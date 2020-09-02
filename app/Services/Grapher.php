@@ -337,6 +337,7 @@ class Grapher
 
     /**
      * Get an instance of a CoreBundle aggregate graph
+     *
      * @param CoreBundle $cb
      * @param string $side
      *
@@ -376,6 +377,7 @@ class Grapher
 
     /**
      * initialise the cache
+     *
      * @return void
      */
     private function setupCache()
@@ -430,9 +432,11 @@ class Grapher
      *
      * @param string $key
      * @param \Closure $fn Callback to populate the cache
+     *
      * @return mixed
      */
-    public function remember( $key, $fn ) {
+    public function remember( $key, $fn )
+    {
         if( $this->cacheEnabled() ) {
             return $this->cacheRepository()->remember( $key, $this->cacheLifetime(), $fn );
         } else {

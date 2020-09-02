@@ -1,12 +1,9 @@
 <html>
-<head>
-    <title>Port Utilisation Report</title>
-</head>
-
+  <head>
+      <title>Port Utilisation Report</title>
+  </head>
 <body>
-
 <h1>Port Utilisation Report</h1>
-
 <p>
     The following ports are at or have exceeded <?= $t->threshold ?>% utilisation over the past week.
 </p>
@@ -15,11 +12,11 @@
 
 <?php foreach( $t->excess as $e ): ?>
 
-    <h2><?= $e['cust']->getName() ?></h2>
+    <h2><?= $e['cust']->name ?></h2>
 
     <?php foreach( $e['ports'] as $i => $p ): ?>
 
-        <h3>Port(s) on <?= $p['switch']->getName() ?> - Speed: <?= $p['speed'] ?>Gbps</h3>
+        <h3>Port(s) on <?= $p['switch']->name ?> - Speed: <?= $p['speed'] ?>Gbps</h3>
 
         <ul>
             <?php if( $p['utilIn'] > $t->threshold ): ?>
@@ -37,7 +34,7 @@
 
 
         <p>
-            <a href="<?= route( "customer@overview" , [ "id" => $e['cust']->getId() ] ) ?> ">
+            <a href="<?= route( "customer@overview" , [ "id" => $e['cust']->id ] ) ?> ">
                 <img src="data:image/png;base64,<?= base64_encode( $p['png'] ) ?>">
             </a>
         </p>
@@ -50,7 +47,7 @@
 <?php endforeach; ?>
 
 
-<?php if( count( $t->excess ) == 0 ): ?>
+<?php if( count( $t->excess ) === 0 ): ?>
     <p>
         No ports were found with excess utilisation over the past week.
     </p>

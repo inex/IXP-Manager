@@ -61,6 +61,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read \IXP\Models\PhysicalInterface|null $fanoutPhysicalInterface
  * @property-read \IXP\Models\PhysicalInterface|null $peeringPhysicalInterface
  * @property-read \IXP\Models\SwitchPort|null $switchport
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\TrafficDailyPhysInt[] $trafficDailiesPhysInt
+ * @property-read int|null $traffic_dailies_phys_int_count
+ * @property-read \IXP\Models\CoreInterface|null $coreInterface
  */
 class PhysicalInterface extends Model
 {
@@ -71,6 +74,12 @@ class PhysicalInterface extends Model
      */
     protected $table = 'physicalinterface';
 
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
 
     const STATUS_CONNECTED       = 1;
     const STATUS_DISABLED        = 2;
@@ -131,7 +140,7 @@ class PhysicalInterface extends Model
     /**
      * Get the core interface associated with the physical interface.
      */
-    public function coreinterface(): HasOne
+    public function coreInterface(): HasOne
     {
         return $this->hasOne(CoreInterface::class, 'physical_interface_id' );
     }
@@ -218,6 +227,57 @@ class PhysicalInterface extends Model
             ->orderBy( 'speed', 'ASC' )
             ->get()->toArray();
     }
+
+    /**
+     * Determine if the port's status is set to CONNECTED
+     *
+     * @return bool True if the port's status is CONNECTED
+     */
+    public function statusIsConnected(): bool
+    {
+        return $this->status === self::STATUS_CONNECTED;
+    }
+
+    /**
+     * Determine if the port's status is set to DISABLED
+     *
+     * @return bool True if the port's status is DISABLED
+     */
+    public function statusIsDisabled(): bool
+    {
+        return $this->status === self::STATUS_DISABLED;
+    }
+
+    /**
+     * Determine if the port's status is set to NOTCONNECTED
+     *
+     * @return bool True if the port's status is NOTCONNECTED
+     */
+    public function statusIsNotConnected(): bool
+    {
+        return $this->status === self::STATUS_NOTCONNECTED;
+    }
+
+    /**
+     * Determine if the port's status is set to XCONNECT
+     *
+     * @return bool True if the port's status is XCONNECT
+     */
+    public function statusIsAwaitingXConnect(): bool
+    {
+        return $this->status === self::STATUS_XCONNECT;
+    }
+
+    /**
+     * Determine if the port's status is set to QUARANTINE
+     *
+     * @return bool True if the port's status is QUARANTINE
+     */
+    public function statusIsQuarantine(): bool
+    {
+        return $this->status === self::STATUS_QUARANTINE;
+    }
+
 
     /**
      * Is this port graphable?

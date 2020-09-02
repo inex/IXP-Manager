@@ -2,6 +2,7 @@
 
 namespace IXP\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -123,6 +124,30 @@ class TrafficDailyPhysInt extends Model
         return Arr::flatten( self::select( [ 'day' ] )
             ->distinct( 'day' )
             ->orderBy( 'day')->get()->toArray() );
+    }
+
+    /**
+     * Delete all entries for a given day
+     *
+     * @param Carbon $day The day to delete all entries for
+     *
+     * @return void
+     */
+    public static function deleteForDay( Carbon $day )
+    {
+        return self::where( 'day', $day->format('Y-m-d') )->delete();
+    }
+
+    /**
+     * Delete all entries before a given day
+     *
+     * @param Carbon $day The day to delete all entries before
+     *
+     * @return void
+     */
+    public static function deleteBefore( Carbon $day )
+    {
+        return self::where( 'day', '<', $day->format('Y-m-d') )->delete();
     }
 
     /**

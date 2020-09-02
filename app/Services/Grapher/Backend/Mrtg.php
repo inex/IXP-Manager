@@ -1,7 +1,9 @@
-<?php namespace IXP\Services\Grapher\Backend;
+<?php
+
+namespace IXP\Services\Grapher\Backend;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -45,20 +47,22 @@ use IXP\Utils\Grapher\{
 /**
  * Grapher Backend -> Mrtg
  *
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Mrtg extends GrapherBackend implements GrapherBackendContract {
-
+class Mrtg extends GrapherBackend implements GrapherBackendContract
+{
     /**
      * {@inheritDoc}
      *
      * @return string
      */
-    public function name(): string {
+    public function name(): string
+    {
         return 'mrtg';
     }
 
@@ -69,7 +73,8 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * @return bool
      */
-    public function isConfigurationRequired(): bool {
+    public function isConfigurationRequired(): bool
+    {
         return true;
     }
 
@@ -79,7 +84,8 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * @see \IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
      * @return bool
      */
-    public function isMonolithicConfigurationSupported(): bool {
+    public function isMonolithicConfigurationSupported(): bool
+    {
         return true;
     }
 
@@ -87,12 +93,13 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * This function indicates whether this graphing engine supports multiple files to a directory
      *
      * @see \IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
+     *
      * @return bool
      */
-    public function isMultiFileConfigurationSupported(): bool {
+    public function isMultiFileConfigurationSupported(): bool
+    {
         return false;
     }
-
 
     /**
      * Generate the configuration file(s) for this graphing backend
@@ -101,6 +108,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * @param int $type The type of configuration to generate
      * @param array $options
+     *
      * @return array
      */
     public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC, array $options = [] ): array
@@ -134,7 +142,8 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * @return array
      */
-    public function getPeeringPorts(): array {
+    public function getPeeringPorts(): array
+    {
         $data = [];
         $data['ixpports']            = [];
         $data['ixpports_maxbytes']   = 0;
@@ -183,8 +192,8 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                         $data['swports_maxbytes'][ $s->id ] = 0;
                     }
 
-                    if( !isset( $data['infras'][ $pi->switchPort->switcher->infrastructure->id ] ) ) {
-                        $i = $pi->switchPort->switcher->infrastructure;
+                    if( !isset( $data['infras'][ $pi->switchPort->switcher->infrastructureModel->id ] ) ) {
+                        $i = $pi->switchPort->switcher->infrastructureModel;
                         $data['infras'][ $i->id ] = $i;
                         $data['infraports_maxbytes'][ $i->id ] = 0;
                     }
@@ -196,13 +205,13 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                     }
 
                     $data['swports'][ $pi->switchPort->switcher->id ][] = $pi->id;
-                    $data['infraports'][ $pi->switchPort->switcher->infrastructure->id ][] = $pi->id;
+                    $data['infraports'][ $pi->switchPort->switcher->infrastructureModel->id ][] = $pi->id;
                     $data['ixpports'][] = $pi->id;
 
                     $maxbytes = $pi->resolveDetectedSpeed() * 1000000 / 8; // Mbps * bps / to bytes
                     $switcher = $pi->switchPort->switcher;
                     $data['swports_maxbytes'   ][ $switcher->id ] += $maxbytes;
-                    $data['infraports_maxbytes'][ $switcher->infrastructure->id ] += $maxbytes;
+                    $data['infraports_maxbytes'][ $switcher->infrastructureModel->id ] += $maxbytes;
                     $data['ixpports_maxbytes'] += $maxbytes;
                 }
             }
@@ -292,7 +301,6 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
         $pi->id = $id;
         $pi->switchportid = $sp->id;
         $pi->speed = $sp->ifHighSpeed;
-        $pi->save();
         return $pi;
     }
 

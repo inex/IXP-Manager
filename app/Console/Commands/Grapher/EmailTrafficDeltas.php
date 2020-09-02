@@ -1,7 +1,9 @@
-<?php namespace IXP\Console\Commands\Grapher;
+<?php
+
+namespace IXP\Console\Commands\Grapher;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,8 +23,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
-
 use D2EM;
 use DateTime;
 
@@ -35,18 +35,18 @@ use IXP\Services\Grapher\Graph;
 
 use Mail;
 
-
  /**
   * Artisan command to email ports where the standard deviation has changed significantly
   *
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+  * @author     Yann Robin      <yann@islandbridgenetworks.ie>
   * @category   Grapher
   * @package    IXP\Console\Commands
-  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
-class EmailTrafficDeltas extends GrapherCommand {
-
+class EmailTrafficDeltas extends GrapherCommand
+{
     /**
      * The name and signature of the console command.
      *
@@ -62,7 +62,6 @@ class EmailTrafficDeltas extends GrapherCommand {
      * @var string
      */
     protected $description = 'Email ports with a swing in the standard deviation';
-
 
     /**
      * Execute the console command.

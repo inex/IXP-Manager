@@ -31,8 +31,7 @@
 
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
-
-                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex" action="<?= route('statistics/utilisation:post' ) ?>" method="post">
+                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex" action="<?= route('statistics@utilisation:post' ) ?>" method="post">
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">
                                     <label for="vlan" class="col-sm-4 col-lg-5">VLAN:</label>
@@ -44,7 +43,6 @@
                                     </select>
                                 </div>
                             </li>
-
                             <li class="nav-item tw-ml-12">
                                 <div class="nav-link d-flex ">
                                     <label for="period" class="col-sm-4 col-lg-5">Period:</label>
@@ -55,7 +53,6 @@
                                     </select>
                                 </div>
                             </li>
-
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">
                                     <label for="period" class="col-sm-4 col-lg-5">Day:</label>
@@ -66,7 +63,6 @@
                                     </select>
                                 </div>
                             </li>
-
                             <li class="nav-item  tw-ml-8">
                                 <div class="nav-link d-flex float-right">
                                     <input type="hidden" name="metric" value="max">

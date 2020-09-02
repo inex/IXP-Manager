@@ -7,7 +7,6 @@
         Statistics /  League Table  (<?php foreach( IXP\Services\Grapher\Graph::CATEGORIES as $cname => $cvalue ) { if( $t->category === $cvalue ) { echo $cname; } } ?>)
 <?php $this->append() ?>
 
-
 <?php $this->section( 'content' ) ?>
     <div class="row">
         <div class="col-sm-12">
@@ -21,7 +20,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
-                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex" action="<?= route('statistics/league-table' ) ?>" method="post">
+                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex" action="<?= route('statistics@league-table' ) ?>" method="post">
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">
                                     <label for="metric" class="col-sm-4 col-lg-4">Metric:</label>
@@ -59,6 +58,7 @@
                     </ul>
                 </div>
             </nav>
+
             <table id="ixpDataTable" class="table table-striped table-bordered collapse" style="width:100%">
                 <thead class="thead-dark">
                     <tr>

@@ -70,7 +70,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\TrafficDaily whereYearTotIn($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\TrafficDaily whereYearTotOut($value)
  * @mixin \Eloquent
- * @property int $ixp_id
  * @property-read \IXP\Models\Customer $customer
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\TrafficDaily whereIxpId($value)
  */
@@ -98,6 +97,29 @@ class TrafficDaily extends Model
         return $this->belongsTo(Customer::class, 'cust_id');
     }
 
+    /**
+     * Delete all entries for a given day
+     *
+     * @param Carbon $day The day to delete all entries for
+     *
+     * @return void
+     */
+    public static function deleteForDay( Carbon $day  )
+    {
+        return self::where( 'day', $day->format('Y-m-d') )->delete();
+    }
+
+    /**
+     * Delete all entries before a given day
+     *
+     * @param Carbon $day The day to delete all entries before
+     *
+     * @return void
+     */
+    public static function deleteBefore( Carbon $day  )
+    {
+        return self::where( 'day', '<', $day->format('Y-m-d') )->delete();
+    }
     /**
      * Return an array of traffic data (joined with the customer record) for
      * a given day and category.
@@ -137,7 +159,7 @@ class TrafficDaily extends Model
      *
      * @return array An array of all switch objects
      */
-    public static function loadTraffic( $day, $category )
+    public static function loadTraffic( Carbon $day, string $category )
     {
         return self::select( [ 'td.*', 'c.*'] )
             ->from( 'traffic_daily AS td' )

@@ -39,7 +39,8 @@ use IXP\Utils\Grapher\{
 /**
  * Grapher Backend -> Sflow
  *
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <Yann@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Services\Grapher
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -100,6 +101,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      *
      * @param int   $type       The type of configuration to generate
      * @param array $options
+     *
      * @return array
      */
     public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC, array $options = [] ): array
@@ -143,7 +145,6 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
             ],
         ];
     }
-
 
     /**
      * Get the data points for a given graph

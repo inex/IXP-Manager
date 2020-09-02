@@ -25,8 +25,10 @@ namespace IXP\Services\Grapher\Backend;
 
 use View;
 
-use IXP\Models\Vlan;
-use IXP\Models\VlanInterface;
+use IXP\Models\{
+    Vlan,
+    VlanInterface
+};
 
 use Illuminate\Support\Facades\View as FacadeView;
 
@@ -110,7 +112,6 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
      */
     public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC, array $options = [] ): array
     {
-
         $v = Vlan::findOrFail( $options[ 'vlanid' ] ?? null );
 
         if( !in_array( $options[ 'protocol' ] ?? null , Graph::PROTOCOLS_REAL, false ) ) {

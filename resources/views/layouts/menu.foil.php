@@ -388,13 +388,13 @@
             </li>
 
             <li class="<?= !request()->is( 'statistics/utilisation' ) ?: 'active' ?>">
-                <a href="<?= route( 'statistics/utilisation' ) ?>" class="nav-link">
+                <a href="<?= route( 'statistics@utilisation' ) ?>" class="nav-link">
                     Port Utilisation
                 </a>
             </li>
 
             <li class="<?= !request()->is( 'statistics/league-table' ) ?: 'active' ?>">
-                <a href="<?= route( 'statistics/league-table' ) ?>" class="nav-link">
+                <a href="<?= route( 'statistics@league-table' ) ?>" class="nav-link">
                     League Table
                 </a>
             </li>

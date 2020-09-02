@@ -42,8 +42,8 @@ use IXP\Services\Grapher\{Graph};
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class P2p extends Graph {
-
+class P2p extends Graph
+{
     /**
      * Source VlanInterface to graph
      *
@@ -106,7 +106,7 @@ class P2p extends Graph {
             $this->wipe();
         }
 
-        $this->svli = $i;
+        $this->svli = $vli;
         return $this;
     }
 

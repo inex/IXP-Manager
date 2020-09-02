@@ -27,19 +27,19 @@
 <?php
     foreach( $t->data['sws'] as $switchid => $switch ):
 
-        if( !isset( $t->data['swports'][$switch->getId()] ) ):
+        if( !isset( $t->data[ 'swports' ][ $switch->id ] ) ):
             continue;
         endif;
 
         echo $t->insert(
             "services/grapher/mrtg/target", [
                 'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
-                'mrtgPrefix'   => sprintf( "switch-aggregate-%05d", $switch->getId() ),
-                'portIds'      => $t->data['swports'][$switch->getId()],
+                'mrtgPrefix'   => sprintf( "switch-aggregate-%05d", $switch->id ),
+                'portIds'      => $t->data[ 'swports' ][ $switch->id ],
                 'data'         => $t->data,
-                'graphTitle'   => sprintf( config('identity.orgname') . " - Peering %%s / second on %s", $switch->getName() ),
+                'graphTitle'   => sprintf( config('identity.orgname') . " - Peering %%s / second on %s", $switch->name ),
                 'directory'    => sprintf( "switches/%03d", $switchid ),
-                'maxbytes'     => $t->data['swports_maxbytes'][$switchid],
+                'maxbytes'     => $t->data[ 'swports_maxbytes' ][ $switchid ],
             ]
         );
 

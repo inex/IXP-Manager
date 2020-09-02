@@ -445,6 +445,42 @@ class Customer extends Model
     }
 
     /**
+     * Is this customer graphable?
+     *
+     * @return bool
+     */
+    public function isGraphable(): bool
+    {
+        foreach( $this->virtualInterfaces as $vi ) {
+            if( $vi->isGraphable() ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Does the customer have any interfaces in quarantine/connected?
+     *
+     * I.e. does the customer have graphable interfaces?
+     *
+     * @return bool
+     */
+    public function hasInterfacesConnectedOrInQuarantine(): bool
+    {
+        foreach( $this->virtualInterfaces as $vi ) {
+            foreach( $vi->physicalInterfaces as $pi ) {
+                if( $pi->statusIsConnectedOrQuarantine() ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * return the doctrine entity
      *
      * @return object|CustomerEntity
@@ -525,38 +561,26 @@ class Customer extends Model
     }
 
     /**
-     * Is this customer graphable?
+     * Utility function to provide a array of all members connected to the exchange (including at
+     * least one physical interface with status 'CONNECTED').
      *
-     * @return bool
+     * @param bool $externalOnly If `true`, only include external customers (i.e. no internal types)
+     *
+     * @return Collection
      */
-    public function isGraphable(): bool
+    public static function getConnected( $externalOnly = false )
     {
-        foreach( $this->virtualInterfaces as $vi ) {
-            if( $vi->isGraphable() ) {
-                return true;
-            }
-        }
-
-        return false;
+        return self::select( 'c.*' )
+            ->from( 'cust AS c' )
+            ->leftJoin( 'virtualinterface AS vi', 'vi.custid', 'c.id'  )
+            ->leftJoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
+            ->whereRaw( self::SQL_CUST_CURRENT )
+            ->whereRaw(self::SQL_CUST_TRAFFICING )
+            ->where('pi.status', PhysicalInterface::STATUS_CONNECTED )
+            ->when( $externalOnly , function( Builder $q ) {
+                return $q->whereRaw( self::SQL_CUST_EXTERNAL );
+            })
+            ->orderBy( 'c.name' )->distinct()->get();
     }
 
-    /**
-     * Does the customer have any interfaces in quarantine/connected?
-     *
-     * I.e. does the customer have graphable interfaces?
-     *
-     * @return bool
-     */
-    public function hasInterfacesConnectedOrInQuarantine(): bool
-    {
-        foreach( $this->virtualInterfaces as $vi ) {
-            foreach( $vi->physicalInterfaces as $pi ) {
-                if( $pi->statusIsConnectedOrQuarantine() ) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
 }

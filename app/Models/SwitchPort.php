@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Log;
+use OSS_SNMP\MIBS\Extreme\Port;
+use OSS_SNMP\MIBS\Iface;
 use OSS_SNMP\SNMP;
 use OSS_SNMP\MIBS\MAU as MauMib;
 use stdClass;
@@ -258,6 +260,122 @@ class SwitchPort extends Model
     public function isTypeFanout(): bool
     {
         return $this->getType() === self::TYPE_FANOUT;
+    }
+
+    /**
+     * Get the appropriate OID for in octets
+     *
+     * @return string
+     */
+    public function oidInOctets(): string
+    {
+        return Iface::OID_IF_HC_IN_OCTETS;
+    }
+
+    /**
+     * Get the appropriate OID for out octets
+     *
+     * @return string
+     */
+    public function oidOutOctets(): string
+    {
+        return Iface::OID_IF_HC_OUT_OCTETS;
+    }
+
+    /**
+     * Get the appropriate OID for in unicast packets
+     *
+     * @return string
+     */
+    public function oidInUnicastPackets(): string
+    {
+        return Iface::OID_IF_HC_IN_UNICAST_PACKETS;
+    }
+
+    /**
+     * Get the appropriate OID for out unicast packets
+     * @return string
+     */
+    public function oidOutUnicastPackets(): string
+    {
+        return Iface::OID_IF_HC_OUT_UNICAST_PACKETS;
+    }
+
+    /**
+     * Get the appropriate OID for in errors
+     * @return string
+     */
+    public function oidInErrors(): string
+    {
+        return Iface::OID_IF_IN_ERRORS;
+    }
+
+    /**
+     * Get the appropriate OID for out errors
+     * @return string
+     */
+    public function oidOutErrors(): string
+    {
+        return Iface::OID_IF_OUT_ERRORS;
+    }
+
+    /**
+     * Get the appropriate OID for in discards
+     * @return string
+     */
+    public function oidInDiscards(): string
+    {
+        return Iface::OID_IF_IN_DISCARDS;
+    }
+
+    /**
+     * Get the appropriate OID for out discards
+     *
+     * @return string
+     */
+    public function oidOutDiscards(): string
+    {
+        switch( $this->switcher->os ) {
+            case 'ExtremeXOS':
+                return Port::OID_PORT_CONG_DROP_PKTS;
+                break;
+            default:
+                return Iface::OID_IF_OUT_DISCARDS;
+                break;
+        }
+    }
+
+    /**
+     * Get the appropriate OID for in broadcasts
+     *
+     * @return string
+     */
+    public function oidInBroadcasts(): string
+    {
+        return Iface::OID_IF_HC_IN_BROADCAST;
+    }
+
+    /**
+     * Get the appropriate OID for out broadcasts
+     *
+     * @return string
+     */
+    public function oidOutBroadcasts(): string
+    {
+        return Iface::OID_IF_HC_OUT_BROADCAST;
+    }
+
+    public function ifnameToSNMPIdentifier()
+    {
+        # escape special characters in ifName as per
+        # http://oss.oetiker.ch/mrtg/doc/mrtg-reference.en.html - "Interface by Name" section
+
+        $ifname = preg_replace( '/:/', '\\:', $this->ifName );
+        $ifname = preg_replace( '/&/', '\\&', $ifname );
+        $ifname = preg_replace( '/@/', '\\@', $ifname );
+        $ifname = preg_replace( '/\ /', '\\\ ', $ifname );
+
+        return $ifname;
     }
 
     /**

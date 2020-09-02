@@ -26,7 +26,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     /**
      * @var boolean flag indicating if this object was already initialized
      *
-     * @see \Doctrine\Common\Persistence\Proxy::__isInitialized
+     * @see \Doctrine\Persistence\Proxy::__isInitialized
      */
     public $__isInitialized__ = false;
 

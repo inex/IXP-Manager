@@ -1,7 +1,9 @@
-<?php namespace IXP\Console\Commands\Grapher;
+<?php
+
+namespace IXP\Console\Commands\Grapher;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,32 +22,23 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
-
-use Symfony\Component\Console\Output\OutputInterface;
-
-use IXP\Contracts\Grapher\Backend as GrapherBackend;
-
-use D2EM;
 use Grapher;
 
-
+use IXP\Contracts\Grapher\Backend as GrapherBackend;
  /**
   * Artisan command to generate configuration for graphing
   *
   * ** Grapher Impementation Dependant! **
   *
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+  * @author     Yann Robin      <yann@islandbridgenetworks.ie>
   * @category   Grapher
   * @package    IXP\Console\Commands
-  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
-class GenerateConfiguration extends GrapherCommand {
-
+class GenerateConfiguration extends GrapherCommand
+{
     /**
      * The name and signature of the console command.
      *
@@ -68,9 +61,10 @@ class GenerateConfiguration extends GrapherCommand {
      *
      * @return mixed
      */
-    public function handle(): int {
-
+    public function handle(): int
+    {
         $grapher = Grapher::backend( $this->option( 'backend' ) );
+
         if( !$grapher->isConfigurationRequired() ) {
             $this->info("This grapher backend (" . $grapher->name() . ") does not require any configuration to be generated");
             return 100;
@@ -88,10 +82,12 @@ class GenerateConfiguration extends GrapherCommand {
      * Output the configuration in the requested format
      *
      * @param string $conf The Configuration
+     *
      * @return int Suggested status code for script exit (0 == success)
      */
-    protected function outputConfiguration( $conf ): int {
-        if( $this->option('output') == '-' ) {
+    protected function outputConfiguration( $conf ): int
+    {
+        if( $this->option('output') === '-' ) {
             echo $conf;
             return 0;
         }
@@ -106,9 +102,13 @@ class GenerateConfiguration extends GrapherCommand {
 
     /**
      * Check the various arguments and options that have been password to the console command
+     *
+     * @param GrapherBackend $grapher
+     *
      * @return int 0 for success or else an error code
      */
-    protected function verifyArgsAndOptions( GrapherBackend $grapher ): int {
+    protected function verifyArgsAndOptions( GrapherBackend $grapher ): int
+    {
         $fn = $this->option('output');
 
         if( !$grapher->isMonolithicConfigurationSupported() ) {
@@ -116,7 +116,7 @@ class GenerateConfiguration extends GrapherCommand {
             return 251;
         }
 
-        if( $fn == '-' ) return 0;
+        if( $fn === '-' ) return 0;
 
         // does it exist but is not writable?
         if( is_file($fn)  && !is_writable($fn) ) {

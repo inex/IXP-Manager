@@ -124,9 +124,7 @@
 
 
     $(document).ready(function() {
-
         tableList.show();
-
     });
 
 </script>

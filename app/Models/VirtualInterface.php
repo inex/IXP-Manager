@@ -92,6 +92,26 @@ class VirtualInterface extends Model
     }
 
     /**
+     * Get the speed of the LAG
+     *
+     * @param bool $connectedOnly Only consider physical interfaces with 'CONNECTED' state
+     *
+     * @return int
+     */
+    public function speed( $connectedOnly = true ): int
+    {
+        $speed = 0;
+        foreach( $this->physicalInterfaces as $pi ) {
+            if( $connectedOnly && !$pi->statusIsConnected() ) {
+                continue;
+            }
+            $speed += $pi->speed;
+        }
+
+        return $speed;
+    }
+
+    /**
      * Utility function to provide an array of all virtual interface objects on a given
      * infrastructure
      *
@@ -140,6 +160,23 @@ class VirtualInterface extends Model
             }
         }
 
+        return false;
+    }
+
+    /**
+     * Return the core bundle associated to the virtual interface or false
+     *
+     * @return CoreBundle|bool
+     */
+    public function getCoreBundle()
+    {
+        foreach( $this->physicalInterfaces as $pi ) {
+            if( $pi->coreinterface()->exists() ) {
+                $ci = $pi->coreinterface;
+                /** @var $ci CoreInterface */
+                return $ci->getCoreLink()->coreBundle;
+            }
+        }
         return false;
     }
 }

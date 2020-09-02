@@ -21,7 +21,7 @@
 
 <?php foreach( $t->ports as $p ): ?>
 
-    <h2><?= $p['cust']->getName() ?></h2>
+    <h2><?= $p['cust']->name ?></h2>
 
     <ul>
         <?php if( $p['dIn'] > $p['thresholdIn']  ): ?>
@@ -53,13 +53,13 @@
     </ul>
 
     <p>
-        <a href="<?= route( "customer@overview" , [ "id" => $p['cust']->getId() ] ) ?>">
+        <a href="<?= route( "customer@overview" , [ "id" => $p['cust']->id ] ) ?>">
             <img src="data:image/png;base64,<?= base64_encode( $p['pngMonth'] ) ?>">
         </a>
     </p>
 
     <p>
-        <a href="<?= route( "customer@overview" , [ "id" => $p['cust']->getId() ] ) ?>">
+        <a href="<?= route( "customer@overview" , [ "id" => $p['cust']->id ] ) ?>">
             <img src="data:image/png;base64,<?= base64_encode( $p['pngYear'] ) ?>">
         </a>
     </p>

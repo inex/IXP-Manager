@@ -20,6 +20,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read \IXP\Models\CoreLink|null $corelinksidea
  * @property-read \IXP\Models\CoreLink|null $corelinksideb
  * @property-read \IXP\Models\PhysicalInterface|null $physicalinterface
+ * @property-read \IXP\Models\CoreLink|null $coreLinkSideA
+ * @property-read \IXP\Models\CoreLink|null $coreLinkSideB
+ * @property-read \IXP\Models\PhysicalInterface|null $physicalInterface
  */
 class CoreInterface extends Model
 {
@@ -33,7 +36,7 @@ class CoreInterface extends Model
     /**
      * Get the physical interface associated with the core interface.
      */
-    public function physicalinterface(): BelongsTo
+    public function physicalInterface(): BelongsTo
     {
         return $this->belongsTo(PhysicalInterface::class, 'physical_interface_id' );
     }
@@ -41,7 +44,7 @@ class CoreInterface extends Model
     /**
      * Get the corelink associated with the core interface side A.
      */
-    public function corelinksidea(): HasOne
+    public function coreLinkSideA(): HasOne
     {
         return $this->hasOne(CoreLink::class, 'core_interface_sidea_id' );
     }
@@ -49,8 +52,22 @@ class CoreInterface extends Model
     /**
      * Get the corelink associated with the core interface side B.
      */
-    public function corelinksideb(): HasOne
+    public function coreLinkSideB(): HasOne
     {
         return $this->hasOne(CoreLink::class, 'core_interface_sideb_id' );
+    }
+
+    /**
+     * Check which side has a core link linked
+     *
+     * @return CoreLink
+     */
+    public function getCoreLink(): CoreLink
+    {
+        if( $this->coreLinkSideA()->exists() ) {
+            return $this->coreLinkSideA;
+        }
+
+        return $this->coreLinkSideB;
     }
 }

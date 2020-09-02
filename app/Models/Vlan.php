@@ -65,6 +65,12 @@ use stdClass;
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $routeserverfilters
  * @property-read int|null $routeserverfilters_count
  * @method static Builder|\IXP\Models\Vlan filtered($type)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IPv4Address[] $ipv4Addresses
+ * @property-read int|null $ipv4_addresses_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IPv6Address[] $ipv6Addresses
+ * @property-read int|null $ipv6_addresses_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $routeServerFilters
+ * @property-read int|null $route_server_filters_count
  */
 class Vlan extends Model
 {

@@ -1,4 +1,6 @@
-<?php namespace IXP\Console\Commands\Grapher;
+<?php
+
+namespace IXP\Console\Commands\Grapher;
 
 /*
  * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -20,29 +22,31 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+//use Entities\Customer;
 
-
-use Entities\Customer;
-use IXP\Contracts\Grapher\Backend as GrapherBackend;
-
-use D2EM;
 use Carbon\Carbon;
-use Entities\TrafficDailyPhysInt;
+
 use Grapher;
+
 use IXP\Services\Grapher\Graph;
 
+use IXP\Models\{
+    Customer,
+    TrafficDailyPhysInt
+};
 
  /**
   * Artisan command to upload member traffic stats to the database
   *
   * @author     Barry O'Donovan <barry@opensolutions.ie>
+  * @author     Yann Robin      <yann@opensolutions.ie>
   * @category   Grapher
   * @package    IXP\Console\Commands
   * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
-class UploadPhysIntStatsToDb extends GrapherCommand {
-
+class UploadPhysIntStatsToDb extends GrapherCommand
+{
     /**
      * The name and signature of the console command.
      *
@@ -58,16 +62,15 @@ class UploadPhysIntStatsToDb extends GrapherCommand {
      */
     protected $description = 'Upload individual physical interface stats to the database (daily task)';
 
-
     /**
      * Execute the console command.
      *
      * @return mixed
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
-     * @throws \Exception
+     *
+     * @throws
      */
-    public function handle(): int {
-
+    public function handle(): int
+    {
         Grapher::backend( $this->option( 'backend' ) );
         $this->setGrapher( Grapher::getFacadeRoot() );
 
@@ -78,49 +81,44 @@ class UploadPhysIntStatsToDb extends GrapherCommand {
 
         // This should only be done once a day and if values already exist for 'today', just delete them.
         $today = now();
-        D2EM::getRepository( 'Entities\TrafficDailyPhysInt' )->deleteForDay( $today );
 
-        /** @var Customer[] $custs */
-        $custs = D2EM::getRepository( 'Entities\Customer')->getConnected( false, true );
+        TrafficDailyPhysInt::deleteForDay( $today );
+
+        $custs = Customer::getConnected( true );
 
         foreach( $custs as $cust )  {
             if( $this->isVerbosityVerbose() ) {
-                $this->info( "\t- processing customer " . $cust->getName() );
+                $this->info( "\t- processing customer " . $cust->name );
             }
 
-            foreach( $cust->getVirtualInterfaces() as $vi ) {
-
-                foreach( $vi->getPhysicalInterfaces() as $pi ) {
-
+            foreach( $cust->virtualInterfaces as $vi ) {
+                foreach( $vi->physicalInterfaces as $pi ) {
                     foreach( Graph::CATEGORIES as $category ) {
-
                         $graph = $this->grapher()->physint( $pi )->setCategory( $category );
 
                         $td = new TrafficDailyPhysInt;
-                        $td->setDay( $today );
-                        $td->setCategory( $category );
-                        $td->setPhysicalInterface( $pi );
+                        $td->physicalinterface_id = $pi->id;
+                        $td->day = $today;
+                        $td->category = $category;
 
                         foreach( Graph::PERIOD_DESCS as $period => $name ) {
-                            $stats = $graph->setPeriod($period)->statistics();
-
-                            $fn = "set{$name}AvgIn";    $td->$fn( $stats->averageIn()   );
-                            $fn = "set{$name}AvgOut";   $td->$fn( $stats->averageOut()  );
-                            $fn = "set{$name}MaxIn";    $td->$fn( $stats->maxIn()       );
-                            $fn = "set{$name}MaxOut";   $td->$fn( $stats->maxOut()      );
-                            $fn = "set{$name}MaxInAt";  $td->$fn( $stats->maxInAt()     );
-                            $fn = "set{$name}MaxOutAt"; $td->$fn( $stats->maxOutAt()     );
-                            $fn = "set{$name}TotIn";    $td->$fn( $stats->totalIn()     );
-                            $fn = "set{$name}TotOut";   $td->$fn( $stats->totalOut()    );
+                            $stats = $graph->setPeriod( $period )->statistics();
+                            $lname = strtolower( $name );
+                            $fn = "{$lname}_avg_in";     $td->$fn = $stats->averageIn();
+                            $fn = "{$lname}_avg_out";    $td->$fn = $stats->averageOut();
+                            $fn = "{$lname}_max_in";     $td->$fn = $stats->maxIn();
+                            $fn = "{$lname}_max_out";    $td->$fn = $stats->maxOut();
+                            $fn = "{$lname}_max_in_at";  $td->$fn = $stats->maxInAt();
+                            $fn = "{$lname}_max_out_at"; $td->$fn = $stats->maxOutAt();
+                            $fn = "{$lname}_tot_in";     $td->$fn = $stats->totalIn();
+                            $fn = "{$lname}_tot_out";    $td->$fn = $stats->totalOut();
                         }
 
                         unset( $graph );
-                        D2EM::persist( $td );
+                        $td->save();
                     }
                 }
             }
-
-            D2EM::flush();
         }
 
         if( config( 'grapher.cli.traffic_daily.delete_old', true ) ) {
@@ -128,7 +126,7 @@ class UploadPhysIntStatsToDb extends GrapherCommand {
                 $this->warn( "Deleting old daily traffic records that are no longer required" );
             }
 
-            D2EM::getRepository( 'Entities\TrafficDailyPhysInt' )->deleteBefore(
+            TrafficDailyPhysInt::deleteBefore(
                 new Carbon( "-" . config( 'grapher.cli.traffic_daily.delete_old_days', 140 ) . " days" )
             );
         }

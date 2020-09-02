@@ -33,7 +33,7 @@
 <?php endforeach; ?>
 
 
-<?php if( count( $t->ports ) == 0 ): ?>
+<?php if( count( $t->ports ) === 0 ): ?>
     <p>
         No ports were found with errors.
     </p>

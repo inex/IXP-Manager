@@ -36,7 +36,8 @@ use IXP\Models\{
 /**
  * Grapher -> Core Bundle Graph
  *
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Services\Grapher
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -61,9 +62,11 @@ class CoreBundle extends Graph
 
     /**
      * Constructor
-     * @param Grapher $grapher
      *
+     * @param Grapher $grapher
      * @param CoreBundleModel $cb
+     * @param string $side
+     *
      */
     public function __construct( Grapher $grapher, CoreBundleModel $cb, string $side = 'a' )
     {
@@ -74,6 +77,7 @@ class CoreBundle extends Graph
 
     /**
      * Get the CoreBundle we're set to use
+     *
      * @return CoreBundleModel
      */
     public function coreBundle(): CoreBundleModel
@@ -132,13 +136,14 @@ class CoreBundle extends Graph
      */
     public function name(): string
     {
-        return $this->coreBundle()->getGraphTitle();
+        return $this->coreBundle()->graph_title;
     }
 
     /**
      * A unique identifier for this 'graph type'
      *
      * E.g. for an IXP, it might be ixpxxx where xxx is the database id
+     *
      * @return string
      */
     public function identifier(): string
@@ -206,7 +211,6 @@ class CoreBundle extends Graph
         $p['side'] = $this->side();
         return $p;
     }
-
 
     /**
      * Process user input for the parameter: cb

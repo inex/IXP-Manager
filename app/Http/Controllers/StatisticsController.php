@@ -639,13 +639,13 @@ class StatisticsController extends Controller
         $day = Carbon::createFromFormat( 'Y-m-d', $tday );
         $category = Graph::processParameterCategory( $r->category );
 
-        return view( 'statistics/league-table' )->with([
+        return view( 'statistics/league-table' )->with( [
             'metric'       => $metric,
             'metrics'      => $metrics,
             'day'          => $day,
             'category'     => $category,
             'trafficDaily' => TrafficDaily::loadTraffic( $day, $category ),
-        ]);
+        ] );
     }
 
     /**
@@ -660,9 +660,10 @@ class StatisticsController extends Controller
      */
     public function coreBundle( StatisticsRequest $r, CoreBundle $cb )
     {
-        $grapher  = App::make( Grapher::class );
         $category = Graph::processParameterCategory( $r->input( 'category' ) );
-        $graph    = $grapher->coreBundle( $cb )->setCategory( $category )->setSide( $r->input( 'side', 'a' ) );
+        $graph    = App::make( Grapher::class )
+            ->coreBundle( $cb )->setCategory( $category )
+            ->setSide( $r->input( 'side', 'a' ) );
 
         // if the customer is authorised, then so too are all of their virtual and physical interfaces:
         try {
@@ -674,7 +675,6 @@ class StatisticsController extends Controller
         return view( 'statistics/core-bundle' )->with([
             "cbs"                   => CoreBundle::getActive(),
             "cb"                    => $cb,
-            "grapher"               => $grapher,
             "graph"                 => $graph,
             "category"              => $category,
             "categories"            => Auth::check() && Auth::user()->isSuperUser() ? Graph::CATEGORY_DESCS : Graph::CATEGORIES_BITS_PKTS_DESCS,
@@ -685,7 +685,7 @@ class StatisticsController extends Controller
     /**
      * Show utilisation of member ports
      *
-     * @param Request $r
+     * @param StatisticsRequest $r
      *
      * @return View
      *

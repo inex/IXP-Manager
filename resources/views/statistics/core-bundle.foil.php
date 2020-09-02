@@ -2,7 +2,7 @@
     /** @var Foil\Template\Template $t */
     $this->layout( 'layouts/ixpv4' );
 
-    /** @var Entities\CoreBundle $t->cb */
+    /** @var \IXP\Models\CoreBundle $t->cb */
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -108,9 +108,7 @@
     </div>
 <?php
 use IXP\Services\Grapher\Graph;
-if( Auth::check() && Auth::user()->isSuperUser() ):
-    ?>
-
+if( Auth::check() && Auth::user()->isSuperUser() ): ?>
     <div class="modal" tabindex="-1" role="dialog" id="grapher-backend-info-modal">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
@@ -145,9 +143,7 @@ if( Auth::check() && Auth::user()->isSuperUser() ):
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-
     <script>
-
         let base_route     = "<?= url( '' ) ?>/statistics/core-bundle";
         let sel_corebundle = $("#form-select-corebundleid");
         let sel_category   = $("#form-select-category");
