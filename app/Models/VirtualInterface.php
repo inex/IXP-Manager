@@ -40,23 +40,20 @@ use Illuminate\Database\Eloquent\{Builder, Collection, Model, Relations\BelongsT
  * @property int $lag_framing
  * @property int $fastlacp
  * @property-read \IXP\Models\Customer|null $customer
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PhysicalInterface[] $physicalInterfaces
- * @property-read int|null $physical_interfaces_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereChannelgroup($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereCustid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereFastlacp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereLagFraming($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereMtu($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereTrunk($value)
- * @mixin \Eloquent
+ * @method static Builder|VirtualInterface newModelQuery()
+ * @method static Builder|VirtualInterface newQuery()
+ * @method static Builder|VirtualInterface query()
+ * @method static Builder|VirtualInterface whereChannelgroup($value)
+ * @method static Builder|VirtualInterface whereCustid($value)
+ * @method static Builder|VirtualInterface whereDescription($value)
+ * @method static Builder|VirtualInterface whereFastlacp($value)
+ * @method static Builder|VirtualInterface whereId($value)
+ * @method static Builder|VirtualInterface whereLagFraming($value)
+ * @method static Builder|VirtualInterface whereMtu($value)
+ * @method static Builder|VirtualInterface whereName($value)
+ * @method static Builder|VirtualInterface whereTrunk($value)
+ * @mixin Eloquent
  */
 class VirtualInterface extends Model
 {

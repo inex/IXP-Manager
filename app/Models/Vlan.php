@@ -32,45 +32,14 @@ use stdClass;
  * IXP\Models\Vlan
  *
  * @property int $id
+ * @property int $infrastructureid
  * @property string|null $name
  * @property int|null $number
- * @property string|null $notes
  * @property int $private
- * @property int $infrastructureid
+ * @property string|null $notes
  * @property int $peering_matrix
  * @property int $peering_manager
  * @property string|null $config_name
- * @property-read \IXP\Models\Infrastructure $infrastructure
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IPv4Address[] $ipv4addresses
- * @property-read int|null $ipv4addresses_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IPv6Address[] $ipv6addresses
- * @property-read int|null $ipv6addresses_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Router[] $routers
- * @property-read int|null $routers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
- * @property-read int|null $vlan_interfaces_count
- * @method static Builder|\IXP\Models\Vlan newModelQuery()
- * @method static Builder|\IXP\Models\Vlan newQuery()
- * @method static Builder|\IXP\Models\Vlan query()
- * @method static Builder|\IXP\Models\Vlan whereConfigName($value)
- * @method static Builder|\IXP\Models\Vlan whereId($value)
- * @method static Builder|\IXP\Models\Vlan whereInfrastructureid($value)
- * @method static Builder|\IXP\Models\Vlan whereName($value)
- * @method static Builder|\IXP\Models\Vlan whereNotes($value)
- * @method static Builder|\IXP\Models\Vlan whereNumber($value)
- * @method static Builder|\IXP\Models\Vlan wherePeeringManager($value)
- * @method static Builder|\IXP\Models\Vlan wherePeeringMatrix($value)
- * @method static Builder|\IXP\Models\Vlan wherePrivate($value)
- * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $routeserverfilters
- * @property-read int|null $routeserverfilters_count
- * @method static Builder|\IXP\Models\Vlan filtered($type)
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IPv4Address[] $ipv4Addresses
- * @property-read int|null $ipv4_addresses_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IPv6Address[] $ipv6Addresses
- * @property-read int|null $ipv6_addresses_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $routeServerFilters
- * @property-read int|null $route_server_filters_count
  */
 class Vlan extends Model
 {

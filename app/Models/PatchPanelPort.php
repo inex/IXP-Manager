@@ -62,35 +62,6 @@ use Illuminate\Support\Carbon;
  * @property-read \IXP\Models\PatchPanel|null $patchPanel
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortFile[] $patchPanelPortFiles
  * @property-read int|null $patch_panel_port_files_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPort[] $slavePort
- * @property-read int|null $slave_port_count
- * @property-read \IXP\Models\SwitchPort|null $switchPort
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereAssignedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereCeaseRequestedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereCeasedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereChargeable($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereColoBillingRef($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereColoCircuitRef($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereConnectedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereCustomerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereDuplexMasterId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereInternalUse($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereLastStateChange($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereLoaCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereOwnedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort wherePatchPanelId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort wherePrivateNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereState($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereSwitchPortId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereTicketRef($value)
- * @mixin \Eloquent
  */
 
 class PatchPanelPort extends Model

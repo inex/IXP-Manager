@@ -23,6 +23,11 @@
         <option name="default">1</option>
       </options>
     </field>
+    <field name="poll" type="boolean" nullable="false">
+      <options>
+        <option name="default">1</option>
+      </options>
+    </field>
     <field name="os" type="string" nullable="true"/>
     <field name="osDate" type="datetime" nullable="true" column="osDate"/>
     <field name="osVersion" type="string" nullable="true" column="osVersion"/>

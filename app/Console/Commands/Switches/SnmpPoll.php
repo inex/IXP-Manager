@@ -83,7 +83,7 @@ class SnmpPoll extends Command
             }
 
         } else {
-            $switches = D2EM::getRepository( SwitcherEntity::class )->getActive();
+            $switches = D2EM::getRepository( SwitcherEntity::class )->getPollable();
         }
 
         if( count( $switches ) ){

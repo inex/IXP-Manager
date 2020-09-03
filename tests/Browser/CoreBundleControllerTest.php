@@ -233,11 +233,11 @@ class CoreBundleControllerTest extends DuskTestCase
                     ->assertInputValue( 'graph-title', $coreBundle[ 'graph-title1' ] )
                     ->type(     'preference',   $coreBundle[ 'preference1' ] )
                     ->select( 'type', $type )
-                    ->pause( 2000 )
+                    ->pause( 500 )
                     ->check( 'enabled' )
-                    ->pause( 2000 )
+                    ->pause( 500 )
                     ->check( 'framing' )
-                    ->pause( 2000 )
+                    ->pause( 500 )
                     ->type(  'mtu', $coreBundle[ 'mtu' ] );
 
                 if( $type == CoreBundleEntity::TYPE_ECMP ) {
@@ -542,6 +542,7 @@ class CoreBundleControllerTest extends DuskTestCase
 
                 $browser->visit( '/interfaces/core-bundle/edit/' . $cb->getId() )
                     ->click( '#delete-cl-' . $cl3->getId() )
+                    ->pause( 500 )
                     ->press( 'Delete' );
 
 
@@ -551,7 +552,7 @@ class CoreBundleControllerTest extends DuskTestCase
 
                 $browser->visit( '/interfaces/core-bundle/edit/' . $cb->getId() )
                     ->click( '#cb-delete-' . $cb->getId() )
-                    ->pause( 2000 )
+                    ->pause( 500 )
                     ->press( 'Delete' );
 
 

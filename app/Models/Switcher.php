@@ -117,6 +117,7 @@ class Switcher extends Model
         'infrastructure',
         'model',
         'active',
+        'poll',
         'notes',
         'hostname',
         'os',

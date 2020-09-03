@@ -43,9 +43,14 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * IXP\Models\Customer
  *
  * @property int $id
+ * @property int|null $irrdb
+ * @property int|null $company_registered_detail_id
+ * @property int|null $company_billing_details_id
+ * @property int|null $reseller
  * @property string|null $name
  * @property int|null $type
  * @property string|null $shortname
+ * @property string|null $abbreviatedName
  * @property int|null $autsys
  * @property int|null $maxprefixes
  * @property string|null $peeringemail
@@ -55,24 +60,19 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property string|null $nocemail
  * @property string|null $nochours
  * @property string|null $nocwww
- * @property int|null $irrdb
  * @property string|null $peeringmacro
+ * @property string|null $peeringmacrov6
  * @property string|null $peeringpolicy
  * @property string|null $corpwww
- * @property \Illuminate\Support\Carbon|null $datejoin
- * @property \Illuminate\Support\Carbon|null $dateleave
+ * @property Carbon|null $datejoin
+ * @property Carbon|null $dateleave
  * @property int|null $status
  * @property int|null $activepeeringmatrix
- * @property \Illuminate\Support\Carbon|null $lastupdated
+ * @property Carbon|null $lastupdated
  * @property int|null $lastupdatedby
  * @property string|null $creator
- * @property \Illuminate\Support\Carbon|null $created
- * @property int|null $company_registered_detail_id
- * @property int|null $company_billing_details_id
- * @property string|null $peeringmacrov6
- * @property string|null $abbreviatedName
+ * @property Carbon|null $created
  * @property string|null $MD5Support
- * @property int|null $reseller
  * @property int $isReseller
  * @property int $in_manrs
  * @property int $in_peeringdb
@@ -90,55 +90,6 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property-read int|null $users_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VirtualInterface[] $virtualInterfaces
  * @property-read int|null $virtual_interfaces_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer current()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer trafficking()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereAbbreviatedName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereActivepeeringmatrix($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereAutsys($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCompanyBillingDetailsId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCompanyRegisteredDetailId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCorpwww($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCreated($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCreator($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereDatejoin($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereDateleave($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereInManrs($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereInPeeringdb($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereIrrdb($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereIsReseller($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereLastupdated($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereLastupdatedby($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereMD5Support($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereMaxprefixes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNoc24hphone($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNocemail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNocfax($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNochours($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNocphone($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNocwww($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringdbOauth($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringemail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringmacro($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringmacrov6($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringpolicy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereReseller($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereShortname($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereType($value)
- * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $peerrouteserverfilters
- * @property-read int|null $peerrouteserverfilters_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $routeserverfilters
- * @property-read int|null $routeserverfilters_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IrrdbPrefix[] $irrdbPrefixes
- * @property-read int|null $irrdb_prefixes_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\TrafficDaily[] $trafficDailies
- * @property-read int|null $traffic_dailies_count
  */
 class Customer extends Model
 {

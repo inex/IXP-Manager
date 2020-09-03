@@ -118,10 +118,17 @@ class SwitchController extends EloquentController
                     'idField'    => 'vendorid'
                 ],
                 'infrastructure' => 'Infrastructure',
+
                 'active'       => [
                     'title'    => 'Active',
                     'type'     => self::$FE_COL_TYPES[ 'YES_NO' ]
                 ],
+
+                'poll'       => [
+                    'title'    => 'Poll',
+                    'type'     => self::$FE_COL_TYPES[ 'YES_NO' ]
+                ],
+
                 'model'          => 'Model',
                 'ipv4addr'       => 'IPv4 Address',
             ]
@@ -365,6 +372,7 @@ class SwitchController extends EloquentController
             'vendorid'          => request()->old( 'vendorid',              $this->object->vendorid ),
             'model'             => request()->old( 'model',                 $this->object->model ),
             'active'            => request()->old( 'active',                ( $this->object->active ? 1 : 0 ) ),
+            'poll'              => request()->old( 'poll',                  ( $this->object->poll ? 1 : 0 ) ),
             'asn'               => request()->old( 'asn',                   $this->object->asn ),
             'loopback_ip'       => request()->old( 'loopback_ip',           $this->object->loopback_ip ),
             'loopback_name'     => request()->old( 'loopback_name',         $this->object->loopback_name ),
@@ -551,6 +559,7 @@ class SwitchController extends EloquentController
             $this->object->save();
         }
     }
+
     /**
      * Function to do the actual validation and storing of the submitted object.
      *

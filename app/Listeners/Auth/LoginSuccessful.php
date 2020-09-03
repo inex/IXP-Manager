@@ -23,7 +23,7 @@ namespace IXP\Listeners\Auth;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM;
+use Auth, D2EM, Log;
 use Entities\UserLoginHistory as UserLoginHistoryEntity;
 use Illuminate\Auth\Events\Login as LoginEvent;
 
@@ -38,6 +38,8 @@ class LoginSuccessful {
      */
     public function handle( LoginEvent $e )
     {
+        Log::notice( 'Login successful for user "' .$e->user->getUsername(). '" from IP ' . ixp_get_client_ip() . '.' );
+
         if( !session()->exists( "switched_user_from" ) && $e->user->getCurrentCustomerToUser() ) {
             if( Auth::viaRemember() ) {
                 $e->user->getCurrentCustomerToUser()->setLastLoginVia( 'RememberMe' );

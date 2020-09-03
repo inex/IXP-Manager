@@ -59,34 +59,29 @@ class LookingGlass
      *
      * @param string $symbol
      */
-    private function validateSymbol( string $symbol ): void
+    private function validateSymbol( string $symbol ): bool
     {
-        if( strlen( $symbol ) < 1 || preg_match( '/^[a-zA-Z_]?[a-zA-Z0-9_]*$/', $symbol ) < 1 ) {
-            abort( 404);
-        }
+        return strlen( $symbol ) >= 1 && preg_match( '/^[a-zA-Z_]?[a-zA-Z0-9_]*$/', $symbol );
     }
 
     /**
-     * Check if the network is valid
+     * Check if the prefix is valid
      *
      * @param Request $request
      */
-    private function validateNetworkRoute( $request ): void
+    private function validateNetworkRoute( $request ): bool
     {
         $validator = Validator::make(
             [
                 'net'   => $request->net,
                 'mask'  => $request->mask
-            ],
-            [
+            ], [
                 'net' => 'required|ip',
                 'mask' => 'numeric|min:1|max:128',
             ]
         );
 
-        if ( $validator->fails() ) {
-            abort(404);
-        }
+        return !$validator->fails();
     }
 
     /**
@@ -103,25 +98,34 @@ class LookingGlass
             return $next($request);
         }
 
-        if( $request->table ) { $this->validateSymbol( $request->table ); }
-        if( $request->protocol ) { $this->validateSymbol( $request->protocol ); }
-        if( $request->net ) { $this->validateNetworkRoute( $request ); }
-
         // get the router object
         try {
             /** @var RouterEntity $router */
             $router = D2EM::getRepository( RouterEntity::class )->findOneBy( [ 'handle' => $request->handle ] );
 
             if( !$router || !$router->hasApi() ) {
-                AlertContainer::push( "Handle not found", Alert::DANGER );
-                return redirect( 'lg');
+                AlertContainer::push( "No router with the provided handle was found", Alert::DANGER );
+                return redirect( route( 'lg::index' ) );
             }
         } catch( RouterException $e ) {
             abort( 404, $e->getMessage() );
         }
 
+        if( ( $request->table && !$this->validateSymbol( $request->table ) )
+                || ( $request->protocol && !$this->validateSymbol( $request->protocol ) ) ) {
+            AlertContainer::push( "Symbol (protocol / table) invalid or not found", Alert::DANGER );
+            return redirect( route( 'lg::bgp-sum', [ 'handle' => $request->handle ] ) );
+        }
+
+        if( ( $request->net || $request->mask ) && !$this->validateNetworkRoute( $request ) ) {
+            abort(404);
+        }
+
         // let's authorise for access (this throws an exception)
-        $this->authorise($router);
+        if( !$this->authorise($router) ) {
+            AlertContainer::push( "Insufficient permissions to access this looking glass", Alert::DANGER );
+            return redirect( route( 'lg::index' ) );
+        }
 
         // get the appropriate looking glass service
         // (throws an exception if no appropriate Looking Glass handler)
@@ -144,7 +148,7 @@ class LookingGlass
             return true;
         }
 
-        abort( 401, "Insufficient permissions to access this looking glass" );
+        return false;
     }
 
 

@@ -52,7 +52,7 @@
                         <?=$p->neighbor_address?>
                     </td>
                     <td class="pr-4">
-                        <?= $t->ee( $p->description_short ) ?? $t->ee( $p->description ) ?? "" ?>
+                        <?= ( $p->description_short ?? false ) ? $t->ee( $p->description_short ) : $t->ee( $p->description ?? "" ) ?>
                     </td>
                     <td class="text-right pr-4" data-order="<?= $p->neighbor_as ?>">
                         <?= $t->asNumber( $p->neighbor_as, false ) ?>

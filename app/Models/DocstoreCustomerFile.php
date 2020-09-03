@@ -52,29 +52,29 @@ use Illuminate\Support\Carbon;
  * @property string|null $sha256
  * @property string|null $description
  * @property int $min_privs
- * @property \Illuminate\Support\Carbon $file_last_updated
+ * @property Carbon $file_last_updated
  * @property int|null $created_by
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read \IXP\Models\Customer $customer
  * @property-read \IXP\Models\DocstoreCustomerDirectory|null $directory
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile whereCreatedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile whereCustId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile whereDisk($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile whereDocstoreCustomerDirectoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile whereFileLastUpdated($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile whereMinPrivs($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile wherePath($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile whereSha256($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @method static Builder|DocstoreCustomerFile newModelQuery()
+ * @method static Builder|DocstoreCustomerFile newQuery()
+ * @method static Builder|DocstoreCustomerFile query()
+ * @method static Builder|DocstoreCustomerFile whereCreatedAt($value)
+ * @method static Builder|DocstoreCustomerFile whereCreatedBy($value)
+ * @method static Builder|DocstoreCustomerFile whereCustId($value)
+ * @method static Builder|DocstoreCustomerFile whereDescription($value)
+ * @method static Builder|DocstoreCustomerFile whereDisk($value)
+ * @method static Builder|DocstoreCustomerFile whereDocstoreCustomerDirectoryId($value)
+ * @method static Builder|DocstoreCustomerFile whereFileLastUpdated($value)
+ * @method static Builder|DocstoreCustomerFile whereId($value)
+ * @method static Builder|DocstoreCustomerFile whereMinPrivs($value)
+ * @method static Builder|DocstoreCustomerFile whereName($value)
+ * @method static Builder|DocstoreCustomerFile wherePath($value)
+ * @method static Builder|DocstoreCustomerFile whereSha256($value)
+ * @method static Builder|DocstoreCustomerFile whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 
 class DocstoreCustomerFile extends Model

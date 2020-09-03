@@ -35,35 +35,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  *
  * @property int $id
  * @property int|null $switchportid
+ * @property int|null $fanout_physical_interface_id
  * @property int|null $virtualinterfaceid
  * @property int|null $status
  * @property int|null $speed
  * @property string|null $duplex
  * @property string|null $notes
- * @property int|null $fanout_physical_interface_id
  * @property int $autoneg
  * @property-read \IXP\Models\SwitchPort|null $switchPort
  * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereAutoneg($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereDuplex($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereFanoutPhysicalInterfaceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereSpeed($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereSwitchportid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereVirtualinterfaceid($value)
- * @mixin \Eloquent
- * @property-read \IXP\Models\CoreInterface|null $coreinterface
- * @property-read \IXP\Models\PhysicalInterface|null $fanoutPhysicalInterface
- * @property-read \IXP\Models\PhysicalInterface|null $peeringPhysicalInterface
- * @property-read \IXP\Models\SwitchPort|null $switchport
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\TrafficDailyPhysInt[] $trafficDailiesPhysInt
- * @property-read int|null $traffic_dailies_phys_int_count
- * @property-read \IXP\Models\CoreInterface|null $coreInterface
  */
 class PhysicalInterface extends Model
 {

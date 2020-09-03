@@ -79,8 +79,9 @@ class SwitchControllerTest extends DuskTestCase
                 ->assertInputValue( 'hostname',   'phpunit.test.example.com' )
                 ->assertInputValue( 'snmppasswd', 'mXPOSpC52cSFg1qN' )
                 ->assertInputValue( 'model',      'FESX648' )
-                ->assertSelected(   'vendorid',   '6')
-                ->assertChecked( 'active' );
+                ->assertSelected(   'vendorid',   '12')
+                ->assertChecked( 'active' )
+                ->assertChecked( 'poll' );
 
             // 2. test add step 2
             $browser->select( 'cabinetid', 1 )
@@ -106,9 +107,10 @@ class SwitchControllerTest extends DuskTestCase
             $this->assertEquals( 'mXPOSpC52cSFg1qN',         $switch->snmppasswd );
             $this->assertEquals( 1,                          $switch->cabinetid );
             $this->assertEquals( 1,                          $switch->infrastructure );
-            $this->assertEquals( 6,                         $switch->vendorid );
+            $this->assertEquals( 12,                         $switch->vendorid );
             $this->assertEquals( 'FESX648',                  $switch->model );
             $this->assertEquals( true,                       $switch->active );
+            $this->assertEquals( true,                       $switch->poll );
             $this->assertEquals( '192.0.2.1',                $switch->ipv4addr );
             $this->assertEquals( '2001:db8::999',            $switch->ipv6addr );
             $this->assertEquals( 'aa0011bb2287',             $switch->mgmt_mac_address );
@@ -133,9 +135,10 @@ class SwitchControllerTest extends DuskTestCase
             $this->assertEquals( 'mXPOSpC52cSFg1qN',         $switch->snmppasswd );
             $this->assertEquals( 1,                          $switch->cabinetid );
             $this->assertEquals( 1,                          $switch->infrastructure );
-            $this->assertEquals( 6,                         $switch->vendorid );
+            $this->assertEquals( 12,                         $switch->vendorid );
             $this->assertEquals( 'FESX648',                  $switch->model );
             $this->assertEquals( true,                       $switch->active );
+            $this->assertEquals( true,                       $switch->poll );
             $this->assertEquals( '192.0.2.1',                $switch->ipv4addr );
             $this->assertEquals( '2001:db8::999',            $switch->ipv6addr );
             $this->assertEquals( 'aa0011bb2287',             $switch->mgmt_mac_address );
@@ -156,6 +159,7 @@ class SwitchControllerTest extends DuskTestCase
                 ->select( 'vendorid', 11 )
                 ->type( 'model', 'TI24X' )
                 ->uncheck( 'active' )
+                ->uncheck( 'poll' )
                 ->type( 'ipv4addr', '192.0.2.2' )
                 ->type( 'ipv6addr', '2001:db8::9999' )
                 ->type( 'mgmt_mac_address', 'AA:00.11:BB.22-88' )
@@ -179,6 +183,7 @@ class SwitchControllerTest extends DuskTestCase
             $this->assertEquals( 11,                          $switch->vendorid );
             $this->assertEquals( 'TI24X',                     $switch->model );
             $this->assertEquals( false,                       $switch->active );
+            $this->assertEquals( false,                       $switch->poll );
             $this->assertEquals( '192.0.2.2',                 $switch->ipv4addr );
             $this->assertEquals( '2001:db8::9999',            $switch->ipv6addr );
             $this->assertEquals( 'aa0011bb2288',              $switch->mgmt_mac_address );
@@ -186,6 +191,7 @@ class SwitchControllerTest extends DuskTestCase
             $this->assertEquals( '127.0.0.2',                 $switch->loopback_ip );
             $this->assertEquals( 'lo1',                       $switch->loopback_name );
             $this->assertEquals( 'Test note 2',               $switch->notes );
+
 
             // test that editing while not making any changes and saving changes nothing
             // (this is a retest for, e.g. unchecked checkboxes)
@@ -206,6 +212,7 @@ class SwitchControllerTest extends DuskTestCase
             $this->assertEquals( 11,                          $switch->vendorid );
             $this->assertEquals( 'TI24X',                     $switch->model );
             $this->assertEquals( false,                       $switch->active );
+            $this->assertEquals( false,                       $switch->poll );
             $this->assertEquals( '192.0.2.2',                 $switch->ipv4addr );
             $this->assertEquals( '2001:db8::9999',            $switch->ipv6addr );
             $this->assertEquals( 'aa0011bb2288',              $switch->mgmt_mac_address );

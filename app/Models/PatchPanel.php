@@ -47,30 +47,30 @@ use Illuminate\Support\Carbon;
  * @property int $connector_type
  * @property string|null $installation_date
  * @property string $port_prefix
- * @property int $active
  * @property int $chargeable
  * @property string $location_notes
+ * @property int $active
  * @property int|null $u_position
  * @property int|null $mounted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPort[] $patchPanelPorts
  * @property-read int|null $patch_panel_ports_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel whereCabinetId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel whereCableType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel whereChargeable($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel whereColoReference($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel whereConnectorType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel whereInstallationDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel whereLocationNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel whereMountedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel wherePortPrefix($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel whereUPosition($value)
- * @mixin \Eloquent
+ * @method static Builder|PatchPanel newModelQuery()
+ * @method static Builder|PatchPanel newQuery()
+ * @method static Builder|PatchPanel query()
+ * @method static Builder|PatchPanel whereActive($value)
+ * @method static Builder|PatchPanel whereCabinetId($value)
+ * @method static Builder|PatchPanel whereCableType($value)
+ * @method static Builder|PatchPanel whereChargeable($value)
+ * @method static Builder|PatchPanel whereColoReference($value)
+ * @method static Builder|PatchPanel whereConnectorType($value)
+ * @method static Builder|PatchPanel whereId($value)
+ * @method static Builder|PatchPanel whereInstallationDate($value)
+ * @method static Builder|PatchPanel whereLocationNotes($value)
+ * @method static Builder|PatchPanel whereMountedAt($value)
+ * @method static Builder|PatchPanel whereName($value)
+ * @method static Builder|PatchPanel wherePortPrefix($value)
+ * @method static Builder|PatchPanel whereUPosition($value)
+ * @mixin Eloquent
  */
 
 class PatchPanel extends Model
