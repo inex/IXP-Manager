@@ -86,10 +86,59 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerFile[] $docstoreCustomerFiles
  * @property-read int|null $docstore_customer_files_count
  * @property-read \IXP\Models\IrrdbConfig|null $irrdbConfig
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IrrdbPrefix[] $irrdbPrefixes
+ * @property-read int|null $irrdb_prefixes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $peerrouteserverfilters
+ * @property-read int|null $peerrouteserverfilters_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $routeserverfilters
+ * @property-read int|null $routeserverfilters_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\TrafficDaily[] $trafficDailies
+ * @property-read int|null $traffic_dailies_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\User[] $users
  * @property-read int|null $users_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VirtualInterface[] $virtualInterfaces
  * @property-read int|null $virtual_interfaces_count
+ * @method static Builder|Customer current()
+ * @method static Builder|Customer newModelQuery()
+ * @method static Builder|Customer newQuery()
+ * @method static Builder|Customer query()
+ * @method static Builder|Customer trafficking()
+ * @method static Builder|Customer whereAbbreviatedName($value)
+ * @method static Builder|Customer whereActivepeeringmatrix($value)
+ * @method static Builder|Customer whereAutsys($value)
+ * @method static Builder|Customer whereCompanyBillingDetailsId($value)
+ * @method static Builder|Customer whereCompanyRegisteredDetailId($value)
+ * @method static Builder|Customer whereCorpwww($value)
+ * @method static Builder|Customer whereCreated($value)
+ * @method static Builder|Customer whereCreator($value)
+ * @method static Builder|Customer whereDatejoin($value)
+ * @method static Builder|Customer whereDateleave($value)
+ * @method static Builder|Customer whereId($value)
+ * @method static Builder|Customer whereInManrs($value)
+ * @method static Builder|Customer whereInPeeringdb($value)
+ * @method static Builder|Customer whereIrrdb($value)
+ * @method static Builder|Customer whereIsReseller($value)
+ * @method static Builder|Customer whereLastupdated($value)
+ * @method static Builder|Customer whereLastupdatedby($value)
+ * @method static Builder|Customer whereMD5Support($value)
+ * @method static Builder|Customer whereMaxprefixes($value)
+ * @method static Builder|Customer whereName($value)
+ * @method static Builder|Customer whereNoc24hphone($value)
+ * @method static Builder|Customer whereNocemail($value)
+ * @method static Builder|Customer whereNocfax($value)
+ * @method static Builder|Customer whereNochours($value)
+ * @method static Builder|Customer whereNocphone($value)
+ * @method static Builder|Customer whereNocwww($value)
+ * @method static Builder|Customer wherePeeringdbOauth($value)
+ * @method static Builder|Customer wherePeeringemail($value)
+ * @method static Builder|Customer wherePeeringmacro($value)
+ * @method static Builder|Customer wherePeeringmacrov6($value)
+ * @method static Builder|Customer wherePeeringpolicy($value)
+ * @method static Builder|Customer whereReseller($value)
+ * @method static Builder|Customer whereShortname($value)
+ * @method static Builder|Customer whereStatus($value)
+ * @method static Builder|Customer whereType($value)
+ * @mixin Eloquent
  */
 class Customer extends Model
 {

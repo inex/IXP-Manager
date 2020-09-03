@@ -34,7 +34,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int|null $customer_id
  * @property int|null $peer_id
  * @property int|null $vlan_id
- * @property string|null $prefix
+ * @property string|null $received_prefix
+ * @property string|null $advertised_prefix
  * @property int|null $protocol
  * @property string|null $action_advertise
  * @property string|null $action_receive
@@ -43,30 +44,27 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $live
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereActionAdvertise($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereActionReceive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereCustomerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereEnabled($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereLive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereOrderBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter wherePeerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter wherePrefix($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereProtocol($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereVlanId($value)
- * @mixin \Eloquent
- * @property string|null $received_prefix
- * @property string|null $advertised_prefix
  * @property-read \IXP\Models\Customer|null $customer
  * @property-read \IXP\Models\Customer|null $peer
  * @property-read \IXP\Models\Vlan|null $vlan
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereAdvertisedPrefix($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereReceivedPrefix($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter query()
+ * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereActionAdvertise($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereActionReceive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereAdvertisedPrefix($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereCustomerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereLive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereOrderBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter wherePeerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereProtocol($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereReceivedPrefix($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereVlanId($value)
+ * @mixin \Eloquent
  */
 class RouteServerFilter extends Model
 {

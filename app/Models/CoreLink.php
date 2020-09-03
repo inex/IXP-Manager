@@ -17,24 +17,21 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $ipv4_subnet
  * @property string|null $ipv6_subnet
  * @property int $enabled
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreLink newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreLink newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreLink query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreLink whereBfd($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreLink whereCoreBundleId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreLink whereCoreInterfaceSideaId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreLink whereCoreInterfaceSidebId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreLink whereEnabled($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreLink whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreLink whereIpv4Subnet($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreLink whereIpv6Subnet($value)
- * @mixin \Eloquent
- * @property-read \IXP\Models\CoreBundle $corebundle
- * @property-read \IXP\Models\CoreInterface|null $coreinterfacesidea
- * @property-read \IXP\Models\CoreInterface|null $coreinterfacesideb
  * @property-read \IXP\Models\CoreBundle $coreBundle
  * @property-read \IXP\Models\CoreInterface $coreInterfaceSideA
  * @property-read \IXP\Models\CoreInterface $coreInterfaceSideB
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreLink newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreLink newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreLink query()
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreLink whereBfd($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreLink whereCoreBundleId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreLink whereCoreInterfaceSideaId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreLink whereCoreInterfaceSidebId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreLink whereEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreLink whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreLink whereIpv4Subnet($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreLink whereIpv6Subnet($value)
+ * @mixin \Eloquent
  */
 class CoreLink extends Model
 {

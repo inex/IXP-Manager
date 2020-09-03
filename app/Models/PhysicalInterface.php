@@ -42,8 +42,26 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $duplex
  * @property string|null $notes
  * @property int $autoneg
- * @property-read \IXP\Models\SwitchPort|null $switchPort
+ * @property-read \IXP\Models\CoreInterface|null $coreInterface
+ * @property-read PhysicalInterface|null $fanoutPhysicalInterface
+ * @property-read PhysicalInterface|null $peeringPhysicalInterface
+ * @property-read \IXP\Models\SwitchPort|null $switchport
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\TrafficDailyPhysInt[] $trafficDailiesPhysInt
+ * @property-read int|null $traffic_dailies_phys_int_count
  * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
+ * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereAutoneg($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereDuplex($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereFanoutPhysicalInterfaceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereSpeed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereSwitchportid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereVirtualinterfaceid($value)
+ * @mixin Eloquent
  */
 class PhysicalInterface extends Model
 {

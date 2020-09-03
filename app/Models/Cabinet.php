@@ -20,24 +20,24 @@ use stdClass;
  * @property string|null $type
  * @property string|null $notes
  * @property int|null $u_counts_from
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServer[] $consoleServers
+ * @property-read Collection|\IXP\Models\ConsoleServer[] $consoleServers
  * @property-read int|null $console_servers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerEquipment[] $customerEquipment
+ * @property-read Collection|\IXP\Models\CustomerEquipment[] $customerEquipment
  * @property-read int|null $customer_equipment_count
  * @property-read \IXP\Models\Location|null $location
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Switcher[] $switchers
+ * @property-read Collection|\IXP\Models\Switcher[] $switchers
  * @property-read int|null $switchers_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereColocation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereHeight($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereLocationid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereUCountsFrom($value)
+ * @method static Builder|Cabinet newModelQuery()
+ * @method static Builder|Cabinet newQuery()
+ * @method static Builder|Cabinet query()
+ * @method static Builder|Cabinet whereColocation($value)
+ * @method static Builder|Cabinet whereHeight($value)
+ * @method static Builder|Cabinet whereId($value)
+ * @method static Builder|Cabinet whereLocationid($value)
+ * @method static Builder|Cabinet whereName($value)
+ * @method static Builder|Cabinet whereNotes($value)
+ * @method static Builder|Cabinet whereType($value)
+ * @method static Builder|Cabinet whereUCountsFrom($value)
  * @mixin \Eloquent
  */
 class Cabinet extends Model

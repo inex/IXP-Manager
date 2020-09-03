@@ -62,6 +62,35 @@ use Illuminate\Support\Carbon;
  * @property-read \IXP\Models\PatchPanel|null $patchPanel
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortFile[] $patchPanelPortFiles
  * @property-read int|null $patch_panel_port_files_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|PatchPanelPort[] $slavePort
+ * @property-read int|null $slave_port_count
+ * @property-read \IXP\Models\SwitchPort|null $switchPort
+ * @method static Builder|PatchPanelPort newModelQuery()
+ * @method static Builder|PatchPanelPort newQuery()
+ * @method static Builder|PatchPanelPort query()
+ * @method static Builder|PatchPanelPort whereAssignedAt($value)
+ * @method static Builder|PatchPanelPort whereCeaseRequestedAt($value)
+ * @method static Builder|PatchPanelPort whereCeasedAt($value)
+ * @method static Builder|PatchPanelPort whereChargeable($value)
+ * @method static Builder|PatchPanelPort whereColoBillingRef($value)
+ * @method static Builder|PatchPanelPort whereColoCircuitRef($value)
+ * @method static Builder|PatchPanelPort whereConnectedAt($value)
+ * @method static Builder|PatchPanelPort whereCustomerId($value)
+ * @method static Builder|PatchPanelPort whereDescription($value)
+ * @method static Builder|PatchPanelPort whereDuplexMasterId($value)
+ * @method static Builder|PatchPanelPort whereId($value)
+ * @method static Builder|PatchPanelPort whereInternalUse($value)
+ * @method static Builder|PatchPanelPort whereLastStateChange($value)
+ * @method static Builder|PatchPanelPort whereLoaCode($value)
+ * @method static Builder|PatchPanelPort whereNotes($value)
+ * @method static Builder|PatchPanelPort whereNumber($value)
+ * @method static Builder|PatchPanelPort whereOwnedBy($value)
+ * @method static Builder|PatchPanelPort wherePatchPanelId($value)
+ * @method static Builder|PatchPanelPort wherePrivateNotes($value)
+ * @method static Builder|PatchPanelPort whereState($value)
+ * @method static Builder|PatchPanelPort whereSwitchPortId($value)
+ * @method static Builder|PatchPanelPort whereTicketRef($value)
+ * @mixin Eloquent
  */
 
 class PatchPanelPort extends Model

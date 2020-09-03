@@ -40,6 +40,31 @@ use stdClass;
  * @property int $peering_matrix
  * @property int $peering_manager
  * @property string|null $config_name
+ * @property-read \IXP\Models\Infrastructure $infrastructure
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IPv4Address[] $ipv4Addresses
+ * @property-read int|null $ipv4_addresses_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IPv6Address[] $ipv6Addresses
+ * @property-read int|null $ipv6_addresses_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $routeServerFilters
+ * @property-read int|null $route_server_filters_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Router[] $routers
+ * @property-read int|null $routers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
+ * @property-read int|null $vlan_interfaces_count
+ * @method static Builder|Vlan filtered($type)
+ * @method static Builder|Vlan newModelQuery()
+ * @method static Builder|Vlan newQuery()
+ * @method static Builder|Vlan query()
+ * @method static Builder|Vlan whereConfigName($value)
+ * @method static Builder|Vlan whereId($value)
+ * @method static Builder|Vlan whereInfrastructureid($value)
+ * @method static Builder|Vlan whereName($value)
+ * @method static Builder|Vlan whereNotes($value)
+ * @method static Builder|Vlan whereNumber($value)
+ * @method static Builder|Vlan wherePeeringManager($value)
+ * @method static Builder|Vlan wherePeeringMatrix($value)
+ * @method static Builder|Vlan wherePrivate($value)
+ * @mixin \Eloquent
  */
 class Vlan extends Model
 {

@@ -20,17 +20,17 @@ use stdClass;
  * @property string $expires
  * @property int $is_2fa_complete
  * @property-read \IXP\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserRememberToken newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserRememberToken newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserRememberToken query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserRememberToken whereCreated($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserRememberToken whereDevice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserRememberToken whereExpires($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserRememberToken whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserRememberToken whereIp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserRememberToken whereIs2faComplete($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserRememberToken whereToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserRememberToken whereUserId($value)
+ * @method static Builder|UserRememberToken newModelQuery()
+ * @method static Builder|UserRememberToken newQuery()
+ * @method static Builder|UserRememberToken query()
+ * @method static Builder|UserRememberToken whereCreated($value)
+ * @method static Builder|UserRememberToken whereDevice($value)
+ * @method static Builder|UserRememberToken whereExpires($value)
+ * @method static Builder|UserRememberToken whereId($value)
+ * @method static Builder|UserRememberToken whereIp($value)
+ * @method static Builder|UserRememberToken whereIs2faComplete($value)
+ * @method static Builder|UserRememberToken whereToken($value)
+ * @method static Builder|UserRememberToken whereUserId($value)
  * @mixin \Eloquent
  */
 class UserRememberToken extends Model

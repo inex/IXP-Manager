@@ -24,22 +24,22 @@ use \OSS_SNMP\MIBS\Iface as SNMPIface;
  * IXP\Models\Switcher
  *
  * @property int $id
+ * @property int|null $infrastructure
  * @property int|null $cabinetid
  * @property int|null $vendorid
  * @property string|null $name
+ * @property string|null $hostname
  * @property string|null $ipv4addr
  * @property string|null $ipv6addr
  * @property string|null $snmppasswd
- * @property \IXP\Models\Infrastructure|null $infrastructure
  * @property string|null $model
  * @property int|null $active
- * @property string|null $notes
- * @property string|null $hostname
  * @property string|null $os
  * @property string|null $osDate
  * @property string|null $osVersion
- * @property string|null $serialNumber
  * @property string|null $lastPolled
+ * @property string|null $notes
+ * @property string|null $serialNumber
  * @property int|null $mauSupported
  * @property int|null $asn
  * @property string|null $loopback_ip
@@ -48,42 +48,44 @@ use \OSS_SNMP\MIBS\Iface as SNMPIface;
  * @property int|null $snmp_engine_time
  * @property int|null $snmp_system_uptime
  * @property int|null $snmp_engine_boots
+ * @property int $poll
  * @property-read \IXP\Models\Cabinet|null $cabinet
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServerConnection[] $consoleServerConnections
  * @property-read int|null $console_server_connections_count
+ * @property-read \IXP\Models\Infrastructure|null $infrastructureModel
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\SwitchPort[] $switchPorts
  * @property-read int|null $switch_ports_count
- * @method static Builder|\IXP\Models\Switcher newModelQuery()
- * @method static Builder|\IXP\Models\Switcher newQuery()
- * @method static Builder|\IXP\Models\Switcher query()
- * @method static Builder|\IXP\Models\Switcher whereActive($value)
- * @method static Builder|\IXP\Models\Switcher whereAsn($value)
- * @method static Builder|\IXP\Models\Switcher whereCabinetid($value)
- * @method static Builder|\IXP\Models\Switcher whereHostname($value)
- * @method static Builder|\IXP\Models\Switcher whereId($value)
- * @method static Builder|\IXP\Models\Switcher whereInfrastructure($value)
- * @method static Builder|\IXP\Models\Switcher whereIpv4addr($value)
- * @method static Builder|\IXP\Models\Switcher whereIpv6addr($value)
- * @method static Builder|\IXP\Models\Switcher whereLastPolled($value)
- * @method static Builder|\IXP\Models\Switcher whereLoopbackIp($value)
- * @method static Builder|\IXP\Models\Switcher whereLoopbackName($value)
- * @method static Builder|\IXP\Models\Switcher whereMauSupported($value)
- * @method static Builder|\IXP\Models\Switcher whereMgmtMacAddress($value)
- * @method static Builder|\IXP\Models\Switcher whereModel($value)
- * @method static Builder|\IXP\Models\Switcher whereName($value)
- * @method static Builder|\IXP\Models\Switcher whereNotes($value)
- * @method static Builder|\IXP\Models\Switcher whereOs($value)
- * @method static Builder|\IXP\Models\Switcher whereOsDate($value)
- * @method static Builder|\IXP\Models\Switcher whereOsVersion($value)
- * @method static Builder|\IXP\Models\Switcher whereSerialNumber($value)
- * @method static Builder|\IXP\Models\Switcher whereSnmpEngineBoots($value)
- * @method static Builder|\IXP\Models\Switcher whereSnmpEngineTime($value)
- * @method static Builder|\IXP\Models\Switcher whereSnmpSystemUptime($value)
- * @method static Builder|\IXP\Models\Switcher whereSnmppasswd($value)
- * @method static Builder|\IXP\Models\Switcher whereVendorid($value)
+ * @method static Builder|Switcher filtered($active)
+ * @method static Builder|Switcher newModelQuery()
+ * @method static Builder|Switcher newQuery()
+ * @method static Builder|Switcher query()
+ * @method static Builder|Switcher whereActive($value)
+ * @method static Builder|Switcher whereAsn($value)
+ * @method static Builder|Switcher whereCabinetid($value)
+ * @method static Builder|Switcher whereHostname($value)
+ * @method static Builder|Switcher whereId($value)
+ * @method static Builder|Switcher whereInfrastructure($value)
+ * @method static Builder|Switcher whereIpv4addr($value)
+ * @method static Builder|Switcher whereIpv6addr($value)
+ * @method static Builder|Switcher whereLastPolled($value)
+ * @method static Builder|Switcher whereLoopbackIp($value)
+ * @method static Builder|Switcher whereLoopbackName($value)
+ * @method static Builder|Switcher whereMauSupported($value)
+ * @method static Builder|Switcher whereMgmtMacAddress($value)
+ * @method static Builder|Switcher whereModel($value)
+ * @method static Builder|Switcher whereName($value)
+ * @method static Builder|Switcher whereNotes($value)
+ * @method static Builder|Switcher whereOs($value)
+ * @method static Builder|Switcher whereOsDate($value)
+ * @method static Builder|Switcher whereOsVersion($value)
+ * @method static Builder|Switcher wherePoll($value)
+ * @method static Builder|Switcher whereSerialNumber($value)
+ * @method static Builder|Switcher whereSnmpEngineBoots($value)
+ * @method static Builder|Switcher whereSnmpEngineTime($value)
+ * @method static Builder|Switcher whereSnmpSystemUptime($value)
+ * @method static Builder|Switcher whereSnmppasswd($value)
+ * @method static Builder|Switcher whereVendorid($value)
  * @mixin \Eloquent
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher filtered($active)
- * @property-read \IXP\Models\Infrastructure|null $infrastructureModel
  */
 class Switcher extends Model
 {

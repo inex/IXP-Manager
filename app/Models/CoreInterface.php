@@ -11,18 +11,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  *
  * @property int $id
  * @property int|null $physical_interface_id
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreInterface newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreInterface newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreInterface query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreInterface whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreInterface wherePhysicalInterfaceId($value)
- * @mixin \Eloquent
- * @property-read \IXP\Models\CoreLink|null $corelinksidea
- * @property-read \IXP\Models\CoreLink|null $corelinksideb
- * @property-read \IXP\Models\PhysicalInterface|null $physicalinterface
  * @property-read \IXP\Models\CoreLink|null $coreLinkSideA
  * @property-read \IXP\Models\CoreLink|null $coreLinkSideB
  * @property-read \IXP\Models\PhysicalInterface|null $physicalInterface
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface query()
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface wherePhysicalInterfaceId($value)
+ * @mixin \Eloquent
  */
 class CoreInterface extends Model
 {

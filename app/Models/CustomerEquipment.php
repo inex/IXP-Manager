@@ -17,14 +17,14 @@ use stdClass;
  * @property string|null $name
  * @property string|null $descr
  * @property-read \IXP\Models\Cabinet|null $cabinet
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerEquipment newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerEquipment newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerEquipment query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerEquipment whereCabinetid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerEquipment whereCustid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerEquipment whereDescr($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerEquipment whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerEquipment whereName($value)
+ * @method static Builder|CustomerEquipment newModelQuery()
+ * @method static Builder|CustomerEquipment newQuery()
+ * @method static Builder|CustomerEquipment query()
+ * @method static Builder|CustomerEquipment whereCabinetid($value)
+ * @method static Builder|CustomerEquipment whereCustid($value)
+ * @method static Builder|CustomerEquipment whereDescr($value)
+ * @method static Builder|CustomerEquipment whereId($value)
+ * @method static Builder|CustomerEquipment whereName($value)
  * @mixin \Eloquent
  */
 class CustomerEquipment extends Model

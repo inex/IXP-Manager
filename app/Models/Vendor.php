@@ -17,14 +17,14 @@ use stdClass;
  * @property string|null $bundle_name
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServer[] $consoleServers
  * @property-read int|null $console_servers_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor whereBundleName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor whereNagiosName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor whereShortname($value)
+ * @method static Builder|Vendor newModelQuery()
+ * @method static Builder|Vendor newQuery()
+ * @method static Builder|Vendor query()
+ * @method static Builder|Vendor whereBundleName($value)
+ * @method static Builder|Vendor whereId($value)
+ * @method static Builder|Vendor whereNagiosName($value)
+ * @method static Builder|Vendor whereName($value)
+ * @method static Builder|Vendor whereShortname($value)
  * @mixin \Eloquent
  */
 class Vendor extends Model

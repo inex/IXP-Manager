@@ -35,17 +35,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $protocol
  * @property string|null $first_seen
  * @property string|null $last_seen
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbPrefix newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbPrefix newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbPrefix query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbPrefix whereCustomerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbPrefix whereFirstSeen($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbPrefix whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbPrefix whereLastSeen($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbPrefix wherePrefix($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbPrefix whereProtocol($value)
- * @mixin \Eloquent
  * @property-read \IXP\Models\Customer $customer
+ * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix query()
+ * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereCustomerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereFirstSeen($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereLastSeen($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix wherePrefix($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereProtocol($value)
+ * @mixin \Eloquent
  */
 class IrrdbPrefix extends Model
 {

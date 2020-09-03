@@ -17,14 +17,14 @@ use stdClass;
  * @property string|null $notes
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Customer[] $customers
  * @property-read int|null $customers_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbConfig newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbConfig newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbConfig query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbConfig whereHost($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbConfig whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbConfig whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbConfig whereProtocol($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbConfig whereSource($value)
+ * @method static Builder|IrrdbConfig newModelQuery()
+ * @method static Builder|IrrdbConfig newQuery()
+ * @method static Builder|IrrdbConfig query()
+ * @method static Builder|IrrdbConfig whereHost($value)
+ * @method static Builder|IrrdbConfig whereId($value)
+ * @method static Builder|IrrdbConfig whereNotes($value)
+ * @method static Builder|IrrdbConfig whereProtocol($value)
+ * @method static Builder|IrrdbConfig whereSource($value)
  * @mixin \Eloquent
  */
 class IrrdbConfig extends Model

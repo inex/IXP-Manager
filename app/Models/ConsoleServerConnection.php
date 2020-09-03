@@ -24,20 +24,20 @@ use stdClass;
  * @property-read \IXP\Models\ConsoleServer|null $consoleServer
  * @property-read \IXP\Models\CustomerTag|null $customer
  * @property-read \IXP\Models\Switcher $switcher
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection whereAutobaud($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection whereConsoleServerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection whereCustid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection whereFlowcontrol($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection whereParity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection wherePort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection whereSpeed($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection whereStopbits($value)
+ * @method static Builder|ConsoleServerConnection newModelQuery()
+ * @method static Builder|ConsoleServerConnection newQuery()
+ * @method static Builder|ConsoleServerConnection query()
+ * @method static Builder|ConsoleServerConnection whereAutobaud($value)
+ * @method static Builder|ConsoleServerConnection whereConsoleServerId($value)
+ * @method static Builder|ConsoleServerConnection whereCustid($value)
+ * @method static Builder|ConsoleServerConnection whereDescription($value)
+ * @method static Builder|ConsoleServerConnection whereFlowcontrol($value)
+ * @method static Builder|ConsoleServerConnection whereId($value)
+ * @method static Builder|ConsoleServerConnection whereNotes($value)
+ * @method static Builder|ConsoleServerConnection whereParity($value)
+ * @method static Builder|ConsoleServerConnection wherePort($value)
+ * @method static Builder|ConsoleServerConnection whereSpeed($value)
+ * @method static Builder|ConsoleServerConnection whereStopbits($value)
  * @mixin \Eloquent
  */
 class ConsoleServerConnection extends Model

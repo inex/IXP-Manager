@@ -38,21 +38,21 @@ use stdClass;
  * @property int|null $peeringdb_ix_id
  * @property int|null $ixf_ix_id
  * @property string|null $country
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Switcher[] $switchers
+ * @property-read Collection|\IXP\Models\Switcher[] $switchers
  * @property-read int|null $switchers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Vlan[] $vlans
+ * @property-read Collection|\IXP\Models\Vlan[] $vlans
  * @property-read int|null $vlans_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Infrastructure newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Infrastructure newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Infrastructure query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Infrastructure whereCountry($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Infrastructure whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Infrastructure whereIsPrimary($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Infrastructure whereIxfIxId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Infrastructure whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Infrastructure wherePeeringdbIxId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Infrastructure whereShortname($value)
- * @mixin \Eloquent
+ * @method static Builder|Infrastructure newModelQuery()
+ * @method static Builder|Infrastructure newQuery()
+ * @method static Builder|Infrastructure query()
+ * @method static Builder|Infrastructure whereCountry($value)
+ * @method static Builder|Infrastructure whereId($value)
+ * @method static Builder|Infrastructure whereIsPrimary($value)
+ * @method static Builder|Infrastructure whereIxfIxId($value)
+ * @method static Builder|Infrastructure whereName($value)
+ * @method static Builder|Infrastructure wherePeeringdbIxId($value)
+ * @method static Builder|Infrastructure whereShortname($value)
+ * @mixin Eloquent
  */
 class Infrastructure extends Model
 {

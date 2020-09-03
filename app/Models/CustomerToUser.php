@@ -13,23 +13,23 @@ use stdClass;
  * @property int $customer_id
  * @property int $user_id
  * @property int $privs
- * @property mixed|null $extra_attributes
  * @property string|null $last_login_date
  * @property string|null $last_login_from
  * @property string $created_at
+ * @property mixed|null $extra_attributes
  * @property string|null $last_login_via
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerToUser newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerToUser newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerToUser query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerToUser whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerToUser whereCustomerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerToUser whereExtraAttributes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerToUser whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerToUser whereLastLoginDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerToUser whereLastLoginFrom($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerToUser whereLastLoginVia($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerToUser wherePrivs($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerToUser whereUserId($value)
+ * @method static Builder|CustomerToUser newModelQuery()
+ * @method static Builder|CustomerToUser newQuery()
+ * @method static Builder|CustomerToUser query()
+ * @method static Builder|CustomerToUser whereCreatedAt($value)
+ * @method static Builder|CustomerToUser whereCustomerId($value)
+ * @method static Builder|CustomerToUser whereExtraAttributes($value)
+ * @method static Builder|CustomerToUser whereId($value)
+ * @method static Builder|CustomerToUser whereLastLoginDate($value)
+ * @method static Builder|CustomerToUser whereLastLoginFrom($value)
+ * @method static Builder|CustomerToUser whereLastLoginVia($value)
+ * @method static Builder|CustomerToUser wherePrivs($value)
+ * @method static Builder|CustomerToUser whereUserId($value)
  * @mixin \Eloquent
  */
 class CustomerToUser extends Model

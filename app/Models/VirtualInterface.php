@@ -40,6 +40,9 @@ use Illuminate\Database\Eloquent\{Builder, Collection, Model, Relations\BelongsT
  * @property int $lag_framing
  * @property int $fastlacp
  * @property-read \IXP\Models\Customer|null $customer
+ * @property-read Collection|\IXP\Models\PhysicalInterface[] $physicalInterfaces
+ * @property-read int|null $physical_interfaces_count
+ * @property-read Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
  * @method static Builder|VirtualInterface newModelQuery()
  * @method static Builder|VirtualInterface newQuery()

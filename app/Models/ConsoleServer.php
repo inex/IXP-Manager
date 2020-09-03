@@ -24,18 +24,18 @@ use stdClass;
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServerConnection[] $consoleServerConnections
  * @property-read int|null $console_server_connections_count
  * @property-read \IXP\Models\Vendor|null $vendor
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereCabinetId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereHostname($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereModel($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereSerialNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereVendorId($value)
+ * @method static Builder|ConsoleServer newModelQuery()
+ * @method static Builder|ConsoleServer newQuery()
+ * @method static Builder|ConsoleServer query()
+ * @method static Builder|ConsoleServer whereActive($value)
+ * @method static Builder|ConsoleServer whereCabinetId($value)
+ * @method static Builder|ConsoleServer whereHostname($value)
+ * @method static Builder|ConsoleServer whereId($value)
+ * @method static Builder|ConsoleServer whereModel($value)
+ * @method static Builder|ConsoleServer whereName($value)
+ * @method static Builder|ConsoleServer whereNotes($value)
+ * @method static Builder|ConsoleServer whereSerialNumber($value)
+ * @method static Builder|ConsoleServer whereVendorId($value)
  * @mixin \Eloquent
  */
 class ConsoleServer extends Model

@@ -21,18 +21,18 @@ use stdClass;
  * @property string|null $lastseenFrom
  * @property string|null $description
  * @property-read \IXP\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey whereAllowedIPs($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey whereApiKey($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey whereCreated($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey whereExpires($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey whereLastseenAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey whereLastseenFrom($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey whereUserId($value)
+ * @method static Builder|ApiKey newModelQuery()
+ * @method static Builder|ApiKey newQuery()
+ * @method static Builder|ApiKey query()
+ * @method static Builder|ApiKey whereAllowedIPs($value)
+ * @method static Builder|ApiKey whereApiKey($value)
+ * @method static Builder|ApiKey whereCreated($value)
+ * @method static Builder|ApiKey whereDescription($value)
+ * @method static Builder|ApiKey whereExpires($value)
+ * @method static Builder|ApiKey whereId($value)
+ * @method static Builder|ApiKey whereLastseenAt($value)
+ * @method static Builder|ApiKey whereLastseenFrom($value)
+ * @method static Builder|ApiKey whereUserId($value)
  * @mixin \Eloquent
  */
 class ApiKey extends Model

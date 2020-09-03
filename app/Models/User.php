@@ -49,6 +49,30 @@ use stdClass;
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ApiKey[] $apiKeys
  * @property-read int|null $api_keys_count
  * @property-read \IXP\Models\Customer|null $customer
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Customer[] $customers
+ * @property-read int|null $customers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\UserRememberToken[] $userRememberTokens
+ * @property-read int|null $user_remember_tokens_count
+ * @method static Builder|User newModelQuery()
+ * @method static Builder|User newQuery()
+ * @method static Builder|User query()
+ * @method static Builder|User whereAuthorisedMobile($value)
+ * @method static Builder|User whereCreated($value)
+ * @method static Builder|User whereCreator($value)
+ * @method static Builder|User whereCustid($value)
+ * @method static Builder|User whereDisabled($value)
+ * @method static Builder|User whereEmail($value)
+ * @method static Builder|User whereExtraAttributes($value)
+ * @method static Builder|User whereId($value)
+ * @method static Builder|User whereLastupdated($value)
+ * @method static Builder|User whereLastupdatedby($value)
+ * @method static Builder|User whereName($value)
+ * @method static Builder|User wherePassword($value)
+ * @method static Builder|User wherePeeringdbId($value)
+ * @method static Builder|User wherePrivs($value)
+ * @method static Builder|User whereUid($value)
+ * @method static Builder|User whereUsername($value)
+ * @mixin Eloquent
  */
 class User extends Model
 {

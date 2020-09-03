@@ -15,15 +15,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $at
  * @property int|null $customer_to_user_id
  * @property string|null $via
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserLoginHistory newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserLoginHistory newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserLoginHistory query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserLoginHistory whereAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserLoginHistory whereCustomerToUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserLoginHistory whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserLoginHistory whereIp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserLoginHistory whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserLoginHistory whereVia($value)
+ * @method static Builder|UserLoginHistory newModelQuery()
+ * @method static Builder|UserLoginHistory newQuery()
+ * @method static Builder|UserLoginHistory query()
+ * @method static Builder|UserLoginHistory whereAt($value)
+ * @method static Builder|UserLoginHistory whereCustomerToUserId($value)
+ * @method static Builder|UserLoginHistory whereId($value)
+ * @method static Builder|UserLoginHistory whereIp($value)
+ * @method static Builder|UserLoginHistory whereUserId($value)
+ * @method static Builder|UserLoginHistory whereVia($value)
  * @mixin \Eloquent
  */
 class UserLoginHistory extends Model

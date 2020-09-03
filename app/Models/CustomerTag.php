@@ -16,16 +16,16 @@ use stdClass;
  * @property int $internal_only
  * @property \Illuminate\Support\Carbon $created
  * @property \Illuminate\Support\Carbon $updated
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag whereCreated($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag whereDisplayAs($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag whereInternalOnly($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag whereTag($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag whereUpdated($value)
+ * @method static Builder|CustomerTag newModelQuery()
+ * @method static Builder|CustomerTag newQuery()
+ * @method static Builder|CustomerTag query()
+ * @method static Builder|CustomerTag whereCreated($value)
+ * @method static Builder|CustomerTag whereDescription($value)
+ * @method static Builder|CustomerTag whereDisplayAs($value)
+ * @method static Builder|CustomerTag whereId($value)
+ * @method static Builder|CustomerTag whereInternalOnly($value)
+ * @method static Builder|CustomerTag whereTag($value)
+ * @method static Builder|CustomerTag whereUpdated($value)
  * @mixin \Eloquent
  */
 class CustomerTag extends Model

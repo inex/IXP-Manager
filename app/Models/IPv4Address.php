@@ -13,14 +13,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int|null $vlanid
  * @property string|null $address
  * @property-read \IXP\Models\Vlan|null $vlan
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IPv4Address newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IPv4Address newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IPv4Address query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IPv4Address whereAddress($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IPv4Address whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IPv4Address whereVlanid($value)
- * @mixin \Eloquent
  * @property-read \IXP\Models\VlanInterface|null $vlaninterface
+ * @method static \Illuminate\Database\Eloquent\Builder|IPv4Address newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|IPv4Address newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|IPv4Address query()
+ * @method static \Illuminate\Database\Eloquent\Builder|IPv4Address whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|IPv4Address whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|IPv4Address whereVlanid($value)
+ * @mixin \Eloquent
  */
 class IPv4Address extends Model
 {

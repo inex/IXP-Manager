@@ -15,14 +15,14 @@ use stdClass;
  * @property string|null $firstseen
  * @property string|null $lastseen
  * @property string|null $mac
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\MacAddress newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\MacAddress newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\MacAddress query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\MacAddress whereFirstseen($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\MacAddress whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\MacAddress whereLastseen($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\MacAddress whereMac($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\MacAddress whereVirtualinterfaceid($value)
+ * @method static Builder|MacAddress newModelQuery()
+ * @method static Builder|MacAddress newQuery()
+ * @method static Builder|MacAddress query()
+ * @method static Builder|MacAddress whereFirstseen($value)
+ * @method static Builder|MacAddress whereId($value)
+ * @method static Builder|MacAddress whereLastseen($value)
+ * @method static Builder|MacAddress whereMac($value)
+ * @method static Builder|MacAddress whereVirtualinterfaceid($value)
  * @mixin \Eloquent
  */
 class MacAddress extends Model

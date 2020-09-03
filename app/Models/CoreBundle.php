@@ -11,10 +11,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * IXP\Models\CoreBundle
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreBundle newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreBundle newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreBundle query()
- * @mixin \Eloquent
  * @property int $id
  * @property string $description
  * @property int $type
@@ -26,19 +22,23 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int|null $cost
  * @property int|null $preference
  * @property int $enabled
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreBundle whereBfd($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreBundle whereCost($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreBundle whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreBundle whereEnabled($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreBundle whereGraphTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreBundle whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreBundle whereIpv4Subnet($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreBundle whereIpv6Subnet($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreBundle wherePreference($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreBundle whereStp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreBundle whereType($value)
- * @property-read \IXP\Models\CoreLink $corelinks
+ * @property-read Collection|\IXP\Models\CoreLink[] $corelinks
  * @property-read int|null $corelinks_count
+ * @method static Builder|CoreBundle newModelQuery()
+ * @method static Builder|CoreBundle newQuery()
+ * @method static Builder|CoreBundle query()
+ * @method static Builder|CoreBundle whereBfd($value)
+ * @method static Builder|CoreBundle whereCost($value)
+ * @method static Builder|CoreBundle whereDescription($value)
+ * @method static Builder|CoreBundle whereEnabled($value)
+ * @method static Builder|CoreBundle whereGraphTitle($value)
+ * @method static Builder|CoreBundle whereId($value)
+ * @method static Builder|CoreBundle whereIpv4Subnet($value)
+ * @method static Builder|CoreBundle whereIpv6Subnet($value)
+ * @method static Builder|CoreBundle wherePreference($value)
+ * @method static Builder|CoreBundle whereStp($value)
+ * @method static Builder|CoreBundle whereType($value)
+ * @mixin \Eloquent
  */
 class CoreBundle extends Model
 {

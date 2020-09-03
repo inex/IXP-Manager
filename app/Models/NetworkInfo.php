@@ -17,17 +17,17 @@ use stdClass;
  * @property string|null $rs1address
  * @property string|null $rs2address
  * @property string|null $dnsfile
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\NetworkInfo newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\NetworkInfo newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\NetworkInfo query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\NetworkInfo whereDnsfile($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\NetworkInfo whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\NetworkInfo whereMasklen($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\NetworkInfo whereNetwork($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\NetworkInfo whereProtocol($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\NetworkInfo whereRs1address($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\NetworkInfo whereRs2address($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\NetworkInfo whereVlanid($value)
+ * @method static Builder|NetworkInfo newModelQuery()
+ * @method static Builder|NetworkInfo newQuery()
+ * @method static Builder|NetworkInfo query()
+ * @method static Builder|NetworkInfo whereDnsfile($value)
+ * @method static Builder|NetworkInfo whereId($value)
+ * @method static Builder|NetworkInfo whereMasklen($value)
+ * @method static Builder|NetworkInfo whereNetwork($value)
+ * @method static Builder|NetworkInfo whereProtocol($value)
+ * @method static Builder|NetworkInfo whereRs1address($value)
+ * @method static Builder|NetworkInfo whereRs2address($value)
+ * @method static Builder|NetworkInfo whereVlanid($value)
  * @mixin \Eloquent
  */
 class NetworkInfo extends Model

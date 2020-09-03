@@ -18,18 +18,18 @@ use stdClass;
  * @property int $active
  * @property int $limited_to
  * @property string $created
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Contact[] $contacts
+ * @property-read Collection|\IXP\Models\Contact[] $contacts
  * @property-read int|null $contacts_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup whereCreated($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup whereLimitedTo($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup whereType($value)
+ * @method static Builder|ContactGroup newModelQuery()
+ * @method static Builder|ContactGroup newQuery()
+ * @method static Builder|ContactGroup query()
+ * @method static Builder|ContactGroup whereActive($value)
+ * @method static Builder|ContactGroup whereCreated($value)
+ * @method static Builder|ContactGroup whereDescription($value)
+ * @method static Builder|ContactGroup whereId($value)
+ * @method static Builder|ContactGroup whereLimitedTo($value)
+ * @method static Builder|ContactGroup whereName($value)
+ * @method static Builder|ContactGroup whereType($value)
  * @mixin \Eloquent
  */
 class ContactGroup extends Model

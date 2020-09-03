@@ -58,10 +58,40 @@ use IXP\Services\Grapher\Graph;
  * @property int|null $busyhost
  * @property string|null $notes
  * @property int $rsmorespecifics
+ * @property-read \IXP\Models\IPv4Address|null $ipv4address
+ * @property-read \IXP\Models\IPv6Address|null $ipv6address
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Layer2Address[] $layer2addresses
  * @property-read int|null $layer2addresses_count
  * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
  * @property-read \IXP\Models\Vlan|null $vlan
+ * @method static Builder|VlanInterface newModelQuery()
+ * @method static Builder|VlanInterface newQuery()
+ * @method static Builder|VlanInterface query()
+ * @method static Builder|VlanInterface whereAs112client($value)
+ * @method static Builder|VlanInterface whereBgpmd5secret($value)
+ * @method static Builder|VlanInterface whereBusyhost($value)
+ * @method static Builder|VlanInterface whereId($value)
+ * @method static Builder|VlanInterface whereIpv4addressid($value)
+ * @method static Builder|VlanInterface whereIpv4bgpmd5secret($value)
+ * @method static Builder|VlanInterface whereIpv4canping($value)
+ * @method static Builder|VlanInterface whereIpv4enabled($value)
+ * @method static Builder|VlanInterface whereIpv4hostname($value)
+ * @method static Builder|VlanInterface whereIpv4monitorrcbgp($value)
+ * @method static Builder|VlanInterface whereIpv6addressid($value)
+ * @method static Builder|VlanInterface whereIpv6bgpmd5secret($value)
+ * @method static Builder|VlanInterface whereIpv6canping($value)
+ * @method static Builder|VlanInterface whereIpv6enabled($value)
+ * @method static Builder|VlanInterface whereIpv6hostname($value)
+ * @method static Builder|VlanInterface whereIpv6monitorrcbgp($value)
+ * @method static Builder|VlanInterface whereIrrdbfilter($value)
+ * @method static Builder|VlanInterface whereMaxbgpprefix($value)
+ * @method static Builder|VlanInterface whereMcastenabled($value)
+ * @method static Builder|VlanInterface whereNotes($value)
+ * @method static Builder|VlanInterface whereRsclient($value)
+ * @method static Builder|VlanInterface whereRsmorespecifics($value)
+ * @method static Builder|VlanInterface whereVirtualinterfaceid($value)
+ * @method static Builder|VlanInterface whereVlanid($value)
+ * @mixin Eloquent
  */
 class VlanInterface extends Model
 {

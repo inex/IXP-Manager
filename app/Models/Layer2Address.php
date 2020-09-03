@@ -20,15 +20,15 @@ use stdClass;
  * @property string|null $lastseen
  * @property string|null $created
  * @property-read \IXP\Models\VlanInterface $vlanInterface
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Layer2Address newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Layer2Address newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Layer2Address query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Layer2Address whereCreated($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Layer2Address whereFirstseen($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Layer2Address whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Layer2Address whereLastseen($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Layer2Address whereMac($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Layer2Address whereVlanInterfaceId($value)
+ * @method static Builder|Layer2Address newModelQuery()
+ * @method static Builder|Layer2Address newQuery()
+ * @method static Builder|Layer2Address query()
+ * @method static Builder|Layer2Address whereCreated($value)
+ * @method static Builder|Layer2Address whereFirstseen($value)
+ * @method static Builder|Layer2Address whereId($value)
+ * @method static Builder|Layer2Address whereLastseen($value)
+ * @method static Builder|Layer2Address whereMac($value)
+ * @method static Builder|Layer2Address whereVlanInterfaceId($value)
  * @mixin \Eloquent
  */
 class Layer2Address extends Model

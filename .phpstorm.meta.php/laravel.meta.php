@@ -11,6 +11,7 @@ namespace PHPSTORM_META {
     */
     override(new \Illuminate\Contracts\Container\Container, map([
         '' => '@',
+            'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
             'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
             'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
             'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,
@@ -87,6 +88,7 @@ namespace PHPSTORM_META {
             'command.controller.make' => \Illuminate\Routing\Console\ControllerMakeCommand::class,
             'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
             'command.db.wipe' => \Illuminate\Database\Console\WipeCommand::class,
+            'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
             'command.down' => \Illuminate\Foundation\Console\DownCommand::class,
             'command.dumpserver' => \BeyondCode\DumpServer\DumpServerCommand::class,
             'command.environment' => \Illuminate\Foundation\Console\EnvironmentCommand::class,
@@ -208,6 +210,7 @@ namespace PHPSTORM_META {
         ]));
     override(\Illuminate\Container\Container::makeWith(0), map([
         '' => '@',
+            'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
             'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
             'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
             'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,
@@ -284,6 +287,7 @@ namespace PHPSTORM_META {
             'command.controller.make' => \Illuminate\Routing\Console\ControllerMakeCommand::class,
             'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
             'command.db.wipe' => \Illuminate\Database\Console\WipeCommand::class,
+            'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
             'command.down' => \Illuminate\Foundation\Console\DownCommand::class,
             'command.dumpserver' => \BeyondCode\DumpServer\DumpServerCommand::class,
             'command.environment' => \Illuminate\Foundation\Console\EnvironmentCommand::class,
@@ -405,6 +409,7 @@ namespace PHPSTORM_META {
         ]));
     override(\Illuminate\Contracts\Container\Container::get(0), map([
         '' => '@',
+            'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
             'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
             'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
             'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,
@@ -481,6 +486,7 @@ namespace PHPSTORM_META {
             'command.controller.make' => \Illuminate\Routing\Console\ControllerMakeCommand::class,
             'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
             'command.db.wipe' => \Illuminate\Database\Console\WipeCommand::class,
+            'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
             'command.down' => \Illuminate\Foundation\Console\DownCommand::class,
             'command.dumpserver' => \BeyondCode\DumpServer\DumpServerCommand::class,
             'command.environment' => \Illuminate\Foundation\Console\EnvironmentCommand::class,
@@ -602,6 +608,7 @@ namespace PHPSTORM_META {
         ]));
     override(\Illuminate\Contracts\Container\Container::make(0), map([
         '' => '@',
+            'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
             'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
             'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
             'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,
@@ -678,6 +685,7 @@ namespace PHPSTORM_META {
             'command.controller.make' => \Illuminate\Routing\Console\ControllerMakeCommand::class,
             'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
             'command.db.wipe' => \Illuminate\Database\Console\WipeCommand::class,
+            'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
             'command.down' => \Illuminate\Foundation\Console\DownCommand::class,
             'command.dumpserver' => \BeyondCode\DumpServer\DumpServerCommand::class,
             'command.environment' => \Illuminate\Foundation\Console\EnvironmentCommand::class,
@@ -799,6 +807,7 @@ namespace PHPSTORM_META {
         ]));
     override(\Illuminate\Contracts\Container\Container::makeWith(0), map([
         '' => '@',
+            'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
             'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
             'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
             'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,
@@ -875,6 +884,7 @@ namespace PHPSTORM_META {
             'command.controller.make' => \Illuminate\Routing\Console\ControllerMakeCommand::class,
             'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
             'command.db.wipe' => \Illuminate\Database\Console\WipeCommand::class,
+            'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
             'command.down' => \Illuminate\Foundation\Console\DownCommand::class,
             'command.dumpserver' => \BeyondCode\DumpServer\DumpServerCommand::class,
             'command.environment' => \Illuminate\Foundation\Console\EnvironmentCommand::class,
@@ -996,6 +1006,7 @@ namespace PHPSTORM_META {
         ]));
     override(\App::get(0), map([
         '' => '@',
+            'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
             'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
             'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
             'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,
@@ -1072,6 +1083,7 @@ namespace PHPSTORM_META {
             'command.controller.make' => \Illuminate\Routing\Console\ControllerMakeCommand::class,
             'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
             'command.db.wipe' => \Illuminate\Database\Console\WipeCommand::class,
+            'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
             'command.down' => \Illuminate\Foundation\Console\DownCommand::class,
             'command.dumpserver' => \BeyondCode\DumpServer\DumpServerCommand::class,
             'command.environment' => \Illuminate\Foundation\Console\EnvironmentCommand::class,
@@ -1193,6 +1205,7 @@ namespace PHPSTORM_META {
         ]));
     override(\App::make(0), map([
         '' => '@',
+            'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
             'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
             'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
             'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,
@@ -1269,6 +1282,7 @@ namespace PHPSTORM_META {
             'command.controller.make' => \Illuminate\Routing\Console\ControllerMakeCommand::class,
             'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
             'command.db.wipe' => \Illuminate\Database\Console\WipeCommand::class,
+            'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
             'command.down' => \Illuminate\Foundation\Console\DownCommand::class,
             'command.dumpserver' => \BeyondCode\DumpServer\DumpServerCommand::class,
             'command.environment' => \Illuminate\Foundation\Console\EnvironmentCommand::class,
@@ -1390,6 +1404,7 @@ namespace PHPSTORM_META {
         ]));
     override(\App::makeWith(0), map([
         '' => '@',
+            'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
             'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
             'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
             'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,
@@ -1466,6 +1481,7 @@ namespace PHPSTORM_META {
             'command.controller.make' => \Illuminate\Routing\Console\ControllerMakeCommand::class,
             'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
             'command.db.wipe' => \Illuminate\Database\Console\WipeCommand::class,
+            'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
             'command.down' => \Illuminate\Foundation\Console\DownCommand::class,
             'command.dumpserver' => \BeyondCode\DumpServer\DumpServerCommand::class,
             'command.environment' => \Illuminate\Foundation\Console\EnvironmentCommand::class,
@@ -1587,6 +1603,7 @@ namespace PHPSTORM_META {
         ]));
     override(\app(0), map([
         '' => '@',
+            'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
             'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
             'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
             'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,
@@ -1663,6 +1680,7 @@ namespace PHPSTORM_META {
             'command.controller.make' => \Illuminate\Routing\Console\ControllerMakeCommand::class,
             'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
             'command.db.wipe' => \Illuminate\Database\Console\WipeCommand::class,
+            'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
             'command.down' => \Illuminate\Foundation\Console\DownCommand::class,
             'command.dumpserver' => \BeyondCode\DumpServer\DumpServerCommand::class,
             'command.environment' => \Illuminate\Foundation\Console\EnvironmentCommand::class,
@@ -1784,6 +1802,7 @@ namespace PHPSTORM_META {
         ]));
     override(\resolve(0), map([
         '' => '@',
+            'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
             'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
             'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
             'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,
@@ -1860,6 +1879,7 @@ namespace PHPSTORM_META {
             'command.controller.make' => \Illuminate\Routing\Console\ControllerMakeCommand::class,
             'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
             'command.db.wipe' => \Illuminate\Database\Console\WipeCommand::class,
+            'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
             'command.down' => \Illuminate\Foundation\Console\DownCommand::class,
             'command.dumpserver' => \BeyondCode\DumpServer\DumpServerCommand::class,
             'command.environment' => \Illuminate\Foundation\Console\EnvironmentCommand::class,
@@ -1981,6 +2001,7 @@ namespace PHPSTORM_META {
         ]));
     override(\Psr\Container\ContainerInterface::get, map([
         '' => '@',
+            'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
             'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
             'Facade\IgnitionContracts\SolutionProviderRepository' => \Facade\Ignition\SolutionProviders\SolutionProviderRepository::class,
             'Facade\Ignition\DumpRecorder\DumpRecorder' => \Facade\Ignition\DumpRecorder\DumpRecorder::class,
@@ -2057,6 +2078,7 @@ namespace PHPSTORM_META {
             'command.controller.make' => \Illuminate\Routing\Console\ControllerMakeCommand::class,
             'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
             'command.db.wipe' => \Illuminate\Database\Console\WipeCommand::class,
+            'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
             'command.down' => \Illuminate\Foundation\Console\DownCommand::class,
             'command.dumpserver' => \BeyondCode\DumpServer\DumpServerCommand::class,
             'command.environment' => \Illuminate\Foundation\Console\EnvironmentCommand::class,
