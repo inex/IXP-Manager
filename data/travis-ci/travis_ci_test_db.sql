@@ -162,7 +162,7 @@ CREATE TABLE `cabinet` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `locationid` int(11) DEFAULT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cololocation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `colocation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `height` int(11) DEFAULT NULL,
   `type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `notes` longtext COLLATE utf8_unicode_ci,
@@ -299,7 +299,6 @@ DROP TABLE IF EXISTS `consoleserverconnection`;
 CREATE TABLE `consoleserverconnection` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `custid` int(11) DEFAULT NULL,
-  `switchid` int(11) DEFAULT NULL,
   `description` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `port` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `speed` int(11) DEFAULT NULL,
@@ -793,7 +792,7 @@ CREATE TABLE `docstore_customer_directories` (
 
 LOCK TABLES `docstore_customer_directories` WRITE;
 /*!40000 ALTER TABLE `docstore_customer_directories` DISABLE KEYS */;
-INSERT INTO `docstore_customer_directories` VALUES (5,5,NULL,'Folder 3','This is the folder 3','2020-04-28 09:09:18','2020-04-28 09:09:18');
+INSERT INTO `docstore_customer_directories` VALUES (1,5,NULL,'Folder 1','This is the folder 1','2020-04-28 08:00:00','2020-04-28 08:00:00'),(2,5,1,'Sub Folder 1','This is sub folder 1','2020-04-28 08:00:00','2020-04-28 08:00:00'),(3,5,NULL,'Folder 2','This is folder 2','2020-04-28 08:00:00','2020-04-28 08:00:00');
 /*!40000 ALTER TABLE `docstore_customer_directories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1051,7 +1050,7 @@ DROP TABLE IF EXISTS `irrdb_asn`;
 CREATE TABLE `irrdb_asn` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `customer_id` int(11) NOT NULL,
-  `asn` int(11) NOT NULL,
+  `asn` int(10) unsigned NOT NULL,
   `protocol` int(11) NOT NULL,
   `first_seen` datetime DEFAULT NULL,
   `last_seen` datetime DEFAULT NULL,
@@ -1301,7 +1300,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1310,7 +1309,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3),(9,'2020_07_21_094354_create_route_server_filters',4);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1727,6 +1726,47 @@ INSERT INTO `physicalinterface` VALUES (1,3,NULL,1,1,1000,'full','',1),(2,4,NULL
 UNLOCK TABLES;
 
 --
+-- Table structure for table `route_server_filters`
+--
+
+DROP TABLE IF EXISTS `route_server_filters`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `route_server_filters` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `customer_id` int(11) DEFAULT NULL,
+  `peer_id` int(11) DEFAULT NULL,
+  `vlan_id` int(11) DEFAULT NULL,
+  `received_prefix` varchar(43) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `advertised_prefix` varchar(43) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `protocol` smallint(6) DEFAULT NULL,
+  `action_advertise` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `action_receive` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `order_by` int(11) NOT NULL,
+  `live` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `route_server_filters_customer_id_order_by_unique` (`customer_id`,`order_by`),
+  KEY `route_server_filters_peer_id_foreign` (`peer_id`),
+  KEY `route_server_filters_vlan_id_foreign` (`vlan_id`),
+  CONSTRAINT `route_server_filters_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `cust` (`id`),
+  CONSTRAINT `route_server_filters_peer_id_foreign` FOREIGN KEY (`peer_id`) REFERENCES `cust` (`id`),
+  CONSTRAINT `route_server_filters_vlan_id_foreign` FOREIGN KEY (`vlan_id`) REFERENCES `vlan` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `route_server_filters`
+--
+
+LOCK TABLES `route_server_filters` WRITE;
+/*!40000 ALTER TABLE `route_server_filters` DISABLE KEYS */;
+/*!40000 ALTER TABLE `route_server_filters` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `routers`
 --
 
@@ -2109,7 +2149,6 @@ DROP TABLE IF EXISTS `traffic_daily`;
 CREATE TABLE `traffic_daily` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `cust_id` int(11) NOT NULL,
-  `ixp_id` int(11) NOT NULL,
   `day` date DEFAULT NULL,
   `category` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
   `day_avg_in` bigint(20) DEFAULT NULL,
@@ -2138,8 +2177,6 @@ CREATE TABLE `traffic_daily` (
   `year_tot_out` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_1F0F81A7BFF2A482` (`cust_id`),
-  KEY `IDX_1F0F81A7A5A4E881` (`ixp_id`),
-  CONSTRAINT `FK_1F0F81A7A5A4E881` FOREIGN KEY (`ixp_id`) REFERENCES `ixp` (`id`),
   CONSTRAINT `FK_1F0F81A7BFF2A482` FOREIGN KEY (`cust_id`) REFERENCES `cust` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2453,38 +2490,6 @@ SET character_set_client = utf8;
 SET character_set_client = @saved_cs_client;
 
 --
--- Temporary table structure for view `view_switch_details_by_custid`
---
-
-DROP TABLE IF EXISTS `view_switch_details_by_custid`;
-/*!50001 DROP VIEW IF EXISTS `view_switch_details_by_custid`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE VIEW `view_switch_details_by_custid` AS SELECT 
- 1 AS `id`,
- 1 AS `custid`,
- 1 AS `virtualinterfacename`,
- 1 AS `virtualinterfaceid`,
- 1 AS `status`,
- 1 AS `speed`,
- 1 AS `duplex`,
- 1 AS `notes`,
- 1 AS `switchport`,
- 1 AS `switchportid`,
- 1 AS `spifname`,
- 1 AS `switch`,
- 1 AS `switchhostname`,
- 1 AS `switchid`,
- 1 AS `vendorid`,
- 1 AS `snmppasswd`,
- 1 AS `infrastructure`,
- 1 AS `cabinet`,
- 1 AS `colocabinet`,
- 1 AS `locationname`,
- 1 AS `locationshortname`*/;
-SET character_set_client = @saved_cs_client;
-
---
 -- Temporary table structure for view `view_vlaninterface_details_by_custid`
 --
 
@@ -2662,24 +2667,6 @@ UNLOCK TABLES;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
--- Final view structure for view `view_switch_details_by_custid`
---
-
-/*!50001 DROP VIEW IF EXISTS `view_switch_details_by_custid`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_general_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `view_switch_details_by_custid` AS select `vi`.`id` AS `id`,`vi`.`custid` AS `custid`,concat(`vi`.`name`,`vi`.`channelgroup`) AS `virtualinterfacename`,`pi`.`virtualinterfaceid` AS `virtualinterfaceid`,`pi`.`status` AS `status`,`pi`.`speed` AS `speed`,`pi`.`duplex` AS `duplex`,`pi`.`notes` AS `notes`,`sp`.`name` AS `switchport`,`sp`.`id` AS `switchportid`,`sp`.`ifName` AS `spifname`,`sw`.`name` AS `switch`,`sw`.`hostname` AS `switchhostname`,`sw`.`id` AS `switchid`,`sw`.`vendorid` AS `vendorid`,`sw`.`snmppasswd` AS `snmppasswd`,`sw`.`infrastructure` AS `infrastructure`,`ca`.`name` AS `cabinet`,`ca`.`colocation` AS `colocabinet`,`lo`.`name` AS `locationname`,`lo`.`shortname` AS `locationshortname` from (((((`virtualinterface` `vi` join `physicalinterface` `pi`) join `switchport` `sp`) join `switch` `sw`) join `cabinet` `ca`) join `location` `lo`) where ((`pi`.`virtualinterfaceid` = `vi`.`id`) and (`pi`.`switchportid` = `sp`.`id`) and (`sp`.`switchid` = `sw`.`id`) and (`sw`.`cabinetid` = `ca`.`id`) and (`ca`.`locationid` = `lo`.`id`)) */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-
---
 -- Final view structure for view `view_vlaninterface_details_by_custid`
 --
 
@@ -2692,7 +2679,7 @@ UNLOCK TABLES;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `view_vlaninterface_details_by_custid` AS select `pi`.`id` AS `id`,`vi`.`custid` AS `custid`,`pi`.`virtualinterfaceid` AS `virtualinterfaceid`,`pi`.`status` AS `status`,concat(`vi`.`name`,`vi`.`channelgroup`) AS `virtualinterfacename`,`vlan`.`number` AS `vlan`,`vlan`.`name` AS `vlanname`,`vlan`.`id` AS `vlanid`,`vli`.`id` AS `vlaninterfaceid`,`vli`.`ipv4enabled` AS `ipv4enabled`,`vli`.`ipv4hostname` AS `ipv4hostname`,`vli`.`ipv4canping` AS `ipv4canping`,`vli`.`ipv4monitorrcbgp` AS `ipv4monitorrcbgp`,`vli`.`ipv6enabled` AS `ipv6enabled`,`vli`.`ipv6hostname` AS `ipv6hostname`,`vli`.`ipv6canping` AS `ipv6canping`,`vli`.`ipv6monitorrcbgp` AS `ipv6monitorrcbgp`,`vli`.`as112client` AS `as112client`,`vli`.`mcastenabled` AS `mcastenabled`,`vli`.`ipv4bgpmd5secret` AS `ipv4bgpmd5secret`,`vli`.`ipv6bgpmd5secret` AS `ipv6bgpmd5secret`,`vli`.`rsclient` AS `rsclient`,`vli`.`irrdbfilter` AS `irrdbfilter`,`vli`.`busyhost` AS `busyhost`,`vli`.`notes` AS `notes`,`v4`.`address` AS `ipv4address`,`v6`.`address` AS `ipv6address` from ((`physicalinterface` `pi` join `virtualinterface` `vi`) join (((`vlaninterface` `vli` left join `ipv4address` `v4` on((`vli`.`ipv4addressid` = `v4`.`id`))) left join `ipv6address` `v6` on((`vli`.`ipv6addressid` = `v6`.`id`))) left join `vlan` on((`vli`.`vlanid` = `vlan`.`id`)))) where ((`pi`.`virtualinterfaceid` = `vi`.`id`) and (`vli`.`virtualinterfaceid` = `vi`.`id`)) */;
+/*!50001 VIEW `view_vlaninterface_details_by_custid` AS select 1 AS `id`,1 AS `custid`,1 AS `virtualinterfaceid`,1 AS `status`,1 AS `virtualinterfacename`,1 AS `vlan`,1 AS `vlanname`,1 AS `vlanid`,1 AS `vlaninterfaceid`,1 AS `ipv4enabled`,1 AS `ipv4hostname`,1 AS `ipv4canping`,1 AS `ipv4monitorrcbgp`,1 AS `ipv6enabled`,1 AS `ipv6hostname`,1 AS `ipv6canping`,1 AS `ipv6monitorrcbgp`,1 AS `as112client`,1 AS `mcastenabled`,1 AS `ipv4bgpmd5secret`,1 AS `ipv6bgpmd5secret`,1 AS `rsclient`,1 AS `irrdbfilter`,1 AS `busyhost`,1 AS `notes`,1 AS `ipv4address`,1 AS `ipv6address` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -2706,4 +2693,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-07-10  9:05:33
+-- Dump completed on 2020-09-02 14:49:23

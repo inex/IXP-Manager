@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Services\Grapher;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -27,12 +27,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
-use IXP\Http\Requests;
+
 use IXP\Http\Controllers\Controller;
 
 use Grapher as GrapherService;
-
-use Carbon\Carbon;
+use IXP\Services\Grapher;
 
 /**
  * Grapher Controller
@@ -40,34 +39,40 @@ use Carbon\Carbon;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Api extends Controller
 {
     /**
      * the grapher service
-     * @var \IXP\Services\Grapher
+     *
+     * @var Grapher
      */
     private $grapher;
 
     /**
      * Constructor
+     * @param Request $request
+     * @param GrapherService $grapher
      */
-    public function __construct( Request $request, GrapherService $grapher ) {
+    public function __construct( Request $request, GrapherService $grapher )
+    {
         $this->grapher = $grapher;
     }
 
     /**
      * Grapher accessor
-     * @return \IXP\Services\Grapher
+     *
+     * @return Grapher
      */
-    private function grapher(): GrapherService {
+    private function grapher(): GrapherService
+    {
         return $this->grapher;
     }
 
-    public function generateConfiguration( Request $request ): Response {
-
+    public function generateConfiguration( Request $request ): Response
+    {
         // get the appropriate backend
         $grapher = GrapherService::backend( $request->input( 'backend', 'mrtg' ) );
 
@@ -85,5 +90,4 @@ class Api extends Controller
         return (new Response( $config ) )
               ->header('Content-Type', "text/plain" );
     }
-
 }

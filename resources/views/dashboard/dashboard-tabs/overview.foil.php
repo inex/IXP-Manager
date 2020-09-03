@@ -16,7 +16,7 @@
 
             </div>
             <div class="card-body">
-                <?= $t->grapher->customer( $t->c )->renderer()->boxLegacy() ?>
+                <?= $t->grapher->customer( \IXP\Models\Customer::find( $t->c->getId() ) )->renderer()->boxLegacy() ?>
             </div>
         </div>
 

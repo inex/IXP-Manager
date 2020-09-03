@@ -128,12 +128,13 @@ class Infrastructure extends Graph
             return $this->allow();
         }
 
+
         if( in_array( $this->category(), [ self::CATEGORY_ERRORS, self::CATEGORY_DISCARDS ], true ) ) {
             $this->deny();
             return false;
         }
 
-        if( is_numeric( config( 'grapher.access.infrastructure' ) ) && config( 'grapher.access.infrastructure' ) === User::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.infrastructure' ) ) && (int)config( 'grapher.access.infrastructure' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 

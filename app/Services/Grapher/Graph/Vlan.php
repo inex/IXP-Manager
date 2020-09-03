@@ -135,7 +135,7 @@ class Vlan extends Graph
             return false;
         }
 
-        if( is_numeric( config( 'grapher.access.vlan' ) ) && config( 'grapher.access.vlan' ) === User::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.vlan' ) ) && (int)config( 'grapher.access.vlan' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 

@@ -125,7 +125,7 @@ class Switcher extends Graph
             return $this->allow();
         }
 
-        if( is_numeric( config( 'grapher.access.switch' ) ) && config( 'grapher.access.switch' ) === User::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.switch' ) ) && (int)config( 'grapher.access.switch' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 

@@ -23,30 +23,25 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use App, Cache, D2EM;
+use App, Cache;
 
 use Carbon\Carbon;
 
-use IXP\Models\Customer;
-use IXP\Models\Infrastructure;
-use IXP\Models\Location;
-use IXP\Models\VirtualInterface;
-use IXP\Models\Vlan;
-use IXP\Models\VlanInterface;
-use IXP\Services\Grapher\Graph as Graph;
-
-use Entities\{
-    Customer            as CustomerEntity,
-    Infrastructure      as InfrastructureEntity,
-    IXP                 as IXPEntity,
-    Location            as LocationEntity,
-    VirtualInterface    as VirtualInterfaceEntity,
-    Vlan                as VlanEntity,
-    VlanInterface       as VlanInterfaceEntity
-};
-
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+
+use IXP\Models\{
+    Customer,
+    Infrastructure,
+    Location,
+    VirtualInterface,
+    Vlan,
+    VlanInterface
+};
+
+use IXP\Services\Grapher\Graph as Graph;
+
+
 use IXP\Services\Grapher;
 
 

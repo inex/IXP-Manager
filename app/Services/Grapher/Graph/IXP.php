@@ -97,7 +97,7 @@ class IXP extends Graph
             return false;
         }
 
-        if( is_numeric( config( 'grapher.access.ixp' ) ) && config( 'grapher.access.ixp' ) === User::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.ixp' ) ) && (int)config( 'grapher.access.ixp' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 

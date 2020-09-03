@@ -3,7 +3,7 @@
 namespace IXP\Http\Middleware\Services;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -50,10 +50,11 @@ use IXP\Services\Grapher\Graph\{
 /**
  * Grapher -> MIDDLEWARE
  *
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robon       <yann@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Grapher
@@ -61,14 +62,15 @@ class Grapher
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  \Closure  $next
+     *
      * @return mixed
      */
-    public function handle($request, Closure $next )
+    public function handle( Request $request, Closure $next )
     {
         // get the grapher service
-        $grapher = App::make('IXP\Services\Grapher');
+        $grapher = App::make( GrapherService::class );
 
         // all graph requests require a certain basic set of parameters / defaults.
         // let's take care of that here
@@ -93,39 +95,39 @@ class Grapher
     /**
      * All graphs have common parameters. We process these here for every request - and set sensible defaults.
      *
-     * @param \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param GrapherService            $grapher
+     *
      * @return Graph
      */
-    private function processParameters( Request $request, GrapherService $grapher ): Graph {
-
+    private function processParameters( Request $request, GrapherService $grapher ): Graph
+    {
         // while the Grapher service stores the processed parameters in its own object, we update the $request
         // parameters here also just in case we need to final versions later in the request.
 
         $target = explode( '/', $request->path() );
         $target = array_pop( $target );
 
-        $request->period   = Graph::processParameterPeriod(   $request->input( 'period',   '' ) );
-        $request->category = Graph::processParameterCategory( $request->input( 'category', '' ) );
-        $request->protocol = Graph::processParameterProtocol( $request->input( 'protocol', '' ) );
-        $request->type     = Graph::processParameterType(     $request->input( 'type',     '' ) );
+        $request->period   = Graph::processParameterPeriod(   $request->period );
+        $request->category = Graph::processParameterCategory( $request->category );
+        $request->protocol = Graph::processParameterProtocol( $request->protocol );
+        $request->type     = Graph::processParameterType(     $request->type );
 
         switch( $target ) {
             case 'ixp':
-                $ixp = IXPGraph::processParameterIXP( (int)$request->input( 'id', 0 ) );
-                $request->id = $ixp->getId();
-                $graph = $grapher->ixp( $ixp )->setParamsFromArray( $request->all() );
+                $request->id = 1;
+                $graph = $grapher->ixp()->setParamsFromArray( $request->all() );
                 break;
 
             case 'infrastructure':
                 $infra = InfrastructureGraph::processParameterInfrastructure( (int)$request->input( 'id', 0 ) );
-                $request->infrastructure = $infra->getId();
+                $request->infrastructure = $infra->id;
                 $graph = $grapher->infrastructure( $infra )->setParamsFromArray( $request->all() );
                 break;
 
             case 'vlan':
                 $vlan = VlanGraph::processParameterVlan( (int)$request->input( 'id', 0 ) );
-                $request->vlan = $vlan->getId();
+                $request->vlan = $vlan->id;
                 $graph = $grapher->vlan( $vlan )->setParamsFromArray( $request->all() );
                 break;
 
@@ -138,38 +140,38 @@ class Grapher
             case 'corebundle':
                 $corebundle = CoreBundleGraph::processParameterCoreBundle( (int)$request->input( 'id', 0 ) );
                 $side       = CoreBundleGraph::processParameterSide( $request->input( 'side', 'a' ) );
-                $request->corebundle = $corebundle->getId();
+                $request->corebundle = $corebundle->id;
                 $request->side       = $side;
                 $graph = $grapher->coreBundle( $corebundle, $side )->setParamsFromArray( $request->all() );
                 break;
 
             case 'switch':
                 $switch = SwitchGraph::processParameterSwitch( (int)$request->input( 'id', 0 ) );
-                $request->switch = $switch->getId();
+                $request->switch = $switch->id;
                 $graph = $grapher->switch( $switch )->setParamsFromArray( $request->all() );
                 break;
 
             case 'physicalinterface':
                 $physint = PhysIntGraph::processParameterPhysicalInterface( (int)$request->input( 'id', 0 ) );
-                $request->physint = $physint->getId();
+                $request->physint = $physint->id;
                 $graph = $grapher->physint( $physint )->setParamsFromArray( $request->all() );
                 break;
 
             case 'virtualinterface':
                 $virtint = VirtIntGraph::processParameterVirtualInterface( (int)$request->input( 'id', 0 ) );
-                $request->virtint = $virtint->getId();
+                $request->virtint = $virtint->id;
                 $graph = $grapher->virtint( $virtint )->setParamsFromArray( $request->all() );
                 break;
 
             case 'customer':
                 $customer = CustomerGraph::processParameterCustomer( (int)$request->input( 'id', 0 ) );
-                $request->customer = $customer->getId();
+                $request->customer = $customer->id;
                 $graph = $grapher->customer( $customer )->setParamsFromArray( $request->all() );
                 break;
 
             case 'vlaninterface':
                 $vlanint = VlanIntGraph::processParameterVlanInterface( (int)$request->input( 'id', 0 ) );
-                $request->vlanint = $vlanint->getId();
+                $request->vlanint = $vlanint->id;
                 $graph = $grapher->vlanint( $vlanint )->setParamsFromArray( $request->all() );
                 break;
 
@@ -182,18 +184,14 @@ class Grapher
             case 'p2p':
                 $srcvlanint = P2pGraph::processParameterSourceVlanInterface(      (int)$request->input( 'svli', 0 ) );
                 $dstvlanint = P2pGraph::processParameterDestinationVlanInterface( (int)$request->input( 'dvli', 0 ) );
-                $request->srcvlanint = $srcvlanint->getId();
-                $request->dstvlanint = $dstvlanint->getId();
+                $request->srcvlanint = $srcvlanint->id;
+                $request->dstvlanint = $dstvlanint->id;
                 $graph = $grapher->p2p( $srcvlanint, $dstvlanint )->setParamsFromArray( $request->all() );
                 break;
-
-
             default:
                 abort(404, 'No such graph type');
         }
-
         /** @var Graph $graph */
         return $graph;
     }
-
 }

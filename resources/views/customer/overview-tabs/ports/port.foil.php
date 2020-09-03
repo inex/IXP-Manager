@@ -21,15 +21,15 @@
                         <?php $firstPi = 0 ?>
                     <?php endif; ?>
 
-                    <?php if( $t->vi->getType() == \Entities\SwitchPort::TYPE_PEERING && count( $pis ) ): ?>
+                    <?php if( $t->vi->getType() === \Entities\SwitchPort::TYPE_PEERING && count( $pis ) ): ?>
                         &nbsp;&nbsp;&nbsp;&nbsp;<?= $t->ee( $firstPi->getSwitchPort()->getSwitcher()->getInfrastructure()->getName() ) ?>
-                    <?php elseif( $t->vi->getType() == \Entities\SwitchPort::TYPE_FANOUT ): ?>
+                    <?php elseif( $t->vi->getType() === \Entities\SwitchPort::TYPE_FANOUT ): ?>
                         &nbsp;&nbsp;&nbsp;&nbsp;Reseller Fanout
 
                         <?php if( count( $pis ) && $firstPi->getRelatedInterface() ): ?>
                             for <a
 
-                                <?php if( Auth::user()->getPrivs() == \Entities\User::AUTH_SUPERUSER ): ?>
+                                <?php if( Auth::user()->getPrivs() === \Entities\User::AUTH_SUPERUSER ): ?>
                                     href="<?= route( "customer@overview" , [ 'id' => $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId() ] ) ?>"
                                 <?php else: ?>
                                     href="<?= route( "customer@detail" , [ "id" => $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId() ] ) ?>"
@@ -40,7 +40,7 @@
                             <em>(unassigned)</em>
                         <?php endif; ?>
 
-                    <?php elseif( $t->vi->getType() == \Entities\SwitchPort::TYPE_RESELLER ): ?>
+                    <?php elseif( $t->vi->getType() === \Entities\SwitchPort::TYPE_RESELLER ): ?>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reseller Uplink
                     <?php endif; ?>
 
@@ -389,7 +389,7 @@
                     </div>
                     <div class="card-body">
 
-                        <?= $t->grapher->virtint( $t->vi )->renderer()->boxLegacy() ?>
+                        <?= $t->grapher->virtint( \IXP\Models\VirtualInterface::find( $t->vi->getId() ) )->renderer()->boxLegacy() ?>
                     </div>
                 </div>
 

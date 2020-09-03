@@ -200,7 +200,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
 
                     $data[ 'custports' ][ $c->id ][] = $pi->id;
 
-                    if( $vi->physicalInterfaces->count() ) {
+                    if( $vi->physicalInterfaces->count() > 1 ) {
                         $data[ 'custlags' ][ $c->id ][ $vi->id ][] = $pi->id;
                     }
 
@@ -280,7 +280,6 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                 }
             }
         }
-
 
         return $data;
     }

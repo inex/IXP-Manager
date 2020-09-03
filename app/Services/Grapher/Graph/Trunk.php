@@ -130,7 +130,7 @@ class Trunk extends Graph
             return $this->allow();
         }
 
-        if( is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) === User::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.trunk' ) ) && (int)config( 'grapher.access.trunk' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 
