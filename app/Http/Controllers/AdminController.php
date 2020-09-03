@@ -180,7 +180,7 @@ class AdminController extends Controller
 
             $cTypes['infras']           = Infrastructure::getListAsArray();
             $cTypes['locations']        = Location::getListAsArray();
-            $cTypes['vlans']            = Vlan::getListAsArray();
+            $cTypes['vlans']            = Vlan::publicOnly()->orderBy('number')->get();
 
             Cache::put( 'admin_ctypes', $cTypes, 300 );
         }

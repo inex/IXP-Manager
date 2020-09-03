@@ -160,7 +160,7 @@ class StatisticsController extends Controller
      */
     public function vlan( int $vlanid = 0, string $protocol = Graph::PROTOCOL_IPV4, string $category = Graph::CATEGORY_BITS ) : View
     {
-        $vlans   = Vlan::filtered( Vlan::TYPE_NORMAL )
+        $vlans   = Vlan::publicOnly()
             ->where( 'peering_matrix', true )->where( 'peering_manager', true )
             ->orderBy( 'name' )->get()->keyBy( 'id' )->toArray();
 
@@ -335,7 +335,7 @@ class StatisticsController extends Controller
             'r'             => $r,
             'infras'        => Infrastructure::getListAsArray(),
             'infra'         => $infra ?? false,
-            'vlans'         => Vlan::getListAsArray(),
+            'vlans'         => Vlan::publicOnly()->orderBy('number')->get(),
             'vlan'          => $vlan ?? false,
         ]);
     }
@@ -730,7 +730,7 @@ class StatisticsController extends Controller
             'category'     => $category,
             'period'       => $period,
             'tdpis'        => ( $day ? TrafficDailyPhysInt::loadTraffic( $day, $category, $period, $vid ) : [] ),
-            'vlans'        => Vlan::getListAsArray(),
+            'vlans'        => Vlan::publicOnly()->orderBy('number')->get(),
             'vlan'         => $vid,
         ] );
     }

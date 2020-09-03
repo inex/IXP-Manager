@@ -40,6 +40,8 @@ use stdClass;
  * @property int $peering_matrix
  * @property int $peering_manager
  * @property string|null $config_name
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Infrastructure $infrastructure
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IPv4Address[] $ipv4Addresses
  * @property-read int|null $ipv4_addresses_count
@@ -51,11 +53,13 @@ use stdClass;
  * @property-read int|null $routers_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
- * @method static Builder|Vlan filtered($type)
  * @method static Builder|Vlan newModelQuery()
  * @method static Builder|Vlan newQuery()
+ * @method static Builder|Vlan privateOnly()
+ * @method static Builder|Vlan publicOnly()
  * @method static Builder|Vlan query()
  * @method static Builder|Vlan whereConfigName($value)
+ * @method static Builder|Vlan whereCreatedAt($value)
  * @method static Builder|Vlan whereId($value)
  * @method static Builder|Vlan whereInfrastructureid($value)
  * @method static Builder|Vlan whereName($value)
@@ -64,10 +68,12 @@ use stdClass;
  * @method static Builder|Vlan wherePeeringManager($value)
  * @method static Builder|Vlan wherePeeringMatrix($value)
  * @method static Builder|Vlan wherePrivate($value)
+ * @method static Builder|Vlan whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Vlan extends Model
 {
+    // FIXME: @yannrobin can you remove this as private should just be a checkbox, not a dropdown list. i.e. boolean flag
     public const PRIVATE_NO  = 0;
     public const PRIVATE_YES = 1;
 
@@ -77,40 +83,11 @@ class Vlan extends Model
     );
 
     /**
-     * Constant to represent normal and private VLANs
-     *
-     * @var int Constant to represent normal and private VLANs
-     */
-    public const TYPE_ALL     = 0;
-
-    /**
-     * Constant to represent normal VLANs only
-     *
-     * @var int Constant to represent normal VLANs ony
-     */
-    public const TYPE_NORMAL  = 1;
-
-    /**
-     * Constant to represent private VLANs only
-     *
-     * @var int Constant to represent private VLANs ony
-     */
-    public const TYPE_PRIVATE = 2;
-
-
-    /**
      * The table associated with the model.
      *
      * @var string
      */
     protected $table = 'vlan';
-
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.
@@ -177,48 +154,21 @@ class Vlan extends Model
     }
 
     /**
-     * Gets a listing of vlans for dropdown
-     *
-     * @return Collection
+     * Scope a query to only include private VLANs
      */
-    public static function getAsArray(): Collection
+    public function scopePrivateOnly( Builder $query ): Builder
     {
-        return self::orderBy( 'name', 'asc' )->get();
+        return $query->where( 'private', 1 );
     }
 
     /**
-     * Return an array of all VLAN objects from the database with caching
-     * (and with the option to specify types - returns normal (non-private)
-     * VLANs by default.
-     *
-     * @param $type int The VLAN types to return (see TYPE_ constants).
-     * @param $orderBy string Typical values: number, name
-     * @param $cache bool Whether to use the cache or not
-     *
-     * @return Collection
+     * Scope a query to only include public / non-private VLANs
      */
-    public static function getAndCache( int $type = self::TYPE_NORMAL, string $orderBy = "number", bool $cache = true ): Collection
+    public function scopePublicOnly( Builder $query ): Builder
     {
-        $type = $type !== self::TYPE_ALL && $type !== self::TYPE_PRIVATE ? self::TYPE_NORMAL : $type ;
-
-        return self::when( $type === self::TYPE_PRIVATE , function( Builder $q ) {
-            return $q->where( 'private', 1 );
-        })->when( $type === self::TYPE_NORMAL , function( Builder $q ) {
-            return $q->where( 'private', 0 );
-        })->orderBy( $orderBy, 'ASC' )->get();
+        return $query->where( 'private', 0 );
     }
 
-    /**
-     * Gets a listing of vlan as array
-     *
-     * @param int $type The VLAN types to return (see TYPE_ constants).
-     *
-     * @return array
-     */
-    public static function getListAsArray( $type = self::TYPE_NORMAL ): array
-    {
-        return self::getAndCache( $type )->toArray();
-    }
 
     /**
      * Gets a listing of vlans or a single one if an ID is provided
@@ -254,8 +204,12 @@ class Vlan extends Model
     /**
      * Returns an array of private VLANs with their details and membership.
      *
-     * @param Infrastructure|null $infra
+     * // FIXME @yannrobin can you think about moving this to the controller
+     * // rather than here? Either private function or in the action itself.
+     * // (customer over tab - and also possible user's dashboard)
+     * // Actually: talk to @barryo tomorrow.
      *
+     * @param Infrastructure|null $infra
      * @return array
      */
     public static function getPrivateVlanDetails( Infrastructure $infra = null ): array
@@ -317,24 +271,5 @@ class Vlan extends Model
             ->where( 'vlan.peering_manager',  true )
             ->where( 'vli.rsclient',  true )
             ->orderBy( 'vlan.name' )->get()->keyBy( 'id' )->toArray();
-    }
-
-    /**
-     * Scope a query to only include filtered vlan.
-     *
-     * @param Builder $query
-     * @param  int $type
-     *
-     * @return Builder
-     */
-    public function scopeFiltered($query, int $type ): Builder
-    {
-        if( $type === self::TYPE_PRIVATE ) {
-            $query->where('private', 1 );
-        } elseif( $type === self::TYPE_NORMAL ) {
-            $query->where('private', 0 );
-        }
-
-        return $query->orderBy( 'name' );
     }
 }

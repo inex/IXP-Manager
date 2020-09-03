@@ -118,7 +118,7 @@ class NetworkInfoController extends EloquentController
     {
         return [
             'object'                => $this->object,
-            'vlans'                 => Vlan::getListAsArray(),
+            'vlans'                 => Vlan::publicOnly()->orderBy('number')->get(),
         ];
     }
 
@@ -142,7 +142,7 @@ class NetworkInfoController extends EloquentController
 
         return [
             'object'                => $this->object,
-            'vlans'                 => Vlan::getListAsArray(),
+            'vlans'                 => Vlan::publicOnly()->orderBy('number')->get(),
         ];
     }
 
