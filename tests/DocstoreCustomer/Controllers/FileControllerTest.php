@@ -54,12 +54,12 @@ class FileControllerTest extends TestCase
         'fileName2'             => 'File3.pdf',
         'fileDescription2'      => 'This is file3.pdf',
         'filePrivs2'            => UserEntity::AUTH_CUSTADMIN,
-        'parentDirId2'          => 5,
+        'parentDirId2'          => 6,
         'fileName3'             => 'File4.txt',
         'fileDescription3'      => 'This is file4.txt',
         'textFile'              => 'I am the file4.txt',
         'filePrivs3'            => UserEntity::AUTH_CUSTADMIN,
-        'parentDirId3'          => 5,
+        'parentDirId3'          => 6,
     ];
 
     /**
