@@ -13,9 +13,19 @@ class AddTimestamps extends Migration
      */
     public function up()
     {
+        Schema::table('cabinet', function (Blueprint $table) {
+            $table->timestamps();
+        });
+
+        Schema::table('infrastructure', function (Blueprint $table) {
+            $table->timestamps();
+        });
+
         Schema::table('vlan', function (Blueprint $table) {
             $table->timestamps();
         });
+
+
     }
 
     /**
@@ -25,8 +35,18 @@ class AddTimestamps extends Migration
      */
     public function down()
     {
+        Schema::table('cabinet', function (Blueprint $table) {
+            $table->dropTimestamps();
+        });
+
+        Schema::table('infrastructure', function (Blueprint $table) {
+            $table->dropTimestamps();
+        });
+
         Schema::table('vlan', function (Blueprint $table) {
             $table->dropTimestamps();
         });
+
+
     }
 }

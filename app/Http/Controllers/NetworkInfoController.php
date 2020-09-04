@@ -98,7 +98,7 @@ class NetworkInfoController extends EloquentController
     /**
      * Provide array of rows for the list action and view action
      *
-     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @param int|null $id The `id` of the row to load for `view` action`. `null` if `listAction`
      *
      * @return array
      *
@@ -125,7 +125,7 @@ class NetworkInfoController extends EloquentController
     /**
      * Display the form to edit an object
      *
-     * @param   int $id ID of the row to edit
+     * @param   int|null $id ID of the row to edit
      *
      * @return array
      */
@@ -176,7 +176,7 @@ class NetworkInfoController extends EloquentController
      *
      * @return bool
      */
-    private function checkIsDuplicate( int $objectid = null, Request $request ): bool
+    private function checkIsDuplicate( Request $request, int $objectid = null  ): bool
     {
         $vlan = Vlan::find( $request->vlanid );
 
@@ -201,7 +201,7 @@ class NetworkInfoController extends EloquentController
     {
         $this->checkForm( $request );
 
-        if( $this->checkIsDuplicate( null, $request ) ) {
+        if( $this->checkIsDuplicate( $request, null ) ) {
             return Redirect::back()->withInput();
         }
 
@@ -224,7 +224,7 @@ class NetworkInfoController extends EloquentController
         $this->object = NetworkInfo::findOrFail( $id );
         $this->checkForm( $request );
 
-        if( $this->checkIsDuplicate( $this->object->id, $request ) ) {
+        if( $this->checkIsDuplicate( $request, $this->object->id ) ) {
             return Redirect::back()->withInput();
         }
 

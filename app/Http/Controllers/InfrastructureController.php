@@ -24,6 +24,7 @@ namespace IXP\Http\Controllers;
  */
 use Countries, Former;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -104,13 +105,18 @@ class InfrastructureController extends Eloquent2Frontend
     /**
      * Provide array of rows for the list action and view action
      *
-     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @param int|null $id The `id` of the row to load for `view` action`. `null` if `listAction`
 
      * @return array
      */
     protected function listGetData( $id = null ): array
     {
-        return Infrastructure::getFeList( $this->feParams, $id );
+        $feParams = $this->feParams;
+        return Infrastructure::when( $id , static function( Builder $q, $id ) {
+            return $q->where('id', $id );
+        } )->when( $feParams->listOrderBy , static function( Builder $q, $orderby ) use ( $feParams )  {
+            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+        })->get()->toArray();
     }
 
     /**

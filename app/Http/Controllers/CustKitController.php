@@ -118,7 +118,9 @@ class CustKitController extends EloquentController
     {
         return [
             'object'        => $this->object ,
-            'cabinets'      => Cabinet::getListAsArray(),
+            'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
+                ->orderBy( 'name', 'asc' )
+                ->get(),
             'custs'         => Customer::getListAsArray(),
         ];
     }
@@ -143,7 +145,9 @@ class CustKitController extends EloquentController
 
         return [
             'object'        => $this->object ,
-            'cabinets'      => Cabinet::getListAsArray(),
+            'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
+                ->orderBy( 'name', 'asc' )
+                ->get(),
             'custs'         => Customer::getListAsArray(),
         ];
     }

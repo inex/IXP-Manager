@@ -63,22 +63,22 @@
                                 <?= $t->ee( $row[ 'number' ] ) ?>
                             </td>
                             <td>
-                                <?= $t->ee( $row[ 'infrastructure' ] ) ?>
+                                <?= $t->ee( $row[ 'infrastructure' ]->name ) ?>
                             </td>
                             <td>
-                                <?php foreach( $row[ "members" ] as $custid => $cust ): ?>
-                                    <a href="<?= route( "customer@overview" , [ "id" => $custid ] ) ?>"><?= $t->ee( $cust[ 'name' ] ) ?></a>
-                                    (<a href=" <?= route( 'interfaces/virtual/edit', [ 'id' => $cust['viid'] ] ) ?>">interface details</a>)<br />
+                                <?php foreach( $row->vlanInterfaces as $vli ): ?>
+                                    <a href="<?= route( "customer@overview" , [ "id" => $vli->virtualInterface->customer->id ] ) ?>"><?= $t->ee( $vli->virtualInterface->customer->name ) ?></a>
+                                    (<a href=" <?= route( 'interfaces/virtual/edit', [ 'id' => $vli->virtualInterface->id ] ) ?>">interface details</a>)<br />
                                 <?php endforeach; ?>
                             </td>
                             <td>
-                                <?php foreach( $row[ 'locations'] as $locid => $locname ): ?>
-                                    <?= $t->ee( $locname ) ?><br />
+                                <?php foreach( $row->vlanInterfaces as $vli ): ?>
+                                    <?= $t->ee( $vli->virtualInterface->physicalInterfaces()->first()->switchPort->switcher->cabinet->location->name ) ?><br />
                                 <?php endforeach; ?>
                             </td>
                             <td>
-                                <?php foreach( $row[ 'switches'] as $swid => $swname ): ?>
-                                    <?= $t->ee( $swname ) ?><br />
+                                <?php foreach( $row->vlanInterfaces as $vli ): ?>
+                                    <?= $t->ee( $vli->virtualInterface->physicalInterfaces()->first()->switchPort->switcher->name ) ?><br />
                                 <?php endforeach; ?>
                             </td>
                         </tr>
@@ -101,7 +101,6 @@
                 paging:   false,
                 info:   false,
             } );
-
         });
     </script>
 <?php $this->append() ?>

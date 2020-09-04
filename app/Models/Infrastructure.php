@@ -25,8 +25,12 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\{Builder, Collection, Model, Relations\HasMany};
-use stdClass;
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Collection,
+    Model,
+    Relations\HasMany
+};
 
 /**
  * IXP\Models\Infrastructure
@@ -64,13 +68,6 @@ class Infrastructure extends Model
     protected $table = 'infrastructure';
 
     /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -99,32 +96,5 @@ class Infrastructure extends Model
     public function switchers(): HasMany
     {
         return $this->hasMany(Switcher::class, 'infrastructure' );
-    }
-
-    /**
-     * Gets a listing of mailing list or a single one if an ID is provided
-     *
-     * @param stdClass $feParams
-     * @param int|null $id
-     *
-     * @return array
-     */
-    public static function getFeList( stdClass $feParams, int $id = null ): array
-    {
-        return self::when( $id , function( Builder $q, $id ) {
-            return $q->where('id', $id );
-        } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-        })->get()->toArray();
-    }
-
-    /**
-     * Gets a listing of infrastructures as array
-     *
-     * @return array
-     */
-    public static function getListAsArray(): array
-    {
-        return self::orderBy( 'name', 'asc' )->get()->toArray();
     }
 }

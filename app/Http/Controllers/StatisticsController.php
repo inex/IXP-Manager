@@ -333,7 +333,7 @@ class StatisticsController extends Controller
             'graph'         => $graphs[0] ?? false,  // sample graph as all types/protocols/categories/periods will be the same
             'graphs'        => $graphs,
             'r'             => $r,
-            'infras'        => Infrastructure::getListAsArray(),
+            'infras'        => Infrastructure::orderBy( 'name', 'asc' )->get(),
             'infra'         => $infra ?? false,
             'vlans'         => Vlan::publicOnly()->orderBy('number')->get(),
             'vlan'          => $vlan ?? false,
