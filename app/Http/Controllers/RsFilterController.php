@@ -106,7 +106,7 @@ class RsFilterController extends Controller
         return view( 'rs-filter/edit' )->with( [
             'rsf'                   => false,
             'c'                     => $cust,
-            'vlans'                 => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], Vlan::getPublicPeeringManager( $cust->id ) ),
+            'vlans'                 => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], $this->getPublicPeeringManager( $cust->id ) ),
             'protocols'             => Router::$PROTOCOLS,
             'peers'                 => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], Customer::getByVlanAndProtocol( $vlanid , $protocol ) ),
             'advertisedPrefixes'    => $advertisedPrefixes
@@ -143,7 +143,7 @@ class RsFilterController extends Controller
         return view( 'rs-filter/edit' )->with( [
             'rsf'       => $rsf,
             'c'         => $rsf->customer,
-            'vlans'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], Vlan::getPublicPeeringManager( $rsf->customer_id ) ),
+            'vlans'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], $this->getPublicPeeringManager( $rsf->customer_id ) ),
             'protocols' => Router::$PROTOCOLS,
             'peers'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], Customer::getByVlanAndProtocol( $vlanid , $protocol ) ),
         ] );
@@ -315,4 +315,25 @@ class RsFilterController extends Controller
 
         return Redirect::to( route( "rs-filter@list", [ "cust" => $rsf->customer_id ] ) );
     }
+
+    /**
+     * Return an array of all public peering manager vlans names where the array key is the vlan id.
+     *
+     * @param int $custid
+     *
+     * @return array
+     */
+    private function getPublicPeeringManager( int $custid ): array
+    {
+        return Vlan::select( [ 'vlan.id AS id', 'vlan.name' ] )
+            ->leftJoin( 'vlaninterface AS vli', 'vli.vlanid', 'vlan.id' )
+            ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
+            ->where( 'vi.custid',  $custid )
+            ->where( 'vlan.private',  false )
+            ->where( 'vlan.peering_manager',  true )
+            ->where( 'vli.rsclient',  true )
+            ->orderBy( 'vlan.name' )->get()->keyBy( 'id' )->toArray();
+    }
+
+
 }

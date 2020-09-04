@@ -40,8 +40,6 @@ use stdClass;
  * @property int $peering_matrix
  * @property int $peering_manager
  * @property string|null $config_name
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Infrastructure $infrastructure
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IPv4Address[] $ipv4Addresses
  * @property-read int|null $ipv4_addresses_count
@@ -59,7 +57,6 @@ use stdClass;
  * @method static Builder|Vlan publicOnly()
  * @method static Builder|Vlan query()
  * @method static Builder|Vlan whereConfigName($value)
- * @method static Builder|Vlan whereCreatedAt($value)
  * @method static Builder|Vlan whereId($value)
  * @method static Builder|Vlan whereInfrastructureid($value)
  * @method static Builder|Vlan whereName($value)
@@ -68,7 +65,6 @@ use stdClass;
  * @method static Builder|Vlan wherePeeringManager($value)
  * @method static Builder|Vlan wherePeeringMatrix($value)
  * @method static Builder|Vlan wherePrivate($value)
- * @method static Builder|Vlan whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Vlan extends Model
@@ -169,107 +165,4 @@ class Vlan extends Model
         return $query->where( 'private', 0 );
     }
 
-
-    /**
-     * Gets a listing of vlans or a single one if an ID is provided
-     *
-     * @param stdClass $feParams
-     * @param int|null $id
-     *
-     * @return array
-     */
-    public static function getFeList( stdClass $feParams, int $id = null ): array
-    {
-        $query = self::select( [ 'vlan.*', 'i.shortname AS infrastructure' ] )
-            ->leftJoin( 'infrastructure AS i', 'i.id', 'vlan.infrastructureid' )
-            ->when( $id , function( Builder $q, $id ) {
-                return $q->where('vlan.id', $id );
-            } );
-
-        if( isset( $feParams->privateList ) && $feParams->privateList ){
-            $query->where( 'private', 1);
-        } else if( isset( $feParams->publicOnly ) && $feParams->publicOnly === true ) {
-            $query->where( 'private', '!=',1);
-        }
-
-        if( isset( $feParams->infra) && $feParams->infra ){
-            $query->where( 'i.id', $feParams->infra->id );
-        }
-
-        return $query->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-                    return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-                })->get()->toArray();
-    }
-
-    /**
-     * Returns an array of private VLANs with their details and membership.
-     *
-     * // FIXME @yannrobin can you think about moving this to the controller
-     * // rather than here? Either private function or in the action itself.
-     * // (customer over tab - and also possible user's dashboard)
-     * // Actually: talk to @barryo tomorrow.
-     *
-     * @param Infrastructure|null $infra
-     * @return array
-     */
-    public static function getPrivateVlanDetails( Infrastructure $infra = null ): array
-    {
-        $vlans =  self::where( 'private', 1 )
-            ->when( $infra , function( Builder $q, $infra ) {
-                return $q->where('infrastructureid', $infra->id );
-            } )
-            ->groupBy( 'id' )->get();
-
-        $result = [];
-        foreach( $vlans as $v ) {
-            $result[ $v->id ]['vlanid']         = $v->id;
-            $result[ $v->id ]['name']           = $v->name;
-            $result[ $v->id ]['number']         = $v->number;
-            $result[ $v->id ]['infrastructure'] = $v->infrastructure->name;
-
-            $members   = [];
-            $locations = [];
-            $switches  = [];
-
-            foreach( $v->vlanInterfaces as $vli ){
-                $cust = $vli->virtualInterface->customer;
-
-                $members[ $cust->id ][ 'id' ]   = $cust->id;
-                $members[ $cust->id ][ 'name' ] = $cust->name;
-                $members[ $cust->id ][ 'viid' ] = $vli->virtualInterface->id;
-
-                foreach( $vli->virtualInterface->physicalInterfaces as $pi ) {
-                    $switcher = $pi->switchPort->switcher;
-                    $location = $switcher->cabinet->location;
-
-                    $locations[ $location->id ] = $location->name;
-                    $switches[ $switcher->id ] = $switcher->name;
-                }
-            }
-
-            $result[ $v->id ][ 'members' ]      = $members;
-            $result[ $v->id ][ 'locations' ]    = $locations;
-            $result[ $v->id ][ 'switches' ]     = $switches;
-        }
-        return $result;
-    }
-
-    /**
-     * Return an array of all public peering manager vlans names where the array key is the vlan id.
-     *
-     * @param int $custid
-     *
-     * @return array
-     */
-    public static function getPublicPeeringManager( int $custid ): array
-    {
-        return self::select( [ 'vlan.id AS id', 'vlan.name' ] )
-            ->leftJoin( 'vlaninterface AS vli', 'vli.vlanid', 'vlan.id' )
-            ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
-            ->where( 'vi.custid',  $custid )
-            ->where( 'vlan.private',  false )
-            ->where( 'vlan.peering_manager',  true )
-            ->where( 'vli.rsclient',  true )
-            ->orderBy( 'vlan.name' )->get()->keyBy( 'id' )->toArray();
-    }
 }

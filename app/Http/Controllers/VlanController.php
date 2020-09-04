@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers;
 
 use Cache, Former, Route;
 
+use Illuminate\Database\Eloquent\Builder;
 use Redirect;
 use Illuminate\Http\{
     RedirectResponse,
@@ -33,10 +34,7 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
-use IXP\Models\{
-    Infrastructure,
-    Vlan
-};
+use IXP\Models\{Aggregators\VlanAggregator, Infrastructure, Vlan};
 
 use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
@@ -79,10 +77,10 @@ class VlanController extends EloquentController
                 'id'          => [
                     'title' => 'DB ID'
                 ],
-                'name'              => 'Description',
-                'config_name'       => 'Config Name',
-                'number'            => '802.1q Tag',
-                'infrastructure'    => 'Infrastructure',
+                'name'                   => 'Description',
+                'config_name'            => 'Config Name',
+                'number'                 => '802.1q Tag',
+                'infrastructure_name'    => 'Infrastructure',
                 'private'        => [
                     'title'          => 'Private',
                     'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
@@ -132,7 +130,24 @@ class VlanController extends EloquentController
      */
     protected function listGetData( $id = null ): array
     {
-        return Vlan::getFeList( $this->feParams, $id );
+        return Vlan::select( [ 'vlan.*', 'i.shortname AS infrastructure_name' ] )
+            ->leftJoin( 'infrastructure AS i', 'i.id', 'vlan.infrastructureid' )
+            ->when( $id , function( Builder $q, $id ) {
+                return $q->where('vlan.id', $id );
+            } )
+            ->when( $feParams->privateList ?? false, function( Builder $q ) {
+                return $q->where( 'private', 1 );
+            })
+            ->when( $feParams->publicOnly ?? false, function( Builder $q ) {
+                return $q->where( 'private', 0 );
+            })
+            ->when( $feParams->infra ?? false, function( Builder $q, $infra )  {
+                return $q->where( 'infrastructureid', $infra->id );
+            })
+            ->when( $feParams->listOrderBy ?? false, function( Builder $q, $orderby ) use ( $feParams ) {
+                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'asc' );
+            })
+            ->get()->toArray();
     }
 
     /**
@@ -298,7 +313,17 @@ class VlanController extends EloquentController
      */
     public function listPrivate( Infrastructure $infra = null ): View
     {
-        $this->data[ 'rows' ]           = Vlan::getPrivateVlanDetails( $infra );
+        // FIXME @yannrobin - can you fix the view for:
+
+        $this->data[ 'rows' ] = Vlan::where( 'private', 1 )
+            ->when( $infra, function( $q, $infra ) {
+                return $q->where('infrastructureid', $infra->id);
+            })
+            ->with([
+                'vlanInterfaces.virtualInterface.customer',
+                'vlanInterfaces.virtualInterface.physicalInterfaces.switchport.switcher.cabinet.location'
+            ])->get();
+
         $this->data[ 'params' ]         = [ 'infra' => $infra ];
 
         return $this->display( 'private' );
