@@ -22,11 +22,12 @@ namespace IXP\Models;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use DB;
-use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations\HasMany, Relations\HasManyThrough};
-use stdClass;
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model,
+    Relations\BelongsTo,
+    Relations\HasMany
+};
 
 /**
  * IXP\Models\Vlan
@@ -69,15 +70,6 @@ use stdClass;
  */
 class Vlan extends Model
 {
-    // FIXME: @yannrobin can you remove this as private should just be a checkbox, not a dropdown list. i.e. boolean flag
-    public const PRIVATE_NO  = 0;
-    public const PRIVATE_YES = 1;
-
-    public static $PRIVATE_YES_NO = array(
-        self::PRIVATE_NO  => 'No',
-        self::PRIVATE_YES => 'Yes'
-    );
-
     /**
      * The table associated with the model.
      *
@@ -151,6 +143,10 @@ class Vlan extends Model
 
     /**
      * Scope a query to only include private VLANs
+     *
+     * @param Builder $query
+     *
+     * @return Builder
      */
     public function scopePrivateOnly( Builder $query ): Builder
     {
@@ -159,10 +155,13 @@ class Vlan extends Model
 
     /**
      * Scope a query to only include public / non-private VLANs
+     *
+     * @param Builder $query
+     *
+     * @return Builder
      */
     public function scopePublicOnly( Builder $query ): Builder
     {
         return $query->where( 'private', 0 );
     }
-
 }

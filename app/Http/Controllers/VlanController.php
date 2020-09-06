@@ -23,10 +23,10 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Cache, Former, Route;
+use Former, Redirect, Route;
 
 use Illuminate\Database\Eloquent\Builder;
-use Redirect;
+
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -34,7 +34,10 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
-use IXP\Models\{Aggregators\VlanAggregator, Infrastructure, Vlan};
+use IXP\Models\{
+    Infrastructure,
+    Vlan
+};
 
 use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
@@ -83,8 +86,7 @@ class VlanController extends EloquentController
                 'infrastructure_name'    => 'Infrastructure',
                 'private'        => [
                     'title'          => 'Private',
-                    'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
-                    'xlator'         => Vlan::$PRIVATE_YES_NO
+                    'type'           => self::$FE_COL_TYPES[ 'YES_NO' ]
                 ],
             ]
         ];
@@ -95,13 +97,11 @@ class VlanController extends EloquentController
             [
                 'peering_matrix' => [
                     'title'          => 'Peering Matrix',
-                    'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
-                    'xlator'         => Vlan::$PRIVATE_YES_NO
+                    'type'           => self::$FE_COL_TYPES[ 'YES_NO' ],
                 ],
                 'peering_manager' => [
                     'title'          => 'Peering Manager',
-                    'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
-                    'xlator'         => Vlan::$PRIVATE_YES_NO
+                    'type'           => self::$FE_COL_TYPES[ 'YES_NO' ],
                 ],
                 'notes' => [
                     'title'         => 'Notes',
@@ -124,28 +124,29 @@ class VlanController extends EloquentController
     /**
      * Provide array of rows for the list and view
      *
-     * @param int $id The `id` of the row to load for `view`. `null` if `list`
+     * @param int|null $id The `id` of the row to load for `view`. `null` if `list`
      *
      * @return array
      */
     protected function listGetData( $id = null ): array
     {
+        $param = $this->feParams;
         return Vlan::select( [ 'vlan.*', 'i.shortname AS infrastructure_name' ] )
             ->leftJoin( 'infrastructure AS i', 'i.id', 'vlan.infrastructureid' )
             ->when( $id , function( Builder $q, $id ) {
                 return $q->where('vlan.id', $id );
             } )
-            ->when( $feParams->privateList ?? false, function( Builder $q ) {
+            ->when( $this->feParams->privateList ?? false, function( Builder $q ) {
                 return $q->where( 'private', 1 );
             })
-            ->when( $feParams->publicOnly ?? false, function( Builder $q ) {
+            ->when( $this->feParams->publicOnly ?? false, function( Builder $q ) {
                 return $q->where( 'private', 0 );
             })
-            ->when( $feParams->infra ?? false, function( Builder $q, $infra )  {
+            ->when( $this->feParams->infra ?? false, function( Builder $q, $infra )  {
                 return $q->where( 'infrastructureid', $infra->id );
             })
-            ->when( $feParams->listOrderBy ?? false, function( Builder $q, $orderby ) use ( $feParams ) {
-                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'asc' );
+            ->when( $this->feParams->listOrderBy ?? false, function( Builder $q, $orderby ) use ( $param ) {
+                return $q->orderBy( $orderby, $param->listOrderByDir ?? 'asc' );
             })
             ->get()->toArray();
     }
@@ -159,14 +160,14 @@ class VlanController extends EloquentController
     {
         return [
             'object'            => $this->object,
-            'infrastructure'    => Infrastructure::getListAsArray(),
+            'infrastructure'    => Infrastructure::orderBy( 'name', 'asc' )->get(),
         ];
     }
 
     /**
      * Display the form to edit an object
      *
-     * @param   int $id ID of the row to edit
+     * @param null $id ID of the row to edit
      *
      * @return array
      */
@@ -187,7 +188,7 @@ class VlanController extends EloquentController
 
         return [
             'object'            => $this->object,
-            'infrastructure'    => Infrastructure::getListAsArray(),
+            'infrastructure'    => Infrastructure::orderBy( 'name', 'asc' )->get(),
         ];
     }
 
@@ -221,7 +222,7 @@ class VlanController extends EloquentController
      *
      * @return bool
      */
-    private function checkIsDuplicate( int $objectid = null, Request $request ): bool
+    private function checkIsDuplicate( Request $request, int $objectid = null ): bool
     {
         if( $vlanFound = Vlan::where( 'infrastructureid', $request->infrastructureid )->where( 'config_name', $request->input( 'config_name' ) )->get()->first() ){
             if( $objectid !== $vlanFound->id ) {
@@ -245,7 +246,7 @@ class VlanController extends EloquentController
     public function doStore( Request $request )
     {
         $this->checkForm( $request );
-        if( $this->checkIsDuplicate( null, $request ) ) {
+        if( $this->checkIsDuplicate( $request, null ) ) {
             return Redirect::back()->withInput();
         }
         $this->object = Vlan::create( $request->all() );
@@ -267,7 +268,7 @@ class VlanController extends EloquentController
     {
         $this->object = Vlan::findOrFail( $id );
         $this->checkForm( $request );
-        if( $this->checkIsDuplicate( $this->object->id, $request ) ){
+        if( $this->checkIsDuplicate( $request, $this->object->id  ) ){
             return Redirect::back()->withInput();
         }
         $this->object->update( $request->all() );
@@ -307,14 +308,12 @@ class VlanController extends EloquentController
     /**
      * Display the private Vlan
      *
-     * @param Infrastructure $infra ID of the vlan to display
+     * @param Infrastructure|null $infra ID of the vlan to display
      *
      * @return View
      */
     public function listPrivate( Infrastructure $infra = null ): View
     {
-        // FIXME @yannrobin - can you fix the view for:
-
         $this->data[ 'rows' ] = Vlan::where( 'private', 1 )
             ->when( $infra, function( $q, $infra ) {
                 return $q->where('infrastructureid', $infra->id);
@@ -333,7 +332,7 @@ class VlanController extends EloquentController
      * Display the Vlan for an Infrastructure
      *
      * @param Infrastructure $infra
-     * @param bool $public only the public vlan ?
+     * @param bool|null $public only the public vlan ?
      *
      * @return View
      */

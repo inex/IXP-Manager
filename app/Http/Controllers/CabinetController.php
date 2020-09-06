@@ -30,6 +30,7 @@ use IXP\Models\{
     Location
 };
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -111,13 +112,18 @@ class CabinetController extends EloquentController
     /**
      * Provide array of rows for the list action and view action
      *
-     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @param int|null $id The `id` of the row to load for `view` action`. `null` if `listAction`
 
      * @return array
      */
     protected function listGetData( $id = null ): array
     {
-        return Cabinet::getFeList( $this->feParams, $id );
+        $feParams = $this->feParams;
+        return Cabinet::when( $id , function( Builder $q, $id ) {
+            return $q->where('id', $id );
+        } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+        })->get()->toArray();
     }
 
     /**
@@ -140,7 +146,7 @@ class CabinetController extends EloquentController
      *
      * @return array
      */
-    protected function editPrepareForm( $id = null ): array
+    protected function editPrepareForm( int $id ): array
     {
         $this->object = Cabinet::findOrFail( $id );
 

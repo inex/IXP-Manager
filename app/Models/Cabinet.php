@@ -2,12 +2,13 @@
 
 namespace IXP\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use stdClass;
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Collection,
+    Model,
+    Relations\BelongsTo,
+    Relations\HasMany
+};
 
 /**
  * IXP\Models\Cabinet
@@ -45,8 +46,8 @@ class Cabinet extends Model
     /**
      * Constants to indicate whether 'u' positions count from top or bottom
      */
-    const U_COUNTS_FROM_TOP    = 1;
-    const U_COUNTS_FROM_BOTTOM = 2;
+    public const U_COUNTS_FROM_TOP    = 1;
+    public const U_COUNTS_FROM_BOTTOM = 2;
 
     /**
      * @var array Textual representations of where u's count from
@@ -62,14 +63,6 @@ class Cabinet extends Model
      * @var string
      */
     protected $table = 'cabinet';
-
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
-
 
     /**
      * The attributes that are mass assignable.
@@ -116,34 +109,5 @@ class Cabinet extends Model
     public function location(): BelongsTo
     {
         return $this->belongsTo(Location::class, 'locationid' );
-    }
-
-    /**
-     * Gets a listing of cabinets list or a single one if an ID is provided
-     *
-     * @param stdClass $feParams
-     * @param int|null $id
-     *
-     * @return array
-     */
-    public static function getFeList( stdClass $feParams, int $id = null ): array
-    {
-        return self::when( $id , function( Builder $q, $id ) {
-            return $q->where('id', $id );
-        } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-        })->get()->toArray();
-    }
-
-    /**
-     * Gets a listing of cabinets from dropdown
-     *
-     * @return array
-     */
-    public static function getListAsArray(): array
-    {
-        return self::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
-            ->orderBy( 'name', 'asc' )
-            ->get()->toArray();
     }
 }

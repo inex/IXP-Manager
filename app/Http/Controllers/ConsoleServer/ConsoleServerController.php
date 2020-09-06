@@ -148,7 +148,9 @@ class ConsoleServerController extends EloquentController
     {
         return [
             'object'        => $this->object,
-            'cabinets'      => Cabinet::getListAsArray(),
+            'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
+                ->orderBy( 'name', 'asc' )
+                ->get(),
             'vendors'       => Vendor::getListAsArray(),
         ];
     }
@@ -160,7 +162,7 @@ class ConsoleServerController extends EloquentController
      *
      * @return array
      */
-    protected function editPrepareForm( $id = null ): array
+    protected function editPrepareForm( int $id ): array
     {
         $this->object = ConsoleServer::findOrFail( $id );
 
@@ -177,7 +179,9 @@ class ConsoleServerController extends EloquentController
 
         return [
             'object'        => $this->object,
-            'cabinets'      => Cabinet::getListAsArray(),
+            'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
+                ->orderBy( 'name', 'asc' )
+                ->get(),
             'vendors'       => Vendor::getListAsArray(),];
     }
 

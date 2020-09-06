@@ -178,9 +178,9 @@ class AdminController extends Controller
 
             $cTypes['cached_at']        = Carbon::now();
 
-            $cTypes['infras']           = Infrastructure::getListAsArray();
+            $cTypes['infras']           = Infrastructure::orderBy( 'name', 'asc' )->get()->toArray();
             $cTypes['locations']        = Location::getListAsArray();
-            $cTypes['vlans']            = Vlan::publicOnly()->orderBy('number')->get();
+            $cTypes['vlans']            = Vlan::publicOnly()->orderBy('number')->get()->toArray();
 
             Cache::put( 'admin_ctypes', $cTypes, 300 );
         }

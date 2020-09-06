@@ -344,8 +344,10 @@ class SwitchController extends EloquentController
             'object'            => $this->object,
             'addBySnmp'         => request()->old( 'add_by_snnp', false ),
             'preAddForm'        => false,
-            'cabinets'          => Cabinet::getListAsArray(),
-            'infra'             => Infrastructure::getListAsArray(),
+            'cabinets'          => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
+                ->orderBy( 'name', 'asc' )
+                ->get(),
+            'infra'             => Infrastructure::orderBy( 'name', 'asc' )->get()->toArray(),
             'vendors'           => Vendor::getListAsArray(),
         ];
     }
@@ -384,8 +386,10 @@ class SwitchController extends EloquentController
             'object'            => $this->object,
             'addBySnmp'         => request()->old( 'add_by_snnp', false ),
             'preAddForm'        => false,
-            'cabinets'          => Cabinet::getListAsArray(),
-            'infra'             => Infrastructure::getListAsArray(),
+            'cabinets'          => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
+                ->orderBy( 'name', 'asc' )
+                ->get(),
+            'infra'             => Infrastructure::orderBy( 'name', 'asc' )->get()->toArray(),
             'vendors'           => Vendor::getListAsArray()
         ];
     }
@@ -451,8 +455,10 @@ class SwitchController extends EloquentController
         $this->data[ 'params' ]['addBySnmp']    = true;
         $this->data[ 'params' ]['preAddForm']   = false;
         $this->data[ 'params' ]['object']       = null;
-        $this->data[ 'params' ]['cabinets']     = Cabinet::getListAsArray();
-        $this->data[ 'params' ]['infra']        = Infrastructure::getListAsArray();
+        $this->data[ 'params' ]['cabinets']     = Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
+            ->orderBy( 'name', 'asc' )
+            ->get();
+        $this->data[ 'params' ]['infra']        = Infrastructure::orderBy( 'name', 'asc' )->get()->toArray();
         $this->data[ 'params' ]['vendors']      = Vendor::getListAsArray();
 
         return $this->display( 'edit' );
@@ -782,7 +788,7 @@ class SwitchController extends EloquentController
             'location'                  => $location,
             'summary'                   => $summary,
             'speeds'                    => $speeds,
-            'infras'                    => $switch ? [ $switch->infrastructure->id => $switch->infrastructure->name ] : Infrastructure::getListAsArray(),
+            'infras'                    => $switch ? [ $switch->infrastructure->id => $switch->infrastructure->name ] : Infrastructure::orderBy( 'name', 'asc' )->get()->toArray(),
             'vlans'                     => Vlan::orderBy( 'name' )->get(),
             'locations'                 => $switch ? [ $switch->cabinet->location->id  => $switch->cabinet->location->name ] : Location::getListAsArray(),
             'switches'                  => Switcher::getByLocationInfrastructureSpeed( $infra, $location, $speed ),
