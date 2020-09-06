@@ -49,11 +49,13 @@ class Store extends FormRequest
      */
     protected function prepareForValidation()
     {
-        // If all vlans/peers are select (value 0) override the value to null, to avoid conflict in DB
+        // If all vlans or all peers are selected (value === 0) then reset to null to avoid conflict in DB
         $vlanid =  $this->vlan_id === '0' ? null : $this->vlan_id;
         $peerid =  $this->peer_id === '0' ? null : $this->peer_id;
         $this->merge([ 'vlan_id' => $vlanid, 'peer_id' => $peerid ]);
     }
+
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -61,9 +63,6 @@ class Store extends FormRequest
      */
     public function rules(): array
     {
-
-        $advertisePrefixRequired    = $this->protocol ? "required" : "nullable";
-        $receivedPrefixRequired     = $this->peer_id ? "required" : "nullable";
 
         if( $this->received_prefix !== '*'){
             $ipvCheckRec       = $this->protocol === '4' ? new IPv4Cidr()          : new IPv6Cidr();
@@ -96,8 +95,8 @@ class Store extends FormRequest
                     }
                 }
             ],
-            'advertised_prefix'     => [ $advertisePrefixRequired , 'max:43', $ipvCheckAdv, $subnetCheckAdv ],
-            'received_prefix'       => [ $receivedPrefixRequired , 'max:43', $ipvCheckRec, $subnetCheckRec ],
+            'advertised_prefix'     => [ 'nullable', 'max:43', $ipvCheckAdv, $subnetCheckAdv ],
+            'received_prefix'       => [ 'nullable', 'max:43', $ipvCheckRec, $subnetCheckRec ],
             'protocol'              => 'nullable|integer|in:' . implode( ',', array_keys( Router::$PROTOCOLS ) ),
             'action_advertise'      => 'nullable|string|max:250|in:' . implode( ',', array_keys( RouteServerFilter::$ADVERTISE_ACTION_TEXT ) ),
             'action_receive'        => 'nullable|string|max:250|in:' . implode( ',', array_keys( RouteServerFilter::$RECEIVE_ACTION_TEXT ) ),

@@ -103,12 +103,20 @@ class RsFilterController extends Controller
             $advertisedPrefixes = IrrdbPrefix::where( 'customer_id', $cust->id )->where( 'protocol', $protocol )->get()->toArray();
         }
 
+        $peers = array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], Customer::getByVlanAndProtocol( $vlanid , $protocol ) );
+        foreach( $peers as $i => $p ) {
+            if( $p['id'] === $cust->id ) {
+                unset( $peers[$i] );
+                break;
+            }
+        }
+
         return view( 'rs-filter/edit' )->with( [
             'rsf'                   => false,
             'c'                     => $cust,
             'vlans'                 => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], $this->getPublicPeeringManager( $cust->id ) ),
             'protocols'             => Router::$PROTOCOLS,
-            'peers'                 => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], Customer::getByVlanAndProtocol( $vlanid , $protocol ) ),
+            'peers'                 => $peers,
             'advertisedPrefixes'    => $advertisedPrefixes
         ] );
     }

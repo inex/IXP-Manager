@@ -87,8 +87,7 @@
         // if protocol is not 'all', get the prefixes
         if( dd_protocol.val() !== '' ) {
             let old = '<?= old( 'advertised_prefix' ) ?>';
-            getPrefixes( dd_peer.val(), 'advertised', old );
-
+            getPrefixes( <?= $this->c->id ?>, 'advertised', old );
         } else {
             // if protocol is 'all', create the prefix as input text and disable it
             $( '#area_advertised_prefix' ).html( `<input class="form-control action_prefixes" id="advertised_prefix" type="text" name="advertised_prefix" value="*">` )

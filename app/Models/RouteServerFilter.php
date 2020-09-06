@@ -94,26 +94,29 @@ class RouteServerFilter extends Model
         'live',
     ];
 
-    const AS_IN             = null;
+    const NO_ACTION         = "NO_ACTION";
+    const AS_IS             = "AS_IS";
     const NO_ADVERTISE      = "NO_ADVERTISE";
     const PREPEND_ONCE      = "PREPEND_ONCE";
     const PREPEND_TWICE     = "PREPEND_TWICE";
     const PREPEND_THRICE    = "PREPEND_THRICE";
 
     public static $ADVERTISE_ACTION_TEXT = [
-        self::AS_IN             => 'Advertise As Is',
-        self::NO_ADVERTISE      => 'Do Not Advertise To Peer',
-        self::PREPEND_ONCE      => 'Prepend My ASN Once To Peer',
-        self::PREPEND_TWICE     => 'Prepend My ASN Twice To Peer',
-        self::PREPEND_THRICE    => 'Prepend My ASN Thrice To Peer',
+        self::NO_ACTION         => 'No Action',
+        self::AS_IS             => 'Advertise As Is',
+        self::NO_ADVERTISE      => 'Do Not Advertise',
+        self::PREPEND_ONCE      => 'Prepend My ASN x1',
+        self::PREPEND_TWICE     => 'Prepend My ASN x2',
+        self::PREPEND_THRICE    => 'Prepend My ASN x3',
     ];
 
     public static $RECEIVE_ACTION_TEXT = [
-        self::AS_IN             => "Receive As Is",
-        self::NO_ADVERTISE      => "Do Not Receive To Peer",
-        self::PREPEND_ONCE      => "Prepend Peer's ASN Once",
-        self::PREPEND_TWICE     => "Prepend Peer's ASN Twice",
-        self::PREPEND_THRICE    => "Prepend Peer's ASN Thrice",
+        self::NO_ACTION         => 'No Action',
+        self::AS_IS             => 'Receive As Is',
+        self::NO_ADVERTISE      => "Do Not Receive (Drop)",
+        self::PREPEND_ONCE      => "Prepend Peer's ASN x1",
+        self::PREPEND_TWICE     => "Prepend Peer's ASN x2",
+        self::PREPEND_THRICE    => "Prepend Peer's ASN x3",
     ];
 
     /**
