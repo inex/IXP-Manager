@@ -55,6 +55,7 @@ class RouteServerFilterPolicy
         if( !$user->isSuperUser() && $cust->id !== $user->getCustomer()->getId() ){
             return false;
         }
+
         return $cust->isRouteServerClient();
     }
 

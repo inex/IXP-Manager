@@ -201,7 +201,7 @@ class RsFilterController extends Controller
     {
         $this->authorize( 'checkRsfObject',  [ RouteServerFilter::class, $rsf ] );
 
-        $rsf->update( $request->all() );
+        $rsf->update( $request->except( [ 'customer_id' ] ) );
 
         Log::notice( Auth::user()->getUsername() . ' updated a router server filter with ID ' . $rsf->id );
 
@@ -264,6 +264,7 @@ class RsFilterController extends Controller
     public function changeOrderBy( RouteServerFilter $rsf,  int $up ): RedirectResponse
     {
         $this->authorize( 'checkRsfObject',  [ RouteServerFilter::class, $rsf ]  );
+
         // Getting the list of all the route server filters for the customer
         $listRsf = RouteServerFilter::where( "customer_id", $rsf->customer_id )->orderBy( 'order_by' )->get();
 
@@ -274,7 +275,6 @@ class RsFilterController extends Controller
 
         // Adding +1 (moving up) or -1 (moving down) to the index of the route serve filter
         $newIndex = $up ? $index-1 : $index+1;
-
         $upText = $up ? "up" : "down";
 
         // Check if the new index exist in the list
