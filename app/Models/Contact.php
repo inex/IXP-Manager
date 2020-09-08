@@ -2,14 +2,36 @@
 
 namespace IXP\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+/*
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
 
 use Auth, stdClass;
-use Illuminate\Support\Collection;
+
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model,
+    Relations\BelongsTo,
+    Relations\BelongsToMany
+};
+
 
 /**
  * IXP\Models\Contact
@@ -53,6 +75,10 @@ use Illuminate\Support\Collection;
  * @method static Builder|Contact wherePhone($value)
  * @method static Builder|Contact wherePosition($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Contact whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Contact whereUpdatedAt($value)
  */
 class Contact extends Model
 {
@@ -62,13 +88,6 @@ class Contact extends Model
      * @var string
      */
     protected $table = 'contact';
-
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.
@@ -83,10 +102,8 @@ class Contact extends Model
         'mobile',
         'facilityaccess',
         'mayauthorize',
-        'lastupdated',
         'lastupdatedby',
         'creator',
-        'created',
         'position',
         'notes',
     ];
@@ -128,63 +145,4 @@ class Contact extends Model
         return $this->belongsTo(Customer::class, 'custid' );
     }
 
-
-    /**
-     * Gets a listing of contacts or a single one if an ID is provided
-     *
-     * @param stdClass $feParams
-     * @param int|null $id
-     * @param int|null $role
-     * @param int|null $cgid
-     *
-     * @return array
-     */
-    public static function getFeList( stdClass $feParams, int $id = null, int $role = null, int $cgid = null ): array
-    {
-        $query = self::select( [ 'contact.*', 'cust.name AS customer', 'cust.id AS custid' ])
-            ->leftJoin( 'cust', 'cust.id', 'contact.custid'  )
-            ->when( $id , function ( Builder $query, $id ) {
-                return $query->where('contact.id', $id );
-            })
-            ->when( !Auth::getUser()->isSuperUser(), function ( Builder $query ) {
-                return $query->where('cust.id', Auth::getUser()->getCustomer()->getId() );
-            })
-            ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-            });
-
-        if( config('contact_group.types.ROLE') ) {
-            $groupid = $role ? $role : ( $cgid ?: null);
-            $query->when( $groupid , function ( Builder $query, $groupid ) {
-                return $query->leftJoin( 'contact_to_group', function( $join ) {
-                    $join->on( 'contact.id', 'contact_to_group.contact_id');
-                })->where('contact_to_group.contact_group_id', $groupid );
-            });
-
-            if( Auth::getUser()->isSuperUser() ) {
-                $query->with( 'contactRoles', 'contactGroups' );
-            }
-        }
-
-        return $query->get()->toArray();
-    }
-
-    /**
-     * Gets a listing of contacts or a single one if an ID is provided
-     *
-     * @param int $custid
-     * @param int|null $groupid
-     *
-     * @return Collection
-     */
-    public static function getForCustomer( int $custid, int $groupid ): Collection
-    {
-        return self::when( $groupid , function ( Builder $query, $groupid ) {
-            return $query->leftJoin( 'contact_to_group', function( $join ) {
-                $join->on( 'contact.id', 'contact_to_group.contact_id');
-            })->where('contact_to_group.contact_group_id', $groupid );
-        })
-            ->where( 'custid', $custid  )
-            ->get();
-    }
 }

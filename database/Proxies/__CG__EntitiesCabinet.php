@@ -66,10 +66,10 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'Switches', 'consoleServers', 'CustomerEquipment', 'Location', 'u_counts_from', 'cololocation', '' . "\0" . 'Entities\\Cabinet' . "\0" . 'patchPanels'];
+            return ['__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'created_at', 'updated_at', 'Switches', 'consoleServers', 'CustomerEquipment', 'Location', 'u_counts_from', 'cololocation', '' . "\0" . 'Entities\\Cabinet' . "\0" . 'patchPanels'];
         }
 
-        return ['__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'Switches', 'consoleServers', 'CustomerEquipment', 'Location', 'u_counts_from', 'cololocation', '' . "\0" . 'Entities\\Cabinet' . "\0" . 'patchPanels'];
+        return ['__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'created_at', 'updated_at', 'Switches', 'consoleServers', 'CustomerEquipment', 'Location', 'u_counts_from', 'cololocation', '' . "\0" . 'Entities\\Cabinet' . "\0" . 'patchPanels'];
     }
 
     /**

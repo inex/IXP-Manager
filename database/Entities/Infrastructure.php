@@ -53,6 +53,9 @@ class Infrastructure
      */
     protected $id;
 
+    protected $created_at;
+    protected $updated_at;
+
     /**
      * @var \Entities\IXP
      */

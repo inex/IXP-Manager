@@ -31,6 +31,7 @@ use Entities\{
     Vlan        as VlanEntity
 };
 
+use IXP\Models\Aggregators\CustomerAggregator;
 use IXP\Models\Customer;
 use IXP\Models\Vlan;
 use Illuminate\Http\{
@@ -117,7 +118,7 @@ class CustomerController extends Controller
             abort( 404 );
         }
 
-        return response()->json( [ 'listCustomers' => Customer::getByVlanAndProtocol( $vlanid, $protocol ) ] );
+        return response()->json( [ 'listCustomers' => CustomerAggregator::getByVlanAndProtocol( $vlanid, $protocol ) ] );
     }
 
 }

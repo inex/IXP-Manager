@@ -10,6 +10,8 @@
     <field name="u_counts_from" type="smallint" nullable="true"/>
     <field name="type" type="string" length="255" nullable="true"/>
     <field name="notes" type="text" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <many-to-one field="Location" target-entity="Entities\Location" inversed-by="Cabinets">
       <join-columns>
         <join-column name="locationid" referenced-column-name="id"/>

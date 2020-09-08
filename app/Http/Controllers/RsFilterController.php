@@ -25,7 +25,7 @@ namespace IXP\Http\Controllers;
 
 use Auth, Former, Log, Redirect;
 
-use IXP\Models\{Customer, IrrdbPrefix, Router, RouteServerFilter, Vlan};
+use IXP\Models\{Aggregators\CustomerAggregator, Customer, IrrdbPrefix, Router, RouteServerFilter, Vlan};
 
 use Illuminate\View\View;
 
@@ -108,7 +108,7 @@ class RsFilterController extends Controller
             'c'                     => $cust,
             'vlans'                 => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], $this->getPublicPeeringManager( $cust->id ) ),
             'protocols'             => Router::$PROTOCOLS,
-            'peers'                 => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], Customer::getByVlanAndProtocol( $vlanid , $protocol ) ),
+            'peers'                 => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], CustomerAggregator::getByVlanAndProtocol( $vlanid , $protocol ) ),
             'advertisedPrefixes'    => $advertisedPrefixes
         ] );
     }
@@ -145,7 +145,7 @@ class RsFilterController extends Controller
             'c'         => $rsf->customer,
             'vlans'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], $this->getPublicPeeringManager( $rsf->customer_id ) ),
             'protocols' => Router::$PROTOCOLS,
-            'peers'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], Customer::getByVlanAndProtocol( $vlanid , $protocol ) ),
+            'peers'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], CustomerAggregator::getByVlanAndProtocol( $vlanid , $protocol ) ),
         ] );
     }
 

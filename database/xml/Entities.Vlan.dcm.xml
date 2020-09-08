@@ -23,6 +23,8 @@
       </options>
     </field>
     <field name="notes" type="text" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <unique-constraints>
       <unique-constraint name="infra_config_name" columns="infrastructureid,config_name"/>
     </unique-constraints>

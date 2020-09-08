@@ -31,6 +31,7 @@ use IXP\Models\{
     CustomerEquipment
 };
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -100,13 +101,21 @@ class CustKitController extends EloquentController
     /**
      * Provide array of rows for the list and view
      *
-     * @param int $id The `id` of the row to load for `view`. `null` if `list`
+     * @param int|null $id The `id` of the row to load for `view`. `null` if `list`
      *
      * @return array
      */
     protected function listGetData( $id = null ): array
     {
-        return CustomerEquipment::getFeList( $this->feParams, $id  );
+        $feParams = $this->feParams;
+        return CustomerEquipment::select( [ 'custkit.*', 'cabinet.name AS cabinet', 'cust.name as customer' ] )
+            ->leftJoin( 'cabinet', 'cabinet.id', 'custkit.cabinetid' )
+            ->leftJoin( 'cust', 'cust.id', 'custkit.custid' )
+            ->when( $id , function( Builder $q, $id ) {
+                return $q->where('id', $id );
+            } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+            })->get()->toArray();
     }
 
     /**
@@ -121,7 +130,7 @@ class CustKitController extends EloquentController
             'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
                 ->orderBy( 'name', 'asc' )
                 ->get(),
-            'custs'         => Customer::getListAsArray(),
+            'custs'         => Customer::orderBy( 'name' )->get(),
         ];
     }
 
@@ -148,7 +157,7 @@ class CustKitController extends EloquentController
             'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
                 ->orderBy( 'name', 'asc' )
                 ->get(),
-            'custs'         => Customer::getListAsArray(),
+            'custs'         => Customer::orderBy( 'name' )->get(),
         ];
     }
 

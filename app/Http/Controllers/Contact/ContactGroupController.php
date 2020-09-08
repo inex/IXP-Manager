@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\Contact;
 
 use Former;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -119,7 +120,14 @@ class ContactGroupController extends EloquentController
      */
     protected function listGetData( $id = null ): array
     {
-        return ContactGroup::getFeList( $this->feParams, $id );
+        $feParams = $this->feParams;
+        return ContactGroup::when( $id , function( Builder $q, $id ) {
+                return $q->where('id', $id );
+            } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+            })->when( $types = config( "contact_group.types" ) , function( Builder $q, $types ) {
+                return $q->whereIn('type', array_keys( $types ) );
+            } )->get()->toArray();
     }
 
     /**
@@ -205,9 +213,7 @@ class ContactGroupController extends EloquentController
     public function doStore( Request $request )
     {
         $this->checkForm( $request );
-        $this->object = ContactGroup::create( array_merge( $request->all(), [
-            'created' => now()
-        ] ) );
+        $this->object = ContactGroup::create( $request->all() );
         return true;
     }
 

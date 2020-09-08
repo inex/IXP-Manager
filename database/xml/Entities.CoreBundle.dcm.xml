@@ -34,6 +34,8 @@
         <option name="default">0</option>
       </options>
     </field>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <one-to-many field="coreLinks" target-entity="Entities\CoreLink" mapped-by="coreBundle"/>
   </entity>
 </doctrine-mapping>

@@ -14,6 +14,8 @@
       </options>
     </field>
     <field name="notes" type="text" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <many-to-one field="vendor" target-entity="Entities\Vendor" inversed-by="consoleServers">
       <join-columns>
         <join-column name="vendor_id" referenced-column-name="id"/>

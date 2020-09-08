@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\ConsoleServer;
 
 use Former;
 
+use Illuminate\Database\Eloquent\Builder;
 use IXP\Rules\IdnValidate;
 
 use Illuminate\Http\{
@@ -130,13 +131,31 @@ class ConsoleServerController extends EloquentController
     /**
      * Provide array of rows for the list action and view action
      *
-     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @param int|null $id The `id` of the row to load for `view` action`. `null` if `listAction`
      *
      * @return array
      */
     protected function listGetData( $id = null ): array
     {
-        return ConsoleServer::getFeList( $this->feParams, $id );
+        $feParams = $this->feParams;
+        return ConsoleServer::selectRaw(
+            'cs.*,
+            v.id AS vendorid, v.name AS vendor,
+            c.id AS cabinetid, c.name AS cabinet, 
+            l.id AS locationid, l.shortname AS facility,
+            COUNT( DISTINCT csc.id ) AS num_connections'
+        )
+            ->from( 'console_server AS cs' )
+            ->leftJoin( 'consoleserverconnection AS csc', 'csc.console_server_id', 'cs.id')
+            ->leftJoin( 'cabinet AS c', 'c.id', 'cs.cabinet_id')
+            ->leftJoin( 'location AS l', 'l.id', 'c.locationid')
+            ->leftJoin( 'vendor AS v', 'v.id', 'cs.vendor_id')
+            ->when( $id , function( Builder $q, $id ) {
+                return $q->where('cs.id', $id );
+            } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+            })
+            ->groupBy('cs.id' )->get()->toArray();
     }
 
     /**

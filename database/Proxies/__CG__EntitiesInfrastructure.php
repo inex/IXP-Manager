@@ -66,10 +66,10 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'shortname', 'country', 'id', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', 'ixf_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary'];
+            return ['__isInitialized__', 'name', 'shortname', 'country', 'id', 'created_at', 'updated_at', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', 'ixf_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary'];
         }
 
-        return ['__isInitialized__', 'name', 'shortname', 'country', 'id', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', 'ixf_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary'];
+        return ['__isInitialized__', 'name', 'shortname', 'country', 'id', 'created_at', 'updated_at', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', 'ixf_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary'];
     }
 
     /**

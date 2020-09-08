@@ -48,7 +48,8 @@ class ApiKey
     /**
      * @var \DateTime
      */
-    private $created;
+    private $created_at;
+    private $updated_at;
 
     /**
      * @var \DateTime
@@ -171,12 +172,12 @@ class ApiKey
     /**
      * Set created
      *
-     * @param \DateTime $created
+     * @param \DateTime $created_at
      * @return ApiKey
      */
-    public function setCreated($created)
+    public function setCreated($created_at)
     {
-        $this->created = $created;
+        $this->created_at = $created_at;
     
         return $this;
     }
@@ -188,7 +189,7 @@ class ApiKey
      */
     public function getCreated()
     {
-        return $this->created;
+        return $this->created_at;
     }
 
     /**

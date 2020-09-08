@@ -2,10 +2,34 @@
 
 namespace IXP\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+/*
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Collection,
+    Model,
+    Relations\BelongsToMany
+};
+
 use stdClass;
 
 /**
@@ -31,6 +55,10 @@ use stdClass;
  * @method static Builder|ContactGroup whereName($value)
  * @method static Builder|ContactGroup whereType($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup whereUpdatedAt($value)
  */
 class ContactGroup extends Model
 {
@@ -48,13 +76,6 @@ class ContactGroup extends Model
     protected $table = 'contact_group';
 
     /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -64,75 +85,11 @@ class ContactGroup extends Model
         'description',
         'type',
         'active',
-        'limited_to',
-        'created',
+        'limited_to'
     ];
 
     public function contacts(): BelongsToMany
     {
         return $this->belongsToMany(Contact::class )->withPivot( 'contact_to_group', 'contact_group_id' );
-    }
-
-    /**
-     * Gets a listing of contact groups or a single one if an ID is provided
-     *
-     * @param stdClass $feParams
-     * @param int|null $id
-     *
-     * @return array
-     */
-    public static function getFeList( stdClass $feParams, int $id = null ): array
-    {
-        return self::when( $id , function( Builder $q, $id ) {
-            return $q->where('id', $id );
-        } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-        })->when( $types = config( "contact_group.types" ) , function( Builder $q, $types ) {
-            return $q->whereIn('type', array_keys( $types ) );
-        } )->get()->toArray();
-    }
-
-    /**
-     * Get contact group names as an array grouped by group type.
-     *
-     * Returned array structure:
-     *
-     *     $arr = [
-     *         'ROLE' => [
-     *              [ 'id' => 1, 'name' => 'Billing' ],
-     *              [ 'id' => 2, 'name' => 'Admin']
-     *         ]
-     *         'OTHER' => [
-     *              [ 'id' => n, 'name' => 'Other group' ]
-     *         ]
-     *     ];
-     *
-     *
-     * @param string|null  $type   Optionally limit to a specific type
-     * @param int|null  $cid    Contact id to filter for a particular contact
-     * @param bool      $active Filter active
-     *
-     * @return array
-     */
-    public static function getGroupNamesTypeArray( string $type = null, int $cid = null, bool $active = false ): array
-    {
-        $result = self::when( $cid , function( Builder $q, $cid ) {
-            return $q->leftJoin( 'contact_to_group', function( $join ) use( $cid ) {
-                $join->on( 'contact_group.id', 'contact_to_group.contact_group_id')
-                    ->where('contact_to_group.contact_id', $cid );
-            });
-        })->when( $type , function( Builder $q, $type ) {
-            return $q->where( 'type', $type );
-        })->when( $active , function( Builder $q, $active ) {
-            return $q->where('active', $active );
-        } )->get();
-
-        $groups = [];
-
-        foreach( $result as $r ){
-            $groups[ $r->type ][ $r->id ] = [ 'id' => $r->id, 'name' => $r->name ];
-        }
-
-        return $groups;
     }
 }

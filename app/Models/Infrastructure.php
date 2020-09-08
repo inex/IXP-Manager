@@ -57,6 +57,10 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|Infrastructure wherePeeringdbIxId($value)
  * @method static Builder|Infrastructure whereShortname($value)
  * @mixin Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Infrastructure whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Infrastructure whereUpdatedAt($value)
  */
 class Infrastructure extends Model
 {

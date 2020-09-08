@@ -17,7 +17,8 @@
         <option name="default">0</option>
       </options>
     </field>
-    <field name="created" type="datetime" nullable="false"/>
+    <field name="created_at" type="datetime" nullable="false"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <many-to-many field="Contacts" target-entity="Entities\Contact" mapped-by="Groups"/>
   </entity>
 </doctrine-mapping>

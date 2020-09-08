@@ -20,10 +20,10 @@
       </options>
     </field>
     <field name="notes" type="text" nullable="true"/>
-    <field name="lastupdated" type="datetime" nullable="true"/>
     <field name="lastupdatedby" type="integer" nullable="true"/>
     <field name="creator" type="string" length="32" nullable="true"/>
-    <field name="created" type="datetime" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <many-to-one field="Customer" target-entity="Entities\Customer" inversed-by="Contacts">
       <join-columns>
         <join-column name="custid" referenced-column-name="id" on-delete="CASCADE"/>

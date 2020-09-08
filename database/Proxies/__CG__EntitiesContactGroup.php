@@ -66,10 +66,10 @@ class ContactGroup extends \Entities\ContactGroup implements \Doctrine\ORM\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'description', 'type', 'active', 'limited_to', 'created', 'id', 'Contacts'];
+            return ['__isInitialized__', 'name', 'description', 'type', 'active', 'limited_to', 'created_at', 'id', 'Contacts'];
         }
 
-        return ['__isInitialized__', 'name', 'description', 'type', 'active', 'limited_to', 'created', 'id', 'Contacts'];
+        return ['__isInitialized__', 'name', 'description', 'type', 'active', 'limited_to', 'created_at', 'id', 'Contacts'];
     }
 
     /**
@@ -289,12 +289,12 @@ class ContactGroup extends \Entities\ContactGroup implements \Doctrine\ORM\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setCreated($created)
+    public function setCreated($created_at)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreated', [$created]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreated', [$created_at]);
 
-        return parent::setCreated($created);
+        return parent::setCreated($created_at);
     }
 
     /**

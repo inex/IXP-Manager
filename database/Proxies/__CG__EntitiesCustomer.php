@@ -66,10 +66,10 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'User', 'Users', 'peerRouteServerFilters', 'routeServerFilters', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'RegistrationDetails', 'BillingDetails', 'IXPs', 'tags', '' . "\0" . 'Entities\\Customer' . "\0" . 'patchPanelPorts', 'noc24hphone', 'RSPrefixes', 'IRRDB', 'in_peeringdb', 'peeringdb_oauth', 'in_manrs', 'Notes', 'peeringmacrov6', 'abbreviatedName', 'MD5Support', 'isReseller', 'ResoldCustomers', 'Reseller', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbPrefixes', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbASNs', '' . "\0" . 'Entities\\Customer' . "\0" . 'logos'];
+            return ['__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'updated_at', 'lastupdatedby', 'creator', 'created_at', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'User', 'Users', 'peerRouteServerFilters', 'routeServerFilters', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'RegistrationDetails', 'BillingDetails', 'IXPs', 'tags', '' . "\0" . 'Entities\\Customer' . "\0" . 'patchPanelPorts', 'noc24hphone', 'RSPrefixes', 'IRRDB', 'in_peeringdb', 'peeringdb_oauth', 'in_manrs', 'Notes', 'peeringmacrov6', 'abbreviatedName', 'MD5Support', 'isReseller', 'ResoldCustomers', 'Reseller', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbPrefixes', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbASNs', '' . "\0" . 'Entities\\Customer' . "\0" . 'logos'];
         }
 
-        return ['__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'User', 'Users', 'peerRouteServerFilters', 'routeServerFilters', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'RegistrationDetails', 'BillingDetails', 'IXPs', 'tags', '' . "\0" . 'Entities\\Customer' . "\0" . 'patchPanelPorts', 'noc24hphone', 'RSPrefixes', 'IRRDB', 'in_peeringdb', 'peeringdb_oauth', 'in_manrs', 'Notes', 'peeringmacrov6', 'abbreviatedName', 'MD5Support', 'isReseller', 'ResoldCustomers', 'Reseller', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbPrefixes', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbASNs', '' . "\0" . 'Entities\\Customer' . "\0" . 'logos'];
+        return ['__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'updated_at', 'lastupdatedby', 'creator', 'created_at', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'User', 'Users', 'peerRouteServerFilters', 'routeServerFilters', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'RegistrationDetails', 'BillingDetails', 'IXPs', 'tags', '' . "\0" . 'Entities\\Customer' . "\0" . 'patchPanelPorts', 'noc24hphone', 'RSPrefixes', 'IRRDB', 'in_peeringdb', 'peeringdb_oauth', 'in_manrs', 'Notes', 'peeringmacrov6', 'abbreviatedName', 'MD5Support', 'isReseller', 'ResoldCustomers', 'Reseller', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbPrefixes', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbASNs', '' . "\0" . 'Entities\\Customer' . "\0" . 'logos'];
     }
 
     /**
@@ -619,12 +619,12 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setLastupdated($lastupdated)
+    public function setLastupdated($updated_at)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastupdated', [$lastupdated]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastupdated', [$updated_at]);
 
-        return parent::setLastupdated($lastupdated);
+        return parent::setLastupdated($updated_at);
     }
 
     /**
@@ -685,12 +685,12 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setCreated($created)
+    public function setCreated($created_at)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreated', [$created]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreated', [$created_at]);
 
-        return parent::setCreated($created);
+        return parent::setCreated($created_at);
     }
 
     /**

@@ -2,11 +2,34 @@
 
 namespace IXP\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use stdClass;
+/*
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model,
+    Relations\BelongsTo,
+    Relations\HasMany
+};
+
 
 /**
  * IXP\Models\ConsoleServer
@@ -37,6 +60,10 @@ use stdClass;
  * @method static Builder|ConsoleServer whereSerialNumber($value)
  * @method static Builder|ConsoleServer whereVendorId($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereUpdatedAt($value)
  */
 class ConsoleServer extends Model
 {
@@ -46,12 +73,6 @@ class ConsoleServer extends Model
      * @var string
      */
     protected $table = 'console_server';
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.
@@ -91,45 +112,5 @@ class ConsoleServer extends Model
     public function consoleServerConnections(): HasMany
     {
         return $this->hasMany(ConsoleServerConnection::class, 'console_server_id');
-    }
-
-    /**
-     * Gets a listing of console servers list or a single one if an ID is provided
-     *
-     * @param stdClass $feParams
-     * @param int|null $id
-     *
-     * @return array
-     */
-    public static function getFeList( stdClass $feParams, int $id = null ): array
-    {
-        return self::selectRaw(
-            'cs.*,
-            v.id AS vendorid, v.name AS vendor,
-            c.id AS cabinetid, c.name AS cabinet, 
-            l.id AS locationid, l.shortname AS facility,
-            COUNT( DISTINCT csc.id ) AS num_connections'
-        )
-            ->from( 'console_server AS cs' )
-            ->leftJoin( 'consoleserverconnection AS csc', 'csc.console_server_id', 'cs.id')
-            ->leftJoin( 'cabinet AS c', 'c.id', 'cs.cabinet_id')
-            ->leftJoin( 'location AS l', 'l.id', 'c.locationid')
-            ->leftJoin( 'vendor AS v', 'v.id', 'cs.vendor_id')
-            ->when( $id , function( Builder $q, $id ) {
-                return $q->where('cs.id', $id );
-            } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-            })
-            ->groupBy('cs.id' )->get()->toArray();
-    }
-
-    /**
-     * Gets a listing of console serves as array
-     *
-     * @return array
-     */
-    public static function getListAsArray(): array
-    {
-        return self::orderBy( 'name', 'asc')->get()->keyBy( 'id' )->toArray();
     }
 }

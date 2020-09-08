@@ -25,10 +25,10 @@
     <field name="dateleave" type="date" nullable="true"/>
     <field name="status" type="smallint" nullable="true"/>
     <field name="activepeeringmatrix" type="boolean" nullable="true"/>
-    <field name="lastupdated" type="date" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <field name="lastupdatedby" type="integer" nullable="true"/>
     <field name="creator" type="string" length="255" nullable="true"/>
-    <field name="created" type="date" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
     <field name="MD5Support" type="string" nullable="true" column="MD5Support">
       <options>
         <option name="default">UNKNOWN</option>

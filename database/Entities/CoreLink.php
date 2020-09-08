@@ -54,6 +54,9 @@ class CoreLink
      */
     private $ipv6_subnet;
 
+    private $created_at;
+    private $updated_at;
+
     /**
      * @var integer
      */

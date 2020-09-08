@@ -150,7 +150,9 @@ class ConsoleServerConnectionController extends EloquentController
 
     protected function preList(): void
     {
-        $this->data[ 'params' ]     = [ 'css' =>  ConsoleServer::getListAsArray() ];
+        $this->data[ 'params' ]     = [
+            'css' =>  ConsoleServer::orderBy( 'name', 'asc')->get()->keyBy( 'id' )->toArray()
+        ];
     }
 
     /**
@@ -162,8 +164,8 @@ class ConsoleServerConnectionController extends EloquentController
     {
         return [
             'object'                => $this->object,
-            'custs'                 => Customer::getListAsArray(),
-            'servers'               => ConsoleServer::getListAsArray(),
+            'custs'                 => Customer::orderBy( 'name' )->get()->toArray(),
+            'servers'               => ConsoleServer::orderBy( 'name', 'asc')->get()->keyBy( 'id' )->toArray(),
             'cs'                    => request()->serverid
         ];
     }
@@ -194,8 +196,8 @@ class ConsoleServerConnectionController extends EloquentController
 
         return [
             'object'                => $this->object,
-            'custs'                 => Customer::getListAsArray(),
-            'servers'               => ConsoleServer::getListAsArray(),
+            'custs'                 => Customer::orderBy( 'name' )->get(),
+            'servers'               => ConsoleServer::orderBy( 'name', 'asc')->get()->keyBy( 'id' )->toArray(),
             'cs'                    => request()->serverid
         ];
     }

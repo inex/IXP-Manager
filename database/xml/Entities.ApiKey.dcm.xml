@@ -8,7 +8,8 @@
     <field name="description" type="text" nullable="true"/>
     <field name="expires" type="datetime" nullable="true"/>
     <field name="allowedIPs" type="text" nullable="true" column="allowedIPs"/>
-    <field name="created" type="datetime" nullable="false"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <field name="lastseenAt" type="datetime" nullable="true" column="lastseenAt"/>
     <field name="lastseenFrom" type="string" length="255" nullable="true" column="lastseenFrom"/>
     <many-to-one field="User" target-entity="Entities\User" inversed-by="ApiKeys">

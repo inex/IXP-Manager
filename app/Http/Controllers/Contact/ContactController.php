@@ -25,12 +25,14 @@ namespace IXP\Http\Controllers\Contact;
 
 use Auth, Former, Redirect;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\{
     Request,
     RedirectResponse
 };
 
 use IXP\Models\{
+    Aggregators\ContactGroupAggregator,
     Contact,
     ContactGroup,
     Customer,
@@ -43,6 +45,7 @@ use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
+use stdClass;
 
 /**
  * Contact Controller
@@ -106,11 +109,11 @@ class ContactController extends EloquentController
                     'name'      => 'Name',
                     'position'  => 'Position',
                     'email'     => 'Email',
-                    'created'       => [
+                    'created_at'       => [
                         'title'     => 'Created',
                         'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
                     ],
-                    'lastupdated'       => [
+                    'updated_at'       => [
                         'title'     => 'Updated',
                         'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
                     ]
@@ -146,7 +149,7 @@ class ContactController extends EloquentController
                     'position'  => 'Position',
                     'email'     => 'Email',
                     'phone'     => 'Phone',
-                    'created'       => [
+                    'created_at'       => [
                         'title'     => 'Created',
                         'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
                     ],
@@ -205,9 +208,49 @@ class ContactController extends EloquentController
     }
 
     /**
+     * Gets a listing of contacts or a single one if an ID is provided
+     *
+     * @param stdClass $feParams
+     * @param int|null $id
+     * @param int|null $role
+     * @param int|null $cgid
+     *
+     * @return array
+     */
+    private function getFeList( stdClass $feParams, int $id = null, int $role = null, int $cgid = null ): array
+    {
+        $query = Contact::select( [ 'contact.*', 'cust.name AS customer', 'cust.id AS custid' ])
+            ->leftJoin( 'cust', 'cust.id', 'contact.custid'  )
+            ->when( $id , function ( Builder $query, $id ) {
+                return $query->where('contact.id', $id );
+            })
+            ->when( !Auth::getUser()->isSuperUser(), function ( Builder $query ) {
+                return $query->where('cust.id', Auth::getUser()->getCustomer()->getId() );
+            })
+            ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+            });
+
+        if( config('contact_group.types.ROLE') ) {
+            $groupid = $role ? $role : ( $cgid ?: null);
+            $query->when( $groupid , function ( Builder $query, $groupid ) {
+                return $query->leftJoin( 'contact_to_group', function( $join ) {
+                    $join->on( 'contact.id', 'contact_to_group.contact_id');
+                })->where('contact_to_group.contact_group_id', $groupid );
+            });
+
+            if( Auth::getUser()->isSuperUser() ) {
+                $query->with( 'contactRoles', 'contactGroups' );
+            }
+        }
+
+        return $query->get()->toArray();
+    }
+
+    /**
      * Provide array of rows for the list action and view action
      *
-     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @param int|null $id The `id` of the row to load for `view` action`. `null` if `listAction`
      *
      * @return array
      *
@@ -219,8 +262,8 @@ class ContactController extends EloquentController
         $cgs = [];
 
         if( config('contact_group.types.ROLE') ) {
-            $activeGroups   = ContactGroup::getGroupNamesTypeArray( false, false , true);
-            $allGroups      = ContactGroup::getGroupNamesTypeArray();
+            $activeGroups   = ContactGroupAggregator::getGroupNamesTypeArray( false, false , true);
+            $allGroups      = ContactGroupAggregator::getGroupNamesTypeArray();
 
             if( !in_array( $role = request()->role, array_column( $activeGroups[ "ROLE" ], 'id' ), false ) ) {
                 $role = null;
@@ -254,7 +297,7 @@ class ContactController extends EloquentController
             ];
         }
 
-        return Contact::getFeList( $this->feParams, $id, $role, $cg );
+        return $this->getFeList( $this->feParams, $id, $role, $cg );
     }
 
     /**
@@ -285,8 +328,8 @@ class ContactController extends EloquentController
     {
         if( config('contact_group.types.ROLE') ) {
             return [
-                'roles'    => ContactGroup::getGroupNamesTypeArray( 'ROLE' )[ "ROLE" ],
-                'allGroups' => ContactGroup::getGroupNamesTypeArray( false, false, true)
+                'roles'    => ContactGroupAggregator::getGroupNamesTypeArray( 'ROLE' )[ "ROLE" ],
+                'allGroups' => ContactGroupAggregator::getGroupNamesTypeArray( false, false, true)
             ];
         }
 
@@ -313,7 +356,7 @@ class ContactController extends EloquentController
         return [
             'object'                => $this->object,
             'groupsForContact'      => [],
-            'custs'                 => Customer::getListAsArray(),
+            'custs'                 => Customer::orderBy( 'name' )->get(),
             'roles'                 => $data[ 'roles' ],
             'allGroups'             => $data[ 'allGroups' ],
         ];
@@ -328,7 +371,7 @@ class ContactController extends EloquentController
      *
      * @throws
      */
-    protected function editPrepareForm( $id = null ): array
+    protected function editPrepareForm( $id ): array
     {
         $this->setRedirectSession();
         $data = $this->getContactsData();
@@ -351,7 +394,7 @@ class ContactController extends EloquentController
 
         $contactGroupDetail = [];
 
-        $contactGroup =  ContactGroup::getGroupNamesTypeArray( false, $this->object->id );
+        $contactGroup =  ContactGroupAggregator::getGroupNamesTypeArray( false, $this->object->id );
 
         foreach( $data[ 'allGroups' ] as $gname => $gvalue ) {
             foreach( $gvalue as $g ){
@@ -364,7 +407,7 @@ class ContactController extends EloquentController
         return [
             'object'                => $this->object,
             'groupsForContact'      => $this->object->contactGroupsAll()->get()->keyBy( 'id' )->toArray(),
-            'custs'                 => Customer::getListAsArray(),
+            'custs'                 => Customer::orderBy( 'name' )->get(),
             'roles'                 => $data[ 'roles' ],
             'allGroups'             => $data[ 'allGroups' ],
         ];
@@ -414,7 +457,13 @@ class ContactController extends EloquentController
         foreach( $groups as $index => $groupid ) {
             if( $cgroup = ContactGroup::find( $groupid ) ) {
                 if( $cgroup->limited_to != 0 ) {
-                    $nbContactForCust = Contact::getForCustomer( $this->object->customer, $groupid )->count();
+                    $nbContactForCust = Contact::when( $groupid , function ( Builder $query, $groupid ) {
+                                        return $query->leftJoin( 'contact_to_group', function( $join ) {
+                                            $join->on( 'contact.id', 'contact_to_group.contact_id');
+                                        })->where('contact_to_group.contact_group_id', $groupid );
+                                    })
+                                    ->where( 'custid', $this->object->custid  )
+                                    ->get()->count();
 
                     if( !$this->object->contactGroupsAll()->contains( 'id', $groupid ) && $cgroup->limited_to <= $nbContactForCust ) {
                         AlertContainer::push( "Contact group " . $cgroup->type . " : " . $cgroup->name . " has a limited membership and is full." , Alert::DANGER );
@@ -449,10 +498,8 @@ class ContactController extends EloquentController
 
         $this->object = Contact::create(
             array_merge( $request->all(), [
-                'created'       => now(),
                 'creator'       => Auth::getUser()->getUsername(),
                 'custid'        => $custid,
-                'lastupdated'   => now(),
                 'lastupdatedby' => Auth::getUser()->getId()
             ] )
         );
@@ -486,10 +533,8 @@ class ContactController extends EloquentController
 
         $this->object->update(
             array_merge( $request->all(), [
-                'created'       => now(),
                 'creator'       => Auth::getUser()->getUsername(),
                 'custid'        => $custid,
-                'lastupdated'   => now(),
                 'lastupdatedby' => Auth::getUser()->getId()
             ] )
         );

@@ -6,6 +6,8 @@
     </id>
     <field name="name" type="string" length="255" nullable="true"/>
     <field name="descr" type="string" length="255" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <many-to-one field="Customer" target-entity="Entities\Customer" inversed-by="CustomerEquipment">
       <join-columns>
         <join-column name="custid" referenced-column-name="id" on-delete="CASCADE"/>

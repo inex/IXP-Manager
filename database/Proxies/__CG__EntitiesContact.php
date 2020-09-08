@@ -66,10 +66,10 @@ class Contact extends \Entities\Contact implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'email', 'phone', 'mobile', 'facilityaccess', 'mayauthorize', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Customer', 'position', 'Groups', 'notes', 'User'];
+            return ['__isInitialized__', 'name', 'email', 'phone', 'mobile', 'facilityaccess', 'mayauthorize', 'updated_at', 'lastupdatedby', 'creator', 'created_at', 'id', 'Customer', 'position', 'Groups', 'notes', 'User'];
         }
 
-        return ['__isInitialized__', 'name', 'email', 'phone', 'mobile', 'facilityaccess', 'mayauthorize', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Customer', 'position', 'Groups', 'notes', 'User'];
+        return ['__isInitialized__', 'name', 'email', 'phone', 'mobile', 'facilityaccess', 'mayauthorize', 'updated_at', 'lastupdatedby', 'creator', 'created_at', 'id', 'Customer', 'position', 'Groups', 'notes', 'User'];
     }
 
     /**
@@ -311,12 +311,12 @@ class Contact extends \Entities\Contact implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setLastupdated($lastupdated)
+    public function setLastupdated($updated_at)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastupdated', [$lastupdated]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastupdated', [$updated_at]);
 
-        return parent::setLastupdated($lastupdated);
+        return parent::setLastupdated($updated_at);
     }
 
     /**
@@ -377,12 +377,12 @@ class Contact extends \Entities\Contact implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setCreated($created)
+    public function setCreated($created_at)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreated', [$created]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreated', [$created_at]);
 
-        return parent::setCreated($created);
+        return parent::setCreated($created_at);
     }
 
     /**

@@ -25,17 +25,20 @@ namespace IXP\Models;
 
 use D2EM, Eloquent;
 
-use DB;
 use Entities\Customer as CustomerEntity;
-use Entities\User as UserEntity;
 
-use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations\BelongsToMany, Relations\HasMany};
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model,
+    Relations\BelongsTo,
+    Relations\BelongsToMany,
+    Relations\HasMany
+};
 
 use Illuminate\Support\{
     Collection,
     Carbon as Carbon
 };
-
 
 use IXP\Exceptions\GeneralException as IXP_Exception;
 
@@ -139,6 +142,15 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @method static Builder|Customer whereStatus($value)
  * @method static Builder|Customer whereType($value)
  * @mixin Eloquent
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $peerRouteServerFilters
+ * @property-read int|null $peer_route_server_filters_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $routeServerFilters
+ * @property-read int|null $route_server_filters_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer currentActive($trafficing = false, $externalOnly = false)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereUpdatedAt($value)
  */
 class Customer extends Model
 {
@@ -157,44 +169,6 @@ class Customer extends Model
     protected $dateFormat = 'Y-m-d';
 
     /**
-     * DQL for selecting customers that are current in terms of `datejoin` and `dateleave`
-     *
-     * @var string DQL for selecting customers that are current in terms of `datejoin` and `dateleave`
-     */
-    public const SQL_CUST_CURRENT = "c.datejoin <= CURRENT_DATE() AND ( c.dateleave IS NULL OR c.dateleave >= CURRENT_DATE() )";
-
-    /**
-     * DQL for selecting customers that are active (i.e. not suspended)
-     *
-     * @var string DQL for selecting customers that are active (i.e. not suspended)
-     */
-    const SQL_CUST_ACTIVE = "c.status IN ( 1, 2 )";
-
-    /**
-     * DQL for selecting all trafficing customers
-     *
-     * @var string DQL for selecting all trafficing customers
-     */
-    const SQL_CUST_TRAFFICING = "c.type != 2";
-
-    /**
-     * DQL for selecting all customers except for internal / dummy customers
-     *
-     * @var string DQL for selecting all customers except for internal / dummy customers
-     */
-    const SQL_CUST_EXTERNAL = "c.type != 3";
-
-    /**
-     * DQL for selecting all "connected" customers
-     *
-     * @var string DQL for selecting all "connected" customers
-     */
-    const SQL_CUST_CONNECTED = "c.status = 1";
-
-    const CREATED_AT = 'created';
-    const UPDATED_AT = 'lastupdated';
-
-    /**
      * The attributes that should be mutated to dates.
      *
      * @var array
@@ -204,11 +178,46 @@ class Customer extends Model
         'dateleave'
     ];
 
+    /**
+     * DQL for selecting customers that are current in terms of `datejoin` and `dateleave`
+     *
+     * @var string DQL for selecting customers that are current in terms of `datejoin` and `dateleave`
+     */
+    public const SQL_CUST_CURRENT = "cust.datejoin <= CURRENT_DATE() AND ( cust.dateleave IS NULL OR cust.dateleave >= CURRENT_DATE() )";
 
-    const TYPE_FULL        = 1;
-    const TYPE_ASSOCIATE   = 2;
-    const TYPE_INTERNAL    = 3;
-    const TYPE_PROBONO     = 4;
+    /**
+     * DQL for selecting customers that are active (i.e. not suspended)
+     *
+     * @var string DQL for selecting customers that are active (i.e. not suspended)
+     */
+    public const SQL_CUST_ACTIVE = "cust.status IN ( 1, 2 )";
+
+    /**
+     * DQL for selecting all trafficing customers
+     *
+     * @var string DQL for selecting all trafficing customers
+     */
+    public const SQL_CUST_TRAFFICING = "cust.type != 2";
+
+    /**
+     * DQL for selecting all customers except for internal / dummy customers
+     *
+     * @var string DQL for selecting all customers except for internal / dummy customers
+     */
+    public const SQL_CUST_EXTERNAL = "cust.type != 3";
+
+    /**
+     * DQL for selecting all "connected" customers
+     *
+     * @var string DQL for selecting all "connected" customers
+     */
+    public const SQL_CUST_CONNECTED = "cust.status = 1";
+
+
+    public const TYPE_FULL        = 1;
+    public const TYPE_ASSOCIATE   = 2;
+    public const TYPE_INTERNAL    = 3;
+    public const TYPE_PROBONO     = 4;
 
     public static $CUST_TYPES_TEXT = [
         self::TYPE_FULL          => 'Full',
@@ -218,9 +227,9 @@ class Customer extends Model
     ];
 
 
-    const STATUS_NORMAL       = 1;
-    const STATUS_NOTCONNECTED = 2;
-    const STATUS_SUSPENDED    = 3;
+    public const STATUS_NORMAL       = 1;
+    public const STATUS_NOTCONNECTED = 2;
+    public const STATUS_SUSPENDED    = 3;
 
     public static $CUST_STATUS_TEXT = [
         self::STATUS_NORMAL           => 'Normal',
@@ -272,7 +281,7 @@ class Customer extends Model
     /**
      * Get the route server filters for the customer
      */
-    public function routeserverfilters(): HasMany
+    public function routeServerFilters(): HasMany
     {
         return $this->hasMany(RouteServerFilter::class, 'customer_id' );
     }
@@ -280,7 +289,7 @@ class Customer extends Model
     /**
      * Get the peer route server filters for the customer
      */
-    public function peerrouteserverfilters(): HasMany
+    public function peerRouteServerFilters(): HasMany
     {
         return $this->hasMany(RouteServerFilter::class, 'peer_id' );
     }
@@ -337,7 +346,7 @@ class Customer extends Model
      * @param Builder $query
      * @return Builder
      */
-    public function scopeCurrent($query): Builder
+    public function scopeCurrent( Builder $query): Builder
     {
         return $query->where('datejoin', '<=', today() )
             ->where( function ( Builder $query) {
@@ -347,14 +356,36 @@ class Customer extends Model
             });
     }
 
-
+    /**
+     * Utility function to provide a array of all active and current customers.
+     *
+     * @param Builder   $query
+     * @param bool      $trafficing If `true`, only include trafficing customers (i.e. no associates)
+     * @param bool      $externalOnly If `true`, only include external customers (i.e. no internal types)
+     *
+     * @return Collection
+     */
+    public static function scopeCurrentActive( Builder $query, $trafficing = false, $externalOnly = false )
+    {
+        return $query->from( 'cust AS c' )
+            ->whereRaw( self::SQL_CUST_CURRENT )
+            ->whereRaw( self::SQL_CUST_ACTIVE )
+            ->when( $trafficing , function( Builder $q ) {
+                return $q->whereRaw(self::SQL_CUST_TRAFFICING )
+                    ->whereRaw( self::SQL_CUST_CONNECTED );
+            } )->when( $externalOnly , function( Builder $q ) {
+                return $q->whereRaw( self::SQL_CUST_EXTERNAL );
+            })->orderBy( 'name' );
+    }
 
     /**
      * Get formatted name
      *
+     * @param null $fmt
+     *
      * @return string
      */
-    public function getFormattedName( $fmt = null )
+    public function getFormattedName( $fmt = null ): string
     {
         if( $this->type === self::TYPE_ASSOCIATE ) {
             return $this->abbreviatedName;
@@ -486,83 +517,15 @@ class Customer extends Model
     }
 
     /**
+     * TO DELETE WHEN IRRDB CONTROLLER IS DONE
+     *
      * return the doctrine entity
      *
      * @return object|CustomerEntity
      */
-    public function getDoctrineObject(): CustomerEntity {
+    public function getDoctrineObject(): CustomerEntity
+    {
         return D2EM::getRepository( CustomerEntity::class )->find( $this->id );
-    }
-
-    /**
-     * Gets a listing of Customers from dropdown
-     *
-     * @param int|null $id
-     * @param array $types
-     *
-     * @return array
-     */
-    public static function getListAsArray( int $id = null, array $types = [] ): array
-    {
-        return self::when( $id , function( Builder $q, $id ) {
-            return $q->where('id', $id );
-        } )->when( count( $types ) > 0 , function( Builder $q, $types ) {
-            return $q->whereIn( 'type', $types );
-        })->orderBy( 'name', 'asc')->get()->toArray();
-    }
-
-    /**
-     * Get All customer by vlan and protocol
-     *
-     * @param int|null $vlanid
-     * @param int|null $protocol
-     *
-     * @return array
-     */
-    public static function getByVlanAndProtocol( int $vlanid = null, int $protocol = null ): array
-    {
-        return self::select( [ 'c.id', 'c.name' ] )
-            ->from( 'cust AS c' )
-            ->leftJoin( 'virtualinterface AS vi', 'vi.custid', 'c.id' )
-            ->leftJoin( 'vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id' )
-            ->leftJoin( 'vlan AS v', 'v.id', 'vli.vlanid' )
-            ->leftJoin( 'routers AS r', 'r.vlan_id', 'v.id' )
-            ->where( 'vli.rsclient', true )
-        ->when( $protocol , function( Builder $q, $protocol ) {
-            return $q->where('r.protocol', $protocol )
-                ->where( "vli.ipv{$protocol}enabled", true  );
-        }, function ($query) {
-            return $query->where( function( $q ) {
-                $q->where( 'r.protocol', 4 )
-                    ->orWhere( 'r.protocol', 6 );
-            })->where( function( $q ) {
-                $q->where( 'vli.ipv4enabled', true )
-                    ->orWhere( 'vli.ipv6enabled', true );
-            });
-        } )->when( $vlanid , function( Builder $q, $vlanid ) {
-            return $q->where( 'v.id', $vlanid );
-        })->distinct( 'c.id' )->orderBy( 'c.name', 'asc')->get()->toArray();
-    }
-
-    /**
-     * Utility function to provide a array of all active and current customers.
-     *
-     * @param bool $trafficing If `true`, only include trafficing customers (i.e. no associates)
-     * @param bool $externalOnly If `true`, only include external customers (i.e. no internal types)
-     *
-     * @return Collection
-     */
-    public static function getCurrentActive( $trafficing = false, $externalOnly = false )
-    {
-        return self::from( 'cust AS c' )
-            ->whereRaw( self::SQL_CUST_CURRENT )
-            ->whereRaw( self::SQL_CUST_ACTIVE )
-            ->when( $trafficing , function( Builder $q ) {
-            return $q->whereRaw(self::SQL_CUST_TRAFFICING )
-                ->whereRaw( self::SQL_CUST_CONNECTED );
-            } )->when( $externalOnly , function( Builder $q ) {
-            return $q->whereRaw( self::SQL_CUST_EXTERNAL );
-            })->orderBy( 'name' )->get();
     }
 
     /**
@@ -575,9 +538,8 @@ class Customer extends Model
      */
     public static function getConnected( $externalOnly = false )
     {
-        return self::select( 'c.*' )
-            ->from( 'cust AS c' )
-            ->leftJoin( 'virtualinterface AS vi', 'vi.custid', 'c.id'  )
+        return self::select( 'cust.*' )
+            ->leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id'  )
             ->leftJoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
             ->whereRaw( self::SQL_CUST_CURRENT )
             ->whereRaw(self::SQL_CUST_TRAFFICING )
@@ -585,7 +547,7 @@ class Customer extends Model
             ->when( $externalOnly , function( Builder $q ) {
                 return $q->whereRaw( self::SQL_CUST_EXTERNAL );
             })
-            ->orderBy( 'c.name' )->distinct()->get();
+            ->orderBy( 'cust.name' )->distinct()->get();
     }
 
     /**

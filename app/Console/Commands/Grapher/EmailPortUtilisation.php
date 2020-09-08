@@ -77,7 +77,7 @@ class EmailPortUtilisation extends GrapherCommand
             return $retval;
         }
 
-        $custs = Customer::getCurrentActive(true, true );
+        $custs = Customer::currentActive(true, true )->get();
         $excess = [];
         foreach( $custs as $c ) {
             foreach( $c->virtualInterfaces as $vi ) {

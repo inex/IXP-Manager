@@ -65,7 +65,10 @@ class ContactGroup
     /**
      * @var \DateTime
      */
-    protected $created;
+    protected $created_at;
+
+    protected $updated_at;
+
 
     /**
      * @var integer
@@ -202,12 +205,12 @@ class ContactGroup
     /**
      * Set created
      *
-     * @param \DateTime $created
+     * @param \DateTime $created_at
      * @return ContactGroup
      */
-    public function setCreated($created)
+    public function setCreated($created_at)
     {
-        $this->created = $created;
+        $this->created_at = $created_at;
     
         return $this;
     }
@@ -219,7 +222,7 @@ class ContactGroup
      */
     public function getCreated()
     {
-        return $this->created;
+        return $this->created_at;
     }
 
     /**

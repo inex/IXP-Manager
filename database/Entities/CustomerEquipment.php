@@ -45,6 +45,9 @@ class CustomerEquipment
      */
     protected $id;
 
+    protected $created_at;
+    protected $updated_at;
+
     /**
      * @var Entities\Customer
      */

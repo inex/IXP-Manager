@@ -2,10 +2,34 @@
 
 namespace IXP\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+/*
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Collection,
+    Model,
+    Relations\BelongsTo
+};
+
 use stdClass;
 
 /**
@@ -34,16 +58,13 @@ use stdClass;
  * @method static Builder|ApiKey whereLastseenFrom($value)
  * @method static Builder|ApiKey whereUserId($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey whereUpdatedAt($value)
  */
 class ApiKey extends Model
 {
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -66,24 +87,5 @@ class ApiKey extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id' );
-    }
-
-    /**
-     * Gets a listing of apikeys list or a single one if an ID is provided
-     *
-     * @param stdClass $feParams
-     * @param int $userid
-     * @param int|null $id
-     *
-     * @return array
-     */
-    public static function getFeList( stdClass $feParams, int $userid, int $id = null ): array
-    {
-        return self::where( 'user_id', $userid )
-            ->when( $id , function( Builder $q, $id ) {
-                return $q->where('id', $id );
-            } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-            })->get()->toArray();
     }
 }

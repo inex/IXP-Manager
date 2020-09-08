@@ -14,6 +14,8 @@
     <field name="peeringdb_ix_id" type="bigint" nullable="true"/>
     <field name="ixf_ix_id" type="bigint" nullable="true"/>
     <field name="country" type="string" length="2" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <unique-constraints>
       <unique-constraint name="unique_shortname" columns="shortname"/>
     </unique-constraints>

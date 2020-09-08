@@ -30,6 +30,7 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -144,13 +145,20 @@ class ApiKeyController extends EloquentController
     /**
      * Provide array of rows for the list action and view action
      *
-     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @param int|null $id The `id` of the row to load for `view` action`. `null` if `listAction`
      *
      * @return array
      */
     protected function listGetData( $id = null ): array
     {
-        return ApiKey::getFeList( $this->feParams, Auth::user()->getId(), $id  );
+        $feParams = $this->feParams;
+        return ApiKey::where( 'user_id', $id )
+            ->when( $id , function( Builder $q, $id ) {
+                return $q->where('id', $id );
+            } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+            })->get()->toArray();
+
     }
 
     /**
@@ -168,7 +176,7 @@ class ApiKeyController extends EloquentController
     /**
      * Display the form to edit an object
      *
-     * @param   int $id ID of the row to edit
+     * @param   int|null $id ID of the row to edit
      *
      * @return array
      */

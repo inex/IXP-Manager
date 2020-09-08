@@ -92,6 +92,15 @@ class VirtualInterface extends Model
     }
 
     /**
+     * Get the physical interfaces for the virtual interface
+     */
+    public function physicalInterfacesConnected(): HasMany
+    {
+        return $this->hasMany(PhysicalInterface::class, 'virtualinterfaceid')
+            ->where( 'status', PhysicalInterface::STATUS_CONNECTED);
+    }
+
+    /**
      * Get the speed of the LAG
      *
      * @param bool $connectedOnly Only consider physical interfaces with 'CONNECTED' state

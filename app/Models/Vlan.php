@@ -67,6 +67,10 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|Vlan wherePeeringMatrix($value)
  * @method static Builder|Vlan wherePrivate($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan whereUpdatedAt($value)
  */
 class Vlan extends Model
 {

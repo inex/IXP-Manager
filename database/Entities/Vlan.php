@@ -115,6 +115,9 @@ class Vlan
      */
     private $routeServerFilters;
 
+    private $created_at;
+    private $updated_at;
+
     /**
      * Constructor
      */

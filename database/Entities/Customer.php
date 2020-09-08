@@ -188,9 +188,9 @@ class Customer
     protected $activepeeringmatrix;
 
     /**
-     * @var \DateTime $lastupdated
+     * @var \DateTime $updated_at
      */
-    protected $lastupdated;
+    protected $updated_at;
 
     /**
      * @var integer $lastupdatedby
@@ -203,9 +203,9 @@ class Customer
     protected $creator;
 
     /**
-     * @var \DateTime $created
+     * @var \DateTime $created_at
      */
-    protected $created;
+    protected $created_at;
 
     /**
      * @var integer $id
@@ -820,12 +820,12 @@ class Customer
     /**
      * Set lastupdated
      *
-     * @param \DateTime $lastupdated
+     * @param \DateTime $updated_at
      * @return Customer
      */
-    public function setLastupdated($lastupdated)
+    public function setLastupdated($updated_at)
     {
-        $this->lastupdated = $lastupdated;
+        $this->updated_at = $updated_at;
 
         return $this;
     }
@@ -837,7 +837,7 @@ class Customer
      */
     public function getLastupdated()
     {
-        return $this->lastupdated;
+        return $this->updated_at;
     }
 
     /**
@@ -889,12 +889,12 @@ class Customer
     /**
      * Set created
      *
-     * @param \DateTime $created
+     * @param \DateTime $created_at
      * @return Customer
      */
-    public function setCreated($created)
+    public function setCreated($created_at)
     {
-        $this->created = $created;
+        $this->created_at = $created_at;
 
         return $this;
     }
@@ -906,7 +906,7 @@ class Customer
      */
     public function getCreated()
     {
-        return $this->created;
+        return $this->created_at;
     }
 
     /**

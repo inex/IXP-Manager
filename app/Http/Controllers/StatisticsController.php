@@ -292,7 +292,7 @@ class StatisticsController extends Controller
             if( $infra = Infrastructure::find( $r->infra ) ) {
                 $targets = VirtualInterface::getForInfrastructure( $infra );
             } else {
-                $targets = Customer::getCurrentActive( true, false );
+                $targets = Customer::currentActive( true, false )->get();
             }
             $r->protocol = Graph::PROTOCOL_ALL;
         } else if( $r->vlan && ( $vlan = Vlan::find( $r->vlan ) ) ) {
@@ -673,7 +673,7 @@ class StatisticsController extends Controller
         }
 
         return view( 'statistics/core-bundle' )->with([
-            "cbs"                   => CoreBundle::getActive(),
+            "cbs"                   => CoreBundle::active()->get(),
             "cb"                    => $cb,
             "graph"                 => $graph,
             "category"              => $category,

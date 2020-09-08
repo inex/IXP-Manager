@@ -70,6 +70,9 @@ class ConsoleServer
      */
     private $notes;
 
+    private $created_at;
+    private $updated_at;
+
     /**
      * @var integer
      */
