@@ -494,7 +494,10 @@ class Switcher extends Model
         // iterate over all the ports discovered on the switch:
         foreach( $host->useIface()->indexes() as $index ) {
             // we're only interested in Ethernet ports here (right?)
-            if( $host->useIface()->types()[ $index ] !== SNMPIface::IF_TYPE_ETHERNETCSMACD && $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_L3IPVLAN ) {
+            if( $host->useIface()->types()[ $index ] !== SNMPIface::IF_TYPE_ETHERNETCSMACD 
+                    && $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_L2VLAN 
+                    && $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_L3IPVLAN
+            ) {
                 continue;
             }
 

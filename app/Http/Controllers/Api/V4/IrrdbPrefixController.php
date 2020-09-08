@@ -55,7 +55,7 @@ class IrrdbPrefixController extends Controller
     {
         $cust = Customer::find( $request->custid );
 
-        if( !in_array( $protocol = $request->protocol, [ null, 4, 6 ], false ) ) {
+        if( !in_array( $protocol = $request->protocol, [ 4, 6 ], false ) ) {
             abort( 404 );
         }
 

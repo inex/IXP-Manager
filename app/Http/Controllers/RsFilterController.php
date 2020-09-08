@@ -103,10 +103,18 @@ class RsFilterController extends Controller
             $advertisedPrefixes = IrrdbPrefix::where( 'customer_id', $cust->id )->where( 'protocol', $protocol )->get()->toArray();
         }
 
+        $peers = array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], Customer::getByVlanAndProtocol( $vlanid , $protocol ) );
+        foreach( $peers as $i => $p ) {
+            if( $p['id'] === $cust->id ) {
+                unset( $peers[$i] );
+                break;
+            }
+        }
+
         return view( 'rs-filter/edit' )->with( [
             'rsf'                   => false,
             'c'                     => $cust,
-            'vlans'                 => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], $this->getPublicPeeringManager( $cust->id ) ),
+            'vlans'                 => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], $this->getPublicPeeringVLANs( $cust->id ) ),
             'protocols'             => Router::$PROTOCOLS,
             'peers'                 => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], CustomerAggregator::getByVlanAndProtocol( $vlanid , $protocol ) ),
             'advertisedPrefixes'    => $advertisedPrefixes
@@ -143,7 +151,7 @@ class RsFilterController extends Controller
         return view( 'rs-filter/edit' )->with( [
             'rsf'       => $rsf,
             'c'         => $rsf->customer,
-            'vlans'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], $this->getPublicPeeringManager( $rsf->customer_id ) ),
+            'vlans'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], $this->getPublicPeeringVLANs( $rsf->customer_id ) ),
             'protocols' => Router::$PROTOCOLS,
             'peers'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], CustomerAggregator::getByVlanAndProtocol( $vlanid , $protocol ) ),
         ] );
@@ -193,7 +201,7 @@ class RsFilterController extends Controller
     {
         $this->authorize( 'checkRsfObject',  [ RouteServerFilter::class, $rsf ] );
 
-        $rsf->update( $request->all() );
+        $rsf->update( $request->except( [ 'customer_id' ] ) );
 
         Log::notice( Auth::user()->getUsername() . ' updated a router server filter with ID ' . $rsf->id );
 
@@ -256,6 +264,7 @@ class RsFilterController extends Controller
     public function changeOrderBy( RouteServerFilter $rsf,  int $up ): RedirectResponse
     {
         $this->authorize( 'checkRsfObject',  [ RouteServerFilter::class, $rsf ]  );
+
         // Getting the list of all the route server filters for the customer
         $listRsf = RouteServerFilter::where( "customer_id", $rsf->customer_id )->orderBy( 'order_by' )->get();
 
@@ -266,7 +275,6 @@ class RsFilterController extends Controller
 
         // Adding +1 (moving up) or -1 (moving down) to the index of the route serve filter
         $newIndex = $up ? $index-1 : $index+1;
-
         $upText = $up ? "up" : "down";
 
         // Check if the new index exist in the list
@@ -317,13 +325,13 @@ class RsFilterController extends Controller
     }
 
     /**
-     * Return an array of all public peering manager vlans names where the array key is the vlan id.
+     * Return an array of all public peering vlans names where the array key is the vlan id.
      *
      * @param int $custid
      *
      * @return array
      */
-    private function getPublicPeeringManager( int $custid ): array
+    private function getPublicPeeringVLANs( int $custid ): array
     {
         return Vlan::select( [ 'vlan.id AS id', 'vlan.name' ] )
             ->leftJoin( 'vlaninterface AS vli', 'vli.vlanid', 'vlan.id' )
