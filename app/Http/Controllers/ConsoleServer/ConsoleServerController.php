@@ -170,7 +170,7 @@ class ConsoleServerController extends EloquentController
             'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
                 ->orderBy( 'name', 'asc' )
                 ->get(),
-            'vendors'       => Vendor::getListAsArray(),
+            'vendors'       => Vendor::orderBy( 'name' )->get(),
         ];
     }
 
@@ -201,7 +201,8 @@ class ConsoleServerController extends EloquentController
             'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
                 ->orderBy( 'name', 'asc' )
                 ->get(),
-            'vendors'       => Vendor::getListAsArray(),];
+            'vendors'       => Vendor::orderBy( 'name' )->get()
+        ];
     }
 
     /**

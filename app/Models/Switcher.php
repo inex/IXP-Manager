@@ -1,8 +1,29 @@
 <?php
 
+/*
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+*/
+
 namespace IXP\Models;
 
-use DateTime, Log, stdClass;
+use DateTime, Log;
 
 use Illuminate\Database\Eloquent\{
     Builder,
@@ -86,23 +107,19 @@ use \OSS_SNMP\MIBS\Iface as SNMPIface;
  * @method static Builder|Switcher whereSnmppasswd($value)
  * @method static Builder|Switcher whereVendorid($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereUpdatedAt($value)
  */
 class Switcher extends Model
 {
-
     /**
      * The table associated with the model.
      *
      * @var string
      */
     protected $table = 'switch';
-
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.
@@ -140,9 +157,9 @@ class Switcher extends Model
     /**
      * Constants for the list mode dropdown in the swtiches list
      */
-    const VIEW_MODE_DEFAULT     = 'view_mode_default';
-    const VIEW_MODE_OS          = 'view_mode_os';
-    const VIEW_MODE_L3          = 'view_mode_l3';
+    public const VIEW_MODE_DEFAULT     = 'view_mode_default';
+    public const VIEW_MODE_OS          = 'view_mode_os';
+    public const VIEW_MODE_L3          = 'view_mode_l3';
 
     /**
      * @var array Textual representations of the list mode
@@ -202,35 +219,6 @@ class Switcher extends Model
     }
 
     /**
-     * Gets a listing of switches or a single one if an ID is provided
-     *
-     * @param stdClass $feParams
-     * @param int|null $id
-     * @param null $params
-     *
-     * @return array
-     */
-    public static function getFeList( stdClass $feParams, int $id = null, $params = null ): array
-    {
-        return self::select( [
-            'switch.*',
-            'i.name AS infrastructure',
-            'v.id AS vendorid', 'v.name AS vendor',
-            'c.id AS cabinetid', 'c.name AS cabinet'
-        ] )
-            ->leftJoin( 'infrastructure AS i', 'i.id', 'switch.infrastructure')
-            ->leftJoin( 'cabinet AS c', 'c.id', 'switch.cabinetid')
-            ->leftJoin( 'vendor AS v', 'v.id', 'switch.vendorid')
-        ->when( $id , function( Builder $q, $id ) {
-            return $q->where('switch.id', $id );
-        } )->when( isset( $params[ 'params' ][ 'activeOnly' ] ) && $params[ 'params' ][ 'activeOnly' ] , function( Builder $q ) {
-            return $q->where('switch.active', true );
-        } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-        })->get()->toArray();
-    }
-
-    /**
      * Gets a listing of patch panel ports for a switch
      *
      * @return Collection
@@ -260,136 +248,6 @@ class Switcher extends Model
             ->where( 'pi.id', '!=', NULL )
             ->get();
     }
-
-    /**
-     * Return an array of all switch objects from the database with caching
-     *
-     * @param bool $active If `true`, return only active switches
-     *
-     * @return Collection
-     */
-    public static function getAndCache( bool $active = false ): Collection
-    {
-        return self::when( $active , function( Builder $q ) {
-            return $q->where( 'active', 1 );
-        })->orderBy( 'name', 'ASC' )->get()->keyBy( 'id' );
-    }
-
-
-    /**
-     * Gets a listing of switcher as array
-     *
-     * @param bool $active
-     *
-     * @return array
-     */
-    public static function getListAsArray( bool $active = false ): array
-    {
-        return self::getAndCache( $active )->toArray();
-    }
-
-    /**
-     * Return an array of all switch names where the array key is the switch id
-     *
-     * @param int|null      $infraid
-     * @param int|null      $locationid
-     * @param int|null      $speed
-
-     * @return Collection
-     */
-    public static function getByLocationInfrastructureSpeed( int $infraid = null, int $locationid = null, int $speed = null ): Collection
-    {
-        return self::when( $locationid , function( Builder $q, $locationid ) {
-                return $q->leftJoin( 'cabinet AS c', 'c.id', 'switch.cabinetid' )
-                    ->where( 'c.locationid', $locationid);
-            })
-            ->when( $infraid , function( Builder $q, $infraid ) {
-                return $q->whereIn( 's.infrastructure', $infraid );
-            })
-            ->when( $speed , function( Builder $q, $speed ) {
-                return $q->leftjoin( 'switchport AS sp', 'sp.switchid', 'switch.id' )
-                    ->leftjoin( 'physicalinterface AS pi', 'pi.switchportid','sp.id' )
-                    ->leftjoin( 'virtualinterface AS vi', 'vi.id','pi.virtualinterfaceid' )
-                    ->leftjoin( 'vlaninterface AS vli', 'vli.virtualinterfaceid','vi.id' )
-                    ->leftjoin( 'ipv4address AS ipv4', 'ipv4.id', '=', 'vli.ipv4addressid' )
-                    ->leftjoin( 'ipv6address AS ipv6', 'ipv4.id', '=', 'vli.ipv6addressid' )
-                    ->where( 'pi.speed', $speed );
-            })
-            ->where( 'active', true )
-            ->orderBy( 'name', 'ASC' )
-            ->get();
-    }
-
-    /**
-     * Return an array of configurations
-     *
-     * @param int   $switchid       Switcher id for filtering results
-     * @param int   $infraid        Infrastructure id for filtering results
-     * @param int   $facilityid     Facility id for filtering results
-     * @param int   $speed          Speed filtering results
-     * @param int   $vlanid         Vlan id for filtering results
-     * @param bool  $rsclient
-     * @param bool  $ipv6enabled
-     *
-     * @return array
-     */
-    public static function getConfiguration( int $switchid = null, int $infraid = null, int $facilityid = null, int $speed = null, int $vlanid = null, bool $rsclient = false, bool $ipv6enabled = false ): array
-    {
-        return self::selectRaw(
-    's.name AS switchname, 
-                s.id AS switchid,
-                GROUP_CONCAT( sp.ifName ) AS ifName,
-                GROUP_CONCAT( pi.speed )  AS speed,
-                GROUP_CONCAT( pi.status ) AS portstatus,
-                c.name AS customer, 
-                c.id AS custid, 
-                c.autsys AS asn,
-                MAX( vli.rsclient    ) AS rsclient,
-                MAX( vli.ipv4enabled ) AS ipv4enabled, 
-                MAX( vli.ipv6enabled ) AS ipv6enabled, 
-                v.name AS vlan,
-                GROUP_CONCAT( DISTINCT ipv4.address ) AS ipv4address, 
-                GROUP_CONCAT( DISTINCT ipv6.address ) AS ipv6address'
-        )
-            ->from( 'vlaninterface AS vli' )
-            ->leftjoin( 'ipv4address AS ipv4', 'ipv4.id', 'vli.ipv4addressid' )
-            ->leftjoin( 'ipv6address AS ipv6', 'ipv6.id', 'vli.ipv6addressid' )
-            ->leftjoin( 'vlan AS v', 'v.id', '=', 'vli.vlanid' )
-            ->leftjoin( 'virtualinterface AS vi', 'vi.id','vli.virtualinterfaceid' )
-            ->leftjoin( 'cust AS c', 'c.id','vi.custid' )
-            ->leftjoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid','vi.id' )
-            ->leftjoin( 'switchport AS sp', 'sp.id', 'pi.switchportid' )
-            ->leftjoin( 'switch AS s', 's.id', 'sp.switchid' )
-            ->leftjoin( 'cabinet AS cab', 'cab.id', 's.cabinetid' )
-            ->whereRaw( Customer::SQL_CUST_CURRENT )
-            ->when( $switchid , function( Builder $q, $switchid ) {
-                return $q->where( 's.id', $switchid);
-            })
-            ->when( $infraid , function( Builder $q, $infraid ) {
-                return $q->where( 's.infrastructure', $infraid );
-            })
-            ->when( $facilityid , function( Builder $q, $facilityid ) {
-                return $q->where( 'cab.locationid', $facilityid );
-            })
-            ->when( $speed , function( Builder $q, $speed ) {
-                return $q->where( 'pi.speed', $speed );
-            })
-            ->when( $vlanid , function( Builder $q, $vlanid ) {
-                return $q->where( 'vli.vlanid', $vlanid );
-            }, function ( $query) {
-                return $query->where( 'v.private', false );
-            })
-            ->when( $rsclient , function( Builder $q ) {
-                return $q->where( 'vli.rsclient', true );
-            })
-            ->when( $ipv6enabled , function( Builder $q ) {
-                return $q->where( 'vli.ipv6enabled', true );
-            })
-            ->groupBy( 'customer', 'custid', 'asn', 'switchname', 'switchid', 'vlan' )
-            ->orderBy( 'customer', 'ASC' )
-            ->get()->toArray();
-    }
-
 
     /**
      * Update switch's details using SNMP polling
@@ -584,22 +442,5 @@ class Switcher extends Model
         }
 
         return $cbs;
-    }
-
-    /**
-     * Scope a query to only include filtered switcher.
-     *
-     * @param Builder $query
-     * @param  int $active
-     *
-     * @return Builder
-     */
-    public function scopeFiltered($query, int $active ): Builder
-    {
-        if( $active ) {
-            $query->where( 'active', true );
-        }
-
-        return $query->orderBy( 'name' );
     }
 }

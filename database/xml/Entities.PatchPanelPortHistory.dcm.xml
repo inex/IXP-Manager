@@ -16,6 +16,8 @@
     <field name="connected_at" type="date" nullable="true"/>
     <field name="cease_requested_at" type="date" nullable="true"/>
     <field name="ceased_at" type="date" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <field name="internal_use" type="boolean" nullable="false">
       <options>
         <option name="default">0</option>

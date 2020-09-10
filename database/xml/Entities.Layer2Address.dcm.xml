@@ -7,7 +7,8 @@
     <field name="mac" type="string" length="12" nullable="true"/>
     <field name="firstseen" type="datetime" nullable="true"/>
     <field name="lastseen" type="datetime" nullable="true"/>
-    <field name="created" type="datetime" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <unique-constraints>
       <unique-constraint name="mac_vlanint" columns="mac,vlan_interface_id"/>
     </unique-constraints>

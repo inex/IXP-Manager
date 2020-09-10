@@ -70,6 +70,9 @@ class Switcher
      */
     protected $ipv4addr;
 
+    private $created_at;
+    private $updated_at;
+
     /**
      * @var string $ipv6addr
      */

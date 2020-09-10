@@ -9,6 +9,8 @@
     <field name="mtu" type="integer" nullable="true"/>
     <field name="trunk" type="boolean" nullable="true"/>
     <field name="channelgroup" type="integer" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <field name="lag_framing" type="boolean" nullable="false">
       <options>
         <option name="default">0</option>

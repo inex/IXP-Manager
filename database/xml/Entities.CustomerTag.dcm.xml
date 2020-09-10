@@ -12,8 +12,8 @@
         <option name="default">0</option>
       </options>
     </field>
-    <field name="created" type="datetime" nullable="false"/>
-    <field name="updated" type="datetime" nullable="false"/>
+    <field name="created_at" type="datetime" nullable="false"/>
+    <field name="updated_at" type="datetime" nullable="false"/>
     <many-to-many field="customers" target-entity="Entities\Customer" inversed-by="tags">
       <join-table name="cust_to_cust_tag">
         <join-columns>

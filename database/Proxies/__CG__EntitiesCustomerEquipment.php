@@ -66,10 +66,10 @@ class CustomerEquipment extends \Entities\CustomerEquipment implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'description', 'id', 'Customer', 'Cabinet', 'descr'];
+            return ['__isInitialized__', 'name', 'description', 'id', 'created_at', 'updated_at', 'Customer', 'Cabinet', 'descr'];
         }
 
-        return ['__isInitialized__', 'name', 'description', 'id', 'Customer', 'Cabinet', 'descr'];
+        return ['__isInitialized__', 'name', 'description', 'id', 'created_at', 'updated_at', 'Customer', 'Cabinet', 'descr'];
     }
 
     /**

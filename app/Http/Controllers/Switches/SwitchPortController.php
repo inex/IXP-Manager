@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\Switches;
 
 use Former, Log, Redirect, Route;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\{
     RedirectResponse,
     JsonResponse,
@@ -143,13 +144,30 @@ class SwitchPortController extends EloquentController
     /**
      * Provide array of rows for the list action and view action
      *
-     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @param int|null $id The `id` of the row to load for `view` action`. `null` if `listAction`
      *
      * @return array
      */
     protected function listGetData( $id = null ): array
     {
-        return SwitchPort::getFeList( $this->feParams, $id, $this->data );
+        $feParams = $this->feParams;
+        return SwitchPort::select( [
+            'sp.*',
+            's.id AS switchid', 's.name AS switchname'
+        ] )
+            ->from( 'switchport AS sp' )
+            ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
+            ->when( $id , function( Builder $q, $id ) {
+                return $q->selectRaw( 'c.id AS cid, c.name AS cname' )
+                    ->leftJoin( 'physicalinterface AS pi', 'pi.switchportid', 'sp.id' )
+                    ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'pi.virtualinterfaceid' )
+                    ->leftJoin( 'cust AS c', 'c.id', 'vi.custid' )
+                    ->where('sp.id', $id );
+            } )->when( isset( $params[ 'params' ][ 'switch' ] ) && $params[ 'params' ][ 'switch' ] , function( Builder $q ) use ( $params ) {
+                return $q->where('s.id', $params[ 'params' ][ 'switch' ]->id );
+            } )->when( isset( $feParams->listOrderBy ) , function( Builder $q ) use ( $feParams )  {
+                return $q->orderBy( $feParams->listOrderBy, $feParams->listOrderByDir ?? 'ASC');
+            })->get()->toArray();
     }
 
     /**
@@ -174,7 +192,7 @@ class SwitchPortController extends EloquentController
         }
 
         $this->data[ 'params' ][ 'switch' ]         = $s;
-        $this->data[ 'params' ][ 'switches' ]       = Switcher::getListAsArray();
+        $this->data[ 'params' ][ 'switches' ]       = Switcher::orderBy( 'name' )->get()->keyBy( 'id' );
 
         $this->data[ 'rows' ] = $this->listGetData();
 
@@ -192,7 +210,7 @@ class SwitchPortController extends EloquentController
     {
         return [
             'object'            => $this->object,
-            'switches'          => Switcher::getListAsArray()
+            'switches'          => Switcher::orderBy( 'name' )->get()->keyBy( 'id' )
         ];
     }
 
@@ -216,7 +234,7 @@ class SwitchPortController extends EloquentController
 
         return [
             'object'            => $this->object,
-            'switches'          => Switcher::getListAsArray()
+            'switches'          => Switcher::orderBy( 'name' )->get()->keyBy( 'id' ),
         ];
     }
 
@@ -371,7 +389,22 @@ class SwitchPortController extends EloquentController
     public function unusedOptics() : View
     {
         $this->setUpUnusedOptics();
-        $this->data[ 'rows' ] =  SwitchPort::getUnusedOpticsForFeList( $this->feParams );
+
+        $feParams = $this->feParams;
+        $this->data[ 'rows' ] =  SwitchPort::select( [
+            'sp.ifIndex AS ifIndex', 'sp.ifName AS ifName', 'sp.type AS type', 'sp.mauType AS mauType', 'sp.mauState AS mauState', 'sp.mauJacktype AS mauJacktype',
+            's.id AS switchid', 's.name AS switchname'
+        ] )
+            ->from( 'switchport AS sp' )
+            ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
+            ->where( 's.mauSupported', 1 )
+            ->where( 'sp.ifOperStatus', '!=', 1 )
+            ->where( 'sp.mauType', '!=', '(empty)' )
+            ->where( 'sp.type', '!=', SwitchPort::TYPE_MANAGEMENT )
+            ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+            })->get()->toArray();
+
         $this->listIncludeTemplates();
 
         AlertContainer::push( "A list of ports from <b>switches that support the IANA MAU MIB</b> where the operational status
@@ -451,7 +484,21 @@ class SwitchPortController extends EloquentController
         $this->feParams->pagetitlepostamble             = 'MAU Interface Detail for ' . $switch->name ;
         $this->data[ 'params' ][ 'switches' ]           = Switcher::where( 'mauSupported', true )->get()->keyBy( 'id' )->toArray();
         $this->data[ 'params' ][ 'switch' ]             = $switch;
-        $this->data[ 'rows' ] =  SwitchPort::getListMau( $this->feParams, $switch->id );
+
+        $feParams = $this->feParams;
+        $this->data[ 'rows' ] =  SwitchPort::select( [
+            'sp.*',
+            's.id AS switchid'
+        ] )
+            ->from( 'switchport AS sp' )
+            ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
+            ->when( $switch->id , function( Builder $q, $id ) {
+                return $q->where('s.id', $id );
+            } )
+            ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+            })->get()->toArray();
+
         $this->listIncludeTemplates();
 
         AlertContainer::push( "Data valid at time of last SNMP poll: " . $switch->lastPolled, Alert::INFO );
@@ -540,7 +587,7 @@ class SwitchPortController extends EloquentController
         $this->data[ 'params' ][ 'portStates' ]     = Iface::$IF_OPER_STATES;
         $this->data[ 'params' ][ 'switch' ]         = $switch;
         $this->data[ 'params' ][ 'switchid' ]       = $switch->id;
-        $this->data[ 'params' ][ 'switches']        = Switcher::getListAsArray();
+        $this->data[ 'params' ][ 'switches']        = Switcher::orderBy( 'name' )->get()->keyBy( 'id' );
 
         $this->data[ 'rows' ] =  $this->listGetData();
 
@@ -588,7 +635,7 @@ class SwitchPortController extends EloquentController
         }
 
         return view( 'switch-port/snmp-poll' )->with([
-            'switches'                  => Switcher::getListAsArray(),
+            'switches'                  => Switcher::orderBy( 'name' )->get()->keyBy( 'id' ),
             's'                         => $switch,
             'ports'                     => $results,
 
@@ -754,7 +801,19 @@ class SwitchPortController extends EloquentController
     public function opticInventory(): view
     {
         $this->setUpOpticInventory();
-        $this->data[ 'rows' ] =  SwitchPort::getOpticInventory( $this->feParams );
+
+        $feParams = $this->feParams;
+        $this->data[ 'rows' ] =  SwitchPort::selectRaw(
+            'switchport.mauType AS mauType,
+            COUNT( switchport.mauType ) AS cnt'
+        )
+            ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+            })
+            ->groupBy( 'switchport.mauType' )
+            ->having( 'cnt', '>', '0' )
+            ->get()->toArray();
+
         $this->listIncludeTemplates();
         return $this->display( 'list' );
     }
@@ -821,7 +880,27 @@ class SwitchPortController extends EloquentController
     public function opticList(): view
     {
         $this->setUpOpticList();
-        $this->data[ 'rows' ] =  SwitchPort::getListMauForType( $this->feParams, request()->input( "mau-type" ) );
+
+        $feParams = $this->feParams;
+        $this->data[ 'rows' ] =  SwitchPort::select( [
+            'sp.*',
+            'c.name AS custname', 'c.id AS custid',
+            's.id AS switchid', 's.name AS switch'
+        ] )
+            ->from( 'switchport AS sp' )
+            ->leftjoin( 'physicalinterface AS pi', 'pi.switchportid', 'sp.id' )
+            ->leftjoin( 'virtualinterface AS vi', 'vi.id', 'pi.virtualinterfaceid' )
+            ->leftjoin( 'cust AS c', 'c.id', 'vi.custid' )
+            ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
+            ->when( request()->input( "mau-type" ) , function( Builder $q, $mautype ) {
+                return $q->where( 'sp.mauType', $mautype);
+            }, function ($query) {
+                return $query->where( 'sp.mauType', '!=', NULL);
+            })
+            ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+            })->get()->toArray();
+
         $this->listIncludeTemplates();
         $this->preList();
         return $this->display( 'list' );

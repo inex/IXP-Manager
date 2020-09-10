@@ -144,6 +144,8 @@ class Router
      */
     private $name;
 
+    private $created_at;
+
     /**
      * @var string
      */
@@ -237,7 +239,7 @@ class Router
     /**
      * @var \DateTime
      */
-    private $last_updated;
+    private $updated_at;
 
     /**
      * @var \Entities\Vlan
@@ -717,7 +719,7 @@ class Router
      * @return DateTime|null
      */
     public function getLastUpdated() {
-        return $this->last_updated;
+        return $this->updated_at;
     }
 
     /**
@@ -726,7 +728,7 @@ class Router
      * @return Carbon|null
      */
     public function getLastUpdatedCarbon() {
-        return $this->last_updated ? Carbon::instance( $this->getLastUpdated() ) : null;
+        return $this->updated_at ? Carbon::instance( $this->getLastUpdated() ) : null;
     }
 
     /**
@@ -1109,7 +1111,7 @@ class Router
      * @return Router
      */
     public function setLastUpdated( DateTime $date ): Router {
-        $this->last_updated = $date;
+        $this->updated_at = $date;
         return $this;
     }
 

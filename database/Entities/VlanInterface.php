@@ -32,6 +32,8 @@ use IXP\Services\Grapher\Graph;
  */
 class VlanInterface
 {
+    private $created_at;
+    private $updated_at;
     /**
      * @var boolean $ipv4enabled
      */

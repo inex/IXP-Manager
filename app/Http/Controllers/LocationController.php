@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers;
 
 use Countries, Former;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -118,7 +119,12 @@ class LocationController extends EloquentController
      */
     protected function listGetData( $id = null ): array
     {
-        return Location::getFeList( $this->feParams, $id );
+        $feParams = $this->feParams;
+        return Location::when( $id , function( Builder $q, $id ) {
+            return $q->where('id', $id );
+        } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+        })->get()->toArray();
     }
 
     /**

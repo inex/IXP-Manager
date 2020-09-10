@@ -40,6 +40,8 @@ use Doctrine\Common\Collections\Collection;
  */
 class VirtualInterface
 {
+    private $created_at;
+    private $updated_at;
     /**
      * @var string $name
      */

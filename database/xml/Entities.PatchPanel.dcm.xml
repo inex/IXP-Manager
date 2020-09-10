@@ -23,6 +23,8 @@
     </field>
     <field name="u_position" type="integer" nullable="true"/>
     <field name="mounted_at" type="smallint" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <many-to-one field="cabinet" target-entity="Entities\Cabinet" inversed-by="patchPanels">
       <join-columns>
         <join-column name="cabinet_id" referenced-column-name="id"/>

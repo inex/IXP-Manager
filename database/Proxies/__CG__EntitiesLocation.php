@@ -66,10 +66,10 @@ class Location extends \Entities\Location implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'shortname', 'tag', 'address', 'country', 'city', 'nocphone', 'nocfax', 'nocemail', 'officephone', 'officefax', 'officeemail', 'id', 'Cabinets', 'notes', '' . "\0" . 'Entities\\Location' . "\0" . 'pdb_facility_id'];
+            return ['__isInitialized__', 'name', 'shortname', 'tag', 'address', '' . "\0" . 'Entities\\Location' . "\0" . 'created_at', '' . "\0" . 'Entities\\Location' . "\0" . 'updated_at', 'country', 'city', 'nocphone', 'nocfax', 'nocemail', 'officephone', 'officefax', 'officeemail', 'id', 'Cabinets', 'notes', '' . "\0" . 'Entities\\Location' . "\0" . 'pdb_facility_id'];
         }
 
-        return ['__isInitialized__', 'name', 'shortname', 'tag', 'address', 'country', 'city', 'nocphone', 'nocfax', 'nocemail', 'officephone', 'officefax', 'officeemail', 'id', 'Cabinets', 'notes', '' . "\0" . 'Entities\\Location' . "\0" . 'pdb_facility_id'];
+        return ['__isInitialized__', 'name', 'shortname', 'tag', 'address', '' . "\0" . 'Entities\\Location' . "\0" . 'created_at', '' . "\0" . 'Entities\\Location' . "\0" . 'updated_at', 'country', 'city', 'nocphone', 'nocfax', 'nocemail', 'officephone', 'officefax', 'officeemail', 'id', 'Cabinets', 'notes', '' . "\0" . 'Entities\\Location' . "\0" . 'pdb_facility_id'];
     }
 
     /**

@@ -25,16 +25,11 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\Model;
-
-
-use Entities\User as UserEntity;
-
-use Illuminate\Database\Eloquent\Relations\{
-    BelongsTo,
+use Illuminate\Database\Eloquent\{
+    Model,
+    Relations\BelongsTo
 };
 
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 
@@ -64,6 +59,10 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereUploadedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereUploadedBy($value)
  * @mixin Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistoryFile whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistoryFile whereUpdatedAt($value)
  */
 
 class PatchPanelPortHistoryFile extends Model
@@ -83,18 +82,4 @@ class PatchPanelPortHistoryFile extends Model
         return $this->belongsTo( PatchPanelPortHistory::class , 'patch_panel_port_history_id' );
     }
 
-    /**
-     * Gets a listing of patch panel port files history for a customer
-     */
-    public static function getForCustomer( Customer $cust, bool $includePrivate = true ): Collection
-    {
-        $q = self::join(     'patch_panel_port_history as ppph' ,     'patch_panel_port_history_file.patch_panel_port_history_id' , 'ppph.id'  )
-            ->where('ppph.cust_id', $cust->id );
-
-        if( !$includePrivate ) {
-            $q->where( 'ppphf.is_private', '0' );
-        }
-
-        return $q->get();
-    }
 }

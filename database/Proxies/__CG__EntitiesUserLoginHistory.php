@@ -66,10 +66,10 @@ class UserLoginHistory extends \Entities\UserLoginHistory implements \Doctrine\O
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'ip', 'at', '' . "\0" . 'Entities\\UserLoginHistory' . "\0" . 'via', 'id', 'user_id', 'customerToUser'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\UserLoginHistory' . "\0" . 'created_at', '' . "\0" . 'Entities\\UserLoginHistory' . "\0" . 'updated_at', 'ip', 'at', '' . "\0" . 'Entities\\UserLoginHistory' . "\0" . 'via', 'id', 'user_id', 'customerToUser'];
         }
 
-        return ['__isInitialized__', 'ip', 'at', '' . "\0" . 'Entities\\UserLoginHistory' . "\0" . 'via', 'id', 'user_id', 'customerToUser'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\UserLoginHistory' . "\0" . 'created_at', '' . "\0" . 'Entities\\UserLoginHistory' . "\0" . 'updated_at', 'ip', 'at', '' . "\0" . 'Entities\\UserLoginHistory' . "\0" . 'via', 'id', 'user_id', 'customerToUser'];
     }
 
     /**

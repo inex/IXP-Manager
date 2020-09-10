@@ -51,12 +51,12 @@ class CustomerTag
     /**
      * @var \DateTime
      */
-    private $created;
+    private $created_at;
 
     /**
      * @var \DateTime
      */
-    private $updated;
+    private $updated_at;
 
     /**
      * @var integer
@@ -154,7 +154,7 @@ class CustomerTag
      */
     public function getCreated(): \DateTime
     {
-        return $this->created;
+        return $this->created_at;
     }
 
     /**
@@ -163,7 +163,7 @@ class CustomerTag
      */
     public function setCreated( \DateTime $created ): CustomerTag
     {
-        $this->created = $created;
+        $this->created_at = $created;
         return $this;
     }
 
@@ -172,7 +172,7 @@ class CustomerTag
      */
     public function getUpdated(): \DateTime
     {
-        return $this->updated;
+        return $this->updated_at;
     }
 
     /**
@@ -181,7 +181,7 @@ class CustomerTag
      */
     public function setUpdated( \DateTime $updated ): CustomerTag
     {
-        $this->updated = $updated;
+        $this->updated_at = $updated;
         return $this;
     }
 

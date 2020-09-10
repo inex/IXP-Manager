@@ -52,7 +52,8 @@ class Layer2Address {
     /**
      * @var \DateTime
      */
-    private $created;
+    private $created_at;
+    private $updated_at;
 
     /**
      * @var \Entities\VlanInterface
@@ -230,7 +231,7 @@ class Layer2Address {
      */
     public function setCreatedAt( $createdAt ): Layer2Address
     {
-        $this->created = $createdAt;
+        $this->created_at = $createdAt;
         return $this;
     }
 

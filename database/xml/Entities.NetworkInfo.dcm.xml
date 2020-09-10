@@ -10,6 +10,8 @@
     <field name="rs1address" type="string" length="40" nullable="true"/>
     <field name="rs2address" type="string" length="40" nullable="true"/>
     <field name="dnsfile" type="string" length="255" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <many-to-one field="Vlan" target-entity="Entities\Vlan" inversed-by="NetworkInfo">
       <join-columns>
         <join-column name="vlanid" referenced-column-name="id"/>

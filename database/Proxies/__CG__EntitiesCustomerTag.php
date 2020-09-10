@@ -66,10 +66,10 @@ class CustomerTag extends \Entities\CustomerTag implements \Doctrine\ORM\Proxy\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'tag', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'display_as', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'description', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'internal_only', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'created', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'updated', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'customers'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'tag', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'display_as', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'description', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'internal_only', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'created_at', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'updated_at', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'customers'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'tag', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'display_as', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'description', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'internal_only', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'created', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'updated', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'customers'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'tag', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'display_as', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'description', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'internal_only', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'created_at', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'updated_at', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'customers'];
     }
 
     /**

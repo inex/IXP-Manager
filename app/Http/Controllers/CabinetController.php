@@ -85,9 +85,9 @@ class CabinetController extends EloquentController
                     'action'     => 'view',
                     'idField'    => 'locationid'
                 ],
-                'name'         => 'Name',
-                'colocation' => 'Colo Location',
-                'height'       => 'Height'
+                'name'          => 'Name',
+                'colocation'    => 'Colo Location',
+                'height'        => 'Height'
             ]
         ];
 
@@ -135,7 +135,7 @@ class CabinetController extends EloquentController
     {
         return [
             'object'                => $this->object,
-            'locations'             => Location::getListAsArray(),
+            'locations'             => Location::orderBy( 'name', 'asc' )->get(),
         ];
     }
 
@@ -162,7 +162,7 @@ class CabinetController extends EloquentController
 
         return [
             'object'                => $this->object,
-            'locations'             => Location::getListAsArray(),
+            'locations'             => Location::orderBy( 'name', 'asc' )->get(),
         ];
     }
 

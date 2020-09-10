@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers;
 
 use Former;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -82,13 +83,18 @@ class VendorController extends EloquentController
     /**
      * Provide array of rows for the list and view
      *
-     * @param int $id The `id` of the row to load for `view`. `null` if `list`
+     * @param int|null $id The `id` of the row to load for `view`. `null` if `list`
      *
      * @return array
      */
     protected function listGetData( $id = null ): array
     {
-        return Vendor::getFeList( $this->feParams, $id );
+        $feParams = $this->feParams;
+        return Vendor::when( $id , function( Builder $q, $id ) {
+            return $q->where('id', $id );
+        } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+        })->get()->toArray();;
     }
 
     /**

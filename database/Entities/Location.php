@@ -49,6 +49,9 @@ class Location
      */
     protected $address;
 
+    private $created_at;
+    private $updated_at;
+
 
     /**
      * @var string

@@ -2,9 +2,31 @@
 
 namespace IXP\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use stdClass;
+/*
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model
+};
 
 /**
  * IXP\Models\CustomerToUser
@@ -31,50 +53,10 @@ use stdClass;
  * @method static Builder|CustomerToUser wherePrivs($value)
  * @method static Builder|CustomerToUser whereUserId($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerToUser whereUpdatedAt($value)
  */
 class CustomerToUser extends Model
 {
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
 
-    /**
-     * Return an array of users with their last login time ordered from most recent to oldest. (DQL)
-     *
-     * As an example, an element of the returned array contains:
-     *
-     *     [0] => array(6) {
-     *         ["attribute"] => string(18) "auth.last_login_at"
-     *         ["lastlogin"] => string(10) "1338329771"
-     *         ["username"]  => string(4) "auser"
-     *         ["email"]     => string(12) "auser@example.com"
-     *         ["cust_name"] => string(4) "INEX"
-     *         ["cust_id"]   => string(2) "15"
-     *     }
-     *
-     * @param stdClass $feParams
-     *
-     * @return array Users with their last login time ordered from most recent to oldest.
-     */
-    public static function getLastLoginsForFeList( stdClass $feParams ): array
-    {
-        return self::select( [
-            'customer_to_users.last_login_date AS last_login_date',
-            'customer_to_users.last_login_via AS last_login_via',
-            'customer_to_users.id AS AS c2u_id',
-            'user.id AS id',
-            'user.username AS username',
-            'user.email AS email',
-            'cust.id AS cust_id',
-            'cust.name AS cust_name'
-        ] )
-        ->join( 'user', 'user.id', 'customer_to_users.user_id' )
-        ->join( 'cust', 'cust.id', 'customer_to_users.customer_id' )
-        ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-        })->get()->toArray();
-    }
 }

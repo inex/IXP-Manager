@@ -25,17 +25,10 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Model
-};
+use Illuminate\Database\Eloquent\{Builder, Collection, Model};
 
-use Illuminate\Database\Eloquent\Relations\{
-    HasMany
-};
-
+use Illuminate\Database\Eloquent\Relations\{HasMany, HasOne};
 use Illuminate\Support\Carbon;
-
 
 /**
  * IXP\Models\PatchPanelPortHistory
@@ -61,8 +54,8 @@ use Illuminate\Support\Carbon;
  * @property string|null $description
  * @property string|null $colo_billing_ref
  * @property int|null $cust_id
- * @property-read \IXP\Models\PatchPanelPort|null $patchPanelPort
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortHistoryFile[] $patchPanelPortHistoryFiles
+ * @property-read PatchPanelPort|null $patchPanelPort
+ * @property-read Collection|PatchPanelPortHistoryFile[] $patchPanelPortHistoryFiles
  * @property-read int|null $patch_panel_port_history_files_count
  * @method static Builder|PatchPanelPortHistory newModelQuery()
  * @method static Builder|PatchPanelPortHistory newQuery()
@@ -89,6 +82,10 @@ use Illuminate\Support\Carbon;
  * @method static Builder|PatchPanelPortHistory whereSwitchport($value)
  * @method static Builder|PatchPanelPortHistory whereTicketRef($value)
  * @mixin Eloquent
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @method static Builder|PatchPanelPortHistory whereCreatedAt($value)
+ * @method static Builder|PatchPanelPortHistory whereUpdatedAt($value)
  */
 
 class PatchPanelPortHistory extends Model
@@ -103,7 +100,7 @@ class PatchPanelPortHistory extends Model
     /**
      * Get the Patch Panel that owns this patch panel port
      */
-    public function patchPanelPort(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function patchPanelPort(): HasOne
     {
         return $this->hasOne( PatchPanelPort::class , 'id' );
     }

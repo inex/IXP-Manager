@@ -40,6 +40,9 @@ class IPv6Address
      */
     protected $id;
 
+    protected $created_at;
+    protected $updated_at;
+
     /**
      * @var Entities\VlanInterface
      */

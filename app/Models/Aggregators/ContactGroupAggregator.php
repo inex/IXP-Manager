@@ -31,6 +31,29 @@ use IXP\Models\ContactGroup;
 
 /**
  * IXP\Models\Aggregators\ContactGroupAggregator
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $description
+ * @property string $type
+ * @property int $active
+ * @property int $limited_to
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Contact[] $contacts
+ * @property-read int|null $contacts_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator whereLimitedTo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class ContactGroupAggregator extends ContactGroup
 {

@@ -11,6 +11,8 @@
         <option name="default">1</option>
       </options>
     </field>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <field name="ifIndex" type="integer" nullable="true" column="ifIndex"/>
     <field name="ifName" type="string" nullable="true" column="ifName"/>
     <field name="ifAlias" type="string" nullable="true" column="ifAlias"/>

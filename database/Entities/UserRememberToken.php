@@ -53,7 +53,9 @@ class UserRememberToken
     /**
      * @var \DateTime
      */
-    private $created;
+    private $created_at;
+
+    private $updated_at;
 
     /**
      * @var \DateTime
@@ -137,7 +139,7 @@ class UserRememberToken
      */
     public function getCreated(): DateTime
     {
-        return $this->created;
+        return $this->created_at;
     }
 
     /**
@@ -146,7 +148,7 @@ class UserRememberToken
      */
     public function setCreated( DateTime $created ): UserRememberToken
     {
-        $this->created = $created;
+        $this->created_at = $created;
         return $this;
     }
 

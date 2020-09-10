@@ -39,6 +39,9 @@ class CoreInterface
      */
     private $id;
 
+    private $created_at;
+    private $updated_at;
+
     /**
      * @var PhysicalInterfaceEntity
      */

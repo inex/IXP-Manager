@@ -23,8 +23,10 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\{
+    Model,
+    Relations\BelongsTo
+};
 
 /**
  * IXP\Models\IrrdbPrefix
@@ -46,6 +48,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix wherePrefix($value)
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereProtocol($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbPrefix whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbPrefix whereUpdatedAt($value)
  */
 class IrrdbPrefix extends Model
 {

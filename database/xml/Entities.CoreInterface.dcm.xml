@@ -9,6 +9,8 @@
         <join-column name="physical_interface_id" referenced-column-name="id" unique="true"/>
       </join-columns>
     </one-to-one>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <one-to-one field="coreLink" target-entity="Entities\CoreLink" mapped-by="coreInterfaceSideA"/>
     <one-to-one field="coreLink2" target-entity="Entities\CoreLink" mapped-by="coreInterfaceSideB"/>
   </entity>

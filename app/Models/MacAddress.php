@@ -2,10 +2,31 @@
 
 namespace IXP\Models;
 
-use DB;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use stdClass;
+/*
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model
+};
 
 /**
  * IXP\Models\MacAddress
@@ -24,6 +45,10 @@ use stdClass;
  * @method static Builder|MacAddress whereMac($value)
  * @method static Builder|MacAddress whereVirtualinterfaceid($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\MacAddress whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\MacAddress whereUpdatedAt($value)
  */
 class MacAddress extends Model
 {
@@ -33,50 +58,4 @@ class MacAddress extends Model
      * @var string
      */
     protected $table = 'macaddress';
-
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
-
-    /**
-     * Gets a listing of mac addresses or a single one if an ID is provided
-     *
-     * @param stdClass $feParams
-     * @param int|null $id
-     *
-     * @return array
-     */
-    public static function getFeList( stdClass $feParams, int $id = null ): array
-    {
-        return self::selectRaw( "m.*,
-            vi.id AS viid,
-            c.id AS customerid, c.abbreviatedName AS customer,
-            s.name AS switchname, 
-            GROUP_CONCAT( sp.name ) AS switchport,
-            GROUP_CONCAT( DISTINCT ipv4.address ) AS ip4,
-            GROUP_CONCAT( DISTINCT ipv6.address ) AS ip6,
-            COALESCE( o.organisation, 'Unknown' ) AS organisation"
-        )
-        ->from( 'macaddress AS m' )
-        ->join( 'virtualinterface AS vi', 'vi.id', 'm.virtualinterfaceid' )
-        ->join( 'vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id' )
-        ->leftjoin( 'ipv4address AS ipv4', 'ipv4.id', 'vli.ipv4addressid' )
-        ->leftjoin( 'ipv6address AS ipv6', 'ipv4.id', 'vli.ipv6addressid' )
-        ->join( 'cust AS c', 'c.id', 'vi.custid' )
-        ->leftjoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
-        ->leftjoin( 'switchport AS sp', 'sp.id', 'pi.switchportid' )
-        ->leftjoin( 'switch AS s', 's.id', 'sp.switchid' )
-        ->leftjoin( 'oui AS o', 'o.oui', '=', DB::raw("SUBSTRING( m.mac, 1, 6 )") )
-        ->when( $id , function( Builder $q, $id ) {
-            return $q->where('id', $id );
-        } )->groupBy( 'm.mac', 'vi.id', 'm.id', 'm.firstseen', 'm.lastseen',
-                'c.id', 'c.abbreviatedName', 's.name', 'o.organisation'
-            )
-        ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-        })->get()->toArray();
-    }
 }

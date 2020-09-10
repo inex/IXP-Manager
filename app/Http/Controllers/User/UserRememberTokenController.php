@@ -27,6 +27,7 @@ use Auth, Route;
 
 use Illuminate\Auth\Recaller;
 
+use Illuminate\Database\Eloquent\Builder;
 use IXP\Models\{
     User,
     UserRememberToken
@@ -142,13 +143,19 @@ class UserRememberTokenController extends EloquentController
     /**
      * Provide array of rows for the list and view
      *
-     * @param int $id The `id` of the row to load for `view`. `null` if `list`
+     * @param int|null $id The `id` of the row to load for `view`. `null` if `list`
      *
      * @return array
      */
     protected function listGetData( $id = null ): array
     {
-        return UserRememberToken::getFeList( $this->feParams, request()->user()->getId(), $id );
+        $feParams = $this->feParams;
+        return UserRememberToken::where( 'user_id', request()->user()->getId() )
+            ->when( $id , function( Builder $q, $id ) {
+                return $q->where('id', $id );
+            } )->when( $feParams->listOrderBy , static function( Builder $q, $orderby ) use ( $feParams )  {
+                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+            })->get()->toArray();
     }
 
     /**

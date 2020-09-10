@@ -115,6 +115,9 @@ class SwitchPort
      */
     protected $type;
 
+    private $created_at;
+    private $updated_at;
+
     /**
      * @var string $name
      */

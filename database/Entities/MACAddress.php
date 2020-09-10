@@ -50,6 +50,9 @@ class MACAddress
      */
     protected $id;
 
+    private $created_at;
+    private $updated_at;
+
     /**
      * @var Entities\VirtualInterface
      */

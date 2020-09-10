@@ -66,10 +66,10 @@ class CoreLink extends \Entities\CoreLink implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'bfd', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'enabled', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'ipv4_subnet', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'ipv6_subnet', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'id', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'coreInterfaceSideA', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'coreInterfaceSideB', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'coreBundle'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'bfd', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'enabled', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'ipv4_subnet', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'ipv6_subnet', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'created_at', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'updated_at', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'id', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'coreInterfaceSideA', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'coreInterfaceSideB', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'coreBundle'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'bfd', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'enabled', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'ipv4_subnet', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'ipv6_subnet', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'id', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'coreInterfaceSideA', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'coreInterfaceSideB', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'coreBundle'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'bfd', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'enabled', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'ipv4_subnet', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'ipv6_subnet', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'created_at', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'updated_at', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'id', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'coreInterfaceSideA', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'coreInterfaceSideB', '' . "\0" . 'Entities\\CoreLink' . "\0" . 'coreBundle'];
     }
 
     /**

@@ -66,10 +66,10 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'lag_framing', 'fastlacp', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'SflowReceivers'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'created_at', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'updated_at', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'lag_framing', 'fastlacp', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'SflowReceivers'];
         }
 
-        return ['__isInitialized__', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'lag_framing', 'fastlacp', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'SflowReceivers'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'created_at', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'updated_at', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'lag_framing', 'fastlacp', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'SflowReceivers'];
     }
 
     /**

@@ -25,10 +25,12 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\{
+    Model,
+    Relations\BelongsTo,
+    Relations\HasMany,
+    Relations\HasOne
+};
 
 /**
  * IXP\Models\PhysicalInterface
@@ -62,6 +64,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereSwitchportid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereVirtualinterfaceid($value)
  * @mixin Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\SwitchPort|null $switchPort
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereUpdatedAt($value)
  */
 class PhysicalInterface extends Model
 {
@@ -72,34 +79,28 @@ class PhysicalInterface extends Model
      */
     protected $table = 'physicalinterface';
 
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
 
-    const STATUS_CONNECTED       = 1;
-    const STATUS_DISABLED        = 2;
-    const STATUS_NOTCONNECTED    = 3;
-    const STATUS_XCONNECT        = 4;
-    const STATUS_QUARANTINE      = 5;
+    public const STATUS_CONNECTED       = 1;
+    public const STATUS_DISABLED        = 2;
+    public const STATUS_NOTCONNECTED    = 3;
+    public const STATUS_XCONNECT        = 4;
+    public const STATUS_QUARANTINE      = 5;
 
-    public static $STATES = array(
+    public static $STATES = [
         self::STATUS_CONNECTED    => 'Connected',
         self::STATUS_DISABLED     => 'Disabled',
         self::STATUS_NOTCONNECTED => 'Not Connected',
         self::STATUS_XCONNECT     => 'Awaiting X-Connect',
         self::STATUS_QUARANTINE   => 'Quarantine'
-    );
+    ];
 
-    public static $APISTATES = array(
+    public static $APISTATES = [
         self::STATUS_CONNECTED    => 'connected',
         self::STATUS_DISABLED     => 'disabled',
         self::STATUS_NOTCONNECTED => 'notconnected',
         self::STATUS_XCONNECT     => 'awaitingxconnect',
         self::STATUS_QUARANTINE   => 'quarantine'
-    );
+    ];
 
     public static $SPEED = [
         10    => '10 Mbps',
@@ -122,7 +123,7 @@ class PhysicalInterface extends Model
     /**
      * Get the switch port that owns the physical interface.
      */
-    public function switchport(): BelongsTo
+    public function switchPort(): BelongsTo
     {
         return $this->belongsTo(SwitchPort::class, 'switchportid');
     }
@@ -169,62 +170,6 @@ class PhysicalInterface extends Model
         return $this->status === self::STATUS_CONNECTED || $this->status === self::STATUS_QUARANTINE;
     }
 
-    /**
-     * Try to find the most accurate version of the port's speed.
-     *
-     * I.e. try the actual SNMP-discovered port speed first, otherwise use the configured speed
-     *
-     * @return int
-     */
-    public function resolveDetectedSpeed()
-    {
-        // try the actual SNMP-discovered port speed first, otherwise use the configured speed:
-        return $this->switchPort->ifHighSpeed > 0 ? $this->switchPort->ifHighSpeed : $this->speed;
-    }
-
-    /**
-     * Turn the database integer representation of the speed into text as
-     * defined in the self::$SPEEDS array (or 'Unknown')
-     *
-     * @return string
-     */
-    public function resolveSpeed(): string
-    {
-        return self::$SPEED[ $this->speed ] ?? 'Unknown';
-    }
-
-    /**
-     * Turn the database integer representation of the states into text as
-     * defined in the self::$STATES array (or 'Unknown')
-     *
-     * @return string
-     */
-    public function resolveStatus(): string
-    {
-        return self::$STATES[ $this->status ] ?? 'Unknown';
-    }
-
-    /**
-     * Turn the database integer representation of the states into text suitable
-     * for API output as defined in the self::$STATES array (or 'unknown')
-     * @return string
-     */
-    public function resolveAPIStatus(): string
-    {
-        return self::$APISTATES[ $this->status ] ?? 'unknown';
-    }
-
-    /**
-     * Provide array of all the speeds
-     *
-     * @return array
-     */
-    public static function getAllSpeed(): array
-    {
-        return self::selectRaw( 'DISTINCT physicalinterface.speed AS speed' )
-            ->orderBy( 'speed', 'ASC' )
-            ->get()->toArray();
-    }
 
     /**
      * Determine if the port's status is set to CONNECTED
@@ -276,6 +221,50 @@ class PhysicalInterface extends Model
         return $this->status === self::STATUS_QUARANTINE;
     }
 
+    /**
+     * Try to find the most accurate version of the port's speed.
+     *
+     * I.e. try the actual SNMP-discovered port speed first, otherwise use the configured speed
+     *
+     * @return int
+     */
+    public function resolveDetectedSpeed()
+    {
+        // try the actual SNMP-discovered port speed first, otherwise use the configured speed:
+        return $this->switchPort->ifHighSpeed > 0 ? $this->switchPort->ifHighSpeed : $this->speed;
+    }
+
+    /**
+     * Turn the database integer representation of the speed into text as
+     * defined in the self::$SPEEDS array (or 'Unknown')
+     *
+     * @return string
+     */
+    public function resolveSpeed(): string
+    {
+        return self::$SPEED[ $this->speed ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the states into text as
+     * defined in the self::$STATES array (or 'Unknown')
+     *
+     * @return string
+     */
+    public function resolveStatus(): string
+    {
+        return self::$STATES[ $this->status ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the states into text suitable
+     * for API output as defined in the self::$STATES array (or 'unknown')
+     * @return string
+     */
+    public function resolveAPIStatus(): string
+    {
+        return self::$APISTATES[ $this->status ] ?? 'unknown';
+    }
 
     /**
      * Is this port graphable?

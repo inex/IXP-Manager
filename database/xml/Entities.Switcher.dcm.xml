@@ -38,6 +38,8 @@
     <field name="snmp_system_uptime" type="bigint" nullable="true"/>
     <field name="snmp_engine_boots" type="bigint" nullable="true"/>
     <field name="notes" type="text" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <many-to-one field="Infrastructure" target-entity="Entities\Infrastructure" inversed-by="Switchers">
       <join-columns>
         <join-column name="infrastructure" referenced-column-name="id"/>

@@ -40,6 +40,9 @@ class IrrdbPrefix
      */
     private $protocol;
 
+    protected $created_at;
+    protected $updated_at;
+
     /**
      * @var \DateTime
      */

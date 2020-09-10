@@ -66,10 +66,10 @@ class IRRDBConfig extends \Entities\IRRDBConfig implements \Doctrine\ORM\Proxy\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'host', 'protocol', 'source', 'notes', 'id', 'Customers'];
+            return ['__isInitialized__', 'host', 'protocol', 'created_at', 'updated_at', 'source', 'notes', 'id', 'Customers'];
         }
 
-        return ['__isInitialized__', 'host', 'protocol', 'source', 'notes', 'id', 'Customers'];
+        return ['__isInitialized__', 'host', 'protocol', 'created_at', 'updated_at', 'source', 'notes', 'id', 'Customers'];
     }
 
     /**

@@ -2,17 +2,44 @@
 
 namespace IXP\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+/*
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+*/
+
 use Log;
-use OSS_SNMP\MIBS\Extreme\Port;
-use OSS_SNMP\MIBS\Iface;
+
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model,
+    Relations\BelongsTo,
+    Relations\HasOne
+};
+
+
+use OSS_SNMP\MIBS\{
+    Extreme\Port,
+    Iface,
+    MAU as MauMib
+};
+
 use OSS_SNMP\SNMP;
-use OSS_SNMP\MIBS\MAU as MauMib;
-use stdClass;
 
 /**
  * IXP\Models\SwitchPort
@@ -68,6 +95,10 @@ use stdClass;
  * @method static Builder|SwitchPort whereSwitchid($value)
  * @method static Builder|SwitchPort whereType($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\SwitchPort whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\SwitchPort whereUpdatedAt($value)
  */
 class SwitchPort extends Model
 {
@@ -77,13 +108,6 @@ class SwitchPort extends Model
      * @var string
      */
     protected $table = 'switchport';
-
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.
@@ -114,12 +138,12 @@ class SwitchPort extends Model
         'mauAutoNegAdminState',
     ];
 
-    const TYPE_UNSET          = 0;
-    const TYPE_PEERING        = 1;
-    const TYPE_MONITOR        = 2;
-    const TYPE_CORE           = 3;
-    const TYPE_OTHER          = 4;
-    const TYPE_MANAGEMENT     = 5;
+    public const TYPE_UNSET          = 0;
+    public const TYPE_PEERING        = 1;
+    public const TYPE_MONITOR        = 2;
+    public const TYPE_CORE           = 3;
+    public const TYPE_OTHER          = 4;
+    public const TYPE_MANAGEMENT     = 5;
 
     /**
      * For resellers, we need to enforce the one port - one mac - one address rule
@@ -132,7 +156,7 @@ class SwitchPort extends Model
      *
      * @var int
      */
-    const TYPE_FANOUT         = 6;
+    public const TYPE_FANOUT         = 6;
 
     /**
      * For resellers, we need an uplink port(s) through which they deliver reseller
@@ -140,9 +164,9 @@ class SwitchPort extends Model
      *
      * @var int
      */
-    const TYPE_RESELLER       = 7;
+    public const TYPE_RESELLER       = 7;
 
-    public static $TYPES = array(
+    public static $TYPES = [
         self::TYPE_UNSET      => 'Unset / Unknown',
         self::TYPE_PEERING    => 'Peering',
         self::TYPE_MONITOR    => 'Monitor',
@@ -151,7 +175,7 @@ class SwitchPort extends Model
         self::TYPE_MANAGEMENT => 'Management',
         self::TYPE_FANOUT     => 'Fanout',
         self::TYPE_RESELLER   => 'Reseller'
-    );
+    ];
 
     // This array is for matching data from OSS_SNMP to the switchport database table.
     // See snmpUpdate() below
@@ -178,7 +202,6 @@ class SwitchPort extends Model
         'autonegSupported'  => [ 'fn' => 'MauAutoNegSupported'  ],
         'autonegAdminState' => [ 'fn' => 'MauAutoNegAdminState' ]
     ];
-
 
 
     /**
@@ -218,6 +241,7 @@ class SwitchPort extends Model
 
     /**
      * Is this an unset port?
+     *
      * @return boolean
      */
     public function isTypeUnset():bool
@@ -227,6 +251,7 @@ class SwitchPort extends Model
 
     /**
      * Is this a peering port?
+     *
      * @return boolean
      */
     public function isTypePeering(): bool
@@ -236,6 +261,7 @@ class SwitchPort extends Model
 
     /**
      * Is this a reseller port?
+     *
      * @return boolean
      */
     public function isTypeReseller(): bool
@@ -245,6 +271,7 @@ class SwitchPort extends Model
 
     /**
      * Is this a core port?
+     *
      * @return boolean
      */
     public function isTypeCore(): bool
@@ -379,107 +406,6 @@ class SwitchPort extends Model
     }
 
     /**
-     * Gets a listing of switche ports or a single one if an ID is provided
-     *
-     * @param stdClass $feParams
-     * @param int|null $id
-     * @param null $params
-     *
-     * @return array
-     */
-    public static function getFeList( stdClass $feParams, int $id = null, $params = null ): array
-    {
-        return self::select( [
-            'sp.*',
-            's.id AS switchid', 's.name AS switchname'
-        ] )
-            ->from( 'switchport AS sp' )
-            ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
-            ->when( $id , function( Builder $q, $id ) {
-                return $q->selectRaw( 'c.id AS cid, c.name AS cname' )
-                    ->leftJoin( 'physicalinterface AS pi', 'pi.switchportid', 'sp.id' )
-                    ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'pi.virtualinterfaceid' )
-                    ->leftJoin( 'cust AS c', 'c.id', 'vi.custid' )
-                ->where('sp.id', $id );
-            } )->when( isset( $params[ 'params' ][ 'switch' ] ) && $params[ 'params' ][ 'switch' ] , function( Builder $q ) use ( $params ) {
-                return $q->where('s.id', $params[ 'params' ][ 'switch' ]->id );
-            } )->when( isset( $feParams->listOrderBy ) , function( Builder $q ) use ( $feParams )  {
-                return $q->orderBy( $feParams->listOrderBy, $feParams->listOrderByDir ?? 'ASC');
-            })->get()->toArray();
-    }
-
-    /**
-     * Get all the unused optics
-     *
-     * @param stdClass $feParams
-     *
-     * @return array
-     */
-    public static function getUnusedOpticsForFeList( stdClass $feParams ): array
-    {
-        return self::select( [
-            'sp.ifIndex AS ifIndex', 'sp.ifName AS ifName', 'sp.type AS type', 'sp.mauType AS mauType', 'sp.mauState AS mauState', 'sp.mauJacktype AS mauJacktype',
-            's.id AS switchid', 's.name AS switchname'
-        ] )
-            ->from( 'switchport AS sp' )
-            ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
-            ->where( 's.mauSupported', 1 )
-            ->where( 'sp.ifOperStatus', '!=', 1 )
-            ->where( 'sp.mauType', '!=', '(empty)' )
-            ->where( 'sp.type', '!=', self::TYPE_MANAGEMENT )
-            ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-            })->get()->toArray();
-    }
-
-    /**
-     * Get all MAU ports
-     *
-     * @param stdClass $feParams
-     * @param int|null $id
-     *
-     * @return array
-     */
-    public static function getListMau( stdClass $feParams,  int $id = null ): array
-    {
-        return self::select( [
-            'sp.*',
-            's.id AS switchid'
-        ] )
-            ->from( 'switchport AS sp' )
-            ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
-            ->when( $id , function( Builder $q, $id ) {
-                return $q->where('s.id', $id );
-            } )
-            ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-            })->get()->toArray();
-    }
-
-    /**
-     * Returns all switch ports assigned to a physical interface for a switch.
-     *
-     * @param $switchid $id Switch ID - switch to query
-     *
-     * @return array
-     */
-    public static function getAllPortsAssignedToPIForSwitch( int $switchid ): array
-    {
-        return self::select( [
-            'sp.id AS id', 'sp.name AS name', 'sp.type AS porttype',
-            'pi.speed AS speed', 'pi.duplex AS duplex',
-            'c.name AS custname'
-        ] )
-            ->from( 'switchport AS sp' )
-            ->join( 'physicalinterface AS pi', 'pi.switchportid', 'sp.id' )
-            ->join( 'virtualinterface AS vi', 'vi.id', 'pi.virtualinterfaceid' )
-            ->join( 'cust AS c', 'c.id', 'vi.custid' )
-            ->where( 'sp.switchid', $switchid )
-            ->orderBy( 'id', 'ASC' )
-            ->get()->keyBy( 'id' )->toArray();
-    }
-
-    /**
      * Returns all available switch ports for a switch.
      *
      * Restrict to only some types of switch port
@@ -512,57 +438,6 @@ class SwitchPort extends Model
             ->where( 'sp.switchid', $switchid )
             ->orderBy( 'id', 'ASC' )
             ->get()->keyBy( 'id' )->toArray();
-    }
-
-    /**
-     * Get all the optic for a dedicated MAU TYPE
-     *
-     * @param stdClass $feParams
-     * @param string|null $mautype
-     *
-     * @return array Array
-     */
-    public static function getListMauForType( stdClass $feParams, string $mautype = null  ): array
-    {
-        return self::select( [
-            'sp.*',
-            'c.name AS custname', 'c.id AS custid',
-            's.id AS switchid', 's.name AS switch'
-        ] )
-            ->from( 'switchport AS sp' )
-            ->leftjoin( 'physicalinterface AS pi', 'pi.switchportid', 'sp.id' )
-            ->leftjoin( 'virtualinterface AS vi', 'vi.id', 'pi.virtualinterfaceid' )
-            ->leftjoin( 'cust AS c', 'c.id', 'vi.custid' )
-            ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
-            ->when( $mautype , function( Builder $q, $mautype ) {
-                return $q->where( 'sp.mauType', $mautype);
-            }, function ($query) {
-                return $query->where( 'sp.mauType', '!=', NULL);
-            })
-            ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-            })->get()->toArray();
-    }
-
-    /**
-     * Get all the optic inventory
-     *
-     * @param stdClass $feParams
-     *
-     * @return array Array
-     */
-    public static function getOpticInventory( stdClass $feParams  ): array
-    {
-        return self::selectRaw(
-            'switchport.mauType AS mauType,
-            COUNT( switchport.mauType ) AS cnt'
-        )
-            ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-            })
-            ->groupBy( 'switchport.mauType' )
-            ->having( 'cnt', '>', '0' )
-            ->get()->toArray();
     }
 
     /**

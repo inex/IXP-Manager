@@ -9,6 +9,8 @@
     <field name="uploaded_at" type="datetime" nullable="false"/>
     <field name="uploaded_by" type="string" nullable="false"/>
     <field name="size" type="integer" nullable="false"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <field name="is_private" type="boolean" nullable="false">
       <options>
         <option name="default">0</option>

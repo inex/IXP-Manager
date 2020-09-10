@@ -30,6 +30,8 @@ class PatchPanelPortFile
 {
     CONST UPLOAD_PATH = 'ppp';
 
+    private $created_at;
+    private $updated_at;
     /**
      * @var integer
      */

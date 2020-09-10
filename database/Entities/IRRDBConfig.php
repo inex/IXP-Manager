@@ -40,6 +40,9 @@ class IRRDBConfig
      */
     protected $protocol;
 
+    protected $created_at;
+    protected $updated_at;
+
     /**
      * @var string $source
      */

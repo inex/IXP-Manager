@@ -18,6 +18,8 @@
     <field name="officefax" type="string" length="255" nullable="true"/>
     <field name="officeemail" type="string" length="255" nullable="true"/>
     <field name="notes" type="text" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <one-to-many field="Cabinets" target-entity="Entities\Cabinet" mapped-by="Location"/>
   </entity>
 </doctrine-mapping>

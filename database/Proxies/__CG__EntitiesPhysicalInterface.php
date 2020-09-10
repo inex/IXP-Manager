@@ -66,10 +66,10 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface', 'TrafficDailiesPhysInt'];
+            return ['__isInitialized__', 'status', 'speed', 'duplex', '' . "\0" . 'Entities\\PhysicalInterface' . "\0" . 'created_at', '' . "\0" . 'Entities\\PhysicalInterface' . "\0" . 'updated_at', 'autoneg', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface', 'TrafficDailiesPhysInt'];
         }
 
-        return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface', 'TrafficDailiesPhysInt'];
+        return ['__isInitialized__', 'status', 'speed', 'duplex', '' . "\0" . 'Entities\\PhysicalInterface' . "\0" . 'created_at', '' . "\0" . 'Entities\\PhysicalInterface' . "\0" . 'updated_at', 'autoneg', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface', 'TrafficDailiesPhysInt'];
     }
 
     /**

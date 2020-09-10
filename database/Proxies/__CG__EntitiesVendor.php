@@ -66,10 +66,10 @@ class Vendor extends \Entities\Vendor implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'id', 'Switches', 'consoleServers', 'bundle_name', '' . "\0" . 'Entities\\Vendor' . "\0" . 'shortname', '' . "\0" . 'Entities\\Vendor' . "\0" . 'nagios_name'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\Vendor' . "\0" . 'created_at', '' . "\0" . 'Entities\\Vendor' . "\0" . 'updated_at', 'name', 'id', 'Switches', 'consoleServers', 'bundle_name', '' . "\0" . 'Entities\\Vendor' . "\0" . 'shortname', '' . "\0" . 'Entities\\Vendor' . "\0" . 'nagios_name'];
         }
 
-        return ['__isInitialized__', 'name', 'id', 'Switches', 'consoleServers', 'bundle_name', '' . "\0" . 'Entities\\Vendor' . "\0" . 'shortname', '' . "\0" . 'Entities\\Vendor' . "\0" . 'nagios_name'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\Vendor' . "\0" . 'created_at', '' . "\0" . 'Entities\\Vendor' . "\0" . 'updated_at', 'name', 'id', 'Switches', 'consoleServers', 'bundle_name', '' . "\0" . 'Entities\\Vendor' . "\0" . 'shortname', '' . "\0" . 'Entities\\Vendor' . "\0" . 'nagios_name'];
     }
 
     /**

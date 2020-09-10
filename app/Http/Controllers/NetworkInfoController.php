@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers;
 
 use Former, Redirect;
 
+use Illuminate\Database\Eloquent\Builder;
 use IXP\Models\{
     NetworkInfo,
     Router,
@@ -106,7 +107,16 @@ class NetworkInfoController extends EloquentController
      */
     protected function listGetData( $id = null ): array
     {
-        return NetworkInfo::getFeList( $this->feParams, $id );
+        $feParams = $this->feParams;
+        return NetworkInfo::select( [ 'networkinfo.*', 'vlan.id AS vlan_id', 'vlan.name AS vlanname' ] )
+            ->leftJoin( 'vlan', 'vlan.id','networkinfo.vlanid' )
+            ->when( $id , function( Builder $q, $id ) {
+                return $q->where( 'networkinfo.id', $id );
+            })
+            ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+            })
+            ->get()->toArray();
     }
 
     /**

@@ -66,10 +66,10 @@ class UserRememberToken extends \Entities\UserRememberToken implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'token', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'device', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'ip', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'created', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'expires', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'id', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'User', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'is_2fa_complete'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'token', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'device', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'ip', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'created_at', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'updated_at', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'expires', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'id', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'User', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'is_2fa_complete'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'token', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'device', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'ip', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'created', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'expires', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'id', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'User', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'is_2fa_complete'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'token', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'device', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'ip', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'created_at', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'updated_at', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'expires', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'id', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'User', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'is_2fa_complete'];
     }
 
     /**

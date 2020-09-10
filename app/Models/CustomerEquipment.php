@@ -47,6 +47,10 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|CustomerEquipment whereId($value)
  * @method static Builder|CustomerEquipment whereName($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerEquipment whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerEquipment whereUpdatedAt($value)
  */
 class CustomerEquipment extends Model
 {

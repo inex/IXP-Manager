@@ -35,6 +35,9 @@ class TrafficDaily
      */
     protected $day;
 
+    private $created_at;
+    private $updated_at;
+
     /**
      * @var string $category
      */

@@ -10,6 +10,8 @@
       </options>
     </field>
     <field name="ipv4hostname" type="string" length="255" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <field name="ipv6enabled" type="boolean" nullable="true">
       <options>
         <option name="default">0</option>

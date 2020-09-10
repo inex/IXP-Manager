@@ -34,8 +34,6 @@ use Illuminate\Database\Eloquent\Relations\{
     HasMany
 };
 
-use Illuminate\Support\Carbon;
-
 /**
  * IXP\Models\PatchPanel
  *
@@ -71,6 +69,10 @@ use Illuminate\Support\Carbon;
  * @method static Builder|PatchPanel wherePortPrefix($value)
  * @method static Builder|PatchPanel whereUPosition($value)
  * @mixin Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel whereUpdatedAt($value)
  */
 
 class PatchPanel extends Model

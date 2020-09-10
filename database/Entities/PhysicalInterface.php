@@ -86,6 +86,9 @@ class PhysicalInterface
      */
     protected $duplex;
 
+    private $created_at;
+    private $updated_at;
+
     /**
      * @var bool $autoneg
      */

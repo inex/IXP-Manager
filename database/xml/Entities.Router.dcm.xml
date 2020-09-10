@@ -54,7 +54,8 @@
     </field>
     <field name="template" type="string" nullable="false"/>
     <field name="skip_md5" type="boolean" nullable="false"/>
-    <field name="last_updated" type="datetime" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <many-to-one field="vlan" target-entity="Entities\Vlan" inversed-by="routers">
       <join-columns>
         <join-column name="vlan_id" referenced-column-name="id" nullable="false"/>

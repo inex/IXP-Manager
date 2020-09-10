@@ -60,8 +60,10 @@ class DocstoreCustomerDirectoryPolicy
      */
     public function listPatchPanelPortFiles( UserEntity $user, Customer $cust )
     {
-        return ( $user->isSuperUser() || $user->getCustomer()->getId() == $cust->id )
-            && PatchPanelPortFile::getForCustomer( $cust, $user->isSuperUser() )->isNotEmpty();
+        return ( $user->isSuperUser() || $user->getCustomer()->getId() === $cust->id )
+            && $cust->patchPanelPorts()->with( 'patchPanelPortFiles' )
+                ->has($user->isSuperUser() ? 'patchPanelPortFiles' : 'patchPanelPortFilesPublic' )->get()
+                ->pluck( 'patchPanelPortFiles' )->isNotEmpty();
     }
 
     /**
@@ -74,8 +76,10 @@ class DocstoreCustomerDirectoryPolicy
      */
     public function listPatchPanelPortFilesHistory( UserEntity $user, Customer $cust )
     {
-        return ( $user->isSuperUser() || $user->getCustomer()->getId() == $cust->id )
-            && PatchPanelPortHistoryFile::getForCustomer( $cust, $user->isSuperUser() )->isNotEmpty();
+        return ( $user->isSuperUser() || $user->getCustomer()->getId() === $cust->id )
+            && $cust->patchPanelPortHistories()
+                ->with( 'patchPanelPortHistoryFiles' )->has( 'patchPanelPortHistoryFiles' )
+                ->get()->pluck( 'patchPanelPortHistoryFiles' )->isNotEmpty();
     }
 
     /**

@@ -30,6 +30,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Vendor
 {
+    private $created_at;
+    private $updated_at;
+
     /**
      * @var string $name
      */

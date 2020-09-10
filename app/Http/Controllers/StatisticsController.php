@@ -28,6 +28,7 @@ use Carbon\Carbon;
 
 use Illuminate\Auth\Access\AuthorizationException;
 
+use Illuminate\Support\Arr;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -38,7 +39,9 @@ use Illuminate\View\View;
 use IXP\Exceptions\Services\Grapher\GraphCannotBeProcessedException;
 use IXP\Http\Requests\StatisticsRequest;
 
-use IXP\Models\{
+use IXP\Models\{Aggregators\TrafficDailyPhysIntAggregator,
+    Aggregators\VirtualInterfaceAggregator,
+    Aggregators\VlanInterfaceAggregator,
     CoreBundle,
     Customer,
     Infrastructure,
@@ -48,8 +51,7 @@ use IXP\Models\{
     TrafficDailyPhysInt,
     VirtualInterface,
     Vlan,
-    VlanInterface
-};
+    VlanInterface};
 
 use IXP\Services\Grapher\Graph;
 use IXP\Services\Grapher;
@@ -205,7 +207,7 @@ class StatisticsController extends Controller
      */
     public function switch( int $switchid = 0, string $category = Graph::CATEGORY_BITS ) : View
     {
-        $switches = Switcher::filtered( true )->get()->keyBy( 'id' )->toArray();
+        $switches = Switcher::where( 'active', true )->orderBy( 'name' )->get()->keyBy( 'id' )->toArray();
         $category = Graph::processParameterCategory( $category, true );
 
         $switch   = Switcher::whereId( isset( $switches[ $switchid ] ) ? $switchid : array_keys( $switches )[0] )->get()->first();
@@ -290,7 +292,7 @@ class StatisticsController extends Controller
 
         if( $r->infra ) {
             if( $infra = Infrastructure::find( $r->infra ) ) {
-                $targets = VirtualInterface::getForInfrastructure( $infra );
+                $targets = VirtualInterfaceAggregator::getForInfrastructure( $infra );
             } else {
                 $targets = Customer::currentActive( true, false )->get();
             }
@@ -300,7 +302,7 @@ class StatisticsController extends Controller
                 $r->protocol = Graph::PROTOCOL_IPV4;
             }
 
-            $targets = VlanInterface::getForVlan( $vlan, $r->protocol );
+            $targets = VlanInterfaceAggregator::getForVlan( $vlan, $r->protocol );
         } else {
             $targets = [];
         }
@@ -508,8 +510,16 @@ class StatisticsController extends Controller
 
         $c = Customer::findOrFail( $cid );
 
+        $srcVlis = VlanInterface::select( [ 'vli.*' ] )
+            ->from( 'vlaninterface AS vli' )
+            ->Join( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
+            ->Join( 'cust AS c', 'c.id', 'vi.custid' )
+            ->Join( 'vlan AS v', 'v.id', 'vli.vlanid' )
+            ->where( 'c.id', $c->id )
+            ->orderBy( 'v.number' )->get()->keyBy( 'id' );
+
         // Find the possible VLAN interfaces that this customer has for the given IXP
-        if( !count( $srcVlis = VlanInterface::getForCustomer( $c ) ) ) {
+        if( !count( $srcVlis ) ) {
             AlertContainer::push( "There were no interfaces available for the given criteria.", Alert::WARNING );
             return redirect()->back();
         }
@@ -528,7 +538,7 @@ class StatisticsController extends Controller
         }
         // Now find the possible other VLAN interfaces that this customer could exchange traffic with
         // (as well as removing the source vli)
-        $dstVlis = VlanInterface::getForVlan( $srcVli->vlan );
+        $dstVlis = VlanInterfaceAggregator::getForVlan( $srcVli->vlan );
         unset( $dstVlis[ $srcVli->id ] );
 
         if( !$dstVlis->count() ) {
@@ -703,7 +713,10 @@ class StatisticsController extends Controller
         if( !in_array( $metric, $metrics, true ) ) {
             $metric = $metrics[ 'Max' ];
         }
-        $days = TrafficDailyPhysInt::availableForDays();
+
+        $days =  Arr::flatten( TrafficDailyPhysInt::select( [ 'day' ] )
+            ->distinct( 'day' )
+            ->orderBy( 'day')->get()->toArray() );
 
         if( count( $days ) ) {
             $day = $r->day;
@@ -729,7 +742,7 @@ class StatisticsController extends Controller
             'days'         => $days,
             'category'     => $category,
             'period'       => $period,
-            'tdpis'        => ( $day ? TrafficDailyPhysInt::loadTraffic( $day, $category, $period, $vid ) : [] ),
+            'tdpis'        => ( $day ? TrafficDailyPhysIntAggregator::loadTraffic( $day, $category, $period, $vid ) : [] ),
             'vlans'        => Vlan::publicOnly()->orderBy('number')->get(),
             'vlan'         => $vid,
         ] );

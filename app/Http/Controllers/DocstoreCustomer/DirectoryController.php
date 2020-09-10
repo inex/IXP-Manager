@@ -98,8 +98,12 @@ class DirectoryController extends Controller
             'cust'          => $cust,
             'dirs'          => DocstoreCustomerDirectory::getHierarchyForCustomerAndUserClass( $cust, $request->user()->getPrivs(), false )[ $dir ? $dir->id : '' ] ?? [],
             'files'         => DocstoreCustomerFile::getListing( $cust, $request->user(), $dir ),
-            'ppp_files'     => PatchPanelPortFile::getForCustomer( $cust, $request->user()->isSuperUser() )->isNotEmpty(),
-            'ppph_files'    => $request->user()->isSuperUser() ? PatchPanelPortHistoryFile::getForCustomer( $cust )->isNotEmpty() : false,
+            'ppp_files'     => $cust->patchPanelPorts()->with( 'patchPanelPortFiles' )
+                ->has($request->user()->isSuperUser() ? 'patchPanelPortFiles' : 'patchPanelPortFilesPublic' )->get()
+                ->pluck( 'patchPanelPortFiles' )->isNotEmpty(),
+            'ppph_files'    => $request->user()->isSuperUser() ? $cust->patchPanelPortHistories()
+                ->with( 'patchPanelPortHistoryFiles' )->has( 'patchPanelPortHistoryFiles' )
+                ->get()->pluck( 'patchPanelPortHistoryFiles' )->isNotEmpty() : false,
         ] );
     }
 
@@ -120,7 +124,9 @@ class DirectoryController extends Controller
         return view( 'docstore-customer/dir/list-ppp-files', [
             'cust'          => $cust,
             'history'       => false,
-            'files'         => PatchPanelPortFile::getForCustomer( $cust, $request->user()->isSuperUser() ),
+            'files'         => $cust->patchPanelPorts()->with( $request->user()->isSuperUser() ? 'patchPanelPortFiles' : 'patchPanelPortFilesPublic' )
+                ->has($request->user()->isSuperUser() ? 'patchPanelPortFiles' : 'patchPanelPortFilesPublic' )->get()
+                ->pluck( 'patchPanelPortFiles' )->flatten(),
         ] );
     }
 
@@ -141,7 +147,7 @@ class DirectoryController extends Controller
         return view( 'docstore-customer/dir/list-ppp-files', [
             'cust'          => $cust,
             'history'       => true,
-            'files'         => $request->user()->isSuperUser() ? PatchPanelPortHistoryFile::getForCustomer( $cust ) : [],
+            'files'         => $request->user()->isSuperUser() ? $cust->patchPanelPortHistories()->with( 'patchPanelPortHistoryFiles' )->has( 'patchPanelPortHistoryFiles' )->get()->pluck( 'patchPanelPortHistoryFiles' )->flatten() : [],
         ] );
     }
     /**

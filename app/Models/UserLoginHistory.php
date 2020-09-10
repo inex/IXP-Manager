@@ -2,9 +2,31 @@
 
 namespace IXP\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
+/*
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model
+};
 
 /**
  * IXP\Models\UserLoginHistory
@@ -35,34 +57,4 @@ class UserLoginHistory extends Model
      */
     protected $table = 'user_logins';
 
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
-
-    /**
-     * Gets a listing of user login histories or a single one if an ID is provided
-     *
-     * @param int|null $userid
-     * @param int $limit
-     *
-     * @return array
-     */
-    public static function getFeList( int $userid = null , int $limit = 0 ): array
-    {
-        return self::select( [ 'user_logins.*', 'user.id AS user_id', 'cust.name AS cust_name' ] )
-        ->leftJoin( 'customer_to_users', 'customer_to_users.id', 'user_logins.customer_to_user_id' )
-        ->leftJoin( 'cust', 'cust.id', 'customer_to_users.customer_id' )
-        ->leftJoin( 'user', 'user.id', 'customer_to_users.user_id' )
-        ->when( $userid , function( Builder $q, $userid ) {
-            return $q->where( 'user.id', $userid );
-        })
-        ->when( $limit > 0 , function( Builder $q, $l ) use( $limit ) {
-            return $q->limit( $limit );
-        })
-        ->orderBy( 'at', 'DESC' )
-        ->get()->toArray();
-    }
 }

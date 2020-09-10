@@ -66,10 +66,10 @@ class CoreInterface extends \Entities\CoreInterface implements \Doctrine\ORM\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'id', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'physicalInterface', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'coreLink', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'coreLink2'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'id', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'created_at', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'updated_at', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'physicalInterface', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'coreLink', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'coreLink2'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'id', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'physicalInterface', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'coreLink', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'coreLink2'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'id', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'created_at', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'updated_at', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'physicalInterface', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'coreLink', '' . "\0" . 'Entities\\CoreInterface' . "\0" . 'coreLink2'];
     }
 
     /**

@@ -65,6 +65,7 @@ class UploadStatsToDb extends GrapherCommand
      * Execute the console command.
      *
      * @return mixed
+     * @throws \Exception
      */
     public function handle(): int
     {
@@ -73,7 +74,7 @@ class UploadStatsToDb extends GrapherCommand
 
         // This should only be done once a day and if values already exist for 'today', just delete them.
         $today = now();
-        TrafficDaily::deleteForDay( $today );
+        TrafficDaily::where( 'day', $today->format('Y-m-d') )->delete();
 
         $custs = Customer::getConnected(true );
 
@@ -110,9 +111,8 @@ class UploadStatsToDb extends GrapherCommand
                 $this->warn( "Deleting old daily traffic records that are no longer required" );
             }
 
-            TrafficDaily::deleteBefore(
-                new Carbon( "-" . config( 'grapher.cli.traffic_daily.delete_old_days', 140 ) . " days" )
-            );
+            $day = new Carbon( "-" . config( 'grapher.cli.traffic_daily.delete_old_days', 140 ) . " days" );
+            TrafficDaily:: where( 'day', '<', $day->format('Y-m-d') )->delete();
         }
 
         return 0;

@@ -16,6 +16,7 @@ class CustomerToUser
      * @var \DateTime
      */
     private $created_at;
+    private $updated_at;
 
 
     /**

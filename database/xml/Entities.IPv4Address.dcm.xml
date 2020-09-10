@@ -8,6 +8,8 @@
     <unique-constraints>
       <unique-constraint name="vlan_address" columns="vlanid,address"/>
     </unique-constraints>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <many-to-one field="Vlan" target-entity="Entities\Vlan" inversed-by="IPv4Addresses">
       <join-columns>
         <join-column name="vlanid" referenced-column-name="id"/>

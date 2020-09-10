@@ -66,10 +66,10 @@ class TrafficDaily extends \Entities\TrafficDaily implements \Doctrine\ORM\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'day', 'category', 'day_avg_in', 'day_avg_out', 'day_max_in', 'day_max_out', 'day_tot_in', 'day_tot_out', 'week_avg_in', 'week_avg_out', 'week_max_in', 'week_max_out', 'week_tot_in', 'week_tot_out', 'month_avg_in', 'month_avg_out', 'month_max_in', 'month_max_out', 'month_tot_in', 'month_tot_out', 'year_avg_in', 'year_avg_out', 'year_max_in', 'year_max_out', 'year_tot_in', 'year_tot_out', 'id', 'Customer', '' . "\0" . 'Entities\\TrafficDaily' . "\0" . 'IXP'];
+            return ['__isInitialized__', 'day', '' . "\0" . 'Entities\\TrafficDaily' . "\0" . 'created_at', '' . "\0" . 'Entities\\TrafficDaily' . "\0" . 'updated_at', 'category', 'day_avg_in', 'day_avg_out', 'day_max_in', 'day_max_out', 'day_tot_in', 'day_tot_out', 'week_avg_in', 'week_avg_out', 'week_max_in', 'week_max_out', 'week_tot_in', 'week_tot_out', 'month_avg_in', 'month_avg_out', 'month_max_in', 'month_max_out', 'month_tot_in', 'month_tot_out', 'year_avg_in', 'year_avg_out', 'year_max_in', 'year_max_out', 'year_tot_in', 'year_tot_out', 'id', 'Customer', '' . "\0" . 'Entities\\TrafficDaily' . "\0" . 'IXP'];
         }
 
-        return ['__isInitialized__', 'day', 'category', 'day_avg_in', 'day_avg_out', 'day_max_in', 'day_max_out', 'day_tot_in', 'day_tot_out', 'week_avg_in', 'week_avg_out', 'week_max_in', 'week_max_out', 'week_tot_in', 'week_tot_out', 'month_avg_in', 'month_avg_out', 'month_max_in', 'month_max_out', 'month_tot_in', 'month_tot_out', 'year_avg_in', 'year_avg_out', 'year_max_in', 'year_max_out', 'year_tot_in', 'year_tot_out', 'id', 'Customer', '' . "\0" . 'Entities\\TrafficDaily' . "\0" . 'IXP'];
+        return ['__isInitialized__', 'day', '' . "\0" . 'Entities\\TrafficDaily' . "\0" . 'created_at', '' . "\0" . 'Entities\\TrafficDaily' . "\0" . 'updated_at', 'category', 'day_avg_in', 'day_avg_out', 'day_max_in', 'day_max_out', 'day_tot_in', 'day_tot_out', 'week_avg_in', 'week_avg_out', 'week_max_in', 'week_max_out', 'week_tot_in', 'week_tot_out', 'month_avg_in', 'month_avg_out', 'month_max_in', 'month_max_out', 'month_tot_in', 'month_tot_out', 'year_avg_in', 'year_avg_out', 'year_max_in', 'year_max_out', 'year_tot_in', 'year_tot_out', 'id', 'Customer', '' . "\0" . 'Entities\\TrafficDaily' . "\0" . 'IXP'];
     }
 
     /**

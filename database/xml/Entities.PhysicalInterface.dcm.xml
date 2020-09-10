@@ -13,6 +13,8 @@
       </options>
     </field>
     <field name="notes" type="text" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <one-to-one field="SwitchPort" target-entity="Entities\SwitchPort" inversed-by="PhysicalInterface">
       <join-columns>
         <join-column name="switchportid" referenced-column-name="id" unique="true"/>

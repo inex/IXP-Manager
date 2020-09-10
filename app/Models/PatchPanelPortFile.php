@@ -25,15 +25,8 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo};
 
-use Illuminate\Database\Eloquent\Relations\{
-    BelongsTo
-};
-
-use Entities\User as UserEntity;
-
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 
@@ -63,6 +56,10 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile whereUploadedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile whereUploadedBy($value)
  * @mixin Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortFile whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortFile whereUpdatedAt($value)
  */
 
 class PatchPanelPortFile extends Model
@@ -80,20 +77,5 @@ class PatchPanelPortFile extends Model
     public function patchPanelPort(): BelongsTo
     {
         return $this->belongsTo( PatchPanelPort::class , 'patch_panel_port_id' );
-    }
-
-    /**
-     * Gets a listing of patch panel port files for a customer
-     */
-    public static function getForCustomer( Customer $c, bool $includePrivate = true ): Collection
-    {
-        $q = self::join(     'patch_panel_port as ppp' ,          'patch_panel_port_file.patch_panel_port_id',        'ppp.id' )
-            ->where('ppp.customer_id', $c->id );
-
-        if( !$includePrivate ) {
-            $q->where( 'patch_panel_port_file.is_private', '0' );
-        }
-
-        return $q->get();
     }
 }

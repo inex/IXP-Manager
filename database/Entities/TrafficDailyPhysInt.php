@@ -31,6 +31,9 @@ use DateTime;
  */
 class TrafficDailyPhysInt
 {
+    private $created_at;
+    private $updated_at;
+
     /**
      * @var DateTime $day
      */

@@ -151,6 +151,10 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer currentActive($trafficing = false, $externalOnly = false)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPort[] $patchPanelPorts
+ * @property-read int|null $patch_panel_ports_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortHistory[] $patchPanelPortHistories
+ * @property-read int|null $patch_panel_port_histories_count
  */
 class Customer extends Model
 {
@@ -160,13 +164,6 @@ class Customer extends Model
      * @var string
      */
     protected $table = 'cust';
-
-    /**
-     * The storage format of the model's date columns.
-     *
-     * @var string
-     */
-    protected $dateFormat = 'Y-m-d';
 
     /**
      * The attributes that should be mutated to dates.
@@ -311,6 +308,22 @@ class Customer extends Model
     }
 
     /**
+     * Get the patch panel portss for the customer
+     */
+    public function patchPanelPorts(): HasMany
+    {
+        return $this->hasMany(PatchPanelPort::class, 'customer_id' );
+    }
+
+    /**
+     * Get the patch panel port histories for the customer
+     */
+    public function patchPanelPortHistories(): HasMany
+    {
+        return $this->hasMany(PatchPanelPortHistory::class, 'cust_id' );
+    }
+
+    /**
      * Get the irrdbconfig that own the customer
      */
     public function irrdbConfig(): BelongsTo
@@ -367,8 +380,7 @@ class Customer extends Model
      */
     public static function scopeCurrentActive( Builder $query, $trafficing = false, $externalOnly = false )
     {
-        return $query->from( 'cust AS c' )
-            ->whereRaw( self::SQL_CUST_CURRENT )
+        return $query->whereRaw( self::SQL_CUST_CURRENT )
             ->whereRaw( self::SQL_CUST_ACTIVE )
             ->when( $trafficing , function( Builder $q ) {
                 return $q->whereRaw(self::SQL_CUST_TRAFFICING )
@@ -558,10 +570,9 @@ class Customer extends Model
      */
     public static function getTypeCounts()
     {
-        return self::selectRaw( 'c.type AS ctype, COUNT( c.type ) AS cnt' )
-            ->from( 'cust AS c' )
+        return self::selectRaw( 'type AS ctype, COUNT( type ) AS cnt' )
             ->whereRaw( self::SQL_CUST_CURRENT )
             ->whereRaw(self::SQL_CUST_ACTIVE )
-            ->groupBy( 'c.type' )->get()->keyBy( 'ctype' )->toArray();
+            ->groupBy( 'ctype' )->get()->keyBy( 'ctype' )->toArray();
     }
 }

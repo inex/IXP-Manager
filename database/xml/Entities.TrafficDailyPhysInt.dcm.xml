@@ -38,6 +38,8 @@
     <field name="year_max_out_at" type="datetime" nullable="true"/>
     <field name="year_tot_in" type="bigint" nullable="true"/>
     <field name="year_tot_out" type="bigint" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <many-to-one field="PhysicalInterface" target-entity="Entities\PhysicalInterface" inversed-by="TrafficDailiesPhysInt">
       <join-columns>
         <join-column name="physicalinterface_id" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>

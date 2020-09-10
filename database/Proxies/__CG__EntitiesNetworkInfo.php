@@ -66,10 +66,10 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'protocol', 'network', 'masklen', 'rs1address', 'rs2address', 'dnsfile', 'id', 'Vlan'];
+            return ['__isInitialized__', 'protocol', 'network', 'masklen', 'rs1address', 'rs2address', 'dnsfile', 'id', '' . "\0" . 'Entities\\NetworkInfo' . "\0" . 'created_at', '' . "\0" . 'Entities\\NetworkInfo' . "\0" . 'updated_at', 'Vlan'];
         }
 
-        return ['__isInitialized__', 'protocol', 'network', 'masklen', 'rs1address', 'rs2address', 'dnsfile', 'id', 'Vlan'];
+        return ['__isInitialized__', 'protocol', 'network', 'masklen', 'rs1address', 'rs2address', 'dnsfile', 'id', '' . "\0" . 'Entities\\NetworkInfo' . "\0" . 'created_at', '' . "\0" . 'Entities\\NetworkInfo' . "\0" . 'updated_at', 'Vlan'];
     }
 
     /**

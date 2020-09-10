@@ -30,14 +30,14 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-use IXP\Models\{
+use IXP\Models\{Aggregators\VirtualInterfaceAggregator,
+    Aggregators\VlanInterfaceAggregator,
     Customer,
     Infrastructure,
     Location,
     VirtualInterface,
     Vlan,
-    VlanInterface
-};
+    VlanInterface};
 
 use IXP\Services\Grapher\Graph as Graph;
 
@@ -90,7 +90,7 @@ class AdminController extends Controller
 
             // Searches for VirtualInterfaces where custtype us not internal.
             // Because it's Virtual Interfaces, it should only be current or unremoved customers, etc.
-            $vis = VirtualInterface::getByLocation();
+            $vis = VirtualInterfaceAggregator::getByLocation();
 
             $speeds          = [];
             $byLocation      = [];
@@ -168,18 +168,36 @@ class AdminController extends Controller
             $cTypes['peeringCusts']     = $peeringCusts;
 
             // FROM of query is vlaninterface so should be current:
-            $cTypes['rsUsage']          = VlanInterface::getRsClientUsagePerVlan();
+            $cTypes['rsUsage']          = VlanInterface::selectRaw( 'v.name AS vlanname,
+                                             COUNT(vli.id) AS overall_count, 
+                                             SUM(vli.rsclient = 1) AS rsclient_count' )
+                                            ->from( 'vlaninterface AS vli' )
+                                            ->Join( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
+                                            ->Join( 'cust AS c', 'c.id', 'vi.custid' )
+                                            ->Join( 'vlan AS v', 'v.id', 'vli.vlanid' )
+                                            ->where( 'v.private', false )
+                                            ->whereIn( 'c.type', [1,4] )
+                                            ->groupBy( 'vlanname' )->get()->toArray();
 
             // FROM of query is vlaninterface so should be current:
-            $cTypes['ipv6Usage']        = VlanInterface::getIPv6UsagePerVlan();
+            $cTypes['ipv6Usage']        = VlanInterface::selectRaw( 'v.name AS vlanname, 
+                                            COUNT(vli.id) AS overall_count, 
+                                            SUM(vli.ipv6enabled = 1) AS ipv6_count' )
+                                            ->from( 'vlaninterface AS vli' )
+                                            ->Join( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
+                                            ->Join( 'cust AS c', 'c.id', 'vi.custid' )
+                                            ->Join( 'vlan AS v', 'v.id', 'vli.vlanid' )
+                                            ->where( 'v.private', false )
+                                            ->whereIn( 'c.type', [1,4] )
+                                            ->groupBy( 'vlanname' )->get()->toArray();
 
             // full/probono customers with connected interface by vlan
-            $cTypes['percentByVlan']    = VirtualInterface::getPercentageCustomersByVlan();
+            $cTypes['percentByVlan']    = VirtualInterfaceAggregator::getPercentageCustomersByVlan();
 
             $cTypes['cached_at']        = Carbon::now();
 
             $cTypes['infras']           = Infrastructure::orderBy( 'name', 'asc' )->get()->toArray();
-            $cTypes['locations']        = Location::getListAsArray();
+            $cTypes['locations']        = Location::orderBy( 'name', 'asc' )->get()->toArray();
             $cTypes['vlans']            = Vlan::publicOnly()->orderBy('number')->get()->toArray();
 
             Cache::put( 'admin_ctypes', $cTypes, 300 );

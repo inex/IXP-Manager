@@ -153,9 +153,9 @@ class User implements Authenticatable, CanResetPasswordContract
     protected $disabled;
 
     /**
-     * @var DateTime $lastupdated
+     * @var DateTime $updated_at
      */
-    protected $lastupdated;
+    protected $updated_at;
 
     /**
      * @var integer $lastupdatedby
@@ -168,9 +168,9 @@ class User implements Authenticatable, CanResetPasswordContract
     protected $creator;
 
     /**
-     * @var DateTime $created
+     * @var DateTime $created_at
      */
-    protected $created;
+    protected $created_at;
 
     /**
      * @var integer $id
@@ -446,12 +446,12 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Set lastupdated
      *
-     * @param DateTime $lastupdated
+     * @param DateTime $updated_at
      * @return User
      */
-    public function setLastupdated($lastupdated)
+    public function setLastupdated($updated_at)
     {
-        $this->lastupdated = $lastupdated;
+        $this->updated_at = $updated_at;
 
         return $this;
     }
@@ -463,7 +463,7 @@ class User implements Authenticatable, CanResetPasswordContract
      */
     public function getLastupdated()
     {
-        return $this->lastupdated;
+        return $this->updated_at;
     }
 
     /**
@@ -488,9 +488,6 @@ class User implements Authenticatable, CanResetPasswordContract
     {
         return $this->lastupdatedby;
     }
-
-
-
 
     /**
      * Get PeeringDB ID
@@ -580,12 +577,12 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Set created
      *
-     * @param \DateTime $created
+     * @param \DateTime $created_at
      * @return User
      */
-    public function setCreated($created)
+    public function setCreated($created_at)
     {
-        $this->created = $created;
+        $this->created_at = $created_at;
 
         return $this;
     }
@@ -597,7 +594,7 @@ class User implements Authenticatable, CanResetPasswordContract
      */
     public function getCreated()
     {
-        return $this->created;
+        return $this->created_at;
     }
 
     /**

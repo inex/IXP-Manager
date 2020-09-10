@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\Switches;
 
 use Auth, DateTime, Former, Route;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -32,7 +33,7 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
-use IXP\Models\{
+use IXP\Models\{Aggregators\SwitcherAggregator,
     Cabinet,
     Infrastructure,
     Location,
@@ -41,8 +42,7 @@ use IXP\Models\{
     SwitchPort,
     User,
     Vendor,
-    Vlan
-};
+    Vlan};
 
 use IXP\Rules\IdnValidate;
 
@@ -324,13 +324,29 @@ class SwitchController extends EloquentController
     /**
      * Provide array of rows for the list action and view action
      *
-     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @param int|null $id The `id` of the row to load for `view` action`. `null` if `listAction`
      *
      * @return array
      */
     protected function listGetData( $id = null ): array
     {
-        return Switcher::getFeList( $this->feParams, $id, $this->data );
+        $feParams = $this->feParams;
+        return Switcher::select( [
+        'switch.*',
+        'i.name AS infrastructure',
+        'v.id AS vendorid', 'v.name AS vendor',
+        'c.id AS cabinetid', 'c.name AS cabinet'
+    ] )
+        ->leftJoin( 'infrastructure AS i', 'i.id', 'switch.infrastructure')
+        ->leftJoin( 'cabinet AS c', 'c.id', 'switch.cabinetid')
+        ->leftJoin( 'vendor AS v', 'v.id', 'switch.vendorid')
+        ->when( $id , function( Builder $q, $id ) {
+            return $q->where('switch.id', $id );
+        } )->when( isset( $params[ 'params' ][ 'activeOnly' ] ) && $params[ 'params' ][ 'activeOnly' ] , function( Builder $q ) {
+            return $q->where('switch.active', true );
+        } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+        })->get()->toArray();
     }
 
     /**
@@ -347,8 +363,8 @@ class SwitchController extends EloquentController
             'cabinets'          => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
                 ->orderBy( 'name', 'asc' )
                 ->get(),
-            'infra'             => Infrastructure::orderBy( 'name', 'asc' )->get()->toArray(),
-            'vendors'           => Vendor::getListAsArray(),
+            'infra'             => Infrastructure::orderBy( 'name' )->get(),
+            'vendors'           => Vendor::orderBy( 'name' )->get(),
         ];
     }
 
@@ -389,8 +405,8 @@ class SwitchController extends EloquentController
             'cabinets'          => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
                 ->orderBy( 'name', 'asc' )
                 ->get(),
-            'infra'             => Infrastructure::orderBy( 'name', 'asc' )->get()->toArray(),
-            'vendors'           => Vendor::getListAsArray()
+            'infra'             => Infrastructure::orderBy( 'name' )->get(),
+            'vendors'           => Vendor::orderBy( 'name' )->get()
         ];
     }
 
@@ -458,8 +474,8 @@ class SwitchController extends EloquentController
         $this->data[ 'params' ]['cabinets']     = Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
             ->orderBy( 'name', 'asc' )
             ->get();
-        $this->data[ 'params' ]['infra']        = Infrastructure::orderBy( 'name', 'asc' )->get()->toArray();
-        $this->data[ 'params' ]['vendors']      = Vendor::getListAsArray();
+        $this->data[ 'params' ]['infra']        = Infrastructure::orderBy( 'name' )->get();
+        $this->data[ 'params' ]['vendors']      = Vendor::orderBy( 'name' )->get();
 
         return $this->display( 'edit' );
     }
@@ -660,7 +676,19 @@ class SwitchController extends EloquentController
     public function portReport( Switcher $switch ) : View
     {
         $allPorts   = SwitchPort::getAllPortsForSwitch( $switch->id, [] , [], false );
-        $ports      = SwitchPort::getAllPortsAssignedToPIForSwitch( $switch->id );
+
+        $ports      = SwitchPort::select( [
+            'sp.id AS id', 'sp.name AS name', 'sp.type AS porttype',
+            'pi.speed AS speed', 'pi.duplex AS duplex',
+            'c.name AS custname'
+        ] )
+            ->from( 'switchport AS sp' )
+            ->join( 'physicalinterface AS pi', 'pi.switchportid', 'sp.id' )
+            ->join( 'virtualinterface AS vi', 'vi.id', 'pi.virtualinterfaceid' )
+            ->join( 'cust AS c', 'c.id', 'vi.custid' )
+            ->where( 'sp.switchid', $switch->id )
+            ->orderBy( 'id', 'ASC' )
+            ->get()->keyBy( 'id' )->toArray();
 
         $matchingValues = array_uintersect($ports, $allPorts , function ($val1, $val2){
             return strcmp($val1['name'], $val2['name']);
@@ -671,7 +699,7 @@ class SwitchController extends EloquentController
         });
 
         return view( 'switches/port-report' )->with([
-            'switches'                  => Switcher::getListAsArray(),
+            'switches'                  => Switcher::orderBy( 'name' )->get()->keyBy( 'id' ),
             's'                         => $switch,
             'ports'                     => array_merge( $matchingValues, $diffValues ),
         ]);
@@ -688,7 +716,9 @@ class SwitchController extends EloquentController
      */
     public function configuration( Request $r ) : View
     {
-        $speeds = PhysicalInterface::getAllSpeed();
+        $speeds = PhysicalInterface::selectRaw( 'DISTINCT physicalinterface.speed AS speed' )
+            ->orderBy( 'speed', 'ASC' )
+            ->get()->toArray();
 
         $switch = $infra = $location = $speed = $vlan = false;
         if( $r->switch !== null ) {
@@ -770,7 +800,7 @@ class SwitchController extends EloquentController
             $summary = false;
         }
 
-        $config = Switcher::getConfiguration(
+        $config = SwitcherAggregator::getConfiguration(
             $switch ? $switch->id : null,
             $infra ? $infra->id : null,
             $location ? $location->id : null,
@@ -791,7 +821,7 @@ class SwitchController extends EloquentController
             'infras'                    => $switch ? [ $switch->infrastructure->id => $switch->infrastructure->name ] : Infrastructure::orderBy( 'name', 'asc' )->get()->toArray(),
             'vlans'                     => Vlan::orderBy( 'name' )->get(),
             'locations'                 => $switch ? [ $switch->cabinet->location->id  => $switch->cabinet->location->name ] : Location::getListAsArray(),
-            'switches'                  => Switcher::getByLocationInfrastructureSpeed( $infra, $location, $speed ),
+            'switches'                  => SwitcherAggregator::getByLocationInfrastructureSpeed( $infra, $location, $speed ),
             'config'                    => $config,
         ]);
     }

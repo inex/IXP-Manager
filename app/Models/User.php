@@ -24,8 +24,14 @@ namespace IXP\Models;
  */
 
 use Eloquent;
-use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations\BelongsToMany, Relations\HasMany};
-use stdClass;
+
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model,
+    Relations\BelongsTo,
+    Relations\BelongsToMany,
+    Relations\HasMany
+};
 
 /**
  * IXP\Models\User
@@ -83,17 +89,10 @@ class User extends Model
      */
     protected $table = 'user';
 
-    /**
-     * The storage format of the model's date columns.
-     *
-     * @var string
-     */
-    protected $dateFormat = 'Y-m-d';
-
-    const AUTH_PUBLIC    = 0;
-    const AUTH_CUSTUSER  = 1;
-    const AUTH_CUSTADMIN = 2;
-    const AUTH_SUPERUSER = 3;
+    public const AUTH_PUBLIC    = 0;
+    public const AUTH_CUSTUSER  = 1;
+    public const AUTH_CUSTADMIN = 2;
+    public const AUTH_SUPERUSER = 3;
 
     public static $PRIVILEGES = [
         User::AUTH_CUSTUSER  => 'CUSTUSER',

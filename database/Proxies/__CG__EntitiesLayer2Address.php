@@ -66,10 +66,10 @@ class Layer2Address extends \Entities\Layer2Address implements \Doctrine\ORM\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'id', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'mac', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'firstseen', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'lastseen', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'created', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'vlanInterface'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'id', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'mac', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'firstseen', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'lastseen', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'created_at', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'updated_at', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'vlanInterface'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'id', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'mac', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'firstseen', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'lastseen', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'created', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'vlanInterface'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'id', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'mac', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'firstseen', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'lastseen', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'created_at', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'updated_at', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'vlanInterface'];
     }
 
     /**

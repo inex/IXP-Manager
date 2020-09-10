@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers;
 
 use Auth, Route;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 use Illuminate\View\View;
@@ -116,12 +117,27 @@ class LoginHistoryController extends EloquentController
     /**
      * Provide array of rows for the list and view
      *
-     * @param int $id The `id` of the row to load for `view`. `null` if `list`
+     * @param int|null $id The `id` of the row to load for `view`. `null` if `list`
      * @return array
      */
     protected function listGetData( $id = null ): array
     {
-        return CustomerToUser::getLastLoginsForFeList( $this->feParams );
+        $feParams = $this->feParams;
+        return CustomerToUser::select( [
+            'customer_to_users.last_login_date AS last_login_date',
+            'customer_to_users.last_login_via AS last_login_via',
+            'customer_to_users.id AS AS c2u_id',
+            'user.id AS id',
+            'user.username AS username',
+            'user.email AS email',
+            'cust.id AS cust_id',
+            'cust.name AS cust_name'
+        ] )
+            ->join( 'user', 'user.id', 'customer_to_users.user_id' )
+            ->join( 'cust', 'cust.id', 'customer_to_users.customer_id' )
+            ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+            })->get()->toArray();
     }
 
     /**
@@ -135,8 +151,21 @@ class LoginHistoryController extends EloquentController
     public function view( Request $r, int $id ): View
     {
         $u = User::findOrFail( $id );
+
+        $limit = $r->limit ?? 0;
         return view( 'login-history/view' )->with( [
-            'histories'     => UserLoginHistory::getFeList( $u->id, $r->limit ?? 0 ),
+            'histories'     => UserLoginHistory::select( [ 'user_logins.*', 'user.id AS user_id', 'cust.name AS cust_name' ] )
+                ->leftJoin( 'customer_to_users', 'customer_to_users.id', 'user_logins.customer_to_user_id' )
+                ->leftJoin( 'cust', 'cust.id', 'customer_to_users.customer_id' )
+                ->leftJoin( 'user', 'user.id', 'customer_to_users.user_id' )
+                ->when( $u->id , function( Builder $q, $userid ) {
+                    return $q->where( 'user.id', $userid );
+                })
+                ->when( $limit > 0 , function( Builder $q ) use( $limit ) {
+                    return $q->limit( $limit );
+                })
+                ->orderByDesc( 'at' )
+                ->get()->toArray(),
             'user'          => $u,
         ] );
     }

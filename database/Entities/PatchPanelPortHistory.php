@@ -39,6 +39,8 @@ use DateTime, Parsedown;
  */
 class PatchPanelPortHistory
 {
+    private $created_at;
+    private $updated_at;
     /**
      * @var integer
      */

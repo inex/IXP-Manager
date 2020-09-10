@@ -90,7 +90,15 @@ class Layer2AddressController extends Controller
             return response()->json( [ 'danger' => false, 'message' => 'Invalid or missing MAC addresses' ] );
         }
 
-        if( Layer2Address::getForVlan( $mac, $vli->vlanid )->count() ) {
+        // Get layer2address for a given vlan
+        $forVlan = Layer2Address::from( 'l2address AS l' )
+            ->join( 'vlaninterface AS vli', 'vli.id',  'l.vlan_interface_id' )
+            ->join( 'vlan AS v', 'v.id', 'vli.vlanid' )
+            ->where( 'mac' , $mac )
+            ->where( 'v.id', $vli->vlanid )
+            ->get();
+
+        if( $forVlan->count() ) {
             !$showFeMessage ?: AlertContainer::push( 'The MAC address already exists within this IXP VLAN.' , Alert::DANGER );
             return response()->json( [ 'danger' => false, 'message' => 'The MAC address already exists within this IXP VLAN' ] );
         }

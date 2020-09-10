@@ -24,7 +24,9 @@ namespace IXP\Http\Controllers;
  */
 use Auth, Route;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 use IXP\Models\{
@@ -147,7 +149,38 @@ class Layer2AddressController extends EloquentController
      */
     protected function listGetData( $id = null ): array
     {
-        return Layer2Address::getFeList( $this->feParams, $id );
+        $feParams = $this->feParams;
+        return Layer2Address::selectRaw( "l.*,
+            vi.id AS viid,
+            c.id AS customerid, c.abbreviatedName AS customer,
+            s.name AS switchname,
+            vl.name as vlan, vl.id as vlanid, 
+            vli.id as vliid,
+            GROUP_CONCAT( sp.name ) AS switchport,
+            GROUP_CONCAT( DISTINCT ipv4.address ) AS ip4,
+            GROUP_CONCAT( DISTINCT ipv6.address ) AS ip6,
+            COALESCE( o.organisation, 'Unknown' ) AS organisation"
+        )
+            ->from( 'l2address AS l' )
+            ->join( 'vlaninterface AS vli', 'vli.id', 'l.vlan_interface_id' )
+            ->join( 'vlan AS vl', 'vl.id', 'vli.vlanid' )
+            ->leftjoin( 'ipv4address AS ipv4', 'ipv4.id', 'vli.ipv4addressid' )
+            ->leftjoin( 'ipv6address AS ipv6', 'ipv6.id', 'vli.ipv6addressid' )
+            ->join( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
+            ->join( 'cust AS c', 'c.id', 'vi.custid' )
+            ->leftjoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
+            ->leftjoin( 'switchport AS sp', 'sp.id', 'pi.switchportid' )
+            ->leftjoin( 'switch AS s', 's.id', 'sp.switchid' )
+            ->leftjoin( 'oui AS o', 'o.oui', '=', DB::raw("SUBSTRING( l.mac, 1, 6 )") )
+            ->when( $id , function( Builder $q, $id ) {
+                return $q->where('l.id', $id );
+            } )->groupBy( 'l.mac', 'vi.id', 'l.id', 'l.firstseen',
+                'l.lastseen', 'c.id', 'c.abbreviatedName', 's.name',
+                'vl.name', 'vl.id', 'vli.id', 'o.organisation'
+            )
+            ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+            })->get()->toArray();
     }
 
     /**

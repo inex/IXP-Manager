@@ -66,10 +66,10 @@ class MACAddress extends \Entities\MACAddress implements \Doctrine\ORM\Proxy\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'firstseen', 'lastseen', 'mac', 'id', 'VirtualInterface'];
+            return ['__isInitialized__', 'firstseen', 'lastseen', 'mac', 'id', '' . "\0" . 'Entities\\MACAddress' . "\0" . 'created_at', '' . "\0" . 'Entities\\MACAddress' . "\0" . 'updated_at', 'VirtualInterface'];
         }
 
-        return ['__isInitialized__', 'firstseen', 'lastseen', 'mac', 'id', 'VirtualInterface'];
+        return ['__isInitialized__', 'firstseen', 'lastseen', 'mac', 'id', '' . "\0" . 'Entities\\MACAddress' . "\0" . 'created_at', '' . "\0" . 'Entities\\MACAddress' . "\0" . 'updated_at', 'VirtualInterface'];
     }
 
     /**

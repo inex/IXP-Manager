@@ -66,10 +66,10 @@ class IrrdbPrefix extends \Entities\IrrdbPrefix implements \Doctrine\ORM\Proxy\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'prefix', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'protocol', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'first_seen', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'last_seen', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'id', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'Customer'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'prefix', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'protocol', 'created_at', 'updated_at', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'first_seen', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'last_seen', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'id', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'Customer'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'prefix', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'protocol', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'first_seen', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'last_seen', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'id', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'Customer'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'prefix', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'protocol', 'created_at', 'updated_at', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'first_seen', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'last_seen', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'id', '' . "\0" . 'Entities\\IrrdbPrefix' . "\0" . 'Customer'];
     }
 
     /**

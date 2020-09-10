@@ -9,7 +9,8 @@
     <field name="last_login_date" type="datetime" nullable="true"/>
     <field name="last_login_from" type="text" length="39" nullable="true"/>
     <field name="last_login_via" type="string" length="50" nullable="true"/>
-    <field name="created_at" type="datetime" nullable="false"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <unique-constraints>
       <unique-constraint name="customer_user" columns="customer_id,user_id"/>
     </unique-constraints>

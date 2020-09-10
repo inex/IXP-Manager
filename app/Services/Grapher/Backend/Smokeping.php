@@ -25,10 +25,7 @@ namespace IXP\Services\Grapher\Backend;
 
 use View;
 
-use IXP\Models\{
-    Vlan,
-    VlanInterface
-};
+use IXP\Models\{Aggregators\VlanInterfaceAggregator, Vlan, VlanInterface};
 
 use Illuminate\Support\Facades\View as FacadeView;
 
@@ -135,7 +132,7 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
         }
 
         // try and reorder the VLIs into alphabetical order of customer names
-        $vlis = VlanInterface::getForProto( $v, $options['protocol'] === Graph::PROTOCOL_IPV4 ? 4 : 6 );
+        $vlis = VlanInterfaceAggregator::getForProto( $v, $options['protocol'] === Graph::PROTOCOL_IPV4 ? 4 : 6 );
 
         $orderedVlis = [];
         foreach( $vlis as $vli ) {

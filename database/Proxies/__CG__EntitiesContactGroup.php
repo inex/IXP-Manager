@@ -66,10 +66,10 @@ class ContactGroup extends \Entities\ContactGroup implements \Doctrine\ORM\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'description', 'type', 'active', 'limited_to', 'created_at', 'id', 'Contacts'];
+            return ['__isInitialized__', 'name', 'description', 'type', 'active', 'limited_to', 'created_at', 'updated_at', 'id', 'Contacts'];
         }
 
-        return ['__isInitialized__', 'name', 'description', 'type', 'active', 'limited_to', 'created_at', 'id', 'Contacts'];
+        return ['__isInitialized__', 'name', 'description', 'type', 'active', 'limited_to', 'created_at', 'updated_at', 'id', 'Contacts'];
     }
 
     /**

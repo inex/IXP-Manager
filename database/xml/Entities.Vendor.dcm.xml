@@ -8,6 +8,8 @@
     <field name="shortname" type="string" length="255" nullable="true"/>
     <field name="nagios_name" type="string" length="255" nullable="true"/>
     <field name="bundle_name" type="string" length="255" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <one-to-many field="Switches" target-entity="Entities\Switcher" mapped-by="Vendor"/>
     <one-to-many field="consoleServers" target-entity="Entities\ConsoleServer" mapped-by="vendor"/>
   </entity>

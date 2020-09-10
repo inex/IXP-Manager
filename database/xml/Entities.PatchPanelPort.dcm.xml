@@ -33,6 +33,8 @@
       </options>
     </field>
     <field name="loa_code" type="string" length="25" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <many-to-one field="patchPanel" target-entity="Entities\PatchPanel" inversed-by="patchPanelPorts">
       <join-columns>
         <join-column name="patch_panel_id" referenced-column-name="id"/>

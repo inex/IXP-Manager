@@ -89,6 +89,9 @@ class PatchPanel
         self::MOUNTED_AT_REAR  => 'Rear',
     ];
 
+    private $created_at;
+    private $updated_at;
+    
     /**
      * @var integer
      */

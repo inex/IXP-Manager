@@ -30,9 +30,10 @@ use Illuminate\Database\Eloquent\{
     Model
 };
 
-use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
-
-use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Relations\{
+    BelongsTo,
+    HasMany
+};
 
 /**
  * IXP\Models\PatchPanelPort
@@ -91,6 +92,13 @@ use Illuminate\Support\Carbon;
  * @method static Builder|PatchPanelPort whereSwitchPortId($value)
  * @method static Builder|PatchPanelPort whereTicketRef($value)
  * @mixin Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\Customer|null $customer
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortFile[] $patchPanelPortFilesPublic
+ * @property-read int|null $patch_panel_port_files_public_count
  */
 
 class PatchPanelPort extends Model
@@ -119,6 +127,14 @@ class PatchPanelPort extends Model
     }
 
     /**
+     * Get the customer that owns this patch panel port
+     */
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo( Customer::class , 'customer_id' );
+    }
+
+    /**
      * Get the patch panel port files for this patch panel port
      */
     public function patchPanelPortFiles(): HasMany
@@ -127,11 +143,12 @@ class PatchPanelPort extends Model
     }
 
     /**
-     * Get the slave port for this patch panel port
+     * Get the public patch panel port files for this patch panel port
      */
-    public function slavePort(): HasMany
+    public function patchPanelPortFilesPublic(): HasMany
     {
-        return $this->hasMany(PatchPanelPort::class, 'du' );
+        return $this->hasMany(PatchPanelPortFile::class, 'patch_panel_port_id' )
+            ->where( 'is_private', 0 );
     }
 
     /**

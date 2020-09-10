@@ -66,10 +66,10 @@ class IPv6Address extends \Entities\IPv6Address implements \Doctrine\ORM\Proxy\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'address', 'id', 'VlanInterface', 'Vlan'];
+            return ['__isInitialized__', 'address', 'id', 'created_at', 'updated_at', 'VlanInterface', 'Vlan'];
         }
 
-        return ['__isInitialized__', 'address', 'id', 'VlanInterface', 'Vlan'];
+        return ['__isInitialized__', 'address', 'id', 'created_at', 'updated_at', 'VlanInterface', 'Vlan'];
     }
 
     /**

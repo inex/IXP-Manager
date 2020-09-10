@@ -23,9 +23,11 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\{
+    Model,
+    Relations\BelongsTo
+};
+
 
 /**
  * IXP\Models\RouteServerFilter
@@ -47,34 +49,27 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read \IXP\Models\Customer|null $customer
  * @property-read \IXP\Models\Customer|null $peer
  * @property-read \IXP\Models\Vlan|null $vlan
- * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter query()
- * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereActionAdvertise($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereActionReceive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereAdvertisedPrefix($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereCustomerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereEnabled($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereLive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereOrderBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter wherePeerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereProtocol($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereReceivedPrefix($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereVlanId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereActionAdvertise($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereActionReceive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereAdvertisedPrefix($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereCustomerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereLive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereOrderBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter wherePeerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereProtocol($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereReceivedPrefix($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereVlanId($value)
  * @mixin \Eloquent
  */
 class RouteServerFilter extends Model
 {
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'route_server_filters';
-
     /**
      * The attributes that are mass assignable.
      *
@@ -94,12 +89,12 @@ class RouteServerFilter extends Model
         'live',
     ];
 
-    const NO_ACTION         = "NO_ACTION";
-    const AS_IS             = "AS_IS";
-    const NO_ADVERTISE      = "NO_ADVERTISE";
-    const PREPEND_ONCE      = "PREPEND_ONCE";
-    const PREPEND_TWICE     = "PREPEND_TWICE";
-    const PREPEND_THRICE    = "PREPEND_THRICE";
+    public const NO_ACTION         = "NO_ACTION";
+    public const AS_IS             = "AS_IS";
+    public const NO_ADVERTISE      = "NO_ADVERTISE";
+    public const PREPEND_ONCE      = "PREPEND_ONCE";
+    public const PREPEND_TWICE     = "PREPEND_TWICE";
+    public const PREPEND_THRICE    = "PREPEND_THRICE";
 
     public static $ADVERTISE_ACTION_TEXT = [
         self::NO_ACTION         => 'No Action',
@@ -146,6 +141,7 @@ class RouteServerFilter extends Model
     /**
      * Turn the database integer representation of the action advertise into text as
      * defined in the self::$ADVERTISE_ACTION_TEXT array (or 'Unknown')
+     *
      * @return string
      */
     public function resolveActionAdvertise(): string
@@ -156,6 +152,7 @@ class RouteServerFilter extends Model
     /**
      * Turn the database integer representation of the action receive into text as
      * defined in the self::$RECEIVE_ACTION_TEXT array (or 'Unknown')
+     *
      * @return string
      */
     public function resolveActionReceive(): string
@@ -166,6 +163,7 @@ class RouteServerFilter extends Model
     /**
      * Turn the database integer representation of the protocol into text as
      * defined in the RouterEntity::$PROTOCOLS array (or 'Unknown')
+     *
      * @return string
      */
     public function resolveProtocol(): string

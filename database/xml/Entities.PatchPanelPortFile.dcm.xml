@@ -14,6 +14,8 @@
         <option name="default">0</option>
       </options>
     </field>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <field name="storage_location" type="string" length="255" nullable="false"/>
     <many-to-one field="patchPanelPort" target-entity="Entities\PatchPanelPort" inversed-by="patchPanelPortFiles">
       <join-columns>
