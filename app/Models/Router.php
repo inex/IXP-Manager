@@ -232,7 +232,7 @@ class Router extends Model
      *
      * @return Builder
      */
-    public function scopeHasApi( Builder $query )
+    public function scopeHasApi( Builder $query ): Builder
     {
         return $query->where('api_type', '>', 0);
     }
@@ -244,7 +244,7 @@ class Router extends Model
      *
      * @return Builder
      */
-    public function scopeRouteServer( Builder $query)
+    public function scopeRouteServer( Builder $query ): Builder
     {
         return $query->where('type', self::TYPE_ROUTE_SERVER);
     }
@@ -256,7 +256,7 @@ class Router extends Model
      *
      * @return Builder
      */
-    public function scopeIPv4( Builder $query)
+    public function scopeIPv4( Builder $query ): Builder
     {
         return $query->where('protocol', self::PROTOCOL_IPV4);
     }
@@ -268,7 +268,7 @@ class Router extends Model
      *
      * @return Builder
      */
-    public function scopeIPv6( Builder $query)
+    public function scopeIPv6( Builder $query ): Builder
     {
         return $query->where('protocol', self::PROTOCOL_IPV6);
     }
@@ -280,7 +280,7 @@ class Router extends Model
      *
      * @return Builder
      */
-    public function scopeLargeCommunities( Builder $query)
+    public function scopeLargeCommunities( Builder $query ): Builder
     {
         return $query->where('bgp_lc', true);
     }
@@ -292,7 +292,7 @@ class Router extends Model
      *
      * @return Builder
      */
-    public function scopeNotQuarantine( Builder $query)
+    public function scopeNotQuarantine( Builder $query ): Builder
     {
         return $query->where('quarantine', false);
     }
@@ -304,8 +304,20 @@ class Router extends Model
      *
      * @return Builder
      */
-    public function scopeRpki( Builder $query)
+    public function scopeRpki( Builder $query ): Builder
     {
         return $query->where('rpki', true);
+    }
+
+
+    /**
+     * Turn the database integer representation of the software into text as
+     * defined in the self::$SOFTWARES array (or 'Unknown')
+     *
+     * @return string
+     */
+    public function resolveSoftware(): string
+    {
+        return self::$SOFTWARES[ $this->software ] ?? 'Unknown';
     }
 }

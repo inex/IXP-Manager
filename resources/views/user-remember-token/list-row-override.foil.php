@@ -16,7 +16,7 @@ $row = $t->row;
         <?= $t->ee( $row['ip'] ) ?>
     </td>
     <td>
-        <?= $t->ee( $row['created'] ) ?>
+        <?= $t->ee( $row['created_at'] ) ?>
     </td>
     <td>
         <?= $t->ee( $row['expires'] ) ?>

@@ -151,6 +151,7 @@ class SwitchPortController extends EloquentController
     protected function listGetData( $id = null ): array
     {
         $feParams = $this->feParams;
+        $params = $this->data;
         return SwitchPort::select( [
             'sp.*',
             's.id AS switchid', 's.name AS switchname'

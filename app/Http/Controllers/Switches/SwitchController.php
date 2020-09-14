@@ -445,7 +445,7 @@ class SwitchController extends EloquentController
             // Store the platform in session to be able to get back the information when we will create the object
             $request->session()->put( "snmp-platform", $snmp->getPlatform() );
 
-            if( $v = Vendor::find( $vendor ) ) {
+            if( $v = Vendor::whereName( $vendor )->get()->first() ) {
                 $vendorid = $v->id;
             }
         } catch( SNMPException $e ) {
@@ -818,9 +818,9 @@ class SwitchController extends EloquentController
             'location'                  => $location,
             'summary'                   => $summary,
             'speeds'                    => $speeds,
-            'infras'                    => $switch ? [ $switch->infrastructure->id => $switch->infrastructure->name ] : Infrastructure::orderBy( 'name', 'asc' )->get()->toArray(),
+            'infras'                    => $switch ? [ $switch->infrastructure->id => $switch->infrastructure->name ] : Infrastructure::orderBy( 'name', 'asc' )->get(),
             'vlans'                     => Vlan::orderBy( 'name' )->get(),
-            'locations'                 => $switch ? [ $switch->cabinet->location->id  => $switch->cabinet->location->name ] : Location::getListAsArray(),
+            'locations'                 => $switch ? [ $switch->cabinet->location->id  => $switch->cabinet->location->name ] : Location::orderBy( 'name', 'asc' )->get(),
             'switches'                  => SwitcherAggregator::getByLocationInfrastructureSpeed( $infra, $location, $speed ),
             'config'                    => $config,
         ]);

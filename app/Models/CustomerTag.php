@@ -23,10 +23,7 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Model
-};
+use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsToMany};
 
 /**
  * IXP\Models\CustomerTag
@@ -53,6 +50,8 @@ use Illuminate\Database\Eloquent\{
  * @property \Illuminate\Support\Carbon $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Customer[] $customers
+ * @property-read int|null $customers_count
  */
 class CustomerTag extends Model
 {
@@ -74,4 +73,12 @@ class CustomerTag extends Model
         'description',
         'internal_only',
     ];
+
+    /**
+     * Get all the customers for the tag
+     */
+    public function customers(): BelongsToMany
+    {
+        return $this->belongsToMany(Customer::class)->withPivot( 'cust_to_cust_tag', 'customer_tag_id' );
+    }
 }

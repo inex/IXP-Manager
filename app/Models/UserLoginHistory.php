@@ -47,6 +47,10 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|UserLoginHistory whereUserId($value)
  * @method static Builder|UserLoginHistory whereVia($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserLoginHistory whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserLoginHistory whereUpdatedAt($value)
  */
 class UserLoginHistory extends Model
 {

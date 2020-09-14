@@ -180,9 +180,9 @@
                     <td>
                         <?php if( $conf[ "switchid" ] ): ?>
                             <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                <a href="<?= route( "switch@port-report"    , [ "id" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
+                                <a href="<?= route( "switch@port-report"    , [ "switch" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
                             <?php else: ?>
-                                <a href="<?= route( "switch@configuration"  , [ "id" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
+                                <a href="<?= route( "switch@configuration"  , [ "switch" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
                             <?php endif; ?>
                         <?php endif; ?>
                     </td>

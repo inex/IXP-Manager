@@ -49,10 +49,13 @@ class AddTimestamps extends Migration
         });
 
         Schema::table('cust', function (Blueprint $table) {
-            $table->dateTime( 'created' )->change();
-            $table->dateTime( 'lastupdated' )->change();
             $table->renameColumn( 'created', 'created_at' );
             $table->renameColumn( 'lastupdated', 'updated_at' );
+        });
+
+        Schema::table('cust', function (Blueprint $table) {
+            $table->dateTime( 'created_at' )->change();
+            $table->dateTime( 'updated_at' )->change();
         });
 
         Schema::table('customer_to_users', function (Blueprint $table) {
@@ -226,10 +229,13 @@ class AddTimestamps extends Migration
         });
 
         Schema::table('cust', function (Blueprint $table) {
-            $table->date( 'created_at' )->change();
-            $table->date( 'updated_at' )->change();
             $table->renameColumn( 'created_at', 'created' );
             $table->renameColumn( 'updated_at', 'lastupdated' );
+        });
+
+        Schema::table('cust', function (Blueprint $table) {
+            $table->date( 'created' )->change();
+            $table->date( 'lastupdated' )->change();
         });
 
         Schema::table('customer_to_users', function (Blueprint $table) {

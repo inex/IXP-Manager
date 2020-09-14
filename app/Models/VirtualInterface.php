@@ -65,6 +65,10 @@ use Illuminate\Database\Eloquent\{
  * @mixin Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PhysicalInterface[] $physicalInterfacesConnected
  * @property-read int|null $physical_interfaces_connected_count
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereUpdatedAt($value)
  */
 class VirtualInterface extends Model
 {

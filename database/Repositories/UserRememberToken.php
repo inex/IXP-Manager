@@ -54,7 +54,7 @@ class UserRememberToken extends EntityRepository
                         urt.token      AS token,
                         urt.device     AS device, 
                         urt.ip         AS ip, 
-                        urt.created    AS created, 
+                        urt.created_at    AS created, 
                         urt.expires    AS expires
                 FROM Entities\\UserRememberToken urt
                 WHERE urt.User = " . (int)$userid;

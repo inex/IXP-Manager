@@ -55,6 +55,25 @@ class ArrayUtilities
         return $new;
     }
 
+    /**
+     * Reindex an array of objects by a member of that object.
+     *
+     * Typically used for Doctrine2 collections.
+     *
+     * @param array     $objects    Array of objects to reindex
+     * @param string    $indexFn    The method of the object that will return the new index. Must be a unique key.
+     *
+     * @return array
+     */
+    public static function reindexEloquentObjects( $objects, $indexFn ){
+        $new = [];
+
+        foreach( $objects as $obj )
+            $new[ $obj->$indexFn ] = $obj;
+
+        return $new;
+    }
+
 
     /**
      * Reorder an array of objects by a member of that object.
@@ -72,6 +91,28 @@ class ArrayUtilities
 
         foreach( $objects as $obj )
             $new[ $obj->$orderFn() ] = $obj;
+
+        ksort( $new, $orderParam );
+
+        return $new;
+    }
+
+    /**
+     * Reorder an array of objects by a member of that object.
+     *
+     * Typically used for Doctrine2 collections.
+     *
+     * @param array     $objects        Array of objects to reindex
+     * @param string    $orderFn        The method of the object that will return the new ordering index (should be unique!).
+     * @param int       $orderParam     Order of the array
+     *
+     * @return array
+     */
+    public static function reorderEloquentObjects( $objects, $orderFn, $orderParam = SORT_REGULAR ){
+        $new = [];
+
+        foreach( $objects as $obj )
+            $new[ $obj->$orderFn ] = $obj;
 
         ksort( $new, $orderParam );
 

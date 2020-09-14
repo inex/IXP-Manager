@@ -25,6 +25,7 @@ namespace Tests\Browser;
 
 use D2EM;
 
+use Illuminate\Database\Eloquent\Builder;
 use IXP\Models\SwitchPort;
 use Tests\DuskTestCase;
 
@@ -58,7 +59,13 @@ class SwitchPortControllerTest extends DuskTestCase
             /**
              * Test view Switch information
              */
-            $sps = SwitchPort::getFeList( (object)[] );
+            $sps = SwitchPort::select( [
+                'sp.*',
+                's.id AS switchid', 's.name AS switchname'
+            ] )
+                ->from( 'switchport AS sp' )
+                ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
+                ->get()->toArray();
 
             $sp = SwitchPort::whereId( reset($sps )[ "id" ] )->get()->first();
 

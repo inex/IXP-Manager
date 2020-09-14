@@ -111,6 +111,7 @@ use \OSS_SNMP\MIBS\Iface as SNMPIface;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereUpdatedAt($value)
+ * @property-read \IXP\Models\Vendor|null $vendor
  */
 class Switcher extends Model
 {
@@ -200,6 +201,14 @@ class Switcher extends Model
     public function cabinet(): BelongsTo
     {
         return $this->belongsTo(Cabinet::class, 'cabinetid' );
+    }
+
+    /**
+     * Get the vendor that own the switcher
+     */
+    public function vendor(): BelongsTo
+    {
+        return $this->belongsTo(Vendor::class, 'vendorid' );
     }
 
     /**

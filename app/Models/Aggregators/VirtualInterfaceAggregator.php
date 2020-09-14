@@ -35,6 +35,43 @@ use IXP\Models\{
 };
 use Illuminate\Support\Collection;
 
+/**
+ * IXP\Models\Aggregators\VirtualInterfaceAggregator
+ *
+ * @property int $id
+ * @property int|null $custid
+ * @property string|null $name
+ * @property string|null $description
+ * @property int|null $mtu
+ * @property int|null $trunk
+ * @property int|null $channelgroup
+ * @property int $lag_framing
+ * @property int $fastlacp
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\Customer|null $customer
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PhysicalInterface[] $physicalInterfaces
+ * @property-read int|null $physical_interfaces_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PhysicalInterface[] $physicalInterfacesConnected
+ * @property-read int|null $physical_interfaces_connected_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
+ * @property-read int|null $vlan_interfaces_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VirtualInterfaceAggregator newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VirtualInterfaceAggregator newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VirtualInterfaceAggregator query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VirtualInterfaceAggregator whereChannelgroup($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VirtualInterfaceAggregator whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VirtualInterfaceAggregator whereCustid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VirtualInterfaceAggregator whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VirtualInterfaceAggregator whereFastlacp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VirtualInterfaceAggregator whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VirtualInterfaceAggregator whereLagFraming($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VirtualInterfaceAggregator whereMtu($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VirtualInterfaceAggregator whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VirtualInterfaceAggregator whereTrunk($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VirtualInterfaceAggregator whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class VirtualInterfaceAggregator extends VirtualInterface
 {
     /**

@@ -48,6 +48,12 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|Vendor whereName($value)
  * @method static Builder|Vendor whereShortname($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Switcher[] $switchers
+ * @property-read int|null $switchers_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor whereUpdatedAt($value)
  */
 class Vendor extends Model
 {
@@ -75,5 +81,13 @@ class Vendor extends Model
     public function consoleServers(): HasMany
     {
         return $this->hasMany(ConsoleServer::class, 'vendor_id' );
+    }
+
+    /**
+     * Get the switchers for the vendor
+     */
+    public function switchers(): HasMany
+    {
+        return $this->hasMany(Switcher::class, 'vendorid' );
     }
 }

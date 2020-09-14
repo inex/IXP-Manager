@@ -97,6 +97,10 @@ use IXP\Services\Grapher\Graph;
  * @method static Builder|VlanInterface whereVirtualinterfaceid($value)
  * @method static Builder|VlanInterface whereVlanid($value)
  * @mixin Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereUpdatedAt($value)
  */
 class VlanInterface extends Model
 {

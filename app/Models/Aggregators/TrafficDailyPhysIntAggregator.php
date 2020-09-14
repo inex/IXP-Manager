@@ -31,6 +31,91 @@ use IXP\Services\Grapher\Graph;
 
 use \IXP\Models\TrafficDailyPhysInt;
 
+/**
+ * IXP\Models\Aggregators\TrafficDailyPhysIntAggregator
+ *
+ * @property int $id
+ * @property int $physicalinterface_id
+ * @property string|null $day
+ * @property string|null $category
+ * @property int|null $day_avg_in
+ * @property int|null $day_avg_out
+ * @property int|null $day_max_in
+ * @property int|null $day_max_out
+ * @property string|null $day_max_in_at
+ * @property string|null $day_max_out_at
+ * @property int|null $day_tot_in
+ * @property int|null $day_tot_out
+ * @property int|null $week_avg_in
+ * @property int|null $week_avg_out
+ * @property int|null $week_max_in
+ * @property int|null $week_max_out
+ * @property string|null $week_max_in_at
+ * @property string|null $week_max_out_at
+ * @property int|null $week_tot_in
+ * @property int|null $week_tot_out
+ * @property int|null $month_avg_in
+ * @property int|null $month_avg_out
+ * @property int|null $month_max_in
+ * @property int|null $month_max_out
+ * @property string|null $month_max_in_at
+ * @property string|null $month_max_out_at
+ * @property int|null $month_tot_in
+ * @property int|null $month_tot_out
+ * @property int|null $year_avg_in
+ * @property int|null $year_avg_out
+ * @property int|null $year_max_in
+ * @property int|null $year_max_out
+ * @property string|null $year_max_in_at
+ * @property string|null $year_max_out_at
+ * @property int|null $year_tot_in
+ * @property int|null $year_tot_out
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\PhysicalInterface $physicalInterface
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereCategory($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereDay($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereDayAvgIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereDayAvgOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereDayMaxIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereDayMaxInAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereDayMaxOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereDayMaxOutAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereDayTotIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereDayTotOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereMonthAvgIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereMonthAvgOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereMonthMaxIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereMonthMaxInAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereMonthMaxOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereMonthMaxOutAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereMonthTotIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereMonthTotOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator wherePhysicalinterfaceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereWeekAvgIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereWeekAvgOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereWeekMaxIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereWeekMaxInAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereWeekMaxOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereWeekMaxOutAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereWeekTotIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereWeekTotOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereYearAvgIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereYearAvgOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereYearMaxIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereYearMaxInAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereYearMaxOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereYearMaxOutAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereYearTotIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\TrafficDailyPhysIntAggregator whereYearTotOut($value)
+ * @mixin \Eloquent
+ */
 class TrafficDailyPhysIntAggregator extends TrafficDailyPhysInt
 {
     /**

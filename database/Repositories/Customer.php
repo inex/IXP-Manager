@@ -174,8 +174,8 @@ class Customer extends EntityRepository
 
         $dql .= " ORDER BY c.name ASC";
         
-        $custs = $this->getEntityManager()->createQuery( $dql )->getSQL();
-dd($custs);
+        $custs = $this->getEntityManager()->createQuery( $dql );
+
         return $asArray ? $custs->getArrayResult() : $custs->getResult();
     }
     

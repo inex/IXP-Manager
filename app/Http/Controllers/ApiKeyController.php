@@ -81,7 +81,7 @@ class ApiKeyController extends EloquentController
             'pagetitle'         => 'API Keys',
             'titleSingular'     => 'API Key',
             'nameSingular'      => 'API key',
-            'listOrderBy'       => 'created',
+            'listOrderBy'       => 'created_at',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'api-key',
             'documentation'     => 'https://docs.ixpmanager.org/features/api/',
@@ -93,7 +93,7 @@ class ApiKeyController extends EloquentController
                     'type'         => config( 'ixp_fe.api_keys.show_keys' ) ? self::$FE_COL_TYPES[ 'TEXT' ] : self::$FE_COL_TYPES[ 'LIMIT' ],
                     'limitTo'      => 6
                 ],
-                'created'      => [
+                'created_at'      => [
                     'title'        => 'Created',
                     'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ],
@@ -152,7 +152,7 @@ class ApiKeyController extends EloquentController
     protected function listGetData( $id = null ): array
     {
         $feParams = $this->feParams;
-        return ApiKey::where( 'user_id', $id )
+        return ApiKey::where( 'user_id', Auth::user()->getId() )
             ->when( $id , function( Builder $q, $id ) {
                 return $q->where('id', $id );
             } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
@@ -231,7 +231,6 @@ class ApiKeyController extends EloquentController
         $this->object = ApiKey::create( [
             'user_id'       => $request->user()->getId(),
             'apiKey'        => $key = Str::random(48),
-            'created'       => now(),
             'expires'       => $request->expires,
             'description'   => $request->description,
         ]);

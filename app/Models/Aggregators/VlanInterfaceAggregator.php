@@ -35,6 +35,72 @@ use IXP\Models\{
     VlanInterface
 };
 
+/**
+ * IXP\Models\Aggregators\VlanInterfaceAggregator
+ *
+ * @property int $id
+ * @property int|null $ipv4addressid
+ * @property int|null $ipv6addressid
+ * @property int|null $virtualinterfaceid
+ * @property int|null $vlanid
+ * @property int|null $ipv4enabled
+ * @property string|null $ipv4hostname
+ * @property int|null $ipv6enabled
+ * @property string|null $ipv6hostname
+ * @property int|null $mcastenabled
+ * @property int|null $irrdbfilter
+ * @property string|null $bgpmd5secret
+ * @property string|null $ipv4bgpmd5secret
+ * @property string|null $ipv6bgpmd5secret
+ * @property int|null $maxbgpprefix
+ * @property int|null $rsclient
+ * @property int|null $ipv4canping
+ * @property int|null $ipv6canping
+ * @property int|null $ipv4monitorrcbgp
+ * @property int|null $ipv6monitorrcbgp
+ * @property int|null $as112client
+ * @property int|null $busyhost
+ * @property string|null $notes
+ * @property int $rsmorespecifics
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\IPv4Address|null $ipv4address
+ * @property-read \IXP\Models\IPv6Address|null $ipv6address
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Layer2Address[] $layer2addresses
+ * @property-read int|null $layer2addresses_count
+ * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
+ * @property-read \IXP\Models\Vlan|null $vlan
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereAs112client($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereBgpmd5secret($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereBusyhost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereIpv4addressid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereIpv4bgpmd5secret($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereIpv4canping($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereIpv4enabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereIpv4hostname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereIpv4monitorrcbgp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereIpv6addressid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereIpv6bgpmd5secret($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereIpv6canping($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereIpv6enabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereIpv6hostname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereIpv6monitorrcbgp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereIrrdbfilter($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereMaxbgpprefix($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereMcastenabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereRsclient($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereRsmorespecifics($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereVirtualinterfaceid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VlanInterfaceAggregator whereVlanid($value)
+ * @mixin \Eloquent
+ */
 class VlanInterfaceAggregator extends VlanInterface
 {
 

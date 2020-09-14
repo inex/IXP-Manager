@@ -94,6 +94,10 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|TrafficDaily whereYearTotIn($value)
  * @method static Builder|TrafficDaily whereYearTotOut($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\TrafficDaily whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\TrafficDaily whereUpdatedAt($value)
  */
 class TrafficDaily extends Model
 {

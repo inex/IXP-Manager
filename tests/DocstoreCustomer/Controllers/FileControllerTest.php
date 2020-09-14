@@ -54,12 +54,12 @@ class FileControllerTest extends TestCase
         'fileName2'             => 'File3.pdf',
         'fileDescription2'      => 'This is file3.pdf',
         'filePrivs2'            => UserEntity::AUTH_CUSTADMIN,
-        'parentDirId2'          => 6,
+        'parentDirId2'          => 5,
         'fileName3'             => 'File4.txt',
         'fileDescription3'      => 'This is file4.txt',
         'textFile'              => 'I am the file4.txt',
         'filePrivs3'            => UserEntity::AUTH_CUSTADMIN,
-        'parentDirId3'          => 6,
+        'parentDirId3'          => 5,
     ];
 
     /**
@@ -67,7 +67,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testStoreSuperUser2()
+    public function testStoreSuperUser2(): void
     {
         // test Superuser
         $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'superuser' ] ] );
@@ -80,10 +80,8 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testUploadFormAccessPublicUser()
+    public function testUploadFormAccessPublicUser(): void
     {
-
-
         // public user
         $response = $this->get( route( 'docstore-c-file@upload' , [ 'cust' => self::testInfo[ 'customerId' ] ] ) );
         $response->assertStatus(302 )
@@ -95,7 +93,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testUploadFormAccessCustUser()
+    public function testUploadFormAccessCustUser(): void
     {
         $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'custuser' ] ] );
         $response = $this->actingAs( $user )->get( route( 'docstore-c-file@upload', [ 'cust' => self::testInfo[ 'customerId' ] ] ) );
@@ -107,7 +105,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testUploadFormAccessCustAdmin()
+    public function testUploadFormAccessCustAdmin(): void
     {
         $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'custadmin' ] ] );
         $response = $this->actingAs( $user )->get( route( 'docstore-c-file@upload', [ 'cust' => self::testInfo[ 'customerId' ] ] ) );
@@ -119,7 +117,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testUploadFormAccessSuperUser()
+    public function testUploadFormAccessSuperUser(): void
     {
         $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'superuser' ] ] );
         $response = $this->actingAs( $user )->get( route( 'docstore-c-file@upload', [ 'cust' => self::testInfo[ 'customerId' ] ] ) );
@@ -131,7 +129,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testStorePublicUser()
+    public function testStorePublicUser(): void
     {
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
@@ -156,7 +154,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testStoreCustUser()
+    public function testStoreCustUser(): void
     {
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
@@ -182,7 +180,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testStoreCustAdmin()
+    public function testStoreCustAdmin(): void
     {
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
@@ -208,7 +206,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testStoreSuperUser()
+    public function testStoreSuperUser(): void
     {
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
@@ -232,7 +230,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testStoreWithoutName()
+    public function testStoreWithoutName(): void
     {
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
 
@@ -254,7 +252,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testStoreWithoutFile()
+    public function testStoreWithoutFile(): void
     {
         $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'superuser' ] ] );
 
@@ -274,7 +272,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testStoreWithWrongSha256()
+    public function testStoreWithWrongSha256(): void
     {
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
 
@@ -296,7 +294,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testStoreWithWrongMinPivs()
+    public function testStoreWithWrongMinPivs(): void
     {
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
 
@@ -318,7 +316,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testUpdatePublicUser()
+    public function testUpdatePublicUser(): void
     {
 
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName' ] ] )->first();
@@ -349,7 +347,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateCustUser()
+    public function testUpdateCustUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName' ] ] )->first();
 
@@ -381,7 +379,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateCustAdmin()
+    public function testUpdateCustAdmin(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName' ] ] )->first();
 
@@ -413,7 +411,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateWithPostMethod()
+    public function testUpdateWithPostMethod(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName' ] ] )->first();
 
@@ -434,7 +432,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateSuperUser()
+    public function testUpdateSuperUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName' ] ] )->get()->last();
 
@@ -461,7 +459,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testViewNoneViewableFilePublicUser()
+    public function testViewNoneViewableFilePublicUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
@@ -475,7 +473,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testViewNoneViewableFileCustUser()
+    public function testViewNoneViewableFileCustUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
@@ -490,7 +488,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testViewNoneViewableFileCustAdmin()
+    public function testViewNoneViewableFileCustAdmin(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
@@ -505,7 +503,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testViewNoneViewableFileSuperUser()
+    public function testViewNoneViewableFileSuperUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
@@ -520,7 +518,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDownloadPublicUser()
+    public function testDownloadPublicUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
@@ -534,7 +532,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDownloadCustUser()
+    public function testDownloadCustUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
@@ -549,7 +547,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDownloadCustAdmin()
+    public function testDownloadCustAdmin(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
@@ -564,7 +562,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDownloadSuperUser()
+    public function testDownloadSuperUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
@@ -579,7 +577,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testInfoPublicUser()
+    public function testInfoPublicUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
@@ -593,7 +591,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testInfoCustUser()
+    public function testInfoCustUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
@@ -608,7 +606,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testInfoCustAdmin()
+    public function testInfoCustAdmin(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
@@ -623,7 +621,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testInfoSuperUser()
+    public function testInfoSuperUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
@@ -639,7 +637,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeletePublicUser()
+    public function testDeletePublicUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
@@ -657,7 +655,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteCustUser()
+    public function testDeleteCustUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
@@ -677,7 +675,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteCustAdmin()
+    public function testDeleteCustAdmin(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
@@ -695,7 +693,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteSuperUser()
+    public function testDeleteSuperUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
@@ -714,7 +712,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testStoreViewableObject()
+    public function testStoreViewableObject(): void
     {
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName3' ], self::testInfo[ 'textFile' ] );
 
@@ -738,7 +736,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testViewPublicUser()
+    public function testViewPublicUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName3' ] ] )->first();
 
@@ -751,7 +749,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testViewCustUser()
+    public function testViewCustUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName3' ] ] )->first();
 
@@ -766,7 +764,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testViewCustAdmin()
+    public function testViewCustAdmin(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName3' ] ] )->first();
 
@@ -781,7 +779,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testViewSuperUser()
+    public function testViewSuperUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName3' ] ] )->first();
 
@@ -797,7 +795,7 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDelete2SuperUser()
+    public function testDelete2SuperUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName3' ] ] )->first();
 

@@ -155,6 +155,8 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property-read int|null $patch_panel_ports_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortHistory[] $patchPanelPortHistories
  * @property-read int|null $patch_panel_port_histories_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerTag[] $tags
+ * @property-read int|null $tags_count
  */
 class Customer extends Model
 {
@@ -232,6 +234,18 @@ class Customer extends Model
         self::STATUS_NORMAL           => 'Normal',
         self::STATUS_NOTCONNECTED     => 'Not Connected',
         self::STATUS_SUSPENDED        => 'Suspended',
+    ];
+
+    const PEERING_POLICY_OPEN       = 'open';
+    const PEERING_POLICY_SELECTIVE  = 'selective';
+    const PEERING_POLICY_MANDATORY  = 'mandatory';
+    const PEERING_POLICY_CLOSED     = 'closed';
+
+    public static $PEERING_POLICIES = [
+        self::PEERING_POLICY_OPEN       => 'open',
+        self::PEERING_POLICY_SELECTIVE  => 'selective',
+        self::PEERING_POLICY_MANDATORY  => 'mandatory',
+        self::PEERING_POLICY_CLOSED     => 'closed'
     ];
 
 
@@ -339,6 +353,14 @@ class Customer extends Model
         return $this->belongsToMany(User::class )->withPivot( 'customer_to_users', 'customer_id' );
     }
 
+    /**
+     * The tags that belong to the customer.
+     */
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(CustomerTag::class , 'cust_to_cust_tag', 'customer_id' );
+    }
+
 
     /**
      * Scope a query to only include trafficking members.
@@ -388,6 +410,41 @@ class Customer extends Model
             } )->when( $externalOnly , function( Builder $q ) {
                 return $q->whereRaw( self::SQL_CUST_EXTERNAL );
             })->orderBy( 'name' );
+    }
+
+    /**
+     * Useful function to get the appropriate AS macro or ASN for a customer
+     * for a given protocol.
+     *
+     * One example usage is in IrrdbCli for bgpq3. bgpq3 requires ASNs to
+     * be formatted as `asxxxx` so we set `$asnPrefix = 'as'` in this case.
+     *
+     * By default, the function will return some format of the ASN if no macro is
+     * defined. To return null in this case, set `$nullIfNoMacro` to true.
+     *
+     * @param int    $protocol One of 4 or 6 (defaults to 4)
+     * @param string $asnPrefix A prefix for the ASN if no macro is present. See above.
+     * @param bool   $nullIfNoMacro
+     *
+     * @return string|null The ASN / AS macro as appropriate
+     */
+    public function resolveAsMacro( $protocol = 4, $asnPrefix = '', $nullIfNoMacro = false ): ?string
+    {
+        if( !in_array( $protocol, [ 4, 6 ], true ) )
+            $protocol = 4;
+
+        // find the appropriate ASN or macro
+        if( $protocol === 6 && strlen( $this->peeringmacrov6 ) > 3 ) {
+            $asmacro = $this->peeringmacrov6;
+        } else if( strlen( $this->peeringmacro ) > 3 ) {
+            $asmacro = $this->peeringmacro;
+        } else if( $nullIfNoMacro ) {
+            $asmacro = null;
+        } else {
+            $asmacro = $asnPrefix . $this->autsys;
+        }
+
+        return $asmacro;
     }
 
     /**

@@ -80,7 +80,7 @@ class UserRememberTokenController extends EloquentController
             'pagetitle'                 => 'Your Active Login Sessions',
             'titleSingular'             => 'Active Login Session',
             'nameSingular'              => 'active login session',
-            'listOrderBy'               => 'created',
+            'listOrderBy'               => 'created_at',
             'listOrderByDir'            => 'ASC',
             'readonly'                  => self::$read_only,
             'allowDeleteForReadOnly'    => self::$allow_delete_for_read_only,
@@ -89,7 +89,7 @@ class UserRememberTokenController extends EloquentController
             'listColumns'    => [
                 'device'      => 'Device',
                 'ip'          => 'IP',
-                'created'      => [
+                'created_at'      => [
                     'title'        => 'Created',
                     'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ],

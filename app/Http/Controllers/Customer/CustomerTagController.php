@@ -93,12 +93,12 @@ class CustomerTagController extends EloquentController
             $this->feParams->listColumns,
             [
                 'description'          => 'Description',
-                'created'              =>
+                'created_at'              =>
                     [
                         'title'        => 'Created',
                         'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
                     ],
-                'updated'              =>
+                'updated_at'              =>
                     [
                         'title'        => 'Updated',
                         'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]

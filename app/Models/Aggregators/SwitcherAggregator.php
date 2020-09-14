@@ -97,6 +97,7 @@ use IXP\Models\Switcher;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereVendorid($value)
  * @mixin \Eloquent
+ * @property-read \IXP\Models\Vendor|null $vendor
  */
 class SwitcherAggregator extends Switcher
 {
@@ -153,9 +154,9 @@ class SwitcherAggregator extends Switcher
                 GROUP_CONCAT( sp.ifName ) AS ifName,
                 GROUP_CONCAT( pi.speed )  AS speed,
                 GROUP_CONCAT( pi.status ) AS portstatus,
-                c.name AS customer, 
-                c.id AS custid, 
-                c.autsys AS asn,
+                cust.name AS customer, 
+                cust.id AS custid, 
+                cust.autsys AS asn,
                 MAX( vli.rsclient    ) AS rsclient,
                 MAX( vli.ipv4enabled ) AS ipv4enabled, 
                 MAX( vli.ipv6enabled ) AS ipv6enabled, 
@@ -168,7 +169,7 @@ class SwitcherAggregator extends Switcher
             ->leftjoin( 'ipv6address AS ipv6', 'ipv6.id', 'vli.ipv6addressid' )
             ->leftjoin( 'vlan AS v', 'v.id', '=', 'vli.vlanid' )
             ->leftjoin( 'virtualinterface AS vi', 'vi.id','vli.virtualinterfaceid' )
-            ->leftjoin( 'cust AS c', 'c.id','vi.custid' )
+            ->leftjoin( 'cust', 'cust.id','vi.custid' )
             ->leftjoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid','vi.id' )
             ->leftjoin( 'switchport AS sp', 'sp.id', 'pi.switchportid' )
             ->leftjoin( 'switch AS s', 's.id', 'sp.switchid' )

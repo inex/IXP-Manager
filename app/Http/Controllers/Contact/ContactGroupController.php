@@ -88,7 +88,7 @@ class ContactGroupController extends EloquentController
                     'title' => 'Active',
                     'type' => self::$FE_COL_TYPES[ 'YES_NO' ]
                 ],
-                'created'       => [
+                'created_at'       => [
                     'title'     => 'Created',
                     'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ]
