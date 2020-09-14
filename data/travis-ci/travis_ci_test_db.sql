@@ -270,6 +270,8 @@ CREATE TABLE `consoleserverconnection` (
   `autobaud` tinyint(1) DEFAULT NULL,
   `notes` longtext COLLATE utf8_unicode_ci,
   `console_server_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `console_server_port_uniq` (`console_server_id`,`port`),
   KEY `IDX_530316DCDA0209B9` (`custid`),
@@ -1287,7 +1289,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1296,7 +1298,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3),(9,'2020_07_21_094354_create_route_server_filters',4),(10,'2020_09_03_153723_add_timestamps',5);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3),(9,'2020_07_21_094354_create_route_server_filters',4),(11,'2020_09_03_153723_add_timestamps',5);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2765,4 +2767,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-09-11 11:25:05
+-- Dump completed on 2020-09-14 15:04:19

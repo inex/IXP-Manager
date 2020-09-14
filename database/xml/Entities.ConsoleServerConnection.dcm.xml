@@ -12,6 +12,8 @@
     <field name="flowcontrol" type="integer" nullable="true"/>
     <field name="autobaud" type="boolean" nullable="true"/>
     <field name="notes" type="text" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <unique-constraints>
       <unique-constraint name="console_server_port_uniq" columns="console_server_id,port"/>
     </unique-constraints>

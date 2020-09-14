@@ -86,7 +86,11 @@ class AdminController extends Controller
         if( $request->query( 'refresh_cache', 0 ) || !( $cTypes = Cache::get( 'admin_ctypes' ) ) ) {
 
             // Full / Associate / Probono / Internal
-            $cTypes['types'] = Customer::getTypeCounts();
+            $cTypes['types'] = Customer::selectRaw( 'type AS ctype, COUNT( type ) AS cnt' )
+                ->whereRaw( Customer::SQL_CUST_CURRENT )
+                ->whereRaw(Customer::SQL_CUST_ACTIVE )
+                ->groupBy( 'ctype' )->get()->keyBy( 'ctype' )->toArray();
+            ;
 
             // Searches for VirtualInterfaces where custtype us not internal.
             // Because it's Virtual Interfaces, it should only be current or unremoved customers, etc.

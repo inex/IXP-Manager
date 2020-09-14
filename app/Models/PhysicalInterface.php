@@ -170,7 +170,6 @@ class PhysicalInterface extends Model
         return $this->status === self::STATUS_CONNECTED || $this->status === self::STATUS_QUARANTINE;
     }
 
-
     /**
      * Determine if the port's status is set to CONNECTED
      *

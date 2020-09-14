@@ -34,6 +34,7 @@ use Illuminate\Http\{
 use Illuminate\View\View;
 
 use IXP\Models\{Aggregators\SwitcherAggregator,
+    Aggregators\SwitchPortAggregator,
     Cabinet,
     Infrastructure,
     Location,
@@ -675,7 +676,7 @@ class SwitchController extends EloquentController
      */
     public function portReport( Switcher $switch ) : View
     {
-        $allPorts   = SwitchPort::getAllPortsForSwitch( $switch->id, [] , [], false );
+        $allPorts   = SwitchPortAggregator::getAllPortsForSwitch( $switch->id, [] , [], false );
 
         $ports      = SwitchPort::select( [
             'sp.id AS id', 'sp.name AS name', 'sp.type AS porttype',

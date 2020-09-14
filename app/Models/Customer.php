@@ -618,18 +618,4 @@ class Customer extends Model
             })
             ->orderBy( 'cust.name' )->distinct()->get();
     }
-
-    /**
-     * Utility function to provide a count of different customer types as `type => count`
-     * where type is as defined in Entities\Customer::$CUST_TYPES_TEXT
-     *
-     * @return array Number of customers of each customer type as `[type] => count`
-     */
-    public static function getTypeCounts()
-    {
-        return self::selectRaw( 'type AS ctype, COUNT( type ) AS cnt' )
-            ->whereRaw( self::SQL_CUST_CURRENT )
-            ->whereRaw(self::SQL_CUST_ACTIVE )
-            ->groupBy( 'ctype' )->get()->keyBy( 'ctype' )->toArray();
-    }
 }

@@ -79,9 +79,9 @@ class ConsoleServerConnection extends Model
         230400  => 230400
     ];
 
-    const PARITY_EVEN       = 1;
-    const PARITY_ODD        = 2;
-    const PARITY_NONE       = 3;
+    public const PARITY_EVEN       = 1;
+    public const PARITY_ODD        = 2;
+    public const PARITY_NONE       = 3;
 
     public static $PARITY = [
         self::PARITY_EVEN   => "even",
@@ -89,9 +89,9 @@ class ConsoleServerConnection extends Model
         self::PARITY_NONE   => "none"
     ];
 
-    const FLOW_CONTROL_NONE         = 1;
-    const FLOW_CONTROL_RTS_CTS      = 2;
-    const FLOW_CONTROL_XON_XOFF     = 3;
+    public const FLOW_CONTROL_NONE         = 1;
+    public const FLOW_CONTROL_RTS_CTS      = 2;
+    public const FLOW_CONTROL_XON_XOFF     = 3;
 
     public static $FLOW_CONTROL = [
         self::FLOW_CONTROL_NONE         => "none",
@@ -111,12 +111,6 @@ class ConsoleServerConnection extends Model
      * @var string
      */
     protected $table = 'consoleserverconnection';
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.
@@ -158,41 +152,5 @@ class ConsoleServerConnection extends Model
     public function consoleServer(): BelongsTo
     {
         return $this->belongsTo(ConsoleServer::class, 'console_server_id' );
-    }
-
-    /**
-     * Gets a listing of console server connections list or a single one if an ID is provided
-     *
-     * @param stdClass $feParams
-     * @param int|null $id
-     * @param int|null $port
-     *
-     * @return array
-     */
-    public static function getFeList( stdClass $feParams, int $id = null, int $port = null ): array
-    {
-        $query = self::select(
-            [
-                'csc.*',
-                'c.name AS customer', 'c.id AS customerid',
-                'cs.id  AS consoleserver_id', 'cs.name AS consoleserver_name'
-            ]
-        )
-            ->from( 'consoleserverconnection AS csc' )
-            ->leftJoin( 'console_server AS cs', 'cs.id', 'csc.console_server_id')
-            ->leftJoin( 'cust AS c', 'c.id', 'csc.custid')
-            ->when( $id , function( Builder $q, $id ) {
-                return $q->where('csc.id', $id );
-            } )
-            ->when( $port , function( Builder $q, $port ) {
-                return $q->where('csc.console_server_id', $port );
-            } )
-            ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-                foreach( $orderby as $order ) {
-                    return $q->orderBy( $order, $feParams->listOrderByDir ?? 'ASC');
-                }
-            });
-
-            return $query->get()->toArray();
     }
 }

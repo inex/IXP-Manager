@@ -26,6 +26,10 @@ class AddTimestamps extends Migration
             $table->timestamps();
         });
 
+        Schema::table('consoleserverconnection', function (Blueprint $table) {
+            $table->timestamps();
+        });
+
         Schema::table('contact', function (Blueprint $table) {
             $table->renameColumn( 'created', 'created_at' );
             $table->renameColumn( 'lastupdated', 'updated_at' );
@@ -203,6 +207,10 @@ class AddTimestamps extends Migration
         });
 
         Schema::table('console_server', function (Blueprint $table) {
+            $table->dropTimestamps();
+        });
+
+        Schema::table('consoleserverconnection', function (Blueprint $table) {
             $table->dropTimestamps();
         });
 

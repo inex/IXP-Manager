@@ -32,11 +32,7 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
-use IXP\Models\{
-    ConsoleServer,
-    ConsoleServerConnection,
-    Customer
-};
+use IXP\Models\{Aggregators\ConsoleServerConnectionAggregatore, ConsoleServer, ConsoleServerConnection, Customer};
 
 use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
@@ -139,13 +135,13 @@ class ConsoleServerConnectionController extends EloquentController
     /**
      * Provide array of rows for the list action and view action
      *
-     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @param int|null $id The `id` of the row to load for `view` action`. `null` if `listAction`
      *
      * @return array
      */
     protected function listGetData( $id = null ): array
     {
-        return ConsoleServerConnection::getFeList( $this->feParams, $id );
+        return ConsoleServerConnectionAggregatore::getFeList( $this->feParams, $id );
     }
 
     protected function preList(): void
@@ -304,7 +300,7 @@ class ConsoleServerConnectionController extends EloquentController
      */
     public function listPort( ConsoleServer $cs ): View
     {
-        $this->data[ 'rows' ]               = ConsoleServerConnection::getFeList( $this->feParams, null, $cs->id );
+        $this->data[ 'rows' ]               = ConsoleServerConnectionAggregatore::getFeList( $this->feParams, null, $cs->id );
         $this->data[ 'params' ][ "cs" ]     = $cs->id;
         $this->listIncludeTemplates();
         $this->preList();

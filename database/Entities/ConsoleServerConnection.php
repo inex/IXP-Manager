@@ -98,6 +98,8 @@ class ConsoleServerConnection
      */
     protected $parity;
 
+    private $created_at;
+    private $updated_at;
     /**
      * @var integer $stopbits
      */
