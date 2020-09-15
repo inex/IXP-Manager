@@ -213,7 +213,7 @@ class VlanInterface extends Model
             $protocol = 'ipv4';
         }
 
-        $fnAddress = ucfirst( $protocol ) . 'address';
+        $fnAddress = $protocol . 'address';
 
         return $this->$fnAddress;
     }
