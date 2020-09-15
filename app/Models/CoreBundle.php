@@ -180,7 +180,7 @@ class CoreBundle extends Model
      *
      * @return int
      */
-    public function getSpeedPi()
+    public function getSpeedPi(): int
     {
         if( $this->corelinks()->exists() ){
             $cl = $this->corelinks()->first();

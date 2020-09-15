@@ -605,7 +605,7 @@ class Customer extends Model
      *
      * @return Collection
      */
-    public static function getConnected( $externalOnly = false )
+    public static function getConnected( $externalOnly = false ): Collection
     {
         return self::select( 'cust.*' )
             ->leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id'  )

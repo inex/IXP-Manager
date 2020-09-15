@@ -119,15 +119,13 @@ class DocstoreDirectory extends Model
      */
     public static function getListing( ?DocstoreDirectory $dir, ?UserEntity $user ): EloquentCollection
     {
-        $list = self::where('parent_dir_id', $dir ? $dir->id : null );
+        return self::where('parent_dir_id', $dir ? $dir->id : null )
+            ->when( !$user || !$user->isSuperUser() , function( Builder $q ) use ( $user) {
+                $q->whereHas( 'files', function( Builder $q ) use ( $user ) {
+                    return $q->where( 'min_privs', '<=', $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC );
+                } );
+            })->orderBy('name')->get();
 
-        if( !$user || !$user->isSuperUser() ) {
-            $list->whereHas( 'files', function( Builder $query ) use ( $user ) {
-                $query->where( 'min_privs', '<=', $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC );
-            } );
-        }
-
-        return $list->orderBy('name')->get();
     }
 
     /**

@@ -144,7 +144,7 @@ class DocstoreFile extends Model
      */
     public function isViewable(): bool
     {
-        return in_array( '.' . pathinfo( $this->name, PATHINFO_EXTENSION ), self::$extensionViewable );
+        return in_array( '.' . pathinfo( $this->name, PATHINFO_EXTENSION ), self::$extensionViewable, true );
     }
 
     /**
@@ -154,7 +154,7 @@ class DocstoreFile extends Model
      */
     public function isEditable(): bool
     {
-        return in_array( '.' . pathinfo( $this->name, PATHINFO_EXTENSION ), self::$extensionEditable );
+        return in_array( '.' . pathinfo( $this->name, PATHINFO_EXTENSION ), self::$extensionEditable, true );
     }
 
     /**
@@ -176,7 +176,7 @@ class DocstoreFile extends Model
      *
      * @return Collection
      */
-    public static function getListing( ?DocstoreDirectory $dir = null, ?UserEntity $user = null )
+    public static function getListing( ?DocstoreDirectory $dir = null, ?UserEntity $user = null ): Collection
     {
         return self::where('min_privs', '<=', $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC )
             ->where('docstore_directory_id', $dir ? $dir->id : null )

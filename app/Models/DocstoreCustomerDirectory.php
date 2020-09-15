@@ -143,7 +143,7 @@ class DocstoreCustomerDirectory extends Model
      */
     public function subDirectories(): HasMany
     {
-        return $this->hasMany(DocstoreCustomerDirectory::class, 'parent_dir_id', 'id' )->orderBy('name');
+        return $this->hasMany( __CLASS__, 'parent_dir_id', 'id' )->orderBy('name');
     }
 
     /**
@@ -151,7 +151,7 @@ class DocstoreCustomerDirectory extends Model
      */
     public function parentDirectory(): BelongsTo
     {
-        return $this->belongsTo(DocstoreCustomerDirectory::class, 'parent_dir_id', 'id' );
+        return $this->belongsTo( __CLASS__, 'parent_dir_id', 'id' );
     }
 
     /**
@@ -174,15 +174,12 @@ class DocstoreCustomerDirectory extends Model
      */
     public static function getListing( Customer $cust, UserEntity $user, ?DocstoreDirectory $dir = null ): EloquentCollection
     {
-        $list = self::where( 'cust_id', $cust->id )->where('parent_dir_id', $dir ? $dir->id : null );
-
-        if( !$user->isSuperUser() ) {
-            $list->whereHas( 'files', function( Builder $query ) use ( $user ) {
-                $query->where( 'min_privs', '<=', $user->getPrivs() );
-            } );
-        }
-
-        return $list->orderBy('name')->get();
+        return self::where( 'cust_id', $cust->id )->where('parent_dir_id', $dir ? $dir->id : null )
+            ->when( !$user->isSuperUser() , function( Builder $q ) use ( $user) {
+                $q->whereHas( 'files', function( Builder $q ) use ( $user ) {
+                    return $q->where( 'min_privs', '<=', $user->getPrivs() );
+                } );
+            })->orderBy('name')->get();
     }
 
     /**

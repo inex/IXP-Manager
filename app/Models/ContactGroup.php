@@ -30,8 +30,6 @@ use Illuminate\Database\Eloquent\{
     Relations\BelongsToMany
 };
 
-use stdClass;
-
 /**
  * IXP\Models\ContactGroup
  *
