@@ -104,7 +104,7 @@ class IrrdbConfigController extends EloquentController
      *
      * @return array
      */
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
         return IrrdbConfig::when( $id , function( Builder $q, $id ) {

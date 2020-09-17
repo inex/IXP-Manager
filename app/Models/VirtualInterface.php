@@ -69,6 +69,7 @@ use Illuminate\Database\Eloquent\{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface connected()
  */
 class VirtualInterface extends Model
 {
@@ -104,32 +105,19 @@ class VirtualInterface extends Model
     }
 
     /**
-     * Get the physical interfaces for the virtual interface
-     */
-    public function physicalInterfacesConnected(): HasMany
-    {
-        return $this->hasMany(PhysicalInterface::class, 'virtualinterfaceid')
-            ->where( 'status', PhysicalInterface::STATUS_CONNECTED);
-    }
-
-    /**
      * Get the speed of the LAG
      *
      * @param bool $connectedOnly Only consider physical interfaces with 'CONNECTED' state
      *
      * @return int
      */
-    public function speed( $connectedOnly = true ): int
+    public function speed( bool $connectedOnly = true ): int
     {
-        $speed = 0;
-        foreach( $this->physicalInterfaces as $pi ) {
-            if( $connectedOnly && !$pi->statusIsConnected() ) {
-                continue;
-            }
-            $speed += $pi->speed;
+        if( $connectedOnly ) {
+            return $this->physicalInterfaces()->connected()->sum('speed');
         }
 
-        return $speed;
+        return $this->physicalInterfaces()->sum('speed');
     }
 
     /**

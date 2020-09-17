@@ -128,7 +128,7 @@ class VlanController extends EloquentController
      *
      * @return array
      */
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $param = $this->feParams;
         return Vlan::select( [ 'vlan.*', 'i.shortname AS infrastructure_name' ] )

@@ -8,9 +8,10 @@
     <field name="original_name" type="string" nullable="false"/>
     <field name="stored_name" type="string" nullable="false"/>
     <field name="uploaded_by" type="string" nullable="false"/>
-    <field name="uploaded_at" type="datetime" nullable="false"/>
+    <field name="created_at" type="datetime" nullable="true"/>
     <field name="width" type="integer" nullable="false"/>
     <field name="height" type="integer" nullable="false"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <many-to-one field="customer" target-entity="Entities\Customer" inversed-by="logos">
       <join-columns>
         <join-column name="customer_id" referenced-column-name="id" on-delete="RESTRICT"/>

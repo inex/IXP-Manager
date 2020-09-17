@@ -96,7 +96,7 @@
                                     <label for="select_protocol" class="col-sm-4 col-lg-6">Protocol:</label>
                                     <select id="select_protocol" name="protocol" class="form-control">
                                         <?php foreach( IXP\Services\Grapher\Graph::PROTOCOL_REAL_DESCS as $pvalue => $pname ): ?>
-                                            <?php if( $srcVli->isIPEnabled( $pvalue ) ): ?>
+                                            <?php if( $srcVli->ipvxEnabled( $pvalue ) ): ?>
                                                 <option value="<?= $pvalue ?>" <?php if( $t->protocol === $pvalue ): ?> selected <?php endif; ?>  >
                                                     <?= $pname ?>
                                                 </option>

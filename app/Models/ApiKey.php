@@ -71,7 +71,6 @@ class ApiKey extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id',
         'apiKey',
         'expires',
         'allowedIPs',

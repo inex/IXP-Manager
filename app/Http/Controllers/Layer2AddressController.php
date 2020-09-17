@@ -58,7 +58,7 @@ class Layer2AddressController extends EloquentController
      *
      * @var boolean
      */
-    public static $read_only = true;
+    public static bool $read_only = true;
 
     /**
      * The minimum privileges required to access this controller.
@@ -68,7 +68,7 @@ class Layer2AddressController extends EloquentController
      *
      * @var int
      */
-    public static $minimum_privilege = User::AUTH_CUSTUSER;
+    public static int $minimum_privilege = User::AUTH_CUSTUSER;
 
     /**
      * This function sets up the frontend controller
@@ -143,11 +143,11 @@ class Layer2AddressController extends EloquentController
     /**
      * Provide array of rows for the list action and view action
      *
-     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @param int|null t $id The `id` of the row to load for `view` action`. `null` if `listAction`
 
      * @return array
      */
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
         return Layer2Address::selectRaw( "l.*,

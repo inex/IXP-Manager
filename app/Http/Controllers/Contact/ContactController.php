@@ -66,7 +66,7 @@ class ContactController extends EloquentController
     /**
      * @inheritdoc
      */
-    protected static $route_prefix = 'contact';
+    protected static ?string $route_prefix = 'contact';
 
     /**
      * The minimum privileges required to access this controller.
@@ -76,7 +76,7 @@ class ContactController extends EloquentController
      *
      * @var int
      */
-    public static $minimum_privilege = User::AUTH_CUSTADMIN;
+    public static int $minimum_privilege = User::AUTH_CUSTADMIN;
 
     /**
      * This function sets up the frontend controller
@@ -256,7 +256,7 @@ class ContactController extends EloquentController
      *
      * @throws
      */
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $role = $cg = null;
         $cgs = [];
@@ -499,10 +499,11 @@ class ContactController extends EloquentController
         $this->object = Contact::create(
             array_merge( $request->all(), [
                 'creator'       => Auth::getUser()->getUsername(),
-                'custid'        => $custid,
                 'lastupdatedby' => Auth::getUser()->getId()
             ] )
         );
+        $this->object->custid = $custid;
+        $this->object->save();
 
         if( !$this->addGroupsToObject( $request->roles ?? [] ) ) {
             return Redirect::back()->withInput( $request->all() );
@@ -534,10 +535,12 @@ class ContactController extends EloquentController
         $this->object->update(
             array_merge( $request->all(), [
                 'creator'       => Auth::getUser()->getUsername(),
-                'custid'        => $custid,
                 'lastupdatedby' => Auth::getUser()->getId()
             ] )
         );
+
+        $this->object->custid = $custid;
+        $this->object->save();
 
         $objectGroups = $this->object->contactGroupsAll()->get()->keyBy( 'id' )->toArray();
         $groupToAdd     = array_diff( $request->roles ?? [], array_keys( $objectGroups ) );

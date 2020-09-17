@@ -25,12 +25,7 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\{
-    Model,
-    Relations\BelongsTo,
-    Relations\HasMany,
-    Relations\HasOne
-};
+use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations\HasMany, Relations\HasOne};
 
 /**
  * IXP\Models\PhysicalInterface
@@ -69,6 +64,7 @@ use Illuminate\Database\Eloquent\{
  * @property-read \IXP\Models\SwitchPort|null $switchPort
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface connected()
  */
 class PhysicalInterface extends Model
 {
@@ -165,9 +161,9 @@ class PhysicalInterface extends Model
      *
      * @return bool True if the port's status is QUARANTINE / CONNECTED
      */
-    public function statusIsConnectedOrQuarantine(): bool
+    public function isConnectedOrQuarantine(): bool
     {
-        return $this->status === self::STATUS_CONNECTED || $this->status === self::STATUS_QUARANTINE;
+        return $this->isConnected() || $this->isQuarantine();
     }
 
     /**
@@ -175,7 +171,7 @@ class PhysicalInterface extends Model
      *
      * @return bool True if the port's status is CONNECTED
      */
-    public function statusIsConnected(): bool
+    public function isConnected(): bool
     {
         return $this->status === self::STATUS_CONNECTED;
     }
@@ -185,7 +181,7 @@ class PhysicalInterface extends Model
      *
      * @return bool True if the port's status is DISABLED
      */
-    public function statusIsDisabled(): bool
+    public function isDisabled(): bool
     {
         return $this->status === self::STATUS_DISABLED;
     }
@@ -195,7 +191,7 @@ class PhysicalInterface extends Model
      *
      * @return bool True if the port's status is NOTCONNECTED
      */
-    public function statusIsNotConnected(): bool
+    public function isNotConnected(): bool
     {
         return $this->status === self::STATUS_NOTCONNECTED;
     }
@@ -205,7 +201,7 @@ class PhysicalInterface extends Model
      *
      * @return bool True if the port's status is XCONNECT
      */
-    public function statusIsAwaitingXConnect(): bool
+    public function isAwaitingXConnect(): bool
     {
         return $this->status === self::STATUS_XCONNECT;
     }
@@ -215,7 +211,7 @@ class PhysicalInterface extends Model
      *
      * @return bool True if the port's status is QUARANTINE
      */
-    public function statusIsQuarantine(): bool
+    public function isQuarantine(): bool
     {
         return $this->status === self::STATUS_QUARANTINE;
     }
@@ -227,7 +223,7 @@ class PhysicalInterface extends Model
      *
      * @return int
      */
-    public function resolveDetectedSpeed(): int
+    public function detectedSpeed(): int
     {
         // try the actual SNMP-discovered port speed first, otherwise use the configured speed:
         return $this->switchPort->ifHighSpeed > 0 ? $this->switchPort->ifHighSpeed : $this->speed;
@@ -239,7 +235,7 @@ class PhysicalInterface extends Model
      *
      * @return string
      */
-    public function resolveSpeed(): string
+    public function speed(): string
     {
         return self::$SPEED[ $this->speed ] ?? 'Unknown';
     }
@@ -250,7 +246,7 @@ class PhysicalInterface extends Model
      *
      * @return string
      */
-    public function resolveStatus(): string
+    public function status(): string
     {
         return self::$STATES[ $this->status ] ?? 'Unknown';
     }
@@ -260,7 +256,7 @@ class PhysicalInterface extends Model
      * for API output as defined in the self::$STATES array (or 'unknown')
      * @return string
      */
-    public function resolveAPIStatus(): string
+    public function apiStatus(): string
     {
         return self::$APISTATES[ $this->status ] ?? 'unknown';
     }
@@ -272,7 +268,7 @@ class PhysicalInterface extends Model
      */
     public function isGraphable(): bool
     {
-        return $this->statusIsConnectedOrQuarantine();
+        return $this->isConnectedOrQuarantine();
     }
 
     /**
@@ -287,16 +283,28 @@ class PhysicalInterface extends Model
     public function getRelatedInterface()
     {
         if( $this->switchPort()->exists() ) {
-            if( $this->switchPort->isTypeFanout() && $this->peeringPhysicalInterface()->exists() ){
+            if( $this->switchPort->isFanout() && $this->peeringPhysicalInterface()->exists() ){
                 return $this->peeringPhysicalInterface;
             }
 
-            if($this->switchPort->isTypePeering() && $this->fanoutPhysicalInterface()->exists() ) {
+            if($this->switchPort->isPeering() && $this->fanoutPhysicalInterface()->exists() ) {
                 return $this->fanoutPhysicalInterface;
             }
             return false;
 
         }
         return false;
+    }
+
+    /**
+     * Scope to get connected virtual interface
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeConnected( Builder $query ): Builder
+    {
+        return $query->where( 'status' , self::STATUS_CONNECTED );
     }
 }

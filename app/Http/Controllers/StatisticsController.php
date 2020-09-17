@@ -532,7 +532,7 @@ class StatisticsController extends Controller
         }
 
         // is the requested protocol support?
-        if( !$srcVli->vlan->private && !$srcVli->isIPEnabled( $r->protocol ) ) {
+        if( !$srcVli->vlan->private && !$srcVli->ipvxEnabled( $r->protocol ) ) {
             AlertContainer::push( Graph::resolveProtocol( $r->protocol ) . " is not supported on the requested VLAN interface.", Alert::WARNING );
             return redirect()->back();
         }

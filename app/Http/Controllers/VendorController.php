@@ -87,7 +87,7 @@ class VendorController extends EloquentController
      *
      * @return array
      */
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
         return Vendor::when( $id , function( Builder $q, $id ) {
@@ -116,7 +116,7 @@ class VendorController extends EloquentController
      *
      * @return array
      */
-    protected function editPrepareForm( $id = null ): array
+    protected function editPrepareForm( int $id ): array
     {
         $this->object = Vendor::findOrFail( $id );
 

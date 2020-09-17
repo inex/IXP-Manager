@@ -95,9 +95,9 @@ abstract class EloquentController extends Controller
      *
      * Automatically determined based on the controller name if not set.
      *
-     * @var string
+     * @var string|null
      */
-    protected static $route_prefix = null;
+    protected static ?string $route_prefix = null;
 
     /**
      * The minimum privileges required to access this controller.
@@ -107,21 +107,21 @@ abstract class EloquentController extends Controller
      *
      * @var int
      */
-    public static $minimum_privilege = User::AUTH_SUPERUSER;
+    public static int $minimum_privilege = User::AUTH_SUPERUSER;
 
     /**
      * Is this a read only controller?
      *
      * @var boolean
      */
-    public static $read_only = false;
+    public static bool $read_only = false;
 
     /**
      * Should we allow a read only controller to delete
      *
      * @var boolean
      */
-    public static $allow_delete_for_read_only = false;
+    public static bool $allow_delete_for_read_only = false;
 
     /**
      * Do we disable to edit?
@@ -255,11 +255,11 @@ abstract class EloquentController extends Controller
     /**
      * Provide array of table rows for the list action (and view action)
      *
-     * @param int $id The `id` of the row to load for `view` action. `null` if `list` action.
+     * @param int|null $id The `id` of the row to load for `view` action. `null` if `list` action.
      *
      * @return array
      */
-    abstract protected function listGetData( $id = null ): array;
+    abstract protected function listGetData( ?int $id = null ): array;
 
     /**
      * Function which can be over-ridden to perform any pre-list tasks

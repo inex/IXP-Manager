@@ -139,7 +139,7 @@ class ConsoleServerConnectionController extends EloquentController
      *
      * @return array
      */
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         return ConsoleServerConnectionAggregatore::getFeList( $this->feParams, $id );
     }
@@ -173,7 +173,7 @@ class ConsoleServerConnectionController extends EloquentController
      *
      * @return array
      */
-    protected function editPrepareForm( $id = null ) : array
+    protected function editPrepareForm( int $id ) : array
     {
         $this->object = ConsoleServerConnection::find( $id );
 
@@ -267,6 +267,8 @@ class ConsoleServerConnectionController extends EloquentController
         }
 
         $this->object = ConsoleServerConnection::create( $request->all() );
+        $this->object->custid = $request->custid;
+        $this->object->save();
         return true;
     }
 

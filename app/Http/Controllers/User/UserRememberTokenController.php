@@ -51,7 +51,7 @@ class UserRememberTokenController extends EloquentController
      */
     protected $object = null;
 
-    protected static $route_prefix = "active-sessions";
+    protected static ?string $route_prefix = "active-sessions";
 
     /**
      * The minimum privileges required to access this controller.
@@ -61,15 +61,15 @@ class UserRememberTokenController extends EloquentController
      *
      * @var int
      */
-    public static $minimum_privilege = User::AUTH_CUSTUSER;
+    public static int $minimum_privilege = User::AUTH_CUSTUSER;
     /**
      * Is this a read only controller?
      *
      * @var boolean
      */
-    public static $read_only = true;
+    public static bool $read_only = true;
 
-    public static $allow_delete_for_read_only = true;
+    public static bool $allow_delete_for_read_only = true;
     /**
      * This function sets up the frontend controller
      */

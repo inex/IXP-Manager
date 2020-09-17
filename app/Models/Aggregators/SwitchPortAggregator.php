@@ -28,6 +28,14 @@ use Illuminate\Database\Eloquent\{
 };
 
 
+/**
+ * IXP\Models\Aggregators\SwitchPortAggregator
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitchPortAggregator newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitchPortAggregator newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitchPortAggregator query()
+ * @mixin \Eloquent
+ */
 class SwitchPortAggregator extends Model
 {
     /**

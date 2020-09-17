@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\{
     Relations\BelongsTo,
     Relations\HasMany
 };
-use Illuminate\Support\Collection;
+
 use IXP\Exceptions\Services\Grapher\ParameterException as GrapherParameterException;
 use IXP\Services\Grapher\Graph;
 
@@ -154,13 +154,24 @@ class VlanInterface extends Model
     /**
      * See if a given protocol is enabled
      *
-     * @param int $p
+     * @param int|string $proto
      *
      * @return bool
      */
-    public function protocolEnabled( int $p ): bool
+    public function ipvxEnabled( $proto ): bool
     {
-        return $p === 4 ? $this->ipv4enabled : $this->ipv6enabled;
+        switch( $proto ) {
+            case 4:
+            case 'ipv4':
+                return $this->ipv4enabled;
+                break;
+            case 6:
+            case 'ipv6':
+                return $this->ipv6enabled;
+                break;
+            default:
+                return false;
+        }
     }
 
     /**
@@ -176,65 +187,52 @@ class VlanInterface extends Model
     /**
      * Convenience function to see if we can graph a VLI for latency for a given protocol
      *
-     * @param string $protocol Either ipv4 / ipv6 (as defined in Grapher)
+     * @param string $proto Either ipv4 / ipv6 (as defined in Grapher)
      *
      * @return bool
      *
      * @throws
      */
-    public function canGraphForLatency( string $protocol ): bool
+    public function canGraphForLatency( string $proto ): bool
     {
-        if( !isset( Graph::PROTOCOLS_REAL[ $protocol ] ) ) {
-            throw new GrapherParameterException( 'Unknown protocol: ' . $protocol );
+        switch( $proto ) {
+            case 'ipv4':
+                return !$this->vlan->private
+                    && $this->ipv4enabled
+                    && $this->ipv4canping
+                    && $this->ipv4address;
+                break;
+            case 'ipv6':
+                return !$this->vlan->private
+                    && $this->ipv6enabled
+                    && $this->ipv6canping
+                    && $this->ipv6address;
+                break;
+            default:
+                return false;
         }
-
-        $fnAddress = strtolower( $protocol ) . 'addressid';
-        $fnCanping = strtolower( $protocol ) . 'canping';
-        $fnEnabled = strtolower( $protocol ) . 'enabled';
-
-        return !$this->vlan->private
-            && $this->$fnEnabled
-            && $this->$fnCanping
-            && $this->$fnAddress;
     }
 
     /**
      * Convenience function to get an IP address based on a given protocol
      *
-     * @param string $protocol Either ipv4 / ipv6 (as defined in Grapher)
+     * @param string $proto Either ipv4 / ipv6 (as defined in Grapher)
      *
      * @return null|IPv4Address|IPv6Address
      *
      * @throws
      */
-    public function getIPAddress( string $protocol )
+    public function getIPAddress( string $proto )
     {
-        if( !isset( Graph::PROTOCOLS_REAL[ $protocol ] ) ) {
-            $protocol = 'ipv4';
+        switch( strtolower( $proto ) ) {
+            case 'ipv4':
+                return $this->ipv4address;
+                break;
+            case 'ipv6':
+                return $this->ipv6address;
+                break;
+            default:
+                return null;
         }
-
-        $fnAddress = ucfirst( $protocol ) . 'address';
-
-        return $this->$fnAddress;
-    }
-
-    /**
-     * Convenience function to see if an IP protocol is enabled
-     *
-     * @param string $protocol Either ipv4 / ipv6 (as defined in Grapher)
-     *
-     * @return bool
-     *
-     * @throws
-     */
-    public function isIPEnabled( string $protocol ): bool
-    {
-        if( !isset( Graph::PROTOCOLS_REAL[$protocol] ) ) {
-            throw new GrapherParameterException( 'Unknown protocol: ' . $protocol );
-        }
-
-        $fnEnabled = strtolower( $protocol ) . 'enabled';
-
-        return $this->$fnEnabled;
     }
 }

@@ -157,6 +157,8 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property-read int|null $patch_panel_port_histories_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerTag[] $tags
  * @property-read int|null $tags_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Logo[] $logos
+ * @property-read int|null $logos_count
  */
 class Customer extends Model
 {
@@ -338,6 +340,14 @@ class Customer extends Model
     }
 
     /**
+     * Get the logos for the customer
+     */
+    public function logos(): HasMany
+    {
+        return $this->hasMany(Logo::class, 'customer_id' );
+    }
+
+    /**
      * Get the irrdbconfig that own the customer
      */
     public function irrdbConfig(): BelongsTo
@@ -495,7 +505,7 @@ class Customer extends Model
 
         foreach( $this->virtualInterfaces as $vi ) {
             foreach( $vi->vlanInterfaces as $vli ) {
-                if( $vli->protocolEnabled( $proto ) && $vli->rsclient ) {
+                if( $vli->ipvxEnabled( $proto ) && $vli->rsclient ) {
                     return true;
                 }
             }
@@ -535,7 +545,7 @@ class Customer extends Model
 
         foreach( $this->virtualInterfaces as $vi ) {
             foreach( $vi->vlanInterfaces as $vli ) {
-                if( $vli->protocolEnabled( $proto ) ) {
+                if( $vli->ipvxEnabled( $proto ) ) {
                     return true;
                 }
             }
@@ -576,7 +586,7 @@ class Customer extends Model
     {
         foreach( $this->virtualInterfaces as $vi ) {
             foreach( $vi->physicalInterfaces as $pi ) {
-                if( $pi->statusIsConnectedOrQuarantine() ) {
+                if( $pi->isConnectedOrQuarantine() ) {
                     return true;
                 }
             }

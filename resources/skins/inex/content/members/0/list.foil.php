@@ -54,7 +54,7 @@ echo Cache::remember('skin-inex-content-members-list.json', '14400', function() 
                 $data[ $c->getId() ][ 'ports' ] .= $data[ $c->getId() ][ 'ports' ] . count( $pis ) . '*';
             }
 
-            $data[ $c->getId() ][ 'ports' ] .= $pi->resolveSpeed();
+            $data[ $c->getId() ][ 'ports' ] .= $pi->speed();
 
             $first = false;
 

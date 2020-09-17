@@ -60,6 +60,10 @@ use stdClass;
  * @method static Builder|ConsoleServerConnection whereSpeed($value)
  * @method static Builder|ConsoleServerConnection whereStopbits($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection whereUpdatedAt($value)
  */
 class ConsoleServerConnection extends Model
 {
@@ -118,7 +122,6 @@ class ConsoleServerConnection extends Model
      * @var array
      */
     protected $fillable = [
-        'custid',
         'description',
         'port',
         'speed',

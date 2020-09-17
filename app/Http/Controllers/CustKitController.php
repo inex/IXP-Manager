@@ -105,7 +105,7 @@ class CustKitController extends EloquentController
      *
      * @return array
      */
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
         return CustomerEquipment::select( [ 'custkit.*', 'cabinet.name AS cabinet', 'cust.name as customer' ] )
@@ -141,7 +141,7 @@ class CustKitController extends EloquentController
      *
      * @return array
      */
-    protected function editPrepareForm( $id = null ): array
+    protected function editPrepareForm( int $id ): array
     {
         $this->object = CustomerEquipment::findOrFail( $id );
 
@@ -189,7 +189,8 @@ class CustKitController extends EloquentController
     {
         $this->checkForm( $request );
         $this->object = CustomerEquipment::create( $request->all() );
-
+        $this->object->custid = $request->custid;
+        $this->object->save();
         return true;
     }
 
@@ -208,6 +209,8 @@ class CustKitController extends EloquentController
         $this->object = CustomerEquipment::findOrFail( $request->id );
         $this->checkForm( $request );
         $this->object->update( $request->all() );
+        $this->object->custid = $request->custid;
+        $this->object->save();
         return true;
     }
 }

@@ -59,7 +59,7 @@ class CabinetController extends EloquentController
      */
     protected $object = null;
 
-    protected static $route_prefix = "rack";
+    protected static ?string $route_prefix = "rack";
 
     /**
      * This function sets up the frontend controller
@@ -116,7 +116,7 @@ class CabinetController extends EloquentController
 
      * @return array
      */
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
         return Cabinet::when( $id , function( Builder $q, $id ) {

@@ -28,6 +28,43 @@ use Illuminate\Database\Eloquent\Builder;
 
 use IXP\Models\ConsoleServerConnection;
 
+/**
+ * IXP\Models\Aggregators\ConsoleServerConnectionAggregatore
+ *
+ * @property int $id
+ * @property int|null $custid
+ * @property string|null $description
+ * @property string|null $port
+ * @property int|null $speed
+ * @property int|null $parity
+ * @property int|null $stopbits
+ * @property int|null $flowcontrol
+ * @property int|null $autobaud
+ * @property string|null $notes
+ * @property int|null $console_server_id
+ * @property-read \IXP\Models\ConsoleServer|null $consoleServer
+ * @property-read \IXP\Models\CustomerTag|null $customer
+ * @property-read \IXP\Models\Switcher $switcher
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereAutobaud($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereConsoleServerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereCustid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereFlowcontrol($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereParity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore wherePort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereSpeed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereStopbits($value)
+ * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereUpdatedAt($value)
+ */
 class ConsoleServerConnectionAggregatore extends ConsoleServerConnection
 {
     /**

@@ -109,7 +109,7 @@ class InfrastructureController extends Eloquent2Frontend
 
      * @return array
      */
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
         return Infrastructure::when( $id , static function( Builder $q, $id ) {
@@ -139,7 +139,7 @@ class InfrastructureController extends Eloquent2Frontend
      *
      * @return array
      */
-    protected function editPrepareForm( $id = null ): array
+    protected function editPrepareForm( int $id ): array
     {
         $this->object = Infrastructure::findOrFail( $id );
 

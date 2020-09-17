@@ -50,7 +50,7 @@ class MacAddressController extends EloquentController
      *
      * @var boolean
      */
-    public static $read_only = true;
+    public static bool $read_only = true;
 
     /**
      * This function sets up the frontend controller
@@ -93,7 +93,7 @@ class MacAddressController extends EloquentController
 
      * @return array
      */
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
         return MacAddress::selectRaw( "m.*,

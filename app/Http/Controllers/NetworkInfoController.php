@@ -105,7 +105,7 @@ class NetworkInfoController extends EloquentController
      *
      * @throws
      */
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
         return NetworkInfo::select( [ 'networkinfo.*', 'vlan.id AS vlan_id', 'vlan.name AS vlanname' ] )
@@ -135,11 +135,11 @@ class NetworkInfoController extends EloquentController
     /**
      * Display the form to edit an object
      *
-     * @param   int|null $id ID of the row to edit
+     * @param   int $id ID of the row to edit
      *
      * @return array
      */
-    protected function editPrepareForm( $id = null ): array
+    protected function editPrepareForm( int $id ): array
     {
         $this->object = NetworkInfo::findOrFail( $id );
 

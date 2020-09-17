@@ -59,7 +59,7 @@ class ContactGroupController extends EloquentController
      */
     protected $object = null;
 
-    protected static $route_prefix = "contact-group";
+    protected static ?string $route_prefix = "contact-group";
 
     /**
      * This function sets up the frontend controller
@@ -112,13 +112,13 @@ class ContactGroupController extends EloquentController
     /**
      * Provide array of rows for the list action and view action
      *
-     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @param int|null $id The `id` of the row to load for `view` action`. `null` if `listAction`
 
      * @return array
      *
      * @throws
      */
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
         return ContactGroup::when( $id , function( Builder $q, $id ) {

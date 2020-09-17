@@ -56,7 +56,7 @@ class LocationController extends EloquentController
      */
     protected $object = null;
 
-    protected static $route_prefix = "facility";
+    protected static ?string $route_prefix = "facility";
     /**
      * This function sets up the frontend controller
      */
@@ -117,7 +117,7 @@ class LocationController extends EloquentController
      *
      * @return array
      */
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
         return Location::when( $id , function( Builder $q, $id ) {
@@ -147,7 +147,7 @@ class LocationController extends EloquentController
      *
      * @return array
      */
-    protected function editPrepareForm( $id = null ): array
+    protected function editPrepareForm( int $id ): array
     {
         $this->object = Location::findOrFail( $id );
 

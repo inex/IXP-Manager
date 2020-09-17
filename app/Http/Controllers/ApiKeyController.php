@@ -69,7 +69,7 @@ class ApiKeyController extends EloquentController
      *
      * @var int
      */
-    public static $minimum_privilege = User::AUTH_CUSTUSER;
+    public static int $minimum_privilege = User::AUTH_CUSTUSER;
 
     /**
      * This function sets up the frontend controller
@@ -149,7 +149,7 @@ class ApiKeyController extends EloquentController
      *
      * @return array
      */
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
         return ApiKey::where( 'user_id', Auth::user()->getId() )
@@ -158,7 +158,6 @@ class ApiKeyController extends EloquentController
             } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
                 return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
             })->get()->toArray();
-
     }
 
     /**
@@ -176,11 +175,11 @@ class ApiKeyController extends EloquentController
     /**
      * Display the form to edit an object
      *
-     * @param   int|null $id ID of the row to edit
+     * @param   int $id ID of the row to edit
      *
      * @return array
      */
-    protected function editPrepareForm( $id = null ): array
+    protected function editPrepareForm( int $id ): array
     {
         $this->object = ApiKey::findOrFail( $id );
 
@@ -228,12 +227,12 @@ class ApiKeyController extends EloquentController
 
         $this->checkForm( $request );
 
-        $this->object = ApiKey::create( [
-            'user_id'       => $request->user()->getId(),
-            'apiKey'        => $key = Str::random(48),
-            'expires'       => $request->expires,
-            'description'   => $request->description,
-        ]);
+        $this->object = new ApiKey;
+        $this->object->apiKey       = $key = Str::random(48);
+        $this->object->expires      = $request->expires;
+        $this->object->description  = $request->description;
+        $this->object->user_id      = $request->user()->getId();
+        $this->object->save();
 
         AlertContainer::push( "API key created: <code>" . $key . "</code>.", Alert::SUCCESS );
 

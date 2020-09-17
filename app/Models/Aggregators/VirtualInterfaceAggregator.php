@@ -71,6 +71,7 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VirtualInterfaceAggregator whereTrunk($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VirtualInterfaceAggregator whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface connected()
  */
 class VirtualInterfaceAggregator extends VirtualInterface
 {

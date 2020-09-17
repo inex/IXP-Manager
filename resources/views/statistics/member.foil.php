@@ -153,10 +153,10 @@
                                                 <h5>
                                                     <?php if( $isLAG ): ?>
                                                         <?= $pi->switchPort->switcher->name ?> ::
-                                                        <?= $pi->switchPort->name ?> (<?=$pi->resolveSpeed() ?>)
+                                                        <?= $pi->switchPort->name ?> (<?=$pi->speed() ?>)
                                                     <?php else: ?>
                                                         <?= $pi->switchPort->switcher->cabinet->location->name ?>
-                                                        / <?= $pi->switchPort->switcher->name ?> (<?=$pi->resolveSpeed() ?>)
+                                                        / <?= $pi->switchPort->switcher->name ?> (<?=$pi->speed() ?>)
                                                     <?php endif; ?>
                                                 </h5>
                                             </div>
@@ -191,7 +191,7 @@
                                                     Fanout Port for <a href="<?= route( 'customer@overview', [ 'id' => $pi->getRelatedInterface()->virtualInterface->customer->id ] ) ?>">
                                                     <?= $pi->getRelatedInterface()->virtualInterface->customer->abbreviatedName ?>
                                                 </a>
-                                                <?php elseif( $pi->switchPort->isTypeReseller() ): ?>
+                                                <?php elseif( $pi->switchPort->isReseller() ): ?>
                                                     Reseller Uplink Port
                                                 <?php endif; ?>
                                             <?php endif; ?>

@@ -95,7 +95,6 @@ class Contact extends Model
      * @var array
      */
     protected $fillable = [
-        'custid',
         'name',
         'email',
         'phone',

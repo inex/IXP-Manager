@@ -67,7 +67,6 @@ class CustomerEquipment extends Model
      * @var array
      */
     protected $fillable = [
-        'custid',
         'cabinetid',
         'name',
         'descr',

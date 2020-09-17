@@ -76,7 +76,6 @@ class RouteServerFilter extends Model
      * @var array
      */
     protected $fillable = [
-        'customer_id',
         'peer_id',
         'vlan_id',
         'received_prefix',

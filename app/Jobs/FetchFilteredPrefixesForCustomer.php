@@ -95,7 +95,7 @@ class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
         foreach( $vlis as $vli ) {
             // query routers for this VLAN
             foreach( array_keys( Router::$PROTOCOLS ) as $ipproto ) {
-                if( $vli->protocolEnabled( $ipproto ) ) {
+                if( $vli->ipvxEnabled( $ipproto ) ) {
                     $this->queryRouteServer( $lg, $vli, $ipproto );
                 }
             }

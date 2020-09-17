@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Customer;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -29,9 +29,9 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 use IXP\Http\Controllers\Controller;
 
-use Illuminate\Http\{
-    RedirectResponse
-};
+use IXP\Models\Customer;
+use IXP\Models\Logo;
+use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
 
 use Illuminate\View\View;
 
@@ -58,48 +58,42 @@ use IXP\Utils\View\Alert\{
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Customers
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class LogoController extends Controller
 {
-
     /**
      * Load a customer from the database with the given ID (or ID in request)
      *
-     * @param int $id The customer ID
-
-     * @return CustomerEntity The customer object
+     * @param int|null $id The customer ID
+     * @return Customer The customer object
      */
-    private function loadCustomer( $id = null ): CustomerEntity
+    private function loadCustomer( ?int $id ): Customer
     {
         if( Auth::getUser()->isSuperUser() ) {
-            if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
-                abort( 404);
-            }
-        } else {
-            $c = Auth::getUser()->getCustomer();
+            return Customer::findOrFail( $id );
         }
 
-        return $c;
+        return Customer::find( Auth::getUser()->getCustomer()->getId() );
     }
 
 
     /**
      * Display the form to add / edit / delete a member's logo
      *
-     * @param int $id ID of the customer
+     * @param int|null $id ID of the customer
      *
      * @return  View
      */
-    public function manage( $id = null )
+    public function manage( ?int $id ): View
     {
         $c = $this->loadCustomer( $id );
 
-        return view( 'customer/logo/manage' )->with([
+        return view( 'customer/logo/manage' )->with( [
             'c'                  => $c,
-            'logo'               => $c->getLogo( LogoEntity::TYPE_WWW80 ) ?? false
-        ]);
+            'logo'               => $c->logos()->exists() ? $c->logos()->first()  : false
+        ] );
     }
 
     /**
@@ -119,90 +113,79 @@ class LogoController extends Controller
         }
 
         $file = $request->file('logo');
-
         $img = Image::make( $file->getPath().'/'.$file->getFilename() );
 
-        $img->resize(null, 80, function ($constraint) {
+        $img->resize(null, 80, function ( $constraint ) {
             $constraint->aspectRatio();
         });
-
         $img->encode('png');
 
-        $logo = new LogoEntity();
+        // remove old logo
+        if( $c->logos()->exists() ) {
+            $oldLogo = $c->logos()->first();
+            if( file_exists( public_path() . '/logos/' . $oldLogo->getShardedPath() ) ) {
+                @unlink( public_path() . '/logos/' . $oldLogo->getShardedPath() );
+            }
+            $oldLogo->delete();
+        }
 
-        $logo->setCustomer(         $c );
-        $logo->setOriginalName(     $file->getClientOriginalName() );
-        $logo->setStoredName(       sha1($img->getEncoded()) . '.png' );
-        $logo->setWidth(            $img->width() );
-        $logo->setHeight(           $img->height() );
-        $logo->setUploadedBy(       Auth::getUser()->getUsername() );
-        $logo->setUploadedAt(       new \DateTime );
-        $logo->setType(             LogoEntity::TYPE_WWW80 );
+        $logo = Logo::create( [
+            'type'          => Logo::TYPE_WWW80,
+            'original_name' => $file->getClientOriginalName(),
+            'stored_name'   => sha1( $img->getEncoded() ) . '.png',
+            'uploaded_by'   => Auth::getUser()->getUsername(),
+            'width'         => $img->width(),
+            'height'        => $img->height(),
+        ] );
 
-        D2EM::persist($logo);
+        $logo->customer_id = $c->id;
+        $logo->save();
 
         $saveTo =  $logo->getFullPath();
 
         if( !is_dir( dirname( $saveTo ) ) ) {
-            @mkdir( dirname($saveTo), 0755, true );
+            @mkdir( dirname( $saveTo ), 0755, true );
         }
 
         $img->save( $saveTo );
 
-        // remove old logo
-        if( $oldLogo = $c->getLogo( LogoEntity::TYPE_WWW80 ) ) {
-            // only delete if they do not upload the exact same logo
-            if( $oldLogo->getShardedPath() != $logo->getShardedPath() ) {
-                if( file_exists( public_path().'/logos/' . $oldLogo->getShardedPath() ) ) {
-                    @unlink( public_path().'/logos/' . $oldLogo->getShardedPath() );
-                }
-            }
-            $c->removeLogo( $oldLogo );
-            D2EM::remove( $oldLogo );
-            D2EM::flush();
-        }
-
-        D2EM::flush();
-
         AlertContainer::push( "Logo successfully uploaded!", Alert::SUCCESS );
 
-        if( !Auth::getUser()->isSuperUser() ) {
-            return Redirect::to( route( "dashboard@index" ) );
-        }
-
-        return Redirect::to( route( "customer@overview" , [ "id" => $c->getId() ] ) );
+        return Redirect::to( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ "id" => $c->id ] ) : Redirect::to( route( "dashboard@index" ) ) );
     }
 
 
     /**
      * Delete a customer's logo
      *
-     * @param   int      $id         Id of the customer
+     * @param Request $request
+     * @param int $id
      *
      * @return  RedirectResponse
-     * @throws
+     *
+     * @throws \Exception
      */
-    public function delete( int $id = null )
+    public function delete( Request $request, int $id ) : RedirectResponse
     {
         $c = $this->loadCustomer( $id );
 
         // do we have a logo?
-        if( !( $oldLogo = $c->getLogo( LogoEntity::TYPE_WWW80 ) ) ) {
+        if( $c->logos()->doesntExist() ) {
             AlertContainer::push( "Sorry, we could not find any logo for you.", Alert::DANGER );
             return Redirect::to( '' );
         }
+
+        $oldLogo = $c->logos()->first();
 
         if( file_exists( $oldLogo->getFullPath() ) ) {
             @unlink( $oldLogo->getFullPath() );
         }
 
-        $c->removeLogo( $oldLogo );
-        D2EM::remove( $oldLogo );
-        D2EM::flush();
+        $oldLogo->delete();
 
         AlertContainer::push( "Logo successfully removed!", Alert::SUCCESS );
 
-        return response()->json( [ 'success' => true ] );
+        return redirect( Auth::user()->isSuperUser() ? route( 'customer@overview', [ 'id' => $c->id ] ) : route( 'dashboard@index' ) );
     }
 
 
@@ -210,23 +193,13 @@ class LogoController extends Controller
      * Display all the customers' logos
      *
      * @return  View
+     *
      * @throws
      */
     public function logos()
     {
-        $logos = [];
-        foreach( D2EM::getRepository( CustomerEntity::class )->findAll() as $c ) {
-            /** @var CustomerEntity $c */
-            if( $c->getLogo( LogoEntity::TYPE_WWW80) ) {
-                $logos[] = $c->getLogo( LogoEntity::TYPE_WWW80);
-            }
-        }
-
         return view( 'customer/logos' )->with([
-            'logos' => $logos,
+            'customers' => Customer::with( 'logos' )->has( 'logos' )->orderBy( 'name' )->get(),
         ]);
     }
-
-
 }
-

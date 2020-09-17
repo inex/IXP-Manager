@@ -136,6 +136,8 @@ use IXP\Models\Customer;
  * @property-read int|null $patch_panel_port_histories_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerTag[] $tags
  * @property-read int|null $tags_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Logo[] $logos
+ * @property-read int|null $logos_count
  */
 class CustomerAggregator extends Customer
 {

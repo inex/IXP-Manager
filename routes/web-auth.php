@@ -36,7 +36,7 @@ if( !config('ixp_fe.frontend.disabled.logo' ) ) {
     Route::group( [ 'prefix' => 'customer-logo', 'namespace' => 'Customer' ], function() {
         Route::get(     'manage/{id?}',     'LogoController@manage'     )->name( "logo@manage"  );
         Route::post(    'store',            'LogoController@store'      )->name( "logo@store"   );
-        Route::post(    'delete/{id}',      'LogoController@delete'     )->name( 'logo@delete'  );
+        Route::delete(  'delete/{id}',      'LogoController@delete'     )->name( 'logo@delete'  );
     } );
 }
 

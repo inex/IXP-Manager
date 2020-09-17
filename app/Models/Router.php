@@ -98,6 +98,8 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereVlanId($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router ipv4()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router ipv6()
  */
 class Router extends Model
 {
@@ -256,7 +258,7 @@ class Router extends Model
      *
      * @return Builder
      */
-    public function scopeIPv4( Builder $query ): Builder
+    public function scopeIpv4( Builder $query ): Builder
     {
         return $query->where('protocol', self::PROTOCOL_IPV4);
     }
@@ -268,7 +270,7 @@ class Router extends Model
      *
      * @return Builder
      */
-    public function scopeIPv6( Builder $query ): Builder
+    public function scopeIpv6( Builder $query ): Builder
     {
         return $query->where('protocol', self::PROTOCOL_IPV6);
     }

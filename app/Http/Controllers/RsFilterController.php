@@ -103,7 +103,7 @@ class RsFilterController extends Controller
             $advertisedPrefixes = IrrdbPrefix::where( 'customer_id', $cust->id )->where( 'protocol', $protocol )->get()->toArray();
         }
 
-        $peers = array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], Customer::getByVlanAndProtocol( $vlanid , $protocol ) );
+        $peers = array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], CustomerAggregator::getByVlanAndProtocol( $vlanid , $protocol ) );
         foreach( $peers as $i => $p ) {
             if( $p['id'] === $cust->id ) {
                 unset( $peers[$i] );
@@ -172,13 +172,15 @@ class RsFilterController extends Controller
 
         $this->authorize( 'checkCustObject',  [ RouteServerFilter::class, $cust ]  );
 
-        $rsf = RouteServerFilter::create( array_merge( $request->except( [ 'customer_id', 'enabled', 'order_by' ] ),
+        $rsf = RouteServerFilter::create( array_merge( $request->except( [ 'enabled', 'order_by' ] ),
             [
-                'customer_id'   => $cust->id,
                 'enabled'       => true,
                 'order_by'      => RouteServerFilter::where( 'customer_id', $cust->id )->get()->max( 'order_by' ) +1,
             ]
         ));
+
+        $rsf->customer_id   = $cust->id;
+        $rsf->save();
 
         Log::notice( Auth::user()->getUsername() . ' created a router server filter with ID ' . $rsf->id );
 
@@ -201,7 +203,7 @@ class RsFilterController extends Controller
     {
         $this->authorize( 'checkRsfObject',  [ RouteServerFilter::class, $rsf ] );
 
-        $rsf->update( $request->except( [ 'customer_id' ] ) );
+        $rsf->update( $request->all() );
 
         Log::notice( Auth::user()->getUsername() . ' updated a router server filter with ID ' . $rsf->id );
 

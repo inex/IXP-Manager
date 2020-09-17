@@ -120,7 +120,7 @@ class LoginHistoryController extends EloquentController
      * @param int|null $id The `id` of the row to load for `view`. `null` if `list`
      * @return array
      */
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
         return CustomerToUser::select( [

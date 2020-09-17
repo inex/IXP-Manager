@@ -74,11 +74,11 @@
                             <small>
                                 <?php if( $t->graph->physicalInterface()->switchport->isTypePeering() ): ?>
                                     Peering Port
-                                <?php elseif( $t->graph->physicalInterface()->switchport->isTypeFanout() ): ?>
+                                <?php elseif( $t->graph->physicalInterface()->switchport->isFanout() ): ?>
                                     Fanout Port for <a href="<?= route( 'customer@overview', [ 'id' => $t->graph->physicalInterface()->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId() ] ) ?>">
                                         <?= $t->graph->physicalInterface()->getRelatedInterface()->getVirtualInterface()->getCustomer()->getAbbreviatedName() ?>
                                     </a>
-                                <?php elseif( $t->graph->physicalInterface()->switchport->isTypeReseller() ): ?>
+                                <?php elseif( $t->graph->physicalInterface()->switchport->isReseller() ): ?>
                                     Reseller Uplink Port
                                 <?php endif; ?>
                             </small>

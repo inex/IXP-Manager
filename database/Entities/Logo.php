@@ -33,6 +33,7 @@ namespace Entities;
      */
     private $original_name;
 
+        private $updated_at;
     /**
      * @var string
      */
@@ -46,7 +47,7 @@ namespace Entities;
     /**
      * @var \DateTime
      */
-    private $uploaded_at;
+    private $created_at;
 
     /**
      * @var integer
@@ -112,7 +113,7 @@ namespace Entities;
      * @return \DateTime
      */
     public function getUploadedAt(){
-        return $this->uploaded_at;
+        return $this->created_at;
     }
 
     /**
@@ -223,7 +224,7 @@ namespace Entities;
      * @return Logo
      */
     public function setUploadedAt( $uploadedAt ){
-        $this->uploaded_at = $uploadedAt;
+        $this->created_at = $uploadedAt;
 
         return $this;
     }
