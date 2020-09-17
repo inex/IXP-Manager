@@ -33,7 +33,7 @@
                             <?php foreach( $t->stats[ "types" ] as $type ): ?>
                                 <tr>
                                     <td>
-                                        <?= \IXP\Models\Customer::resolveGivenType( $type[ 'ctype' ] ) ?>
+                                        <?= \IXP\Models\Customer::givenType( $type[ 'ctype' ] ) ?>
                                     </td>
                                     <td class="tw-text-right">
                                         <a href="<?= route( "customer@list" ) . '?type=' . $type[ 'ctype' ] ?>">

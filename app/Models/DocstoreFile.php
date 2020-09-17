@@ -134,7 +134,7 @@ class DocstoreFile extends Model
      */
     public function logs(): HasMany
     {
-        return $this->hasMany('IXP\Models\DocstoreLog');
+        return $this->hasMany(DocstoreLog::class );
     }
 
     /**

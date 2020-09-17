@@ -456,7 +456,7 @@ class SwitchPort extends Model
                         $n = $host->useMAU()->$snmp();
                         $n = isset( $n[ $this->ifIndex ] ) ? $n[ $this->ifIndex ] : null;
                     }
-                } catch( Exception $e ) {
+                } catch( \Exception $e ) {
                     // looks like the switch supports MAU but not all of the MIBs
                     if( $logger !== false ) {
                         Log::debug( "[{$this->switcher->name}]:{$this->name} [Index: {$this->ifIndex}] MAU MIB for {$fn} not supported" );
@@ -494,7 +494,7 @@ class SwitchPort extends Model
             else
                 $this->lagIfIndex = null;
 
-        } catch( Exception $e ){}
+        } catch( \Exception $e ){}
 
         $this->lastSnmpPoll = now();
 

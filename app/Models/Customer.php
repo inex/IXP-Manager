@@ -380,7 +380,7 @@ class Customer extends Model
      * @param Builder $query
      * @return Builder
      */
-    public function scopeTrafficking($query): Builder
+    public function scopeTrafficking( Builder $query ): Builder
     {
         return $query->where('type', '!=', Customer::TYPE_ASSOCIATE );
     }
@@ -410,7 +410,7 @@ class Customer extends Model
      *
      * @return Collection
      */
-    public static function scopeCurrentActive( Builder $query, $trafficing = false, $externalOnly = false )
+    public static function scopeCurrentActive( Builder $query, bool $trafficing = false, $externalOnly = false ): Collection
     {
         return $query->whereRaw( self::SQL_CUST_CURRENT )
             ->whereRaw( self::SQL_CUST_ACTIVE )
@@ -474,7 +474,7 @@ class Customer extends Model
             $fmt = "%a %j";
         }
 
-        $as = $this->autsys ? $this->autsys : false;
+        $as = $this->autsys ?: false;
 
         return str_replace(
             [ '%n', '%a', '%s', '%i', '%j', '%k', '%l' ],
@@ -489,6 +489,18 @@ class Customer extends Model
             ],
             $fmt
         );
+    }
+
+    /**
+     * Return the given type as string
+     *
+     * @param int $t
+     *
+     * @return string
+     */
+    public static function givenType( int $t ): string
+    {
+        return self::$CUST_TYPES_TEXT[ $t ] ?? 'Unknwon';
     }
 
     /**
@@ -554,10 +566,7 @@ class Customer extends Model
         return false;
     }
 
-    public static function resolveGivenType( int $t ): string
-    {
-        return self::$CUST_TYPES_TEXT[ $t ] ?? 'Unknwon';
-    }
+
 
     /**
      * Is this customer graphable?
