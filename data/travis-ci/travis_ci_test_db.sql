@@ -1225,15 +1225,15 @@ DROP TABLE IF EXISTS `logos`;
 CREATE TABLE `logos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `customer_id` int(11) DEFAULT NULL,
-  `type` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `original_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `stored_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `uploaded_by` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `uploaded_at` datetime NOT NULL,
   `width` int(11) NOT NULL,
   `height` int(11) NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `IDX_9F54004F9395C3F3` (`customer_id`),
+  UNIQUE KEY `UNIQ_9F54004F9395C3F3` (`customer_id`),
   CONSTRAINT `FK_9F54004F9395C3F3` FOREIGN KEY (`customer_id`) REFERENCES `cust` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2767,4 +2767,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-09-14 15:04:19
+-- Dump completed on 2020-09-17 14:21:11

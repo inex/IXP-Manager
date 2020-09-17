@@ -97,7 +97,7 @@
                                         <label for="select_protocol" class="col-sm-4 col-lg-6">Protocol:</label>
                                         <select id="select_protocol" name="protocol" class="form-control">
                                             <?php foreach( IXP\Services\Grapher\Graph::PROTOCOL_REAL_DESCS as $pvalue => $pname ): ?>
-                                                <?php if( $t->srcVli->vlan->private || $t->srcVli->isIPEnabled( $pvalue ) ): ?>
+                                                <?php if( $t->srcVli->vlan->private || $t->srcVli->ipvxEnabled( $pvalue ) ): ?>
                                                     <option value="<?= $pvalue ?>" <?php if( $t->protocol === $pvalue ): ?> selected <?php endif; ?>  >
                                                         <?= $pname ?>
                                                     </option>
@@ -124,7 +124,7 @@
     <?php
         $dstVlis = $t->dstVlis;
         foreach( $dstVlis as $id => $dvli ) {
-            if( !$t->srcVli->vlan->private && !$dvli->isIPEnabled( $t->protocol ) ) {
+            if( !$t->srcVli->vlan->private && !$dvli->ipvxEnabled( $t->protocol ) ) {
                 unset( $dstVlis[ $id ] );
             }
         }

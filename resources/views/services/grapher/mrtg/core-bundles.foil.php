@@ -50,7 +50,7 @@
 
                 $piid = $clid[$side];
                 
-                $cbmaxbytes += $t->data['pis'][$piid]->resolveDetectedSpeed() * 1000000 / 8;
+                $cbmaxbytes += $t->data['pis'][$piid]->detectedSpeed() * 1000000 / 8;
 
                 echo $this->insert(
                     "services/grapher/mrtg/target", [
@@ -65,7 +65,7 @@
                                 $t->data['pis'][$piid]->switchPort->switcher->name
                             ),
                         'directory'    => sprintf("corebundles/%05d/ints", $cb->id),
-                        'maxbytes'     => $t->data['pis'][ $piid ]->resolveDetectedSpeed() * 1000000 / 8, // Mbps * bps / to bytes
+                        'maxbytes'     => $t->data['pis'][ $piid ]->detectedSpeed() * 1000000 / 8, // Mbps * bps / to bytes
                         ]
                 ) . "\n\n\n";
 

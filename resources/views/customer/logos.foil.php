@@ -36,5 +36,4 @@
             </div>
         </div>
     </div>
-
 <?php $this->append() ?>

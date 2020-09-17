@@ -160,7 +160,7 @@
                                                     <?php endif; ?>
                                                 </h5>
                                             </div>
-                                            <?php if( $pi->statusIsConnectedOrQuarantine() ): ?>
+                                            <?php if( $pi->isConnectedOrQuarantine() ): ?>
                                                 <div class="btn-group btn-group-sm my-auto">
                                                     <?php if( !$isLAG ): ?>
                                                         <?= $t->insert( 'statistics/snippets/latency-dropup', [ 'vi' => $vi ] ) ?>
@@ -198,7 +198,7 @@
                                         </small>
                                     </div>
                                     <div class="card-body">
-                                        <?php if( $pi->statusIsConnectedOrQuarantine() ): ?>
+                                        <?php if( $pi->isConnectedOrQuarantine() ): ?>
                                             <?= $t->grapher->physint( $pi )->setCategory( $t->category )->setPeriod( $t->period )->renderer()->boxLegacy() ?>
                                         <?php else: ?>
                                             <?= $t->insert( 'customer/overview-tabs/ports/pi-status', [ 'pi' => $pi ] ) ?>

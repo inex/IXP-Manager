@@ -176,7 +176,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                         $maxPiID = $pi->id;
                     }
 
-                    if( !$pi->statusIsConnectedOrQuarantine() || !$pi->switchPort->switcher->active ) {
+                    if( !$pi->isConnectedOrQuarantine() || !$pi->switchPort->switcher->active ) {
                         continue;
                     }
 

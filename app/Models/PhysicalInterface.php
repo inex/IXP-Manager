@@ -221,9 +221,9 @@ class PhysicalInterface extends Model
      *
      * I.e. try the actual SNMP-discovered port speed first, otherwise use the configured speed
      *
-     * @return int
+     * @return int|null
      */
-    public function detectedSpeed(): int
+    public function detectedSpeed(): ?int
     {
         // try the actual SNMP-discovered port speed first, otherwise use the configured speed:
         return $this->switchPort->ifHighSpeed > 0 ? $this->switchPort->ifHighSpeed : $this->speed;
