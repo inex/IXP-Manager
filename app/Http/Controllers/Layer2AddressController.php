@@ -58,7 +58,7 @@ class Layer2AddressController extends EloquentController
      *
      * @var boolean
      */
-    public static bool $read_only = true;
+    public static $read_only = true;
 
     /**
      * The minimum privileges required to access this controller.
@@ -68,7 +68,7 @@ class Layer2AddressController extends EloquentController
      *
      * @var int
      */
-    public static int $minimum_privilege = User::AUTH_CUSTUSER;
+    public static $minimum_privilege = User::AUTH_CUSTUSER;
 
     /**
      * This function sets up the frontend controller

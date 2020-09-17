@@ -59,7 +59,7 @@ class ContactGroupController extends EloquentController
      */
     protected $object = null;
 
-    protected static ?string $route_prefix = "contact-group";
+    protected static $route_prefix = "contact-group";
 
     /**
      * This function sets up the frontend controller

@@ -795,7 +795,7 @@ class Customer extends EntityRepository
             $crd = $c->getRegistrationDetails();
 
             // Delete Customer Logo
-            foreach( $c->getLogos() as $logo){
+            foreach( $c->getLogo() as $logo){
 
                 if( file_exists( $logo->getFullPath() ) ) {
                     @unlink( $logo->getFullPath() );

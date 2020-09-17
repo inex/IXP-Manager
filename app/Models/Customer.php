@@ -27,13 +27,12 @@ use D2EM, Eloquent;
 
 use Entities\Customer as CustomerEntity;
 
-use Illuminate\Database\Eloquent\{
-    Builder,
+use Illuminate\Database\Eloquent\{Builder,
     Model,
     Relations\BelongsTo,
     Relations\BelongsToMany,
-    Relations\HasMany
-};
+    Relations\HasMany,
+    Relations\HasOne};
 
 use Illuminate\Support\{
     Collection,
@@ -159,6 +158,7 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property-read int|null $tags_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Logo[] $logos
  * @property-read int|null $logos_count
+ * @property-read \IXP\Models\Logo|null $logo
  */
 class Customer extends Model
 {
@@ -340,11 +340,11 @@ class Customer extends Model
     }
 
     /**
-     * Get the logos for the customer
+     * Get the logo for the customer
      */
-    public function logos(): HasMany
+    public function logo(): HasOne
     {
-        return $this->hasMany(Logo::class, 'customer_id' );
+        return $this->hasOne(Logo::class, 'customer_id' );
     }
 
     /**

@@ -66,10 +66,10 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'description', 'port', 'speed', 'parity', 'stopbits', 'flowcontrol', 'autobaud', 'notes', 'id', 'Customer', 'consoleServer', 'switchid'];
+            return ['__isInitialized__', 'description', 'port', 'speed', 'parity', '' . "\0" . 'Entities\\ConsoleServerConnection' . "\0" . 'created_at', '' . "\0" . 'Entities\\ConsoleServerConnection' . "\0" . 'updated_at', 'stopbits', 'flowcontrol', 'autobaud', 'notes', 'id', 'Customer', 'consoleServer', 'switchid'];
         }
 
-        return ['__isInitialized__', 'description', 'port', 'speed', 'parity', 'stopbits', 'flowcontrol', 'autobaud', 'notes', 'id', 'Customer', 'consoleServer', 'switchid'];
+        return ['__isInitialized__', 'description', 'port', 'speed', 'parity', '' . "\0" . 'Entities\\ConsoleServerConnection' . "\0" . 'created_at', '' . "\0" . 'Entities\\ConsoleServerConnection' . "\0" . 'updated_at', 'stopbits', 'flowcontrol', 'autobaud', 'notes', 'id', 'Customer', 'consoleServer', 'switchid'];
     }
 
     /**

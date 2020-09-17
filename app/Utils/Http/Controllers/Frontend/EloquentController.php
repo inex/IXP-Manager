@@ -97,7 +97,7 @@ abstract class EloquentController extends Controller
      *
      * @var string|null
      */
-    protected static ?string $route_prefix = null;
+    protected static $route_prefix = null;
 
     /**
      * The minimum privileges required to access this controller.
@@ -107,21 +107,21 @@ abstract class EloquentController extends Controller
      *
      * @var int
      */
-    public static int $minimum_privilege = User::AUTH_SUPERUSER;
+    public static $minimum_privilege = User::AUTH_SUPERUSER;
 
     /**
      * Is this a read only controller?
      *
      * @var boolean
      */
-    public static bool $read_only = false;
+    public static $read_only = false;
 
     /**
      * Should we allow a read only controller to delete
      *
      * @var boolean
      */
-    public static bool $allow_delete_for_read_only = false;
+    public static $allow_delete_for_read_only = false;
 
     /**
      * Do we disable to edit?

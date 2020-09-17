@@ -25,7 +25,7 @@
                         <h3>Your Existing Logo:</h3>
                     </div>
                     <div class="col-md-6 text-center col-sm-12">
-                        <img src="<?= url( 'logos/' . $t->logo->getShardedPath() ) ?>" class="www80-padding img-responsive">
+                        <img src="<?= url( 'logos/' . $t->logo->shardedPath() ) ?>" class="www80-padding img-responsive">
                     </div>
                 </div>
             <?php endif; ?>

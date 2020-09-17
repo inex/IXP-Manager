@@ -66,7 +66,7 @@ class ContactController extends EloquentController
     /**
      * @inheritdoc
      */
-    protected static ?string $route_prefix = 'contact';
+    protected static $route_prefix = 'contact';
 
     /**
      * The minimum privileges required to access this controller.
@@ -76,7 +76,7 @@ class ContactController extends EloquentController
      *
      * @var int
      */
-    public static int $minimum_privilege = User::AUTH_CUSTADMIN;
+    public static $minimum_privilege = User::AUTH_CUSTADMIN;
 
     /**
      * This function sets up the frontend controller

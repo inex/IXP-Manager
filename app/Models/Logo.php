@@ -38,10 +38,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Logo extends Model
 {
-    /**
-     * Type for display on public website
-     */
-    public const TYPE_WWW80 = 'WWW80';
 
     /**
      * The attributes that are mass assignable.
@@ -49,7 +45,6 @@ class Logo extends Model
      * @var array
      */
     protected $fillable = [
-        'type',
         'original_name',
         'stored_name',
         'uploaded_by',
@@ -70,7 +65,7 @@ class Logo extends Model
      *
      * @return string the/sharded/path/filename
      */
-    public function getShardedPath(): string
+    public function shardedPath(): string
     {
         return $this->stored_name[ 0 ] . '/' . $this->stored_name[ 1 ] . '/' . $this->stored_name;
     }
@@ -80,8 +75,8 @@ class Logo extends Model
      *
      * @return string the/full/path/filename
      */
-    public function getFullPath(): string
+    public function fullPath(): string
     {
-        return public_path() . '/logos/' . $this->getShardedPath();
+        return public_path() . '/logos/' . $this->shardedPath();
     }
 }

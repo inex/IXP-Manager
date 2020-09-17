@@ -59,7 +59,7 @@ class CabinetController extends EloquentController
      */
     protected $object = null;
 
-    protected static ?string $route_prefix = "rack";
+    protected static $route_prefix = "rack";
 
     /**
      * This function sets up the frontend controller

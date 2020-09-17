@@ -138,6 +138,7 @@ use IXP\Models\Customer;
  * @property-read int|null $tags_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Logo[] $logos
  * @property-read int|null $logos_count
+ * @property-read \IXP\Models\Logo|null $logo
  */
 class CustomerAggregator extends Customer
 {

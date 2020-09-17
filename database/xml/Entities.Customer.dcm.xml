@@ -91,7 +91,7 @@
     <one-to-many field="Traffic95ths" target-entity="Entities\Traffic95th" mapped-by="Customer"/>
     <one-to-many field="Traffic95thMonthlys" target-entity="Entities\Traffic95thMonthly" mapped-by="Customer"/>
     <one-to-many field="TrafficDailies" target-entity="Entities\TrafficDaily" mapped-by="Customer"/>
-    <one-to-many field="logos" target-entity="Entities\Logo" mapped-by="customer"/>
+    <one-to-one field="logos" target-entity="Entities\Logo" mapped-by="customer"/>
     <one-to-many field="patchPanelPorts" target-entity="Entities\PatchPanelPort" mapped-by="customer"/>
     <one-to-many field="Users" target-entity="Entities\CustomerToUser" mapped-by="customer"/>
 <!--    <one-to-many field="routeServerFilters" target-entity="Entities\RouteServerFilter" mapped-by="customer"/>-->

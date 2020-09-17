@@ -2491,33 +2491,10 @@ class Customer
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getLogos()
+    public function getLogo()
     {
         return $this->logos;
     }
-
-    /**
-     * Get logo of a specific type
-     *
-     * @return \Entities\Logo
-     */
-    public function getLogo($type)
-    {
-        if( !count($this->getLogos() ) ) {
-            return null;
-        }
-
-        foreach( $this->getLogos() as $l ) {
-            if( $l->getType() == $type ) {
-                return $l;
-            }
-        }
-
-        return null;
-    }
-
-
-
 
     /**
      * Add patchPanelPort

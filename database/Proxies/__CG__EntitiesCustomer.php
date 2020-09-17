@@ -2009,23 +2009,12 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function getLogos()
+    public function getLogo()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLogos', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLogo', []);
 
-        return parent::getLogos();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getLogo($type)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLogo', [$type]);
-
-        return parent::getLogo($type);
+        return parent::getLogo();
     }
 
     /**

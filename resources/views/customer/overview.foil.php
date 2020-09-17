@@ -137,7 +137,7 @@
     <div class="tw-bg-white shadow-sm tw-p-6">
 
         <div class="row">
-            <div class="<?= $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ? "col-md-9 col-lg-7" : "col-12" ?>">
+            <div class="<?= $t->logoManagementEnabled() && ( $logo = $c->getLogo() ) ? "col-md-9 col-lg-7" : "col-12" ?>">
 
                 <h3>
                     <?= $t->ee( $c->getFormattedName() ) ?>
@@ -201,7 +201,7 @@
                 </p>
             </div>
 
-            <?php if( $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ): ?>
+            <?php if( $t->logoManagementEnabled() && ( $logo = $c->getLogo() ) ): ?>
 
                 <div class="col-md-3 col-lg-5 col-12 tw-mt-6 md:tw-mt-0 tw-text-center align-self-center">
                     <img class="img-fluid lg:tw-inline-block tw-align-middle" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>">

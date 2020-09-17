@@ -69,7 +69,7 @@ class ApiKeyController extends EloquentController
      *
      * @var int
      */
-    public static int $minimum_privilege = User::AUTH_CUSTUSER;
+    public static $minimum_privilege = User::AUTH_CUSTUSER;
 
     /**
      * This function sets up the frontend controller

@@ -50,7 +50,7 @@ class MacAddressController extends EloquentController
      *
      * @var boolean
      */
-    public static bool $read_only = true;
+    public static $read_only = true;
 
     /**
      * This function sets up the frontend controller

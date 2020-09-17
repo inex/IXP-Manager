@@ -65,7 +65,6 @@ class AdminController extends Controller
      */
     public function dashboard( Request $request ): View
     {
-        dd( VirtualInterface::find( 4 )->speed() );
         return view( 'admin/dashboard' )->with([
             'stats'                 => $this->dashboardStats( $request ),
             'graphs'                => $this->publicPeeringGraphs( $request ),

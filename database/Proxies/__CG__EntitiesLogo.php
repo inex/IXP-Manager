@@ -66,10 +66,10 @@ class Logo extends \Entities\Logo implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\Logo' . "\0" . 'original_name', '' . "\0" . 'Entities\\Logo' . "\0" . 'stored_name', '' . "\0" . 'Entities\\Logo' . "\0" . 'uploaded_by', '' . "\0" . 'Entities\\Logo' . "\0" . 'uploaded_at', '' . "\0" . 'Entities\\Logo' . "\0" . 'width', '' . "\0" . 'Entities\\Logo' . "\0" . 'height', '' . "\0" . 'Entities\\Logo' . "\0" . 'id', '' . "\0" . 'Entities\\Logo' . "\0" . 'customer', '' . "\0" . 'Entities\\Logo' . "\0" . 'type'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\Logo' . "\0" . 'original_name', '' . "\0" . 'Entities\\Logo' . "\0" . 'updated_at', '' . "\0" . 'Entities\\Logo' . "\0" . 'stored_name', '' . "\0" . 'Entities\\Logo' . "\0" . 'uploaded_by', '' . "\0" . 'Entities\\Logo' . "\0" . 'created_at', '' . "\0" . 'Entities\\Logo' . "\0" . 'width', '' . "\0" . 'Entities\\Logo' . "\0" . 'height', '' . "\0" . 'Entities\\Logo' . "\0" . 'id', '' . "\0" . 'Entities\\Logo' . "\0" . 'customer'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\Logo' . "\0" . 'original_name', '' . "\0" . 'Entities\\Logo' . "\0" . 'stored_name', '' . "\0" . 'Entities\\Logo' . "\0" . 'uploaded_by', '' . "\0" . 'Entities\\Logo' . "\0" . 'uploaded_at', '' . "\0" . 'Entities\\Logo' . "\0" . 'width', '' . "\0" . 'Entities\\Logo' . "\0" . 'height', '' . "\0" . 'Entities\\Logo' . "\0" . 'id', '' . "\0" . 'Entities\\Logo' . "\0" . 'customer', '' . "\0" . 'Entities\\Logo' . "\0" . 'type'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\Logo' . "\0" . 'original_name', '' . "\0" . 'Entities\\Logo' . "\0" . 'updated_at', '' . "\0" . 'Entities\\Logo' . "\0" . 'stored_name', '' . "\0" . 'Entities\\Logo' . "\0" . 'uploaded_by', '' . "\0" . 'Entities\\Logo' . "\0" . 'created_at', '' . "\0" . 'Entities\\Logo' . "\0" . 'width', '' . "\0" . 'Entities\\Logo' . "\0" . 'height', '' . "\0" . 'Entities\\Logo' . "\0" . 'id', '' . "\0" . 'Entities\\Logo' . "\0" . 'customer'];
     }
 
     /**
@@ -293,17 +293,6 @@ class Logo extends \Entities\Logo implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function getType()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getType', []);
-
-        return parent::getType();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function setOriginalName($originalName)
     {
 
@@ -376,17 +365,6 @@ class Logo extends \Entities\Logo implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', [$customer]);
 
         return parent::setCustomer($customer);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setType($type)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setType', [$type]);
-
-        return parent::setType($type);
     }
 
 }

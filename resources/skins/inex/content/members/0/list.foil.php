@@ -13,7 +13,7 @@ echo Cache::remember('skin-inex-content-members-list.json', '14400', function() 
         $data[ $c->getId() ][ 'numberofports' ] = 0;
         $data[ $c->getId() ][ 'joined' ] = $c->getDatejoin()->format( 'Y-m-d' );
 
-        if( $l = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) {
+        if( $l = $c->getLogo() ) {
             $data[ $c->getId() ][ 'logo' ] = url( '' ) . '/logos/' . $l->getShardedPath();
         } else {
             $data[ $c->getId() ][ 'logo' ] = false;

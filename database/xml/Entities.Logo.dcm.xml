@@ -4,7 +4,6 @@
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>
-    <field name="type" type="string" nullable="false"/>
     <field name="original_name" type="string" nullable="false"/>
     <field name="stored_name" type="string" nullable="false"/>
     <field name="uploaded_by" type="string" nullable="false"/>
@@ -12,10 +11,10 @@
     <field name="width" type="integer" nullable="false"/>
     <field name="height" type="integer" nullable="false"/>
     <field name="updated_at" type="datetime" nullable="true"/>
-    <many-to-one field="customer" target-entity="Entities\Customer" inversed-by="logos">
+    <one-to-one field="customer" target-entity="Entities\Customer" inversed-by="logos">
       <join-columns>
         <join-column name="customer_id" referenced-column-name="id" on-delete="RESTRICT"/>
       </join-columns>
-    </many-to-one>
+    </one-to-one>
   </entity>
 </doctrine-mapping>

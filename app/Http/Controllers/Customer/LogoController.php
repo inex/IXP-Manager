@@ -92,7 +92,7 @@ class LogoController extends Controller
 
         return view( 'customer/logo/manage' )->with( [
             'c'                  => $c,
-            'logo'               => $c->logos()->exists() ? $c->logos()->first()  : false
+            'logo'               => $c->logo()->exists() ? $c->logo  : false
         ] );
     }
 
@@ -121,16 +121,15 @@ class LogoController extends Controller
         $img->encode('png');
 
         // remove old logo
-        if( $c->logos()->exists() ) {
-            $oldLogo = $c->logos()->first();
-            if( file_exists( public_path() . '/logos/' . $oldLogo->getShardedPath() ) ) {
-                @unlink( public_path() . '/logos/' . $oldLogo->getShardedPath() );
+        if( $c->logo()->exists() ) {
+            $oldLogo = $c->logo;
+            if( file_exists( public_path() . '/logos/' . $oldLogo->shardedPath() ) ) {
+                @unlink( public_path() . '/logos/' . $oldLogo->shardedPath() );
             }
             $oldLogo->delete();
         }
 
         $logo = Logo::create( [
-            'type'          => Logo::TYPE_WWW80,
             'original_name' => $file->getClientOriginalName(),
             'stored_name'   => sha1( $img->getEncoded() ) . '.png',
             'uploaded_by'   => Auth::getUser()->getUsername(),
@@ -141,7 +140,7 @@ class LogoController extends Controller
         $logo->customer_id = $c->id;
         $logo->save();
 
-        $saveTo =  $logo->getFullPath();
+        $saveTo =  $logo->fullPath();
 
         if( !is_dir( dirname( $saveTo ) ) ) {
             @mkdir( dirname( $saveTo ), 0755, true );
@@ -170,15 +169,15 @@ class LogoController extends Controller
         $c = $this->loadCustomer( $id );
 
         // do we have a logo?
-        if( $c->logos()->doesntExist() ) {
+        if( $c->logo()->doesntExist() ) {
             AlertContainer::push( "Sorry, we could not find any logo for you.", Alert::DANGER );
             return Redirect::to( '' );
         }
 
-        $oldLogo = $c->logos()->first();
+        $oldLogo = $c->logo;
 
-        if( file_exists( $oldLogo->getFullPath() ) ) {
-            @unlink( $oldLogo->getFullPath() );
+        if( file_exists( $oldLogo->fullPath() ) ) {
+            @unlink( $oldLogo->fullPath() );
         }
 
         $oldLogo->delete();
@@ -196,10 +195,10 @@ class LogoController extends Controller
      *
      * @throws
      */
-    public function logos()
+    public function logos(): View
     {
         return view( 'customer/logos' )->with([
-            'customers' => Customer::with( 'logos' )->has( 'logos' )->orderBy( 'name' )->get(),
+            'customers' => Customer::with( 'logo' )->has( 'logo' )->orderBy( 'name' )->get(),
         ]);
     }
 }

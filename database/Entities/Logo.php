@@ -70,17 +70,6 @@ namespace Entities;
     private $customer;
 
     /**
-     * @var string
-     */
-    private $type;
-
-    /**
-     * Tyoe for display on public website
-     */
-    const TYPE_WWW80 = 'WWW80';
-
-
-    /**
      * Get originalName
      *
      * @return string
@@ -171,14 +160,6 @@ namespace Entities;
         return public_path().'/logos/' . $this->getShardedPath();
     }
 
-    /**
-     * Get type
-     *
-     * @return string
-     */
-    public function getType(){
-        return $this->type;
-    }
 
     /**
      * Set originalName
@@ -263,19 +244,6 @@ namespace Entities;
      */
     public function setCustomer( \Entities\Customer $customer = null ){
         $this->customer = $customer;
-        return $this;
-    }
-
-    /**
-     * Set type
-     *
-     * @param string $type
-     *
-     * @return Logo
-     */
-    public function setType( $type ){
-        $this->type = $type;
-
         return $this;
     }
 }

@@ -56,7 +56,7 @@ class LocationController extends EloquentController
      */
     protected $object = null;
 
-    protected static ?string $route_prefix = "facility";
+    protected static $route_prefix = "facility";
     /**
      * This function sets up the frontend controller
      */
