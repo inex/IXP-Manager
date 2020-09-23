@@ -30,14 +30,14 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-use IXP\Models\{Aggregators\VirtualInterfaceAggregator,
-    Aggregators\VlanInterfaceAggregator,
+use IXP\Models\{
+    Aggregators\VirtualInterfaceAggregator,
     Customer,
     Infrastructure,
     Location,
-    VirtualInterface,
     Vlan,
-    VlanInterface};
+    VlanInterface
+};
 
 use IXP\Services\Grapher\Graph as Graph;
 

@@ -23,6 +23,7 @@ namespace IXP\Http\Requests;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 use IPTools\{
@@ -47,10 +48,10 @@ class StoreIpAddress extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // middleware ensures superuser access only so always authorised here:
-        return true;
+        return Auth::getUser()->isSuperUser();
     }
 
     /**
@@ -58,7 +59,7 @@ class StoreIpAddress extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'vlan'                  => 'required|integer|exists:Entities\Vlan,id',
@@ -89,7 +90,7 @@ class StoreIpAddress extends FormRequest
 
                 $ip = new IP( $pieces[ 0 ] );
 
-                if( $ip->version == 'IPv4' ) {
+                if( $ip->version === 'IPv4' ) {
                     if( !isset( $pieces[ 1 ] ) ) {
                         $pieces[ 1 ] = 32;
                     }

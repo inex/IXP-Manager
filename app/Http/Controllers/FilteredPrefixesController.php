@@ -42,8 +42,8 @@ use IXP\Models\Customer;
  */
 class FilteredPrefixesController extends Controller
 {
-
     /**
+     * Get the list
      *
      * @param Request $r
      * @param Customer $customer
@@ -70,12 +70,11 @@ class FilteredPrefixesController extends Controller
 
             // if we are using the sync queue runner, it will have completed
             $filteredPrefixes = Cache::get( 'filtered-prefixes-' . $customer->id, false );
-        };
+        }
 
         return view( 'filtered-prefixes.view' )->with([
             'customer'         => $customer,
             'filteredPrefixes' => $filteredPrefixes,
         ]);
     }
-
 }

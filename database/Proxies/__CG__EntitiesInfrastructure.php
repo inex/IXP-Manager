@@ -66,10 +66,10 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'shortname', 'country', 'id', 'created_at', 'updated_at', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', 'ixf_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary'];
+            return ['__isInitialized__', 'name', 'shortname', 'country', 'id', 'created_at', 'updated_at', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', 'ixf_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary'];
         }
 
-        return ['__isInitialized__', 'name', 'shortname', 'country', 'id', 'created_at', 'updated_at', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', 'ixf_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary'];
+        return ['__isInitialized__', 'name', 'shortname', 'country', 'id', 'created_at', 'updated_at', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', 'ixf_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary'];
     }
 
     /**
@@ -233,28 +233,6 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setIXP(\Entities\IXP $iXP = NULL)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIXP', [$iXP]);
-
-        return parent::setIXP($iXP);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getIXP()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIXP', []);
-
-        return parent::getIXP();
     }
 
     /**

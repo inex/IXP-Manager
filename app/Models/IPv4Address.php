@@ -23,11 +23,8 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-use Illuminate\Database\Eloquent\{
-    Model,
-    Relations\BelongsTo,
-    Relations\HasOne
-};
+use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations\HasOne};
+use IPTools\Network as IPToolsNetwork;
 
 
 /**

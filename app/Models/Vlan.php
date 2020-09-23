@@ -71,6 +71,8 @@ use Illuminate\Database\Eloquent\{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\NetworkInfo[] $networksInfo
+ * @property-read int|null $networks_info_count
  */
 class Vlan extends Model
 {
@@ -130,11 +132,19 @@ class Vlan extends Model
     }
 
     /**
-     * Get the route server filters for the cabinet
+     * Get the route server filters for the vlan
      */
     public function routeServerFilters(): HasMany
     {
         return $this->hasMany(RouteServerFilter::class, 'vlan_id' );
+    }
+
+    /**
+     * Get the networks info for the vlan
+     */
+    public function networksInfo(): HasMany
+    {
+        return $this->hasMany(NetworkInfo::class, 'vlanid' );
     }
 
     /**

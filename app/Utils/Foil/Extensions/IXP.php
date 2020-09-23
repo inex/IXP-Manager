@@ -60,7 +60,6 @@ class IXP implements ExtensionInterface {
             'google2faAuthenticator' => [ $this, 'google2faAuthenticator' ],
             'logoManagementEnabled'  => [ $this, 'logoManagementEnabled' ],
             'maxFileUploadSize'      => [ $this, 'maxFileUploadSize' ],
-            'multiIXP'               => [ $this, 'multiIXP' ],
             'nagiosHostname'         => [ $this, 'nagiosHostname' ],
             'nakedUrl'               => [ $this, 'nakedUrl' ],
             'resellerMode'           => [ $this, 'resellerMode' ],
@@ -300,23 +299,6 @@ class IXP implements ExtensionInterface {
     public function logoManagementEnabled(): bool
     {
         return !(bool)config( 'ixp_fe.frontend.disabled.logo' );
-    }
-
-    /**
-     * Checks if multi IXP mode is enabled.
-     *
-     * To enable multi IXP mode set the env variable IXP_MULTIIXP_ENABLED
-     *
-     * NB: this functionality is deprecated in IXP Manager v4.0 and will be
-     * removed piecemeal.
-     *
-     * @see https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality
-     *
-     * @return bool
-     */
-    public function multiIXP(): bool
-    {
-        return (bool)config( 'ixp.multiixp.enabled', false );
     }
 
     /**

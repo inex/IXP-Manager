@@ -159,6 +159,10 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Logo[] $logos
  * @property-read int|null $logos_count
  * @property-read \IXP\Models\Logo|null $logo
+ * @property-read Customer|null $resellerObject
+ * @property-read \Illuminate\Database\Eloquent\Collection|Customer[] $resoldCustomers
+ * @property-read int|null $resold_customers_count
+ * @property-read \IXP\Models\CompanyBillingDetail|null $companyBillingDetail
  */
 class Customer extends Model
 {
@@ -348,6 +352,30 @@ class Customer extends Model
     }
 
     /**
+     * Get the logo for the customer
+     */
+    public function companyBillingDetail(): BelongsTo
+    {
+        return $this->belongsTo(CompanyBillingDetail::class, 'company_billing_details_id' );
+    }
+
+    /**
+     * Get the resold customers for the customer
+     */
+    public function resoldCustomers(): hasMany
+    {
+        return $this->hasMany( __CLASS__, 'reseller' );
+    }
+
+    /**
+     * Get the reseller for the customer
+     */
+    public function resellerObject(): BelongsTo
+    {
+        return $this->belongsTo( __CLASS__, 'reseller' );
+    }
+
+    /**
      * Get the irrdbconfig that own the customer
      */
     public function irrdbConfig(): BelongsTo
@@ -371,6 +399,44 @@ class Customer extends Model
         return $this->belongsToMany(CustomerTag::class , 'cust_to_cust_tag', 'customer_id' );
     }
 
+    /**
+     * Check if this customer is of the named type
+     * @return boolean
+     */
+    public function typeInternal(): bool
+    {
+        return $this->type === self::TYPE_INTERNAL;
+    }
+
+    /**
+     * Check if this customer is of the named type
+     *
+     * @return boolean
+     */
+    public function typeFull(): bool
+    {
+        return $this->type === self::TYPE_FULL;
+    }
+
+    /**
+     * Check if this customer is of the named type
+     *
+     * @return boolean
+     */
+    public function typeProBono(): bool
+    {
+        return $this->type === self::TYPE_PROBONO;
+    }
+
+    /**
+     * Check if this customer is of the named type
+     *
+     * @return boolean
+     */
+    public function typeAssociate(): bool
+    {
+        return $this->type === self::TYPE_ASSOCIATE;
+    }
 
     /**
      * Scope a query to only include trafficking members.
@@ -505,11 +571,14 @@ class Customer extends Model
 
     /**
      * Is the customer a route server client on any of their VLAN interfaces?
+     *
      * @param int $proto One of [4,6]. Defaults to 4.
+     *
      * @return boolean
-     * @throws IXP_Exception
+     *
+     * @throws
      */
-    public function isRouteServerClient( int $proto = 4 ): bool
+    public function routeServerClient( int $proto = 4 ): bool
     {
         if( !in_array( $proto, [ 4, 6 ] ) ) {
             throw new IXP_Exception( 'Invalid protocol' );

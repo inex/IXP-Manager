@@ -29,16 +29,6 @@ return [
 
     /* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;
-    ;; Enables multi-IXP mode.
-    ;;
-    ;; See: https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality
-    ;; */
-    'multiixp' => [
-        'enabled' => env( 'IXP_MULTIIXP_ENABLED', false ),
-    ],
-
-    /* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;;
     ;; Enables resller mode
     ;;
     ;; See: https://github.com/inex/IXP-Manager/wiki/Reseller-Functionality

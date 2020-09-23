@@ -115,7 +115,7 @@ class CustomerTagController extends EloquentController
      *
      * @return array
      */
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
         return CustomerTag::when( $id , function( Builder $q, $id ) {
@@ -144,7 +144,7 @@ class CustomerTagController extends EloquentController
      *
      * @return array
      */
-    protected function editPrepareForm( $id ): array
+    protected function editPrepareForm( int $id ): array
     {
         $this->object = CustomerTag::findOrFail( $id );
 

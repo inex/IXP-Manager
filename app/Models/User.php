@@ -124,6 +124,11 @@ class User extends Model
         User::AUTH_SUPERUSER => 'Superuser',
     ];
 
+    public static $PRIVILEGES_TEXT_NONSUPERUSER = [
+        User::AUTH_CUSTUSER  => 'Customer User',
+        User::AUTH_CUSTADMIN => 'Customer Administrator',
+    ];
+
     /**
      * Get the remember tokens for the user
      */

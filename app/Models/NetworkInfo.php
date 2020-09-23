@@ -23,10 +23,7 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Model
-};
+use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo};
 
 /**
  * IXP\Models\NetworkInfo
@@ -55,6 +52,7 @@ use Illuminate\Database\Eloquent\{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\NetworkInfo whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\NetworkInfo whereUpdatedAt($value)
+ * @property-read \IXP\Models\Vlan|null $vlan
  */
 class NetworkInfo extends Model
 {
@@ -76,4 +74,13 @@ class NetworkInfo extends Model
         'network',
         'masklen',
     ];
+
+    /**
+     * Get the vlan that own the network info
+     */
+    public function vlan(): BelongsTo
+    {
+        return $this->belongsTo(Vlan::class, 'vlanid' );
+    }
+    
 }

@@ -57,11 +57,6 @@ class Infrastructure
     protected $updated_at;
 
     /**
-     * @var \Entities\IXP
-     */
-    protected $IXP;
-
-    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     protected $Switchers;
@@ -142,28 +137,6 @@ class Infrastructure
         return $this->id;
     }
 
-    /**
-     * Set IXP
-     *
-     * @param IXP $iXP
-     * @return Infrastructure
-     */
-    public function setIXP(IXP $iXP = null)
-    {
-        $this->IXP = $iXP;
-
-        return $this;
-    }
-
-    /**
-     * Get IXP
-     *
-     * @return IXP
-     */
-    public function getIXP()
-    {
-        return $this->IXP;
-    }
 
     /**
      * Constructor

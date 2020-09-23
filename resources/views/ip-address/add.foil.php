@@ -4,23 +4,16 @@
     IP Addresses / Add IPv<?= $t->protocol ?> Address
 <?php $this->append() ?>
 
-
-
 <?php $this->section( 'page-header-postamble' ) ?>
-
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-white" href="<?= route ( 'ip-address@list', [ 'protocol' => $t->protocol, 'vlanid' => request()->input( 'vlan' ) ] ) ?>" title="list">
+        <a class="btn btn-white" href="<?= route ( 'ip-address@list', [ 'protocol' => $t->protocol, 'vlanid' => request()->vlan ] ) ?>" title="list">
             <i class="fa fa-list"></i>
         </a>
     </div>
-
 <?php $this->append() ?>
 
-
 <?php $this->section( 'content' ) ?>
-
 <div class="col-sm-12">
-
     <div class="card ">
         <div class="card-body">
 
@@ -41,16 +34,14 @@
                 ->blockHelp( 'Select the VLAN to add the new IP addresses to.' )
             ?>
 
-
             <?= Former::text( 'network' )
                 ->label( 'Network' )
-                ->placeholder( $t->protocol == 6 ? '2001:db8:23::100/121' : '192.0.2.24/28' )
-                ->blockHelp( 'Enter a subnet is CIDR format. /' . ( $t->protocol == 6 ? '128' : '32' ) . ' is optional for a single address.' )
+                ->placeholder( $t->protocol === 6 ? '2001:db8:23::100/121' : '192.0.2.24/28' )
+                ->blockHelp( 'Enter a subnet is CIDR format. /' . ( $t->protocol === 6 ? '128' : '32' ) . ' is optional for a single address.' )
             ?>
 
 
-            <?php if( $t->protocol == 6 ): ?>
-
+            <?php if( $t->protocol === 6 ): ?>
                 <?= Former::checkbox( 'decimal' )
                     ->label( '&nbsp;' )
                     ->text( 'Enter decimal values only' )
@@ -74,10 +65,8 @@
                 </div>
 
             <?php else: ?>
-
                 <?= Former::hidden( 'decimal' )->value( '0' ) ?>
                 <?= Former::hidden( 'overflow' )->value( '0' ) ?>
-
             <?php endif; ?>
 
             <?= Former::checkbox( 'skip' )
@@ -90,7 +79,7 @@
             ?>
 
             <?=Former::actions( Former::primary_submit( 'Add Addresses' )->class( "mb-2 mb-sm-0"),
-                Former::secondary_link( 'Cancel' )->href( route ( 'ip-address@list', [ 'protocol' => $t->protocol, 'vlanid' => request()->input( 'vlan' ) ] ) )->class( "mb-2 mb-sm-0"),
+                Former::secondary_link( 'Cancel' )->href( route ( 'ip-address@list', [ 'protocol' => $t->protocol, 'vlanid' => request()->vlan ] ) )->class( "mb-2 mb-sm-0"),
                 Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0")
             );?>
 
@@ -105,11 +94,10 @@
         <div class="card-body">
             <p>
                 IP addresses are added by specifying a subnet of addresses to add in CIDR notation. The only exception is adding a single
-                IP address in which case the <code><?= $t->protocol == 6 ? '/128' : '/32' ?></code> is optional.
+                IP address in which case the <code><?= $t->protocol === 6 ? '/128' : '/32' ?></code> is optional.
             </p>
 
-            <?php if( $t->protocol == 6 ): ?>
-
+            <?php if( $t->protocol === 6 ): ?>
                 <p>
                     Here is an example - if you wanted to add 8 sequential IPv6 addresses starting from <code>2001:db8:32::64</code>, you would enter the
                     following in the <em>Network</em> inout box above: <code>2001:db8:32::64/125</code>. This would then add the following 8 IP addresses:
@@ -136,10 +124,7 @@
 2001:db8:32::69
 2001:db8:32::70 [only if 'Overflow network bound for decimal-only values' is checked]
 2001:db8:32::71 [only if 'Overflow network bound for decimal-only values' is checked]</pre>
-
-
             <?php else: ?>
-
                 <p>
                     Here is an example - if you wanted to add 8 sequential IPv4 addresses starting from <code>192.0.2.64</code>, you would enter the
                     following in the <em>Network</em> inout box above: <code>192.0.2.64/29</code>. This would then add the following 8 IP addresses:
@@ -155,25 +140,15 @@
 192.0.2.71</pre>
 
             <?php endif; ?>
-
             <p>
                 To prevent you accidentally populating your database with a ridiculous number of IP addresses, there is a lower subnet
-                bound of <code>/<?= $t->protocol == 6 ? '120' : '24' ?></code>. If you need to add more than this, just add them in batches.
+                bound of <code>/<?= $t->protocol === 6 ? '120' : '24' ?></code>. If you need to add more than this, just add them in batches.
             </p>
-
         </div>
-
     </div>
-
 </div>
-
-
-
-
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
     <?= $t->insert( 'ip-address/js/add.foil.php' ) ?>
 <?php $this->append() ?>
-

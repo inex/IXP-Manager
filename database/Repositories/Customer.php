@@ -108,7 +108,6 @@ class Customer extends EntityRepository
      * @param bool $asArray If `true`, return an associative array, else an array of Customer objects
      * @param bool $trafficing If `true`, only include trafficing customers (i.e. no associates)
      * @param bool $externalOnly If `true`, only include external customers (i.e. no internal types)
-     * @param \Entities\IXP $ixp Limit to a specific IXP
      * @return array
      */
     public function getCurrentActive( $asArray = false, $trafficing = false, $externalOnly = false, $ixp = false )
@@ -121,9 +120,6 @@ class Customer extends EntityRepository
         
         if( $externalOnly )
             $dql .= " AND " . self::DQL_CUST_EXTERNAL;
-
-        if( $ixp !== false )
-            $dql .= " AND :ixp MEMBER OF c.IXPs";
 
         $dql .= " ORDER BY c.name ASC";
         
@@ -231,23 +227,6 @@ class Customer extends EntityRepository
             $customers[ $c['id'] ] = $c['name'];
         
         return $customers;
-    }
-
-    /**
-     * Return an array of all customers who are not related with a given IXP.
-     *
-     * @param \Entities\IXP $ixp IXP for filtering results
-     * @return \Entities\Customerp[ An array of customers
-     */
-    public function getNamesNotAssignedToIXP( $ixp )
-    {
-        return $this->getEntityManager()->createQuery(
-                "SELECT c
-                    FROM Entities\\Customer c
-                    WHERE ?1 NOT MEMBER OF c.IXPs
-                    ORDER BY c.name ASC" )
-            ->setParameter( 1, $ixp )
-            ->getResult();
     }
 
     /**

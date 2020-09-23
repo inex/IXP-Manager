@@ -464,7 +464,6 @@ IXP_API_JSONEXPORTSCHEMA_PUBLIC=true
 
 #######################################################################################
 # See config/ixp.php
-IXP_MULTIIXP_ENABLED=false
 IXP_RESELLER_ENABLED=false
 IXP_AS112_UI_ACTIVE=true
 

@@ -96,16 +96,6 @@
     <one-to-many field="Users" target-entity="Entities\CustomerToUser" mapped-by="customer"/>
 <!--    <one-to-many field="routeServerFilters" target-entity="Entities\RouteServerFilter" mapped-by="customer"/>-->
 <!--    <one-to-many field="peerRouteServerFilters" target-entity="Entities\RouteServerFilter" mapped-by="peer"/>-->
-    <many-to-many field="IXPs" target-entity="Entities\IXP" inversed-by="Customers">
-      <join-table name="customer_to_ixp">
-        <join-columns>
-          <join-column name="customer_id" referenced-column-name="id" nullable="false"/>
-        </join-columns>
-        <inverse-join-columns>
-          <join-column name="ixp_id" referenced-column-name="id" nullable="false"/>
-        </inverse-join-columns>
-      </join-table>
-    </many-to-many>
     <many-to-many field="tags" target-entity="Entities\CustomerTag" mapped-by="customers"/>
   </entity>
 </doctrine-mapping>

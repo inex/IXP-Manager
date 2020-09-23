@@ -68,10 +68,10 @@ class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
      * Execute the job.
      *
      * @return void
-     * @throws \IXP\Exceptions\Services\LookingGlass\ConfigurationException
-     * @throws GeneralException
+     *
+     * @throws
      */
-    public function handle( LookingGlass $lg )
+    public function handle( LookingGlass $lg ): void
     {
         if( !$this->havePersistentCache() ) {
             throw new GeneralException('A persistent cache is required to fetch filtered prefixes' );
@@ -111,8 +111,10 @@ class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
      * @param LookingGlass $lg
      * @param VlanInterface $vli
      * @param int $ipproto
+     *
      * @return void
-     * @throws \IXP\Exceptions\Services\LookingGlass\ConfigurationException
+     *
+     * @throws
      */
     private function queryRouteServer( LookingGlass $lg, VlanInterface $vli, int $ipproto ): void
     {
@@ -162,5 +164,4 @@ class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
             }
         }
     }
-
 }

@@ -300,11 +300,6 @@ class Customer
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    protected $IXPs;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
     protected $tags;
 
     /**
@@ -2125,38 +2120,6 @@ class Customer
         return $this->Reseller;
     }
 
-    /**
-     * Add IXPs
-     *
-     * @param \Entities\IXP $iXPs
-     * @return Customer
-     */
-    public function addIXP(\Entities\IXP $iXPs)
-    {
-        $this->IXPs[] = $iXPs;
-
-        return $this;
-    }
-
-    /**
-     * Remove IXPs
-     *
-     * @param \Entities\IXP $iXPs
-     */
-    public function removeIXP(\Entities\IXP $iXPs)
-    {
-        $this->IXPs->removeElement($iXPs);
-    }
-
-    /**
-     * Get IXPs
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getIXPs()
-    {
-        return $this->IXPs;
-    }
     /**
      * @var \Doctrine\Common\Collections\Collection
      */

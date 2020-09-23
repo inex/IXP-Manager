@@ -139,6 +139,12 @@ use IXP\Models\Customer;
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Logo[] $logos
  * @property-read int|null $logos_count
  * @property-read \IXP\Models\Logo|null $logo
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerNote[] $notes
+ * @property-read int|null $notes_count
+ * @property-read Customer|null $resellerObject
+ * @property-read \Illuminate\Database\Eloquent\Collection|Customer[] $resoldCustomers
+ * @property-read int|null $resold_customers_count
+ * @property-read \IXP\Models\CompanyBillingDetail|null $companyBillingDetail
  */
 class CustomerAggregator extends Customer
 {

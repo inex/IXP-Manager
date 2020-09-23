@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,94 +23,110 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Redirect;
+use Redirect;
 
-use IPTools\{
-    Network
+use Illuminate\Database\Eloquent\Builder;
+
+use IXP\Models\{
+    Aggregators\IpAddressAggregator,
+    IPv4Address,
+    IPv6Address,
+    Vlan
 };
-
-use Entities\{
-    IPv4Address            as IPv4AddressEntity,
-    IPv6Address            as IPv6AddressEntity,
-    Vlan                   as VlanEntity
-};
-
-use IXP\Utils\View\Alert\Alert;
-use IXP\Utils\View\Alert\Container as AlertContainer;
-
-use Illuminate\View\View;
 
 use Illuminate\Http\{
     RedirectResponse,
     Request
 };
 
+use Illuminate\View\View;
+
+use IPTools\{Network, Network as IPToolsNetwork};
+
 use IXP\Http\Requests\{
     DeleteIpAddressesByNetwork,
     StoreIpAddress
 };
 
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
 
 /**
  * IP Address Controller
- *
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- *
  * @category   Admin
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class IpAddressController extends Controller
 {
-
     /**
      * Return the entity depending on the protocol
      *
      * @param int       $protocol   Protocol of the IP address
-     * @param boolean   $entity     Do we need to return the entity ?
+     * @param boolean   $model      Do we need to return the $model ?
      *
-     * @return IPv4AddressEntity | IPv6AddressEntity | integer
+     * @return IPv4Address | IPv6Address | integer
      */
-    private function processProtocol( int $protocol , bool $entity = true )
+    private function processProtocol( int $protocol , bool $model = true )
     {
-        if( !in_array( $protocol, [ 4,6 ] ) ){
+        if( !in_array( $protocol, [ 4,6 ] ) ) {
             abort( 404 , 'Unknown protocol');
         }
 
-        if( $entity ){
-            return $protocol == 4 ? IPv4AddressEntity::class : IPv6AddressEntity::class;
-        } else {
-            return $protocol;
+        if( $model ){
+            return $protocol === 4 ? IPv4Address::class : IPv6Address::class;
         }
+
+        return $protocol;
     }
 
     /**
      * Display the list of the IP Address (IPv4 or IPv6)
      *
-     * @param int $protocol Protocol of the IP address
-     * @param int $vid ID of the vlan
+     * @param int       $protocol   Protocol of the IP address
+     * @param int|null  Vlan        ID of the vlan
      *
      * @return view
+     *
      * @throws
      */
     public function list( int $protocol, int $vid = null ): View
     {
         $vlan = false;
         if( $vid ) {
-            if( !( $vlan = D2EM::getRepository( VlanEntity::class )->find( $vid ) ) ) {
-                abort( 404 , 'Unknown vlan');
-            }
+            $vlan = Vlan::findOrFail( $vid );
         }
 
-        $ips = $vlan ? D2EM::getRepository( $this->processProtocol( $protocol, true ) )->getAllForList( $vlan->getId() ) : [] ;
+        $ips = $this->processProtocol( $protocol, true )::selectRaw( 'ip.id as id, 
+                        ip.address as address,' .
+            ( $protocol === 4 ? 'inet_aton(ip.address) as aton' : 'hex( inet6_aton( ip.address ) ) as aton') .
+                        ',v.name AS vlan, 
+                        v.id as vlanid,
+                        vli.id AS vliid,
+                        vli.ipv4hostname AS hostname,
+                        c.name AS customer, 
+                        c.id AS customerid,
+                        vi.id AS viid' )
+            ->from( "ipv{$protocol}address AS ip" )
+            ->leftJoin( 'vlan AS v', 'v.id', 'ip.vlanid' )
+            ->leftJoin( 'vlaninterface AS vli', 'vli.ipv4addressid', 'ip.id' )
+            ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
+            ->leftJoin( 'cust AS c', 'c.id', 'vi.custid' )
+            ->when( $vlan, function( Builder $q, $vlan ) {
+                return $q->where( 'v.id', $vlan->id );
+            } )
+            ->orderBy( 'address' )
+            ->get()->toArray();
 
         return view( 'ip-address/list' )->with([
-            'ips'                       => $ips,
-            'vlans'                     => D2EM::getRepository( VlanEntity::class )->getNames(),
+            'ips'                       => $vlan ? $ips : [],
+            'vlans'                     => Vlan::publicOnly()->orderBy('number')->get(),
             'protocol'                  => $protocol,
             'vlan'                      => $vlan
-
         ]);
     }
 
@@ -124,11 +140,10 @@ class IpAddressController extends Controller
     public function add( int $protocol ): View
     {
         return view( 'ip-address/add' )->with([
-            'vlans'                     => D2EM::getRepository( VlanEntity::class )->getNames(),
+            'vlans'                     => Vlan::publicOnly()->orderBy('number')->get(),
             'protocol'                  => $this->processProtocol( $protocol, false )
         ]);
     }
-
 
     /**
      * Edit the core links associated to a core bundle
@@ -141,24 +156,24 @@ class IpAddressController extends Controller
      */
     public function store( StoreIpAddress $request ): RedirectResponse
     {
-        /** @var VlanEntity $vlan */
-        $vlan     = D2EM::getRepository( VlanEntity::class )->find( $request->input('vlan' ) );
-        $network  = Network::parse( trim( htmlspecialchars( $request->input('network' ) )  ) );
+        $vlan     = Vlan::find( $request->vlan );
+        $network  = Network::parse( trim( htmlspecialchars( $request->network )  ) );
         $skip     = (bool)$request->input( 'skip',     false );
         $decimal  = (bool)$request->input( 'decimal',  false );
         $overflow = (bool)$request->input( 'overflow', false );
 
-        if( $network->getFirstIP()->version == 'IPv6' ) {
-            $result = D2EM::getRepository( IPv6AddressEntity::class )->bulkAdd(
-                D2EM::getRepository( IPv6AddressEntity::class )->generateSequentialAddresses( $network, $decimal, $overflow ),
-                $vlan, $skip
-            );
+        if( $network->getFirstIP()->version === 'IPv6' ) {
+            $sequentialAddrs = self::generateSequentialAddresses( $network, $decimal, $overflow );
+            $model = IPv6Address::class;
         } else {
-            $result = D2EM::getRepository( IPv4AddressEntity::class )->bulkAdd(
-                D2EM::getRepository( IPv4AddressEntity::class )->generateSequentialAddresses( $network ),
-                $vlan, $skip
-            );
+            $sequentialAddrs = [];
+            foreach( $network as $ip ) {
+                $sequentialAddrs[] = (string)$ip;
+            }
+            $model = IPv4Address::class;
         }
+
+        $result = IpAddressAggregator::bulkAdd( $sequentialAddrs, $vlan, $model, $skip );
 
         if( !$skip && count( $result['preexisting'] ) ) {
             AlertContainer::push( "No addresses were added as the following addresses already exist in the database: "
@@ -167,80 +182,68 @@ class IpAddressController extends Controller
             return Redirect::back()->withInput();
         }
 
-        if( count( $result['new'] ) == 0 ) {
+        if( count( $result['new'] ) === 0 ) {
             AlertContainer::push( "No addresses were added. " . count( $result['preexisting'] ) . " already exist in the database.",
                 Alert::WARNING
             );
             return Redirect::back()->withInput();
         }
 
-        AlertContainer::push( count( $result['new'] ) . ' new IP addresses added to <em>' . $vlan->getName() . '</em>. '
+        AlertContainer::push( count( $result['new'] ) . ' new IP addresses added to <em>' . $vlan->name . '</em>. '
             . ( $skip ? 'There were ' . count( $result['preexisting'] ) . ' preexisting address(es).' : '' ),
             Alert::SUCCESS
         );
 
-        return Redirect::to( route( 'ip-address@list', [ 'protocol' => $network->getFirstIP()->getVersion() == 'IPv6' ? '6' : '4', 'vlanid' => $vlan->getId() ] ) );
+        return Redirect::to( route( 'ip-address@list', [ 'protocol' => $network->getFirstIP()->getVersion() === 'IPv6' ? '6' : '4', 'vlanid' => $vlan->id ] ) );
     }
 
 
     /**
      * Display the form to delete free IP addresses in a VLAN
      *
-     * @param  DeleteIpAddressesByNetwork  $request            Instance of the current HTTP request
-     * @param  int      $vlanid                Id of the VLan
+     * @param DeleteIpAddressesByNetwork $request Instance of the current HTTP request
+     * @param Vlan $vlan
      *
-     * There's actually three ways into this action:
-     *
-     * 1. standard GET request which just displays for form asking for the network range to delete
-     * 2. POST with the network range: finds addresses and displays them for confirmation
-     * 3. POST with 'doDelete' parameter: works as (2) but actually deletes the addressess
-     *
-     * @return View | Redirect
+     * @return View | RedirectResponse
      *
      * @throws
      */
-    public function deleteByNetwork( DeleteIpAddressesByNetwork $request, int $vlanid )
+    public function deleteByNetwork( DeleteIpAddressesByNetwork $request, Vlan $vlan )
     {
+        $ips = [];
+        if( $request->network ) {
+            $network  = Network::parse( trim( htmlspecialchars( $request->network )  ) );
 
-        /** @var VlanEntity $v */
-        if( !( $v = D2EM::getRepository( VlanEntity::class )->find( $vlanid ) ) ) {
-            abort(404);
-        }
-
-        if( $request->input( 'network' ) ) {
-
-            $network  = Network::parse( trim( htmlspecialchars( $request->input('network' ) )  ) );
-
-            if( $network->getFirstIP()->version == 'IPv6' ) {
-                $ips = D2EM::getRepository( IPv6AddressEntity::class )->getFreeAddressesFromList( $v,
-                    D2EM::getRepository( IPv6AddressEntity::class )->generateSequentialAddresses( $network, false, false )
-                );
+            if( $network->getFirstIP()->version === 'IPv6' ) {
+                /** @var IPv6Address $model */
+                $model = IPv6Address::class;
+                $sequentialAddrs = self::generateSequentialAddresses( $network, false, false );
             } else {
-                $ips = D2EM::getRepository( IPv4AddressEntity::class )->getFreeAddressesFromList( $v,
-                    D2EM::getRepository( IPv4AddressEntity::class )->generateSequentialAddresses( $network )
-                );
+                /** @var IPv4Address $model */
+                $model = IPv4Address::class;
+
+                $sequentialAddrs = [];
+                foreach( $network as $ip ) {
+                    $sequentialAddrs[] = (string)$ip;
+                }
             }
 
-        } else {
-            $ips = [];
-        }
 
-        if( $request->input( 'doDelete', false ) == "1" ) {
+            $ips = $model::with( 'vlanInterface' )->doesntHave( 'vlanInterface' )
+                ->whereIn( 'address', $sequentialAddrs )
+                ->where( 'vlanid', $vlan->id )->get();
 
-            foreach( $ips as $ip ) {
-                D2EM::remove( $ip );
+            if( $request->input( 'doDelete', false ) === "1" ) {
+                $model::whereIn( 'id', $ips->pluck( 'id' ) )->delete();
+                AlertContainer::push( 'IP Addresses deleted.', Alert::SUCCESS );
+
+                return redirect( route( 'ip-address@list', [ 'protocol' => $network->getFirstIP()->version === 'IPv6' ? 6 : 4, 'vlanid' => $vlan->id ] ) );
             }
-
-            D2EM::flush();
-
-            AlertContainer::push( 'IP Addresses deleted.', Alert::SUCCESS );
-
-            return redirect( route( 'ip-address@list', [ 'protocol' => $network->getFirstIP()->version == 'IPv6' ? 6 : 4, 'vlanid' => $v->getId() ] ) );
         }
 
         return view( 'ip-address/delete-by-network' )->with([
-            'vlan'                      => $v,
-            'network'                   => $request->input( 'network', '' ),
+            'vlan'                      => $vlan,
+            'network'                   => $request->network,
             'ips'                       => $ips,
         ]);
     }
@@ -251,26 +254,77 @@ class IpAddressController extends Controller
      *
      * @param Request $request
      *
+     * @param int $id
      * @return RedirectResponse
      *
+     * @throws
      */
-    public function delete( Request $request ): RedirectResponse
+    public function delete( Request $request, int $id ): RedirectResponse
     {
-        if( !( $ip = D2EM::getRepository( $this->processProtocol( $request->input( "protocol" ), true ) )->find( $request->input( "id" ) ) ) ) {
-            abort(404);
-        }
+        $ip = $this->processProtocol( $request->protocol , true )::findOrFail( $id );
 
-        if( $ip->getVlanInterface() ){
+        if( $ip->vlanInterface()->exists() ) {
             AlertContainer::push( 'This IP address is assigned to a VLAN interface.', Alert::DANGER );
-            return response()->json( [ 'success' => false ] );
+            return redirect()->back();
         }
 
-        D2EM::remove( $ip );
+        $vid = $ip->vlanid;
 
-        D2EM::flush();
+        $ip->delete();
 
         AlertContainer::push( 'The IP has been successfully deleted.', Alert::SUCCESS );
+        return Redirect::to( route( "ip-address@list", [ "protocol" => $request->protocol , "vlanid" => $vid ] ) );
+    }
 
-        return Redirect::to( route( "ip-address@list", [ "protocol" => $request->input( "protocol" ) , "vlanid" => $request->input( "vlanid" ) ] ) );
+    /**
+     * For a given IPTools library network object, generate sequential IPv6 addresses.
+     *
+     * There is also a `$decimal` option which only returns IPv6 addresses where the
+     * last block uses only decimal numbering. This exists because typically IXs allocate
+     * a customer an IPv6 address such that the last block matches the last block of the
+     * IPv4 address. So, if set, the function will generate the number of addresses as
+     * indicated by the CIDR block size but skip over any addresses containing
+     * `a-f` characters. **NB:** the full number of addresses will be generated which means
+     * this would typically overflow the subnet bound (unless $nooverflow is set).
+     *
+     * @param IPToolsNetwork $network
+     * @param bool           $decimal
+     * @param bool           $overflow
+     *
+     * @return array Generated addresses (string[])
+     *
+     * @throws
+     */
+    private static function generateSequentialAddresses( IPToolsNetwork $network, bool $decimal = false, bool $overflow = true ): array
+    {
+        $addresses = [];
+
+        if( $decimal ) {
+            $ip = $network->getFirstIP();
+            $target = 2 ** ( 128 - $network->getPrefixLength() );
+            $i      = 0;
+            $loops  = 0;
+
+            do {
+                if( ++$loops === $target && !$overflow ) {
+                    break;
+                }
+
+                if( !preg_match( '/^([0-9]+|)$/', substr( $ip, strrpos( $ip, ':' ) + 1 ) ) ) {
+                    $ip = $ip->next();
+                    continue;
+                }
+
+                $addresses[] = (string)$ip;
+                $ip = $ip->next();
+                $i++;
+
+            } while( $i < $target );
+        } else {
+            foreach( $network as $ip ) {
+                $addresses[] = (string)$ip;
+            }
+        }
+        return $addresses;
     }
 }

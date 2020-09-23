@@ -63,7 +63,7 @@ class RSPrefix extends EntityRepository
     public function aggregateRouteSummariesForCustomer( $custid )
     {
         $summary = $this->_initialiseAggregateRouteSummariesArray();
-    
+
         foreach( \Entities\RSPrefix::$SUMMARY_TYPES_FNS as $type => $fn )
         {
             foreach( [ 4, 6 ] as $protocol )

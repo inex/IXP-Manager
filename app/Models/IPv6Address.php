@@ -75,4 +75,5 @@ class IPv6Address extends Model
     {
         return $this->hasOne(VlanInterface::class, 'ipv6addressid' );
     }
+
 }
