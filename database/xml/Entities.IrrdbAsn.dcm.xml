@@ -12,6 +12,8 @@
     <field name="protocol" type="integer" nullable="false"/>
     <field name="first_seen" type="datetime" nullable="true"/>
     <field name="last_seen" type="datetime" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <unique-constraints>
       <unique-constraint name="custasn" columns="asn,protocol,customer_id"/>
     </unique-constraints>

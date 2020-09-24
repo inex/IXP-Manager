@@ -82,5 +82,5 @@ class NetworkInfo extends Model
     {
         return $this->belongsTo(Vlan::class, 'vlanid' );
     }
-    
+
 }

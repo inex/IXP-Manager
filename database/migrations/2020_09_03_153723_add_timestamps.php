@@ -87,6 +87,10 @@ class AddTimestamps extends Migration
              $table->timestamps();
         });
 
+        Schema::table('irrdb_asn', function (Blueprint $table) {
+             $table->timestamps();
+        });
+
         Schema::table('irrdbconfig', function (Blueprint $table) {
              $table->timestamps();
         });
@@ -276,6 +280,9 @@ class AddTimestamps extends Migration
             $table->dropTimestamps();
         });
 
+        Schema::table('irrdb_asn', function (Blueprint $table) {
+            $table->dropTimestamps();
+        });
         Schema::table('irrdbconfig', function (Blueprint $table) {
             $table->dropTimestamps();
         });

@@ -3,7 +3,7 @@
 namespace IXP\Rules;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,10 +28,11 @@ use Illuminate\Contracts\Validation\Rule;
 /**
  * IPv6Cidr
  *
- * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   Rules
  * @package    IXP\Rules
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class IPv6Cidr implements Rule
@@ -53,7 +54,7 @@ class IPv6Cidr implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes( $attribute, $value ): bool
     {
         if( !strpos( $value, '/' ) ) {
             return false;
@@ -83,7 +84,7 @@ class IPv6Cidr implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'Invalid IPv6 address in CIDR format (e.g. 2001:db8:10::/48).';
     }

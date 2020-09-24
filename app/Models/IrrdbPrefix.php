@@ -63,10 +63,24 @@ class IrrdbPrefix extends Model
     protected $table = 'irrdb_prefix';
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'customer_id',
+        'prefix',
+        'protocol',
+        'first_seen',
+        'last_seen',
+    ];
+
+    /**
      * Get the customer for the irrdb prefix
      */
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class, 'customer_id' );
     }
+
 }

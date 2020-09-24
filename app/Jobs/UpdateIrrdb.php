@@ -69,6 +69,7 @@ class UpdateIrrdb extends Job implements ShouldQueue
      *
      * @param CustomerModel     $customer
      * @param string            $type
+     * @param int               $proto
      *
      * @return void
      */
@@ -83,9 +84,10 @@ class UpdateIrrdb extends Job implements ShouldQueue
      * Execute the job.
      *
      * @return void
+     *
      * @throws
      */
-    public function handle()
+    public function handle(): void
     {
         if( !$this->havePersistentCache() ) {
             throw new GeneralException('A persistent cache is required to fetch filtered prefixes' );
@@ -93,7 +95,7 @@ class UpdateIrrdb extends Job implements ShouldQueue
 
         Cache::put( 'updating-irrdb-' . $this->type . '-' . $this->proto . '-' . $this->customer->id, true, 3600 );
 
-        $updater = $this->type == "asn" ? new UpdateAsnDb( $this->customer->getDoctrineObject() ) : new UpdatePrefixDb( $this->customer->getDoctrineObject() );
+        $updater = $this->type === "asn" ? new UpdateAsnDb( $this->customer ) : new UpdatePrefixDb( $this->customer );
 
         $result = $updater->update();
         $result[ "found_at" ] = now();
@@ -101,5 +103,4 @@ class UpdateIrrdb extends Job implements ShouldQueue
         Cache::put( 'updated-irrdb-'  . $this->type . '-' . $this->proto . '-' . $this->customer->id, $result , 900 );
         Cache::put( 'updating-irrdb-' . $this->type . '-' . $this->proto . '-' . $this->customer->id, false, 3600 );
     }
-
 }

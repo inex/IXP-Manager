@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace IXP\Tasks\Irrdb;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,22 +23,30 @@ namespace IXP\Tasks\Irrdb;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use DB, Exception, Log;
 
-use D2EM;
-use Entities\Customer;
-use Exception;
-use IXP\Exceptions\ConfigurationException;
-use IXP\Exceptions\GeneralException;
+use IXP\Exceptions\{
+    ConfigurationException,
+    GeneralException
+};
+
+use IXP\Models\{
+    Aggregators\IrrdbAggregator,
+    Customer,
+    IrrdbAsn,
+    IrrdbPrefix
+};
+
 use IXP\Utils\Bgpq3;
-use Log;
 
 /**
  * UpdateDb
  *
- * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin      <yann@islandbridgenetworks.ie>
  * @category   Tasks
  * @package    IXP\Tasks\Irrdb
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 abstract class UpdateDb
@@ -62,46 +70,44 @@ abstract class UpdateDb
      *
      * @var array
      */
-    private $protocols = [4,6];
+    private $protocols = [ 4,6 ];
 
     /**
      * Variable for timing
      */
     private $time     = 0.0;
 
-
     /**
      * Stardard result array
+     *
      * @var array
      */
     protected $result = [
         'wiped'     => false,
-
         'v4'        => [
             'count'     => 0,
             'stale'     => [],
             'new'       => [],
             'dbUpdated' => false,
         ],
-
         'v6'        => [
             'count'     => 0,
             'stale'     => [],
             'new'       => [],
             'dbUpdated' => false,
         ],
-
         'netTime'   => 0.0,
         'dbTime'    => 0.0,
         'procTime'  => 0.0,
-
         'msg'       => null,
-
     ];
 
     /**
      * UpdatePrefixDb constructor.
-     * @param Customer $c
+     *
+     * @param Customer      $c
+     * @param array|null    $protocols
+     *
      * @throws ConfigurationException
      */
     public function __construct( Customer $c, ?array $protocols = null ) {
@@ -118,9 +124,11 @@ abstract class UpdateDb
      * Set the customer member
      *
      * @param Customer $customer
+     *
      * @return UpdateDb
      */
-    public function setCustomer( Customer $customer ): UpdateDb {
+    public function setCustomer( Customer $customer ): UpdateDb
+    {
         $this->customer = $customer;
         return $this;
     }
@@ -130,29 +138,32 @@ abstract class UpdateDb
      *
      * @return Customer
      */
-    public function customer(): Customer {
+    public function customer(): Customer
+    {
         return $this->customer;
     }
-
 
     /**
      * Get the protocols to update
      *
      * @return array
      */
-    public function protocols(): array {
+    public function protocols(): array
+    {
         return $this->protocols;
     }
-
 
     /**
      * Set the Bgpq3 utility
      *
      * @param Bgpq3 $bgpq3
+     *
      * @return UpdateDb
-     * @throws ConfigurationException
+     *
+     * @throws
      */
-    public function setBgpq3( Bgpq3 $bgpq3 ): UpdateDb {
+    public function setBgpq3( Bgpq3 $bgpq3 ): UpdateDb
+    {
         $this->bgpq3 = $bgpq3;
         return $this;
     }
@@ -162,7 +173,8 @@ abstract class UpdateDb
      *
      * @return Bgpq3
      */
-    public function bgpq3(): Bgpq3 {
+    public function bgpq3(): Bgpq3
+    {
         return $this->bgpq3;
     }
 
@@ -170,7 +182,8 @@ abstract class UpdateDb
      * Start a timer
      * @return $this
      */
-    protected function startTimer() {
+    protected function startTimer(): self
+    {
         $this->time = microtime(true);
         return $this;
     }
@@ -179,7 +192,8 @@ abstract class UpdateDb
      * Return time since timer started
      * @return float
      */
-    protected function timeElapsed() {
+    protected function timeElapsed(): float
+    {
         return microtime(true) - $this->time;
     }
 
@@ -189,33 +203,29 @@ abstract class UpdateDb
      * This is transaction safe and works as follows ensuring the member's ASNs are available
      * to any script requiring them at any time.
      *
-     * @param array $fromIrrdb
-     * @param int $protocol The protocol to use (4 or 6)
-     * @param string $type
+     * @param array     $fromIrrdb
+     * @param int       $protocol   The protocol to use (4 or 6)
+     * @param string    $type
+     *
      * @return bool
-     * @throws Exception
-     * @throws GeneralException
+     *
+     * @throws
      */
-    protected function updateDb( array $fromIrrdb, int $protocol, $type = 'prefix' ): bool {
-
+    protected function updateDb( array $fromIrrdb, int $protocol, $type = 'prefix' ): bool
+    {
         switch( $type ) {
             case 'asn':
-                $dbTable = 'irrdb_asn';
-                $entity  = 'Entities\IrrdbAsn';
+                $model      = IrrdbAsn::class; /** @var IrrdbAsn $model  */
                 break;
-
             case 'prefix':
-                $dbTable = 'irrdb_prefix';
-                $entity  = 'Entities\IrrdbPrefix';
+                $model      = IrrdbPrefix::class; /** @var IrrdbPrefix $model  */
                 break;
-
             default:
                 throw new GeneralException( 'Unknown type for updating: ' . $type );
         }
 
-        $conn = D2EM::getConnection();
         $this->startTimer();
-        $fromDb = D2EM::getRepository( $entity )->getForCustomerAndProtocol( $this->customer(), $protocol );
+        $fromDb = IrrdbAggregator::forCustomerAndProtocol( $this->customer()->id, $protocol, $type );
         $this->result['dbTime'] += $this->timeElapsed();
 
         // The calling function and the Bgpq3 class does a lot of validation and error
@@ -223,10 +233,10 @@ abstract class UpdateDb
         // something falls through to here. So, as a basic check, make sure we do not accept
         // an empty array of prefixes/ASNs for a customer that has a lot.
 
-        if( count( $fromIrrdb ) == 0 ) {
+        if( count( $fromIrrdb ) === 0 ) {
             // make sure the customer doesn't have a non-empty prefix/ASN set that we're about to delete
-            if( count( $fromDb ) != 0 ) {
-                $msg = "IRRDB {$type}: {$this->customer()->getName()} has a non-zero {$type} count for IPv{$protocol} in the database but "
+            if( count( $fromDb ) !== 0 ) {
+                $msg = "IRRDB {$type}: {$this->customer()->name} has a non-zero {$type} count for IPv{$protocol} in the database but "
                     . "BGPQ3 returned none. Please examine manually. No databases changes made for this customer.";
                 Log::alert( $msg );
                 $result['msg'] = $msg;
@@ -238,13 +248,13 @@ abstract class UpdateDb
 
         $this->startTimer();
 
-        $fromIrrdbSet = new \Ds\Set($fromIrrdb);
+        $fromIrrdbSet = new \Ds\Set( $fromIrrdb );
 
         foreach( $fromDb as $i => $p ) {
-            if( $fromIrrdbSet->contains( $p[$type] ) ) {
+            if( $fromIrrdbSet->contains( $p[ $type ] ) ) {
                 // ASN/prefix exists in both db and IRRDB - no action required
-                unset($fromDb[$i]);
-                $fromIrrdbSet->remove($p[$type]);
+                unset( $fromDb[ $i ] );
+                $fromIrrdbSet->remove( $p[$type] );
             }
         }
 
@@ -254,45 +264,48 @@ abstract class UpdateDb
         // $fromDb      => asns/prefixes in the database that need to be deleted
         // $fromIrrdb   => new asns/prefixes that need to be added
 
-        $this->result['v'.$protocol]['stale'] = $fromDb;
-        $this->result['v'.$protocol]['new']   = $fromIrrdb;
+        $this->result[ 'v'.$protocol ][ 'stale' ] = $fromDb;
+        $this->result[ 'v'.$protocol ][ 'new' ]   = $fromIrrdb;
 
         // validate any remaining IRRDB prefixes/ASNs before we put them near the database
         $fromIrrdb = $this->validate( $fromIrrdb, $protocol );
+
         $this->result['procTime'] += $this->timeElapsed();
 
         $this->startTimer();
-        $conn->beginTransaction();
+
+        DB::beginTransaction();
 
         try {
-            $now = date( 'Y-m-d H:i:s' );
+            $now = now()->format( 'Y-m-d H:i:s' );
 
             foreach( $fromIrrdb as $p ) {
-                Log::debug( "INSERT [{$type}]: {$this->customer()->getShortname()} IPv{$protocol} {$p}" );
-                $conn->executeUpdate(
-                    "INSERT INTO `{$dbTable}` ( customer_id, {$type}, protocol, last_seen, first_seen ) VALUES ( ?, ?, ?, ?, ? )",
-                    [ $this->customer()->getId(), $p, $protocol, $now, $now ]
+                Log::debug( "INSERT [{$type}]: {$this->customer()->shortname} IPv{$protocol} {$p}" );
+                $model::create(
+                    [
+                        'customer_id'   => $this->customer()->id,
+                        $type           => $p,
+                        'protocol'      => $protocol,
+                        'last_seen'     => $now,
+                        'first_seen'    => $now,
+                    ]
                 );
             }
 
             foreach( $fromDb as $i => $p ) {
-                Log::debug( "DELETE [{$type}]: {$this->customer()->getShortname()} IPv{$protocol} ID:{$p['id']} {$p[$type]}" );
-                $conn->executeUpdate(
-                    "DELETE FROM `{$dbTable}` WHERE id = ?",
-                        [ $p['id'] ]
-                );
+                Log::debug( "DELETE [{$type}]: {$this->customer()->shortname} IPv{$protocol} ID:{$p['id']} {$p[$type]}" );
+                $model::where( 'id', $p['id'] )->delete();
             }
 
-            $conn->executeUpdate(
-                "UPDATE `{$dbTable}` SET last_seen = ? WHERE customer_id = ? AND protocol = ?",
-                [ $now, $this->customer()->getId(), $protocol ]
-            );
+            $model::where( 'customer_id', $this->customer()->id )
+                ->where( 'protocol', $protocol )
+                ->update( [ 'last_seen' => $now ] );
 
-            $conn->commit();
+            DB::commit();
 
             $this->result['dbTime'] += $this->timeElapsed();
         } catch( Exception $e ) {
-            $conn->rollback();
+            DB::rollBack();
             $this->result['dbTime'] += $this->timeElapsed();
             throw $e;
         }
@@ -302,8 +315,10 @@ abstract class UpdateDb
 
     /**
      * Validate ASNs/prefixes. Implement in subclasses.
+     *
      * @param array $prefixes
      * @param int $protocol
+     *
      * @return array
      */
     abstract protected function validate( array $prefixes, int $protocol ): array;

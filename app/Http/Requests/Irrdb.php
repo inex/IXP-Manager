@@ -25,7 +25,9 @@ namespace IXP\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-use Entities\User;
+use Illuminate\Validation\Validator;
+use IXP\Models\User;
+
 use IXP\Exceptions\IrrdbManage;
 
 /**
@@ -39,13 +41,12 @@ use IXP\Exceptions\IrrdbManage;
  */
 class Irrdb extends FormRequest
 {
-
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         if( !ixp_min_auth( User::AUTH_CUSTUSER ) ) {
             return false;
@@ -63,7 +64,7 @@ class Irrdb extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [];
     }
@@ -71,23 +72,20 @@ class Irrdb extends FormRequest
     /**
      * Configure the validator instance.
      *
-     * @param  \Illuminate\Validation\Validator  $validator
      * @return void
      */
-    public function withValidator( $validator )
+    public function withValidator(): void
     {
-        if( !( $this->customer->isRouteServerClient() && $this->customer->isIrrdbFiltered() ) ) {
+        if( !( $this->customer->routeServerClient() && $this->customer->isIrrdbFiltered() ) ) {
             throw new IrrdbManage( 'IRRDB only applies to customers who are route server clients which are configured for IRRDB filtering.' );
         }
 
-        if( !in_array( $this->protocol, [ 4,6 ] ) ) {
+        if( !in_array( $this->protocol, [ 4,6 ], false ) ) {
             abort( 404 , 'Unknown protocol');
         }
 
         if( !in_array( $this->type, [ "asn", 'prefix' ] ) ) {
             abort( 404 , 'Unknown IRRDB type');
         }
-
-
     }
 }

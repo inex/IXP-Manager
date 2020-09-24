@@ -474,9 +474,9 @@ class Customer extends Model
      * @param bool      $trafficing If `true`, only include trafficing customers (i.e. no associates)
      * @param bool      $externalOnly If `true`, only include external customers (i.e. no internal types)
      *
-     * @return Collection
+     * @return Builder
      */
-    public static function scopeCurrentActive( Builder $query, bool $trafficing = false, $externalOnly = false ): Collection
+    public static function scopeCurrentActive( Builder $query, bool $trafficing = false, $externalOnly = false ): Builder
     {
         return $query->whereRaw( self::SQL_CUST_CURRENT )
             ->whereRaw( self::SQL_CUST_ACTIVE )
@@ -671,18 +671,6 @@ class Customer extends Model
         }
 
         return false;
-    }
-
-    /**
-     * TO DELETE WHEN IRRDB CONTROLLER IS DONE
-     *
-     * return the doctrine entity
-     *
-     * @return object|CustomerEntity
-     */
-    public function getDoctrineObject(): CustomerEntity
-    {
-        return D2EM::getRepository( CustomerEntity::class )->find( $this->id );
     }
 
     /**
