@@ -42,10 +42,10 @@ class PeeringManagerRequest extends FormRequest
 
             foreach( $addresses as $address ) {
                 $data = [
-                    'email' => trim($address)
+                    'email' => trim( $address )
                 ];
-                $validator = Validator::make($data, $rules);
-                if ($validator->fails()) {
+                $validator = Validator::make( $data, $rules );
+                if( $validator->fails() ) {
                     return false;
                 }
             }

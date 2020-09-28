@@ -243,12 +243,12 @@ class PeeringManager{
     /**
      * @var \DateTime $created
      */
-    protected $created;
+    protected $created_at;
 
     /**
-     * @var \DateTime $updated
+     * @var \DateTime $updated_at
      */
-    protected $updated;
+    protected $updated_at;
 
 
     /**
@@ -259,7 +259,7 @@ class PeeringManager{
      */
     public function setCreated($created)
     {
-        $this->created = $created;
+        $this->created_at = $created;
     
         return $this;
     }
@@ -282,7 +282,7 @@ class PeeringManager{
      */
     public function setUpdated($updated)
     {
-        $this->updated = $updated;
+        $this->updated_at = $updated;
     
         return $this;
     }
@@ -294,7 +294,7 @@ class PeeringManager{
      */
     public function getUpdated()
     {
-        return $this->updated;
+        return $this->updated_at;
     }
 
 

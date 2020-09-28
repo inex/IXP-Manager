@@ -374,7 +374,7 @@ class JsonSchema
 
                         if( $vli->$enabledfn ) {
                             $vlanentry[ $ipv ][ 'address' ] = $vli->$ipvaddressfn->address;
-                            if( ( $asmacro = $vi->customer->resolveAsMacro( $protocol, "AS", true ) ) !== null ) {
+                            if( ( $asmacro = $vi->customer->asMacro( $protocol, "AS", true ) ) !== null ) {
                                 $vlanentry[ $ipv ][ 'as_macro' ] = $asmacro;
                             }
                             $vlanentry[ $ipv ][ 'routeserver' ] = (bool)$vli->rsclient;

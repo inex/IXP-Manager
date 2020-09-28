@@ -27,7 +27,10 @@ use Illuminate\Database\Eloquent\{
     Builder,
 };
 
+use Carbon\Carbon;
 use IXP\Models\Customer;
+use IXP\Models\PeeringManager;
+use IXP\Models\Vlan;
 
 /**
  * IXP\Models\Aggregators\CustomerAggregator
@@ -145,6 +148,8 @@ use IXP\Models\Customer;
  * @property-read \Illuminate\Database\Eloquent\Collection|Customer[] $resoldCustomers
  * @property-read int|null $resold_customers_count
  * @property-read \IXP\Models\CompanyBillingDetail|null $companyBillingDetail
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
+ * @property-read int|null $vlan_interfaces_count
  */
 class CustomerAggregator extends Customer
 {
@@ -180,5 +185,231 @@ class CustomerAggregator extends Customer
             } )->when( $vlanid, function( Builder $q, $vlanid ) {
                 return $q->where( 'v.id', $vlanid );
             } )->distinct( 'c.id' )->orderBy( 'c.name', 'asc' )->get()->toArray();
+    }
+
+    /**
+     * Build an array of data for the peering matrice
+     *
+     * Sample return:
+     *
+     *     [
+     *         "me" => [    "id" => 69
+     *                       "name" => "3 Ireland's"
+     *                       "shortname" => "three"
+     *                       "autsys" => 34218
+     *                       "maxprefixes" => 100
+     *                       "peeringemail" => "io.ip@three.co.uk"
+     *                       "peeringpolicy" => "open"
+     *                       "vlaninterfaces" => [
+     *                               10 => [
+     *                                   0 => [
+     *                                           "ipv4enabled" => true
+     *                                           "ipv6enabled" => false
+     *                                           "rsclient" => true
+     *                                       ]
+     *                               ]
+     *
+     *                          ]
+     *
+     *                  ]
+     *
+     *         "potential" => [
+     *               12041 => false
+     *               56767 => false
+     *               196737 => false
+     *          ]
+     *
+     *          "potential_bilat" => [
+     *               12041 => true
+     *               56767 => true
+     *               196737 => false
+     *          ]
+     *
+     *          "peered" => [
+     *               12041 => true
+     *               56767 => true
+     *               196737 => false
+     *          ]
+     *
+     *          "peered" => [
+     *               12041 => false
+     *               56767 => false
+     *               196737 => false
+     *          ]
+     *
+     *         "peers" => [
+     *               60 => [
+     *                   "id" => 44
+     *                   "custid" => 69
+     *                   "peerid" => 60
+     *                   "email_last_sent" => null
+     *                   "emails_sent" => 0
+     *                   "peered" => false
+     *                   "rejected" => false
+     *                   "notes" => ""
+     *                   "created" => DateTime
+     *                   "updated" => DateTime
+     *                   "email_days" => -1
+     *               ]
+     *           ]
+     *
+     *          "custs" => [
+     *               12041 => [
+     *                   "id" => 146
+     *                   "name" => "Afilias"
+     *                   "shortname" => "afilias"
+     *                   "autsys" => 12041
+     *                   "maxprefixes" => 500
+     *                   "peeringemail" => "peering@afilias-nst.info"
+     *                   "peeringpolicy" => "open"
+     *                   "vlaninterfaces" => [...]
+     *                   "ispotential" => true
+     *                   10 => [
+     *                   4 => 1
+     *                   ]
+     *               ]
+     *               56767 => [...]
+     *               196737 => [...]
+     *
+     *     ]
+     *
+     * @param Customer  $cust   Current customer
+     * @param Vlan[]    $vlans  Array of Vlans
+     * @param array     $protos Array of protos
+     *
+     * @return array|null
+     *
+     */
+    public static function getPeeringManagerArrayByType( Customer $cust, $vlans, array $protos ): ?array
+    {
+        if( !count( $vlans ) ) {
+            return null;
+        }
+
+        $bilat = [];
+        foreach( $vlans as $vlan ) {
+            foreach( $protos as $proto ) {
+                $bilat[ $vlan->number ][ $proto ] = BGPSessionDataAggregator::getPeers( $vlan->id, $proto );
+            }
+        }
+        $vlanNumbers = Vlan::select( ['id', 'number'] )->get()->keyBy( 'id' )->toArray();
+
+        $custs = Customer::currentActive( true, true, false )->with( 'vlanInterfaces' )->get()->keyBy( 'autsys' )->toArray();
+
+        $potential = $potential_bilat = $peered = $rejected = [];
+
+        foreach( $custs as $index => $value ){
+            $vlanInterface = [];
+            foreach( $value[ 'vlan_interfaces' ] as $i => $vli ){
+                $vlanInterface[ $vlanNumbers[ $vli[ 'vlanid' ] ][ 'number' ] ][] = $vli;
+            }
+
+            $custs[ $index ][ 'vlan_interfaces' ] = $vlanInterface;
+        }
+
+        if( isset( $custs[ $cust->autsys ] ) ){
+            $me = $custs[ $cust->autsys ];
+            unset( $custs[ $cust->autsys ] );
+        } else {
+            $me = null;
+        }
+
+        foreach( $custs as $c ) {
+            $custs[ $c[ 'autsys' ] ][ 'ispotential' ] = false;
+            foreach( $vlans as $vlan ) {
+                if( isset( $me[ 'vlan_interfaces' ][ $vlan->number ] ) ) {
+                    if( isset( $c[ 'vlan_interfaces' ][$vlan->number] ) ) {
+                        foreach( $protos as $proto ) {
+                            if( $me[ 'vlan_interfaces' ][ $vlan->number ][ 0 ][ "ipv{$proto}enabled" ] && $c[ 'vlan_interfaces' ][ $vlan->number ][ 0 ][ "ipv{$proto}enabled" ] ) {
+                                if( isset( $bilat[ $vlan->number ][ 4 ][ $me['autsys' ] ][ 'peers' ] ) && in_array( $c[ 'autsys' ], $bilat[ $vlan->number ][ 4 ][ $me[ 'autsys' ] ][ 'peers' ] ) ){
+                                    $custs[ $c[ 'autsys' ] ][ $vlan->number ][$proto] = 2;
+                                } else if( $me[ 'vlan_interfaces' ][ $vlan->number ][ 0 ][ 'rsclient' ] && $c[ 'vlan_interfaces' ][ $vlan->number ][ 0 ][ 'rsclient' ] ){
+                                    $custs[ $c[ 'autsys' ] ][ $vlan->number ][ $proto ] = 1;
+                                    $custs[ $c[ 'autsys' ] ][ 'ispotential' ] = true;
+                                } else {
+                                    $custs[ $c[ 'autsys' ] ][ $vlan->number ][ $proto ] = 0;
+                                    $custs[ $c[ 'autsys' ] ][ 'ispotential' ] = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach( $custs as $c ) {
+            $peered[          $c[ 'autsys' ] ] = false;
+            $potential_bilat[ $c[ 'autsys' ] ] = false;
+            $potential[       $c[ 'autsys' ] ] = false;
+            $rejected[        $c[ 'autsys' ] ] = false;
+
+            foreach( $vlans as $vlan ) {
+                foreach( $protos as $proto ) {
+                    if( isset( $c[ $vlan->number ][ $proto ] ) ) {
+                        switch( $c[ $vlan->number ][ $proto ] ) {
+                            case 2:
+                                $peered[ $c[ 'autsys' ] ] = true;
+                                break;
+                            case 1:
+                                $peered[          $c[ 'autsys' ] ] = true;
+                                $potential_bilat[ $c[ 'autsys' ] ] = true;
+                                break;
+                            case 0:
+                                $potential[       $c[ 'autsys' ] ] = true;
+                                $potential_bilat[ $c[ 'autsys' ] ] = true;
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+        $peers = PeeringManager::selectRaw(
+            'pm.id AS id, c.id AS custid, p.id AS peerid,
+                pm.email_last_sent AS email_last_sent, pm.emails_sent AS emails_sent,
+                pm.peered AS peered, pm.rejected AS rejected, pm.notes AS notes,
+                pm.created_at AS created_at, pm.updated_at AS updated_at'
+        )->from( 'peering_manager AS pm' )
+            ->leftJoin( 'cust AS c', 'c.id', 'pm.custid')
+            ->leftJoin( 'cust AS p', 'p.id', 'pm.peerid')
+            ->where( 'c.id', $cust->id )
+            ->get()->keyBy( 'peerid' )->toArray();
+
+        foreach( $peers as $i => $p ) {
+            // days since last peering request email sent
+            if( !$p[ 'email_last_sent' ] ){
+                $peers[ $i ][ 'email_days' ] = -1;
+            } else {
+                $email_last_sent = new Carbon( $peers[103]['email_last_sent']);
+                $peers[ $i ][ 'email_days' ] = floor( ( time() - $email_last_sent->getTimestamp() ) / 86400 );
+            }
+        }
+
+        foreach( $custs as $c ) {
+            if( isset( $peers[ $c[ 'id' ] ] ) ) {
+                if( isset( $peers[ $c[ 'id' ] ][ 'peered' ] ) && $peers[ $c[ 'id' ] ][ 'peered' ] ) {
+                    $peered[            $c[ 'autsys' ] ] = true;
+                    $rejected[          $c[ 'autsys' ] ] = false;
+                    $potential[         $c[ 'autsys' ] ] = false;
+                    $potential_bilat[   $c[ 'autsys' ] ] = false;
+                } else if( isset( $peers[ $c[ 'id' ] ][ 'rejected' ] ) && $peers[ $c[ 'id' ] ][ 'rejected' ] ) {
+                    $peered[            $c['autsys' ] ] = false;
+                    $rejected[          $c['autsys' ] ] = true;
+                    $potential[         $c['autsys' ] ] = false;
+                    $potential_bilat[   $c['autsys' ] ] = false;
+                }
+            }
+        }
+
+        return [    "me"                => $me,
+                    "potential"         => $potential,
+                    "potential_bilat"   => $potential_bilat,
+                    "peered"            => $peered,
+                    "rejected"          => $rejected,
+                    "peers"             => $peers,
+                    "custs"             => $custs,
+                    "bilat"             => $bilat,
+                    "vlan"              => $vlans ,
+                    "protos"            => $protos
+        ];
     }
 }

@@ -4,10 +4,9 @@
     ->id( "form-peering-request" );
 ?>
 
-    <?php if( $t->form == "email" ): ?>
+    <?php if( $t->form === "email" ): ?>
         <?= Former::text( 'to' )
             ->label( 'To' );
-
         ?>
 
         <?= Former::text( 'cc' )
@@ -23,7 +22,6 @@
         ?>
 
         <div class="form-group">
-
             <div class="card mt-4">
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs">
@@ -38,7 +36,7 @@
 
                 <div class="tab-content card-body">
                     <div role="tabpanel" class="tab-pane show active" id="body">
-                        <textarea class="bootbox-input bootbox-input-textarea form-control" style="font-family:monospace;" rows="30" id="message" name="message"><?= $t->insert( 'peering-manager/peering-message', [ "peer" => $t->peer, "pp" => $t->pp, "user" => Auth::getUser() ] ); ?></textarea>
+                        <textarea class="bootbox-input bootbox-input-textarea form-control" style="font-family:monospace;" rows="30" id="message" name="message"><?= $t->insert( 'peering-manager/peering-message', [ "peer" => $t->peer, "pp" => $t->pp, "user" => \IXP\Models\User::find( Auth::getUser()->getId() ) ] ); ?></textarea>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="preview">
                         <div class="bg-light p-4 well-preview">
@@ -47,8 +45,6 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
 
         <?= Former::hidden( 'input-marksent' )
@@ -64,7 +60,6 @@
     <?php else: ?>
 
         <div class="form-group">
-
             <div class="card mt-4">
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs">
@@ -79,7 +74,7 @@
 
                 <div class="tab-content card-body">
                     <div role="tabpanel" class="tab-pane show active" id="body">
-                        <textarea class="bootbox-input bootbox-input-textarea form-control" style="font-family:monospace;" rows="20" id="peering-manager-notes" name="peering-manager-notes"><?= $t->peeringManager->getNotes() ?></textarea>
+                        <textarea class="bootbox-input bootbox-input-textarea form-control" style="font-family:monospace;" rows="20" id="peering-manager-notes" name="peering-manager-notes"><?= $t->peeringManager->notes ?></textarea>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="preview">
                         <div class="bg-light p-4 well-preview">
@@ -88,20 +83,15 @@
                     </div>
                 </div>
             </div>
-
         </div>
-
     <?php endif; ?>
 
     <?= Former::hidden( 'peerid' )
         ->id( 'peerid' )
-        ->value( $t->peer->getId() );
+        ->value( $t->peer->id );
     ?>
 
 <?= Former::close() ?>
-
-
-
 
 <script>
 
@@ -109,12 +99,12 @@
      * Adds a prefix when a user goes to add/edit notes (typically name and date).
      */
     function setNotesTextArea() {
-        if( $(this).val() == '' ) {
-            $(this).val( notesIntro );
+        if( $( this ).val() === '' ) {
+            $( this ).val( notesIntro );
         } else {
-            $(this).val( notesIntro  + $(this).val() );
+            $( this ).val( notesIntro  + $(this).val() );
         }
-        $(this).setCursorPosition( notesIntro.length );
+        $( this ).setCursorPosition( notesIntro.length );
     }
 
     /**
@@ -144,7 +134,7 @@
             const well_div = $(this).closest('div').parent( 'div' ).find( ".well-preview" );
             e.preventDefault();
 
-            $(this).tab('show');
+            $( this ).tab('show');
 
             $.ajax( MARKDOWN_URL, {
                 data: {
@@ -152,14 +142,12 @@
                 },
                 type: 'POST'
             })
-                .done( function( data ) {
-                    well_div.html( data.html );
-                })
-                .fail( function() {
-                    well_div.html('Error!');
-                });
+            .done( function( data ) {
+                well_div.html( data.html );
+            })
+            .fail( function() {
+                well_div.html('Error!');
+            });
         })
-
     });
-
 </script>

@@ -32,6 +32,7 @@ use Illuminate\Database\Eloquent\{Builder,
     Relations\BelongsTo,
     Relations\BelongsToMany,
     Relations\HasMany,
+    Relations\HasManyThrough,
     Relations\HasOne};
 
 use Illuminate\Support\{
@@ -147,7 +148,7 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property-read int|null $peer_route_server_filters_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $routeServerFilters
  * @property-read int|null $route_server_filters_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer currentActive($trafficing = false, $externalOnly = false)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer currentActive($trafficing = false, $externalOnly = false, $connected = true)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereUpdatedAt($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPort[] $patchPanelPorts
@@ -163,6 +164,8 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property-read \Illuminate\Database\Eloquent\Collection|Customer[] $resoldCustomers
  * @property-read int|null $resold_customers_count
  * @property-read \IXP\Models\CompanyBillingDetail|null $companyBillingDetail
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
+ * @property-read int|null $vlan_interfaces_count
  */
 class Customer extends Model
 {
@@ -261,6 +264,32 @@ class Customer extends Model
     public function virtualInterfaces(): HasMany
     {
         return $this->hasMany(VirtualInterface::class, 'custid');
+    }
+
+    /**
+     * Get the peers for the customer
+     */
+    public function peers(): HasMany
+    {
+        return $this->hasMany(PeeringManager::class, 'custid');
+    }
+
+    /**
+     * Get the peers with for the customer
+     */
+    public function peersWith(): HasMany
+    {
+        return $this->hasMany(PeeringManager::class, 'peerid');
+    }
+
+    /**
+     * Get the virtual interfaces for the customer
+     */
+    public function vlanInterfaces(): HasManyThrough
+    {
+        return $this->hasManyThrough( VlanInterface::class, VirtualInterface::class,
+            'custid', 'virtualinterfaceid'
+        );
     }
 
     /**
@@ -470,19 +499,22 @@ class Customer extends Model
     /**
      * Utility function to provide a array of all active and current customers.
      *
-     * @param Builder   $query
-     * @param bool      $trafficing If `true`, only include trafficing customers (i.e. no associates)
-     * @param bool      $externalOnly If `true`, only include external customers (i.e. no internal types)
-     *
+     * @param Builder $query
+     * @param bool $trafficing      If `true`, only include trafficing customers (i.e. no associates)
+     * @param bool $externalOnly    If `true`, only include external customers (i.e. no internal types)
+     * @param bool $connected       If `true`, only include connected customers
+     * 
      * @return Builder
      */
-    public static function scopeCurrentActive( Builder $query, bool $trafficing = false, $externalOnly = false ): Builder
+    public static function scopeCurrentActive( Builder $query, bool $trafficing = false, bool $externalOnly = false, bool $connected = true ): Builder
     {
         return $query->whereRaw( self::SQL_CUST_CURRENT )
             ->whereRaw( self::SQL_CUST_ACTIVE )
-            ->when( $trafficing , function( Builder $q ) {
+            ->when( $trafficing , function( Builder $q ) use( $connected ) {
                 return $q->whereRaw(self::SQL_CUST_TRAFFICING )
-                    ->whereRaw( self::SQL_CUST_CONNECTED );
+                    ->when( $connected , function( Builder $q ) {
+                        return $q->whereRaw( self::SQL_CUST_CONNECTED );
+                    });
             } )->when( $externalOnly , function( Builder $q ) {
                 return $q->whereRaw( self::SQL_CUST_EXTERNAL );
             })->orderBy( 'name' );
@@ -504,10 +536,10 @@ class Customer extends Model
      *
      * @return string|null The ASN / AS macro as appropriate
      */
-    public function resolveAsMacro( $protocol = 4, $asnPrefix = '', $nullIfNoMacro = false ): ?string
+    public function asMacro( $protocol = 4, $asnPrefix = '', $nullIfNoMacro = false ): ?string
     {
         if( !in_array( $protocol, [ 4, 6 ], true ) )
-            $protocol = 4;
+            throw new \IXP_Exception( 'Invalid / unknown protocol. 4/6 accepted only.' );
 
         // find the appropriate ASN or macro
         if( $protocol === 6 && strlen( $this->peeringmacrov6 ) > 3 ) {

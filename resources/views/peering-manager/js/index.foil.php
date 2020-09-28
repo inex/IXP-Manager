@@ -7,48 +7,64 @@
     const btn_sendtome          = $( '#modal-peering-request-sendtome' );
     const btn_send              = $( '#modal-peering-request-send' );
     const btn_save_note         = $( '#modal-peering-notes-save' );
+    const table                 = $('.table');
 
     let notesIntro = "### <?= date("Y-m-d" ) . ' - ' . Auth::user()->getUsername() ?> \n\n\n";
 
-
     $(document).ready( function() {
+
+        table.show();
+
+        table.DataTable( {
+            stateSave: true,
+            stateDuration : DATATABLE_STATE_DURATION,
+            responsive: true,
+            ordering: false,
+            searching: false,
+            paging:   false,
+            info:   false,
+        } );
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            $($.fn.dataTable.tables( true ) ).DataTable()
+                .columns.adjust()
+                .responsive.recalc();
+        });
 
         $('[data-toggle="tooltip"]').tooltip( { container: 'body' } );
 
         //////////////////////////////////////////////////////////////////////////////////////
         // action bindings:
 
-        btn_marksent.on( 'click', function( event ){
+        btn_marksent.on( 'click', function() {
             $( '#input-sendtome' ).val( '0' );
             $( '#input-marksent' ).val( '1' );
             sendPeeringRequest();
         });
 
 
-        btn_sendtome.on( 'click', function( event ){
+        btn_sendtome.on( 'click', function() {
             $( '#input-sendtome' ).val( '1' );
             $( '#input-marksent' ).val( '0' );
             sendPeeringRequest();
         });
 
-        btn_send.on( 'click', function( event ){
+        btn_send.on( 'click', function() {
             $( '#input-sendtome' ).val( '0' );
             $( '#input-marksent' ).val( '0' );
             sendPeeringRequest();
         });
 
-
-        btn_save_note.on( 'click', function( event ) {
+        btn_save_note.on( 'click', function() {
             peeringNote()
         });
 
-
-        $( '.table' ).on( 'click', '.peering-request', function( e ){
+        $( '.peering-request' ).click( function( e ) {
             e.preventDefault();
-            let custid  = ( this.id ).substring( 16 );
-            let days    = $( "#" + this.id ).attr( 'data-days' );
+            let custid  = $( this ).attr( 'data-object-id');
+            let days    = $( this ).attr( 'data-days' );
             if( days >= 0 && days < 30 ) {
-                bootbox.confirm( "Are you sure you want to send a peering request to this member? You already sent one " + ( days == 0 ? "today" : ( days == 1 ? "yesterday" : days + " days ago" ) ) + ".",
+                bootbox.confirm( "Are you sure you want to send a peering request to this member? You already sent one " + ( days === 0 ? "today" : ( days === 1 ? "yesterday" : days + " days ago" ) ) + ".",
                     function( result ) {
                         if( result ) {
                             setTimeout( function(){
@@ -60,33 +76,11 @@
             } else {
                 peeringPopup( custid, "email" );
             }
-
         });
 
-
-        $( '.table' ).on( 'click', '.peering-note', function( e ){
+        $( '.peering-note' ).click( function( e ){
             e.preventDefault();
-            let peerid = ( this.id ).substring( 14 );
-            peeringPopup( peerid, "note" );
-
-        });
-
-        $('.table').show();
-
-        $('.table').DataTable( {
-            stateSave: true,
-            stateDuration : DATATABLE_STATE_DURATION,
-            responsive: true,
-            ordering: false,
-            searching: false,
-            paging:   false,
-            info:   false,
-        } );
-
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            $($.fn.dataTable.tables(true)).DataTable()
-                .columns.adjust()
-                .responsive.recalc();
+            peeringPopup( $( this ).attr( 'data-object-id' ), "note" );
         });
 
     });
@@ -94,13 +88,12 @@
     /**
      * Setup the popup for sending email or adding/editing notes.
      */
-    function peeringPopup( peerid, action ) {
-
-        $('#modal-peering-request').modal('show');
-
+    function peeringPopup( peerid, action )
+    {
+        $('#modal-peering-request').modal( 'show' );
         $( ".btn-footer-modal" ).hide();
-
-        $.ajax( "<?= route( 'peering-manager@form-email-frag' ) ?>", {
+        let url = "<?= route( 'peering-manager@form-email-frag' ) ?>";
+        $.ajax( url, {
             data: {
                 peerid    : peerid,
                 form      : action,
@@ -110,30 +103,25 @@
         })
         .done( function( data ) {
             if( data.success ){
-
-                $('#peering-modal-label').html( action == "email" ? "Send Peering Request by Email" : "Peering Notes for " + $( "#peer-name-" + peerid ).html() );
+                $('#peering-modal-label').html( action === "email" ? "Send Peering Request by Email" : "Peering Notes for " + $( "#peer-name-" + peerid ).html() );
                 $( ".btn-footer-modal-" + action ).show();
                 $('#peering-modal-body').html( data.htmlFrag );
-
             }
         })
         .fail( function() {
-            throw new Error( "Error running ajax query for peering-manager/form-email-frag" );
-            alert( "Error running ajax query for peering-manager/form-email-frag" );
+            alert( "Error running ajax query for " + url );
+            throw new Error( "Error running ajax query for " + url );
         })
-
-
-
     }
 
     /**
      * Set the note to the dedicated peering manager
      */
-    function peeringNote() {
-
-        $("#modal-peering-request-content .readonlyChange").attr("readonly", true);
-
-        $.ajax("<?= route( 'peering-manager@notes' ) ?>", {
+    function peeringNote()
+    {
+        $("#modal-peering-request-content .readonlyChange").attr( "readonly", true );
+        let url = "<?= route( 'peering-manager@notes' ) ?>";
+        $.ajax( url , {
             data: {
                 "notes": $("#peering-manager-notes").val(),
                 "peerid": $("#peerid").val(),
@@ -142,8 +130,7 @@
             type: 'POST'
         })
         .done(function (data) {
-            if (data.error) {
-
+            if (data.error ) {
                 bootbox.dialog({
                     title: "<i class='fa fa-cross'></i> Error",
                     message: data.message,
@@ -154,16 +141,12 @@
                                 btn_close.removeAttr('disabled').removeClass('disabled');
                                 $("#modal-peering-request").css("overflow", "scroll");
                             }
-
                         }
                     }
                 });
-
             } else {
-
-                $('#modal-peering-request').modal('hide');
-
-                $( "#peering-notes-icon-" + $("#peerid").val() ).css( "color", "black" );
+                $('#modal-peering-request').modal( 'hide' );
+                $( "#peering-notes-icon-" + $( "#peerid" ).val() ).css( "color", "black" );
                 bootbox.alert({
                     title: "<i class='fa fa-check'></i> Success",
                     message: data.message,
@@ -173,12 +156,11 @@
                         }
                     }
                 })
-
             }
         })
         .fail(function () {
-            throw new Error("Error running ajax query for peering-manager/notes");
-            alert("Error running ajax query for peering-manager/notes");
+            alert("Error running ajax query for " + url);
+            throw new Error("Error running ajax query for " + url);
         })
     }
 
@@ -186,10 +168,10 @@
     /**
      * Send email to request a peering to an other customer
      */
-    function sendPeeringRequest() {
-
+    function sendPeeringRequest()
+    {
         $( ".btn-footer-modal" ).attr( 'disabled', 'disabled' ).addClass( 'disabled' );
-        $("#modal-peering-request-content .readonlyChange" ).attr( "readonly", true);
+        $("#modal-peering-request-content .readonlyChange" ).attr( "readonly", true );
 
         // delete the previous error from the form
         $( "#form-peering-request div" ).removeClass( "has-error" );
@@ -199,8 +181,8 @@
         $('[data-toggle="tooltip"]').tooltip( 'hide' );
 
         let custid  = $( '#peerid' ).val();
-
-        $.ajax( "<?= route('peering-manager@send-peering-email')?>", {
+        let url     = "<?= route('peering-manager@send-peering-email')?>";
+        $.ajax( url, {
             data: {
                 "_token"            : "<?= csrf_token() ?>",
                 "to"                : $( "#to"  ).val(),
@@ -209,15 +191,14 @@
                 "subject"           : $( "#subject" ).val(),
                 "message"           : $( "#message" ).val(),
                 "peerid"            : $( "#peerid"  ).val(),
-                "input-marksent"    : $( '#input-marksent' ).val(),
-                "input-sendtome"    : $( '#input-sendtome' ).val(),
+                "marksent"          : $( '#input-marksent' ).val(),
+                "sendtome"          : $( '#input-sendtome' ).val(),
             },
             type: 'POST',
             /**
              * A function to be called if the request fails.
              */
             error: function( jqXHR ) {
-
                 // manage the form error returned by laravel request
                 $.each( jqXHR.responseJSON.errors , function( index, value ) {
                     console.log( index + ": " + value );
@@ -247,10 +228,9 @@
                     });
 
                 } else {
-
                     $('#modal-peering-request').modal('hide');
 
-                    if ( $( '#input-sendtome' ).val() == '0' ) {
+                    if ( $( '#input-sendtome' ).val() === '0' ) {
                         $('#peering-request-'       + custid    ).attr( 'data-days', 0 );
                         $('#peering-request-icon-'  + custid    ).attr( 'class', 'fa fa-repeat'    );
                         $('#peering-notes-icon-'    + custid    ).attr( 'class', 'fa fa-star'      );
@@ -267,16 +247,12 @@
                     });
 
                     $( ".btn-footer-modal" ).removeAttr( 'disabled', 'disabled' ).removeClass( 'disabled' );
-
                 }
 
             })
             .fail( function() {
-                throw new Error( "Error running ajax query for peering-manager/send-peering-email" );
-                alert( "Error running ajax query for peering-manager/send-peering-email" );
+                alert( "Error running ajax query for " + url );
+                throw new Error( "Error running ajax query for " + url );
             });
-
-
     }
-
 </script>

@@ -36,6 +36,8 @@ use IXP\Exceptions\Mailable as MailableException;
 use IXP\Http\Requests\PeeringManagerRequest;
 
 use Auth;
+use IXP\Models\Customer;
+use IXP\Models\User;
 
 /**
  * Mailable for Peering manager
@@ -52,7 +54,7 @@ class RequestPeeringManager extends Mailable
     use Queueable, SerializesModels;
 
     /**
-     * @var CustomerEntity
+     * @var Customer
      */
     public $peer;
 
@@ -79,11 +81,12 @@ class RequestPeeringManager extends Mailable
     /**
      * Create a new message instance.
      *
-     * @param CustomerEntity $peer
+     * @param Customer              $peer
      * @param PeeringManagerRequest $r
      *
      */
-    public function __construct( CustomerEntity $peer, PeeringManagerRequest $r ) {
+    public function __construct( Customer $peer, PeeringManagerRequest $r )
+    {
         $this->peer = $peer;
         $this->prepareFromRequest($r);
         $this->prepareBody($r);
@@ -107,9 +110,9 @@ class RequestPeeringManager extends Mailable
      *
      * @return RequestPeeringManager
      */
-    protected function prepareFromRequest( PeeringManagerRequest $r ) {
-
-        if( !$r->input( "sendtome" ) ) {
+    protected function prepareFromRequest( PeeringManagerRequest $r ): RequestPeeringManager
+    {
+        if( !$r->sendtome ) {
             // recipients
             foreach( [ "to", "cc", "bcc" ] as $p ) {
                 foreach( explode(',', $r->input( $p ) ) as $emaddr ) {
@@ -121,7 +124,7 @@ class RequestPeeringManager extends Mailable
             }
         }
 
-        $this->subject( $r->input('subject') );
+        $this->subject( $r->subject );
 
         return $this;
     }
@@ -133,17 +136,17 @@ class RequestPeeringManager extends Mailable
      *
      * @return RequestPeeringManager
      */
-    public function prepareBody( PeeringManagerRequest $r )
+    public function prepareBody( PeeringManagerRequest $r ): RequestPeeringManager
     {
         // Templating is slightly awkward here as Laravel's Mailable is built around reading the
         // body from a template file be we have it via post.
         //
         // To work around this, we'll use a temporary file in a new view namespace.
 
-        $body          = $r->input('message');
+        $body          = $r->message;
         $this->tmpfile = tempnam( sys_get_temp_dir(), 'request_peering_email_' );
         $this->tmpname = basename( $this->tmpfile );
-        $this->tmpfile = $this->tmpfile . '.blade.php';
+        $this->tmpfile .= '.blade.php';
         file_put_contents( $this->tmpfile, "@component('mail::message')\n\n" . $body . "\n\n@endcomponent\n" );
         view()->addNamespace('request_peering_emails', sys_get_temp_dir() );
         $this->markdown( 'request_peering_emails::' . $this->tmpname );
@@ -155,45 +158,48 @@ class RequestPeeringManager extends Mailable
      *
      * @return $this
      */
-    public function build() {
+    public function build(): self
+    {
         return $this;
     }
 
     /**
      * Checks if we can send the email
      *
-     * @param boolean $sendtome
+     * @param bool $sendtome
      *
-     * @throws MailableException
+     * @return void
+     *
+     * @throws
      */
-    public function checkIfSendable( $sendtome ) {
+    public function checkIfSendable( bool $sendtome ): void
+    {
         if( config( "ixp.peering_manager.testmode" ) ) {
-
             if( !config( "ixp.peering_manager.testemail" ) ) {
                 throw new MailableException( "Peering Manager test mode enabled but testemail not defined in config file." );
-            } else {
-                if( !filter_var( config( "ixp.peering_manager.testemail" ) , FILTER_VALIDATE_EMAIL ) ) {
-                    throw new MailableException( "Peering Manager testemail not a valid email." );
-                } else {
-                    $this->to  = [];
-                    $this->cc  = [];
-                    $this->bcc = [];
-
-                    $this->to( config( "ixp.peering_manager.testemail" ), "Test Email" );
-                }
             }
 
-        } else {
+            if( !filter_var( config( "ixp.peering_manager.testemail" ) , FILTER_VALIDATE_EMAIL ) ) {
+                throw new MailableException( "Peering Manager testemail not a valid email." );
+            }
 
+            $this->to  = [];
+            $this->cc  = [];
+            $this->bcc = [];
+
+            $this->to( config( "ixp.peering_manager.testemail" ), "Test Email" );
+
+        } else {
+            $user = User::find( Auth::getUser()->getId() );
             if( $sendtome ) {
                 $this->to  = [];
                 $this->cc  = [];
                 $this->bcc = [];
-                $this->to( Auth::getUser()->getEmail(), Auth::getUser()->getFormattedName() );
+                $this->to( $user->email, $user->username );
             } else {
-                $this->to( $this->peer->getPeeringemail(), $this->peer->getName() . " Peering Team" );
-                $this->cc( Auth::getUser()->getCustomer()->getPeeringemail(),  Auth::getUser()->getCustomer()->getName() . " Peering Team" );
-                $this->replyTo( Auth::getUser()->getCustomer()->getPeeringemail(),  Auth::getUser()->getCustomer()->getName() . " Peering Team" );
+                $this->to( $this->peer->peeringemail, $this->peer->name . " Peering Team" );
+                $this->cc( $user->customer->peeringemail,  $user->customer->name . " Peering Team" );
+                $this->replyTo( $user->customer->peeringemail,  $user->customer->name . " Peering Team" );
             }
         }
 

@@ -141,6 +141,11 @@ class AddTimestamps extends Migration
             $table->timestamps();
         });
 
+        Schema::table('peering_manager', function (Blueprint $table) {
+            $table->renameColumn( 'updated', 'updated_at' );
+            $table->renameColumn( 'created', 'created_at' );
+        });
+
         Schema::table('physicalinterface', function (Blueprint $table) {
             $table->timestamps();
         });
@@ -331,6 +336,11 @@ class AddTimestamps extends Migration
 
         Schema::table('patch_panel_port_history_file', function (Blueprint $table) {
             $table->dropTimestamps();
+        });
+
+        Schema::table('peering_manager', function (Blueprint $table) {
+            $table->renameColumn( 'updated_at', 'updated' );
+            $table->renameColumn( 'created_at', 'created' );
         });
 
         Schema::table('physicalinterface', function (Blueprint $table) {

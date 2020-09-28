@@ -73,6 +73,7 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan whereUpdatedAt($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\NetworkInfo[] $networksInfo
  * @property-read int|null $networks_info_count
+ * @method static Builder|Vlan peeringManager()
  */
 class Vlan extends Model
 {
@@ -177,5 +178,17 @@ class Vlan extends Model
     public function scopePublicOnly( Builder $query ): Builder
     {
         return $query->where( 'private', 0 );
+    }
+
+    /**
+     * Scope a query to only include peering manager
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopePeeringManager( Builder $query ): Builder
+    {
+        return $query->where( 'peering_manager', 1 );
     }
 }

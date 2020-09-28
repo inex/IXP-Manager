@@ -57,7 +57,7 @@ class UpdatePrefixDb extends UpdateDb
                 $this->bgpq3()->setSources( $this->customer()->irrdbConfig->source );
 
                 $this->startTimer();
-                $prefixes = $this->bgpq3()->getPrefixList( $this->customer()->resolveAsMacro( $protocol, 'as' ), $protocol );
+                $prefixes = $this->bgpq3()->getPrefixList( $this->customer()->asMacro( $protocol, 'as' ), $protocol );
                 $this->result[ 'netTime' ] += $this->timeElapsed();
 
                 $this->result[ 'v' . $protocol ][ 'count' ] = count( $prefixes );

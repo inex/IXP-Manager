@@ -1,8 +1,6 @@
 <div class="row">
     <div class="col-sm-12">
-
         <table class="table table-bordered table-striped collapse" style="width: 100%">
-
             <thead class="thead-dark">
                 <tr>
                     <th>
@@ -14,14 +12,12 @@
                     <th>
                         Policy
                     </th>
-
                     <?php foreach( $t->vlans as $vlan ): ?>
+                        <?php $vlanid = $vlan->number ?>
 
-                        <?php $vlanid = $vlan->getNumber() ?>
-
-                        <?php if( isset( $t->me[ 'vlaninterfaces' ][ $vlanid ] ) ): ?>
+                        <?php if( isset( $t->me[ 'vlan_interfaces' ][ $vlanid ] ) ): ?>
                             <th>
-                                <?= $vlan->getName() ?>
+                                <?= $vlan->name ?>
                             </th>
                         <?php endif; ?>
 
@@ -30,11 +26,8 @@
                     <th></th>
                 </tr>
             </thead>
-
             <tbody>
-
                 <?php foreach( $t->listOfCusts as  $as => $p ): ?>
-
                     <?php $c = $t->custs[ $as ] ?>
                     <?php $cid = $c[ "id" ] ?>
 
@@ -47,7 +40,7 @@
                             <td><?= $c[ "peeringpolicy" ] ?></td>
 
                             <?php foreach( $t->vlans as $avlan ): ?>
-                                <?php $vlan = $avlan->getNumber() ?>
+                                <?php $vlan = $avlan->number ?>
                                 <?php if( isset( $c[ $vlan ] ) ): ?>
                                 <td>
                                     <?php foreach( $t->protos as $proto ): ?>
@@ -56,23 +49,21 @@
                                         <?php endif; ?>
                                     <?php endforeach; ?>
                                 </td>
-                                <?php elseif( isset( $t->me[ "vlaninterfaces" ][ $vlan ] ) ): ?>
+                                <?php elseif( isset( $t->me[ "vlan_interfaces" ][ $vlan ] ) ): ?>
                                     <td></td>
                                 <?php endif; ?>
-
                             <?php endforeach; ?>
-
                             <td>
                                 <div class="btn-group btn-group-sm my-auto">
-
                                     <button id="peering-request-<?= $cid ?>"
+                                            data-object-id="<?= $cid ?>"
                                             data-days="<?= isset( $t->peers[ $cid ] ) ? $t->peers[ $cid ][ "email_days" ] : -1 ?>"
                                             class="btn btn-white btn-sm peering-request" <?= !$c[ "ispotential" ] ? "disabled" : "" ?>>
                                         <i id="peering-request-icon-<?= $cid ?>"
                                            class="fa  <?= isset( $t->peers[ $cid ][ "emails_sent"] ) && $t->peers[ $cid ][ "emails_sent" ] ? "fa-repeat" : "fa-envelope" ?>"></i> Request Peering
                                     </button>
 
-                                    <button id="peering-notes-<?= $cid ?>" class="btn btn-white btn-sm peering-note">
+                                    <button id="peering-notes-<?= $cid ?>" class="btn btn-white btn-sm peering-note" data-object-id="<?= $cid ?>">
                                         <i id="peering-notes-icon-<?= $cid ?>" class="fa fa-star" <?= isset( $t->peers[ $cid ][ "notes" ] ) && strlen( $t->peers[ $cid ][ "notes" ] ) ?: "style='color:lightgrey'" ?>></i> Notes
                                     </button>
 
@@ -106,6 +97,6 @@
 
             </tbody>
         </table>
-        <input id="custid" type="hidden" value="<?= $t->c->getId() ?>">
+        <input id="custid" type="hidden" value="<?= $t->c->id ?>">
     </div>
 </div>

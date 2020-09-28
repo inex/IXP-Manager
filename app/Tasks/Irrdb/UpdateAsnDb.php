@@ -54,7 +54,7 @@ class UpdateAsnDb extends UpdateDb
                 $this->bgpq3()->setSources( $this->customer()->irrdbConfig->source );
 
                 $this->startTimer();
-                $asns = $this->bgpq3()->getAsnList( $this->customer()->resolveAsMacro( $protocol, 'as' ), $protocol );
+                $asns = $this->bgpq3()->getAsnList( $this->customer()->asMacro( $protocol, 'as' ), $protocol );
 
                 $this->result[ 'netTime' ] += $this->timeElapsed();
 

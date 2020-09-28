@@ -305,7 +305,7 @@ class Customer extends EntityRepository
             "SELECT pm.id AS id, c.id AS custid, p.id AS peerid,
                 pm.email_last_sent AS email_last_sent, pm.emails_sent AS emails_sent,
                 pm.peered AS peered, pm.rejected AS rejected, pm.notes AS notes,
-                pm.created AS created, pm.updated AS updated
+                pm.created_at AS created, pm.updated_at AS updated
         
              FROM \\Entities\\PeeringManager pm
                  LEFT JOIN pm.Customer c
@@ -367,10 +367,14 @@ class Customer extends EntityRepository
                     {
                         $custs[ $c->getAutsys() ]['vlaninterfaces'][ $vli->getVlan()->getNumber() ] = [];
                         $cnt = 0;
+
                     }
-                    else
+                    else{
                         $cnt = count( $custs[ $c->getAutsys() ]['vlaninterfaces'][ $vli->getVlan()->getNumber() ] );
-                        
+                    }
+
+
+
                     $custs[ $c->getAutsys() ]['vlaninterfaces'][ $vli->getVlan()->getNumber() ][ $cnt ]['ipv4enabled'] = $vli->getIpv4enabled();
                     $custs[ $c->getAutsys() ]['vlaninterfaces'][ $vli->getVlan()->getNumber() ][ $cnt ]['ipv6enabled'] = $vli->getIpv6enabled();
                     $custs[ $c->getAutsys() ]['vlaninterfaces'][ $vli->getVlan()->getNumber() ][ $cnt ]['rsclient']    = $vli->getRsclient();

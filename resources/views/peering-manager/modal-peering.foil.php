@@ -9,13 +9,11 @@
             </div>
 
             <div class="modal-body" id="peering-modal-body">
-
             </div>
             <div class="modal-footer" id="modal-peering-request-footer">
                 <button id="modal-peering-request-close"  type="button" class="btn btn-secondary" data-dismiss="modal">
                     <i class="fa fa-times"></i> Cancel
                 </button>
-
                 <button class="btn btn-primary btn-footer-modal btn-footer-modal-email collapse" id="modal-peering-request-marksent" data-toggle="tooltip" title="Don't send this email but mark it as sent - useful if you are sending requests manually but want to track them here." >
                     Mark Sent
                 </button>
@@ -25,7 +23,6 @@
                 <button class="btn btn-success btn-footer-modal btn-footer-modal-email collapse" id="modal-peering-request-send" >
                     Send
                 </button>
-
                 <button class="btn btn-success btn-footer-modal btn-footer-modal-note collapse" id="modal-peering-notes-save" >
                     Save
                 </button>
@@ -34,6 +31,3 @@
         </div>
     </div>
 </div>
-
-
-

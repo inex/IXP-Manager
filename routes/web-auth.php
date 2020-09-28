@@ -147,11 +147,11 @@ Route::group( [ 'namespace' => 'User', 'prefix' => 'user' ], function() {
 /// Peering manager
 ///
 Route::group( [ 'prefix' => 'peering-manager' ], function() {
-    Route::get(  '',                            'PeeringManagerController@index'            )->name( "peering-manager@index"            );
-    Route::get(  '{id}/mark-peering/{status}',  'PeeringManagerController@markPeering'      )->name( 'peering-manager@mark-peering'     );
-    Route::post( 'form',                        'PeeringManagerController@formEmailFrag'    )->name( 'peering-manager@form-email-frag'  );
-    Route::post( 'send-peering-email',          'PeeringManagerController@sendPeeringEmail' )->name( "peering-manager@send-peering-email" );
-    Route::post( 'notes',                       'PeeringManagerController@peeringNotes'     )->name( "peering-manager@notes" );
+    Route::get(  '',                            'PeeringManagerController@index'            )->name( 'peering-manager@index'                );
+    Route::get(  '{id}/mark-peering/{status}',  'PeeringManagerController@markPeering'      )->name( 'peering-manager@mark-peering'         );
+    Route::post( 'form',                        'PeeringManagerController@formEmailFrag'    )->name( 'peering-manager@form-email-frag'      );
+    Route::post( 'send-peering-email',          'PeeringManagerController@sendPeeringEmail' )->name( 'peering-manager@send-peering-email'   );
+    Route::post( 'notes',                       'PeeringManagerController@peeringNotes'     )->name( 'peering-manager@notes'                );
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
