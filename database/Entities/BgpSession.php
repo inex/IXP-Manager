@@ -30,6 +30,8 @@ use D2EM;
  */
 class BgpSession
 {
+    private $created_at;
+    private $updated_at;
     /**
      * @var integer
      */

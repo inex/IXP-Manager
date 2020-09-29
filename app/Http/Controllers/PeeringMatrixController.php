@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,6 +28,10 @@ use Entities\{
     Vlan                        as VlanEntity
 };
 
+use Cache;
+use IXP\Models\BgpSession;
+use IXP\Models\Customer;
+use IXP\Models\Vlan;
 use Illuminate\Http\{
     RedirectResponse
 };
@@ -50,12 +54,11 @@ use D2EM, Redirect;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   PatchPanel
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class PeeringMatrixController extends Controller
 {
-
     /**
      * Display dashboard
      *
@@ -67,7 +70,6 @@ class PeeringMatrixController extends Controller
      */
     public function index( Request $r )
     {
-
         if( config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ) {
             AlertContainer::push( 'The peering matrix has been disabled.', Alert::DANGER );
             return Redirect::to('');
@@ -83,10 +85,9 @@ class PeeringMatrixController extends Controller
             6 => 'IPv6'
         ];
 
-        if( $r->input( 'vlan' )  !== null ) {
-            /** @var VlanEntity $s */
-            if(  $vlan = D2EM::getRepository( VlanEntity::class )->find( $r->input( 'vlan' ) ) ) {
-                $vl = $vlan->getId();
+        if( $r->vlan  !== null ) {
+            if(  $vlan = Vlan::find( $r->vlan ) ) {
+                $vl = $vlan->id;
                 $r->session()->put( "peering-matrix-vlan", $vl );
             } else {
                 $r->session()->remove( "peering-matrix-vlan" );
@@ -98,10 +99,9 @@ class PeeringMatrixController extends Controller
             $vl = config( "identity.vlans.default" );
         }
 
-
-        if( $r->input( 'proto' )  !== null ) {
-            if( array_key_exists( $r->input( 'proto' ) , $protos ) ) {
-                $proto = $r->input( 'proto' );
+        if( $r->proto  !== null ) {
+            if( array_key_exists( $r->proto , $protos ) ) {
+                $proto = $r->proto;
                 $r->session()->put( "peering-matrix-proto", $proto );
             } else {
                 $r->session()->remove( "peering-matrix-proto" );
@@ -113,13 +113,13 @@ class PeeringMatrixController extends Controller
             $proto = 4;
         }
 
+        $vlans = Vlan::select( [ 'id', 'name' ] )->where( 'peering_matrix', 1 )
+            ->orderBy( 'number' )->get()->keyBy( 'id' )->toArray();
 
-        if( !count( ( $vlans = D2EM::getRepository( VlanEntity::class )->getPeeringMatrixVLANs() ) ) ) {
-
+        if( !count( $vlans ) ) {
             AlertContainer::push( 'No VLANs have been enabled for the peering matrix. Please see <a href="'
                 . 'https://github.com/inex/IXP-Manager/wiki/Peering-Matrix">these instructions</a>'
                 . ' / contact our support team.', Alert::DANGER );
-
             return Redirect::to( '');
         }
 
@@ -136,12 +136,19 @@ class PeeringMatrixController extends Controller
             }
         }
 
-        $cust = D2EM::getRepository( VlanEntity::class   )->getCustomers( $vl, $proto );
+        $cust = Vlan::select( [ 'cust.autsys', 'cust.name', 'cust.shortname', 'vli.rsclient', 'cust.activepeeringmatrix', 'cust.id' ] )
+            ->leftJoin( 'vlaninterface AS vli', 'vli.vlanid', 'vlan.id' )
+            ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
+            ->leftJoin( 'cust', 'cust.id', 'vi.custid' )
+            ->whereRaw( Customer::SQL_CUST_CURRENT )->whereRaw( Customer::SQL_CUST_TRAFFICING )
+            ->whereRaw( Customer::SQL_CUST_EXTERNAL )->where( 'vlan.id', $vl )
+            ->where( "vli.ipv{$proto}enabled", 1 )->orderBy( 'cust.autsys' )
+            ->get()->keyBy( 'autsys' )->toArray();
+
         $asns = array_keys( $cust );
 
-        /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'peering-matrix/index' )->with([
-            'sessions'                      => D2EM::getRepository( BgpSessionEntity::class       )->getPeers( $vl, $proto ),
+            'sessions'                      => $this->getPeers( $vl, $proto ),
             'custs'                         => $cust,
             'vlans'                         => $vlans,
             'protos'                        => $protos,
@@ -151,4 +158,96 @@ class PeeringMatrixController extends Controller
         ]);
     }
 
+    /**
+     * Get all the BGP peers of all peers
+     *
+     * This function is for generating the peering matrix based on data contained in the
+     * `bgpsession` table which is updated based on detected BGP sessions between
+     * routers on the peering LAN(s) from sflow data.
+     *
+     * It returns an array of all BGP peers show their peers, such as:
+     *
+     *     array(57) {
+     *         [42] => array(3) {
+     *             ["shortname"] => string(10) "pchanycast"
+     *             ["name"] => string(25) "Packet Clearing House DNS"
+     *             ["peers"] => array(17) {
+     *                   [2110] => string(4) "2110"
+     *                   [2128] => string(4) "2128"
+     *                   ...
+     *             }
+     *         }
+     *         [112] => array(3) {
+     *             ["shortname"] => string(5) "as112"
+     *             ["name"] => string(17) "AS112 Reverse DNS"
+     *             ["peers"] => array(20) {
+     *                   [1213] => string(4) "1213"
+     *                   [2110] => string(4) "2110"
+     *                   ...
+     *             }
+     *         }
+     *         ...
+     *     }
+     *
+     * It also caches the results on a per VLAN, per protocol basis.
+     *
+     * @param int $vlan The VLAN ID of the peering LAN to query
+     * @param int $protocol The IP protocol to query (4 or 6)
+     *
+     * @return array Array of peerings (as described above)
+     *
+     * @throws
+     */
+    private function getPeers( int $vlan, int $protocol = 6 ): array
+    {
+        $key = "pm_sessions_{$vlan}_{$protocol}";
+
+        if( $apeers = Cache::get( $key ) ) {
+            return $apeers;
+        }
+
+        // we've added "bs.timestamp >= NOW() - INTERVAL 7 DAY" below as we don't
+        // dump old date (yet) and the time to run the query is O(n) on number
+        // of rows...
+        $peers = BgpSession::selectRaw(
+            'cs.shortname AS csshortname, 
+                        cs.name AS csname, 
+                        cs.autsys AS csautsys,
+                        cs.activepeeringmatrix AS csactivepeeringmatrix,
+                        cd.autsys AS cdautsys'
+        )->from( 'bgp_sessions AS bs' )
+            ->leftJoin( "ipv{$protocol}address AS srcip", 'srcip.id', 'bs.srcipaddressid' )
+            ->leftJoin( "ipv{$protocol}address AS dstip", 'dstip.id', 'bs.dstipaddressid' )
+            ->leftJoin( 'vlaninterface AS vlis', 'vlis.ipv4addressid', 'srcip.id' )
+            ->leftJoin( 'vlaninterface AS vlid', 'vlid.ipv4addressid', 'dstip.id' )
+            ->leftJoin( 'virtualinterface AS vis', 'vis.id', 'vlis.virtualinterfaceid' )
+            ->leftJoin( 'virtualinterface AS vid', 'vid.id', 'vlid.virtualinterfaceid' )
+            ->leftJoin( 'cust AS cs', 'cs.id', 'vis.custid' )
+            ->leftJoin( 'cust AS cd', 'cd.id', 'vid.custid' )
+            ->leftJoin( 'vlan', 'vlan.id', 'srcip.vlanid' )
+            ->whereRaw( 'bs.last_seen >= NOW() - INTERVAL 7 DAY' )
+            ->where( 'bs.protocol', $protocol )
+            ->where( 'bs.packetcount', '>=', 1 )
+            ->where( 'vlan.id', $vlan )
+            ->groupByRaw( 'bs.srcipaddressid, bs.dstipaddressid, bs.id, vlis.virtualinterfaceid, vlid.virtualinterfaceid' )
+            ->orderBy( 'csautsys' )->get()->toArray();
+
+        $apeers = [];
+
+        foreach( $peers as $p ) {
+
+            if( !isset( $apeers[ $p['csautsys'] ] ) )
+            {
+                $apeers[ $p['csautsys'] ] = [];
+                $apeers[ $p['csautsys'] ]['shortname']           = $p['csshortname'];
+                $apeers[ $p['csautsys'] ]['name']                = $p['csname'];
+                $apeers[ $p['csautsys'] ]['activepeeringmatrix'] = $p['csactivepeeringmatrix'];
+                $apeers[ $p['csautsys'] ]['peers']               = [];
+            }
+            $apeers[ $p['csautsys'] ]['peers'][ $p['cdautsys'] ] = $p['cdautsys'];
+        }
+
+        Cache::put( $key, $apeers, 3600 );
+        return $apeers;
+    }
 }

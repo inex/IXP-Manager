@@ -150,6 +150,10 @@ use IXP\Models\Vlan;
  * @property-read \IXP\Models\CompanyBillingDetail|null $companyBillingDetail
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|PeeringManager[] $peers
+ * @property-read int|null $peers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|PeeringManager[] $peersWith
+ * @property-read int|null $peers_with_count
  */
 class CustomerAggregator extends Customer
 {
@@ -289,7 +293,7 @@ class CustomerAggregator extends Customer
         $bilat = [];
         foreach( $vlans as $vlan ) {
             foreach( $protos as $proto ) {
-                $bilat[ $vlan->number ][ $proto ] = BGPSessionDataAggregator::getPeers( $vlan->id, $proto );
+                $bilat[ $vlan->number ][ $proto ] = BgpSessionDataAggregator::getPeers( $vlan->id, $proto );
             }
         }
         $vlanNumbers = Vlan::select( ['id', 'number'] )->get()->keyBy( 'id' )->toArray();

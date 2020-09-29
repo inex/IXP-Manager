@@ -166,6 +166,10 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property-read \IXP\Models\CompanyBillingDetail|null $companyBillingDetail
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PeeringManager[] $peers
+ * @property-read int|null $peers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PeeringManager[] $peersWith
+ * @property-read int|null $peers_with_count
  */
 class Customer extends Model
 {

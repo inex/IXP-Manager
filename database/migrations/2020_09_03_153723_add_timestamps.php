@@ -18,6 +18,10 @@ class AddTimestamps extends Migration
             $table->timestamp( 'updated_at' )->nullable();
         });
 
+        Schema::table('bgp_sessions', function (Blueprint $table) {
+            $table->timestamps();
+        });
+
         Schema::table('cabinet', function (Blueprint $table) {
             $table->timestamps();
         });
@@ -214,6 +218,10 @@ class AddTimestamps extends Migration
         Schema::table('api_keys', function (Blueprint $table) {
             $table->renameColumn( 'created_at', 'created' );
             $table->dropColumn( 'updated_at' );
+        });
+
+        Schema::table('bgp_sessions', function (Blueprint $table) {
+            $table->timestamps();
         });
 
         Schema::table('cabinet', function (Blueprint $table) {

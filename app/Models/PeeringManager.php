@@ -32,6 +32,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager wherePeerid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereRejected($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereUpdated($value)
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\Customer|null $customer
+ * @property-read \IXP\Models\Customer|null $peer
+ * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereUpdatedAt($value)
  */
 class PeeringManager extends Model
 {

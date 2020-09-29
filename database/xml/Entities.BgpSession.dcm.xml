@@ -14,6 +14,8 @@
     </field>
     <field name="last_seen" type="datetime" nullable="false"/>
     <field name="source" type="string" length="40" nullable="true"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <unique-constraints>
       <unique-constraint name="src_protocol_dst" columns="srcipaddressid,protocol,dstipaddressid"/>
     </unique-constraints>
