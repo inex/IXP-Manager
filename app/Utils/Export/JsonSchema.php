@@ -413,7 +413,7 @@ class JsonSchema
                                     $r = $routeServersByIps[ $vli->vlan->id ][ $vli->$ipvaddressfn->address ];
                                     $service = new stdClass;
                                     $service->type           = 'ixrouteserver';
-                                    $service->daemon         = $r->resolveSoftware();
+                                    $service->daemon         = $r->software();
                                     if( $r->software_version        ) { $service->daemon_version = $r->software_version; }
                                     if( $r->operating_system       ) { $service->os             = $r->operating_system; }
                                     if( $r->operating_system_version ) { $service->os_version     = $r->operating_system_version; }
@@ -425,7 +425,7 @@ class JsonSchema
                                     /** @var Router $r */
                                     $service = new stdClass;
                                     $service->type           = 'ixroutecollector';
-                                    $service->daemon         = $r->resolveSoftware();
+                                    $service->daemon         = $r->software();
                                     if( $r->software_version        ) { $service->daemon_version = $r->software_version; }
                                     if( $r->operating_system        ) { $service->os             = $r->operating_system; }
                                     if( $r->operating_system_version ) { $service->os_version     = $r->operating_system_version; }

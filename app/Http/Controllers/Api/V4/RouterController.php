@@ -1,10 +1,9 @@
 <?php
 
-declare(strict_types=1);
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,6 +22,9 @@ namespace IXP\Http\Controllers\Api\V4;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use  D2EM;
+
+use IXP\Models\Router;
 
 use IXP\Tasks\Router\ConfigurationGenerator as RouterConfigurationGenerator;
 
@@ -35,30 +37,32 @@ use Entities\{
     Router as RouterEntity
 };
 
-use Carbon\Carbon;
-
-use Auth, D2EM;
-
 /**
  * RouterController
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   APIv4
  * @package    IXP\Http\Controllers\Api\V4
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class RouterController extends Controller {
-
+class RouterController extends Controller
+{
     /**
      * Generate a configuration.
      *
      * This just takes one argument: the router handle to generate the configuration for.
      *
+     * @param string $handle
+     *
      * @return Response
+     *
+     * @throws
      */
-    public function genConfig( string $handle ): Response {
-        if( !( $router = D2EM::getRepository( RouterEntity::class )->findOneBy( [ 'handle' => $handle ] ) ) ) {
+    public function genConfig( string $handle ): Response
+    {
+        if( !( $router = Router::whereHandle( $handle )->get()->first() ) ) {
             abort( 404, "Unknown router handle" );
         }
 

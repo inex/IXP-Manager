@@ -730,4 +730,17 @@ class Customer extends Model
             })
             ->orderBy( 'cust.name' )->distinct()->get();
     }
+
+    /**
+     * Does the customer have any interfaces in quarantine?
+     *
+     * @return bool
+     */
+    public function hasInterfacesInQuarantine(): bool
+    {
+        return (bool)self::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )
+            ->leftJoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
+            ->where( 'cust.id', $this->id )->where( 'pi.status', PhysicalInterface::STATUS_QUARANTINE )
+            ->get()->count();
+    }
 }

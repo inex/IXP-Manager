@@ -1,7 +1,7 @@
 <?php $this->layout('services/lg/layout') ?>
 
 <?php $this->section('title') ?>
-    <small>Routes for <?= ucwords($t->source) ?> <code><?= $t->name ?></code></small>
+    <small>Routes for <?= ucwords( $t->source ) ?> <code><?= $t->name ?></code></small>
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -9,7 +9,7 @@
     <div class="card mb-4">
         <div class="card-body">
             <?php if( $t->source ?? false ): ?>
-                <b>Routes <?= $t->source == 'export to protocol' ? 'exported to protocol' : 'from ' . $t->source ?>: <code><?= $t->name ?></code>.</b>
+                <b>Routes <?= $t->source === 'export to protocol' ? 'exported to protocol' : 'from ' . $t->source ?>: <code><?= $t->name ?></code>.</b>
             <?php endif; ?>
             
             <b>Key:</b> <span class="badge badge-success">P</span>
@@ -44,21 +44,18 @@
             </tr>
         </thead>
         <tbody>
-
             <?php if( !count( $t->content->routes ) ): ?>
-
-                <tr><td colspan="6">No routes found</td></tr>
-
+                <tr>
+                  <td colspan="6">No routes found</td>
+                </tr>
             <?php else: ?>
-
                 <?php foreach( $t->content->routes as $r ): ?>
-
                     <?php
                         // any blocked routes?
                         $blocked = false;
                         if( isset( $r->bgp->large_communities ) ) {
                             foreach( $r->bgp->large_communities as $lc ) {
-                                if( $lc[0] == $t->lg->router()->asn() && $lc[1] == 1101 ) {
+                                if( $lc[0] == $t->lg->router()->asn && $lc[1] == 1101 ) {
                                     $blocked = true;
                                     break;
                                 }
@@ -66,14 +63,13 @@
                         }
                     ?>
 
-
                     <tr>
                         <td>
                             <?php
                                 // need to split the ip/netmask so we don't urlencode() the '/' between them:
                                 list( $ip, $mask ) = explode( '/', $r->network );
                             ?>
-                            <a href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/route/<?= urlencode($ip) ?>/<?= $mask ?>/table/master<?= $t->lg->router()->software() == Entities\Router::SOFTWARE_BIRD2 ? $t->lg->router()->protocol() : '' ?>"
+                            <a href="<?= url('/lg') . '/' . $t->lg->router()->handle ?>/route/<?= urlencode($ip) ?>/<?= $mask ?>/table/master<?= $t->lg->router()->software === \IXP\Models\Router::SOFTWARE_BIRD2 ? $t->lg->router()->protocol() : '' ?>"
                                     data-toggle="modal" data-target="#route-modal">
                                 <?= $r->network ?>
                             </a>
@@ -107,7 +103,7 @@
                             <?php endif; ?>
                         </td>
                         <td>
-                            <?php if( isset($r->bgp->as_path) ): ?>
+                            <?php if( isset( $r->bgp->as_path ) ): ?>
                                 <?php foreach( $r->bgp->as_path as $asp ): ?>
                                     <?= $t->asNumber( $asp, false ) ?>
                                 <?php endforeach; ?>
@@ -115,15 +111,12 @@
                         </td>
                         <td>
                             <a class="btn btn-white btn-sm" style="font-size: 14px;" data-toggle="modal"
-                                href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/route/<?= urlencode( explode('/',$r->network)[0] ) ?>/<?= explode('/',$r->network)[1] ?>/<?= $t->source == 'export to protocol' ? 'export' : $t->source ?>/<?= $t->name ?>"
+                                href="<?= url('/lg') . '/' . $t->lg->router()->handle ?>/route/<?= urlencode( explode('/',$r->network)[0] ) ?>/<?= explode('/',$r->network)[1] ?>/<?= $t->source == 'export to protocol' ? 'export' : $t->source ?>/<?= $t->name ?>"
                                 data-target="#route-modal">Details</a>
                         </td>
                     </tr>
-
                 <?php endforeach; ?>
-
             <?php endif; ?>
-
         </tbody>
     </table>
 
@@ -133,18 +126,11 @@
         </div>
       </div>
     </div>
-
-
-
 <?php $this->append() ?>
 
 <?php $this->section('scripts') ?>
-
     <script type="text/javascript">
-
-        $('#routes')
-            .removeClass( 'display' )
-            .addClass('table');
+        $('#routes').removeClass( 'display' ).addClass( 'table' );
 
         $(document).ready(function() {
             $('#routes').DataTable({
@@ -161,8 +147,7 @@
             });
 
             $('body').on('click', '[data-toggle="modal"]', function() {
-
-                $($(this).data("target")+' .modal-content').html( `
+                $( $( this ).data( "target" )+' .modal-content').html( `
                     <div class="text-center">
                         <div class="spinner-border m-5" style="width: 5rem; height: 5rem;" role="status">
                             <span class="sr-only">Loading...</span>
@@ -170,7 +155,7 @@
                     </div>
                 ` );
 
-                $($(this).data("target")+' .modal-content').load($(this).attr('href'));
+                $( $( this ).data( "target" ) + ' .modal-content').load( $( this ).attr( 'href' ) );
             });
         });
 

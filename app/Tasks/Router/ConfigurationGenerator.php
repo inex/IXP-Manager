@@ -1,10 +1,9 @@
 <?php
 
-declare(strict_types=1);
 namespace IXP\Tasks\Router;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,6 +27,8 @@ use D2EM, Log;
 use IXP\Exceptions\GeneralException;
 use Illuminate\Contracts\View\View as ViewContract;
 
+use IXP\Models\Aggregators\VlanInterfaceAggregator;
+use IXP\Models\Router;
 use Entities\{
     Router as RouterEntity,
     VlanInterface as VlanInterfaceEntity
@@ -36,10 +37,11 @@ use Entities\{
 /**
  * ConfigurationGenerator
  *
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   Tasks
  * @package    IXP\Tasks\Router
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class ConfigurationGenerator
@@ -47,22 +49,33 @@ class ConfigurationGenerator
     /**
      * Router details object.
      *
-     * @var RouterEntity $r
+     * @var Router $r
      */
     private $router = null;
 
-    public function __construct( RouterEntity $r ) {
+    /**
+     * ConfigurationGenerator constructor
+     * .
+     * @param Router $r
+     *
+     * @throws
+     */
+    public function __construct( Router $r )
+    {
         $this->setRouter( $r );
     }
 
     /**
      * Set the router options array
      *
-     * @throws GeneralException
-     * @param RouterEntity $router Router details
+     * @param Router $router Router details
+     *
      * @return ConfigurationGenerator
+     *
+     * @throws
      */
-    public function setRouter( RouterEntity $router ): ConfigurationGenerator {
+    public function setRouter( Router $router ): ConfigurationGenerator
+    {
         $this->router = $router;
         return $this;
     }
@@ -70,29 +83,33 @@ class ConfigurationGenerator
     /**
      * Get the router options array
      *
-     * @return RouterEntity
+     * @return Router
      */
-    public function router(): RouterEntity {
+    public function router(): Router
+    {
         return $this->router;
     }
 
     /**
      * Generate and return the configuration
      *
-     * @throws GeneralException
      * @return ViewContract The configuration
+     *
+     * @throws
      */
-    public function render(): ViewContract {
-        $ints = D2EM::getRepository( VlanInterfaceEntity::class )->sanitiseVlanInterfaces(
-            $this->router()->getVlan(), $this->router()->getProtocol(), $this->router()->getType(), $this->router()->getQuarantine() );
-
-        $v = view( $this->router()->getTemplate() )->with(
-            [ 'handle' => $this->router()->getHandle(), 'ints' => $ints, 'router' => $this->router(), 'vlan' => $this->router()->getVlan() ]
+    public function render(): ViewContract
+    {
+        $ints = VlanInterfaceAggregator::sanitiseVlanInterfaces(
+            $this->router()->vlan, $this->router()->protocol, $this->router()->type, $this->router()->quarantine
         );
 
-        Log::info( 'Generated router configuration for ' . $this->router()->handle() . ' and used ' . memory_get_peak_usage() . ' bytes (' . memory_get_peak_usage(true) . ' real) of memory.' );
+
+        $v = view( $this->router()->template )->with(
+            [ 'handle' => $this->router()->handle, 'ints' => $ints, 'router' => $this->router(), 'vlan' => $this->router()->vlan ]
+        );
+
+        Log::info( 'Generated router configuration for ' . $this->router()->handle . ' and used ' . memory_get_peak_usage() . ' bytes (' . memory_get_peak_usage( true ) . ' real) of memory.' );
 
         return $v;
     }
-
 }

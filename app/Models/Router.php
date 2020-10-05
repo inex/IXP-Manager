@@ -104,6 +104,36 @@ use Illuminate\Database\Eloquent\{
 class Router extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'vlan_id',
+        'handle',
+        'protocol',
+        'type',
+        'name',
+        'shortname',
+        'router_id',
+        'peering_ip',
+        'asn',
+        'software',
+        'mgmt_host',
+        'api',
+        'api_type',
+        'lg_access',
+        'quarantine',
+        'bgp_lc',
+        'template',
+        'skip_md5',
+        'rpki',
+        'software_version',
+        'operating_system',
+        'operating_system_version',
+        'rfc1997_passthru'
+    ];
+    /**
      * The attributes that should be cast to native types.
      *
      * @var array
@@ -318,8 +348,101 @@ class Router extends Model
      *
      * @return string
      */
-    public function resolveSoftware(): string
+    public function software(): string
     {
         return self::$SOFTWARES[ $this->software ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the api type into text as
+     * defined in the self::$SOFTWARES array (or 'Unknown')
+     * @return string
+     */
+    public function resolveApiType(): string
+    {
+        return self::$API_TYPES[ $this->api_type ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the protocol into text as
+     * defined in the self::$PROTOCOLS array (or 'Unknown')
+     *
+     * @return string
+     */
+    public function protocol(): string
+    {
+        return self::$PROTOCOLS[ $this->protocol ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the type into text as
+     * defined in the self::$TYPES_SHORT array (or 'Unknown')
+     * @return string
+     */
+    public function typeShortName(): string
+    {
+        return self::$TYPES_SHORT[ $this->type ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the type into text as
+     * defined in the self::$TYPES array (or 'Unknown')
+     * @return string
+     */
+    public function type(): string
+    {
+        return self::$TYPES[ $this->type ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the lg access into text as
+     * defined in the User::$PRIVILEGES_ALL array (or 'Unknown')
+     *
+     * @return string
+     */
+    public function lgAccess(): string
+    {
+        return User::$PRIVILEGES_ALL[ $this->lg_access ] ?? 'Unknown';
+    }
+
+    /**
+     * Does the router have an API?
+     *
+     * In other words, is 'api' and 'api_type' set?
+     *
+     * @return bool
+     */
+    public function hasApi(): bool
+    {
+        return $this->api && $this->api_type;
+    }
+
+    /**
+     * This function controls access to a router for a looking glass
+     *
+     * @param int $privs User's privileges (see \Models\User)
+     *
+     * @return bool
+     */
+    public function authorise( int $privs ): bool
+    {
+        return $privs >= $this->lg_access;
+    }
+
+    /**
+     * This function check is the last updated time is greater than the given number of seconds
+     *
+     * @param int $threshold
+     *
+     * @return bool
+     */
+    public function lastUpdatedGreaterThanSeconds( int $threshold ): bool
+    {
+        if( !$this->updated_at ) {
+            // if null, then, as far as we know, it has never been updated....
+            return true;
+        }
+
+        return $this->updated_at->diffInSeconds( null ) > $threshold;
     }
 }

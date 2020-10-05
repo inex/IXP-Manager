@@ -162,4 +162,46 @@ class User extends Model
             ->orderBy( 'id', 'asc' );
     }
 
+    /**
+     * Is the user of the named type?
+     *
+     * @return bool
+     */
+    public function custUser(): bool
+    {
+        return $this->privs === self::AUTH_CUSTUSER;
+    }
+
+    /**
+     * Is the user of the named type?
+     * @return bool
+     */
+    public function custAdmin(): bool
+    {
+        return $this->privs === self::AUTH_CUSTADMIN;
+    }
+
+    /**
+     * Is the user of the named type?
+     *
+     * @return bool
+     */
+    public function superUser(): bool
+    {
+        return $this->privs === self::AUTH_SUPERUSER;
+    }
+
+    /**
+     * Get privilege from the table CustomerToUser
+     *
+     * @return int|null
+     */
+    public function getPrivs(): ?int
+    {
+        $c2u = CustomerToUser::where( 'customer_id' , $this->custid )->where( 'user_id' , $this->id )->get()->first();
+        if( $c2u ) {
+            return $c2u->privs;
+        }
+        return null;
+    }
 }

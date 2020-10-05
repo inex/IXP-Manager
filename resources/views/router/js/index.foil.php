@@ -11,14 +11,14 @@
         ],
     } );
 
-    $( "a[id|='delete-router']" ).on( 'click', function( e ) {
+    $( '.btn-delete' ).click( function( e ) {
         e.preventDefault();
-        let rtid = ( this.id ).substring( 14 );
+        let url = $( this ).attr( 'data-url');
 
-        let html = `<form id="form-delete" method="POST" action="<?= route('router@delete' ) ?>">
+        let html = `<form id="form-delete" method="POST" action="${url}">
                         <div>Do you want to delete this router ?</div>
                         <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                        <input type="hidden" name="id" value="${rtid}">
+                        <input type="hidden" name="_method" value="delete" />
                     </form>`;
 
         bootbox.dialog({
@@ -43,5 +43,4 @@
             }
         });
     });
-
 </script>

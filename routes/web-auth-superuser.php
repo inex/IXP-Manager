@@ -70,15 +70,15 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
 
 
 Route::group( [ 'prefix' => 'router' ], function() {
-    Route::get(     'list',                             'RouterController@list'     )->name( 'router@list'  );
-    Route::get(     'status',                           'RouterController@status'   )->name( 'router@status' );
-    Route::get(     'add',                              'RouterController@edit'     )->name( 'router@add'   );
-    Route::get(     'edit/{id}',                        'RouterController@edit'     )->name( 'router@edit'  );
-    Route::get(     'view/{id}',                        'RouterController@view'     )->name( 'router@view'  );
-    Route::get(     'gen-config/{id}',                  'RouterController@genConfig');
-    Route::post(     'delete',                          'RouterController@delete'   )->name( 'router@delete'  );
-    Route::post(    'store',                            'RouterController@store'    )->name( 'router@store'  );
-
+    Route::get(     'list',             'RouterController@list'     )->name( 'router@list'   );
+    Route::get(     'status',           'RouterController@status'   )->name( 'router@status' );
+    Route::get(     'create',           'RouterController@create'   )->name( 'router@create' );
+    Route::get(     'edit/{router}',    'RouterController@edit'     )->name( 'router@edit'   );
+    Route::get(     'view/{router}',    'RouterController@view'     )->name( 'router@view'   );
+    Route::get(     'gen-config/{id}',  'RouterController@genConfig');
+    Route::delete(  'delete/{router}',  'RouterController@delete'   )->name( 'router@delete'  );
+    Route::post(   'store',             'RouterController@store'    )->name( 'router@store'   );
+    Route::put(    'update/{router}',   'RouterController@store'    )->name( 'router@update'  );
 });
 
 

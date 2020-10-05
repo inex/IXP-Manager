@@ -28,12 +28,7 @@ use Illuminate\Database\Eloquent\{
 };
 use Illuminate\Support\Collection;
 
-use IXP\Models\{
-    Customer,
-    PhysicalInterface,
-    Vlan,
-    VlanInterface
-};
+use IXP\Models\{Customer, PhysicalInterface, Router, Vlan, VlanInterface};
 
 /**
  * IXP\Models\Aggregators\VlanInterfaceAggregator
@@ -248,5 +243,149 @@ class VlanInterfaceAggregator extends VlanInterface
                         cab.id, cab.name,
                         l.name, l.shortname, l.tag" )
             ->orderByRaw( 'cust.autsys ASC, vli.id ASC' )->get()->toArray();
+    }
+
+
+
+    /**
+     * Find all IP addresses on a given VLAN for a given ASN and protocol.
+     *
+     * This is used (for example) when generating router configuration
+     * which prevents next-hop hijacking but allows the same ASN to
+     * set its other IPs as the next hop.
+     *
+     * @param Vlan $v
+     * @param int $asn
+     * @param int $proto
+     *
+     * @return array Array of IP addresses [ '192.0.2.2', '192.0.2.23', ]
+     *
+     * @throws
+     */
+    public static function getAllIPsForASN( Vlan $v, int $asn, int $proto ): array
+    {
+        if( !in_array( $proto, [ 4,6 ] , true ) ) {
+            throw new \Exception( 'Invalid inet protocol' );
+        }
+
+        $ips = Vlan::select( [ 'ip.address' ] )
+            ->from( 'vlaninterface AS vli' )
+            ->leftJoin( 'vlan AS v', 'v.id', 'vli.vlanid' )
+            ->leftJoin( "ipv{$proto}address AS ip", 'ip.id', "vli.ipv{$proto}addressid" )
+            ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid')
+            ->leftJoin( 'cust', 'cust.id', 'vi.custid')
+            ->where( 'cust.autsys', $asn )->where( 'v.id', $v->id )
+            ->get()->pluck( 'address' )->toArray();
+
+        $vips = [];
+        foreach( $ips as $ip ) {
+            if( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+                $vips[] = $ip;
+            }
+        }
+
+        return $vips;
+    }
+
+    /**
+     * Utility function to get and return active VLAN interfaces on the requested protocol
+     * suitable for route collector / server configuration.
+     *
+     * Sample return:
+     *
+     *     [
+     *         [cid] => 999
+     *         [cname] => Customer Name
+     *         [cshortname] => shortname
+     *         [autsys] => 65000
+     *         [peeringmacro] => QWE              // or AS65500 if not defined
+     *         [vliid] => 159
+     *         [fvliid] => 00159                  // formatted %05d
+     *         [address] => 192.0.2.123
+     *         [bgpmd5secret] => qwertyui         // or false
+     *         [as112client] => 1                 // if the member is an as112 client or not
+     *         [rsclient] => 1                    // if the member is a route server client or not
+     *         [maxprefixes] => 20
+     *         [irrdbfilter] => 0/1               // if IRRDB filtering should be applied
+     *         [rsmorespecifics] => 0/1           // if IRRDB filtering should allow more specifics
+     *         [location_name] => Interxion DUB1
+     *         [location_shortname] => IX-DUB1
+     *         [location_tag] => ix1
+     *     ]
+     *
+     * @param Vlan  $vlan
+     * @param int   $protocol
+     * @param int   $target
+     * @param bool  $quarantine
+     *
+     * @return array As defined above
+     *
+     */
+    public static function sanitiseVlanInterfaces( Vlan $vlan, int $protocol = 4, int $target = Router::TYPE_ROUTE_SERVER, bool $quarantine = false ): array
+    {
+        $ints = self::getForProto( $vlan, $protocol, $quarantine  ? PhysicalInterface::STATUS_QUARANTINE : PhysicalInterface::STATUS_CONNECTED );
+
+        $newints = [];
+
+        foreach( $ints as $index => $int ) {
+
+            if( !$int['enabled'] ) {
+                continue;
+            }
+
+            $int['protocol'] = $protocol;
+
+            // don't need this anymore:
+            unset( $int['enabled'] );
+
+            if( $target === Router::TYPE_ROUTE_SERVER && !$int['rsclient'] ) {
+                continue;
+            }
+
+            if( $target === Router::TYPE_AS112 && !$int['as112client'] ) {
+                continue;
+            }
+
+            $int['fvliid'] = sprintf( '%04d', $int['vliid'] );
+
+            if( $int['maxbgpprefix'] && $int['maxbgpprefix'] > $int['gmaxprefixes'] ) {
+                $int['maxprefixes'] = $int['maxbgpprefix'];
+            } else {
+                $int['maxprefixes'] = $int['gmaxprefixes'];
+            }
+
+            if( !$int['maxprefixes'] ) {
+                $int['maxprefixes'] = 250;
+            }
+
+            unset( $int['gmaxprefixes'] );
+            unset( $int['maxbgpprefix'] );
+
+            if( $protocol === 6 && $int['peeringmacrov6'] ) {
+                $int['peeringmacro'] = $int['peeringmacrov6'];
+            }
+
+            if( !$int['peeringmacro'] ) {
+                $int['peeringmacro'] = 'AS' . $int['autsys'];
+            }
+
+            unset( $int['peeringmacrov6'] );
+
+            if( !$int['bgpmd5secret'] ) {
+                $int['bgpmd5secret'] = false;
+            }
+
+            $int['allpeeringips'] = self::getAllIPsForASN( $vlan, $int['autsys'], $protocol );
+
+            if( $int['irrdbfilter'] ) {
+                $int['irrdbfilter_prefixes'] = IrrdbAggregator::forCustomerAndProtocol( $int[ 'cid' ], $protocol, 'prefix', true );
+                $int['irrdbfilter_asns'    ] = IrrdbAggregator::forCustomerAndProtocol( $int[ 'cid' ], $protocol, 'asn', true );
+            }
+
+            $newints[ $int['address'] ] = $int;
+
+        }
+
+        return $newints;
     }
 }

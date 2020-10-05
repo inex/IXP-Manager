@@ -26,7 +26,7 @@ function fn_import ( int remote_as )
         return false;
     }
 
-    <?php if( $t->router->rpki() ): ?>
+    <?php if( $t->router->rpki ): ?>
 
     # RPKI check
     if( roa_check( t_roa, net, bgp_path.last_nonaggregated ) = ROA_INVALID ) then {
@@ -47,7 +47,7 @@ function fn_import ( int remote_as )
 <?php foreach( $t->ints as $int ):
     
         // do not set up a session to ourselves!
-        if( $int['autsys'] == $t->router->asn() ):
+        if( $int['autsys'] == $t->router->asn ):
             continue;
         endif;
 
@@ -63,7 +63,7 @@ protocol bgp pb_as<?= $int['autsys'] ?>_vli<?= $int['vliid'] ?>_ipv<?= $int['pro
             export where proto = "static_as112";
             import limit <?= $int['maxprefixes'] ?> action restart;
         };
-        <?php if( $int['bgpmd5secret'] && !$t->router->skipMD5() ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
+        <?php if( $int['bgpmd5secret'] && !$t->router->skip_md5 ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
 
 }
 

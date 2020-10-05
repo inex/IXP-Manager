@@ -1,119 +1,110 @@
 <?php $this->layout('services/lg/layout') ?>
-
-<?php $this->section('title') ?>
-    <small>BGP Protocol Summary</small>
-<?php $this->append() ?>
-
+    <?php $this->section('title') ?>
+        <small>BGP Protocol Summary</small>
+    <?php $this->append() ?>
 <?php $this->section('content') ?>
-
-<table class="table table-striped table-sm text-monospace" style="font-size: 14px;width: 100%;" id="bgpsummary">
-    <thead class="thead-dark">
-        <tr>
-            <th>
-                Neighbor
-            </th>
-            <th>
-                Description
-            </th>
-            <th class="text-right">
-                ASN&nbsp;
-            </th>
-            <th>
-                Table
-            </th>
-            <th class="text-right">
-                PfxLimit&nbsp;
-            </th>
-            <th class="text-right">
-                State/PfxRcd&nbsp;
-            </th>
-            <th class="text-right">
-                PfxExp&nbsp;
-            </th>
-            <th>
-                Actions
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-
-        <?php if( !count( (array)$t->content->protocols ) ): ?>
-
+    <table class="table table-striped table-sm text-monospace" style="font-size: 14px;width: 100%;" id="bgpsummary">
+        <thead class="thead-dark">
             <tr>
-                <td colspan="8">No BGP sessions found</td>
+                <th>
+                    Neighbor
+                </th>
+                <th>
+                    Description
+                </th>
+                <th class="text-right">
+                    ASN&nbsp;
+                </th>
+                <th>
+                    Table
+                </th>
+                <th class="text-right">
+                    PfxLimit&nbsp;
+                </th>
+                <th class="text-right">
+                    State/PfxRcd&nbsp;
+                </th>
+                <th class="text-right">
+                    PfxExp&nbsp;
+                </th>
+                <th>
+                    Actions
+                </th>
             </tr>
-
-        <?php else: ?>
-
-            <?php foreach( $t->content->protocols as $name => $p ): ?>
-
-                <tr <?= $p->state == 'up' ? '' : 'class="warning"' ?>>
-                    <td class="pr-4">
-                        <?=$p->neighbor_address?>
-                    </td>
-                    <td class="pr-4">
-                        <?= ( $p->description_short ?? false ) ? $t->ee( $p->description_short ) : $t->ee( $p->description ?? "" ) ?>
-                    </td>
-                    <td class="text-right pr-4" data-order="<?= $p->neighbor_as ?>">
-                        <?= $t->asNumber( $p->neighbor_as, false ) ?>
-                    </td>
-                    <td>
-                        <a href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/routes/table/<?= $p->table ?>">
-                            <?= $p->table ?>
-                        </a>
-                    </td>
-                    <?php if( isset($p->import_limit) and isset( $p->route_limit_at ) and $p->import_limit ): ?>
-                        <td class="text-right pr-4" data-order="<?= $p->import_limit ?>">
-                            <span
-                                <?php if( ( (float)$p->route_limit_at / $p->import_limit ) >= .9 ): ?>
-                                    class="badge badge-danger"
-                                <?php elseif( ( (float)$p->route_limit_at / $p->import_limit ) >= .8 ): ?>
-                                    class="badge badge-warning"
-                                <?php endif; ?>
-                            >
-                                <?= $p->route_limit_at ?>/<?= $p->import_limit ?>
-                            </span>
-                    <?php else: ?>
-                        <td class="text-right pr-4">
-                    <?php endif; ?>
-                    </td>
-                    <td class="text-right pr-4" data-order="<?= $p->state != 'up' ? "-1" : $p->routes->imported ?>">
-                        <?php if( $p->state != 'up' ): ?>
-                            <span class="badge badge-warning"><?= $p->bgp_state ?></span>
-                        <?php else: ?>
-                            <?php if( is_int( $p->routes->imported ) and is_int( $t->content->api->max_routes ) and $p->routes->imported < $t->content->api->max_routes ): ?>
-                                <a href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/routes/protocol/<?= $name ?>">
-                            <?php endif; ?>
-                            <?= $p->routes->imported ?>
-                            <?php if( is_int( $p->routes->imported ) and is_int( $t->content->api->max_routes ) and $p->routes->imported < $t->content->api->max_routes ): ?>
-                                </a>
-                            <?php endif; ?>
-                        <?php endif; ?>
-                    </td>
-                    <td class="text-right pr-4" data-order="<?= $p->state == 'up' ? $p->routes->exported : -1 ?>">
-                        <?php if( $p->state == 'up' ): ?>
-                            <?php if( is_int( $p->routes->exported ) and is_int( $t->content->api->max_routes ) and $p->routes->exported < $t->content->api->max_routes ): ?>
-                                <a href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/routes/export/<?= $name ?>">
-                            <?php endif; ?>
-                            <?= $p->routes->exported ?>
-                            <?php if( is_int( $p->routes->exported ) and is_int( $t->content->api->max_routes ) and $p->routes->exported < $t->content->api->max_routes ): ?>
-                                </a>
-                            <?php endif; ?>
-                        <?php endif; ?>
-                    </td>
-                    <td class="text-reset">
-                        <a class="btn btn-white btn-sm" style="font-size: 14px;" id="protocol_details-<?= $name ?>"
-                            data-protocol="<?= $name ?>" title="<?= $t->ee( $p->description ) ?? "" ?>">
-                            Details
-                        </a>
-                    </td>
+        </thead>
+        <tbody>
+            <?php if( !count( (array)$t->content->protocols ) ): ?>
+                <tr>
+                    <td colspan="8">No BGP sessions found</td>
                 </tr>
+            <?php else: ?>
+                <?php foreach( $t->content->protocols as $name => $p ): ?>
 
-            <?php endforeach; ?>
-        <?php endif; ?>
-
-    </tbody>
-</table>
+                    <tr <?= $p->state === 'up' ? '' : 'class="warning"' ?>>
+                        <td class="pr-4">
+                            <?=$p->neighbor_address?>
+                        </td>
+                        <td class="pr-4">
+                            <?= ( $p->description_short ?? false ) ? $t->ee( $p->description_short ) : $t->ee( $p->description ?? "" ) ?>
+                        </td>
+                        <td class="text-right pr-4" data-order="<?= $p->neighbor_as ?>">
+                            <?= $t->asNumber( $p->neighbor_as, false ) ?>
+                        </td>
+                        <td>
+                            <a href="<?= url('/lg') . '/' . $t->lg->router()->handle ?>/routes/table/<?= $p->table ?>">
+                                <?= $p->table ?>
+                            </a>
+                        </td>
+                        <?php if( isset($p->import_limit) and isset( $p->route_limit_at ) and $p->import_limit ): ?>
+                            <td class="text-right pr-4" data-order="<?= $p->import_limit ?>">
+                                <span
+                                    <?php if( ( (float)$p->route_limit_at / $p->import_limit ) >= .9 ): ?>
+                                        class="badge badge-danger"
+                                    <?php elseif( ( (float)$p->route_limit_at / $p->import_limit ) >= .8 ): ?>
+                                        class="badge badge-warning"
+                                    <?php endif; ?>
+                                >
+                                    <?= $p->route_limit_at ?>/<?= $p->import_limit ?>
+                                </span>
+                        <?php else: ?>
+                            <td class="text-right pr-4">
+                        <?php endif; ?>
+                        </td>
+                        <td class="text-right pr-4" data-order="<?= $p->state !== 'up' ? "-1" : $p->routes->imported ?>">
+                            <?php if( $p->state !== 'up' ): ?>
+                                <span class="badge badge-warning"><?= $p->bgp_state ?></span>
+                            <?php else: ?>
+                                <?php if( is_int( $p->routes->imported ) && is_int( $t->content->api->max_routes ) && $p->routes->imported < $t->content->api->max_routes ): ?>
+                                    <a href="<?= url('/lg') . '/' . $t->lg->router()->handle ?>/routes/protocol/<?= $name ?>">
+                                <?php endif; ?>
+                                <?= $p->routes->imported ?>
+                                <?php if( is_int( $p->routes->imported ) && is_int( $t->content->api->max_routes ) && $p->routes->imported < $t->content->api->max_routes ): ?>
+                                    </a>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                        </td>
+                        <td class="text-right pr-4" data-order="<?= $p->state === 'up' ? $p->routes->exported : -1 ?>">
+                            <?php if( $p->state === 'up' ): ?>
+                                <?php if( is_int( $p->routes->exported ) && is_int( $t->content->api->max_routes ) && $p->routes->exported < $t->content->api->max_routes ): ?>
+                                    <a href="<?= url('/lg') . '/' . $t->lg->router()->handle ?>/routes/export/<?= $name ?>">
+                                <?php endif; ?>
+                                <?= $p->routes->exported ?>
+                                <?php if( is_int( $p->routes->exported ) && is_int( $t->content->api->max_routes ) && $p->routes->exported < $t->content->api->max_routes ): ?>
+                                    </a>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                        </td>
+                        <td class="text-reset">
+                            <a class="btn btn-white btn-sm" style="font-size: 14px;" id="protocol_details-<?= $name ?>"
+                                data-protocol="<?= $name ?>" title="<?= $t->ee( $p->description ) ?? "" ?>">
+                                Details
+                            </a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </tbody>
+    </table>
 
 <div class="modal fade" id="protocol-info-modal" role="dialog">
   <div class="modal-dialog modal-xl" role="document">
@@ -202,7 +193,7 @@
             return;
         }
         $("#submit").prop('disabled', true);
-        $.get('<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/route/' + encodeURIComponent($("#net").val().trim()) + '/' +
+        $.get('<?= url('/lg') . '/' . $t->lg->router()->handle ?>/route/' + encodeURIComponent($("#net").val().trim()) + '/' +
                 source + '/' + encodeURIComponent( $("#source").val() ), function(html) {
             $('#route-modal .modal-content').html(html);
             $('#route-modal').modal('show', {backdrop: 'static'});

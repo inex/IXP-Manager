@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace IXP\Providers;
 
 /*
@@ -25,10 +23,9 @@ namespace IXP\Providers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
-
 use Illuminate\Support\ServiceProvider;
 use Route;
+use IXP\Services\LookingGlass;
 
 /**
  * Looking Glass Service Provider
@@ -39,8 +36,8 @@ use Route;
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class LookingGlassServiceProvider extends ServiceProvider {
-
+class LookingGlassServiceProvider extends ServiceProvider
+{
     protected $defer = false;
 
     /**
@@ -84,23 +81,20 @@ class LookingGlassServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
-        $this->app->singleton( 'IXP\Services\LookingGlass', function($app) {
-            return new \IXP\Services\LookingGlass;
+        $this->app->singleton( LookingGlass::class, function( $app) {
+            return new LookingGlass;
         });
     }
-
 
     /**
      * Get the services provided by the provider.
      *
      * @return array
      */
-    public function provides()
+    public function provides(): array
     {
-        return [ 'IXP\Services\LookingGlass' ];
+        return [ LookingGlass::class ];
     }
-
-
 }

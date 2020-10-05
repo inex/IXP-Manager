@@ -49,7 +49,7 @@
 <?php foreach( $t->ints as $int ):
 
     // do not set up a session to ourselves!
-    if( $int['autsys'] == $t->router->asn() ):
+    if( $int['autsys'] == $t->router->asn ):
         continue;
     endif;
 
@@ -78,7 +78,7 @@ int set allas;
     <?= $t->insert( 'api/v4/router/collector/bird2/import-pre-extra', [ 'int' => $int ] ) ?>
 
     # Filter small prefixes
-<?php if( $t->router->protocol() == 6 ): ?>
+<?php if( $t->router->protocol == 6 ): ?>
     if ( net ~ [ ::/0{<?= config( 'ixp.irrdb.min_v6_subnet_size', 48 ) + 1 ?>,128} ] ) then {
 <?php else: ?>
     if ( net ~ [ 0.0.0.0/0{<?= config( 'ixp.irrdb.min_v4_subnet_size', 24 ) + 1 ?>,32} ] ) then {
@@ -126,7 +126,7 @@ int set allas;
         bgp_large_community.add( IXP_LC_FILTERED_AS_PATH_TOO_LONG );
     }
 
-
+        <?php echo $int['cid'] ?>
 <?php
     // Only do IRRDB ASN filtering if this is enabled per client:
     if( ( $int['rsclient'] ?? false ) && $int['irrdbfilter'] ?? true ):
@@ -152,7 +152,7 @@ int set allas;
 
 
 
-<?php if( $t->router->rpki() && config( 'ixp.rpki.rtr1.host' ) ): ?>
+<?php if( $t->router->rpki && config( 'ixp.rpki.rtr1.host' ) ): ?>
 
     # RPKI check
     if( roa_check( t_roa, net, bgp_path.last_nonaggregated ) = ROA_INVALID ) then {
@@ -181,8 +181,8 @@ int set allas;
         if( count( $int['irrdbfilter_prefixes'] ) ): ?>
 
     allnet = [ <?php echo $t->softwrap( $int['rsmorespecifics']
-        ? $t->bird()->prefixExactToLessSpecific( $int['irrdbfilter_prefixes'], $t->router->protocol(), config( 'ixp.irrdb.min_v' . $t->router->protocol() . '_subnet_size' ) )
-        : $int['irrdbfilter_prefixes'], 4, ", ", ",", 15, $t->router->protocol() == 6 ? 36 : 26 ); ?>
+        ? $t->bird()->prefixExactToLessSpecific( $int['irrdbfilter_prefixes'], $t->router->protocol, config( 'ixp.irrdb.min_v' . $t->router->protocol . '_subnet_size' ) )
+        : $int['irrdbfilter_prefixes'], 4, ", ", ",", 15, $t->router->protocol == 6 ? 36 : 26 ); ?>
 
     ];
 
@@ -234,11 +234,11 @@ protocol bgp pb_as<?= $int['autsys'] ?>_vli<?= $int['vliid'] ?>_ipv<?= $int['pro
         # The import filter listed here just accepts everything but adds tags.
         import where f_import_as<?= $int['autsys'] ?>();
         export none;
-        <?php if( $t->router->protocol() == 6 ): ?>missing lladdr ignore;<?php endif; ?>
+        <?php if( $t->router->protocol == 6 ): ?>missing lladdr ignore;<?php endif; ?>
 
     };
 
-    <?php if( $int['bgpmd5secret'] && !$t->router->skipMD5() ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
+    <?php if( $int['bgpmd5secret'] && !$t->router->skip_md5 ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
 
 }
 

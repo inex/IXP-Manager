@@ -37,7 +37,7 @@
 # Generated: <?= date('Y-m-d H:i:s') . "\n" ?>
 #
 
-# For VLAN: <?= $t->vlan->getName() ?> (Tag: <?= $t->vlan->getNumber() ?>, Database ID: <?= $t->vlan->getId() ?>)
+# For VLAN: <?= $t->vlan->name ?> (Tag: <?= $t->vlan->number ?>, Database ID: <?= $t->vlan->id ?>)
 
 
 # standardise time formats:
@@ -50,10 +50,10 @@ timeformat route        iso long;
 log "/var/log/bird/<?= $t->handle ?>.log" all;
 log syslog all;
 
-define routerasn     = <?= $t->router->asn()        ?>;
-define routeraddress = <?= $t->router->peeringIp() ?>;
+define routerasn     = <?= $t->router->asn        ?>;
+define routeraddress = <?= $t->router->peering_ip ?>;
 
-router id <?= $t->router->routerId() ?>;
+router id <?= $t->router->router_id ?>;
 
 # ignore interface up/down events
 protocol device { }
@@ -64,7 +64,7 @@ protocol device { }
 function avoid_martians()
 prefix set martians;
 {
-<?php if( $t->router->protocol() == 6 ): ?>
+<?php if( $t->router->protocol == 6 ): ?>
 
     martians = [
         ::/0,                   # Default (can be advertised as a route in BGP to peers if desired)

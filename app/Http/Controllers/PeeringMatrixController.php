@@ -23,15 +23,14 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Entities\{
-    BgpSession                  as BgpSessionEntity,
-    Vlan                        as VlanEntity
+use Cache, Redirect;
+
+use IXP\Models\{
+    BgpSession,
+    Customer,
+    Vlan
 };
 
-use Cache;
-use IXP\Models\BgpSession;
-use IXP\Models\Customer;
-use IXP\Models\Vlan;
 use Illuminate\Http\{
     RedirectResponse
 };
@@ -46,8 +45,6 @@ use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
-
-use D2EM, Redirect;
 
 /**
  * PeeringMatrixController Controller
@@ -215,7 +212,7 @@ class PeeringMatrixController extends Controller
                         cs.autsys AS csautsys,
                         cs.activepeeringmatrix AS csactivepeeringmatrix,
                         cd.autsys AS cdautsys'
-        )->from( 'bgp_sessions AS bs' )
+            )->from( 'bgp_sessions AS bs' )
             ->leftJoin( "ipv{$protocol}address AS srcip", 'srcip.id', 'bs.srcipaddressid' )
             ->leftJoin( "ipv{$protocol}address AS dstip", 'dstip.id', 'bs.dstipaddressid' )
             ->leftJoin( 'vlaninterface AS vlis', 'vlis.ipv4addressid', 'srcip.id' )
@@ -235,9 +232,7 @@ class PeeringMatrixController extends Controller
         $apeers = [];
 
         foreach( $peers as $p ) {
-
-            if( !isset( $apeers[ $p['csautsys'] ] ) )
-            {
+            if( !isset( $apeers[ $p['csautsys'] ] ) ) {
                 $apeers[ $p['csautsys'] ] = [];
                 $apeers[ $p['csautsys'] ]['shortname']           = $p['csshortname'];
                 $apeers[ $p['csautsys'] ]['name']                = $p['csname'];
