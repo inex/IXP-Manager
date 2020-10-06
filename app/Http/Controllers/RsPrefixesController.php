@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,13 +22,10 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use Auth, D2EM;
-
-use Entities\{
-    RSPrefix            as RSPrefixEntity,
-    Customer            as CustomerEntity,
-    VirtualInterface    as VirtualInterfaceEntity,
+use IXP\Models\{
+    Aggregators\RsPrefixAggregator,
+    Customer,
+    RsPrefix
 };
 
 use Illuminate\Http\Request;
@@ -37,15 +34,15 @@ use Illuminate\View\View;
 
 /**
  * Route Server Prefixes Controller
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class RsPrefixesController extends Controller
 {
-
     /**
      * Display all the RsPrefixes
      *
@@ -54,9 +51,9 @@ class RsPrefixesController extends Controller
     public function list(): View
     {
         return view( 'rs-prefixes/list' )->with([
-            'types'                 => RSPrefixEntity::$SUMMARY_TYPES_FNS,
-            'rsRouteTypes'          => array_keys( RSPrefixEntity::$ROUTES_TYPES_FNS ),
-            'cPrefixes'             => D2EM::getRepository( RSPrefixEntity::class )->aggregateRouteSummaries()
+            'types'                 => RsPrefix::$SUMMARY_TYPES_FNS,
+            'rsRouteTypes'          => array_keys( RsPrefix::$ROUTES_TYPES_FNS ),
+            'cPrefixes'             => RsPrefixAggregator::aggregateRouteSummaries()
         ]);
     }
 
@@ -68,40 +65,32 @@ class RsPrefixesController extends Controller
      * type       type of Rs prefix (adv_nacc|adv_acc|nadv_acc)
      * protocol   protocol selected (4/6)
      *
-     * @param   Request $r
-     * @param   int     $cid customer ID
+     * @param   Request     $r
+     * @param   Customer    $cust customer
+     *
      * @return  View
      */
-    public function view( Request $r, $cid ) : View
+    public function view( Request $r, Customer $cust ) : View
     {
-        /** @var CustomerEntity $c */
-        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $cid ) ) ) {
-            abort(404);
-        }
-
-        if( !in_array( $type = $r->input( 'type', false ), array_merge( [ false ], array_keys( RSPrefixEntity::$SUMMARY_TYPES_FNS ) ) ) ) {
+        if( !in_array( $type = $r->input( 'type', false ), array_merge( [ false ], array_keys( RsPrefix::$SUMMARY_TYPES_FNS ) ), false ) ) {
             abort( 404 );
         }
 
-        if( !in_array( $protocol = $r->input( 'protocol' ), [ null, 4, 6 ] ) ) {
+        if( !in_array( $protocol = $r->protocol, [ null, 4, 6 ], false ) ) {
             abort( 404 );
         }
 
         // does the customer have VLAN interfaces that filtering is disabled on?
-        $totalVlanInts = 0;
-        $filteredVlanInts = 0;
+        $totalVlanInts = $filteredVlanInts = 0;
 
-        foreach( $c->getVirtualInterfaces() as $vi ) {
-            /** @var VirtualInterfaceEntity $vi */
-            foreach( $vi->getVlanInterfaces() as $vli ) {
-                if( $vli->getVlan()->getPrivate() ){
-                    continue;
+        foreach( $cust->virtualInterfaces as $vi ) {
+            foreach( $vi->vlanInterfaces as $vli ) {
+                if( !$vli->vlan->private ){
+                    if( $vli->irrdbfilter ){
+                        $filteredVlanInts++;
+                    }
+                    $totalVlanInts++;
                 }
-
-                if( $vli->getIrrdbfilter() ){
-                    $filteredVlanInts++;
-                }
-                $totalVlanInts++;
             }
         }
 
@@ -110,9 +99,9 @@ class RsPrefixesController extends Controller
             'filteredVl'                => $filteredVlanInts ,
             'protocol'                  => $protocol ?? false,
             'type'                      => $type,
-            'rsRouteTypes'              => array_keys( RSPrefixEntity::$ROUTES_TYPES_FNS ),
-            'c'                         => $c,
-            'aggRoutes'                 => D2EM::getRepository( RSPrefixEntity::class )->aggregateRoutes( $c->getId(), $protocol )
+            'rsRouteTypes'              => array_keys( RsPrefix::$ROUTES_TYPES_FNS ),
+            'c'                         => $cust,
+            'aggRoutes'                 => RsPrefixAggregator::aggregateRoutes( $cust->id, $protocol )
         ]);
     }
 }

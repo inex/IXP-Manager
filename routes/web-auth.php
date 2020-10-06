@@ -61,7 +61,7 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
 ///
 Route::group( [ 'prefix' => 'rs-prefixes', 'middleware' => [ 'rs-prefixes' ] ], function() {
     Route::get(     'list',         'RsPrefixesController@list' )->name( 'rs-prefixes@list'  );
-    Route::get(     'view/{cid}',   'RsPrefixesController@view' )->name( 'rs-prefixes@view'  );
+    Route::get(     'view/{cust}',   'RsPrefixesController@view' )->name( 'rs-prefixes@view'  );
 });
 
 

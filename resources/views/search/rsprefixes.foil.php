@@ -19,7 +19,7 @@
         <?php foreach( $t->results as $prefix ): ?>
             <tr>
                 <td>
-                    <a href="<?= route( "rs-prefixes@view", [ "cid" => $prefix->getCustomer()->getId() ] ) ?>">
+                    <a href="<?= route( "rs-prefixes@view", [ "cust" => $prefix->getCustomer()->getId() ] ) ?>">
                         <?= $t->ee(  $prefix->getPrefix() ) ?>
                     </a>
                 </td>

@@ -61,24 +61,24 @@
 
     foreach( $t->routers as $n => $d ):
 
-    if( !$d->hasApi() ) {
+    if( !$d->api() ) {
         continue;
     }
 
-    $hosts[] = "bird-{$d->getHandle()}";
+    $hosts[] = "bird-{$d->getHandle}";
 ?>
 
 define host     {
         use                     <?= $t->host_definition . "\n" ?>
-        host_name               bird-<?= $d->getHandle() . "\n" ?>
-        alias                   <?= $d->name() . "\n" ?>
-        address                 <?= $d->mgmtIp() . "\n" ?>
-        _apiurl                 <?= $d->api() . "\n" ?>
+        host_name               bird-<?= $d->handle . "\n" ?>
+        alias                   <?= $d->name . "\n" ?>
+        address                 <?= $d->mgmt_host . "\n" ?>
+        _apiurl                 <?= $d->api . "\n" ?>
 }
 
 define service     {
     use                     <?= $t->service_definition . "\n" ?>
-    host_name               bird-<?= $d->getHandle() . "\n" ?>
+    host_name               bird-<?= $d->handle . "\n" ?>
 }
 
 <?php endforeach; ?>

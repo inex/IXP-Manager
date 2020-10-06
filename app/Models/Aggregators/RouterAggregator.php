@@ -28,6 +28,74 @@ use IXP\Models\Customer;
 use IXP\Models\Router;
 use IXP\Models\User;
 
+/**
+ * IXP\Models\Aggregators\RouterAggregator
+ *
+ * @property int $id
+ * @property int $vlan_id
+ * @property string $handle
+ * @property int $protocol
+ * @property int $type
+ * @property string $name
+ * @property string $shortname
+ * @property string $router_id
+ * @property string $peering_ip
+ * @property int $asn
+ * @property string $software
+ * @property string $mgmt_host
+ * @property string|null $api
+ * @property int $api_type
+ * @property bool|null $lg_access
+ * @property bool $quarantine
+ * @property bool $bgp_lc
+ * @property string $template
+ * @property bool $skip_md5
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property bool $rpki
+ * @property string|null $software_version
+ * @property string|null $operating_system
+ * @property string|null $operating_system_version
+ * @property int $rfc1997_passthru
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property-read \IXP\Models\Vlan $vlan
+ * @method static Builder|Router hasApi()
+ * @method static Builder|Router ipv4()
+ * @method static Builder|Router ipv6()
+ * @method static Builder|Router largeCommunities()
+ * @method static Builder|RouterAggregator newModelQuery()
+ * @method static Builder|RouterAggregator newQuery()
+ * @method static Builder|Router notQuarantine()
+ * @method static Builder|RouterAggregator query()
+ * @method static Builder|Router routeServer()
+ * @method static Builder|Router rpki()
+ * @method static Builder|RouterAggregator whereApi($value)
+ * @method static Builder|RouterAggregator whereApiType($value)
+ * @method static Builder|RouterAggregator whereAsn($value)
+ * @method static Builder|RouterAggregator whereBgpLc($value)
+ * @method static Builder|RouterAggregator whereCreatedAt($value)
+ * @method static Builder|RouterAggregator whereHandle($value)
+ * @method static Builder|RouterAggregator whereId($value)
+ * @method static Builder|RouterAggregator whereLgAccess($value)
+ * @method static Builder|RouterAggregator whereMgmtHost($value)
+ * @method static Builder|RouterAggregator whereName($value)
+ * @method static Builder|RouterAggregator whereOperatingSystem($value)
+ * @method static Builder|RouterAggregator whereOperatingSystemVersion($value)
+ * @method static Builder|RouterAggregator wherePeeringIp($value)
+ * @method static Builder|RouterAggregator whereProtocol($value)
+ * @method static Builder|RouterAggregator whereQuarantine($value)
+ * @method static Builder|RouterAggregator whereRfc1997Passthru($value)
+ * @method static Builder|RouterAggregator whereRouterId($value)
+ * @method static Builder|RouterAggregator whereRpki($value)
+ * @method static Builder|RouterAggregator whereShortname($value)
+ * @method static Builder|RouterAggregator whereSkipMd5($value)
+ * @method static Builder|RouterAggregator whereSoftware($value)
+ * @method static Builder|RouterAggregator whereSoftwareVersion($value)
+ * @method static Builder|RouterAggregator whereTemplate($value)
+ * @method static Builder|RouterAggregator whereType($value)
+ * @method static Builder|RouterAggregator whereUpdatedAt($value)
+ * @method static Builder|RouterAggregator whereVlanId($value)
+ * @mixin \Eloquent
+ */
 class RouterAggregator extends Router
 {
     /**

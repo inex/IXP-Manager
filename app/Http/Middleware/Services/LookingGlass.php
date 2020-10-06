@@ -102,7 +102,7 @@ class LookingGlass
         try {
             $router =  Router::whereHandle( $request->handle )->get()->first();
 
-            if( !$router || !$router->hasApi() ) {
+            if( !$router || !$router->api() ) {
                 AlertContainer::push( "No router with the provided handle was found", Alert::DANGER );
                 return redirect( route( 'lg::index' ) );
             }

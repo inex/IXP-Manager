@@ -9,7 +9,7 @@
         <th>
             First Seen
         </th>
-        <?php if( $t->type == 'adv_acc' || $t->type == 'adv_nacc' ): ?>
+        <?php if( $t->type === 'adv_acc' || $t->type === 'adv_nacc' ): ?>
                 <th>
                     Origin AS
                 </th>
@@ -25,9 +25,9 @@
                     IPv<?= $t->ee( $r[ 'protocol'] ) ?>
                 </td>
                 <td>
-                    <?= $r[ 'timestamp']->format('Y-m-d H:i:s') ?>
+                    <?= $r[ 'timestamp'] ?>
                 </td>
-                <?php if( $t->type == 'adv_acc' || $t->type == 'adv_nacc' ): ?>
+                <?php if( $t->type === 'adv_acc' || $t->type === 'adv_nacc' ): ?>
                     <td>
                         <?= $t->asNumber( $r[ 'rsorigin' ] ) ?>
                     </td>

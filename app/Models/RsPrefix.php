@@ -43,8 +43,8 @@ class RsPrefix extends Model
      * @var array Map prefix acceptance types to lookup functions
      */
     public static $ROUTES_TYPES_FNS = [
-        'adv_acc'  => 'getRoutesAdvertisedAndAccepted',
-        'adv_nacc' => 'getRoutesAdvertisedAndNotAccepted',
-        'nadv_acc' => 'getRoutesNotAdvertisedButAcceptable'
+        'adv_acc'  => 'routesAdvertisedAndAccepted',
+        'adv_nacc' => 'routesAdvertisedAndNotAccepted',
+        'nadv_acc' => 'routesNotAdvertisedButAcceptable'
     ];
 }
