@@ -23,24 +23,23 @@
             <?php foreach( $t->results[ 'contacts' ] as $contact ): ?>
                 <tr>
                     <td>
-                        <a href="<?= url( "contact/edit/id/" . $contact->getId() . "/cid/".$contact->getCustomer()->getId()) ?>">
-                            <?= $t->ee(  $contact->getName() ) ?>
+                        <a href="<?= url( "contact/edit/id/" . $contact->id . "/cid/" . $contact->customer->id ) ?>">
+                            <?= $t->ee(  $contact->name ) ?>
                         </a>
                     </td>
                     <td>
-                        <?= $t->ee( $contact->getEmail() ) ?>
+                        <?= $t->ee( $contact->email ) ?>
                     </td>
                     <td>
-                        <a href="<?= route( "customer@overview" , [ "id" => $contact->getCustomer()->getId() ] ) ?>">
-                            <?= $t->ee( $contact->getCustomer()->getName() ) ?>
+                        <a href="<?= route( "customer@overview" , [ "id" => $contact->customer->id ] ) ?>">
+                            <?= $t->ee( $contact->customer->name ) ?>
                         </a>
                     </td>
                     <td>
-                        <?= $contact->getCreated()->format( "Y-m-d H:i:s") ?>
+                        <?= $contact->created_at ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 </div>
-

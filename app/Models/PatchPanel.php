@@ -30,9 +30,7 @@ use Illuminate\Database\Eloquent\{
     Model
 };
 
-use Illuminate\Database\Eloquent\Relations\{
-    HasMany
-};
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
 
 /**
  * IXP\Models\PatchPanel
@@ -73,6 +71,7 @@ use Illuminate\Database\Eloquent\Relations\{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel whereUpdatedAt($value)
+ * @property-read \IXP\Models\Cabinet|null $cabinet
  */
 
 class PatchPanel extends Model
@@ -90,5 +89,13 @@ class PatchPanel extends Model
     public function patchPanelPorts(): HasMany
     {
         return $this->hasMany(PatchPanelPort::class, 'patch_panel_id' );
+    }
+
+    /**
+     * Get the cabinet that own the patch panel
+     */
+    public function cabinet(): BelongsTo
+    {
+        return $this->belongsTo(Cabinet::class, 'cabinet_id' );
     }
 }

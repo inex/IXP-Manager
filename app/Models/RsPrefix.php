@@ -3,6 +3,8 @@
 namespace IXP\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * IXP\Models\RsPrefix
@@ -47,4 +49,13 @@ class RsPrefix extends Model
         'adv_nacc' => 'routesAdvertisedAndNotAccepted',
         'nadv_acc' => 'routesNotAdvertisedButAcceptable'
     ];
+
+    /**
+     * Get the the customer that own the rs prefix
+     */
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class, 'custid' );
+    }
+
 }

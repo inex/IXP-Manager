@@ -326,7 +326,7 @@ class PatchPanelPort extends EntityRepository
      *
      * @return PatchPanelPortEntity[]
      */
-    public function findByColoRefs( string $ref )
+    public function finvdByColoRefs( string $ref )
     {
         $q = $this->getEntityManager()->createQuery(
             "SELECT ppp

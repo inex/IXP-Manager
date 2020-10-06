@@ -65,6 +65,8 @@ use Illuminate\Database\Eloquent\{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereUpdatedAt($value)
+ * @property-read Collection|\IXP\Models\PatchPanel[] $patchPanels
+ * @property-read int|null $patch_panels_count
  */
 class Cabinet extends Model
 {
@@ -126,6 +128,14 @@ class Cabinet extends Model
     public function consoleServers(): HasMany
     {
         return $this->hasMany(ConsoleServer::class, 'cabinet_id' );
+    }
+
+    /**
+     * Get the patch panels for the cabinet
+     */
+    public function patchPanels(): HasMany
+    {
+        return $this->hasMany(PatchPanel::class, 'cabinet_id' );
     }
 
     /**

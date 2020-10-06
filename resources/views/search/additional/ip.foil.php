@@ -1,9 +1,9 @@
 <div class="mt-2">
-    <?php foreach( $t->interfaces[ $t->cust->getId() ] as $vli ) :?>
+    <?php foreach( $t->interfaces[ $t->cust->id ] as $vli ) :?>
     <h5>
-        IP Address: <?php if( $t->type == 'ipv4' ): ?> <?= $t->ee( $vli->getIPv4Address()->getAddress() ) ?> <?php else: ?> <?= $t->ee( $vli->getIPv6Address()->getAddress() ) ?> <?php endif; ?>
+        IP Address: <?php if( $t->type == 'ipv4' ): ?> <?= $t->ee( $vli->ipv4address->address ) ?> <?php else: ?> <?= $t->ee( $vli->ipv6address->address ) ?> <?php endif; ?>
 
-        <a class="ml-2 btn btn-white btn-sm" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vli->getVirtualInterface()->getId() ] ) ?>">
+        <a class="ml-2 btn btn-white btn-sm" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vli->virtualInterface->id ] ) ?>">
             Virtual Interface
         </a>
     </h5>
@@ -11,30 +11,30 @@
     <div class="row">
         <div class="col-sm-6">
             <ul>
-                <?php foreach( $vli->getVirtualInterface()->getPhysicalInterfaces() as $pi ): ?>
+                <?php foreach( $vli->virtualInterface->physicalInterfaces as $pi ): ?>
                     <li>
-                        <?= $t->ee( $pi->getSwitchport()->getSwitcher()->getName() ) ?> :: <?= $t->ee( $pi->getSwitchport()->getName() )?>
+                        <?= $t->ee( $pi->switchport->switcher->name ) ?> :: <?= $t->ee( $pi->switchport->name )?>
                     </li>
                 <?php endforeach; ?>
             </ul>
         </div>
         <div class="col-sm-6">
             <ul>
-                <?php if( $vli->getIPv4Address() ): ?>
+                <?php if( $vli->ipv4address ): ?>
                 <li>
-                    <a href="<?= route( 'interfaces/vlan/edit' , [ 'id' => $vli->getId() ] ) ?>">
-                        <span class="badge badge-<?php if( $vli->getIpv6enabled() ): ?>success<?php else: ?>danger<?php endif; ?>">
-                            <?= $t->ee( $vli->getIPv4Address()->getAddress() ) ?>
+                    <a href="<?= route( 'interfaces/vlan/edit' , [ 'id' => $vli->id ] ) ?>">
+                        <span class="badge badge-<?php if( $vli->ipv6enabled ): ?>success<?php else: ?>danger<?php endif; ?>">
+                            <?= $t->ee( $vli->ipv4address->address ) ?>
                         </span>
                     </a>
                 </li>
                 <?php endif; ?>
 
-                <?php if($vli->getIPv6Address() ): ?>
+                <?php if( $vli->ipv6address ): ?>
                     <li>
-                        <a href="<?= route( 'interfaces/vlan/edit' , [ 'id' => $vli->getId() ] ) ?>">
-                            <span class="badge badge-<?php if( $vli->getIpv6enabled() ): ?>success<?php else: ?>danger<?php endif; ?>">
-                                <?= $t->ee( $vli->getIPv6Address()->getAddress() ) ?>
+                        <a href="<?= route( 'interfaces/vlan/edit' , [ 'id' => $vli->id ] ) ?>">
+                            <span class="badge badge-<?php if( $vli->ipv6enabled ): ?>success<?php else: ?>danger<?php endif; ?>">
+                                <?= $t->ee( $vli->ipv6address->address ) ?>
                             </span>
                         </a>
                     </li>

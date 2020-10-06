@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,26 +22,22 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use D2EM, Redirect;
-
-use Illuminate\View\View;
-
-use Entities\{
-    Customer         as   CustomerEntity,
-    Contact          as   ContactEntity,
-    IPv4Address      as   IPv4AddressEntity,
-    IPv6Address      as   IPv6AddressEntity,
-    Layer2Address    as   Layer2AddressEntity,
-    MACAddress       as   MACAddressEntity,
-    PatchPanelPort   as   PatchPanelPortEntity,
-    RSPrefix         as   RSPrefixEntity,
-    User             as   UserEntity,
-    VlanInterface    as   VlanInterfaceEntity
-};
+use Illuminate\Database\Eloquent\Collection;
 
 use Illuminate\Http\{
     RedirectResponse, Request
+};
+
+use Illuminate\View\View;
+
+use IXP\Models\{
+    Contact,
+    Customer,
+    PatchPanelPort,
+    RsPrefix,
+    User,
+    VirtualInterface,
+    VlanInterface
 };
 
 /**
@@ -49,55 +45,66 @@ use Illuminate\Http\{
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Interfaces
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SearchController extends Controller
 {
-
     /**
      * Search different type of objects ( IP, User, Mac address)
      *
      * @param   Request $request instance of the current HTTP request
+     *
      * @return  RedirectResponse|View
      */
     public function do( Request $request )
     {
         $type       = '';
-        $results    = [];
-        $interfaces = [];
+        $results    = $interfaces = [];
 
-        if( $search = trim( htmlspecialchars( $request->input( 'search' ) ) ) ) {
-
+        if( $search = trim( htmlspecialchars( $request->search ) ) ) {
             // what kind of search are we doing?
             if( preg_match( '/^PPP\-(\d+)$/', $search, $matches ) ) {
                 // patch panel port search
-                if( $ppp = D2EM::getRepository( PatchPanelPortEntity::class )->find( $matches[1] ) ) {
-                    return Redirect::to( route( 'patch-panel-port@view', [ 'id' => $ppp->getId() ] ) );
+                if( $ppp = PatchPanelPort::find( $matches[1] ) ) {
+                    return redirect( route( 'patch-panel-port@view', [ 'id' => $ppp->id ] ) );
                 }
             }
             else if( preg_match( '/^xc:\s*(.*)\s*$/', $search, $matches ) ) {
                 // patch panel x-connect ID search
                 // wild card search
                 $type = 'ppp-xc';
-                $results = D2EM::getRepository( PatchPanelPortEntity::class )->findByColoRefs( $matches[1] );
+                $results = PatchPanelPort::leftJoin( 'patch_panel', 'patch_panel.id', 'patch_panel_port.patch_panel_id' )
+                    ->where( 'colo_circuit_ref', 'LIKE', '%' . $matches[1] . '%'  )->orWhere( 'colo_billing_ref', 'LIKE', '%' . $matches[1] . '%' )
+                    ->orderByRaw( 'patch_panel.id ASC, patch_panel_port.id ASC' )->get();
 
                 if( count( $results ) === 1 ) {
-                    return Redirect::to( route( 'patch-panel-port@view', [ 'id' => $results[0]->getId() ] ) );
+                    return redirect( route( 'patch-panel-port@view', [ 'id' => $results[0]->id ] ) );
                 }
             }
             else if( preg_match( '/^\.\d{1,3}$/', $search ) || preg_match( '/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $search ) ) {
                 // IPv4 search
                 $type = 'ipv4';
-                $ips = $this->processIPSearch( D2EM::getRepository( IPv4AddressEntity::class )->findVlanInterfaces( $search ) );
+                $result = VlanInterface::leftJoin( 'ipv4address AS ip', 'ip.id', 'vlaninterface.ipv4addressid' )
+                    ->where( 'ip.address', 'LIKE', strtolower( '%' . $search ) )->get();
+
+                $ips = $this->processIPSearch( $result );
                 $results = $ips[ 'results' ];
                 $interfaces = $ips[ 'interfaces' ];
             }
             else if( preg_match( '/^[a-f0-9]{12}$/', strtolower( $search ) ) || preg_match( '/^[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}$/', strtolower( $search ) ) ) {
                 // mac address search
                 $type = 'mac';
-                $discoveredMACs = $this->processMACSearch( D2EM::getRepository( MACAddressEntity::class )->findVirtualInterface( $search ) );
-                $configuredMACs = $this->processMACSearch( D2EM::getRepository( Layer2AddressEntity::class )->findVlanInterface( $search ) );
+                $search = preg_replace( '/[^a-f0-9]/', '', strtolower( $search ) );
+
+                $vis = VirtualInterface::select( 'virtualinterface.*' )->leftJoin( 'macaddress', 'macaddress.virtualinterfaceid', 'virtualinterface.id' )
+                    ->where( 'macaddress.mac', $search )->distinct()->get();
+
+                $vlis = VlanInterface::select( 'vlaninterface.*' )->leftJoin( 'l2address', 'l2address.vlan_interface_id', 'vlaninterface.id' )
+                    ->where( 'l2address.mac', $search )->get();
+
+                $discoveredMACs = $this->processMACSearch( $vis );
+                $configuredMACs = $this->processMACSearch( $vlis );
                 $macs = $this->mergeMacs( $discoveredMACs, $configuredMACs );
                 $results    = $macs[ 'results' ];
                 $interfaces = $macs[ 'interfaces' ];
@@ -105,43 +112,49 @@ class SearchController extends Controller
             else if( preg_match( '/^:[0-9a-fA-F]{1,4}$/', $search ) || preg_match( '/^[0-9a-fA-F]{1,4}:.*:[0-9a-fA-F]{1,4}$/', $search ) ) {
                 // IPv6 search
                 $type = 'ipv6';
-                $ips =  $this->processIPSearch( D2EM::getRepository( IPv6AddressEntity::class )->findVlanInterfaces( $search ) );
+
+                $result = VlanInterface::leftJoin( 'ipv6address AS ip', 'ip.id', 'vlaninterface.ipv6addressid' )
+                    ->where( 'ip.address', 'LIKE', strtolower( '%' . $search ) )->get();
+
+                $ips =  $this->processIPSearch( $result );
                 $results = $ips[ 'results' ];
                 $interfaces = $ips[ 'interfaces' ];
             }
             else if( preg_match( '/^as(\d+)$/', strtolower( $search ), $matches ) || preg_match( '/^(\d+)$/', $search, $matches ) ) {
                 // user by ASN search
                 $type = 'asn';
-                $results = D2EM::getRepository( CustomerEntity::class )->findByASN( $matches[1] );
+                $results =  Customer::whereAutsys( $matches[1] )->get();
             }
             else if( preg_match( '/^AS-(.*)$/', strtoupper( $search ) ) ) {
                 // user by ASN macro search
                 $type = 'asmacro';
-                $results = D2EM::getRepository( CustomerEntity::class )->findByASMacro( $search );
+                $results = Customer::where( 'peeringmacro', $search )->orWhere( 'peeringmacrov6', $search )->get();
             }
             else if( preg_match( '/^@([a-zA-Z0-9]+)$/', $search, $matches ) ) {
                 // user by username search
                 $type = 'username';
-                $results[ 'users' ] = D2EM::getRepository( UserEntity::class )->findByUsername( $matches[1] . '%' );
+                $results[ 'users' ] = User::where( 'Username', 'LIKE' , $matches[1] . '%' )->get();
             }
             else if( filter_var( $search, FILTER_VALIDATE_EMAIL ) !== false ) {
                 // user by email search
                 $type = 'email';
-
-                $results[ 'users' ]     = D2EM::getRepository( UserEntity::class    )->findByEmail( $search );
-                $results[ 'contacts' ]  = D2EM::getRepository( ContactEntity::class )->findByEmail( $search );
+                $results[ 'users' ]     = User::whereEmail( $search )->get();
+                $results[ 'contacts' ]  = Contact::whereEmail( $search )->get();
             }
             else if( preg_match( '/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\/\d{1,2}$/', $search ) || preg_match( '/^[0-9a-fA-F]{1,4}:.*:[0-9a-fA-F]{0,4}\/\d{1,3}$/', $search ) ) {
                 // rsprefix search
                 $type = 'rsprefix';
-                $results = D2EM::getRepository( RSPrefixEntity::class )->findBy( [ 'prefix' => $search ] );
+                $results = RsPrefix::wherePrefix( $search )->get();
             }
             else {
                 // wild card search
                 $type = 'cust_wild';
-                $results = D2EM::getRepository( CustomerEntity::class )->findWild( $search );
+                $search = '%' . $search . '%';
+                $results = Customer::leftJoin( 'company_registration_detail AS r', 'r.id', 'cust.company_registered_detail_id' )
+                    ->where( 'cust.name', 'LIKE' , $search )->orWhere( 'cust.shortname', 'LIKE' , $search )
+                    ->orWhere( 'cust.abbreviatedName', 'LIKE' , $search )->orWhere( 'r.registeredName', 'LIKE' , $search )
+                    ->orderBy( 'cust.name' )->get();
             }
-
         }
 
         return view( 'search/do' )->with([
@@ -155,43 +168,42 @@ class SearchController extends Controller
     /**
      * Process the IP search (IPv4 and IPv6)
      *
-     * @param   array $vlis vlan interfaces list
+     * @param Collection $vlis vlan interfaces list
+     *
      * @return  array array composed of the the result (customer) and the interface (vlan interfaces)
      */
-    private function processIpSearch( array $vlis = [] ) {
-        $results = [];
-        $interfaces = [];
+    private function processIpSearch( Collection $vlis ): array
+    {
+        $results = $interfaces = [];
         foreach( $vlis as $vli ) {
-            $results[ $vli->getVirtualInterface()->getCustomer()->getId() ] = $vli->getVirtualInterface()->getCustomer();
-            $interfaces[ $vli->getVirtualInterface()->getCustomer()->getId() ][] = $vli;
+            /** @var $vli VlanInterface */
+            $results[ $vli->virtualInterface->customer->id ] = $vli->virtualInterface->customer;
+            $interfaces[ $vli->virtualInterface->customer->id ][] = $vli;
         }
-
         return [ 'results' => $results, 'interfaces' => $interfaces ];
     }
 
     /**
      * Process the mac address search
      *
-     * @param   array $is virtual interfaces list
+     * @param Collection|null  $is virtual interfaces list
      *
      * @return  array array composed of the the result (customer) and the interface (vlan interfaces)
      */
-    private function processMACSearch( array $is = [] ) {
-        $results = [];
-        $interfaces = [];
+    private function processMACSearch( Collection $is ): array
+    {
+        $results = $interfaces = [];
 
         foreach( $is as $i ) {
-
-            if( $i instanceof VlanInterfaceEntity ) {
-                $c = $i->getVirtualInterface()->getCustomer();
+            if( $i instanceof VlanInterface ) {
+                $c = $i->virtualInterface->customer;
             } else {
-                $c = $i->getCustomer();
+                $c = $i->customer;
             }
 
-            $results[ $c->getId()    ]   = $c;
-            $interfaces[ $c->getId() ][] = $i instanceof VlanInterfaceEntity ? $i->getVirtualInterface() : $i;
+            $results[ $c->id ]      = $c;
+            $interfaces[ $c->id ][] = $i instanceof VlanInterface ? $i->virtualInterface : $i;
         }
-
         return [ 'results' => $results, 'interfaces' => $interfaces ];
     }
 
@@ -203,9 +215,9 @@ class SearchController extends Controller
      *
      * @return array
      */
-    private function mergeMacs( array $discovered, array $configured ): array {
-        $results    = [];
-        $interfaces = [];
+    private function mergeMacs( array $discovered, array $configured ): array
+    {
+        $results    = $interfaces = [];
 
         foreach( [ $discovered, $configured ] as $a ) {
             foreach( $a['results'] as $cid => $c ) {

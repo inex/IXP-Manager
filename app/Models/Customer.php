@@ -377,6 +377,14 @@ class Customer extends Model
     }
 
     /**
+     * Get the rsPrefixes for the customer
+     */
+    public function rsPrefixes(): HasMany
+    {
+        return $this->hasMany(RsPrefix::class, 'custid' );
+    }
+
+    /**
      * Get the logo for the customer
      */
     public function logo(): HasOne
@@ -469,6 +477,48 @@ class Customer extends Model
     public function typeAssociate(): bool
     {
         return $this->type === self::TYPE_ASSOCIATE;
+    }
+
+    /**
+     * Returns true if the customer's status is NORMAL
+     *
+     * @return bool True if the customer's status is NORMAL
+     */
+    public function isNormal(): bool
+    {
+        return $this->status === self::STATUS_NORMAL;
+    }
+
+    /**
+     * Returns true if the customer's status is NOTCONNECTED
+     *
+     * @return bool True if the customer's status is NOTCONNECTED
+     */
+    public function isNotConnected(): bool
+    {
+        return $this->status === self::STATUS_NOTCONNECTED;
+    }
+
+    /**
+     * Returns true if the customer's status is SUSPENDED
+     *
+     * @return bool True if the customer's status is SUSPENDED
+     */
+    public function isSuspended(): bool
+    {
+        return $this->status === self::STATUS_SUSPENDED;
+    }
+
+    /**
+     * Returns true if the customer has left
+     *
+     * @return bool
+     */
+    public function hasLeft(): bool
+    {
+        // sigh. Using a date field to determine if an account is closed or not is a
+        // very bad idea and should be changed => FIXME
+        return $this->dateleave != null;
     }
 
     /**

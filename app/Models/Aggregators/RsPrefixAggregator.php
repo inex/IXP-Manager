@@ -15,6 +15,20 @@ use IXP\Models\RsPrefix;
  * @method static Builder|RsPrefixAggregator newQuery()
  * @method static Builder|RsPrefixAggregator query()
  * @mixin \Eloquent
+ * @property int $id
+ * @property int|null $custid
+ * @property string|null $timestamp
+ * @property string|null $prefix
+ * @property int|null $protocol
+ * @property int|null $irrdb
+ * @property int|null $rs_origin
+ * @method static Builder|RsPrefixAggregator whereCustid($value)
+ * @method static Builder|RsPrefixAggregator whereId($value)
+ * @method static Builder|RsPrefixAggregator whereIrrdb($value)
+ * @method static Builder|RsPrefixAggregator wherePrefix($value)
+ * @method static Builder|RsPrefixAggregator whereProtocol($value)
+ * @method static Builder|RsPrefixAggregator whereRsOrigin($value)
+ * @method static Builder|RsPrefixAggregator whereTimestamp($value)
  */
 class RsPrefixAggregator extends RsPrefix
 {

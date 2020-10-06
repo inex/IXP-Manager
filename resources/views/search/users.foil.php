@@ -23,24 +23,23 @@
             <?php foreach( $t->results[ 'users' ] as $user ): ?>
                 <tr>
                     <td>
-                        <a href="<?= route( "login-history@view", [ "id" => $user->getId() ] ) ?>">
-                            <?= $t->ee( $user->getUsername() ) ?>
+                        <a href="<?= route( "login-history@view", [ "id" => $user->id ] ) ?>">
+                            <?= $t->ee( $user->username ) ?>
                         </a>
                     </td>
                     <td>
-                        <?= $t->ee( $user->getEmail() ) ?>
+                        <?= $t->ee( $user->email ) ?>
                     </td>
                     <td>
-                        <a href="<?= route( "customer@overview" , [ "id" => $user->getCustomer()->getId() ] ) ?>">
-                            <?= $t->ee( $user->getCustomer()->getName() ) ?>
+                        <a href="<?= route( "customer@overview" , [ "id" => $user->customer->id ] ) ?>">
+                            <?= $t->ee( $user->customer->name ) ?>
                         </a>
                     </td>
                     <td>
-                        <?= $user->getCreated()->format( "Y-m-d H:i:s") ?>
+                        <?= $user->created_at->format( "Y-m-d H:i:s") ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 </div>
-

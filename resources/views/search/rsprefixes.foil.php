@@ -19,20 +19,20 @@
         <?php foreach( $t->results as $prefix ): ?>
             <tr>
                 <td>
-                    <a href="<?= route( "rs-prefixes@view", [ "cust" => $prefix->getCustomer()->getId() ] ) ?>">
-                        <?= $t->ee(  $prefix->getPrefix() ) ?>
+                    <a href="<?= route( "rs-prefixes@view", [ "cust" => $prefix->customer->id ] ) ?>">
+                        <?= $t->ee(  $prefix->prefix ) ?>
                     </a>
                 </td>
                 <td>
-                    <a href="<?= route( "customer@overview" , [ "id" => $prefix->getCustomer()->getId() ] ) ?>">
-                        <?= $t->ee( $prefix->getCustomer()->getName() ) ?>
+                    <a href="<?= route( "customer@overview" , [ "id" => $prefix->customer->id ] ) ?>">
+                        <?= $t->ee( $prefix->customer->name ) ?>
                     </a>
                 </td>
                 <td>
-                    <?php if( $prefix->getIrrdb() ): ?> Yes<?php else: ?>No<?php endif; ?>
+                    <?php if( $prefix->irrdb ): ?> Yes<?php else: ?>No<?php endif; ?>
                 </td>
                 <td>
-                    <?= $prefix->getRsOrigin() ?>
+                    <?= $prefix->rs_origin ?>
                 </td>
             </tr>
         <?php endforeach; ?>
