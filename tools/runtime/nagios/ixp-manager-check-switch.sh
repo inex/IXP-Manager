@@ -75,9 +75,9 @@ else
     RETCODE=2;
 fi
 
-while read line; do
+echo $STATUS | jq -r '.msgs[]' | while read line; do
     echo -n "${line} "
-done< <(echo $STATUS | jq -r '.msgs[]')
+done
 
 echo
 
