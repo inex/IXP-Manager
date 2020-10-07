@@ -39,7 +39,8 @@ use Illuminate\View\View;
 use IXP\Exceptions\Services\Grapher\GraphCannotBeProcessedException;
 use IXP\Http\Requests\StatisticsRequest;
 
-use IXP\Models\{Aggregators\TrafficDailyPhysIntAggregator,
+use IXP\Models\{
+    Aggregators\TrafficDailyPhysIntAggregator,
     Aggregators\VirtualInterfaceAggregator,
     Aggregators\VlanInterfaceAggregator,
     CoreBundle,
@@ -51,7 +52,8 @@ use IXP\Models\{Aggregators\TrafficDailyPhysIntAggregator,
     TrafficDailyPhysInt,
     VirtualInterface,
     Vlan,
-    VlanInterface};
+    VlanInterface
+};
 
 use IXP\Services\Grapher\Graph;
 use IXP\Services\Grapher;

@@ -113,7 +113,7 @@ class LocationController extends EloquentController
     /**
      * Provide array of rows for the list and view
      *
-     * @param int $id The `id` of the row to load for `view`. `null` if `list`
+     * @param int|null $id The `id` of the row to load for `view`. `null` if `list`
      *
      * @return array
      */

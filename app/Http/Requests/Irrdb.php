@@ -76,7 +76,7 @@ class Irrdb extends FormRequest
      */
     public function withValidator(): void
     {
-        if( !( $this->customer->routeServerClient() && $this->customer->isIrrdbFiltered() ) ) {
+        if( !( $this->customer->routeServerClient() && $this->customer->irrdbFiltered() ) ) {
             throw new IrrdbManage( 'IRRDB only applies to customers who are route server clients which are configured for IRRDB filtering.' );
         }
 

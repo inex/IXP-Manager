@@ -1,10 +1,9 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace IXP\Jobs;
 
-
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -29,19 +28,27 @@ use Cache;
 use Carbon\Carbon;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\{
+    SerializesModels,
+    InteractsWithQueue
+};
+
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
 use IXP\Exceptions\GeneralException;
-use IXP\Models\{Customer, Router, VlanInterface};
+
+use IXP\Models\{
+    Customer,
+    Router,
+    VlanInterface
+};
+
 use IXP\Services\LookingGlass;
 
 class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
 
     /**
      * @var Customer
@@ -57,6 +64,7 @@ class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
      * Create a new job instance.
      *
      * @param Customer $customer
+     *
      * @return void
      */
     public function __construct( Customer $customer )
@@ -67,9 +75,11 @@ class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
     /**
      * Execute the job.
      *
+     * @param LookingGlass $lg
+     *
      * @return void
      *
-     * @throws
+     * @throws GeneralException
      */
     public function handle( LookingGlass $lg ): void
     {
@@ -130,7 +140,6 @@ class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
             ->get();
 
         foreach( $routers as $router ) {
-
             if( !( $resp = \json_decode( $lg->forRouter( $router )->routesProtocolLargeCommunityWildXYRoutes( $bird_protocol, $router->asn, 1101 ) ) ) || !isset( $resp->routes ) ) {
                 continue;
             }
@@ -143,7 +152,7 @@ class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
                 }
 
                 $this->filteredPrefixes[ $route->network ]['routers'][      $router->handle ] = $bird_protocol;
-                $this->filteredPrefixes[ $route->network ]['age'][          $router->handle ] = Carbon::parse($route->age);
+                $this->filteredPrefixes[ $route->network ]['age'][          $router->handle ] = Carbon::parse( $route->age );
                 $this->filteredPrefixes[ $route->network ]['primary'][      $router->handle ] = $route->primary;
                 $this->filteredPrefixes[ $route->network ]['as_path'][      $router->handle ] = $route->bgp->as_path;
                 $this->filteredPrefixes[ $route->network ]['gateway'][      $router->handle ] = $route->gateway;

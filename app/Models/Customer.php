@@ -685,7 +685,7 @@ class Customer extends Model
      * Is the customer IRRDB filtered (usually for route server clients) on any of their VLAN interfaces?
      * @return boolean
      */
-    public function isIrrdbFiltered(): bool
+    public function irrdbFiltered(): bool
     {
         foreach( $this->virtualInterfaces as $vi ) {
             foreach( $vi->vlanInterfaces as $vli ) {

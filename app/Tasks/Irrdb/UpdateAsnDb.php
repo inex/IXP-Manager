@@ -50,7 +50,7 @@ class UpdateAsnDb extends UpdateDb
     {
 
         foreach( $this->protocols() as $protocol ) {
-            if( $this->customer()->routeServerClient( $protocol ) && $this->customer()->isIrrdbFiltered() ) {
+            if( $this->customer()->routeServerClient( $protocol ) && $this->customer()->irrdbFiltered() ) {
                 $this->bgpq3()->setSources( $this->customer()->irrdbConfig->source );
 
                 $this->startTimer();
