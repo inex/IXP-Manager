@@ -1,54 +1,38 @@
 <?php
-/** @var Foil\Template\Template $t */
-$this->layout( 'layouts/ixpv4' );
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' );
 ?>
-
-<?php $this->section( 'headers' ) ?>
-    <style>
-        #table-core-link tr td{
-            vertical-align: middle;
-        }
-    </style>
-<?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
     Core Bundles / Edit
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-
     <div class="btn-group btn-group-sm" role="group">
         <a class="btn btn-white" href="<?= route( 'core-bundle@list' )?>" title="list">
             <span class="fa fa-th-list"></span>
         </a>
-        <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-plus"></i> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="<?= route( 'core-bundle@add-wizard' )?>" >
+            <a class="dropdown-item" href="<?= route( 'core-bundle@create-wizard' )?>" >
                 Add Core Bundle Wizard...
             </a>
-
         </ul>
     </div>
-
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
-
     <div class="row">
-
         <div class="col-sm-12">
-
             <?= $t->alerts() ?>
-
             <div id="message-cb"></div>
-
             <div class="card">
                 <div class="card-body">
-                    <?= Former::open()->method( 'POST' )
+                    <?= Former::open()->method( 'PUT' )
                         ->id( 'core-bundle-form' )
-                        ->action( route ( 'core-bundle@edit-store' ) )
+                        ->action( route ( 'core-bundle@update', [ 'cb' => $t->cb->id ] ) )
                         ->customInputWidthClass( 'col-lg-8 col-md-6 col-sm-6' )
                         ->customLabelWidthClass( 'col-lg-4 col-md-3 col-sm-4' )
                         ->actionButtonsCustomClass( "grey-box")
@@ -59,8 +43,7 @@ $this->layout( 'layouts/ixpv4' );
                         </h3>
                         <hr>
                         <div class="col-lg-6 col-sm-12">
-
-                            <?= Former::select( 'customer' )
+                            <?= Former::select( 'custid' )
                                 ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
                                 ->fromQuery( $t->customers, 'name' )
                                 ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
@@ -74,7 +57,7 @@ $this->layout( 'layouts/ixpv4' );
                                 ->blockHelp( 'help text' );
                             ?>
 
-                            <?= Former::text( 'graph-title' )
+                            <?= Former::text( 'graph_title' )
                                 ->label( 'Graph Title' )
                                 ->placeholder( 'Graph Title' )
                                 ->blockHelp( 'help text' );
@@ -82,19 +65,17 @@ $this->layout( 'layouts/ixpv4' );
 
                             <?= Former::select( 'type' )
                                 ->label( 'Type<sup>*</sup>' )
-                                ->fromQuery( Entities\CoreBundle::$TYPES , 'name' )
+                                ->fromQuery( \IXP\Models\CoreBundle::$TYPES , 'name' )
                                 ->placeholder( 'Choose Core Bundle type' )
                                 ->addClass( 'chzn-select' )
                                 ->blockHelp( '' )
-                                ->value( Entities\CoreBundle::TYPE_ECMP )
+                                ->value( \IXP\Models\CoreBundle::TYPE_ECMP )
                                 ->disabled( true );
                             ?>
-
                         </div>
 
                         <div class="col-lg-6 col-sm-12">
-
-                            <?php if( $t->cb->isL2LAG() ): ?>
+                            <?php if( $t->cb->typeL2LAG() ): ?>
                                 <?= Former::checkbox( 'stp' )
                                     ->id('stp')
                                     ->label( 'STP' )
@@ -125,8 +106,7 @@ $this->layout( 'layouts/ixpv4' );
                                 ->blockHelp( "" );
                             ?>
 
-                            <?php if( $t->cb->isL3LAG() ): ?>
-
+                            <?php if( $t->cb->typeL3LAG() ): ?>
                                 <?= Former::checkbox( 'bfd' )
                                     ->label( 'BFD' )
                                     ->value( 1 )
@@ -134,7 +114,7 @@ $this->layout( 'layouts/ixpv4' );
                                     ->blockHelp( "" );
                                 ?>
 
-                                <?= Former::text( 'subnet' )
+                                <?= Former::text( 'ipv4_subnet' )
                                     ->label( 'SubNet' )
                                     ->placeholder( '192.0.2.0/30' )
                                     ->blockHelp( "" )
@@ -144,12 +124,12 @@ $this->layout( 'layouts/ixpv4' );
 
                             <?= Former::hidden( 'type' )
                                 ->id( 'type')
-                                ->value( $t->cb->getType() );
+                                ->value( $t->cb->type );
                             ?>
 
                             <?= Former::hidden( 'cb' )
                                 ->id( 'cb')
-                                ->value( $t->cb->getId() )
+                                ->value( $t->cb->id )
                             ?>
 
                         </div>
@@ -160,9 +140,7 @@ $this->layout( 'layouts/ixpv4' );
                             Former::success_button( 'Help' )->id( 'help-btn' )
                         )?>
 
-
                     <?= Former::close() ?>
-
                 </div>
             </div>
 
@@ -182,18 +160,14 @@ $this->layout( 'layouts/ixpv4' );
                         <b class="mr-auto my-auto">
                             If you are sure you want to delete this Core Bundle:
                         </b>
-                        <a class="btn btn-danger mr-4" id="cb-delete-<?= $t->cb->getId() ?>" href="#" title="Delete">
+                        <a class="btn btn-danger mr-4 btn-delete-cb" data-url="<?= route( 'core-bundle@delete', [ 'cb' => $t->cb->id ] ) ?>" href="#" title="Delete">
                             Delete
                         </a>
-
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>

@@ -29,6 +29,7 @@ use IXP\Models\RsPrefix;
  * @method static Builder|RsPrefixAggregator whereProtocol($value)
  * @method static Builder|RsPrefixAggregator whereRsOrigin($value)
  * @method static Builder|RsPrefixAggregator whereTimestamp($value)
+ * @property-read \IXP\Models\Customer|null $customer
  */
 class RsPrefixAggregator extends RsPrefix
 {

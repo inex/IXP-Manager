@@ -19,13 +19,11 @@
     const class_lag_area        = $( '.lag-area' );
 
 
-
     // Some global variable
     let excludedSwitchPortSideA  = [];
     let excludedSwitchPortSideB  = [];
 
     let switchArray             = <?php echo json_encode( $t->switches ) ; ?>
-
 
     $( document ).ready( function() {
         $( 'label.col-lg-2' ).removeClass( 'col-lg-2' );
@@ -66,7 +64,7 @@
      * set description value in the graph name input if this one is empty
      */
     input_description.blur( function() {
-        if( input_graph_title.val() == '' ){
+        if( input_graph_title.val() === '' ){
             input_graph_title.val( input_description.val() );
         }
     });
@@ -83,7 +81,7 @@
     $('#core-bundle-submit-btn').click(function() {
         $( ".message" ).html( '' );
 
-        if( dd_type.val() == <?= \Entities\CoreBundle::TYPE_L3_LAG ?> && input_subnet.val() !== '' ) {
+        if( parseInt( dd_type.val() ) === <?= \IXP\Models\CoreBundle::TYPE_L3_LAG ?> && input_subnet.val() !== '' ) {
             if( !validSubnet( input_subnet.val() ) ) {
                 $("#message-cb").html(`<div class='alert alert-danger' role='alert'>The subnet ${input_subnet.val()} is not valid! </div>` );
                 $("html, body").animate({ scrollTop: 0 }, "slow");
@@ -125,7 +123,7 @@
         setDropDownSwitchSideX( sside );
 
         // Reset the list of excluded port depending on the side
-        if( sside == 'a' ){
+        if( sside === 'a' ) {
             excludedSwitchPortSideA = []
         } else {
             excludedSwitchPortSideB = []
@@ -173,18 +171,17 @@
     /// Functions
     ///
 
-
     /**
      * Display Core link area and set value to input depending on the type selected
      */
-    function displayCoreLinks( action ){
+    function displayCoreLinks( action ) {
         div_core_link_area.html( '' );
         $("#div-links").show( );
 
         actionForL3Lag();
         actionForLxLag();
 
-        dd_type.val() == <?= \Entities\CoreBundle::TYPE_L2_LAG ?> ? div_stp.slideDown() : div_stp.slideUp();
+        parseInt( dd_type.val() ) === <?= \IXP\Models\CoreBundle::TYPE_L2_LAG ?> ? div_stp.slideDown() : div_stp.slideUp();
 
         loadBundleLinkSection( action );
     }
@@ -197,7 +194,7 @@
 
         let currentMessage = previousElement.find( ".message-new-cl" );
 
-        if( action == 'addBtn' ) {
+        if( action === 'addBtn' ) {
             // check if the switch port for side A and B are set
             if( !dd_switch_a.val() || !dd_switch_b.val()  ){
                 div_message_cl.append( "<div class='alert alert-danger' role='alert'>Please select Switches for Side A and B.</div>" );
@@ -231,7 +228,7 @@
     }
 
 
-    function initializeNewCoreLink( element, old_nb_link ){
+    function initializeNewCoreLink( element, old_nb_link ) {
         let nb_link = $( ".core-link-form" ).length;
 
         element.find( ".sp-dd" ).select2( { width: '100%' } );
@@ -239,7 +236,7 @@
         element.find( ".message-new-cl" ).attr( "id",  `message-${nb_link}` );
         element.find( ".delete-core-link" ).attr( "id",  `delete-cl-${nb_link}` );
 
-        if( old_nb_link < 1){
+        if( old_nb_link < 1 ){
             element.find( ".delete-core-link" ).remove();
         }
 
@@ -250,7 +247,7 @@
     /**
      *  Set the name to all the inputs, indexed by their order in the DOM
      * */
-    function setDetailInputName( element, nb_link ){
+    function setDetailInputName( element, nb_link ) {
         element.find( ".cl-input" ).each( function( index, input ) {
             $( input ).attr( 'name' , `cl-details[${nb_link}][${$( input ).attr( "data-value" )}]` );
             $( input ).attr( 'id' , $( input ).attr( "data-value" ) + "-" + nb_link  );
@@ -261,21 +258,19 @@
     /**
      * Function adding a new core link form in the core links area
      */
-    function loadBundleLinkSection( action ){
+    function loadBundleLinkSection( action ) {
         // store the last value
         let old_nb_link = $( ".core-link-form" ).length;
 
         let previous_core_link_form = $( "#core-links-area .core-link-form:last" );
 
-        let bundleType = dd_type.val();
-        let enabled = cb_enabled.is(':checked') ? true : false;
-
-        let subnet = $( "#subnet-" + old_nb_link  ).val() ? $( "#subnet-" + old_nb_link  ).val() : null ;
+        let bundleType  = parseInt( dd_type.val() );
+        let enabled     = !!cb_enabled.is(':checked');
+        let subnet      = $( "#subnet-" + old_nb_link  ).val() ? $( "#subnet-" + old_nb_link  ).val() : null ;
 
         $( ".message" ).html( '' );
 
-        if( !checkClError( action, bundleType, subnet, previous_core_link_form ) ){
-
+        if( !checkClError( action, bundleType, subnet, previous_core_link_form ) ) {
             // clone the default core link form in order to insert it as a new Core link form in the dedicated zone
             let new_core_link_form = $( "#core-link-example" ).clone();
 
@@ -283,7 +278,7 @@
             new_core_link_form.addClass( "core-link-form" ).removeAttr( "id" );
 
             // if the bundle type is not Type ECMP, delete the BFD and Subnet inputs from the core link form
-            if( bundleType != <?= \Entities\CoreBundle::TYPE_ECMP ?> ){
+            if( bundleType !== <?= \IXP\Models\CoreBundle::TYPE_ECMP ?> ){
                 new_core_link_form.find( ".type-ecmp-only" ).remove();
             }
 
@@ -309,8 +304,7 @@
             }
 
             // event when the add button has been clicked
-            if( action == 'addBtn' ){
-
+            if( action === 'addBtn' ){
                 // disable the switch/switchport dropdown (side A/B) of the previous core link
                 disableDropDown( previous_core_link_form, true );
 
@@ -335,10 +329,10 @@
     /**
      * Copy the switch dropdown from the side A to B excluding the switch selected in side A
      */
-    function setDropDownSwitchSideX( sid ){
+    function setDropDownSwitchSideX( sid ) {
         let otherSwitch, currentSwitch;
 
-        if( sid == 'a' ) {
+        if( sid === 'a' ) {
             otherSwitch     = dd_switch_b;
             currentSwitch   = dd_switch_a;
         } else {
@@ -349,19 +343,19 @@
         let options = "";
         let oldvalue = otherSwitch.val();
 
-        if( oldvalue == null || oldvalue == '' ){
+        if( oldvalue == null || oldvalue === '' ) {
             options = `<option value="">Choose a switch</option>\n`;
         }
 
         jQuery.each( switchArray, function( id , val ) {
             let select = '';
 
-            if( oldvalue != null && id == oldvalue ){
+            if( oldvalue != null && val.id === parseInt( oldvalue ) ) {
                 select = `selected= 'selected'`;
             }
 
-            if( id != currentSwitch.val() ){
-                options += `<option ${select} value="${id}">${val}</option>\n`;
+            if( val.id !== parseInt( currentSwitch.val() ) ){
+                options += `<option ${select} value="${val.id}">${val.name}</option>\n`;
             }
         });
 
@@ -371,7 +365,7 @@
     /**
      * Disable or enable the switch/switch port of the both side
      */
-    function disableDropDown( element, disable) {
+    function disableDropDown( element, disable ) {
         if( $( ".core-link-form" ).length <= 2 ){
             $( ".switch-dd" ).prop( 'disabled', disable ).trigger( 'change.select2' );
         }
@@ -391,7 +385,6 @@
             new_core_link_form.find( '.enabled-cl' ).prop(' checked', true );
         }
     }
-
 
     /**
      * set the next valid subnet to the new core link form
@@ -416,7 +409,7 @@
     function actionForL3Lag() {
         let required;
 
-        if( dd_type.val() == <?= \Entities\CoreBundle::TYPE_L3_LAG ?> ) {
+        if( parseInt( dd_type.val() ) === <?= \IXP\Models\CoreBundle::TYPE_L3_LAG ?> ) {
             div_l3_lag.slideDown();
             required = true ;
         } else {
@@ -433,14 +426,13 @@
     function actionForLxLag() {
         let required;
 
-        if( dd_type.val() == <?= \Entities\CoreBundle::TYPE_L3_LAG ?> || dd_type.val() == <?= \Entities\CoreBundle::TYPE_L2_LAG ?> ) {
+        if( parseInt( dd_type.val() ) === <?= \IXP\Models\CoreBundle::TYPE_L3_LAG ?> || parseInt( dd_type.val() ) === <?= \IXP\Models\CoreBundle::TYPE_L2_LAG ?> ) {
             class_lag_area.slideDown();
             required = true ;
         } else{
             class_lag_area.slideUp();
             required = false ;
         }
-
         $( '.input-lx-lag' ).prop( 'required', required );
     }
 

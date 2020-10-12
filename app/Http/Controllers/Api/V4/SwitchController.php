@@ -31,6 +31,7 @@ use Entities\{
     CoreBundle as CoreBundleEntity,
     Switcher as SwitcherEntity, SwitchPort as SwitchPortEntity, SwitchPort
 };
+use IXP\Models\Aggregators\SwitcherAggregator;
 
 /**
  * SwitcherController API Controller
@@ -40,7 +41,22 @@ use Entities\{
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 
-class SwitchController extends Controller {
+class SwitchController extends Controller
+{
+
+    /**
+     * Get the switch port for a Switch
+     *
+     * @param   Request $request instance of the current HTTP request
+     * @param   int     $id      switch ID
+     *
+     * @return  JsonResponse JSON array of listPort
+     */
+    public function switchPort( Request $request, int $id )
+    {
+        $listPorts = SwitcherAggregator::allPorts( $id ,[ SwitchPort::TYPE_CORE, SwitchPort::TYPE_UNSET ], $request->spIdsExcluded, true );
+        return response()->json( [ 'listPorts' => $listPorts ] );
+    }
 
     /**
      * Get all switch ports for a given switch
@@ -82,17 +98,7 @@ class SwitchController extends Controller {
         return response()->json( [ 'listPorts' => $listPorts ] );
     }
 
-    /**
-     * Get the switch port for a Switch
-     *
-     * @param   Request $request instance of the current HTTP request
-     * @param   int     $id      switch ID
-     * @return  JsonResponse JSON array of listPort
-     */
-    public function switchPort( Request $request, int $id ) {
-        $listPorts = D2EM::getRepository(SwitcherEntity::class )->getAllPorts( $id ,[ SwitchPortEntity::TYPE_CORE,SwitchPortEntity::TYPE_UNSET ], $request->input('spIdsExcluded' ), true );
-        return response()->json( [ 'listPorts' => $listPorts ] );
-    }
+
 
 
     /**

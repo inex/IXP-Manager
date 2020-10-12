@@ -27,9 +27,7 @@ namespace IXP\Http\Controllers\Interfaces;
 use D2EM, Input, Redirect;
 
 use Entities\{
-    CoreBundle as CoreBundleEntity,
     CoreInterface as CoreInterfaceEntity,
-    CoreLink as CoreLinkEntity,
     IPv4Address as IPv4AddressEntity,
     IPv6Address as IPv6AddressEntity,
     PhysicalInterface as PhysicalInterfaceEntity,
@@ -39,6 +37,11 @@ use Entities\{
     VlanInterface as VlanInterfaceEntity
 };
 
+use IXP\Models\CoreBundle;
+use IXP\Models\CoreInterface;
+use IXP\Models\CoreLink;
+use IXP\Models\PhysicalInterface;
+use IXP\Models\SwitchPort;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -293,70 +296,61 @@ abstract class Common extends Controller
     /**
      * Build everything that a Core Bundle need (core link, core Interface etc)
      *
-     * @param   CoreBundleEntity $cb Core bundle object
-     * @param   Request $request instance of the current HTTP request
-     * @param   array $vis array of the Virtual interfaces ( side A and B ) linked to the core bundle
-     * @param   bool $edit Are we editing the core bundle ?
+     * @param   CoreBundle  $cb Core bundle object
+     * @param   Request     $r instance of the current HTTP request
+     * @param   array       $vis array of the Virtual interfaces ( side A and B ) linked to the core bundle
+     * @param   bool        $edit Are we editing the core bundle ?
      *
-     * @return bool
+     * @return RedirectResponse|bool
      *
      * @throws
      */
-    public function buildCorelink( $cb, $request, $vis, $edit )
+    public function buildCorelink( CoreBundle $cb, Request $r, array $vis, bool $edit )
     {
-        foreach( $request->input( "cl-details" ) as $clDetail ) {
-            /** @var CoreLinkEntity $cl */
-            $cl = new CoreLinkEntity;
-            D2EM::persist( $cl );
+        foreach( $r->input( "cl-details" ) as $clDetail ) {
+            $cl = new CoreLink;
 
-            $cl->setCoreBundle( $cb );
-            $cl->setEnabled( $clDetail[ "enabled-cl" ] ?? false );
+            $cl->core_bundle_id = $cb->id;
+            $cl->enabled = $clDetail[ 'enabled-cl' ] ?? false;
 
-            $bfd = ( $clDetail[ "bfd" ] ?? false );
+            $bfd    = $clDetail[ 'bfd' ] ?? false;
+            $type   = $edit ? $cb->type : $r->type;
 
-            $type = $edit ? $cb->getType() : $request->input('type' ) ;
+            $cl->bfd =  (int)$type === CoreBundle::TYPE_ECMP ? $bfd : false;
+            $cl->ipv4_subnet = $clDetail[ 'subnet' ] ?? null;
 
-            $cl->setBFD( ( $type == CoreBundleEntity::TYPE_ECMP ) ? $bfd : false );
-            $cl->setIPv4Subnet( $clDetail[ "subnet" ] ?? null );
-
-            foreach( $vis as $side => $vi ){
-                /** @var SwitchPortEntity $spa */
-                /** @var SwitchPortEntity $spb */
-                if( !( ${ 'sp' . $side } = D2EM::getRepository( SwitchPortEntity::class )->find( $clDetail[ "hidden-sp-$side" ] ) ) ) {
-                    return Redirect::back()->withInput( Input::all() );
+            foreach( $vis as $side => $vi ) {
+                if( !( ${ 'sp' . $side } = SwitchPort::find( $clDetail[ "hidden-sp-$side" ] ) ) ) {
+                    return Redirect::back()->withInput( $r->all() );
                 }
 
-                ${ 'sp' . $side }->setType( SwitchPortEntity::TYPE_CORE );
+                ${ 'sp' . $side }->type = SwitchPort::TYPE_CORE;
+                ${ 'sp' . $side }->save();
 
-                /** @var PhysicalInterfaceEntity $pia */
-                /** @var PhysicalInterfaceEntity $pib */
-                ${ 'pi' . $side } = new PhysicalInterfaceEntity;
-                D2EM::persist( ${ 'pi' . $side } );
+                ${ 'pi' . $side } = new PhysicalInterface;
+                ${ 'pi' . $side }->switchportid         = ${ 'sp' . $side }->id;
+                ${ 'pi' . $side }->virtualinterfaceid   = $vi->id;
+                ${ 'pi' . $side }->speed                = $edit ? $cb->speedPi()    : $r->speed;
+                ${ 'pi' . $side }->duplex               = $edit ? $cb->duplexPi()   : $r->duplex;
+                ${ 'pi' . $side }->autoneg              = $edit ? $cb->autoNegPi()  : $r->input('auto-neg' ) ?? false;
+                ${ 'pi' . $side }->status               = PhysicalInterface::STATUS_CONNECTED;
+                ${ 'pi' . $side }->save();
 
-                ${ 'pi'.$side }->setSwitchPort(        ${ 'sp' . $side } );
-                ${ 'pi'.$side }->setVirtualInterface(  $vi );
-                ${ 'pi'.$side }->setSpeed(             $edit ? $cb->getSpeedPi() : $request->input('speed' ) );
-                ${ 'pi'.$side }->setDuplex(            $edit ? $cb->getDuplexPi() : $request->input('duplex' ) );
-                ${ 'pi'.$side }->setAutoneg(           $edit ? $cb->getAutoNegPi() : $request->input('auto-neg' ) ?? false );
-                ${ 'pi'.$side }->setStatus(            PhysicalInterfaceEntity::STATUS_CONNECTED );
-
-                /** @var CoreInterfaceEntity $cia */
-                /** @var CoreInterfaceEntity $cib */
-                ${ 'ci' . $side } = new CoreInterfaceEntity;
-                D2EM::persist( ${ 'ci' . $side } );
-                ${ 'ci' . $side }->setPhysicalInterface( ${ 'pi' . $side } );
+                ${ 'ci' . $side } = new CoreInterface;
+                ${ 'ci' . $side }->physical_interface_id = ${ 'pi' . $side }->id;
+                ${ 'ci' . $side }->save();
             }
 
-            $cl->setCoreInterfaceSideA( $cia );
-            $cl->setCoreInterfaceSideB( $cib );
+            $cl->core_interface_sidea_id = $cia->id;
+            $cl->core_interface_sideb_id = $cib->id;
 
-            $vis[ 'a' ]->addPhysicalInterface( $pia );
-            $vis[ 'b' ]->addPhysicalInterface( $pib );
+            $cl->save();
+
+            $pia->virtualinterfaceid = $vis[ 'a' ]->id;
+            $pia->save();
+            $pib->virtualinterfaceid = $vis[ 'b' ]->id;
+            $pib->save();
         }
-
-
         return true;
     }
-
-
 }

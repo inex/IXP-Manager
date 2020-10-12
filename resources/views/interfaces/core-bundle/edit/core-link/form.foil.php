@@ -1,8 +1,7 @@
-<div id="core-links-area" class="mb-4" style="display: none;" >
-
+<div id="core-links-area" class="mb-4 collapse">
     <?= Former::horizontal_open()->method( 'POST' )
         ->id( 'core-link-form' )
-        ->action( route( "core-link@add-store" ) )
+        ->action( route( 'core-link@store', [ 'cb' => $t->cb->id ] ) )
         ->customInputWidthClass( 'col-sm-6' )
         ->actionButtonsCustomClass( "grey-box")
     ?>
@@ -17,11 +16,8 @@
             </div>
 
             <div class="card-body row">
-
                 <div class="col-sm-12">
-
                     <div id="message-new-cl"></div>
-
                     <?= Former::select( 'cl-details[1][sp-a]' )
                         ->id( "sp-a-1" )
                         ->label( 'Side A Switch Port' )
@@ -29,7 +25,8 @@
                         ->placeholder( 'Choose a Switch Port' )
                         ->addClass( 'chzn-select new-core-link-input sp-dd' )
                         ->blockHelp( '' )
-                        ->dataValue( "a" );
+                        ->dataValue( "a" )
+                        ->dataId( "1" );
                     ?>
 
                     <?= Former::hidden( 'cl-details[1][hidden-sp-a]' )
@@ -44,7 +41,8 @@
                         ->placeholder( 'Choose a Switch Port' )
                         ->addClass( 'chzn-select new-core-link-input sp-dd' )
                         ->blockHelp( '' )
-                        ->dataValue( "b" );
+                        ->dataValue( "b" )
+                        ->dataId( "1" );
                     ?>
 
                     <?= Former::hidden( 'cl-details[1][hidden-sp-b]' )
@@ -61,8 +59,7 @@
                         ->check( true )
                     ?>
 
-                    <?php if( $t->cb->isECMP() ): ?>
-
+                    <?php if( $t->cb->typeECMP() ): ?>
                         <?= Former::checkbox( 'cl-details[1][bfd]' )
                             ->id( "bfd-1" )
                             ->label( 'BFD' )
@@ -77,23 +74,18 @@
                             ->addClass( 'new-core-link-input subnet' )
                             ->placeholder( '192.0.2.0/30' )
                         ?>
-
                     <?php endif; ?>
-
                 </div>
-
             </div>
-
         </div>
-
 
         <?= Former::hidden( 'core-bundle' )
             ->id( 'core-bundle')
-            ->value( $t->cb->getId() )
+            ->value( $t->cb->id )
         ?>
 
         <?=Former::actions(
-            Former::primary_submit( 'Add new core link' )->id( 'new-core-links-submit-btn' )
+            Former::primary_submit( 'Create new core link' )->id( 'new-core-links-submit-btn' )
         )->class('text-center');?>
 
         <?= Former::close() ?>

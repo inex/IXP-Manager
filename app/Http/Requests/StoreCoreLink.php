@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,21 +23,9 @@ namespace IXP\Http\Requests;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
-
 use Auth;
 
-use Entities\{
-    CoreBundle as CoreBundleEntity
-};
-
 use Illuminate\Foundation\Http\FormRequest;
-
-use Illuminate\Validation\Validator;
-
-use IXP\Utils\View\Alert\Alert;
-use IXP\Utils\View\Alert\Container as AlertContainer;
-
 
 class StoreCoreLink extends FormRequest
 {
@@ -46,7 +34,7 @@ class StoreCoreLink extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // middleware ensures superuser access only so always authorised here:
         return Auth::getUser()->isSuperUser();
@@ -57,7 +45,7 @@ class StoreCoreLink extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $arrayCl = [];
         for( $i = 1; $i <= $this->input( 'nb-core-links' ); $i++ ){

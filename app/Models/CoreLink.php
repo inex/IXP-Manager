@@ -23,10 +23,7 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Database\Eloquent\{
-    Model,
-    Relations\BelongsTo
-};
+use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo};
 
 /**
  * IXP\Models\CoreLink
@@ -58,6 +55,7 @@ use Illuminate\Database\Eloquent\{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreLink whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreLink whereUpdatedAt($value)
+ * @method static Builder|CoreLink active()
  */
 class CoreLink extends Model
 {
@@ -85,10 +83,32 @@ class CoreLink extends Model
     }
 
     /**
+     * Get the core interface (A/B)
+     *
+     * @return array
+     */
+    public function coreInterfaces(): array
+    {
+        return [ $this->coreInterfaceSideA, $this->coreInterfaceSideB ];
+    }
+    /**
      * Get the corebundle that own the corelink
      */
     public function coreBundle(): BelongsTo
     {
         return $this->belongsTo(CoreBundle::class, 'core_bundle_id' );
+    }
+
+    /**
+     * Return all active core link
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+
+    public function scopeActive( Builder $query ): Builder
+    {
+        return $query->where( 'enabled' , true );
     }
 }

@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|RsPrefix whereRsOrigin($value)
  * @method static \Illuminate\Database\Eloquent\Builder|RsPrefix whereTimestamp($value)
  * @mixin \Eloquent
+ * @property-read \IXP\Models\Customer|null $customer
  */
 class RsPrefix extends Model
 {

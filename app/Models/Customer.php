@@ -170,6 +170,8 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property-read int|null $peers_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PeeringManager[] $peersWith
  * @property-read int|null $peers_with_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RsPrefix[] $rsPrefixes
+ * @property-read int|null $rs_prefixes_count
  */
 class Customer extends Model
 {

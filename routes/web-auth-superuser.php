@@ -139,18 +139,18 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
     });
 
     Route::group( [  'prefix' => 'core-bundle' ], function() {
-        Route::get(     'list',                             'CoreBundleController@list'             )->name(    'core-bundle@list'          );
-        Route::get(     'add-wizard',                       'CoreBundleController@addWizard'        )->name(    'core-bundle@add-wizard'    );
-        Route::get(     'edit/{id}',                        'CoreBundleController@edit'             )->name(    'core-bundle@edit'          );
-        Route::post(    'add-store-wizard',                 'CoreBundleController@addStoreWizard'   )->name(    'core-bundle@add-store'     );
-        Route::post(    'edit-store-wizard',                'CoreBundleController@editStoreWizard'  )->name(    'core-bundle@edit-store'    );
-        Route::post(    'delete',                           'CoreBundleController@delete'           )->name(    'core-bundle@delete'        );
-    });
+        Route::get(     'list',              'CoreBundleController@list'             )->name(    'core-bundle@list'          );
+        Route::get(     'create-wizard',     'CoreBundleController@createWizard'     )->name(    'core-bundle@create-wizard' );
+        Route::get(     'edit/{cb}',         'CoreBundleController@edit'             )->name(    'core-bundle@edit'          );
+        Route::post(    'store-wizard',      'CoreBundleController@storeWizard'      )->name(    'core-bundle@store'         );
+        Route::put(     'update-wizard/{cb}','CoreBundleController@updateWizard'     )->name(    'core-bundle@update'        );
+        Route::delete(  'delete/{cb}',       'CoreBundleController@delete'           )->name(    'core-bundle@delete'        );
 
-    Route::group( [  'prefix' => 'core-link' ], function() {
-        Route::post(    'add',              'CoreLinkController@addStore'           )->name( 'core-link@add-store'      );
-        Route::post(    'store',            'CoreLinkController@editStore'          )->name( 'core-link@edit-store'     );
-        Route::post(    'delete',           'CoreLinkController@delete'             )->name( 'core-link@delete'         );
+        Route::group( [  'prefix' => '{cb}/core-link' ], function() {
+            Route::post(   'add',           'CoreLinkController@store'   )->name( 'core-link@store'      );
+            Route::put(    'update',        'CoreLinkController@update'  )->name( 'core-link@update'     );
+            Route::delete( 'delete/{cl}',   'CoreLinkController@delete'  )->name( 'core-link@delete'     );
+        });
     });
 });
 

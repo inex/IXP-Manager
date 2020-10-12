@@ -108,6 +108,11 @@ class PhysicalInterface extends Model
         400000 => '400 Gbps'
     ];
 
+    public static $DUPLEX = array(
+        'full'   => 'full',
+        'half'   => 'half'
+    );
+
     /**
      * Get the virtual interface that owns the physical interface.
      */

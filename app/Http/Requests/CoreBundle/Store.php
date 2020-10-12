@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\CoreBundle;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,32 +22,30 @@ namespace IXP\Http\Requests\CoreBundle;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
-
-use Auth, D2EM;
-
-use Entities\{
-    CoreBundle as CoreBundleEntity,
-    SwitchPort as SwitchPortEntity
-};
+use Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
 use Illuminate\Validation\Validator;
 
-use IXP\Utils\View\Alert\Alert;
-use IXP\Utils\View\Alert\Container as AlertContainer;
+use IXP\Models\{
+    CoreBundle,
+    SwitchPort
+};
 
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
 
-class StoreAdd extends FormRequest
+class Store extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // middleware ensures superuser access only so always authorised here:
         return Auth::getUser()->isSuperUser();
@@ -58,40 +56,43 @@ class StoreAdd extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $arrayCb = [
-            'customer'                  => 'required|integer|exists:Entities\Customer,id',
+            'custid'                    => 'required|integer|exists:Entities\Customer,id',
             'description'               => 'required|string|max:255',
-            'graph-title'               => 'required|string|max:255',
+            'graph_title'               => 'required|string|max:255',
             'cost'                      => 'nullable|integer',
             'preference'                => 'nullable|integer',
-            'type'                      => 'required|integer|in:' . implode( ',', array_keys( CoreBundleEntity::$TYPES ) ),
-            'subnet'                    => ( $this->input('type') == CoreBundleEntity::TYPE_L3_LAG ) ? "required" : "nullable",
-
+            'type'                      => 'required|integer|in:' . implode( ',', array_keys( CoreBundle::$TYPES ) ),
+            'ipv4_subnet'               => $this->type === CoreBundle::TYPE_L3_LAG ? "required" : "nullable",
         ];
+
+        $rules  = ( $this->type === CoreBundle::TYPE_L2_LAG || $this->type === CoreBundle::TYPE_L3_LAG) ? 'required|string|max:255' : 'nullable';
+        $rules2 = ( $this->type === CoreBundle::TYPE_L2_LAG || $this->type === CoreBundle::TYPE_L3_LAG) ? 'required|integer|min:0'  : 'nullable';
 
         $arrayVi = [
             'mtu'                       => 'required|integer|min:0|max:64000',
-            'vi-name-a'                 => ( $this->input('type') == CoreBundleEntity::TYPE_L2_LAG || $this->input('type') == CoreBundleEntity::TYPE_L3_LAG) ? "required|string|max:255" : "nullable",
-            'vi-name-b'                 => ( $this->input('type') == CoreBundleEntity::TYPE_L2_LAG || $this->input('type') == CoreBundleEntity::TYPE_L3_LAG) ? "required|string|max:255" : "nullable",
-            'vi-channel-number-a'       => ( $this->input('type') == CoreBundleEntity::TYPE_L2_LAG || $this->input('type') == CoreBundleEntity::TYPE_L3_LAG) ? "required|integer|min:0" : "nullable",
-            'vi-channel-number-b'       => ( $this->input('type') == CoreBundleEntity::TYPE_L2_LAG || $this->input('type') == CoreBundleEntity::TYPE_L3_LAG) ? "required|integer|min:0" : "nullable"
+            'vi-name-a'                 => $rules,
+            'vi-name-b'                 => $rules,
+            'vi-channel-number-a'       => $rules2,
+            'vi-channel-number-b'       => $rules2,
         ];
 
-
-        $result = $this->input( 'cb' )  ? $arrayCb : array_merge( $arrayCb, $arrayVi );
-
-        return $result;
+        return $this->cb  ? $arrayCb : array_merge( $arrayCb, $arrayVi );
     }
 
-
-    public function withValidator( Validator $validator )
+    /**
+     * @param Validator $validator
+     *
+     * @return bool
+     */
+    public function withValidator( Validator $validator ): bool
     {
-        if( !$validator->fails() ) {
+        if( !$validator->fails() && !$this->input( 'cb' ) ) {
             $validator->after( function( Validator $validator ) {
 
-                if( count( $this->input( 'cl-details' ) ) == 0 ){
+                if( count( $this->input( 'cl-details' ) ) === 0 ){
                     AlertContainer::push( 'You need at add least one Core link' , Alert::DANGER );
                     $validator->errors()->add( "", "" );
                     return false;
@@ -99,7 +100,7 @@ class StoreAdd extends FormRequest
 
                 foreach( $this->input( 'cl-details' ) as $index => $detail ) {
                     foreach( [ "a", "b" ] as $side ){
-                        if( !D2EM::getRepository( SwitchPortEntity::class )->find( $detail[ "hidden-sp-" . $side ] ) ) {
+                        if( !SwitchPort::find( $detail[ "hidden-sp-" . $side ] ) ) {
                             AlertContainer::push( 'Please select the switch port side ' . ucfirst( $side ) . " for the core link number " . $index , Alert::DANGER );
                             $validator->errors()->add( "switch-port", "" );
                             return false;
@@ -109,7 +110,5 @@ class StoreAdd extends FormRequest
             });
         }
         return true;
-
     }
-
 }

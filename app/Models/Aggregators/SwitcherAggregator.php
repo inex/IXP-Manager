@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use IXP\Models\Customer;
 use IXP\Models\Switcher;
+use IXP\Models\SwitchPort;
 
 /**
  * IXP\Models\Aggregators\SwitcherAggregator
@@ -203,4 +204,43 @@ class SwitcherAggregator extends Switcher
             ->get()->toArray();
     }
 
+
+    /**
+     * Returns all available switch ports for a switch.
+     *
+     * Restrict to only some types of switch port
+     * Exclude switch port ids from the list
+     *
+     * Suitable for other generic use.
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @param array    $types  Switch port type restrict to some types only
+     * @param array    $spid   Switch port IDs, if set, those ports are excluded from the results
+     *
+     * @return array
+     */
+    public static function allPorts( int $id, $types = [], $spid = [], bool $notAssignToPI = true ): array
+    {
+        $ports = self::select( [ 'sp.name AS name', 'sp.type AS porttype', 'sp.id AS id' ] )
+            ->leftJoin( 'switchport AS sp', 'sp.switchid', 'switch.id' )
+            ->when( $notAssignToPI, function( Builder $q ) {
+                return $q->leftJoin( 'physicalinterface as PI', 'pi.switchportid', 'sp.id' )
+                    ->whereNull( 'pi.id' );
+            } )->where( 'switch.id', $id )
+            ->when( count( $types ) > 0, function( Builder $q ) use( $types ) {
+                return $q->whereIn( 'sp.type', $types );
+            } )
+            ->when( $spid !== null && count( $spid ) > 0, function( Builder $q ) use( $spid ) {
+                return $q->whereNotIn( 'sp.id', $spid );
+            } )
+            ->orderBy( 'sp.id' )
+            ->get()->keyBy( 'id' )->toArray();
+
+        foreach( $ports as $index => $port ){
+            $ports[ $index ][ 'type' ]             = SwitchPort::$TYPES[ $port[ 'porttype' ] ];
+            $ports[ $index ][ 'spname-sptype' ]    = $port[ "name" ] . ' (' . SwitchPort::$TYPES[ $port[ 'porttype' ] ] . ')';
+        }
+
+        return $ports;
+    }
 }

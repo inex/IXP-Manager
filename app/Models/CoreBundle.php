@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\{
     Model,
     Relations\HasMany
 };
+use Entities\CoreLink as CoreLinkEntity;
 
 
 /**
@@ -77,6 +78,22 @@ class CoreBundle extends Model
      */
     protected $table = 'corebundles';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'description',
+        'type',
+        'graph_title',
+        'bfd',
+        'ipv4_subnet',
+        'stp',
+        'cost',
+        'preference',
+        'enabled'
+    ];
 
     /**
      * CONST TYPES
@@ -107,7 +124,7 @@ class CoreBundle extends Model
      *
      * @return bool
      */
-    public function isTypeECMP(): bool
+    public function typeECMP(): bool
     {
         return $this->type === self::TYPE_ECMP;
     }
@@ -117,9 +134,9 @@ class CoreBundle extends Model
      *
      * @return bool
      */
-    public function isTypeL2Lag(): bool
+    public function typeL2Lag(): bool
     {
-        return type === self::TYPE_L2_LAG;
+        return $this->type === self::TYPE_L2_LAG;
     }
 
     /**
@@ -127,7 +144,7 @@ class CoreBundle extends Model
      *
      * @return bool
      */
-    public function isTypeL3Lag(): bool
+    public function typeL3Lag(): bool
     {
         return $this->type === self::TYPE_L3_LAG;
     }
@@ -135,9 +152,10 @@ class CoreBundle extends Model
     /**
      * Turn the database integer representation of the type into text as
      * defined in the self::$TYPES array (or 'Unknown')
+     *
      * @return string
      */
-    public function resolveType(): string
+    public function typeText(): string
     {
         return self::$TYPES[ $this->type ] ?? 'Unknown';
     }
@@ -163,10 +181,9 @@ class CoreBundle extends Model
      *
      * @return Switcher|bool
      */
-    public function getSwitchSideX( bool $sideA = true )
+    public function switchSideX( bool $sideA = true )
     {
-        if( $this->corelinks()->exists() ){
-            $cl = $this->corelinks()->first();
+        if( $cl = $this->corelinks()->first() ){
             /** @var CoreInterface $side */
             $side = $sideA ? $cl->coreInterfaceSideA : $cl->coreInterfaceSideB ;
             return $side->physicalinterface->switchPort->switcher;
@@ -176,18 +193,101 @@ class CoreBundle extends Model
     }
 
     /**
+     * Check if all the core links for the core bundle are enabled
+     *
+     * @return boolean
+     */
+    public function allCoreLinksEnabled(): bool
+    {
+        return $this->corelinks->where( 'enabled', false )->count() <= 0;
+    }
+
+    /**
      * get the speed of the Physical interface
      *
      * @return int
      */
-    public function getSpeedPi(): int
+    public function speedPi(): int
     {
-        if( $this->corelinks()->exists() ){
-            $cl = $this->corelinks()->first();
-
+        if( $cl = $this->corelinks()->first() ){
             return $cl->coreInterfaceSideA->physicalinterface->speed;
         }
-
         return 0;
+    }
+
+    /**
+     * get the duplex of the Physical interface
+     *
+     * @return int|false
+     */
+    public function duplexPi()
+    {
+        if( $cl = $this->corelinks()->first() ){
+            return $cl->coreInterfaceSideA->physicalinterface->duplex;
+        }
+
+        return false;
+    }
+
+    /**
+     * get the auto neg of the Physical interface
+     *
+     * @return int|false
+     */
+    public function autoNegPi()
+    {
+        if( $cl = $this->corelinks()->first() ){
+            return $cl->coreInterfaceSideA->physicalinterface->autoneg;
+        }
+
+        return false;
+    }
+
+    /**
+     * get the customer associated virtual interface of the core bundle
+     *
+     * @return Customer|bool
+     */
+    public function customer()
+    {
+        if( $cl = $this->corelinks()->first() ){
+            return $cl->coreInterfaceSideA->physicalinterface->virtualInterface->customer;
+        }
+        return false;
+    }
+
+    /**
+     * get the virtual interfaces linked to the core links of the side A and B
+     *
+     * @return array
+     */
+    public function virtualInterfaces(): array
+    {
+        $vis = [];
+        if( $cl = $this->corelinks()->first() ){
+            $vis[ 'a' ] = $cl->coreInterfaceSideA->physicalInterface->virtualInterface;
+            $vis[ 'b' ] = $cl->coreInterfaceSideB->physicalInterface->virtualInterface;
+        }
+        return $vis;
+    }
+
+    /**
+     * Check if the switch is the same for the Physical interfaces of the core links associated to the core bundle
+     *
+     * @param bool $sideA if true get the side A if false Side B
+     *
+     * @return bool
+     */
+    public function sameSwitchForEachPIFromCL( bool $sideA = true ): bool
+    {
+        $switches = [];
+
+        foreach( $this->corelinks as $cl ) {
+            /** @var CoreInterface $side */
+            $side = $sideA ? $cl->coreInterfaceSideA : $cl->coreInterfaceSideB ;
+            $switches[] = $side->physicalInterface->switchPort->switcher->id;
+        }
+
+        return ( count( array_unique( $switches ) ) == 1 ) ? true : false;
     }
 }

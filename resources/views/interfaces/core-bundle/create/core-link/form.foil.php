@@ -11,10 +11,8 @@
     </div>
 
     <div class="card-body row">
-
         <div class="col-sm-12">
             <div id="" class="message-new-cl message"></div>
-
             <div class="form-group row">
                 <label for="sp-a-1" class="control-label col-sm-6 col-lg-3"> Side A Switch Port</label>
                 <div class="col-lg-4 col-sm-6">
