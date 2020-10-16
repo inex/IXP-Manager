@@ -94,7 +94,6 @@ Route::group( [  'prefix' => 'switch' ], function() {
     Route::get( '{id}/core-bundles-status',          'SwitchController@coreBundlesStatus' );
     Route::post( '{id}/switch-port-for-ppp',          'SwitchController@switchPortForPPP' );
     Route::post( '{id}/switch-port-prewired',         'SwitchController@switchPortPrewired' );
-    Route::post( '{id}/switch-port',                  'SwitchController@switchPort' );
 });
 
 

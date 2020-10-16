@@ -38,8 +38,7 @@ $( document ).ready(function() {
 /**
  * function to delete a virtual/physical/vlan interface
  */
-function deletePopup( id, viid, type ) {
-
+function deletePopup( btn_delete, viid, type ) {
     let objectName, urlDelete;
 
     let user = 0;
@@ -53,16 +52,13 @@ function deletePopup( id, viid, type ) {
         if( $( "#custid" ).val() !== undefined ){
             user = $( "#custid" ).val();
         }
-
     } else if( type === "sflr" ) {
         objectName = "Sflow Receiver";
         urlDelete = "<?= route( 'sflow-receiver@delete' ) ?>" ;
     } else if( type === "pi" ) {
         objectName = "Physical Interface";
-        urlDelete = "<?= route( 'interfaces/physical/delete' ) ?>";
+        urlDelete = btn_delete.attr( 'data-url');
     }
-
-    const btn_delete = $( '#delete-' +type+ '-' + id );
 
     let reltype      = "normal";
     if( btn_delete.attr( "data-type" ) === "1" ){
@@ -82,9 +78,9 @@ function deletePopup( id, viid, type ) {
                     <div>Do you really want to delete this ${objectName}? ${extraMessage}</div>
 
                     <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                    <input type="hidden" name="id" value="${id}">
                     <input type="hidden" id="related" name="related" value="0">
                     <input type="hidden" id="user" name="user" value="${user}">
+                    <input type="hidden" name="_method" value="delete" />
                 </form>`;
 
     if( !related ) {
@@ -112,6 +108,7 @@ function deletePopup( id, viid, type ) {
     } else {
         bootbox.dialog({
             title: `Delete ${objectName}`,
+            size: 'large',
             message: html,
             buttons: {
                 cancel: {

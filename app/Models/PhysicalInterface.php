@@ -75,6 +75,20 @@ class PhysicalInterface extends Model
      */
     protected $table = 'physicalinterface';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'switchportid',
+        'virtualinterfaceid',
+        'status',
+        'speed',
+        'duplex',
+        'autoneg',
+        'notes',
+    ];
 
     public const STATUS_CONNECTED       = 1;
     public const STATUS_DISABLED        = 2;
@@ -285,14 +299,14 @@ class PhysicalInterface extends Model
      *
      * @return PhysicalInterface|bool The related peering / fanout port (or false for none / n/a)
      */
-    public function getRelatedInterface()
+    public function relatedInterface()
     {
         if( $this->switchPort()->exists() ) {
-            if( $this->switchPort->isFanout() && $this->peeringPhysicalInterface()->exists() ){
+            if( $this->switchPort->isFanout() && $this->peeringPhysicalInterface ){
                 return $this->peeringPhysicalInterface;
             }
 
-            if($this->switchPort->isPeering() && $this->fanoutPhysicalInterface()->exists() ) {
+            if($this->switchPort->isPeering() && $this->fanoutPhysicalInterface ) {
                 return $this->fanoutPhysicalInterface;
             }
             return false;
@@ -301,6 +315,22 @@ class PhysicalInterface extends Model
         return false;
     }
 
+    /**
+     * Get the other physical interface associated to the core link of the current Physical Interface
+     *
+     * @return PhysicalInterface|bool
+     */
+    public function otherPICoreLink()
+    {
+        if( $ci = $this->coreInterface ){
+            if( $this->id === $ci->coreLinkSideA->coreInterfaceSideA->physical_interface_id ){
+                return $ci->coreLink()->coreInterfaceSideB->physicalInterface;
+            }
+            return $ci->coreLink()->coreInterfaceSideA->physicalInterface;
+        }
+
+        return false;
+    }
     /**
      * Scope to get connected virtual interface
      *

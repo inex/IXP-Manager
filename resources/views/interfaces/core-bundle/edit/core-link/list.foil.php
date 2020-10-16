@@ -76,13 +76,13 @@
                         </td>
                         <td class="align-middle">
                             <?= $cl->coreInterfaceSideA->physicalInterface->switchPort->name ?>
-                            <a class="btn btn-sm btn-white" href="<?= route('interfaces/physical/edit/from-core-bundle' , [ 'id' => $cl->coreInterfaceSideA->physicalInterface->id, 'cb' => $t->cb->id ] ) ?>">
+                            <a class="btn btn-sm btn-white" href="<?= route('physical-interface@edit-from-core-bundle' , [ 'pi' => $cl->coreInterfaceSideA->physicalInterface->id, 'cb' => $t->cb->id ] ) ?>">
                                 <i class="fa fa-pencil"></i>
                             </a>
                         </td>
                         <td class="align-middle">
                             <?= $cl->coreInterfaceSideB->physicalInterface->switchPort->name ?>
-                            <a class="btn btn-sm btn-white" href="<?= route('interfaces/physical/edit/from-core-bundle' , [ 'id' => $cl->coreInterfaceSideB->physicalInterface->id, 'cb' => $t->cb->id ] ) ?>">
+                            <a class="btn btn-sm btn-white" href="<?= route('physical-interface@edit-from-core-bundle' , [ 'pi' => $cl->coreInterfaceSideB->physicalInterface->id, 'cb' => $t->cb->id ] ) ?>">
                                 <i class="fa fa-pencil"></i>
                             </a>
                         </td>

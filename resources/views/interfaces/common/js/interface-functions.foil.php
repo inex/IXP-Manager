@@ -168,37 +168,41 @@ function usedAcrossVlans() {
  * Takes the currently selected switch from the dd_switch dropdown and calls an
  * AJAX API endpoint to get the available ports.
  */
-function updateSwitchPort(e) {
+function updateSwitchPort( e ) {
 
     let dd_sp, arrayType, excludeSp, selectedPort;
     let sw = $( e.target );
 
     if( $( this ).attr( "id" ).substr( -6 ) === "fanout" ) {
         dd_sp     = $( "#switch-port-fanout" );
-        arrayType = [ <?= \Entities\SwitchPort::TYPE_UNSET ?>, <?= \Entities\SwitchPort::TYPE_FANOUT ?> ];
+        arrayType = [ <?= \IXP\Models\SwitchPort::TYPE_UNSET ?>, <?= \IXP\Models\SwitchPort::TYPE_FANOUT ?> ];
         selectedPort = $( "#original-switch-port-fanout" ).val();
     } else {
-        dd_sp     = $( "#switch-port" );
-        arrayType = [ <?= \Entities\SwitchPort::TYPE_UNSET ?>,  <?= \Entities\SwitchPort::TYPE_PEERING ?>, <?= \Entities\SwitchPort::TYPE_CORE ?> ];
+        dd_sp     = $( "#switchportid" );
+        arrayType = [ <?= \IXP\Models\SwitchPort::TYPE_UNSET ?>,  <?= \IXP\Models\SwitchPort::TYPE_PEERING ?>, <?= \IXP\Models\SwitchPort::TYPE_CORE ?> ];
         selectedPort = $( "#original-switch-port" ).val();
     }
 
     let url = "<?= url( '/api/v4/switch' )?>/" + sw.val() + "/ports";
 
+    datas = {
+        types : arrayType,
+        notAssignToPI: 1,
+        piNull: 0,
+        spIdsExcluded : []
+    };
+
     dd_sp.html( "<option value=\"\">Loading, please wait...</option>\n" ).trigger('change.select2');
 
-    $.ajax( url )
+    $.ajax( url , {
+        data: datas
+    })
         .done( function( data ) {
             let options = "<option value=\"\">Choose a switch port</option>\n";
 
-            $.each( data.switchports, function( key, port ) {
-
-                if(port.sp_id.toString()  === selectedPort){
-                    console.log(port.sp_type);
-                }
-                if( ( port.pi_id === null || port.sp_id.toString() === selectedPort ) && arrayType.indexOf( port.sp_type ) !== -1 ) {
-                    options += `<option value="${port.sp_id}">${port.sp_name} (${port.sp_type_name})</option>\n`;
-
+            $.each( data.ports, function( key, port ) {
+                if( ( port.pi_id === null || port.id === parseInt( selectedPort ) ) ) {
+                    options += `<option value="${port.id}">${port.name} (${port.type})</option>\n`;
                 }
             });
 
@@ -217,5 +221,4 @@ function updateSwitchPort(e) {
             dd_sp.trigger('change.select2');
         });
 }
-
 </script>

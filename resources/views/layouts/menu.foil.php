@@ -57,7 +57,7 @@
             <?php if( request()->is( 'interfaces/*' ) ): ?>
                 <ul>
                     <li class="nav-sub-menu-item <?= !request()->is( 'interfaces/physical/*' ) ?: 'active' ?>">
-                        <a class="nav-link" href="<?= route('interfaces/physical/list' ) ?>">
+                        <a class="nav-link" href="<?= route('physical-interface@list' ) ?>">
                             Physical Interfaces
                         </a>
                     </li>

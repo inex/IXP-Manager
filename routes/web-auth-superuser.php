@@ -108,14 +108,16 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
     });
 
     Route::group( [  'prefix' => 'physical' ], function() {
-        Route::get(     'list',                             'PhysicalInterfaceController@list'          )->name( 'interfaces/physical/list'                         );
-        Route::get(     'view/{id}',                        'PhysicalInterfaceController@view'          )->name( 'interfaces/physical/view'                         );
-        Route::get(     'edit/{id}',                        'PhysicalInterfaceController@edit'          )->name( 'interfaces/physical/edit'                         );
-        Route::get(     'edit/{id}/from-cb/{cb}',           'PhysicalInterfaceController@editFromCb'    )->name( 'interfaces/physical/edit/from-core-bundle'        );
-        Route::get(     'edit/{id}/vintid/{viid}',          'PhysicalInterfaceController@edit'          )->name( 'interfaces/physical/edit/from-virtual-interface'  );
-        Route::get(     'add/{id}/vintid/{viid}',           'PhysicalInterfaceController@edit'          )->name( 'interfaces/physical/add'                          );
-        Route::post(    'store',                            'PhysicalInterfaceController@store'         )->name( 'interfaces/physical/store'                        );
-        Route::post(    'delete',                           'PhysicalInterfaceController@delete'        )->name( 'interfaces/physical/delete'                       );
+        Route::get('list',                  'PhysicalInterfaceController@list'          )->name( 'physical-interface@list'                          );
+        Route::get('view/{pi}',             'PhysicalInterfaceController@view'          )->name('physical-interface@view'                           );
+        Route::get('create/vintid/{vi}',    'PhysicalInterfaceController@create'        )->name( 'physical-interface@create'                        );
+        Route::get('edit/{pi}',             'PhysicalInterfaceController@edit'          )->name( 'physical-interface@edit'                          );
+        Route::get('edit/{pi}/cb/{cb}',     'PhysicalInterfaceController@editFromCb'    )->name( 'physical-interface@edit-from-core-bundle'         );
+        Route::get('edit/{pi}/vintid/{vi}', 'PhysicalInterfaceController@edit'          )->name( 'physical-interface@edit-from-virtual-interface'   );
+
+        Route::post(    'store',            'PhysicalInterfaceController@store'         )->name( 'physical-interface@store'                         );
+        Route::put(     'update/{pi}',      'PhysicalInterfaceController@update'        )->name( 'physical-interface@update'                        );
+        Route::delete(  'delete/{pi}',      'PhysicalInterfaceController@delete'        )->name( 'physical-interface@delete'                        );
     });
 
     Route::group( [  'prefix' => 'vlan' ], function() {

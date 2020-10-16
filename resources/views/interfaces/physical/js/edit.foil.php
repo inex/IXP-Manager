@@ -11,7 +11,6 @@
         cb_fanout.on( 'click', handleFanoutEnabled );
     }
 
-
     function handleFanoutEnabled() {
         if( cb_fanout.is(":checked") ) {
             div_fanout.slideDown();

@@ -52,7 +52,7 @@
                                     <?= $l2a->id ?>
                                 </td>
                                 <td>
-                                    <?= $l2a->getMacFormattedWithColons() ?>
+                                    <?= $l2a->macFormatted( ':' ) ?>
                                 </td>
                                 <td>
                                     <?= $l2a->created ?>

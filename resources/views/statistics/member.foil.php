@@ -188,8 +188,8 @@
                                                 <?php if( $pi->switchPort->isTypePeering() ): ?>
                                                 Peering Port
                                                 <?php elseif( $pi->switchPort->isTypeFanout() ): ?>
-                                                    Fanout Port for <a href="<?= route( 'customer@overview', [ 'id' => $pi->getRelatedInterface()->virtualInterface->customer->id ] ) ?>">
-                                                    <?= $pi->getRelatedInterface()->virtualInterface->customer->abbreviatedName ?>
+                                                    Fanout Port for <a href="<?= route( 'customer@overview', [ 'id' => $pi->relatedInterface()->virtualInterface->customer->id ] ) ?>">
+                                                    <?= $pi->relatedInterface()->virtualInterface->customer->abbreviatedName ?>
                                                 </a>
                                                 <?php elseif( $pi->switchPort->isReseller() ): ?>
                                                     Reseller Uplink Port

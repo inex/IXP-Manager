@@ -86,7 +86,7 @@ class CoreInterface extends Model
      *
      * @return CoreLink
      */
-    public function getCoreLink(): CoreLink
+    public function coreLink(): CoreLink
     {
         if( $this->coreLinkSideA()->exists() ) {
             return $this->coreLinkSideA;

@@ -213,19 +213,23 @@ class SwitcherAggregator extends Switcher
      *
      * Suitable for other generic use.
      *
-     * @param int      $id     Switch ID - switch to query
-     * @param array    $types  Switch port type restrict to some types only
-     * @param array    $spid   Switch port IDs, if set, those ports are excluded from the results
-     *
+     * @param int   $id Switch ID - switch to query
+     * @param array $types Switch port type restrict to some types only
+     * @param array $spid Switch port IDs, if set, those ports are excluded from the results
+     * @param bool  $notAssignToPI
+     * @param bool  $piNull
      * @return array
      */
-    public static function allPorts( int $id, $types = [], $spid = [], bool $notAssignToPI = true ): array
+    public static function allPorts( int $id, $types = [], $spid = [], bool $notAssignToPI = true, bool $piNull = true ): array
     {
         $ports = self::select( [ 'sp.name AS name', 'sp.type AS porttype', 'sp.id AS id' ] )
             ->leftJoin( 'switchport AS sp', 'sp.switchid', 'switch.id' )
-            ->when( $notAssignToPI, function( Builder $q ) {
-                return $q->leftJoin( 'physicalinterface as PI', 'pi.switchportid', 'sp.id' )
-                    ->whereNull( 'pi.id' );
+            ->when( $notAssignToPI, function( Builder $q ) use( $piNull ) {
+                return $q->addSelect( [ 'pi.id AS pi_id' ] )
+                    ->leftJoin( 'physicalinterface as pi', 'pi.switchportid', 'sp.id' )
+                    ->when( $piNull , function( Builder $q ) {
+                        return $q->whereNull( 'pi.id' );
+                    } );
             } )->where( 'switch.id', $id )
             ->when( count( $types ) > 0, function( Builder $q ) use( $types ) {
                 return $q->whereIn( 'sp.type', $types );

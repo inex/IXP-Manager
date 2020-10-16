@@ -23,14 +23,17 @@ namespace IXP\Http\Controllers\Services\Grapher;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\{
+    Request,
+    Response
+};
 
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
 
 use IXP\Http\Controllers\Controller;
 
 use Grapher as GrapherService;
+
 use IXP\Services\Grapher;
 
 /**

@@ -82,4 +82,32 @@ class Layer2Address extends Model
     {
         return $this->belongsTo(VlanInterface::class, 'vlan_interface_id');
     }
+
+    /**
+     * Get mac formated depending on the format selected
+     *  - with comma (xx:xx:xx:xx:xx:xx)
+     *  - with dots (xxxx.xxxx.xxxx)
+     *  - with dash (xx-xx-xx-xx-xx-xx)
+     *
+     * @param string $format
+     *
+     * @return string
+     */
+    public function macFormatted( string $format ): string
+    {
+        switch( $format ) {
+            case ':':
+                return wordwrap( $this->mac, 2, ':',true );
+                break;
+            case '.':
+                return wordwrap( $this->mac, 4, '.',true );
+                break;
+            case '-':
+                return wordwrap($this->mac, 2, '-',true);
+                break;
+            default:
+                return $this->mac;
+        }
+    }
+
 }

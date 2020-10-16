@@ -16,26 +16,22 @@
             }
 
             if( switchId != null && switchId !== '' ) {
-                let url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/switch-port";
+                let url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/ports";
 
-                if( !edit ){
-                    datas = {
-                        spIdsExcluded: excludedSwitchPortSideA.concat( excludedSwitchPortSideB )
-                    };
-                } else {
-                    datas = {
-                        spIdsExcluded: []
-                    };
-                }
+                datas = {
+                    types : [ <?= \IXP\Models\SwitchPort::TYPE_UNSET ?>, <?= \IXP\Models\SwitchPort::TYPE_CORE ?> ],
+                    notAssignToPI: true,
+                    piNull: true,
+                    spIdsExcluded : !edit ? excludedSwitchPortSideA.concat( excludedSwitchPortSideB ) : []
+                };
 
                 $.ajax( url , {
-                    data: datas,
-                    type: 'POST'
+                    data: datas
                 })
                 .done( function( data ) {
                     let options = `<option value="">Choose a switch port</option>\n`;
 
-                    $.each( data.listPorts, function( key, value ){
+                    $.each( data.ports, function( key, value ){
                         options += `<option value="${value.id}">${value.name} (${value.type})</option>\n`;
                     });
 

@@ -23,10 +23,7 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Model
-};
+use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo};
 
 /**
  * IXP\Models\MacAddress
@@ -58,4 +55,12 @@ class MacAddress extends Model
      * @var string
      */
     protected $table = 'macaddress';
+
+    /**
+     * Get the virtual interface for the mac addresses for
+     */
+    public function virtualInterface(): BelongsTo
+    {
+        return $this->belongsTo(VirtualInterface::class, 'virtualinterfaceid');
+    }
 }

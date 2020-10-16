@@ -50,10 +50,9 @@ cb_lag_framing.trigger( 'change' );
     /**
      * on click even allow to delete a Sflow receiver
      */
-    $("a[id|='delete-pi']").on('click', function(e){
+    $( '.btn-delete-pi' ).click( function(e){
         e.preventDefault();
-        let piid = (this.id).substring(10);
-        deletePopup( piid, <?= $t->vi->getId() ?> , 'pi' );
+        deletePopup( $( this ), false, 'pi');
     });
 
     /**

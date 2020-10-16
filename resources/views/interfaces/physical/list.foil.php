@@ -1,6 +1,6 @@
 <?php
-/** @var Foil\Template\Template $t */
-$this->layout( 'layouts/ixpv4' );
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -8,14 +8,10 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
-
     <div class="row">
-
         <div class="col-sm-12">
-
             <?= $t->alerts() ?>
-
-            <table id='table-pi' class="collapse table table-striped" style="width: 100%">
+            <table id='table' class="collapse table table-striped">
                 <thead class="thead-dark">
                     <tr>
                         <th>
@@ -72,7 +68,7 @@ $this->layout( 'layouts/ixpv4' );
                                 <?= $t->ee( $pi['port'] )   ?>
                             </td>
                             <td>
-                                <?= isset( Entities\PhysicalInterface::$STATES[ $pi['status'] ] ) ? Entities\PhysicalInterface::$STATES[ $pi['status'] ] : 'Unknown'  ?>
+                                <?= \IXP\Models\PhysicalInterface::$STATES[ $pi[ 'status' ] ] ?? 'Unknown' ?>
                             </td>
                             <td>
                                 <?= $t->scaleBits( $pi['speed'] * 1000 * 1000, 0 ) ?>
@@ -88,7 +84,7 @@ $this->layout( 'layouts/ixpv4' );
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn-white" href="<?= route( 'interfaces/physical/view' , [ 'id' => $pi['id'] ] ) ?>" title="View">
+                                    <a class="btn btn-white" href="<?= route( 'physical-interface@view' , [ 'pi' => $pi['id'] ] ) ?>" title="View">
                                         <i class="fa fa-eye"></i>
                                     </a>
 
@@ -96,10 +92,10 @@ $this->layout( 'layouts/ixpv4' );
                                         <i class="fa fa-filter"></i>
                                     </a>
 
-                                    <a class="btn btn-white" href="<?= route ( 'interfaces/physical/edit', [ 'id' => $pi['id'] ] ) ?>" title="Edit">
+                                    <a class="btn btn-white" href="<?= route ( 'physical-interface@edit', [ 'pi' => $pi['id'] ] ) ?>" title="Edit">
                                         <i class="fa fa-pencil"></i>
                                     </a>
-                                    <a class="btn btn-white" id="delete-pi-<?= $pi['id'] ?>" <?php if( $t->resellerMode() && ( $pi['ppid'] || $pi['fpid'] ) ) :?> data-related="1" <?php endif; ?> data-type="<?= $pi['type'] ?>" href="" title="Delete">
+                                    <a class="btn btn-white btn-delete" <?php if( $t->resellerMode() && ( $pi['ppid'] || $pi['fpid'] ) ) :?> data-related="1" <?php endif; ?> data-type="<?= $pi['type'] ?>" data-url="<?= route( 'physical-interface@delete', [ 'pi' => $pi[ 'id' ] ] ) ?>" href="#" title="Delete">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </div>
@@ -108,7 +104,6 @@ $this->layout( 'layouts/ixpv4' );
                     <?php endforeach;?>
                 <tbody>
             </table>
-
         </div>
     </div>
 <?php $this->append() ?>
@@ -116,12 +111,10 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'scripts' ) ?>
 <?= $t->insert( 'interfaces/virtual/js/interface' ); ?>
     <script>
-
         $(document).ready( function() {
+            $( '#table' ).show();
 
-            $( '#table-pi' ).show();
-
-            $( '#table-pi' ).DataTable( {
+            $( '#table' ).DataTable( {
                 stateSave: true,
                 stateDuration : DATATABLE_STATE_DURATION,
                 responsive : true,
@@ -133,18 +126,16 @@ $this->layout( 'layouts/ixpv4' );
                     { "targets": [ 6 ], "visible": false, "searchable": false }
                 ],
             });
-
-
         });
 
         /**
          * on click even allow to delete a Virtual Interface
          */
-        $(document).on('click', "a[id|='delete-pi']" ,function(e){
+        $( '.btn-delete' ).click( function(e){
             e.preventDefault();
-            let pi = (this.id).substring(10);
-            deletePopup( pi, false, 'pi');
+            deletePopup( $( this ), false, 'pi');
         });
+
 
     </script>
 <?php $this->append() ?>

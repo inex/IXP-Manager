@@ -105,6 +105,14 @@ class VirtualInterface extends Model
     }
 
     /**
+     * Get the mac addresses for the virtual interface
+     */
+    public function macAddresses(): HasMany
+    {
+        return $this->hasMany(MacAddress::class, 'virtualinterfaceid');
+    }
+
+    /**
      * Get the speed of the LAG
      *
      * @param bool $connectedOnly Only consider physical interfaces with 'CONNECTED' state
@@ -147,7 +155,7 @@ class VirtualInterface extends Model
             if( $pi->coreinterface()->exists() ) {
                 $ci = $pi->coreinterface;
                 /** @var $ci CoreInterface */
-                return $ci->getCoreLink()->coreBundle;
+                return $ci->coreLink()->coreBundle;
             }
         }
         return false;

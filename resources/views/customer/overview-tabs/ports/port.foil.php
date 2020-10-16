@@ -194,7 +194,7 @@
                 <p>
                     No physical interfaces defined.
                     <?php if( Auth::getUser()->isSuperUser() ): ?>
-                        <a href="<?= route( "interfaces/physical/add", [ "id" =>  0 , "viid" => $t->vi->getId() ] ) ?>">Add one...</a>
+                        <a href="<?= route( "physical-interface@create", [ "vi" => $t->vi->getId() ] ) ?>">Add one...</a>
                     <?php endif; ?>
                 </p>
             </div>

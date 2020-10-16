@@ -47,27 +47,15 @@ class SwitchController extends Controller
     /**
      * Get the switch port for a Switch
      *
-     * @param   Request $request instance of the current HTTP request
+     * @param   Request $r      instance of the current HTTP request
      * @param   int     $id      switch ID
      *
      * @return  JsonResponse JSON array of listPort
      */
-    public function switchPort( Request $request, int $id )
+    public function ports( Request $r, int $id ): JsonResponse
     {
-        $listPorts = SwitcherAggregator::allPorts( $id ,[ SwitchPort::TYPE_CORE, SwitchPort::TYPE_UNSET ], $request->spIdsExcluded, true );
-        return response()->json( [ 'listPorts' => $listPorts ] );
-    }
-
-    /**
-     * Get all switch ports for a given switch
-     *
-     * @param Request $request Instance of the current HTTP request
-     * @param int $id
-     *
-     * @return  JsonResponse Ports
-     */
-    public function ports( Request $request, int $id ) {
-        return response()->json( [ 'switchports' => D2EM::getRepository( SwitcherEntity::class )->getPorts( $id ) ] );
+        $ports = SwitcherAggregator::allPorts( $id , $r->types , $r->spIdsExcluded, (bool)$r->notAssignToPI, (bool)$r->piNull );
+        return response()->json( [ 'ports' => $ports ] );
     }
 
     /**
