@@ -1,35 +1,28 @@
 <?php
-/** @var Foil\Template\Template $t */
-$this->layout( 'layouts/ixpv4' );
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Sflow Receivers / <?= $t->sflr ? 'Edit' : 'Add' ?> Sflow Receiver
+    Sflow Receivers / <?= $t->sflr ? 'Edit' : 'Create' ?> Sflow Receiver
 <?php $this->append() ?>
-
-
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-white" href="<?= route( 'interfaces/sflow-receiver/list' ) ?>" title="list">
+        <a class="btn btn-white" href="<?= route( 'sflow-receiver@list' ) ?>" title="list">
             <span class="fa fa-th-list"></span>
         </a>
     </div>
 <?php $this->append() ?>
 
-
 <?php $this->section('content') ?>
-
     <div class="row">
-
         <div class="col-lg-12">
-
             <?= $t->alerts() ?>
-
             <div class="card">
                 <div class="card-body">
-                    <?= Former::open()->method( 'post' )
-                        ->action( route( 'sflow-receiver@store' ) )
+                    <?= Former::open()->method( $t->sflr ? 'put' : 'post' )
+                        ->action( $t->sflr ? route( 'sflow-receiver@update', [ 'sflr' => $t->sflr->id ] ) : route( 'sflow-receiver@store' ) )
                         ->customInputWidthClass( 'col-sm-6 col-lg-4' )
                         ->customLabelWidthClass( 'col-lg-2 col-md-4 col-sm-4' )
                         ->actionButtonsCustomClass( "grey-box")
@@ -45,17 +38,13 @@ $this->layout( 'layouts/ixpv4' );
                         ->blockHelp( 'help text' );
                     ?>
 
-                    <?= Former::hidden( 'id' )
-                        ->value( $t->sflr ? $t->sflr->getId() : null )
-                    ?>
-
-                    <?= Former::hidden( 'viid' )
-                        ->value( $t->sflr ? $t->sflr->getVirtualInterface()->getId() : $t->vi->getId() )
+                    <?= Former::hidden( 'virtual_interface_id' )
+                        ->value( $t->sflr ? $t->sflr->virtualInterface->id : $t->vi->id )
                     ?>
 
                     <?=Former::actions(
-                        Former::primary_submit( $t->sflr ? 'Save Changes' : 'Add' )->class( "mb-2 mb-sm-0" ),
-                        Former::secondary_link( 'Cancel' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) :  route( 'interfaces/sflow-receiver/list' ) )->class( "mb-2 mb-sm-0" ),
+                        Former::primary_submit( $t->sflr ? 'Save Changes' : 'Create' )->class( "mb-2 mb-sm-0" ),
+                        Former::secondary_link( 'Cancel' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->id ] ) :  route( 'sflow-receiver@list' ) )->class( "mb-2 mb-sm-0" ),
                         Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
                     )->id('btn-group');?>
 
@@ -80,9 +69,6 @@ $this->layout( 'layouts/ixpv4' );
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
-
 <?php $this->append() ?>

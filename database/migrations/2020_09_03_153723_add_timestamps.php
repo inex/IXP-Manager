@@ -159,6 +159,10 @@ class AddTimestamps extends Migration
             $table->timestamp( 'created_at' )->nullable();
         });
 
+        Schema::table('sflow_receiver', function (Blueprint $table) {
+            $table->timestamps();
+        });
+
         Schema::table('switch', function (Blueprint $table) {
             $table->timestamps();
         });
@@ -358,6 +362,10 @@ class AddTimestamps extends Migration
         Schema::table('routers', function (Blueprint $table) {
             $table->renameColumn( 'updated_at', 'last_updated' );
             $table->dropColumn( 'created_at' );
+        });
+
+        Schema::table('sflow_receiver', function (Blueprint $table) {
+            $table->dropTimestamps();
         });
 
         Schema::table('switch', function (Blueprint $table) {

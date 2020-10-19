@@ -6,6 +6,8 @@
     </id>
     <field name="dst_ip" type="string" length="255" nullable="false"/>
     <field name="dst_port" type="integer" nullable="false"/>
+    <field name="created_at" type="datetime" nullable="true"/>
+    <field name="updated_at" type="datetime" nullable="true"/>
     <many-to-one field="VirtualInterface" target-entity="Entities\VirtualInterface" inversed-by="SflowReceivers">
       <join-columns>
         <join-column name="virtual_interface_id" referenced-column-name="id" on-delete="CASCADE"/>

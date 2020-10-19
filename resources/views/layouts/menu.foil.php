@@ -69,7 +69,7 @@
                     </li>
 
                     <li class="nav-sub-menu-item <?= !request()->is( 'interfaces/sflow-receiver/*' ) ?: 'active' ?>">
-                        <a class="nav-link" href="<?= route('interfaces/sflow-receiver/list') ?>">
+                        <a class="nav-link" href="<?= route('sflow-receiver@list') ?>">
                             Sflow Receivers
                         </a>
                     </li>

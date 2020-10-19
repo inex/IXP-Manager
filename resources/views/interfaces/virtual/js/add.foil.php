@@ -76,10 +76,9 @@ cb_lag_framing.trigger( 'change' );
     /**
      * on click even allow to delete a Sflow receiver
      */
-    $( "a[id|='delete-sflr']" ).on( 'click', function(e) {
+    $( ".btn-delete-sflr" ).click( function(e) {
         e.preventDefault();
-        let sflrid = (this.id).substring(12);
-        deletePopup( sflrid, <?= $t->vi->getId() ?>, 'sflr' );
+        deletePopup( $( this ), <?= $t->vi->getId() ?>, 'sflr');
     });
 <?php endif; ?>
 

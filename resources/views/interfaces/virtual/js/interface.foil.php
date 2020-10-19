@@ -54,7 +54,7 @@ function deletePopup( btn_delete, viid, type ) {
         }
     } else if( type === "sflr" ) {
         objectName = "Sflow Receiver";
-        urlDelete = "<?= route( 'sflow-receiver@delete' ) ?>" ;
+        urlDelete = btn_delete.attr( 'data-url');
     } else if( type === "pi" ) {
         objectName = "Physical Interface";
         urlDelete = btn_delete.attr( 'data-url');

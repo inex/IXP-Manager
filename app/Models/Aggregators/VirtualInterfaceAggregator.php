@@ -72,6 +72,8 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\VirtualInterfaceAggregator whereUpdatedAt($value)
  * @mixin \Eloquent
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface connected()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\MacAddress[] $macAddresses
+ * @property-read int|null $mac_addresses_count
  */
 class VirtualInterfaceAggregator extends VirtualInterface
 {

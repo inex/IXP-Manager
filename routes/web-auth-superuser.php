@@ -132,12 +132,13 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
     });
 
     Route::group( [  'prefix' => 'sflow-receiver' ], function() {
-        Route::get(     'list',                             'SflowReceiverController@list'  )->name( 'interfaces/sflow-receiver/list'                        );
-        Route::get(     'edit/{id}/',                       'SflowReceiverController@edit'  )->name( 'interfaces/sflow-receiver/edit'                        );
-        Route::get(     'edit/{id}/vintid/{viid}',          'SflowReceiverController@edit'  )->name( 'interfaces/sflow-receiver/edit/from-virtual-interface' );
-        Route::get(     'add/{id}/vintid/{viid}',           'SflowReceiverController@edit'  )->name( 'interfaces/sflow-receiver/add'                         );
-        Route::post(    'store',                            'SflowReceiverController@store' )->name( 'sflow-receiver@store'                                  );
-        Route::post(    'delete',                           'SflowReceiverController@delete')->name( 'sflow-receiver@delete'                                 );
+        Route::get(     'list',                     'SflowReceiverController@list'      )->name( 'sflow-receiver@list'                          );
+        Route::get(     'edit/{sflr}/',             'SflowReceiverController@edit'      )->name( 'sflow-receiver@edit'                          );
+        Route::get(     'edit/{sflr}/vintid/{vi}',  'SflowReceiverController@edit'      )->name( 'sflow-receiver@edit-from-virtual-interface'   );
+        Route::get(     'create/vintid/{vi}',       'SflowReceiverController@create'    )->name( 'sflow-receiver@create'                        );
+        Route::post(    'store',                    'SflowReceiverController@store'     )->name( 'sflow-receiver@store'                         );
+        Route::put(    'update/{sflr}',             'SflowReceiverController@update'    )->name( 'sflow-receiver@update'                       );
+        Route::delete(  'delete/{sflr}',            'SflowReceiverController@delete'    )->name( 'sflow-receiver@delete'                        );
     });
 
     Route::group( [  'prefix' => 'core-bundle' ], function() {

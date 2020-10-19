@@ -26,7 +26,9 @@
                 };
 
                 $.ajax( url , {
-                    data: datas
+                    data: datas,
+                    method: "POST",
+                    _token : "<?= csrf_token() ?>"
                 })
                 .done( function( data ) {
                     let options = `<option value="">Choose a switch port</option>\n`;

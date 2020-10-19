@@ -195,7 +195,9 @@ function updateSwitchPort( e ) {
     dd_sp.html( "<option value=\"\">Loading, please wait...</option>\n" ).trigger('change.select2');
 
     $.ajax( url , {
-        data: datas
+        data: datas,
+        method: "POST",
+        _token : "<?= csrf_token() ?>"
     })
         .done( function( data ) {
             let options = "<option value=\"\">Choose a switch port</option>\n";

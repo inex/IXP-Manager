@@ -38,6 +38,9 @@ class SflowReceiver
      */
     private $dst_port;
 
+    private $created_at;
+    private $updated_at;
+
     /**
      * @var integer
      */

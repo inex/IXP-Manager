@@ -89,7 +89,7 @@ Route::get('switch-port/{id}/customer',                         'SwitchPortContr
 Route::get('switch-port/{id}/physical-interface',               'SwitchPortController@physicalInterface' );
 
 Route::group( [  'prefix' => 'switch' ], function() {
-    Route::get( '{id}/ports',                        'SwitchController@ports' );
+    Route::post( '{id}/ports',                        'SwitchController@ports' );
     Route::get( '{id}/status',                       'SwitchController@status' );
     Route::get( '{id}/core-bundles-status',          'SwitchController@coreBundlesStatus' );
     Route::post( '{id}/switch-port-for-ppp',          'SwitchController@switchPortForPPP' );

@@ -70,6 +70,8 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface connected()
+ * @property-read Collection|\IXP\Models\MacAddress[] $macAddresses
+ * @property-read int|null $mac_addresses_count
  */
 class VirtualInterface extends Model
 {
@@ -110,6 +112,14 @@ class VirtualInterface extends Model
     public function macAddresses(): HasMany
     {
         return $this->hasMany(MacAddress::class, 'virtualinterfaceid');
+    }
+
+    /**
+     * Get the sflow receivers for the virtual interface
+     */
+    public function sflowReceivers(): HasMany
+    {
+        return $this->hasMany(SflowReceiver::class, 'virtual_interface_id');
     }
 
     /**
