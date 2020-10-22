@@ -58,10 +58,9 @@ cb_lag_framing.trigger( 'change' );
     /**
      * on click even allow to delete a VLI
      */
-    $("a[id|='delete-vli']").on( 'click', function(e) {
+    $( '.btn-delete-vli' ).click( function(e) {
         e.preventDefault();
-        let vliid = (this.id).substring(11);
-        deletePopup( vliid, <?= $t->vi->getId() ?>, 'vli' );
+        deletePopup( $( this ), <?= $t->vi->getId() ?>, 'vli');
     });
 
     /**

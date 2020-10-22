@@ -1,6 +1,6 @@
 <?php
-/** @var Foil\Template\Template $t */
-$this->layout( 'layouts/ixpv4' );
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -8,14 +8,10 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
-
     <div class="row">
-
         <div class="col-sm-12">
-
             <?= $t->alerts() ?>
-
-            <table id='table-vli' class="table table-striped table-responsive-ixp-with-header collapse" style="width: 100%;">
+            <table id='table-vli' class="table table-striped table-responsive-ixp-with-header collapse">
                 <thead class="thead-dark">
                     <tr>
                         <th>
@@ -40,40 +36,39 @@ $this->layout( 'layouts/ixpv4' );
                 <thead>
                 <tbody>
                     <?php foreach( $t->vlis as $vli ):
-                        /** @var Entities\VlanInterface $vli */ ?>
+                        /** @var \IXP\Models\VlanInterface $vli */ ?>
                         <tr>
                             <td>
-                                <a href="<?= route( "customer@overview" , [ "id" => $vli['custid'] ] ) ?>">
-                                    <?= $t->ee( $vli['customer'] )  ?>
+                                <a href="<?= route( "customer@overview" , [ "id" => $vli->virtualInterface->custid ] ) ?>">
+                                    <?= $t->ee( $vli->virtualInterface->customer->name )  ?>
                                 </a>
                             </td>
                             <td>
-                                <a href="<?= route( 'vlan@view', [ "id" => $vli['vlanid'] ] ) ?>">
-                                    <?= $t->ee( $vli['vlan'] )   ?>
+                                <a href="<?= route( 'vlan@view', [ "id" => $vli->vlanid ] ) ?>">
+                                    <?= $t->ee( $vli->vlan->name )   ?>
                                 </a>
                             </td>
                             <td>
-                                <?= $vli['rsclient'] ? '<i class="fa fa-check"></i>' : '<i class="fa fa-cross"></i>'   ?>
+                              <i class="fa <?= $vli->rsclient ? 'fa-check' : 'fa-cross' ?>"></i>
                             </td>
                             <td>
-                                <?= $t->ee( $vli['ipv4'] )  ?>
+                                <?= $t->ee( $vli->ipv4address->address ?? '' )  ?>
                             </td>
                             <td>
-                                <?= $t->ee( $vli['ipv6'] )  ?>
+                                <?= $t->ee( $vli->ipv6address->address ?? '' )  ?>
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn-white" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vli['vintid'] ] ) ?>" title="Virtual Interface">
+                                    <a class="btn btn-white" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vli->virtualinterfaceid ] ) ?>" title="Virtual Interface">
                                         <i class="fa fa-filter"></i>
                                     </a>
-                                    <a class="btn btn-white" href="<?= route( 'interfaces/vlan/view' , [ 'id' => $vli['id'] ] ) ?>" title="Preview">
+                                    <a class="btn btn-white" href="<?= route( 'vlan-interface@view' , [ 'vli' => $vli->id ] ) ?>" title="Preview">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    <a class="btn btn-white"  href="<?= route( 'interfaces/vlan/edit' , [ 'id' => $vli['id'] ] ) ?>" title="Edit">
+                                    <a class="btn btn-white"  href="<?= route( 'vlan-interface@edit' , [ 'vli' => $vli->id ] ) ?>" title="Edit">
                                         <i class="fa fa-pencil"></i>
                                     </a>
-
-                                    <a class="btn btn-white" id="delete-vli-<?= $vli['id'] ?>" href="" title="Delete">
+                                    <a class="btn btn-white btn-delete" href="#" data-url="<?= route( 'vlan-interface@delete', [ 'vli' =>  $vli->id ] ) ?>" title="Delete">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </div>
@@ -89,15 +84,14 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'scripts' ) ?>
     <?= $t->insert( 'interfaces/virtual/js/interface' ); ?>
-    <script>
 
+    <script>
         /**
          * on click even allow to delete a Virtual Interface
          */
-        $(document).on('click', "a[id|='delete-vli']" ,function(e){
+        $( ".btn-delete" ).click( function(e) {
             e.preventDefault();
-            let vli = (this.id).substring(11);
-            deletePopup( vli , false , 'vli');
+            deletePopup( $( this ) , false , 'vli');
         });
 
     </script>

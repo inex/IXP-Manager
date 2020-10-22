@@ -23,14 +23,7 @@ namespace IXP\Http\Controllers\Interfaces;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Input, Redirect;
-
-use Entities\{
-    IPv4Address as IPv4AddressEntity,
-    IPv6Address as IPv6AddressEntity,
-    Vlan as VlanEntity,
-    VlanInterface as VlanInterfaceEntity
-};
+use Input, Redirect;
 
 use IXP\Exceptions\GeneralException;
 
@@ -38,9 +31,13 @@ use IXP\Models\{
     CoreBundle,
     CoreInterface,
     CoreLink,
+    IPv4Address,
+    IPv6Address,
     PhysicalInterface,
     SwitchPort,
-    VirtualInterface
+    VirtualInterface,
+    Vlan,
+    VlanInterface
 };
 
 use Illuminate\Http\{
@@ -191,7 +188,6 @@ abstract class Common extends Controller
                 AlertContainer::push( "Missing channel group assigned as this is a LAG port", Alert::INFO );
             }
 
-
             // LAGs must have a bundle name
             if( $vi->lag_framing && !$vi->name ) {
                 // assumption on no mlags (multi chassis lags) here:
@@ -266,59 +262,66 @@ abstract class Common extends Controller
      * * if it exists, it ensures is is not assigned to another interface;
      * * if !exists, creates a new one.
      *
-     * @param Request $request
-     * @param VlanEntity $v
-     * @param VlanInterfaceEntity $vli Vlan interface to assign IP to
-     * @param bool $ipv6 Bool to define if IP address is IPv4 or IPv6
+     * @param Request       $r
+     * @param Vlan          $v
+     * @param VlanInterface $vli Vlan interface to assign IP to
+     * @param bool          $ipv6 Bool to define if IP address is IPv4 or IPv6
+     *
      * @return bool
+     *
      * @throws
      */
-    public function setIp( Request $request, VlanEntity $v, VlanInterfaceEntity $vli, bool $ipv6 = false )
+    public function setIp( Request $r, Vlan $v, VlanInterface $vli, bool $ipv6 = false ): bool
     {
         $iptype         = $ipv6 ? "ipv6" : "ipv4";
-        $ipVer          = $ipv6 ? "IPv6" : "IPv4";
-        $setterIPv      = "set{$ipVer}Address";
-        $setterEnabled  = "set{$ipVer}enabled";
-        $setterHostname = "set{$ipVer}hostname";
-        $setterSecret   = "set{$ipVer}bgpmd5secret";
-        $setterPing     = "set{$ipVer}canping";
-        $setterMonitor  = "set{$ipVer}monitorrcbgp";
 
-        $entity = $ipv6 ? IPv6AddressEntity::class : IPv4AddressEntity::class;
+        $setterIPv      = "{$iptype}addressid";
+        $setterEnabled  = "{$iptype}enabled";
+        $setterHostname = "{$iptype}hostname";
+        $setterSecret   = "{$iptype}bgpmd5secret";
+        $setterPing     = "{$iptype}canping";
+        $setterMonitor  = "{$iptype}monitorrcbgp";
 
-        $addressValue = $request->input( $iptype . '-address' );
+        /** @var IPv4Address|IPv6Address $model */
+        $model = $ipv6 ? IPv6Address::class : IPv4Address::class;
+
+        $addressValue = $r->input( $iptype . 'address' );
 
         if( trim( $addressValue ) ) {
-            if( !( $ip = D2EM::getRepository( $entity )->findOneBy( [ "Vlan" => $v->getId(), 'address' => $addressValue ] ) ) ) {
-                /** @var IPv4AddressEntity|IPv6AddressEntity $ip */
-                $ip = new $entity();
-                $ip->setVlan( $v );
-                $ip->setAddress( $addressValue );
-                D2EM::persist( $ip );
-            } else if( $ip->getVlanInterface() && $ip->getVlanInterface() != $vli ) {
-                AlertContainer::push( "{$ipVer} address {$addressValue} is already in use by another VLAN interface on the same VLAN.", Alert::DANGER );
+            if( !( $ip = $model::where( 'vlanid', $v->id)->where( 'address', $addressValue )->get()->first() ) ) {
+                $ip = new $model;
+                $ip->vlanid  = $v->id;
+                $ip->address = $addressValue;
+                $ip->save();
+            } else if( $ip->vlanInterface && $ip->vlanInterface->id !== $vli->id ) {
+                AlertContainer::push( ucfirst( $iptype ) . " address {$addressValue} is already in use by another VLAN interface on the same VLAN.", Alert::DANGER );
                 return false;
             }
 
-            $vli->$setterIPv( $ip );
+            $vli->$setterIPv = $ip->id;
 
         } else {
-            $vli->$setterIPv( null );
+            $vli->$setterIPv = null;
         }
 
-        $vli->$setterHostname( $request->input( $iptype . '-hostname' ) );
-        $vli->$setterEnabled(  $request->input( $iptype . '-enabled', false ) );
-        $vli->$setterSecret(   $request->input( $iptype . '-bgp-md5-secret' ) );
-        $vli->$setterPing(     $request->input( $iptype . '-can-ping', false ) );
-        $vli->$setterMonitor(  $request->input( $iptype . '-monitor-rcbgp', false ) );
-
+        $vli->$setterHostname   = $r->input( $iptype . 'hostname' );
+        $vli->$setterEnabled    = $r->input( $iptype . 'enabled'  );
+        $vli->$setterSecret     = $r->input( $iptype . 'bgpmd5secret' );
+        $vli->$setterPing       = $r->input( $iptype . 'canping' );
+        $vli->$setterMonitor    = $r->input( $iptype . 'monitorrcbgp' );
+        $vli->save();
         return true;
     }
 
 
-    public function warnIfIrrdbFilteringButNoIrrdbSourceSet( VlanInterfaceEntity $vli )
+    /**
+     * @param VlanInterface $vli
+     *
+     * @return void
+     */
+    public function warnIfIrrdbFilteringButNoIrrdbSourceSet( VlanInterface $vli ): void
     {
-        if( $vli->getRsclient() && $vli->getIrrdbfilter() && !$vli->getVirtualInterface()->getCustomer()->getIRRDB() ) {
+        if( $vli->rsclient && $vli->irrdbfilter && !$vli->virtualInterface->customer->irrdb ) {
             AlertContainer::push( "You have enabled IRRDB filtering for this VLAN interface's route server sessions. "
                 . "However, the customer does not have an IRRDB source set. As such, the route servers will block all prefix "
                 . "advertisements. To rectify this, edit the customer and set an IRRDB source.", Alert::WARNING );

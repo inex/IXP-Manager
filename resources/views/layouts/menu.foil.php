@@ -63,7 +63,7 @@
                     </li>
 
                     <li class="nav-sub-menu-item <?= !request()->is( 'interfaces/vlan/*' ) ?: 'active' ?>">
-                        <a class="nav-link" href="<?= route('interfaces/vlan/list' ) ?>">
+                        <a class="nav-link" href="<?= route('vlan-interface@list' ) ?>">
                             Vlan Interfaces
                         </a>
                     </li>

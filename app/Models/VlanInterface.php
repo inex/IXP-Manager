@@ -112,6 +112,23 @@ class VlanInterface extends Model
     protected $table = 'vlaninterface';
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'virtualinterfaceid',
+        'vlanid',
+        'irrdbfilter',
+        'rsmorespecifics',
+        'mcastenabled',
+        'maxbgpprefix',
+        'rsclient',
+        'as112client',
+        'busyhost',
+    ];
+
+    /**
      * Get the customer that owns the virtual interfaces.
      */
     public function virtualInterface(): BelongsTo

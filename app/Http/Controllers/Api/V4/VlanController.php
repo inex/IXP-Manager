@@ -25,6 +25,8 @@ namespace IXP\Http\Controllers\Api\V4;
  */
 
 use D2EM;
+use IXP\Models\Aggregators\VlanAggregator;
+use IXP\Models\Vlan;
 use Validator;
 
 use Entities\{
@@ -58,26 +60,19 @@ class VlanController extends Controller
      *         v_id: "2",                      // VLAN id
      *         vli_id: "16"                    // VlanInterface ID (or null if not assigned / in use)
      *     },
-
      *
-     * @params  Request $request instance of the current HTTP request
-     * @params  int $id Vlan id
+     * @param  Vlan    $v      Vlan
+     *
      * @return  JsonResponse array of IP addresses
+     * @throws
      */
-    public function getIPAddresses( Request $request, int $id ) : JsonResponse {
-
-        /** @var VlanEntity $vl */
-        if( !( $v = D2EM::getRepository( VlanEntity::class )->find( $id ) ) ) {
-            return abort( 404 );
-        }
-
+    public function ipAddresses( Vlan $v ) : JsonResponse
+    {
         return response()->json([
-            'ipv4' => D2EM::getRepository( VlanEntity::class )->getIpAddresses( $v->getId(), RouterEntity::PROTOCOL_IPV4 ),
-            'ipv6' => D2EM::getRepository( VlanEntity::class )->getIpAddresses( $v->getId(), RouterEntity::PROTOCOL_IPV6 )
+            'ipv4' => VlanAggregator::ipAddresses( $v->id, RouterEntity::PROTOCOL_IPV4 ),
+            'ipv6' => VlanAggregator::ipAddresses( $v->id, RouterEntity::PROTOCOL_IPV6 )
         ]);
     }
-
-
 
     /**
      * Determine is an IP address /really/ free by checking across all vlans

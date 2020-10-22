@@ -6,7 +6,7 @@
         <hr>
         <div id='alert-ipv4-address' class="alert alert-warning collapse ip-is-used-alert" role="alert"></div>
 
-        <?= Former::select( 'ipv4-address' )
+        <?= Former::select( 'ipv4address' )
             ->label( 'IPv4 Address' )
             ->placeholder( 'Choose an IPv4 Address' )
             ->class( "chzn-select-deselect-tag" )
@@ -16,22 +16,21 @@
 
         <?= Former::hidden( 'original-ipv4-address')
             ->id('original-ipv4-address')
-            ->forceValue( old('ipv4-address') !== null ? old('ipv4-address') : ( $t->vli && $t->vli->getIPv4Address() ? $t->vli->getIPv4Address()->getAddress() : '' ) )
-
+            ->forceValue( old('ipv4address') !== null ? old('ipv4address') : ( $t->vli && $t->vli->ipv4address ? $t->vli->ipv4address->address : '' ) )
         ?>
 
-        <?= Former::text( 'ipv4-hostname' )
+        <?= Former::text( 'ipv4hostname' )
             ->label( 'IPv4 Hostname' )
             ->blockHelp( 'The PTR ARPA record that should be associated with this IP address. Normally selected by the ' . config( 'ixp_fe.lang.customer.one' ) . '. E.g. <code>' . config( 'ixp_fe.lang.customer.one' ) . '.ixpname.net</code>.' );
         ?>
 
-        <?= Former::text( 'ipv4-bgp-md5-secret' )
+        <?= Former::text( 'ipv4bgpmd5secret' )
             ->label( 'IPv4 BGP MD5 Secret' )
-            ->append( '<button class="btn-white btn glyphicon-generator-ipv4" id="generator-ipv4" type="button"><i class="fa fa-refresh"> </i></button>' )
+            ->append( '<button class="btn-white btn glyphicon-generator glyphicon-generator-ipv4" id="generator-ipv4" type="button"><i class="fa fa-refresh"> </i></button>' )
             ->blockHelp( 'MD5 secret for route server / collector / AS112 BGP sessions. If supported by your browser, it can be generated in a cryptographically secure manner by clicking the <em>refresh</em> button.' );
         ?>
 
-        <?= Former::checkbox( 'ipv4-can-ping' )
+        <?= Former::checkbox( 'ipv4canping' )
             ->label( '&nbsp;' )
             ->text( 'IPv4 Ping Allowed / Possible' )
             ->blockHelp( "IXP's typically monitor " . config( 'ixp_fe.lang.customer.one' ) . " interfaces for reachability / latency using pings. If the " . config( 'ixp_fe.lang.customer.one' ) . " has asked you not to do this, uncheck this box." )
@@ -39,7 +38,7 @@
             ->inline()
         ?>
 
-        <?= Former::checkbox( 'ipv4-monitor-rcbgp' )
+        <?= Former::checkbox( 'ipv4monitorrcbgp' )
             ->label( '&nbsp;' )
             ->text( 'IPv4 Monitor Route Collector BGP' )
             ->blockHelp( "IXP's often monitor a " . config( 'ixp_fe.lang.customer.owner' ) . " route collector BGP session. If this is not possible / unsuitable for this " . config( 'ixp_fe.lang.customer.one' ) . ", uncheck this box." )

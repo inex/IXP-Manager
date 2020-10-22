@@ -3,12 +3,12 @@
 //////////////////////////////////////////////////////////////////////////////////////
 // we'll need these handles to html elements in a few places:
 
-const cb_ipv6_enabled     = $( '#ipv6-enabled' );
-const cb_ipv4_enabled     = $( '#ipv4-enabled' );
+const cb_ipv6_enabled     = $( '#ipv6enabled' );
+const cb_ipv4_enabled     = $( '#ipv4enabled' );
 const cb_irrdbfilter      = $( '#irrdbfilter' );
-const dd_ipv6             = $( "#ipv6-address" );
-const dd_ipv4             = $( "#ipv4-address" );
-const dd_vlan             = $( "#vlan" );
+const dd_ipv6             = $( "#ipv6address" );
+const dd_ipv4             = $( "#ipv4address" );
+const dd_vlan             = $( "#vlanid" );
 const div_ipv6            = $( "#ipv6-area" );
 const div_ipv4            = $( "#ipv4-area" );
 const div_rsmorespecifics = $( "#div-rsmorespecifics" );

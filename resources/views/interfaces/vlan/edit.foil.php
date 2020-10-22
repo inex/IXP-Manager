@@ -6,51 +6,40 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     Vlan Interfaces
     /
-    <?= $t->duplicateTo ? 'Duplicate' : ( $t->vli ? 'Edit' : 'Add' ) ?> VLAN Interface
-    (<?= $t->vi->getCustomer()->getFormattedName() ?>)
+    <?= $t->duplicateTo ? 'Duplicate' : ( $t->vli ? 'Edit' : 'Create' ) ?> VLAN Interface
+    (<?= $t->vi ? $t->vi->customer->getFormattedName() : $t->vli->virtualInterface->customer->getFormattedName() ?>)
 <?php $this->append() ?>
 
-
 <?php $this->section( 'page-header-postamble' ) ?>
-
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-white" href="<?= route( 'interfaces/vlan/list' )?>" title="list">
+        <a class="btn btn-white" href="<?= route( 'vlan-interface@list' )?>" title="list">
             <span class="fa fa-th-list"></span>
         </a>
         <?php if( $t->vli ): ?>
-            <a class="btn btn-white" href="<?= route( 'interfaces/vlan/view', [ 'id' => $t->vli->getId() ] )?>" title="edit">
+            <a class="btn btn-white" href="<?= route( 'vlan-interface@view', [ 'vli' => $t->vli->id ] )?>" title="edit">
                 <span class="fa fa-eye"></span>
             </a>
         <?php endif;?>
     </div>
-
 <?php $this->append() ?>
 
-
-
 <?php $this->section('content') ?>
-
     <div class="row">
-
         <div class="col-sm-12">
-
             <?= $t->alerts() ?>
-
             <?php if( $t->duplicateTo ): ?>
-
                 <div class="alert alert-info mt-4" role="alert">
                     <div class="d-flex align-items-center">
                         <div class="text-center">
                             <i class="fa fa-question-circle fa-2x"></i>
                         </div>
                         <div class="col-sm-12">
-                            This form allows you to duplicate the selected VLAN interface from <em><?= $t->vli->getVlan()->getName() ?></em> to your chosen VLAN as indicated below.
+                            This form allows you to duplicate the selected VLAN interface from <em><?= $t->vli->vlan->name ?></em> to your chosen VLAN as indicated below.
                             The IP address(es) will be created if they do not already exist (and will be checked to ensure they are not already in use). The new interface will not
                             be created until you click the <em>Save Changes</em> button below.
                         </div>
                     </div>
                 </div>
-
             <?php endif; ?>
 
             <div id="instructions-alert" class="collapse alert alert-info mt-4" role="alert">
@@ -67,14 +56,12 @@
 
             <div class="card">
                 <div class="card-body">
-
                     <h3>
                         General VLAN Settings
                     </h3>
                     <hr>
-
-                    <?= Former::open()->method( 'post' )
-                        ->action( route( 'interfaces/vlan/store' ) )
+                    <?= Former::open()->method( $t->vli ? 'put' : 'post' )
+                        ->action( $t->vli ? route( 'vlan-interface@update', [ 'vli' => $t->vli->id ] ) : route( 'vlan-interface@store' ) )
                         ->customInputWidthClass( 'col-sm-6' )
                         ->customLabelWidthClass( 'col-md-3 col-sm-3 col-lg-4' )
                         ->actionButtonsCustomClass( "grey-box")
@@ -82,8 +69,7 @@
 
                     <div class="row">
                         <div class="col-md-12 col-lg-6">
-
-                            <?= Former::select( 'vlan' )
+                            <?= Former::select( 'vlanid' )
                                 ->label( 'Vlan' )
                                 ->fromQuery( $t->vlans, 'name' )
                                 ->placeholder( 'Choose a VLAN' )
@@ -109,14 +95,14 @@
 
                             ?>
 
-                            <?= Former::checkbox( 'ipv6-enabled' )
+                            <?= Former::checkbox( 'ipv6enabled' )
                                 ->label('&nbsp;')
                                 ->text( 'IPv6 Enabled' )
                                 ->value( 1 )
                                 ->blockHelp( 'Click to enable IPv6 and reveal associated settings.' )
                             ?>
 
-                            <?= Former::checkbox( 'ipv4-enabled' )
+                            <?= Former::checkbox( 'ipv4enabled' )
                                 ->label('&nbsp;')
                                 ->text( 'IPv4 Enabled' )
                                 ->value( 1 )
@@ -126,7 +112,6 @@
                         </div>
 
                         <div class="col-md-12 col-lg-6">
-
                             <?= Former::number( 'maxbgpprefix' )
                                 ->label( 'Max BGP Prefixes' )
                                 ->blockHelp( 'The maximum IPv4/6 prefixes that any router configured via IXP Manager should accept for this endpoing. '
@@ -153,7 +138,7 @@
                                     . 'See <a href=""http://docs.ixpmanager.org/features/irrdb/">the documentation</a> for more information.' )
                             ?>
 
-                            <div id="div-rsmorespecifics" style="<?= old( 'irrdbfilter' ) || $t->vli && $t->vli->getIrrdbfilter() ?: 'display: none;' ?>">
+                            <div id="div-rsmorespecifics" class="<?= old( 'irrdbfilter' ) || $t->vli && $t->vli->irrdbfilter ?: 'collapse' ?>" >
                                 <?= Former::checkbox( 'rsmorespecifics' )
                                     ->label('&nbsp;')
                                     ->text( 'IRRDB - Allow More Specifics?' )
@@ -172,38 +157,30 @@
                                     ->blockHelp( 'If checked, then IXP Manager will configure a BGP peer for this connection when generating <a href="http://docs.ixpmanager.org/features/as112/">AS112 router configurations</a>.' )
                                 ?>
                             <?php endif; ?>
-
                         </div>
                     </div>
-
                 </div>
             </div>
 
-
             <div class="row">
-                <div id='ipv6-area' class="col-md-12 col-lg-6 mt-4" style="<?= old( 'ipv6-enabled' ) || $t->vli && $t->vli->getIPv6Enabled() ?: 'display: none;' ?>">
+                <div id='ipv6-area' class="col-md-12 col-lg-6 mt-4 <?= old( 'ipv6enabled' ) || $t->vli && $t->vli->ipv6enabled ?: 'collapse' ?> ">
                     <?= $t->insert( 'interfaces/common/vli/ipv6.foil.php' ) ?>
                 </div>
 
-                <div id='ipv4-area' class="col-md-12 col-lg-6 mt-4" style="<?= old( 'ipv4-enabled' ) || Former::checkbox( 'ipv4-enabled' )->getValue() ?: 'display: none;' ?>">
+                <div id='ipv4-area' class="col-md-12 col-lg-6 mt-4 <?= old( 'ipv4enabled' ) || Former::checkbox( 'ipv4enabled' )->getValue() ?: 'collapse' ?>">
                     <?= $t->insert( 'interfaces/common/vli/ipv4.foil.php' ) ?>
                 </div>
             </div>
 
-
-            <?= Former::hidden( 'id' )
-                ->value( $t->vli ? $t->vli->getId() : null )
-            ?>
-
-            <?= Former::hidden( 'viid' )
+            <?= Former::hidden( 'virtualinterfaceid' )
                 ->id( 'viid' )
-                ->value( $t->vli ? $t->vli->getVirtualInterface()->getId() : $t->vi->getId())
+                ->value( $t->vli ? $t->vli->virtualInterface->id : $t->vi->id)
             ?>
 
             <?php if( $t->duplicateTo ): ?>
-                <?= Former::hidden( 'vlan' )
-                    ->id( 'vlan' )
-                    ->value(  $t->duplicateTo )
+                <?= Former::hidden( 'vlanid' )
+                    ->id( 'vlanid' )
+                    ->forceValue(  $t->duplicateTo->id )
                 ?>
             <?php endif; ?>
 
@@ -212,27 +189,19 @@
                 ->value(  $t->duplicateTo ? true : false )
             ?>
 
-            <?= Former::hidden( 'viid' )
-                ->id( 'viid' )
-                ->value( $t->vli ? $t->vli->getVirtualInterface()->getId() : $t->vi->getId())
-            ?>
-
             <?= Former::hidden( 'redirect2vi' )
                 ->value( $t->vi ? true : false )
             ?>
 
             <?=Former::actions(
-                Former::primary_submit( $t->vli ? 'Save Changes' : 'Add' )->class( "mb-2 mb-sm-0" ),
-                Former::secondary_link( 'Cancel' )->id( 'cancel-btn' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) :  route( 'interfaces/vlan/list' ) )->class( "mb-2 mb-sm-0" ),
+                Former::primary_submit( $t->vli ? 'Save Changes' : 'Create' )->class( "mb-2 mb-sm-0" ),
+                Former::secondary_link( 'Cancel' )->id( 'cancel-btn' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->id ] ) :  route( 'vlan-interface@list' ) )->class( "mb-2 mb-sm-0" ),
                 Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
             )->id('btn-group') ?>
 
             <?= Former::close() ?>
-
         </div>
-
     </div>
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>

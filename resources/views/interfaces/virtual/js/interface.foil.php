@@ -45,7 +45,7 @@ function deletePopup( btn_delete, viid, type ) {
 
     if( type === "vli") {
         objectName = "Vlan Interface";
-        urlDelete  = "<?= route( 'vlan-interface@delete' ) ?>";
+        urlDelete  = btn_delete.attr( 'data-url');
     } else if( type === "vi" ) {
         objectName = "Virtual Interface";
         urlDelete = "<?= route( 'virtual-interface@delete' ) ?>" ;
