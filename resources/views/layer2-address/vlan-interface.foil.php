@@ -9,7 +9,7 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-sm">
-        <a href="<?= route( "interfaces/virtual/edit" , [ "id" => $t->vli->virtualInterface->id ] ) ?>" class="btn btn-sm btn-white">
+        <a href="<?= route( 'virtual-interface@edit' , [ "vi" => $t->vli->virtualInterface->id ] ) ?>" class="btn btn-sm btn-white">
             Virtual Interface Details
         </a>
         <a class="btn  btn-sm btn-white" href="#" id="add-l2a">

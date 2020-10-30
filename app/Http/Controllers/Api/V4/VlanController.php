@@ -2,9 +2,8 @@
 
 namespace IXP\Http\Controllers\Api\V4;
 
-
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -26,11 +25,11 @@ namespace IXP\Http\Controllers\Api\V4;
 
 use D2EM;
 use IXP\Models\Aggregators\VlanAggregator;
+use IXP\Models\Router;
 use IXP\Models\Vlan;
 use Validator;
 
 use Entities\{
-    Router        as RouterEntity,
     Vlan          as VlanEntity
 };
 
@@ -46,7 +45,6 @@ use Illuminate\Http\Request;
  */
 class VlanController extends Controller
 {
-
     /**
      * Get all IP addresses (v4 and v6) for a given VLAN.
      *
@@ -69,8 +67,8 @@ class VlanController extends Controller
     public function ipAddresses( Vlan $v ) : JsonResponse
     {
         return response()->json([
-            'ipv4' => VlanAggregator::ipAddresses( $v->id, RouterEntity::PROTOCOL_IPV4 ),
-            'ipv6' => VlanAggregator::ipAddresses( $v->id, RouterEntity::PROTOCOL_IPV6 )
+            'ipv4' => VlanAggregator::ipAddresses( $v->id, Router::PROTOCOL_IPV4 ),
+            'ipv6' => VlanAggregator::ipAddresses( $v->id, Router::PROTOCOL_IPV6 )
         ]);
     }
 
@@ -80,13 +78,16 @@ class VlanController extends Controller
      * Returns a array of objects where each object is the details of its usage (example below).
      * If not used, returns an empty array.
      *
-     * @see VlanEntity::usedAcrossVlans() for array structure.
+     * @param Request $r
      *
      * @return  JsonResponse array of object
+     *
+     * @see VlanEntity::usedAcrossVlans() for array structure.
+     *
      */
-    public function usedAcrossVlans( Request $request ) : JsonResponse {
-
-        $validator = Validator::make( $request->all(), [
+    public function usedAcrossVlans( Request $r ) : JsonResponse
+    {
+        $validator = Validator::make( $r->all(), [
             'ip' => 'required|ip'
         ]);
 
@@ -95,7 +96,7 @@ class VlanController extends Controller
         }
 
         return response()->json(
-            D2EM::getRepository( VlanEntity::class )->usedAcrossVlans( $request->input( 'ip' ) )
+            VlanAggregator::usedAcrossVlans( $r->ip )
         );
     }
 }

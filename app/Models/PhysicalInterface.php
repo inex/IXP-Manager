@@ -323,12 +323,11 @@ class PhysicalInterface extends Model
     public function otherPICoreLink()
     {
         if( $ci = $this->coreInterface ){
-            if( $this->id === $ci->coreLinkSideA->coreInterfaceSideA->physical_interface_id ){
+            if( $this->id === $ci->coreLink()->coreInterfaceSideA->physical_interface_id ){
                 return $ci->coreLink()->coreInterfaceSideB->physicalInterface;
             }
             return $ci->coreLink()->coreInterfaceSideA->physicalInterface;
         }
-
         return false;
     }
     /**

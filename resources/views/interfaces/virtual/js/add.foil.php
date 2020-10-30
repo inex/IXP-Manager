@@ -1,13 +1,11 @@
 <script>
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
 /// we'll need these handles to html elements in a few places:
 ///
 
 const btn_advanced   = $( '#advanced-options' );
-const btn_delete     = $( '#delete-vi-<?= $t->vi ? $t->vi->getId() : "xxxxxxx" ?>' );
+const btn_delete     = $( '#delete-vi-<?= $t->vi ? $t->vi->id : "xxxxxxx" ?>' );
 
 const cb_lag_framing = $( '#lag_framing' );
 
@@ -21,11 +19,6 @@ const div_fastlacp   = $( "#fastlacp-area" );
 ///
 
 // display or hide the advanced area
-
-
-
-
-
 btn_advanced.on('click', function(e){ e.preventDefault(); div_advanced.slideToggle();btn_delete.slideToggle({
     easing: "easeOutQuad",
     start: function() {
@@ -41,10 +34,9 @@ cb_lag_framing.trigger( 'change' );
     /**
      * on click even allow to delete a Sflow receiver
      */
-    $("a[id|='delete-vi']").on('click', function(e){
+    $( '.btn-delete-vi'  ).on('click', function(e){
         e.preventDefault();
-        let viid = (this.id).substring(10);
-        deletePopup( viid, <?= $t->vi->getId() ?> , 'vi' );
+        deletePopup( $( this ), 'vi');
     });
 
     /**
@@ -52,7 +44,7 @@ cb_lag_framing.trigger( 'change' );
      */
     $( '.btn-delete-pi' ).click( function(e){
         e.preventDefault();
-        deletePopup( $( this ), false, 'pi');
+        deletePopup( $( this ), 'pi');
     });
 
     /**
@@ -60,16 +52,15 @@ cb_lag_framing.trigger( 'change' );
      */
     $( '.btn-delete-vli' ).click( function(e) {
         e.preventDefault();
-        deletePopup( $( this ), <?= $t->vi->getId() ?>, 'vli');
+        deletePopup( $( this ), 'vli');
     });
 
     /**
      * on click even allow to delete a Sflow receiver
      */
-    $( "a[id|='duplicate-vli']" ).on( 'click', function(e) {
+    $( '.btn-duplicate-vli' ).on( 'click', function(e) {
         e.preventDefault();
-        let vliid = (this.id).substring(14);
-        duplicateVliPopup( vliid, <?= $t->vi->getId() ?> );
+        duplicateVliPopup( $( this ).attr( 'data-object-id' ), <?= $t->vi->id ?> );
     });
 
     /**
@@ -77,7 +68,7 @@ cb_lag_framing.trigger( 'change' );
      */
     $( ".btn-delete-sflr" ).click( function(e) {
         e.preventDefault();
-        deletePopup( $( this ), <?= $t->vi->getId() ?>, 'sflr');
+        deletePopup( $( this ), 'sflr');
     });
 <?php endif; ?>
 
@@ -88,7 +79,7 @@ cb_lag_framing.trigger( 'change' );
 /// Initial states
 ///
 
-if ( $( '#name' ).val() != '' || $( '#description' ).val() != '' || $( '#channel-group' ).val() != '' || $( '#mtu' ).val() != '' ) {
+if ( $( '#name' ).val() !== '' || $( '#description' ).val() !== '' || $( '#channelgroup' ).val() !== '' || $( '#mtu' ).val() !== '' ) {
     div_advanced.show();
     btn_delete.css( "display", "inline-block" );
 } else {
@@ -99,13 +90,10 @@ if ( $( '#name' ).val() != '' || $( '#description' ).val() != '' || $( '#channel
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
 /**
  * function to show the duplicate vli popup
  */
-function duplicateVliPopup( id, viid ){
+function duplicateVliPopup( id, viid ) {
 
     let html = `
             <p>
@@ -126,8 +114,8 @@ function duplicateVliPopup( id, viid ){
             <p>
             Please select the VLAN: <select id="duplicateTo" class="chzn-select">
                 <option></option>
-            <?php foreach( $t->vls as $id => $vl): ?>
-                <option value="<?= $id ?>"><?= $vl ?></option>
+            <?php foreach( $t->vlans as $id => $vl): ?>
+                <option value="<?= $vl->id ?>"><?= $vl->name ?></option>
             <?php endforeach; ?>
             </select>
             </p>

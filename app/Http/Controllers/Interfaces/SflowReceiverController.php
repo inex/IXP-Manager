@@ -117,7 +117,7 @@ class SflowReceiverController extends Common
         $sflr = SflowReceiver::create( $r->all() );
 
         AlertContainer::push( 'Sflow receiver created.', Alert::SUCCESS );
-        return Redirect::to( route( 'interfaces/virtual/edit', [ 'id' => $sflr->virtual_interface_id ] ) );
+        return Redirect::to( route( 'virtual-interface@edit', [ 'vi' => $sflr->virtual_interface_id ] ) );
     }
 
     /**
@@ -135,7 +135,7 @@ class SflowReceiverController extends Common
         $sflr->update( $r->all() );
 
         AlertContainer::push( 'Sflow receiver updated.', Alert::SUCCESS );
-        return Redirect::to( route( 'interfaces/virtual/edit', [ 'id' => $sflr->virtualInterface->id ] ) );
+        return Redirect::to( route( 'virtual-interface@edit', [ 'vi' => $sflr->virtualInterface->id ] ) );
     }
 
     /**
@@ -155,6 +155,6 @@ class SflowReceiverController extends Common
         if( $_SERVER[ "HTTP_REFERER" ] === route( "sflow-receiver@list" ) ){
             return Redirect::to( route( "sflow-receiver@list" ) );
         }
-        return Redirect::to( route( "interfaces/virtual/edit" , [ "id" => $sflr->virtualInterface->id ] ) );
+        return Redirect::to( route( "virtual-interface@edit" , [ "vi" => $sflr->virtualInterface->id ] ) );
     }
 }

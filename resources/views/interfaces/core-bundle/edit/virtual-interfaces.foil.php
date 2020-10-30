@@ -16,7 +16,7 @@
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">
-                            <a class="btn btn btn-white" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vi->id ] )?>" title="Edit">
+                            <a class="btn btn btn-white" href="<?= route( 'virtual-interface@edit' , [ 'vi' => $vi->id ] )?>" title="Edit">
                                 <i class="fa fa-pencil"></i>
                             </a>
                         </div>

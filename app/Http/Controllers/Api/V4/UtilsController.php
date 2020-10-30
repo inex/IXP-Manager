@@ -1,7 +1,9 @@
 <?php
 
+namespace IXP\Http\Controllers\Api\V4;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,27 +23,33 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace IXP\Http\Controllers\Api\V4;
-
-use Illuminate\Container\Container;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\{
+    JsonResponse,
+    Request
+};
 
 use Parsedown;
 
+/**
+ * Utils Controller
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 
-class UtilsController extends Controller {
-
-
+class UtilsController extends Controller
+{
     /**
      * Turn markdown text into HTML
      *
      * @param   Request $request
+     *
      * @return  JsonResponse JSON object with 'html' element
      */
-    public function markdown( Request $request ): JsonResponse {
+    public function markdown( Request $request ): JsonResponse
+    {
         $pd = new Parsedown();
-
         return response()->json([
             'html' => $pd->text( $request->get( 'text', '' ) )
         ]);

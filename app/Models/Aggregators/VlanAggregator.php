@@ -77,4 +77,54 @@ class VlanAggregator extends Vlan
             ->get()->toArray();
 
     }
+
+    /**
+     * Determine is an IP address /really/ free by checking across all vlans
+     *
+     * Returns a array of objects as follows (or empty array if not user):
+     *
+     * [
+     *      [
+     *          customer: {
+     *              id: x,
+     *              name: "",
+     *              autsys: x,
+     *              abbreviated_name: ""
+     *          },
+     *          virtualinterface: {
+     *              id: x
+     *          },
+     *          vlaninterface: {
+     *              id: x
+     *          },
+     *          vlan: {
+     *              id: x,
+     *              name: "",
+     *              number: x
+     *          }
+     *      },
+     *      {
+     *
+     *      ]
+     * ]
+     *
+     * @param  string $ip The IPv6/4 address to check
+     * @return array Array of object
+     */
+    public static function usedAcrossVlans( string $ip ) : array
+    {
+        $table = strpos( $ip, ':' ) !== false ? 'ipv6address' : 'ipv4address' ;
+
+        return Vlan::select( [
+                'c.id AS cid', 'c.name AS cname', 'c.autsys AS cautsys', 'c.abbreviatedName AS cabbreviatedname',
+                'vi.id AS viid', 'vli.id AS vliid',
+                'v.id AS vid', 'v.name AS vname', 'v.number AS vnumber'
+            ] )
+            ->from( 'vlaninterface AS vli' )
+            ->leftJoin( $table, "${table}.id", "vli.${table}id" )
+            ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid')
+            ->leftJoin( 'cust AS c', 'c.id', 'vi.custid' )
+            ->leftJoin( 'vlan AS v', 'v.id', 'vli.vlanid')
+            ->where( "${table}.address", $ip )->get()->toArray();
+    }
 }

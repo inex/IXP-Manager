@@ -88,7 +88,7 @@
                                         <i class="fa fa-eye"></i>
                                     </a>
 
-                                    <a class="btn btn-white" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi['vintid'] ] ) ?>" title="Virtual Interface">
+                                    <a class="btn btn-white" href="<?= route( 'virtual-interface@edit' , [ 'vi' => $pi['vintid'] ] ) ?>" title="Virtual Interface">
                                         <i class="fa fa-filter"></i>
                                     </a>
 
@@ -133,7 +133,7 @@
          */
         $( '.btn-delete' ).click( function(e){
             e.preventDefault();
-            deletePopup( $( this ), false, 'pi');
+            deletePopup( $( this ), 'pi');
         });
 
 

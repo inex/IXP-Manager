@@ -195,7 +195,7 @@
 
             <?=Former::actions(
                 Former::primary_submit( $t->vli ? 'Save Changes' : 'Create' )->class( "mb-2 mb-sm-0" ),
-                Former::secondary_link( 'Cancel' )->id( 'cancel-btn' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->id ] ) :  route( 'vlan-interface@list' ) )->class( "mb-2 mb-sm-0" ),
+                Former::secondary_link( 'Cancel' )->id( 'cancel-btn' )->href( $t->vi ? route(  'virtual-interface@edit' , [ 'vi' => $t->vi->id ] ) :  route( 'vlan-interface@list' ) )->class( "mb-2 mb-sm-0" ),
                 Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
             )->id('btn-group') ?>
 

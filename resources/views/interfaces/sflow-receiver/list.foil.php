@@ -51,7 +51,7 @@
                                 </a>
                             </td>
                             <td>
-                                <a href="<?= route( "interfaces/virtual/edit", [ 'id' => $sflr->virtualInterface->id ] ) ?>">
+                                <a href="<?= route( 'virtual-interface@edit', [ 'vi' => $sflr->virtualInterface->id ] ) ?>">
                                     <?php if( count( $pis = $sflr->virtualInterface->physicalInterfaces ) ): ?>
                                         <?= $t->ee( $pis->first()->switchPort->switcher->name ) ?>
                                     <?php endif; ?>
@@ -93,7 +93,7 @@
          */
         $( ".btn-delete" ).click( function(e) {
             e.preventDefault();
-            deletePopup( $( this ) , false, 'sflr' );
+            deletePopup( $( this ), 'sflr' );
         });
 
     </script>

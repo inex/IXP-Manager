@@ -23,7 +23,6 @@ namespace IXP\Http\Controllers\Api\V4;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
 use D2EM;
 
 use Entities\{

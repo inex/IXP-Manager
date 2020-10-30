@@ -4,7 +4,7 @@
             IPv6 Details
         </h4>
         <hr>
-        <div id='alert-ipv6-address' class="alert alert-warning collapse ip-is-used-alert" role="alert"></div>
+        <div id='alert-ipv6address' class="alert alert-warning collapse ip-is-used-alert" role="alert"></div>
 
         <?= Former::select( 'ipv6address' )
             ->label( 'IPv6 Address' )
@@ -14,8 +14,8 @@
                 . 'You can also create a new IPv6 address by entering it here but please use clue as validation is minimal. Also ensure you use standard short form with lower case letters.' );
         ?>
 
-        <?= Former::hidden( 'original-ipv6-address')
-            ->id('original-ipv6-address')
+        <?= Former::hidden( 'original-ipv6address')
+            ->id('original-ipv6address')
             ->forceValue( old('ipv6address') !== null ? old('ipv6address') : ( $t->vli && $t->vli->ipv6address ? $t->vli->ipv6address->address : '' ) )
         ?>
 

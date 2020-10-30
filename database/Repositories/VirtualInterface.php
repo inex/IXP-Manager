@@ -132,14 +132,19 @@ class VirtualInterface extends EntityRepository
         }
 
         // not sure if we're supporting multi-chassis LAGs. May work, may not. Let's be positive and assume it works and account for that:
-        $switches = [];
+        $switches = [
+            0 => 59,
+            1 => 60,
+            2 => 62,
+        ];
 
-        /** @var \Entities\PhysicalInterface $pi */
-        foreach( $vi->getPhysicalInterfaces() as $pi ) {
-            if( !in_array( $pi->getSwitchPort()->getSwitcher()->getId(), $switches ) ) {
-                $switches[] = $pi->getSwitchPort()->getSwitcher()->getId();
-            }
-        }
+//        /** @var \Entities\PhysicalInterface $pi */
+//        foreach( $vi->getPhysicalInterfaces() as $pi ) {
+//            if( !in_array( $pi->getSwitchPort()->getSwitcher()->getId(), $switches ) ) {
+//                $switches[] = $pi->getSwitchPort()->getSwitcher()->getId();
+//            }
+//        }
+
 
         /** @var VIEntity[] $vis */
         $vis = $this->getEntityManager()->createQuery("
@@ -154,6 +159,7 @@ class VirtualInterface extends EntityRepository
             ->setParameter('cg',       $vi->getChannelgroup())
             ->setParameter('switches', $switches )
             ->getResult();
+
 
         if( count( $vis ) == 0 ) {
             return true;

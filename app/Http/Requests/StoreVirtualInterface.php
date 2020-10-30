@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -36,7 +36,7 @@ class StoreVirtualInterface extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // middleware ensures superuser access only so always authorised here:
         return Auth::getUser()->isSuperUser();
@@ -47,13 +47,13 @@ class StoreVirtualInterface extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'cust'                  => 'integer'. ( $this->input('selectedCust') ? '|nullable' : '|required' ),
+            'custid'                 => 'integer|'. ( $this->selectedCust ? 'nullable' : 'required' ),
             'name'                  => 'string|max:255|nullable',
             'description'           => 'string|max:255|nullable',
-            'channel-group'         => 'integer|nullable',
+            'channelgroup'          => 'integer|nullable',
             'mtu'                   => 'integer|min:1|max:64000|nullable',
         ];
     }

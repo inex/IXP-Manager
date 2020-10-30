@@ -4,7 +4,7 @@
             IPv4 Details
         </h4>
         <hr>
-        <div id='alert-ipv4-address' class="alert alert-warning collapse ip-is-used-alert" role="alert"></div>
+        <div id='alert-ipv4address' class="alert alert-warning collapse ip-is-used-alert" role="alert"></div>
 
         <?= Former::select( 'ipv4address' )
             ->label( 'IPv4 Address' )
@@ -14,8 +14,8 @@
                 . 'You can also create a new IPv4 address by entering it here but please use clue as validation is minimal.');
         ?>
 
-        <?= Former::hidden( 'original-ipv4-address')
-            ->id('original-ipv4-address')
+        <?= Former::hidden( 'original-ipv4address')
+            ->id('original-ipv4address')
             ->forceValue( old('ipv4address') !== null ? old('ipv4address') : ( $t->vli && $t->vli->ipv4address ? $t->vli->ipv4address->address : '' ) )
         ?>
 

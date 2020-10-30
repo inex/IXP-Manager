@@ -111,7 +111,7 @@
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <a class="btn btn-white <?= $ip[ 'viid' ] ?: 'disabled' ?>" href="<?= $ip[ 'viid' ] ? route( "interfaces/virtual/edit" , [ 'id' => $ip[ 'viid' ] ] ) : '#' ?>" title="See interface">
+                                        <a class="btn btn-white <?= $ip[ 'viid' ] ?: 'disabled' ?>" href="<?= $ip[ 'viid' ] ? route( 'virtual-interface@edit' , [ 'vi' => $ip[ 'viid' ] ] ) : '#' ?>" title="See interface">
                                             <i class="fa fa-eye"></i>
                                         </a>
                                         <a class="btn btn-white delete-ip <?= !$ip[ 'vliid' ] ?: 'disabled' ?>" data-url="<?= !$ip[ 'viid' ] ? route( "ip-address@delete" , [ 'id' => $ip[ 'id' ] ] ) : '#' ?>" href="#" title="Delete">

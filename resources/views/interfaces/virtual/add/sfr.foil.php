@@ -1,5 +1,4 @@
 <?php
-
 // ************************************************************************************************************
 // **
 // ** The "Sflow Receivers" table on the virtual interface add/edit page.
@@ -7,19 +6,18 @@
 // ** Not a standalone template - called from interfaces/virtual/add.foil.php
 // **
 // ************************************************************************************************************
-
 ?>
 <?php if( config('grapher.backends.sflow.enabled') ):?>
     <div class="row mt-4">
         <h3 class="col-md-12">
             Sflow Receivers
-            <a class="btn btn-white btn-sm" href="<?= route('sflow-receiver@create' , [ 'vi' => $t->vi->getId() ] ) ?>">
+            <a class="btn btn-white btn-sm" href="<?= route('sflow-receiver@create' , [ 'vi' => $t->vi->id ] ) ?>">
                 <i class="fa fa-plus"></i>
             </a>
         </h3>
 
         <div class="col-md-12 table">
-            <?php if( count( $t->vi->getSflowReceivers() ) ): ?>
+            <?php if( $t->vi->sflowReceivers()->count() ): ?>
                 <table id="table-sflr" class="table table-striped table-responsive-ixp-no-header">
                     <thead class="thead-dark">
                         <tr>
@@ -35,20 +33,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach( $t->vi->getSflowReceivers() as $sflr ): /** @var Entities\SflowReceiver $sflr */ ?>
+                        <?php foreach( $t->vi->sflowReceivers as $sflr ): /** @var \IXP\Models\SflowReceiver $sflr */ ?>
                             <tr>
                                 <td>
-                                    <?= $t->ee( $sflr->getDstIp() ) ?>
+                                    <?= $t->ee( $sflr->dst_ip ) ?>
                                 </td>
                                 <td>
-                                    <?= $sflr->getDstPort() ?>
+                                    <?= $sflr->dst_port ?>
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
-                                        <a class="btn btn-white" href="<?= route('sflow-receiver@edit-from-virtual-interface' , [ 'sflr' => $sflr->getId(), 'vi' => $t->vi->getId() ] ) ?>">
+                                        <a class="btn btn-white" href="<?= route('sflow-receiver@edit-from-virtual-interface' , [ 'sflr' => $sflr->id, 'vi' => $t->vi->id ] ) ?>">
                                             <i class="fa fa-pencil"></i>
                                         </a>
-                                        <a class="btn btn-white btn-delete-sflr" href="#" data-url="<?= route( 'sflow-receiver@delete', [ 'sflr' => $sflr->getId() ] ) ?>" title="Delete Sflow Receiver">
+                                        <a class="btn btn-white btn-delete-sflr" href="#" data-url="<?= route( 'sflow-receiver@delete', [ 'sflr' => $sflr->id ] ) ?>" title="Delete Sflow Receiver">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     </div>
@@ -65,7 +63,7 @@
                         </div>
                         <div class="col-sm-12">
                             There are no Sflow receivers defined for this virtual interface.
-                            <a class="btn btn-white" href="<?= route('sflow-receiver@create' , [ 'vi' => $t->vi->getId() ] ) ?>">
+                            <a class="btn btn-white" href="<?= route('sflow-receiver@create' , [ 'vi' => $t->vi->id ] ) ?>">
                                 Create one now...
                             </a>
                         </div>

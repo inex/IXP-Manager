@@ -83,6 +83,21 @@ class VirtualInterface extends Model
     protected $table = 'virtualinterface';
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'custid',
+        'name',
+        'description',
+        'mtu',
+        'trunk',
+        'channelgroup',
+        'lag_framing',
+        'fastlacp',
+    ];
+    /**
      * Get the customer that owns the virtual interfaces.
      */
     public function customer(): BelongsTo
@@ -169,5 +184,136 @@ class VirtualInterface extends Model
             }
         }
         return false;
+    }
+
+    /**
+     * Get peerring PhysicalInterfaces
+     *
+
+     */
+    public function peeringPhysicalInterface(): array
+    {
+        $ppis = [];
+        foreach( $this->physicalInterfaces as $ppi ) {
+            if( $ppi->peeringPhysicalInterface ){
+                $ppis[] = $ppi->peeringPhysicalInterface;
+            }
+        }
+        return $ppis;
+    }
+
+    /**
+     * Get fanout PhysicalInterfaces
+     *
+     * @return array
+     */
+    public function fanoutPhysicalInterface(): array
+    {
+        $ppis = [];
+        foreach( $this->physicalInterfaces as $ppi){
+            if( $ppi->fanoutPhysicalInterface ) {
+                $ppis[] = $ppi->peeringPhysicalInterface;
+            }
+        }
+        return $ppis;
+    }
+
+    /**
+     * Get a Switch Port of a virtual interface.
+     *
+     * @return SwitchPort|bool The switch port or false if no switch port.
+     */
+    public function switchPort()
+    {
+        if( $this->physicalInterfaces()->count() ){
+            return $this->physicalInterfaces()->first()->switchPort;
+        }
+        return false;
+    }
+
+    /**
+     * Get the *type* of virtual interface based on the switchport type.
+     *
+     * Actually returns type of the first physical interface's switchport. All
+     * switchports in a virtual interface should be the same type so just
+     * examining the first is sufficient to determine the *virtual interface type*.
+     *
+     * @see SwitchPortt::$TYPES
+     *
+     * @return string|bool The virtual interface type (`\Entities\SwitchPort::TYPE_XXX`) or false if no physical interfaces.
+     */
+    public function type()
+    {
+        if( $this->physicalInterfaces()->count() ) {
+            return $this->physicalInterfaces()->first()->switchPort->type;
+        }
+        return false;
+    }
+
+    /**
+     * Turn the database integer representation of the type into text as
+     * defined in the SwitchPort::$TYPES array (or 'Unknown')
+     * @return string
+     */
+    public function resolveType(): string
+    {
+        return SwitchPort::$TYPES[ $this->type() ] ?? 'Unknown';
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_PEERING?
+     *
+     * @return bool
+     */
+    public function typePeering(): bool
+    {
+        return $this->type() === SwitchPort::TYPE_PEERING;
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_FANOUT?
+     *
+     * @return bool
+     */
+    public function typeFanout(): bool
+    {
+        return $this->type() === SwitchPort::TYPE_FANOUT;
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_RESELLER?
+     *
+     * @return bool
+     */
+    public function typeReseller(): bool
+    {
+        return $this->type() === SwitchPort::TYPE_RESELLER;
+    }
+
+    /**
+     * Get the bundle name if name and channel group are set. Otherwise an empty string.
+     *
+     * @return string
+     */
+    public function bundleName(): string
+    {
+        if( $this->name && $this->channelgroup ) {
+            return $this->name . $this->channelgroup;
+        }
+        return '';
+    }
+
+    /**
+     * Check if the switch is the same for the physical interfaces of the virtual interface
+     *
+     * @return bool
+     */
+    public function sameSwitchForEachPI(): bool
+    {
+         return self::select( 'sp.switchid AS switchid' )
+                 ->from( 'virtualinterface AS vi' )
+                 ->leftJoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
+                 ->leftJoin( 'switchport AS sp', 'sp.id', 'pi.switchportid' )
+                 ->where( 'vi.id', $this->id )->distinct()->get()->pluck( 'switchid' )->count() === 1;
     }
 }

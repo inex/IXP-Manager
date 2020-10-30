@@ -34,6 +34,7 @@ use IXP\Models\{
     VirtualInterface
 };
 use Illuminate\Support\Collection;
+use IXP\Exceptions\GeneralException;
 
 /**
  * IXP\Models\Aggregators\VirtualInterfaceAggregator
@@ -185,5 +186,45 @@ class VirtualInterfaceAggregator extends VirtualInterface
             ->whereIn( 'c.type', [1,4] )
             ->groupBy( 'v.name' )
             ->orderByDesc( 'count' )->get()->toArray();
+    }
+
+    /**
+     * For the given $vi, we want to ensure its channel group is unique
+     * within a switch
+     *
+     * @param VirtualInterface $vi
+     *
+     * @return bool
+     *
+     * @throws
+     */
+    public static function validateChannelGroup( VirtualInterface $vi ): bool
+    {
+        if( $vi->channelgroup === null ) {
+            throw new GeneralException("Should not be testing a null channel group number");
+        }
+
+        if( $vi->physicalInterfaces()->count() === 0 ) {
+            throw new GeneralException("Channel group number is only relevant when there is at least one physical interface");
+        }
+
+        $vis = VirtualInterface::select( [ 'vi.id AS id' ] )
+            ->from( 'virtualinterface AS vi' )
+            ->join( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
+            ->join( 'switchport as sp', 'sp.id', 'pi.switchportid' )
+            ->where( 'vi.channelgroup', $vi->channelgroup )
+            ->whereIn( 'sp.switchid', function( $query ) use( $vi ) {
+                $query->select( [ 's.id' ] )
+                    ->from( 'switch AS s' )
+                    ->leftJoin( 'switchport AS sp', 'sp.switchid', 's.id')
+                    ->leftJoin( 'physicalinterface AS pi', 'pi.switchportid', 'sp.id' )
+                    ->where( 'pi.virtualinterfaceid', $vi->id );
+            } )->distinct()->get()->pluck( 'id' )->toArray();
+
+        if( ( count( $vis ) === 0 ) || ( count( $vis ) === 1 && in_array( $vi->id, $vis, false )  ) ) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -12,8 +12,8 @@ $(document).ready( function() {
     // BUT ONLY AFTER ALL THE AJAX HAS RUN
     if( duplicate ) {
         $.when( $, ...ajaxRequests ).then( function() {
-            const ipv6 = $( "#original-ipv6-address" ).val();
-            const ipv4 = $( "#original-ipv4-address" ).val();
+            const ipv6 = $( "#original-ipv6address" ).val();
+            const ipv4 = $( "#original-ipv4address" ).val();
 
             // do these exist in the dropdown?
             if( !dd_ipv6.find( `option[value='${ipv6}']` ).length > 0 ) {

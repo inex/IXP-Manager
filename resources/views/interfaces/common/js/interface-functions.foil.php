@@ -1,6 +1,5 @@
 <script>
 
-
 /**
  * Takes the currently selected VLAN from the dd_vlan dropdown and calls an
  * AJAX API endpoint to get the available IP addresses.
@@ -10,8 +9,8 @@ function updateIpAddresses() {
 
         // This function may be called on a form submission error where IPs are already chosen.
         // If that's the case, we want to remember them
-        let selectedIPv6 = $( "#original-ipv6-address" ).val();
-        let selectedIPv4 = $( "#original-ipv4-address" ).val();
+        let selectedIPv6 = $( "#original-ipv6address" ).val();
+        let selectedIPv4 = $( "#original-ipv4address" ).val();
 
         $( dd_ipv6 ).html( `<option value="">Loading, please wait...</option>` ).trigger('change.select2');
         $( dd_ipv4 ).html( `<option value="">Loading, please wait...</option>` ).trigger('change.select2');
@@ -24,7 +23,6 @@ function updateIpAddresses() {
 
         ajaxRequests.push( $.ajax( url )
             .done( function( data ) {
-
                 // IPv6
                 let options = `<option value="">Choose an IPv6 Address</option>`;
                 $.each( data.ipv6, function( key, ip ) {
@@ -122,8 +120,6 @@ function updateMD5( e ) {
 }
 
 
-
-
 /**
  * Fn to perform an API query to see if a select IP address is in use across
  * any VLAN and, if it is, add a warning message.
@@ -135,17 +131,16 @@ function usedAcrossVlans() {
     $( '#alert-' + inputName ).html( '' ).hide();
 
     if( ipAddress ) {
-
         let html = "<ul>";
 
         ajaxRequests.push( $.ajax({
-                url: "<?= url( '/api/v4/vlan/ip-address/used-across-vlans' )?>",
+                url: "<?= route( 'vlan@used-across-vlans' )?>",
                 method: "POST",
                 data: { ip: ipAddress }
             })
             .done( function( data ) {
                 $.each( data, function( key, vli ){
-                    html += `<li>${ipAddress} is in use by ${vli.customer.abbreviated_name} on ${vli.vlan.name}</li>\n`;
+                    html += `<li>${ipAddress} is in use by ${vli.cabbreviatedname} on ${vli.vname}</li>\n`;
                 });
             })
             .fail( function() {
@@ -154,15 +149,13 @@ function usedAcrossVlans() {
             })
             .always( function() {
                 if( html !== "<ul>" ) {
-                    $('#alert-' + inputName).html( html + '</ul>' ).show();
+                    console.log( html );
+                    $('#alert-' + inputName ).html( html + '</ul>' ).show();
                 }
             })
-    ); // ajaxRequests.push()
+        );
     }
 }
-
-
-
 
 /**
  * Takes the currently selected switch from the dd_switch dropdown and calls an
@@ -170,7 +163,7 @@ function usedAcrossVlans() {
  */
 function updateSwitchPort( e ) {
 
-    let dd_sp, arrayType, excludeSp, selectedPort;
+    let dd_sp, arrayType, selectedPort;
     let sw = $( e.target );
 
     if( $( this ).attr( "id" ).substr( -6 ) === "fanout" ) {

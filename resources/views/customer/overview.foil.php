@@ -22,7 +22,7 @@
 
             <div class="dropdown-menu dropdown-menu-right">
 
-                <a class="dropdown-item" href="<?= route( 'interfaces/virtual/add-wizard/custid', [ 'custid' => $c->getId() ] ) ?>">
+                <a class="dropdown-item" href="<?= route( 'virtual-interface@create-wizard-for-cust', [ 'cust' => $c->getId() ] ) ?>">
                     Provision new port...
                 </a>
 

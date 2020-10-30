@@ -49,7 +49,7 @@
             <?php endif; ?>
 
             <li class="<?= !request()->is( 'interfaces/virtual*' ) ?: 'active' ?>">
-                <a class="nav-link" href="<?= route( 'interfaces/virtual/list' ) ?>" >
+                <a class="nav-link" href="<?= route( 'virtual-interface@list' ) ?>" >
                     Interfaces / Ports
                 </a>
             </li>

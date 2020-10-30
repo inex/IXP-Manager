@@ -70,7 +70,8 @@ class PhysicalInterfaceController extends Common
                     sp.name AS port, l.id AS locid, l.name AS location'
             )->from( 'physicalinterface AS pi' )
                 ->leftJoin( 'physicalinterface AS ppi', 'ppi.fanout_physical_interface_id', 'pi.id' )
-                ->leftJoin( 'physicalinterface AS fpi', 'fpi.id', 'pi.fanout_physical_interface_id' )->leftJoin( 'virtualinterface AS vi', 'vi.id', 'pi.virtualinterfaceid' )
+                ->leftJoin( 'physicalinterface AS fpi', 'fpi.id', 'pi.fanout_physical_interface_id' )
+                ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'pi.virtualinterfaceid' )
                 ->leftJoin( 'cust AS c', 'c.id', 'vi.custid' )
                 ->leftJoin( 'switchport AS sp', 'sp.id', 'pi.switchportid' )
                 ->leftJoin( 'switch AS s', 's.id', 'sp.switchid' )
@@ -145,12 +146,12 @@ class PhysicalInterfaceController extends Common
         // we never edit a fanout port:
         if( $pi->switchPort->isFanout() ) {
             AlertContainer::push( 'Do not edit fanout ports directly. Edit the peering interface and the fanout port will be updated to match.', Alert::DANGER );
-            return redirect( route( 'interfaces/virtual/edit', [ 'id' => $pi->virtualinterfaceid ] ) );
+            return redirect( route( 'virtual-interface@edit', [ 'vi' => $pi->virtualinterfaceid ] ) );
         }
 
         if( $vi && $pi->virtualinterfaceid !== $vi->id ) {
             AlertContainer::push( 'The physical interface does not belong to this virtual interface.', Alert::DANGER );
-            return redirect( route( 'interfaces/virtual/edit', [ 'id' => $pi->virtualinterfaceid ] ) );
+            return redirect( route( 'virtual-interface@edit', [ 'vi' => $pi->virtualinterfaceid ] ) );
         }
 
         // fill the form with physical interface data
@@ -222,7 +223,7 @@ class PhysicalInterfaceController extends Common
 
         AlertContainer::push( 'Physical Interface created', Alert::SUCCESS );
 
-        return Redirect::to( $r->cb ? route( "core-bundle@edit", [ "cb" => $r->cb ] ) : route( "interfaces/virtual/edit", [ "id" => $pi->virtualinterfaceid ] ) );
+        return Redirect::to( $r->cb ? route( "core-bundle@edit", [ "cb" => $r->cb ] ) : route( "virtual-interface@edit", [ "vi" => $pi->virtualinterfaceid ] ) );
     }
 
     /**
@@ -275,7 +276,7 @@ class PhysicalInterfaceController extends Common
 
         AlertContainer::push( 'Physical Interface updated successfully.', Alert::SUCCESS );
 
-        return Redirect::to( $r->cb ? route( "core-bundle@edit", [ "cb" => $r->cb ] ) : route( "interfaces/virtual/edit", [ "id" => $pi->virtualinterfaceid ] ) );
+        return Redirect::to( $r->cb ? route( "core-bundle@edit", [ "cb" => $r->cb ] ) : route( "virtual-interface@edit", [ "vi" => $pi->virtualinterfaceid ] ) );
     }
 
     /**
@@ -293,7 +294,7 @@ class PhysicalInterfaceController extends Common
         if( $_SERVER[ "HTTP_REFERER" ] === route( "physical-interface@list" ) ){
             $redirect = route( "physical-interface@list" );
         } else {
-            $redirect = route( "interfaces/virtual/edit", [ "id" => $pi->virtualinterfaceid ] );
+            $redirect = route( "virtual-interface@edit", [ "vi" => $pi->virtualinterfaceid ] );
         }
 
         if( $pi->coreInterface ) {
@@ -301,25 +302,7 @@ class PhysicalInterfaceController extends Common
             return Redirect::to( $redirect );
         }
 
-        $pi2 = clone $pi;
-        if( $pi->switchPort->isPeering() && $pi->fanoutPhysicalInterface ) {
-            $pi->update( [ 'switchportid' => null ] );
-            $pi->fanoutPhysicalInterface->switchPort->update( [ 'type' => SwitchPort::TYPE_PEERING ] );
-        } else if( $pi->switchPort->isFanout() && $pi->peeringPhysicalInterface ) {
-            if( (bool)$r->related ){
-                $this->removeRelatedInterface( $pi2 );
-            }
-
-            $pi->peeringPhysicalInterface->fanout_physical_interface_id = null;
-            $pi->peeringPhysicalInterface->save();
-        }
-        if( (bool)$r->related && $pi2->relatedInterface() ) {
-            $this->removeRelatedInterface( $pi2 );
-        }
-
-        $this->setBundleDetails( $pi->virtualInterface );
-
-        $pi->delete();
+        $this->deletePi( $r, $pi, true );
 
         AlertContainer::push( 'The Physical Interface deleted.', Alert::SUCCESS );
 

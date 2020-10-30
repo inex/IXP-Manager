@@ -3,7 +3,7 @@
 namespace IXP\Listeners\Layer2Address;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -51,6 +51,7 @@ class Changed implements ShouldQueue
      * Handle the event.
      *
      * @param  Layer2AddressAddedEvent|Layer2AddressDeletedEvent  $e
+     *
      * @return void
      */
     public function handle( $e )

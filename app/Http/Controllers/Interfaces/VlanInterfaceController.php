@@ -193,7 +193,7 @@ class VlanInterfaceController extends Common
 
         AlertContainer::push( 'Vlan Interface created.', Alert::SUCCESS );
 
-        return redirect( route( 'interfaces/virtual/edit', [ 'id' => $r->virtualinterfaceid ] ) );
+        return redirect( route( 'virtual-interface@edit', [ 'vi' => $r->virtualinterfaceid ] ) );
     }
 
     /**
@@ -236,7 +236,7 @@ class VlanInterfaceController extends Common
         AlertContainer::push( 'Vlan Interface updated.', Alert::SUCCESS );
 
         if( (bool)$r->redirect2vi || (bool)$r->duplicated ) {
-            return redirect( route( 'interfaces/virtual/edit', [ 'id' => $vli->virtualinterfaceid ] ) );
+            return redirect( route( 'virtual-interface@edit', [ 'vi' => $vli->virtualinterfaceid ] ) );
         }
 
         return redirect( route( 'vlan-interface@list' ) );
@@ -263,6 +263,6 @@ class VlanInterfaceController extends Common
         if( $_SERVER[ "HTTP_REFERER" ] === route( 'vlan-interface@list' ) ){
             return redirect( route( 'vlan-interface@list' ) );
         }
-        return Redirect::to( route( "interfaces/virtual/edit" , [ "id" => $viid ] ) );
+        return redirect( route( 'virtual-interface@edit' , [ 'vi' => $viid ] ) );
     }
 }

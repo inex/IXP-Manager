@@ -59,7 +59,7 @@
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn-white" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vli->virtualinterfaceid ] ) ?>" title="Virtual Interface">
+                                    <a class="btn btn-white" href="<?= route( 'virtual-interface@edit' , [ 'vi' => $vli->virtualinterfaceid ] ) ?>" title="Virtual Interface">
                                         <i class="fa fa-filter"></i>
                                     </a>
                                     <a class="btn btn-white" href="<?= route( 'vlan-interface@view' , [ 'vli' => $vli->id ] ) ?>" title="Preview">
@@ -91,7 +91,7 @@
          */
         $( ".btn-delete" ).click( function(e) {
             e.preventDefault();
-            deletePopup( $( this ) , false , 'vli');
+            deletePopup( $( this ), 'vli');
         });
 
     </script>

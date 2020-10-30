@@ -389,4 +389,37 @@ abstract class Common extends Controller
         }
         return true;
     }
+
+    /**
+     * Delete the physical interface and everything related
+     *
+     * @param Request           $r
+     * @param PhysicalInterface $pi
+     *
+     * @throws
+     */
+    protected function deletePi( Request $r, PhysicalInterface $pi, bool $setBunleDetails = false ): void
+    {
+        $pi2 = clone $pi;
+        if( $pi->switchPort->isPeering() && $pi->fanoutPhysicalInterface ) {
+            $pi->update( [ 'switchportid' => null ] );
+            $pi->fanoutPhysicalInterface->switchPort->update( [ 'type' => SwitchPort::TYPE_PEERING ] );
+        } else if( $pi->switchPort->isFanout() && $pi->peeringPhysicalInterface ) {
+            if( (bool)$r->related ){
+                $this->removeRelatedInterface( $pi2 );
+            }
+
+            $pi->peeringPhysicalInterface->fanout_physical_interface_id = null;
+            $pi->peeringPhysicalInterface->save();
+        }
+        if( (bool)$r->related && $pi2->relatedInterface() ) {
+            $this->removeRelatedInterface( $pi2 );
+        }
+
+        if( $setBunleDetails ){
+            $this->setBundleDetails( $pi->virtualInterface );
+        }
+
+        $pi->delete();
+    }
 }

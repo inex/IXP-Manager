@@ -107,7 +107,7 @@ Route::group( [  'prefix' => 'switch' ], function() {
 
 Route::group( [  'prefix' => 'vlan' ], function() {
     Route::get( '{v}/ip-addresses',                    'VlanController@ipAddresses' );
-    Route::post( 'ip-address/used-across-vlans',        'VlanController@UsedAcrossVlans' );
+    Route::post( 'ip-address/used-across-vlans',        'VlanController@UsedAcrossVlans' )->name( 'vlan@used-across-vlans' );
 });
 
 Route::group( [ 'namespace' => 'Customer\Note', 'prefix' => 'customer-note' ], function() {

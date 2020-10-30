@@ -23,16 +23,15 @@ namespace IXP\Http\Controllers\Api\V4;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Models\Customer;
-use IXP\Models\IrrdbPrefix;
-use IXP\Models\Vlan;
+use IXP\Models\{
+    Customer,
+    IrrdbPrefix
+};
 
 use Illuminate\Http\{
     JsonResponse,
     Request
 };
-
-
 
 /**
  * IrrdbPrefix API v4 Controller
@@ -67,5 +66,4 @@ class IrrdbPrefixController extends Controller
 
         return response()->json( [ 'prefixes' => $prefixes ] );
     }
-
 }

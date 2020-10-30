@@ -4,7 +4,7 @@
         <?php foreach( $t->interfaces[ $t->cust->id ] as $vi ) :?>
             <?php foreach( $vi->physicalInterfaces as $pi ) :?>
                 <li>
-                    <a href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vi->id ] ) ?>">
+                    <a href="<?= route( 'virtual-interface@edit' , [ 'vi' => $vi->id ] ) ?>">
                         <?= $t->ee( $pi->switchport->switcher->name ) ?> :: <?= $t->ee( $pi->switchport->name ) ?>
                     </a>
                 </li>

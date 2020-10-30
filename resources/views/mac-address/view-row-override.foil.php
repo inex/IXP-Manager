@@ -26,10 +26,10 @@
             asort( $ports, SORT_NATURAL );
 
             foreach( $ports as $port ) {
-                echo "<a href=".route('interfaces/virtual/edit', [ 'id' => $row['viid'] ] ).">".$t->ee( $row['switchname'] ) . '::' . $t->ee( $port )."</a><br/>";
+                echo "<a href=".route('virtual-interface@edit', [ 'vi' => $row['viid'] ] ).">".$t->ee( $row['switchname'] ) . '::' . $t->ee( $port )."</a><br/>";
             }
         } else {
-            echo "<a href=".route('interfaces/virtual/edit', [ 'id' => $row['viid'] ] ).">".$t->ee( $row['switchname'] ) . '::' . $t->ee( $row[ 'switchport' ] ) ."</a>";
+            echo "<a href=".route('virtual-interface@edit', [ 'vi' => $row['viid'] ] ).">".$t->ee( $row['switchname'] ) . '::' . $t->ee( $row[ 'switchport' ] ) ."</a>";
         } ?>
     </td>
 </tr>>

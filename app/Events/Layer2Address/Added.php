@@ -25,6 +25,7 @@ namespace IXP\Events\Layer2Address;
 
 use IXP\Models\{
     Layer2Address,
+    User,
     VlanInterface
 };
 
@@ -50,7 +51,7 @@ class Added
     public $mac;
 
     /**
-     * @var UserEntity
+     * @var User
      */
     public $user;
 
@@ -67,15 +68,15 @@ class Added
     /**
      * Create a new event instance.
      *
-     * @param Layer2Address       $l2a
-     * @param UserEntity          $u
+     * @param Layer2Address $l2a
+     * @param User          $u
      */
-    public function __construct( Layer2Address $l2a, UserEntity $u )
+    public function __construct( Layer2Address $l2a, User $u )
     {
         $this->action   = "add";
         $this->mac      = $l2a->mac;
         $this->user     = $u;
-        $this->customer = $u->getCustomer()->getFormattedName();
+        $this->customer = $u->customer->getFormattedName();
         $this->vli      = $l2a->vlanInterface;
     }
 }

@@ -23,27 +23,27 @@ namespace IXP\Http\Controllers\Api\V4;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM;
-
-use IXP\Utils\View\Alert\Alert;
-use IXP\Utils\View\Alert\Container as AlertContainer;
-use IXP\Models\{
-    Layer2Address,
-    VlanInterface
-};
-
-use Entities\{
-    Layer2Address as Layer2AddressEntity,
-};
+use Auth;
 
 use Illuminate\Http\{
     JsonResponse,
     Request
 };
 
+use IXP\Models\{
+    Layer2Address,
+    User,
+    VlanInterface
+};
+
 use IXP\Events\Layer2Address\{
     Added       as Layer2AddressAddedEvent,
     Deleted     as Layer2AddressDeletedEvent
+};
+
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
 };
 
 /**
@@ -108,7 +108,7 @@ class Layer2AddressController extends Controller
             'vlan_interface_id' => $request->vlan_interface_id
         ] );
 
-        event( new Layer2AddressAddedEvent( $l2a, Auth::getUser() ) );
+        event( new Layer2AddressAddedEvent( $l2a, User::find( Auth::getUser()->getId() ) ) );
         !$showFeMessage ?: AlertContainer::push( 'The MAC address has been added successfully.' , Alert::SUCCESS );
         return response()->json( [ 'success' => true, 'message' => 'The MAC address has been added successfully.' ] );
     }
@@ -133,7 +133,7 @@ class Layer2AddressController extends Controller
      *
      * @return  JsonResponse
      *
-     * @throws \Exception
+     * @throws
      */
     public function delete( Layer2Address $l2a, bool $showFeMessage = false  ): JsonResponse
     {
@@ -154,9 +154,8 @@ class Layer2AddressController extends Controller
 
         $l2a->delete();
 
-        event( new Layer2AddressDeletedEvent( $l2a->getMacFormattedWithColons(), $l2a->vlanInterface, Auth::user() ) );
+        event( new Layer2AddressDeletedEvent( $l2a->macFormatted( ':' ), $l2a->vlanInterface, User::find( Auth::user()->getId() ) ) );
         !$showFeMessage ?: AlertContainer::push( 'The MAC address has been deleted.' , Alert::SUCCESS );
         return response()->json( [ 'success' => true, 'message' => 'The MAC address has been deleted.' ] );
     }
-
 }

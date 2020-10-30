@@ -44,7 +44,7 @@
 
                     <?=Former::actions(
                         Former::primary_submit( $t->sflr ? 'Save Changes' : 'Create' )->class( "mb-2 mb-sm-0" ),
-                        Former::secondary_link( 'Cancel' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->id ] ) :  route( 'sflow-receiver@list' ) )->class( "mb-2 mb-sm-0" ),
+                        Former::secondary_link( 'Cancel' )->href( $t->vi ? route(  'virtual-interface@edit' , [ 'vi' => $t->vi->id ] ) :  route( 'sflow-receiver@list' ) )->class( "mb-2 mb-sm-0" ),
                         Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
                     )->id('btn-group');?>
 

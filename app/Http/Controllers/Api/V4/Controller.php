@@ -23,5 +23,6 @@
 
 use IXP\Http\Controllers\Api\Controller as ApiController;
 
-class Controller extends ApiController {
+class Controller extends ApiController
+{
 }

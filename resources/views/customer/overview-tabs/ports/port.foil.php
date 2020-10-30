@@ -56,7 +56,7 @@
             <?php if( Auth::getUser()->isSuperUser() ): ?>
 
                 <div class="btn-group my-auto">
-                    <a class="btn btn-sm btn-white" href="<?= route( "interfaces/virtual/edit", [ "id" => $t->vi->getId() ] ) ?>" title="Edit">
+                    <a class="btn btn-sm btn-white" href="<?= route( 'virtual-interface@edit', [ 'vi' => $t->vi->getId() ] ) ?>" title="Edit">
                         <i class="fa fa-pencil"></i>
                     </a>
                 </div>

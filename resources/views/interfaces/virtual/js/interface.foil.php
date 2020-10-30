@@ -38,26 +38,22 @@ $( document ).ready(function() {
 /**
  * function to delete a virtual/physical/vlan interface
  */
-function deletePopup( btn_delete, viid, type ) {
-    let objectName, urlDelete;
-
+function deletePopup( btn_delete, type ) {
+    let objectName;
     let user = 0;
+    let urlDelete  = btn_delete.attr( 'data-url');
 
     if( type === "vli") {
         objectName = "Vlan Interface";
-        urlDelete  = btn_delete.attr( 'data-url');
     } else if( type === "vi" ) {
         objectName = "Virtual Interface";
-        urlDelete = "<?= route( 'virtual-interface@delete' ) ?>" ;
         if( $( "#custid" ).val() !== undefined ){
             user = $( "#custid" ).val();
         }
     } else if( type === "sflr" ) {
         objectName = "Sflow Receiver";
-        urlDelete = btn_delete.attr( 'data-url');
     } else if( type === "pi" ) {
         objectName = "Physical Interface";
-        urlDelete = btn_delete.attr( 'data-url');
     }
 
     let reltype      = "normal";

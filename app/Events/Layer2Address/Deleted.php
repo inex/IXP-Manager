@@ -23,10 +23,9 @@ namespace IXP\Events\Layer2Address;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Models\VlanInterface;
-
-use Entities\{
-    User            as UserEntity,
+use IXP\Models\{
+    User,
+    VlanInterface
 };
 
 use Illuminate\Queue\SerializesModels;
@@ -47,7 +46,7 @@ class Deleted
     public $mac;
 
     /**
-     * @var UserEntity
+     * @var User
      */
     public $user;
 
@@ -66,16 +65,16 @@ class Deleted
      *
      * @param string                $oldmac
      * @param VlanInterface         $vli
-     * @param UserEntity            $u
+     * @param User                  $u
      *
      * @return void
      */
-    public function __construct( string $oldmac, VlanInterface $vli, UserEntity $u )
+    public function __construct( string $oldmac, VlanInterface $vli, User $u )
     {
         $this->action   = "delete";
         $this->mac      = $oldmac;
         $this->user     = $u;
-        $this->customer = $u->getCustomer()->getFormattedName();
+        $this->customer = $u->customer->getFormattedName();
         $this->vli      = $vli;
     }
 }
