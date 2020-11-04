@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,7 +23,9 @@ namespace IXP\Http\Requests;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use IXP\Models\PatchPanel;
 
 class StorePatchPanel extends FormRequest
 {
@@ -32,10 +34,10 @@ class StorePatchPanel extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // middleware ensures superuser access only so always authorised here:
-        return true;
+        return Auth::user()->isSuperUser();
     }
 
     /**
@@ -43,16 +45,18 @@ class StorePatchPanel extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name'              => 'required|string|max:255',
             'colo_reference'    => 'required|string|max:255',
-            'cabinet'           => 'required|integer|exists:Entities\Cabinet,id',
+            'cabinet_id'        => 'required|integer|exists:Entities\Cabinet,id',
             'cable_type'        => 'required|integer',
             'connector_type'    => 'required|integer',
             'installation_date' => 'date',
             'port_prefix'       => 'string|nullable',
+            'u_position'        => 'numeric|nullable',
+            'mounted_at'        => 'string|nullable|in:' . implode( ',', array_keys( PatchPanel::$MOUNTED_AT ) ),
             'numberOfPorts'     => 'required|integer',
         ];
     }

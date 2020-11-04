@@ -14,10 +14,10 @@
 
     <div class="btn-group btn-group-sm" role="group">
         <?php if( $t->pp ): ?>
-            <a class="btn btn-white" href="<?= route('patch-panel/edit' , [ 'id' => $t->pp->getId() ] ) ?>" title="Edit Patch Panel">
+            <a class="btn btn-white" href="<?= route('patch-panel@edit' , [ 'pp' => $t->pp->getId() ] ) ?>" title="Edit Patch Panel">
                 <span class="fa fa-pencil"></span>
             </a>
-            <a class="btn btn-white" href="<?= route('patch-panel@view' , [ 'id' => $t->pp->getId() ] ) ?>" title="View Patch Panel">
+            <a class="btn btn-white" href="<?= route('patch-panel@view' , [ 'pp' => $t->pp->getId() ] ) ?>" title="View Patch Panel">
                 <span class="fa fa-eye"></span>
             </a>
         <?php endif;?>

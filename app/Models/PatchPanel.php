@@ -84,6 +84,79 @@ class PatchPanel extends Model
     protected $table = 'patch_panel';
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'cabinet_id',
+        'name',
+        'colo_reference',
+        'cable_type',
+        'connector_type',
+        'installation_date',
+        'port_prefix',
+        'active',
+        'chargeable',
+        'location_notes',
+        'u_position',
+        'mounted_at',
+    ];
+
+    /**
+     * CONST Cable types
+     */
+    public const CABLE_TYPE_UTP                = 1;
+    public const CABLE_TYPE_SMF                = 2;
+    public const CABLE_TYPE_MMF                = 3;
+    public const CABLE_TYPE_OTHER              = 999;
+
+    /**
+     * Array Cable types
+     */
+    public static $CABLE_TYPES = [
+        self::CABLE_TYPE_UTP            => 'UTP',
+        self::CABLE_TYPE_SMF            => 'SMF',
+        self::CABLE_TYPE_MMF            => 'MMF',
+        self::CABLE_TYPE_OTHER          => 'Other',
+    ];
+
+
+    /**
+     * CONST Connector types
+     */
+    public const CONNECTOR_TYPE_RJ45           = 1;
+    public const CONNECTOR_TYPE_SC             = 2;
+    public const CONNECTOR_TYPE_LC             = 3;
+    public const CONNECTOR_TYPE_MU             = 4;
+    public const CONNECTOR_TYPE_OTHER          = 999;
+
+    /**
+     * Array Connector types
+     */
+    public static $CONNECTOR_TYPES = [
+        self::CONNECTOR_TYPE_RJ45      => 'RJ45',
+        self::CONNECTOR_TYPE_SC        => 'SC',
+        self::CONNECTOR_TYPE_LC        => 'LC',
+        self::CONNECTOR_TYPE_MU        => 'MU',
+        self::CONNECTOR_TYPE_OTHER     => 'Other',
+    ];
+
+    /**
+     * Counts from patch panel mount position
+     */
+    public const MOUNTED_AT_FRONT = 1;
+    public const MOUNTED_AT_REAR  = 2;
+
+    /**
+     * Mounted at textual representations
+     */
+    public static $MOUNTED_AT = [
+        self::MOUNTED_AT_FRONT => 'Front',
+        self::MOUNTED_AT_REAR  => 'Rear',
+    ];
+
+    /**
      * Get the patch panel port files for this patch panel port
      */
     public function patchPanelPorts(): HasMany
@@ -97,5 +170,189 @@ class PatchPanel extends Model
     public function cabinet(): BelongsTo
     {
         return $this->belongsTo(Cabinet::class, 'cabinet_id' );
+    }
+
+    /**
+     * Turn the database integer representation of the cable type into text as
+     * defined in the self::$CABLE_TYPES array (or 'Unknown')
+     *
+     * @return string
+     */
+    public function cableType(): string
+    {
+        return self::$CABLE_TYPES[ $this->cable_type ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the connector type into text as
+     * defined in the self::$CONNECTOR_TYPES array (or 'Unknown')
+     *
+     * @return string
+     */
+    public function connectorType(): string
+    {
+        return self::$CONNECTOR_TYPES[ $this->connector_type ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the states into text as
+     * defined in the PatchPanelPort::$CHARGEABLES array (or 'Unknown')
+     *
+     * @return string
+     */
+    public function chargeable(): string
+    {
+        return PatchPanelPort::$CHARGEABLES[ $this->chargeable ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the states into text as
+     * defined in the PatchPanelPort::$CHARGEABLES array (or 'Unknown')
+     *
+     * @return string
+     */
+    public function mountedAt(): string
+    {
+        return self::$MOUNTED_AT[ $this->mounted_at ] ?? 'Unknown';
+    }
+
+    /**
+     * Does this patch panel have any duplex ports?
+     *
+     * @return bool
+     */
+    public function hasDuplexPort(): bool
+    {
+        $slave = self::select( [ 'ppps.id' ] )
+            ->from( 'patch_panel AS pp' )
+            ->leftJoin( 'patch_panel_port AS ppp', 'ppp.patch_panel_id', 'pp.id' )
+            ->join( 'patch_panel_port AS ppps', 'ppps.id', 'ppp.duplex_master_id' )
+            ->where( 'pp.id', $this->id )->get()->keyBy( 'id' )->count() > 0;
+
+        $master = self::select( [ 'ppp.id' ] )
+                ->from( 'patch_panel AS pp' )
+                ->leftJoin( 'patch_panel_port AS ppp', 'ppp.patch_panel_id', 'pp.id' )
+                ->whereNotNull( 'duplex_master_id' )
+                ->where( 'pp.id', $this->id )->get()->keyBy( 'id' )->count() > 0;
+
+
+        return $slave || $master;
+    }
+
+    /**
+     * Get number of patch panel ports
+     *
+     * @return int
+     */
+    public function availableForUsePortCount(): int
+    {
+        $master = self::select( [ 'pppm.*' ] )
+            ->from( 'patch_panel AS pp' )
+            ->leftJoin( 'patch_panel_port AS ppp', 'ppp.patch_panel_id', 'pp.id' )
+            ->leftJoin( 'patch_panel_port AS pppm', 'pppm.id', 'ppp.duplex_master_id' )
+            ->whereIn( 'pppm.state', PatchPanelPort::$AVAILABLE_STATES )
+            ->where( 'pp.id', $this->id )->get()->keyBy( 'id' )->count();
+
+        $ppp = self::select( [ 'ppp.*' ] )
+            ->from( 'patch_panel AS pp' )
+            ->leftJoin( 'patch_panel_port AS ppp', 'ppp.patch_panel_id', 'pp.id' )
+            ->whereIn( 'ppp.state', PatchPanelPort::$AVAILABLE_STATES )
+            ->whereNull( 'ppp.duplex_master_id' )
+            ->where( 'pp.id', $this->id )->get()->keyBy( 'id' )->count();
+
+        return $master + $ppp;
+
+    }
+
+    /**
+     * get the css class used to display the value => available ports / total ports
+     *
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     *
+     * @return string
+     */
+    public function cssClassPortCount(): string
+    {
+        $total = $this->patchPanelPorts()->count();
+        $available = $this->availableForUsePortCount();
+        if($total !== 0):
+            if( ($total - $available) / $total < 0.7 ):
+                $class = "success";
+            elseif( ($total - $available ) / $total < 0.85 ):
+                $class = "warning";
+            else:
+                $class = "danger";
+            endif;
+        else:
+            $class = "danger";
+        endif;
+
+        return $class;
+    }
+
+    /**
+     * get the value availble port / total port
+     *
+     *
+     * @param  bool $divide if the value need to be divide by 2 (use when some patch panel ports have duplex port)
+     *
+     * @return string
+     */
+    public function availableOnTotalPort( $divide = false ): string
+    {
+        $available = ($divide)? floor( $this->availableForUsePortCount() / 2 ) : $this->availableForUsePortCount();
+        $total     = ($divide)? floor( $this->patchPanelPorts()->count() / 2 ) : $this->patchPanelPorts()->count();
+
+        return $available.' / '.$total;
+    }
+
+    /**
+     * Create patch panel ports for a patch panel
+     *
+     * @param  int $n the number of port needed
+     *
+     * @return void
+     */
+    public function createPorts( int $n ): void
+    {
+        // what's the current maximum port number?
+        // (we need this to add new ones to the end)
+        $max = $this->patchPanelPorts()->max( 'number' );
+
+        for( $i = 1; $i <= $n; $i++ ) {
+            PatchPanelPort::create( [
+                'number'            => ( $max + $i ),
+                'state'             => PatchPanelPort::STATE_AVAILABLE,
+                'patch_panel_id'    => $this->id,
+                'chargeable'        => $this->chargeable,
+                'last_state_change' => now(),
+            ] );
+        }
+    }
+
+    /**
+     * A descriptive position of the patch panel in the rack
+     *
+     * @return string
+     */
+    public function locationDescription(): string
+    {
+        $loc = '';
+
+        if( $this->u_position ) {
+            $loc .= 'Located at U' . $this->u_position;
+
+            if( $cf = $this->cabinet->u_counts_from ) {
+                $loc .= ' (counting from the ' . strtolower( Cabinet::$U_COUNTS_FROM[ $cf ] ) . ')';
+            }
+
+            if( $ma = $this->mounted_at ) {
+                $loc .= ' at the ' . strtolower( self::$MOUNTED_AT[ $ma ] ) . ' of the cabinet';
+            }
+
+            $loc .= '.';
+        }
+
+        return $loc;
     }
 }

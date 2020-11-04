@@ -127,6 +127,7 @@ class AddTimestamps extends Migration
 
         Schema::table('patch_panel', function (Blueprint $table) {
             $table->timestamps();
+            $table->date( 'installation_date' )->change();
         });
 
         Schema::table('patch_panel_port', function (Blueprint $table) {

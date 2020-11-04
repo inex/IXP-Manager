@@ -111,4 +111,5 @@ class Location extends Model
     {
         return $this->hasMany(Cabinet::class, 'locationid' );
     }
+
 }

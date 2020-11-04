@@ -111,6 +111,60 @@ class PatchPanelPort extends Model
     protected $table = 'patch_panel_port';
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'patch_panel_id',
+        'state',
+        'number',
+        'chargeable',
+        'last_state_change',
+    ];
+
+    /**
+     * CONST STATES
+     */
+    public const STATE_AVAILABLE              = 1;
+    public const STATE_AWAITING_XCONNECT      = 2;
+    public const STATE_CONNECTED              = 3;
+    public const STATE_AWAITING_CEASE         = 4;
+    public const STATE_CEASED                 = 5;
+    public const STATE_BROKEN                 = 6;
+    public const STATE_RESERVED               = 7;
+    public const STATE_PREWIRED               = 8;
+    public const STATE_OTHER                  = 999;
+
+    /**
+     * Array STATES for available
+     */
+    public static $AVAILABLE_STATES = [
+        self::STATE_AVAILABLE,
+        self::STATE_PREWIRED,
+        self::STATE_AWAITING_CEASE,
+        self::STATE_CEASED,
+    ];
+
+    /**
+     * CONST CHARGEABLE
+     */
+    public const CHARGEABLE_YES                = 1;
+    public const CHARGEABLE_NO                 = 2;
+    public const CHARGEABLE_HALF               = 3;
+    public const CHARGEABLE_OTHER              = 4;
+
+    /**
+     * Array $CHARGEABLES
+     */
+    public static $CHARGEABLES = [
+        self::CHARGEABLE_YES            => "Yes",
+        self::CHARGEABLE_NO             => "No",
+        self::CHARGEABLE_HALF           => "Half",
+        self::CHARGEABLE_OTHER          => "Other"
+    ];
+
+    /**
      * Get the Patch Panel that owns this patch panel port
      */
     public function patchPanel(): BelongsTo
@@ -135,6 +189,14 @@ class PatchPanelPort extends Model
     }
 
     /**
+     * Get the duplex master port that owns this patch panel port
+     */
+    public function duplexMasterPort(): BelongsTo
+    {
+        return $this->belongsTo( __CLASS__, 'duplex_master_id' );
+    }
+
+    /**
      * Get the patch panel port files for this patch panel port
      */
     public function patchPanelPortFiles(): HasMany
@@ -149,6 +211,14 @@ class PatchPanelPort extends Model
     {
         return $this->hasMany(PatchPanelPortFile::class, 'patch_panel_port_id' )
             ->where( 'is_private', 0 );
+    }
+
+    /**
+     * Get the duplex slaves ports for this patch panel port
+     */
+    public function duplexSlavePorts(): HasMany
+    {
+        return $this->hasMany( __CLASS__ , 'duplex_master_id' );
     }
 
     /**

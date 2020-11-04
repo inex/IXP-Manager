@@ -15,7 +15,7 @@
          * set the colo_reference in empty input by the name input value
          */
         input_name.blur( function() {
-            if( input_colo_ref.val() == '' ){
+            if( input_colo_ref.val() === '' ){
                 input_colo_ref.val( input_name.val() );
             }
         });

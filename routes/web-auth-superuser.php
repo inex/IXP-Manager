@@ -37,13 +37,14 @@ Route::group( [ 'prefix' => 'ip-address' ], function() {
 });
 
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], function() {
-    Route::get(     'list',                             'PatchPanelController@index'            )->name( 'patch-panel/list'         )   ;
-    Route::get(     'list/inactive',                    'PatchPanelController@indexInactive'    )->name( 'patch-panel/list/inactive'    );
-    Route::get(     'add',                              'PatchPanelController@edit'             )->name( 'patch-panel/add'              );
-    Route::get(     'edit/{id}',                        'PatchPanelController@edit'             )->name( 'patch-panel/edit'             );
-    Route::get(     'view/{id}',                        'PatchPanelController@view'             )->name( 'patch-panel@view'             );
-    Route::get(     'change-status/{id}/{active}',      'PatchPanelController@changeStatus'     )->name( 'patch-panel@change-status'    );
+    Route::get(     'list',                             'PatchPanelController@index'            )->name( 'patch-panel@list'             );
+    Route::get(     'list/inactive',                    'PatchPanelController@indexInactive'    )->name( 'patch-panel@list-inactive'    );
+    Route::get(     'create',                           'PatchPanelController@create'           )->name( 'patch-panel@create'           );
+    Route::get(     'edit/{pp}',                        'PatchPanelController@edit'             )->name( 'patch-panel@edit'             );
+    Route::get(     'view/{pp}',                        'PatchPanelController@view'             )->name( 'patch-panel@view'             );
+    Route::get(     'change-status/{pp}/{active}',      'PatchPanelController@changeStatus'     )->name( 'patch-panel@change-status'    );
     Route::post(    'store',                            'PatchPanelController@store'            )->name( 'patch-panel@store'            );
+    Route::put(    'update/{pp}',                      'PatchPanelController@update'           )->name( 'patch-panel@update'           );
 });
 
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'middleware' => 'patch-panel-port' ], function() {

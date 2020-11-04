@@ -80,7 +80,7 @@
 
 
             <li class="<?= !request()->is( 'patch-panel/*' ) ?: 'active' ?>">
-                <a class="nav-link" href="<?= route('patch-panel/list' ) ?>">
+                <a class="nav-link" href="<?= route('patch-panel@list' ) ?>">
                     Patch Panels
                 </a>
             </li>

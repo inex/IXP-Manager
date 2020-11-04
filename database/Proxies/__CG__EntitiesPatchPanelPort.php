@@ -1085,7 +1085,7 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function isDuplexPort(): bool
+    public function isDuplexPort()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'isDuplexPort', []);
