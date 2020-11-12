@@ -23,7 +23,7 @@
             <?php foreach( $t->results[ 'contacts' ] as $contact ): ?>
                 <tr>
                     <td>
-                        <a href="<?= url( "contact/edit/id/" . $contact->getId() . "/cid/".$contact->getCustomer()->getId()) ?>">
+                        <a href="<?= url( "contact/edit/" . $contact->getId() ) ?>">
                             <?= $t->ee(  $contact->getName() ) ?>
                         </a>
                     </td>
