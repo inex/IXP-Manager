@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,29 +28,53 @@ use App, D2EM;
 use Entities\{
     Customer    as CustomerEntity,
     PatchPanel  as PatchPanelEntity,
-    Vlan        as VlanEntity
 };
 
 use IXP\Models\Aggregators\CustomerAggregator;
+
 use IXP\Models\Customer;
+use IXP\Models\PatchPanel;
 use IXP\Models\Vlan;
 use Illuminate\Http\{
     JsonResponse,
     Request
 };
 
-
-
 /**
  * Customer API v4 Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Customers
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class CustomerController extends Controller
 {
+    /**
+     * Get the switches for a customer
+     *
+     * @param Request   $r instance of the current HTTP request
+     * @param Customer  $cust
+     *
+     * @return  JsonResponse
+     */
+    public function switches( Request $r, Customer $cust ): JsonResponse
+    {
+        $ppp = PatchPanel::findOrFail( $r->patch_panel_id );
+
+        $switches = Customer::select( [ 's.id AS id', 's.name' ] )
+            ->from( 'cust AS c' )
+            ->join( 'virtualinterface AS vi', 'vi.custid', 'c.id' )
+            ->join( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
+            ->join( 'switchport AS sp', 'sp.id', 'pi.switchportid' )
+            ->join( 'switch AS s', 's.id', 'sp.switchid' )
+            ->join( 'cabinet AS cab', 'cab.id', 's.cabinetid' )
+            ->where( 'cab.locationid', $ppp->cabinet->locationid )
+            ->where( 'c.id', $cust->id )
+            ->get()->keyBy( 'id' )->toArray();
+
+        return response()->json( [ 'hasSwitches' => (bool)count( $switches ) , 'switches' => $switches ] );
+    }
 
     /**
      * Get network information from PeeringDb by ASN
@@ -67,35 +91,7 @@ class CustomerController extends Controller
     }
 
 
-    /**
-     * Get the switches for a customer
-     *
-     * @param Request $request instance of the current HTTP request
-     * @param int $id
-     *
-     * @return  JsonResponse
-     */
-    public function switches( Request $request, int $id ): JsonResponse
-    {
-        if( !($customer = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
-            abort( 404, 'No such customer' );
-        }
 
-        if( !($patchPanel = D2EM::getRepository( PatchPanelEntity::class )->find( $request->input('patch_panel_id') ) ) ) {
-            abort( 404, 'No such patch panel' );
-        }
-
-        $switches = [];
-        foreach ($customer->getVirtualInterfaces() as $vi ){
-            foreach( $vi->getPhysicalInterfaces() as $pi ){
-                $switch = $pi->getSwitchPort()->getSwitcher();
-                if( $switch->getCabinet()->getLocation()->getId() == $patchPanel->getCabinet()->getLocation()->getId() ) {
-                    $switches[ $switch->getId() ] = $switch->getName();
-                }
-            }
-        }
-        return response()->json( [ 'switchesFound' => boolval( count( $switches ) ), 'switches' => $switches ] );
-    }
 
     /**
      * Get Customer depending on the Vlan and Protocol

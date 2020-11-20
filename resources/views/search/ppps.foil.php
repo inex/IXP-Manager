@@ -41,12 +41,12 @@
                     <?= $t->ee( $ppp->patchPanel->cabinet->name ) ?>
                 </td>
                 <td>
-                    <a href="<?= route( 'patch-panel-port/list/patch-panel', [ 'ppid' => $ppp->patchPanel->id ] ) ?>">
+                    <a href="<?= route( 'patch-panel-port@list-for-patch-panel', [ 'pp' => $ppp->patchPanel->id ] ) ?>">
                         <?= $t->ee( $ppp->patchPanel->name ) ?>
                     </a>
                 </td>
                 <td>
-                    <a href="<?= route( 'patch-panel-port@view', [ 'id' => $ppp->id ] ) ?>">
+                    <a href="<?= route( 'patch-panel-port@view', [ 'ppp' => $ppp->id ] ) ?>">
                         <?= $t->ee( $ppp->name ) ?>
                     </a>
                 </td>

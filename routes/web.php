@@ -31,14 +31,11 @@
 | to using a Closure or controller method. Build something great!
 |
 */
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
 /// Customers
 ///
-
 Route::group( [ 'prefix' => 'customer', 'namespace' => 'Customer'], function() {
     Route::get( 'details',                  'CustomerController@details'        )->name( "customer@details"    );
     Route::get( 'associates',               'CustomerController@associates'     )->name( "customer@associates" );
@@ -50,23 +47,18 @@ Route::group( [ 'prefix' => 'customer', 'namespace' => 'Customer'], function() {
 ///
 /// Peering Matrix
 ///
-
 Route::get( 'peering-matrix', 'PeeringMatrixController@index' )->name( "peering-matrix@index" );
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
-/// Patch Panels
+/// Patch Panel Port
 ///
-
-Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], function() {
-    Route::get( 'view/{id}',                    'PatchPanelPortController@view'         )->name( "patch-panel-port@view"        );
-    Route::get( 'loa-pdf/{id}',                 'PatchPanelPortController@loaPDF'       )->name( "patch-panel-port@loa-pdf"     );
-    Route::get( 'verify-loa/{id}/{code}',       'PatchPanelPortController@verifyLoa'    )->name( "patch-panel-port@verify-loa"  );
+Route::group( [ 'namespace' => 'PatchPanel\Port', 'prefix' => 'patch-panel-port' ], function() {
+    Route::get( 'view/{ppp}',                    'PortController@view'     )->name( "patch-panel-port@view"        );
+    Route::get( '{ppp}/loa/verify/{code}',       'LoaController@verify'    )->name( "patch-panel-port-loa@verify"  );
 });
-
-Route::get( 'verify-loa/{id}/{code}',           'PatchPanel\PatchPanelPortController@verifyLoa'    )->name( "patch-panel-port@verify-loa"  );
 
 
 Route::get( 'weather-map/{id}',                  'WeatherMapController@index' )->name( 'weathermap');
@@ -112,7 +104,6 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'core-bundle/{cb}',                          'StatisticsController@coreBundle'        )->name( 'statistics@core-bundle'            );
 });
 
-
 // Authentication routes...
 Route::group( [ 'namespace' => 'Auth' ], function() {
     Route::get( 'logout',                   'LoginController@logout'                                )->name( "login@logout"                     );
@@ -136,21 +127,12 @@ Route::group( [ 'namespace' => 'Auth' ], function() {
     Route::redirect( 'auth/lost-username', url( '' ) . '/username',        301 );
 });
 
-
-
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
 /// MEMBER EXPORT
 ///
-
-
 Route::get( 'participants.json', function() { return redirect(route('ixf-member-export')); });
-
-
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -195,27 +177,20 @@ if( !config( 'ixp_fe.frontend.disabled.docstore' ) ) {
     } );
 }
 
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
 /// DEFAULT ROUTE
 ///
-
 Route::get( '/', function() {
-
     if( Auth::guest() ) {
         return redirect(route( "login@showForm" ) );
     }
 
     if( Auth::getUser()->isSuperUser() ) {
         return redirect( route( "admin@dashboard" ) );
-    } else {
-        return redirect( route( "dashboard@index" ) );
     }
+    return redirect( route( "dashboard@index" ) );
 })->name( 'default' );
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-

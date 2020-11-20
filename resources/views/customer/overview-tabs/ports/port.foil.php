@@ -165,7 +165,7 @@
                                         <?= $t->ee( $pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getColoReference() ) ?> -
 
                                         <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                            <a href="<?= route( "patch-panel-port/list/patch-panel" , [ "ppid" => $pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getId() ] ) ?>">
+                                            <a href="<?= route( 'patch-panel-port@list-for-patch-panel' , [ "pp" => $pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getId() ] ) ?>">
                                                 <?= $t->ee( $pi->getSwitchPort()->getPatchPanelPort()->getName() ) ?>
                                             </a>
                                         <?php else: ?>

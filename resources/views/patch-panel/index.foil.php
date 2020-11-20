@@ -137,7 +137,7 @@
                             ?>
                             <tr>
                                 <td>
-                                    <a href="<?= route( 'patch-panel-port/list/patch-panel' , [ 'ppid' => $pp->id ] ) ?>">
+                                    <a href="<?= route( 'patch-panel-port@list-for-patch-panel' , [ 'pp' => $pp->id ] ) ?>">
                                         <?= $t->ee( $pp->name ) ?>
                                     </a>
                                 </td>
@@ -190,7 +190,7 @@
                                                 <i class="fa fa-repeat"></i>
                                             </a>
                                         <?php endif; ?>
-                                        <a class="btn btn-white" href="<?= route ( 'patch-panel-port/list/patch-panel' , [ 'ppid' => $pp->id ] ) ?>" title="See Ports">
+                                        <a class="btn btn-white" href="<?= route ( 'patch-panel-port@list-for-patch-panel' , [ 'pp' => $pp->id ] ) ?>" title="See Ports">
                                             <i class="fa fa-th"></i>
                                         </a>
                                     </div>

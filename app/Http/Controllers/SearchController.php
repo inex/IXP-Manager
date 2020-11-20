@@ -67,7 +67,7 @@ class SearchController extends Controller
             if( preg_match( '/^PPP\-(\d+)$/', $search, $matches ) ) {
                 // patch panel port search
                 if( $ppp = PatchPanelPort::find( $matches[1] ) ) {
-                    return redirect( route( 'patch-panel-port@view', [ 'id' => $ppp->id ] ) );
+                    return redirect( route( 'patch-panel-port@view', [ 'ppp' => $ppp->id ] ) );
                 }
             }
             else if( preg_match( '/^xc:\s*(.*)\s*$/', $search, $matches ) ) {
@@ -79,7 +79,7 @@ class SearchController extends Controller
                     ->orderByRaw( 'patch_panel.id ASC, patch_panel_port.id ASC' )->get();
 
                 if( count( $results ) === 1 ) {
-                    return redirect( route( 'patch-panel-port@view', [ 'id' => $results[0]->id ] ) );
+                    return redirect( route( 'patch-panel-port@view', [ 'ppp' => $results[0]->id ] ) );
                 }
             }
             else if( preg_match( '/^\.\d{1,3}$/', $search ) || preg_match( '/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $search ) ) {

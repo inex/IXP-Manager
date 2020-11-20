@@ -23,7 +23,7 @@
             <?php foreach( $t->results[ 'contacts' ] as $contact ): ?>
                 <tr>
                     <td>
-                        <a href="<?= url( "contact/edit/id/" . $contact->id . "/cid/" . $contact->customer->id ) ?>">
+                        <a href="<?= route( "customer@overview" , [ "id" => $contact->customer->id, 'tab' => 'contacts' ] ) ?>">
                             <?= $t->ee(  $contact->name ) ?>
                         </a>
                     </td>

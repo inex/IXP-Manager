@@ -46,26 +46,31 @@ use Illuminate\Http\Request;
 //
 Route::group( [  'prefix' => 'customer' ], function() {
     Route::get( 'query-peeringdb/asn/{asn}',   'CustomerController@queryPeeringDbWithAsn' );
-    Route::post( '{id}/switches',               'CustomerController@switches' );
+    Route::post( '{cust}/switches',               'CustomerController@switches' );
 });
-
-
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Patch Panel Port
 //
-Route::post(  'patch-panel-port/delete-file/{fileid}',           'PatchPanelPortController@deleteFile' );
-Route::post(  'patch-panel-port/delete-history-file/{fileid}',   'PatchPanelPortController@deleteHistoryFile' );
+Route::group( [  'prefix' => 'patch-panel-port' ], function() {
+    Route::group( [  'namespace' => 'PatchPanel\Port' ], function() {
+        Route::delete(  'file/delete/{file}',           'FileController@delete'           );
+        Route::delete(  'file/delete-history/{file}',   'FileController@deleteHistory'    );
+        Route::post(  'file/toggle-privacy/{file}',     'FileController@togglePrivacy'    )->name( 'patch-panel-port-file@toogle-privacy' );
+    });
+});
+
+
 Route::post(  'patch-panel-port/delete/{id}',                    'PatchPanelPortController@delete' );
 Route::post(  'patch-panel-port/split/{id}',                     'PatchPanelPortController@split' );
-Route::post(  'patch-panel-port/toggle-file-privacy/{fileid}',   'PatchPanelPortController@toggleFilePrivacy' );
-Route::post(  'patch-panel-port/upload-file/{id}',               'PatchPanelPortController@uploadFile' );
-Route::post(  'patch-panel-port/notes/{id}',                     'PatchPanelPortController@setNotes' );
 
-Route::get(  'patch-panel-port/{id}',                           'PatchPanelPortController@detail');
-Route::get(  'patch-panel-port/deep/{id}',                      'PatchPanelPortController@detailDeep');
-Route::post( 'patch-panel/{id}/patch-panel-port-free',          'PatchPanelController@getFreePatchPanelPort');
+Route::post(  'patch-panel-port/upload-file/{id}',               'PatchPanelPortController@uploadFile' );
+Route::post(  'patch-panel-port/notes/{ppp}',                    'PatchPanelPortController@setNotes' );
+
+Route::get(  'patch-panel-port/{ppp}',                           'PatchPanelPortController@detail');
+Route::get(  'patch-panel-port/deep/{ppp}',                      'PatchPanelPortController@detailDeep');
+
+Route::post( 'patch-panel/{pp}/free-port',                      'PatchPanelController@freePort');
 
 Route::get('provisioner/layer2interfaces/switch/{switchid}.{outformat}',        'Provisioner\YamlController@forSwitch');
 Route::get('provisioner/layer2interfaces/switch-name/{switchname}.{outformat}', 'Provisioner\YamlController@forSwitchByName')->where(['switchname' => '[A-Za-z0-9\.\-]+']);
@@ -85,15 +90,17 @@ Route::get( 'provisioner/switch/switch-name/{switchname}.{outformat}',          
 
 Route::get( 'provisioner/corebundle/list.{outformat}',                          'Provisioner\YamlController@listCoreBundle');
 
-Route::get('switch-port/{id}/customer',                         'SwitchPortController@customer' );
-Route::get('switch-port/{id}/physical-interface',               'SwitchPortController@physicalInterface' );
+Route::group( [  'prefix' => 'switch-port' ], function() {
+    Route::get('{sp}/customer',                         'SwitchPortController@customer' );
+    Route::get('{sp}/physical-interface',               'SwitchPortController@physicalInterface' );
+});
 
 Route::group( [  'prefix' => 'switch' ], function() {
-    Route::post( '{id}/ports',                        'SwitchController@ports' );
+    Route::post( '{id}/ports',                       'SwitchController@ports' );
     Route::get( '{id}/status',                       'SwitchController@status' );
     Route::get( '{id}/core-bundles-status',          'SwitchController@coreBundlesStatus' );
-    Route::post( '{id}/switch-port-for-ppp',          'SwitchController@switchPortForPPP' );
-    Route::post( '{id}/switch-port-prewired',         'SwitchController@switchPortPrewired' );
+    Route::post( '{s}/switch-port-for-ppp',          'SwitchController@switchPortForPPP' )->name( 'switch@switch-port-for-ppp' );
+    Route::post( '{s}/switch-port-prewired',         'SwitchController@switchPortPrewired' )->name( 'switch@switch-port-prewired' );
 });
 
 

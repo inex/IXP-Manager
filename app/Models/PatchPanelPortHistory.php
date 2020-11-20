@@ -27,8 +27,9 @@ use Eloquent;
 
 use Illuminate\Database\Eloquent\{Builder, Collection, Model};
 
-use Illuminate\Database\Eloquent\Relations\{HasMany, HasOne};
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany, HasOne};
 use Illuminate\Support\Carbon;
+use Schema;
 
 /**
  * IXP\Models\PatchPanelPortHistory
@@ -98,11 +99,39 @@ class PatchPanelPortHistory extends Model
     protected $table = 'patch_panel_port_history';
 
     /**
-     * Get the Patch Panel that owns this patch panel port
+     * The attributes that are mass assignable.
+     *
+     * @var array
      */
-    public function patchPanelPort(): HasOne
+    protected $fillable = [
+        'switchport',
+        'patch_panel_port_id',
+        'customer',
+        'cust_id',
+        'state',
+        'notes',
+        'assigned_at',
+        'connected_at',
+        'cease_requested_at',
+        'ceased_at',
+        'internal_use',
+        'chargeable',
+        'duplex_master_id',
+        'number',
+        'colo_circuit_ref',
+        'ticket_ref',
+        'private_notes',
+        'owned_by',
+        'description',
+        'colo_billing_ref',
+    ];
+
+    /**
+     * Get the Patch Panel Port that owns this patch panel port history
+     */
+    public function patchPanelPort(): BelongsTo
     {
-        return $this->hasOne( PatchPanelPort::class , 'id' );
+        return $this->belongsTo( PatchPanelPort::class , 'patch_panel_port_id' );
     }
 
     /**
@@ -111,5 +140,61 @@ class PatchPanelPortHistory extends Model
     public function patchPanelPortHistoryFiles(): HasMany
     {
         return $this->hasMany(PatchPanelPortHistoryFile::class, 'patch_panel_port_history_id' );
+    }
+
+    /**
+     * Turn the database integer representation of the states into text as
+     * defined in the self::$CHARGEABLES array (or 'Unknown')
+     *
+     * @return string
+     */
+    public function chargeable(): string
+    {
+        return self::$CHARGEABLES[ $this->chargeable ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the states into text as
+     * defined in the self::$STATES array (or 'Unknown')
+     *
+     * @return string
+     */
+    public function ownedBy(): string
+    {
+        return self::$OWNED_BY[ $this->owned_by ] ?? 'Unknown';
+    }
+
+    /**
+     * Populate the history model with details from a patch panel port.
+     *
+     * @param PatchPanelPort $ppp
+     *
+     * @return PatchPanelPortHistory
+     *
+     * @throws
+     */
+    public static function createFromPort( PatchPanelPort $ppp ): PatchPanelPortHistory
+    {
+        return self::create( [
+            'switchport'            => $ppp->switchPort ? $ppp->switchPort->switcher->name . '::' . $ppp->switchPort->name : '',
+            'patch_panel_port_id'   => $ppp->id,
+            'customer'              => $ppp->customer->name ?? '',
+            'cust_id'               => $ppp->customer->id ?? '',
+            'state'                 => $ppp->state,
+            'notes'                 => $ppp->notes,
+            'assigned_at'           => $ppp->assigned_at,
+            'connected_at'          => $ppp->connected_at,
+            'cease_requested_at'    => $ppp->cease_requested_at,
+            'ceased_at'             => $ppp->ceased_at ?? now(),
+            'internal_use'          => $ppp->internal_use,
+            'chargeable'            => $ppp->chargeable,
+            'number'                => $ppp->number,
+            'colo_circuit_ref'      => $ppp->colo_circuit_ref,
+            'ticket_ref'            => $ppp->ticket_ref,
+            'private_notes'         => $ppp->private_notes,
+            'owned_by'              => $ppp->owned_by,
+            'description'           => $ppp->description,
+            'colo_billing_ref'      => $ppp->colo_billing_ref,
+        ] );
     }
 }

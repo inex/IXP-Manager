@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,18 +21,18 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
 namespace IXP\Mail\PatchPanelPort;
 
-use Entities\PatchPanelPort as PatchPanelPortEntity;
+use IXP\Models\PatchPanelPort;
 
 /**
  * Mailable for patch panel emails
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   PatchPanel
  * @package    IXP\Mail\PatchPanelPort
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Connect extends Email
@@ -40,11 +40,12 @@ class Connect extends Email
     /**
      * Create a new message instance.
      *
-     * @param PatchPanelPortEntity $ppp
+     * @param PatchPanelPort $ppp
      */
-    public function __construct( PatchPanelPortEntity $ppp ) {
-        parent::__construct($ppp);
-        $this->subject = "Cross connect to " . env('IDENTITY_ORGNAME' ) . " [" . $ppp->getPatchPanel()->getColoReference() . " / " . $ppp->getName() . "]";
+    public function __construct( PatchPanelPort $ppp )
+    {
+        parent::__construct( $ppp );
+        $this->subject = "Cross connect to " . env('IDENTITY_ORGNAME' ) . " [" . $ppp->patchPanel->colo_reference . " / " . $ppp->name() . "]";
         $this->tmpl = 'patch-panel-port/emails/connect';
     }
 }

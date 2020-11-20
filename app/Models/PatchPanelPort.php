@@ -23,17 +23,25 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
 
+use Auth;
+use DB;
 use Eloquent;
 
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Model
-};
+use Illuminate\Database\Eloquent\{Builder, Collection, Model};
 
 use Illuminate\Database\Eloquent\Relations\{
     BelongsTo,
     HasMany
 };
+
+use IXP\Mail\PatchPanelPort\{
+    Cease   as CeaseMail,
+    Connect as ConnectMail,
+    Info    as InfoMail,
+    Loa     as LoaMail
+};
+use IXP\Exceptions\GeneralException;
+use Storage;
 
 /**
  * IXP\Models\PatchPanelPort
@@ -116,11 +124,27 @@ class PatchPanelPort extends Model
      * @var array
      */
     protected $fillable = [
+        'switch_port_id',
         'patch_panel_id',
+        'customer_id',
         'state',
-        'number',
-        'chargeable',
+        'notes',
+        'assigned_at',
+        'connected_at',
+        'cease_requested_at',
+        'ceased_at',
         'last_state_change',
+        'internal_use',
+        'chargeable',
+        'duplex_master_id',
+        'number',
+        'colo_circuit_ref',
+        'ticket_ref',
+        'private_notes',
+        'owned_by',
+        'loa_code',
+        'description',
+        'colo_billing_ref'
     ];
 
     /**
@@ -137,14 +161,13 @@ class PatchPanelPort extends Model
     public const STATE_OTHER                  = 999;
 
     /**
-     * Array STATES for available
+     * CONST OWNED
      */
-    public static $AVAILABLE_STATES = [
-        self::STATE_AVAILABLE,
-        self::STATE_PREWIRED,
-        self::STATE_AWAITING_CEASE,
-        self::STATE_CEASED,
-    ];
+    public const OWNED_CUST                    = 1;
+    public const OWNED_IXP                     = 2;
+    public const OWNED_SERV_PRO                = 3;
+    public const OWNED_DATA_CENTER             = 4;
+    public const OWNED_OTHER                   = 5;
 
     /**
      * CONST CHARGEABLE
@@ -155,6 +178,75 @@ class PatchPanelPort extends Model
     public const CHARGEABLE_OTHER              = 4;
 
     /**
+     * CONST EMAIL
+     */
+    const EMAIL_CONNECT                 = 1;
+    const EMAIL_CEASE                   = 2;
+    const EMAIL_INFO                    = 3;
+    const EMAIL_LOA                     = 4;
+
+    /**
+     * Array STATES
+     */
+    public static $STATES = [
+        self::STATE_AVAILABLE           => "Available",
+        self::STATE_AWAITING_XCONNECT   => "Awaiting Xconnect",
+        self::STATE_CONNECTED           => "Connected",
+        self::STATE_AWAITING_CEASE      => "Awaiting Cease",
+        self::STATE_CEASED              => "Ceased",
+        self::STATE_BROKEN              => "Broken",
+        self::STATE_RESERVED            => "Reserved",
+        self::STATE_PREWIRED            => "Prewired",
+        self::STATE_OTHER               => "Other"
+    ];
+
+    /**
+     * Array STATES for available
+     */
+    public static $AVAILABLE_FOR_ALLOCATION_STATES = [
+        self::STATE_AVAILABLE,
+        self::STATE_PREWIRED,
+    ];
+
+    /**
+     * Array STATES for allocated
+     */
+    public static $ALLOCATED_STATES = [
+        self::STATE_AWAITING_XCONNECT,
+        self::STATE_CONNECTED,
+        self::STATE_AWAITING_CEASE,
+    ];
+
+    /**
+     * Array STATES for allocated
+     */
+    public static $ALLOCATED_STATES_TEXT = [
+        self::STATE_AWAITING_XCONNECT   => "Awaiting Xconnect",
+        self::STATE_CONNECTED           => "Connected",
+        self::STATE_AWAITING_CEASE      => "Awaiting Cease",
+    ];
+    /**
+     * Array STATES for available
+     */
+    public static $AVAILABLE_STATES = [
+        self::STATE_AVAILABLE,
+        self::STATE_PREWIRED,
+        self::STATE_AWAITING_CEASE,
+        self::STATE_CEASED,
+    ];
+
+    /**
+     * Array $CHARGEABLES
+     */
+    public static $OWNED_BY = [
+        self::OWNED_CUST                => "Customer",
+        self::OWNED_IXP                 => "IXP",
+        self::OWNED_SERV_PRO            => "Service Provider",
+        self::OWNED_DATA_CENTER         => "Data Center",
+        self::OWNED_OTHER               => "Other",
+    ];
+
+    /**
      * Array $CHARGEABLES
      */
     public static $CHARGEABLES = [
@@ -162,6 +254,16 @@ class PatchPanelPort extends Model
         self::CHARGEABLE_NO             => "No",
         self::CHARGEABLE_HALF           => "Half",
         self::CHARGEABLE_OTHER          => "Other"
+    ];
+
+    /**
+     * @var array Email ids to classes
+     */
+    public static $EMAIL_CLASSES = [
+        self::EMAIL_CEASE       =>  CeaseMail::class,
+        self::EMAIL_CONNECT     =>  ConnectMail::class,
+        self::EMAIL_INFO        =>  InfoMail::class,
+        self::EMAIL_LOA         =>  LoaMail::class,
     ];
 
     /**
@@ -205,6 +307,14 @@ class PatchPanelPort extends Model
     }
 
     /**
+     * Get the patch panel port histories for this patch panel port
+     */
+    public function patchPanelPortHistories(): HasMany
+    {
+        return $this->hasMany(PatchPanelPortHistory::class, 'patch_panel_port_id' );
+    }
+
+    /**
      * Get the public patch panel port files for this patch panel port
      */
     public function patchPanelPortFilesPublic(): HasMany
@@ -222,20 +332,409 @@ class PatchPanelPort extends Model
     }
 
     /**
+     * A public facing reference for this. Essentially the ID.
+     *
+     * @return string
+     */
+    public function circuitReference(): string
+    {
+        return sprintf( "PPP-%05d", $this->id );
+    }
+
+    /**
+     * Is this port part of a duplex port group?
+     *
+     * @return bool
+     */
+    public function isDuplexPort(): bool
+    {
+        return $this->duplex_master_id !== null || $this->duplexSlavePorts()->count() > 0;
+    }
+
+    /**
      * Get name
      *
      * @return integer
      */
-    public function getName()
+    public function name()
     {
         $name = $this->patchPanel->port_prefix . $this->number;
 
-
-        // finish me
-//        if( $this->hasSlavePort() ) {
-//            $name .= '/' . $this->getDuplexSlavePortName() . ' ';
-//            $name .= '(' . ( $this->getNumber() % 2 ? ( floor( $this->getNumber() / 2 ) ) + 1 : $this->getNumber() / 2 ) . ')';
-//        }
+        if( $this->duplexSlavePorts()->exists() ) {
+            $name .= '/' . $this->duplexSlavePorts()->first()->name() . ' ';
+            $name .= '(' . ( $this->number % 2 ? ( floor( $this->number / 2 ) ) + 1 : $this->number / 2 ) . ')';
+        }
         return $name;
+    }
+
+    /**
+     * Turn the database integer representation of the states into text as
+     * defined in the self::$STATES array (or 'Unknown')
+     *
+     * @return string
+     */
+    public function states(): string
+    {
+        return self::$STATES[ $this->state ] ?? 'Unknown';
+    }
+
+    /**
+     * Get chargeable
+     *
+     * @return int
+     */
+    public function isChargeable(): int
+    {
+        return isset( self::$CHARGEABLES[ $this->chargeable ] ) ? $this->chargeable : self::CHARGEABLE_NO;
+
+    }
+
+    /**
+     * Turn the database integer representation of the states into text as
+     * defined in the self::$CHARGEABLES array (or 'Unknown')
+     *
+     * @return string
+     */
+    public function chargeable(): string
+    {
+        return self::$CHARGEABLES[ $this->chargeable ] ?? 'Unknown';
+    }
+
+    /**
+     * Is this port os allocated?
+     *
+     * It is if its state is one of: awaiting xconnect, connected, awaiting cease.
+     *
+     * @return bool
+     */
+    public function allocated(): bool
+    {
+        return in_array( $this->state, self::$ALLOCATED_STATES );
+    }
+
+    /**
+     * Is this port available for use?
+     *
+     * It is if its state is one of: available, ceased, awaiting cease, prewired.
+     *
+     * @return bool
+     */
+    public function availableForUse(): bool
+    {
+        return in_array( $this->state, self::$AVAILABLE_STATES );
+    }
+
+    /**
+     * Turn the database integer representation of the states into text as
+     * defined in the self::$STATES array (or 'Unknown')
+     * @return string
+     */
+    public function ownedBy(): string
+    {
+        return self::$OWNED_BY[ $this->owned_by ] ?? 'Unknown';
+    }
+
+    /**
+     * Is the state STATE_AVAILABLE?
+     *
+     * @return bool
+     */
+    public function stateAvailable(): bool
+    {
+        return $this->state === self::STATE_AVAILABLE;
+    }
+
+    /**
+     * Is the state STATE_AWAITING_XCONNECT?
+     *
+     * @return bool
+     */
+    public function stateAwaitingXConnect(): bool
+    {
+        return $this->state === self::STATE_AWAITING_XCONNECT;
+    }
+
+    /**
+     * Is the state STATE_CONNECTED?
+     *
+     * @return bool
+     */
+    public function stateConnected(): bool
+    {
+        return $this->state === self::STATE_CONNECTED;
+    }
+
+    /**
+     * Is the state STATE_AWAITING_CEASE?
+     *
+     * @return bool
+     */
+    public function stateAwaitingCease(): bool
+    {
+        return $this->state === self::STATE_AWAITING_CEASE;
+    }
+
+    /**
+     * Is the state STATE_CEASED?
+     *
+     * @return bool
+     */
+    public function stateCeased(): bool
+    {
+        return $this->state === self::STATE_CEASED;
+    }
+
+    /**
+     * Is the state STATE_RESERVED?
+     *
+     * @return bool
+     */
+    public function stateReserved(): bool
+    {
+        return $this->state === self::STATE_RESERVED;
+    }
+
+    /**
+     * Is the state STATE_RESERVED?
+     *
+     * @return bool
+     */
+    public function statePrewired(): bool
+    {
+        return $this->state === self::STATE_PREWIRED;
+    }
+
+    /**
+     * Get css class state
+     *
+     * @param int $state
+     * @param bool $superUser
+     *
+     * @return string
+     */
+    public static function stateCssClass( int $state, bool $superUser = false ): string
+    {
+        if( $superUser ){
+            if( in_array( $state, self::$AVAILABLE_STATES ) || $state === self::STATE_PREWIRED ):
+                $class = 'success';
+            elseif( $state === self::STATE_AWAITING_XCONNECT ):
+                $class = 'warning';
+            elseif( $state === self::STATE_CONNECTED ):
+                $class = 'danger';
+            else:
+                $class = 'info';
+            endif;
+        } else {
+            if( $state === self::STATE_CONNECTED ):
+                $class = 'success';
+            elseif( $state === self::STATE_AWAITING_CEASE ):
+                $class = 'warning';
+            elseif( $state === self::STATE_AWAITING_XCONNECT ):
+                $class = 'danger';
+            else:
+                $class = 'info';
+            endif;
+        }
+
+        return $class;
+    }
+
+    /**
+     * Reset the port and set status to available (including slave ports)
+     *
+     * @return void
+     */
+    public function reset(): void
+    {
+        foreach( $this->duplexSlavePorts as $pppsp ) {
+            $pppsp->reset();
+            $pppsp->update( [ 'duplex_master_id', null ] );
+        }
+
+        // Attributes that are not reset
+        $excludedValues = [ 'id', 'patch_panel_id', 'number', 'owned_by', 'colo_billing_ref', 'updated_at', 'created_at' ];
+
+        // Get for each attributes their default values
+        $attributesToReset = DB::query()->selectRaw( 'COLUMN_NAME, COLUMN_DEFAULT, DATA_TYPE' )
+            ->from( 'INFORMATION_SCHEMA.COLUMNS' )
+            ->where( 'TABLE_NAME', $this->table )
+            ->where( 'TABLE_SCHEMA', config( 'database.connections.mysql.database' ) )
+            ->whereNotIn( 'COLUMN_NAME', $excludedValues )->get();
+
+
+        foreach( $attributesToReset as $attr ) {
+            // if the types are varchar or longtext set '' instead of null
+            $this->{$attr->COLUMN_NAME} = in_array( $attr->DATA_TYPE, [ 'varchar', 'longtext' ] ) ? '' : $attr->COLUMN_DEFAULT;
+        }
+
+        $this->state                = self::STATE_AVAILABLE;
+        $this->last_state_change    = now();
+        $this->save();
+    }
+
+    /**
+     * Archive a patch panel port (and its slave ports)
+     *
+     * NB: does not reset the original port.
+     *
+     * @return PatchPanelPortHistory
+     *
+     * @throws
+     */
+    public function archive(): PatchPanelPortHistory
+    {
+        $historyPort = PatchPanelPortHistory::createFromPort( $this );
+
+        foreach( $this->duplexSlavePorts as $slave ) {
+            /** @var PatchPanelPort  $slave */
+            $slaveHistoryPort = clone $historyPort;
+            $slaveHistoryPort->number = $slave->number;
+            $slaveHistoryPort->duplex_master_id = $historyPort->id;
+            $slaveHistoryPort->patch_panel_port_id = $slave->id;
+            $slaveHistoryPort->save();
+        }
+
+        foreach( $this->patchPanelPortFilesPublic as $file ) {
+            PatchPanelPortHistoryFile::createFromFile( $file, $historyPort );
+            $file->delete();
+        }
+
+        return $historyPort;
+    }
+
+    /**
+     * Move details / contents of a PPP to another PPP.
+     *
+     * Moves the information and files from a patch panel port to an other one
+     * (and also move duplex slave if there is one). This function also:
+     *
+     * * Creates history of the old patch panel port
+     * * Resets the old patch panel port (and duplex slave)
+     *
+     * @param PatchPanelPort        $dest          The destination port
+     * @param PatchPanelPort|null   $slave         If the source port is a duplex port, we need a new slave also.
+     *
+     * @return boolean
+     *
+     * @throws
+     */
+    public function move( PatchPanelPort $dest, PatchPanelPort $slave = null ): bool
+    {
+        // preflight checks
+        if( $this->duplexSlavePorts()->count() && ( $slave === null || !$slave->availableForUse() ) ) {
+            throw new GeneralException( 'Source is duplex but no slave / free slave provided' );
+        }
+
+        if( !$dest->availableForUse() ) {
+            throw new GeneralException( 'Destination port is not available for use' );
+        }
+
+        if( !( $history = $this->archive() )  ) {
+            return false;
+        }
+
+
+        // wipe source switch port as it is a unique constraint in the db
+        $spid = $this->switch_port_id;
+        $this->update( [ 'switch_port_id' => null ] );
+
+        // Update the new port with the data of the old port
+        $dest->update( $this->replicate(
+                [ 'id', 'switch_port_id', 'patch_panel_id', 'duplex_master_id', 'number', 'private_notes', 'colo_billing_ref' ]
+            )->toArray()
+        );
+
+        $dest->update( [
+            'switch_port_id' => $spid,
+            'private_notes'  => "### " . now()->format('Y-m-d')." - IXP Manager\n\nMoved from "
+                . $this->patchPanel->name . "/" . $this->name()
+                . " by ". ( Auth::check() ? Auth::user()->getUsername() : "unknown/unauth" )
+                . " on " . now()->format('Y-m-d') . ".\n\n"
+                . $this->private_notes
+        ]);
+
+        if( $slave ){
+            $slave->update( [ 'duplex_master_id' => $dest->id ] );
+        }
+
+        foreach( $this->patchPanelPortFiles as $file ){
+            $file->update( [ 'patch_panel_port_id' => $dest->id ] );
+        }
+
+        // Reset the old port
+        $this->reset();
+
+        $history->update( [
+            'private_notes' => "### " . now()->format('Y-m-d' ) . " - IXP Manager\n\nMoved to "
+                . $dest->patchPanel->name . "/" . $dest->name()
+                . " by ". ( Auth::check() ? Auth::user()->getUsername() : "unknown/unauth" )
+                . " on " . now()->format( 'Y-m-d' ) . ".\n\n"
+                . ( $dest->patchPanelPortFiles()->count() ? "See new port for files.\n\n" : '' )
+                . $history->private_notes
+        ] );
+
+        return true;
+    }
+
+    /**
+     * Remove a patch panel port and everything linked to it ( duplex port, files, histories, etc...)
+     *
+     * Also:
+     *
+     * * optionally deletes the linked slave port.
+     * * deletes all the history.
+     * * deletes in the database and on the disk all the files/filesHistory uploaded for this port.
+     *
+     * @throws
+     */
+    public function remove(): void
+    {
+        // Delete slave port first
+        if( $this->duplexSlavePorts()->count() ){
+            foreach( $this->duplexSlavePorts as $slave ){
+                /** @var $slave PatchPanelPort */
+                $slave->remove();
+            }
+        }
+
+        // Delete port histories and files
+        foreach( $this->patchPanelPortHistories as $history ) {
+            /** @var $history PatchPanelPortHistory */
+
+            $user = Auth::check() ? Auth::user()->getUsername() : 'unkown/unauth';
+            foreach( PatchPanelPortHistory::whereDuplexMasterId( $history->id )->get() as $duplex ){
+                $duplex->update([
+                    'duplex_master_id'  => null,
+                    'private_notes'     => "### " . now()->format('Y-m-d') . " - IXP Manager \n\nHad a master port that was deleted by {$user} on " . now()->format('Y-m-d') . "\n\n"
+                        . $duplex->private_notes
+                ]);
+            }
+
+            foreach( $history->patchPanelPortHistoryFiles as $historyFile ) {
+                $path = 'files/' . $historyFile->getPath();
+
+                $historyFile->update( [ 'patch_panel_port_history_id' => null ] );
+                $historyFile->delete();
+
+                if( Storage::exists( $path ) ){
+                    Storage::delete( $path );
+                }
+            }
+            $history->update( [ 'patch_panel_port_id' => null ] );
+            $history->delete();
+        }
+
+        // Delete port files
+        foreach( $this->patchPanelPortFiles as $file ){
+            $path = 'files/' . $file->getPath();
+
+            $file->update( [ 'patch_panel_port_id' => null ] );
+            $file->delete();
+            if( Storage::exists( $path ) ){
+                Storage::delete( $path );
+            }
+        }
+
+        $this->delete();
     }
 }

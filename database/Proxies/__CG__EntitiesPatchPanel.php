@@ -590,7 +590,7 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function hasDuplexPort()
+    public function hasDuplexPort(): bool
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasDuplexPort', []);

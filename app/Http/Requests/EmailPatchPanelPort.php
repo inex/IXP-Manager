@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,6 +23,7 @@ namespace IXP\Http\Requests;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class EmailPatchPanelPort extends FormRequest
@@ -32,10 +33,10 @@ class EmailPatchPanelPort extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // middleware ensures superuser access only so always authorised here:
-        return true;
+        return Auth::user()->isSuperUser();
     }
 
     /**
@@ -43,7 +44,7 @@ class EmailPatchPanelPort extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'email_to'              => 'required|string',

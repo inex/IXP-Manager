@@ -16,7 +16,7 @@
         <a class="btn btn-white" href="<?= route ('patch-panel@edit' , [ 'pp' => $pp->id ] ) ?>" title="Edit">
             <i class="fa fa-pencil"></i>
         </a>
-        <a class="btn btn-white" href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'ppid' => $pp->id ]  ) ?>" title="Ports list">
+        <a class="btn btn-white" href="<?= route('patch-panel-port@list-for-patch-panel' ,  [ 'pp' => $pp->id ]  ) ?>" title="Ports list">
             <i class="fa fa-th"></i>
         </a>
     </div>
@@ -40,7 +40,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <a href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'ppid' => $pp->id ]  ) ?>">
+                                    <a href="<?= route('patch-panel-port@list-for-patch-panel' ,  [ 'pp' => $pp->id ]  ) ?>">
                                         <?= $t->ee( $pp->name ) ?>
                                     </a>
                                 </td>
@@ -99,7 +99,7 @@
                                         $totalDivide  = $pp->availableOnTotalPort(true) ;
                                         $total        = $pp->availableOnTotalPort(false) ;
                                     ?>
-                                    <a href="<?= route ( 'patch-panel-port/list/patch-panel' , [ 'ppid' => $pp->id ] ) ?>">
+                                    <a href="<?= route ( 'patch-panel-port@list-for-patch-panel' , [ 'pp' => $pp->id ] ) ?>">
                                     <span title="" class="badge badge-<?= $pp->cssClassPortCount() ?>">
                                             <?php if( $duplex ): ?>
                                                 <?= $totalDivide ?>

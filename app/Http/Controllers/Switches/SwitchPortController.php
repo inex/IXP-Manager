@@ -343,7 +343,7 @@ class SwitchPortController extends EloquentController
         if(  $this->object->patchPanelPort()->exists() ) {
             $ppp = $this->object->patchPanelPort;
             AlertContainer::push( "You cannot delete the switch port {$this->object->name} as it is assigned to a patch panel port for "
-                . "<a href=\"" . route('patch-panel-port/list/patch-panel', [ "ppid" => $ppp->patchPanel->id ] ) . "\">{$ppp->getName()}</a>.", Alert::DANGER );
+                . "<a href=\"" . route('patch-panel-port@list-for-patch-panel', [ 'pp' => $ppp->patchPanel->id ] ) . "\">{$ppp->getName()}</a>.", Alert::DANGER );
             return false;
         }
 
@@ -713,7 +713,7 @@ class SwitchPortController extends EloquentController
                 $ppp = $sp->patchPanelPort;
                 AlertContainer::push( "Could not delete switch port {$sp->name} as it is assigned to a patch panel port for "
                     . "<a href=\""
-                    . route( "patch-panel-port/list/patch-panel" , [ 'ppid' => $ppp->id ]  )
+                    . route( 'patch-panel-port@list-for-patch-panel' , [ 'pp' => $ppp->id ]  )
                     . "\">{$ppp->getName()}</a>.", Alert::DANGER
                 );
 

@@ -142,7 +142,7 @@ class PatchPanelController extends Controller
         // create the patch panel ports
         $pp->createPorts( $r->numberOfPorts );
 
-        return redirect( route( "patch-panel-port/list/patch-panel", [ "ppid" => $pp->id ] )  );
+        return redirect( route( 'patch-panel-port@list-for-patch-panel', [ "pp" => $pp->id ] )  );
     }
 
     /**
@@ -163,7 +163,7 @@ class PatchPanelController extends Controller
         // create the patch panel ports
         $pp->createPorts( $r->numberOfPorts );
 
-        return redirect( route( "patch-panel-port/list/patch-panel", [ "ppid" => $pp->id ] )  );
+        return redirect( route( 'patch-panel-port@list-for-patch-panel', [ "pp" => $pp->id ] )  );
     }
 
     /**

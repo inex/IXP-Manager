@@ -14,7 +14,6 @@
 
                 <h4>Public Notes</h4>
 
-
                     <div class="card mt-4 mb-4">
                         <div class="card-header">
                             <ul class="nav nav-tabs card-header-tabs">
@@ -68,10 +67,6 @@
                     <br><br>
                     <span>Update Physical Port State To: </span>
                     <select title="Physical Interface States" id="notes-modal-body-pi-status">
-                        <option value="0"></option>
-                        <?php foreach( Entities\PhysicalInterface::$STATES as $i => $s ): ?>
-                            <option value="<?= $i ?>"><?= $s ?></option>
-                        <?php endforeach; ?>
                     </select>
                 </div>
             </div>

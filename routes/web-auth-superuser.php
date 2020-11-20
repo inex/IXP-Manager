@@ -47,26 +47,32 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], functi
     Route::put(    'update/{pp}',                      'PatchPanelController@update'           )->name( 'patch-panel@update'           );
 });
 
-Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'middleware' => 'patch-panel-port' ], function() {
-    Route::get(     'list',                             'PatchPanelPortController@index'                )->name('patch-panel-port/list'                 );
-    Route::post(    'advanced-list',                    'PatchPanelPortController@advancedIndex'        )->name('patch-panel-port@advanced-list'       );
-    Route::get(     'list/patch-panel/{ppid}',          'PatchPanelPortController@index'                )->name('patch-panel-port/list/patch-panel'     );
-    Route::get(     'edit/{id}',                        'PatchPanelPortController@edit'                 )->name('patch-panel-port@edit'                 );
-    Route::get(     'edit-to-allocate/{id}',            'PatchPanelPortController@editToAllocate'       )->name('patch-panel-port@edit-allocate'        );
-    Route::get(     'edit-to-prewired/{id}',            'PatchPanelPortController@editToPrewired'       )->name('patch-panel-port@edit-prewired'        );
-    Route::get(     'change-status/{id}/{status}',      'PatchPanelPortController@changeStatus'         )->name('patch-panel-port@change-status'        );
-    Route::get(     'email/{id}/{type}',                'PatchPanelPortController@email'                )->name('patch-panel-port@email'                );
-    Route::get(     'move-form/{id}',                   'PatchPanelPortController@moveForm'             )->name('patch-panel-port@move-form'            );
-    Route::post(    'move',                             'PatchPanelPortController@move'                 )->name('patch-panel-port@move'                 );
-    Route::post(    'store',                            'PatchPanelPortController@store'                )->name('patch-panel-port@store'                );
-    Route::post(    'send-email/{id}/{type}',           'PatchPanelPortController@sendEmail'            )->name('patch-panel-port@send-email'           );
-    Route::post(    'delete-file/{fileid}',             'PatchPanelPortController@deleteFile'           )->name('patch-panel-port@delete-file'          );
-    Route::post(    'delete-history-file/{fileid}',     'PatchPanelPortController@deleteHistoryFile'    )->name('patch-panel-port@delete-history-file'  );
-    Route::post(    'delete/{id}',                      'PatchPanelPortController@delete'               )->name('patch-panel-port@delete'               );
-    Route::post(    'split/{id}',                       'PatchPanelPortController@split'                )->name('patch-panel-port@split'                );
-    Route::post(    'toggle-file-privacy/{fileid}',     'PatchPanelPortController@toggleFilePrivacy'    )->name('patch-panel-port@toggle-file-privacy'  );
-    Route::post(    'upload-file/{id}',                 'PatchPanelPortController@uploadFile'           )->name('patch-panel-port/upload-file'          );
-    Route::post(    'notes/{id}',                       'PatchPanelPortController@setNotes'             )->name('patch-panel-port/set-notes'            );
+Route::group( [ 'namespace' => 'PatchPanel\Port', 'prefix' => 'patch-panel-port' ], function() {
+    Route::get(     'list',                             'PortController@index'                )->name('patch-panel-port@list'                 );
+    Route::post(    'advanced-list',                    'PortController@advancedIndex'        )->name('patch-panel-port@advanced-list'        );
+    Route::get(     'list/patch-panel/{pp}',            'PortController@index'                )->name('patch-panel-port@list-for-patch-panel' );
+    Route::get(     'edit/{ppp}',                       'PortController@edit'                 )->name('patch-panel-port@edit'                 );
+    Route::get(     'edit/{ppp}/allocate',              'PortController@editAllocate'         )->name('patch-panel-port@edit-allocate'        );
+    Route::get(     'edit/{ppp}/prewired',              'PortController@editPrewired'         )->name('patch-panel-port@edit-prewired'        );
+    Route::get(     'change-status/{ppp}/{status}',     'PortController@changeStatus'         )->name('patch-panel-port@change-status'        );
+    Route::get(     'move-form/{ppp}',                  'DangerActionsController@moveForm'             )->name('patch-panel-port@move-form'            );
+    Route::put(     'move/{ppp}',                       'DangerActionsController@move'                 )->name('patch-panel-port@move'                 );
+    Route::put(     'split/{ppp}',                      'DangerActionsController@split'                )->name('patch-panel-port@split'                );
+    Route::post(    'notes/{ppp}',                      'PortController@setNotes'             )->name('patch-panel-port/set-notes'            );
+    Route::put(    'update/{ppp}',                       'PortController@update'              )->name('patch-panel-port@update'               );
+    Route::delete(    'delete/{ppp}',                   'DangerActions@delete'               )->name('patch-panel-port@delete'               );
+
+    Route::group( [  'prefix' => 'file' ], function() {
+        Route::delete(  'delete/{file}',           'FileController@delete'              )->name('patch-panel-port-file@delete'                  );
+        Route::delete(  'delete-history/{file}',   'FileController@deleteHistory'       )->name('patch-panel-port-file@delete-history'          );
+        Route::post(    'toggle-privacy/{file}',   'FileController@togglePrivacy'       )->name('patch-panel-port-file@toggle-privacy'          );
+        Route::post(    'upload/{ppp}',            'FileController@upload'              )->name('patch-panel-port-file@upload'                  );
+    });
+
+    Route::group( [  'prefix' => 'email' ], function() {
+        Route::post(    'send-email/{id}/{type}',           'EmailControler@sendEmail'            )->name('patch-panel-port@send-email'           );
+        Route::get(     'email/{id}/{type}',                'EmailControler@email'                )->name('patch-panel-port@email'                );
+    });
 });
 
 

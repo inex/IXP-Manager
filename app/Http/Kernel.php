@@ -145,7 +145,6 @@ class Kernel extends HttpKernel {
         'controller-enabled'    => Middleware\ControllerEnabled::class,
         'doctrine2frontend'     => Middleware\Doctrine2Frontend::class,
         'grapher'               => Middleware\Services\Grapher::class,
-        'patch-panel-port'      => Middleware\PatchPanelPort::class,
         'rs-prefixes'           => Middleware\RsPrefixes::class,
         '2fa'                   => Middleware\Google2FA::class,
     ];

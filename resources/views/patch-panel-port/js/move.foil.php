@@ -1,66 +1,66 @@
+<?php
+    $hasSlave = $t->ppp->duplexSlavePorts()->count() ? true : false;
+?>
 <script>
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
-
-    const dd_pp         = $( "#pp" );
-    const dd_master     = $( "#master-port" );
-    const dd_slave      = $( "#slave-port" );
+    const dd_pp         = $( "#patch_panel_id" );
+    const dd_master     = $( "#port_id" );
+    const dd_slave      = $( "#slave_id" );
 
     //////////////////////////////////////////////////////////////////////////////////////
     // action bindings:
-
-    dd_pp.change( () => { setPPP(); } );
-
-    <?php if( $t->ppp->hasSlavePort() ): ?>
-    dd_master.change(function(){
-        let nextPort = parseInt( dd_master.val()) + parseInt(1);
-        if( $( '#slave-port option[value="'+nextPort+'"]' ).length ) {
-            dd_slave.val( nextPort );
-            dd_slave.trigger('change.select2');
-        }
-    });
+    <?php if( $hasSlave ): ?>
+        dd_master.change(function(){
+            let nextPort = dd_master.find( ":selected" ).next().val();
+            dd_slave.val( nextPort ).trigger('change.select2');
+        });
     <?php endif; ?>
 
-    //////////////////////////////////////////////////////////////////////////////////////
-    // functions:
+    $( document ).ready( function() {
+        if( dd_pp.val() !== null ){
+            dd_pp.trigger('change');
+        }
 
+    });
     /**
      * set all the Patch Panel Panel Port available for the Patch Panel selected
      */
-    function setPPP(){
-        let ppId    = dd_pp.val();
-        let url     = "<?= url( '/api/v4/patch-panel' )?>/" + ppId + "/patch-panel-port-free";
-        let datas   = {pppId: <?= $t->ppp->getId() ?> };
+    dd_pp.change( function( ) {
+        let url     = "<?= url( '/api/v4/patch-panel' )?>/" +  $( this ).val() + "/free-port";
+        let datas   = {
+            pppid: <?= $t->ppp->id ?>
+        };
 
-
-        $( "#master-port" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger('change.select2');
-        <?php if( $t->ppp->hasSlavePort() ): ?>
-        $( "#slave-port" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger('change.select2');
+        dd_master.html( `<option value="">Loading please wait</option>` ).trigger( 'change.select2' );
+        <?php if( $hasSlave ): ?>
+            dd_slave.html( `<option value="">Loading please wait</option>` ).trigger( 'change.select2' );
         <?php endif; ?>
 
         $.ajax( url , {
             data: datas,
             type: 'POST'
         })
-            .done( function( data ) {
-                let options = `<option value="">Choose a switch port</option>`;
-                $.each( data.listPorts, function( key, value ){
-                    options += `<option value="${key}">${value}</option>`;
-                });
-                dd_master.html( options );
-                <?php if( $t->ppp->hasSlavePort() ): ?>
-                dd_slave.html( options );
-                <?php endif; ?>
-            })
-            .fail( function() {
-                throw new Error( `Error running ajax query for ${url}`  );
-                alert( `Error running ajax query for ${url}` );
-            })
-            .always( function() {
-                dd_master.trigger('change.select2');
-                <?php if( $t->ppp->hasSlavePort() ): ?>
-                dd_slave.trigger('change.select2');
-                <?php endif; ?>
+        .done( function( data ) {
+            let options = `<option value="">Choose a switch port</option>`;
+            $.each( data.ports, function( key, value ){
+                options += `<option value="${value.id}">${value.name}</option>`;
             });
-    }
+            dd_master.html( options );
+            <?php if( $hasSlave ): ?>
+                dd_slave.html( options );
+            <?php endif; ?>
+        })
+        .fail( function() {
+            alert( `Error running ajax query for ${url}` );
+            throw new Error( `Error running ajax query for ${url}`  );
+        })
+        .always( function() {
+            dd_master.trigger('change.select2');
+            <?php if( $hasSlave ): ?>
+                dd_slave.trigger('change.select2');
+            <?php endif; ?>
+        });
+    });
+
 </script>

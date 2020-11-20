@@ -50,12 +50,12 @@ $this->layout( 'layouts/ixpv4' );
                     </td>
                     <td class="<?= $i ? '' : 'tw-border-t-2' ?> tw-px-4 tw-w-auto">
                 <?php if( $t->history ): ?>
-                    <a href="<?= route('patch-panel-port@view', [ 'id' => $file->patchPanelPortHistory->patchPanelPort->id ] ) . '#ppp-' . $file->patch_panel_port_history_id  ?>">
+                    <a href="<?= route('patch-panel-port@view', [ 'ppp' => $file->patchPanelPortHistory->patchPanelPort->id ] ) . '#ppp-' . $file->patch_panel_port_history_id  ?>">
                         <?= $t->ee( $file->name ) ?>
                     </a>
                     <em>(<?= $t->ee( $file->patchPanelPortHistory->patchPanelPort->patchPanel->name ) ?>)</em>
                 <?php else: ?>
-                    <a href="<?= route('patch-panel-port@view', [ 'id' => $file->patch_panel_port_id ] ) ?>">
+                    <a href="<?= route('patch-panel-port@view', [ 'ppp' => $file->patch_panel_port_id ] ) ?>">
                         <?= $t->ee( $file->name ) ?>
                     </a>
                     <em>(<?= $t->ee( $file->patchPanelPort->patchPanel->name ) ?>)</em>
@@ -69,7 +69,7 @@ $this->layout( 'layouts/ixpv4' );
                                 &middot;&middot;&middot;
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="<?= route( 'patch-panel-port@download-file', [ 'pppfid' => $file->id] ) ?>">Download</a>
+                                <a class="dropdown-item" href="<?= route( 'patch-panel-port-file@download', [ 'file' => $file->id] ) ?>">Download</a>
                             </div>
                         </div>
                     </td>

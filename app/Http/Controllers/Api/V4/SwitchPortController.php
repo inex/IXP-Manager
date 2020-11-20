@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,77 +22,58 @@ namespace IXP\Http\Controllers\Api\V4;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use D2EM;
-
-use Entities\{
-    SwitchPort
-};
+use IXP\Models\SwitchPort;
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-
 /**
  * PatchPanelPort Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   PatchPanel
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class SwitchPortController extends Controller {
-
-
+class SwitchPortController extends Controller
+{
     /**
      * Get the customer for a switch port
      *
-     * @param   int $id The ID of the switchport to query
+     * @param   SwitchPort $sp The ID of the switch port to query
+     *
      * @return  JsonResponse JSON customer object
      */
-    public function customer( int $id ): JsonResponse {
-
-        if( !( $sp = D2EM::getRepository( SwitchPort::class )->find( $id ) ) ) {
-            abort( 404, 'No such switchport' );
-        }
-
-        /** @var SwitchPort $sp */
-        if( $pi = $sp->getPhysicalInterface() ) {
-            if( $vi = $pi->getVirtualInterface() ) {
-                return response()->json([
-                    'customerFound' => true,
-                    'id'            => $vi->getCustomer()->getId(),
-                    'name'          => $vi->getCustomer()->getName(),
-                ]);
-            }
-        }
-
-        return response()->json(['customerFound' => false]);
+    public function customer( SwitchPort $sp ): JsonResponse
+    {
+        return response()->json( [
+            'customer' =>  SwitchPort::selectRaw( 'COUNT( c.id ) as nb, c.id, c.name' )
+                ->from( 'switchport AS sp' )
+                ->leftJoin( 'physicalinterface AS pi', 'pi.switchportid', 'sp.id' )
+                ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'pi.virtualinterfaceid' )
+                ->leftJoin( 'cust AS c', 'c.id', 'vi.custid' )
+                ->where( 'sp.id', $sp->id )
+                ->groupBy( 'c.id' )
+                ->get()->first()->toArray()
+        ] );
     }
 
     /**
      * Check if the switch port has a physical interface set
      *
-     * @param   int $id  Id of the switchport
+     * @param   SwitchPort $sp  Id of the switchport
+     *
      * @return  JsonResponse JSON response
      */
-    public function physicalInterface(int $id): JsonResponse {
-        /** @var SwitchPort $sp */
-        if( !( $sp = D2EM::getRepository(SwitchPort::class)->find($id) ) ) {
-            abort( 404, 'No such switchport' );
-        }
-
-        if( ( $pi = $sp->getPhysicalInterface() ) ){
+    public function physicalInterface( SwitchPort $sp ): JsonResponse
+    {
+        if( ( $pi = $sp->physicalInterface ) ){
             return response()->json([
-                'physInt' => [
-                    'id'         => $pi->getId(),
-                    'status'     => $pi->getStatus(),
-                    'statusText' => $pi->resolveStatus(),
+                'pi' => [
+                    'id'         => $pi->id,
+                    'status'     => $pi->status,
+                    'statusText' => $pi->status(),
                 ]
             ]);
         }
-
-        return response()->json([]);
+        return response()->json( [] );
     }
-
-
 }

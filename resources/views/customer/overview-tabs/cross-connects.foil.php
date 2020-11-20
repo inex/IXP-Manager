@@ -45,7 +45,7 @@
                 <?php foreach( $t->crossConnects as $patchPanelPort ): ?>
                     <tr>
                         <td>
-                            <a href="<?= route( "patch-panel-port@view" , [ "id" => $patchPanelPort->getId() ] ) ?>">
+                            <a href="<?= route( "patch-panel-port@view" , [ "ppp" => $patchPanelPort->getId() ] ) ?>">
                                 <?= $t->ee($patchPanelPort->getPatchPanel()->getName() ) ?>
                                 <?= $t->ee( $patchPanelPort->getName() ) ?>
                             </a>

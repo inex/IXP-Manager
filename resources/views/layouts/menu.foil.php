@@ -88,7 +88,7 @@
             <?php if( request()->is( 'patch-panel/*' ) || request()->is( 'patch-panel-port/*' ) ): ?>
                 <ul>
                     <li class="nav-sub-menu-item <?= !request()->is( 'patch-panel-port/*' ) ?: 'active' ?>">
-                        <a class="nav-link" href="<?= route('patch-panel-port/list' ) ?>">
+                        <a class="nav-link" href="<?= route('patch-panel-port@list' ) ?>">
                             Patch Panel Port
                         </a>
                     </li>

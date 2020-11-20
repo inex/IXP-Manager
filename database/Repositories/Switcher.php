@@ -415,6 +415,7 @@ class Switcher extends EntityRepository
 
         $dql .= " ORDER BY sp.id ASC";
 
+        //dd($dql);
         $query = $this->getEntityManager()->createQuery( $dql );
         $query->setParameter( 1, $id);
 

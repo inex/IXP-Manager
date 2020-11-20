@@ -45,11 +45,18 @@ if( !config('ixp_fe.frontend.disabled.logo' ) ) {
 ///
 /// Patch Panels
 ///
-Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'middleware' => 'patch-panel-port'], function() {
-    Route::get( 'download-loa/{id}',                'PatchPanelPortController@downloadLoA'      )->name( 'patch-panel-port@download-loa'     );
-    Route::get( 'view-loa/{id}',                    'PatchPanelPortController@viewLoA'          )->name( 'patch-panel-port@view-loa'         );
-    Route::get( 'download-file/{pppfid}',           'PatchPanelPortController@downloadFile'     )->name( 'patch-panel-port@download-file'    );
-    Route::get( 'view/{id}',                        'PatchPanelPortController@view'             )->name( 'patch-panel-port@view'             );
+Route::group( [ 'namespace' => 'PatchPanel\Port', 'prefix' => 'patch-panel-port' ], function() {
+
+    Route::get( 'view/{ppp}',                     'PortController@view'             )->name( 'patch-panel-port@view'             );
+
+    Route::group( [  'prefix' => 'file' ], function() {
+        Route::get( 'download/{file}',           'FileController@download'     )->name( 'patch-panel-port-file@download'    );
+    });
+
+    Route::group( [  'prefix' => 'loa' ], function() {
+        Route::get( 'download/{ppp}',                'LoaController@download'      )->name( 'patch-panel-port-loa@download'     );
+        Route::get( 'view/{ppp}',                    'LoaController@view'          )->name( 'patch-panel-port-loa@view'         );
+    });
 });
 
 

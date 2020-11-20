@@ -304,7 +304,7 @@ class PhysicalInterfaceController extends Common
 
         $this->deletePi( $r, $pi, true );
 
-        AlertContainer::push( 'The Physical Interface deleted.', Alert::SUCCESS );
+        AlertContainer::push( 'Physical Interface deleted.', Alert::SUCCESS );
 
         return Redirect::to( $redirect );
     }

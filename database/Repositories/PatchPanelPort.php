@@ -90,6 +90,7 @@ class PatchPanelPort extends EntityRepository
      * @return  array   list of patch panel form key => pppId , value => ppp name
      */
     public function getAvailablePorts( int $ppid, $excludeIds = [] ):array {
+
         $dql = "SELECT ppp
                     FROM Entities\\PatchPanelPort ppp
                     JOIN ppp.patchPanel pp
