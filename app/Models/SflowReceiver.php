@@ -45,6 +45,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver whereUpdatedAt($value)
+ * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
  */
 class SflowReceiver extends Model
 {

@@ -22,44 +22,42 @@ namespace IXP\Http\Controllers\Api\V4;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Illuminate\Database\Eloquent\Builder;
 
-use D2EM;
-
-use Entities\{
-    Infrastructure    as InfrastructureEntity,
-    PhysicalInterface as PhysicalInterfaceEntity,
-    Router            as RouterEntity,
-    Vlan              as VlanEntity,
-    VlanInterface     as VlanInterfaceEntity
+use Illuminate\Http\{
+    Request,
+    Response
 };
 
-use Illuminate\Http\{Request,Response};
 use Illuminate\Support\Facades\View as FacadeView;
 
+use IXP\Models\{
+    Aggregators\VlanInterfaceAggregator,
+    Infrastructure,
+    PhysicalInterface,
+    Router,
+    Vlan
+};
 
-class NagiosController extends Controller {
-
+class NagiosController extends Controller
+{
 
     /**
      * An API call to generate customer reachability Nagios configuration for a given VLAN and protocol.
      *
      * @see http://docs.ixpmanager.org/features/nagios/
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $vlanid
-     * @param int                      $protocol
-     * @param string|null              $template
-     * @return \Illuminate\Http\Response
+     * @param Request           $r
+     * @param Vlan              $vlan
+     * @param int               $protocol
+     * @param string|null       $template
+     *
+     * @return Response|void
      */
-    public function customers( Request $request, int $vlanid, int $protocol, string $template = null ): Response {
-
+    public function customers( Request $r, Vlan $vlan, int $protocol, string $template = null )
+    {
         if( !in_array( $protocol, [ 4, 6 ] ) ) {
             return abort( 404, 'Unknown protocol' );
-        }
-
-        /** @var VlanEntity $v */
-        if( !( $v =  D2EM::getRepository( VlanEntity::class )->find( $vlanid ) ) ){
-            return abort( 404, 'Unknown VLAN' );
         }
 
         if( $template === null ) {
@@ -72,42 +70,35 @@ class NagiosController extends Controller {
             abort(404, 'Unknown template');
         }
 
-        $vlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForProto( $v->getId(), $protocol, PhysicalInterfaceEntity::STATUS_CONNECTED );
-
         return response()
             ->view( $tmpl, [
-                'vlan'     => $v,
+                'vlan'     => $vlan,
                 'protocol' => $protocol,
-                'vlis'     => $vlis,
+                'vlis'     => VlanInterfaceAggregator::forProto( $vlan, $protocol, PhysicalInterface::STATUS_CONNECTED ),
 
                 // optional POST/GET parameters
-                'host_definition'               => $request->input( 'host_definition',              'ixp-manager-member-host'              ),
-                'service_definition'            => $request->input( 'service_definition',           'ixp-manager-member-service'           ),
-                'ping_service_definition'       => $request->input( 'ping_service_definition',      'ixp-manager-member-ping-service'      ),
-                'ping_busy_service_definition'  => $request->input( 'ping_busy_service_definition', 'ixp-manager-member-ping-busy-service' ),
+                'host_definition'               => $r->input( 'host_definition',              'ixp-manager-member-host'              ),
+                'service_definition'            => $r->input( 'service_definition',           'ixp-manager-member-service'           ),
+                'ping_service_definition'       => $r->input( 'ping_service_definition',      'ixp-manager-member-ping-service'      ),
+                'ping_busy_service_definition'  => $r->input( 'ping_busy_service_definition', 'ixp-manager-member-ping-busy-service' ),
 
             ], 200 )
             ->header( 'Content-Type', 'text/plain; charset=utf-8' );
     }
-
 
     /**
      * An API call to generate production switch host and hostgroups for Nagios configuration for a given infrastructure.
      *
      * @see http://docs.ixpmanager.org/features/nagios/
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $infraid
-     * @param string|null              $template
-     * @return \Illuminate\Http\Response
+     * @param Request               $r
+     * @param Infrastructure        $infra
+     * @param string|null           $template
+     *
+     * @return Response
      */
-    public function switches( Request $request, int $infraid, string $template = null ): Response {
-
-        /** @var InfrastructureEntity $infra */
-        if( !( $infra =  D2EM::getRepository( InfrastructureEntity::class )->find( $infraid ) ) ) {
-            return abort( 404, 'Unknown infrastructure' );
-        }
-
+    public function switches( Request $r, Infrastructure $infra, string $template = null ): Response
+    {
         if( $template === null ) {
             $tmpl = 'api/v4/nagios/switches/default';
         } else {
@@ -118,16 +109,13 @@ class NagiosController extends Controller {
             abort(404, 'Unknown template');
         }
 
-        $switches = $infra->getSwitchers();
-
-
         return response()
             ->view( $tmpl, [
                 'infra'    => $infra,
-                'switches' => $switches,
+                'switches' => $infra->switchers,
 
                 // optional POST/GET parameters
-                'host_definition' => $request->input( 'host_definition', 'ixp-manager-production-switch' ),
+                'host_definition' => $r->input( 'host_definition', 'ixp-manager-production-switch' ),
             ], 200 )
             ->header( 'Content-Type', 'text/plain; charset=utf-8' );
     }
@@ -137,20 +125,21 @@ class NagiosController extends Controller {
      *
      * @see http://docs.ixpmanager.org/features/nagios/
      *
-     * @param \Illuminate\Http\Request $request
-     * @param string|null              $template
-     * @param int                      $vlanid
-     * @return \Illuminate\Http\Response
+     * @param Request           $r
+     * @param string|null       $template
+     * @param Vlan|null         $vlan
+     *
+     * @return Response
      */
-    public function birdseyeDaemons( Request $request, string $template = null, int $vlanid = null )
+    public function birdseyeDaemons( Request $r, string $template = null, Vlan $vlan = null ): Response
     {
-        $routers = D2EM::getRepository( RouterEntity::class )->filterForApiType( RouterEntity::API_TYPE_BIRDSEYE );
+        $routers = Router::where( 'api_type', Router::API_TYPE_BIRDSEYE )
+            ->when( $vlan, function( Builder $q, $vlan ) {
+                return $q->where( 'vlan_id', $vlan->id );
+            } )
+            ->orderBy( 'handle' )->get();
 
-        if( $vlanid ) {
-            $routers = D2EM::getRepository( RouterEntity::class )->filterCollectionOnVlanId( $routers, $vlanid );
-        }
-
-        if( !count($routers) ) {
+        if( !$routers->count() ) {
             abort( 404, "No routers for the provided VLAN ID / Bird's Eye API type." );
         }
 
@@ -166,12 +155,12 @@ class NagiosController extends Controller {
 
         return response()
                 ->view( $tmpl, [
-                    'routers' => $routers,
-                    'vlanid' => $vlanid ?? false,
+                    'routers'   => $routers,
+                    'vlanid'    => $vlan->id ?? false,
 
                     // optional POST/GET parameters
-                    'host_definition'    => $request->input( 'host_definition', 'ixp-manager-host-birdseye-daemon' ),
-                    'service_definition' => $request->input( 'host_definition', 'ixp-manager-service-birdseye-daemon' ),
+                    'host_definition'    => $r->input( 'host_definition', 'ixp-manager-host-birdseye-daemon' ),
+                    'service_definition' => $r->input( 'host_definition', 'ixp-manager-service-birdseye-daemon' ),
 
                 ], 200)
                 ->header('Content-Type', 'text/plain; charset=utf-8');
@@ -183,26 +172,22 @@ class NagiosController extends Controller {
      *
      * @see http://docs.ixpmanager.org/features/nagios/
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $vlanid
-     * @param int                      $protocol
-     * @param int                      $type
-     * @param string|null              $template
-     * @return \Illuminate\Http\Response
+     * @param Request           $r
+     * @param Vlan              $vlan
+     * @param int               $protocol
+     * @param int               $type
+     * @param string|null       $template
+     *
+     * @return Response|void
      */
-    public function birdseyeBgpSessions( Request $request, int $vlanid, int $protocol, int $type, string $template = null ): Response {
-
+    public function birdseyeBgpSessions( Request $r, Vlan $vlan, int $protocol, int $type, string $template = null )
+    {
         if( !in_array( $protocol, [ 4, 6 ] ) ) {
             return abort( 404, 'Unknown protocol' );
         }
 
-        if( !isset( RouterEntity::$TYPES[$type] ) ) {
+        if( !isset( Router::$TYPES[ $type ] ) ) {
             return abort( 404, 'Unknown router type' );
-        }
-
-        /** @var VlanEntity $v */
-        if( !( $v =  D2EM::getRepository( VlanEntity::class )->find( $vlanid ) ) ){
-            return abort( 404, 'Unknown VLAN' );
         }
 
         if( $template === null ) {
@@ -215,33 +200,30 @@ class NagiosController extends Controller {
             abort(404, 'Unknown template');
         }
 
-        // this is pretty inefficient...
-        $routers = D2EM::getRepository( RouterEntity::class )->filterForApiType( RouterEntity::API_TYPE_BIRDSEYE );
-        $routers = D2EM::getRepository( RouterEntity::class )->filterCollectionOnType( $routers, $type );
-        $routers = D2EM::getRepository( RouterEntity::class )->filterCollectionOnProtocol( $routers, $protocol );
-        $routers = D2EM::getRepository( RouterEntity::class )->filterCollectionOnVlanId( $routers, $v->getId() );
+        $routers = Router::where( 'api_type', Router::API_TYPE_BIRDSEYE )
+            ->where( 'type', $type )
+            ->where( 'protocol', $protocol )
+            ->where( 'vlan_id', $vlan->id )
+            ->orderBy( 'handle' )->get();
 
-        if( !count( $routers ) ) {
+        if( !$routers->count() ) {
             abort( 404, "No suitable router(s) found." );
         }
 
-        $vlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForProto( $v->getId(), $protocol, PhysicalInterfaceEntity::STATUS_CONNECTED );
-
         return response()
             ->view( $tmpl, [
-                'vlan'      => $v,
+                'vlan'      => $vlan,
                 'protocol'  => $protocol,
                 'type'      => $type,
-                'typeName'  => RouterEntity::$TYPES[$type],
-                'typeShort' => strtolower( RouterEntity::$TYPES_SHORT[$type] ),
+                'typeName'  => Router::$TYPES[ $type ],
+                'typeShort' => strtolower( Router::$TYPES_SHORT[ $type ] ),
                 'routers'   => $routers,
-                'vlis'      => $vlis,
+                'vlis'      => VlanInterfaceAggregator::forProto( $vlan, $protocol, PhysicalInterface::STATUS_CONNECTED ),
 
                 // optional POST/GET parameters
-                'service_definition'            => $request->input( 'service_definition',           'ixp-manager-member-bgp-session-service'           ),
+                'service_definition'            => $r->input( 'service_definition',           'ixp-manager-member-bgp-session-service'           ),
 
             ], 200 )
             ->header( 'Content-Type', 'text/plain; charset=utf-8' );
     }
-
 }

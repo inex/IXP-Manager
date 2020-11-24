@@ -30,8 +30,6 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
-use IXP\Http\Controllers\Controller;
-
 use IXP\Models\{
     PatchPanelPort,
     User
@@ -45,7 +43,7 @@ use IXP\Models\{
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class LoaController extends Controller
+class LoaController extends Common
 {
     /**
      * Download a Letter of Authority file - LoA
@@ -57,7 +55,7 @@ class LoaController extends Controller
     public function download( PatchPanelPort $ppp ): Response
     {
         $this->setupLoA( $ppp );
-        [ $pdf, $pdfname ] = $this->createLoAPDF( $ppp );
+        [ $pdf, $pdfname ] = $this->createLoaPDF( $ppp );
         return $pdf->download( $pdfname );
     }
 
@@ -71,23 +69,8 @@ class LoaController extends Controller
     public function view( PatchPanelPort $ppp ): Response
     {
         $this->setupLoA( $ppp );
-        [ $pdf, $pdfname ] = $this->createLoAPDF( $ppp );
-        return $pdf->stream($pdfname);
-    }
-
-    /**
-     * Generate the LoA PDF
-     *
-     * @param PatchPanelPort $ppp
-     *
-     * @return array To be unpacked with list( $pdf, $pdfname )
-     */
-    private function createLoAPDF( PatchPanelPort $ppp ): array
-    {
-        $pdf = app('dompdf.wrapper');
-        $pdf->loadView( 'patch-panel-port/loa', [ 'ppp' => $ppp ] );
-        $pdfName = sprintf( "LoA-%s-%s.pdf", $ppp->circuitReference(), now()->format( 'Y-m-d' ) );
-        return [ $pdf, $pdfName ];
+        [ $pdf, $pdfname ] = $this->createLoaPDF( $ppp );
+        return $pdf->stream( $pdfname );
     }
 
     /**

@@ -27,7 +27,7 @@ use Auth;
 use DB;
 use Eloquent;
 
-use Illuminate\Database\Eloquent\{Builder, Collection, Model};
+use Illuminate\Database\Eloquent\{Builder, Model};
 
 use Illuminate\Database\Eloquent\Relations\{
     BelongsTo,
@@ -107,6 +107,11 @@ use Storage;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereUpdatedAt($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortFile[] $patchPanelPortFilesPublic
  * @property-read int|null $patch_panel_port_files_public_count
+ * @property-read PatchPanelPort|null $duplexMasterPort
+ * @property-read \Illuminate\Database\Eloquent\Collection|PatchPanelPort[] $duplexSlavePorts
+ * @property-read int|null $duplex_slave_ports_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortHistory[] $patchPanelPortHistories
+ * @property-read int|null $patch_panel_port_histories_count
  */
 
 class PatchPanelPort extends Model
@@ -117,6 +122,15 @@ class PatchPanelPort extends Model
      * @var string
      */
     protected $table = 'patch_panel_port';
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'state' => 'integer',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -587,11 +601,16 @@ class PatchPanelPort extends Model
 
         foreach( $this->duplexSlavePorts as $slave ) {
             /** @var PatchPanelPort  $slave */
-            $slaveHistoryPort = clone $historyPort;
-            $slaveHistoryPort->number = $slave->number;
-            $slaveHistoryPort->duplex_master_id = $historyPort->id;
-            $slaveHistoryPort->patch_panel_port_id = $slave->id;
-            $slaveHistoryPort->save();
+            PatchPanelPortHistory::create(
+                array_merge(
+                    $historyPort->replicate( [ 'id', 'duplex_master_id', 'number', 'patch_panel_port_id' ] )->toArray(),
+                    [
+                        'number'                => $slave->number,
+                        'duplex_master_id'      => $historyPort->id,
+                        'patch_panel_port_id'   => $slave->id,
+                    ]
+                )
+            );
         }
 
         foreach( $this->patchPanelPortFilesPublic as $file ) {
@@ -629,10 +648,13 @@ class PatchPanelPort extends Model
             throw new GeneralException( 'Destination port is not available for use' );
         }
 
+        foreach( $this->patchPanelPortFiles as $file ){
+            $file->update( [ 'patch_panel_port_id' => $dest->id ] );
+        }
+
         if( !( $history = $this->archive() )  ) {
             return false;
         }
-
 
         // wipe source switch port as it is a unique constraint in the db
         $spid = $this->switch_port_id;
@@ -655,10 +677,6 @@ class PatchPanelPort extends Model
 
         if( $slave ){
             $slave->update( [ 'duplex_master_id' => $dest->id ] );
-        }
-
-        foreach( $this->patchPanelPortFiles as $file ){
-            $file->update( [ 'patch_panel_port_id' => $dest->id ] );
         }
 
         // Reset the old port

@@ -414,7 +414,7 @@
         $.ajax( "<?= url('patch-panel-port/file/delete/') ?>/" + pppfid, {
             type : 'delete',
             data: {
-                json: 1,
+                jsonResponse: 1,
             },
         } )
             .done( function( data ) {

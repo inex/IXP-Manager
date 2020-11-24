@@ -28,6 +28,26 @@ use Illuminate\Database\Eloquent\Collection;
 use IXP\Models\PatchPanelPort;
 
 
+/**
+ * IXP\Models\Aggregators\PatchPanelPortAggregator
+ *
+ * @property-read \IXP\Models\Customer $customer
+ * @property-read PatchPanelPort $duplexMasterPort
+ * @property-read Collection|PatchPanelPort[] $duplexSlavePorts
+ * @property-read int|null $duplex_slave_ports_count
+ * @property-read \IXP\Models\PatchPanel $patchPanel
+ * @property-read Collection|\IXP\Models\PatchPanelPortFile[] $patchPanelPortFiles
+ * @property-read int|null $patch_panel_port_files_count
+ * @property-read Collection|\IXP\Models\PatchPanelPortFile[] $patchPanelPortFilesPublic
+ * @property-read int|null $patch_panel_port_files_public_count
+ * @property-read Collection|\IXP\Models\PatchPanelPortHistory[] $patchPanelPortHistories
+ * @property-read int|null $patch_panel_port_histories_count
+ * @property-read \IXP\Models\SwitchPort $switchPort
+ * @method static Builder|PatchPanelPortAggregator newModelQuery()
+ * @method static Builder|PatchPanelPortAggregator newQuery()
+ * @method static Builder|PatchPanelPortAggregator query()
+ * @mixin \Eloquent
+ */
 class PatchPanelPortAggregator extends PatchPanelPort
 {
     /**

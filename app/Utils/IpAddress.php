@@ -3,7 +3,7 @@
 namespace IXP\Utils;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -32,7 +32,6 @@ use IXP\Exceptions\GeneralException;
  */
 class IpAddress
 {
-
     /**
      * Convert an IP address to an ARPA record
      *
@@ -43,26 +42,26 @@ class IpAddress
      *
      * @param string $ip The IP address
      * @param int $protocol Either 4 (IPv4) or 6 (IPv6)
+     *
      * @return string
+     *
      * @throws
      */
-    public static function toArpa( string $ip, int $protocol ) {
+    public static function toArpa( string $ip, int $protocol ): string
+    {
         switch( $protocol ) {
             case 4:
                 $parts = explode( '.', $ip );
-                $arpa = sprintf( '%d.%d.%d.%d.in-addr.arpa.', $parts[3], $parts[2], $parts[1], $parts[0] );
+                $arpa = sprintf( '%d.%d.%d.%d.in-addr.arpa.', $parts[ 3 ], $parts[ 2 ], $parts[ 1 ], $parts[ 0 ] );
                 break;
-
             case 6:
-                $addr = inet_pton($ip);
-                $unpack = unpack('H*hex', $addr);
-                $hex = $unpack['hex'];
-                $arpa = implode('.', array_reverse(str_split($hex))) . '.ip6.arpa.';
+                $addr = inet_pton( $ip );
+                $unpack = unpack('H*hex', $addr );
+                $hex = $unpack[ 'hex' ];
+                $arpa = implode('.', array_reverse( str_split( $hex ) ) ) . '.ip6.arpa.';
                 break;
-
             default:
                 throw new GeneralException( 'Invalid protocol!' );
-
         }
 
         return $arpa;
@@ -75,20 +74,18 @@ class IpAddress
      *
      * @return string
      */
-    public static function getIp()
+    public static function getIp(): string
     {
         foreach( [ 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR' ] as $key ) {
             if( array_key_exists( $key, $_SERVER ) === true ) {
-                foreach( explode(',', $_SERVER[$key] ) as $ip ) {
-                    $ip = trim($ip);
+                foreach( explode(',', $_SERVER[ $key ] ) as $ip ) {
+                    $ip = trim( $ip );
                     if( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) !== false ) {
                         return $ip;
                     }
                 }
             }
         }
-
         return request()->getClientIp();
     }
-
 }

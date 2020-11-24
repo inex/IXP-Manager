@@ -60,7 +60,7 @@ Route::group( [ 'namespace' => 'PatchPanel\Port', 'prefix' => 'patch-panel-port'
     Route::put(     'split/{ppp}',                      'DangerActionsController@split'                )->name('patch-panel-port@split'                );
     Route::post(    'notes/{ppp}',                      'PortController@setNotes'             )->name('patch-panel-port/set-notes'            );
     Route::put(    'update/{ppp}',                       'PortController@update'              )->name('patch-panel-port@update'               );
-    Route::delete(    'delete/{ppp}',                   'DangerActions@delete'               )->name('patch-panel-port@delete'               );
+    Route::delete(    'delete/{ppp}',                   'DangerActionsController@delete'               )->name('patch-panel-port@delete'               );
 
     Route::group( [  'prefix' => 'file' ], function() {
         Route::delete(  'delete/{file}',           'FileController@delete'              )->name('patch-panel-port-file@delete'                  );
@@ -70,8 +70,8 @@ Route::group( [ 'namespace' => 'PatchPanel\Port', 'prefix' => 'patch-panel-port'
     });
 
     Route::group( [  'prefix' => 'email' ], function() {
-        Route::post(    'send-email/{id}/{type}',           'EmailControler@sendEmail'            )->name('patch-panel-port@send-email'           );
-        Route::get(     'email/{id}/{type}',                'EmailControler@email'                )->name('patch-panel-port@email'                );
+        Route::post(    'send/{ppp}/{type}',           'EmailController@send'            )->name('patch-panel-port-email@send'           );
+        Route::get(     '{ppp}/{type}',                'EmailController@email'           )->name('patch-panel-port-email@form'                );
     });
 });
 

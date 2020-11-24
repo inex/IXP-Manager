@@ -26,6 +26,7 @@ namespace IXP\Http\Controllers\Api\V4;
 use Auth;
 
 use IXP\Models\Infrastructure;
+
 use Illuminate\Http\{
     JsonResponse,
     Response
@@ -64,7 +65,6 @@ class PublicController extends Controller
      */
     public function ping(): JsonResponse
     {
-
         return response()->json([
             'software' => "IXP Manager",
             'version'  => APPLICATION_VERSION,

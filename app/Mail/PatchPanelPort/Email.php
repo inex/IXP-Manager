@@ -104,13 +104,13 @@ abstract class Email extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): self
     {
         return $this;
     }
 
     /**
-     * Get the emailaddresses for to / cc / bcc
+     * Get the email addresses for to / cc / bcc
      *
      * @param string $recipientClass
      *

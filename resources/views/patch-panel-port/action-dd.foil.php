@@ -77,10 +77,10 @@
         <?php endif; ?>
 
         <?php if( $ppp->customer_id ): ?>
-            <a class="dropdown-item" href="<?= route( 'patch-panel-port@email',  [ 'id' => $ppp->id , 'type' => PatchPanelPort::EMAIL_CONNECT ]    )  ?>">Email - Connect</a>
-            <a class="dropdown-item" href="<?= route( 'patch-panel-port@email',  [ 'id' => $ppp->id , 'type' => PatchPanelPort::EMAIL_CEASE ]      )  ?>">Email - Cease</a>
-            <a class="dropdown-item" href="<?= route( 'patch-panel-port@email',  [ 'id' => $ppp->id , 'type' => PatchPanelPort::EMAIL_INFO ]       )  ?>">Email - Information</a>
-            <a class="dropdown-item" href="<?= route( 'patch-panel-port@email',  [ 'id' => $ppp->id , 'type' => PatchPanelPort::EMAIL_LOA ]        )  ?>">Email - LoA</a>
+            <a class="dropdown-item" href="<?= route( 'patch-panel-port-email@form',  [ 'ppp' => $ppp->id , 'type' => PatchPanelPort::EMAIL_CONNECT ]    )  ?>">Email - Connect</a>
+            <a class="dropdown-item" href="<?= route( 'patch-panel-port-email@form',  [ 'ppp' => $ppp->id , 'type' => PatchPanelPort::EMAIL_CEASE ]      )  ?>">Email - Cease</a>
+            <a class="dropdown-item" href="<?= route( 'patch-panel-port-email@form',  [ 'ppp' => $ppp->id , 'type' => PatchPanelPort::EMAIL_INFO ]       )  ?>">Email - Information</a>
+            <a class="dropdown-item" href="<?= route( 'patch-panel-port-email@form',  [ 'ppp' => $ppp->id , 'type' => PatchPanelPort::EMAIL_LOA ]        )  ?>">Email - LoA</a>
 
             <?php if( Auth::getUser()->isSuperUser() ): ?>
                 <div class="dropdown-divider"></div>

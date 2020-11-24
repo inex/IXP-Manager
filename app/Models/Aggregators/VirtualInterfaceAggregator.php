@@ -75,6 +75,8 @@ use IXP\Exceptions\GeneralException;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface connected()
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\MacAddress[] $macAddresses
  * @property-read int|null $mac_addresses_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\SflowReceiver[] $sflowReceivers
+ * @property-read int|null $sflow_receivers_count
  */
 class VirtualInterfaceAggregator extends VirtualInterface
 {

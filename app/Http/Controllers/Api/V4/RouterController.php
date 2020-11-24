@@ -22,7 +22,7 @@ namespace IXP\Http\Controllers\Api\V4;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use  D2EM;
+use Carbon\Carbon;
 
 use IXP\Models\Router;
 
@@ -32,11 +32,6 @@ use Illuminate\Http\{
     JsonResponse,
     Response
 };
-
-use Entities\{
-    Router as RouterEntity
-};
-
 /**
  * RouterController
  *
@@ -73,23 +68,6 @@ class RouterController extends Controller
     }
 
     /**
-     * Set `last_updated` to the current datetime (now)
-     *
-     * @param string $handle Handle of the router that we want
-     * @return JsonResponse
-     */
-    public function setLastUpdated( string $handle ) : JsonResponse {
-        if( !( $rt = D2EM::getRepository( RouterEntity::class )->findOneBy( [ 'handle' => $handle ] ) ) ) {
-            abort( 404, "Unknown router handle" );
-        }
-
-        $rt->setLastUpdated(new \DateTime);
-        D2EM::flush();
-
-        return response()->json( $this->getLastUpdatedArray( $rt ) );
-    }
-
-    /**
      * Get 'last_updated' for the router with the handle provided
      *
      * Returns the JSON version of the array:
@@ -102,13 +80,31 @@ class RouterController extends Controller
      * @param string $handle Handle of the router that we want
      * @return JsonResponse
      */
-    public function getLastUpdated( string $handle ) : JsonResponse {
-        /** @var RouterEntity $rt */
-        if( !( $rt = D2EM::getRepository( RouterEntity::class )->findOneBy( [ 'handle' => $handle ] ) ) ) {
+    public function getLastUpdated( string $handle ) : JsonResponse
+    {
+        if( !( $r = Router::whereHandle( $handle )->get()->first() ) ) {
             abort( 404, "Unknown router handle" );
         }
 
-        return response()->json( $this->getLastUpdatedArray( $rt ) );
+        return response()->json( $this->lastUpdatedArray( $r ) );
+    }
+
+    /**
+     * Set `last_updated` to the current datetime (now)
+     *
+     * @param string $handle Handle of the router that we want
+     *
+     * @return JsonResponse
+     */
+    public function setLastUpdated( string $handle ): JsonResponse
+    {
+        if( !( $r = Router::whereHandle( $handle )->get()->first() ) ) {
+            abort( 404, "Unknown router handle" );
+        }
+
+        $r->update( [ 'updated_at' => now() ] );
+
+        return response()->json( $this->lastUpdatedArray( $r ) );
     }
 
     /**
@@ -126,15 +122,12 @@ class RouterController extends Controller
      *
      * @return JsonResponse
      */
-    public function getAllLastUpdated() : JsonResponse {
-        $routers = D2EM::getRepository( RouterEntity::class )->findAll();
+    public function getAllLastUpdated(): JsonResponse
+    {
         $result = [];
-
-        /** @var RouterEntity $rt */
-        foreach( $routers as $rt ) {
-            $result[ $rt->getHandle() ] = $this->getLastUpdatedArray( $rt );
+        foreach( Router::all() as $r ) {
+            $result[ $r->handle ] = $this->lastUpdatedArray( $r );
         }
-
         return response()->json( $result );
     }
 
@@ -151,16 +144,16 @@ class RouterController extends Controller
      *          ...
      *     ]
      *
+     * @param int $threshold
+     *
      * @return JsonResponse
      */
-    public function getAllLastUpdatedBefore( int $threshold ) : JsonResponse {
-        $routers = D2EM::getRepository( RouterEntity::class )->findAll();
+    public function getAllLastUpdatedBefore( int $threshold ): JsonResponse
+    {
         $result = [];
-
-        /** @var RouterEntity $rt */
-        foreach( $routers as $rt ) {
-            if( $rt->getLastUpdated() && $rt->lastUpdatedGreaterThanSeconds( $threshold ) ) {
-                $result[ $rt->getHandle() ] = $this->getLastUpdatedArray( $rt );
+        foreach( Router::all() as $r ) {
+            if( $r->updated_at && $r->lastUpdatedGreaterThanSeconds( $threshold ) ) {
+                $result[ $r->handle ] = $this->lastUpdatedArray( $r );
             }
         }
 
@@ -170,13 +163,16 @@ class RouterController extends Controller
 
     /**
      * Format the router's last updated datetime as an array
-     * @param RouterEntity $r
+     *
+     * @param Router $r
+     *
      * @return array
      */
-    private function getLastUpdatedArray( RouterEntity $rt ) {
+    private function lastUpdatedArray( Router $r ): array
+    {
         return [
-            'last_updated'      => $rt->getLastUpdated() ? $rt->getLastUpdatedCarbon()->toIso8601String() : null,
-            'last_updated_unix' => $rt->getLastUpdated() ? $rt->getLastUpdatedCarbon()->timestamp : null,
+            'last_updated'      => $r->updated_at ? Carbon::instance( $r->updated_at )->toIso8601String() : null,
+            'last_updated_unix' => $r->updated_at ? Carbon::instance( $r->updated_at )->timestamp : null,
         ];
     }
 }

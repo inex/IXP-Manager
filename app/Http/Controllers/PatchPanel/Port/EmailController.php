@@ -22,12 +22,11 @@ namespace IXP\Http\Controllers\PatchPanel\Port;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use D2EM, Former, Mail, Redirect;
 
-use Entities\{
-    PatchPanelPort              as PatchPanelPortEntity,
-    PatchPanelPortFile          as PatchPanelPortFileEntity,
-};
+use Barryvdh\DomPDF\PDF;
+use Former, Mail, Redirect;
+
+use IXP\Models\PatchPanelPort;
 
 use Illuminate\Http\{
     RedirectResponse,
@@ -36,7 +35,6 @@ use Illuminate\Http\{
 use Illuminate\View\View;
 
 use IXP\Exceptions\Mailable as MailableException;
-use IXP\Http\Controllers\Controller;
 
 use IXP\Http\Requests\{
     EmailPatchPanelPort as EmailPatchPanelPortRequest,
@@ -49,8 +47,6 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-use Repositories\PatchPanelPort as PatchPanelPortRepository;
-
 /**
  * Email Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
@@ -59,26 +55,96 @@ use Repositories\PatchPanelPort as PatchPanelPortRepository;
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class EmailController extends Controller
+class EmailController extends Common
 {
+    /**
+     * Display and fill the form to send an email to the customer
+     *
+     * @param  PatchPanelPort   $ppp    patch panel port
+     * @param  int              $type   Email type to send
+     * @return  view
+     */
+    public function email( PatchPanelPort $ppp, int $type ): View
+    {
+        $mailable = $this->setupEmailRoutes( $ppp, $type );
+
+        return view( 'patch-panel-port/email-form' )->with([
+            'ppp'                           => $ppp,
+            'emailType'                     => $type,
+            'body'                          => $mailable->getBody()
+        ]);
+    }
+
+    /**
+     * Send an email to the customer (connected, ceased, info, loa PDF)
+     *
+     * @param EmailPatchPanelPortRequest    $r
+     * @param PatchPanelPort                $ppp   patch panel port id
+     * @param int                           $type Email type to send
+     *
+     * @return RedirectResponse|View
+     */
+    public function send( EmailPatchPanelPortRequest $r, PatchPanelPort $ppp, int $type )
+    {
+        $mailable = $this->setupEmailRoutes( $ppp, $type );
+
+        $mailable->prepareFromRequest( $r );
+        $mailable->prepareBody( $r );
+
+        try {
+            $mailable->checkIfSendable();
+        } catch( MailableException $e ) {
+            AlertContainer::push( $e->getMessage(), Alert::DANGER );
+
+            return view( 'patch-panel-port/email-form' )->with([
+                'ppp'                           => $ppp,
+                'emailType'                     => $type,
+                'mailable'                      => $mailable
+            ]);
+        }
+
+        if( $type === PatchPanelPort::EMAIL_LOA || $r->loa ) {
+            /** @var PDF $pdf */
+            [ $pdf, $pdfname ] = $this->createLoAPDF( $ppp );
+            $mailable->attachData( $pdf->output(), $pdfname, [
+                'mime'    => 'application/pdf'
+            ]);
+        }
+
+        // should we also attach public files?
+        if( in_array( $type, [ PatchPanelPort::EMAIL_CEASE, PatchPanelPort::EMAIL_INFO ], true ) ) {
+            foreach( $ppp->patchPanelPortFilesPublic as $file ) {
+                $mailable->attach( storage_path() . '/files/' . $file->path(), [
+                    'as'            => $file->name,
+                    'mime'          => $file->type
+                ]);
+            }
+        }
+
+        Mail::send( $mailable );
+
+        AlertContainer::push( "Email sent.", Alert::SUCCESS );
+
+        return Redirect::to( route( 'patch-panel-port@list-for-patch-panel', [ "pp" => $ppp->patch_panel_id ] ) );
+    }
 
     /**
      * Setup / validation for composing and sending emails
      *
-     * @param  int $type Email type to send
-     * @param  Email $mailable
+     * @param PatchPanelPort    $ppp
+     * @param int               $type Email type to send
+     * @param Email|null        $mailable
+     *
      * @return  Email
      */
-    private function setupEmailRoutes( int $type, Email $mailable = null ): Email
+    private function setupEmailRoutes( PatchPanelPort $ppp, int $type, Email $mailable = null ): Email
     {
-        /** @var PatchPanelPortRepository $pppRepository */
-        $pppRepository = D2EM::getRepository( PatchPanelPortEntity::class );
-        if( !( $emailClass = $pppRepository->resolveEmailClass( $type ) ) ) {
+        if( !array_key_exists( $type, PatchPanelPort::$EMAIL_CLASSES ) ) {
             abort(404, 'Email type not found');
         }
 
         if( !$mailable ) {
-            $mailable = new $emailClass($this->getPPP());
+            $mailable = new PatchPanelPort::$EMAIL_CLASSES[ $type ]( $ppp );
         }
 
         Former::populate([
@@ -89,77 +155,4 @@ class EmailController extends Controller
 
         return $mailable;
     }
-
-    /**
-     * Display and fill the form to send an email to the customer
-     *
-     * @param  int $id patch panel port id
-     * @param  int $type Email type to send
-     * @return  view
-     */
-    public function email( int $id, int $type ): View
-    {
-        $mailable = $this->setupEmailRoutes( $type );
-
-        return view( 'patch-panel-port/email-form' )->with([
-            'ppp'                           => $this->getPPP($id),
-            'emailType'                     => $type,
-            'body'                          => $mailable->getBody()
-        ]);
-    }
-
-    /**
-     * Send an email to the customer (connected, ceased, info, loa PDF)
-     *
-     * @param EmailPatchPanelPortRequest $request
-     * @param int $id   patch panel port id
-     * @param int  $type Email type to send
-     *
-     * @return RedirectResponse|View
-     */
-    public function sendEmail( EmailPatchPanelPortRequest $request, int $id, int $type )
-    {
-        $mailable = $this->setupEmailRoutes( $type );
-
-        $mailable->prepareFromRequest( $request );
-        $mailable->prepareBody( $request );
-
-        try {
-            $mailable->checkIfSendable();
-        } catch( MailableException $e ) {
-            AlertContainer::push( $e->getMessage(), Alert::DANGER );
-
-            return view( 'patch-panel-port/email-form' )->with([
-                'ppp'                           => $this->getPPP($id),
-                'emailType'                     => $type,
-                'mailable'                      => $mailable
-            ]);
-        }
-
-        if( $type == PatchPanelPortEntity::EMAIL_LOA || $request->input( 'loa' ) ) {
-            /** @var \Barryvdh\DomPDF\PDF $pdf */
-            [ $pdf, $pdfname ] = $this->createLoAPDF( $this->getPPP() );
-            $mailable->attachData( $pdf->output(), $pdfname, [
-                'mime'    => 'application/pdf'
-            ]);
-        }
-
-        // should we also attach public files?
-        if( in_array( $type, [ PatchPanelPortEntity::EMAIL_CEASE, PatchPanelPortEntity::EMAIL_INFO ] ) ) {
-            foreach( $this->getPPP()->getPatchPanelPortPublicFiles() as $pppf ) {
-                /** @var PatchPanelPortFileEntity $pppf */
-                $mailable->attach( storage_path() . '/files/' . $pppf->getPath(), [
-                    'as'            => $pppf->getName(),
-                    'mime'          => $pppf->getType()
-                ]);
-            }
-        }
-
-        Mail::send( $mailable );
-
-        AlertContainer::push( "Email sent.", Alert::SUCCESS );
-
-        return Redirect::to( route( 'patch-panel-port@list-for-patch-panel', [ "pp" => $this->getPPP()->getPatchPanel()->getId() ] ) );
-    }
-
 }

@@ -7,26 +7,26 @@ You have a cross connect to INEX which our records indicate is no longer require
 Please contact the co-location facility and request that they cease the following cross connect:
 
 ```
-Facility:        {{ $ppp->getPatchPanel()->getCabinet()->getLocation()->getName() }}
-Rack:            {{ $ppp->getPatchPanel()->getCabinet()->getCololocation() }}
-Colo Reference:  {{ $ppp->getColoCircuitRef() }}
-Patch panel:     {{ $ppp->getPatchPanel()->getName() }}
-Type:            {{ $ppp->getPatchPanel()->resolveCableType() }}
-Port:            {{ $ppp->getName() }} @if( $ppp->hasSlavePort() ) *(duplex port)* @endif
+Facility:        {{ $ppp->patchPanel->cabinet->location->name }}
+Rack:            {{ $ppp->patchPanel->cabinet->colocation }}
+Colo Reference:  {{ $ppp->colo_circuit_ref }}
+Patch panel:     {{ $ppp->patchPanel->name }}
+Type:            {{ $ppp->patchPanel->cableType() }}
+Port:            {{ $ppp->name() }} @if( $ppp->duplexSlavePorts()->count() ) *(duplex port)* @endif
 
-@if( $ppp->getConnectedAt() )
-Connected on:    {{  $ppp->getConnectedAt()->format('Y-m-d') }}
+@if( $ppp->connected_at )
+Connected on:    {{  $ppp->connected_at }}
 @endif
 ```
 
-@if( $ppp->hasPublicFiles() )
+@if( $ppp->patchPanelPortFilesPublic()->count() )
 We have attached documentation which we have on file regarding this connection which may help process this request.
 @endif
 
-@if( strlen( trim( $ppp->getNotes() ) ) )
+@if( strlen( trim( $ppp->notes ) ) )
 We have also recorded the following notes:
 
-@foreach( explode( "\n", $ppp->getNotes() ) as $l )
+@foreach( explode( "\n", $ppp->notes ) as $l )
 > {{$l}}
 @endforeach
 

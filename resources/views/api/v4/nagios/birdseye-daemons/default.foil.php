@@ -16,7 +16,7 @@
 # Limited to VLAN ID: <?= $t->vlanid ?>
 <?php endif; ?>
 #
-# Generated: <?= date( 'Y-m-d H:i:s' ) . "\n" ?>
+# Generated: <?= now()->format( 'Y-m-d H:i:s' ) . "\n" ?>
 #
 #
 # The following objects are used by inheritance here and need to be defined by your own configuration:
@@ -58,14 +58,14 @@
 <?php
     $hosts = [];
     $hg_name  = 'bird-daemons'          . ( $t->vlanid ? ('-vlanid-' . $t->vlanid) : '' );
+    /** @var  $d \IXP\Models\Router */
+foreach( $t->routers as $d ):
 
-    foreach( $t->routers as $n => $d ):
-
-    if( !$d->api() ) {
+    if( !$d->api ) {
         continue;
     }
 
-    $hosts[] = "bird-{$d->getHandle}";
+    $hosts[] = "bird-{$d->handle}";
 ?>
 
 define host     {

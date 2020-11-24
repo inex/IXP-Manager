@@ -1,12 +1,16 @@
 <?php
     /** @var object $t */
-    $this->layout( 'layouts/ixpv4' )
+
+use IXP\Models\PatchPanelPort;
+
+$this->layout( 'layouts/ixpv4' );
+    $ppp = $t->ppp; /** @var $ppp PatchPanelPort */
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
     Patch Panel Port
     /
-    Email : <?= $t->ee( $t->ppp->getName() )?>
+    Email : <?= $t->ee( $ppp->name() )?>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -14,7 +18,7 @@
         <?= $t->alerts() ?>
 
         <?= Former::open()->method( 'POST' )
-            ->action( route ( 'patch-panel-port@send-email' , [ 'id' =>  $t->ppp->getId() , 'type' => $t->emailType  ] ) )
+            ->action( route ( 'patch-panel-port-email@send' , [ 'ppp' =>  $ppp->id , 'type' => $t->emailType  ] ) )
             ->actionButtonsCustomClass( "grey-box");
         ?>
         <?= Former::text( 'email_to' )
@@ -33,10 +37,10 @@
             ->label( 'Subject' );
         ?>
 
-        <?php if( $t->emailType != \Entities\PatchPanelPort::EMAIL_LOA ): ?>
+        <?php if( $t->emailType !== PatchPanelPort::EMAIL_LOA ): ?>
             <?= Former::checkbox( 'loa' )
                 ->label( 'Attach LoA as a PDF' )
-                ->check( $t->emailType == 1 /* connect */ || $t->emailType == 4 /* send loa */ )
+                ->check( $t->emailType === PatchPanelPort::EMAIL_CONNECT || $t->emailType === PatchPanelPort::EMAIL_LOA )
                 ->value( 1 )
                 ->inline()
             ?>
@@ -68,10 +72,9 @@
             </div>
         </div>
 
-
         <?= Former::actions(
             Former::primary_submit( 'Send Email' ),
-            Former::secondary_link( 'Cancel' )->href( route ( 'patch-panel-port@list-for-patch-panel' , [ 'pp' => $t->ppp->getPatchPanel()->getId() ] ) )
+            Former::secondary_link( 'Cancel' )->href( route ( 'patch-panel-port@list-for-patch-panel' , [ 'pp' => $ppp->patch_panel_id ] ) )
         );
         ?>
 
@@ -80,38 +83,36 @@
         ?>
 
         <?= Former::hidden( 'patch_panel_port_id' )
-            ->value( $t->ppp->getId() )
+            ->value( $ppp->id )
         ?>
         <?= Former::close() ?>
 
     </div>
-
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
 
-<script>
+    <script>
 
-    /**
-     * allow the value to be display as a tag
-     */
-    function allowValue(event){
-        event.cancel = checkEmail(event.item);
-    }
-
-    /**
-     * check if the value is an email
-     */
-    function checkEmail(text){
-        let filter = /^[\w-.+]+@[a-zA-Z0-9.-]+.[a-zA-z0-9]{2,4}$/;
-
-        if (!filter.test(text)) {
-           return true;
-        } else {
-            return false;
+        /**
+         * allow the value to be display as a tag
+         */
+        function allowValue( event ){
+            event.cancel = checkEmail( event.item );
         }
-    }
-</script>
+
+        /**
+         * check if the value is an email
+         */
+        function checkEmail(text){
+            let filter = /^[\w-.+]+@[a-zA-Z0-9.-]+.[a-zA-z0-9]{2,4}$/;
+
+            if (!filter.test(text)) {
+               return true;
+            } else {
+                return false;
+            }
+        }
+    </script>
 
 <?php $this->append() ?>

@@ -304,7 +304,7 @@ class StatisticsController extends Controller
                 $r->protocol = Graph::PROTOCOL_IPV4;
             }
 
-            $targets = VlanInterfaceAggregator::getForVlan( $vlan, $r->protocol );
+            $targets = VlanInterfaceAggregator::forVlan( $vlan, $r->protocol );
         } else {
             $targets = [];
         }
@@ -540,7 +540,7 @@ class StatisticsController extends Controller
         }
         // Now find the possible other VLAN interfaces that this customer could exchange traffic with
         // (as well as removing the source vli)
-        $dstVlis = VlanInterfaceAggregator::getForVlan( $srcVli->vlan );
+        $dstVlis = VlanInterfaceAggregator::forVlan( $srcVli->vlan );
         unset( $dstVlis[ $srcVli->id ] );
 
         if( !$dstVlis->count() ) {

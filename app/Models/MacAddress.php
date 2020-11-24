@@ -64,4 +64,15 @@ class MacAddress extends Model
     {
         return $this->belongsTo(VirtualInterface::class, 'virtualinterfaceid');
     }
+
+
+    /**
+     * Format the mac address with colons
+     *
+     * @return string
+     */
+    public function macColonsFormatted(): string
+    {
+        return strtolower( implode( ':', str_split( $this->mac, 2 ) ) );
+    }
 }

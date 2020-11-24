@@ -1,6 +1,7 @@
 <?php
 
-namespace IXP\Http\Controllers\Api\V4;
+namespace IXP\Http\Controllers\PatchPanel\Port;
+
 /*
  * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -21,44 +22,35 @@ namespace IXP\Http\Controllers\Api\V4;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
-
 use IXP\Models\{
-    Aggregators\PatchPanelPortAggregator,
-    PatchPanel
+    PatchPanelPort,
 };
 
-use Illuminate\Http\{
-    JsonResponse,
-    Request
-};
 
+use IXP\Http\Controllers\Controller;
 
 /**
- * PatchPanelController
- *
- * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * Common Functions Patch panel port Controllers
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   APIv4
- * @package    IXP\Http\Controllers\Api\V4
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   Interfaces
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class PatchPanelController extends Controller
+abstract class Common extends Controller
 {
     /**
-     * Get the patch panel ports available for a patch panel
+     * Generate the LoA PDF
      *
-     * @param   Request         $r      instance of the current HTTP request
-     * @param   PatchPanel      $pp     the patch panel
+     * @param PatchPanelPort $ppp
      *
-     * @return  JsonResponse
+     * @return array To be unpacked with list( $pdf, $pdfname )
      */
-    public function freePort( Request $r, PatchPanel $pp ): JsonResponse
+    protected function createLoaPDF( PatchPanelPort $ppp ): array
     {
-        return response()->json( [
-            'ports' => PatchPanelPortAggregator::getAvailablePorts( $pp->id, [ $r->pppid ] )
-        ]);
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadView( 'patch-panel-port/loa', [ 'ppp' => $ppp ] );
+        $pdfName = sprintf( "LoA-%s-%s.pdf", $ppp->circuitReference(), now()->format( 'Y-m-d' ) );
+        return [ $pdf, $pdfName ];
     }
 }

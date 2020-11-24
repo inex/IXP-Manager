@@ -108,7 +108,7 @@ class VlanInterfaceAggregator extends VlanInterface
      * @return Collection
      *
      */
-    public static function getForVlan( Vlan $vlan, $protocol = false )
+    public static function forVlan( Vlan $vlan, $protocol = false )
     {
         return self::select( [ 'vli.*' ] )
             ->from( 'vlaninterface AS vli' )
@@ -177,7 +177,7 @@ class VlanInterfaceAggregator extends VlanInterface
      *
      * @throws
      */
-    public static function getForProto( Vlan $vlan, int $proto, int $pistatus = PhysicalInterface::STATUS_CONNECTED ) : array
+    public static function forProto( Vlan $vlan, int $proto, int $pistatus = PhysicalInterface::STATUS_CONNECTED ) : array
     {
         if( !in_array( $proto, [ 4, 6 ] ) ){
             $proto = 4;
@@ -323,7 +323,7 @@ class VlanInterfaceAggregator extends VlanInterface
      */
     public static function sanitiseVlanInterfaces( Vlan $vlan, int $protocol = 4, int $target = Router::TYPE_ROUTE_SERVER, bool $quarantine = false ): array
     {
-        $ints = self::getForProto( $vlan, $protocol, $quarantine  ? PhysicalInterface::STATUS_QUARANTINE : PhysicalInterface::STATUS_CONNECTED );
+        $ints = self::forProto( $vlan, $protocol, $quarantine  ? PhysicalInterface::STATUS_QUARANTINE : PhysicalInterface::STATUS_CONNECTED );
 
         $newints = [];
 

@@ -193,7 +193,7 @@ class PatchPanelPortHistoryFile extends Model
      *
      * @return string
      */
-    public function getPath(): string
+    public function path(): string
     {
         return PatchPanelPortFile::UPLOAD_PATH . '/' . $this->storage_location[ 0 ] . '/'
             . $this->storage_location[ 1 ] . '/' . $this->storage_location;

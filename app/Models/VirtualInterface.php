@@ -72,6 +72,8 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface connected()
  * @property-read Collection|\IXP\Models\MacAddress[] $macAddresses
  * @property-read int|null $mac_addresses_count
+ * @property-read Collection|\IXP\Models\SflowReceiver[] $sflowReceivers
+ * @property-read int|null $sflow_receivers_count
  */
 class VirtualInterface extends Model
 {

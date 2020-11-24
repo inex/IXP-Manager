@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,8 +20,6 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | API Routes - External
@@ -34,17 +32,15 @@ use Illuminate\Http\Request;
 |
 |
 */
-
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // DNS ARPA Entries
 //
-// Returns plain text from the given template (api/v4/dns/[template]):
-Route::get('dns/arpa/{vlanid}/{protocol}/{template}',  'DnsController@arpaTemplated');
-// Returns JSON object:
-Route::get('dns/arpa/{vlanid}/{protocol}',             'DnsController@arpa');
-
+Route::group( [  'prefix' => 'dns/arpa' ], function() {
+    // Returns plain text from the given template (api/v4/dns/[template]):
+    Route::get('{vlan}/{protocol}/{template}',  'DnsController@arpaTemplated');
+    // Returns JSON object:
+    Route::get('{vlan}/{protocol}',             'DnsController@arpa');
+});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Users
@@ -62,7 +58,6 @@ Route::post('user/formatted',                   'UserController@formatted');
 Route::post('user/formatted/{priv}',            'UserController@formatted');
 Route::post('user/formatted/{priv}/{template}', 'UserController@formatted');
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mailing Lists
 //
@@ -77,28 +72,30 @@ Route::group( [  'prefix' => 'mailing-list' ], function() {
     Route::post( 'init/json/{listname}', 'MailingListController@init' );
 });
 
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Routers
 //
-// Generate router configuration:
-Route::get('router/gen_config/{handle}',                        'RouterController@genConfig' );
-Route::get('router/gen-config/{handle}',                        'RouterController@genConfig' )
-     ->name( 'apiv4-router-gen-config' );
+Route::group( [  'prefix' => 'router' ], function() {
+    // Generate router configuration:
+    Route::get('gen_config/{handle}',    'RouterController@genConfig'    );
+    Route::get('gen-config/{handle}',    'RouterController@genConfig'    )->name( 'apiv4-router-gen-config' );
 
-// Get / set a routers last updated time:
-Route::post('router/updated/{handle}',                          'RouterController@setLastUpdated' );
-Route::get('router/updated/{handle}',                           'RouterController@getLastUpdated' );
-Route::get('router/updated',                                    'RouterController@getAllLastUpdated' );
-Route::get('router/updated-before/{threshold}',                 'RouterController@getAllLastUpdatedBefore' );
+    // Get / set a routers last updated time:
+    Route::post('updated/{handle}',                          'RouterController@setLastUpdated'          );
+    Route::get('updated/{handle}',                           'RouterController@getLastUpdated'          );
+    Route::get('updated',                                    'RouterController@getAllLastUpdated'       );
+    Route::get('updated-before/{threshold}',                 'RouterController@getAllLastUpdatedBefore' );
+});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Sflow Receiver
 //
-Route::get('sflow-receivers/pretag.map',                        'SflowReceiverController@pretagMap');
-Route::get('sflow-receivers/receivers.lst',                     'SflowReceiverController@receiversLst');
-Route::get('sflow-receivers.{format}',               		'SflowReceiverController@getReceiverList');
+Route::group( [  'prefix' => 'sflow-receivers' ], function() {
+    Route::get('pretag.map',        'SflowReceiverController@pretagMap'         );
+    Route::get('receivers.lst',     'SflowReceiverController@receiversLst'      );
+});
+
+Route::get('sflow-receivers.{format}',         'SflowReceiverController@getReceiverList'   );
 
 
 
@@ -113,29 +110,25 @@ Route::get( 'sflow-db-mapper/configured-macs',                  'VlanInterfaceCo
 
 
 Route::group( [ 'prefix' => 'nagios' ], function() {
-    Route::get(  'customers/{vlanid}/{protocol}',            'NagiosController@customers' );
-    Route::post( 'customers/{vlanid}/{protocol}',            'NagiosController@customers' );
-    Route::get(  'customers/{vlanid}/{protocol}/{template}', 'NagiosController@customers' );
-    Route::post( 'customers/{vlanid}/{protocol}/{template}', 'NagiosController@customers' );
+    Route::get(  'customers/{vlan}/{protocol}',            'NagiosController@customers' );
+    Route::post( 'customers/{vlan}/{protocol}',            'NagiosController@customers' );
+    Route::get(  'customers/{vlan}/{protocol}/{template}', 'NagiosController@customers' );
+    Route::post( 'customers/{vlan}/{protocol}/{template}', 'NagiosController@customers' );
 
-    Route::get(  'switches/{infraid}',                      'NagiosController@switches' );
-    Route::post( 'switches/{infraid}',                      'NagiosController@switches' );
-    Route::get(  'switches/{infraid}/{template}',           'NagiosController@switches' );
-    Route::post( 'switches/{infraid}/{template}',           'NagiosController@switches' );
+    Route::get(  'switches/{infra}',                        'NagiosController@switches' );
+    Route::post( 'switches/{infra}',                        'NagiosController@switches' );
+    Route::get(  'switches/{infra}/{template}',             'NagiosController@switches' );
+    Route::post( 'switches/{infra}/{template}',             'NagiosController@switches' );
 
     Route::get(  'birdseye-daemons',                        'NagiosController@birdseyeDaemons');
     Route::post( 'birdseye-daemons',                        'NagiosController@birdseyeDaemons');
     Route::get(  'birdseye-daemons/{template}',             'NagiosController@birdseyeDaemons');
     Route::post( 'birdseye-daemons/{template}',             'NagiosController@birdseyeDaemons');
-    Route::get(  'birdseye-daemons/{template}/{vlanid}',    'NagiosController@birdseyeDaemons');
-    Route::post( 'birdseye-daemons/{template}/{vlanid}',    'NagiosController@birdseyeDaemons');
+    Route::get(  'birdseye-daemons/{template}/{vlan}',      'NagiosController@birdseyeDaemons');
+    Route::post( 'birdseye-daemons/{template}/{vlan}',      'NagiosController@birdseyeDaemons');
 
-    Route::get(  'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}',            'NagiosController@birdseyeBgpSessions');
-    Route::post( 'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}',            'NagiosController@birdseyeBgpSessions');
-    Route::get(  'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}/{template}', 'NagiosController@birdseyeBgpSessions');
-    Route::post( 'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}/{template}', 'NagiosController@birdseyeBgpSessions');
+    Route::get(  'birdseye-bgp-sessions/{vlan}/{protocol}/{type}',            'NagiosController@birdseyeBgpSessions');
+    Route::post( 'birdseye-bgp-sessions/{vlan}/{protocol}/{type}',            'NagiosController@birdseyeBgpSessions');
+    Route::get(  'birdseye-bgp-sessions/{vlan}/{protocol}/{type}/{template}', 'NagiosController@birdseyeBgpSessions');
+    Route::post( 'birdseye-bgp-sessions/{vlan}/{protocol}/{type}/{template}', 'NagiosController@birdseyeBgpSessions');
 });
-
-
-
-

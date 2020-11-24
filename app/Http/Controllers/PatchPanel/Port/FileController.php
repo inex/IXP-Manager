@@ -79,11 +79,11 @@ class FileController extends Controller
      *
      * @return  RedirectResponse|JsonResponse
      *
-     * @throws \Exception
+     * @throws
      */
     public function delete( Request $r, PatchPanelPortFile $file )
     {
-        $path = 'files/' . $file->getPath();
+        $path = 'files/' . $file->path();
 
         if( Storage::exists( $path ) && Storage::delete( $path ) ) {
             $file->delete();
@@ -92,7 +92,7 @@ class FileController extends Controller
             $message = 'Patch Panel Port File could not be deleted.'; $success = false;
         }
 
-        if( (bool)$r->json ) {
+        if( (bool)$r->jsonResponse ) {
             return response()->json( ['success'     => true,    'message' => 'File deleted' ] );
         }
 
@@ -111,7 +111,7 @@ class FileController extends Controller
      */
     public function deleteHistory( PatchPanelPortHistoryFile $file ): RedirectResponse
     {
-        $path = 'files/' . $file->getPath();
+        $path = 'files/' . $file->path();
 
         if( Storage::exists( $path ) && Storage::delete( $path ) ) {
             $file->delete();
@@ -183,6 +183,6 @@ class FileController extends Controller
             }
         }
 
-        return response()->file( storage_path() . '/files/' . $file->getPath(), [ 'Content-Type' => $file->type ] );
+        return response()->file( storage_path() . '/files/' . $file->path(), [ 'Content-Type' => $file->type ] );
     }
 }

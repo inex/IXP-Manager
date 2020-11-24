@@ -109,5 +109,4 @@ class Layer2Address extends Model
                 return $this->mac;
         }
     }
-
 }
