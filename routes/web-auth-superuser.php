@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -26,16 +26,25 @@
 | Web Routes - These Required an Auth'd User
 |--------------------------------------------------------------------------
 */
-
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// IP Address
+///
 Route::group( [ 'prefix' => 'ip-address' ], function() {
     Route::get(     'list/{protocol}/{vlanid?}',                'IpAddressController@list'              )->name( 'ip-address@list'                 );
     Route::get(     'delete-by-network/vlan/{vlan}',            'IpAddressController@deleteByNetwork'   )->name( 'ip-address@delete-by-network'    );
-    Route::post(  'delete-by-network/vlan/{vlan}',            'IpAddressController@deleteByNetwork'   );
+    Route::post(    'delete-by-network/vlan/{vlan}',            'IpAddressController@deleteByNetwork'   );
     Route::get(     'add/{protocol}',                           'IpAddressController@add'               )->name( 'ip-address@add'                  );
     Route::post(    'store',                                    'IpAddressController@store'             )->name( 'ip-address@store'                );
     Route::delete(  'delete/{id}',                              'IpAddressController@delete'            )->name( 'ip-address@delete'               );
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Patch Panel
+///
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], function() {
     Route::get(     'list',                             'PatchPanelController@index'            )->name( 'patch-panel@list'             );
     Route::get(     'list/inactive',                    'PatchPanelController@indexInactive'    )->name( 'patch-panel@list-inactive'    );
@@ -47,6 +56,11 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], functi
     Route::put(    'update/{pp}',                      'PatchPanelController@update'           )->name( 'patch-panel@update'           );
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Patch Panel Port
+///
 Route::group( [ 'namespace' => 'PatchPanel\Port', 'prefix' => 'patch-panel-port' ], function() {
     Route::get(     'list',                             'PortController@index'                )->name('patch-panel-port@list'                 );
     Route::post(    'advanced-list',                    'PortController@advancedIndex'        )->name('patch-panel-port@advanced-list'        );
@@ -75,7 +89,11 @@ Route::group( [ 'namespace' => 'PatchPanel\Port', 'prefix' => 'patch-panel-port'
     });
 });
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Router
+///
 Route::group( [ 'prefix' => 'router' ], function() {
     Route::get(     'list',             'RouterController@list'     )->name( 'router@list'   );
     Route::get(     'status',           'RouterController@status'   )->name( 'router@status' );
@@ -88,30 +106,35 @@ Route::group( [ 'prefix' => 'router' ], function() {
     Route::put(    'update/{router}',   'RouterController@store'    )->name( 'router@update'  );
 });
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Statistics
+///
 Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'league-table', 'StatisticsController@leagueTable' );
     Route::post( 'league-table', 'StatisticsController@leagueTable' )->name( 'statistics@league-table' );
-
-    Route::get(  'utilisation', 'StatisticsController@utilisation' )->name( 'statistics@utilisation' );
-    Route::post( 'utilisation', 'StatisticsController@utilisation' )->name( 'statistics@utilisation:post' );
+    Route::get(  'utilisation',  'StatisticsController@utilisation' )->name( 'statistics@utilisation' );
+    Route::post( 'utilisation',  'StatisticsController@utilisation' )->name( 'statistics@utilisation:post' );
 });
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Interfaces
+///
 Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], function() {
     Route::group( [  'prefix' => 'virtual' ], function() {
         Route::get(     'list',                     'VirtualInterfaceController@list'                   )->name(    'virtual-interface@list'                    );
         Route::get(     'edit/{vi}',                'VirtualInterfaceController@edit'                   )->name(    'virtual-interface@edit'                      );
         Route::get(     'create',                   'VirtualInterfaceController@create'                 )->name(    'virtual-interface@create'                  );
         Route::get(     'add/cust/{cust}',          'VirtualInterfaceController@createForCust'          )->name(    'interfaces/virtual/add/custid'             );
-
         Route::get(     'wizard-create',            'VirtualInterfaceController@wizard'                 )->name(   'virtual-interface@wizard'                   );
         Route::get(     'wizard-create/cust/{cust}','VirtualInterfaceController@createWizardForCust'    )->name(   'virtual-interface@create-wizard-for-cust'   );
         Route::post(    'store',                    'VirtualInterfaceController@store'                  )->name(   'virtual-interface@store'                    );
         Route::put(     'update/{vi}',              'VirtualInterfaceController@update'                 )->name(   'virtual-interface@update'                  );
         Route::post(    'wizard-store',             'VirtualInterfaceController@storeWizard'            )->name(    'virtual-interface@wizard-store'            );
         Route::delete(  'delete/{vi}',              'VirtualInterfaceController@delete'                 )->name(    'virtual-interface@delete'                  );
-        
     });
 
     Route::group( [  'prefix' => 'physical' ], function() {
@@ -121,7 +144,6 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get('edit/{pi}',             'PhysicalInterfaceController@edit'          )->name( 'physical-interface@edit'                          );
         Route::get('edit/{pi}/cb/{cb}',     'PhysicalInterfaceController@editFromCb'    )->name( 'physical-interface@edit-from-core-bundle'         );
         Route::get('edit/{pi}/vintid/{vi}', 'PhysicalInterfaceController@edit'          )->name( 'physical-interface@edit-from-virtual-interface'   );
-
         Route::post(    'store',            'PhysicalInterfaceController@store'         )->name( 'physical-interface@store'                         );
         Route::put(     'update/{pi}',      'PhysicalInterfaceController@update'        )->name( 'physical-interface@update'                        );
         Route::delete(  'delete/{pi}',      'PhysicalInterfaceController@delete'        )->name( 'physical-interface@delete'                        );
@@ -165,48 +187,70 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
     });
 });
 
-Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function() {
-    Route::get(     'list',                             'CustomerController@list'                       )->name( 'customer@list');
-    Route::get(     'add',                              'CustomerController@edit'                       )->name( 'customer@add');
-    Route::get(     'edit/{id}',                        'CustomerController@edit'                       )->name( 'customer@edit');
-    Route::get(     'billing-registration/{id}',        'CustomerController@editBillingAndRegDetails'   )->name( 'customer@billing-registration');
-    Route::get(     'welcome-email/{id}',               'CustomerController@welcomeEmail'               )->name( "customer@welcome-email" );
-    Route::get(     'delete-recap/{id}',                'CustomerController@deleteRecap'                )->name( "customer@delete-recap" );
-    Route::get(     'overview/{id}/{tab?}',             'CustomerController@overview'                   )->name( "customer@overview" );
-    Route::get(     '{id}/tags',                       'CustomerController@tags'                        )->name( "customer@tags" );
-    Route::post(    'store',                            'CustomerController@store'                      )->name( 'customer@store');
-    Route::post(    'store-billing-and-reg-details',    'CustomerController@storeBillingAndRegDetails'  )->name( 'customer@store-billing-and-reg-details');
-    Route::post(    'send-welcome-email',               'CustomerController@sendWelcomeEmail'           )->name( 'customer@send-welcome-email');
-    Route::post(    'delete',                           'CustomerController@delete'                     )->name( 'customer@delete');
-    Route::post(    'store-tags',                       'CustomerController@storeTags'                  )->name( 'customer@store-tags');
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Customer
+///
+Route::group( [ 'namespace' => 'Customer'  ], function() {
+    Route::group( [ 'prefix' => 'customer' ], function() {
+        Route::get(     'list',                             'CustomerController@list'                       )->name( 'customer@list');
+        Route::get(     'add',                              'CustomerController@edit'                       )->name( 'customer@add');
+        Route::get(     'edit/{id}',                        'CustomerController@edit'                       )->name( 'customer@edit');
+        Route::get(     'billing-registration/{id}',        'CustomerController@editBillingAndRegDetails'   )->name( 'customer@billing-registration');
+        Route::get(     'welcome-email/{id}',               'CustomerController@welcomeEmail'               )->name( "customer@welcome-email" );
+        Route::get(     'delete-recap/{id}',                'CustomerController@deleteRecap'                )->name( "customer@delete-recap" );
+        Route::get(     'overview/{id}/{tab?}',             'CustomerController@overview'                   )->name( "customer@overview" );
+        Route::get(     '{id}/tags',                       'CustomerController@tags'                        )->name( "customer@tags" );
+        Route::post(    'store',                            'CustomerController@store'                      )->name( 'customer@store');
+        Route::post(    'store-billing-and-reg-details',    'CustomerController@storeBillingAndRegDetails'  )->name( 'customer@store-billing-and-reg-details');
+        Route::post(    'send-welcome-email',               'CustomerController@sendWelcomeEmail'           )->name( 'customer@send-welcome-email');
+        Route::post(    'delete',                           'CustomerController@delete'                     )->name( 'customer@delete');
+        Route::post(    'store-tags',                       'CustomerController@storeTags'                  )->name( 'customer@store-tags');
+    });
+
+    if( !config('ixp_fe.frontend.disabled.logo' ) ) {
+        Route::group( [ 'prefix' => 'customer-logo' ], function() {
+            Route::get( 'logos', 'LogoController@logos' )->name( "logo@logos" );
+        } );
+    }
+
+    Route::group( [ 'prefix' => 'customer-note' ], function() {
+        Route::get(    'read-all',                          'CustomerNotesController@readAll'                )->name( 'customerNotes@readAll');
+        Route::get(    'unread-notes',                      'CustomerNotesController@unreadNotes'            )->name( "customerNotes@unreadNotes" );
+    });
 });
 
-if( !config('ixp_fe.frontend.disabled.logo' ) ) {
-    Route::group( [ 'namespace' => 'Customer', 'prefix' => 'customer-logo' ], function() {
-        Route::get( 'logos', 'LogoController@logos' )->name( "logo@logos" );
-    } );
-}
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// User
+///
+Route::group( [ 'namespace' => 'User' ], function() {
+    Route::group( [ 'prefix' => 'customer-to-user' ], function() {
+        Route::post('privs',     'CustomerToUserController@updatePrivs' )->name( "customer-to-user@privs" );
+    });
 
-Route::group( [ 'namespace' => 'Customer', 'prefix' => 'customer-note' ], function() {
-    Route::get(    'read-all',                          'CustomerNotesController@readAll'                )->name( 'customerNotes@readAll');
-    Route::get(    'unread-notes',                      'CustomerNotesController@unreadNotes'            )->name( "customerNotes@unreadNotes" );
+    if( config( 'google2fa.enabled' ) ) {
+        Route::group( [ 'prefix' => '2fa' ], function() {
+            Route::post('delete',   'User2FAController@delete'   )->name( "2fa@delete"    );
+        });
+    }
 });
 
-
-Route::group( [ 'namespace' => 'User', 'prefix' => 'customer-to-user' ], function() {
-    Route::post('privs',     'CustomerToUserController@updatePrivs' )->name( "customer-to-user@privs" );
-});
-
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Admin
+///
 Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Search
+///
 Route::get( 'search', 'SearchController@do' )->name( 'search' );
-
-
-if( config( 'google2fa.enabled' ) ) {
-    Route::group( [ 'namespace' => 'User', 'prefix' => '2fa' ], function() {
-        Route::post('delete',   'User2FAController@delete'   )->name( "2fa@delete"    );
-    });
-}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,18 +284,10 @@ if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ) {
 ///
 /// Utilities
 ///
-
-
-Route::get( 'phpinfo', function() { phpinfo(); })->name('phpinfo');
+Route::get( 'phpinfo', function() { phpinfo(); } )->name('phpinfo' );
 
 Route::group( [ 'prefix' => 'utils' ], function() {
-
     Route::get( 'phpinfo', function() {
         return view( 'utils/phpinfo' );
     })->name('utils/phpinfo');
-
 });
-
-
-
-

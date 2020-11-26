@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -29,28 +29,34 @@ use IXP\Utils\Whois;
 
 use Cache;
 
-class WhoisController extends Controller {
-
-
-
+/**
+ * WhoisController
+ *
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
+ * @category   APIv4
+ * @package    IXP\Http\Controllers\Api\V4\Provisioner
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class WhoisController extends Controller
+{
     /**
      * API call to do a Whois looking on an AS number
      *
-     * @param Request $r
-     * @param string $asn The AS number
+     * @param Request   $r
+     * @param string    $asn The AS number
+     *
      * @return Response
      */
-    public function asn( Request $r, string $asn ) {
-
-        $response = Cache::remember( 'api-v4-whois-asn-' . $asn, config('ixp_api.whois.cache_ttl'), function () use ($asn) {
-
+    public function asn( Request $r, string $asn ): Response
+    {
+        $response = Cache::remember( 'api-v4-whois-asn-' . $asn, config('ixp_api.whois.cache_ttl'), function () use ( $asn ) {
             $whois = new Whois( config( 'ixp_api.whois.asn.host' ), config( 'ixp_api.whois.asn.port' ) );
-
             $response = $whois->whois( 'AS' . (int)$asn );
 
             // nicer error message than PeeringDB's
-            if( $whois->host() === 'whois.peeringdb.com' && strpos( strtolower( $response ), "network matching query does not exist" ) !== false ) {
-
+            if( $whois->host() === 'whois.peeringdb.com' && stripos( $response, "network matching query does not exist" ) !== false ) {
                 // sigh, nothing in PeeringDB. Try Team Cymru (which is asn2 by default) to get at least some info.
                 $whois = new Whois( config( 'ixp_api.whois.asn2.host' ), config( 'ixp_api.whois.asn2.port' ) );
                 $response = $whois->whois( 'AS' . (int)$asn );
@@ -67,15 +73,14 @@ class WhoisController extends Controller {
     /**
      * API call to do a Whois looking on a prefix
      *
-     * @param Request $r
-     * @param string $prefix The IP address element of the prefix
-     * @param string $mask The mask length
+     * @param string    $prefix The IP address element of the prefix
+     * @param string    $mask   The mask length
+     *
      * @return Response
      */
-    public function prefix( Request $r, string $prefix, string $mask ) {
-
-        $response = Cache::remember( 'api-v4-whois-prefix-' . $prefix . '-' . $mask, config('ixp_api.whois.cache_ttl'), function () use ($prefix, $mask) {
-
+    public function prefix( string $prefix, string $mask ): Response
+    {
+        $response = Cache::remember( 'api-v4-whois-prefix-' . $prefix . '-' . $mask, config('ixp_api.whois.cache_ttl'), function () use ( $prefix, $mask ) {
             $whois = new Whois( config('ixp_api.whois.prefix.host'), config('ixp_api.whois.prefix.port') );
             return $whois->whois( $prefix .'/' . $mask );
         });

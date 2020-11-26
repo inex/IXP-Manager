@@ -24,6 +24,7 @@ namespace IXP\Http\Controllers\Api\V4;
  */
 
 use Auth;
+
 use Illuminate\Http\{
     JsonResponse,
     Request

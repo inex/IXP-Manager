@@ -25,6 +25,7 @@ namespace IXP\Models\Aggregators;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use IXP\Models\CoreBundle;
 use IXP\Models\Customer;
 use IXP\Models\Switcher;
 use IXP\Models\SwitchPort;
@@ -246,5 +247,60 @@ class SwitcherAggregator extends Switcher
         }
 
         return $ports;
+    }
+
+    /**
+     * @param string|null $net
+     * @param string $side
+     * @param bool $maskneeded
+     *
+     * @return string
+     */
+    public static function linkAddr( string $net, string $side, bool $maskneeded = true ): string
+    {
+        $ip   = explode("/", $net )[ 0 ];
+        $mask = explode("/", $net )[ 1 ];
+
+        $net = ip2long( $ip ) & ( 0xffffffff << ( 32 - $mask ) );
+        $firstip = (int)$mask === 31 ? $net : $net + 1;
+
+        $ip = strtolower( $side ) === 'a' ? long2ip( $firstip ) : long2ip($firstip + 1 );
+
+        if( $maskneeded ) {
+            $ip .= "/" . $mask;
+        }
+
+        return $ip;
+    }
+
+    /**
+     * Returns core bundle routing info for the specified switch ID
+     *
+     * @param Switcher      $switch     switch to query
+     *
+     * @return array
+     */
+    public static function coreBundleNeighbors( Switcher $switch ): array
+    {
+        return self::query()->selectRaw( 'cb.type, cb.ipv4_subnet as cbSubnet, 
+                cb.cost, cb.preference, cl.ipv4_subnet as clSubnet, sA.id as sAid, 
+                sB.id as sBid, sA.name as sAname , sB.name as sBname, sA.asn as sAasn , 
+                sB.asn as sBasn' )
+            ->from( 'corelinks AS cl' )
+            ->leftJoin( 'corebundles AS cb', 'cb.id', 'cl.core_bundle_id' )
+            ->leftJoin( 'coreinterfaces AS ciA', 'ciA.id', 'cl.core_interface_sidea_id' )
+            ->leftJoin( 'coreinterfaces AS ciB', 'ciB.id', 'cl.core_interface_sideb_id' )
+            ->leftJoin( 'physicalinterface AS piA', 'piA.id', 'ciA.physical_interface_id' )
+            ->leftJoin( 'physicalinterface AS piB', 'piB.id', 'ciB.physical_interface_id' )
+            ->leftJoin( 'switchport AS spA', 'spA.id', 'piA.switchportid' )
+            ->leftJoin( 'switchport AS spB', 'spB.id', 'piB.switchportid' )
+            ->leftJoin( 'switch AS sA', 'sA.id', 'spA.switchid' )
+            ->leftJoin( 'switch AS sB', 'sB.id', 'spB.switchid' )
+            ->where( function ($query) use( $switch ) {
+                $query->where( 'sA.id', $switch->id )
+                    ->orWhere( 'sB.id', $switch->id );
+            })
+            ->whereIn( 'cb.type', [ CoreBundle::TYPE_ECMP, CoreBundle::TYPE_L3_LAG ] )
+            ->get()->toArray();
     }
 }

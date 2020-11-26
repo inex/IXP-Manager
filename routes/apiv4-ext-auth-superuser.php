@@ -45,19 +45,20 @@ Route::group( [  'prefix' => 'dns/arpa' ], function() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Users
 //
-// Returns all users (or users with given integer privilege) as JSON
-Route::get('user/json',         'UserController@json');
-Route::get('user/json/{priv}',  'UserController@json');
+Route::group( [  'prefix' => 'user' ], function() {
+    // Returns all users (or users with given integer privilege) as JSON
+    Route::get('json',         'UserController@json');
+    Route::get('json/{priv}',  'UserController@json');
 
-// Returns all users (or users with given integer privilege) as a formatted template (e.g. for TACACS)
-// see: http://docs.ixpmanager.org/features/tacacs/
-Route::get( 'user/formatted',                   'UserController@formatted');
-Route::get( 'user/formatted/{priv}',            'UserController@formatted');
-Route::get( 'user/formatted/{priv}/{template}', 'UserController@formatted');
-Route::post('user/formatted',                   'UserController@formatted');
-Route::post('user/formatted/{priv}',            'UserController@formatted');
-Route::post('user/formatted/{priv}/{template}', 'UserController@formatted');
-
+    // Returns all users (or users with given integer privilege) as a formatted template (e.g. for TACACS)
+    // see: http://docs.ixpmanager.org/features/tacacs/
+    Route::get( 'formatted',                   'UserController@formatted' );
+    Route::get( 'formatted/{priv}',            'UserController@formatted' );
+    Route::get( 'formatted/{priv}/{template}', 'UserController@formatted' );
+    Route::post('formatted',                   'UserController@formatted' );
+    Route::post('formatted/{priv}',            'UserController@formatted' );
+    Route::post('formatted/{priv}/{template}', 'UserController@formatted' );
+});
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mailing Lists
 //

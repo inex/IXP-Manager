@@ -91,7 +91,6 @@ class SwitchController extends Controller
     /**
      * Get the Prewired switch port for a Switch
      *
-     * @params  $request instance of the current HTTP request
      * @param Request   $r
      * @param Switcher  $s
      *

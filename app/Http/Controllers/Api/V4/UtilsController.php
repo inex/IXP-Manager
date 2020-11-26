@@ -43,15 +43,15 @@ class UtilsController extends Controller
     /**
      * Turn markdown text into HTML
      *
-     * @param   Request $request
+     * @param   Request $r
      *
      * @return  JsonResponse JSON object with 'html' element
      */
-    public function markdown( Request $request ): JsonResponse
+    public function markdown( Request $r ): JsonResponse
     {
         $pd = new Parsedown();
         return response()->json([
-            'html' => $pd->text( $request->get( 'text', '' ) )
+            'html' => $pd->text( $r->text )
         ]);
     }
 }

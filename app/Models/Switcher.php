@@ -156,6 +156,15 @@ class Switcher extends Model
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'active'         => 'boolean',
+    ];
+
+    /**
      * Constants for the list mode dropdown in the swtiches list
      */
     public const VIEW_MODE_DEFAULT     = 'view_mode_default';

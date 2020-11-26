@@ -96,6 +96,15 @@ class CoreBundle extends Model
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'stp'         => 'boolean',
+    ];
+
+    /**
      * CONST TYPES
      */
     public const TYPE_ECMP              = 1;

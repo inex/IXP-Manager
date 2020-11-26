@@ -101,6 +101,15 @@ class Vlan extends Model
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'private'         => 'boolean',
+    ];
+
+    /**
      * Get the vlan interfaces that are in this vlan
      */
     public function vlanInterfaces(): HasMany

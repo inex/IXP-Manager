@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,8 +21,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes - Legacy Aliases
@@ -32,13 +30,13 @@ use Illuminate\Http\Request;
 |
 */
 
-
-// IXF Member List Export
-Route::get('apiv1/member-list/list',                   'IXP\Http\Controllers\Api\V4\MemberExportController@ixf' );
-Route::get('apiv1/member-list/list/version/{version}', 'IXP\Http\Controllers\Api\V4\MemberExportController@ixf' );
+Route::group( [  'prefix' => 'apiv1/member-list', 'namespace' => 'IXP\Http\Controllers\Api\V4' ], function() {
+    // IXF Member List Export
+    Route::get('list',                   'MemberExportController@ixf' );
+    Route::get('list/version/{version}', 'MemberExportController@ixf' );
+});
 
 
 Route::get( 'static/support', function() {
    return redirect( 'public-content/support' );
 })->name( "static/support" );
-

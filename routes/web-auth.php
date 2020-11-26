@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -46,7 +46,6 @@ if( !config('ixp_fe.frontend.disabled.logo' ) ) {
 /// Patch Panels
 ///
 Route::group( [ 'namespace' => 'PatchPanel\Port', 'prefix' => 'patch-panel-port' ], function() {
-
     Route::get( 'view/{ppp}',                     'PortController@view'             )->name( 'patch-panel-port@view'             );
 
     Route::group( [  'prefix' => 'file' ], function() {
@@ -67,10 +66,9 @@ Route::group( [ 'namespace' => 'PatchPanel\Port', 'prefix' => 'patch-panel-port'
 /// Route Server Prefixes
 ///
 Route::group( [ 'prefix' => 'rs-prefixes', 'middleware' => [ 'rs-prefixes' ] ], function() {
-    Route::get(     'list',         'RsPrefixesController@list' )->name( 'rs-prefixes@list'  );
+    Route::get(     'list',          'RsPrefixesController@list' )->name( 'rs-prefixes@list'  );
     Route::get(     'view/{cust}',   'RsPrefixesController@view' )->name( 'rs-prefixes@view'  );
 });
-
 
 Route::get('filtered-prefixes/{customer}', 'FilteredPrefixesController@list' )->name( 'filtered-prefixes@list' );
 
@@ -91,8 +89,7 @@ Route::group( [ 'prefix' => 'profile' ], function() {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
-///
-
+/// Switch
 Route::get(  'switch/configuration',       'Switches\SwitchController@configuration'       )->name( "switch@configuration" );
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,11 +103,10 @@ Route::group( [ 'namespace' => 'Auth' ], function() {
     Route::get('switch-customer/{id}',     'SwitchCustomerController@switch'                        )->name( "switch-customer@switch"        );
 });
 
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
-/// Authentication
+/// Dashboard
 ///
 Route::group( [ 'prefix' => 'dashboard' ], function() {
     Route::get(  '{tab?}',                          'DashboardController@index'                 )->name( "dashboard@index"                  );
@@ -202,7 +198,6 @@ if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ) {
         Route::get( '{cust}/patch-panel-port-files',        'DirectoryController@listPatchPanelPortFiles'           )->name( 'docstore-c-dir@list-patch-panel-port-file'         );
         Route::get( '{cust}/patch-panel-port-history-files','DirectoryController@listPatchPanelPortHistoryFiles'    )->name('docstore-c-dir@list-patch-panel-port-history-file' );
         Route::get( '{cust}/{dir?}',                        'DirectoryController@list'                              )->name( 'docstore-c-dir@list'                               );
-
 
         Route::get(    '{cust}/file/download/{file}',   'FileController@download'    )->name( 'docstore-c-file@download'    );
         Route::get(    '{cust}/file/view/{file}',       'FileController@view'        )->name( 'docstore-c-file@view'        );

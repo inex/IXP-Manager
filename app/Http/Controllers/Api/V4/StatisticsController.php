@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,13 +23,9 @@ namespace IXP\Http\Controllers\Api\V4;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Cache, D2EM, Grapher;
+use Cache, Grapher;
 
 use Carbon\Carbon;
-
-use Entities\{
-    IXP as IXPEntity
-};
 
 use Illuminate\Http\JsonResponse;
 
@@ -37,15 +33,17 @@ use IXP\Services\Grapher\Graph;
 
 
 /**
- * Statistics API Controller
+ * StatisticsController
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
+ * @category   APIv4
+ * @package    IXP\Http\Controllers\Api\V4
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class StatisticsController extends Controller
 {
-
-
     /**
      * Function to export max traffic stats by month (past six) as JSON
      *
@@ -75,8 +73,7 @@ class StatisticsController extends Controller
     {
         $data = Cache::remember( 'public_overall_stats_by_month', 14400, function() {
 
-            $ixp   = D2EM::getRepository( IXPEntity::class )->getDefault();
-            $graph = Grapher::ixp( $ixp )->setPeriod( Graph::PERIOD_YEAR );
+            $graph = Grapher::ixp()->setPeriod( Graph::PERIOD_YEAR );
 
             $graph->authorise();
 
@@ -84,16 +81,16 @@ class StatisticsController extends Controller
 
             $data = [];
 
-            $start = Carbon::now()->subMonths( 5 )->startOfMonth();
-            $startTs = $start->timestamp;
+            $start      = Carbon::now()->subMonths( 5 )->startOfMonth();
+            $startTs    = $start->timestamp;
 
             $i = 0;
             while( $start->lt( Carbon::now() ) ) {
-                $data[ $i ][ 'start' ] = $start->copy();
-                $data[ $i ][ 'startTs' ] = $start->timestamp;
-                $data[ $i ][ 'end' ] = $start->endOfMonth()->copy();
-                $data[ $i ][ 'endTs' ] = $start->endOfMonth()->timestamp;
-                $data[ $i ][ 'max' ] = 0;
+                $data[ $i ][ 'start' ]      = $start->copy();
+                $data[ $i ][ 'startTs' ]    = $start->timestamp;
+                $data[ $i ][ 'end' ]        = $start->endOfMonth()->copy();
+                $data[ $i ][ 'endTs' ]      = $start->endOfMonth()->timestamp;
+                $data[ $i ][ 'max' ]        = 0;
 
                 $start->startOfMonth()->addMonth();
                 $i++;
@@ -102,7 +99,7 @@ class StatisticsController extends Controller
             $endTs = $data[ $i - 1 ][ 'endTs' ];
 
             foreach( $mrtg as $m ) {
-                if( count( $m ) != 5 ) {
+                if( count( $m ) !== 5 ) {
                     continue;
                 }
 
@@ -118,7 +115,6 @@ class StatisticsController extends Controller
                         if( $m[ 4 ] > $data[ $i ][ 'max' ] ) {
                             $data[ $i ][ 'max' ] = $m[ 4 ];
                         }
-
                         break;
                     }
                 }
@@ -128,12 +124,11 @@ class StatisticsController extends Controller
             foreach( $data as $i => $d ) {
                 /** @var Carbon $start */
                 $start = $data[ $i ][ 'start' ];
-
                 /** @var Carbon $end */
                 $end = $data[ $i ][ 'end' ];
 
-                $data[ $i ][ 'start' ] = $start->format( 'Y-m-d' ) . 'T' . $start->format( 'H:i:s' ) . 'Z';
-                $data[ $i ][ 'end' ]   = $end->format( 'Y-m-d' )   . 'T' . $end->format( 'H:i:s' )   . 'Z';
+                $data[ $i ][ 'start' ] = $start->format( 'Y-m-d\TH:i:s\Z' );
+                $data[ $i ][ 'end' ]   = $end->format( 'Y-m-d\TH:i:s\Z' );
             }
 
             return $data;
@@ -141,5 +136,4 @@ class StatisticsController extends Controller
 
         return response()->json( $data );
     }
-
 }

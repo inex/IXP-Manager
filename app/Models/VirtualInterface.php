@@ -99,6 +99,18 @@ class VirtualInterface extends Model
         'lag_framing',
         'fastlacp',
     ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'trunk'         => 'boolean',
+        'lag_framing'   => 'boolean',
+        'fastlacp'      => 'boolean',
+    ];
+
     /**
      * Get the customer that owns the virtual interfaces.
      */

@@ -90,6 +90,15 @@ class PhysicalInterface extends Model
         'notes',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'autoneg'         => 'boolean',
+    ];
+
     public const STATUS_CONNECTED       = 1;
     public const STATUS_DISABLED        = 2;
     public const STATUS_NOTCONNECTED    = 3;
@@ -340,5 +349,18 @@ class PhysicalInterface extends Model
     public function scopeConnected( Builder $query ): Builder
     {
         return $query->where( 'status' , self::STATUS_CONNECTED );
+    }
+
+    /**
+     * Get the core bundle if the physical interface is associated to a core bundle
+     *
+     * @return CoreBundle|bool
+     */
+    public function coreBundle()
+    {
+        if( $ci = $this->coreInterface ){
+            return $ci->coreLink()->coreBundle;
+        }
+        return false;
     }
 }

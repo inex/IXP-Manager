@@ -60,7 +60,11 @@ Route::group( [ 'namespace' => 'PatchPanel\Port', 'prefix' => 'patch-panel-port'
     Route::get( '{ppp}/loa/verify/{code}',       'LoaController@verify'    )->name( "patch-panel-port-loa@verify"  );
 });
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// weather-map
+///
 Route::get( 'weather-map/{id}',                  'WeatherMapController@index' )->name( 'weathermap');
 
 
@@ -72,17 +76,15 @@ Route::get( 'weather-map/{id}',                  'WeatherMapController@index' )-
 /// See: http://docs.ixpmanager.org/features/static-content/
 ///
 ///
-Route::get( 'content/{priv}/{page}',     'ContentController@index' )->name( 'content' );
-Route::get( 'public-content/{page}',     'ContentController@public' )->name( 'public-content' );
-
-Route::get( 'content/members/{priv}/{page}', 'ContentController@members' )->name( 'content/members' );
+Route::get( 'content/{priv}/{page}',        'ContentController@index'   )->name( 'content'          );
+Route::get( 'public-content/{page}',        'ContentController@public'  )->name( 'public-content'   );
+Route::get( 'content/members/{priv}/{page}','ContentController@members' )->name( 'content/members'  );
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
 /// Statistics -> a dedicated request object manages authorization
 ///
-
 Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'ixp/{category?}',                             'StatisticsController@ixp'               )->name( 'statistics@ixp'                );
     Route::get(  'infrastructure/{graphid?}/{category?}',       'StatisticsController@infrastructure'    )->name( 'statistics@infrastructure'     );
@@ -104,7 +106,11 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'core-bundle/{cb}',                          'StatisticsController@coreBundle'        )->name( 'statistics@core-bundle'            );
 });
 
-// Authentication routes...
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Authentication routes
+///
 Route::group( [ 'namespace' => 'Auth' ], function() {
     Route::get( 'logout',                   'LoginController@logout'                                )->name( "login@logout"                     );
     Route::get( 'login',                    'LoginController@showLoginForm'                         )->name( "login@showForm"                   );
@@ -119,6 +125,11 @@ Route::group( [ 'namespace' => 'Auth' ], function() {
     Route::get( 'username',                 'ForgotPasswordController@showUsernameForm'             )->name( "forgot-password@showUsernameForm" );
     Route::post('forgot-username',          'ForgotPasswordController@sendUsernameEmail'            )->name( "forgot-password@username-email"   );
 
+    // PeeringDB OAuth
+    Route::group( [ 'prefix' => 'auth/login/peeringdb' ], function() {
+        Route::get('',          'LoginController@peeringdbRedirectToProvider'       )->name('auth:login-peeringdb' );
+        Route::get('callback',  'LoginController@peeringdbHandleProviderCallback'   );
+    });
 
     // IXP Manager <v4.9 aliases for static links
     Route::redirect( 'auth/logout',        url( '' ) . '/logout',          301 );
@@ -133,17 +144,6 @@ Route::group( [ 'namespace' => 'Auth' ], function() {
 /// MEMBER EXPORT
 ///
 Route::get( 'participants.json', function() { return redirect(route('ixf-member-export')); });
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-///
-/// PeeringDB OAuth
-///
-
-Route::get('auth/login/peeringdb',          'Auth\LoginController@peeringdbRedirectToProvider')->name('auth:login-peeringdb');
-Route::get('auth/login/peeringdb/callback', 'Auth\LoginController@peeringdbHandleProviderCallback');
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -173,7 +173,6 @@ if( !config( 'ixp_fe.frontend.disabled.docstore' ) ) {
 
         Route::get(    '/file/{file}/logs',        'LogController@list'           )->name( 'docstore-log@list'         );
         Route::get(    '/file/{file}/unique-logs', 'LogController@uniqueList'     )->name( 'docstore-log@unique-list'  );
-
     } );
 }
 
