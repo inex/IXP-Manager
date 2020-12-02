@@ -1,7 +1,8 @@
 <?php
 
+namespace IXP\Http;
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,12 +22,7 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace IXP\Http;
-
-use Illuminate\Auth\Middleware\{
-    AuthenticateWithBasicAuth,
-    Authorize
-};
+use Illuminate\Auth\Middleware\{AuthenticateWithBasicAuth, Authorize, EnsureEmailIsVerified};
 
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
@@ -38,10 +34,10 @@ use Illuminate\Foundation\Http\Middleware\{
     ValidatePostSize
 };
 
-use Illuminate\Routing\Middleware\{
-    SubstituteBindings,
-    ThrottleRequests
-};
+use Illuminate\Http\Middleware\SetCacheHeaders;
+use Illuminate\Session\Middleware\AuthenticateSession;
+use IXP\Http\Middleware\Authenticate;
+use Illuminate\Routing\Middleware\{SubstituteBindings, ThrottleRequests, ValidateSignature};
 
 use Illuminate\Session\Middleware\StartSession;
 
@@ -49,8 +45,8 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 use IXP\Http\Middleware\TrustProxies;
 
-class Kernel extends HttpKernel {
-
+class Kernel extends HttpKernel
+{
     /**
      * The application's global HTTP middleware stack.
      *
@@ -106,7 +102,7 @@ class Kernel extends HttpKernel {
 
         'e2frontend' => [
             'web',
-            'doctrine2frontend',
+            'eloquent2Frontend',
         ],
 
         'grapher' => [
@@ -134,21 +130,20 @@ class Kernel extends HttpKernel {
         'auth.basic'            => AuthenticateWithBasicAuth::class,
         'bindings'              => SubstituteBindings::class,
         'can'                   => Authorize::class,
-        'cache.headers'         => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+        'cache.headers'         => SetCacheHeaders::class,
         'guest'                 => Middleware\RedirectIfAuthenticated::class,
-        'signed'                => \Illuminate\Routing\Middleware\ValidateSignature::class,
+        'signed'                => ValidateSignature::class,
         'throttle'              => ThrottleRequests::class,
-        'verified'              => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'verified'              => EnsureEmailIsVerified::class,
         'apiauth'               => Middleware\ApiAuthenticate::class,
         'apimaybeauth'          => Middleware\ApiMaybeAuthenticate::class,
         'assert.privilege'      => Middleware\AssertUserPrivilege::class,
         'controller-enabled'    => Middleware\ControllerEnabled::class,
-        'doctrine2frontend'     => Middleware\Doctrine2Frontend::class,
+        'eloquent2Frontend'     => Middleware\Eloquent2Frontend::class,
         'grapher'               => Middleware\Services\Grapher::class,
         'rs-prefixes'           => Middleware\RsPrefixes::class,
         '2fa'                   => Middleware\Google2FA::class,
     ];
-
 
     /**
      * The priority-sorted list of middleware.
@@ -158,13 +153,12 @@ class Kernel extends HttpKernel {
      * @var array
      */
     protected $middlewarePriority = [
-        \Illuminate\Session\Middleware\StartSession::class,
-        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \IXP\Http\Middleware\Authenticate::class,
-        \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        \Illuminate\Session\Middleware\AuthenticateSession::class,
-        \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        \Illuminate\Auth\Middleware\Authorize::class,
+        StartSession::class,
+        ShareErrorsFromSession::class,
+        Authenticate::class,
+        ThrottleRequests::class,
+        AuthenticateSession::class,
+        SubstituteBindings::class,
+        Authorize::class,
     ];
-
 }

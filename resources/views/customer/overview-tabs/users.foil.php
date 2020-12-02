@@ -63,7 +63,7 @@
                             <i class="fa fa-trash"></i>
                         </a>
                         <a class="btn btn-white <?= $c2u->getUser()->getDisabled() || Auth::getUser()->getId() == $c2u->getUser()->getId() ? "disabled" : "" ?>"
-                           href="<?= route( "switch-user@switch" , [ "id" => $c2u->getUser()->getId() ] ) ?>" rel="tooltip" title="Log in as this user...">
+                           href="<?= route( "switch-user@switch" , [ "user" => $c2u->getUser()->getId() ] ) ?>" rel="tooltip" title="Log in as this user...">
                             <i class="fa fa-user"></i>
                         </a>
 

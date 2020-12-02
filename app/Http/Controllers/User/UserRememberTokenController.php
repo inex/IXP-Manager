@@ -150,7 +150,7 @@ class UserRememberTokenController extends EloquentController
     protected function listGetData( $id = null ): array
     {
         $feParams = $this->feParams;
-        return UserRememberToken::where( 'user_id', request()->user()->getId() )
+        return UserRememberToken::where( 'user_id', request()->user()->id )
             ->when( $id , function( Builder $q, $id ) {
                 return $q->where('id', $id );
             } )->when( $feParams->listOrderBy , static function( Builder $q, $orderby ) use ( $feParams )  {
@@ -164,7 +164,7 @@ class UserRememberTokenController extends EloquentController
     protected function preDelete(): bool
     {
         // ensure a user can only delete their own sessions:
-        return $this->object->user->id === Auth::user()->getId();
+        return $this->object->user->id === Auth::id();
     }
 
     /**

@@ -118,12 +118,12 @@ class Controller extends BaseController
         if( request()->cust && request()->is( 'user/add*' ) ) {
             if( ( $c = Customer::find( request()->cust ) ) ) {
                 // Internal customer and SuperUser
-                if( Auth::getUser()->isSuperUser() && $c->typeInternal() ){
+                if( Auth::user()->superUser() && $c->typeInternal() ){
                     $privs = User::$PRIVILEGES_TEXT;
                 }
             }
             // If we add a user and we are a SuperUser
-        } elseif( Auth::getUser()->isSuperUser() && ( request()->is( 'user/add*' ) || request()->is( 'customer-to-user/add*' )  ) ) {
+        } elseif( Auth::user()->superUser() && ( request()->is( 'user/add*' ) || request()->is( 'customer-to-user/add*' )  ) ) {
             $privs = User::$PRIVILEGES_TEXT;
         }
 

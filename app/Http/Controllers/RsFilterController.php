@@ -320,7 +320,7 @@ class RsFilterController extends Controller
         $this->authorize( 'checkRsfObject',  [ RouteServerFilter::class, $rsf ]  );
         $rsf->delete();
 
-        Log::notice( Auth::getUser()->getUsername()." deleted the route server filter with the ID:" . $rsf->id );
+        Log::notice( Auth::user()->username." deleted the route server filter with the ID:" . $rsf->id );
         AlertContainer::push( 'Router server filter deleted.', Alert::SUCCESS );
 
         return Redirect::to( route( "rs-filter@list", [ "cust" => $rsf->customer_id ] ) );

@@ -35,7 +35,7 @@ class SwitchControllerTest extends DuskTestCase
     public function tearDown(): void
     {
         foreach( [ 'phpunit', 'phpunit2' ] as $name ) {
-            if( $infra = Switcher::whereName( $name )->get()->first() ) {
+            if( $infra = Switcher::whereName( $name )->first() ) {
                 $infra->delete();
             }
         }
@@ -99,7 +99,7 @@ class SwitchControllerTest extends DuskTestCase
                 ->assertSee( 'FESX648' );
 
             // get the switch:
-            $switch = Switcher::whereName( 'phpunit' )->get()->first();
+            $switch = Switcher::whereName( 'phpunit' )->first();
 
             // test the values:
             $this->assertEquals( 'phpunit',                  $switch->name );

@@ -56,7 +56,7 @@ class PatchPanelPortController extends Controller
             ->when( $deep, function( Builder $q ) {
                 return $q->with( 'PatchPanel', 'SwitchPort.physicalInterface' );
             } )
-            ->get()->first()
+            ->first()
         );
     }
 

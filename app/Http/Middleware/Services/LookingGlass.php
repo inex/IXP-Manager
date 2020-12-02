@@ -32,9 +32,10 @@ use IXP\Utils\View\Alert\{
 
 use Illuminate\Http\Request;
 
-use IXP\Models\Router;
-use IXP\Models\User;
-
+use IXP\Models\{
+    Router,
+    User
+};
 
 use IXP\Exceptions\Utils\RouterException;
 
@@ -65,19 +66,19 @@ class LookingGlass
     /**
      * Check if the prefix is valid
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return bool
      */
-    private function validateNetworkRoute( Request $request ): bool
+    private function validateNetworkRoute( Request $r ): bool
     {
         $validator = Validator::make(
             [
-                'net'   => $request->net,
-                'mask'  => $request->mask
+                'net'   => $r->net,
+                'mask'  => $r->mask
             ], [
-                'net' => 'required|ip',
-                'mask' => 'numeric|min:1|max:128',
+                'net'   => 'required|ip',
+                'mask'  => 'numeric|min:1|max:128',
             ]
         );
 
@@ -87,20 +88,20 @@ class LookingGlass
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
+     * @param Request $r
      * @param Closure $next
      *
      * @return mixed
      */
-    public function handle( Request $request, Closure $next )
+    public function handle( Request $r, Closure $next )
     {
         if( Route::currentRouteName() === 'lg::index' ) {
-            return $next($request);
+            return $next( $r );
         }
 
         // get the router object
         try {
-            $router =  Router::whereHandle( $request->handle )->get()->first();
+            $router =  Router::whereHandle( $r->handle )->first();
 
             if( !$router || !$router->api() ) {
                 AlertContainer::push( "No router with the provided handle was found", Alert::DANGER );
@@ -110,13 +111,13 @@ class LookingGlass
             abort( 404, $e->getMessage() );
         }
 
-        if( ( $request->table && !$this->validateSymbol( $request->table ) )
-                || ( $request->protocol && !$this->validateSymbol( $request->protocol ) ) ) {
+        if( ( $r->table && !$this->validateSymbol( $r->table ) )
+                || ( $r->protocol && !$this->validateSymbol( $r->protocol ) ) ) {
             AlertContainer::push( "Symbol (protocol / table) invalid or not found", Alert::DANGER );
-            return redirect( route( 'lg::bgp-sum', [ 'handle' => $request->handle ] ) );
+            return redirect( route( 'lg::bgp-sum', [ 'handle' => $r->handle ] ) );
         }
 
-        if( ( $request->net || $request->mask ) && !$this->validateNetworkRoute( $request ) ) {
+        if( ( $r->net || $r->mask ) && !$this->validateNetworkRoute( $r ) ) {
             abort(404);
         }
 
@@ -130,9 +131,9 @@ class LookingGlass
         // (throws an exception if no appropriate Looking Glass handler)
         $lg = App::make( LookingGlassService::class )->forRouter( $router );
 
-        $request->attributes->add( [ 'lg' => $lg ] );
+        $r->attributes->add( [ 'lg' => $lg ] );
 
-        return $next( $request );
+        return $next( $r );
     }
 
     /**
@@ -144,7 +145,7 @@ class LookingGlass
      */
     private function authorise( Router $router ): bool
     {
-        if( $router->authorise( Auth::check() ? Auth::user()->getPrivs() : User::AUTH_PUBLIC ) ) {
+        if( $router->authorise( Auth::check() ? Auth::user()->privs() : User::AUTH_PUBLIC ) ) {
             return true;
         }
 

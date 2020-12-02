@@ -23,8 +23,7 @@ namespace IXP\Http\Middleware\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Closure;
-use App;
+use App, Closure;
 
 use Illuminate\Http\Request;
 
@@ -32,7 +31,6 @@ use IXP\Services\Grapher as GrapherService;
 use IXP\Services\Grapher\Graph;
 
 use IXP\Services\Grapher\Graph\{
-    IXP               as IXPGraph,
     Infrastructure    as InfrastructureGraph,
     Vlan              as VlanGraph,
     Switcher          as SwitchGraph,

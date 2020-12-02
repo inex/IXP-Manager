@@ -32,7 +32,7 @@ class ContactControllerTest extends DuskTestCase
     public function tearDown(): void
     {
         foreach( [ 'Test Contact 1', 'Test Contact 2' ] as $name ) {
-            if( $c = Contact::whereName( $name )->get()->first() ) {
+            if( $c = Contact::whereName( $name )->first() ) {
                 $c->delete();
             }
         }
@@ -84,7 +84,7 @@ class ContactControllerTest extends DuskTestCase
                 ->assertSee( 'test-contact1@example.com' );
 
             // get the contact:
-            $c = Contact::whereName( 'Test Contact 1' )->get()->first();
+            $c = Contact::whereName( 'Test Contact 1' )->first();
 
             // test the values:
             $this->assertEquals( 'Test Contact 1',            $c->name );
@@ -208,7 +208,7 @@ class ContactControllerTest extends DuskTestCase
                 ->assertSee( 'test-contact1@example.com' );
 
             // get the contact:
-            $c = Contact::whereName( 'Test Contact 1' )->get()->first();
+            $c = Contact::whereName( 'Test Contact 1' )->first();
             // test the values:
             $this->assertEquals( 'Test Contact 1',            $c->name );
             $this->assertEquals( 'Test Position',             $c->position );
@@ -288,7 +288,7 @@ class ContactControllerTest extends DuskTestCase
                 ->assertSee( 'test-contact1@example.com' );
 
             // get the contact:
-            $c = Contact::whereName( 'Test Contact 1' )->get()->first();
+            $c = Contact::whereName( 'Test Contact 1' )->first();
 
             // test the values:
             $this->assertEquals( 'Test Contact 1',            $c->name );

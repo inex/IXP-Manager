@@ -42,7 +42,7 @@ class StoreVirtualInterfaceWizard extends FormRequest
     public function authorize(): bool
     {
         // middleware ensures superuser access only so always authorised here:
-        return Auth::getUser()->isSuperUser();
+        return Auth::user()->superUser();
     }
 
     /**

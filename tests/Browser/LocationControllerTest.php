@@ -42,7 +42,7 @@ class LocationControllerTest extends DuskTestCase
     public function tearDown(): void
     {
         foreach( [ 'Infrastructure Test', 'Infrastructure Test2' ] as $name ) {
-            if( $c = Location::whereName( $name )->get()->first() ) {
+            if( $c = Location::whereName( $name )->first() ) {
                 $c->delete();
             }
         }
@@ -112,7 +112,7 @@ class LocationControllerTest extends DuskTestCase
                 ->assertPathIs('/facility/list')
                 ->assertSee( "Facility created" );
 
-            $location = Location::whereName( 'Infrastructure Test' )->get()->first();
+            $location = Location::whereName( 'Infrastructure Test' )->first();
 
             // 2. test added data in database against expected values
             $this->assertInstanceOf( Location::class, $location );

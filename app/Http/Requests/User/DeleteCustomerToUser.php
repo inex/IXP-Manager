@@ -81,7 +81,7 @@ class DeleteCustomerToUser extends FormRequest
 
             if( !$this->user()->isSuperUser() ) {
                 if( $this->c2u->getCustomer()->getId() != $this->user()->getCustomer()->getId() ) {
-                    Log::notice( Auth::getUser()->getUsername() . " tried to delete another customer's user: " . $c2u->getUser()->getName() . " from " . $c2u->getCustomer()->getName() );
+                    Log::notice( Auth::user()->username() . " tried to delete another customer's user: " . $c2u->getUser()->getName() . " from " . $c2u->getCustomer()->getName() );
                     abort( 403, 'You are not authorised to delete this user. The administrators have been notified.' );
                 }
             }

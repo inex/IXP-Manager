@@ -8,7 +8,7 @@ You, or someone entering your email address, has requested a password reset for 
 If you wish to proceed, please click on the following link:
 
 
-@component('mail::button', ['url' => route( "reset-password@show-reset-form", [ "token" => $token, "username" => $user->getUsername() ] ), 'color' => 'blue'])
+@component('mail::button', ['url' => route( "reset-password@show-reset-form", [ "token" => $token, "username" => $user->username ] ), 'color' => 'blue'])
     Reset password
 @endcomponent
 

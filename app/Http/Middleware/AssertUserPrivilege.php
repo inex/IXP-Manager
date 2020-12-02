@@ -3,7 +3,7 @@
 namespace IXP\Http\Middleware;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,39 +22,38 @@ namespace IXP\Http\Middleware;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
 use Auth, Closure;
 
 use Illuminate\Http\Request;
 
 /**
- * Middleware: Assert an authentcated user is of a given privilege
+ * Middleware: Assert an authenticated user is of a given privilege
  *
  * Check for IXP Manager token credentials with API access requests
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Providers
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-
 class AssertUserPrivilege
 {
     /**
      * Handle an incoming request.
      *
-     * @param  Request  $request
-     * @param  Closure  $next
+     * @param Request   $r
+     * @param Closure   $next
+     * @param int       $privilege
+     *
      * @return mixed
      */
-    public function handle($request, Closure $next, $privilege)
+    public function handle( Request $r, Closure $next, int $privilege )
     {
-        if( Auth::user()->getPrivs() != $privilege ) {
+        if( Auth::user()->privs() !== $privilege ) {
             return response( 'Insufficient permissions', 403 );
         }
 
-        return $next($request);
+        return $next( $r );
     }
 }

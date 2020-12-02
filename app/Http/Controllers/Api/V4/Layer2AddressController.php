@@ -108,7 +108,7 @@ class Layer2AddressController extends Controller
             'vlan_interface_id' => $request->vlan_interface_id
         ] );
 
-        event( new Layer2AddressAddedEvent( $l2a, User::find( Auth::getUser()->getId() ) ) );
+        event( new Layer2AddressAddedEvent( $l2a, User::find( Auth::id() ) ) );
         !$showFeMessage ?: AlertContainer::push( 'The MAC address has been added successfully.' , Alert::SUCCESS );
         return response()->json( [ 'success' => true, 'message' => 'The MAC address has been added successfully.' ] );
     }

@@ -22,44 +22,48 @@ namespace IXP\Listeners\Auth;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Auth, Log;
 
-use Auth, D2EM, Log;
-use Entities\UserLoginHistory as UserLoginHistoryEntity;
 use Illuminate\Auth\Events\Login as LoginEvent;
 
-class LoginSuccessful {
+use IXP\Models\UserLoginHistory;
 
+/**
+ * LoginSuccessful Listener
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   Listeners
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class LoginSuccessful
+{
     /**
      * Handle a login event.
      *
-     *
      * @param  LoginEvent  $e
+     *
      * @return void
      */
-    public function handle( LoginEvent $e )
+    public function handle( LoginEvent $e ): void
     {
-        Log::notice( 'Login successful for user "' .$e->user->getUsername(). '" from IP ' . ixp_get_client_ip() . '.' );
+        Log::notice( 'Login successful for user "' . $e->user->username. '" from IP ' . ixp_get_client_ip() . '.' );
 
-        if( !session()->exists( "switched_user_from" ) && $e->user->getCurrentCustomerToUser() ) {
-            if( Auth::viaRemember() ) {
-                $e->user->getCurrentCustomerToUser()->setLastLoginVia( 'RememberMe' );
-            } else {
-                $e->user->getCurrentCustomerToUser()->setLastLoginVia( 'Login' );
-            }
-
-            $e->user->getCurrentCustomerToUser()->setLastLoginAt( now() );
-            $e->user->getCurrentCustomerToUser()->setLastLoginFrom( ixp_get_client_ip() );
+        if( !session()->exists( "switched_user_from" ) && ( $c2u = $e->user->currentCustomerToUser() ) ) {
+            $c2u->update( [
+                'last_login_date'   => now(),
+                'last_login_from'   => ixp_get_client_ip(),
+                'last_login_via'    => Auth::viaRemember() ?  'RememberMe' : 'Login',
+            ] );
 
             if( config( "ixp_fe.login_history.enabled" ) ) {
-                $log = new UserLoginHistoryEntity;
-                $log->setAt( now() );
-                $log->setVia( Auth::viaRemember() ? 'RememberMe' : 'Login' );
-                $log->setIp( ixp_get_client_ip() );
-                $log->setCustomerToUser( $e->user->getCurrentCustomerToUser() );
-                D2EM::persist( $log );
+                UserLoginHistory::create( [
+                    'ip'                    => ixp_get_client_ip(),
+                    'at'                    => now(),
+                    'via'                   => Auth::viaRemember() ?  'RememberMe' : 'Login',
+                    'customer_to_user_id'   => $c2u->id,
+                ] );
             }
         }
-
-        D2EM::flush();
     }
 }

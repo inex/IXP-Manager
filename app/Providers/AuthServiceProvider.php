@@ -25,7 +25,8 @@ use Auth, Gate;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
-use IXP\Services\Auth\DoctrineUserProvider;
+use IXP\Services\Auth\EloquentUserProvider;
+
 use IXP\Services\Auth\SessionGuard;
 
 class AuthServiceProvider extends ServiceProvider
@@ -74,10 +75,8 @@ class AuthServiceProvider extends ServiceProvider
             return $guard;
         });
 
-        Auth::provider('doctrine', function ( $app, array $config ) {
-            $em = $app[ 'registry' ]->getManagerForClass( $config['model'] );
-            
-            return new DoctrineUserProvider( $app['hash'], $em , $config['model'] );
+        Auth::provider('eloquent', function ( $app, array $config ) {
+            return new EloquentUserProvider( $app['hash'], $config['model'] );
         });
     }
 }

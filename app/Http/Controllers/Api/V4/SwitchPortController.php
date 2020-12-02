@@ -52,7 +52,7 @@ class SwitchPortController extends Controller
                 ->leftJoin( 'cust AS c', 'c.id', 'vi.custid' )
                 ->where( 'sp.id', $sp->id )
                 ->groupBy( 'c.id' )
-                ->get()->first()->toArray()
+                ->first()->toArray()
         ] );
     }
 

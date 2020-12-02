@@ -3,7 +3,7 @@
 namespace IXP\Http\Middleware;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,52 +22,52 @@ namespace IXP\Http\Middleware;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
 use Auth, Closure, Log, Route;
 
-use Illuminate\Auth\Recaller;
-use Entities\{
-    User as UserEntity
+use Illuminate\Http\Request;
+
+use IXP\Models\User;
+
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
 };
 
-use IXP\Utils\View\Alert\Alert;
-use IXP\Utils\View\Alert\Container as AlertContainer;
-
 /**
- * Middleware: Manage Doctrine2Frontend filters, etc
+ * Middleware: Manage Eloquent2Frontend filters, etc
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers\Doctrine2Frontend
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-
-class Doctrine2Frontend
+class Eloquent2Frontend
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param   Request     $r
+     * @param   Closure     $next
+     *
      * @return mixed
      */
-    public function handle( $request, Closure $next )
+    public function handle( Request $r, Closure $next )
     {
         // get the class and method that has been called:
         [ $controller, $method ] = explode('@', Route::currentRouteAction() );
 
         // what's the user's privilege?
-        $user_priv = Auth::check() ? Auth::user()->getPrivs() : UserEntity::AUTH_PUBLIC;
+        $user_priv = Auth::check() ? Auth::user()->privs() : User::AUTH_PUBLIC;
 
         // first check - do we have the necessary privileges to access this?
         if( $user_priv < $controller::$minimum_privilege ) {
             AlertContainer::push(  "You do not have the required privileges to access this function.", Alert::DANGER );
-            Log::info( ( Auth::check() ? Auth::user()->getUsername() : 'Anonymous user' ) . " tried to access {$controller}@{$method} but does not have the required privileges" );
+            Log::info( ( Auth::check() ? Auth::user()->username : 'Anonymous user' ) . " tried to access {$controller}@{$method} but does not have the required privileges" );
             return redirect( '' );
         }
 
-        return $next($request);
+        return $next( $r );
     }
 }

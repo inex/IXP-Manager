@@ -23,10 +23,8 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Model
-};
+use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo};
+
 
 /**
  * IXP\Models\CustomerToUser
@@ -55,8 +53,50 @@ use Illuminate\Database\Eloquent\{
  * @mixin \Eloquent
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerToUser whereUpdatedAt($value)
+ * @property-read \IXP\Models\Customer $customer
+ * @property-read \IXP\Models\User $user
  */
 class CustomerToUser extends Model
 {
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'customer_id',
+        'user_id',
+        'privs',
+        'extra_attributes',
+        'last_login_date',
+        'last_login_from',
+        'last_login_via',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'extra_attributes' => 'json',
+    ];
+
+    /**
+     * Get the customer for the customertouser
+     */
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class, 'customer_id' );
+    }
+
+    /**
+     * Get the user for the customertouser
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id' );
+    }
 
 }

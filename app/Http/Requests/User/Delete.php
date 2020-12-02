@@ -78,16 +78,16 @@ class Delete extends FormRequest
 
                 $this->user = D2EM::getRepository( UserEntity::class )->find( request()->input( 'id' , false) );
 
-                if( !Auth::getUser()->isSuperUser() ) {
+                if( !Auth::user()->superUser() ) {
                    // Check if the custadmin try to delete a user from an other Customer
-                    if( !D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ "user" => $this->user , "customer" => Auth::getUser()->getCustomer()->getId() ] ) ) {
-                        Log::notice( Auth::getUser()->getUsername() . " tried to delete other customer user " . $this->user->getUsername() );
+                    if( !D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ "user" => $this->user , "customer" => Auth::getUser()->custid ] ) ) {
+                        Log::notice( Auth::user()->username . " tried to delete other customer user " . $this->user->getUsername() );
                         abort( 401, 'You are not authorised to delete this user. The administrators have been notified.' );
                     }
                 }
 
                 // Check if a custadmin try to delete a User that has more than 1 customer to User (this should never happen)
-                if( !Auth::getUser()->isSuperUser() && count( $this->user->getCustomers() ) > 1  ) {
+                if( !Auth::user()->superUser() && count( $this->user->getCustomers() ) > 1  ) {
                     abort( 401, 'You are not authorised to delete this user. The administrators have been notified.' );
                 }
 

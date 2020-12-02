@@ -7,20 +7,14 @@
 
             |
 
-            <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-
+            <?php if( Auth::check() && Auth::user()->superUser() ): ?>
                 Generated in
                 <?= sprintf( "%0.3f", microtime(true) - APPLICATION_STARTTIME ) ?>
                 seconds
-
             <?php else: ?>
-
-                Copyright &copy; 2009 - <?= date('Y') ?> Internet Neutral Exchange Association CLG
-
+                Copyright &copy; 2009 - <?= now()->format('Y') ?> Internet Neutral Exchange Association CLG
             <?php endif; ?>
-
             |
-
             Discover INEX at:
             <a href="https://www.inex.ie/">
                 <i class="fa fa-globe fa-inverse mx-1"></i>
@@ -43,7 +37,6 @@
             </a>
 
             </small>
-
         </div>
     </div>
 </footer>

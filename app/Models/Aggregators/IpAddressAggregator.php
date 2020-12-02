@@ -60,7 +60,7 @@ class IpAddressAggregator
 
             foreach( $addresses as $a ) {
                 // does the address already exist?
-                $ipAddress = $model::where( 'address', $a )->where( 'vlanid', $vlan->id )->get()->first();
+                $ipAddress = $model::where( 'address', $a )->where( 'vlanid', $vlan->id )->first();
 
                 if( $ipAddress ) {
                     $results[ 'preexisting' ][] = $ipAddress;

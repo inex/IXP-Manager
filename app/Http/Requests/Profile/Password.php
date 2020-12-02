@@ -77,7 +77,7 @@ class Password extends FormRequest
     {
         $validator->after( function( $validator ) {
 
-            if( !Hash::check( $this->input( "current_password" ), Auth::getUser()->getPassword() ) ){
+            if( !Hash::check( $this->input( "current_password" ), Auth::user()->password ) ){
                 $validator->errors()->add( 'current_password', 'The current password is incorrect.');
                 return false;
             }

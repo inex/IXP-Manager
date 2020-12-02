@@ -60,11 +60,36 @@ use Illuminate\Database\Eloquent\{
  */
 class UserRememberToken extends Model
 {
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id',
+        'token',
+        'device',
+        'ip',
+        'expires',
+        'is_2fa_complete',
+    ];
+
     /**
      * Get the user that own the remember token
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Is this token expired?
+     *
+     * @return bool
+     */
+    public function expired(): bool
+    {
+        return $this->expires < now();
     }
 }

@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Auth;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,71 +23,66 @@ namespace IXP\Http\Controllers\Auth;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM;
+use Auth;
 
-use Entities\{
-    Customer            as CustomerEntity,
-    CustomerToUser      as CustomerToUserEntity,
-    User                as UserEntity,
-    UserLoginHistory    as UserLoginHistoryEntity
-};
+use Illuminate\Http\RedirectResponse;
 
 use IXP\Http\Controllers\Controller;
-use IXP\Utils\View\Alert\Alert;
-use IXP\Utils\View\Alert\Container as AlertContainer;
 
+use IXP\Models\{
+    Customer,
+    CustomerToUser,
+    UserLoginHistory,
+};
+
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
 
 /**
- * Switch Customer Controller
- *
- * @author     Yann Robin       <yann@islandbridgenetworks.ie>
- * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
- *
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * SwitchCustomerController
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   Controller/Auth
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SwitchCustomerController extends Controller
 {
+    /**
+     * Allow a user to switch of customer
+     *
+     * @param Customer $cust
+     *
+     * @return RedirectResponse
+     */
+    public function switch( Customer $cust ): RedirectResponse
+    {
+        $user = Auth::user();
 
-    public function switch( int $id ){
-
-        /** @var $user UserEntity */
-        if( !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
-            abort( "404", "Unknown Customer" );
-        }
-
-        $user = Auth::getUser();
-
-        if( !( $c2u = D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ "customer" => $cust, "user" => $user ] ) ) ){
+         if( !( $c2u = CustomerToUser::where( 'customer_id', $cust->id )->where( 'user_id', $user->id )->first() ) ){
             AlertContainer::push( "You are not allowed to access to this customer.", Alert::DANGER );
-
             return redirect()->to( "/" );
         }
 
-        $c2u->setLastLoginAt(  new \DateTime );
-        $c2u->setLastLoginFrom( $this->getIp() );
+        $c2u->update([
+            'last_login_date' => now(),
+            'last_login_from' => $this->getIp(),
+        ]);
 
         if( config( "ixp_fe.login_history.enabled" ) ) {
-
-            $log = new UserLoginHistoryEntity;
-            D2EM::persist( $log );
-
-
-
-            $log->setAt(    new \DateTime() );
-            $log->setIp(    $this->getIp() );
-            $log->setCustomerToUser(  $c2u  );
-
-            D2EM::flush();
+            UserLoginHistory::create( [
+                'ip'                    => $this->getIp(),
+                'at'                    => now(),
+                'customer_to_user_id'   => $c2u->id,
+                'via'                   => 'SwitchCustomer'
+            ] );
         }
 
-        $user->setCustomer( $cust );
+        $user->update( [ 'custid' => $cust->id ] );
 
-        D2EM::flush();
-
-        AlertContainer::push( "You are now logged in for {$cust->getName()}.", Alert::SUCCESS );
-
+        AlertContainer::push( "You are now logged in for {$cust->name}.", Alert::SUCCESS );
         return redirect()->to( "/" );
     }
-
 }

@@ -1,7 +1,9 @@
-<?php namespace IXP\Http\Middleware;
+<?php
+
+namespace IXP\Http\Middleware;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,11 +23,19 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Closure;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 
-class VerifyCsrfToken extends Middleware {
-
+/**
+ * Middleware: VerifyCsrfToken
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class VerifyCsrfToken extends Middleware
+{
     /**
      * Indicates whether the XSRF-TOKEN cookie should be set on the response.
      *

@@ -1,5 +1,4 @@
 <nav id="navbar-header" class="navbar navbar-expand-lg navbar-dark bg-dark">
-
     <button class="navbar-toggler d-block-sm d-md-none" type="button" id="sidebarCollapse" >
         <i id="menu-icon" class="fa fa-bars"></i>
     </button>
@@ -35,7 +34,6 @@
                 </div>
             </li>
 
-
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle center-dd-caret d-flex <?= !request()->is( 'lg', 'peering-matrix' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Peering
@@ -65,7 +63,6 @@
                     Statistics
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-
                     <a class="dropdown-item <?= !request()->is( 'statistics/ixp') ?: 'active' ?>" href="<?= route( 'statistics@ixp' ) ?>">
                         Overall Peering Graphs
                     </a>
@@ -83,12 +80,11 @@
                         <a class="dropdown-item <?= !request()->is( 'statistics/trunk' ) ?: 'active' ?>" href="<?= route('statistics@trunk') ?>">
                             Inter-Switch / PoP Graphs
                         </a>
-                    <?php elseif( count( $cbs = d2r( 'CoreBundle' )->getActive() ) ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'statistics/core-bundle' ) ?: 'active' ?>" href="<?= route('statistics@core-bundle', $cbs[0]->getId() ) ?>">
+                    <?php elseif( count( $cbs = \IXP\Models\CoreBundle::active()->get() ) ): ?>
+                        <a class="dropdown-item <?= !request()->is( 'statistics/core-bundle' ) ?: 'active' ?>" href="<?= route('statistics@core-bundle', $cbs->first()->id ) ?>">
                             Inter-Switch / PoP Graphs
                         </a>
                     <?php endif; ?>
-
 
                     <a class="dropdown-item <?= !request()->is( 'statistics/switch') ?: 'active' ?>" href="<?= route('statistics@switch') ?>">
                         Switch Aggregate Graphs
@@ -98,10 +94,10 @@
                     <a class="dropdown-item <?= !request()->is( 'statistics/members') ?: 'active' ?>" href="<?= route( 'statistics@members' ) ?>">
                         <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Graphs
                     </a>
+
                     <a class="dropdown-item <?= !request()->is( 'statistics/league-table') ?: 'active' ?>" href="<?= route( 'statistics@league-table' ) ?>">
                         League Table
                     </a>
-
 
                     <?php if( is_array( config( 'ixp_tools.weathermap', false ) ) ): ?>
                         <div class="dropdown-divider"></div>
@@ -119,7 +115,6 @@
                 </a>
             </li>
 
-
             <?= $this->insert('layouts/staff-links'); ?>
 
         </ul>
@@ -128,7 +123,7 @@
             <select id="menu-select-customer" type="select" name="id" class="chzn-select col-xl-7 col-lg-6">
                 <option></option>
                 <?php foreach( $t->dd_customer_id_name as $k => $i ): ?>
-                    <option value="<?= $k ?>"><?= $i ?></option>
+                    <option value="<?= $k ?>"><?= $i[ 'name' ] ?></option>
                 <?php endforeach; ?>
             </select>
         </form>
@@ -139,10 +134,13 @@
                     My Account
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right" id="my-account-dd">
+                    <a id="profile" class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">
+                      Profile
+                    </a>
 
-                    <a id="profile" class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">Profile</a>
-
-                    <a class="dropdown-item <?= !request()->is( 'api-key/list' ) ?: 'active' ?>" href="<?= route('api-key@list' )?>">API Keys</a>
+                    <a class="dropdown-item <?= !request()->is( 'api-key/list' ) ?: 'active' ?>" href="<?= route('api-key@list' )?>">
+                      API Keys
+                    </a>
 
                     <a id="active-sessions" class="dropdown-item <?= !request()->is( 'active-sessions/list' ) ?: 'active' ?>" href="<?= route('active-sessions@list' )?>">
                         Active Sessions
@@ -152,28 +150,26 @@
 
                     <a class="dropdown-item <?= !request()->is( 'customer-note/unread-notes' ) ?: 'active' ?>" href="<?= route( 'customerNotes@unreadNotes' ) ?>">Unread Notes</a>
 
-                    <?php if( count( Auth::getUser()->getCustomers() ) > 1 ): ?>
-
+                    <?php $customers = Auth::user()->customers;
+                        if( $customers->count() > 1 ):
+                            ?>
                         <div class="dropdown-divider"></div>
 
                         <h6 class="dropdown-header">
                             Switch to:
                         </h6>
 
-                        <?php foreach( Auth::getUser()->getCustomers() as $cust ): ?>
-
-                            <a id="switch-cust-<?= $cust->getId() ?>"
-                               class="dropdown-item <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: 'active cursor-default' ?>"
-                               <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: "onclick='return false;'" ?>
-                               href="<?= Auth::getUser()->getCustomer()->getId() == $cust->getId() ? '#' : route( 'switch-customer@switch' , [ "id" => $cust->getId() ]  ) ?>"
+                        <?php foreach( $customers as $cust ): ?>
+                            <a id="switch-cust-<?= $cust->id ?>"
+                               class="dropdown-item <?= Auth::user()->custid !== $cust->id ?: 'active cursor-default' ?>"
+                               <?= Auth::user()->custid !== $cust->id ?: "onclick='return false;'" ?>
+                               href="<?= Auth::user()->custid === $cust->id ? '#' : route( 'switch-customer@switch' , [ "cust" => $cust->id ] ) ?>"
                             >
-                                <?= $cust->getName() ?>
+                                <?= $cust->name ?>
                             </a>
 
                         <?php endforeach; ?>
-
                     <?php endif; ?>
-
 
                     <div class="dropdown-divider"></div>
 
@@ -182,7 +178,6 @@
                     <?php else: ?>
                         <a id="logout" class="dropdown-item" href="<?= route( 'login@logout' ) ?>">Logout</a>
                     <?php endif; ?>
-
                 </ul>
             </li>
 
@@ -194,6 +189,5 @@
                 <?php endif; ?>
             <li>
         </ul>
-
     </div>
 </nav>

@@ -241,7 +241,7 @@ class ConsoleServerConnectionController extends EloquentController
      */
     private function checkIsDuplicate( int $objectid = null, Request $request ): bool
     {
-        if( $cs = ConsoleServerConnection::where( "console_server_id" , $request->console_server_id  )->where( 'port' , $request->port )->get()->first() ) {
+        if( $cs = ConsoleServerConnection::where( "console_server_id" , $request->console_server_id  )->where( 'port' , $request->port )->first() ) {
             if( $objectid !== $cs->id ) {
                 AlertContainer::push( "This port is already used by this console server."   , Alert::DANGER );
                 return true;

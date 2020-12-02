@@ -1,7 +1,9 @@
-<?php namespace IXP\Http\Middleware;
+<?php
+
+namespace IXP\Http\Middleware;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,27 +22,25 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Auth, Closure;
 
+use Illuminate\Http\Request;
 
-use Auth;
-use Closure;
-use D2EM;
-
-use Illuminate\Contracts\Auth\Guard;
-
+use IXP\Models\ApiKey;
 /**
  * Middleware: ApiAuthenticate
  *
  * Check for IXP Manager token credentials with API access requests
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Providers
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class ApiAuthenticate {
-
+class ApiAuthenticate
+{
 	/**
 	 * Authenticate protected APIv4 calls
 	 *
@@ -49,53 +49,44 @@ class ApiAuthenticate {
 	 *     curl -X GET -H "X-IXP-Manager-API-Key: mySuperSecretApiKey" http://ixpv.dev/api/v4/test
 	 *     wget http://ixpv.dev/api/v4/test?apikey=mySuperSecretApiKey
 	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  \Closure  $next
+	 * @param   Request     $r
+	 * @param   Closure     $next
      *
 	 * @return mixed
      *
      * @throws
 	 */
-	public function handle($request, Closure $next)
+	public function handle( Request $r, Closure $next )
 	{
 		// are we already logged in?
 		if( !Auth::check() ) {
-
 			// find API key. Prefer header to URL:
 			$apikey = false;
-			if( $request->header('X-IXP-Manager-API-Key') ) {
-				$apikey = $request->header('X-IXP-Manager-API-Key');
-			} else if( $request->input('apikey') ) {
-				$apikey = $request->input('apikey');
+			if( $r->header('X-IXP-Manager-API-Key') ) {
+				$apikey = $r->header('X-IXP-Manager-API-Key');
+			} else if( $r->apikey ) {
+				$apikey = $r->apikey;
 			}
 
 			if( !$apikey ) {
 				return response('Unauthorized.', 401);
 	        }
 
-	        try {
-	            $key = D2EM::createQuery( "SELECT a FROM \\Entities\\ApiKey a WHERE a.apiKey = ?1" )
-                        ->setParameter( 1, $apikey )
-                        ->getSingleResult();
-	        } catch( \Doctrine\ORM\NoResultException $e ) {
-	            return response( 'Valid API key required', 403 );
-	        }
+            if( !( $key = ApiKey::where( 'apiKey', $apikey )->first() ) ) {
+                return response( 'Valid API key required', 403 );
+            }
 
-            if( $key->getExpires() !== null && now() > $key->getExpires() ){
+            if( $key->expires && now() > $key->expires ) {
                 return response( 'API key expired', 403 );
             }
 
-	        Auth::onceUsingId( $key->getUser()->getId() );
+            Auth::onceUsingId( $key->user_id );
 
-	        $key->setLastseenAt( new \DateTime() );
-	        $key->setLastseenFrom( ixp_get_client_ip() );
-	        D2EM::flush();
+            $key->update( [
+                'lastseenAt'    => now(),
+                'lastseenFrom'  => ixp_get_client_ip(),
+            ] );
 		}
-		
-		return $next($request);
+		return $next( $r );
 	}
-
-
-
-
 }

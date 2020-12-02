@@ -44,7 +44,7 @@ class DocstoreCustomerFilePolicy
      */
     public function download( UserEntity $user, DocstoreCustomerFile $file )
     {
-        return $user->isSuperUser() || ( $file->min_privs <= $user->getPrivs() && request()->user()->getCustomer()->getId() === $file->customer->id );
+        return $user->isSuperUser() || ( $file->min_privs <= $user->getPrivs() && request()->user()->custid === $file->customer->id );
     }
 
     /**
@@ -58,7 +58,7 @@ class DocstoreCustomerFilePolicy
      */
     public function view( UserEntity $user, DocstoreCustomerFile $file )
     {
-        return $user->isSuperUser() || ( $file->min_privs <= $user->getPrivs() && request()->user()->getCustomer()->getId() === $file->customer->id );
+        return $user->isSuperUser() || ( $file->min_privs <= $user->getPrivs() && request()->user()->custid === $file->customer->id );
     }
 
     /**

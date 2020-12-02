@@ -57,7 +57,7 @@ class RouterController extends Controller
      */
     public function genConfig( string $handle ): Response
     {
-        if( !( $router = Router::whereHandle( $handle )->get()->first() ) ) {
+        if( !( $router = Router::whereHandle( $handle )->first() ) ) {
             abort( 404, "Unknown router handle" );
         }
 
@@ -82,7 +82,7 @@ class RouterController extends Controller
      */
     public function getLastUpdated( string $handle ) : JsonResponse
     {
-        if( !( $r = Router::whereHandle( $handle )->get()->first() ) ) {
+        if( !( $r = Router::whereHandle( $handle )->first() ) ) {
             abort( 404, "Unknown router handle" );
         }
 
@@ -98,7 +98,7 @@ class RouterController extends Controller
      */
     public function setLastUpdated( string $handle ): JsonResponse
     {
-        if( !( $r = Router::whereHandle( $handle )->get()->first() ) ) {
+        if( !( $r = Router::whereHandle( $handle )->first() ) ) {
             abort( 404, "Unknown router handle" );
         }
 

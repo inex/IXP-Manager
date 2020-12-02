@@ -190,7 +190,7 @@ class NetworkInfoController extends EloquentController
     {
         $vlan = Vlan::find( $request->vlanid );
 
-        if( $ni = NetworkInfo::where( "vlanid" , $vlan->id  )->where( 'protocol' , $request->protocol )->get()->first() ) {
+        if( $ni = NetworkInfo::where( "vlanid" , $vlan->id  )->where( 'protocol' , $request->protocol )->first() ) {
             if( $objectid !== $ni->id ) {
                 AlertContainer::push( "Network information for this vlan (" . $vlan->name . ") and and protocol (ipv" . $request->protocol . ") already exists. Please edit that instead."   , Alert::DANGER );
                 return true;

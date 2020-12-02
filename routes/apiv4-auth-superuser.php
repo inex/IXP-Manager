@@ -49,11 +49,11 @@ Route::group( [  'prefix' => 'customer' ], function() {
 // Patch Panel Port
 //
 Route::group( [  'prefix' => 'patch-panel-port' ], function() {
-    Route::group( [  'namespace' => 'PatchPanel\Port' ], function() {
-        Route::delete(  'file/delete/{file}',           'FileController@delete'           );
-        Route::delete(  'file/delete-history/{file}',   'FileController@deleteHistory'    );
-        Route::post(    'file/toggle-privacy/{file}',   'FileController@togglePrivacy'    )->name( 'patch-panel-port-file@toogle-privacy' );
-    });
+//    Route::group( [  'namespace' => 'PatchPanel\Port' ], function() {
+//        Route::delete(  'file/delete/{file}',           'FileController@delete'           );
+//        Route::delete(  'file/delete-history/{file}',   'FileController@deleteHistory'    );
+//        Route::post(    'file/toggle-privacy/{file}',   'FileController@togglePrivacy'    )->name( 'patch-panel-port-file@toogle-privacy' );
+//    });
 
     Route::get(  '{ppp}',                           'PatchPanelPortController@detail'       );
     Route::get(  'deep/{ppp}',                      'PatchPanelPortController@detailDeep'   );

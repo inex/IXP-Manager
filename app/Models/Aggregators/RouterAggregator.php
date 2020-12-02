@@ -119,7 +119,7 @@ class RouterAggregator extends Router
     {
         $routers = self::whereNotNull( 'api' )
             ->where( 'api_type', 1 )
-            ->where( 'lg_access', '<=', $user ? $user->getPrivs() : User::AUTH_PUBLIC )
+            ->where( 'lg_access', '<=', $user ? $user->privs() : User::AUTH_PUBLIC )
             ->when( !$user, function( Builder $q ) {
                 return $q->where( 'quarantine', false );
             } )
@@ -157,7 +157,7 @@ class RouterAggregator extends Router
 //            ->leftJoin( 'infrastructure as i', 'i.id', 'v.infrastructureid' )
             whereNotNull( 'api' )
             ->where( 'api_type', 1 )
-            ->where( 'lg_access', '<=', $user ? $user->getPrivs() : User::AUTH_PUBLIC )
+            ->where( 'lg_access', '<=', $user ? $user->privs() : User::AUTH_PUBLIC )
             ->when( !$user, function( Builder $q ) {
                 return $q->where( 'quarantine', false );
             } )

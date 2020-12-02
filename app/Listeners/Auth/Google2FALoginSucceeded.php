@@ -22,13 +22,24 @@ namespace IXP\Listeners\Auth;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Auth;
 
-use Auth, D2EM;
 use Illuminate\Auth\Recaller;
+
+use IXP\Models\UserRememberToken;
+
 use PragmaRX\Google2FALaravel\Events\LoginSucceeded;
 
-class Google2FALoginSucceeded {
-
+/**
+ * Google2FALoginSucceeded Listener
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   Listeners\Auth
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class Google2FALoginSucceeded
+{
     /**
      * Handle a Google2FA login event.
      *
@@ -37,20 +48,17 @@ class Google2FALoginSucceeded {
      * is possibly for a user to avoid 2da by deleting the session cookie and forcing a remember me login.
      *
      * @param  LoginSucceeded  $e
+     *
      * @return void
      */
-    public function handle( LoginSucceeded $e )
+    public function handle( LoginSucceeded $e ): void
     {
-        if( $r = request()->cookies->get(Auth::getRecallerName()) ) {
+        if( $r = request()->cookies->get( Auth::getRecallerName() ) ) {
+            $recaller = new Recaller( $r );
+            $urt = UserRememberToken::where( 'token',  $recaller->token() )->first();
 
-            $recaller = new Recaller($r);
-
-            /** @var \Entities\UserRememberToken $urt */
-            $urt = d2r( 'UserRememberToken' )->findOneBy( [ 'token' => $recaller->token() ] );
-
-            if( $urt && !$urt->getIs2faComplete() ) {
-                $urt->setIs2faComplete(true);
-                D2EM::flush($urt);
+            if( $urt && !$urt->is_2fa_complete ) {
+                $urt->update( [ 'is_2fa_complete' => true ] );
             }
         }
     }

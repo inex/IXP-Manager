@@ -185,7 +185,7 @@ class LocationController extends EloquentController
             'shortname' => [
                 'required', 'string', 'max:255',
                 function ($attribute, $value, $fail) use( $request ) {
-                    $location = Location::whereShortname( $value )->get()->first();
+                    $location = Location::whereShortname( $value )->first();
                     if( $location && $location->exists() && $location->id !== (int)$request->id ) {
                         return $fail( 'The shortname has already been taken' );
                     }

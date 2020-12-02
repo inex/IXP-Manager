@@ -190,7 +190,7 @@ class RequestPeeringManager extends Mailable
             $this->to( config( "ixp.peering_manager.testemail" ), "Test Email" );
 
         } else {
-            $user = User::find( Auth::getUser()->getId() );
+            $user = User::find( Auth::id() );
             if( $sendtome ) {
                 $this->to  = [];
                 $this->cc  = [];

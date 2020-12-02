@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,7 +22,6 @@
  */
 
 // Front end config options for IXP Manager
-
 return [
 
     /*
@@ -57,7 +56,6 @@ return [
     | "%a [AS%j]"
     */
     'customer_name_format' => "%a (AS%i)",
-
 
     /*
      * Customer or Member?
@@ -103,7 +101,6 @@ return [
         'beta' => [
             'core_bundles' => env( 'IXP_FE_BETA_CORE_BUNDLES', false ),
         ],
-
     ],
 
 
@@ -126,7 +123,7 @@ return [
     |                                      logged in users may see their prefixes.
     */
     'rs-prefixes' => [
-        'access'  => env( 'IXP_FE_RS_PREFIXES_ACCESS', Entities\User::AUTH_SUPERUSER ),
+        'access'  => env( 'IXP_FE_RS_PREFIXES_ACCESS', \IXP\Models\User::AUTH_SUPERUSER ),
     ],
 
 
@@ -197,9 +194,7 @@ return [
     |
     */
     'admin_dashboard' => [
-
         'default_graph_period'       => env( 'IXP_FE_ADMIN_DASHBOARD_DEFAULT_GRAPH_PERIOD', 'week' ),
-
     ],
 
     /*
@@ -209,9 +204,7 @@ return [
    |
    */
     'login_history' => [
-
         'enabled'       => env( 'IXP_FE_LOGIN_HISTORY_ENABLED', true ),
-
     ],
 
     /*
@@ -229,7 +222,6 @@ return [
 
         // maximum API keys per user
         'max_keys'        => env( 'IXP_FE_API_KEYS_MAX', 10 ),
-
     ],
 
     /*
@@ -241,5 +233,4 @@ return [
     'vlaninterfaces' => [
         'hostname_required'  => env( 'IXP_FE_VLANINTERFACES_HOSTNAME_REQUIRED', true ),
     ],
-
 ];

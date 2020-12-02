@@ -79,7 +79,7 @@ class Profile extends FormRequest
     {
         $validator->after( function( $validator ) {
 
-            if( !Hash::check( $this->input( "actual_password" ), Auth::getUser()->getPassword() ) ){
+            if( !Hash::check( $this->input( "actual_password" ), Auth::user()->password ) ){
                 $validator->errors()->add( 'actual_password', 'The current password is incorrect.');
                 return false;
             }

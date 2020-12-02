@@ -43,7 +43,7 @@ class BillingInformation extends FormRequest
      */
     public function authorize()
     {
-        return Auth::getUser()->isSuperUser();
+        return Auth::user()->superUser();
     }
 
     /**

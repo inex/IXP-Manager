@@ -1,7 +1,9 @@
-<?php namespace IXP\Http\Middleware;
+<?php
+
+namespace IXP\Http\Middleware;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,17 +22,25 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Auth, Closure;
 
-use Auth, Closure, D2EM;
-use Illuminate\Auth\Recaller;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Http\Request;
 
-use Entities\{
-    CustomerToUser as CustomerToUserEntity
-};
+use IXP\Models\CustomerToUser;
 
-class Authenticate {
-
+/**
+ * Middleware: Ensure authentification
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yannr Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Doctrine2Frontend
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class Authenticate
+{
 	/**
 	 * The Guard implementation.
 	 *
@@ -42,9 +52,10 @@ class Authenticate {
 	 * Create a new filter instance.
 	 *
 	 * @param  Guard  $auth
+     *
 	 * @return void
 	 */
-	public function __construct(Guard $auth)
+	public function __construct( Guard $auth )
 	{
 		$this->auth = $auth;
 	}
@@ -52,32 +63,25 @@ class Authenticate {
 	/**
 	 * Handle an incoming request.
 	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  \Closure  $next
+	 * @param   Request     $r
+	 * @param   Closure     $next
+     *
 	 * @return mixed
 	 */
-	public function handle($request, Closure $next)
+	public function handle( Request $r, Closure $next )
 	{
-
-		if ($this->auth->guest())
-		{
-			if ($request->ajax())
-			{
+		if( $this->auth->guest() ) {
+			if( $r->ajax() ) {
 				return response('Unauthorized.', 401);
 			}
-			else
-			{
-				return redirect()->guest(route( "login@showForm" ) );
-			}
+			return redirect()->guest(route( "login@showForm" ) );
 		}
 
-
-        if( !Auth::user()->getCustomer() || !D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => Auth::user() , "customer" => Auth::user()->getCustomer() ] ) ){
+        if( !Auth::user()->customer || !CustomerToUser::where( [ 'user_id' => Auth::id()  ] )->where( [ 'customer_id' => Auth::user()->custid ] )->first() ){
             Auth::logout();
             return redirect()->guest(route( "login@showForm" ) );
         }
 
-		return $next($request);
+		return $next( $r );
 	}
-
 }

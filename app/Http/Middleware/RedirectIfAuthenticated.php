@@ -1,7 +1,8 @@
-<?php namespace IXP\Http\Middleware;
+<?php
+namespace IXP\Http\Middleware;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,11 +23,13 @@
  */
 
 use Closure;
+
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
-class RedirectIfAuthenticated {
-
+class RedirectIfAuthenticated
+{
 	/**
 	 * The Guard implementation.
 	 *
@@ -40,7 +43,7 @@ class RedirectIfAuthenticated {
 	 * @param  Guard  $auth
 	 * @return void
 	 */
-	public function __construct(Guard $auth)
+	public function __construct( Guard $auth )
 	{
 		$this->auth = $auth;
 	}
@@ -48,18 +51,17 @@ class RedirectIfAuthenticated {
 	/**
 	 * Handle an incoming request.
 	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  \Closure  $next
+	 * @param   Request     $r
+	 * @param   Closure     $next
+     *
 	 * @return mixed
 	 */
-	public function handle($request, Closure $next)
+	public function handle( Request $r, Closure $next)
 	{
-		if ($this->auth->check())
-		{
+		if( $this->auth->check() ) {
 			return new RedirectResponse( url('') );
 		}
 
-		return $next($request);
+		return $next( $r );
 	}
-
 }

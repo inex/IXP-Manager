@@ -167,7 +167,7 @@ class InfrastructureController extends Eloquent2Frontend
             'name' => [
                 'required', 'string', 'max:255',
                 function ($attribute, $value, $fail) use( $request ) {
-                    $infra = Infrastructure::whereName( $value )->get()->first();
+                    $infra = Infrastructure::whereName( $value )->first();
                     if( $infra && $infra->exists() && $infra->id !== (int)$request->id ) {
                         return $fail( 'The name has already been taken.' );
                     }

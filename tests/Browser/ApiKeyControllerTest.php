@@ -72,7 +72,7 @@ class ApiKeyControllerTest extends DuskTestCase
                 ->assertSee( "API key created:" );
 
 
-            $apiKey = ApiKey::whereId( 5 )->get()->first();
+            $apiKey = ApiKey::whereId( 5 )->first();
 
             // 2. Check the api key
             $this->assertInstanceOf( ApiKey::class, $apiKey );

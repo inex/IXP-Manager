@@ -80,7 +80,7 @@ class PeeringManagerController extends Controller
         }
 
         $protos = [ 4, 6 ];
-        $c      = Customer::find( Auth::getUser()->getCustomer()->getId() );
+        $c      = Customer::find( Auth::user()->custid );
         $vlans  = Vlan::peeringManager()->orderBy( 'number' )->get();
         $peers  = CustomerAggregator::getPeeringManagerArrayByType( $c , $vlans, $protos ) ?? false;
 
@@ -127,7 +127,7 @@ class PeeringManagerController extends Controller
                 // potential peerings
                 $pp = [];
                 $count = 0;
-                $cust = Customer::find( Auth::getUser()->getCustomer()->getId() );
+                $cust = Customer::find( Auth::user()->custid );
 
                 foreach( $cust->virtualInterfaces as $myvis ) {
                     foreach( $myvis->vlanInterfaces as $vli ) {
@@ -147,11 +147,11 @@ class PeeringManagerController extends Controller
                 Former::populate( [
                     'to'             => $peer->peeringemail,
                     'cc'             => $cust->peeringemail,
-                    'bcc'            => User::find( Auth::getUser()->getId() )->email,
+                    'bcc'            => User::find( Auth::id() )->email,
                     'subject'        => "[" . config( "identity.orgname" ) . "] Peering Request from " . $cust->name . " (ASN" . $cust->autsys . ")",
                 ] );
             } else {
-                $peeringManager = $this->loadPeeringManager( Customer::find( Auth::getUser()->getCustomer()->getId() ), $peer );
+                $peeringManager = $this->loadPeeringManager( Customer::find( Auth::user()->custid ), $peer );
             }
         }
 
@@ -179,8 +179,8 @@ class PeeringManagerController extends Controller
 
         $marksent = $r->marksent;
         $sendtome = $r->sendtome;
-        $user = User::find( Auth::getUser()->getId() );
-        $cust = Customer::find( Auth::getUser()->getCustomer()->getId() );
+        $user = User::find( Auth::id() );
+        $cust = Customer::find( Auth::user()->custid );
 
         try {
             if( !$marksent ){
@@ -234,7 +234,7 @@ class PeeringManagerController extends Controller
     public function peeringNotes( Request $r ): JsonResponse
     {
         $peer = Customer::findOrFail( $r->peerid );
-        $cust = Customer::find( Auth::getUser()->getCustomer()->getId() );
+        $cust = Customer::find( Auth::user()->custid );
         $pm = $this->loadPeeringManager( $cust , $peer );
 
         if( trim( stripslashes( $r->input( 'notes' ) ) ) ) {
@@ -258,7 +258,7 @@ class PeeringManagerController extends Controller
     public function markPeering( int $custid, string $status ): RedirectResponse
     {
         $peer = Customer::findOrFail( $custid );
-        $pm = $this->loadPeeringManager( Customer::find( Auth::getUser()->getCustomer()->getId() ), $peer );
+        $pm = $this->loadPeeringManager( Customer::find( Auth::user()->custid ), $peer );
 
         if( $status === "peered" ) {
             $pm->peered = !$pm->peered;
@@ -296,7 +296,7 @@ class PeeringManagerController extends Controller
      */
     private function loadPeeringManager( Customer $cust, Customer $peer ): PeeringManager
     {
-        if( !( $pm = PeeringManager::where( 'custid' , $cust->id )->where( 'peerid' , $peer->id )->get()->first() ) ){
+        if( !( $pm = PeeringManager::where( 'custid' , $cust->id )->where( 'peerid' , $peer->id )->first() ) ){
             $pm = PeeringManager::create(
                 [
                     'note'      => '',

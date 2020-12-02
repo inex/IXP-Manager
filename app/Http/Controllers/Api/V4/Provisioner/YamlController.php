@@ -114,7 +114,7 @@ class YamlController extends Controller
      */
     public function forSwitchByName( string $switchname, string $format ): Response
     {
-        if( !( $switch = Switcher::whereName( $switchname )->get()->first()  ) ) {
+        if( !( $switch = Switcher::whereName( $switchname )->first()  ) ) {
             abort( 404, "Unknown switch" );
         }
 
@@ -156,7 +156,7 @@ class YamlController extends Controller
      */
     public function vlansForSwitchByName( string $switchname, string $format ): Response
     {
-        if( !( $switch = Switcher::whereName( $switchname )->get()->first()  ) ) {
+        if( !( $switch = Switcher::whereName( $switchname )->first()  ) ) {
             abort( 404, "Unknown switch" );
         }
 
@@ -204,7 +204,7 @@ class YamlController extends Controller
      */
     public function showSwitchByName( string $switchname, string $format ): Response
     {
-        if( !( $switch = Switcher::whereName( $switchname )->get()->first()  ) ) {
+        if( !( $switch = Switcher::whereName( $switchname )->first()  ) ) {
             abort( 404, "Unknown switch" );
         }
 
@@ -307,7 +307,7 @@ class YamlController extends Controller
      */
     public function coreLinkForSwitchByName( string $switchname, string $format ): Response
     {
-        if( !( $switch = Switcher::whereName( $switchname )->get()->first()  ) ) {
+        if( !( $switch = Switcher::whereName( $switchname )->first()  ) ) {
             abort( 404, "Unknown switch" );
         }
 
@@ -399,7 +399,7 @@ class YamlController extends Controller
      */
     public function bgpForSwitchByName( string $switchname, string $format ): Response
     {
-        if( !( $switch = Switcher::whereName( $switchname )->get()->first()  ) ) {
+        if( !( $switch = Switcher::whereName( $switchname )->first()  ) ) {
             abort( 404, "Unknown switch" );
         }
 

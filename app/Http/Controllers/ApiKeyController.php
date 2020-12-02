@@ -115,7 +115,7 @@ class ApiKeyController extends EloquentController
         // phpunit / artisan trips up here without the cli test:
         if( PHP_SAPI !== 'cli' ) {
             // custom access controls:
-            switch( Auth::check() ? Auth::user()->getPrivs() : User::AUTH_PUBLIC ) {
+            switch( Auth::check() ? Auth::user()->privs() : User::AUTH_PUBLIC ) {
                 case User::AUTH_SUPERUSER:
                 case User::AUTH_CUSTUSER || User::AUTH_CUSTADMIN:
                     break;
@@ -152,7 +152,7 @@ class ApiKeyController extends EloquentController
     protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
-        return ApiKey::where( 'user_id', Auth::user()->getId() )
+        return ApiKey::where( 'user_id', Auth::id() )
             ->when( $id , function( Builder $q, $id ) {
                 return $q->where('id', $id );
             } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
@@ -272,7 +272,7 @@ class ApiKeyController extends EloquentController
      */
     public function listShowKeys( Request $r ): View
     {
-        if( !Hash::check( $r->pass , $r->user()->getPassword() ) ) {
+        if( !Hash::check( $r->pass , $r->user()->password ) ) {
             AlertContainer::push( 'Incorrect password entered', Alert::DANGER );
         } else {
             AlertContainer::push( 'API keys are visible for this request only. You will need to re-enter your password to view them again.', Alert::SUCCESS );

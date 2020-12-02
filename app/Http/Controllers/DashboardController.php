@@ -81,11 +81,11 @@ class DashboardController extends Controller
     {
 
         // Redirect Super user
-        if( Auth::getUser()->isSuperUser() ){
+        if( Auth::user()->superUser() ){
             return Redirect::to( '/');
         }
 
-        $c = Auth::getUser()->getCustomer();
+        $c = Auth::user()->customer;
         $grapher = null;
 
         if( !$c->isTypeAssociate() ) {
@@ -155,12 +155,11 @@ class DashboardController extends Controller
      */
     public function storeNocDetails( NocDetailsRequest $r )
     {
-        if( Auth::getUser()->isCustUser() ){
+        if( Auth::user()->custUser() ){
             abort( 403, 'Insufficient Permissions.' );
         }
 
-        /** @var CustomerEntity $c */
-        $c = Auth::getUser()->getCustomer();
+        $c = Auth::user()->customer;
 
         $c->setNocphone(        $r->input( 'nocphone'       ) );
         $c->setNoc24hphone(     $r->input( 'noc24hphone'    ) );
@@ -168,7 +167,7 @@ class DashboardController extends Controller
         $c->setNochours(        $r->input( 'nochours'       ) );
         $c->setNocwww(          $r->input( 'nocwww'         ) );
         $c->setLastupdated(     new DateTime() );
-        $c->setLastupdatedby(   Auth::getUser()->getId() );
+        $c->setLastupdatedby(   Auth::id() );
 
         D2EM::flush();
 
@@ -188,12 +187,12 @@ class DashboardController extends Controller
      */
     public function storeBillingDetails( BillingDetailsRequest $r ){
 
-        if( Auth::getUser()->isCustUser() ){
+        if( Auth::user()->custUser() ){
             abort( 403, 'Insufficient Permissions.' );
         }
 
         /** @var CustomerEntity $c */
-        $c = Auth::getUser()->getCustomer();
+        $c = Auth::user()->customer;
 
         $cbd  = $c->getBillingDetails();
         $ocbd = clone $c->getBillingDetails();

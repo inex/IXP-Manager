@@ -288,7 +288,7 @@ abstract class Common extends Controller
         $addressValue = $r->input( $iptype . 'address' );
 
         if( trim( $addressValue ) ) {
-            if( !( $ip = $model::where( 'vlanid', $v->id)->where( 'address', $addressValue )->get()->first() ) ) {
+            if( !( $ip = $model::where( 'vlanid', $v->id)->where( 'address', $addressValue )->first() ) ) {
                 $ip = new $model;
                 $ip->vlanid  = $v->id;
                 $ip->address = $addressValue;

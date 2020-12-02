@@ -216,7 +216,7 @@ class ConsoleServerController extends EloquentController
             'name' => [
                 'required', 'string', 'max:255',
                 function ($attribute, $value, $fail) use( $request ) {
-                    $cs = ConsoleServer::whereName( $value )->get()->first();
+                    $cs = ConsoleServer::whereName( $value )->first();
                     if( $cs && $cs->exists() && $cs->id !== (int)$request->id ) {
                         return $fail( 'The name must be unique.' );
                     }

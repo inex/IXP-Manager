@@ -61,4 +61,15 @@ class UserLoginHistory extends Model
      */
     protected $table = 'user_logins';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'ip',
+        'at',
+        'customer_to_user_id',
+        'via',
+    ];
 }

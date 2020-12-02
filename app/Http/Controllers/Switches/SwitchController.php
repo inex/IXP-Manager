@@ -446,7 +446,7 @@ class SwitchController extends EloquentController
             // Store the platform in session to be able to get back the information when we will create the object
             $request->session()->put( "snmp-platform", $snmp->getPlatform() );
 
-            if( $v = Vendor::whereName( $vendor )->get()->first() ) {
+            if( $v = Vendor::whereName( $vendor )->first() ) {
                 $vendorid = $v->id;
             }
         } catch( SNMPException $e ) {
@@ -492,7 +492,7 @@ class SwitchController extends EloquentController
             'name' => [
                 'required', 'string', 'max:255',
                 function ($attribute, $value, $fail) use( $request ) {
-                    $switcher = Switcher::whereName( $value )->get()->first();
+                    $switcher = Switcher::whereName( $value )->first();
                     if( $switcher && $switcher->exists() && $switcher->id !== (int)$request->id ) {
                         return $fail( 'The name must be unique.' );
                     }
@@ -501,7 +501,7 @@ class SwitchController extends EloquentController
             'hostname' => [
                 'required', 'string', 'max:255', new IdnValidate(),
                 function ($attribute, $value, $fail) use( $request ) {
-                    $switcher = Switcher::whereHostname( $value )->get()->first();
+                    $switcher = Switcher::whereHostname( $value )->first();
                     if( $switcher && $switcher->exists() && $switcher->id !== (int)$request->id ) {
                         return $fail( 'The hostname must be unique.' );
                     }
@@ -536,7 +536,7 @@ class SwitchController extends EloquentController
             'loopback_ip' => [
                 'nullable', 'string', 'max:255',
                 function ($attribute, $value, $fail) use( $request ) {
-                    $switcher = Switcher::whereLoopbackIp( $value )->get()->first();
+                    $switcher = Switcher::whereLoopbackIp( $value )->first();
                     if( $switcher && $switcher->exists() && $switcher->id !== (int)$request->id ) {
                         return $fail( 'The loopback IP must be unique.' );
                     }

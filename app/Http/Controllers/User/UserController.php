@@ -92,7 +92,7 @@ class UserController extends Controller
      * @return  array
      */
     private function getListData( $id = null ) {
-        return Auth::getUser()->isSuperUser() ? D2EM::getRepository( UserEntity::class )->getAllForFeListSuperUser( $id ) : D2EM::getRepository( UserEntity::class )->getAllForFeListCustAdmin( Auth::getUser(), $id );
+        return Auth::user()->superUser() ? D2EM::getRepository( UserEntity::class )->getAllForFeListSuperUser( $id ) : D2EM::getRepository( UserEntity::class )->getAllForFeListCustAdmin( Auth::getUser(), $id );
     }
 
     /**

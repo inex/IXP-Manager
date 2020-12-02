@@ -42,7 +42,7 @@
                     <th>
                         Email
                     </th>
-                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                    <?php if( Auth::user()->superUser() ): ?>
                         <th>
                             <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
                         </th>
@@ -79,7 +79,7 @@
                                 <?= $t->ee( $u[ "email" ] ) ?>
                             </td>
 
-                            <?php if( Auth::getUser()->isSuperUser() ): ?>
+                            <?php if( Auth::user()->superUser() ): ?>
                                 <td>
                                     <?php if( $u['nbC2U'] > 1 ) : ?>
                                         <a href="<?= route( "user@edit" , [ "id" => $u[ 'id' ] ] ) ?>" class="badge badge-info"> Multiple (<?= $u['nbC2U'] ?>)</a>
@@ -121,7 +121,7 @@
                                         <i class="fa fa-pencil"></i>
                                     </a>
 
-                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                    <?php if( Auth::user()->superUser() ): ?>
                                         <a class="btn btn-white d2f-list-delete" id='d2f-list-delete-<?= $u[ 'id' ] ?>' data-nb-c2u="<?= $u[ 'nbC2U' ] ?>" href="<?= route( 'user@delete' )  ?>" title="Delete">
                                             <i class="fa fa-trash"></i>
                                         </a>
@@ -131,7 +131,7 @@
                                         </a>
                                     <?php endif; ?>
 
-                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                    <?php if( Auth::user()->superUser() ): ?>
                                         <button id="d2f-more-options-<?= $u[ 'id' ] ?>" type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-right">
@@ -147,7 +147,7 @@
                                             <a class="dropdown-item" href="<?= route( "login-history@view",     [ 'id' => $u['id'] ]   )    ?>">
                                                 Login history
                                             </a>
-                                            <a id="d2f-option-login-as-<?= $u[ 'id' ] ?>" class="dropdown-item <?= $u[ 'disabled' ] || Auth::getUser()->getId() == $u['id'] ? "disabled" : "" ?>" href="<?= route( "switch-user@switch", [ "id" => $u['id'] ] ) ?>">
+                                            <a id="d2f-option-login-as-<?= $u[ 'id' ] ?>" class="dropdown-item <?= $u[ 'disabled' ] || Auth::id()  == $u['id'] ? "disabled" : "" ?>" href="<?= route( "switch-user@switch", [ "user" => $u['id'] ] ) ?>">
                                                 Login as
                                             </a>
 

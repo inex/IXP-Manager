@@ -1652,7 +1652,7 @@
          * We need to override so we can /immediately/ log out users if the current user session
          * was deleted (by the user) from another session.
          *
-         * @return \Entities\User|null 
+         * @return \IXP\Services\Auth\AuthenticatableContract|null 
          * @static 
          */ 
         public static function user()
@@ -1687,7 +1687,7 @@
          * Log the given user ID into the application without sessions or cookies.
          *
          * @param mixed $id
-         * @return \Entities\User|false 
+         * @return \IXP\Models\User|false 
          * @static 
          */ 
         public static function onceUsingId($id)
@@ -1751,7 +1751,7 @@
          *
          * @param mixed $id
          * @param bool $remember
-         * @return \Entities\User|false 
+         * @return \IXP\Models\User|false 
          * @static 
          */ 
         public static function loginUsingId($id, $remember = false)
@@ -1824,7 +1824,7 @@
                     /**
          * Get the last user we attempted to authenticate.
          *
-         * @return \Entities\User 
+         * @return \IXP\Models\User 
          * @static 
          */ 
         public static function getLastAttempted()
@@ -1926,7 +1926,7 @@
                     /**
          * Return the currently cached user.
          *
-         * @return \Entities\User|null 
+         * @return \IXP\Models\User|null 
          * @static 
          */ 
         public static function getUser()
@@ -1972,7 +1972,7 @@
                     /**
          * Determine if current user is authenticated. If not, throw an exception.
          *
-         * @return \Entities\User 
+         * @return \IXP\Models\User 
          * @throws \Illuminate\Auth\AuthenticationException
          * @static 
          */ 
@@ -7724,6 +7724,10 @@
             /**
      * 
      *
+     * @method static \Illuminate\Redis\Limiters\ConcurrencyLimiterBuilder funnel(string $name)
+     * @method static \Illuminate\Redis\Limiters\DurationLimiterBuilder throttle(string $name)
+     * @see \Illuminate\Redis\RedisManager
+     * @see \Illuminate\Contracts\Redis\Factory
      */ 
         class Redis {
                     /**

@@ -34,7 +34,7 @@ class InfrastructureControllerTest extends DuskTestCase
      */
     public function tearDown(): void
     {
-        if( $infra = Infrastructure::whereName( 'Infrastructure PHPUnit' )->get()->first() ) {
+        if( $infra = Infrastructure::whereName( 'Infrastructure PHPUnit' )->first() ) {
             $infra->delete();
         }
         parent::tearDown();
@@ -97,7 +97,7 @@ class InfrastructureControllerTest extends DuskTestCase
                     ->assertSee( "Infrastructure PHPUnit" )
                     ->assertSee( "phpunit" );
 
-            $infra = Infrastructure::whereName( 'Infrastructure PHPUnit' )->get()->first();
+            $infra = Infrastructure::whereName( 'Infrastructure PHPUnit' )->first();
 
             // 2. test added data in database against expected values
             $this->assertInstanceOf( Infrastructure::class, $infra );

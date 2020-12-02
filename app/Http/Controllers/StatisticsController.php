@@ -134,7 +134,7 @@ class StatisticsController extends Controller
         $infras     = Infrastructure::select( [ 'name', 'id' ] )
             ->orderBy( 'name' )
             ->get()->keyBy( 'id' )->toArray();
-        $infra      = Infrastructure::whereId( isset( $infras[ $infraid ] ) ? $infraid : array_keys( $infras )[0] )->get()->first();
+        $infra      = Infrastructure::whereId( isset( $infras[ $infraid ] ) ? $infraid : array_keys( $infras )[0] )->first();
         $category   = Graph::processParameterCategory( $category, true );
 
         $graph      = App::make( Grapher::class )
@@ -175,7 +175,7 @@ class StatisticsController extends Controller
             abort( 404, 'No VLANs available for graphing' );
         }
 
-        $vlan     = Vlan::whereId( isset( $vlans[ $vlanid ] ) ? $vlanid : array_keys( $vlans )[0] )->get()->first();
+        $vlan     = Vlan::whereId( isset( $vlans[ $vlanid ] ) ? $vlanid : array_keys( $vlans )[0] )->first();
         $graph    = App::make( Grapher::class )
             ->vlan( $vlan )->setType( Graph::TYPE_PNG )
             ->setProtocol( $protocol )->setCategory( $category );
@@ -212,7 +212,7 @@ class StatisticsController extends Controller
         $switches = Switcher::where( 'active', true )->orderBy( 'name' )->get()->keyBy( 'id' )->toArray();
         $category = Graph::processParameterCategory( $category, true );
 
-        $switch   = Switcher::whereId( isset( $switches[ $switchid ] ) ? $switchid : array_keys( $switches )[0] )->get()->first();
+        $switch   = Switcher::whereId( isset( $switches[ $switchid ] ) ? $switchid : array_keys( $switches )[0] )->first();
         $graph    = App::make( Grapher::class )->switch( $switch )->setType( Graph::TYPE_PNG )->setProtocol( Graph::PROTOCOL_ALL )->setCategory( $category );
 
         $graph->authorise();

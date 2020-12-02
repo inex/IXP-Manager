@@ -1,7 +1,9 @@
 <?php
 
+namespace IXP\Providers;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,9 +22,6 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-namespace IXP\Providers;
-
 // based on: https://github.com/franzliedke/laravel-plates
 
 use Illuminate\Support\ServiceProvider;
@@ -35,18 +34,16 @@ use View;
 
 class FoilServiceProvider extends ServiceProvider
 {
-
     /**
      * Register the service provider.
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $app = $this->app;
 
-        $app->singleton('Foil\Engine', function () use ($app) {
-
+        $app->singleton( \Foil\Engine::class, function () use ( $app ) {
             $engine = \Foil\engine([
                 'folders'          => config('view.paths'),
                 'ext'              => 'foil.php',
@@ -60,14 +57,12 @@ class FoilServiceProvider extends ServiceProvider
             return $engine;
         });
 
-        $app->resolving('view', function($view) use ($app) {
-
-            $engine = new Engine($app->make('Foil\Engine'));
+        $app->resolving('view', function($view) use ( $app ) {
+            $engine = new Engine($app->make( \Foil\Engine::class ));
 
             // we have a few rendering functions we want to include here:
             $engine->engine()->loadExtension( new IXPFoilExtensions(), [ 'alerts' ] );
             $engine->engine()->loadExtension( new BirdFoilExtensions(), [] );
-
 
             $view->addExtension('foil.php', 'foil', function() use ($app, $engine) {
                 return $engine;
@@ -78,5 +73,4 @@ class FoilServiceProvider extends ServiceProvider
             });
         });
     }
-
 }

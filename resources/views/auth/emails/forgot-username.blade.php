@@ -9,7 +9,7 @@ The usernames linked to your account are:
 
 @foreach( $users as $user )
 
-* {{ $user->getUsername() }} (for *{{ $user->getCustomer()->getName() }}*)
+* {{ $user->username }} (for *{{ $user->customer->name }}*)
 
 @endforeach
 

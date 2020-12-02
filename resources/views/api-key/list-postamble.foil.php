@@ -75,7 +75,7 @@
             </dd>
 
 
-            <?php if( Auth::user()->isSuperUser() ): ?>
+            <?php if( Auth::user()->superUser() ): ?>
 
                 <dt>Automated Provisioning</dt>
                 <dd>

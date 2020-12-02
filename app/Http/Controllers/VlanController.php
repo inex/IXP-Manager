@@ -224,7 +224,7 @@ class VlanController extends EloquentController
      */
     private function checkIsDuplicate( Request $request, int $objectid = null ): bool
     {
-        if( $vlanFound = Vlan::where( 'infrastructureid', $request->infrastructureid )->where( 'config_name', $request->input( 'config_name' ) )->get()->first() ){
+        if( $vlanFound = Vlan::where( 'infrastructureid', $request->infrastructureid )->where( 'config_name', $request->input( 'config_name' ) )->first() ){
             if( $objectid !== $vlanFound->id ) {
                 AlertContainer::push( "The couple Infrastructure and config name already exist.", Alert::DANGER );
                 return true;

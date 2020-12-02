@@ -67,7 +67,7 @@ class SwitchPortControllerTest extends DuskTestCase
                 ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
                 ->get()->toArray();
 
-            $sp = SwitchPort::whereId( reset($sps )[ "id" ] )->get()->first();
+            $sp = SwitchPort::whereId( reset($sps )[ "id" ] )->first();
 
             $this->assertInstanceOf( SwitchPort::class, $sp );
 
@@ -96,7 +96,7 @@ class SwitchPortControllerTest extends DuskTestCase
                     ->assertPathIs( "/switch-port/list" )
                     ->assertSee( "Switch Port created" );
 
-                $newSp = SwitchPort::whereName( 'travistest1' )->get()->first();
+                $newSp = SwitchPort::whereName( 'travistest1' )->first();
 
                 // test added data in database against expected values
                 $this->assertInstanceOf( SwitchPort::class, $newSp );

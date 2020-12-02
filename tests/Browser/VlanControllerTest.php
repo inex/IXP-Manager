@@ -37,7 +37,7 @@ class VlanControllerTest extends DuskTestCase
     public function tearDown(): void
     {
         foreach( [ 'Vlan test', 'Vlan test2' ] as $name ) {
-            if( $vlan = Vlan::whereName( $name )->get()->first() ) {
+            if( $vlan = Vlan::whereName( $name )->first() ) {
                 $vlan->delete();
             }
         }
@@ -88,7 +88,7 @@ class VlanControllerTest extends DuskTestCase
                     ->assertPathIs('/vlan/list')
                     ->assertSee( "VLAN created" );
 
-            $vlan = Vlan::whereName( 'Vlan test' )->get()->first();
+            $vlan = Vlan::whereName( 'Vlan test' )->first();
 
             // 2. test added data in database against expected values
             $this->assertInstanceOf( Vlan::class,   $vlan );

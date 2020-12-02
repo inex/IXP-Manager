@@ -12,7 +12,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 
-<?php if( Auth::getUser()->isSuperUser() ): ?>
+<?php if( Auth::user()->superUser() ): ?>
     <?php $this->section( 'page-header-postamble' ) ?>
         <div class="btn-group btn-group-sm" role="group">
             <a class="btn btn-white extra-action" href="<?= route('patch-panel-port@edit' , [ "ppp" => $ppp->id ] ) ?>" title="edit">
@@ -118,7 +118,7 @@ $this->layout( 'layouts/ixpv4' );
                                             </td>
                                             <td>
                                                 <?php if( $current ): ?>
-                                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                                    <?php if( Auth::user()->superUser() ): ?>
                                                         <a href="<?= route( 'patch-panel-port@list-for-patch-panel' , [ 'pp' => $history->patch_panel_id ] ) ?>" >
                                                             <?= $t->ee( $history->patchPanel->name ) ?>
                                                         </a>
@@ -126,7 +126,7 @@ $this->layout( 'layouts/ixpv4' );
                                                         <?= $t->ee( $history->patchPanelPort->patchPanel->name ) ?>
                                                     <?php endif; ?>
                                                 <?php else: ?>
-                                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                                    <?php if( Auth::user()->superUser() ): ?>
                                                         <a href="<?= route( 'patch-panel-port@list-for-patch-panel' , [ 'pp' => $history->patchPanelPort->patchPanel->id ] ) ?>" >
                                                             <?= $t->ee( $history->patchPanelPort->patchPanel->name ) ?>
                                                         </a>
@@ -184,7 +184,7 @@ $this->layout( 'layouts/ixpv4' );
                                                         <?php if( !$current ): ?>
                                                             <?= $t->ee( $history->customer ) ?>
                                                         <?php else: ?>
-                                                            <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                                            <?php if( Auth::user()->superUser() ): ?>
                                                                 <a href="<?= route( 'customer@overview' , [ 'id' => $history->customer_id ] ) ?>" >
                                                                     <?= $t->ee( $history->customer->name ) ?>
                                                                 </a>
@@ -500,7 +500,7 @@ $this->layout( 'layouts/ixpv4' );
                                             <div class="card-header d-flex">
                                                     Attached Files
                                                 <?php if( $current ): ?>
-                                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                                    <?php if( Auth::user()->superUser() ): ?>
                                                         <a class="btn btn-white btn-sm ml-auto btn-upload-file" href="<?= route( 'patch-panel-port-file@upload', [ 'ppp' => $ppp->id ] ) ?>" >
                                                             <i class="fa fa-upload"></i>
                                                         </a>

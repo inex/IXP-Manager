@@ -46,7 +46,7 @@ Users  / <?= $t->isAdd ? 'Add' : 'Edit' ?>
                             ->label( 'Name' )
                             ->placeholder( 'Firstname Lastname' )
                             ->blockHelp( "The full name of the user." )
-                            ->disabled( $t->user ? ( !Auth::getUser()->isSuperUser() && Auth::getUser()->getId() != $t->user->getId() ? true : false ) : $t->disableInputs );
+                            ->disabled( $t->user ? ( !Auth::user()->superUser() && Auth::id() !== $t->user->getId() ? true : false ) : $t->disableInputs );
                         ?>
 
                         <?= Former::text( 'username' )
@@ -77,11 +77,11 @@ Users  / <?= $t->isAdd ? 'Add' : 'Edit' ?>
                             ->label( 'Mobile' )
                             ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
                             ->blockHelp( "The user's mobile phone number." )
-                            ->disabled( $t->user ? ( !Auth::getUser()->isSuperUser() && Auth::getUser()->getId() != $t->user->getId() ? true : false ) : $t->disableInputs);
+                            ->disabled( $t->user ? ( !Auth::user()->superUser() && Auth::id() != $t->user->getId() ? true : false ) : $t->disableInputs);
                         ?>
 
 
-                        <?php if( Auth::getUser()->isSuperUser() && $t->user ): ?>
+                        <?php if( Auth::user()->superUser() && $t->user ): ?>
 
                             <?= Former::actions(
                                 Former::primary_submit( $t->isAdd ? 'Add' : 'Save Changes' ),
@@ -123,7 +123,7 @@ Users  / <?= $t->isAdd ? 'Add' : 'Edit' ?>
                                                 <?= Former::select( 'privs_' . $c2u->getId() )
                                                     ->label( '' )
                                                     ->placeholder( 'Select a privilege' )
-                                                    ->fromQuery( Auth::getUser()->isSuperUser() && $c2u->getCustomer()->isTypeInternal()  ?  \Entities\User::$PRIVILEGES_TEXT : \Entities\User::$PRIVILEGES_TEXT_NONSUPERUSER, 'name' )
+                                                    ->fromQuery( Auth::user()->superUser() && $c2u->getCustomer()->isTypeInternal()  ?  \Entities\User::$PRIVILEGES_TEXT : \Entities\User::$PRIVILEGES_TEXT_NONSUPERUSER, 'name' )
                                                     ->addClass( 'chzn-select privs' )
                                                     ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/usage/users/#types-of-users">'
                                                         . 'the official documentation here</a>.'
@@ -145,7 +145,7 @@ Users  / <?= $t->isAdd ? 'Add' : 'Edit' ?>
 
                         <?php else: ?>
 
-                            <?php if( Auth::getUser()->isSuperUser() ): ?>
+                            <?php if( Auth::user()->superUser() ): ?>
                                 <?= Former::select( 'custid')
                                     ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
                                     ->placeholder( 'Select a ' . config( 'ixp_fe.lang.customer.one' ) )
@@ -157,11 +157,11 @@ Users  / <?= $t->isAdd ? 'Add' : 'Edit' ?>
                                 ?>
 
                                 <?php if( $t->c ):?>
-                                    <?= Former::hidden( 'custid' )->value( Auth::getUser()->getCustomer()->getId() ) ?>
+                                    <?= Former::hidden( 'custid' )->value( Auth::user()->custid ) ?>
                                 <?php endif;?>
 
                             <?php else: ?>
-                                <?= Former::hidden( 'custid' )->value( Auth::getUser()->getCustomer()->getId() ) ?>
+                                <?= Former::hidden( 'custid' )->value( Auth::user()->custid ) ?>
                             <?php endif; ?>
 
                             <?= Former::select( 'privs')
@@ -198,7 +198,7 @@ Users  / <?= $t->isAdd ? 'Add' : 'Edit' ?>
             </div>
         </div>
 
-        <?php if( Auth::getUser()->isSuperUser() && $t->user ): ?>
+        <?php if( Auth::user()->superUser() && $t->user ): ?>
             <div class="alert alert-danger mt-4" role="alert">
                 <div class="d-flex align-items-center">
                     <div class="text-center">

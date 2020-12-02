@@ -96,7 +96,7 @@ class ContactController extends EloquentController
             'viewFolderName'    => 'contact',
         ];
 
-        switch( Auth::getUser()->getPrivs() ) {
+        switch( Auth::user()->privs() ) {
             case User::AUTH_SUPERUSER:
                 $this->feParams->listColumns = [
                     'customer'  => [
@@ -161,7 +161,7 @@ class ContactController extends EloquentController
         }
 
         // display the same information in the view as the list
-        if( !Auth::getUser()->isSuperUser() ) {
+        if( !Auth::user()->superUser() ) {
             $this->feParams->viewColumns = $this->feParams->listColumns;
         } else {
             $this->feParams->viewColumns = array_merge(
@@ -183,7 +183,7 @@ class ContactController extends EloquentController
      */
     protected function preView(): void
     {
-        if( !Auth::getUser()->isSuperUser() && Auth::getUser()->getCustomer()->getId() != $this->data[ 'item' ][ 'custid' ] ) {
+        if( !Auth::user()->superUser() && Auth::user()->custid() !== (int)$this->data[ 'item' ][ 'custid' ] ) {
             $this->unauthorized();
         }
 
@@ -224,8 +224,8 @@ class ContactController extends EloquentController
             ->when( $id , function ( Builder $query, $id ) {
                 return $query->where('contact.id', $id );
             })
-            ->when( !Auth::getUser()->isSuperUser(), function ( Builder $query ) {
-                return $query->where('cust.id', Auth::getUser()->getCustomer()->getId() );
+            ->when( !Auth::user()->superUser(), function ( Builder $query ) {
+                return $query->where('cust.id', Auth::user()->custid );
             })
             ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
                 return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');

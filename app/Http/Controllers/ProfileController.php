@@ -68,8 +68,7 @@ class ProfileController extends Controller
      */
     public function edit(): View
     {
-        /** @var UserEntity $user */
-        $user = Auth::getUser();
+        $user = Auth::user();
 
         // array used to populate the form to modify user information.
         // former doesn't allow us to populate a form the classic way when there is many forms on the same view.
@@ -113,7 +112,7 @@ class ProfileController extends Controller
     public function updatePassword( PasswordRequest $r  ): RedirectResponse
     {
         /** @var UserEntity $user */
-        $user = Auth::getUser();
+        $user = Auth::user();
 
         $user->setPassword( Hash::make( $r->input('new_password') ) );
         $user->setLastUpdated( new DateTime() );
@@ -142,7 +141,7 @@ class ProfileController extends Controller
     public function updateProfile( ProfileRequest $r  ): RedirectResponse
     {
         /** @var UserEntity $user */
-        $user = Auth::getUser();
+        $user = Auth::user();
 
         $user->setName(             $r->input( "name") );
         $user->setUsername(         $r->input( "username") );
@@ -186,7 +185,7 @@ class ProfileController extends Controller
     public function updateMailingLists( Request $r ) : RedirectResponse
     {
         /** @var UserEntity $user */
-        $user = Auth::getUser();
+        $user = Auth::user();
 
         if( config( 'mailinglists.enabled', false ) ) {
 

@@ -76,7 +76,7 @@ Add
                     <th>
                         Email
                     </th>
-                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                    <?php if( Auth::user()->superUser() ): ?>
                         <th>
                             Customers
                         </th>
@@ -103,7 +103,7 @@ Add
                         <td>
                             <?= $user->getEmail()?>
                         </td>
-                        <?php if( Auth::getUser()->isSuperUser() ): ?>
+                        <?php if( Auth::user()->superUser() ): ?>
                             <td>
                                 <?php foreach( $user->getCustomers() as $customer ): ?>
                                     <?= $customer->getName()?><br>
@@ -134,7 +134,7 @@ Add
                 );
             ?>
 
-            <?php if( Auth::getUser()->isSuperUser() ): ?>
+            <?php if( Auth::user()->superUser() ): ?>
 
                 <?= Former::select( 'custid' )
                     ->id( 'cust' )
@@ -147,12 +147,12 @@ Add
                 ?>
 
                 <?php if( $t->c ):?>
-                    <?= Former::hidden( 'custid' )->value( Auth::getUser()->getCustomer()->getId() ) ?>
+                    <?= Former::hidden( 'custid' )->value( Auth::user()->custid ) ?>
                 <?php endif;?>
 
             <?php else: ?>
 
-                <?= Former::hidden( 'custid' )->value( Auth::getUser()->getCustomer()->getId() ) ?>
+                <?= Former::hidden( 'custid' )->value( Auth::user()->custid ) ?>
 
             <?php endif; ?>
 

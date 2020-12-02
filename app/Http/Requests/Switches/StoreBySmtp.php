@@ -36,10 +36,10 @@ class StoreBySmtp extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // middleware ensures superuser access only so always authorised here:
-        return Auth::getUser()->isSuperUser();
+        return Auth::user()->superUser();
     }
 
     /**
@@ -54,7 +54,7 @@ class StoreBySmtp extends FormRequest
             'hostname' => [
                 'required', 'string', 'max:255', new IdnValidate(),
                 function ($attribute, $value, $fail) {
-                    $switcher = Switcher::whereHostname( $value )->get()->first();
+                    $switcher = Switcher::whereHostname( $value )->first();
                     if( $switcher && $switcher->exists() ) {
                         return $fail( 'The hostname must be unique.' );
                     }

@@ -291,12 +291,12 @@ class CustomerController extends Controller
         if( $isEdit ) {
 
             $c->setLastupdated( new DateTime() );
-            $c->setLastupdatedby( Auth::getUser()->getId() );
+            $c->setLastupdatedby( Auth::id() );
 
         } else {
 
             $c->setCreated( new DateTime() );
-            $c->setCreator( Auth::getUser()->getId() );
+            $c->setCreator( Auth::id() );
 
             $bdetail = new CompanyBillingDetailEntity;
             D2EM::persist( $bdetail );
@@ -547,7 +547,7 @@ class CustomerController extends Controller
             'c'                         => $c,
             'customers'                 => D2EM::getRepository( CustomerEntity::class )->getNames( true ),
             'netInfo'                   => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray(),
-            'isSuperUser'               => Auth::getUser()->isSuperUser(),
+            'isSuperUser'               => Auth::user()->superUser(),
 
             // is this user watching all notes for this customer?
             'coNotifyAll'               => Auth::getUser()->getPreference( "customer-notes.{$c->getId()}.notify" ) ? true : false,

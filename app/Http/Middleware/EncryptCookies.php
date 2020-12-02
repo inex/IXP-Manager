@@ -1,7 +1,9 @@
 <?php
 
+namespace IXP\Http\Middleware;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,9 +22,6 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-namespace IXP\Http\Middleware;
-
 use Illuminate\Cookie\Middleware\EncryptCookies as Middleware;
 
 class EncryptCookies extends Middleware

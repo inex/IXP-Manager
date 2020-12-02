@@ -25,13 +25,23 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\{
-    Builder,
+use Illuminate\Database\Eloquent\{Builder,
     Model,
     Relations\BelongsTo,
     Relations\BelongsToMany,
-    Relations\HasMany
-};
+    Relations\HasMany,
+    Relations\HasOne};
+
+use Illuminate\Notifications\Notifiable;
+
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Auth\Passwords\CanResetPassword;
+
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Support\Str;
+use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
+use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 
 /**
  * IXP\Models\User
@@ -83,15 +93,48 @@ use Illuminate\Database\Eloquent\{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereUpdatedAt($value)
+ * @property-read \IXP\Models\User2FA|null $user2FA
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerToUser[] $customerToUser
+ * @property-read int|null $customer_to_user_count
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read int|null $notifications_count
  */
-class User extends Model
+class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
+
+    use Authenticatable, CanResetPassword, Notifiable;
     /**
      * The table associated with the model.
      *
      * @var string
      */
     protected $table = 'user';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'custid',
+        'username',
+        'password',
+        'email',
+        'privs',
+        'creator',
+        'name',
+        'peeringdb_id',
+        'extra_attributes',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'extra_attributes' => 'json',
+    ];
 
     public const AUTH_PUBLIC    = 0;
     public const AUTH_CUSTUSER  = 1;
@@ -138,6 +181,14 @@ class User extends Model
     }
 
     /**
+     * Get the remember tokens for the user
+     */
+    public function user2FA(): HasOne
+    {
+        return $this->hasOne(User2FA::class, 'user_id' );
+    }
+
+    /**
      * Get the customer
      */
     public function customer(): BelongsTo
@@ -160,6 +211,14 @@ class User extends Model
     {
         return $this->belongsToMany(Customer::class, 'customer_to_users', 'user_id' )
             ->orderBy( 'id', 'asc' );
+    }
+
+    /**
+     * Get all the customers for the user
+     */
+    public function customerToUser(): HasMany
+    {
+        return $this->HasMany(CustomerToUser::class, 'user_id' );
     }
 
     /**
@@ -188,7 +247,7 @@ class User extends Model
      */
     public function superUser(): bool
     {
-        return $this->privs === self::AUTH_SUPERUSER;
+        return $this->privs() === self::AUTH_SUPERUSER;
     }
 
     /**
@@ -196,12 +255,100 @@ class User extends Model
      *
      * @return int|null
      */
-    public function getPrivs(): ?int
+    public function privs(): ?int
     {
-        $c2u = CustomerToUser::where( 'customer_id' , $this->custid )->where( 'user_id' , $this->id )->get()->first();
+        $c2u = CustomerToUser::where( 'customer_id' , $this->custid )->where( 'user_id' , $this->id )->first();
         if( $c2u ) {
             return $c2u->privs;
         }
         return null;
+    }
+
+    /**
+     * Does 2fa need to be enforced for this user?
+     *
+     * @return bool
+     */
+    public function is2faEnforced(): bool
+    {
+        if( !config('google2fa.enabled') ) {
+            return false;
+        }
+
+        return $this->privs() >= config( "google2fa.ixpm_2fa_enforce_for_users" )
+            && ( !$this->user2FA || !$this->user2FA->enabled );
+    }
+
+    /**
+     * Check if the user is required to authenticate with 2FA for the current session
+     *
+     * @return bool
+     */
+    public function is2faAuthRequiredForSession(): bool
+    {
+        if( !config('google2fa.enabled') ) {
+            return false;
+        }
+
+        if( !$this->user2FA || !$this->user2FA->enabled ) {
+            // If the user does not have 2fa configured or enabled but it is required, then return true:
+            if( $this->is2faEnforced() ) {
+                return true;
+            }
+            return false;
+        }
+
+        $authenticator = new GoogleAuthenticator( request() );
+
+        if( $authenticator->isAuthenticated() ) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Get the current customer to user - if one exists.
+     *
+     * @return CustomerToUser|null
+     */
+    public function currentCustomerToUser(): ?CustomerToUser
+    {
+        if( !$this->customer ) {
+            return null;
+        }
+
+        $c2u = CustomerToUser::where( 'customer_id', $this->custid )
+            ->where( 'user_id', $this->id )->first();
+
+        return $c2u ?? null;
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     *
+     * @return void
+     */
+    public function sendPasswordResetNotification( $token ): void
+    {
+        event( new ForgotPasswordEvent( $token, $this ) );
+    }
+
+    /**
+     * Get the "remember me" token value.
+     *
+     * // We have overridden Laravel's remember token functionality and do not rely on this.
+     * // However, some Laravel functionality if triggered on this returning a non-false value
+     * // to execute certain functionality. As such, we'll just return something random:
+     *
+     * @return string
+     */
+    public function getRememberToken(): string
+    {
+        // We have overridden Laravel's remember token functionality and do not rely on this.
+        // However, some Laravel functionality if triggered on this returning a non-false value
+        // to execute certain functionality. As such, we'll just return something random:
+        return Str::random(60);
     }
 }

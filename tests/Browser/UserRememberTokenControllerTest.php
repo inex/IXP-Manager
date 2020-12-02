@@ -48,7 +48,7 @@ class UserRememberTokenControllerTest extends DuskTestCase
 
         $this->browse( function ( Browser $browser, Browser $browser2 ) {
 
-            $user = User::whereUsername('travis' )->get()->first();
+            $user = User::whereUsername('travis' )->first();
 
             $cookieName = Auth::getRecallerName();
 
@@ -118,7 +118,7 @@ class UserRememberTokenControllerTest extends DuskTestCase
                     ->assertPathIs('/active-sessions/list');
 
             // Get the last user remember token for the user
-            $lastUrt = UserRememberToken::whereUserId( $user->id )->orderBy( 'id', 'DESC' )->get()->first();
+            $lastUrt = UserRememberToken::whereUserId( $user->id )->orderBy( 'id', 'DESC' )->first();
 
             $browser->press("#d2f-list-delete-" . $lastUrt->id)
                 ->waitForText( 'Do you really want to delete this active login session?' )
@@ -146,7 +146,7 @@ class UserRememberTokenControllerTest extends DuskTestCase
              * Delete the user remember token left for the user and check that the user is loggued out
              */
             // Get the user remember token left for the user
-            $urt = UserRememberToken::whereUserId( $user->id )->get()->first();
+            $urt = UserRememberToken::whereUserId( $user->id )->first();
 
             $browser->press("#d2f-list-delete-" . $urt->id )
                 ->waitForText( 'Do you really want to delete this active login session?' )

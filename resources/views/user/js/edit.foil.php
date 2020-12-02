@@ -5,7 +5,7 @@
 
         $( "#btnCancel" ).attr( "href", $( "#linkCancel" ).val() );
 
-        <?php if( Auth::getUser()->isSuperUser() && $t->user ): ?>
+        <?php if( Auth::user()->superUser() && $t->user ): ?>
 
             let tableList = $( '.table' );
 

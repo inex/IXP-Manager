@@ -15,7 +15,7 @@
 
     let publicNotes     = $( '#notes' );
     let privateNotes    = $( '#private_notes' );
-    let notesIntro = "### <?= date( "Y-m-d" ) . ' - ' . $t->ee( Auth::getUser()->getUsername() ) ?> \n\n\n\n";
+    let notesIntro = "### <?= date( "Y-m-d" ) . ' - ' . $t->ee( Auth::user()->username ) ?> \n\n\n\n";
 
     //////////////////////////////////////////////////////////////////////////////////////
     // action bindings:

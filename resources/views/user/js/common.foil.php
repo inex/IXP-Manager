@@ -7,7 +7,7 @@
         let objectId    = ( this.id ).substring( 16 );
         let urlDelete   =   this.href;
         let nbC2U       = $(this).attr( "data-nb-c2u" );
-        let superUser   = <?= Auth::getUser()->isSuperUser() ? 'true' : 'false' ?> ;
+        let superUser   = <?= Auth::user()->superUser() ? 'true' : 'false' ?> ;
         let message = 'Do you really want to delete this user?';
         let objectName = 'User';
 

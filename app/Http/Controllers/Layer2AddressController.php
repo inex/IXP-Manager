@@ -192,11 +192,11 @@ class Layer2AddressController extends EloquentController
      */
     public function forVlanInterface( VlanInterface $vli )
     {
-        if( Auth::getUser()->isSuperUser() ) {
+        if( Auth::user()->superUser() ) {
             return view( 'layer2-address/vlan-interface' )->with( [ 'vli' => $vli ] );
         }
 
-        if( config( 'ixp_fe.layer2-addresses.customer_can_edit' ) && Auth::getUser()->getCustomer()->getId() === $vli->virtualInterface->customer->id ) {
+        if( config( 'ixp_fe.layer2-addresses.customer_can_edit' ) && Auth::user()->custid === $vli->virtualInterface->customer->id ) {
             return view( 'layer2-address/vlan-interface-cust' )->with( [ 'vli' => $vli ] );
         }
 

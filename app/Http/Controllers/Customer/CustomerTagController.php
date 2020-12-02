@@ -171,7 +171,7 @@ class CustomerTagController extends EloquentController
             'tag' => [
                 'required', 'string', 'max:255',
                 function ($attribute, $value, $fail) use( $request ) {
-                    $tag = CustomerTag::whereTag( $value )->get()->first();
+                    $tag = CustomerTag::whereTag( $value )->first();
                     if( $tag && $tag->exists() && $tag->id !== (int)$request->id ) {
                         return $fail( 'The tag must be unique.' );
                     }
