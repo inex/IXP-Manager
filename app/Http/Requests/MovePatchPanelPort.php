@@ -36,7 +36,7 @@ class MovePatchPanelPort extends FormRequest
     public function authorize(): bool
     {
         // middleware ensures superuser access only so always authorised here:
-        return Auth::user()->superUser();
+        return Auth::getUser()->isSuperUser();
     }
 
     /**

@@ -63,7 +63,7 @@ class IrrdbController extends Controller
         $irrdbList = IrrdbAggregator::forCustomerAndProtocol( $customer->id, $protocol, $type );
 
         // are we busting the cache?
-        if( Auth::user()->isSuperUser() && $r->reset_cache === "1" ) {
+        if( Auth::getUser()->isSuperUser() && $r->reset_cache === "1" ) {
             Cache::forget('updated-irrdb-' . $type . '-' . $customer->id );
         }
 
@@ -90,7 +90,7 @@ class IrrdbController extends Controller
     public function update( IrrdbRequest $r, Customer $customer, string $type, int $protocol ) : RedirectResponse
     {
         // are we busting the cache?
-        if( Auth::user()->isSuperUser() && $r->reset_cache === "1" ) {
+        if( Auth::getUser()->superUser() && $r->reset_cache === "1" ) {
             Cache::forget('updated-irrdb-' . $type . '-' . $protocol . '-' . $customer->id );
         }
 

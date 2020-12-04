@@ -83,7 +83,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
     protected function gate(): void
     {
         Gate::define('viewTelescope', function ( $user ) {
-            return config( 'app.env' ) !== 'testing' && $user->superUser();
+            return config( 'app.env' ) !== 'testing' && $user->isSuperUser();
         });
     }
 }

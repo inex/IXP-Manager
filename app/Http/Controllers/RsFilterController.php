@@ -182,7 +182,7 @@ class RsFilterController extends Controller
         $rsf->customer_id   = $cust->id;
         $rsf->save();
 
-        Log::notice( Auth::user()->getUsername() . ' created a router server filter with ID ' . $rsf->id );
+        Log::notice( Auth::getUser()->username . ' created a router server filter with ID ' . $rsf->id );
 
         AlertContainer::push( "Route Server Filter created", Alert::SUCCESS );
 
@@ -205,7 +205,7 @@ class RsFilterController extends Controller
 
         $rsf->update( $request->all() );
 
-        Log::notice( Auth::user()->getUsername() . ' updated a router server filter with ID ' . $rsf->id );
+        Log::notice( Auth::getUser()->username . ' updated a router server filter with ID ' . $rsf->id );
 
         AlertContainer::push( "Route Server Filter updated", Alert::SUCCESS );
 
@@ -246,7 +246,7 @@ class RsFilterController extends Controller
         $rsf->enabled =  ( bool )$enable;
         $rsf->save();
 
-        Log::notice( Auth::user()->getUsername() . ' ' . $status . ' a router server filter with ID ' . $rsf->id );
+        Log::notice( Auth::getUser()->username . ' ' . $status . ' a router server filter with ID ' . $rsf->id );
 
         AlertContainer::push( 'The route server filter has been ' . $status, Alert::SUCCESS );
         return redirect( route( "rs-filter@list", [ "cust" => $rsf->customer_id ] ) );
@@ -320,7 +320,7 @@ class RsFilterController extends Controller
         $this->authorize( 'checkRsfObject',  [ RouteServerFilter::class, $rsf ]  );
         $rsf->delete();
 
-        Log::notice( Auth::user()->username." deleted the route server filter with the ID:" . $rsf->id );
+        Log::notice( Auth::getUser()->username." deleted the route server filter with the ID:" . $rsf->id );
         AlertContainer::push( 'Router server filter deleted.', Alert::SUCCESS );
 
         return Redirect::to( route( "rs-filter@list", [ "cust" => $rsf->customer_id ] ) );

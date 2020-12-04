@@ -150,7 +150,7 @@
 
                     <a class="dropdown-item <?= !request()->is( 'customer-note/unread-notes' ) ?: 'active' ?>" href="<?= route( 'customerNotes@unreadNotes' ) ?>">Unread Notes</a>
 
-                    <?php $customers = Auth::user()->customers;
+                    <?php $customers = Auth::getUser()->customers;
                         if( $customers->count() > 1 ):
                             ?>
                         <div class="dropdown-divider"></div>
@@ -161,9 +161,9 @@
 
                         <?php foreach( $customers as $cust ): ?>
                             <a id="switch-cust-<?= $cust->id ?>"
-                               class="dropdown-item <?= Auth::user()->custid !== $cust->id ?: 'active cursor-default' ?>"
-                               <?= Auth::user()->custid !== $cust->id ?: "onclick='return false;'" ?>
-                               href="<?= Auth::user()->custid === $cust->id ? '#' : route( 'switch-customer@switch' , [ "cust" => $cust->id ] ) ?>"
+                               class="dropdown-item <?= Auth::getUser()->custid !== $cust->id ?: 'active cursor-default' ?>"
+                               <?= Auth::getUser()->custid !== $cust->id ?: "onclick='return false;'" ?>
+                               href="<?= Auth::getUser()->custid === $cust->id ? '#' : route( 'switch-customer@switch' , [ "cust" => $cust->id ] ) ?>"
                             >
                                 <?= $cust->name ?>
                             </a>

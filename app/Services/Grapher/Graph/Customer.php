@@ -120,7 +120,7 @@ class Customer extends Graph
      */
     public static function authorisedForAllCustomers(): bool
     {
-        if( Auth::check() && Auth::user()->isSuperUser() ) {
+        if( Auth::check() && Auth::getUser()->isSuperUser() ) {
             return true;
         }
 
@@ -128,7 +128,7 @@ class Customer extends Graph
             return true;
         }
 
-        return Auth::check() && is_numeric( config( 'grapher.access.customer' ) ) && Auth::user()->getPrivs() >= config( 'grapher.access.customer' );
+        return Auth::check() && is_numeric( config( 'grapher.access.customer' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.customer' );
     }
 
     /**
@@ -153,23 +153,23 @@ class Customer extends Graph
             return false;
         }
 
-        if( Auth::user()->isSuperUser() ) {
+        if( Auth::getUser()->isSuperUser() ) {
             return $this->allow();
         }
 
-        if( Auth::user()->getCustomer()->getId() === $this->customer()->id ) {
+        if( Auth::getUser()->custid === $this->customer()->id ) {
             return $this->allow();
         }
 
         if( config( 'grapher.access.customer' ) !== 'own_graphs_only'
                 && is_numeric( config( 'grapher.access.customer' ) )
-                && Auth::user()->getPrivs() >= config( 'grapher.access.customer' )
+                && Auth::getUser()->privs() >= config( 'grapher.access.customer' )
         ) {
             return $this->allow();
         }
 
         Log::notice( sprintf( "[Grapher] [Customer]: user %d::%s tried to access a customer aggregate graph "
-            . "{$this->customer()->id} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
+            . "{$this->customer()->id} which is not theirs", Auth::id(), Auth::getUser()->username )
         );
 
         $this->deny();
@@ -216,8 +216,8 @@ class Customer extends Graph
     public static function processParameterCustomer( int $i ): CustomerModel
     {
         // if we're not an admin, default to the currently logged in customer
-        if( !$i && Auth::check() && !Auth::user()->isSuperUser() && !Auth::user()->getCustomer()->isTypeAssociate() ) {
-            return CustomerModel::find( Auth::user()->getCustomer()->getId() );
+        if( !$i && Auth::check() && !Auth::getUser()->isSuperUser() && !Auth::getUser()->customer->typeAssociate() ) {
+            return CustomerModel::find( Auth::getUser()->custid );
         }
 
         return CustomerModel::findOrFail( $i );

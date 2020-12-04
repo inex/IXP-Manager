@@ -49,7 +49,7 @@ class NocDetailsRequest extends FormRequest
     public function authorize()
     {
         // middleware ensures custuser or custadmin access only so always authorised here:
-        return Auth::user()->custUser() || Auth::user()->custAdmin() ;
+        return Auth::getUser()->isCustUser() || Auth::getUser()->isCustAdmin() ;
     }
 
     /**

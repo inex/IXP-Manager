@@ -3,7 +3,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?php if(  Auth::user()->isSuperUser()  ): ?>
+    <?php if(  Auth::getUser()->isSuperUser()  ): ?>
         <a href="<?= route( "customer@overview" , [ "id" => $t->customer->id ] ) ?>">
             <?= $t->customer->name ?>
         </a>
@@ -120,7 +120,7 @@
                       <?= $t->updatedIrrdb['found_at']->format('Y-m-d H:i:s') ?> and will not be refreshed until <?= $t->updatedIrrdb['found_at']->copy()->addMinutes(15)->format('H:i:s') ?>.
 
                   </p>
-                  <?php if( Auth::user()->isSuperUser() ): ?>
+                  <?php if( Auth::getUser()->isSuperUser() ): ?>
                       <p>
                           The network / database / processing effort was:
                           <?= $t->updatedIrrdb['netTime'] ?>s / <?= $t->updatedIrrdb['dbTime'] ?>s / <?= $t->updatedIrrdb['procTime'] ?>s.

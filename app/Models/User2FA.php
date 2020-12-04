@@ -57,6 +57,17 @@ class User2FA extends Model
     protected $table = 'user_2fa';
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id',
+        'enabled',
+        'secret',
+    ];
+
+    /**
      * Get the physical interface associated with the core interface.
      */
     public function user(): BelongsTo

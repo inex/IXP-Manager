@@ -68,12 +68,12 @@ class Layer2AddressController extends Controller
     {
         $vli = VlanInterface::findOrFail( $request->vlan_interface_id );
 
-        if( !Auth::user()->isSuperUser() ) {
+        if( !Auth::getUser()->isSuperUser() ) {
             if( !config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ) {
                 abort( 404 );
             }
 
-            if( Auth::user()->getCustomer()->getId() !== $vli->virtualInterface->customer->id ) {
+            if( Auth::getUser()->custid !== $vli->virtualInterface->customer->id ) {
                 abort( 403, 'VLI / Customer mismatch' );
             }
 
@@ -137,12 +137,12 @@ class Layer2AddressController extends Controller
      */
     public function delete( Layer2Address $l2a, bool $showFeMessage = false  ): JsonResponse
     {
-        if( !Auth::user()->isSuperUser() ) {
+        if( !Auth::getUser()->isSuperUser() ) {
             if( !config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ) {
                 abort( 404 );
             }
 
-            if( Auth::user()->getCustomer()->getId() !== $l2a->vlanInterface->virtualInterface->custid ) {
+            if( Auth::getUser()->custid !== $l2a->vlanInterface->virtualInterface->custid ) {
                 abort( 403, 'MAC address / Customer mismatch' );
             }
 
@@ -154,7 +154,7 @@ class Layer2AddressController extends Controller
 
         $l2a->delete();
 
-        event( new Layer2AddressDeletedEvent( $l2a->macFormatted( ':' ), $l2a->vlanInterface, User::find( Auth::user()->getId() ) ) );
+        event( new Layer2AddressDeletedEvent( $l2a->macFormatted( ':' ), $l2a->vlanInterface, User::find( Auth::id() ) ) );
         !$showFeMessage ?: AlertContainer::push( 'The MAC address has been deleted.' , Alert::SUCCESS );
         return response()->json( [ 'success' => true, 'message' => 'The MAC address has been deleted.' ] );
     }

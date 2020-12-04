@@ -60,7 +60,7 @@ class EditStore extends FormRequest
          $addUserInfo = [];
 
         // If its a superuser
-        if( Auth::user()->superUser() ) {
+        if( Auth::getUser()->isSuperUser() ) {
             $infoArray = [
                 'name'                                              => 'required|string|max:255',
                 'username'                                          => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/|unique:Entities\User,username' . ( $this->input( 'id' ) ? ',' . $this->input( 'id' ) : '' ),
@@ -94,15 +94,15 @@ class EditStore extends FormRequest
 
     public function withValidator( Validator $validator )
     {
-        if( !Auth::user()->superUser() ) {
+        if( !Auth::getUser()->isSuperUser() ) {
             if( !$validator->fails() ) {
 
                 $validator->after( function( Validator $validator ) {
 
-                    $cust = Auth::user()->isSuperUser() ? D2EM::getRepository( CustomerEntity::class )->find( $this->input( 'custid' ) ) : Auth::user()->custid;
+                    $cust = Auth::getUser()->isSuperUser() ? D2EM::getRepository( CustomerEntity::class )->find( $this->input( 'custid' ) ) : Auth::getUser()->custid;
 
                     if( $this->input( 'privs' ) == UserEntity::AUTH_SUPERUSER ) {
-                        if( !Auth::user()->superUser() || Auth::user()->superUser() && !$cust->isTypeInternal() ) {
+                        if( !Auth::getUser()->isSuperUser() || Auth::getUser()->isSuperUser() && !$cust->isTypeInternal() ) {
                             $validator->errors()->add( 'privs', "You are not allowed to set this User as a Super User for " . $cust->getName() );
                             return false;
                         }

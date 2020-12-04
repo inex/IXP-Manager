@@ -8,7 +8,7 @@
     const toggle_potential_slave    = $('#toggle-potential-slaves' );
     const note_model_intro          = $('#notes-modal-body-intro' );
 
-    let notesIntro = "### <?= date("Y-m-d" ) . ' - ' . Auth::user()->getUsername() ?> \n\n\n";
+    let notesIntro = "### <?= date("Y-m-d" ) . ' - ' . Auth::getUser()->username ?> \n\n\n";
 
     //////////////////////////////////////////////////////////////////////////////////////
     // action bindings:

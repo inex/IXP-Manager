@@ -134,7 +134,7 @@ Users / View User
                             </td>
                         </tr>
 
-                        <?php if( Auth::user()->superUser() ): ?>
+                        <?php if( Auth::getUser()->isSuperUser() ): ?>
                             <tr>
                                 <td>
                                     <b>
@@ -149,7 +149,7 @@ Users / View User
                                 </td>
                             </tr>
                         <?php endif; ?>
-                        <?php if( Auth::user()->superUser() ): ?>
+                        <?php if( Auth::getUser()->isSuperUser() ): ?>
                             <tr>
 
                                 <td colspan="2">

@@ -62,7 +62,7 @@ class ContentController extends Controller
     {
         // check privilege:
         if( $priv !== User::AUTH_PUBLIC ) {
-            if( Auth::guest() || Auth::user()->getPrivs() < $priv ) {
+            if( Auth::guest() || Auth::getUser()->privs() < $priv ) {
                 abort( 403, 'Unauthorized' );
             }
         }
@@ -102,7 +102,7 @@ class ContentController extends Controller
     {
         // check privilege:
         if( $priv !== User::AUTH_PUBLIC ) {
-            if( Auth::guest() || Auth::user()->getPrivs() < $priv ) {
+            if( Auth::guest() || Auth::getUser()->privs() < $priv ) {
                 abort( 403, 'Unauthorized' );
             }
         }

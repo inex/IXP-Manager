@@ -88,7 +88,7 @@ class IXP extends Graph
      */
     public function authorise(): bool
     {
-        if( Auth::check() && Auth::user()->isSuperUser() ) {
+        if( Auth::check() && Auth::getUser()->isSuperUser() ) {
             return $this->allow();
         }
 
@@ -101,7 +101,7 @@ class IXP extends Graph
             return $this->allow();
         }
 
-        if( Auth::check() && is_numeric( config( 'grapher.access.ixp' ) ) && Auth::user()->getPrivs() >= config( 'grapher.access.ixp' ) ) {
+        if( Auth::check() && is_numeric( config( 'grapher.access.ixp' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.ixp' ) ) {
             return $this->allow();
         }
 

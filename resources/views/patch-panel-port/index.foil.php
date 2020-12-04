@@ -2,7 +2,7 @@
     /** @var object $t */
     /** @var \IXP\Models\PatchPanel $pp */
     $pp = $t->pp;
-    $isSuperUser = Auth::user()->isSuperUser();
+    $isSuperUser = Auth::getUser()->isSuperUser();
     $ppHasDuplex = $pp ? $pp->hasDuplexPort() : false;
 ?>
 

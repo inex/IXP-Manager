@@ -81,11 +81,11 @@ class DashboardController extends Controller
     {
 
         // Redirect Super user
-        if( Auth::user()->superUser() ){
+        if( Auth::getUser()->isSuperUser() ){
             return Redirect::to( '/');
         }
 
-        $c = Auth::user()->customer;
+        $c = Auth::getUser()->customer;
         $grapher = null;
 
         if( !$c->isTypeAssociate() ) {
@@ -130,7 +130,7 @@ class DashboardController extends Controller
         return view( 'dashboard/index' )->with([
             'recentMembers'                 => array_slice( D2EM::getRepository( CustomerEntity::class )->getRecent(), 0 , 5 ),
             'crossConnects'                 => D2EM::getRepository( PatchPanelPortEntity::class       )->getForCustomer(    $c->getId()             ),
-            'notesInfo'                     => D2EM::getRepository( CustomerNoteEntity::class   )->analyseForUser(      $cns, $c, Auth::user()  ),
+            'notesInfo'                     => D2EM::getRepository( CustomerNoteEntity::class   )->analyseForUser(      $cns, $c, Auth::getUser()  ),
             'rsRoutes'                      => $rsRoutes        ?? null,
             'resoldCustomer'                => $resoldCustomer  ?? null,
             'netInfo'                       => $netinfo         ?? null,
@@ -155,11 +155,11 @@ class DashboardController extends Controller
      */
     public function storeNocDetails( NocDetailsRequest $r )
     {
-        if( Auth::user()->custUser() ){
+        if( Auth::getUser()->isCustUser() ){
             abort( 403, 'Insufficient Permissions.' );
         }
 
-        $c = Auth::user()->customer;
+        $c = Auth::getUser()->customer;
 
         $c->setNocphone(        $r->input( 'nocphone'       ) );
         $c->setNoc24hphone(     $r->input( 'noc24hphone'    ) );
@@ -187,12 +187,12 @@ class DashboardController extends Controller
      */
     public function storeBillingDetails( BillingDetailsRequest $r ){
 
-        if( Auth::user()->custUser() ){
+        if( Auth::getUser()->isCustUser() ){
             abort( 403, 'Insufficient Permissions.' );
         }
 
         /** @var CustomerEntity $c */
-        $c = Auth::user()->customer;
+        $c = Auth::getUser()->customer;
 
         $cbd  = $c->getBillingDetails();
         $ocbd = clone $c->getBillingDetails();

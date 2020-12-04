@@ -5,7 +5,7 @@
 
 <?php $this->section( 'page-header-preamble' ) ?>
 
-<?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+<?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
     <a href="<?= route( 'customer@overview', [ 'id' => $t->c->id ] ) ?>" >
         <?= $t->c->getFormattedName() ?>
     </a>
@@ -29,7 +29,7 @@
 
 <?php $this->append() ?>
 
-<?php if( Auth::check() && !Auth::user()->isSuperUser() ): ?>
+<?php if( Auth::check() && !Auth::getUser()->isSuperUser() ): ?>
     <?php $this->section( 'page-header-postamble' ) ?>
         <?php if( $t->grapher()->canAccessAllCustomerGraphs() ): ?>
                 <a class="btn btn-white" href="<?= route( 'statistics@member', [ 'id' => $t->c->id ] ) ?>">All Ports</a>

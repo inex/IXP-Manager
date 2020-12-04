@@ -111,23 +111,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     protected $table = 'user';
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'custid',
-        'username',
-        'password',
-        'email',
-        'privs',
-        'creator',
-        'name',
-        'peeringdb_id',
-        'extra_attributes',
-    ];
-
-    /**
      * The attributes that should be cast.
      *
      * @var array
@@ -226,7 +209,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      *
      * @return bool
      */
-    public function custUser(): bool
+    public function isCustUser(): bool
     {
         return $this->privs === self::AUTH_CUSTUSER;
     }
@@ -235,7 +218,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      * Is the user of the named type?
      * @return bool
      */
-    public function custAdmin(): bool
+    public function isCustAdmin(): bool
     {
         return $this->privs === self::AUTH_CUSTADMIN;
     }
@@ -245,7 +228,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      *
      * @return bool
      */
-    public function superUser(): bool
+    public function isSuperUser(): bool
     {
         return $this->privs() === self::AUTH_SUPERUSER;
     }
@@ -350,5 +333,20 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         // However, some Laravel functionality if triggered on this returning a non-false value
         // to execute certain functionality. As such, we'll just return something random:
         return Str::random(60);
+    }
+
+    /**
+     * Allow direct access to the 2FA secret code
+     */
+    public function __get( $key )
+    {
+        switch( $key ) {
+            // google2fa Laravel bridge looking for 2fa secret
+            case 'secret':
+                return $this->user2FA->secret ?? null;
+                break;
+        }
+
+        return parent::__get( $key );
     }
 }

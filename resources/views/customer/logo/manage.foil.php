@@ -4,7 +4,7 @@
 ?>
 
 
-<?php if( Auth::user()->isSuperUser() ): ?>
+<?php if( Auth::getUser()->isSuperUser() ): ?>
     <?php $this->section( 'page-header-preamble' ) ?>
         <a href="<?= route( "customer@overview" , [ "id" => $t->c->id ] ) ?>" >
             <?= $t->ee( $t->c->name ) ?>

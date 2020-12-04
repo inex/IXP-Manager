@@ -1,5 +1,4 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-
     <?= $this->insert('layouts/ixp-logo-header'); ?>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -9,7 +8,6 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-
             <li class="nav-item <?= !request()->is( 'dashboard' ) ?: 'active' ?>">
                 <a class="nav-link" href="<?= url('') ?>">
                    Home
@@ -38,15 +36,13 @@
                         </a>
                     <?php endif; ?>
 
-                    <?php if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) && \IXP\Models\DocstoreCustomerFile::getListingForAllDirectories( Auth::user()->getCustomer()->getId(),\IXP\Models\User::AUTH_CUSTUSER )  ): ?>
+                    <?php if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) && \IXP\Models\DocstoreCustomerFile::getListingForAllDirectories( Auth::getUser()->custid,\IXP\Models\User::AUTH_CUSTUSER )  ): ?>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item <?= !request()->is( 'docstore-c*' ) ?: 'active' ?>" href="<?= route('docstore-c-dir@list', [ 'cust' => Auth::user()->getCustomer()->getId() ] ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'docstore-c*' ) ?: 'active' ?>" href="<?= route('docstore-c-dir@list', [ 'cust' => Auth::getUser()->custid ] ) ?>">
                             My Documents
                         </a>
                     <?php endif; ?>
-
                 </div>
-
             </li>
 
             <li class="nav-item dropdown">
@@ -60,7 +56,7 @@
                         </a>
                     <?php endif; ?>
                     <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) ): ?>
-                        <?php if( Auth::user()->getCustomer()->isRouteServerClient() ): ?>
+                        <?php if( Auth::getUser()->customer->routeServerClient() ): ?>
                             <a class="dropdown-item <?= !request()->is( 'rs-prefixes/list' ) ?: 'active' ?>" href="<?= route('rs-prefixes@list') ?>">
                                 Route Server Prefixes
                             </a>
@@ -76,9 +72,7 @@
                             Peering Matrix
                         </a>
                     <?php endif; ?>
-
                 </div>
-
             </li>
 
             <?php
@@ -97,63 +91,58 @@
                     </a>
 
                     <?php if( config('grapher.backends.sflow.enabled') ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'statistics/p2p/*' ) ?: 'active' ?>" href="<?= route( 'statistics@p2p', ['cid' => Auth::user()->getCustomer()->getId() ] ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/p2p/*' ) ?: 'active' ?>" href="<?= route( 'statistics@p2p', ['cid' => Auth::getUser()->custid ] ) ?>">
                             My Peer to Peer Traffic
                         </a>
                     <?php endif; ?>
 
                     <div class="dropdown-divider"></div>
 
-                    <?php if( is_numeric( config( 'grapher.access.ixp' ) ) && config( 'grapher.access.ixp' ) <= Auth::user()->getPrivs() ): ?>
+                    <?php if( is_numeric( config( 'grapher.access.ixp' ) ) && config( 'grapher.access.ixp' ) <= Auth::getUser()->privs() ): ?>
                         <a class="dropdown-item <?= !request()->is( 'statistics/ixp' ) ?: 'active' ?>" href="<?= route( 'statistics@ixp' ) ?>">
                             Overall Peering Graphs
                         </a>
                     <?php endif; ?>
-                    <?php if( is_numeric( config( 'grapher.access.infrastructure' ) ) && config( 'grapher.access.infrastructure' )  <= Auth::user()->getPrivs() ): ?>
+
+                    <?php if( is_numeric( config( 'grapher.access.infrastructure' ) ) && config( 'grapher.access.infrastructure' )  <= Auth::getUser()->privs() ): ?>
                         <a class="dropdown-item <?= !request()->is( 'statistics/infrastructure' ) ?: 'active' ?>" href="<?= route( 'statistics@infrastructure' ) ?>">
                             Infrastructure Graphs
                         </a>
                     <?php endif; ?>
-                    <?php if( is_numeric( config( 'grapher.access.vlan' ) ) && config( 'grapher.access.vlan' ) <= Auth::user()->getPrivs() && config( 'grapher.backends.sflow.enabled' ) ): ?>
+
+                    <?php if( is_numeric( config( 'grapher.access.vlan' ) ) && config( 'grapher.access.vlan' ) <= Auth::getUser()->privs() && config( 'grapher.backends.sflow.enabled' ) ): ?>
                         <a class="dropdown-item <?= !request()->is( 'statistics/vlan' ) ?: 'active' ?>" href="<?= route( 'statistics@vlan' ) ?>">
                             VLAN / Per-Protocol Graphs
                         </a>
                     <?php endif; ?>
 
-
-                    <?php if( is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) <= Auth::user()->getPrivs() ): ?>
+                    <?php if( is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) <= Auth::getUser()->privs() ): ?>
                         <?php if( count( config( 'grapher.backends.mrtg.trunks' ) ?? [] ) ): ?>
                             <a class="dropdown-item <?= !request()->is( 'statistics/trunk' ) ?: 'active' ?>" href="<?= route('statistics@trunk') ?>">
                                 Inter-Switch / PoP Graphs
                             </a>
-                        <?php elseif( count( $cbs = d2r( 'CoreBundle' )->getActive() ) ): ?>
-                            <a class="dropdown-item <?= !request()->is( 'statistics/core-bundle' ) ?: 'active' ?>" href="<?= route('statistics@core-bundle', $cbs[0]->getId() ) ?>">
+                        <?php elseif( count( $cbs = \IXP\Models\CoreBundle::active()->get() ) ): ?>
+                            <a class="dropdown-item <?= !request()->is( 'statistics/core-bundle' ) ?: 'active' ?>" href="<?= route('statistics@core-bundle', $cbs->first()->id ) ?>">
                                 Inter-Switch / PoP Graphs
                             </a>
                         <?php endif; ?>
                     <?php endif; ?>
 
-
-                    <?php if( is_numeric( config( 'grapher.access.switch' ) ) && config( 'grapher.access.switch' ) <= Auth::user()->getPrivs() ): ?>
+                    <?php if( is_numeric( config( 'grapher.access.switch' ) ) && config( 'grapher.access.switch' ) <= Auth::getUser()->privs() ): ?>
                         <a class="dropdown-item <?= !request()->is( 'statistics/switch' ) ?: 'active' ?>" href="<?= route('statistics@switch') ?>">
                             Switch Aggregate Graphs
                         </a>
                     <?php endif; ?>
 
                     <?php if( $this->grapher()->canAccessAllCustomerGraphs() ): ?>
-
                         <div class="dropdown-divider"></div>
 
                         <a class="dropdown-item <?= !request()->is( 'statistics/members' ) ?: 'active' ?>" href="<?= route( 'statistics@members' ) ?>">
                             <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Graphs
                         </a>
-
                     <?php endif; ?>
 
-
-
                     <?php if( is_array( config( 'ixp_tools.weathermap', false ) ) ): ?>
-
                         <div class="dropdown-divider"></div>
 
                         <?php foreach( config( 'ixp_tools.weathermap' ) as $k => $w ): ?>
@@ -178,7 +167,6 @@
                     My Account
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right" id="my-account-dd">
-
                     <a id="profile" class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">
                         Profile
                     </a>
@@ -191,22 +179,20 @@
                         Active Sessions
                     </a>
 
-                    <?php if( count( Auth::getUser()->getCustomers() ) > 1 ): ?>
-
+                    <?php if( Auth::getUser()->customers()->count() > 1 ): ?>
                         <div class="dropdown-divider"></div>
 
                         <h6 class="dropdown-header">
                             Switch to:
                         </h6>
 
-                        <?php foreach( Auth::getUser()->getCustomers() as $cust ): ?>
-
-                            <a id="switch-cust-<?= $cust->getId() ?>" class="dropdown-item <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: 'active cursor-default' ?>" <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: "onclick='return false;'" ?> href="<?= Auth::getUser()->getCustomer()->getId() == $cust->getId() ? '#' : route( 'switch-customer@switch' , [ "id" => $cust->getId() ]  ) ?>">
+                        <?php foreach( Auth::getUser()->customers as $cust ): ?>
+                            <a id="switch-cust-<?= $cust->id ?>" class="dropdown-item <?= Auth::getUser()->custid !== $cust->id ?: 'active cursor-default' ?>"
+                                <?= Auth::getUser()->custid !== $cust->id ?: "onclick='return false;'" ?>
+                               href="<?= Auth::getUser()->custid === $cust->id ? '#' : route( 'switch-customer@switch' , [ "id" => $cust->id ]  ) ?>">
                                 <?= $cust->getName() ?>
                             </a>
-
                         <?php endforeach; ?>
-
                     <?php endif; ?>
 
                     <div class="dropdown-divider"></div>
@@ -214,7 +200,6 @@
                     <a id="logout" class="dropdown-item" href="<?= route( 'login@logout' ) ?>">
                         Logout
                     </a>
-
                 </ul>
             </li>
 

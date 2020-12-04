@@ -71,11 +71,11 @@ class LogoController extends Controller
      */
     private function loadCustomer( ?int $id ): Customer
     {
-        if( Auth::user()->superUser() ) {
+        if( Auth::getUser()->isSuperUser() ) {
             return Customer::findOrFail( $id );
         }
 
-        return Customer::find( Auth::user()->custid );
+        return Customer::find( Auth::getUser()->custid );
     }
 
 
@@ -132,7 +132,7 @@ class LogoController extends Controller
         $logo = Logo::create( [
             'original_name' => $file->getClientOriginalName(),
             'stored_name'   => sha1( $img->getEncoded() ) . '.png',
-            'uploaded_by'   => Auth::user()->username,
+            'uploaded_by'   => Auth::getUser()->username,
             'width'         => $img->width(),
             'height'        => $img->height(),
         ] );
@@ -150,7 +150,7 @@ class LogoController extends Controller
 
         AlertContainer::push( "Logo successfully uploaded!", Alert::SUCCESS );
 
-        return Redirect::to( Auth::user()->superUser() ? route( "customer@overview" , [ "id" => $c->id ] ) : Redirect::to( route( "dashboard@index" ) ) );
+        return Redirect::to( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ "id" => $c->id ] ) : Redirect::to( route( "dashboard@index" ) ) );
     }
 
 
@@ -184,7 +184,7 @@ class LogoController extends Controller
 
         AlertContainer::push( "Logo successfully removed!", Alert::SUCCESS );
 
-        return redirect( Auth::user()->isSuperUser() ? route( 'customer@overview', [ 'id' => $c->id ] ) : route( 'dashboard@index' ) );
+        return redirect( Auth::getUser()->isSuperUser() ? route( 'customer@overview', [ 'id' => $c->id ] ) : route( 'dashboard@index' ) );
     }
 
 

@@ -54,7 +54,7 @@ class PublicController extends Controller
     public function test(): Response
     {
         return response()->make( "API Test Function!\n\nAuthenticated: "
-                . ( Auth::check() ? 'Yes, as: ' . Auth::user()->username : 'No' ) . "\n\n", 200 )
+                . ( Auth::check() ? 'Yes, as: ' . Auth::getUser()->username : 'No' ) . "\n\n", 200 )
             ->header( 'Content-Type', 'text/plain; charset=utf-8' );
     }
 

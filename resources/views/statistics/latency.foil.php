@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+    <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
         <a href="<?= route( 'customer@overview', [ 'id' => $t->c->id ] ) ?>" >
             <?= $t->c->getFormattedName() ?>
         </a>
@@ -20,7 +20,7 @@
     <?php endif; ?>
 <?php $this->append() ?>
 
-<?php if( Auth::check() && !Auth::user()->isSuperUser() ): ?>
+<?php if( Auth::check() && !Auth::getUser()->isSuperUser() ): ?>
     <?php $this->section( 'page-header-postamble' ) ?>
         <a class="btn btn-white" href="<?= route( 'statistics@member', [ 'id' => $t->c->id ] ) ?>">All Ports</a>
     <?php $this->append() ?>
@@ -62,7 +62,7 @@
                     </ul>
                 </div>
 
-                <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+                <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
                     <button type="button" class="btn btn-white pull-right tw-text-gray-600" data-toggle="modal" data-target="#grapher-backend-info-modal">
                         Backend Info
                     </button>
@@ -100,7 +100,7 @@
         <?php endforeach; ?>
     </div>
 
-    <?php if( Auth::check() && Auth::user()->isSuperUser() ):?>
+    <?php if( Auth::check() && Auth::getUser()->isSuperUser() ):?>
         <div class="modal" tabindex="-1" role="dialog" id="grapher-backend-info-modal">
             <div class="modal-dialog modal-xl" role="document">
                 <div class="modal-content">

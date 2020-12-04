@@ -96,7 +96,7 @@ class ContactController extends EloquentController
             'viewFolderName'    => 'contact',
         ];
 
-        switch( Auth::user()->privs() ) {
+        switch( Auth::getUser()->privs() ) {
             case User::AUTH_SUPERUSER:
                 $this->feParams->listColumns = [
                     'customer'  => [
@@ -161,7 +161,7 @@ class ContactController extends EloquentController
         }
 
         // display the same information in the view as the list
-        if( !Auth::user()->superUser() ) {
+        if( !Auth::getUser()->isSuperUser() ) {
             $this->feParams->viewColumns = $this->feParams->listColumns;
         } else {
             $this->feParams->viewColumns = array_merge(
@@ -183,7 +183,7 @@ class ContactController extends EloquentController
      */
     protected function preView(): void
     {
-        if( !Auth::user()->superUser() && Auth::user()->custid() !== (int)$this->data[ 'item' ][ 'custid' ] ) {
+        if( !Auth::getUser()->isSuperUser() && Auth::getUser()->custid !== (int)$this->data[ 'item' ][ 'custid' ] ) {
             $this->unauthorized();
         }
 
@@ -224,8 +224,8 @@ class ContactController extends EloquentController
             ->when( $id , function ( Builder $query, $id ) {
                 return $query->where('contact.id', $id );
             })
-            ->when( !Auth::user()->superUser(), function ( Builder $query ) {
-                return $query->where('cust.id', Auth::user()->custid );
+            ->when( !Auth::getUser()->isSuperUser(), function ( Builder $query ) {
+                return $query->where('cust.id', Auth::getUser()->custid );
             })
             ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
                 return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
@@ -378,7 +378,7 @@ class ContactController extends EloquentController
 
         $this->object = Contact::findOrFail( $id );
 
-        if( !Auth::getUser()->isSuperUser() && Auth::getUser()->getCustomer()->getId() !== $this->object->customer->id ){
+        if( !Auth::getUser()->isSuperUser() && Auth::getUser()->custid !== $this->object->customer->id ){
             $this->unauthorized();
         }
 
@@ -526,7 +526,7 @@ class ContactController extends EloquentController
         $this->object = Contact::findOrFail( $id );
         $this->checkForm( $request );
 
-        $custid = Auth::getUser()->getCustomer()->getId();
+        $custid = Auth::getUser()->custid;
 
         if( Auth::getUser()->isSuperUser() ) {
             $custid = $request->custid;

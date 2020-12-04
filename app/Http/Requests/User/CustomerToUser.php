@@ -108,9 +108,9 @@ class CustomerToUser extends FormRequest
 
             if( $this->input( 'privs' ) == UserEntity::AUTH_SUPERUSER ) {
 
-                $cust = $this->user()->isSuperUser() ? $this->cust : $this->user()->getCustomer();
+                $cust = $this->user()->superUser() ? $this->cust : $this->user()->getCustomer();
 
-                if( !$this->user()->isSuperUser() )  {
+                if( !$this->user()->superUser() )  {
                     $validator->errors()->add( 'privs',  "You are not allowed to set any user as a super user." );
                     return false;
                 }

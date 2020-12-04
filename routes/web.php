@@ -186,7 +186,7 @@ Route::get( '/', function() {
         return redirect(route( "login@showForm" ) );
     }
 
-    if( Auth::user()->superUser() ) {
+    if( Auth::getUser()->isSuperUser() ) {
         return redirect( route( "admin@dashboard" ) );
     }
     return redirect( route( "dashboard@index" ) );

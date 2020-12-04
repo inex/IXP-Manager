@@ -191,10 +191,9 @@ class UserAggregator extends User
             Log::info( 'PeeringDB OAuth: found existing user ' . $user->id . '/' . $user->username . ' for PeeringDB user: ' . $pdbuser[ 'name' ] . '/' . $pdbuser[ 'email' ] );
         }
 
-        $user->update([
-            'name'      => $pdbuser[ 'name' ],
-            'email'     => $pdbuser[ 'email' ]
-        ]);
+        $user->name     = $pdbuser[ 'name' ];
+        $user->email    = $pdbuser[ 'email' ];
+        $user->save();
 
         $result[ 'user' ] = $user;
 
@@ -215,7 +214,8 @@ class UserAggregator extends User
                     UserLoginHistory::where( 'customer_to_user_id', $c2u->id )->delete();
                     // if this is the user's default / last logged in as customer, reset it:
                     if( !$user->customer || $user->custid === $c2u->customer_id ) {
-                        $user->update( [ 'custid' => null ] );
+                        $user->custid = null;
+                        $user->save();
                     }
 
                     $result['removed_from'][] = $c2u->customer;
@@ -282,7 +282,8 @@ class UserAggregator extends User
         } else if( $user->customer()->doesntExist() ) {
             // set a default customer if we do not have one
             Log::info( 'PeeringDB OAuth: user ' . $user->id . '/' . $user->username . ' given default customer: ' . $user->customers()->first()->getFormattedName() );
-            $user->update( [ 'custid' => $user->customers()->first()->id ] );
+            $user->custid = $user->customers()->first()->id;
+            $user->save();
         }
 
         return $result;

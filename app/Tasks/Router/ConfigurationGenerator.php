@@ -23,15 +23,12 @@ namespace IXP\Tasks\Router;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Log;
-use IXP\Exceptions\GeneralException;
+use Log;
 use Illuminate\Contracts\View\View as ViewContract;
 
-use IXP\Models\Aggregators\VlanInterfaceAggregator;
-use IXP\Models\Router;
-use Entities\{
-    Router as RouterEntity,
-    VlanInterface as VlanInterfaceEntity
+use IXP\Models\{
+    Aggregators\VlanInterfaceAggregator,
+    Router
 };
 
 /**

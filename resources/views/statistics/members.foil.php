@@ -7,7 +7,7 @@
     Statistics / Graphs
     <?php if( $t->graph ): ?>
 
-        <?php if( !(Auth::check() && Auth::user()->isSuperUser() ) ): ?>
+        <?php if( !(Auth::check() && Auth::getUser()->isSuperUser() ) ): ?>
             <small>
         <?php endif; ?>
 
@@ -24,7 +24,7 @@
         <?php endif; ?>
         )
 
-        <?php if( !(Auth::check() && Auth::user()->isSuperUser() ) ): ?>
+        <?php if( !(Auth::check() && Auth::getUser()->isSuperUser() ) ): ?>
             </small>
         <?php endif; ?>
     <?php endif; ?>

@@ -139,8 +139,8 @@ class LookingGlass extends Controller
      */
     private function addCommonParams( View $view ): View
     {
-        $cust = Auth::check() ? Customer::find( Auth::user()->getCustomer()->getId() ) : null;
-        $user = Auth::check() ? User::find( Auth::user()->getId() ) : null;
+        $cust = Auth::check() ? Customer::find( Auth::getUser()->custid ) : null;
+        $user = Auth::check() ? User::find( Auth::id() ) : null;
 
         $view->with( 'status', json_decode( $this->lg()->status(), false ) );
         $view->with( 'lg',      $this->lg() );
@@ -159,8 +159,8 @@ class LookingGlass extends Controller
      */
     public function index(): View
     {
-        $cust = Auth::check() ? Customer::find( Auth::user()->getCustomer()->getId() ) : null;
-        $user = Auth::check() ? User::find( Auth::user()->getId() ) : null;
+        $cust = Auth::check() ? Customer::find( Auth::getUser()->custid ) : null;
+        $user = Auth::check() ? User::find( Auth::id() ) : null;
 
         return view('services/lg/index' )->with( [
             'lg'            => false,

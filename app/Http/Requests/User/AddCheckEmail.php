@@ -67,11 +67,11 @@ class AddCheckEmail extends FormRequest
     public function withValidator( Validator $validator )
     {
         $validator->after( function( Validator $validator ) {
-            if( !Auth::user()->superUser() ) {
+            if( !Auth::getUser()->isSuperUser() ) {
                 /** @var UserEntity $user */
                 foreach( D2EM::getRepository( UserEntity::class )->findBy( [ 'email' => $this->input( 'email' ) ] ) as $user ) {
 
-                    if( D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => Auth::user()->custid , "user" => $user ] ) ){
+                    if( D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => Auth::getUser()->custid , "user" => $user ] ) ){
                         AlertContainer::push( "A user already exists with that email address for your company." , Alert::DANGER );
 
                         $validator->errors()->add( 'email',  " " );

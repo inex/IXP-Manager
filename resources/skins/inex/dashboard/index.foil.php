@@ -217,7 +217,7 @@ $this->layout( 'layouts/ixpv4' );
                 .responsive.recalc();
         });
 
-        <?php if( Auth::user()->custUser() ): ?>
+        <?php if( Auth::getUser()->isCustUser() ): ?>
             $( document ).ready(function() {
                 $( "#details input" ).attr( "disabled", "disabled" );
                 $( "#details select" ).attr( "disabled", "disabled" )

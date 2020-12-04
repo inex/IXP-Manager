@@ -144,23 +144,23 @@ class PhysicalInterface extends Graph
             return false;
         }
 
-        if( Auth::user()->isSuperUser() ) {
+        if( Auth::getUser()->isSuperUser() ) {
             return $this->allow();
         }
 
-        if( Auth::user()->getCustomer()->getId() === $this->physicalInterface()->virtualInterface->customer->id ) {
+        if( Auth::getUser()->custid === $this->physicalInterface()->virtualInterface->customer->id ) {
             return $this->allow();
         }
 
         if( config( 'grapher.access.customer' ) !== 'own_graphs_only'
             && is_numeric( config( 'grapher.access.customer' ) )
-            && Auth::user()->getPrivs() >= config( 'grapher.access.customer' )
+            && Auth::getUser()->privs >= config( 'grapher.access.customer' )
         ) {
             return $this->allow();
         }
 
         Log::notice( sprintf( "[Grapher] [PhysicalInterface]: user %d::%s tried to access a physical interface graph "
-                . "{$this->physicalInterface()->id} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
+                . "{$this->physicalInterface()->id} which is not theirs", Auth::id(), Auth::getUser()->username )
         );
 
         $this->deny();

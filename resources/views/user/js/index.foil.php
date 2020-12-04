@@ -1,6 +1,6 @@
 
 <?= $t->insert( 'user/js/common' ); ?>
-<?php if( !Auth::user()->superUser() ):?>
+<?php if( !Auth::getUser()->isSuperUser() ):?>
     <script>
         let tableList = $( '#table-list' );
 

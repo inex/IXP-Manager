@@ -12,7 +12,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+    <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
         <div class="btn-group btn-group-sm ml-auto" role="group">
 
             <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/docstore/">
@@ -45,7 +45,7 @@
 
 <?= $t->alerts() ?>
 
-<?php if( Auth::check() && Auth::user()->isSuperUser() && !$t->dir && !count( $t->dirs ) && !count( $t->files ) ): ?>
+<?php if( Auth::check() && Auth::getUser()->isSuperUser() && !$t->dir && !count( $t->dirs ) && !count( $t->files ) ): ?>
 
     <?= $t->insert( 'docstore/welcome.foil.php' ) ?>
 
@@ -106,7 +106,7 @@
             <td class="<?= $i ? '' : 'top' ?> meta"></td>
             <td class="<?= $i ? '' : 'top' ?> meta"></td>
             <td class="<?= $i ? '' : 'top' ?> meta">
-                <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+                <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
                     <div class="dropdown">
                         <button class="btn btn-light btn-sm tw-my-0 tw-py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             &middot;&middot;&middot;
@@ -139,7 +139,7 @@
             </td>
 
             <td class="<?= $i ? '' : 'tw-border-t-2' ?> meta tw-text-center">
-                <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+                <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
                     <span class="tw-w-full tw-inline-block tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-xs tw-text-gray-700">
                         <?= \Entities\User::$PRIVILEGES_ALL[ $file->min_privs ] ?>
                     </span>
@@ -147,7 +147,7 @@
             </td>
 
             <td class="<?= $i ? '' : 'tw-border-t-2' ?> meta tw-text-right" style="font-variant-numeric: tabular-nums;">
-                <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+                <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
                     <?php if( $file->created_at < $sixmonthsago ): ?>
                         <span class="tw-align-middle tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-sm tw-text-gray-700"
                               data-toggle="tooltip" data-placement="left" data-html="true" title="Unique User Downloads: <?= $file->unique_downloads_count ?>">
@@ -177,13 +177,13 @@
                         <?php if( $file->isViewable() ): ?>
                             <a class="dropdown-item" href="<?= route( 'docstore-file@download', ['file' => $file->id] ) ?>">Download</a>
                         <?php endif; ?>
-                        <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+                        <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
                             <a class="dropdown-item list-info-btn" data-object-type="file" href="#" data-url="<?= route( "docstore-file@info", [ "file" => $file ] ) ?>">Metadata</a>
                         <?php endif; ?>
                         <a class="dropdown-item" href="#"
                            onclick="bootbox.alert({ message: 'SHA checksums can be used to check the authenticity / integrity of files.<br><br><?= $file->sha256 ? "SHA256 checksum: [<code>" . $t->ee( $file->sha256 ) . "</code>]" : "there is no sha256 checksum registered for this file." ?>', size: 'large' }); return false;">Show SHA256</a>
 
-                        <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+                        <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="<?= route( 'docstore-log@unique-list', [ 'file' => $file ] ) ?>">Unique Downloads</a>
                             <a class="dropdown-item" href="<?= route( 'docstore-log@list', [ 'file' => $file ] ) ?>">All Downloads</a>

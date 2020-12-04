@@ -1,6 +1,6 @@
 <div class="tw-max-w-lg">
 
-    <?php if( Auth::user()->isSuperUser() ): ?>
+    <?php if( Auth::getUser()->isSuperUser() ): ?>
 
         <h3 class="tw-mb-8">Welcome to the <?= ucfirst( config( 'ixp_fe.lang.customer.one') ) ?> Document Store for <?= $t->cust->name ?></h3>
 

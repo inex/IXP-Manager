@@ -149,7 +149,8 @@ class LoginController extends Controller
 
         // Check if the user has a default customer OR if the default customer is no longer in the C2U, then assign one
         if( !$user->customer || !$c2u ){
-            $user->update( [ 'custid' => $user->customers()->first()->id ] );
+            $user->custid = $user->customers()->first()->id;
+            $user->save();
         }
     }
 

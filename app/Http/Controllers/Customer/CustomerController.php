@@ -547,7 +547,7 @@ class CustomerController extends Controller
             'c'                         => $c,
             'customers'                 => D2EM::getRepository( CustomerEntity::class )->getNames( true ),
             'netInfo'                   => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray(),
-            'isSuperUser'               => Auth::user()->superUser(),
+            'isSuperUser'               => Auth::getUser()->isSuperUser(),
 
             // is this user watching all notes for this customer?
             'coNotifyAll'               => Auth::getUser()->getPreference( "customer-notes.{$c->getId()}.notify" ) ? true : false,
@@ -568,7 +568,7 @@ class CustomerController extends Controller
             'countries'                 => Countries::getList('name' ),
             'tab'                       => strtolower( $tab ),
             'notes'                     => $cns,
-            'notesInfo'                 => D2EM::getRepository( CustomerNoteEntity::class )->analyseForUser( $cns, $c, Auth::user() ),
+            'notesInfo'                 => D2EM::getRepository( CustomerNoteEntity::class )->analyseForUser( $cns, $c, Auth::getUser() ),
             'peers'                     => D2EM::getRepository( CustomerEntity::class )->getPeeringManagerArrayByType( $c , D2EM::getRepository( VlanEntity::class )->getPeeringManagerVLANs(), [ 4, 6 ] ) ?? false,
         ]);
     }

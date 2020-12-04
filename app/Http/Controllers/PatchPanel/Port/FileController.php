@@ -153,7 +153,7 @@ class FileController extends Controller
                 'name'                  => $file->getClientOriginalName(),
                 'type'                  => Storage::mimeType( $path ),
                 'uploaded_at'           => now(),
-                'uploaded_by'           => Auth::user()->getUsername(),
+                'uploaded_by'           => Auth::getUser()->username,
                 'size'                  => Storage::size( $path ),
                 'storage_location'      => $hash
             ] );
@@ -173,8 +173,8 @@ class FileController extends Controller
      */
     public function download( PatchPanelPortFile $file ): BinaryFileResponse
     {
-        $u = User::find( Auth::user()->getId() );
-        if( !$u->superUser() ) {
+        $u = User::find( Auth::id() );
+        if( !$u->isSuperUser() ) {
             if( !$file->patchPanelPort->customer
                 || $file->patchPanelPort->customer_id !== $u->custid
                 || $file->is_private ) {

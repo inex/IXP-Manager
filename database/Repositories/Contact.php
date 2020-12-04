@@ -197,8 +197,8 @@ class Contact extends EntityRepository
 
         $dql .= ( $where ? "" : " WHERE 1 = 1" );
 
-        if( !Auth::user()->superUser() ) {
-            $dql .= " AND cust.id = " . Auth::user()->custid;
+        if( !Auth::getUser()->isSuperUser() ) {
+            $dql .= " AND cust.id = " . Auth::getUser()->custid;
         }
 
 
@@ -208,7 +208,7 @@ class Contact extends EntityRepository
         }
 
 
-        if( !Auth::user()->superUser() ) {
+        if( !Auth::getUser()->isSuperUser() ) {
             return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
         }
 

@@ -3,7 +3,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+    <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
         Route Server Prefix /
     <?php endif; ?>
     Route Server Prefix Filtering Analysis Tool

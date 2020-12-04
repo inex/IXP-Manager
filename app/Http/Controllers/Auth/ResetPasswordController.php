@@ -147,9 +147,8 @@ class ResetPasswordController extends Controller
      */
     protected function resetPassword( User $user, string $password ): void
     {
-        $user->update( [
-            'password' => Hash::make( $password ),
-        ] );
+        $user->password = Hash::make( $password );
+        $user->save();
 
         event( new PasswordResetEvent( $user ) );
 

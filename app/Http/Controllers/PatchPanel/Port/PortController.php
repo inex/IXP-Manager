@@ -365,8 +365,8 @@ class PortController extends Controller
     {
         $listHistory[] = $ppp;
 
-        if( !Auth::user()->isSuperUser() ) {
-            if( !$ppp->customer || $ppp->customer_id !== Auth::user()->getCustomer()->getId() ) {
+        if( !Auth::getUser()->isSuperUser() ) {
+            if( !$ppp->customer || $ppp->customer_id !== Auth::getUser()->custid ) {
                 abort(404);
             }
         } else {

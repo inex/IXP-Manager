@@ -46,7 +46,7 @@ class IxpServiceProvider extends ServiceProvider
     {
         $this->app->resolving('view', function( $view ) {
             View::composer('*', function($view) {
-                if( ( Auth::check() && Auth::user()->superUser() ) || env( 'IXP_PHPUNIT_RUNNING', false ) ) {
+                if( ( Auth::check() && Auth::getUser()->isSuperUser() ) || env( 'IXP_PHPUNIT_RUNNING', false ) ) {
                     // get an array of customer id => names
                     if( !( $customers = Cache::get( 'admin_home_customers' ) ) ) {
                         $customers = Customer::select( [ 'id', 'name' ] )->currentActive()->get()->keyBy( 'id' )->toArray();

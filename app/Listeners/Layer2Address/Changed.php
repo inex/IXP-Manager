@@ -60,7 +60,7 @@ class Changed implements ShouldQueue
             return;
         }
 
-        if( !config( 'ixp_fe.layer2-addresses.email_on_superuser_change' ) && $e->user->isSuperUser() ) {
+        if( !config( 'ixp_fe.layer2-addresses.email_on_superuser_change' ) && $e->user->superUser() ) {
             return;
         }
 

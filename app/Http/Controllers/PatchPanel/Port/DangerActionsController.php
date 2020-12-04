@@ -123,8 +123,8 @@ class DangerActionsController extends Controller
         foreach( $ppp->duplexSlavePorts as $slave ){
             $ppp->update( [
                 'duplex_master_id' => null,
-                'private_notes' => "### " . now()->format('Y-m-d') . " - ". Auth::user()->getUsername() ."\n\nThis port had a slave port: "
-                    . $slave->patchPanel->port_prefix . $slave->number . " which was split by " . Auth::user()->getUsername()
+                'private_notes' => "### " . now()->format('Y-m-d') . " - ". Auth::getUser()->username ."\n\nThis port had a slave port: "
+                    . $slave->patchPanel->port_prefix . $slave->number . " which was split by " . Auth::getUser()->username
                     . " on " . now()->format('Y-m-d') . ".\n\n"
                     . $ppp->private_notes
             ]);
@@ -132,8 +132,8 @@ class DangerActionsController extends Controller
             $slave->reset();
 
             $slave->update( [
-                'private_notes' => "### " . now()->format('Y-m-d') . " - ". Auth::user()->getUsername() ."\n\nThis port was a duplex slave port with "
-                    . $ppp->patchPanel->port_prefix . $ppp->number . " and was split by " . Auth::user()->getUsername()
+                'private_notes' => "### " . now()->format('Y-m-d') . " - ". Auth::getUser()->username ."\n\nThis port was a duplex slave port with "
+                    . $ppp->patchPanel->port_prefix . $ppp->number . " and was split by " . Auth::getUser()->username
                     . " on " . now()->format('Y-m-d') . ".\n\n"
             ] );
         }

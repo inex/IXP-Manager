@@ -59,7 +59,7 @@ class SwitchCustomerController extends Controller
      */
     public function switch( Customer $cust ): RedirectResponse
     {
-        $user = Auth::user();
+        $user = Auth::getUser();
 
          if( !( $c2u = CustomerToUser::where( 'customer_id', $cust->id )->where( 'user_id', $user->id )->first() ) ){
             AlertContainer::push( "You are not allowed to access to this customer.", Alert::DANGER );
@@ -80,7 +80,8 @@ class SwitchCustomerController extends Controller
             ] );
         }
 
-        $user->update( [ 'custid' => $cust->id ] );
+        $user->custid = $cust->id;
+        $user->save();
 
         AlertContainer::push( "You are now logged in for {$cust->name}.", Alert::SUCCESS );
         return redirect()->to( "/" );

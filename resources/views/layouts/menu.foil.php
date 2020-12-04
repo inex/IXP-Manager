@@ -67,7 +67,6 @@
                             Sflow Receivers
                         </a>
                     </li>
-
                 </ul>
             <?php endif; ?>
 
@@ -186,28 +185,26 @@
                 </a>
             </li>
 
-
             <li>
                 <a href="<?= route('ip-address@list', [ 'protocol' => 4 ] ) ?>" class="nav-link">
                     IP Addresses
                 </a>
             </li>
+            <?php if( request()->is( 'ip-address/*' ) ): ?>
+                <ul>
+                    <li class="nav-sub-menu-item <?= (int)request()->route()->parameter('protocol') === 4 ? 'active' : '' ?>">
+                        <a href="<?= route('ip-address@list', [ 'protocol' => 4 ] ) ?>" class="nav-link">
+                            &nbsp;&nbsp;&nbsp;&nbsp;IPv4 Addresses
+                        </a>
+                    </li>
 
-                <?php if( request()->is( 'ip-address/*' ) ): ?>
-                    <ul>
-                        <li class="nav-sub-menu-item <?= (int)request()->route()->parameter('protocol') === 4 ? 'active' : '' ?>">
-                            <a href="<?= route('ip-address@list', [ 'protocol' => 4 ] ) ?>" class="nav-link">
-                                &nbsp;&nbsp;&nbsp;&nbsp;IPv4 Addresses
-                            </a>
-                        </li>
-
-                        <li class="nav-sub-menu-item <?= (int)request()->route()->parameter('protocol') === 6 ? 'active' : '' ?>">
-                            <a href="<?= route('ip-address@list', [ 'protocol' => 6 ] ) ?>" class="nav-link">
-                                &nbsp;&nbsp;&nbsp;&nbsp;IPv6 Addresses
-                            </a>
-                        </li>
-                    </ul>
-                <?php endif; ?>
+                    <li class="nav-sub-menu-item <?= (int)request()->route()->parameter('protocol') === 6 ? 'active' : '' ?>">
+                        <a href="<?= route('ip-address@list', [ 'protocol' => 6 ] ) ?>" class="nav-link">
+                            &nbsp;&nbsp;&nbsp;&nbsp;IPv6 Addresses
+                        </a>
+                    </li>
+                </ul>
+            <?php endif; ?>
 
             <li class=" <?= !request()->is( 'irrdb-config/*' ) ?: 'active' ?>">
                 <a href="<?= route( 'irrdb-config@list' ) ?>" class="nav-link">
@@ -221,23 +218,23 @@
                 </a>
             </li>
 
-                <?php if( request()->is( 'mac-address/*' ) || request()->is( 'layer2-address/*' ) ): ?>
-                    <ul>
-                        <li class="nav-sub-menu-item <?= !request()->is( 'layer2-address/*' ) ?: 'active' ?>">
-                            <a href="<?= route( 'layer2-address@list' ) ?>" class="nav-link">
-                                Configured Addresses
+            <?php if( request()->is( 'mac-address/*' ) || request()->is( 'layer2-address/*' ) ): ?>
+                <ul>
+                    <li class="nav-sub-menu-item <?= !request()->is( 'layer2-address/*' ) ?: 'active' ?>">
+                        <a href="<?= route( 'layer2-address@list' ) ?>" class="nav-link">
+                            Configured Addresses
+                        </a>
+                    </li>
+
+                    <?php if( !config( 'ixp_fe.frontend.disabled.mac-address', false ) ): ?>
+                        <li class="nav-sub-menu-item <?= !request()->is( 'mac-address/*' ) ?: 'active' ?>">
+                            <a href="<?= route('mac-address@list') ?>" class="nav-link">
+                                Discovered Addresses
                             </a>
                         </li>
-
-                        <?php if( !config( 'ixp_fe.frontend.disabled.mac-address', false ) ): ?>
-                            <li class="nav-sub-menu-item <?= !request()->is( 'mac-address/*' ) ?: 'active' ?>">
-                                <a href="<?= route('mac-address@list') ?>" class="nav-link">
-                                    Discovered Addresses
-                                </a>
-                            </li>
-                        <?php endif; ?>
-                    </ul>
-                <?php endif; ?>
+                    <?php endif; ?>
+                </ul>
+            <?php endif; ?>
 
             <li class="<?= !request()->is( 'rack/*' ) ?: 'active' ?>">
                 <a class="nav-link" href="<?= route('rack@list') ?>">
@@ -259,15 +256,15 @@
                 </a>
             </li>
 
-                <?php if( request()->is( 'router/*' ) ): ?>
-                    <ul>
-                        <li class="nav-sub-menu-item <?= request()->is( 'router/status' ) ? 'active' : '' ?>" >
-                            <a href="<?= route('router@status' ) ?>" class="nav-link" >
-                                Live Status
-                            </a>
-                        </li>
-                    </ul>
-                <?php endif;?>
+            <?php if( request()->is( 'router/*' ) ): ?>
+                <ul>
+                    <li class="nav-sub-menu-item <?= request()->is( 'router/status' ) ? 'active' : '' ?>" >
+                        <a href="<?= route('router@status' ) ?>" class="nav-link" >
+                            Live Status
+                        </a>
+                    </li>
+                </ul>
+            <?php endif;?>
 
             <li class="<?= !request()->is( 'switch/*' ) ?: 'active' ?>" >
                 <a id="lhs-menu-switches" class="nav-link" href="<?= route('switch@list') ?>">
@@ -275,25 +272,25 @@
                 </a>
             </li>
 
-                <?php if( request()->is( 'switch/*' ) || request()->is( 'switch-port/*' ) ): ?>
-                    <ul>
-                        <li class="nav-sub-menu-item <?= request()->is( 'switch-port/*' ) && !request()->is( 'switch-port/unused-optics' ) && !request()->is( 'switch-port/optic-inventory' ) && !request()->is( 'switch-port/optic-list' ) ? 'active' : '' ?>">
-                            <a id="lhs-menu-switch-ports" class="nav-link" href="<?= route( "switch-port@list" ) ?>">
-                                Switch Ports
-                            </a>
-                        </li>
-                        <li class="nav-sub-menu-item <?= request()->is( 'switch-port/*' ) && request()->is( 'switch-port/unused-optics' ) ? 'active' : '' ?>">
-                            <a href="<?= route( "switch-port@unused-optics" ) ?>" class="nav-link">
-                                Unused Optics
-                            </a>
-                        </li>
-                        <li class="nav-sub-menu-item <?= request()->is( 'switch-port/*' ) && request()->is( 'switch-port/optic-inventory' )  || request()->is( 'switch-port/optic-list' ) ? 'active' : '' ?>">
-                            <a href="<?= route( "switch-port@optic-inventory" ) ?>" class="nav-link">
-                                Optic Inventory
-                            </a>
-                        </li>
-                    </ul>
-                <?php endif; ?>
+            <?php if( request()->is( 'switch/*' ) || request()->is( 'switch-port/*' ) ): ?>
+                <ul>
+                    <li class="nav-sub-menu-item <?= request()->is( 'switch-port/*' ) && !request()->is( 'switch-port/unused-optics' ) && !request()->is( 'switch-port/optic-inventory' ) && !request()->is( 'switch-port/optic-list' ) ? 'active' : '' ?>">
+                        <a id="lhs-menu-switch-ports" class="nav-link" href="<?= route( "switch-port@list" ) ?>">
+                            Switch Ports
+                        </a>
+                    </li>
+                    <li class="nav-sub-menu-item <?= request()->is( 'switch-port/*' ) && request()->is( 'switch-port/unused-optics' ) ? 'active' : '' ?>">
+                        <a href="<?= route( "switch-port@unused-optics" ) ?>" class="nav-link">
+                            Unused Optics
+                        </a>
+                    </li>
+                    <li class="nav-sub-menu-item <?= request()->is( 'switch-port/*' ) && request()->is( 'switch-port/optic-inventory' )  || request()->is( 'switch-port/optic-list' ) ? 'active' : '' ?>">
+                        <a href="<?= route( "switch-port@optic-inventory" ) ?>" class="nav-link">
+                            Optic Inventory
+                        </a>
+                    </li>
+                </ul>
+            <?php endif; ?>
 
             <li class="<?= !request()->is( 'vendor/*' ) ?: 'active' ?>" >
                 <a href="<?= route('vendor@list' ) ?>" class="nav-link">
@@ -307,21 +304,21 @@
                 </a>
             </li>
 
-                <?php if( request()->is( 'vlan/*' ) || request()->is( 'network-info/*' ) ): ?>
-                    <ul>
-                        <li class="nav-sub-menu-item <?= !request()->is( 'network-info/*' ) ?: 'active' ?>">
-                            <a href="<?= route('network-info@list' ) ?>" class="nav-link">
-                                Network Information
-                            </a>
-                        </li>
+            <?php if( request()->is( 'vlan/*' ) || request()->is( 'network-info/*' ) ): ?>
+                <ul>
+                    <li class="nav-sub-menu-item <?= !request()->is( 'network-info/*' ) ?: 'active' ?>">
+                        <a href="<?= route('network-info@list' ) ?>" class="nav-link">
+                            Network Information
+                        </a>
+                    </li>
 
-                        <li class="nav-sub-menu-item <?= !request()->is( 'vlan/private' ) ?: 'active' ?>">
-                            <a href="<?= route( 'vlan@private' ) ?>" class="nav-link">
-                                Private VLANs
-                            </a>
-                        </li>
-                    </ul>
-                <?php endif; ?>
+                    <li class="nav-sub-menu-item <?= !request()->is( 'vlan/private' ) ?: 'active' ?>">
+                        <a href="<?= route( 'vlan@private' ) ?>" class="nav-link">
+                            Private VLANs
+                        </a>
+                    </li>
+                </ul>
+            <?php endif; ?>
 
             <h6>
                 <span>IXP STATISTICS</span>

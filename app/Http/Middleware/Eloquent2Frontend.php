@@ -59,12 +59,12 @@ class Eloquent2Frontend
         [ $controller, $method ] = explode('@', Route::currentRouteAction() );
 
         // what's the user's privilege?
-        $user_priv = Auth::check() ? Auth::user()->privs() : User::AUTH_PUBLIC;
+        $user_priv = Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC;
 
         // first check - do we have the necessary privileges to access this?
         if( $user_priv < $controller::$minimum_privilege ) {
             AlertContainer::push(  "You do not have the required privileges to access this function.", Alert::DANGER );
-            Log::info( ( Auth::check() ? Auth::user()->username : 'Anonymous user' ) . " tried to access {$controller}@{$method} but does not have the required privileges" );
+            Log::info( ( Auth::check() ? Auth::getUser()->username : 'Anonymous user' ) . " tried to access {$controller}@{$method} but does not have the required privileges" );
             return redirect( '' );
         }
 

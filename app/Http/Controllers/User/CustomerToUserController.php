@@ -121,7 +121,7 @@ class CustomerToUserController extends Controller
         $redirect = session()->get( "user_post_store_redirect" );
         session()->remove( "user_post_store_redirect" );
 
-        Log::notice( Auth::user()->username . ' added ' . $request->existingUser->getUsername() . ' via CustomerToUser ID [' . $c2u->getId() . '] to ' . $request->cust->getName() );
+        Log::notice( Auth::getUser()->username . ' added ' . $request->existingUser->getUsername() . ' via CustomerToUser ID [' . $c2u->getId() . '] to ' . $request->cust->getName() );
 
         AlertContainer::push( $request->existingUser->getName() . '/' . $request->existingUser->getUsername() . ' has been added to ' . $request->cust->getName(), Alert::SUCCESS );
 
@@ -156,7 +156,7 @@ class CustomerToUserController extends Controller
         }
 
         if( $request->input( 'privs' ) == UserEntity::AUTH_SUPERUSER ) {
-            if( !Auth::user()->superUser() ) {
+            if( !Auth::getUser()->isSuperUser() ) {
                 return response()->json( [ 'success' => false, 'message' => "You are not allowed to set the super user privilege" ] );
             }
 
@@ -188,7 +188,7 @@ class CustomerToUserController extends Controller
         $disassociatedCustomer = $request->c2u->getCustomer();
 
         // Store the initial Customer before the deletion
-        $initialCustomer = Auth::user()->customer;
+        $initialCustomer = Auth::getUser()->customer;
 
         $disassociatedUser->removeCustomer( $request->c2u );
 
@@ -205,7 +205,7 @@ class CustomerToUserController extends Controller
         D2EM::flush();
 
         AlertContainer::push( $disassociatedUser->getName()  . '/' . $disassociatedUser->getUsername() . ' has been removed from ' . $disassociatedCustomer->getName(), Alert::SUCCESS );
-        Log::notice( Auth::user()->username." deleted customer2user" . $disassociatedCustomer->getName() . '/' . $disassociatedUser->getName() );
+        Log::notice( Auth::getUser()->username." deleted customer2user" . $disassociatedCustomer->getName() . '/' . $disassociatedUser->getName() );
 
         // If the user deleted itself and is logged in as the same customer:
         if( $request->user()->getId() == $disassociatedUser->getId() && $initialCustomer->getId() == $disassociatedCustomer->getId() ) {

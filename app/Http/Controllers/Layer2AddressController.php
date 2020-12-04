@@ -107,7 +107,7 @@ class Layer2AddressController extends EloquentController
         // phpunit / artisan trips up here without the cli test:
         if( php_sapi_name() !== 'cli' ) {
             // custom access controls:
-            switch( Auth::check() ? Auth::user()->getPrivs() : User::AUTH_PUBLIC ) {
+            switch( Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC ) {
                 case User::AUTH_SUPERUSER:
                     break;
 
@@ -192,11 +192,11 @@ class Layer2AddressController extends EloquentController
      */
     public function forVlanInterface( VlanInterface $vli )
     {
-        if( Auth::user()->superUser() ) {
+        if( Auth::getUser()->superUser() ) {
             return view( 'layer2-address/vlan-interface' )->with( [ 'vli' => $vli ] );
         }
 
-        if( config( 'ixp_fe.layer2-addresses.customer_can_edit' ) && Auth::user()->custid === $vli->virtualInterface->customer->id ) {
+        if( config( 'ixp_fe.layer2-addresses.customer_can_edit' ) && Auth::getUser()->custid === $vli->virtualInterface->customer->id ) {
             return view( 'layer2-address/vlan-interface-cust' )->with( [ 'vli' => $vli ] );
         }
 

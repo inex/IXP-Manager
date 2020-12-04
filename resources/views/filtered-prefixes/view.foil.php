@@ -102,7 +102,7 @@
                         Note that we cache this information for 15 minutes. The above prefix(es) were found at
                         <?= $found_at->format('H:i:s') ?> and will not be refreshed until <?= $found_at->addMinutes(15)->format('H:i:s') ?>.
                     </p>
-                    <?php if( Auth::user()->isSuperUser() ): ?>
+                    <?php if( Auth::getUser()->isSuperUser() ): ?>
                         <p>
                             <b>Oh, wait, it looks like you're a super admin!</b>
                             You can <a href="<?= route( 'filtered-prefixes@list', [ 'customer' => $t->customer->id ] ) ?>?reset_cache=1">bust the cache

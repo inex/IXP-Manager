@@ -9,7 +9,7 @@
     const btn_save_note         = $( '#modal-peering-notes-save' );
     const table                 = $('.table');
 
-    let notesIntro = "### <?= date("Y-m-d" ) . ' - ' . Auth::user()->getUsername() ?> \n\n\n";
+    let notesIntro = "### <?= date("Y-m-d" ) . ' - ' . Auth::getUser()->username ?> \n\n\n";
 
     $(document).ready( function() {
 

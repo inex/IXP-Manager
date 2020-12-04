@@ -36,7 +36,7 @@ class EmailPatchPanelPort extends FormRequest
     public function authorize(): bool
     {
         // middleware ensures superuser access only so always authorised here:
-        return Auth::user()->isSuperUser();
+        return Auth::getUser()->superUser();
     }
 
     /**

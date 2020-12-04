@@ -1,7 +1,9 @@
-<?php namespace IXP\Services;
+<?php
+
+namespace IXP\Services;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,7 +22,6 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Illuminate\Contracts\View\Engine as EngineInterface;
 
 use Foil\Engine as EngineFoil;
@@ -30,12 +31,13 @@ class FoilEngine implements EngineInterface
     /** @var PlatesEngine */
     private $engine;
 
-    public function __construct(EngineFoil $engine)
+    public function __construct( EngineFoil $engine )
     {
         $this->engine = $engine;
     }
 
-    public function engine(): EngineFoil {
+    public function engine(): EngineFoil
+    {
         return $this->engine;
     }
 
@@ -44,11 +46,11 @@ class FoilEngine implements EngineInterface
      *
      * @param  string  $path
      * @param  array   $data
+     *
      * @return string
      */
-    public function get($path, array $data = array())
+    public function get( $path, array $data = array() )
     {
-        return $this->engine->render($path, $data);
+        return $this->engine->render( $path, $data );
     }
-
 }

@@ -395,8 +395,8 @@ class PatchPanelPort
      */
     public function getStateCssClass()
     {
-        if( Auth::user()->superUser() ){
-            if( $this->isAvailableForUse() or $this->isStatePrewired()):
+        if( Auth::getUser()->isSuperUser() ){
+            if( $this->isAvailableForUse() || $this->isStatePrewired()):
                 $class = 'success';
             elseif($this->isStateAwaitingXConnect()):
                 $class = 'warning';

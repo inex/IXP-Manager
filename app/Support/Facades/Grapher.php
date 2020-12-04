@@ -24,6 +24,7 @@ namespace IXP\Support\Facades;
  */
 
 use Illuminate\Support\Facades\Facade;
+use IXP\Services\Grapher as GrapherService;
 
 /**
  * @see \IXP\Contracts\Grapher
@@ -35,8 +36,8 @@ class Grapher extends Facade
      *
      * @return string
      */
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
-        return 'IXP\Services\Grapher';
+        return GrapherService::class;
     }
 }

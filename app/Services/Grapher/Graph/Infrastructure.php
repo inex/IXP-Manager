@@ -124,7 +124,7 @@ class Infrastructure extends Graph
      */
     public function authorise(): bool
     {
-        if( Auth::check() && Auth::user()->isSuperUser() ) {
+        if( Auth::check() && Auth::getUser()->isSuperUser() ) {
             return $this->allow();
         }
 
@@ -138,7 +138,7 @@ class Infrastructure extends Graph
             return $this->allow();
         }
 
-        if( Auth::check() && is_numeric( config( 'grapher.access.infrastructure' ) ) && Auth::user()->getPrivs() >= config( 'grapher.access.infrastructure' ) ) {
+        if( Auth::check() && is_numeric( config( 'grapher.access.infrastructure' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.infrastructure' ) ) {
             return $this->allow();
         }
 

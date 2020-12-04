@@ -171,7 +171,7 @@ class SwitchController extends EloquentController
         // phpunit / artisan trips up here without the cli test:
         if( php_sapi_name() !== 'cli' ) {
             // custom access controls:
-            switch( Auth::check() ? Auth::user()->getPrivs() : User::AUTH_PUBLIC ) {
+            switch( Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC ) {
                 case User::AUTH_SUPERUSER:
                     break;
                 case User::AUTH_CUSTUSER || User::AUTH_CUSTADMIN:

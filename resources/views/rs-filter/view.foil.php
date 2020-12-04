@@ -14,7 +14,7 @@ $this->layout( 'layouts/ixpv4' )
             <span class="fa fa-list"></span>
         </a>
 
-        <?php if( !Auth::user()->custUser() ): ?>
+        <?php if( !Auth::getUser()->isCustUser() ): ?>
             <a class="btn btn-white" href="<?= route ('rs-filter@create', [ "cust" => $t->rsf->customer->id ] ) ?>" title="create">
                 <span class="fa fa-plus"></span>
             </a>
@@ -42,7 +42,7 @@ $this->layout( 'layouts/ixpv4' )
                                     </b>
                                 </td>
                                 <td>
-                                    <?php if( Auth::user()->superUser() ): ?>
+                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
                                         <?php if( $t->rsf->peer ): ?>
                                             <a href="<?= route( "customer@overview" , [ "id" => $t->rsf->peer->id ] )?> ">
                                                 <?= $t->ee( $t->rsf->peer->name )?>
@@ -66,7 +66,7 @@ $this->layout( 'layouts/ixpv4' )
                                     </b>
                                 </td>
                                 <td>
-                                    <?php if( Auth::user()->superUser() ): ?>
+                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
                                         <a href="<?= route( "customer@overview" , [ "id" => $t->rsf->customer->id ] )?> ">
                                             <?= $t->ee( $t->rsf->customer->name )?>
                                         </a>
@@ -83,7 +83,7 @@ $this->layout( 'layouts/ixpv4' )
                                 </td>
                                 <td>
                                     <?php if( $t->rsf->vlan ): ?>
-                                        <?php if( Auth::user()->superUser() ): ?>
+                                        <?php if( Auth::getUser()->isSuperUser() ): ?>
                                             <a href="<?= route( "vlan@view" , [ "id" => $t->rsf->vlan->id ] )?> ">
                                                 <?= $t->rsf->vlan->name ?>
                                             </a>

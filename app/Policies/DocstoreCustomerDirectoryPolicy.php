@@ -92,7 +92,7 @@ class DocstoreCustomerDirectoryPolicy
      */
     public function list( UserEntity $user, Customer $cust  )
     {
-        return $user->isSuperUser() || ( $user->getPrivs() >= UserEntity::AUTH_CUSTUSER && $user->getCustomer()->getId() === $cust->id ) ;
+        return $user->isSuperUser() || ( $user->privs() >= UserEntity::AUTH_CUSTUSER && $user->getCustomer()->getId() === $cust->id ) ;
     }
 
     /**

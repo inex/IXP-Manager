@@ -19,7 +19,7 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section('content') ?>
 
-    <?php if( Auth::check() && Auth::user()->isSuperUser() && !count( $t->files ) ): ?>
+    <?php if( Auth::check() && Auth::getUser()->isSuperUser() && !count( $t->files ) ): ?>
 
         <?= $t->insert( 'docstore-customer/welcome.foil.php' ) ?>
 

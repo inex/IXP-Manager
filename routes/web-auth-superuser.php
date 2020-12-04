@@ -230,12 +230,6 @@ Route::group( [ 'namespace' => 'User' ], function() {
     Route::group( [ 'prefix' => 'customer-to-user' ], function() {
         Route::post('privs',     'CustomerToUserController@updatePrivs' )->name( "customer-to-user@privs" );
     });
-
-    if( config( 'google2fa.enabled' ) ) {
-        Route::group( [ 'prefix' => '2fa' ], function() {
-            Route::post('delete',   'User2FAController@delete'   )->name( "2fa@delete"    );
-        });
-    }
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

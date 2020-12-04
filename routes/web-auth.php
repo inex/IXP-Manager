@@ -174,9 +174,9 @@ Route::group( [ 'prefix' => 'irrdb' ], function() {
 ///
 if( config( 'google2fa.enabled' ) ) {
     Route::group( [ 'namespace' => 'User', 'prefix' => '2fa' ], function() {
-        Route::get('configure','User2FAController@configure')->name('2fa@configure');
-        Route::post('enable',   'User2FAController@enable'   )->name( "2fa@enable"    );
-        Route::post('disable',  'User2FAController@disable'  )->name( "2fa@disable"   );
+        Route::get('configure', 'User2FAController@configure'   )->name('2fa@configure'     );
+        Route::post('enable',   'User2FAController@enable'      )->name( "2fa@enable"       );
+        Route::post('disable',  'User2FAController@disable'     )->name( "2fa@disable"      );
         Route::post( '/authenticate', function() {
             if( Session::exists( "url.intended.2fa" ) ) {
                 return redirect( Session::pull( "url.intended.2fa" ) );

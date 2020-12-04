@@ -670,7 +670,7 @@ class PatchPanelPort extends Model
             'switch_port_id' => $spid,
             'private_notes'  => "### " . now()->format('Y-m-d')." - IXP Manager\n\nMoved from "
                 . $this->patchPanel->name . "/" . $this->name()
-                . " by ". ( Auth::check() ? Auth::user()->getUsername() : "unknown/unauth" )
+                . " by ". ( Auth::check() ? Auth::getUser()->username : "unknown/unauth" )
                 . " on " . now()->format('Y-m-d') . ".\n\n"
                 . $this->private_notes
         ]);
@@ -685,7 +685,7 @@ class PatchPanelPort extends Model
         $history->update( [
             'private_notes' => "### " . now()->format('Y-m-d' ) . " - IXP Manager\n\nMoved to "
                 . $dest->patchPanel->name . "/" . $dest->name()
-                . " by ". ( Auth::check() ? Auth::user()->getUsername() : "unknown/unauth" )
+                . " by ". ( Auth::check() ? Auth::getUser()->username : "unknown/unauth" )
                 . " on " . now()->format( 'Y-m-d' ) . ".\n\n"
                 . ( $dest->patchPanelPortFiles()->count() ? "See new port for files.\n\n" : '' )
                 . $history->private_notes
@@ -719,7 +719,7 @@ class PatchPanelPort extends Model
         foreach( $this->patchPanelPortHistories as $history ) {
             /** @var $history PatchPanelPortHistory */
 
-            $user = Auth::check() ? Auth::user()->getUsername() : 'unkown/unauth';
+            $user = Auth::check() ? Auth::getUser()->username : 'unkown/unauth';
             foreach( PatchPanelPortHistory::whereDuplexMasterId( $history->id )->get() as $duplex ){
                 $duplex->update([
                     'duplex_master_id'  => null,

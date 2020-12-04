@@ -123,9 +123,9 @@ class DocstoreCustomerDirectory extends Model
             if( !Auth::check() ) {
                 // if public user make sure that no records is returned
                 $builder->where('id', null );
-            } elseif( !Auth::user()->isSuperUser() ) {
+            } elseif( !Auth::getUser()->isSuperUser() ) {
                 // if not super user make sure only records from the same customer are returned
-                $builder->where('cust_id', Auth::user()->getCustomer()->getId() );
+                $builder->where('cust_id', Auth::getUser()->custid );
             }
         });
     }

@@ -161,7 +161,7 @@ class P2p extends Graph
      */
     public static function authorisedForAllCustomers(): bool
     {
-        if( Auth::check() && Auth::user()->isSuperUser() ) {
+        if( Auth::check() && Auth::getUser()->isSuperUser() ) {
             return true;
         }
 
@@ -169,7 +169,7 @@ class P2p extends Graph
             return true;
         }
 
-        return Auth::check() && is_numeric( config( 'grapher.access.p2p' ) ) && Auth::user()->getPrivs() >= config( 'grapher.access.p2p' );
+        return Auth::check() && is_numeric( config( 'grapher.access.p2p' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.p2p' );
     }
 
     /**
@@ -193,23 +193,23 @@ class P2p extends Graph
             return false;
         }
 
-        if( Auth::user()->isSuperUser() ) {
+        if( Auth::getUser()->isSuperUser() ) {
             return $this->allow();
         }
 
-        if( Auth::user()->getCustomer()->getId() === $this->svli()->virtualInterface->customer->id ) {
+        if( Auth::getUser()->custid === $this->svli()->virtualInterface->customer->id ) {
             return $this->allow();
         }
 
         if( config( 'grapher.access.p2p' ) !== 'own_graphs_only'
             && is_numeric( config( 'grapher.access.p2p' ) )
-            && Auth::user()->getPrivs() >= config( 'grapher.access.p2p' )
+            && Auth::getUser()->privs() >= (int)config( 'grapher.access.p2p' )
         ) {
             return $this->allow();
         }
 
         Log::notice( sprintf( "[Grapher] [Customer]: user %d::%s tried to access a customer p2p vli graph "
-                . "{$this->svli()->id} with dvli {$this->dvli()->id} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
+                . "{$this->svli()->id} with dvli {$this->dvli()->id} which is not theirs", Auth::id(), Auth::getUser()->username )
         );
 
         $this->deny();

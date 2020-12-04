@@ -58,7 +58,7 @@ class FilteredPrefixesController extends Controller
         $this->authorize('view', $customer);
 
         // are we busting the cache?
-        if( Auth::user()->isSuperUser() && $r->reset_cache === "1" ) {
+        if( Auth::getUser()->isSuperUser() && $r->reset_cache === "1" ) {
             Cache::forget('filtered-prefixes-' . $customer->id );
         }
 

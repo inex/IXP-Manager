@@ -10,7 +10,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+    <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
         <a href="<?= route( 'customer@overview', [ 'id' => $t->c->id ] ) ?>" >
             <?= $t->c->getFormattedName() ?>
         </a>
@@ -38,7 +38,7 @@
     <?php endif; ?>
 <?php $this->append() ?>
 
-<?php if( Auth::check() && !Auth::user()->isSuperUser() ): ?>
+<?php if( Auth::check() && !Auth::getUser()->isSuperUser() ): ?>
     <?php $this->section( 'page-header-postamble' ) ?>
         <a class="btn btn-white btn-sm" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->id ] ) ?>">P2P Overview</a>
     <?php $this->append() ?>

@@ -6,7 +6,7 @@
 
 <?php $this->section( 'page-header-preamble' ) ?>
 
-    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+    <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
         <?= $t->associates ? ( 'Associate ' . ucfirst( config( 'ixp_fe.lang.customer.many' ) ) )  : ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
     <?php else: ?>
         <?= $t->associates ? 'Associate' : '' ?> <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>

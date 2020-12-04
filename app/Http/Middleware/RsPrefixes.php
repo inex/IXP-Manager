@@ -62,7 +62,7 @@ class RsPrefixes
                 return $next( $r );
             }
 
-            if( Auth::guest() || config( 'ixp_fe.rs-prefixes.access' ) > Auth::user()->privs() ) {
+            if( Auth::guest() || config( 'ixp_fe.rs-prefixes.access' ) > Auth::getUser()->privs() ) {
                 AlertContainer::push(  "You do not have the required privileges to access this function.", Alert::DANGER );
                 return redirect( '' );
             }
@@ -72,11 +72,11 @@ class RsPrefixes
             }
 
             if( Auth::check() ) {
-                if( (int)config( 'ixp_fe.rs-prefixes.access' ) <= Auth::user()->privs() ) {
+                if( (int)config( 'ixp_fe.rs-prefixes.access' ) <= Auth::getUser()->privs() ) {
                     return $next( $r );
                 }
 
-                if( Auth::user()->custid === (int)$r->route()->parameter( 'cid' ) ) {
+                if( Auth::getUser()->custid === (int)$r->route()->parameter( 'cid' ) ) {
                     return $next( $r );
                 }
             }

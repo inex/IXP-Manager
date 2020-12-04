@@ -133,9 +133,9 @@ class DocstoreCustomerFile extends Model
             if( !Auth::check() ) {
                 // if public user make sure that no records is returned
                 $builder->where('id', null );
-            } elseif( !Auth::user()->isSuperUser() ) {
+            } elseif( !Auth::getUser()->isSuperUser() ) {
                 // If not super user make sure only allowed files are returned
-                $builder->where('min_privs', '<=', Auth::user()->getPrivs() );
+                $builder->where('min_privs', '<=', Auth::getUser()->privs() );
             }
         });
     }

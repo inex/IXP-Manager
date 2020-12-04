@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,9 +22,10 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Auth, D2EM, Hash, Redirect;
 
-use Auth, D2EM, DateTime, Hash, Redirect;
-
+use Illuminate\Auth\Recaller;
+use IXP\Models\UserRememberToken;
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -33,9 +34,7 @@ use Illuminate\Http\{
 use Illuminate\View\View;
 
 use Entities\{
-    User                as  UserEntity,
-    UserRememberToken  as UserRememberTokenEntity,
-    Session             as SessionEntity
+    User                as  UserEntity
 };
 
 use IXP\Http\Requests\Profile\{
@@ -55,12 +54,11 @@ use IXP\Utils\View\Alert\{
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Profile
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class ProfileController extends Controller
 {
-
     /**
      * Display the form to edit a profile
      *
@@ -68,64 +66,67 @@ class ProfileController extends Controller
      */
     public function edit(): View
     {
-        $user = Auth::user();
+        $user = Auth::getUser();
 
         // array used to populate the form to modify user information.
         // former doesn't allow us to populate a form the classic way when there is many forms on the same view.
-        $profileDetails = [
-            'name'                  => $user->getName(),
-            'username'              => $user->getUsername(),
-            'email'                 => $user->getEmail(),
-            'authorisedMobile'      => $user->getAuthorisedMobile(),
+        $details = [
+            'name'                  => $user->name,
+            'username'              => $user->username,
+            'email'                 => $user->email,
+            'authorisedMobile'      => $user->authorisedMobile,
         ];
 
-        $customerNotesNotificationOption = [
-            'notify'                => Auth::getUser()->getPreference( "customer-notes.notify" ),
-        ];
+//        $notesNotifications = [
+//            'notify'                => Auth::getUser()->getPreference( "customer-notes.notify" ),
+//        ];
 
+        $notesNotifications      = [];
         $mailingListSubscriptions         = [];
 
         // are we using mailing lists?
-        if( $mailingListsEnabled = config( 'mailinglists.enabled', false ) ) {
-            foreach( config( "mailinglists.lists") as $name => $ml ) {
-                $mailingListSubscriptions[$name] = $user->getPreference( "mailinglist.{$name}.subscribed" );
-            }
-        }
+//        if( config( 'mailinglists.enabled', false ) ) {
+//            foreach( config( "mailinglists.lists") as $name => $ml ) {
+//                $mailingListSubscriptions[$name] = $user->getPreference( "mailinglist.{$name}.subscribed" );
+//            }
+//        }
 
         return view( 'profile/edit' )->with([
-            "profileDetails"                   =>  $profileDetails,
-            "customerNotesNotificationOption"  =>  $customerNotesNotificationOption,
+            "details"                          =>  $details,
+            "notesNotifications"               =>  $notesNotifications,
             "mailingListSubscriptions"         =>  $mailingListSubscriptions,
-            "mailingListsEnabled"              =>  $mailingListsEnabled,
         ]);
     }
-
 
     /**
      * Update password form
      *
      * @param PasswordRequest $r instance of the current HTTP request
+     *
      * @return RedirectResponse
      *
      * @throws
      */
     public function updatePassword( PasswordRequest $r  ): RedirectResponse
     {
-        /** @var UserEntity $user */
-        $user = Auth::user();
+        $user = Auth::getUser();
 
-        $user->setPassword( Hash::make( $r->input('new_password') ) );
-        $user->setLastUpdated( new DateTime() );
-        $user->setLastUpdatedBy( $user->getId() );
+        // get the token of the current session
+        if( $recallerName = $r->cookies->get( Auth::getRecallerName() ) ) {
+            $recaller = new Recaller( $recallerName );
+            $token = $recaller->token();
+        }
 
-        D2EM::flush();
+        $user->password      = Hash::make( $r->new_password );
+        $user->lastupdatedby = $user->id;
+        $user->save();
 
         AlertContainer::push( 'Password updated successfully', Alert::SUCCESS );
 
         // Logout all the active session except the current one
-        D2EM::getRepository( UserEntity::class )->deleteActiveSession( $user->getId(), false );
+        UserRememberToken::where( 'user_id', $user->id )->where( 'token', '!=', $token ?? null )->delete();
 
-        return Redirect::to( route( "profile@edit"  ) );
+        return redirect( route( "profile@edit"  ) );
     }
 
 
@@ -140,20 +141,18 @@ class ProfileController extends Controller
      */
     public function updateProfile( ProfileRequest $r  ): RedirectResponse
     {
-        /** @var UserEntity $user */
-        $user = Auth::user();
+        $user = Auth::getUser();
 
-        $user->setName(             $r->input( "name") );
-        $user->setUsername(         $r->input( "username") );
-        $user->setEmail(            $r->input( "email") );
-        $user->setLastUpdated(      new DateTime() );
-        $user->setLastUpdatedBy(    $user->getId() );
+        $user->name = $r->name;
+        $user->username = $r->username;
+        $user->email = $r->email;
+        $user->authorisedMobile = $r->authorisedMobile;
+        $user->lastupdatedby = $user->id;
+        $user->save();
 
-        D2EM::flush();
+        AlertContainer::push( 'Profile details updated.', Alert::SUCCESS );
 
-        AlertContainer::push( 'Your profile has been updated successfully', Alert::SUCCESS );
-
-        return Redirect::to( route( "profile@edit"  ) );
+        return redirect( route( "profile@edit"  ) );
     }
 
     /**
@@ -185,7 +184,7 @@ class ProfileController extends Controller
     public function updateMailingLists( Request $r ) : RedirectResponse
     {
         /** @var UserEntity $user */
-        $user = Auth::user();
+        $user = Auth::getUser();
 
         if( config( 'mailinglists.enabled', false ) ) {
 
@@ -199,7 +198,4 @@ class ProfileController extends Controller
 
         return Redirect::to( route( "profile@edit"  ) );
     }
-
-
 }
-

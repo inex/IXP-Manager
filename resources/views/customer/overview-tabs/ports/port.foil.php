@@ -29,7 +29,7 @@
                         <?php if( count( $pis ) && $firstPi->getRelatedInterface() ): ?>
                             for <a
 
-                                <?php if( Auth::user()->getPrivs() === \Entities\User::AUTH_SUPERUSER ): ?>
+                                <?php if( Auth::getUser()->privs() === \Entities\User::AUTH_SUPERUSER ): ?>
                                     href="<?= route( "customer@overview" , [ 'id' => $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId() ] ) ?>"
                                 <?php else: ?>
                                     href="<?= route( "customer@detail" , [ "id" => $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId() ] ) ?>"

@@ -12,13 +12,13 @@
 
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+    <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
         <a href="<?= route( $c->isTypeAssociate() ? 'customer@associates' : 'customer@details' )?>"><?= $c->isTypeAssociate() ? 'Associate ' : '' ?><?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?></a>
     <?php else: ?>
         <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Detail
     <?php endif; ?>
 
-    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+    <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
         /
         <a href="<?= route( 'customer@overview', [ 'id' => $c->getId() ] ) ?>">
             <?= $t->ee( $c->getName() ) ?>

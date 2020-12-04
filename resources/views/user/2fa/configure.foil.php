@@ -1,21 +1,16 @@
 <?php
-/** @var Foil\Template\Template $t */
-$this->layout( 'layouts/ixpv4' )
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' )
 ?>
-
 
 <?php $this->section( 'page-header-preamble' ) ?>
     Security / Two Factor Authentication
 <?php $this->append() ?>
 
-
 <?php $this->section('content') ?>
     <div class="row">
-
         <div class="col-sm-12">
-
             <?= $t->alerts() ?>
-
             <div class="card">
                 <div class="card-header">
                     <h3>
@@ -36,27 +31,13 @@ $this->layout( 'layouts/ixpv4' )
                         <a href="https://tools.ietf.org/html/rfc6238">RFC 6238</a>.
                     </p>
 
-
-                    <?php if( !$t->user->getUser2FA() || !$t->user->getUser2FA()->enabled() ): ?>
-
+                    <?php if( !$t->user->user2FA || !$t->user->user2FA->enabled ): ?>
                         <?= $t->insert( 'user/2fa/configure/enable' ) ?>
-
                     <?php else: ?>
-
                         <?= $t->insert( 'user/2fa/configure/manage' ) ?>
-
                     <?php endif; ?>
-
-
                 </div>
             </div>
-
         </div>
-
     </div>
-
-
-
-
-
 <?php $this->append() ?>

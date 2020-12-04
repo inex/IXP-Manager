@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,74 +21,73 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
-// Helpder functions
-
-
-if( !function_exists( 'd2r' ) ) {
-    function d2r( $entity, $namespace = 'Entities' ) {
-        return app('Doctrine\ORM\EntityManagerInterface')->getRepository($namespace.'\\'.$entity);
-    }
-}
-
-if( !function_exists( 'resolve_dns_a' ) ) {
-
+/**
+ * Helper functions
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+if( !function_exists( 'resolve_dns_a' ) )
+{
     /**
      * Do a DNS A record lookup on a hostname
      *
      * @param string $hostname
+     *
      * @return string|null The IP address or null
      */
-    function resolve_dns_a( string $hostname ) {
+    function resolve_dns_a( string $hostname ): ?string
+    {
         $a = dns_get_record( $hostname, DNS_A );
 
-        if( empty( $a ) )
+        if( empty( $a ) ){
             return null;
-
+        }
         return $a[0]['ip'];
     }
 }
 
-if( !function_exists( 'resolve_dns_aaaa' ) ) {
-
+if( !function_exists( 'resolve_dns_aaaa' ) )
+{
     /**
      * Do a DNS AAAA record lookup on a hostname
      *
      * @param string $hostname
+     *
      * @return string|null The IP address or null
      */
-    function resolve_dns_aaaa( string $hostname ) {
+    function resolve_dns_aaaa( string $hostname ): ?string
+    {
         $a = dns_get_record( $hostname, DNS_AAAA );
 
-        if( empty( $a ) )
+        if( empty( $a ) ){
             return null;
-
+        }
         return $a[0]['ipv6'];
     }
 }
 
-
-if( !function_exists( 'ixp_min_auth' ) ) {
-
+if( !function_exists( 'ixp_min_auth' ) )
+{
     /**
      * Check is a logged/public user meets the minimum authentication level provided
      *
-     * @param int $minauth
+     * @param int $minAuth
+     *
      * @return bool
      */
-    function ixp_min_auth( int $minauth ) {
-
+    function ixp_min_auth( int $minAuth ): bool
+    {
         if( Auth::check() ) {
-            return Auth::user()->getPrivs() >= $minauth;
+            return Auth::getUser()->privs() >= $minAuth;
         }
-
-        return $minauth === 0;
+        return $minAuth === 0;
     }
 }
 
-
-if( !function_exists( 'ixp_get_client_ip' ) ) {
-
+if( !function_exists( 'ixp_get_client_ip' ) )
+{
     /**
      * Try to get the clients real IP address even when behind a proxy.
      *
@@ -96,13 +95,13 @@ if( !function_exists( 'ixp_get_client_ip' ) ) {
      *
      * @return string
      */
-    function ixp_get_client_ip()
+    function ixp_get_client_ip(): string
     {
         // look for public:
         foreach( [ 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR' ] as $key ) {
             if( array_key_exists( $key, $_SERVER ) === true ) {
-                foreach( explode(',', $_SERVER[$key] ) as $ip ) {
-                    $ip = trim($ip);
+                foreach( explode(',', $_SERVER[ $key ] ) as $ip ) {
+                    $ip = trim( $ip );
                     if( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) !== false ) {
                         return $ip;
                     }
@@ -113,8 +112,8 @@ if( !function_exists( 'ixp_get_client_ip' ) ) {
         // accept private:
         foreach( [ 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR' ] as $key ) {
             if( array_key_exists( $key, $_SERVER ) === true ) {
-                foreach( explode(',', $_SERVER[$key] ) as $ip ) {
-                    $ip = trim($ip);
+                foreach( explode(',', $_SERVER[ $key ] ) as $ip ) {
+                    $ip = trim( $ip );
                     if( filter_var( $ip, FILTER_VALIDATE_IP ) !== false ) {
                         return $ip;
                     }
@@ -125,14 +124,11 @@ if( !function_exists( 'ixp_get_client_ip' ) ) {
         if( request() && request()->getClientIp() ) {
             return request()->getClientIp();
         }
-
         return '';
     }
 }
 
-if( !function_exists( 'rrd_graph' ) ) {
-
+if( !function_exists( 'rrd_graph' ) )
+{
     function rrd_graph( $a, $b ) { return []; }
-
 }
-

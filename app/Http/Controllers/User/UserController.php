@@ -92,7 +92,7 @@ class UserController extends Controller
      * @return  array
      */
     private function getListData( $id = null ) {
-        return Auth::user()->superUser() ? D2EM::getRepository( UserEntity::class )->getAllForFeListSuperUser( $id ) : D2EM::getRepository( UserEntity::class )->getAllForFeListCustAdmin( Auth::getUser(), $id );
+        return Auth::getUser()->isSuperUser() ? D2EM::getRepository( UserEntity::class )->getAllForFeListSuperUser( $id ) : D2EM::getRepository( UserEntity::class )->getAllForFeListCustAdmin( Auth::getUser(), $id );
     }
 
     /**
@@ -319,7 +319,7 @@ class UserController extends Controller
         }
 
         // Superuser OR Logged User edit his own user
-        if( Auth::getUser()->isSuperUser() || $user->getId() == Auth::getUser()->getId() ) {
+        if( Auth::getUser()->isSuperUser() || $user->getId() === Auth::id() ) {
             $user->setName( $request->input( 'name' ) );
             $user->setAuthorisedMobile( $request->input( 'authorisedMobile' ) );
         }
@@ -331,7 +331,7 @@ class UserController extends Controller
         }
 
         $user->setLastupdated( now() );
-        $user->setLastupdatedby( Auth::getUser()->getId() );
+        $user->setLastupdatedby( Auth::id() );
 
         D2EM::flush();
 
@@ -346,7 +346,7 @@ class UserController extends Controller
             D2EM::flush();
         }
 
-        Log::notice( Auth::user()->getUsername() . ' edited a User with ID ' . $user->getId() );
+        Log::notice( Auth::getUser()->getUsername() . ' edited a User with ID ' . $user->getId() );
 
         AlertContainer::push( 'The User has been edited', Alert::SUCCESS );
 

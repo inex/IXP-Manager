@@ -6,11 +6,11 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Route Server Filtering <?= Auth::user()->isSuperUser() ? ' for ' . $t->c->name : '' ?>
+    Route Server Filtering <?= Auth::getUser()->isSuperUser() ? ' for ' . $t->c->name : '' ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <?php if( !Auth::user()->custUser() ): ?>
+    <?php if( !Auth::getUser()->isCustUser() ): ?>
         <div class="btn-group btn-group-sm" role="group">
             <a class="btn btn-white" href="<?= route('rs-filter@create', [ "cust" => $t->c->id ] ) ?>">
                 <span class="fa fa-plus"></span>
@@ -24,7 +24,7 @@ $this->layout( 'layouts/ixpv4' );
         <div class="col-md-12">
             <?= $t->alerts() ?>
 
-            <?php if( Auth::user()->custUser() ): ?>
+            <?php if( Auth::getUser()->isCustUser() ): ?>
                 <div class="alert alert-info mt-4" role="alert">
                     <div class="d-flex align-items-center">
                         <div class="text-center">
@@ -79,7 +79,7 @@ $this->layout( 'layouts/ixpv4' );
                         <?php foreach( $t->rsFilters as $index => $rsf ):?>
                             <tr>
                                 <td>
-                                    <?php if( Auth::user()->superUser() ): ?>
+                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
                                         <?php if( $rsf->peer ): ?>
                                             <a href="<?= route( 'customer@overview', [ 'id' => $rsf->peer->id ] ) ?>">
                                                 <?= $t->ee( $rsf->peer->name ) ?>
@@ -137,7 +137,7 @@ $this->layout( 'layouts/ixpv4' );
                                             <i class="fa fa-eye"></i>
                                         </a>
 
-                                        <?php if( !Auth::user()->custUser() ): ?>
+                                        <?php if( !Auth::getUser()->isCustUser() ): ?>
                                             <a class="btn btn-white" href="<?= route( 'rs-filter@edit' , [ 'rsf' =>  $rsf->id ] ) ?>" title="Edit">
                                                 <i class="fa fa-pencil"></i>
                                             </a>

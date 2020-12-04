@@ -357,7 +357,7 @@ class StatisticsController extends Controller
     public function member( StatisticsRequest $r, int $id = null )
     {
         if( !$id && Auth::check() ) {
-            $id = Auth::user()->getCustomer()->getId();
+            $id = Auth::getUser()->custid;
         }
 
         $c = Customer::findOrFail( $id );
@@ -482,7 +482,7 @@ class StatisticsController extends Controller
     {
         // default to the current user:
         if( !$cid && Auth::check() ) {
-            $cid = Auth::user()->getCustomer()->getId();
+            $cid = Auth::getUser()->custid;
         }
 
         // for larger IXPs, it's quite intensive to display all the graphs - decide if we need to do this or not
@@ -689,7 +689,7 @@ class StatisticsController extends Controller
             "cb"                    => $cb,
             "graph"                 => $graph,
             "category"              => $category,
-            "categories"            => Auth::check() && Auth::user()->isSuperUser() ? Graph::CATEGORY_DESCS : Graph::CATEGORIES_BITS_PKTS_DESCS,
+            "categories"            => Auth::check() && Auth::getUser()->isSuperUser() ? Graph::CATEGORY_DESCS : Graph::CATEGORIES_BITS_PKTS_DESCS,
         ]);
     }
 

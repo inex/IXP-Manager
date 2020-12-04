@@ -72,10 +72,10 @@ class AddStore extends FormRequest
 
                 $validator->after( function( Validator $validator ) {
 
-                    $cust = Auth::user()->isSuperUser() ? D2EM::getRepository( CustomerEntity::class )->find( $this->input( 'custid' ) ) : Auth::getUser()->getCustomer();
+                    $cust = Auth::getUser()->isSuperUser() ? D2EM::getRepository( CustomerEntity::class )->find( $this->input( 'custid' ) ) : Auth::getUser()->getCustomer();
 
                     if( $this->input( 'privs' ) == UserEntity::AUTH_SUPERUSER ) {
-                        if( !Auth::user()->superUser() || Auth::user()->superUser() && !$cust->isTypeInternal() ) {
+                        if( !Auth::getUser()->isSuperUser() || Auth::getUser()->isSuperUser() && !$cust->isTypeInternal() ) {
                             $validator->errors()->add( 'privs', "You are not allowed to set this User as a Super User for " . $cust->getName() );
                             return false;
                         }

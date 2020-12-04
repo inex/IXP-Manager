@@ -50,7 +50,7 @@ class AssertUserPrivilege
      */
     public function handle( Request $r, Closure $next, int $privilege )
     {
-        if( Auth::user()->privs() !== $privilege ) {
+        if( Auth::getUser()->privs() !== $privilege ) {
             return response( 'Insufficient permissions', 403 );
         }
 

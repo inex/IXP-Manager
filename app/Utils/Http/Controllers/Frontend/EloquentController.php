@@ -503,7 +503,7 @@ abstract class EloquentController extends Controller
 
         $this->postFlush( 'create' );
 
-        Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' created'
+        Log::notice( ( Auth::check() ? Auth::getUser()->username : 'A public user' ) . ' created'
             . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->id );
 
         AlertContainer::push( $this->store_alert_success_message ?? $this->feParams->titleSingular . " created.", Alert::SUCCESS );
@@ -531,7 +531,7 @@ abstract class EloquentController extends Controller
 
         $this->postFlush( 'update' );
 
-        Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' updated'
+        Log::notice( ( Auth::check() ? Auth::getUser()->username : 'A public user' ) . ' updated'
             . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->id );
 
         AlertContainer::push( $this->update_alert_success_message ?? $this->feParams->titleSingular . " updated.", Alert::SUCCESS );

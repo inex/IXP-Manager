@@ -7,7 +7,7 @@
 
             |
 
-            <?php if( Auth::check() && Auth::user()->superUser() ): ?>
+            <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
                 Generated in
                 <?= sprintf( "%0.3f", microtime(true) - APPLICATION_STARTTIME ) ?>
                 seconds

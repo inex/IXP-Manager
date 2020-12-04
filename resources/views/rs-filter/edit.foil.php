@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?= $t->rsf ? 'Edit ' : 'Create ' ?> Route Server Filter <?= Auth::user()->isSuperUser() ? ' for ' . $t->c->name : '' ?>
+    <?= $t->rsf ? 'Edit ' : 'Create ' ?> Route Server Filter <?= Auth::getUser()->isSuperUser() ? ' for ' . $t->c->name : '' ?>
 
 <?php $this->append() ?>
 

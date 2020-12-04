@@ -5,7 +5,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+    <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
         <a href="<?= route( 'customer@overview', [ 'id' => $t->c->id ] ) ?>" >
             <?= $t->c->getFormattedName() ?>
         </a>
@@ -46,7 +46,7 @@
                         </form>
                     </ul>
                 </div>
-                <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+                <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
                     <button type="button" class="btn btn-white pull-right tw-text-gray-600" data-toggle="modal" data-target="#grapher-backend-info-modal">
                         Backend Info
                     </button>
@@ -109,7 +109,7 @@
     </div>
 <?php
 
-    if( Auth::check() && Auth::user()->isSuperUser() ):
+    if( Auth::check() && Auth::getUser()->isSuperUser() ):
         ?>
         <div class="modal" tabindex="-1" role="dialog" id="grapher-backend-info-modal">
             <div class="modal-dialog modal-xl" role="document">

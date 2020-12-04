@@ -34,13 +34,13 @@
 
             if( !Auth::check() || Session::exists( "2fa-" . Auth::id() ) ) {
                 echo $t->insert("layouts/menus/public");
-            } elseif( Auth::user()->custUser() && Auth::user()->customer()->isAssociate() ) {
+            } elseif( Auth::getUser()->isCustUser() && Auth::getUser()->customer->typeAssociate() ) {
                 echo $t->insert("layouts/menus/associate");
-            } elseif( Auth::user()->custAdmin() ) {
+            } elseif( Auth::getUser()->isCustAdmin() ) {
                 echo $t->insert( "layouts/menus/custadmin" );
-            } elseif( Auth::user()->custUser() ) {
+            } elseif( Auth::getUser()->isCustUser() ) {
                 echo $t->insert("layouts/menus/custuser");
-            } elseif( Auth::user()->superUser() ) {
+            } elseif( Auth::getUser()->isSuperUser() ) {
                 echo $t->insert("layouts/menus/superuser");
             }
             ?>
@@ -49,12 +49,12 @@
         <div class="container-fluid">
             <div class="row" >
 
-                <?php if( Auth::check() && Auth::user()->superUser() && !Auth::user()->is2faAuthRequiredForSession() ): ?>
+                <?php if( Auth::check() && Auth::getUser()->isSuperUser() && !Auth::getUser()->is2faAuthRequiredForSession() ): ?>
                     <?= $t->insert( 'layouts/menu' ); ?>
                 <?php endif; ?>
 
                 <div id="slide-reveal-overlay" class="collapse"></div>
-                <?php if( Auth::check() && Auth::user()->superUser() && !Auth::user()->is2faAuthRequiredForSession() ): ?>
+                <?php if( Auth::check() && Auth::getUser()->isSuperUser() && !Auth::getUser()->is2faAuthRequiredForSession() ): ?>
                     <main role="main" id="main-div" class="col-md-9 ml-sm-auto col-lg-9 col-xl-10 mt-2 pb-4">
                  <?php else: ?>
                     <main role="main" id="main-div" class="col-md-10 mx-sm-auto mt-2 pb-4">
@@ -115,7 +115,7 @@
                 $( this ).data( 'placeholder' );
             }});
 
-            <?php if( Auth::check() && Auth::user()->superUser() ): ?>
+            <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
                 $( "#menu-select-customer" ).select2({ width: '100%',placeholder: "Jump to <?= config( 'ixp_fe.lang.customer.one' ) ?>...", allowClear: true }).change( function(){
                     document.location.href = '<?= url( "/customer/overview" ) ?>/' + $( "#menu-select-customer" ).val();
                 });

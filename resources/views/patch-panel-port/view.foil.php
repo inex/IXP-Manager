@@ -12,7 +12,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 
-<?php if( Auth::user()->superUser() ): ?>
+<?php if( Auth::getUser()->isSuperUser() ): ?>
     <?php $this->section( 'page-header-postamble' ) ?>
         <div class="btn-group btn-group-sm" role="group">
             <a class="btn btn-white extra-action" href="<?= route('patch-panel-port@edit' , [ "ppp" => $ppp->id ] ) ?>" title="edit">
@@ -45,7 +45,7 @@ $this->layout( 'layouts/ixpv4' );
                                 </a>
                             </li>
 
-                            <?php if( !Auth::user()->isSuperUser() ){ break; /* no history for non-admins */ } ?>
+                            <?php if( !Auth::getUser()->isSuperUser() ){ break; /* no history for non-admins */ } ?>
 
                         <?php endforeach; ?>
                     </ul>
@@ -118,7 +118,7 @@ $this->layout( 'layouts/ixpv4' );
                                             </td>
                                             <td>
                                                 <?php if( $current ): ?>
-                                                    <?php if( Auth::user()->superUser() ): ?>
+                                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
                                                         <a href="<?= route( 'patch-panel-port@list-for-patch-panel' , [ 'pp' => $history->patch_panel_id ] ) ?>" >
                                                             <?= $t->ee( $history->patchPanel->name ) ?>
                                                         </a>
@@ -126,7 +126,7 @@ $this->layout( 'layouts/ixpv4' );
                                                         <?= $t->ee( $history->patchPanelPort->patchPanel->name ) ?>
                                                     <?php endif; ?>
                                                 <?php else: ?>
-                                                    <?php if( Auth::user()->superUser() ): ?>
+                                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
                                                         <a href="<?= route( 'patch-panel-port@list-for-patch-panel' , [ 'pp' => $history->patchPanelPort->patchPanel->id ] ) ?>" >
                                                             <?= $t->ee( $history->patchPanelPort->patchPanel->name ) ?>
                                                         </a>
@@ -184,7 +184,7 @@ $this->layout( 'layouts/ixpv4' );
                                                         <?php if( !$current ): ?>
                                                             <?= $t->ee( $history->customer ) ?>
                                                         <?php else: ?>
-                                                            <?php if( Auth::user()->superUser() ): ?>
+                                                            <?php if( Auth::getUser()->isSuperUser() ): ?>
                                                                 <a href="<?= route( 'customer@overview' , [ 'id' => $history->customer_id ] ) ?>" >
                                                                     <?= $t->ee( $history->customer->name ) ?>
                                                                 </a>
@@ -204,11 +204,11 @@ $this->layout( 'layouts/ixpv4' );
                                                         </b>
                                                     </td>
                                                     <td>
-                                                        <div class="float-left my-2 badge badge-<?= PatchPanelPort::stateCssClass( $history->state, Auth::user()->isSuperUser() ) ?>">
+                                                        <div class="float-left my-2 badge badge-<?= PatchPanelPort::stateCssClass( $history->state, Auth::getUser()->isSuperUser() ) ?>">
                                                             <?= $history->states() ?>
                                                         </div>
 
-                                                            <?php if( Auth::user()->isSuperUser() ): ?>
+                                                            <?php if( Auth::getUser()->isSuperUser() ): ?>
                                                                 <div class="float-right dropdown btn-group-sm ml-2">
                                                                     <button class="btn btn-white dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                                                         Change State
@@ -268,7 +268,7 @@ $this->layout( 'layouts/ixpv4' );
                                                 </tr>
                                             <?php endif; ?>
 
-                                            <?php if( $current && ( Auth::user()->isSuperUser() || $history->stateAwaitingXConnect() ) && $ppp->customer ): ?>
+                                            <?php if( $current && ( Auth::getUser()->isSuperUser() || $history->stateAwaitingXConnect() ) && $ppp->customer ): ?>
                                                 <tr>
                                                     <td>
                                                         <b>
@@ -312,7 +312,7 @@ $this->layout( 'layouts/ixpv4' );
                                     <div class="col-lg-6 col-md-12">
                                         <table class="table_view_info">
 
-                                            <?php if( Auth::user()->isSuperUser() ): ?>
+                                            <?php if( Auth::getUser()->isSuperUser() ): ?>
                                                 <tr>
                                                     <td>
                                                         <b>
@@ -375,7 +375,7 @@ $this->layout( 'layouts/ixpv4' );
                                                 </tr>
                                             <?php endif; ?>
 
-                                            <?php if( Auth::user()->isSuperUser() ): ?>
+                                            <?php if( Auth::getUser()->isSuperUser() ): ?>
                                                 <tr>
                                                     <td>
                                                         <b>
@@ -438,7 +438,7 @@ $this->layout( 'layouts/ixpv4' );
                                 </div> <!-- row -->
 
                                 <div class="row">
-                                    <?php if( Auth::user()->isSuperUser() ): ?>
+                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
                                         <div class="col-lg-6 col-md-12 mt-4 mt-lg-0">
                                             <div class="card">
                                                 <div class="card-header">
@@ -500,7 +500,7 @@ $this->layout( 'layouts/ixpv4' );
                                             <div class="card-header d-flex">
                                                     Attached Files
                                                 <?php if( $current ): ?>
-                                                    <?php if( Auth::user()->superUser() ): ?>
+                                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
                                                         <a class="btn btn-white btn-sm ml-auto btn-upload-file" href="<?= route( 'patch-panel-port-file@upload', [ 'ppp' => $ppp->id ] ) ?>" >
                                                             <i class="fa fa-upload"></i>
                                                         </a>
@@ -534,7 +534,7 @@ $this->layout( 'layouts/ixpv4' );
                                                         </thead>
 
                                                         <?php foreach ( $listFile as $file ):?>
-                                                            <?php if( Auth::user()->isSuperUser() || !$file->is_private ): ?>
+                                                            <?php if( Auth::getUser()->isSuperUser() || !$file->is_private ): ?>
                                                                 <tr id="file_row_<?=$file->id?>">
                                                                     <td class="d-flex">
                                                                         <div class="mr-auto">
@@ -559,7 +559,7 @@ $this->layout( 'layouts/ixpv4' );
                                                                     </td>
                                                                     <td>
                                                                         <div class="btn-group btn-group-sm" role="group">
-                                                                            <?php if( Auth::user()->isSuperUser() ): ?>
+                                                                            <?php if( Auth::getUser()->isSuperUser() ): ?>
                                                                                 <a class="btn btn-white file-toggle-private" data-object-id="<?= $file->id ?>" href="<?= route( 'patch-panel-port-file@toggle-privacy', [ 'file' => $file->id ] ) ?>" title="Toggle Public / Private">
                                                                                     <i id="file-toggle-private-i-<?= $file->id ?>" class="fa fa-<?= $file->is_private ? 'unlock' : 'lock' ?>"></i>
                                                                                 </a>
@@ -569,7 +569,7 @@ $this->layout( 'layouts/ixpv4' );
                                                                                 <i class="fa fa-download"></i>
                                                                             </a>
 
-                                                                            <?php if( Auth::user()->isSuperUser() ): ?>
+                                                                            <?php if( Auth::getUser()->isSuperUser() ): ?>
                                                                                 <button class='btn btn-white btn-delete-file' data-object-id='<?=$file->id?>'  href="<?= route( $isHistory ? 'patch-panel-port-file@delete-history' : 'patch-panel-port-file@delete', [ 'file' => $file->id ] ) ?>" title="Delete">
                                                                                     <i class="fa fa-trash"></i>
                                                                                 </button>
@@ -586,7 +586,7 @@ $this->layout( 'layouts/ixpv4' );
                                     </div>
                                 </div> <!-- row -->
                             </div>
-                            <?php if( !Auth::user()->isSuperUser() ){ break; /* no history for non-admins */ } ?>
+                            <?php if( !Auth::getUser()->isSuperUser() ){ break; /* no history for non-admins */ } ?>
                         <?php endforeach; ?>
                     </div>
                 </div>

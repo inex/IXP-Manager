@@ -68,7 +68,7 @@ class Google2FA
 
         $authenticator = new GoogleAuthenticator( $r );
 
-        if( !Auth::user()->user2FA || !Auth::user()->user2FA->enabled || $authenticator->isAuthenticated() ) {
+        if( !Auth::getUser()->user2FA || !Auth::getUser()->user2FA->enabled || $authenticator->isAuthenticated() ) {
             return $next( $r );
         }
 

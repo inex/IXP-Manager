@@ -59,7 +59,7 @@ class SwitchUserController extends Controller
      */
     public function switch( User $user ): RedirectResponse
     {
-        if( !Auth::user()->superUser() ) {
+        if( !Auth::getUser()->isSuperUser() ) {
             AlertContainer::push( "You are not allowed to switch users!", Alert::DANGER );
             return redirect()->to( "/" );
         }
@@ -74,7 +74,7 @@ class SwitchUserController extends Controller
 
         Auth::login( $user );
 
-        AlertContainer::push( "You are now logged in as {$user->username} ". "(" . Auth::user()->name . ")", Alert::SUCCESS );
+        AlertContainer::push( "You are now logged in as {$user->username} ". "(" . Auth::getUser()->name . ")", Alert::SUCCESS );
 
         return redirect()->to( "/" );
     }
@@ -87,7 +87,7 @@ class SwitchUserController extends Controller
     public function switchBack(): RedirectResponse
     {
         if( !session()->exists( "switched_user_from" ) ) {
-            AlertContainer::push( "You are not currently logged in as another user. You are logged in as: " . Auth::user()->username . "( " . Auth::user()->name . " )", Alert::DANGER );
+            AlertContainer::push( "You are not currently logged in as another user. You are logged in as: " . Auth::getUser()->username . "( " . Auth::getUser()->name . " )", Alert::DANGER );
             return redirect()->to( "/" );
         }
 

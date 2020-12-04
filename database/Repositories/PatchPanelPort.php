@@ -205,7 +205,7 @@ class PatchPanelPort extends EntityRepository
                     WHERE ppph.duplexMasterPort = $ppphid"
             )->getResult();
 
-        $un = Auth::check() ? Auth::user()->getUsername() : 'unkown/unauth';
+        $un = Auth::check() ? Auth::getUser()->username : 'unkown/unauth';
 
         foreach( $listDuplexPort as $duplexPort ) {
             /** @var PatchPanelPortHistoryEntity $duplexPort */
@@ -405,7 +405,7 @@ class PatchPanelPort extends EntityRepository
         $destination->setPrivateNotes(
             "### " . date('Y-m-d')." - IXP Manager\n\nMoved from "
             . $source->getPatchPanel()->getName() . "/" . $source->getName()
-            . " by ". ( Auth::check() ? Auth::user()->getUsername() : "unknown/unauth" )
+            . " by ". ( Auth::check() ? Auth::getUser()->username : "unknown/unauth" )
             . " on " . date('Y-m-d') . ".\n\n"
             . $source->getPrivateNotes()
         );
@@ -426,7 +426,7 @@ class PatchPanelPort extends EntityRepository
         $history->setPrivateNotes(
             "### " . date('Y-m-d')." - IXP Manager\n\nMoved to "
                 . $destination->getPatchPanel()->getName() . "/" . $destination->getName()
-                . " by ". ( Auth::check() ? Auth::user()->getUsername() : "unknown/unauth" )
+                . " by ". ( Auth::check() ? Auth::getUser()->username : "unknown/unauth" )
                 . " on " . date('Y-m-d') . ".\n\n"
                 . ( $destination->hasFiles() ? "See new port for files.\n\n" : '' )
                 . $history->getPrivateNotes()
