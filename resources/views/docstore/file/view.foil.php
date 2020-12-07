@@ -1,8 +1,8 @@
 <?php
-/** @var Foil\Template\Template $t */
-/** @var $t->active */
+    /** @var Foil\Template\Template $t */
+    /** @var $t->active */
 
-$this->layout( 'layouts/ixpv4' );
+    $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -12,7 +12,6 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm ml-auto" role="group">
-
         <a id="add-file" class="btn btn-white" href="<?= route('docstore-file@download', ['file' => $t->file ] ) ?>">
             Download
         </a>

@@ -22,12 +22,12 @@ namespace IXP\Policies;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use Entities\User as UserEntity;
-
-use IXP\Models\DocstoreDirectory;
-
 use Illuminate\Auth\Access\HandlesAuthorization;
+
+use IXP\Models\{
+    DocstoreDirectory,
+    User
+};
 
 class DocstoreDirectoryPolicy
 {
@@ -36,11 +36,11 @@ class DocstoreDirectoryPolicy
     /**
      * Determine whether the user can create docstore directories.
      *
-     * @param  UserEntity  $user
+     * @param  User  $user
      *
      * @return mixed
      */
-    public function create( UserEntity $user)
+    public function create( User $user )
     {
         return $user->isSuperUser();
     }
@@ -48,12 +48,12 @@ class DocstoreDirectoryPolicy
     /**
      * Determine whether the user can update the docstore directory.
      *
-     * @param   UserEntity          $user
+     * @param   User                $user
      * @param   DocstoreDirectory   $dir
      *
      * @return mixed
      */
-    public function update( UserEntity $user, DocstoreDirectory $dir )
+    public function update( User $user, DocstoreDirectory $dir )
     {
         return $user->isSuperUser();
     }
@@ -61,12 +61,12 @@ class DocstoreDirectoryPolicy
     /**
      * Determine whether the user can delete the docstore directory.
      *
-     * @param   UserEntity          $user
+     * @param   User                $user
      * @param   DocstoreDirectory   $dir
      *
      * @return mixed
      */
-    public function delete( UserEntity $user, DocstoreDirectory $dir )
+    public function delete( User $user, DocstoreDirectory $dir )
     {
         return $user->isSuperUser();
     }

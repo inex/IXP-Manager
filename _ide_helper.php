@@ -1652,7 +1652,7 @@
          * We need to override so we can /immediately/ log out users if the current user session
          * was deleted (by the user) from another session.
          *
-         * @return \IXP\Services\Auth\AuthenticatableContract|null 
+         * @return \IXP\Services\Auth\User|\IXP\Services\Auth\AuthenticatableContract|void|null 
          * @static 
          */ 
         public static function user()

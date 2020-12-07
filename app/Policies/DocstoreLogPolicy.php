@@ -22,12 +22,11 @@ namespace IXP\Policies;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use Entities\User as UserEntity;
-
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-use IXP\Models\DocstoreLog;
+use IXP\Models\{
+    User
+};
 
 class DocstoreLogPolicy
 {
@@ -35,7 +34,7 @@ class DocstoreLogPolicy
 
     public function before( $user, $ability )
     {
-        if ( $user->isSuperUser() ) {
+        if( $user->isSuperUser() ) {
             return true;
         }
     }
@@ -43,84 +42,11 @@ class DocstoreLogPolicy
     /**
      * Determine whether the user can view any docstore logs.
      *
-     * @param  UserEntity  $user
+     * @param User $user
      *
      * @return mixed
      */
-    public function viewAny( UserEntity $user )
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can view the docstore log.
-     *
-     * @param  UserEntity   $user
-     * @param  DocstoreLog  $docstoreLog
-     *
-     * @return mixed
-     */
-    public function view( UserEntity $user, DocstoreLog $docstoreLog)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can create docstore logs.
-     *
-     * @param  UserEntity  $user
-     *
-     * @return mixed
-     */
-    public function create( UserEntity $user)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can update the docstore log.
-     *
-     * @param  UserEntity  $user
-     * @param  DocstoreLog  $docstoreLog
-     * @return mixed
-     */
-    public function update( UserEntity $user, DocstoreLog $docstoreLog )
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can delete the docstore log.
-     *
-     * @param  UserEntity   $user
-     * @param  DocstoreLog  $docstoreLog
-     * @return mixed
-     */
-    public function delete( UserEntity $user, DocstoreLog $docstoreLog )
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can restore the docstore log.
-     *
-     * @param  UserEntity   $user
-     * @param  DocstoreLog  $docstoreLog
-     * @return mixed
-     */
-    public function restore( UserEntity $user, DocstoreLog $docstoreLog )
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the docstore log.
-     *
-     * @param  UserEntity   $user
-     * @param  DocstoreLog  $docstoreLog
-     * @return mixed
-     */
-    public function forceDelete( UserEntity $user, DocstoreLog $docstoreLog )
+    public function viewAny( User $user )
     {
         //
     }

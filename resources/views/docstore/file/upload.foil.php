@@ -1,25 +1,17 @@
 <?php
-/** @var Foil\Template\Template $t */
-/** @var $t->active */
+    /** @var Foil\Template\Template $t */
+    /** @var $t->active */
 
-$this->layout( 'layouts/ixpv4' );
+    $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
     Document Store :: <?= $t->file ? 'Edit' : 'Upload' ?> File
 <?php $this->append() ?>
 
-
-<?php $this->section( 'page-header-postamble' ) ?>
-
-<?php $this->append() ?>
-
 <?php $this->section('content') ?>
-
     <?= $t->alerts() ?>
-
     <div class="card-body">
-
         <?= Former::open_for_files()->method( $t->file ? 'put' : 'post' )
             ->action( $t->file ? route ( 'docstore-file@update', [ 'file' => $t->file ] ) : route ( 'docstore-file@store' ) )
             ->actionButtonsCustomClass( "grey-box")
@@ -120,35 +112,28 @@ $this->layout( 'layouts/ixpv4' );
         ?>
 
         <?= Former::close() ?>
-
     </div>
-
 <?php $this->append() ?>
-
 
 <?php $this->section( 'scripts' ) ?>
 
-<script>
-    <?php if( $t->file ): ?>
+    <script>
+        <?php if( $t->file ): ?>
+            $( document ).ready( function() {
+                $('#uploadedFile').on( 'input', function( e ) {
+                    $('#sha256').removeAttr('disabled').val('');
+                });
+            });
+        <?php endif; ?>
 
         $( document ).ready( function() {
-
-            $('#uploadedFile').on( 'input', function( e ) {
-                $('#sha256').removeAttr('disabled').val('');
+            $("#uploadedFile").on( 'input', function() {
+                if( $( "#name" ).val() === '' ) {
+                    $( "#name" ).val( this.files[0].name );
+                }
             });
-
         });
-
-    <?php endif; ?>
-
-    $( document ).ready( function() {
-        $("#uploadedFile").on('input', function() {
-            if( $( "#name" ).val() == '' ) {
-                $( "#name" ).val( this.files[0].name );
-            }
-        });
-    });
-</script>
+    </script>
 
 <?php $this->append() ?>
 

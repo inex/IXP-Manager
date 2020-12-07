@@ -138,8 +138,8 @@
                             <a class="dropdown-item <?= !request()->is( 'statistics/trunk' ) ?: 'active' ?>" href="<?= route('statistics@trunk') ?>">
                                 Inter-Switch / PoP Graphs
                             </a>
-                        <?php elseif( count( $cbs = \IXP\Models\CoreBundle::active()->get() ) ): ?>
-                            <a class="dropdown-item <?= !request()->is( 'statistics/core-bundle' ) ?: 'active' ?>" href="<?= route('statistics@core-bundle', $cbs->first()->id ) ?>">
+                        <?php elseif( $cb = \IXP\Models\CoreBundle::active()->first() ): ?>
+                            <a class="dropdown-item <?= !request()->is( 'statistics/core-bundle' ) ?: 'active' ?>" href="<?= route('statistics@core-bundle', $cb->id ) ?>">
                                 Inter-Switch / PoP Graphs
                             </a>
                         <?php endif; ?>

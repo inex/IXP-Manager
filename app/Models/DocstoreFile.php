@@ -80,7 +80,6 @@ use Storage;
 
 class DocstoreFile extends Model
 {
-
     /**
      * The attributes that are mass assignable.
      *
@@ -171,15 +170,15 @@ class DocstoreFile extends Model
      * Gets a directory listing of files for the given (or root) directory and as
      * appropriate for the user (or public access)
      *
-     * @param DocstoreDirectory|null $dir
-     * @param UserEntity|null $user
+     * @param DocstoreDirectory|null    $dir
+     * @param User|null                 $user
      *
      * @return Collection
      */
-    public static function getListing( ?DocstoreDirectory $dir = null, ?UserEntity $user = null ): Collection
+    public static function getListing( ?DocstoreDirectory $dir = null, ?User $user = null ): Collection
     {
-        return self::where('min_privs', '<=', $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC )
-            ->where('docstore_directory_id', $dir ? $dir->id : null )
+        return self::where('min_privs', '<=', $user ? $user->privs() : UserEntity::AUTH_PUBLIC )
+            ->where('docstore_directory_id', $dir->id ?? null )
             ->withCount([ 'logs as downloads_count', 'logs as unique_downloads_count' => function( Builder $query ) {
                 $query->select( DB::raw('COUNT( DISTINCT downloaded_by )' ) );
             }])

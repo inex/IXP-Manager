@@ -23,10 +23,7 @@ namespace IXP\Http\Controllers\Docstore;
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-use D2EM;
-
-use Entities\User as UserEntity;
-
+use Auth;
 use Former\Facades\Former;
 
 use Illuminate\Http\{
@@ -59,19 +56,27 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
+/**
+ * FileController Controller
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   Docstore
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class FileController extends Controller
 {
     /**
      * View a docstore file apply to allowed mimetype ( DocstoreFile::$
      *
-     * @param Request $request
-     * @param DocstoreFile $file
+     * @param Request           $r
+     * @param DocstoreFile      $file
      *
-     * @return mixed
+     * @return RedirectResponse|View
      *
      * @throws
      */
-    public function view( Request $request, DocstoreFile $file )
+    public function view( Request $r, DocstoreFile $file )
     {
         $this->authorize( 'view', $file );
 
@@ -79,8 +84,8 @@ class FileController extends Controller
             return redirect( route( 'docstore-file@download', [ 'file' => $file->id ] ) );
         }
 
-        if( $request->user() ) {
-            $file->logs()->save( new DocstoreLog( [ 'downloaded_by' => $request->user()->getId() ] ) );
+        if( Auth::user() ) {
+            $file->logs()->save( new DocstoreLog( [ 'downloaded_by' => Auth::id() ] ) );
         }
 
         return view( 'docstore/file/view', [
@@ -92,161 +97,161 @@ class FileController extends Controller
     /**
      * Download a docstore file
      *
-     * @param Request $request
-     * @param DocstoreFile $file
+     * @param Request       $r
+     * @param DocstoreFile  $file
      *
      * @return mixed
      *
      * @throws
      */
-    public function download( Request $request, DocstoreFile $file )
+    public function download( Request $r, DocstoreFile $file )
     {
         $this->authorize( 'download', $file );
 
-        if( $request->user() ) {
-            $file->logs()->save( new DocstoreLog( [ 'downloaded_by' => $request->user()->getId() ] ) );
+        if( Auth::user() ) {
+            $file->logs()->save( new DocstoreLog( [ 'downloaded_by' => Auth::id() ] ) );
         }
 
         try {
             return Storage::disk( $file->disk )->download( $file->path, $file->name );
         } catch( FlySystemException $e ) {
             AlertContainer::push( "This file could not be found / downloaded. Please report this error to the support team.", Alert::DANGER );
-            return redirect( route( 'docstore-dir@list', [ 'dir' => $file->directory->id ] ) );
+            return redirect()->back();
         }
     }
 
     /**
      * Get information on a docstore file
      *
-     * @param Request $request
-     * @param DocstoreFile $file
+     * @param DocstoreFile  $file
      *
      * @return mixed
      *
      * @throws
      */
-    public function info( Request $request, DocstoreFile $file )
+    public function info( DocstoreFile $file )
     {
         $this->authorize( 'info', $file );
 
         return view( 'docstore/file/info', [
-            'file' => $file,
-            'size' => Storage::disk( $file->disk )->size( $file->path ),
+            'file'          => $file,
+            'size'          => Storage::disk( $file->disk )->size( $file->path ),
             'last_modified' => Storage::disk( $file->disk )->lastModified( $file->path ),
-            'dspath' => config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' ) . '/' . $file->path,
-            'created_by' => D2EM::getRepository(UserEntity::class)->find($file->created_by),
+            'dspath'        => config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' ) . '/' . $file->path,
+            'created_by'    => User::find( $file->created_by ),
         ]);
     }
-
 
     /**
      * Upload a new docstore file
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return View
      *
      * @throws
      */
-    public function upload( Request $request )
+    public function upload( Request $r ): View
     {
         $this->authorize( 'create', DocstoreFile::class );
 
         Former::populate([
-            'min_privs' => $request->old( 'min_privs', User::AUTH_SUPERUSER )
+            'min_privs' => $r->old( 'min_privs', User::AUTH_SUPERUSER )
         ]);
 
         return view( 'docstore/file/upload', [
             'file'          => false,
-            'dirs'          => DocstoreDirectory::getListingForDropdown( DocstoreDirectory::getListing( null, $request->user() )  ),
+            'dirs'          => DocstoreDirectory::getListingForDropdown( DocstoreDirectory::getListing( null, $r->user() )  ),
         ] );
     }
 
     /**
      * Store a docstore file uploaded
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return RedirectResponse
      *
      * @throws
      */
-    public function store( Request $request ): RedirectResponse
+    public function store( Request $r ): RedirectResponse
     {
         $this->authorize( 'create', DocstoreFile::class );
 
-        $this->checkForm( $request );
-        $file = $request->file('uploadedFile');
+        $this->checkForm( $r );
+        $file = $r->file('uploadedFile');
         $path = $file->store( '', 'docstore' );
 
         $file = DocstoreFile::create( [
-            'name'                  => $request->name,
-            'description'           => $request->description,
-            'docstore_directory_id' => $request->docstore_directory_id,
-            'min_privs'             => $request->min_privs,
+            'name'                  => $r->name,
+            'description'           => $r->description,
+            'docstore_directory_id' => $r->docstore_directory_id,
+            'min_privs'             => $r->min_privs,
             'path'                  => $path,
             'sha256'                => hash_file( 'sha256', $file ),
-            'created_by'            => $request->user()->getId(),
+            'created_by'            => Auth::id(),
             'file_last_updated'     => now(),
         ] );
 
-        Log::info( sprintf( "DocStore: file [%d|%s] uploaded by %s", $file->id, $file->name, $request->user()->getUsername() ) );
+        Log::info( sprintf( "DocStore: file [%d|%s] uploaded by %s", $file->id, $file->name, Auth::user()->username ) );
 
-        AlertContainer::push( "File <em>{$request->name}</em> uploaded.", Alert::SUCCESS );
+        AlertContainer::push( "File <em>{$r->name}</em> uploaded.", Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $file->docstore_directory_id ] ) );
     }
 
     /**
      * Edit a docstore file uploaded
      *
-     * @param Request           $request
+     * @param Request           $r
      * @param DocstoreFile      $file
      *
      * @return View
      *
      * @throws
      */
-    public function edit( Request $request , DocstoreFile $file ): View
+    public function edit( Request $r , DocstoreFile $file ): View
     {
         $this->authorize( 'update', $file );
 
         Former::populate([
-            'name'                  => $request->old( 'name',           $file->name         ),
-            'description'           => $request->old( 'descripton',     $file->description  ),
-            'sha256'                => $request->old( 'sha256',         $file->sha256       ),
-            'min_privs'             => $request->old( 'min_privs',      $file->min_privs    ),
-            'docstore_directory_id' => $request->old( 'docstore_directory_id',$file->docstore_directory_id ?? '' ),
+            'name'                  => $r->old( 'name',                         $file->name         ),
+            'description'           => $r->old( 'descripton',                   $file->description  ),
+            'sha256'                => $r->old( 'sha256',                       $file->sha256       ),
+            'min_privs'             => $r->old( 'min_privs',                    $file->min_privs    ),
+            'docstore_directory_id' => $r->old( 'docstore_directory_id',$file->docstore_directory_id ?? '' ),
         ]);
 
         return view( 'docstore/file/upload', [
             'file'                      => $file,
-            'dirs'                      => DocstoreDirectory::getListingForDropdown( DocstoreDirectory::getListing( null, $request->user() ) )
+            'dirs'                      => DocstoreDirectory::getListingForDropdown( DocstoreDirectory::getListing( null, $r->user() ) )
         ] );
     }
 
     /**
      * Update a docstore file uploaded
      *
-     * @param Request $request
-     * @param DocstoreFile $file
+     * @param Request       $r
+     * @param DocstoreFile  $file
      *
      * @return RedirectResponse
      *
      * @throws
      */
-    public function update( Request $request , DocstoreFile $file ): RedirectResponse
+    public function update( Request $r , DocstoreFile $file ): RedirectResponse
     {
         $this->authorize( 'update', $file );
 
-        $this->checkForm( $request, $file );
+        $this->checkForm( $r, $file );
+
+        $user = Auth::user();
 
         // if a new file is updated
-        if( $request->uploadedFile ) {
+        if( $r->uploadedFile ) {
             // get path of the old file in order to delete it later
             $oldPath = $file->path;
 
-            $uploadedFile = $request->file('uploadedFile');
-            $path = $uploadedFile->store( '', 'docstore' );
+            $uploadedFile   = $r->file('uploadedFile');
+            $path           = $uploadedFile->store( '', 'docstore' );
 
             $file->update([
                 'path'                  => $path,
@@ -259,42 +264,42 @@ class FileController extends Controller
         }
 
         // Purge the logs of the file
-        if( $request->purgeLogs ) {
-            Log::info( sprintf( "DocStore: all download logs for file [%d|%s] purged by %s", $file->id, $file->name, $request->user()->getUsername() ) );
+        if( $r->purgeLogs ) {
+            Log::info( sprintf( "DocStore: all download logs for file [%d|%s] purged by %s", $file->id, $file->name, $user->username ) );
             $file->logs()->delete();
         }
 
         $file->update( [
-            'name'                  => $request->name,
-            'description'           => $request->description,
-            'docstore_directory_id' => $request->docstore_directory_id,
-            'min_privs'             => $request->min_privs
+            'name'                  => $r->name,
+            'description'           => $r->description,
+            'docstore_directory_id' => $r->docstore_directory_id,
+            'min_privs'             => $r->min_privs
         ] );
 
-        Log::info( sprintf( "DocStore: file [%d|%s] edited by %s", $file->id, $file->name, $request->user()->getUsername() ) );
+        Log::info( sprintf( "DocStore: file [%d|%s] edited by %s", $file->id, $file->name, $user->username ) );
 
-        AlertContainer::push( "File <em>{$request->name}</em> updated.", Alert::SUCCESS );
+        AlertContainer::push( "File <em>{$file->name}</em> updated.", Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $file->docstore_directory_id ] ) );
     }
-
 
     /**
      * Check if the form is valid
      *
-     * @param Request $request
-     * @param DocstoreFile $file
+     * @param Request               $r
+     * @param DocstoreFile|null     $file
      *
+     * @return void
      */
-    private function checkForm( Request $request, ?DocstoreFile $file = null )
+    private function checkForm( Request $r, ?DocstoreFile $file = null ): void
     {
-        $request->validate( [
+        $r->validate( [
             'name'          => 'required|max:100',
-            'uploadedFile'  => Rule::requiredIf( function() use ( $request, $file ) {
+            'uploadedFile'  => Rule::requiredIf( function() use ( $r, $file ) {
                 return !$file;
             }),
             'sha256'        => [ 'nullable', 'max:64',
-                function ($attribute, $value, $fail ) use( $request ) {
-                    if( $value && $request->file('uploadedFile' ) && $value !== hash_file( 'sha256', $request->file( 'uploadedFile' ) ) ) {
+                function ($attribute, $value, $fail ) use( $r ) {
+                    if( $value && $r->file('uploadedFile' ) && $value !== hash_file( 'sha256', $r->file( 'uploadedFile' ) ) ) {
                         return $fail( 'The sha256 checksum calculated on the server does not match the one you provided.' );
                     }
                 },
@@ -310,18 +315,17 @@ class FileController extends Controller
         ] );
     }
 
-
     /**
      * Delete a file
      *
-     * @param Request $request
+     * @param Request       $r
+     * @param DocstoreFile  $file
      *
-     * @param DocstoreFile $file
      * @return RedirectResponse
      *
      * @throws
      */
-    public function delete( Request $request , DocstoreFile $file ): RedirectResponse
+    public function delete( Request $r , DocstoreFile $file ): RedirectResponse
     {
         $this->authorize( 'delete', $file );
 
@@ -331,7 +335,7 @@ class FileController extends Controller
         $file->logs()->delete();
 
         AlertContainer::push( "File <em>{$file->name}</em> deleted.", Alert::SUCCESS );
-        Log::info( sprintf( "DocStore: file [%d|%s] deleted by %s", $file->id, $file->name, $request->user()->getUsername() ) );
+        Log::info( sprintf( "DocStore: file [%d|%s] deleted by %s", $file->id, $file->name, $r->user()->username ) );
 
         $file->delete();
 

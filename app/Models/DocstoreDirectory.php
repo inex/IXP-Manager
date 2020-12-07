@@ -89,7 +89,7 @@ class DocstoreDirectory extends Model
      */
     public function subDirectories(): HasMany
     {
-        return $this->hasMany(DocstoreDirectory::class, 'parent_dir_id', 'id' )->orderBy('name');
+        return $this->hasMany( __CLASS__, 'parent_dir_id', 'id' )->orderBy('name');
     }
 
     /**
@@ -97,7 +97,7 @@ class DocstoreDirectory extends Model
      */
     public function parentDirectory(): BelongsTo
     {
-        return $this->belongsTo(DocstoreDirectory::class, 'parent_dir_id', 'id' );
+        return $this->belongsTo( __CLASS__, 'parent_dir_id', 'id' );
     }
 
     /**
@@ -105,24 +105,24 @@ class DocstoreDirectory extends Model
      */
     public function files(): HasMany
     {
-        return $this->hasMany(DocstoreFile::class);
+        return $this->hasMany(DocstoreFile::class );
     }
 
     /**
      * Gets a listing of directories for the given (or root) directory and as
      * appropriate for the user (or public access)
      *
-     * @param DocstoreDirectory|null    $dir
-     * @param UserEntity|null           $user
+     * @param DocstoreDirectory|null        $dir
+     * @param User|null                     $user
      *
      * @return EloquentCollection
      */
-    public static function getListing( ?DocstoreDirectory $dir, ?UserEntity $user ): EloquentCollection
+    public static function getListing( ?DocstoreDirectory $dir, ?User $user ): EloquentCollection
     {
-        return self::where('parent_dir_id', $dir ? $dir->id : null )
+        return self::where('parent_dir_id', $dir->id ?? null )
             ->when( !$user || !$user->isSuperUser() , function( Builder $q ) use ( $user) {
                 $q->whereHas( 'files', function( Builder $q ) use ( $user ) {
-                    return $q->where( 'min_privs', '<=', $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC );
+                    return $q->where( 'min_privs', '<=', $user ? $user->privs() : User::AUTH_PUBLIC );
                 } );
             })->orderBy('name')->get();
 
@@ -149,17 +149,14 @@ class DocstoreDirectory extends Model
         $data[] = [ 'id' => '', 'name' => 'Root Directory' ];
 
         foreach( $dirs as $dir ) {
-
             $data[] = [ 'id' => $dir->id, 'name' => str_repeat( '&nbsp;', $depth ) . '-&nbsp;' . $dir->name ];
 
             foreach( self::getListingForDropdown( $dir->subDirectories, $depth + 5 ) as $sub ) {
                 $data[] = $sub;
             }
         }
-
         return $data;
     }
-
 
     /**
      * Static property used by getHierarchyForUserClass() and recurseForHierarchyForUserClass()
@@ -191,14 +188,15 @@ class DocstoreDirectory extends Model
      * for choosing to display the menu options, would be ran per page hit.
      *
      * @param int $priv
+     *
      * @return mixed
      */
     public static function getHierarchyForUserClass( int $priv = User::AUTH_SUPERUSER )
     {
         return Cache::remember( self::CACHE_KEY_FOR_USER_CLASS_HIERARCHY . $priv, 86400, function() use ( $priv ) {
-            self::where('parent_dir_id', null )->orderBy('name')->get()->each( function( $sd ) use ($priv) {
+            self::where('parent_dir_id', null )->orderBy('name' )->get()->each( function( $sd ) use ( $priv ) {
                 if( self::recurseForHierarchyForUserClass( $sd, $priv ) ) {
-                    self::$dirs[$sd->parent_dir_id][] = [ 'id' => $sd->id, 'name' => $sd->name ];
+                    self::$dirs[ $sd->parent_dir_id ][] = [ 'id' => $sd->id, 'name' => $sd->name ];
                 }
             });
 
@@ -214,7 +212,6 @@ class DocstoreDirectory extends Model
                     self::$dirs[null]  = [ 'id' => null, 'name' => 'Root Directory' ];
                 }
             }
-
             return self::$dirs;
         } );
     }
@@ -225,15 +222,16 @@ class DocstoreDirectory extends Model
      * included or not.
      *
      * @param DocstoreDirectory $subdir
-     * @param int $priv User class to test for
+     * @param int               $priv User class to test for
+     *
      * @return bool
      */
-    private static function recurseForHierarchyForUserClass( DocstoreDirectory $subdir, $priv )
+    private static function recurseForHierarchyForUserClass( DocstoreDirectory $subdir, int $priv ): bool
     {
         $includeSubdir = false;
         foreach( $subdir->subDirectories as $sd ) {
             if( $shouldInclude = self::recurseForHierarchyForUserClass( $sd, $priv ) ) {
-                self::$dirs[$sd->parent_dir_id][] = [ 'id' => $sd->id, 'name' => $sd->name ];
+                self::$dirs[ $sd->parent_dir_id ][] = [ 'id' => $sd->id, 'name' => $sd->name ];
                 $includeSubdir = true;
             }
         }
@@ -259,9 +257,11 @@ class DocstoreDirectory extends Model
      *
      * @param DocstoreDirectory $dir
      *
+     * @return void
+     *
      * @throws
      */
-    public static function recursiveDelete( DocstoreDirectory $dir )
+    public static function recursiveDelete( DocstoreDirectory $dir ): void
     {
         $dir->subDirectories->each( function( DocstoreDirectory $subdir ) {
             self::recursiveDelete( $subdir );

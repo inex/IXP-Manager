@@ -64,7 +64,7 @@ class SessionGuard extends BaseGuard
      * We need to override so we can /immediately/ log out users if the current user session
      * was deleted (by the user) from another session.
      *
-     * @return AuthenticatableContract|User|void|null
+     * @return User|AuthenticatableContract|void|null
      */
     public function user()
     {

@@ -22,12 +22,12 @@ namespace IXP\Policies;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use Entities\User as UserEntity;
-
-use IXP\Models\DocstoreFile;
-
 use Illuminate\Auth\Access\HandlesAuthorization;
+
+use IXP\Models\{
+    User,
+    DocstoreFile
+};
 
 class DocstoreFilePolicy
 {
@@ -36,37 +36,37 @@ class DocstoreFilePolicy
     /**
      * Determine whether the user can download a docstore file.
      *
-     * @param   UserEntity      $user
+     * @param   User|null       $user
      * @param   DocstoreFile    $file
      *
      * @return mixed
      */
-    public function download( ?UserEntity $user, DocstoreFile $file )
+    public function download( ?User $user, DocstoreFile $file )
     {
-        return $file->min_privs <= ( $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC );
+        return $file->min_privs <= ( $user ? $user->privs() : User::AUTH_PUBLIC );
     }
 
     /**
      * Determine whether the user can view the docstore file.
      *
-     * @param   UserEntity      $user
+     * @param   User|null       $user
      * @param   DocstoreFile    $file
      *
      * @return mixed
      */
-    public function view( ?UserEntity $user, DocstoreFile $file )
+    public function view( ?User $user, DocstoreFile $file )
     {
-        return $file->min_privs <= ( $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC );
+        return $file->min_privs <= ( $user ? $user->privs() : User::AUTH_PUBLIC );
     }
 
     /**
      * Determine whether the user can create docstore files.
      *
-     * @param  UserEntity  $user
+     * @param  User  $user
      *
      * @return mixed
      */
-    public function create( UserEntity $user )
+    public function create( User $user )
     {
         return $user->isSuperUser();
     }
@@ -74,12 +74,12 @@ class DocstoreFilePolicy
     /**
      * Determine whether the user can get info on the docstore file.
      *
-     * @param   UserEntity      $user
+     * @param   User            $user
      * @param   DocstoreFile    $file
      *
      * @return mixed
      */
-    public function info( UserEntity $user, DocstoreFile $file )
+    public function info( User $user, DocstoreFile $file )
     {
         return $user->isSuperUser();
     }
@@ -87,12 +87,12 @@ class DocstoreFilePolicy
     /**
      * Determine whether the user can update the docstore file.
      *
-     * @param   UserEntity      $user
+     * @param   User            $user
      * @param   DocstoreFile    $file
      *
      * @return mixed
      */
-    public function update( UserEntity $user, DocstoreFile $file )
+    public function update( User $user, DocstoreFile $file )
     {
         return $user->isSuperUser();
     }
@@ -100,12 +100,12 @@ class DocstoreFilePolicy
     /**
      * Determine whether the user can delete the docstore file.
      *
-     * @param   UserEntity      $user
+     * @param   User            $user
      * @param   DocstoreFile    $file
      *
      * @return mixed
      */
-    public function delete( UserEntity $user, DocstoreFile $file )
+    public function delete( User $user, DocstoreFile $file )
     {
         return $user->isSuperUser();
     }
