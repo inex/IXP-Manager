@@ -132,7 +132,6 @@ interface LookingGlass
      */
     public function protocolTable( string $table, string $network, int $mask ): string;
 
-
     /**
      * Get wildcard large communities in protocol tabe of form ( x, y, * )
      *
@@ -143,5 +142,4 @@ interface LookingGlass
      * @return string
      */
     public function routesProtocolLargeCommunityWildXYRoutes( string $protocol, int $x, int $y ): string;
-
 }

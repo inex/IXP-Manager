@@ -22,17 +22,16 @@ namespace IXP\Console\Commands\Grapher;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Carbon\Carbon;
-use D2EM;
-use DateTime;
-use Entities\TrafficDaily as TrafficDailyEntity;
+
 use Grapher;
-use IXP\Models\Customer;
-use IXP\Models\TrafficDaily;
+
+use IXP\Models\{
+    Customer,
+    TrafficDaily
+};
+
 use IXP\Services\Grapher\Graph;
-
-
  /**
   * Artisan command to upload member traffic stats to the database
   *
@@ -59,7 +58,6 @@ class UploadStatsToDb extends GrapherCommand
      * @var string
      */
     protected $description = 'Upload port stats to the database (daily task)';
-
 
     /**
      * Execute the console command.

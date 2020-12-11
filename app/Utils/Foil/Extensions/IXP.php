@@ -1,7 +1,9 @@
-<?php namespace IXP\Utils\Foil\Extensions;
+<?php
+
+namespace IXP\Utils\Foil\Extensions;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,13 +23,16 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Foil\Contracts\ExtensionInterface;
+
 
 use IXP\Utils\View\Alert\Container as AlertContainer;
 
-use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
+use Foil\Contracts\ExtensionInterface;
 
 use Illuminate\Support\Facades\Auth;
+
+use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
+use function count;
 
 /**
  * Grapher -> Renderer view extensions
@@ -37,22 +42,29 @@ use Illuminate\Support\Facades\Auth;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class IXP implements ExtensionInterface {
+class IXP implements ExtensionInterface
+{
 
+    /**
+     * @var
+     */
     private $args;
 
-    public function setup(array $args = []) {
+    public function setup( array $args = [] )
+    {
         $this->args = $args;
     }
 
-    public function provideFilters(): array {
+    public function provideFilters(): array
+    {
        return [];
     }
 
-    public function provideFunctions(): array {
+    public function provideFunctions(): array
+    {
         return [
             'alerts'                 => [ AlertContainer::class, 'html' ],
             'as112UiActive'          => [ $this, 'as112UiActive' ],
@@ -71,16 +83,15 @@ class IXP implements ExtensionInterface {
         ];
     }
 
-
-
-
-
     /**
      * Max file upload size
      *
      * Inspired by: http://stackoverflow.com/questions/13076480/php-get-actual-maximum-upload-size
+     *
+     * @return string
      */
-    public function maxFileUploadSize(): string {
+    public function maxFileUploadSize(): string
+    {
         static $max_size = null;
 
         $parseSize = function( $size ) {
@@ -109,7 +120,6 @@ class IXP implements ExtensionInterface {
         return $this->scale( $max_size, 'bytes' );
     }
 
-
     /**
      * Scale function
      *
@@ -131,14 +141,16 @@ class IXP implements ExtensionInterface {
      * @param string $format     The format to sue (as above: bytes / pkts / errs / etc )
      * @param int    $decs       Number of decimals after the decimal point. Defaults to 3.
      * @param int    $returnType Type of string to return. Valid values are listed above. Defaults to 0.
+     *
      * @return string            Scaled / formatted number / type.
      */
-    private function scale( float $v, string $format, int $decs = 3, int $returnType = 0 ): string {
+    private function scale( float $v, string $format, int $decs = 3, int $returnType = 0 ): string
+    {
         if( $format === 'bytes' ) {
             $formats = [
                 'Bytes', 'KBytes', 'MBytes', 'GBytes', 'TBytes'
             ];
-        } else if( \in_array( $format, [ 'pkts', 'errs', 'discs', 'bcasts' ] ) ) {
+        } else if( in_array( $format, [ 'pkts', 'errs', 'discs', 'bcasts' ] ) ) {
             $formats = [
                 'pps', 'Kpps', 'Mpps', 'Gpps', 'Tpps'
             ];
@@ -148,7 +160,7 @@ class IXP implements ExtensionInterface {
             ];
         }
 
-        $num_formats = \count( $formats );
+        $num_formats = count( $formats );
         for( $i = 0; $i < $num_formats; $i++ ) {
             if( ( $v / 1000.0 < 1.0 ) || ( $num_formats === $i + 1 ) ) {
                 if( $returnType === 0 ) {
@@ -172,9 +184,11 @@ class IXP implements ExtensionInterface {
      * See scale above
      * @param float $v
      * @param int $decs
+     *
      * @return string
      */
-    public function scaleBits( float $v, int $decs = 3 ): string {
+    public function scaleBits( float $v, int $decs = 3 ): string
+    {
         return $this->scale( $v, 'bits', $decs );
     }
 
@@ -182,12 +196,13 @@ class IXP implements ExtensionInterface {
      * See scale above
      * @param float $v
      * @param int $decs
+     *
      * @return string
      */
-    public function scaleBytes( float $v, int $decs = 3 ): string {
+    public function scaleBytes( float $v, int $decs = 3 ): string
+    {
         return $this->scale( $v, 'bytes', $decs );
     }
-
 
     /**
      * Scale a size in bytes in human style filesize
@@ -195,8 +210,8 @@ class IXP implements ExtensionInterface {
      * @param int  $bytes          The value to scale
      * @return string            Scaled / formatted number / type.
      */
-    public function scaleFilesize( int $bytes ): string {
-
+    public function scaleFilesize( int $bytes ): string
+    {
         if( $bytes >= 1073741824 ) {
             return number_format( $bytes / 1073741824, 2 ) . ' GB';
         }
@@ -227,10 +242,12 @@ class IXP implements ExtensionInterface {
     * @param string $lineEnding
     * @param int    $indent
     * @param int    $pad
+     *
     * @return string            Scaled / formatted number / type.
     */
-    public function softwrap( array $data, int $perline, string $elementSeparator, string $lineEnding, int $indent = 0, int $pad = 0 ): string {
-        if( !( $cnt = \count( $data ) ) ) {
+    public function softwrap( array $data, int $perline, string $elementSeparator, string $lineEnding, int $indent = 0, int $pad = 0 ): string
+    {
+        if( !( $cnt = count( $data ) ) ) {
             return '';
         }
 
@@ -267,13 +284,13 @@ class IXP implements ExtensionInterface {
      * @param int    $protocol        Protocol
      * @param int    $vlanid          VLAN ID
      * @param int    $vliid           VLAN Interface ID
+     *
      * @return string
      */
-    public function nagiosHostname( string $abbreviatedName, int $asn, int $protocol, int $vlanid, int $vliid ): string {
+    public function nagiosHostname( string $abbreviatedName, int $asn, int $protocol, int $vlanid, int $vliid ): string
+    {
         return preg_replace( '/[^a-zA-Z0-9]/', '-', strtolower( $abbreviatedName ) ) . '-as' . $asn . '-ipv' . $protocol . '-vlanid' . $vlanid . '-vliid' . $vliid;
     }
-
-
 
     /**
      * Checks if reseller mode is enabled.
@@ -320,9 +337,10 @@ class IXP implements ExtensionInterface {
      *
      * @param  int    $asn      The AS number
      * @param  bool   $addAs    Do we need to add AS?
+     *
      * @return string
      */
-    public function asNumber( $asn, $addAs = true )
+    public function asNumber( $asn, $addAs = true ): string
     {
         if( Auth::check() && $asn ) {
             return '<a href="#ixpm-asnumber-' . $asn . '" onClick="ixpAsnumber( ' . $asn . ' ); return false;">' . ( $addAs ? 'AS' : '' ) . $asn . '</a>';
@@ -335,9 +353,10 @@ class IXP implements ExtensionInterface {
      * Replaces an IP prefix with some JS magic to invoke a bootbox.
      *
      * @param $prefix
+     *
      * @return string
      */
-    public function whoisPrefix( $prefix )
+    public function whoisPrefix( $prefix ): string
     {
         if( Auth::check() && $prefix ) {
             return '<a href="#ixpm-prefix-whois-' . md5($prefix) . '" onClick="ixpWhoisPrefix( \'' . $prefix . '\' ); return false;">' . $prefix . '</a>';
@@ -350,6 +369,7 @@ class IXP implements ExtensionInterface {
      * Takes a URL with https://xxx/ and returns xxx
      *
      * @param  string $url      The URL
+     *
      * @return string
      */
     public function nakedUrl( string $url ): string
@@ -363,7 +383,8 @@ class IXP implements ExtensionInterface {
      *
      * @return GoogleAuthenticator
      */
-    public function google2faAuthenticator() {
+    public function google2faAuthenticator(): GoogleAuthenticator
+    {
         return new GoogleAuthenticator( request() );
     }
 }

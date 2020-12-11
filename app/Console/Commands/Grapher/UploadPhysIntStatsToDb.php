@@ -38,8 +38,8 @@ use IXP\Models\{
  /**
   * Artisan command to upload member traffic stats to the database
   *
-  * @author     Barry O'Donovan <barry@opensolutions.ie>
-  * @author     Yann Robin      <yann@opensolutions.ie>
+  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+  * @author     Yann Robin      <yann@islandbridgenetworks.ie>
   * @category   Grapher
   * @package    IXP\Console\Commands
   * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee

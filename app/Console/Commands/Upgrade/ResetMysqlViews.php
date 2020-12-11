@@ -22,16 +22,13 @@ namespace IXP\Console\Commands\Upgrade;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
 use Illuminate\Support\Facades\DB;
 use IXP\Console\Commands\Command as IXPCommand;
-
-
 /**
- * Class Customer2User - tool to migrate the Customer/User datas to customer_to_users table
+ * Reset MYSQL views
  *
  * @author      Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author      Yann Robin <yann@islandbridgenetworks.ie>
  * @package     IXP\Console\Commands\Upgrade
  * @copyright   Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
@@ -62,7 +59,8 @@ class ResetMysqlViews extends IXPCommand
      * @throws
      *
      */
-    public function handle(): int {
+    public function handle(): int
+    {
         DB::beginTransaction();
         DB::unprepared( resolve( 'Foil\Engine' )->render( 'database/views.foil.sql' ) );
         DB::commit();

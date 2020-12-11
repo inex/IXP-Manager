@@ -22,25 +22,20 @@ namespace IXP\Console\Commands\Switches;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
 use IXP\Console\Commands\Command;
-
-use D2EM;
 
 use OSS_SNMP\{
     Exception,
     SNMP
 };
 
-use Entities\{
-    Switcher    as SwitcherEntity
-};
+use IXP\Models\Switcher;
 
 /**
  * Class SnmpPoll
  *
  * @author      Barry O'Donovan     <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @package     IXP\Console\Commands
  * @copyright   Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
@@ -71,32 +66,30 @@ class ReindexIfIndex extends Command
      *
      * @throws
      */
-    public function handle() {
-
-        /** @var $s SwitcherEntity */
-
-        if( ! ( $s = D2EM::getRepository( SwitcherEntity::class )->findOneBy( [ "name" => $this->argument('switch') ] ) ) ) {
+    public function handle()
+    {
+        if( ! ( $s = Switcher::where( 'name', $this->argument('switch') )->first() ) ) {
             $this->error( "ERR: No switch found with name: " . $this->argument('switch' ) );
             return -1;
         }
 
         try {
-            $host = new SNMP( $s->getHostname(), $s->getSnmppasswd() );
+            $host = new SNMP( $s->hostname, $s->snmppasswd );
 
             // array in ifIndex => ifName format:
             $snmpports = $host->useIface()->names();
 
-            foreach( $s->getPorts() as $sp ) {
+            foreach( $s->switchPorts as $sp ) {
                 foreach( $snmpports as $ifIndex => $ifName ) {
-                    if( $sp->getIfName() != $ifName ) {
+                    if( $sp->ifName !== $ifName ) {
                         continue;
                     }
 
-                    if( $sp->getIfIndex() == $ifIndex ) {
-                        $this->comment( " - {$sp->getIfName()} unchanged, ifIndex remains the same");
+                    if( $sp->ifName === $ifIndex ) {
+                        $this->comment( " - {$sp->ifName} unchanged, ifIndex remains the same");
                     } else {
-                        $this->info(" - {$sp->getIfName()} ifIndex changed from {$sp->getIfIndex()} to {$ifIndex}");
-                        $sp->setIfIndex( $ifIndex );
+                        $this->info(" - {$sp->ifName} ifIndex changed from {$sp->ifIndex} to {$ifIndex}");
+                        $sp->ifIndex = $ifIndex;
                     }
 
                     unset( $snmpports[$ifIndex] );
@@ -104,18 +97,16 @@ class ReindexIfIndex extends Command
                 }
             }
 
-            if( $this->option( 'noflush', false ) ){
+            if( $this->option( 'noflush', false ) ) {
                 $this->error( "\n*** --noflush parameter set - NO CHANGES MADE TO DATABASE" );
             } else{
-                D2EM::flush();
+                $sp->save();
             }
-
         } catch( Exception $e ) {
             $this->error("ERROR: OSS_SNMP exception polling switch ports for {$s->getName()} by SNMP");
             $this->error( $e->getMessage() );
             return -2;
         }
-
         return 0;
     }
 }

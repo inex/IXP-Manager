@@ -420,7 +420,7 @@ class SwitchPort extends Model
      *
      * @throws
      */
-    public function snmpUpdate( $host, $logger = false ): SwitchPort
+    public function snmpUpdate( SNMP $host, bool $logger = false ): SwitchPort
     {
         foreach( self::$SNMP_MAP as $snmp => $attribute ) {
             $fn = $attribute;
@@ -489,10 +489,11 @@ class SwitchPort extends Model
             // are we a LAG port?
             $isAggregatePorts = $host->useLAG()->isAggregatePorts();
 
-            if( isset( $isAggregatePorts[ $this->ifIndex ] ) && $isAggregatePorts[ $this->ifIndex ] )
+            if( isset( $isAggregatePorts[ $this->ifIndex ] ) && $isAggregatePorts[ $this->ifIndex ] ){
                 $this->lagIfIndex = $host->useLAG()->portAttachedIds()[ $this->ifIndex ];
-            else
+            } else {
                 $this->lagIfIndex = null;
+            }
 
         } catch( \Exception $e ){}
 

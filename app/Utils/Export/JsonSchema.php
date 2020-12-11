@@ -32,10 +32,6 @@ use IXP\Models\{
     NetworkInfo,
     Router
 };
-
-use IXP\Utils\ArrayUtilities;
-
-
 /**
  * JSON Schema Exporter
  *
@@ -202,7 +198,7 @@ class JsonSchema
                 $id = $ni['id'];
                 $vlanentry[$id]['id']                                   = $ni['id'];
                 $vlanentry[$id]['name']                                 = $ni['name'];
-                $vlanentry[$id][ 'ipv'.$ni['protocol'] ]['prefix']     = $ni[ 'network' ];
+                $vlanentry[$id][ 'ipv'.$ni['protocol'] ]['prefix']      = $ni[ 'network' ];
                 $vlanentry[$id][ 'ipv'.$ni['protocol'] ]['mask_length'] = $ni[ 'masklen' ];
             }
 
@@ -319,12 +315,7 @@ class JsonSchema
                 });
         }
 
-        $customers = ArrayUtilities::reindexEloquentObjects(
-            ArrayUtilities::reorderEloquentObjects( Customer::getConnected(false ),
-                'autsys', SORT_NUMERIC
-            ),
-            'id'
-        );
+        $customers =  Customer::getConnected( false, 'autsys' )->keyBy( 'id' );
 
         $cnt = 0;
         foreach( $customers as $c ) {

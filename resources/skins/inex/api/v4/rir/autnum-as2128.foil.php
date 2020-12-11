@@ -5,7 +5,7 @@ aut-num:        AS2128
 as-name:        INEX
 descr:          Internet Neutral Exchange Association Company Limited By Guarantee
 <?php foreach( $t->asns as $asn => $details ): ?>
-<?php if( $asn != 2128 ): ?>
+<?php if( $asn !== 2128 ): ?>
 import:         from AS<?= $asn ?> accept <?= $details[ "asmacro" ] ?> # <?= $details[ "name" ] ?>
 
 export:         to   AS<?= $asn ?> announce AS-INEXIE

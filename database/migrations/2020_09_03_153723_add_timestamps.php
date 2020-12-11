@@ -125,6 +125,10 @@ class AddTimestamps extends Migration
             $table->timestamps();
         });
 
+        Schema::table('oui', function (Blueprint $table) {
+            $table->timestamps();
+        });
+
         Schema::table('patch_panel', function (Blueprint $table) {
             $table->timestamps();
             $table->date( 'installation_date' )->change();
@@ -328,6 +332,10 @@ class AddTimestamps extends Migration
         });
 
         Schema::table('networkinfo', function (Blueprint $table) {
+            $table->dropTimestamps();
+        });
+
+        Schema::table('oui', function (Blueprint $table) {
             $table->dropTimestamps();
         });
 

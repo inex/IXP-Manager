@@ -1,11 +1,9 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace IXP\Jobs;
 
-
-
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -47,7 +45,6 @@ use IXP\Tasks\Irrdb\{
 class UpdateIrrdb extends Job implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
 
     /**
      * @var CustomerModel

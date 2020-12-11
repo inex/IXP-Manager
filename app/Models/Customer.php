@@ -765,11 +765,12 @@ class Customer extends Model
      * Utility function to provide a array of all members connected to the exchange (including at
      * least one physical interface with status 'CONNECTED').
      *
-     * @param bool $externalOnly If `true`, only include external customers (i.e. no internal types)
+     * @param bool      $externalOnly If `true`, only include external customers (i.e. no internal types)
+     * @param string    $orderBy
      *
      * @return Collection
      */
-    public static function getConnected( $externalOnly = false ): Collection
+    public static function getConnected( $externalOnly = false, string $orderBy = 'name' ): Collection
     {
         return self::select( 'cust.*' )
             ->leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id'  )
@@ -780,7 +781,7 @@ class Customer extends Model
             ->when( $externalOnly , function( Builder $q ) {
                 return $q->whereRaw( self::SQL_CUST_EXTERNAL );
             })
-            ->orderBy( 'cust.name' )->distinct()->get();
+            ->orderBy( 'cust.' . $orderBy  )->distinct()->get();
     }
 
     /**

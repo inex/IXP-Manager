@@ -108,6 +108,16 @@ class Contact extends Model
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'facilityaccess'            => 'boolean',
+        'mayauthorize'              => 'boolean',
+    ];
+
+    /**
      * Get the contact groups that are type role for the contact
      */
     public function contactRoles(): BelongsToMany

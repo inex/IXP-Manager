@@ -3,7 +3,7 @@
 namespace IXP\Console\Commands\Utils;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,16 +22,15 @@ namespace IXP\Console\Commands\Utils;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
-use D2EM;
-
 use Illuminate\Support\Facades\DB;
-use Repositories\UserLoginHistory as UserLoginHistoryRepo;
 
 use IXP\Console\Commands\Command as IXPCommand;
-use Repositories\UserLoginHistory;
 
+use IXP\Models\{
+    ApiKey,
+    UserLoginHistory,
+    UserRememberToken
+};
 
 /**
  * Class UpdateOuiDatabase - update OUI database from named file or IEEE website.
@@ -44,8 +43,9 @@ use Repositories\UserLoginHistory;
  * Note that we bundle a recent OUI file in `data/oui` also.
  *
  * @author Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author Yann Robin <yann@islandbridgenetworks.ie>
  * @package IXP\Console\Commands\Utils
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class ExpungeLogs extends IXPCommand
@@ -62,34 +62,30 @@ class ExpungeLogs extends IXPCommand
      *
      * @var string
      */
-    protected $description = 'Delete old data from database tables';
+    protected $description = 'This command will delete old data from database tables > 6 months old';
 
     /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function handle() {
-
+    public function handle()
+    {
         $sixmonthsago   = now()->subMonths(6)->format( 'Y-m-d 00:00:00' );
 
         // Deleting user login logs older than 6 months
         $this->isVerbosityVerbose() && $this->output->write('Expunging user login records > 6 months...', false );
-        D2EM::createQuery( 'DELETE FROM Entities\\UserLoginHistory ulh WHERE ulh.at < ?1' )->execute( [ 1 => $sixmonthsago ] );
+        UserLoginHistory::where( 'at', '<', $sixmonthsago )->delete();
         $this->isVerbosityVerbose() && $this->info(' [done]' );
 
-        // Deleting expired API Keys older than 3 months
-        $this->isVerbosityVerbose() && $this->output->write('Expunging expired API Key records > 3 months...', false );
-        D2EM::createQuery( 'DELETE FROM Entities\\ApiKey a WHERE a.expires IS NOT NULL AND a.expires < ?1' )->execute( [
-            1 => now()->subWeek()->format( 'Y-m-d 00:00:00' )
-        ]);
+        // Deleting expired API Keys older than 1 week
+        $this->isVerbosityVerbose() && $this->output->write('Expunging expired API Key records > 1 week...', false );
+        ApiKey::whereNotNull( 'expires' )->where( 'expires', '<', now()->subWeek()->format( 'Y-m-d 00:00:00' )  )->delete();
         $this->isVerbosityVerbose() && $this->info(' [done]' );
 
         // Deleting expired UserRememberTokens
         $this->isVerbosityVerbose() && $this->output->write('Expunging expired user remember tokens...', false );
-        D2EM::createQuery( 'DELETE FROM Entities\\UserRememberToken urt WHERE urt.expires < ?1' )->execute( [
-            1 => now()->format( 'Y-m-d H:i:s' )
-        ]);
+        UserRememberToken::where( 'expires', '<', now()->format( 'Y-m-d H:i:s' ) )->delete();
         $this->isVerbosityVerbose() && $this->info(' [done]' );
 
 

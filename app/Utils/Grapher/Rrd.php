@@ -2,10 +2,8 @@
 
 namespace IXP\Utils\Grapher;
 
-use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
-
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,8 +23,9 @@ use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Services\Grapher\Graph;
+use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
 
+use IXP\Services\Grapher\Graph;
 
 /**
  * A class to handle RRD files
@@ -96,13 +95,13 @@ class Rrd
      *
      * these values are taken from mrtg/src/rateup.c
      */
-    const PERIOD_TIME = Mrtg::PERIOD_TIME;
+    public const PERIOD_TIME = Mrtg::PERIOD_TIME;
 
 
     /**
      * Prefix for local cached files
      */
-    const LOCAL_CACHE_RRD_PREFIX = "ixp-utils-rrd-";
+    public const LOCAL_CACHE_RRD_PREFIX = "ixp-utils-rrd-";
 
     /**
      * Class constructor.
@@ -120,7 +119,8 @@ class Rrd
     /**
      * Class destructor
      */
-    public function __destruct() {
+    public function __destruct()
+    {
         $this->deleteLocalCopies();
     }
 
@@ -131,27 +131,33 @@ class Rrd
      *
      * @return string
      */
-    public function file(): string {
+    public function file(): string
+    {
         return $this->file;
     }
 
     /**
      * Accessor for PERIOD_TIME
+     *
      * @param string
+     *
      * @return float
      */
-    public function getPeriodTime( $period ): float {
-        if( isset( self::PERIOD_TIME[ $period ] ) )
+    public function getPeriodTime( $period ): float
+    {
+        if( isset( self::PERIOD_TIME[ $period ] ) ){
             return self::PERIOD_TIME[ $period ];
-        else
-            return 0.0;
+        }
+        return 0.0;
     }
 
     /**
      * Access for the graph object under consideration
-     * @return \IXP\Services\Grapher\Graph
+     *
+     * @return Graph
      */
-    private function graph(): Graph {
+    private function graph(): Graph
+    {
         return $this->graph;
     }
 
@@ -162,9 +168,11 @@ class Rrd
      * @see getLocalFilename() for detals
      *
      * @return string The full path to the local directory
+     *
      * @throws \IXP\Exceptions\Utils\Grapher\FileError
      */
-    private function getLocalDirectory() {
+    private function getLocalDirectory()
+    {
         // use Laravel's storage if possible
         if( !function_exists( 'storage_path' ) ) {
             throw new FileErrorException("Could not identify storage directory - fn storage_path() not defined");
@@ -185,10 +193,13 @@ class Rrd
      * @see getLocalCopy() for detals
      *
      * @param  string $ext The extension
+     *
      * @return string The full path to the local copy
+     *
      * @throws \IXP\Exceptions\Utils\Grapher\FileError
      */
-    private function getLocalFilename( $ext = 'rrd' ) {
+    private function getLocalFilename( $ext = 'rrd' )
+    {
         return "{$this->getLocalDirectory()}/" . self::LOCAL_CACHE_RRD_PREFIX . "{$this->graph()->key()}.{$ext}";
     }
 
@@ -204,11 +215,13 @@ class Rrd
      * @see removeLocalCopies()
      *
      * @return string The full path to the local copy
+     *
      * @throws \IXP\Exceptions\Utils\Grapher\FileError
      */
-    private function getLocalCopy(): string {
+    private function getLocalCopy(): string
+    {
         // if it's already local, just return
-        if( substr( $this->realfile, 0, 4 ) != 'http' ) {
+        if( substr( $this->realfile, 0, 4 ) !== 'http' ) {
             $this->file = $this->realfile;
             return $this->file;
         }
@@ -230,7 +243,8 @@ class Rrd
      *
      * @see getLocalCopy() for an explanation
      */
-    private function deleteLocalCopies() {
+    private function deleteLocalCopies()
+    {
         $files = glob( $this->getLocalDirectory() . "/" . self::LOCAL_CACHE_RRD_PREFIX . "*" );
         $now   = time();
 
@@ -245,7 +259,8 @@ class Rrd
      * Prepare RRD file
      * @throws \IXP\Exceptions\Utils\Grapher\FileError
      */
-    protected function loadRrdFile() {
+    protected function loadRrdFile()
+    {
         // we need to allow for remote files but php's rrd_* functions don't support this
         $this->getLocalCopy();
     }
@@ -254,13 +269,13 @@ class Rrd
      * Get the RRD file
      * @throws \IXP\Exceptions\Utils\Grapher\FileError
      */
-    public function rrd() {
+    public function rrd()
+    {
         if( !( $rrd = @file_get_contents($this->file) ) ) {
             throw new FileErrorException("Could not read RRD file [{$this->file}]");
         }
         return $rrd;
     }
-
 
     /**
      * The MRTG files have different data source names than the sflow files.
@@ -269,8 +284,9 @@ class Rrd
      *
      * @return array
      */
-    private function getIndexKeys() {
-        if( $this->graph()->backend()->name() == 'mrtg' ) {
+    private function getIndexKeys()
+    {
+        if( $this->graph()->backend()->name() === 'mrtg' ) {
             return [ 'ds0', 'ds1' ];  // in out
         }
 
@@ -289,6 +305,7 @@ class Rrd
      * - MRTG/RRD provides traffic as bytes, change to bits
      *
      * @return array
+     *
      * @throws \IXP\Exceptions\Utils\Grapher\FileError
      */
     public function data(): array {
@@ -315,7 +332,7 @@ class Rrd
 
         $values  = [];
 
-        $isBits = ( $this->graph()->category() == Graph::CATEGORY_BITS );
+        $isBits = ( $this->graph()->category() === Graph::CATEGORY_BITS );
 
         $i = 0;
 
@@ -335,11 +352,9 @@ class Rrd
                     $values[$i][3] *= 8;
                     $values[$i][4] *= 8;
                 }
-
                 $i++;
             }
         }
-
         return $values;
     }
 
@@ -348,9 +363,9 @@ class Rrd
      *
      * @throws \IXP\Exceptions\Utils\Grapher\FileError
      */
-    public function png(): string {
-
-        $separated_maxima = ( self::PERIOD_TIME[ $this->graph()->period() ] > 60*60*24*2) ? true : false;
+    public function png(): string
+    {
+        $separated_maxima = self::PERIOD_TIME[ $this->graph()->period() ] > 60*60*24*2;
 
         list( $indexIn, $indexOut ) = $this->getIndexKeys();
 
@@ -374,10 +389,10 @@ class Rrd
             'DEF:c='.$this->file().':'.$indexOut.':AVERAGE',
             'DEF:d='.$this->file().':'.$indexOut.':MAX',
 
-            'CDEF:cdefa=a,' . ( $this->graph()->category() == Graph::CATEGORY_BITS ? '8' : '1' ) . ',*',
-            'CDEF:cdefb=b,' . ( $this->graph()->category() == Graph::CATEGORY_BITS ? '8' : '1' ) . ',*',
-            'CDEF:cdefc=c,' . ( $this->graph()->category() == Graph::CATEGORY_BITS ? '8' : '1' ) . ',*',
-            'CDEF:cdefd=d,' . ( $this->graph()->category() == Graph::CATEGORY_BITS ? '8' : '1' ) . ',*',
+            'CDEF:cdefa=a,' . ( $this->graph()->category() === Graph::CATEGORY_BITS ? '8' : '1' ) . ',*',
+            'CDEF:cdefb=b,' . ( $this->graph()->category() === Graph::CATEGORY_BITS ? '8' : '1' ) . ',*',
+            'CDEF:cdefc=c,' . ( $this->graph()->category() === Graph::CATEGORY_BITS ? '8' : '1' ) . ',*',
+            'CDEF:cdefd=d,' . ( $this->graph()->category() === Graph::CATEGORY_BITS ? '8' : '1' ) . ',*',
 
             'VDEF:last_in=cdefa,LAST',
             'VDEF:last_out=cdefc,LAST',
@@ -425,15 +440,13 @@ class Rrd
         return $this->getLocalFilename('png');
     }
 
-
     /**
      * Accessor method for $array - the data from the MRTG file.
      *
      * @return array The data from the MRTG file
      */
-    public function getArray()
+    public function getArray(): array
     {
         return $this->array;
     }
-
 }

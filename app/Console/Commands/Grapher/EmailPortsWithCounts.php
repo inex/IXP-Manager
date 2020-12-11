@@ -106,9 +106,8 @@ class EmailPortsWithCounts extends GrapherCommand
      */
     private function emailPortsWithCounts( $category ): array
     {
-
-        $data = TrafficDaily::loadTraffic( Carbon::yesterday(), $category );
-        $ports = [];
+        $data   = TrafficDaily::loadTraffic( Carbon::yesterday(), $category );
+        $ports  = [];
 
         foreach( $data as $d ) {
             if( $d[ 'day_tot_in' ] === 0 && $d[ 'day_tot_out' ] === 0 ) {
@@ -118,22 +117,22 @@ class EmailPortsWithCounts extends GrapherCommand
             $port = [];
 
             if( $this->isVerbosityVerbose() ) {
-                $this->info( "{$d['Customer']['name']}\n\t\tIN / OUT: {$d[ 'day_tot_in' ]} / {$d[ 'day_tot_out' ]}" );
+                $this->info( "{$d['name']}\n\t\tIN / OUT: {$d[ 'day_tot_in' ]} / {$d[ 'day_tot_out' ]}" );
             }
 
-            $graph = $this->grapher()->customer( Customer::find( $d[ 'Customer' ][ 'id' ] ) )->setCategory( $category )->setPeriod( Graph::PERIOD_DAY );
+            $graph = $this->grapher()->customer( Customer::find( $d[ 'cust_id' ] ) )->setCategory( $category )->setPeriod( Graph::PERIOD_DAY );
 
-            $port['cust']    = $d['Customer'];
-            $port['in']      = $d[ 'day_tot_in' ];
-            $port['out']     = $d[ 'day_tot_out' ];
-            $port['png']     = $graph->png();
+            $port['cust_id']    = $d[ 'cust_id' ];
+            $port['name']       = $d[ 'name' ];
+            $port['in']         = $d[ 'day_tot_in' ];
+            $port['out']        = $d[ 'day_tot_out' ];
+            $port['png']        = $graph->png();
 
             $ports[] = $port;
         }
 
         return $ports;
     }
-
 
     /**
      * Check the various arguments and options that have been password to the console command

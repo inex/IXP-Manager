@@ -5,7 +5,7 @@ password: <?= config('ixp_api.rir.password') ?>
     as-name:        FOOBAR
     descr:          Some City Internet Exchange Association Limited
 <?php foreach( $t->asns as $asn => $details ): ?>
-<?php if( $asn != 2128 ): ?>
+<?php if( $asn !== 2128 ): ?>
     import:         from AS<?= $asn ?> accept <?= $details[ "asmacro" ] ?> # <?= $details[ "name" ] ?>
 
     export:         to   AS<?= $asn ?> announce AS-MYIXPASSET

@@ -1,7 +1,9 @@
-<?php namespace IXP\Console\Commands\Contact;
+<?php
+
+namespace IXP\Console\Commands\Contact;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,21 +23,24 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Illuminate\Database\Eloquent\Builder;
 use IXP\Console\Commands\Command;
 
 use D2EM;
+use IXP\Models\Contact;
 
- /**
+/**
   * Artisan command to export contacts by group
   *
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+  * @author     Yann Robin <yanny@islandbridgenetworks.ie>
   * @category   Contact
   * @package    IXP\Console\Commands
-  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
-class ExportGroup extends Command {
-
+class ExportGroup extends Command
+{
     /**
      * The name and signature of the console command.
      *
@@ -60,10 +65,12 @@ class ExportGroup extends Command {
      *
      * @return mixed
      */
-    public function handle(): int {
-
+    public function handle(): int
+    {
+        $type = $this->option('type');
+        $name = $this->option('name');
         // Imported from Zend Framework with little change on 2017-11
-        if( ( !$this->option('type') && !$this->option('name') ) || ( $this->option('type') && $this->option('name') ) )  {
+        if( ( !$type && !$name ) || ( $type && $name ) )  {
             $this->error( "Group name or type must be set (and not both)." );
             return -1;
         }
@@ -73,47 +80,29 @@ class ExportGroup extends Command {
             return -2;
         }
 
-        $dql = "SELECT c.name AS name, c.position as position, c.email AS email, c.phone AS phone, c.mobile AS mobile,
-                    c.facilityaccess AS facilityacces, c.mayauthorize AS mayauthorize, c.notes as notes
+        $contacts = Contact::selectRaw( 'c.name AS name, c.position as position, c.email AS email, c.phone AS phone, c.mobile AS mobile,
+                    c.facilityaccess AS facilityaccess, c.mayauthorize AS mayauthorize, c.notes as notes' )
+            ->from( 'contact AS c' )
+            ->leftJoin( 'contact_to_group AS ctg', 'ctg.contact_id', 'c.id' )
+            ->leftJoin( 'contact_group AS cg', 'cg.id', 'ctg.contact_group_id' )
+            ->leftJoin( 'cust AS cu', 'cu.id', 'c.custid')
+            ->when( $type, function( Builder $q, $type ) {
+                return $q->where( 'cg.type', $type );
+            }, function( $query ) use( $name ) {
+                return $query->where( 'cg.name', $name );
+            } )
+            ->when( $cid = $this->option('cid'), function( Builder $q, $cid ) {
+                return $q->where( 'cu.id', $cid );
+            })->groupBy( 'c.id' )->get()->toArray();
 
-             FROM Entities\\Contact c
-                LEFT JOIN c.Groups cg
-                LEFT JOIN c.Customer cu\n";
-
-        if( $this->option('type') ) {
-            $dql .= " WHERE cg.type = :type";
-        } else {
-            $dql .= " WHERE cg.name = :name";
-        }
-
-        if( $this->option('cid') ) {
-            $dql .= " AND cu.id = :cid";
-        }
-
-        $dql .= " GROUP BY c.id";
-
-        $q = D2EM::createQuery( $dql );
-
-        if( $this->option('type') ) {
-            $q->setParameter( 'type', $this->option( 'type' ) );
-        } else {
-            $q->setParameter( 'name', $this->option('name') );
-        }
-
-        if( $this->option('cid') ) {
-            $q->setParameter( 'cid', $this->option('cid') );
-        }
-
-        $contacts = $q->getArrayResult();
-
-        if( !$contacts ) {
-            if( $this->option('format' ) == 'json' ) {
+        if( !count( $contacts ) ) {
+            if( $this->option('format' ) === 'json' ) {
                 echo json_encode( [] ) . "\n";
             }
             return 0;
         }
 
-        if( $this->option('format') == "csv" )  {
+        if( $this->option('format') === "csv" )  {
             $names= [];
             foreach( $contacts[0] as $name => $data ) {
                 $names[] = $name;
@@ -134,5 +123,4 @@ class ExportGroup extends Command {
         echo "\n";
         return 0;
     }
-
 }

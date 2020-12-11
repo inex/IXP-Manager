@@ -3,7 +3,7 @@
 namespace IXP\Console\Commands\Upgrade;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,16 +22,12 @@ namespace IXP\Console\Commands\Upgrade;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
-use D2EM;
-
-use Entities\{CustomerToUser as CustomerToUserEntity,
-    User as UserEntity
-};
-
 use IXP\Console\Commands\Command as IXPCommand;
 
+use IXP\Models\{
+    CustomerToUser,
+    User
+};
 
 /**
  * Class PromoteCustUser - tool to promote the CustUser into CustAdmin
@@ -39,7 +35,7 @@ use IXP\Console\Commands\Command as IXPCommand;
  * @author      Yann Robin <yann@islandbridgenetworks.ie>
  * @author      Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @package     IXP\Console\Commands\Upgrade
- * @copyright   Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright   Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class PromoteCustUser extends IXPCommand
@@ -68,8 +64,8 @@ class PromoteCustUser extends IXPCommand
      * @throws
      *
      */
-    public function handle() {
-
+    public function handle()
+    {
         echo "\n\n";
         $this->warn( "ONLY RUN ONCE AND ONLY WHEN UPGRADING TO IXP Manager v5.0.0 from v4.9.x" );
         echo "\n";
@@ -85,20 +81,18 @@ class PromoteCustUser extends IXPCommand
 
         $this->info( 'Migration in progress, please wait...' );
 
-        /** @var CustomerToUserEntity[] $C2UCustUser */
-        $C2UCustUser = D2EM::getRepository( CustomerToUserEntity::class )->findBy( [ "privs" => UserEntity::AUTH_CUSTUSER ] );
+        $C2UCustUser = CustomerToUser::where( 'privs', User::AUTH_CUSTUSER )->get();
 
-        $bar = $this->output->createProgressBar( count( $C2UCustUser ) );
+        $bar = $this->output->createProgressBar( $C2UCustUser->count() );
         $bar->start();
 
         foreach( $C2UCustUser as $c2u ) {
-
             // Changing user privilege
-            $c2u->setPrivs( UserEntity::AUTH_CUSTADMIN );
-            D2EM::flush();
+            $c2u->privs = User::AUTH_CUSTADMIN;
+            $c2u->save();
 
             $bar->advance();
-        };
+        }
 
         $bar->finish();
         echo "\n\n";

@@ -1,7 +1,9 @@
-<?php namespace IXP\Utils\Former\Framework;
+<?php
+
+namespace IXP\Utils\Former\Framework;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,69 +22,67 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
 use Former\Framework\TwitterBootstrap4 as FormerTwitterBootstrap4;
-use IXP\Utils\Former\Framework\Action as FormerAction;
-use Former\Traits\Field;
+
 use HtmlObject\Element;
+
+use Illuminate\Foundation\Application;
 
 /**
  * Overrides some methods of Former's default framework
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class TwitterBootstrap4 extends FormerTwitterBootstrap4  {
-
+class TwitterBootstrap4 extends FormerTwitterBootstrap4
+{
     /**
      * Create a new TwitterBootstrap instance
      *
-     * @param \Illuminate\Foundation\Application $app
+     * @param Application $app
      */
-    public function __construct( $app )
+    public function __construct( Application $app )
     {
         parent::__construct($app);
     }
 
-
     /**
      * Wrap a field with potential additional tags
      *
-     * @param  Field $field
+     *
+     * @param $field
      *
      * @return Element A wrapped field
      */
-    public function wrapField($field)
+    public function wrapField( $field ): Element
     {
-        $width = isset( $this->app['former.form']->getAttributes()['custom-input-width-class'] )
-            ? $this->app['former.form']->getAttributes()['custom-input-width-class'] : $this->fieldWidth;
+        $width = $this->app[ 'former.form' ]->getAttributes()[ 'custom-input-width-class' ] ?? $this->fieldWidth;
 
-        if ($this->app['former.form']->isOfType('horizontal')) {
-                return Element::create('div', $field)->addClass($width);
+        if( $this->app[ 'former.form' ]->isOfType( 'horizontal' ) ) {
+            return Element::create('div', $field )->addClass( $width );
         }
-
         return $field;
     }
 
     /**
      * Add label classes
      *
-     * @return string[] An array of attributes with the label class
+     * @return array An array of attributes with the label class
      */
-    public function getLabelClasses()
+    public function getLabelClasses(): array
     {
-        $width = isset( $this->app['former.form']->getAttributes()['custom-label-width-class'] )
-            ? $this->app['former.form']->getAttributes()['custom-label-width-class'] : $this->labelWidth;
+        $width = $this->app[ 'former.form' ]->getAttributes()[ 'custom-label-width-class' ] ?? $this->labelWidth;
 
-        if ($this->app['former.form']->isOfType('horizontal')) {
-            return array('control-label', $width);
-        } elseif ($this->app['former.form']->isOfType('inline')) {
-            return array('sr-only');
-        } else {
-            return array('control-label');
+        if( $this->app[ 'former.form' ]->isOfType( 'horizontal' ) ) {
+            return [ 'control-label', $width ];
         }
+        if ( $this->app[ 'former.form' ]->isOfType( 'inline' ) ) {
+            return [ 'sr-only' ];
+        }
+
+        return [ 'control-label' ];
     }
 
     /**
@@ -93,9 +93,10 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4  {
      *
      * @return Element
      */
-    public function createBlockHelp($text, $attributes = array())
+    public function createBlockHelp( $text, $attributes = array() )
     {
-        return Element::create('small', $text, $attributes)->addClass('form-text text-muted former-help-text');
+        return Element::create('small', $text, $attributes )
+            ->addClass('form-text text-muted former-help-text' );
     }
 
     /**
@@ -103,17 +104,17 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4  {
      *
      * @return Element A wrapped item
      */
-    public function placeAround($item)
+    public function placeAround( $item ): Element
     {
         // Render object
-        if (is_object($item) and method_exists($item, '__toString')) {
+        if( is_object( $item ) && method_exists( $item, '__toString' ) ) {
             $item = $item->__toString();
         }
 
         // Get class to use
-        $class = (strpos($item, '<button') !== false) ? 'append' : 'addon';
+        $class = ( strpos( $item, '<button' ) !== false ) ? 'append' : 'addon';
 
-        return Element::create('span', $item)->addClass('input-group-'.$class);
+        return Element::create('span', $item )->addClass('input-group-' . $class );
     }
 
     /**
@@ -121,71 +122,61 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4  {
      *
      * @return string A list of group classes
      */
-    public function getGroupClasses()
+    public function getGroupClasses(): string
     {
-        if ($this->app['former.form']->isOfType('horizontal')) {
-            $classes = 'form-group row ';
-        } else {
-            $classes = 'form-group ';
+        $classes = 'form-group ';
+        if( $this->app[ 'former.form' ]->isOfType( 'horizontal' ) ){
+            $classes .= 'row ';
         }
 
-        if( isset( $this->app['former.form']->getAttributes()['inputs-position'] ) ){
-            $classes .= $this->app['former.form']->getAttributes()['inputs-position'];
+        if( isset( $this->app[ 'former.form' ]->getAttributes()[ 'inputs-position' ] ) ){
+            $classes .= $this->app['former.form']->getAttributes()[ 'inputs-position' ];
         }
 
         return $classes;
     }
-
 
     /**
      * Add actions block class
      *
      * @return string|null
      */
-    public function getActionClasses()
+    public function getActionClasses(): ?string
     {
-        if ($this->app['former.form']->isOfType('horizontal') || $this->app['former.form']->isOfType('inline')) {
+        if( $this->app[ 'former.form' ]->isOfType( 'horizontal' ) || $this->app[ 'former.form' ]->isOfType( 'inline' ) ) {
             $classes = 'form-group';
 
-            if( isset( $this->app['former.form']->getAttributes()['inputs-positions'] ) ){
-                $classes .= $this->app['former.form']->getAttributes()['inputs-positions'];
+            if( isset( $this->app[ 'former.form' ]->getAttributes()[ 'inputs-positions' ] ) ){
+                $classes .= $this->app[ 'former.form' ]->getAttributes()[ 'inputs-positions' ];
             }
 
-            if( isset( $this->app['former.form']->getAttributes()['action-buttons-custom-class'] ) &&  $this->app['former.form']->getAttributes()['action-buttons-custom-class'] == "grey-box" ){
+            if( isset( $this->app[ 'former.form' ]->getAttributes()[ 'action-buttons-custom-class' ] ) &&  $this->app[ 'former.form' ]->getAttributes()[ 'action-buttons-custom-class' ] === "grey-box" ){
                 $classes .= " col-sm-12";
             } else{
                 $classes .= " row";
             }
-
             return $classes;
         }
-
         return null;
     }
-
 
     /**
      * Wrap actions block with potential additional tags
      *
-     * @param  Actions $actions
+     * @param  $actions
      *
      * @return string A wrapped actions block
      */
-    public function wrapActions($actions)
+    public function wrapActions( $actions ): string
     {
-
         // For horizontal forms, we wrap the actions in a div
-        if ($this->app['former.form']->isOfType('horizontal')) {
+        if( $this->app[ 'former.form' ]->isOfType( 'horizontal' ) ) {
+            $class = $this->app[ 'former.form' ]->getAttributes()[ 'action-buttons-custom-class' ] ?? "";
 
-            $class = isset( $this->app['former.form']->getAttributes()['action-buttons-custom-class'] ) ? $this->app['former.form']->getAttributes()['action-buttons-custom-class'] : "";
-
-            if( $class == "grey-box" ){
-                $element = Element::create('div', $actions)->addClass( "bg-light p-4 mt-4 shadow-sm text-center col-lg-12" );
-            } else{
-                $element = Element::create('div', $actions)->addClass(array($this->fieldOffset, $this->fieldWidth , $class ));
+            if( $class === 'grey-box' ){
+                return Element::create('div', $actions )->addClass( "bg-light p-4 mt-4 shadow-sm text-center col-lg-12" );
             }
-
-            return $element;
+            return  Element::create('div', $actions )->addClass( [ $this->fieldOffset, $this->fieldWidth , $class ]);
         }
 
         return $actions;

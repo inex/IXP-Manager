@@ -357,12 +357,13 @@ class Switcher extends Model
      * @param SNMP $host An instance of \OSS_SNMP\SNMP for this switch
      * @param bool $logger An instance of the logger or false
      * @param bool $result
+     * @param bool $nosave Do we need to save the object in DB ?
      *
      * @return Switcher For fluent interfaces
      *
      * @throws
      */
-    public function snmpPollSwitchPorts( $host, $logger = false, &$result = false ): Switcher
+    public function snmpPollSwitchPorts( $host, $logger = false, bool $result = false, bool $nosave = false ): Switcher
     {
         // clone the ports currently known to this switch as we'll be playing with this array
         $existingPorts = clone $this->switchPorts();
@@ -398,12 +399,15 @@ class Switcher extends Model
 
             if( !$sp ) {
                 // none existing port in database so we have found a new port
-                $sp = SwitchPort::create( [
-                    'switchid'  => $this->id,
-                    'ifIndex'   => $index,
-                    'active'    => true,
-                    'type'      => SwitchPort::TYPE_UNSET,
-                ]);
+                // Do we need to save the object ?
+                if( !$nosave ){
+                    $sp = SwitchPort::create( [
+                        'switchid'  => $this->id,
+                        'ifIndex'   => $index,
+                        'active'    => true,
+                        'type'      => SwitchPort::TYPE_UNSET,
+                    ]);
+                }
 
                 if( is_array( $result ) ) {
                     $result[ $index ] = [ "port" => $sp, 'bullet' => "new" ];

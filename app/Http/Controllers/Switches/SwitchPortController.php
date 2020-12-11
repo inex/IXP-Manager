@@ -572,7 +572,7 @@ class SwitchPortController extends EloquentController
             $host = new SNMP( $switch->hostname, $switch->snmppasswd );
 
             $switch->snmpPoll( $host, true );
-            $switch->snmpPollSwitchPorts( $host, true );
+            $switch->snmpPollSwitchPorts( $host, true, false, false );
             $switch->save();
 
             AlertContainer::push( "The below is <b>live information</b> gathered via SNMP", Alert::INFO );
@@ -627,7 +627,7 @@ class SwitchPortController extends EloquentController
         try {
             $host = new SNMP( $switch->hostname, $switch->snmppasswd );
             $switch->snmpPoll( $host, true );
-            $switch->snmpPollSwitchPorts( $host, true, $results );
+            $switch->snmpPollSwitchPorts( $host, true, $results, false );
             $switch->save();
 
         } catch( Exception $e ) {

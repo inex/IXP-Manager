@@ -5,7 +5,7 @@ namespace IXP\Utils\View\Alert;
 /**
  * A class to encapsulate Bootstrap v3 messages.
  *
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,25 +28,27 @@ namespace IXP\Utils\View\Alert;
 /**
  * Alert
  *
- * @author Barry O'Donovan <barry@opensolutions.ie>
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * @author Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  */
 class Container
 {
-
     /**
      * Push a message onto the message stack
-     * @param string $message
-     * @param string $class
-     * @param bool $clear
+     * @param string    $message
+     * @param string    $class
+     * @param bool      $clear
+     *
+     * @return void
      */
-    public static function push( string $message, string $class = Alert::INFO, $clear = false ) {
+    public static function push( string $message, string $class = Alert::INFO, $clear = false ): void
+    {
         if( $clear || !( $alerts = session('ixp.utils.view.alerts') ) ) {
             $alerts = [];
         }
 
         $alerts[] = new Alert( $message, $class );
-        session(['ixp.utils.view.alerts' => $alerts]);
+        session( [ 'ixp.utils.view.alerts' => $alerts ] );
     }
 
     /**
@@ -56,7 +58,8 @@ class Container
      *
      * @return Alert null for none ( === null)
      */
-    public static function pop() {
+    public static function pop()
+    {
         $alerts = session('ixp.utils.view.alerts');
 
         if( !$alerts || !count($alerts) ) {
@@ -73,11 +76,11 @@ class Container
      *
      * @return string
      */
-    public static function html(): string {
+    public static function html(): string
+    {
         $alerts = '';
 
         while( $alert = self::pop() ) {
-
             switch ($alert->class()) {
                 case 'danger':
                     $icon = "fa-exclamation-triangle";
@@ -99,13 +102,8 @@ class Container
                 . '<div class="text-center"><i class="fa ' . $icon . ' fa-2x "></i></div>'
                 . '<div class="col-sm-12">' . clean( $alert->message() ) . "</div> \n"
                 . '</div></div>' . "\n\n";
-
-
-
         }
 
         return $alerts;
     }
 }
-
-

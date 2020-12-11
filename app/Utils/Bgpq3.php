@@ -3,7 +3,7 @@
 namespace IXP\Utils;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -62,12 +62,11 @@ class Bgpq3
      * @param string $sources Whois server sources - defaults to BGPQ's own default
      * @throws ConfigurationException
      */
-    public function __construct( $path, $whois = null, $sources = null )
+    public function __construct( string $path, string $whois = null, string $sources = null )
     {
         if( !$path || !is_file( $path ) || !is_executable( $path ) ) {
             throw new ConfigurationException('You must set the configuration option IXP_IRRDB_BGPQ3_PATH and it must be the absolute path to the executable bgpq3 utility.');
         }
-
 
         $this->path = $path;
 
@@ -88,25 +87,30 @@ class Bgpq3
      *
      * @param string $asmacro As number (of the form as1234) or AS macro
      * @param int $proto The IP protocol - 4 or 6.
-     * @throws Exception On a JSON decoding error
+     *
      * @return array The array of prefixes (or empty array).
+     *
+     * @throws Exception On a JSON decoding error
      */
-    public function getPrefixList( $asmacro, $proto = 4 )
+    public function getPrefixList( string $asmacro, int $proto = 4 ): array
     {
         $minSubnetSize = config( 'ixp.irrdb.min_v' . $proto . '_subnet_size' );
         $json = $this->execute( '-l pl -j -m ' . $minSubnetSize . ' ' . escapeshellarg( $asmacro ), $proto );
         $array = json_decode( $json, true );
 
-        if( $array === null )
+        if( $array === null ){
             throw new Exception( "Could not decode JSON response from BGPQ" );
+        }
 
-        if( !isset( $array[ 'pl' ] ) )
+        if( !isset( $array[ 'pl' ] ) ){
             throw new Exception( "Named prefix list [pl] expected in decoded JSON but not found!" );
+        }
 
         $prefixes = [];
         // we're going to ignore the 'exact' for now.
-        foreach( $array[ 'pl' ] as $ar )
+        foreach( $array[ 'pl' ] as $ar ){
             $prefixes[] = $ar['prefix'];
+        }
 
         return $prefixes;
     }
@@ -118,25 +122,29 @@ class Bgpq3
      * Returns an array of ASNs that may appear in any as path for the
      * route paths (or empty array).
      *
-     * @param string $asmacro As number (of the form as1234) or AS macro
-     * @param int $proto The IP protocol - 4 or 6.
+     * @param string    $asmacro As number (of the form as1234) or AS macro
+     * @param int       $proto The IP protocol - 4 or 6.
+     *
      * @return array The array of prefixes (or empty array).
      */
-    public function getAsnList( $asmacro, $proto = 4 )
+    public function getAsnList( string $asmacro, int $proto = 4 ): array
     {
         $json = $this->execute( '-3j -l pl -f 999 ' . escapeshellarg( $asmacro ), false );
         $array = json_decode( $json, true );
 
-        if( $array === null )
+        if( $array === null ){
             throw new Exception( "Could not decode JSON response from BGPQ when fetching ASN list" );
+        }
 
-        if( !isset( $array[ 'pl' ] ) )
+        if( !isset( $array[ 'pl' ] ) ){
             throw new Exception( "Named prefix list [pl] expected in decoded JSON but not found when fetching ASN list!" );
+        }
 
         $asns = [];
 
-        foreach( $array[ 'pl' ] as $asn )
+        foreach( $array[ 'pl' ] as $asn ){
             $asns[] = $asn;
+        }
 
         return $asns;
     }
@@ -145,21 +153,26 @@ class Bgpq3
      * Ececute the BGPQ command line utility using the defined (or default)
      * whois host and sources.
      *
-     * @param string $cmd The query part ot the BGPQ command. I.e. other switches besides -6, -h, -S.
-     * @param int $proto The protocol. If 6, adds the -6 switch
-     * @throws Exception If return code from BGPQ3 is != 0
+     * @param string    $cmd The query part ot the BGPQ command. I.e. other switches besides -6, -h, -S.
+     * @param int       $proto The protocol. If 6, adds the -6 switch
+     *
      * @return string The output from the shell command.
+     *
+     * @throws Exception If return code from BGPQ3 is != 0
      */
-    private function execute( $cmd, $proto = 4 )
+    private function execute( string $cmd, int $proto = 4 ): string
     {
-        if( $this->whois )
+        if( $this->whois ){
             $cmd = '-h ' . escapeshellarg( $this->whois ) . ' ' . $cmd;
+        }
 
-        if( $this->sources )
+        if( $this->sources ){
             $cmd = '-S ' . escapeshellarg( $this->sources ) . ' ' . $cmd;
+        }
 
-        if( $proto == 6 )
+        if( $proto === 6 ){
             $cmd = '-6 ' . $cmd;
+        }
 
         $cmd = $this->path . ' ' . $cmd;
 
@@ -168,20 +181,21 @@ class Bgpq3
 
         exec( $cmd, $output, $return_var );
 
-        if( $return_var != 0 )
+        if( $return_var != 0 ){
             throw new Exception( 'Error executing BGPQ3 with: ' . $cmd );
+        }
 
         return implode( "\n", $output );
     }
-
 
     /**
      * The whois server to query
      *
      * @param string $whois The whois server to query
+     *
      * @return Bgpq3 For fluent interfaces
      */
-    public function setWhois( $whois )
+    public function setWhois( string $whois ): Bgpq3
     {
         $this->whois = $whois;
         return $this;
@@ -191,9 +205,10 @@ class Bgpq3
      * The whois server sources
      *
      * @param string $sources The whois server sources
+     *
      * @return Bgpq3 For fluent interfaces
      */
-    public function setSources( $sources )
+    public function setSources( string $sources ): Bgpq3
     {
         $this->sources = $sources;
         return $this;
@@ -203,13 +218,13 @@ class Bgpq3
      * The executable path to the BGPQ executable
      *
      * @param string $path The executable path to the BGPQ executable
+     *
      * @return Bgpq3 For fluent interfaces
      */
-    public function setPath( $path )
+    public function setPath( string $path ): Bgpq3
     {
         $this->path = $path;
 
         return $this;
     }
-
 }

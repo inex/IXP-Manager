@@ -55,7 +55,6 @@ class GenerateConfiguration extends GrapherCommand
      */
     protected $description = 'Generate configuration for a graphing backend';
 
-
     /**
      * Execute the console command.
      *
@@ -133,5 +132,4 @@ class GenerateConfiguration extends GrapherCommand
         // all good :-D
         return 0;
     }
-
 }

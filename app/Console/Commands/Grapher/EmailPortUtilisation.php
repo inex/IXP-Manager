@@ -29,7 +29,6 @@ use IXP\Mail\Grapher\PortUtilisation as PortUtilisationMail;
 
 use IXP\Models\{
     Customer,
-    VirtualInterface
 };
 
 use IXP\Services\Grapher\Graph;
@@ -81,7 +80,6 @@ class EmailPortUtilisation extends GrapherCommand
         $excess = [];
         foreach( $custs as $c ) {
             foreach( $c->virtualInterfaces as $vi ) {
-                /** @var  $vi VirtualInterface */
                 if( ( $speed = $vi->speed() * 1000 * 1000 ) === 0 ) {
                     continue;
                 }

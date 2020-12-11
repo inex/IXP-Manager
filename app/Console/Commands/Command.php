@@ -1,7 +1,9 @@
-<?php namespace IXP\Console\Commands;
+<?php
+
+namespace IXP\Console\Commands;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,50 +22,57 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Symfony\Component\Console\Output\OutputInterface;
-use Entities\IXP;
 
-abstract class Command extends \Illuminate\Console\Command {
-
+abstract class Command extends \Illuminate\Console\Command
+{
      /**
       * Returns true if verbosity is EXACTLY: VERBOSITY_QUIET
+      *
       * @return bool
       */
-     protected function isVerbosityQuiet() {
-         return $this->getOutput()->getVerbosity() == OutputInterface::VERBOSITY_QUIET;
+     protected function isVerbosityQuiet(): bool
+     {
+         return $this->getOutput()->getVerbosity() === OutputInterface::VERBOSITY_QUIET;
      }
 
      /**
       * Returns true if verbosity is at least: VERBOSITY_NORMAL
+      *
       * @return bool
       */
-     protected function isVerbosityNormal() {
+     protected function isVerbosityNormal(): bool
+     {
          return $this->getOutput()->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL;
      }
 
      /**
       * Returns true if verbosity is at least: VERBOSITY_VERBOSE
+      *
       * @return bool
       */
-     protected function isVerbosityVerbose() {
+     protected function isVerbosityVerbose(): bool
+     {
          return $this->getOutput()->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE;
      }
 
      /**
       * Returns true if verbosity is at least: VERBOSITY_VERY_VERBOSE
+      *
       * @return bool
       */
-     protected function isVerbosityVeryVerbose() {
+     protected function isVerbosityVeryVerbose(): bool
+     {
          return $this->getOutput()->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE;
      }
 
      /**
       * Returns true if verbosity is at least: VERBOSITY_DEBUG
+      *
       * @return bool
       */
-     protected function isVerbosityDebug() {
+     protected function isVerbosityDebug(): bool
+     {
          return $this->getOutput()->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG;
      }
-
 }

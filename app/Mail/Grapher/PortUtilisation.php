@@ -1,7 +1,9 @@
 <?php
 
+namespace IXP\Mail\Grapher;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,14 +22,9 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
-namespace IXP\Mail\Grapher;
-
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 /**
  * Mailable for port utilisation
@@ -35,7 +32,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Mail\Grapher
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class PortUtilisation extends Mailable
@@ -55,9 +52,11 @@ class PortUtilisation extends Mailable
     /**
      * Create a new message instance.
      *
-     * @return void
+     * @param array $excess
+     * @param float $threshold
      */
-    public function __construct( $excess, $threshold ) {
+    public function __construct( array $excess, float $threshold )
+    {
         $this->excess    = $excess;
         $this->threshold = $threshold;
     }
@@ -67,7 +66,7 @@ class PortUtilisation extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): self
     {
         return $this->view('services.grapher.email.port-utilisation')
             ->subject( env('IDENTITY_NAME') . " :: Ports Utilisation Report" );

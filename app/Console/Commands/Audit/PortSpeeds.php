@@ -1,7 +1,9 @@
-<?php namespace IXP\Console\Commands\Audit;
+<?php
+
+namespace IXP\Console\Commands\Audit;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,10 +24,8 @@
  */
 
 use IXP\Console\Commands\Command;
-use D2EM;
 
-use Entities\PhysicalInterface;
-
+use IXP\Models\PhysicalInterface;
 use OSS_SNMP\MIBS\Iface as IfaceMIB;
 
 /**
@@ -34,11 +34,11 @@ use OSS_SNMP\MIBS\Iface as IfaceMIB;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Audit
  * @package    IXP\Console\Commands
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class PortSpeeds extends Command {
-
+class PortSpeeds extends Command
+{
     /**
      * The name and signature of the console command.
      *
@@ -62,50 +62,40 @@ class PortSpeeds extends Command {
      */
     public function handle(): int
     {
-
-        $mismatched = [];
-
-        $ignorepiids = [];
+        $mismatched = $ignorepiids = [];
         if( $this->option('ignore-pids' ) ) {
             $ignorepiids = explode( ',', $this->option('ignore-pids' ) );
         }
 
-        /** @var PhysicalInterface $pi */
-        foreach( D2EM::getRepository(PhysicalInterface::class )->findAll() as $pi ) {
-
-            if( $pi->statusIsConnectedOrQuarantine() 
-                    && $pi->getSwitchPort() 
-                    && $pi->getSpeed() != $pi->getSwitchPort()->getIfHighSpeed()
-                    && $pi->getSwitchPort()->getIfOperStatus() == IfaceMIB::IF_OPER_STATUS_UP ) {
-
-                if( in_array( $pi->getId(), $ignorepiids ) ) {
-                    continue;
-                }
+        foreach( PhysicalInterface::whereNotIn( 'id', $ignorepiids )->get() as $pi ) {
+            if( $pi->isConnectedOrQuarantine()
+                    && $pi->switchPort
+                    && $pi->speed !== $pi->switchPort->ifHighSpeed
+                    && $pi->switchPort->ifOperStatus === IfaceMIB::IF_OPER_STATUS_UP ) {
 
                 $mismatched[] = [
-                    $pi->getVirtualInterface()->getCustomer()->getFormattedName(),
-                    $pi->getId(),
-                    $pi->getSwitchPort()->getSwitcher()->getName(),
-                    $pi->getSwitchPort()->getName(),
-                    $pi->getSwitchPort()->getIfHighSpeed(),
-                    $pi->getSpeed(),
+                    $pi->virtualInterface->customer->getFormattedName(),
+                    $pi->id,
+                    $pi->switchPort->switcher->name,
+                    $pi->switchPort->name,
+                    $pi->switchPort->ifHighSpeed,
+                    $pi->speed,
                 ];
             }
-
         }
 
-        if( $this->option('cron') && $mismatched === [] ) {
+        if( $this->option('cron') && !count( $mismatched ) ) {
             return 0;
         }
 
         $this->info( "\nAudit of Configured Physical Interface Port Speeds Against SNMP Discovered Speeds\n" );
 
-        if( $mismatched == [] ) {
+        if( !count( $mismatched ) ) {
             $this->info( "No mismatched ports found." );
         } else {
             $this->table( [ 'Customer', 'PI DB ID', 'Switch', 'Switchport', 'PI Speed', 'SNMP Speed' ], $mismatched );
         }
 
-        return $mismatched == [] ? 0 : 1;
+        return !count( $mismatched ) ? 0 : 1;
     }
 }

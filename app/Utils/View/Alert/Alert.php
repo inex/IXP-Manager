@@ -5,7 +5,7 @@ namespace IXP\Utils\View\Alert;
 /**
  * A class to encapsulate Bootstrap v3 messages.
  *
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,18 +28,18 @@ namespace IXP\Utils\View\Alert;
 /**
  * Alert
  *
- * @author Barry O'Donovan <barry@opensolutions.ie>
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * @author Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  */
 class Alert
 {
 
-    const SUCCESS = 'success';
-    const INFO    = 'info';
-    const WARNING = 'warning';
-    const DANGER  = 'danger';
+    public const SUCCESS = 'success';
+    public const INFO    = 'info';
+    public const WARNING = 'warning';
+    public const DANGER  = 'danger';
 
-    const CLASSES = [
+    public const CLASSES = [
         self::SUCCESS,
         self::INFO,
         self::WARNING,
@@ -63,7 +63,8 @@ class Alert
      * @param string $message
      * @param string $class
      */
-    public function __construct( string $message, string $class = self::INFO ) {
+    public function __construct( string $message, string $class = self::INFO )
+    {
         $this->message = $message;
 
         if( !in_array( $class, self::CLASSES ) ) {
@@ -77,18 +78,17 @@ class Alert
      * Get the message
      * @return string
      */
-    public function message(): string {
-        return( $this->message );
+    public function message(): string
+    {
+        return $this->message;
     }
 
     /**
      * Get the class
      * @return string the class
      */
-    public function class(): string {
-        return( $this->class );
+    public function class(): string
+    {
+        return $this->class;
     }
-
 }
-
-

@@ -23,14 +23,15 @@ namespace IXP\Console\Commands\Grapher;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Carbon\Carbon;
 use D2EM;
-use DateTime;
 
-use Entities\Customer as CustomerEntity;
 
 use Grapher;
 
 use IXP\Mail\Grapher\TrafficDeltas as TrafficDeltasMailable;
+use IXP\Models\Customer;
+use IXP\Models\TrafficDaily;
 use IXP\Services\Grapher\Graph;
 
 use Mail;
@@ -76,12 +77,11 @@ class EmailTrafficDeltas extends GrapherCommand
         if( ( $retval = $this->verifyArgsAndOptions() ) !== 0 ) {
             return $retval;
         }
-
-        $day   = new DateTime( '-1 days' );
-        $ports = $this->portsWithDelta( $day, floatval($this->option('stddev')) );
+        $day = Carbon::now()->subDays( 1 );
+        $ports = $this->portsWithDelta( $day, (float)$this->option( 'stddev' ) );
 
         if( count( $ports ) ) {
-            Mail::to( explode( ',', $this->argument( 'email' ) ) )->send( new TrafficDeltasMailable( $ports, floatval($this->option('stddev')), $day ) );
+            Mail::to( explode( ',', $this->argument( 'email' ) ) )->send( new TrafficDeltasMailable( $ports, (float)$this->option( 'stddev' ), $day ) );
         } else if( $this->isVerbosityVerbose() ) {
             $this->info("No ports have a traffic delta within the requested deviation");
         }
@@ -91,24 +91,33 @@ class EmailTrafficDeltas extends GrapherCommand
 
     /**
      * Find ports with the given stddev delta
-     * @param DateTime $day
+     *
+     * @param Carbon    $day
+     * @param float     $stddev
+     *
      * @return array
+     *
+     * @throws
      */
-    private function portsWithDelta( DateTime $day, float $stddev ): array {
-
-        /** @var CustomerEntity[] custs */
-        $custs = D2EM::getRepository( 'Entities\Customer' )->getCurrentActive( false, true, true );
+    private function portsWithDelta( Carbon $day, float $stddev ): array
+    {
+        $custs = Customer::currentActive(true, true )->get();
         $ports = [];
 
         foreach( $custs as $c ) {
+            $tds = TrafficDaily::where( 'cust_id', $c->id )
+                ->where( 'category', Graph::CATEGORY_BITS )
+                ->where( 'day', '<=', $day->format( 'Y-m-d' ) )
+                ->whereRaw( "DATE_FORMAT(day,'%w') = DATE_FORMAT( '" . $day->format( 'Y-m-d' ) . "','%w') ")
+                ->orderByDesc( 'day' )
+                ->limit( config('grapher.cli.traffic_differentials.stddev_calc_length', 60)+1 )
+                ->get()->toArray();
 
-            $tds = D2EM::getRepository( 'Entities\TrafficDaily' )
-                ->getWeeklyAsArray( $c, config('grapher.cli.traffic_differentials.stddev_calc_length', 60)+1, Graph::CATEGORY_BITS, $day );
 
             if( $tds === null || count( $tds ) <= 3 ) {
                 continue;
             }
-            
+
             $port = [];
 
             $port['cust'] = $c;
@@ -148,19 +157,18 @@ class EmailTrafficDeltas extends GrapherCommand
             $port['thresholdIn']  = $stddev * $port['stddevIn'];
             $port['thresholdOut'] = $stddev * $port['stddevOut'];
 
-            $port['percentIn']  = $port['meanIn']  ? intval( ( $port['dIn']  / $port['meanIn']  ) * 100 ) : $port['dIn'];
-            $port['percentOut'] = $port['meanOut'] ? intval( ( $port['dOut'] / $port['meanOut'] ) * 100 ) : $port['dOut'];
+            $port['percentIn']  = $port['meanIn']  ? (int)( ( $port[ 'dIn' ] / $port[ 'meanIn' ] ) * 100 ) : $port['dIn'];
+            $port['percentOut'] = $port['meanOut'] ? (int)( ( $port[ 'dOut' ] / $port[ 'meanOut' ] ) * 100 ) : $port['dOut'];
 
 
             if( $port['dIn'] > $port['thresholdIn'] || $port['dOut'] > $port['thresholdOut'] ) {
-
                 if( $this->isVerbosityVerbose() ) {
-                    $this->warn( $c->getName() );
+                    $this->warn( $c->name );
                     $this->warn( sprintf( "\tIN  M: %d\tSD: %d\tDiff: %d\tT: %d\tR: %s",
-                        intval( $port['meanIn'] ), intval( $port['stddevIn'] ), intval( $port['dIn'] ), $port['thresholdIn'], ( $port['dIn'] > $port['thresholdIn'] ? 'OUT' : 'IN' )
+                        (int)$port[ 'meanIn' ], (int)$port[ 'stddevIn' ], (int)$port[ 'dIn' ], $port['thresholdIn'], ( $port['dIn'] > $port['thresholdIn'] ? 'OUT' : 'IN' )
                     ) );
                     $this->warn( sprintf( "\tOUT M: %d\tSD: %d\tDiff: %d\tT: %d\tR: %s\n",
-                        intval( $port['meanOut'] ), intval( $port['stddevOut'] ), intval( $port['dOut'] ), $port['thresholdOut'], ( $port['dOut'] > $port['thresholdOut'] ? 'OUT' : 'IN' )
+                        (int)$port[ 'meanOut' ], (int)$port[ 'stddevOut' ], (int)$port[ 'dOut' ], $port['thresholdOut'], ( $port['dOut'] > $port['thresholdOut'] ? 'OUT' : 'IN' )
                     ) );
                 }
 
@@ -169,13 +177,12 @@ class EmailTrafficDeltas extends GrapherCommand
                 $ports[] = $port;
 
             } else if( $this->isVerbosityVeryVerbose() ) {
-
-                $this->info( $c->getName() );
+                $this->info( $c->name );
                 $this->info( sprintf( "\tIN  M: %d\tSD: %d\tDiff: %d\tT: %d\tR: %s",
-                    intval( $port['meanIn'] ), intval( $port['stddevIn'] ), intval( $port['dIn'] ), $port['thresholdIn'], ( $port['dIn'] > $port['thresholdIn'] ? 'OUT' : 'IN' )
+                    (int)$port[ 'meanIn' ], (int)$port[ 'stddevIn' ], (int)$port[ 'dIn' ], $port['thresholdIn'], ( $port['dIn'] > $port['thresholdIn'] ? 'OUT' : 'IN' )
                 ) );
                 $this->info( sprintf( "\tOUT M: %d\tSD: %d\tDiff: %d\tT: %d\tR: %s\n",
-                    intval( $port['meanOut'] ), intval( $port['stddevOut'] ), intval( $port['dOut'] ), $port['thresholdOut'], ( $port['dOut'] > $port['thresholdOut'] ? 'OUT' : 'IN' )
+                    (int)$port[ 'meanOut' ], (int)$port[ 'stddevOut' ], (int)$port[ 'dOut' ], $port['thresholdOut'], ( $port['dOut'] > $port['thresholdOut'] ? 'OUT' : 'IN' )
                 ) );
             }
         }
@@ -183,12 +190,13 @@ class EmailTrafficDeltas extends GrapherCommand
         return $ports;
     }
 
-
     /**
      * Check the various arguments and options that have been password to the console command
+     *
      * @return int 0 for success or else an error code
      */
-    protected function verifyArgsAndOptions(): int {
+    protected function verifyArgsAndOptions(): int
+    {
         $emails = explode( ',', $this->argument('email') );
 
         foreach( $emails as $e ) {
@@ -205,5 +213,4 @@ class EmailTrafficDeltas extends GrapherCommand
 
         return 0;
     }
-
 }

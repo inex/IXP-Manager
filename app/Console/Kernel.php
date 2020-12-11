@@ -1,7 +1,9 @@
-<?php namespace IXP\Console;
+<?php
+
+namespace IXP\Console;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -24,16 +26,17 @@
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
-class Kernel extends ConsoleKernel {
-
+class Kernel extends ConsoleKernel
+{
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param Schedule $schedule
+     *
      * @return void
      */
-    protected function schedule(Schedule $schedule) {
-
+    protected function schedule( Schedule $schedule ): void
+    {
         // Expunge logs / GDPR data / etc.
         $schedule->command( 'utils:expunge-logs' )->dailyAt( '3:04' );
         
@@ -78,7 +81,7 @@ class Kernel extends ConsoleKernel {
      *
      * @return void
      */
-    protected function commands()
+    protected function commands(): void
     {
         $this->load(__DIR__.'/Commands');
 

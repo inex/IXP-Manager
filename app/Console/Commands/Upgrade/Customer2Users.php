@@ -3,7 +3,7 @@
 namespace IXP\Console\Commands\Upgrade;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,18 +22,10 @@ namespace IXP\Console\Commands\Upgrade;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
-use D2EM, DB;
-
-use Entities\{
-    CustomerToUser      as CustomerToUserEntity,
-    User                as UserEntity,
-    UserLoginHistory    as UserLoginHistoryEntity
-};
+use DB;
 
 use IXP\Console\Commands\Command as IXPCommand;
-
+use IXP\Models\{CustomerToUser, User, UserLoginHistory};
 
 /**
  * Class Customer2User - tool to migrate the Customer/User datas to customer_to_users table
@@ -41,7 +33,7 @@ use IXP\Console\Commands\Command as IXPCommand;
  * @author      Yann Robin <yann@islandbridgenetworks.ie>
  * @author      Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @package     IXP\Console\Commands\Upgrade
- * @copyright   Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright   Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Customer2Users extends IXPCommand
@@ -70,8 +62,8 @@ class Customer2Users extends IXPCommand
      * @throws
      *
      */
-    public function handle() {
-
+    public function handle()
+    {
         echo "\n\n";
         $this->warn( "ONLY RUN ONCE AND ONLY WHEN UPGRADING TO IXP Manager v5.0.0 from v4.9.x" );
         echo "\n";
@@ -90,31 +82,31 @@ class Customer2Users extends IXPCommand
 
         $this->info( 'Migration in progress, please wait...' );
 
-        /** @var UserEntity[] $users */
-        $users = D2EM::getRepository( UserEntity::class )->findAll();
+        $users = User::all();
 
-        $bar = $this->output->createProgressBar(count($users));
+        $bar = $this->output->createProgressBar( $users->count() );
         $bar->start();
 
         foreach( $users as $u ) {
-
             // create the new CustomerToUserEntity entity with the information of the current User and Customer table entries
-            $c2u = new CustomerToUserEntity();
-            $c2u->setUser(      $u )
-                ->setCustomer(  $u->getCustomer() )
-                ->setCreatedAt( new \DateTime )
-                ->setPrivs(     $u->getUserPrivs() )
-                ->setLastLoginAt( $u->getPreference( 'auth.last_login_at' ) ? new \DateTime( date( 'Y-m-d H:i:s' , $u->getPreference( 'auth.last_login_at' ) ) ) : null )
-                ->setLastLoginFrom(     $u->getPreference( 'auth.last_login_from' ) )
-                ->setExtraAttributes( [ "created_by" => [ "type" => "migration-script" ] ] );
-            D2EM::persist( $c2u );
-            D2EM::flush();
+            $c2u = new CustomerToUser;
+            $c2u->user_id =             $u->id;
+            $c2u->customer_id =         $u->custid;
+            $c2u->privs =               $u->privs;
+            $c2u->last_login_date =     null;
+            $c2u->last_login_from =     null;
+            $c2u->extra_attributes =      [ "created_by" => [ "type" => "migration-script" ] ];
+            $c2u->save();
+            /** FIXME FIXME-YR */
 
-            /** @var UserLoginHistoryEntity $loginHistory */
-            DB::table( 'user_logins' )->where( 'user_id', $u->getId() )->update( ['customer_to_user_id' => $c2u->getId() ] );
+//                ->setLastLoginAt( $u->getPreference( 'auth.last_login_at' ) ? new \DateTime( date( 'Y-m-d H:i:s' , $u->getPreference( 'auth.last_login_at' ) ) ) : null )
+//                ->setLastLoginFrom(     $u->getPreference( 'auth.last_login_from' ) )
+//
+
+            UserLoginHistory::where( 'user_id', $u->id )->update( ['customer_to_user_id' => $c2u->id ] );
 
             $bar->advance();
-        };
+        }
 
         $bar->finish();
         echo "\n\n";
