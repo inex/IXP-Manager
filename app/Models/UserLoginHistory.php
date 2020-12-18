@@ -23,10 +23,7 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Model
-};
+use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo};
 
 /**
  * IXP\Models\UserLoginHistory
@@ -72,4 +69,12 @@ class UserLoginHistory extends Model
         'customer_to_user_id',
         'via',
     ];
+
+    /**
+     * Get the customer to user
+     */
+    public function customerToUser(): BelongsTo
+    {
+        return $this->belongsTo(CustomerToUser::class, 'customer_to_user_id');
+    }
 }

@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\User;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,31 +22,29 @@ namespace IXP\Http\Requests\User;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use Auth, D2EM;
-
-use Entities\{
-    Customer    as CustomerEntity,
-    User        as UserEntity,
-};
+use Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
+use IXP\Models\{
+    Customer,
+    User
+};
 
-class EditStore extends FormRequest
+
+class Update extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         if( $this->user()->isCustUser() ){
             return false;
         }
-
         return true;
     }
 
@@ -55,68 +53,55 @@ class EditStore extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
          $addUserInfo = [];
 
         // If its a superuser
-        if( Auth::getUser()->isSuperUser() ) {
+        if( Auth::user()->isSuperUser() ) {
             $infoArray = [
                 'name'                                              => 'required|string|max:255',
-                'username'                                          => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/|unique:Entities\User,username' . ( $this->input( 'id' ) ? ',' . $this->input( 'id' ) : '' ),
+                'username'                                          => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/|unique:Entities\User,username,' . $this->u->id,
                 'email'                                             => 'required|email|max:255',
                 'authorisedMobile'                                  => 'nullable|string|max:50',
             ];
-
         } else  {
-
             $infoArray = [
-                'privs'         => 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) )
+                'privs'         => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES_ALL ) )
             ];
 
             // If the User edit himself
-            if( Auth::id() === (int)$this->input( 'id' ) ) {
+            if( Auth::id() === (int)$this->u->id ) {
                 $addUserInfo = [
                     'name'                                              => 'required|string|max:255',
                     'authorisedMobile'                                  => 'nullable|string|max:50'
-
                 ];
             }
-
             $infoArray = array_merge( $infoArray, $addUserInfo );
-
         }
-
         return $infoArray ;
     }
 
-
-
-    public function withValidator( Validator $validator )
+    /**
+     * @param Validator $validator
+     *
+     * @return bool
+     */
+    public function withValidator( Validator $validator ): bool
     {
-        if( !Auth::getUser()->isSuperUser() ) {
-            if( !$validator->fails() ) {
+        if( !Auth::user()->isSuperUser() && !$validator->fails() ) {
+            $validator->after( function( Validator $validator ) {
+                $cust = Auth::getUser()->isSuperUser() ? Customer::find( $this->custid ) : Auth::user()->customer;
 
-                $validator->after( function( Validator $validator ) {
-
-                    $cust = Auth::getUser()->isSuperUser() ? D2EM::getRepository( CustomerEntity::class )->find( $this->input( 'custid' ) ) : Auth::getUser()->custid;
-
-                    if( $this->input( 'privs' ) == UserEntity::AUTH_SUPERUSER ) {
-                        if( !Auth::getUser()->isSuperUser() || Auth::getUser()->isSuperUser() && !$cust->isTypeInternal() ) {
-                            $validator->errors()->add( 'privs', "You are not allowed to set this User as a Super User for " . $cust->getName() );
-                            return false;
-                        }
+                if( (int)$this->privs === User::AUTH_SUPERUSER ) {
+                    if( !Auth::getUser()->isSuperUser() || ( Auth::user()->isSuperUser() && !$cust->typeInternal() ) ) {
+                        $validator->errors()->add( 'privs', "You are not allowed to set this User as a Super User for " . $cust->name );
+                        return false;
                     }
-
-                    return true;
-                });
-
-            }
+                }
+                return true;
+            });
         }
-
-
         return false;
-
     }
-
 }

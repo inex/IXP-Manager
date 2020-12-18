@@ -71,7 +71,7 @@
                     <?php endif; ?>
 
                     <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) ): ?>
-                        <?php if( Auth::getUser()->customer->isRouteServerClient() ): ?>
+                        <?php if( Auth::getUser()->customer->routeServerClient() ): ?>
                             <a class="dropdown-item <?= !request()->is( 'rs-prefixes/list' ) ?: 'active' ?>" href="<?= route('rs-prefixes@list') ?>">
                                 Route Server Prefixes
                             </a>
@@ -205,7 +205,7 @@
                         <?php foreach( Auth::getUser()->customers as $cust ): ?>
                             <a id="switch-cust-<?= $cust->id ?>" class="dropdown-item <?= Auth::getUser()->custid !== $cust->id ?: 'active cursor-default' ?>"
                                 <?= Auth::getUser()->custid !== $cust->id ?: "onclick='return false;'" ?>
-                               href="<?= Auth::getUser()->custid === $cust->id ? '#' : route( 'switch-customer@switch' , [ "id" => $cust->id ]  ) ?>">
+                               href="<?= Auth::getUser()->custid === $cust->id ? '#' : route( 'switch-customer@switch' , [ "cust" => $cust->id ]  ) ?>">
                                 <?= $cust->name ?>
                             </a>
                         <?php endforeach; ?>

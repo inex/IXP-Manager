@@ -98,9 +98,9 @@ Route::get(  'switch/configuration',       'Switches\SwitchController@configurat
 /// Authentication
 ///
 Route::group( [ 'namespace' => 'Auth' ], function() {
-    Route::get('switch-user/{user}',       'SwitchUserController@switch'                            )->name( 'switch-user@switch'            );
-    Route::get('switch-user-back',         'SwitchUserController@switchBack'                        )->name( 'switch-user@switchBack'        );
-    Route::get('switch-customer/{cust}',   'SwitchCustomerController@switch'                        )->name( 'switch-customer@switch'        );
+    Route::get('switch-user/{c2u}',        'SwitchUserController@switch'       )->name( 'switch-user@switch'            );
+    Route::get('switch-user-back',         'SwitchUserController@switchBack'    )->name( 'switch-user@switchBack'        );
+    Route::get('switch-customer/{cust}',   'SwitchCustomerController@switch'    )->name( 'switch-customer@switch'        );
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,9 +121,9 @@ Route::group( [ 'prefix' => 'dashboard' ], function() {
 /// Cust to User
 ///
 Route::group( [ 'namespace' => 'User', 'prefix' => 'customer-to-user' ], function() {
-    Route::get( 'add/{email?}', 'CustomerToUserController@add'                          )->name( "customer-to-user@add"    );
-    Route::post('store',        'CustomerToUserController@store'                        )->name( "customer-to-user@store"  );
-    Route::post('delete',       'CustomerToUserController@delete'                       )->name( "customer-to-user@delete" );
+    Route::get( 'create/{email}',   'CustomerToUserController@create'       )->name( "customer-to-user@create" );
+    Route::post('store',            'CustomerToUserController@store'        )->name( "customer-to-user@store"  );
+    Route::delete('delete/{c2u}',   'CustomerToUserController@delete'       )->name( "customer-to-user@delete" );
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -132,16 +132,17 @@ Route::group( [ 'namespace' => 'User', 'prefix' => 'customer-to-user' ], functio
 /// User
 ///
 Route::group( [ 'namespace' => 'User', 'prefix' => 'user' ], function() {
-    Route::get(     'list',                     'UserController@index'                 )->name("user@list"              );
-    Route::get(     'view/{id}',                'UserController@view'                  )->name("user@view"              );
-    Route::get(     'add',                      'UserController@add'                   )->name('user@add'               );
-    Route::get(     'add-wizard/{custid?}',     'UserController@addForm'               )->name('user@add-wizard'        );
-    Route::get(     'edit/{id}',                'UserController@edit'                  )->name('user@edit'              );
-    Route::post(    'welcome-email',            'UserController@resendWelcomeEmail'    )->name('user@welcome-email'     );
-    Route::post(    'add-store',                'UserController@addStore'              )->name('user@add-store'         );
-    Route::post(    'edit-store',               'UserController@editStore'             )->name('user@edit-store'        );
-    Route::post(    'delete',                   'UserController@delete'                )->name('user@delete'            );
-    Route::post(     'add/check-email',         'UserController@addCheckEmail'         )->name('user@add-check-email'   );
+    Route::get(     'list',                     'UserController@list'                  )->name('user@list'              );
+    Route::get(     'view/{u}',                 'UserController@view'                  )->name('user@view'              );
+    Route::get(     'create',                   'UserController@create'                )->name('user@create'            );
+    Route::get(     'create-wizard/{cust?}',    'UserController@createForm'            )->name('user@create-wizard'     );
+    Route::get(     'edit/{u}',                 'UserController@edit'                  )->name('user@edit'              );
+    Route::post(    'welcome-email/{u}',        'UserController@resendWelcomeEmail'    )->name('user@welcome-email'     );
+    Route::post(    'create/check-email',       'UserController@createCheckEmail'      )->name('user@create-check-email'   );
+    Route::post(    'store',                    'UserController@store'                 )->name('user@store'             );
+    Route::put(     'update/{u}',               'UserController@update'                )->name('user@update'            );
+    Route::delete(  'delete/{u}',               'UserController@delete'                )->name('user@delete'            );
+
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

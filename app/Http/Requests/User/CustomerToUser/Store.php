@@ -1,9 +1,9 @@
 <?php
 
-namespace IXP\Http\Requests\User;
+namespace IXP\Http\Requests\User\CustomerToUser;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,48 +23,40 @@ namespace IXP\Http\Requests\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM;
-
-use Entities\{
-    Customer            as CustomerEntity,
-    CustomerToUser      as CustomerToUserEntity,
-    User                as UserEntity,
-};
-
+use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
+
+use IXP\Models\{
+    Customer,
+    CustomerToUser,
+    User
+};
 
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
 
-class CustomerToUser extends FormRequest
+class Store extends FormRequest
 {
     /**
      * The Customer object
-     * @var CustomerEntity
+     *
+     * @var Customer
      */
     public $cust = null;
-
-    /**
-     * The User object
-     * @var UserEntity
-     */
-    public $existingUser = null;
 
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        // check that this user can effect these changes
         if( $this->user()->isCustUser() ) {
             return false;
         }
-
         return true;
     }
 
@@ -73,49 +65,49 @@ class CustomerToUser extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
-        return [
-            'custid'                => 'required|integer|exists:Entities\Customer,id',
-            'existingUserId'        => 'required|integer|exists:Entities\User,id',
-            'privs'                 => 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) ),
+        $rules = [
+            'user_id'       => 'required|integer|exists:Entities\User,id',
+            'privs'         => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES_ALL ) ),
         ];
+
+        if( Auth::user()->isSuperUser() ) {
+            $extraRules = [
+                'customer_id'   => 'required|integer|exists:Entities\Customer,id',
+            ];
+        }
+
+        return array_merge( $rules, $extraRules ?? [] );
     }
 
-
-
-    public function withValidator( Validator $validator )
+    /**
+     * @param Validator $validator
+     */
+    public function withValidator( Validator $validator ): void
     {
-
         $validator->after( function( Validator $validator ) {
-
-            if( !$this->input( 'existingUserId' ) ) {
+            if( !$this->user_id ) {
                 AlertContainer::push( "You must select one user from the list." , Alert::DANGER );
                 return false;
             }
 
-            $this->cust         = D2EM::getRepository( CustomerEntity::class    )->find( $this->input( 'custid'         ) );
-            $this->existingUser = D2EM::getRepository( UserEntity::class        )->find( $this->input( 'existingUserId' ) );
+            $this->cust = Auth::user()->isSuperUser() ? Customer::find( $this->customer_id ) : Auth::user()->customer;
 
-            if( !$this->user()->isSuperUser() && $this->existingUser->getCustomer()->getId() != $this->cust->getId() ) {
-                abort( "403" );
-            }
-
-            if( D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => $this->cust , "user" => $this->existingUser ] ) ) {
-                $validator->errors()->add('custid',  "This user is already associated with " . $this->cust->getName() );
+            if( CustomerToUser::where( 'customer_id', $this->cust->id )->where( 'user_id', $this->user_id )->exists() ) {
+                AlertContainer::push( "This user is already associated with " . $this->cust->name, Alert::DANGER );
+                $validator->errors()->add( 'customer_id',  " " );
                 return false;
             }
 
-            if( $this->input( 'privs' ) == UserEntity::AUTH_SUPERUSER ) {
+            if( (int)$this->privs === User::AUTH_SUPERUSER ) {
 
-                $cust = $this->user()->superUser() ? $this->cust : $this->user()->getCustomer();
-
-                if( !$this->user()->superUser() )  {
+                if( !$this->user()->isSuperUser() )  {
                     $validator->errors()->add( 'privs',  "You are not allowed to set any user as a super user." );
                     return false;
                 }
 
-                if( !$cust->isTypeInternal() ) {
+                if( !$this->cust->typeInternal() ) {
                     $validator->errors()->add( 'privs',  "You are not allowed to set super user privileges for non-internal (IXP) customer types." );
                     return false;
                 }
@@ -126,5 +118,4 @@ class CustomerToUser extends FormRequest
             return true;
         });
     }
-
 }

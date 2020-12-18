@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Http\Requests\User;
+namespace IXP\Http\Requests\User\CustomerToUser;
 
 /*
  * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -22,26 +22,14 @@ namespace IXP\Http\Requests\User;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Auth, D2EM, Log;
 
-use Entities\{
-    CustomerToUser as CustomerToUserEntity,
-    User as UserEntity
-};
+use Log;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
-use IXP\Models\CustomerToUser;
-
 
 class Delete extends FormRequest
 {
-    /**
-     * The User object
-     * @var UserEntity
-     */
-    public $user = null;
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -49,7 +37,7 @@ class Delete extends FormRequest
      */
     public function authorize(): bool
     {
-        if( $this->user()->isCustUser() ){
+        if( $this->user()->isCustUser() ) {
             return false;
         }
         return true;
@@ -72,20 +60,12 @@ class Delete extends FormRequest
      */
     public function withValidator( Validator $validator ): bool
     {
-        if( !$validator->fails() ) {
-            $validator->after( function( ) {
-                // Check if the custadmin try to delete a user from an other Customer
-                if( !Auth::getUser()->isSuperUser() && CustomerToUser::where( 'customer_id', Auth::getUser()->custid )->where( 'user_id', $this->u->id )->doesntExist() ) {
-                    Log::notice( Auth::user()->username . " tried to delete other customer user " . $this->u->username );
-                    abort( 401, 'You are not authorised to delete this user. The administrators have been notified.' );
-                }
-
-                // Check if a custadmin try to delete a User that has more than 1 customer to User (this should never happen)
-                if( !Auth::user()->isSuperUser() && $this->u->customers()->count() > 1  ) {
-                    abort( 401, 'You are not authorised to delete this user. The administrators have been notified.' );
-                }
-            });
-        }
+        $validator->after( function( ) {
+            if( !$this->user()->isSuperUser() && $this->c2u->customer_id !== $this->user()->custid ) {
+                Log::notice( $this->user()->username . " tried to delete another customer's user: " . $this->c2u->user->name . " from " . $this->c2u->customer->name );
+                abort( 403, 'You are not authorised to delete this user. The administrators have been notified.' );
+            }
+        });
         return true;
     }
 }

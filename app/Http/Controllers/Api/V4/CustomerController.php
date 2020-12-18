@@ -90,9 +90,6 @@ class CustomerController extends Controller
         return response()->json( App::make( "IXP\Services\PeeringDb" )->getNetworkByAsn( $asn ) );
     }
 
-
-
-
     /**
      * Get Customer depending on the Vlan and Protocol
      *

@@ -1,18 +1,14 @@
-
 <?php
-/** @var Foil\Template\Template $t */
-
-$this->layout( 'layouts/ixpv4' )
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' )
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-Users / View User
+    Users / View User
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-
     <div class="btn-group btn-group-sm ml-auto" role="group">
-
         <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/usage/users/">
             Documentation
         </a>
@@ -21,186 +17,171 @@ Users / View User
             <i class="fa fa-th-list"></i>
         </a>
 
-        <a id="add-user" class="btn btn-white" href="<?= route('user@edit' , [ "id" => $t->u[ 'id' ] ] ) ?>">
+        <a id="add-user" class="btn btn-white" href="<?= route('user@edit' , [ "u" => $t->u[ 'id' ] ] ) ?>">
             <i class="fa fa-pencil"></i>
         </a>
-        <a id="add-user" class="btn btn-white" href="<?= route('user@add-wizard') ?>">
+        <a id="add-user" class="btn btn-white" href="<?= route('user@create-wizard') ?>">
             <i class="fa fa-plus"></i>
         </a>
-
     </div>
-
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
-<div class="row">
-
-    <div class="col-sm-12">
-
-        <div class="card">
-            <div class="card-header">
-                Details for User (DB ID: <?= $t->u[ 'id' ] ?> )
-            </div>
-            <div class="card-body row">
-                <div class="col-lg-6 col-md-12">
-                    <table class="table_view_info">
-                        <tr>
-                            <td>
-                                <b>
-                                    Name
-                                </b>
-                            </td>
-                            <td>
-                                <?= $t->ee( $t->u[ 'name' ] ) ?>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <b>
-                                    Username
-                                </b>
-                            </td>
-                            <td>
-                                <?= $t->ee( $t->u[ 'username' ] ) ?>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <b>
-                                    Email
-                                </b>
-                            </td>
-                            <td>
-                                <?= $t->ee( $t->u[ 'email' ] ) ?>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <b>
-                                    Privileges
-                                </b>
-                            </td>
-                            <td>
-                                <?= $t->u['privileges'] ?>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <b>
-                                    Enabled
-                                </b>
-                            </td>
-                            <td>
-                                <?= $t->u['disabled'] ? "No" : "Yes" ?>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <b>
-                                    2FA Enabled
-                                </b>
-                            </td>
-                            <td>
-                                <?= $t->u['u2fa_enabled'] ? "Yes" : "No" ?>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <b>
-                                    Created
-                                </b>
-                            </td>
-                            <td>
-                                <?php if( $t->u['created'] != null): ?>
-                                    <?= $t->u['created']->format( 'Y-m-d H:i:s' ) ?>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <b>
-                                    Created By
-                                </b>
-                            </td>
-                            <td>
-                                    <?= $t->u['creator'] ?? '' ?>
-                            </td>
-                        </tr>
-
-                        <?php if( Auth::getUser()->isSuperUser() ): ?>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    Details for User (DB ID: <?= $t->u[ 'id' ] ?> )
+                </div>
+                <div class="card-body row">
+                    <div class="col-lg-6 col-md-12">
+                        <table class="table_view_info">
                             <tr>
                                 <td>
                                     <b>
-                                        Updated
+                                        Name
                                     </b>
                                 </td>
                                 <td>
-                                    <?php if( $t->u['lastupdated'] != null): ?>
-                                        <?= $t->u['lastupdated']->format( 'Y-m-d H:i:s' ) ?>
-                                    <?php endif; ?>
-
+                                    <?= $t->ee( $t->u[ 'name' ] ) ?>
                                 </td>
                             </tr>
-                        <?php endif; ?>
-                        <?php if( Auth::getUser()->isSuperUser() ): ?>
+
                             <tr>
-
-                                <td colspan="2">
-
-                                    <?php $user = D2EM::getRepository( Entities\User::class )->find( $t->u[ 'id' ] ) ?>
-                                    <table class="table table-striped" width="100%">
-                                        <thead class="thead-dark">
-                                        <th>
-                                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
-                                        </th>
-                                        <th>
-                                            Privilege
-                                        </th>
-                                        <th>
-                                            Created By
-                                        </th>
-                                        </thead>
-                                        <tbody>
-                                        <?php foreach( $user->getCustomers2User() as $c ): ?>
-                                            <tr>
-                                                <td>
-                                                    <?= $t->ee( $c->getCustomer()->getName() ) ?>
-                                                </td>
-                                                <td>
-                                                    <?=  \Entities\User::$PRIVILEGES_TEXT[ $c->getPrivs() ] ?>
-                                                </td>
-                                                <td>
-                                                    <?= $t->ee( $c->getExtraAttributes()['created_by']['type'] ?? '' ) ?>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach;?>
-
-                                        </tbody>
-                                    </table>
+                                <td>
+                                    <b>
+                                        Username
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $t->ee( $t->u[ 'username' ] ) ?>
                                 </td>
                             </tr>
-                        <?php endif; ?>
-                    </table>
+
+                            <tr>
+                                <td>
+                                    <b>
+                                        Email
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $t->ee( $t->u[ 'email' ] ) ?>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <b>
+                                        Privileges
+                                    </b>
+                                </td>
+                                <td>
+                                    <?=  $t->u['privileges'] ?>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <b>
+                                        Enabled
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $t->u['disabled'] ? "No" : "Yes" ?>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <b>
+                                        2FA Enabled
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $t->u['u2fa_enabled'] ? "Yes" : "No" ?>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <b>
+                                        Created
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $t->u['created'] ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>
+                                        Created By
+                                    </b>
+                                </td>
+                                <td>
+                                        <?= $t->u['creator'] ?? '' ?>
+                                </td>
+                            </tr>
+
+                            <?php if( Auth::user()->isSuperUser() ): ?>
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Updated
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <?= $t->u['lastupdated'] ?>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
+                            <?php if( Auth::user()->isSuperUser() ): ?>
+                                <tr>
+                                    <td colspan="2">
+                                        <table class="table table-striped" width="100%">
+                                            <thead class="thead-dark">
+                                            <th>
+                                                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
+                                            </th>
+                                            <th>
+                                                Privilege
+                                            </th>
+                                            <th>
+                                                Created By
+                                            </th>
+                                            </thead>
+                                            <tbody>
+                                                <?php foreach( $t->c2us as $c2u ): ?>
+                                                    <tr>
+                                                        <td>
+                                                            <?= $t->ee( $c2u->customer->name ) ?>
+                                                        </td>
+                                                        <td>
+                                                            <?=  \IXP\Models\User::$PRIVILEGES_TEXT[ $c2u->privs ] ?>
+                                                        </td>
+                                                        <td>
+                                                            <?= $t->ee( $c2u->extra_attributes['created_by']['type'] ?? '' ) ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach;?>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
+                        </table>
+                    </div>
                 </div>
             </div>
+            <br><br><br>
+            <p>
+                The <em>created by</em> column indicates how the user was linked to the <?= config( 'ixp_fe.lang.customer.one' ) ?>. The information you may see includes:
+            </p>
+            <ul>
+                <li> <em>migration-script:</em> the user originally belonged to this <?= config( 'ixp_fe.lang.customer.one' ) ?> in versions of IXP Manager &lt;v5.0 when users where linked 1:1 with <?= config( 'ixp_fe.lang.customer.many' ) ?>. </li>
+                <li> <em>user:</em> the user was linked to this <?= config( 'ixp_fe.lang.customer.one' ) ?> by either a <?= config( 'ixp_fe.lang.customer.one' ) ?> admin or a super admin. </li>
+                <li> <em>PeeringDB:</em> the user was added via a PeeringDB OAuth login. </li>
+            </ul>
         </div>
-
-        <br><br><br>
-        <p>
-            The <em>created by</em> column indicates how the user was linked to the <?= config( 'ixp_fe.lang.customer.one' ) ?>. The information you may see includes:
-        </p>
-        <ul>
-            <li> <em>migration-script:</em> the user originally belonged to this <?= config( 'ixp_fe.lang.customer.one' ) ?> in versions of IXP Manager &lt;v5.0 when users where linked 1:1 with <?= config( 'ixp_fe.lang.customer.many' ) ?>. </li>
-            <li> <em>user:</em> the user was linked to this <?= config( 'ixp_fe.lang.customer.one' ) ?> by either a <?= config( 'ixp_fe.lang.customer.one' ) ?> admin or a super admin. </li>
-            <li> <em>PeeringDB:</em> the user was added via a PeeringDB OAuth login. </li>
-        </ul>
     </div>
-</div>
 <?php $this->append() ?>

@@ -189,7 +189,7 @@
                         <?php foreach( Auth::getUser()->customers as $cust ): ?>
                             <a id="switch-cust-<?= $cust->id ?>" class="dropdown-item <?= Auth::getUser()->custid !== $cust->id ?: 'active cursor-default' ?>"
                                 <?= Auth::getUser()->custid !== $cust->id ?: "onclick='return false;'" ?>
-                               href="<?= Auth::getUser()->custid === $cust->id ? '#' : route( 'switch-customer@switch' , [ "id" => $cust->id ]  ) ?>">
+                               href="<?= Auth::getUser()->custid === $cust->id ? '#' : route( 'switch-customer@switch' , [ "cust" => $cust->id ]  ) ?>">
                                 <?= $cust->getName() ?>
                             </a>
                         <?php endforeach; ?>

@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\User;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,12 +23,7 @@ namespace IXP\Http\Requests\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use AUth, D2EM;
-
-use Entities\{
-    CustomerToUser      as CustomerToUserEntity,
-    User                as UserEntity,
-};
+use Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
@@ -37,17 +32,22 @@ use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
+use IXP\Models\{
+    User
+};
 
-class AddCheckEmail extends FormRequest
+class CheckEmail extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        // middleware ensures superuser access only so always authorised here:
+        if( $this->user()->isCustUser() ){
+            return false;
+        }
         return true;
     }
 
@@ -56,32 +56,30 @@ class AddCheckEmail extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'email'                 => 'required|email|max:255',
         ];
     }
 
-
-    public function withValidator( Validator $validator )
+    /**
+     * @param Validator $validator
+     */
+    public function withValidator( Validator $validator ): void
     {
         $validator->after( function( Validator $validator ) {
-            if( !Auth::getUser()->isSuperUser() ) {
-                /** @var UserEntity $user */
-                foreach( D2EM::getRepository( UserEntity::class )->findBy( [ 'email' => $this->input( 'email' ) ] ) as $user ) {
+            if( !Auth::user()->isSuperUser() ) {
+                if( User::leftJoin( 'customer_to_users AS c2u', 'c2u.user_id', 'user.id' )
+                    ->where( 'email', $this->email )
+                    ->where( 'customer_id', Auth::user()->custid )->exists() ) {
 
-                    if( D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => Auth::getUser()->custid , "user" => $user ] ) ){
-                        AlertContainer::push( "A user already exists with that email address for your company." , Alert::DANGER );
-
-                        $validator->errors()->add( 'email',  " " );
-                        return false;
-                    }
+                    AlertContainer::push( "A user already exists with that email address for your company." , Alert::DANGER );
+                    $validator->errors()->add( 'email',  " " );
+                    return false;
                 }
             }
-
             return true;
         });
     }
-
 }

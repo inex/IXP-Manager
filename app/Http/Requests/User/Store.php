@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\User;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,27 +23,29 @@ namespace IXP\Http\Requests\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM;
-
-use Entities\{
-    Customer    as CustomerEntity,
-    User        as UserEntity,
-};
+use Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+
 use Illuminate\Validation\Validator;
 
+use IXP\Models\{
+    Customer,
+    User
+};
 
-class AddStore extends FormRequest
+class Store extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        // middleware ensures superuser access only so always authorised here:
+        if( $this->user()->isCustUser() ){
+            return false;
+        }
         return true;
     }
 
@@ -52,7 +54,7 @@ class AddStore extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name'                      => 'required|string|max:255',
@@ -60,35 +62,30 @@ class AddStore extends FormRequest
             'email'                     => 'required|email|max:255',
             'authorisedMobile'          => 'nullable|string|max:50',
             'custid'                    => 'required|integer|exists:Entities\Customer,id',
-            'privs'                     => 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) ),
+            'privs'                     => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES_ALL ) ),
         ];
     }
 
-
-
-    public function withValidator( Validator $validator )
+    /**
+     * @param Validator $validator
+     *
+     * @return bool
+     */
+    public function withValidator( Validator $validator ): bool
     {
-            if( !$validator->fails() ) {
+        if( !$validator->fails() ) {
+            $validator->after( function( Validator $validator ) {
+                $cust = Auth::getUser()->isSuperUser() ? Customer::find( $this->custid ) : Auth::user()->customer;
 
-                $validator->after( function( Validator $validator ) {
-
-                    $cust = Auth::getUser()->isSuperUser() ? D2EM::getRepository( CustomerEntity::class )->find( $this->input( 'custid' ) ) : Auth::getUser()->getCustomer();
-
-                    if( $this->input( 'privs' ) == UserEntity::AUTH_SUPERUSER ) {
-                        if( !Auth::getUser()->isSuperUser() || Auth::getUser()->isSuperUser() && !$cust->isTypeInternal() ) {
-                            $validator->errors()->add( 'privs', "You are not allowed to set this User as a Super User for " . $cust->getName() );
-                            return false;
-                        }
+                if( (int)$this->privs === User::AUTH_SUPERUSER ) {
+                    if( !Auth::user()->isSuperUser() || ( Auth::user()->isSuperUser() && !$cust->typeInternal() ) ) {
+                        $validator->errors()->add( 'privs', "You are not allowed to set this User as a Super User for " . $cust->name );
+                        return false;
                     }
-
-                    return true;
-                });
-
+                }
+                return true;
+            });
         }
-
-
         return false;
-
     }
-
 }

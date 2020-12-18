@@ -550,10 +550,12 @@ class CustomerController extends Controller
             'isSuperUser'               => Auth::getUser()->isSuperUser(),
 
             // is this user watching all notes for this customer?
-            'coNotifyAll'               => Auth::getUser()->getPreference( "customer-notes.{$c->getId()}.notify" ) ? true : false,
+            //'coNotifyAll'               => Auth::getUser()->getPreference( "customer-notes.{$c->getId()}.notify" ) ? true : false,
+            'coNotifyAll'               => false,
 
             // what specific notes is this user watching?
-            'coNotify'                  => Auth::getUser()->getAssocPreference( "customer-notes.watching" ) ? Auth::getUser()->getAssocPreference( "customer-notes.watching" )[0] : [],
+            //'coNotify'                  => Auth::getUser()->getAssocPreference( "customer-notes.watching" ) ? Auth::getUser()->getAssocPreference( "customer-notes.watching" )[0] : [],
+            'coNotify'                  => [],
 
             'rsRoutes'                  => ( config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) && $c->isRouteServerClient() )
                                                 ? D2EM::getRepository( RSPrefixEntity::class )->aggregateRouteSummariesForCustomer( $c->getId() ) : false,
@@ -568,7 +570,7 @@ class CustomerController extends Controller
             'countries'                 => Countries::getList('name' ),
             'tab'                       => strtolower( $tab ),
             'notes'                     => $cns,
-            'notesInfo'                 => D2EM::getRepository( CustomerNoteEntity::class )->analyseForUser( $cns, $c, Auth::getUser() ),
+            'notesInfo'                 => D2EM::getRepository( CustomerNoteEntity::class )->analyseForUser( $cns, $c, D2EM::getRepository( UserEntity::class )->find( Auth::getUser()->id ) ),
             'peers'                     => D2EM::getRepository( CustomerEntity::class )->getPeeringManagerArrayByType( $c , D2EM::getRepository( VlanEntity::class )->getPeeringManagerVLANs(), [ 4, 6 ] ) ?? false,
         ]);
     }

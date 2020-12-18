@@ -31,7 +31,11 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
-use IXP\Models\{Aggregators\VlanInterfaceAggregator, Cabinet, Location, PatchPanel, Vlan};
+use IXP\Models\{
+    Cabinet,
+    Location,
+    PatchPanel
+};
 
 use IXP\Http\Controllers\Controller;
 use IXP\Http\Requests\StorePatchPanel;
@@ -60,7 +64,6 @@ class PatchPanelController extends Controller
      */
     public function index( bool $active = true ): View
     {
-        dd( now()->subWeek()->format( 'Y-m-d 00:00:00' ));
         return view( 'patch-panel/index' )->with([
             'patchPanels'       => PatchPanel::whereActive( $active )->get(),
             'locations'         => Location::select( [ 'id', 'name' ] )->orderBy( 'name' )->get(),

@@ -151,8 +151,7 @@
                     <a class="dropdown-item <?= !request()->is( 'customer-note/unread-notes' ) ?: 'active' ?>" href="<?= route( 'customerNotes@unreadNotes' ) ?>">Unread Notes</a>
 
                     <?php $customers = Auth::getUser()->customers;
-                        if( $customers->count() > 1 ):
-                            ?>
+                        if( count( $customers ) > 1 ):?>
                         <div class="dropdown-divider"></div>
 
                         <h6 class="dropdown-header">

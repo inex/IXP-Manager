@@ -23,7 +23,7 @@
         </th>
         <th>
             Actions
-            <a id="users-add-btn" class="btn btn-white btn-sm ml-2" href="<?= route( "user@add-wizard" ) . "?cust=" . $t->c->getId() ?>">
+            <a id="users-add-btn" class="btn btn-white btn-sm ml-2" href="<?= route( "user@create-wizard", [ 'cust' => $t->c->getId() ] )  ?>">
                 <i class="fa fa-plus"></i>
             </a>
         </th>
@@ -56,21 +56,21 @@
                 </td>
                 <td>
                     <div class="btn-group btn-group-sm">
-                        <a class="btn btn-white" href="<?= route( "user@edit", [ "id" => $c2u->getUser()->getId() ] ) ?>">
+                        <a class="btn btn-white" href="<?= route( "user@edit", [ "u" => $c2u->getUser()->getId() ] ) ?>">
                             <i class="fa fa-pencil"></i>
                         </a>
-                        <a class="btn btn-white usr-list-delete btn-delete-c2u" id="usr-list-delete-<?= count( $c2u->getUser()->getCustomers() ) > 1 ? $c2u->getId() : $c2u->getUser()->getId()  ?>" href="<?= count( $c2u->getUser()->getCustomers() ) > 1 ? route( 'customer-to-user@delete' ) : route(  'user@delete' )  ?>" title="Delete">
+                        <a class="btn btn-white usr-list-delete btn-delete-c2u" id="usr-list-delete-<?= count( $c2u->getUser()->getCustomers() ) > 1 ? $c2u->getId() : $c2u->getUser()->getId()  ?>" href="<?= count( $c2u->getUser()->getCustomers() ) > 1 ? route( 'customer-to-user@delete', [ 'c2u' => $c2u->getId() ] ) : route(  'user@delete', [ 'u' => $c2u->getUser()->getId() ] )  ?>" title="Delete">
                             <i class="fa fa-trash"></i>
                         </a>
-                        <a class="btn btn-white <?= $c2u->getUser()->getDisabled() || Auth::getUser()->getId() == $c2u->getUser()->getId() ? "disabled" : "" ?>"
-                           href="<?= route( "switch-user@switch" , [ "user" => $c2u->getUser()->getId() ] ) ?>" rel="tooltip" title="Log in as this user...">
+                        <a class="btn btn-white <?= $c2u->getUser()->getDisabled() || Auth::getUser()->id == $c2u->getUser()->getId() ? "disabled" : "" ?>"
+                           href="<?= route( "switch-user@switch" , [ "c2u" => $c2u->getId() ] ) ?>" rel="tooltip" title="Log in as this user...">
                             <i class="fa fa-user"></i>
                         </a>
 
 
                         <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                         <ul class="dropdown-menu dropdown-menu-right">
-                            <form id="welcome-email" method="POST" action="<?= route('user@welcome-email' ) ?>">
+                            <form id="welcome-email" method="POST" action="<?= route('user@welcome-email', [ 'u' => $c2u->getUser()->getId() ] ) ?>">
                                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                                 <input type="hidden" name="id" value="<?= $c2u->getUser()->getId() ?>">
                                 <input type="hidden" name="resend" value="1">

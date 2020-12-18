@@ -1,12 +1,10 @@
 <?= $t->insert( 'user/js/common' ); ?>
+
 <script>
-
     $( document ).ready(function() {
-
         $( "#btnCancel" ).attr( "href", $( "#linkCancel" ).val() );
 
-        <?php if( Auth::getUser()->isSuperUser() && $t->user ): ?>
-
+        <?php if( Auth::user()->isSuperUser() && $t->user ): ?>
             let tableList = $( '.table' );
 
             tableList.show();
@@ -32,17 +30,15 @@
             /**
              * event onchange on the privs dropdowns for super user only
              */
-            $( document ).on('change', ".privs" ,function(e){
+            $( '.privs' ).change( function( e ) {
                 e.preventDefault();
-
                 let dd_privs = $( "#" + this.id );
-
                 clearSelect( dd_privs );
                 $( "#extra-message" ).html( "" );
 
-                let ajaxCall = $.ajax( "<?= route( 'customer-to-user@privs' ) ?>", {
+                $.ajax( "<?= route( 'customer-to-user@privs' ) ?>", {
                     data: {
-                        id       : ( this.id ).substring( 6 ),
+                        id       : $( this ).attr( 'data-object-id'),
                         privs    : dd_privs.val(),
                         _token   : "<?= csrf_token() ?>"
                     },
@@ -52,7 +48,7 @@
                     if( data.success ){
                         dd_privs.addClass( "is-valid" );
                         dd_privs.closest('div').append( "<div class='valid-feedback feedback'> " + data.message + " </div>" );
-                        $( "#select2-" +dd_privs.attr( "id" )+ "-container" ).parent( 'span' ).addClass( "valid-border-select" );
+                        $( "#select2-" + dd_privs.attr( "id" ) + "-container" ).parent( 'span' ).addClass( "valid-border-select" );
 
                         if( data.extraMessage !== null ){
                             $( "#extra-message" ).html( `<div class="alert alert-warning mt-4" role="alert">
@@ -86,10 +82,6 @@
                 $( ".select2-selection" ).removeClass( 'error-border-select' ).removeClass( 'valid-border-select' );
                 dd_privs.removeClass( "is-invalid" ).removeClass( "is-valid" );
             }
-
-
         <?php endif; ?>
-
     });
-
 </script>

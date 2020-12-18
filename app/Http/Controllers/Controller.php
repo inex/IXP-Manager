@@ -115,15 +115,14 @@ class Controller extends BaseController
         $privs = User::$PRIVILEGES_TEXT_NONSUPERUSER;
 
         // If we add a user via the customer overview users list
-        if( request()->cust && request()->is( 'user/add*' ) ) {
-            if( ( $c = Customer::find( request()->cust ) ) ) {
+        if( request()->custid && request()->is( 'user/create*' ) ) {
+            if( ( $c = Customer::find( request()->custid ) ) ) {
                 // Internal customer and SuperUser
-                if( Auth::getUser()->isSuperUser() && $c->typeInternal() ){
+                if( Auth::user()->isSuperUser() && $c->typeInternal() ){
                     $privs = User::$PRIVILEGES_TEXT;
                 }
             }
-            // If we add a user and we are a SuperUser
-        } elseif( Auth::getUser()->isSuperUser() && ( request()->is( 'user/add*' ) || request()->is( 'customer-to-user/add*' )  ) ) {
+        }elseif( Auth::user()->isSuperUser() && ( request()->is( 'user/create*' ) || request()->is( 'customer-to-user/create*' )  ) ) {
             $privs = User::$PRIVILEGES_TEXT;
         }
 

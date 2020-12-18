@@ -119,40 +119,50 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'extra_attributes' => 'json',
     ];
 
+    protected $attributes = [
+        'extra_attributes' => '[]',
+    ];
+
     public const AUTH_PUBLIC    = 0;
     public const AUTH_CUSTUSER  = 1;
     public const AUTH_CUSTADMIN = 2;
     public const AUTH_SUPERUSER = 3;
 
     public static $PRIVILEGES = [
-        User::AUTH_CUSTUSER  => 'CUSTUSER',
-        User::AUTH_CUSTADMIN => 'CUSTADMIN',
-        User::AUTH_SUPERUSER => 'SUPERUSER',
+        self::AUTH_CUSTUSER  => 'CUSTUSER',
+        self::AUTH_CUSTADMIN => 'CUSTADMIN',
+        self::AUTH_SUPERUSER => 'SUPERUSER',
     ];
 
     public static $PRIVILEGES_ALL = [
-        User::AUTH_PUBLIC    => 'PUBLIC',
-        User::AUTH_CUSTUSER  => 'CUSTUSER',
-        User::AUTH_CUSTADMIN => 'CUSTADMIN',
-        User::AUTH_SUPERUSER => 'SUPERUSER',
+        self::AUTH_PUBLIC    => 'PUBLIC',
+        self::AUTH_CUSTUSER  => 'CUSTUSER',
+        self::AUTH_CUSTADMIN => 'CUSTADMIN',
+        self::AUTH_SUPERUSER => 'SUPERUSER',
     ];
 
     public static $PRIVILEGES_TEXT = [
-        User::AUTH_CUSTUSER  => 'Customer User',
-        User::AUTH_CUSTADMIN => 'Customer Administrator',
-        User::AUTH_SUPERUSER => 'Superuser',
+        self::AUTH_CUSTUSER  => 'Customer User',
+        self::AUTH_CUSTADMIN => 'Customer Administrator',
+        self::AUTH_SUPERUSER => 'Superuser',
     ];
 
     public static $PRIVILEGES_TEXT_ALL = [
-        User::AUTH_PUBLIC    => 'Public / Non-User',
-        User::AUTH_CUSTUSER  => 'Customer User',
-        User::AUTH_CUSTADMIN => 'Customer Administrator',
-        User::AUTH_SUPERUSER => 'Superuser',
+        self::AUTH_PUBLIC    => 'Public / Non-User',
+        self::AUTH_CUSTUSER  => 'Customer User',
+        self::AUTH_CUSTADMIN => 'Customer Administrator',
+        self::AUTH_SUPERUSER => 'Superuser',
     ];
 
     public static $PRIVILEGES_TEXT_NONSUPERUSER = [
-        User::AUTH_CUSTUSER  => 'Customer User',
-        User::AUTH_CUSTADMIN => 'Customer Administrator',
+        self::AUTH_CUSTUSER  => 'Customer User',
+        self::AUTH_CUSTADMIN => 'Customer Administrator',
+    ];
+
+    public static $PRIVILEGES_TEXT_VSHORT = [
+        self::AUTH_CUSTUSER  => 'CU',
+        self::AUTH_CUSTADMIN => 'CA',
+        self::AUTH_SUPERUSER => 'SU',
     ];
 
     /**
@@ -211,7 +221,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function isCustUser(): bool
     {
-        return $this->privs === self::AUTH_CUSTUSER;
+        return $this->privs() === self::AUTH_CUSTUSER;
     }
 
     /**
@@ -220,7 +230,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function isCustAdmin(): bool
     {
-        return $this->privs === self::AUTH_CUSTADMIN;
+        return $this->privs() === self::AUTH_CUSTADMIN;
     }
 
     /**
