@@ -2,6 +2,27 @@
 
 namespace IXP\Models\Aggregators;
 
+/*
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -99,12 +120,13 @@ class RsPrefixAggregator extends RsPrefix
         foreach( RsPrefix::$SUMMARY_TYPES_FNS as $type => $fn ) {
             foreach( [ 4, 6 ] as $protocol ) {
                 if( $sum = self::$fn( $protocol, $custid ) ) {
-                    $summary[ $type ][ $protocol ] = $sum['prefixes'];
-                    $summary[ $type ]['total'] += $sum['prefixes'];
-                    $summary[ 'total' ] += $sum['prefixes'];
+                    $summary[ $type ][ $protocol ] = $sum[0]['prefixes'];
+                    $summary[ $type ]['total'] += $sum[0]['prefixes'];
+                    $summary[ 'total' ] += $sum[0]['prefixes'];
                 }
             }
         }
+
         return $summary;
     }
 
@@ -272,16 +294,18 @@ class RsPrefixAggregator extends RsPrefix
             ->when( $cust, function( Builder $q, $cust ) {
                 return $q->where( 'cust.id', $cust );
             } )
-        ->orderBy( 'cust.id' )
-        ->groupByRaw( 'cust.name ASC, rs_prefixes.protocol ASC, rs_prefixes.irrdb ASC' )
+        ->groupBy( 'cust.id' )
+        ->orderByRaw( 'cust.name ASC, rs_prefixes.protocol ASC, rs_prefixes.irrdb ASC' )
         ->get();
+
+
 
         if( $cust !== null )
         {
             $result ? $result->first() : false;
         }
 
-        return $result ? $result->toArray() : false;
+        return $result->isNotEmpty() ? $result->toArray() : false;
     }
 
     /**

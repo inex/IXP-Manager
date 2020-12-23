@@ -70,7 +70,7 @@ Route::group( [ 'prefix' => 'rs-prefixes', 'middleware' => [ 'rs-prefixes' ] ], 
     Route::get(     'view/{cust}',   'RsPrefixesController@view' )->name( 'rs-prefixes@view'  );
 });
 
-Route::get('filtered-prefixes/{customer}', 'FilteredPrefixesController@list' )->name( 'filtered-prefixes@list' );
+Route::get('filtered-prefixes/{cust}', 'FilteredPrefixesController@list' )->name( 'filtered-prefixes@list' );
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,7 +79,7 @@ Route::get('filtered-prefixes/{customer}', 'FilteredPrefixesController@list' )->
 /// Profile
 ///
 Route::group( [ 'prefix' => 'profile' ], function() {
-    Route::get( '', 'ProfileController@edit' )->name( 'profile@edit' );
+    Route::get(   '',                              'ProfileController@edit'                         )->name( 'profile@edit'                             );
     Route::post( 'update-password',                'ProfileController@updatePassword'               )->name( 'profile@update-password'                  );
     Route::post( 'update-profile',                 'ProfileController@updateProfile'                )->name( 'profile@update-profile'                   );
     Route::post( 'update-notification-preference', 'ProfileController@updateNotificationPreference' )->name( 'profile@update-notification-preference'   );
@@ -164,8 +164,8 @@ Route::group( [ 'prefix' => 'peering-manager' ], function() {
 /// IRRDB
 ///
 Route::group( [ 'prefix' => 'irrdb' ], function() {
-    Route::get(  'customer/{customer}/{type}/{protocol}',   'IrrdbController@list'            )->name( "irrdb@list"            );
-    Route::get(  'update/{customer}/{type}/{protocol}',     'IrrdbController@update'          )->name( "irrdb@update"          );
+    Route::get(  'customer/{cust}/{type}/{protocol}',   'IrrdbController@list'            )->name( 'irrdb@list'            );
+    Route::get(  'update/{cust}/{type}/{protocol}',     'IrrdbController@update'          )->name( 'irrdb@update'          );
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

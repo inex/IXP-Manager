@@ -46,12 +46,12 @@ class CustomerNote
     /**
      * @var \DateTime
      */
-    protected $created;
+    protected $created_at;
 
     /**
      * @var \DateTime
      */
-    protected $updated;
+    protected $updated_at;
 
     /**
      * @var integer
@@ -151,7 +151,7 @@ class CustomerNote
      */
     public function setCreated($created)
     {
-        $this->created = $created;
+        $this->created_at = $created;
     
         return $this;
     }
@@ -163,7 +163,7 @@ class CustomerNote
      */
     public function getCreated()
     {
-        return $this->created;
+        return $this->created_at;
     }
 
     /**
@@ -225,7 +225,7 @@ class CustomerNote
      */
     public function setUpdated($updated)
     {
-        $this->updated = $updated;
+        $this->updated_at = $updated;
     
         return $this;
     }
@@ -237,6 +237,6 @@ class CustomerNote
      */
     public function getUpdated()
     {
-        return $this->updated;
+        return $this->updated_at;
     }
 }

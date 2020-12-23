@@ -372,9 +372,9 @@ class UserController extends Controller
 
         Log::notice( Auth::user()->username . ' updated a User with ID ' . $u->id );
 
-        AlertContainer::push( 'The User has been updated', Alert::SUCCESS );
+        AlertContainer::push( 'User updated', Alert::SUCCESS );
 
-        return redirect()->to( $this->postStoreRedirect() );
+        return redirect( $this->postStoreRedirect() );
     }
 
     /**
@@ -391,6 +391,10 @@ class UserController extends Controller
             if( strpos( $redirect, "customer/overview" ) ) {
                 return $redirect;
             }
+        }
+
+        if( Auth::user()->isCustUser() ) {
+            return '';
         }
 
         return route( 'user@list' );

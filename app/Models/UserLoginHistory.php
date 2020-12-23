@@ -48,6 +48,7 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo};
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserLoginHistory whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserLoginHistory whereUpdatedAt($value)
+ * @property-read \IXP\Models\CustomerToUser|null $customerToUser
  */
 class UserLoginHistory extends Model
 {

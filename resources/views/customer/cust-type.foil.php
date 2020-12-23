@@ -33,10 +33,10 @@
     <?php endif; ?>
 <?php endif; ?>
 
-<?php if( !$c->typeAssociate()  &&  !$c->isNormal() ): ?>
-    <?php if( $c->isNotConnected() ): ?>
+<?php if( !$c->typeAssociate()  &&  !$c->statusNormal() ): ?>
+    <?php if( $c->statusNotConnected() ): ?>
         <span class="badge  badge-warning">NOT CONNECTED</span>
-    <?php elseif( $c->isSuspended() ): ?>
+    <?php elseif( $c->statusSuspended() ): ?>
         <span class="badge  badge-danger">SUSPENDED</span>
     <?php else: ?>
         <span class="badge  badge-primary">UNKNOWN CUSTOMER STATUS</span>

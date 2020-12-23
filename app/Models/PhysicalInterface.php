@@ -131,10 +131,10 @@ class PhysicalInterface extends Model
         400000 => '400 Gbps'
     ];
 
-    public static $DUPLEX = array(
+    public static $DUPLEX = [
         'full'   => 'full',
         'half'   => 'half'
-    );
+    ];
 
     /**
      * Get the virtual interface that owns the physical interface.
@@ -191,7 +191,7 @@ class PhysicalInterface extends Model
      */
     public function isConnectedOrQuarantine(): bool
     {
-        return $this->isConnected() || $this->isQuarantine();
+        return $this->statusConnected() || $this->statusQuarantine();
     }
 
     /**
@@ -199,7 +199,7 @@ class PhysicalInterface extends Model
      *
      * @return bool True if the port's status is CONNECTED
      */
-    public function isConnected(): bool
+    public function statusConnected(): bool
     {
         return $this->status === self::STATUS_CONNECTED;
     }
@@ -209,7 +209,7 @@ class PhysicalInterface extends Model
      *
      * @return bool True if the port's status is DISABLED
      */
-    public function isDisabled(): bool
+    public function statusDisabled(): bool
     {
         return $this->status === self::STATUS_DISABLED;
     }
@@ -219,7 +219,7 @@ class PhysicalInterface extends Model
      *
      * @return bool True if the port's status is NOTCONNECTED
      */
-    public function isNotConnected(): bool
+    public function statusNotConnected(): bool
     {
         return $this->status === self::STATUS_NOTCONNECTED;
     }
@@ -229,7 +229,7 @@ class PhysicalInterface extends Model
      *
      * @return bool True if the port's status is XCONNECT
      */
-    public function isAwaitingXConnect(): bool
+    public function statusAwaitingXConnect(): bool
     {
         return $this->status === self::STATUS_XCONNECT;
     }
@@ -239,7 +239,7 @@ class PhysicalInterface extends Model
      *
      * @return bool True if the port's status is QUARANTINE
      */
-    public function isQuarantine(): bool
+    public function statusQuarantine(): bool
     {
         return $this->status === self::STATUS_QUARANTINE;
     }

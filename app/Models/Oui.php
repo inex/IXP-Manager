@@ -17,6 +17,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Oui whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Oui whereOrganisation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Oui whereOui($value)
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Oui whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Oui whereUpdatedAt($value)
  */
 class Oui extends Model
 {

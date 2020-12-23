@@ -95,7 +95,7 @@ class SwitchConfigurationGenerator
             }
 
             // don't emit ports which aren't ready for production
-            if( $pi->isAwaitingXConnect() ) {
+            if( $pi->statusAwaitingXConnect() ) {
                 continue;
             }
 
@@ -192,7 +192,7 @@ class SwitchConfigurationGenerator
             // if any bundle members are connected then status is connected
             // if all bundle members are quarantine then status is quarantine
             // otherwise status remains as default: notconnected
-            if( $pi->isConnected() ) {
+            if( $pi->statusConnected() ) {
                 $p['status'] = $pi->apiStatus();
             }
             if( $pi->status !== PhysicalInterface::STATUS_QUARANTINE ) {

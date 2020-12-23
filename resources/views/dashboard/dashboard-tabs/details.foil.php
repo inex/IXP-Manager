@@ -1,8 +1,5 @@
 <div class="row">
-
     <div class="col-lg-6 mb-4">
-
-
         <h3>
             NOC Details
         </h3>
@@ -42,7 +39,7 @@
 
         <?= Former::select( 'nochours' )
             ->label( 'Hours' )
-            ->fromQuery( \Entities\Customer::$NOC_HOURS )
+            ->fromQuery( \IXP\Models\Customer::$NOC_HOURS )
             ->placeholder( 'Choose NOC Hours' )
             ->addClass( 'chzn-select' )
             ->blockHelp( 'The hours during which the NOC is available.' );
@@ -54,7 +51,7 @@
             ->blockHelp( 'An optional NOC information email page / status page.' );
         ?>
 
-        <?php if( !Auth::getUser()->isCustUser() ): ?>
+        <?php if( !$t->isCustUser ): ?>
             <?= Former::actions(
                 Former::primary_submit( 'Update NOC Details' )->class( "mb-sm-0 mb-2" ),
                 Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-sm-0 mb-2" )
@@ -63,12 +60,9 @@
         <?php endif; ?>
 
         <?= Former::close() ?>
-
-
     </div>
     <div class="col-lg-6">
-        <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode() || !$t->c->isResoldCustomer() ): ?>
-
+        <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode() || !$t->c->resellerObject()->exists() ): ?>
             <h3>
                 Billing Details
             </h3>
@@ -147,7 +141,7 @@
                 ->blockHelp( '' );
             ?>
 
-            <?php if( !Auth::getUser()->isCustUser() ): ?>
+            <?php if( !$t->isCustUser ): ?>
                 <?= Former::actions(
                     Former::primary_submit( 'Update Billing Details' ),
                     Former::success_button( 'Help' )->class( "help-btn mb-sm-0 mb-2" )
@@ -155,10 +149,7 @@
                 ?>
             <?php endif; ?>
 
-
             <?= Former::close() ?>
-
         <?php endif; ?>
     </div>
-
 </div>

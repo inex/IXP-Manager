@@ -172,6 +172,8 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property-read int|null $peers_with_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RsPrefix[] $rsPrefixes
  * @property-read int|null $rs_prefixes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerNote[] $customerNotes
+ * @property-read int|null $customer_notes_count
  */
 class Customer extends Model
 {
@@ -240,7 +242,6 @@ class Customer extends Model
         self::TYPE_PROBONO       => 'Pro-bono',
     ];
 
-
     public const STATUS_NORMAL       = 1;
     public const STATUS_NOTCONNECTED = 2;
     public const STATUS_SUSPENDED    = 3;
@@ -251,16 +252,30 @@ class Customer extends Model
         self::STATUS_SUSPENDED        => 'Suspended',
     ];
 
-    const PEERING_POLICY_OPEN       = 'open';
-    const PEERING_POLICY_SELECTIVE  = 'selective';
-    const PEERING_POLICY_MANDATORY  = 'mandatory';
-    const PEERING_POLICY_CLOSED     = 'closed';
+    public const PEERING_POLICY_OPEN       = 'open';
+    public const PEERING_POLICY_SELECTIVE  = 'selective';
+    public const PEERING_POLICY_MANDATORY  = 'mandatory';
+    public const PEERING_POLICY_CLOSED     = 'closed';
 
     public static $PEERING_POLICIES = [
         self::PEERING_POLICY_OPEN       => 'open',
         self::PEERING_POLICY_SELECTIVE  => 'selective',
         self::PEERING_POLICY_MANDATORY  => 'mandatory',
         self::PEERING_POLICY_CLOSED     => 'closed'
+    ];
+
+    public const NOC_HOURS_24x7 = '24x7';
+    public const NOC_HOURS_8x5  = '8x5';
+    public const NOC_HOURS_8x7  = '8x7';
+    public const NOC_HOURS_12x5 = '12x5';
+    public const NOC_HOURS_12x7 = '12x7';
+
+    public static $NOC_HOURS = [
+        self::NOC_HOURS_24x7 => '24x7',
+        self::NOC_HOURS_8x5  => '8x5',
+        self::NOC_HOURS_8x7  => '8x7',
+        self::NOC_HOURS_12x5 => '12x5',
+        self::NOC_HOURS_12x7 => '12x7'
     ];
 
 
@@ -387,6 +402,14 @@ class Customer extends Model
     }
 
     /**
+     * Get the customer notes for the customer
+     */
+    public function customerNotes(): HasMany
+    {
+        return $this->hasMany(CustomerNote::class, 'customer_id' );
+    }
+
+    /**
      * Get the logo for the customer
      */
     public function logo(): HasOne
@@ -486,7 +509,7 @@ class Customer extends Model
      *
      * @return bool True if the customer's status is NORMAL
      */
-    public function isNormal(): bool
+    public function statusNormal(): bool
     {
         return $this->status === self::STATUS_NORMAL;
     }
@@ -496,7 +519,7 @@ class Customer extends Model
      *
      * @return bool True if the customer's status is NOTCONNECTED
      */
-    public function isNotConnected(): bool
+    public function statusNotConnected(): bool
     {
         return $this->status === self::STATUS_NOTCONNECTED;
     }
@@ -506,7 +529,7 @@ class Customer extends Model
      *
      * @return bool True if the customer's status is SUSPENDED
      */
-    public function isSuspended(): bool
+    public function statusSuspended(): bool
     {
         return $this->status === self::STATUS_SUSPENDED;
     }
@@ -685,19 +708,15 @@ class Customer extends Model
 
     /**
      * Is the customer IRRDB filtered (usually for route server clients) on any of their VLAN interfaces?
+     *
      * @return boolean
      */
     public function irrdbFiltered(): bool
     {
-        foreach( $this->virtualInterfaces as $vi ) {
-            foreach( $vi->vlanInterfaces as $vli ) {
-                if( $vli->irrdbfilter ) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return (bool)self::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )
+            ->leftJoin( 'vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id' )
+            ->where( 'cust.id', $this->id )->where( 'irrdbfilter', true )
+            ->get()->count();
     }
 
     /**
@@ -765,12 +784,14 @@ class Customer extends Model
      * Utility function to provide a array of all members connected to the exchange (including at
      * least one physical interface with status 'CONNECTED').
      *
-     * @param bool      $externalOnly If `true`, only include external customers (i.e. no internal types)
+     * @param bool      $externalOnly   If `true`, only include external customers (i.e. no internal types)
+     * @param bool      $active         If `true`, only include active customers
      * @param string    $orderBy
+     * @param string    $direction      Direction for the order by
      *
      * @return Collection
      */
-    public static function getConnected( $externalOnly = false, string $orderBy = 'name' ): Collection
+    public static function getConnected( $externalOnly = false, $active = false , string $orderBy = 'name', string $direction = 'asc' ): Collection
     {
         return self::select( 'cust.*' )
             ->leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id'  )
@@ -781,7 +802,10 @@ class Customer extends Model
             ->when( $externalOnly , function( Builder $q ) {
                 return $q->whereRaw( self::SQL_CUST_EXTERNAL );
             })
-            ->orderBy( 'cust.' . $orderBy  )->distinct()->get();
+            ->when( $active , function( Builder $q ) {
+                return $q->whereRaw( self::SQL_CUST_ACTIVE );
+            })
+            ->orderBy( 'cust.' . $orderBy , $direction )->distinct()->get();
     }
 
     /**
@@ -795,5 +819,59 @@ class Customer extends Model
             ->leftJoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
             ->where( 'cust.id', $this->id )->where( 'pi.status', PhysicalInterface::STATUS_QUARANTINE )
             ->get()->count();
+    }
+
+    /**
+     * Does the customer have private VLANs?
+     *
+     * A private VLAN is a VLAN between a subset of members (usually
+     * just two).
+     *
+     * @return bool
+     */
+    public function hasPrivateVlans(): bool
+    {
+        return (bool)self::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )
+            ->leftJoin( 'vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id' )
+            ->leftJoin( 'vlan AS v', 'v.id', 'vli.vlanid' )
+            ->where( 'v.private', true )->where( 'cust.id', $this->id )
+            ->get()->count();
+    }
+
+    /**
+     * Get private VLAN information as an associate array
+     *
+     * Useful utility function for displaying a customers private VLANs in the
+     * overview page and the customer's own portal.
+     *
+     * Response is an array such as:
+     *
+     *     [8] => [                          // VLAN ID
+     *         [vlis] => [
+     *             // VlanInterface objects for the customer that are on this private VLAN
+     *         ],
+     *         [members] => [
+     *             // Customer objects for all customers (including this one) that share this VLAN
+     *         ]
+     *     ]
+     *
+     *
+     * @return array Private VLAN details
+     */
+    public function privateVlanDetails(): array
+    {
+        $pvlans = [];
+
+        foreach( $this->vlanInterfaces as $vli ){
+            if( $vli->vlan->private ) {
+                $pvlans[ $vli->vlanid ][ 'vlis' ][] = $vli;
+
+                foreach( $vli->vlan->vlanInterfaces as $vli2 ) {
+                    $pvlans[ $vli->vlanid ][ 'members' ][ $vli2->virtualInterface->custid ]
+                        = $vli2->virtualInterface->customer;
+                }
+            }
+        }
+        return $pvlans;
     }
 }

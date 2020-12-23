@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\Dashboard;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,21 +22,18 @@ namespace IXP\Http\Requests\Dashboard;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Auth;
 
-use Entities\{
-    Customer    as CustomerEntity
-};
-
 use Illuminate\Foundation\Http\FormRequest;
+
+use IXP\Models\Customer;
 
 /**
  * Dashboard Noc details Request
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Customers
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class NocDetailsRequest extends FormRequest
@@ -46,10 +43,10 @@ class NocDetailsRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        // middleware ensures custuser or custadmin access only so always authorised here:
-        return Auth::getUser()->isCustUser() || Auth::getUser()->isCustAdmin() ;
+        // middleware ensures custadmin access only so always authorised here:
+        return Auth::getUser()->isCustAdmin();
     }
 
     /**
@@ -57,15 +54,14 @@ class NocDetailsRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'nocphone'              => 'nullable|string|max:255',
             'noc24hphone'           => 'nullable|string|max:255',
             'nocemail'              => 'nullable|email|max:255',
-            'nochours'              => 'nullable|string|in:' . implode( ',', array_keys( CustomerEntity::$NOC_HOURS ) ),
+            'nochours'              => 'nullable|string|in:' . implode( ',', array_keys( Customer::$NOC_HOURS ) ),
             'nocwww'                => 'nullable|url|max:255',
         ];
     }
-
 }

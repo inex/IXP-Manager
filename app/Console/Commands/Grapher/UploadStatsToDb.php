@@ -74,7 +74,7 @@ class UploadStatsToDb extends GrapherCommand
         $today = now();
         TrafficDaily::where( 'day', $today->format('Y-m-d') )->delete();
 
-        $custs = Customer::getConnected(true );
+        $custs = Customer::getConnected( true );
 
         foreach( $custs as $cust )  {
             if( $this->isVerbosityVerbose() ) {

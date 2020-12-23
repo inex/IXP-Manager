@@ -3,7 +3,7 @@
 namespace IXP\Mail\Customer;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,22 +22,21 @@ namespace IXP\Mail\Customer;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
-
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
 use Entities\CompanyBillingDetail as CompanyBillingDetailEntity;
+use IXP\Models\CompanyBillingDetail;
 
 /**
  * Mailable for billing details changed
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Customer
  * @package    IXP\Mail\Customer
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class BillingDetailsChanged extends Mailable
@@ -46,24 +45,27 @@ class BillingDetailsChanged extends Mailable
 
     /**
      * Old/original details
-     * @var CompanyBillingDetailEntity
+     *
+     * @var CompanyBillingDetail
      */
     public $ocbd;
 
     /**
      * New details
-     * @var CompanyBillingDetailEntity
+     *
+     * @var CompanyBillingDetail
      */
     public $cbd;
 
     /**
      * Create a new message instance.
      *
-     * @param CompanyBillingDetailEntity     $ocbd
-     * @param CompanyBillingDetailEntity     $cbd
+     * @param CompanyBillingDetail     $ocbd
+     * @param CompanyBillingDetail     $cbd
+     *
      * @return void
     */
-    public function __construct( CompanyBillingDetailEntity $ocbd, CompanyBillingDetailEntity $cbd )
+    public function __construct( CompanyBillingDetail $ocbd, CompanyBillingDetail $cbd )
     {
         $this->ocbd = $ocbd;
         $this->cbd  = $cbd;
@@ -74,9 +76,9 @@ class BillingDetailsChanged extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): self
     {
         return $this->markdown( 'customer.emails.billing-details-changed' )
-            ->subject( env('IDENTITY_NAME') . " :: Updated Billing Details for " . $this->cbd->getCustomer()->getFormattedName() );
+            ->subject( env('IDENTITY_NAME') . " :: Updated Billing Details for " . $this->cbd->customer->getFormattedName() );
     }
 }

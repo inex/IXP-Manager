@@ -28,7 +28,7 @@
 
                 <div class="dropdown-divider"></div>
 
-                <a class="dropdown-item" href="<?= route( "irrdb@list", [ "customer" => $c->getId(), "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">
+                <a class="dropdown-item" href="<?= route( "irrdb@list", [ "cust" => $c->getId(), "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">
                     View / Update IRRDB Entries...
                 </a>
 
@@ -325,7 +325,7 @@
 
                         <?php if( !config( 'ixp_fe.frontend.disabled.filtered-prefixes' ) ): ?>
 
-                            <li class="nav-item" onclick="window.location.href = '<?= route( "filtered-prefixes@list", [ 'customer' =>  $c->getId() ] ) ?>'">
+                            <li class="nav-item" onclick="window.location.href = '<?= route( "filtered-prefixes@list", [ 'cust' =>  $c->getId() ] ) ?>'">
                                 <a class="nav-link" data-toggle="tab"  href="">
                                     Filtered Prefixes &raquo;
                                 </a>
@@ -333,7 +333,7 @@
 
                         <?php elseif( $c->isIrrdbFiltered() ): ?>
 
-                            <li class="nav-item" onclick="window.location.href = '<?= route( "irrdb@list", [ "customer" => $c->getId(), "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>'">
+                            <li class="nav-item" onclick="window.location.href = '<?= route( "irrdb@list", [ "cust" => $c->getId(), "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>'">
                                 <a class="nav-link" data-toggle="tab"  href="">
                                     IRRDB Entries &raquo;
                                 </a>

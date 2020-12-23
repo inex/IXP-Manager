@@ -46,35 +46,35 @@ class FilteredPrefixesController extends Controller
     /**
      * Get the list
      *
-     * @param Request $r
-     * @param Customer $customer
+     * @param Request   $r
+     * @param Customer  $cust
      *
      * @return View
      *
      * @throws
      */
-    public function list( Request $r, Customer $customer ) : View
+    public function list( Request $r, Customer $cust ) : View
     {
-        $this->authorize('view', $customer);
+        $this->authorize('view', $cust);
 
         // are we busting the cache?
         if( Auth::getUser()->isSuperUser() && $r->reset_cache === "1" ) {
-            Cache::forget('filtered-prefixes-' . $customer->id );
+            Cache::forget('filtered-prefixes-' . $cust->id );
         }
 
         // get the prefixes
-        $filteredPrefixes = Cache::get( 'filtered-prefixes-' . $customer->id, false );
+        $filteredPrefixes = Cache::get( 'filtered-prefixes-' . $cust->id, false );
 
         if( $filteredPrefixes === false ) {
             // no cached result so schedule a job to gather them:
             //FetchFilteredPrefixesForCustomer::dispatch( $customer );
 
             // if we are using the sync queue runner, it will have completed
-            $filteredPrefixes = Cache::get( 'filtered-prefixes-' . $customer->id, false );
+            $filteredPrefixes = Cache::get( 'filtered-prefixes-' . $cust->id, false );
         }
 
         return view( 'filtered-prefixes.view' )->with([
-            'customer'         => $customer,
+            'customer'         => $cust,
             'filteredPrefixes' => $filteredPrefixes,
         ]);
     }

@@ -1,11 +1,10 @@
-
-<table class="table table-striped table-note <?php if( !count( $t->notes ) ): ?>collapse <?php endif; ?>" id="co-notes-table" style="width: 100%">
+<table class="w-100 table table-striped table-note <?php if( !$t->notes->count() ): ?>collapse <?php endif; ?>" id="co-notes-table">
     <thead class="thead-dark">
         <tr>
             <th>
                 Title
             </th>
-            <?php if( Auth::getUser()->isSuperUser() ): ?>
+            <?php if( $t->isSuperUser ): ?>
                 <th>
                     Visibility
                 </th>
@@ -15,12 +14,12 @@
             </th>
             <th>
                 Action
-                <?php if( Auth::getUser()->isSuperUser() ): ?>
+                <?php if( $t->isSuperUser ): ?>
                     &nbsp;<div class="btn-group btn-group-sm ml-2">
                         <button id="co-notes-add-btn" class="btn btn-white co-notes-add-btn">
                             <i class="fa fa-plus"></i>
                         </button>
-                        <button id="co-cust-notify-<?= $t->c->getId() ?>"  class="btn btn-white co-cust-notify <?= $t->coNotifyAll ? 'active' : '' ?>">
+                        <button id="co-cust-notify-<?= $t->c->id ?>"  class="btn btn-white co-cust-notify <?= $t->coNotifyAll ? 'active' : '' ?>">
                             <i class="fa fa-bell"></i>
                         </button>
 
@@ -33,18 +32,19 @@
         </tr>
     </thead>
 
-
     <tbody id="co-notes-table-tbody">
         <?php
-            /** @var \Entities\CustomerNote $n */
-        foreach( $t->notes as $n ):
-        ?>
-            <?php if( Auth::getUser()->isSuperUser() || !$n->getPrivate() ): ?>
-                <tr id="co-notes-table-row-<?= $n->getId() ?>">
-                    <td id="co-notes-table-row-title-<?= $n->getId() ?>">
-                        <?php if( ( !$t->notesInfo[ "notesLastRead" ] || $n->getUpdated()->format( 'U' ) > $t->notesInfo[ "notesLastRead" ] ) && ( !$t->notesInfo[ "notesReadUpto" ] || $n->getUpdated()->format( 'U' ) >  $t->notesInfo[ "notesReadUpto" ]  ) ): ?>
+            /** @var \IXP\Models\CustomerNote $n */
+        foreach( $t->notes as $n ):?>
+            <?php if( $t->isSuperUser || !$n->private ): ?>
+                <?php
+                    $updated_at = \Carbon\Carbon::instance( $n->updated_at );
+                ?>
+                <tr id="co-notes-table-row-<?= $n->id ?>">
+                    <td id="co-notes-table-row-title-<?= $n->id ?>">
+                        <?php if( ( !$t->notesInfo[ "notesLastRead" ] || $updated_at->format( 'U' ) > $t->notesInfo[ "notesLastRead" ] ) && ( !$t->notesInfo[ "notesReadUpto" ] || $updated_at->format( 'U' ) >  $t->notesInfo[ "notesReadUpto" ]  ) ): ?>
                             <span class="badge badge-success">
-                                <?php if( $n->getUpdated() == $n->getCreated() ): ?>
+                                <?php if( $n->updated_at === $n->created_at ): ?>
                                     NEW
                                 <?php else: ?>
                                     UPDATED
@@ -52,34 +52,34 @@
                             </span>
                             &nbsp;&nbsp;
                         <?php endif; ?>
-                        <?= $t->ee( $n->getTitle() ) ?>
+                        <?= $t->ee( $n->title ) ?>
                     </td>
 
-                    <?php if( Auth::getUser()->isSuperUser() ): ?>
-                        <td id="co-notes-table-row-public-<?= $n->getId() ?>">
-                            <span class="badge badge-<?php if( !$n->getPrivate() ): ?>success">PUBLIC<?php else: ?>secondary">PRIVATE<?php endif; ?></span>
+                    <?php if( $t->isSuperUser ): ?>
+                        <td id="co-notes-table-row-public-<?= $n->id ?>">
+                            <span class="badge badge-<?php if( !$n->private ): ?>success">PUBLIC<?php else: ?>secondary">PRIVATE<?php endif; ?></span>
                         </td>
                     <?php endif; ?>
-                    <td id="co-notes-table-row-updated-<?= $n->getId() ?>">
-                        <?= $n->getUpdated()->format( 'Y-m-d H:i' ) ?>
+                    <td id="co-notes-table-row-updated-<?= $n->id ?>">
+                        <?= $updated_at->format( 'Y-m-d H:i' ) ?>
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm">
-                            <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                <button id="co-notes-notify-<?= $n->getId() ?>"  class="btn btn-white co-notes-notify <?php if( is_array( $t->coNotify ) && array_key_exists( $n->getId(), $t->coNotify ) && $t->coNotify[ $n->getId() ] ): ?>active<?php endif; ?>">
+                            <?php if( $t->isSuperUser ): ?>
+                                <button id="co-notes-notify-<?= $n->id ?>"  class="btn btn-white co-notes-notify <?php if( is_array( $t->coNotify ) && array_key_exists( $n->id, $t->coNotify ) && $t->coNotify[ $n->id ] ): ?>active<?php endif; ?>">
                                     <i class="fa fa-bell"></i>
                                 </button>
                             <?php endif; ?>
 
-                            <button id="co-notes-view-<?= $n->getId() ?>"  class="btn btn-white co-notes-view">
+                            <button id="co-notes-view-<?= $n->id ?>"  class="btn btn-white co-notes-view">
                                 <i class="fa fa-eye"></i>
                             </button>
 
-                            <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                <button id="co-notes-edit-<?= $n->getId() ?>"  class="btn btn-white co-notes-edit">
+                            <?php if( $t->isSuperUser ): ?>
+                                <button id="co-notes-edit-<?= $n->id ?>"  class="btn btn-white co-notes-edit">
                                     <i class="fa fa-pencil"></i>
                                 </button>
-                                <button id="co-notes-trash-<?= $n->getId() ?>" class="btn btn-white co-notes-trash">
+                                <button id="co-notes-trash-<?= $n->id ?>" class="btn btn-white co-notes-trash">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             <?php endif; ?>
@@ -91,14 +91,14 @@
     </tbody>
 </table>
 
-<?php if( !count( $t->notes ) ): ?>
+<?php if( !$t->notes->count() ): ?>
     <p class="mt-4" id="co-notes-no-notes-msg">
         There are no notes for this customer.
-        <a class="btn btn-white ml-2" href="#" id="co-notes-add-link">Add one...</a>
+        <a class="btn btn-white ml-2" href="#" id="co-notes-add-link">Create one...</a>
     </p>
 <?php endif; ?>
 
-<?php if( Auth::getUser()->isSuperUser() ): ?>
+<?php if( $t->isSuperUser ): ?>
 
     <!-- Modal dialog for notes / state changes -->
     <div class="modal fade" id="co-notes-dialog" tabindex="-1" role="dialog" aria-labelledby="notes-modal-label">
@@ -106,7 +106,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="notes-modal-label">
-                        <span id="co-notes-dialog-title-action">Add a</span> Note for <?= $t->c->getName() ?>
+                        <span id="co-notes-dialog-title-action">Create a</span> Note for <?= $t->c->name ?>
                     </h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <i class="fa fa-times"></i>
@@ -153,7 +153,7 @@
                         <p>
                             <em>Markdown formatting supported (and encouraged!)</em>
                         </p>
-                        <input type="hidden" name="custid" value="<?= $t->c->getId() ?>" />
+                        <input type="hidden" name="custid" value="<?= $t->c->id ?>" />
                         <input type="hidden" id="notes-dialog-noteid" name="noteid" value="0" />
                     </form>
                 </div>

@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\Dashboard;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -42,10 +42,10 @@ class BillingDetailsRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        // middleware ensures custuser or custadmin access only so always authorised here:
-        return Auth::getUser()->isCustUser() || Auth::getUser()->isCustAdmin();
+        // middleware ensures custadmin access only so always authorised here:
+        return Auth::getUser()->isCustAdmin();
     }
 
     /**
@@ -53,7 +53,7 @@ class BillingDetailsRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'billingContactName'    => 'nullable|string|max:255',
@@ -68,5 +68,4 @@ class BillingDetailsRequest extends FormRequest
             'invoiceEmail'          => 'nullable|email|max:255',
         ];
     }
-
 }

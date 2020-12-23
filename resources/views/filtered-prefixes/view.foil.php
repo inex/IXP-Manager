@@ -4,25 +4,25 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Route Server Filtered Prefixes for <?= $t->customer->getFormattedName() ?>
+    Route Server Filtered Prefixes for <?= $t->cust->getFormattedName() ?>
 <?php $this->append() ?>
 
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <?php if( $t->customer->routeServerClient() && $t->customer->irrdbFiltered() ): ?>
+    <?php if( $t->cust->routeServerClient() && $t->cust->irrdbFiltered() ): ?>
         <div class="btn-group btn-group-sm" role="group">
             <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 View / Update IRRDB Entries
             </button>
 
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
-                <?php if( $t->customer->isIPvXEnabled( 4 ) ): ?>
-                    <a class="dropdown-item" href="<?= route( "irrdb@list", [ "customer" => $t->customer->id, "type" => "asn", "protocol" => 4 ] ) ?>">IPv4 IRRDB ASNs</a>
-                    <a class="dropdown-item" href="<?= route( "irrdb@list", [ "customer" => $t->customer->id, "type" => "prefix", "protocol" => 4 ] ) ?>">IPv4 IRRDB Prefixes</a>
+                <?php if( $t->cust->isIPvXEnabled( 4 ) ): ?>
+                    <a class="dropdown-item" href="<?= route( "irrdb@list", [ "cust" => $t->cust->id, "type" => "asn", "protocol" => 4 ] ) ?>">IPv4 IRRDB ASNs</a>
+                    <a class="dropdown-item" href="<?= route( "irrdb@list", [ "cust" => $t->cust->id, "type" => "prefix", "protocol" => 4 ] ) ?>">IPv4 IRRDB Prefixes</a>
                 <?php endif; ?>
-                <?php if( $t->customer->isIPvXEnabled( 6 ) ): ?>
-                    <a class="dropdown-item" href="<?= route( "irrdb@list", [ "customer" => $t->customer->id, "type" => "asn", "protocol" => 6 ] ) ?>">IPv6 IRRDB ASNs</a>
-                    <a class="dropdown-item" href="<?= route( "irrdb@list", [ "customer" => $t->customer->id, "type" => "prefix", "protocol" => 6 ] ) ?>">IPv6 IRRDB Prefixes</a>
+                <?php if( $t->cust->isIPvXEnabled( 6 ) ): ?>
+                    <a class="dropdown-item" href="<?= route( "irrdb@list", [ "cust" => $t->cust->id, "type" => "asn", "protocol" => 6 ] ) ?>">IPv6 IRRDB ASNs</a>
+                    <a class="dropdown-item" href="<?= route( "irrdb@list", [ "cust" => $t->cust->id, "type" => "prefix", "protocol" => 6 ] ) ?>">IPv6 IRRDB Prefixes</a>
                 <?php endif; ?>
             </div>
         </div>
@@ -45,7 +45,7 @@
                     Our queue runner is checking the appropriate route servers for you and gathering the required information.
                 </p>
                 <p>
-                    Count to ten (slowly!) and then <a href="<?= route( 'filtered-prefixes@list', [ 'customer' => $t->customer->id ] ) ?>">click
+                    Count to ten (slowly!) and then <a href="<?= route( 'filtered-prefixes@list', [ 'cust' => $t->cust->id ] ) ?>">click
                         here to refresh the page</a>.
                 </p>
             <?php else: ?>
@@ -105,7 +105,7 @@
                     <?php if( Auth::getUser()->isSuperUser() ): ?>
                         <p>
                             <b>Oh, wait, it looks like you're a super admin!</b>
-                            You can <a href="<?= route( 'filtered-prefixes@list', [ 'customer' => $t->customer->id ] ) ?>?reset_cache=1">bust the cache
+                            You can <a href="<?= route( 'filtered-prefixes@list', [ 'cust' => $t->cust->id ] ) ?>?reset_cache=1">bust the cache
                             by clicking here</a>.
                         </p>
                     <?php endif; ?>

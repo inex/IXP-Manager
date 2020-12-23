@@ -235,7 +235,7 @@ class UserAggregator extends User
                 Log::info( 'PeeringDB OAuth: user ' . $user->id . '/' . $user->username . ' has PeeringDB affiliation with ' . $cust->getFormattedName() );
 
                 // is this a valid customer?
-                if( !( $cust->typeFull() || $cust->typeProBono() ) || !$cust->isNormal() || $cust->hasLeft() || !$cust->peeringdb_oauth ) {
+                if( !( $cust->typeFull() || $cust->typeProBono() ) || !$cust->statusNormal() || $cust->hasLeft() || !$cust->peeringdb_oauth ) {
                     Log::info( 'PeeringDB OAuth: ' . $cust->getFormattedName() . ' not a suitable IXP Manager customer for PeeringDB, skipping.' );
                     continue;
                 }

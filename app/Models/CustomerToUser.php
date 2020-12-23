@@ -55,6 +55,8 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerToUser whereUpdatedAt($value)
  * @property-read \IXP\Models\Customer $customer
  * @property-read \IXP\Models\User $user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\UserLoginHistory[] $userLoginHistories
+ * @property-read int|null $user_login_histories_count
  */
 class CustomerToUser extends Model
 {

@@ -128,7 +128,7 @@ class RouterAggregator extends Router
 
         $result = [];
         foreach( $routers as $key => $r ) {
-            if( $r->quarantine && !$user->superUser() && !$cust->hasInterfacesInQuarantine() ) {
+            if( $r->quarantine && !$user->isSuperUser() && !$cust->hasInterfacesInQuarantine() ) {
                 continue;
             }
             $result[ $r->type() ][ $key ] = $r->name;
@@ -165,7 +165,7 @@ class RouterAggregator extends Router
 
         $result = [];
         foreach( $routers as $key => $r ) {
-            if( $r->quarantine && !$user->superUser() && !$cust->hasInterfacesInQuarantine() ) {
+            if( $r->quarantine && !$user->isSuperUser() && !$cust->hasInterfacesInQuarantine() ) {
                 continue;
             }
             $result[ $r->vlan->infrastructure->name ][ $r->protocol ][] = $r;

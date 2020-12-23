@@ -156,6 +156,8 @@ use IXP\Models\Vlan;
  * @property-read int|null $peers_with_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RsPrefix[] $rsPrefixes
  * @property-read int|null $rs_prefixes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerNote[] $customerNotes
+ * @property-read int|null $customer_notes_count
  */
 class CustomerAggregator extends Customer
 {
@@ -385,7 +387,7 @@ class CustomerAggregator extends Customer
             if( !$p[ 'email_last_sent' ] ){
                 $peers[ $i ][ 'email_days' ] = -1;
             } else {
-                $email_last_sent = new Carbon( $peers[103]['email_last_sent']);
+                $email_last_sent = new Carbon( $p['email_last_sent']);
                 $peers[ $i ][ 'email_days' ] = floor( ( time() - $email_last_sent->getTimestamp() ) / 86400 );
             }
         }

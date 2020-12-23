@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,10 +22,8 @@ namespace IXP\Http\Requests;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Illuminate\Foundation\Http\FormRequest;
 
-use Illuminate\Validation\Validator;
 use IXP\Models\User;
 
 use IXP\Exceptions\IrrdbManage;
@@ -56,7 +54,7 @@ class Irrdb extends FormRequest
             return true;
         }
 
-        return $this->user()->getCustomer()->getId() === $this->customer->id;
+        return $this->user()->custid === $this->cust->id;
     }
 
     /**
@@ -73,10 +71,12 @@ class Irrdb extends FormRequest
      * Configure the validator instance.
      *
      * @return void
+     *
+     * @throws
      */
     public function withValidator(): void
     {
-        if( !( $this->customer->routeServerClient() && $this->customer->irrdbFiltered() ) ) {
+        if( !( $this->cust->routeServerClient() && $this->cust->irrdbFiltered() ) ) {
             throw new IrrdbManage( 'IRRDB only applies to customers who are route server clients which are configured for IRRDB filtering.' );
         }
 

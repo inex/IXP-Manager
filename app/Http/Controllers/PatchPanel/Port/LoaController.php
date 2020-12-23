@@ -83,7 +83,7 @@ class LoaController extends Common
     private function setupLoA( PatchPanelPort $ppp ): void
     {
         $u = User::find( Auth::id() );
-        if( !$u->superUser() ) {
+        if( !$u->isSuperUser() ) {
             if( $ppp->customer_id !== $u->custid ) {
                 Log::alert($u->username . ' tried to create a PPP LoA for PPP:' . $ppp->id . ' but does not have permission');
                 abort(401);

@@ -26,6 +26,10 @@ class AddTimestamps extends Migration
             $table->timestamps();
         });
 
+        Schema::table('company_billing_detail', function (Blueprint $table) {
+            $table->timestamps();
+        });
+
         Schema::table('console_server', function (Blueprint $table) {
             $table->timestamps();
         });
@@ -64,6 +68,11 @@ class AddTimestamps extends Migration
         Schema::table('cust', function (Blueprint $table) {
             $table->dateTime( 'created_at' )->change();
             $table->dateTime( 'updated_at' )->change();
+        });
+
+        Schema::table('cust_notes', function (Blueprint $table) {
+            $table->renameColumn( 'created', 'created_at' );
+            $table->renameColumn( 'updated', 'updated_at' );
         });
 
         Schema::table('customer_to_users', function (Blueprint $table) {
@@ -237,6 +246,10 @@ class AddTimestamps extends Migration
             $table->dropTimestamps();
         });
 
+        Schema::table('company_billing_detail', function (Blueprint $table) {
+            $table->dropTimestamps();
+        });
+
         Schema::table('console_server', function (Blueprint $table) {
             $table->dropTimestamps();
         });
@@ -275,6 +288,11 @@ class AddTimestamps extends Migration
         Schema::table('cust', function (Blueprint $table) {
             $table->date( 'created' )->change();
             $table->date( 'lastupdated' )->change();
+        });
+
+        Schema::table('cust_notes', function (Blueprint $table) {
+            $table->renameColumn( 'created_at', 'created' );
+            $table->renameColumn( 'updated_at', 'updated' );
         });
 
         Schema::table('customer_to_users', function (Blueprint $table) {

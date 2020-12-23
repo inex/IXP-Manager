@@ -30,8 +30,6 @@ use IXP\Models\{
 
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-
-
 /**
  * Route Server Prefixes Controller
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>

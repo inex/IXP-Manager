@@ -112,6 +112,7 @@ use Storage;
  * @property-read int|null $duplex_slave_ports_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortHistory[] $patchPanelPortHistories
  * @property-read int|null $patch_panel_port_histories_count
+ * @method static Builder|PatchPanelPort masterPort()
  */
 
 class PatchPanelPort extends Model
@@ -366,6 +367,18 @@ class PatchPanelPort extends Model
     }
 
     /**
+     * Scope a query to match master ports only
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeMasterPort( Builder $query ): Builder
+    {
+        return $query->where('duplex_master_id', null );
+    }
+
+    /**
      * Get name
      *
      * @return integer
@@ -528,26 +541,28 @@ class PatchPanelPort extends Model
      */
     public static function stateCssClass( int $state, bool $superUser = false ): string
     {
-        if( $superUser ){
-            if( in_array( $state, self::$AVAILABLE_STATES ) || $state === self::STATE_PREWIRED ):
+        if( $superUser ) {
+            if( in_array( $state, self::$AVAILABLE_STATES ) || $state === self::STATE_PREWIRED ){
                 $class = 'success';
-            elseif( $state === self::STATE_AWAITING_XCONNECT ):
+            } elseif( $state === self::STATE_AWAITING_XCONNECT ){
                 $class = 'warning';
-            elseif( $state === self::STATE_CONNECTED ):
+            } elseif( $state === self::STATE_CONNECTED ){
                 $class = 'danger';
-            else:
+            } else {
                 $class = 'info';
-            endif;
+            }
+
+            return $class;
+        }
+
+        if( $state === self::STATE_CONNECTED ){
+            $class = 'success';
+        } elseif( $state === self::STATE_AWAITING_CEASE ) {
+            $class = 'warning';
+        } elseif( $state === self::STATE_AWAITING_XCONNECT ) {
+            $class = 'danger';
         } else {
-            if( $state === self::STATE_CONNECTED ):
-                $class = 'success';
-            elseif( $state === self::STATE_AWAITING_CEASE ):
-                $class = 'warning';
-            elseif( $state === self::STATE_AWAITING_XCONNECT ):
-                $class = 'danger';
-            else:
-                $class = 'info';
-            endif;
+            $class = 'info';
         }
 
         return $class;

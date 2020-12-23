@@ -315,7 +315,7 @@ class JsonSchema
                 });
         }
 
-        $customers =  Customer::getConnected( false, 'autsys' )->keyBy( 'id' );
+        $customers =  Customer::getConnected( false, false, 'autsys' )->keyBy( 'id' );
 
         $cnt = 0;
         foreach( $customers as $c ) {
@@ -335,7 +335,7 @@ class JsonSchema
                     
                     $atLeastOnePiIsPeering = true;
                     
-                    if( $pi->isConnected() ) {
+                    if( $pi->statusConnected() ) {
                         $iflist[] = [
                             'switch_id'	=> $pi->switchPort->switcher->id,
                             'if_speed'	=> $pi->speed,

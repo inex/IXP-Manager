@@ -52,28 +52,28 @@ class IrrdbController extends Controller
      * Display the list of IRRDB (ASN/Prefix), (IPv4/IPv6) for a customer
      *
      * @param IrrdbRequest      $r
-     * @param Customer          $customer
+     * @param Customer          $cust
      * @param String            $type
      * @param int               $protocol
      *
      * @return View
      */
-    public function list( IrrdbRequest $r, Customer $customer, string $type, int $protocol ) : View
+    public function list( IrrdbRequest $r, Customer $cust, string $type, int $protocol ) : View
     {
-        $irrdbList = IrrdbAggregator::forCustomerAndProtocol( $customer->id, $protocol, $type );
+        $irrdbList = IrrdbAggregator::forCustomerAndProtocol( $cust->id, $protocol, $type );
 
         // are we busting the cache?
         if( Auth::getUser()->isSuperUser() && $r->reset_cache === "1" ) {
-            Cache::forget('updated-irrdb-' . $type . '-' . $customer->id );
+            Cache::forget('updated-irrdb-' . $type . '-' . $cust->id );
         }
 
         return view( 'irrdb/list' )->with([
             'irrdbList'         => $irrdbList,
             'type'              => $type,
-            'customer'          => $customer,
+            'customer'          => $cust,
             'protocol'          => $protocol,
-            'updatingIrrdb'     => Cache::get( 'updating-irrdb-' . $type . '-' . $protocol . '-' . $customer->id, false ),
-            'updatedIrrdb'      => Cache::get( 'updated-irrdb-'  . $type . '-' . $protocol . '-' . $customer->id, false ),
+            'updatingIrrdb'     => Cache::get( 'updating-irrdb-' . $type . '-' . $protocol . '-' . $cust->id, false ),
+            'updatedIrrdb'      => Cache::get( 'updated-irrdb-'  . $type . '-' . $protocol . '-' . $cust->id, false ),
         ]);
     }
 
@@ -81,28 +81,28 @@ class IrrdbController extends Controller
      * Update the list of IRRDB (ASN/Prefix) for a customer
      *
      * @param IrrdbRequest      $r
-     * @param Customer          $customer
+     * @param Customer          $cust
      * @param String            $type
      * @param int               $protocol
      *
      * @return RedirectResponse
      */
-    public function update( IrrdbRequest $r, Customer $customer, string $type, int $protocol ) : RedirectResponse
+    public function update( IrrdbRequest $r, Customer $cust, string $type, int $protocol ) : RedirectResponse
     {
         // are we busting the cache?
-        if( Auth::getUser()->superUser() && $r->reset_cache === "1" ) {
-            Cache::forget('updated-irrdb-' . $type . '-' . $protocol . '-' . $customer->id );
+        if( Auth::getUser()->isSuperUser() && $r->reset_cache === "1" ) {
+            Cache::forget('updated-irrdb-' . $type . '-' . $protocol . '-' . $cust->id );
         }
 
         // get the status of the irrdb update function
-        $updatedIrrdb = Cache::get( 'updated-irrdb-' . $type . '-' . $protocol . '-' . $customer->id, false );
+        $updatedIrrdb = Cache::get( 'updated-irrdb-' . $type . '-' . $protocol . '-' . $cust->id, false );
 
         if( $updatedIrrdb === false ) {
             // no cached result so schedule a job to gather them:
-            Cache::put( 'updating-irrdb-' . $type . '-' . $protocol . '-' . $customer->id, true, 3600 );
-            UpdateIrrdb::dispatch( $customer, $type, $protocol );
+            Cache::put( 'updating-irrdb-' . $type . '-' . $protocol . '-' . $cust->id, true, 3600 );
+            UpdateIrrdb::dispatch( $cust, $type, $protocol );
         }
 
-        return redirect( route( "irrdb@list", [ "customer" => $customer->id, "type" => $type , "protocol" => $protocol ] )  );
+        return redirect( route( "irrdb@list", [ "cust" => $cust->id, "type" => $type , "protocol" => $protocol ] )  );
     }
 }

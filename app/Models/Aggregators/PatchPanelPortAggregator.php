@@ -47,6 +47,7 @@ use IXP\Models\PatchPanelPort;
  * @method static Builder|PatchPanelPortAggregator newQuery()
  * @method static Builder|PatchPanelPortAggregator query()
  * @mixin \Eloquent
+ * @method static Builder|PatchPanelPort masterPort()
  */
 class PatchPanelPortAggregator extends PatchPanelPort
 {

@@ -21,16 +21,16 @@
 
           <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
               <?php if( $t->customer->isIPvXEnabled( 4 ) ): ?>
-                  <a class="dropdown-item <?= !request()->is( "irrdb/*/asn/4" ) ?: 'active' ?>" href="<?= route( "irrdb@list", [ "customer" => $t->customer->id, "type" => "asn", "protocol" => 4 ] ) ?>">IPv4 IRRDB ASNs</a>
-                  <a class="dropdown-item <?= !request()->is( "irrdb/*/prefix/4" ) ?: 'active' ?>" href="<?= route( "irrdb@list", [ "customer" => $t->customer->id, "type" => "prefix", "protocol" => 4 ] ) ?>">IPv4 IRRDB Prefixes</a>
+                  <a class="dropdown-item <?= !request()->is( "irrdb/*/asn/4" ) ?: 'active' ?>" href="<?= route( "irrdb@list", [ "cust" => $t->customer->id, "type" => "asn", "protocol" => 4 ] ) ?>">IPv4 IRRDB ASNs</a>
+                  <a class="dropdown-item <?= !request()->is( "irrdb/*/prefix/4" ) ?: 'active' ?>" href="<?= route( "irrdb@list", [ "cust" => $t->customer->id, "type" => "prefix", "protocol" => 4 ] ) ?>">IPv4 IRRDB Prefixes</a>
               <?php endif; ?>
               <?php if( $t->customer->isIPvXEnabled( 6 ) ): ?>
-                  <a class="dropdown-item <?= !request()->is( "irrdb/*/asn/6" ) ?: 'active' ?>" href="<?= route( "irrdb@list", [ "customer" => $t->customer->id, "type" => "asn", "protocol" => 6 ] ) ?>">IPv6 IRRDB ASNs</a>
-                  <a class="dropdown-item <?= !request()->is( "irrdb/*/prefix/6" ) ?: 'active' ?>" href="<?= route( "irrdb@list", [ "customer" => $t->customer->id, "type" => "prefix", "protocol" => 6 ] ) ?>">IPv6 IRRDB Prefixes</a>
+                  <a class="dropdown-item <?= !request()->is( "irrdb/*/asn/6" ) ?: 'active' ?>" href="<?= route( "irrdb@list", [ "cust" => $t->customer->id, "type" => "asn", "protocol" => 6 ] ) ?>">IPv6 IRRDB ASNs</a>
+                  <a class="dropdown-item <?= !request()->is( "irrdb/*/prefix/6" ) ?: 'active' ?>" href="<?= route( "irrdb@list", [ "cust" => $t->customer->id, "type" => "prefix", "protocol" => 6 ] ) ?>">IPv6 IRRDB Prefixes</a>
               <?php endif; ?>
           </div>
 
-          <a class="btn btn-primary" href="<?= route( "irrdb@update", [ "customer" => $t->customer->id, "type" => $t->type, "protocol" => $t->protocol ] ) ?>">
+          <a class="btn btn-primary" href="<?= route( "irrdb@update", [ "cust" => $t->customer->id, "type" => $t->type, "protocol" => $t->protocol ] ) ?>">
               Update <?= $t->type === "asn" ? 'ASNs' : 'Prefixes' ?>
           </a>
       </div>
@@ -50,7 +50,7 @@
                           Our queue runner is updating the IRRDB entries for you.
                       </p>
                       <p>
-                          Count to ten (slowly!) and then <a href="<?= route( "irrdb@list", [ "customer" => $t->customer->id, "type" => $t->type, "protocol" => $t->protocol ] ) ?>">click
+                          Count to ten (slowly!) and then <a href="<?= route( "irrdb@list", [ "cust" => $t->customer->id, "type" => $t->type, "protocol" => $t->protocol ] ) ?>">click
                               here to refresh the page</a>.
                       </p>
                   <?php else: ?>
@@ -127,7 +127,7 @@
                       </p>
                       <p>
                           <b>Oh, wait, it looks like you're a super admin!</b>
-                          You can <a href="<?= route( 'irrdb@update', [ 'customer' => $t->customer->id, 'type' => $t->type, 'protocol' => $t->protocol ] ) ?>?reset_cache=1">bust the cache
+                          You can <a href="<?= route( 'irrdb@update', [ 'cust' => $t->customer->id, 'type' => $t->type, 'protocol' => $t->protocol ] ) ?>?reset_cache=1">bust the cache
                               by clicking here</a>.
                       </p>
                   <?php endif; ?>

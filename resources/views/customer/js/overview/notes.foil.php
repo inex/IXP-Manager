@@ -284,7 +284,7 @@
             ]
         } );
 
-        <?php if( Auth::getUser()->isSuperUser() ): ?>
+        <?php if( $t->isSuperUser ): ?>
 
             $( ".table-note" ).on( "click", ".co-notes-add-btn", function( event ){
                 event.preventDefault();
@@ -331,15 +331,12 @@
             // mark notes as read and update the users last read time
             $( '#notes-unread-indicator' ).remove();
 
-            <?php if( Auth::getUser()->isSuperUser() ): ?>
-                $.get( "<?= route( "customer-notes@ping" , [ 'id' => $t->c->getId() ] ) ?>");
+            <?php if( $t->isSuperUser ): ?>
+                $.get( "<?= route( "customer-notes@ping" , [ 'id' => $t->c->id ] ) ?>");
             <?php else: ?>
                 $.get( "<?= route( "customer-notes@ping" ) ?>");
             <?php endif; ?>
         });
-
-
     });
-
 
 </script>

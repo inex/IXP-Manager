@@ -49,8 +49,8 @@ class RsPrefixes
     /**
      * Handle an incoming request.
      *
-     * @param  Request  $r
-     * @param Closure   $next
+     * @param   Request     $r
+     * @param   Closure     $next
      *
      * @return mixed
      */
@@ -76,7 +76,7 @@ class RsPrefixes
                     return $next( $r );
                 }
 
-                if( Auth::getUser()->custid === (int)$r->route()->parameter( 'cid' ) ) {
+                if( Auth::getUser()->custid === $r->cust->id ) {
                     return $next( $r );
                 }
             }

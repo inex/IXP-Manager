@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,16 +22,7 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use App, Auth, Countries, D2EM, DateTime, Redirect;
-
-use Entities\{
-    Customer                    as CustomerEntity,
-    CustomerNote                as CustomerNoteEntity,
-    NetworkInfo                 as NetworkInfoEntity,
-    PatchPanelPort              as PatchPanelPortEntity,
-    RSPrefix                    as RSPrefixEntity
-};
+use App, Auth, Countries, Redirect;
 
 use Illuminate\Http\{
     RedirectResponse,
@@ -48,89 +39,91 @@ use IXP\Http\Requests\Dashboard\{
 };
 
 use IXP\Models\{
+    Aggregators\RsPrefixAggregator,
     Customer,
-    DocstoreCustomerFile
+    NetworkInfo
 };
 
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
+use IXP\Services\Grapher;
 
 /**
  * DashboardController Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   PatchPanel
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class DashboardController extends Controller
 {
-
     /**
      * Display dashboard
      *
-     * @param Request $request
-     * @param string $tab Tab from the overview selected
+     * @param Request     $r
+     *
+     * @param string|null $tab Tab from the overview selected
      *
      * @return  View|RedirectResponse
      *
+     * @throws
      */
-    public function index( Request $request, string $tab = null )
+    public function index( Request $r, string $tab = null )
     {
-
         // Redirect Super user
-        if( Auth::getUser()->isSuperUser() ){
+        if( Auth::user()->isSuperUser() ){
             return Redirect::to( '/');
         }
 
         $c = Auth::getUser()->customer;
         $grapher = null;
 
-        if( !$c->isTypeAssociate() ) {
+        if( !$c->typeAssociate() ) {
+            $resoldCustomer     = $c->resellerObject()->exists();
+            $netinfo            = NetworkInfo::vlanProtocol();
+            $grapher            = $grapher = App::make( Grapher::class );
 
-            $resoldCustomer     = $c->isResoldCustomer();
-            $netinfo            = D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray();
-            $grapher            = $grapher = App::make('IXP\Services\Grapher');
-
-
-            if( $c->isRouteServerClient() ) {
-                $rsRoutes = D2EM::getRepository( RSPrefixEntity::class )->aggregateRouteSummariesForCustomer( $c->getId() );
+            if( $c->routeServerClient() ) {
+                $rsRoutes = RsPrefixAggregator::aggregateRouteSummariesForCustomer( $c->id );
             }
         }
 
-        $cns = D2EM::getRepository( CustomerNoteEntity::class )->fetchForCustomer( $c, true );
-        $cbd = $c->getBillingDetails();
+
+        $cns = $c->customerNotes()->publicOnly()->get();
+        $cbd = $c->companyBillingDetail;
 
         // array used to populate the details forms
         // former doesn't allow us to populate a form the classic way when there is >1 forms on the same view.
         $dataNocDetail = [
-            'nocphone'                  => $request->old( 'nocphone',                $c->getNocphone() ),
-            'noc24hphone'               => $request->old( 'noc24hphone',             $c->getNoc24hphone() ),
-            'nocemail'                  => $request->old( 'nocemail',                $c->getNocemail() ),
-            'nochours'                  => $request->old( 'nochours',                $c->getNochours() ),
-            'nocwww'                    => $request->old( 'nocwww',                  $c->getNocwww() ),
+            'nocphone'                  => $r->old( 'nocphone',                $c->nocphone ),
+            'noc24hphone'               => $r->old( 'noc24hphone',             $c->noc24hphone ),
+            'nocemail'                  => $r->old( 'nocemail',                $c->nocemail ),
+            'nochours'                  => $r->old( 'nochours',                $c->nochours ),
+            'nocwww'                    => $r->old( 'nocwww',                  $c->nocwww ),
         ];
 
         $dataBillingDetail = [
-            'billingContactName'        => $request->old( 'billingContactName',      $cbd->getBillingContactName() ),
-            'billingAddress1'           => $request->old( 'billingAddress1',         $cbd->getBillingAddress1() ),
-            'billingAddress2'           => $request->old( 'billingAddress2',         $cbd->getBillingAddress2() ),
-            'billingAddress3'           => $request->old( 'billingAddress3',         $cbd->getBillingAddress3() ),
-            'billingTownCity'           => $request->old( 'billingTownCity',         $cbd->getBillingTownCity() ),
-            'billingPostcode'           => $request->old( 'billingPostcode',         $cbd->getBillingPostcode() ),
-            'billingCountry'            => $request->old( 'billingCountry',          in_array( $cbd->getBillingCountry(),  array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ) ? $cbd->getBillingCountry() : null ),
-            'billingEmail'              => $request->old( 'billingEmail',            $cbd->getBillingEmail() ),
-            'billingTelephone'          => $request->old( 'billingTelephone',        $cbd->getBillingTelephone() ),
-            'invoiceEmail'              => $request->old( 'invoiceEmail',            $cbd->getInvoiceEmail() ),
+            'billingContactName'        => $r->old( 'billingContactName',      $cbd->billingContactName ),
+            'billingAddress1'           => $r->old( 'billingAddress1',         $cbd->billingAddress1 ),
+            'billingAddress2'           => $r->old( 'billingAddress2',         $cbd->billingAddress2 ),
+            'billingAddress3'           => $r->old( 'billingAddress3',         $cbd->billingAddress3 ),
+            'billingTownCity'           => $r->old( 'billingTownCity',         $cbd->billingTownCity ),
+            'billingPostcode'           => $r->old( 'billingPostcode',         $cbd->billingPostcode ),
+            'billingCountry'            => $r->old( 'billingCountry',          in_array( $cbd->billingCountry,  array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ) ? $cbd->billingCountry : null ),
+            'billingEmail'              => $r->old( 'billingEmail',            $cbd->billingEmail ),
+            'billingTelephone'          => $r->old( 'billingTelephone',        $cbd->billingTelephone ),
+            'invoiceEmail'              => $r->old( 'invoiceEmail',            $cbd->invoiceEmail ),
         ];
 
-        /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
+        /** FIXME FIXME-YR fix notes */
         return view( 'dashboard/index' )->with([
-            'recentMembers'                 => array_slice( D2EM::getRepository( CustomerEntity::class )->getRecent(), 0 , 5 ),
-            'crossConnects'                 => D2EM::getRepository( PatchPanelPortEntity::class       )->getForCustomer(    $c->getId()             ),
-            'notesInfo'                     => D2EM::getRepository( CustomerNoteEntity::class   )->analyseForUser(      $cns, $c, Auth::getUser()  ),
+            'recentMembers'                 => Customer::getConnected( true, true, 'datejoin', 'desc' )->take( 5 ),
+            'crossConnects'                 => $c->patchPanelPorts()->masterPort()->get(),
+            //'notesInfo'                     => D2EM::getRepository( CustomerNoteEntity::class   )->analyseForUser(      $cns, $c, Auth::getUser()  ),
+            'notesInfo'                     => [ 'unreadNotes' => 1, 'notesLastRead' => 0, 'notesReadUpto' => 1 ],
             'rsRoutes'                      => $rsRoutes        ?? null,
             'resoldCustomer'                => $resoldCustomer  ?? null,
             'netInfo'                       => $netinfo         ?? null,
@@ -140,10 +133,9 @@ class DashboardController extends Controller
             'dataBillingDetail'             => $dataBillingDetail,
             'dataNocDetail'                 => $dataNocDetail,
             'countries'                     => Countries::getList('name' ),
-            'tab'                           => strtolower( $tab ),
+            'tab'                           => strtolower( $tab ) ?: false,
         ]);
     }
-
 
     /**
      * Edit NOC details of a customer via the dashboard
@@ -151,28 +143,22 @@ class DashboardController extends Controller
      * @param   NocDetailsRequest $r instance of the current HTTP request
      *
      * @return  RedirectResponse
+     *
      * @throws
      */
-    public function storeNocDetails( NocDetailsRequest $r )
+    public function storeNocDetails( NocDetailsRequest $r ): RedirectResponse
     {
-        if( Auth::getUser()->isCustUser() ){
-            abort( 403, 'Insufficient Permissions.' );
-        }
-
         $c = Auth::getUser()->customer;
 
-        $c->setNocphone(        $r->input( 'nocphone'       ) );
-        $c->setNoc24hphone(     $r->input( 'noc24hphone'    ) );
-        $c->setNocemail(        $r->input( 'nocemail'       ) );
-        $c->setNochours(        $r->input( 'nochours'       ) );
-        $c->setNocwww(          $r->input( 'nocwww'         ) );
-        $c->setLastupdated(     new DateTime() );
-        $c->setLastupdatedby(   Auth::id() );
+        $c->nocphone        =   $r->nocphone;
+        $c->noc24hphone     =   $r->noc24hphone;
+        $c->nocemail        =   $r->nocemail;
+        $c->nochours        =   $r->nochours;
+        $c->nocwww          =   $r->nocwww;
+        $c->lastupdatedby   =   Auth::id();
+        $c->save();
 
-        D2EM::flush();
-
-        AlertContainer::push( 'Your NOC details have been updated', Alert::SUCCESS );
-
+        AlertContainer::push( 'NOC details updated', Alert::SUCCESS );
         return Redirect::to( route( "dashboard@index", [ "tab" => "details" ] ) );
     }
 
@@ -185,36 +171,28 @@ class DashboardController extends Controller
      * @return  RedirectResponse
      * @throws
      */
-    public function storeBillingDetails( BillingDetailsRequest $r ){
-
-        if( Auth::getUser()->isCustUser() ){
-            abort( 403, 'Insufficient Permissions.' );
-        }
-
-        /** @var CustomerEntity $c */
+    public function storeBillingDetails( BillingDetailsRequest $r ): RedirectResponse
+    {
         $c = Auth::getUser()->customer;
 
-        $cbd  = $c->getBillingDetails();
-        $ocbd = clone $c->getBillingDetails();
+        $cbd  = $c->companyBillingDetail;
+        $ocbd = clone $c->companyBillingDetail;
 
-        $cbd->setBillingContactName(     $r->input( 'billingContactName'   ) );
-        $cbd->setBillingAddress1(        $r->input( 'billingAddress1'      ) );
-        $cbd->setBillingAddress2(        $r->input( 'billingAddress2'      ) );
-        $cbd->setBillingAddress3(        $r->input( 'billingAddress3'      ) );
-        $cbd->setBillingTownCity(        $r->input( 'billingTownCity'      ) );
-        $cbd->setBillingPostcode(        $r->input( 'billingPostcode'      ) );
-        $cbd->setBillingCountry(         $r->input( 'billingCountry'       ) );
-        $cbd->setBillingEmail(           $r->input( 'billingEmail'         ) );
-        $cbd->setBillingTelephone(       $r->input( 'billingTelephone'     ) );
-        $cbd->setInvoiceEmail(           $r->input( 'invoiceEmail'         ) );
-
-        D2EM::flush();
+        $cbd->billingContactName    =   $r->billingContactName;
+        $cbd->billingAddress1       =   $r->billingAddress1;
+        $cbd->billingAddress2       =   $r->billingAddress2;
+        $cbd->billingAddress3       =   $r->billingAddress3;
+        $cbd->billingTownCity       =   $r->billingTownCity;
+        $cbd->billingPostcode       =   $r->billingPostcode;
+        $cbd->billingCountry        =   $r->billingCountry;
+        $cbd->billingEmail          =   $r->billingEmail;
+        $cbd->billingTelephone      =   $r->billingTelephone;
+        $cbd->invoiceEmail          =   $r->invoiceEmail;
+        $cbd->save();
 
         event( new CustomerBillingDetailsChangedEvent( $ocbd, $cbd ) );
 
-        AlertContainer::push( 'Your billing details have been updated', Alert::SUCCESS );
-
+        AlertContainer::push( 'Billing details updated', Alert::SUCCESS );
         return Redirect::to( route( "dashboard@index", [ "tab" => "details" ] ) );
-
     }
 }

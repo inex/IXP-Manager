@@ -106,7 +106,7 @@ class Generator
         }
 
         // populate the template variables
-        $customers =  Customer::getConnected( false, 'autsys' )->keyBy( 'id' );
+        $customers =  Customer::getConnected( false, false, 'autsys' )->keyBy( 'id' );
 
         return view( 'api/v4/rir/' . $tmpl, [
                 'customers'     => $customers,
@@ -228,7 +228,7 @@ class Generator
                     $oneConnectedInterface = false;
 
                     foreach( $vli->virtualInterface->physicalInterfaces as $pi ) {
-                        if( $pi->isConnected() ) {
+                        if( $pi->statusConnected() ) {
                             $oneConnectedInterface = true;
                             break;
                         }
@@ -240,7 +240,7 @@ class Generator
 
                     $cust = $vli->virtualInterface->customer;
 
-                    if( !$cust->isNormal() ){
+                    if( !$cust->statusNormal() ){
                         continue;
                     }
 

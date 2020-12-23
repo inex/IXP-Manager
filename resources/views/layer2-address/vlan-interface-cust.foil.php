@@ -17,7 +17,6 @@
     <?php endif; ?>
 <?php $this->append() ?>
 
-
 <?php $this->section( 'content' ) ?>
     <div class="row">
         <div class="col-sm-12">
@@ -55,7 +54,7 @@
                                     <?= $l2a->macFormatted( ':' ) ?>
                                 </td>
                                 <td>
-                                    <?= $l2a->created ?>
+                                    <?= $l2a->created_at ?>
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
