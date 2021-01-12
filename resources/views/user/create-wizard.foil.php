@@ -46,7 +46,7 @@
 
             <?= Former::actions(
                 Former::primary_submit( 'Create' ),
-                Former::secondary_link( 'Cancel' )->href( $t->custid ? route( "customer@overview" , [ "id" => $t->custid ] ) : route( "user@list" ) ),
+                Former::secondary_link( 'Cancel' )->href( $t->custid ? route( "customer@overview" , [ 'cust' => $t->custid ] ) : route( "user@list" ) ),
                 Former::success_button( 'Help' )->id( 'help-btn' )
             );
             ?>

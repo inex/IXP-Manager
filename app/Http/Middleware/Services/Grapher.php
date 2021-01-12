@@ -85,9 +85,9 @@ class Grapher
             abort( 200 );
         }
 
-        $request->attributes->add(['graph' => $graph]);
+        $request->attributes->add( ['graph' => $graph] );
 
-        return $next($request);
+        return $next( $request );
     }
 
     /**

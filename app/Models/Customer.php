@@ -42,18 +42,14 @@ use Illuminate\Support\{
 
 use IXP\Exceptions\GeneralException as IXP_Exception;
 
+
 /**
  * IXP\Models\Customer
  *
  * @property int $id
- * @property int|null $irrdb
- * @property int|null $company_registered_detail_id
- * @property int|null $company_billing_details_id
- * @property int|null $reseller
  * @property string|null $name
  * @property int|null $type
  * @property string|null $shortname
- * @property string|null $abbreviatedName
  * @property int|null $autsys
  * @property int|null $maxprefixes
  * @property string|null $peeringemail
@@ -63,27 +59,36 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property string|null $nocemail
  * @property string|null $nochours
  * @property string|null $nocwww
+ * @property int|null $irrdb
  * @property string|null $peeringmacro
- * @property string|null $peeringmacrov6
  * @property string|null $peeringpolicy
  * @property string|null $corpwww
  * @property Carbon|null $datejoin
  * @property Carbon|null $dateleave
  * @property int|null $status
  * @property int|null $activepeeringmatrix
- * @property Carbon|null $lastupdated
+ * @property Carbon|null $updated_at
  * @property int|null $lastupdatedby
  * @property string|null $creator
- * @property Carbon|null $created
+ * @property Carbon|null $created_at
+ * @property int|null $company_registered_detail_id
+ * @property int|null $company_billing_details_id
+ * @property string|null $peeringmacrov6
+ * @property string|null $abbreviatedName
  * @property string|null $MD5Support
+ * @property int|null $reseller
  * @property int $isReseller
  * @property int $in_manrs
  * @property int $in_peeringdb
  * @property int $peeringdb_oauth
+ * @property-read \IXP\Models\CompanyBillingDetail|null $companyBillingDetail
+ * @property-read \IXP\Models\CompanyRegisteredDetail|null $companyRegisteredDetail
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServerConnection[] $consoleServerConnections
  * @property-read int|null $console_server_connections_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Contact[] $contacts
  * @property-read int|null $contacts_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerNote[] $customerNotes
+ * @property-read int|null $customer_notes_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerDirectory[] $docstoreCustomerDirectories
  * @property-read int|null $docstore_customer_directories_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerFile[] $docstoreCustomerFiles
@@ -91,20 +96,41 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property-read \IXP\Models\IrrdbConfig|null $irrdbConfig
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IrrdbPrefix[] $irrdbPrefixes
  * @property-read int|null $irrdb_prefixes_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $peerrouteserverfilters
- * @property-read int|null $peerrouteserverfilters_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $routeserverfilters
- * @property-read int|null $routeserverfilters_count
+ * @property-read \IXP\Models\Logo|null $logo
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortHistory[] $patchPanelPortHistories
+ * @property-read int|null $patch_panel_port_histories_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPort[] $patchPanelPorts
+ * @property-read int|null $patch_panel_ports_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $peerRouteServerFilters
+ * @property-read int|null $peer_route_server_filters_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PeeringManager[] $peers
+ * @property-read int|null $peers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PeeringManager[] $peersWith
+ * @property-read int|null $peers_with_count
+ * @property-read Customer|null $resellerObject
+ * @property-read \Illuminate\Database\Eloquent\Collection|Customer[] $resoldCustomers
+ * @property-read int|null $resold_customers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $routeServerFilters
+ * @property-read int|null $route_server_filters_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RsPrefix[] $rsPrefixes
+ * @property-read int|null $rs_prefixes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerTag[] $tags
+ * @property-read int|null $tags_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\TrafficDaily[] $trafficDailies
  * @property-read int|null $traffic_dailies_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\User[] $users
  * @property-read int|null $users_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VirtualInterface[] $virtualInterfaces
  * @property-read int|null $virtual_interfaces_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
+ * @property-read int|null $vlan_interfaces_count
+ * @method static Builder|Customer associate()
  * @method static Builder|Customer current()
+ * @method static Builder|Customer currentActive($trafficing = false, $externalOnly = false, $connected = true)
  * @method static Builder|Customer newModelQuery()
  * @method static Builder|Customer newQuery()
  * @method static Builder|Customer query()
+ * @method static Builder|Customer resellerOnly()
  * @method static Builder|Customer trafficking()
  * @method static Builder|Customer whereAbbreviatedName($value)
  * @method static Builder|Customer whereActivepeeringmatrix($value)
@@ -112,7 +138,7 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @method static Builder|Customer whereCompanyBillingDetailsId($value)
  * @method static Builder|Customer whereCompanyRegisteredDetailId($value)
  * @method static Builder|Customer whereCorpwww($value)
- * @method static Builder|Customer whereCreated($value)
+ * @method static Builder|Customer whereCreatedAt($value)
  * @method static Builder|Customer whereCreator($value)
  * @method static Builder|Customer whereDatejoin($value)
  * @method static Builder|Customer whereDateleave($value)
@@ -121,7 +147,6 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @method static Builder|Customer whereInPeeringdb($value)
  * @method static Builder|Customer whereIrrdb($value)
  * @method static Builder|Customer whereIsReseller($value)
- * @method static Builder|Customer whereLastupdated($value)
  * @method static Builder|Customer whereLastupdatedby($value)
  * @method static Builder|Customer whereMD5Support($value)
  * @method static Builder|Customer whereMaxprefixes($value)
@@ -141,39 +166,10 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @method static Builder|Customer whereShortname($value)
  * @method static Builder|Customer whereStatus($value)
  * @method static Builder|Customer whereType($value)
+ * @method static Builder|Customer whereUpdatedAt($value)
  * @mixin Eloquent
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $peerRouteServerFilters
- * @property-read int|null $peer_route_server_filters_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $routeServerFilters
- * @property-read int|null $route_server_filters_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer currentActive($trafficing = false, $externalOnly = false, $connected = true)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereUpdatedAt($value)
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPort[] $patchPanelPorts
- * @property-read int|null $patch_panel_ports_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortHistory[] $patchPanelPortHistories
- * @property-read int|null $patch_panel_port_histories_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerTag[] $tags
- * @property-read int|null $tags_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Logo[] $logos
- * @property-read int|null $logos_count
- * @property-read \IXP\Models\Logo|null $logo
- * @property-read Customer|null $resellerObject
- * @property-read \Illuminate\Database\Eloquent\Collection|Customer[] $resoldCustomers
- * @property-read int|null $resold_customers_count
- * @property-read \IXP\Models\CompanyBillingDetail|null $companyBillingDetail
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
- * @property-read int|null $vlan_interfaces_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PeeringManager[] $peers
- * @property-read int|null $peers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PeeringManager[] $peersWith
- * @property-read int|null $peers_with_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RsPrefix[] $rsPrefixes
- * @property-read int|null $rs_prefixes_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerNote[] $customerNotes
- * @property-read int|null $customer_notes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerToUser[] $customerToUser
+ * @property-read int|null $customer_to_user_count
  */
 class Customer extends Model
 {
@@ -183,6 +179,48 @@ class Customer extends Model
      * @var string
      */
     protected $table = 'cust';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'type',
+        'shortname',
+        'autsys',
+        'maxprefixes',
+        'peeringemail',
+        'nocphone',
+        'noc24hphone',
+        'nocemail',
+        'nochours',
+        'nocwww',
+        'irrdb',
+        'peeringmacro',
+        'peeringpolicy',
+        'corpwww',
+        'datejoin',
+        'dateleave',
+        'status',
+        'activepeeringmatrix',
+        'creator',
+        'company_registered_detail_id',
+        'company_billing_details_id',
+        'peeringmacrov6',
+        'abbreviatedName',
+        'MD5Support',
+        'reseller',
+        'isReseller',
+        'peeringdb_oauth',
+        'lastupdatedby',
+
+        //'nocfax',
+        //'in_manrs',
+        //'in_peeringdb',
+
+    ];
 
     /**
      * The attributes that should be mutated to dates.
@@ -278,6 +316,27 @@ class Customer extends Model
         self::NOC_HOURS_12x7 => '12x7'
     ];
 
+    public const MD5_SUPPORT_UNKNOWN   = 'UNKNOWN';
+    public const MD5_SUPPORT_YES       = 'YES';
+    public const MD5_SUPPORT_MANDATORY = 'MANDATORY';
+    public const MD5_SUPPORT_PREFERRED = 'PREFERRED';
+    public const MD5_SUPPORT_NO        = 'NO';
+
+    public static $MD5_SUPPORT = [
+        self::MD5_SUPPORT_UNKNOWN   => 'Unknown',
+        self::MD5_SUPPORT_YES       => 'Yes',
+        self::MD5_SUPPORT_MANDATORY => 'Yes - Mandatory',
+        self::MD5_SUPPORT_PREFERRED => 'Yes - Preferred',
+        self::MD5_SUPPORT_NO        => 'No'
+    ];
+
+    /**
+     * Get the customer equipments for the customer
+     */
+    public function customerEquipments(): HasMany
+    {
+        return $this->hasMany(CustomerEquipment::class, 'custid');
+    }
 
     /**
      * Get the virtual interfaces for the customer
@@ -418,11 +477,19 @@ class Customer extends Model
     }
 
     /**
-     * Get the logo for the customer
+     * Get the billing details for the customer
      */
     public function companyBillingDetail(): BelongsTo
     {
         return $this->belongsTo(CompanyBillingDetail::class, 'company_billing_details_id' );
+    }
+
+    /**
+     * Get the registered detail for the customer
+     */
+    public function companyRegisteredDetail(): BelongsTo
+    {
+        return $this->belongsTo(CompanyRegisteredDetail::class, 'company_registered_detail_id' );
     }
 
     /**
@@ -454,7 +521,15 @@ class Customer extends Model
      */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class )->withPivot( 'customer_to_users', 'customer_id' );
+        return $this->belongsToMany(User::class , 'customer_to_users', 'customer_id' );
+    }
+
+    /**
+     * Get all the customer to user for the customer
+     */
+    public function customerToUser(): HasMany
+    {
+        return $this->HasMany(CustomerToUser::class, 'customer_id' );
     }
 
     /**
@@ -547,6 +622,30 @@ class Customer extends Model
     }
 
     /**
+     * Scope a query to only include reseller members.
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeResellerOnly( Builder $query ): Builder
+    {
+        return $query->where('isReseller', true );
+    }
+
+    /**
+     * Scope a query to only include type associate
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeAssociate( Builder $query ): Builder
+    {
+        return $query->where('type', self::TYPE_ASSOCIATE );
+    }
+
+    /**
      * Scope a query to only include trafficking members.
      *
      * Not that the IXP's own internal customers are included in this.
@@ -567,12 +666,7 @@ class Customer extends Model
      */
     public function scopeCurrent( Builder $query): Builder
     {
-        return $query->where('datejoin', '<=', today() )
-            ->where( function ( Builder $query) {
-                $query->whereNull( 'dateleave' )
-                    ->orWhere( 'dateleave', '=', '0000-00-00' )
-                    ->orWhere( 'dateleave', '>=', today() );
-            });
+        return $query->whereRaw( self::SQL_CUST_CURRENT );
     }
 
     /**
@@ -681,6 +775,26 @@ class Customer extends Model
     }
 
     /**
+     * Turn the database integer representation of the status into text
+     *
+     * @return string
+     */
+    public function status(): string
+    {
+        return self::$CUST_STATUS_TEXT[ $this->status ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the type into text
+     *
+     * @return string
+     */
+    public function type(): string
+    {
+        return self::$CUST_TYPES_TEXT[ $this->type ] ?? 'Unknown';
+    }
+
+    /**
      * Is the customer a route server client on any of their VLAN interfaces?
      *
      * @param int $proto One of [4,6]. Defaults to 4.
@@ -695,15 +809,11 @@ class Customer extends Model
             throw new IXP_Exception( 'Invalid protocol' );
         }
 
-        foreach( $this->virtualInterfaces as $vi ) {
-            foreach( $vi->vlanInterfaces as $vli ) {
-                if( $vli->ipvxEnabled( $proto ) && $vli->rsclient ) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return self::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )
+            ->leftJoin( 'vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id' )
+            ->where( 'vli.rsclient', true )
+            ->where( 'cust.id', $this->id )
+            ->where( "ipv{$proto}enabled", true )->count() ? true : false;
     }
 
     /**
@@ -716,6 +826,19 @@ class Customer extends Model
         return (bool)self::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )
             ->leftJoin( 'vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id' )
             ->where( 'cust.id', $this->id )->where( 'irrdbfilter', true )
+            ->get()->count();
+    }
+
+    /**
+     * Is the customer an AS112 client on any of their VLAN interfaces?
+     *
+     * @return boolean
+     */
+    public function isAS112Client(): bool
+    {
+        return (bool)self::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )
+            ->leftJoin( 'vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id' )
+            ->where( 'cust.id', $this->id )->where( 'as112client', true )
             ->get()->count();
     }
 

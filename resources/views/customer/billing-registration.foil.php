@@ -4,27 +4,20 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-
-        <a href="<?= route( 'customer@overview', [ 'id' => $t->c->getId() ] ) ?>">
-            <?= $t->c->getFormattedName() ?>
-        </a>
-        /
-        Billing and Registration Details
-
+    <a href="<?= route( 'customer@overview', [ 'cust' => $t->c->id ] ) ?>">
+        <?= $t->c->getFormattedName() ?>
+    </a>
+    /
+    Billing and Registration Details
 <?php $this->append() ?>
-
 
 <?php $this->section('content') ?>
     <div class="container-fluid">
-
         <div class="row">
-
             <div class="col-lg-12">
-
                 <?= $t->alerts() ?>
 
                 <?php if( config( 'ixp_fe.customer.billing_updates_notify' ) ): ?>
-
                     <div class="alert alert-info mt-4" role="alert">
                         <div class="d-flex align-items-center">
                             <div class="text-center">
@@ -38,28 +31,24 @@
                             </div>
                         </div>
                     </div>
-
                 <?php endif; ?>
 
-                <div id="instructions-alert" class="alert alert-info" style="display: none;">
+                <div id="instructions-alert" class="alert alert-info collapse">
                     <b>IXP Manager</b> does not provide any accounting / invoicing functionality. All the information on this page is
                     informational for your own record keeping. None of it is required.
                 </div>
 
                 <?= Former::open()->method( 'POST' )
-                    ->action( route ('customer@store-billing-and-reg-details' ) )
+                    ->action( route ('customer@store-billing-and-reg-details', [ 'cust' => $t->c->id ] ) )
                     ->customInputWidthClass( 'col-sm-6' )
                     ->customLabelWidthClass( 'col-sm-4' )
                     ->actionButtonsCustomClass( "grey-box")
                 ?>
 
-
                 <div class="row">
                     <div class="col-lg-6 col-md-12">
-
                         <h3>Registration Details</h3>
                         <hr class="tw-mb-6">
-
 
                         <?= Former::text( 'registeredName' )
                             ->label( 'Registered Name' )
@@ -78,7 +67,6 @@
                             ->addClass( 'chzn-select-tag' )
                             ->blockHelp( '' );
                         ?>
-
 
                         <?= Former::text( 'address1' )
                             ->id( 'address1' )
@@ -119,14 +107,10 @@
                         ?>
                     </div>
 
-
-                    <?php if( !( $t->resellerMode() && $t->c->isResoldCustomer() ) ): ?>
-
+                    <?php if( !( $t->resellerMode() && $t->c->reseller ) ): ?>
                         <div class="col-lg-6 col-md-12 full-member-details">
-
                             <h3>Billing Details</h3>
                             <hr class="tw-mb-6">
-
 
                             <?= Former::text( 'billingContactName' )
                                 ->label( 'Contact' )
@@ -135,7 +119,7 @@
 
                             <?= Former::select( 'billingFrequency' )
                                 ->label( 'Billing Frequency' )
-                                ->fromQuery( \Entities\CompanyBillingDetail::$BILLING_FREQUENCIES )
+                                ->fromQuery( \IXP\Models\CompanyBillingDetail::$BILLING_FREQUENCIES )
                                 ->placeholder( 'Choose a billing frequency' )
                                 ->addClass( 'chzn-select' )
                                 ->blockHelp( '' );
@@ -204,7 +188,7 @@
 
                             <?= Former::select( 'invoiceMethod' )
                                 ->label( 'Invoice Method' )
-                                ->fromQuery( \Entities\CompanyBillingDetail::$INVOICE_METHODS )
+                                ->fromQuery( \IXP\Models\CompanyBillingDetail::$INVOICE_METHODS )
                                 ->placeholder( 'Choose an invoice method' )
                                 ->addClass( 'chzn-select' )
                                 ->blockHelp( '' );
@@ -231,26 +215,16 @@
                     <?php endif; ?>
                 </div>
 
-
-                <?=Former::actions( Former::primary_submit( $t->c ? 'Save Changes' : 'Add' )->class( "mb-2 mb-sm-0" ),
-                    Former::secondary_link( 'Cancel' )->href( route( "customer@overview" , [ "id" => $t->c->getId() ] ) )->class( "mb-2 mb-sm-0" ),
+                <?=Former::actions( Former::primary_submit( 'Save Changes' )->class( "mb-2 mb-sm-0" ),
+                    Former::secondary_link( 'Cancel' )->href( route( "customer@overview" , [ 'cust' => $t->c->id ] ) )->class( "mb-2 mb-sm-0" ),
                     Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0")
-                    );?>
-
-
-
-                <?= Former::hidden( 'id' )
-                    ->value( $t->c ? $t->c->getId() : '' )
-                ?>
+                );?>
 
                 <?= Former::close() ?>
 
             </div>
-
         </div>
     </div>
-
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
@@ -260,12 +234,12 @@
              * set the address information to the billing address info
              */
             $( "#copy-address" ).click( () => {
-                $( "#address1" ).val(  ) != ''   ? $( "#billingAddress1"   ).val( $( "#address1" ).val(  ) ) : '';
-                $( "#address2" ).val(  ) != ''   ? $( "#billingAddress2"   ).val( $( "#address2" ).val(  ) ) : '';
-                $( "#address3" ).val(  ) != ''   ? $( "#billingAddress3"   ).val( $( "#address3" ).val(  ) ) : '';
-                $( "#townCity" ).val(  ) != ''   ? $( "#billingTownCity"   ).val( $( "#townCity" ).val(  ) ): '';
-                $( "#postcode" ).val(  ) != ''   ? $( "#billingPostcode"   ).val( $( "#postcode" ).val(  ) ): '';
-                $( "#country" ).val(  ) != ''    ? $( "#billingCountry"    ).val( $( "#country"  ).val(  ) ).trigger('change.select2') : '';
+                $( "#address1" ).val(  ) !== ''   ? $( "#billingAddress1"   ).val( $( "#address1" ).val() ) : '';
+                $( "#address2" ).val(  ) !== ''   ? $( "#billingAddress2"   ).val( $( "#address2" ).val() ) : '';
+                $( "#address3" ).val(  ) !== ''   ? $( "#billingAddress3"   ).val( $( "#address3" ).val() ) : '';
+                $( "#townCity" ).val(  ) !== ''   ? $( "#billingTownCity"   ).val( $( "#townCity" ).val() ): '';
+                $( "#postcode" ).val(  ) !== ''   ? $( "#billingPostcode"   ).val( $( "#postcode" ).val() ): '';
+                $( "#country" ).val(  )  !== ''   ? $( "#billingCountry"    ).val( $( "#country"  ).val() ).trigger('change.select2') : '';
             } );
         });
     </script>

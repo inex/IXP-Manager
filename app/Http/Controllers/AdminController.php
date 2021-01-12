@@ -83,129 +83,112 @@ class AdminController extends Controller
     private function dashboardStats( Request $request ): array
     {
         // only do this once every 60 minutes
-        if( $request->query( 'refresh_cache', 0 ) || !( $cTypes = Cache::get( 'admin_ctypes' ) ) ) {
-
+        //if( $request->query( 'refresh_cache', 0 ) || !( $cTypes = Cache::get( 'admin_ctypes' ) ) ) {
             // Full / Associate / Probono / Internal
-            $cTypes['types'] = Customer::selectRaw( 'type AS ctype, COUNT( type ) AS cnt' )
-                ->whereRaw( Customer::SQL_CUST_CURRENT )
-                ->whereRaw(Customer::SQL_CUST_ACTIVE )
-                ->groupBy( 'ctype' )->get()->keyBy( 'ctype' )->toArray();
-            ;
+            $cTypes[ 'types' ] = Customer::selectRaw('type AS ctype, COUNT( type ) AS cnt')
+                ->whereRaw(Customer::SQL_CUST_CURRENT)
+                ->whereRaw(Customer::SQL_CUST_ACTIVE)
+                ->groupBy('ctype')->get()->keyBy('ctype')->toArray();;
 
             // Searches for VirtualInterfaces where custtype us not internal.
             // Because it's Virtual Interfaces, it should only be current or unremoved customers, etc.
             $vis = VirtualInterfaceAggregator::getByLocation();
 
-            $speeds          = [];
-            $byLocation      = [];
-            $byLan           = [];
-            $byIxp           = [];
+            $speeds = [];
+            $byLocation = [];
+            $byLan = [];
+            $byIxp = [];
             $custsByLocation = [];
-            $custsByInfra    = [];
-            $peeringCusts    = [];
+            $custsByInfra = [];
+            $peeringCusts = [];
 
             foreach( $vis as $vi ) {
-                $location       = $vi['locationname'];
-                $infrastructure = $vi['infrastructure'];
-                // ----
+                $location = $vi[ 'locationname' ];
+                $infrastructure = $vi[ 'infrastructure' ];
 
-                if( !isset( $custsByLocation[ $location ] ) ) {
-                    $custsByLocation[ $location ] = 1;
+                if ( !isset($custsByLocation[ $location ])) {
+                    $custsByLocation[ $location ] = ['count' => 1, 'id' => $vi[ 'locationid' ], 'name' => $location];
                 } else {
-                    $custsByLocation[ $location ]++;
+                    $custsByLocation[ $location ][ 'count' ]++;
                 }
 
-                // ----
-
-                if( !isset( $speeds[ $vi['speed'] ] ) ) {
+                if ( !isset($speeds[ $vi[ 'speed' ] ])) {
                     $speeds[ $vi[ 'speed' ] ] = 1;
                 } else {
                     $speeds[ $vi[ 'speed' ] ]++;
                 }
 
-                // ----
-
-                if( !isset( $custsByInfra[ $infrastructure ] ) ) {
+                if ( !isset($custsByInfra[ $infrastructure ])) {
                     $custsByInfra[ $infrastructure ] = [];
                 }
-                if( !in_array( $vi['customerid'], $custsByInfra[ $infrastructure ], true ) ) {
+                if ( !in_array($vi[ 'customerid' ], $custsByInfra[ $infrastructure ], true)) {
                     $custsByInfra[ $infrastructure ][] = $vi[ 'customerid' ];
                 }
 
-                if( !in_array( $vi['customerid'], $peeringCusts, true ) ) {
+                if ( !in_array($vi[ 'customerid' ], $peeringCusts, true)) {
                     $peeringCusts[] = $vi[ 'customerid' ];
                 }
 
-                // ----
-
-                if( !isset( $byLocation[ $location ] ) ) {
-                    $byLocation[ $location ] = [];
+                if ( !isset($byLocation[ $location ])) {
+                    $byLocation[ $location ] = [ 'id' => $vi[ 'locationid' ]  ];
                 }
-                if( !isset( $byLocation[ $vi['locationname'] ][ $vi['speed'] ] ) ) {
+                if ( !isset($byLocation[ $vi[ 'locationname' ] ][ $vi[ 'speed' ] ])) {
                     $byLocation[ $location ][ $vi[ 'speed' ] ] = 1;
                 } else {
                     $byLocation[ $location ][ $vi[ 'speed' ] ]++;
                 }
 
-                // ----
-
-                if( !isset( $byLan[ $infrastructure ] ) ) {
-                    $byLan[ $infrastructure ] = [];
+                if ( !isset( $byLan[ $infrastructure ] ) ) {
+                    $byLan[ $infrastructure ] = [ 'id' => $vi[ 'infrastructureid' ] ];
                 }
 
-                if( !isset( $byLan[ $infrastructure ][ $vi['speed'] ] ) ) {
+                if ( !isset( $byLan[ $infrastructure ][ $vi[ 'speed' ] ] ) ) {
                     $byLan[ $infrastructure ][ $vi[ 'speed' ] ] = 1;
                 } else {
                     $byLan[ $infrastructure ][ $vi[ 'speed' ] ]++;
                 }
             }
 
-            ksort( $speeds, SORT_NUMERIC );
-            arsort( $custsByLocation, SORT_NUMERIC );
+            ksort($speeds, SORT_NUMERIC);
 
-            $cTypes['speeds']           = $speeds;
-            $cTypes['custsByLocation']  = $custsByLocation;
-            $cTypes['byLocation']       = $byLocation;
-            $cTypes['byLan']            = $byLan;
-            $cTypes['byIxp']            = $byIxp;
-            $cTypes['custsByInfra']     = $custsByInfra;
-            $cTypes['peeringCusts']     = $peeringCusts;
+            usort($custsByLocation, function ($a, $b) {
+                return $a[ 'count' ] < $b[ 'count' ];
+            });
 
-            // FROM of query is vlaninterface so should be current:
-            $cTypes['rsUsage']          = VlanInterface::selectRaw( 'v.name AS vlanname,
-                                             COUNT(vli.id) AS overall_count, 
-                                             SUM(vli.rsclient = 1) AS rsclient_count' )
-                                            ->from( 'vlaninterface AS vli' )
-                                            ->Join( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
-                                            ->Join( 'cust AS c', 'c.id', 'vi.custid' )
-                                            ->Join( 'vlan AS v', 'v.id', 'vli.vlanid' )
-                                            ->where( 'v.private', false )
-                                            ->whereIn( 'c.type', [1,4] )
-                                            ->groupBy( 'vlanname' )->get()->toArray();
+            $cTypes[ 'speeds' ] = $speeds;
+            $cTypes[ 'custsByLocation' ] = $custsByLocation;
+            $cTypes[ 'byLocation' ] = $byLocation;
+            $cTypes[ 'byLan' ] = $byLan;
+            $cTypes[ 'byIxp' ] = $byIxp;
+            $cTypes[ 'custsByInfra' ] = $custsByInfra;
+            $cTypes[ 'peeringCusts' ] = $peeringCusts;
 
             // FROM of query is vlaninterface so should be current:
-            $cTypes['ipv6Usage']        = VlanInterface::selectRaw( 'v.name AS vlanname, 
-                                            COUNT(vli.id) AS overall_count, 
-                                            SUM(vli.ipv6enabled = 1) AS ipv6_count' )
-                                            ->from( 'vlaninterface AS vli' )
-                                            ->Join( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
-                                            ->Join( 'cust AS c', 'c.id', 'vi.custid' )
-                                            ->Join( 'vlan AS v', 'v.id', 'vli.vlanid' )
-                                            ->where( 'v.private', false )
-                                            ->whereIn( 'c.type', [1,4] )
-                                            ->groupBy( 'vlanname' )->get()->toArray();
+            $cTypes[ 'usage' ] = VlanInterface::selectRaw(
+            'v.id AS vlanid,
+                        v.name AS vlanname,
+                        COUNT(vli.id) AS overall_count, 
+                        SUM(vli.rsclient = 1) AS rsclient_count,
+                        SUM(vli.ipv6enabled = 1) AS ipv6_count' )
+                ->from('vlaninterface AS vli')
+                ->Join('virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid')
+                ->Join('cust AS c', 'c.id', 'vi.custid')
+                ->Join('vlan AS v', 'v.id', 'vli.vlanid')
+                ->where('v.private', false)
+                ->whereIn('c.type', [1, 4])
+                ->groupBy('vlanname')->get()->toArray();
 
             // full/probono customers with connected interface by vlan
-            $cTypes['percentByVlan']    = VirtualInterfaceAggregator::getPercentageCustomersByVlan();
+            $cTypes[ 'percentByVlan' ] = VirtualInterfaceAggregator::getPercentageCustomersByVlan();
 
-            $cTypes['cached_at']        = Carbon::now();
+            $cTypes[ 'cached_at' ] = Carbon::now();
 
-            $cTypes['infras']           = Infrastructure::orderBy( 'name', 'asc' )->get()->toArray();
-            $cTypes['locations']        = Location::orderBy( 'name', 'asc' )->get()->toArray();
-            $cTypes['vlans']            = Vlan::publicOnly()->orderBy('number')->get()->toArray();
+            $cTypes[ 'infras' ] = Infrastructure::orderBy('name', 'asc')->get()->toArray();
+            $cTypes[ 'locations' ] = Location::orderBy('name', 'asc')->get()->toArray();
+            $cTypes[ 'vlans' ] = Vlan::publicOnly()->orderBy('number')->get()->keyBy('id')->toArray();
 
-            Cache::put( 'admin_ctypes', $cTypes, 300 );
-        }
+            Cache::put('admin_ctypes', $cTypes, 300);
+        //}
 
         return $cTypes;
     }
@@ -242,7 +225,7 @@ class AdminController extends Controller
                     ->setCategory( Graph::CATEGORY_BITS );
             }
 
-            Cache::put( 'admin_stats_'.$period, $graphs, 300 );
+            Cache::put( 'admin_stats_'. $period, $graphs, 300 );
         }
         return $graphs;
     }

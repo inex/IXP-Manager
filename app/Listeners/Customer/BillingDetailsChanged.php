@@ -44,9 +44,8 @@ class BillingDetailsChanged
      *
      * @return void
      */
-    public function handle( BillingDetailsChangedEvent $e )
+    public function handle( BillingDetailsChangedEvent $e ): void
     {
-
         if( !config( 'ixp_fe.customer.billing_updates_notify' ) || $e->ocbd->customer->resellerObject()->exists() ) {
             return;
         }

@@ -6,7 +6,7 @@
 
 <?php if( Auth::getUser()->isSuperUser() ): ?>
     <?php $this->section( 'page-header-preamble' ) ?>
-        <a href="<?= route( "customer@overview" , [ "id" => $t->c->id ] ) ?>" >
+        <a href="<?= route( "customer@overview" , [ 'cust' => $t->c->id ] ) ?>" >
             <?= $t->ee( $t->c->name ) ?>
         </a>
         /
@@ -72,7 +72,7 @@
 
                     <?= Former::actions(
                         Former::primary_submit( 'Upload' )->class( "mb-2 mb-sm-0" ),
-                        Former::secondary_link( 'Cancel' )->href( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ "id" => $t->c->id ] ) : route( "dashboard@index" ) )->class( "mb-2 mb-sm-0" ),
+                        Former::secondary_link( 'Cancel' )->href( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ 'cust' => $t->c->id ] ) : route( "dashboard@index" ) )->class( "mb-2 mb-sm-0" ),
                         Auth::getUser()->isSuperUser() ? Former::success_link( 'Help' )->href('http://docs.ixpmanager.org/usage/customers/#customer-logos')->class( "mb-2 mb-sm-0" ) : ''
                     );
                     ?>

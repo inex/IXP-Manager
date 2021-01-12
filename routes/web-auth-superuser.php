@@ -194,19 +194,18 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
 ///
 Route::group( [ 'namespace' => 'Customer'  ], function() {
     Route::group( [ 'prefix' => 'customer' ], function() {
-        Route::get(     'list',                             'CustomerController@list'                       )->name( 'customer@list');
-        Route::get(     'add',                              'CustomerController@edit'                       )->name( 'customer@add');
-        Route::get(     'edit/{id}',                        'CustomerController@edit'                       )->name( 'customer@edit');
-        Route::get(     'billing-registration/{id}',        'CustomerController@editBillingAndRegDetails'   )->name( 'customer@billing-registration');
-        Route::get(     'welcome-email/{id}',               'CustomerController@welcomeEmail'               )->name( "customer@welcome-email" );
-        Route::get(     'delete-recap/{id}',                'CustomerController@deleteRecap'                )->name( "customer@delete-recap" );
-        Route::get(     'overview/{id}/{tab?}',             'CustomerController@overview'                   )->name( "customer@overview" );
-        Route::get(     '{id}/tags',                       'CustomerController@tags'                        )->name( "customer@tags" );
-        Route::post(    'store',                            'CustomerController@store'                      )->name( 'customer@store');
-        Route::post(    'store-billing-and-reg-details',    'CustomerController@storeBillingAndRegDetails'  )->name( 'customer@store-billing-and-reg-details');
-        Route::post(    'send-welcome-email',               'CustomerController@sendWelcomeEmail'           )->name( 'customer@send-welcome-email');
-        Route::post(    'delete',                           'CustomerController@delete'                     )->name( 'customer@delete');
-        Route::post(    'store-tags',                       'CustomerController@storeTags'                  )->name( 'customer@store-tags');
+        Route::get(     'list',                                 'CustomerController@list'                       )->name( 'customer@list'                            );
+        Route::get(     'create',                               'CustomerController@create'                     )->name( 'customer@create'                          );
+        Route::get(     'edit/{cust}',                          'CustomerController@edit'                       )->name( 'customer@edit'                            );
+        Route::get(     'billing-registration/{cust}',          'CustomerController@billingAndRegDetails'       )->name( 'customer@billing-registration'            );
+        Route::get(     'welcome-email/{cust}',                 'CustomerController@welcomeEmail'               )->name( 'customer@welcome-email'                   );
+        Route::get(     'overview/{cust}/{tab?}',               'CustomerController@overview'                   )->name( 'customer@overview'                        );
+        Route::get(     'delete-recap/{cust}',                  'CustomerController@deleteRecap'                )->name( 'customer@delete-recap'                    );
+        Route::post(    'store',                                'CustomerController@store'                      )->name( 'customer@store'                           );
+        Route::put(     'update/{cust}',                        'CustomerController@update'                     )->name( 'customer@update'                         );
+        Route::post(    '{cust}/store-billing-and-reg-details', 'CustomerController@storeBillingAndRegDetails'  )->name( 'customer@store-billing-and-reg-details'   );
+        Route::post(    '{cust}/send-welcome-email',            'CustomerController@sendWelcomeEmail'           )->name( 'customer@send-welcome-email'              );
+        Route::delete(    'delete/{cust}',                      'CustomerController@delete'                     )->name( 'customer@delete'                          );
     });
 
     if( !config('ixp_fe.frontend.disabled.logo' ) ) {

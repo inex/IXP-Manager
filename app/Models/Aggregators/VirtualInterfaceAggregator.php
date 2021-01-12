@@ -131,8 +131,10 @@ class VirtualInterfaceAggregator extends VirtualInterface
             'cust.id AS customerid',
             'vi.id AS id',
             'pi.speed AS speed',
+            'i.id AS infrastructureid',
             'i.name AS infrastructure',
-            'l.name AS locationname'
+            'l.id AS locationid',
+            'l.name AS locationname',
         ] )
             ->from( 'virtualinterface AS vi' )
             ->Join( 'cust AS cust', 'cust.id', 'vi.custid' )
@@ -168,7 +170,8 @@ class VirtualInterfaceAggregator extends VirtualInterface
     public static function getPercentageCustomersByVlan(): array
     {
         return self::selectRaw(
-            "v.name AS vlanname, 
+            "v.name AS vlanname,
+            v.id AS vlanid, 
             COUNT( DISTINCT vi.custid ) AS count, 
             COUNT( DISTINCT vi.custid ) / ( 
             SELECT COUNT( DISTINCT vi.custid ) FROM virtualinterface AS vi

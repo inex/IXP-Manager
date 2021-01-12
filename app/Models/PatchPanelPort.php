@@ -387,8 +387,8 @@ class PatchPanelPort extends Model
     {
         $name = $this->patchPanel->port_prefix . $this->number;
 
-        if( $this->duplexSlavePorts()->exists() ) {
-            $name .= '/' . $this->duplexSlavePorts()->first()->name() . ' ';
+        if( $this->duplexSlavePorts->isNotEmpty() ) {
+            $name .= '/' . $this->duplexSlavePorts[ 0 ]->name() . ' ';
             $name .= '(' . ( $this->number % 2 ? ( floor( $this->number / 2 ) ) + 1 : $this->number / 2 ) . ')';
         }
         return $name;

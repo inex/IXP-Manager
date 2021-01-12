@@ -57,6 +57,7 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations
  * @property-read \IXP\Models\User $user
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\UserLoginHistory[] $userLoginHistories
  * @property-read int|null $user_login_histories_count
+ * @method static Builder|CustomerToUser custAdmin()
  */
 class CustomerToUser extends Model
 {
@@ -107,6 +108,18 @@ class CustomerToUser extends Model
     public function userLoginHistories(): HasMany
     {
         return $this->hasMany(UserLoginHistory::class, 'customer_to_user_id');
+    }
+
+    /**
+     * Scope a query to only include cust admins.
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeCustAdmin( Builder $query ): Builder
+    {
+        return $query->where('privs', User::AUTH_CUSTADMIN );
     }
 
 }

@@ -28,19 +28,25 @@
     <body class="d-flex flex-column h-100">
         <header>
             <?php
+            use IXP\Models\User;
             // We used to manage these menus with a lot of if / elseif / else clauses. It was a mess.
             // Despite the drawbacks of replication, it's easier - by a distance - to mainatin standalone
             // menu templates per user type:
+            $authCheck  = Auth::check();
+            if( $authCheck ){
+                $is2faAuthRequiredForSession = Auth::getUser()->is2faAuthRequiredForSession();
+                $privs      = Auth::getUser()->privs();
+            }
 
-            if( !Auth::check() || Session::exists( "2fa-" . Auth::id() ) ) {
+            if( !$authCheck || Session::exists( "2fa-" . Auth::id() ) ) {
                 echo $t->insert("layouts/menus/public");
-            } elseif( Auth::getUser()->isCustUser() && Auth::getUser()->customer->typeAssociate() ) {
+            } elseif( $privs === User::AUTH_CUSTUSER && Auth::getUser()->customer->typeAssociate() ) {
                 echo $t->insert("layouts/menus/associate");
-            } elseif( Auth::getUser()->isCustAdmin() ) {
+            } elseif( $privs === User::AUTH_CUSTADMIN ) {
                 echo $t->insert( "layouts/menus/custadmin" );
-            } elseif( Auth::getUser()->isCustUser() ) {
+            } elseif( $privs === User::AUTH_CUSTUSER ) {
                 echo $t->insert("layouts/menus/custuser");
-            } elseif( Auth::getUser()->isSuperUser() ) {
+            } elseif( $privs === User::AUTH_SUPERUSER ) {
                 echo $t->insert("layouts/menus/superuser");
             }
             ?>
@@ -49,42 +55,35 @@
         <div class="container-fluid">
             <div class="row" >
 
-                <?php if( Auth::check() && Auth::getUser()->isSuperUser() && !Auth::getUser()->is2faAuthRequiredForSession() ): ?>
+                <?php if( $authCheck && $privs === User::AUTH_SUPERUSER && !$is2faAuthRequiredForSession ): ?>
                     <?= $t->insert( 'layouts/menu' ); ?>
                 <?php endif; ?>
 
                 <div id="slide-reveal-overlay" class="collapse"></div>
-                <?php if( Auth::check() && Auth::getUser()->isSuperUser() && !Auth::getUser()->is2faAuthRequiredForSession() ): ?>
+                <?php if( $authCheck && $privs === User::AUTH_SUPERUSER && !$is2faAuthRequiredForSession ): ?>
                     <main role="main" id="main-div" class="col-md-9 ml-sm-auto col-lg-9 col-xl-10 mt-2 pb-4">
                  <?php else: ?>
                     <main role="main" id="main-div" class="col-md-10 mx-sm-auto mt-2 pb-4">
                 <?php endif; ?>
+                      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                          <h3>
+                              <?php $this->section( 'page-header-preamble' ) ?>
+                              <?php $this->stop() ?>
+                          </h3>
+                          <div class="btn-toolbar mb-2 mb-md-0 ml-auto">
+                              <?php $this->section( 'page-header-postamble' ) ?>
+                              <?php $this->stop() ?>
+                          </div>
+                      </div>
 
-                        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                            <h3>
-                                <?php $this->section('page-header-preamble') ?>
-                                <?php $this->stop() ?>
-                            </h3>
-                            <div class="btn-toolbar mb-2 mb-md-0 ml-auto">
-                                <?php $this->section('page-header-postamble') ?>
-                                <?php $this->stop() ?>
-                            </div>
-                        </div>
-
-                        <div class="container-fluid">
-                            <div class="col-sm-12">
-                                <?php $this->section('content') ?>
-
-                                <?php $this->stop() ?>
-                            </div>
-
-                        </div>
-
-
-                    </main>
-
+                      <div class="container-fluid">
+                          <div class="col-sm-12">
+                              <?php $this->section( 'content' ) ?>
+                              <?php $this->stop() ?>
+                          </div>
+                      </div>
+                  </main>
             </div> <!-- </div class="row"> -->
-
         </div> <!-- </div class="container"> -->
 
         <?= $t->insert( 'layouts/footer-content' ); ?>
@@ -95,9 +94,7 @@
             const MARKDOWN_URL              = "<?= route( "utils@markdown" )   ?>";
             const DATATABLE_STATE_DURATION  = 0;
         </script>
-        <script type="text/javascript" src="<?= url ('') . mix('js/ixp-pack.js') ?>"></script>
-
-        <script>
+        <script type="text/javascript" src="<?= url ('') . mix('js/ixp-pack.js') ?>"></script><script>
 
             $( ".chzn-select" ).select2( { width: '100%', placeholder: function() {
                 $( this ).data( 'placeholder' );
@@ -115,7 +112,7 @@
                 $( this ).data( 'placeholder' );
             }});
 
-            <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
+            <?php if( $authCheck && $privs === User::AUTH_SUPERUSER ): ?>
                 $( "#menu-select-customer" ).select2({ width: '100%',placeholder: "Jump to <?= config( 'ixp_fe.lang.customer.one' ) ?>...", allowClear: true }).change( function(){
                     document.location.href = '<?= url( "/customer/overview" ) ?>/' + $( "#menu-select-customer" ).val();
                 });
@@ -148,10 +145,8 @@
                     $('#slide-reveal-overlay').toggleClass('collapse');
                     $('body').toggleClass('overflow-hidden');
                 }
-
             <?php endif; ?>
         </script>
-
 
         <?php $this->section('scripts') ?>
         <?php $this->stop() ?>
@@ -161,6 +156,5 @@
             // Piwik / Google Analytics integration:
             $t->insert( 'layouts/footer-custom' );
         ?>
-
     </body>
 </html>

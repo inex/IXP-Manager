@@ -6,27 +6,25 @@
 
                 <small>
                     <?php
-                        $vlis       = $t->vi->vlanInterfaces();
-                        $vli        = $vlis->first() ?? 0 /** @var $vli \IXP\Models\VlanInterface */;
+                        $vlis       = $t->vi->vlanInterfaces;
+                        $vli        = $vlis[ 0 ] ?? 0 /** @var $vli \IXP\Models\VlanInterface */;
 
                         $pis        = $t->vi->physicalInterfaces;
                         $countPis   = $pis->count();
-                        $firstPi    = $pis->first() ?? 0 /** @var $firstPi \IXP\Models\PhysicalInterface */
+                        $firstPi    = $pis[ 0 ] ?? 0 /** @var $firstPi \IXP\Models\PhysicalInterface */
                     ?>
 
                     <?php if( $t->vi->typePeering() && $countPis ): ?>
                         &nbsp;&nbsp;&nbsp;&nbsp;<?= $t->ee( $firstPi->switchPort->switcher->infrastructureModel->name ) ?>
                     <?php elseif( $t->vi->typeFanout() ): ?>
                         &nbsp;&nbsp;&nbsp;&nbsp;Reseller Fanout
-
-                        <?php if( $countPis && $firstPi->relatedInterface() ): ?>
-                            for <a href="<?= route( Auth::getUser()->isSuperUser() ? "customer@overview" : "customer@detail" , [ 'id' => $firstPi->relatedInterface()->virtualInterface->custid ] ) ?>">
-                                <?= $t->ee( $firstPi->relatedInterface()->virtualInterface->customer->abbreviatedName ) ?>
+                        <?php if( $countPis && $related = $firstPi->relatedInterface() ): ?>
+                            for <a href="<?= route( $t->isSuperUser ? "customer@overview" : "customer@detail" , [ 'cust' => $related->virtualInterface->custid ] ) ?>">
+                                <?= $t->ee( $related->virtualInterface->customer->abbreviatedName ) ?>
                         </a>
                         <?php else: ?>
                             <em>(unassigned)</em>
                         <?php endif; ?>
-
                     <?php elseif( $t->vi->typeReseller() ): ?>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reseller Uplink
                     <?php endif; ?>
@@ -173,8 +171,8 @@
             </div>
         <?php endif; ?>
 
-        <?php if( $t->vi->vlanInterfaces()->exists() ): ?>
-            <?php foreach( $t->vi->vlanInterfaces as $vli ): ?>
+        <?php if( $vlis->isNotEmpty() ): ?>
+            <?php foreach( $vlis as $vli ): ?>
                 <?php $vlanid = $vli->vlanid ?>
                 <?php if( $vli->vlan->private ): ?>
                     <div class="row">
@@ -232,7 +230,7 @@
                     <div class="row mb-4">
                         <div class="col-lg-12">
                             <table class="table table-sm table-borderless table-striped">
-                                <?php if( $vli->ipv6enabled && $vli->ipv6address ): ?>
+                                <?php if( $vli->ipv6enabled && $v6 = $vli->ipv6address ): ?>
                                     <tr>
                                         <td>
                                             <b>
@@ -241,7 +239,7 @@
                                         </td>
                                         <td>
                                             <span class="tw-font-mono">
-                                                <?= $t->ee( $vli->ipv6Address->address ) ?><?php if( isset( $t->netInfo[ $vlanid ][ 6 ][ 'masklen' ] ) ) : ?>/<?= $t->netInfo[ $vlanid ][ 6 ][ "masklen" ] ?><?php endif;?>
+                                                <?= $t->ee( $v6->address ) ?><?php if( isset( $t->netInfo[ $vlanid ][ 6 ][ 'masklen' ] ) ) : ?>/<?= $t->netInfo[ $vlanid ][ 6 ][ "masklen" ] ?><?php endif;?>
                                             </span>
                                         </td>
                                         <td>
@@ -259,7 +257,7 @@
                                     </tr>
                                 <?php endif; ?>
 
-                                <?php if( $vli->ipv4enabled && $vli->ipv4address ): ?>
+                                <?php if( $vli->ipv4enabled && $v4 = $vli->ipv4address ): ?>
                                     <tr>
                                         <td>
                                             <b>
@@ -268,7 +266,7 @@
                                         </td>
                                         <td>
                                             <span class="tw-font-mono">
-                                                <?= $t->ee( $vli->ipv4address->address ) ?><?php if( isset( $t->netInfo[ $vlanid ][ 4 ][ 'masklen' ] ) ) : ?>/<?= $t->netInfo[ $vlanid ][ 4 ][ "masklen" ] ?><?php endif;?>
+                                                <?= $t->ee( $v4->address ) ?><?php if( isset( $t->netInfo[ $vlanid ][ 4 ][ 'masklen' ] ) ) : ?>/<?= $t->netInfo[ $vlanid ][ 4 ][ "masklen" ] ?><?php endif;?>
                                             </span>
                                         </td>
                                         <td>
@@ -374,7 +372,7 @@
                         </h5>
                     </div>
 
-                    <div clas="my-auto">
+                    <div class="my-auto">
                         <a class="btn btn-white btn-sm" href="<?= route( "statistics@member-drilldown", [ 'type' => 'pi', 'typeid' => $pi->id ] ) ?>">
                             <i class="fa fa-search"></i>
                         </a>

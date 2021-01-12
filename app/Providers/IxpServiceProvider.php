@@ -49,10 +49,9 @@ class IxpServiceProvider extends ServiceProvider
                 if( ( Auth::check() && Auth::getUser()->isSuperUser() ) || env( 'IXP_PHPUNIT_RUNNING', false ) ) {
                     // get an array of customer id => names
                     if( !( $customers = Cache::get( 'admin_home_customers' ) ) ) {
-                        $customers = Customer::select( [ 'id', 'name' ] )->currentActive()->get()->keyBy( 'id' )->toArray();
+                        $customers = Customer::select( [ 'id', 'name' ] )->current()->orderBy( 'name' )->get()->keyBy( 'id' )->toArray();
                         Cache::put( 'admin_home_customers', $customers, 3600 );
                     }
-
                     $view->with( 'dd_customer_id_name', $customers );
                 }
             });

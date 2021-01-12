@@ -93,7 +93,7 @@
                     <?php foreach( $t->tdpis as $td ): ?>
                         <tr>
                             <td>
-                                <a href="<?= route( 'customer@overview', [ 'id' => $td[ 'cid' ] ] ) ?>">
+                                <a href="<?= route( 'customer@overview', [ 'cust' => $td[ 'cid' ] ] ) ?>">
                                     <?= $td[ 'cname' ] ?>
                                 </a>
                             </td>

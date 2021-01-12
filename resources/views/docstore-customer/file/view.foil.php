@@ -7,7 +7,7 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'page-header-preamble' ) ?>
     <?php if( Auth::getUser()->isSuperUser() ): ?>
-        <a href="<?= route('customer@overview', [ 'id' => $t->cust->id ] ) ?>"><?= $t->ee( $t->cust->name ) ?></a> ::
+        <a href="<?= route('customer@overview', [ 'cust' => $t->cust->id ] ) ?>"><?= $t->ee( $t->cust->name ) ?></a> ::
     <?php endif; ?>
 
     Document Store

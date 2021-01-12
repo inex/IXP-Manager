@@ -81,7 +81,7 @@ class CustomerToUserController extends Controller
         }
 
         Former::populate([
-            'custid'                => $r->old( 'custid',       $r->cust ),
+            'customer_id'           => $r->old( 'custid',       $r->cust ),
             'linkCancel'            => $r->old( 'linkCancel',   $r->headers->get( 'referer', "" ) ),
         ]);
 
@@ -89,7 +89,7 @@ class CustomerToUserController extends Controller
             'listUsers'             => $listUsers,
             'custs'                 => Customer::orderBy( 'name' )->get(),
             'privs'                 => $this->getAllowedPrivs(),
-            'c'                     => Customer::find( $r->custid ) ?? false,
+            'c'                     => Customer::find( $r->cust ) ?? false,
         ]);
     }
 
@@ -123,7 +123,7 @@ class CustomerToUserController extends Controller
 
         // retrieve the customer ID
         if( strpos( $redirect, "customer/overview" ) ) {
-            return redirect( route( 'customer@overview' , [ 'id' => $c2u->customer_id , 'tab' => 'users' ] ) );
+            return redirect( route( 'customer@overview' , [ 'cust' => $c2u->customer_id , 'tab' => 'users' ] ) );
         }
 
         return redirect( route( "user@list" )  );
@@ -203,7 +203,7 @@ class CustomerToUserController extends Controller
 
         // retrieve the customer ID
         if( strpos( $r->headers->get( 'referer', "" ), "customer/overview" ) !== false ) {
-            return Redirect::to( route( "customer@overview" , [ "id" => $disassociatedCust->id , "tab" => "users" ] ) );
+            return Redirect::to( route( "customer@overview" , [ 'cust' => $disassociatedCust->id , "tab" => "users" ] ) );
         }
 
         return Redirect::to( route( "user@list" ) );

@@ -151,7 +151,7 @@
                     <a class="dropdown-item <?= !request()->is( 'customer-note/unread-notes' ) ?: 'active' ?>" href="<?= route( 'customerNotes@unreadNotes' ) ?>">Unread Notes</a>
 
                     <?php $customers = Auth::getUser()->customers;
-                        if( count( $customers ) > 1 ):?>
+                    if( $customers ):?>
                         <div class="dropdown-divider"></div>
 
                         <h6 class="dropdown-header">
@@ -166,7 +166,6 @@
                             >
                                 <?= $cust->name ?>
                             </a>
-
                         <?php endforeach; ?>
                     <?php endif; ?>
 

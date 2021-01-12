@@ -185,7 +185,7 @@ $this->layout( 'layouts/ixpv4' );
                                                             <?= $t->ee( $history->customer ) ?>
                                                         <?php else: ?>
                                                             <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                                                <a href="<?= route( 'customer@overview' , [ 'id' => $history->customer_id ] ) ?>" >
+                                                                <a href="<?= route( 'customer@overview' , [ 'cust' => $history->customer_id ] ) ?>" >
                                                                     <?= $t->ee( $history->customer->name ) ?>
                                                                 </a>
                                                             <?php else: ?>

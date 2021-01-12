@@ -171,9 +171,9 @@
                     <td>
                         <?php if( $conf[ "custid" ] ): ?>
                             <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                <a href="<?= route( "customer@overview" , [ "id" => $conf[ "custid" ] ] ) ?>"><?= $conf[ "customer" ] ?></a>
+                                <a href="<?= route( "customer@overview" , [ 'cust' => $conf[ "custid" ] ] ) ?>"><?= $conf[ "customer" ] ?></a>
                             <?php else: ?>
-                                <a href="<?= route( "customer@detail"   , [ "id" => $conf[ "custid" ] ] ) ?>"><?= $conf[ "customer" ] ?></a>
+                                <a href="<?= route( "customer@detail"   , [ 'cust' => $conf[ "custid" ] ] ) ?>"><?= $conf[ "customer" ] ?></a>
                             <?php endif; ?>
                         <?php endif; ?>
                     </td>

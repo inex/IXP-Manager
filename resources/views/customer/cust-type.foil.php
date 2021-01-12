@@ -1,13 +1,7 @@
 <?php
-/** @var Foil\Template\Template $t */
-?>
-
-<?php
-    /** @var \IXP\Models\Customer $c */
-    $c = $t->cust;
-    if( $c instanceof \Entities\Customer ) {
-        $c = \IXP\Models\Customer::find( $c->getId() );
-    }
+  /** @var Foil\Template\Template $t */
+  /** @var \IXP\Models\Customer $c */
+  $c = $t->cust;
 ?>
 
 <?php if( $c->typeAssociate() ): ?>

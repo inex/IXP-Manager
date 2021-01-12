@@ -42,11 +42,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        view()->composer('layouts.master', function( $view ) {
-            $view->with( 'controllerAction' , app('request')->route()->getAction()['as'] );
-        });
-
-        view()->composer(['telescope::layout'], function ( $view ) {
+        view()->composer( [ 'telescope::layout' ], function ( $view ) {
             $view->with( 'telescopeScriptVariables', [
                 'path'      => config( 'telescope.url_path' ),
                 'timezone'  => config('app.timezone'),

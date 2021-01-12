@@ -67,7 +67,7 @@
                             </td>
                             <td>
                                 <?php foreach( $row->vlanInterfaces as $vli ): ?>
-                                    <a href="<?= route( "customer@overview" , [ "id" => $vli->virtualInterface->customer->id ] ) ?>"><?= $t->ee( $vli->virtualInterface->customer->name ) ?></a>
+                                    <a href="<?= route( "customer@overview" , [ 'cust' => $vli->virtualInterface->customer->id ] ) ?>"><?= $t->ee( $vli->virtualInterface->customer->name ) ?></a>
                                     (<a href=" <?= route( 'virtual-interface@edit', [ 'vi' => $vli->virtualInterface->id ] ) ?>">interface details</a>)<br />
                                 <?php endforeach; ?>
                             </td>

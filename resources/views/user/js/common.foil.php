@@ -7,8 +7,8 @@
         let urlDelete   =   this.href;
         let nbC2U       = $( this ).attr( "data-nb-c2u" );
         let superUser   = <?= Auth::user()->isSuperUser() ? 'true' : 'false' ?> ;
-        let message = 'Do you really want to delete this user?';
-        let objectName = 'User';
+        let message;
+        let objectName  = 'User';
 
         if( superUser && !$(this).hasClass( "btn-delete-c2u"  )  ) {
             message = `Are you sure you want to delete this user and its ${nbC2U} <?= config( 'ixp_fe.lang.customer.one' )  ?> links?`;
@@ -20,7 +20,7 @@
         let html = `<form id="d2f-form-delete" method="POST" action="${urlDelete}">
                       <div>${message}</div>
                       <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                       <input type="hidden" name="_method" value="delete" />
+                      <input type="hidden" name="_method" value="delete" />
                    </form>`;
 
         let buttons = {

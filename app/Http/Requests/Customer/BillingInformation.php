@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\Customer;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -31,6 +31,7 @@ use Entities\{
 
 use Illuminate\Foundation\Http\FormRequest;
 
+use IXP\Models\CompanyBillingDetail;
 use Webpatser\Countries\CountriesFacade as Countries;
 
 
@@ -41,7 +42,7 @@ class BillingInformation extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return Auth::getUser()->isSuperUser();
     }
@@ -51,9 +52,8 @@ class BillingInformation extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
-
         return [
             'registeredName'        => 'nullable|string|max:255',
             'companyNumber'         => 'nullable|string|max:255',
@@ -66,7 +66,7 @@ class BillingInformation extends FormRequest
             'country'               => 'nullable|string|max:255|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
 
             'billingContactName'    => 'nullable|string|max:255',
-            'billingFrequency'      => 'nullable|string|max:255|in:' . implode( ',', array_keys( CompanyBillingDetailEntity::$BILLING_FREQUENCIES ) ),
+            'billingFrequency'      => 'nullable|string|max:255|in:' . implode( ',', array_keys( CompanyBillingDetail::$BILLING_FREQUENCIES ) ),
             'billingAddress1'       => 'nullable|string|max:255',
             'billingAddress2'       => 'nullable|string|max:255',
             'billingAddress3'       => 'nullable|string|max:255',
@@ -75,11 +75,10 @@ class BillingInformation extends FormRequest
             'billingCountry'        => 'nullable|string|max:255|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
             'billingEmail'          => 'nullable|email|max:255',
             'billingTelephone'      => 'nullable|string|max:255',
-            'invoiceMethod'         => 'nullable|string|max:255|in:' . implode( ',', array_keys( CompanyBillingDetailEntity::$INVOICE_METHODS ) ),
+            'invoiceMethod'         => 'nullable|string|max:255|in:' . implode( ',', array_keys( CompanyBillingDetail::$INVOICE_METHODS ) ),
             'invoiceEmail'          => 'nullable|string|max:255',
             'vatRate'               => 'nullable|string|max:255',
             'vatNumber'             => 'nullable|string|max:255',
         ];
-
     }
 }

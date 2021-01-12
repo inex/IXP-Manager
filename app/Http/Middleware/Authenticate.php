@@ -77,9 +77,9 @@ class Authenticate
 			return redirect()->guest(route( "login@showForm" ) );
 		}
 
-        if( !Auth::getUser()->customer || !CustomerToUser::where( [ 'user_id' => Auth::id()  ] )->where( [ 'customer_id' => Auth::getUser()->custid ] )->first() ){
+        if( !Auth::getUser()->custid || !CustomerToUser::where( [ 'user_id' => Auth::id()  ] )->where( [ 'customer_id' => Auth::getUser()->custid ] )->first() ){
             Auth::logout();
-            return redirect()->guest(route( "login@showForm" ) );
+            return redirect()->guest( route( "login@showForm" ) );
         }
 
 		return $next( $r );

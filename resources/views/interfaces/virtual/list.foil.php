@@ -59,7 +59,7 @@
                     <?php foreach( $t->vis as $vi ): ?>
                         <tr>
                             <td>
-                                <a href="<?= route( "customer@overview" , [ "id" => $vi[ 'custid' ] ] ) ?>">
+                                <a href="<?= route( "customer@overview" , [ 'cust' => $vi[ 'custid' ] ] ) ?>">
                                     <?= $t->ee( $vi[ 'custname' ] ) ?>
                                 </a>
                             </td>

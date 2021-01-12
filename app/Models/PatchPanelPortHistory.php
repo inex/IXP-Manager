@@ -197,4 +197,16 @@ class PatchPanelPortHistory extends Model
             'colo_billing_ref'      => $ppp->colo_billing_ref,
         ] );
     }
+
+    /**
+     * Scope a query to match master ports only
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeMasterPort( Builder $query ): Builder
+    {
+        return $query->where('duplex_master_id', null );
+    }
 }

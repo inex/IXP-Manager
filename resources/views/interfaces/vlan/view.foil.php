@@ -36,7 +36,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <a href="<?= route( "customer@overview" , [ "id" => $vli->virtualInterface->custid ] ) ?>">
+                                    <a href="<?= route( "customer@overview" , [ 'cust' => $vli->virtualInterface->custid ] ) ?>">
                                         <?= $t->ee( $vli->virtualInterface->customer->name )   ?>
                                     </a>
                                 </td>

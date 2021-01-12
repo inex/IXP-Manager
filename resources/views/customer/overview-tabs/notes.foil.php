@@ -99,29 +99,28 @@
 <?php endif; ?>
 
 <?php if( $t->isSuperUser ): ?>
-
     <!-- Modal dialog for notes / state changes -->
     <div class="modal fade" id="co-notes-dialog" tabindex="-1" role="dialog" aria-labelledby="notes-modal-label">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="notes-modal-label">
-                        <span id="co-notes-dialog-title-action">Create a</span> Note for <?= $t->c->name ?>
+                        <span id="co-notes-dialog-title-action">
+                          Create a
+                        </span>
+                        Note for <?= $t->c->name ?>
                     </h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <i class="fa fa-times"></i>
                     </button>
                 </div>
-                <div class="modal-body" id="notes-modal-body">
 
+                <div class="modal-body" id="notes-modal-body">
                     <div class="alert alert-warning" id="co-notes-warning" style="display: none;">
                         <strong>Warning!</strong> Your customer will be able to read this note!
                     </div>
-
                     <form class="bootbox-form" id="co-notes-form">
-
                         <input type="text" placeholder="Title" class="bootbox-input bootbox-input form-control" name="title" id="co-notes-ftitle" />
-
                         <div class="card mt-4">
                             <div class="card-header">
                                 <ul class="nav nav-tabs card-header-tabs">
@@ -165,7 +164,6 @@
                     <button id="co-notes-fadd"  type="button" class="btn btn-primary">
                         Add
                     </button>
-
                 </div>
             </div>
         </div>

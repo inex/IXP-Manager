@@ -401,10 +401,10 @@ abstract class Common extends Controller
     protected function deletePi( Request $r, PhysicalInterface $pi, bool $setBunleDetails = false ): void
     {
         $pi2 = clone $pi;
-        if( $pi->switchPort->isPeering() && $pi->fanoutPhysicalInterface ) {
+        if( $pi->switchPort->typePeering() && $pi->fanoutPhysicalInterface ) {
             $pi->update( [ 'switchportid' => null ] );
             $pi->fanoutPhysicalInterface->switchPort->update( [ 'type' => SwitchPort::TYPE_PEERING ] );
-        } else if( $pi->switchPort->isFanout() && $pi->peeringPhysicalInterface ) {
+        } else if( $pi->switchPort->typeFanout() && $pi->peeringPhysicalInterface ) {
             if( (bool)$r->related ){
                 $this->removeRelatedInterface( $pi2 );
             }

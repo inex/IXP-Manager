@@ -115,7 +115,7 @@
                                 <td>
                                     <?php if( $port[ "port"]->physicalInterface()->exists() ): ?>
                                         <?php $cust = $port[ "port"]->physicalInterface->virtualInterface->customer ?>
-                                        <a href="<?= route( 'customer@overview', [ 'id' => $cust->id , 'tab' => 'ports' ] ) ?>">
+                                        <a href="<?= route( 'customer@overview', [ 'cust' => $cust->id , 'tab' => 'ports' ] ) ?>">
                                             <?= $cust->shortname ?>
                                         </a>
                                     <?php endif; ?>

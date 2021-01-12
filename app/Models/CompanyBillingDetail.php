@@ -2,6 +2,27 @@
 
 namespace IXP\Models;
 
+/*
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -45,6 +66,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereVatNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereVatRate($value)
  * @property-read \IXP\Models\Customer|null $customer
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereUpdatedAt($value)
  */
 class CompanyBillingDetail extends Model
 {
@@ -54,6 +79,53 @@ class CompanyBillingDetail extends Model
      * @var string
      */
     protected $table = 'company_billing_detail';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'billingContactName',
+        'billingAddress1',
+        'billingAddress2',
+        'billingAddress3',
+        'billingTownCity',
+        'billingPostcode',
+        'billingCountry',
+        'billingEmail',
+        'billingTelephone',
+        'vatNumber',
+        'vatRate',
+        'purchaseOrderRequired',
+        'invoiceMethod',
+        'invoiceEmail',
+        'billingFrequency',
+    ];
+
+    public const INVOICE_METHOD_EMAIL = 'EMAIL';
+    public const INVOICE_METHOD_POST  = 'POST';
+
+    public static $INVOICE_METHODS = [
+        self::INVOICE_METHOD_EMAIL => 'Email',
+        self::INVOICE_METHOD_POST  => 'Post'
+    ];
+
+    public const BILLING_FREQUENCY_MONTHLY    = 'MONTHLY';
+    public const BILLING_FREQUENCY_2MONTHLY   = '2MONTHLY';
+    public const BILLING_FREQUENCY_QUARTERLY  = 'QUARTERLY';
+    public const BILLING_FREQUENCY_HALFYEARLY = 'HALFYEARLY';
+    public const BILLING_FREQUENCY_ANNUALLY   = 'ANNUALLY';
+    public const BILLING_FREQUENCY_NOBILLING  = 'NOBILLING';
+
+    public static $BILLING_FREQUENCIES = [
+        self::BILLING_FREQUENCY_MONTHLY    => 'Monthly',
+        self::BILLING_FREQUENCY_2MONTHLY   => 'Every 2 Months',
+        self::BILLING_FREQUENCY_QUARTERLY  => 'Quarterly',
+        self::BILLING_FREQUENCY_HALFYEARLY => 'Half-Yearly',
+        self::BILLING_FREQUENCY_ANNUALLY   => 'Annually',
+        self::BILLING_FREQUENCY_NOBILLING  => 'No Billing'
+    ];
 
     /**
      * Get the customer for the company billing detail

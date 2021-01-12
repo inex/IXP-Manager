@@ -6,7 +6,7 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <a href="<?= route( 'customer@overview', [ 'id' => $t->cust->id ] ) ?>"><?= $t->cust->name ?></a> ::
+    <a href="<?= route( 'customer@overview', [ 'cust' => $t->cust->id ] ) ?>"><?= $t->cust->name ?></a> ::
     Document Store :: <?= $t->file ? 'Edit' : 'Upload' ?> <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> File
 <?php $this->append() ?>
 

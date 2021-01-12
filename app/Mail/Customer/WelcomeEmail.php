@@ -3,7 +3,7 @@
 namespace IXP\Mail\Customer;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -26,7 +26,6 @@ namespace IXP\Mail\Customer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 use Entities\{
     Customer as CustomerEntity
@@ -35,6 +34,7 @@ use Entities\{
 use IXP\Exceptions\Mailable as MailableException;
 
 use IXP\Http\Requests\Customer\WelcomeEmail as WelcomeEmailRequest;
+use IXP\Models\Customer;
 
 /**
  * Mailable for Customer
@@ -43,7 +43,7 @@ use IXP\Http\Requests\Customer\WelcomeEmail as WelcomeEmailRequest;
  * @author     Yanm Robin       <yann@islandbridgenetworks.ie>
  * @category   Customer
  * @package    IXP\Mail\Customer
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class WelcomeEmail extends Mailable
@@ -51,7 +51,7 @@ class WelcomeEmail extends Mailable
     use Queueable, SerializesModels;
 
     /**
-     * @var CustomerEntity
+     * @var Customer
      */
     public $c;
 
@@ -78,10 +78,11 @@ class WelcomeEmail extends Mailable
     /**
      * Create a new message instance.
      *
-     * @param CustomerEntity $c
-     * @param WelcomeEmailRequest $r
+     * @param Customer              $c
+     * @param WelcomeEmailRequest   $r
      */
-    public function __construct( CustomerEntity $c, WelcomeEmailRequest $r ) {
+    public function __construct( Customer $c, WelcomeEmailRequest $r )
+    {
         $this->c = $c;
         $this->r = $r;
         $this->prepareFromRequest($r);
@@ -91,21 +92,23 @@ class WelcomeEmail extends Mailable
     /**
      * Destructor
      */
-    public function __destruct() {
+    public function __destruct()
+    {
         // remove temporary file if it exists
         if( $this->tmpfile && file_exists( $this->tmpfile ) ){
             @unlink( $this->tmpfile );
         }
     }
 
-
     /**
      * Set up recipients and subject from a POST request.
      *
      * @param WelcomeEmailRequest $r
+     *
      * @return WelcomeEmail
      */
-    protected function prepareFromRequest( WelcomeEmailRequest $r ) {
+    protected function prepareFromRequest( WelcomeEmailRequest $r ): self
+    {
         // recipients
         foreach( [ 'to', 'cc', 'bcc' ] as $p ) {
             $hasFn = 'has' . ucfirst( $p );
@@ -117,7 +120,7 @@ class WelcomeEmail extends Mailable
             }
         }
 
-        $this->subject( $r->input('subject') );
+        $this->subject( $r->subject );
         return $this;
     }
 
@@ -125,16 +128,17 @@ class WelcomeEmail extends Mailable
      * Set up Markdown body from a POST request.
      *
      * @param WelcomeEmailRequest $r
+     *
      * @return WelcomeEmail
      */
-    public function prepareBody( WelcomeEmailRequest $r )
+    public function prepareBody( WelcomeEmailRequest $r ): self
     {
         // Templating is slightly awkward here as Laravel's Mailable is built around reading the
         // body from a template file be we have it via post.
         //
         // To work around this, we'll use a temporary file in a new view namespace.
 
-        $body          = $r->input('message');
+        $body          = $r->message;
         $this->tmpfile = tempnam( sys_get_temp_dir(), 'welcome_email_' );
         $this->tmpname = basename( $this->tmpfile );
         $this->tmpfile = $this->tmpfile . '.blade.php';
@@ -149,15 +153,18 @@ class WelcomeEmail extends Mailable
      *
      * @return $this
      */
-    public function build() {
+    public function build(): self
+    {
         return $this;
     }
 
     /**
      * Checks if we can send the email
+     *
      * @throws MailableException
      */
-    public function checkIfSendable() {
+    public function checkIfSendable(): void
+    {
         if( !count( $this->to ) ) {
             throw new MailableException( "No valid recipients" );
         }

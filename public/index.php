@@ -22,9 +22,8 @@
  */
 
 // let's time how long it takes to execute
-define('LARAVEL_START', microtime(true));
+define( 'LARAVEL_START', microtime(true ) );
 define( 'APPLICATION_STARTTIME', microtime( true ) );
-
 
 // common issue is mbstring missing which results in an obscure error
 if( !extension_loaded('mbstring') ) {
@@ -87,4 +86,4 @@ $response = $kernel->handle(
 
 $response->send();
 
-$kernel->terminate($request, $response);
+$kernel->terminate( $request, $response );

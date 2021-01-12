@@ -128,6 +128,8 @@ class UserController extends Controller
      * Display the User list
      *
      * @return  view
+     *
+     * @throws
      */
     public function list(): View
     {
@@ -147,6 +149,8 @@ class UserController extends Controller
      * @param Customer|null $cust
      *
      * @return View
+     *
+     * @throws
      */
     public function createForm( Request $r, Customer $cust = null ): View
     {
@@ -198,6 +202,8 @@ class UserController extends Controller
      * @param Request $r
      *
      * @return  View
+     *
+     * @throws
      */
     public function create( Request $r ): View
     {
@@ -266,7 +272,7 @@ class UserController extends Controller
             AlertContainer::push( 'Please note that you have given this user full administrative access.', Alert::WARNING );
         }
 
-        // Send Email related to the evenr
+        // Send Email related to the event
         event( new UserCreatedEvent( $user ) );
 
         Log::notice( Auth::user()->username . ' Created a User  with ID ' . $user->id );
@@ -284,6 +290,8 @@ class UserController extends Controller
      * @param Request   $r
      *
      * @return  View
+     *
+     * @throws
      */
     public function edit( Request $r, User $u ): View
     {
@@ -338,30 +346,30 @@ class UserController extends Controller
      *
      * @return  RedirectResponse
      *
+     * @throws
      */
     public function update( UpdateUser $r, User $u ): RedirectResponse
     {
         $this->authorize( 'any', User::class );
 
         // Superuser OR Logged User edit his own user
-        if( Auth::user()->isSuperUser() || $u->id === Auth::id() ) {
+        if( ( $isSuperUser = Auth::user()->isSuperUser() ) || $u->id === Auth::id() ) {
             $u->name = $r->name;
             $u->authorisedMobile = $r->authorisedMobile;
             $u->save();
         }
 
-        if( Auth::user()->isSuperUser() ) {
+        if( $isSuperUser ) {
             $u->username    = strtolower( $r->username );
             $u->email       = $r->email;
             $u->disabled    = !$r->disabled;
             $u->save();
         }
 
-
         $u->lastupdatedby = Auth::id();
         $u->save();
 
-        if( !Auth::user()->isSuperUser() ) {
+        if( !$isSuperUser ) {
             if( !( $c2u = $u->customerToUser()->where( 'customer_id', Auth::user()->custid  )->first() ) ) {
                 abort(404, 'UserToCustomer not found');
             }
@@ -406,6 +414,8 @@ class UserController extends Controller
      * @param   User $u ID of the patch panel
      *
      * @return  view
+     *
+     * @throws
      */
     public function view( User $u ): View
     {
@@ -456,10 +466,8 @@ class UserController extends Controller
             return Redirect::to( route( "login@showForm" ) );
         }
 
-        if( Auth::user()->isSuperUser() ) {
-            if( strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
-                return Redirect::to( route( "customer@overview", [ "id" => $u->custid , "tab" => "users"] ) );
-            }
+        if( Auth::user()->isSuperUser() && strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
+            return Redirect::to( route( "customer@overview", [ 'cust' => $u->custid , "tab" => "users"] ) );
         }
 
         return Redirect::to( route( "user@list" ) );
@@ -476,6 +484,11 @@ class UserController extends Controller
     {
         Mail::to( $u->email )->send( new UserCreatedeMailable( $u, true ) );
         AlertContainer::push( sprintf( 'The welcome email has been resent' ), Alert::SUCCESS );
+
+        if( Auth::user()->isSuperUser() && strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
+            return Redirect::to( route( "customer@overview", [ 'cust' => $u->custid , "tab" => "users"] ) );
+        }
+
         return redirect::to( route( "user@list" ) );
     }
 }

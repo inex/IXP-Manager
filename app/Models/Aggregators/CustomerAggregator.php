@@ -22,15 +22,20 @@ namespace IXP\Models\Aggregators;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use DB, Exception;
+
+use Carbon\Carbon;
 
 use Illuminate\Database\Eloquent\{
     Builder,
 };
 
-use Carbon\Carbon;
-use IXP\Models\Customer;
-use IXP\Models\PeeringManager;
-use IXP\Models\Vlan;
+use IXP\Models\{
+    CoreBundle,
+    Customer,
+    PeeringManager,
+    Vlan
+};
 
 /**
  * IXP\Models\Aggregators\CustomerAggregator
@@ -158,6 +163,13 @@ use IXP\Models\Vlan;
  * @property-read int|null $rs_prefixes_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerNote[] $customerNotes
  * @property-read int|null $customer_notes_count
+ * @method static Builder|Customer reseller()
+ * @method static Builder|Customer resellerOnly()
+ * @property-read \IXP\Models\CompanyRegisteredDetail|null $companyRegisteredDetail
+ * @method static Builder|Customer typeAssociate()
+ * @method static Builder|Customer associate()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerToUser[] $customerToUser
+ * @property-read int|null $customer_to_user_count
  */
 class CustomerAggregator extends Customer
 {
@@ -419,5 +431,85 @@ class CustomerAggregator extends Customer
                     "vlan"              => $vlans ,
                     "protos"            => $protos
         ];
+    }
+
+
+
+    /**
+     * Delete the customer.
+     *
+     * Related entities are mostly handled by 'ON DELETE CASCADE'.
+     *
+     * @param Customer $cust The customer Object
+     *
+     * @return bool
+     *
+     * @throws
+     */
+    public static function deleteObject( Customer $cust ): bool
+    {
+        try {
+            DB::beginTransaction();
+
+            // Delete Customer Logo
+            if( $logo = $cust->logo ) {
+                if( file_exists( $logo->fullPath() ) ) {
+                    @unlink( $logo->fullPath() );
+                }
+                $logo->delete();
+            }
+
+            // delete contact to contact group links
+            $cust->contacts()->delete();
+
+            foreach( $cust->customerToUser as $c2u ) {
+
+                // Delete User Logins
+                $c2u->userLoginHistories()->delete();
+
+                $user = $c2u->user;
+                $nbCust = $user->customerToUser()->count();
+                // Delete Customer2User
+                $c2u->delete();
+
+                // Delete User, if that user only have the customer that we want to delete
+                if( $nbCust === 1 ) {
+                    $user->delete();
+                    $user->refresh();
+                } elseif( $user->custid === $cust->id ) {
+                    if( $c = $user->customerToUser()->where( 'customer_id', '!=', $cust->id )->first() ){
+                        $newAssignCust = $c->customer_id;
+                    }
+
+                    $user->custid = $newAssignCust ?? null;
+                    $user->save();
+                }
+            }
+
+            // Delete the Core Bundle
+            $cbs = CoreBundle::select( 'cb.*' )->from( 'corebundles AS cb' )
+                ->leftJoin( 'corelinks AS cl', 'cl.core_bundle_id', 'cb.id' )
+                ->leftJoin( 'coreinterfaces AS ci', 'ci.id', 'cl.core_interface_sidea_id' )
+                ->leftJoin( 'physicalinterface AS pi', 'pi.id', 'ci.physical_interface_id' )
+                ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'pi.virtualinterfaceid' )
+                ->where( 'vi.custid', $cust->id )->distinct()->get();
+
+            foreach( $cbs as $cb ){
+                /** @var $cb CoreBundle */
+                $cb->deleteObject();
+            }
+
+            $cust->delete();
+
+            $cust->companyBillingDetail()->delete();
+            $cust->companyRegisteredDetail()->delete();
+
+            DB::commit();
+        } catch( Exception $e ) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return true;
     }
 }

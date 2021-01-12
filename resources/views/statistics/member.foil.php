@@ -5,7 +5,7 @@
 
 <?php $this->section( 'page-header-preamble' ) ?>
     <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
-        <a href="<?= route( 'customer@overview', [ 'id' => $t->c->id ] )?>" >
+        <a href="<?= route( 'customer@overview', [ 'cust' => $t->c->id ] )?>" >
             <?= $t->c->getFormattedName() ?>
         </a>
     <?php else: ?>
@@ -188,10 +188,10 @@
                                                 <?php if( $pi->switchPort->isTypePeering() ): ?>
                                                 Peering Port
                                                 <?php elseif( $pi->switchPort->isTypeFanout() ): ?>
-                                                    Fanout Port for <a href="<?= route( 'customer@overview', [ 'id' => $pi->relatedInterface()->virtualInterface->customer->id ] ) ?>">
+                                                    Fanout Port for <a href="<?= route( 'customer@overview', [ 'cust' => $pi->relatedInterface()->virtualInterface->customer->id ] ) ?>">
                                                     <?= $pi->relatedInterface()->virtualInterface->customer->abbreviatedName ?>
                                                 </a>
-                                                <?php elseif( $pi->switchPort->isReseller() ): ?>
+                                                <?php elseif( $pi->switchPort->typeReseller() ): ?>
                                                     Reseller Uplink Port
                                                 <?php endif; ?>
                                             <?php endif; ?>

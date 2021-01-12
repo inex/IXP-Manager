@@ -329,7 +329,7 @@ class JsonSchema
 
                 foreach( $vi->physicalInterfaces as $pi ) {
                     // FIXME: hack for LONAP as they do peering on reseller ports :-(
-                    if( !$pi->switchPort->isPeering() && !$pi->switchPort->isReseller() ) {
+                    if( !$pi->switchPort->typePeering() && !$pi->switchPort->typeReseller() ) {
                         continue;
                     }
                     

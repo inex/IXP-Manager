@@ -55,7 +55,7 @@
                     <?php foreach( $t->notes as $n ): ?>
                         <tr>
                             <td>
-                                <a href="<?= route( "customer@overview" , [ "id" => $n[ 'cid' ] ] ) ?>" >
+                                <a href="<?= route( "customer@overview" , [ 'cust' => $n[ 'cid' ] ] ) ?>" >
                                     <?= $n[ 'cname' ] ?>
                                 </a>
                             </td>

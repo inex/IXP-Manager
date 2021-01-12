@@ -25,12 +25,13 @@ namespace IXP\Providers;
 // based on: https://github.com/franzliedke/laravel-plates
 
 use Illuminate\Support\ServiceProvider;
+
 use IXP\Services\FoilEngine as Engine;
 
-use IXP\Utils\Foil\Extensions\Bird as BirdFoilExtensions;
-use IXP\Utils\Foil\Extensions\IXP  as IXPFoilExtensions;
-
-use View;
+use IXP\Utils\Foil\Extensions\{
+    Bird as BirdFoilExtensions,
+    IXP  as IXPFoilExtensions
+};
 
 class FoilServiceProvider extends ServiceProvider
 {
@@ -43,7 +44,7 @@ class FoilServiceProvider extends ServiceProvider
     {
         $app = $this->app;
 
-        $app->singleton( \Foil\Engine::class, function () use ( $app ) {
+        $app->singleton( \Foil\Engine::class, function () {
             $engine = \Foil\engine([
                 'folders'          => config('view.paths'),
                 'ext'              => 'foil.php',
@@ -58,17 +59,17 @@ class FoilServiceProvider extends ServiceProvider
         });
 
         $app->resolving('view', function($view) use ( $app ) {
-            $engine = new Engine($app->make( \Foil\Engine::class ));
+            $engine = new Engine( $app->make( \Foil\Engine::class ) );
 
             // we have a few rendering functions we want to include here:
             $engine->engine()->loadExtension( new IXPFoilExtensions(), [ 'alerts' ] );
             $engine->engine()->loadExtension( new BirdFoilExtensions(), [] );
 
-            $view->addExtension('foil.php', 'foil', function() use ($app, $engine) {
+            $view->addExtension('foil.php', 'foil', function() use ( $engine) {
                 return $engine;
             });
 
-            $view->addExtension('foil.js', 'foil', function() use ($app, $engine) {
+            $view->addExtension('foil.js', 'foil', function() use ( $engine) {
                 return $engine;
             });
         });

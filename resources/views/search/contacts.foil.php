@@ -23,7 +23,7 @@
             <?php foreach( $t->results[ 'contacts' ] as $contact ): ?>
                 <tr>
                     <td>
-                        <a href="<?= route( "customer@overview" , [ "id" => $contact->customer->id, 'tab' => 'contacts' ] ) ?>">
+                        <a href="<?= route( "customer@overview" , [ 'cust' => $contact->customer->id, 'tab' => 'contacts' ] ) ?>">
                             <?= $t->ee(  $contact->name ) ?>
                         </a>
                     </td>
@@ -31,7 +31,7 @@
                         <?= $t->ee( $contact->email ) ?>
                     </td>
                     <td>
-                        <a href="<?= route( "customer@overview" , [ "id" => $contact->customer->id ] ) ?>">
+                        <a href="<?= route( "customer@overview" , [ 'cust' => $contact->customer->id ] ) ?>">
                             <?= $t->ee( $contact->customer->name ) ?>
                         </a>
                     </td>

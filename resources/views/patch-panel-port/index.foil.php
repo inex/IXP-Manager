@@ -135,7 +135,7 @@
                                 </td>
                                 <td>
                                     <?php if( $ppp->customer_id ): ?>
-                                        <a href="<?= route( "customer@overview" , [ "id" => $ppp->customer_id ] ) ?>">
+                                        <a href="<?= route( "customer@overview" , [ 'cust' => $ppp->customer_id ] ) ?>">
                                             <?= $t->ee( $ppp->cname ) ?>
                                         </a>
                                     <?php endif; ?>

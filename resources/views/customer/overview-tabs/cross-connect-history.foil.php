@@ -5,7 +5,7 @@
         </h3>
     </div>
     <div class="card-body">
-        <table class="table table-striped table-responsive-ixp collapse">
+        <table class="table table-striped table-responsive-ixp collapse w-100">
             <thead class="thead-dark">
             <tr>
                 <th>
@@ -30,12 +30,15 @@
             </thead>
             <tbody>
                 <?php foreach( $t->crossConnectsHistory as $hist ):
-                    /** @var $hist \IXP\Models\PatchPanelPortHistory */?>
+                    /** @var $hist \IXP\Models\PatchPanelPortHistory */
+                    $ppp  = $hist->patchPanelPort;
+                    $pp   = $ppp->patchPanel;
+                    ?>
                     <tr>
                         <td>
                             <a href="<?= route( "patch-panel-port@view" , [ "ppp" => $hist->patch_panel_port_id ] ) ?>">
-                                <?= $t->ee( $hist->patchPanelPort->patchPanel->name ) ?> ::
-                                <?= $t->ee( $hist->patchPanelPort->name() ) ?>
+                                <?= $t->ee( $pp->name ) ?> ::
+                                <?= $t->ee( $ppp->name() ) ?>
                             </a>
                         </td>
 
@@ -43,10 +46,10 @@
                             <?= $t->ee( $hist->colo_circuit_ref ) ?>
                         </td>
                         <td>
-                            <?= $t->ee( $hist->patchPanelPort->patchPanel->cabinet->location->name ) ?>
+                            <?= $t->ee( $pp->cabinet->location->name ) ?>
                         </td>
                         <td>
-                            <?= $t->ee( $hist->patchPanelPort->patchPanel->cabinet->name ) ?>
+                            <?= $t->ee( $pp->cabinet->name ) ?>
                         </td>
                         <td>
                             <?= $hist->assigned_at ?>

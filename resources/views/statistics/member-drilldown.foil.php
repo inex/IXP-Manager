@@ -6,7 +6,7 @@
 
 <?php $this->section( 'page-header-preamble' ) ?>
     <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
-        <a href="<?= route( 'customer@overview', [ 'id' => $t->c->id ] ) ?>" >
+        <a href="<?= route( 'customer@overview', [ 'cust' => $t->c->id ] ) ?>" >
             <?= $t->c->getFormattedName() ?>
         </a>
         /
@@ -74,11 +74,11 @@
                             <small>
                                 <?php if( $t->graph->physicalInterface()->switchport->isTypePeering() ): ?>
                                     Peering Port
-                                <?php elseif( $t->graph->physicalInterface()->switchport->isFanout() ): ?>
-                                    Fanout Port for <a href="<?= route( 'customer@overview', [ 'id' => $t->graph->physicalInterface()->relatedInterface()->virtualInterface->customer->id ] ) ?>">
+                                <?php elseif( $t->graph->physicalInterface()->switchport->typeFanout() ): ?>
+                                    Fanout Port for <a href="<?= route( 'customer@overview', [ 'cust' => $t->graph->physicalInterface()->relatedInterface()->virtualInterface->customer->id ] ) ?>">
                                         <?= $t->graph->physicalInterface()->relatedInterface()->virtualInterface->customer->abbreviatedName ?>
                                     </a>
-                                <?php elseif( $t->graph->physicalInterface()->switchport->isReseller() ): ?>
+                                <?php elseif( $t->graph->physicalInterface()->switchport->typeReseller() ): ?>
                                     Reseller Uplink Port
                                 <?php endif; ?>
                             </small>

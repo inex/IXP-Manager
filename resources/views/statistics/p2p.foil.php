@@ -6,7 +6,7 @@
 <?php $this->section( 'page-header-preamble' ) ?>
 
 <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
-    <a href="<?= route( 'customer@overview', [ 'id' => $t->c->id ] ) ?>" >
+    <a href="<?= route( 'customer@overview', [ 'cust' => $t->c->id ] ) ?>" >
         <?= $t->c->getFormattedName() ?>
     </a>
     /

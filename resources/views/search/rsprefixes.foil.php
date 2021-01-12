@@ -24,7 +24,7 @@
                     </a>
                 </td>
                 <td>
-                    <a href="<?= route( "customer@overview" , [ "id" => $prefix->customer->id ] ) ?>">
+                    <a href="<?= route( "customer@overview" , [ 'cust' => $prefix->customer->id ] ) ?>">
                         <?= $t->ee( $prefix->customer->name ) ?>
                     </a>
                 </td>

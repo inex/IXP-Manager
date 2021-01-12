@@ -356,7 +356,7 @@ class VirtualInterfaceController extends Common
         AlertContainer::push( 'Virtual Interface deleted.', Alert::SUCCESS );
 
         if( $r->user ) {
-            return redirect( route( "customer@overview", [ "id" => $r->user, "tab" => "ports" ] ) );
+            return redirect( route( "customer@overview", [ 'cust' => $r->user, "tab" => "ports" ] ) );
         }
         return redirect( route( "virtual-interface@list" ) );
     }

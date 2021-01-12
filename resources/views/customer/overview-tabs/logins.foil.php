@@ -1,4 +1,7 @@
-<table class="table table-striped table-responsive-ixp-action collapse" style="width:100%">
+<?php
+    $c = $t->c; /** @var $c \IXP\Models\Customer */
+?>
+<table class="table table-striped table-responsive-ixp-action collapse w-100">
     <thead class="thead-dark">
     <tr>
         <th>
@@ -19,30 +22,26 @@
     </tr>
     </thead>
     <tbody>
-        <?php foreach( $t->c->getC2Users() as $c2u ): ?>
+        <?php foreach( $c->customerToUser as $c2u ):
+            $user = $c2u->user;
+            ?>
             <tr>
                 <td>
-                    <?= $t->ee ( $c2u->getUser()->getUsername() ) ?>
+                    <?= $t->ee ( $user->username ) ?>
                 </td>
                 <td>
-                    <?= $t->ee( $c2u->getUser()->getEmail() ) ?>
+                    <?= $t->ee( $user->email ) ?>
                 </td>
                 <td>
-                    <?php if( $c2u->getLastLoginDate( ) ): ?>
-                        <?= $c2u->getLastLoginDate( )->format( "Y-m-d H:i:s" ) ?>
-                    <?php else: ?>
-                        <em>Never</em>
-                    <?php endif; ?>
+                    <?= $c2u->last_login_date ?? '<em>Never</em>' ?>
                 </td>
                 <td>
-                    <?php if( $c2u->getLastLoginFrom() ): ?>
-                        <?= $c2u->getLastLoginFrom() ?>
-                    <?php endif; ?>
+                    <?= $c2u->last_login_from ?>
                 </td>
                 <td>
-                    <?php if( count( $c2u->getUserLoginHistory() ) > 0 ): ?>
+                    <?php if( $c2u->userLoginHistories()->count() ): ?>
                         <div class="btn-group btn-group-sm">
-                            <a class="btn btn-white have-tooltip" title="History" href="<?= route( "login-history@view", [ 'id' => $c2u->getId() ] ) ?>">
+                            <a class="btn btn-white have-tooltip" title="History" href="<?= route( "login-history@view", [ 'id' => $c2u->id ] ) ?>">
                                 <i class="fa fa-history"></i>
                             </a>
                         </div>

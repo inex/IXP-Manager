@@ -63,7 +63,7 @@
                                     <div class="list-group-item">
                                         <div>
                                             <b class="mr-2">
-                                                <a style="font-size: x-large" href="<?= route( "customer@overview" , [ "id" => $cust->id ] ) ?>">
+                                                <a style="font-size: x-large" href="<?= route( "customer@overview" , [ 'cust' => $cust->id ] ) ?>">
                                                     <?= $t->ee( $cust->abbreviatedName ) ?> - AS<?= $t->ee( $cust->autsys )?>
                                                 </a>
                                             </b>
@@ -80,10 +80,10 @@
                                         <?php endif; ?>
 
                                         <div class="btn-group flex-wrap">
-                                            <a class="btn btn-white" href="<?= route( "customer@overview" , [ "id" => $cust->id ] ) ?>">
+                                            <a class="btn btn-white" href="<?= route( "customer@overview" , [ 'cust' => $cust->id ] ) ?>">
                                                 Overview
                                             </a>
-                                            <a class="btn btn-white" href="<?= route( "customer@overview" , [ "id" => $cust->id , "tab" => "ports" ] ) ?>">
+                                            <a class="btn btn-white" href="<?= route( "customer@overview" , [ 'cust' => $cust->id , "tab" => "ports" ] ) ?>">
                                                 Ports
                                             </a>
                                             <a class="btn btn-white" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $cust->id, "type" => "agg" ] ) ?>">
@@ -92,10 +92,10 @@
                                             <a class="btn btn-white" href="<?= route( 'statistics@p2p-get', [ "cid" => $cust->id ] )?>">
                                                 P2P
                                             </a>
-                                            <a class="btn btn-white" href="<?= route( "customer@overview" , [ "id" => $cust->id, "tab" => "users" ] ) ?>">
+                                            <a class="btn btn-white" href="<?= route( "customer@overview" , [ 'cust' => $cust->id, "tab" => "users" ] ) ?>">
                                                 Users
                                             </a>
-                                            <a class="btn btn-white" href="<?= route( "customer@overview" , [ "id" => $cust->id, "tab" => "contacts" ] )?>">
+                                            <a class="btn btn-white" href="<?= route( "customer@overview" , [ 'cust' => $cust->id, "tab" => "contacts" ] )?>">
                                                 Contacts
                                             </a>
                                         </div>

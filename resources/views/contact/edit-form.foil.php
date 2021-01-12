@@ -167,7 +167,7 @@
                     }
 
                     if( $custid !== null ) {
-                        $cancel_url = route( 'customer@overview', [ "id" => $custid,  "tab" => "contacts" ] );
+                        $cancel_url = route( 'customer@overview', [ 'cust' => $custid,  "tab" => "contacts" ] );
                     } else {
                         $cancel_url = route( 'contact@list' );
                     }

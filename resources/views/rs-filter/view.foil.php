@@ -44,7 +44,7 @@ $this->layout( 'layouts/ixpv4' )
                                 <td>
                                     <?php if( Auth::getUser()->isSuperUser() ): ?>
                                         <?php if( $t->rsf->peer ): ?>
-                                            <a href="<?= route( "customer@overview" , [ "id" => $t->rsf->peer->id ] )?> ">
+                                            <a href="<?= route( "customer@overview" , [ 'cust' => $t->rsf->peer->id ] )?> ">
                                                 <?= $t->ee( $t->rsf->peer->name )?>
                                             </a>
                                         <?php else: ?>
@@ -67,7 +67,7 @@ $this->layout( 'layouts/ixpv4' )
                                 </td>
                                 <td>
                                     <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                        <a href="<?= route( "customer@overview" , [ "id" => $t->rsf->customer->id ] )?> ">
+                                        <a href="<?= route( "customer@overview" , [ 'cust' => $t->rsf->customer->id ] )?> ">
                                             <?= $t->ee( $t->rsf->customer->name )?>
                                         </a>
                                     <?php else: ?>

@@ -174,10 +174,8 @@ class VirtualInterface extends Model
      */
     public function isGraphable(): bool
     {
-        foreach( $this->physicalInterfaces as $pi ) {
-            if( $pi->isGraphable() ) {
-                return true;
-            }
+        if( $this->physicalInterfaces()->graphable()->count() ) {
+            return true;
         }
 
         return false;
@@ -258,8 +256,8 @@ class VirtualInterface extends Model
      */
     public function type()
     {
-        if( $this->physicalInterfaces()->count() ) {
-            return $this->physicalInterfaces()->first()->switchPort->type;
+        if( $this->physicalInterfaces->isNotEmpty() ) {
+            return $this->physicalInterfaces[ 0 ]->switchPort->type;
         }
         return false;
     }
@@ -329,5 +327,21 @@ class VirtualInterface extends Model
                  ->leftJoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
                  ->leftJoin( 'switchport AS sp', 'sp.id', 'pi.switchportid' )
                  ->where( 'vi.id', $this->id )->distinct()->get()->pluck( 'switchid' )->count() === 1;
+    }
+
+    /**
+     * Number of non-private VLANs
+     *
+     * Usually just one but we use this for labeling on the frontend if >1
+     *
+     * @return int
+     */
+    public function numberPublicVlans(): int
+    {
+        return self::from( 'virtualinterface AS vi' )
+            ->leftJoin( 'vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id' )
+            ->leftJoin( 'vlan AS v', 'v.id', 'vli.vlanid' )
+            ->where( 'vi.id', $this->id )
+            ->where( 'private', false )->count();
     }
 }

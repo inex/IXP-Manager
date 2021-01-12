@@ -183,7 +183,7 @@
                 if( $t->cb ) {
                     $bbtn = '<a href="' . route( 'core-bundle@edit', [ 'cb' => $t->cb->id ] ) . '" class="btn btn-secondary mb-2 mb-md-2 mb-lg-0">Return to Core Bundle</a>';
                 } elseif( $t->vi ) {
-                    $bbtn  = '<a href="' . route( "customer@overview" , [ "id" => $t->vi->customer->id, "tab" => "ports" ] ) . '" class="btn btn-secondary mb-2 mb-md-2 mb-lg-0">Return to ' . ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' Overview</a>';
+                    $bbtn  = '<a href="' . route( "customer@overview" , [ 'cust' => $t->vi->customer->id, "tab" => "ports" ] ) . '" class="btn btn-secondary mb-2 mb-md-2 mb-lg-0">Return to ' . ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' Overview</a>';
                     $related = $t->resellerMode() && ( count( $t->vi->peeringPhysicalInterface() ) || count( $t->vi->fanoutPhysicalInterface() ) ) ? "data-related='1'" : '';
                     $bbtn .= '<a class="collapse btn btn-danger mb-2 mb-md-2 mt-lg-2 ml-1 btn-delete-vi"  id="delete-vi-' . $t->vi->id . '" data-url="' . route( 'virtual-interface@delete', [ 'vi' => $t->vi->id ]  ) . '" ' . $related . ' href="#" >Delete Interface</a>';
                 } else {

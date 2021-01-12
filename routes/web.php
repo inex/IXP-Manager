@@ -39,7 +39,7 @@
 Route::group( [ 'prefix' => 'customer', 'namespace' => 'Customer'], function() {
     Route::get( 'details',                  'CustomerController@details'        )->name( "customer@details"    );
     Route::get( 'associates',               'CustomerController@associates'     )->name( "customer@associates" );
-    Route::get( 'detail/{id}',              'CustomerController@detail'         )->name( "customer@detail"     );
+    Route::get( 'detail/{cust}',            'CustomerController@detail'         )->name( 'customer@detail'     );
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

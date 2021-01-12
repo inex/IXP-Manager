@@ -1,4 +1,3 @@
-<?php /** @var Foil\Template\Template $t */ ?>
 <script>
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
@@ -8,7 +7,7 @@
     $(document).ready( function(){
         // Copy the tag in the input display_as if empty
         input_tag.focusout(function() {
-            if( input_display_as.val() == '' ){
+            if( input_display_as.val() === '' ){
                 input_display_as.val( input_tag.val() );
             }
         });

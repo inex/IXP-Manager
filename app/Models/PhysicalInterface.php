@@ -300,6 +300,19 @@ class PhysicalInterface extends Model
     }
 
     /**
+     * Scope to get connected virtual interface
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeGraphable( Builder $query ): Builder
+    {
+        return $query->where( 'status' , self::STATUS_CONNECTED )
+            ->orWhere( 'status' , self::STATUS_QUARANTINE );
+    }
+
+    /**
      * Gets the related peering / fanout port for the current fanout / peering port
      *
      * For reseller functionality, we have the option of having fanout ports connectted to
@@ -310,16 +323,15 @@ class PhysicalInterface extends Model
      */
     public function relatedInterface()
     {
-        if( $this->switchPort()->exists() ) {
-            if( $this->switchPort->isFanout() && $this->peeringPhysicalInterface ){
+        if( $sp = $this->switchPort ) {
+            if( $sp->typeFanout() && $this->peeringPhysicalInterface ){
                 return $this->peeringPhysicalInterface;
             }
 
-            if($this->switchPort->isPeering() && $this->fanoutPhysicalInterface ) {
+            if( $sp->typePeering() && $this->fanoutPhysicalInterface ) {
                 return $this->fanoutPhysicalInterface;
             }
             return false;
-
         }
         return false;
     }
@@ -339,6 +351,7 @@ class PhysicalInterface extends Model
         }
         return false;
     }
+
     /**
      * Scope to get connected virtual interface
      *

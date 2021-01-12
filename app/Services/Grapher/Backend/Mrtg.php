@@ -265,7 +265,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
         foreach( Infrastructure::all() as $infra ) {
             foreach( $infra->switchers as $switch ) {
                 foreach( $switch->switchPorts as $sp ) {
-                    if( $sp->isCore() ) {
+                    if( $sp->typeCore() ) {
                         // this needs to be wrapped in a physical interface for the template
                         $pi = $this->wrapSwitchPortInPhysicalInterface( $sp, ++$maxPiID );
                         $data[ 'pis' ][ $pi->id ] = $pi;

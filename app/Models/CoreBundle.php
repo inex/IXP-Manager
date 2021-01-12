@@ -22,6 +22,7 @@ namespace IXP\Models;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use DB, Exception;
 
 use Illuminate\Database\Eloquent\{
     Builder,
@@ -29,8 +30,6 @@ use Illuminate\Database\Eloquent\{
     Model,
     Relations\HasMany
 };
-use Entities\CoreLink as CoreLinkEntity;
-
 
 /**
  * IXP\Models\CoreBundle
@@ -297,6 +296,39 @@ class CoreBundle extends Model
             $switches[] = $side->physicalInterface->switchPort->switcher->id;
         }
 
-        return ( count( array_unique( $switches ) ) == 1 ) ? true : false;
+        return count(array_unique($switches)) == 1;
+    }
+
+    /**
+     * Delete the Core Bundle ans everything related.
+     *
+     * @return bool
+     *
+     * @throws
+     */
+    public function deleteObject(): bool
+    {
+        try {
+            DB::beginTransaction();
+
+            foreach( $this->corelinks as $cl ){
+                $cl->delete();
+                foreach( $cl->coreInterfaces() as $ci ){
+                    /** @var CoreInterface  $ci */
+                    $ci->delete();
+                    $ci->physicalInterface->virtualInterface->delete();
+                    $ci->physicalInterface->delete();
+                }
+            }
+            $this->delete();
+
+            DB::commit();
+
+        } catch( Exception $e ) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return true;
     }
 }

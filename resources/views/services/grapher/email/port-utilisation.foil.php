@@ -32,7 +32,7 @@
                 </ul>
 
                 <p>
-                    <a href="<?= route( "customer@overview" , [ "id" => $e['cust']->id ] ) ?> ">
+                    <a href="<?= route( "customer@overview" , [ 'cust' => $e['cust']->id ] ) ?> ">
                         <img src="data:image/png;base64,<?= base64_encode( $p['png'] ) ?>">
                     </a>
                 </p>

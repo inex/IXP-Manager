@@ -127,7 +127,7 @@
                     ?>
 
                     <?php if( $t->c ):?>
-                        <?= Former::hidden( 'custid' )->value( Auth::user()->custid ) ?>
+                        <?= Former::hidden( 'customer_id' )->value( Auth::user()->custid ) ?>
                     <?php endif;?>
 
                 <?php endif; ?>

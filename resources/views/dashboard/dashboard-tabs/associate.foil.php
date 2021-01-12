@@ -26,7 +26,7 @@
             <?php foreach( $t->recentMembers as $recent ): ?>
                 <tr>
                     <td>
-                        <a href="<?= route( 'customer@detail', [ 'id' => $recent->id ] ) ?>">
+                        <a href="<?= route( 'customer@detail', [ 'cust' => $recent->id ] ) ?>">
                             <?= $t->ee( $recent->name ) ?>
                         </a>
                     </td>

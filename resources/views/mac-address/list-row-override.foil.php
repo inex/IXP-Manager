@@ -7,7 +7,7 @@ $row = $t->row;
 
 <tr>
     <td>
-        <a href="<?=  route( "customer@overview" , [ "id" => $row[ 'customerid' ] ] ) ?>">
+        <a href="<?=  route( "customer@overview" , [ 'cust' => $row[ 'customerid' ] ] ) ?>">
             <?= $t->ee( $row['customer'] ) ?>
         </a>
     </td>

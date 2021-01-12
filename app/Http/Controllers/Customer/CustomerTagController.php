@@ -23,9 +23,16 @@ namespace IXP\Http\Controllers\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Entities\Customer as CustomerEntity;
+use Entities\CustomerTag as CustomerTagEntity;
 use Former;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\View\View;
+use IXP\Models\Customer;
+use IXP\Models\CustomerToCustomerTag;
+use IXP\Utils\View\Alert\Alert;
+use IXP\Utils\View\Alert\Container as AlertContainer;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -34,6 +41,7 @@ use Illuminate\Http\{
 use IXP\Models\CustomerTag;
 
 use IXP\Utils\Http\Controllers\Frontend\EloquentController;
+use Route;
 use Session;
 
 /**
@@ -107,6 +115,16 @@ class CustomerTagController extends EloquentController
         );
     }
 
+    /**
+     * @param string $route_prefix
+     */
+    protected static function additionalRoutes( string $route_prefix ): void
+    {
+        Route::group( [ 'prefix' => $route_prefix ], static function() use ( $route_prefix ) {
+            Route::get(     'cust/{cust}',  'Customer\CustomerTagController@linkCustomer' )->name( $route_prefix . '@link-customer' );
+            Route::post(    'link/{cust}',  'Customer\CustomerTagController@link'         )->name( $route_prefix . '@link');
+        });
+    }
 
     /**
      * Provide array of rows for the list action and view action
@@ -234,5 +252,52 @@ class CustomerTagController extends EloquentController
     {
         Session::remove( "cust-list-tag" );
         return true;
+    }
+
+    /**
+     * Display the form to link/unlink customer/tags
+     *
+     * @param Customer $cust    The Customer
+     *
+     * @return View
+     */
+    public function linkCustomer( Customer $cust ): View
+    {
+        return view( 'customer/tag/cust' )->with([
+            'c'             => $cust,
+            'tags'          => CustomerTag::orderBy( 'display_as' )->get(),
+        ]);
+    }
+
+    /**
+     * Add or edit a customer (set all the data needed)
+     *
+     * @param   Request     $r instance of the current HTTP request
+     * @param   Customer    $cust
+     *
+     * @return  RedirectResponse
+     * @throws
+     */
+    public function link( Request $r, Customer $cust ): RedirectResponse
+    {
+        $tagsToCreate  = array_diff( $r->tags ?? [], array_keys( $cust->tags->keyBy( 'id' )->toArray() ) );
+        $tagsToDelete  = array_diff( array_keys( $cust->tags->keyBy( 'id' )->toArray() ), $r->tags ?? [] );
+
+        foreach( $tagsToDelete as $dtag ){
+            CustomerToCustomerTag::where( 'customer_tag_id' ,$dtag )
+                ->where( 'customer_id', $cust->id )->delete();
+        }
+
+        foreach( $tagsToCreate as $ctag ){
+            if( CustomerToCustomerTag::where( 'customer_tag_id' , $ctag )->where( 'customer_id', $cust->id )->doesntExist() ){
+                CustomerToCustomerTag::create([
+                    'customer_tag_id'   => $ctag,
+                    'customer_id'       => $cust->id,
+                ]);
+            }
+        }
+
+        AlertContainer::push( "Tags updated.", Alert::SUCCESS );
+        return redirect( route( "customer@overview" , [ "cust" => $cust->id ] ) );
     }
 }

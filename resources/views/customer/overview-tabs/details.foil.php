@@ -1,8 +1,10 @@
+<?php
+  $c = $t->c; /** @var \IXP\Models\Customer $c */
+  $rdetails = $c->companyRegisteredDetail; /** @var \IXP\Models\CompanyRegisteredDetail $rdetails */
+?>
+
 <div class="d-flex row">
-
     <div class="col-md-6">
-        <?php $rdetails = $t->c->getRegistrationDetails() ?>
-
         <div class="tw-rounded tw-p-4 tw-shadow-md tw-border tw-border-grey-light">
             <header class="tw-pb-2 tw-pl-2 tw-flex tw-border-b tw-border-grey-300">
                 <h3>
@@ -15,7 +17,7 @@
                         Registered Name
                     </th>
                     <td>
-                        <?= $t->ee( $rdetails->getRegisteredName() ) ?>
+                        <?= $t->ee( $rdetails->registeredName ) ?>
                     </td>
                 </tr>
                 <tr>
@@ -23,7 +25,7 @@
                         Company Number
                     </th>
                     <td>
-                        <?= $t->ee( $rdetails->getCompanyNumber() ) ?>
+                        <?= $t->ee( $rdetails->companyNumber ) ?>
                     </td>
                 </tr>
                 <tr>
@@ -31,7 +33,7 @@
                         Jurisdiction
                     </th>
                     <td>
-                        <?= $t->ee( $rdetails->getJurisdiction() ) ?>
+                        <?= $t->ee( $rdetails->jurisdiction ) ?>
                     </td>
                 </tr>
                 <tr>
@@ -39,11 +41,11 @@
                         Address
                     </th>
                     <td>
-                        <?php if( $rdetails->getAddress1() ): ?><?= $t->ee( $rdetails->getAddress1() ) ?><br/><?php endif; ?>
-                        <?php if( $rdetails->getAddress2() ): ?><?= $t->ee( $rdetails->getAddress2() ) ?><br/><?php endif; ?>
-                        <?php if( $rdetails->getAddress3() ): ?><?= $t->ee( $rdetails->getAddress3() ) ?><br/><?php endif; ?>
-                        <?php if( $rdetails->getTownCity() ): ?><?= $t->ee( $rdetails->getTownCity() ) ?><br/><?php endif; ?>
-                        <?php if( $rdetails->getPostcode() ): ?><?= $t->ee( $rdetails->getPostcode() ) ?><?php endif; ?>
+                        <?php if( $rdetails->address1 ): ?><?= $t->ee( $rdetails->address1 ) ?><br/><?php endif; ?>
+                        <?php if( $rdetails->address2 ): ?><?= $t->ee( $rdetails->address2 ) ?><br/><?php endif; ?>
+                        <?php if( $rdetails->address3 ): ?><?= $t->ee( $rdetails->address3 ) ?><br/><?php endif; ?>
+                        <?php if( $rdetails->townCity ): ?><?= $t->ee( $rdetails->townCity ) ?><br/><?php endif; ?>
+                        <?php if( $rdetails->postcode ): ?><?= $t->ee( $rdetails->postcode ) ?><?php endif; ?>
                     </td>
                 </tr>
                 <tr>
@@ -51,7 +53,7 @@
                         Country
                     </th>
                     <td>
-                        <?= $t->ee( $rdetails->getCountryName() ) ?>
+                        <?= $rdetails->country ? array_column( Countries::getList(), 'name', 'iso_3166_2')[ $rdetails->country ] : null ?>
                     </td>
                 </tr>
             </table>
@@ -59,21 +61,21 @@
     </div>
 
     <div class="col-md-6">
-        <?php if( !config('ixp.reseller.no_billing') && !$t->c->isResoldCustomer() ): ?>
+        <?php if( !config('ixp.reseller.no_billing') && !$c->reseller ): ?>
         <div class="tw-rounded tw-p-4 tw-shadow-md tw-border tw-border-grey-light">
             <header class="tw-pb-2 tw-pl-2 tw-flex tw-border-b tw-border-grey-300">
                 <h3>
                     Billing Details
                 </h3>
             </header>
-            <?php $bdetails = $t->c->getBillingDetails() ?>
+            <?php $bdetails = $c->companyBillingDetail /** @var $bdetails \IXP\Models\CompanyBillingDetail  */ ?>
             <table class="table">
                 <tr>
                     <th>
                         Contact Name
                     </th>
                     <td>
-                        <?= $t->ee( $bdetails->getBillingContactName() ) ?>
+                        <?= $t->ee( $bdetails->billingContactName ) ?>
                     </td>
                 </tr>
                 <tr>
@@ -81,7 +83,7 @@
                         VAT Number
                     </th>
                     <td>
-                        <?= $t->ee( $bdetails->getVatNumber() ) ?>
+                        <?= $t->ee( $bdetails->vatNumber ) ?>
                     </td>
                 </tr>
                 <tr>
@@ -89,7 +91,7 @@
                         VAT Rate
                     </th>
                     <td>
-                        <?= $t->ee( $bdetails->getVatRate() ) ?>
+                        <?= $t->ee( $bdetails->vatRate ) ?>
                     </td>
                 </tr>
                 <tr>
@@ -97,11 +99,7 @@
                         Billing Period
                     </th>
                     <td>
-                        <?php if( $bdetails->getBillingFrequency() != '' ): ?>
-                            <?php if( isset( \Entities\CompanyBillingDetail::$BILLING_FREQUENCIES[$bdetails->getBillingFrequency()] ) ): ?>
-                                <?= \Entities\CompanyBillingDetail::$BILLING_FREQUENCIES[ $bdetails->getBillingFrequency() ] ?>
-                            <?php endif; ?>
-                        <?php endif; ?>
+                        <?= \IXP\Models\CompanyBillingDetail::$BILLING_FREQUENCIES[ $bdetails->billingFrequency ] ?? null ?>
                     </td>
                 </tr>
                 <tr>
@@ -109,7 +107,7 @@
                         E-Mail
                     </th>
                     <td>
-                        <?= $t->ee( $bdetails->getBillingEmail() ) ?>
+                        <?= $t->ee( $bdetails->billingEmail ) ?>
                     </td>
                 </tr>
                 <tr>
@@ -117,11 +115,11 @@
                         Address
                     </th>
                     <td>
-                        <?php if( $bdetails->getBillingAddress1() ): ?> <?= $t->ee( $bdetails->getBillingAddress1() ) ?><br/><?php endif; ?>
-                        <?php if( $bdetails->getBillingAddress2() ): ?> <?= $t->ee( $bdetails->getBillingAddress2() ) ?><br/><?php endif; ?>
-                        <?php if( $bdetails->getBillingAddress3() ): ?> <?= $t->ee( $bdetails->getBillingAddress3() ) ?><br/><?php endif; ?>
-                        <?php if( $bdetails->getBillingTownCity() ): ?> <?= $t->ee( $bdetails->getBillingTownCity() ) ?><br/><?php endif; ?>
-                        <?php if( $bdetails->getBillingPostcode() ): ?> <?= $t->ee( $bdetails->getBillingPostcode() ) ?><?php endif; ?>
+                        <?php if( $bdetails->billingAddress1 ): ?> <?= $t->ee( $bdetails->billingAddress1 ) ?><br/><?php endif; ?>
+                        <?php if( $bdetails->billingAddress2 ): ?> <?= $t->ee( $bdetails->billingAddress2 ) ?><br/><?php endif; ?>
+                        <?php if( $bdetails->billingAddress3 ): ?> <?= $t->ee( $bdetails->billingAddress3 ) ?><br/><?php endif; ?>
+                        <?php if( $bdetails->billingTownCity ): ?> <?= $t->ee( $bdetails->billingTownCity ) ?><br/><?php endif; ?>
+                        <?php if( $bdetails->billingPostcode ): ?> <?= $t->ee( $bdetails->billingPostcode ) ?><?php endif; ?>
                     </td>
                 </tr>
                 <tr>
@@ -129,7 +127,7 @@
                         Country
                     </th>
                     <td>
-                        <?= $t->ee( $bdetails->getBillingCountryName() ) ?>
+                        <?= $bdetails->billingCountry ? array_column( Countries::getList(), 'name', 'iso_3166_2')[ $bdetails->billingCountry ] : null ?>
                     </td>
                 </tr>
                 <tr>
@@ -137,7 +135,7 @@
                         Phone
                     </th>
                     <td>
-                        <?= $t->ee( $bdetails->getBillingTelephone() ) ?>
+                        <?= $t->ee( $bdetails->billingTelephone ) ?>
                     </td>
                 </tr>
                 <tr>
@@ -145,11 +143,7 @@
                         P/O Required
                     </th>
                     <td>
-                        <?php if( $bdetails->getPurchaseOrderRequired() ): ?>
-                            <i class="fa fa-check"></i>
-                        <?php else: ?>
-                            <i class="fa fa-times"></i>
-                        <?php endif; ?>
+                        <?= $bdetails->purchaseOrderRequired ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>'  ?>
                     </td>
                 </tr>
                 <tr>
@@ -157,11 +151,7 @@
                         Invoice Method
                     </th>
                     <td>
-                        <?php if( $bdetails->getInvoiceMethod() != '' ): ?>
-                            <?php if( isset( \Entities\CompanyBillingDetail::$INVOICE_METHODS[ $bdetails->getInvoiceMethod() ] ) ): ?>
-                                <?= \Entities\CompanyBillingDetail::$INVOICE_METHODS[ $bdetails->getInvoiceMethod() ] ?>
-                            <?php endif; ?>
-                        <?php endif; ?>
+                        <?= \IXP\Models\CompanyBillingDetail::$INVOICE_METHODS[ $bdetails->invoiceMethod ] ?? null ?>
                     </td>
                 </tr>
                 <tr>
@@ -169,7 +159,7 @@
                         Invoice E-Mail
                     </th>
                     <td>
-                        <?= $t->ee( $bdetails->getInvoiceEmail() ) ?>
+                        <?= $t->ee( $bdetails->invoiceEmail ) ?>
                     </td>
                 </tr>
             </table>

@@ -150,7 +150,7 @@ class LogoController extends Controller
 
         AlertContainer::push( "Logo successfully uploaded!", Alert::SUCCESS );
 
-        return Redirect::to( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ "id" => $c->id ] ) : Redirect::to( route( "dashboard@index" ) ) );
+        return Redirect::to( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ 'cust' => $c->id ] ) : Redirect::to( route( "dashboard@index" ) ) );
     }
 
 
@@ -184,7 +184,7 @@ class LogoController extends Controller
 
         AlertContainer::push( "Logo successfully removed!", Alert::SUCCESS );
 
-        return redirect( Auth::getUser()->isSuperUser() ? route( 'customer@overview', [ 'id' => $c->id ] ) : route( 'dashboard@index' ) );
+        return redirect( Auth::getUser()->isSuperUser() ? route( 'customer@overview', [ 'cust' => $c->id ] ) : route( 'dashboard@index' ) );
     }
 
 

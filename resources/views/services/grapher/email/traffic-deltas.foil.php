@@ -51,13 +51,13 @@
             </ul>
 
             <p>
-                <a href="<?= route( "customer@overview" , [ "id" => $p['cust']->id ] ) ?>">
+                <a href="<?= route( "customer@overview" , [ 'cust' => $p['cust']->id ] ) ?>">
                     <img src="data:image/png;base64,<?= base64_encode( $p['pngMonth'] ) ?>">
                 </a>
             </p>
 
             <p>
-                <a href="<?= route( "customer@overview" , [ "id" => $p['cust']->id ] ) ?>">
+                <a href="<?= route( "customer@overview" , [ 'cust' => $p['cust']->id ] ) ?>">
                     <img src="data:image/png;base64,<?= base64_encode( $p['pngYear'] ) ?>">
                 </a>
             </p>

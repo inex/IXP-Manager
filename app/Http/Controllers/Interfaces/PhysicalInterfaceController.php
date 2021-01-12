@@ -144,7 +144,7 @@ class PhysicalInterfaceController extends Common
     public function edit( Request $r,  PhysicalInterface $pi, VirtualInterface $vi = null, CoreBundle $cb = null )
     {
         // we never edit a fanout port:
-        if( $pi->switchPort->isFanout() ) {
+        if( $pi->switchPort->typeFanout() ) {
             AlertContainer::push( 'Do not edit fanout ports directly. Edit the peering interface and the fanout port will be updated to match.', Alert::DANGER );
             return redirect( route( 'virtual-interface@edit', [ 'vi' => $pi->virtualinterfaceid ] ) );
         }

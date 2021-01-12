@@ -22,7 +22,11 @@ namespace IXP\Http;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Auth\Middleware\{AuthenticateWithBasicAuth, Authorize, EnsureEmailIsVerified};
+use Illuminate\Auth\Middleware\{
+    AuthenticateWithBasicAuth,
+    Authorize,
+    EnsureEmailIsVerified
+};
 
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
@@ -37,7 +41,12 @@ use Illuminate\Foundation\Http\Middleware\{
 use Illuminate\Http\Middleware\SetCacheHeaders;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use IXP\Http\Middleware\Authenticate;
-use Illuminate\Routing\Middleware\{SubstituteBindings, ThrottleRequests, ValidateSignature};
+
+use Illuminate\Routing\Middleware\{
+    SubstituteBindings,
+    ThrottleRequests,
+    ValidateSignature
+};
 
 use Illuminate\Session\Middleware\StartSession;
 

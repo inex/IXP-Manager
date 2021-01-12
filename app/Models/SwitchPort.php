@@ -244,7 +244,7 @@ class SwitchPort extends Model
      *
      * @return boolean
      */
-    public function isUnset():bool
+    public function typeUnset():bool
     {
         return $this->type === self::TYPE_UNSET;
     }
@@ -254,7 +254,7 @@ class SwitchPort extends Model
      *
      * @return boolean
      */
-    public function isPeering(): bool
+    public function typePeering(): bool
     {
         return $this->type === self::TYPE_PEERING;
     }
@@ -264,7 +264,7 @@ class SwitchPort extends Model
      *
      * @return boolean
      */
-    public function isReseller(): bool
+    public function typeReseller(): bool
     {
         return $this->type === self::TYPE_RESELLER;
     }
@@ -274,7 +274,7 @@ class SwitchPort extends Model
      *
      * @return boolean
      */
-    public function isCore(): bool
+    public function typeCore(): bool
     {
         return $this->type === self::TYPE_CORE;
     }
@@ -284,7 +284,7 @@ class SwitchPort extends Model
      *
      * @return boolean
      */
-    public function isFanout(): bool
+    public function typeFanout(): bool
     {
         return $this->type === self::TYPE_FANOUT;
     }

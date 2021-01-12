@@ -30,6 +30,10 @@ class AddTimestamps extends Migration
             $table->timestamps();
         });
 
+        Schema::table('company_registration_detail', function (Blueprint $table) {
+            $table->timestamps();
+        });
+
         Schema::table('console_server', function (Blueprint $table) {
             $table->timestamps();
         });
@@ -86,6 +90,10 @@ class AddTimestamps extends Migration
         Schema::table('cust_tag', function (Blueprint $table) {
             $table->renameColumn( 'created', 'created_at' );
             $table->renameColumn( 'updated', 'updated_at' );
+        });
+
+        Schema::table('cust_to_cust_tag', function (Blueprint $table) {
+            $table->timestamps();
         });
 
         Schema::table('infrastructure', function (Blueprint $table) {
@@ -250,6 +258,10 @@ class AddTimestamps extends Migration
             $table->dropTimestamps();
         });
 
+        Schema::table('company_registration_detail', function (Blueprint $table) {
+            $table->dropTimestamps();
+        });
+
         Schema::table('console_server', function (Blueprint $table) {
             $table->dropTimestamps();
         });
@@ -306,6 +318,10 @@ class AddTimestamps extends Migration
         Schema::table('cust_tag', function (Blueprint $table) {
             $table->renameColumn( 'created_at', 'created' );
             $table->renameColumn( 'updated_at', 'updated' );
+        });
+
+        Schema::table('cust_to_cust_tag', function (Blueprint $table) {
+            $table->dropTimestamps();
         });
 
         Schema::table('infrastructure', function (Blueprint $table) {
@@ -440,6 +456,5 @@ class AddTimestamps extends Migration
         Schema::table('vlan', function (Blueprint $table) {
             $table->dropTimestamps();
         });
-
     }
 }

@@ -31,7 +31,7 @@
                         <?= $t->ee( $user->email ) ?>
                     </td>
                     <td>
-                        <a href="<?= route( "customer@overview" , [ "id" => $user->customer->id ] ) ?>">
+                        <a href="<?= route( "customer@overview" , [ 'cust' => $user->customer->id ] ) ?>">
                             <?= $t->ee( $user->customer->name ) ?>
                         </a>
                     </td>

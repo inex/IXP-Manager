@@ -80,7 +80,7 @@
                                           Multiple (<?= $u['nbC2U'] ?>)
                                         </a>
                                     <?php else: ?>
-                                        <a href="<?=  route( "customer@overview" , [ "id" => $u[ 'custid' ] ] ) ?>">
+                                        <a href="<?=  route( "customer@overview" , [ 'cust' => $u[ 'custid' ] ] ) ?>">
                                             <?= $t->ee( $u['customer'] ) ?>
                                         </a>
                                     <?php endif; ?>

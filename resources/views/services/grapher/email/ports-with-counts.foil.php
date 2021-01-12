@@ -17,7 +17,7 @@
                 </li>
             </ul>
             <p>
-                <a href="<?= route( "customer@overview" , [ "id" => $p['cust_id'] ] ) ?>">
+                <a href="<?= route( "customer@overview" , [ 'cust' => $p['cust_id'] ] ) ?>">
                     <img src="data:image/png;base64,<?= base64_encode( $p['png'] ) ?>">
                 </a>
             </p>

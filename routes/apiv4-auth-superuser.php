@@ -41,8 +41,8 @@
 // Customers
 //
 Route::group( [  'prefix' => 'customer' ], function() {
-    Route::get( 'query-peeringdb/asn/{asn}',   'CustomerController@queryPeeringDbWithAsn' );
-    Route::post( '{cust}/switches',               'CustomerController@switches' );
+    Route::get(  'query-peeringdb/asn/{asn}',   'CustomerController@queryPeeringDbWithAsn'  );
+    Route::post( '{cust}/switches',             'CustomerController@switches'               );
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

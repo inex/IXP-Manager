@@ -56,7 +56,7 @@ class RedirectIfAuthenticated
      *
 	 * @return mixed
 	 */
-	public function handle( Request $r, Closure $next)
+	public function handle( Request $r, Closure $next )
 	{
 		if( $this->auth->check() ) {
 			return new RedirectResponse( url('') );

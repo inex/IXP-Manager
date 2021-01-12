@@ -1,9 +1,7 @@
 <script>
-
     function coNotesOpenDialog() {
         $( "#co-notes-dialog" ).modal();
     }
-
 
     function coNotesPublicCheckbox() {
         if( $( "#co-notes-fpublic" ).is( ':checked' ) ) {
@@ -22,7 +20,6 @@
     }
 
     function coNotesEditDialog( event ) {
-
         event.preventDefault();
         let noteid = ( this.id ).substring( 14 );
 

@@ -165,7 +165,7 @@ class CoreBundleController extends Common
         // Creating all the elements linked to the new core bundle (core links, core interfaces, physical interfaces)
         $this->buildCorelink( $cb, $r, [ 'a' => $via , 'b' => $vib ] , false );
 
-        Log::notice( $r->user()->getUsername() . ' added a core bundle with (id: ' . $cb->id . ')' );
+        Log::notice( $r->user()->username . ' added a core bundle with (id: ' . $cb->id . ')' );
         AlertContainer::push( 'Core bundle created', Alert::SUCCESS );
 
         return Redirect::to( route( "core-bundle@list" ) );
@@ -194,7 +194,7 @@ class CoreBundleController extends Common
 
         $cb->update( $r->all() );
 
-        Log::notice( $r->user()->getUsername() . ' updated a core bundle with (id: ' . $cb->id . ')' );
+        Log::notice( $r->user()->username . ' updated a core bundle with (id: ' . $cb->id . ')' );
         AlertContainer::push( 'Core bundle updated.', Alert::SUCCESS );
 
         return Redirect::to( route( 'core-bundle@list' ) );
@@ -218,18 +218,9 @@ class CoreBundleController extends Common
      */
     public function delete( Request $r, CoreBundle $cb ): RedirectResponse
     {
-        foreach( $cb->corelinks as $cl ){
-            $cl->delete();
-            foreach( $cl->coreInterfaces() as $ci ){
-                /** @var CoreInterface  $ci */
-                $ci->delete();
-                $ci->physicalInterface->virtualInterface->delete();
-                $ci->physicalInterface->delete();
-            }
-        }
-        $cb->delete();
+        $cb->deleteObject();
 
-        Log::notice( $r->user()->getUsername()." deleted a core bundle (id: " . $cb->id . ')' );
+        Log::notice( $r->user()->username." deleted a core bundle (id: " . $cb->id . ')' );
         AlertContainer::push( 'Core bundle deleted.', Alert::SUCCESS );
         return Redirect::to( route( "core-bundle@list" ) );
     }

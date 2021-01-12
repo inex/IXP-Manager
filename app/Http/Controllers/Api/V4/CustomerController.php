@@ -39,6 +39,7 @@ use Illuminate\Http\{
     JsonResponse,
     Request
 };
+use IXP\Services\PeeringDb;
 
 /**
  * Customer API v4 Controller
@@ -83,16 +84,16 @@ class CustomerController extends Controller
      * @see \IXP\Services\PeeringDb::getNetworkByAsn()
      *
      * @param   string  $asn
+     *
      * @return  JsonResponse
      */
     public function queryPeeringDbWithAsn( string $asn ): JsonResponse
     {
-        return response()->json( App::make( "IXP\Services\PeeringDb" )->getNetworkByAsn( $asn ) );
+        return response()->json( App::make( PeeringDb::class )->getNetworkByAsn( $asn ) );
     }
 
     /**
      * Get Customer depending on the Vlan and Protocol
-     *
      *
      * @param   Request $request instance of the current HTTP request
      *
@@ -113,5 +114,4 @@ class CustomerController extends Controller
 
         return response()->json( [ 'listCustomers' => CustomerAggregator::getByVlanAndProtocol( $vlanid, $protocol ) ] );
     }
-
 }

@@ -246,7 +246,7 @@
                         <?php if( $t->data[ 'item' ][ 'cid' ] ): ?>
                             <b>
                                 This port is in use by
-                                <a href="<?= route( 'customer@overview', [ 'id' => $t->data[ 'item' ][ 'cid' ] ] ) ?>">
+                                <a href="<?= route( 'customer@overview', [ 'cust' => $t->data[ 'item' ][ 'cid' ] ] ) ?>">
                                     <?= $t->data[ 'item' ][ 'cname' ] ?></a>.
                             </b>
                         <?php else: ?>

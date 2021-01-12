@@ -336,7 +336,7 @@ class SwitchPortController extends EloquentController
         if( ( $this->object->physicalInterface()->exists() ) ) {
             $c = $this->object->physicalInterface->virtualInterface->customer;
             AlertContainer::push( "You cannot delete the switch port {$this->object->name} as it is assigned to a physical interface for "
-                . "<a href=\"" . route('customer@overview', [ "id" => $c->id, "tab" => "ports" ]) . "\">{$c->name}</a>.", Alert::DANGER );
+                . "<a href=\"" . route('customer@overview', [ 'cust' => $c->id, "tab" => "ports" ]) . "\">{$c->name}</a>.", Alert::DANGER );
             return false;
         }
 
@@ -702,7 +702,7 @@ class SwitchPortController extends EloquentController
                 $cust = $sp->physicalInterface->virtualInterface->customer;
                 AlertContainer::push( "Could not delete switch port {$sp->name} as it is assigned to a physical interface for "
                     . "<a href=\""
-                    . route( "customer@overview" , [ 'id' => $cust->id, 'tab' => 'ports' ]  )
+                    . route( "customer@overview" , [ 'cust' => $cust->id, 'tab' => 'ports' ]  )
                     . "\">{$cust->name}</a>.", Alert::DANGER
                 );
 

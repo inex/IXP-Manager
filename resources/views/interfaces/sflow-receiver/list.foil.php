@@ -46,7 +46,7 @@
                     <?php foreach( $t->listSr as $sflr ): /** @var \IXP\Models\SflowReceiver $sflr */ ?>
                         <tr>
                             <td>
-                                <a href="<?= route( "customer@overview" , [ "id" => $sflr->virtualInterface->customer->id ] ) ?>">
+                                <a href="<?= route( "customer@overview" , [ 'cust' => $sflr->virtualInterface->customer->id ] ) ?>">
                                     <?= $t->ee( $sflr->virtualInterface->customer->name )   ?>
                                 </a>
                             </td>

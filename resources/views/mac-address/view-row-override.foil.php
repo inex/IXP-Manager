@@ -9,7 +9,7 @@
         <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
     </th>
     <td>
-        <a href="<?= route( "customer@overview" , [ "id" => $row[ 'customerid' ] ] ) ?>">
+        <a href="<?= route( "customer@overview" , [ 'cust' => $row[ 'customerid' ] ] ) ?>">
             <?= $t->ee( $row['customer'] ) ?>
         </a>
     </td>

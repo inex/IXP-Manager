@@ -52,7 +52,7 @@ class CustomerNote extends EntityRepository {
         return $this->getEntityManager()->createQuery(
                 "SELECT n FROM Entities\CustomerNote n WHERE n.Customer = ?1 "
                 . ( $publicOnly ? "AND n.private = 0 " : "" )
-                . "ORDER BY n.created DESC"
+                . "ORDER BY n.created_at DESC"
             )
             ->setParameter( 1, $custid )
             ->getResult();

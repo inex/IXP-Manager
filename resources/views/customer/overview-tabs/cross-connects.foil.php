@@ -49,7 +49,7 @@
                     <tr>
                         <td>
                             <a href="<?= route( "patch-panel-port@view" , [ "ppp" => $ppp->id ] ) ?>">
-                                <?= $t->ee( $ppp->patchPanel->name ) ?>
+                                <?= $t->ee( $pp->name ) ?>
                                 <?= $t->ee( $ppp->name() ) ?>
                             </a>
                         </td>
@@ -62,16 +62,16 @@
                             </td>
                         <?php endif; ?>
                         <td>
-                            <span title="" class="badge badge-<?=$ppp->stateCssClass( $ppp->state, $t->isSuperUser ) ?>">
+                            <span class="badge badge-<?=$ppp->stateCssClass( $ppp->state, $t->isSuperUser ) ?>">
                             <?= $ppp->states() ?>
                             </span>
                         </td>
                         <td>
-                            <?= $t->ee( $ppp->patchPanel->cabinet->location->name ) ?>
+                            <?= $t->ee( $pp->cabinet->location->name ) ?>
                         </td>
                         <?php if( $t->isSuperUser ): ?>
                             <td>
-                                <?= $t->ee( $ppp->patchPanel->cabinet->name ) ?>
+                                <?= $t->ee( $pp->cabinet->name ) ?>
                             </td>
                         <?php endif; ?>
                         <td>

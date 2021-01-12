@@ -575,7 +575,7 @@ class ContactController extends EloquentController
 
         // retrieve the customer ID
         if( $redirect === 'customer@overview' ) {
-            return route( 'customer@overview' , [ 'id' => $this->object->customer->id , 'tab' => 'contacts' ] );
+            return route( 'customer@overview' , [ 'cust' => $this->object->customer->id , 'tab' => 'contacts' ] );
         }
 
         return null;
@@ -622,7 +622,7 @@ class ContactController extends EloquentController
         if( strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
             if( $custid = $this->request->session()->get( "ixp_contact_delete_custid" ) ) {
                 $this->request->session()->remove( "ixp_contact_delete_custid" );
-                return route( "customer@overview", [ "id" => $custid, "tab" => "contacts" ] );
+                return route( "customer@overview", [ "cust" => $custid, "tab" => "contacts" ] );
             }
         }
 
