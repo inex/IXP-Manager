@@ -31,6 +31,8 @@ use Illuminate\Database\Eloquent\{
     Relations\HasMany
 };
 
+use OSS_SNMP\MIBS\Iface;
+
 /**
  * IXP\Models\CoreBundle
  *
@@ -280,6 +282,34 @@ class CoreBundle extends Model
     }
 
     /**
+     * Get all core links where each side of the link has an SNMP IF Oper State as provided
+     * (defaults to operational state: UP).
+     *
+     * @param  int  $operstate
+     * @param  bool  $onlyEnabled
+     *
+     * @return CoreLink[]
+     */
+    public function coreLinksWithIfOperStateX( int $operstate = Iface::IF_ADMIN_STATUS_UP, bool $onlyEnabled = true ): array {
+        return self::select( 'cl.*' )
+            ->from( 'corebundles AS cb' )
+            ->leftJoin( 'corelinks AS cl', 'cl.core_bundle_id', 'cb.id' )
+            ->leftJoin( 'coreinterfaces AS cia', 'cia.id', 'cl.core_interface_sidea_id' )
+            ->leftJoin( 'coreinterfaces AS cib', 'cib.id', 'cl.core_interface_sideb_id' )
+            ->leftJoin( 'physicalinterface AS pia', 'pia.id', 'cia.physical_interface_id' )
+            ->leftJoin( 'physicalinterface AS pib', 'pib.id', 'cib.physical_interface_id' )
+            ->leftJoin( 'switchport AS spa', 'spa.id', 'pia.switchportid' )
+            ->leftJoin( 'switchport AS spb', 'spb.id', 'pib.switchportid' )
+            ->where( 'spa.ifOperStatus', $operstate )
+            ->where( 'spb.ifOperStatus', $operstate )
+            ->where( 'cb.id', $this->id )
+            ->when( $onlyEnabled , function( Builder $q ) {
+                return $q->where( 'cl.enabled', true );
+            })->get()->toArray();
+    }
+
+
+        /**
      * Check if the switch is the same for the Physical interfaces of the core links associated to the core bundle
      *
      * @param bool $sideA if true get the side A if false Side B

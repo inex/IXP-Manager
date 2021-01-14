@@ -89,6 +89,8 @@ use IXP\Models\{
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereUsername($value)
  * @mixin \Eloquent
+ * @method static Builder|User activeOnly()
+ * @method static Builder|User byPrivs($priv = null)
  */
 class UserAggregator extends User
 {
@@ -268,6 +270,7 @@ class UserAggregator extends User
 
             Log::info( 'PeeringDB OAuth: user ' . $user->id . '/' . $user->username . ' has no customers - deleting...' );
 
+            // FIXME FIXME-YR
             // delete all the user's preferences
 //            foreach( $user->getPreferences() as $pref ) {
 //                $user->removePreference( $pref );

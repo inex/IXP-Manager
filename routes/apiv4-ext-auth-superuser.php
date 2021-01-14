@@ -104,12 +104,13 @@ Route::get('sflow-receivers.{format}',         'SflowReceiverController@getRecei
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Vlan Interface
 //
-Route::get( 'vlan-interface/l2-addresses/{id}',                 'VlanInterfaceController@getL2A' );
+Route::get( 'vlan-interface/l2-addresses/{vli}',                'VlanInterfaceController@getL2A' );
 Route::get( 'sflow-db-mapper/learned-macs',                     'VlanInterfaceController@sflowLearnedMacs' );
 Route::get( 'sflow-db-mapper/configured-macs',                  'VlanInterfaceController@sflowConfiguredMacs' );
 
-
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Nagios
+//
 Route::group( [ 'prefix' => 'nagios' ], function() {
     Route::get(  'customers/{vlan}/{protocol}',            'NagiosController@customers' );
     Route::post( 'customers/{vlan}/{protocol}',            'NagiosController@customers' );

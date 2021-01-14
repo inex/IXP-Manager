@@ -170,6 +170,8 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @mixin Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerToUser[] $customerToUser
  * @property-read int|null $customer_to_user_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerEquipment[] $customerEquipments
+ * @property-read int|null $customer_equipments_count
  */
 class Customer extends Model
 {

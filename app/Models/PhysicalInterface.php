@@ -65,6 +65,7 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface connected()
+ * @method static Builder|PhysicalInterface graphable()
  */
 class PhysicalInterface extends Model
 {

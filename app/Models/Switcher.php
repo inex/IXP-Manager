@@ -23,6 +23,7 @@
 
 namespace IXP\Models;
 
+use Carbon\Carbon;
 use DateTime, Log;
 
 use Illuminate\Database\Eloquent\{
@@ -37,6 +38,7 @@ use Illuminate\Database\Eloquent\Relations\{
 
 use Illuminate\Support\Collection;
 
+use IXP\Exceptions\Switches\RebootDiscoveryNotSupported;
 use OSS_SNMP\SNMP;
 
 use \OSS_SNMP\MIBS\Iface as SNMPIface;
@@ -464,5 +466,109 @@ class Switcher extends Model
         }
 
         return $cbs;
+    }
+
+    /**
+     * Evaluate the switches status.
+     *
+     * Checks for recent reboots and missed snmp polling.
+     *
+     * @return array
+     */
+    public function status(): array
+    {
+        // assume we're okay
+        $okay = true;
+        $msgs = [];
+
+        if( !$this->active ) {
+            return [
+                'name' => $this->name,
+                'status' => true,
+                'msgs' => [ 'Switch is inactive. Status tests skipped.' ],
+            ];
+        }
+
+        // last polled:
+        if( $this->lastPolled ) {
+            $lastPolled = Carbon::instance( $this->lastPolled );
+            if( $lastPolled->diffInMinutes() > 10 ) {
+                $okay = false;
+                $msgs[] = 'WARNING: last polled ' . $lastPolled->diffForHumans() . '.';
+            } else {
+                $msgs[] = 'Last polled ' . $lastPolled->diffForHumans() . '.';;
+            }
+        } else {
+            $okay = false;
+            $msgs[] = 'Switch has never been polled via SNMP.';
+        }
+
+        try {
+            if( $this->recentlyRebooted() ) {
+                $okay = false;
+                $msgs[] = 'CRITICAL: rebooted within the last hour (probably).';
+            }
+        } catch( RebootDiscoveryNotSupported $e ) {
+            $msgs[] = 'Switch does not support reboot checks.';
+        }
+
+        return [
+            'name' => $this->name,
+            'status' => $okay,
+            'msgs' => $msgs,
+        ];
+    }
+
+    /**
+     * Indicate if the switch (probably) recently rebooted.
+     *
+     * If this returns true, switch has /most likely/ rebooted.
+     *
+     * @param int $window Window in minutes for 'recently'. Defaults to 60.
+     *
+     * @return bool
+     *
+     * @throws RebootDiscoveryNotSupported
+     */
+    public function recentlyRebooted( int $window = 60 ): bool
+    {
+        if( $this->snmp_engine_time === null && $this->snmp_system_uptime === null ) {
+            throw new RebootDiscoveryNotSupported;
+        }
+
+        // convert window to seconds
+        $window *= 60;
+
+        // assume that the switch probably hasn't rebooted
+        $probably = false;
+
+        if( ( $this->snmp_system_uptime / 100 ) < $window ) {
+            // Either sysuptime has rolled over or switch has rebooted.
+
+            // try to identify rollover from snmp engine uptime.
+            // we're ignore engine.boots here because it's not clear what causes that to increment.
+            if( $this->snmp_engine_time !== null ) {
+                if( $this->snmp_engine_time < $window ) {
+                    $probably = true;
+                }
+            } else {
+                $probably = true;
+            }
+        }
+
+        if( $probably === true && Carbon::parse( $this->lastPolled )->diffInMinutes() < 60 ) {
+            // one additional check is that interface last change must be less than the sysuptime for a reboot
+            // to have taken place. We'll add a margin to the window here also.
+            $cutoff = time() - $window - 60; // 60 for some margin
+
+            foreach( $this->switchPorts as $sp ) {
+                if( $sp->ifLastChange < $cutoff && $sp->ifOperStatus === SNMPIface::IF_ADMIN_STATUS_UP && $sp->physicalInterface && $sp->active ) {
+                    $probably = false;
+                    break;
+                }
+            }
+        }
+
+        return $probably;
     }
 }

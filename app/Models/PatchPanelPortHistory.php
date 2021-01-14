@@ -87,6 +87,7 @@ use Schema;
  * @property Carbon|null $updated_at
  * @method static Builder|PatchPanelPortHistory whereCreatedAt($value)
  * @method static Builder|PatchPanelPortHistory whereUpdatedAt($value)
+ * @method static Builder|PatchPanelPortHistory masterPort()
  */
 
 class PatchPanelPortHistory extends Model

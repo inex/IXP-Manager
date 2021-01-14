@@ -36,8 +36,8 @@
 //     curl -X GET -H "X-IXP-Manager-API-Key: mySuperSecretApiKey" http://ixpv.dev/api/v4/test
 //     wget http://ixpv.dev/api/v4/test?apikey=mySuperSecretApiKey
 
-Route::any( 'ping', 'PublicController@ping' )->name('api-v4:ping');
-Route::any( 'test', 'PublicController@test' )->name('api-v4:test');
+Route::any( 'ping', 'PublicController@ping' )->name('api-v4:ping' );
+Route::any( 'test', 'PublicController@test' )->name('api-v4:test' );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // IX-F Member List Export

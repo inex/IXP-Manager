@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -104,15 +104,21 @@ Route::group( [  'prefix' => 'provisioner', 'namespace' => 'Provisioner' ], func
     Route::get( 'corebundle/list.{outformat}',                          'YamlController@listCoreBundle' );
 });
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Switch Port
+//
 Route::group( [  'prefix' => 'switch-port' ], function() {
     Route::get('{sp}/customer',                         'SwitchPortController@customer' );
     Route::get('{sp}/physical-interface',               'SwitchPortController@physicalInterface' );
 });
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Switch
+//
 Route::group( [  'prefix' => 'switch' ], function() {
-    Route::post( '{id}/ports',                       'SwitchController@ports' );
-    Route::get( '{id}/status',                       'SwitchController@status' );
-    Route::get( '{id}/core-bundles-status',          'SwitchController@coreBundlesStatus' );
+    Route::post( '{s}/ports',                       'SwitchController@ports' );
+    Route::get(  '{s}/status',                       'SwitchController@status' );
+    Route::get(  '{s}/core-bundles-status',          'SwitchController@coreBundlesStatus' );
     Route::post( '{s}/switch-port-for-ppp',          'SwitchController@switchPortForPPP'    )->name( 'switch@switch-port-for-ppp' );
     Route::post( '{s}/switch-port-prewired',         'SwitchController@switchPortPrewired'  )->name( 'switch@switch-port-prewired' );
 });

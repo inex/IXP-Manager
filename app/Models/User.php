@@ -98,6 +98,8 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
  * @property-read int|null $customer_to_user_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
+ * @method static Builder|User activeOnly()
+ * @method static Builder|User byPrivs($priv = null)
  */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
@@ -212,6 +214,34 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function customerToUser(): HasMany
     {
         return $this->HasMany(CustomerToUser::class, 'user_id' );
+    }
+
+    /**
+     * Scope a query to match active user only
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeActiveOnly( Builder $query ): Builder
+    {
+        return $query->where('disabled', false );
+    }
+
+    /**
+     * Scope a query to match user by privs
+     *
+     * @param  Builder  $query
+     * @param  int|null  $priv
+     *
+     * @return Builder
+     */
+    public function scopeByPrivs( Builder $query, int $priv = null ): Builder
+    {
+        return $query->select( 'user.*' )->leftJoin( 'customer_to_users AS c2u', 'c2u.user_id', 'user.id' )
+            ->when( $priv, function( Builder $q, $priv ){
+                return $q->where( 'c2u.privs', $priv );
+            } )->distinct();
     }
 
     /**
@@ -359,4 +389,5 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
         return parent::__get( $key );
     }
+
 }

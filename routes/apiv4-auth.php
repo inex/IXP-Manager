@@ -36,7 +36,7 @@
 //
 Route::group( [ 'prefix' => 'ixps' ], function() {
     Route::post(    'store/{showFeMessage?}',    'Layer2AddressController@store'  )->name( 'l2-address@create' );
-    Route::delete(  '{l2a}//{showFeMessage?}',   'Layer2AddressController@delete' )->name( 'l2-address@delete' );
+    Route::delete(  '{l2a}/{showFeMessage?}',    'Layer2AddressController@delete' )->name( 'l2-address@delete' );
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +50,7 @@ Route::group( [ 'prefix' => 'customer-note', 'namespace' => 'Customer\Note'], fu
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Utils
 //
-Route::post( 'utils/markdown',                                  'UtilsController@markdown' )->name( "utils@markdown" );
+Route::post( 'utils/markdown',  'UtilsController@markdown' )->name( "utils@markdown" );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Customer

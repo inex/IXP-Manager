@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,19 +22,18 @@ namespace IXP\Http\Controllers\Api\V4;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use D2EM;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 
-use Entities\{
-    CoreBundle as CoreBundleEntity,
-    Switcher as SwitcherEntity
+use Illuminate\Http\{
+    Request,
+    JsonResponse
 };
-use IXP\Models\Aggregators\SwitcherAggregator;
-use IXP\Models\Switcher;
-use IXP\Models\SwitchPort;
+
+use IXP\Models\{
+    Aggregators\SwitcherAggregator,
+    Switcher,
+    SwitchPort
+};
 
 /**
  * SwitcherController API Controller
@@ -48,15 +47,15 @@ class SwitchController extends Controller
     /**
      * Get the switch port for a Switch
      *
-     * @param   Request $r      instance of the current HTTP request
-     * @param   int     $id      switch ID
+     * @param   Request     $r      instance of the current HTTP request
+     * @param   Switcher    $s      switch
      *
      * @return  JsonResponse JSON array of listPort
      */
-    public function ports( Request $r, int $id ): JsonResponse
+    public function ports( Request $r, Switcher $s ): JsonResponse
     {
         return response()->json( [
-            'ports' => SwitcherAggregator::allPorts( $id , $r->types , $r->spIdsExcluded, (bool)$r->notAssignToPI, (bool)$r->piNull )
+            'ports' => SwitcherAggregator::allPorts( $s->id , $r->types , $r->spIdsExcluded, (bool)$r->notAssignToPI, (bool)$r->piNull )
         ] );
     }
 
@@ -116,51 +115,47 @@ class SwitchController extends Controller
 
     /**
      * Get the switch status for monitoring purposes
+     *
+     * @param  Switcher  $s
+     *
+     * @return JsonResponse
      */
-    public function status( Request $request, int $id ) {
-        if( !( $switch = D2EM::getRepository( SwitcherEntity::class )->find( $id ) ) ) {
-            abort( 404, "Unknown switch" );
-        }
-
-        return response()->json( $switch->status() );
+    public function status( Switcher $s ): JsonResponse
+    {
+        return response()->json( $s->status() );
     }
 
     /**
      * Get the switch status for monitoring purposes
+     *
+     * @param  Switcher  $s
+     *
+     * @return JsonResponse
      */
-    public function coreBundlesStatus( Request $request, int $id ) {
-        /** @var SwitcherEntity $switch */
-        if( !( $switch = D2EM::getRepository( SwitcherEntity::class )->find( $id ) ) ) {
-            abort( 404, "Unknown switch" );
-        }
-
+    public function coreBundlesStatus( Switcher $s ): JsonResponse
+    {
         $okay = true;
         $msgs = [];
 
-        /** @var CoreBundleEntity $cb */
-        foreach( $switch->getCoreBundles() as $cb ) {
-
-            if( $cb->getEnabled() ) {
-                $linksup      = count( $cb->getCoreLinksWithIfOperStateX() ); // with no args this defaults to X = oper state up for enabled links
-                $linksenabled = count( $cb->getCoreLinksEnabled() );
+        foreach( $s->getCoreBundles() as $cb ) {
+            if( $cb->enabled ) {
+                $linksup      = count( $cb->coreLinksWithIfOperStateX() ); // with no args this defaults to X = oper state up for enabled links
+                $linksenabled = count( $cb->corelinks()->active()->get()->toArray() );
 
                 if( $linksup === $linksenabled ) {
-                    $msgs[] = $cb->getSwitchSideX( true )->getName() . ' - ' . $cb->getSwitchSideX( false )->getName() . " OK - {$linksup}/${linksenabled} links up";
+                    $msgs[] = $cb->switchSideX( true )->name . ' - ' . $cb->switchSideX( false )->name . " OK - {$linksup}/${linksenabled} links up";
                 } else {
                     $okay = false;
-                    $msgs[] = 'ISSUE: ' . $cb->getSwitchSideX( true )->getName() . ' - ' . $cb->getSwitchSideX( false )->getName() . " has {$linksup}/${linksenabled} links up";
+                    $msgs[] = 'ISSUE: ' . $cb->switchSideX( true )->name . ' - ' . $cb->switchSideX( false )->name . " has {$linksup}/${linksenabled} links up";
                 }
             } else {
-                $msgs[] = 'Ignoring ' . $cb->getSwitchSideX( true )->getName() . ' - ' . $cb->getSwitchSideX( false )->getName() . ' as core bundle disabled';
+                $msgs[] = 'Ignoring ' . $cb->switchSideX( true )->name . ' - ' . $cb->switchSideX( false )->name . ' as core bundle disabled';
             }
         }
 
         if( $msgs === [] ) {
             $msgs[] = "No core bundles configured for this switch";
         }
-
-        return response()->json( [ 'status' => $okay, 'switchname' => $switch->getName(), 'msgs' => $msgs ] );
+        return response()->json( [ 'status' => $okay, 'switchname' => $s->name, 'msgs' => $msgs ] );
     }
-
-
 }

@@ -115,9 +115,9 @@ class SwitcherAggregator extends Switcher
     public static function getByLocationInfrastructureSpeed( int $infraid = null, int $locationid = null, int $speed = null ): Collection
     {
         return self::when( $locationid , function( Builder $q, $locationid ) {
-            return $q->leftJoin( 'cabinet AS c', 'c.id', 'switch.cabinetid' )
-                ->where( 'c.locationid', $locationid);
-        })
+                return $q->leftJoin( 'cabinet AS c', 'c.id', 'switch.cabinetid' )
+                    ->where( 'c.locationid', $locationid);
+            })
             ->when( $infraid , function( Builder $q, $infraid ) {
                 return $q->whereIn( 's.infrastructure', $infraid );
             })
