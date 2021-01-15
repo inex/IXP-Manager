@@ -22,15 +22,14 @@ namespace IXP\Policies;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
-use IXP\Models\User;
 use Route;
-use Entities\{
-    User as UserEntity
+
+use IXP\Models\{
+    User,
+    Customer,
+    RouteServerFilter
 };
-use IXP\Models\Customer;
-use IXP\Models\RouteServerFilter;
+
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class RouteServerFilterPolicy
@@ -40,14 +39,14 @@ class RouteServerFilterPolicy
     /**
      * Super admins can do anything
      *
-     * @param UserEntity $user
+     * @param User $user
      * @param $ability
      *
      * @return bool
      *
      * @throws
      */
-    public function before( UserEntity $user, $ability)
+    public function before( User $user, $ability)
     {
         if( !$user->isSuperUser() ) {
             $minAuth = User::AUTH_CUSTADMIN;
@@ -65,16 +64,16 @@ class RouteServerFilterPolicy
     /**
      * Determine whether the user can access to that route
      *
-     * @param UserEntity    $user
+     * @param User          $user
      * @param Customer      $cust
      *
      * @return mixed
      *
      * @throws
      */
-    public function checkCustObject( UserEntity $user, Customer $cust )
+    public function checkCustObject( User $user, Customer $cust )
     {
-        if( !$user->isSuperUser() && $cust->id !== $user->getCustomer()->getId() ){
+        if( !$user->isSuperUser() && $cust->id !== $user->custid ){
             return false;
         }
 
@@ -84,17 +83,16 @@ class RouteServerFilterPolicy
     /**
      * Determine whether the user can access to that route
      *
-     * @param  UserEntity  $user
-     * @param  RouteServerFilter  $rsf
+     * @param  User                 $user
+     * @param  RouteServerFilter    $rsf
      * @return mixed
      */
-    public function checkRsfObject( UserEntity $user, RouteServerFilter $rsf )
+    public function checkRsfObject( User $user, RouteServerFilter $rsf )
     {
-        if( !$user->isSuperUser() && $rsf->customer_id !== $user->getCustomer()->getId() ){
+        if( !$user->isSuperUser() && $rsf->customer_id !== $user->custid ){
             return false;
         }
 
         return $rsf->customer->isRouteServerClient();
     }
-
 }

@@ -490,7 +490,7 @@ class ContactController extends EloquentController
     public function doStore( Request $request )
     {
         $this->checkForm( $request );
-        $custid = Auth::getUser()->getCustomer()->getId();
+        $custid = Auth::getUser()->custid;
 
         if( Auth::getUser()->isSuperUser() ) {
             $custid = $request->custid;
@@ -498,8 +498,8 @@ class ContactController extends EloquentController
 
         $this->object = Contact::create(
             array_merge( $request->all(), [
-                'creator'       => Auth::getUser()->getUsername(),
-                'lastupdatedby' => Auth::getUser()->getId()
+                'creator'       => Auth::getUser()->username,
+                'lastupdatedby' => Auth::id()
             ] )
         );
         $this->object->custid = $custid;
@@ -534,8 +534,8 @@ class ContactController extends EloquentController
 
         $this->object->update(
             array_merge( $request->all(), [
-                'creator'       => Auth::getUser()->getUsername(),
-                'lastupdatedby' => Auth::getUser()->getId()
+                'creator'       => Auth::getUser()->username,
+                'lastupdatedby' => Auth::id()
             ] )
         );
 
@@ -598,7 +598,7 @@ class ContactController extends EloquentController
             // keep the customer ID for redirection on success
             $this->request->session()->put( "ixp_contact_delete_custid", $this->object->customer->id );
         } else {
-            if( $this->object->customer->id !== Auth::getUser()->getCustomer()->getId() ) {
+            if( $this->object->customer->id !== Auth::getUser()->custid ) {
                 AlertContainer::push( 'You are not authorised to delete this contact.', Alert::DANGER );
                 return false;
             }

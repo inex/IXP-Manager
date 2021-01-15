@@ -23,12 +23,7 @@ namespace IXP\Http\Controllers\Api\V4;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use App, D2EM;
-
-use Entities\{
-    Customer    as CustomerEntity,
-    PatchPanel  as PatchPanelEntity,
-};
+use App;
 
 use IXP\Models\Aggregators\CustomerAggregator;
 

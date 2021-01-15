@@ -3,7 +3,7 @@
 namespace IXP\Policies;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2010 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,14 +22,10 @@ namespace IXP\Policies;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use Entities\User as UserEntity;
-
 use IXP\Models\{
     Customer,
     DocstoreCustomerDirectory,
-    PatchPanelPortFile,
-    PatchPanelPortHistoryFile
+    User
 };
 
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -41,11 +37,11 @@ class DocstoreCustomerDirectoryPolicy
     /**
      * Determine whether the user can access the list
      *
-     * @param UserEntity    $user
+     * @param User    $user
      *
      * @return mixed
      */
-    public function listCustomers( UserEntity $user )
+    public function listCustomers( User $user )
     {
         return $user->isSuperUser();
     }
@@ -53,14 +49,14 @@ class DocstoreCustomerDirectoryPolicy
     /**
      * Determine whether the user can access the list
      *
-     * @param UserEntity    $user
+     * @param User          $user
      * @param Customer      $cust
      *
      * @return mixed
      */
-    public function listPatchPanelPortFiles( UserEntity $user, Customer $cust )
+    public function listPatchPanelPortFiles( User $user, Customer $cust ): bool
     {
-        return ( $user->isSuperUser() || $user->getCustomer()->getId() === $cust->id )
+        return ( $user->isSuperUser() || $user->custid === $cust->id )
             && $cust->patchPanelPorts()->with( 'patchPanelPortFiles' )
                 ->has($user->isSuperUser() ? 'patchPanelPortFiles' : 'patchPanelPortFilesPublic' )->get()
                 ->pluck( 'patchPanelPortFiles' )->isNotEmpty();
@@ -69,14 +65,14 @@ class DocstoreCustomerDirectoryPolicy
     /**
      * Determine whether the user can access the list
      *
-     * @param UserEntity    $user
+     * @param User          $user
      * @param Customer      $cust
      *
      * @return mixed
      */
-    public function listPatchPanelPortFilesHistory( UserEntity $user, Customer $cust )
+    public function listPatchPanelPortFilesHistory( User $user, Customer $cust ): bool
     {
-        return ( $user->isSuperUser() || $user->getCustomer()->getId() === $cust->id )
+        return ( $user->isSuperUser() || $user->custid === $cust->id )
             && $cust->patchPanelPortHistories()
                 ->with( 'patchPanelPortHistoryFiles' )->has( 'patchPanelPortHistoryFiles' )
                 ->get()->pluck( 'patchPanelPortHistoryFiles' )->isNotEmpty();
@@ -85,24 +81,25 @@ class DocstoreCustomerDirectoryPolicy
     /**
      * Determine whether the user can create docstore directories.
      *
-     * @param UserEntity    $user
+     * @param User          $user
      * @param Customer      $cust
      *
      * @return mixed
      */
-    public function list( UserEntity $user, Customer $cust  )
+    public function list( User $user, Customer $cust  ): bool
     {
-        return $user->isSuperUser() || ( $user->privs() >= UserEntity::AUTH_CUSTUSER && $user->getCustomer()->getId() === $cust->id ) ;
+        return $user->isSuperUser() || ( $user->privs() >= User::AUTH_CUSTUSER && $user->custid === $cust->id ) ;
     }
 
     /**
      * Determine whether the user can create docstore directories.
      *
-     * @param UserEntity    $user
+     * @param User          $user
      * @param Customer      $cust
+     *
      * @return mixed
      */
-    public function create( UserEntity $user, Customer $cust )
+    public function create( User $user, Customer $cust ): bool
     {
         return $user->isSuperUser() && $cust->exists;
     }
@@ -110,13 +107,12 @@ class DocstoreCustomerDirectoryPolicy
     /**
      * Determine whether the user can update the docstore directory.
      *
-     * @param   UserEntity                  $user
-     * @param   Customer                    $cust
+     * @param   User                        $user
      * @param   DocstoreCustomerDirectory   $dir
      *
      * @return mixed
      */
-    public function update( UserEntity $user, DocstoreCustomerDirectory $dir )
+    public function update( User $user, DocstoreCustomerDirectory $dir )
     {
         return $user->isSuperUser();
     }
@@ -124,12 +120,12 @@ class DocstoreCustomerDirectoryPolicy
     /**
      * Determine whether the user can delete the docstore directory.
      *
-     * @param   UserEntity                  $user
+     * @param   User                        $user
      * @param   DocstoreCustomerDirectory   $dir
      *
      * @return mixed
      */
-    public function delete( UserEntity $user, DocstoreCustomerDirectory $dir )
+    public function delete( User $user, DocstoreCustomerDirectory $dir )
     {
         return $user->isSuperUser();
     }
@@ -137,12 +133,12 @@ class DocstoreCustomerDirectoryPolicy
     /**
      * Determine whether the user can delete the docstore directory.
      *
-     * @param   UserEntity  $user
+     * @param   User        $user
      * @param   Customer    $cust
      *
      * @return mixed
      */
-    public function deleteForCustomer( UserEntity $user, Customer $cust )
+    public function deleteForCustomer( User $user, Customer $cust ): bool
     {
         return $user->isSuperUser() && $cust->docstoreCustomerFiles()->get()->isNotEmpty();
     }

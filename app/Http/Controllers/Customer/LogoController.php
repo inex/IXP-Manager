@@ -29,17 +29,17 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 use IXP\Http\Controllers\Controller;
 
-use IXP\Models\Customer;
-use IXP\Models\Logo;
-use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
+use IXP\Models\{
+    Customer,
+    Logo
+};
+
+use Illuminate\Http\{
+    RedirectResponse,
+    Request
+};
 
 use Illuminate\View\View;
-
-
-use Entities\{
-    Customer                as CustomerEntity,
-    Logo                    as LogoEntity
-};
 
 use IXP\Http\Requests\Customer\{
     Logo                    as LogoRequest

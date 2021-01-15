@@ -189,12 +189,12 @@ class ContactGroupController extends EloquentController
     /**
      * Check if the form is valid
      *
-     * @param $request
+     * @param $r
      */
-    public function checkForm( Request $request ): void
+    public function checkForm( Request $r ): void
     {
-        $request->validate( [
-            'name'                  => 'required|string|max:255|unique:Entities\ContactGroup,name' . ( $request->input( 'id' ) ? ','. $request->input( 'id' ) : '' ),
+        $r->validate( [
+            'name'                  => 'required|string|max:255|unique:Entities\ContactGroup,name' . ( $r->id ? ','. $r->id : '' ),
             'description'           => 'required|string|max:255',
             'type'                  => 'required|string|in:' . implode( ',', array_keys( config( "contact_group.types" ) ) ),
             'limited_to'            => 'required|integer|min:0',

@@ -123,7 +123,7 @@
                         <td class="<?= $i ? '' : 'tw-border-t-2' ?> meta tw-text-center">
                             <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
                                 <span class="tw-w-full tw-inline-block tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-xs tw-text-gray-700">
-                                    <?= \Entities\User::$PRIVILEGES_ALL[ $file->min_privs ] ?>
+                                    <?= \IXP\Models\User::$PRIVILEGES_ALL[ $file->min_privs ] ?>
                                 </span>
                             <?php endif; ?>
                         </td>

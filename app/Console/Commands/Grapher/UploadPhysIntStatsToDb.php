@@ -22,8 +22,6 @@ namespace IXP\Console\Commands\Grapher;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-//use Entities\Customer;
-
 use Carbon\Carbon;
 
 use Grapher;

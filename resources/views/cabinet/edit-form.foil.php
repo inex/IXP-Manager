@@ -44,7 +44,7 @@
         <?= Former::select( 'u_counts_from' )
             ->label( "U's Count From")
             ->placeholder( 'Select an option' )
-            ->fromQuery( Entities\Cabinet::$U_COUNTS_FROM )
+            ->fromQuery( \IXP\Models\Cabinet::$U_COUNTS_FROM )
             ->addClass( 'chzn-select' )
             ->blockHelp( "Some racks have their U's labelled - please indicate if you count these from top to bottom or from bottom to top." );
         ?>

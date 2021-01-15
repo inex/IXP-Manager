@@ -23,14 +23,11 @@ namespace IXP\Http\Requests\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM;
-
-use Entities\{
-    Customer    as CustomerEntity
-};
+use Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
+
 use IXP\Models\Customer;
 
 /**

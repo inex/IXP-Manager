@@ -1,8 +1,7 @@
 <?php
-/** @var Foil\Template\Template $t */
-/** @var $t->active */
-
-$this->layout( 'layouts/ixpv4' );
+    /** @var Foil\Template\Template $t */
+    /** @var $t->active */
+    $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -18,11 +17,8 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
-
-    <?php if( Auth::check() && Auth::getUser()->isSuperUser() && !count( $t->files ) ): ?>
-
+    <?php if( Auth::check() && Auth::getUser()->isSuperUser() && !$t->files->count() ): ?>
         <?= $t->insert( 'docstore-customer/welcome.foil.php' ) ?>
-
     <?php endif; ?>
 
     <?= $t->alerts() ?>
@@ -43,7 +39,9 @@ $this->layout( 'layouts/ixpv4' );
                                     &middot;&middot;&middot;
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item list-delete-btn"  href="#" data-url="<?= route( 'docstore-c-dir@delete-for-customer', [ 'cust' => $file->customer ] ) ?>">Purge</a>
+                                    <a class="dropdown-item btn-delete"  href="<?= route( 'docstore-c-dir@delete-for-customer', [ 'cust' => $file->customer ] ) ?>">
+                                      Purge
+                                    </a>
                                 </div>
                             </div>
                         </td>
@@ -55,7 +53,6 @@ $this->layout( 'layouts/ixpv4' );
             </tbody>
         </table>
     </div>
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>

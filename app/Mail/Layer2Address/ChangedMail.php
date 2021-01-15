@@ -26,17 +26,10 @@ namespace IXP\Mail\Layer2Address;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 use IXP\Events\Layer2Address\{
     Added   as Layer2AddressAddedEvent,
     Deleted as Layer2AddressDeletedEvent
-};
-
-use Entities\{
-    Customer as CustomerEntity,
-    VirtualInterface as VirtualInterfaceEntity,
-    VlanInterface
 };
 
 /**

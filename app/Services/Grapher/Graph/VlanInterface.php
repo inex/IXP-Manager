@@ -28,12 +28,9 @@ use Auth, Log;
 use IXP\Services\Grapher;
 use IXP\Services\Grapher\{Graph};
 
-use Entities\Customer as CustomerEntity;
-use Entities\User as UserEntity;
-use Entities\VlanInterface as VlanInterfaceEntity;
-
 use IXP\Models\{
     Customer,
+    User,
     VlanInterface as VlanInterfaceModel
 };
 
@@ -149,7 +146,7 @@ class VlanInterface extends Graph
      */
     public function authorise(): bool
     {
-        if( is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) == UserEntity::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.customer' ) ) && (int)config( 'grapher.access.customer' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 

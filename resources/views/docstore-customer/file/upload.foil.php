@@ -1,21 +1,21 @@
 <?php
-/** @var Foil\Template\Template $t */
-/** @var $t->active */
+    /** @var Foil\Template\Template $t */
+    /** @var $t->active */
 
-$this->layout( 'layouts/ixpv4' );
+    $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <a href="<?= route( 'customer@overview', [ 'cust' => $t->cust->id ] ) ?>"><?= $t->cust->name ?></a> ::
+    <a href="<?= route( 'customer@overview', [ 'cust' => $t->cust->id ] ) ?>">
+        <?= $t->cust->name ?>
+    </a> ::
     Document Store :: <?= $t->file ? 'Edit' : 'Upload' ?> <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> File
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
-
     <?= $t->alerts() ?>
 
     <div class="card-body">
-
         <?= Former::open_for_files()->method( $t->file ? 'put' : 'post' )
             ->action( $t->file ? route ( 'docstore-c-file@update', [ 'cust' => $t->cust, 'file' => $t->file ] ) : route ( 'docstore-c-file@store', [ 'cust' => $t->cust ] ) )
             ->actionButtonsCustomClass( "grey-box")
@@ -107,34 +107,25 @@ $this->layout( 'layouts/ixpv4' );
         ?>
 
         <?= Former::close() ?>
-
     </div>
-
 <?php $this->append() ?>
 
-
 <?php $this->section( 'scripts' ) ?>
-
     <script>
         <?php if( $t->file ): ?>
-
             $( document ).ready( function() {
                 $('#uploadedFile').on( 'input', function( e ) {
                     $('#sha256').removeAttr('disabled').val('');
                 });
             });
-
         <?php endif; ?>
 
         $( document ).ready( function() {
             $("#uploadedFile").on('input', function() {
-                if( $( "#name" ).val() == '' ) {
+                if( $( "#name" ).val() === '' ) {
                     $( "#name" ).val( this.files[0].name );
                 }
             });
         });
-
     </script>
-
 <?php $this->append() ?>
-

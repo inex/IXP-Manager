@@ -1,21 +1,25 @@
 <?php
-/** @var Foil\Template\Template $t */
-/** @var $t->active */
-
-$this->layout( 'layouts/ixpv4' );
+    /** @var Foil\Template\Template $t */
+    /** @var $t->active */
+    $this->layout( 'layouts/ixpv4' );
+    $check = Auth::check();
+    $isSuperUser = Auth::getUser()->isSuperUser()
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?php if( Auth::getUser()->isSuperUser() ): ?>
-        <a href="<?= route( 'customer@overview', [ 'cust' => $t->cust->id ] ) ?>" ><?= $t->ee( $t->cust->name ) ?></a> :: Document Store
+    <?php if( $isSuperUser ): ?>
+        <a href="<?= route( 'customer@overview', [ 'cust' => $t->cust->id ] ) ?>" >
+            <?= $t->ee( $t->cust->name ) ?>
+        </a> :: Document Store
     <?php else: ?>
-        <a href="<?= route( 'dashboard@index' ) ?>" ><?= $t->cust->name ?></a> :: Document Store
+        <a href="<?= route( 'dashboard@index' ) ?>" >
+            <?= $t->cust->name ?>
+        </a> :: Document Store
     <?php endif; ?>
-
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
+    <?php if( $check && $isSuperUser ): ?>
         <div class="btn-group btn-group-sm ml-auto" role="group">
 
             <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/docstore/">
@@ -28,7 +32,7 @@ $this->layout( 'layouts/ixpv4' );
                 <i class="fa fa-home"></i>
             </a>
 
-            <a id="add-dir" class="btn btn-white" href="<?= route('docstore-c-dir@create', [ 'cust' => $t->cust, 'parent_dir' => $t->dir ? $t->dir->id : null ] ) ?>"
+            <a id="add-dir" class="btn btn-white" href="<?= route('docstore-c-dir@create', [ 'cust' => $t->cust, 'parent_dir_id' => $t->dir->id ?? null] ) ?>"
                data-toggle="tooltip" data-placement="bottom" title="Create Directory"
             >
                 <i class="fa fa-plus"></i> <i class="fa fa-folder"></i>
@@ -102,7 +106,7 @@ $this->layout( 'layouts/ixpv4' );
                         </tr>
                     <?php endif; ?>
 
-                    <?php if( Auth::getUser()->isSuperUser() && $t->ppph_files ): ?>
+                    <?php if( $isSuperUser && $t->ppph_files ): ?>
                         <tr>
                             <td class="<?= 'top' ?> icon"></td>
                             <td class="<?= 'top' ?> icon">
@@ -136,22 +140,24 @@ $this->layout( 'layouts/ixpv4' );
                         <td class="<?= $i ? '' : 'top' ?> meta"></td>
                         <td class="<?= $i ? '' : 'top' ?> meta"></td>
                         <td class="<?= $i ? '' : 'top' ?> meta">
-                            <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
+                            <?php if( $check && $isSuperUser ): ?>
                                 <div class="dropdown">
                                     <button class="btn btn-light btn-sm tw-my-0 tw-py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         &middot;&middot;&middot;
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" href="<?= route( "docstore-c-dir@edit", [ 'cust' => $t->cust, 'dir' => $dir[ 'id' ] ] ) ?>">Edit</a>
-                                        <a class="dropdown-item list-delete-btn" data-object-type="dir" href="#" data-url="<?= route('docstore-c-dir@delete', [ 'dir' => $dir[ 'id' ] ] ) ?>">Delete</a>
+                                        <a class="dropdown-item" href="<?= route( "docstore-c-dir@edit", [ 'cust' => $t->cust, 'dir' => $dir[ 'id' ] ] ) ?>">
+                                          Edit
+                                        </a>
+                                        <a class="dropdown-item btn-delete" data-object-type="dir" href="<?= route('docstore-c-dir@delete', [ 'dir' => $dir[ 'id' ] ] ) ?>">
+                                          Delete
+                                        </a>
                                     </div>
                                 </div>
                             <?php endif; ?>
                         </td>
                     </tr>
-
                 <?php $i++; endforeach; ?>
-
 
                 <?php foreach( $t->files as $file ): ?>
                     <tr class="">
@@ -168,9 +174,9 @@ $this->layout( 'layouts/ixpv4' );
                         </td>
 
                         <td class="<?= $i ? '' : 'tw-border-t-2' ?> meta tw-text-center">
-                            <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
+                            <?php if( $check && $isSuperUser ): ?>
                                 <span class="tw-w-full tw-inline-block tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-xs tw-text-gray-700">
-                                    <?= \Entities\User::$PRIVILEGES_ALL[ $file->min_privs ] ?>
+                                    <?= \IXP\Models\User::$PRIVILEGES_ALL[ $file->min_privs ] ?>
                                 </span>
                             <?php endif; ?>
                         </td>
@@ -190,27 +196,25 @@ $this->layout( 'layouts/ixpv4' );
                                     <?php if( $file->isViewable() ): ?>
                                         <a class="dropdown-item" href="<?= route( 'docstore-c-file@download', [ 'cust' => $t->cust, 'file' => $file->id] ) ?>">Download</a>
                                     <?php endif; ?>
-                                    <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
-                                        <a class="dropdown-item list-info-btn" data-object-type="file" href="#" data-url="<?= route( "docstore-c-file@info", [ "file" => $file ] ) ?>">Metadata</a>
+                                    <?php if( $check && $isSuperUser ): ?>
+                                        <a class="dropdown-item btn-meta" href="<?= route( "docstore-c-file@info", [ "file" => $file ] ) ?>">Metadata</a>
                                     <?php endif; ?>
                                     <a class="dropdown-item" href="#"
                                        onclick="bootbox.alert({ message: 'SHA checksums can be used to check the authenticity / integrity of files.<br><br><?= $file->sha256 ? "SHA256 checksum: [<code>" . $t->ee( $file->sha256 ) . "</code>]" : "there is no sha256 checksum registered for this file." ?>', size: 'large' }); return false;">Show SHA256</a>
 
-                                    <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
+                                    <?php if( $check && $isSuperUser ): ?>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="<?= route( "docstore-c-file@edit", [ 'cust' => $t->cust , "file" => $file ] ) ?>">Edit</a>
-                                        <a class="dropdown-item list-delete-btn" data-object-type="file" href="#" data-url="<?= route( "docstore-c-file@delete", [ "file" => $file ] ) ?>">Delete</a>
+                                        <a class="dropdown-item btn-delete" data-object-type="file" href="<?= route( "docstore-c-file@delete", [ "file" => $file ] ) ?>">Delete</a>
                                     <?php endif; ?>
                                 </div>
                             </div>
                         </td>
                     </tr>
                 <?php endforeach; ?>
-
                 <tr>
                     <td class="top" colspan="7"></td>
                 </tr>
-
             </tbody>
         </table>
     </div>

@@ -25,8 +25,6 @@ namespace IXP\Models;
 
 use Eloquent, Storage;
 
-use Entities\User as UserEntity;
-
 use Illuminate\Database\Eloquent\{
     Builder,
     Collection as EloquentCollection,

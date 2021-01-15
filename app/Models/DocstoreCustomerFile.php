@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,8 +25,6 @@ namespace IXP\Models;
 
 use Auth, Eloquent;
 
-use Entities\User as UserEntity;
-
 use Illuminate\Database\Eloquent\{
     Builder,
     Collection,
@@ -38,8 +36,6 @@ use Illuminate\Database\Eloquent\Relations\{
 };
 
 use Illuminate\Support\Carbon;
-
-
 /**
  * IXP\Models\DocstoreCustomerFile
  *
@@ -105,7 +101,6 @@ class DocstoreCustomerFile extends Model
         'file_last_updated',
     ];
 
-
     /**
      * File extension allowed to be viewed
      *
@@ -125,7 +120,7 @@ class DocstoreCustomerFile extends Model
      *
      * @return void
      */
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -163,7 +158,7 @@ class DocstoreCustomerFile extends Model
      */
     public function isViewable(): bool
     {
-        return in_array( '.' . pathinfo( $this->name, PATHINFO_EXTENSION ), self::$extensionViewable );
+        return in_array( '.' . pathinfo( strtolower( $this->name ), PATHINFO_EXTENSION ), self::$extensionViewable, true );
     }
 
     /**
@@ -173,7 +168,7 @@ class DocstoreCustomerFile extends Model
      */
     public function isEditable(): bool
     {
-        return in_array( '.' . pathinfo( $this->name, PATHINFO_EXTENSION ), self::$extensionEditable );
+        return in_array( '.' . pathinfo( strtolower( $this->name ), PATHINFO_EXTENSION ), self::$extensionEditable, true );
     }
 
     /**
@@ -192,13 +187,13 @@ class DocstoreCustomerFile extends Model
      *
      * @param Customer                          $cust
      * @param DocstoreCustomerDirectory|null    $dir
-     * @param UserEntity|null                   $user
+     * @param User|null                         $user
      *
      * @return Collection
      */
-    public static function getListing( Customer $cust, UserEntity $user, ?DocstoreCustomerDirectory $dir = null )
+    public static function getListing( Customer $cust, User $user, ?DocstoreCustomerDirectory $dir = null )
     {
-        return self::where('min_privs', '<=', $user->getPrivs() )
+        return self::where('min_privs', '<=', $user->privs() )
             ->where('cust_id', $cust->id )
             ->where('docstore_customer_directory_id', $dir ? $dir->id : null )
             ->orderBy('name')->get();
@@ -213,20 +208,10 @@ class DocstoreCustomerFile extends Model
      *
      * @return Collection
      */
-    public static function getListingForAllDirectories( int $cust_id, int $privs )
+    public static function getListingForAllDirectories( int $cust_id, int $privs ): Collection
     {
         return self::where('min_privs', '<=', $privs )
             ->where('cust_id', $cust_id )
             ->orderBy('name')->get();
-    }
-
-    /**
-     * Gets listing of customers with at least a documents
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public static function getCustomers( )
-    {
-        return self::groupBy('cust_id' )->get();
     }
 }

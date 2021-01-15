@@ -4,79 +4,76 @@
 echo Cache::remember('skin-inex-content-members-list.json', '14400', function() use ($t) {
     $data = [];
 
-    /** @var Entities\Customer $c */
+    /** @var \IXP\Models\Customer $c */
     foreach( $t->customers as $c ) {
 
-        $data[ $c->getId() ][ 'type' ] = $c->resolveType();
-        $data[ $c->getId() ][ 'corpwww' ] = $c->getCorpwww();
-        $data[ $c->getId() ][ 'name' ] = $c->getName();
-        $data[ $c->getId() ][ 'numberofports' ] = 0;
-        $data[ $c->getId() ][ 'joined' ] = $c->getDatejoin()->format( 'Y-m-d' );
+        $data[ $c->id ][ 'type' ] = $c->type();
+        $data[ $c->id ][ 'corpwww' ] = $c->corpwww;
+        $data[ $c->id ][ 'name' ] = $c->name;
+        $data[ $c->id ][ 'numberofports' ] = 0;
+        $data[ $c->id ][ 'joined' ] = \Carbon\Carbon::parse( $c->datejoin )->format( 'Y-m-d' );
 
-        if( $l = $c->getLogo() ) {
-            $data[ $c->getId() ][ 'logo' ] = url( '' ) . '/logos/' . $l->getShardedPath();
+        if( $l = $c->logo ) {
+            $data[ $c->id ][ 'logo' ] = url( '' ) . '/logos/' . $l->shardedPath();
         } else {
-            $data[ $c->getId() ][ 'logo' ] = false;
+            $data[ $c->id ][ 'logo' ] = false;
         }
 
-        if( !$c->isTypeAssociate() ) {
-            $data[ $c->getId() ][ 'autsys' ] = $c->getAutsys();
-            $data[ $c->getId() ][ 'peeringpolicy' ] = $c->getPeeringpolicy();
+        if( !$c->typeAssociate() ) {
+            $data[ $c->id ][ 'autsys' ] = $c->autsys;
+            $data[ $c->id ][ 'peeringpolicy' ] = $c->peeringpolicy;
 
-            $data[ $c->getId() ][ 'routeserver' ] = 'No';
-            $data[ $c->getId() ][ 'ipv4' ] = 'No';
-            $data[ $c->getId() ][ 'ipv6' ] = 'No';
-            $data[ $c->getId() ][ 'ports' ] = '';
+            $data[ $c->id ][ 'routeserver' ] = 'No';
+            $data[ $c->id ][ 'ipv4' ] = 'No';
+            $data[ $c->id ][ 'ipv6' ] = 'No';
+            $data[ $c->id ][ 'ports' ] = '';
         }
 
         $first = true;
-        foreach( $c->getVirtualInterfaces() as $vi ) {
+        foreach( $c->virtualInterfaces as $vi ) {
 
-            if( $vi->isTypeCore() ) {
+            if( $vi->typeCore() ) {
                 continue;
             }
 
-            $pis = $vi->getPhysicalInterfaces();
+            $pis = $vi->physicalInterfaces;
 
             if( !count( $pis ) ) {
                 continue;
             }
 
-            $data[ $c->getId() ][ 'numberofports' ] = $data[ $c->getId() ][ 'numberofports' ] + count( $pis );
+            $data[ $c->id ][ 'numberofports' ] += count($pis);
 
             $pi = $pis[ 0 ];
 
             if( !$first ) {
-                $data[ $c->getId() ][ 'ports' ] .= ' + ';
+                $data[ $c->id ][ 'ports' ] .= ' + ';
             }
 
             if( count( $pis ) > 1 ) {
-                $data[ $c->getId() ][ 'ports' ] .= $data[ $c->getId() ][ 'ports' ] . count( $pis ) . '*';
+                $data[ $c->id ][ 'ports' ] .= $data[ $c->id ][ 'ports' ] . count( $pis ) . '*';
             }
 
-            $data[ $c->getId() ][ 'ports' ] .= $pi->speed();
+            $data[ $c->id ][ 'ports' ] .= $pi->speed();
 
             $first = false;
 
-            foreach( $vi->getVlanInterfaces() as $vli ) {
-                if( $vli->getRsclient() ) {
-                    $data[ $c->getId() ][ 'routeserver' ] = 'Yes';
+            foreach( $vi->vlanInterfaces as $vli ) {
+                if( $vli->rsclient ) {
+                    $data[ $c->id ][ 'routeserver' ] = 'Yes';
                 }
 
-                if( $vli->getIpv4enabled() ) {
-                    $data[ $c->getId() ][ 'ipv4' ] = 'Yes';
+                if( $vli->ipv4enabled ) {
+                    $data[ $c->id ][ 'ipv4' ] = 'Yes';
 
                 }
 
-                if( $vli->getIpv6enabled() ) {
-                    $data[ $c->getId() ][ 'ipv6' ] = 'Yes';
+                if( $vli->ipv6enabled ) {
+                    $data[ $c->id ][ 'ipv6' ] = 'Yes';
 
                 }
             }
         }
-
     }
-
     return json_encode( $data, JSON_PRETTY_PRINT );
 });
-

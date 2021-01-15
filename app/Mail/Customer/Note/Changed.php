@@ -23,17 +23,9 @@ namespace IXP\Mail\Customer\Note;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
-
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-
-use Entities\{
-    CustomerNote    as CustomerNoteEntity,
-    Customer        as CustomerEntity,
-    User            as UserEntity
-};
 
 use IXP\Events\Customer\Note\Changed as CustomerNoteChangedEvent;
 

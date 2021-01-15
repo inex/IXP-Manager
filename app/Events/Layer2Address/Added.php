@@ -29,10 +29,6 @@ use IXP\Models\{
     VlanInterface
 };
 
-use Entities\{
-    User            as UserEntity,
-};
-
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 

@@ -23,24 +23,22 @@ namespace IXP\Http\Controllers\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM;
+use Auth, ErrorException;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
-use IXP\Models\Aggregators\RouterAggregator;
-use IXP\Models\Customer;
-use IXP\Models\Router;
-use IXP\Models\User;
 
-use Entities\{
-    Router as RouterEntity
+use IXP\Models\{
+    Aggregators\RouterAggregator,
+    Customer,
+    User
 };
 
-use ErrorException;
+use Illuminate\Http\{
+    RedirectResponse,
+    Request,
+    Response
+};
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 use IXP\Contracts\LookingGlass as LookingGlassContract;

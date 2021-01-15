@@ -22,22 +22,20 @@ namespace IXP\Mail\PeeringManager;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Auth;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-use Entities\{
-    Customer as CustomerEntity
-};
-
 use IXP\Exceptions\Mailable as MailableException;
 
 use IXP\Http\Requests\PeeringManagerRequest;
 
-use Auth;
-use IXP\Models\Customer;
-use IXP\Models\User;
+use IXP\Models\{
+    Customer,
+    User
+};
 
 /**
  * Mailable for Peering manager

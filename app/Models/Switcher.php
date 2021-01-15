@@ -347,7 +347,7 @@ class Switcher extends Model
      * beginning -1 if the port only exists in the database). The contents of this
      * associative array is:
      *
-     *     "port"   => \Entities\SwitchPort object
+     *     "port"   => \Models\SwitchPort object
      *     "bullet" =>
      *         - false for existing ports
      *         - "new" for newly found ports

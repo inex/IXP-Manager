@@ -78,7 +78,7 @@ class CoreLinkController extends Common
         // Creating all the elements linked to the new core link (core interfaces, physical interfaces)
         $this->buildCorelink( $cb, $r, $cb->virtualInterfaces(), true );
 
-        Log::notice( $r->user()->getUsername() . ' added a core link for the core bundle with (id: ' . $cb->id . ')' );
+        Log::notice( $r->user()->username . ' added a core link for the core bundle with (id: ' . $cb->id . ')' );
         AlertContainer::push( 'Core link added.', Alert::SUCCESS );
 
         return Redirect::to( route( "core-bundle@edit" , [ "cb" => $cb->id ] ) );
@@ -107,7 +107,7 @@ class CoreLinkController extends Common
             $cl->save();
         }
 
-        Log::notice( $r->user()->getUsername() . ' edited the core links from the core bundle with (id: ' . $cb->id . ')' );
+        Log::notice( $r->user()->username . ' edited the core links from the core bundle with (id: ' . $cb->id . ')' );
         AlertContainer::push( 'Core links updated.', Alert::SUCCESS );
 
         return Redirect::to( route( "core-bundle@edit", [ "cb" => $cb->id ] ) );
@@ -140,7 +140,7 @@ class CoreLinkController extends Common
             $pi->delete();
         }
 
-        Log::notice( $r->user()->getUsername()." deleted a core link (id: " . $cl->id . ')' );
+        Log::notice( $r->user()->username." deleted a core link (id: " . $cl->id . ')' );
         AlertContainer::push( 'Core link deleted.', Alert::SUCCESS );
 
         return Redirect::to( route( "core-bundle@edit", [ "cb" => $cb->id ] ) );

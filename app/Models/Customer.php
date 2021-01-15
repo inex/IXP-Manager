@@ -23,9 +23,7 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Eloquent;
-
-use Entities\Customer as CustomerEntity;
+use Eloquent;
 
 use Illuminate\Database\Eloquent\{Builder,
     Model,

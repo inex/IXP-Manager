@@ -22,9 +22,9 @@ namespace IXP\Providers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Entities\User as UserEntity;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+
 use IXP\Models\User;
 
 class RouteServiceProvider extends ServiceProvider
@@ -129,7 +129,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebAuthSuperuserRoutes(): void
     {
         Route::group([
-            'middleware'    => config( 'google2fa.enabled' ) ? [ 'web' , 'auth' , '2fa' , 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ] : [ 'web' , 'auth', 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ],
+            'middleware'    => config( 'google2fa.enabled' ) ? [ 'web' , 'auth' , '2fa' , 'assert.privilege:' . User::AUTH_SUPERUSER ] : [ 'web' , 'auth', 'assert.privilege:' . User::AUTH_SUPERUSER ],
             'namespace'     => $this->namespace,
         ], function () {
             require base_path('routes/web-auth-superuser.php' );

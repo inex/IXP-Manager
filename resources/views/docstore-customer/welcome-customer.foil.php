@@ -1,8 +1,9 @@
 <div class="tw-max-w-lg">
 
     <?php if( Auth::getUser()->isSuperUser() ): ?>
-
-        <h3 class="tw-mb-8">Welcome to the <?= ucfirst( config( 'ixp_fe.lang.customer.one') ) ?> Document Store for <?= $t->cust->name ?></h3>
+        <h3 class="tw-mb-8">
+          Welcome to the <?= ucfirst( config( 'ixp_fe.lang.customer.one') ) ?> Document Store for <?= $t->cust->name ?>
+        </h3>
 
         <p>
             This is <b>IXP Manager's</b> <b><u>per-<?= config( 'ixp_fe.lang.customer.one') ?></u></b> document store allowing
@@ -34,6 +35,5 @@
         <p>
             <b>For more information, <a target="_blank" href="https://docs.ixpmanager.org/features/docstore/">see the official documentation here</a>.</b>
         </p>
-
     <?php endif; ?>
 </div>

@@ -24,7 +24,7 @@ namespace IXP\Policies;
  */
 
 
-use Entities\User;
+use IXP\Models\User;
 use IXP\Models\Customer;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -36,11 +36,12 @@ class CustomerPolicy
     /**
      * Superadmins can do anything
      *
-     * @param User $user
-     * @param $ability
+     * @param User  $user
+     * @param       $ability
+     *
      * @return bool
      */
-    public function before( User $user, $ability)
+    public function before( User $user, $ability ): bool
     {
         if( $user->isSuperUser() ) {
             return true;
@@ -50,23 +51,23 @@ class CustomerPolicy
     /**
      * Determine whether the user can view the customer.
      *
-     * @param  \Entities\User  $user
-     * @param  Customer  $customer
+     * @param  User         $user
+     * @param  Customer     $customer
      * @return mixed
      */
-    public function view(User $user, Customer $customer)
+    public function view( User $user, Customer $customer ): bool
     {
-        //
-        return $user->getCustomer()->getId() === $customer->id;
+        return $user->custid === $customer->id;
     }
 
     /**
      * Determine whether the user can create customers.
      *
-     * @param  \Entities\User  $user
+     * @param  User  $user
+     *
      * @return mixed
      */
-    public function create(User $user)
+    public function create( User $user )
     {
         //
     }
@@ -74,8 +75,9 @@ class CustomerPolicy
     /**
      * Determine whether the user can update the customer.
      *
-     * @param  \Entities\User  $user
-     * @param  \IXP\Customer  $customer
+     * @param  User         $user
+     * @param  Customer     $customer
+     *
      * @return mixed
      */
     public function update(User $user, Customer $customer)
@@ -86,11 +88,11 @@ class CustomerPolicy
     /**
      * Determine whether the user can delete the customer.
      *
-     * @param  \Entities\User  $user
-     * @param  \IXP\Customer  $customer
+     * @param  User         $user
+     * @param  Customer     $customer
      * @return mixed
      */
-    public function delete(User $user, Customer $customer)
+    public function delete( User $user, Customer $customer )
     {
         //
     }
@@ -98,11 +100,11 @@ class CustomerPolicy
     /**
      * Determine whether the user can restore the customer.
      *
-     * @param  \Entities\User  $user
-     * @param  \IXP\Customer  $customer
+     * @param  User         $user
+     * @param  Customer     $customer
      * @return mixed
      */
-    public function restore(User $user, Customer $customer)
+    public function restore( User $user, Customer $customer )
     {
         //
     }
@@ -110,11 +112,12 @@ class CustomerPolicy
     /**
      * Determine whether the user can permanently delete the customer.
      *
-     * @param  \Entities\User  $user
-     * @param  \IXP\Customer  $customer
+     * @param  User         $user
+     * @param  Customer     $customer
+     *
      * @return mixed
      */
-    public function forceDelete(User $user, Customer $customer)
+    public function forceDelete( User $user, Customer $customer )
     {
         //
     }

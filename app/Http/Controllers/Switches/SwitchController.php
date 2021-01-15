@@ -333,12 +333,11 @@ class SwitchController extends EloquentController
     {
         $feParams = $this->feParams;
         return Switcher::select( [
-        'switch.*',
-        'i.name AS infrastructure',
-        'v.id AS vendorid', 'v.name AS vendor',
-        'c.id AS cabinetid', 'c.name AS cabinet'
-    ] )
-        ->leftJoin( 'infrastructure AS i', 'i.id', 'switch.infrastructure')
+            'switch.*',
+            'i.name AS infrastructure',
+            'v.id AS vendorid', 'v.name AS vendor',
+            'c.id AS cabinetid', 'c.name AS cabinet'
+        ] )->leftJoin( 'infrastructure AS i', 'i.id', 'switch.infrastructure')
         ->leftJoin( 'cabinet AS c', 'c.id', 'switch.cabinetid')
         ->leftJoin( 'vendor AS v', 'v.id', 'switch.vendorid')
         ->when( $id , function( Builder $q, $id ) {
@@ -647,7 +646,7 @@ class SwitchController extends EloquentController
      */
     protected function preDelete() : bool
     {
-        $okay = $okayPPP = true;
+        $okay = true;
 
         if( $this->object->getPhysicalInterfaces()->count() ) {
                 $okay = false;
@@ -679,10 +678,10 @@ class SwitchController extends EloquentController
         $allPorts   = SwitchPortAggregator::getAllPortsForSwitch( $switch->id, [] , [], false );
 
         $ports      = SwitchPort::select( [
-            'sp.id AS id', 'sp.name AS name', 'sp.type AS porttype',
-            'pi.speed AS speed', 'pi.duplex AS duplex',
-            'c.name AS custname'
-        ] )
+                'sp.id AS id', 'sp.name AS name', 'sp.type AS porttype',
+                'pi.speed AS speed', 'pi.duplex AS duplex',
+                'c.name AS custname'
+            ] )
             ->from( 'switchport AS sp' )
             ->join( 'physicalinterface AS pi', 'pi.switchportid', 'sp.id' )
             ->join( 'virtualinterface AS vi', 'vi.id', 'pi.virtualinterfaceid' )
@@ -722,6 +721,7 @@ class SwitchController extends EloquentController
             ->get()->toArray();
 
         $switch = $infra = $location = $speed = $vlan = false;
+
         if( $r->switch !== null ) {
             if(  $switch = Switcher::find( $r->switch ) ) {
                 $r->session()->put( "switch-configuration-switch", $switch );
@@ -802,11 +802,11 @@ class SwitchController extends EloquentController
         }
 
         $config = SwitcherAggregator::getConfiguration(
-            $switch ? $switch->id : null,
-            $infra ? $infra->id : null,
-            $location ? $location->id : null,
+            $switch->id ?? null,
+            $infra->id ?? null,
+            $location->id ?? null,
             $speed,
-            $vlan ? $vlan->id : null,
+            $vlan->id ?? null,
             $r->input( 'rs-client' )    ? true : false,
             $r->input( 'ipv6-enabled' ) ? true : false
         );

@@ -22,9 +22,6 @@ namespace IXP\Http\Controllers\Customer;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use Entities\Customer as CustomerEntity;
-use Entities\CustomerTag as CustomerTagEntity;
 use Former;
 
 use Illuminate\Database\Eloquent\Builder;

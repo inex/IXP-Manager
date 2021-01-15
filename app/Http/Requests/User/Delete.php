@@ -22,23 +22,23 @@ namespace IXP\Http\Requests\User;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Auth, D2EM, Log;
+use Auth, Log;
 
-use Entities\{
-    CustomerToUser as CustomerToUserEntity,
-    User as UserEntity
+use IXP\Models\{
+    CustomerToUser,
+    User
 };
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
-use IXP\Models\CustomerToUser;
+
 
 
 class Delete extends FormRequest
 {
     /**
      * The User object
-     * @var UserEntity
+     * @var User
      */
     public $user = null;
 

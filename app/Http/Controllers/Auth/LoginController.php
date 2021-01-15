@@ -23,19 +23,17 @@
 
 namespace IXP\Http\Controllers\Auth;
 
-use Auth, D2EM, Socialite, Str;
-
-use Entities\{
-    Customer            as CustomerEntity ,
-    User                as UserEntity
-};
+use Auth, Socialite, Str;
 
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
-use IXP\Models\Aggregators\UserAggregator;
-use IXP\Models\Customer;
-use IXP\Models\CustomerToUser;
-use IXP\Models\User;
+use IXP\Models\{
+    Aggregators\UserAggregator,
+    Customer,
+    CustomerToUser,
+    User
+};
+
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -51,8 +49,10 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-use Symfony\Component\HttpFoundation\RedirectResponse as RedirectResponseFoundation;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\{
+    RedirectResponse as RedirectResponseFoundation,
+    Response
+};
 
 /**
  * LoginController

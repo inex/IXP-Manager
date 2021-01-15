@@ -25,13 +25,10 @@ namespace IXP\Http\Requests\Customer;
 
 use Auth;
 
-use Entities\{
-    CompanyBillingDetail as CompanyBillingDetailEntity
-};
-
 use Illuminate\Foundation\Http\FormRequest;
 
 use IXP\Models\CompanyBillingDetail;
+
 use Webpatser\Countries\CountriesFacade as Countries;
 
 

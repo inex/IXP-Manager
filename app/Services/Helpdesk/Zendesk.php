@@ -28,8 +28,8 @@ use IXP\Exceptions\GeneralException;
 
 use IXP\Models\{
     Contact,
-    Customer
-};
+    Customer,
+    User};
 
 use Zendesk\API\HttpClient as ZendeskAPI;
 /**
@@ -358,7 +358,7 @@ class Zendesk implements HelpdeskContract
         $data['organization_id'] = $org_id;
 
         /** FIXME contact table doesnt have user_id anymore */
-        if( $contact->getUser() && $contact->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER ){
+        if( $contact->getUser() && $contact->getUser()->getPrivs() == User::AUTH_SUPERUSER ){
             $data['role'] = 'admin';
         } else {
             $data['role'] = 'end-user';

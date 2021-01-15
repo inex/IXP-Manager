@@ -1,5 +1,4 @@
 <div>
-
     <h4>Metadata for <?= $t->file->name ?></h4>
 
     <table class="tw-mt-8">
@@ -9,7 +8,7 @@
             </td>
             <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
                 <?php if( $t->created_by ): ?>
-                    <?= $t->ee( $t->created_by->getUsername() ) ?> (<?= $t->ee( $t->created_by->getName() ) ?>)
+                    <?= $t->ee( $t->created_by->username ) ?> (<?= $t->ee( $t->created_by->name ) ?>)
                 <?php else: ?>
                     <em>User no longer exists in database.</em>
                 <?php endif; ?>
@@ -36,7 +35,7 @@
                 Last Modified
             </td>
             <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
-                <?= date( 'Y-m-d H:i:s', $t->last_modified ) ?>
+                <?= \Carbon\Carbon::parse( $t->last_modified )->format( 'Y-m-d H:i:s',  ) ?>
             </td>
         </tr>
         <tr class="tw-border-t tw-border-b tw-border-blue-500">

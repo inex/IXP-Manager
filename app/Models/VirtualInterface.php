@@ -252,7 +252,7 @@ class VirtualInterface extends Model
      *
      * @see SwitchPortt::$TYPES
      *
-     * @return string|bool The virtual interface type (`\Entities\SwitchPort::TYPE_XXX`) or false if no physical interfaces.
+     * @return string|bool The virtual interface type (`\Models\SwitchPort::TYPE_XXX`) or false if no physical interfaces.
      */
     public function type()
     {
@@ -300,6 +300,16 @@ class VirtualInterface extends Model
     public function typeReseller(): bool
     {
         return $this->type() === SwitchPort::TYPE_RESELLER;
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_CORE?
+     *
+     * @return bool
+     */
+    public function typeCore(): bool
+    {
+        return $this->type() === SwitchPort::TYPE_CORE;
     }
 
     /**

@@ -25,11 +25,9 @@ namespace IXP\Http\Requests;
 
 use Auth;
 
-use IXP\Models\Router;
-use IXP\Models\User;
-use Entities\{
-    Router as RouterEntity,
-    User as UserEntity
+use IXP\Models\{
+    Router,
+    User
 };
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -42,7 +40,7 @@ class StoreRouter extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // middleware ensures superuser access only so always authorised here:
         return Auth::getUser()->isSuperUser();

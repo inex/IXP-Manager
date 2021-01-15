@@ -440,7 +440,7 @@ class CustomerAggregator extends Customer
     /**
      * Delete the customer.
      *
-     * Related entities are mostly handled by 'ON DELETE CASCADE'.
+     * Related models are mostly handled by 'ON DELETE CASCADE'.
      *
      * @param Customer $cust The customer Object
      *

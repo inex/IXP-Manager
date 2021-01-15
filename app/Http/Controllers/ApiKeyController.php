@@ -231,7 +231,7 @@ class ApiKeyController extends EloquentController
         $this->object->apiKey       = $key = Str::random(48);
         $this->object->expires      = $request->expires;
         $this->object->description  = $request->description;
-        $this->object->user_id      = $request->user()->getId();
+        $this->object->user_id      = $request->user()->id;
         $this->object->save();
 
         AlertContainer::push( "API key created: <code>" . $key . "</code>.", Alert::SUCCESS );

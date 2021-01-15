@@ -19,7 +19,7 @@
 
         <?= Former::select( 'protocol' )
             ->label( 'Protocol' )
-            ->fromQuery( \Entities\Router::$PROTOCOLS , 'name' )
+            ->fromQuery( \IXP\Models\Router::$PROTOCOLS , 'name' )
             ->placeholder( 'Choose a protocol' )
             ->addClass( 'chzn-select' )
             ->blockHelp( "" );

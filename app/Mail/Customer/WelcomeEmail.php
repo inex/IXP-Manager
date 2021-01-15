@@ -27,13 +27,10 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-use Entities\{
-    Customer as CustomerEntity
-};
-
 use IXP\Exceptions\Mailable as MailableException;
 
 use IXP\Http\Requests\Customer\WelcomeEmail as WelcomeEmailRequest;
+
 use IXP\Models\Customer;
 
 /**

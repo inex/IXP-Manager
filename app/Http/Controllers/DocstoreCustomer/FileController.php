@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\DocstoreCustomer;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,9 +23,7 @@ namespace IXP\Http\Controllers\DocstoreCustomer;
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-use D2EM, Log, Storage;
-
-use Entities\User as UserEntity;
+use Log, Storage;
 
 use Former\Facades\Former;
 
@@ -59,7 +57,7 @@ use \League\Flysystem\Exception as FlySystemException;
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   DocstoreCustomer
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 
@@ -68,7 +66,6 @@ class FileController extends Controller
     /**
      * View a docstore customer file apply to allowed mimetype ( DocstoreFile::$
      *
-     * @param Request               $request
      * @param Customer              $cust
      * @param DocstoreCustomerFile  $file
      *
@@ -76,7 +73,7 @@ class FileController extends Controller
      *
      * @throws
      */
-    public function view( Request $request, Customer $cust, DocstoreCustomerFile $file )
+    public function view( Customer $cust, DocstoreCustomerFile $file )
     {
         $this->authorize( 'view', $file );
 
@@ -94,7 +91,6 @@ class FileController extends Controller
     /**
      * Download a docstore customer file
      *
-     * @param Request               $request
      * @param Customer              $cust
      * @param DocstoreCustomerFile  $file
      *
@@ -102,7 +98,7 @@ class FileController extends Controller
      *
      * @throws
      */
-    public function download( Request $request, Customer $cust, DocstoreCustomerFile $file )
+    public function download( Customer $cust, DocstoreCustomerFile $file )
     {
         $this->authorize( 'download', $file );
 
@@ -117,14 +113,13 @@ class FileController extends Controller
     /**
      * Get information on a docstore customer file
      *
-     * @param Request               $request
      * @param DocstoreCustomerFile  $file
      *
      * @return mixed
      *
      * @throws
      */
-    public function info( Request $request, DocstoreCustomerFile $file )
+    public function info( DocstoreCustomerFile $file )
     {
         $this->authorize( 'info', $file );
 
@@ -133,76 +128,77 @@ class FileController extends Controller
             'size'          => Storage::disk( $file->disk )->size( $file->path ),
             'last_modified' => Storage::disk( $file->disk )->lastModified( $file->path ),
             'dspath'        => config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' ) . '/' . $file->path,
-            'created_by'    => D2EM::getRepository(UserEntity::class)->find( $file->created_by ),
+            'created_by'    => User::find( $file->created_by ),
         ]);
     }
 
     /**
      * Upload a new docstore customer file
      *
-     * @param Request   $request
+     * @param Request   $r
      * @param Customer  $cust
+     *
      * @return View
      *
      * @throws
      */
-    public function upload( Request $request, Customer $cust )
+    public function upload( Request $r, Customer $cust ): view
     {
         $this->authorize( 'create', DocstoreCustomerFile::class );
 
         Former::populate([
-            'min_privs' => $request->old( 'min_privs', User::AUTH_SUPERUSER )
+            'min_privs' => $r->old( 'min_privs', User::AUTH_SUPERUSER )
         ]);
 
         return view( 'docstore-customer/file/upload', [
             'file'          => false,
             'cust'          => $cust,
-            'dirs'          => DocstoreCustomerDirectory::getListingForDropdown( DocstoreCustomerDirectory::getListing( $cust, $request->user() )  ),
+            'dirs'          => DocstoreCustomerDirectory::getListingForDropdown( DocstoreCustomerDirectory::getListing( $cust, $r->user() )  ),
         ] );
     }
 
     /**
      * Store a docstore customer file uploaded
      *
-     * @param Request   $request
+     * @param Request   $r
      * @param Customer  $cust
      *
      * @return RedirectResponse
      *
      * @throws
      */
-    public function store( Request $request, Customer $cust ): RedirectResponse
+    public function store( Request $r, Customer $cust ): RedirectResponse
     {
         $this->authorize( 'create', DocstoreCustomerFile::class );
 
-        $this->checkForm( $request );
+        $this->checkForm( $r );
 
-        $uploadedFile = $request->file('uploadedFile' );
+        $uploadedFile = $r->file('uploadedFile' );
 
         $path = $uploadedFile->store( $cust->id, 'docstore_customers' );
 
         $file = DocstoreCustomerFile::create( [
-            'name'                              => $request->name,
-            'description'                       => $request->description,
+            'name'                              => $r->name,
+            'description'                       => $r->description,
             'cust_id'                           => $cust->id,
-            'min_privs'                         => $request->min_privs,
+            'min_privs'                         => $r->min_privs,
             'path'                              => $path,
             'sha256'                            => hash_file( 'sha256', $uploadedFile ),
-            'created_by'                        => $request->user()->getId(),
+            'created_by'                        => $r->user()->id,
             'file_last_updated'                 => now(),
-            'docstore_customer_directory_id'    => $request->docstore_customer_directory_id,
+            'docstore_customer_directory_id'    => $r->docstore_customer_directory_id,
         ] );
 
-        Log::info( sprintf( "DocStore: file [%d|%s] uploaded by %s for the customer [%d|%s]", $file->id, $file->name, $request->user()->getUsername(), $cust->id, $cust->name ) );
+        Log::info( sprintf( "DocStore: file [%d|%s] uploaded by %s for the customer [%d|%s]", $file->id, $file->name, $r->user()->username, $cust->id, $cust->name ) );
 
-        AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . " File <em>{$request->name}</em> uploaded.", Alert::SUCCESS );
+        AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . " File <em>{$r->name}</em> uploaded.", Alert::SUCCESS );
         return redirect( route( 'docstore-c-dir@list', [ 'cust' => $cust , 'dir' => $file->docstore_customer_directory_id ] ) );
     }
 
     /**
      * Edit a docstore customer file uploaded
      *
-     * @param Request               $request
+     * @param Request               $r
      * @param Customer              $cust
      * @param DocstoreCustomerFile  $file
      *
@@ -210,29 +206,29 @@ class FileController extends Controller
      *
      * @throws
      */
-    public function edit( Request $request, Customer $cust, DocstoreCustomerFile $file ): View
+    public function edit( Request $r, Customer $cust, DocstoreCustomerFile $file ): View
     {
         $this->authorize( 'update', $file );
 
         Former::populate([
-            'name'                  => $request->old( 'name',           $file->name         ),
-            'description'           => $request->old( 'descripton',     $file->description  ),
-            'sha256'                => $request->old( 'sha256',         $file->sha256       ),
-            'min_privs'             => $request->old( 'min_privs',      $file->min_privs    ),
-            'docstore_customer_directory_id' => $request->old( 'docstore_customer_directory_id',$file->docstore_customer_directory_id ?? '' ),
+            'name'                              => $r->old( 'name',           $file->name         ),
+            'description'                       => $r->old( 'descripton',     $file->description  ),
+            'sha256'                            => $r->old( 'sha256',         $file->sha256       ),
+            'min_privs'                         => $r->old( 'min_privs',      $file->min_privs    ),
+            'docstore_customer_directory_id'    => $r->old( 'docstore_customer_directory_id',$file->docstore_customer_directory_id ?? '' ),
         ]);
 
         return view( 'docstore-customer/file/upload', [
             'file'                      => $file,
             'cust'                      => $cust,
-            'dirs'                      => DocstoreCustomerDirectory::getListingForDropdown( DocstoreCustomerDirectory::getListing( $file->customer, $request->user() ) )
+            'dirs'                      => DocstoreCustomerDirectory::getListingForDropdown( DocstoreCustomerDirectory::getListing( $file->customer, $r->user() ) )
         ] );
     }
 
     /**
      * Update a docstore customer file uploaded
      *
-     * @param Request               $request
+     * @param Request               $r
      * @param Customer              $cust
      * @param DocstoreCustomerFile  $file
      *
@@ -240,18 +236,18 @@ class FileController extends Controller
      *
      * @throws
      */
-    public function update( Request $request, Customer $cust, DocstoreCustomerFile $file ): RedirectResponse
+    public function update( Request $r, Customer $cust, DocstoreCustomerFile $file ): RedirectResponse
     {
         $this->authorize( 'update', $file );
 
-        $this->checkForm( $request, $file );
+        $this->checkForm( $r, $file );
 
         // if a new file is updated
-        if( $request->uploadedFile ) {
+        if( $r->uploadedFile ) {
             // get path of the old file in order to delete it later
             $oldPath = $file->path;
 
-            $uploadedFile = $request->file('uploadedFile');
+            $uploadedFile = $r->file('uploadedFile');
             $path = $uploadedFile->store( $file->customer->id, 'docstore_customers' );
 
             $file->update([
@@ -265,31 +261,29 @@ class FileController extends Controller
         }
 
         $file->update( [
-            'name'                              => $request->name,
-            'description'                       => $request->description,
-            'docstore_customer_directory_id'    => $request->docstore_customer_directory_id,
-            'min_privs'                         => $request->min_privs
+            'name'                              => $r->name,
+            'description'                       => $r->description,
+            'docstore_customer_directory_id'    => $r->docstore_customer_directory_id,
+            'min_privs'                         => $r->min_privs
         ] );
 
+        Log::info( sprintf( "DocStore: customer file [%d|%s] edited by %s for the customer [%d|%s]", $file->id, $file->name, $r->user()->username, $cust->id, $cust->name ) );
 
-
-        Log::info( sprintf( "DocStore: customer file [%d|%s] edited by %s for the customer [%d|%s]", $file->id, $file->name, $request->user()->getUsername(), $cust->id, $cust->name ) );
-
-        AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . " file <em>{$request->name}</em> updated.", Alert::SUCCESS );
+        AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . " file <em>{$r->name}</em> updated.", Alert::SUCCESS );
         return redirect( route( 'docstore-c-dir@list', [ 'cust' => $cust , 'dir' => $file->docstore_customer_directory_id ] ) );
     }
 
     /**
      * Delete a file
      *
-     * @param Request               $request
+     * @param Request               $r
      * @param DocstoreCustomerFile  $file
      *
      * @return RedirectResponse
      *
      * @throws
      */
-    public function delete( Request $request , DocstoreCustomerFile $file ): RedirectResponse
+    public function delete( Request $r , DocstoreCustomerFile $file ): RedirectResponse
     {
         $this->authorize( 'delete', $file );
 
@@ -299,7 +293,7 @@ class FileController extends Controller
         Storage::disk( $file->disk )->delete( $file->path );
 
         AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . " file <em>{$file->name}</em> deleted.", Alert::SUCCESS );
-        Log::info( sprintf( "DocStore: customer file [%d|%s] deleted by %s for the customer [%d|%s]", $file->id, $file->name, $request->user()->getUsername(), $cust->id, $cust->name ) );
+        Log::info( sprintf( "DocStore: customer file [%d|%s] deleted by %s for the customer [%d|%s]", $file->id, $file->name, $r->user()->username, $cust->id, $cust->name ) );
 
         $file->delete();
 
@@ -309,20 +303,20 @@ class FileController extends Controller
     /**
      * Check if the form is valid
      *
-     * @param Request               $request
-     * @param DocstoreCustomerFile  $file
+     * @param Request                       $r
+     * @param DocstoreCustomerFile|null     $file
      *
      */
-    private function checkForm( Request $request, ?DocstoreCustomerFile $file = null )
+    private function checkForm( Request $r, ?DocstoreCustomerFile $file = null )
     {
-        $request->validate( [
+        $r->validate( [
             'name'          => 'required|max:100',
-            'uploadedFile'  => Rule::requiredIf( function() use ( $request, $file ) {
+            'uploadedFile'  => Rule::requiredIf( function() use ( $r, $file ) {
                 return !$file;
             }),
             'sha256'        => [ 'nullable', 'max:64',
-                function ( $attribute, $value, $fail ) use( $request ) {
-                    if( $value && $request->file('uploadedFile' ) && $value !== hash_file( 'sha256', $request->file( 'uploadedFile' ) ) ) {
+                function ( $attribute, $value, $fail ) use( $r ) {
+                    if( $value && $r->file('uploadedFile' ) && $value !== hash_file( 'sha256', $r->file( 'uploadedFile' ) ) ) {
                         return $fail( 'The sha256 checksum calculated on the server does not match the one you provided.' );
                     }
                 },

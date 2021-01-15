@@ -26,7 +26,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-use Entities\CompanyBillingDetail as CompanyBillingDetailEntity;
 use IXP\Models\CompanyBillingDetail;
 
 /**

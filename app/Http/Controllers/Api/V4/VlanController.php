@@ -22,19 +22,18 @@ namespace IXP\Http\Controllers\Api\V4;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use D2EM;
-use IXP\Models\Aggregators\VlanAggregator;
-use IXP\Models\Router;
-use IXP\Models\Vlan;
 use Validator;
 
-use Entities\{
-    Vlan          as VlanEntity
+use IXP\Models\{
+    Aggregators\VlanAggregator,
+    Router,
+    Vlan
 };
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\{
+    JsonResponse,
+    Request
+};
 
 /**
  * Vlan API Controller
@@ -82,7 +81,7 @@ class VlanController extends Controller
      *
      * @return  JsonResponse array of object
      *
-     * @see VlanEntity::usedAcrossVlans() for array structure.
+     * @see VlanAggregator::usedAcrossVlans() for array structure.
      *
      */
     public function usedAcrossVlans( Request $r ) : JsonResponse

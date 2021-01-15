@@ -22,10 +22,6 @@ namespace IXP\Console\Commands\Utils;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use D2EM;
-use DB;
-use Entities\OUI as OUIEntity;
-
 use IXP\Console\Commands\Command as IXPCommand;
 
 use IXP\Models\Oui;

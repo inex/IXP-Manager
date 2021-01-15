@@ -24,11 +24,9 @@ namespace IXP\Models;
  */
 use Auth, Eloquent, Storage;
 
-use Entities\User as UserEntity;
-
 use Illuminate\Database\Eloquent\{
     Builder,
-    Collection as EloquentCollection,
+    Collection,
     Model
 };
 
@@ -55,10 +53,10 @@ use Illuminate\Support\Facades\{
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read \IXP\Models\Customer $customer
- * @property-read EloquentCollection|\IXP\Models\DocstoreCustomerFile[] $files
+ * @property-read Collection|\IXP\Models\DocstoreCustomerFile[] $files
  * @property-read int|null $files_count
  * @property-read DocstoreCustomerDirectory|null $parentDirectory
- * @property-read EloquentCollection|DocstoreCustomerDirectory[] $subDirectories
+ * @property-read Collection|DocstoreCustomerDirectory[] $subDirectories
  * @property-read int|null $sub_directories_count
  * @method static Builder|DocstoreCustomerDirectory newModelQuery()
  * @method static Builder|DocstoreCustomerDirectory newQuery()
@@ -115,7 +113,7 @@ class DocstoreCustomerDirectory extends Model
      *
      * @return void
      */
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -168,16 +166,16 @@ class DocstoreCustomerDirectory extends Model
      *
      * @param Customer                  $cust
      * @param DocstoreDirectory|null    $dir
-     * @param UserEntity|null           $user
+     * @param User|null                 $user
      *
-     * @return EloquentCollection
+     * @return Collection
      */
-    public static function getListing( Customer $cust, UserEntity $user, ?DocstoreDirectory $dir = null ): EloquentCollection
+    public static function getListing( Customer $cust, User $user, ?DocstoreDirectory $dir = null ): Collection
     {
-        return self::where( 'cust_id', $cust->id )->where('parent_dir_id', $dir ? $dir->id : null )
-            ->when( !$user->isSuperUser() , function( Builder $q ) use ( $user) {
+        return self::where( 'cust_id', $cust->id )->where('parent_dir_id', $dir->id ?? null)
+            ->when( !$user->isSuperUser() , function( Builder $q ) use ( $user ) {
                 $q->whereHas( 'files', function( Builder $q ) use ( $user ) {
-                    return $q->where( 'min_privs', '<=', $user->getPrivs() );
+                    return $q->where( 'min_privs', '<=', $user->privs() );
                 } );
             })->orderBy('name')->get();
     }
@@ -192,25 +190,22 @@ class DocstoreCustomerDirectory extends Model
      *      [ "id" => 4, "name"  => "Folder 2" ],
      *  ]
      *
-     * @param $dirs EloquentCollection
-     * @param $depth int
+     * @param $dirs     Collection
+     * @param $depth    int
      *
      * @return array
      */
-    public static function getListingForDropdown( EloquentCollection $dirs, int $depth = 5 ): array
+    public static function getListingForDropdown( Collection $dirs, int $depth = 5 ): array
     {
         $data = [];
         $data[] = [ 'id' => '', 'name' => 'Root Directory' ];
 
         foreach( $dirs as $dir ) {
-
             $data[] = [ 'id' => $dir->id, 'name' => str_repeat( '&nbsp;', $depth ) . '-&nbsp;' . $dir->name ];
-
             foreach( self::getListingForDropdown( $dir->subDirectories, $depth + 5 ) as $sub ) {
                 $data[] = $sub;
             }
         }
-
         return $data;
     }
 
@@ -229,7 +224,8 @@ class DocstoreCustomerDirectory extends Model
     public static function getHierarchyForCustomerAndUserClass( Customer $cust, int $priv = User::AUTH_SUPERUSER, bool $showRoot = true )
     {
         return Cache::remember( self::CACHE_KEY_FOR_CUSTOMER_USER_CLASS_HIERARCHY . $cust->id . '_' . $priv, 86400, function() use ( $cust, $priv, $showRoot ) {
-            self::where( 'cust_id', $cust->id )->where('parent_dir_id', null )->orderBy('name')->get()->each( function( $sd ) use ( $priv ) {
+            self::where( 'cust_id', $cust->id )->whereNull('parent_dir_id' )
+                ->orderBy('name')->get()->each( function( $sd ) use ( $priv ) {
                 if( self::recurseForHierarchyForCustomerAndUserClass( $sd, $priv ) ) {
                     self::$dirs[ $sd->parent_dir_id ][] = [ 'id' => $sd->id, 'name' => $sd->name ];
                 }
@@ -258,11 +254,11 @@ class DocstoreCustomerDirectory extends Model
      * included or not.
      *
      * @param DocstoreCustomerDirectory $subdir
-     * @param int $priv User class to test for
+     * @param int                       $priv User class to test for
      *
      * @return bool
      */
-    private static function recurseForHierarchyForCustomerAndUserClass( DocstoreCustomerDirectory $subdir, $priv )
+    private static function recurseForHierarchyForCustomerAndUserClass( DocstoreCustomerDirectory $subdir, int $priv ): bool
     {
         $includeSubdir = false;
         foreach( $subdir->subDirectories as $sd ) {
@@ -295,7 +291,7 @@ class DocstoreCustomerDirectory extends Model
      *
      * @throws
      */
-    public static function recursiveDelete( DocstoreCustomerDirectory $dir )
+    public static function recursiveDelete( DocstoreCustomerDirectory $dir ): void
     {
         $dir->subDirectories->each( function( DocstoreCustomerDirectory $subdir ) {
             self::recursiveDelete( $subdir );
@@ -318,7 +314,7 @@ class DocstoreCustomerDirectory extends Model
      *
      * @throws
      */
-    public static function deleteAllForCustomer( Customer $cust )
+    public static function deleteAllForCustomer( Customer $cust ): void
     {
         // Getting all the root directories for the customer
         $rootDirs = self::where( 'cust_id', $cust->id )->where( 'parent_dir_id', null )->get();
