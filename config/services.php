@@ -71,4 +71,12 @@ return [
     ],
 
 
+    // SAGE Socialite
+    'sage' => [
+        'client_id' => env('SAGE_CLIENT_ID'),
+        'client_secret' => env('SAGE_CLIENT_SECRET'),
+        'redirect' => env('SAGE_REDIRECT_URI')
+    ],
+
+
 ];

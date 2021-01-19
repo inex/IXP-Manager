@@ -90,6 +90,7 @@ class EventServiceProvider extends ServiceProvider {
 
         \SocialiteProviders\Manager\SocialiteWasCalled::class => [
             'SocialiteProviders\\PeeringDB\\PeeringDBExtendSocialite@handle',
+            'SocialiteProviders\\Sage\\SageExtendSocialite@handle',
         ],
 
     ];

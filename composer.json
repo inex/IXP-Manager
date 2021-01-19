@@ -51,10 +51,11 @@
         "webpatser/laravel-countries": "^1.5",
         "laravel/telescope": "^2.0",
         "laravel/horizon": "^3.0",
-        "socialiteproviders/manager": "^3.3",
+        "socialiteproviders/manager": "^4.0",
         "pragmarx/google2fa-laravel": "^1.2",
         "bacon/bacon-qr-code": "~2.0",
-        "wolfcast/browser-detection": "^2.9"
+        "wolfcast/browser-detection": "^2.9",
+        "socialiteproviders/sage": "^4.1"
     },
     "require-dev": {
         "facade/ignition": "^1.4",
