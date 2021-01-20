@@ -18,11 +18,13 @@ $this->layout( 'layouts/ixpv4' );
                 <a href="<?= route('sage/login') ?>">SAGE OAuth Login</a>.
             </p>
 
-            <?php if( isset( $t->user ) ): ?>
-                <p>Token: <?= $user->token ?></p>
-                <p>Expires: <?= $user->expiresIn ?></p>
-                <p>ID: <?= $user->id ?></p>
-                <p>Email: <?= $user->email ?></p>
+            <?php if( $t->ifnot( 'suser', false ) === false ): ?>
+                User not set.
+            <?php else: ?>
+                <p>Token: <?= $t->suser->token ?></p>
+                <p>Expires: <?= $t->suser->expiresIn ?></p>
+                <p>ID: <?= $t->suser->id ?></p>
+                <p>Email: <?= $t->suser->email ?></p>
             <?php endif; ?>
 
 
