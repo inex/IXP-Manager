@@ -1,6 +1,5 @@
 <div class="card col-sm-12">
     <div class="card-body">
-
         <?= Former::open()->method( $t->data['params']['isAdd'] ? 'POST' : 'PUT' )
             ->id( 'form' )
             ->action( $t->data['params']['isAdd'] ? route( $t->feParams->route_prefix . '@store' ) : route($t->feParams->route_prefix . '@update', [ 'id' => $t->data[ 'params'][ 'object']->id ] ) )
@@ -67,12 +66,6 @@
         );
         ?>
 
-        <?= Former::hidden( 'id' )
-            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->id : '' )
-        ?>
-
         <?= Former::close() ?>
-
     </div>
 </div>
-

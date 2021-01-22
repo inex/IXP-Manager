@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\RouteServerFilter;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,14 +22,12 @@ namespace IXP\Http\Requests\RouteServerFilter;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Illuminate\Foundation\Http\FormRequest;
 
 use IXP\Models\{
     Customer,
     Router,
     RouteServerFilter,
-    User,
     Vlan
 };
 
@@ -39,7 +37,15 @@ use IXP\Rules\{
     IPv6Cidr,
     Ipv6SubnetSize
 };
-
+/**
+ * Store RouteServerFilter FormRequest
+ *
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @category   Request\RouteServerFilter
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class Store extends FormRequest
 {
     /**
@@ -47,7 +53,7 @@ class Store extends FormRequest
      *
      * @return void
      */
-    protected function prepareForValidation()
+    protected function prepareForValidation(): void
     {
         // If all vlans or all peers are selected (value === 0) then reset to null to avoid conflict in DB
         $vlanid =  $this->vlan_id === '0' ? null : $this->vlan_id;
@@ -63,7 +69,6 @@ class Store extends FormRequest
      */
     public function rules(): array
     {
-
         if( $this->received_prefix !== '*'){
             $ipvCheckRec       = $this->protocol === '4' ? new IPv4Cidr()          : new IPv6Cidr();
             $subnetCheckRec    = $this->protocol === '4' ? new Ipv4SubnetSize()    : new Ipv6SubnetSize();
@@ -83,14 +88,14 @@ class Store extends FormRequest
         return [
             'peer_id'               => [ 'nullable', 'integer',
                 function( $attribute, $value, $fail ) {
-                    if( !Customer::whereId( $value )->exists() ) {
+                    if( !Customer::find( $value ) ) {
                         return $fail( 'Customer is invalid / does not exist.' );
                     }
                 }
             ],
             'vlan_id'               => [ 'nullable', 'integer',
                 function( $attribute, $value, $fail ) {
-                    if( !Vlan::whereId( $value )->exists() ) {
+                    if( !Vlan::find( $value ) ) {
                         return $fail( 'Vlan is invalid / does not exist.' );
                     }
                 }
@@ -101,6 +106,5 @@ class Store extends FormRequest
             'action_advertise'      => 'nullable|string|max:250|in:' . implode( ',', array_keys( RouteServerFilter::$ADVERTISE_ACTION_TEXT ) ),
             'action_receive'        => 'nullable|string|max:250|in:' . implode( ',', array_keys( RouteServerFilter::$RECEIVE_ACTION_TEXT ) ),
         ];
-
     }
 }

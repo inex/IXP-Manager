@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,7 +22,6 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Auth, Route;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -42,14 +41,15 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController;
  * Login History Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   VlanInterface
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   Controller
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class LoginHistoryController extends EloquentController
 {
     /**
-     * The object being added / edited
+     * The object being created / edited
+     *
      * @var UserLoginHistory
      */
     protected $object = null;
@@ -66,9 +66,8 @@ class LoginHistoryController extends EloquentController
             'nameSingular'      => 'a Login History',
             'listOrderBy'       => 'last_login_date',
             'listOrderByDir'    => 'DESC',
-            'readonly'       => 'true',
+            'readonly'          => 'true',
             'viewFolderName'    => 'login-history',
-
             'listColumns'    => [
                 'username'          =>  'Username',
                 'email'             =>  'Email',
@@ -91,12 +90,11 @@ class LoginHistoryController extends EloquentController
         $this->feParams->viewColumns = $this->feParams->listColumns;
 
         // phpunit / artisan trips up here without the cli test:
-        if( php_sapi_name() !== 'cli' ) {
+        if( PHP_SAPI !== 'cli' ) {
             // custom access controls:
             switch( Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC ) {
                 case User::AUTH_SUPERUSER:
                     break;
-
                 default:
                     $this->unauthorized();
             }
@@ -118,6 +116,7 @@ class LoginHistoryController extends EloquentController
      * Provide array of rows for the list and view
      *
      * @param int|null $id The `id` of the row to load for `view`. `null` if `list`
+     *
      * @return array
      */
     protected function listGetData( ?int $id = null ): array
@@ -133,11 +132,11 @@ class LoginHistoryController extends EloquentController
             'cust.id AS cust_id',
             'cust.name AS cust_name'
         ] )
-            ->join( 'user', 'user.id', 'customer_to_users.user_id' )
-            ->join( 'cust', 'cust.id', 'customer_to_users.customer_id' )
-            ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-            })->get()->toArray();
+        ->join( 'user', 'user.id', 'customer_to_users.user_id' )
+        ->join( 'cust', 'cust.id', 'customer_to_users.customer_id' )
+        ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+        })->get()->toArray();
     }
 
     /**
@@ -154,6 +153,7 @@ class LoginHistoryController extends EloquentController
 
         $limit = $r->limit ?? 0;
         return view( 'login-history/view' )->with( [
+            'user'          => $u,
             'histories'     => UserLoginHistory::select( [ 'user_logins.*', 'user.id AS user_id', 'cust.name AS cust_name' ] )
                 ->leftJoin( 'customer_to_users', 'customer_to_users.id', 'user_logins.customer_to_user_id' )
                 ->leftJoin( 'cust', 'cust.id', 'customer_to_users.customer_id' )
@@ -166,7 +166,6 @@ class LoginHistoryController extends EloquentController
                 })
                 ->orderByDesc( 'at' )
                 ->get()->toArray(),
-            'user'          => $u,
         ] );
     }
 }

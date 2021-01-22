@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,7 +22,6 @@ namespace IXP\Http\Controllers\Api\V4;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Auth;
 
 use Illuminate\Http\{
@@ -45,12 +44,11 @@ use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
-
 /**
  * Layer2Address API Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Layer2AddressController extends Controller
@@ -58,22 +56,22 @@ class Layer2AddressController extends Controller
     /**
      * Create a mac address to a VLAN Interface
      *
-     * @param Request   $request            instance of the current HTTP request
+     * @param Request   $r                  instance of the current HTTP request
      * @param bool      $showFeMessage      Should we show the frontend message ?
      *
      * @return  JsonResponse
      *
      */
-    public function store( Request $request, bool $showFeMessage = false ): JsonResponse
+    public function store( Request $r, bool $showFeMessage = false ): JsonResponse
     {
-        $vli = VlanInterface::findOrFail( $request->vlan_interface_id );
+        $vli = VlanInterface::findOrFail( $r->vlan_interface_id );
 
         if( !Auth::getUser()->isSuperUser() ) {
             if( !config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ) {
                 abort( 404 );
             }
 
-            if( Auth::getUser()->custid !== $vli->virtualInterface->customer->id ) {
+            if( Auth::getUser()->custid !== $vli->virtualInterface->custid ) {
                 abort( 403, 'VLI / Customer mismatch' );
             }
 
@@ -83,7 +81,7 @@ class Layer2AddressController extends Controller
             }
         }
 
-        $mac = preg_replace( "/[^a-f0-9]/i", '' , strtolower( $request->mac ) );
+        $mac = preg_replace( "/[^a-f0-9]/i", '' , strtolower( $r->mac ) );
 
         if( strlen( $mac ) !== 12 ) {
             !$showFeMessage ?: AlertContainer::push( 'Invalid or missing MAC addresses.' , Alert::DANGER );
@@ -91,26 +89,26 @@ class Layer2AddressController extends Controller
         }
 
         // Get layer2address for a given vlan
-        $forVlan = Layer2Address::from( 'l2address AS l' )
+        $exist = Layer2Address::from( 'l2address AS l' )
             ->join( 'vlaninterface AS vli', 'vli.id',  'l.vlan_interface_id' )
             ->join( 'vlan AS v', 'v.id', 'vli.vlanid' )
             ->where( 'mac' , $mac )
             ->where( 'v.id', $vli->vlanid )
-            ->get();
+            ->count() ? true : false;
 
-        if( $forVlan->count() ) {
+        if( $exist ) {
             !$showFeMessage ?: AlertContainer::push( 'The MAC address already exists within this IXP VLAN.' , Alert::DANGER );
             return response()->json( [ 'danger' => false, 'message' => 'The MAC address already exists within this IXP VLAN' ] );
         }
 
         $l2a = Layer2Address::create( [
             'mac' => $mac,
-            'vlan_interface_id' => $request->vlan_interface_id
+            'vlan_interface_id' => $r->vlan_interface_id
         ] );
 
         event( new Layer2AddressAddedEvent( $l2a, User::find( Auth::id() ) ) );
-        !$showFeMessage ?: AlertContainer::push( 'The MAC address has been added successfully.' , Alert::SUCCESS );
-        return response()->json( [ 'success' => true, 'message' => 'The MAC address has been added successfully.' ] );
+        !$showFeMessage ?: AlertContainer::push( 'MAC address created.' , Alert::SUCCESS );
+        return response()->json( [ 'success' => true, 'message' => 'MAC address created.' ] );
     }
 
 //    /**
@@ -155,7 +153,7 @@ class Layer2AddressController extends Controller
         $l2a->delete();
 
         event( new Layer2AddressDeletedEvent( $l2a->macFormatted( ':' ), $l2a->vlanInterface, User::find( Auth::id() ) ) );
-        !$showFeMessage ?: AlertContainer::push( 'The MAC address has been deleted.' , Alert::SUCCESS );
-        return response()->json( [ 'success' => true, 'message' => 'The MAC address has been deleted.' ] );
+        !$showFeMessage ?: AlertContainer::push( 'MAC address deleted.' , Alert::SUCCESS );
+        return response()->json( [ 'success' => true, 'message' => 'MAC address deleted.' ] );
     }
 }

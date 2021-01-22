@@ -29,9 +29,9 @@
     /**
      *  Function to delete an IP address
      */
-    $( '.delete-ip' ).on( 'click', function( e ) {
+    $( '.delete-ip' ).click( function( e ) {
         e.preventDefault();
-        let url = $( this ).attr( 'data-url');
+        let url = this.href;
         let html = `<form id="form-delete" method="POST" action="${url}">
                         <div>Do you really want to delete this IP address?</div>
                         <input type="hidden" name="_token" value="<?= csrf_token() ?>">

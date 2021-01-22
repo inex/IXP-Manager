@@ -74,7 +74,7 @@ class DashboardController extends Controller
     public function index( Request $r, string $tab = null )
     {
         // Redirect Super user
-        if( Auth::user()->isSuperUser() ){
+        if( Auth::user()->isSuperUser() ) {
             return Redirect::to( '/');
         }
 
@@ -82,15 +82,14 @@ class DashboardController extends Controller
         $grapher = null;
 
         if( !$c->typeAssociate() ) {
-            $resoldCustomer     = $c->resellerObject()->exists();
+            $resoldCustomer     = $c->reseller;
             $netinfo            = NetworkInfo::vlanProtocol();
-            $grapher            = $grapher = App::make( Grapher::class );
+            $grapher            = App::make( Grapher::class );
 
             if( $c->routeServerClient() ) {
                 $rsRoutes = RsPrefixAggregator::aggregateRouteSummariesForCustomer( $c->id );
             }
         }
-
 
         $cns = $c->customerNotes()->publicOnly()->get();
         $cbd = $c->companyBillingDetail;
@@ -98,11 +97,11 @@ class DashboardController extends Controller
         // array used to populate the details forms
         // former doesn't allow us to populate a form the classic way when there is >1 forms on the same view.
         $dataNocDetail = [
-            'nocphone'                  => $r->old( 'nocphone',                $c->nocphone ),
-            'noc24hphone'               => $r->old( 'noc24hphone',             $c->noc24hphone ),
-            'nocemail'                  => $r->old( 'nocemail',                $c->nocemail ),
-            'nochours'                  => $r->old( 'nochours',                $c->nochours ),
-            'nocwww'                    => $r->old( 'nocwww',                  $c->nocwww ),
+            'nocphone'                  => $r->old( 'nocphone',                $c->nocphone         ),
+            'noc24hphone'               => $r->old( 'noc24hphone',             $c->noc24hphone      ),
+            'nocemail'                  => $r->old( 'nocemail',                $c->nocemail         ),
+            'nochours'                  => $r->old( 'nochours',                $c->nochours         ),
+            'nocwww'                    => $r->old( 'nocwww',                  $c->nocwww           ),
         ];
 
         $dataBillingDetail = [
@@ -112,7 +111,7 @@ class DashboardController extends Controller
             'billingAddress3'           => $r->old( 'billingAddress3',         $cbd->billingAddress3 ),
             'billingTownCity'           => $r->old( 'billingTownCity',         $cbd->billingTownCity ),
             'billingPostcode'           => $r->old( 'billingPostcode',         $cbd->billingPostcode ),
-            'billingCountry'            => $r->old( 'billingCountry',          in_array( $cbd->billingCountry,  array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ) ? $cbd->billingCountry : null ),
+            'billingCountry'            => $r->old( 'billingCountry',          in_array( $cbd->billingCountry,  array_values( Countries::getListForSelect( 'iso_3166_2' ) ), false ) ? $cbd->billingCountry : null ),
             'billingEmail'              => $r->old( 'billingEmail',            $cbd->billingEmail ),
             'billingTelephone'          => $r->old( 'billingTelephone',        $cbd->billingTelephone ),
             'invoiceEmail'              => $r->old( 'invoiceEmail',            $cbd->invoiceEmail ),
@@ -169,6 +168,7 @@ class DashboardController extends Controller
      * @param   BillingDetailsRequest $r instance of the current HTTP request
      *
      * @return  RedirectResponse
+     *
      * @throws
      */
     public function storeBillingDetails( BillingDetailsRequest $r ): RedirectResponse

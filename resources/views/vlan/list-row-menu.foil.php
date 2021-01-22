@@ -11,7 +11,7 @@
             <i class="fa fa-trash"></i>
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item btn-2f-list-delete" id='e2f-list-delete-<?= $t->row[ 'id' ] ?>' href="#" data-object-id="<?= $t->row[ 'id' ] ?>" data-url="<?= route( $t->feParams->route_prefix.'@delete' , [ 'id' => $this->row[ 'id' ] ]  )  ?>" title="Delete">
+            <a class="dropdown-item btn-2f-list-delete" id='e2f-list-delete-<?= $t->row[ 'id' ] ?>' data-object-id="<?= $t->row[ 'id' ] ?>" href="<?= route( $t->feParams->route_prefix.'@delete' , [ 'id' => $this->row[ 'id' ] ]  )  ?>" title="Delete">
                 Delete the Vlan
             </a>
             <a class="dropdown-item" href="<?= route( 'ip-address@delete-by-network' , [ 'vlan' => $t->row['id']  ] ) ?>">

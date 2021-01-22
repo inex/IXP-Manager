@@ -3,7 +3,7 @@
 namespace IXP\Listeners\Layer2Address;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -34,7 +34,14 @@ use IXP\Events\Layer2Address\{
 
 use IXP\Mail\Layer2Address\ChangedMail as Layer2AddressChangedMail;
 
-
+/**
+ * Changed Listener
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   Layer2Address\Listeners
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class Changed implements ShouldQueue
 {
     /**
@@ -42,10 +49,7 @@ class Changed implements ShouldQueue
      *
      * @return void
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(){}
 
     /**
      * Handle the event.
@@ -54,7 +58,7 @@ class Changed implements ShouldQueue
      *
      * @return void
      */
-    public function handle( $e )
+    public function handle( $e ): void
     {
         if( !( config( 'ixp_fe.layer2-addresses.email_on_superuser_change' ) || config( 'ixp_fe.layer2-addresses.email_on_customer_change' ) ) ) {
             return;

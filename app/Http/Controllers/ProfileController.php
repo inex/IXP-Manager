@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,7 +25,7 @@ namespace IXP\Http\Controllers;
 use Auth, D2EM, Hash, Redirect;
 
 use Illuminate\Auth\Recaller;
-use IXP\Models\UserRememberToken;
+
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -41,8 +41,9 @@ use IXP\Http\Requests\Profile\{
     Notification    as NotificationRequest,
     Password        as PasswordRequest,
     Profile         as ProfileRequest
-
 };
+
+use IXP\Models\UserRememberToken;
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -54,7 +55,7 @@ use IXP\Utils\View\Alert\{
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Profile
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class ProfileController extends Controller
@@ -124,11 +125,12 @@ class ProfileController extends Controller
         AlertContainer::push( 'Password updated successfully', Alert::SUCCESS );
 
         // Logout all the active session except the current one
-        UserRememberToken::where( 'user_id', $user->id )->where( 'token', '!=', $token ?? null )->delete();
+        UserRememberToken::where( 'user_id', $user->id )
+            ->where( 'token', '!=', $token ?? null )
+            ->delete();
 
         return redirect( route( "profile@edit"  ) );
     }
-
 
     /**
      * Update the user's profile (name, email, etc..)
@@ -151,7 +153,6 @@ class ProfileController extends Controller
         $user->save();
 
         AlertContainer::push( 'Profile details updated.', Alert::SUCCESS );
-
         return redirect( route( "profile@edit"  ) );
     }
 

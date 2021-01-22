@@ -3,7 +3,7 @@
 namespace IXP\Policies;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -32,6 +32,14 @@ use IXP\Models\{
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 
+/**
+ * RouteServerFilterPolicy
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   Policies
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class RouteServerFilterPolicy
 {
     use HandlesAuthorization;
@@ -46,16 +54,17 @@ class RouteServerFilterPolicy
      *
      * @throws
      */
-    public function before( User $user, $ability)
+    public function before( User $user, $ability): bool
     {
-        if( !$user->isSuperUser() ) {
+        $privs = $user->getPrivs();
+        if( $privs !== User::AUTH_SUPERUSER ) {
             $minAuth = User::AUTH_CUSTADMIN;
 
             if( in_array( explode('@', Route::getCurrentRoute()->getActionName() )[1], [ "view", "list" ] ) ){
                 $minAuth = User::AUTH_CUSTUSER;
             }
 
-            if( $user->getPrivs() < $minAuth ) {
+            if( $privs < $minAuth ) {
                 return false;
             }
         }
@@ -67,17 +76,16 @@ class RouteServerFilterPolicy
      * @param User          $user
      * @param Customer      $cust
      *
-     * @return mixed
+     * @return bool
      *
      * @throws
      */
-    public function checkCustObject( User $user, Customer $cust )
+    public function checkCustObject( User $user, Customer $cust ): bool
     {
-        if( !$user->isSuperUser() && $cust->id !== $user->custid ){
+        if( $cust->id !== $user->custid && !$user->isSuperUser() ){
             return false;
         }
-
-        return $cust->isRouteServerClient();
+        return $cust->routeServerClient();
     }
 
     /**
@@ -85,14 +93,16 @@ class RouteServerFilterPolicy
      *
      * @param  User                 $user
      * @param  RouteServerFilter    $rsf
-     * @return mixed
+     *
+     * @return bool
+     *
+     * @throws
      */
-    public function checkRsfObject( User $user, RouteServerFilter $rsf )
+    public function checkRsfObject( User $user, RouteServerFilter $rsf ): bool
     {
-        if( !$user->isSuperUser() && $rsf->customer_id !== $user->custid ){
+        if(  $rsf->customer_id !== $user->custid  && !$user->isSuperUser() ){
             return false;
         }
-
-        return $rsf->customer->isRouteServerClient();
+        return $rsf->customer->routeServerClient();
     }
 }

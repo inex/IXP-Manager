@@ -23,7 +23,7 @@ $row = $t->row;
     </td>
     <td>
         <div class="btn-group btn-group-sm">
-            <a class="btn btn-white btn-2f-list-delete" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="#" data-object-id="<?= $t->row[ 'id' ] ?>" data-url="<?= route( $t->feParams->route_prefix.'@delete' , [ 'id' => $t->row[ 'id' ] ]  )  ?>"  title="Delete">
+            <a class="btn btn-white btn-2f-list-delete" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' data-object-id="<?= $t->row[ 'id' ] ?>" href="<?= route( $t->feParams->route_prefix.'@delete' , [ 'id' => $t->row[ 'id' ] ]  )  ?>"  title="Delete">
                 <i class="fa fa-trash"></i>
             </a>
         </div>

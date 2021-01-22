@@ -1,4 +1,3 @@
-
 <div class="card col-sm-12">
     <div class="card-body">
         <?= Former::open()->method( $t->data['params']['isAdd'] ? 'POST' : 'PUT' )
@@ -35,17 +34,11 @@
         ?>
 
         <?= Former::actions(
-            Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->class( "mb-2 mb-sm-0" ),
+            Former::primary_submit( $t->data['params']['isAdd'] ? 'Create' : 'Save Changes' )->class( "mb-2 mb-sm-0" ),
             Former::secondary_link( 'Cancel' )->href( route($t->feParams->route_prefix . '@list') )->class( "mb-2 mb-sm-0" ),
             Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
-        );
-        ?>
-
-        <?= Former::hidden( 'id' )
-            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->id : '' )
-        ?>
+        ); ?>
 
         <?= Former::close() ?>
-
     </div>
 </div>

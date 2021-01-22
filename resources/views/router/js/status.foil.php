@@ -1,5 +1,4 @@
 <script>
-
     const lgEnabled = <?= $t->lgEnabled ? 'true' : 'false' ?>;
 
     let table = $('#router-list').on( 'init.dt', function () {

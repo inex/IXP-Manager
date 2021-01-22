@@ -95,7 +95,7 @@
                             <b class="mr-auto my-auto">
                                 Delete your logo ...
                             </b>
-                            <a id="btn-delete" class="btn btn-danger mr-4 " data-url="<?= route( "logo@delete" , [ 'id' => $t->c->id ] )  ?>" href="#">
+                            <a id="btn-delete" class="btn btn-danger mr-4 " href="<?= route( "logo@delete" , [ 'id' => $t->c->id ] )  ?>">
                                 Remove My Logo
                             </a>
                         </div>

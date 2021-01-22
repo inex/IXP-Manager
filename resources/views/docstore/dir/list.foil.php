@@ -98,7 +98,7 @@
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item" href="<?= route( "docstore-dir@edit", [ "dir" => $dir['id'] ] ) ?>">Edit</a>
-                                        <a class="dropdown-item list-delete-btn" data-object-type="dir" href="#" data-url="<?= route('docstore-dir@delete', [ 'dir' => $dir['id'] ] ) ?>">Delete</a>
+                                        <a class="dropdown-item list-delete-btn" data-object-type="dir" href="<?= route('docstore-dir@delete', [ 'dir' => $dir['id'] ] ) ?>">Delete</a>
                                     </div>
                                 </div>
                             <?php endif; ?>
@@ -160,7 +160,7 @@
                                         <a class="dropdown-item" href="<?= route( 'docstore-file@download', ['file' => $file->id] ) ?>">Download</a>
                                     <?php endif; ?>
                                     <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
-                                        <a class="dropdown-item list-info-btn" data-object-type="file" href="#" data-url="<?= route( "docstore-file@info", [ "file" => $file ] ) ?>">Metadata</a>
+                                        <a class="dropdown-item list-info-btn" data-object-type="file" href="<?= route( "docstore-file@info", [ "file" => $file ] ) ?>">Metadata</a>
                                     <?php endif; ?>
                                     <a class="dropdown-item" href="#"
                                        onclick="bootbox.alert({ message: 'SHA checksums can be used to check the authenticity / integrity of files.<br><br><?= $file->sha256 ? "SHA256 checksum: [<code>" . $t->ee( $file->sha256 ) . "</code>]" : "there is no sha256 checksum registered for this file." ?>', size: 'large' }); return false;">Show SHA256</a>
@@ -171,7 +171,7 @@
                                         <a class="dropdown-item" href="<?= route( 'docstore-log@list', [ 'file' => $file ] ) ?>">All Downloads</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="<?= route( "docstore-file@edit", [ "file" => $file ] ) ?>">Edit</a>
-                                        <a class="dropdown-item list-delete-btn" data-object-type="file" href="#" data-url="<?= route( "docstore-file@delete", [ "file" => $file ] ) ?>">Delete</a>
+                                        <a class="dropdown-item list-delete-btn" data-object-type="file" href="<?= route( "docstore-file@delete", [ "file" => $file ] ) ?>">Delete</a>
                                     <?php endif; ?>
                                 </div>
                             </div>

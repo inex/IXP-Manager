@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -34,13 +34,14 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class MacAddressController extends EloquentController
 {
     /**
-     * The object being added / edited
+     * The object being created / edited
+     *
      * @var MacAddress
      */
     protected $object = null;
@@ -67,7 +68,6 @@ class MacAddressController extends EloquentController
             'viewFolderName'    => 'mac-address',
             'readonly'          => self::$read_only,
             'documentation'     => 'https://docs.ixpmanager.org/features/layer2-addresses/',
-
             'listColumns'       => [
                 'id'             => [
                     'title' => 'DB ID',

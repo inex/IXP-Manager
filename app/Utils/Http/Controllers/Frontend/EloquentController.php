@@ -22,7 +22,6 @@ namespace IXP\Utils\Http\Controllers\Frontend;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Auth, Log, Route, Str;
 
 use IXP\Models\User;
@@ -181,7 +180,7 @@ abstract class EloquentController extends Controller
     /**
      * The class's initialisation method.
      */
-    public function __construct( )
+    public function __construct()
     {
         $this->middleware(function ($request, $next) {
             $this->feInit();
@@ -328,7 +327,7 @@ abstract class EloquentController extends Controller
      *
      * @return array
      */
-    protected function viewGetData( $id ): array
+    protected function viewGetData( int $id ): array
     {
         $data = $this->listGetData( $id );
 
@@ -352,12 +351,12 @@ abstract class EloquentController extends Controller
     /**
      * View an object
      *
-     * @param Request $request The HTTP Request object
-     * @param int $id The `id` of the row to load for `view` action.
+     * @param Request   $r      The HTTP Request object
+     * @param int       $id     The `id` of the row to load for `view` action.
      *
      * @return View
      */
-    public function view( Request $request, int $id ): View
+    public function view( Request $r, int $id ): View
     {
         $this->data[ 'item' ]                         = $this->viewGetData( $id ) ;
         $this->data[ 'view' ][ 'viewPreamble']        = $this->resolveTemplate( 'view-preamble',      false );
@@ -435,7 +434,7 @@ abstract class EloquentController extends Controller
      *
      * @throws
      */
-    public function edit( $id ): View
+    public function edit( int $id ): View
     {
         $this->data[ 'params' ] = $this->editPrepareForm( $id );
         $this->data[ 'params' ]['isAdd'] = false;
@@ -446,11 +445,11 @@ abstract class EloquentController extends Controller
     /**
      * Function to do the actual validation of the create/edit form..
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @throws GeneralException
      */
-    public function checkForm( Request $request ): void
+    public function checkForm( Request $r ): void
     {
         throw new GeneralException( 'For non-read-only Eloquent2Frontend controllers, you must override this method.' );
     }
@@ -458,13 +457,13 @@ abstract class EloquentController extends Controller
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return RedirectResponse|bool
      *
      * @throws GeneralException
      */
-    public function doStore( Request $request )
+    public function doStore( Request $r )
     {
         throw new GeneralException( 'For non-read-only Eloquent2Frontend controllers, you must override this method.' );
     }
@@ -472,14 +471,14 @@ abstract class EloquentController extends Controller
     /**
      * Function to do the actual update of the submitted object.
      *
-     * @param Request $request
-     * @param int $id
+     * @param Request   $r
+     * @param int       $id
      *
      * @return RedirectResponse|bool
      *
      * @throws GeneralException
      */
-    public function doUpdate( Request $request, int $id )
+    public function doUpdate( Request $r, int $id )
     {
         throw new GeneralException( 'For non-read-only Doctrine2Frontend controllers, you must override this method.' );
     }
@@ -487,15 +486,15 @@ abstract class EloquentController extends Controller
     /**
      * Action for storing a new object
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return RedirectResponse|bool
      *
      * @throws
      */
-    public function store( Request $request )
+    public function store( Request $r )
     {
-        $storeResult = $this->doStore( $request );
+        $storeResult = $this->doStore( $r );
 
         if( $storeResult !== true ) {
             return $storeResult;
@@ -514,16 +513,16 @@ abstract class EloquentController extends Controller
     /**
      * Action for updating an object
      *
-     * @param Request $request
-     * @param int $id
+     * @param Request   $r
+     * @param int       $id
      *
      * @return RedirectResponse|bool
      *
      * @throws GeneralException
      */
-    public function update( Request $request, int $id )
+    public function update( Request $r, int $id )
     {
-        $updateResult = $this->doUpdate( $request, $id );
+        $updateResult = $this->doUpdate( $r, $id );
 
         if( $updateResult !== true ) {
             return $updateResult;
@@ -581,17 +580,17 @@ abstract class EloquentController extends Controller
     /**
      * Delete an object
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return RedirectResponse
      *
      * @throws
      */
-    public function delete( Request $request ): RedirectResponse
+    public function delete( Request $r ): RedirectResponse
     {
-        $this->object = $this->feParams->entity::findOrFail( $request->id );
+        $this->object = $this->feParams->entity::findOrFail( $r->id );
 
-        $this->request = $request;
+        $this->request = $r;
 
         if( $this->preDelete() ) {
             $this->object->delete();
@@ -626,7 +625,7 @@ abstract class EloquentController extends Controller
      *
      * @return View
      */
-    protected function display( $tpl ): View
+    protected function display( string $tpl ): View
     {
         $this->feParams->route_prefix = self::route_prefix();
 
@@ -646,18 +645,22 @@ abstract class EloquentController extends Controller
      *
      * This will also work for subdirectories: e.g. `$tpl = forms/add.html` is also valid.
      *
-     * @param string $tpl The template to display
-     * @param bool $quitOnMissing If a template is not found, this normally throws a 404. If this is set to false, the function returns false instead.
+     * @param string    $tpl            The template to display
+     * @param bool      $quitOnMissing  If a template is not found, this normally throws a 404. If this is set to false, the function returns false instead.
      *
      * @return bool|string The template to use of false if none found
      */
-    protected function resolveTemplate( $tpl, $quitOnMissing = true )
+    protected function resolveTemplate( string $tpl, bool $quitOnMissing = true )
     {
         if( view()->exists( $this->feParams->viewFolderName . "/{$tpl}" ) ) {
             return $this->feParams->viewFolderName . "/{$tpl}";
-        } else if( view()->exists( static::$baseViews . "/{$tpl}"  ) ) {
+        }
+
+        if( view()->exists( static::$baseViews . "/{$tpl}"  ) ) {
             return static::$baseViews . "/{$tpl}";
-        } else if( view()->exists( $tpl  ) ) {
+        }
+
+        if( view()->exists( $tpl  ) ) {
             return $tpl;
         }
 

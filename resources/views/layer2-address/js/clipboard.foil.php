@@ -6,7 +6,6 @@
 
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
-
     const mac_input       = $( ".mac-input" );
     const case_btn        = $( "#notes-modal-btn-case" );
 
@@ -53,7 +52,7 @@
     /**
      * on click, show a popup of the mac address with different formats
      */
-    $( '.btn-view-l2a' ).on( 'click', function( e ) {
+    $( '.btn-view-l2a' ).click( function( e ) {
         e.preventDefault();
         let mac = $( this ).attr( 'data-object-mac');
 
@@ -67,8 +66,7 @@
     /**
      * on click, change the case of the mac addresses (uppercase/lowercase)
      */
-    $( '#notes-modal-btn-case' ).on( 'click' ,function( e )
-    {
+    $( '#notes-modal-btn-case' ).on( 'click' ,function( e ) {
         e.preventDefault();
         if( mac_input.hasClass( 'upperCase' ) ) {
             mac_input.removeClass( 'upperCase' ).addClass( 'lowerCase' );

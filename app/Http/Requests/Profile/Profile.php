@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\Profile;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -31,8 +31,8 @@ use Illuminate\Validation\Validator;
  * Profile details Store Request
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Profile
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   Requests\Profile
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Profile extends FormRequest
@@ -68,6 +68,7 @@ class Profile extends FormRequest
      * Configure the validator instance.
      *
      * @param  Validator  $validator
+     *
      * @return void
      */
     public function withValidator( Validator $validator ): void

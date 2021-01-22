@@ -51,7 +51,7 @@
      */
     $( ".btn-delete-cl" ).click( function( e ) {
         e.preventDefault();
-        deleteElement( true , $( this ).attr( 'data-url') );
+        deleteElement( true , this.href );
     });
 
     /**
@@ -59,7 +59,7 @@
      */
     $( '.btn-delete-cb' ).click( function( e ) {
         e.preventDefault();
-        deleteElement( false , $( this ).attr( 'data-url') );
+        deleteElement( false , this.href );
     });
 
     /**

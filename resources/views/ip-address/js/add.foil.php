@@ -11,5 +11,4 @@
           }
       }).trigger( 'change' );
   <?php endif; ?>
-
 </script>

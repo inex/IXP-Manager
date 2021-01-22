@@ -435,8 +435,6 @@ class CustomerAggregator extends Customer
         ];
     }
 
-
-
     /**
      * Delete the customer.
      *

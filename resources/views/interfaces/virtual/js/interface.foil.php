@@ -41,7 +41,7 @@ $( document ).ready(function() {
 function deletePopup( btn_delete, type ) {
     let objectName;
     let user = 0;
-    let urlDelete  = btn_delete.attr( 'data-url');
+    let urlDelete  = btn_delete.href;
 
     if( type === "vli") {
         objectName = "Vlan Interface";

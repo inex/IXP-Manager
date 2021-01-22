@@ -11,9 +11,7 @@ $this->layout( 'layouts/ixpv4' );
 
 
 <?php $this->section( 'page-header-postamble' ) ?>
-
     <div class="btn-group btn-group-sm" role="group">
-
         <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
             <a  target="_blank" class="btn btn-white" href="<?= $t->feParams->documentation ?>">
                 Documentation
@@ -33,14 +31,11 @@ $this->layout( 'layouts/ixpv4' );
             </a>
         <?php endif; ?>
     </div>
-
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
     <div class="row">
-
         <div class="col-lg-12">
-
             <?= $t->alerts() ?>
 
             <?= $t->data[ 'view' ]['viewPreamble'] ? $t->insert( $t->data[ 'view' ]['viewPreamble'] ) : '' ?>
@@ -49,26 +44,16 @@ $this->layout( 'layouts/ixpv4' );
                 <div class="card-header">
                     Details for <?=  $t->feParams->titleSingular  ?> <?= !isset( $t->data[ 'item' ]['id'] ) ?: '(DB ID: ' . $t->data[ 'item' ]['id'] . ')' ?>
                 </div>
-
                 <div class="card-body">
-
                     <table class="table_view_info">
                         <?php if( $t->data[ 'view' ]['viewRowOverride'] ): ?>
-
                             <?= $t->insert( $t->data[ 'view' ]['viewRowOverride'], [ 'row' => $t->data ] ) ?>
-
                         <?php else: ?>
-
                             <?php if( isset( $t->feParams->viewColumns ) ): ?>
-
                                 <?php foreach( $t->feParams->viewColumns as $col => $cconf ): ?>
-
                                     <?php if( !is_array( $cconf ) || !isset( $cconf[ 'display'] ) || $cconf[ 'display'] ): ?>
-
                                         <?php if( !isset( $cconf[ 'hideIfFieldTrue'] ) || !$t->data[ 'item' ][ $cconf[ 'hideIfFieldTrue'] ] ): ?>
-
                                             <tr>
-
                                                 <th>
                                                     <?php if( !is_array( $cconf ) ): ?>
                                                         <?= $cconf ?>
@@ -76,10 +61,7 @@ $this->layout( 'layouts/ixpv4' );
                                                         <?= $cconf[ 'title' ] ?>
                                                     <?php endif; ?>
                                                 </th>
-
-
                                                 <td>
-
                                                     <?php if( !is_array( $cconf ) ): ?>
 
                                                         <?php if( $t->data[ 'item' ][ $col ] ): ?>
@@ -88,7 +70,7 @@ $this->layout( 'layouts/ixpv4' );
 
                                                     <?php elseif( isset( $cconf[ 'type' ] ) ): ?>
 
-                                                        <?php if( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'HAS_ONE'] ): ?>
+                                                        <?php if( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'HAS_ONE'] ): ?>
                                                             <?php $nameIdParam = '' ; ?>
                                                             <?php if( isset( $cconf['nameIdParam'] ) ): ?>
                                                                 <?php $nameIdParam = $cconf['nameIdParam'].'/'; ?>
@@ -97,7 +79,7 @@ $this->layout( 'layouts/ixpv4' );
                                                                 <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
                                                             </a>
 
-                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'XLATE'] ): ?>
+                                                        <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'XLATE'] ): ?>
 
                                                             <?php if( isset($cconf[ 'xlator'][ $t->data[ 'item' ][ $col ] ]) ): ?>
                                                                 <?= $cconf[ 'xlator' ][ $t->data[ 'item' ][ $col] ] ?>
@@ -105,7 +87,7 @@ $this->layout( 'layouts/ixpv4' );
                                                                 <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
                                                             <?php endif; ?>
 
-                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
+                                                        <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
 
                                                             <?php if(  $t->data[ 'item' ][ $col ] ): ?>
                                                                 <?= $t->data[ 'item' ][ $col ]  ?>
@@ -113,7 +95,7 @@ $this->layout( 'layouts/ixpv4' );
                                                             <?php endif; ?>
 
 
-                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
+                                                        <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'DATE'] ): ?>
 
                                                             <?php if( $t->data[ 'item' ][ $col ] instanceof \DateTime ): ?>
                                                                 <?= $t->data[ 'item' ][ $col ]->format( 'Y-m-d' )  ?>
@@ -121,7 +103,7 @@ $this->layout( 'layouts/ixpv4' );
                                                                 <?= date('Y-m-d', strtotime( $t->data[ 'item' ][ $col ] ) ) ?>
                                                             <?php endif; ?>
 
-                                                        <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'TIME'] ): ?>
+                                                        <?php elseif( $cconf[ 'type' ] ===  $t->data[ 'col_types' ][ 'TIME'] ): ?>
 
                                                             <?php if(  $t->data[ 'item' ][ $col ] ): ?>
                                                                 <?= $t->data[ 'item' ][ $col ]->format( 'H:i:s' )  ?>
@@ -129,33 +111,33 @@ $this->layout( 'layouts/ixpv4' );
                                                             <?php endif; ?>
 
 
-                                                        <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'REPLACE'] ): ?>
+                                                        <?php elseif( $cconf[ 'type' ] ===  $t->data[ 'col_types' ][ 'REPLACE'] ): ?>
 
                                                             <?php if( $t->data[ 'item' ][ $col ] ): ?>
                                                                 <?= str_replace( '%%COL%%', $t->ee( $t->data[ 'item' ][ $col ] ) , $cconf[ 'subject' ] ) ?>
                                                             <?php endif; ?>
 
-                                                        <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'YES_NO'] ): ?>
+                                                        <?php elseif( $cconf[ 'type' ] ===  $t->data[ 'col_types' ][ 'YES_NO'] ): ?>
 
                                                             <?= $t->data[ 'item' ][ $col ] ? "<label class='label label-success'>Yes</label>" : "<label class='label label-danger'>No</label>" ?>
 
-                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'INVERSE_YES_NO'] ): ?>
+                                                        <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'INVERSE_YES_NO'] ): ?>
 
                                                             <?= !$t->data[ 'item' ][ $col ] ? "<label class='label label-success'>Yes</label>" : "<label class='label label-danger'>No</label>" ?>
 
-                                                        <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'YES_NO_NULL'] ): ?>
+                                                        <?php elseif( $cconf[ 'type' ] ===  $t->data[ 'col_types' ][ 'YES_NO_NULL'] ): ?>
 
                                                             <?= $t->data[ 'item' ][ $col ] === null ? 'Unknown' : ( $t->data[ 'item' ][ $col ] ? "<label class='label label-success'>Yes</label>" : "<label class='label label-danger'>No</label>" ) ?>
 
-                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SCRIPT'] ): ?>
+                                                        <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'SCRIPT'] ): ?>
 
                                                             <?= $t->insert( $cconf['script'], [ 'row' => $t->data['item'], 'col' => $col ] ) ?>
 
-                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'PARSDOWN'] ): ?>
+                                                        <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'PARSDOWN'] ): ?>
 
                                                             <?= @parsedown( $t->data[ 'item' ][ $col ] )?>
 
-                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'CONST'] ): ?>
+                                                        <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'CONST'] ): ?>
 
                                                             <?php if( isset( $cconf[ 'const' ][ $t->data[ 'item' ][ $col ] ] ) ): ?>
 
@@ -163,7 +145,7 @@ $this->layout( 'layouts/ixpv4' );
 
                                                             <?php endif; ?>
 
-                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'LABEL'] ): ?>
+                                                        <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'LABEL'] ): ?>
 
                                                             <?php if( isset( $t->data[ 'item' ][ $col ] ) ): ?>
 
@@ -213,26 +195,26 @@ $this->layout( 'layouts/ixpv4' );
 
                                                             <?php endif; ?>
 
-                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'ARRAY'] ): ?>
+                                                        <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'ARRAY'] ): ?>
 
                                                             <?= $cconf[ 'source' ][ $t->data[ 'item' ][ $col] ] ?? $t->data[ 'item' ][ $col] ?>
 
-                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'INTEGER'] ): ?>
+                                                        <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'INTEGER'] ): ?>
 
                                                             <?=  (int)$t->data[ 'item' ][ $col] ?>
 
-                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'LIMIT'] ): ?>
+                                                        <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'LIMIT'] ): ?>
 
                                                             <?= Str::limit( $t->data[ 'item' ][ $col ], $cconf[ 'limitTo'] )?>
 
-                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'TEXT'] ): ?>
+                                                        <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'TEXT'] ): ?>
 
                                                             <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
 
-                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'COUNTRY'] ): ?>
+                                                        <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'COUNTRY'] ): ?>
 
                                                             <?php if( $t->ee( $t->data[ 'item' ][ $col ] ) ): ?>
-                                                                <?= array_column(Countries::getList(), 'name', 'iso_3166_2' )[ $t->ee( $t->data[ 'item' ][ $col ] ) ] ?>
+                                                                <?= array_column( Countries::getList(), 'name', 'iso_3166_2' )[ $t->ee( $t->data[ 'item' ][ $col ] ) ] ?>
                                                             <?php endif; ?>
 
                                                         <?php else: ?>
@@ -242,40 +224,23 @@ $this->layout( 'layouts/ixpv4' );
                                                         <?php endif; ?>
 
                                                     <?php else: ?>
-
                                                         <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
-
                                                     <?php endif; ?>
                                                 </td>
-
                                             </tr>
-
                                         <?php endif; ?>
-
                                     <?php endif; ?>
-
                                 <?php endforeach; ?>
-
                             <?php endif; ?>
                         <?php endif; ?>
-
                     </table>
-
                 </div>
-
             </div>
-
             <?= $t->data[ 'view' ]['viewPostamble'] ? $t->insert( $t->data[ 'view' ]['viewPostamble'] ) : '' ?>
-
         </div>
-
     </div>
-
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-
-<?= $t->data[ 'view' ][ 'viewScript' ] ? $t->insert( $t->data[ 'view' ][ 'viewScript' ] ) : '' ?>
-
+    <?= $t->data[ 'view' ][ 'viewScript' ] ? $t->insert( $t->data[ 'view' ][ 'viewScript' ] ) : '' ?>
 <?php $this->append() ?>

@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,7 +22,6 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Former;
 
 use IXP\Models\{
@@ -32,6 +31,7 @@ use IXP\Models\{
 };
 
 use Illuminate\Database\Eloquent\Builder;
+
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -44,7 +44,7 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   VlanInterface
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class CustKitController extends EloquentController
@@ -70,7 +70,7 @@ class CustKitController extends EloquentController
             'viewFolderName'    => 'cust-kit',
 
             'listColumns'    => [
-                'id'        => [ 'title' => 'DB ID', 'display' => true ],
+                'id'        => [ 'title' => 'DB ID', 'display' => false ],
                 'name'      => 'Name',
                 'customer'  => [
                     'title'         => 'Customer',
@@ -95,7 +95,6 @@ class CustKitController extends EloquentController
                 'descr'      => 'Description'
             ]
         );
-
     }
 
     /**
@@ -112,7 +111,7 @@ class CustKitController extends EloquentController
             ->leftJoin( 'cabinet', 'cabinet.id', 'custkit.cabinetid' )
             ->leftJoin( 'cust', 'cust.id', 'custkit.custid' )
             ->when( $id , function( Builder $q, $id ) {
-                return $q->where('id', $id );
+                return $q->where('custkit.id', $id );
             } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
                 return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
             })->get()->toArray();
@@ -128,8 +127,7 @@ class CustKitController extends EloquentController
         return [
             'object'        => $this->object ,
             'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
-                ->orderBy( 'name', 'asc' )
-                ->get(),
+                ->orderBy( 'name' )->get(),
             'custs'         => Customer::orderBy( 'name' )->get(),
         ];
     }
@@ -146,71 +144,70 @@ class CustKitController extends EloquentController
         $this->object = CustomerEquipment::findOrFail( $id );
 
         Former::populate([
-            'name'          => request()->old( 'name',        $this->object->name ),
-            'custid'        => request()->old( 'custid',      $this->object->custid ),
-            'cabinetid'     => request()->old( 'cabinetid',   $this->object->cabinetid ),
-            'descr'         => request()->old( 'descr',       $this->object->descr ),
+            'name'          => request()->old( 'name',        $this->object->name       ),
+            'custid'        => request()->old( 'custid',      $this->object->custid     ),
+            'cabinetid'     => request()->old( 'cabinetid',   $this->object->cabinetid  ),
+            'descr'         => request()->old( 'descr',       $this->object->descr      ),
         ]);
 
         return [
             'object'        => $this->object ,
             'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
-                ->orderBy( 'name', 'asc' )
-                ->get(),
+                ->orderBy( 'name')->get(),
             'custs'         => Customer::orderBy( 'name' )->get(),
         ];
     }
 
     /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request $r
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doStore( Request $r )
+    {
+        $this->checkForm( $r );
+        $this->object = CustomerEquipment::create( $r->all() );
+        $this->object->custid = $r->custid;
+        $this->object->save();
+        return true;
+    }
+
+    /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request   $r
+     * @param int       $id
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doUpdate( Request $r, int $id )
+    {
+        $this->object = CustomerEquipment::findOrFail( $id );
+        $this->checkForm( $r );
+        $this->object->update( $r->all() );
+        $this->object->custid = $r->custid;
+        $this->object->save();
+        return true;
+    }
+
+    /**
      * Check if the form is valid
      *
-     * @param $request
+     * @param $r
      */
-    public function checkForm( Request $request ): void
+    public function checkForm( Request $r ): void
     {
-        $request->validate( [
+        $r->validate( [
             'name'                  => 'required|string|max:255',
             'custid'                => 'required|integer|exists:Entities\Customer,id',
             'cabinetid'             => 'required|integer|exists:Entities\Cabinet,id',
             'descr'                 => 'nullable|string|max:255',
         ] );
-    }
-
-    /**
-     * Function to do the actual validation and storing of the submitted object.
-     *
-     * @param Request $request
-     *
-     * @return bool|RedirectResponse
-     *
-     * @throws
-     */
-    public function doStore( Request $request )
-    {
-        $this->checkForm( $request );
-        $this->object = CustomerEquipment::create( $request->all() );
-        $this->object->custid = $request->custid;
-        $this->object->save();
-        return true;
-    }
-
-    /**
-     * Function to do the actual validation and storing of the submitted object.
-     *
-     * @param Request $request
-     * @param int $id
-     *
-     * @return bool|RedirectResponse
-     *
-     * @throws
-     */
-    public function doUpdate( Request $request, int $id )
-    {
-        $this->object = CustomerEquipment::findOrFail( $request->id );
-        $this->checkForm( $request );
-        $this->object->update( $request->all() );
-        $this->object->custid = $request->custid;
-        $this->object->save();
-        return true;
     }
 }

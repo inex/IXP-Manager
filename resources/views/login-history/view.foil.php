@@ -5,12 +5,9 @@
 
 <?php $this->section( 'page-header-preamble' ) ?>
     Login History / <?= $t->ee( $t->user->username ) ?>
-
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
-
-
     <div class="alert alert-info mt-4" role="alert">
         <div class="d-flex align-items-center">
             <div class="text-center">
@@ -22,7 +19,7 @@
         </div>
     </div>
 
-    <table id="table-list" class="table collapse table-striped table-responsive-ixp-with-header" width="100%">
+    <table id="table-list" class="table collapse table-striped table-responsive-ixp-with-header w-100">
         <thead class="thead-dark">
             <tr>
                 <th>
@@ -63,7 +60,6 @@
 <?php $this->section( 'scripts' ) ?>
     <script>
         $(document).ready( function() {
-
             $( '.table-responsive-ixp-with-header' ).show();
 
             $( '.table-responsive-ixp-with-header' ).DataTable({

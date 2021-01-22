@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -39,11 +39,9 @@ use IXP\Models\{
     VlanInterface
 };
 
-use IXP\Services\Grapher\Graph as Graph;
-
+use IXP\Services\Grapher\Graph;
 
 use IXP\Services\Grapher;
-
 
 /**
  * Admin Controller
@@ -51,7 +49,7 @@ use IXP\Services\Grapher;
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Admin
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class AdminController extends Controller
@@ -59,16 +57,16 @@ class AdminController extends Controller
     /**
      * Display the home page
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return view
      */
-    public function dashboard( Request $request ): View
+    public function dashboard( Request $r ): View
     {
         return view( 'admin/dashboard' )->with([
-            'stats'                 => $this->dashboardStats( $request ),
-            'graphs'                => $this->publicPeeringGraphs( $request ),
-            'graph_period'          => $request->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ),
+            'stats'                 => $this->dashboardStats( $r ),
+            'graphs'                => $this->publicPeeringGraphs( $r ),
+            'graph_period'          => $r->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ),
             'graph_periods'         => Graph::PERIOD_DESCS,
         ]);
     }
@@ -76,14 +74,14 @@ class AdminController extends Controller
     /**
      * Get type counts statistics
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return array array of statistics
      */
-    private function dashboardStats( Request $request ): array
+    private function dashboardStats( Request $r ): array
     {
         // only do this once every 60 minutes
-        //if( $request->query( 'refresh_cache', 0 ) || !( $cTypes = Cache::get( 'admin_ctypes' ) ) ) {
+        if( $r->query( 'refresh_cache', 0 ) || !( $cTypes = Cache::get( 'admin_ctypes' ) ) ) {
             // Full / Associate / Probono / Internal
             $cTypes[ 'types' ] = Customer::selectRaw('type AS ctype, COUNT( type ) AS cnt')
                 ->whereRaw(Customer::SQL_CUST_CURRENT)
@@ -155,13 +153,13 @@ class AdminController extends Controller
                 return $a[ 'count' ] < $b[ 'count' ];
             });
 
-            $cTypes[ 'speeds' ] = $speeds;
-            $cTypes[ 'custsByLocation' ] = $custsByLocation;
-            $cTypes[ 'byLocation' ] = $byLocation;
-            $cTypes[ 'byLan' ] = $byLan;
-            $cTypes[ 'byIxp' ] = $byIxp;
-            $cTypes[ 'custsByInfra' ] = $custsByInfra;
-            $cTypes[ 'peeringCusts' ] = $peeringCusts;
+            $cTypes[ 'speeds' ]             = $speeds;
+            $cTypes[ 'custsByLocation' ]    = $custsByLocation;
+            $cTypes[ 'byLocation' ]         = $byLocation;
+            $cTypes[ 'byLan' ]              = $byLan;
+            $cTypes[ 'byIxp' ]              = $byIxp;
+            $cTypes[ 'custsByInfra' ]       = $custsByInfra;
+            $cTypes[ 'peeringCusts' ]       = $peeringCusts;
 
             // FROM of query is vlaninterface so should be current:
             $cTypes[ 'usage' ] = VlanInterface::selectRaw(
@@ -179,16 +177,14 @@ class AdminController extends Controller
                 ->groupBy('vlanname')->get()->toArray();
 
             // full/probono customers with connected interface by vlan
-            $cTypes[ 'percentByVlan' ] = VirtualInterfaceAggregator::getPercentageCustomersByVlan();
-
-            $cTypes[ 'cached_at' ] = Carbon::now();
-
-            $cTypes[ 'infras' ] = Infrastructure::orderBy('name', 'asc')->get()->toArray();
-            $cTypes[ 'locations' ] = Location::orderBy('name', 'asc')->get()->toArray();
-            $cTypes[ 'vlans' ] = Vlan::publicOnly()->orderBy('number')->get()->keyBy('id')->toArray();
+            $cTypes[ 'percentByVlan' ]  = VirtualInterfaceAggregator::getPercentageCustomersByVlan();
+            $cTypes[ 'cached_at' ]      = Carbon::now();
+            $cTypes[ 'infras' ]         = Infrastructure::orderBy('name' )->get()->toArray();
+            $cTypes[ 'locations' ]      = Location::orderBy('name' )->get()->toArray();
+            $cTypes[ 'vlans' ]          = Vlan::publicOnly()->orderBy('number')->get()->keyBy('id')->toArray();
 
             Cache::put('admin_ctypes', $cTypes, 300);
-        //}
+        }
 
         return $cTypes;
     }
@@ -196,19 +192,19 @@ class AdminController extends Controller
     /**
      * Get public peering graphs
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return array array of graphs
      *
      * @throws
      */
-    private function publicPeeringGraphs( Request $request ): array
+    private function publicPeeringGraphs( Request $r ): array
     {
         $grapher = App::make( Grapher::class );
 
-        $period   = Graph::processParameterPeriod( $request->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ) );
+        $period   = Graph::processParameterPeriod( $r->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ) );
 
-        if( $request->query( 'refresh_cache', 0 ) || !( $graphs = Cache::get( 'admin_stats_'.$period ) ) ) {
+        if( $r->query( 'refresh_cache', 0 ) || !( $graphs = Cache::get( 'admin_stats_'.$period ) ) ) {
             $graphs = [];
 
             $graphs['ixp'] = $grapher->ixp()

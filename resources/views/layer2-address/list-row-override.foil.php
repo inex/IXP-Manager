@@ -1,8 +1,7 @@
-
 <?php
-// due to how PHP Foil passes data, we reassign this so we can copy and paste normal list code if we want.
-// see http://www.foilphp.it/docs/DATA/PASS-DATA.html
-$row = $t->row;
+    // due to how PHP Foil passes data, we reassign this so we can copy and paste normal list code if we want.
+    // see http://www.foilphp.it/docs/DATA/PASS-DATA.html
+    $row = $t->row;
 ?>
 
 <tr>
@@ -35,14 +34,13 @@ $row = $t->row;
         <?= $t->ee( $row['ip6'] ) ?>
     </td>
     <td>
-        <a id="view-l2a-<?= $row[ 'id' ] ?>" name="<?= $t->ee( $row[ 'mac' ] ) ?>" href="#" title="View">
+        <a id="view-l2a-<?= $row[ 'id' ] ?>" class="btn-view-l2a" data-object-mac="<?= $t->ee( $row[ 'mac' ] ) ?>" href="#" title="View">
             <?= $t->ee( $row[ 'mac' ] ) ?>
         </a>
     </td>
     <td>
         <?= $t->ee( $row['organisation'] ) ?>
     </td>
-
     <td>
         <div class="btn-group btn-group-sm">
             <a class="btn btn-white" href="<?= route( $t->feParams->route_prefix . '@forVlanInterface' , [ 'vli' => $row[ 'vliid' ] ] ) ?>" title="Preview">

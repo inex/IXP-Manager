@@ -4,7 +4,7 @@
 
         $( '.list-delete-btn' ).on( 'click', function( event ) {
             event.preventDefault();
-            let url = $( this ).attr( 'data-url');
+            let url = this.href;
             let type = $(this).attr( 'data-object-type') === 'file' ? 'file' : 'directory';
 
             let html = `<form id="form-delete" method="POST" action="${url}">
@@ -42,10 +42,9 @@
             });
         });
 
-        $( '.list-info-btn' ).on( 'click', function( event ) {
-            event.preventDefault();
-            let url = $(this).attr( 'data-url');
-
+        $( '.list-info-btn' ).click( function( e ) {
+            e.preventDefault();
+            let url = this).href;
             bootbox.dialog({
                 message: '<div><p class="text-center"><i class="fa fa-spinner fa-spin text-5xl"></i></p></div>',
                 size: "extra-large",

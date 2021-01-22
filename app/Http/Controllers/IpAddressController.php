@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,7 +22,6 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Redirect;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -41,7 +40,10 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
-use IPTools\{Network, Network as IPToolsNetwork};
+use IPTools\{
+    Network,
+    Network as IPToolsNetwork
+};
 
 use IXP\Http\Requests\{
     DeleteIpAddressesByNetwork,
@@ -58,7 +60,7 @@ use IXP\Utils\View\Alert\{
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Admin
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class IpAddressController extends Controller
@@ -137,7 +139,7 @@ class IpAddressController extends Controller
      *
      * @return view
      */
-    public function add( int $protocol ): View
+    public function create( int $protocol ): View
     {
         return view( 'ip-address/add' )->with([
             'vlans'                     => Vlan::publicOnly()->orderBy('number')->get(),
@@ -148,19 +150,19 @@ class IpAddressController extends Controller
     /**
      * Edit the core links associated to a core bundle
      *
-     * @param   StoreIpAddress      $request instance of the current HTTP request
+     * @param   StoreIpAddress      $r instance of the current HTTP request
      *
      * @return  RedirectResponse
      *
      * @throws
      */
-    public function store( StoreIpAddress $request ): RedirectResponse
+    public function store( StoreIpAddress $r ): RedirectResponse
     {
-        $vlan     = Vlan::find( $request->vlan );
-        $network  = Network::parse( trim( htmlspecialchars( $request->network )  ) );
-        $skip     = (bool)$request->input( 'skip',     false );
-        $decimal  = (bool)$request->input( 'decimal',  false );
-        $overflow = (bool)$request->input( 'overflow', false );
+        $vlan     = Vlan::find( $r->vlan );
+        $network  = Network::parse( trim( htmlspecialchars( $r->network )  ) );
+        $skip     = (bool)$r->input( 'skip',     false );
+        $decimal  = (bool)$r->input( 'decimal',  false );
+        $overflow = (bool)$r->input( 'overflow', false );
 
         if( $network->getFirstIP()->version === 'IPv6' ) {
             $sequentialAddrs = self::generateSequentialAddresses( $network, $decimal, $overflow );
@@ -201,18 +203,18 @@ class IpAddressController extends Controller
     /**
      * Display the form to delete free IP addresses in a VLAN
      *
-     * @param DeleteIpAddressesByNetwork $request Instance of the current HTTP request
+     * @param DeleteIpAddressesByNetwork $r Instance of the current HTTP request
      * @param Vlan $vlan
      *
      * @return View | RedirectResponse
      *
      * @throws
      */
-    public function deleteByNetwork( DeleteIpAddressesByNetwork $request, Vlan $vlan )
+    public function deleteByNetwork( DeleteIpAddressesByNetwork $r, Vlan $vlan )
     {
         $ips = [];
-        if( $request->network ) {
-            $network  = Network::parse( trim( htmlspecialchars( $request->network )  ) );
+        if( $r->network ) {
+            $network  = Network::parse( trim( htmlspecialchars( $r->network )  ) );
 
             if( $network->getFirstIP()->version === 'IPv6' ) {
                 /** @var IPv6Address $model */
@@ -228,12 +230,11 @@ class IpAddressController extends Controller
                 }
             }
 
-
             $ips = $model::with( 'vlanInterface' )->doesntHave( 'vlanInterface' )
                 ->whereIn( 'address', $sequentialAddrs )
                 ->where( 'vlanid', $vlan->id )->get();
 
-            if( $request->input( 'doDelete', false ) === "1" ) {
+            if( $r->input( 'doDelete', false ) === "1" ) {
                 $model::whereIn( 'id', $ips->pluck( 'id' ) )->delete();
                 AlertContainer::push( 'IP Addresses deleted.', Alert::SUCCESS );
 
@@ -243,37 +244,33 @@ class IpAddressController extends Controller
 
         return view( 'ip-address/delete-by-network' )->with([
             'vlan'                      => $vlan,
-            'network'                   => $request->network,
+            'network'                   => $r->network,
             'ips'                       => $ips,
         ]);
     }
 
-
     /**
      * Delete an IP address
      *
-     * @param Request $request
-     *
+     * @param Request $r
      * @param int $id
+     *
      * @return RedirectResponse
      *
      * @throws
      */
-    public function delete( Request $request, int $id ): RedirectResponse
+    public function delete( Request $r, int $id ): RedirectResponse
     {
-        $ip = $this->processProtocol( $request->protocol , true )::findOrFail( $id );
+        $ip = $this->processProtocol( $r->protocol , true )::findOrFail( $id );
 
-        if( $ip->vlanInterface()->exists() ) {
+        if( $ip->vlanInterface ) {
             AlertContainer::push( 'This IP address is assigned to a VLAN interface.', Alert::DANGER );
             return redirect()->back();
         }
-
-        $vid = $ip->vlanid;
-
         $ip->delete();
 
         AlertContainer::push( 'The IP has been successfully deleted.', Alert::SUCCESS );
-        return Redirect::to( route( "ip-address@list", [ "protocol" => $request->protocol , "vlanid" => $vid ] ) );
+        return Redirect::to( route( "ip-address@list", [ "protocol" => $r->protocol , "vlanid" => $ip->vlanid ] ) );
     }
 
     /**

@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,40 +25,48 @@ namespace IXP\Http\Controllers;
 
 use Former;
 
-use IXP\Models\{
-    Cabinet,
-    Location
-};
-
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\{
     Request,
     RedirectResponse
 };
 
+use IXP\Models\{
+    Cabinet,
+    Location
+};
+
+use IXP\Utils\Http\Controllers\Frontend\EloquentController;
+
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
-
-use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
 /**
  * Cabinet Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class CabinetController extends EloquentController
 {
     /**
-     * The object being added / edited
+     * The object being created / edited
+     *
      * @var Cabinet
      */
     protected $object = null;
 
+    /**
+     * The URL prefix to use.
+     *
+     * Automatically determined based on the controller name if not set.
+     *
+     * @var string|null
+     */
     protected static $route_prefix = "rack";
 
     /**
@@ -77,8 +85,8 @@ class CabinetController extends EloquentController
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'cabinet',
             'listColumns'    => [
-                'id'        => [ 'title' => 'DB ID', 'display' => true ],
-                'locationid'  => [
+                'id'        => [ 'title' => 'DB ID', 'display' => false ],
+                'locationname'  => [
                     'title'      => 'Facility',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
                     'controller' => 'facility',
@@ -119,8 +127,10 @@ class CabinetController extends EloquentController
     protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
-        return Cabinet::when( $id , function( Builder $q, $id ) {
-            return $q->where('id', $id );
+        return Cabinet::select( [ 'cabinet.*', 'l.name AS locationname' ] )
+            ->leftJoin( 'location AS l', 'l.id', 'cabinet.locationid' )
+        ->when( $id , function( Builder $q, $id ) {
+            return $q->where('cabinet.id', $id );
         } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
             return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
         })->get()->toArray();
@@ -135,12 +145,12 @@ class CabinetController extends EloquentController
     {
         return [
             'object'                => $this->object,
-            'locations'             => Location::orderBy( 'name', 'asc' )->get(),
+            'locations'             => Location::orderBy( 'name' )->get(),
         ];
     }
 
     /**
-     * Display the form to add/edit an object
+     * Display the form to create/edit an object
      *
      * @param   int $id ID of the row to edit
      *
@@ -151,76 +161,51 @@ class CabinetController extends EloquentController
         $this->object = Cabinet::findOrFail( $id );
 
         Former::populate( [
-            'name'                  => request()->old( 'name',          $this->object->name ),
-            'locationid'            => request()->old( 'locationid',    $this->object->locationid ),
-            'colocation'            => request()->old( 'colocation',    $this->object->colocation ),
-            'type'                  => request()->old( 'type',          $this->object->type ),
-            'height'                => request()->old( 'height',        $this->object->height ),
-            'u_counts_from'         => request()->old( 'u_counts_from', $this->object->u_counts_from ),
-            'notes'                 => request()->old( 'notes',         $this->object->notes ),
+            'name'                  => request()->old( 'name',          $this->object->name             ),
+            'locationid'            => request()->old( 'locationid',    $this->object->locationid       ),
+            'colocation'            => request()->old( 'colocation',    $this->object->colocation       ),
+            'type'                  => request()->old( 'type',          $this->object->type             ),
+            'height'                => request()->old( 'height',        $this->object->height           ),
+            'u_counts_from'         => request()->old( 'u_counts_from', $this->object->u_counts_from    ),
+            'notes'                 => request()->old( 'notes',         $this->object->notes            ),
         ] );
 
         return [
             'object'                => $this->object,
-            'locations'             => Location::orderBy( 'name', 'asc' )->get(),
+            'locations'             => Location::orderBy( 'name' )->get(),
         ];
-    }
-
-    /**
-     * Check if the form is valid
-     *
-     * @param $request
-     */
-    public function checkForm( Request $request ): void
-    {
-        $request->validate( [
-            'name'                  => 'required|string|max:255',
-            'locationid'            => [ 'required', 'integer',
-                function( $attribute, $value, $fail ) {
-                    if( !Location::whereId( $value )->exists() ) {
-                        return $fail( 'Location is invalid / does not exist.' );
-                    }
-                }
-            ],
-            'colocation'            => 'required|string|max:255',
-            'height'                => 'nullable|integer',
-            'type'                  => 'nullable|string|max:255',
-            'notes'                 => 'nullable|string|max:65535',
-            'u_counts_from'         => 'required|integer|in:' . implode( ',', array_keys( Cabinet::$U_COUNTS_FROM ) ),
-        ] );
     }
 
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doStore( Request $request )
+    public function doStore( Request $r )
     {
-        $this->checkForm( $request );
-        $this->object = Cabinet::create( $request->all() );
+        $this->checkForm( $r );
+        $this->object = Cabinet::create( $r->all() );
         return true;
     }
 
     /**
      * Function to do the actual validation and updating of the submitted object.
      *
-     * @param Request $request
-     * @param int $id
+     * @param Request   $r
+     * @param int       $id
      *
      * @return bool|RedirectResponse
      *
      */
-    public function doUpdate( Request $request, int $id )
+    public function doUpdate( Request $r, int $id )
     {
-        $this->checkForm( $request );
-        $this->object = Cabinet::findOrFail( $request->id );
-        $this->object->update( $request->all() );
-
+        $this->checkForm( $r );
+        $this->object = Cabinet::findOrFail( $id );
+        $this->object->update( $r->all() );
         return true;
     }
 
@@ -241,5 +226,29 @@ class CabinetController extends EloquentController
         }
 
         return $okay;
+    }
+
+    /**
+     * Check if the form is valid
+     *
+     * @param $r
+     */
+    public function checkForm( Request $r ): void
+    {
+        $r->validate( [
+            'name'                  => 'required|string|max:255',
+            'locationid'            => [ 'required', 'integer',
+                function( $attribute, $value, $fail ) {
+                    if( !Location::find( $value ) ) {
+                        return $fail( 'Location is invalid / does not exist.' );
+                    }
+                }
+            ],
+            'colocation'            => 'required|string|max:255',
+            'height'                => 'nullable|integer',
+            'type'                  => 'nullable|string|max:255',
+            'notes'                 => 'nullable|string|max:65535',
+            'u_counts_from'         => 'required|integer|in:' . implode( ',', array_keys( Cabinet::$U_COUNTS_FROM ) ),
+        ] );
     }
 }

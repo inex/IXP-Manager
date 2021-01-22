@@ -41,7 +41,8 @@
             <div class="card">
                 <div class="card-body">
                     <?= Former::open()->method( $t->rt ? 'PUT' : 'POST' )
-                        ->action(  $t->rt ? route('router@update', [ 'router' => $t->rt ] ) : route('router@store' ) )
+                        ->action(  $t->rt ? route('router@update',
+                            [ 'router' => $t->rt ] ) : route('router@store' ) )
                         ->customInputWidthClass( 'col-sm-6' )
                         ->addClass( 'col-md-10' )
                         ->actionButtonsCustomClass( "grey-box");
@@ -237,7 +238,7 @@
                     " );
                     ?>
 
-                    <?=Former::actions( Former::primary_submit( $t->rt ? 'Save Changes' : 'Create Router' )->id('btn-submit-form')->class( "mb-2 mb-sm-0"),
+                    <?=Former::actions( Former::primary_submit( $t->rt ? 'Save Changes' : 'Create' )->id('btn-submit-form')->class( "mb-2 mb-sm-0"),
                         Former::secondary_link( 'Cancel' )->href( route( 'router@list' ) )->class( "mb-2 mb-sm-0"),
                         Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0")
                     );?>

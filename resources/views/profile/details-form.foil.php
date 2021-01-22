@@ -39,6 +39,5 @@
         Former::primary_submit( 'Update Profile' )
     );
     ?>
-
     <?= Former::close() ?>
 </div>

@@ -95,17 +95,17 @@
             <thead>
             <tbody>
                 <?php foreach( $t->routers as $router ):
-                    /** @var IXP\Models\ $router */ ?>
+                    /** @var IXP\Models\Router $router */ ?>
                     <tr>
                         <td>
                             <?php if( !config( 'ixp_fe.frontend.disabled.lg' ) ): ?>
                                 <a href="<?= route( "lg::bgp-sum", [ 'handle' => $router->handle ] ) ?>">
                             <?php endif; ?>
-                                <?= $router->handle ?>
+                                <?= $t->ee( $router->handle ) ?>
                             <?= config( 'ixp_fe.frontend.disabled.lg' ) ?: '</a>' ?>
                         </td>
                         <td>
-                            <?= $router->shortname ?>
+                            <?= $t->ee( $router->shortname ) ?>
                         </td>
                         <td>
                             <?= $router->router_id ?>
@@ -122,16 +122,11 @@
                             <?php endif; ?>
                         </td>
 
-                        <td id="<?= $router->handle ?>-api-version">
-                        </td>
-                        <td id="<?= $router->handle ?>-bgp-sessions">
-                        </td>
-                        <td id="<?= $router->handle ?>-bgp-sessions-up">
-                        </td>
-                        <td id="<?= $router->handle ?>-last-updated">
-                        </td>
-                        <td id="<?= $router->handle ?>-last-reboot">
-                        </td>
+                        <td id="<?= $router->handle ?>-api-version"></td>
+                        <td id="<?= $router->handle ?>-bgp-sessions"></td>
+                        <td id="<?= $router->handle ?>-bgp-sessions-up"></td>
+                        <td id="<?= $router->handle ?>-last-updated"></td>
+                        <td id="<?= $router->handle ?>-last-reboot"></td>
                     </tr>
                 <?php endforeach;?>
             <tbody>

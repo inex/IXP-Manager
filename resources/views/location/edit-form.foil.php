@@ -82,7 +82,6 @@
                 </div>
             </div>
 
-
             <div class="col-lg-6 col-md-12 mt-4 mt-sm-4 mt-lg-0">
                 <div class="card">
                     <div class="card-body former-input-col-sm-6 former-label-col-sm-6">
@@ -109,7 +108,6 @@
                 </div>
             </div>
         </div>
-
 
         <div class="form-group">
             <div class="col-lg-offset-2 col-sm-8">
@@ -151,11 +149,6 @@
         );
         ?>
 
-        <?= Former::hidden( 'id' )
-            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->id : '' )
-        ?>
-
         <?= Former::close() ?>
-
     </div>
 </div>

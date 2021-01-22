@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,14 +22,7 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Cache, Redirect;
-
-use IXP\Models\{
-    BgpSession,
-    Customer,
-    Vlan
-};
 
 use Illuminate\Http\{
     RedirectResponse
@@ -41,17 +34,22 @@ use Illuminate\Http\{
     Request
 };
 
+use IXP\Models\{
+    BgpSession,
+    Customer,
+    Vlan
+};
+
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
-
 /**
  * PeeringMatrixController Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   PatchPanel
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class PeeringMatrixController extends Controller
@@ -110,8 +108,11 @@ class PeeringMatrixController extends Controller
             $proto = 4;
         }
 
-        $vlans = Vlan::select( [ 'id', 'name' ] )->where( 'peering_matrix', 1 )
-            ->orderBy( 'number' )->get()->keyBy( 'id' )->toArray();
+        // Find all VLANs marked for inclusion in the peering matrices.
+        $vlans = Vlan::select( [ 'id', 'name' ] )
+            ->where( 'peering_matrix', 1 )
+            ->orderBy( 'number' )->get()
+            ->keyBy( 'id' )->toArray();
 
         if( !count( $vlans ) ) {
             AlertContainer::push( 'No VLANs have been enabled for the peering matrix. Please see <a href="'
@@ -133,6 +134,8 @@ class PeeringMatrixController extends Controller
             }
         }
 
+        //Return all active, trafficing and external customers on a given VLAN for a given protocol
+        //(indexed by ASN)
         $cust = Vlan::select( [ 'cust.autsys', 'cust.name', 'cust.shortname', 'vli.rsclient', 'cust.activepeeringmatrix', 'cust.id' ] )
             ->leftJoin( 'vlaninterface AS vli', 'vli.vlanid', 'vlan.id' )
             ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
@@ -188,8 +191,8 @@ class PeeringMatrixController extends Controller
      *
      * It also caches the results on a per VLAN, per protocol basis.
      *
-     * @param int $vlan The VLAN ID of the peering LAN to query
-     * @param int $protocol The IP protocol to query (4 or 6)
+     * @param int $vlan         The VLAN ID of the peering LAN to query
+     * @param int $protocol     The IP protocol to query (4 or 6)
      *
      * @return array Array of peerings (as described above)
      *

@@ -98,7 +98,7 @@
                                         <i class="fa fa-pencil"></i>
                                     </a>
 
-                                    <a class="btn btn btn-white btn-delete" href="#" data-url="<?= route( 'virtual-interface@delete', [ 'vi' => $vi[ 'id' ] ] ) ?>" <?php if( $t->resellerMode() && ( $vi[ 'peering' ] || $vi[ 'fanout' ] ) ) :?> data-related="1" <?php endif; ?> <?php if( $vi[ 'switchport' ] ): ?> data-type="<?= explode( ',', $vi[ 'switchporttype' ] )[0] ?>" <?php endif; ?> title="Delete Virtual Interface">
+                                    <a class="btn btn btn-white btn-delete" href="<?= route( 'virtual-interface@delete', [ 'vi' => $vi[ 'id' ] ] ) ?>" <?php if( $t->resellerMode() && ( $vi[ 'peering' ] || $vi[ 'fanout' ] ) ) :?> data-related="1" <?php endif; ?> <?php if( $vi[ 'switchport' ] ): ?> data-type="<?= explode( ',', $vi[ 'switchporttype' ] )[0] ?>" <?php endif; ?> title="Delete Virtual Interface">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </div>

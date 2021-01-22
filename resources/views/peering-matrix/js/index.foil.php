@@ -1,22 +1,27 @@
 <script>
-    sessions  = <?= json_encode( $t->sessions ) ?>;
-    custs     = <?= json_encode( $t->custs ) ?>;
+    //////////////////////////////////////////////////////////////////////////////////////
+    // we'll need these handles to html elements in a few places:
+    sessions  = <?= json_encode( $t->sessions, JSON_THROW_ON_ERROR ) ?>;
+    custs     = <?= json_encode( $t->custs, JSON_THROW_ON_ERROR ) ?>;
+
+    const table       = $( "#table-pm" );
 
     $( 'document' ).ready( function(){
-        $( "#table-pm" ).show();
+        table.show();
         let columnClicked, mouseLocked   = false;
 
-         $( "#table-pm" ).delegate( 'td', 'mouseover mouseout click', function( event ) {
+        table.delegate( 'td', 'mouseover mouseout click', function( event ) {
+            console.log(this.id.indexOf( 'td-asn-' ))
              if( columnClicked ) return;
-             if( this.id.indexOf( 'td-asn-' ) == 0   ) return;
-             if( this.id.indexOf( 'td-name-' ) == 0  ) return;
+             if( this.id.indexOf( 'td-asn-' ) === 0   ) return;
+             if( this.id.indexOf( 'td-name-' ) === 0  ) return;
 
              let yasn = this.id.substr( this.id.lastIndexOf( '-' ) + 1 );
              let xasn = this.id.substr( 3, this.id.lastIndexOf( '-' ) - 3 );
 
              if( event.type === 'click' ) {
                  if( mouseLocked ) {
-                     $("#table-pm").find( "colgroup" ).removeClass( "hover" );
+                     table.find( "colgroup" ).removeClass( "hover" );
                      $( '.col-yasn-' + yasn ).removeClass( 'hover2' );
 
                      $( '[id|="td-name"]'   ).removeClass( 'highlight'  );
@@ -38,13 +43,13 @@
                  $( '#td-asn-' + yasn   ).addClass( "highlight"     );
                  $( '#th-as-' + yasn    ).addClass( "highlight"     );
              } else if( event.type === 'mouseout' && !mouseLocked ) {
-                    $("colgroup").eq( $(this).index() ).removeClass("hover");
-                    $( '.col-yasn-' + yasn  ).removeClass( 'hover2'     );
-                    $( '#td-name-' + xasn   ).removeClass( "highlight2" );
-                    $( '#td-asn-' + xasn    ).removeClass( "highlight2" );
-                    $( '#td-name-' + yasn   ).removeClass( "highlight"  );
-                    $( '#td-asn-' + yasn    ).removeClass( "highlight"  );
-                    $( '#th-as-' + yasn     ).removeClass( "highlight"  );
+                $("colgroup").eq( $(this).index() ).removeClass("hover");
+                $( '.col-yasn-' + yasn  ).removeClass( 'hover2'     );
+                $( '#td-name-' + xasn   ).removeClass( "highlight2" );
+                $( '#td-asn-' + xasn    ).removeClass( "highlight2" );
+                $( '#td-name-' + yasn   ).removeClass( "highlight"  );
+                $( '#td-asn-' + yasn    ).removeClass( "highlight"  );
+                $( '#th-as-' + yasn     ).removeClass( "highlight"  );
              }
          });
 
@@ -52,7 +57,7 @@
         /**
          * Highlight the column
          */
-        $( "#table-pm" ).delegate( 'th', 'mouseover mouseout', function( event ) {
+        table.delegate( 'th', 'mouseover mouseout', function( event ) {
             if( columnClicked ) return;
             if( this.id === 'th-asn' ) return;
             if( this.id === 'th-name' ) return;
@@ -69,21 +74,21 @@
         /**
          * Allow to display a single colum on click
          */
-        $( '[id|="th-as"]' ).on( "click", function( e ) {
+        $( '.th-as' ).click( function( ) {
             let sdisplay = false;
-            let yasn = (this.id).substring( 6 );
+            let yasn = $(this).attr( 'data-id');
 
             if( columnClicked ) {
                 columnClicked = false;
-                $( '[id|="th-as"]' ).show();
+                $( '.th-as' ).show();
                 sdisplay = true;
             }
             else {
                 columnClicked = true;
             }
 
-            $( '[id|="th-as"]' ).each( function( index, element ) {
-                let asn = (this.id).substring( 6 );
+            $( '.th-as' ).each( function( index, element ) {
+                let asn = $(this).attr( 'data-id');
                 if( columnClicked ) {
                     if( asn === yasn ) {
                         return;
@@ -104,7 +109,7 @@
         /**
          * Allow to zoom/dezoom the table of result
          */
-        $( '[id|="btn-zoom"]' ).on( "click", function( e ) {
+        $( '.btn-zoom' ).click( function( e ) {
             let i, zoom = 0;
             for( i = 1; i <= 5; i++ ) {
                 if( $( '#tbody-pm' ).hasClass( 'zoom' + i  ) ) {

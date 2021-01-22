@@ -1,5 +1,4 @@
 <script>
-
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
     const btn_marksent          = $( "#modal-peering-request-marksent" );
@@ -12,7 +11,6 @@
     let notesIntro = "### <?= date("Y-m-d" ) . ' - ' . Auth::getUser()->username ?> \n\n\n";
 
     $(document).ready( function() {
-
         table.show();
 
         table.DataTable( {
@@ -35,13 +33,11 @@
 
         //////////////////////////////////////////////////////////////////////////////////////
         // action bindings:
-
         btn_marksent.on( 'click', function() {
             $( '#input-sendtome' ).val( '0' );
             $( '#input-marksent' ).val( '1' );
             sendPeeringRequest();
         });
-
 
         btn_sendtome.on( 'click', function() {
             $( '#input-sendtome' ).val( '1' );
@@ -64,7 +60,7 @@
             let custid  = $( this ).attr( 'data-object-id');
             let days    = $( this ).attr( 'data-days' );
             if( days >= 0 && days < 30 ) {
-                bootbox.confirm( "Are you sure you want to send a peering request to this member? You already sent one " + ( days === 0 ? "today" : ( days === 1 ? "yesterday" : days + " days ago" ) ) + ".",
+                bootbox.confirm( "Are you sure you want to send a peering request to this member? You already sent one " + ( parseInt(days) === 0 ? "today" : ( parseInt(days) === 1 ? "yesterday" : days + " days ago" ) ) + ".",
                     function( result ) {
                         if( result ) {
                             setTimeout( function(){

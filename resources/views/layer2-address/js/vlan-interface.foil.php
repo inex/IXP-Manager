@@ -9,7 +9,6 @@
             columnDefs: [
                 { responsivePriority: 1, targets: 0 },
                 { responsivePriority: 2, targets: -1 },
-                { "targets": [ 0 ], "visible": false, "searchable": false, }
             ],
             "order": [[ 0, "asc" ]]
         });
@@ -18,7 +17,7 @@
     /**
      * on click even allow to add a mac address using prompt popup
      */
-    $('#add-l2a' ).on( 'click', function( e ) {
+    $('#add-l2a' ).click( function( e ) {
         e.preventDefault();
 
         bootbox.prompt( {
@@ -34,7 +33,7 @@
                 }
             },
             callback: function ( result ) {
-                if( result != null ) {
+                if( result !== null ) {
                     $.ajax( "<?= route ( 'l2-address@create', [ 'showFeMessage' => true ] ) ?>", {
                         type: 'POST',
                         data: {
@@ -58,10 +57,9 @@
     /**
      * function to delete a mac address using a confirm popup
      */
-    $( '.btn-2f-list-delete' ).on( 'click', function( event ) {
-        event.preventDefault();
-
-        let url = $( this ).attr( 'data-url');
+    $( '.btn-delete' ).click( function( e ) {
+        e.preventDefault();
+        let url = this.href;
         bootbox.confirm({
             message: "Do you really want to delete this MAC Address?",
             buttons: {

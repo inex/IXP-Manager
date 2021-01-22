@@ -1,4 +1,3 @@
-
 <div class="alert alert-info" role="alert">
     <div class="d-flex align-items-center">
         <div class="text-center">

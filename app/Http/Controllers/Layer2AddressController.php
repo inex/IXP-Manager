@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -41,14 +41,15 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController;
  * Layer2Address Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   VlanInterface
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   Controller
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Layer2AddressController extends EloquentController
 {
     /**
      * The object being created / edited
+     *
      * @var Layer2Address
      */
     protected $object = null;
@@ -73,7 +74,7 @@ class Layer2AddressController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = (object)[
             'entity'            => Layer2Address::class,
@@ -85,7 +86,6 @@ class Layer2AddressController extends EloquentController
             'viewFolderName'    => 'layer2-address',
             'readonly'          => self::$read_only,
             'documentation'     => 'https://docs.ixpmanager.org/features/layer2-addresses/',
-
             'listColumns'       => [
                 'id'                => [
                     'title' => 'DB ID',
@@ -105,12 +105,11 @@ class Layer2AddressController extends EloquentController
         $this->feParams->viewColumns = $this->feParams->listColumns;
 
         // phpunit / artisan trips up here without the cli test:
-        if( php_sapi_name() !== 'cli' ) {
+        if( PHP_SAPI !== 'cli' ) {
             // custom access controls:
             switch( Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC ) {
                 case User::AUTH_SUPERUSER:
                     break;
-
                 case User::AUTH_CUSTUSER || User::AUTH_CUSTADMIN:
                     switch( Route::current()->getName() ) {
                         case 'layer2-address@forVlanInterface':
@@ -136,7 +135,7 @@ class Layer2AddressController extends EloquentController
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::get(  'vlan-interface/{vli}', 'Layer2AddressController@forVlanInterface' )->name( "layer2-address@forVlanInterface" );
+            Route::get(  'vlan-interface/{vli}', 'Layer2AddressController@forVlanInterface' )->name( $route_prefix . '@forVlanInterface' );
         });
     }
 
@@ -177,8 +176,7 @@ class Layer2AddressController extends EloquentController
             } )->groupBy( 'l.mac', 'vi.id', 'l.id', 'l.firstseen',
                 'l.lastseen', 'c.id', 'c.abbreviatedName', 's.name',
                 'vl.name', 'vl.id', 'vli.id', 'o.organisation'
-            )
-            ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+            )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
                 return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
             })->get()->toArray();
     }

@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,40 +22,41 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Former, Redirect;
 
 use Illuminate\Database\Eloquent\Builder;
-use IXP\Models\{
-    NetworkInfo,
-    Router,
-    Vlan
-};
 
 use Illuminate\Http\{
     Request,
     RedirectResponse
 };
 
+use IXP\Models\{
+    NetworkInfo,
+    Router,
+    Vlan
+};
+
+use IXP\Utils\Http\Controllers\Frontend\EloquentController;
+
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
-
-use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
 /**
  * Network Information Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class NetworkInfoController extends EloquentController
 {
     /**
      * The object being created / edited
+     *
      * @var NetworkInfo
      */
     protected $object = null;
@@ -73,7 +74,6 @@ class NetworkInfoController extends EloquentController
             'listOrderBy'       => 'vlan_id',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'network-info',
-
             'listColumns'       => [
                 'vlanname'  => [
                     'title'         => 'Vlan',
@@ -91,7 +91,6 @@ class NetworkInfoController extends EloquentController
                 'masklen'       => 'Masklen',
             ],
         ];
-
         // display the same information in the view as the list
         $this->feParams->viewColumns = $this->feParams->listColumns;
     }
@@ -144,101 +143,107 @@ class NetworkInfoController extends EloquentController
         $this->object = NetworkInfo::findOrFail( $id );
 
         Former::populate([
-            'vlanid'                => request()->old( 'vlan',        $this->object->vlanid ),
-            'protocol'              => request()->old( 'protocol',    $this->object->protocol ),
-            'network'               => request()->old( 'network',     $this->object->network ),
-            'masklen'               => request()->old( 'masklen',     $this->object->masklen ),
+            'vlanid'                => request()->old( 'vlan',        $this->object->vlanid     ),
+            'protocol'              => request()->old( 'protocol',    $this->object->protocol   ),
+            'network'               => request()->old( 'network',     $this->object->network    ),
+            'masklen'               => request()->old( 'masklen',     $this->object->masklen    ),
         ]);
 
         return [
-            'object'                => $this->object,
-            'vlans'                 => Vlan::publicOnly()->orderBy('number')->get(),
+            'object'    => $this->object,
+            'vlans'     => Vlan::publicOnly()->orderBy('number')->get(),
         ];
     }
 
     /**
-     * Check if the form is valid
-     *
-     * @param $request
-     */
-    public function checkForm( Request $request ): void
-    {
-        $rangeMasklen = $request->protocol == '4' ? 'min:16|max:29' : 'min:32|max:64';
-
-        $request->validate( [
-            'vlanid'                => [ 'required', 'integer',
-                function ($attribute, $value, $fail) {
-                    if( !Vlan::whereId( $value )->exists() ) {
-                        return $fail( 'Vlan does not exist.' );
-                    }
-                } ],
-            'protocol'              => 'required|integer|in:' . implode( ',', array_keys( Router::$PROTOCOLS ) ),
-            'network'               => 'required|max:255|ipv' . $request->protocol ,
-            'masklen'               => 'required|integer|' . $rangeMasklen ,
-        ] );
-    }
-
-    /**
-     * Check if there is a duplicate network info object with those values
-     *
-     * @param int|null       $objectid
-     * @param Request   $request
-     *
-     * @return bool
-     */
-    private function checkIsDuplicate( Request $request, int $objectid = null  ): bool
-    {
-        $vlan = Vlan::find( $request->vlanid );
-
-        if( $ni = NetworkInfo::where( "vlanid" , $vlan->id  )->where( 'protocol' , $request->protocol )->first() ) {
-            if( $objectid !== $ni->id ) {
-                AlertContainer::push( "Network information for this vlan (" . $vlan->name . ") and and protocol (ipv" . $request->protocol . ") already exists. Please edit that instead."   , Alert::DANGER );
-                return true;
-            }
-        }
-        return false;
-    }
-    /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doStore( Request $request )
+    public function doStore( Request $r )
     {
-        $this->checkForm( $request );
+        $this->checkForm( $r );
 
-        if( $this->checkIsDuplicate( $request, null ) ) {
+        if( $this->checkIsDuplicate( $r, null ) ) {
             return Redirect::back()->withInput();
         }
 
-        $this->object = NetworkInfo::create( $request->all() );
+        $this->object = NetworkInfo::create( $r->all() );
         return true;
     }
 
     /**
      * Function to do the actual validation and updating of the submitted object.
      *
-     * @param Request $request
+     * @param Request   $r
+     * @param int       $id
      *
-     * @param int $id
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doUpdate( Request $request, int $id )
+    public function doUpdate( Request $r, int $id )
     {
         $this->object = NetworkInfo::findOrFail( $id );
-        $this->checkForm( $request );
+        $this->checkForm( $r );
 
-        if( $this->checkIsDuplicate( $request, $this->object->id ) ) {
+        if( $this->checkIsDuplicate( $r, $this->object->id ) ) {
             return Redirect::back()->withInput();
         }
 
-        $this->object->update( $request->all() );
+        $this->object->update( $r->all() );
         return true;
+    }
+
+    /**
+     * Check if there is a duplicate network info object with those values
+     *
+     * @param Request   $r
+     * @param int|null  $objectid
+     *
+     * @return bool
+     */
+    private function checkIsDuplicate( Request $r, int $objectid = null  ): bool
+    {
+        $vlan = Vlan::find( $r->vlanid );
+
+        $exist = NetworkInfo::where( "vlanid" , $vlan->id  )
+            ->where( 'protocol' , $r->protocol )
+            ->when( $objectid , function( Builder $q, $objectid ) {
+                return $q->where( 'id', '!=',  $objectid );
+            })->count() ? true : false;
+
+        if( $exist ) {
+            AlertContainer::push( "Network information for this vlan (" . $vlan->name . ") and and protocol (ipv" . $r->protocol . ") already exists. Please edit that instead."   , Alert::DANGER );
+            return true;
+
+        }
+        return false;
+    }
+
+    /**
+     * Check if the form is valid
+     *
+     * @param Request   $r
+     */
+    public function checkForm( Request $r ): void
+    {
+        $rangeMasklen = (int)$r->protocol === 4 ? 'min:16|max:29' : 'min:32|max:64';
+
+        $r->validate( [
+            'vlanid'                => [ 'required', 'integer',
+                function ($attribute, $value, $fail) {
+                    if( !Vlan::find( $value ) ) {
+                        return $fail( 'Vlan does not exist.' );
+                    }
+                } ],
+            'protocol'              => 'required|integer|in:' . implode( ',', array_keys( Router::$PROTOCOLS ) ),
+            'network'               => 'required|max:255|ipv' . $r->protocol ,
+            'masklen'               => 'required|integer|' . $rangeMasklen ,
+        ] );
     }
 }

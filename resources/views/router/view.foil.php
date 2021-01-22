@@ -26,213 +26,211 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
-
-<div class="row">
-    <div class="col-sm-12">
-        <div class="card">
-            <div class="card-header">
-                Details for Router
-            </div>
-            <div class="card-body row">
-                <div class="col-lg-6 col-md-12">
-                    <table class="table_view_info">
-                        <tr>
-                            <td>
-                                <b>Handle:</b>
-                            </td>
-                            <td>
-                                <?= $t->ee( $rt->handle )?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>Vlan:</b>
-                            </td>
-                            <td>
-                                <a href="<?= route( "vlan@view" , [ "id" => $rt->vlan->id ] )?> ">
-                                    <?= $t->ee( $rt->vlan->name )?>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>Protocol:</b>
-                            </td>
-                            <td>
-                                <?= $rt->protocol()?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>Type:</b>
-                            </td>
-                            <td>
-                                <?= $rt->type()?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>Name:</b>
-                            </td>
-                            <td>
-                                <?= $t->ee( $rt->name ) ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>ShortName:</b>
-                            </td>
-                            <td>
-                                <?= $t->ee( $rt->shortname ) ?>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>Router ID:</b>
-                            </td>
-                            <td>
-                                <?= $rt->router_id ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>Peering IP:</b>
-                            </td>
-                            <td>
-                                <?= $t->ee( $rt->peering_ip ) ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>ASN:</b>
-                            </td>
-                            <td>
-                                <?= $rt->asn ?>
-                            </td>
-                        </tr>
-                    </table>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    Details for Router
                 </div>
+                <div class="card-body row">
+                    <div class="col-lg-6 col-md-12">
+                        <table class="table_view_info">
+                            <tr>
+                                <td>
+                                    <b>Handle:</b>
+                                </td>
+                                <td>
+                                    <?= $t->ee( $rt->handle )?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Vlan:</b>
+                                </td>
+                                <td>
+                                    <a href="<?= route( "vlan@view" , [ "id" => $rt->vlan->id ] )?> ">
+                                        <?= $t->ee( $rt->vlan->name )?>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Protocol:</b>
+                                </td>
+                                <td>
+                                    <?= $rt->protocol()?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Type:</b>
+                                </td>
+                                <td>
+                                    <?= $rt->type()?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Name:</b>
+                                </td>
+                                <td>
+                                    <?= $t->ee( $rt->name ) ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>ShortName:</b>
+                                </td>
+                                <td>
+                                    <?= $t->ee( $rt->shortname ) ?>
 
-                <div class="col-lg-6 col-md-12">
-                    <table class="table_view_info">
-                        <tr>
-                            <td>
-                                <b>Software:</b>
-                            </td>
-                            <td>
-                                <?= $rt->software() ?> <?= $rt->software_version ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>Operating System:</b>
-                            </td>
-                            <td>
-                                <?= $rt->operating_system ?> <?= $rt->operating_system_version ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>MGMT Host:</b>
-                            </td>
-                            <td>
-                                <?= $t->ee( $rt->mgmt_host ) ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>API Type:</b>
-                            </td>
-                            <td>
-                                <?= $rt->resolveApiType() ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>
-                                    API:
-                                </b>
-                            </td>
-                            <td>
-                                <a href="<?= $rt->api?>">
-                                    <?= $t->ee( $rt->api )?>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>LG Access:</b>
-                            </td>
-                            <td>
-                                <?= $rt->lgAccess() ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>Quarantine:</b>
-                            </td>
-                            <td>
-                                <?= $rt->quarantine ? 'Yes' : 'No'  ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>BGP LC:</b>
-                            </td>
-                            <td>
-                                <?= $rt->bgp_lc ? 'Yes' : 'No' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>RPKI:</b>
-                            </td>
-                            <td>
-                                <?= $rt->rpki ? 'Yes' : 'No' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>RFC1997 Pass Through:</b>
-                            </td>
-                            <td>
-                                <?= $rt->rfc1997_passthru ? 'Yes' : 'No' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>Skip MD5:</b>
-                            </td>
-                            <td>
-                                <?= $rt->skip_md5 ? 'Yes' : 'No' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>Template:</b>
-                            </td>
-                            <td>
-                                <code> <?= $t->ee( $rt->template )?> </code>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>Last Update:</b>
-                            </td>
-                            <td>
-                                <?= $rt->updated_at ? $rt->updated_at->format('Y-m-d H:i:s') : '(unknown)' ?>
-                                <?php if( $rt->updated_at && $rt->lastUpdatedGreaterThanSeconds( 86400 ) ): ?>
-                                    <span class="badge badge-danger">
-                                        <i class="fa fa-exclamation-triangle" title="Last updated more than 1 day ago"></i>
-                                    </span>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Router ID:</b>
+                                </td>
+                                <td>
+                                    <?= $rt->router_id ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Peering IP:</b>
+                                </td>
+                                <td>
+                                    <?= $t->ee( $rt->peering_ip ) ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>ASN:</b>
+                                </td>
+                                <td>
+                                    <?= $rt->asn ?>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-lg-6 col-md-12">
+                        <table class="table_view_info">
+                            <tr>
+                                <td>
+                                    <b>Software:</b>
+                                </td>
+                                <td>
+                                    <?= $rt->software() ?> <?= $rt->software_version ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Operating System:</b>
+                                </td>
+                                <td>
+                                    <?= $rt->operating_system ?> <?= $rt->operating_system_version ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>MGMT Host:</b>
+                                </td>
+                                <td>
+                                    <?= $t->ee( $rt->mgmt_host ) ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>API Type:</b>
+                                </td>
+                                <td>
+                                    <?= $rt->resolveApiType() ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>
+                                        API:
+                                    </b>
+                                </td>
+                                <td>
+                                    <a href="<?= $rt->api?>">
+                                        <?= $t->ee( $rt->api )?>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>LG Access:</b>
+                                </td>
+                                <td>
+                                    <?= $rt->lgAccess() ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Quarantine:</b>
+                                </td>
+                                <td>
+                                    <?= $rt->quarantine ? 'Yes' : 'No'  ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>BGP LC:</b>
+                                </td>
+                                <td>
+                                    <?= $rt->bgp_lc ? 'Yes' : 'No' ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>RPKI:</b>
+                                </td>
+                                <td>
+                                    <?= $rt->rpki ? 'Yes' : 'No' ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>RFC1997 Pass Through:</b>
+                                </td>
+                                <td>
+                                    <?= $rt->rfc1997_passthru ? 'Yes' : 'No' ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Skip MD5:</b>
+                                </td>
+                                <td>
+                                    <?= $rt->skip_md5 ? 'Yes' : 'No' ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Template:</b>
+                                </td>
+                                <td>
+                                    <code> <?= $t->ee( $rt->template )?> </code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Last Update:</b>
+                                </td>
+                                <td>
+                                    <?= $rt->updated_at ? $rt->updated_at->format('Y-m-d H:i:s') : '(unknown)' ?>
+                                    <?php if( $rt->updated_at && $rt->lastUpdatedGreaterThanSeconds( 86400 ) ): ?>
+                                        <span class="badge badge-danger">
+                                            <i class="fa fa-exclamation-triangle" title="Last updated more than 1 day ago"></i>
+                                        </span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 <?php $this->append() ?>

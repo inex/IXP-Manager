@@ -8,7 +8,4 @@
             You can use this page to record details of what you host.
         </div>
     </div>
-
 </div>
-
-

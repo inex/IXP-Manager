@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,7 +22,6 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Auth, Former, Hash, Redirect, Route, Str;
 
 use IXP\Utils\View\Alert\{
@@ -50,7 +49,7 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class ApiKeyController extends EloquentController
@@ -138,7 +137,7 @@ class ApiKeyController extends EloquentController
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
         Route::group( [  'prefix' => $route_prefix ], static function() use ( $route_prefix ) {
-            Route::post(  'list-show-keys',      'ApiKeyController@listShowKeys' )->name( 'api-key@list-show-keys' );
+            Route::post(  'list-show-keys',      'ApiKeyController@listShowKeys' )->name( $route_prefix . '@list-show-keys' );
         });
     }
 
@@ -186,7 +185,7 @@ class ApiKeyController extends EloquentController
         Former::populate( [
             'apiKey'            => request()->old( 'apiKey',    config( 'ixp_fe.api_keys.show_keys' ) ? $this->object->apiKey : Str::limit( $this->object->apiKey, 6 ) ),
             'description'       => request()->old( 'description',       $this->object->description ),
-            'expires'           => request()->old( 'expires',         ( $this->object->expires ? $this->object->expires->format( "Y-m-d" ) : null ) )
+            'expires'           => request()->old( 'expires',          $this->object->expires ? $this->object->expires->format( "Y-m-d" ) : null )
         ] );
 
         return [
@@ -195,43 +194,28 @@ class ApiKeyController extends EloquentController
     }
 
     /**
-     * Check if the form is valid
-     *
-     * @param $request
-     *
-     * @return void
-     */
-    public function checkForm( Request $request ): void
-    {
-        $request->validate( [
-            'description'        => 'nullable|string|max:255',
-            'expires'            => 'nullable|date|after:' . now()->format( "Y-m-d" ),
-        ] );
-    }
-
-    /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doStore( Request $request )
+    public function doStore( Request $r )
     {
-        if( count( $request->user()->getApiKeys() ) >= config( 'ixp_fe.api_keys.max_keys' ) ) {
+        if( $r->user()->apiKeys()->count() >= config( 'ixp_fe.api_keys.max_keys' ) ) {
             AlertContainer::push( "We currently have a limit of " . config( 'ixp_fe.api_keys.max_keys' ) . " API keys per user. Please contact us if you require more.", Alert::DANGER );
             return Redirect::back()->withInput();
         }
 
-        $this->checkForm( $request );
+        $this->checkForm( $r );
 
         $this->object = new ApiKey;
         $this->object->apiKey       = $key = Str::random(48);
-        $this->object->expires      = $request->expires;
-        $this->object->description  = $request->description;
-        $this->object->user_id      = $request->user()->id;
+        $this->object->expires      = $r->expires;
+        $this->object->description  = $r->description;
+        $this->object->user_id      = $r->user()->id;
         $this->object->save();
 
         AlertContainer::push( "API key created: <code>" . $key . "</code>.", Alert::SUCCESS );
@@ -242,23 +226,18 @@ class ApiKeyController extends EloquentController
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
-     * @param int $id
+     * @param Request   $r
+     * @param int       $id
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doUpdate( Request $request, int $id )
+    public function doUpdate( Request $r, int $id )
     {
-        if( count( $request->user()->getApiKeys() ) >= config( 'ixp_fe.api_keys.max_keys' ) ) {
-            AlertContainer::push( "We currently have a limit of " . config( 'ixp_fe.api_keys.max_keys' ) . " API keys per user. Please contact us if you require more.", Alert::DANGER );
-            return Redirect::back()->withInput();
-        }
-
-        $this->object = ApiKey::findOrFail( $request->id );
-        $this->checkForm( $request );
-        $this->object->update( $request->all() );
+        $this->object = ApiKey::findOrFail( $id );
+        $this->checkForm( $r );
+        $this->object->update( $r->all() );
 
         return true;
     }
@@ -280,5 +259,20 @@ class ApiKeyController extends EloquentController
         }
 
         return $this->list( $r );
+    }
+
+    /**
+     * Check if the form is valid
+     *
+     * @param $r
+     *
+     * @return void
+     */
+    public function checkForm( Request $r ): void
+    {
+        $r->validate( [
+            'description'        => 'nullable|string|max:255',
+            'expires'            => 'nullable|date|after:' . now()->format( "Y-m-d" ),
+        ] );
     }
 }

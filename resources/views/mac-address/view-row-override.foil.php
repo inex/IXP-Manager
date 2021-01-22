@@ -1,4 +1,3 @@
-
 <?php
     // due to how PHP Foil passes data, we reassign this so we can copy and paste normal list code if we want.
     // see http://www.foilphp.it/docs/DATA/PASS-DATA.html
@@ -13,15 +12,13 @@
             <?= $t->ee( $row['customer'] ) ?>
         </a>
     </td>
-</tr>>
-
+</tr>
 <tr>
     <th>
         Interface
     </th>
     <td>
         <?php if( strpos( $row['switchport'], ',' ) !== false ) {
-
             $ports = explode( ',', $row['switchport'] );
             asort( $ports, SORT_NATURAL );
 
@@ -54,7 +51,7 @@
         MAC Address
     </th>
     <td>
-        <a id="view-l2a-<?= $row[ 'id' ] ?>" name="<?= $t->ee( $row[ 'mac' ] ) ?>" href="#" title="View">
+        <a id="view-l2a-<?= $row[ 'id' ] ?>" class="btn-view-l2a" data-object-mac="<?= $t->ee( $row[ 'mac' ] ) ?>" href="#" title="View">
             <?= $t->ee( $row[ 'mac' ] ) ?>
         </a>
     </td>

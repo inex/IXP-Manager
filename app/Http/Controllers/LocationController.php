@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,7 +22,6 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Countries, Former;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -44,8 +43,8 @@ use IXP\Utils\View\Alert\{
  * Location Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   VlanInterface
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   Controller
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class LocationController extends EloquentController
@@ -56,7 +55,15 @@ class LocationController extends EloquentController
      */
     protected $object = null;
 
+    /**
+     * The URL prefix to use.
+     *
+     * Automatically determined based on the controller name if not set.
+     *
+     * @var string|null
+     */
     protected static $route_prefix = "facility";
+
     /**
      * This function sets up the frontend controller
      */
@@ -70,7 +77,6 @@ class LocationController extends EloquentController
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'location',
-
             'listColumns'    => [
                 'id'        => [
                     'title' => 'UID',
@@ -103,8 +109,8 @@ class LocationController extends EloquentController
                 'officefax'   => 'Office Fax',
                 'officeemail' => 'Office Email',
                 'notes'       => [
-                    'title'         => 'Notes',
-                    'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
+                    'title' => 'Notes',
+                    'type'  => self::$FE_COL_TYPES[ 'PARSDOWN' ]
                 ]
             ]
         );
@@ -152,19 +158,19 @@ class LocationController extends EloquentController
         $this->object = Location::findOrFail( $id );
 
         Former::populate([
-            'name'                  => request()->old( 'name',        $this->object->name ),
-            'shortname'             => request()->old( 'shortname',   $this->object->shortname ),
-            'tag'                   => request()->old( 'tag',         $this->object->tag ),
-            'address'               => request()->old( 'address',     $this->object->address ),
-            'city'                  => request()->old( 'city',        $this->object->city ),
+            'name'                  => request()->old( 'name',        $this->object->name           ),
+            'shortname'             => request()->old( 'shortname',   $this->object->shortname      ),
+            'tag'                   => request()->old( 'tag',         $this->object->tag            ),
+            'address'               => request()->old( 'address',     $this->object->address        ),
+            'city'                  => request()->old( 'city',        $this->object->city           ),
             'country'               => request()->old( 'country', in_array( $this->object->country, array_values( Countries::getListForSelect( 'iso_3166_2' ) ), false ) ? $this->object->country : null ),
-            'nocphone'              => request()->old( 'nocphone',    $this->object->nocphone ),
-            'nocfax'                => request()->old( 'nocfax',      $this->object->nocfax ),
-            'nocemail'              => request()->old( 'nocemail',    $this->object->nocemail ),
-            'officephone'           => request()->old( 'officephone', $this->object->officephone ),
-            'officefax'             => request()->old( 'officefax',   $this->object->officefax ),
-            'officeemail'           => request()->old( 'officeemail', $this->object->officeemail ),
-            'notes'                 => request()->old( 'notes',       $this->object->notes ),
+            'nocphone'              => request()->old( 'nocphone',    $this->object->nocphone       ),
+            'nocfax'                => request()->old( 'nocfax',      $this->object->nocfax         ),
+            'nocemail'              => request()->old( 'nocemail',    $this->object->nocemail       ),
+            'officephone'           => request()->old( 'officephone', $this->object->officephone    ),
+            'officefax'             => request()->old( 'officefax',   $this->object->officefax      ),
+            'officeemail'           => request()->old( 'officeemail', $this->object->officeemail    ),
+            'notes'                 => request()->old( 'notes',       $this->object->notes          ),
         ]);
 
         return [
@@ -174,64 +180,36 @@ class LocationController extends EloquentController
     }
 
     /**
-     * Check if the form is valid
-     *
-     * @param $request
-     */
-    public function checkForm( Request $request ): void
-    {
-        $request->validate( [
-            'name'              => 'required|string|max:255',
-            'shortname' => [
-                'required', 'string', 'max:255',
-                function ($attribute, $value, $fail) use( $request ) {
-                    $location = Location::whereShortname( $value )->first();
-                    if( $location && $location->exists() && $location->id !== (int)$request->id ) {
-                        return $fail( 'The shortname has already been taken' );
-                    }
-                },
-            ],
-            'city'              => 'required|string|max:50',
-            'country'           => 'required|string|max:2|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
-            'tag'               => 'required|string|max:255',
-            'nocemail'          => 'nullable|email',
-            'officeemail'       => 'nullable|email',
-        ] );
-    }
-
-    /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doStore( Request $request )
+    public function doStore( Request $r )
     {
-        $this->checkForm( $request );
-        $this->object = Location::create( $request->all() );
-
+        $this->checkForm( $r );
+        $this->object = Location::create( $r->all() );
         return true;
     }
 
     /**
      * Function to do the actual validation and updating of the submitted object.
      *
-     * @param Request $request
-     * @param int $id
+     * @param Request   $r
+     * @param int       $id
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doUpdate( Request $request, int $id )
+    public function doUpdate( Request $r, int $id )
     {
         $this->object = Location::findOrFail( $id );
-        $this->checkForm( $request );
-        $this->object->update( $request->all() );
-
+        $this->checkForm( $r );
+        $this->object->update( $r->all() );
         return true;
     }
 
@@ -246,5 +224,31 @@ class LocationController extends EloquentController
         }
 
         return true;
+    }
+
+    /**
+     * Check if the form is valid
+     *
+     * @param $r
+     */
+    public function checkForm( Request $r ): void
+    {
+        $r->validate( [
+            'name'              => 'required|string|max:255',
+            'shortname' => [
+                'required', 'string', 'max:255',
+                function ($attribute, $value, $fail) use( $r ) {
+                    $location = Location::whereShortname( $value )->first();
+                    if( $location && $location->id !== (int)$r->id ) {
+                        return $fail( 'The shortname has already been taken' );
+                    }
+                },
+            ],
+            'city'              => 'required|string|max:50',
+            'country'           => 'required|string|max:2|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
+            'tag'               => 'required|string|max:255',
+            'nocemail'          => 'nullable|email',
+            'officeemail'       => 'nullable|email',
+        ] );
     }
 }

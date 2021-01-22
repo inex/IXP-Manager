@@ -1,11 +1,9 @@
-
 <script>
 
     let dd_pdb = $( '#pdb_facility_id' );
     let errorOption = `<option value="0">AJAX / API Error</option>\n`;
 
     $(document).ready(function() {
-
         dd_pdb.select2({
             placeholder: 'Please wait, loading...',
             allowClear: true
@@ -54,5 +52,4 @@
 
         $( "#notes" ).parent().removeClass().addClass( "col-sm-12" )
     });
-
 </script>

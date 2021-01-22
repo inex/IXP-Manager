@@ -56,10 +56,10 @@
         </div>
 
         <div class="btn-group btn-group btn-group-sm">
-            <button id="btn-zoom-out" class="btn btn-white btn-xs">
+            <button id="btn-zoom-out" class="btn btn-white btn-xs btn-zoom">
                 <i class="fa fa-search-minus"></i>
             </button>
-            <button id="btn-zoom-in"  class="btn btn-white btn-xs">
+            <button id="btn-zoom-in"  class="btn btn-white btn-xs btn-zoom">
                 <i class="fa fa-search-plus"></i>
             </button>
         </div>
@@ -86,7 +86,7 @@
                         }
                         ?>
 
-                        <th id="th-as-<?= $x_as ?>" class="zoom2 asn">
+                        <th id="th-as-<?= $x_as ?>" class="zoom2 asn th-as" data-id="<?= $x_as ?>">
                             <?php $asn = sprintf( $t->asnStringFormat, $x_as ) ?>
                             <?php $len = strlen( $asn ) ?>
                             <?php for( $pos = 0; $pos <= $len; $pos++ ): ?>
@@ -97,9 +97,7 @@
                                 <?php $asn = substr( $asn, 1 ) ?>
                             <?php endfor; ?>
                         </th>
-
                     <?php endforeach; ?>
-
                 </tr>
             </thead>
 
@@ -132,39 +130,39 @@
 
                             <td id="td-<?= $x_as ?>-<?= $y_as ?>" class="col-yasn-<?= $y_as ?> peering
 
-                                            <?php if( $y[ 'autsys' ] != $x[ 'autsys' ] ): ?>
+                                <?php if( $y[ 'autsys' ] != $x[ 'autsys' ] ): ?>
 
-                                                <?php if( isset( $t->sessions[ $x_as ][ 'peers' ][ $y_as ] ) && $x[ 'rsclient'] && $y[ 'rsclient' ] ): ?>
+                                    <?php if( isset( $t->sessions[ $x_as ][ 'peers' ][ $y_as ] ) && $x[ 'rsclient'] && $y[ 'rsclient' ] ): ?>
 
-                                                     peered bilateral-rs
-                                                        <?php $bilat++; ?>
-                                                        <?php $rspeer++; ?>
+                                         peered bilateral-rs
+                                            <?php $bilat++; ?>
+                                            <?php $rspeer++; ?>
 
-                                                <?php elseif( isset( $t->sessions[ $x_as ][ 'peers' ][ $y_as ] ) ): ?>
+                                    <?php elseif( isset( $t->sessions[ $x_as ][ 'peers' ][ $y_as ] ) ): ?>
 
-                                                     peered bilateral-only
-                                                        <?php $bilat++; ?>
+                                         peered bilateral-only
+                                            <?php $bilat++; ?>
 
-                                                <?php elseif( $x[ 'rsclient' ] && $y[ 'rsclient' ] ): ?>
+                                    <?php elseif( $x[ 'rsclient' ] && $y[ 'rsclient' ] ): ?>
 
-                                                     peered rs-only
-                                                        <?php $rspeer++; ?>
+                                         peered rs-only
+                                            <?php $rspeer++; ?>
 
-                                                <?php else: ?>
+                                    <?php else: ?>
 
-                                                    not-peered
+                                        not-peered
 
-                                                <?php endif; ?>
+                                    <?php endif; ?>
 
-                                            <?php endif; ?>
+                                <?php endif; ?>
 
-                                            zoom2">
+                                zoom2">
 
                             </td>
 
                             <?php $inner = $inner ++ ?>
 
-                            <?php if( $outer == count( $t->custs ) && $inner == count( $t->custs ) ): ?>
+                            <?php if( $outer === count( $t->custs ) && $inner === count( $t->custs ) ): ?>
 
                                 <td></td>
 
@@ -178,8 +176,8 @@
 
                 <?php endforeach; ?>
 
-                <?php $bilat = $bilat / 2 ?>
-                <?php $rspeer = $rspeer / 2 ?>
+                <?php $bilat /= 2 ?>
+                <?php $rspeer /= 2 ?>
             </tbody>
         </table>
 

@@ -3,7 +3,7 @@
 namespace IXP\Mail\PeeringManager;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -44,7 +44,7 @@ use IXP\Models\{
  * @author     Yanm Robin       <yann@islandbridgenetworks.ie>
  * @category   Customer
  * @package    IXP\Mail\Customer
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class RequestPeeringManager extends Mailable
@@ -86,14 +86,15 @@ class RequestPeeringManager extends Mailable
     public function __construct( Customer $peer, PeeringManagerRequest $r )
     {
         $this->peer = $peer;
-        $this->prepareFromRequest($r);
-        $this->prepareBody($r);
+        $this->prepareFromRequest( $r );
+        $this->prepareBody( $r );
     }
 
     /**
      * Destructor
      */
-    public function __destruct() {
+    public function __destruct()
+    {
         // remove temporary file if it exists
         if( $this->tmpfile && file_exists( $this->tmpfile ) ){
             @unlink( $this->tmpfile );

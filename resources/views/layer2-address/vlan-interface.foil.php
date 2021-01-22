@@ -12,7 +12,7 @@
         <a href="<?= route( 'virtual-interface@edit' , [ "vi" => $t->vli->virtualInterface->id ] ) ?>" class="btn btn-sm btn-white">
             Virtual Interface Details
         </a>
-        <a class="btn  btn-sm btn-white" href="#" id="add-l2a">
+        <a class="btn btn-sm btn-white" href="#" id="add-l2a">
             <i class="fa fa-plus"></i>
         </a>
     </div>
@@ -42,7 +42,7 @@
                         </dt>
                         <dd class="col-sm-9">
                             <?= $t->vli->ipvv4Address ? $t->vli->ipvv4Address->address . ( $t->vli->ipvv6Address ? ' / ': '' ) : ''  ?>
-                            <?= $t->vli->ipvv6Address ? $t->vli->ipvv6Address->address : '' ?>
+                            <?= $t->vli->ipvv6Address->address ?? '' ?>
                         </dd>
                     </dl>
                 </div>
@@ -51,12 +51,9 @@
             <div id="message"></div>
 
             <div id="list-area" class="collapse">
-                <table id='layer-2-interface-list' class="table table-striped" width="100%">
+                <table id='layer-2-interface-list' class="table table-striped w-100">
                     <thead class="thead-dark">
                         <tr>
-                            <th>
-                                ID
-                            </th>
                             <th>
                                 MAC Address
                             </th>
@@ -69,12 +66,8 @@
                         </tr>
                     <thead>
                     <tbody >
-                        <?php foreach( $t->vli->layer2Addresses as $l2a ):
-                            ?>
+                        <?php foreach( $t->vli->layer2Addresses as $l2a ):?>
                             <tr>
-                                <td>
-                                    <?= $l2a->id ?>
-                                </td>
                                 <td>
                                     <?= $l2a->macFormatted( ':' ) ?>
                                 </td>
@@ -86,7 +79,7 @@
                                         <a class="btn btn-white btn-view-l2a" id="view-l2a-<?= $l2a->id ?>" data-object-mac="<?= $l2a->mac ?>" href="#" title="View">
                                             <i class="fa fa-eye"></i>
                                         </a>
-                                        <a class="btn btn-white btn-2f-list-delete" id='d2f-list-delete-<?= $l2a->id ?>' href="#" data-object-id="<?= $l2a->id ?>" data-url="<?= route( 'l2-address@delete' , [ 'l2a' => $l2a->id, 'showFeMessage' => true  ]  )  ?>"  title="Delete">
+                                        <a class="btn btn-white btn-delete" data-object-id="<?= $l2a->id ?>" href="<?= route( 'l2-address@delete' , [ 'l2a' => $l2a->id, 'showFeMessage' => true  ]  )  ?>"  title="Delete">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     </div>

@@ -1,8 +1,6 @@
 <script>
-
-    $( '#delete' ).on(  'click', function( event ) {
-        event.preventDefault();
-
+    $( '#delete' ).click( function( e ) {
+        e.preventDefault();
         let network = $( "#network" ).val();
 
         let html = `<form id="delete-ips" method="POST" action="<?= route( 'ip-address@delete-by-network', [ 'vlan' => $t->vlan->id ] ) ?>">

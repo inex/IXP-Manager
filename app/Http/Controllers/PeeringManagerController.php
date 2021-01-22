@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,7 +22,6 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Auth, Former, Mail, Redirect;
 
 use IXP\Models\{
@@ -59,8 +58,8 @@ use IXP\Mail\PeeringManager\RequestPeeringManager;
  * PeeringManagerController Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   PatchPanel
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   Controller
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class PeeringManagerController extends Controller
@@ -82,9 +81,9 @@ class PeeringManagerController extends Controller
         $protos = [ 4, 6 ];
         $c      = Customer::find( Auth::getUser()->custid );
         $vlans  = Vlan::peeringManager()->orderBy( 'number' )->get();
-        $peers  = CustomerAggregator::getPeeringManagerArrayByType( $c , $vlans, $protos ) ?? false;
+        $peers  = CustomerAggregator::getPeeringManagerArrayByType( $c , $vlans, $protos ) ?? [];
 
-        if( !$peers ) {
+        if( !count( $peers ) ) {
             AlertContainer::push( 'No peers have been found for the peering manager. Please see <a href="'
                 . 'https://github.com/inex/IXP-Manager/wiki/Peering-Manager">these instructions</a>'
                 . ' / ensure your database is populating with peering information.', Alert::DANGER );
@@ -109,57 +108,55 @@ class PeeringManagerController extends Controller
     /**
      * Display the form to send email
      *
-     * @param  Request    $request        instance of the current HTTP request
+     * @param  Request    $r        instance of the current HTTP request
      *
      * @return JsonResponse
      *
      * @throws
      */
-    public function formEmailFrag( Request $request ): JsonResponse
+    public function formEmailFrag( Request $r ): JsonResponse
     {
         $success = true;
         $pp = $peer = $peeringManager = false;
 
-        if( !( $peer = Customer::find( $request->peerid ) ) ){
+        if( !( $peer = Customer::find( $r->peerid ) ) ){
             $success = false;
-        } else {
-            if( $request->form === "email" ) {
-                // potential peerings
-                $pp = [];
-                $count = 0;
-                $cust = Customer::find( Auth::getUser()->custid );
+        } elseif( $r->form === "email" ) {
+            // potential peerings
+            $pp     = [];
+            $count  = 0;
+            $cust   = Customer::find( Auth::getUser()->custid );
 
-                foreach( $cust->virtualInterfaces as $myvis ) {
-                    foreach( $myvis->vlanInterfaces as $vli ) {
-                        // does b member have one (or more than one)?
-                        foreach( $peer->virtualInterfaces as $pvis ) {
-                            foreach( $pvis->vlanInterfaces as $pvli ) {
-                                if( $vli->vlan->id === $pvli->vlan->id ) {
-                                    $pp[ $count ][ 'my' ] = $vli;
-                                    $pp[ $count ][ 'your' ] = $pvli;
-                                    $count++;
-                                }
+            foreach( $cust->virtualInterfaces as $myvis ) {
+                foreach( $myvis->vlanInterfaces as $vli ) {
+                    // does b member have one (or more than one)?
+                    foreach( $peer->virtualInterfaces as $pvis ) {
+                        foreach( $pvis->vlanInterfaces as $pvli ) {
+                            if( $vli->vlan->id === $pvli->vlan->id ) {
+                                $pp[ $count ][ 'my' ] = $vli;
+                                $pp[ $count ][ 'your' ] = $pvli;
+                                $count++;
                             }
                         }
                     }
                 }
-
-                Former::populate( [
-                    'to'             => $peer->peeringemail,
-                    'cc'             => $cust->peeringemail,
-                    'bcc'            => User::find( Auth::id() )->email,
-                    'subject'        => "[" . config( "identity.orgname" ) . "] Peering Request from " . $cust->name . " (ASN" . $cust->autsys . ")",
-                ] );
-            } else {
-                $peeringManager = $this->loadPeeringManager( Customer::find( Auth::getUser()->custid ), $peer );
             }
+
+            Former::populate( [
+                'to'             => $peer->peeringemail,
+                'cc'             => $cust->peeringemail,
+                'bcc'            => User::find( Auth::id() )->email,
+                'subject'        => "[" . config( "identity.orgname" ) . "] Peering Request from " . $cust->name . " (ASN" . $cust->autsys . ")",
+            ] );
+        } else {
+            $peeringManager = $this->loadPeeringManager( Customer::find( Auth::getUser()->custid ), $peer );
         }
 
         $returnHTML = view('peering-manager/form-email')->with([
                 'peer'                  => $peer,
                 'pp'                    => $pp,
                 'peeringManager'        => $peeringManager,
-                'form'                  => $request->form ?? "email",
+                'form'                  => $r->form ?? "email",
             ])->render();
 
         return response()->json( ['success' => $success, 'htmlFrag' => $returnHTML ] );
@@ -174,13 +171,12 @@ class PeeringManagerController extends Controller
      */
     public function sendPeeringEmail( PeeringManagerRequest $r ) : JsonResponse
     {
-        $peer = Customer::findOrFail( $r->peerid );
-        $mailable = new RequestPeeringManager( $peer, $r );
-
-        $marksent = $r->marksent;
-        $sendtome = $r->sendtome;
-        $user = User::find( Auth::id() );
-        $cust = Customer::find( Auth::getUser()->custid );
+        $peer       = Customer::findOrFail( $r->peerid );
+        $mailable   = new RequestPeeringManager( $peer, $r );
+        $marksent   = $r->marksent;
+        $sendtome   = $r->sendtome;
+        $user       = User::find( Auth::id() );
+        $cust       = Customer::find( Auth::getUser()->custid );
 
         try {
             if( !$marksent ){
@@ -201,7 +197,7 @@ class PeeringManagerController extends Controller
 
             if( !( config( "ixp.peering_manager.testmode" ) ) || config( "ixp.peering_manager.testdate" ) ) {
                 $pm->email_last_sent = now();
-                $pm->emails_sent =  $pm->emails_sent +1;
+                ++$pm->emails_sent;
             }
 
             if( !( config( "ixp.peering_manager.testmode" ) ) || config( "ixp.peering_manager.testnote" ) ) {
@@ -233,15 +229,14 @@ class PeeringManagerController extends Controller
      */
     public function peeringNotes( Request $r ): JsonResponse
     {
-        $peer = Customer::findOrFail( $r->peerid );
-        $cust = Customer::find( Auth::getUser()->custid );
-        $pm = $this->loadPeeringManager( $cust , $peer );
+        $peer   = Customer::findOrFail( $r->peerid );
+        $cust   = Customer::find( Auth::getUser()->custid );
+        $pm     = $this->loadPeeringManager( $cust , $peer );
 
-        if( trim( stripslashes( $r->input( 'notes' ) ) ) ) {
+        if( trim( stripslashes( $r->notes ) ) ) {
             $pm->notes = trim( stripslashes( $r->notes ) );
             $pm->save();
         }
-
         return response()->json( [ 'error' => false, "message" => "Peering notes updated for " . $peer->name ] );
     }
 
@@ -257,8 +252,8 @@ class PeeringManagerController extends Controller
      */
     public function markPeering( int $custid, string $status ): RedirectResponse
     {
-        $peer = Customer::findOrFail( $custid );
-        $pm = $this->loadPeeringManager( Customer::find( Auth::getUser()->custid ), $peer );
+        $peer   = Customer::findOrFail( $custid );
+        $pm     = $this->loadPeeringManager( Customer::find( Auth::getUser()->custid ), $peer );
 
         if( $status === "peered" ) {
             $pm->peered = !$pm->peered;
@@ -283,7 +278,6 @@ class PeeringManagerController extends Controller
         return Redirect::to( route( "peering-manager@index"  ) );
     }
 
-
     /**
      * Utility function to load a PeeringManager entity and initialise one if not found
      *
@@ -296,7 +290,9 @@ class PeeringManagerController extends Controller
      */
     private function loadPeeringManager( Customer $cust, Customer $peer ): PeeringManager
     {
-        if( !( $pm = PeeringManager::where( 'custid' , $cust->id )->where( 'peerid' , $peer->id )->first() ) ){
+        $pm = PeeringManager::where( 'custid' , $cust->id )->where( 'peerid' , $peer->id )->first();
+
+        if( !$pm ){
             $pm = PeeringManager::create(
                 [
                     'note'      => '',
@@ -308,7 +304,6 @@ class PeeringManagerController extends Controller
             $pm->custid =   $cust->id;
             $pm->peerid =   $peer->id;
             $pm->save();
-
             return $pm;
         }
 

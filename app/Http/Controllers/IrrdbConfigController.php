@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,7 +22,6 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Former;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -47,14 +46,14 @@ use IXP\Utils\View\Alert\{
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class IrrdbConfigController extends EloquentController
 {
-
     /**
      * The object being created / edited
+     *
      * @var IrrdbConfig
      */
     protected $object = null;
@@ -73,7 +72,6 @@ class IrrdbConfigController extends EloquentController
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'irrdb-config',
             'documentation'     => 'https://docs.ixpmanager.org/features/irrdb/',
-
             'listColumns'       => [
                 'id'        => [
                     'title' => 'DB ID',
@@ -129,19 +127,19 @@ class IrrdbConfigController extends EloquentController
     /**
      * Display the form to update an object
      *
-     * @param null $id
+     * @param int|null $id
      *
      * @return array
      */
-    protected function editPrepareForm( $id = null ): array
+    protected function editPrepareForm( int $id = null ): array
     {
         $this->object = IrrdbConfig::findOrFail( $id );
 
         Former::populate([
-            'host'              => request()->old( 'host',         $this->object->host ),
-            'protocol'          => request()->old( 'protocol',     $this->object->protocol ),
-            'source'            => request()->old( 'source',       $this->object->source ),
-            'notes'             => request()->old( 'notes',       $this->object->notes ),
+            'host'              => request()->old( 'host',         $this->object->host      ),
+            'protocol'          => request()->old( 'protocol',     $this->object->protocol  ),
+            'source'            => request()->old( 'source',       $this->object->source    ),
+            'notes'             => request()->old( 'notes',        $this->object->notes     ),
         ]);
 
         return [
@@ -150,52 +148,36 @@ class IrrdbConfigController extends EloquentController
     }
 
     /**
-     * Check if the form is valid
-     *
-     * @param $request
-     */
-    public function checkForm( Request $request ): void
-    {
-        $request->validate( [
-            'host'                  => [ 'required', 'max:255', 'string', new IdnValidate() ],
-            'protocol'              => 'required|string|max:255',
-            'source'                => 'required|string|max:255',
-        ] );
-    }
-
-    /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doStore( Request $request )
+    public function doStore( Request $r )
     {
-        $this->checkForm( $request );
-        $this->object = IrrdbConfig::create( $request->all() );
-
+        $this->checkForm( $r );
+        $this->object = IrrdbConfig::create( $r->all() );
         return true;
     }
 
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
-     * @param int $id
+     * @param Request   $r
+     * @param int       $id
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doUpdate( Request $request, int $id )
+    public function doUpdate( Request $r, int $id )
     {
         $this->object = IrrdbConfig::findOrFail( $id );
-        $this->checkForm( $request );
-        $this->object->update( $request->all() );
-
+        $this->checkForm( $r );
+        $this->object->update( $r->all() );
         return true;
     }
 
@@ -209,7 +191,20 @@ class IrrdbConfigController extends EloquentController
             AlertContainer::push( "You cannot delete this IRRDB Source there are {$cnt} customer(s) associated with it. ", Alert::DANGER );
             $okay = false;
         }
-
         return $okay;
+    }
+
+    /**
+     * Check if the form is valid
+     *
+     * @param Request $r
+     */
+    public function checkForm( Request $r ): void
+    {
+        $r->validate( [
+            'host'                  => [ 'required', 'max:255', 'string', new IdnValidate() ],
+            'protocol'              => 'required|string|max:255',
+            'source'                => 'required|string|max:255',
+        ] );
     }
 }

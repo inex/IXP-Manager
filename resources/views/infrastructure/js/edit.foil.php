@@ -1,4 +1,3 @@
-
 <script>
     let dd_ixp = $( '#ixf_ix_id' );
     let dd_pdb = $( '#peeringdb_ix_id' );
@@ -20,7 +19,6 @@
     });
 
     $(document).ready(function() {
-
         $.ajax( "<?= url('api/v4/ix-f/ixp') ?>" )
             .done( function( data ) {
                 let selectedixp, selectNow;

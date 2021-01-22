@@ -6,7 +6,6 @@
     Peering Manager
 <?php $this->append() ?>
 
-
 <?php $this->section('content') ?>
     <div class="row">
         <div class="col-lg-12">
@@ -70,9 +69,7 @@
                     </div>
                 </div>
             </div>
-
             <?= $t->insert( 'peering-manager/modal-peering' ); ?>
-
         </div>
     </div>
 <?php $this->append() ?>

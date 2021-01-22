@@ -13,7 +13,7 @@
 
     $( '.btn-delete' ).click( function( e ) {
         e.preventDefault();
-        let url = $( this ).attr( 'data-url');
+        let url = this.href;
 
         let html = `<form id="form-delete" method="POST" action="${url}">
                         <div>Do you want to delete this router ?</div>
@@ -29,7 +29,7 @@
                     label: 'Close',
                     className: 'btn-secondary',
                     callback: function () {
-                        $('.bootbox.modal').modal('hide');
+                        $( '.bootbox.modal' ).modal('hide');
                         return false;
                     }
                 },
@@ -37,7 +37,7 @@
                     label: 'Delete',
                     className: 'btn-danger',
                     callback: function () {
-                        $('#form-delete').submit();
+                        $( '#form-delete' ).submit();
                     }
                 },
             }

@@ -68,7 +68,7 @@
                                     <a class="btn btn-white"  href="<?= route( 'vlan-interface@edit' , [ 'vli' => $vli->id ] ) ?>" title="Edit">
                                         <i class="fa fa-pencil"></i>
                                     </a>
-                                    <a class="btn btn-white btn-delete" href="#" data-url="<?= route( 'vlan-interface@delete', [ 'vli' =>  $vli->id ] ) ?>" title="Delete">
+                                    <a class="btn btn-white btn-delete" href="<?= route( 'vlan-interface@delete', [ 'vli' =>  $vli->id ] ) ?>" title="Delete">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </div>

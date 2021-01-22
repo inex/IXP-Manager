@@ -119,7 +119,7 @@
                         <td class="align-middle">
                             <?php if( $t->cb->coreLinks()->count() > 1 ): ?>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn btn-white btn-delete-cl" href="#" data-url="<?= route( 'core-link@delete', [ 'cb' => $t->cb->id , 'cl' => $cl->id ] ) ?>" title="Delete">
+                                    <a class="btn btn btn-white btn-delete-cl" href="<?= route( 'core-link@delete', [ 'cb' => $t->cb->id , 'cl' => $cl->id ] ) ?>" title="Delete">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </div>

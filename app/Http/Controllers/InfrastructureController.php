@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -40,19 +40,19 @@ use IXP\Utils\View\Alert\{
 };
 
 use IXP\Utils\Http\Controllers\Frontend\EloquentController as Eloquent2Frontend;
-
 /**
  * Infrastructure Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009 - 20202 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class InfrastructureController extends Eloquent2Frontend
 {
     /**
      * The object being created / edited
+     *
      * @var Infrastructure
      */
     protected $object = null;
@@ -73,7 +73,7 @@ class InfrastructureController extends Eloquent2Frontend
             'listColumns'       => [
                 'id'        => [
                     'title' => 'DB ID' ,
-                    'display' => true
+                    'display' => false
                 ],
                 'name'      => 'Name',
                 'shortname' => 'Shortname',
@@ -97,7 +97,10 @@ class InfrastructureController extends Eloquent2Frontend
         // display the same information in the view as the list
         $this->feParams->viewColumns = array_merge(
             $this->feParams->listColumns, [
-                'country'   => [ 'title' => 'Country', 'type' => self::$FE_COL_TYPES[ 'COUNTRY' ] ],
+                'country'   => [
+                    'title' => 'Country',
+                    'type' => self::$FE_COL_TYPES[ 'COUNTRY' ]
+                ],
             ]
         );
     }
@@ -144,10 +147,10 @@ class InfrastructureController extends Eloquent2Frontend
         $this->object = Infrastructure::findOrFail( $id );
 
         Former::populate([
-            'name'             => request()->old( 'name',      $this->object->name ),
-            'shortname'        => request()->old( 'shortname', $this->object->shortname ),
-            'isPrimary'        => request()->old( 'isPrimary', ( $this->object->isPrimary ? 1 : 0 ) ),
-            'country'          => request()->old( 'country', in_array( $this->object->country,  array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ) ? $this->object->country : null ),
+            'name'             => request()->old( 'name',      $this->object->name          ),
+            'shortname'        => request()->old( 'shortname', $this->object->shortname     ),
+            'isPrimary'        => request()->old( 'isPrimary', $this->object->isPrimary     ),
+            'country'          => request()->old( 'country', in_array( $this->object->country,  array_values( Countries::getListForSelect( 'iso_3166_2' ) ), false ) ? $this->object->country : null ),
         ]);
 
         return [
@@ -157,41 +160,18 @@ class InfrastructureController extends Eloquent2Frontend
     }
 
     /**
-     * Check if the form is valid
-     *
-     * @param $request
-     */
-    public function checkForm( Request $request ): void
-    {
-        $request->validate( [
-            'name' => [
-                'required', 'string', 'max:255',
-                function ($attribute, $value, $fail) use( $request ) {
-                    $infra = Infrastructure::whereName( $value )->first();
-                    if( $infra && $infra->exists() && $infra->id !== (int)$request->id ) {
-                        return $fail( 'The name has already been taken.' );
-                    }
-                },
-            ],
-            'shortname'             => 'required|string|max:255',
-            'country'               => 'required|string|max:2|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
-        ] );
-    }
-
-    /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doStore( Request $request )
+    public function doStore( Request $r )
     {
-        $this->checkForm( $request );
-        $this->object = Infrastructure::create( $request->all() );
-
+        $this->checkForm( $r );
+        $this->object = Infrastructure::create( $r->all() );
         $this->resetInfrastructures();
 
         return true;
@@ -200,20 +180,18 @@ class InfrastructureController extends Eloquent2Frontend
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param Request $r
      * @param int $id
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doUpdate( Request $request, int $id )
+    public function doUpdate( Request $r, int $id )
     {
-        $this->object = Infrastructure::findOrFail( $request->id );
-        $this->checkForm( $request );
-
-        $this->object->update( $request->all() );
-
+        $this->object = Infrastructure::findOrFail( $id );
+        $this->checkForm( $r );
+        $this->object->update( $r->all() );
         $this->resetInfrastructures();
 
         return true;
@@ -261,5 +239,27 @@ class InfrastructureController extends Eloquent2Frontend
         }
 
         return $okay;
+    }
+
+    /**
+     * Check if the form is valid
+     *
+     * @param $r
+     */
+    public function checkForm( Request $r ): void
+    {
+        $r->validate( [
+            'name' => [
+                'required', 'string', 'max:255',
+                function( $attribute, $value, $fail) use( $r ) {
+                    $infra = Infrastructure::whereName( $value )->first();
+                    if( $infra && $infra->id !== (int)$r->id ) {
+                        return $fail( 'The name has already been taken.' );
+                    }
+                },
+            ],
+            'shortname'             => 'required|string|max:255',
+            'country'               => 'required|string|max:2|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
+        ] );
     }
 }

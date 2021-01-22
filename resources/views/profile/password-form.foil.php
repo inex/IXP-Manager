@@ -46,5 +46,4 @@
     ?>
 
     <?= Former::close() ?>
-
 </div>

@@ -1,9 +1,10 @@
 <?php
-  $this->layout( 'layouts/ixpv4' );
+    $this->layout( 'layouts/ixpv4' );
+    $isSuperUser = Auth::getUser()->isSuperUser();
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?php if(  Auth::getUser()->isSuperUser()  ): ?>
+    <?php if(  $isSuperUser  ): ?>
         <a href="<?= route( "customer@overview" , [ 'cust' => $t->customer->id ] ) ?>">
             <?= $t->customer->name ?>
         </a>
@@ -120,7 +121,7 @@
                       <?= $t->updatedIrrdb['found_at']->format('Y-m-d H:i:s') ?> and will not be refreshed until <?= $t->updatedIrrdb['found_at']->copy()->addMinutes(15)->format('H:i:s') ?>.
 
                   </p>
-                  <?php if( Auth::getUser()->isSuperUser() ): ?>
+                  <?php if( $isSuperUser ): ?>
                       <p>
                           The network / database / processing effort was:
                           <?= $t->updatedIrrdb['netTime'] ?>s / <?= $t->updatedIrrdb['dbTime'] ?>s / <?= $t->updatedIrrdb['procTime'] ?>s.

@@ -31,9 +31,6 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>
-                                ID
-                            </th>
-                            <th>
                                 MAC Address
                             </th>
                             <th>
@@ -48,9 +45,6 @@
                         <?php foreach( $t->vli->layer2Addresses as $l2a ):?>
                             <tr>
                                 <td>
-                                    <?= $l2a->id ?>
-                                </td>
-                                <td>
                                     <?= $l2a->macFormatted( ':' ) ?>
                                 </td>
                                 <td>
@@ -62,7 +56,7 @@
                                             <i class="fa fa-eye"></i>
                                         </a>
                                         <?php if( $t->vli->layer2Addresses()->count() > config( 'ixp_fe.layer2-addresses.customer_params.min_addresses' ) ): ?>
-                                            <a class="btn btn-white btn-2f-list-delete" id='d2f-list-delete-<?= $l2a->id ?>' href="#" data-object-id="<?= $l2a->id ?>" data-url="<?= route( 'l2-address@delete' , [ 'l2a' => $l2a->id, 'showFeMessage' => true  ]  )  ?>"  title="Delete">
+                                            <a class="btn btn-white btn-delete" id='d2f-list-delete-<?= $l2a->id ?>' data-object-id="<?= $l2a->id ?>" href="<?= route( 'l2-address@delete' , [ 'l2a' => $l2a->id, 'showFeMessage' => true  ]  )  ?>"  title="Delete">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                         <?php endif; ?>
@@ -82,4 +76,3 @@
     <?= $t->insert( 'layer2-address/js/clipboard' ); ?>
     <?= $t->insert( 'layer2-address/js/vlan-interface' ); ?>
 <?php $this->append() ?>
-

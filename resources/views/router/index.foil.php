@@ -22,7 +22,7 @@
   <div class="row">
       <div class="col-sm-12">
           <?= $t->alerts() ?>
-          <table id='router-list' class="table table-striped table-responsive-ixp-with-header" width="100%">
+          <table id='router-list' class="table table-striped table-responsive-ixp-with-header w-100">
               <thead class="thead-dark">
                   <tr>
                       <th>

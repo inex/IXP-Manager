@@ -14,41 +14,45 @@
                     </th>
                     <?php foreach( $t->vlans as $vlan ): ?>
                         <?php $vlanid = $vlan->number ?>
-
                         <?php if( isset( $t->me[ 'vlan_interfaces' ][ $vlanid ] ) ): ?>
                             <th>
                                 <?= $vlan->name ?>
                             </th>
                         <?php endif; ?>
-
                     <?php endforeach; ?>
-
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach( $t->listOfCusts as  $as => $p ): ?>
-                    <?php $c = $t->custs[ $as ] ?>
-                    <?php $cid = $c[ "id" ] ?>
+                    <?php
+                        $c = $t->custs[ $as ];
+                        $cid = $c[ "id" ];
+                    ?>
 
                     <?php if( $p ): ?>
                         <tr>
                             <td id="peer-name-<?= $cid ?>">
                                 <?= $c[ "name" ] ?>
                             </td>
-                            <td><?= $c[ "autsys" ] ?></td>
-                            <td><?= $c[ "peeringpolicy" ] ?></td>
-
+                            <td>
+                                <?= $c[ "autsys" ] ?>
+                            </td>
+                            <td>
+                                <?= $c[ "peeringpolicy" ] ?>
+                            </td>
                             <?php foreach( $t->vlans as $avlan ): ?>
                                 <?php $vlan = $avlan->number ?>
                                 <?php if( isset( $c[ $vlan ] ) ): ?>
-                                <td>
-                                    <?php foreach( $t->protos as $proto ): ?>
-                                        <?php if( isset( $c[ $vlan ][ $proto ] ) ): ?>
-                                            <span class="badge <?= ( $c[ $vlan ][ $proto ] )? "badge-success" : "badge-danger" ?>" >IPv<?= $proto ?></span>
-                                        <?php endif; ?>
-                                    <?php endforeach; ?>
-                                </td>
+                                    <td>
+                                        <?php foreach( $t->protos as $proto ): ?>
+                                            <?php if( isset( $c[ $vlan ][ $proto ] ) ): ?>
+                                                <span class="badge <?= ( $c[ $vlan ][ $proto ] )? "badge-success" : "badge-danger" ?>" >
+                                                    IPv<?= $proto ?>
+                                                </span>
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
+                                    </td>
                                 <?php elseif( isset( $t->me[ "vlan_interfaces" ][ $vlan ] ) ): ?>
                                     <td></td>
                                 <?php endif; ?>
@@ -86,15 +90,11 @@
                                             <?php endif; ?>
                                         </a>
                                     </div>
-
                                 </div>
                             </td>
-
                         </tr>
                     <?php endif; ?>
-
                 <?php endforeach; ?>
-
             </tbody>
         </table>
         <input id="custid" type="hidden" value="<?= $t->c->id ?>">

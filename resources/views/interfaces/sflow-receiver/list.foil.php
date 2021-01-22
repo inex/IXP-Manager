@@ -69,7 +69,7 @@
                                         <i class="fa fa-pencil"></i>
                                     </a>
 
-                                    <a class="btn btn-white btn-delete-sflr btn-delete" href="#" data-url="<?= route( 'sflow-receiver@delete', [ 'sflr' => $sflr->id ] ) ?>" title="Delete">
+                                    <a class="btn btn-white btn-delete-sflr btn-delete" href="<?= route( 'sflow-receiver@delete', [ 'sflr' => $sflr->id ] ) ?>" title="Delete">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </div>

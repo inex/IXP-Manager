@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -26,8 +26,8 @@ use Auth;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-
 use Illuminate\Foundation\Validation\ValidatesRequests;
+
 use Illuminate\Routing\Controller as BaseController;
 
 use IXP\Models\{
@@ -99,7 +99,6 @@ class Controller extends BaseController
                 }
             }
         }
-
         return request()->getClientIp();
     }
 
@@ -112,20 +111,20 @@ class Controller extends BaseController
      */
     protected function getAllowedPrivs(): array
     {
-        $privs = User::$PRIVILEGES_TEXT_NONSUPERUSER;
+        $privs          = User::$PRIVILEGES_TEXT_NONSUPERUSER;
+        $isSuperUser    = Auth::user()->isSuperUser();
 
         // If we add a user via the customer overview users list
         if( request()->custid && request()->is( 'user/create*' ) ) {
             if( ( $c = Customer::find( request()->custid ) ) ) {
                 // Internal customer and SuperUser
-                if( Auth::user()->isSuperUser() && $c->typeInternal() ){
+                if( $c->typeInternal() && $isSuperUser ){
                     $privs = User::$PRIVILEGES_TEXT;
                 }
             }
-        }elseif( Auth::user()->isSuperUser() && ( request()->is( 'user/create*' ) || request()->is( 'customer-to-user/create*' )  ) ) {
+        }elseif( $isSuperUser && ( request()->is( 'user/create*' ) || request()->is( 'customer-to-user/create*' )  ) ) {
             $privs = User::$PRIVILEGES_TEXT;
         }
-
         return $privs;
     }
 }

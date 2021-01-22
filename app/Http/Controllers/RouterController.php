@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,7 +22,6 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Former, Redirect;
 
 use Illuminate\Http\{
@@ -48,7 +47,8 @@ use IXP\Utils\View\Alert\{
  * Router Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   Controller
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class RouterController extends Controller
@@ -72,12 +72,15 @@ class RouterController extends Controller
      */
     public function status(): View
     {
-        $routers = $routersWithApi = [];
-        $lgEnabled      = !config('ixp_fe.frontend.disabled.lg' );
+        $routers    = $routersWithApi = [];
+        $lgEnabled  = !config('ixp_fe.frontend.disabled.lg' );
 
         if( $lgEnabled ) {
             $routers        = Router::all();
-            $routersWithApi = Router::whereNotNull( 'api' )->where( 'api_type', '!=', 0 )->get()->pluck( 'handle' )->toArray();
+            // Get routers with API
+            $routersWithApi = Router::whereNotNull( 'api' )
+                ->where( 'api_type', '!=', 0 )->get()
+                ->pluck( 'handle' )->toArray();
         }
 
         return view( 'router/status' )->with([
@@ -88,7 +91,7 @@ class RouterController extends Controller
     }
 
     /**
-     * Display the form to edit a router
+     * Display the form to create a router
      *
      * @return View
      */
@@ -110,31 +113,29 @@ class RouterController extends Controller
     public function edit( Router $router ): View
     {
         Former::populate([
-            'handle'                => request()->old( 'handle',      $router->handle ),
-            'vlan'                  => request()->old( 'vlan',        $router->vlan_id ),
-            'protocol'              => request()->old( 'protocol',    $router->protocol ),
-            'type'                  => request()->old( 'type',        $router->type ),
-            'name'                  => request()->old( 'name',        $router->name ),
-            'shortname'             => request()->old( 'shortname',   $router->shortname ),
-            'router_id'             => request()->old( 'router_id',   $router->router_id ),
-            'peering_ip'            => request()->old( 'peering_ip',  $router->peering_ip ),
-            'asn'                   => request()->old( 'asn',         $router->asn ),
-
-            'software'                 => request()->old( 'software',                    $router->software ),
-            'software_version'         => request()->old( 'software_version',            $router->software_version ),
-            'operating_system'         => request()->old( 'operating_system',            $router->operating_system ),
-            'operating_system_version' => request()->old( 'operating_system_version',    $router->operating_system_version ),
-
-            'mgmt_host'             => request()->old( 'mgmt_host',   $router->mgmt_host ),
-            'api_type'              => request()->old( 'api_type',    $router->api_type ),
-            'api'                   => request()->old( 'api',         $router->api ),
-            'lg_access'             => request()->old( 'lg_access',   $router->lg_access ),
-            'quarantine'            => request()->old( 'quarantine',  ( $router->quarantine    ? 1 : 0 ) ),
-            'bgp_lc'                => request()->old( 'bgp_lc',      ( $router->bgp_lc         ? 1 : 0 ) ),
-            'rpki'                  => request()->old( 'rpki',        ( $router->rpki          ? 1 : 0 ) ),
-            'rfc1997_passthru'      => request()->old( 'rfc1997_passthru', ( $router->rfc1997_passthru ? 1 : 0 ) ),
-            'skip_md5'              => request()->old( 'skip_md5',    ( $router->skip_md5       ? 1 : 0 ) ),
-            'template'              => request()->old( 'template',    $router->template ),
+            'handle'                    => request()->old( 'handle',      $router->handle       ),
+            'vlan_id'                   => request()->old( 'vlan_id',     $router->vlan_id      ),
+            'protocol'                  => request()->old( 'protocol',    $router->protocol     ),
+            'type'                      => request()->old( 'type',        $router->type         ),
+            'name'                      => request()->old( 'name',        $router->name         ),
+            'shortname'                 => request()->old( 'shortname',   $router->shortname    ),
+            'router_id'                 => request()->old( 'router_id',   $router->router_id    ),
+            'peering_ip'                => request()->old( 'peering_ip',  $router->peering_ip   ),
+            'asn'                       => request()->old( 'asn',         $router->asn          ),
+            'software'                 => request()->old( 'software',                    $router->software                  ),
+            'software_version'         => request()->old( 'software_version',            $router->software_version          ),
+            'operating_system'         => request()->old( 'operating_system',            $router->operating_system          ),
+            'operating_system_version' => request()->old( 'operating_system_version',    $router->operating_system_version  ),
+            'mgmt_host'                 => request()->old( 'mgmt_host',         $router->mgmt_host          ),
+            'api_type'                  => request()->old( 'api_type',          $router->api_type           ),
+            'api'                       => request()->old( 'api',               $router->api                ),
+            'lg_access'                 => request()->old( 'lg_access',         $router->lg_access          ),
+            'quarantine'                => request()->old( 'quarantine',        $router->quarantine         ),
+            'bgp_lc'                    => request()->old( 'bgp_lc',            $router->bgp_lc             ),
+            'rpki'                      => request()->old( 'rpki',              $router->rpki               ),
+            'rfc1997_passthru'          => request()->old( 'rfc1997_passthru',  $router->rfc1997_passthru   ),
+            'skip_md5'                  => request()->old( 'skip_md5',          $router->skip_md5           ),
+            'template'                  => request()->old( 'template',          $router->template           ),
         ]);
 
         return view( 'router/edit' )->with([
@@ -146,21 +147,20 @@ class RouterController extends Controller
     /**
      * Add or edit a router (set all the data needed)
      *
-     * @param   StoreRouter $request instance of the current HTTP request
+     * @param   StoreRouter $r instance of the current HTTP request
      *
      * @return  RedirectResponse
      *
      * @throws
      */
-    public function store( StoreRouter $request ): RedirectResponse
+    public function store( StoreRouter $r ): RedirectResponse
     {
-        if( !FacadeView::exists( $request->template ) ) {
+        if( !FacadeView::exists( $r->template ) ) {
             AlertContainer::push( 'The template you entered cannot be found. Please check the help message for more information.', Alert::DANGER );
-            return Redirect::to( route( 'router@create' ) )->withInput( $request->all() );
+            return Redirect::to( route( 'router@create' ) )->withInput( $r->all() );
         }
 
-        Router::create( $request->all() );
-
+        Router::create( $r->all() );
         AlertContainer::push( 'Router created.', Alert::SUCCESS );
         return Redirect::to( route( "router@list" ) );
     }
@@ -168,17 +168,16 @@ class RouterController extends Controller
     /**
      * Add or edit a router (set all the data needed)
      *
-     * @param StoreRouter   $request instance of the current HTTP request
+     * @param StoreRouter   $r      instance of the current HTTP request
      * @param Router        $router
      * 
      * @return  RedirectResponse
      *
      * @throws
      */
-    public function update( StoreRouter $request, Router $router ): RedirectResponse
+    public function update( StoreRouter $r, Router $router ): RedirectResponse
     {
-        $router->update( $request->all() );
-
+        $router->update( $r->all() );
         AlertContainer::push( 'Router updated.', Alert::SUCCESS );
         return Redirect::to( route( "router@list" ) );
     }
@@ -209,7 +208,7 @@ class RouterController extends Controller
     public function delete( Router $router): RedirectResponse
     {
         $router->delete();
-        AlertContainer::push( 'The router has been successfully deleted.', Alert::SUCCESS );
+        AlertContainer::push( 'Router deleted.', Alert::SUCCESS );
         return Redirect::to( route( "router@list" ) );
     }
 }

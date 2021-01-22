@@ -10,7 +10,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
         <?php if( count( $t->vlans ) ): ?>
-            <a class="btn btn-white" href="<?= route ('ip-address@add', [ 'protocol' => $t->protocol ]) ?>">
+            <a class="btn btn-white" href="<?= route ('ip-address@create', [ 'protocol' => $t->protocol ]) ?>">
                 <span class="fa fa-plus"></span>
             </a>
         <?php endif; ?>
@@ -58,7 +58,7 @@
                                         Switch to IPv<?= $t->protocol === 4 ? 6 : 4 ?>
                                     </a>
 
-                                    <a class="btn btn-white" href="<?= route ('ip-address@add', [ 'protocol' => $t->protocol, 'vlan' => $t->vlan->id  ]) ?>">
+                                    <a class="btn btn-white" href="<?= route ('ip-address@create', [ 'protocol' => $t->protocol, 'vlan' => $t->vlan->id  ]) ?>">
                                         <span class="fa fa-plus"></span>
                                     </a>
 
@@ -76,7 +76,7 @@
                 <?php if( $t->vlan ): ?>
                     <p>
                         There are no IPv<?= $t->protocol ?> addresses in this VLAN.
-                        <a href="<?= route ('ip-address@add', [ 'protocol' => $t->protocol, 'vlan' => $t->vlan->id ] ) ?>">Add some...</a>
+                        <a href="<?= route ('ip-address@create', [ 'protocol' => $t->protocol, 'vlan' => $t->vlan->id ] ) ?>">Create some...</a>
                     </p>
                 <?php endif; ?>
             <?php else: ?>
@@ -114,7 +114,7 @@
                                         <a class="btn btn-white <?= $ip[ 'viid' ] ?: 'disabled' ?>" href="<?= $ip[ 'viid' ] ? route( 'virtual-interface@edit' , [ 'vi' => $ip[ 'viid' ] ] ) : '#' ?>" title="See interface">
                                             <i class="fa fa-eye"></i>
                                         </a>
-                                        <a class="btn btn-white delete-ip <?= !$ip[ 'vliid' ] ?: 'disabled' ?>" data-url="<?= !$ip[ 'viid' ] ? route( "ip-address@delete" , [ 'id' => $ip[ 'id' ] ] ) : '#' ?>" href="#" title="Delete">
+                                        <a class="btn btn-white delete-ip <?= !$ip[ 'vliid' ] ?: 'disabled' ?>" href="<?= !$ip[ 'viid' ] ? route( "ip-address@delete" , [ 'id' => $ip[ 'id' ] ] ) : '#' ?>" title="Delete">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     </div>

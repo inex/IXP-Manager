@@ -95,7 +95,7 @@
                                     <a class="btn btn-white" href="<?= route ( 'physical-interface@edit', [ 'pi' => $pi['id'] ] ) ?>" title="Edit">
                                         <i class="fa fa-pencil"></i>
                                     </a>
-                                    <a class="btn btn-white btn-delete" <?php if( $t->resellerMode() && ( $pi['ppid'] || $pi['fpid'] ) ) :?> data-related="1" <?php endif; ?> data-type="<?= $pi['type'] ?>" data-url="<?= route( 'physical-interface@delete', [ 'pi' => $pi[ 'id' ] ] ) ?>" href="#" title="Delete">
+                                    <a class="btn btn-white btn-delete" <?php if( $t->resellerMode() && ( $pi['ppid'] || $pi['fpid'] ) ) :?> data-related="1" <?php endif; ?> data-type="<?= $pi['type'] ?>" href="<?= route( 'physical-interface@delete', [ 'pi' => $pi[ 'id' ] ] ) ?>" title="Delete">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </div>
