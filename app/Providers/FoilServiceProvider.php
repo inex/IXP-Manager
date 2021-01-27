@@ -53,7 +53,7 @@ class FoilServiceProvider extends ServiceProvider
                 'autoescape'       => false,                    // enabling this is a serious performance hit
                                                                 // e.g. >30secs to generate INEX's MRTG config
                                                                 // vs. x without it
-                'strict_variables' => true,                     // enabled as using undef'd vars is a programming error
+                'strict_variables' => !env('APP_DEBUG'),    // enabled as using undef'd vars is a programming error
                 'alias'            => 't'                       // $t is now shorthand for $this
             ]);
 

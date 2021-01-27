@@ -546,4 +546,33 @@ class CompanyBillingDetail
     {
         return $this->billingAddress3;
     }
+
+
+    public function getFrequencyAsNumMonths(): int
+    {
+        switch( $this->getBillingFrequency() ) {
+
+            case self::BILLING_FREQUENCY_MONTHLY:
+                return 1;
+
+            case self::BILLING_FREQUENCY_2MONTHLY:
+                return 2;
+
+            case self::BILLING_FREQUENCY_QUARTERLY:
+                return 3;
+
+            case self::BILLING_FREQUENCY_HALFYEARLY:
+                return 6;
+
+            case self::BILLING_FREQUENCY_ANNUALLY:
+                return 12;
+
+            case self::BILLING_FREQUENCY_NOBILLING:
+                return 0;
+
+            default:
+                die('huh? no such billing frequency');
+
+        }
+    }
 }

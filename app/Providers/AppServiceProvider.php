@@ -58,6 +58,10 @@ class AppServiceProvider extends ServiceProvider {
         DocstoreDirectory::observe( DocstoreDirectoryObserver::class );
         // observer for docstore customer directory
         DocstoreCustomerDirectory::observe( DocstoreCustomerDirectoryObserver::class );
+
+        if(config('app.env') === 'development') {
+            \URL::forceScheme('https');
+        }
     }
 
     /**
