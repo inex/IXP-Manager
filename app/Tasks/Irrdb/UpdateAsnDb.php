@@ -49,9 +49,14 @@ class UpdateAsnDb extends UpdateDb
     public function update(): array
     {
 
+<<<<<<< HEAD
         foreach( $this->protocols() as $protocol ) {
             if( $this->customer()->routeServerClient( $protocol ) && $this->customer()->irrdbFiltered() ) {
                 $this->bgpq3()->setSources( $this->customer()->irrdbConfig->source );
+=======
+            if( $this->customer()->isRouteServerClient($protocol) && $this->customer()->isIrrdbFiltered() && $this->customer()->getIRRDB() ) {
+                $this->bgpq3()->setSources( $this->customer()->getIRRDB()->getSource() );
+>>>>>>> inex/master
 
                 $this->startTimer();
                 $asns = $this->bgpq3()->getAsnList( $this->customer()->asMacro( $protocol, 'as' ), $protocol );
