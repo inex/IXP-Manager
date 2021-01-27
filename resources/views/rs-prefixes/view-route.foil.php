@@ -1,4 +1,4 @@
-<table class="table collapse table-striped" id="list-table-<?= $t->type ?>" width="100%">
+<table class="table collapse table-striped w-100" id="list-table-<?= $t->type ?>" width="100%">
     <thead class="thead-dark">
         <th>
             Prefix
@@ -10,9 +10,9 @@
             First Seen
         </th>
         <?php if( $t->type === 'adv_acc' || $t->type === 'adv_nacc' ): ?>
-                <th>
-                    Origin AS
-                </th>
+            <th>
+                Origin AS
+            </th>
         <?php endif; ?>
     </thead>
     <tbody>

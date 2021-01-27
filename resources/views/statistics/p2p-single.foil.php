@@ -3,28 +3,27 @@
     $this->layout( 'layouts/ixpv4' );
 
     // helpers:
-    /** @var \IXP\Models\VlanInterface $srcVli */
-    $srcVli = $t->srcVli;
-    /** @var \IXP\Models\VlanInterface $dstVli */
-    $dstVli = $t->dstVli;
+    $srcVli = $t->srcVli;/** @var \IXP\Models\VlanInterface $srcVli */
+    $dstVli = $t->dstVli; /** @var \IXP\Models\VlanInterface $dstVli */
+    $isSuperUser = Auth::getUser()->isSuperUser();
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
+    <?php if( Auth::check() && $isSuperUser ): ?>
         <a href="<?= route( 'customer@overview', [ 'cust' => $t->c->id ] ) ?>" >
             <?= $t->c->getFormattedName() ?>
         </a>
         /
-        <a href="<?= route( 'statistics@member', [ 'id' => $t->c->id ] ) ?>" >
+        <a href="<?= route( 'statistics@member', [ 'cust' => $t->c->id ] ) ?>" >
             Statistics
         </a>
         /
-        <a href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->id ] ) ?>" >
+        <a href="<?= route( 'statistics@p2p', [ 'cust' => $t->c->id ] ) ?>" >
             Peer to Peer Graphs
         </a>
         /
         Traffic Exchanged with
-            <a href="<?= route( 'statistics@p2p', [ 'cid' => $dstVli->virtualInterface->customer->id ] )
+            <a href="<?= route( 'statistics@p2p', [ 'cust' => $dstVli->virtualInterface->customer->id ] )
                 . '?svli='     . $dstVli->id
                 . '&dvli='     . $srcVli->id
                 . '&category=' . $t->category
@@ -38,9 +37,9 @@
     <?php endif; ?>
 <?php $this->append() ?>
 
-<?php if( Auth::check() && !Auth::getUser()->isSuperUser() ): ?>
+<?php if( Auth::check() && !$isSuperUser ): ?>
     <?php $this->section( 'page-header-postamble' ) ?>
-        <a class="btn btn-white btn-sm" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->id ] ) ?>">P2P Overview</a>
+        <a class="btn btn-white btn-sm" href="<?= route( 'statistics@p2p', [ 'cust' => $t->c->id ] ) ?>">P2P Overview</a>
     <?php $this->append() ?>
 <?php endif; ?>
 
@@ -49,8 +48,8 @@
         <div class="col-md-12">
             <?= $t->alerts() ?>
             <h3>
-                Traffic exchanged between <?= $srcVli->virtualInterface->customer->abbreviatedName ?> (<?= $srcVli->getIPAddress( $t->protocol ) ? $srcVli->getIPAddress( $t->protocol )->address : 'No IP' ?>)
-                &amp; <?= $dstVli->virtualInterface->customer->abbreviatedName ?> (<?= $dstVli->getIPAddress( $t->protocol ) ? $dstVli->getIPAddress( $t->protocol )->address : 'No IP' ?>)
+                Traffic exchanged between <?= $srcVli->virtualInterface->customer->abbreviatedName ?> (<?= $srcVli->getIPAddress( $t->protocol )->address ?? 'No IP' ?>)
+                &amp; <?= $dstVli->virtualInterface->customer->abbreviatedName ?> (<?= $dstVli->getIPAddress( $t->protocol )->address ?? 'No IP' ?>)
             </h3>
         </div>
     </div>
@@ -63,7 +62,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
-                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex" action="<?= route( 'statistics@p2p', [ 'cid' => $this->c->id ] ) ?>" method="post">
+                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex" action="<?= route( 'statistics@p2p', [ 'cust' => $this->c->id ] ) ?>" method="post">
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">
                                     <label for="select_network" class="col-sm-4 col-lg-3">Interface:</label>
@@ -71,7 +70,7 @@
                                         <?php foreach( $t->srcVlis as $id => $vli ): ?>
                                             <option value="<?= $id ?>" <?php if( $t->srcVli->id === $vli->id ): ?> selected <?php endif; ?>  >
                                                 <?= $vli->vlan->name ?>
-                                                    :: <?= $vli->getIPAddress( $t->protocol ) ? $vli->getIPAddress( $t->protocol )->address : 'No IP - VLI ID: ' . $vli->id ?>
+                                                    :: <?= $vli->getIPAddress( $t->protocol )->address ?? 'No IP - VLI ID: ' . $vli->id ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -126,7 +125,7 @@
                     <div class="card-body">
                         <p>
                             <?php
-                                $t->graph->setDestinationVlanInterface( $dstVli, false )->setType('png')->setPeriod( $pid );
+                                $t->graph->setDestinationVlanInterface( $dstVli, false )->setType( 'png' )->setPeriod( $pid );
                                 $t->graph->authorise();
                             ?>
                             <img class="img-responsive" src="<?= $t->graph->url() ?>">
@@ -137,6 +136,7 @@
         <?php endforeach; ?>
     </div>
 <?php $this->append() ?>
+
 <?php $this->section( 'scripts' ) ?>
     <?= $t->insert( 'statistics/js/p2p' ); ?>
 <?php $this->append() ?>

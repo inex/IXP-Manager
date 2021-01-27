@@ -56,7 +56,7 @@ class RouteServerFilterPolicy
      */
     public function before( User $user, $ability): bool
     {
-        $privs = $user->getPrivs();
+        $privs = $user->privs();
         if( $privs !== User::AUTH_SUPERUSER ) {
             $minAuth = User::AUTH_CUSTADMIN;
 
@@ -68,6 +68,7 @@ class RouteServerFilterPolicy
                 return false;
             }
         }
+        return true;
     }
 
     /**

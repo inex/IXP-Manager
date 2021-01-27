@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,7 +22,6 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Former, Redirect, Route;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -51,13 +50,14 @@ use IXP\Utils\View\Alert\{
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class VlanController extends EloquentController
 {
     /**
      * The object being created / edited
+     *
      * @var Vlan
      */
     protected $object = null;
@@ -75,10 +75,10 @@ class VlanController extends EloquentController
             'listOrderBy'       => 'number',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'vlan',
-
             'listColumns'    => [
                 'id'          => [
-                    'title' => 'DB ID'
+                    'title'     => 'DB ID',
+                    'display'   => false,
                 ],
                 'name'                   => 'Description',
                 'config_name'            => 'Config Name',
@@ -111,11 +111,18 @@ class VlanController extends EloquentController
         );
     }
 
+    /**
+     * Additional routes
+     *
+     * @param string $route_prefix
+     *
+     * @return void
+     */
     protected static function additionalRoutes( string $route_prefix ): void
     {
         Route::group( [ 'prefix' => $route_prefix ], static function() use ( $route_prefix ) {
-            Route::get(     'private',                              'VlanController@listPrivate'    )->name( $route_prefix . '@private'        );
-            Route::get(     'private/infra/{infra}',                'VlanController@listPrivate'    )->name( $route_prefix . '@privateInfra'   );
+            Route::get(     'private',                             'VlanController@listPrivate'    )->name( $route_prefix . '@private'        );
+            Route::get(     'private/infra/{infra}',               'VlanController@listPrivate'    )->name( $route_prefix . '@privateInfra'   );
             Route::get(     'list/infra/{infra}',                  'VlanController@listInfra'      )->name( $route_prefix . '@infra'          );
             Route::get(     'list/infra/{infra}/public/{public}',  'VlanController@listInfra'      )->name( $route_prefix . '@infraPublic'    );
         });
@@ -160,7 +167,7 @@ class VlanController extends EloquentController
     {
         return [
             'object'            => $this->object,
-            'infrastructure'    => Infrastructure::orderBy( 'name', 'asc' )->get(),
+            'infrastructure'    => Infrastructure::orderBy( 'name' )->get(),
         ];
     }
 
@@ -176,59 +183,41 @@ class VlanController extends EloquentController
         $this->object = Vlan::findOrFail( $id );
 
         Former::populate([
-            'name'                      =>  request()->old( 'name',               $this->object->name ),
-            'number'                    =>  request()->old( 'number',             $this->object->number ),
-            'infrastructureid'          =>  request()->old( 'infrastructureid',   $this->object->infrastructureid ),
-            'config_name'               =>  request()->old( 'config_name',        $this->object->config_name ),
-            'private'                   =>  request()->old( 'private',            ( $this->object->private              ? 1 : 0 ) ),
-            'peering_matrix'            =>  request()->old( 'peering_matrix',     ($this->object->peering_matrix        ? 1 : 0 ) ),
-            'peering_manager'           =>  request()->old( 'peering_manager',    ( $this->object->peering_manager      ? 1 : 0 ) ),
-            'notes'                     =>  request()->old( 'notes',              $this->object->notes ),
+            'name'                      =>  request()->old( 'name',               $this->object->name               ),
+            'number'                    =>  request()->old( 'number',             $this->object->number             ),
+            'infrastructureid'          =>  request()->old( 'infrastructureid',   $this->object->infrastructureid   ),
+            'config_name'               =>  request()->old( 'config_name',        $this->object->config_name        ),
+            'private'                   =>  request()->old( 'private',            $this->object->private            ),
+            'peering_matrix'            =>  request()->old( 'peering_matrix',     $this->object->peering_matrix     ),
+            'peering_manager'           =>  request()->old( 'peering_manager',    $this->object->peering_manager    ),
+            'notes'                     =>  request()->old( 'notes',              $this->object->notes              ),
         ]);
 
         return [
             'object'            => $this->object,
-            'infrastructure'    => Infrastructure::orderBy( 'name', 'asc' )->get(),
+            'infrastructure'    => Infrastructure::orderBy( 'name' )->get(),
         ];
-    }
-
-    /**
-     * Check if the form is valid
-     *
-     * @param $request
-     */
-    public function checkForm( Request $request ): void
-    {
-        $request->validate( [
-            'name'              => 'required|string|max:255',
-            'number'            => 'required|integer|min:1|max:4096',
-            'config_name'       => 'required|string|max:32|alpha_dash',
-            'infrastructureid'  => [
-                'required', 'integer',
-                function ($attribute, $value, $fail) {
-                    if( !Infrastructure::whereId( $value )->exists() ) {
-                        return $fail( 'The infrastructure does not exist.' );
-                    }
-                },
-            ],
-        ] );
     }
 
     /**
      * Check if there is a duplicate vlan object with those values
      *
      * @param int|null      $objectid
-     * @param Request       $request
+     * @param Request       $r
      *
      * @return bool
      */
-    private function checkIsDuplicate( Request $request, int $objectid = null ): bool
+    private function checkIsDuplicate( Request $r, int $objectid = null ): bool
     {
-        if( $vlanFound = Vlan::where( 'infrastructureid', $request->infrastructureid )->where( 'config_name', $request->input( 'config_name' ) )->first() ){
-            if( $objectid !== $vlanFound->id ) {
-                AlertContainer::push( "The couple Infrastructure and config name already exist.", Alert::DANGER );
-                return true;
-            }
+        $exist = Vlan::where( 'infrastructureid', $r->infrastructureid )
+            ->where( 'config_name', $r->config_name )
+            ->when( $objectid , function( Builder $q, $objectid ) {
+                return $q->where( 'id', '!=',  $objectid );
+            })->count() ? true : false;
+
+        if( $exist ) {
+            AlertContainer::push( "The couple Infrastructure and config name already exist.", Alert::DANGER );
+            return true;
         }
 
         return false;
@@ -237,19 +226,19 @@ class VlanController extends EloquentController
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doStore( Request $request )
+    public function doStore( Request $r )
     {
-        $this->checkForm( $request );
-        if( $this->checkIsDuplicate( $request, null ) ) {
+        $this->checkForm( $r );
+        if( $this->checkIsDuplicate( $r, null ) ) {
             return Redirect::back()->withInput();
         }
-        $this->object = Vlan::create( $request->all() );
+        $this->object = Vlan::create( $r->all() );
 
         return true;
     }
@@ -257,22 +246,22 @@ class VlanController extends EloquentController
     /**
      * Function to do the actual validation and updating of the submitted object.
      *
-     * @param Request $request
-     * @param int $id
+     * @param Request   $r
+     * @param int       $id
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doUpdate( Request $request, int $id )
+    public function doUpdate( Request $r, int $id )
     {
         $this->object = Vlan::findOrFail( $id );
-        $this->checkForm( $request );
-        if( $this->checkIsDuplicate( $request, $this->object->id  ) ){
+        $this->checkForm( $r );
+
+        if( $this->checkIsDuplicate( $r, $this->object->id  ) ){
             return Redirect::back()->withInput();
         }
-        $this->object->update( $request->all() );
-
+        $this->object->update( $r->all() );
         return true;
     }
 
@@ -323,8 +312,7 @@ class VlanController extends EloquentController
                 'vlanInterfaces.virtualInterface.physicalInterfaces.switchport.switcher.cabinet.location'
             ])->get();
 
-        $this->data[ 'params' ]         = [ 'infra' => $infra ];
-
+        $this->data[ 'params' ] = [ 'infra' => $infra ];
         return $this->display( 'private' );
     }
 
@@ -343,7 +331,28 @@ class VlanController extends EloquentController
         }
 
         $this->feParams->infra = $infra;
-
         return $this->list( request() );
+    }
+
+    /**
+     * Check if the form is valid
+     *
+     * @param $r
+     */
+    public function checkForm( Request $r ): void
+    {
+        $r->validate( [
+            'name'              => 'required|string|max:255',
+            'number'            => 'required|integer|min:1|max:4096',
+            'config_name'       => 'required|string|max:32|alpha_dash',
+            'infrastructureid'  => [
+                'required', 'integer',
+                function ($attribute, $value, $fail) {
+                    if( !Infrastructure::find( $value ) ) {
+                        return $fail( 'The infrastructure does not exist.' );
+                    }
+                },
+            ],
+        ] );
     }
 }

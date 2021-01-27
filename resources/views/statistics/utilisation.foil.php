@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-        Statistics / Utilisation  (<?php foreach( IXP\Services\Grapher\Graph::CATEGORIES as $cname => $cvalue ) { if( $t->category === $cvalue ) { echo $cname; } } ?>)
+    Statistics / Utilisation  (<?php foreach( IXP\Services\Grapher\Graph::CATEGORIES as $cname => $cvalue ) { if( $t->category === $cvalue ) { echo $cname; } } ?>)
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -22,7 +22,7 @@
 
             <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
                 <a class="navbar-brand" href="<?= route('statistics@members') ?>">
-                    Utilization:
+                    Utilisation:
                 </a>
 
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@
                                     <select id="vlan" name="vlan" class="form-control">
                                         <option></option>
                                             <?php foreach( $t->vlans as $v ): ?>
-                                                <option value="<?= $v[ 'id' ] ?>" <?= $t->vlan && $v[ 'id' ] === $t->vlan ? 'selected' : '' ?>><?= $v[ 'name' ] ?></option>
+                                                <option value="<?= $v->id ?>" <?= $t->vlan && $v->id === $t->vlan ? 'selected' : '' ?>><?= $v->name ?></option>
                                             <?php endforeach; ?>
                                     </select>
                                 </div>

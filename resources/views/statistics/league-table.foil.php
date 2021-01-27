@@ -46,7 +46,7 @@
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">
                                     <label for="day" class="col-sm-4 col-lg-3">Day:</label>
-                                    <input type="text" class="form-control" name="day" value="<?= $t->day->format( 'Y-m-d' ) ?>" size="10" maxlength="10">
+                                    <input type="text" class="form-control" name="day" style="width:130px" value="<?= $t->day->format( 'Y-m-d' ) ?>" size="10" maxlength="10">
                                 </div>
                             </li>
 

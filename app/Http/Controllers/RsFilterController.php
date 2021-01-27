@@ -53,7 +53,7 @@ use IXP\Utils\View\Alert\{
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class RsFilterController extends Controller
@@ -90,9 +90,9 @@ class RsFilterController extends Controller
     {
         $this->authorize( 'checkCustObject',  [ RouteServerFilter::class, $cust ]  );
 
-        $vlanid     = request()->old( 'vlan_id',         null );
-        $protocol   = request()->old( 'protocol',        null );
-        $peer       = request()->old( 'peer_id',        null  );
+        $vlanid     = request()->old( 'vlan_id' );
+        $protocol   = request()->old( 'protocol');
+        $peer       = request()->old( 'peer_id' );
 
         Former::populate( [
             'peer_id'               => $peer        ?? "Null",
@@ -110,7 +110,8 @@ class RsFilterController extends Controller
                 ->where( 'protocol', $protocol )->get()->toArray();
         }
 
-        $peers = array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], CustomerAggregator::getByVlanAndProtocol( $vlanid , $protocol ) );
+        $peers = array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ],
+            CustomerAggregator::getByVlanAndProtocol( $vlanid , $protocol ) );
 
         foreach( $peers as $i => $p ) {
             if( $p['id'] === $cust->id ) {
@@ -150,8 +151,8 @@ class RsFilterController extends Controller
             'vlan_id'               => $vlanid      ?? "null",
             'protocol'              => $protocol    ?? "null",
             'peer_id'               => $peerid      ?? 'null',
-            'received_prefix'       => request()->old( 'received_prefix',           $rsf->received_prefix ),
-            'advertised_prefix'     => request()->old( 'advertised_prefix',         $rsf->advertised_prefix ),
+            'received_prefix_val'   => request()->old( 'received_prefix',           $rsf->received_prefix ),
+            'advertised_prefix_val' => request()->old( 'advertised_prefix',         $rsf->advertised_prefix ),
             'action_advertise'      => request()->old( 'action_advertise',   $rsf->action_advertise ?? 'Null' ),
             'action_receive'        => request()->old( 'action_receive',     $rsf->action_receive ?? 'Null' ),
         ] );
@@ -176,7 +177,7 @@ class RsFilterController extends Controller
      */
     public function store( Store $r ): RedirectResponse
     {
-        $cust = Customer::findOrFail( request( "custid" ) );
+        $cust = Customer::findOrFail( $r->custid );
 
         $this->authorize( 'checkCustObject',  [ RouteServerFilter::class, $cust ]  );
 
@@ -223,6 +224,8 @@ class RsFilterController extends Controller
      * @param RouteServerFilter $rsf
      *
      * @return View
+     *
+     * @throws
      */
     public function view( RouteServerFilter $rsf ): View
     {
@@ -241,6 +244,7 @@ class RsFilterController extends Controller
      *
      * @return RedirectResponse
      *
+     * @throws
      */
     public function toggleEnable( RouteServerFilter $rsf, int $enable ): RedirectResponse
     {
@@ -255,7 +259,6 @@ class RsFilterController extends Controller
         AlertContainer::push( 'Route server filter ' . $status . '.', Alert::SUCCESS );
         return redirect( route( "rs-filter@list", [ "cust" => $rsf->customer_id ] ) );
     }
-
 
     /**
      * Change the order by of a route server filter (up/down)
@@ -276,13 +279,13 @@ class RsFilterController extends Controller
             ->orderBy( 'order_by' )->get();
 
         // Getting the index of the requested route server filter within the list
-        $index = $listRsf->search( function ($value, $key) use ( $rsf ) {
+        $index = $listRsf->search( function ( $value, $key ) use ( $rsf ) {
             return $value->id === $rsf->id;
         });
 
         // Adding +1 (moving up) or -1 (moving down) to the index of the route serve filter
         $newIndex   = $up ? $index-1 : $index+1;
-        $upText     = $up ? "up" : "down";
+        $upText     = $up ? 'up' : 'down';
 
         // Check if the new index exist in the list
         if( !$listRsf->get( $newIndex ) ) {
@@ -326,7 +329,6 @@ class RsFilterController extends Controller
 
         Log::notice( Auth::getUser()->username." deleted the route server filter with the ID:" . $rsf->id );
         AlertContainer::push( 'Router server filter deleted.', Alert::SUCCESS );
-
         return Redirect::to( route( "rs-filter@list", [ "cust" => $rsf->customer_id ] ) );
     }
 

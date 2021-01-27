@@ -1,12 +1,12 @@
 <?php
     /** @var Foil\Template\Template $t */
     $this->layout( 'layouts/ixpv4' );
-
-    /** @var \IXP\Models\CoreBundle $t->cb */
+    $cb = $t->cb;/** @var \IXP\Models\CoreBundle $cb */
+    $isSuperUser = Auth::getUser()->isSuperUser();
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?= $t->ee( $t->cb->graph_title ) ?>
+    <?= $t->ee( $cb->graph_title ) ?>
     (<?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>)
 <?php $this->append() ?>
 
@@ -19,14 +19,14 @@
                     Core Bundle:
                 </a>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                    <form class="navbar-form navbar-left form-inline d-block d-lg-flex"  action="<?= route( "statistics@core-bundle", [ "cb" => $t->cb->id ] ) ?>" method="GET">
+                    <form class="navbar-form navbar-left form-inline d-block d-lg-flex"  action="<?= route( "statistics@core-bundle", [ "cb" => $cb->id ] ) ?>" method="GET">
                         <ul class="navbar-nav">
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">
                                     <select id="form-select-corebundleid" name="cbid" class="form-control" >
-                                        <?php foreach( $t->cbs as $cb ): ?>
-                                            <option value="<?= $cb->id ?>" <?= $t->cb->id !== $cb->id ?: 'selected="selected"' ?>>
-                                                <?= $cb->graph_title ?>
+                                        <?php foreach( $t->cbs as $cbl ): ?>
+                                            <option value="<?= $cbl->id ?>" <?= $cb->id !== $cbl->id ?: 'selected="selected"' ?>>
+                                                <?= $cbl->graph_title ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -37,15 +37,15 @@
                 </div>
 
                 <div class="pull-right tw-text-gray-600">
-                    <?= $t->cb->resolveType() ?>,
-                    <?= $t->ee( $this->cb->getSwitchSideX( $t->graph->side() === 'a' )->name )  ?> -
-                    <?= $t->ee( $this->cb->getSwitchSideX( $t->graph->side() !== 'a' )->name )  ?>,
+                    <?= $cb->typeText() ?>,
+                    <?= $t->ee( $cb->switchSideX( $t->graph->side() === 'a' )->name )  ?> -
+                    <?= $t->ee( $cb->switchSideX( $t->graph->side() !== 'a' )->name )  ?>,
 
-                    <?php if( $this->cb->coreLinks()->count() ): ?>
-                        <?= $this->cb->coreLinks()->count() ?> x <?= $t->scaleBits( $this->cb->getSpeedPi() * 1000000, 0 ) ?>
-                        = <?= $t->scaleBits( $this->cb->coreLinks()->count() * $this->cb->getSpeedPi() * 1000000, 0 )  ?>
+                    <?php if( $nb = $cb->coreLinks()->count() ): ?>
+                        <?= $nb ?> x <?= $t->scaleBits( $cb->speedPi() * 1000000, 0 ) ?>
+                        = <?= $t->scaleBits( $nb * $cb->speedPi() * 1000000, 0 )  ?>
                     <?php else: ?>
-                        <?= $t->scaleBits( $this->cb->getSpeedPi() * 1000000, 0 ) ?>
+                        <?= $t->scaleBits( $cb->speedPi() * 1000000, 0 ) ?>
                     <?php endif ?>
                 </div>
             </nav>
@@ -56,7 +56,7 @@
                 </a>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
-                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex"  action="<?= route( "statistics@core-bundle", [ "cb" => $t->cb->id ] ) ?>" method="GET">
+                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex"  action="<?= route( "statistics@core-bundle", [ "cb" => $cb->id ] ) ?>" method="GET">
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">
                                     <label for="category" class="col-sm-4 col-lg-4">Side:</label>
@@ -81,8 +81,8 @@
                         </form>
                     </ul>
                 </div>
-                <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
-                    <button type="button" class="btn btn-white pull-right tw-text-gray-600" data-toggle="modal" data-target="#grapher-backend-info-modal">
+                <?php if( Auth::check() && $isSuperUser ): ?>
+                    <button type="button" class="btn btn-white pull-right" data-toggle="modal" data-target="#grapher-backend-info-modal">
                         Backend Info
                     </button>
                 <?php endif; ?>
@@ -106,40 +106,38 @@
             </div>
         </div>
     </div>
-<?php
-use IXP\Services\Grapher\Graph;
-if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
-    <div class="modal" tabindex="-1" role="dialog" id="grapher-backend-info-modal">
-        <div class="modal-dialog modal-xl" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Grapher Backend Information</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <?php foreach( $t->graph::PERIOD_DESCS as $pvalue => $pname ): ?>
-                        <h6><?= $pname ?></h6>
-                        <ul>
-                            <li>
-                                Backend: <?= $t->graph->setPeriod( $pvalue )->backend()->name() ?> <code><?= get_class( $t->graph->backend() ) ?></code>
-                            </li>
-                            <li>
-                                Data File Path: <code><?= $t->graph->dataPath() ?></code>
-                            </li>
-                        </ul>
-                    <?php endforeach; ?>
-                    <pre><?= print_r( $t->graph->toc() ) ?></pre>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+    <?php if( Auth::check() && $isSuperUser ): ?>
+        <div class="modal" tabindex="-1" role="dialog" id="grapher-backend-info-modal">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Grapher Backend Information</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <?php foreach( $t->graph::PERIOD_DESCS as $pvalue => $pname ): ?>
+                            <h6><?= $pname ?></h6>
+                            <ul>
+                                <li>
+                                    Backend: <?= $t->graph->setPeriod( $pvalue )->backend()->name() ?> <code><?= get_class( $t->graph->backend() ) ?></code>
+                                </li>
+                                <li>
+                                    Data File Path: <code><?= $t->graph->dataPath() ?></code>
+                                </li>
+                            </ul>
+                        <?php endforeach; ?>
+                        <pre><?= print_r( $t->graph->toc() ) ?></pre>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-<?php endif; ?>
-
+    <?php endif; ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>

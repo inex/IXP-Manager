@@ -101,7 +101,7 @@ $c = $t->c; /** @var $c \IXP\Models\Customer */
                                 <?php endif ?>
 
                                 <?php if( config('grapher.backends.sflow.enabled') ) : ?>
-                                    <li class="nav-item" onclick="window.location.href = '<?= route( "statistics@p2p", [ 'cid' => $c->id ] )  ?>'">
+                                    <li class="nav-item" onclick="window.location.href = '<?= route( "statistics@p2p", [ 'cust' => $c->id ] )  ?>'">
                                         <a class="nav-link" data-toggle="tab" href="#">
                                             P2P &raquo;
                                         </a>
@@ -125,7 +125,7 @@ $c = $t->c; /** @var $c \IXP\Models\Customer */
 
                             <?php if( config( 'grapher.backends.sflow.enabled' )  ): ?>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="<?= route( "statistics@p2p" , [ "cid" => $c->id ] ) ?>">
+                                    <a class="nav-link" href="<?= route( "statistics@p2p" , [ "cust" => $c->id ] ) ?>">
                                         Peer to Peer Traffic &raquo;
                                     </a>
                                 </li>

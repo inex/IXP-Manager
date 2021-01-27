@@ -1,4 +1,4 @@
-<table class="table table-striped" width="100%">
+<table class="table table-striped w-100">
     <thead class="thead-dark">
         <tr>
             <th>
@@ -16,15 +16,16 @@
         </tr>
     </thead>
     <tbody>
-        <?php foreach( $t->results as $prefix ): ?>
+        <?php foreach( $t->results as $prefix ):
+            /** @var $prefix \IXP\Models\RsPrefix */?>
             <tr>
                 <td>
-                    <a href="<?= route( "rs-prefixes@view", [ "cust" => $prefix->customer->id ] ) ?>">
+                    <a href="<?= route( "rs-prefixes@view", [ "cust" => $prefix->custid ] ) ?>">
                         <?= $t->ee(  $prefix->prefix ) ?>
                     </a>
                 </td>
                 <td>
-                    <a href="<?= route( "customer@overview" , [ 'cust' => $prefix->customer->id ] ) ?>">
+                    <a href="<?= route( "customer@overview" , [ 'cust' => $prefix->custid ] ) ?>">
                         <?= $t->ee( $prefix->customer->name ) ?>
                     </a>
                 </td>

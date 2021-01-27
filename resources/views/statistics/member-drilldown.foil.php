@@ -1,22 +1,23 @@
 <?php
     /** @var Foil\Template\Template $t */
     $this->layout( 'layouts/ixpv4' );
-
+    $isSuperUser = Auth::getUser()->isSuperUser();
+    $c = $t->c; /** @var $c \IXP\Models\Customer */
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
-        <a href="<?= route( 'customer@overview', [ 'cust' => $t->c->id ] ) ?>" >
+    <?php if( Auth::check() && $isSuperUser ): ?>
+        <a href="<?= route( 'customer@overview', [ 'cust' => $c->id ] ) ?>" >
             <?= $t->c->getFormattedName() ?>
         </a>
         /
-        <a href="<?= route( 'statistics@member', [ 'id' => $t->c->id ] ) ?>" >
+        <a href="<?= route( 'statistics@member', [ 'cust' => $c->id ] ) ?>" >
             Port Graphs
         </a>
         /
         Statistics Drilldown (<?= $t->graph->resolveMyCategory() ?>)
     <?php else: ?>
-        IXP Port Graphs :: <?= $t->c->getFormattedName() ?>
+        IXP Port Graphs :: <?= $c->getFormattedName() ?>
     <?php endif; ?>
 <?php $this->append() ?>
 
@@ -26,9 +27,11 @@
             <?= $t->alerts() ?>
             <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
                 <a class="navbar-brand" href="#">Graph Options:</a>
+
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="collapse navbar-collapse mr-auto" id="navbarNavDropdown">
                     <ul class="navbar-nav">
                         <form class="navbar-form navbar-left form-inline d-block d-lg-flex">
@@ -42,12 +45,14 @@
                                     </select>
                                 </div>
                             </li>
-                            <a class="btn btn-white float-right" href="<?= route( 'statistics@member', [ 'id' => $t->c->id ] ) ?>?category=<?= $t->graph->category() ?>">All Ports</a>
+                            <a class="btn btn-white float-right" href="<?= route( 'statistics@member', [ 'id' => $t->c->id ] ) ?>?category=<?= $t->graph->category() ?>">
+                                All Ports
+                            </a>
                         </form>
                     </ul>
                 </div>
-                <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
-                    <button type="button" class="btn btn-white pull-right tw-text-gray-600" data-toggle="modal" data-target="#grapher-backend-info-modal">
+                <?php if( Auth::check() && $isSuperUser ): ?>
+                    <button type="button" class="btn btn-white pull-right" data-toggle="modal" data-target="#grapher-backend-info-modal">
                         Backend Info
                     </button>
                 <?php endif; ?>
@@ -69,7 +74,7 @@
                     case IXP\Services\Grapher\Graph\PhysicalInterface::class: ?>
                         Port:  <?= $t->graph->physicalInterface()->switchport->switcher->name ?> / <?= $t->graph->physicalInterface()->switchport->name ?>
 
-                        <?php if( $t->resellerMode() && $t->c->isReseller ): ?>
+                        <?php if( $t->resellerMode() && $c->isReseller ): ?>
                             <br />
                             <small>
                                 <?php if( $t->graph->physicalInterface()->switchport->isTypePeering() ): ?>
@@ -82,13 +87,11 @@
                                     Reseller Uplink Port
                                 <?php endif; ?>
                             </small>
-
                         <?php endif;
-
                         break;
-
                 endswitch; ?>
             </h3>
+
             <div class="row">
                 <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $pvalue => $pname ): ?>
                     <div class="col-sm-12 col-lg-6 mt-4">
@@ -107,15 +110,14 @@
             </div>
         </div>
     </div>
-<?php
-
-    if( Auth::check() && Auth::getUser()->isSuperUser() ):
-        ?>
+    <?php if( Auth::check() && $isSuperUser ):?>
         <div class="modal" tabindex="-1" role="dialog" id="grapher-backend-info-modal">
             <div class="modal-dialog modal-xl" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Grapher Backend Information</h5>
+                        <h5 class="modal-title">
+                            Grapher Backend Information
+                        </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -44,8 +44,8 @@ use IXP\Models\{
  * Search Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Interfaces
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   Controller
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SearchController extends Controller
@@ -53,16 +53,16 @@ class SearchController extends Controller
     /**
      * Search different type of objects ( IP, User, Mac address)
      *
-     * @param   Request $request instance of the current HTTP request
+     * @param   Request $r instance of the current HTTP request
      *
      * @return  RedirectResponse|View
      */
-    public function do( Request $request )
+    public function do( Request $r )
     {
         $type       = '';
         $results    = $interfaces = [];
 
-        if( $search = trim( htmlspecialchars( $request->search ) ) ) {
+        if( $search = trim( htmlspecialchars( $r->search ) ) ) {
             // what kind of search are we doing?
             if( preg_match( '/^PPP\-(\d+)$/', $search, $matches ) ) {
                 // patch panel port search
@@ -84,17 +84,17 @@ class SearchController extends Controller
             }
             else if( preg_match( '/^\.\d{1,3}$/', $search ) || preg_match( '/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $search ) ) {
                 // IPv4 search
-                $type = 'ipv4';
+                $type   = 'ipv4';
                 $result = VlanInterface::leftJoin( 'ipv4address AS ip', 'ip.id', 'vlaninterface.ipv4addressid' )
                     ->where( 'ip.address', 'LIKE', strtolower( '%' . $search ) )->get();
 
-                $ips = $this->processIPSearch( $result );
-                $results = $ips[ 'results' ];
+                $ips        = $this->processIPSearch( $result );
+                $results    = $ips[ 'results' ];
                 $interfaces = $ips[ 'interfaces' ];
             }
             else if( preg_match( '/^[a-f0-9]{12}$/', strtolower( $search ) ) || preg_match( '/^[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}$/', strtolower( $search ) ) ) {
                 // mac address search
-                $type = 'mac';
+                $type   = 'mac';
                 $search = preg_replace( '/[^a-f0-9]/', '', strtolower( $search ) );
 
                 $vis = VirtualInterface::select( 'virtualinterface.*' )->leftJoin( 'macaddress', 'macaddress.virtualinterfaceid', 'virtualinterface.id' )
@@ -105,9 +105,9 @@ class SearchController extends Controller
 
                 $discoveredMACs = $this->processMACSearch( $vis );
                 $configuredMACs = $this->processMACSearch( $vlis );
-                $macs = $this->mergeMacs( $discoveredMACs, $configuredMACs );
-                $results    = $macs[ 'results' ];
-                $interfaces = $macs[ 'interfaces' ];
+                $macs           = $this->mergeMacs( $discoveredMACs, $configuredMACs );
+                $results        = $macs[ 'results' ];
+                $interfaces     = $macs[ 'interfaces' ];
             }
             else if( preg_match( '/^:[0-9a-fA-F]{1,4}$/', $search ) || preg_match( '/^[0-9a-fA-F]{1,4}:.*:[0-9a-fA-F]{1,4}$/', $search ) ) {
                 // IPv6 search
@@ -116,19 +116,19 @@ class SearchController extends Controller
                 $result = VlanInterface::leftJoin( 'ipv6address AS ip', 'ip.id', 'vlaninterface.ipv6addressid' )
                     ->where( 'ip.address', 'LIKE', strtolower( '%' . $search ) )->get();
 
-                $ips =  $this->processIPSearch( $result );
-                $results = $ips[ 'results' ];
+                $ips        =  $this->processIPSearch( $result );
+                $results    = $ips[ 'results' ];
                 $interfaces = $ips[ 'interfaces' ];
             }
             else if( preg_match( '/^as(\d+)$/', strtolower( $search ), $matches ) || preg_match( '/^(\d+)$/', $search, $matches ) ) {
                 // user by ASN search
-                $type = 'asn';
-                $results =  Customer::whereAutsys( $matches[1] )->get();
+                $type       = 'asn';
+                $results    =  Customer::whereAutsys( $matches[1] )->get();
             }
             else if( preg_match( '/^AS-(.*)$/', strtoupper( $search ) ) ) {
                 // user by ASN macro search
-                $type = 'asmacro';
-                $results = Customer::where( 'peeringmacro', $search )->orWhere( 'peeringmacrov6', $search )->get();
+                $type       = 'asmacro';
+                $results    = Customer::where( 'peeringmacro', $search )->orWhere( 'peeringmacrov6', $search )->get();
             }
             else if( preg_match( '/^@([a-zA-Z0-9]+)$/', $search, $matches ) ) {
                 // user by username search
@@ -143,14 +143,14 @@ class SearchController extends Controller
             }
             else if( preg_match( '/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\/\d{1,2}$/', $search ) || preg_match( '/^[0-9a-fA-F]{1,4}:.*:[0-9a-fA-F]{0,4}\/\d{1,3}$/', $search ) ) {
                 // rsprefix search
-                $type = 'rsprefix';
-                $results = RsPrefix::wherePrefix( $search )->get();
+                $type       = 'rsprefix';
+                $results    = RsPrefix::wherePrefix( $search )->get();
             }
             else {
                 // wild card search
-                $type = 'cust_wild';
-                $search = '%' . $search . '%';
-                $results = Customer::leftJoin( 'company_registration_detail AS r', 'r.id', 'cust.company_registered_detail_id' )
+                $type       = 'cust_wild';
+                $search     = '%' . $search . '%';
+                $results    = Customer::leftJoin( 'company_registration_detail AS r', 'r.id', 'cust.company_registered_detail_id' )
                     ->where( 'cust.name', 'LIKE' , $search )->orWhere( 'cust.shortname', 'LIKE' , $search )
                     ->orWhere( 'cust.abbreviatedName', 'LIKE' , $search )->orWhere( 'r.registeredName', 'LIKE' , $search )
                     ->orderBy( 'cust.name' )->get();
@@ -177,8 +177,8 @@ class SearchController extends Controller
         $results = $interfaces = [];
         foreach( $vlis as $vli ) {
             /** @var $vli VlanInterface */
-            $results[ $vli->virtualInterface->customer->id ] = $vli->virtualInterface->customer;
-            $interfaces[ $vli->virtualInterface->customer->id ][] = $vli;
+            $results[ $vli->virtualInterface->custid ] = $vli->virtualInterface->customer;
+            $interfaces[ $vli->virtualInterface->custid ][] = $vli;
         }
         return [ 'results' => $results, 'interfaces' => $interfaces ];
     }

@@ -1,16 +1,16 @@
 <?php
-/** @var Foil\Template\Template $t */
-/** @var $t->active */
-
-$this->layout( 'layouts/ixpv4' );
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' );
+    $isSuperUser = Auth::getUser()->isSuperUser();
+    $isCustUser = Auth::getUser()->isCustUser();
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Route Server Filtering <?= Auth::getUser()->isSuperUser() ? ' for ' . $t->c->name : '' ?>
+    Route Server Filtering <?= $isSuperUser ? ' for ' . $t->c->name : '' ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <?php if( !Auth::getUser()->isCustUser() ): ?>
+    <?php if( !$isCustUser ): ?>
         <div class="btn-group btn-group-sm" role="group">
             <a class="btn btn-white" href="<?= route('rs-filter@create', [ "cust" => $t->c->id ] ) ?>">
                 <span class="fa fa-plus"></span>
@@ -24,7 +24,7 @@ $this->layout( 'layouts/ixpv4' );
         <div class="col-md-12">
             <?= $t->alerts() ?>
 
-            <?php if( Auth::getUser()->isCustUser() ): ?>
+            <?php if( $isCustUser ): ?>
                 <div class="alert alert-info mt-4" role="alert">
                     <div class="d-flex align-items-center">
                         <div class="text-center">
@@ -71,15 +71,16 @@ $this->layout( 'layouts/ixpv4' );
                                 Order
                             </th>
                             <th>
-
+                                Actions
                             </th>
                         </tr>
                     <thead>
                     <tbody>
-                        <?php foreach( $t->rsFilters as $index => $rsf ):?>
+                        <?php foreach( $t->rsFilters as $index => $rsf ):
+                            /** @var $rsf \IXP\Models\RouteServerFilter */?>
                             <tr>
                                 <td>
-                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                    <?php if( $isSuperUser ): ?>
                                         <?php if( $rsf->peer ): ?>
                                             <a href="<?= route( 'customer@overview', [ 'cust' => $rsf->peer->id ] ) ?>">
                                                 <?= $t->ee( $rsf->peer->name ) ?>
@@ -103,7 +104,7 @@ $this->layout( 'layouts/ixpv4' );
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <?= $rsf->resolveProtocol() ?>
+                                    <?= $rsf->protocol() ?>
                                 </td>
                                 <td>
                                     <?php if( $t->ee( $rsf->advertised_prefix ) ): ?>
@@ -113,7 +114,7 @@ $this->layout( 'layouts/ixpv4' );
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <?= $t->ee( $rsf->resolveActionAdvertise() ) ?>
+                                    <?= $t->ee( $rsf->actionAdvertise() ) ?>
                                 </td>
                                 <td>
                                     <?php if( $t->ee( $rsf->received_prefix ) ): ?>
@@ -123,10 +124,10 @@ $this->layout( 'layouts/ixpv4' );
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <?= $t->ee( $rsf->resolveActionReceive() ) ?>
+                                    <?= $t->ee( $rsf->actionReceive() ) ?>
                                 </td>
                                 <td>
-                                    <?= $rsf->enabled ? "Y" : "N" ?>
+                                    <?= $rsf->enabled ? "Yes" : "No" ?>
                                 </td>
                                 <td>
                                     <?= $rsf->order_by ?>
@@ -137,7 +138,7 @@ $this->layout( 'layouts/ixpv4' );
                                             <i class="fa fa-eye"></i>
                                         </a>
 
-                                        <?php if( !Auth::getUser()->isCustUser() ): ?>
+                                        <?php if( !$isCustUser ): ?>
                                             <a class="btn btn-white" href="<?= route( 'rs-filter@edit' , [ 'rsf' =>  $rsf->id ] ) ?>" title="Edit">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
@@ -176,7 +177,9 @@ $this->layout( 'layouts/ixpv4' );
                             <b class="mr-auto my-auto">
                                 No route server filters have been defined.
                                 &nbsp;&nbsp;&nbsp;&nbsp;
-                                <a class="btn btn-sm btn-white" href="<?= route( "rs-filter@create", [ "cust" => $t->c->id ] ) ?>">Create One</a>
+                                <a class="btn btn-sm btn-white" href="<?= route( "rs-filter@create", [ "cust" => $t->c->id ] ) ?>">
+                                    Create One
+                                </a>
                             </b>
                         </div>
                     </div>
@@ -185,54 +188,47 @@ $this->layout( 'layouts/ixpv4' );
         </div>
     </div>
 
-
-
-
-  <div class="alert alert-info mt-4" role="alert">
-    <div class="d-flex align-items-center">
-      <div class="mr-4 text-center">
-        <i class="fa fa-question-circle fa-2x"></i>
-      </div>
-      <div>
-        <h3>
-          Route Server Filtering
-        </h3>
-
-        <p>
-          <b>IXP Manager</b> supports the industry standards for community based route server filtering. You can find
-          the <a href="https://docs.ixpmanager.org/features/route-servers/#well-known-filtering-communities">official
-          documentation here</a>. Using the BGP-community mechanism can be difficult to implement where a network
-          engineer is not familiar with BGP communities or where a network may have arduous change control processes
-          for altering a router's configuration.
-        </p>
-
-        <p>
-          This purpose of this tool is to allow IXP participants to implement the exact same mechanism but rather than
-          tagging your routes on egress from your router / manipulating routes on ingress to your router, the IXP's
-          route servers perform the equivalent tagging / route manipulation as they accept your routes or send you
-          routes from other networks.
-        </p>
-
-        <p>
-          Please note the following important points:
-        </p>
-        <ol>
-          <li>
-              This tool is intended to help you make relatively simple routing policies.
-          </li>
-          <li>
-              When processing routes, <b>the first matching rule wins</b>. Please consider the ordering of your rules
-              and ensure to put more specific rules first.
-          </li>
-          <li>
-              You are responsible for your own routing policy and ensuring any rules you set here have the desired effect.
-              If in doubt, feel free to contact our operations team.
-          </li>
-        </ol>
-      </div>
+    <div class="alert alert-info mt-4" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="mr-4 text-center">
+                <i class="fa fa-question-circle fa-2x"></i>
+            </div>
+            <div>
+                <h3>
+                  Route Server Filtering
+                </h3>
+                <p>
+                  <b>IXP Manager</b> supports the industry standards for community based route server filtering. You can find
+                  the <a href="https://docs.ixpmanager.org/features/route-servers/#well-known-filtering-communities">official
+                  documentation here</a>. Using the BGP-community mechanism can be difficult to implement where a network
+                  engineer is not familiar with BGP communities or where a network may have arduous change control processes
+                  for altering a router's configuration.
+                </p>
+                <p>
+                  This purpose of this tool is to allow IXP participants to implement the exact same mechanism but rather than
+                  tagging your routes on egress from your router / manipulating routes on ingress to your router, the IXP's
+                  route servers perform the equivalent tagging / route manipulation as they accept your routes or send you
+                  routes from other networks.
+                </p>
+                <p>
+                  Please note the following important points:
+                </p>
+                <ol>
+                  <li>
+                      This tool is intended to help you make relatively simple routing policies.
+                  </li>
+                  <li>
+                      When processing routes, <b>the first matching rule wins</b>. Please consider the ordering of your rules
+                      and ensure to put more specific rules first.
+                  </li>
+                  <li>
+                      You are responsible for your own routing policy and ensuring any rules you set here have the desired effect.
+                      If in doubt, feel free to contact our operations team.
+                  </li>
+                </ol>
+            </div>
+        </div>
     </div>
-  </div>
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>

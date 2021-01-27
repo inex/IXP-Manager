@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,7 +22,6 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Former;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -40,13 +39,14 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class VendorController extends EloquentController
 {
     /**
      * The object being created / edited
+     *
      * @var Vendor
      */
     protected $object = null;
@@ -64,7 +64,6 @@ class VendorController extends EloquentController
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'vendor-e2f',
-
             'listColumns'    => [
                 'id'             => [
                     'title' => 'UID',
@@ -94,7 +93,7 @@ class VendorController extends EloquentController
             return $q->where('id', $id );
         } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
             return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-        })->get()->toArray();;
+        })->get()->toArray();
     }
 
     /**
@@ -121,9 +120,9 @@ class VendorController extends EloquentController
         $this->object = Vendor::findOrFail( $id );
 
         Former::populate([
-            'name'        => request()->old( 'name',        $this->object->name ),
-            'shortname'   => request()->old( 'shortname',   $this->object->shortname ),
-            'bundle_name' => request()->old( 'bundle_name', $this->object->bundle_name ),
+            'name'        => request()->old( 'name',        $this->object->name         ),
+            'shortname'   => request()->old( 'shortname',   $this->object->shortname    ),
+            'bundle_name' => request()->old( 'bundle_name', $this->object->bundle_name  ),
         ]);
 
         return [
@@ -132,49 +131,49 @@ class VendorController extends EloquentController
     }
 
     /**
-     * Check if the form is valid
-     *
-     * @param $request
-     */
-    public function checkForm( Request $request ): void
-    {
-        $request->validate( [
-            'name'              => 'required|string|max:255',
-            'shortname'         => 'required|string|max:255',
-        ] );
-    }
-
-    /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doStore( Request $request )
+    public function doStore( Request $r )
     {
-        $this->checkForm( $request );
-        $this->object = Vendor::create( $request->all() );
+        $this->checkForm( $r );
+        $this->object = Vendor::create( $r->all() );
         return true;
     }
 
     /**
      * Function to do the actual validation and updating of the submitted object.
      *
-     * @param Request $request
+     * @param Request   $r
+     * @param int       $id
      *
-     * @param int $id
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doUpdate( Request $request, int $id )
+    public function doUpdate( Request $r, int $id )
     {
         $this->object = Vendor::findOrFail( $id );
-        $this->checkForm( $request );
-        $this->object->update( $request->all() );
+        $this->checkForm( $r );
+        $this->object->update( $r->all() );
         return true;
+    }
+
+    /**
+     * Check if the form is valid
+     *
+     * @param $r
+     */
+    public function checkForm( Request $r ): void
+    {
+        $r->validate( [
+            'name'              => 'required|string|max:255',
+            'shortname'         => 'required|string|max:255',
+        ] );
     }
 }

@@ -4,7 +4,7 @@
     $ppps = $t->results;
 ?>
 
-<table class="table table-striped" width="100%">
+<table class="table table-striped w-100">
     <thead class="thead-dark">
         <tr>
             <th>
@@ -30,7 +30,6 @@
             </th>
         </tr>
     </thead>
-
     <tbody>
         <?php foreach( $ppps as $ppp ): ?>
             <tr>
@@ -41,7 +40,7 @@
                     <?= $t->ee( $ppp->patchPanel->cabinet->name ) ?>
                 </td>
                 <td>
-                    <a href="<?= route( 'patch-panel-port@list-for-patch-panel', [ 'pp' => $ppp->patchPanel->id ] ) ?>">
+                    <a href="<?= route( 'patch-panel-port@list-for-patch-panel', [ 'pp' => $ppp->patch_panel_id ] ) ?>">
                         <?= $t->ee( $ppp->patchPanel->name ) ?>
                     </a>
                 </td>

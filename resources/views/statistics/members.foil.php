@@ -181,7 +181,7 @@
                                     </div>
                                     <div class="btn-group btn-group-sm my-auto" role="group">
                                         <?php if( config('grapher.backends.sflow.enabled') && isset( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS[$graph->category()] ) && $t->grapher()->canAccessAllCustomerP2pGraphs() ): ?>
-                                            <a class="btn btn-white" href="<?= route('statistics@p2p', [ 'cid' => $graph->customer()->id ] ) . "?category={$graph->category()}&period={$graph->period()}" ?>">
+                                            <a class="btn btn-white" href="<?= route('statistics@p2p', [ 'cust' => $graph->customer()->id ] ) . "?category={$graph->category()}&period={$graph->period()}" ?>">
                                                 <span class="fa fa-random"></span>
                                             </a>
                                         <?php endif; ?>

@@ -1,6 +1,4 @@
-
 <script>
-
     let vlan_protocols = {
         <?php foreach( $t->srcVlis as $svli ): /** @var \IXP\Models\VlanInterface $svli */ ?>
         "<?= $svli->id ?>": {
@@ -16,17 +14,16 @@
     <?php foreach( $t->srcVlis as $vli ): ?>
         <?php if( $vli->ipv4enabled ): ?>
             ipv4_select_options += `<option value="<?= $vli->id ?>"><?= $vli->vlan->name ?> :: `
-                + `<?= $vli->ipv4Address ? $vli->ipv4Address->address : 'No IP - VLI ID: ' . $vli->id ?>`
+                + `<?= $vli->ipv4Address->address ?? ('No IP - VLI ID: '.$vli->id) ?>`
                 + `</option>`;
         <?php endif; ?>
 
         <?php if( $vli->ipv6enabled ): ?>
             ipv6_select_options += `<option value="<?= $vli->id ?>"><?= $vli->vlan->name ?> :: `
-                + `<?= $vli->ipv6Address ? $vli->ipv6Address->address : 'No IP - VLI ID: ' . $vli->id ?>`
+                + `<?= $vli->ipv6Address->address ?? ('No IP - VLI ID: '.$vli->id) ?>`
                 + `</option>`;
         <?php endif; ?>
     <?php endforeach; ?>
-
 
     let protocol = "<?= $t->protocol ?>";
 
@@ -34,9 +31,7 @@
     let sel_protocol  = $("#select_protocol");
 
     let fnSelNetworkChanged = function() {
-
         let protos = vlan_protocols[sel_network.val()];
-
         let options = "";
 
         if (protos.ipv4) {
@@ -53,7 +48,6 @@
     };
 
     let fnSelProtocolChanged = function() {
-
         let protocol         = sel_protocol.val();
         let selected_network = sel_network.val();
 
@@ -70,8 +64,6 @@
         sel_network.on( 'change', fnSelNetworkChanged );
     };
 
-
     sel_network.on( 'change', fnSelNetworkChanged );
     sel_protocol.on( 'change', fnSelProtocolChanged );
-
 </script>

@@ -60,7 +60,7 @@
                             <li class="nav-item float-right ml-3">
                                 <input type="submit" class="btn btn-white" value="Show Graphs">
                                 <?php if( config('grapher.backends.sflow.enabled') && $t->grapher()->canAccessAllCustomerP2pGraphs() ): ?>
-                                    <a class="btn btn-white ml-2" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->id ] ) ?>">
+                                    <a class="btn btn-white ml-2" href="<?= route( 'statistics@p2p', [ 'cust' => $t->c->id ] ) ?>">
                                         <i class="fa fa-random"></i>&nbsp;&nbsp;P2P Graphs
                                     </a>&nbsp;&nbsp;&nbsp;&nbsp;
                                 <?php endif; ?>
@@ -82,7 +82,7 @@
                             </h3>
                             <div class="btn-group btn-group-sm my-auto">
                                 <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
-                                    <a class="btn btn-sm btn-white" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->id ] ) ?>">
+                                    <a class="btn btn-sm btn-white" href="<?= route( 'statistics@p2p', [ 'cust' => $t->c->id ] ) ?>">
                                         <span class="fa fa-random"></span>
                                     </a>
                                 <?php endif; ?>
@@ -98,15 +98,17 @@
                 </div>
             </div>
 
-            <?php foreach( $t->c->virtualinterfaces as $vi ): ?>
+            <?php foreach( $t->c->virtualinterfaces as $vi ):
+                /** @var $vi \IXP\Models\VirtualInterface */?>
                 <div class="card col-sm-12 mt-4 bg-light">
                     <div class="card-body row" >
-                        <?php if( !$vi->physicalInterfaces()->exists() ) {
+                        <?php $pis = $vi->physicalInterfaces ?>
+                        <?php if( $pis->isEmpty() ) {
                                 continue;
                             }
 
-                            $pi = $vi->physicalInterfaces()->first();
-                            $isLAG =  $vi->physicalInterfaces()->count() > 1;
+                            $pi = $pis[ 0 ];
+                            $isLAG =  count( $pis ) > 1;
                         ?>
 
                         <?php if( $isLAG ): ?>
@@ -122,8 +124,8 @@
                                                 <?= $t->insert( 'statistics/snippets/latency-dropup', [ 'vi' => $vi ] ) ?>
 
                                                 <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
-                                                    <a class="btn btn-white" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->id ] )
-                                                        . ( $vi->vlanInterfaces()->exists() ? '?svli=' . $vi->vlanInterfaces()->first()->id : '' )
+                                                    <a class="btn btn-white" href="<?= route( 'statistics@p2p', [ 'cust' => $t->c->id ] )
+                                                        . ( $vi->vlanInterfaces->isNotEmpty() ? '?svli=' . $vi->vlanInterfaces[ 0 ]->id : '' )
                                                     ?>">
                                                         <span class="fa fa-random"></span>
                                                     </a>
@@ -144,7 +146,7 @@
                             </div>
                         <?php endif; ?>
 
-                        <?php foreach( $vi->physicalInterfaces as $idx => $pi ): ?>
+                        <?php foreach( $pis as $idx => $pi ): ?>
                             <div class="col-sm-12 col-lg-6 mb-4 <?php if( $isLAG && $idx > 0 ): ?>offset-lg-6 <?php endif; ?>">
                                 <div class="card">
                                     <div class="card-header">
@@ -153,10 +155,10 @@
                                                 <h5>
                                                     <?php if( $isLAG ): ?>
                                                         <?= $pi->switchPort->switcher->name ?> ::
-                                                        <?= $pi->switchPort->name ?> (<?=$pi->speed() ?>)
+                                                        <?= $pi->switchPort->name ?> (<?= $pi->speed() ?>)
                                                     <?php else: ?>
                                                         <?= $pi->switchPort->switcher->cabinet->location->name ?>
-                                                        / <?= $pi->switchPort->switcher->name ?> (<?=$pi->speed() ?>)
+                                                        / <?= $pi->switchPort->switcher->name ?> (<?= $pi->speed() ?>)
                                                     <?php endif; ?>
                                                 </h5>
                                             </div>
@@ -166,8 +168,8 @@
                                                         <?= $t->insert( 'statistics/snippets/latency-dropup', [ 'vi' => $vi ] ) ?>
                                                     <?php endif; ?>
                                                     <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
-                                                        <a class="btn btn-white btn-sm" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->id ] )
-                                                        . ( $vi->vlanInterfaces()->exists() ? '?svli=' . $vi->vlanInterfaces()->first()->id : '' )
+                                                        <a class="btn btn-white btn-sm" href="<?= route( 'statistics@p2p', [ 'cust' => $t->c->id ] )
+                                                        . ( $vi->vlanInterfaces->isNotEmpty() ? '?svli=' . $vi->vlanInterfaces[ 0 ]->id : '' )
                                                         ?>">
                                                             <span class="fa fa-random"></span>
                                                         </a>
@@ -187,9 +189,10 @@
                                                 <br />
                                                 <?php if( $pi->switchPort->isTypePeering() ): ?>
                                                 Peering Port
-                                                <?php elseif( $pi->switchPort->isTypeFanout() ): ?>
-                                                    Fanout Port for <a href="<?= route( 'customer@overview', [ 'cust' => $pi->relatedInterface()->virtualInterface->customer->id ] ) ?>">
-                                                    <?= $pi->relatedInterface()->virtualInterface->customer->abbreviatedName ?>
+                                                <?php elseif( $pi->switchPort->isTypeFanout() ):
+                                                    $cust = $pi->relatedInterface()->virtualInterface->customer?>
+                                                    Fanout Port for <a href="<?= route( 'customer@overview', [ 'cust' => $cust->id ] ) ?>">
+                                                    <?= $cust->abbreviatedName ?>
                                                 </a>
                                                 <?php elseif( $pi->switchPort->typeReseller() ): ?>
                                                     Reseller Uplink Port

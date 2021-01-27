@@ -1,10 +1,11 @@
 <?php
     /** @var Foil\Template\Template $t */
     $this->layout( 'layouts/ixpv4' );
+    $isSuperUser = Auth::getUser()->isSuperUser();
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
+    <?php if( Auth::check() && $isSuperUser ): ?>
         <a href="<?= route( 'customer@overview', [ 'cust' => $t->c->id ] ) ?>" >
             <?= $t->c->getFormattedName() ?>
         </a>
@@ -20,11 +21,13 @@
     <?php endif; ?>
 <?php $this->append() ?>
 
-<?php if( Auth::check() && !Auth::getUser()->isSuperUser() ): ?>
-    <?php $this->section( 'page-header-postamble' ) ?>
+
+<?php $this->section( 'page-header-postamble' ) ?>
+    <?php if( Auth::check() && !$isSuperUser ): ?>
         <a class="btn btn-white" href="<?= route( 'statistics@member', [ 'id' => $t->c->id ] ) ?>">All Ports</a>
-    <?php $this->append() ?>
-<?php endif; ?>
+    <?php endif; ?>
+<?php $this->append() ?>
+
 
 <?php $this->section('content') ?>
     <div class="row">
@@ -62,8 +65,8 @@
                     </ul>
                 </div>
 
-                <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
-                    <button type="button" class="btn btn-white pull-right tw-text-gray-600" data-toggle="modal" data-target="#grapher-backend-info-modal">
+                <?php if( Auth::check() && $isSuperUser ): ?>
+                    <button type="button" class="btn btn-white pull-right" data-toggle="modal" data-target="#grapher-backend-info-modal">
                         Backend Info
                     </button>
                 <?php endif; ?>
@@ -100,7 +103,7 @@
         <?php endforeach; ?>
     </div>
 
-    <?php if( Auth::check() && Auth::getUser()->isSuperUser() ):?>
+    <?php if( Auth::check() && $isSuperUser ):?>
         <div class="modal" tabindex="-1" role="dialog" id="grapher-backend-info-modal">
             <div class="modal-dialog modal-xl" role="document">
                 <div class="modal-content">
@@ -133,7 +136,6 @@
         </div>
     <?php endif; ?>
 <?php $this->append() ?>
-
 
 <?php $this->section( 'scripts' ) ?>
     <?php if( $t->vli->canGraphForLatency( IXP\Services\Grapher\Graph::PROTOCOL_IPV4 ) && $t->vli->canGraphForLatency( IXP\Services\Grapher\Graph::PROTOCOL_IPV6 ) ): ?>

@@ -4,7 +4,7 @@
             <i class="fa fa-info-circle fa-2x"></i>
         </div>
         <div class="col-sm-12"
-            <b>No vendor entries exist in the database.</b> <a href="<?= route( $t->feParams->route_prefix . '@add') ?>">Add one...</a>
+            <b>No vendor entries exist in the database.</b> <a href="<?= route( $t->feParams->route_prefix . '@create') ?>">Create one...</a>
         </div>
     </div>
 </div>

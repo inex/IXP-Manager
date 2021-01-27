@@ -120,7 +120,9 @@ class Customer extends Graph
      */
     public static function authorisedForAllCustomers(): bool
     {
-        if( Auth::check() && Auth::getUser()->isSuperUser() ) {
+        $privs = Auth::getUser()->privs();
+
+        if( Auth::check() && $privs === User::AUTH_SUPERUSER ) {
             return true;
         }
 
@@ -128,7 +130,7 @@ class Customer extends Graph
             return true;
         }
 
-        return Auth::check() && is_numeric( config( 'grapher.access.customer' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.customer' );
+        return Auth::check() && is_numeric( config( 'grapher.access.customer' ) ) && $privs >= config( 'grapher.access.customer' );
     }
 
     /**

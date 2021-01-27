@@ -33,12 +33,7 @@
         );
         ?>
 
-        <?= Former::hidden( 'id' )
-            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->id : '' )
-        ?>
-
         <?= Former::close() ?>
-
     </div>
 </div>
 

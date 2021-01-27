@@ -2,7 +2,7 @@
     <h3>
         Users
     </h3>
-    <table class="table table-striped" width="100%">
+    <table class="table table-striped w-100">
         <thead class="thead-dark">
             <tr>
                 <th>
@@ -20,7 +20,8 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach( $t->results[ 'users' ] as $user ): ?>
+            <?php foreach( $t->results[ 'users' ] as $user ):
+                /** @var $user \IXP\Models\User */?>
                 <tr>
                     <td>
                         <a href="<?= route( "login-history@view", [ "id" => $user->id ] ) ?>">
@@ -31,12 +32,12 @@
                         <?= $t->ee( $user->email ) ?>
                     </td>
                     <td>
-                        <a href="<?= route( "customer@overview" , [ 'cust' => $user->customer->id ] ) ?>">
+                        <a href="<?= route( "customer@overview" , [ 'cust' => $user->custid ] ) ?>">
                             <?= $t->ee( $user->customer->name ) ?>
                         </a>
                     </td>
                     <td>
-                        <?= $user->created_at->format( "Y-m-d H:i:s") ?>
+                        <?= $user->created_at ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

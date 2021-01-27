@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,21 +22,21 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+
 use IXP\Models\{
     Aggregators\RsPrefixAggregator,
     Customer,
     RsPrefix
 };
-
-use Illuminate\Http\Request;
-use Illuminate\View\View;
 /**
  * Route Server Prefixes Controller
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class RsPrefixesController extends Controller

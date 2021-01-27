@@ -91,7 +91,7 @@
                     </a>
 
                     <?php if( config('grapher.backends.sflow.enabled') ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'statistics/p2p/*' ) ?: 'active' ?>" href="<?= route( 'statistics@p2p', ['cid' => Auth::getUser()->custid ] ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/p2p/*' ) ?: 'active' ?>" href="<?= route( 'statistics@p2p', ['cust' => Auth::getUser()->custid ] ) ?>">
                             My Peer to Peer Traffic
                         </a>
                     <?php endif; ?>
@@ -105,20 +105,20 @@
                     <?php endif; ?>
 
                     <?php if( is_numeric( config( 'grapher.access.infrastructure' ) ) && config( 'grapher.access.infrastructure' )  <= Auth::getUser()->privs() ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'statistics/infrastructure' ) ?: 'active' ?>" href="<?= route( 'statistics@infrastructure' ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/infrastructure*' ) ?: 'active' ?>" href="<?= route( 'statistics@infrastructure' ) ?>">
                             Infrastructure Graphs
                         </a>
                     <?php endif; ?>
 
                     <?php if( is_numeric( config( 'grapher.access.vlan' ) ) && config( 'grapher.access.vlan' ) <= Auth::getUser()->privs() && config( 'grapher.backends.sflow.enabled' ) ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'statistics/vlan' ) ?: 'active' ?>" href="<?= route( 'statistics@vlan' ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/vlan*' ) ?: 'active' ?>" href="<?= route( 'statistics@vlan' ) ?>">
                             VLAN / Per-Protocol Graphs
                         </a>
                     <?php endif; ?>
 
                     <?php if( is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) <= Auth::getUser()->privs() ): ?>
                         <?php if( count( config( 'grapher.backends.mrtg.trunks' ) ?? [] ) ): ?>
-                            <a class="dropdown-item <?= !request()->is( 'statistics/trunk' ) ?: 'active' ?>" href="<?= route('statistics@trunk') ?>">
+                            <a class="dropdown-item <?= !request()->is( 'statistics/trunk*' ) ?: 'active' ?>" href="<?= route('statistics@trunk') ?>">
                                 Inter-Switch / PoP Graphs
                             </a>
                         <?php elseif( $cb = \IXP\Models\CoreBundle::active()->first() ): ?>

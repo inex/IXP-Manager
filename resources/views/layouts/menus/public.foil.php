@@ -62,20 +62,20 @@
                     <?php endif; ?>
 
                     <?php if( is_numeric( config( 'grapher.access.infrastructure' ) ) && config( 'grapher.access.infrastructure' ) === \IXP\Models\User::AUTH_PUBLIC ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'statistics/infrastructure' ) ?: 'active' ?>" href="<?= route( 'statistics@infrastructure' ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/infrastructure*' ) ?: 'active' ?>" href="<?= route( 'statistics@infrastructure' ) ?>">
                             Infrastructure Graphs
                         </a>
                     <?php endif; ?>
 
                     <?php if( is_numeric( config( 'grapher.access.vlan' ) ) && config( 'grapher.access.vlan' ) === \IXP\Models\User::AUTH_PUBLIC && config( 'grapher.backends.sflow.enabled' ) ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'statistics/vlan' ) ?: 'active' ?>" href="<?= route( 'statistics@vlan' ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/vlan*' ) ?: 'active' ?>" href="<?= route( 'statistics@vlan' ) ?>">
                             VLAN / Per-Protocol Graphs
                         </a>
                     <?php endif; ?>
 
                     <?php if( is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) === \IXP\Models\User::AUTH_PUBLIC ): ?>
                         <?php if( count( config( 'grapher.backends.mrtg.trunks' ) ?? [] ) ): ?>
-                            <a class="dropdown-item <?= !request()->is( 'statistics/trunk' ) ?: 'active' ?>" href="<?= route('statistics@trunk') ?>">
+                            <a class="dropdown-item <?= !request()->is( 'statistics/trunk*' ) ?: 'active' ?>" href="<?= route('statistics@trunk') ?>">
                                 Inter-Switch / PoP Graphs
                             </a>
                         <?php elseif( $cb = \IXP\Models\CoreBundle::active()->first() ): ?>

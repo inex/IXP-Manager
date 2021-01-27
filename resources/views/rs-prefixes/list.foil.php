@@ -1,5 +1,5 @@
 <?php $this->layout( 'layouts/ixpv4' );
-/** @var object $t */
+    /** @var object $t */
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -46,14 +46,12 @@
 <?php $this->section( 'scripts' ) ?>
     <script>
         $(document).ready( function() {
-            $( '.table' ).show();
-
             $( '.table' ).dataTable({
                 stateSave: true,
                 stateDuration : DATATABLE_STATE_DURATION,
                 responsive : true,
                 pageLength: 100
-            } );
+            } ).show();
         });
     </script>
 <?php $this->append() ?>

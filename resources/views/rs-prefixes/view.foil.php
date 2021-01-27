@@ -1,5 +1,5 @@
 <?php $this->layout( 'layouts/ixpv4' );
-/** @var object $t */
+    /** @var object $t */
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -16,7 +16,7 @@
 <?php $this->section( 'content' ) ?>
     <div class="row">
         <div class="col-sm-12">
-            <?php if( $t->totalVl != $t->filteredVl ): ?>
+            <?php if( $t->totalVl !== $t->filteredVl ): ?>
                 <div class="alert alert-warning mt-4" role="alert">
                     <div class="d-flex align-items-center">
                         <div class="text-center">
@@ -83,7 +83,7 @@
 
 <?php $this->section( 'scripts' ) ?>
     <script>
-        $(document).ready( function() {
+        $( document ).ready( function() {
             <?php if( $t->type ): ?>
                 $( '.tab-pane' ).removeClass( 'active' );
                 $( '.nav-tabs li' ).removeClass( 'active' );
@@ -91,14 +91,12 @@
                 $( '#nav-<?=  $t->type ?>' ).addClass( 'active' );
             <?php endif; ?>
 
-            $( '.table' ).show();
-
             $( '.table' ).dataTable({
                 stateSave: true,
                 stateDuration : DATATABLE_STATE_DURATION,
                 responsive : true,
                 pageLength: 50
-            });
+            }).show();
         });
     </script>
 <?php $this->append() ?>

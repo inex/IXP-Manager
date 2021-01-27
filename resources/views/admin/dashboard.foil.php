@@ -458,7 +458,7 @@
                                             <?php if( $id === 'ixp' ): ?>
                                                 href="<?= route('statistics@ixp') ?>"
                                             <?php else: ?>
-                                                href="<?= route('statistics@infrastructure', [ 'graphid' => $id ] ) ?>"
+                                                href="<?= route('statistics@infrastructure', [ 'infra' => $id ] ) ?>"
                                             <?php endif; ?>
                                         >
                                             <i class="fa fa-search"></i></a>

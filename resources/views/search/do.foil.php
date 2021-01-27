@@ -89,7 +89,7 @@
                                             <a class="btn btn-white" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $cust->id, "type" => "agg" ] ) ?>">
                                                 Statistics
                                             </a>
-                                            <a class="btn btn-white" href="<?= route( 'statistics@p2p-get', [ "cid" => $cust->id ] )?>">
+                                            <a class="btn btn-white" href="<?= route( 'statistics@p2p-get', [ 'cust' => $cust->id ] )?>">
                                                 P2P
                                             </a>
                                             <a class="btn btn-white" href="<?= route( "customer@overview" , [ 'cust' => $cust->id, "tab" => "users" ] ) ?>">
@@ -123,9 +123,7 @@
 
 <?php $this->section( 'scripts' ) ?>
     <script>
-        $('.table').show();
-
-        $('.table').DataTable( {
+        $( '.table' ).dataTable( {
             stateSave: true,
             stateDuration : DATATABLE_STATE_DURATION,
             responsive: true,
@@ -133,7 +131,6 @@
             searching: false,
             paging:   false,
             info:   false,
-        } );
-
+        } ).show();
     </script>
 <?php $this->append() ?>

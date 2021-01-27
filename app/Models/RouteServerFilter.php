@@ -143,7 +143,7 @@ class RouteServerFilter extends Model
      *
      * @return string
      */
-    public function resolveActionAdvertise(): string
+    public function actionAdvertise(): string
     {
         return self::$ADVERTISE_ACTION_TEXT[ $this->action_advertise ] ?? 'Unknown';
     }
@@ -154,18 +154,18 @@ class RouteServerFilter extends Model
      *
      * @return string
      */
-    public function resolveActionReceive(): string
+    public function actionReceive(): string
     {
         return self::$RECEIVE_ACTION_TEXT[ $this->action_receive ] ?? 'Unknown';
     }
 
     /**
      * Turn the database integer representation of the protocol into text as
-     * defined in the RouterEntity::$PROTOCOLS array (or 'Unknown')
+     * defined in the RouteServerFilter::$PROTOCOLS array (or 'Unknown')
      *
      * @return string
      */
-    public function resolveProtocol(): string
+    public function protocol(): string
     {
         return Router::$PROTOCOLS[ $this->protocol ] ?? 'Both';
     }

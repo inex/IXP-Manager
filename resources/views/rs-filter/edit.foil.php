@@ -63,7 +63,7 @@
                         <label for="advertised_prefix" class="control-label col-sm-4 col-md-4 col-lg-3">Advertise Prefix</label>
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div id="area_advertised_prefix"></div>
-                            <?php if(  $t->errors->has('advertised_prefix') ): ?>
+                            <?php if(  $t->errors->has( 'advertised_prefix' ) ): ?>
                                 <div class="invalid-feedback d-block"><?= $t->errors->first('advertised_prefix') ?></div>
                             <?php endif; ?>
                             <small class="form-text text-muted former-help-text">
@@ -74,6 +74,9 @@
                                 maximum prefix setting is less that 2,000.
                             </small>
                         </div>
+                        <?= Former::hidden( 'advertised_prefix_val' )
+                            ->id( 'advertised_prefix_val' )
+                        ?>
                     </div>
 
                     <?= Former::select( 'action_advertise' )
@@ -88,7 +91,7 @@
                         <label for="received_prefix" class="control-label col-sm-4 col-md-4 col-lg-3">Received Prefix</label>
                         <div class="col-lg-4 col-md-6 col-sm-6" >
                             <div id="area_received_prefix"></div>
-                            <?php if(  $t->errors->has('received_prefix') ): ?>
+                            <?php if(  $t->errors->has( 'received_prefix' ) ): ?>
                                 <div class="invalid-feedback d-block"><?= $t->errors->first('received_prefix') ?></div>
                             <?php endif; ?>
                             <small class="form-text text-muted former-help-text">
@@ -96,8 +99,10 @@
                               or you can select a specific prefix here. See above (received prefix) help text for more
                               information as the same rules apply.
                             </small>
-
                         </div>
+                        <?= Former::hidden( 'received_prefix_val' )
+                            ->id( 'received_prefix_val' )
+                        ?>
                     </div>
 
                     <?= Former::select( 'action_receive' )
@@ -107,10 +112,6 @@
                         ->addClass( 'chzn-select' )
                         ->blockHelp( 'Please see below for an explanation of the possible actions.' )
 
-                    ?>
-
-                    <?= Former::hidden( 'id' )
-                        ->value( $t->rsf ? $t->rsf->id : '' )
                     ?>
 
                     <?= Former::hidden( 'custid' )
@@ -131,57 +132,52 @@
         </div>
     </div>
 
+    <div class="alert alert-info mt-4 former-help-text" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="mr-4 text-center">
+                <i class="fa fa-question-circle fa-2x"></i>
+            </div>
+            <div>
+                <h3>
+                    Filter Action Help
+                </h3>
+                <p>
+                    There are six possible actions for prefixes you advertise or receive via the route servers:
+                </p>
 
-  <div class="alert alert-info mt-4 former-help-text" role="alert">
-    <div class="d-flex align-items-center">
-      <div class="mr-4 text-center">
-        <i class="fa fa-question-circle fa-2x"></i>
-      </div>
-      <div>
-        <h3>
-          Filter Action Help
-        </h3>
-
-        <p>
-            There are six possible actions for prefixes you advertise or receive via the route servers:
-        </p>
-
-        <dl>
-
-          <dt>No Action</dt>
-          <dd>
-              Take no action whatsoever on the matched routes. This is important as <b>Receive As Is / Advertise As Is</b>
-              is a matching action and processing of those routes will stop there. Using <b>No Action</b> will not match
-              the routes and they will continue to be evaluated by any further rules.
-          </dd>
-
-          <dt>Receive As Is / Advertise As Is</dt>
-          <dd>
-              Accept / advertise the matched routes as is and stop processing.
-          </dd>
-
-          <dt>Do Not Advertise / Do Not Receive (Drop)</dt>
-          <dd>
-              For routes you are sending, do not advertise them to the matching peer(s). For matching routes you
-              would ordinarily expect to receive, drop them.
-          </dd>
-
-          <dt>Prepend My ASN / Prepend Peer's ASN</dt>
-          <dd>
-              For a matching route, prepend the appropriate ASN 1, 2 or 3 times to make the route look less favourable
-              in BGP routing decisions.
-          </dd>
-
-
-
-        </dl>
-
-
-      </div>
+                <dl>
+                    <dt>
+                        No Action
+                    </dt>
+                    <dd>
+                      Take no action whatsoever on the matched routes. This is important as <b>Receive As Is / Advertise As Is</b>
+                      is a matching action and processing of those routes will stop there. Using <b>No Action</b> will not match
+                      the routes and they will continue to be evaluated by any further rules.
+                    </dd>
+                    <dt>
+                        Receive As Is / Advertise As Is
+                    </dt>
+                    <dd>
+                        Accept / advertise the matched routes as is and stop processing.
+                    </dd>
+                    <dt>
+                        Do Not Advertise / Do Not Receive (Drop)
+                    </dt>
+                    <dd>
+                        For routes you are sending, do not advertise them to the matching peer(s). For matching routes you
+                        would ordinarily expect to receive, drop them.
+                    </dd>
+                    <dt>
+                        Prepend My ASN / Prepend Peer's ASN
+                    </dt>
+                    <dd>
+                        For a matching route, prepend the appropriate ASN 1, 2 or 3 times to make the route look less favourable
+                        in BGP routing decisions.
+                    </dd>
+                </dl>
+            </div>
+        </div>
     </div>
-  </div>
-
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>

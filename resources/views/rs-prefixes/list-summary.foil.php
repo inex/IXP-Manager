@@ -1,4 +1,4 @@
-<table class="table collapse table-striped" id="summary-table-<?= $t->type ?>">
+<table class="table collapse table-striped w-100" id="summary-table-<?= $t->type ?>">
     <thead class="thead-dark">
         <th>
             <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>

@@ -86,14 +86,14 @@ class Store extends FormRequest
         }
         
         return [
-            'peer_id'               => [ 'nullable', 'integer',
+            'peer_id' => [ 'nullable', 'integer',
                 function( $attribute, $value, $fail ) {
                     if( !Customer::find( $value ) ) {
                         return $fail( 'Customer is invalid / does not exist.' );
                     }
                 }
             ],
-            'vlan_id'               => [ 'nullable', 'integer',
+            'vlan_id' => [ 'nullable', 'integer',
                 function( $attribute, $value, $fail ) {
                     if( !Vlan::find( $value ) ) {
                         return $fail( 'Vlan is invalid / does not exist.' );

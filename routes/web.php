@@ -86,24 +86,19 @@ Route::get( 'content/members/{priv}/{page}','ContentController@members' )->name(
 /// Statistics -> a dedicated request object manages authorization
 ///
 Route::group( [ 'prefix' => 'statistics' ], function() {
-    Route::get(  'ixp/{category?}',                             'StatisticsController@ixp'               )->name( 'statistics@ixp'                );
-    Route::get(  'infrastructure/{graphid?}/{category?}',       'StatisticsController@infrastructure'    )->name( 'statistics@infrastructure'     );
-    Route::get(  'vlan/{vlanid?}/{protocol?}/{category?}',      'StatisticsController@vlan'              )->name( 'statistics@vlan'               );
-    Route::get(  'switch/{switchid?}/{category?}',              'StatisticsController@switch'            )->name( 'statistics@switch'             );
-    Route::get(  'trunk/{trunkid?}/{category?}',                'StatisticsController@trunk'             )->name( 'statistics@trunk'              );
-
-    Route::get(  'members', 'StatisticsController@members' );
-    Route::post( 'members', 'StatisticsController@members' )->name( 'statistics@members' );
-
-    Route::get(  'p2p/{cid}', 'StatisticsController@p2p' )->name( 'statistics@p2p-get' );
-    Route::post( 'p2p/{cid}', 'StatisticsController@p2p' )->name( 'statistics@p2p' );
-
-    Route::get(  'member/{id?}',                                'StatisticsController@member'            )->name( 'statistics@member'             );
-
-    Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'   )->name( 'statistics@member-drilldown'   );
-    Route::get(  'latency/{vli}/{protocol}',                  'StatisticsController@latency'           )->name( 'statistics@latency'            );
-
-    Route::get(  'core-bundle/{cb}',                          'StatisticsController@coreBundle'        )->name( 'statistics@core-bundle'            );
+    Route::get(  'ixp/{category?}',                             'StatisticsController@ixp'                  )->name( 'statistics@ixp'                   );
+    Route::get(  'infrastructure/{infra?}/{category?}',         'StatisticsController@infrastructure'       )->name( 'statistics@infrastructure'        );
+    Route::get(  'vlan/{vlan?}/{protocol?}/{category?}',        'StatisticsController@vlan'                 )->name( 'statistics@vlan'                  );
+    Route::get(  'switch/{switch?}/{category?}',                'StatisticsController@switch'               )->name( 'statistics@switch'                );
+    Route::get(  'trunk/{trunk?}/{category?}',                  'StatisticsController@trunk'                )->name( 'statistics@trunk'                 );
+    Route::get(  'members',                                     'StatisticsController@members'              );
+    Route::post( 'members',                                     'StatisticsController@members'              )->name( 'statistics@members'               );
+    Route::get(  'p2p/{cust}',                                  'StatisticsController@p2p'                  )->name( 'statistics@p2p-get'               );
+    Route::post( 'p2p/{cust}',                                  'StatisticsController@p2p'                  )->name( 'statistics@p2p'                   );
+    Route::get(  'member/{cust?}',                              'StatisticsController@member'               )->name( 'statistics@member'                );
+    Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'      )->name( 'statistics@member-drilldown'      );
+    Route::get(  'latency/{vli}/{protocol}',                    'StatisticsController@latency'              )->name( 'statistics@latency'               );
+    Route::get(  'core-bundle/{cb}',                            'StatisticsController@coreBundle'           )->name( 'statistics@core-bundle'           );
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

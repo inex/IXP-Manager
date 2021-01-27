@@ -1,3 +1,6 @@
+<?php
+    $c = $t->c; /** @var \IXP\Models\Customer $c */
+?>
 <p>
     This <em>Route Server Prefix Filtering Analysis</em> tool allows one to examine what routes a
     network is advertising to the <?= config( 'identity.orgname' ) ?> Route Servers.
@@ -7,16 +10,16 @@
 
 <p>
     <?= config( 'identity.name' ) ?> has set the source of IRRDB information for this network to:
-    <?= $t->c->irrdbConfig->source ?> <em>(<?= $t->c->irrdbConfig->notes ?>)</em>.
+    <?= $c->irrdbConfig->source ?> <em>(<?= $c->irrdbConfig->notes ?>)</em>.
 </p>
 
 <p>
-    <?php if( $t->c->peeringmacro ): ?>
-        We are using the IPv4 AS-SET <code><?= $t->c->peeringmacro ?></code>
-        (and IPv6 AS-SET <code><?= $t->c->asMacro( 6 ) ?></code>) when querying the IRRDB database(s).
+    <?php if( $c->peeringmacro ): ?>
+        We are using the IPv4 AS-SET <code><?= $c->peeringmacro ?></code>
+        (and IPv6 AS-SET <code><?= $c->asMacro( 6 ) ?></code>) when querying the IRRDB database(s).
     <?php else: ?>
         We have no AS-SET on record for his network and as such, we are just querying the IRRDB database(s) using
-        the single ASN <?= $t->c->autsys ?>.
+        the single ASN <?= $c->autsys ?>.
     <?php endif; ?>
 </p>
 
@@ -46,10 +49,8 @@
 <div>
     <pre>
         route:          192.0.2.0/24
-        descr:          <?= $t->c->name ?>
-
-        origin:         AS<?= $t->c->autsys ?>
-
+        descr:          <?= $c->name ?>
+        origin:         AS<?= $c->autsys ?>
         mnt-by:         YOURORG-MNT
     </pre>
 
@@ -57,10 +58,8 @@
 <div>
     <pre>
         route6:         2001:DB8::/32
-        descr:          <?= $t->c->name ?>
-
-        origin:         AS<?= $t->c->autsys ?>
-
+        descr:          <?= $c->name ?>
+        origin:         AS<?= $c->autsys ?>
         mnt-by:         YOURORG-MNT
     </pre>
 </div>

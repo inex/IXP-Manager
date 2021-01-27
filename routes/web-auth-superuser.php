@@ -113,9 +113,9 @@ Route::group( [ 'prefix' => 'router' ], function() {
 ///
 Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'league-table', 'StatisticsController@leagueTable' );
-    Route::post( 'league-table', 'StatisticsController@leagueTable' )->name( 'statistics@league-table' );
-    Route::get(  'utilisation',  'StatisticsController@utilisation' )->name( 'statistics@utilisation' );
-    Route::post( 'utilisation',  'StatisticsController@utilisation' )->name( 'statistics@utilisation:post' );
+    Route::post( 'league-table', 'StatisticsController@leagueTable' )->name( 'statistics@league-table'      );
+    Route::get(  'utilisation',  'StatisticsController@utilisation' )->name( 'statistics@utilisation'       );
+    Route::post( 'utilisation',  'StatisticsController@utilisation' )->name( 'statistics@utilisation:post'  );
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

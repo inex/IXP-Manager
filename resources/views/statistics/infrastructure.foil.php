@@ -28,8 +28,8 @@
                                 <div class="nav-link d-flex ">
                                     <label for="category" class="col-lg-6 col-sm-4">Infrastructure:</label>
                                     <select id="form-select-infraid" name="infraid" class="form-control" >
-                                        <?php foreach( $t->infras as $id => $i ): ?>
-                                            <option value="<?= $id ?>" <?= $t->infra->id !== $id ?: 'selected="selected"' ?>><?= $i[ 'name' ] ?></option>
+                                        <?php foreach( $t->infras as $i ): ?>
+                                            <option value="<?= $i->id ?>" <?= $t->infra->id !== $i->id ?: 'selected="selected"' ?>><?= $i->name ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -44,7 +44,7 @@
                                     </select>
                                 </div>
                             </li>
-                            <a class="btn btn-white float-right" href="<?= route( 'statistics@ixp' ) ?>">
+                            <a class="btn btn-white float-right ml-2" href="<?= route( 'statistics@ixp' ) ?>">
                                 Overall IXP Graphs
                             </a>
                         </form>

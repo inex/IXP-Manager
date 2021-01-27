@@ -41,8 +41,8 @@
                                 <div class="nav-link d-flex ">
                                     <label class="col-4 col-md-4 col-lg-3" for="form-select-vlanid">Vlan:</label>
                                     <select id="form-select-vlanid" name="vlanid" class="form-control" >
-                                        <?php foreach( $t->vlans as $id => $v ): ?>
-                                            <option value="<?= $id ?>" <?= $t->vlan->id !== $id ?: 'selected="selected"' ?>><?= $v[ 'name' ] ?></option>
+                                        <?php foreach( $t->vlans as $v ): ?>
+                                            <option value="<?= $v->id ?>" <?= $t->vlan->id !== $v->id ?: 'selected="selected"' ?>><?= $v->name ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>

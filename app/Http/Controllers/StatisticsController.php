@@ -1,6 +1,9 @@
 <?php
+
+namespace IXP\Http\Controllers;
+
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,19 +23,16 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace IXP\Http\Controllers;
-
-use App, Auth;
-
-use Carbon\Carbon;
+use App, Auth, Carbon\Carbon;
 
 use Illuminate\Auth\Access\AuthorizationException;
 
-use Illuminate\Support\Arr;
 use Illuminate\Http\{
     Request,
     RedirectResponse
 };
+
+use Illuminate\Support\Arr;
 
 use Illuminate\View\View;
 
@@ -71,8 +71,8 @@ use IXP\Utils\View\Alert\{
  * Statistics Controller
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
- * @category   Statistics
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   Controller
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class StatisticsController extends Controller
@@ -122,30 +122,30 @@ class StatisticsController extends Controller
     /**
      * Show IXP infrastructure graphs
      *
-     * @param int $infraid ID of the infrastructure to show the graph of
-     * @param string $category Category of graph to show (e.g. bits / pkts)
+     * @param Infrastructure|null   $infra      Infrastructure to show the graph of
+     * @param string                $category   Category of graph to show (e.g. bits / pkts)
      *
      * @return View
      *
      * @throws
      */
-    public function infrastructure( int $infraid = 0, string $category = Graph::CATEGORY_BITS ) : View
+    public function infrastructure( ?Infrastructure $infra = null, string $category = Graph::CATEGORY_BITS ) : View
     {
         $infras     = Infrastructure::select( [ 'name', 'id' ] )
-            ->orderBy( 'name' )
-            ->get()->keyBy( 'id' )->toArray();
-        $infra      = Infrastructure::whereId( isset( $infras[ $infraid ] ) ? $infraid : array_keys( $infras )[0] )->first();
+            ->orderBy( 'name' )->get();
+
+        $inf        = $infra ?? $infras->first();
         $category   = Graph::processParameterCategory( $category, true );
 
         $graph      = App::make( Grapher::class )
-            ->infrastructure( $infra )->setType( Graph::TYPE_PNG )
+            ->infrastructure( $inf )->setType( Graph::TYPE_PNG )
             ->setProtocol( Graph::PROTOCOL_ALL )->setCategory( $category );
 
         $graph->authorise();
 
         return view( 'statistics/infrastructure' )->with( [
             'infras'   => $infras,
-            'infra'    => $infra,
+            'infra'    => $inf,
             'graph'    => $graph,
             'category' => $category,
         ] );
@@ -154,30 +154,29 @@ class StatisticsController extends Controller
     /**
      * Show Vlan (sflow) graphs
      *
-     * @param int       $vlanid     ID of the VLAN to show the graph of
-     * @param string    $protocol   IPv4/6
-     * @param string    $category
+     * @param Vlan|null     $vlan       VLAN to show the graph of
+     * @param string        $protocol   IPv4/6
+     * @param string        $category
      *
      * @return View
      *
      * @throws
      */
-    public function vlan( int $vlanid = 0, string $protocol = Graph::PROTOCOL_IPV4, string $category = Graph::CATEGORY_BITS ) : View
+    public function vlan( Vlan $vlan = null, string $protocol = Graph::PROTOCOL_IPV4, string $category = Graph::CATEGORY_BITS ) : View
     {
-        $vlans   = Vlan::publicOnly()
-            ->where( 'peering_matrix', true )->where( 'peering_manager', true )
-            ->orderBy( 'name' )->get()->keyBy( 'id' )->toArray();
+        $vlans   = Vlan::publicOnly()->where( 'peering_matrix', true )
+            ->where( 'peering_manager', true )
+            ->orderBy( 'name' )->get();
 
-        $protocol = Graph::processParameterRealProtocol( $protocol );
-        $category = Graph::processParameterCategory( $category, true );
-
-        if( !count( [ $vlans ] ) ) {
+        if( !$vlans->count() ) {
             abort( 404, 'No VLANs available for graphing' );
         }
 
-        $vlan     = Vlan::whereId( isset( $vlans[ $vlanid ] ) ? $vlanid : array_keys( $vlans )[0] )->first();
-        $graph    = App::make( Grapher::class )
-            ->vlan( $vlan )->setType( Graph::TYPE_PNG )
+        $protocol   = Graph::processParameterRealProtocol( $protocol );
+        $category   = Graph::processParameterCategory( $category, true );
+        $vl         = $vlan ?? $vlans->first();
+        $graph      = App::make( Grapher::class )
+            ->vlan( $vl )->setType( Graph::TYPE_PNG )
             ->setProtocol( $protocol )->setCategory( $category );
 
         try {
@@ -190,7 +189,7 @@ class StatisticsController extends Controller
 
         return view( 'statistics/vlan' )->with( [
             'vlans'    => $vlans,
-            'vlan'     => $vlan,
+            'vlan'     => $vl,
             'graph'    => $graph,
             'protocol' => $protocol,
             'category' => $category,
@@ -200,26 +199,30 @@ class StatisticsController extends Controller
     /**
      * Show IXP switch graphs
      *
-     * @param int       $switchid       ID of the switch to show the graph of
-     * @param string    $category       Category of graph to show (e.g. bits / pkts)
+     * @param Switcher|null $switch         Switch to show the graph of
+     * @param string        $category       Category of graph to show (e.g. bits / pkts)
      *
      * @return View
      *
      * @throws
      */
-    public function switch( int $switchid = 0, string $category = Graph::CATEGORY_BITS ) : View
+    public function switch( Switcher $switch = null, string $category = Graph::CATEGORY_BITS ) : View
     {
-        $switches = Switcher::where( 'active', true )->orderBy( 'name' )->get()->keyBy( 'id' )->toArray();
-        $category = Graph::processParameterCategory( $category, true );
+        $switches = Switcher::where( 'active', true )
+            ->orderBy( 'name' )->get()
+            ->keyBy( 'id' );
 
-        $switch   = Switcher::whereId( isset( $switches[ $switchid ] ) ? $switchid : array_keys( $switches )[0] )->first();
-        $graph    = App::make( Grapher::class )->switch( $switch )->setType( Graph::TYPE_PNG )->setProtocol( Graph::PROTOCOL_ALL )->setCategory( $category );
+        $category   = Graph::processParameterCategory( $category, true );
+        $s          = $switch ?? $switches->first();
+        $graph      = App::make( Grapher::class )
+            ->switch( $s )->setType( Graph::TYPE_PNG )
+            ->setProtocol( Graph::PROTOCOL_ALL )->setCategory( $category );
 
         $graph->authorise();
 
         return view( 'statistics/switch' )->with([
             'switches'  => $switches,
-            'switch'    => $switch,
+            'switch'    => $s,
             'graph'     => $graph,
             'category'  => $category,
         ]);
@@ -228,14 +231,14 @@ class StatisticsController extends Controller
     /**
      * Show IXP trunk graphs
      *
-     * @param string $trunkid ID of the trunk to show the graph of
-     * @param string $category Category of graph to show (e.g. bits / pkts)
+     * @param string|null   $trunk     ID of the trunk to show the graph of
+     * @param string        $category  Category of graph to show (e.g. bits / pkts)
      *
      * @return RedirectResponse|View
      *
      * @throws
      */
-    public function trunk( string $trunkid = null, string $category = Graph::CATEGORY_BITS )
+    public function trunk( string $trunk = null, string $category = Graph::CATEGORY_BITS )
     {
         if( !is_array( config('grapher.backends.mrtg.trunks') ) || !count( config('grapher.backends.mrtg.trunks') ) ) {
             AlertContainer::push(
@@ -249,23 +252,23 @@ class StatisticsController extends Controller
         $images = [];
         $graphs = [];
         foreach( config('grapher.backends.mrtg.trunks') as $g ) {
-            $images[]           = $g['name'];
-            $graphs[$g['name']] = $g['title'];
+            $images[]               = $g[ 'name' ];
+            $graphs[ $g['name'] ]   = $g[ 'title' ];
         }
 
-        if( !in_array( $trunkid, $images, true ) ) {
-            $trunkid = $images[ 0 ];
+        if( !in_array( $trunk, $images, true ) ) {
+            $trunk = $images[ 0 ];
         }
 
         $graph = App::make( Grapher::class )
-            ->trunk( $trunkid )->setType( Graph::TYPE_PNG )
+            ->trunk( $trunk )->setType( Graph::TYPE_PNG )
             ->setProtocol( Graph::PROTOCOL_ALL )->setCategory( Graph::CATEGORY_BITS );
 
         $graph->authorise();
 
         return view( 'statistics/trunk' )->with( [
             'graphs'    => $graphs,
-            'trunkid'   => $trunkid,
+            'trunkid'   => $trunk,
             'graph'     => $graph,
             'category'  => $category,
         ] );
@@ -287,7 +290,7 @@ class StatisticsController extends Controller
         }
 
         $grapher = App::make( Grapher::class );
-        $this->processGraphParams($r);
+        $this->processGraphParams( $r );
 
         // do we have an infrastructure or vlan?
         $vlan = $infra = false;
@@ -303,7 +306,6 @@ class StatisticsController extends Controller
             if( !in_array( $r->protocol, Graph::PROTOCOLS_REAL, true ) ) {
                 $r->protocol = Graph::PROTOCOL_IPV4;
             }
-
             $targets = VlanInterfaceAggregator::forVlan( $vlan, $r->protocol );
         } else {
             $targets = [];
@@ -334,56 +336,50 @@ class StatisticsController extends Controller
         }
 
         return view( 'statistics/members' )->with([
-            'graph'         => $graphs[0] ?? false,  // sample graph as all types/protocols/categories/periods will be the same
+            'graph'         => $graphs[ 0 ] ?? false,  // sample graph as all types/protocols/categories/periods will be the same
             'graphs'        => $graphs,
             'r'             => $r,
-            'infras'        => Infrastructure::orderBy( 'name', 'asc' )->get(),
+            'infras'        => Infrastructure::orderBy( 'name' )->get(),
             'infra'         => $infra ?? false,
             'vlans'         => Vlan::publicOnly()->orderBy('number')->get(),
             'vlan'          => $vlan ?? false,
         ]);
     }
 
-
     /**
      * Display all graphs for a member
      *
-     * @param StatisticsRequest $r
-     * @param int|null          $id ID of the member
+     * @param StatisticsRequest     $r
+     * @param Customer|null         $cust the member
      *
      * @return RedirectResponse|View
      *
      */
-    public function member( StatisticsRequest $r, int $id = null )
+    public function member( StatisticsRequest $r, Customer $cust = null )
     {
-        if( !$id && Auth::check() ) {
-            $id = Auth::getUser()->custid;
+        if( !$cust && Auth::check() ) {
+            $cust = Auth::getUser()->customer;
         }
-
-        $c = Customer::findOrFail( $id );
 
         $grapher = App::make( Grapher::class );
 
         // if the customer is authorised, then so too are all of their virtual and physical interfaces:
         try {
-            $grapher->customer( $c )->authorise();
+            $grapher->customer( $cust )->authorise();
         } catch( AuthorizationException $e ) {
             abort( 403, "You are not authorised to view this member's graphs." );
         }
 
-        if( !$c->hasInterfacesConnectedOrInQuarantine() ) {
-            AlertContainer::push(
-                "This customer has no graphable interfaces (i.e. no physical interfaces in quarantine or connected)",
-                Alert::WARNING
-            );
+        if( !$cust->hasInterfacesConnectedOrInQuarantine() ) {
+            AlertContainer::push("This customer has no graphable interfaces (i.e. no physical interfaces in quarantine or connected)", Alert::WARNING);
             return redirect()->back();
         }
 
         return view( 'statistics/member' )->with([
-            "c"                     => $c,
+            "c"                     => $cust,
             "grapher"               => $grapher,
-            "category"              => Graph::processParameterCategory( $r->input( 'category' ) ),
-            "period"                => Graph::processParameterPeriod( $r->input( 'period' ) ),
+            "category"              => Graph::processParameterCategory( $r->category ),
+            "period"                => Graph::processParameterPeriod( $r->period ),
         ]);
     }
 
@@ -402,18 +398,18 @@ class StatisticsController extends Controller
     {
         switch( strtolower( $type ) ) {
             case 'agg':
-                $c = Customer::findOrFail( $typeid );
-                $graph = App::make( Grapher::class )->customer( $c );
+                $c      = Customer::findOrFail( $typeid );
+                $graph  = App::make( Grapher::class )->customer( $c );
                 break;
             case 'vi':
-                $vi = VirtualInterface::findOrFail( $typeid );
-                $c = $vi->customer;
-                $graph = App::make( Grapher::class )->virtint( $vi );
+                $vi     = VirtualInterface::findOrFail( $typeid );
+                $c      = $vi->customer;
+                $graph  = App::make( Grapher::class )->virtint( $vi );
                 break;
             case 'pi':
-                $pi = PhysicalInterface::findOrFail( $typeid );
-                $c = $pi->virtualInterface->customer;
-                $graph = App::make( Grapher::class )->physint( $pi );
+                $pi     = PhysicalInterface::findOrFail( $typeid );
+                $c      = $pi->virtualInterface->customer;
+                $graph  = App::make( Grapher::class )->physint( $pi );
                 break;
             default:
                 abort( 404, 'Unknown graph type' );
@@ -472,17 +468,17 @@ class StatisticsController extends Controller
      * sFlow Peer to Peer statistics
      *
      * @param Request $r
-     * @param null $cid
+     * @param Customer|null $cust
      *
      * @return RedirectResponse|View
      *
      * @throws
      */
-    public function p2p( Request $r, $cid = null )
+    public function p2p( Request $r, Customer $cust = null )
     {
         // default to the current user:
-        if( !$cid && Auth::check() ) {
-            $cid = Auth::getUser()->custid;
+        if( !$cust && Auth::check() ) {
+            $cust = Auth::getUser()->customer;
         }
 
         // for larger IXPs, it's quite intensive to display all the graphs - decide if we need to do this or not
@@ -510,14 +506,12 @@ class StatisticsController extends Controller
         $r->period   = Graph::processParameterPeriod(       $r->period );
         $r->protocol = Graph::processParameterRealProtocol( $r->protocol );
 
-        $c = Customer::findOrFail( $cid );
-
         $srcVlis = VlanInterface::select( [ 'vli.*' ] )
             ->from( 'vlaninterface AS vli' )
             ->Join( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
             ->Join( 'cust AS c', 'c.id', 'vi.custid' )
             ->Join( 'vlan AS v', 'v.id', 'vli.vlanid' )
-            ->where( 'c.id', $c->id )
+            ->where( 'c.id', $cust->id )
             ->orderBy( 'v.number' )->get()->keyBy( 'id' );
 
         // Find the possible VLAN interfaces that this customer has for the given IXP
@@ -593,14 +587,14 @@ class StatisticsController extends Controller
 
         // authenticate on one of the graphs
         $graph = App::make( Grapher::class )
-            ->p2p( $srcVli, $dstVli ? $dstVli : $dstVlis[ $dstVlis->first()->id ] )
+            ->p2p( $srcVli, $dstVli ?: $dstVlis[ $dstVlis->first()->id ])
             ->setProtocol( $r->protocol )
             ->setCategory( $r->category )
             ->setPeriod( $r->period );
         $graph->authorise();
 
         $viewOptions = [
-            'c'                => $c,
+            'c'                => $cust,
             'category'         => $r->category,
             'dstVlis'          => $dstVlis,
             'dstVli'           => $dstVli,
@@ -618,7 +612,6 @@ class StatisticsController extends Controller
         }
 
         return view( 'statistics/p2p', $viewOptions );
-
     }
 
     /**
@@ -648,8 +641,8 @@ class StatisticsController extends Controller
             $tday = Carbon::now()->format( 'Y-m-d');
         }
 
-        $day = Carbon::createFromFormat( 'Y-m-d', $tday );
-        $category = Graph::processParameterCategory( $r->category );
+        $day        = Carbon::createFromFormat( 'Y-m-d', $tday );
+        $category   = Graph::processParameterCategory( $r->category );
 
         return view( 'statistics/league-table' )->with( [
             'metric'       => $metric,
@@ -693,7 +686,6 @@ class StatisticsController extends Controller
         ]);
     }
 
-
     /**
      * Show utilisation of member ports
      *
@@ -712,18 +704,19 @@ class StatisticsController extends Controller
         ];
 
         $metric = $r->input( 'metric', $metrics['Max'] );
+
         if( !in_array( $metric, $metrics, true ) ) {
             $metric = $metrics[ 'Max' ];
         }
 
-        $days =  Arr::flatten( TrafficDailyPhysInt::select( [ 'day' ] )
+        $days =  TrafficDailyPhysInt::select( [ 'day' ] )
             ->distinct( 'day' )
-            ->orderBy( 'day')->get()->toArray() );
+            ->orderBy( 'day')->get()->pluck( 'day' )->toArray();
 
         if( count( $days ) ) {
             $day = $r->day;
             if( !in_array( $day, $days, true ) ) {
-                $day = $days[0];
+                $day = $days[ 0 ];
             }
         } else {
             $day = null;
@@ -744,7 +737,7 @@ class StatisticsController extends Controller
             'days'         => $days,
             'category'     => $category,
             'period'       => $period,
-            'tdpis'        => ( $day ? TrafficDailyPhysIntAggregator::loadTraffic( $day, $category, $period, $vid ) : [] ),
+            'tdpis'        => $day ? TrafficDailyPhysIntAggregator::loadTraffic( $day, $category, $period, $vid ) : [],
             'vlans'        => Vlan::publicOnly()->orderBy('number')->get(),
             'vlan'         => $vid,
         ] );

@@ -7,7 +7,7 @@
 
     //////////////////////////////////////////////////////////////////////////////////////
     // action bindings:
-    dd_vlan.change(     () => { setCustomer(); } );
+    dd_vlan.change( () => { setCustomer(); } );
     dd_peer.change( () => { setReceivedPrefixes(); setAdvertisePrefixes(); } );
 
     dd_protocol.change(function() {
@@ -87,6 +87,7 @@
         // if protocol is not 'all', get the prefixes
         if( dd_protocol.val() !== '' ) {
             let old = '<?= old( 'advertised_prefix' ) ?>';
+            console.log(old);
             getPrefixes( <?= $this->c->id ?>, 'advertised', old );
         } else {
             // if protocol is 'all', create the prefix as input text and disable it
@@ -115,7 +116,6 @@
             type: 'POST'
         })
         .done( function( data ) {
-
             // data.prefixes = false when the customer->maxprefixes >= 2000
             // data.prefixes.length when we didnt get any result from the request
             // in those case create input text for the dedicated prefix input
@@ -139,6 +139,8 @@
 
                 if( old !== '' ) {
                     $( `#${input_select}_prefix` ).val( old ).trigger( 'change.select2' );
+                }else if( $( `#${input_select}_prefix_val` ).val() ){
+                    $( `#${input_select}_prefix` ).val( $( `#${input_select}_prefix_val` ).val() ).trigger( 'change.select2' );
                 }
             }
         })

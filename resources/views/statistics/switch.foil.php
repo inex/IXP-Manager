@@ -11,6 +11,7 @@
     <div class="row">
         <div class="col-md-12">
             <?= $t->alerts() ?>
+
             <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
                 <a class="navbar-brand" href="<?= route( "statistics@switch" ) ?>">
                     Graph Options:
@@ -27,8 +28,8 @@
                                 <div class="nav-link d-flex ">
                                     <label for="switchid" class="col-sm-4 col-lg-4">Switch:</label>
                                     <select id="form-select-switchid" name="switchid" class="form-control">
-                                        <?php foreach( $t->switches as $id => $s ): ?>
-                                            <option value="<?= $id ?>" <?= $t->switch->id !== $id ?: 'selected="selected"' ?>><?= $s[ 'name' ] ?></option>
+                                        <?php foreach( $t->switches as $s ): ?>
+                                            <option value="<?= $s->id ?>" <?= $t->switch->id !== $s->id ?: 'selected="selected"' ?>><?= $s->name ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -68,7 +69,6 @@
 
 <?php $this->section( 'scripts' ) ?>
     <script>
-
         let base_route   = "<?= route( 'statistics@switch' ) ?>";
         let sel_switchid = $("#form-select-switchid");
         let sel_category = $("#form-select-category");
