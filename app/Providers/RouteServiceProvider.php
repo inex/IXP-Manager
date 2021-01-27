@@ -64,6 +64,7 @@ class RouteServiceProvider extends ServiceProvider {
         $this->mapApiV4Routes();
         $this->mapApiV4AuthRoutes();
         $this->mapApiAuthSuperuserRoutes();
+        $this->mapPublicApiRoutes();
 
         // aliases that need to be deprecated:
         require base_path('routes/apiv1-aliases.php');
@@ -230,6 +231,25 @@ class RouteServiceProvider extends ServiceProvider {
             'prefix' => 'api/v4',
         ], function ($router) {
             require base_path('routes/apiv4-ext-auth-superuser.php');
+        });
+    }
+
+
+    /**
+     * Define the "web" routes for the application.
+     *
+     * These routes all receive session state, CSRF protection, etc.
+     *
+     * @return void
+     */
+    protected function mapPublicApiRoutes()
+    {
+        Route::group([
+            'middleware' => 'publicapi',
+            'namespace' => $this->namespace . '\\Api\\V4',
+            'prefix' => 'api/v4/public',
+        ], function ($router) {
+            require base_path('routes/publicapi.php');
         });
     }
 }
