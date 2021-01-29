@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Customer;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,37 +22,46 @@ namespace IXP\Http\Controllers\Customer;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Former;
+use Former, Route, Session;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\View\View;
-use IXP\Models\Customer;
-use IXP\Models\CustomerToCustomerTag;
-use IXP\Utils\View\Alert\Alert;
-use IXP\Utils\View\Alert\Container as AlertContainer;
+
 use Illuminate\Http\{
     Request,
     RedirectResponse
 };
 
-use IXP\Models\CustomerTag;
+use Illuminate\View\View;
+
+use IXP\Models\{
+    Customer,
+    CustomerToCustomerTag,
+    CustomerTag
+};
+
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
 
 use IXP\Utils\Http\Controllers\Frontend\EloquentController;
-use Route;
-use Session;
+
 
 /**
  * Customer Tag Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Customer
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class CustomerTagController extends EloquentController
 {
     /**
      * The object being created / edited
+     *
      * @var CustomerTag
      */
     protected $object = null;
@@ -65,20 +74,15 @@ class CustomerTagController extends EloquentController
         $this->feParams         = ( object )[
             'entity'            => CustomerTag::class,
             'pagetitle'         => ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' Tags',
-
             'titleSingular'     => ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' Tag',
             'nameSingular'      => config( 'ixp_fe.lang.customer.one' ) . ' tag',
-
             'defaultAction'     => 'list',
             'defaultController' => 'CustomerTagController',
             'listOrderBy'       => 'tag',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'customer/tag',
-
             'extraDeleteMessage' => "<b>This tag will be removed from all " . config( 'ixp_fe.lang.customer.many' ) . " tagged with it.</b>",
-
             'documentation'     => 'https://docs.ixpmanager.org/usage/customer-tags/',
-
             'listColumns'    => [
                 'id'        => [
                     'title' => 'DB ID',
@@ -98,7 +102,7 @@ class CustomerTagController extends EloquentController
             $this->feParams->listColumns,
             [
                 'description'          => 'Description',
-                'created_at'              =>
+                'created_at'           =>
                     [
                         'title'        => 'Created',
                         'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
@@ -113,13 +117,17 @@ class CustomerTagController extends EloquentController
     }
 
     /**
+     * Additional routes
+     *
      * @param string $route_prefix
+     *
+     * @return void
      */
     protected static function additionalRoutes( string $route_prefix ): void
     {
         Route::group( [ 'prefix' => $route_prefix ], static function() use ( $route_prefix ) {
             Route::get(     'cust/{cust}',  'Customer\CustomerTagController@linkCustomer' )->name( $route_prefix . '@link-customer' );
-            Route::post(    'link/{cust}',  'Customer\CustomerTagController@link'         )->name( $route_prefix . '@link');
+            Route::post(    'link/{cust}',  'Customer\CustomerTagController@link'         )->name( $route_prefix . '@link'          );
         });
     }
 
@@ -148,7 +156,7 @@ class CustomerTagController extends EloquentController
     protected function createPrepareForm(): array
     {
         return [
-            'object'                => $this->object
+            'object'    => $this->object
         ];
     }
 
@@ -164,10 +172,10 @@ class CustomerTagController extends EloquentController
         $this->object = CustomerTag::findOrFail( $id );
 
         Former::populate([
-            'tag'                   => request()->old( 'tag',               $this->object->tag ),
-            'description'           => request()->old( 'description',       $this->object->description ),
-            'display_as'            => request()->old( 'display_as',        $this->object->display_as ),
-            'internal_only'         => request()->old( 'internal_only',     ( $this->object->internal_only ? 1 : 0 ) ),
+            'tag'                   => request()->old( 'tag',               $this->object->tag              ),
+            'description'           => request()->old( 'description',       $this->object->description      ),
+            'display_as'            => request()->old( 'display_as',        $this->object->display_as       ),
+            'internal_only'         => request()->old( 'internal_only',     $this->object->internal_only    ),
         ]);
 
         return [
@@ -176,43 +184,21 @@ class CustomerTagController extends EloquentController
     }
 
     /**
-     * Check if the form is valid
-     *
-     * @param $request
-     */
-    public function checkForm( Request $request ): void
-    {
-        $request->validate( [
-            'tag' => [
-                'required', 'string', 'max:255',
-                function ($attribute, $value, $fail) use( $request ) {
-                    $tag = CustomerTag::whereTag( $value )->first();
-                    if( $tag && $tag->exists() && $tag->id !== (int)$request->id ) {
-                        return $fail( 'The tag must be unique.' );
-                    }
-                },
-            ],
-            'description'           => 'nullable|string|max:255',
-            'display_as'            => 'required|string|max:255',
-        ] );
-    }
-
-    /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doStore( Request $request )
+    public function doStore( Request $r )
     {
-        $this->checkForm( $request );
+        $this->checkForm( $r );
 
-        $this->object = CustomerTag::create( array_merge( $request->except( 'tag' ),
+        $this->object = CustomerTag::create( array_merge( $r->except( 'tag' ),
             [
-                'tag'   => preg_replace( "/[^a-z0-9\-]/" , "", strtolower( $request->tag ) )
+                'tag'   => preg_replace( "/[^a-z0-9\-]/" , "", strtolower( $r->tag ) )
             ]
         ));
 
@@ -222,23 +208,22 @@ class CustomerTagController extends EloquentController
     /**
      * Function to do the actual validation and updating of the submitted object.
      *
-     * @param Request $request
-     * @param int $id
+     * @param Request   $r
+     * @param int       $id
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doUpdate( Request $request, int $id )
+    public function doUpdate( Request $r, int $id )
     {
-        $this->object = CustomerTag::findOrFail( $request->id );
-        $this->checkForm( $request );
-        $this->object->update( array_merge( $request->except( 'tag' ),
+        $this->object = CustomerTag::findOrFail( $r->id );
+        $this->checkForm( $r );
+        $this->object->update( array_merge( $r->except( 'tag' ),
             [
-                'tag'   => preg_replace( "/[^a-z0-9\-]/" , "", strtolower( $request->tag ) )
+                'tag'   => preg_replace( "/[^a-z0-9\-]/" , "", strtolower( $r->tag ) )
             ]
         ));
-
         return true;
     }
 
@@ -247,6 +232,7 @@ class CustomerTagController extends EloquentController
      */
     protected function preDelete(): bool
     {
+        $this->object->customers()->detach();
         Session::remove( "cust-list-tag" );
         return true;
     }
@@ -269,7 +255,7 @@ class CustomerTagController extends EloquentController
     /**
      * Add or edit a customer (set all the data needed)
      *
-     * @param   Request     $r instance of the current HTTP request
+     * @param   Request     $r      instance of the current HTTP request
      * @param   Customer    $cust
      *
      * @return  RedirectResponse
@@ -296,5 +282,27 @@ class CustomerTagController extends EloquentController
 
         AlertContainer::push( "Tags updated.", Alert::SUCCESS );
         return redirect( route( "customer@overview" , [ "cust" => $cust->id ] ) );
+    }
+
+    /**
+     * Check if the form is valid
+     *
+     * @param $r
+     */
+    public function checkForm( Request $r ): void
+    {
+        $r->validate( [
+            'tag' => [
+                'required', 'string', 'max:255',
+                function ($attribute, $value, $fail) use( $r ) {
+                    $tag = CustomerTag::whereTag( $value )->first();
+                    if( $tag && $tag->id !== (int)$r->id ) {
+                        return $fail( 'The tag must be unique.' );
+                    }
+                },
+            ],
+            'description'           => 'nullable|string|max:255',
+            'display_as'            => 'required|string|max:255',
+        ] );
     }
 }

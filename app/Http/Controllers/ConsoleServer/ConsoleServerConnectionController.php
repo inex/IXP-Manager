@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\ConsoleServer;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\ConsoleServer;
 
 use Former, Redirect, Route;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -32,7 +33,12 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
-use IXP\Models\{Aggregators\ConsoleServerConnectionAggregatore, ConsoleServer, ConsoleServerConnection, Customer};
+use IXP\Models\{
+    Aggregators\ConsoleServerConnectionAggregatore,
+    ConsoleServer,
+    ConsoleServerConnection,
+    Customer,
+};
 
 use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
@@ -45,8 +51,9 @@ use IXP\Utils\View\Alert\{
  * ConsoleServerConnection Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\ConsoleServer
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class ConsoleServerConnectionController extends EloquentController
@@ -71,11 +78,10 @@ class ConsoleServerConnectionController extends EloquentController
             'listOrderBy'       => [ 'c.name', 'csc.port' ],
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'console-server-connection',
-
             'listColumns'    => [
                 'id'        => [
                     'title' => 'DB ID',
-                    'display' => true
+                    'display' => false
                 ],
                 'customer'  => [
                     'title'      => 'Customer',
@@ -125,6 +131,13 @@ class ConsoleServerConnectionController extends EloquentController
         );
     }
 
+    /**
+     * Additional routes
+     *
+     * @param string $route_prefix
+     *
+     * @return void
+     */
     protected static function additionalRoutes( string $route_prefix ): void
     {
         Route::group( [ 'prefix' => $route_prefix ], static function() use ( $route_prefix ) {
@@ -144,10 +157,12 @@ class ConsoleServerConnectionController extends EloquentController
         return ConsoleServerConnectionAggregatore::getFeList( $this->feParams, $id );
     }
 
+
     protected function preList(): void
     {
         $this->data[ 'params' ]     = [
-            'css' =>  ConsoleServer::orderBy( 'name', 'asc')->get()->keyBy( 'id' )->toArray()
+            'css' =>  ConsoleServer::orderBy( 'name' )
+                ->get()->keyBy( 'id' )->toArray()
         ];
     }
 
@@ -160,8 +175,8 @@ class ConsoleServerConnectionController extends EloquentController
     {
         return [
             'object'                => $this->object,
-            'custs'                 => Customer::orderBy( 'name' )->get()->toArray(),
-            'servers'               => ConsoleServer::orderBy( 'name', 'asc')->get()->keyBy( 'id' )->toArray(),
+            'custs'                 => Customer::orderBy( 'name' )->get(),
+            'servers'               => ConsoleServer::orderBy( 'name' )->get()->keyBy( 'id' )->toArray(),
             'cs'                    => request()->serverid
         ];
     }
@@ -178,96 +193,44 @@ class ConsoleServerConnectionController extends EloquentController
         $this->object = ConsoleServerConnection::find( $id );
 
         Former::populate([
-            'description'           => request()->old( 'description',           $this->object->description ),
-            'custid'                => request()->old( 'custid',                $this->object->custid ),
-            'console_server_id'     => request()->old( 'console_server_id',     $this->object->console_server_id ),
-            'port'                  => request()->old( 'port',                  $this->object->port ),
-            'speed'                 => request()->old( 'speed',                 $this->object->speed ),
-            'parity'                => request()->old( 'parity',                $this->object->parity ),
-            'stopbits'              => request()->old( 'stopbits',              $this->object->stopbits ) ,
-            'flowcontrol'           => request()->old( 'flowcontrol',           $this->object->flowcontrol ),
-            'autobaud'              => request()->old( 'autobaud',       $this->object->autobaud ? 1 : 0 ),
-            'notes'                 => request()->old( 'notes',                 $this->object->notes )
+            'description'           => request()->old( 'description',           $this->object->description          ),
+            'custid'                => request()->old( 'custid',                $this->object->custid               ),
+            'console_server_id'     => request()->old( 'console_server_id',     $this->object->console_server_id    ),
+            'port'                  => request()->old( 'port',                  $this->object->port                 ),
+            'speed'                 => request()->old( 'speed',                 $this->object->speed                ),
+            'parity'                => request()->old( 'parity',                $this->object->parity               ),
+            'stopbits'              => request()->old( 'stopbits',              $this->object->stopbits             ),
+            'flowcontrol'           => request()->old( 'flowcontrol',           $this->object->flowcontrol          ),
+            'autobaud'              => request()->old( 'autobaud',              $this->object->autobaud             ),
+            'notes'                 => request()->old( 'notes',                 $this->object->notes                )
         ]);
 
         return [
             'object'                => $this->object,
             'custs'                 => Customer::orderBy( 'name' )->get(),
-            'servers'               => ConsoleServer::orderBy( 'name', 'asc')->get()->keyBy( 'id' )->toArray(),
+            'servers'               => ConsoleServer::orderBy( 'name' )->get()->keyBy( 'id' )->toArray(),
             'cs'                    => request()->serverid
         ];
     }
 
     /**
-     * Check if the form is valid
-     *
-     * @param $request
-     */
-    public function checkForm( Request $request ): void
-    {
-        $request->validate( [
-            'description'           => 'required|string|max:255',
-            'custid'            => [ 'required', 'integer',
-                function( $attribute, $value, $fail ) {
-                    if( !Customer::whereId( $value )->exists() ) {
-                        return $fail( 'Customer is invalid / does not exist.' );
-                    }
-                }
-            ],
-            'console_server_id'            => [ 'required', 'integer',
-                function( $attribute, $value, $fail ) {
-                    if( !ConsoleServer::whereId( $value )->exists() ) {
-                        return $fail( 'Console Server is invalid / does not exist.' );
-                    }
-                }
-            ],
-            'port'                  => 'required|string|max:255',
-            'speed'                 => 'nullable|integer',
-            'parity'                => 'nullable|string',
-            'stopbits'              => 'nullable|string',
-            'flowcontrol'           => 'nullable|string',
-            'autobaud'              => 'boolean',
-            'notes'                 => 'nullable|string|max:65535',
-        ] );
-    }
-
-    /**
-     * Check if there is a duplicate console server connection object with those values
-     *
-     * @param int|null  $objectid
-     * @param Request   $request
-     *
-     * @return bool
-     */
-    private function checkIsDuplicate( int $objectid = null, Request $request ): bool
-    {
-        if( $cs = ConsoleServerConnection::where( "console_server_id" , $request->console_server_id  )->where( 'port' , $request->port )->first() ) {
-            if( $objectid !== $cs->id ) {
-                AlertContainer::push( "This port is already used by this console server."   , Alert::DANGER );
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doStore( Request $request )
+    public function doStore( Request $r )
     {
-        $this->checkForm( $request );
-        if( $this->checkIsDuplicate( null, $request ) ) {
+        $this->checkForm( $r );
+        if( $this->checkIsDuplicate( $r ) ) {
             return Redirect::back()->withInput();
         }
 
-        $this->object = ConsoleServerConnection::create( $request->all() );
-        $this->object->custid = $request->custid;
+        $this->object = ConsoleServerConnection::create( $r->all() );
+        $this->object->custid = $r->custid;
         $this->object->save();
         return true;
     }
@@ -275,21 +238,23 @@ class ConsoleServerConnectionController extends EloquentController
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
-     * @param int $id
+     * @param Request   $r
+     * @param int       $id
      *
      * @return bool|RedirectResponse
      *
      */
-    public function doUpdate( Request $request, int $id )
+    public function doUpdate( Request $r, int $id )
     {
         $this->object = ConsoleServerConnection::findOrFail( $id );
-        $this->checkForm( $request );
-        if( $this->checkIsDuplicate( $this->object->id, $request ) ) {
+        $this->checkForm( $r );
+        if( $this->checkIsDuplicate( $r,  $this->object->id ) ) {
             return Redirect::back()->withInput();
         }
 
-        $this->object->update( $request->all() );
+        $this->object->update( $r->all() );
+        $this->object->custid = $r->custid;
+        $this->object->save();
         return true;
     }
 
@@ -302,14 +267,12 @@ class ConsoleServerConnectionController extends EloquentController
      */
     public function listPort( ConsoleServer $cs ): View
     {
-        $this->data[ 'rows' ]               = ConsoleServerConnectionAggregatore::getFeList( $this->feParams, null, $cs->id );
-        $this->data[ 'params' ][ "cs" ]     = $cs->id;
         $this->listIncludeTemplates();
         $this->preList();
-
+        $this->data[ 'rows' ]               = ConsoleServerConnectionAggregatore::getFeList( $this->feParams, null, $cs->id );
+        $this->data[ 'params' ][ "cs" ]     = $cs->id;
         return $this->display( 'list' );
     }
-
 
     /**
      * @inheritdoc
@@ -331,5 +294,61 @@ class ConsoleServerConnectionController extends EloquentController
     protected function postDeleteRedirect(): ?string
     {
         return route('console-server-connection@listPort' , [ 'cs' => $this->object->console_server_id ] );
+    }
+
+    /**
+     * Check if the form is valid
+     *
+     * @param $r
+     */
+    public function checkForm( Request $r ): void
+    {
+        $r->validate( [
+            'description'       => 'required|string|max:255',
+            'custid'            => [ 'required', 'integer',
+                function( $attribute, $value, $fail ) {
+                    if( !Customer::find( $value ) ) {
+                        return $fail( 'Customer is invalid / does not exist.' );
+                    }
+                }
+            ],
+            'console_server_id'   => [ 'required', 'integer',
+                function( $attribute, $value, $fail ) {
+                    if( !ConsoleServer::find( $value ) ) {
+                        return $fail( 'Console Server is invalid / does not exist.' );
+                    }
+                }
+            ],
+            'port'                  => 'required|string|max:255',
+            'speed'                 => 'nullable|integer',
+            'parity'                => 'nullable|string',
+            'stopbits'              => 'nullable|string',
+            'flowcontrol'           => 'nullable|string',
+            'autobaud'              => 'boolean',
+            'notes'                 => 'nullable|string|max:65535',
+        ] );
+    }
+
+    /**
+     * Check if there is a duplicate console server connection object with those values
+     *
+     * @param Request $r
+     * @param int|null  $objectid
+     *
+     * @return bool
+     */
+    private function checkIsDuplicate( Request $r , int $objectid = null ): bool
+    {
+        $exist = ConsoleServerConnection::where( "console_server_id" , $r->console_server_id  )
+            ->where( 'port' , $r->port )
+            ->when( $objectid , function( Builder $q, $objectid ) {
+                return $q->where( 'id', '!=',  $objectid );
+            })->count() ? true : false;
+
+        if( $exist ) {
+            AlertContainer::push( "This port is already used by this console server."   , Alert::DANGER );
+            return true;
+        }
+        return false;
     }
 }

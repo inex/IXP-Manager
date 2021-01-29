@@ -1,8 +1,9 @@
 <?php
+
 namespace IXP\Http\Controllers\Auth;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -24,8 +25,6 @@ namespace IXP\Http\Controllers\Auth;
 
 use Password, Redirect;
 
-use Illuminate\View\View;
-
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 
 use Illuminate\Http\{
@@ -33,6 +32,8 @@ use Illuminate\Http\{
     RedirectResponse,
     Request
 };
+
+use Illuminate\View\View;
 
 use IXP\Events\Auth\ForgotUsername as ForgotUsernameEvent;
 
@@ -51,10 +52,12 @@ use IXP\Utils\View\Alert\{
 
 /**
  * ForgotPasswordController
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller/Auth
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Auth
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class ForgotPasswordController extends Controller

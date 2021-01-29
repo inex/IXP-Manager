@@ -57,7 +57,7 @@
                         </div>
                         <div class="col-sm-12">
                             No Customer tag available.
-                            <a class="btn btn-white" href="<?= route( "customer-tag@add" ) ?>">
+                            <a class="btn btn-white" href="<?= route( "customer-tag@create" ) ?>">
                                 Create one
                             </a>
                         </div>

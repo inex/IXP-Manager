@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Customer;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,9 +23,8 @@ namespace IXP\Http\Controllers\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use App, Auth, Cache, Countries, Former, Mail, Redirect;
+use App, Auth, Cache, Carbon\Carbon, Countries, Former, Mail, Redirect;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
 use Illuminate\Http\{
@@ -69,10 +68,12 @@ use IXP\Services\Grapher;
 
 /**
  * Customer Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Customers
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Customer
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class CustomerController extends Controller
@@ -136,7 +137,6 @@ class CustomerController extends Controller
             'showCurrentOnly'       => $showCurrentOnly ?? false,
             'tag'                   => $tid ?? false,
             'tags'                  => $tags,
-
             'custs'                 => Customer::selectRaw( 'cust.*' )
                 ->when( $tid, function( Builder $q, $tid ) {
                     return $q->leftJoin( 'cust_to_cust_tag AS t', 't.customer_id', 'cust.id' )
@@ -165,14 +165,15 @@ class CustomerController extends Controller
         ]);
 
         return view( 'customer/edit' )->with([
-            'cust'                          => false,
-            'irrdbs'                        => IrrdbConfig::orderBy( 'source' )->get()->keyBy( 'id' ),
-            'resellers'                     => Customer::select( [ 'id', 'name' ] )->resellerOnly()->orderBy( 'name' )->get()->keyBy( 'id' ),
+            'cust'              => false,
+            'irrdbs'            => IrrdbConfig::orderBy( 'source' )->get(),
+            'resellers'         => Customer::select( [ 'id', 'name' ] )
+                ->resellerOnly()->orderBy( 'name' )->get(),
         ]);
     }
 
     /**
-     * Add or edit a customer (set all the data needed)
+     * Create a customer (set all the data needed)
      *
      * @param   CustomerRequest $r instance of the current HTTP request
      *
@@ -196,12 +197,11 @@ class CustomerController extends Controller
 
         Cache::forget( 'admin_home_customers' );
         AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' created.', Alert::SUCCESS );
-
         return Redirect::to( route( 'customer@billing-registration' , [ 'cust' => $cust->id ] ) );
     }
 
     /**
-     * Display the form to add/edit a customer
+     * Display the form to edit a customer
      *
      * @param Request   $r
      * @param Customer  $cust The Customer
@@ -211,43 +211,44 @@ class CustomerController extends Controller
     public function edit( Request $r, Customer $cust ): View
     {
         Former::populate([
-            'name'                  => $r->old( 'name',                $cust->name ),
-            'type'                  => $r->old( 'type',                $cust->type ),
-            'shortname'             => $r->old( 'shortname',           $cust->shortname ),
-            'corpwww'               => $r->old( 'corpwww',             $cust->corpwww ),
+            'name'                  => $r->old( 'name',                $cust->name              ),
+            'type'                  => $r->old( 'type',                $cust->type              ),
+            'shortname'             => $r->old( 'shortname',           $cust->shortname         ),
+            'corpwww'               => $r->old( 'corpwww',             $cust->corpwww           ),
             'datejoin'              => $r->old( 'datejoin',            !$cust->datejoin ?: Carbon::instance( $cust->datejoin )->format( "Y-m-d" ) ) ,
             'dateleft'              => $r->old( 'dateleft',            !$cust->dateleave ?: Carbon::instance( $cust->dateleave )->format( "Y-m-d" ) ),
-            'status'                => $r->old( 'status',              $cust->status ),
-            'MD5Support'            => $r->old( 'MD5Support',          $cust->MD5Support ),
-            'abbreviatedName'       => $r->old( 'abbreviatedName',     $cust->abbreviatedName ),
-            'autsys'                => $r->old( 'autsys',              $cust->autsys ),
-            'maxprefixes'           => $r->old( 'maxprefixes',         $cust->maxprefixes ),
-            'peeringpolicy'         => $r->old( 'peeringpolicy',       $cust->peeringpolicy ),
-            'peeringemail'          => $r->old( 'peeringemail',        $cust->peeringemail ),
-            'peeringmacro'          => $r->old( 'peeringmacro',        $cust->peeringmacro ),
-            'peeringmacrov6'        => $r->old( 'peeringmacrov6',      $cust->peeringmacrov6 ),
-            'irrdb'                 => $r->old( 'irrdb',               $cust->irrdb ),
-            'activepeeringmatrix'   => $r->old( 'activepeeringmatrix', $cust->activepeeringmatrix ) ,
-            'nocphone'              => $r->old( 'nocphone',            $cust->nocphone ),
-            'noc24hphone'           => $r->old( 'noc24hphone',         $cust->noc24hphone ),
-            'nocemail'              => $r->old( 'nocemail',            $cust->nocemail ),
-            'nochours'              => $r->old( 'nochours',            $cust->nochours ),
-            'nocwww'                => $r->old( 'nocwww',              $cust->nocwww ),
-            'isReseller'            => $r->old( 'isReseller',          $cust->isReseller ),
+            'status'                => $r->old( 'status',              $cust->status                ),
+            'MD5Support'            => $r->old( 'MD5Support',          $cust->MD5Support            ),
+            'abbreviatedName'       => $r->old( 'abbreviatedName',     $cust->abbreviatedName       ),
+            'autsys'                => $r->old( 'autsys',              $cust->autsys                ),
+            'maxprefixes'           => $r->old( 'maxprefixes',         $cust->maxprefixes           ),
+            'peeringpolicy'         => $r->old( 'peeringpolicy',       $cust->peeringpolicy         ),
+            'peeringemail'          => $r->old( 'peeringemail',        $cust->peeringemail          ),
+            'peeringmacro'          => $r->old( 'peeringmacro',        $cust->peeringmacro          ),
+            'peeringmacrov6'        => $r->old( 'peeringmacrov6',      $cust->peeringmacrov6        ),
+            'irrdb'                 => $r->old( 'irrdb',               $cust->irrdb                 ),
+            'activepeeringmatrix'   => $r->old( 'activepeeringmatrix', $cust->activepeeringmatrix   ),
+            'nocphone'              => $r->old( 'nocphone',            $cust->nocphone              ),
+            'noc24hphone'           => $r->old( 'noc24hphone',         $cust->noc24hphone           ),
+            'nocemail'              => $r->old( 'nocemail',            $cust->nocemail              ),
+            'nochours'              => $r->old( 'nochours',            $cust->nochours              ),
+            'nocwww'                => $r->old( 'nocwww',              $cust->nocwww                ),
+            'isReseller'            => $r->old( 'isReseller',          $cust->isReseller            ),
             'isResold'              => $r->old( 'isResold',            ( $this->resellerMode() && $cust->reseller ) ),
             'reseller'              => $r->old( 'reseller',            ( $this->resellerMode() && $cust->reseller ) ? $cust->reseller : false ),
-            'peeringdb_oauth'       => $r->old( 'peeringdb_oauth',     $cust->peeringdb_oauth ),
+            'peeringdb_oauth'       => $r->old( 'peeringdb_oauth',     $cust->peeringdb_oauth       ),
         ]);
 
         return view( 'customer/edit' )->with([
             'cust'                          => $cust,
-            'irrdbs'                        => IrrdbConfig::orderBy( 'source' )->get()->keyBy( 'id' ),
-            'resellers'                     => Customer::select( [ 'id', 'name' ] )->resellerOnly()->orderBy( 'name' )->get()->keyBy( 'id' ),
+            'irrdbs'                        => IrrdbConfig::orderBy( 'source' )->get(),
+            'resellers'                     => Customer::select( [ 'id', 'name' ] )->resellerOnly()
+                ->orderBy( 'name' )->get(),
         ]);
     }
 
     /**
-     * Add or edit a customer (set all the data needed)
+     * Update a customer (set all the data needed)
      *
      * @param   CustomerRequest $r instance of the current HTTP request
      * @param   Customer        $cust
@@ -287,7 +288,7 @@ class CustomerController extends Controller
         $crd = $cust->companyRegisteredDetail;
 
         $dataBillingDetail = [];
-        if( !( $this->resellerMode() && $cust->reseller ) ){
+        if( !( $cust->reseller && $this->resellerMode() ) ){
             $dataBillingDetail = [
                 'billingContactName'        => $r->old( 'billingContactName',     $cbd->billingContactName ),
                 'billingFrequency'          => $r->old( 'billingFrequency',       $cbd->billingFrequency ),
@@ -324,7 +325,7 @@ class CustomerController extends Controller
         return view( 'customer/billing-registration' )->with([
             'c'                             => $cust,
             'juridictions'                  => CompanyRegisteredDetail::select( 'jurisdiction' )
-                ->where( 'jurisdiction', '!=', '' )->distinct()->get()->toArray(),
+                ->where( 'jurisdiction', '!=', '' )->distinct()->get()->pluck( 'jurisdiction' ),
             'countries'                     => Countries::getList('name' )
         ]);
     }
@@ -348,12 +349,11 @@ class CustomerController extends Controller
 
         $crd->update( $r->all() );
 
-        if( !( $this->resellerMode() && $cust->reseller ) ) {
+        if( !( $cust->reseller && $this->resellerMode() ) ) {
             $cbd->update( $r->all() );
         }
 
         event( new CustomerBillingDetailsChangedEvent( $ocbd, $cbd ) );
-
         return Redirect::to( route( "customer@overview" , [ 'cust' => $cust->id , 'tab' => 'details' ]  ) );
     }
 
@@ -409,7 +409,6 @@ class CustomerController extends Controller
         return redirect()->back();
     }
 
-
     /**
      * Display the customer overview
      *
@@ -458,7 +457,7 @@ class CustomerController extends Controller
             'notes'                     => $cns,
             //'notesInfo'                 => D2EM::getRepository( CustomerNoteEntity::class )->analyseForUser( $cns, $c, D2EM::getRepository( UserEntity::class )->find( Auth::getUser()->id ) ),
             'notesInfo'                 => [ 'unreadNotes' => 1, 'notesLastRead' => 0, 'notesReadUpto' => 1 ],
-            'peers'                     => CustomerAggregator::getPeeringManagerArrayByType( $cust, Vlan::peeringManager()->orderBy( 'number' )->get(), [ 4,6 ]) ?? false
+            'peers'                     => CustomerAggregator::getPeeringManagerArrayByType( $cust, Vlan::peeringManager()->orderBy( 'number' )->get(), [ 4,6 ] ) ?? false
         ]);
     }
 
@@ -519,7 +518,6 @@ class CustomerController extends Controller
         }
 
         Mail::send( $mailable );
-
         AlertContainer::push( "Welcome email sent.", Alert::SUCCESS );
         return Redirect::to( route( "customer@overview", [ "cust" => $cust->id ] ) );
     }
@@ -534,7 +532,7 @@ class CustomerController extends Controller
     public function deleteRecap( Customer $cust )
     {
         // cannot delete a customer with active cross connects:
-        if( $cust->patchPanelPorts()->exists() ) {
+        if( $cust->patchPanelPorts->isNotEmpty() ) {
             AlertContainer::push( "This customer has active patch panel ports. Please cease "
                 . "these (or set them to awaiting cease and unset the customer link in the patch panel "
                 . "port) to proceed with deleting this customer.", Alert::DANGER

@@ -39,8 +39,6 @@ use Illuminate\Foundation\Http\Middleware\{
 };
 
 use Illuminate\Http\Middleware\SetCacheHeaders;
-use Illuminate\Session\Middleware\AuthenticateSession;
-use IXP\Http\Middleware\Authenticate;
 
 use Illuminate\Routing\Middleware\{
     SubstituteBindings,
@@ -49,10 +47,14 @@ use Illuminate\Routing\Middleware\{
 };
 
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Session\Middleware\AuthenticateSession;
 
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-use IXP\Http\Middleware\TrustProxies;
+use IXP\Http\Middleware\{
+    TrustProxies,
+    Authenticate
+};
 
 class Kernel extends HttpKernel
 {

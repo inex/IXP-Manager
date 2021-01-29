@@ -8,52 +8,52 @@
             ->actionButtonsCustomClass( "grey-box")
         ?>
 
-            <?= Former::text( 'name' )
-                ->label( 'Name' )
-                ->blockHelp( "The name of the console server. Typically you should use the host part of the hostname." );
-            ?>
+        <?= Former::text( 'name' )
+            ->label( 'Name' )
+            ->blockHelp( "The name of the console server. Typically you should use the host part of the hostname." );
+        ?>
 
-            <?= Former::text( 'hostname' )
-                ->label( 'Hostname' )
-                ->blockHelp( "The hostname of the console server. This should be in DNS and should be resolvable." );
-            ?>
+        <?= Former::text( 'hostname' )
+            ->label( 'Hostname' )
+            ->blockHelp( "The hostname of the console server. This should be in DNS and should be resolvable." );
+        ?>
 
-            <?= Former::select( 'cabinet_id' )
-                ->id( 'cabinet' )
-                ->label( 'Rack' )
-                ->addClass( 'chzn-select' )
-                ->placeholder( 'Choose a rack' )
-                ->fromQuery( $t->data[ 'params'][ 'cabinets' ], 'name' )
-                ->blockHelp( "The rack where the console server is located." );
-            ?>
+        <?= Former::select( 'cabinet_id' )
+            ->id( 'cabinet' )
+            ->label( 'Rack' )
+            ->addClass( 'chzn-select' )
+            ->placeholder( 'Choose a rack' )
+            ->fromQuery( $t->data[ 'params'][ 'cabinets' ], 'name' )
+            ->blockHelp( "The rack where the console server is located." );
+        ?>
 
-            <?= Former::select( 'vendor_id' )
-                ->id( 'vendor' )
-                ->placeholder( 'Choose a vendor' )
-                ->fromQuery( $t->data[ 'params'][ 'vendors' ], 'name' )
-                ->addClass( 'chzn-select' )
-                ->label( 'Vendor' )
-                ->blockHelp( "If the vendor is not listed here, you can "
-                    . '<a href="' . route( 'vendor@create' ) . '">add them by clicking here</a>.' );
-            ?>
+        <?= Former::select( 'vendor_id' )
+            ->id( 'vendor' )
+            ->placeholder( 'Choose a vendor' )
+            ->fromQuery( $t->data[ 'params'][ 'vendors' ], 'name' )
+            ->addClass( 'chzn-select' )
+            ->label( 'Vendor' )
+            ->blockHelp( "If the vendor is not listed here, you can "
+                . '<a href="' . route( 'vendor@create' ) . '">add them by clicking here</a>.' );
+        ?>
 
-            <?= Former::text( 'model' )
-                ->label( 'Model' )
-                ->blockHelp( "The model of the console server." );
-            ?>
+        <?= Former::text( 'model' )
+            ->label( 'Model' )
+            ->blockHelp( "The model of the console server." );
+        ?>
 
-            <?= Former::text( 'serialNumber' )
-                ->label( 'Serial Number' )
-                ->blockHelp( "The serial number of the console server." );
-            ?>
+        <?= Former::text( 'serialNumber' )
+            ->label( 'Serial Number' )
+            ->blockHelp( "The serial number of the console server." );
+        ?>
 
-            <?= Former::checkbox( 'active' )
-                ->label( '&nbsp;' )
-                ->text( 'Active' )
-                ->value( 1 )
-                ->inline()
-                ->blockHelp( "Marking a console inactive will exclude it from, for example, Nagios configuration generation." );
-            ?>
+        <?= Former::checkbox( 'active' )
+            ->label( '&nbsp;' )
+            ->text( 'Active' )
+            ->value( 1 )
+            ->inline()
+            ->blockHelp( "Marking a console inactive will exclude it from, for example, Nagios configuration generation." );
+        ?>
 
         <div class="form-group col-lg-8 col-sm-12">
             <div class="col-lg-offset-2 col-sm-offset-2">
@@ -91,12 +91,7 @@
             Former::primary_submit( $t->data['params']['isAdd'] ? 'Create' : 'Save Changes' )->id( 'btn-submit' )->class( "mb-2 mb-sm-0"),
             Former::secondary_link( 'Cancel' )->href( route($t->feParams->route_prefix.'@list') )->class( "mb-2 mb-sm-0"),
             Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0")
-        );
-        ?>
-
-        <?= Former::hidden( 'id' )
-            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->id : '' )
-        ?>
+        ); ?>
 
         <?= Former::close() ?>
     </div>

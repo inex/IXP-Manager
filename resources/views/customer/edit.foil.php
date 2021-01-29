@@ -294,7 +294,6 @@
             <?php endif; ?>
         </div>
 
-        <div style="clear: both"></div>
         <br/>
 
         <?= Former::actions( Former::primary_submit( $t->cust ? 'Save Changes' : 'Create' )->class( "mb-2 mb-sm-0" ),

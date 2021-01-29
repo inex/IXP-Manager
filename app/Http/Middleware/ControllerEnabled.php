@@ -38,7 +38,7 @@ use IXP\Utils\View\Alert\{
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yannr Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
- * @package    IXP\Http\Controllers\Doctrine2Frontend
+ * @package    IXP\Http\Middleware
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */

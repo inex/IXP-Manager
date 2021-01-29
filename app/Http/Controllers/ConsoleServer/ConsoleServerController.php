@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\ConsoleServer;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -26,7 +26,6 @@ namespace IXP\Http\Controllers\ConsoleServer;
 use Former;
 
 use Illuminate\Database\Eloquent\Builder;
-use IXP\Rules\IdnValidate;
 
 use Illuminate\Http\{
     Request,
@@ -39,20 +38,25 @@ use IXP\Models\{
     Vendor
 };
 
+use IXP\Rules\IdnValidate;
+
 use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
 /**
  * ConsoleServer Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\ConsoleServer
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class ConsoleServerController extends EloquentController
 {
     /**
      * The object being created / edited
+     * 
      * @var ConsoleServer
      */
     protected $object = null;
@@ -70,7 +74,6 @@ class ConsoleServerController extends EloquentController
             'listOrderBy'       => 'id',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'console-server',
-
             'listColumns'    => [
                 'name'           => [
                     'title'      => 'Name',
@@ -168,8 +171,7 @@ class ConsoleServerController extends EloquentController
         return [
             'object'        => $this->object,
             'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
-                ->orderBy( 'name', 'asc' )
-                ->get(),
+                ->orderBy( 'name' )->get(),
             'vendors'       => Vendor::orderBy( 'name' )->get(),
         ];
     }
@@ -186,97 +188,55 @@ class ConsoleServerController extends EloquentController
         $this->object = ConsoleServer::findOrFail( $id );
 
         Former::populate([
-            'name'              => request()->old( 'name',             $this->object->name ),
-            'hostname'          => request()->old( 'hostname',         $this->object->hostname ),
-            'model'             => request()->old( 'model',            $this->object->model ),
-            'serialNumber'      => request()->old( 'serial_number',    $this->object->serialNumber ),
-            'cabinet_id'        => request()->old( 'cabinet',          $this->object->cabinet_id ),
-            'vendor_id'         => request()->old( 'vendor',           $this->object->vendor_id ),
-            'active'            => request()->old( 'active',           ( $this->object->active ? 1 : 0 ) ),
-            'notes'             => request()->old( 'notes',             $this->object->note ),
+            'name'              => request()->old( 'name',             $this->object->name          ),
+            'hostname'          => request()->old( 'hostname',         $this->object->hostname      ),
+            'model'             => request()->old( 'model',            $this->object->model         ),
+            'serialNumber'      => request()->old( 'serial_number',    $this->object->serialNumber  ),
+            'cabinet_id'        => request()->old( 'cabinet',          $this->object->cabinet_id    ),
+            'vendor_id'         => request()->old( 'vendor',           $this->object->vendor_id     ),
+            'active'            => request()->old( 'active',           $this->object->active        ),
+            'notes'             => request()->old( 'notes',            $this->object->notes         ),
         ]);
 
         return [
             'object'        => $this->object,
             'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
-                ->orderBy( 'name', 'asc' )
-                ->get(),
+                ->orderBy( 'name' )->get(),
             'vendors'       => Vendor::orderBy( 'name' )->get()
         ];
     }
 
     /**
-     * Check if the form is valid
-     *
-     * @param $request
-     */
-    public function checkForm( Request $request ): void
-    {
-        $request->validate( [
-            'name' => [
-                'required', 'string', 'max:255',
-                function ($attribute, $value, $fail) use( $request ) {
-                    $cs = ConsoleServer::whereName( $value )->first();
-                    if( $cs && $cs->exists() && $cs->id !== (int)$request->id ) {
-                        return $fail( 'The name must be unique.' );
-                    }
-                },
-            ],
-            'vendor_id'            => [ 'required', 'integer',
-                function( $attribute, $value, $fail ) {
-                    if( !Vendor::whereId( $value )->exists() ) {
-                        return $fail( 'Vendor is invalid / does not exist.' );
-                    }
-                }
-            ],
-            'cabinet_id'            => [ 'required', 'integer',
-                function( $attribute, $value, $fail ) {
-                    if( !Cabinet::whereId( $value )->exists() ) {
-                        return $fail( 'Vendor is invalid / does not exist.' );
-                    }
-                }
-            ],
-            'model'             => 'nullable|string|max:255',
-            'serialNumber'     => 'nullable|string',
-            'notes'             => 'nullable|string',
-            'hostname'          => [ 'required','string', new IdnValidate() ],
-            'active'            => 'string'
-        ] );
-    }
-
-    /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doStore( Request $request )
+    public function doStore( Request $r )
     {
-        $this->checkForm( $request );
-        $this->object = ConsoleServer::create( $request->all() );
-
+        $this->checkForm( $r );
+        $this->object = ConsoleServer::create( $r->all() );
         return true;
     }
 
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request   $request
+     * @param Request   $r
      * @param int       $id
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doUpdate( Request $request, int $id )
+    public function doUpdate( Request $r, int $id )
     {
         $this->object = ConsoleServer::findOrFail( $id );
-        $this->checkForm( $request );
-        $this->object->update( $request->all() );
-
+        $this->checkForm( $r );
+        $this->object->update( $r->all() );
         return true;
     }
 
@@ -291,5 +251,44 @@ class ConsoleServerController extends EloquentController
     {
         $this->object->consoleServerConnections()->delete();
         return true;
+    }
+
+    /**
+     * Check if the form is valid
+     *
+     * @param $r
+     */
+    public function checkForm( Request $r ): void
+    {
+        $r->validate( [
+            'name' => [
+                'required', 'string', 'max:255',
+                function ($attribute, $value, $fail) use( $r ) {
+                    $cs = ConsoleServer::whereName( $value )->first();
+                    if( $cs && $cs->id !== (int)$r->id ) {
+                        return $fail( 'The name must be unique.' );
+                    }
+                },
+            ],
+            'vendor_id'     => [ 'required', 'integer',
+                function( $attribute, $value, $fail ) {
+                    if( !Vendor::find( $value ) ) {
+                        return $fail( 'Vendor is invalid / does not exist.' );
+                    }
+                }
+            ],
+            'cabinet_id'    => [ 'required', 'integer',
+                function( $attribute, $value, $fail ) {
+                    if( !Cabinet::find( $value ) ) {
+                        return $fail( 'Vendor is invalid / does not exist.' );
+                    }
+                }
+            ],
+            'model'             => 'nullable|string|max:255',
+            'serialNumber'     => 'nullable|string',
+            'notes'             => 'nullable|string',
+            'hostname'          => [ 'required','string', new IdnValidate() ],
+            'active'            => 'string'
+        ] );
     }
 }

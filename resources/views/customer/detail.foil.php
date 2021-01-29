@@ -1,10 +1,7 @@
 <?php
     /** @var Foil\Template\Template $t */
     $this->layout( 'layouts/ixpv4' );
-
-    /** @var \IXP\Models\Customer $c */
-    $c = $t->c;
-
+    $c = $t->c;/** @var \IXP\Models\Customer $c */
     $isSuperUser = Auth::getUser()->isSuperUser()
 ?>
 
@@ -140,7 +137,7 @@
                         <div class="tw-max-w-sm tw-rounded tw-overflow-hidden tw-shadow-lg">
                             <div class="tw-px-6 tw-py-6">
                                 <div class="tw-font-bold tw-text-xl tw-mb-2">
-                                    <?php if( $infra = $vi->physicalInterfaces()->first()->switchPort->switcher->infrastructureModel ): ?>
+                                    <?php if( $infra = $vi->physicalInterfaces[ 0 ]->switchPort->switcher->infrastructureModel ): ?>
                                         <?= $infra->name ?>
                                     <?php else: ?>
                                       '<em>Unknown Infrastructure</em>'
@@ -152,7 +149,7 @@
 
                                 </div>
 
-                                <?php if( $pi = $vi->physicalInterfaces()->first() ):
+                                <?php if( $pi = $vi->physicalInterfaces[ 0 ] ):
                                     /** @var $pi \IXP\Models\PhysicalInterface */?>
                                     <p class="tw-text-grey-dark tw-text-sm">
                                         Location

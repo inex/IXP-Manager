@@ -79,6 +79,6 @@ class CustomerTag extends Model
      */
     public function customers(): BelongsToMany
     {
-        return $this->belongsToMany(Customer::class)->withPivot( 'cust_to_cust_tag', 'customer_tag_id' );
+        return $this->belongsToMany(Customer::class, 'cust_to_cust_tag', 'customer_tag_id' );
     }
 }

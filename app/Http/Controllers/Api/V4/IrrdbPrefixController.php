@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,22 +23,24 @@ namespace IXP\Http\Controllers\Api\V4;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Models\{
-    Customer,
-    IrrdbPrefix
-};
-
 use Illuminate\Http\{
     JsonResponse,
     Request
 };
 
+use IXP\Models\{
+    Customer,
+    IrrdbPrefix
+};
+
 /**
  * IrrdbPrefix API v4 Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Customers
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   APIv4
+ * @package    IXP\Http\Controllers\Api\V4
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class IrrdbPrefixController extends Controller
@@ -46,15 +48,15 @@ class IrrdbPrefixController extends Controller
     /**
      * Get IrrdbPrefixes depending on the customer and Protocol
      *
-     * @param   Request $request instance of the current HTTP request
+     * @param   Request $r instance of the current HTTP request
      *
      * @return  JsonResponse
      */
-    public function byCustomerAndProtocol( Request $request ): JsonResponse
+    public function byCustomerAndProtocol( Request $r ): JsonResponse
     {
-        $cust = Customer::find( $request->custid );
+        $cust = Customer::find( $r->custid );
 
-        if( !in_array( $protocol = $request->protocol, [ 4, 6 ], false ) ) {
+        if( !in_array( $protocol = $r->protocol, [ 4, 6 ], false ) ) {
             abort( 404 );
         }
 

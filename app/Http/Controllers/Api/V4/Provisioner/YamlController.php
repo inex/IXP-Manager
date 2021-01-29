@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4\Provisioner;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -45,7 +45,7 @@ use IXP\Tasks\Yaml\SwitchConfigurationGenerator;
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   APIv4
  * @package    IXP\Http\Controllers\Api\V4\Provisioner
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class YamlController extends Controller
@@ -59,6 +59,8 @@ class YamlController extends Controller
      * @param string    $format
      *
      * @return Response
+     *
+     * @throws
      */
     private function structuredResponse( array $array, string $format ): Response
     {
@@ -71,7 +73,8 @@ class YamlController extends Controller
                 $output = yaml_emit( $array, YAML_UTF8_ENCODING );
                 break;
             case 'json':
-                $output = json_encode ( $array, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE )."\n";
+                $output = json_encode($array,
+                        JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)."\n";
                 $contentType = 'application/json';
                 break;
         }
@@ -131,6 +134,8 @@ class YamlController extends Controller
      * @param string    $format
      *
      * @return Response
+     *
+     * @throws
      */
     public function vlansForSwitch( Switcher $switch, string $format ): Response
     {
@@ -138,7 +143,7 @@ class YamlController extends Controller
             ->from( 'vlan AS v' )
             ->leftJoin( 'infrastructure AS i', 'i.id', 'v.infrastructureid' )
             ->leftJoin( 'switch AS s', 's.infrastructure', 'i.id' )
-            ->where( 's.id', $switch->id )->get()->toArray();
+            ->where( 's.id', $switch->id )->orderBy( 'config_name' )->get()->toArray();
 
         return $this->structuredResponse( $listVlans, $format );
     }
@@ -169,6 +174,8 @@ class YamlController extends Controller
      * @param string $format
      *
      * @return Response
+     *
+     * @throws
      */
     public function listSwitch( string $format ): Response
     {
@@ -188,6 +195,8 @@ class YamlController extends Controller
      * @param string    $format
      *
      * @return Response
+     *
+     * @throws
      */
     public function showSwitch( Switcher $switch, string $format ): Response
     {
@@ -201,6 +210,8 @@ class YamlController extends Controller
      * @param string        $format
      *
      * @return Response
+     *
+     * @throws
      */
     public function showSwitchByName( string $switchname, string $format ): Response
     {
@@ -248,6 +259,8 @@ class YamlController extends Controller
      * @param string        $format
      *
      * @return Response
+     *
+     * @throws
      */
     public function coreLinkForSwitch( Switcher $switch, string $format ): Response
     {
@@ -325,6 +338,8 @@ class YamlController extends Controller
      * @param string    $format
      *
      * @return Response
+     *
+     * @throws
      */
     public function bgpForSwitch( Switcher $switch, string $format ): Response
     {
@@ -410,6 +425,8 @@ class YamlController extends Controller
      * Generate a list of Core Bundles
      *
      * @return Response
+     *
+     * @throws
      */
     public function listCoreBundle( string $format ): Response
     {

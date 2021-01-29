@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -32,13 +32,22 @@ use Illuminate\Http\{
 
 use IXP\Utils\Export\JsonSchema as JsonSchemaExporter;
 
+/**
+ * MemberExport API Controller
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   APIv4
+ * @package    IXP\Http\Controllers\Api\V4
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class MemberExportController extends Controller
 {
     /**
      * API call to generate DNS ARPA records in a given format
      *
-     * @param Request $r
-     * @param string $version Version fo schema to export
+     * @param Request   $r
+     * @param string    $version Version fo schema to export
      *
      * @return JsonResponse
      */

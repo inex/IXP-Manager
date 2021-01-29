@@ -48,6 +48,8 @@ use IXP\Utils\View\Alert\{
  * Layer2Address API Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   APIv4
+ * @package    IXP\Http\Controllers\Api\V4
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -110,18 +112,6 @@ class Layer2AddressController extends Controller
         !$showFeMessage ?: AlertContainer::push( 'MAC address created.' , Alert::SUCCESS );
         return response()->json( [ 'success' => true, 'message' => 'MAC address created.' ] );
     }
-
-//    /**
-//     * Get the layer2Interface detail
-//     *
-//     * @param   Layer2Address $l2a
-//     *
-//     * @return  JsonResponse
-//     */
-//    public function detail( Layer2Address $l2a ): JsonResponse
-//    {
-//        return response()->json( $l2a->jsonArray() );
-//    }
 
     /**
      * Delete a mac address from a Vlan Interface

@@ -38,10 +38,17 @@ use IXP\Models\{
     Router,
     Vlan
 };
-
+/**
+ * Nagios API Controller
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   APIv4
+ * @package    IXP\Http\Controllers\Api\V4
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class NagiosController extends Controller
 {
-
     /**
      * An API call to generate customer reachability Nagios configuration for a given VLAN and protocol.
      *
@@ -52,12 +59,12 @@ class NagiosController extends Controller
      * @param int               $protocol
      * @param string|null       $template
      *
-     * @return Response|void
+     * @return Response
      */
-    public function customers( Request $r, Vlan $vlan, int $protocol, string $template = null )
+    public function customers( Request $r, Vlan $vlan, int $protocol, string $template = null ): Response
     {
         if( !in_array( $protocol, [ 4, 6 ] ) ) {
-            return abort( 404, 'Unknown protocol' );
+            abort( 404, 'Unknown protocol' );
         }
 
         if( $template === null ) {
@@ -178,16 +185,16 @@ class NagiosController extends Controller
      * @param int               $type
      * @param string|null       $template
      *
-     * @return Response|void
+     * @return Response
      */
-    public function birdseyeBgpSessions( Request $r, Vlan $vlan, int $protocol, int $type, string $template = null )
+    public function birdseyeBgpSessions( Request $r, Vlan $vlan, int $protocol, int $type, string $template = null ): Response
     {
         if( !in_array( $protocol, [ 4, 6 ] ) ) {
-            return abort( 404, 'Unknown protocol' );
+            abort( 404, 'Unknown protocol' );
         }
 
         if( !isset( Router::$TYPES[ $type ] ) ) {
-            return abort( 404, 'Unknown router type' );
+            abort( 404, 'Unknown router type' );
         }
 
         if( $template === null ) {

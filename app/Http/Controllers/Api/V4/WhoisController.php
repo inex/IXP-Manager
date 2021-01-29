@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,11 +23,11 @@ namespace IXP\Http\Controllers\Api\V4;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Cache;
+
 use Illuminate\Http\{Request,Response};
 
 use IXP\Utils\Whois;
-
-use Cache;
 
 /**
  * WhoisController
@@ -36,7 +36,7 @@ use Cache;
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   APIv4
  * @package    IXP\Http\Controllers\Api\V4\Provisioner
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class WhoisController extends Controller
@@ -68,7 +68,6 @@ class WhoisController extends Controller
 
         return response( $response, 200 )->header('Content-Type', 'text/plain');
     }
-
 
     /**
      * API call to do a Whois looking on a prefix

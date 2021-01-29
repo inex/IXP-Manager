@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Auth;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,30 +23,33 @@ namespace IXP\Http\Controllers\Auth;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth;
-
-use Illuminate\Http\RedirectResponse;
+use Auth, Log;
 
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\RedirectResponse;
 
 use IXP\Http\Controllers\Controller;
 
-use IXP\Models\Customer;
-use IXP\Models\CustomerToUser;
-use IXP\Models\User;
+use IXP\Models\{
+    Customer,
+    CustomerToUser,
+    User
+};
 
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
-use Log;
+
 
 /**
  * SwitchUserController
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller/Auth
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Auth
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SwitchUserController extends Controller
@@ -80,9 +83,7 @@ class SwitchUserController extends Controller
         Auth::login( $user );
 
         Log::notice( Auth::user()->username . '(' . Auth::user()->name . ') logged as the user ' . $user->username . '(' . $user->name . ')' . ' for the customer ' . $user->customer->name  );
-
         AlertContainer::push( "You are now logged in as {$user->username} " . " (" . Auth::getUser()->name . ") for the " . config( 'ixp_fe.lang.customer.one' ) . ' ' . $user->customer->name, Alert::SUCCESS );
-
         return redirect( '/' );
     }
 

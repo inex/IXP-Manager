@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,24 +22,20 @@ namespace IXP\Http\Controllers\Api\V4;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use Cache, Grapher;
-
-use Carbon\Carbon;
+use Cache, Grapher, Carbon\Carbon;
 
 use Illuminate\Http\JsonResponse;
 
 use IXP\Services\Grapher\Graph;
 
-
 /**
  * StatisticsController
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @author     Yann Robin       <yann@islandbridgenetworks.ie>
+ * @author     Yann Robin      <yann@islandbridgenetworks.ie>
  * @category   APIv4
  * @package    IXP\Http\Controllers\Api\V4
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class StatisticsController extends Controller
@@ -72,19 +68,15 @@ class StatisticsController extends Controller
     public function overallByMonth(): JsonResponse
     {
         $data = Cache::remember( 'public_overall_stats_by_month', 14400, function() {
-
             $graph = Grapher::ixp()->setPeriod( Graph::PERIOD_YEAR );
-
             $graph->authorise();
 
-            $mrtg = $graph->data();
-
-            $data = [];
-
+            $mrtg       = $graph->data();
+            $data       = [];
             $start      = Carbon::now()->subMonths( 5 )->startOfMonth();
             $startTs    = $start->timestamp;
+            $i          = 0;
 
-            $i = 0;
             while( $start->lt( Carbon::now() ) ) {
                 $data[ $i ][ 'start' ]      = $start->copy();
                 $data[ $i ][ 'startTs' ]    = $start->timestamp;

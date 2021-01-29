@@ -3,7 +3,7 @@
 namespace IXP\Http\Middleware\Services;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,7 +22,6 @@ namespace IXP\Http\Middleware\Services;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use App, Auth, Closure, Route, Validator;
 
 use IXP\Utils\View\Alert\{
@@ -42,13 +41,13 @@ use IXP\Exceptions\Utils\RouterException;
 use IXP\Services\LookingGlass as LookingGlassService;
 
 /**
- * LookingGlass -> MIDDLEWARE
+ * Middleware: LokingGlass
  *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   LookingGlass
- * @package    IXP\Services\LookingGlass
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @package    IXP\Services\Middleware\LookingGlass
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class LookingGlass
@@ -57,6 +56,8 @@ class LookingGlass
      * Check if the symbols is valid
      *
      * @param string $symbol
+     *
+     * @return bool
      */
     private function validateSymbol( string $symbol ): bool
     {
@@ -92,6 +93,8 @@ class LookingGlass
      * @param Closure $next
      *
      * @return mixed
+     *
+     * @throws
      */
     public function handle( Request $r, Closure $next )
     {
@@ -148,7 +151,6 @@ class LookingGlass
         if( $router->authorise( Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC ) ) {
             return true;
         }
-
         return false;
     }
 }

@@ -1,5 +1,4 @@
 <div class="btn-group btn-group-sm">
-
     <a class="btn btn-white" href="<?= route($t->feParams->route_prefix . '@view' , [ 'id' => $t->row[ 'id' ] ] ) ?>"  title="Preview">
         <i class="fa fa-eye"></i>
     </a>
@@ -15,5 +14,4 @@
             <i class="fa fa-trash"></i>
         </a>
     <?php endif;?>
-
 </div>

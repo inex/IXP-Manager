@@ -52,6 +52,10 @@ class AddTimestamps extends Migration
             $table->timestamp( 'updated_at' )->nullable();
         });
 
+        Schema::table('contact_to_group', function (Blueprint $table) {
+            $table->timestamps();
+        });
+
         Schema::table('corebundles', function (Blueprint $table) {
             $table->timestamps();
         });
@@ -278,6 +282,10 @@ class AddTimestamps extends Migration
         Schema::table('contact_group', function (Blueprint $table) {
             $table->renameColumn( 'created_at', 'created' );
             $table->dropColumn( 'updated_at' );
+        });
+
+        Schema::table('contact_to_group', function (Blueprint $table) {
+            $table->dropTimestamps();
         });
 
         Schema::table('corebundles', function (Blueprint $table) {

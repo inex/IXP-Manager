@@ -1,6 +1,12 @@
+<?php
+    $privs          = Auth::getUser()->privs();
+    $isSuperUser    = $privs === \IXP\Models\User::AUTH_SUPERUSER;
+    $isCustAdmin    = $privs === \IXP\Models\User::AUTH_CUSTADMIN;
+?>
+
 <div class="card">
     <div class="card-body">
-        <?= Former::open()->method(  $t->data['params']['isAdd'] ? 'POST' : 'PUT'  )
+        <?= Former::open()->method( $t->data['params']['isAdd'] ? 'POST' : 'PUT'  )
             ->id( 'form' )
             ->action( $t->data['params']['isAdd'] ? route( $t->feParams->route_prefix . '@store' ) : route($t->feParams->route_prefix . '@update', [ 'id' => $t->data[ 'params'][ 'object']->id ] ) )
             ->customInputWidthClass( 'col-sm-6 col-md-6 col-lg-8 col-xl-6' )
@@ -30,7 +36,7 @@
                     ->blockHelp( "The contact's job title / position." );
                 ?>
 
-                <?php if( Auth::getUser()->isSuperUser() ):?>
+                <?php if( $isSuperUser ):?>
                     <?= Former::select( 'custid' )
                         ->id( 'cust' )
                         ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
@@ -63,8 +69,10 @@
             <div class="col-lg-6">
                 <div class="form-group row" >
                     <?php if( $t->data[ 'params'][ "allGroups" ] && isset( $t->data[ 'params'][ "allGroups" ][ 'ROLE' ] ) ): ?>
-                        <div class="" style="display: contents">
-                            <label class="control-label col-lg-3 col-sm-3">&nbsp;Role&nbsp;</label>
+                        <div class="collapse">
+                            <label class="control-label col-lg-3 col-sm-3">&nbsp;
+                                Role&nbsp;
+                            </label>
                         </div>
                         <div>
                             <?php foreach( $t->data[ 'params'][ "allGroups" ][ 'ROLE' ] as $role ): ?>
@@ -83,7 +91,7 @@
                     <?php endif; ?>
                 </div>
 
-                <?php if( !Auth::getUser()->isCustAdmin() ): ?>
+                <?php if( !$isCustAdmin ): ?>
                     <div class="form-group col-sm-12">
                         <div class="card mt-4">
                             <div class="card-header">
@@ -115,13 +123,13 @@
                     </div>
                 <?php endif; ?>
 
-                <?php if( Auth::getUser()->isSuperUser() ): ?>
+                <?php if( $isSuperUser ): ?>
                     <?php if( ( $t->data[ 'params' ][ "allGroups" ] && count( $t->data[ 'params' ][ "allGroups" ] ) > 1 ) || ( count( $t->data[ 'params'][ "allGroups" ] ) == 1 && !isset( $t->data[ 'params'][ "allGroups" ]['ROLE'] ) ) ): ?>
                         <div class="form-group">
                             <label for="mayauthorize" class="control-label col-lg-2 col-sm-4">&nbsp;Groups&nbsp;</label>
                             <table class="table table-no-border">
                                 <?php foreach( $t->data[ 'params'][ "allGroups" ] as $gname => $gvalue ): ?>
-                                    <?php if( $gname != "ROLE" && config('contact_group.types.' . $gname ) ): ?>
+                                    <?php if( $gname !== "ROLE" && config('contact_group.types.' . $gname ) ): ?>
                                         <tr>
                                             <td>
                                                 <label for="mayauthorize" class="control-label col-lg-2 col-sm-4" style="display: grid">&nbsp;<?= $gname ?>&nbsp;</label>
@@ -141,27 +149,26 @@
                                                     </div>
                                                 </td>
                                             <?php endforeach; ?>
-
                                         </tr>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
                             </table>
                         </div>
                     <?php endif; ?>
-
                 <?php endif; ?>
-
             </div>
         </div>
 
             <?php
                 // need to figure out where the cancel button foes. shouldn't be this hard :-(
-                if( session()->get( 'contact_post_store_redirect' ) === 'contact@list' || session()->get( 'contact_post_store_redirect' ) === 'contact@add' ) {
+                $redirect = session()->get( 'contact_post_store_redirect' );
+
+                if( $redirect === 'contact@list' || $redirect === 'contact@add' ) {
                         $cancel_url = route('contact@list' );
                 } else {
                     $custid = null;
                     if( isset( $t->data[ 'params'][ 'object'] ) && $t->data[ 'params'][ 'object'] instanceof \IXP\Models\ContactGroup ) {
-                        $custid = $t->data[ 'params'][ 'object']->customer()->id;
+                        $custid = $t->data[ 'params'][ 'object']->custid;
                     } else if( session()->get( 'contact_post_store_redirect_cid', null ) !== null ) {
                         $custid = session()->get( 'contact_post_store_redirect_cid' );
                     }
@@ -172,21 +179,13 @@
                         $cancel_url = route( 'contact@list' );
                     }
                 }
-
             ?>
 
             <?= Former::actions(
                 Former::primary_submit( $t->data['params']['isAdd'] ? 'Create' : 'Save Changes' )->class( "mb-2 mb-sm-0" ),
                 Former::secondary_link( 'Cancel' )->href( $cancel_url )->class( "mb-2 mb-sm-0" ),
                 Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
-            );
-            ?>
-
-            <?= Former::hidden( 'id' )
-                ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->id : '' )
-            ?>
-
+            ); ?>
         <?= Former::close() ?>
-
     </div>
 </div>

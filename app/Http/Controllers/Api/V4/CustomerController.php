@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,11 +25,13 @@ namespace IXP\Http\Controllers\Api\V4;
 
 use App;
 
-use IXP\Models\Aggregators\CustomerAggregator;
+use IXP\Models\{
+    Aggregators\CustomerAggregator,
+    Customer,
+    PatchPanel,
+    Vlan
+};
 
-use IXP\Models\Customer;
-use IXP\Models\PatchPanel;
-use IXP\Models\Vlan;
 use Illuminate\Http\{
     JsonResponse,
     Request
@@ -40,8 +42,9 @@ use IXP\Services\PeeringDb;
  * Customer API v4 Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Customers
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   APIv4
+ * @package    IXP\Http\Controllers\Api\V4
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class CustomerController extends Controller
@@ -49,7 +52,7 @@ class CustomerController extends Controller
     /**
      * Get the switches for a customer
      *
-     * @param Request   $r instance of the current HTTP request
+     * @param Request   $r      instance of the current HTTP request
      * @param Customer  $cust
      *
      * @return  JsonResponse
@@ -90,20 +93,20 @@ class CustomerController extends Controller
     /**
      * Get Customer depending on the Vlan and Protocol
      *
-     * @param   Request $request instance of the current HTTP request
+     * @param   Request $r instance of the current HTTP request
      *
      * @return  JsonResponse
      */
-    public function byVlanAndProtocol( Request $request ): JsonResponse
+    public function byVlanAndProtocol( Request $r ): JsonResponse
     {
         $vlanid = null;
 
-        if( $request->vlanid ) {
-            $vlan = Vlan::findOrFail( $request->vlanid );
+        if( $r->vlanid ) {
+            $vlan = Vlan::findOrFail( $r->vlanid );
             $vlanid = $vlan->id;
         }
 
-        if( !in_array( $protocol = $request->protocol, [ null, 4, 6 ], false ) ) {
+        if( !in_array( $protocol = $r->protocol, [ null, 4, 6 ], false ) ) {
             abort( 404 );
         }
 

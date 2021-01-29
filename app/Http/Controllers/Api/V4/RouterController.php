@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -39,7 +39,7 @@ use Illuminate\Http\{
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   APIv4
  * @package    IXP\Http\Controllers\Api\V4
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class RouterController extends Controller
@@ -78,6 +78,7 @@ class RouterController extends Controller
      *     ]
      *
      * @param string $handle Handle of the router that we want
+     *
      * @return JsonResponse
      */
     public function getLastUpdated( string $handle ) : JsonResponse
@@ -159,7 +160,6 @@ class RouterController extends Controller
 
         return response()->json( $result );
     }
-
 
     /**
      * Format the router's last updated datetime as an array

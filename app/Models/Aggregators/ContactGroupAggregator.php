@@ -74,9 +74,9 @@ class ContactGroupAggregator extends ContactGroup
      *     ];
      *
      *
-     * @param string|null  $type   Optionally limit to a specific type
-     * @param int|null  $cid    Contact id to filter for a particular contact
-     * @param bool      $active Filter active
+     * @param string|null   $type   Optionally limit to a specific type
+     * @param int|null      $cid    Contact id to filter for a particular contact
+     * @param bool          $active Filter active
      *
      * @return array
      */

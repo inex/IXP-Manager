@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Auth;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -36,6 +36,8 @@ use Illuminate\View\View;
 
 use IXP\Http\Controllers\Controller;
 
+use IXP\Events\Auth\PasswordReset   as PasswordResetEvent;
+
 use IXP\Models\User;
 
 use IXP\Utils\View\Alert\{
@@ -43,14 +45,14 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-use IXP\Events\Auth\PasswordReset   as PasswordResetEvent;
-
 /**
  * ResetPasswordController
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller/Auth
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Auth
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class ResetPasswordController extends Controller
@@ -102,8 +104,8 @@ class ResetPasswordController extends Controller
         ] );
 
         return view('auth/reset-password')->with( [
-            'token' => $token,
-            'username' => $r->username
+            'token'     => $token,
+            'username'  => $r->username
         ] );
     }
 

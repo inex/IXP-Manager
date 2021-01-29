@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Contact;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\Contact;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Former, Redirect;
+use Auth, Former, Redirect, stdClass;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\{
@@ -45,20 +45,21 @@ use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
-use stdClass;
 
 /**
  * Contact Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Contact
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class ContactController extends EloquentController
 {
     /**
-     * The object being added / edited
+     * The object being created / edited
+     *
      * @var Contact
      */
     protected $object = null;
@@ -96,7 +97,7 @@ class ContactController extends EloquentController
             'viewFolderName'    => 'contact',
         ];
 
-        switch( Auth::getUser()->privs() ) {
+        switch( $privs = Auth::getUser()->privs() ) {
             case User::AUTH_SUPERUSER:
                 $this->feParams->listColumns = [
                     'customer'  => [
@@ -161,9 +162,7 @@ class ContactController extends EloquentController
         }
 
         // display the same information in the view as the list
-        if( !Auth::getUser()->isSuperUser() ) {
-            $this->feParams->viewColumns = $this->feParams->listColumns;
-        } else {
+        if( $privs === User::AUTH_SUPERUSER ) {
             $this->feParams->viewColumns = array_merge(
                 $this->feParams->listColumns,
                 [
@@ -175,35 +174,8 @@ class ContactController extends EloquentController
                     ]
                 ]
             );
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function preView(): void
-    {
-        if( !Auth::getUser()->isSuperUser() && Auth::getUser()->custid !== (int)$this->data[ 'item' ][ 'custid' ] ) {
-            $this->unauthorized();
-        }
-
-        if( isset( $this->data[ "item" ][ "contact_groups" ] ) ) {
-            $this->feParams->viewColumns = array_merge(
-                $this->feParams->viewColumns,
-                [
-                    'contact_groups'     => [
-                        'title'         => 'Group',
-                        'type'          => self::$FE_COL_TYPES[ 'LABEL' ],
-                        'array'   => [
-                            'delimiter'         => ',',
-                            'replace'           => '<br/>',
-                            'array_index'       => [
-                                'type', 'name'
-                            ]
-                        ]
-                    ]
-                ]
-            );
+        } else {
+            $this->feParams->viewColumns = $this->feParams->listColumns;
         }
     }
 
@@ -219,12 +191,13 @@ class ContactController extends EloquentController
      */
     private function getFeList( stdClass $feParams, int $id = null, int $role = null, int $cgid = null ): array
     {
+        $isSuperUser = Auth::getUser()->isSuperUser();
         $query = Contact::select( [ 'contact.*', 'cust.name AS customer', 'cust.id AS custid' ])
             ->leftJoin( 'cust', 'cust.id', 'contact.custid'  )
             ->when( $id , function ( Builder $query, $id ) {
                 return $query->where('contact.id', $id );
             })
-            ->when( !Auth::getUser()->isSuperUser(), function ( Builder $query ) {
+            ->when( !$isSuperUser, function ( Builder $query ) {
                 return $query->where('cust.id', Auth::getUser()->custid );
             })
             ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
@@ -232,14 +205,14 @@ class ContactController extends EloquentController
             });
 
         if( config('contact_group.types.ROLE') ) {
-            $groupid = $role ? $role : ( $cgid ?: null);
+            $groupid = $role ?: ($cgid ?: null);
             $query->when( $groupid , function ( Builder $query, $groupid ) {
                 return $query->leftJoin( 'contact_to_group', function( $join ) {
                     $join->on( 'contact.id', 'contact_to_group.contact_id');
                 })->where('contact_to_group.contact_group_id', $groupid );
             });
 
-            if( Auth::getUser()->isSuperUser() ) {
+            if( $isSuperUser ) {
                 $query->with( 'contactRoles', 'contactGroups' );
             }
         }
@@ -273,11 +246,11 @@ class ContactController extends EloquentController
                 // flatten the multi dimensional array
                 foreach( $activeGroups as $gname => $gvalue ) {
                     foreach( $gvalue as $index => $val ){
-                        $cgs[$index] = $val[ 'name' ];
+                        $cgs[ $index ] = $val[ 'name' ];
                     }
                 }
 
-                if( !array_key_exists( $cg, $allGroups['ROLE'] ) ) {
+                if( !array_key_exists( $cg, $cgs ) ) {
                     $cg = null;
                 }
             }
@@ -301,40 +274,34 @@ class ContactController extends EloquentController
     }
 
     /**
-     * Set the session in order to redirect to the good location
-     *
-     * @return void
+     * @inheritdoc
      */
-    private function setRedirectSession(): void
+    protected function preView(): void
     {
-        session()->remove( "contact_post_store_redirect" );
+        if( Auth::getUser()->custid !== (int)$this->data[ 'item' ][ 'custid' ]  && !Auth::getUser()->isSuperUser() ) {
+            $this->unauthorized();
+        }
 
-        // check if we come from the customer overview or the contact list
-        if( strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
-            session()->put( 'contact_post_store_redirect',     'customer@overview' );
-            session()->put( 'contact_post_store_redirect_cid', request()->cust );
-        } else {
-            session()->put( 'contact_post_store_redirect', 'contact@list' );
-            session()->put( 'contact_post_store_redirect_cid', null );
+        if( isset( $this->data[ 'item' ][ 'contact_groups' ] ) && count( $this->data[ 'item' ][ 'contact_groups' ] ) ) {
+            $this->feParams->viewColumns = array_merge(
+                $this->feParams->viewColumns,
+                [
+                    'contact_groups'     => [
+                        'title'         => 'Group',
+                        'type'          => self::$FE_COL_TYPES[ 'LABEL' ],
+                        'array'   => [
+                            'delimiter'         => ',',
+                            'replace'           => '<br/>',
+                            'array_index'       => [
+                                'type', 'name'
+                            ]
+                        ]
+                    ]
+                ]
+            );
         }
     }
 
-    /**
-     * return an array of contacts data
-     *
-     * @return array
-     */
-    private function getContactsData(): array
-    {
-        if( config('contact_group.types.ROLE') ) {
-            return [
-                'roles'    => ContactGroupAggregator::getGroupNamesTypeArray( 'ROLE' )[ "ROLE" ],
-                'allGroups' => ContactGroupAggregator::getGroupNamesTypeArray( false, false, true)
-            ];
-        }
-
-        return [ 'roles' => null, 'allGroups' => [] ];
-    }
     /**
      * Display the form to add/edit an object
      *
@@ -371,30 +338,28 @@ class ContactController extends EloquentController
      *
      * @throws
      */
-    protected function editPrepareForm( $id ): array
+    protected function editPrepareForm( int $id ): array
     {
         $this->setRedirectSession();
-        $data = $this->getContactsData();
+        $this->object   = Contact::findOrFail( $id );
+        $data           = $this->getContactsData();
 
-        $this->object = Contact::findOrFail( $id );
-
-        if( !Auth::getUser()->isSuperUser() && Auth::getUser()->custid !== $this->object->customer->id ){
+        if( Auth::getUser()->custid !== $this->object->customer->id && !Auth::getUser()->isSuperUser() ){
             $this->unauthorized();
         }
 
         $contactDetail = [
-            'name'                      => request()->old( 'name',      $this->object->name ),
+            'name'                      => request()->old( 'name',      $this->object->name     ),
             'position'                  => request()->old( 'position',  $this->object->position ),
-            'custid'                    => request()->old( 'custid',    $this->object->custid ),
-            'email'                     => request()->old( 'email',     $this->object->email ),
-            'phone'                     => request()->old( 'phone',     $this->object->phone ),
-            'mobile'                    => request()->old( 'mobile',    $this->object->mobile ),
-            'notes'                     => request()->old( 'notes',     $this->object->notes ),
+            'custid'                    => request()->old( 'custid',    $this->object->custid   ),
+            'email'                     => request()->old( 'email',     $this->object->email    ),
+            'phone'                     => request()->old( 'phone',     $this->object->phone    ),
+            'mobile'                    => request()->old( 'mobile',    $this->object->mobile   ),
+            'notes'                     => request()->old( 'notes',     $this->object->notes    ),
         ];
 
         $contactGroupDetail = [];
-
-        $contactGroup =  ContactGroupAggregator::getGroupNamesTypeArray( false, $this->object->id );
+        $contactGroup       =  ContactGroupAggregator::getGroupNamesTypeArray( false, $this->object->id );
 
         foreach( $data[ 'allGroups' ] as $gname => $gvalue ) {
             foreach( $gvalue as $g ){
@@ -416,11 +381,11 @@ class ContactController extends EloquentController
     /**
      * Check if the form is valid
      *
-     * @param $request
+     * @param $r
      *
      * @return void
      */
-    public function checkForm( Request $request ): void
+    public function checkForm( Request $r ): void
     {
         $rules = [
             'name'                  => 'required|string|max:255',
@@ -434,15 +399,15 @@ class ContactController extends EloquentController
         if( Auth::getUser()->isSuperUser() ){
             $rules = array_merge( $rules, [ 'custid' => [
                 'required', 'integer',
-                function( $attribute, $value, $fail ) use ($request) {
-                    if( !Customer::whereId( $value )->exists() ) {
+                function( $attribute, $value, $fail ) {
+                    if( !Customer::find( $value ) ) {
                         return $fail( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' is invalid / does not exist.' );
                     }
                 }
             ] ] );
         }
 
-        $request->validate( $rules );
+        $r->validate( $rules );
     }
 
     /**
@@ -456,7 +421,7 @@ class ContactController extends EloquentController
     {
         foreach( $groups as $index => $groupid ) {
             if( $cgroup = ContactGroup::find( $groupid ) ) {
-                if( $cgroup->limited_to != 0 ) {
+                if( $cgroup->limited_to !== 0 ) {
                     $nbContactForCust = Contact::when( $groupid , function ( Builder $query, $groupid ) {
                                         return $query->leftJoin( 'contact_to_group', function( $join ) {
                                             $join->on( 'contact.id', 'contact_to_group.contact_id');
@@ -465,39 +430,40 @@ class ContactController extends EloquentController
                                     ->where( 'custid', $this->object->custid  )
                                     ->get()->count();
 
-                    if( !$this->object->contactGroupsAll()->contains( 'id', $groupid ) && $cgroup->limited_to <= $nbContactForCust ) {
+                    if( $cgroup->limited_to <= $nbContactForCust && !$this->object->contactGroupsAll->contains( 'id', $groupid ) ) {
                         AlertContainer::push( "Contact group " . $cgroup->type . " : " . $cgroup->name . " has a limited membership and is full." , Alert::DANGER );
                         return false;
                     }
                 }
 
                 if( !$this->object->contactGroupsAll->contains( 'id', $groupid ) ) {
-                    $this->object->contactRoles()->save( $cgroup );
+                    $this->object->contactRoles()->attach( $cgroup );
                 }
             }
         }
         return true;
     }
+
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doStore( Request $request )
+    public function doStore( Request $r )
     {
-        $this->checkForm( $request );
+        $this->checkForm( $r );
         $custid = Auth::getUser()->custid;
 
         if( Auth::getUser()->isSuperUser() ) {
-            $custid = $request->custid;
+            $custid = $r->custid;
         }
 
         $this->object = Contact::create(
-            array_merge( $request->all(), [
+            array_merge( $r->all(), [
                 'creator'       => Auth::getUser()->username,
                 'lastupdatedby' => Auth::id()
             ] )
@@ -505,8 +471,8 @@ class ContactController extends EloquentController
         $this->object->custid = $custid;
         $this->object->save();
 
-        if( !$this->addGroupsToObject( $request->roles ?? [] ) ) {
-            return Redirect::back()->withInput( $request->all() );
+        if( !$this->addGroupsToObject( $r->roles ?? [] ) ) {
+            return Redirect::back()->withInput( $r->all() );
         }
 
         return true;
@@ -515,25 +481,25 @@ class ContactController extends EloquentController
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
-     * @param int $id
+     * @param Request   $r
+     * @param int       $id
      *
      * @return bool|RedirectResponse
      *
      */
-    public function doUpdate( Request $request, int $id )
+    public function doUpdate( Request $r, int $id )
     {
         $this->object = Contact::findOrFail( $id );
-        $this->checkForm( $request );
+        $this->checkForm( $r );
 
         $custid = Auth::getUser()->custid;
 
         if( Auth::getUser()->isSuperUser() ) {
-            $custid = $request->custid;
+            $custid = $r->custid;
         }
 
         $this->object->update(
-            array_merge( $request->all(), [
+            array_merge( $r->all(), [
                 'creator'       => Auth::getUser()->username,
                 'lastupdatedby' => Auth::id()
             ] )
@@ -542,19 +508,17 @@ class ContactController extends EloquentController
         $this->object->custid = $custid;
         $this->object->save();
 
-        $objectGroups = $this->object->contactGroupsAll()->get()->keyBy( 'id' )->toArray();
-        $groupToAdd     = array_diff( $request->roles ?? [], array_keys( $objectGroups ) );
-        $groupToDelete  = array_diff( array_keys( $objectGroups ), $request->roles ?? [] );
+        $objectGroups   = $this->object->contactGroupsAll()->get()->keyBy( 'id' )->toArray();
+        $groupToAdd     = array_diff( $r->roles ?? [], array_keys( $objectGroups ) );
+        $groupToDelete  = array_diff( array_keys( $objectGroups ), $r->roles ?? [] );
 
         if( !$this->addGroupsToObject( $groupToAdd ) ) {
-            return Redirect::back()->withInput( $request->all() );
+            return Redirect::back()->withInput( $r->all() );
         }
 
         foreach( $groupToDelete as $gToDelete ) {
-            if( $cgroup = ContactGroup::find( $gToDelete ) ) {
-                if( $cgroup->active ) {
-                    $this->object->contactGroupsAll()->detach( $cgroup->id );
-                }
+            if(( $cgroup = ContactGroup::find( $gToDelete ) ) && $cgroup->active) {
+                $this->object->contactGroupsAll()->detach( $cgroup->id );
             }
         }
 
@@ -575,7 +539,7 @@ class ContactController extends EloquentController
 
         // retrieve the customer ID
         if( $redirect === 'customer@overview' ) {
-            return route( 'customer@overview' , [ 'cust' => $this->object->customer->id , 'tab' => 'contacts' ] );
+            return route( 'customer@overview' , [ 'cust' => $this->object->custid , 'tab' => 'contacts' ] );
         }
 
         return null;
@@ -597,11 +561,9 @@ class ContactController extends EloquentController
         if( Auth::getUser()->isSuperUser() ) {
             // keep the customer ID for redirection on success
             $this->request->session()->put( "ixp_contact_delete_custid", $this->object->customer->id );
-        } else {
-            if( $this->object->customer->id !== Auth::getUser()->custid ) {
-                AlertContainer::push( 'You are not authorised to delete this contact.', Alert::DANGER );
-                return false;
-            }
+        } elseif( $this->object->customer->id !== Auth::getUser()->custid ) {
+            AlertContainer::push( 'You are not authorised to delete this contact.', Alert::DANGER );
+            return false;
         }
 
         $this->object->contactGroupsAll()->detach();
@@ -627,5 +589,41 @@ class ContactController extends EloquentController
         }
 
         return route( 'contact@list' );
+    }
+
+    /**
+     * Set the session in order to redirect to the good location
+     *
+     * @return void
+     */
+    private function setRedirectSession(): void
+    {
+        session()->remove( "contact_post_store_redirect" );
+
+        // check if we come from the customer overview or the contact list
+        if( strpos( request()->headers->get('referer', '' ), "customer/overview" ) ) {
+            session()->put( 'contact_post_store_redirect',     'customer@overview' );
+            session()->put( 'contact_post_store_redirect_cid', request()->cust );
+        } else {
+            session()->put( 'contact_post_store_redirect', 'contact@list' );
+            session()->put( 'contact_post_store_redirect_cid', null );
+        }
+    }
+
+    /**
+     * return an array of contacts data
+     *
+     * @return array
+     */
+    private function getContactsData(): array
+    {
+        if( config('contact_group.types.ROLE') ) {
+            return [
+                'roles'     => ContactGroupAggregator::getGroupNamesTypeArray( 'ROLE' )[ "ROLE" ],
+                'allGroups' => ContactGroupAggregator::getGroupNamesTypeArray( false, false, true)
+            ];
+        }
+
+        return [ 'roles' => null, 'allGroups' => [] ];
     }
 }

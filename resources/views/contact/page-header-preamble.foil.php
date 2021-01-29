@@ -28,7 +28,5 @@
         <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@create' ) ?>">
             <span class="fa fa-plus"></span>
         </a>
-
     </div>
-
 <?php endif;?>

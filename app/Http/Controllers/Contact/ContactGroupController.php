@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Contact;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -32,7 +32,6 @@ use Illuminate\Http\{
 };
 
 use IXP\Models\{
-    User,
     ContactGroup
 };
 
@@ -47,14 +46,16 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController;
  * Contact Group Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Contact
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class ContactGroupController extends EloquentController
 {
     /**
      * The object being created / edited
+     *
      * @var ContactGroup
      */
     protected $object = null;
@@ -140,7 +141,6 @@ class ContactGroupController extends EloquentController
             AlertContainer::push( 'Contact groups are not configured. Please see <a href="https://docs.ixpmanager.org/usage/contacts/#contact-groups">the documentation here</a>.', Alert::INFO );
             return redirect( route( 'contact@list' ) );
         }
-
         return null;
     }
 
@@ -154,8 +154,8 @@ class ContactGroupController extends EloquentController
     protected function createPrepareForm(): array
     {
         return [
-            'object'                => $this->object,
-            'types'                 => config( "contact_group.types" )
+            'object'        => $this->object,
+            'types'         => config( 'contact_group.types' )
         ];
     }
 
@@ -173,17 +173,51 @@ class ContactGroupController extends EloquentController
         $this->object = ContactGroup::findOrFail( $id );
 
         Former::populate( [
-            'name'                      => request()->old( 'name',              $this->object->name ),
-            'description'               => request()->old( 'description',       $this->object->description ),
-            'type'                      => request()->old( 'type',              $this->object->type ),
-            'active'                    => request()->old( 'active',            ( $this->object->active      ? 1 : 0 ) ),
-            'limited_to'                => request()->old( 'limit',             $this->object->limited_to ),
+            'name'              => request()->old( 'name',              $this->object->name         ),
+            'description'       => request()->old( 'description',       $this->object->description  ),
+            'type'              => request()->old( 'type',              $this->object->type         ),
+            'active'            => request()->old( 'active',            $this->object->active       ),
+            'limited_to'        => request()->old( 'limit',             $this->object->limited_to   ),
         ] );
 
         return [
-            'object'                => $this->object,
-            'types'                 => config( "contact_group.types" )
+            'object'        => $this->object,
+            'types'         => config( "contact_group.types" )
         ];
+    }
+
+    /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request $r
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doStore( Request $r )
+    {
+        $this->checkForm( $r );
+        $this->object = ContactGroup::create( $r->all() );
+        return true;
+    }
+
+    /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request   $r
+     * @param int       $id
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doUpdate( Request $r, int $id )
+    {
+        $this->object = ContactGroup::findOrFail( $id );
+        $this->checkForm( $r );
+        $this->object->update( $r->all() );
+        return true;
     }
 
     /**
@@ -196,43 +230,8 @@ class ContactGroupController extends EloquentController
         $r->validate( [
             'name'                  => 'required|string|max:255|unique:Entities\ContactGroup,name' . ( $r->id ? ','. $r->id : '' ),
             'description'           => 'required|string|max:255',
-            'type'                  => 'required|string|in:' . implode( ',', array_keys( config( "contact_group.types" ) ) ),
+            'type'                  => 'required|string|in:' . implode( ',', array_keys( config( 'contact_group.types' ) ) ),
             'limited_to'            => 'required|integer|min:0',
         ] );
-    }
-
-    /**
-     * Function to do the actual validation and storing of the submitted object.
-     *
-     * @param Request $request
-     *
-     * @return bool|RedirectResponse
-     *
-     * @throws
-     */
-    public function doStore( Request $request )
-    {
-        $this->checkForm( $request );
-        $this->object = ContactGroup::create( $request->all() );
-        return true;
-    }
-
-    /**
-     * Function to do the actual validation and storing of the submitted object.
-     *
-     * @param Request $request
-     * @param int $id
-     *
-     * @return bool|RedirectResponse
-     *
-     * @throws
-     */
-    public function doUpdate( Request $request, int $id )
-    {
-        $this->object = ContactGroup::findOrFail( $id );
-        $this->checkForm( $request );
-        $this->object->update( $request->all() );
-
-        return true;
     }
 }

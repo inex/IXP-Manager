@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Customer;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,7 +23,14 @@ namespace IXP\Http\Controllers\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Redirect;
+use Auth, Redirect;
+
+use Illuminate\Http\{
+    RedirectResponse,
+    Request
+};
+
+use Illuminate\View\View;
 
 use Intervention\Image\ImageManagerStatic as Image;
 
@@ -34,16 +41,8 @@ use IXP\Models\{
     Logo
 };
 
-use Illuminate\Http\{
-    RedirectResponse,
-    Request
-};
+use IXP\Http\Requests\Customer\Logo as LogoRequest;
 
-use Illuminate\View\View;
-
-use IXP\Http\Requests\Customer\{
-    Logo                    as LogoRequest
-};
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -57,30 +56,30 @@ use IXP\Utils\View\Alert\{
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Customers
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Customer
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class LogoController extends Controller
 {
     /**
-     * Load a customer from the database with the given ID (or ID in request)
+     * Display all the customers' logos
      *
-     * @param int|null $id The customer ID
-     * @return Customer The customer object
+     * @return  View
+     *
+     * @throws
      */
-    private function loadCustomer( ?int $id ): Customer
+    public function logos(): View
     {
-        if( Auth::getUser()->isSuperUser() ) {
-            return Customer::findOrFail( $id );
-        }
-
-        return Customer::find( Auth::getUser()->custid );
+        return view( 'customer/logos' )->with([
+            'customers' => Customer::with( 'logo' )
+                ->has( 'logo' )->orderBy( 'name' )->get(),
+        ]);
     }
 
-
     /**
-     * Display the form to add / edit / delete a member's logo
+     * Display the form to create / edit / delete a member's logo
      *
      * @param int|null $id ID of the customer
      *
@@ -92,37 +91,35 @@ class LogoController extends Controller
 
         return view( 'customer/logo/manage' )->with( [
             'c'                  => $c,
-            'logo'               => $c->logo()->exists() ? $c->logo  : false
+            'logo'               => $c->logo ?? false
         ] );
     }
 
     /**
-     * Add or edit a customer's logo
+     * Upload a customer's logo
      *
-     * @param   LogoRequest $request instance of the current HTTP request
+     * @param   LogoRequest $r instance of the current HTTP request
      *
      * @return  RedirectResponse
      * @throws
      */
-    public function store( LogoRequest $request ): RedirectResponse
+    public function store( LogoRequest $r ): RedirectResponse
     {
-        $c = $this->loadCustomer( $request->input( 'id' ) );
+        $c = $this->loadCustomer( $r->id );
 
-        if( !$request->hasFile( 'logo' ) ) {
+        if( !$r->hasFile( 'logo' ) ) {
             abort(400);
         }
 
-        $file = $request->file('logo');
-        $img = Image::make( $file->getPath().'/'.$file->getFilename() );
+        $file   = $r->file('logo');
+        $img    = Image::make( $file->getPath() . '/' . $file->getFilename() );
 
         $img->resize(null, 80, function ( $constraint ) {
             $constraint->aspectRatio();
-        });
-        $img->encode('png');
+        })->encode('png');
 
         // remove old logo
-        if( $c->logo()->exists() ) {
-            $oldLogo = $c->logo;
+        if( $oldLogo = $c->logo ) {
             if( file_exists( public_path() . '/logos/' . $oldLogo->shardedPath() ) ) {
                 @unlink( public_path() . '/logos/' . $oldLogo->shardedPath() );
             }
@@ -130,11 +127,11 @@ class LogoController extends Controller
         }
 
         $logo = Logo::create( [
-            'original_name' => $file->getClientOriginalName(),
-            'stored_name'   => sha1( $img->getEncoded() ) . '.png',
-            'uploaded_by'   => Auth::getUser()->username,
-            'width'         => $img->width(),
-            'height'        => $img->height(),
+            'original_name'     => $file->getClientOriginalName(),
+            'stored_name'       => sha1( $img->getEncoded() ) . '.png',
+            'uploaded_by'       => Auth::getUser()->username,
+            'width'             => $img->width(),
+            'height'            => $img->height(),
         ] );
 
         $logo->customer_id = $c->id;
@@ -148,8 +145,7 @@ class LogoController extends Controller
 
         $img->save( $saveTo );
 
-        AlertContainer::push( "Logo successfully uploaded!", Alert::SUCCESS );
-
+        AlertContainer::push( "Logo uploaded.", Alert::SUCCESS );
         return Redirect::to( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ 'cust' => $c->id ] ) : Redirect::to( route( "dashboard@index" ) ) );
     }
 
@@ -157,48 +153,44 @@ class LogoController extends Controller
     /**
      * Delete a customer's logo
      *
-     * @param Request $request
-     * @param int $id
+     * @param Request   $r
+     * @param int       $id
      *
      * @return  RedirectResponse
      *
      * @throws \Exception
      */
-    public function delete( Request $request, int $id ) : RedirectResponse
+    public function delete( Request $r, int $id ) : RedirectResponse
     {
         $c = $this->loadCustomer( $id );
 
         // do we have a logo?
-        if( $c->logo()->doesntExist() ) {
+        if( !( $oldLogo = $c->logo ) ) {
             AlertContainer::push( "Sorry, we could not find any logo for you.", Alert::DANGER );
             return Redirect::to( '' );
         }
-
-        $oldLogo = $c->logo;
 
         if( file_exists( $oldLogo->fullPath() ) ) {
             @unlink( $oldLogo->fullPath() );
         }
 
         $oldLogo->delete();
-
-        AlertContainer::push( "Logo successfully removed!", Alert::SUCCESS );
-
+        AlertContainer::push( "Logo deleted.", Alert::SUCCESS );
         return redirect( Auth::getUser()->isSuperUser() ? route( 'customer@overview', [ 'cust' => $c->id ] ) : route( 'dashboard@index' ) );
     }
 
-
     /**
-     * Display all the customers' logos
+     * Load a customer from the database with the given ID (or ID in request)
      *
-     * @return  View
-     *
-     * @throws
+     * @param int|null $id The customer ID
+     * @return Customer The customer object
      */
-    public function logos(): View
+    private function loadCustomer( ?int $id ): Customer
     {
-        return view( 'customer/logos' )->with([
-            'customers' => Customer::with( 'logo' )->has( 'logo' )->orderBy( 'name' )->get(),
-        ]);
+        if( Auth::getUser()->isSuperUser() ) {
+            return Customer::findOrFail( $id );
+        }
+
+        return Customer::find( Auth::getUser()->custid );
     }
 }
