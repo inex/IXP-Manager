@@ -48,6 +48,7 @@ use IXP\Utils\View\Alert\{
 
 /**
  * Contact Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
@@ -338,6 +339,7 @@ class ContactController extends EloquentController
      */
     public function doStore( Request $r )
     {
+
         $this->checkForm( $r );
         $custid = Auth::getUser()->isSuperUser() ? $r->custid : Auth::getUser()->custid;
 
@@ -348,12 +350,12 @@ class ContactController extends EloquentController
             ] )
         );
         $this->object->custid = $custid;
+        $this->object->save();
 
         if( !$this->addGroupsToObject( $r->roles ?? [] ) ) {
-            return Redirect::back()->withInput( $r->all() );
+            return redirect( route( self::route_prefix() . '@edit', [ 'id' => $this->object->id ] ) );
         }
-        // save the object if addGroupsToObject was success
-        $this->object->save();
+
         return true;
     }
 
@@ -435,17 +437,17 @@ class ContactController extends EloquentController
         );
 
         $this->object->custid = $custid;
+        $this->object->save();
 
         $objectGroups   = $this->object->contactGroupsAll()->get()->keyBy( 'id' )->toArray();
         $groupToAdd     = array_diff( $r->roles ?? [], array_keys( $objectGroups ) );
         $groupToDelete  = array_diff( array_keys( $objectGroups ), $r->roles ?? [] );
 
         if( !$this->addGroupsToObject( $groupToAdd ) ) {
-            return Redirect::back()->withInput( $r->all() );
+            return redirect( route( self::route_prefix() . '@edit', [ 'id' => $this->object->id ] ) );
         }
 
         // save the object if addGroupsToObject was success
-        $this->object->save();
         foreach( $groupToDelete as $gToDelete ) {
             if( ( $cgroup = ContactGroup::find( $gToDelete ) ) && $cgroup->active ) {
                 $this->object->contactGroupsAll()->detach( $cgroup->id );
@@ -497,7 +499,6 @@ class ContactController extends EloquentController
         }
 
         $this->object->contactGroupsAll()->detach();
-
         return true;
     }
 
@@ -517,7 +518,6 @@ class ContactController extends EloquentController
                 return route( "customer@overview", [ "cust" => $custid, "tab" => "contacts" ] );
             }
         }
-
         return route( 'contact@list' );
     }
 

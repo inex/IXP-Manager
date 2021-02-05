@@ -25,7 +25,6 @@ namespace IXP\Http\Controllers\Docstore;
 
 use Auth, Former;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\{
     RedirectResponse,
@@ -48,10 +47,12 @@ use IXP\Utils\View\Alert\{
 
 /**
  * DirectoryController Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Docstore
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Docstore
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class DirectoryController extends Controller
@@ -65,7 +66,7 @@ class DirectoryController extends Controller
      */
     public function list( DocstoreDirectory $dir = null ): View
     {
-        $user = Auth::user();
+        $user   = Auth::user();
         $dirs   = DocstoreDirectory::getHierarchyForUserClass( optional( $user )->privs() ?? 0 )[ $dir->id ?? '' ] ?? [];
         $files  = DocstoreFile::getListing( $dir, $user );
 
@@ -75,7 +76,7 @@ class DirectoryController extends Controller
         }
 
         return view( 'docstore/dir/list', [
-            'dir'       => $dir ?? false,
+            'dir'       => $dir ?: false,
             'dirs'      => $dirs,
             'files'     => $files,
         ] );
@@ -96,8 +97,7 @@ class DirectoryController extends Controller
 
         return view( 'docstore/dir/create', [
             'dir'           => false,
-            'dirs'          => DocstoreDirectory::getListingForDropdown( DocstoreDirectory::getListing( null, Auth::getUser() )  ),
-            'parent_dir'    => $r->input( 'parent_dir', false )
+            'dirs'          => DocstoreDirectory::getListingForDropdown( DocstoreDirectory::getListing( null, Auth::getUser() ) ),
         ] );
     }
 
@@ -113,17 +113,10 @@ class DirectoryController extends Controller
     public function store( Request $r ): RedirectResponse
     {
         $this->authorize( 'create', DocstoreDirectory::class );
-
         $this->checkForm( $r );
-
-        $dir = DocstoreDirectory::create( [
-            'name'              => $r->name,
-            'description'       => $r->description,
-            'parent_dir_id'     => $r->parent_dir
-        ] );
+        $dir = DocstoreDirectory::create( $r->all() );
 
         Log::info( sprintf( "DocStore: new directory [%d|%s] created by %s", $dir->id, $dir->name, Auth::getUser()->username ) );
-
         AlertContainer::push( "New directory <em>{$dir->name}</em> created.", Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $dir->id ] ) );
     }
@@ -143,15 +136,14 @@ class DirectoryController extends Controller
         $this->authorize( 'update', $dir );
 
         Former::populate([
-            'name'                  => $r->old( 'name',                 $dir->name          ),
-            'description'           => $r->old( 'descripton',           $dir->description   ),
-            'parent_dir'            => $r->old( 'parent_dir',   $dir->parent_dir_id ?? '' ),
+            'name'                  => $r->old( 'name',                 $dir->name                  ),
+            'description'           => $r->old( 'descripton',           $dir->description           ),
+            'parent_dir_id'         => $r->old( 'parent_dir',    $dir->parent_dir_id ?: ''    ),
         ]);
 
         return view( 'docstore/dir/create', [
             'dir'           => $dir,
             'dirs'          => DocstoreDirectory::getListingForDropdown( DocstoreDirectory::getListing( null, Auth::user() ) ),
-            'parent_dir'    => $dir->parent_dir_id
         ] );
     }
 
@@ -167,17 +159,10 @@ class DirectoryController extends Controller
     public function update( Request $r , DocstoreDirectory $dir ): RedirectResponse
     {
         $this->authorize( 'update', $dir );
-
         $this->checkForm( $r );
-
-        $dir->update( [
-            'name'          => $r->name,
-            'description'   => $r->description,
-            'parent_dir_id' => $r->parent_dir
-        ] );
+        $dir->update( $r->all() );
 
         Log::info( sprintf( "DocStore: directory [%d|%s] edited by %s", $dir->id, $dir->name, Auth::user()->username ) );
-
         AlertContainer::push( "Directory <em>{$dir->name}</em> updated.", Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $dir->parent_dir_id ] ) );
     }
@@ -216,13 +201,7 @@ class DirectoryController extends Controller
         $r->validate( [
             'name'          => 'required|max:100',
             'description'   => 'nullable',
-            'parent_dir_id' => [ 'nullable', 'integer',
-                function ( $attribute, $value, $fail ) {
-                    if( !DocstoreDirectory::where( $attribute, $value )->exists() ) {
-                        return $fail( 'Parent directory is invalid / does not exist.' );
-                    }
-                },
-            ]
+            'parent_dir_id' => 'nullable|integer|exists:docstore_directories,id',
         ] );
     }
 }

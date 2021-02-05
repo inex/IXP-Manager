@@ -269,7 +269,6 @@ class CustomerController extends Controller
 
         Cache::forget( 'admin_home_customers' );
         AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' updated ', Alert::SUCCESS );
-
         return Redirect::to( route( "customer@overview" , [ "cust" => $cust->id ] ) );
     }
 
@@ -325,7 +324,7 @@ class CustomerController extends Controller
         return view( 'customer/billing-registration' )->with([
             'c'                             => $cust,
             'juridictions'                  => CompanyRegisteredDetail::select( 'jurisdiction' )
-                ->where( 'jurisdiction', '!=', '' )->distinct()->get()->pluck( 'jurisdiction' ),
+                ->where( 'jurisdiction', '!=', '' )->distinct()->get()->toArray(),
             'countries'                     => Countries::getList('name' )
         ]);
     }
@@ -382,7 +381,8 @@ class CustomerController extends Controller
     {
         if( config( 'ixp_fe.customer.details_public') ) {
             return view( 'customer/details' )->with([
-                'custs'                 => Customer::current()->associate()->orderBy( 'name' )->get(),
+                'custs'                 => Customer::current()->associate()
+                    ->orderBy( 'name' )->get(),
                 'associates'            => true,
             ]);
         }
@@ -574,7 +574,6 @@ class CustomerController extends Controller
         } else {
             AlertContainer::push( "Customer could not be deleted. Please open a GitHub bug report.", Alert::DANGER );
         }
-
         return Redirect::to( route( "customer@list" ) );
     }
 }

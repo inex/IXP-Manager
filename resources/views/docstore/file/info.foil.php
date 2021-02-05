@@ -1,5 +1,7 @@
 <div>
-    <h4>Metadata for <?= $t->ee( $t->file->name ) ?></h4>
+    <h4>
+        Metadata for <?= $t->ee( $t->file->name ) ?>
+    </h4>
 
     <table class="tw-mt-8">
         <tr class="tw-border-t tw-border-blue-500">

@@ -2,8 +2,8 @@
     $(function () {
         $('[data-toggle="tooltip"]').tooltip();
 
-        $( '.list-delete-btn' ).on( 'click', function( event ) {
-            event.preventDefault();
+        $( '.btn-delete' ).click( function( e ) {
+            e.preventDefault();
             let url = this.href;
             let type = $(this).attr( 'data-object-type') === 'file' ? 'file' : 'directory';
 
@@ -42,9 +42,9 @@
             });
         });
 
-        $( '.list-info-btn' ).click( function( e ) {
+        $( '.btn-infos' ).click( function( e ) {
             e.preventDefault();
-            let url = this).href;
+            let url = this.href;
             bootbox.dialog({
                 message: '<div><p class="text-center"><i class="fa fa-spinner fa-spin text-5xl"></i></p></div>',
                 size: "extra-large",

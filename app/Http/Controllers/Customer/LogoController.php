@@ -28,7 +28,6 @@ use Auth, Redirect;
 use Exception;
 use Illuminate\Http\{
     RedirectResponse,
-    Request
 };
 
 use Illuminate\View\View;
@@ -91,7 +90,7 @@ class LogoController extends Controller
 
         return view( 'customer/logo/manage' )->with( [
             'c'                  => $c,
-            'logo'               => $c->logo ?? false
+            'logo'               => $c->logo ?: false
         ] );
     }
 
@@ -149,7 +148,6 @@ class LogoController extends Controller
         return Redirect::to( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ 'cust' => $c->id ] ) : Redirect::to( route( "dashboard@index" ) ) );
     }
 
-
     /**
      * Delete a customer's logo
      *
@@ -189,7 +187,6 @@ class LogoController extends Controller
         if( Auth::getUser()->isSuperUser() ) {
             return Customer::findOrFail( $id );
         }
-
         return Customer::find( Auth::getUser()->custid );
     }
 }

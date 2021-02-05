@@ -113,11 +113,11 @@
                         if( response.net.poc_set !== "undefined" ) {
                             $.each( response.net.poc_set, function( key, noc ) {
                                 if( noc.role.toUpperCase() === "NOC" ) {
-                                    if( noc.phone !== "undefined" ){
+                                    if( noc.phone !== "undefined" && noc.phone !== "" ){
                                         input_nocphone.val( htmlEntities( noc.phone ) ).addClass( 'is-valid' );
                                     }
                                     if( noc.email !== "undefined" ) {
-                                        input_nocemail.val( htmlEntities( noc.email ) );
+                                        input_nocemail.val( htmlEntities( noc.email ) ).addClass( 'is-valid' );
                                         input_peeringemail.val( htmlEntities( noc.email ) ).addClass( 'is-valid' );
                                     }
                                 }

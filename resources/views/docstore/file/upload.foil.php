@@ -1,7 +1,5 @@
 <?php
     /** @var Foil\Template\Template $t */
-    /** @var $t->active */
-
     $this->layout( 'layouts/ixpv4' );
 ?>
 
@@ -134,6 +132,5 @@
             });
         });
     </script>
-
 <?php $this->append() ?>
 

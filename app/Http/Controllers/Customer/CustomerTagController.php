@@ -46,7 +46,6 @@ use IXP\Utils\View\Alert\{
 
 use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
-
 /**
  * Customer Tag Controller
  *
@@ -195,13 +194,8 @@ class CustomerTagController extends EloquentController
     public function doStore( Request $r )
     {
         $this->checkForm( $r );
-
-        $this->object = CustomerTag::create( array_merge( $r->except( 'tag' ),
-            [
-                'tag'   => preg_replace( "/[^a-z0-9\-]/" , "", strtolower( $r->tag ) )
-            ]
-        ));
-
+        $r->request->set( 'tag', preg_replace( "/[^a-z0-9\-]/" , "", strtolower( $r->tag ) ) );
+        $this->object = CustomerTag::create( $r->all() );
         return true;
     }
 
@@ -219,11 +213,8 @@ class CustomerTagController extends EloquentController
     {
         $this->object = CustomerTag::findOrFail( $r->id );
         $this->checkForm( $r );
-        $this->object->update( array_merge( $r->except( 'tag' ),
-            [
-                'tag'   => preg_replace( "/[^a-z0-9\-]/" , "", strtolower( $r->tag ) )
-            ]
-        ));
+        $r->request->set( 'tag', preg_replace( "/[^a-z0-9\-]/" , "", strtolower( $r->tag ) ) );
+        $this->object->update( $r->all() );
         return true;
     }
 
@@ -266,11 +257,13 @@ class CustomerTagController extends EloquentController
         $tagsToCreate  = array_diff( $r->tags ?? [], array_keys( $cust->tags->keyBy( 'id' )->toArray() ) );
         $tagsToDelete  = array_diff( array_keys( $cust->tags->keyBy( 'id' )->toArray() ), $r->tags ?? [] );
 
+        // Tags that have been unchecked => unlink from the customer
         foreach( $tagsToDelete as $dtag ){
             CustomerToCustomerTag::where( 'customer_tag_id' ,$dtag )
                 ->where( 'customer_id', $cust->id )->delete();
         }
 
+        // Tags that have been checked => link to the customer
         foreach( $tagsToCreate as $ctag ){
             if( CustomerToCustomerTag::where( 'customer_tag_id' , $ctag )->where( 'customer_id', $cust->id )->doesntExist() ){
                 CustomerToCustomerTag::create([
@@ -292,17 +285,9 @@ class CustomerTagController extends EloquentController
     public function checkForm( Request $r ): void
     {
         $r->validate( [
-            'tag' => [
-                'required', 'string', 'max:255',
-                function ($attribute, $value, $fail) use( $r ) {
-                    $tag = CustomerTag::whereTag( $value )->first();
-                    if( $tag && $tag->id !== (int)$r->id ) {
-                        return $fail( 'The tag must be unique.' );
-                    }
-                },
-            ],
-            'description'           => 'nullable|string|max:255',
-            'display_as'            => 'required|string|max:255',
+            'tag'               => 'required|string|max:255|unique:cust_tag,tag' . ( $this->object ? ',' . $this->object->id : '' ),
+            'description'       => 'nullable|string|max:255',
+            'display_as'        => 'required|string|max:255',
         ] );
     }
 }

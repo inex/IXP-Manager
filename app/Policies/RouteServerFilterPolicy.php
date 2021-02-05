@@ -35,6 +35,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 
 /**
  * RouteServerFilterPolicy
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP

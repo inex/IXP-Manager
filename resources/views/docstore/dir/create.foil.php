@@ -34,7 +34,7 @@
             ->blockHelp( "The name of the directory (this is as it appears on listings in the web interface rather than on the filesystem)." );
         ?>
 
-        <?= Former::select( 'parent_dir' )
+        <?= Former::select( 'parent_dir_id' )
             ->label( 'Parent Directory' )
             ->fromQuery( $t->dirs, 'name' )
             ->addClass( 'chzn-select' )
@@ -91,7 +91,7 @@
     <script>
         <?php if( $t->dir ): ?>
             $(document).ready(function() {
-                $( "#parent_dir option[value=" + <?= $t->dir->id ?> +"]" ).attr( 'disabled','disabled' );
+                $( "#parent_dir_id option[value=" + <?= $t->dir->id ?> +"]" ).attr( 'disabled','disabled' );
             });
         <?php endif; ?>
     </script>

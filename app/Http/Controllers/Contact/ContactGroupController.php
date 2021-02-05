@@ -44,6 +44,7 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
 /**
  * Contact Group Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
