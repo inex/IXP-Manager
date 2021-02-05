@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\Customer;
 
 use Auth, Redirect;
 
+use Exception;
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -42,7 +43,6 @@ use IXP\Models\{
 };
 
 use IXP\Http\Requests\Customer\Logo as LogoRequest;
-
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -153,14 +153,13 @@ class LogoController extends Controller
     /**
      * Delete a customer's logo
      *
-     * @param Request   $r
      * @param int       $id
      *
      * @return  RedirectResponse
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    public function delete( Request $r, int $id ) : RedirectResponse
+    public function delete( int $id ) : RedirectResponse
     {
         $c = $this->loadCustomer( $id );
 

@@ -162,11 +162,10 @@ function usedAcrossVlans() {
  * AJAX API endpoint to get the available ports.
  */
 function updateSwitchPort( e ) {
-
     let dd_sp, arrayType, selectedPort;
     let sw = $( e.target );
 
-    if( $( this ).attr( "id" ).substr( -6 ) === "fanout" ) {
+    if( $( this ).attr( 'data-value' ) === "fanout" ) {
         dd_sp     = $( "#switch-port-fanout" );
         arrayType = [ <?= \IXP\Models\SwitchPort::TYPE_UNSET ?>, <?= \IXP\Models\SwitchPort::TYPE_FANOUT ?> ];
         selectedPort = $( "#original-switch-port-fanout" ).val();
@@ -189,31 +188,31 @@ function updateSwitchPort( e ) {
 
     $.ajax( url , {
         data: datas,
-        method: "POST",
+        method: "GET",
         _token : "<?= csrf_token() ?>"
     })
-        .done( function( data ) {
-            let options = "<option value=\"\">Choose a switch port</option>\n";
+    .done( function( data ) {
+        let options = "<option value=\"\">Choose a switch port</option>\n";
 
-            $.each( data.ports, function( key, port ) {
-                if( ( port.pi_id === null || port.id === parseInt( selectedPort ) ) ) {
-                    options += `<option value="${port.id}">${port.name} (${port.type})</option>\n`;
-                }
-            });
-
-            dd_sp.html( options );
-
-            if( selectedPort ) {
-                dd_sp.val( selectedPort );
+        $.each( data.ports, function( key, port ) {
+            if( ( port.pi_id === null || port.id === parseInt( selectedPort ) ) ) {
+                options += `<option value="${port.id}">${port.name} (${port.type})</option>\n`;
             }
-        })
-        .fail( function() {
-            let options = "<option value=\"\">ERROR</option>\n";
-            dd_sp.html( options );
-            throw new Error( "Error running ajax query for " + url );
-        })
-        .always( function() {
-            dd_sp.trigger('change.select2');
         });
+
+        dd_sp.html( options );
+
+        if( selectedPort ) {
+            dd_sp.val( selectedPort );
+        }
+    })
+    .fail( function() {
+        let options = "<option value=\"\">ERROR</option>\n";
+        dd_sp.html( options );
+        throw new Error( "Error running ajax query for " + url );
+    })
+    .always( function() {
+        dd_sp.trigger('change.select2');
+    });
 }
 </script>

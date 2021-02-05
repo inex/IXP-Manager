@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Countries, Former;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -40,11 +41,14 @@ use IXP\Utils\View\Alert\{
 };
 
 use IXP\Utils\Http\Controllers\Frontend\EloquentController as Eloquent2Frontend;
+
 /**
  * Infrastructure Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
+ * @category   IXP
+ * @package    IXP\Http\Controllers
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -173,15 +177,14 @@ class InfrastructureController extends Eloquent2Frontend
         $this->checkForm( $r );
         $this->object = Infrastructure::create( $r->all() );
         $this->resetInfrastructures();
-
         return true;
     }
 
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $r
-     * @param int $id
+     * @param Request   $r
+     * @param int       $id
      *
      * @return bool|RedirectResponse
      *
@@ -249,17 +252,9 @@ class InfrastructureController extends Eloquent2Frontend
     public function checkForm( Request $r ): void
     {
         $r->validate( [
-            'name' => [
-                'required', 'string', 'max:255',
-                function( $attribute, $value, $fail) use( $r ) {
-                    $infra = Infrastructure::whereName( $value )->first();
-                    if( $infra && $infra->id !== (int)$r->id ) {
-                        return $fail( 'The name has already been taken.' );
-                    }
-                },
-            ],
-            'shortname'             => 'required|string|max:255',
-            'country'               => 'required|string|max:2|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
+            'name'          => 'required|string|max:255|unique:infrastructure,name' . ( $r->id ? ','. $r->id : '' ),
+            'shortname'     => 'required|string|max:255',
+            'country'       => 'required|string|max:2|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
         ] );
     }
 }

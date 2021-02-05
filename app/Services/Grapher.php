@@ -3,7 +3,7 @@
 namespace IXP\Services;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -31,6 +31,8 @@ use IXP\Exceptions\Services\Grapher\{
         GraphCannotBeProcessedException
 };
 
+use Closure;
+use Illuminate\Contracts\Cache\Repository;
 use IXP\Contracts\Grapher\Backend as BackendContract;
 
 use IXP\Models\{
@@ -66,9 +68,9 @@ use IXP\Services\Grapher\Graph\{
  *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
- * @category   Grapher
+ * @category   IXP
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Grapher
@@ -139,7 +141,7 @@ class Grapher
      *
      * @throws
      *
-     *@see \IXP\Console\Commands\Grapher\GrapherCommand::resolveBackend()
+     * @see \IXP\Console\Commands\Grapher\GrapherCommand::resolveBackend()
      *
      */
     public function backend( $backend = null ): BackendContract
@@ -338,8 +340,8 @@ class Grapher
     /**
      * Get an instance of a CoreBundle aggregate graph
      *
-     * @param CoreBundle $cb
-     * @param string $side
+     * @param CoreBundle    $cb
+     * @param string        $side
      *
      * @return CoreBundleGraph
      */
@@ -380,11 +382,11 @@ class Grapher
      *
      * @return void
      */
-    private function setupCache()
+    private function setupCache(): void
     {
         if( config('grapher.cache.enabled', false ) ) {
-            $this->cacheEnabled = true;
-            $this->cacheLifetime = config('grapher.cache.lifetime', 5 );
+            $this->cacheEnabled     = true;
+            $this->cacheLifetime    = config('grapher.cache.lifetime', 5 );
         } else {
             $this->cacheEnabled = false;
         }
@@ -409,6 +411,7 @@ class Grapher
 
     /**
      * How long do we cache entries for?
+     *
      * @return int (minutes)
      */
     public function cacheLifetime(): int
@@ -418,9 +421,10 @@ class Grapher
 
     /**
      * Get the cache repository
-     * @return \Illuminate\Contracts\Cache\Repository
+     *
+     * @return Repository
      */
-    public function cacheRepository(): \Illuminate\Contracts\Cache\Repository
+    public function cacheRepository(): Repository
     {
         return Cache::store( config('grapher.cache.store' ) );
     }
@@ -430,17 +434,16 @@ class Grapher
      *
      * See Laravel's Cache::remember() function
      *
-     * @param string $key
-     * @param \Closure $fn Callback to populate the cache
+     * @param string    $key
+     * @param Closure   $fn Callback to populate the cache
      *
      * @return mixed
      */
-    public function remember( $key, $fn )
+    public function remember( string $key, Closure $fn )
     {
         if( $this->cacheEnabled() ) {
             return $this->cacheRepository()->remember( $key, $this->cacheLifetime(), $fn );
-        } else {
-            return $fn();
         }
+        return $fn();
     }
 }

@@ -21,7 +21,6 @@
 <?php $this->section('content') ?>
     <?= $t->alerts() ?>
     <?php if( !$t->lgEnabled ): ?>
-
         <div class="alert alert-warning" role="alert">
             <div class="d-flex align-items-center">
                 <div class="text-center">

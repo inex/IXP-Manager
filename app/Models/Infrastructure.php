@@ -42,6 +42,8 @@ use Illuminate\Database\Eloquent\{
  * @property int|null $peeringdb_ix_id
  * @property int|null $ixf_ix_id
  * @property string|null $country
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Collection|\IXP\Models\Switcher[] $switchers
  * @property-read int|null $switchers_count
  * @property-read Collection|\IXP\Models\Vlan[] $vlans
@@ -50,17 +52,15 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|Infrastructure newQuery()
  * @method static Builder|Infrastructure query()
  * @method static Builder|Infrastructure whereCountry($value)
+ * @method static Builder|Infrastructure whereCreatedAt($value)
  * @method static Builder|Infrastructure whereId($value)
  * @method static Builder|Infrastructure whereIsPrimary($value)
  * @method static Builder|Infrastructure whereIxfIxId($value)
  * @method static Builder|Infrastructure whereName($value)
  * @method static Builder|Infrastructure wherePeeringdbIxId($value)
  * @method static Builder|Infrastructure whereShortname($value)
+ * @method static Builder|Infrastructure whereUpdatedAt($value)
  * @mixin Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Infrastructure whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Infrastructure whereUpdatedAt($value)
  */
 class Infrastructure extends Model
 {

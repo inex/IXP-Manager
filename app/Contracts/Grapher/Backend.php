@@ -3,7 +3,7 @@
 namespace IXP\Contracts\Grapher;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,7 +22,9 @@ namespace IXP\Contracts\Grapher;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use IXP\Services\Grapher\Graph;
+
  /**
   * Helpdesk Contract - any concrete implementation of a Helpdesk provider must
   * implement this interface
@@ -30,9 +32,9 @@ use IXP\Services\Grapher\Graph;
   * @see        http://laravel.com/docs/5.0/contracts
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
   * @author     Yann Robin <yann@islandbridgenetworks.ie>
-  * @category   Graphing
+  * @category   IXP
   * @package    IXP\Contracts
-  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
 interface Backend

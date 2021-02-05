@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use App, Auth, Countries, Redirect;
 
 use Illuminate\Http\{
@@ -52,10 +53,12 @@ use IXP\Services\Grapher;
 
 /**
  * DashboardController Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   PatchPanel
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class DashboardController extends Controller
@@ -64,7 +67,6 @@ class DashboardController extends Controller
      * Display dashboard
      *
      * @param Request     $r
-     *
      * @param string|null $tab Tab from the overview selected
      *
      * @return  View|RedirectResponse
@@ -106,15 +108,15 @@ class DashboardController extends Controller
 
         $dataBillingDetail = [
             'billingContactName'        => $r->old( 'billingContactName',      $cbd->billingContactName ),
-            'billingAddress1'           => $r->old( 'billingAddress1',         $cbd->billingAddress1 ),
-            'billingAddress2'           => $r->old( 'billingAddress2',         $cbd->billingAddress2 ),
-            'billingAddress3'           => $r->old( 'billingAddress3',         $cbd->billingAddress3 ),
-            'billingTownCity'           => $r->old( 'billingTownCity',         $cbd->billingTownCity ),
-            'billingPostcode'           => $r->old( 'billingPostcode',         $cbd->billingPostcode ),
+            'billingAddress1'           => $r->old( 'billingAddress1',         $cbd->billingAddress1    ),
+            'billingAddress2'           => $r->old( 'billingAddress2',         $cbd->billingAddress2    ),
+            'billingAddress3'           => $r->old( 'billingAddress3',         $cbd->billingAddress3    ),
+            'billingTownCity'           => $r->old( 'billingTownCity',         $cbd->billingTownCity    ),
+            'billingPostcode'           => $r->old( 'billingPostcode',         $cbd->billingPostcode    ),
             'billingCountry'            => $r->old( 'billingCountry',          in_array( $cbd->billingCountry,  array_values( Countries::getListForSelect( 'iso_3166_2' ) ), false ) ? $cbd->billingCountry : null ),
-            'billingEmail'              => $r->old( 'billingEmail',            $cbd->billingEmail ),
-            'billingTelephone'          => $r->old( 'billingTelephone',        $cbd->billingTelephone ),
-            'invoiceEmail'              => $r->old( 'invoiceEmail',            $cbd->invoiceEmail ),
+            'billingEmail'              => $r->old( 'billingEmail',            $cbd->billingEmail       ),
+            'billingTelephone'          => $r->old( 'billingTelephone',        $cbd->billingTelephone   ),
+            'invoiceEmail'              => $r->old( 'invoiceEmail',            $cbd->invoiceEmail       ),
         ];
 
         /** FIXME FIXME-YR fix notes */
@@ -173,10 +175,9 @@ class DashboardController extends Controller
      */
     public function storeBillingDetails( BillingDetailsRequest $r ): RedirectResponse
     {
-        $c = Auth::getUser()->customer;
-
-        $cbd  = $c->companyBillingDetail;
-        $ocbd = clone $c->companyBillingDetail;
+        $c      = Auth::getUser()->customer;
+        $cbd    = $c->companyBillingDetail;
+        $ocbd   = clone $c->companyBillingDetail;
 
         $cbd->billingContactName    =   $r->billingContactName;
         $cbd->billingAddress1       =   $r->billingAddress1;
@@ -192,7 +193,7 @@ class DashboardController extends Controller
 
         event( new CustomerBillingDetailsChangedEvent( $ocbd, $cbd ) );
 
-        AlertContainer::push( 'Billing details updated', Alert::SUCCESS );
+        AlertContainer::push( 'Billing details updated.', Alert::SUCCESS );
         return Redirect::to( route( "dashboard@index", [ "tab" => "details" ] ) );
     }
 }

@@ -85,8 +85,12 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property-read int|null $console_server_connections_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Contact[] $contacts
  * @property-read int|null $contacts_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerEquipment[] $customerEquipments
+ * @property-read int|null $customer_equipments_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerNote[] $customerNotes
  * @property-read int|null $customer_notes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerToUser[] $customerToUser
+ * @property-read int|null $customer_to_user_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerDirectory[] $docstoreCustomerDirectories
  * @property-read int|null $docstore_customer_directories_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerFile[] $docstoreCustomerFiles
@@ -124,7 +128,8 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property-read int|null $vlan_interfaces_count
  * @method static Builder|Customer associate()
  * @method static Builder|Customer current()
- * @method static Builder|Customer currentActive($trafficing = false, $externalOnly = false, $connected = true)
+ * @method static Builder|Customer currentActive(bool $trafficing = false, bool $externalOnly = false, bool $connected = true)
+ * @method static Builder|Customer internal()
  * @method static Builder|Customer newModelQuery()
  * @method static Builder|Customer newQuery()
  * @method static Builder|Customer query()
@@ -166,10 +171,6 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @method static Builder|Customer whereType($value)
  * @method static Builder|Customer whereUpdatedAt($value)
  * @mixin Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerToUser[] $customerToUser
- * @property-read int|null $customer_to_user_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerEquipment[] $customerEquipments
- * @property-read int|null $customer_equipments_count
  */
 class Customer extends Model
 {
@@ -643,6 +644,18 @@ class Customer extends Model
     public function scopeAssociate( Builder $query ): Builder
     {
         return $query->where('type', self::TYPE_ASSOCIATE );
+    }
+
+    /**
+     * Scope a query to only include type internal
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeInternal( Builder $query ): Builder
+    {
+        return $query->where('type', self::TYPE_INTERNAL );
     }
 
     /**

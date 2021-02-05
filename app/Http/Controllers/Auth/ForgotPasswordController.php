@@ -84,7 +84,7 @@ class ForgotPasswordController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        $this->middleware('guest' );
     }
 
     /**
@@ -102,11 +102,11 @@ class ForgotPasswordController extends Controller
      *
      * @param Request $r
      *
-     * @return RedirectResponse|JsonResponse
+     * @return RedirectResponse
      *
      * @throws
      */
-    public function sendResetLinkEmail( Request $r)
+    public function sendResetLinkEmail( Request $r ): RedirectResponse
     {
         $this->validate( $r, ['username' => 'required'] );
 
@@ -118,19 +118,17 @@ class ForgotPasswordController extends Controller
         );
 
         return $response === Password::RESET_LINK_SENT
-            ? $this->sendResetLinkResponse( $r, $response )
-            : $this->sendResetLinkFailedResponse( $r, $response );
+            ? $this->sendResetLinkResponse()
+            : $this->sendResetLinkFailedResponse();
     }
 
     /**
      * Get the response for a successful password reset link.
      *
-     * @param Request   $r
-     * @param  string   $response
      *
-     * @return RedirectResponse|JsonResponse
+     * @return RedirectResponse
      */
-    protected function sendResetLinkResponse( Request $r, string $response )
+    protected function sendResetLinkResponse(): RedirectResponse
     {
         AlertContainer::push( 'The reset link has been sent to your email address.', Alert::SUCCESS );
         return redirect( route( 'login@login' ) );
@@ -139,12 +137,9 @@ class ForgotPasswordController extends Controller
     /**
      * Get the response for a failed password reset link.
      *
-     * @param   Request     $r
-     * @param   string      $response
-     *
-     * @return RedirectResponse|JsonResponse
+     * @return RedirectResponse
      */
-    protected function sendResetLinkFailedResponse( Request $r, string $response )
+    protected function sendResetLinkFailedResponse(): RedirectResponse
     {
         AlertContainer::push( "We can't find a user with that username" , Alert::DANGER );
         return back();

@@ -3,7 +3,7 @@
 namespace IXP\Services\Grapher\Backend;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,11 +25,16 @@ namespace IXP\Services\Grapher\Backend;
 
 use View;
 
-use IXP\Models\{Aggregators\VlanInterfaceAggregator, Vlan, VlanInterface};
-
 use Illuminate\Support\Facades\View as FacadeView;
 
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
+
+use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
+
+use IXP\Models\{
+    Aggregators\VlanInterfaceAggregator,
+    Vlan
+};
 
 use IXP\Services\Grapher\{
     Graph,
@@ -37,16 +42,14 @@ use IXP\Services\Grapher\{
     Graph\Latency as LatencyGraph,
 };
 
-use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
-
 /**
  * Grapher Backend -> Smokeping
  *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
- * @category   Grapher
+ * @category   IXP
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Smokeping extends GrapherBackend implements GrapherBackendContract
@@ -125,11 +128,7 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
             abort(404, 'Unknown template');
         }
 
-        if( isset( $options['probe'] ) ) {
-            $probe = $options['probe'];
-        } else {
-            $probe = 'FPing' . ( $options['protocol'] === Graph::PROTOCOL_IPV4 ? '' : '6' );
-        }
+        $probe = $options[ 'probe' ] ?? ('FPing'.($options[ 'protocol' ] === Graph::PROTOCOL_IPV4 ? '' : '6'));
 
         // try and reorder the VLIs into alphabetical order of customer names
         $vlis = VlanInterfaceAggregator::forProto( $v, $options['protocol'] === Graph::PROTOCOL_IPV4 ? 4 : 6 );
@@ -248,11 +247,7 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
         // does an override exist?
         $urls = config( 'grapher.backends.smokeping.overrides.per_vlan_urls', [] );
 
-        if( isset( $urls[ $graph->vli()->vlan->id ] ) ) {
-            return $urls[ $graph->vli()->vlan->id ];
-        }
-
-        return config('grapher.backends.smokeping.url');
+        return $urls[ $graph->vli()->vlan->id ] ?? config('grapher.backends.smokeping.url');
     }
 
     /**
@@ -273,7 +268,6 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
                 return sprintf( "%s/?displaymode=a;start=now-%s;end=now;target=infra_%s.vlan_%s.vlanint_%s_%s", $this->resolveGraphURL( $graph ),
                     $graph->period(), $graph->vli()->virtualInterface->physicalInterfaces()->first()->switchPort->switcher->infrastructure,
                     $graph->vli()->vlan->id,  $graph->vli()->id, $graph->protocol()  );
-                break;
             default:
                 throw new CannotHandleRequestException("Backend asserted it could process but cannot handle graph of type: {$graph->type()}" );
         }

@@ -56,11 +56,11 @@ use IXP\Models\{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property string|null $name
  * @property int|null $peeringdb_id
- * @property mixed|null $extra_attributes
+ * @property array|null $extra_attributes
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ApiKey[] $apiKeys
  * @property-read int|null $api_keys_count
  * @property-read Customer|null $customer
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerToUser[] $customerToUser
+ * @property-read \Illuminate\Database\Eloquent\Collection|CustomerToUser[] $customerToUser
  * @property-read int|null $customer_to_user_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Customer[] $customers
  * @property-read int|null $customers_count
@@ -69,6 +69,8 @@ use IXP\Models\{
  * @property-read \IXP\Models\User2FA|null $user2FA
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\UserRememberToken[] $userRememberTokens
  * @property-read int|null $user_remember_tokens_count
+ * @method static Builder|User activeOnly()
+ * @method static Builder|User byPrivs(?int $priv = null)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator query()
@@ -89,8 +91,6 @@ use IXP\Models\{
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereUsername($value)
  * @mixin \Eloquent
- * @method static Builder|User activeOnly()
- * @method static Builder|User byPrivs($priv = null)
  */
 class UserAggregator extends User
 {

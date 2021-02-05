@@ -29,10 +29,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * IXP\Models\CompanyBillingDetail
  *
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail query()
- * @mixin \Eloquent
  * @property int $id
  * @property string|null $billingContactName
  * @property string|null $billingAddress1
@@ -49,6 +45,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $invoiceMethod
  * @property string|null $invoiceEmail
  * @property string|null $billingFrequency
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\Customer|null $customer
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail query()
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereBillingAddress1($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereBillingAddress2($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereBillingAddress3($value)
@@ -59,17 +61,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereBillingPostcode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereBillingTelephone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereBillingTownCity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereInvoiceEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereInvoiceMethod($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail wherePurchaseOrderRequired($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereVatNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereVatRate($value)
- * @property-read \IXP\Models\Customer|null $customer
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class CompanyBillingDetail extends Model
 {

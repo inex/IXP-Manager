@@ -32,8 +32,8 @@ use IXP\Http\Controllers\Controller;
 use IXP\Models\{
     Customer,
     CustomerToUser,
-    UserLoginHistory,
-};
+    User,
+    UserLoginHistory};
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -60,6 +60,7 @@ class SwitchCustomerController extends Controller
      */
     public function switch( Customer $cust ): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::getUser();
 
          if( !( $c2u = CustomerToUser::where( 'customer_id', $cust->id )->where( 'user_id', $user->id )->first() ) ){

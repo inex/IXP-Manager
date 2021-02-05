@@ -177,7 +177,7 @@ class ConsoleServerConnectionController extends EloquentController
             'object'                => $this->object,
             'custs'                 => Customer::orderBy( 'name' )->get(),
             'servers'               => ConsoleServer::orderBy( 'name' )->get()->keyBy( 'id' )->toArray(),
-            'cs'                    => request()->serverid
+            'cs'                    => request()->console_server_id
         ];
     }
 
@@ -209,7 +209,7 @@ class ConsoleServerConnectionController extends EloquentController
             'object'                => $this->object,
             'custs'                 => Customer::orderBy( 'name' )->get(),
             'servers'               => ConsoleServer::orderBy( 'name' )->get()->keyBy( 'id' )->toArray(),
-            'cs'                    => request()->serverid
+            'cs'                    => request()->console_server_id
         ];
     }
 
@@ -279,7 +279,7 @@ class ConsoleServerConnectionController extends EloquentController
      */
     protected function postStoreRedirect(): ?string
     {
-        if( $cs = ConsoleServer::find( request()->console_server_id ) ) {
+        if( $cs = ConsoleServer::find( request()->cs ) ) {
             return route( 'console-server-connection@listPort' , [ "cs" => $cs->id ] ) ;
         }
 
@@ -304,21 +304,9 @@ class ConsoleServerConnectionController extends EloquentController
     public function checkForm( Request $r ): void
     {
         $r->validate( [
-            'description'       => 'required|string|max:255',
-            'custid'            => [ 'required', 'integer',
-                function( $attribute, $value, $fail ) {
-                    if( !Customer::find( $value ) ) {
-                        return $fail( 'Customer is invalid / does not exist.' );
-                    }
-                }
-            ],
-            'console_server_id'   => [ 'required', 'integer',
-                function( $attribute, $value, $fail ) {
-                    if( !ConsoleServer::find( $value ) ) {
-                        return $fail( 'Console Server is invalid / does not exist.' );
-                    }
-                }
-            ],
+            'description'           => 'required|string|max:255',
+            'custid'                => 'required|integer|exists:cust,id',
+            'console_server_id'     => 'required|integer|exists:console_server,id',
             'port'                  => 'required|string|max:255',
             'speed'                 => 'nullable|integer',
             'parity'                => 'nullable|string',

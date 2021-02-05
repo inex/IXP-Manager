@@ -37,21 +37,21 @@ use Illuminate\Database\Eloquent\{
  * @property int $protocol
  * @property string|null $first_seen
  * @property string|null $last_seen
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer $customer
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix query()
+ * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereCustomerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereFirstSeen($value)
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereLastSeen($value)
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix wherePrefix($value)
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereProtocol($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbPrefix whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbPrefix whereUpdatedAt($value)
  */
 class IrrdbPrefix extends Model
 {

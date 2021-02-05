@@ -153,7 +153,6 @@ class ResetPasswordController extends Controller
         $user->save();
 
         event( new PasswordResetEvent( $user ) );
-
         $this->redirectTo = route("login@showForm" ) . '?username=' . $user->username ;
     }
     /**

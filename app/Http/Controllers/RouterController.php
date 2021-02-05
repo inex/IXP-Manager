@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Former, Redirect;
 
 use Illuminate\Http\{
@@ -45,9 +46,11 @@ use IXP\Utils\View\Alert\{
 
 /**
  * Router Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
+ * @category   IXP
+ * @package    IXP\Http\Controllers
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -104,48 +107,7 @@ class RouterController extends Controller
     }
 
     /**
-     * Display the form to edit a router
-     *
-     * @param Router    $router     router that need to be edited
-     *
-     * @return View
-     */
-    public function edit( Router $router ): View
-    {
-        Former::populate([
-            'handle'                    => request()->old( 'handle',      $router->handle       ),
-            'vlan_id'                   => request()->old( 'vlan_id',     $router->vlan_id      ),
-            'protocol'                  => request()->old( 'protocol',    $router->protocol     ),
-            'type'                      => request()->old( 'type',        $router->type         ),
-            'name'                      => request()->old( 'name',        $router->name         ),
-            'shortname'                 => request()->old( 'shortname',   $router->shortname    ),
-            'router_id'                 => request()->old( 'router_id',   $router->router_id    ),
-            'peering_ip'                => request()->old( 'peering_ip',  $router->peering_ip   ),
-            'asn'                       => request()->old( 'asn',         $router->asn          ),
-            'software'                 => request()->old( 'software',                    $router->software                  ),
-            'software_version'         => request()->old( 'software_version',            $router->software_version          ),
-            'operating_system'         => request()->old( 'operating_system',            $router->operating_system          ),
-            'operating_system_version' => request()->old( 'operating_system_version',    $router->operating_system_version  ),
-            'mgmt_host'                 => request()->old( 'mgmt_host',         $router->mgmt_host          ),
-            'api_type'                  => request()->old( 'api_type',          $router->api_type           ),
-            'api'                       => request()->old( 'api',               $router->api                ),
-            'lg_access'                 => request()->old( 'lg_access',         $router->lg_access          ),
-            'quarantine'                => request()->old( 'quarantine',        $router->quarantine         ),
-            'bgp_lc'                    => request()->old( 'bgp_lc',            $router->bgp_lc             ),
-            'rpki'                      => request()->old( 'rpki',              $router->rpki               ),
-            'rfc1997_passthru'          => request()->old( 'rfc1997_passthru',  $router->rfc1997_passthru   ),
-            'skip_md5'                  => request()->old( 'skip_md5',          $router->skip_md5           ),
-            'template'                  => request()->old( 'template',          $router->template           ),
-        ]);
-
-        return view( 'router/edit' )->with([
-            'rt'                => $router,
-            'vlans'             => Vlan::publicOnly()->orderBy( 'number' )->get(),
-        ]);
-    }
-
-    /**
-     * Add or edit a router (set all the data needed)
+     * Create a router
      *
      * @param   StoreRouter $r instance of the current HTTP request
      *
@@ -166,7 +128,48 @@ class RouterController extends Controller
     }
 
     /**
-     * Add or edit a router (set all the data needed)
+     * Display the form to edit a router
+     *
+     * @param Router    $router     router that need to be edited
+     *
+     * @return View
+     */
+    public function edit( Router $router ): View
+    {
+        Former::populate([
+            'handle'                    => request()->old( 'handle',      $router->handle       ),
+            'vlan_id'                   => request()->old( 'vlan_id',     $router->vlan_id      ),
+            'protocol'                  => request()->old( 'protocol',    $router->protocol     ),
+            'type'                      => request()->old( 'type',        $router->type         ),
+            'name'                      => request()->old( 'name',        $router->name         ),
+            'shortname'                 => request()->old( 'shortname',   $router->shortname    ),
+            'router_id'                 => request()->old( 'router_id',   $router->router_id    ),
+            'peering_ip'                => request()->old( 'peering_ip',  $router->peering_ip   ),
+            'asn'                       => request()->old( 'asn',         $router->asn          ),
+            'software'                  => request()->old( 'software',                    $router->software                  ),
+            'software_version'          => request()->old( 'software_version',            $router->software_version          ),
+            'operating_system'          => request()->old( 'operating_system',            $router->operating_system          ),
+            'operating_system_version'  => request()->old( 'operating_system_version',    $router->operating_system_version  ),
+            'mgmt_host'                 => request()->old( 'mgmt_host',         $router->mgmt_host          ),
+            'api_type'                  => request()->old( 'api_type',          $router->api_type           ),
+            'api'                       => request()->old( 'api',               $router->api                ),
+            'lg_access'                 => request()->old( 'lg_access',         $router->lg_access          ),
+            'quarantine'                => request()->old( 'quarantine',        $router->quarantine         ),
+            'bgp_lc'                    => request()->old( 'bgp_lc',            $router->bgp_lc             ),
+            'rpki'                      => request()->old( 'rpki',              $router->rpki               ),
+            'rfc1997_passthru'          => request()->old( 'rfc1997_passthru',  $router->rfc1997_passthru   ),
+            'skip_md5'                  => request()->old( 'skip_md5',          $router->skip_md5           ),
+            'template'                  => request()->old( 'template',          $router->template           ),
+        ]);
+
+        return view( 'router/edit' )->with([
+            'rt'                => $router,
+            'vlans'             => Vlan::publicOnly()->orderBy( 'number' )->get(),
+        ]);
+    }
+
+    /**
+     * Update a router (set all the data needed)
      *
      * @param StoreRouter   $r      instance of the current HTTP request
      * @param Router        $router

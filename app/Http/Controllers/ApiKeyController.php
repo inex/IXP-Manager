@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth, Former, Hash, Redirect, Route, Str;
 
 use IXP\Utils\View\Alert\{
@@ -48,7 +49,8 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController;
  * ApiKey Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
+ * @category   IXP
+ * @package    IXP\Http\Controllers
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -56,6 +58,7 @@ class ApiKeyController extends EloquentController
 {
     /**
      * The object being created / updated
+     *
      * @var ApiKey
      */
     protected $object = null;
@@ -84,7 +87,6 @@ class ApiKeyController extends EloquentController
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'api-key',
             'documentation'     => 'https://docs.ixpmanager.org/features/api/',
-
             'listColumns'    => [
                 'id'           => [ 'title' => 'UID', 'display' => false ],
                 'apiKey'       => [
@@ -219,7 +221,6 @@ class ApiKeyController extends EloquentController
         $this->object->save();
 
         AlertContainer::push( "API key created: <code>" . $key . "</code>.", Alert::SUCCESS );
-
         return true;
     }
 
@@ -238,7 +239,6 @@ class ApiKeyController extends EloquentController
         $this->object = ApiKey::findOrFail( $id );
         $this->checkForm( $r );
         $this->object->update( $r->all() );
-
         return true;
     }
 

@@ -114,19 +114,17 @@ class LoginController extends Controller
      */
     public function showLoginForm() : View
     {
-        if( !session()->has('url.intended') ) {
-            if( Str::startsWith( url()->previous(), url('') ) ) {
-                if( config('google2fa.enabled') ) {
-                    if( strpos( url()->previous(), route( "2fa@authenticate" ) ) !== false ) {
-                        // Store intended url to redirect after login
-                        session( [ 'url.intended' => url()->previous() ] );
-                        // Store intended url to redirect after 2FA
-                        session( [ 'url.intended.2fa' => url()->previous() ] );
-                    }
-                } else {
+        if( !session()->has('url.intended') && Str::startsWith(url()->previous(), url(''))) {
+            if( config('google2fa.enabled') ) {
+                if( strpos( url()->previous(), route( "2fa@authenticate" ) ) !== false ) {
                     // Store intended url to redirect after login
                     session( [ 'url.intended' => url()->previous() ] );
+                    // Store intended url to redirect after 2FA
+                    session( [ 'url.intended.2fa' => url()->previous() ] );
                 }
+            } else {
+                // Store intended url to redirect after login
+                session( [ 'url.intended' => url()->previous() ] );
             }
         }
         return view( 'auth/login' );
@@ -174,8 +172,8 @@ class LoginController extends Controller
     /**
      * Log the user out of the application.
      *
-     * @param Request       $r
-     * @param  array|null   $customMessage Custom message to display
+     * @param   Request      $r
+     * @param   array|null   $customMessage Custom message to display
      *
      * @return Response
      */

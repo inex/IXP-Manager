@@ -40,9 +40,11 @@
 
             <div class="card">
                 <div class="card-body">
-                    <?= Former::open()->method( $t->rt ? 'PUT' : 'POST' )
-                        ->action(  $t->rt ? route('router@update',
-                            [ 'router' => $t->rt ] ) : route('router@store' ) )
+                    <?= Former::open()
+                        ->method( $t->rt ? 'PUT' : 'POST' )
+                        ->action(  $t->rt ?
+                            route('router@update', [ 'router' => $t->rt ] )
+                            : route('router@store' ) )
                         ->customInputWidthClass( 'col-sm-6' )
                         ->addClass( 'col-md-10' )
                         ->actionButtonsCustomClass( "grey-box");

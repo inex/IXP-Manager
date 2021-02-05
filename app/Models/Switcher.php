@@ -47,22 +47,22 @@ use \OSS_SNMP\MIBS\Iface as SNMPIface;
  * IXP\Models\Switcher
  *
  * @property int $id
- * @property int|null $infrastructure
  * @property int|null $cabinetid
  * @property int|null $vendorid
  * @property string|null $name
- * @property string|null $hostname
  * @property string|null $ipv4addr
  * @property string|null $ipv6addr
  * @property string|null $snmppasswd
+ * @property int|null $infrastructure
  * @property string|null $model
- * @property int|null $active
+ * @property bool|null $active
+ * @property string|null $notes
+ * @property string|null $hostname
  * @property string|null $os
  * @property string|null $osDate
  * @property string|null $osVersion
- * @property string|null $lastPolled
- * @property string|null $notes
  * @property string|null $serialNumber
+ * @property string|null $lastPolled
  * @property int|null $mauSupported
  * @property int|null $asn
  * @property string|null $loopback_ip
@@ -72,19 +72,22 @@ use \OSS_SNMP\MIBS\Iface as SNMPIface;
  * @property int|null $snmp_system_uptime
  * @property int|null $snmp_engine_boots
  * @property int $poll
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Cabinet|null $cabinet
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServerConnection[] $consoleServerConnections
  * @property-read int|null $console_server_connections_count
  * @property-read \IXP\Models\Infrastructure|null $infrastructureModel
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\SwitchPort[] $switchPorts
  * @property-read int|null $switch_ports_count
- * @method static Builder|Switcher filtered($active)
+ * @property-read \IXP\Models\Vendor|null $vendor
  * @method static Builder|Switcher newModelQuery()
  * @method static Builder|Switcher newQuery()
  * @method static Builder|Switcher query()
  * @method static Builder|Switcher whereActive($value)
  * @method static Builder|Switcher whereAsn($value)
  * @method static Builder|Switcher whereCabinetid($value)
+ * @method static Builder|Switcher whereCreatedAt($value)
  * @method static Builder|Switcher whereHostname($value)
  * @method static Builder|Switcher whereId($value)
  * @method static Builder|Switcher whereInfrastructure($value)
@@ -107,13 +110,9 @@ use \OSS_SNMP\MIBS\Iface as SNMPIface;
  * @method static Builder|Switcher whereSnmpEngineTime($value)
  * @method static Builder|Switcher whereSnmpSystemUptime($value)
  * @method static Builder|Switcher whereSnmppasswd($value)
+ * @method static Builder|Switcher whereUpdatedAt($value)
  * @method static Builder|Switcher whereVendorid($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereUpdatedAt($value)
- * @property-read \IXP\Models\Vendor|null $vendor
  */
 class Switcher extends Model
 {

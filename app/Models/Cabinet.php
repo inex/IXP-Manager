@@ -42,17 +42,22 @@ use Illuminate\Database\Eloquent\{
  * @property string|null $type
  * @property string|null $notes
  * @property int|null $u_counts_from
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Collection|\IXP\Models\ConsoleServer[] $consoleServers
  * @property-read int|null $console_servers_count
  * @property-read Collection|\IXP\Models\CustomerEquipment[] $customerEquipment
  * @property-read int|null $customer_equipment_count
  * @property-read \IXP\Models\Location|null $location
+ * @property-read Collection|\IXP\Models\PatchPanel[] $patchPanels
+ * @property-read int|null $patch_panels_count
  * @property-read Collection|\IXP\Models\Switcher[] $switchers
  * @property-read int|null $switchers_count
  * @method static Builder|Cabinet newModelQuery()
  * @method static Builder|Cabinet newQuery()
  * @method static Builder|Cabinet query()
  * @method static Builder|Cabinet whereColocation($value)
+ * @method static Builder|Cabinet whereCreatedAt($value)
  * @method static Builder|Cabinet whereHeight($value)
  * @method static Builder|Cabinet whereId($value)
  * @method static Builder|Cabinet whereLocationid($value)
@@ -60,13 +65,8 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|Cabinet whereNotes($value)
  * @method static Builder|Cabinet whereType($value)
  * @method static Builder|Cabinet whereUCountsFrom($value)
+ * @method static Builder|Cabinet whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereUpdatedAt($value)
- * @property-read Collection|\IXP\Models\PatchPanel[] $patchPanels
- * @property-read int|null $patch_panels_count
  */
 class Cabinet extends Model
 {

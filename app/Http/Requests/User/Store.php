@@ -58,10 +58,10 @@ class Store extends FormRequest
     {
         return [
             'name'                      => 'required|string|max:255',
-            'username'                  => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/|unique:Entities\User,username' . ( $this->input( 'id' ) ? ',' . $this->input( 'id' ) : '' ),
+            'username'                  => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/|unique:user,username' . ( $this->input( 'id' ) ? ',' . $this->input( 'id' ) : '' ),
             'email'                     => 'required|email|max:255',
             'authorisedMobile'          => 'nullable|string|max:50',
-            'custid'                    => 'required|integer|exists:Entities\Customer,id',
+            'custid'                    => 'required|integer|exists:cust,id',
             'privs'                     => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES_ALL ) ),
         ];
     }

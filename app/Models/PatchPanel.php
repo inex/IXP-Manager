@@ -43,11 +43,14 @@ use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
  * @property int $connector_type
  * @property string|null $installation_date
  * @property string $port_prefix
+ * @property int $active
  * @property int $chargeable
  * @property string $location_notes
- * @property int $active
  * @property int|null $u_position
  * @property int|null $mounted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\Cabinet|null $cabinet
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPort[] $patchPanelPorts
  * @property-read int|null $patch_panel_ports_count
  * @method static Builder|PatchPanel newModelQuery()
@@ -59,6 +62,7 @@ use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
  * @method static Builder|PatchPanel whereChargeable($value)
  * @method static Builder|PatchPanel whereColoReference($value)
  * @method static Builder|PatchPanel whereConnectorType($value)
+ * @method static Builder|PatchPanel whereCreatedAt($value)
  * @method static Builder|PatchPanel whereId($value)
  * @method static Builder|PatchPanel whereInstallationDate($value)
  * @method static Builder|PatchPanel whereLocationNotes($value)
@@ -66,12 +70,8 @@ use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
  * @method static Builder|PatchPanel whereName($value)
  * @method static Builder|PatchPanel wherePortPrefix($value)
  * @method static Builder|PatchPanel whereUPosition($value)
+ * @method static Builder|PatchPanel whereUpdatedAt($value)
  * @mixin Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanel whereUpdatedAt($value)
- * @property-read \IXP\Models\Cabinet|null $cabinet
  */
 
 class PatchPanel extends Model

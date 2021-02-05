@@ -42,17 +42,17 @@ use IXP\Models\ContactGroup;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Contact[] $contacts
  * @property-read int|null $contacts_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator whereLimitedTo($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ContactGroupAggregator whereUpdatedAt($value)
+ * @method static Builder|ContactGroupAggregator newModelQuery()
+ * @method static Builder|ContactGroupAggregator newQuery()
+ * @method static Builder|ContactGroupAggregator query()
+ * @method static Builder|ContactGroupAggregator whereActive($value)
+ * @method static Builder|ContactGroupAggregator whereCreatedAt($value)
+ * @method static Builder|ContactGroupAggregator whereDescription($value)
+ * @method static Builder|ContactGroupAggregator whereId($value)
+ * @method static Builder|ContactGroupAggregator whereLimitedTo($value)
+ * @method static Builder|ContactGroupAggregator whereName($value)
+ * @method static Builder|ContactGroupAggregator whereType($value)
+ * @method static Builder|ContactGroupAggregator whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ContactGroupAggregator extends ContactGroup

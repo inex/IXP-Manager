@@ -22,11 +22,13 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth, Former, Log, Redirect;
 
 use Illuminate\View\View;
 
 use Illuminate\Http\{
+    Request,
     RedirectResponse
 };
 
@@ -50,9 +52,11 @@ use IXP\Utils\View\Alert\{
 
 /**
  * Route Server Filtering Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
+ * @category   IXP
+ * @package    IXP\Http\Controllers
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -69,10 +73,11 @@ class RsFilterController extends Controller
      */
     public function list( Customer $cust ): View
     {
-        $this->authorize( 'checkCustObject',  [ RouteServerFilter::class, $cust ]  );
+        $this->authorize( 'checkCustObject',  [ RouteServerFilter::class, $cust ] );
 
         return view( 'rs-filter/list' )->with([
-            "rsFilters"         => RouteServerFilter::where( "customer_id" , $cust->id )->orderBy( 'order_by' )->get(),
+            "rsFilters"         => RouteServerFilter::where( "customer_id" , $cust->id )
+                ->orderBy( 'order_by' )->get(),
             "c"                 => $cust
         ]);
     }
@@ -80,28 +85,29 @@ class RsFilterController extends Controller
     /**
      * Allow to display the form to create a route server filter
      *
-     * @param Customer $cust
+     * @param Request   $r
+     * @param Customer  $cust
      *
      * @return  View
      *
      * @throws
      */
-    public function create( Customer $cust ): View
+    public function create( Request $r,  Customer $cust ): View
     {
         $this->authorize( 'checkCustObject',  [ RouteServerFilter::class, $cust ]  );
 
-        $vlanid     = request()->old( 'vlan_id' );
-        $protocol   = request()->old( 'protocol');
-        $peer       = request()->old( 'peer_id' );
+        $vlanid     = $r->old( 'vlan_id' );
+        $protocol   = $r->old( 'protocol');
+        $peer       = $r->old( 'peer_id' );
 
         Former::populate( [
             'peer_id'               => $peer        ?? "Null",
             'vlan_id'               => $vlanid      ?? "Null",
             'protocol'              => $protocol    ?? "Null",
-            'action_advertise'      => request()->old( 'action_advertise',   "Null"  ),
-            'action_receive'        => request()->old( 'action_receive',     "Null"  ),
-            'received_prefix'       => request()->old( 'received_prefix',     "*"     ),
-            'advertised_prefix'     => request()->old( 'advertised_prefix',     "*"     ),
+            'action_advertise'      => $r->old( 'action_advertise',   "Null"  ),
+            'action_receive'        => $r->old( 'action_receive',     "Null"  ),
+            'received_prefix'       => $r->old( 'received_prefix',     "*"     ),
+            'advertised_prefix'     => $r->old( 'advertised_prefix',     "*"     ),
         ] );
 
         $advertisedPrefixes = [];
@@ -127,42 +133,6 @@ class RsFilterController extends Controller
             'protocols'             => Router::$PROTOCOLS,
             'peers'                 => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], CustomerAggregator::getByVlanAndProtocol( $vlanid , $protocol ) ),
             'advertisedPrefixes'    => $advertisedPrefixes
-        ] );
-    }
-
-    /**
-     * Allow to display the form to edit a route server filter
-     *
-     * @param RouteServerFilter   $rsf
-     *
-     * @return  View
-     *
-     * @throws
-     */
-    public function edit( RouteServerFilter $rsf ): View
-    {
-        $this->authorize( 'checkRsfObject',  [ RouteServerFilter::class, $rsf ] );
-
-        $vlanid     = request()->old( 'vlan_id',     $rsf->vlan_id  ?? null );
-        $protocol   = request()->old( 'protocol',    $rsf->protocol ?? null );
-        $peerid     = request()->old( 'peer_id',     $rsf->peer_id  ?? null );
-
-        Former::populate( [
-            'vlan_id'               => $vlanid      ?? "null",
-            'protocol'              => $protocol    ?? "null",
-            'peer_id'               => $peerid      ?? 'null',
-            'received_prefix_val'   => request()->old( 'received_prefix',           $rsf->received_prefix ),
-            'advertised_prefix_val' => request()->old( 'advertised_prefix',         $rsf->advertised_prefix ),
-            'action_advertise'      => request()->old( 'action_advertise',   $rsf->action_advertise ?? 'Null' ),
-            'action_receive'        => request()->old( 'action_receive',     $rsf->action_receive ?? 'Null' ),
-        ] );
-
-        return view( 'rs-filter/edit' )->with( [
-            'rsf'       => $rsf,
-            'c'         => $rsf->customer,
-            'vlans'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], $this->getPublicPeeringVLANs( $rsf->customer_id ) ),
-            'protocols' => Router::$PROTOCOLS,
-            'peers'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], CustomerAggregator::getByVlanAndProtocol( $vlanid , $protocol ) ),
         ] );
     }
 
@@ -195,6 +165,43 @@ class RsFilterController extends Controller
         Log::notice( Auth::getUser()->username . ' created a router server filter with ID ' . $rsf->id );
         AlertContainer::push( "Route Server Filter created", Alert::SUCCESS );
         return redirect( route( "rs-filter@list", [ "cust" => $cust->id ] )  );
+    }
+
+    /**
+     * Allow to display the form to edit a route server filter
+     *
+     * @param Request             $r
+     * @param RouteServerFilter   $rsf
+     *
+     * @return  View
+     *
+     * @throws
+     */
+    public function edit( Request $r, RouteServerFilter $rsf ): View
+    {
+        $this->authorize( 'checkRsfObject',  [ RouteServerFilter::class, $rsf ] );
+
+        $vlanid     = $r->old( 'vlan_id',     $rsf->vlan_id  ?? null );
+        $protocol   = $r->old( 'protocol',    $rsf->protocol ?? null );
+        $peerid     = $r->old( 'peer_id',     $rsf->peer_id  ?? null );
+
+        Former::populate( [
+            'vlan_id'               => $vlanid      ?? "null",
+            'protocol'              => $protocol    ?? "null",
+            'peer_id'               => $peerid      ?? 'null',
+            'received_prefix_val'   => $r->old( 'received_prefix',           $rsf->received_prefix ),
+            'advertised_prefix_val' => $r->old( 'advertised_prefix',         $rsf->advertised_prefix ),
+            'action_advertise'      => $r->old( 'action_advertise',   $rsf->action_advertise ?? 'Null' ),
+            'action_receive'        => $r->old( 'action_receive',     $rsf->action_receive ?? 'Null' ),
+        ] );
+
+        return view( 'rs-filter/edit' )->with( [
+            'rsf'       => $rsf,
+            'c'         => $rsf->customer,
+            'vlans'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], $this->getPublicPeeringVLANs( $rsf->customer_id ) ),
+            'protocols' => Router::$PROTOCOLS,
+            'peers'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], CustomerAggregator::getByVlanAndProtocol( $vlanid , $protocol ) ),
+        ] );
     }
 
     /**
@@ -252,7 +259,7 @@ class RsFilterController extends Controller
 
         $status = $enable ? 'enabled' : 'disabled';
 
-        $rsf->enabled =  (bool)$enable;
+        $rsf->enabled = (bool)$enable;
         $rsf->save();
 
         Log::notice( Auth::getUser()->username . ' ' . $status . ' a router server filter with ID ' . $rsf->id );

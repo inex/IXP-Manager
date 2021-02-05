@@ -22,9 +22,6 @@
  */
 
 use Ds\Set;
-use Entities\{
-    User as UserEntity
-};
 
 use IXP\Utils\MailingList as ML;
 

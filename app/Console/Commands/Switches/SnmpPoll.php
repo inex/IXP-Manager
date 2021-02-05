@@ -32,9 +32,6 @@ use OSS_SNMP\{
 };
 
 use IXP\Models\Switcher;
-use Entities\{
-    Switcher    as SwitcherEntity
-};
 
 /**
  * Class SnmpPoll

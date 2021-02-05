@@ -3,7 +3,7 @@
 namespace IXP\Services\Grapher\Graph;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +22,7 @@ namespace IXP\Services\Grapher\Graph;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth, Log;
 
 use IXP\Models\{
@@ -32,14 +33,14 @@ use IXP\Models\{
 use IXP\Services\Grapher;
 use IXP\Services\Grapher\{Graph};
 
-
 /**
  * Grapher -> P2P Graph
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   Grapher
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class P2p extends Graph
@@ -57,7 +58,6 @@ class P2p extends Graph
      * @var VlanInterfaceModel
      */
     private $dvli = null;
-
 
     /**
      * Constructor
@@ -91,7 +91,6 @@ class P2p extends Graph
     {
         return $this->dvli;
     }
-
 
     /**
      * Set the source vli we should use
@@ -152,7 +151,6 @@ class P2p extends Graph
     {
         return sprintf( "p2p-svli%05d-dvli%05d", $this->svli()->id, $this->dvli()->id );
     }
-
 
     /**
      * Utility function to determine if the currently logged in user can access 'all customer's p2p' graphs
@@ -246,7 +244,6 @@ class P2p extends Graph
         $p['dvli'] = $this->dvli()->id;
         return $p;
     }
-
 
     /**
      * Process user input for the parameter: vlanint

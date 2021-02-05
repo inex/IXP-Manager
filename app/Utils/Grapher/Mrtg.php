@@ -3,7 +3,7 @@
 namespace IXP\Utils\Grapher;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,9 +22,12 @@ namespace IXP\Utils\Grapher;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
-use IXP\Services\Grapher\Graph;
+
 use IXP\Exceptions\Services\Grapher\GeneralException;
+
+use IXP\Services\Grapher\Graph;
 
 /**
  * A class to handle Mrtg log files
@@ -35,9 +38,13 @@ use IXP\Exceptions\Services\Grapher\GeneralException;
  * * 20100219 Ported to IXP Manager by barryo
  * * 20160127 Ported to IXP Manager v4 by barryo
  *
- * @author Nick Hilliard <nick@inex.ie>
- * @author Barry O'Donovan <barry@opensolutions.ie>
- * @package Grapher
+ * @author     Nick Hilliard <nick@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Utils\Grapher
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Mrtg
 {
@@ -58,7 +65,7 @@ class Mrtg
      *
      * these values are taken from mrtg/src/rateup.c
      */
-    const PERIOD_TIME = [
+    public const PERIOD_TIME = [
         Graph::PERIOD_DAY   => 119988.0,     // ( 33.33 * 3600 ),
         Graph::PERIOD_WEEK  => 719712.0,     // ( 8.33  * 24 * 3600 ),
         Graph::PERIOD_MONTH => 2879712.0,    // ( 33.33 * 24 * 3600 ),
@@ -108,7 +115,7 @@ class Mrtg
      *
      * @param string $file The MRTG log file to load for analysis
      */
-    function __construct( string $file )
+    public function __construct( string $file )
     {
         $this->file  = $file;
         $this->array = $this->loadMrtgFile();
@@ -123,10 +130,7 @@ class Mrtg
      */
     public function getPeriodTime( $period ): float
     {
-        if( isset( self::PERIOD_TIME[ $period ] ) ){
-            return self::PERIOD_TIME[ $period ];
-        }
-        return 0.0;
+        return self::PERIOD_TIME[ $period ] ?? 0.0;
     }
 
     /**
@@ -149,7 +153,7 @@ class Mrtg
      *
      * @return array
      *
-     * @throws IXP\Exceptions\Utils\Grapher\FileError
+     * @throws
      */
     protected function loadMrtgFile(): array
     {
@@ -169,7 +173,6 @@ class Mrtg
 
         // drop the first record as it's traffic counters from the most recent run of mrtg.
         array_shift( $values );
-
         fclose( $fd );
 
         return $values;
@@ -200,8 +203,8 @@ class Mrtg
             throw new GeneralException('Invalid period');
         }
 
-        $starttime = time() - $periodsecs;
-        $endtime = time();
+        $starttime  = time() - $periodsecs;
+        $endtime    = time();
 
         // Run through the array and pull out the values we want
         for( $i = sizeof( $this->array )-1; $i >= 0; $i-- ) {
@@ -220,7 +223,6 @@ class Mrtg
                 $values[$i][4] *= 8;
             }
         }
-
         return $values;
     }
 

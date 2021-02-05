@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Former;
 
 use IXP\Models\{
@@ -43,7 +44,8 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController;
  * CustKit Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   VlanInterface
+ * @category   IXP
+ * @package    IXP\Http\Controllers\ConsoleServer
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -68,7 +70,6 @@ class CustKitController extends EloquentController
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'cust-kit',
-
             'listColumns'    => [
                 'id'        => [ 'title' => 'DB ID', 'display' => false ],
                 'name'      => 'Name',
@@ -133,7 +134,7 @@ class CustKitController extends EloquentController
     }
 
     /**
-     * Display the form to add/edit an object
+     * Display the form to edit an object
      *
      * @param   int $id ID of the row to edit
      *
@@ -205,8 +206,8 @@ class CustKitController extends EloquentController
     {
         $r->validate( [
             'name'                  => 'required|string|max:255',
-            'custid'                => 'required|integer|exists:Entities\Customer,id',
-            'cabinetid'             => 'required|integer|exists:Entities\Cabinet,id',
+            'custid'                => 'required|integer|exists:cust,id',
+            'cabinetid'             => 'required|integer|exists:cabinet,id',
             'descr'                 => 'nullable|string|max:255',
         ] );
     }

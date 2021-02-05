@@ -53,12 +53,12 @@ class StoreVirtualInterfaceWizard extends FormRequest
     public function rules()
     {
         return [
-            'custid'                => 'required|integer|exists:Entities\Customer,id',
-            'vlanid'                => 'required|integer|exists:Entities\Vlan,id',
+            'custid'                => 'required|integer|exists:cust,id',
+            'vlanid'                => 'required|integer|exists:vlan,id',
             'trunk'                 => 'boolean',
 
-            'switch'                => 'required|integer|exists:Entities\Switcher,id',
-            'switchportid'          => 'required|integer|exists:Entities\SwitchPort,id',
+            'switch'                => 'required|integer|exists:switch,id',
+            'switchportid'          => 'required|integer|exists:switchport,id',
             'status'                => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterface::$STATES ) ),
             'speed'                 => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterface::$SPEED ) ),
             'duplex'                => 'required|string|in:' . implode( ',', array_keys( PhysicalInterface::$DUPLEX ) ),

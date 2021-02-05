@@ -33,20 +33,20 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo};
  * @property string|null $firstseen
  * @property string|null $lastseen
  * @property string|null $mac
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
  * @method static Builder|MacAddress newModelQuery()
  * @method static Builder|MacAddress newQuery()
  * @method static Builder|MacAddress query()
+ * @method static Builder|MacAddress whereCreatedAt($value)
  * @method static Builder|MacAddress whereFirstseen($value)
  * @method static Builder|MacAddress whereId($value)
  * @method static Builder|MacAddress whereLastseen($value)
  * @method static Builder|MacAddress whereMac($value)
+ * @method static Builder|MacAddress whereUpdatedAt($value)
  * @method static Builder|MacAddress whereVirtualinterfaceid($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\MacAddress whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\MacAddress whereUpdatedAt($value)
- * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
  */
 class MacAddress extends Model
 {

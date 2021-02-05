@@ -3,7 +3,7 @@
 namespace IXP\Services\Grapher\Graph;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,10 +22,10 @@ namespace IXP\Services\Grapher\Graph;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth, Log;
 
-use IXP\Services\Grapher;
-use IXP\Services\Grapher\Graph;
+use Illuminate\Auth\Access\AuthorizationException;
 
 use IXP\Exceptions\Services\Grapher\{
     ParameterException
@@ -36,17 +36,17 @@ use IXP\Models\{
     User
 };
 
-use Illuminate\Auth\Access\AuthorizationException;
-
+use IXP\Services\Grapher;
+use IXP\Services\Grapher\Graph;
 
 /**
  * Grapher -> Latency Graphs
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Grapher
+ * @category   IXP
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Latency extends Graph
@@ -123,7 +123,6 @@ class Latency extends Graph
         $this->setPeriod( self::PERIOD_3HOURS );
     }
 
-
     /**
      * Set the period we should use
      *
@@ -144,7 +143,6 @@ class Latency extends Graph
         }
 
         $this->period = $v;
-
         return $this;
     }
 
@@ -226,7 +224,6 @@ class Latency extends Graph
     public function authorise(): bool
     {
         // NB: see above authorisedForAllCustomers()
-
         if( is_numeric( config( 'grapher.access.latency' ) ) && config( 'grapher.access.latency' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
@@ -282,8 +279,8 @@ class Latency extends Graph
      */
     public function getParamsAsArray(): array
     {
-        $p = parent::getParamsAsArray();
-        $p['id'] = $this->vli()->id;
+        $p          = parent::getParamsAsArray();
+        $p['id']    = $this->vli()->id;
         return $p;
     }
 

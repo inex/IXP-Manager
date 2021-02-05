@@ -34,21 +34,21 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo};
  * @property string $at
  * @property int|null $customer_to_user_id
  * @property string|null $via
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\CustomerToUser|null $customerToUser
  * @method static Builder|UserLoginHistory newModelQuery()
  * @method static Builder|UserLoginHistory newQuery()
  * @method static Builder|UserLoginHistory query()
  * @method static Builder|UserLoginHistory whereAt($value)
+ * @method static Builder|UserLoginHistory whereCreatedAt($value)
  * @method static Builder|UserLoginHistory whereCustomerToUserId($value)
  * @method static Builder|UserLoginHistory whereId($value)
  * @method static Builder|UserLoginHistory whereIp($value)
+ * @method static Builder|UserLoginHistory whereUpdatedAt($value)
  * @method static Builder|UserLoginHistory whereUserId($value)
  * @method static Builder|UserLoginHistory whereVia($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserLoginHistory whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserLoginHistory whereUpdatedAt($value)
- * @property-read \IXP\Models\CustomerToUser|null $customerToUser
  */
 class UserLoginHistory extends Model
 {

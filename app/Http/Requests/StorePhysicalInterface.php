@@ -50,15 +50,15 @@ class StorePhysicalInterface extends FormRequest
     public function rules(): array
     {
         return [
-            'virtualinterfaceid'        => 'required|integer|exists:Entities\VirtualInterface,id',
-            'switch'                    => 'required|integer|exists:Entities\Switcher,id',
-            'switchportid'              => 'required|integer|exists:Entities\SwitchPort,id',
+            'virtualinterfaceid'        => 'required|integer|exists:virtualinterface,id',
+            'switch'                    => 'required|integer|exists:switch,id',
+            'switchportid'              => 'required|integer|exists:switchport,id',
             'status'                    => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterface::$STATES ) ),
             'speed'                     => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterface::$SPEED ) ),
             'duplex'                    => 'required|string|in:'  . implode( ',', array_keys( PhysicalInterface::$DUPLEX ) ),
             'notes'                     => 'string|nullable',
-            'switch-fanout'             => 'integer' . ( $this->fanout ? '|required|exists:Entities\Switcher,id'   : '|nullable' ),
-            'switch-port-fanout'        => 'integer' . ( $this->fanout ? '|required|exists:Entities\SwitchPort,id' : '|nullable' ),
+            'switch-fanout'             => 'integer' . ( $this->fanout ? '|required|exists:switch,id'   : '|nullable' ),
+            'switch-port-fanout'        => 'integer' . ( $this->fanout ? '|required|exists:switchport,id' : '|nullable' ),
         ];
     }
 }

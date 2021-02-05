@@ -1,6 +1,6 @@
 <?php
-/** @var Foil\Template\Template $t */
-$this->layout( 'layouts/ixpv4' );
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -24,7 +24,7 @@ $this->layout( 'layouts/ixpv4' );
     <div class="row">
         <div class="col-sm-12">
             <?= $t->alerts() ?>
-            <table id='table-cb' class="table collapse table-striped">
+            <table id='table-cb' class="table collapse table-striped w-100">
                 <thead class="thead-dark">
                     <tr>
                         <th>
@@ -51,10 +51,14 @@ $this->layout( 'layouts/ixpv4' );
                     </tr>
                 <thead>
                 <tbody>
-                    <?php foreach( $t->cbs as $cb ): ?>
+                    <?php foreach( $t->cbs as $cb ):
+                        /** @var \IXP\Models\CoreBundle $cb */
+                        $clsNb      = $cb->coreLinks()->count();
+                        $piSpeed    = $cb->speedPi();
+                        ?>
                         <tr>
                             <td>
-                                <?= $t->ee( $cb->description )  ?>
+                                <?= $t->ee( $cb->description ) ?>
                             </td>
                             <td>
                                 <?= $t->ee( $cb->typeText() )  ?>
@@ -65,7 +69,9 @@ $this->layout( 'layouts/ixpv4' );
                                 <?php elseif( $cb->enabled && $cb->allCoreLinksEnabled() ): ?>
                                     <i class="fa fa-check"></i>
                                 <?php else:?>
-                                    <span class="badge badge-warning"> <?= $cb->coreLinks()->active()->get()->count() ?> / <?= $cb->coreLinks->count() ?> </span>
+                                    <span class="badge badge-warning">
+                                        <?= $cb->coreLinks()->active()->get()->count() ?> / <?= $clsNb ?>
+                                    </span>
                                 <?php endif; ?>
                             </td>
                             <td>
@@ -74,8 +80,8 @@ $this->layout( 'layouts/ixpv4' );
                             <td>
                                 <?= $t->ee( $cb->switchSideX( false )->name )  ?>
                             </td>
-                            <td data-sort="<?= $cb->coreLinks()->count() * $cb->speedPi() ?>" >
-                                <?= $t->scaleBits(  $cb->coreLinks()->count() * $cb->speedPi() * 1000000, 0 )  ?>
+                            <td data-sort="<?= $clsNb * $piSpeed ?>" >
+                                <?= $t->scaleBits(  $clsNb * $piSpeed * 1000000, 0 )  ?>
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
@@ -100,7 +106,6 @@ $this->layout( 'layouts/ixpv4' );
             </p>
         </div>
     </div>
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>

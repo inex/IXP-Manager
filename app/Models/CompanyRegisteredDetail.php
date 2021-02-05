@@ -39,6 +39,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $townCity
  * @property string|null $postcode
  * @property string|null $country
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\Customer|null $customer
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail query()
@@ -47,17 +50,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereAddress3($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereCompanyNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereCountry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereJurisdiction($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail wherePostcode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereRegisteredName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereTownCity($value)
- * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \IXP\Models\Customer|null $customer
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class CompanyRegisteredDetail extends Model
 {

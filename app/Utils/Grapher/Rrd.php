@@ -3,7 +3,7 @@
 namespace IXP\Utils\Grapher;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -106,10 +106,12 @@ class Rrd
     /**
      * Class constructor.
      *
-     * @param string $file  The RRD log file to load for analysis
-     * @param Graph  $graph The graph object
+     * @param  string  $file  The RRD log file to load for analysis
+     * @param  Graph  $graph  The graph object
+     *
+     * @throws
      */
-    function __construct( string $file, Graph $graph )
+    public function __construct( string $file, Graph $graph )
     {
         $this->realfile  = $file;
         $this->graph     = $graph;
@@ -145,10 +147,7 @@ class Rrd
      */
     public function getPeriodTime( $period ): float
     {
-        if( isset( self::PERIOD_TIME[ $period ] ) ){
-            return self::PERIOD_TIME[ $period ];
-        }
-        return 0.0;
+        return self::PERIOD_TIME[ $period ] ?? 0.0;
     }
 
     /**
@@ -169,9 +168,9 @@ class Rrd
      *
      * @return string The full path to the local directory
      *
-     * @throws \IXP\Exceptions\Utils\Grapher\FileError
+     * @throws
      */
-    private function getLocalDirectory()
+    private function getLocalDirectory(): string
     {
         // use Laravel's storage if possible
         if( !function_exists( 'storage_path' ) ) {
@@ -196,9 +195,9 @@ class Rrd
      *
      * @return string The full path to the local copy
      *
-     * @throws \IXP\Exceptions\Utils\Grapher\FileError
+     * @throws
      */
-    private function getLocalFilename( $ext = 'rrd' )
+    private function getLocalFilename( $ext = 'rrd' ): string
     {
         return "{$this->getLocalDirectory()}/" . self::LOCAL_CACHE_RRD_PREFIX . "{$this->graph()->key()}.{$ext}";
     }
@@ -216,12 +215,12 @@ class Rrd
      *
      * @return string The full path to the local copy
      *
-     * @throws \IXP\Exceptions\Utils\Grapher\FileError
+     * @throws
      */
     private function getLocalCopy(): string
     {
         // if it's already local, just return
-        if( substr( $this->realfile, 0, 4 ) !== 'http' ) {
+        if( strpos($this->realfile, 'http') !== 0) {
             $this->file = $this->realfile;
             return $this->file;
         }
@@ -243,7 +242,7 @@ class Rrd
      *
      * @see getLocalCopy() for an explanation
      */
-    private function deleteLocalCopies()
+    private function deleteLocalCopies(): void
     {
         $files = glob( $this->getLocalDirectory() . "/" . self::LOCAL_CACHE_RRD_PREFIX . "*" );
         $now   = time();
@@ -257,9 +256,10 @@ class Rrd
 
     /**
      * Prepare RRD file
-     * @throws \IXP\Exceptions\Utils\Grapher\FileError
+     *
+     * @throws
      */
-    protected function loadRrdFile()
+    protected function loadRrdFile(): void
     {
         // we need to allow for remote files but php's rrd_* functions don't support this
         $this->getLocalCopy();
@@ -267,7 +267,8 @@ class Rrd
 
     /**
      * Get the RRD file
-     * @throws \IXP\Exceptions\Utils\Grapher\FileError
+     *
+     * @throws
      */
     public function rrd()
     {
@@ -284,7 +285,7 @@ class Rrd
      *
      * @return array
      */
-    private function getIndexKeys()
+    private function getIndexKeys(): array
     {
         if( $this->graph()->backend()->name() === 'mrtg' ) {
             return [ 'ds0', 'ds1' ];  // in out
@@ -292,7 +293,6 @@ class Rrd
 
         return [ 'traffic_in', 'traffic_out' ];
     }
-
 
     /**
      * From the RRD file, process the data and return it in the same format
@@ -306,10 +306,10 @@ class Rrd
      *
      * @return array
      *
-     * @throws \IXP\Exceptions\Utils\Grapher\FileError
+     * @throws
      */
-    public function data(): array {
-
+    public function data(): array
+    {
         $rrd = rrd_fetch( $this->file, [
             'AVERAGE',
             '--start', time() - self::PERIOD_TIME[ $this->graph()->period() ]
@@ -335,10 +335,8 @@ class Rrd
         $isBits = ( $this->graph()->category() === Graph::CATEGORY_BITS );
 
         $i = 0;
-
          foreach( $tin as $ts => $v ) {
             if( is_numeric( $v ) && is_numeric( $rrd['data'][$indexOut][$ts] ) ) {
-
                 // first couple are often blank
                 if( $ts > time() - $this->step ) {
                     continue;
@@ -361,7 +359,7 @@ class Rrd
     /**
      * From the RRD file, process and return a png
      *
-     * @throws \IXP\Exceptions\Utils\Grapher\FileError
+     * @throws
      */
     public function png(): string
     {

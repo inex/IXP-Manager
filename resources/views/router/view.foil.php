@@ -1,7 +1,7 @@
 <?php
   /** @var \IXP\Models\Router $rt */
   $this->layout( 'layouts/ixpv4' );
-  $rt = $t->rt;
+  $rt = $t->rt /** @var $rt \IXP\Models\Router */;
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -48,7 +48,7 @@
                                     <b>Vlan:</b>
                                 </td>
                                 <td>
-                                    <a href="<?= route( "vlan@view" , [ "id" => $rt->vlan->id ] )?> ">
+                                    <a href="<?= route( "vlan@view" , [ "id" => $rt->vlan_id ] )?> ">
                                         <?= $t->ee( $rt->vlan->name )?>
                                     </a>
                                 </td>

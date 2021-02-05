@@ -37,26 +37,24 @@ use Illuminate\Database\Eloquent\{
  * @property string $token
  * @property string $device
  * @property string $ip
- * @property string $created
+ * @property \Illuminate\Support\Carbon|null $created_at
  * @property string $expires
  * @property int $is_2fa_complete
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\User $user
  * @method static Builder|UserRememberToken newModelQuery()
  * @method static Builder|UserRememberToken newQuery()
  * @method static Builder|UserRememberToken query()
- * @method static Builder|UserRememberToken whereCreated($value)
+ * @method static Builder|UserRememberToken whereCreatedAt($value)
  * @method static Builder|UserRememberToken whereDevice($value)
  * @method static Builder|UserRememberToken whereExpires($value)
  * @method static Builder|UserRememberToken whereId($value)
  * @method static Builder|UserRememberToken whereIp($value)
  * @method static Builder|UserRememberToken whereIs2faComplete($value)
  * @method static Builder|UserRememberToken whereToken($value)
+ * @method static Builder|UserRememberToken whereUpdatedAt($value)
  * @method static Builder|UserRememberToken whereUserId($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserRememberToken whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserRememberToken whereUpdatedAt($value)
  */
 class UserRememberToken extends Model
 {

@@ -22,15 +22,17 @@ namespace IXP\Http\Requests;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Illuminate\Foundation\Http\FormRequest;
+use Auth, Validator;
 
-use Validator;
+use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * PeeringManagerRequest FormRequest
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Requests
+ * @category   IXP
+ * @package    IXP\Http\Requests
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -68,7 +70,7 @@ class PeeringManagerRequest extends FormRequest
     public function authorize(): bool
     {
         // middleware ensures superuser access only so always authorised here:
-        return true;
+        return Auth::getUser()->isSuperUser();
     }
 
     /**

@@ -22,6 +22,7 @@ namespace IXP\Http\Requests\Profile;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth, Hash;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -29,9 +30,11 @@ use Illuminate\Validation\Validator;
 
 /**
  * Profile Password Store Request
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Requests\Profile
+ * @category   IXP
+ * @package    IXP\Http\Requests\Profile
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */

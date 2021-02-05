@@ -41,7 +41,6 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-
 /**
  * SwitchUserController
  *

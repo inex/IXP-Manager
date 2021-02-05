@@ -37,6 +37,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int|null $protocol
  * @property int|null $irrdb
  * @property int|null $rs_origin
+ * @property-read \IXP\Models\Customer|null $customer
  * @method static \Illuminate\Database\Eloquent\Builder|RsPrefix newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|RsPrefix newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|RsPrefix query()
@@ -48,7 +49,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|RsPrefix whereRsOrigin($value)
  * @method static \Illuminate\Database\Eloquent\Builder|RsPrefix whereTimestamp($value)
  * @mixin \Eloquent
- * @property-read \IXP\Models\Customer|null $customer
  */
 class RsPrefix extends Model
 {

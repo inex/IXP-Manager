@@ -35,7 +35,9 @@ use Schema;
  * IXP\Models\PatchPanelPortHistory
  *
  * @property int $id
+ * @property string|null $switchport
  * @property int|null $patch_panel_port_id
+ * @property string|null $customer
  * @property int $state
  * @property string|null $notes
  * @property string|null $assigned_at
@@ -44,8 +46,6 @@ use Schema;
  * @property string|null $ceased_at
  * @property int $internal_use
  * @property int $chargeable
- * @property string|null $customer
- * @property string|null $switchport
  * @property int|null $duplex_master_id
  * @property int $number
  * @property string|null $colo_circuit_ref
@@ -55,9 +55,12 @@ use Schema;
  * @property string|null $description
  * @property string|null $colo_billing_ref
  * @property int|null $cust_id
- * @property-read PatchPanelPort|null $patchPanelPort
- * @property-read Collection|PatchPanelPortHistoryFile[] $patchPanelPortHistoryFiles
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read \IXP\Models\PatchPanelPort|null $patchPanelPort
+ * @property-read Collection|\IXP\Models\PatchPanelPortHistoryFile[] $patchPanelPortHistoryFiles
  * @property-read int|null $patch_panel_port_history_files_count
+ * @method static Builder|PatchPanelPortHistory masterPort()
  * @method static Builder|PatchPanelPortHistory newModelQuery()
  * @method static Builder|PatchPanelPortHistory newQuery()
  * @method static Builder|PatchPanelPortHistory query()
@@ -68,6 +71,7 @@ use Schema;
  * @method static Builder|PatchPanelPortHistory whereColoBillingRef($value)
  * @method static Builder|PatchPanelPortHistory whereColoCircuitRef($value)
  * @method static Builder|PatchPanelPortHistory whereConnectedAt($value)
+ * @method static Builder|PatchPanelPortHistory whereCreatedAt($value)
  * @method static Builder|PatchPanelPortHistory whereCustId($value)
  * @method static Builder|PatchPanelPortHistory whereCustomer($value)
  * @method static Builder|PatchPanelPortHistory whereDescription($value)
@@ -82,12 +86,8 @@ use Schema;
  * @method static Builder|PatchPanelPortHistory whereState($value)
  * @method static Builder|PatchPanelPortHistory whereSwitchport($value)
  * @method static Builder|PatchPanelPortHistory whereTicketRef($value)
- * @mixin Eloquent
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @method static Builder|PatchPanelPortHistory whereCreatedAt($value)
  * @method static Builder|PatchPanelPortHistory whereUpdatedAt($value)
- * @method static Builder|PatchPanelPortHistory masterPort()
+ * @mixin Eloquent
  */
 
 class PatchPanelPortHistory extends Model

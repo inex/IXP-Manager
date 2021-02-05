@@ -50,7 +50,7 @@ class StorePatchPanel extends FormRequest
         return [
             'name'              => 'required|string|max:255',
             'colo_reference'    => 'required|string|max:255',
-            'cabinet_id'        => 'required|integer|exists:Entities\Cabinet,id',
+            'cabinet_id'        => 'required|integer|exists:cabinet,id',
             'cable_type'        => 'required|integer',
             'connector_type'    => 'required|integer',
             'installation_date' => 'date',

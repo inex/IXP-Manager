@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -82,7 +82,6 @@ return [
     |    frontend.disabled.cust-kit = true
     |    frontend.disabled.console-server-connection = true
     */
-
     'frontend' => [
         'disabled' => [
             'console-server-connection' => env( 'IXP_FE_FRONTEND_DISABLED_CONSOLE',           false ),
@@ -103,7 +102,6 @@ return [
         ],
     ],
 
-
     /*
     |--------------------------------------------------------------------------
     | Route Server Prefixes Access permissions
@@ -117,15 +115,14 @@ return [
     |
     | The following options apply:
     |
-    | 1. Entities\User::AUTH_PUBLIC     -> tool is publically available to all
-    | 2. Entities\User::AUTH_CUSTUSER   -> tool is available to any logged in user
-    | 3. Entities\User::AUTH_SUPERUSER  -> summary and any customer access is restricted to superadmins,
+    | 1. \IXP\Models\User::AUTH_PUBLIC     -> tool is publically available to all
+    | 2. \IXP\Models\User::AUTH_CUSTUSER   -> tool is available to any logged in user
+    | 3. \IXP\Models\User::AUTH_SUPERUSER  -> summary and any customer access is restricted to superadmins,
     |                                      logged in users may see their prefixes.
     */
     'rs-prefixes' => [
         'access'  => env( 'IXP_FE_RS_PREFIXES_ACCESS', \IXP\Models\User::AUTH_SUPERUSER ),
     ],
-
 
     /*
     |--------------------------------------------------------------------------
@@ -163,8 +160,6 @@ return [
         'details_public' => env( 'IXP_FE_CUSTOMER_DETAILS_PUBLIC', true ),
     ],
 
-
-
     /*
     |--------------------------------------------------------------------------
     | Customer Ability to Change Own MAC Addresses
@@ -172,7 +167,6 @@ return [
     |
     */
     'layer2-addresses' => [
-
         'customer_can_edit'  => env( 'IXP_FE_LAYER2_ADDRESSES_CUST_CAN_EDIT', false ),
 
         'customer_params' => [
@@ -183,9 +177,7 @@ return [
         'email_on_superuser_change'  => env( 'IXP_FE_LAYER2_ADDRESSES_EMAIL_ON_SUPERUSER_CHANGE', false ),
         'email_on_customer_change'   => env( 'IXP_FE_LAYER2_ADDRESSES_EMAIL_ON_CUSTOMER_CHANGE',  false ),
         'email_on_change_dest'       => env( 'IXP_FE_LAYER2_ADDRESSES_EMAIL_ON_CHANGE_DEST',      null  ),  // e.g. 'ops@ixp.example.net'
-
     ],
-
 
     /*
     |--------------------------------------------------------------------------
@@ -213,7 +205,6 @@ return [
    |--------------------------------------------------------------------------
    |
    */
-
     'api_keys' => [
 
         // when an API key is created it is only shown once in the UI and there after it is hidden.

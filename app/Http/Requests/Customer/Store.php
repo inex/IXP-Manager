@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\Customer;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -34,8 +34,9 @@ use IXP\Models\Customer;
  * Customer Store Request
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Customers
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Requests\Customer
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Store extends FormRequest
@@ -61,7 +62,7 @@ class Store extends FormRequest
         $validateCommonDetails = [
             'name'                  => 'required|string|max:255',
             'type'                  => 'required|integer|in:' . implode( ',', array_keys( Customer::$CUST_TYPES_TEXT ) ),
-            'shortname'             => 'required|string|max:30|regex:/[a-z0-9]+/|unique:Entities\Customer,shortname'. ( $this->cust ? ','. $this->cust->id : '' ),
+            'shortname'             => 'required|string|max:30|regex:/[a-z0-9]+/|unique:cust,shortname'. ( $this->cust ? ','. $this->cust->id : '' ),
             'corpwww'               => 'nullable|url|max:255',
             'datejoin'              => 'date',
             'dateleft'              => 'nullable|date',
@@ -77,18 +78,17 @@ class Store extends FormRequest
             'peeringmacro'          => 'nullable|string|max:255',
             'peeringmacrov6'        => 'nullable|string|max:255',
             'peeringpolicy'         => 'string|in:' . implode( ',', array_keys( Customer::$PEERING_POLICIES ) ),
-            'irrdb'                 => 'nullable|integer|exists:Entities\IRRDBConfig,id',
+            'irrdb'                 => 'nullable|integer|exists:irrdbconfig,id',
             'nocphone'              => 'nullable|string|max:255',
             'noc24hphone'           => 'nullable|string|max:255',
             'nocemail'              => 'email|max:255',
             'nochours'              => 'nullable|string|in:' . implode( ',', array_keys( Customer::$NOC_HOURS ) ),
             'nocwww'                => 'nullable|url|max:255',
-            'reseller'              => 'nullable|integer|exists:Entities\Customer,id',
+            'reseller'              => 'nullable|integer|exists:cust,id',
         ];
 
         return $this-> type === Customer::TYPE_ASSOCIATE  ? $validateCommonDetails : array_merge( $validateCommonDetails, $validateOtherDetails ) ;
     }
-
 
     /**
      * Configure the validator instance.

@@ -3,7 +3,7 @@
 namespace IXP\Services\Grapher\Graph;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -26,7 +26,7 @@ namespace IXP\Services\Grapher\Graph;
 use Auth, Log;
 
 use IXP\Services\Grapher;
-use IXP\Services\Grapher\{Graph};
+use IXP\Services\Grapher\Graph;
 
 use IXP\Models\{
     Customer,
@@ -38,21 +38,20 @@ use IXP\Models\{
  * Grapher -> VlanInterface Graph (l3)
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   Grapher
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class VlanInterface extends Graph
 {
-
     /**
      * VlanInterface to graph
      *
      * @var VlanInterfaceModel
      */
     private $vlanint = null;
-
 
     /**
      * Constructor
@@ -182,6 +181,7 @@ class VlanInterface extends Graph
      * Generate a URL to get this graphs 'file' of a given type
      *
      * @param array $overrides Allow standard parameters to be overridden (e.g. category)
+     *
      * @return string
      */
     public function url( array $overrides = [] ): string
@@ -200,8 +200,8 @@ class VlanInterface extends Graph
      */
     public function getParamsAsArray(): array
     {
-        $p = parent::getParamsAsArray();
-        $p['id'] = $this->vlanInterface()->id;
+        $p          = parent::getParamsAsArray();
+        $p['id']    = $this->vlanInterface()->id;
         return $p;
     }
 

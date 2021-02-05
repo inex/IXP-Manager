@@ -103,7 +103,7 @@ Route::group( [ 'prefix' => 'router' ], function() {
     Route::get(     'gen-config/{id}',  'RouterController@genConfig');
     Route::delete(  'delete/{router}',  'RouterController@delete'   )->name( 'router@delete'  );
     Route::post(   'store',             'RouterController@store'    )->name( 'router@store'   );
-    Route::put(    'update/{router}',   'RouterController@store'    )->name( 'router@update'  );
+    Route::put(    'update/{router}',   'RouterController@update'   )->name( 'router@update'  );
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

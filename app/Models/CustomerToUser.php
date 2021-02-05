@@ -33,11 +33,17 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations
  * @property int $customer_id
  * @property int $user_id
  * @property int $privs
+ * @property array|null $extra_attributes
  * @property string|null $last_login_date
  * @property string|null $last_login_from
- * @property string $created_at
- * @property mixed|null $extra_attributes
+ * @property \Illuminate\Support\Carbon|null $created_at
  * @property string|null $last_login_via
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\Customer $customer
+ * @property-read \IXP\Models\User $user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\UserLoginHistory[] $userLoginHistories
+ * @property-read int|null $user_login_histories_count
+ * @method static Builder|CustomerToUser custAdmin()
  * @method static Builder|CustomerToUser newModelQuery()
  * @method static Builder|CustomerToUser newQuery()
  * @method static Builder|CustomerToUser query()
@@ -49,15 +55,9 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations
  * @method static Builder|CustomerToUser whereLastLoginFrom($value)
  * @method static Builder|CustomerToUser whereLastLoginVia($value)
  * @method static Builder|CustomerToUser wherePrivs($value)
+ * @method static Builder|CustomerToUser whereUpdatedAt($value)
  * @method static Builder|CustomerToUser whereUserId($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerToUser whereUpdatedAt($value)
- * @property-read \IXP\Models\Customer $customer
- * @property-read \IXP\Models\User $user
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\UserLoginHistory[] $userLoginHistories
- * @property-read int|null $user_login_histories_count
- * @method static Builder|CustomerToUser custAdmin()
  */
 class CustomerToUser extends Model
 {

@@ -3,7 +3,7 @@
 namespace IXP\Utils\Grapher;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,14 +22,21 @@ namespace IXP\Utils\Grapher;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use IXP\Services\Grapher\Graph;
+
 use IXP\Exceptions\Services\Grapher\GeneralException;
+
+use IXP\Services\Grapher\Graph;
+
 /**
  * A class to handle **dummy** Mrtg log files
  *
- * @author Nick Hilliard <nick@inex.ie>
- * @author Barry O'Donovan <barry@opensolutions.ie>
- * @package Grapher
+ * @author     Nick Hilliard <nick@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Utils\Grapher
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Dummy extends Mrtg
 {
@@ -38,7 +45,7 @@ class Dummy extends Mrtg
      *
      * @param string $file The MRTG log file to load for analysis
      */
-    function __construct( string $file )
+    public function __construct( string $file )
     {
         parent::__construct( $file );
     }
@@ -68,8 +75,8 @@ class Dummy extends Mrtg
             throw new GeneralException('Invalid period');
         }
 
-        $starttime = $this->array[0][0] - $periodsecs;
-        $endtime = $this->array[0][0];
+        $starttime  = $this->array[0][0] - $periodsecs;
+        $endtime    = $this->array[0][0];
 
         // Run through the array and pull out the values we want
         for( $i = sizeof( $this->array )-1; $i >= 0; $i-- ) {
@@ -95,7 +102,6 @@ class Dummy extends Mrtg
                 $values[$i][4]  = (int)floor( $values[$i][2] * 0.1 );
             }
         }
-
         return $values;
     }
 }

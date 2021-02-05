@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Interfaces;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -35,7 +35,6 @@ use Illuminate\View\View;
 use IXP\Models\{
     Aggregators\SwitcherAggregator,
     CoreBundle,
-    CoreInterface,
     Customer,
     Switcher,
     SwitchPort,
@@ -53,10 +52,12 @@ use IXP\Utils\View\Alert\{
 
 /**
  * CoreBundle Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Interfaces
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Interfaces
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class CoreBundleController extends Common
@@ -94,39 +95,7 @@ class CoreBundleController extends Common
     {
         return view( 'interfaces/core-bundle/create/form-wizard' )->with([
             'switches'                      => Switcher::select( [ 'id', 'name' ] )->orderBy( 'name' )->get(),
-            'customers'                     => Customer::whereType(  Customer::TYPE_INTERNAL )->get(),
-        ]);
-    }
-
-    /**
-     * Display the form to edit a core bundle
-     *
-     * @param  Request      $request    Instance of the current HTTP request
-     * @param  CoreBundle   $cb         ID of the Core bundle
-     *
-     * @return  View
-     */
-    public function edit( Request $request,  CoreBundle $cb ): View
-    {
-        // fill the form with the core bundle data
-        Former::populate([
-            'custid'                    => $request->old('custid',    $cb->customer()    ),
-            'description'               => $request->old('description', $cb->description   ),
-            'graph_title'               => $request->old('graph_title', $cb->graph_title   ),
-            'cost'                      => $request->old('cost',        $cb->cost          ),
-            'preference'                => $request->old('preference',  $cb->preference    ),
-            'type'                      => $request->old('type',        $cb->type          ),
-            'subnet'                    => $request->old('subnet',      $cb->ipv4_subnet   ),
-            'enabled'                   => $request->old('enabled',     ( $cb->enabled ? 1 : 0 ) ),
-            'bfd'                       => $request->old('bfd',         ( $cb->bfd     ? 1 : 0 ) ),
-            'stp'                       => $request->old('stp',         ( $cb->stp     ? 1 : 0 ) ),
-        ]);
-
-        return view( 'interfaces/core-bundle/edit/edit-wizard' )->with([
-            'cb'                            => $cb,
-            'customers'                     => Customer::whereType(  Customer::TYPE_INTERNAL )->get(),
-            'switchPortsSideA'              => SwitcherAggregator::allPorts( $cb->switchSideX( true  )->id ,[ SwitchPort::TYPE_CORE, SwitchPort::TYPE_UNSET ], [], true ),
-            'switchPortsSideB'              => SwitcherAggregator::allPorts( $cb->switchSideX( false )->id ,[ SwitchPort::TYPE_CORE, SwitchPort::TYPE_UNSET ], [], true ),
+            'customers'                     => Customer::internal()->get(),
         ]);
     }
 
@@ -167,8 +136,39 @@ class CoreBundleController extends Common
 
         Log::notice( $r->user()->username . ' added a core bundle with (id: ' . $cb->id . ')' );
         AlertContainer::push( 'Core bundle created', Alert::SUCCESS );
-
         return Redirect::to( route( "core-bundle@list" ) );
+    }
+
+    /**
+     * Display the form to edit a core bundle
+     *
+     * @param  Request      $r      Instance of the current HTTP request
+     * @param  CoreBundle   $cb     Core bundle
+     *
+     * @return  View
+     */
+    public function edit( Request $r,  CoreBundle $cb ): View
+    {
+        // fill the form with the core bundle data
+        Former::populate([
+            'custid'                    => $r->old('custid',      $cb->customer()->id   ),
+            'description'               => $r->old('description', $cb->description      ),
+            'graph_title'               => $r->old('graph_title', $cb->graph_title      ),
+            'cost'                      => $r->old('cost',        $cb->cost             ),
+            'preference'                => $r->old('preference',  $cb->preference       ),
+            'type'                      => $r->old('type',        $cb->type             ),
+            'subnet'                    => $r->old('subnet',      $cb->ipv4_subnet      ),
+            'enabled'                   => $r->old('enabled',     $cb->enabled          ),
+            'bfd'                       => $r->old('bfd',         $cb->bfd              ),
+            'stp'                       => $r->old('stp',         $cb->stp              ),
+        ]);
+
+        return view( 'interfaces/core-bundle/edit/edit-wizard' )->with([
+            'cb'                            => $cb,
+            'customers'                     => Customer::internal()->get(),
+            'switchPortsSideA'              => SwitcherAggregator::allPorts( $cb->switchSideX( true  )->id ,[ SwitchPort::TYPE_CORE, SwitchPort::TYPE_UNSET ], [], true ),
+            'switchPortsSideB'              => SwitcherAggregator::allPorts( $cb->switchSideX( false )->id ,[ SwitchPort::TYPE_CORE, SwitchPort::TYPE_UNSET ], [], true ),
+        ]);
     }
 
     /**
@@ -196,7 +196,6 @@ class CoreBundleController extends Common
 
         Log::notice( $r->user()->username . ' updated a core bundle with (id: ' . $cb->id . ')' );
         AlertContainer::push( 'Core bundle updated.', Alert::SUCCESS );
-
         return Redirect::to( route( 'core-bundle@list' ) );
     }
 
@@ -219,7 +218,6 @@ class CoreBundleController extends Common
     public function delete( Request $r, CoreBundle $cb ): RedirectResponse
     {
         $cb->deleteObject();
-
         Log::notice( $r->user()->username." deleted a core bundle (id: " . $cb->id . ')' );
         AlertContainer::push( 'Core bundle deleted.', Alert::SUCCESS );
         return Redirect::to( route( "core-bundle@list" ) );

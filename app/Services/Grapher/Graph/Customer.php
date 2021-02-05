@@ -3,7 +3,7 @@
 namespace IXP\Services\Grapher\Graph;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +22,7 @@ namespace IXP\Services\Grapher\Graph;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth, Log;
 
 use IXP\Services\Grapher;
@@ -37,9 +38,9 @@ use IXP\Models\{
  *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
- * @category   Grapher
+ * @category   IXP
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Customer extends Graph
@@ -120,9 +121,7 @@ class Customer extends Graph
      */
     public static function authorisedForAllCustomers(): bool
     {
-        $privs = Auth::getUser()->privs();
-
-        if( Auth::check() && $privs === User::AUTH_SUPERUSER ) {
+        if( Auth::check() && Auth::getUser()->isSuperUser() ) {
             return true;
         }
 
@@ -130,7 +129,7 @@ class Customer extends Graph
             return true;
         }
 
-        return Auth::check() && is_numeric( config( 'grapher.access.customer' ) ) && $privs >= config( 'grapher.access.customer' );
+        return Auth::check() && is_numeric( config( 'grapher.access.customer' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.customer' );
     }
 
     /**
@@ -145,7 +144,6 @@ class Customer extends Graph
     public function authorise(): bool
     {
         // NB: see above authorisedForAllCustomers()
-
         if( is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }

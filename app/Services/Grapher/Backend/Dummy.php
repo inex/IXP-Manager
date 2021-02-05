@@ -3,7 +3,7 @@
 namespace IXP\Services\Grapher\Backend;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -36,14 +36,14 @@ use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
 
 use IXP\Utils\Grapher\Dummy as DummyFile;
 
-
 /**
  * Grapher Backend -> Dummy
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   Grapher
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Dummy extends GrapherBackend implements GrapherBackendContract
@@ -248,7 +248,7 @@ class Dummy extends GrapherBackend implements GrapherBackendContract
      */
     public function dataPath( Graph $graph ): string
     {
-            return $this->resolveFilePath( $graph, 'log' );
+        return $this->resolveFilePath( $graph, 'log' );
     }
 
     /**

@@ -63,6 +63,8 @@ use IXP\Services\Grapher\Graph;
  * @property int|null $busyhost
  * @property string|null $notes
  * @property int $rsmorespecifics
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\IPv4Address|null $ipv4address
  * @property-read \IXP\Models\IPv6Address|null $ipv6address
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Layer2Address[] $layer2addresses
@@ -75,6 +77,7 @@ use IXP\Services\Grapher\Graph;
  * @method static Builder|VlanInterface whereAs112client($value)
  * @method static Builder|VlanInterface whereBgpmd5secret($value)
  * @method static Builder|VlanInterface whereBusyhost($value)
+ * @method static Builder|VlanInterface whereCreatedAt($value)
  * @method static Builder|VlanInterface whereId($value)
  * @method static Builder|VlanInterface whereIpv4addressid($value)
  * @method static Builder|VlanInterface whereIpv4bgpmd5secret($value)
@@ -94,13 +97,10 @@ use IXP\Services\Grapher\Graph;
  * @method static Builder|VlanInterface whereNotes($value)
  * @method static Builder|VlanInterface whereRsclient($value)
  * @method static Builder|VlanInterface whereRsmorespecifics($value)
+ * @method static Builder|VlanInterface whereUpdatedAt($value)
  * @method static Builder|VlanInterface whereVirtualinterfaceid($value)
  * @method static Builder|VlanInterface whereVlanid($value)
  * @mixin Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereUpdatedAt($value)
  */
 class VlanInterface extends Model
 {

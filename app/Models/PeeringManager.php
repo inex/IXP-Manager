@@ -8,10 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * IXP\Models\PeeringManager
  *
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager query()
- * @mixin \Eloquent
  * @property int $id
  * @property int|null $custid
  * @property int|null $peerid
@@ -20,9 +16,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $peered
  * @property int|null $rejected
  * @property string|null $notes
- * @property string|null $created
- * @property string|null $updated
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereCreated($value)
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\Customer|null $customer
+ * @property-read \IXP\Models\Customer|null $peer
+ * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereCustid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereEmailLastSent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereEmailsSent($value)
@@ -31,13 +32,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager wherePeered($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager wherePeerid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereRejected($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereUpdated($value)
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \IXP\Models\Customer|null $customer
- * @property-read \IXP\Models\Customer|null $peer
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class PeeringManager extends Model
 {

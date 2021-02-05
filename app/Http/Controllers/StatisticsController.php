@@ -32,8 +32,6 @@ use Illuminate\Http\{
     RedirectResponse
 };
 
-use Illuminate\Support\Arr;
-
 use Illuminate\View\View;
 
 use IXP\Exceptions\Services\Grapher\GraphCannotBeProcessedException;
@@ -69,9 +67,11 @@ use IXP\Utils\View\Alert\{
 
 /**
  * Statistics Controller
+ *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
- * @category   Controller
+ * @category   IXP
+ * @package    IXP\Http\Controllers
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */

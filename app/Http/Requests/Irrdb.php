@@ -22,6 +22,7 @@ namespace IXP\Http\Requests;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -29,11 +30,14 @@ use Illuminate\Foundation\Http\FormRequest;
 use IXP\Models\User;
 
 use IXP\Exceptions\IrrdbManage;
+
 /**
  * IP Address Request
  *
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Requests
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */

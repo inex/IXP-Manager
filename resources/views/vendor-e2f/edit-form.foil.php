@@ -30,8 +30,7 @@
             Former::primary_submit( $t->data['params']['isAdd'] ? 'Create' : 'Save Changes' )->class( "mb-2 mb-sm-0" ),
             Former::secondary_link( 'Cancel' )->href( route( $t->feParams->route_prefix . '@list') )->class( "mb-2 mb-sm-0" ),
             Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
-        );
-        ?>
+        ); ?>
 
         <?= Former::close() ?>
     </div>

@@ -37,22 +37,20 @@ use Illuminate\Database\Eloquent\{
  * @property string|null $mac
  * @property string|null $firstseen
  * @property string|null $lastseen
- * @property string|null $created
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\VlanInterface $vlanInterface
  * @method static Builder|Layer2Address newModelQuery()
  * @method static Builder|Layer2Address newQuery()
  * @method static Builder|Layer2Address query()
- * @method static Builder|Layer2Address whereCreated($value)
+ * @method static Builder|Layer2Address whereCreatedAt($value)
  * @method static Builder|Layer2Address whereFirstseen($value)
  * @method static Builder|Layer2Address whereId($value)
  * @method static Builder|Layer2Address whereLastseen($value)
  * @method static Builder|Layer2Address whereMac($value)
+ * @method static Builder|Layer2Address whereUpdatedAt($value)
  * @method static Builder|Layer2Address whereVlanInterfaceId($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Layer2Address whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Layer2Address whereUpdatedAt($value)
  */
 class Layer2Address extends Model
 {

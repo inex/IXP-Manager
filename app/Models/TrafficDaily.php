@@ -61,11 +61,14 @@ use Illuminate\Database\Eloquent\{
  * @property int|null $year_max_out
  * @property int|null $year_tot_in
  * @property int|null $year_tot_out
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer $customer
  * @method static Builder|TrafficDaily newModelQuery()
  * @method static Builder|TrafficDaily newQuery()
  * @method static Builder|TrafficDaily query()
  * @method static Builder|TrafficDaily whereCategory($value)
+ * @method static Builder|TrafficDaily whereCreatedAt($value)
  * @method static Builder|TrafficDaily whereCustId($value)
  * @method static Builder|TrafficDaily whereDay($value)
  * @method static Builder|TrafficDaily whereDayAvgIn($value)
@@ -81,6 +84,7 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|TrafficDaily whereMonthMaxOut($value)
  * @method static Builder|TrafficDaily whereMonthTotIn($value)
  * @method static Builder|TrafficDaily whereMonthTotOut($value)
+ * @method static Builder|TrafficDaily whereUpdatedAt($value)
  * @method static Builder|TrafficDaily whereWeekAvgIn($value)
  * @method static Builder|TrafficDaily whereWeekAvgOut($value)
  * @method static Builder|TrafficDaily whereWeekMaxIn($value)
@@ -94,10 +98,6 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|TrafficDaily whereYearTotIn($value)
  * @method static Builder|TrafficDaily whereYearTotOut($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\TrafficDaily whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\TrafficDaily whereUpdatedAt($value)
  */
 class TrafficDaily extends Model
 {

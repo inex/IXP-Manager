@@ -3,7 +3,7 @@
 namespace IXP\Services\Grapher\Graph;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,10 +22,8 @@ namespace IXP\Services\Grapher\Graph;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Auth, Log;
 
-use IXP\Services\Grapher;
-use IXP\Services\Grapher\{Graph};
+use Auth, Log;
 
 use IXP\Models\{
     Customer,
@@ -33,14 +31,17 @@ use IXP\Models\{
     User
 };
 
+use IXP\Services\Grapher;
+use IXP\Services\Grapher\{Graph};
+
 /**
  * Grapher -> PhysicalInterface Graph
  *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
- * @category   Grapher
+ * @category   IXP
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class PhysicalInterface extends Graph
@@ -51,7 +52,6 @@ class PhysicalInterface extends Graph
      * @var PhysicalInterfaceModel
      */
     private $physint = null;
-
 
     /**
      * Constructor
@@ -190,8 +190,8 @@ class PhysicalInterface extends Graph
      */
     public function getParamsAsArray(): array
     {
-        $p = parent::getParamsAsArray();
-        $p['id'] = $this->physicalInterface()->id;
+        $p          = parent::getParamsAsArray();
+        $p['id']    = $this->physicalInterface()->id;
         return $p;
     }
 

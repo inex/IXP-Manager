@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Countries, Former;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -41,9 +42,11 @@ use IXP\Utils\View\Alert\{
 
 /**
  * Location Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
+ * @category   IXP
+ * @package    IXP\Http\Controllers
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -51,6 +54,7 @@ class LocationController extends EloquentController
 {
     /**
      * The object being created / edited
+     *
      * @var Location
      */
     protected $object = null;
@@ -218,11 +222,10 @@ class LocationController extends EloquentController
      */
     protected function preDelete(): bool
     {
-        if( $this->object->cabinets()->exists() ) {
+        if( $this->object->cabinets->count() ) {
             AlertContainer::push( "Could not delete the Facility ({$this->object->name}) as at least one rack is located here. Reassign or delete the rack first.", Alert::DANGER );
             return false;
         }
-
         return true;
     }
 
@@ -235,18 +238,10 @@ class LocationController extends EloquentController
     {
         $r->validate( [
             'name'              => 'required|string|max:255',
-            'shortname' => [
-                'required', 'string', 'max:255',
-                function ($attribute, $value, $fail) use( $r ) {
-                    $location = Location::whereShortname( $value )->first();
-                    if( $location && $location->id !== (int)$r->id ) {
-                        return $fail( 'The shortname has already been taken' );
-                    }
-                },
-            ],
+            'shortname'         => 'required|string|max:255|unique:location,shortname' . ( $r->id ? ',' . $r->id : '' ),
+            'tag'               => 'required|string|max:255',
             'city'              => 'required|string|max:50',
             'country'           => 'required|string|max:2|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
-            'tag'               => 'required|string|max:255',
             'nocemail'          => 'nullable|email',
             'officeemail'       => 'nullable|email',
         ] );

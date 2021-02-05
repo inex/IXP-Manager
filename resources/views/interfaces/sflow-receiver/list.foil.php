@@ -16,13 +16,13 @@
                         <i class="fa fa-info-circle fa-2x"></i>
                     </div>
                     <div class="col-sm-12">
-                        You can add sflow receivers via the <?= config( 'ixp_fe.lang.customer.many' ) ?> virtual interface edit page.
+                        You can create sflow receivers via the <?= config( 'ixp_fe.lang.customer.many' ) ?> virtual interface edit page.
                     </div>
                 </div>
             </div>
 
             <?= $t->alerts() ?>
-            <table id='table-sflr' class="table table-striped table-responsive-ixp-with-header collapse">
+            <table id='table-sflr' class="table table-striped table-responsive-ixp-with-header collapse w-100">
                 <thead class="thead-dark">
                     <tr>
                         <th>
@@ -46,14 +46,14 @@
                     <?php foreach( $t->listSr as $sflr ): /** @var \IXP\Models\SflowReceiver $sflr */ ?>
                         <tr>
                             <td>
-                                <a href="<?= route( "customer@overview" , [ 'cust' => $sflr->virtualInterface->customer->id ] ) ?>">
+                                <a href="<?= route( "customer@overview" , [ 'cust' => $sflr->virtualInterface->custid ] ) ?>">
                                     <?= $t->ee( $sflr->virtualInterface->customer->name )   ?>
                                 </a>
                             </td>
                             <td>
-                                <a href="<?= route( 'virtual-interface@edit', [ 'vi' => $sflr->virtualInterface->id ] ) ?>">
+                                <a href="<?= route( 'virtual-interface@edit', [ 'vi' => $sflr->virtual_interface_id ] ) ?>">
                                     <?php if( count( $pis = $sflr->virtualInterface->physicalInterfaces ) ): ?>
-                                        <?= $t->ee( $pis->first()->switchPort->switcher->name ) ?>
+                                        <?= $t->ee( $pis[ 0 ]->switchPort->switcher->name ) ?>
                                     <?php endif; ?>
                                 </a>
                             </td>
@@ -82,8 +82,6 @@
     </div>
 <?php $this->append() ?>
 
-
-
 <?php $this->section( 'scripts' ) ?>
     <?= $t->insert( 'interfaces/virtual/js/interface' ); ?>
 
@@ -95,7 +93,6 @@
             e.preventDefault();
             deletePopup( $( this ), 'sflr' );
         });
-
     </script>
 
 <?php $this->append() ?>å

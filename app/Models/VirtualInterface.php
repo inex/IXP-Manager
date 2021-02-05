@@ -41,19 +41,26 @@ use Illuminate\Database\Eloquent\{
  * @property string|null $name
  * @property string|null $description
  * @property int|null $mtu
- * @property int|null $trunk
+ * @property bool|null $trunk
  * @property int|null $channelgroup
- * @property int $lag_framing
- * @property int $fastlacp
+ * @property bool $lag_framing
+ * @property bool $fastlacp
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer|null $customer
+ * @property-read Collection|\IXP\Models\MacAddress[] $macAddresses
+ * @property-read int|null $mac_addresses_count
  * @property-read Collection|\IXP\Models\PhysicalInterface[] $physicalInterfaces
  * @property-read int|null $physical_interfaces_count
+ * @property-read Collection|\IXP\Models\SflowReceiver[] $sflowReceivers
+ * @property-read int|null $sflow_receivers_count
  * @property-read Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
  * @method static Builder|VirtualInterface newModelQuery()
  * @method static Builder|VirtualInterface newQuery()
  * @method static Builder|VirtualInterface query()
  * @method static Builder|VirtualInterface whereChannelgroup($value)
+ * @method static Builder|VirtualInterface whereCreatedAt($value)
  * @method static Builder|VirtualInterface whereCustid($value)
  * @method static Builder|VirtualInterface whereDescription($value)
  * @method static Builder|VirtualInterface whereFastlacp($value)
@@ -62,18 +69,8 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|VirtualInterface whereMtu($value)
  * @method static Builder|VirtualInterface whereName($value)
  * @method static Builder|VirtualInterface whereTrunk($value)
+ * @method static Builder|VirtualInterface whereUpdatedAt($value)
  * @mixin Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PhysicalInterface[] $physicalInterfacesConnected
- * @property-read int|null $physical_interfaces_connected_count
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface connected()
- * @property-read Collection|\IXP\Models\MacAddress[] $macAddresses
- * @property-read int|null $mac_addresses_count
- * @property-read Collection|\IXP\Models\SflowReceiver[] $sflowReceivers
- * @property-read int|null $sflow_receivers_count
  */
 class VirtualInterface extends Model
 {

@@ -22,6 +22,7 @@ namespace IXP\Policies;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Route;
 
 use IXP\Models\{
@@ -36,7 +37,8 @@ use Illuminate\Auth\Access\HandlesAuthorization;
  * RouteServerFilterPolicy
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Policies
+ * @category   IXP
+ * @package    IXP\Http\Policies
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -47,8 +49,8 @@ class RouteServerFilterPolicy
     /**
      * Super admins can do anything
      *
-     * @param User $user
-     * @param $ability
+     * @param User  $user
+     * @param       $ability
      *
      * @return bool
      *

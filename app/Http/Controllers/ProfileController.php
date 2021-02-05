@@ -22,10 +22,12 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Auth, D2EM, Hash, Redirect;
+
+use Auth, Hash, Redirect;
 
 use Illuminate\Auth\Recaller;
 
+use IXP\Models\User;
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -52,9 +54,11 @@ use IXP\Utils\View\Alert\{
 
 /**
  * Profile Controller
+ *
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   Profile
+ * @category   IXP
+ * @package    IXP\Http\Controllers
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -67,6 +71,7 @@ class ProfileController extends Controller
      */
     public function edit(): View
     {
+        /** @var User $user */
         $user = Auth::getUser();
 
         // array used to populate the form to modify user information.
@@ -110,6 +115,7 @@ class ProfileController extends Controller
      */
     public function updatePassword( PasswordRequest $r  ): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::getUser();
 
         // get the token of the current session
@@ -122,13 +128,12 @@ class ProfileController extends Controller
         $user->lastupdatedby = $user->id;
         $user->save();
 
-        AlertContainer::push( 'Password updated successfully', Alert::SUCCESS );
-
         // Logout all the active session except the current one
         UserRememberToken::where( 'user_id', $user->id )
             ->where( 'token', '!=', $token ?? null )
             ->delete();
 
+        AlertContainer::push( 'Password updated.', Alert::SUCCESS );
         return redirect( route( "profile@edit"  ) );
     }
 
@@ -143,13 +148,14 @@ class ProfileController extends Controller
      */
     public function updateProfile( ProfileRequest $r  ): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::getUser();
 
-        $user->name = $r->name;
-        $user->username = $r->username;
-        $user->email = $r->email;
+        $user->name             = $r->name;
+        $user->username         = $r->username;
+        $user->email            = $r->email;
         $user->authorisedMobile = $r->authorisedMobile;
-        $user->lastupdatedby = $user->id;
+        $user->lastupdatedby    = $user->id;
         $user->save();
 
         AlertContainer::push( 'Profile details updated.', Alert::SUCCESS );
@@ -168,18 +174,19 @@ class ProfileController extends Controller
     public function updateNotificationPreference( NotificationRequest $r ) : RedirectResponse
     {
         Auth::getUser()->setPreference( 'customer-notes.notify', $r->input( 'notify' ) );
-        D2EM::flush();
+        //D2EM::flush();
 
-        AlertContainer::push( 'Notification preference has been updated.', Alert::SUCCESS );
-
+        AlertContainer::push( 'Notification preference updated.', Alert::SUCCESS );
         return Redirect::to( route( "profile@edit"  ) );
     }
 
     /**
      * Update the mailing list preferences of the user
      *
-     * @param Request $r instance of the current HTTP request
-     * @return RedirectResponse
+     * @param   Request $r instance of the current HTTP request
+     *
+     * @return  RedirectResponse
+     *
      * @throws
      */
     public function updateMailingLists( Request $r ) : RedirectResponse
@@ -188,15 +195,13 @@ class ProfileController extends Controller
         $user = Auth::getUser();
 
         if( config( 'mailinglists.enabled', false ) ) {
-
             foreach( config( 'mailinglists.lists' ) as $name => $ml ) {
                 $user->setPreference( "mailinglist.{$name}.subscribed", $r->input( "ml_" . $name ) ?? 0 );
             }
-            D2EM::flush();
+            //D2EM::flush();
         }
 
-        AlertContainer::push( 'Your mailing list subscriptions have been updated and will take effect within 12 hours.', Alert::SUCCESS );
-
+        AlertContainer::push( 'Mailing list subscriptions updated and will take effect within 12 hours.', Alert::SUCCESS );
         return Redirect::to( route( "profile@edit"  ) );
     }
 }

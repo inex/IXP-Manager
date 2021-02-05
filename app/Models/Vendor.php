@@ -37,23 +37,23 @@ use Illuminate\Database\Eloquent\{
  * @property string|null $shortname
  * @property string|null $nagios_name
  * @property string|null $bundle_name
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServer[] $consoleServers
  * @property-read int|null $console_servers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Switcher[] $switchers
+ * @property-read int|null $switchers_count
  * @method static Builder|Vendor newModelQuery()
  * @method static Builder|Vendor newQuery()
  * @method static Builder|Vendor query()
  * @method static Builder|Vendor whereBundleName($value)
+ * @method static Builder|Vendor whereCreatedAt($value)
  * @method static Builder|Vendor whereId($value)
  * @method static Builder|Vendor whereNagiosName($value)
  * @method static Builder|Vendor whereName($value)
  * @method static Builder|Vendor whereShortname($value)
+ * @method static Builder|Vendor whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Switcher[] $switchers
- * @property-read int|null $switchers_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor whereUpdatedAt($value)
  */
 class Vendor extends Model
 {

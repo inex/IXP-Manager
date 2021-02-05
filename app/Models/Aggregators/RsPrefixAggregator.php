@@ -32,10 +32,6 @@ use IXP\Models\RsPrefix;
 /**
  * IXP\Models\Aggregators\RsPrefixAggregator
  *
- * @method static Builder|RsPrefixAggregator newModelQuery()
- * @method static Builder|RsPrefixAggregator newQuery()
- * @method static Builder|RsPrefixAggregator query()
- * @mixin \Eloquent
  * @property int $id
  * @property int|null $custid
  * @property string|null $timestamp
@@ -43,6 +39,10 @@ use IXP\Models\RsPrefix;
  * @property int|null $protocol
  * @property int|null $irrdb
  * @property int|null $rs_origin
+ * @property-read \IXP\Models\Customer|null $customer
+ * @method static Builder|RsPrefixAggregator newModelQuery()
+ * @method static Builder|RsPrefixAggregator newQuery()
+ * @method static Builder|RsPrefixAggregator query()
  * @method static Builder|RsPrefixAggregator whereCustid($value)
  * @method static Builder|RsPrefixAggregator whereId($value)
  * @method static Builder|RsPrefixAggregator whereIrrdb($value)
@@ -50,7 +50,7 @@ use IXP\Models\RsPrefix;
  * @method static Builder|RsPrefixAggregator whereProtocol($value)
  * @method static Builder|RsPrefixAggregator whereRsOrigin($value)
  * @method static Builder|RsPrefixAggregator whereTimestamp($value)
- * @property-read \IXP\Models\Customer|null $customer
+ * @mixin \Eloquent
  */
 class RsPrefixAggregator extends RsPrefix
 {

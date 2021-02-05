@@ -29,23 +29,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * IXP\Models\SlowReceiver
  *
- * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver query()
- * @mixin \Eloquent
  * @property int $id
  * @property int|null $virtual_interface_id
  * @property string $dst_ip
  * @property int $dst_port
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
+ * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver query()
+ * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver whereDstIp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver whereDstPort($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver whereVirtualInterfaceId($value)
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver whereUpdatedAt($value)
- * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
+ * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver whereVirtualInterfaceId($value)
+ * @mixin \Eloquent
  */
 class SflowReceiver extends Model
 {

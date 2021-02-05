@@ -11,13 +11,12 @@
     const cb_enabled            = $( "#enabled" );
     const input_subnet          = $( '#subnet' );
     const input_description     = $( "#description" );
-    const input_graph_title     = $( "#graph-title" );
+    const input_graph_title     = $( "#graph_title" );
     const div_stp               = $( '#stp-div' );
     const div_core_link_area    = $( "#core-links-area" );
     const div_message_cl        = $( "#message-cl" );
     const div_l3_lag            = $( '#l3-lag-area' );
     const class_lag_area        = $( '.lag-area' );
-
 
     // Some global variable
     let excludedSwitchPortSideA  = [];

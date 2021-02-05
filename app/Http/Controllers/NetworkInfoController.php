@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Former, Redirect;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -46,9 +47,11 @@ use IXP\Utils\View\Alert\{
 
 /**
  * Network Information Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
+ * @category   IXP
+ * @package    IXP\Http\Comtrollers
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -108,14 +111,14 @@ class NetworkInfoController extends EloquentController
     {
         $feParams = $this->feParams;
         return NetworkInfo::select( [ 'networkinfo.*', 'vlan.id AS vlan_id', 'vlan.name AS vlanname' ] )
-            ->leftJoin( 'vlan', 'vlan.id','networkinfo.vlanid' )
-            ->when( $id , function( Builder $q, $id ) {
-                return $q->where( 'networkinfo.id', $id );
-            })
-            ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-            })
-            ->get()->toArray();
+        ->leftJoin( 'vlan', 'vlan.id','networkinfo.vlanid' )
+        ->when( $id , function( Builder $q, $id ) {
+            return $q->where( 'networkinfo.id', $id );
+        })
+        ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+        })
+        ->get()->toArray();
     }
 
     /**
@@ -220,7 +223,6 @@ class NetworkInfoController extends EloquentController
         if( $exist ) {
             AlertContainer::push( "Network information for this vlan (" . $vlan->name . ") and and protocol (ipv" . $r->protocol . ") already exists. Please edit that instead."   , Alert::DANGER );
             return true;
-
         }
         return false;
     }
@@ -235,12 +237,7 @@ class NetworkInfoController extends EloquentController
         $rangeMasklen = (int)$r->protocol === 4 ? 'min:16|max:29' : 'min:32|max:64';
 
         $r->validate( [
-            'vlanid'                => [ 'required', 'integer',
-                function ($attribute, $value, $fail) {
-                    if( !Vlan::find( $value ) ) {
-                        return $fail( 'Vlan does not exist.' );
-                    }
-                } ],
+            'vlanid'                => 'required|integer|exists:vlan,id',
             'protocol'              => 'required|integer|in:' . implode( ',', array_keys( Router::$PROTOCOLS ) ),
             'network'               => 'required|max:255|ipv' . $r->protocol ,
             'masklen'               => 'required|integer|' . $rangeMasklen ,

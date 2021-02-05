@@ -42,7 +42,7 @@ use IXP\Models\SwitchPort;
  * @property string|null $snmppasswd
  * @property int|null $infrastructure
  * @property string|null $model
- * @property int|null $active
+ * @property bool|null $active
  * @property string|null $notes
  * @property string|null $hostname
  * @property string|null $os
@@ -65,41 +65,41 @@ use IXP\Models\SwitchPort;
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServerConnection[] $consoleServerConnections
  * @property-read int|null $console_server_connections_count
  * @property-read \IXP\Models\Infrastructure|null $infrastructureModel
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\SwitchPort[] $switchPorts
+ * @property-read \Illuminate\Database\Eloquent\Collection|SwitchPort[] $switchPorts
  * @property-read int|null $switch_ports_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereAsn($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereCabinetid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereHostname($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereInfrastructure($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereIpv4addr($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereIpv6addr($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereLastPolled($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereLoopbackIp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereLoopbackName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereMauSupported($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereMgmtMacAddress($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereModel($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereOs($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereOsDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereOsVersion($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator wherePoll($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereSerialNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereSnmpEngineBoots($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereSnmpEngineTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereSnmpSystemUptime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereSnmppasswd($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\SwitcherAggregator whereVendorid($value)
- * @mixin \Eloquent
  * @property-read \IXP\Models\Vendor|null $vendor
+ * @method static Builder|SwitcherAggregator newModelQuery()
+ * @method static Builder|SwitcherAggregator newQuery()
+ * @method static Builder|SwitcherAggregator query()
+ * @method static Builder|SwitcherAggregator whereActive($value)
+ * @method static Builder|SwitcherAggregator whereAsn($value)
+ * @method static Builder|SwitcherAggregator whereCabinetid($value)
+ * @method static Builder|SwitcherAggregator whereCreatedAt($value)
+ * @method static Builder|SwitcherAggregator whereHostname($value)
+ * @method static Builder|SwitcherAggregator whereId($value)
+ * @method static Builder|SwitcherAggregator whereInfrastructure($value)
+ * @method static Builder|SwitcherAggregator whereIpv4addr($value)
+ * @method static Builder|SwitcherAggregator whereIpv6addr($value)
+ * @method static Builder|SwitcherAggregator whereLastPolled($value)
+ * @method static Builder|SwitcherAggregator whereLoopbackIp($value)
+ * @method static Builder|SwitcherAggregator whereLoopbackName($value)
+ * @method static Builder|SwitcherAggregator whereMauSupported($value)
+ * @method static Builder|SwitcherAggregator whereMgmtMacAddress($value)
+ * @method static Builder|SwitcherAggregator whereModel($value)
+ * @method static Builder|SwitcherAggregator whereName($value)
+ * @method static Builder|SwitcherAggregator whereNotes($value)
+ * @method static Builder|SwitcherAggregator whereOs($value)
+ * @method static Builder|SwitcherAggregator whereOsDate($value)
+ * @method static Builder|SwitcherAggregator whereOsVersion($value)
+ * @method static Builder|SwitcherAggregator wherePoll($value)
+ * @method static Builder|SwitcherAggregator whereSerialNumber($value)
+ * @method static Builder|SwitcherAggregator whereSnmpEngineBoots($value)
+ * @method static Builder|SwitcherAggregator whereSnmpEngineTime($value)
+ * @method static Builder|SwitcherAggregator whereSnmpSystemUptime($value)
+ * @method static Builder|SwitcherAggregator whereSnmppasswd($value)
+ * @method static Builder|SwitcherAggregator whereUpdatedAt($value)
+ * @method static Builder|SwitcherAggregator whereVendorid($value)
+ * @mixin \Eloquent
  */
 class SwitcherAggregator extends Switcher
 {

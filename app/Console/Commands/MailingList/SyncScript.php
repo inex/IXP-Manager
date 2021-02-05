@@ -21,10 +21,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Entities\{
-    User as UserEntity
-};
-
 use IXP\Utils\MailingList as ML;
 
  /**

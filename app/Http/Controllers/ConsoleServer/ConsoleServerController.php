@@ -148,17 +148,17 @@ class ConsoleServerController extends EloquentController
             l.id AS locationid, l.shortname AS facility,
             COUNT( DISTINCT csc.id ) AS num_connections'
         )
-            ->from( 'console_server AS cs' )
-            ->leftJoin( 'consoleserverconnection AS csc', 'csc.console_server_id', 'cs.id')
-            ->leftJoin( 'cabinet AS c', 'c.id', 'cs.cabinet_id')
-            ->leftJoin( 'location AS l', 'l.id', 'c.locationid')
-            ->leftJoin( 'vendor AS v', 'v.id', 'cs.vendor_id')
-            ->when( $id , function( Builder $q, $id ) {
-                return $q->where('cs.id', $id );
-            } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-            })
-            ->groupBy('cs.id' )->get()->toArray();
+        ->from( 'console_server AS cs' )
+        ->leftJoin( 'consoleserverconnection AS csc', 'csc.console_server_id', 'cs.id')
+        ->leftJoin( 'cabinet AS c', 'c.id', 'cs.cabinet_id')
+        ->leftJoin( 'location AS l', 'l.id', 'c.locationid')
+        ->leftJoin( 'vendor AS v', 'v.id', 'cs.vendor_id')
+        ->when( $id , function( Builder $q, $id ) {
+            return $q->where('cs.id', $id );
+        } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+        })
+        ->groupBy('cs.id' )->get()->toArray();
     }
 
     /**
@@ -261,34 +261,14 @@ class ConsoleServerController extends EloquentController
     public function checkForm( Request $r ): void
     {
         $r->validate( [
-            'name' => [
-                'required', 'string', 'max:255',
-                function ($attribute, $value, $fail) use( $r ) {
-                    $cs = ConsoleServer::whereName( $value )->first();
-                    if( $cs && $cs->id !== (int)$r->id ) {
-                        return $fail( 'The name must be unique.' );
-                    }
-                },
-            ],
-            'vendor_id'     => [ 'required', 'integer',
-                function( $attribute, $value, $fail ) {
-                    if( !Vendor::find( $value ) ) {
-                        return $fail( 'Vendor is invalid / does not exist.' );
-                    }
-                }
-            ],
-            'cabinet_id'    => [ 'required', 'integer',
-                function( $attribute, $value, $fail ) {
-                    if( !Cabinet::find( $value ) ) {
-                        return $fail( 'Vendor is invalid / does not exist.' );
-                    }
-                }
-            ],
+            'name'              => 'required|string|max:255|unique:console_server,name' . ( $this->object ? ','. $this->object->id : '' ),
+            'vendor_id'         => 'required|integer|exists:vendor,id',
+            'cabinet_id'        => 'required|integer|exists:cabinet,id',
             'model'             => 'nullable|string|max:255',
-            'serialNumber'     => 'nullable|string',
+            'serialNumber'      => 'nullable|string',
             'notes'             => 'nullable|string',
             'hostname'          => [ 'required','string', new IdnValidate() ],
-            'active'            => 'string'
+            'active'            => 'string',
         ] );
     }
 }

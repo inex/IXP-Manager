@@ -34,9 +34,11 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * StoreRouter FormRequest
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Requests
+ * @category   IPX
+ * @package    IXP\Http\Requests
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -63,14 +65,14 @@ class StoreRouter extends FormRequest
         $this->merge( [ 'handle' => preg_replace( "/[^a-z0-9\-]/", '' , strtolower( $this->input( 'handle', '' ) ) ) ] );
 
         return [
-            'handle'                   => 'required|string|max:255|unique:Entities\Router,handle' . ( $this->id ? ','. $this->id : '' ),
-            'vlan_id'                  => 'required|integer|exists:Entities\Vlan,id',
+            'handle'                   => 'required|string|max:255|unique:routers,handle' . ( $this->router ? ','. $this->router->id : '' ),
+            'vlan_id'                  => 'required|integer|exists:vlan,id',
             'protocol'                 => 'required|integer|in:' . implode( ',', array_keys( Router::$PROTOCOLS ) ),
             'type'                     => 'required|integer|in:' . implode( ',', array_keys( Router::$TYPES ) ),
             'name'                     => 'required|string|max:255',
             'shortname'                => 'required|string|max:30',
             'router_id'                => 'required|ipv4',
-            'peering_ip'               => 'required|ipv' . $this->input('protocol'),
+            'peering_ip'               => 'required|ipv' . $this->protocol,
             'asn'                      => 'required|integer',
             'software'                 => 'required|integer|in:' . implode( ',', array_keys( Router::$SOFTWARES ) ),
             'software_version'         => 'nullable|string|max:255',
@@ -79,7 +81,7 @@ class StoreRouter extends FormRequest
             'mgmt_host'                => 'required|string|max:255',
             'api_type'                 => 'required|integer|in:' . implode( ',', array_keys( Router::$API_TYPES ) ),
             'api'                      => ( $this->api_type !== Router::API_TYPE_NONE ? 'url|required|regex:/.*[^\/]$/' : '' ),
-            'lg_access'                => 'integer' . ( $this->input('api') ? '|required|in:' . implode( ',', array_keys( User::$PRIVILEGES_ALL ) ) : '' ),
+            'lg_access'                => 'integer' . ( $this->api ? '|required|in:' . implode( ',', array_keys( User::$PRIVILEGES_ALL ) ) : '' ),
         ];
     }
 

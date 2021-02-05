@@ -43,6 +43,8 @@ use Illuminate\Database\Eloquent\{
  * @property string|null $serialNumber
  * @property int|null $active
  * @property string|null $notes
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Cabinet|null $cabinet
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServerConnection[] $consoleServerConnections
  * @property-read int|null $console_server_connections_count
@@ -52,18 +54,16 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|ConsoleServer query()
  * @method static Builder|ConsoleServer whereActive($value)
  * @method static Builder|ConsoleServer whereCabinetId($value)
+ * @method static Builder|ConsoleServer whereCreatedAt($value)
  * @method static Builder|ConsoleServer whereHostname($value)
  * @method static Builder|ConsoleServer whereId($value)
  * @method static Builder|ConsoleServer whereModel($value)
  * @method static Builder|ConsoleServer whereName($value)
  * @method static Builder|ConsoleServer whereNotes($value)
  * @method static Builder|ConsoleServer whereSerialNumber($value)
+ * @method static Builder|ConsoleServer whereUpdatedAt($value)
  * @method static Builder|ConsoleServer whereVendorId($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereUpdatedAt($value)
  */
 class ConsoleServer extends Model
 {

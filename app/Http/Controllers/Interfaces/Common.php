@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Interfaces;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,9 +23,18 @@ namespace IXP\Http\Controllers\Interfaces;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Exception;
 use Input, Redirect;
 
 use IXP\Exceptions\GeneralException;
+
+use Illuminate\Http\{
+    Request,
+    RedirectResponse
+};
+
+use IXP\Http\Controllers\Controller;
+use IXP\Http\Requests\StoreVirtualInterfaceWizard;
 
 use IXP\Models\{
     CoreBundle,
@@ -40,14 +49,6 @@ use IXP\Models\{
     VlanInterface
 };
 
-use Illuminate\Http\{
-    Request,
-    RedirectResponse
-};
-
-use IXP\Http\Controllers\Controller;
-use IXP\Http\Requests\StoreVirtualInterfaceWizard;
-
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
@@ -55,10 +56,12 @@ use IXP\Utils\View\Alert\{
 
 /**
  * Common Functions for the Inferfaces Controllers
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Interfaces
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Interfaces
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 abstract class Common extends Controller
@@ -71,6 +74,7 @@ abstract class Common extends Controller
      * @param PhysicalInterface $pi Physical interface to remove related physical interface.
      *
      * @return void
+     *
      * @throws
      */
     public function removeRelatedInterface( PhysicalInterface $pi ): void
@@ -118,7 +122,7 @@ abstract class Common extends Controller
      *
      * @throws
      */
-    public function processFanoutPhysicalInterface( $r, $pi, $vi ): bool
+    public function processFanoutPhysicalInterface( $r, PhysicalInterface $pi, VirtualInterface $vi ): bool
     {
         if( !$r->fanout ) {
             $this->removeRelatedInterface( $pi );
@@ -202,10 +206,10 @@ abstract class Common extends Controller
         }
         else{
             // we don't allow setting channel group or name until there's >= 1 physical interface / LAG framing:
-            $vi->name = '';
-            $vi->channelgroup = null;
-            $vi->lag_framing = false;
-            $vi->fastlacp = false;
+            $vi->name           = '';
+            $vi->channelgroup   = null;
+            $vi->lag_framing    = false;
+            $vi->fastlacp       = false;
             $vi->save();
         }
     }
@@ -274,7 +278,6 @@ abstract class Common extends Controller
     public function setIp( Request $r, Vlan $v, VlanInterface $vli, bool $ipv6 = false ): bool
     {
         $iptype         = $ipv6 ? "ipv6" : "ipv4";
-
         $setterIPv      = "{$iptype}addressid";
         $setterEnabled  = "{$iptype}enabled";
         $setterHostname = "{$iptype}hostname";
@@ -393,10 +396,11 @@ abstract class Common extends Controller
     /**
      * Delete the physical interface and everything related
      *
-     * @param Request           $r
-     * @param PhysicalInterface $pi
+     * @param  Request              $r
+     * @param  PhysicalInterface    $pi
+     * @param  bool                 $setBunleDetails
      *
-     * @throws
+     * @throws Exception
      */
     protected function deletePi( Request $r, PhysicalInterface $pi, bool $setBunleDetails = false ): void
     {

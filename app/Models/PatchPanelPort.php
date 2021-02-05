@@ -68,12 +68,21 @@ use Storage;
  * @property string|null $loa_code
  * @property string|null $description
  * @property string|null $colo_billing_ref
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\Customer|null $customer
+ * @property-read PatchPanelPort|null $duplexMasterPort
+ * @property-read \Illuminate\Database\Eloquent\Collection|PatchPanelPort[] $duplexSlavePorts
+ * @property-read int|null $duplex_slave_ports_count
  * @property-read \IXP\Models\PatchPanel|null $patchPanel
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortFile[] $patchPanelPortFiles
  * @property-read int|null $patch_panel_port_files_count
- * @property-read \Illuminate\Database\Eloquent\Collection|PatchPanelPort[] $slavePort
- * @property-read int|null $slave_port_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortFile[] $patchPanelPortFilesPublic
+ * @property-read int|null $patch_panel_port_files_public_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortHistory[] $patchPanelPortHistories
+ * @property-read int|null $patch_panel_port_histories_count
  * @property-read \IXP\Models\SwitchPort|null $switchPort
+ * @method static Builder|PatchPanelPort masterPort()
  * @method static Builder|PatchPanelPort newModelQuery()
  * @method static Builder|PatchPanelPort newQuery()
  * @method static Builder|PatchPanelPort query()
@@ -84,6 +93,7 @@ use Storage;
  * @method static Builder|PatchPanelPort whereColoBillingRef($value)
  * @method static Builder|PatchPanelPort whereColoCircuitRef($value)
  * @method static Builder|PatchPanelPort whereConnectedAt($value)
+ * @method static Builder|PatchPanelPort whereCreatedAt($value)
  * @method static Builder|PatchPanelPort whereCustomerId($value)
  * @method static Builder|PatchPanelPort whereDescription($value)
  * @method static Builder|PatchPanelPort whereDuplexMasterId($value)
@@ -99,20 +109,8 @@ use Storage;
  * @method static Builder|PatchPanelPort whereState($value)
  * @method static Builder|PatchPanelPort whereSwitchPortId($value)
  * @method static Builder|PatchPanelPort whereTicketRef($value)
+ * @method static Builder|PatchPanelPort whereUpdatedAt($value)
  * @mixin Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \IXP\Models\Customer|null $customer
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereUpdatedAt($value)
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortFile[] $patchPanelPortFilesPublic
- * @property-read int|null $patch_panel_port_files_public_count
- * @property-read PatchPanelPort|null $duplexMasterPort
- * @property-read \Illuminate\Database\Eloquent\Collection|PatchPanelPort[] $duplexSlavePorts
- * @property-read int|null $duplex_slave_ports_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortHistory[] $patchPanelPortHistories
- * @property-read int|null $patch_panel_port_histories_count
- * @method static Builder|PatchPanelPort masterPort()
  */
 
 class PatchPanelPort extends Model

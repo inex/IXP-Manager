@@ -61,7 +61,7 @@ class Update extends FormRequest
         if( Auth::user()->isSuperUser() ) {
             $infoArray = [
                 'name'                                              => 'required|string|max:255',
-                'username'                                          => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/|unique:Entities\User,username,' . $this->u->id,
+                'username'                                          => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/|unique:user,username,' . $this->u->id,
                 'email'                                             => 'required|email|max:255',
                 'authorisedMobile'                                  => 'nullable|string|max:50',
             ];

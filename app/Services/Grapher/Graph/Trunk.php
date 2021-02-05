@@ -3,7 +3,7 @@
 namespace IXP\Services\Grapher\Graph;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,23 +22,24 @@ namespace IXP\Services\Grapher\Graph;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth;
+
+use IXP\Exceptions\Services\Grapher\{ParameterException};
 
 use IXP\Models\User;
 
 use IXP\Services\Grapher;
 use IXP\Services\Grapher\{Graph};
 
-use IXP\Exceptions\Services\Grapher\{ParameterException};
-
 /**
  * Grapher -> Switch Graph
  *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
- * @category   Grapher
+ * @category   IXP
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Trunk extends Graph
@@ -90,7 +91,6 @@ class Trunk extends Graph
         }
         
         $this->trunkname = $n;
-
         return $this;
     }
 
@@ -100,7 +100,7 @@ class Trunk extends Graph
      */
     public function name(): string
     {
-        return config('grapher.backends.mrtg.trunks.'.$this->trunkname().'.title');
+        return config('grapher.backends.mrtg.trunks.' . $this->trunkname().'.title' );
     }
 
     /**
@@ -165,8 +165,8 @@ class Trunk extends Graph
      */
     public function getParamsAsArray(): array
     {
-        $p = parent::getParamsAsArray();
-        $p['id'] = $this->trunkname();
+        $p          = parent::getParamsAsArray();
+        $p['id']    = $this->trunkname();
         return $p;
     }
 
@@ -184,7 +184,6 @@ class Trunk extends Graph
         if( !is_array( config('grapher.backends.mrtg.trunks.'.$n) ) ) {
             abort(404);
         }
-
         return $n;
     }
 }

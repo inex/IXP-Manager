@@ -29,23 +29,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * IXP\Models\User2FA
  *
- * @method static \Illuminate\Database\Eloquent\Builder|User2FA newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|User2FA newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|User2FA query()
- * @mixin \Eloquent
  * @property int $id
  * @property int $user_id
  * @property int $enabled
  * @property string|null $secret
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|User2FA newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|User2FA newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|User2FA query()
  * @method static \Illuminate\Database\Eloquent\Builder|User2FA whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User2FA whereEnabled($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User2FA whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User2FA whereSecret($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User2FA whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User2FA whereUserId($value)
- * @property-read \IXP\Models\User $user
+ * @mixin \Eloquent
  */
 class User2FA extends Model
 {

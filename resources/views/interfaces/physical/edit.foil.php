@@ -41,6 +41,7 @@
                     ?>
 
                     <?= Former::select( 'switch' )
+                        ->dataValue( 'switch' )
                         ->label( 'Switch' )
                         ->fromQuery( $t->switches, 'name' )
                         ->placeholder( 'Choose a switch' )
@@ -60,7 +61,7 @@
                     <?=
                     Former::hidden( 'original-switch-port')
                         ->id('original-switch-port')
-                        ->forceValue( old('switch-port') ? old('switch-port')  : ( $t->pi && $t->pi->switchPort ? $t->pi->switchPort->id : '' ) )
+                        ->forceValue( old('switch-port') ?: ($t->pi && $t->pi->switchPort ? $t->pi->switchPort->id : ''))
                     ?>
 
                     <?= Former::select( 'status' )
@@ -218,6 +219,7 @@
 
                             <div id="fanout-area" class="collapse">
                                 <?= Former::select( 'switch-fanout' )
+                                    ->dataValue( 'fanout' )
                                     ->label( 'Switch' )
                                     ->fromQuery( $t->switches, 'name' )
                                     ->placeholder( 'Choose a Switch' )
@@ -234,7 +236,7 @@
 
                                 <?= Former::hidden( 'original-switch-port-fanout')
                                     ->id('original-switch-port-fanout')
-                                    ->forceValue( old('switch-port-fanout') ? old('switch-port-fanout')  : ( $t->spFanout ? $t->spFanout : '' ) )
+                                    ->forceValue( old('switch-port-fanout') ?: ($t->spFanout ? $t->spFanout : ''))
                                 ?>
 
                                 <?= Former::hidden( 'sp-fanout' )
@@ -248,10 +250,6 @@
                             </div>
                         </div>
                     <?php endif; ?>
-
-                    <?= Former::hidden( 'id' )
-                        ->value( $t->pi ? $t->pi->id : false )
-                    ?>
 
                     <?= Former::hidden( 'virtualinterfaceid' )
                         ->value( $t->pi ? $t->pi->virtualInterface->id : $t->vi->id )

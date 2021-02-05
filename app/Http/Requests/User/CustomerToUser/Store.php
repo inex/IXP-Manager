@@ -68,13 +68,13 @@ class Store extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'user_id'       => 'required|integer|exists:Entities\User,id',
+            'user_id'       => 'required|integer|exists:user,id',
             'privs'         => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES_ALL ) ),
         ];
 
         if( Auth::user()->isSuperUser() ) {
             $extraRules = [
-                'customer_id'   => 'required|integer|exists:Entities\Customer,id',
+                'customer_id'   => 'required|integer|exists:cust,id',
             ];
         }
 

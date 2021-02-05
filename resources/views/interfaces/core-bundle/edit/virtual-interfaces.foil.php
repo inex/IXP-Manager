@@ -6,7 +6,6 @@
         <table id="table-virtual-interface" class="table table-bordered">
             <?php foreach( $t->cb->virtualInterfaces() as $side => $vi ) :
                 /** @var \IXP\Models\VirtualInterface $vi */ ?>
-
                 <tr>
                     <td>
                         Side <?= $side ?>

@@ -32,40 +32,39 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations
  *
  * @property int $id
  * @property int|null $switchportid
- * @property int|null $fanout_physical_interface_id
  * @property int|null $virtualinterfaceid
  * @property int|null $status
  * @property int|null $speed
  * @property string|null $duplex
  * @property string|null $notes
- * @property int $autoneg
+ * @property int|null $fanout_physical_interface_id
+ * @property bool $autoneg
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\CoreInterface|null $coreInterface
  * @property-read PhysicalInterface|null $fanoutPhysicalInterface
  * @property-read PhysicalInterface|null $peeringPhysicalInterface
- * @property-read \IXP\Models\SwitchPort|null $switchport
+ * @property-read \IXP\Models\SwitchPort|null $switchPort
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\TrafficDailyPhysInt[] $trafficDailiesPhysInt
  * @property-read int|null $traffic_dailies_phys_int_count
  * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
- * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface query()
- * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereAutoneg($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereDuplex($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereFanoutPhysicalInterfaceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereSpeed($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereSwitchportid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PhysicalInterface whereVirtualinterfaceid($value)
- * @mixin Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \IXP\Models\SwitchPort|null $switchPort
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface connected()
+ * @method static Builder|PhysicalInterface connected()
  * @method static Builder|PhysicalInterface graphable()
+ * @method static Builder|PhysicalInterface newModelQuery()
+ * @method static Builder|PhysicalInterface newQuery()
+ * @method static Builder|PhysicalInterface query()
+ * @method static Builder|PhysicalInterface whereAutoneg($value)
+ * @method static Builder|PhysicalInterface whereCreatedAt($value)
+ * @method static Builder|PhysicalInterface whereDuplex($value)
+ * @method static Builder|PhysicalInterface whereFanoutPhysicalInterfaceId($value)
+ * @method static Builder|PhysicalInterface whereId($value)
+ * @method static Builder|PhysicalInterface whereNotes($value)
+ * @method static Builder|PhysicalInterface whereSpeed($value)
+ * @method static Builder|PhysicalInterface whereStatus($value)
+ * @method static Builder|PhysicalInterface whereSwitchportid($value)
+ * @method static Builder|PhysicalInterface whereUpdatedAt($value)
+ * @method static Builder|PhysicalInterface whereVirtualinterfaceid($value)
+ * @mixin Eloquent
  */
 class PhysicalInterface extends Model
 {

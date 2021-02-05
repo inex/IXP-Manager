@@ -39,24 +39,22 @@ use Illuminate\Database\Eloquent\{
  * @property string $type
  * @property int $active
  * @property int $limited_to
- * @property string $created
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Collection|\IXP\Models\Contact[] $contacts
  * @property-read int|null $contacts_count
  * @method static Builder|ContactGroup newModelQuery()
  * @method static Builder|ContactGroup newQuery()
  * @method static Builder|ContactGroup query()
  * @method static Builder|ContactGroup whereActive($value)
- * @method static Builder|ContactGroup whereCreated($value)
+ * @method static Builder|ContactGroup whereCreatedAt($value)
  * @method static Builder|ContactGroup whereDescription($value)
  * @method static Builder|ContactGroup whereId($value)
  * @method static Builder|ContactGroup whereLimitedTo($value)
  * @method static Builder|ContactGroup whereName($value)
  * @method static Builder|ContactGroup whereType($value)
+ * @method static Builder|ContactGroup whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup whereUpdatedAt($value)
  */
 class ContactGroup extends Model
 {

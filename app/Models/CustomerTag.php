@@ -33,25 +33,21 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsToMany};
  * @property string $display_as
  * @property string|null $description
  * @property int $internal_only
- * @property \Illuminate\Support\Carbon $created
- * @property \Illuminate\Support\Carbon $updated
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Customer[] $customers
+ * @property-read int|null $customers_count
  * @method static Builder|CustomerTag newModelQuery()
  * @method static Builder|CustomerTag newQuery()
  * @method static Builder|CustomerTag query()
- * @method static Builder|CustomerTag whereCreated($value)
+ * @method static Builder|CustomerTag whereCreatedAt($value)
  * @method static Builder|CustomerTag whereDescription($value)
  * @method static Builder|CustomerTag whereDisplayAs($value)
  * @method static Builder|CustomerTag whereId($value)
  * @method static Builder|CustomerTag whereInternalOnly($value)
  * @method static Builder|CustomerTag whereTag($value)
- * @method static Builder|CustomerTag whereUpdated($value)
+ * @method static Builder|CustomerTag whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag whereUpdatedAt($value)
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Customer[] $customers
- * @property-read int|null $customers_count
  */
 class CustomerTag extends Model
 {

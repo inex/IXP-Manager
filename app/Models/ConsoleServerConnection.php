@@ -42,6 +42,8 @@ use stdClass;
  * @property int|null $autobaud
  * @property string|null $notes
  * @property int|null $console_server_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\ConsoleServer|null $consoleServer
  * @property-read \IXP\Models\CustomerTag|null $customer
  * @property-read \IXP\Models\Switcher $switcher
@@ -50,6 +52,7 @@ use stdClass;
  * @method static Builder|ConsoleServerConnection query()
  * @method static Builder|ConsoleServerConnection whereAutobaud($value)
  * @method static Builder|ConsoleServerConnection whereConsoleServerId($value)
+ * @method static Builder|ConsoleServerConnection whereCreatedAt($value)
  * @method static Builder|ConsoleServerConnection whereCustid($value)
  * @method static Builder|ConsoleServerConnection whereDescription($value)
  * @method static Builder|ConsoleServerConnection whereFlowcontrol($value)
@@ -59,11 +62,8 @@ use stdClass;
  * @method static Builder|ConsoleServerConnection wherePort($value)
  * @method static Builder|ConsoleServerConnection whereSpeed($value)
  * @method static Builder|ConsoleServerConnection whereStopbits($value)
+ * @method static Builder|ConsoleServerConnection whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection whereUpdatedAt($value)
  */
 class ConsoleServerConnection extends Model
 {

@@ -20,17 +20,17 @@ use IXP_Exception;
  * @property int|null $packetcount
  * @property string|null $timestamp
  * @property string|null $source
- * @method static \Illuminate\Database\Eloquent\Builder|BgpSessionData newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BgpSessionData newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BgpSessionData query()
- * @method static \Illuminate\Database\Eloquent\Builder|BgpSessionData whereDstipaddressid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BgpSessionData whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BgpSessionData wherePacketcount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BgpSessionData whereProtocol($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BgpSessionData whereSource($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BgpSessionData whereSrcipaddressid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BgpSessionData whereTimestamp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BgpSessionData whereVlan($value)
+ * @method static Builder|BgpSessionDataAggregator newModelQuery()
+ * @method static Builder|BgpSessionDataAggregator newQuery()
+ * @method static Builder|BgpSessionDataAggregator query()
+ * @method static Builder|BgpSessionDataAggregator whereDstipaddressid($value)
+ * @method static Builder|BgpSessionDataAggregator whereId($value)
+ * @method static Builder|BgpSessionDataAggregator wherePacketcount($value)
+ * @method static Builder|BgpSessionDataAggregator whereProtocol($value)
+ * @method static Builder|BgpSessionDataAggregator whereSource($value)
+ * @method static Builder|BgpSessionDataAggregator whereSrcipaddressid($value)
+ * @method static Builder|BgpSessionDataAggregator whereTimestamp($value)
+ * @method static Builder|BgpSessionDataAggregator whereVlan($value)
  * @mixin \Eloquent
  */
 class BgpSessionDataAggregator extends BgpSessionData

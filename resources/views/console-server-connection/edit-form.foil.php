@@ -121,7 +121,7 @@
         ?>
 
         <?= Former::hidden( 'cs' )
-            ->value($t->data[ 'params' ][ "cs" ] ?? "")
+            ->value( $t->data[ 'params' ][ "cs" ] ?? "" )
         ?>
 
         <?= Former::close() ?>

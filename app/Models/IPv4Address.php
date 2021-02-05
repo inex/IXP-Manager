@@ -33,20 +33,19 @@ use IPTools\Network as IPToolsNetwork;
  * @property int $id
  * @property int|null $vlanid
  * @property string|null $address
- * @property-read \IXP\Models\Vlan|null $vlan
- * @property-read \IXP\Models\VlanInterface|null $vlaninterface
- * @method static \Illuminate\Database\Eloquent\Builder|IPv4Address newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|IPv4Address newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|IPv4Address query()
- * @method static \Illuminate\Database\Eloquent\Builder|IPv4Address whereAddress($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IPv4Address whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IPv4Address whereVlanid($value)
- * @mixin \Eloquent
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\Vlan|null $vlan
  * @property-read \IXP\Models\VlanInterface|null $vlanInterface
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IPv4Address whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IPv4Address whereUpdatedAt($value)
+ * @method static Builder|IPv4Address newModelQuery()
+ * @method static Builder|IPv4Address newQuery()
+ * @method static Builder|IPv4Address query()
+ * @method static Builder|IPv4Address whereAddress($value)
+ * @method static Builder|IPv4Address whereCreatedAt($value)
+ * @method static Builder|IPv4Address whereId($value)
+ * @method static Builder|IPv4Address whereUpdatedAt($value)
+ * @method static Builder|IPv4Address whereVlanid($value)
+ * @mixin \Eloquent
  */
 class IPv4Address extends Model
 {

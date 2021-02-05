@@ -36,9 +36,13 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo};
  * @property string|null $rs1address
  * @property string|null $rs2address
  * @property string|null $dnsfile
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\Vlan|null $vlan
  * @method static Builder|NetworkInfo newModelQuery()
  * @method static Builder|NetworkInfo newQuery()
  * @method static Builder|NetworkInfo query()
+ * @method static Builder|NetworkInfo whereCreatedAt($value)
  * @method static Builder|NetworkInfo whereDnsfile($value)
  * @method static Builder|NetworkInfo whereId($value)
  * @method static Builder|NetworkInfo whereMasklen($value)
@@ -46,13 +50,9 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo};
  * @method static Builder|NetworkInfo whereProtocol($value)
  * @method static Builder|NetworkInfo whereRs1address($value)
  * @method static Builder|NetworkInfo whereRs2address($value)
+ * @method static Builder|NetworkInfo whereUpdatedAt($value)
  * @method static Builder|NetworkInfo whereVlanid($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\NetworkInfo whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\NetworkInfo whereUpdatedAt($value)
- * @property-read \IXP\Models\Vlan|null $vlan
  */
 class NetworkInfo extends Model
 {

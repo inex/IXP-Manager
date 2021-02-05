@@ -1,10 +1,9 @@
 <?php
-declare(strict_types=1);
 
 namespace IXP\Services\Grapher;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -29,8 +28,6 @@ use IXP\Services\Grapher;
 use IXP\Contracts\Grapher\Backend as GrapherBackend;
 
 use IXP\Exceptions\Services\Grapher\{
-    ConfigurationException,
-    GraphCannotBeProcessedException,
     ParameterException
 };
 
@@ -40,39 +37,45 @@ use Illuminate\Auth\Access\AuthorizationException;
  * Grapher -> Abstract Graph
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   Grapher
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 abstract class Graph
 {
     /**
      * Category to use
+     *
      * @var
      */
     private $category = self::CATEGORY_DEFAULT;
 
     /**
      * Protocol to use
+     *
      * @var
      */
     private $protocol = self::PROTOCOL_DEFAULT;
 
     /**
      * Grapher Service
+     *
      * @var Grapher
      */
     private $grapher;
 
     /**
      * Backend to use
+     *
      * @var GrapherBackend
      */
     private $backend = null;
 
     /**
      * Data points (essentially a cache which is wiped as appropriate)
+     *
      * @var array
      */
     private $data = null;
@@ -85,6 +88,7 @@ abstract class Graph
 
     /**
      * Renderer object (essentially a cache which is wiped as appropriate)
+     *
      * @var Renderer
      */
     private $renderer = null;
@@ -228,7 +232,6 @@ abstract class Graph
      * Default protocol for graphs
      */
     public const PROTOCOL_DEFAULT = self::PROTOCOL_ALL;
-
 
     /**
      * Array of valid protocols
@@ -380,15 +383,13 @@ abstract class Graph
      *
      * @return GrapherBackend
      *
-     * @throws ConfigurationException
-     * @throws GraphCannotBeProcessedException
+     * @throws
      */
     public function backend(): GrapherBackend
     {
         if( $this->backend === null ) {
             $this->backend = $this->grapher()->backendForGraph( $this );
         }
-
         return $this->backend;
     }
 
@@ -412,10 +413,12 @@ abstract class Graph
      * return as JSON
      *
      * @return string
+     *
+     * @throws
      */
     public function log(): string
     {
-        return json_encode( $this->data(), JSON_PRETTY_PRINT );
+        return json_encode($this->data(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT);
     }
 
     /**
@@ -423,14 +426,12 @@ abstract class Graph
      *
      * @return array
      *
-     * @throws ConfigurationException
-     * @throws GraphCannotBeProcessedException
+     * @throws
      */
     public function toc(): array
     {
-        $arr = [ 'class' => $this->lcClassType() ];
-
-        $supports = $this->backend()->supports();
+        $arr        = [ 'class' => $this->lcClassType() ];
+        $supports   = $this->backend()->supports();
 
         foreach( $supports[ $this->lcClassType() ][ 'types' ] as $t ) {
             $arr[ 'urls' ][ $t ] = $this->url( [ 'type' => $t ] );
@@ -457,12 +458,11 @@ abstract class Graph
      *
      * @return string
      *
-     * @throws ConfigurationException
-     * @throws GraphCannotBeProcessedException
+     * @throws
      */
     public function json(): string
     {
-        return json_encode( $this->toc(), JSON_PRETTY_PRINT );
+        return json_encode( $this->toc(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT );
     }
 
     /**
@@ -549,7 +549,7 @@ abstract class Graph
      * We cache certain data (e.g. backend, data, statistics). This needs to be wiped
      * if certain graph parameters are changed.
      */
-    public function wipe()
+    public function wipe(): void
     {
         $this->backend    = null;
         $this->data       = null;
@@ -597,9 +597,10 @@ abstract class Graph
 
     /**
      * The name of a graph (e.g. member name, IXP name, etc)
+     *
      * @return string
      */
-    abstract function name(): string;
+    abstract public function name(): string;
 
     /**
      * The title of a graph (e.g. member name, IXP name, etc)
@@ -630,9 +631,10 @@ abstract class Graph
      * A unique identifier for this 'graph type'
      *
      * E.g. for an IXP, it might be ixpxxx where xxx is the database id
+     *
      * @return string
      */
-    abstract function identifier(): string;
+    abstract public function identifier(): string;
 
     /**
      * A simple key for this graph
@@ -677,7 +679,7 @@ abstract class Graph
      *
      * @param string $message Deny message
      */
-    protected function deny( $message = 'This action is unauthorized.' )
+    protected function deny( $message = 'This action is unauthorized.' ): void
     {
         throw new AuthorizationException($message);
     }
@@ -804,9 +806,10 @@ abstract class Graph
     /**
      * Get the category description for a given category identifier
      * @param string $category
+     *
      * @return string
      */
-    public static function resolveCategory( $category ): string
+    public static function resolveCategory( string $category ): string
     {
         return self::CATEGORY_DESCS[ $category ] ?? 'Unknown';
     }
@@ -957,7 +960,6 @@ abstract class Graph
         }
         return $v;
     }
-
 
     /**
      * Process user input for the parameter: category

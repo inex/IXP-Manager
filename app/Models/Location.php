@@ -47,6 +47,8 @@ use Illuminate\Database\Eloquent\{
  * @property int|null $pdb_facility_id
  * @property string|null $city
  * @property string|null $country
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Cabinet[] $cabinets
  * @property-read int|null $cabinets_count
  * @method static Builder|Location newModelQuery()
@@ -55,6 +57,7 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|Location whereAddress($value)
  * @method static Builder|Location whereCity($value)
  * @method static Builder|Location whereCountry($value)
+ * @method static Builder|Location whereCreatedAt($value)
  * @method static Builder|Location whereId($value)
  * @method static Builder|Location whereName($value)
  * @method static Builder|Location whereNocemail($value)
@@ -67,11 +70,8 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|Location wherePdbFacilityId($value)
  * @method static Builder|Location whereShortname($value)
  * @method static Builder|Location whereTag($value)
+ * @method static Builder|Location whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Location whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Location whereUpdatedAt($value)
  */
 class Location extends Model
 {

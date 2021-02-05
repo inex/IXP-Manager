@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth, Cache;
 
 use Illuminate\Http\Request;
@@ -29,13 +30,16 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 use IXP\Jobs\FetchFilteredPrefixesForCustomer;
+
 use IXP\Models\Customer;
 
 /**
  * Filtered Prefixes Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
+ * @category   IXP
+ * @package    IXP\Http\Controllers
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -51,7 +55,7 @@ class FilteredPrefixesController extends Controller
      *
      * @throws
      */
-    public function list( Request $r, Customer $cust ) : View
+    public function list( Request $r, Customer $cust ): View
     {
         $this->authorize('view', $cust);
 

@@ -37,20 +37,20 @@ use Illuminate\Database\Eloquent\{
  * @property int|null $cabinetid
  * @property string|null $name
  * @property string|null $descr
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Cabinet|null $cabinet
  * @method static Builder|CustomerEquipment newModelQuery()
  * @method static Builder|CustomerEquipment newQuery()
  * @method static Builder|CustomerEquipment query()
  * @method static Builder|CustomerEquipment whereCabinetid($value)
+ * @method static Builder|CustomerEquipment whereCreatedAt($value)
  * @method static Builder|CustomerEquipment whereCustid($value)
  * @method static Builder|CustomerEquipment whereDescr($value)
  * @method static Builder|CustomerEquipment whereId($value)
  * @method static Builder|CustomerEquipment whereName($value)
+ * @method static Builder|CustomerEquipment whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerEquipment whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerEquipment whereUpdatedAt($value)
  */
 class CustomerEquipment extends Model
 {

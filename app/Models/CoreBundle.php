@@ -43,17 +43,21 @@ use OSS_SNMP\MIBS\Iface;
  * @property int $bfd
  * @property string|null $ipv4_subnet
  * @property string|null $ipv6_subnet
- * @property int $stp
+ * @property bool $stp
  * @property int|null $cost
  * @property int|null $preference
  * @property int $enabled
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Collection|\IXP\Models\CoreLink[] $corelinks
  * @property-read int|null $corelinks_count
+ * @method static Builder|CoreBundle active()
  * @method static Builder|CoreBundle newModelQuery()
  * @method static Builder|CoreBundle newQuery()
  * @method static Builder|CoreBundle query()
  * @method static Builder|CoreBundle whereBfd($value)
  * @method static Builder|CoreBundle whereCost($value)
+ * @method static Builder|CoreBundle whereCreatedAt($value)
  * @method static Builder|CoreBundle whereDescription($value)
  * @method static Builder|CoreBundle whereEnabled($value)
  * @method static Builder|CoreBundle whereGraphTitle($value)
@@ -63,12 +67,8 @@ use OSS_SNMP\MIBS\Iface;
  * @method static Builder|CoreBundle wherePreference($value)
  * @method static Builder|CoreBundle whereStp($value)
  * @method static Builder|CoreBundle whereType($value)
+ * @method static Builder|CoreBundle whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreBundle active()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreBundle whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreBundle whereUpdatedAt($value)
  */
 class CoreBundle extends Model
 {
@@ -193,7 +193,8 @@ class CoreBundle extends Model
      */
     public function switchSideX( bool $sideA = true )
     {
-        if( $cl = $this->corelinks()->first() ){
+        $cl = $this->corelinks[ 0 ] ?? false;
+        if( $cl ){
             /** @var CoreInterface $side */
             $side = $sideA ? $cl->coreInterfaceSideA : $cl->coreInterfaceSideB ;
             return $side->physicalinterface->switchPort->switcher;
@@ -219,7 +220,8 @@ class CoreBundle extends Model
      */
     public function speedPi(): int
     {
-        if( $cl = $this->corelinks()->first() ){
+        $cl = $this->corelinks[ 0 ] ?? false;
+        if( $cl ){
             return $cl->coreInterfaceSideA->physicalinterface->speed;
         }
         return 0;
@@ -260,7 +262,8 @@ class CoreBundle extends Model
      */
     public function customer()
     {
-        if( $cl = $this->corelinks()->first() ){
+        $cl = $this->corelinks[ 0 ] ?? false;
+        if( $cl ){
             return $cl->coreInterfaceSideA->physicalinterface->virtualInterface->customer;
         }
         return false;
@@ -351,14 +354,11 @@ class CoreBundle extends Model
                 }
             }
             $this->delete();
-
             DB::commit();
-
         } catch( Exception $e ) {
             DB::rollBack();
             throw $e;
         }
-
         return true;
     }
 }

@@ -35,26 +35,22 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $private
  * @property string $title
  * @property string $note
- * @property string $created
- * @property string $updated
- * @method static \Illuminate\Database\Eloquent\Builder|CustomerNote newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CustomerNote newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CustomerNote query()
- * @method static \Illuminate\Database\Eloquent\Builder|CustomerNote whereCreated($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CustomerNote whereCustomerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CustomerNote whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CustomerNote whereNote($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CustomerNote wherePrivate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CustomerNote whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CustomerNote whereUpdated($value)
- * @mixin \Eloquent
- * @property-read \IXP\Models\Customer $customer
- * @method static Builder|CustomerNote privateOnly()
- * @method static Builder|CustomerNote publicOnly()
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
+ * @property-read \IXP\Models\Customer $customer
+ * @method static Builder|CustomerNote newModelQuery()
+ * @method static Builder|CustomerNote newQuery()
+ * @method static Builder|CustomerNote privateOnly()
+ * @method static Builder|CustomerNote publicOnly()
+ * @method static Builder|CustomerNote query()
  * @method static Builder|CustomerNote whereCreatedAt($value)
+ * @method static Builder|CustomerNote whereCustomerId($value)
+ * @method static Builder|CustomerNote whereId($value)
+ * @method static Builder|CustomerNote whereNote($value)
+ * @method static Builder|CustomerNote wherePrivate($value)
+ * @method static Builder|CustomerNote whereTitle($value)
  * @method static Builder|CustomerNote whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class CustomerNote extends Model
 {

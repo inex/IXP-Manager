@@ -38,7 +38,7 @@ use IXP\Models\{
  * @property string|null $name
  * @property int|null $number
  * @property string|null $notes
- * @property int $private
+ * @property bool $private
  * @property int $infrastructureid
  * @property int $peering_matrix
  * @property int $peering_manager

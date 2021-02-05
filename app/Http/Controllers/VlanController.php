@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Former, Redirect, Route;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -47,9 +48,11 @@ use IXP\Utils\View\Alert\{
 
 /**
  * Vlan Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
+ * @category   IXP
+ * @package    IXP\Http\Controllers
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -172,6 +175,25 @@ class VlanController extends EloquentController
     }
 
     /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request $r
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doStore( Request $r )
+    {
+        $this->checkForm( $r );
+        if( $this->checkIsDuplicate( $r, null ) ) {
+            return Redirect::back()->withInput();
+        }
+        $this->object = Vlan::create( $r->all() );
+        return true;
+    }
+
+    /**
      * Display the form to edit an object
      *
      * @param null $id ID of the row to edit
@@ -197,50 +219,6 @@ class VlanController extends EloquentController
             'object'            => $this->object,
             'infrastructure'    => Infrastructure::orderBy( 'name' )->get(),
         ];
-    }
-
-    /**
-     * Check if there is a duplicate vlan object with those values
-     *
-     * @param int|null      $objectid
-     * @param Request       $r
-     *
-     * @return bool
-     */
-    private function checkIsDuplicate( Request $r, int $objectid = null ): bool
-    {
-        $exist = Vlan::where( 'infrastructureid', $r->infrastructureid )
-            ->where( 'config_name', $r->config_name )
-            ->when( $objectid , function( Builder $q, $objectid ) {
-                return $q->where( 'id', '!=',  $objectid );
-            })->count() ? true : false;
-
-        if( $exist ) {
-            AlertContainer::push( "The couple Infrastructure and config name already exist.", Alert::DANGER );
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Function to do the actual validation and storing of the submitted object.
-     *
-     * @param Request $r
-     *
-     * @return bool|RedirectResponse
-     *
-     * @throws
-     */
-    public function doStore( Request $r )
-    {
-        $this->checkForm( $r );
-        if( $this->checkIsDuplicate( $r, null ) ) {
-            return Redirect::back()->withInput();
-        }
-        $this->object = Vlan::create( $r->all() );
-
-        return true;
     }
 
     /**
@@ -319,8 +297,8 @@ class VlanController extends EloquentController
     /**
      * Display the Vlan for an Infrastructure
      *
-     * @param Infrastructure $infra
-     * @param bool|null $public only the public vlan ?
+     * @param Infrastructure    $infra
+     * @param bool|null         $public only the public vlan ?
      *
      * @return View
      */
@@ -345,14 +323,31 @@ class VlanController extends EloquentController
             'name'              => 'required|string|max:255',
             'number'            => 'required|integer|min:1|max:4096',
             'config_name'       => 'required|string|max:32|alpha_dash',
-            'infrastructureid'  => [
-                'required', 'integer',
-                function ($attribute, $value, $fail) {
-                    if( !Infrastructure::find( $value ) ) {
-                        return $fail( 'The infrastructure does not exist.' );
-                    }
-                },
-            ],
+            'infrastructureid'  => 'required|integer|exists:infrastructure,id',
         ] );
+    }
+
+    /**
+     * Check if there is a duplicate vlan object with those values
+     *
+     * @param int|null      $objectid
+     * @param Request       $r
+     *
+     * @return bool
+     */
+    private function checkIsDuplicate( Request $r, int $objectid = null ): bool
+    {
+        $exist = Vlan::where( 'infrastructureid', $r->infrastructureid )
+            ->where( 'config_name', $r->config_name )
+            ->when( $objectid , function( Builder $q, $objectid ) {
+                return $q->where( 'id', '!=',  $objectid );
+            })->count() ? true : false;
+
+        if( $exist ) {
+            AlertContainer::push( "The couple Infrastructure and config name already exist.", Alert::DANGER );
+            return true;
+        }
+
+        return false;
     }
 }

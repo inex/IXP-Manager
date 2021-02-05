@@ -51,9 +51,9 @@ class StorePatchPanelPort extends FormRequest
         $required   = ( $this->allocated || $this->prewired ) ? 'nullable' : 'required';
         $required2  = $this->duplex  ? 'required' : 'nullable';
         return [
-            'switch_port_id'        => 'nullable|integer|exists:Entities\SwitchPort,id',
-            'customer_id'           => 'nullable|integer|exists:Entities\Customer,id',
-            'partner_port'          => $required2 . '|integer|exists:Entities\PatchPanelPort,id',
+            'switch_port_id'        => 'nullable|integer|exists:switchport,id',
+            'customer_id'           => 'nullable|integer|exists:cust,id',
+            'partner_port'          => $required2 . '|integer|exists:patch_panel_port,id',
             'number'                => $required . '|string|max:255',
             'patch_panel'           => $required,
             'description'           => 'nullable|string|max:255',

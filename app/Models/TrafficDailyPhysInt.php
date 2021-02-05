@@ -68,11 +68,14 @@ use Illuminate\Database\Eloquent\{
  * @property string|null $year_max_out_at
  * @property int|null $year_tot_in
  * @property int|null $year_tot_out
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\PhysicalInterface $physicalInterface
  * @method static Builder|TrafficDailyPhysInt newModelQuery()
  * @method static Builder|TrafficDailyPhysInt newQuery()
  * @method static Builder|TrafficDailyPhysInt query()
  * @method static Builder|TrafficDailyPhysInt whereCategory($value)
+ * @method static Builder|TrafficDailyPhysInt whereCreatedAt($value)
  * @method static Builder|TrafficDailyPhysInt whereDay($value)
  * @method static Builder|TrafficDailyPhysInt whereDayAvgIn($value)
  * @method static Builder|TrafficDailyPhysInt whereDayAvgOut($value)
@@ -92,6 +95,7 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|TrafficDailyPhysInt whereMonthTotIn($value)
  * @method static Builder|TrafficDailyPhysInt whereMonthTotOut($value)
  * @method static Builder|TrafficDailyPhysInt wherePhysicalinterfaceId($value)
+ * @method static Builder|TrafficDailyPhysInt whereUpdatedAt($value)
  * @method static Builder|TrafficDailyPhysInt whereWeekAvgIn($value)
  * @method static Builder|TrafficDailyPhysInt whereWeekAvgOut($value)
  * @method static Builder|TrafficDailyPhysInt whereWeekMaxIn($value)
@@ -109,10 +113,6 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|TrafficDailyPhysInt whereYearTotIn($value)
  * @method static Builder|TrafficDailyPhysInt whereYearTotOut($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\TrafficDailyPhysInt whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\TrafficDailyPhysInt whereUpdatedAt($value)
  */
 class TrafficDailyPhysInt extends Model
 {

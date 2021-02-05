@@ -13,9 +13,7 @@
     // action bindings:
 
     $( document ).ready( function() {
-        table.show();
-
-        table.DataTable( {
+        table.dataTable( {
             stateSave: true,
             stateDuration : DATATABLE_STATE_DURATION,
             responsive: true,
@@ -27,10 +25,9 @@
                 { responsivePriority: 1, targets: 0 },
                 { responsivePriority: 2, targets: -1 }
             ],
-        } );
+        } ).show();
 
         $( ".subnet-cl" ).parent().removeClass().addClass( "col-sm-8" );
-
     });
 
     //////////////////////////////////////////////////////////////////////////////////////
@@ -90,7 +87,6 @@
         }
     });
 
-
     /**
      * Check if all the switch ports have been chosen before submitting the form to add a new Core Link
      */
@@ -130,7 +126,6 @@
     ///
     /// Function:
     ///
-
 
     /**
      * Function that allow to delete a Core Link or a Core Bundle

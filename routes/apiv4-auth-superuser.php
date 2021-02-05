@@ -116,11 +116,11 @@ Route::group( [  'prefix' => 'switch-port' ], function() {
 // Switch
 //
 Route::group( [  'prefix' => 'switch' ], function() {
-    Route::post( '{s}/ports',                       'SwitchController@ports' );
-    Route::get(  '{s}/status',                       'SwitchController@status' );
-    Route::get(  '{s}/core-bundles-status',          'SwitchController@coreBundlesStatus' );
-    Route::post( '{s}/switch-port-for-ppp',          'SwitchController@switchPortForPPP'    )->name( 'switch@switch-port-for-ppp' );
-    Route::post( '{s}/switch-port-prewired',         'SwitchController@switchPortPrewired'  )->name( 'switch@switch-port-prewired' );
+    Route::get( '{s}/ports',                        'SwitchController@ports'                );
+    Route::get( '{s}/status',                       'SwitchController@status'               );
+    Route::get( '{s}/core-bundles-status',          'SwitchController@coreBundlesStatus'    );
+    Route::post('{s}/switch-port-for-ppp',          'SwitchController@switchPortForPPP'     )->name( 'switch@switch-port-for-ppp' );
+    Route::post('{s}/switch-port-prewired',         'SwitchController@switchPortPrewired'   )->name( 'switch@switch-port-prewired' );
 });
 
 

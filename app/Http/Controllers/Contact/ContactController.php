@@ -216,7 +216,6 @@ class ContactController extends EloquentController
                 $query->with( 'contactRoles', 'contactGroups' );
             }
         }
-
         return $query->get()->toArray();
     }
 
@@ -236,13 +235,12 @@ class ContactController extends EloquentController
 
         if( config('contact_group.types.ROLE') ) {
             $activeGroups   = ContactGroupAggregator::getGroupNamesTypeArray( false, false , true);
-            $allGroups      = ContactGroupAggregator::getGroupNamesTypeArray();
 
             if( !in_array( $role = request()->role, array_column( $activeGroups[ "ROLE" ], 'id' ), false ) ) {
                 $role = null;
             }
 
-            if( $cg = request()->input( "cgid" ) ) {
+            if( $cg = request()->cgid ) {
                 // flatten the multi dimensional array
                 foreach( $activeGroups as $gname => $gvalue ) {
                     foreach( $gvalue as $index => $val ){
@@ -330,6 +328,36 @@ class ContactController extends EloquentController
     }
 
     /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request $r
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doStore( Request $r )
+    {
+        $this->checkForm( $r );
+        $custid = Auth::getUser()->isSuperUser() ? $r->custid : Auth::getUser()->custid;
+
+        $this->object = Contact::create(
+            array_merge( $r->all(), [
+                'creator'       => Auth::getUser()->username,
+                'lastupdatedby' => Auth::id()
+            ] )
+        );
+        $this->object->custid = $custid;
+
+        if( !$this->addGroupsToObject( $r->roles ?? [] ) ) {
+            return Redirect::back()->withInput( $r->all() );
+        }
+        // save the object if addGroupsToObject was success
+        $this->object->save();
+        return true;
+    }
+
+    /**
      * Display the form to edit an object
      *
      * @param   int $id ID of the row to edit
@@ -379,106 +407,6 @@ class ContactController extends EloquentController
     }
 
     /**
-     * Check if the form is valid
-     *
-     * @param $r
-     *
-     * @return void
-     */
-    public function checkForm( Request $r ): void
-    {
-        $rules = [
-            'name'                  => 'required|string|max:255',
-            'position'              => 'nullable|string|max:255',
-            'email'                 => 'nullable|email',
-            'phone'                 => 'nullable|string|max:50',
-            'mobile'                => 'nullable|string|max:50',
-            'notes'                 => 'nullable|string|max:255',
-        ];
-
-        if( Auth::getUser()->isSuperUser() ){
-            $rules = array_merge( $rules, [ 'custid' => [
-                'required', 'integer',
-                function( $attribute, $value, $fail ) {
-                    if( !Customer::find( $value ) ) {
-                        return $fail( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' is invalid / does not exist.' );
-                    }
-                }
-            ] ] );
-        }
-
-        $r->validate( $rules );
-    }
-
-    /**
-     * Add contact group to the contact object
-     *
-     * @param array $groups
-     *
-     * @return bool
-     */
-    private function addGroupsToObject( array $groups ): bool
-    {
-        foreach( $groups as $index => $groupid ) {
-            if( $cgroup = ContactGroup::find( $groupid ) ) {
-                if( $cgroup->limited_to !== 0 ) {
-                    $nbContactForCust = Contact::when( $groupid , function ( Builder $query, $groupid ) {
-                                        return $query->leftJoin( 'contact_to_group', function( $join ) {
-                                            $join->on( 'contact.id', 'contact_to_group.contact_id');
-                                        })->where('contact_to_group.contact_group_id', $groupid );
-                                    })
-                                    ->where( 'custid', $this->object->custid  )
-                                    ->get()->count();
-
-                    if( $cgroup->limited_to <= $nbContactForCust && !$this->object->contactGroupsAll->contains( 'id', $groupid ) ) {
-                        AlertContainer::push( "Contact group " . $cgroup->type . " : " . $cgroup->name . " has a limited membership and is full." , Alert::DANGER );
-                        return false;
-                    }
-                }
-
-                if( !$this->object->contactGroupsAll->contains( 'id', $groupid ) ) {
-                    $this->object->contactRoles()->attach( $cgroup );
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Function to do the actual validation and storing of the submitted object.
-     *
-     * @param Request $r
-     *
-     * @return bool|RedirectResponse
-     *
-     * @throws
-     */
-    public function doStore( Request $r )
-    {
-        $this->checkForm( $r );
-        $custid = Auth::getUser()->custid;
-
-        if( Auth::getUser()->isSuperUser() ) {
-            $custid = $r->custid;
-        }
-
-        $this->object = Contact::create(
-            array_merge( $r->all(), [
-                'creator'       => Auth::getUser()->username,
-                'lastupdatedby' => Auth::id()
-            ] )
-        );
-        $this->object->custid = $custid;
-        $this->object->save();
-
-        if( !$this->addGroupsToObject( $r->roles ?? [] ) ) {
-            return Redirect::back()->withInput( $r->all() );
-        }
-
-        return true;
-    }
-
-    /**
      * Function to do the actual validation and storing of the submitted object.
      *
      * @param Request   $r
@@ -486,6 +414,7 @@ class ContactController extends EloquentController
      *
      * @return bool|RedirectResponse
      *
+     * @throws
      */
     public function doUpdate( Request $r, int $id )
     {
@@ -506,7 +435,6 @@ class ContactController extends EloquentController
         );
 
         $this->object->custid = $custid;
-        $this->object->save();
 
         $objectGroups   = $this->object->contactGroupsAll()->get()->keyBy( 'id' )->toArray();
         $groupToAdd     = array_diff( $r->roles ?? [], array_keys( $objectGroups ) );
@@ -516,8 +444,10 @@ class ContactController extends EloquentController
             return Redirect::back()->withInput( $r->all() );
         }
 
+        // save the object if addGroupsToObject was success
+        $this->object->save();
         foreach( $groupToDelete as $gToDelete ) {
-            if(( $cgroup = ContactGroup::find( $gToDelete ) ) && $cgroup->active) {
+            if( ( $cgroup = ContactGroup::find( $gToDelete ) ) && $cgroup->active ) {
                 $this->object->contactGroupsAll()->detach( $cgroup->id );
             }
         }
@@ -592,6 +522,33 @@ class ContactController extends EloquentController
     }
 
     /**
+     * Check if the form is valid
+     *
+     * @param $r
+     *
+     * @return void
+     */
+    public function checkForm( Request $r ): void
+    {
+        $rules = [
+            'name'                  => 'required|string|max:255',
+            'position'              => 'nullable|string|max:255',
+            'email'                 => 'nullable|email',
+            'phone'                 => 'nullable|string|max:50',
+            'mobile'                => 'nullable|string|max:50',
+            'notes'                 => 'nullable|string|max:255',
+        ];
+
+        if( Auth::getUser()->isSuperUser() ){
+            $rules = array_merge( $rules,
+                [ 'custid' => 'required|integer|exists:cust,id' ]
+            );
+        }
+
+        $r->validate( $rules );
+    }
+
+    /**
      * Set the session in order to redirect to the good location
      *
      * @return void
@@ -620,10 +577,43 @@ class ContactController extends EloquentController
         if( config('contact_group.types.ROLE') ) {
             return [
                 'roles'     => ContactGroupAggregator::getGroupNamesTypeArray( 'ROLE' )[ "ROLE" ],
-                'allGroups' => ContactGroupAggregator::getGroupNamesTypeArray( false, false, true)
+                'allGroups' => ContactGroupAggregator::getGroupNamesTypeArray( false, false, true )
             ];
         }
-
         return [ 'roles' => null, 'allGroups' => [] ];
+    }
+
+    /**
+     * Add contact group to the contact object
+     *
+     * @param array $groups
+     *
+     * @return bool
+     */
+    private function addGroupsToObject( array $groups ): bool
+    {
+        foreach( $groups as $index => $groupid ) {
+            if( $cgroup = ContactGroup::find( $groupid ) ) {
+                if( $cgroup->limited_to !== 0 ) {
+                    $nbContactForCust = Contact::when( $groupid , function ( Builder $query, $groupid ) {
+                        return $query->leftJoin( 'contact_to_group', function( $join ) {
+                            $join->on( 'contact.id', 'contact_to_group.contact_id');
+                        })->where('contact_to_group.contact_group_id', $groupid );
+                    })
+                        ->where( 'custid', $this->object->custid  )
+                        ->get()->count();
+
+                    if( $cgroup->limited_to <= $nbContactForCust && !$this->object->contactGroupsAll->contains( 'id', $groupid ) ) {
+                        AlertContainer::push( "Contact group " . $cgroup->type . " : " . $cgroup->name . " has a limited membership and is full." , Alert::DANGER );
+                        return false;
+                    }
+                }
+
+                if( !$this->object->contactGroupsAll->contains( 'id', $groupid ) ) {
+                    $this->object->contactRoles()->attach( $cgroup );
+                }
+            }
+        }
+        return true;
     }
 }

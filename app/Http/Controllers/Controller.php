@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -35,6 +36,16 @@ use IXP\Models\{
     User
 };
 
+/**
+ * Controller
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Controllers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -78,7 +89,6 @@ class Controller extends BaseController
     {
         return !(bool)config( 'ixp_fe.frontend.disabled.logo' );
     }
-
 
     /**
      * Try to get the clients real IP address even when behind a proxy.

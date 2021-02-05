@@ -55,51 +55,47 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
  * @property int|null $uid
  * @property int|null $privs
  * @property int|null $disabled
- * @property string|null $lastupdated
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $lastupdatedby
  * @property string|null $creator
- * @property string|null $created
+ * @property \Illuminate\Support\Carbon|null $created_at
  * @property string|null $name
  * @property int|null $peeringdb_id
- * @property mixed|null $extra_attributes
+ * @property array|null $extra_attributes
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ApiKey[] $apiKeys
  * @property-read int|null $api_keys_count
  * @property-read \IXP\Models\Customer|null $customer
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerToUser[] $customerToUser
+ * @property-read int|null $customer_to_user_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Customer[] $customers
  * @property-read int|null $customers_count
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \IXP\Models\User2FA|null $user2FA
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\UserRememberToken[] $userRememberTokens
  * @property-read int|null $user_remember_tokens_count
+ * @method static Builder|User activeOnly()
+ * @method static Builder|User byPrivs(?int $priv = null)
  * @method static Builder|User newModelQuery()
  * @method static Builder|User newQuery()
  * @method static Builder|User query()
  * @method static Builder|User whereAuthorisedMobile($value)
- * @method static Builder|User whereCreated($value)
+ * @method static Builder|User whereCreatedAt($value)
  * @method static Builder|User whereCreator($value)
  * @method static Builder|User whereCustid($value)
  * @method static Builder|User whereDisabled($value)
  * @method static Builder|User whereEmail($value)
  * @method static Builder|User whereExtraAttributes($value)
  * @method static Builder|User whereId($value)
- * @method static Builder|User whereLastupdated($value)
  * @method static Builder|User whereLastupdatedby($value)
  * @method static Builder|User whereName($value)
  * @method static Builder|User wherePassword($value)
  * @method static Builder|User wherePeeringdbId($value)
  * @method static Builder|User wherePrivs($value)
  * @method static Builder|User whereUid($value)
+ * @method static Builder|User whereUpdatedAt($value)
  * @method static Builder|User whereUsername($value)
  * @mixin Eloquent
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereUpdatedAt($value)
- * @property-read \IXP\Models\User2FA|null $user2FA
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerToUser[] $customerToUser
- * @property-read int|null $customer_to_user_count
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read int|null $notifications_count
- * @method static Builder|User activeOnly()
- * @method static Builder|User byPrivs($priv = null)
  */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {

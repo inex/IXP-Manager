@@ -3,7 +3,7 @@
 namespace IXP\Services\Grapher\Graph;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +22,7 @@ namespace IXP\Services\Grapher\Graph;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth;
 
 use IXP\Services\Grapher;
@@ -32,15 +33,14 @@ use IXP\Models\{
     User
 };
 
-
 /**
  * Grapher -> Core Bundle Graph
  *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
- * @category   Grapher
+ * @category   IXP
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class CoreBundle extends Graph
@@ -59,13 +59,12 @@ class CoreBundle extends Graph
      */
     private $side = 'a';
 
-
     /**
      * Constructor
      *
-     * @param Grapher $grapher
-     * @param CoreBundleModel $cb
-     * @param string $side
+     * @param Grapher           $grapher
+     * @param CoreBundleModel   $cb
+     * @param string            $side
      *
      */
     public function __construct( Grapher $grapher, CoreBundleModel $cb, string $side = 'a' )
@@ -206,9 +205,9 @@ class CoreBundle extends Graph
      */
     public function getParamsAsArray(): array
     {
-        $p = parent::getParamsAsArray();
-        $p['id'] = $this->coreBundle()->id;
-        $p['side'] = $this->side();
+        $p          = parent::getParamsAsArray();
+        $p['id']    = $this->coreBundle()->id;
+        $p['side']  = $this->side();
         return $p;
     }
 
@@ -240,7 +239,6 @@ class CoreBundle extends Graph
         if( !in_array( $s, [ 'a', 'b'] ) ) {
             abort(404);
         }
-
         return $s;
     }
 }

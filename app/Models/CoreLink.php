@@ -36,26 +36,26 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo};
  * @property string|null $ipv4_subnet
  * @property string|null $ipv6_subnet
  * @property int $enabled
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\CoreBundle $coreBundle
  * @property-read \IXP\Models\CoreInterface $coreInterfaceSideA
  * @property-read \IXP\Models\CoreInterface $coreInterfaceSideB
- * @method static \Illuminate\Database\Eloquent\Builder|CoreLink newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CoreLink newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CoreLink query()
- * @method static \Illuminate\Database\Eloquent\Builder|CoreLink whereBfd($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CoreLink whereCoreBundleId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CoreLink whereCoreInterfaceSideaId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CoreLink whereCoreInterfaceSidebId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CoreLink whereEnabled($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CoreLink whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CoreLink whereIpv4Subnet($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CoreLink whereIpv6Subnet($value)
- * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreLink whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreLink whereUpdatedAt($value)
  * @method static Builder|CoreLink active()
+ * @method static Builder|CoreLink newModelQuery()
+ * @method static Builder|CoreLink newQuery()
+ * @method static Builder|CoreLink query()
+ * @method static Builder|CoreLink whereBfd($value)
+ * @method static Builder|CoreLink whereCoreBundleId($value)
+ * @method static Builder|CoreLink whereCoreInterfaceSideaId($value)
+ * @method static Builder|CoreLink whereCoreInterfaceSidebId($value)
+ * @method static Builder|CoreLink whereCreatedAt($value)
+ * @method static Builder|CoreLink whereEnabled($value)
+ * @method static Builder|CoreLink whereId($value)
+ * @method static Builder|CoreLink whereIpv4Subnet($value)
+ * @method static Builder|CoreLink whereIpv6Subnet($value)
+ * @method static Builder|CoreLink whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class CoreLink extends Model
 {

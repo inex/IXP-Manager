@@ -22,6 +22,7 @@ namespace IXP\Http\Requests\Profile;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth, Hash;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -31,7 +32,8 @@ use Illuminate\Validation\Validator;
  * Profile details Store Request
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Requests\Profile
+ * @category   IXP
+ * @package    IXP\Http\Requests\Profile
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -57,7 +59,7 @@ class Profile extends FormRequest
     {
         return [
             'name'              => 'required|string|min:2|max:255',
-            'username'          => 'required|string|min:3|max:255|unique:Entities\User,username,' . Auth::id(),
+            'username'          => 'required|string|min:3|max:255|unique:user,username,' . Auth::id(),
             'email'             => 'required|email|max:255',
             'authorisedMobile'  => 'nullable|string|max:30',
             'actual_password'   => 'required|string|max:255',

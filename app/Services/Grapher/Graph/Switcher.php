@@ -3,7 +3,7 @@
 namespace IXP\Services\Grapher\Graph;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,9 +22,10 @@ namespace IXP\Services\Grapher\Graph;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth;
 
-use \IXP\Models\{
+use IXP\Models\{
     Switcher as SwitcherModel,
     User
 };
@@ -37,9 +38,9 @@ use IXP\Services\Grapher\{Graph};
  *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
- * @category   Grapher
+ * @category   IXP
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Switcher extends Graph
@@ -92,6 +93,7 @@ class Switcher extends Graph
 
     /**
      * The name of a graph (e.g. member name, IXP name, etc)
+     *
      * @return string
      */
     public function name(): string
@@ -103,6 +105,7 @@ class Switcher extends Graph
      * A unique identifier for this 'graph type'
      *
      * E.g. for an IXP, it might be ixpxxx where xxx is the database id
+     *
      * @return string
      */
     public function identifier(): string

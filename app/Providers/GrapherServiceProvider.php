@@ -3,7 +3,7 @@
 namespace IXP\Providers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +22,7 @@ namespace IXP\Providers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Route;
 
 use Foil\Engine;
@@ -29,7 +30,6 @@ use Foil\Engine;
 use Illuminate\Support\ServiceProvider;
 
 use IXP\Exceptions\Services\Grapher\ConfigurationException;
-
 
 use IXP\Console\Commands\Grapher\{
     EmailPortsWithCounts,
@@ -51,7 +51,7 @@ use IXP\Services\Grapher\Renderer\Extensions\Grapher as GrapherRendererExtension
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Providers
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class GrapherServiceProvider extends ServiceProvider
@@ -70,6 +70,8 @@ class GrapherServiceProvider extends ServiceProvider
      * Bootstrap the application services.
      *
      * @return void
+     *
+     * @throws
      */
     public function boot(): void
     {
@@ -90,7 +92,7 @@ class GrapherServiceProvider extends ServiceProvider
 
         Route::group(['middleware' => [ 'api/v4', 'assert.privilege:' . User::AUTH_SUPERUSER ],
                 'namespace' => 'IXP\Http\Controllers\Services', 'as' => 'grapher::' ], function(){
-                    
+
             Route::get(  'api/v4/grapher/mrtg-config', 'Grapher\Api@generateConfiguration' );
             Route::get(  'api/v4/grapher/config',      'Grapher\Api@generateConfiguration' );
             Route::post( 'api/v4/grapher/config',      'Grapher\Api@generateConfiguration' );

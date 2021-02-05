@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -27,7 +27,16 @@ use Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-
+/**
+ * Store SflowReceiver FormRequest
+ *
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Requests
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class StoreSflowReceiver extends FormRequest
 {
     /**
@@ -49,7 +58,7 @@ class StoreSflowReceiver extends FormRequest
     public function rules(): array
     {
         return [
-            'virtual_interface_id'      => 'required|integer|exists:Entities\VirtualInterface,id',
+            'virtual_interface_id'      => 'required|integer|exists:virtualinterface,id',
             'dst_ip'                    => 'required|ip',
             'dst_port'                  => 'required|integer',
         ];

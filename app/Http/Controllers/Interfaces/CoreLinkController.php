@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Interfaces;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -30,9 +30,7 @@ use Illuminate\Http\{
     Request
 };
 
-use IXP\Http\Requests\{
-    StoreCoreLink
-};
+use IXP\Http\Requests\CoreBundle\StoreCoreLink;
 
 use IXP\Models\{
     CoreBundle,
@@ -48,10 +46,12 @@ use IXP\Utils\View\Alert\{
 
 /**
  * Core Link Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Interfaces
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Interfaces
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class CoreLinkController extends Common
@@ -79,13 +79,12 @@ class CoreLinkController extends Common
         $this->buildCorelink( $cb, $r, $cb->virtualInterfaces(), true );
 
         Log::notice( $r->user()->username . ' added a core link for the core bundle with (id: ' . $cb->id . ')' );
-        AlertContainer::push( 'Core link added.', Alert::SUCCESS );
-
+        AlertContainer::push( 'Core link created.', Alert::SUCCESS );
         return Redirect::to( route( "core-bundle@edit" , [ "cb" => $cb->id ] ) );
     }
 
     /**
-     * Edit the core links (enabled/BFD/Subnet) associated to a core bundle
+     * Update the core links (enabled/BFD/Subnet) associated to a core bundle
      *
      * @param Request       $r instance of the current HTTP request
      * @param CoreBundle    $cb
@@ -109,9 +108,7 @@ class CoreLinkController extends Common
 
         Log::notice( $r->user()->username . ' edited the core links from the core bundle with (id: ' . $cb->id . ')' );
         AlertContainer::push( 'Core links updated.', Alert::SUCCESS );
-
         return Redirect::to( route( "core-bundle@edit", [ "cb" => $cb->id ] ) );
-
     }
 
     /**
@@ -142,7 +139,6 @@ class CoreLinkController extends Common
 
         Log::notice( $r->user()->username." deleted a core link (id: " . $cl->id . ')' );
         AlertContainer::push( 'Core link deleted.', Alert::SUCCESS );
-
         return Redirect::to( route( "core-bundle@edit", [ "cb" => $cb->id ] ) );
     }
 }

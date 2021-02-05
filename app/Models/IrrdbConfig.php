@@ -37,21 +37,21 @@ use Illuminate\Database\Eloquent\{
  * @property string|null $protocol
  * @property string|null $source
  * @property string|null $notes
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Customer[] $customers
  * @property-read int|null $customers_count
  * @method static Builder|IrrdbConfig newModelQuery()
  * @method static Builder|IrrdbConfig newQuery()
  * @method static Builder|IrrdbConfig query()
+ * @method static Builder|IrrdbConfig whereCreatedAt($value)
  * @method static Builder|IrrdbConfig whereHost($value)
  * @method static Builder|IrrdbConfig whereId($value)
  * @method static Builder|IrrdbConfig whereNotes($value)
  * @method static Builder|IrrdbConfig whereProtocol($value)
  * @method static Builder|IrrdbConfig whereSource($value)
+ * @method static Builder|IrrdbConfig whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbConfig whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbConfig whereUpdatedAt($value)
  */
 class IrrdbConfig extends Model
 {

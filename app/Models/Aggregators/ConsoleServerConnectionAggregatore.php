@@ -42,28 +42,28 @@ use IXP\Models\ConsoleServerConnection;
  * @property int|null $autobaud
  * @property string|null $notes
  * @property int|null $console_server_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\ConsoleServer|null $consoleServer
  * @property-read \IXP\Models\CustomerTag|null $customer
  * @property-read \IXP\Models\Switcher $switcher
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereAutobaud($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereConsoleServerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereCustid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereFlowcontrol($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereParity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore wherePort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereSpeed($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereStopbits($value)
+ * @method static Builder|ConsoleServerConnectionAggregatore newModelQuery()
+ * @method static Builder|ConsoleServerConnectionAggregatore newQuery()
+ * @method static Builder|ConsoleServerConnectionAggregatore query()
+ * @method static Builder|ConsoleServerConnectionAggregatore whereAutobaud($value)
+ * @method static Builder|ConsoleServerConnectionAggregatore whereConsoleServerId($value)
+ * @method static Builder|ConsoleServerConnectionAggregatore whereCreatedAt($value)
+ * @method static Builder|ConsoleServerConnectionAggregatore whereCustid($value)
+ * @method static Builder|ConsoleServerConnectionAggregatore whereDescription($value)
+ * @method static Builder|ConsoleServerConnectionAggregatore whereFlowcontrol($value)
+ * @method static Builder|ConsoleServerConnectionAggregatore whereId($value)
+ * @method static Builder|ConsoleServerConnectionAggregatore whereNotes($value)
+ * @method static Builder|ConsoleServerConnectionAggregatore whereParity($value)
+ * @method static Builder|ConsoleServerConnectionAggregatore wherePort($value)
+ * @method static Builder|ConsoleServerConnectionAggregatore whereSpeed($value)
+ * @method static Builder|ConsoleServerConnectionAggregatore whereStopbits($value)
+ * @method static Builder|ConsoleServerConnectionAggregatore whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Aggregators\ConsoleServerConnectionAggregatore whereUpdatedAt($value)
  */
 class ConsoleServerConnectionAggregatore extends ConsoleServerConnection
 {

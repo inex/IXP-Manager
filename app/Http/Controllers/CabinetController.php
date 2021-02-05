@@ -47,7 +47,8 @@ use IXP\Utils\View\Alert\{
  * Cabinet Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
+ * @category   IXP
+ * @package    IXP\Http\Controllers
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -237,13 +238,7 @@ class CabinetController extends EloquentController
     {
         $r->validate( [
             'name'                  => 'required|string|max:255',
-            'locationid'            => [ 'required', 'integer',
-                function( $attribute, $value, $fail ) {
-                    if( !Location::find( $value ) ) {
-                        return $fail( 'Location is invalid / does not exist.' );
-                    }
-                }
-            ],
+            'locationid'            => 'required|integer|exists:location,id',
             'colocation'            => 'required|string|max:255',
             'height'                => 'nullable|integer',
             'type'                  => 'nullable|string|max:255',

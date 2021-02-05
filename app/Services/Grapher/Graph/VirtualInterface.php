@@ -3,7 +3,7 @@
 namespace IXP\Services\Grapher\Graph;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +22,7 @@ namespace IXP\Services\Grapher\Graph;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth, Log;
 
 use IXP\Services\Grapher;
@@ -38,9 +39,9 @@ use IXP\Models\{
  *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
- * @category   Grapher
+ * @category   IXP
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class VirtualInterface extends Graph
@@ -55,7 +56,7 @@ class VirtualInterface extends Graph
     /**
      * Constructor
      *
-     * @param Grapher $grapher
+     * @param Grapher               $grapher
      * @param VirtualInterfaceModel $vi
      */
     public function __construct( Grapher $grapher, VirtualInterfaceModel $vi )
@@ -103,11 +104,12 @@ class VirtualInterface extends Graph
 
     /**
      * The name of a graph (e.g. member name, IXP name, etc)
+     *
      * @return string
      */
     public function name(): string
     {
-        $pi = $this->virtualInterface()->physicalInterfaces()->first();
+        $pi = $this->virtualInterface()->physicalInterfaces[ 0 ];
         return "LAG over ports on " . $pi->switchPort->switcher->name;
     }
 
@@ -187,8 +189,8 @@ class VirtualInterface extends Graph
      */
     public function getParamsAsArray(): array
     {
-        $p = parent::getParamsAsArray();
-        $p['id'] = $this->virtualInterface()->id;
+        $p          = parent::getParamsAsArray();
+        $p['id']    = $this->virtualInterface()->id;
         return $p;
     }
 

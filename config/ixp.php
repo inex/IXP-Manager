@@ -83,7 +83,7 @@ return [
        ;;
        ;; */
     'peering-matrix' => [
-        'min-auth' => env( 'PEERING_MATRIX_MIN_AUTH', \Entities\User::AUTH_PUBLIC ),
+        'min-auth' => env( 'PEERING_MATRIX_MIN_AUTH', \IXP\Models\User::AUTH_PUBLIC ),
     ],
 
 

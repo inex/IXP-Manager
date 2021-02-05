@@ -49,8 +49,8 @@ class StoreVlanInterface extends FormRequest
     public function rules(): array
     {
         return [
-            'vlanid'                => 'required|integer|exists:Entities\Vlan,id',
-            'virtualinterfaceid'    => 'required|integer|exists:Entities\VirtualInterface,id',
+            'vlanid'                => 'required|integer|exists:vlan,id',
+            'virtualinterfaceid'    => 'required|integer|exists:virtualinterface,id',
             'irrdbfilter'           => 'boolean',
             'mcastenabled'          => 'boolean',
             'ipv4enabled'           => 'boolean',

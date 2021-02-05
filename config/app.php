@@ -204,7 +204,6 @@ return [
         /*
          * Third party providers
          */
-        LaravelDoctrine\Extensions\BeberleiExtensionsServiceProvider::class,
 
         Former\FormerServiceProvider::class,
 
@@ -267,10 +266,6 @@ return [
         'URL'       => 'Illuminate\Support\Facades\URL',
         'Validator' => 'Illuminate\Support\Facades\Validator',
         'View'      => 'Illuminate\Support\Facades\View',
-
-        'D2EM'      => LaravelDoctrine\ORM\Facades\EntityManager::class,
-        'Registry'  => LaravelDoctrine\ORM\Facades\Registry::class,
-        'Doctrine'  => LaravelDoctrine\ORM\Facades\Doctrine::class,
 
         'Grapher'   => IXP\Support\Facades\Grapher::class,
         'Image'     => Intervention\Image\Facades\Image::class,

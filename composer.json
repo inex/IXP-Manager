@@ -31,8 +31,6 @@
         "fideloper/proxy": "^4.0",
         "laravel/framework": "^6.0",
         "laravel/tinker": "~1.0",
-        "laravel-doctrine/orm": "1.5.*",
-        
         "foil/foil": "~0.6",
 
         "zendesk/zendesk_api_client_php": "2.*",
@@ -42,8 +40,6 @@
         "barryvdh/laravel-dompdf": "^0.8.0",
         "luketowers/purifier": "dev-master",
         "php-ds/php-ds": "^1.1",
-        "beberlei/doctrineextensions": "^1.0",
-        "laravel-doctrine/extensions": "1.1.*",
         "s1lentium/iptools": "^1.1",
         "parsedown/laravel": "^1.0",
         "webpatser/laravel-countries": "^1.5",
@@ -52,8 +48,7 @@
         "socialiteproviders/manager": "^3.3",
         "pragmarx/google2fa-laravel": "^1.2",
         "bacon/bacon-qr-code": "~2.0",
-        "wolfcast/browser-detection": "^2.9",
-        "ext-yaml": "*"
+        "wolfcast/browser-detection": "^2.9"
     },
     "require-dev": {
         "facade/ignition": "^1.4",

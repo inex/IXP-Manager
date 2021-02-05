@@ -91,10 +91,6 @@ return [
             'driver'    => 'eloquent',
             'model'     => User::class,
         ],
-//        'users' => [
-//            'driver' => 'doctrine',
-//            'model' => Entities\User::class,
-//        ],
 
 //         'users' => [
 //             'driver' => 'database',

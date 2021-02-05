@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Redirect;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -45,9 +46,9 @@ use IPTools\{
     Network as IPToolsNetwork
 };
 
-use IXP\Http\Requests\{
-    DeleteIpAddressesByNetwork,
-    StoreIpAddress
+use IXP\Http\Requests\IpAddress\{
+    DeleteByNetwork,
+    Store
 };
 
 use IXP\Utils\View\Alert\{
@@ -57,9 +58,11 @@ use IXP\Utils\View\Alert\{
 
 /**
  * IP Address Controller
+ *
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   Admin
+ * @category   IXP
+ * @package    IXP\Http\Controllers
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -126,7 +129,7 @@ class IpAddressController extends Controller
 
         return view( 'ip-address/list' )->with([
             'ips'                       => $vlan ? $ips : [],
-            'vlans'                     => Vlan::publicOnly()->orderBy('number')->get(),
+            'vlans'                     => Vlan::publicOnly()->orderBy('number' )->get(),
             'protocol'                  => $protocol,
             'vlan'                      => $vlan
         ]);
@@ -142,7 +145,7 @@ class IpAddressController extends Controller
     public function create( int $protocol ): View
     {
         return view( 'ip-address/add' )->with([
-            'vlans'                     => Vlan::publicOnly()->orderBy('number')->get(),
+            'vlans'                     => Vlan::publicOnly()->orderBy('number' )->get(),
             'protocol'                  => $this->processProtocol( $protocol, false )
         ]);
     }
@@ -150,13 +153,13 @@ class IpAddressController extends Controller
     /**
      * Edit the core links associated to a core bundle
      *
-     * @param   StoreIpAddress      $r instance of the current HTTP request
+     * @param   Store      $r instance of the current HTTP request
      *
      * @return  RedirectResponse
      *
      * @throws
      */
-    public function store( StoreIpAddress $r ): RedirectResponse
+    public function store( Store $r ): RedirectResponse
     {
         $vlan     = Vlan::find( $r->vlan );
         $network  = Network::parse( trim( htmlspecialchars( $r->network )  ) );
@@ -199,18 +202,17 @@ class IpAddressController extends Controller
         return Redirect::to( route( 'ip-address@list', [ 'protocol' => $network->getFirstIP()->getVersion() === 'IPv6' ? '6' : '4', 'vlanid' => $vlan->id ] ) );
     }
 
-
     /**
      * Display the form to delete free IP addresses in a VLAN
      *
-     * @param DeleteIpAddressesByNetwork $r Instance of the current HTTP request
-     * @param Vlan $vlan
+     * @param DeleteByNetwork    $r Instance of the current HTTP request
+     * @param Vlan                          $vlan
      *
      * @return View | RedirectResponse
      *
      * @throws
      */
-    public function deleteByNetwork( DeleteIpAddressesByNetwork $r, Vlan $vlan )
+    public function deleteByNetwork( DeleteByNetwork $r, Vlan $vlan )
     {
         $ips = [];
         if( $r->network ) {

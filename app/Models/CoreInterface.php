@@ -34,19 +34,19 @@ use Illuminate\Database\Eloquent\{
  *
  * @property int $id
  * @property int|null $physical_interface_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\CoreLink|null $coreLinkSideA
  * @property-read \IXP\Models\CoreLink|null $coreLinkSideB
  * @property-read \IXP\Models\PhysicalInterface|null $physicalInterface
  * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface query()
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface wherePhysicalInterfaceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreInterface whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CoreInterface whereUpdatedAt($value)
  */
 class CoreInterface extends Model
 {

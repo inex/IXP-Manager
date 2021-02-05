@@ -3,7 +3,7 @@
 namespace IXP\Services\Grapher\Backend;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,15 +22,16 @@ namespace IXP\Services\Grapher\Backend;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Log;
 
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
+
 use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
-use IXP\Services\Grapher\Backend as GrapherBackend;
-
-use IXP\Services\Grapher\Graph;
-
 use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
+
+use IXP\Services\Grapher\Backend as GrapherBackend;
+use IXP\Services\Grapher\Graph;
 
 use IXP\Utils\Grapher\{
     Rrd  as RrdUtil
@@ -41,9 +42,9 @@ use IXP\Utils\Grapher\{
  *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <Yann@islandbridgenetworks.ie>
- * @category   Grapher
+ * @category   Ixp
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Sflow extends GrapherBackend implements GrapherBackendContract
@@ -263,22 +264,16 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
                 return sprintf( "aggregate.%s.%s.vlan%05d.%s",
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
                     $graph->vlan()->number, $type );
-                break;
-
             case 'VlanInterface':
                 /** @var Graph\VlanInterface $graph */
                 return sprintf( "individual.%s.%s.src-%05d.%s",
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
                     $graph->vlanInterface()->id, $type );
-                break;
-
             case 'P2p':
                 /** @var Graph\P2p $graph */
                 return sprintf( "p2p.%s.%s.src-%05d.dst-%05d.%s",
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
                     $graph->svli()->id, $graph->dvli()->id, $type );
-                break;
-
             default:
                 throw new CannotHandleRequestException("Backend asserted it could process but cannot handle graph of type: {$graph->type()}" );
         }
@@ -304,22 +299,16 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
                 return sprintf( "%s/%s/%s/aggregate/%s", $config['root'],
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
                     $this->resolveFileName( $graph, $type ) );
-                break;
-
             case 'VlanInterface':
                 /** @var Graph\VlanInterface $graph */
                 return sprintf( "%s/%s/%s/individual/%s", $config['root'],
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
                     $this->resolveFileName( $graph, $type ) );
-                break;
-
             case 'P2p':
                 /** @var Graph\P2p $graph */
                 return sprintf( "%s/%s/%s/p2p/src-%05d/%s", $config['root'],
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
                     $graph->svli()->id, $this->resolveFileName( $graph, $type ) );
-                break;
-
             default:
                 throw new CannotHandleRequestException("Backend asserted it could process but cannot handle graph of type: {$graph->type()}" );
         }

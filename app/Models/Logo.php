@@ -10,31 +10,27 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property int $id
  * @property int|null $customer_id
- * @property string $type
  * @property string $original_name
  * @property string $stored_name
  * @property string $uploaded_by
- * @property string $uploaded_at
+ * @property \Illuminate\Support\Carbon|null $created_at
  * @property int $width
  * @property int $height
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Logo newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Logo newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Logo query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Logo whereCustomerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Logo whereHeight($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Logo whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Logo whereOriginalName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Logo whereStoredName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Logo whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Logo whereUploadedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Logo whereUploadedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Logo whereWidth($value)
- * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer|null $customer
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Logo whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Logo whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Logo newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Logo newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Logo query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Logo whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Logo whereCustomerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Logo whereHeight($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Logo whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Logo whereOriginalName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Logo whereStoredName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Logo whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Logo whereUploadedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Logo whereWidth($value)
+ * @mixin \Eloquent
  */
 class Logo extends Model
 {

@@ -83,7 +83,7 @@ return [
     /*
      * Require 2FA authentication for IXP users >= this level.
      *
-     * By default we set it to '\Entities\User::AUTH_SUPERUSER + 1' which means no users will be
+     * By default we set it to '\IXP\Models\User::AUTH_SUPERUSER + 1' which means no users will be
      * forced to enabled 2fa.
      *
      * To force:

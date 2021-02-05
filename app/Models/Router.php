@@ -430,6 +430,6 @@ class Router extends Model
             return true;
         }
 
-        return $this->updated_at->diffInSeconds( null ) > $threshold;
+        return $this->updated_at->diffInSeconds() > $threshold;
     }
 }

@@ -7,10 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * IXP\Models\BGPSession
  *
- * @method static \Illuminate\Database\Eloquent\Builder|BgpSession newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BgpSession newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BgpSession query()
- * @mixin \Eloquent
  * @property int $id
  * @property int $srcipaddressid
  * @property int $protocol
@@ -20,6 +16,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $source
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|BgpSession newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BgpSession newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BgpSession query()
  * @method static \Illuminate\Database\Eloquent\Builder|BgpSession whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BgpSession whereDstipaddressid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BgpSession whereId($value)
@@ -29,6 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|BgpSession whereSource($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BgpSession whereSrcipaddressid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BgpSession whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class BgpSession extends Model
 {
