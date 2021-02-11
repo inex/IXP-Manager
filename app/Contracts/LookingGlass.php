@@ -113,9 +113,9 @@ interface LookingGlass
     /**
      * Get details for a specific route as received by a protocol
      *
-     * @param string $protocol Protocol name
-     * @param string $network The route to lookup
-     * @param int $mask The mask of the route to look up
+     * @param string    $protocol   Protocol name
+     * @param string    $network    The route to lookup
+     * @param int       $mask       The mask of the route to look up
      *
      * @return string
      */
@@ -124,9 +124,9 @@ interface LookingGlass
     /**
      * Get details for a specific route in a named table (vrf)
      *
-     * @param string $table Table name
-     * @param string $network The route to lookup
-     * @param int $mask The mask of the route to look up
+     * @param string    $table      Table name
+     * @param string    $network    The route to lookup
+     * @param int       $mask       The mask of the route to look up
      *
      * @return string
      */
@@ -135,9 +135,9 @@ interface LookingGlass
     /**
      * Get wildcard large communities in protocol tabe of form ( x, y, * )
      *
-     * @param string $protocol Protocol name
-     * @param int $x
-     * @param int $y
+     * @param string    $protocol Protocol name
+     * @param int       $x
+     * @param int       $y
      *
      * @return string
      */

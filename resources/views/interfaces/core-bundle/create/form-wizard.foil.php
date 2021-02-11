@@ -1,6 +1,6 @@
 <?php
-/** @var Foil\Template\Template $t */
-$this->layout( 'layouts/ixpv4' );
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'title' ) ?>
@@ -67,7 +67,8 @@ $this->layout( 'layouts/ixpv4' );
                                     ->id('stp')
                                     ->label( 'STP' )
                                     ->value( 1 )
-                                    ->blockHelp( "" );
+                                    ->class( 'mx-1' )
+                                    ->blockHelp( '' );
                                 ?>
                             </div>
 
@@ -99,8 +100,8 @@ $this->layout( 'layouts/ixpv4' );
                                 ->id( 'enabled' )
                                 ->label( 'Enabled' )
                                 ->value( 1 )
-                                ->class( "mx-1" )
-                                ->blockHelp( "" );
+                                ->class( 'mx-1' )
+                                ->blockHelp( '' );
                             ?>
                         </div>
 
@@ -202,7 +203,9 @@ $this->layout( 'layouts/ixpv4' );
 
                     <div class="form-group col-sm-12">
                         <div class="p-4 text-center col-lg-12">
-                            <button id="add-new-core-link" type="button" class="btn btn-primary" title="Add Core link">Create Core Link</button>
+                            <button id="add-new-core-link" type="button" class="btn btn-primary" title="Add Core link">
+                                Create an other Core Link
+                            </button>
                         </div>
                     </div>
                 </div>

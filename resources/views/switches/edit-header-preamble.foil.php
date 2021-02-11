@@ -4,7 +4,7 @@
             <span class="fa fa-th-list"></span>
         </a>
     <?php endif; ?>
-    <a title="add SNMP" class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@add-by-snmp') ?>">
+    <a title="add SNMP" class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@create-by-snmp') ?>">
         <span class="fa fa-plus"></span>
     </a>
 </div>

@@ -1,3 +1,7 @@
+<?php
+    $vi = $t->vi; /** @var $vi \IXP\Models\VirtualInterface */
+?>
+
 <?php if( $t->cb ): ?>
     <div class="alert alert-warning mt-4" role="alert">
         <div class="d-flex align-items-center">
@@ -15,7 +19,7 @@
 <div class="card">
     <div class="card-body">
         <?= Former::open()->method( $t->vi ? 'PUT' :'POST' )
-            ->action( $t->vi ? route( 'virtual-interface@update', [ 'vi' => $t->vi->id ] ) : route( 'virtual-interface@store' ) )
+            ->action( $t->vi ? route( 'virtual-interface@update', [ 'vi' => $vi->id ] ) : route( 'virtual-interface@store' ) )
             ->customInputWidthClass( 'col-lg-6 col-md-7' )
             ->customLabelWidthClass( 'col-lg-4 col-md-5' )
             ->actionButtonsCustomClass( "grey-box")
@@ -33,7 +37,13 @@
                         ->blockHelp( 'The ' . config( 'ixp_fe.lang.customer.one' ) . ' who owns this virtual interface.' );
                     ?>
 
-                    <?php if( $t->vi && $t->vi->vlanInterfaces()->count() > 1 && !$t->vi->trunk ): ?>
+                    <?php if( $t->selectedCust ): ?>
+                        <?= Former::hidden( 'custid' )
+                            ->forceValue( $t->selectedCust->id )
+                        ?>
+                    <?php endif; ?>
+
+                    <?php if( $vi && !$vi->trunk && $vi->vlanInterfaces()->count() > 1 ): ?>
                         <div class="alert alert-warning mt-4" role="alert">
                             <div class="d-flex align-items-center">
                                 <div class="text-center">
@@ -55,7 +65,7 @@
                         ->value( 1 );
                     ?>
 
-                    <?php if( $t->vi && $t->vi->physicalInterfaces()->count() > 1 && !$t->vi->lag_framing ): ?>
+                    <?php if( $vi && !$vi->lag_framing && $vi->physicalInterfaces()->count() > 1 ): ?>
                         <div class="alert alert-warning mt-4" role="alert">
                             <div class="d-flex align-items-center">
                                 <div class="text-center">
@@ -77,7 +87,7 @@
                         ->value( 1 );
                     ?>
 
-                    <div id='fastlacp-area' style="<?= old( 'fastlacp' ) || ( $t->vi && $t->vi->lag_framing ) ? "" : "display: none" ?>">
+                    <div id='fastlacp-area' style="<?= old( 'fastlacp' ) || ( $vi && $vi->lag_framing ) ? "" : "display: none" ?>">
                         <?= Former::checkbox( 'fastlacp' )
                             ->label( '&nbsp;' )
                             ->text( 'Use Fast LACP' )
@@ -87,14 +97,16 @@
                         ?>
                     </div>
 
-                    <?php if ($t->vi && $t->vi->bundleName() ): ?>
+                    <?php if( $vi && $vi->bundleName() ): ?>
                         <div class="form-group row">
-                            <label for="custid" class="control-label col-sm-4">Bundle Name</label>
+                            <label for="custid" class="control-label col-sm-4">
+                                Bundle Name
+                            </label>
                             <div class="col-sm-6">
                                 <label class="">
                                     <b>
                                         <code>
-                                            <?= $t->ee( $t->vi->bundleName() ) ?>
+                                            <?= $t->ee( $vi->bundleName() ) ?>
                                         </code>
                                     </b>
                                 </label>
@@ -102,28 +114,28 @@
                         </div>
                     <?php endif; ?>
 
-                    <?php if ($t->vi && $t->vi->type() ): ?>
+                    <?php if( $vi && $vi->type() ): ?>
                         <div class="form-group row">
-                            <label class="control-label col-sm-4">Type</label>
-
+                            <label class="control-label col-sm-4">
+                                Type
+                            </label>
                             <div class="col-sm-6">
-
-                                <span class="badge <?php if( $t->vi->typePeering() ): ?> badge-success <?php elseif( $t->vi->typeFanout() ): ?>badge-secondary <?php elseif( $t->vi->typeReseller() ): ?>badge-dark <?php else: ?>badge-info <?php endif; ?>">
-                                    <?= $t->vi->resolveType() ?>
+                                <span class="badge <?php if( $vi->typePeering() ): ?> badge-success <?php elseif( $vi->typeFanout() ): ?>badge-secondary <?php elseif( $vi->typeReseller() ): ?>badge-dark <?php else: ?>badge-info <?php endif; ?>">
+                                    <?= $vi->resolveType() ?>
                                 </span>
 
-                                <?php if( $t->vi->physicalInterfaces()->count() === 1 ):
-                                    $pi = $t->vi->physicalInterfaces()->first(); /** @var \IXP\Models\PhysicalInterface $pi */
+                                <?php if( $vi->physicalInterfaces()->count() === 1 ):
+                                    $pi = $vi->physicalInterfaces[ 0 ]; /** @var \IXP\Models\PhysicalInterface $pi */
                                     ?>
-                                    <?php if( $t->vi->typePeering() && $pi->fanoutPhysicalInterface ): ?>
+                                    <?php if( $pi->fanoutPhysicalInterface && $vi->typePeering() ): ?>
                                         <span class="ml-2">
-                                            <a href="<?= route( 'virtual-interface@edit' , [ 'vi' => $pi->fanoutPhysicalInterface->virtualInterface->id ]) ?>" >
+                                            <a href="<?= route( 'virtual-interface@edit' , [ 'vi' => $pi->fanoutPhysicalInterface->virtualinterfaceid ] ) ?>" >
                                                 See fanout port
                                             </a>
                                         </span>
-                                    <?php elseif( $t->vi->typeFanout() && $pi->peeringPhysicalInterface ): ?>
+                                    <?php elseif( $pi->peeringPhysicalInterface &&  $t->vi->typeFanout() ): ?>
                                         <span class="ml-2">
-                                            <a href="<?= route( 'virtual-interface@edit' , [ 'vi' => $pi->peeringPhysicalInterface->virtualInterface->id ]) ?>" >
+                                            <a href="<?= route( 'virtual-interface@edit' , [ 'vi' => $pi->peeringPhysicalInterface->virtualinterfaceid ] ) ?>" >
                                                 See peering port
                                             </a>
                                         </span>
@@ -162,20 +174,10 @@
                     ?>
                 </div>
 
-                <?= Former::hidden( 'id' )
-                    ->value( $t->vi->id ?? null )
-                ?>
-
                 <?php if( $t->vi ): ?>
                     <?= Former::hidden( 'custid' )
-                        ->id( "custid" )
+                        ->id( 'custid' )
                         ->forceValue( $t->vi->customer->id )
-                    ?>
-                <?php endif; ?>
-
-                <?php if( $t->selectedCust ): ?>
-                    <?= Former::hidden( 'selectedCust' )
-                        ->forceValue( $t->selectedCust->id )
                     ?>
                 <?php endif; ?>
 

@@ -99,14 +99,13 @@ class CoreLinkController extends Common
             $cl->enabled = $r->input( 'enabled-' . $cl->id ) ?? false;
 
             if( $cb->typeECMP() ){
-                $cl->bfd =  $r->input( 'bfd-'.$cl->id ) ?? false;
-                $cl->ipv4_subnet = $r->input( 'subnet-'.$cl->id );
+                $cl->bfd            =  $r->input( 'bfd-' . $cl->id ) ?? false;
+                $cl->ipv4_subnet    = $r->input( 'subnet-' . $cl->id );
             }
-
             $cl->save();
         }
 
-        Log::notice( $r->user()->username . ' edited the core links from the core bundle with (id: ' . $cb->id . ')' );
+        Log::notice( $r->user()->username . ' updated the core links from the core bundle with (id: ' . $cb->id . ')' );
         AlertContainer::push( 'Core links updated.', Alert::SUCCESS );
         return Redirect::to( route( "core-bundle@edit", [ "cb" => $cb->id ] ) );
     }

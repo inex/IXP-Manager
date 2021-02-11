@@ -1,6 +1,10 @@
 <?php
     $this->layout( 'layouts/ixpv4' );
     $isSuperUser = Auth::getUser()->isSuperUser();
+    $switch     = $t->s; /** @var \IXP\Models\Switcher $switch */
+    $infra      = $t->infra; /** @var \IXP\Models\Infrastructure $infra */
+    $vlan       = $t->vlan; /** @var \IXP\Models\Vlan $vlan */
+    $location   = $t->location; /** @var \IXP\Models\Location $location */
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -11,16 +15,16 @@
     <div class="btn-group btn-group-sm" role="group">
         <div class="btn-group btn-group-sm">
             <button type="button" class="btn btn-white dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?= $t->s ? $t->s->infrastructure->name : ($t->infra->name ?? "All Infrastructures") ?>
+                <?= $switch ? $switch->infrastructureModel->name : ($infra->name ?? "All Infrastructures") ?>
             </button>
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
-                <a class="dropdown-item <?= $t->s ? "" : ( !$t->infra ? "active" : "" ) ?>" href="<?= route( "switch@configuration", [ "infra" => 0 ] ) ?>">
+                <a class="dropdown-item <?= $switch ? "" : ( !$infra ? "active" : "" ) ?>" href="<?= route( "switch@configuration", [ "infra" => 0 ] ) ?>">
                     All Infrastructures
                 </a>
                 <div class="dropdown-divider"></div>
-                <?php foreach( $t->infras as $infra ): ?>
-                    <a class="dropdown-item <?= $t->s ? "active" : ( $t->infra && $t->infra->id === $id ? "active" : "" )?>" href="<?= route( "switch@configuration", [ "infra" => $infra[ 'id' ] ] ) ?>">
-                        <?= $infra[ 'name' ] ?>
+                <?php foreach( $t->infras as $i ): ?>
+                    <a class="dropdown-item <?= $switch ? "active" : ( $infra && $infra->id === $i->id ? "active" : "" )?>" href="<?= route( "switch@configuration", [ "infra" => $i->id ] ) ?>">
+                        <?= $i->name ?>
                     </a>
                 <?php endforeach; ?>
             </div>
@@ -28,16 +32,16 @@
 
         <div class="btn-group btn-group-sm">
             <button type="button" class="btn btn-white dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?= $t->vlan->name ?? "All VLANs" ?>
+                <?= $vlan->name ?? "All VLANs" ?>
             </button>
 
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
-                <a class="dropdown-item <?= !$t->vlan ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "vlan" => 0 ] ) ?>">
+                <a class="dropdown-item <?= !$vlan ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "vlan" => 0 ] ) ?>">
                     All VLANs
                 </a>
                 <div class="dropdown-divider"></div>
                 <?php foreach( $t->vlans as $vl ): ?>
-                    <a class="dropdown-item <?= $t->vlan && $t->vlan->id === $vl->id ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "vlan" => $vl->id ] ) ?>">
+                    <a class="dropdown-item <?= $vlan && $vlan->id === $vl->id ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "vlan" => $vl->id ] ) ?>">
                         <?= $vl->name ?>
                     </a>
                 <?php endforeach; ?>
@@ -46,16 +50,16 @@
 
         <div class="btn-group btn-group-sm">
             <button type="button" class="btn btn-white dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?= $t->s ? $t->s->cabinet->location->name : ($t->location->name ?? "All Facilities") ?>
+                <?= $switch ? $switch->cabinet->location->name : ($location->name ?? "All Facilities") ?>
             </button>
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
-                <a class="dropdown-item <?= $t->s ? "" : ( !$t->location ? "active" : "" ) ?>" href="<?= route( "switch@configuration", [ "location" => 0 ] ) ?>">
+                <a class="dropdown-item <?= $switch ? "" : ( $location ?: "active" ) ?>" href="<?= route( "switch@configuration", [ "location" => 0 ] ) ?>">
                     All Facilities
                 </a>
                 <div class="dropdown-divider"></div>
-                <?php foreach( $t->locations as $location ): ?>
-                    <a class="dropdown-item <?= $t->s ? "active" : ( $t->location && $t->location->id === $id ? "active" : "" ) ?>" href="<?= route( "switch@configuration", [ "location" => $location[ 'id' ] ] ) ?>">
-                        <?= $location[ 'name' ] ?>
+                <?php foreach( $t->locations as $l ): ?>
+                    <a class="dropdown-item <?= $switch ? "active" : ( !($location && $location->id === $l->id) ?: "active" ) ?>" href="<?= route( "switch@configuration", [ "location" => $l->id ] ) ?>">
+                        <?= $l->name ?>
                     </a>
                 <?php endforeach; ?>
             </div>
@@ -63,13 +67,13 @@
 
         <div class="btn-group btn-group-sm">
             <button type="button" class="btn btn-white dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?= $t->s->name ?? "All switches" ?>
+                <?= $switch->name ?? "All switches" ?>
             </button>
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
-                <a class="dropdown-item <?= !$t->s ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "switch" => 0 ] ) ?>">All Switch</a>
+                <a class="dropdown-item <?= !$switch ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "switch" => 0 ] ) ?>">All Switch</a>
                 <div class="dropdown-divider"></div>
                 <?php foreach( $t->switches as $s ): ?>
-                    <a class="dropdown-item <?= $t->s && $t->s->id === $s->id ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "switch" => $s->id ] ) ?>">
+                    <a class="dropdown-item <?= $switch && $switch->id === $s->id ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "switch" => $s->id ] ) ?>">
                         <?= $s->name ?>
                     </a>
                 <?php endforeach; ?>
@@ -86,8 +90,8 @@
                 </a>
                 <div class="dropdown-divider"></div>
                 <?php foreach( $t->speeds as $speed ): ?>
-                    <a class="dropdown-item <?= $t->speed === $speed[ 'speed' ] ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "speed" => $speed[ 'speed' ] ] ) ?>">
-                        <?= $t->scaleBits( $speed[ 'speed' ] * 1000000, 0 ) ?>
+                    <a class="dropdown-item <?= $t->speed === $speed ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "speed" => $speed ] ) ?>">
+                        <?= $t->scaleBits( $speed * 1000000, 0 ) ?>
                     </a>
                 <?php endforeach; ?>
             </div>

@@ -28,8 +28,8 @@
 
     dd_vlan.on( 'change', updateIpAddresses );
 
-    $( ".glyphicon-generator-ipv6" ).parent().on( 'click', updateMD5 );
-    $( ".glyphicon-generator-ipv4" ).parent().on( 'click', updateMD5 );
+    $( ".glyphicon-generator-ipv6" ).parent().click( updateMD5 );
+    $( ".glyphicon-generator-ipv4" ).parent().click( updateMD5 );
 
     //////////////////////////////////////////////////////////////////////////////////////
     // initial states:

@@ -1,10 +1,11 @@
 <?php
     /** @var Foil\Template\Template $t */
+    use IXP\Models\PatchPanelPort;
 
-use IXP\Models\PatchPanelPort;
-
-$this->layout( 'layouts/ixpv4' );
+    $this->layout( 'layouts/ixpv4' );
     $ppp = $this->ppp; /** @var $ppp PatchPanelPort */
+    $isSuperUser = Auth::getUser()->isSuperUser();
+    $nbSlave = $ppp->duplexSlavePorts()->count();
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -12,14 +13,19 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 
-<?php if( Auth::getUser()->isSuperUser() ): ?>
+<?php if( $isSuperUser ): ?>
     <?php $this->section( 'page-header-postamble' ) ?>
         <div class="btn-group btn-group-sm" role="group">
             <a class="btn btn-white extra-action" href="<?= route('patch-panel-port@edit' , [ "ppp" => $ppp->id ] ) ?>" title="edit">
                 <span class="fa fa-pencil"></span>
             </a>
 
-            <?= $t->insert( 'patch-panel-port/action-dd', [ 'ppp' => $ppp, 'btnClass' => 'btn-group-sm', 'tpl' => 'view', 'prefix' => $ppp->patchPanel->port_prefix, 'nbSlave' => $ppp->duplexSlavePorts()->count(), 'slaveName' => $ppp->duplexSlavePorts()->count() ? $ppp->duplexSlavePorts()->first()->name() : '' ] ); ?>
+            <?= $t->insert( 'patch-panel-port/action-dd', [
+                    'ppp' => $ppp, 'btnClass' => 'btn-group-sm',
+                    'tpl' => 'view', 'prefix' => $ppp->patchPanel->port_prefix,
+                    'nbSlave' => $nbSlave,
+                    'slaveName' => $nbSlave ? $ppp->duplexSlavePorts[ 0 ]->name() : '',
+                    'isSuperUser' => $isSuperUser ] ); ?>
 
             <a class="btn btn-white" href="<?= route('patch-panel-port@list-for-patch-panel' , [ "pp" => $ppp->patch_panel_id ] ) ?>" title="list">
                 <span class="fa fa-th-list"></span>
@@ -45,7 +51,7 @@ $this->layout( 'layouts/ixpv4' );
                                 </a>
                             </li>
 
-                            <?php if( !Auth::getUser()->isSuperUser() ){ break; /* no history for non-admins */ } ?>
+                            <?php if( !$isSuperUser ){ break; /* no history for non-admins */ } ?>
 
                         <?php endforeach; ?>
                     </ul>
@@ -55,6 +61,9 @@ $this->layout( 'layouts/ixpv4' );
                     <div class="tab-content">
                         <?php foreach ( $t->listHistory as $history ):
                             /** @var PatchPanelPort $history */
+                            $duplexMasterPort = $history->duplexMasterPort;
+                            $duplexSlavePort = $history->duplexSlavePorts;
+
                             $current = get_class( $history ) === PatchPanelPort::class;
                             if( $current ):
                                 $pp = $history->patchPanel;
@@ -64,88 +73,85 @@ $this->layout( 'layouts/ixpv4' );
 
                             ?>
 
-                        <div class="tab-pane fade <?php if( $current ) { ?> active show <?php } ?>" id="ppp-<?= $history->id ?>">
-                            <div class="row">
-                                <div class="col-lg-6 col-md-12">
-                                    <table class="table_view_info">
-                                        <?php if( !$current && ( $history->duplexMasterPort || $history->duplexSlavePorts ) ): ?>
+                            <div class="tab-pane fade <?php if( $current ) { ?> active show <?php } ?>" id="ppp-<?= $history->id ?>">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-12">
+                                        <table class="table_view_info">
+                                            <?php if( !$current && ( $duplexMasterPort || $duplexSlavePort ) ): ?>
+                                                <tr>
+                                                    <td>
+                                                        <b>
+                                                            Duplex:
+                                                        </b>
+                                                    </td>
+                                                    <td>
+                                                        Was part of duplex port with
+                                                        <?php if( $duplexMasterPort ) { ?>
+                                                            <?= $t->ee( $duplexMasterPort->patchPanel->name )?>
+                                                        <?php } else { ?>
+                                                            <?= $t->ee( $duplexSlavePort->patchPanel->name )?>
+                                                        <?php } ?>
+                                                    </td>
+                                                </tr>
+                                            <?php endif; ?>
                                             <tr>
                                                 <td>
                                                     <b>
-                                                        Duplex:
+                                                        Description:
                                                     </b>
                                                 </td>
                                                 <td>
-                                                    Was part of duplex port with
-                                                    <?php if( $history->duplexMasterPort ) { ?>
-                                                        <?= $t->ee( $history->duplexMasterPort->patchPanel->name )?>
-                                                    <?php } else { ?>
-                                                        <?= $t->ee( $history->duplexSlavePorts->patchPanel->name )?>
-                                                    <?php } ?>
+                                                    <?= @parsedown( $t->ee( $history->description ) ) ?>
                                                 </td>
                                             </tr>
-                                        <?php endif; ?>
-
-                                        <tr>
-                                            <td>
-                                                <b>
-                                                    Description:
-                                                </b>
-                                            </td>
-                                            <td>
-                                                <?= @parsedown( $t->ee( $history->description ) ) ?>
-                                            </td>
-                                        </tr>
-
-                                        <?php if( $current ): ?>
+                                            <?php if( $current ): ?>
+                                                <tr>
+                                                    <td>
+                                                        <b>
+                                                            Our Reference:
+                                                        </b>
+                                                    </td>
+                                                    <td>
+                                                        <?= $t->ee( $history->circuitReference() ) ?>
+                                                    </td>
+                                                </tr>
+                                            <?php endif; ?>
                                             <tr>
                                                 <td>
                                                     <b>
-                                                        Our Reference:
+                                                        Patch Panel:
                                                     </b>
                                                 </td>
                                                 <td>
-                                                    <?= $t->ee( $history->circuitReference() ) ?>
-                                                </td>
-                                            </tr>
-                                        <?php endif; ?>
-
-                                        <tr>
-                                            <td>
-                                                <b>
-                                                    Patch Panel:
-                                                </b>
-                                            </td>
-                                            <td>
-                                                <?php if( $current ): ?>
-                                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                                        <a href="<?= route( 'patch-panel-port@list-for-patch-panel' , [ 'pp' => $history->patch_panel_id ] ) ?>" >
-                                                            <?= $t->ee( $history->patchPanel->name ) ?>
-                                                        </a>
-                                                    <?php else: ?>
-                                                        <?= $t->ee( $history->patchPanelPort->patchPanel->name ) ?>
-                                                    <?php endif; ?>
-                                                <?php else: ?>
-                                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                                        <a href="<?= route( 'patch-panel-port@list-for-patch-panel' , [ 'pp' => $history->patchPanelPort->patchPanel->id ] ) ?>" >
+                                                    <?php if( $current ): ?>
+                                                        <?php if( $isSuperUser ): ?>
+                                                            <a href="<?= route( 'patch-panel-port@list-for-patch-panel' , [ 'pp' => $history->patch_panel_id ] ) ?>" >
+                                                                <?= $t->ee( $history->patchPanel->name ) ?>
+                                                            </a>
+                                                        <?php else: ?>
                                                             <?= $t->ee( $history->patchPanelPort->patchPanel->name ) ?>
-                                                        </a>
+                                                        <?php endif; ?>
                                                     <?php else: ?>
-                                                        <?= $t->ee( $history->patchPanelPort->patchPanel->name ) ?>
+                                                        <?php if( $isSuperUser ): ?>
+                                                            <a href="<?= route( 'patch-panel-port@list-for-patch-panel' , [ 'pp' => $history->patchPanelPort->patchPanel->id ] ) ?>" >
+                                                                <?= $t->ee( $history->patchPanelPort->patchPanel->name ) ?>
+                                                            </a>
+                                                        <?php else: ?>
+                                                            <?= $t->ee( $history->patchPanelPort->patchPanel->name ) ?>
+                                                        <?php endif; ?>
                                                     <?php endif; ?>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <b>
-                                                    Patch Panel Port:
-                                                </b>
-                                            </td>
-                                            <td>
-                                                <?= $t->ee( $ppp->name() ) ?>
-                                            </td>
-                                        </tr>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <b>
+                                                        Patch Panel Port:
+                                                    </b>
+                                                </td>
+                                                <td>
+                                                    <?= $t->ee( $ppp->name() ) ?>
+                                                </td>
+                                            </tr>
 
                                         <?php if( $current ): ?>
                                             <?php if( $history->switchPort ): ?>
@@ -173,102 +179,102 @@ $this->layout( 'layouts/ixpv4' );
                                                 </tr>
                                             <?php endif; ?>
 
-                                            <?php if( $history->customer ): ?>
-                                                <tr>
-                                                    <td>
-                                                        <b>
-                                                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>:
-                                                        </b>
-                                                    </td>
-                                                    <td>
-                                                        <?php if( !$current ): ?>
-                                                            <?= $t->ee( $history->customer ) ?>
-                                                        <?php else: ?>
-                                                            <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                                                <a href="<?= route( 'customer@overview' , [ 'cust' => $history->customer_id ] ) ?>" >
-                                                                    <?= $t->ee( $history->customer->name ) ?>
-                                                                </a>
+                                                <?php if( $history->customer ): ?>
+                                                    <tr>
+                                                        <td>
+                                                            <b>
+                                                                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>:
+                                                            </b>
+                                                        </td>
+                                                        <td>
+                                                            <?php if( !$current ): ?>
+                                                                <?= $t->ee( $history->customer ) ?>
                                                             <?php else: ?>
-                                                                <?= $t->ee( $history->customer->name ) ?>
+                                                                <?php if( $isSuperUser ): ?>
+                                                                    <a href="<?= route( 'customer@overview' , [ 'cust' => $history->customer_id ] ) ?>" >
+                                                                        <?= $t->ee( $history->customer->name ) ?>
+                                                                    </a>
+                                                                <?php else: ?>
+                                                                    <?= $t->ee( $history->customer->name ) ?>
+                                                                <?php endif; ?>
                                                             <?php endif; ?>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                </tr>
-                                            <?php endif; ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php endif; ?>
 
-                                            <?php if( $current ): ?>
-                                                <tr>
-                                                    <td>
-                                                        <b>
-                                                            State:
-                                                        </b>
-                                                    </td>
-                                                    <td>
-                                                        <div class="float-left my-2 badge badge-<?= PatchPanelPort::stateCssClass( $history->state, Auth::getUser()->isSuperUser() ) ?>">
-                                                            <?= $history->states() ?>
-                                                        </div>
+                                                <?php if( $current ): ?>
+                                                    <tr>
+                                                        <td>
+                                                            <b>
+                                                                State:
+                                                            </b>
+                                                        </td>
+                                                        <td>
+                                                            <div class="float-left my-2 badge badge-<?= PatchPanelPort::stateCssClass( $history->state, $isSuperUser ) ?>">
+                                                                <?= $history->states() ?>
+                                                            </div>
 
-                                                            <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                                                <div class="float-right dropdown btn-group-sm ml-2">
-                                                                    <button class="btn btn-white dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                                                        Change State
-                                                                    </button>
-                                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                                                        <?php if( $ppp->stateAvailable() || $ppp->stateReserved() || $ppp->statePrewired() ): ?>
-                                                                            <a class="dropdown-item" id="allocate-<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@edit-allocate' , [ 'ppp' => $ppp->id ] ) ?>">
-                                                                                Allocate
-                                                                            </a>
-                                                                        <?php endif; ?>
+                                                                <?php if( $isSuperUser ): ?>
+                                                                    <div class="float-right dropdown btn-group-sm ml-2">
+                                                                        <button class="btn btn-white dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                                            Change State
+                                                                        </button>
+                                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                                            <?php if( $ppp->stateAvailable() || $ppp->stateReserved() || $ppp->statePrewired() ): ?>
+                                                                                <a class="dropdown-item" id="allocate-<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@edit-allocate' , [ 'ppp' => $ppp->id ] ) ?>">
+                                                                                    Allocate
+                                                                                </a>
+                                                                            <?php endif; ?>
 
-                                                                        <?php if( $ppp->stateAvailable() ): ?>
-                                                                            <a class="dropdown-item" id="prewired-<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@edit-prewired' , [ 'ppp' => $ppp->id ] ) ?>">
-                                                                                Set Prewired
-                                                                            </a>
-                                                                        <?php endif; ?>
+                                                                            <?php if( $ppp->stateAvailable() ): ?>
+                                                                                <a class="dropdown-item" id="prewired-<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@edit-prewired' , [ 'ppp' => $ppp->id ] ) ?>">
+                                                                                    Set Prewired
+                                                                                </a>
+                                                                            <?php endif; ?>
 
-                                                                        <?php if( $ppp->statePrewired() ): ?>
-                                                                            <a class="dropdown-item" id="prewired-<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'ppp' => $ppp->id , 'status' => PatchPanelPort::STATE_AVAILABLE ] ) ?>">
-                                                                                Unset Prewired
-                                                                            </a>
-                                                                        <?php endif; ?>
+                                                                            <?php if( $ppp->statePrewired() ): ?>
+                                                                                <a class="dropdown-item" id="prewired-<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'ppp' => $ppp->id , 'status' => PatchPanelPort::STATE_AVAILABLE ] ) ?>">
+                                                                                    Unset Prewired
+                                                                                </a>
+                                                                            <?php endif; ?>
 
-                                                                        <?php if( $ppp->stateAvailable() ): ?>
-                                                                            <a class="dropdown-item" id="reserved-<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'ppp' => $ppp->id , 'status' => PatchPanelPort::STATE_RESERVED ] ) ?>">
-                                                                                Mark as Reserved
-                                                                            </a>
-                                                                        <?php endif; ?>
+                                                                            <?php if( $ppp->stateAvailable() ): ?>
+                                                                                <a class="dropdown-item" id="reserved-<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'ppp' => $ppp->id , 'status' => PatchPanelPort::STATE_RESERVED ] ) ?>">
+                                                                                    Mark as Reserved
+                                                                                </a>
+                                                                            <?php endif; ?>
 
-                                                                        <?php if( $ppp->stateReserved() ): ?>
-                                                                            <a class="dropdown-item" id="unreserved-<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'ppp' => $ppp->id , 'status' => PatchPanelPort::STATE_AVAILABLE ] ) ?>">
-                                                                                Unreserve
-                                                                            </a>
-                                                                        <?php endif; ?>
+                                                                            <?php if( $ppp->stateReserved() ): ?>
+                                                                                <a class="dropdown-item" id="unreserved-<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'ppp' => $ppp->id , 'status' => PatchPanelPort::STATE_AVAILABLE ] ) ?>">
+                                                                                    Unreserve
+                                                                                </a>
+                                                                            <?php endif; ?>
 
-                                                                        <?php if( $t->ppp->stateAwaitingXConnect() ): ?>
-                                                                            <a class="dropdown-item btn-set-connected" data-object-id="<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'ppp' => $ppp->id , 'status' => PatchPanelPort::STATE_CONNECTED ] ) ?>">
-                                                                                Set Connected
-                                                                            </a>
-                                                                        <?php endif; ?>
+                                                                            <?php if( $t->ppp->stateAwaitingXConnect() ): ?>
+                                                                                <a class="dropdown-item btn-set-connected" data-object-id="<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'ppp' => $ppp->id , 'status' => PatchPanelPort::STATE_CONNECTED ] ) ?>">
+                                                                                    Set Connected
+                                                                                </a>
+                                                                            <?php endif; ?>
 
-                                                                        <?php if( $ppp->stateAwaitingXConnect() || $ppp->stateConnected() ): ?>
-                                                                            <a class="dropdown-item btn-request-cease" data-object-id="<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'ppp' => $ppp->id , 'status' => PatchPanelPort::STATE_AWAITING_CEASE ] ) ?>">
-                                                                                Set Awaiting Cease
-                                                                            </a>
-                                                                        <?php endif; ?>
+                                                                            <?php if( $ppp->stateAwaitingXConnect() || $ppp->stateConnected() ): ?>
+                                                                                <a class="dropdown-item btn-request-cease" data-object-id="<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'ppp' => $ppp->id , 'status' => PatchPanelPort::STATE_AWAITING_CEASE ] ) ?>">
+                                                                                    Set Awaiting Cease
+                                                                                </a>
+                                                                            <?php endif; ?>
 
-                                                                        <?php if( $ppp->stateAwaitingXConnect() || $ppp->stateConnected() || $t->ppp->stateAwaitingCease() ): ?>
-                                                                            <a class="dropdown-item btn-set-ceased" data-object-id="<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'ppp' => $ppp->id , 'status' => PatchPanelPort::STATE_CEASED ] ) ?>">
-                                                                                Set Ceased
-                                                                            </a>
-                                                                        <?php endif; ?>
-                                                                    </div>
-                                                            <?php endif; /* isSuperUser() */ ?>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            <?php endif; ?>
+                                                                            <?php if( $ppp->stateAwaitingXConnect() || $ppp->stateConnected() || $t->ppp->stateAwaitingCease() ): ?>
+                                                                                <a class="dropdown-item btn-set-ceased" data-object-id="<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'ppp' => $ppp->id , 'status' => PatchPanelPort::STATE_CEASED ] ) ?>">
+                                                                                    Set Ceased
+                                                                                </a>
+                                                                            <?php endif; ?>
+                                                                        </div>
+                                                                <?php endif; /* isSuperUser() */ ?>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                <?php endif; ?>
 
-                                            <?php if( $current && ( Auth::getUser()->isSuperUser() || $history->stateAwaitingXConnect() ) && $ppp->customer ): ?>
+                                            <?php if( $current && ( $isSuperUser || $history->stateAwaitingXConnect() ) && $ppp->customer ): ?>
                                                 <tr>
                                                     <td>
                                                         <b>
@@ -312,7 +318,7 @@ $this->layout( 'layouts/ixpv4' );
                                     <div class="col-lg-6 col-md-12">
                                         <table class="table_view_info">
 
-                                            <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                            <?php if( $isSuperUser ): ?>
                                                 <tr>
                                                     <td>
                                                         <b>
@@ -375,7 +381,7 @@ $this->layout( 'layouts/ixpv4' );
                                                 </tr>
                                             <?php endif; ?>
 
-                                            <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                            <?php if( $isSuperUser ): ?>
                                                 <tr>
                                                     <td>
                                                         <b>
@@ -438,7 +444,7 @@ $this->layout( 'layouts/ixpv4' );
                                 </div> <!-- row -->
 
                                 <div class="row">
-                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                    <?php if( $isSuperUser ): ?>
                                         <div class="col-lg-6 col-md-12 mt-4 mt-lg-0">
                                             <div class="card">
                                                 <div class="card-header">
@@ -534,7 +540,7 @@ $this->layout( 'layouts/ixpv4' );
                                                         </thead>
 
                                                         <?php foreach ( $listFile as $file ):?>
-                                                            <?php if( Auth::getUser()->isSuperUser() || !$file->is_private ): ?>
+                                                            <?php if( $isSuperUser || !$file->is_private ): ?>
                                                                 <tr id="file_row_<?=$file->id?>">
                                                                     <td class="d-flex">
                                                                         <div class="mr-auto">
@@ -559,20 +565,20 @@ $this->layout( 'layouts/ixpv4' );
                                                                     </td>
                                                                     <td>
                                                                         <div class="btn-group btn-group-sm" role="group">
-                                                                            <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                                                                <a class="btn btn-white file-toggle-private" data-object-id="<?= $file->id ?>" href="<?= route( 'patch-panel-port-file@toggle-privacy', [ 'file' => $file->id ] ) ?>" title="Toggle Public / Private">
+                                                                            <?php if( $isSuperUser ): ?>
+                                                                                <a class="btn btn-white file-toggle-private" data-object-id="<?= $file->id ?>" href="<?= route( $isHistory ? 'patch-panel-port-history-file@toggle-privacy' : 'patch-panel-port-file@toggle-privacy', [ 'file' => $file->id ] ) ?>" title="Toggle Public / Private">
                                                                                     <i id="file-toggle-private-i-<?= $file->id ?>" class="fa fa-<?= $file->is_private ? 'unlock' : 'lock' ?>"></i>
                                                                                 </a>
                                                                             <?php endif; ?>
 
-                                                                            <a class="btn btn-white" target="_blank" href="<?= route('patch-panel-port-file@download', [ 'file' => $file->id ] ) ?>" title="Download">
+                                                                            <a class="btn btn-white" target="_blank" href="<?= route($isHistory ? 'patch-panel-port-history-file@download' : 'patch-panel-port-file@download' , [ 'file' => $file->id ] ) ?>" title="Download">
                                                                                 <i class="fa fa-download"></i>
                                                                             </a>
 
-                                                                            <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                                                                <button class='btn btn-white btn-delete-file' data-object-id='<?=$file->id?>'  href="<?= route( $isHistory ? 'patch-panel-port-file@delete-history' : 'patch-panel-port-file@delete', [ 'file' => $file->id ] ) ?>" title="Delete">
+                                                                            <?php if( $isSuperUser ): ?>
+                                                                                <a class='btn btn-white btn-delete-file' data-object-id='<?=$file->id?>' href="<?= route( $isHistory ? 'patch-panel-port-history-file@delete' : 'patch-panel-port-file@delete', [ 'file' => $file->id ] ) ?>" title="Delete">
                                                                                     <i class="fa fa-trash"></i>
-                                                                                </button>
+                                                                                </a>
                                                                             <?php endif; ?>
                                                                         </div>
                                                                     </td>
@@ -586,7 +592,7 @@ $this->layout( 'layouts/ixpv4' );
                                     </div>
                                 </div> <!-- row -->
                             </div>
-                            <?php if( !Auth::getUser()->isSuperUser() ){ break; /* no history for non-admins */ } ?>
+                            <?php if( !$isSuperUser ){ break; /* no history for non-admins */ } ?>
                         <?php endforeach; ?>
                     </div>
                 </div>

@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Interfaces;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +22,8 @@ namespace IXP\Http\Controllers\Interfaces;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+use DB;
 use Former;
 
 use Illuminate\View\View;
@@ -52,10 +54,12 @@ use IXP\Utils\View\Alert\{
 
 /**
  * VirtualInterface Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Interfaces
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Interfaces
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class VirtualInterfaceController extends Common
@@ -68,6 +72,7 @@ class VirtualInterfaceController extends Common
     public function list() : View
     {
         return view( 'interfaces/virtual/list' )->with([
+            'resellerMode'      => $this->resellerMode(),
             'vis'               => VirtualInterface::selectRaw(
                 'vi.id AS id, 
                             SUM( pi.speed ) AS speed,
@@ -80,22 +85,21 @@ class VirtualInterfaceController extends Common
                             GROUP_CONCAT( ppi.id ) AS peering,
                             GROUP_CONCAT( fpi.id ) AS fanout'
                         )->from( 'virtualinterface AS vi' )
-                            ->leftJoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
-                            ->leftJoin( 'physicalinterface AS ppi', 'ppi.fanout_physical_interface_id', 'pi.id' )
-                            ->leftJoin( 'physicalinterface AS fpi', 'fpi.id', 'pi.fanout_physical_interface_id' )
-                            ->leftJoin( 'cust AS c', 'c.id', 'vi.custid' )
-                            ->leftJoin( 'switchport AS sp', 'sp.id', 'pi.switchportid' )
-                            ->leftJoin( 'switch AS s', 's.id', 'sp.switchid' )
-                            ->leftJoin( 'cabinet AS cab', 'cab.id', 's.cabinetid' )
-                            ->leftJoin( 'location AS l', 'l.id', 'cab.locationid' )
-                            ->groupBy( 'id' )
-                            ->get()->toArray(),
-            'resellerMode'      => $this->resellerMode()
+                        ->leftJoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
+                        ->leftJoin( 'physicalinterface AS ppi', 'ppi.fanout_physical_interface_id', 'pi.id' )
+                        ->leftJoin( 'physicalinterface AS fpi', 'fpi.id', 'pi.fanout_physical_interface_id' )
+                        ->leftJoin( 'cust AS c', 'c.id', 'vi.custid' )
+                        ->leftJoin( 'switchport AS sp', 'sp.id', 'pi.switchportid' )
+                        ->leftJoin( 'switch AS s', 's.id', 'sp.switchid' )
+                        ->leftJoin( 'cabinet AS cab', 'cab.id', 's.cabinetid' )
+                        ->leftJoin( 'location AS l', 'l.id', 'cab.locationid' )
+                        ->groupBy( 'id' )
+                        ->get()->toArray(),
         ]);
     }
 
     /**
-     * Display the form to add a virtual interface
+     * Display the form to create a virtual interface
      *
      * @param Customer $cust customer
      *
@@ -115,37 +119,36 @@ class VirtualInterfaceController extends Common
      */
     public function createForCust( Customer $cust ) : View
     {
-        return $this->create( null, $cust );
+        return $this->create( request(), $cust );
     }
 
     /**
-     * Display the form to add a virtual interface
+     * Display the form to create a virtual interface
      *
-     * @param Request $r
-     * @param VirtualInterface|null $vi the virtual interface
-     * @param Customer|null $cust the customer to preselect
+     * @param Request                   $r
+     * @param Customer|null             $cust the customer to preselect
      *
      * @return View
      */
-    public function create( Request $r,  VirtualInterface $vi = null, Customer $cust = null ): View
+    public function create( Request $r, Customer $cust = null ): View
     {
         if( $cust ) {
             Former::populate( [
-                'cust' => $r->old( 'cust', $cust->id ),
+                'custid' => $r->old( 'cust', $cust->id ),
             ] );
         }
 
         return view( 'interfaces/virtual/add' )->with([
             'custs'             => Customer::groupBy( 'name' )->get(),
-            'vlans'             => Vlan::orderBy( 'number' )->get(),
+            'vlans'             => [],
             'vi'                => false,
             'cb'                => false,
-            'selectedCust'      => $cust ?? false
+            'selectedCust'      => $cust ?: false
         ]);
     }
 
     /**
-     * Create a virtual interface (set all the data needed)
+     * Create a virtual interface
      *
      * @param   StoreVirtualInterface $r instance of the current HTTP request
      *
@@ -155,27 +158,19 @@ class VirtualInterfaceController extends Common
      */
     public function store( StoreVirtualInterface $r ): RedirectResponse
     {
-        $cust = Customer::findOrFail( $r->selectedCust ?: $r->custid );
-
         // we don't allow setting channel group or name until there's >= 1 physical interface / LAG framing:
         $r->merge( [ 'name' => '' , 'channelgroup' => null ] );
-
-        $vi = VirtualInterface::create( array_merge( $r->all(),
-            [
-                'custid' => $cust->id
-            ]
-        ));
+        $vi = VirtualInterface::create( $r->all() );
 
         $this->setBundleDetails( $vi );
 
         AlertContainer::push( 'Virtual Interface created.', Alert::SUCCESS );
-
         return redirect( route( 'virtual-interface@edit', [ 'vi' => $vi->id ] ) );
 
     }
 
     /**
-     * Display the form to add a virtual interface
+     * Display the form to edit a virtual interface
      *
      * @param Request           $r
      * @param VirtualInterface  $vi     the virtual interface
@@ -186,21 +181,22 @@ class VirtualInterfaceController extends Common
     {
         $name = $r->old( 'name', $vi->name );
 
-        // Check if the last character of the Name is a white space, if its the case we add Double quotes to keep the space at the end
-        if( substr($name, -1) === " " ) {
+        // Check if the last character of the Name is a white space,
+        // if its the case we add Double quotes to keep the space at the end
+        if( substr( $name, -1 ) === ' ' ) {
             $name = '"'. $name . '"';
         }
 
         // fill the form with Virtual interface data
         Former::populate([
-            'custid'                => $r->old( 'custid',            $vi->custid ),
-            'trunk'                 => $r->old( 'trunk',             $vi->trunk) ,
-            'lag_framing'           => $r->old( 'lag_framing',       $vi->lag_framing ),
-            'fastlacp'              => $r->old( 'fastlacp',          $vi->fastlacp ),
+            'custid'                => $r->old( 'custid',            $vi->custid        ),
+            'trunk'                 => $r->old( 'trunk',             $vi->trunk         ),
+            'lag_framing'           => $r->old( 'lag_framing',       $vi->lag_framing   ),
+            'fastlacp'              => $r->old( 'fastlacp',          $vi->fastlacp      ),
+            'description'           => $r->old( 'description',       $vi->description   ),
+            'channelgroup'          => $r->old( 'channel-group',     $vi->channelgroup  ),
+            'mtu'                   => $r->old( 'mtu',               $vi->mtu           ),
             'name'                  => $name,
-            'description'           => $r->old( 'description',       $vi->description ),
-            'channelgroup'          => $r->old( 'channel-group',     $vi->channelgroup ),
-            'mtu'                   => $r->old( 'mtu',               $vi->mtu ),
         ]);
 
         return view( 'interfaces/virtual/add' )->with([
@@ -224,19 +220,13 @@ class VirtualInterfaceController extends Common
      */
     public function update( StoreVirtualInterface $r, VirtualInterface $vi ): RedirectResponse
     {
-        $cust = Customer::findOrFail( $r->selectedCust ?: $r->custid );
-
         // we don't allow setting channel group or name until there's >= 1 physical interface / LAG framing:
         if( $vi->physicalInterfaces()->count() === 0 ) {
             $r->merge( [ 'name' => '' , 'channelgroup' => null ] );
         }
 
-        $vi->update( array_merge( $r->all(),
-            [
-                'custid' => $cust->id
-            ]
-        ));
-
+        DB::beginTransaction();
+        $vi->update( $r->all() );
         $this->setBundleDetails( $vi );
 
         if( $vi->physicalInterfaces()->count() > 0 ) {
@@ -248,17 +238,17 @@ class VirtualInterfaceController extends Common
             // if it's a number gt zero and it's changed (if we're editing)
 
             // ensure it's unique:
-            if( $vi->physicalInterfaces()->count() === 1 && !$r->lag_framing && $r->channelgroup === null ) {
+            if( !$r->lag_framing && $r->channelgroup === null && $vi->physicalInterfaces()->count() === 1 ) {
                 // no op -> this allows a user to set a null channel group number on an interface with one PI and no lag framing.
             } else if( !VirtualInterfaceAggregator::validateChannelGroup( $vi ) ) {
+                DB::rollback();
                 AlertContainer::push( 'Channel group number is not unique within the switch.', Alert::DANGER );
-                return redirect( route( 'virtual-interface@edit', [ 'vi' => $vi->id ] ) )->withInput();
+                return redirect( route( 'virtual-interface@edit', [ 'vi' => $vi->id ] ) )->withInput()->exceptInput( 'channelgroup' );
             }
         }
-
+        DB::commit();
         AlertContainer::push( 'Virtual Interface updated.', Alert::SUCCESS );
         return redirect( route( 'virtual-interface@edit', [ 'vi' => $vi->id ] ) );
-
     }
 
     /**
@@ -267,12 +257,14 @@ class VirtualInterfaceController extends Common
      * @param Customer|null $cust Id of the customer to preselect
      *
      * @return View
+     *
+     * @throws
      */
     public function wizard( Customer $cust = null ): View
     {
         if( $cust ) {
             Former::populate( [
-                'cust' => $cust->id,
+                'custid' => $cust->id,
             ] );
         }
 
@@ -280,9 +272,11 @@ class VirtualInterfaceController extends Common
             'custs'                 => Customer::groupBy( 'name' )->get(),
             'vli'                   => false,
             'vlans'                 => Vlan::orderBy( 'number' )->get(),
-            'pi_switches'           => Switcher::whereActive( true )->orderBy( 'name' )->get(),
-            'resoldCusts'           => $this->resellerMode() ? json_encode( Customer::join( 'cust AS reseller', 'reseller.reseller', 'cust.id' )->orderBy( 'reseller.name' )->get() ) : json_encode([]) ,
-            'selectedCust'          => $cust ?? false
+            'pi_switches'           => Switcher::whereActive( true )
+                ->orderBy( 'name' )->get(),
+            'resoldCusts'           => $this->resellerMode() ? json_encode( Customer::join('cust AS reseller', 'reseller.reseller', 'cust.id')
+                ->orderBy('reseller.name')->get(), JSON_THROW_ON_ERROR) : json_encode([], JSON_THROW_ON_ERROR),
+            'selectedCust'          => $cust ?: false
         ]);
     }
 

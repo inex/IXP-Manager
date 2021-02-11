@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Services;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,19 +25,13 @@ namespace IXP\Http\Controllers\Services;
 
 use Auth, ErrorException;
 
-use Illuminate\Routing\Redirector;
-
-use IXP\Models\{
-    Aggregators\RouterAggregator,
-    Customer,
-    User
-};
-
 use Illuminate\Http\{
     RedirectResponse,
     Request,
     Response
 };
+
+use Illuminate\Routing\Redirector;
 
 use Illuminate\View\View;
 
@@ -47,6 +41,11 @@ use IXP\Exceptions\Services\LookingGlass\GeneralException as LookingGlassGeneral
 
 use IXP\Http\Controllers\Controller;
 
+use IXP\Models\{
+    Aggregators\RouterAggregator,
+    Customer,
+    User
+};
 
 /**
  * LookingGlass Controller
@@ -64,8 +63,8 @@ use IXP\Http\Controllers\Controller;
  * *************************************************
  *
  * @author     Barry O'Donovan   <barry@islandbridgenetworks.ie>
- * @author    Yann Robin        <yann@islandbridgenetworks.ie>
- * @category   LookingGlass
+ * @author     Yann Robin        <yann@islandbridgenetworks.ie>
+ * @category   IXP
  * @package    IXP\Services\LookingGlass
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
@@ -140,11 +139,10 @@ class LookingGlass extends Controller
         $cust = Auth::check() ? Customer::find( Auth::getUser()->custid ) : null;
         $user = Auth::check() ? User::find( Auth::id() ) : null;
 
-        $view->with( 'status', json_decode( $this->lg()->status(), false ) );
-        $view->with( 'lg',      $this->lg() );
-        $view->with( 'routers', RouterAggregator::forDropdown( $cust, $user ) );
-        $view->with( 'tabRouters', RouterAggregator::forTab( $cust, $user ) );
-
+        $view->with( 'status',      json_decode( $this->lg()->status(), false, 512, JSON_THROW_ON_ERROR));
+        $view->with( 'lg',          $this->lg() );
+        $view->with( 'routers',     RouterAggregator::forDropdown( $cust, $user ) );
+        $view->with( 'tabRouters',  RouterAggregator::forTab( $cust, $user ) );
         return $view;
     }
 
@@ -211,7 +209,7 @@ class LookingGlass extends Controller
     {
         // get bgp protocol summary
         $view = view('services/lg/bgp-summary' )->with([
-            'content' => json_decode( $this->lg()->bgpSummary(), false ),
+            'content' => json_decode( $this->lg()->bgpSummary(), false, 512, JSON_THROW_ON_ERROR),
         ]);
 
         return $this->addCommonParams( $view );
@@ -245,8 +243,8 @@ class LookingGlass extends Controller
         }
 
         $view = view('services/lg/routes' )->with([
-            'content' => json_decode( $routes, false ),
-            'source' => 'table', 'name' => $table
+            'content'   => json_decode($routes, false, 512, JSON_THROW_ON_ERROR),
+            'source'    => 'table', 'name' => $table
         ]);
 
         return $this->addCommonParams( $view );
@@ -264,7 +262,7 @@ class LookingGlass extends Controller
     {
         // get bgp protocol summary
         $view = view('services/lg/routes' )->with([
-            'content' => json_decode( $this->lg()->routesForProtocol( $protocol ), false ),
+            'content' => json_decode( $this->lg()->routesForProtocol( $protocol ), false, 512, JSON_THROW_ON_ERROR),
             'source' => 'protocol', 'name' => $protocol
         ]);
         return $this->addCommonParams( $view );
@@ -282,7 +280,7 @@ class LookingGlass extends Controller
     {
         // get bgp protocol summary
         $view = view('services/lg/routes' )->with([
-            'content'   => json_decode( $this->lg()->routesForExport( $protocol ), false ),
+            'content'   => json_decode( $this->lg()->routesForExport( $protocol ), false, 512, JSON_THROW_ON_ERROR),
             'source'    => 'export to protocol',
             'name'      => $protocol
         ]);
@@ -302,7 +300,8 @@ class LookingGlass extends Controller
     public function routeProtocol( string $handle, string $network, string $mask, string $protocol ): View
     {
         return view('services/lg/route' )->with([
-            'content' => json_decode( $this->lg()->protocolRoute( $protocol, $network, (int)$mask ), false ),
+            'content' => json_decode($this->lg()->protocolRoute($protocol, $network, (int) $mask), false, 512,
+                JSON_THROW_ON_ERROR),
             'source'  => 'protocol',
             'name'    => $protocol,
             'lg'      => $this->lg(),

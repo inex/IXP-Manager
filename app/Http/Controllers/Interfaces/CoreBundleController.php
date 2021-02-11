@@ -94,8 +94,9 @@ class CoreBundleController extends Common
     public function createWizard(): View
     {
         return view( 'interfaces/core-bundle/create/form-wizard' )->with([
-            'switches'                      => Switcher::select( [ 'id', 'name' ] )->orderBy( 'name' )->get(),
-            'customers'                     => Customer::internal()->get(),
+            'switches'      => Switcher::select( [ 'id', 'name' ] )
+                ->orderBy( 'name' )->get(),
+            'customers'     => Customer::internal()->get(),
         ]);
     }
 
@@ -134,7 +135,7 @@ class CoreBundleController extends Common
         // Creating all the elements linked to the new core bundle (core links, core interfaces, physical interfaces)
         $this->buildCorelink( $cb, $r, [ 'a' => $via , 'b' => $vib ] , false );
 
-        Log::notice( $r->user()->username . ' added a core bundle with (id: ' . $cb->id . ')' );
+        Log::notice( $r->user()->username . ' created a core bundle with (id: ' . $cb->id . ')' );
         AlertContainer::push( 'Core bundle created', Alert::SUCCESS );
         return Redirect::to( route( "core-bundle@list" ) );
     }

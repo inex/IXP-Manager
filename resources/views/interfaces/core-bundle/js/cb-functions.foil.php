@@ -27,7 +27,7 @@
 
                 $.ajax( url , {
                     data: datas,
-                    method: "POST",
+                    method: "GET",
                     _token : "<?= csrf_token() ?>"
                 })
                 .done( function( data ) {

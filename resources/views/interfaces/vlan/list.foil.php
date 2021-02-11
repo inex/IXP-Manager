@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-sm-12">
             <?= $t->alerts() ?>
-            <table id='table-vli' class="table table-striped table-responsive-ixp-with-header collapse">
+            <table id='table-vli' class="table table-striped table-responsive-ixp-with-header collapse w-100">
                 <thead class="thead-dark">
                     <tr>
                         <th>

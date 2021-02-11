@@ -22,6 +22,7 @@ namespace IXP\Http\Requests\CoreBundle;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth;
 
 use Illuminate\Foundation\Http\FormRequest;

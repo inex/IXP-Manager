@@ -26,7 +26,7 @@
 
         <?= Former::text( 'ipv6bgpmd5secret' )
             ->label( 'IPv6 BGP MD5 Secret' )
-            ->append( '<button class="btn-white btn glyphicon-generator glyphicon-generator-ipv6" id="generator-ipv4" type="button"><i class="fa fa-refresh"> </i></button>' )
+            ->append( '<button class="btn-white btn glyphicon-generator glyphicon-generator-ipv6" id="generator-ipv6" type="button"><i class="fa fa-refresh"> </i></button>' )
             ->blockHelp( 'MD5 secret for route server / collector / AS112 BGP sessions. Can be copied from the IPv4 version if set or (if supported by your browser), it can be generated in a cryptographically secure manner by clicking the <em>refresh</em> button.' );
         ?>
 

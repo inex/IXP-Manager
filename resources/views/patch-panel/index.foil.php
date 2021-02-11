@@ -1,6 +1,5 @@
 <?php
     /** @var Foil\Template\Template $t */
-    /** @var $t->active */
     $this->layout( 'layouts/ixpv4' );
 ?>
 
@@ -90,14 +89,17 @@
 
             <?= $t->alerts() ?>
 
-            <?php if( !count( $t->patchPanels ) && $t->active ): ?>
+            <?php if( $t->active && !count( $t->patchPanels ) ): ?>
                 <div class="alert alert-info" role="alert">
                     <div class="d-flex align-items-center">
                         <div class="text-center">
                             <i class="fa fa-question-circle fa-2x"></i>
                         </div>
                         <div class="col-sm-12">
-                            <b>No active patch panels exist.</b> <a class="btn btn-white" href="<?= route( 'patch-panel@create' ) ?>">Create one...</a>
+                            <b>No active patch panels exist.</b>
+                            <a class="btn btn-white" href="<?= route( 'patch-panel@create' ) ?>">
+                                Create one...
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -131,9 +133,9 @@
                     <tbody>
                         <?php foreach( $t->patchPanels as $pp ):
                             /** @var \IXP\Models\PatchPanel $pp */
-                            $duplex = $pp->hasDuplexPort();
-                            $totalPortDivide = $pp->availableOnTotalPort( true );
-                            $totalPort = $pp->availableOnTotalPort( false );
+                            $duplex             = $pp->hasDuplexPort();
+                            $totalPortDivide    = $pp->availableOnTotalPort( true );
+                            $totalPort          = $pp->availableOnTotalPort( false );
                             ?>
                             <tr>
                                 <td>
@@ -166,7 +168,6 @@
                                         <span class="badge badge-info">
                                             <?= $totalPort ?>
                                         </span>
-
                                     <?php endif; ?>
                                 </td>
                                 <td>

@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Switches;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -33,6 +33,10 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
+use IXP\Http\Requests\Switches\{
+    StoreBySmtp as StoreBySmtpRequest
+};
+
 use IXP\Models\{Aggregators\SwitcherAggregator,
     Aggregators\SwitchPortAggregator,
     Cabinet,
@@ -46,10 +50,6 @@ use IXP\Models\{Aggregators\SwitcherAggregator,
     Vlan};
 
 use IXP\Rules\IdnValidate;
-
-use IXP\Http\Requests\Switches\{
-    StoreBySmtp as StoreBySmtpRequest
-};
 
 use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
@@ -66,16 +66,19 @@ use OSS_SNMP\{
 
 /**
  * Switch Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Switches
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SwitchController extends EloquentController
 {
     /**
      * The object being created / edited
+     *
      * @var Switcher
      */
     protected $object = null;
@@ -93,11 +96,8 @@ class SwitchController extends EloquentController
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'switches',
-
-            'addRoute'          => route( static::route_prefix() . '@add-by-snmp' ),
-
+            'addRoute'          => route( static::route_prefix() . '@create-by-snmp' ),
             'documentation'     => 'https://docs.ixpmanager.org/usage/switches/',
-
             'listColumns'       => [
                 'id'        => [
                     'title' => 'UID',
@@ -119,17 +119,14 @@ class SwitchController extends EloquentController
                     'idField'    => 'vendorid'
                 ],
                 'infrastructure' => 'Infrastructure',
-
                 'active'       => [
                     'title'    => 'Active',
                     'type'     => self::$FE_COL_TYPES[ 'YES_NO' ]
                 ],
-
                 'poll'       => [
                     'title'    => 'Poll',
                     'type'     => self::$FE_COL_TYPES[ 'YES_NO' ]
                 ],
-
                 'model'          => 'Model',
                 'ipv4addr'       => 'IPv4 Address',
             ]
@@ -169,7 +166,7 @@ class SwitchController extends EloquentController
         );
 
         // phpunit / artisan trips up here without the cli test:
-        if( php_sapi_name() !== 'cli' ) {
+        if( PHP_SAPI !== 'cli' ) {
             // custom access controls:
             switch( Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC ) {
                 case User::AUTH_SUPERUSER:
@@ -200,13 +197,20 @@ class SwitchController extends EloquentController
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
         Route::group( [  'prefix' => $route_prefix ], function() {
-            Route::get(  'add-by-snmp',         'Switches\SwitchController@addBySnmp'           )->name( "switch@add-by-snmp" );
-            Route::get(  'port-report/{switch}','Switches\SwitchController@portReport'          )->name( "switch@port-report" );
-            Route::get(  'configuration',       'Switches\SwitchController@configuration'       )->name( "switch@configuration" );
-            Route::post(  'store-by-snmp',      'Switches\SwitchController@storeBySmtp'         )->name( "switch@store-by-snmp" );
+            Route::get(  'create-by-snmp',      'Switches\SwitchController@addBySnmp'       )->name( 'switch@create-by-snmp'   );
+            Route::get(  'port-report/{switch}','Switches\SwitchController@portReport'      )->name( "switch@port-report"   );
+            Route::get(  'configuration',       'Switches\SwitchController@configuration'   )->name( "switch@configuration" );
+            Route::post( 'store-by-snmp',       'Switches\SwitchController@storeBySmtp'     )->name( "switch@store-by-snmp" );
         });
     }
 
+    /**
+     * List the contents of a database table.
+     *
+     * @param Request $r
+     *
+     * @return View|RedirectResponse
+     */
     public function list( Request $r  ) : View
     {
         if( ( $showActiveOnly = $r->activeOnly ) !== null  ) {
@@ -318,7 +322,6 @@ class SwitchController extends EloquentController
                 'type'     => self::$FE_COL_TYPES[ 'YES_NO' ]
             ]
         ];
-
         return true;
     }
 
@@ -361,11 +364,34 @@ class SwitchController extends EloquentController
             'addBySnmp'         => request()->old( 'add_by_snnp', false ),
             'preAddForm'        => false,
             'cabinets'          => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
-                ->orderBy( 'name', 'asc' )
-                ->get(),
+                ->orderBy( 'name' )->get(),
             'infra'             => Infrastructure::orderBy( 'name' )->get(),
             'vendors'           => Vendor::orderBy( 'name' )->get(),
         ];
+    }
+
+    /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request $r
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doStore( Request $r )
+    {
+        $this->checkForm( $r );
+
+        if( $r->asn && Switcher::whereAsn( $r->asn )->exists() ) {
+            AlertContainer::push( "Note: this ASN is already is use by at least one other switch. If you are using eBGP, this may cause prefixes to be black-holed.", Alert::WARNING );
+        }
+
+        $r->merge( [ 'mgmt_mac_address' => preg_replace( "/[^a-f0-9]/i", '', strtolower( $r->mgmt_mac_address ) ) ] );
+
+        $this->object = Switcher::create( $r->all() );
+        $this->extraAttributes( $r );
+        return true;
     }
 
     /**
@@ -403,11 +429,37 @@ class SwitchController extends EloquentController
             'addBySnmp'         => request()->old( 'add_by_snnp', false ),
             'preAddForm'        => false,
             'cabinets'          => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
-                ->orderBy( 'name', 'asc' )
-                ->get(),
+                ->orderBy( 'name' )->get(),
             'infra'             => Infrastructure::orderBy( 'name' )->get(),
             'vendors'           => Vendor::orderBy( 'name' )->get()
         ];
+    }
+
+    /**
+     * Function to do the actual validation and editing of the submitted object.
+     *
+     * @param Request   $r
+     * @param int       $id
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doUpdate( Request $r, int $id )
+    {
+        $this->object = Switcher::findOrFail( $id );
+
+        $this->checkForm( $r );
+
+        if( $r->asn && Switcher::whereAsn( $r->asn )->where( 'id', '!=', $this->object->id )->exists() ){
+            AlertContainer::push( "Note: this ASN is already is use by at least one other switch. If you are using eBGP, this may cause prefixes to be black-holed.", Alert::WARNING );
+        }
+
+        $r->merge( [ 'mgmt_mac_address' => preg_replace( "/[^a-f0-9]/i", '', strtolower( $r->mgmt_mac_address ) ) ] );
+
+        $this->object->update( $r->all() );
+        $this->extraAttributes( $r );
+        return true;
     }
 
     /**
@@ -481,167 +533,6 @@ class SwitchController extends EloquentController
     }
 
     /**
-     * Check if the form is valid
-     *
-     * @param $request
-     */
-    public function checkForm( Request $request ): void
-    {
-        $request->validate( [
-            'name' => [
-                'required', 'string', 'max:255',
-                function ($attribute, $value, $fail) use( $request ) {
-                    $switcher = Switcher::whereName( $value )->first();
-                    if( $switcher && $switcher->exists() && $switcher->id !== (int)$request->id ) {
-                        return $fail( 'The name must be unique.' );
-                    }
-                },
-            ],
-            'hostname' => [
-                'required', 'string', 'max:255', new IdnValidate(),
-                function ($attribute, $value, $fail) use( $request ) {
-                    $switcher = Switcher::whereHostname( $value )->first();
-                    if( $switcher && $switcher->exists() && $switcher->id !== (int)$request->id ) {
-                        return $fail( 'The hostname must be unique.' );
-                    }
-                },
-            ],
-            'cabinetid'            => [ 'required', 'integer',
-                function( $attribute, $value, $fail ) {
-                    if( !Cabinet::whereId( $value )->exists() ) {
-                        return $fail( 'Cabinet is invalid / does not exist.' );
-                    }
-                }
-            ],
-            'infrastructure'            => [ 'required', 'integer',
-                function( $attribute, $value, $fail ) {
-                    if( !Infrastructure::whereId( $value )->exists() ) {
-                        return $fail( 'Infrastructure is invalid / does not exist.' );
-                    }
-                }
-            ],
-            'snmppasswd'                => 'nullable|string|max:255',
-            'vendorid'            => [ 'required', 'integer',
-                function( $attribute, $value, $fail ) {
-                    if( !Vendor::whereId( $value )->exists() ) {
-                        return $fail( 'Vendor is invalid / does not exist.' );
-                    }
-                }
-            ],
-            'ipv4addr'                  => 'nullable|ipv4',
-            'ipv6addr'                  => 'nullable|ipv6',
-            'model'                     => 'nullable|string|max:255',
-            'asn'                       => 'nullable|integer|min:1',
-            'loopback_ip' => [
-                'nullable', 'string', 'max:255',
-                function ($attribute, $value, $fail) use( $request ) {
-                    $switcher = Switcher::whereLoopbackIp( $value )->first();
-                    if( $switcher && $switcher->exists() && $switcher->id !== (int)$request->id ) {
-                        return $fail( 'The loopback IP must be unique.' );
-                    }
-                },
-            ],
-            'loopback_name'             => 'nullable|string|max:255',
-            'mgmt_mac_address'          => 'nullable|string|max:17|regex:/^[a-f0-9:\.\-]{12,17}$/i',
-        ] );
-    }
-
-    /**
-     * Add some extra attributes to the object
-     *
-     * @param $request
-     *
-     * @return void
-     *
-     * @throws
-     */
-    private function extraAttributes( Request $request ): void
-    {
-        if( $request->session()->exists( "snmp-platform" ) ) {
-            /** @var Platform $platform */
-            $platform = $request->session()->get( "snmp-platform" );
-            $osDate = null;
-
-            if( $platform->getOsDate() instanceof DateTime ) {
-                $osDate = $platform->getOsDate();
-            } else if( is_string( $platform->getOsDate() ) ) {
-                $osDate = new DateTime( $platform->getOsDate() );
-            }
-
-            $this->object->os =             $platform->getOs();
-            $this->object->osDate =         $osDate;
-            $this->object->osVersion =      $platform->getOsVersion();
-            $this->object->serialNumber =   $platform->getSerialNumber();
-            $this->object->save();
-            $request->session()->remove( "snmp-platform" );
-        }
-
-        if( $request->add_by_snnp ) {
-            $this->object->lastPolled =   now();
-            $this->object->save();
-        }
-    }
-
-    /**
-     * Function to do the actual validation and storing of the submitted object.
-     *
-     * @param Request $request
-     * @return bool|RedirectResponse
-     *
-     * @throws
-     */
-    public function doStore( Request $request )
-    {
-        $this->checkForm( $request );
-
-        if( $request->asn && Switcher::where( 'asn', $request->asn )->exists() ) {
-            AlertContainer::push( "Note: this ASN is already is use by at least one other switch. If you are using eBGP, this may cause prefixes to be black-holed.", Alert::WARNING );
-        }
-
-        $this->object = Switcher::create( array_merge( $request->except( 'mgmt_mac_address' ),
-            [
-                'mgmt_mac_address' => preg_replace( "/[^a-f0-9]/i", '', strtolower( $request->mgmt_mac_address ) )
-            ])
-        );
-
-        $this->extraAttributes( $request );
-
-        return true;
-    }
-
-    /**
-     * Function to do the actual validation and editing of the submitted object.
-     *
-     * @param Request $request
-     * @param int $id
-     *
-     * @return bool|RedirectResponse
-     *
-     * @throws
-     */
-    public function doUpdate( Request $request, int $id )
-    {
-        $this->object = Switcher::findOrFail( $id );
-
-        $this->checkForm( $request );
-
-        if( $request->asn && Switcher::where( 'asn', $request->asn )->where( 'id', '!=', $this->object->id )->exists() ){
-            AlertContainer::push( "Note: this ASN is already is use by at least one other switch. If you are using eBGP, this may cause prefixes to be black-holed.", Alert::WARNING );
-        }
-
-        $this->object->update( array_merge( $request->except( 'mgmt_mac_address' ),
-            [
-                'mgmt_mac_address' => preg_replace( "/[^a-f0-9]/i", '', strtolower( $request->mgmt_mac_address ) )
-            ])
-        );
-
-        $this->extraAttributes( $request );
-
-        return true;
-    }
-
-
-    /**
      * @inheritdoc
      */
     protected function preDelete() : bool
@@ -649,8 +540,8 @@ class SwitchController extends EloquentController
         $okay = true;
 
         if( $this->object->getPhysicalInterfaces()->count() ) {
-                $okay = false;
-                AlertContainer::push( "Cannot delete switch: there are switch ports assigned to one or more physical interfaces.", Alert::DANGER );
+            $okay = false;
+            AlertContainer::push( "Cannot delete switch: there are switch ports assigned to one or more physical interfaces.", Alert::DANGER );
         }
 
         if( $this->object->getPatchPanelPorts()->count() ) {
@@ -681,25 +572,25 @@ class SwitchController extends EloquentController
                 'sp.id AS id', 'sp.name AS name', 'sp.type AS porttype',
                 'pi.speed AS speed', 'pi.duplex AS duplex',
                 'c.name AS custname'
-            ] )
-            ->from( 'switchport AS sp' )
+            ] )->from( 'switchport AS sp' )
             ->join( 'physicalinterface AS pi', 'pi.switchportid', 'sp.id' )
             ->join( 'virtualinterface AS vi', 'vi.id', 'pi.virtualinterfaceid' )
             ->join( 'cust AS c', 'c.id', 'vi.custid' )
             ->where( 'sp.switchid', $switch->id )
-            ->orderBy( 'id', 'ASC' )
+            ->orderBy( 'id' )
             ->get()->keyBy( 'id' )->toArray();
 
-        $matchingValues = array_uintersect($ports, $allPorts , function ($val1, $val2){
-            return strcmp($val1['name'], $val2['name']);
+        $matchingValues = array_uintersect( $ports, $allPorts , static function ( $val1, $val2 ){
+            return strcmp( $val1['name'], $val2['name'] );
         });
 
-        $diffValues = array_udiff($allPorts, $ports , function ($val1, $val2){
-            return strcmp($val1['name'], $val2['name']);
+        $diffValues = array_udiff( $allPorts, $ports , static function ( $val1, $val2 ){
+            return strcmp( $val1['name'], $val2['name'] );
         });
 
         return view( 'switches/port-report' )->with([
-            'switches'                  => Switcher::orderBy( 'name' )->get()->keyBy( 'id' ),
+            'switches'                  => Switcher::orderBy( 'name' )
+                ->get()->keyBy( 'id' ),
             's'                         => $switch,
             'ports'                     => array_merge( $matchingValues, $diffValues ),
         ]);
@@ -716,11 +607,9 @@ class SwitchController extends EloquentController
      */
     public function configuration( Request $r ) : View
     {
+        $infra  = $location = $speed = $switch = $vlan = $summary = false;
         $speeds = PhysicalInterface::selectRaw( 'DISTINCT physicalinterface.speed AS speed' )
-            ->orderBy( 'speed', 'ASC' )
-            ->get()->toArray();
-
-        $switch = $infra = $location = $speed = $vlan = false;
+            ->orderBy( 'speed' )->get()->pluck( 'speed' )->toArray();
 
         if( $r->switch !== null ) {
             if(  $switch = Switcher::find( $r->switch ) ) {
@@ -756,7 +645,8 @@ class SwitchController extends EloquentController
         }
 
         if( $r->speed !== null ) {
-            if( in_array( $r->speed, $r->speed, false ) ) {
+            $speed = (int)$r->speed;
+            if( in_array( $r->speed, $speeds, false ) ) {
                 $r->session()->put( "switch-configuration-speed", $r->speed );
             } else {
                 $r->session()->remove( "switch-configuration-speed" );
@@ -766,8 +656,7 @@ class SwitchController extends EloquentController
             $speed = $r->session()->get( "switch-configuration-speed" );
         }
 
-        $vlan = false;
-        if( $r->input( 'vlan', null ) !== null ) {
+        if( $r->vlan !== null ) {
             if( $vlan = Vlan::find( $r->vlan ) ) {
                 $r->session()->put( "switch-configuration-vlan", $vlan );
             } else {
@@ -782,7 +671,7 @@ class SwitchController extends EloquentController
             $summary = "Connections details for: ";
 
             if( $switch ) {
-                $summary .= $switch->name . " (on " . $switch->infrastructure->name. " at " . $switch->cabinet->location->name . ")";
+                $summary .= $switch->name . " (on " . $switch->infrastructureModel->name. " at " . $switch->cabinet->location->name . ")";
             } else {
                 if( $infra ){
                     $summary .= $infra->name . ' (infrastructure); ';
@@ -794,11 +683,9 @@ class SwitchController extends EloquentController
                     $summary .= $vlan->name . ' (VLAN); ';
                 }
                 if( $speed ) {
-                    $summary .= PhysicalInterface::$SPEED[$speed] . '; ';
+                    $summary .= PhysicalInterface::$SPEED[ $speed ] . '; ';
                 }
             }
-        } else{
-            $summary = false;
         }
 
         $config = SwitcherAggregator::getConfiguration(
@@ -819,11 +706,71 @@ class SwitchController extends EloquentController
             'location'                  => $location,
             'summary'                   => $summary,
             'speeds'                    => $speeds,
-            'infras'                    => $switch ? [ $switch->infrastructure->id => $switch->infrastructure->name ] : Infrastructure::orderBy( 'name', 'asc' )->get(),
+            'infras'                    => $switch ? [ Infrastructure::find( $switch->infrastructure ) ] : Infrastructure::orderBy( 'name' )->get(),
             'vlans'                     => Vlan::orderBy( 'name' )->get(),
-            'locations'                 => $switch ? [ $switch->cabinet->location->id  => $switch->cabinet->location->name ] : Location::orderBy( 'name', 'asc' )->get(),
-            'switches'                  => SwitcherAggregator::getByLocationInfrastructureSpeed( $infra, $location, $speed ),
+            'locations'                 => $switch ? [ Location::find( $switch->cabinet->locationid ) ] : Location::orderBy( 'name' )->get(),
+            'switches'                  => SwitcherAggregator::getByLocationInfrastructureSpeed( $infra->id ?? null, $location->id ?? null, $speed ?: null ),
             'config'                    => $config,
         ]);
+    }
+
+    /**
+     * Check if the form is valid
+     *
+     * @param $r
+     */
+    public function checkForm( Request $r ): void
+    {
+        $r->validate( [
+            'name'              => 'required|string|max:255|unique:switch,name' . ( $r->id ? ',' . $r->id : ''  ),
+            'hostname'          => [ 'required', 'string', 'max:255', new IdnValidate(), 'unique:switch,hostname' . ( $r->id ? ',' . $r->id : ''  ) ],
+            'cabinetid'         => 'required|integer|exists:cabinet,id',
+            'infrastructure'    => 'required|integer|exists:infrastructure,id',
+            'snmppasswd'        => 'nullable|string|max:255',
+            'vendorid'          => 'required|integer|exists:vendor,id',
+            'ipv4addr'          => 'nullable|ipv4',
+            'ipv6addr'          => 'nullable|ipv6',
+            'model'             => 'nullable|string|max:255',
+            'asn'               => 'nullable|integer|min:1',
+            'loopback_ip'       => 'nullable|string|max:255|unique:switch,loopback_ip' . ( $r->id ? ',' . $r->id : ''  ),
+            'loopback_name'     => 'nullable|string|max:255',
+            'mgmt_mac_address'  => 'nullable|string|max:17|regex:/^[a-f0-9:\.\-]{12,17}$/i',
+        ] );
+    }
+
+    /**
+     * Add some extra attributes to the object
+     *
+     * @param $r
+     *
+     * @return void
+     *
+     * @throws
+     */
+    private function extraAttributes( Request $r ): void
+    {
+        if( $r->session()->exists( "snmp-platform" ) ) {
+            /** @var Platform $platform */
+            $platform = $r->session()->get( "snmp-platform" );
+            $osDate = null;
+
+            if( $platform->getOsDate() instanceof DateTime ) {
+                $osDate = $platform->getOsDate();
+            } else if( is_string( $platform->getOsDate() ) ) {
+                $osDate = new DateTime( $platform->getOsDate() );
+            }
+
+            $this->object->os =             $platform->getOs();
+            $this->object->osDate =         $osDate;
+            $this->object->osVersion =      $platform->getOsVersion();
+            $this->object->serialNumber =   $platform->getSerialNumber();
+            $this->object->save();
+            $r->session()->remove( "snmp-platform" );
+        }
+
+        if( $r->add_by_snnp ) {
+            $this->object->lastPolled =   now();
+            $this->object->save();
+        }
     }
 }

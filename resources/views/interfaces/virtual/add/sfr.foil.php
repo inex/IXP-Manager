@@ -33,7 +33,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach( $t->vi->sflowReceivers as $sflr ): /** @var \IXP\Models\SflowReceiver $sflr */ ?>
+                        <?php foreach( $t->vi->sflowReceivers as $sflr ):
+                            /** @var \IXP\Models\SflowReceiver $sflr */ ?>
                             <tr>
                                 <td>
                                     <?= $t->ee( $sflr->dst_ip ) ?>

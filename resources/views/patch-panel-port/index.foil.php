@@ -176,7 +176,11 @@
                                 <td width="200px">
                                     <div class="btn-group btn-group-sm my-auto" role="group">
 
-                                        <?= $t->insert( 'patch-panel-port/action-dd', [ 'ppp' => $ppp, 'btnClass' => 'btn-group-sm', 'tpl' => 'index', 'prefix' => $ppp->prefix, 'nbSlave' => $ppp->nbslave, 'slaveName' => $slaveName ] ); ?>
+                                        <?= $t->insert( 'patch-panel-port/action-dd', [ 'ppp' => $ppp,
+                                             'btnClass' => 'btn-group-sm', 'tpl' => 'index',
+                                             'prefix' => $ppp->prefix, 'nbSlave' => $ppp->nbslave,
+                                             'slaveName' => $slaveName, 'isSuperUser' => $isSuperUser ] );
+                                        ?>
 
                                         <a class="btn btn-white" title="History"
                                                 href="<?= route( 'patch-panel-port@view' , [ 'ppp' => $ppp->id ] ) ?>  ">

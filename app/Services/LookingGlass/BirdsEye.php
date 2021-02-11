@@ -3,7 +3,7 @@
 namespace IXP\Services\LookingGlass;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,18 +22,19 @@ namespace IXP\Services\LookingGlass;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use IXP\Contracts\LookingGlass as LookingGlassContract;
 
-use IXP\Models\Router as Router;
+use IXP\Models\Router;
 
 /**
  * LookingGlass Backend -> Bird's Eye
  *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
- * @category   LookingGlass
+ * @category   IXP
  * @package    IXP\Services\LookingGlass
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class BirdsEye implements LookingGlassContract
@@ -58,7 +59,7 @@ class BirdsEye implements LookingGlassContract
      */
     public function __construct( Router $r )
     {
-        $this->setRouter($r);
+        $this->setRouter( $r );
     }
 
     /**
@@ -86,7 +87,9 @@ class BirdsEye implements LookingGlassContract
 
     /**
      * Set the router object
+     *
      * @param Router $r
+     *
      * @return BirdsEye For fluent interfaces
      */
     public function setRouter( Router $r ): LookingGlassContract
@@ -188,9 +191,9 @@ class BirdsEye implements LookingGlassContract
     /**
      * Get details for a specific route as received by a protocol
      *
-     * @param string $protocol Protocol name
-     * @param string $network The route to lookup
-     * @param int $mask The mask of the route to look up
+     * @param string    $protocol   Protocol name
+     * @param string    $network    The route to lookup
+     * @param int       $mask       The mask of the route to look up
      *
      * @return string
      */
@@ -202,39 +205,37 @@ class BirdsEye implements LookingGlassContract
     /**
      * Get details for a specific route in a named table (vrf)
      *
-     * @param string $table Table name
-     * @param string $network The route to lookup
-     * @param int $mask The mask of the route to look up
+     * @param string    $table      Table name
+     * @param string    $network    The route to lookup
+     * @param int       $mask       The mask of the route to look up
      *
      * @return string
      */
     public function protocolTable( string $table,string $network,int $mask ): string
     {
-        dd( $this->apiCall( 'route/' . urlencode($network . '/' . $mask ) . '/table/' . urlencode( $table ) ) );
         return $this->apiCall( 'route/' . urlencode($network . '/' . $mask ) . '/table/' . urlencode( $table ) );
     }
 
     /**
      * Get details for a specific route in a named protocol export
      *
-     * @param string $protocol Protocol name
-     * @param string $network The route to lookup
-     * @param int $mask The mask of the route to look up
+     * @param string    $protocol   Protocol name
+     * @param string    $network    The route to lookup
+     * @param int       $mask       The mask of the route to look up
      *
      * @return string
      */
-    public function exportRoute( string $protocol,string $network,int $mask ): string
+    public function exportRoute( string $protocol, string $network, int $mask ): string
     {
         return $this->apiCall( 'route/' . urlencode($network . '/' . $mask ) . '/export/' . urlencode( $protocol ) );
     }
 
-
     /**
      * Get wildcard large communities in protocol tabe of form ( x, y, * )
      *
-     * @param string $protocol Protocol name
-     * @param int $x
-     * @param int $y
+     * @param string    $protocol Protocol name
+     * @param int       $x
+     * @param int       $y
      *
      * @return string
      */

@@ -29,7 +29,7 @@
     <div class="row">
         <div class="col-sm-12">
             <?= $t->alerts() ?>
-            <table id='table-vi' class="collapse table table-stripped no-wrap table-responsive-ixp-with-header">
+            <table id='table-vi' class="collapse table table-stripped no-wrap table-responsive-ixp-with-header w-100">
                 <thead class="thead-dark">
                     <tr>
                         <th>
@@ -118,10 +118,9 @@
         /**
          * on click even allow to delete a Virtual Interface
          */
-        $( '.btn-delete' ).click( function(e){
+        $( '.btn-delete' ).click( function( e ){
             e.preventDefault();
             deletePopup( $( this ), 'vi');
         });
-
     </script>
 <?php $this->append() ?>

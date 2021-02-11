@@ -82,7 +82,7 @@
             <a class="dropdown-item" href="<?= route( 'patch-panel-port-email@form',  [ 'ppp' => $ppp->id , 'type' => PatchPanelPort::EMAIL_INFO ]       )  ?>">Email - Information</a>
             <a class="dropdown-item" href="<?= route( 'patch-panel-port-email@form',  [ 'ppp' => $ppp->id , 'type' => PatchPanelPort::EMAIL_LOA ]        )  ?>">Email - LoA</a>
 
-            <?php if( Auth::getUser()->isSuperUser() ): ?>
+            <?php if( $t->isSuperUser ): ?>
                 <div class="dropdown-divider"></div>
             <?php endif; ?>
         <?php endif; ?>
@@ -108,7 +108,7 @@
         <?php endif; ?>
 
 
-        <?php if( Auth::getUser()->isSuperUser() ): ?>
+        <?php if( $t->isSuperUser ): ?>
             <li id="danger-dropdown-<?= $ppp->id ?>" data-master-port="<?= $ppp->number ?>" data-port-prefix="<?= $t->prefix ?>" data-slave-port="<?= $t->slaveName ?>" class="dropdown-submenu">
                 <a class="dropdown-item submenu" tabindex="-1" href="#" >
                     Admin Actions <i class="fa fa-caret-down"></i>

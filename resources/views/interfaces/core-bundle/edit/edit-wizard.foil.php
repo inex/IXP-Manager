@@ -81,7 +81,8 @@
                                 ->label( 'STP' )
                                 ->value( 1 )
                                 ->inline()
-                                ->blockHelp( "" );
+                                ->class( 'mx-1' )
+                                ->blockHelp( '' );
                             ?>
                         <?php endif; ?>
 
@@ -103,7 +104,8 @@
                             ->id( 'enabled' )
                             ->label( 'Enabled' )
                             ->value( 1 )
-                            ->blockHelp( "" );
+                            ->class( 'mx-1' )
+                            ->blockHelp( '' );
                         ?>
 
                         <?php if( $t->cb->typeL3LAG() ): ?>

@@ -25,7 +25,7 @@
             </div>
         </div>
 
-        <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@add-by-snmp') ?>">
+        <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@create-by-snmp') ?>">
             <span class="fa fa-plus"></span>
         </a>
     </div>

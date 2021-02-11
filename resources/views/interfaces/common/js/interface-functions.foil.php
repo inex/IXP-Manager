@@ -83,13 +83,14 @@ function updateIpAddresses() {
  * Such it and see - I think it makes sense ;-)   (barryo)
  */
 function updateMD5( e ) {
+    const element         = $(this).children();
     const in_ipv6_md5     = $( "#ipv6bgpmd5secret" );
     const in_ipv4_md5     = $( "#ipv4bgpmd5secret" );
 
-    const v6      = in_ipv6_md5.val().trim();
-    const v4      = in_ipv4_md5.val().trim();
+    const v6                = in_ipv6_md5.val().trim();
+    const v4                = in_ipv4_md5.val().trim();
 
-    const target  = $( e.target ).hasClass('glyphicon-generator-ipv6') || $( e.target ).find('.glyphicon-generator-ipv6').length !== 0 ? in_ipv6_md5 : in_ipv4_md5;
+    const target  = element.hasClass( 'glyphicon-generator-ipv6' ) || element.find( '.glyphicon-generator-ipv6' ).length !== 0 ? in_ipv6_md5 : in_ipv4_md5;
     const other   = target === in_ipv6_md5 ? in_ipv4_md5 : in_ipv6_md5;
 
     const vtarget = target.val().trim();

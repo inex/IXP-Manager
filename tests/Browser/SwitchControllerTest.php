@@ -64,7 +64,7 @@ class SwitchControllerTest extends DuskTestCase
                 ->assertSee( 'switch1' )
                 ->assertSee( 'switch2' );
 
-            $browser->visit( '/switch/add-by-snmp' )
+            $browser->visit( '/switch/create-by-snmp' )
                 ->assertSee( 'Add Switch via SNMP' )
                 ->assertSee( 'Hostname' )
                 ->assertSee( 'SNMP Community' );

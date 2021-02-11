@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\PatchPanel\Port;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers\PatchPanel\Port;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth, Log, Storage;
 
 use Illuminate\Http\{
@@ -48,10 +49,12 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
  * File Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   PatchPanel/Port
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\PatchPanel\Port
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class FileController extends Controller
@@ -98,29 +101,6 @@ class FileController extends Controller
 
         AlertContainer::push( $message, $success ? Alert::SUCCESS : Alert::DANGER );
         return redirect()->to( route( 'patch-panel-port@view', [ 'ppp' => $file->patch_panel_port_id ] ) );
-    }
-
-    /**
-     * Delete a patch panel port file history
-     *
-     * @param  PatchPanelPortHistoryFile $file patch panel port history file
-     *
-     * @return  RedirectResponse
-     *
-     * @throws
-     */
-    public function deleteHistory( PatchPanelPortHistoryFile $file ): RedirectResponse
-    {
-        $path = 'files/' . $file->path();
-
-        if( Storage::exists( $path ) && Storage::delete( $path ) ) {
-            $file->delete();
-            AlertContainer::push( 'Patch Panel Port File deleted.', Alert::SUCCESS );
-        } else {
-            AlertContainer::push( 'Patch Panel Port File could not be deleted.', Alert::DANGER );
-        }
-
-        return redirect()->to( route( 'patch-panel-port@view', [ 'ppp', $file->patchPanelPortHistory->patch_panel_port_id ] ) . '#ppp-' . $file->patchPanelPortHistory->patch_panel_port_id );
     }
 
     /**

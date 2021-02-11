@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\PatchPanel\Port;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers\PatchPanel\Port;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth, Log;
 
 use Illuminate\Http\{
@@ -37,10 +38,12 @@ use IXP\Models\{
 
 /**
  * PatchPanelPort Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   PatchPanel
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\PatchPanel\Port
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class LoaController extends Common
@@ -83,11 +86,9 @@ class LoaController extends Common
     private function setupLoA( PatchPanelPort $ppp ): void
     {
         $u = User::find( Auth::id() );
-        if( !$u->isSuperUser() ) {
-            if( $ppp->customer_id !== $u->custid ) {
-                Log::alert($u->username . ' tried to create a PPP LoA for PPP:' . $ppp->id . ' but does not have permission');
-                abort(401);
-            }
+        if( $ppp->customer_id !== $u->custid  && !$u->isSuperUser() ) {
+            Log::alert($u->username . ' tried to create a PPP LoA for PPP:' . $ppp->id . ' but does not have permission');
+            abort(401);
         }
     }
 

@@ -3,7 +3,7 @@
 namespace IXP\Rules;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -30,9 +30,9 @@ use Illuminate\Contracts\Validation\Rule;
  *
  * @author     Barry O'Donovan  <barry@opensolutions.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
- * @category   Rules
+ * @category   IXP
  * @package    IXP\Rules
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class IdnValidate implements Rule
@@ -42,19 +42,17 @@ class IdnValidate implements Rule
      *
      * @return void
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(){}
 
     /**
      * Determine if the validation rule passes.
      *
      * @param  string  $attribute
      * @param  mixed  $value
+     *
      * @return bool
      */
-    public function passes($attribute, $value): bool
+    public function passes( $attribute, $value ): bool
     {
         $foo = idn_to_ascii ( $value, IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46 );
         return ( filter_var( $foo, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME ) ) ? true : false;

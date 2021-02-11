@@ -742,7 +742,7 @@ class PatchPanelPort extends Model
             }
 
             foreach( $history->patchPanelPortHistoryFiles as $historyFile ) {
-                $path = 'files/' . $historyFile->getPath();
+                $path = 'files/' . $historyFile->path();
 
                 $historyFile->update( [ 'patch_panel_port_history_id' => null ] );
                 $historyFile->delete();

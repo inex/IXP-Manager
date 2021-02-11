@@ -235,7 +235,6 @@ class PatchPanel extends Model
                 ->whereNotNull( 'duplex_master_id' )
                 ->where( 'pp.id', $this->id )->get()->keyBy( 'id' )->count() > 0;
 
-
         return $slave || $master;
     }
 
@@ -261,7 +260,6 @@ class PatchPanel extends Model
             ->where( 'pp.id', $this->id )->get()->keyBy( 'id' )->count();
 
         return $master + $ppp;
-
     }
 
     /**
@@ -273,8 +271,8 @@ class PatchPanel extends Model
      */
     public function cssClassPortCount(): string
     {
-        $total = $this->patchPanelPorts()->count();
-        $available = $this->availableForUsePortCount();
+        $total      = $this->patchPanelPorts()->count();
+        $available  = $this->availableForUsePortCount();
         if($total !== 0):
             if( ($total - $available) / $total < 0.7 ):
                 $class = "success";
@@ -303,7 +301,7 @@ class PatchPanel extends Model
         $available = ($divide)? floor( $this->availableForUsePortCount() / 2 ) : $this->availableForUsePortCount();
         $total     = ($divide)? floor( $this->patchPanelPorts()->count() / 2 ) : $this->patchPanelPorts()->count();
 
-        return $available.' / '.$total;
+        return $available . ' / ' . $total;
     }
 
     /**

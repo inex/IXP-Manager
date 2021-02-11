@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\PatchPanel\Port;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers\PatchPanel\Port;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth, Former, Redirect, Str;
 
 use Illuminate\Http\{
@@ -34,9 +35,7 @@ use Illuminate\View\View;
 
 use IXP\Http\Controllers\Controller;
 
-use IXP\Http\Requests\{
-    StorePatchPanelPort     as StorePatchPanelPortRequest,
-};
+use IXP\Http\Requests\StorePatchPanelPort as StorePatchPanelPortRequest;
 
 use IXP\Models\{
     Aggregators\PatchPanelPortAggregator,
@@ -56,10 +55,12 @@ use IXP\Utils\View\Alert\{
 
 /**
  * PatchPanelPort Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   PatchPanel
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\PatchPanel\Port
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class PortController extends Controller
@@ -74,8 +75,8 @@ class PortController extends Controller
     public function index( PatchPanel $pp = null ): View
     {
         return view( 'patch-panel-port/index' )->with([
-            'patchPanelPorts'               => PatchPanelPortAggregator::list( $pp->id ?? null ),
-            'pp'                            => $pp ?? false,
+            'patchPanelPorts'   => PatchPanelPortAggregator::list( $pp->id ?? null ),
+            'pp'                => $pp ?: false,
         ]);
     }
 
@@ -100,12 +101,13 @@ class PortController extends Controller
         $summary .= ( $availableForUse ? ', available for use.' : '.' );
 
         return view( 'patch-panel-port/index' )->with([
-            'patchPanelPorts'               => PatchPanelPortAggregator::list( null, true, $location, $cabinet, $cabletype, $availableForUse ),
+            'patchPanelPorts'               => PatchPanelPortAggregator::list(
+                null, true, $location, $cabinet, $cabletype, $availableForUse
+            ),
             'pp'                            => false,
             'summary'                       => $summary,
         ]);
     }
-
 
     /**
      * Display the form to edit allocate a patch panel port
@@ -179,28 +181,28 @@ class PortController extends Controller
         $duplexSlaveId = $ppp->duplexSlavePorts()->exists() ? $ppp->duplexSlavePorts()->first()->id : null;
         // fill the form with patch panel port data
         Former::populate( [
-            'switch_port_id'            => $r->old( 'switch_port_id',          $ppp->switch_port_id ),
+            'switch_port_id'            => $r->old( 'switch_port_id',          $ppp->switch_port_id     ),
             'patch_panel'               => $ppp->patchPanel->name,
-            'customer_id'               => $r->old( 'customer_id',             $ppp->customer_id ),
-            'state'                     => $r->old( 'state',                   $ppp->state ),
-            'notes'                     => $r->old( 'notes',                   $ppp->notes ),
-            'assigned_at'               => $r->old( 'assigned_at',             $ppp->assigned_at ),
-            'connected_at'              => $r->old( 'connected_at',            $ppp->connected_at ),
-            'cease_requested_at'        => $r->old( 'cease_requested_at',     $ppp->cease_requested_at ),
-            'ceased_at'                 => $r->old( 'ceased_at',               $ppp->ceased_at ),
-            'last_state_change'         => $r->old( 'last_state_change',       $ppp->last_state_change ),
-            'chargeable'                => $r->old( 'chargeable',              $chargeable ),
+            'customer_id'               => $r->old( 'customer_id',             $ppp->customer_id        ),
+            'state'                     => $r->old( 'state',                   $ppp->state              ),
+            'notes'                     => $r->old( 'notes',                   $ppp->notes              ),
+            'assigned_at'               => $r->old( 'assigned_at',             $ppp->assigned_at        ),
+            'connected_at'              => $r->old( 'connected_at',            $ppp->connected_at       ),
+            'cease_requested_at'        => $r->old( 'cease_requested_at',     $ppp->cease_requested_at  ),
+            'ceased_at'                 => $r->old( 'ceased_at',               $ppp->ceased_at          ),
+            'last_state_change'         => $r->old( 'last_state_change',       $ppp->last_state_change  ),
+            'chargeable'                => $r->old( 'chargeable',              $chargeable              ),
             'number'                    => $ppp->number,
-            'colo_circuit_ref'          => $r->old( 'colo_circuit_ref',        $ppp->colo_circuit_ref ),
-            'ticket_ref'                => $r->old( 'ticket_ref',              $ppp->ticket_ref ),
-            'private_notes'             => $r->old( 'private_notes',           $ppp->private_notes ),
-            'owned_by'                  => $r->old( 'owned_by',                $ppp->owned_by ),
-            'description'               => $r->old( 'description',             $ppp->description ),
-            'colo_billing_ref'          => $r->old( 'colo_billing_ref',        $ppp->colo_billing_ref ),
+            'colo_circuit_ref'          => $r->old( 'colo_circuit_ref',        $ppp->colo_circuit_ref   ),
+            'ticket_ref'                => $r->old( 'ticket_ref',              $ppp->ticket_ref         ),
+            'private_notes'             => $r->old( 'private_notes',           $ppp->private_notes      ),
+            'owned_by'                  => $r->old( 'owned_by',                $ppp->owned_by           ),
+            'description'               => $r->old( 'description',             $ppp->description        ),
+            'colo_billing_ref'          => $r->old( 'colo_billing_ref',        $ppp->colo_billing_ref   ),
             'cabinet_name'              => $ppp->patchPanel->cabinet->name,
             'colocation_centre'         => $ppp->patchPanel->cabinet->location->name,
-            'switch'                    => $r->old( 'switch',                  $ppp->switchPort->switchid ?? null ),
-            'partner_port'              => $r->old( 'partner_port',            $duplexSlaveId ),
+            'switch'                    => $r->old( 'switch',           $ppp->switchPort->switchid ?? null    ),
+            'partner_port'              => $r->old( 'partner_port',            $duplexSlaveId                       ),
         ]);
 
         return view( 'patch-panel-port/edit' )->with([
@@ -221,7 +223,7 @@ class PortController extends Controller
     }
 
     /**
-     * Add or edit a patch panel port (set all the data needed)
+     * Update a patch panel port
      *
      * @param   StorePatchPanelPortRequest  $r instance of the current HTTP request
      * @param   PatchPanelPort              $ppp
@@ -404,10 +406,8 @@ class PortController extends Controller
 
         // we may also pass a new state for a physical interface with this request
         // (because we call this function from set connected / set ceased / etc)
-        if( $r->pi_status ) {
-            if( $ppp->switchPort && ( $pi = $ppp->switchPort->physicalInterface ) ) {
-                $pi->update( [ 'status' => $r->pi_status ] );
-            }
+        if( $r->pi_status && $ppp->switchPort && ( $pi = $ppp->switchPort->physicalInterface ) ) {
+            $pi->update( [ 'status' => $r->pi_status ] );
         }
 
         return response()->json( [ 'success' => true ] );

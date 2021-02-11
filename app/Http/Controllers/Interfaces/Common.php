@@ -23,8 +23,7 @@ namespace IXP\Http\Controllers\Interfaces;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Exception;
-use Input, Redirect;
+use Exception, Redirect;
 
 use IXP\Exceptions\GeneralException;
 

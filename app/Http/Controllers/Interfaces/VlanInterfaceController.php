@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Interfaces;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,6 +23,7 @@ namespace IXP\Http\Controllers\Interfaces;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use DB;
 use Redirect, Former;
 
 use Illuminate\View\View;
@@ -52,8 +53,9 @@ use IXP\Utils\View\Alert\{
  * Vlan Interface Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Interfaces
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Interfaces
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class VlanInterfaceController extends Common
@@ -66,21 +68,11 @@ class VlanInterfaceController extends Common
     public function list(): View
     {
         return view( 'interfaces/vlan/list' )->with([
-            'vlis'               => VlanInterface::all()
-        ]);
-    }
-
-    /**
-     * Display a VLAN interface
-     *
-     * @param VlanInterface $vli
-     *
-     * @return  View
-     */
-    public function view( VlanInterface $vli ): View
-    {
-        return view( 'interfaces/vlan/view' )->with([
-            'vli' => $vli
+            'vlis'      => VlanInterface::with( 'virtualInterface.customer' )
+                ->with( 'vlan' )
+                ->with( 'ipv4address' )
+                ->with( 'ipv6address' )
+                ->get()
         ]);
     }
 
@@ -108,11 +100,12 @@ class VlanInterfaceController extends Common
     public function create( Request $r, VirtualInterface $vi ): View
     {
         Former::populate([
-            'maxbgpprefix'              => $r->old( 'maxbgpprefix',           $vi->customer->maxprefixes ),
+            'maxbgpprefix'              => $r->old( 'maxbgpprefix', $vi->customer->maxprefixes ),
         ]);
 
         return view( 'interfaces/vlan/edit' )->with([
-            'vlans'                     => Vlan::publicOnly()->orderBy('number')->get(),
+            'vlans'                     => Vlan::publicOnly()
+                ->orderBy('number')->get(),
             'vli'                       => false,
             'vi'                        => $vi,
             'duplicateTo'               => false
@@ -120,7 +113,33 @@ class VlanInterfaceController extends Common
     }
 
     /**
-     * Display the form to edit a VLAM interface
+     * Create a vlan interface
+     *
+     * @param   StoreVlanInterface $r instance of the current HTTP request
+     *
+     * @return  RedirectResponse
+     * @throws
+     */
+    public function store( StoreVlanInterface $r ): RedirectResponse
+    {
+        $vli    = new VlanInterface;
+        $v      = Vlan::find( $r->vlanid );
+
+        if( !$this->setIp( $r, $v, $vli, false ) || !$this->setIp( $r, $v, $vli, true ) ) {
+            return Redirect::back()->withInput( $r->all() );
+        }
+
+        $vli->update( $r->all() );
+
+        // add a warning if we're filtering on irrdb but have not configured one for the customer
+        $this->warnIfIrrdbFilteringButNoIrrdbSourceSet( $vli );
+
+        AlertContainer::push( 'Vlan Interface created.', Alert::SUCCESS );
+        return redirect( route( 'virtual-interface@edit', [ 'vi' => $r->virtualinterfaceid ] ) );
+    }
+
+    /**
+     * Display the form to edit a VLAN interface
      *
      * @param Request                   $r
      * @param VlanInterface             $vli    The VLAN interface
@@ -162,42 +181,16 @@ class VlanInterfaceController extends Common
         }
 
         return view( 'interfaces/vlan/edit' )->with([
-            'vlans'                     => Vlan::publicOnly()->orderBy('number')->get(),
+            'vlans'                     => Vlan::publicOnly()
+                ->orderBy('number')->get(),
             'vli'                       => $vli,
-            'vi'                        => $vi ?? false,
-            'duplicateTo'               => $duplicateTo ?? false
+            'vi'                        => $vi ?: false,
+            'duplicateTo'               => $duplicateTo ?: false
         ]);
     }
 
     /**
-     * Create a vlan interface
-     *
-     * @param   StoreVlanInterface $r instance of the current HTTP request
-     *
-     * @return  RedirectResponse
-     * @throws
-     */
-    public function store( StoreVlanInterface $r ): RedirectResponse
-    {
-        $vli    = new VlanInterface;
-        $v      = Vlan::find( $r->vlanid );
-
-        if( !$this->setIp( $r, $v, $vli, false ) || !$this->setIp( $r, $v, $vli, true ) ) {
-            return Redirect::back()->withInput( $r->all() );
-        }
-
-        $vli->update( $r->all() );
-
-        // add a warning if we're filtering on irrdb but have not configured one for the customer
-        $this->warnIfIrrdbFilteringButNoIrrdbSourceSet( $vli );
-
-        AlertContainer::push( 'Vlan Interface created.', Alert::SUCCESS );
-
-        return redirect( route( 'virtual-interface@edit', [ 'vi' => $r->virtualinterfaceid ] ) );
-    }
-
-    /**
-     * Add / edit a vlan interface (set all the data needed)
+     * Update a vlan interface
      *
      * @param   StoreVlanInterface  $r      instance of the current HTTP request
      * @param   VlanInterface       $vli
@@ -210,6 +203,7 @@ class VlanInterfaceController extends Common
     {
         // are we duplicating?
         if( (bool)$r->duplicate ) {
+            DB::beginTransaction();
             $source = $vli;
             $vli = VlanInterface::create();
             foreach( $source->layer2addresses as $l2a ) {
@@ -225,9 +219,11 @@ class VlanInterfaceController extends Common
         $v = Vlan::find( $r->vlanid );
 
         if( !$this->setIp( $r, $v, $vli, false ) || !$this->setIp( $r, $v, $vli, true ) ) {
+            DB::rollBack();
             return Redirect::back()->withInput( $r->all() );
         }
 
+        DB::commit();
         $vli->update( $r->all() );
 
         // add a warning if we're filtering on irrdb but have not configured one for the customer
@@ -243,18 +239,30 @@ class VlanInterfaceController extends Common
     }
 
     /**
+     * Display a VLAN interface
+     *
+     * @param VlanInterface $vli
+     *
+     * @return  View
+     */
+    public function view( VlanInterface $vli ): View
+    {
+        return view( 'interfaces/vlan/view' )->with([
+            'vli' => $vli
+        ]);
+    }
+
+    /**
      * Delete a Vlan Interface and the Layer2Address associated
      *
-     * @param Request $r
      * @param VlanInterface $vli
      *
      * @return  RedirectResponse
      *
      * @throws
      */
-    public function delete( Request $r, VlanInterface $vli ): RedirectResponse
+    public function delete( VlanInterface $vli ): RedirectResponse
     {
-        $viid = $vli->virtualInterface->id;
         $vli->layer2addresses()->delete();
         $vli->delete();
 
@@ -263,6 +271,6 @@ class VlanInterfaceController extends Common
         if( $_SERVER[ "HTTP_REFERER" ] === route( 'vlan-interface@list' ) ){
             return redirect( route( 'vlan-interface@list' ) );
         }
-        return redirect( route( 'virtual-interface@edit' , [ 'vi' => $viid ] ) );
+        return redirect( route( 'virtual-interface@edit' , [ 'vi' => $vli->virtualinterfaceid ] ) );
     }
 }

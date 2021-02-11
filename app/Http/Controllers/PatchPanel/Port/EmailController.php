@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\PatchPanel\Port;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,9 +22,9 @@ namespace IXP\Http\Controllers\PatchPanel\Port;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Former, Mail, Redirect;
 
 use Barryvdh\DomPDF\PDF;
-use Former, Mail, Redirect;
 
 use IXP\Models\PatchPanelPort;
 
@@ -49,10 +49,12 @@ use IXP\Utils\View\Alert\{
 
 /**
  * Email Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   PatchPanel/Port
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\PatchPanel\Port
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class EmailController extends Common

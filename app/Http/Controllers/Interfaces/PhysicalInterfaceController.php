@@ -99,7 +99,7 @@ class PhysicalInterfaceController extends Common
     public function view( PhysicalInterface $pi ): View
     {
         return view( 'interfaces/physical/view' )->with([
-            'pi' => $pi
+            'pi'    => $pi
         ]);
     }
 

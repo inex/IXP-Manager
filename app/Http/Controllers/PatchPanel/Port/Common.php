@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\PatchPanel\Port;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,19 +22,21 @@ namespace IXP\Http\Controllers\PatchPanel\Port;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+use IXP\Http\Controllers\Controller;
+
 use IXP\Models\{
     PatchPanelPort,
 };
 
-
-use IXP\Http\Controllers\Controller;
-
 /**
  * Common Functions Patch panel port Controllers
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Interfaces
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\PatchPanel\Port
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 abstract class Common extends Controller

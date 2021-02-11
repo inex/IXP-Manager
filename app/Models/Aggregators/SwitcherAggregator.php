@@ -27,6 +27,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use IXP\Models\CoreBundle;
 use IXP\Models\Customer;
+use IXP\Models\Infrastructure;
+use IXP\Models\Location;
 use IXP\Models\Switcher;
 use IXP\Models\SwitchPort;
 
@@ -106,20 +108,21 @@ class SwitcherAggregator extends Switcher
     /**
      * Return an array of all switch names where the array key is the switch id
      *
-     * @param int|null      $infraid
-     * @param int|null      $locationid
-     * @param int|null      $speed
+     * @param int|null   $infra
+     * @param int|null   $location
+     * @param int|null   $speed
 
      * @return Collection
      */
-    public static function getByLocationInfrastructureSpeed( int $infraid = null, int $locationid = null, int $speed = null ): Collection
+    public static function getByLocationInfrastructureSpeed( int $infra = null, int $location = null, int $speed = null ): Collection
     {
-        return self::when( $locationid , function( Builder $q, $locationid ) {
+        return self::select( 'switch.*' )
+            ->when( $location , function( Builder $q, $location ) {
                 return $q->leftJoin( 'cabinet AS c', 'c.id', 'switch.cabinetid' )
-                    ->where( 'c.locationid', $locationid);
+                    ->where( 'c.locationid', $location );
             })
-            ->when( $infraid , function( Builder $q, $infraid ) {
-                return $q->whereIn( 's.infrastructure', $infraid );
+            ->when( $infra , function( Builder $q, $infra ) {
+                return $q->where( 'switch.infrastructure', $infra );
             })
             ->when( $speed , function( Builder $q, $speed ) {
                 return $q->leftjoin( 'switchport AS sp', 'sp.switchid', 'switch.id' )
@@ -130,9 +133,8 @@ class SwitcherAggregator extends Switcher
                     ->leftjoin( 'ipv6address AS ipv6', 'ipv4.id', '=', 'vli.ipv6addressid' )
                     ->where( 'pi.speed', $speed );
             })
-            ->where( 'active', true )
-            ->orderBy( 'name', 'ASC' )
-            ->get();
+            ->where( 'switch.active', true )
+            ->orderBy( 'switch.name' )->distinct()->get();
     }
 
     /**

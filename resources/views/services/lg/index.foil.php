@@ -13,7 +13,9 @@
                 <ul class="nav nav-tabs">
                     <?php foreach ( $t->tabRouters as $infra => $router): ?>
                         <li class="nav-item">
-                            <a class="nav-link <?= !($infra === array_key_first( $t->tabRouters ) ) ?: 'active'?>" href="#<?= Str::kebab( strtolower( $infra ) ) ?>" data-toggle="tab"><?=  $t->ee( $infra ) ?></a>
+                            <a class="nav-link <?= !($infra === array_key_first( $t->tabRouters ) ) ?: 'active'?>" href="#<?= Str::kebab( strtolower( $infra ) ) ?>" data-toggle="tab">
+                                <?=  $t->ee( $infra ) ?>
+                            </a>
                         </li>
                     <?php endforeach; ?>
                 </ul>

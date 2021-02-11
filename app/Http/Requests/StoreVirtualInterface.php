@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,12 +23,20 @@ namespace IXP\Http\Requests;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
 use Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-
+/**
+ * Store VirtualInterface FormRequest
+ *
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Requests
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class StoreVirtualInterface extends FormRequest
 {
     /**
@@ -50,7 +58,7 @@ class StoreVirtualInterface extends FormRequest
     public function rules(): array
     {
         return [
-            'custid'                 => 'integer|'. ( $this->selectedCust ? 'nullable' : 'required' ),
+            'custid'                 => 'integer|required|exists:cust,id',
             'name'                  => 'string|max:255|nullable',
             'description'           => 'string|max:255|nullable',
             'channelgroup'          => 'integer|nullable',

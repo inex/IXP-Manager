@@ -42,7 +42,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach( $t->vi->vlanInterfaces as $vli ):   /** @var \IXP\Models\VlanInterface $vli */ ?>
+                    <?php foreach( $t->vi->vlanInterfaces as $vli ):
+                        /** @var \IXP\Models\VlanInterface $vli */ ?>
                         <tr>
                             <td>
                                 <?= $t->ee( $vli->vlan->name ) ?>

@@ -117,9 +117,10 @@ class RouterAggregator extends Router
      */
     public static function forDropdown( Customer $cust = null, User $user = null ): array
     {
+        $privs = $user ? $user->privs() : User::AUTH_PUBLIC;
         $routers = self::whereNotNull( 'api' )
             ->where( 'api_type', 1 )
-            ->where( 'lg_access', '<=', $user ? $user->privs() : User::AUTH_PUBLIC )
+            ->where( 'lg_access', '<=', $privs )
             ->when( !$user, function( Builder $q ) {
                 return $q->where( 'quarantine', false );
             } )
@@ -128,7 +129,7 @@ class RouterAggregator extends Router
 
         $result = [];
         foreach( $routers as $key => $r ) {
-            if( $r->quarantine && !$user->isSuperUser() && !$cust->hasInterfacesInQuarantine() ) {
+            if( $r->quarantine && $privs !== User::AUTH_SUPERUSER && !$cust->hasInterfacesInQuarantine() ) {
                 continue;
             }
             $result[ $r->type() ][ $key ] = $r->name;
@@ -149,6 +150,7 @@ class RouterAggregator extends Router
      */
     public static function forTab( Customer $cust = null, User $user = null )
     {
+        $privs = $user ? $user->privs() : User::AUTH_PUBLIC;
         $routers = self::
 //        select( [
 //            'routers.handle', 'routers.name', 'routers.updated_at'
@@ -157,7 +159,7 @@ class RouterAggregator extends Router
 //            ->leftJoin( 'infrastructure as i', 'i.id', 'v.infrastructureid' )
             whereNotNull( 'api' )
             ->where( 'api_type', 1 )
-            ->where( 'lg_access', '<=', $user ? $user->privs() : User::AUTH_PUBLIC )
+            ->where( 'lg_access', '<=', $privs )
             ->when( !$user, function( Builder $q ) {
                 return $q->where( 'quarantine', false );
             } )
@@ -165,7 +167,7 @@ class RouterAggregator extends Router
 
         $result = [];
         foreach( $routers as $key => $r ) {
-            if( $r->quarantine && !$user->isSuperUser() && !$cust->hasInterfacesInQuarantine() ) {
+            if( $r->quarantine && $privs !== User::AUTH_SUPERUSER && !$cust->hasInterfacesInQuarantine() ) {
                 continue;
             }
             $result[ $r->vlan->infrastructure->name ][ $r->protocol ][] = $r;

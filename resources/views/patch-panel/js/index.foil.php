@@ -1,12 +1,9 @@
 <script>
+    let cabinets        = JSON.parse( '<?= json_encode( $t->cabinets ) ?>' );
+    let locations_dd    = $('#adv-search-select-locations');
 
-    let cabinets = JSON.parse( '<?= json_encode( $t->cabinets ) ?>' );
-
-    $(document).ready( function() {
-
-        $('.table-responsive-ixp-with-header').show();
-
-        $('.table-responsive-ixp-with-header').DataTable( {
+    $( document ).ready( function() {
+        $('.table-responsive-ixp-with-header').dataTable( {
             stateSave: true,
             stateDuration : DATATABLE_STATE_DURATION,
             responsive: true,
@@ -14,22 +11,20 @@
                 { responsivePriority: 1, targets: 0 },
                 { responsivePriority: 2, targets: -1 }
             ],
-        } );
+        } ).show();
 
-
-
-        $('#btn-filter-options').on( 'click', function( e ) {
+        $( '#btn-filter-options' ).click( function( e ) {
             e.preventDefault();
-            $('#filter-row').slideToggle();
+            $( '#filter-row' ).slideToggle();
         });
 
-        $('#adv-search-select-locations').on( 'change', function( e ) {
+        locations_dd.change( function( e ) {
             let opts = `<option value="all">All Racks</option>` ;
 
-            if( $('#adv-search-select-locations').val() !== 'all' ) {
+            if( locations_dd.val() !== 'all' ) {
                 for ( let i in cabinets ) {
-                    if( cabinets[i].locationid === parseInt( $( '#adv-search-select-locations' ).val() ) ) {
-                        opts += `<option value='${cabinets[i].id}'> ${ cabinets[  i ].name }</option>`;
+                    if( cabinets[ i ].locationid === parseInt( locations_dd.val() ) ) {
+                        opts += `<option value='${cabinets[ i ].id}'> ${ cabinets[ i ].name }</option>`;
                     }
                 }
             }
@@ -39,7 +34,7 @@
 
         $( '.btn-delete' ).click( function( event ) {
             event.preventDefault();
-            let url = $( this ).attr( 'href' );
+            let url = this.href;
 
             bootbox.dialog({
                 message: 'Are you sure that you want to delete this Patch Panel ? It will become deactivated.',

@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\PatchPanel;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers\PatchPanel;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Former;
 
 use Illuminate\Http\{
@@ -47,10 +48,12 @@ use IXP\Utils\View\Alert\{
 
 /**
  * PatchPanel Controller
+ *
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   PatchPanel
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\PatchPanel
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class PatchPanelController extends Controller
@@ -65,9 +68,12 @@ class PatchPanelController extends Controller
     public function index( bool $active = true ): View
     {
         return view( 'patch-panel/index' )->with([
-            'patchPanels'       => PatchPanel::whereActive( $active )->get(),
-            'locations'         => Location::select( [ 'id', 'name' ] )->orderBy( 'name' )->get(),
-            'cabinets'          => Cabinet::select( [ 'id', 'name', 'locationid' ] )->orderBy( 'name' )->get()->toArray(),
+            'patchPanels'       => PatchPanel::whereActive( $active )
+                ->with( 'cabinet' )->get(),
+            'locations'         => Location::select( [ 'id', 'name' ] )
+                ->orderBy( 'name' )->get(),
+            'cabinets'          => Cabinet::select( [ 'id', 'name', 'locationid' ] )
+                ->orderBy( 'name' )->get()->toArray(),
             'active'            => $active
         ]);
     }
@@ -88,45 +94,14 @@ class PatchPanelController extends Controller
     public function create(): View
     {
         return view( 'patch-panel/edit' )->with([
-            'pp'                            => false,
-            'cabinets'                      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
-                                            ->orderBy( 'name', 'asc' )->get(),
+            'pp'            => false,
+            'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
+                ->orderBy( 'name' )->get(),
         ]);
     }
 
     /**
-     * Allow to display the form to create/edit a patch panel
-     *
-     * @param Request       $r
-     * @param PatchPanel    $pp      the patch panel
-     *
-     * @return  View
-     */
-    public function edit( Request $r, PatchPanel $pp ): View
-    {
-        Former::populate([
-            'cabinet_id'                => $r->old( 'cabinet_id',             $pp->cabinet_id ),
-            'name'                      => $r->old( 'name',                $pp->name ),
-            'colo_reference'            => $r->old( 'colo_reference',      $pp->colo_reference ),
-            'cable_type'                => $r->old( 'cable_type',          $pp->cable_type ),
-            'connector_type'            => $r->old( 'connector_type',      $pp->connector_type ),
-            'installation_date'         => $r->old( 'installation_date',   $pp->installation_date ),
-            'port_prefix'               => $r->old( 'port_prefix',         $pp->port_prefix ),
-            'location_notes'            => $r->old( 'location_notes',      $pp->location_notes ),
-            'u_position'                => $r->old( 'u_position',          $pp->u_position ),
-            'mounted_at'                => $r->old( 'mounted_at',          $pp->mounted_at ),
-            'numberOfPorts'             => $r->old( 'numberOfPorts',       0 ),
-        ]);
-
-        return view( 'patch-panel/edit' )->with([
-            'pp'                            => $pp,
-            'cabinets'                      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
-                                                ->orderBy( 'name', 'asc' )->get(),
-        ]);
-    }
-
-    /**
-     * Allow to create/edit a patch panel
+     * Allow to create a patch panel
      *
      * @param   StorePatchPanel $r instance of the current HTTP request
      *
@@ -141,12 +116,42 @@ class PatchPanelController extends Controller
 
         // create the patch panel ports
         $pp->createPorts( $r->numberOfPorts );
-
         return redirect( route( 'patch-panel-port@list-for-patch-panel', [ "pp" => $pp->id ] )  );
     }
 
     /**
-     * Allow to create/edit a patch panel
+     * Allow to display the form to edit a patch panel
+     *
+     * @param Request       $r
+     * @param PatchPanel    $pp      the patch panel
+     *
+     * @return  View
+     */
+    public function edit( Request $r, PatchPanel $pp ): View
+    {
+        Former::populate([
+            'cabinet_id'                => $r->old( 'cabinet_id',          $pp->cabinet_id          ),
+            'name'                      => $r->old( 'name',                $pp->name                ),
+            'colo_reference'            => $r->old( 'colo_reference',      $pp->colo_reference      ),
+            'cable_type'                => $r->old( 'cable_type',          $pp->cable_type          ),
+            'connector_type'            => $r->old( 'connector_type',      $pp->connector_type      ),
+            'installation_date'         => $r->old( 'installation_date',   $pp->installation_date   ),
+            'port_prefix'               => $r->old( 'port_prefix',         $pp->port_prefix         ),
+            'location_notes'            => $r->old( 'location_notes',      $pp->location_notes      ),
+            'u_position'                => $r->old( 'u_position',          $pp->u_position          ),
+            'mounted_at'                => $r->old( 'mounted_at',          $pp->mounted_at          ),
+            'numberOfPorts'             => $r->old( 'numberOfPorts',0                         ),
+        ]);
+
+        return view( 'patch-panel/edit' )->with([
+            'pp'            => $pp,
+            'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
+                ->orderBy( 'name' )->get(),
+        ]);
+    }
+
+    /**
+     * Allow to update a patch panel
      *
      * @param StorePatchPanel   $r
      * @param PatchPanel        $pp
@@ -162,7 +167,6 @@ class PatchPanelController extends Controller
 
         // create the patch panel ports
         $pp->createPorts( $r->numberOfPorts );
-
         return redirect( route( 'patch-panel-port@list-for-patch-panel', [ "pp" => $pp->id ] )  );
     }
 
@@ -182,9 +186,9 @@ class PatchPanelController extends Controller
 
         if( $pp->patchPanelPorts()->count() === $pp->availableForUsePortCount() ) {
             $pp->update( [ 'active' => (bool)$active ] );
-            AlertContainer::push( 'The patch panel has been marked as '.$status, Alert::SUCCESS );
+            AlertContainer::push( 'The patch panel has been marked as ' . $status, Alert::SUCCESS );
         } else {
-            AlertContainer::push( 'To make a patch panel '.$status.', all ports must be available for use.', Alert::DANGER );
+            AlertContainer::push( 'To make a patch panel ' . $status . ', all ports must be available for use.', Alert::DANGER );
         }
 
         return redirect( route( "patch-panel@list" ) );

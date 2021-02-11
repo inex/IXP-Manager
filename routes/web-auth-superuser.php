@@ -62,30 +62,35 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], functi
 /// Patch Panel Port
 ///
 Route::group( [ 'namespace' => 'PatchPanel\Port', 'prefix' => 'patch-panel-port' ], function() {
-    Route::get(     'list',                             'PortController@index'                )->name('patch-panel-port@list'                 );
-    Route::post(    'advanced-list',                    'PortController@advancedIndex'        )->name('patch-panel-port@advanced-list'        );
-    Route::get(     'list/patch-panel/{pp}',            'PortController@index'                )->name('patch-panel-port@list-for-patch-panel' );
-    Route::get(     'edit/{ppp}',                       'PortController@edit'                 )->name('patch-panel-port@edit'                 );
-    Route::get(     'edit/{ppp}/allocate',              'PortController@editAllocate'         )->name('patch-panel-port@edit-allocate'        );
-    Route::get(     'edit/{ppp}/prewired',              'PortController@editPrewired'         )->name('patch-panel-port@edit-prewired'        );
-    Route::get(     'change-status/{ppp}/{status}',     'PortController@changeStatus'         )->name('patch-panel-port@change-status'        );
-    Route::get(     'move-form/{ppp}',                  'DangerActionsController@moveForm'             )->name('patch-panel-port@move-form'            );
-    Route::put(     'move/{ppp}',                       'DangerActionsController@move'                 )->name('patch-panel-port@move'                 );
-    Route::put(     'split/{ppp}',                      'DangerActionsController@split'                )->name('patch-panel-port@split'                );
-    Route::post(    'notes/{ppp}',                      'PortController@setNotes'             )->name('patch-panel-port/set-notes'            );
-    Route::put(    'update/{ppp}',                       'PortController@update'              )->name('patch-panel-port@update'               );
-    Route::delete(    'delete/{ppp}',                   'DangerActionsController@delete'               )->name('patch-panel-port@delete'               );
+    Route::get(     'list',                             'PortController@index'                  )->name('patch-panel-port@list'                     );
+    Route::post(    'advanced-list',                    'PortController@advancedIndex'          )->name('patch-panel-port@advanced-list'            );
+    Route::get(     'list/patch-panel/{pp}',            'PortController@index'                  )->name('patch-panel-port@list-for-patch-panel'     );
+    Route::get(     'edit/{ppp}',                       'PortController@edit'                   )->name('patch-panel-port@edit'                     );
+    Route::get(     'edit/{ppp}/allocate',              'PortController@editAllocate'           )->name('patch-panel-port@edit-allocate'            );
+    Route::get(     'edit/{ppp}/prewired',              'PortController@editPrewired'           )->name('patch-panel-port@edit-prewired'            );
+    Route::get(     'change-status/{ppp}/{status}',     'PortController@changeStatus'           )->name('patch-panel-port@change-status'            );
+    Route::get(     'move-form/{ppp}',                  'DangerActionsController@moveForm'      )->name('patch-panel-port@move-form'                );
+    Route::put(     'move/{ppp}',                       'DangerActionsController@move'          )->name('patch-panel-port@move'                     );
+    Route::put(     'split/{ppp}',                      'DangerActionsController@split'         )->name('patch-panel-port@split'                    );
+    Route::post(    'notes/{ppp}',                      'PortController@setNotes'               )->name('patch-panel-port/set-notes'                );
+    Route::put(    'update/{ppp}',                       'PortController@update'                )->name('patch-panel-port@update'                   );
+    Route::delete(    'delete/{ppp}',                   'DangerActionsController@delete'        )->name('patch-panel-port@delete'                   );
 
     Route::group( [  'prefix' => 'file' ], function() {
-        Route::delete(  'delete/{file}',           'FileController@delete'              )->name('patch-panel-port-file@delete'                  );
-        Route::delete(  'delete-history/{file}',   'FileController@deleteHistory'       )->name('patch-panel-port-file@delete-history'          );
-        Route::post(    'toggle-privacy/{file}',   'FileController@togglePrivacy'       )->name('patch-panel-port-file@toggle-privacy'          );
-        Route::post(    'upload/{ppp}',            'FileController@upload'              )->name('patch-panel-port-file@upload'                  );
+        Route::delete(  'delete/{file}',           'FileController@delete'              )->name('patch-panel-port-file@delete'                      );
+        Route::post(    'toggle-privacy/{file}',   'FileController@togglePrivacy'       )->name('patch-panel-port-file@toggle-privacy'              );
+        Route::post(    'upload/{ppp}',            'FileController@upload'              )->name('patch-panel-port-file@upload'                      );
+    });
+
+    Route::group( [  'prefix' => 'history-file' ], function() {
+        Route::delete(  'delete/{file}',            'HistoryFileController@delete'          )->name(    'patch-panel-port-history-file@delete'          );
+        Route::post(    'toggle-privacy/{file}',    'HistoryFileController@togglePrivacy'   )->name(    'patch-panel-port-history-file@toggle-privacy'  );
+        Route::get(     'download/{file}',          'HistoryFileController@download'        )->name(    'patch-panel-port-history-file@download'        );
     });
 
     Route::group( [  'prefix' => 'email' ], function() {
-        Route::post(    'send/{ppp}/{type}',           'EmailController@send'            )->name('patch-panel-port-email@send'           );
-        Route::get(     '{ppp}/{type}',                'EmailController@email'           )->name('patch-panel-port-email@form'                );
+        Route::post(    'send/{ppp}/{type}',           'EmailController@send'            )->name('patch-panel-port-email@send'                  );
+        Route::get(     '{ppp}/{type}',                'EmailController@email'           )->name('patch-panel-port-email@form'                  );
     });
 });
 
@@ -126,15 +131,15 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
 Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], function() {
     Route::group( [  'prefix' => 'virtual' ], function() {
         Route::get(     'list',                     'VirtualInterfaceController@list'                   )->name(    'virtual-interface@list'                    );
-        Route::get(     'edit/{vi}',                'VirtualInterfaceController@edit'                   )->name(    'virtual-interface@edit'                      );
+        Route::get(     'edit/{vi}',                'VirtualInterfaceController@edit'                   )->name(    'virtual-interface@edit'                    );
         Route::get(     'create',                   'VirtualInterfaceController@create'                 )->name(    'virtual-interface@create'                  );
-        Route::get(     'add/cust/{cust}',          'VirtualInterfaceController@createForCust'          )->name(    'interfaces/virtual/add/custid'             );
-        Route::get(     'wizard-create',            'VirtualInterfaceController@wizard'                 )->name(   'virtual-interface@wizard'                   );
-        Route::get(     'wizard-create/cust/{cust}','VirtualInterfaceController@createWizardForCust'    )->name(   'virtual-interface@create-wizard-for-cust'   );
-        Route::post(    'store',                    'VirtualInterfaceController@store'                  )->name(   'virtual-interface@store'                    );
+        Route::get(     'create/cust/{cust}',       'VirtualInterfaceController@createForCust'          )->name(    'virtual-interface@create-for-cust'         );
+        Route::get(     'wizard-create',            'VirtualInterfaceController@wizard'                 )->name(   'virtual-interface@wizard'                  );
+        Route::get(     'wizard-create/cust/{cust}','VirtualInterfaceController@createWizardForCust'    )->name(   'virtual-interface@create-wizard-for-cust'  );
+        Route::post(    'store',                    'VirtualInterfaceController@store'                  )->name(   'virtual-interface@store'                   );
         Route::put(     'update/{vi}',              'VirtualInterfaceController@update'                 )->name(   'virtual-interface@update'                  );
-        Route::post(    'wizard-store',             'VirtualInterfaceController@storeWizard'            )->name(    'virtual-interface@wizard-store'            );
-        Route::delete(  'delete/{vi}',              'VirtualInterfaceController@delete'                 )->name(    'virtual-interface@delete'                  );
+        Route::post(    'wizard-store',             'VirtualInterfaceController@storeWizard'            )->name(    'virtual-interface@wizard-store'           );
+        Route::delete(  'delete/{vi}',              'VirtualInterfaceController@delete'                 )->name(    'virtual-interface@delete'                 );
     });
 
     Route::group( [  'prefix' => 'physical' ], function() {

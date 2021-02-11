@@ -104,7 +104,7 @@
                         ->min( 0 )
                         ->blockHelp(
                             $t->pp ? 'There are ' . $t->pp->patchPanelPorts()->count() . " ports in this panel already. Enter the number of ports <b> you want to add</b> above."
-                                . "<b>Note that duplex ports should be entered as two ports.</b>"
+                                . " <b>Note that duplex ports should be entered as two ports.</b>"
                                 : 'Please set the number of ports that you want to create for this patch panel. <b>Note that duplex ports should be entered as two ports.</b>'
                         );
                     ?>

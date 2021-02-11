@@ -7,7 +7,9 @@
                     <ul class="nav nav-pills card-header-pills">
                         <?php foreach( $info as $protocol => $routers ): ?>
                             <li class="nav-item" >
-                                <a class="nav-link <?= !($protocol === array_key_first( $info ) ) ?: 'active'?>" data-toggle="pill" href="#<?= $formatedName . '-' . $protocol ?>">IPv<?= $protocol ?></a>
+                                <a class="nav-link <?= !($protocol === array_key_first( $info ) ) ?: 'active'?>" data-toggle="pill" href="#<?= $formatedName . '-' . $protocol ?>">
+                                    IPv<?= $protocol ?>
+                                </a>
                             </li>
                         <?php endforeach; ?>
                     </ul>
@@ -37,7 +39,9 @@
                                                     <?= $router[ 'updated_at' ] ? $router[ 'updated_at' ]->format( "Y-m-d H:i:s" ) : '(unknown)' ?>
                                                 </td>
                                                 <td>
-                                                    <a class="btn btn-primary" href="<?= url('/lg/' . $t->ee( $router[ 'handle' ] ) ) ?>">Looking Glass</a>
+                                                    <a class="btn btn-primary" href="<?= url('/lg/' . $t->ee( $router[ 'handle' ] ) ) ?>">
+                                                        Looking Glass
+                                                    </a>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>

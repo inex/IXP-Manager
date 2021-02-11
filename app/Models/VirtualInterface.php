@@ -316,10 +316,7 @@ class VirtualInterface extends Model
      */
     public function bundleName(): string
     {
-        if( $this->name && $this->channelgroup ) {
-            return $this->name . $this->channelgroup;
-        }
-        return '';
+        return $this->name && $this->channelgroup ? $this->name . $this->channelgroup : '';
     }
 
     /**

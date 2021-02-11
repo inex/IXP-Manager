@@ -1,7 +1,7 @@
 <?php
     // ************************************************************************************************************
     // **
-    // ** This template describes the add / edit virtual interface page which lists a virtual interface's
+    // ** This template describes the create / edit virtual interface page which lists a virtual interface's
     // ** details, its physical and vlan interfaces and any configured sflow receivers.
     // **
     // ** This template is broken up for simplicity with each indepentant element loaded from the add/ directory.
@@ -12,7 +12,9 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    (Virtual) Interfaces / Create/Edit Virtual Interface</li>
+    (Virtual) Interfaces /
+    <?= $t->vi ? 'Edit' : 'Create' ?>
+    Virtual Interface
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -62,9 +64,7 @@
 
             <?php endif; ?>
         </div>
-
     </div>
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>

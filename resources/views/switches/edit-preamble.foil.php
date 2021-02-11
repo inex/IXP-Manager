@@ -22,7 +22,7 @@
                 <p>
                     While it is possible to add switches without SNMP polling, this is strongly discouraged as SNMP is built heavily into the switch and switch port management.
                 </p>
-                Please consider using <a href="<?= route( $t->feParams->route_prefix.'@add-by-snmp' ) ?>" >the SNMP method to add switches</a>.
+                Please consider using <a href="<?= route( $t->feParams->route_prefix.'@create-by-snmp' ) ?>" >the SNMP method to add switches</a>.
             </div>
         </div>
     </div>

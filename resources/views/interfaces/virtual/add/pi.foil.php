@@ -75,7 +75,7 @@
                                 <?php endif; ?>
 
                                 <?php if( $t->cb ): ?>
-                                    <?php if( $pi->otherPICoreLink()->switchPort->switchid === $pi->switchPort->switchid ): ?>
+                                    <?php if( ( $otherPi = $pi->otherPICoreLink() ) && $otherPi->switchPort->switchid === $pi->switchPort->switchid ): ?>
                                         <span class="badge badge-danger">Core interface to same switch!</span>
                                     <?php endif; ?>
                                 <?php endif; ?>
@@ -102,7 +102,9 @@
                             </td>
                             <?php if( $t->cb ): ?>
                                 <td>
-                                    <?= $pi->otherPICoreLink()->switchPort->switcher->name ?> :: <?= $pi->otherPICoreLink()->switchPort->ifName ?>
+                                    <?php if( $otherPi ): ?>
+                                        <?= $otherPi->switchPort->switcher->name ?> :: <?= $pi->otherPICoreLink()->switchPort->ifName ?>
+                                    <?php endif; ?>
                                 </td>
                             <?php endif; ?>
                             <td>

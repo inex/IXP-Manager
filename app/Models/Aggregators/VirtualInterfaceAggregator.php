@@ -223,10 +223,6 @@ class VirtualInterfaceAggregator extends VirtualInterface
                     ->where( 'pi.virtualinterfaceid', $vi->id );
             } )->distinct()->get()->pluck( 'id' )->toArray();
 
-        if( ( count( $vis ) === 0 ) || ( count( $vis ) === 1 && in_array( $vi->id, $vis, false )  ) ) {
-            return true;
-        }
-
-        return false;
+        return count( $vis ) === 0 || ( count( $vis ) === 1 && in_array( $vi->id, $vis, false ) );
     }
 }
