@@ -96,6 +96,8 @@ if ($#pkglist > -1 || $#cpanlist > -1) {
 	print "\nSuggested installation command:\n\n";
 	print "\t$pkginstaller ".join (' ', @pkglist)."\n\n" if ($#pkglist > -1);
 	print "\tcpan ".join (' ', @cpanlist)."\n\n" if ($#cpanlist > -1);
+	exit 1;
 } else {
 	print "All IXP Manager dependencies installed\n";
+	exit 0;
 }
