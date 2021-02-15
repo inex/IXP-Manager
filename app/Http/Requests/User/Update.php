@@ -22,6 +22,7 @@ namespace IXP\Http\Requests\User;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -32,6 +33,16 @@ use IXP\Models\{
     User
 };
 
+/**
+ * Update FormRequest
+ *
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Requests\User
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 
 class Update extends FormRequest
 {
@@ -89,12 +100,13 @@ class Update extends FormRequest
      */
     public function withValidator( Validator $validator ): bool
     {
-        if( !Auth::user()->isSuperUser() && !$validator->fails() ) {
-            $validator->after( function( Validator $validator ) {
-                $cust = Auth::getUser()->isSuperUser() ? Customer::find( $this->custid ) : Auth::user()->customer;
+        $isSuperUser = Auth::user()->isSuperUser();
+        if( !$validator->fails() && !$isSuperUser ) {
+            $validator->after( function( Validator $validator ) use ( $isSuperUser ) {
+                $cust = $isSuperUser ? Customer::find( $this->custid ) : Auth::user()->customer;
 
                 if( (int)$this->privs === User::AUTH_SUPERUSER ) {
-                    if( !Auth::getUser()->isSuperUser() || ( Auth::user()->isSuperUser() && !$cust->typeInternal() ) ) {
+                    if( !$isSuperUser || ( $isSuperUser && !$cust->typeInternal() ) ) {
                         $validator->errors()->add( 'privs', "You are not allowed to set this User as a Super User for " . $cust->name );
                         return false;
                     }

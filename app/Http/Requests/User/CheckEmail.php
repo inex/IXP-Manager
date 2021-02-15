@@ -36,6 +36,16 @@ use IXP\Models\{
     User
 };
 
+/**
+ * CheckEmail FormRequest
+ *
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Requests\User
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class CheckEmail extends FormRequest
 {
     /**
@@ -59,7 +69,7 @@ class CheckEmail extends FormRequest
     public function rules(): array
     {
         return [
-            'email'                 => 'required|email|max:255',
+            'email'     => 'required|email|max:255',
         ];
     }
 
@@ -69,15 +79,13 @@ class CheckEmail extends FormRequest
     public function withValidator( Validator $validator ): void
     {
         $validator->after( function( Validator $validator ) {
-            if( !Auth::user()->isSuperUser() ) {
-                if( User::leftJoin( 'customer_to_users AS c2u', 'c2u.user_id', 'user.id' )
+            if( !Auth::user()->isSuperUser() && User::leftJoin( 'customer_to_users AS c2u', 'c2u.user_id', 'user.id' )
                     ->where( 'email', $this->email )
                     ->where( 'customer_id', Auth::user()->custid )->exists() ) {
 
-                    AlertContainer::push( "A user already exists with that email address for your company." , Alert::DANGER );
-                    $validator->errors()->add( 'email',  " " );
-                    return false;
-                }
+                AlertContainer::push( "A user already exists with that email address for your company." , Alert::DANGER );
+                $validator->errors()->add( 'email',  " " );
+                return false;
             }
             return true;
         });

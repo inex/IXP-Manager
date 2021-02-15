@@ -1,5 +1,6 @@
 <script>
     $( document ).ready(function() {
+        $( "#btnCancel" ).attr( "href", $( "#linkCancel" ).val() );
 
         $( "#list-user tr" ).click(function() {
             $( ".radio-button" ).prop( "checked", false );

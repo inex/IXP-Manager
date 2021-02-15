@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\User;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -34,6 +34,16 @@ use IXP\Models\{
     User
 };
 
+/**
+ * Store FormRequest
+ *
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Requests\User
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class Store extends FormRequest
 {
     /**
@@ -58,7 +68,7 @@ class Store extends FormRequest
     {
         return [
             'name'                      => 'required|string|max:255',
-            'username'                  => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/|unique:user,username' . ( $this->input( 'id' ) ? ',' . $this->input( 'id' ) : '' ),
+            'username'                  => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/|unique:user,username' . ( $this->id ? ',' . $this->id : '' ),
             'email'                     => 'required|email|max:255',
             'authorisedMobile'          => 'nullable|string|max:50',
             'custid'                    => 'required|integer|exists:cust,id',
@@ -75,10 +85,11 @@ class Store extends FormRequest
     {
         if( !$validator->fails() ) {
             $validator->after( function( Validator $validator ) {
-                $cust = Auth::getUser()->isSuperUser() ? Customer::find( $this->custid ) : Auth::user()->customer;
+                $isSuperUser = Auth::getUser()->isSuperUser();
+                $cust = $isSuperUser ? Customer::find( $this->custid ) : Auth::user()->customer;
 
                 if( (int)$this->privs === User::AUTH_SUPERUSER ) {
-                    if( !Auth::user()->isSuperUser() || ( Auth::user()->isSuperUser() && !$cust->typeInternal() ) ) {
+                    if( !$isSuperUser || ( $isSuperUser && !$cust->typeInternal() ) ) {
                         $validator->errors()->add( 'privs', "You are not allowed to set this User as a Super User for " . $cust->name );
                         return false;
                     }

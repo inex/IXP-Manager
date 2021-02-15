@@ -33,11 +33,10 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
-use IXP\Http\Requests\Switches\{
-    StoreBySmtp as StoreBySmtpRequest
-};
+use IXP\Http\Requests\Switches\StoreBySmtp as StoreBySmtpRequest;
 
-use IXP\Models\{Aggregators\SwitcherAggregator,
+use IXP\Models\{
+    Aggregators\SwitcherAggregator,
     Aggregators\SwitchPortAggregator,
     Cabinet,
     Infrastructure,
@@ -471,7 +470,6 @@ class SwitchController extends EloquentController
     {
         // wipe any preexisting cached switch platform entry:
         session()->remove( "snmp-platform" );
-
         $this->addEditSetup();
         return $this->display( 'add-by-smtp-form' );
     }
@@ -479,23 +477,23 @@ class SwitchController extends EloquentController
     /**
      * Process the hostname and SNMP community, poll the switch and set up the proper add/edit form
      *
-     * @param StoreBySmtpRequest $request
+     * @param StoreBySmtpRequest $r
      *
      * @return bool|RedirectResponse|View
      *
      * @throws
      */
-    public function storeBySmtp( StoreBySmtpRequest $request )
+    public function storeBySmtp( StoreBySmtpRequest $r )
     {
         $vendorid = null;
 
         // can we get it by SNMP and discover some basic details?
         try {
-            $snmp   = new SNMP( $request->hostname, $request->snmppasswd );
+            $snmp   = new SNMP( $r->hostname, $r->snmppasswd );
             $vendor = $snmp->getPlatform()->getVendor();
 
             // Store the platform in session to be able to get back the information when we will create the object
-            $request->session()->put( "snmp-platform", $snmp->getPlatform() );
+            $r->session()->put( "snmp-platform", $snmp->getPlatform() );
 
             if( $v = Vendor::whereName( $vendor )->first() ) {
                 $vendorid = $v->id;
@@ -504,14 +502,14 @@ class SwitchController extends EloquentController
             $snmp = null;
         }
 
-        $sp = strpos( $request->hostname, '.' );
+        $sp = strpos( $r->hostname, '.' );
 
         Former::populate([
-            'name'              => substr( $request->input( 'hostname' ), 0, $sp ? $sp : strlen( $request->input( 'hostname' ) ) ),
-            'snmppasswd'        => $request->snmppasswd,
-            'hostname'          => $request->hostname,
-            'ipv4addr'          => resolve_dns_a(    $request->hostname ) ?? '',
-            'ipv6addr'          => resolve_dns_aaaa( $request->hostname ) ?? '',
+            'name'              => substr( $r->hostname, 0, $sp ?: strlen( $r->hostname ) ),
+            'snmppasswd'        => $r->snmppasswd,
+            'hostname'          => $r->hostname,
+            'ipv4addr'          => resolve_dns_a(    $r->hostname ) ?? '',
+            'ipv6addr'          => resolve_dns_aaaa( $r->hostname ) ?? '',
             'vendorid'          => $vendorid ?? "",
             'model'             => $snmp ? $snmp->getPlatform()->getModel() : "",
         ]);
@@ -524,8 +522,7 @@ class SwitchController extends EloquentController
         $this->data[ 'params' ]['preAddForm']   = false;
         $this->data[ 'params' ]['object']       = null;
         $this->data[ 'params' ]['cabinets']     = Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
-            ->orderBy( 'name', 'asc' )
-            ->get();
+            ->orderBy( 'name' )->get();
         $this->data[ 'params' ]['infra']        = Infrastructure::orderBy( 'name' )->get();
         $this->data[ 'params' ]['vendors']      = Vendor::orderBy( 'name' )->get();
 

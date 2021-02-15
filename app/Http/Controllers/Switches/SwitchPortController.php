@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Switches;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -35,9 +35,9 @@ use Illuminate\Http\{
 use Illuminate\View\View;
 
 use IXP\Models\{
+    Infrastructure,
     Switcher,
-    SwitchPort,
-};
+    SwitchPort};
 
 use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
@@ -55,16 +55,19 @@ use OSS_SNMP\MIBS\Iface;
 
 /**
  * Switch Port Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Switches
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SwitchPortController extends EloquentController
 {
     /**
      * The object being created / edited
+     *
      * @var SwitchPort
      */
     protected $object = null;
@@ -85,8 +88,7 @@ class SwitchPortController extends EloquentController
             'route_action'              => 'list',
             'route_prefix_page_title'   => 'switch',
             'pagetitlepostamble'        => 'Switch Port',
-
-            'listColumns'       => [
+            'listColumns'               => [
                 'id'        => [
                     'title' => 'UID',
                     'display' => false
@@ -133,7 +135,7 @@ class SwitchPortController extends EloquentController
             Route::get(  'optic-list',          'Switches\SwitchPortController@opticList'      )->name( 'switch-port@optic-list'        );
             Route::get(  'list-mau/{switch}',   'Switches\SwitchPortController@listMau'        )->name( 'switch-port@list-mau'          );
             Route::get(  'op-status/{switch}',  'Switches\SwitchPortController@listOpStatus'   )->name( 'switch-port@list-op-status'    );
-            Route::get(  'snmp-poll/{switch}',  'Switches\SwitchPortController@snmpPoll'      )->name( 'switch-port@snmp-poll'         );
+            Route::get(  'snmp-poll/{switch}',  'Switches\SwitchPortController@snmpPoll'       )->name( 'switch-port@snmp-poll'         );
 
             Route::post( 'set-type',            'Switches\SwitchPortController@setType'        )->name( 'switch-port@set-type'          );
             Route::post( 'change-status',       'Switches\SwitchPortController@changeStatus'   )->name( 'switch-port@change-status'     );
@@ -150,50 +152,50 @@ class SwitchPortController extends EloquentController
      */
     protected function listGetData( $id = null ): array
     {
-        $feParams = $this->feParams;
-        $params = $this->data;
+        $feParams   = $this->feParams;
+        $params     = $this->data;
         return SwitchPort::select( [
             'sp.*',
             's.id AS switchid', 's.name AS switchname'
         ] )
-            ->from( 'switchport AS sp' )
-            ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
-            ->when( $id , function( Builder $q, $id ) {
-                return $q->selectRaw( 'c.id AS cid, c.name AS cname' )
-                    ->leftJoin( 'physicalinterface AS pi', 'pi.switchportid', 'sp.id' )
-                    ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'pi.virtualinterfaceid' )
-                    ->leftJoin( 'cust AS c', 'c.id', 'vi.custid' )
-                    ->where('sp.id', $id );
-            } )->when( isset( $params[ 'params' ][ 'switch' ] ) && $params[ 'params' ][ 'switch' ] , function( Builder $q ) use ( $params ) {
-                return $q->where('s.id', $params[ 'params' ][ 'switch' ]->id );
-            } )->when( isset( $feParams->listOrderBy ) , function( Builder $q ) use ( $feParams )  {
-                return $q->orderBy( $feParams->listOrderBy, $feParams->listOrderByDir ?? 'ASC');
-            })->get()->toArray();
+        ->from( 'switchport AS sp' )
+        ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
+        ->when( $id , function( Builder $q, $id ) {
+            return $q->selectRaw( 'c.id AS cid, c.name AS cname' )
+                ->leftJoin( 'physicalinterface AS pi', 'pi.switchportid', 'sp.id' )
+                ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'pi.virtualinterfaceid' )
+                ->leftJoin( 'cust AS c', 'c.id', 'vi.custid' )
+                ->where('sp.id', $id );
+        } )->when( isset( $params[ 'params' ][ 'switch' ] ) && $params[ 'params' ][ 'switch' ] , function( Builder $q ) use ( $params ) {
+            return $q->where('s.id', $params[ 'params' ][ 'switch' ]->id );
+        } )->when( isset( $feParams->listOrderBy ) , function( Builder $q ) use ( $feParams )  {
+            return $q->orderBy( $feParams->listOrderBy, $feParams->listOrderByDir ?? 'ASC');
+        })->get()->toArray();
     }
 
     /**
      * List the contents of a database table.
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return View|RedirectResponse
      */
-    public function list( Request $request ) : View
+    public function list( Request $r ) : View
     {
         $s = false;
-
-        if( $request->switch  !== null ) {
-            if(  $s = Switcher::find( $request->switch ) ) {
-                $request->session()->put( "switch-port-list", $s->id );
+        if( $r->switch !== null ) {
+            if(  $s = Switcher::find( $r->switch ) ) {
+                $r->session()->put( "switch-port-list", $s->id );
             } else {
-                $request->session()->remove( "switch-port-list" );
+                $r->session()->remove( "switch-port-list" );
+                $s = false;
             }
-        } else if( $request->session()->exists( "switch-port-list" ) ) {
-            $s = Switcher::find( $request->session()->get( "switch-port-list" ) );
+        } else if( $r->session()->exists( "switch-port-list" ) ) {
+            $s = Switcher::find( $r->session()->get( "switch-port-list" ) );
         }
 
-        $this->data[ 'params' ][ 'switch' ]         = $s;
-        $this->data[ 'params' ][ 'switches' ]       = Switcher::orderBy( 'name' )->get()->keyBy( 'id' );
+        $this->data[ 'params' ][ 'switch' ]     = $s;
+        $this->data[ 'params' ][ 'switches' ]   = Switcher::orderBy( 'name' )->get()->keyBy( 'id' );
 
         $this->data[ 'rows' ] = $this->listGetData();
 
@@ -211,8 +213,44 @@ class SwitchPortController extends EloquentController
     {
         return [
             'object'            => $this->object,
-            'switches'          => Switcher::orderBy( 'name' )->get()->keyBy( 'id' )
+            'switches'          => Switcher::orderBy( 'name' )->get()->toArray()
         ];
+    }
+
+    /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request $r
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doStore( Request $r )
+    {
+        $rules = [
+            'switchid'      => 'required|integer|exists:switch,id',
+            'numfirst'      => 'required|integer|min:0',
+            'numports'      => 'required|integer|min:1|max:48',
+            'type'          => 'required|integer|in:' . implode( ',', array_keys( SwitchPort::$TYPES ) ),
+        ];
+
+        for( $i = 0; $i < $r->numports; $i++ ) {
+            $rules[ 'portName'.$i ] = 'required|string|max:255';
+            $rules[ 'portType'.$i ] = 'required|integer|in:' . implode( ',', array_keys( SwitchPort::$TYPES ) );
+        }
+
+        $r->validate( $rules );
+
+        for( $i = 0; $i < $r->numports; $i++ ) {
+            $this->object = SwitchPort::create( [
+                'switchid'  => $r->switchid,
+                'type'      => $r->input('portType' . $i ),
+                'name'      => $r->input('portName' . $i ),
+                'active'    => true,
+            ] );
+        }
+        return true;
     }
 
     /**
@@ -227,88 +265,39 @@ class SwitchPortController extends EloquentController
         $this->object = SwitchPort::findOrFail( $id );
 
         Former::populate([
-            'switchid'          => request()->old( 'switchid',    $this->object->switchid ),
-            'name'              => request()->old( 'name',        $this->object->name ),
-            'type'              => request()->old( 'type',        $this->object->type ),
-            'active'            => request()->old( 'active',      ( $this->object->active ? 1 : 0 ) ) ,
+            'switchid'          => request()->old( 'switchid',    $this->object->switchid   ),
+            'name'              => request()->old( 'name',        $this->object->name       ),
+            'type'              => request()->old( 'type',        $this->object->type       ),
+            'active'            => request()->old( 'active',      $this->object->active     ),
         ]);
 
         return [
             'object'            => $this->object,
-            'switches'          => Switcher::orderBy( 'name' )->get()->keyBy( 'id' ),
+            'switches'          => Switcher::orderBy( 'name' )->get()->keyBy( 'id' )->toArray(),
         ];
     }
 
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
-     * @return bool|RedirectResponse
-     *
-     * @throws
-     */
-    public function doStore( Request $request )
-    {
-        $rules = [
-            'switchid' => [
-                'required', 'integer',
-                function( $attribute, $value, $fail ) {
-                    if( !Switcher::whereId( $value )->exists() ) {
-                        return $fail( 'Switch is invalid / does not exist.' );
-                    }
-                }
-            ],
-            'numfirst'                  => 'required|integer|min:0',
-            'numports'                  => 'required|integer|min:1|max:48',
-            'type'                      => 'required|integer|in:' . implode( ',', array_keys( SwitchPort::$TYPES ) ),
-        ];
-
-        for( $i = 0; $i < $request->numports; $i++ ) {
-            $rules[ 'portName'.$i ] = 'required|string|max:255';
-            $rules[ 'portType'.$i ] = 'required|integer|in:' . implode( ',', array_keys( SwitchPort::$TYPES ) );
-        }
-
-        $request->validate( $rules );
-
-        for( $i = 0; $i < $request->numports; $i++ ) {
-            $this->object = SwitchPort::create( [
-                'switchid'  => $request->switchid,
-                'type'      => $request->input('portType' . $i ),
-                'name'      => $request->input('portName' . $i ),
-                'active'    => true,
-            ] );
-        }
-        return true;
-    }
-
-    /**
-     * Function to do the actual validation and storing of the submitted object.
-     *
-     * @param Request $request
-     * @param int $id
+     * @param Request   $r
+     * @param int       $id
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doUpdate( Request $request, int $id )
+    public function doUpdate( Request $r, int $id )
     {
         $this->object = SwitchPort::findOrFail( $id );
 
-        $request->validate( [
-            'switchid' => [
-                'required', 'integer',
-                function( $attribute, $value, $fail ) {
-                    if( !Switcher::whereId( $value )->exists() ) {
-                        return $fail( 'Switch is invalid / does not exist.' );
-                    }
-                }
-            ],
-            'name'                      => 'required|string|max:255',
-            'type'                      => 'required|integer|in:' . implode( ',', array_keys( SwitchPort::$TYPES ) ),
+        $r->validate( [
+            'switchid'      => 'required|integer|exists:switch,id',
+            'name'          => 'required|string|max:255',
+            'type'          => 'required|integer|in:' . implode( ',', array_keys( SwitchPort::$TYPES ) ),
         ] );
 
-        $this->object->update( $request->all() );
+        $this->object->update( $r->all() );
 
         return true;
     }
@@ -333,17 +322,16 @@ class SwitchPortController extends EloquentController
      */
     protected function preDelete(): bool
     {
-        if( ( $this->object->physicalInterface()->exists() ) ) {
-            $c = $this->object->physicalInterface->virtualInterface->customer;
+        if( $pi = $this->object->physicalInterface ) {
+            $c = $pi->virtualInterface->customer;
             AlertContainer::push( "You cannot delete the switch port {$this->object->name} as it is assigned to a physical interface for "
                 . "<a href=\"" . route('customer@overview', [ 'cust' => $c->id, "tab" => "ports" ]) . "\">{$c->name}</a>.", Alert::DANGER );
             return false;
         }
 
-        if(  $this->object->patchPanelPort()->exists() ) {
-            $ppp = $this->object->patchPanelPort;
+        if( $ppp = $this->object->patchPanelPort ) {
             AlertContainer::push( "You cannot delete the switch port {$this->object->name} as it is assigned to a patch panel port for "
-                . "<a href=\"" . route('patch-panel-port@list-for-patch-panel', [ 'pp' => $ppp->patchPanel->id ] ) . "\">{$ppp->getName()}</a>.", Alert::DANGER );
+                . "<a href=\"" . route('patch-panel-port@list-for-patch-panel', [ 'pp' => $ppp->patch_panel_id ] ) . "\">{$ppp->name()}</a>.", Alert::DANGER );
             return false;
         }
 
@@ -363,7 +351,6 @@ class SwitchPortController extends EloquentController
         $this->feParams->route_prefix_page_title    = 'switch';
         $this->feParams->readonly                   = true;
         $this->feParams->hideactioncolumn           = true;
-
         $this->feParams->listColumns = [
             'ifIndex'       => [
                 'title' => 'UID',
@@ -393,10 +380,9 @@ class SwitchPortController extends EloquentController
 
         $feParams = $this->feParams;
         $this->data[ 'rows' ] =  SwitchPort::select( [
-            'sp.ifIndex AS ifIndex', 'sp.ifName AS ifName', 'sp.type AS type', 'sp.mauType AS mauType', 'sp.mauState AS mauState', 'sp.mauJacktype AS mauJacktype',
-            's.id AS switchid', 's.name AS switchname'
-        ] )
-            ->from( 'switchport AS sp' )
+                'sp.ifIndex AS ifIndex', 'sp.ifName AS ifName', 'sp.type AS type', 'sp.mauType AS mauType', 'sp.mauState AS mauState', 'sp.mauJacktype AS mauJacktype',
+                's.id AS switchid', 's.name AS switchname'
+            ] )->from( 'switchport AS sp' )
             ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
             ->where( 's.mauSupported', 1 )
             ->where( 'sp.ifOperStatus', '!=', 1 )
@@ -425,16 +411,19 @@ class SwitchPortController extends EloquentController
         $this->feParams->pagetitle                  = 'Switches';
         $this->feParams->route_prefix_page_title    = 'switch';
         $this->feParams->route_action               = 'list-mau';
-        $this->feParams->listOrderBy                = 'id';
+        $this->feParams->listOrderBy                = 'name';
         $this->feParams->readonly                   = true;
         $this->feParams->hideactioncolumn           = true;
 
         $this->feParams->listColumns = [
             'id'                    =>
                 [ 'title' => 'UID',
-                  'display' => true
+                  'display' => false
                 ],
-            'ifName'                => 'Name',
+            'ifName'                => [
+                'title'     =>  'Name',
+                'data-sort' =>  'id'
+            ],
             'type'                  => [
                 'title'     =>  'Type',
                 'type'      =>   self::$FE_COL_TYPES[ 'CONST' ],
@@ -482,15 +471,16 @@ class SwitchPortController extends EloquentController
         }
 
         $this->setUpListMau();
-        $this->feParams->pagetitlepostamble             = 'MAU Interface Detail for ' . $switch->name ;
-        $this->data[ 'params' ][ 'switches' ]           = Switcher::where( 'mauSupported', true )->get()->keyBy( 'id' )->toArray();
-        $this->data[ 'params' ][ 'switch' ]             = $switch;
+        $this->feParams->pagetitlepostamble     = 'MAU Interface Detail for ' . $switch->name ;
+        $this->data[ 'params' ][ 'switches' ]   = Switcher::where( 'mauSupported', true )
+            ->get()->keyBy( 'id' )->toArray();
+        $this->data[ 'params' ][ 'switch' ]     = $switch;
 
         $feParams = $this->feParams;
         $this->data[ 'rows' ] =  SwitchPort::select( [
-            'sp.*',
-            's.id AS switchid'
-        ] )
+                'sp.*',
+                's.id AS switchid'
+            ] )
             ->from( 'switchport AS sp' )
             ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
             ->when( $switch->id , function( Builder $q, $id ) {
@@ -570,7 +560,6 @@ class SwitchPortController extends EloquentController
         try
         {
             $host = new SNMP( $switch->hostname, $switch->snmppasswd );
-
             $switch->snmpPoll( $host, true );
             $switch->snmpPollSwitchPorts( $host, true, false, false );
             $switch->save();
@@ -676,6 +665,29 @@ class SwitchPortController extends EloquentController
         return response()->json( [ 'success' => true ] );
     }
 
+    /**
+     * Change the port status for the Switch Ports
+     *
+     * @param   Request     $r          HTTP instance
+     *
+     * @return JsonResponse
+     *
+     * @throws
+     */
+    public function changeStatus( Request $r ): JsonResponse
+    {
+        if( $r->spid ) {
+            foreach( $r->spid as $id ) {
+                $sp = SwitchPort::findOrFail( $id );
+                $sp->active = $r->active ? 1 : 0;
+                $sp->save();
+            }
+
+            AlertContainer::push(  "The selected switch ports have been updated.", Alert::SUCCESS );
+            return response()->json( [ 'success' => true ] );
+        }
+        return response()->json( [ 'success' => false ] );
+    }
 
     /**
      * Delete port
@@ -734,32 +746,7 @@ class SwitchPortController extends EloquentController
         );
 
         AlertContainer::push( "The selected switch ports - where possible - have been deleted", Alert::SUCCESS );
-
         return response()->json( [ 'success' => true ] );
-    }
-
-    /**
-     * Change the port status for the Switch Ports
-     *
-     * @param   Request     $r          HTTP instance
-     *
-     * @return JsonResponse
-     *
-     * @throws
-     */
-    public function changeStatus( Request $r ): JsonResponse
-    {
-        if( $r->spid ) {
-            foreach( $r->spid as $id ) {
-                $sp = SwitchPort::findOrFail( $id );
-                $sp->active = $r->active ? 1 : 0;
-                $sp->save();
-            }
-
-            AlertContainer::push(  "The selected switch ports have been updated.", Alert::SUCCESS );
-            return response()->json( [ 'success' => true ] );
-        }
-        return response()->json( [ 'success' => false ] );
     }
 
     /**
@@ -805,9 +792,9 @@ class SwitchPortController extends EloquentController
 
         $feParams = $this->feParams;
         $this->data[ 'rows' ] =  SwitchPort::selectRaw(
-            'switchport.mauType AS mauType,
-            COUNT( switchport.mauType ) AS cnt'
-        )
+                'switchport.mauType AS mauType,
+                COUNT( switchport.mauType ) AS cnt'
+            )
             ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
                 return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
             })
@@ -818,7 +805,6 @@ class SwitchPortController extends EloquentController
         $this->listIncludeTemplates();
         return $this->display( 'list' );
     }
-
 
     /**
      * Set up all the information to display the optics list

@@ -1,6 +1,7 @@
 <?php
 
 namespace IXP\Http\Middleware;
+
 /*
  * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -21,6 +22,7 @@ namespace IXP\Http\Middleware;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Illuminate\Foundation\Http\Middleware\TrimStrings as Middleware;
 
 /**

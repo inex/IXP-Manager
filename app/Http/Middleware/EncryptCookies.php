@@ -22,6 +22,7 @@ namespace IXP\Http\Middleware;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Illuminate\Cookie\Middleware\EncryptCookies as Middleware;
 
 /**

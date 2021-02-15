@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\User;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers\User;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth, Former, Hash, Log, Mail, Redirect;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -39,16 +40,12 @@ use IXP\Http\Controllers\Controller;
 
 use IXP\Http\Requests\User\{
     CheckEmail      as CheckEmailRequest,
+    Delete          as DeleteRequest,
     Store           as StoreUser,
     Update          as UpdateUser,
 };
 
 use IXP\Mail\User\UserCreated as UserCreatedeMailable;
-
-use IXP\Utils\View\Alert\{
-    Alert,
-    Container as AlertContainer
-};
 
 use IXP\Models\{
     Customer,
@@ -56,14 +53,19 @@ use IXP\Models\{
     User
 };
 
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
+
 /**
  * User Controller
  *
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- *
- * @category   PatchPanel
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\User
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class UserController extends Controller
@@ -137,7 +139,8 @@ class UserController extends Controller
 
         return view( 'user/index' )->with([
             'users'             => $this->getListData(),
-            'nbC2u'             => CustomerToUser::selectRaw( 'user_id, COUNT( id ) AS nbC2U' )->groupBy( 'user_id' )->get()->keyBy( 'user_id' )->toArray()
+            'nbC2u'             => CustomerToUser::selectRaw( 'user_id, COUNT( id ) AS nbC2U' )
+                ->groupBy( 'user_id' )->get()->keyBy( 'user_id' )->toArray()
         ]);
     }
 
@@ -159,7 +162,7 @@ class UserController extends Controller
         $this->redirectLink();
 
         Former::populate([
-            'cancelBtn'             =>  $r->old( 'cancelBtn', $r->headers->get( 'referer', "" ) ),
+            'cancelBtn'     =>  $r->old( 'cancelBtn', $r->headers->get( 'referer', "" ) ),
         ]);
 
         return view( 'user/create-wizard' )->with([
@@ -277,7 +280,7 @@ class UserController extends Controller
 
         Log::notice( Auth::user()->username . ' Created a User  with ID ' . $user->id );
 
-        AlertContainer::push( "User added successfully. A welcome email is being sent to {$user->email} with "
+        AlertContainer::push( "User added. A welcome email is being sent to {$user->email} with "
             . "instructions on how to set their password. ", Alert::SUCCESS );
 
         return redirect( $this->postStoreRedirect() );
@@ -295,31 +298,29 @@ class UserController extends Controller
      */
     public function edit( Request $r, User $u ): View
     {
-        $this->authorize( 'any', User::class );
+        $this->authorize( 'access', $u );
 
-        if( !$r->user()->isSuperUser() && CustomerToUser::where( 'customer_id', $r->user()->custid )->where( 'user_id', $u->id )->doesntExist() ){
-            abort( 403, 'Not allowed to edit this user' );
-        }
+        $isSuperUser = Auth::user()->isSuperUser();
 
         if( !request()->session()->exists( 'user_post_store_redirect' ) ) {
             $this->redirectLink();
         }
 
         $dataCust = [
-            'name'             => $r->old( 'name',                  $u->name ),
-            'username'         => $r->old( 'username',              $u->username ),
-            'email'            => $r->old( 'email',                 $u->email),
-            'authorisedMobile' => $r->old( 'authorisedMobile',      $u->authorisedMobile ),
-            'disabled'         => $r->old( 'disabled',              !$u->disabled ),
+            'name'             => $r->old( 'name',                  $u->name                ),
+            'username'         => $r->old( 'username',              $u->username            ),
+            'email'            => $r->old( 'email',                 $u->email               ),
+            'authorisedMobile' => $r->old( 'authorisedMobile',      $u->authorisedMobile    ),
+            'disabled'         => $r->old( 'disabled',              !$u->disabled           ),
             'linkCancel'       => $r->old( 'linkCancel',            $r->headers->get( 'referer', "" ) ),
         ];
 
         $datac2u = [];
 
-        $listC2u = Auth::getUser()->isSuperUser() ? $u->customerToUser : $u->customerToUser()->where( 'customer_id', Auth::user()->custid )->get();
+        $listC2u = $isSuperUser ? $u->customerToUser : $u->customerToUser()->where( 'customer_id', Auth::user()->custid )->get();
 
         foreach( $listC2u as $c2u ) {
-            if( Auth::user()->isSuperUser() ) {
+            if( $isSuperUser ) {
                 $datac2u[ 'privs_' . $c2u->id ] = $r->old( 'privs_' . $c2u->id , $c2u->privs );
             } else {
                 $datac2u[ 'privs'  ] = $r->old( 'privs',  $c2u->privs );
@@ -330,7 +331,7 @@ class UserController extends Controller
 
         return view( 'user/edit' )->with([
             'user'                  => $u,
-            'disableInputs'         => Auth::user()->isSuperUser() ? false : true,
+            'disableInputs'         => $isSuperUser ? false : true,
             'isAdd'                 => false,
             'custs'                 => Customer::orderBy( 'name' )->get(),
             'privs'                 => $this->getAllowedPrivs(),
@@ -350,7 +351,7 @@ class UserController extends Controller
      */
     public function update( UpdateUser $r, User $u ): RedirectResponse
     {
-        $this->authorize( 'any', User::class );
+        $this->authorize( 'access', $u );
 
         // Superuser OR Logged User edit his own user
         if( ( $isSuperUser = Auth::user()->isSuperUser() ) || $u->id === Auth::id() ) {
@@ -379,9 +380,7 @@ class UserController extends Controller
         }
 
         Log::notice( Auth::user()->username . ' updated a User with ID ' . $u->id );
-
         AlertContainer::push( 'User updated', Alert::SUCCESS );
-
         return redirect( $this->postStoreRedirect() );
     }
 
@@ -419,10 +418,16 @@ class UserController extends Controller
      */
     public function view( User $u ): View
     {
-        $this->authorize( 'any', User::class );
+        $this->authorize( 'access', $u );
+
+        $user = $this->getListData( $u )[ 0 ] ?? null;
+
+        if( !$user ){
+            abort( 404,'User does not exist');
+        }
 
         return view( 'user/view' )->with([
-            'u'     => $this->getListData( $u )[ 0 ],
+            'u'     => $user,
             'c2us'  => $u->customerToUser
         ]);
     }
@@ -430,13 +435,14 @@ class UserController extends Controller
     /**
      * Delete a user and everything related !!
      *
-     * @param   User        $u
+     * @param   DeleteRequest   $r
+     * @param   User            $u
      *
      * @return  RedirectResponse
      *
      * @throws
      */
-    public function delete( User $u ) : RedirectResponse
+    public function delete( DeleteRequest $r, User $u ) : RedirectResponse
     {
         $this->authorize( 'any', User::class );
 

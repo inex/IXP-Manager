@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\User;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers\User;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth, Hash;
 
 use Illuminate\Auth\Recaller;
@@ -40,24 +41,25 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
-use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
+use IXP\Http\Controllers\Controller;
+
+use IXP\Exceptions\User2FAException;
 
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
 
-use IXP\Http\Controllers\Controller;
-
-use IXP\Exceptions\User2FAException;
+use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 
 /**
  * Security Password Controller
  *
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   User
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\User
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class User2FAController extends Controller

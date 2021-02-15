@@ -22,11 +22,13 @@ namespace IXP\Http\Middleware;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth, Closure;
 
 use Illuminate\Http\Request;
 
 use IXP\Models\ApiKey;
+
 /**
  * Middleware: ApiAuthenticate
  *

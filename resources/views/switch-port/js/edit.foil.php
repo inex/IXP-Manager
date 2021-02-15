@@ -33,7 +33,6 @@
             });
         });
 
-
         /**
          * Even on click to generate the switch ports
          */
@@ -68,8 +67,28 @@
                 let inputPortName = "portName" + (i - numFirst);
                 let inputPortType = "portType" + (i - numFirst);
 
-                portsList += `<tr><td><div class='form-group row'><label for="${inputPortName}" class='control-label col-lg-3 col-sm-6'>Name</label><div class='col-sm-6'><input type='text' class='form-control port-name' id="${inputPortName}" name="${inputPortName}" value="${sprintf(prefix, i)}" /></div></div></td>
-                                <td><div class='form-group row'><label class='control-label col-lg-3 col-sm-6'>Type</label><div class='col-sm-6'><select class='form-control chzn-select port-type' id="${inputPortType}" name="${inputPortType}"></select></div></div></td></tr>`;
+                portsList += `<tr>
+                                <td>
+                                    <div class='form-group row'>
+                                        <label for="${inputPortName}" class='control-label col-lg-3 col-sm-6'>Name</label>
+                                        <div class='col-sm-6'>
+                                            <input type='text' class='form-control port-name' id="${inputPortName}" name="${inputPortName}" value="${sprintf(prefix, i)}" />
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class='form-group row'>
+                                        <label class='control-label col-lg-3 col-sm-6'>Type</label>
+                                        <div class='col-lg-5 col-sm-6'>
+                                            <select class='form-control chzn-select gggg port-type' id="${inputPortType}" data-select2-id="${inputPortType}" name="${inputPortType}">
+                                                <?php foreach( \IXP\Models\SwitchPort::$TYPES as $index => $type ): ?>
+                                                    <option value='<?= $index ?>'><?= $type ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>`;
             }
 
             portsList += "</table></div></div>";
@@ -78,9 +97,7 @@
 
             $("#submit-area").show();
 
-            for (let i = 0; i < numPorts; i++) {
-                $("#portType" + i).html( type_dd.html() ).val( type_dd.val() ).select2();
-            }
+            $( ".port-type" ).val( type_dd.val() ).select2().trigger('change.select2');
 
             displayErrorMessage();
         }
@@ -88,8 +105,7 @@
     /**
      * Display error message from the request for the ports name/type
      */
-    function displayErrorMessage()
-        {
+    function displayErrorMessage() {
             <?php if( count( $t->errors ) ): ?>
                 <?php foreach( $t->errors->getMessages() as $id => $message ): ?>
                     $( '#<?= $id ?>' ).addClass( 'is-invalid' ).closest( 'div' ).append( "<span class='invalid-feedback' style='display: inline;'><?= $message[ 0 ] ?></span>");

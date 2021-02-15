@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\User\CustomerToUser;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -94,14 +94,13 @@ class Store extends FormRequest
 
             $this->cust = Auth::user()->isSuperUser() ? Customer::find( $this->customer_id ) : Auth::user()->customer;
 
-            if( CustomerToUser::where( 'customer_id', $this->cust->id )->where( 'user_id', $this->user_id )->exists() ) {
+            if( CustomerToUser::where( 'customer_id', $this->cust->id )->where( 'user_id', $this->user_id )->get()->isNotEmpty() ) {
                 AlertContainer::push( "This user is already associated with " . $this->cust->name, Alert::DANGER );
                 $validator->errors()->add( 'customer_id',  " " );
                 return false;
             }
 
             if( (int)$this->privs === User::AUTH_SUPERUSER ) {
-
                 if( !$this->user()->isSuperUser() )  {
                     $validator->errors()->add( 'privs',  "You are not allowed to set any user as a super user." );
                     return false;

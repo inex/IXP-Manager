@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\Switches;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -26,9 +26,19 @@ namespace IXP\Http\Requests\Switches;
 use Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
-use IXP\Models\Switcher;
+
 use IXP\Rules\IdnValidate;
 
+/**
+ * StoreBySmtp FormRequest
+ *
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Swtiches
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class StoreBySmtp extends FormRequest
 {
     /**
@@ -47,19 +57,11 @@ class StoreBySmtp extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'snmppasswd' => 'required|string|max:255',
-            'hostname' => [
-                'required', 'string', 'max:255', new IdnValidate(),
-                function ($attribute, $value, $fail) {
-                    $switcher = Switcher::whereHostname( $value )->first();
-                    if( $switcher && $switcher->exists() ) {
-                        return $fail( 'The hostname must be unique.' );
-                    }
-                },
-            ],
+            'snmppasswd'    => 'required|string|max:255',
+            'hostname'      => [ 'required', 'string', 'max:255', new IdnValidate(), 'unique:switch,hostname' . ( $this->id ? ',' . $this->id : ''  ) ],
         ];
     }
 

@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\User;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,6 +28,7 @@ use Auth, Route;
 use Illuminate\Auth\Recaller;
 
 use Illuminate\Database\Eloquent\Builder;
+
 use IXP\Models\{
     User,
     UserRememberToken
@@ -40,17 +41,27 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController;
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\User
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class UserRememberTokenController extends EloquentController
 {
     /**
      * The object being created / edited
+     *
      * @var UserRememberToken
      */
     protected $object = null;
 
+    /**
+     * The URL prefix to use.
+     *
+     * Automatically determined based on the controller name if not set.
+     *
+     * @var string|null
+     */
     protected static $route_prefix = "active-sessions";
 
     /**
@@ -62,6 +73,7 @@ class UserRememberTokenController extends EloquentController
      * @var int
      */
     public static $minimum_privilege = User::AUTH_CUSTUSER;
+
     /**
      * Is this a read only controller?
      *
@@ -69,7 +81,13 @@ class UserRememberTokenController extends EloquentController
      */
     public static $read_only = true;
 
+    /**
+     * Should we allow a read only controller to delete
+     *
+     * @var boolean
+     */
     public static $allow_delete_for_read_only = true;
+
     /**
      * This function sets up the frontend controller
      */
@@ -85,7 +103,6 @@ class UserRememberTokenController extends EloquentController
             'readonly'                  => self::$read_only,
             'allowDeleteForReadOnly'    => self::$allow_delete_for_read_only,
             'viewFolderName'            => 'user-remember-token',
-
             'listColumns'    => [
                 'device'      => 'Device',
                 'ip'          => 'IP',
@@ -115,7 +132,7 @@ class UserRememberTokenController extends EloquentController
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
         Route::group( [  'prefix' => $route_prefix ], static function() use ( $route_prefix ) {
-            Route::delete(  'delete',      'User\UserRememberTokenController@delete'         )->name( $route_prefix."@delete" );
+            Route::delete(  'delete',   'User\UserRememberTokenController@delete' )->name( $route_prefix."@delete" );
         });
     }
 
@@ -164,7 +181,7 @@ class UserRememberTokenController extends EloquentController
     protected function preDelete(): bool
     {
         // ensure a user can only delete their own sessions:
-        return $this->object->user->id === Auth::id();
+        return $this->object->user_id === Auth::id();
     }
 
     /**

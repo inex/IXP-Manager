@@ -132,9 +132,12 @@
 
                 <?php endif; ?>
 
+                <?= Former::hidden( 'linkCancel' )
+                    ->id( "linkCancel" )?>
+
                 <?= Former::actions(
                     Former::primary_submit( 'Create User' ),
-                    Former::secondary_link( 'Cancel' )->href( route( "user@create-wizard" ) ),
+                    Former::secondary_link( 'Cancel' )->href( '' )->id( "btnCancel" ),
                     Former::success_button( 'Help' )->id( 'help-btn' )
                 );
                 ?>

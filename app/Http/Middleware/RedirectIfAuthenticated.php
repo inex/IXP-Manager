@@ -27,6 +27,7 @@ use Closure;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+
 /**
  * Middleware: RedirectIfAuthenticated
  *

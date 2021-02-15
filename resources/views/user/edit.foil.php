@@ -139,7 +139,7 @@
                                             </td>
                                             <td>
                                                 <a class="btn btn-white btn-delete btn-delete-c2u" data-object-id='<?= count( $customersToUser ) > 1 ? $c2u->id : $c2u->user_id ?>'
-                                                   href="<?= count( $customersToUser ) > 1 ? route( 'customer-to-user@delete', [ 'c2u' => $c2u->id ] ) : route('user@delete', [ 'u', $c2u->user_id ] )  ?>" title="Delete">
+                                                   href="<?= count( $customersToUser ) > 1 ? route( 'customer-to-user@delete', [ 'c2u' => $c2u->id ] ) : route('user@delete', [ 'u' => $c2u->user_id ] )  ?>" title="Delete">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </td>

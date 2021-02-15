@@ -3,7 +3,7 @@
 namespace IXP\Policies;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,11 +23,23 @@ namespace IXP\Policies;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
-use IXP\Models\User;
-use IXP\Models\Customer;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
+use IXP\Models\{
+    User,
+    Customer
+};
+
+/**
+ * CustomerPolicy
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Policies
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class CustomerPolicy
 {
     use HandlesAuthorization;
@@ -53,6 +65,7 @@ class CustomerPolicy
      *
      * @param  User         $user
      * @param  Customer     $customer
+     *
      * @return mixed
      */
     public function view( User $user, Customer $customer ): bool

@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\User\CustomerToUser;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,6 +28,16 @@ use Log;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
+/**
+ * Delete CustomerToUser FormRequest
+ *
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Requests\CustomerToUser
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class Delete extends FormRequest
 {
     /**
@@ -61,7 +71,7 @@ class Delete extends FormRequest
     public function withValidator( Validator $validator ): bool
     {
         $validator->after( function( ) {
-            if( !$this->user()->isSuperUser() && $this->c2u->customer_id !== $this->user()->custid ) {
+            if( $this->c2u->customer_id !== $this->user()->custid && !$this->user()->isSuperUser() ) {
                 Log::notice( $this->user()->username . " tried to delete another customer's user: " . $this->c2u->user->name . " from " . $this->c2u->customer->name );
                 abort( 403, 'You are not authorised to delete this user. The administrators have been notified.' );
             }

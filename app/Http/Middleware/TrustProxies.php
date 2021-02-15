@@ -22,9 +22,10 @@ namespace IXP\Http\Middleware;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Fideloper\Proxy\TrustProxies as Middleware;
 
 use Illuminate\Http\Request;
+
+use Fideloper\Proxy\TrustProxies as Middleware;
 
 /**
  * Middleware: TrustProxies

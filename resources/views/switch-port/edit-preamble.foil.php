@@ -1,4 +1,3 @@
-
 <?php if( $t->data[ 'params'][ 'isAdd'] ): ?>
     <div class="alert alert-danger" role="alert">
         <div class="d-flex align-items-center">

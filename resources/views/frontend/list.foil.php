@@ -100,7 +100,11 @@
                                                 <?= $t->ee( $row[ $col ] ) ?>
                                             </td>
                                         <?php elseif( !isset( $cconf[ 'display'] ) || $cconf[ 'display']  ): ?>
-                                            <td>
+                                            <td
+                                                <?php if( isset( $cconf[ 'data-sort'] ) ): ?>
+                                                     data-order="<?= $row[ $cconf[ 'data-sort'] ] ?>"
+                                                <?php endif; ?>
+                                            >
                                                 <?php if(isset( $cconf[ 'type'] ) ): ?>
                                                     <?php if( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'HAS_ONE'] ): ?>
                                                         <?php $nameIdParam = '' ; ?>
