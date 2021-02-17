@@ -1,4 +1,3 @@
-
 <?php foreach( $t->ints as $int ):
     
         // do not set up a session to ourselves!

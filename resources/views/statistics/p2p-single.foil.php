@@ -5,7 +5,7 @@
     // helpers:
     $srcVli = $t->srcVli;/** @var \IXP\Models\VlanInterface $srcVli */
     $dstVli = $t->dstVli; /** @var \IXP\Models\VlanInterface $dstVli */
-    $isSuperUser = Auth::getUser()->isSuperUser();
+    $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>

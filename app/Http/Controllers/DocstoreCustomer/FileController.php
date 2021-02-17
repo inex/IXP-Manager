@@ -267,6 +267,7 @@ class FileController extends Controller
             'min_privs'                         => $r->min_privs
         ] );
 
+
         Log::info( sprintf( "DocStore: customer file [%d|%s] edited by %s for the customer [%d|%s]", $file->id, $file->name, $r->user()->username, $cust->id, $cust->name ) );
 
         AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . " file <em>{$r->name}</em> updated.", Alert::SUCCESS );
@@ -307,28 +308,22 @@ class FileController extends Controller
      * @param DocstoreCustomerFile|null     $file
      *
      */
-    private function checkForm( Request $r, ?DocstoreCustomerFile $file = null )
+    private function checkForm( Request $r, ?DocstoreCustomerFile $file = null ): void
     {
         $r->validate( [
-            'name'          => 'required|max:100',
-            'uploadedFile'  => Rule::requiredIf( function() use ( $r, $file ) {
+            'name'                              => 'required|max:100',
+            'uploadedFile'                      => Rule::requiredIf( function() use ( $r, $file ) {
                 return !$file;
             }),
-            'sha256'        => [ 'nullable', 'max:64',
+            'sha256'                            => [ 'nullable', 'max:64',
                 function ( $attribute, $value, $fail ) use( $r ) {
                     if( $value && $r->file('uploadedFile' ) && $value !== hash_file( 'sha256', $r->file( 'uploadedFile' ) ) ) {
                         return $fail( 'The sha256 checksum calculated on the server does not match the one you provided.' );
                     }
                 },
             ],
-            'min_privs'     => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES ) ),
-            'docstore_customer_directory_id' => [ 'nullable', 'integer',
-                function ( $attribute, $value, $fail ) {
-                    if( !DocstoreCustomerDirectory::whereId( $value )->exists() ) {
-                        return $fail( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' directory does not exist.' );
-                    }
-                },
-            ]
+            'min_privs'                         => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES ) ),
+            'docstore_customer_directory_id'    => 'nullable|integer|exists:docstore_customer_directories,id',
         ] );
     }
 }

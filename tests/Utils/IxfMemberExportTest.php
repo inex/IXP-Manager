@@ -3,7 +3,7 @@
 namespace Tests\Utils;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -24,6 +24,7 @@ namespace Tests\Utils;
  */
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+
 use IXP\Utils\Export\JsonSchema as JsonSchemaExporter;
 
 use Tests\TestCase;
@@ -34,11 +35,11 @@ use Tests\TestCase;
  *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
- * @category   Tests
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Tests\Utils
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-
 class IxfMemberExportTest extends TestCase
 {
     public $versions     = [ '1.0', '0.7', '0.6' ];
@@ -62,6 +63,5 @@ class IxfMemberExportTest extends TestCase
                 $this->assertEquals( $knownGoodConf, $json, "Known good and generated IX-F Member Export for {$v}-{$a} do not match" );
             }
         }
-
     }
 }

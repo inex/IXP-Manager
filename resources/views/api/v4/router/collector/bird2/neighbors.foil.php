@@ -126,7 +126,6 @@ int set allas;
         bgp_large_community.add( IXP_LC_FILTERED_AS_PATH_TOO_LONG );
     }
 
-        <?php echo $int['cid'] ?>
 <?php
     // Only do IRRDB ASN filtering if this is enabled per client:
     if( ( $int['rsclient'] ?? false ) && $int['irrdbfilter'] ?? true ):
@@ -234,7 +233,7 @@ protocol bgp pb_as<?= $int['autsys'] ?>_vli<?= $int['vliid'] ?>_ipv<?= $int['pro
         # The import filter listed here just accepts everything but adds tags.
         import where f_import_as<?= $int['autsys'] ?>();
         export none;
-        <?php if( $t->router->protocol == 6 ): ?>missing lladdr ignore;<?php endif; ?>
+        <?php if( $t->router->protocol === 6 ): ?>missing lladdr ignore;<?php endif; ?>
 
     };
 

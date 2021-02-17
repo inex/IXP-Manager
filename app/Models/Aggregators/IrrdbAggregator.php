@@ -53,19 +53,18 @@ class IrrdbAggregator
         if( $type === 'asn' ) {
             $model = IrrdbAsn::class; /** @var IrrdbAsn  $model */
             $field = 'asn';
+            $orderby = $field . ' ASC, id ASC';
         } else {
             $model = IrrdbPrefix::class; /** @var IrrdbPrefix  $model */
             $field = 'prefix';
+            $orderby = 'INET' . ( $protocol === 6 ? '6' : '' ) . "_ATON( {$field} ) ASC, id ASC";
         }
 
         $results = $model::select( [ 'id', $field , 'first_seen', 'last_seen' ] )
             ->where( 'customer_id', $custid )
             ->where( 'protocol', $protocol )
-            ->when( $protocol === 6, function( Builder $q, $protocol ) use( $field ) {
-                return $q->orderByRaw( 'INET' . ( $protocol === 6 ? '6' : '' ) . "_ATON( {$field} ) ASC, id ASC" );
-            }, function( $query ) use( $field ) {
-                return $query->orderByRaw( $field . ' ASC, id ASC' );
-            } )->get();
+            ->orderByRaw( $orderby )
+            ->get();
 
         if( !$flatten ) {
             return $results->toArray();
@@ -73,5 +72,4 @@ class IrrdbAggregator
 
         return $results->keyBy( 'id' )->pluck( $field, 'id'  )->toArray();
     }
-
 }

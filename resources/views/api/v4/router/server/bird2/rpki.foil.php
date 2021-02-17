@@ -27,7 +27,7 @@ protocol rpki rpki1 {
 
 protocol rpki rpki2 {
 
-    roa<?= $t->router->protocol() ?> { table t_roa; };
+    roa<?= $t->router->protocol ?> { table t_roa; };
 
     remote "<?= config( 'ixp.rpki.rtr2.host' ) ?>" port <?= config( 'ixp.rpki.rtr2.port' ) ?>;
 

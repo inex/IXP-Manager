@@ -383,7 +383,6 @@ class VlanInterfaceAggregator extends VlanInterface
             }
 
             $newints[ $int['address'] ] = $int;
-
         }
 
         return $newints;

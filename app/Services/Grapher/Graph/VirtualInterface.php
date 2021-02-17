@@ -160,7 +160,7 @@ class VirtualInterface extends Graph
         }
 
         Log::notice( sprintf( "[Grapher] [VirtualInterface]: user %d::%s tried to access a virtual interface graph "
-                . "{$this->virtualInterface()->id} which is not theirs", Auth::id, Auth::getUser()->username )
+                . "{$this->virtualInterface()->id} which is not theirs", Auth::id(), Auth::getUser()->username )
         );
 
         $this->deny();

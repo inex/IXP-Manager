@@ -9,7 +9,7 @@
  *
  * Skinning: https://ixp-manager.readthedocs.io/en/latest/features/skinning.html
  *
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -88,7 +88,7 @@ int set allas;
 
     allnet = [ <?= implode( ', ',
             $int['rsmorespecifics']
-                    ? $t->bird()->prefixExactToLessSpecific( $int['irrdbfilter_prefixes'], $t->router->protocol(), config( 'ixp.irrdb.min_v' . $t->router->protocol() . '_subnet_size' ) )
+                    ? $t->bird()->prefixExactToLessSpecific( $int['irrdbfilter_prefixes'], $t->router->protocol, config( 'ixp.irrdb.min_v' . $t->router->protocol . '_subnet_size' ) )
                     : $int['irrdbfilter_prefixes']
                 ) ?> ];
 

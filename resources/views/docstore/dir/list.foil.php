@@ -4,7 +4,7 @@
 
     $this->layout( 'layouts/ixpv4' );
     $sixmonthsago = now()->subMonths(6)->startOfDay();
-    $isSuperUser = Auth::getUser()->isSuperUser();
+    $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>

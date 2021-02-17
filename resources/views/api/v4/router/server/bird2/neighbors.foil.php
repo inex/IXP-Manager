@@ -188,7 +188,7 @@ int set allas;
 
     allnet = [ <?php echo $t->softwrap( $int['rsmorespecifics']
             ? $t->bird()->prefixExactToLessSpecific( $int['irrdbfilter_prefixes'], $t->router->protocol, config( 'ixp.irrdb.min_v' . $t->router->protocol . '_subnet_size' ) )
-            : $int['irrdbfilter_prefixes'], 4, ", ", ",", 15, $t->router->protocol() == 6 ? 36 : 26 ); ?>
+            : $int['irrdbfilter_prefixes'], 4, ", ", ",", 15, $t->router->protocol === 6 ? 36 : 26 ); ?>
 
     ];
 
@@ -256,7 +256,7 @@ filter f_export_as<?= $int['autsys'] ?>
 
 protocol pipe pp_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?> {
         description "Pipe for AS<?= $int['autsys'] ?> - <?= $int['cname'] ?> - VLAN Interface <?= $int['vliid'] ?>";
-        table master<?= $t->router->protocol() ?>;
+        table master<?= $t->router->protocol ?>;
         peer table t_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?>;
         import filter f_export_to_master;
         export where ixp_community_filter(<?= $int['autsys'] ?>);

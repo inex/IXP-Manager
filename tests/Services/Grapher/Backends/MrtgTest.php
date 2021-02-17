@@ -1,9 +1,9 @@
 <?php
 
-use Tests\TestCase;
+namespace Tests\Services\Grapher\Backends;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,9 +23,7 @@ use Tests\TestCase;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Entities\Router as RouterEntity;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use IXP\Tasks\Router\ConfigurationGenerator as RouterConfigurationGenerator;
+use Tests\TestCase;
 
 use Grapher as GrapherService;
 
@@ -34,14 +32,16 @@ use Grapher as GrapherService;
  * against known good configurations for IXP\Tasks\Router\ConfigurationGenerator
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   Tests
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Tests\Services\Grapher\Backends
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class MrtgTest extends TestCase
 {
 
-    public function testMrtgConfigurationGeneration()
+    public function testMrtgConfigurationGeneration(): void
     {
         $grapher = GrapherService::backend( 'mrtg' );
 

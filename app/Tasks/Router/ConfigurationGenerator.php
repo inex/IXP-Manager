@@ -100,9 +100,12 @@ class ConfigurationGenerator
             $this->router()->vlan, $this->router()->protocol, $this->router()->type, $this->router()->quarantine
         );
 
-
         $v = view( $this->router()->template )->with(
-            [ 'handle' => $this->router()->handle, 'ints' => $ints, 'router' => $this->router(), 'vlan' => $this->router()->vlan ]
+            [ 'handle'  => $this->router()->handle,
+              'ints'    => $ints,
+              'router'  => $this->router(),
+              'vlan'    => $this->router()->vlan
+            ]
         );
 
         Log::info( 'Generated router configuration for ' . $this->router()->handle . ' and used ' . memory_get_peak_usage() . ' bytes (' . memory_get_peak_usage( true ) . ' real) of memory.' );

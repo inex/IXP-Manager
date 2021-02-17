@@ -1,7 +1,7 @@
 <?php
     /** @var Foil\Template\Template $t */
     $this->layout( 'layouts/ixpv4' );
-    $isSuperUser = Auth::getUser()->isSuperUser();
+    $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
     $c = $t->c; /** @var $c \IXP\Models\Customer */
 ?>
 
@@ -64,10 +64,19 @@
                         <?php break;
                     case IXP\Services\Grapher\Graph\VirtualInterface::class: ?>
                         LAG
-                        <?php if( $sp = $t->graph->virtualInterface()->switchport ): ?>
+                        <?php if( $sp = $t->graph->virtualInterface()->switchPort() ): ?>
                             <small>
                                 <?= $sp->switcher->name ?>
-                                [<?= implode( ', ', $t->graph->virtualInterface()->getSwitchPortNames() ) ?>]
+                                <?php
+                                    $names = [];
+                                    foreach( $t->graph->virtualInterface()->physicalInterfaces as $pi ){
+                                        if( $sp = $pi->switchPort ){
+                                            $names[] = $sp->name;
+                                        }
+                                    }
+                                ?>
+
+                                [<?= implode( ', ', $names ) ?>]
                             </small>
                         <?php endif;
                         break;

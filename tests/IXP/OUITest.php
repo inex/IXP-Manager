@@ -1,7 +1,9 @@
 <?php
 
+namespace Tests\IXP;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,15 +24,20 @@
  */
 
 use IXP\Exceptions\GeneralException;
-use Tests\TestCase;
 
 use IXP\Utils\OUI as OUIUtil;
 
-
-
+use Tests\TestCase;
 
 /**
  * PHPUnit test class to test the IXP_OUI class
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Tests\IXP
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class OUITest extends TestCase
 {
@@ -64,7 +71,7 @@ class OUITest extends TestCase
 
 END_DATA;
 
-    public function testParse()
+    public function testParse(): void
     {
         $oui = new OUIUtil();
         $parsed = $oui->processRawData( $this->sampleRawData );
@@ -80,10 +87,9 @@ END_DATA;
         $this->assertEquals( 3, count( $parsed ) );
     }
 
-
     /**
      */
-    public function testBadFile()
+    public function testBadFile(): void
     {
         $this->expectException( GeneralException::class );
         $oui = new OUIUtil( '/path/that/does/not/exist/I/hope.txt' );
@@ -96,6 +102,5 @@ END_DATA;
     //     $oui = new IXP_OUI();
     //     $this->assertInstanceOf( 'IXP_OUI', $oui->loadList() );
     // }
-
 
 }
