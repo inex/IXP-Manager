@@ -179,7 +179,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                         break 2;
                     }
 
-                    if( !$pi->statusIsConnectedOrQuarantine() || !$pi->getSwitchPort()->getSwitcher()->getActive() ) {
+                    if( !$pi->statusIsConnectedOrQuarantine() || !$pi->getSwitchPort()->getSwitcher()->getPollable() ) {
                         continue;
                     }
 
@@ -222,7 +222,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
             foreach( $infra->getSwitchers() as $switch ) {
                 /** @var SwitcherEntity $switch */
 
-                if( !$switch->getActive() ) {
+                if( !$switch->getPollable() ) {
                     continue;
                 }
 
