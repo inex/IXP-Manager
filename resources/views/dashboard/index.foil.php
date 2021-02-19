@@ -1,8 +1,9 @@
 <?php
-/** @var Foil\Template\Template $t */
-/** @var $t->active */
-$this->layout( 'layouts/ixpv4' );
-$c = $t->c; /** @var $c \IXP\Models\Customer */
+    /** @var Foil\Template\Template $t */
+    /** @var $t->active */
+    $this->layout( 'layouts/ixpv4' );
+    $c = $t->c; /** @var $c \IXP\Models\Customer */
+    $isSuperUser = Auth::getUser()->isSuperUser();
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -29,7 +30,7 @@ $c = $t->c; /** @var $c \IXP\Models\Customer */
                     <div class="card-header">
                         <ul class="nav nav-tabs card-header-tabs">
                             <li class="nav-item">
-                                <a class="nav-link <?php if( $t->tab === null || $t->tab === 'overview' || $t->tab === 'index' ): ?>active<?php endif; ?>" data-toggle="tab" href="#overview">
+                                <a class="nav-link <?php if( !$t->tab || $t->tab === 'overview' || $t->tab === 'index' ): ?>active<?php endif; ?>" data-toggle="tab" href="#overview">
                                   Overview
                                 </a>
                             </li>
@@ -135,7 +136,7 @@ $c = $t->c; /** @var $c \IXP\Models\Customer */
 
                     <div class="card-body">
                         <div class="tab-content">
-                            <div id="overview" class="tab-pane fade <?php if( $t->tab === null || $t->tab === 'overview' || $t->tab === 'index' ): ?> show active <?php endif; ?>">
+                            <div id="overview" class="tab-pane fade <?php if( !$t->tab || $t->tab === 'overview' || $t->tab === 'index' ): ?> show active <?php endif; ?>">
                                 <?= $t->insert( 'dashboard/dashboard-tabs/overview' ); ?>
                             </div>
 
@@ -145,26 +146,26 @@ $c = $t->c; /** @var $c \IXP\Models\Customer */
 
                             <div id="ports" class="tab-pane fade <?php if( $t->tab === 'ports' ): ?> show active <?php endif; ?>">
                                 <?php if( $t->resellerMode() && $c->isReseller ): ?>
-                                    <?= $t->insert( 'customer/overview-tabs/reseller-ports' ); ?>
+                                    <?= $t->insert( 'customer/overview-tabs/reseller-ports', [ 'isSuperUser' => $isSuperUser ] ); ?>
                                 <?php else: ?>
-                                    <?= $t->insert( 'customer/overview-tabs/ports' ); ?>
+                                    <?= $t->insert( 'customer/overview-tabs/ports', [ 'isSuperUser' => $isSuperUser ] ); ?>
                                 <?php endif ?>
                             </div>
 
                             <?php if( $t->resellerMode() && $c->isReseller ): ?>
                                 <div id="resold-customers" class="tab-pane fade <?php if( $t->tab === 'resold-customers' ): ?> show active <?php endif; ?>">
-                                    <?= $t->insert( 'customer/overview-tabs/resold-customers' ); ?>
+                                    <?= $t->insert( 'customer/overview-tabs/resold-customers', [ 'isSuperUser' => $isSuperUser ] ); ?>
                                 </div>
                             <?php endif ?>
 
                             <?php if( $t->notes ): ?>
                                 <div id="notes" class="tab-pane fade <?php if( $t->tab === 'notes' ): ?> show active <?php endif; ?> ">
-                                    <?= $t->insert( 'customer/overview-tabs/notes' ); ?>
+                                    <?= $t->insert( 'customer/overview-tabs/notes', [ 'isSuperUser' => $isSuperUser ] ); ?>
                                 </div>
                             <?php endif ?>
 
                             <div id="cross-connects" class="tab-pane fade <?php if( $t->tab === 'cross-connects' ): ?> show active <?php endif; ?>">
-                                <?= $t->insert( 'customer/overview-tabs/cross-connects' ); ?>
+                                <?= $t->insert( 'customer/overview-tabs/cross-connects', [ 'isSuperUser' => $isSuperUser ] ); ?>
                             </div>
                         </div>
                     </div>
@@ -178,11 +179,9 @@ $c = $t->c; /** @var $c \IXP\Models\Customer */
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-<?= $t->insert( 'customer/js/overview/notes' ); ?>
+<?= $t->insert( 'customer/js/overview/notes', [ 'isSuperUser' => $isSuperUser ] ); ?>
   <script>
-      $('.table-responsive-ixp').show();
-
-      $('.table-responsive-ixp').DataTable( {
+      $('.table-responsive-ixp').dataTable( {
           stateSave: true,
           stateDuration : DATATABLE_STATE_DURATION,
           responsive: true,
@@ -190,7 +189,7 @@ $c = $t->c; /** @var $c \IXP\Models\Customer */
           searching: false,
           paging:   false,
           info:   false,
-      } );
+      } ).show();
 
       $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
           $($.fn.dataTable.tables(true)).DataTable()

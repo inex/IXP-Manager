@@ -34,12 +34,19 @@ use IXP\Models\DocstoreFile;
 
 use Tests\TestCase;
 
+/**
+ * Test docstore File Controller
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Tests\Docstore\Controllers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class FileControllerTest extends TestCase
 {
     public const testInfo = [
-        'custuser'              => 'hecustuser',
-        'custadmin'             => 'hecustadmin',
-        'superuser'             => 'travis',
         'disk'                  => 'docstore',
         'fileName'              => 'File.pdf',
         'fileDescription'       => 'This is file.pdf',

@@ -39,6 +39,16 @@ use Illuminate\Foundation\Http\FormRequest;
 class PeeringManagerRequest extends FormRequest
 {
 
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
     public function __construct()
     {
         parent::__construct();
@@ -60,17 +70,6 @@ class PeeringManagerRequest extends FormRequest
             }
             return true;
         });
-    }
-
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize(): bool
-    {
-        // middleware ensures superuser access only so always authorised here:
-        return Auth::getUser()->isSuperUser();
     }
 
     /**

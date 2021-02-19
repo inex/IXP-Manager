@@ -1,7 +1,9 @@
 <?php
 
+namespace Tests\Browser;
+
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,21 +23,31 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace Tests\Browser;
-
 use Str;
 
 use Carbon\Carbon;
 
 use IXP\Models\ApiKey;
-use Tests\DuskTestCase;
+
 use Laravel\Dusk\Browser;
 
+use Tests\DuskTestCase;
+
+/**
+ * Test Apikey Controller
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Tests\Browser
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class ApiKeyControllerTest extends DuskTestCase
 {
     public function tearDown(): void
     {
-        if( $key = ApiKey::find( 5) ) {
+        if( $key = ApiKey::find( 5 ) ) {
             $key->delete();
         }
 
@@ -72,7 +84,7 @@ class ApiKeyControllerTest extends DuskTestCase
                 ->assertSee( "API key created:" );
 
 
-            $apiKey = ApiKey::whereId( 5 )->first();
+            $apiKey = ApiKey::find( 5 );
 
             // 2. Check the api key
             $this->assertInstanceOf( ApiKey::class, $apiKey );

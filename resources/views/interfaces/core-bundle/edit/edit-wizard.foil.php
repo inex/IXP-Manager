@@ -162,7 +162,7 @@
                         <b class="mr-auto my-auto">
                             If you are sure you want to delete this Core Bundle:
                         </b>
-                        <a class="btn btn-danger mr-4 btn-delete-cb" href="<?= route( 'core-bundle@delete', [ 'cb' => $t->cb->id ] ) ?>"  title="Delete">
+                        <a class="btn btn-danger mr-4 btn-delete-cb" id="btn-delete-cb" href="<?= route( 'core-bundle@delete', [ 'cb' => $t->cb->id ] ) ?>"  title="Delete">
                             Delete
                         </a>
                     </div>

@@ -1,7 +1,9 @@
 <?php
 
+namespace Tests\Browser;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,42 +23,53 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace Tests\Browser;
-
-use Auth,D2EM;
-
-use Tests\DuskTestCase;
-use Laravel\Dusk\Browser;
-
-use Entities\{
-    Customer            as CustomerEntity,
-    PeeringManager      as PeeringManagerEntity,
-    User                as UserEntity,
-    Vlan                as VlanEntity
+use IXP\Models\{
+    Aggregators\CustomerAggregator,
+    Customer,
+    PeeringManager,
+    User,
+    Vlan
 };
 
+use Laravel\Dusk\Browser;
+
+use Tests\DuskTestCase;
+
+
+
+/**
+ * Test peering manager Controller
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Tests\Browser
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class PeeringManagerControllerTest extends DuskTestCase
 {
 
     public function tearDown(): void
     {
+        /** @var Customer $cust */
+        $cust = User::whereUsername( 'hecustadmin' )->get()->first()->customer;
 
-        /** @var UserEntity $user */
-        $cust = D2EM::getRepository( UserEntity::class )->findOneBy( [ "username" => "hecustadmin" ] )->getCustomer();
-
-        $peers = D2EM::getRepository( CustomerEntity::class )->getPeeringManagerArrayByType( D2EM::getRepository( UserEntity::class )->findOneBy( [ "username" => "hecustadmin" ] )->getCustomer() , D2EM::getRepository( VlanEntity::class )->getPeeringManagerVLANs(), [ 4, 6 ] );
+        $peers = CustomerAggregator::getPeeringManagerArrayByType(
+            $cust,
+            Vlan::peeringManager()->orderBy( 'number' )->get(),
+            [ 4, 6 ]
+        );
 
         foreach( $peers[ "potential" ] as  $as => $p ){
             if($p){
                 $c = $peers[ "custs" ][ $as ];
                 break;
             }
-
         }
 
-        if( $p = D2EM::getRepository( PeeringManagerEntity::class )->findOneBy( [ 'Customer' => $cust, 'Peer' => $c[ "id" ] ] ) ) {
-            D2EM::remove( $p );
-            D2EM::flush();
+        if( $p = PeeringManager::where( 'custid', $cust->id )->where( 'peerid', $c[ "id" ] )->get()->first() ) {
+            $p->delete();
         }
 
         parent::tearDown();
@@ -69,28 +82,31 @@ class PeeringManagerControllerTest extends DuskTestCase
      *
      * @throws
      */
-    public function testPeeringManager()
+    public function testPeeringManager(): void
     {
         $this->browse( function ( Browser $browser ) {
 
             $browser->resize(1600, 1400 )
-                ->visit('/login' )
-                ->type('username', 'hecustadmin' )
-                ->type('password', 'travisci' )
-                ->press( '#login-btn' )
-                ->assertPathIs('/dashboard' );
+                    ->visit('/login' )
+                    ->type('username', 'hecustadmin' )
+                    ->type('password', 'travisci' )
+                    ->press( '#login-btn' )
+                    ->assertPathIs('/dashboard' );
 
 
             $browser->press( "#peering-manager-a" )
                 ->waitForText( 'Potential Peers' );
 
-            /** @var UserEntity $user */
-            $user = D2EM::getRepository( UserEntity::class )->findOneBy( [ "username" => "hecustadmin" ] );
+            $user = User::whereUsername( 'hecustadmin' )->get()->first();
 
-            /** @var CustomerEntity $cust */
-            $cust = $user->getCustomer();
+            /** @var Customer $cust */
+            $cust = $user->customer;
 
-            $peers = D2EM::getRepository( CustomerEntity::class )->getPeeringManagerArrayByType( $cust , D2EM::getRepository( VlanEntity::class )->getPeeringManagerVLANs(), [ 4, 6 ] );
+            $peers = CustomerAggregator::getPeeringManagerArrayByType(
+                $cust,
+                Vlan::peeringManager()->orderBy( 'number' )->get(),
+                [ 4, 6 ]
+            );
 
             foreach( $peers[ "potential" ] as  $as => $p ){
                 if( $p ) {
@@ -100,8 +116,7 @@ class PeeringManagerControllerTest extends DuskTestCase
             }
 
             // Check data in DB
-            /** @var $pm PeeringManagerEntity */
-            $this->assertEquals( null , D2EM::getRepository( PeeringManagerEntity::class )->findOneBy( [ 'Customer' => $cust, 'Peer' => $c[ "id" ] ] ) );
+            $this->assertEquals( null , PeeringManager::where( 'custid', $cust->id )->where( 'peerid', $c[ "id" ] )->get()->first() );
 
 
             $browser->click( "#peering-notes-icon-" . $c[ "id" ] )
@@ -117,7 +132,8 @@ class PeeringManagerControllerTest extends DuskTestCase
             $browser->waitUntilMissing( ".modal-backdrop" );
 
             // Check value in DB
-            $this->assertInstanceOf( PeeringManagerEntity::class , $pm = D2EM::getRepository( PeeringManagerEntity::class )->findOneBy( [ 'Customer' => $cust, 'Peer' => $c[ "id" ] ] ) );
+            /** @var $pm PeeringManager */
+            $this->assertInstanceOf( PeeringManager::class , $pm = PeeringManager::where( 'custid', $cust->id )->where( 'peerid', $c[ "id" ] )->get()->first() );
 
 //            $this->assertEquals( "### " . date( "Y-m-d" ) . " - hecustadmin
 //
@@ -128,15 +144,16 @@ class PeeringManagerControllerTest extends DuskTestCase
             $browser->click( "#peering-request-" . $c[ "id" ] )
                 ->waitForText( "Send Peering Request by Email" )
                 ->click('#modal-peering-request-marksent' )
+                ->pause( 500 )
                 ->waitForText( "Peering request marked as sent in your Peering Manager." )
                 ->press( "Close" );
 
             $browser->waitUntilMissing( ".modal-backdrop"  );
 
             // Check value in DB
-            D2EM::refresh( $pm );
+            $pm->refresh();
 
-            $this->assertEquals( 1 ,$pm->getEmailsSent() );
+            $this->assertEquals( 1 , $pm->emails_sent );
 
 //            $this->sendEmail( $browser, $pm, $c, $user, true, 1);
 //            $this->sendEmail( $browser, $pm, $c, $user, false, 2);
@@ -151,18 +168,19 @@ class PeeringManagerControllerTest extends DuskTestCase
     /**
      * Test the peering manager request send to me function or send to the customer
      *
-     * @param Browser                   $browser
-     * @param PeeringManagerEntity      $pm
-     * @param CustomerEntity            $c
-     * @param UserEntity                $user
-     * @param boolean                   $sentToMe
-     * @param integer                   $nbSent
+     * @param Browser               $browser
+     * @param PeeringManager        $pm
+     * @param array                 $c
+     * @param User                  $user
+     * @param bool                  $sentToMe
+     * @param int                   $nbSent
      *
      * @return void
+     *
      * @throws
      */
-    public function sendEmail( $browser, $pm, $c, $user, $sentToMe, $nbSent ){
-
+    public function sendEmail( Browser $browser, PeeringManager $pm, array $c, User $user, bool $sentToMe, int $nbSent ): void
+    {
         // Test Send email to me
         $browser->click( "#peering-request-" . $c[ "id" ] )
             ->waitForText( "Are you sure you want to send a peering request to this member? You already sent one today." )
@@ -175,48 +193,43 @@ class PeeringManagerControllerTest extends DuskTestCase
             ->waitUntilMissing( ".modal-backdrop" );
 
         // Check value in DB
-        D2EM::refresh( $pm );
+        $pm->refresh();
 
-        $this->assertEquals( $nbSent ,$pm->getEmailsSent() );
-
+        $this->assertEquals( $nbSent , $pm->emails_sent );
     }
 
     /**
-     * @param Browser               $browser
-     * @param PeeringManagerEntity  $pm
-     * @param CustomerEntity        $c
-     * @param string                $status
+     * @param Browser           $browser
+     * @param PeeringManager    $pm
+     * @param array             $c
+     * @param string            $status
      *
      * @throws
      */
-    public function markPeering( $browser, $pm , $c, $status ){
-
-        $this->assertEquals( false, $status == "peered" ? $pm->getPeered() : $pm->getRejected() );
+    public function markPeering( Browser $browser, PeeringManager $pm , array $c, string $status ): void
+    {
+        $this->assertEquals( false, $status === "peered" ? $pm->peered : $pm->rejected );
 
         $browser->press( "#dropdown-mark-peering-" . $c[ "id" ] )
-                ->press( $status == "peered" ? "#mark-peered-". $c[ "id" ] : "#mark-rejected-". $c[ "id" ] )
+                ->press( $status === "peered" ? "#mark-peered-". $c[ "id" ] : "#mark-rejected-". $c[ "id" ] )
                 ->assertPathIs( '/peering-manager' )
-                ->assertSee( $status == "peered" ? 'Peered flag set for ' . $c[ "name" ] : 'Ignored / rejected flag set for ' . $c[ "name" ] );
-
-
-
+                ->assertSee( $status === "peered" ? 'Peered flag set for ' . $c[ "name" ] : 'Ignored / rejected flag set for ' . $c[ "name" ] );
 
         // Check value in DB
-        D2EM::refresh( $pm );
-        $this->assertEquals( true, $status == "peered" ? $pm->getPeered() : $pm->getRejected() );
+        $pm->refresh();
+        $this->assertEquals( true, $status === "peered" ? $pm->peered : $pm->rejected );
 
-        $browser->press( $status == "peered" ? "#peering-peers-li" : "#peering-rejected-li" )
+        $browser->press( $status === "peered" ? "#peering-peers-li" : "#peering-rejected-li" )
                 ->assertSee( $c[ "name" ] )
                 ->waitFor(  "#dropdown-mark-peering-" . $c[ "id" ] )
                 ->press(    "#dropdown-mark-peering-" . $c[ "id" ] )
-                ->press(    $status == "peered" ? "#mark-peered-". $c[ "id" ] : "#mark-rejected-". $c[ "id" ] )
+                ->press(    $status === "peered" ? "#mark-peered-". $c[ "id" ] : "#mark-rejected-". $c[ "id" ] )
                 ->assertPathIs( '/peering-manager' )
                 ->assertSee( $status == "peered" ? 'Peered flag cleared for ' . $c[ "name" ] : 'Ignored / rejected flag cleared for ' . $c[ "name" ] );
 
         // Check value in DB
-        D2EM::refresh( $pm );
+        $pm->refresh();
 
-        $this->assertEquals( false, $status == "peered" ? $pm->getPeered() : $pm->getRejected() );
+        $this->assertEquals( false, $status === "peered" ? $pm->peered : $pm->rejected );
     }
-
 }

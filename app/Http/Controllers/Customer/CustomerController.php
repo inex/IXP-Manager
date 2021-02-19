@@ -457,7 +457,7 @@ class CustomerController extends Controller
             'notes'                     => $cns,
             //'notesInfo'                 => D2EM::getRepository( CustomerNoteEntity::class )->analyseForUser( $cns, $c, D2EM::getRepository( UserEntity::class )->find( Auth::getUser()->id ) ),
             'notesInfo'                 => [ 'unreadNotes' => 1, 'notesLastRead' => 0, 'notesReadUpto' => 1 ],
-            'peers'                     => CustomerAggregator::getPeeringManagerArrayByType( $cust, Vlan::peeringManager()->orderBy( 'number' )->get(), [ 4,6 ] ) ?? false
+            'peers'                     => CustomerAggregator::getPeeringManagerArrayByType( $cust, Vlan::peeringManager()->orderBy( 'number' )->get(), [ 4,6 ] ) ?: false
         ]);
     }
 

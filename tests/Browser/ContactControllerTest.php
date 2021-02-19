@@ -1,7 +1,9 @@
 <?php
 
+namespace Tests\Browser;
+
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,12 +23,21 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace Tests\Browser;
-
 use IXP\Models\Contact;
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
+use Throwable;
 
+/**
+ * Test Contact Controller
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Tests\Browser
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class ContactControllerTest extends DuskTestCase
 {
     public function tearDown(): void
@@ -44,11 +55,11 @@ class ContactControllerTest extends DuskTestCase
      * A Dusk test example.
      *
      * @return void
-     * @throws \Throwable
+     *
+     * @throws Throwable
      */
-    public function testAdd()
+    public function testAdd(): void
     {
-
         $this->browse(function (Browser $browser) {
             $browser->resize( 1600,1200 )
                     ->visit('/logout')
@@ -69,58 +80,58 @@ class ContactControllerTest extends DuskTestCase
 
 
             // 1. test add :
-            $browser->type( 'name', 'Test Contact 1' )
-                ->select( 'custid', 5 )
-                ->type( 'position', 'Test Position' )
+            $browser->type( 'name', 'Test Contact 1'            )
+                ->select( 'custid', 5                           )
+                ->type( 'position', 'Test Position'             )
                 ->type( 'email',    'test-contact1@example.com' )
-                ->type( 'phone',    '0209110000' )
-                ->type( 'mobile',   '0209120000' )
-                ->type( 'notes', 'Test note' )
+                ->type( 'phone',    '0209110000'                )
+                ->type( 'mobile',   '0209120000'                )
+                ->type( 'notes',    'Test note'                 )
                 ->press('Create' )
-                ->assertPathIs('/contact/list' )
-                ->assertSee( 'Contact created' )
-                ->assertSee( 'Test Contact 1' )
-                ->assertSee( 'Test Position' )
-                ->assertSee( 'test-contact1@example.com' );
+                ->assertPathIs('/contact/list'             )
+                ->assertSee( 'Contact created'              )
+                ->assertSee( 'Test Contact 1'               )
+                ->assertSee( 'Test Position'                )
+                ->assertSee( 'test-contact1@example.com'    );
 
             // get the contact:
+            /** @var Contact $c */
             $c = Contact::whereName( 'Test Contact 1' )->first();
 
             // test the values:
-            $this->assertEquals( 'Test Contact 1',            $c->name );
-            $this->assertEquals( 'Test Position',             $c->position );
-            $this->assertEquals( 'test-contact1@example.com', $c->email );
-            $this->assertEquals( '0209110000',                $c->phone );
-            $this->assertEquals( '0209120000',                $c->mobile );
-            $this->assertEquals( 5,                           $c->custid );
-            $this->assertEquals( 'Test note',                 $c->notes );
+            $this->assertEquals( 'Test Contact 1',            $c->name      );
+            $this->assertEquals( 'Test Position',             $c->position  );
+            $this->assertEquals( 'test-contact1@example.com', $c->email     );
+            $this->assertEquals( '0209110000',                $c->phone     );
+            $this->assertEquals( '0209120000',                $c->mobile    );
+            $this->assertEquals( 5,                           $c->custid    );
+            $this->assertEquals( 'Test note',                 $c->notes     );
 
 
             // test that editing while not making any changes and saving changes nothing
 
-            $browser->visit( '/contact/edit/' . $c->id )
-                ->assertPathIs('/contact/edit/' . $c->id )
+            $browser->visit( '/contact/edit/' . $c->id      )
+                ->assertPathIs('/contact/edit/' . $c->id    )
                 ->press( 'Save Changes' )
-                ->assertPathIs('/contact/list' )
-                ->assertSee( 'Contact updated' )
-                ->assertSee( 'Test Contact 1' )
-                ->assertSee( 'Test Position' )
+                ->assertPathIs('/contact/list'  )
+                ->assertSee( 'Contact updated'  )
+                ->assertSee( 'Test Contact 1'   )
+                ->assertSee( 'Test Position'    )
                 ->assertSee( 'test-contact1@example.com' );
 
             // test the values:
             $c->refresh();
-            $this->assertEquals( 'Test Contact 1',            $c->name );
-            $this->assertEquals( 'Test Position',             $c->position );
-            $this->assertEquals( 'test-contact1@example.com', $c->email );
-            $this->assertEquals( '0209110000',                $c->phone );
-            $this->assertEquals( '0209120000',                $c->mobile );
-            $this->assertEquals( 5,                           $c->custid );
-            $this->assertEquals( 'Test note',                 $c->notes );
-
+            $this->assertEquals( 'Test Contact 1',            $c->name      );
+            $this->assertEquals( 'Test Position',             $c->position  );
+            $this->assertEquals( 'test-contact1@example.com', $c->email     );
+            $this->assertEquals( '0209110000',                $c->phone     );
+            $this->assertEquals( '0209120000',                $c->mobile    );
+            $this->assertEquals( 5,                           $c->custid    );
+            $this->assertEquals( 'Test note',                 $c->notes     );
 
             // now test that editing while making changes works
-            $browser->visit( '/contact/edit/' . $c->id )
-                ->assertPathIs('/contact/edit/' . $c->id )
+            $browser->visit( '/contact/edit/' . $c->id       )
+                ->assertPathIs('/contact/edit/' . $c->id    )
                 ->type( 'name', 'Test Contact 2' )
                 ->select( 'custid', 2 )
                 ->type( 'position', 'Test Position2' )
@@ -228,7 +239,7 @@ class ContactControllerTest extends DuskTestCase
 
 
             // delete this contact
-            $browser->press( '#e2f-list-delete-' . $c->id )
+            $browser->press( '#btn-delete-' . $c->id )
                 ->waitForText( 'Do you really want to delete this contact?' )
                 ->press( 'Delete' )
                 ->assertPathIs('/customer/overview/5/contacts' )
@@ -242,7 +253,6 @@ class ContactControllerTest extends DuskTestCase
             $browser->visit('/logout')
                 ->assertPathIs( '/login' );
         });
-
     }
 
     /**

@@ -6,7 +6,7 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <?=  $t->feParams->pagetitle  ?>
     /
-    Add Switch via SNMP
+    Create Switch via SNMP
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>

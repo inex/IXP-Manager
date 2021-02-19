@@ -8,7 +8,7 @@
                 /** @var \IXP\Models\VirtualInterface $vi */ ?>
                 <tr>
                     <td>
-                        Side <?= $side ?>
+                        Side <?= strtoupper( $side ) ?>
                     </td>
                     <td>
                         <?= $t->ee( $vi->name )?>

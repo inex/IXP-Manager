@@ -343,16 +343,21 @@ class CoreBundle extends Model
     {
         try {
             DB::beginTransaction();
-
+            $vis = [];
             foreach( $this->corelinks as $cl ){
                 $cl->delete();
                 foreach( $cl->coreInterfaces() as $ci ){
                     /** @var CoreInterface  $ci */
                     $ci->delete();
-                    $ci->physicalInterface->virtualInterface->delete();
+                    $vis[] = $ci->physicalInterface->virtualInterface;
                     $ci->physicalInterface->delete();
                 }
             }
+
+            foreach( $vis as $vi ){
+                $vi->delete();
+            }
+
             $this->delete();
             DB::commit();
         } catch( Exception $e ) {

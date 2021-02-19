@@ -137,7 +137,6 @@ class Router extends Model
      */
     protected $casts = [
         'asn'        => 'integer',
-        'lg_access'  => 'boolean',
         'quarantine' => 'boolean',
         'bgp_lc'     => 'boolean',
         'skip_md5'   => 'boolean',

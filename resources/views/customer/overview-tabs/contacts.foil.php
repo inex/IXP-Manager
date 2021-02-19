@@ -53,7 +53,7 @@
                         <a class="btn btn-white" id="cont-list-edit-<?= $co->id ?>"href="<?= route( "contact@edit", [ "id" => $co->id ] ) ?>">
                             <i class="fa fa-pencil"></i>
                         </a>
-                        <a class="btn btn-white btn-delete" href="<?= route( 'contact@delete' , [ 'id' => $co->id ]  )  ?>" title="Delete">
+                        <a class="btn btn-white btn-delete" id="btn-delete-<?= $co->id ?>" href="<?= route( 'contact@delete' , [ 'id' => $co->id ]  )  ?>" title="Delete">
                             <i class="fa fa-trash"></i>
                         </a>
                     </div>

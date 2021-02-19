@@ -1,3 +1,7 @@
+<?php
+    $isCustUser = Auth::getUser()->isCustUser();
+?>
+
 <div class="row">
     <div class="col-lg-6 mb-4">
         <h3>
@@ -51,7 +55,7 @@
             ->blockHelp( 'An optional NOC information email page / status page.' );
         ?>
 
-        <?php if( !$t->isCustUser ): ?>
+        <?php if( !$isCustUser ): ?>
             <?= Former::actions(
                 Former::primary_submit( 'Update NOC Details' )->class( "mb-sm-0 mb-2" ),
                 Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-sm-0 mb-2" )
@@ -141,7 +145,7 @@
                 ->blockHelp( '' );
             ?>
 
-            <?php if( !$t->isCustUser ): ?>
+            <?php if( !$isCustUser ): ?>
                 <?= Former::actions(
                     Former::primary_submit( 'Update Billing Details' ),
                     Former::success_button( 'Help' )->class( "help-btn mb-sm-0 mb-2" )

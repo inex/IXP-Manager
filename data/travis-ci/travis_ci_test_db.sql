@@ -65,6 +65,8 @@ CREATE TABLE `bgp_sessions` (
   `packetcount` int(11) NOT NULL DEFAULT '0',
   `last_seen` datetime NOT NULL,
   `source` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `src_protocol_dst` (`srcipaddressid`,`protocol`,`dstipaddressid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -168,6 +170,8 @@ CREATE TABLE `company_billing_detail` (
   `invoiceMethod` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `invoiceEmail` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `billingFrequency` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -178,7 +182,7 @@ CREATE TABLE `company_billing_detail` (
 
 LOCK TABLES `company_billing_detail` WRITE;
 /*!40000 ALTER TABLE `company_billing_detail` DISABLE KEYS */;
-INSERT INTO `company_billing_detail` VALUES (1,NULL,'c/o The Bill Payers','Money House, Moneybags Street',NULL,'Dublin','D4','IE',NULL,NULL,NULL,NULL,0,'EMAIL',NULL,'NOBILLING'),(2,'','','','','','','','','','','',0,'EMAIL','','NOBILLING'),(3,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'EMAIL',NULL,'NOBILLING'),(4,'','','','','','','','','','','',0,'EMAIL','','NOBILLING'),(5,'','','','','','','','','','','',0,'EMAIL','','NOBILLING');
+INSERT INTO `company_billing_detail` VALUES (1,NULL,'c/o The Bill Payers','Money House, Moneybags Street',NULL,'Dublin','D4','IE',NULL,NULL,NULL,NULL,0,'EMAIL',NULL,'NOBILLING',NULL,NULL),(2,'','','','','','','','','','','',0,'EMAIL','','NOBILLING',NULL,NULL),(3,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'EMAIL',NULL,'NOBILLING',NULL,NULL),(4,'','','','','','','','','','','',0,'EMAIL','','NOBILLING',NULL,NULL),(5,'','','','','','','','','','','',0,'EMAIL','','NOBILLING',NULL,NULL);
 /*!40000 ALTER TABLE `company_billing_detail` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -200,6 +204,8 @@ CREATE TABLE `company_registration_detail` (
   `townCity` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `postcode` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `country` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -210,7 +216,7 @@ CREATE TABLE `company_registration_detail` (
 
 LOCK TABLES `company_registration_detail` WRITE;
 /*!40000 ALTER TABLE `company_registration_detail` DISABLE KEYS */;
-INSERT INTO `company_registration_detail` VALUES (1,'INEX','123456','Ireland','5 Somewhere',NULL,NULL,'Dublin','D4','IE'),(2,'','','','','','','','',''),(3,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(4,'','','','','','','','',''),(5,'','','','','','','','','');
+INSERT INTO `company_registration_detail` VALUES (1,'INEX','123456','Ireland','5 Somewhere',NULL,NULL,'Dublin','D4','IE',NULL,NULL),(2,'','','','','','','','','',NULL,NULL),(3,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(4,'','','','','','','','','',NULL,NULL),(5,'','','','','','','','','',NULL,NULL);
 /*!40000 ALTER TABLE `company_registration_detail` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -369,6 +375,8 @@ DROP TABLE IF EXISTS `contact_to_group`;
 CREATE TABLE `contact_to_group` (
   `contact_id` int(11) NOT NULL,
   `contact_group_id` bigint(20) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`contact_id`,`contact_group_id`),
   KEY `IDX_FCD9E962E7A1254A` (`contact_id`),
   KEY `IDX_FCD9E962647145D0` (`contact_group_id`),
@@ -566,8 +574,8 @@ CREATE TABLE `cust_notes` (
   `private` tinyint(1) NOT NULL DEFAULT '1',
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `note` longtext COLLATE utf8_unicode_ci NOT NULL,
-  `created` datetime NOT NULL,
-  `updated` datetime NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_6377D8679395C3F3` (`customer_id`),
   CONSTRAINT `FK_6377D8679395C3F3` FOREIGN KEY (`customer_id`) REFERENCES `cust` (`id`) ON DELETE CASCADE
@@ -623,6 +631,8 @@ DROP TABLE IF EXISTS `cust_to_cust_tag`;
 CREATE TABLE `cust_to_cust_tag` (
   `customer_tag_id` int(11) NOT NULL,
   `customer_id` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`customer_tag_id`,`customer_id`),
   KEY `IDX_A6CFB30CB17BF40` (`customer_tag_id`),
   KEY `IDX_A6CFB30C9395C3F3` (`customer_id`),
@@ -637,7 +647,7 @@ CREATE TABLE `cust_to_cust_tag` (
 
 LOCK TABLES `cust_to_cust_tag` WRITE;
 /*!40000 ALTER TABLE `cust_to_cust_tag` DISABLE KEYS */;
-INSERT INTO `cust_to_cust_tag` VALUES (1,4),(1,5),(2,1),(2,4);
+INSERT INTO `cust_to_cust_tag` VALUES (1,4,NULL,NULL),(1,5,NULL,NULL),(2,1,NULL,NULL),(2,4,NULL,NULL);
 /*!40000 ALTER TABLE `cust_to_cust_tag` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -671,34 +681,6 @@ CREATE TABLE `custkit` (
 LOCK TABLES `custkit` WRITE;
 /*!40000 ALTER TABLE `custkit` DISABLE KEYS */;
 /*!40000 ALTER TABLE `custkit` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `customer_to_ixp`
---
-
-DROP TABLE IF EXISTS `customer_to_ixp`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `customer_to_ixp` (
-  `customer_id` int(11) NOT NULL,
-  `ixp_id` int(11) NOT NULL,
-  PRIMARY KEY (`customer_id`,`ixp_id`),
-  KEY `IDX_E85DBF209395C3F3` (`customer_id`),
-  KEY `IDX_E85DBF20A5A4E881` (`ixp_id`),
-  CONSTRAINT `FK_E85DBF209395C3F3` FOREIGN KEY (`customer_id`) REFERENCES `cust` (`id`),
-  CONSTRAINT `FK_E85DBF20A5A4E881` FOREIGN KEY (`ixp_id`) REFERENCES `ixp` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `customer_to_ixp`
---
-
-LOCK TABLES `customer_to_ixp` WRITE;
-/*!40000 ALTER TABLE `customer_to_ixp` DISABLE KEYS */;
-INSERT INTO `customer_to_ixp` VALUES (1,1),(2,1),(3,1),(4,1),(5,1);
-/*!40000 ALTER TABLE `customer_to_ixp` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1034,6 +1016,8 @@ CREATE TABLE `irrdb_asn` (
   `protocol` int(11) NOT NULL,
   `first_seen` datetime DEFAULT NULL,
   `last_seen` datetime DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `custasn` (`asn`,`protocol`,`customer_id`),
   KEY `IDX_87BFC5569395C3F3` (`customer_id`),
@@ -1047,7 +1031,7 @@ CREATE TABLE `irrdb_asn` (
 
 LOCK TABLES `irrdb_asn` WRITE;
 /*!40000 ALTER TABLE `irrdb_asn` DISABLE KEYS */;
-INSERT INTO `irrdb_asn` VALUES (1,4,112,4,'2014-01-06 14:42:49',NULL),(2,4,112,6,'2014-01-06 14:42:50',NULL),(3,2,112,4,'2014-01-06 14:42:50',NULL),(4,2,1213,4,'2014-01-06 14:42:50',NULL),(5,2,1921,4,'2014-01-06 14:42:50',NULL),(6,2,2128,4,'2014-01-06 14:42:50',NULL),(7,2,2850,4,'2014-01-06 14:42:50',NULL),(8,2,42310,4,'2014-01-06 14:42:50',NULL),(9,2,112,6,'2014-01-06 14:42:51',NULL),(10,2,1213,6,'2014-01-06 14:42:51',NULL),(11,2,1921,6,'2014-01-06 14:42:51',NULL),(12,2,2128,6,'2014-01-06 14:42:51',NULL),(13,2,2850,6,'2014-01-06 14:42:51',NULL),(14,2,42310,6,'2014-01-06 14:42:51',NULL),(15,5,11521,4,'2014-01-06 14:42:51',NULL),(16,5,25441,4,'2014-01-06 14:42:51',NULL),(17,5,34317,4,'2014-01-06 14:42:51',NULL),(18,5,35272,4,'2014-01-06 14:42:51',NULL),(19,5,39064,4,'2014-01-06 14:42:51',NULL),(20,5,43178,4,'2014-01-06 14:42:51',NULL),(21,5,43610,4,'2014-01-06 14:42:51',NULL),(22,5,47615,4,'2014-01-06 14:42:51',NULL),(23,5,48342,4,'2014-01-06 14:42:51',NULL),(24,5,49573,4,'2014-01-06 14:42:51',NULL),(25,5,197853,4,'2014-01-06 14:42:51',NULL),(26,5,197904,4,'2014-01-06 14:42:51',NULL),(27,5,11521,6,'2014-01-06 14:42:52',NULL),(28,5,25441,6,'2014-01-06 14:42:52',NULL),(29,5,34317,6,'2014-01-06 14:42:52',NULL),(30,5,35272,6,'2014-01-06 14:42:52',NULL),(31,5,39064,6,'2014-01-06 14:42:52',NULL),(32,5,43178,6,'2014-01-06 14:42:52',NULL),(33,5,43610,6,'2014-01-06 14:42:52',NULL),(34,5,47615,6,'2014-01-06 14:42:52',NULL),(35,5,48342,6,'2014-01-06 14:42:52',NULL),(36,5,49573,6,'2014-01-06 14:42:52',NULL),(37,5,197853,6,'2014-01-06 14:42:52',NULL),(38,5,197904,6,'2014-01-06 14:42:52',NULL),(39,3,27,4,'2014-01-06 14:42:52',NULL),(40,3,42,4,'2014-01-06 14:42:52',NULL),(41,3,187,4,'2014-01-06 14:42:52',NULL),(42,3,297,4,'2014-01-06 14:42:52',NULL),(43,3,715,4,'2014-01-06 14:42:52',NULL),(44,3,3856,4,'2014-01-06 14:42:52',NULL),(45,3,7251,4,'2014-01-06 14:42:52',NULL),(46,3,13202,4,'2014-01-06 14:42:52',NULL),(47,3,16327,4,'2014-01-06 14:42:52',NULL),(48,3,16668,4,'2014-01-06 14:42:52',NULL),(49,3,16686,4,'2014-01-06 14:42:52',NULL),(50,3,20144,4,'2014-01-06 14:42:52',NULL),(51,3,20539,4,'2014-01-06 14:42:52',NULL),(52,3,21312,4,'2014-01-06 14:42:52',NULL),(53,3,24999,4,'2014-01-06 14:42:52',NULL),(54,3,27678,4,'2014-01-06 14:42:52',NULL),(55,3,32978,4,'2014-01-06 14:42:52',NULL),(56,3,32979,4,'2014-01-06 14:42:52',NULL),(57,3,35160,4,'2014-01-06 14:42:52',NULL),(58,3,38052,4,'2014-01-06 14:42:52',NULL),(59,3,44876,4,'2014-01-06 14:42:52',NULL),(60,3,45170,4,'2014-01-06 14:42:52',NULL),(61,3,45494,4,'2014-01-06 14:42:52',NULL),(62,3,48582,4,'2014-01-06 14:42:52',NULL),(63,3,48892,4,'2014-01-06 14:42:52',NULL),(64,3,50843,4,'2014-01-06 14:42:52',NULL),(65,3,51874,4,'2014-01-06 14:42:52',NULL),(66,3,52234,4,'2014-01-06 14:42:52',NULL),(67,3,52306,4,'2014-01-06 14:42:52',NULL),(68,3,54145,4,'2014-01-06 14:42:52',NULL),(69,3,59464,4,'2014-01-06 14:42:52',NULL),(70,3,60313,4,'2014-01-06 14:42:52',NULL),(71,3,197058,4,'2014-01-06 14:42:52',NULL),(72,3,27,6,'2014-01-06 14:42:52',NULL),(73,3,42,6,'2014-01-06 14:42:52',NULL),(74,3,187,6,'2014-01-06 14:42:52',NULL),(75,3,297,6,'2014-01-06 14:42:52',NULL),(76,3,715,6,'2014-01-06 14:42:52',NULL),(77,3,3856,6,'2014-01-06 14:42:52',NULL),(78,3,7251,6,'2014-01-06 14:42:52',NULL),(79,3,13202,6,'2014-01-06 14:42:52',NULL),(80,3,16327,6,'2014-01-06 14:42:52',NULL),(81,3,16668,6,'2014-01-06 14:42:52',NULL),(82,3,16686,6,'2014-01-06 14:42:52',NULL),(83,3,20144,6,'2014-01-06 14:42:52',NULL),(84,3,20539,6,'2014-01-06 14:42:52',NULL),(85,3,21312,6,'2014-01-06 14:42:52',NULL),(86,3,24999,6,'2014-01-06 14:42:52',NULL),(87,3,27678,6,'2014-01-06 14:42:52',NULL),(88,3,32978,6,'2014-01-06 14:42:52',NULL),(89,3,32979,6,'2014-01-06 14:42:52',NULL),(90,3,35160,6,'2014-01-06 14:42:52',NULL),(91,3,38052,6,'2014-01-06 14:42:52',NULL),(92,3,44876,6,'2014-01-06 14:42:52',NULL),(93,3,45170,6,'2014-01-06 14:42:52',NULL),(94,3,45494,6,'2014-01-06 14:42:52',NULL),(95,3,48582,6,'2014-01-06 14:42:52',NULL),(96,3,48892,6,'2014-01-06 14:42:52',NULL),(97,3,50843,6,'2014-01-06 14:42:52',NULL),(98,3,51874,6,'2014-01-06 14:42:52',NULL),(99,3,52234,6,'2014-01-06 14:42:52',NULL),(100,3,52306,6,'2014-01-06 14:42:52',NULL),(101,3,54145,6,'2014-01-06 14:42:52',NULL),(102,3,59464,6,'2014-01-06 14:42:52',NULL),(103,3,60313,6,'2014-01-06 14:42:52',NULL),(104,3,197058,6,'2014-01-06 14:42:52',NULL);
+INSERT INTO `irrdb_asn` VALUES (1,4,112,4,'2014-01-06 14:42:49',NULL,NULL,NULL),(2,4,112,6,'2014-01-06 14:42:50',NULL,NULL,NULL),(3,2,112,4,'2014-01-06 14:42:50',NULL,NULL,NULL),(4,2,1213,4,'2014-01-06 14:42:50',NULL,NULL,NULL),(5,2,1921,4,'2014-01-06 14:42:50',NULL,NULL,NULL),(6,2,2128,4,'2014-01-06 14:42:50',NULL,NULL,NULL),(7,2,2850,4,'2014-01-06 14:42:50',NULL,NULL,NULL),(8,2,42310,4,'2014-01-06 14:42:50',NULL,NULL,NULL),(9,2,112,6,'2014-01-06 14:42:51',NULL,NULL,NULL),(10,2,1213,6,'2014-01-06 14:42:51',NULL,NULL,NULL),(11,2,1921,6,'2014-01-06 14:42:51',NULL,NULL,NULL),(12,2,2128,6,'2014-01-06 14:42:51',NULL,NULL,NULL),(13,2,2850,6,'2014-01-06 14:42:51',NULL,NULL,NULL),(14,2,42310,6,'2014-01-06 14:42:51',NULL,NULL,NULL),(15,5,11521,4,'2014-01-06 14:42:51',NULL,NULL,NULL),(16,5,25441,4,'2014-01-06 14:42:51',NULL,NULL,NULL),(17,5,34317,4,'2014-01-06 14:42:51',NULL,NULL,NULL),(18,5,35272,4,'2014-01-06 14:42:51',NULL,NULL,NULL),(19,5,39064,4,'2014-01-06 14:42:51',NULL,NULL,NULL),(20,5,43178,4,'2014-01-06 14:42:51',NULL,NULL,NULL),(21,5,43610,4,'2014-01-06 14:42:51',NULL,NULL,NULL),(22,5,47615,4,'2014-01-06 14:42:51',NULL,NULL,NULL),(23,5,48342,4,'2014-01-06 14:42:51',NULL,NULL,NULL),(24,5,49573,4,'2014-01-06 14:42:51',NULL,NULL,NULL),(25,5,197853,4,'2014-01-06 14:42:51',NULL,NULL,NULL),(26,5,197904,4,'2014-01-06 14:42:51',NULL,NULL,NULL),(27,5,11521,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(28,5,25441,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(29,5,34317,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(30,5,35272,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(31,5,39064,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(32,5,43178,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(33,5,43610,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(34,5,47615,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(35,5,48342,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(36,5,49573,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(37,5,197853,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(38,5,197904,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(39,3,27,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(40,3,42,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(41,3,187,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(42,3,297,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(43,3,715,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(44,3,3856,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(45,3,7251,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(46,3,13202,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(47,3,16327,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(48,3,16668,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(49,3,16686,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(50,3,20144,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(51,3,20539,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(52,3,21312,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(53,3,24999,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(54,3,27678,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(55,3,32978,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(56,3,32979,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(57,3,35160,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(58,3,38052,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(59,3,44876,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(60,3,45170,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(61,3,45494,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(62,3,48582,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(63,3,48892,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(64,3,50843,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(65,3,51874,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(66,3,52234,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(67,3,52306,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(68,3,54145,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(69,3,59464,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(70,3,60313,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(71,3,197058,4,'2014-01-06 14:42:52',NULL,NULL,NULL),(72,3,27,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(73,3,42,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(74,3,187,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(75,3,297,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(76,3,715,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(77,3,3856,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(78,3,7251,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(79,3,13202,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(80,3,16327,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(81,3,16668,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(82,3,16686,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(83,3,20144,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(84,3,20539,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(85,3,21312,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(86,3,24999,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(87,3,27678,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(88,3,32978,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(89,3,32979,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(90,3,35160,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(91,3,38052,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(92,3,44876,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(93,3,45170,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(94,3,45494,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(95,3,48582,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(96,3,48892,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(97,3,50843,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(98,3,51874,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(99,3,52234,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(100,3,52306,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(101,3,54145,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(102,3,59464,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(103,3,60313,6,'2014-01-06 14:42:52',NULL,NULL,NULL),(104,3,197058,6,'2014-01-06 14:42:52',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `irrdb_asn` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1111,37 +1095,6 @@ LOCK TABLES `irrdbconfig` WRITE;
 /*!40000 ALTER TABLE `irrdbconfig` DISABLE KEYS */;
 INSERT INTO `irrdbconfig` VALUES (1,'whois.ripe.net','ripe','RIPE','RIPE Query from RIPE Database',NULL,NULL),(2,'whois.radb.net','irrd','RADB','RADB Query from RADB Database',NULL,NULL),(3,'whois.lacnic.net','ripe','LACNIC','LACNIC Query from LACNIC Database',NULL,NULL),(4,'whois.afrinic.net','ripe','AFRINIC','AFRINIC Query from AFRINIC Database',NULL,NULL),(5,'whois.apnic.net','ripe','APNIC','APNIC Query from APNIC Database',NULL,NULL),(6,'rr.level3.net','ripe','LEVEL3','Level3 Query from Level3 Database',NULL,NULL),(7,'whois.radb.net','irrd','ARIN','ARIN Query from RADB Database',NULL,NULL),(8,'whois.radb.net','irrd','RADB,ARIN','RADB+ARIN Query from RADB Database',NULL,NULL),(9,'whois.radb.net','irrd','ALTDB','ALTDB Query from RADB Database',NULL,NULL),(10,'whois.radb.net','irrd','RADB,RIPE','RADB+RIPE Query from RADB Database',NULL,NULL),(11,'whois.radb.net','irrd','RADB,APNIC,ARIN','RADB+APNIC+ARIN Query from RADB Database',NULL,NULL),(12,'whois.radb.net','irrd','RIPE,ARIN','RIPE+ARIN Query from RADB Database',NULL,NULL),(13,'whois.radb.net','irrd','RADB,RIPE,APNIC,ARIN','',NULL,NULL);
 /*!40000 ALTER TABLE `irrdbconfig` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `ixp`
---
-
-DROP TABLE IF EXISTS `ixp`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ixp` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `shortname` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `address1` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `address2` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `address3` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `address4` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `country` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_FA4AB7F64082763` (`shortname`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ixp`
---
-
-LOCK TABLES `ixp` WRITE;
-/*!40000 ALTER TABLE `ixp` DISABLE KEYS */;
-INSERT INTO `ixp` VALUES (1,'INEX','INEX','5 Somewhere','Somebourogh','Dublin','D4','IE');
-/*!40000 ALTER TABLE `ixp` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1289,7 +1242,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1298,7 +1251,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3),(9,'2020_07_21_094354_create_route_server_filters',4),(11,'2020_09_03_153723_add_timestamps',5);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3),(9,'2020_07_21_094354_create_route_server_filters',4),(12,'2020_09_03_153723_add_timestamps',5),(13,'2020_09_18_095136_delete_ixp_table',6),(14,'2020_11_16_102415_database_fixes',7);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1376,6 +1329,8 @@ CREATE TABLE `oui` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `oui` varchar(6) COLLATE utf8_unicode_ci NOT NULL,
   `organisation` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_DAEC0140DAEC0140` (`oui`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -1472,7 +1427,7 @@ CREATE TABLE `patch_panel_port` (
   `ceased_at` date DEFAULT NULL,
   `last_state_change` date DEFAULT NULL,
   `internal_use` tinyint(1) NOT NULL DEFAULT '0',
-  `chargeable` int(11) NOT NULL DEFAULT '0',
+  `chargeable` int(11) NOT NULL DEFAULT '2',
   `duplex_master_id` int(11) DEFAULT NULL,
   `number` smallint(6) NOT NULL,
   `colo_circuit_ref` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1637,8 +1592,8 @@ CREATE TABLE `peering_manager` (
   `peered` tinyint(1) DEFAULT NULL,
   `rejected` tinyint(1) DEFAULT NULL,
   `notes` longtext COLLATE utf8_unicode_ci,
-  `created` datetime DEFAULT NULL,
-  `updated` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_35A72597DA0209B9` (`custid`),
   KEY `IDX_35A725974E5F9AFF` (`peerid`),
@@ -1891,6 +1846,8 @@ CREATE TABLE `sflow_receiver` (
   `virtual_interface_id` int(11) DEFAULT NULL,
   `dst_ip` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `dst_port` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_E633EA142C0D6F5F` (`virtual_interface_id`),
   CONSTRAINT `FK_E633EA142C0D6F5F` FOREIGN KEY (`virtual_interface_id`) REFERENCES `virtualinterface` (`id`) ON DELETE CASCADE
@@ -2767,4 +2724,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-09-17 14:21:11
+-- Dump completed on 2021-02-18 14:15:26

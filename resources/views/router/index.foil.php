@@ -111,7 +111,7 @@
                                     <a class="btn btn-white" href="<?= route('router@edit' , [ 'router' => $router->id ] )?>" title="Edit">
                                         <i class="fa fa-pencil"></i>
                                     </a>
-                                    <a class="btn btn-white btn-delete" href="<?= route('router@delete' , [ 'router' => $router->id ] )?>" title="Delete">
+                                    <a class="btn btn-white btn-delete" id="btn-delete-<?= $router->id ?>" href="<?= route('router@delete' , [ 'router' => $router->id ] )?>" title="Delete">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </div>
