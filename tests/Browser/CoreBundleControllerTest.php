@@ -51,10 +51,11 @@ class CoreBundleControllerTest extends DuskTestCase
     public function tearDown(): void
     {
         foreach( [ 51, 55 ] as $spid ) {
-            $sp = Switcher::find( $spid );
+            $sp = SwitchPort::find( $spid );
 
             if( $sp ) {
-                $sp->update( [ 'type', SwitchPort::TYPE_CORE ] );
+                $sp->type = SwitchPort::TYPE_CORE;
+                $sp->save();
             }
         }
         parent::tearDown();

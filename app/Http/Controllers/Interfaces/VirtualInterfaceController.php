@@ -164,7 +164,7 @@ class VirtualInterfaceController extends Common
 
         $this->setBundleDetails( $vi );
 
-        AlertContainer::push( 'Virtual Interface created.', Alert::SUCCESS );
+        AlertContainer::push( 'Virtual interface created.', Alert::SUCCESS );
         return redirect( route( 'virtual-interface@edit', [ 'vi' => $vi->id ] ) );
 
     }
@@ -220,6 +220,8 @@ class VirtualInterfaceController extends Common
      */
     public function update( StoreVirtualInterface $r, VirtualInterface $vi ): RedirectResponse
     {
+        $r->merge( [ 'name' => trim( $r->name , '"') ] );
+
         // we don't allow setting channel group or name until there's >= 1 physical interface / LAG framing:
         if( $vi->physicalInterfaces()->count() === 0 ) {
             $r->merge( [ 'name' => '' , 'channelgroup' => null ] );
@@ -314,7 +316,7 @@ class VirtualInterfaceController extends Common
         // add a warning if we're filtering on irrdb but have not configured one for the customer
         $this->warnIfIrrdbFilteringButNoIrrdbSourceSet( $vli );
 
-        AlertContainer::push( "Interface created.", Alert::SUCCESS );
+        AlertContainer::push( "Virtual interface created.", Alert::SUCCESS );
         return redirect( route( 'virtual-interface@edit', [ 'vi' => $vi->id ] ) );
     }
 
@@ -347,7 +349,7 @@ class VirtualInterfaceController extends Common
         $vi->macAddresses()->delete();
         $vi->delete();
 
-        AlertContainer::push( 'Virtual Interface deleted.', Alert::SUCCESS );
+        AlertContainer::push( 'Virtual interface deleted.', Alert::SUCCESS );
 
         if( $r->user ) {
             return redirect( route( "customer@overview", [ 'cust' => $r->user, "tab" => "ports" ] ) );

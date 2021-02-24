@@ -107,15 +107,15 @@
                                     <a class="btn btn-white" href="<?= route('user@view' , [ 'u' => $u[ 'id' ] ] ) ?>"  title="Preview">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    <a class="btn btn-white" id='d2f-list-edit-<?= $u[ 'id' ] ?>' href="<?= route('user@edit' , [ 'u' => $u[ 'id' ] ] ) ?> " title="Edit">
+                                    <a class="btn btn-white" id='btn-edit-<?= $u[ 'id' ] ?>' href="<?= route('user@edit' , [ 'u' => $u[ 'id' ] ] ) ?> " title="Edit">
                                         <i class="fa fa-pencil"></i>
                                     </a>
                                     <?php if( $isSuperUser ): ?>
-                                        <a class="btn btn-white btn-delete" data-object-id='<?= $u[ 'id' ] ?>' data-nb-c2u="<?= $u[ 'nbC2U' ] ?>" href="<?= route( 'user@delete', [ 'u' => $u[ 'id' ] ] )  ?>" title="Delete">
+                                        <a class="btn btn-white btn-delete" id="btn-delete-<?= $u[ 'id' ] ?>" data-object-id='<?= $u[ 'id' ] ?>' data-nb-c2u="<?= $u[ 'nbC2U' ] ?>" href="<?= route( 'user@delete', [ 'u' => $u[ 'id' ] ] )  ?>" title="Delete">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     <?php else: ?>
-                                        <a class="btn btn-white btn-delete" data-object-id='<?= $t->nbC2u[ $u[ 'id' ] ][ 'nbC2U' ] > 1 ? $u[ 'c2uid' ] : $u[ 'id' ] ?>' data-nb-c2u="<?= $t->nbC2u[ $u[ 'id' ] ][ 'nbC2U' ] ?>" href="<?= $t->nbC2u[ $u[ 'id' ] ][ 'nbC2U' ] > 1 ? route( 'customer-to-user@delete' , [ 'c2u' => $u[ 'c2uid' ] ] ) : route('user@delete' , [ 'u' => $u[ 'id' ] ] )  ?>" title="Delete">
+                                        <a class="btn btn-white btn-delete" id="btn-delete-<?= $u[ 'id' ] ?>" data-object-id='<?= $t->nbC2u[ $u[ 'id' ] ][ 'nbC2U' ] > 1 ? $u[ 'c2uid' ] : $u[ 'id' ] ?>' data-nb-c2u="<?= $t->nbC2u[ $u[ 'id' ] ][ 'nbC2U' ] ?>" href="<?= $t->nbC2u[ $u[ 'id' ] ][ 'nbC2U' ] > 1 ? route( 'customer-to-user@delete' , [ 'c2u' => $u[ 'c2uid' ] ] ) : route('user@delete' , [ 'u' => $u[ 'id' ] ] )  ?>" title="Delete">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     <?php endif; ?>

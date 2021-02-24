@@ -175,8 +175,8 @@
                 </div>
 
                 <?php if( $t->vi ): ?>
-                    <?= Former::hidden( 'custid' )
-                        ->id( 'custid' )
+                    <?= Former::hidden( 'cust' )
+                        ->id( 'cust' )
                         ->forceValue( $t->vi->customer->id )
                     ?>
                 <?php endif; ?>

@@ -88,7 +88,7 @@
             if( array_search( $c->id, $keys, true ) ===  count( $keys ) ){
                 $cidnext = $c->id;
             } else {
-                $cidnext = $keys[ array_search( $c->id, $keys, true ) +1 ];
+                $cidnext = $keys[ array_search( $c->id, $keys, true ) +1 ] ?? $keys[ array_search( $c->id, $keys, true ) ];
             }
         ?>
 

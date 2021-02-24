@@ -195,7 +195,7 @@ class CustomerToUserController extends Controller
             $disassociatedUser->save();
         }
 
-        AlertContainer::push( $disassociatedUser->name  . '/' . $disassociatedUser->username . ' has been removed from ' . $disassociatedCust->name, Alert::SUCCESS );
+        AlertContainer::push( $disassociatedUser->name  . '/' . $disassociatedUser->username . ' deleted from ' . $disassociatedCust->name, Alert::SUCCESS );
         Log::notice( Auth::getUser()->username." deleted customer2user" . $disassociatedCust->name . '/' . $disassociatedUser->name );
 
         // If the user deleted itself and is logged in as the same customer:

@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Users/Create
+    Users / Create
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>

@@ -117,7 +117,7 @@
                                         <i class="fa fa-pencil"></i>
                                     </a>
 
-                                    <a class="btn btn-white btn-delete-pi" <?php if( $t->resellerMode() && ( $pi->peeringPhysicalInterface || $pi->fanoutPhysicalInterface ) ) :?> data-related="1" <?php endif; ?> data-type="<?= $pi->switchPort->type ?>" href="<?= route( 'physical-interface@delete', [ 'pi' => $pi->id ] ) ?>" title="Delete Physical Interface">
+                                    <a class="btn btn-white btn-delete-pi" id="btn-delete-pi-<?= $pi->id?>" <?php if( $t->resellerMode() && ( $pi->peeringPhysicalInterface || $pi->fanoutPhysicalInterface ) ) :?> data-related="1" <?php endif; ?> data-type="<?= $pi->switchPort->type ?>" href="<?= route( 'physical-interface@delete', [ 'pi' => $pi->id ] ) ?>" title="Delete Physical Interface">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </div>

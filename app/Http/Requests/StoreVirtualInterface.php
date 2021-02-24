@@ -58,7 +58,7 @@ class StoreVirtualInterface extends FormRequest
     public function rules(): array
     {
         return [
-            'custid'                 => 'integer|required|exists:cust,id',
+            'custid'                => 'integer|required|exists:cust,id',
             'name'                  => 'string|max:255|nullable',
             'description'           => 'string|max:255|nullable',
             'channelgroup'          => 'integer|nullable',

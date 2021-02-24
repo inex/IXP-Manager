@@ -156,7 +156,7 @@ class PhysicalInterfaceController extends Common
             $related->save();
         }
 
-        AlertContainer::push( 'Physical Interface created', Alert::SUCCESS );
+        AlertContainer::push( 'Physical Interface created.', Alert::SUCCESS );
         return Redirect::to( $r->cb ? route( "core-bundle@edit", [ "cb" => $r->cb ] ) : route( "virtual-interface@edit", [ "vi" => $pi->virtualinterfaceid ] ) );
     }
 

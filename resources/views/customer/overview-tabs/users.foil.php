@@ -61,7 +61,7 @@
                             <i class="fa fa-pencil"></i>
                         </a>
 
-                        <a class="btn btn-white btn-delete-usr btn-delete-c2u"
+                        <a class="btn btn-white btn-delete-usr btn-delete-c2u" id="btn-delete-<?= $c2u->user_id ?>"
                            href="<?= $nbCusts > 1 ? route( 'customer-to-user@delete', [ 'c2u' => $c2u->id ] ) : route(  'user@delete', [ 'u' => $c2u->user_id ] )  ?>"
                            title="Delete">
                             <i class="fa fa-trash"></i>

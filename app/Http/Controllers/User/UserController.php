@@ -271,7 +271,7 @@ class UserController extends Controller
         $c2u->extra_attributes = [ "created_by" => [ "type" => "user" , "user_id" => $user->id ] ];
         $c2u->save();
 
-        if( $r->privs === User::AUTH_SUPERUSER ) {
+        if( (int)$r->privs === User::AUTH_SUPERUSER ) {
             AlertContainer::push( 'Please note that you have given this user full administrative access.', Alert::WARNING );
         }
 
@@ -280,7 +280,7 @@ class UserController extends Controller
 
         Log::notice( Auth::user()->username . ' Created a User  with ID ' . $user->id );
 
-        AlertContainer::push( "User added. A welcome email is being sent to {$user->email} with "
+        AlertContainer::push( "User created. A welcome email is being sent to {$user->email} with "
             . "instructions on how to set their password. ", Alert::SUCCESS );
 
         return redirect( $this->postStoreRedirect() );

@@ -138,7 +138,7 @@
                                                 <?= $t->ee( $c2u->extra_attributes['created_by']['type'] ?? '' ) ?>
                                             </td>
                                             <td>
-                                                <a class="btn btn-white btn-delete btn-delete-c2u" data-object-id='<?= count( $customersToUser ) > 1 ? $c2u->id : $c2u->user_id ?>'
+                                                <a class="btn btn-white btn-delete btn-delete-c2u" id="btn-delete-c2u-<?= $c2u->id ?>" data-object-id='<?= count( $customersToUser ) > 1 ? $c2u->id : $c2u->user_id ?>'
                                                    href="<?= count( $customersToUser ) > 1 ? route( 'customer-to-user@delete', [ 'c2u' => $c2u->id ] ) : route('user@delete', [ 'u' => $c2u->user_id ] )  ?>" title="Delete">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
@@ -204,7 +204,7 @@
                             <b class="mr-auto my-auto">
                                 If you are sure you want to delete the user:
                             </b>
-                            <a class="btn btn-danger mr-4 btn-delete btn-delete-user" data-object-id='<?= $t->user->id ?>' data-nb-c2u="<?= $t->user->customers()->count() ?>" href="<?= route( 'user@delete', [ 'u' => $t->user->id ] ) ?>" title="Delete">
+                            <a class="btn btn-danger mr-4 btn-delete btn-delete-user" id="btn-delete-<?= $t->user->id ?>" data-object-id='<?= $t->user->id ?>' data-nb-c2u="<?= $t->user->customers()->count() ?>" href="<?= route( 'user@delete', [ 'u' => $t->user->id ] ) ?>" title="Delete">
                                 Delete User
                             </a>
                         </div>
