@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Cache, Countries, D2EM, Former, Redirect, Validator;
+use Countries, D2EM, Former, Redirect, Validator;
 
 use Entities\{
     Infrastructure      as InfrastructureEntity,
@@ -204,21 +204,6 @@ class InfrastructureController extends Doctrine2Frontend
 
         return true;
     }
-
-    /**
-     * Overriding optional method to clear cached entries:
-     *
-     * @param string $action Either 'add', 'edit', 'delete'
-     * @return bool
-     */
-    protected function postFlush( string $action ): bool
-    {
-        // wipe cached entries
-        Cache::forget( InfrastructureRepository::CACHE_KEY_PRIMARY );
-        Cache::forget( InfrastructureRepository::CACHE_KEY_ALL     );
-        return true;
-    }
-
 
 
     /**

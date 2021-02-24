@@ -15,7 +15,7 @@ If you are unfamiliar with how IXPs work, take some time to read this email -- i
 ## Connection Details
 
 
-You have opted to connect to <?= config( 'identity.orgname' ) ?> using {{ count( $c->getVirtualInterfaces() ) }} ports. We have assigned the following IP addresses and switch ports for your connections:
+You have opted to connect to <?= config( 'identity.orgname' ) ?> using {{ count( $c->getVirtualInterfaces() ) }} port(s). We have assigned the following IP address(es) and switch port(s) for your connection(s):
 
 @foreach( $c->getVirtualInterfaces() as $vi )
 
@@ -81,7 +81,7 @@ of all other members, a Peering Manager tool, documentation, support information
 management and much more.
 
 @if( count($admins) )
-Customer users with *admin* previleges can create and manage other user accounts.
+Customer users with *admin* privileges can create and manage other user accounts.
 
 We have created your administration account(s) with the following username(s) and email address(es):
 
@@ -154,7 +154,7 @@ database, and are available only from the IXP Manager on the following URL:
 
 * {{ route('customer@details') }}
 
-The sensitive areas of the {{ config( 'identity.orgname' ) }} website is password protected and SSL secured.
+The sensitive areas of the {{ config( 'identity.orgname' ) }} website are password protected and SSL secured.
 Passwords are only provided to current {{ config( 'identity.orgname' ) }} members.  This information is
 considered private and will not be passed on to other third parties by {{ config( 'identity.orgname' ) }}.
 
@@ -186,7 +186,7 @@ Full details are at: https://www.example.com/
 PeeringDB
 =========
 
-PeeringDB ( http://www.peeringdb.com/ ) facilitates the exchange of information related to peering. Specifically,
+PeeringDB ( https://www.peeringdb.com/ ) facilitates the exchange of information related to peering. Specifically,
 what networks are peering, where they are peering, and if they are likely to peer with you.
 
 More and more organisations are using PeeringDB to make decisions on where they should open POPs, provision new links, etc.

@@ -32,7 +32,7 @@ use Entities\{
     Session             as SessionEntity,
     User                as UserEntity,
     UserLoginHistory    as UserLoginHistoryEntity,
-    UserRememberTokens  as UserRememberTokensEntity
+    UserRememberToken  as UserRememberTokenEntity
 };
 
 use Doctrine\ORM\EntityRepository;
@@ -121,12 +121,14 @@ class User extends EntityRepository
      */
     public function getLastLoginsForFeList( $feParams )
     {
-        $dql = "SELECT  c2u.last_login_date AS last_login_date, 
+        $dql = "SELECT  c2u.last_login_date AS last_login_date,
+                        c2u.last_login_via AS last_login_via, 
                         u.username AS username,
                         u.email AS email, 
                         c.name AS cust_name, 
                         c.id AS cust_id, 
-                        c2u.id AS id
+                        c2u.id AS c2u_id,
+                        u.id AS id
                     FROM Entities\\CustomerToUser c2u
                         JOIN c2u.user u
                         JOIN c2u.customer c";
@@ -258,12 +260,12 @@ class User extends EntityRepository
                         u.lastupdated AS lastupdated,
                         COUNT( c2u ) as nbC2U,
                         MAX( c2u.privs ) as privileges,
-                        ps.google2fa_enable as google2fa_enabled,
+                        ps.enabled as u2fa_enabled,
                         ps.id as psid 
                   FROM Entities\\User u
                         LEFT JOIN u.Customer as c
                         LEFT JOIN u.Customers as c2u
-                        LEFT JOIN u.PasswordSecurity as ps
+                        LEFT JOIN u.User2FA as ps
                   WHERE 1 = 1";
 
         if( $id ) {
@@ -272,8 +274,7 @@ class User extends EntityRepository
 
         $dql .= " GROUP BY id
                   ORDER BY username ASC";
-
-
+        
         return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
 
     }
@@ -328,12 +329,12 @@ class User extends EntityRepository
                         COUNT( c2u ) as nbC2U,
                         MAX( c2u.privs ) as privileges,
                         c2u.id as c2uid,
-                        ps.google2fa_enable as google2fa_enabled,
+                        ps.enabled as u2fa_enabled,
                         ps.id as psid
                   FROM Entities\\User u
                   LEFT JOIN u.Customer as c 
                   LEFT JOIN u.Customers as c2u
-                  LEFT JOIN u.PasswordSecurity as ps
+                  LEFT JOIN u.User2FA as ps
                   WHERE 1 = 1
                   AND c2u.customer = " . $user->getCustomer()->getId() . "
                   AND c2u.privs <= " . UserEntity::AUTH_CUSTADMIN;
@@ -631,52 +632,6 @@ class User extends EntityRepository
         return $result;
     }
 
-    /**
-     * Return a user depending a token and id
-     *
-     * @param $identifier
-     * @param $token
-     *
-     * @return UserEntity|null
-     *
-     * @throws
-     */
-    public function retrieveByOtcToken( $identifier, $token )
-    {
-        $now = new DateTime();
 
-        $sql = "SELECT ort
-                FROM Entities\\OtpRememberTokens ort 
-                WHERE ort.User = ?1
-                AND ort.token = ?2
-                AND ort.expires > ?3";
 
-        $result = $this->getEntityManager()->createQuery( $sql )
-            ->setParameter( '1', $identifier )
-            ->setParameter( '2', $token )
-            ->setParameter( '3', $now->format( 'Y-m-d H:i:s' ) )
-            ->getOneOrNullResult();
-
-        if( $result ) {
-            return $result->getUser();
-        }
-
-        return null;
-
-    }
-
-    /**
-     * Delete all the active session and remember me token for the user
-     *
-     * @param int   $id
-     * @param bool  $deleteCurrentSession Do we need to delete the current session
-     *
-     * @return void
-     */
-    public function deleteActiveSession( int $id, $deleteCurrentSession = false ) {
-
-        D2EM::getRepository( UserRememberTokensEntity::class    )->deleteByUser( $id, $deleteCurrentSession );
-        D2EM::getRepository( SessionEntity::class               )->deleteByUser( $id, $deleteCurrentSession );
-
-    }
 }

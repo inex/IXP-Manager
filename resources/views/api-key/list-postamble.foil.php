@@ -99,6 +99,29 @@
                     </ul>
                 </dd>
 
+
+
+                <dt>Sflow MAC Address Mapping</dt>
+                <dd>
+                    When configuring <a href="https://docs.ixpmanager.org/features/sflow-p2p/">Sflow based peer to peer graphs</a>,
+                    the mechanism to associate sflow samples (based on source and destination MAC addreesses) to VLAN interfaces
+                    requires a MAC to VLAN interface dictionary.
+                    <br><br>
+                    As IXP Manager <a href="https://docs.ixpmanager.org/features/layer2-addresses/">supports layer2 / MAC addresses in two ways</a>
+                    (learned versus configured), there are two endpoints.
+                    <ul>
+                        <li>Learned: <code><a href="<?= url( "/api/v4/sflow-db-mapper/learned-macs" ) ?>"><?= url( "/api/v4/sflow-db-mapper/learned-macs" ) ?></a></code></li>
+                        <li>Configured: <code><a href="<?= url( "/api/v4/sflow-db-mapper/configured-macs" ) ?>"><?= url( "/api/v4/sflow-db-mapper/configured-macs" ) ?></a></code></li>
+                    </ul>
+                    The JSON output is structured as follows:
+                    <ul>
+                        <li> outer object indexed by infrastructure ID </li>
+                        <li> each infrastructure object has per VLAN objects indexed by the VLAN <b>tag</b> (NB: this is not the VLAN database ID but the VLAN tag) </li>
+                        <li> each VLAN object has key/value pairs of <code>macaddress: vlaninterfaceid</code> </li>
+                    </ul>
+                </dd>
+
+
             <?php endif; ?>
 
 

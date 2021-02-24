@@ -25,6 +25,8 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
+use IXP\Exceptions\GeneralException;
+
 /**
  * IXP
  *
@@ -34,31 +36,24 @@ use Doctrine\ORM\EntityRepository;
 class IXP extends EntityRepository
 {
     /**
-     * The cache key for the default IXP
-     * @var string The cache key for the default IXP
-     */
-    const CACHE_KEY_DEFAULT_IXP = 'ixp_default';
-    
-    /**
      * Return the default IXP (i.e. the one with database id 1)
      *
-     * @throws \IXP_Exception
+     * @throws GeneralException
      * @return \Entities\IXP $ixp The default IXP
      */
     public function getDefault()
     {
         $ixp = $this->getEntityManager()->createQuery(
                 "SELECT ixp
-                    FROM Entities\\IXP ixp
+                    FROM Entities\IXP ixp
                     WHERE ixp.id = 1"
             )
-            ->useResultCache( true, 7200, self::CACHE_KEY_DEFAULT_IXP )
             ->getResult();
         
         if( !$ixp )
         {
             // uh oh, inconsistency
-            throw new \IXP_Exception( 'We could not load the default IXP which should have ID 1' );
+            throw new GeneralException( 'We could not load the default IXP which should have ID 1' );
         }
         
         return $ixp[0];

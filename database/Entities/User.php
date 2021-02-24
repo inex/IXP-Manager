@@ -30,15 +30,16 @@ use Entities\{
     Contact             as ContactEntity,
     Customer            as CustomerEntity,
     CustomerToUser      as CustomerToUserEntity,
-    PasswordSecurity    as PasswordSecurityEntity,
-    UserRememberTokens  as UserRememberTokensEntity,
+    User2FA             as User2FAEntity,
+    UserRememberToken  as UserRememberTokenEntity,
     User                as UserEntity,
     UserLoginHistory    as UserLoginHistoryEntity,
     UserPreference      as UserPreferenceEntity
 };
 
 use Doctrine\Common\Collections\Collection;
-use IXP\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Str;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -48,6 +49,9 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
 
 use IXP\Utils\Doctrine2\WithPreferences as Doctrine2_WithPreferences;
+
+use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
+
 use Psy\Util\Json;
 
 
@@ -83,10 +87,24 @@ class User implements Authenticatable, CanResetPasswordContract
         User::AUTH_SUPERUSER => 'Superuser',
     );
 
+    public static $PRIVILEGES_TEXT_ALL = array(
+        User::AUTH_PUBLIC    => 'Public / Non-User',
+        User::AUTH_CUSTUSER  => 'Customer User',
+        User::AUTH_CUSTADMIN => 'Customer Administrator',
+        User::AUTH_SUPERUSER => 'Superuser',
+    );
+
+
     public static $PRIVILEGES_TEXT_SHORT = array(
         User::AUTH_CUSTUSER  => 'Cust User',
         User::AUTH_CUSTADMIN => 'Cust Admin',
         User::AUTH_SUPERUSER => 'Superuser',
+    );
+
+    public static $PRIVILEGES_TEXT_VSHORT = array(
+        User::AUTH_CUSTUSER  => 'CU',
+        User::AUTH_CUSTADMIN => 'CA',
+        User::AUTH_SUPERUSER => 'SU',
     );
 
     public static $PRIVILEGES_TEXT_NONSUPERUSER = array(
@@ -209,14 +227,14 @@ class User implements Authenticatable, CanResetPasswordContract
     protected $Children;
 
     /**
-     * @var PasswordSecurityEntity
+     * @var User2FAEntity
      */
-    protected $PasswordSecurity;
+    protected $User2FA;
 
     /**
-     * @var UserRememberTokensEntity
+     * @var UserRememberTokenEntity
      */
-    protected $UserRememberTokens;
+    protected $UserRememberToken;
 
     /**
      * Constructor
@@ -226,7 +244,7 @@ class User implements Authenticatable, CanResetPasswordContract
         $this->Preferences          = new ArrayCollection();
         $this->Customers            = new ArrayCollection();
         $this->ApiKeys              = new ArrayCollection();
-        $this->UserRememberTokens   = new ArrayCollection();
+        $this->UserRememberToken   = new ArrayCollection();
     }
 
     /**
@@ -592,6 +610,25 @@ class User implements Authenticatable, CanResetPasswordContract
         return $this->id;
     }
 
+
+    /**
+     * Get the current customer to user entity - if one exists.
+     *
+     * @return CustomerToUserEntity|null
+     */
+    public function getCurrentCustomerToUser(): ?CustomerToUserEntity
+    {
+        if( !$this->getCustomer() ) {
+            return null;
+        }
+
+        $c2u = D2EM::getRepository( CustomerToUserEntity::class )->findBy( [ 'customer' => $this->getCustomer(), 'user' => $this->getId() ] );
+        return isset( $c2u[0] ) ? $c2u[0] : null;
+    }
+
+
+
+
     /**
      * Add Preferences
      *
@@ -863,12 +900,12 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Set Password Security
      *
-     * @param PasswordSecurityEntity $passwordSecurity
+     * @param User2FAEntity $user2fa
      * @return User
      */
-    public function setPasswordSecurity( PasswordSecurityEntity $passwordSecurity )
+    public function setUser2FA( ?User2FAEntity $user2fa )
     {
-        $this->PasswordSecurity = $passwordSecurity;
+        $this->User2FA = $user2fa;
 
         return $this;
     }
@@ -876,49 +913,82 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Get Password Security
      *
-     * @return PasswordSecurityEntity
+     * @return User2FAEntity
      */
-    public function getPasswordSecurity()
+    public function getUser2FA()
     {
-        return $this->PasswordSecurity;
+        return $this->User2FA;
     }
 
 
     /**
-     * Does the 2FA is required for this user
+     * Does 2fa need to be enforced for this user?
      *
      * @return bool
      */
-    public function is2FARequired()
+    public function is2faEnforced()
     {
-        if( $this->isSuperUser() && config( "google2fa.superuser_required" ) && ( !$this->getPasswordSecurity() || !$this->getPasswordSecurity()->isGoogle2faEnable() ) ) {
-            return true;
+        if( !config('google2fa.enabled') ) {
+            return false;
         }
-        return false;
+
+        return $this->getPrivs() >= config( "google2fa.ixpm_2fa_enforce_for_users" )
+            && ( !$this->getUser2FA() || !$this->getUser2FA()->enabled() );
     }
 
     /**
-     * Does the 2FA is enabled for his user
+     * Is 2FA enabled for this user
      *
      * @return bool
      */
-    public function is2FAenabled()
+    public function is2faEnabled()
     {
-        if( $this->getPasswordSecurity() && $this->getPasswordSecurity()->isGoogle2faEnable() ) {
-            return true;
+        if( !config('google2fa.enabled') ) {
+            return false;
         }
-        return false;
+
+        return $this->getUser2FA() && $this->getUser2FA()->enabled();
+    }
+
+    /**
+     * Check if the user is required to authenticate with 2FA for the current session
+     *
+     * @return bool
+     */
+    public function is2faAuthRequiredForSession()
+    {
+        if( !config('google2fa.enabled') ) {
+            return false;
+        }
+
+        if( !$this->getUser2FA() || !$this->getUser2FA()->enabled() ) {
+
+            // If the user does not have 2fa configured or enabled but it is required, then return true:
+            if( $this->is2faEnforced() ) {
+                return true;
+            }
+
+            return false;
+        }
+
+        $authenticator = new GoogleAuthenticator( request() );
+
+        if( $authenticator->isAuthenticated() ) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
      * Add Remember token
      *
-     * @param UserRememberTokensEntity $userRememberTokens
+     * @param UserRememberTokenEntity $UserRememberToken
      * @return User
      */
-    public function addUserRememberTokens( UserRememberTokensEntity $userRememberTokens )
+    public function addUserRememberToken( UserRememberTokenEntity $UserRememberToken )
     {
-        $this->UserRememberTokens[] = $userRememberTokens;
+        $this->UserRememberToken[] = $UserRememberToken;
 
         return $this;
     }
@@ -926,11 +996,11 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Remove Remember token
      *
-     * @param UserRememberTokensEntity $userRememberTokens
+     * @param UserRememberTokenEntity $UserRememberToken
      */
-    public function removeRememberTokens( UserRememberTokensEntity $userRememberTokens )
+    public function removeRememberTokens( UserRememberTokenEntity $UserRememberToken )
     {
-        $this->UserRememberTokens->removeElement( $userRememberTokens );
+        $this->UserRememberToken->removeElement( $UserRememberToken );
     }
 
     /**
@@ -938,10 +1008,22 @@ class User implements Authenticatable, CanResetPasswordContract
      *
      * @return Collection
      */
-    public function RememberTokens()
+    public function getUserRememberTokens()
     {
-        return $this->UserRememberTokens;
+        return $this->UserRememberToken;
     }
+
+    /**
+     * Is this a user of an associate member?
+     *
+     * @return bool
+     */
+    public function isAssociate(): bool
+    {
+        return $this->getCustomer()->isTypeAssociate();
+    }
+
+
 
     /***************************************************************************
      | LARAVEL 5 USER PROVIDER INTERFACE METHODS
@@ -991,7 +1073,10 @@ class User implements Authenticatable, CanResetPasswordContract
      */
     public function getRememberToken()
     {
-        return $this->attributes[$this->getRememberTokenName()];
+        // We have overridden Laravel's remember token fucntionality and do not rely on this.
+        // However, some Laravel functionality if triggered on this returning a non-false value
+        // to execute certain functionality. As such, we'll just return something random:
+        return Str::random(60);
     }
 
     /**
@@ -1002,8 +1087,8 @@ class User implements Authenticatable, CanResetPasswordContract
      */
     public function setRememberToken($value)
     {
-
-        $this->attributes[$this->getRememberTokenName()] = $value;
+        // We have overridden Laravel's remember token fucntionality and do not rely on this.
+        return;
     }
 
     /**
@@ -1036,4 +1121,28 @@ class User implements Authenticatable, CanResetPasswordContract
      | END LARAVEL 5 USER PROVIDER INTERFACE METHODS
      ***************************************************************************/
 
+
+    /**
+     * Allow direct access to some properties.
+     *
+     * Because we use Laravel Doctrine, some Laravel packages will fail as they expect to
+     * be able to access object properties in the same mannor as Eloquent.
+     *
+     * We use this to work around those issues.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function __get( string $name )
+    {
+        switch( $name ) {
+
+            // google2fa Laravel bridge looking for 2fa secret
+            case 'secret':
+                return $this->getUser2FA() ? $this->getUser2FA()->getSecret() : null;
+                break;
+        }
+
+        return null;
+    }
 }

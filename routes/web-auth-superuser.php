@@ -55,7 +55,6 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
     Route::get(     'edit-to-prewired/{id}',            'PatchPanelPortController@editToPrewired'       )->name('patch-panel-port@edit-prewired'        );
     Route::get(     'change-status/{id}/{status}',      'PatchPanelPortController@changeStatus'         )->name('patch-panel-port@change-status'        );
     Route::get(     'email/{id}/{type}',                'PatchPanelPortController@email'                )->name('patch-panel-port@email'                );
-    Route::get(     'download-file/{pppfid}',           'PatchPanelPortController@downloadFile'         )->name('patch-panel-port@download-file'        );
     Route::get(     'move-form/{id}',                   'PatchPanelPortController@moveForm'             )->name('patch-panel-port@move-form'            );
     Route::post(    'move',                             'PatchPanelPortController@move'                 )->name('patch-panel-port@move'                 );
     Route::post(    'store',                            'PatchPanelPortController@store'                )->name('patch-panel-port@store'                );
@@ -86,6 +85,9 @@ Route::group( [ 'prefix' => 'router' ], function() {
 Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'league-table', 'StatisticsController@leagueTable' );
     Route::post( 'league-table', 'StatisticsController@leagueTable' )->name( 'statistics/league-table' );
+
+    Route::get(  'utilisation', 'StatisticsController@utilisation' )->name( 'statistics/utilisation' );
+    Route::post( 'utilisation', 'StatisticsController@utilisation' )->name( 'statistics/utilisation:post' );
 });
 
 
@@ -166,7 +168,6 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function()
     Route::post(    'send-welcome-email',               'CustomerController@sendWelcomeEmail'           )->name( 'customer@send-welcome-email');
     Route::post(    'delete',                           'CustomerController@delete'                     )->name( 'customer@delete');
     Route::post(    'store-tags',                       'CustomerController@storeTags'                  )->name( 'customer@store-tags');
-
 });
 
 if( !config('ixp_fe.frontend.disabled.logo' ) ) {
@@ -189,7 +190,39 @@ Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );
 
 Route::get( 'search', 'SearchController@do' )->name( 'search' );
 
-Route::get( '2fa/superuser-verification', 'SecurityPasswordController@superuserVerification' )->name( '2fa@superuser-verification' );
+
+if( config( 'google2fa.enabled' ) ) {
+    Route::group( [ 'namespace' => 'User', 'prefix' => '2fa' ], function() {
+        Route::post('delete',   'User2FAController@delete'   )->name( "2fa@delete"    );
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// CUSTOMER DOCUMENT STORE
+///
+if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ) {
+    Route::group( [ 'namespace' => 'DocstoreCustomer', 'prefix' => 'docstorec' ], function() {
+        Route::get( '',                           'DirectoryController@listCustomers'   )->name( 'docstore-c-dir@customers'  );
+
+        Route::get( '{cust}/dir/create',          'DirectoryController@create'    )->name( 'docstore-c-dir@create'  );
+        Route::get( '{cust}/dir/{dir}/edit',      'DirectoryController@edit'            )->name( 'docstore-c-dir@edit'       );
+
+        Route::post(    '{cust}/dir/store',       'DirectoryController@store'               )->name( 'docstore-c-dir@store'   );
+        Route::put(     '{cust}/dir/update/{dir}','DirectoryController@update'              )->name( 'docstore-c-dir@update'  );
+        Route::delete(  '/dir/{dir}',             'DirectoryController@delete'              )->name( 'docstore-c-dir@delete'  );
+        Route::delete(  '{cust}/dir',             'DirectoryController@deleteForCustomer'   )->name( 'docstore-c-dir@delete-for-customer'  );
+
+        Route::get(  '{cust}/file/upload',       'FileController@upload' )->name( 'docstore-c-file@upload'  );
+        Route::get(  '{cust}/file/{file}/edit',  'FileController@edit'   )->name( 'docstore-c-file@edit'    );
+        Route::post( '{cust}/file/store',        'FileController@store'  )->name( 'docstore-c-file@store'   );
+        Route::put(  '{cust}/file/update/{file}','FileController@update' )->name( 'docstore-c-file@update'  );
+        Route::delete( '/file/{file}',             'FileController@delete'      )->name( 'docstore-c-file@delete'      );
+        Route::get(    '/file/info/{file}',              'FileController@info'        )->name( 'docstore-c-file@info'        );
+
+    } );
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////

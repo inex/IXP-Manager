@@ -101,6 +101,7 @@ class IPv6Address extends EntityRepository
 
         $dql = "SELECT  ip.id AS id, 
                         ip.address AS address,
+                        hex( inet6_aton( ip.address ) ) as aton,
                         v.name AS vlan, 
                         v.id AS vlanid,
                         vli.id AS vliid,

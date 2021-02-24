@@ -45,4 +45,5 @@ cat cb-aggregate-00001-sidea-bits.log| awk  '{ if( NF == 3 ) { print $1, $3, $2;
  
  * sessions moved to database (encrypted)
  * changing password logs out all other sessions
- 
+ * session handler needs to be changed to database. Need a code check for
+ this I think.

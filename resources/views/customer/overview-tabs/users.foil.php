@@ -52,7 +52,7 @@
                     <?php endif;?>
                 </td>
                 <td>
-                    <?= $c2u->getUser()->getPasswordSecurity() && $c2u->getUser()->getPasswordSecurity()->isGoogle2faEnable() ? "Yes" : "No" ?>
+                    <?= $c2u->getUser()->getUser2FA() && $c2u->getUser()->getUser2FA()->enabled() ? "Yes" : "No" ?>
                 </td>
                 <td>
                     <div class="btn-group btn-group-sm">
@@ -82,8 +82,8 @@
                                 Login history
                             </a>
                             <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                <?php if( $c2u->getUser()->getPasswordSecurity() && $c2u->getUser()->getPasswordSecurity()->isGoogle2faEnable() ): ?>
-                                    <a id="d2f-option-remove-2fa-<?= $c2u->getUser()->getPasswordSecurity()->getId() ?>" class="dropdown-item remove-2fa" data-object-id="<?= $c2u->getUser()->getPasswordSecurity()->getId() ?>" href="#">
+                                <?php if( $c2u->getUser()->getUser2FA() && $c2u->getUser()->getUser2FA()->enabled() ): ?>
+                                    <a id="d2f-option-remove-2fa-<?= $c2u->getUser()->getUser2FA()->getId() ?>" class="dropdown-item remove-2fa" data-object-id="<?= $c2u->getUser()->getUser2FA()->getId() ?>" href="#">
                                         Remove 2FA
                                     </a>
                                 <?php endif; ?>

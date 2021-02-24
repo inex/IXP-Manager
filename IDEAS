@@ -64,9 +64,6 @@ Potential Todo / Feature Ideas
   * Add notification when members login, especially affected members, link
     to maintenance pages.
 
-* Have a "private" directory analogous to the "public" one,with files only
-  loadable by logged in users. See issue #71.
-
 * Per location member statistics graphs to show all member traffic is a
   specific location - see issue #204
 

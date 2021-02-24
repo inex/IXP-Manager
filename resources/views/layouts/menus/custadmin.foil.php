@@ -28,7 +28,7 @@
             </li>
 
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle <?= !request()->is( 'customer/*' , 'switch/configuration' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle <?= !request()->is( 'customer/*' , 'switch/configuration', 'docstore/*' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Information
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -41,6 +41,21 @@
                     <a class="dropdown-item <?= !request()->is( 'switch/configuration' ) ?: 'active' ?>" href="<?= route('switch@configuration') ?>">
                         Switch Configuration
                     </a>
+
+                    <?php if( !config( 'ixp_fe.frontend.disabled.docstore' ) && \IXP\Models\DocstoreDirectory::getHierarchyForUserClass( \IXP\Models\User::AUTH_CUSTADMIN ) ): ?>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item <?= request()->is( 'docstore*' ) && !request()->is( 'docstorec*' ) ? 'active' : '' ?>" href="<?= route('docstore-dir@list' ) ?>">
+                            Document Store
+                        </a>
+                    <?php endif; ?>
+
+                    <?php if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) && \IXP\Models\DocstoreCustomerFile::getListingForAllDirectories( Auth::user()->getCustomer()->getId(),\IXP\Models\User::AUTH_CUSTADMIN ) ): ?>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item <?= !request()->is( 'docstorec*' ) ?: 'active' ?>" href="<?= route('docstore-c-dir@list', [ 'cust' => Auth::user()->getCustomer()->getId() ] ) ?>">
+                            My Documents
+                        </a>
+                    <?php endif; ?>
+
                 </div>
             </li>
 
@@ -171,7 +186,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right" id="my-account-dd">
 
-                    <a class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">
+                    <a id="profile" class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">
                         Profile
                     </a>
 
@@ -179,7 +194,7 @@
                         API Keys
                     </a>
 
-                    <a class="dropdown-item <?= !request()->is( 'user-remember-token/list' ) ?: 'active' ?>" href="<?= route('user-remember-token@list' )?>">
+                    <a id="active-sessions" class="dropdown-item <?= !request()->is( 'active-sessions/list' ) ?: 'active' ?>" href="<?= route('active-sessions@list' )?>">
                         Active Sessions
                     </a>
 
@@ -203,7 +218,7 @@
 
                     <div class="dropdown-divider"></div>
 
-                    <a class="dropdown-item" href="<?= route( 'login@logout' ) ?>">
+                    <a id="logout" class="dropdown-item" href="<?= route( 'login@logout' ) ?>">
                         Logout
                     </a>
 

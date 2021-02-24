@@ -23,6 +23,9 @@
 
 namespace Entities;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Entities\TrafficDailyPhysInt as TrafficDailyPhysIntEntity;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -58,7 +61,8 @@ class PhysicalInterface
         1000  => '1 Gbps',
         10000 => '10 Gbps',
         40000 => '40 Gbps',
-        100000 => '100 Gbps'
+        100000 => '100 Gbps',
+        400000 => '400 Gbps'
     ];
 
     public static $DUPLEX = array(
@@ -99,29 +103,35 @@ class PhysicalInterface
     protected $id;
 
     /**
-     * @var \Entities\SwitchPort
+     * @var SwitchPort
      */
     protected $SwitchPort;
 
     /**
-     * @var \Entities\VirtualInterface
+     * @var VirtualInterface
      */
     protected $VirtualInterface;
 
     /**
-     * @var \Entities\PhysicalInterface
+     * @var PhysicalInterface
      */
     protected $FanoutPhysicalInterface;
 
     /**
-     * @var \Entities\PhysicalInterface
+     * @var PhysicalInterface
      */
     protected $PeeringPhysicalInterface;
 
     /**
-     * @var \Entities\CoreInterface
+     * @var CoreInterface
      */
     protected $coreInterface;
+
+    /**
+     * @var ArrayCollection
+     */
+    protected $TrafficDailiesPhysInt;
+
 
     /**
      * Set status
@@ -262,10 +272,10 @@ class PhysicalInterface
     /**
      * Set SwitchPort
      *
-     * @param \Entities\SwitchPort $switchPort
+     * @param SwitchPort $switchPort
      * @return PhysicalInterface
      */
-    public function setSwitchPort(\Entities\SwitchPort $switchPort = null)
+    public function setSwitchPort( SwitchPort $switchPort = null)
     {
         $this->SwitchPort = $switchPort;
 
@@ -275,7 +285,7 @@ class PhysicalInterface
     /**
      * Get SwitchPort
      *
-     * @return \Entities\SwitchPort
+     * @return SwitchPort
      */
     public function getSwitchPort()
     {
@@ -285,10 +295,10 @@ class PhysicalInterface
     /**
      * Set VirtualInterface
      *
-     * @param \Entities\VirtualInterface $virtualInterface
+     * @param VirtualInterface $virtualInterface
      * @return PhysicalInterface
      */
-    public function setVirtualInterface(\Entities\VirtualInterface $virtualInterface = null)
+    public function setVirtualInterface( VirtualInterface $virtualInterface = null)
     {
         $this->VirtualInterface = $virtualInterface;
 
@@ -308,10 +318,10 @@ class PhysicalInterface
     /**
      * Set FanoutPhysicalInterface
      *
-     * @param \Entities\PhysicalInterface $fanoutPhysicalInterface
+     * @param PhysicalInterface $fanoutPhysicalInterface
      * @return PhysicalInterface
      */
-    public function setFanoutPhysicalInterface(\Entities\PhysicalInterface $fanoutPhysicalInterface = null)
+    public function setFanoutPhysicalInterface( PhysicalInterface $fanoutPhysicalInterface = null)
     {
         $this->FanoutPhysicalInterface = $fanoutPhysicalInterface;
 
@@ -321,7 +331,7 @@ class PhysicalInterface
     /**
      * Get FanoutPhysicalInterface
      *
-     * @return \Entities\PhysicalInterface
+     * @return PhysicalInterface
      */
     public function getFanoutPhysicalInterface()
     {
@@ -331,10 +341,10 @@ class PhysicalInterface
     /**
      * Set PeeringPhysicalInterface
      *
-     * @param \Entities\PhysicalInterface $peeringPhysicalInterface
+     * @param PhysicalInterface $peeringPhysicalInterface
      * @return PhysicalInterface
      */
-    public function setPeeringPhysicalInterface(\Entities\PhysicalInterface $peeringPhysicalInterface = null)
+    public function setPeeringPhysicalInterface( PhysicalInterface $peeringPhysicalInterface = null)
     {
         $this->PeeringPhysicalInterface = $peeringPhysicalInterface;
 
@@ -344,7 +354,7 @@ class PhysicalInterface
     /**
      * Get PeeringPhysicalInterface
      *
-     * @return \Entities\PhysicalInterface
+     * @return PhysicalInterface
      */
     public function getPeeringPhysicalInterface()
     {
@@ -354,7 +364,7 @@ class PhysicalInterface
     /**
      * Get CoreInterface
      *
-     * @return \Entities\CoreInterface
+     * @return CoreInterface
      */
     public function getCoreInterface()
     {
@@ -364,7 +374,7 @@ class PhysicalInterface
     /**
      * Get the core bundle if the physical interface is associated to a core bundle
      *
-     * @return \Entities\CoreBundle
+     * @return CoreBundle
      */
     public function getCoreBundle()
     {
@@ -377,7 +387,7 @@ class PhysicalInterface
     /**
      * Get the other physical interface associated to the core link of the current Physical Interface
      *
-     * @return \Entities\PhysicalInterface
+     * @return PhysicalInterface
      */
     public function getOtherPICoreLink(){
 
@@ -401,14 +411,14 @@ class PhysicalInterface
      * peering ports. In this case, this function will return the related peering or
      * fanout port as appropriate.
      *
-     * @return \Entities\PhysicalInterface The related peering / fanout port (or false for none / n/a)
+     * @return PhysicalInterface The related peering / fanout port (or false for none / n/a)
      */
     public function getRelatedInterface()
     {
         if( $this->getSwitchPort() ){
-            if( $this->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_FANOUT && $this->getPeeringPhysicalInterface() )
+            if( $this->getSwitchPort()->getType() == SwitchPort::TYPE_FANOUT && $this->getPeeringPhysicalInterface() )
                 return $this->getPeeringPhysicalInterface();
-            else if( $this->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_PEERING && $this->getFanoutPhysicalInterface() )
+            else if( $this->getSwitchPort()->getType() == SwitchPort::TYPE_PEERING && $this->getFanoutPhysicalInterface() )
                 return $this->getFanoutPhysicalInterface();
             else
                 return false;
@@ -520,5 +530,43 @@ class PhysicalInterface
     public function resolveAPIStatus(): string {
         return self::$APISTATES[ $this->getStatus() ] ?? 'unknown';
     }
+
+
+
+
+    /**
+     * Add TrafficDailies
+     *
+     * @param TrafficDailyPhysIntEntity $trafficDailyPhysInt
+     * @return PhysicalInterface
+     */
+    public function addTrafficDailyPhysInt( TrafficDailyPhysIntEntity $trafficDailyPhysInt )
+    {
+        $this->TrafficDailiesPhysInt[] = $trafficDailyPhysInt;
+
+        return $this;
+    }
+
+    /**
+     * Remove TrafficDailies
+     *
+     * @param TrafficDailyPhysIntEntity $trafficDailyPhysInt
+     */
+    public function removeTrafficDaily( TrafficDailyPhysIntEntity $trafficDailyPhysInt)
+    {
+        $this->TrafficDailiesPhysInt->removeElement( $trafficDailyPhysInt );
+    }
+
+    /**
+     * Get TrafficDailies
+     *
+     * @return ArrayCollection
+     */
+    public function getTrafficDailiesPhysInt()
+    {
+        return $this->TrafficDailiesPhysInt;
+    }
+
+
 
 }

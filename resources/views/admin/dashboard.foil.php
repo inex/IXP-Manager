@@ -50,16 +50,20 @@
                     </table>
                 </div>
 
-                <?php if( count( $t->stats[ "custsByInfra" ] ) > 1 ): ?>
+                <?php if( count( $t->stats[ "percentByVlan" ] ) > 1 ): ?>
 
                     <div class="tw-my-12">
-                        <h4 class="tw-mb-6"><?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?> by Infrastructure</h4>
+                        <h4 class="tw-mb-6"><?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?> by VLAN</h4>
+
+                        <p>
+                            We count full and pro-bono members with at least one connected physical interface.
+                        </p>
 
                         <table class="table table-sm table-hover table-striped tw-shadow-md tw-rounded-sm">
                             <thead>
                             <tr>
                                 <th>
-                                    Infrastructure
+                                    VLAN
                                 </th>
                                 <th class="tw-text-right">
                                     <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
@@ -70,19 +74,18 @@
                             </tr>
                             </thead>
                             <tbody class="tw-text-sm">
-                            <?php foreach( $t->stats[ "custsByInfra" ] as $infra => $custids  ): ?>
+                            <?php foreach( $t->stats[ "percentByVlan" ] as $stats  ): ?>
                                 <tr>
                                     <td>
-                                        <?= $infra ?>
+                                        <?= $stats->vlanname ?>
                                     </td>
                                     <td class="tw-text-right">
-                                        <a href="<?= route( "switch@configuration", [ "infra" => array_search( $infra , $t->stats['infras'] ) ] ) ?>">
-                                            <?= count( $custids ) ?>
+                                        <a href="<?= route( "switch@configuration", [ "vlan" => array_search( $stats->vlanname , $t->stats['vlans'] ) ] ) ?>">
+                                            <?= $stats->count ?>
                                         </a>
-
                                     </td>
                                     <td class="tw-text-right">
-                                        <?= round( (100.0 * count( $custids ) ) / count( $t->stats[ 'peeringCusts' ] ) ) ?>%
+                                        <?= round( $stats->percent ) ?>%
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

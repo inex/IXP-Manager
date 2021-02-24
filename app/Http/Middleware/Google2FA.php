@@ -3,7 +3,7 @@
 namespace IXP\Http\Middleware;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,28 +25,29 @@ namespace IXP\Http\Middleware;
 
 use Illuminate\Http\Request;
 
-use IXP\Support\Google2FAAuthenticator;
+use Auth;
+use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 
-use Closure, Session;
+use Closure;
 
 /**
- * Middleware: Manage Doctrine2Frontend filters, etc
+ * Middleware: Google 2FA
  *
- * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * Based on: https://github.com/antonioribeiro/google2fa-laravel/blob/master/src/Middleware.php
+ *
  * @category   IXP
  * @package    IXP\Http\Middleware
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Google2FA
 {
     /**
-     * @var array List of routes to exclude from 2fa
+     * @var array List of route names to exclude from 2fa
      */
-    protected $except = [
-        '2fa/superuser-verification',
-        '2fa/enable',
+    protected $excludes = [
+        '2fa@configure',
+        '2fa@enable',
     ];
 
     /**
@@ -58,56 +59,21 @@ class Google2FA
      */
     public function handle( $request, Closure $next )
     {
-        if( !$this->inExceptArray( $request ) ) {
-
-            // Session used to hide the lateral menu
-            Session::remove( '2fa-' . $request->user()->getId() );
-
-            // Force the superuser to enable 2FA
-            if( $request->user()->is2FARequired() ) {
-
-                // If we come from the login page then redirect to the 2FA verification form. Otherwise logout:
-                if( request()->headers->get('referer', '' ) === route( 'login@login' ) ) {
-                    return redirect( route( '2fa@superuser-verification' ) );
-                }
-
-                return redirect( route( 'login@logout' ) );
-            }
-
-            $authenticator = app(Google2FAAuthenticator::class)->boot( $request );
-
-            if( $authenticator->isAuthenticated() ) {
-                return $next( $request );
-            }
-
-            // Session used to hide the lateral menu
-            Session::put( "2fa-". $request->user()->getId() , true );
-
-            return $authenticator->makeRequestOneTimePasswordResponse();
+        if( in_array( $request->route()->getName(), $this->excludes ) ) {
+            return $next( $request );
         }
 
-        return $next( $request );
-    }
-
-    /**
-     * Determine if the request has a URI that should not pass through 2FA
-     *
-     * @param Request $request
-     * @return bool
-     */
-    protected function inExceptArray( $request ): bool
-    {
-        foreach( $this->except as $except ) {
-            if( $except !== '/' ) {
-                $except = trim( $except, '/' );
-            }
-
-            if( $request->fullUrlIs( $except ) || $request->is( $except ) ) {
-                return true;
-            }
+        // Force the superuser to enable 2FA
+        if( $request->user()->is2faEnforced() ) {
+            return redirect( route( '2fa@configure' ) );
         }
 
-        return false;
-    }
+        $authenticator = new GoogleAuthenticator($request);
 
+        if( !Auth::user()->getUser2FA() || !Auth::user()->getUser2FA()->enabled() || $authenticator->isAuthenticated() ) {
+            return $next( $request );
+        }
+
+        return $authenticator->makeRequestOneTimePasswordResponse();
+    }
 }

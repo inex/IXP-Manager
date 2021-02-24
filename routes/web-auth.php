@@ -156,21 +156,40 @@ Route::group( [ 'prefix' => 'irrdb' ], function() {
 });
 
 
-Route::group( [ 'prefix' => '2fa' ], function() {
+if( config( 'google2fa.enabled' ) ) {
 
-    Route::post(  'check-password', 'SecurityPasswordController@checkPassword'  )->name( "2fa@check-password"   );
-    Route::post(  'enable',         'SecurityPasswordController@enable2fa'      )->name( "2fa@enable"           );
-    Route::post(  'delete',         'SecurityPasswordController@delete2fa'      )->name( "2fa@delete"           );
-    Route::post(  'reset',          'SecurityPasswordController@reset2fa'       )->name( "2fa@reset"            );
-    Route::post(  'test-code',      'SecurityPasswordController@testCode2fa'    )->name( "2fa@test-code"        );
+    Route::group( [ 'namespace' => 'User', 'prefix' => '2fa' ], function() {
 
-    Route::post('/authenticate', function () {
-        if( Session::exists( "url.intended.2fa" ) ) {
-            return redirect( Session::pull( "url.intended.2fa" ) );
-        }
-        return redirect( '' );
+        Route::get('configure','User2FAController@configure')->name('2fa@configure');
 
-    })->name('2fa@authenticate' )->middleware( '2fa' );
+        Route::post('enable',   'User2FAController@enable'   )->name( "2fa@enable"    );
+        Route::post('disable',  'User2FAController@disable'  )->name( "2fa@disable"   );
 
-});
+        Route::post( '/authenticate', function() {
+            if( Session::exists( "url.intended.2fa" ) ) {
+                return redirect( Session::pull( "url.intended.2fa" ) );
+            }
+            return redirect( '' );
 
+        } )->name( '2fa@authenticate' )->middleware( '2fa' );
+
+    } );
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// CUSTOMER DOCUMENT STORE
+///
+if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ) {
+    Route::group( [ 'namespace' => 'DocstoreCustomer', 'prefix' => 'docstorec' ], function() {
+        Route::get( '{cust}/patch-panel-port-files',        'DirectoryController@listPatchPanelPortFiles'           )->name( 'docstore-c-dir@list-patch-panel-port-file'         );
+        Route::get( '{cust}/patch-panel-port-history-files','DirectoryController@listPatchPanelPortHistoryFiles'    )->name('docstore-c-dir@list-patch-panel-port-history-file' );
+        Route::get( '{cust}/{dir?}',                        'DirectoryController@list'                              )->name( 'docstore-c-dir@list'                               );
+
+
+        Route::get(    '{cust}/file/download/{file}',   'FileController@download'    )->name( 'docstore-c-file@download'    );
+        Route::get(    '{cust}/file/view/{file}',       'FileController@view'        )->name( 'docstore-c-file@view'        );
+    } );
+}

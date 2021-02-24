@@ -34,8 +34,7 @@
 
             /
 
-            <a href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>" >
-                Traffic Exchanged with
+            Traffic Exchanged with
                 <a href="<?= route( 'statistics@p2p', [ 'cid' => $dstVli->getVirtualInterface()->getCustomer()->getId() ] )
                     . '?svli='     . $dstVli->getId()
                     . '&dvli='     . $srcVli->getId()

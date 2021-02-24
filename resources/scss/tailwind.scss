@@ -364,6 +364,37 @@ a:hover{
     border-color : #ced4da;
 }
 
+
+/****************************************************************************************
+ **** Docstore
+ ****************************************************************************************/
+
+.docstore table {
+    @apply tw-table-auto tw-w-full;
+}
+
+.docstore td {
+    @apply tw-border-t tw-px-2 tw-py-2;
+}
+
+.docstore td.top {
+  @apply tw-border-t-2 tw-px-2 tw-py-2;
+}
+
+.docstore td.meta {
+    @apply tw-whitespace-no-wrap tw-w-1 tw-hidden;
+}
+
+@screen lg {
+  .docstore td.meta {
+    @apply tw-whitespace-no-wrap tw-w-1 tw-table-cell;
+  }
+}
+
+.docstore td.icon {
+  @apply tw-text-center tw-whitespace-no-wrap tw-w-1 tw-px-2 tw-py-2 tw-mr-4;
+}
+
 /**
  * This injects all of Tailwind's utility classes, generated based on your
  * config file.

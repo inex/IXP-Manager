@@ -35,23 +35,6 @@ use Doctrine\ORM\EntityRepository;
  */
 class Session extends EntityRepository
 {
-    /**
-     * Delete all the active session for the user
-     *
-     * @param int   $userid
-     * @param bool  $deleteCurrentsession Do we need to delete the current session
-     *
-     * @return void
-     */
-    public function deleteByUser( int $userid, bool $deleteCurrentsession = false )
-    {
-        $dql = "DELETE FROM Entities\\Session s 
-                WHERE s.user_id = ?1";
 
-        if( !$deleteCurrentsession ){
-            $dql .= " AND s.id != '" . SessionFacade::getId() . "'";
-        }
-        return $this->getEntityManager()->createQuery( $dql )->setParameter(1, $userid )->execute();
-    }
 }
 

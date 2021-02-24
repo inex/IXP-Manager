@@ -22,6 +22,7 @@
  */
 
 use Auth, Closure, D2EM;
+use Illuminate\Auth\Recaller;
 use Illuminate\Contracts\Auth\Guard;
 
 use Entities\{
@@ -69,6 +70,7 @@ class Authenticate {
 				return redirect()->guest(route( "login@showForm" ) );
 			}
 		}
+
 
         if( !Auth::user()->getCustomer() || !D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => Auth::user() , "customer" => Auth::user()->getCustomer() ] ) ){
             Auth::logout();

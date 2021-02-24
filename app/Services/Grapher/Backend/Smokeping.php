@@ -128,7 +128,7 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
         }
 
         // try and reorder the VLIs into alphabetical order of customer names
-        $vlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForProto( $v, $options['protocol'] == Graph::PROTOCOL_IPV4 ? 4 : 6, false );
+        $vlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForProto( $v, $options['protocol'] == Graph::PROTOCOL_IPV4 ? 4 : 6 );
         $orderedVlis = [];
         foreach( $vlis as $vli ) {
             $orderedVlis[ $vli['cname'] . '::' . $vli['vliid'] ] = $vli;

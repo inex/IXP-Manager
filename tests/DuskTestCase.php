@@ -58,14 +58,67 @@ abstract class DuskTestCase extends BaseTestCase
         $options = (new ChromeOptions)->addArguments([
             '--disable-gpu',
             '--headless',
-            "--lang=en-GB",
+            '--lang=en-GB',
             '--window-size=1600,1200',
         ]);
 
         return RemoteWebDriver::create(
             'http://localhost:9515', DesiredCapabilities::chrome()->setCapability(
-                ChromeOptions::CAPABILITY, $options
-            )
+            ChromeOptions::CAPABILITY, $options
+        )
         );
+    }
+
+    /**
+     * Overrides any .env files for dusk tests
+     *
+     * @param array $variables
+     */
+    protected function overrideEnv($variables = [])
+    {
+        $path = '.env';
+
+        if (file_exists($path)) {
+
+            // The environment variables to prepend
+            $prepend = '';
+
+            // Convert all new parameters to expected format
+            foreach ($variables as $key => $value) {
+                $prepend .= PHP_EOL . $key . '="' . $value . '"' ;
+            }
+
+            // Grab original .env file contents
+            $original = file_get_contents($path);
+
+            // Write all to .env file for dusk test
+            file_put_contents($path, $original . $prepend);
+        }
+    }
+
+    /**
+     * Delete a value in .env files for dusk tests
+     *
+     * @param array $variables
+     */
+    protected function deleteEnvValue($variables = [])
+    {
+        $path = '.env';
+
+        if ( file_exists( $path ) ) {
+
+            // Grab original .env file contents
+            $original = explode("\n", file_get_contents( $path ) );
+            $output = '';
+            // Convert all new parameters to expected format
+            foreach ( $original as $value ) {
+                if ( $value != $variables ) {
+                    $output .= $value . PHP_EOL;
+                }
+            }
+
+            // Write all to .env file for dusk test
+            file_put_contents($path, $output );
+        }
     }
 }

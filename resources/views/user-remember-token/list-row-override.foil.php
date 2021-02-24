@@ -10,7 +10,7 @@ $row = $t->row;
     <td>
         <?= $t->ee( $row['device'] ) ?>
 
-        <?php if( $row['session_id'] == Session::getId() ): ?>
+        <?php if( $row['token'] === $t->data['session_token'] ): ?>
             <span class="badge badge-info ml-2">Current</span>
         <?php endif; ?>
     </td>

@@ -23,14 +23,14 @@
 
 namespace IXP\Http\Controllers\Auth;
 
-use Auth, D2EM, DateTime, Socialite, Session, Str;
+use Auth, D2EM, Socialite, Session, Str;
 
 use Entities\{
     Customer            as CustomerEntity ,
     CustomerToUser      as CustomerToUserEntity,
     User                as UserEntity,
     UserLoginHistory    as UserLoginHistoryEntity,
-    UserRememberTokens  as UserRememberTokensEntity
+    UserRememberToken  as UserRememberTokenEntity
 };
 
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -50,7 +50,6 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-use IXP\Support\Google2FAAuthenticator;
 use Symfony\Component\HttpFoundation\Response;
 
 class LoginController extends Controller
@@ -103,29 +102,24 @@ class LoginController extends Controller
     public function showLoginForm() : View
     {
         if( !session()->has('url.intended') ) {
-            if( Str::startsWith( url()->previous(), url('') ) && strpos( url()->previous(), route( "2fa@authenticate" ) ) != 0 ) {
-                // Store intended url to redirect after login
-                session( ['url.intended' => url()->previous() ] );
-                // Store intended url to redirect after 2FA
-                session( ['url.intended.2fa' => url()->previous() ] );
+            if( Str::startsWith( url()->previous(), url('') ) ) {
+                if( config('google2fa.enabled') ) {
+                    if( strpos( url()->previous(), route( "2fa@authenticate" ) ) !== false ) {
+                        // Store intended url to redirect after login
+                        session( [ 'url.intended' => url()->previous() ] );
+                        // Store intended url to redirect after 2FA
+                        session( [ 'url.intended.2fa' => url()->previous() ] );
+                    }
+                } else {
+                    // Store intended url to redirect after login
+                    session( [ 'url.intended' => url()->previous() ] );
+                }
             }
         }
 
         return view( 'auth/login' );
     }
 
-    /**
-     * Attempt to log the user into the application.
-     *
-     * @param Request $request
-     * @return bool
-     */
-    protected function attemptLogin(Request $request)
-    {
-        return $this->guard()->attempt(
-            $this->credentials($request), $request->input('remember') ? true : false
-        );
-    }
 
     /**
      * The user has been authenticated.
@@ -133,58 +127,28 @@ class LoginController extends Controller
      * @param Request $request
      * @param  UserEntity  $user
      *
-     * @return void
+     * @return Response
      *
      * @throws
      */
-    protected function authenticated( Request $request, $user )
+    protected function authenticated( Request $request, $user, $viaPeeringDB = false )
     {
         // Check if the user has Customer(s) linked
-        if( count( $user->getCustomers() ) > 0 ) {
-
-            /** @var CustomerToUserEntity $c2u */
-            $c2u = D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => $user , "customer" => $user->getCustomer() ] );
-
-            // Check if the user has a default customer OR if the default customer is no longer in the C2U, then assign one
-            if( !$user->getCustomer() || !$c2u ){
-                $user->setCustomer( $user->getCustomers()[0] );
-                D2EM::flush();
-                $c2u = D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => $user , "customer" => $user->getCustomer() ] );
-            }
-
-
-            $c2u->setLastLoginAt( now() );
-            $c2u->setLastLoginFrom( $this->getIP() );
-
-            if( config( "ixp_fe.login_history.enabled" ) ) {
-                $log = new UserLoginHistoryEntity;
-                D2EM::persist( $log );
-
-                $log->setAt( now() );
-                $log->setIp( $this->getIP() );
-                $log->setCustomerToUser(  $c2u  );
-
-                D2EM::flush();
-            }
-
-        } else {
-            // No customer linked, logout
-            $this->logout( $request, [ 'message' => "Your user account is not associated with any " . config( "ixp_fe.lang.customer.many" ) . " .", 'class' => Alert::DANGER ] );
+        if( !count( $user->getCustomers() ) ) {
+            return $this->logout( $request, [ 'message' => "Your user account is not associated with any " . config( "ixp_fe.lang.customer.many" ) . ".", 'class' => Alert::DANGER ] );
         }
 
-        // Check if we added a UserRememberToken id to the request
-        if( request()->request->has( "ixpm-user-remember-me-token-id" ) ){
-            // Updating the current UserRememberToken session id with the current session ID in order to link them
-            $urt = D2EM::getRepository( UserRememberTokensEntity::class )->find( request()->request->get( "ixpm-user-remember-me-token-id" ) );
-            $urt->setSessionId( Session::getId() );
+        /** @var CustomerToUserEntity $c2u */
+        $c2u = D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => $user , "customer" => $user->getCustomer() ] );
+
+        // Check if the user has a default customer OR if the default customer is no longer in the C2U, then assign one
+        if( !$user->getCustomer() || !$c2u ){
+            $user->setCustomer( $user->getCustomers()[0] );
+            D2EM::flush();
+            $c2u = D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => $user , "customer" => $user->getCustomer() ] );
         }
 
         D2EM::flush();
-
-        // if remember me is enabled, set a session variable so we can set the same on the 2fa form if enabled
-        if( $request->get('remember') ) {
-            $request->session()->put( 'ixpm-login-rememberme-set', true );
-        }
     }
 
     /**
@@ -212,24 +176,17 @@ class LoginController extends Controller
      */
     public function logout( Request $request, $customMessage = null ) : Response
     {
-        if( Auth::check() && $request->user()->is2FAenabled() ) {
-            $authenticator = app( Google2FAAuthenticator::class )->boot( $request );
-            $authenticator->logout();
-        }
-
         $this->guard()->logout();
-
         $request->session()->invalidate();
 
         AlertContainer::push( $customMessage ? $customMessage[ "message" ] : "You have been logged out." , $customMessage ? $customMessage[ "class" ] : Alert::SUCCESS );
-
         return redirect('');
     }
 
     /**
      * Redirect the user to the PeeringDB authentication page.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function peeringdbRedirectToProvider()
     {
@@ -338,7 +295,7 @@ class LoginController extends Controller
         }
 
         Auth::login( $result['user'] );
-        $this->authenticated( $request, $result['user'] );
+        $this->authenticated( $request, $result['user'], true );
         return redirect('');
     }
 

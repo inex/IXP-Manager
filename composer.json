@@ -51,7 +51,7 @@
         "laravel/horizon": "^3.0",
         "socialiteproviders/manager": "^3.3",
         "pragmarx/google2fa-laravel": "^1.2",
-        "bacon/bacon-qr-code": "~1.0.3",
+        "bacon/bacon-qr-code": "~2.0",
         "wolfcast/browser-detection": "^2.9"
     },
     "require-dev": {
@@ -110,11 +110,15 @@
             "@php artisan package:discover"
         ],
 
+        "post-install-cmd": [
+            "@php artisan clear-compiled"
+        ],
+
         "post-update-cmd": [
             "@php artisan clear-compiled",
             "@php artisan ide-helper:generate",
             "@php artisan ide-helper:meta --filename=.phpstorm.meta.php/laravel.meta.php",
-            "@php artisan ide-helper:models -W",
+            "@php artisan ide-helper:models -Wr",
             "@php artisan telescope:publish",
             "@php artisan horizon:assets"
         ]
@@ -124,6 +128,9 @@
             "preferred-install": "dist",
             "sort-packages": true,
             "optimize-autoloader": true
+        },
+        "platform": {
+            "php": "7.3.0"
         }
    },
    "minimum-stability": "stable"

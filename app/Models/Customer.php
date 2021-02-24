@@ -2,11 +2,43 @@
 
 namespace IXP\Models;
 
-use Illuminate\Database\Eloquent\Model;
+/*
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
 
-use D2EM;
+use D2EM, Eloquent;
 
+use DB;
 use Entities\Customer as CustomerEntity;
+use Entities\User as UserEntity;
+
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model
+};
+
+use Illuminate\Support\{
+    Collection,
+    Carbon as Carbon
+};
+
 
 use IXP\Exceptions\GeneralException as IXP_Exception;
 
@@ -30,8 +62,8 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property string|null $peeringmacro
  * @property string|null $peeringpolicy
  * @property string|null $corpwww
- * @property string|null $datejoin
- * @property string|null $dateleave
+ * @property \Illuminate\Support\Carbon|null $datejoin
+ * @property \Illuminate\Support\Carbon|null $dateleave
  * @property int|null $status
  * @property int|null $activepeeringmatrix
  * @property \Illuminate\Support\Carbon|null $lastupdated
@@ -47,9 +79,18 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property int $isReseller
  * @property int $in_manrs
  * @property int $in_peeringdb
+ * @property int $peeringdb_oauth
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerDirectory[] $docstoreCustomerDirectories
+ * @property-read int|null $docstore_customer_directories_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerFile[] $docstoreCustomerFiles
+ * @property-read int|null $docstore_customer_files_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VirtualInterface[] $virtualInterfaces
+ * @property-read int|null $virtual_interfaces_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer current()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer trafficking()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereAbbreviatedName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereActivepeeringmatrix($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereAutsys($value)
@@ -76,6 +117,7 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNochours($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNocphone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNocwww($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringdbOauth($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringemail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringmacro($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringmacrov6($value)
@@ -85,12 +127,6 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereType($value)
  * @mixin \Eloquent
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer trafficking()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer current()
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VirtualInterface[] $virtualInterfaces
- * @property int $peeringdb_oauth
- * @property-read int|null $virtual_interfaces_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringdbOauth($value)
  */
 class Customer extends Model
 {
@@ -154,14 +190,30 @@ class Customer extends Model
         return $this->hasMany('IXP\Models\VirtualInterface', 'custid');
     }
 
+    /**
+     * Get the docstore customer directories for the customer
+     */
+    public function docstoreCustomerDirectories()
+    {
+        return $this->hasMany(DocstoreCustomerDirectory::class, 'cust_id');
+    }
+
+    /**
+     * Get the docstore customer files for the customer
+     */
+    public function docstoreCustomerFiles()
+    {
+        return $this->hasMany(DocstoreCustomerFile::class, 'cust_id');
+    }
+
 
     /**
      * Scope a query to only include trafficking members.
      *
      * Not that the IXP's own internal customers are included in this.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeTrafficking($query)
     {
@@ -171,13 +223,13 @@ class Customer extends Model
     /**
      * Scope a query to only include current members
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeCurrent($query)
     {
         return $query->where('datejoin', '<=', today() )
-            ->where( function (\Illuminate\Database\Eloquent\Builder $query) {
+            ->where( function ( Builder $query) {
                 $query->whereNull( 'dateleave' )
                     ->orWhere( 'dateleave', '=', '0000-00-00' )
                     ->orWhere( 'dateleave', '>=', today() );

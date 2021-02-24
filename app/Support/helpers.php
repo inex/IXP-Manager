@@ -122,6 +122,10 @@ if( !function_exists( 'ixp_get_client_ip' ) ) {
             }
         }
 
+        if( request() && request()->getClientIp() ) {
+            return request()->getClientIp();
+        }
+
         return '';
     }
 }

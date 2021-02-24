@@ -24,6 +24,7 @@ namespace IXP\Http\Controllers;
 
 use App, Auth, D2EM;
 
+use Carbon\Carbon;
 use Entities\{
     CoreBundle          as CoreBundleEntity,
     Customer            as CustomerEntity,
@@ -32,6 +33,7 @@ use Entities\{
     PhysicalInterface   as PhysicalInterfaceEntity,
     Switcher            as SwitchEntity,
     TrafficDaily        as TrafficDailyEntity,
+    TrafficDailyPhysInt as TrafficDailyPhysIntEntity,
     VirtualInterface    as VirtualInterfaceEntity,
     Vlan                as VlanEntity,
     VlanInterface       as VlanInterfaceEntity,
@@ -165,7 +167,7 @@ class StatisticsController extends Controller
 
 
         /** @var VlanEntity[] $eVlans */
-        $eVlans   = D2EM::getRepository( VlanEntity::class )->getAndCache( VlanRepository::TYPE_NORMAL, 'name', false );
+        $eVlans   = D2EM::getRepository( VlanEntity::class )->getFiltered( VlanRepository::TYPE_NORMAL, 'name' );
         $grapher  = App::make('IXP\Services\Grapher');
         $protocol = Graph::processParameterRealProtocol( $protocol );
         $category = Graph::processParameterCategory( $category, true );
@@ -219,7 +221,7 @@ class StatisticsController extends Controller
     public function switch( int $switchid = 0, string $category = Graph::CATEGORY_BITS ) : View
     {
         /** @var SwitchEntity[] $eSwitches */
-        $eSwitches = D2EM::getRepository( SwitchEntity::class )->getAndCache( true );
+        $eSwitches = D2EM::getRepository( SwitchEntity::class )->getFiltered( true );
         $grapher = App::make('IXP\Services\Grapher');
         $category = Graph::processParameterCategory( $category, true );
 
@@ -327,7 +329,7 @@ class StatisticsController extends Controller
             if( !in_array( $r->protocol, Graph::PROTOCOLS_REAL ) ) {
                 $r->protocol = Graph::PROTOCOL_IPV4;
             }
-            $targets = D2EM::getRepository( VlanInterfaceEntity::class )->getObjectsForVlan( $vlan, false, $r->protocol );
+            $targets = D2EM::getRepository( VlanInterfaceEntity::class )->getObjectsForVlan( $vlan, $r->protocol );
         } else {
             $targets = [];
         }
@@ -586,7 +588,7 @@ class StatisticsController extends Controller
 
         // Now find the possible other VLAN interfaces that this customer could exchange traffic with
         // (as well as removing the source vli)
-        $dstVlis = D2EM::getRepository( VlanInterfaceEntity::class )->getObjectsForVlan( $srcVli->getVlan(), false );
+        $dstVlis = D2EM::getRepository( VlanInterfaceEntity::class )->getObjectsForVlan( $srcVli->getVlan() );
         unset( $dstVlis[ $srcVli->getId() ] );
 
         if( !count( $dstVlis ) ) {
@@ -741,6 +743,60 @@ class StatisticsController extends Controller
             "graph"                 => $graph,
             "category"              => $category,
             "categories"            => Auth::check() && Auth::user()->isSuperUser() ? Graph::CATEGORY_DESCS : Graph::CATEGORIES_BITS_PKTS_DESCS,
+        ]);
+    }
+
+
+    /**
+     * Show utilisation of member ports
+     *
+     * @param Request $r
+     *
+     * @return View
+     *
+     * @throws
+     */
+    public function utilisation( StatisticsRequest $r )
+    {
+        $metrics = [
+            'Max'     => 'max',
+            'Total'   => 'data',
+            'Average' => 'average'
+        ];
+
+        $metric = $r->input( 'metric', $metrics['Max'] );
+        if( !in_array( $metric, $metrics ) ) {
+            $metric = $metrics[ 'Max' ];
+        }
+
+        $days = D2EM::getRepository( TrafficDailyPhysIntEntity::class )->availableForDays();
+        if( count( $days ) ) {
+            $day = $r->input( 'day' );
+            if( !in_array( $day, $days ) ) {
+                $day = $days[0];
+            }
+        } else {
+            $day = null;
+        }
+
+        $vid = false;
+        if( $r->input( 'vlan' ) && ( $vlan = D2EM::getRepository( VlanEntity::class )->find( $r->input( 'vlan' ) ) ) ) {
+            $vid = $vlan->getId();
+        }
+
+        $category = Graph::processParameterCategory( $r->input( 'category' ) );
+        $period   = Graph::processParameterPeriod( $r->input( 'period' ), Graph::PERIOD_MONTH );
+
+        return view( 'statistics/utilisation' )->with([
+            'metric'       => $metric,
+            'metrics'      => $metrics,
+            'day'          => $day,
+            'days'         => $days,
+            'category'     => $category,
+            'period'       => $period,
+            'tdpis'        => ( $day ? D2EM::getRepository( TrafficDailyPhysIntEntity::class )->load( $day, $category, $period, $vid ) : [] ),
+            'vlans'        => D2EM::getRepository( VlanEntity::class )->getNames(),
+            'vlan'         => $vid,
         ]);
     }
 

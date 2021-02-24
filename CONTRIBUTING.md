@@ -38,7 +38,7 @@ need contributors to follow so that we can accept them.
 
 # Additional Resources
 
-* [Contributor License Agreement](https://github.com/inex/IXP-Manager/wiki/Contributor-License-Agreement)
+* [Contributor License Agreement](https://docs.ixpmanager.org/dev/cla/)
 * [General GitHub documentation](http://help.github.com/)
 * [GitHub pull request documentation](http://help.github.com/send-pull-requests/)
 * [IXP Manager Mailing List](https://www.inex.ie/mailman/listinfo/ixpmanager)

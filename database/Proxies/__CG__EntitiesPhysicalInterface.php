@@ -26,25 +26,27 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
     /**
      * @var boolean flag indicating if this object was already initialized
      *
-     * @see \Doctrine\Common\Persistence\Proxy::__isInitialized
+     * @see \Doctrine\Persistence\Proxy::__isInitialized
      */
     public $__isInitialized__ = false;
 
     /**
-     * @var array properties to be lazy loaded, with keys being the property
-     *            names and values being their default values
+     * @var array<string, null> properties to be lazy loaded, indexed by property name
+     */
+    public static $lazyPropertiesNames = array (
+);
+
+    /**
+     * @var array<string, mixed> default values of properties to be lazy loaded, with keys being the property names
      *
      * @see \Doctrine\Common\Proxy\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = [];
+    public static $lazyPropertiesDefaults = array (
+);
 
 
 
-    /**
-     * @param \Closure $initializer
-     * @param \Closure $cloner
-     */
-    public function __construct($initializer = null, $cloner = null)
+    public function __construct(?\Closure $initializer = null, ?\Closure $cloner = null)
     {
 
         $this->__initializer__ = $initializer;
@@ -64,10 +66,10 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface'];
+            return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface', 'TrafficDailiesPhysInt'];
         }
 
-        return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface'];
+        return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface', 'TrafficDailiesPhysInt'];
     }
 
     /**
@@ -82,7 +84,7 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
 
                 $existingProperties = get_object_vars($proxy);
 
-                foreach ($proxy->__getLazyProperties() as $property => $defaultValue) {
+                foreach ($proxy::$lazyPropertiesDefaults as $property => $defaultValue) {
                     if ( ! array_key_exists($property, $existingProperties)) {
                         $proxy->$property = $defaultValue;
                     }
@@ -165,6 +167,7 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
     /**
      * {@inheritDoc}
      * @internal generated method: use only when explicitly handling proxy specific loading logic
+     * @deprecated no longer in use - generated code now relies on internal components rather than generated public API
      * @static
      */
     public function __getLazyProperties()
@@ -560,6 +563,39 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveAPIStatus', []);
 
         return parent::resolveAPIStatus();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addTrafficDailyPhysInt(\Entities\TrafficDailyPhysInt $trafficDailyPhysInt)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addTrafficDailyPhysInt', [$trafficDailyPhysInt]);
+
+        return parent::addTrafficDailyPhysInt($trafficDailyPhysInt);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeTrafficDaily(\Entities\TrafficDailyPhysInt $trafficDailyPhysInt)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeTrafficDaily', [$trafficDailyPhysInt]);
+
+        return parent::removeTrafficDaily($trafficDailyPhysInt);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTrafficDailiesPhysInt()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTrafficDailiesPhysInt', []);
+
+        return parent::getTrafficDailiesPhysInt();
     }
 
 }

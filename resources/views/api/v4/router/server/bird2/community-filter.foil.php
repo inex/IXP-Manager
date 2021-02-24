@@ -70,7 +70,7 @@ function ixp_community_filter(int peerasn)
 
 <?php endif; ?>
     # it's unwise to conduct a 32-bit check on a 16-bit value
-    if peerasn > 65535 then
+    if routeserverasn > 65535 || peerasn > 65535 then
             return true;
 
     # Implement widely used community filtering schema.

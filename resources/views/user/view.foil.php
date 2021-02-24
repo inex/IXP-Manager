@@ -106,7 +106,7 @@ Users / View User
                                 </b>
                             </td>
                             <td>
-                                <?= $t->u['google2fa_enabled'] ? "Yes" : "No" ?>
+                                <?= $t->u['u2fa_enabled'] ? "Yes" : "No" ?>
                             </td>
                         </tr>
 

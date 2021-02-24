@@ -34,7 +34,7 @@ use Illuminate\View\View;
 
 use Entities\{
     User                as  UserEntity,
-    UserRememberTokens  as UserRememberTokensEntity,
+    UserRememberToken  as UserRememberTokenEntity,
     Session             as SessionEntity
 };
 

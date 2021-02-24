@@ -57,7 +57,6 @@ mix.styles(
         'node_modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css',
         'node_modules/datatables.net-responsive-bs4/css/responsive.bootstrap4.css',
 
-        'public/css/draganddrop.css',
         'public/css/ixp-manager.css',
         'public/css/tailwind.css',
         // etc. etc.

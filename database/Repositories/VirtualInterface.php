@@ -30,7 +30,10 @@ use Entities\{
     PhysicalInterface as PIEntity,
     VirtualInterface as VIEntity
 };
+
 use IXP\Exceptions\GeneralException;
+
+use Illuminate\Support\Facades\DB;
 
 /**
  * VirtualInterface
@@ -49,15 +52,14 @@ class VirtualInterface extends EntityRepository
      */
     public function getByLocation()
     {
-        return $ints = $this->getEntityManager()->createQuery(
-            "SELECT c.id AS customerid, vi.id AS id, pi.speed AS speed, i.name AS infrastructure, l.name AS locationname, sixp.name as ixp, sixp.shortname as locixp
-                FROM Entities\\VirtualInterface vi
+        return $this->getEntityManager()->createQuery(
+            "SELECT c.id AS customerid, vi.id AS id, pi.speed AS speed, i.name AS infrastructure, l.name AS locationname
+                FROM Entities\VirtualInterface vi
                     JOIN vi.Customer c
                     JOIN vi.PhysicalInterfaces pi
                     JOIN pi.SwitchPort sp
                     JOIN sp.Switcher sw
                     JOIN sw.Infrastructure i
-                    JOIN i.IXP sixp
                     JOIN sw.Cabinet ca
                     JOIN ca.Location l
                 WHERE
@@ -65,65 +67,6 @@ class VirtualInterface extends EntityRepository
         )->getArrayResult();
     }
 
-
-    /**
-     * Utility function to provide an array of all virtual interfaces on a given
-     * infrastructure (optionally with active VLAN Interfaces for a given protocol).
-     *
-     * Returns an array of:
-     *
-     *     * Customer ID (cid)
-     *     * Customer Name (cname)
-     *     * Customer Shortname (cshortname)
-     *     * VirtualInterface ID (id)
-     *     * Physical Interface ID (pid)
-     *     * VLAN Interface ID (vlanid)
-     *     * SwithPort ID (spid)
-     *     * Switch ID (swid)
-     *
-     * @param \Entities\Infrastructure $infra The infrastructure to gather VirtualInterfaces for
-     * @param int $proto Either 4 or 6 to limit the results to interface with IPv4 / IPv6
-     * @param bool $externalOnly If true (default) then only external (non-internal) interfaces will be returned
-     * @param bool $useResultCache If true, use Doctrine's result cache to prevent needless database overhead
-     * @return array As defined above.
-     * @throws \IXP_Exception
-     */
-    public function getForInfrastructure( $infra, $proto = false, $externalOnly = true, $useResultCache = true )
-    {
-        $qstr = "SELECT c.id AS cid, c.name AS cname, c.shortname AS cshortname,
-                       vi.id AS id, pi.id AS pid, vli.id AS vlanid, sp.id AS spid, sw.id as swid
-                    FROM Entities\\VirtualInterface vi
-                        JOIN vi.Customer c
-                        JOIN vi.PhysicalInterfaces pi
-                        JOIN vi.VlanInterfaces vli
-                        JOIN pi.SwitchPort sp
-                        JOIN sp.Switcher sw
-                        JOIN sw.Infrastructure i
-                    WHERE
-                        i = :infra
-                        AND " . Customer::DQL_CUST_ACTIVE     . "
-                        AND " . Customer::DQL_CUST_CURRENT    . "
-                        AND " . Customer::DQL_CUST_TRAFFICING . "
-                        AND pi.status = " . \Entities\PhysicalInterface::STATUS_CONNECTED;
-                               
-        if( $proto )
-        {
-            if( !in_array( $proto, [ 4, 6 ] ) )
-                throw new \IXP_Exception( 'Invalid protocol specified' );
-            
-            $qstr .= "AND vli.ipv{$proto}enabled = 1 ";
-        }
-            
-        if( $externalOnly )
-            $qstr .= "AND " . Customer::DQL_CUST_EXTERNAL;
-                    
-        $qstr .= " ORDER BY c.name ASC";
-        
-        $q = $this->getEntityManager()->createQuery( $qstr );
-        $q->setParameter( 'infra', $infra );
-        $q->useResultCache( $useResultCache, 3600 );
-        return $q->getArrayResult();
-    }
 
     /**
      * Utility function to provide an array of all virtual interface objects on a given
@@ -308,4 +251,48 @@ class VirtualInterface extends EntityRepository
         return false;
     }
 
+
+
+
+    /**
+     * Get statistics/percentage of connected customer by VLAN
+     *
+     * - customer type full or probono
+     * - at least one pi connected
+     *
+     * Returns an array of objects such as:
+     *
+     * [
+     *      {#4344
+     *          "vlanname": "INEX LAN1",
+     *          "count": 105,
+     *          "percent": "96.3303",
+     *      },
+     * ]
+     *
+     * @return array
+     */
+    public function getPercentageCustomersByVlan(): array
+    {
+        return DB::select('
+            SELECT v.name AS vlanname, COUNT( DISTINCT vi.custid ) AS count, COUNT( DISTINCT vi.custid ) / ( SELECT COUNT( DISTINCT vi.custid )
+
+                        FROM virtualinterface AS vi
+                        JOIN vlaninterface as vli ON vli.virtualinterfaceid = vi.id
+                        JOIN vlan AS v ON v.id = vli.vlanid
+                        JOIN cust AS c ON c.id = vi.custid
+                        LEFT JOIN physicalinterface AS pi ON pi.virtualinterfaceid = vi.id
+                        WHERE v.private = 0 AND pi.status = 1 AND c.`type`IN (1,4) ) * 100 AS percent 
+
+            FROM virtualinterface AS vi
+            JOIN vlaninterface AS vli on vli.virtualinterfaceid = vi.id
+            JOIN vlan AS v ON v.id = vli.vlanid
+            LEFT JOIN physicalinterface AS pi ON pi.virtualinterfaceid = vi.id
+            JOIN cust AS c ON c.id = vi.custid
+            
+            WHERE v.private = 0 AND pi.status = 1 AND c.`type`in (1,4)
+            
+            GROUP BY v.name ORDER BY `count` DESC'
+        );
+    }
 }

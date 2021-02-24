@@ -1,0 +1,363 @@
+{
+    "version": "1.0",
+    "generator": "IXP Manager v999.9.9",
+    "timestamp": "2020-05-23T08:34:42Z",
+    "ixp_list": [
+        {
+            "shortname": "Infrastructure #1",
+            "name": "*** CONFIG IDENTITY IN .env ***",
+            "country": "*** CONFIG IDENTITY IN .env ***",
+            "url": "*** CONFIG IDENTITY IN .env ***",
+            "peeringdb_id": 48,
+            "ixf_id": 20,
+            "ixp_id": 1,
+            "support_email": "*** CONFIG IDENTITY IN .env ***",
+            "support_phone": "*** CONFIG IDENTITY IN .env ***",
+            "support_contact_hours": "*** CONFIG IDENTITY IN .env ***",
+            "emergency_email": "*** CONFIG IDENTITY IN .env ***",
+            "emergency_phone": "*** CONFIG IDENTITY IN .env ***",
+            "emergency_contact_hours": "*** CONFIG IDENTITY IN .env ***",
+            "billing_contact_hours": "*** CONFIG IDENTITY IN .env ***",
+            "billing_email": "*** CONFIG IDENTITY IN .env ***",
+            "billing_phone": "*** CONFIG IDENTITY IN .env ***",
+            "peering_policy_list": [
+                "open",
+                "selective",
+                "mandatory",
+                "closed"
+            ],
+            "vlan": [],
+            "switch": [
+                {
+                    "id": 1,
+                    "name": "switch1",
+                    "colo": "Location 1",
+                    "city": "*** CONFIG IDENTITY IN .env ***",
+                    "country": "*** CONFIG IDENTITY IN .env ***",
+                    "manufacturer": "Brocade",
+                    "model": "FESX624",
+                    "software": ""
+                }
+            ]
+        },
+        {
+            "shortname": "Infrastructure #2",
+            "name": "*** CONFIG IDENTITY IN .env ***",
+            "country": "*** CONFIG IDENTITY IN .env ***",
+            "url": "*** CONFIG IDENTITY IN .env ***",
+            "peeringdb_id": 387,
+            "ixf_id": 645,
+            "ixp_id": 2,
+            "support_email": "*** CONFIG IDENTITY IN .env ***",
+            "support_phone": "*** CONFIG IDENTITY IN .env ***",
+            "support_contact_hours": "*** CONFIG IDENTITY IN .env ***",
+            "emergency_email": "*** CONFIG IDENTITY IN .env ***",
+            "emergency_phone": "*** CONFIG IDENTITY IN .env ***",
+            "emergency_contact_hours": "*** CONFIG IDENTITY IN .env ***",
+            "billing_contact_hours": "*** CONFIG IDENTITY IN .env ***",
+            "billing_email": "*** CONFIG IDENTITY IN .env ***",
+            "billing_phone": "*** CONFIG IDENTITY IN .env ***",
+            "peering_policy_list": [
+                "open",
+                "selective",
+                "mandatory",
+                "closed"
+            ],
+            "vlan": [],
+            "switch": [
+                {
+                    "id": 2,
+                    "name": "switch2",
+                    "colo": "Location 1",
+                    "city": "*** CONFIG IDENTITY IN .env ***",
+                    "country": "*** CONFIG IDENTITY IN .env ***",
+                    "manufacturer": "Brocade",
+                    "model": "FESX624",
+                    "software": ""
+                }
+            ]
+        }
+    ],
+    "member_list": [
+        {
+            "asnum": 42,
+            "member_since": "2014-01-06T00:00:00Z",
+            "url": "http:\/\/www.example.com\/",
+            "name": "PCH DNS",
+            "peering_policy": "open",
+            "member_type": "peering",
+            "contact_email": [
+                "peering@example.com"
+            ],
+            "contact_phone": [
+                ""
+            ],
+            "ixp_manager": {
+                "tags": []
+            },
+            "connection_list": [
+                {
+                    "ixp_id": 1,
+                    "state": "active",
+                    "if_list": [
+                        {
+                            "switch_id": 1,
+                            "if_speed": 100
+                        }
+                    ],
+                    "vlan_list": [
+                        {
+                            "vlan_id": 1,
+                            "ipv4": {
+                                "address": "10.1.0.36",
+                                "as_macro": "AS-PCH",
+                                "routeserver": true,
+                                "mac_addresses": [],
+                                "max_prefix": 2000
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "asnum": 112,
+            "member_since": "2014-01-06T00:00:00Z",
+            "url": "http:\/\/www.example.com\/",
+            "name": "AS112",
+            "peering_policy": "open",
+            "member_type": "peering",
+            "contact_email": [
+                "peering@example.com"
+            ],
+            "contact_phone": [
+                ""
+            ],
+            "ixp_manager": {
+                "tags": {
+                    "test-tag1": "Test Tag1",
+                    "test-tag2": "Test Tag2"
+                }
+            },
+            "connection_list": [
+                {
+                    "ixp_id": 1,
+                    "state": "active",
+                    "if_list": [
+                        {
+                            "switch_id": 1,
+                            "if_speed": 10
+                        }
+                    ],
+                    "vlan_list": [
+                        {
+                            "vlan_id": 1,
+                            "ipv4": {
+                                "address": "10.1.0.6",
+                                "routeserver": true,
+                                "mac_addresses": [],
+                                "max_prefix": 20
+                            }
+                        }
+                    ]
+                },
+                {
+                    "ixp_id": 2,
+                    "state": "active",
+                    "if_list": [
+                        {
+                            "switch_id": 2,
+                            "if_speed": 10
+                        }
+                    ],
+                    "vlan_list": [
+                        {
+                            "vlan_id": 2,
+                            "ipv4": {
+                                "address": "10.2.0.6",
+                                "routeserver": true,
+                                "mac_addresses": [],
+                                "max_prefix": 20
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "asnum": 1213,
+            "member_since": "2014-01-06T00:00:00Z",
+            "url": "http:\/\/www.example.com\/",
+            "name": "HEAnet",
+            "peering_policy": "open",
+            "member_type": "peering",
+            "contact_email": [
+                "peering@example.com"
+            ],
+            "contact_phone": [
+                ""
+            ],
+            "ixp_manager": {
+                "tags": []
+            },
+            "connection_list": [
+                {
+                    "ixp_id": 1,
+                    "state": "active",
+                    "if_list": [
+                        {
+                            "switch_id": 1,
+                            "if_speed": 1000
+                        },
+                        {
+                            "switch_id": 1,
+                            "if_speed": 1000
+                        }
+                    ],
+                    "vlan_list": [
+                        {
+                            "vlan_id": 1,
+                            "ipv4": {
+                                "address": "10.1.0.10",
+                                "as_macro": "AS-HEANET",
+                                "routeserver": true,
+                                "mac_addresses": [],
+                                "max_prefix": 1000
+                            },
+                            "ipv6": {
+                                "address": "2001:db8:1::10",
+                                "as_macro": "AS-HEANET",
+                                "routeserver": true,
+                                "mac_addresses": [],
+                                "max_prefix": 1000
+                            }
+                        }
+                    ]
+                },
+                {
+                    "ixp_id": 2,
+                    "state": "active",
+                    "if_list": [
+                        {
+                            "switch_id": 2,
+                            "if_speed": 1000
+                        }
+                    ],
+                    "vlan_list": [
+                        {
+                            "vlan_id": 2,
+                            "ipv4": {
+                                "address": "10.2.0.11",
+                                "as_macro": "AS-HEANET",
+                                "routeserver": true,
+                                "mac_addresses": [],
+                                "max_prefix": 1000
+                            },
+                            "ipv6": {
+                                "address": "2001:db8:2::11",
+                                "as_macro": "AS-HEANET",
+                                "routeserver": true,
+                                "mac_addresses": [],
+                                "max_prefix": 1000
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "asnum": 2128,
+            "member_since": "2014-01-06T00:00:00Z",
+            "url": "http:\/\/www.siep.com\/",
+            "name": "INEX",
+            "peering_policy": "mandatory",
+            "member_type": "ixp",
+            "contact_email": [
+                "peering@siep.net"
+            ],
+            "contact_phone": [
+                "+353 1 123 4567"
+            ],
+            "peering_policy_url": "http:\/\/www.siep.com\/noc\/",
+            "contact_hours": "24x7",
+            "ixp_manager": {
+                "tags": {
+                    "test-tag2": "Test Tag2"
+                }
+            },
+            "connection_list": []
+        },
+        {
+            "asnum": 25441,
+            "member_since": "2014-01-06T00:00:00Z",
+            "url": "http:\/\/www.example.com\/",
+            "name": "Imagine",
+            "peering_policy": "open",
+            "member_type": "peering",
+            "contact_email": [
+                "peering@example.com"
+            ],
+            "contact_phone": [
+                ""
+            ],
+            "ixp_manager": {
+                "tags": {
+                    "test-tag1": "Test Tag1"
+                }
+            },
+            "connection_list": [
+                {
+                    "ixp_id": 1,
+                    "state": "active",
+                    "if_list": [
+                        {
+                            "switch_id": 1,
+                            "if_speed": 1000
+                        }
+                    ],
+                    "vlan_list": [
+                        {
+                            "vlan_id": 1,
+                            "ipv6": {
+                                "address": "2001:db8:1::8",
+                                "as_macro": "AS-IBIS",
+                                "routeserver": true,
+                                "mac_addresses": [],
+                                "max_prefix": 1000
+                            }
+                        }
+                    ]
+                },
+                {
+                    "ixp_id": 2,
+                    "state": "active",
+                    "if_list": [
+                        {
+                            "switch_id": 2,
+                            "if_speed": 10000
+                        }
+                    ],
+                    "vlan_list": [
+                        {
+                            "vlan_id": 2,
+                            "ipv4": {
+                                "address": "10.2.0.46",
+                                "as_macro": "AS-IBIS",
+                                "routeserver": false,
+                                "mac_addresses": [],
+                                "max_prefix": 1000
+                            },
+                            "ipv6": {
+                                "address": "2001:db8:2::46",
+                                "as_macro": "AS-IBIS",
+                                "routeserver": false,
+                                "mac_addresses": [],
+                                "max_prefix": 1000
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

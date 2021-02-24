@@ -231,19 +231,6 @@ class VlanController extends Doctrine2Frontend
     }
 
     /**
-     * Overriding optional method to clear cached entries:
-     *
-     * @param string $action Either 'add', 'edit', 'delete'
-     * @return bool
-     */
-    protected function postFlush( string $action ): bool
-    {
-        // this is created in Repositories\Vlan::getNames()
-        Cache::forget( VlanRepository::ALL_CACHE_KEY );
-        return true;
-    }
-
-    /**
      * @inheritdoc
      */
     protected function preDelete(): bool

@@ -45,7 +45,7 @@ class OUI extends EntityRepository
      */
     public function clear()
     {
-        return $this->getEntityManager()->createQuery( "DELETE FROM Entities\\OUI" )->execute();
+        return $this->getEntityManager()->createQuery( "DELETE FROM Entities\OUI" )->execute();
     }
 
     /**

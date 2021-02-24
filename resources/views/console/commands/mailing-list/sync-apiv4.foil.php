@@ -32,7 +32,7 @@ curl -sf -H "X-IXP-Manager-API-Key: $KEY" \
     | <?= config( 'mailinglists.mailman.cmds.add_members', 'XXX' ) ?> <?= $name ?> >/dev/null
 
 # Remove subscriptions from the list
-curl -sf -H "X-IXP-Manager-API-Key: $KEY" \ 
+curl -sf -H "X-IXP-Manager-API-Key: $KEY" \
     -X GET $URL/unsubscribed/<?= $name ?> \
     | <?= config( 'mailinglists.mailman.cmds.remove_members', 'XXX' ) ?> <?= $name ?> >/dev/null
 

@@ -38,6 +38,33 @@
         </div>
 
 
+
+        <div class="btn-group btn-group-sm">
+            <button type="button" class="btn btn-white dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <?= $t->vlan ? $t->vlan->getName() : "All VLANs" ?>
+            </button>
+
+
+            <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
+                <a class="dropdown-item <?= !$t->vlan ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "vlan" => 0 ] ) ?>">
+                    All VLANs
+                </a>
+
+
+                <div class="dropdown-divider"></div>
+
+                <?php foreach( $t->vlans as $id => $name ): ?>
+                    <a class="dropdown-item <?= $t->vlan && $t->vlan->getId() == $id ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "vlan" => $id ] ) ?>">
+                        <?= $name ?>
+                    </a>
+
+                <?php endforeach; ?>
+
+            </div>
+        </div>
+
+
+
         <div class="btn-group btn-group-sm">
             <button type="button" class="btn btn-white dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <?= $t->s ? $t->s->getCabinet()->getLocation()->getName() : ( $t->location ? $t->location->getName() : "All Facilities" ) ?>
@@ -111,7 +138,7 @@
         </div>
 
 
-        <a class="btn btn-white" href="<?= route( "switch@configuration", [ "switch" => 0, "infra" => 0, "location" => 0, "speed" => 0 ] ) ?>">
+        <a class="btn btn-white" href="<?= route( "switch@configuration", [ "switch" => 0, "infra" => 0, "location" => 0, "speed" => 0, 'vlan' => 0 ] ) ?>">
             Clear
         </a>
 
@@ -124,6 +151,15 @@
 <div class="row">
 
     <div class="col-sm-12">
+
+
+
+        <?php if( $t->summary ): ?>
+            <p>
+                <?= $t->summary ?>
+            </p>
+        <?php endif; ?>
+
 
         <table id="list-configuration" class="table table-striped table-bordered" width="100%">
 
@@ -176,17 +212,21 @@
                         <?= $conf[ "switchid" ] ?>
                     </td>
                     <td>
-                        <?php if( Auth::getUser()->isSuperUser() ): ?>
-                            <a href="<?= route( "customer@overview" , [ "id" => $conf[ "custid" ] ] ) ?>"><?= $conf[ "customer" ] ?></a>
-                        <?php else: ?>
-                            <a href="<?= route( "customer@detail"   , [ "id" => $conf[ "custid" ] ] ) ?>"><?= $conf[ "customer" ] ?></a>
+                        <?php if( $conf[ "custid" ] ): ?>
+                            <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                <a href="<?= route( "customer@overview" , [ "id" => $conf[ "custid" ] ] ) ?>"><?= $conf[ "customer" ] ?></a>
+                            <?php else: ?>
+                                <a href="<?= route( "customer@detail"   , [ "id" => $conf[ "custid" ] ] ) ?>"><?= $conf[ "customer" ] ?></a>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </td>
                     <td>
-                        <?php if( Auth::getUser()->isSuperUser() ): ?>
-                            <a href="<?= route( "switch@port-report"    , [ "id" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
-                        <?php else: ?>
-                            <a href="<?= route( "switch@configuration"  , [ "id" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
+                        <?php if( $conf[ "switchid" ] ): ?>
+                            <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                <a href="<?= route( "switch@port-report"    , [ "id" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
+                            <?php else: ?>
+                                <a href="<?= route( "switch@configuration"  , [ "id" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </td>
                     <td>

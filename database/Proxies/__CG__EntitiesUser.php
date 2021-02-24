@@ -26,7 +26,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * @var boolean flag indicating if this object was already initialized
      *
-     * @see \Doctrine\Common\Persistence\Proxy::__isInitialized
+     * @see \Doctrine\Persistence\Proxy::__isInitialized
      */
     public $__isInitialized__ = false;
 
@@ -59,18 +59,18 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     }
 
     /**
-     * 
+     * {@inheritDoc}
      * @param string $name
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         if (\array_key_exists($name, self::$lazyPropertiesNames)) {
             $this->__initializer__ && $this->__initializer__->__invoke($this, '__get', [$name]);
-
             return $this->$name;
         }
 
-        trigger_error(sprintf('Undefined property: %s::$%s', __CLASS__, $name), E_USER_NOTICE);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__get', [$name]);
+        return parent::__get($name);
     }
 
     /**
@@ -114,10 +114,10 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Contact', 'Children', 'PasswordSecurity', 'UserRememberTokens', '_className', '_preferenceClassName'];
+            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Contact', 'Children', 'User2FA', 'UserRememberToken', '_className', '_preferenceClassName'];
         }
 
-        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Contact', 'Children', 'PasswordSecurity', 'UserRememberTokens', '_className', '_preferenceClassName'];
+        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Contact', 'Children', 'User2FA', 'UserRememberToken', '_className', '_preferenceClassName'];
     }
 
     /**
@@ -573,6 +573,17 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getCurrentCustomerToUser(): ?\Entities\CustomerToUser
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCurrentCustomerToUser', []);
+
+        return parent::getCurrentCustomerToUser();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function addPreference(\Entities\UserPreference $preferences)
     {
 
@@ -837,78 +848,100 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setPasswordSecurity(\Entities\PasswordSecurity $passwordSecurity)
+    public function setUser2FA(?\Entities\User2FA $user2fa)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPasswordSecurity', [$passwordSecurity]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser2FA', [$user2fa]);
 
-        return parent::setPasswordSecurity($passwordSecurity);
+        return parent::setUser2FA($user2fa);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getPasswordSecurity()
+    public function getUser2FA()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPasswordSecurity', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser2FA', []);
 
-        return parent::getPasswordSecurity();
+        return parent::getUser2FA();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function is2FARequired()
+    public function is2faEnforced()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'is2FARequired', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'is2faEnforced', []);
 
-        return parent::is2FARequired();
+        return parent::is2faEnforced();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function is2FAenabled()
+    public function is2faEnabled()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'is2FAenabled', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'is2faEnabled', []);
 
-        return parent::is2FAenabled();
+        return parent::is2faEnabled();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function addUserRememberTokens(\Entities\UserRememberTokens $userRememberTokens)
+    public function is2faAuthRequiredForSession()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addUserRememberTokens', [$userRememberTokens]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'is2faAuthRequiredForSession', []);
 
-        return parent::addUserRememberTokens($userRememberTokens);
+        return parent::is2faAuthRequiredForSession();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function removeRememberTokens(\Entities\UserRememberTokens $userRememberTokens)
+    public function addUserRememberToken(\Entities\UserRememberToken $UserRememberToken)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeRememberTokens', [$userRememberTokens]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addUserRememberToken', [$UserRememberToken]);
 
-        return parent::removeRememberTokens($userRememberTokens);
+        return parent::addUserRememberToken($UserRememberToken);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function RememberTokens()
+    public function removeRememberTokens(\Entities\UserRememberToken $UserRememberToken)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'RememberTokens', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeRememberTokens', [$UserRememberToken]);
 
-        return parent::RememberTokens();
+        return parent::removeRememberTokens($UserRememberToken);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUserRememberTokens()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUserRememberTokens', []);
+
+        return parent::getUserRememberTokens();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isAssociate(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isAssociate', []);
+
+        return parent::isAssociate();
     }
 
     /**

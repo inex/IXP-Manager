@@ -44,6 +44,15 @@ class EventServiceProvider extends ServiceProvider {
      * @var array
      */
     protected $listen = [
+
+        \Illuminate\Auth\Events\Login::class => [
+            \IXP\Listeners\Auth\LoginSuccessful::class
+        ],
+
+        \Illuminate\Auth\Events\Failed::class => [
+            \IXP\Listeners\Auth\LoginFailed::class
+        ],
+
         'IXP\Events\Customer\BillingDetailsChanged' => [
             'IXP\Listeners\Customer\BillingDetailsChanged'
         ],
@@ -73,6 +82,10 @@ class EventServiceProvider extends ServiceProvider {
 
         'IXP\Events\Auth\PasswordReset' => [
             'IXP\Listeners\Auth\PasswordReset'
+        ],
+
+        \PragmaRX\Google2FALaravel\Events\LoginSucceeded::class => [
+            \IXP\Listeners\Auth\Google2FALoginSucceeded::class
         ],
 
         \SocialiteProviders\Manager\SocialiteWasCalled::class => [

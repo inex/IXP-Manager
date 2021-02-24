@@ -25,7 +25,7 @@ use Auth, Gate;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
-use IXP\Contracts\Auth\DoctrineUserProvider;
+use IXP\Services\Auth\DoctrineUserProvider;
 use IXP\Services\Auth\SessionGuard;
 
 class AuthServiceProvider extends ServiceProvider

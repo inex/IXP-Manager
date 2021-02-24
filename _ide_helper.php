@@ -2,8 +2,8 @@
 // @formatter:off
 
 /**
- * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 6.12.0 on 2020-01-21 15:31:54.
+ * A helper file for Laravel, to provide autocomplete information to your IDE
+ * Generated for Laravel 6.18.32 on 2020-08-05 23:36:11.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -333,10 +333,10 @@ namespace Illuminate\Support\Facades {
          * @return string|bool 
          * @static 
          */ 
-        public static function environment($environments = null)
+        public static function environment(...$environments)
         {
                         /** @var \Illuminate\Foundation\Application $instance */
-                        return $instance->environment($environments);
+                        return $instance->environment(...$environments);
         }
         
         /**
@@ -506,8 +506,6 @@ namespace Illuminate\Support\Facades {
         
         /**
          * Resolve the given type from the container.
-         * 
-         * (Overriding Container::make)
          *
          * @param string $abstract
          * @param array $parameters
@@ -522,8 +520,6 @@ namespace Illuminate\Support\Facades {
         
         /**
          * Determine if the given abstract type has been bound.
-         * 
-         * (Overriding Container::bound)
          *
          * @param string $abstract
          * @return bool 
@@ -1835,71 +1831,20 @@ namespace Illuminate\Support\Facades {
         
         /**
          * Get the currently authenticated user.
+         * 
+         * Overrides Laravel's default version which is a single shared token so we
+         * can have a per-browser / device token.
+         * 
+         * We need to override so we can /immediately/ log out users if the current user session
+         * was deleted (by the user) from another session.
          *
-         * @return \IXP\Services\Auth\AuthenticatableContract|null 
+         * @return \Entities\User|null 
          * @static 
          */ 
         public static function user()
         {
                         /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->user();
-        }
-        
-        /**
-         * If the user check remember me in the OTP validation form
-         *
-         * @param \IXP\Services\Auth\AuthenticatableContract $user
-         * @param bool $remember
-         * @return void 
-         * @throws 
-         * @static 
-         */ 
-        public static function RememberMeViaOTP($user, $remember = false)
-        {
-                        /** @var \IXP\Services\Auth\SessionGuard $instance */
-                        $instance->RememberMeViaOTP($user, $remember);
-        }
-        
-        /**
-         * Log a user into the application.
-         *
-         * @param \IXP\Services\Auth\AuthenticatableContract $user
-         * @param bool $remember
-         * @return void 
-         * @static 
-         */ 
-        public static function login($user, $remember = false)
-        {
-                        /** @var \IXP\Services\Auth\SessionGuard $instance */
-                        $instance->login($user, $remember);
-        }
-        
-        /**
-         * Log the user out of the application.
-         *
-         * @return void 
-         * @static 
-         */ 
-        public static function logout()
-        {
-                        /** @var \IXP\Services\Auth\SessionGuard $instance */
-                        $instance->logout();
-        }
-        
-        /**
-         * Invalidate other sessions for the current user.
-         * 
-         * The application must be using the AuthenticateSession middleware.
-         *
-         * @param string $password
-         * @param string $attribute
-         * @return bool|null 
-         * @static 
-         */ 
-        public static function logoutOtherDevices($password, $attribute = 'password')
-        {
-                        /** @var \IXP\Services\Auth\SessionGuard $instance */
-                        return $instance->logoutOtherDevices($password, $attribute);
         }
         
         /**
@@ -2018,6 +1963,34 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Log a user into the application.
+         *
+         * @param \Illuminate\Contracts\Auth\Authenticatable $user
+         * @param bool $remember
+         * @return void 
+         * @static 
+         */ 
+        public static function login($user, $remember = false)
+        {
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
+                        $instance->login($user, $remember);
+        }
+        
+        /**
+         * Log the user out of the application.
+         *
+         * @return void 
+         * @static 
+         */ 
+        public static function logout()
+        {
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
+                        $instance->logout();
+        }
+        
+        /**
          * Log the user out of the application on their current device only.
          *
          * @return void 
@@ -2028,6 +2001,23 @@ namespace Illuminate\Support\Facades {
             //Method inherited from \Illuminate\Auth\SessionGuard            
                         /** @var \IXP\Services\Auth\SessionGuard $instance */
                         $instance->logoutCurrentDevice();
+        }
+        
+        /**
+         * Invalidate other sessions for the current user.
+         * 
+         * The application must be using the AuthenticateSession middleware.
+         *
+         * @param string $password
+         * @param string $attribute
+         * @return bool|null 
+         * @static 
+         */ 
+        public static function logoutOtherDevices($password, $attribute = 'password')
+        {
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
+                        return $instance->logoutOtherDevices($password, $attribute);
         }
         
         /**
@@ -2460,10 +2450,10 @@ namespace Illuminate\Support\Facades {
          * @return bool 
          * @static 
          */ 
-        public static function check($name, $parameters = null)
+        public static function check($name, ...$parameters)
         {
                         /** @var \Illuminate\View\Compilers\BladeCompiler $instance */
-                        return $instance->check($name, $parameters);
+                        return $instance->check($name, ...$parameters);
         }
         
         /**
@@ -2781,13 +2771,26 @@ namespace Illuminate\Support\Facades {
          *
          * @param mixed $command
          * @return mixed 
-         * @throws \RuntimeException
          * @static 
          */ 
         public static function dispatchToQueue($command)
         {
                         /** @var \Illuminate\Bus\Dispatcher $instance */
                         return $instance->dispatchToQueue($command);
+        }
+        
+        /**
+         * Dispatch a command to its appropriate handler after the current process.
+         *
+         * @param mixed $command
+         * @param mixed $handler
+         * @return void 
+         * @static 
+         */ 
+        public static function dispatchAfterResponse($command, $handler = null)
+        {
+                        /** @var \Illuminate\Bus\Dispatcher $instance */
+                        $instance->dispatchAfterResponse($command, $handler);
         }
         
         /**
@@ -2859,6 +2862,48 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Assert if a job was dispatched after the response was sent based on a truth-test callback.
+         *
+         * @param string $command
+         * @param callable|int|null $callback
+         * @return void 
+         * @static 
+         */ 
+        public static function assertDispatchedAfterResponse($command, $callback = null)
+        {
+                        /** @var \Illuminate\Support\Testing\Fakes\BusFake $instance */
+                        $instance->assertDispatchedAfterResponse($command, $callback);
+        }
+        
+        /**
+         * Assert if a job was pushed after the response was sent a number of times.
+         *
+         * @param string $command
+         * @param int $times
+         * @return void 
+         * @static 
+         */ 
+        public static function assertDispatchedAfterResponseTimes($command, $times = 1)
+        {
+                        /** @var \Illuminate\Support\Testing\Fakes\BusFake $instance */
+                        $instance->assertDispatchedAfterResponseTimes($command, $times);
+        }
+        
+        /**
+         * Determine if a job was dispatched based on a truth-test callback.
+         *
+         * @param string $command
+         * @param callable|null $callback
+         * @return void 
+         * @static 
+         */ 
+        public static function assertNotDispatchedAfterResponse($command, $callback = null)
+        {
+                        /** @var \Illuminate\Support\Testing\Fakes\BusFake $instance */
+                        $instance->assertNotDispatchedAfterResponse($command, $callback);
+        }
+        
+        /**
          * Get all of the jobs matching a truth-test callback.
          *
          * @param string $command
@@ -2873,6 +2918,20 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Get all of the jobs dispatched after the response was sent matching a truth-test callback.
+         *
+         * @param string $command
+         * @param callable|null $callback
+         * @return \Illuminate\Support\Collection 
+         * @static 
+         */ 
+        public static function dispatchedAfterResponse($command, $callback = null)
+        {
+                        /** @var \Illuminate\Support\Testing\Fakes\BusFake $instance */
+                        return $instance->dispatchedAfterResponse($command, $callback);
+        }
+        
+        /**
          * Determine if there are any stored commands for a given class.
          *
          * @param string $command
@@ -2883,6 +2942,19 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Support\Testing\Fakes\BusFake $instance */
                         return $instance->hasDispatched($command);
+        }
+        
+        /**
+         * Determine if there are any stored commands for a given class.
+         *
+         * @param string $command
+         * @return bool 
+         * @static 
+         */ 
+        public static function hasDispatchedAfterResponse($command)
+        {
+                        /** @var \Illuminate\Support\Testing\Fakes\BusFake $instance */
+                        return $instance->hasDispatchedAfterResponse($command);
         }
          
     }
@@ -3783,7 +3855,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $key
          * @param mixed $default
-         * @param string $path
+         * @param string|null $path
          * @return \Symfony\Component\HttpFoundation\Cookie 
          * @static 
          */ 
@@ -3800,10 +3872,10 @@ namespace Illuminate\Support\Facades {
          * @return void 
          * @static 
          */ 
-        public static function queue($parameters = null)
+        public static function queue(...$parameters)
         {
                         /** @var \Illuminate\Cookie\CookieJar $instance */
-                        $instance->queue($parameters);
+                        $instance->queue(...$parameters);
         }
         
         /**
@@ -5025,7 +5097,7 @@ namespace Illuminate\Support\Facades {
          * Register an event listener with the dispatcher.
          *
          * @param string|array $events
-         * @param mixed $listener
+         * @param \Closure|string $listener
          * @return void 
          * @static 
          */ 
@@ -5046,6 +5118,19 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Events\Dispatcher $instance */
                         return $instance->hasListeners($eventName);
+        }
+        
+        /**
+         * Determine if the given event has any wildcard listeners.
+         *
+         * @param string $eventName
+         * @return bool 
+         * @static 
+         */ 
+        public static function hasWildcardListeners($eventName)
+        {
+                        /** @var \Illuminate\Events\Dispatcher $instance */
+                        return $instance->hasWildcardListeners($eventName);
         }
         
         /**
@@ -5194,6 +5279,45 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Events\Dispatcher $instance */
                         return $instance->setQueueResolver($resolver);
+        }
+        
+        /**
+         * Register a custom macro.
+         *
+         * @param string $name
+         * @param object|callable $macro
+         * @return void 
+         * @static 
+         */ 
+        public static function macro($name, $macro)
+        {
+                        \Illuminate\Events\Dispatcher::macro($name, $macro);
+        }
+        
+        /**
+         * Mix another object into the class.
+         *
+         * @param object $mixin
+         * @param bool $replace
+         * @return void 
+         * @throws \ReflectionException
+         * @static 
+         */ 
+        public static function mixin($mixin, $replace = true)
+        {
+                        \Illuminate\Events\Dispatcher::mixin($mixin, $replace);
+        }
+        
+        /**
+         * Checks if macro is registered.
+         *
+         * @param string $name
+         * @return bool 
+         * @static 
+         */ 
+        public static function hasMacro($name)
+        {
+                        return \Illuminate\Events\Dispatcher::hasMacro($name);
         }
         
         /**
@@ -5703,6 +5827,21 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Filesystem\Filesystem $instance */
                         return $instance->directories($directory);
+        }
+        
+        /**
+         * Ensure a directory exists.
+         *
+         * @param string $path
+         * @param int $mode
+         * @param bool $recursive
+         * @return void 
+         * @static 
+         */ 
+        public static function ensureDirectoryExists($path, $mode = 493, $recursive = true)
+        {
+                        /** @var \Illuminate\Filesystem\Filesystem $instance */
+                        $instance->ensureDirectoryExists($path, $mode, $recursive);
         }
         
         /**
@@ -6604,7 +6743,7 @@ namespace Illuminate\Support\Facades {
          * Get a log channel instance.
          *
          * @param string|null $channel
-         * @return mixed 
+         * @return \Psr\Log\LoggerInterface 
          * @static 
          */ 
         public static function channel($channel = null)
@@ -6617,7 +6756,7 @@ namespace Illuminate\Support\Facades {
          * Get a log driver instance.
          *
          * @param string|null $driver
-         * @return mixed 
+         * @return \Psr\Log\LoggerInterface 
          * @static 
          */ 
         public static function driver($driver = null)
@@ -6680,7 +6819,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Unset the given channel instance.
          *
-         * @param string|null $name
+         * @param string|null $driver
          * @return \Illuminate\Log\LogManager 
          * @static 
          */ 
@@ -7453,6 +7592,7 @@ namespace Illuminate\Support\Facades {
          * @param string $notification
          * @param callable|null $callback
          * @return void 
+         * @throws \Exception
          * @static 
          */ 
         public static function assertSentTo($notifiable, $notification, $callback = null)
@@ -7483,6 +7623,7 @@ namespace Illuminate\Support\Facades {
          * @param string $notification
          * @param callable|null $callback
          * @return void 
+         * @throws \Exception
          * @static 
          */ 
         public static function assertNotSentTo($notifiable, $notification, $callback = null)
@@ -7856,6 +7997,20 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Support\Testing\Fakes\QueueFake $instance */
                         $instance->assertPushedWithChain($job, $expectedChain, $callback);
+        }
+        
+        /**
+         * Assert if a job was pushed with an empty chain based on a truth-test callback.
+         *
+         * @param string $job
+         * @param callable|null $callback
+         * @return void 
+         * @static 
+         */ 
+        public static function assertPushedWithoutChain($job, $callback = null)
+        {
+                        /** @var \Illuminate\Support\Testing\Fakes\QueueFake $instance */
+                        $instance->assertPushedWithoutChain($job, $callback);
         }
         
         /**
@@ -8364,8 +8519,6 @@ namespace Illuminate\Support\Facades {
     /**
      * 
      *
-     * @see \Illuminate\Redis\RedisManager
-     * @see \Illuminate\Contracts\Redis\Factory
      */ 
     class Redis {
         
@@ -8610,10 +8763,10 @@ namespace Illuminate\Support\Facades {
          * @return bool 
          * @static 
          */ 
-        public static function is($patterns = null)
+        public static function is(...$patterns)
         {
                         /** @var \Illuminate\Http\Request $instance */
-                        return $instance->is($patterns);
+                        return $instance->is(...$patterns);
         }
         
         /**
@@ -8623,10 +8776,10 @@ namespace Illuminate\Support\Facades {
          * @return bool 
          * @static 
          */ 
-        public static function routeIs($patterns = null)
+        public static function routeIs(...$patterns)
         {
                         /** @var \Illuminate\Http\Request $instance */
-                        return $instance->routeIs($patterns);
+                        return $instance->routeIs(...$patterns);
         }
         
         /**
@@ -8636,10 +8789,10 @@ namespace Illuminate\Support\Facades {
          * @return bool 
          * @static 
          */ 
-        public static function fullUrlIs($patterns = null)
+        public static function fullUrlIs(...$patterns)
         {
                         /** @var \Illuminate\Http\Request $instance */
-                        return $instance->fullUrlIs($patterns);
+                        return $instance->fullUrlIs(...$patterns);
         }
         
         /**
@@ -8717,7 +8870,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Get the client user agent.
          *
-         * @return string 
+         * @return string|null 
          * @static 
          */ 
         public static function userAgent()
@@ -9947,7 +10100,9 @@ namespace Illuminate\Support\Facades {
          * Gets the preferred format for the response by inspecting, in the following order:
          *   * the request format set using setRequestFormat
          *   * the values of the Accept HTTP header
-         *   * the content type of the body of the request.
+         * 
+         * Note that if you use this method, you should send the "Vary: Accept" header
+         * in the response to prevent any issues with intermediary HTTP caches.
          *
          * @static 
          */ 
@@ -10595,9 +10750,9 @@ namespace Illuminate\Support\Facades {
          *
          * @static 
          */ 
-        public static function validate($rules, $params = null)
+        public static function validate($rules, ...$params)
         {
-                        return \Illuminate\Http\Request::validate($rules, $params);
+                        return \Illuminate\Http\Request::validate($rules, ...$params);
         }
         
         /**
@@ -10605,9 +10760,9 @@ namespace Illuminate\Support\Facades {
          *
          * @static 
          */ 
-        public static function validateWithBag($errorBag, $rules, $params = null)
+        public static function validateWithBag($errorBag, $rules, ...$params)
         {
-                        return \Illuminate\Http\Request::validateWithBag($errorBag, $rules, $params);
+                        return \Illuminate\Http\Request::validateWithBag($errorBag, $rules, ...$params);
         }
         
         /**
@@ -11589,10 +11744,10 @@ namespace Illuminate\Support\Facades {
          * @return bool 
          * @static 
          */ 
-        public static function is($patterns = null)
+        public static function is(...$patterns)
         {
                         /** @var \Illuminate\Routing\Router $instance */
-                        return $instance->is($patterns);
+                        return $instance->is(...$patterns);
         }
         
         /**
@@ -11602,10 +11757,10 @@ namespace Illuminate\Support\Facades {
          * @return bool 
          * @static 
          */ 
-        public static function currentRouteNamed($patterns = null)
+        public static function currentRouteNamed(...$patterns)
         {
                         /** @var \Illuminate\Routing\Router $instance */
-                        return $instance->currentRouteNamed($patterns);
+                        return $instance->currentRouteNamed(...$patterns);
         }
         
         /**
@@ -11627,10 +11782,10 @@ namespace Illuminate\Support\Facades {
          * @return bool 
          * @static 
          */ 
-        public static function uses($patterns = null)
+        public static function uses(...$patterns)
         {
                         /** @var \Illuminate\Routing\Router $instance */
-                        return $instance->uses($patterns);
+                        return $instance->uses(...$patterns);
         }
         
         /**
@@ -13051,7 +13206,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $path
          * @param \Illuminate\Http\File|\Illuminate\Http\UploadedFile|string $file
-         * @param array $options
+         * @param mixed $options
          * @return string|false 
          * @static 
          */ 
@@ -13067,7 +13222,7 @@ namespace Illuminate\Support\Facades {
          * @param string $path
          * @param \Illuminate\Http\File|\Illuminate\Http\UploadedFile|string $file
          * @param string $name
-         * @param array $options
+         * @param mixed $options
          * @return string|false 
          * @static 
          */ 
@@ -13113,7 +13268,8 @@ namespace Illuminate\Support\Facades {
          * @return bool 
          * @static 
          */ 
-        public static function prepend($path, $data, $separator = '')
+        public static function prepend($path, $data, $separator = '
+')
         {
                         /** @var \Illuminate\Filesystem\FilesystemAdapter $instance */
                         return $instance->prepend($path, $data, $separator);
@@ -13128,7 +13284,8 @@ namespace Illuminate\Support\Facades {
          * @return bool 
          * @static 
          */ 
-        public static function append($path, $data, $separator = '')
+        public static function append($path, $data, $separator = '
+')
         {
                         /** @var \Illuminate\Filesystem\FilesystemAdapter $instance */
                         return $instance->append($path, $data, $separator);
@@ -14964,7 +15121,7 @@ namespace LaravelDoctrine\ORM\Facades {
     /**
      * 
      *
-     * @method statuc \Doctrine\ORM\Utility\IdentifierFlattener getIdentifierFlattener()
+     * @method static \Doctrine\ORM\Utility\IdentifierFlattener getIdentifierFlattener()
      */ 
     class EntityManager {
         
@@ -15207,9 +15364,9 @@ namespace LaravelDoctrine\ORM\Facades {
          *
          * @param string|null $entityName if given, only entities of this type will get detached
          * @return void 
-         * @throws ORMInvalidArgumentException                           if a non-null non-string value is given
-         * @throws \Doctrine\Common\Persistence\Mapping\MappingException if a $entityName is given, but that entity is not
-         *                                                               found in the mappings
+         * @throws ORMInvalidArgumentException If a non-null non-string value is given.
+         * @throws MappingException            If a $entityName is given, but that entity is not
+         *                                     found in the mappings.
          * @static 
          */ 
         public static function clear($entityName = null)
@@ -15349,7 +15506,7 @@ namespace LaravelDoctrine\ORM\Facades {
          * Gets the repository for an entity class.
          *
          * @param string $entityName The name of the entity.
-         * @return \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository The repository class.
+         * @return \Doctrine\ORM\ObjectRepository|\Doctrine\ORM\EntityRepository The repository class.
          * @static 
          */ 
         public static function getRepository($entityName)
@@ -15897,7 +16054,7 @@ namespace LaravelDoctrine\ORM\Facades {
     /**
      * 
      *
-     * @method statuc \Doctrine\ORM\Utility\IdentifierFlattener getIdentifierFlattener()
+     * @method static \Doctrine\ORM\Utility\IdentifierFlattener getIdentifierFlattener()
      */ 
     class EntityManager {
         
@@ -16140,9 +16297,9 @@ namespace LaravelDoctrine\ORM\Facades {
          *
          * @param string|null $entityName if given, only entities of this type will get detached
          * @return void 
-         * @throws ORMInvalidArgumentException                           if a non-null non-string value is given
-         * @throws \Doctrine\Common\Persistence\Mapping\MappingException if a $entityName is given, but that entity is not
-         *                                                               found in the mappings
+         * @throws ORMInvalidArgumentException If a non-null non-string value is given.
+         * @throws MappingException            If a $entityName is given, but that entity is not
+         *                                     found in the mappings.
          * @static 
          */ 
         public static function clear($entityName = null)
@@ -16282,7 +16439,7 @@ namespace LaravelDoctrine\ORM\Facades {
          * Gets the repository for an entity class.
          *
          * @param string $entityName The name of the entity.
-         * @return \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository The repository class.
+         * @return \Doctrine\ORM\ObjectRepository|\Doctrine\ORM\EntityRepository The repository class.
          * @static 
          */ 
         public static function getRepository($entityName)
@@ -16592,6 +16749,7 @@ namespace IXP\Support\Facades {
          *
          * @param string $trunkname
          * @return \IXP\Services\Grapher\Graph\Trunk 
+         * @throws \IXP\Exceptions\Services\Grapher\ParameterException
          * @static 
          */ 
         public static function trunk($trunkname)
@@ -16685,6 +16843,7 @@ namespace IXP\Support\Facades {
          *
          * @param \IXP\Services\VlanInterface $vli
          * @return \IXP\Services\LatencyGraph 
+         * @throws \IXP\Exceptions\Services\Grapher\ParameterException
          * @static 
          */ 
         public static function latency($vli)
@@ -16703,6 +16862,17 @@ namespace IXP\Support\Facades {
         {
                         /** @var \IXP\Services\Grapher $instance */
                         return $instance->cacheEnabled();
+        }
+        
+        /**
+         * Manually disable the cache
+         *
+         * @static 
+         */ 
+        public static function disableCache()
+        {
+                        /** @var \IXP\Services\Grapher $instance */
+                        return $instance->disableCache();
         }
         
         /**
@@ -17151,6 +17321,19 @@ namespace Barryvdh\DomPDF {
         {
                         /** @var \Barryvdh\DomPDF\PDF $instance */
                         return $instance->loadFile($file);
+        }
+        
+        /**
+         * Add metadata info
+         *
+         * @param array $info
+         * @return static 
+         * @static 
+         */ 
+        public static function addInfo($info)
+        {
+                        /** @var \Barryvdh\DomPDF\PDF $instance */
+                        return $instance->addInfo($info);
         }
         
         /**
@@ -19079,8 +19262,8 @@ namespace Webpatser\Countries {
          * Define a one-to-one relationship.
          *
          * @param string $related
-         * @param string $foreignKey
-         * @param string $localKey
+         * @param string|null $foreignKey
+         * @param string|null $localKey
          * @return \Illuminate\Database\Eloquent\Relations\HasOne 
          * @static 
          */ 
@@ -19115,9 +19298,9 @@ namespace Webpatser\Countries {
          *
          * @param string $related
          * @param string $name
-         * @param string $type
-         * @param string $id
-         * @param string $localKey
+         * @param string|null $type
+         * @param string|null $id
+         * @param string|null $localKey
          * @return \Illuminate\Database\Eloquent\Relations\MorphOne 
          * @static 
          */ 
@@ -19132,9 +19315,9 @@ namespace Webpatser\Countries {
          * Define an inverse one-to-one or many relationship.
          *
          * @param string $related
-         * @param string $foreignKey
-         * @param string $ownerKey
-         * @param string $relation
+         * @param string|null $foreignKey
+         * @param string|null $ownerKey
+         * @param string|null $relation
          * @return \Illuminate\Database\Eloquent\Relations\BelongsTo 
          * @static 
          */ 
@@ -19148,10 +19331,10 @@ namespace Webpatser\Countries {
         /**
          * Define a polymorphic, inverse one-to-one or many relationship.
          *
-         * @param string $name
-         * @param string $type
-         * @param string $id
-         * @param string $ownerKey
+         * @param string|null $name
+         * @param string|null $type
+         * @param string|null $id
+         * @param string|null $ownerKey
          * @return \Illuminate\Database\Eloquent\Relations\MorphTo 
          * @static 
          */ 
@@ -19179,8 +19362,8 @@ namespace Webpatser\Countries {
          * Define a one-to-many relationship.
          *
          * @param string $related
-         * @param string $foreignKey
-         * @param string $localKey
+         * @param string|null $foreignKey
+         * @param string|null $localKey
          * @return \Illuminate\Database\Eloquent\Relations\HasMany 
          * @static 
          */ 
@@ -19215,9 +19398,9 @@ namespace Webpatser\Countries {
          *
          * @param string $related
          * @param string $name
-         * @param string $type
-         * @param string $id
-         * @param string $localKey
+         * @param string|null $type
+         * @param string|null $id
+         * @param string|null $localKey
          * @return \Illuminate\Database\Eloquent\Relations\MorphMany 
          * @static 
          */ 
@@ -19232,12 +19415,12 @@ namespace Webpatser\Countries {
          * Define a many-to-many relationship.
          *
          * @param string $related
-         * @param string $table
-         * @param string $foreignPivotKey
-         * @param string $relatedPivotKey
-         * @param string $parentKey
-         * @param string $relatedKey
-         * @param string $relation
+         * @param string|null $table
+         * @param string|null $foreignPivotKey
+         * @param string|null $relatedPivotKey
+         * @param string|null $parentKey
+         * @param string|null $relatedKey
+         * @param string|null $relation
          * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany 
          * @static 
          */ 
@@ -19253,11 +19436,11 @@ namespace Webpatser\Countries {
          *
          * @param string $related
          * @param string $name
-         * @param string $table
-         * @param string $foreignPivotKey
-         * @param string $relatedPivotKey
-         * @param string $parentKey
-         * @param string $relatedKey
+         * @param string|null $table
+         * @param string|null $foreignPivotKey
+         * @param string|null $relatedPivotKey
+         * @param string|null $parentKey
+         * @param string|null $relatedKey
          * @param bool $inverse
          * @return \Illuminate\Database\Eloquent\Relations\MorphToMany 
          * @static 
@@ -19274,11 +19457,11 @@ namespace Webpatser\Countries {
          *
          * @param string $related
          * @param string $name
-         * @param string $table
-         * @param string $foreignPivotKey
-         * @param string $relatedPivotKey
-         * @param string $parentKey
-         * @param string $relatedKey
+         * @param string|null $table
+         * @param string|null $foreignPivotKey
+         * @param string|null $relatedPivotKey
+         * @param string|null $parentKey
+         * @param string|null $relatedKey
          * @return \Illuminate\Database\Eloquent\Relations\MorphToMany 
          * @static 
          */ 
@@ -20073,8 +20256,9 @@ namespace PragmaRX\Google2FALaravel {
          *
          * @param int $length
          * @param string $prefix
-         * @throws Exceptions\InvalidCharactersException
-         * @throws Exceptions\IncompatibleWithGoogleAuthenticatorException
+         * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
+         * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+         * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
          * @return string 
          * @static 
          */ 
@@ -20187,8 +20371,8 @@ namespace PragmaRX\Google2FALaravel {
          * Takes the secret key and the timestamp and returns the one time
          * password.
          *
-         * @param string $secret - Secret key in binary form.
-         * @param int $counter - Timestamp as returned by getTimestamp.
+         * @param string $secret Secret key in binary form.
+         * @param int $counter Timestamp as returned by getTimestamp.
          * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
          * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
          * @throws Exceptions\IncompatibleWithGoogleAuthenticatorException
@@ -20248,6 +20432,7 @@ namespace PragmaRX\Google2FALaravel {
          * Set the HMAC hashing algorithm.
          *
          * @param mixed $algorithm
+         * @throws \PragmaRX\Google2FA\Exceptions\InvalidAlgorithmException
          * @return \PragmaRX\Google2FA\Google2FA 
          * @static 
          */ 
@@ -20314,7 +20499,7 @@ namespace PragmaRX\Google2FALaravel {
          * Verifies a user inputted key against the current timestamp. Checks $window
          * keys either side of the timestamp.
          *
-         * @param string $key - User specified key
+         * @param string $key User specified key
          * @param string $secret
          * @param null|int $window
          * @param null|int $timestamp
@@ -20337,7 +20522,7 @@ namespace PragmaRX\Google2FALaravel {
          * keys either side of the timestamp.
          *
          * @param string $secret
-         * @param string $key - User specified key
+         * @param string $key User specified key
          * @param int|null $window
          * @param null|int $timestamp
          * @param null|int $oldTimestamp
@@ -20361,14 +20546,14 @@ namespace PragmaRX\Google2FALaravel {
          * be used twice.
          *
          * @param string $secret
-         * @param string $key - User specified key
-         * @param int $oldTimestamp - The timestamp from the last verified key
+         * @param string $key User specified key
+         * @param int|null $oldTimestamp The timestamp from the last verified key
          * @param int|null $window
          * @param int|null $timestamp
          * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
          * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
          * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
-         * @return bool|int - false (not verified) or the timestamp of the verified key
+         * @return bool|int 
          * @static 
          */ 
         public static function verifyKeyNewer($secret, $key, $oldTimestamp, $window = null, $timestamp = null)
@@ -20399,8 +20584,10 @@ namespace PragmaRX\Google2FALaravel {
          *
          * @param int $length
          * @param string $prefix
-         * @throws IncompatibleWithGoogleAuthenticatorException
-         * @throws InvalidCharactersException
+         * @throws \Exception
+         * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+         * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
+         * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
          * @return string 
          * @static 
          */ 
@@ -20415,8 +20602,9 @@ namespace PragmaRX\Google2FALaravel {
          * Decodes a base32 string into a binary string.
          *
          * @param string $b32
-         * @throws InvalidCharactersException
-         * @throws IncompatibleWithGoogleAuthenticatorException
+         * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+         * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
+         * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
          * @return string 
          * @static 
          */ 
@@ -20439,6 +20627,20 @@ namespace PragmaRX\Google2FALaravel {
             //Method inherited from \PragmaRX\Google2FA\Google2FA            
                         /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
                         return $instance->toBase32($string);
+        }
+        
+        /**
+         * Get a config value.
+         *
+         * @param $string
+         * @throws \Exception
+         * @return mixed 
+         * @static 
+         */ 
+        public static function config($string, $default = null)
+        {
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->config($string, $default);
         }
         
         /**
@@ -20825,8 +21027,8 @@ namespace Laravel\Socialite\Facades {
         /**
          * Get the default driver name.
          *
-         * @throws \InvalidArgumentException
          * @return string 
+         * @throws \InvalidArgumentException
          * @static 
          */ 
         public static function getDefaultDriver()
@@ -21309,7 +21511,7 @@ namespace  {
             /**
              * Paginate the given query.
              *
-             * @param int $perPage
+             * @param int|null $perPage
              * @param array $columns
              * @param string $pageName
              * @param int|null $page
@@ -21326,7 +21528,7 @@ namespace  {
             /**
              * Paginate the given query into a simple paginator.
              *
-             * @param int $perPage
+             * @param int|null $perPage
              * @param array $columns
              * @param string $pageName
              * @param int|null $page
@@ -21615,8 +21817,8 @@ namespace  {
              *
              * @param callable $callback
              * @param int $count
-             * @param string $column
-             * @param string $alias
+             * @param string|null $column
+             * @param string|null $alias
              * @return bool 
              * @static 
              */ 
@@ -21658,7 +21860,7 @@ namespace  {
              * Pass the query to a given callback.
              *
              * @param callable $callback
-             * @return \Illuminate\Database\Query\Builder 
+             * @return \Illuminate\Database\Eloquent\Builder 
              * @static 
              */ 
             public static function tap($callback)
@@ -21973,7 +22175,7 @@ namespace  {
             /**
              * Add a subselect expression to the query.
              *
-             * @param \Closure|\Illuminate\Database\Query\Builder|string $query
+             * @param \Closure|$this|string $query
              * @param string $as
              * @return \Illuminate\Database\Query\Builder|static 
              * @throws \InvalidArgumentException
@@ -22939,10 +23141,24 @@ namespace  {
              * @return \Illuminate\Database\Query\Builder 
              * @static 
              */ 
-            public static function groupBy($groups = null)
+            public static function groupBy(...$groups)
             {
                                 /** @var \Illuminate\Database\Query\Builder $instance */
-                                return $instance->groupBy($groups);
+                                return $instance->groupBy(...$groups);
+            }
+         
+            /**
+             * Add a raw groupBy clause to the query.
+             *
+             * @param string $sql
+             * @param array $bindings
+             * @return \Illuminate\Database\Query\Builder 
+             * @static 
+             */ 
+            public static function groupByRaw($sql, $bindings = [])
+            {
+                                /** @var \Illuminate\Database\Query\Builder $instance */
+                                return $instance->groupByRaw($sql, $bindings);
             }
          
             /**
@@ -23024,7 +23240,7 @@ namespace  {
             /**
              * Add an "order by" clause to the query.
              *
-             * @param \Closure|\Illuminate\Database\Query\Builder|string $column
+             * @param \Closure|\Illuminate\Database\Query\Builder|\Illuminate\Database\Query\Expression|string $column
              * @param string $direction
              * @return \Illuminate\Database\Query\Builder 
              * @throws \InvalidArgumentException

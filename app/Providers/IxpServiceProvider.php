@@ -60,7 +60,7 @@ class IxpServiceProvider extends ServiceProvider
                         Cache::put( 'admin_home_customers', $customers, 3600 );
                     }
 
-                    $view->with( 'customers', $customers );
+                    $view->with( 'dd_customer_id_name', $customers );
                 }
 
             });

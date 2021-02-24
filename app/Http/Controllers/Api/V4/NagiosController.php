@@ -72,7 +72,7 @@ class NagiosController extends Controller {
             abort(404, 'Unknown template');
         }
 
-        $vlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForProto( $v->getId(), $protocol, false, PhysicalInterfaceEntity::STATUS_CONNECTED );
+        $vlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForProto( $v->getId(), $protocol, PhysicalInterfaceEntity::STATUS_CONNECTED );
 
         return response()
             ->view( $tmpl, [
@@ -225,7 +225,7 @@ class NagiosController extends Controller {
             abort( 404, "No suitable router(s) found." );
         }
 
-        $vlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForProto( $v->getId(), $protocol, false, PhysicalInterfaceEntity::STATUS_CONNECTED );
+        $vlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForProto( $v->getId(), $protocol, PhysicalInterfaceEntity::STATUS_CONNECTED );
 
         return response()
             ->view( $tmpl, [

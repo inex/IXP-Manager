@@ -60,6 +60,13 @@
                     <?php endif; ?>
                 </a>
 
+                <?php if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ): ?>
+                    <div class="dropdown-divider"></div>
+
+                    <a class="dropdown-item" href="<?= route( 'docstore-c-dir@list', [ 'cust' => $c->getId() ] ) ?>">
+                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Documents...
+                    </a>
+                <?php endif; ?>
 
                 <div class="dropdown-divider"></div>
 
@@ -196,8 +203,7 @@
 
             <?php if( $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ): ?>
 
-                <div class="col-md-3 col-lg-5 col-12 tw-mt-6 md:tw-mt-0 tw-text-center">
-                    <span class="lg:tw-inline-block xl:tw-h-full lg:tw-align-middle"></span>
+                <div class="col-md-3 col-lg-5 col-12 tw-mt-6 md:tw-mt-0 tw-text-center align-self-center">
                     <img class="img-fluid lg:tw-inline-block tw-align-middle" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>">
                 </div>
 
@@ -289,6 +295,16 @@
                         </a>
                     </li>
                 <?php endif ?>
+
+
+                <?php if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ): ?>
+                    <li class="nav-item" onclick="window.location.href = '<?= route( 'docstore-c-dir@list', [ 'cust' => $c->getId() ] ) ?>'">
+                        <a class="nav-link" data-toggle="tab" href="">
+                            Documents &raquo;
+                        </a>
+                    </li>
+                <?php endif; ?>
+
 
                 <?php if( $c->getType() != \Entities\Customer::TYPE_ASSOCIATE && ( ! $c->hasLeft() ) ): ?>
 

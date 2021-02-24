@@ -344,7 +344,7 @@
                     . 'order and pay for the connection. This can be used, for example, to reconcile billing.' );
             ?>
 
-            <?= Former::radios( 'Internal_use' )
+            <?= Former::radios( 'Internal Use' )
                 ->radios([
                     'Yes' => ['name' => 'internal_use', 'value' => '1'],
                     'No' => ['name' => 'internal_use', 'value' => '0'],

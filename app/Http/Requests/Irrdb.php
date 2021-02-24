@@ -26,6 +26,7 @@ namespace IXP\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 use Entities\User;
+use IXP\Exceptions\IrrdbManage;
 
 /**
  * IP Address Request
@@ -70,12 +71,13 @@ class Irrdb extends FormRequest
     /**
      * Configure the validator instance.
      *
+     * @param  \Illuminate\Validation\Validator  $validator
      * @return void
      */
-    public function withValidator( )
+    public function withValidator( $validator )
     {
         if( !( $this->customer->isRouteServerClient() && $this->customer->isIrrdbFiltered() ) ) {
-            abort( 404 );
+            throw new IrrdbManage( 'IRRDB only applies to customers who are route server clients which are configured for IRRDB filtering.' );
         }
 
         if( !in_array( $this->protocol, [ 4,6 ] ) ) {

@@ -102,24 +102,24 @@ prefix set martians;
 
     <?php else: ?>
 
-    martians = [
-        10.0.0.0/8+,            # RFC1918 - Private use
-        100.64.0.0/10+,         # RFC6598 - Shared address space
-        127.0.0.0/8+,           # RFC1122 - Loopback
-        169.254.0.0/16+,        # RFC3927 - Link-local
-        172.16.0.0/12+,         # RFC1918 - Private use
-        192.0.0.0/24+,          # multiple RFCs
-        192.0.2.0/24+,          # RFC5737 - Documentation - TEST-NET-1
-        192.168.0.0/16+,        # RFC1918 - Private use
-        198.18.0.0/15+,         # RFC2544 - Benchmarking
-        198.51.100.0/24+,       # RFC5737 - Documentation - TEST-NET-2
-        203.0.113.0/24+,        # RFC5737 - Documentation - TEST-NET-3
-        224.0.0.0/4+,           # RFC3171 - Multicast
-        240.0.0.0/4+,           # RFC1112 - Reserved
-        0.0.0.0/32-,
-        0.0.0.0/0{<?= config( 'ixp.irrdb.min_v4_subnet_size', 24 ) + 1 ?>,32},
-        0.0.0.0/0{0,7}
-    ];
+        martians = [
+            0.0.0.0/32-,            # rfc5735 Special Use IPv4 Addresses
+            0.0.0.0/0{<?= config( 'ixp.irrdb.min_v4_subnet_size', 24 ) + 1 ?>,32},       # Filter small prefixes
+            0.0.0.0/0{0,7},         # rfc1122 Requirements for Internet Hosts -- Communication Layers 3.2.1.3
+            10.0.0.0/8+,            # rfc1918 Address Allocation for Private Internets
+            100.64.0.0/10+,         # rfc6598 IANA-Reserved IPv4 Prefix for Shared Address Space
+            127.0.0.0/8+,           # rfc1122 Requirements for Internet Hosts -- Communication Layers 3.2.1.3
+            169.254.0.0/16+,        # rfc3927 Dynamic Configuration of IPv4 Link-Local Addresses
+            172.16.0.0/12+,         # rfc1918 Address Allocation for Private Internets
+            192.0.0.0/24+,          # rfc6890 Special-Purpose Address Registries
+            192.0.2.0/24+,          # rfc5737 IPv4 Address Blocks Reserved for Documentation
+            192.168.0.0/16+,        # rfc1918 Address Allocation for Private Internets
+            198.18.0.0/15+,         # rfc2544 Benchmarking Methodology for Network Interconnect Devices
+            198.51.100.0/24+,       # rfc5737 IPv4 Address Blocks Reserved for Documentation
+            203.0.113.0/24+,        # rfc5737 IPv4 Address Blocks Reserved for Documentation
+            224.0.0.0/4+,           # rfc1112 Host Extensions for IP Multicasting
+            240.0.0.0/4+            # rfc6890 Special-Purpose Address Registries
+        ];
 
     <?php endif; ?>
 

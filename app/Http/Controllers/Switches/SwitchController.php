@@ -99,12 +99,14 @@ class SwitchController extends Doctrine2Frontend
             'pagetitle'         => 'Switches',
 
             'titleSingular'     => 'Switch',
-            'nameSingular'      => 'a switch',
+            'nameSingular'      => 'switch',
 
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
 
             'viewFolderName'    => 'switches',
+
+            'addRoute'          => route( static::route_prefix() . '@add-by-snmp' ),
 
             'documentation'     => 'https://docs.ixpmanager.org/usage/switches/',
 
@@ -588,22 +590,6 @@ class SwitchController extends Doctrine2Frontend
 
 
     /**
-     * Overriding optional method to clear cached entries:
-     *
-     * @param string $action Either 'add', 'edit', 'delete'
-     * @return bool
-     */
-    protected function postFlush( string $action ): bool
-    {
-        // wipe cached entries
-        // this is created in Repositories\Switcher::getAndCache()
-        D2EM::getRepository( SwitcherEntity::class )->clearCacheAll();
-        return true;
-    }
-
-
-
-    /**
      * @inheritdoc
      */
     protected function preDelete() : bool
@@ -694,7 +680,7 @@ class SwitchController extends Doctrine2Frontend
         $speeds = D2EM::getRepository( PhysicalInterfaceEntity::class )->getAllSpeed();
 
         $switch = false;
-        if( $r->input( 'switch' ) ) {
+        if( $r->input( 'switch', null ) !== null ) {
             /** @var SwitcherEntity $switch */
             if(  $switch = D2EM::getRepository( SwitcherEntity::class )->find( $r->input( 'switch' ) ) ) {
                 $r->session()->put( "switch-configuration-switch", $switch );
@@ -707,9 +693,9 @@ class SwitchController extends Doctrine2Frontend
         }
 
         $infra = false;
-        if( $r->input( 'infra' ) ) {
+        if( $r->input( 'infra', null ) !== null ) {
             /** @var InfrastructureEntity $infra */
-            if(  $infra = D2EM::getRepository( InfrastructureEntity::class )->find( $r->input( 'infra' ) ) ) {
+            if(  $r->input( 'infra' ) && $infra = D2EM::getRepository( InfrastructureEntity::class )->find( $r->input( 'infra' ) ) ) {
                 $r->session()->put( "switch-configuration-infra", $infra );
             } else {
                 $r->session()->remove( "switch-configuration-infra" );
@@ -720,9 +706,9 @@ class SwitchController extends Doctrine2Frontend
         }
 
         $location = false;
-        if( $r->input( 'location' ) ) {
+        if( $r->input( 'location', null ) !== null ) {
             /** @var LocationEntity $facility */
-            if(  $location = D2EM::getRepository( LocationEntity::class )->find( $r->input( 'location' ) ) ) {
+            if(  $r->input( 'location' ) && $location = D2EM::getRepository( LocationEntity::class )->find( $r->input( 'location' ) ) ) {
                 $r->session()->put( "switch-configuration-location", $location );
             } else {
                 $r->session()->remove( "switch-configuration-location" );
@@ -733,7 +719,7 @@ class SwitchController extends Doctrine2Frontend
         }
 
         $speed = false;
-        if( $r->input( 'speed' ) ) {
+        if( $r->input( 'speed', null ) !== null ) {
             $speed = $r->input( 'speed' );
             if( in_array( $r->input( 'speed' ), $speeds) ) {
                 $r->session()->put( "switch-configuration-speed", $speed );
@@ -746,22 +732,35 @@ class SwitchController extends Doctrine2Frontend
         }
 
         $vlan = false;
-        if( $r->input( 'vlan' ) !== null ) {
-            /** @var LocationEntity $facility */
-            $vlan = D2EM::getRepository( VlanEntity::class )->find( $r->input( 'vlan' ) );
+        if( $r->input( 'vlan', null ) !== null ) {
+            if( $vlan = D2EM::getRepository( VlanEntity::class )->find( $r->input( 'vlan' ) ) ) {
+                $r->session()->put( "switch-configuration-vlan", $vlan );
+            } else {
+                $r->session()->remove( "switch-configuration-vlan" );
+                $vlan = false;
+            }
+        } else if( $r->session()->exists( "switch-configuration-vlan" ) ) {
+            $vlan = $r->session()->get( "switch-configuration-vlan" );
         }
 
-        if( $switch || $infra || $location ) {
-            $summary = ":: Connections details for ";
+        if( $switch || $infra || $location || $vlan ) {
+            $summary = "Connections details for: ";
 
             if( $switch ) {
                 $summary .= $switch->getName() . " (on " . $switch->getInfrastructure()->getName() . " at " . $switch->getCabinet()->getLocation()->getName() . ")";
-            } elseif( $infra && $location ){
-                $summary .= $infra->getName() . " at " . $location->getName();
-            } elseif( $infra ){
-                $summary .= $infra->getName();
-            } elseif( $location ){
-                $summary .= $location->getName();
+            } else {
+                if( $infra ){
+                    $summary .= $infra->getName() . ' (infrastructure); ';
+                }
+                if( $location ){
+                    $summary .= $location->getName() . ' (facility); ';
+                }
+                if( $vlan ) {
+                    $summary .= $vlan->getName() . ' (VLAN); ';
+                }
+                if( $speed ) {
+                    $summary .= PhysicalInterfaceEntity::$SPEED[$speed] . '; ';
+                }
             }
 
         } else{
@@ -782,10 +781,12 @@ class SwitchController extends Doctrine2Frontend
             's'                         => $switch,
             'speed'                     => $speed,
             'infra'                     => $infra,
+            'vlan'                      => $vlan,
             'location'                  => $location,
             'summary'                   => $summary,
             'speeds'                    => $speeds,
             'infras'                    => $switch ? [ $switch->getInfrastructure()->getId()          => $switch->getInfrastructure()->getName()           ] : D2EM::getRepository( InfrastructureEntity::class     )->getNames( true ),
+            'vlans'                     => D2EM::getRepository( VlanEntity::class )->getNames(),
             'locations'                 => $switch ? [ $switch->getCabinet()->getLocation()->getId()  => $switch->getCabinet()->getLocation()->getName()   ] : D2EM::getRepository( LocationEntity::class           )->getNames(),
             'switches'                  => D2EM::getRepository( SwitcherEntity::class           )->getByLocationAndInfrastructureAndSpeed( $infra, $location, $speed ),
             'config'                    => $config,
