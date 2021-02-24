@@ -35,7 +35,7 @@
                                                     <?= $t->ee( $router[ 'name' ] ) ?>
                                                 </td>
                                                 <td class="align-middle">
-                                                    <?= $router[ 'last-updated' ]->format( "Y-m-d H:i:s" ) ?>
+                                                    <?= $router[ 'last-updated' ] ? $router[ 'last-updated' ]->format( "Y-m-d H:i:s" ) : '(unknown)' ?>
                                                 </td>
                                                 <td>
                                                     <a class="btn btn-primary" href="<?= url('/lg/' . $t->ee( $router[ 'handle' ] ) ) ?>">Looking Glass</a>

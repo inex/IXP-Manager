@@ -52,25 +52,25 @@ use Illuminate\Support\Facades\{
  * @property int|null $parent_dir_id
  * @property string $name
  * @property string|null $description
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read \IXP\Models\Customer $customer
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerFile[] $files
+ * @property-read EloquentCollection|\IXP\Models\DocstoreCustomerFile[] $files
  * @property-read int|null $files_count
- * @property-read \IXP\Models\DocstoreCustomerDirectory|null $parentDirectory
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerDirectory[] $subDirectories
+ * @property-read DocstoreCustomerDirectory|null $parentDirectory
+ * @property-read EloquentCollection|DocstoreCustomerDirectory[] $subDirectories
  * @property-read int|null $sub_directories_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory whereCustId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory whereParentDirId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @method static Builder|DocstoreCustomerDirectory newModelQuery()
+ * @method static Builder|DocstoreCustomerDirectory newQuery()
+ * @method static Builder|DocstoreCustomerDirectory query()
+ * @method static Builder|DocstoreCustomerDirectory whereCreatedAt($value)
+ * @method static Builder|DocstoreCustomerDirectory whereCustId($value)
+ * @method static Builder|DocstoreCustomerDirectory whereDescription($value)
+ * @method static Builder|DocstoreCustomerDirectory whereId($value)
+ * @method static Builder|DocstoreCustomerDirectory whereName($value)
+ * @method static Builder|DocstoreCustomerDirectory whereParentDirId($value)
+ * @method static Builder|DocstoreCustomerDirectory whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 
 class DocstoreCustomerDirectory extends Model

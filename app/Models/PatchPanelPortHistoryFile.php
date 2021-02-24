@@ -51,19 +51,19 @@ use Illuminate\Support\Collection;
  * @property int $is_private
  * @property string $storage_location
  * @property-read \IXP\Models\PatchPanelPortHistory|null $patchPanelPortHistory
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistoryFile newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistoryFile newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistoryFile query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistoryFile whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistoryFile whereIsPrivate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistoryFile whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistoryFile wherePatchPanelPortHistoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistoryFile whereSize($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistoryFile whereStorageLocation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistoryFile whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistoryFile whereUploadedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistoryFile whereUploadedBy($value)
- * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereIsPrivate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile wherePatchPanelPortHistoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereSize($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereStorageLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereUploadedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereUploadedBy($value)
+ * @mixin Eloquent
  */
 
 class PatchPanelPortHistoryFile extends Model

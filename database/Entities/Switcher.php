@@ -146,6 +146,12 @@ class Switcher
     protected $active;
 
     /**
+     * @var boolean poll
+     */
+    protected $poll;
+
+
+    /**
      * @var \DateTime
      */
     protected $osDate;
@@ -516,6 +522,33 @@ class Switcher
 
 
     /**
+     * Set poll
+     *
+     * If true, the switch can be polled via SNMP/etc to update ports
+     *
+     * @param boolean $poll
+     * @return Switcher
+     */
+    public function setPoll(bool $poll)
+    {
+        $this->poll = $poll;
+
+        return $this;
+    }
+
+    /**
+     * Get poll
+     *
+     * @return boolean Should the switch be polled via SNMP/etc
+     */
+    public function getPoll(): bool
+    {
+        return $this->poll;
+    }
+
+
+
+    /**
      * Set hostname
      *
      * @param string $hostname
@@ -735,7 +768,9 @@ class Switcher
         foreach( $host->useIface()->indexes() as $index ) {
 
             // we're only interested in Ethernet ports here (right?)
-            if( $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_ETHERNETCSMACD && $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_L3IPVLAN ) {
+            if( $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_ETHERNETCSMACD
+                && $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_L2VLAN
+                && $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_L3IPVLAN ) {
                 continue;
             }
 

@@ -243,17 +243,17 @@
                         cells in the body will freeze the dynamic highlighting.
                     </li>
                     <li>
-                        Where a <?= config( "options.identity.orgname" ) ?> member is not listed on this peering matrix, it is because they are
-                        currently not actively peering at <?= config( "options.identity.orgname" ) ?> , or because they have opted out of presenting
+                        Where a <?= config( "identity.orgname" ) ?> member is not listed on this peering matrix, it is because they are
+                        currently not actively peering at <?= config( "identity.orgname" ) ?>, or because they have opted out of presenting
                         their peering information in this database.
                     </li>
                     <li>
-                        This peering matrix is based on sflow traffic accounting data from the <?= config( "options.identity.orgname" ) ?> peering
+                        This peering matrix is based on sflow traffic accounting data from the <?= config( "identity.orgname" ) ?> peering
                         LANs and route server BGP peerings.
                     </li>
                     <li>
                         This peering matrix only detects if there is bidirectional TCP flow between routers at
-                        <?= config( "options.identity.orgname" ) ?>. It cannot detect whether there are actually prefixes swapped between routers.
+                        <?= config( "identity.orgname" ) ?>. It cannot detect whether there are actually prefixes swapped between routers.
                     </li>
                 </ul>
 

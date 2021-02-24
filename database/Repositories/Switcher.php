@@ -249,6 +249,17 @@ class Switcher extends EntityRepository
     }
 
     /**
+     * Get all active pollable switches as Doctrine2 objects
+     *
+     * @return array
+     */
+    public function getPollable(){
+        $q = "SELECT s FROM \\Entities\\Switcher s WHERE s.active = 1 AND s.poll = 1";
+        return $this->getEntityManager()->createQuery( $q )->getResult();
+    }
+
+
+    /**
      * Returns all switch ports for a given switch.
      *
      * Each switchport element of the array is as follows:
@@ -852,6 +863,7 @@ class Switcher extends EntityRepository
                         i.name AS infrastructure, 
                         s.model AS model,
                         s.active AS active, 
+                        s.poll AS poll, 
                         s.notes AS notes, 
                         s.lastPolled AS lastPolled,
                         s.hostname AS hostname, 

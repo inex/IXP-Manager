@@ -52,7 +52,7 @@
                         <?=$p->neighbor_address?>
                     </td>
                     <td class="pr-4">
-                        <?= $p->description_short ?? $p->description ?? "" ?>
+                        <?= ( $p->description_short ?? false ) ? $t->ee( $p->description_short ) : $t->ee( $p->description ?? "" ) ?>
                     </td>
                     <td class="text-right pr-4" data-order="<?= $p->neighbor_as ?>">
                         <?= $t->asNumber( $p->neighbor_as, false ) ?>
@@ -103,7 +103,7 @@
                     </td>
                     <td class="text-reset">
                         <a class="btn btn-white btn-sm" style="font-size: 14px;" id="protocol_details-<?= $name ?>"
-                            data-protocol="<?= $name ?>" title="<?= $p->description ?? "" ?>">
+                            data-protocol="<?= $name ?>" title="<?= $t->ee( $p->description ) ?? "" ?>">
                             Details
                         </a>
                     </td>

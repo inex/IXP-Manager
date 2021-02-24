@@ -35,31 +35,31 @@ use Illuminate\Database\Eloquent\{
  * IXP\Models\Vlan
  *
  * @property int $id
+ * @property int $infrastructureid
  * @property string|null $name
  * @property int|null $number
- * @property string|null $notes
  * @property int $private
- * @property int $infrastructureid
+ * @property string|null $notes
  * @property int $peering_matrix
  * @property int $peering_manager
  * @property string|null $config_name
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Router[] $routers
+ * @property-read Collection|\IXP\Models\Router[] $routers
  * @property-read int|null $routers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
+ * @property-read Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan whereConfigName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan whereInfrastructureid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan whereNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan wherePeeringManager($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan wherePeeringMatrix($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan wherePrivate($value)
- * @mixin \Eloquent
+ * @method static Builder|Vlan newModelQuery()
+ * @method static Builder|Vlan newQuery()
+ * @method static Builder|Vlan query()
+ * @method static Builder|Vlan whereConfigName($value)
+ * @method static Builder|Vlan whereId($value)
+ * @method static Builder|Vlan whereInfrastructureid($value)
+ * @method static Builder|Vlan whereName($value)
+ * @method static Builder|Vlan whereNotes($value)
+ * @method static Builder|Vlan whereNumber($value)
+ * @method static Builder|Vlan wherePeeringManager($value)
+ * @method static Builder|Vlan wherePeeringMatrix($value)
+ * @method static Builder|Vlan wherePrivate($value)
+ * @mixin Eloquent
  */
 class Vlan extends Model
 {

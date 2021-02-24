@@ -100,7 +100,7 @@ class LocationControllerTest extends DuskTestCase
                 ->type( 'notes',            'test notes' )
                 ->press('Add')
                 ->assertPathIs('/facility/add')
-                ->waitForText('Equinix Dallas (DA1)' )
+                ->waitForText('Equinix DA1 - Dallas' )
                 ->assertSee( "The shortname has already been taken" )
                 ->assertSee( "The nocemail must be a valid email address" )
                 ->assertSee( "The officeemail must be a valid email address" )
@@ -138,7 +138,7 @@ class LocationControllerTest extends DuskTestCase
             $browser->click( '#d2f-list-edit-' .  $location->getId() );
 
             // 4. test that form contains settings as above using assertChecked(), assertNotChecked(), assertSelected(), assertInputValue, ...
-            $browser->waitForText('Equinix Dallas (DA1)' )
+            $browser->waitForText('Equinix DA1 - Dallas' )
                     ->assertInputValue('name',                  'Infrastructure Test')
                     ->assertInputValue( 'shortname',            'test' )
                     ->assertInputValue( 'tag',                  'test tag' )
