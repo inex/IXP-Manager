@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,20 +22,27 @@
  */
 
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Eloquent\Model;
 
-class DatabaseSeeder extends Seeder {
-
+/**
+ * Seed the database countries table
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Database\Seeds
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class DatabaseSeeder extends Seeder
+{
 	/**
 	 * Run the database seeds.
 	 *
 	 * @return void
 	 */
-	public function run()
+	public function run(): void
 	{
-        $this->call('CountriesSeeder');
+        $this->call('CountriesSeeder' );
         $this->command->info('Seeded the countries!');
-
     }
-
 }

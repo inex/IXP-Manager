@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  *
  * This file is part of IXP Manager.
  *
@@ -22,8 +22,17 @@
 
 use Illuminate\Database\Seeder;
 
+use IXP\Models\Vendor;
+
 /**
  * Seed the database vendors table with common vendors
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Database\Seeds
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Vendors extends Seeder
 {
@@ -32,7 +41,7 @@ class Vendors extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $vendors = [
             [ "Allied Telesyn",   'AlliedTel',     'alliedtel'                    ],
@@ -55,20 +64,13 @@ class Vendors extends Seeder
             [ "Transmode",        'Transmode',     'transmode'                    ],
         ];
 
-        foreach( $vendors as $vendor )
-        {
-            $e = new \Entities\Vendor();
-            $e->setName(       $vendor[0] );
-            $e->setShortname(  $vendor[1] );
-            $e->setNagiosName( $vendor[2] );
-            
-            if( isset( $vendor[3] ) ) {
-                $e->setBundleName( $vendor[3] );
-            }
-            
-            D2EM::persist( $e );
+        foreach( $vendors as $vendor ) {
+            Vendor::create([
+                'name'          => $vendor[0],
+                'shortname'     => $vendor[1],
+                'nagios_name'   => $vendor[2],
+                'bundle_name'   => $vendor[3] ?? null,
+            ]);
         }
-
-        D2EM::flush();
     }
 }

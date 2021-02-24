@@ -66,8 +66,6 @@ use IXP\Utils\View\Alert\{
 
 use IXP\Services\Grapher;
 
-use Grapher as GrapherService;
-
 /**
  * Customer Controller
  *
