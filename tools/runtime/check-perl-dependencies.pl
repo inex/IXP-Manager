@@ -38,21 +38,20 @@ my @dependencies = (
 	# this ludicrousfail is for redhat and derivatives
 	{ name => 'Data::Dumper',	pkgng => '',			apt => '',				redhat => 'perl-Data-Dumper' },
 	{ name => 'Time::HiRes',	pkgng => '',			apt => '',				redhat => 'perl-Time-HiRes' },
-	{ name => 'Module::Build',	pkgng => '',			apt => '',				redhat => '' },
-	{ name => 'Crypt::DES',		pkgng => '',			apt => '',				redhat => 'perl-Crypt-DES' },
-	{ name => 'Crypt::Rijndael',	pkgng => '',			apt => '',				redhat => '' },
-	{ name => 'Digest::SHA1',	pkgng => '',			apt => '',				redhat => 'perl-Digest-SHA1' },
 
 	# operating systems which work: 
-	{ name => 'Config::General',	pkgng => 'p5-Config-General',	apt => 'libconfig-general-perl',	redhat => '' },
+#	{ name => 'Module::Build',	pkgng => 'p5-Module-Build',	apt => 'libmodule-build-perl',		redhat => 'perl-CPAN' },
+#	{ name => 'Crypt::Rijndael',	pkgng => 'p5-Crypt-Rijndael',	apt => 'libcrypt-rijndael-perl',	redhat => '' },
+#	{ name => 'Crypt::DES',		pkgng => 'p5-Crypt-DES',	apt => 'libcrypt-des-perl',		redhat => 'perl-Crypt-DES' },
+	{ name => 'Config::General',	pkgng => 'p5-Config-General',	apt => 'libconfig-general-perl',	redhat => 'perl-Config-General' },
 	{ name => 'DBD::mysql',		pkgng => 'p5-DBD-mysql',	apt => 'libdbd-mysql-perl',		redhat => 'perl-DBD-MySQL' },
 	{ name => 'DBI',		pkgng => 'p5-DBI',		apt => 'libdbi-perl',			redhat => 'libdbi-dbd-mysql' },
 	{ name => 'NetAddr::IP',	pkgng => 'p5-NetAddr-IP',	apt => 'libnetaddr-ip-perl',		redhat => 'perl-NetAddr-IP' },
 	{ name => 'NetPacket::TCP',	pkgng => 'p5-NetPacket-TCP',	apt => 'libnetpacket-perl',		redhat => '' },
-	{ name => 'Net::SNMP',		pkgng => 'p5-Net-SNMP',		apt => 'libnet-snmp-perl',		redhat => '' },
+	{ name => 'Net::SNMP',		pkgng => 'p5-Net-SNMP',		apt => 'libnet-snmp-perl',		redhat => 'net-snmp-perl' },
 	{ name => 'Net_SNMP_util',	pkgng => 'mrtg',		apt => 'mrtg',				redhat => '' },
 	{ name => 'RRDs',		pkgng => 'rrdtool',		apt => 'librrds-perl',			redhat => 'rrdtool-perl' },
-	{ name => 'JSON',		pkgng => 'p5-JSON',		apt => 'libjson-pp-perl',		redhat => 'perl-JSON' },
+	{ name => 'JSON',		pkgng => 'p5-JSON',		apt => 'libjson-perl',			redhat => 'perl-JSON' },
 	{ name => 'REST::Client',	pkgng => 'p5-REST-Client',	apt => 'librest-client-perl',		redhat => 'perl-REST-Client' },
 
 );
@@ -97,6 +96,8 @@ if ($#pkglist > -1 || $#cpanlist > -1) {
 	print "\nSuggested installation command:\n\n";
 	print "\t$pkginstaller ".join (' ', @pkglist)."\n\n" if ($#pkglist > -1);
 	print "\tcpan ".join (' ', @cpanlist)."\n\n" if ($#cpanlist > -1);
+	exit 1;
 } else {
 	print "All IXP Manager dependencies installed\n";
+	exit 0;
 }
