@@ -32,12 +32,12 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations
  *
  * @property int $id
  * @property int|null $switchportid
+ * @property int|null $fanout_physical_interface_id
  * @property int|null $virtualinterfaceid
  * @property int|null $status
  * @property int|null $speed
  * @property string|null $duplex
  * @property string|null $notes
- * @property int|null $fanout_physical_interface_id
  * @property bool $autoneg
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

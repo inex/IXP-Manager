@@ -97,8 +97,11 @@ class SwitchPortControllerTest extends DuskTestCase
 
             $browser->driver->executeScript('window.scrollTo(0, 3000);');
 
-            $browser->click( "#generate-btn" )
-                    ->click( "#btn-submit" )
+            $browser->click( "#generate-btn" );
+
+            $browser->driver->executeScript('window.scrollTo(0, 3000);');
+
+            $browser->click( "#btn-submit" )
                     ->assertPathIs( "/switch-port/list" )
                     ->assertSee( "Switch Port created" );
 

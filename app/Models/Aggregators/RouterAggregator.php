@@ -45,7 +45,7 @@ use IXP\Models\User;
  * @property string $mgmt_host
  * @property string|null $api
  * @property int $api_type
- * @property bool|null $lg_access
+ * @property int|null $lg_access
  * @property bool $quarantine
  * @property bool $bgp_lc
  * @property string $template

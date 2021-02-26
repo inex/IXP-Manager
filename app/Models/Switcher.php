@@ -47,22 +47,22 @@ use \OSS_SNMP\MIBS\Iface as SNMPIface;
  * IXP\Models\Switcher
  *
  * @property int $id
+ * @property int|null $infrastructure
  * @property int|null $cabinetid
  * @property int|null $vendorid
  * @property string|null $name
+ * @property string|null $hostname
  * @property string|null $ipv4addr
  * @property string|null $ipv6addr
  * @property string|null $snmppasswd
- * @property int|null $infrastructure
  * @property string|null $model
  * @property bool|null $active
- * @property string|null $notes
- * @property string|null $hostname
  * @property string|null $os
  * @property string|null $osDate
  * @property string|null $osVersion
- * @property string|null $serialNumber
  * @property string|null $lastPolled
+ * @property string|null $notes
+ * @property string|null $serialNumber
  * @property int|null $mauSupported
  * @property int|null $asn
  * @property string|null $loopback_ip

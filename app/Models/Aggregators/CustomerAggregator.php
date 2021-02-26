@@ -41,9 +41,14 @@ use IXP\Models\{
  * IXP\Models\Aggregators\CustomerAggregator
  *
  * @property int $id
+ * @property int|null $irrdb
+ * @property int|null $company_registered_detail_id
+ * @property int|null $company_billing_details_id
+ * @property int|null $reseller
  * @property string|null $name
  * @property int|null $type
  * @property string|null $shortname
+ * @property string|null $abbreviatedName
  * @property int|null $autsys
  * @property int|null $maxprefixes
  * @property string|null $peeringemail
@@ -53,8 +58,8 @@ use IXP\Models\{
  * @property string|null $nocemail
  * @property string|null $nochours
  * @property string|null $nocwww
- * @property int|null $irrdb
  * @property string|null $peeringmacro
+ * @property string|null $peeringmacrov6
  * @property string|null $peeringpolicy
  * @property string|null $corpwww
  * @property \Illuminate\Support\Carbon|null $datejoin
@@ -65,12 +70,7 @@ use IXP\Models\{
  * @property int|null $lastupdatedby
  * @property string|null $creator
  * @property \Illuminate\Support\Carbon|null $created_at
- * @property int|null $company_registered_detail_id
- * @property int|null $company_billing_details_id
- * @property string|null $peeringmacrov6
- * @property string|null $abbreviatedName
  * @property string|null $MD5Support
- * @property int|null $reseller
  * @property int $isReseller
  * @property int $in_manrs
  * @property int $in_peeringdb

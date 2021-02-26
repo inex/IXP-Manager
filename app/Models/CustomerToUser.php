@@ -33,10 +33,10 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations
  * @property int $customer_id
  * @property int $user_id
  * @property int $privs
- * @property array|null $extra_attributes
  * @property string|null $last_login_date
  * @property string|null $last_login_from
  * @property \Illuminate\Support\Carbon|null $created_at
+ * @property array|null $extra_attributes
  * @property string|null $last_login_via
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer $customer
