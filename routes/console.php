@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +22,8 @@
  */
 
 use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Facades\Artisan;
+
 /*
 |--------------------------------------------------------------------------
 | Console Routes
@@ -34,4 +36,4 @@ use Illuminate\Foundation\Inspiring;
 */
 Artisan::command('inspire', function () {
     $this->comment( Inspiring::quote() );
-});
+})->purpose('Display an inspiring quote');

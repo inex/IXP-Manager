@@ -23,33 +23,26 @@ namespace IXP\Http\Middleware;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Http\Request;
-
-use Fideloper\Proxy\TrustProxies as Middleware;
+use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance as Middleware;
 
 /**
- * Middleware: TrustProxies
+ * Middleware: check for maintenance
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Yannr Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Middleware
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class TrustProxies extends Middleware
+class PreventRequestsDuringMaintenance extends Middleware
 {
     /**
-     * The trusted proxies for this application.
-     *
-     * @var array|string|null
-     */
-    protected $proxies;
-
-    /**
-     * The current proxy header mappings.
+     * The URIs that should be reachable while maintenance mode is enabled.
      *
      * @var array
      */
-    protected $headers = Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_HOST | Request::HEADER_X_FORWARDED_PORT | Request::HEADER_X_FORWARDED_PROTO | Request::HEADER_X_FORWARDED_AWS_ELB;
+    protected $except = [
+        //
+    ];
 }

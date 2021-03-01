@@ -28,6 +28,7 @@ use Illuminate\Auth\Middleware\{
     EnsureEmailIsVerified
 };
 
+use Fruitcake\Cors\HandleCors;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -52,9 +53,9 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 use IXP\Http\Middleware\{
+    PreventRequestsDuringMaintenance,
     TrustProxies,
-    Authenticate
-};
+    Authenticate};
 
 class Kernel extends HttpKernel
 {
@@ -66,11 +67,13 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-        CheckForMaintenanceMode::class,
+        TrustProxies::class,
+        HandleCors::class,
+        PreventRequestsDuringMaintenance::class,
         ValidatePostSize::class,
         Middleware\TrimStrings::class,
         ConvertEmptyStringsToNull::class,
-        TrustProxies::class,
+
     ];
 
     /**
@@ -145,7 +148,7 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'auth'                  => Middleware\Authenticate::class,
         'auth.basic'            => AuthenticateWithBasicAuth::class,
-        'bindings'              => SubstituteBindings::class,
+        //'bindings'              => SubstituteBindings::class,
         'can'                   => Authorize::class,
         'cache.headers'         => SetCacheHeaders::class,
         'guest'                 => Middleware\RedirectIfAuthenticated::class,
@@ -162,20 +165,20 @@ class Kernel extends HttpKernel
         '2fa'                   => Middleware\Google2FA::class,
     ];
 
-    /**
-     * The priority-sorted list of middleware.
-     *
-     * This forces non-global middleware to always be in the given order.
-     *
-     * @var array
-     */
-    protected $middlewarePriority = [
-        StartSession::class,
-        ShareErrorsFromSession::class,
-        Authenticate::class,
-        ThrottleRequests::class,
-        AuthenticateSession::class,
-        SubstituteBindings::class,
-        Authorize::class,
-    ];
+//    /**
+//     * The priority-sorted list of middleware.
+//     *
+//     * This forces non-global middleware to always be in the given order.
+//     *
+//     * @var array
+//     */
+//    protected $middlewarePriority = [
+//        StartSession::class,
+//        ShareErrorsFromSession::class,
+//        Authenticate::class,
+//        ThrottleRequests::class,
+//        AuthenticateSession::class,
+//        SubstituteBindings::class,
+//        Authorize::class,
+//    ];
 }

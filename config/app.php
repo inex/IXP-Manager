@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -247,6 +247,7 @@ return [
         'File'      => 'Illuminate\Support\Facades\File',
         'Gate'      => Illuminate\Support\Facades\Gate::class,
         'Hash'      => 'Illuminate\Support\Facades\Hash',
+        'Http'      => Illuminate\Support\Facades\Http::class,
         'Input'     => 'Illuminate\Support\Facades\Input',
         'Lang'      => 'Illuminate\Support\Facades\Lang',
         'Log'       => 'Illuminate\Support\Facades\Log',
@@ -255,7 +256,7 @@ return [
         'Password'  => 'Illuminate\Support\Facades\Password',
         'Queue'     => 'Illuminate\Support\Facades\Queue',
         'Redirect'  => 'Illuminate\Support\Facades\Redirect',
-        'Redis'     => 'Illuminate\Support\Facades\Redis',
+        //'Redis'     => 'Illuminate\Support\Facades\Redis',
         'Request'   => 'Illuminate\Support\Facades\Request',
         'Response'  => 'Illuminate\Support\Facades\Response',
         'Route'     => 'Illuminate\Support\Facades\Route',

@@ -50,20 +50,21 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontFlash = [
+        'current_password',
         'password',
         'password_confirmation',
     ];
 
     /**
-     * Report or log an exception.
-     *
-     * @param  Throwable  $exception
+     * Register the exception handling callbacks for the application.
      *
      * @return void
      */
-    public function report( Throwable $exception ): void
+    public function register()
     {
-        parent::report( $exception );
+        $this->reportable(function (Throwable $e) {
+            //
+        });
     }
 
     /**

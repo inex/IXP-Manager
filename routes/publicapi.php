@@ -22,6 +22,7 @@
  */
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +52,3 @@ Route::any( 'test', 'PublicController@test' )->name('api-v4:test');
 Route::get( 'statistics/overall-by-month', 'StatisticsController@overallByMonth' );
 
 Route::get( 'content/members/0/list.json', '\IXP\Http\Controllers\ContentController@simpleMembers' )->name( 'content/members' );
-
-
-

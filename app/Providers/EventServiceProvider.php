@@ -3,7 +3,7 @@
 namespace IXP\Providers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -67,6 +67,16 @@ use IXP\Events\Auth\{
     PasswordReset
 };
 
+/**
+ * Event Service Provider
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Providers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class EventServiceProvider extends ServiceProvider
 {
     /**
@@ -141,7 +151,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        parent::boot();
         //
     }
 }

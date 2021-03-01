@@ -22,10 +22,12 @@ namespace IXP\Http\Middleware;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Closure;
+use Auth, Closure;
 
 use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Http\RedirectResponse;
+
+use IXP\Providers\RouteServiceProvider;
+
 use Illuminate\Http\Request;
 
 /**
@@ -47,31 +49,24 @@ class RedirectIfAuthenticated
 	 */
 	protected $auth;
 
-	/**
-	 * Create a new filter instance.
-	 *
-	 * @param  Guard  $auth
-	 * @return void
-	 */
-	public function __construct( Guard $auth )
-	{
-		$this->auth = $auth;
-	}
-
-	/**
-	 * Handle an incoming request.
-	 *
-	 * @param   Request     $r
-	 * @param   Closure     $next
+    /**
+     * Handle an incoming request.
      *
-	 * @return mixed
-	 */
-	public function handle( Request $r, Closure $next )
-	{
-		if( $this->auth->check() ) {
-			return new RedirectResponse( url('') );
-		}
+     * @param  Request  $request
+     * @param  Closure  $next
+     * @param  string|null  ...$guards
+     * @return mixed
+     */
+    public function handle(Request $request, Closure $next, ...$guards)
+    {
+        $guards = empty($guards) ? [null] : $guards;
 
-		return $next( $r );
-	}
+        foreach ( $guards as $guard ) {
+            if ( Auth::guard( $guard )->check() ) {
+                return redirect(RouteServiceProvider::HOME );
+            }
+        }
+
+        return $next($request);
+    }
 }

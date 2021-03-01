@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace IXP\Http\Middleware;
 
 /*
  * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -23,27 +23,29 @@ namespace App\Http\Middleware;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode as Middleware;
+use Illuminate\Http\Middleware\TrustHosts as Middleware;
 
 /**
- * Middleware: check for maintenance
+ * Middleware: TrustHosts
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @author     Yannr Robin <yann@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Middleware
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class CheckForMaintenanceMode extends Middleware
+class TrustHosts extends Middleware
 {
     /**
-     * The URIs that should be reachable while maintenance mode is enabled.
+     * Get the host patterns that should be trusted.
      *
-     * @var array
+     * @return array
      */
-    protected $except = [
-        //
-    ];
+    public function hosts()
+    {
+        return [
+            $this->allSubdomainsOfApplicationUrl(),
+        ];
+    }
 }
-

@@ -3,7 +3,7 @@
 namespace IXP\Providers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,19 +22,39 @@ namespace IXP\Providers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 use IXP\Models\User;
 
+/**
+ * Route Service Provider
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Providers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class RouteServiceProvider extends ServiceProvider
 {
     /**
-     * This namespace is applied to the controller routes in your routes file.
+     * The path to the "home" route for your application.
      *
-     * In addition, it is set as the URL generator's root namespace.
+     * This is used by Laravel authentication to redirect users after login.
      *
      * @var string
+     */
+    public const HOME = '';
+
+    /**
+     * The controller namespace for the application.
+     *
+     * When present, controller route declarations will automatically be prefixed with this namespace.
+     *
+     * @var string|null
      */
     protected $namespace = 'IXP\Http\Controllers';
 
