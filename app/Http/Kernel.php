@@ -100,7 +100,7 @@ class Kernel extends HttpKernel
             SubstituteBindings::class,
             Middleware\ControllerEnabled::class,
             //'throttle:60,1',
-            'bindings',
+            //'bindings',
             Middleware\ControllerEnabled::class,
         ],
 
@@ -165,20 +165,20 @@ class Kernel extends HttpKernel
         '2fa'                   => Middleware\Google2FA::class,
     ];
 
-//    /**
-//     * The priority-sorted list of middleware.
-//     *
-//     * This forces non-global middleware to always be in the given order.
-//     *
-//     * @var array
-//     */
-//    protected $middlewarePriority = [
-//        StartSession::class,
-//        ShareErrorsFromSession::class,
-//        Authenticate::class,
-//        ThrottleRequests::class,
-//        AuthenticateSession::class,
-//        SubstituteBindings::class,
-//        Authorize::class,
-//    ];
+    /**
+     * The priority-sorted list of middleware.
+     *
+     * This forces non-global middleware to always be in the given order.
+     *
+     * @var array
+     */
+    protected $middlewarePriority = [
+        StartSession::class,
+        ShareErrorsFromSession::class,
+        Authenticate::class,
+        ThrottleRequests::class,
+        AuthenticateSession::class,
+        SubstituteBindings::class,
+        Authorize::class,
+    ];
 }

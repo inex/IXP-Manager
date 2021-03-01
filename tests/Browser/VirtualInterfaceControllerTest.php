@@ -237,9 +237,9 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
         // Edit the virtual Interface, uncheck all checkboxes, change value of select
         $browser->select('custid', '3' )
+                ->uncheck('fastlacp'    )
                 ->uncheck('trunk'       )
                 ->uncheck('lag_framing' )
-                ->uncheck('fastlacp'    )
                 ->press('Save Changes' )
                 ->assertPathIs('/interfaces/virtual/edit/' . $vi->id )
                 ->assertSee('Virtual Interface updated' );

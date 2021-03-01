@@ -236,7 +236,7 @@ class DirectoryControllerTest extends TestCase
         $this->actingAs( $this->getSuperUser( 'travis' ) )
             ->post( route( 'docstore-dir@store' ),
                 [
-                    'name'              =>  self::testInfo[ 'folderName' ],
+                    'name'              => self::testInfo[ 'folderName' ],
                     'description'       => self::testInfo[ 'folderDescription' ],
                     'parent_dir_id'     => self::testInfo[ 'parentDirId' ]
                 ]
