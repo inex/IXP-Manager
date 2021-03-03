@@ -155,6 +155,18 @@ a:hover {
   @apply tw-underline;
 }
 
+.border-t{
+    border-top-width: 1px;
+}
+
+.border{
+    border-width: 1px;
+}
+
+.shadow{
+    --tw-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
 
 /****************************************************************************************
  **** LHS Menu in IXP Manager
@@ -176,7 +188,7 @@ a:hover {
 
 
 #side-navbar {
-  @apply tw-shadow tw-pr-0 tw-bg-white;
+  @apply shadow tw-pr-0 tw-bg-white;
 }
 
 #side-navbar ul, #side-navbar ol {
@@ -229,7 +241,7 @@ a:hover {
  ****************************************************************************************/
 
 .btn {
-    @apply font-bold rounded tw-border-transparent;
+    @apply tw-font-bold tw-rounded-sm tw-border-transparent;
 }
 
 .btn:hover {
@@ -261,7 +273,7 @@ a:hover {
 }
 
 .btn-outline-secondary{
-    @apply bg-transparent text-grey font-semibold border border-grey rounded;
+    @apply tw-bg-transparent tw-text-grey tw-font-semibold border tw-border-grey tw-rounded-sm
 }
 
 .btn-outline-secondary:hover{
@@ -269,19 +281,19 @@ a:hover {
 }
 
 .btn-white{
-    @apply bg-white text-grey-darkest font-semibold border border-grey-light rounded shadow;
+    @apply tw-bg-white tw-text-grey-darkest tw-font-semibold border tw-border-grey-light tw-rounded-sm shadow;
 }
 
 .btn-white:hover{
-    @apply bg-grey-lighter border border-grey-light;
+    @apply tw-bg-grey-lighter border tw-border-grey-light;
 }
 
 .btn-info{
-    @apply bg-white text-teal-500 font-semibold border border-teal-500 rounded shadow;
+    @apply tw-bg-white tw-text-teal-500 tw-font-semibold border tw-border-teal-500 tw-rounded-sm shadow;
 }
 
 .btn-info:hover{
-    @apply bg-teal-500 border border-grey-light;
+    @apply tw-bg-teal-500 border tw-border-grey-light;
 }
 
 /****************************************************************************************ea
@@ -289,7 +301,7 @@ a:hover {
  ****************************************************************************************/
 
 input.form-control{
-    @apply tw-shadow-md tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-4 tw-text-grey-darker tw-leading-tight;
+    @apply shadow tw-appearance-none border tw-rounded-sm tw-w-full tw-py-2 tw-px-4 tw-text-grey-darker tw-leading-tight;
 }
 
 input.form-control:focus{
@@ -297,11 +309,11 @@ input.form-control:focus{
 }
 
 .input-group-append .btn{
-    @apply tw-shadow-md; border-color : #ced4da;
+    @apply shadow; border-color : #ced4da;
 }
 
 label.control-label, label.form-check-label{
-    @apply block text-grey-darker text-sm font-bold;
+    @apply tw-block tw-text-grey-darker tw-text-sm tw-font-bold;
 }
 
 
@@ -311,11 +323,11 @@ label.control-label, label.form-check-label{
  ****************************************************************************************/
 
 .badge{
-   @apply text-white font-bold py-1 px-3 rounded-full
+   @apply tw-text-white tw-font-bold tw-py-1 tw-px-3 tw-rounded-full
 }
 
 .badge-info{
-    @apply bg-teal-500;
+    @apply tw-bg-teal-500;
 }
 
 .badge-success{
@@ -336,16 +348,12 @@ label.control-label, label.form-check-label{
 
 .card{
     border-color : #dae1e7;
-    @apply tw-shadow-md tw-rounded-sm;
+    @apply shadow tw-rounded-sm;
  }
 
  .card .card-header{
-    @apply rounded-tl-sm rounded-tr-sm border-b-0;
+    @apply tw-rounded-tl-sm tw-rounded-tr-sm tw-border-b-0;
  }
-
-
-
-
 
 
 a{
@@ -374,25 +382,25 @@ a:hover{
 }
 
 .docstore td {
-    @apply tw-border-t tw-px-2 tw-py-2;
+    @apply border-t tw-border-gray-300 tw-px-2 tw-py-2;
 }
 
 .docstore td.top {
-  @apply tw-border-t-2 tw-px-2 tw-py-2;
+  @apply tw-border-t-2 tw-border-gray-300 tw-px-2 tw-py-2;
 }
 
 .docstore td.meta {
-    @apply tw-whitespace-no-wrap tw-w-1 tw-hidden;
+    @apply tw-whitespace-nowrap tw-w-1 tw-hidden;
 }
 
 @screen lg {
   .docstore td.meta {
-    @apply tw-whitespace-no-wrap tw-w-1 tw-table-cell;
+    @apply tw-whitespace-nowrap tw-w-1 tw-table-cell;
   }
 }
 
 .docstore td.icon {
-  @apply tw-text-center tw-whitespace-no-wrap tw-w-1 tw-px-2 tw-py-2 tw-mr-4;
+  @apply tw-text-center tw-whitespace-nowrap tw-w-1 tw-px-2 tw-py-2 tw-mr-4;
 }
 
 /**

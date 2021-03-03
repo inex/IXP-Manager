@@ -213,7 +213,7 @@
             </div>
         </div>
 
-        <div class="clearfix"></div>
+        <div class="flow-root"></div>
 
         <div class="full-member-details row mt-4" style="<?=
         old( 'type' ) === \IXP\Models\Customer::TYPE_ASSOCIATE || ( $t->cust && $t->cust->typeAssociate() ) ? 'display: none;' : ''

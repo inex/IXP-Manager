@@ -261,7 +261,7 @@
 
                 </div>
 
-                <div class="clearfix"></div>
+                <div class="flow-root"></div>
 
                 <?= Former::actions(
                     Former::primary_submit( $t->pi ? 'Save Changes' : 'Create' )->class( "mb-2 mb-sm-0" ),
