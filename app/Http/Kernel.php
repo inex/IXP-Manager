@@ -122,6 +122,12 @@ class Kernel extends HttpKernel {
             Middleware\ControllerEnabled::class,
             Middleware\Services\LookingGlass::class,
         ],
+
+        // Middleware group for simple APIs where we do not want to create cookies.
+        'publicapi' => [
+            SubstituteBindings::class,
+            Middleware\ControllerEnabled::class,
+        ],
     ];
 
     /**

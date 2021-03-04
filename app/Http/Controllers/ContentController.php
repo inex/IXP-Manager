@@ -123,4 +123,14 @@ class ContentController extends Controller {
         return $r;
     }
 
+    /**
+     * Display the appropriate member details page (if permissions match)
+     *
+     * @return View|Response|JsonResponse
+     */
+    public function simpleMembers()
+    {
+        return $this->members( 0, 'list.json' );
+    }
+
 }
