@@ -47,15 +47,29 @@ use Illuminate\Support\Facades\{
 /**
  * IXP\Models\DocstoreCustomerDirectory
  *
+ * @property int $id
+ * @property int $cust_id
+ * @property int|null $parent_dir_id
+ * @property string $name
+ * @property string|null $description
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read \IXP\Models\Customer $customer
  * @property-read EloquentCollection|\IXP\Models\DocstoreCustomerFile[] $files
  * @property-read int|null $files_count
- * @property-read DocstoreCustomerDirectory $parentDirectory
+ * @property-read DocstoreCustomerDirectory|null $parentDirectory
  * @property-read EloquentCollection|DocstoreCustomerDirectory[] $subDirectories
  * @property-read int|null $sub_directories_count
  * @method static Builder|DocstoreCustomerDirectory newModelQuery()
  * @method static Builder|DocstoreCustomerDirectory newQuery()
  * @method static Builder|DocstoreCustomerDirectory query()
+ * @method static Builder|DocstoreCustomerDirectory whereCreatedAt($value)
+ * @method static Builder|DocstoreCustomerDirectory whereCustId($value)
+ * @method static Builder|DocstoreCustomerDirectory whereDescription($value)
+ * @method static Builder|DocstoreCustomerDirectory whereId($value)
+ * @method static Builder|DocstoreCustomerDirectory whereName($value)
+ * @method static Builder|DocstoreCustomerDirectory whereParentDirId($value)
+ * @method static Builder|DocstoreCustomerDirectory whereUpdatedAt($value)
  * @mixin Eloquent
  */
 

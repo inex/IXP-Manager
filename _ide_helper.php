@@ -15450,6 +15450,38 @@
         }
          
     }
+            /**
+     * 
+     *
+     * @see \IXP\Services\Purifier
+     */ 
+        class Purifier {
+                    /**
+         * 
+         *
+         * @param $dirty
+         * @param null $config
+         * @return mixed 
+         * @static 
+         */ 
+        public static function clean($dirty, $config = null)
+        {
+                        /** @var \IXP\Services\Purifier $instance */
+                        return $instance->clean($dirty, $config);
+        }
+                    /**
+         * Get HTMLPurifier instance.
+         *
+         * @return \HTMLPurifier 
+         * @static 
+         */ 
+        public static function getInstance()
+        {
+                        /** @var \IXP\Services\Purifier $instance */
+                        return $instance->getInstance();
+        }
+         
+    }
      
 }
 
@@ -15716,42 +15748,6 @@
         {
                         /** @var \Former\Former $instance */
                         return $instance->getRules($name);
-        }
-         
-    }
-     
-}
-
-    namespace LukeTowers\Purifier\Facades { 
-            /**
-     * 
-     *
-     * @see \LukeTowers\Purifier
-     */ 
-        class Purifier {
-                    /**
-         * 
-         *
-         * @param $dirty
-         * @param null $config
-         * @return mixed 
-         * @static 
-         */ 
-        public static function clean($dirty, $config = null)
-        {
-                        /** @var \LukeTowers\Purifier\Purifier $instance */
-                        return $instance->clean($dirty, $config);
-        }
-                    /**
-         * Get HTMLPurifier instance.
-         *
-         * @return \HTMLPurifier 
-         * @static 
-         */ 
-        public static function getInstance()
-        {
-                        /** @var \LukeTowers\Purifier\Purifier $instance */
-                        return $instance->getInstance();
         }
          
     }
@@ -22007,7 +22003,7 @@ namespace  {
             class Grapher extends \IXP\Support\Facades\Grapher {}
             class Image extends \Intervention\Image\Facades\Image {}
             class Former extends \Former\Facades\Former {}
-            class Purifier extends \LukeTowers\Purifier\Facades\Purifier {}
+            class Purifier extends \IXP\Support\Facades\Purifier {}
             class PDF extends \Barryvdh\DomPDF\Facade {}
             class Countries extends \Webpatser\Countries\CountriesFacade {}
             class Google2FA extends \PragmaRX\Google2FALaravel\Facade {}
