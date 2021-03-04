@@ -362,8 +362,8 @@ class SwitchController extends EloquentController
             'object'            => $this->object,
             'addBySnmp'         => request()->old( 'add_by_snnp', false ),
             'preAddForm'        => false,
-            'cabinets'          => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
-                ->orderBy( 'name' )->get(),
+            'cabinets'          => Location::with( 'cabinets' )
+                ->has( 'cabinets' )->get()->toArray(),// getting the cabinets via the location to build the grouped options dropdown
             'infra'             => Infrastructure::orderBy( 'name' )->get(),
             'vendors'           => Vendor::orderBy( 'name' )->get(),
         ];
@@ -407,7 +407,6 @@ class SwitchController extends EloquentController
         Former::populate([
             'name'              => request()->old( 'name',                  $this->object->name ),
             'hostname'          => request()->old( 'hostname',              $this->object->hostname ),
-            'cabinetid'         => request()->old( 'cabinetid',             $this->object->cabinetid ),
             'infrastructure'    => request()->old( 'infrastructure',        $this->object->infrastructure ),
             'ipv4addr'          => request()->old( 'ipv4addr',              $this->object->ipv4addr ),
             'ipv6addr'          => request()->old( 'ipv6addr',              $this->object->ipv6addr ),
@@ -427,8 +426,8 @@ class SwitchController extends EloquentController
             'object'            => $this->object,
             'addBySnmp'         => request()->old( 'add_by_snnp', false ),
             'preAddForm'        => false,
-            'cabinets'          => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
-                ->orderBy( 'name' )->get(),
+            'cabinets'          => Location::with( 'cabinets' )
+                ->has( 'cabinets' )->get()->toArray(),// getting the cabinets via the location to build the grouped options dropdown
             'infra'             => Infrastructure::orderBy( 'name' )->get(),
             'vendors'           => Vendor::orderBy( 'name' )->get()
         ];
