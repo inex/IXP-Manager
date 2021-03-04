@@ -43,37 +43,11 @@ use Illuminate\Support\Carbon;
 /**
  * IXP\Models\DocstoreCustomerFile
  *
- * @property int $id
- * @property int $cust_id
- * @property int|null $docstore_customer_directory_id
- * @property string $name
- * @property string $disk
- * @property string $path
- * @property string|null $sha256
- * @property string|null $description
- * @property int $min_privs
- * @property Carbon $file_last_updated
- * @property int|null $created_by
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
  * @property-read \IXP\Models\Customer $customer
- * @property-read \IXP\Models\DocstoreCustomerDirectory|null $directory
+ * @property-read \IXP\Models\DocstoreCustomerDirectory $directory
  * @method static Builder|DocstoreCustomerFile newModelQuery()
  * @method static Builder|DocstoreCustomerFile newQuery()
  * @method static Builder|DocstoreCustomerFile query()
- * @method static Builder|DocstoreCustomerFile whereCreatedAt($value)
- * @method static Builder|DocstoreCustomerFile whereCreatedBy($value)
- * @method static Builder|DocstoreCustomerFile whereCustId($value)
- * @method static Builder|DocstoreCustomerFile whereDescription($value)
- * @method static Builder|DocstoreCustomerFile whereDisk($value)
- * @method static Builder|DocstoreCustomerFile whereDocstoreCustomerDirectoryId($value)
- * @method static Builder|DocstoreCustomerFile whereFileLastUpdated($value)
- * @method static Builder|DocstoreCustomerFile whereId($value)
- * @method static Builder|DocstoreCustomerFile whereMinPrivs($value)
- * @method static Builder|DocstoreCustomerFile whereName($value)
- * @method static Builder|DocstoreCustomerFile wherePath($value)
- * @method static Builder|DocstoreCustomerFile whereSha256($value)
- * @method static Builder|DocstoreCustomerFile whereUpdatedAt($value)
  * @mixin Eloquent
  */
 
