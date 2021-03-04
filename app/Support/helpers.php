@@ -25,6 +25,16 @@
 // Helpder functions
 
 
+// https://github.com/LukeTowers/Purifier/blob/master/src/helpers.php - 20210304 - MIT
+if (!function_exists('clean')) {
+    function clean($dirty, $config = null)
+    {
+        return app('purifier')->clean($dirty, $config);
+    }
+}
+
+
+
 if( !function_exists( 'd2r' ) ) {
     function d2r( $entity, $namespace = 'Entities' ) {
         return app('Doctrine\ORM\EntityManagerInterface')->getRepository($namespace.'\\'.$entity);

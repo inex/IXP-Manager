@@ -40,7 +40,7 @@
         "intervention/image": "^2.3",
         "anahkiasen/former": "^4.2",
         "barryvdh/laravel-dompdf": "^0.8.0",
-        "luketowers/purifier": "dev-master",
+        "ezyang/htmlpurifier": "4.13.*",
         "php-ds/php-ds": "^1.1",
         "beberlei/doctrineextensions": "^1.0",
         "laravel-doctrine/extensions": "1.1.*",
@@ -64,7 +64,7 @@
         "laravel/dusk": "^5.0",
         "nunomaduro/collision": "^3.0",
         "staudenmeir/dusk-updater": "^1.0"
-     },
+    },
     "support": {
         "issues": "https://www.ixpmanager.org/support.php",
         "forum": "https://www.inex.ie/mailman/listinfo/ixpmanager",

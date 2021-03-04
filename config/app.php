@@ -201,14 +201,14 @@ return [
         IXP\Providers\PeeringDbServiceProvider::class,
         IXP\Providers\IxpServiceProvider::class,
 
+        IXP\Providers\PurifierServiceProvider::class,
+
         /*
          * Third party providers
          */
         LaravelDoctrine\Extensions\BeberleiExtensionsServiceProvider::class,
 
         Former\FormerServiceProvider::class,
-
-        LukeTowers\Purifier\PurifierServiceProvider::class,
 
         Webpatser\Countries\CountriesServiceProvider::class,
 
@@ -276,7 +276,7 @@ return [
         'Image'     => Intervention\Image\Facades\Image::class,
 
         'Former'    => Former\Facades\Former::class,
-        'Purifier'  => LukeTowers\Purifier\Facades\Purifier::class,
+        'Purifier'   => IXP\Support\Facades\Purifier::class,
         'PDF'       => Barryvdh\DomPDF\Facade::class,
 
         'Countries' => Webpatser\Countries\CountriesFacade::class,
