@@ -33,7 +33,7 @@
                         <?php $isLAG = 1 ?>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAG Port
                     <?php else: ?>
-                        <?= $t->insert( 'customer/overview-tabs/ports/pi-status', [ 'pi' => $firstPi, 'vi' => $t->vi ] ); ?>
+                        <?= $t->insert( 'customer/overview-tabs/ports/pi-status', [ 'pi' => $firstPi, 'vi' => $t->vi, 'isSuperUser' => $t->isSuperUser ] ); ?>
                         <?php $isLAG = 0 ?>
                     <?php endif; ?>
                 </small>
@@ -57,7 +57,7 @@
                         <?php if( $isLAG ): ?>
                             <h5>
                                 Port <?= $countPi ?> of <?= $countPis ?> in LAG
-                                <?= $t->insert( 'customer/overview-tabs/ports/pi-status', [ 'pi' => $pi ] ); ?>
+                                <?= $t->insert( 'customer/overview-tabs/ports/pi-status', [ 'pi' => $pi, 'isSuperUser' => $t->isSuperUser ] ); ?>
                             </h5>
                         <?php endif; ?>
                     </div>
