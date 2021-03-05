@@ -131,7 +131,7 @@ class JsonSchema
 
             $i = [];
             /** @var Infrastructure $infra */
-            $i['shortname'] = $infra->getName();
+            $i['shortname'] = $infra->getShortName();
             $i['name'] = config('identity.legalname');
             $i['country'] = $infra->getCountry() ?? config('identity.location.country');
             $i['url'] = config('identity.corporate_url');
