@@ -1,5 +1,5 @@
 <?php
-    $hasSlave = $t->ppp->duplexSlavePorts()->count() ? true : false;
+    $hasSlave = $t->ppp->duplexSlavePorts()->exists();
 ?>
 <script>
     //////////////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,9 @@
      * set all the Patch Panel Panel Port available for the Patch Panel selected
      */
     dd_pp.change( function( ) {
-        let url     = "<?= url( '/api/v4/patch-panel' )?>/" +  $( this ).val() + "/free-port";
+        let fn = "<?= $hasSlave ? "free-duplex-port" : "free-port"  ?>"
+
+        let url     = "<?= url( '/api/v4/patch-panel' )?>/" +  $( this ).val() + "/" + fn;
         let datas   = {
             pppid: <?= $t->ppp->id ?>
         };

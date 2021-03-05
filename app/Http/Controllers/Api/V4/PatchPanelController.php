@@ -57,4 +57,19 @@ class PatchPanelController extends Controller
             'ports' => PatchPanelPortAggregator::getAvailablePorts( $pp->id, [ $r->pppid ] )
         ]);
     }
+
+    /**
+     * Get the patch panel ports duplex available for a patch panel
+     *
+     * @param   Request         $r      instance of the current HTTP request
+     * @param   PatchPanel      $pp     the patch panel
+     *
+     * @return  JsonResponse
+     */
+    public function freeDuplexPort( Request $r, PatchPanel $pp ): JsonResponse
+    {
+        return response()->json( [
+            'ports' => PatchPanelPortAggregator::getAvailablePorts( $pp->id, [ $r->pppid ], null, false )
+        ]);
+    }
 }

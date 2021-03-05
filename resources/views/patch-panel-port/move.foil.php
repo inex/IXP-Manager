@@ -11,6 +11,7 @@
 <?php $this->section( 'content' ) ?>
     <div class="row">
         <div class="col-sm-12">
+            <?= $t->alerts() ?>
             <div class="card">
                 <div class="card-body">
                     <?= Former::open()->method( 'PUT' )
@@ -42,7 +43,7 @@
                         ->blockHelp( 'The new port to move to.' );
                     ?>
 
-                    <?php if( $ppp->duplexSlavePorts()->count() ): ?>
+                    <?php if( $ppp->duplexSlavePorts()->exists() ): ?>
                         <?= Former::select( 'slave_id' )
                             ->label( 'New Slave/Duplex Port' )
                             ->placeholder( 'Choose a Duplex port' )
@@ -56,7 +57,7 @@
                     ?>
 
                     <?= Former::hidden( 'has_duplex' )
-                        ->value( $ppp->duplexSlavePorts()->count() ? true : false )
+                        ->value( $ppp->duplexSlavePorts()->exists() )
                     ?>
 
                     <?=Former::actions(

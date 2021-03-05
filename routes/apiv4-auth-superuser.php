@@ -71,7 +71,8 @@ Route::group( [  'prefix' => 'patch-panel-port' ], function() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Patch Panel
 //
-Route::post( 'patch-panel/{pp}/free-port',                      'PatchPanelController@freePort');
+Route::post( 'patch-panel/{pp}/free-port',                      'PatchPanelController@freePort'         );
+Route::post( 'patch-panel/{pp}/free-duplex-port',               'PatchPanelController@freeDuplexPort'   );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Provisioner Yaml

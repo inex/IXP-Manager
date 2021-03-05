@@ -122,10 +122,11 @@ class PatchPanelPortAggregator extends PatchPanelPort
      * @param   int         $ppid           ID of the patch panel
      * @param   array       $excludeIds     Patch Panel Port ID that we want to exclude from the list
      * @param   int|null    $includeSlave   Patch Panel Port ID of the slave to include
+     * @param   bool        $excludeDuplex  Should we exclude the duplex port ?
      *
      * @return  array   list of patch panel form key => pppId , value => ppp name
      */
-    public static function getAvailablePorts( int $ppid, $excludeIds = [], int $includeSlave = null  ): array
+    public static function getAvailablePorts( int $ppid, $excludeIds = [], int $includeSlave = null, bool $excludeDuplex = true ): array
     {
         return self::selectRaw( '
             ppp.id AS id,
@@ -134,8 +135,15 @@ class PatchPanelPortAggregator extends PatchPanelPort
             ->join( 'patch_panel AS pp', 'pp.id', 'ppp.patch_panel_id' )
             ->leftJoin( 'patch_panel_port AS ppps', 'ppps.duplex_master_id', 'ppp.id' )
             ->where( 'pp.id', $ppid )
-            ->whereNull( 'ppps.duplex_master_id' )
-            ->whereNull( 'ppp.duplex_master_id' )
+            ->when( $excludeDuplex , function( Builder $q ) {
+                return $q->whereNull( 'ppps.duplex_master_id' )
+                        ->whereNull( 'ppp.duplex_master_id' );
+            }, function( $q ) {
+                return $q->where(function ($q) {
+                    $q->orWhereNotNull( 'ppp.duplex_master_id' )
+                        ->orWhereNotNull( 'ppps.duplex_master_id' );
+                });
+            } )
             ->whereIn( 'ppp.state', PatchPanelPort::$AVAILABLE_FOR_ALLOCATION_STATES )
             ->when( $includeSlave , function( Builder $q, $includeSlave ) {
                 return $q->orWhere('ppp.id', $includeSlave );

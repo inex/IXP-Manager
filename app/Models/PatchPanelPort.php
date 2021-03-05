@@ -675,7 +675,15 @@ class PatchPanelPort extends Model
 
         // Update the new port with the data of the old port
         $dest->update( $this->replicate(
-                [ 'id', 'switch_port_id', 'patch_panel_id', 'duplex_master_id', 'number', 'private_notes', 'colo_billing_ref' ]
+                [
+                    'id',
+                    'switch_port_id',
+                    'patch_panel_id',
+                    'duplex_master_id',
+                    'number',
+                    'private_notes',
+                    'colo_billing_ref'
+                ]
             )->toArray()
         );
 
@@ -685,11 +693,15 @@ class PatchPanelPort extends Model
                 . $this->patchPanel->name . "/" . $this->name()
                 . " by ". ( Auth::check() ? Auth::getUser()->username : "unknown/unauth" )
                 . " on " . now()->format('Y-m-d') . ".\n\n"
-                . $this->private_notes
+                . $this->private_notes,
+            'duplex_master_id' => null
         ]);
 
         if( $slave ){
             $slave->update( [ 'duplex_master_id' => $dest->id ] );
+            if( $s = $slave->duplexSlavePorts()->first() ){
+                $s->update( [ "duplex_master_id" => null ] );
+            }
         }
 
         // Reset the old port

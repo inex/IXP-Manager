@@ -92,9 +92,18 @@ class DangerActionsController extends Controller
     public function move( MovePatchPanelPortRequest $r, PatchPanelPort $ppp ): RedirectResponse
     {
         $newPort  = PatchPanelPort::find( $r->port_id );
-
+        $newPort->isDuplexPort();
         if( $ppp->duplexSlavePorts()->count() ){
             $slave = PatchPanelPort::find( $r->slave_id );
+
+            if( !$newPort->isDuplexPort() || !$slave->isDuplexPort() ) {
+                AlertContainer::push( "You cannot move the duplex port {$ppp->name()} to the new selected ports. Because the selected port are not part of a duplex port.", Alert::DANGER );
+                return redirect( route( 'patch-panel-port@move-form', [ 'ppp' => $ppp ] ) );
+            }
+        }elseif( $newPort->isDuplexPort() ){
+            // if the port we want to move is a single port and the new selected port is part of a duplex port
+            AlertContainer::push( "You cannot move the port {$ppp->name()} to the new selected port {$newPort->patchPanel->port_prefix}{$newPort->number} because it is part of a duplex port.", Alert::DANGER );
+            return redirect( route( 'patch-panel-port@move-form', [ 'ppp' => $ppp ] ) );
         }
 
         if( $ppp->move( $newPort, $slave ?? null ) ) {
@@ -103,7 +112,7 @@ class DangerActionsController extends Controller
             AlertContainer::push( 'Something went wrong!', Alert::DANGER );
         }
 
-        return Redirect::to( route('patch-panel-port@list-for-patch-panel' ,  [ 'pp' => $newPort->patch_panel_id ] ) );
+        return redirect( route('patch-panel-port@list-for-patch-panel' ,  [ 'pp' => $newPort->patch_panel_id ] ) );
     }
 
     /**
