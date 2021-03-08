@@ -694,14 +694,10 @@ class PatchPanelPort extends Model
                 . " by ". ( Auth::check() ? Auth::getUser()->username : "unknown/unauth" )
                 . " on " . now()->format('Y-m-d') . ".\n\n"
                 . $this->private_notes,
-            'duplex_master_id' => null
         ]);
 
         if( $slave ){
             $slave->update( [ 'duplex_master_id' => $dest->id ] );
-            if( $s = $slave->duplexSlavePorts()->first() ){
-                $s->update( [ "duplex_master_id" => null ] );
-            }
         }
 
         // Reset the old port

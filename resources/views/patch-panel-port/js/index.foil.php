@@ -11,9 +11,7 @@
     // action bindings:
 
     $(document).ready(function(){
-        $( '#table-ppp' ).show();
-
-        $( '#table-ppp' ).DataTable({
+        $( '#table-ppp' ).dataTable({
             stateSave: true,
             stateDuration : DATATABLE_STATE_DURATION,
             responsive : true,
@@ -26,7 +24,7 @@
                     { "targets": [ 0 ], "visible": false, "searchable": false,}
                 ],
             "order": [[ 0, "asc" ]]
-        });
+        }).show();
 
     });
 

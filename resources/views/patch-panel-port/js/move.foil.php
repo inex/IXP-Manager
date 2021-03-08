@@ -7,13 +7,20 @@
     const dd_pp         = $( "#patch_panel_id" );
     const dd_master     = $( "#port_id" );
     const dd_slave      = $( "#slave_id" );
+    const area_slave    = $( "#area_slave" );
 
     //////////////////////////////////////////////////////////////////////////////////////
     // action bindings:
     <?php if( $hasSlave ): ?>
         dd_master.change(function(){
-            let nextPort = dd_master.find( ":selected" ).next().val();
-            dd_slave.val( nextPort ).trigger('change.select2');
+            let selected = dd_master.find( ":selected" );
+            if( selected.attr( 'data-has-duplex' ) === 'false' ) {
+                area_slave.show();
+                let nextPort = selected.next().val();
+                dd_slave.val( nextPort ).trigger('change.select2');
+            } else {
+                area_slave.hide();
+            }
         });
     <?php endif; ?>
 
@@ -45,12 +52,20 @@
         })
         .done( function( data ) {
             let options = `<option value="">Choose a switch port</option>`;
+            <?php if( $hasSlave ): ?>
+                let optionsSlave = `<option value="">Choose a switch port</option>`;
+            <?php endif; ?>
             $.each( data.ports, function( key, value ){
-                options += `<option value="${value.id}">${value.name}</option>`;
+                options += `<option data-has-duplex="${value.isDuplex}" value="${value.id}">${value.name}</option>`;
+
+                if( value.isDuplex === false ){
+                    optionsSlave += `<option data-has-duplex="${value.isDuplex}" value="${value.id}">${value.name}</option>`;
+                }
+
             });
             dd_master.html( options );
             <?php if( $hasSlave ): ?>
-                dd_slave.html( options );
+                dd_slave.html( optionsSlave );
             <?php endif; ?>
         })
         .fail( function() {

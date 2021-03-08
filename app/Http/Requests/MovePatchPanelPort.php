@@ -25,6 +25,7 @@ namespace IXP\Http\Requests;
 
 use Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use IXP\Models\PatchPanelPort;
 
 class MovePatchPanelPort extends FormRequest
 {
@@ -46,10 +47,11 @@ class MovePatchPanelPort extends FormRequest
      */
     public function rules(): array
     {
+        $master = PatchPanelPort::find( $this->port_id );
         return [
             'id'                 => 'required|integer|exists:patch_panel_port,id',
             'port_id'            => 'required|integer|exists:patch_panel_port,id',
-            'slave_id'           => $this->has_duplex ? 'required|integer|different:port_id|exists:patch_panel_port,id' : '',
+            'slave_id'           => !$master->isDuplexPort() ? 'required|integer|different:port_id|exists:patch_panel_port,id' : '',
         ];
     }
 }

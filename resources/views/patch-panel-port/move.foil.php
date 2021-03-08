@@ -44,12 +44,14 @@
                     ?>
 
                     <?php if( $ppp->duplexSlavePorts()->exists() ): ?>
-                        <?= Former::select( 'slave_id' )
-                            ->label( 'New Slave/Duplex Port' )
-                            ->placeholder( 'Choose a Duplex port' )
-                            ->addClass( 'chzn-select' )
-                            ->blockHelp( 'The original port is a duplex port so you must also chose the slave/partner/duplex port here.' );
-                        ?>
+                        <div id="area_slave" class="collapse">
+                            <?= Former::select( 'slave_id' )
+                                ->label( 'New Slave/Duplex Port' )
+                                ->placeholder( 'Choose a Duplex port' )
+                                ->addClass( 'chzn-select' )
+                                ->blockHelp( 'The original port is a duplex port so you must also chose the slave/partner/duplex port here.' );
+                            ?>
+                        </div>
                     <?php endif; ?>
 
                     <?= Former::hidden( 'id' )

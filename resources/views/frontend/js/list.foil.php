@@ -38,8 +38,6 @@
 
         let tableList = $( '#table-list' );
 
-        tableList.show();
-
         tableList.dataTable({
             stateSave: true,
             stateDuration : DATATABLE_STATE_DURATION,
@@ -77,6 +75,6 @@
                 { 'bSortable': false, "bSearchable": false, "sWidth": "150px" }
                 <?php endif; ?>
             ]
-        });
+        }).show();
     });
 </script>

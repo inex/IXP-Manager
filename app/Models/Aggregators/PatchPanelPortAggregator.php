@@ -126,23 +126,21 @@ class PatchPanelPortAggregator extends PatchPanelPort
      *
      * @return  array   list of patch panel form key => pppId , value => ppp name
      */
-    public static function getAvailablePorts( int $ppid, $excludeIds = [], int $includeSlave = null, bool $excludeDuplex = true ): array
+    public static function getAvailablePorts( int $ppid, $excludeIds = [], int $includeSlave = null, bool $excludeDuplex = true )
     {
-        return self::selectRaw( '
-            ppp.id AS id,
-            GROUP_CONCAT( pp.port_prefix, ppp.number ) AS name
-        ' )
+        $ppps = PatchPanelPort::selectRaw(
+            'ppp.id, ppp.number, 
+            ppp.patch_panel_id, ppp.duplex_master_id,
+            GROUP_CONCAT( pp.port_prefix, ppp.number ) AS name' )
+            ->from( 'patch_panel_port AS ppp' )
             ->join( 'patch_panel AS pp', 'pp.id', 'ppp.patch_panel_id' )
             ->leftJoin( 'patch_panel_port AS ppps', 'ppps.duplex_master_id', 'ppp.id' )
             ->where( 'pp.id', $ppid )
             ->when( $excludeDuplex , function( Builder $q ) {
                 return $q->whereNull( 'ppps.duplex_master_id' )
-                        ->whereNull( 'ppp.duplex_master_id' );
+                    ->whereNull( 'ppp.duplex_master_id' );
             }, function( $q ) {
-                return $q->where(function ($q) {
-                    $q->orWhereNotNull( 'ppp.duplex_master_id' )
-                        ->orWhereNotNull( 'ppps.duplex_master_id' );
-                });
+                return $q->whereNull( 'ppp.duplex_master_id' );
             } )
             ->whereIn( 'ppp.state', PatchPanelPort::$AVAILABLE_FOR_ALLOCATION_STATES )
             ->when( $includeSlave , function( Builder $q, $includeSlave ) {
@@ -151,7 +149,22 @@ class PatchPanelPortAggregator extends PatchPanelPort
             ->when( count( $excludeIds ) > 0 , function( Builder $q ) use( $excludeIds ) {
                 return $q->whereNotIn('ppp.id', $excludeIds );
             } )
-            ->groupBy( 'id' )->orderBy( 'ppp.number' )
-            ->get()->keyBy( 'id' )->toArray();
+            ->groupBy( 'ppp.id' )->orderBy( 'ppp.number' )
+            ->get();
+
+        if( $excludeDuplex ){
+            return $ppps->toArray();
+        }
+
+        $result = [];
+        foreach ( $ppps as $ppp ){
+            /** @var $ppp PatchPanelPort */
+            $result[ $ppp->id ] = [
+                'id'        => $ppp->id,
+                'name'      => $ppp->name(),
+                'isDuplex'  => $ppp->duplexSlavePorts()->exists()
+            ];
+        }
+        return $result;
     }
 }
