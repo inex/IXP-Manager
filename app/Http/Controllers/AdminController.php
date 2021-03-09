@@ -101,14 +101,22 @@ class AdminController extends Controller
             $custsByInfra = [];
             $peeringCusts = [];
 
+
             foreach( $vis as $vi ) {
                 $location = $vi[ 'locationname' ];
                 $infrastructure = $vi[ 'infrastructure' ];
+                $custid = $vi[ 'customerid' ];
 
                 if ( !isset($custsByLocation[ $location ])) {
-                    $custsByLocation[ $location ] = ['count' => 1, 'id' => $vi[ 'locationid' ], 'name' => $location];
-                } else {
+                    $custsByLocation[ $location ] = [
+                        'count' => 1,
+                        'id' => $vi[ 'locationid' ],
+                        'name' => $location,
+                        'custs' => [ $custid ]
+                    ];
+                } elseif( !in_array( $custid, $custsByLocation[ $location ][ 'custs' ], true ) ){
                     $custsByLocation[ $location ][ 'count' ]++;
+                    $custsByLocation[ $location ][ 'custs' ][] = $custid;
                 }
 
                 if ( !isset($speeds[ $vi[ 'speed' ] ])) {
