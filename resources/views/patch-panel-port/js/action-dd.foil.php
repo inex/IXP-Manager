@@ -282,7 +282,7 @@
                         },
                         callback: function( result ){
                             if( result ){
-                                popup( pppId, action, url, false );
+                                setNotes( ppp, action, url );
                             } else {
                                 $( '#notes-modal-btn-confirm' ).attr( "disabled", false );
                                 $( 'body' ).addClass( 'overflow-hidden' );
@@ -291,28 +291,7 @@
                         }
                     });
                 } else {
-                    $.ajax( "<?= url('patch-panel-port/notes')?>/" + ppp.id, {
-                        data: {
-                            pppId: ppp.id,
-                            notes: $( '#notes-modal-body-public-notes' ).val(),
-                            private_notes: $( '#notes-modal-body-private-notes' ).val(),
-                            pi_status: action === 'set-connected' && ppp.switch_port_id ? $( '#notes-modal-body-pi-status' ).val() : null,
-                            colo_circuit_ref: action === 'set-connected' ? $( '#notes-modal-body-colo-ref').val() : null,
-                        },
-                        type: 'POST'
-                    })
-                    .done( function( data ) {
-                        document.location.href = url;
-                    })
-                    .fail( function(){
-                        alert( 'Could not update notes. API / AJAX / network error' );
-                        throw new Error("Error running ajax query for api/v4/patch-panel-port/notes");
-                    })
-                    .always( function() {
-                        $( '#notes-modal' ).modal( 'hide' );
-                        $( '#notes-modal-btn-confirm' ).attr( 'disabled', false) ;
-                        popupTearDown();
-                    });
+                    setNotes( ppp, action, url );
                 }
             });
 
@@ -321,6 +300,30 @@
         });
     }
 
+    function setNotes( ppp, action, url ){
+        $.ajax( "<?= url('patch-panel-port/notes')?>/" + ppp.id, {
+            data: {
+                pppId: ppp.id,
+                notes: $( '#notes-modal-body-public-notes' ).val(),
+                private_notes: $( '#notes-modal-body-private-notes' ).val(),
+                pi_status: action === 'set-connected' && ppp.switch_port_id ? $( '#notes-modal-body-pi-status' ).val() : null,
+                colo_circuit_ref: action === 'set-connected' ? $( '#notes-modal-body-colo-ref').val() : null,
+            },
+            type: 'POST'
+        })
+            .done( function( data ) {
+                document.location.href = url;
+            })
+            .fail( function(){
+                alert( 'Could not update notes. API / AJAX / network error' );
+                throw new Error("Error running ajax query for api/v4/patch-panel-port/notes");
+            })
+            .always( function() {
+                $( '#notes-modal' ).modal( 'hide' );
+                $( '#notes-modal-btn-confirm' ).attr( 'disabled', false) ;
+                popupTearDown();
+            });
+    }
     /**
      * Display a drag'n'drop popup to attached files to patch panel ports.
      *
