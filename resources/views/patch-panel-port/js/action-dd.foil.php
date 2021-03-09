@@ -3,10 +3,12 @@
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
 
-    const publicNotes               = $('#notes-modal-body-public-notes' );
-    const privateNotes              = $('#notes-modal-body-private-notes' );
-    const toggle_potential_slave    = $('#toggle-potential-slaves' );
-    const note_model_intro          = $('#notes-modal-body-intro' );
+    const publicNotes                   = $('#notes-modal-body-public-notes' );
+    const privateNotes                  = $('#notes-modal-body-private-notes' );
+    const toggle_potential_slave        = $('#toggle-potential-slaves' );
+    const note_modal_intro              = $('#notes-modal-body-intro' );
+    const note_modal_body_div_colo_ref  = $( '#notes-modal-body-div-colo-ref' );
+    const note_modal_body_div_pi_status = $( '#notes-modal-body-div-pi-status' );
 
     let notesIntro = "### <?= date("Y-m-d" ) . ' - ' . Auth::getUser()->username ?> \n\n\n";
 
@@ -29,22 +31,22 @@
 
     $( '.btn-edit-notes' ).click( function(e) {
         e.preventDefault();
-        popup( $( this ).attr( 'data-object-id' ), 'edit-notes', $( this ).attr( 'href' ) );
+        popup( $( this ).attr( 'data-object-id' ), 'edit-notes', $( this ).attr( 'href' ), false );
     });
 
     $( '.btn-set-connected' ).click( function(e) {
         e.preventDefault();
-        popup( $( this ).attr( 'data-object-id' ) , 'set-connected', $( this ).attr( 'href' ) );
+        popup( $( this ).attr( 'data-object-id' ) , 'set-connected', $( this ).attr( 'href' ), true );
     });
 
     $( '.btn-request-cease' ).click( function(e) {
         e.preventDefault();
-        popup( $( this ).attr( 'data-object-id' ) , 'request-cease', $( this ).attr( 'href' ) );
+        popup( $( this ).attr( 'data-object-id' ) , 'request-cease', $( this ).attr( 'href' ), false );
     });
 
     $( '.btn-set-ceased' ).click( function(e){
         e.preventDefault();
-        popup( $( this ).attr( 'data-object-id' ), 'set-ceased', $( this ).attr( 'href' ) );
+        popup( $( this ).attr( 'data-object-id' ), 'set-ceased', $( this ).attr( 'href' ), false );
     });
 
     $( '.btn-upload-file' ).click( function(e){
@@ -173,16 +175,17 @@
      */
     function popupSetUp( ppp, action ) {
         if( action !== 'edit-notes' ) {
-            note_model_intro.show();
+            note_modal_intro.show();
         } else {
-            note_model_intro.hide();
+            note_modal_intro.hide();
         }
 
         $( '#notes-modal-ppp-id' ).val( ppp.id );
         publicNotes.val( ppp.notes );
         privateNotes.val( ppp.private_notes );
 
-        $( '#notes-modal-body-div-pi-status' ).hide();
+        note_modal_body_div_pi_status.hide();
+        note_modal_body_div_colo_ref.hide();
 
         let options = '<option value="0"></option>\n';
         $.each( <?= json_encode( \IXP\Models\PhysicalInterface::$STATES ) ?> , function ( i, elem) {
@@ -194,9 +197,15 @@
         if( action === 'set-connected' && ppp.switch_port_id ) {
             if( ppp.switch_port.physical_interface !== null ){
                 $('#notes-modal-body-pi-status').val( ppp.switch_port.physical_interface.status );
+                $('#notes-modal-body-pi-status').trigger('change.select2');
             }
 
-            $('#notes-modal-body-div-pi-status').show();
+            note_modal_body_div_pi_status.addClass( 'd-flex' ).show();
+        }
+
+        if( action === 'set-connected' ) {
+            $('#notes-modal-body-colo-ref' ).val( ppp.coloRef );
+            note_modal_body_div_colo_ref.addClass( 'd-flex' ).show();
         }
 
         // The logic of these two blocks is:
@@ -222,7 +231,12 @@
         privateNotes.val( '' );
 
         $( '#notes-modal-body-pi-status' ).html( '' );
-        $( '#notes-modal-body-div-pi-status' ).hide();
+        note_modal_body_div_pi_status.removeClass( 'd-flex' ).hide();
+
+        $( '#notes-modal-body-colo-ref' ).html( '' );
+        note_modal_body_div_colo_ref.removeClass( 'd-flex' ).hide();
+
+        $( 'body' ).removeClass( 'overflow-hidden' );
 
         publicNotes.off( 'blur change click keyup focus focusout' );
         privateNotes.off( 'blur change click keyup focus focusout' );
@@ -240,23 +254,53 @@
      * @param pppId The ID of the patch panel port
      * @param action An indication of which option the user chose (e.g. 'edit-notes', 'set-connected', etc
      * @param url The URL of the anchor element used to trigger the popup.
+     * @param checkColoRef Do we need to check that the colo_red input is not empty
      */
-    function popup( pppId, action, url ) {
+    function popup( pppId, action, url, checkColoRef ) {
+
         ajaxGetPatchPanelPort( pppId, action, url, function( ppp, action, url ) {
             popupSetUp( ppp, action );
 
-            $( '#notes-modal-btn-confirm' ).click( function() {
+            $( '#notes-modal-btn-confirm' ).on( 'click', function() {
 
-                $('#notes-modal-btn-confirm').attr("disabled", true);
+                $( '#notes-modal-btn-confirm' ).attr( "disabled", true );
 
-                $.ajax( "<?= url('patch-panel-port/notes')?>/" + ppp.id, {
-                    data: {
-                        notes: $( '#notes-modal-body-public-notes' ).val(),
-                        private_notes: $( '#notes-modal-body-private-notes' ).val(),
-                        pi_status: action === 'set-connected' && ppp.switch_port_id ? $('#notes-modal-body-pi-status').val() : null
-                    },
-                    type: 'POST'
-                })
+                if( checkColoRef && action === 'set-connected' && !$( '#notes-modal-body-colo-ref' ).val() ) {
+                    bootbox.confirm({
+                        message: `You have not entered a colocation reference.
+                        You may proceed without it by clicking continue below.
+                        If you do, please return and enter the co-location reference later.`,
+                        buttons: {
+                            confirm: {
+                                label: 'Continue',
+                                className: 'btn-primary'
+                            },
+                            cancel: {
+                                label: 'Cancel',
+                                className: 'btn-secondary'
+                            }
+                        },
+                        callback: function( result ){
+                            if( result ){
+                                popup( pppId, action, url, false );
+                            } else {
+                                $( '#notes-modal-btn-confirm' ).attr( "disabled", false );
+                                $( 'body' ).addClass( 'overflow-hidden' );
+                                $( '#notes-modal' ).addClass( 'overflow-auto' );
+                            }
+                        }
+                    });
+                } else {
+                    $.ajax( "<?= url('patch-panel-port/notes')?>/" + ppp.id, {
+                        data: {
+                            pppId: ppp.id,
+                            notes: $( '#notes-modal-body-public-notes' ).val(),
+                            private_notes: $( '#notes-modal-body-private-notes' ).val(),
+                            pi_status: action === 'set-connected' && ppp.switch_port_id ? $( '#notes-modal-body-pi-status' ).val() : null,
+                            colo_circuit_ref: action === 'set-connected' ? $( '#notes-modal-body-colo-ref').val() : null,
+                        },
+                        type: 'POST'
+                    })
                     .done( function( data ) {
                         document.location.href = url;
                     })
@@ -269,13 +313,13 @@
                         $( '#notes-modal-btn-confirm' ).attr( 'disabled', false) ;
                         popupTearDown();
                     });
+                }
             });
 
             $( '#notes-modal' ).modal('show');
             $( '#notes-modal' ).on( 'hidden.bs.modal', popupTearDown );
         });
     }
-
 
     /**
      * Display a drag'n'drop popup to attached files to patch panel ports.

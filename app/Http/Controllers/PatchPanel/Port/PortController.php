@@ -410,6 +410,10 @@ class PortController extends Controller
             $pi->update( [ 'status' => $r->pi_status ] );
         }
 
+        if( $r->colo_circuit_ref ) {
+            $ppp->update( [ 'colo_circuit_ref' =>  clean( $r->colo_circuit_ref ) ] );
+        }
+
         return response()->json( [ 'success' => true ] );
     }
 
