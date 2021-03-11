@@ -330,7 +330,7 @@
      * @param pppid The ID of the patch panel port
      */
     function uploadPopup( url ) {
-        let html = `<form id="upload" class="col-lg-12 tw-bg-gray-100 tw-border tw-rounded-sm" method="post" action='${url}' enctype='multipart/form-data'>
+        let html = `<form id="upload" class="col-lg-12 tw-bg-gray-100 tw-border-1 tw-rounded-sm" method="post" action='${url}' enctype='multipart/form-data'>
                         <div id='drop' class="tw-py-20 tw-px-10 tw-text-center tw-font-bold tw-text-gray-600">
                             Drop Files Here &nbsp;
                             <a href="#" id="upload-drop-a" class="btn btn-success color-white">
@@ -386,7 +386,7 @@
                 // either via the browse button, or via drag/drop:
                 add: function (e, data) {
 
-                    let tpl = $(`<li class="col-md-12 tw-border-t tw-relative tw-h-24 tw-p-2 tw-pl-4">
+                    let tpl = $(`<li class="col-md-12 tw-border-t-1 tw-relative tw-h-24 tw-p-2 tw-pl-4">
                                     <div class="row info-area">
                                         <p class="info-text tw-font-bold col-md-8 mr-auto">
                                             ${data.files[0].name}

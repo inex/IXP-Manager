@@ -79,25 +79,29 @@ class Container
     public static function html(): string
     {
         $alerts = '';
+        $color = '';
 
         while( $alert = self::pop() ) {
             switch ($alert->class()) {
                 case 'danger':
                     $icon = "fa-exclamation-triangle";
+                    $color = "red";
                     break;
                 case 'info':
                     $icon = "fa-info-circle";
+                    $color = "blue";
                     break;
                 case 'success':
                     $icon = "fa-check-circle";
+                    $color = "green";
                     break;
                 case 'warning':
                     $icon = "fa-exclamation-circle";
+                    $color = "orange";
                     break;
             }
 
-            $alerts .= '<div class="alert alert-' . $alert->class() . ' alert-dismissible mb-16" role="alert">' . "\n"
-                . '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . "\n"
+            $alerts .= '<div class="tw-bg-' . $color . '-100 tw-border-l-4 tw-border-' . $color . '-500 tw-text-' . $color . '-700 p-4 alert-dismissible mb-4" role="alert">' . "\n"
                 . '<div class="d-flex align-items-center">'
                 . '<div class="text-center"><i class="fa ' . $icon . ' fa-2x "></i></div>'
                 . '<div class="col-sm-12">' . clean( $alert->message() ) . "</div> \n"

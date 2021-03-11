@@ -2,7 +2,7 @@
     <h4>Metadata for <?= $t->file->name ?></h4>
 
     <table class="tw-mt-8">
-        <tr class="tw-border-t tw-border-blue-500">
+        <tr class="tw-border-t-1 tw-border-blue-500">
             <td class="tw-text-right tw-font-bold tw-p-2">
                 Created By
             </td>
@@ -14,7 +14,7 @@
                 <?php endif; ?>
             </td>
         </tr>
-        <tr class="tw-border-t tw-border-blue-500">
+        <tr class="tw-border-t-1 tw-border-blue-500">
             <td class="tw-text-right tw-font-bold tw-p-2">
                 Customer
             </td>
@@ -22,7 +22,7 @@
                 <?= $t->ee( $t->file->customer->name ) ?>
             </td>
         </tr>
-        <tr class="tw-border-t tw-border-blue-500">
+        <tr class="tw-border-t-1 tw-border-blue-500">
             <td class="tw-text-right tw-font-bold tw-p-2">
                 Path
             </td>
@@ -30,7 +30,7 @@
                 <?= $t->dspath ?>
             </td>
         </tr>
-        <tr class="tw-border-t tw-border-blue-500">
+        <tr class="tw-border-t-1 tw-border-blue-500">
             <td class="tw-text-right tw-font-bold tw-p-2">
                 Last Modified
             </td>
@@ -38,7 +38,7 @@
                 <?= \Carbon\Carbon::parse( $t->last_modified )->format( 'Y-m-d H:i:s',  ) ?>
             </td>
         </tr>
-        <tr class="tw-border-t tw-border-b tw-border-blue-500">
+        <tr class="tw-border-t-1 tw-border-b-1 tw-border-blue-500">
             <td class="tw-text-right tw-font-bold tw-p-2">
                 Size
             </td>

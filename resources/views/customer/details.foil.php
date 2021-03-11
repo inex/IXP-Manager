@@ -52,14 +52,14 @@
 
                                 <?php if( !$t->associates ): ?>
                                     <?php if( $c->peeringpolicy !== \IXP\Models\Customer::PEERING_POLICY_OPEN ): ?>
-                                        <span class="tw-hidden lg:tw-inline tw-border tw-p-1 tw-rounded-full tw-float-right tw-text-grey-dark tw-uppercase tw-text-xs">
+                                        <span class="tw-hidden lg:tw-inline tw-border-1 tw-p-1 tw-rounded-full tw-float-right tw-text-grey-dark tw-uppercase tw-text-xs">
                                             <?= $c->peeringpolicy ?>
                                         </span>
                                     <?php endif; ?>
 
                                     <?php if( $c->in_manrs ): ?>
                                         <a href="https://www.manrs.org/" target="_blank" class="hover:no-underline">
-                                            <span class="tw-hidden md:tw-inline tw-border tw-border-green-500 tw-p-1 tw-rounded-full tw-text-green-500 tw-uppercase tw-text-xs tw-mx-3">
+                                            <span class="tw-hidden md:tw-inline tw-border-1 tw-border-green-500 tw-p-1 tw-rounded-full tw-text-green-500 tw-uppercase tw-text-xs tw-mx-3">
                                                 MANRS
                                             </span>
                                         </a>

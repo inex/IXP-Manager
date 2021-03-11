@@ -5,8 +5,8 @@
 
 <div class="d-flex row">
     <div class="col-md-6">
-        <div class="tw-rounded tw-p-4 tw-shadow-md tw-border tw-border-grey-light">
-            <header class="tw-pb-2 tw-pl-2 tw-flex tw-border-b tw-border-grey-300">
+        <div class="tw-rounded-sm tw-p-4 tw-shadow-md tw-border-1 tw-border-grey-light">
+            <header class="tw-pb-2 tw-pl-2 tw-flex tw-border-b-1 tw-border-gray-300">
                 <h3>
                     Registration Details
                 </h3>
@@ -62,8 +62,8 @@
 
     <div class="col-md-6">
         <?php if( !config('ixp.reseller.no_billing') && !$c->reseller ): ?>
-        <div class="tw-rounded tw-p-4 tw-shadow-md tw-border tw-border-grey-light">
-            <header class="tw-pb-2 tw-pl-2 tw-flex tw-border-b tw-border-grey-300">
+        <div class="tw-rounded-sm tw-p-4 tw-shadow-md tw-border-1 tw-border-grey-light">
+            <header class="tw-pb-2 tw-pl-2 tw-flex tw-border-b-1 tw-border-gray-300">
                 <h3>
                     Billing Details
                 </h3>

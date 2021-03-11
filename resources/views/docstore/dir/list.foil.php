@@ -123,7 +123,7 @@
 
                         <td class="<?= $i ? '' : 'tw-border-t-2' ?> meta tw-text-center">
                             <?php if( Auth::check() && $isSuperUser ): ?>
-                                <span class="tw-w-full tw-inline-block tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-xs tw-text-gray-700">
+                                <span class="tw-w-full tw-inline-block tw-border-gray-200 tw-border-1 tw-rounded-sm tw-bg-gray-200 tw-px-1 tw-text-xs tw-text-gray-700">
                                     <?= \IXP\Models\User::$PRIVILEGES_ALL[ $file->min_privs ] ?>
                                 </span>
                             <?php endif; ?>
@@ -132,12 +132,12 @@
                         <td class="<?= $i ? '' : 'tw-border-t-2' ?> meta tw-text-right" style="font-variant-numeric: tabular-nums;">
                             <?php if( Auth::check() && $isSuperUser ): ?>
                                 <?php if( $file->created_at < $sixmonthsago ): ?>
-                                    <span class="tw-align-middle tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-sm tw-text-gray-700"
+                                    <span class="tw-align-middle tw-border-gray-200 tw-border-1 tw-rounded-sm tw-bg-gray-200 tw-px-1 tw-text-sm tw-text-gray-700"
                                           data-toggle="tooltip" data-placement="left" data-html="true" title="Unique User Downloads: <?= $file->unique_downloads_count ?>">
                                         <?= $file->unique_downloads_count ?>
                                     </span>
                                 <?php else: ?>
-                                    <span class="tw-align-middle tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-sm tw-text-gray-700"
+                                    <span class="tw-align-middle tw-border-gray-200 tw-border-1 tw-rounded-sm tw-bg-gray-200 tw-px-1 tw-text-sm tw-text-gray-700"
                                             data-toggle="tooltip" data-placement="left" data-html="true" title="Unique User Downloads:<br> <?= $file->downloads_count ?> Total (<?= $file->unique_downloads_count ?> Unique)">
                                         <?= $file->downloads_count ?> (<?= $file->unique_downloads_count ?>)
                                     </span>
@@ -146,7 +146,7 @@
                         </td>
 
                         <td class="<?= $i ? '' : 'tw-border-t-2' ?> meta">
-                            <span class="tw-text-gray-700 tw-text-sm tw-align-middle tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1">
+                            <span class="tw-text-gray-700 tw-text-sm tw-align-middle tw-border-gray-200 tw-border-1 tw-rounded-sm tw-bg-gray-200 tw-px-1">
                                 <?= $file->file_last_updated->toFormattedDateString() ?>
                             </span>
                         </td>

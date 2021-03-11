@@ -2,7 +2,7 @@
     $c = $t->c; /** @var $c \IXP\Models\Customer */
     $isSuperUser = Auth::getUser()->isSuperUser();
 ?>
-<table class="table tw-border tw-border-grey-light tw-shadow-md table-striped table-responsive-ixp-action collapse" style="width:100%">
+<table class="table tw-border-1 tw-border-grey-light tw-shadow-md table-striped table-responsive-ixp-action collapse" style="width:100%">
     <thead class="thead-dark">
         <tr>
             <th>

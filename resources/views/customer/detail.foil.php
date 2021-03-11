@@ -47,14 +47,14 @@
                             <p class="tw-mt-6">
                                 <?php if( $c->in_manrs ): ?>
                                     <a href="https://www.manrs.org/" target="_blank" class="hover:tw-no-underline">
-                                        <span class="tw-inline-block tw-border tw-border-green-500 tw-p-1 tw-rounded-full tw-text-green-500 tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-3">
+                                        <span class="tw-inline-block tw-border-1 tw-border-green-500 tw-p-1 tw-rounded-full tw-text-green-500 tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-3">
                                             MANRS
                                         </span>
                                     </a>
                                 <?php endif; ?>
 
                                 <?php if( $c->peeringpolicy !== \IXP\Models\Customer::PEERING_POLICY_OPEN ): ?>
-                                    <span class="tw-inline-block tw-border tw-border-gray-600 tw-p-1 tw-rounded-full tw-text-gray-600 tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-3">
+                                    <span class="tw-inline-block tw-border-1 tw-border-gray-600 tw-p-1 tw-rounded-full tw-text-gray-600 tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-3">
                                         <?= $c->peeringpolicy ?>
                                     </span>
                                 <?php endif; ?>
@@ -72,7 +72,7 @@
 
             <?php if( Auth::check() && !$c->typeAssociate() ): ?>
                 <div class="row tw-mt-6 tw-mx-4">
-                    <div class="col-12 tw-border tw-border-grey-light tw-p-4 tw-text-gray-700 ">
+                    <div class="col-12 tw-border-1 tw-border-grey-light tw-p-4 tw-text-gray-700 ">
                         <?php if( filter_var( $c->peeringemail, FILTER_VALIDATE_EMAIL ) ): ?>
                             <div class="row">
                                 <div class="col-12 col-md-3 tw-text-center md:tw-text-right">
@@ -134,7 +134,7 @@
                     }
                 ?>
                     <div class="col-12 col-md-6 col-xl-4 mt-4">
-                        <div class="tw-max-w-sm tw-rounded tw-overflow-hidden tw-shadow-lg">
+                        <div class="tw-max-w-sm tw-rounded-sm tw-overflow-hidden tw-shadow-lg">
                             <div class="tw-px-6 tw-py-6">
                                 <div class="tw-font-bold tw-text-xl tw-mb-2">
                                     <?php if( $infra = $vi->physicalInterfaces[ 0 ]->switchPort->switcher->infrastructureModel ): ?>
@@ -200,9 +200,9 @@
 
                                         <?php if( !in_array( $c->autsys , $t->rsasns, true ) ): ?>
                                             <?php if( $vli->rsclient ): ?>
-                                                <span class="tw-inline-block tw-border tw-border-green-500       tw-p-1 tw-rounded-full tw-text-green-dark  tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-2">
+                                                <span class="tw-inline-block tw-border-1 tw-border-green-500 tw-p-1 tw-rounded-full tw-text-green-dark  tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-2">
                                             <?php else: ?>
-                                                <span class="tw-inline-block tw-border tw-border-red-lighter     tw-p-1 tw-rounded-full tw-text-red-lighter tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-2">
+                                                <span class="tw-inline-block tw-border-1 tw-border-red-lighter tw-p-1 tw-rounded-full tw-text-red-lighter tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-2">
                                             <?php endif; ?>
                                                 Route Server
                                             </span>
@@ -210,9 +210,9 @@
 
                                         <?php if( $c->autsys !== 112 ): ?>
                                             <?php if( $vli->as112client ): ?>
-                                                <span class="tw-inline-block tw-border tw-border-green-500 tw-p-1 tw-rounded-full tw-text-green-dark  tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-2">
+                                                <span class="tw-inline-block tw-border-1 tw-border-green-500 tw-p-1 tw-rounded-full tw-text-green-dark  tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-2">
                                             <?php else: ?>
-                                                <span class="tw-inline-block tw-border tw-border-red-lighter tw-p-1 tw-rounded-full tw-text-red-lighter tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-2">
+                                                <span class="tw-inline-block tw-border-1 tw-border-red-lighter tw-p-1 tw-rounded-full tw-text-red-lighter tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-2">
                                             <?php endif; ?>
                                                 AS112
                                             </span>

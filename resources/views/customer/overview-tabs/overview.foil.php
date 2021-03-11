@@ -23,7 +23,7 @@
             </div>
         <?php endif; ?>
 
-        <div class="row tw-p-4 m-1 tw-shadow-md tw-border tw-border-grey-light tw-rounded-sm">
+        <div class="row tw-p-4 m-1 tw-shadow-md tw-border-1 tw-border-grey-light tw-rounded-sm">
             <table class="table table-md table-no-border table-sm col-lg-6 col-sm-12">
                 <tbody>
                 <tr>

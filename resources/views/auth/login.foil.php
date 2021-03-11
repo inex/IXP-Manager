@@ -28,7 +28,7 @@
             <div class="tw-w-full tw-max-w-sm tw-mx-auto">
                 <?= Former::open()->method( 'POST' )
                     ->action( route( 'login@login' ) )
-                    ->class( "tw-bg-white tw-shadow-md tw-rounded tw-px-8 tw-pt-6 tw-pb-8 tw-mb-6" )
+                    ->class( "tw-bg-white tw-shadow-md tw-rounded-sm tw-px-8 tw-pt-6 tw-pb-8 tw-mb-6" )
                 ?>
                 <div class="tw-mb-6">
                     <label class="control-label" for="username">

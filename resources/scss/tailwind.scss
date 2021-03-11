@@ -155,11 +155,15 @@ a:hover {
   @apply tw-underline;
 }
 
-.border-t{
+.tw-border-t-1{
     border-top-width: 1px;
 }
 
-.border{
+.tw-border-b-1{
+    border-bottom-width: 1px;
+}
+
+.tw-border-1{
     border-width: 1px;
 }
 
@@ -273,7 +277,7 @@ a:hover {
 }
 
 .btn-outline-secondary{
-    @apply tw-bg-transparent tw-text-grey tw-font-semibold border tw-border-grey tw-rounded-sm
+    @apply tw-bg-transparent tw-text-grey tw-font-semibold tw-border-1 tw-border-grey tw-rounded-sm
 }
 
 .btn-outline-secondary:hover{
@@ -281,19 +285,19 @@ a:hover {
 }
 
 .btn-white{
-    @apply tw-bg-white tw-text-grey-darkest tw-font-semibold border tw-border-grey-light tw-rounded-sm shadow;
+    @apply tw-bg-white tw-text-grey-darkest tw-font-semibold tw-border-1 tw-border-grey-light tw-rounded-sm shadow;
 }
 
 .btn-white:hover{
-    @apply tw-bg-grey-lighter border tw-border-grey-light;
+    @apply tw-bg-grey-lighter tw-border-1 tw-border-grey-light;
 }
 
 .btn-info{
-    @apply tw-bg-white tw-text-teal-500 tw-font-semibold border tw-border-teal-500 tw-rounded-sm shadow;
+    @apply tw-bg-white tw-text-teal-500 tw-font-semibold tw-border-1 tw-border-teal-500 tw-rounded-sm shadow;
 }
 
 .btn-info:hover{
-    @apply tw-bg-teal-500 border tw-border-grey-light;
+    @apply tw-bg-teal-500 tw-border-1 tw-border-grey-light;
 }
 
 /****************************************************************************************ea
@@ -301,7 +305,7 @@ a:hover {
  ****************************************************************************************/
 
 input.form-control{
-    @apply shadow tw-appearance-none border tw-rounded-sm tw-w-full tw-py-2 tw-px-4 tw-text-grey-darker tw-leading-tight;
+    @apply shadow tw-appearance-none tw-border-1 tw-rounded-sm tw-w-full tw-py-2 tw-px-4 tw-text-grey-darker tw-leading-tight;
 }
 
 input.form-control:focus{
@@ -382,7 +386,7 @@ a:hover{
 }
 
 .docstore td {
-    @apply border-t tw-border-gray-300 tw-px-2 tw-py-2;
+    @apply tw-border-t-1 tw-border-gray-300 tw-px-2 tw-py-2;
 }
 
 .docstore td.top {

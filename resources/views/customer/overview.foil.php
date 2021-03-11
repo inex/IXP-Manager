@@ -140,7 +140,7 @@
                     <?php if( !$c->typeAssociate() ): ?>
                         <?php if( $c->in_manrs ): ?>
                             <a href="https://www.manrs.org/" target="_blank" class="hover:tw-no-underline">
-                                <span class="tw-inline-block tw-border tw-border-green-500 tw-rounded-full tw-text-green-500 tw-font-semibold tw-uppercase tw-text-xs tw-px-3 tw-py-1 tw-mr-3">
+                                <span class="tw-inline-block tw-border-1 tw-border-green-500 tw-rounded-full tw-text-green-500 tw-font-semibold tw-uppercase tw-text-xs tw-px-3 tw-py-1 tw-mr-3">
                                     MANRS
                                 </span>
                             </a>
