@@ -312,6 +312,26 @@
                                                     <?= $t->ee( $history->colo_billing_ref ) ?>
                                                 </td>
                                             </tr>
+                                            <tr>
+                                                <td>
+                                                    <b>
+                                                        Created:
+                                                    </b>
+                                                </td>
+                                                <td>
+                                                    <?= $history->created_at ?>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <b>
+                                                        Updated:
+                                                    </b>
+                                                </td>
+                                                <td>
+                                                    <?= $history->updated_at ?>
+                                                </td>
+                                            </tr>
                                         </table>
                                     </div>
 

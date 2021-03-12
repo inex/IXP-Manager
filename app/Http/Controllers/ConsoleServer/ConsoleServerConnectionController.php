@@ -49,6 +49,7 @@ use IXP\Utils\View\Alert\{
 
 /**
  * ConsoleServerConnection Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
@@ -126,6 +127,14 @@ class ConsoleServerConnectionController extends EloquentController
                 'notes'       => [
                     'title'         => 'Notes',
                     'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
+                ],
+                'created_at'       => [
+                    'title'         => 'Created',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ],
+                'updated_at'       => [
+                    'title'         => 'Updated',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ]
             ]
         );

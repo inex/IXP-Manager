@@ -131,6 +131,26 @@
                                     <?= $t->data[ 'item' ][ 'mauAutoNegAdminState' ] === null ? '(not supported / unknown)' : ( $t->data[ 'item' ][ 'mauAutoNegAdminState' ] ? 'Enabled' : 'No' ) ?>
                                 </td>
                             </tr>
+                            <tr>
+                                <td>
+                                    <b>
+                                        Created:
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $t->data[ 'item' ][ 'created_at' ] ? \Carbon\Carbon::create( $t->data[ 'item' ][ 'created_at' ] ) : ''?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>
+                                        Updated:
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $t->data[ 'item' ][ 'updated_at' ] ? \Carbon\Carbon::create( $t->data[ 'item' ][ 'updated_at' ] ) : '' ?>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

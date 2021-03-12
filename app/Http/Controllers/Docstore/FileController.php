@@ -275,6 +275,7 @@ class FileController extends Controller
             'last_modified' => Storage::disk( $file->disk )->lastModified( $file->path ),
             'dspath'        => config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' ) . '/' . $file->path,
             'created_by'    => User::find( $file->created_by ),
+            'created_at'    => $file->created_at,
         ]);
     }
 

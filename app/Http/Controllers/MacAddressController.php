@@ -119,7 +119,7 @@ class MacAddressController extends EloquentController
             ->leftjoin( 'switch AS s', 's.id', 'sp.switchid' )
             ->leftjoin( 'oui AS o', 'o.oui', '=', DB::raw("SUBSTRING( m.mac, 1, 6 )") )
             ->when( $id , function( Builder $q, $id ) {
-                return $q->where('id', $id );
+                return $q->where('m.id', $id );
             } )->groupBy( 'm.mac', 'vi.id', 'm.id', 'm.firstseen', 'm.lastseen',
                 'c.id', 'c.abbreviatedName', 's.name', 'o.organisation'
             )

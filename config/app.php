@@ -215,6 +215,8 @@ return [
 
         PragmaRX\Google2FALaravel\ServiceProvider::class,
 
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+
     ],
 
     /*

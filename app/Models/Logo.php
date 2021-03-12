@@ -13,9 +13,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $original_name
  * @property string $stored_name
  * @property string $uploaded_by
+ * @property \Illuminate\Support\Carbon|null $created_at
  * @property int $width
  * @property int $height
- * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer|null $customer
  * @method static \Illuminate\Database\Eloquent\Builder|Logo newModelQuery()

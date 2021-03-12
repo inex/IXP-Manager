@@ -123,6 +123,26 @@
                                 <?= @parsedown( $pi->notes ) ?>
                             </td>
                         </tr>
+                        <tr>
+                            <td>
+                                <b>
+                                    Created:
+                                </b>
+                            </td>
+                            <td>
+                                <?= $pi->created_at ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>
+                                    Updated:
+                                </b>
+                            </td>
+                            <td>
+                                <?= $pi->updated_at ?>
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>

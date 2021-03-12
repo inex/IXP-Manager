@@ -127,6 +127,26 @@
                                     <?= $t->ee( $vli->notes ) ?>
                                 </td>
                             </tr>
+                            <tr>
+                                <td>
+                                    <b>
+                                        Created:
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $vli->created_at ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>
+                                        Updated:
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $vli->updated_at ?>
+                                </td>
+                            </tr>
                         </table>
                     </div>
 

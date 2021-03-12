@@ -26,100 +26,116 @@
         <div class="row tw-p-4 m-1 tw-shadow-md tw-border-1 tw-border-grey-light tw-rounded-sm">
             <table class="table table-md table-no-border table-sm col-lg-6 col-sm-12">
                 <tbody>
-                <tr>
-                    <td>
-                        <b>Abbreviated Name</b>
-                    </td>
-                    <td>
-                        <?= $t->ee( $c->abbreviatedName ) ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <b>Corporate Site</b>
-                    </td>
-                    <td>
-                        <a target="_blank" href="<?= $t->ee( $c->corpwww )?>">
-                            <?= $t->ee( $c->corpwww ) ?>
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <b>Status</b>
-                    </td>
-                    <td>
-                        <?= $c->status() ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <b>Type</b>
-                    </td>
-                    <td>
-                        <?= $c->type() ?>
-                    </td>
-                </tr>
-                <?php if( !$c->typeAssociate() ): ?>
                     <tr>
                         <td>
-                            <b>Peering Policy</b>
+                            <b>Abbreviated Name</b>
                         </td>
                         <td>
-                            <?= $t->ee( $c->peeringpolicy ) ?>
+                            <?= $t->ee( $c->abbreviatedName ) ?>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <b>PeeringDB</b>
+                            <b>Corporate Site</b>
                         </td>
                         <td>
-                            <?php if( $c->in_peeringdb ): ?>
-                                <a href="https://www.peeringdb.com/asn/<?= $c->autsys ?>" target="_blank">
-                                  Yes &raquo;
-                                </a>
-                            <?php else: ?>
-                                No
-                            <?php endif; ?>
-
-                            <?php if( config( 'auth.peeringdb.enabled' ) && !$c->peeringdb_oauth ): ?>
-                                <span class="badge badge-warning">
-                                    <i class="fa fa-exclamation-circle"></i> OAuth Disabled
-                                </span>
-                            <?php endif; ?>
+                            <a target="_blank" href="<?= $t->ee( $c->corpwww )?>">
+                                <?= $t->ee( $c->corpwww ) ?>
+                            </a>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <b>IRRDB</b>
+                            <b>Status</b>
                         </td>
                         <td>
-                            <?php if( $irrdb = $c->irrdbConfig ): ?>
-                                <?= $t->ee( $irrdb->source )?>
-                                <?php if( $c->routeServerClient() && $c->irrdbFiltered() ): ?>
-                                    (<a href="<?= route( "irrdb@list", [ "cust" => $c->id, "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">entries</a>)
+                            <?= $c->status() ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Type</b>
+                        </td>
+                        <td>
+                            <?= $c->type() ?>
+                        </td>
+                    </tr>
+                    <?php if( !$c->typeAssociate() ): ?>
+                        <tr>
+                            <td>
+                                <b>Peering Policy</b>
+                            </td>
+                            <td>
+                                <?= $t->ee( $c->peeringpolicy ) ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>PeeringDB</b>
+                            </td>
+                            <td>
+                                <?php if( $c->in_peeringdb ): ?>
+                                    <a href="https://www.peeringdb.com/asn/<?= $c->autsys ?>" target="_blank">
+                                      Yes &raquo;
+                                    </a>
+                                <?php else: ?>
+                                    No
                                 <?php endif; ?>
+
+                                <?php if( config( 'auth.peeringdb.enabled' ) && !$c->peeringdb_oauth ): ?>
+                                    <span class="badge badge-warning">
+                                        <i class="fa fa-exclamation-circle"></i> OAuth Disabled
+                                    </span>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>IRRDB</b>
+                            </td>
+                            <td>
+                                <?php if( $irrdb = $c->irrdbConfig ): ?>
+                                    <?= $t->ee( $irrdb->source )?>
+                                    <?php if( $c->routeServerClient() && $c->irrdbFiltered() ): ?>
+                                        (<a href="<?= route( "irrdb@list", [ "cust" => $c->id, "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">entries</a>)
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+
+                    <tr>
+                        <td>
+                            <?php if( !$c->typeAssociate() ): ?>
+                                <b>NOC Details</b>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?php if( !$c->typeAssociate() ): ?>
+                                <?php if( $c->nochours      ): ?>   <?= $t->ee( $c->nochours ) ?> <br />    <?php endif; ?>
+                                <?php if( $c->nocemail      ): ?>   <a href="mailto:<?= $t->ee( $c->nocemail ) ?>"> <?= $t->ee( $c->nocemail ) ?> </a><br /><?php endif; ?>
+                                <?php if( $c->nocwww        ): ?>   <a href="<?= $t->ee( $c->nocwww ) ?>"> <?= $t->ee( $c->nocwww ) ?> </a><br /><?php endif; ?>
+                                <?php if( $c->nocphone      ): ?>   <?= $t->ee( $c->nocphone ) ?> <br />    <?php endif; ?>
+                                <?php if( $c->noc24hphone   ): ?>   <?= $t->ee( $c->noc24hphone ) ?> (24h) <?php endif; ?>
                             <?php endif; ?>
                         </td>
                     </tr>
-                <?php endif; ?>
-
-                <tr>
-                    <td>
-                        <?php if( !$c->typeAssociate() ): ?>
-                            <b>NOC Details</b>
-                        <?php endif; ?>
-                    </td>
-                    <td>
-                        <?php if( !$c->typeAssociate() ): ?>
-                            <?php if( $c->nochours      ): ?>   <?= $t->ee( $c->nochours ) ?> <br />    <?php endif; ?>
-                            <?php if( $c->nocemail      ): ?>   <a href="mailto:<?= $t->ee( $c->nocemail ) ?>"> <?= $t->ee( $c->nocemail ) ?> </a><br /><?php endif; ?>
-                            <?php if( $c->nocwww        ): ?>   <a href="<?= $t->ee( $c->nocwww ) ?>"> <?= $t->ee( $c->nocwww ) ?> </a><br /><?php endif; ?>
-                            <?php if( $c->nocphone      ): ?>   <?= $t->ee( $c->nocphone ) ?> <br />    <?php endif; ?>
-                            <?php if( $c->noc24hphone   ): ?>   <?= $t->ee( $c->noc24hphone ) ?> (24h) <?php endif; ?>
-                        <?php endif; ?>
-                    </td>
-                </tr>
+                    <tr>
+                        <td>
+                            <b>Created</b>
+                        </td>
+                        <td>
+                            <?= strpos($c->created_at, '-0') !== 0 ? $c->created_at : ''  ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Updated</b>
+                        </td>
+                        <td>
+                            <?= $c->updated_at ?>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
 

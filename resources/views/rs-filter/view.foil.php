@@ -126,6 +126,26 @@
                                     <?= $t->ee( $rsf->advertised_prefix ) ?>
                                 </td>
                             </tr>
+                            <tr>
+                                <td>
+                                    <b>
+                                        Created:
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $t->ee( $rsf->created_at ) ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>
+                                        Updated:
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $t->ee( $rsf->updated_at ) ?>
+                                </td>
+                            </tr>
                         </table>
                     </div>
                     <div class="col-lg-6 col-md-12">

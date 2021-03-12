@@ -58,7 +58,10 @@
                                 MAC Address
                             </th>
                             <th>
-                                Created At
+                                Created
+                            </th>
+                            <th>
+                                Updated
                             </th>
                             <th>
                                 Action
@@ -72,7 +75,10 @@
                                     <?= $l2a->macFormatted( ':' ) ?>
                                 </td>
                                 <td>
-                                    <?= $l2a->created ?>
+                                    <?= $l2a->created_at ?>
+                                </td>
+                                <td>
+                                    <?= $l2a->updated_at ?>
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">

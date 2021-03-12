@@ -34,7 +34,7 @@
                     Details for User (DB ID: <?= $t->u[ 'id' ] ?> )
                 </div>
                 <div class="card-body row">
-                    <div class="col-lg-6 col-md-12">
+                    <div class="col-lg-12 col-md-12">
                         <table class="table_view_info">
                             <tr>
                                 <td>
@@ -138,7 +138,7 @@
                             <?php if( Auth::user()->isSuperUser() ): ?>
                                 <tr>
                                     <td colspan="2">
-                                        <table class="table table-striped" width="100%">
+                                        <table class="table table-striped w-100">
                                             <thead class="thead-dark">
                                             <th>
                                                 <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
@@ -148,6 +148,12 @@
                                             </th>
                                             <th>
                                                 Created By
+                                            </th>
+                                            <th>
+                                                Created
+                                            </th>
+                                            <th>
+                                                Updated
                                             </th>
                                             </thead>
                                             <tbody>
@@ -161,6 +167,12 @@
                                                         </td>
                                                         <td>
                                                             <?= $t->ee( $c2u->extra_attributes['created_by']['type'] ?? '' ) ?>
+                                                        </td>
+                                                        <td>
+                                                            <?= $c2u->created_at ?>
+                                                        </td>
+                                                        <td>
+                                                            <?= $c2u->updated_at ?>
                                                         </td>
                                                     </tr>
                                                 <?php endforeach;?>

@@ -93,8 +93,19 @@ class CustKitController extends EloquentController
         // display the same information in the view as the list
         $this->feParams->viewColumns = array_merge(
             $this->feParams->listColumns, [
-                'descr'      => 'Description'
-            ]
+                'descr'      => 'Description',
+                'created_at'       => [
+                    'title'         => 'Created',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ],
+                'updated_at'       => [
+                    'title'         => 'Updated',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ]
+
+            ],
+
+
         );
     }
 

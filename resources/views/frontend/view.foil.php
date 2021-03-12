@@ -90,10 +90,8 @@ $this->layout( 'layouts/ixpv4' );
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
 
                                                             <?php if(  $t->data[ 'item' ][ $col ] ): ?>
-                                                                <?= $t->data[ 'item' ][ $col ]  ?>
-
+                                                                <?= Carbon\Carbon::create( $t->data[ 'item' ][ $col ] )->format( 'Y-m-d H:i:s' ) ?>
                                                             <?php endif; ?>
-
 
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'DATE'] ): ?>
 

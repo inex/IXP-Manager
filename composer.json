@@ -51,7 +51,8 @@
         "pragmarx/google2fa-laravel": "^1.4.1",
         "bacon/bacon-qr-code": "^2.0.3",
         "wolfcast/browser-detection": "^2.9.5",
-        "laravel/ui": "^3.0"
+        "laravel/ui": "^3.0",
+        "doctrine/dbal": "^3.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -114,6 +115,7 @@
 
         "post-update-cmd": [
             "@php artisan clear-compiled",
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "@php artisan ide-helper:generate",
             "@php artisan ide-helper:meta --filename=.phpstorm.meta.php/laravel.meta.php",
             "@php artisan ide-helper:models -Wr",

@@ -150,7 +150,7 @@
                                                     <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
 
                                                         <?php if( $row[ $col ] !== null): ?>
-                                                            <?= $row[ $col ] ?>
+                                                            <?= Carbon\Carbon::create( $row[ $col ] )->format( 'Y-m-d H:i:s' ) ?>
                                                         <?php endif; ?>
 
                                                     <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'UNIX_TIMESTAMP'] ): ?>

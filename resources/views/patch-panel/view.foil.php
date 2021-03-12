@@ -127,6 +127,26 @@
                                     <?= $pp->chargeable() ?> <em>(default for ports)</em>
                                 </td>
                             </tr>
+                            <tr>
+                                <td>
+                                    <b>
+                                        Created:
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $pp->created_at ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>
+                                        Updated:
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $pp->updated_at ?>
+                                </td>
+                            </tr>
                         </table>
                     </div>
 

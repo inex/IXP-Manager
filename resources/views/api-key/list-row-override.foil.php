@@ -16,7 +16,7 @@ $row = $t->row;
     </td>
 
     <td>
-        <?= $row['created_at'] ?>
+        <?= $row['created_at'] ? Carbon\Carbon::parse( $row['created_at'] ) : '' ?>
     </td>
     <td>
         <?php if( $row['expires'] ): ?>

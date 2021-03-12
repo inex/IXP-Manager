@@ -16,7 +16,7 @@ $row = $t->row;
         <?= $t->ee( $row['ip'] ) ?>
     </td>
     <td>
-        <?= $t->ee( $row['created_at'] ) ?>
+        <?= $t->ee( $row['created_at'] ? \Carbon\Carbon::parse( $t->ee( $row['created_at'] ) )->format( 'Y:m:d H:i:s' ) : '' ) ?>
     </td>
     <td>
         <?= $t->ee( $row['expires'] ) ?>

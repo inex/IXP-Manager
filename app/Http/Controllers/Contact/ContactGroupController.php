@@ -101,6 +101,10 @@ class ContactGroupController extends EloquentController
         $this->feParams->viewColumns = array_merge(
             $this->feParams->listColumns,
             [
+                'updated_at'       => [
+                    'title'     => 'Updated',
+                    'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ],
                 'limited_to'    => [
                     'title' => 'Limit',
                     'type' => self::$FE_COL_TYPES[ 'INTEGER' ]

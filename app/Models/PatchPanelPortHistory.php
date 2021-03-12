@@ -35,7 +35,9 @@ use Schema;
  * IXP\Models\PatchPanelPortHistory
  *
  * @property int $id
+ * @property string|null $switchport
  * @property int|null $patch_panel_port_id
+ * @property string|null $customer
  * @property int $state
  * @property string|null $notes
  * @property string|null $assigned_at
@@ -44,8 +46,6 @@ use Schema;
  * @property string|null $ceased_at
  * @property int $internal_use
  * @property int $chargeable
- * @property string|null $customer
- * @property string|null $switchport
  * @property int|null $duplex_master_id
  * @property int $number
  * @property string|null $colo_circuit_ref

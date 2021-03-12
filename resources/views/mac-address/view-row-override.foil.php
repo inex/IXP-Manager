@@ -29,7 +29,7 @@
             echo "<a href=".route('virtual-interface@edit', [ 'vi' => $row['viid'] ] ).">".$t->ee( $row['switchname'] ) . '::' . $t->ee( $row[ 'switchport' ] ) ."</a>";
         } ?>
     </td>
-</tr>>
+</tr>
 <tr>
     <th>
         IPv4
@@ -64,4 +64,20 @@
         <?= $t->ee( $row['organisation'] ) ?>
     </td>
 </tr>
+<tr>
+    <th>
+        Created
+    </th>
+    <td>
+        <?= $row[ 'created_at' ] ? Carbon\Carbon::parse( $row[ 'created_at' ] ) : '' ?>
+    </td>
+</tr>
+    <tr>
+        <th>
+            Updated
+        </th>
+        <td>
+            <?= $row[ 'updated_at' ] ? Carbon\Carbon::parse( $row[ 'updated_at' ] ) : '' ?>
+        </td>
+    </tr>
 <?= $t->insert( 'layer2-address/modal-mac' ); ?>

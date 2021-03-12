@@ -6209,6 +6209,147 @@
             /**
      * 
      *
+     * @see \Illuminate\Hashing\HashManager
+     */ 
+        class Hash {
+                    /**
+         * Create an instance of the Bcrypt hash Driver.
+         *
+         * @return \Illuminate\Hashing\BcryptHasher 
+         * @static 
+         */ 
+        public static function createBcryptDriver()
+        {
+                        /** @var \Illuminate\Hashing\HashManager $instance */
+                        return $instance->createBcryptDriver();
+        }
+                    /**
+         * Create an instance of the Argon2i hash Driver.
+         *
+         * @return \Illuminate\Hashing\ArgonHasher 
+         * @static 
+         */ 
+        public static function createArgonDriver()
+        {
+                        /** @var \Illuminate\Hashing\HashManager $instance */
+                        return $instance->createArgonDriver();
+        }
+                    /**
+         * Create an instance of the Argon2id hash Driver.
+         *
+         * @return \Illuminate\Hashing\Argon2IdHasher 
+         * @static 
+         */ 
+        public static function createArgon2idDriver()
+        {
+                        /** @var \Illuminate\Hashing\HashManager $instance */
+                        return $instance->createArgon2idDriver();
+        }
+                    /**
+         * Get information about the given hashed value.
+         *
+         * @param string $hashedValue
+         * @return array 
+         * @static 
+         */ 
+        public static function info($hashedValue)
+        {
+                        /** @var \Illuminate\Hashing\HashManager $instance */
+                        return $instance->info($hashedValue);
+        }
+                    /**
+         * Hash the given value.
+         *
+         * @param string $value
+         * @param array $options
+         * @return string 
+         * @static 
+         */ 
+        public static function make($value, $options = [])
+        {
+                        /** @var \Illuminate\Hashing\HashManager $instance */
+                        return $instance->make($value, $options);
+        }
+                    /**
+         * Check the given plain value against a hash.
+         *
+         * @param string $value
+         * @param string $hashedValue
+         * @param array $options
+         * @return bool 
+         * @static 
+         */ 
+        public static function check($value, $hashedValue, $options = [])
+        {
+                        /** @var \Illuminate\Hashing\HashManager $instance */
+                        return $instance->check($value, $hashedValue, $options);
+        }
+                    /**
+         * Check if the given hash has been hashed using the given options.
+         *
+         * @param string $hashedValue
+         * @param array $options
+         * @return bool 
+         * @static 
+         */ 
+        public static function needsRehash($hashedValue, $options = [])
+        {
+                        /** @var \Illuminate\Hashing\HashManager $instance */
+                        return $instance->needsRehash($hashedValue, $options);
+        }
+                    /**
+         * Get the default driver name.
+         *
+         * @return string 
+         * @static 
+         */ 
+        public static function getDefaultDriver()
+        {
+                        /** @var \Illuminate\Hashing\HashManager $instance */
+                        return $instance->getDefaultDriver();
+        }
+                    /**
+         * Get a driver instance.
+         *
+         * @param string|null $driver
+         * @return mixed 
+         * @throws \InvalidArgumentException
+         * @static 
+         */ 
+        public static function driver($driver = null)
+        {            //Method inherited from \Illuminate\Support\Manager         
+                        /** @var \Illuminate\Hashing\HashManager $instance */
+                        return $instance->driver($driver);
+        }
+                    /**
+         * Register a custom driver creator Closure.
+         *
+         * @param string $driver
+         * @param \Closure $callback
+         * @return \Illuminate\Hashing\HashManager 
+         * @static 
+         */ 
+        public static function extend($driver, $callback)
+        {            //Method inherited from \Illuminate\Support\Manager         
+                        /** @var \Illuminate\Hashing\HashManager $instance */
+                        return $instance->extend($driver, $callback);
+        }
+                    /**
+         * Get all of the created "drivers".
+         *
+         * @return array 
+         * @static 
+         */ 
+        public static function getDrivers()
+        {            //Method inherited from \Illuminate\Support\Manager         
+                        /** @var \Illuminate\Hashing\HashManager $instance */
+                        return $instance->getDrivers();
+        }
+         
+    }
+            /**
+     * 
+     *
      * @method static \Illuminate\Http\Client\PendingRequest accept(string $contentType)
      * @method static \Illuminate\Http\Client\PendingRequest acceptJson()
      * @method static \Illuminate\Http\Client\PendingRequest asForm()
@@ -6447,147 +6588,6 @@
         {
                         /** @var \Illuminate\Http\Client\Factory $instance */
                         return $instance->macroCall($method, $parameters);
-        }
-         
-    }
-            /**
-     * 
-     *
-     * @see \Illuminate\Hashing\HashManager
-     */ 
-        class Hash {
-                    /**
-         * Create an instance of the Bcrypt hash Driver.
-         *
-         * @return \Illuminate\Hashing\BcryptHasher 
-         * @static 
-         */ 
-        public static function createBcryptDriver()
-        {
-                        /** @var \Illuminate\Hashing\HashManager $instance */
-                        return $instance->createBcryptDriver();
-        }
-                    /**
-         * Create an instance of the Argon2i hash Driver.
-         *
-         * @return \Illuminate\Hashing\ArgonHasher 
-         * @static 
-         */ 
-        public static function createArgonDriver()
-        {
-                        /** @var \Illuminate\Hashing\HashManager $instance */
-                        return $instance->createArgonDriver();
-        }
-                    /**
-         * Create an instance of the Argon2id hash Driver.
-         *
-         * @return \Illuminate\Hashing\Argon2IdHasher 
-         * @static 
-         */ 
-        public static function createArgon2idDriver()
-        {
-                        /** @var \Illuminate\Hashing\HashManager $instance */
-                        return $instance->createArgon2idDriver();
-        }
-                    /**
-         * Get information about the given hashed value.
-         *
-         * @param string $hashedValue
-         * @return array 
-         * @static 
-         */ 
-        public static function info($hashedValue)
-        {
-                        /** @var \Illuminate\Hashing\HashManager $instance */
-                        return $instance->info($hashedValue);
-        }
-                    /**
-         * Hash the given value.
-         *
-         * @param string $value
-         * @param array $options
-         * @return string 
-         * @static 
-         */ 
-        public static function make($value, $options = [])
-        {
-                        /** @var \Illuminate\Hashing\HashManager $instance */
-                        return $instance->make($value, $options);
-        }
-                    /**
-         * Check the given plain value against a hash.
-         *
-         * @param string $value
-         * @param string $hashedValue
-         * @param array $options
-         * @return bool 
-         * @static 
-         */ 
-        public static function check($value, $hashedValue, $options = [])
-        {
-                        /** @var \Illuminate\Hashing\HashManager $instance */
-                        return $instance->check($value, $hashedValue, $options);
-        }
-                    /**
-         * Check if the given hash has been hashed using the given options.
-         *
-         * @param string $hashedValue
-         * @param array $options
-         * @return bool 
-         * @static 
-         */ 
-        public static function needsRehash($hashedValue, $options = [])
-        {
-                        /** @var \Illuminate\Hashing\HashManager $instance */
-                        return $instance->needsRehash($hashedValue, $options);
-        }
-                    /**
-         * Get the default driver name.
-         *
-         * @return string 
-         * @static 
-         */ 
-        public static function getDefaultDriver()
-        {
-                        /** @var \Illuminate\Hashing\HashManager $instance */
-                        return $instance->getDefaultDriver();
-        }
-                    /**
-         * Get a driver instance.
-         *
-         * @param string|null $driver
-         * @return mixed 
-         * @throws \InvalidArgumentException
-         * @static 
-         */ 
-        public static function driver($driver = null)
-        {            //Method inherited from \Illuminate\Support\Manager         
-                        /** @var \Illuminate\Hashing\HashManager $instance */
-                        return $instance->driver($driver);
-        }
-                    /**
-         * Register a custom driver creator Closure.
-         *
-         * @param string $driver
-         * @param \Closure $callback
-         * @return \Illuminate\Hashing\HashManager 
-         * @static 
-         */ 
-        public static function extend($driver, $callback)
-        {            //Method inherited from \Illuminate\Support\Manager         
-                        /** @var \Illuminate\Hashing\HashManager $instance */
-                        return $instance->extend($driver, $callback);
-        }
-                    /**
-         * Get all of the created "drivers".
-         *
-         * @return array 
-         * @static 
-         */ 
-        public static function getDrivers()
-        {            //Method inherited from \Illuminate\Support\Manager         
-                        /** @var \Illuminate\Hashing\HashManager $instance */
-                        return $instance->getDrivers();
         }
          
     }
@@ -22719,8 +22719,8 @@ namespace  {
             class Event extends \Illuminate\Support\Facades\Event {}
             class File extends \Illuminate\Support\Facades\File {}
             class Gate extends \Illuminate\Support\Facades\Gate {}
-            class Http extends \Illuminate\Support\Facades\Http {}
             class Hash extends \Illuminate\Support\Facades\Hash {}
+            class Http extends \Illuminate\Support\Facades\Http {}
             class Lang extends \Illuminate\Support\Facades\Lang {}
             class Log extends \Illuminate\Support\Facades\Log {}
             class Mail extends \Illuminate\Support\Facades\Mail {}

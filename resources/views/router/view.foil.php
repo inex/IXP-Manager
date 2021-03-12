@@ -110,6 +110,27 @@
                                     <?= $rt->asn ?>
                                 </td>
                             </tr>
+                            <tr>
+                                <td>
+                                    <b>Created:</b>
+                                </td>
+                                <td>
+                                    <?= $rt->created_at ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Updated:</b>
+                                </td>
+                                <td>
+                                    <?= $rt->updated_at ?: '(unknown)' ?>
+                                    <?php if( $rt->updated_at && $rt->lastUpdatedGreaterThanSeconds( 86400 ) ): ?>
+                                        <span class="badge badge-danger">
+                                            <i class="fa fa-exclamation-triangle" title="Last updated more than 1 day ago"></i>
+                                        </span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
                         </table>
                     </div>
                     <div class="col-lg-6 col-md-12">
@@ -212,19 +233,6 @@
                                 </td>
                                 <td>
                                     <code> <?= $t->ee( $rt->template )?> </code>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <b>Last Update:</b>
-                                </td>
-                                <td>
-                                    <?= $rt->updated_at ? $rt->updated_at->format('Y-m-d H:i:s') : '(unknown)' ?>
-                                    <?php if( $rt->updated_at && $rt->lastUpdatedGreaterThanSeconds( 86400 ) ): ?>
-                                        <span class="badge badge-danger">
-                                            <i class="fa fa-exclamation-triangle" title="Last updated more than 1 day ago"></i>
-                                        </span>
-                                    <?php endif; ?>
                                 </td>
                             </tr>
                         </table>

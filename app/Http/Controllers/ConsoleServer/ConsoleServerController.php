@@ -126,6 +126,14 @@ class ConsoleServerController extends EloquentController
                 'notes'       => [
                     'title'         => 'Notes',
                     'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
+                ],
+                'created_at'       => [
+                    'title'         => 'Created',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ],
+                'updated_at'       => [
+                    'title'         => 'Updated',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ]
             ]
         );

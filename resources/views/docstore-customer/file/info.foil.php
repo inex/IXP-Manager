@@ -32,6 +32,14 @@
         </tr>
         <tr class="tw-border-t-1 tw-border-blue-500">
             <td class="tw-text-right tw-font-bold tw-p-2">
+                Created
+            </td>
+            <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
+                <?= $t->created_at ?>
+            </td>
+        </tr>
+        <tr class="tw-border-t-1 tw-border-blue-500">
+            <td class="tw-text-right tw-font-bold tw-p-2">
                 Last Modified
             </td>
             <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">

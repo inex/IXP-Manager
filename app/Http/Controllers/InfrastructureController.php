@@ -105,6 +105,14 @@ class InfrastructureController extends Eloquent2Frontend
                     'title' => 'Country',
                     'type' => self::$FE_COL_TYPES[ 'COUNTRY' ]
                 ],
+                'created_at'       => [
+                    'title'         => 'Created',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ],
+                'updated_at'       => [
+                    'title'         => 'Updated',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ]
             ]
         );
     }
