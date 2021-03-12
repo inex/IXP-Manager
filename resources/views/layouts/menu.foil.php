@@ -138,13 +138,11 @@
                 <?php endif; ?>
             <?php endif; ?>
 
-            <?php if( config( 'ixp_fe.frontend.beta.core_bundles', false ) ): ?>
-                <li class="<?= !request()->is( 'interfaces/core-bundle/*' ) ?: 'active' ?>" >
-                    <a href="<?= route('core-bundle@list' ) ?>" class="nav-link">
-                        Core Bundles
-                    </a>
-                </li>
-            <?php endif; ?>
+            <li class="<?= !request()->is( 'interfaces/core-bundle/*' ) ?: 'active' ?>" >
+                <a href="<?= route('core-bundle@list' ) ?>" class="nav-link">
+                    Core Bundles
+                </a>
+            </li>
 
 
             <?php /**************************************** DOCSTORE ****************************************/ ?>

@@ -56,14 +56,6 @@ use IXP\Utils\View\Alert\{
  */
 class CoreLinkController extends Common
 {
-    public function __construct()
-    {
-        if( !config( 'ixp_fe.frontend.beta.core_bundles', false ) ) {
-            AlertContainer::push( 'The core bundle functionality is not ready for production use.', Alert::DANGER );
-            Redirect::to('')->send();
-        }
-    }
-
     /**
      * Add a core link to a core bundle only when EDITING a core bundle
      *
