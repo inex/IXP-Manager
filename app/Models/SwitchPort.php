@@ -63,8 +63,8 @@ use OSS_SNMP\SNMP;
  * @property string|null $mauType
  * @property string|null $mauState
  * @property string|null $mauAvailability
- * @property int|null $mauAutoNegSupported
  * @property string|null $mauJacktype
+ * @property int|null $mauAutoNegSupported
  * @property int|null $mauAutoNegAdminState
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

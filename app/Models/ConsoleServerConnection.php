@@ -33,6 +33,7 @@ use stdClass;
  *
  * @property int $id
  * @property int|null $custid
+ * @property int|null $switchid
  * @property string|null $description
  * @property string|null $port
  * @property int|null $speed
@@ -46,7 +47,7 @@ use stdClass;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\ConsoleServer|null $consoleServer
  * @property-read \IXP\Models\CustomerTag|null $customer
- * @property-read \IXP\Models\Switcher $switcher
+ * @property-read \IXP\Models\Switcher|null $switcher
  * @method static Builder|ConsoleServerConnection newModelQuery()
  * @method static Builder|ConsoleServerConnection newQuery()
  * @method static Builder|ConsoleServerConnection query()
@@ -62,6 +63,7 @@ use stdClass;
  * @method static Builder|ConsoleServerConnection wherePort($value)
  * @method static Builder|ConsoleServerConnection whereSpeed($value)
  * @method static Builder|ConsoleServerConnection whereStopbits($value)
+ * @method static Builder|ConsoleServerConnection whereSwitchid($value)
  * @method static Builder|ConsoleServerConnection whereUpdatedAt($value)
  * @mixin \Eloquent
  */
