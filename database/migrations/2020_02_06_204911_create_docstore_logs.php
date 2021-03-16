@@ -13,21 +13,9 @@ class CreateDocstoreLogs extends Migration
      */
     public function up()
     {
-        Schema::create('docstore_logs', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        // 2021-03-06 BOD: Migration no longer required as included in 2020_06_01_143931_database_schema_at_end_v5
+        // Migration file kept for anyone upgrading so that their database table of migration states remains consistent.
 
-            $table->bigInteger('docstore_file_id')->nullable(false)->unsigned();
-
-            // we're not using a FK constraint here as users can be deleted without deleting download logs.
-            $table->integer('downloaded_by')->nullable();
-
-            $table->foreign('docstore_file_id')->references('id')->on('docstore_files');
-
-            $table->timestamps();
-
-            // this should be indexed for the log expunging query (see artisan utils:expunge-logs).
-            $table->index('created_at');
-        });
     }
 
     /**
@@ -37,6 +25,5 @@ class CreateDocstoreLogs extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('docstore_logs');
     }
 }
