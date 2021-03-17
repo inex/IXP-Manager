@@ -498,6 +498,7 @@ class SwitchPort extends Model
         } catch( \Exception $e ){}
 
         $this->lastSnmpPoll = now();
+        $this->save();
 
         return $this;
     }
