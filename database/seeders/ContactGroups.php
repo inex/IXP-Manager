@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Database\Seeders;
+namespace Database\Seeders;
 
 /*
  * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
