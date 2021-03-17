@@ -61,7 +61,6 @@ class ResetMysqlViews extends IXPCommand
      */
     public function handle(): int
     {
-        DB::beginTransaction();
         DB::unprepared( resolve( 'Foil\Engine' )->render( 'database/views.foil.sql' ) );
 
         $sql = <<<END_SQL
@@ -99,7 +98,6 @@ END
 END_SQL;
 
         DB::unprepared( $sql );
-        DB::commit();
 
         return 0;
     }
