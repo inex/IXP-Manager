@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -30,6 +30,8 @@ use Illuminate\Database\Eloquent\{
     Relations\BelongsTo,
     Relations\HasMany
 };
+
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\Cabinet
@@ -70,6 +72,8 @@ use Illuminate\Database\Eloquent\{
  */
 class Cabinet extends Model
 {
+    use Observable;
+
     /**
      * Constants to indicate whether 'u' positions count from top or bottom
      */
@@ -144,5 +148,21 @@ class Cabinet extends Model
     public function location(): BelongsTo
     {
         return $this->belongsTo(Location::class, 'locationid' );
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Rack (Cabinet) [id:%d] '%s'",
+            $model->id,
+            $model->name,
+        );
     }
 }

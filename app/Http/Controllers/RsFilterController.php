@@ -151,7 +151,7 @@ class RsFilterController extends Controller
 
         $this->authorize( 'checkCustObject',  [ RouteServerFilter::class, $cust ]  );
 
-        $rsf = RouteServerFilter::create( array_merge( $r->except( [ 'enabled', 'order_by' ] ),
+        $rsf = RouteServerFilter::make( array_merge( $r->except( [ 'enabled', 'order_by' ] ),
             [
                 'enabled'       => true,
                 'order_by'      => RouteServerFilter::where( 'customer_id', $cust->id )
@@ -159,7 +159,7 @@ class RsFilterController extends Controller
             ]
         ));
 
-        $rsf->customer_id   = $cust->id;
+        $rsf->customer_id = $cust->id;
         $rsf->save();
 
         Log::notice( Auth::getUser()->username . ' created a router server filter with ID ' . $rsf->id );

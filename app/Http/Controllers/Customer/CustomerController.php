@@ -184,7 +184,7 @@ class CustomerController extends Controller
     public function store( CustomerRequest $r ): RedirectResponse
     {
         $bdetail = CompanyBillingDetail::create( [ 'purchaseOrderRequired' => 0 ] );
-        $rdetail = CompanyRegisteredDetail::create();
+        $rdetail = CompanyRegisteredDetail::create( [ 'registeredName' => $r->name ] );
 
         $cust = Customer::create( array_merge( $r->all(),
             [

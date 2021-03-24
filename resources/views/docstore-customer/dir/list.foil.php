@@ -204,6 +204,11 @@
 
                                     <?php if( $check && $isSuperUser ): ?>
                                         <div class="dropdown-divider"></div>
+                                        <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\DocstoreCustomerFile::class, 'logSubject') ): ?>
+                                            <a class="dropdown-item" href="<?= route( 'log@list', [ 'model' => 'DocstoreCustomerFile' , 'model_id' => $file->id ] ) ?>">
+                                                View logs
+                                            </a>
+                                        <?php endif; ?>
                                         <a class="dropdown-item" href="<?= route( "docstore-c-file@edit", [ 'cust' => $t->cust , "file" => $file ] ) ?>">Edit</a>
                                         <a class="dropdown-item btn-delete" data-object-type="file" href="<?= route( "docstore-c-file@delete", [ "file" => $file ] ) ?>">Delete</a>
                                     <?php endif; ?>

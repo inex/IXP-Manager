@@ -187,7 +187,7 @@ abstract class Common extends Controller
             // LAGs must have a channel group and bundle name. But only if they have a phys int:
             if( $vi->lag_framing && !$vi->channelgroup ) {
                 $vi->channelgroup = $this->assignChannelGroup( $vi );
-                $vi->save();
+                //$vi->save();
                 AlertContainer::push( "Missing channel group assigned as this is a LAG port", Alert::INFO );
             }
 
@@ -196,7 +196,7 @@ abstract class Common extends Controller
                 // assumption on no mlags (multi chassis lags) here:
                 if( $vendor = $vi->physicalInterfaces()->first()->switchport->switcher->vendor ) {
                     $vi->name = $vendor->bundle_name;
-                    $vi->save();
+                    //$vi->save();
                     AlertContainer::push( "Missing bundle name assigned as this is a LAG port", Alert::INFO );
                 } else {
                     AlertContainer::push( "Missing bundle name not assigned as no bundle name set for this switch vendor (see Vendors)", Alert::WARNING );
@@ -209,7 +209,7 @@ abstract class Common extends Controller
             $vi->channelgroup   = null;
             $vi->lag_framing    = false;
             $vi->fastlacp       = false;
-            $vi->save();
+            //$vi->save();
         }
     }
 
@@ -311,7 +311,6 @@ abstract class Common extends Controller
         $vli->$setterSecret     = $r->input( $iptype . 'bgpmd5secret' );
         $vli->$setterPing       = $r->input( $iptype . 'canping' );
         $vli->$setterMonitor    = $r->input( $iptype . 'monitorrcbgp' );
-        $vli->save();
         return true;
     }
 
@@ -372,6 +371,7 @@ abstract class Common extends Controller
                 ${ 'pi' . $side }->duplex               = $edit ? $cb->duplexPi()   : $r->duplex;
                 ${ 'pi' . $side }->autoneg              = $edit ? $cb->autoNegPi()  : $r->input('auto-neg' ) ?? false;
                 ${ 'pi' . $side }->status               = PhysicalInterface::STATUS_CONNECTED;
+                ${ 'pi' . $side }->virtualinterfaceid = $vis[ $side ]->id;
                 ${ 'pi' . $side }->save();
 
                 ${ 'ci' . $side } = new CoreInterface;
@@ -383,11 +383,6 @@ abstract class Common extends Controller
             $cl->core_interface_sideb_id = $cib->id;
 
             $cl->save();
-
-            $pia->virtualinterfaceid = $vis[ 'a' ]->id;
-            $pia->save();
-            $pib->virtualinterfaceid = $vis[ 'b' ]->id;
-            $pib->save();
         }
         return true;
     }

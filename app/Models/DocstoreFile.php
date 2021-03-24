@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -37,6 +37,8 @@ use Illuminate\Database\Eloquent\Relations\{
 };
 
 use Illuminate\Support\Carbon;
+
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\DocstoreFile
@@ -76,6 +78,8 @@ use Illuminate\Support\Carbon;
 
 class DocstoreFile extends Model
 {
+    use Observable;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -179,5 +183,21 @@ class DocstoreFile extends Model
                 $query->select( DB::raw('COUNT( DISTINCT downloaded_by )' ) );
             }])
             ->orderBy('name')->get();
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Docstore File [id:%d] '%s'",
+            $model->id,
+            $model->name,
+        );
     }
 }

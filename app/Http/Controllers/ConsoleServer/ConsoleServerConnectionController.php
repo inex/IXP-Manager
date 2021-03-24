@@ -72,7 +72,7 @@ class ConsoleServerConnectionController extends EloquentController
     public function feInit(): void
     {
         $this->feParams         = (object)[
-            'entity'            => ConsoleServerConnection::class,
+            'model'             => ConsoleServerConnection::class,
             'pagetitle'         => 'Console Server Connections',
             'titleSingular'     => 'Console Server Connection',
             'nameSingular'      => 'a console server connection',
@@ -238,7 +238,7 @@ class ConsoleServerConnectionController extends EloquentController
             return Redirect::back()->withInput();
         }
 
-        $this->object = ConsoleServerConnection::create( $r->all() );
+        $this->object = ConsoleServerConnection::make( $r->all() );
         $this->object->custid = $r->custid;
         $this->object->save();
         return true;
@@ -261,7 +261,7 @@ class ConsoleServerConnectionController extends EloquentController
             return Redirect::back()->withInput();
         }
 
-        $this->object->update( $r->all() );
+        $this->object->fill( $r->all() );
         $this->object->custid = $r->custid;
         $this->object->save();
         return true;

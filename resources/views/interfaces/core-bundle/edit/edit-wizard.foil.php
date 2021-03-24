@@ -37,10 +37,22 @@
                         ->customLabelWidthClass( 'col-lg-4 col-md-3 col-sm-4' )
                         ->actionButtonsCustomClass( "grey-box")
                     ?>
+                    <div class="d-flex">
+                        <div class="mr-auto">
+                            <h3>
+                                General Core Bundle Settings :
+                            </h3>
+                        </div>
 
-                    <h3>
-                        General Core Bundle Settings :
-                    </h3>
+                        <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\CoreBundle::class, 'logSubject') ): ?>
+                            <div class="">
+                                <a class="btn btn-white btn-sm" href="<?= route( 'log@list', [ 'model' => 'CoreBundle' , 'model_id' => $t->cb->id ] ) ?>">
+                                    View logs
+                                </a>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
                     <hr>
                     <div class="col-lg-6 col-sm-12">
                         <?= Former::select( 'custid' )

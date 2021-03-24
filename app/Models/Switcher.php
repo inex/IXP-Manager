@@ -1,7 +1,9 @@
 <?php
 
+namespace IXP\Models;
+
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,8 +23,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-namespace IXP\Models;
-
 use Carbon\Carbon;
 use DateTime, Log;
 
@@ -39,6 +39,9 @@ use Illuminate\Database\Eloquent\Relations\{
 use Illuminate\Support\Collection;
 
 use IXP\Exceptions\Switches\RebootDiscoveryNotSupported;
+
+use IXP\Traits\Observable;
+
 use OSS_SNMP\SNMP;
 
 use \OSS_SNMP\MIBS\Iface as SNMPIface;
@@ -116,6 +119,8 @@ use \OSS_SNMP\MIBS\Iface as SNMPIface;
  */
 class Switcher extends Model
 {
+    use Observable;
+
     /**
      * The table associated with the model.
      *
@@ -569,5 +574,21 @@ class Switcher extends Model
         }
 
         return $probably;
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Switcher [id:%d] '%s'",
+            $model->id,
+            $model->name,
+        );
     }
 }

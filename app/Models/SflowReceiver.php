@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,8 +23,12 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\{
+    Model,
+    Relations\BelongsTo
+};
+
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\SlowReceiver
@@ -49,6 +53,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class SflowReceiver extends Model
 {
+    use Observable;
+
     /**
      * The table associated with the model.
      *
@@ -73,5 +79,22 @@ class SflowReceiver extends Model
     public function virtualInterface(): BelongsTo
     {
         return $this->belongsTo(VirtualInterface::class, 'virtual_interface_id');
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Sflow Receiver [id:%d] '%s' belonging to Vlan [id:%d]",
+            $model->id,
+            $model->dst_ip,
+            $model->virtual_interface_id,
+        );
     }
 }

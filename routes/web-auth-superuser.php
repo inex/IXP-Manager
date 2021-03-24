@@ -157,15 +157,16 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
     });
 
     Route::group( [  'prefix' => 'vlan' ], function() {
-        Route::get(     'list',                             'VlanInterfaceController@list'      )->name(    'vlan-interface@list'                           );
-        Route::get(     'view/{vli}',                       'VlanInterfaceController@view'      )->name(    'vlan-interface@view'                           );
-        Route::get(     'edit/{vli}',                       'VlanInterfaceController@edit'      )->name(    'vlan-interface@edit'                           );
-        Route::get(     'duplicate/{vli}/to/{v}',           'VlanInterfaceController@duplicate' )->name(    'vlan-interface@duplicate'                      );
-        Route::get(     'edit/{vli}/vintid/{vi}',           'VlanInterfaceController@edit'      )->name(     'vlan-interface@edit-from-virtual-interface'   );
-        Route::get(     'create/vintid/{vi}',               'VlanInterfaceController@create'    )->name(    'vlan-interface@create'                         );
-        Route::post(    'store',                            'VlanInterfaceController@store'     )->name(    'vlan-interface@store'                          );
-        Route::put(     'update/{vli}',                     'VlanInterfaceController@update'    )->name(     'vlan-interface@update'                        );
-        Route::delete(  'delete/{vli}',                     'VlanInterfaceController@delete'    )->name(    'vlan-interface@delete'                         );
+        Route::get(     'list',                             'VlanInterfaceController@list'          )->name(    'vlan-interface@list'                           );
+        Route::get(     'view/{vli}',                       'VlanInterfaceController@view'          )->name(    'vlan-interface@view'                           );
+        Route::get(     'edit/{vli}',                       'VlanInterfaceController@edit'          )->name(    'vlan-interface@edit'                           );
+        Route::get(     'duplicate/{vli}/to/{v}',           'VlanInterfaceController@duplicateForm' )->name(    'vlan-interface@duplicate-form'                 );
+        Route::get(     'edit/{vli}/vintid/{vi}',           'VlanInterfaceController@edit'          )->name(     'vlan-interface@edit-from-virtual-interface'   );
+        Route::get(     'create/vintid/{vi}',               'VlanInterfaceController@create'        )->name(    'vlan-interface@create'                         );
+        Route::post(    'store',                            'VlanInterfaceController@store'         )->name(    'vlan-interface@store'                          );
+        Route::put(     'duplicate/{vli}',                  'VlanInterfaceController@duplicate'     )->name(     'vlan-interface@duplicate'                     );
+        Route::put(     'update/{vli}',                     'VlanInterfaceController@update'        )->name(     'vlan-interface@update'                       );
+        Route::delete(  'delete/{vli}',                     'VlanInterfaceController@delete'        )->name(    'vlan-interface@delete'                         );
     });
 
     Route::group( [  'prefix' => 'sflow-receiver' ], function() {

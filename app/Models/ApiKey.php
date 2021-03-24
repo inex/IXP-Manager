@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,13 +25,9 @@ namespace IXP\Models;
 
 use Illuminate\Database\Eloquent\{
     Builder,
-    Collection,
     Model,
     Relations\BelongsTo
 };
-
-use stdClass;
-
 
 /**
  * IXP\Models\ApiKey
@@ -59,6 +55,10 @@ use stdClass;
  * @method static Builder|ApiKey whereLastseenFrom($value)
  * @method static Builder|ApiKey whereUserId($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static Builder|ApiKey whereCreatedAt($value)
+ * @method static Builder|ApiKey whereUpdatedAt($value)
  */
 class ApiKey extends Model
 {

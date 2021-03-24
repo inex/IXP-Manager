@@ -103,6 +103,11 @@
         <a class="btn btn-white" href="<?= route( "customer@overview", [ 'cust' => $cidnext ] ) ?>">
             <span class="fa fa-chevron-right"></span>
         </a>
+        <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\Customer::class, 'logSubject') ): ?>
+            <a class="btn btn-white btn-sm" href="<?= route( 'log@list', [ 'model' => 'Customer' , 'model_id' => $c->id ] ) ?>">
+                View logs
+            </a>
+        <?php endif; ?>
     </div>
 <?php $this->append() ?>
 

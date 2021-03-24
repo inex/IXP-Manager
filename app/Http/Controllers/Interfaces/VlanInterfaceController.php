@@ -84,7 +84,7 @@ class VlanInterfaceController extends Common
      *
      * @return  View
      */
-    public function duplicate( VlanInterface $vli, Vlan $v ): View
+    public function duplicateForm( VlanInterface $vli, Vlan $v ): View
     {
         return $this->edit( request(), $vli, null , $v );
     }
@@ -108,6 +108,7 @@ class VlanInterfaceController extends Common
                 ->orderBy('number')->get(),
             'vli'                       => false,
             'vi'                        => $vi,
+            'redirect2vi'               => $vi ? true : false,
             'duplicateTo'               => false
         ]);
     }
@@ -122,14 +123,14 @@ class VlanInterfaceController extends Common
      */
     public function store( StoreVlanInterface $r ): RedirectResponse
     {
-        $vli    = new VlanInterface;
+        $vli    = VlanInterface::make( $r->all() );
         $v      = Vlan::find( $r->vlanid );
 
         if( !$this->setIp( $r, $v, $vli, false ) || !$this->setIp( $r, $v, $vli, true ) ) {
             return Redirect::back()->withInput( $r->all() );
         }
 
-        $vli->update( $r->all() );
+        $vli->save();
 
         // add a warning if we're filtering on irrdb but have not configured one for the customer
         $this->warnIfIrrdbFilteringButNoIrrdbSourceSet( $vli );
@@ -176,6 +177,7 @@ class VlanInterfaceController extends Common
             'ipv6monitorrcbgp'          => $r->old( 'ipv6monitorrcbgp',         $vli->ipv6monitorrcbgp          ),
         ]);
 
+        $redirect2vi = $vi ? true : false;
         if( !$vi ){
             $vi = $vli->virtualInterface;
         }
@@ -185,7 +187,8 @@ class VlanInterfaceController extends Common
                 ->orderBy('number')->get(),
             'vli'                       => $vli,
             'vi'                        => $vi ?: false,
-            'duplicateTo'               => $duplicateTo ?: false
+            'duplicateTo'               => $duplicateTo ?: false,
+            'redirect2vi'               => $redirect2vi
         ]);
     }
 
@@ -201,29 +204,12 @@ class VlanInterfaceController extends Common
      */
     public function update( StoreVlanInterface $r, VlanInterface $vli ): RedirectResponse
     {
-        // are we duplicating?
-        if( (bool)$r->duplicate ) {
-            DB::beginTransaction();
-            $source = $vli;
-            $vli = VlanInterface::create();
-            foreach( $source->layer2addresses as $l2a ) {
-                Layer2Address::create(
-                    [
-                        'vlan_interface_id' => $vli->id,
-                        'mac'               => $l2a->mac
-                    ]
-                );
-            }
-        }
-
         $v = Vlan::find( $r->vlanid );
 
         if( !$this->setIp( $r, $v, $vli, false ) || !$this->setIp( $r, $v, $vli, true ) ) {
-            DB::rollBack();
             return Redirect::back()->withInput( $r->all() );
         }
 
-        DB::commit();
         $vli->update( $r->all() );
 
         // add a warning if we're filtering on irrdb but have not configured one for the customer
@@ -231,12 +217,54 @@ class VlanInterfaceController extends Common
 
         AlertContainer::push( 'Vlan Interface updated.', Alert::SUCCESS );
 
-        if( (bool)$r->redirect2vi || (bool)$r->duplicated ) {
-            return redirect( route( 'virtual-interface@edit', [ 'vi' => $vli->virtualinterfaceid ] ) );
+        return redirect( $r->redirect2vi ? route( 'virtual-interface@edit', [ 'vi' => $vli->virtualinterfaceid ] ) : route( 'vlan-interface@list' ) );
+    }
+
+    /**
+     * Duplicate a vlan interface
+     *
+     * @param   StoreVlanInterface  $r      instance of the current HTTP request
+     * @param   VlanInterface       $vli
+     *
+     * @return  RedirectResponse
+     *
+     * @throws
+     */
+    public function duplicate( StoreVlanInterface $r, VlanInterface $vli ): RedirectResponse
+    {
+        // are we duplicating?
+        $source = $vli;
+        $v      = Vlan::find( $r->vlanid );
+
+        DB::beginTransaction();
+        $vli    = VlanInterface::make();
+        foreach( $source->layer2addresses as $l2a ) {
+            Layer2Address::create(
+                [
+                    'vlan_interface_id' => $vli->id,
+                    'mac'               => $l2a->mac
+                ]
+            );
         }
 
-        return redirect( route( 'vlan-interface@list' ) );
+        if( !$this->setIp( $r, $v, $vli, false ) || !$this->setIp( $r, $v, $vli, true ) ) {
+            // Rollback if there is issue to avoid to insert the data created above
+            DB::rollBack();
+            return Redirect::back()->withInput( $r->all() );
+        }
+
+        $vli->fill( $r->all() );
+        $vli->save();
+        DB::commit();
+
+        // add a warning if we're filtering on irrdb but have not configured one for the customer
+        $this->warnIfIrrdbFilteringButNoIrrdbSourceSet( $vli );
+
+        AlertContainer::push( 'Vlan Interface duplicated.', Alert::SUCCESS );
+
+        return redirect( route( 'virtual-interface@edit', [ 'vi' => $vli->virtualinterfaceid ] ) );
     }
+
 
     /**
      * Display a VLAN interface

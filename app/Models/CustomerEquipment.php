@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,6 +28,8 @@ use Illuminate\Database\Eloquent\{
     Model,
     Relations\BelongsTo
 };
+
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\CustomerEquipment
@@ -54,6 +56,8 @@ use Illuminate\Database\Eloquent\{
  */
 class CustomerEquipment extends Model
 {
+    use Observable;
+
     /**
      * The table associated with the model.
      *
@@ -78,5 +82,22 @@ class CustomerEquipment extends Model
     public function cabinet(): BelongsTo
     {
         return $this->belongsTo(Cabinet::class, 'cabinetid' );
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Colocated Equipment (Customer Equipment) [id:%d] belonging to Rack (Cabinet) [id:%d] '%s'",
+            $model->id,
+            $model->cabinetid,
+            $model->cabinet->name
+        );
     }
 }

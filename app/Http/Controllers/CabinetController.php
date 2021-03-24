@@ -76,7 +76,7 @@ class CabinetController extends EloquentController
     public function feInit(): void
     {
         $this->feParams         = ( object )[
-            'entity'            => Cabinet::class,
+            'model'             => Cabinet::class,
             'pagetitle'         => 'Racks',
             'titleSingular'     => 'Rack',
             'nameSingular'      => 'rack',

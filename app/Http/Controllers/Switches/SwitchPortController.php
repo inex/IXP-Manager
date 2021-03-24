@@ -78,7 +78,7 @@ class SwitchPortController extends EloquentController
     public function feInit(): void
     {
         $this->feParams         = ( object )[
-            'entity'                    => SwitchPort::class,
+            'model'                     => SwitchPort::class,
             'pagetitle'                 => 'Switch Ports',
             'titleSingular'             => 'Switch Port',
             'nameSingular'              => 'a switch port',

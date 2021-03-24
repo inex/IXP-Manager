@@ -60,7 +60,7 @@ class VendorController extends EloquentController
     public function feInit(): void
     {
         $this->feParams         = (object)[
-            'entity'            => Vendor::class,
+            'model'             => Vendor::class,
             'pagetitle'         => 'Vendors',
             'titleSingular'     => 'Vendor',
             'nameSingular'      => 'a vendor',

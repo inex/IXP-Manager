@@ -53,6 +53,7 @@ class CustKitController extends EloquentController
 {
     /**
      * The object being created / edited
+     *
      * @var CustomerEquipment
      */
     protected $object = null;
@@ -63,7 +64,7 @@ class CustKitController extends EloquentController
     public function feInit(): void
     {
         $this->feParams         = (object)[
-            'entity'            => CustomerEquipment::class,
+            'model'             => CustomerEquipment::class,
             'pagetitle'         => 'Colocated Equipment',
             'titleSingular'     => 'Colocated Equipment',
             'nameSingular'      => 'colocated equipment',
@@ -145,6 +146,24 @@ class CustKitController extends EloquentController
     }
 
     /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request $r
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doStore( Request $r )
+    {
+        $this->checkForm( $r );
+        $this->object = CustomerEquipment::make( $r->all() );
+        $this->object->custid = $r->custid;
+        $this->object->save();
+        return true;
+    }
+
+    /**
      * Display the form to edit an object
      *
      * @param   int $id ID of the row to edit
@@ -173,24 +192,6 @@ class CustKitController extends EloquentController
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $r
-     *
-     * @return bool|RedirectResponse
-     *
-     * @throws
-     */
-    public function doStore( Request $r )
-    {
-        $this->checkForm( $r );
-        $this->object = CustomerEquipment::create( $r->all() );
-        $this->object->custid = $r->custid;
-        $this->object->save();
-        return true;
-    }
-
-    /**
-     * Function to do the actual validation and storing of the submitted object.
-     *
      * @param Request   $r
      * @param int       $id
      *
@@ -202,7 +203,7 @@ class CustKitController extends EloquentController
     {
         $this->object = CustomerEquipment::findOrFail( $id );
         $this->checkForm( $r );
-        $this->object->update( $r->all() );
+        $this->object->fill( $r->all() );
         $this->object->custid = $r->custid;
         $this->object->save();
         return true;

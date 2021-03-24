@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,7 +23,13 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo};
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model,
+    Relations\BelongsTo
+};
+
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\NetworkInfo
@@ -56,6 +62,8 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo};
  */
 class NetworkInfo extends Model
 {
+    use Observable;
+
     /**
      * The table associated with the model.
      *
@@ -135,5 +143,23 @@ class NetworkInfo extends Model
         }
 
         return $result;
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Network Info [id:%d] '%s' belonging to Vlan [id:%d] '%s'",
+            $model->id,
+            $model->network,
+            $model->vlanid,
+            $model->vlan->name,
+        );
     }
 }

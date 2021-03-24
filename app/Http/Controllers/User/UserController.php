@@ -357,14 +357,12 @@ class UserController extends Controller
         if( ( $isSuperUser = Auth::user()->isSuperUser() ) || $u->id === Auth::id() ) {
             $u->name = $r->name;
             $u->authorisedMobile = $r->authorisedMobile;
-            $u->save();
         }
 
         if( $isSuperUser ) {
             $u->username    = strtolower( $r->username );
             $u->email       = $r->email;
             $u->disabled    = !$r->disabled;
-            $u->save();
         }
 
         $u->lastupdatedby = Auth::id();

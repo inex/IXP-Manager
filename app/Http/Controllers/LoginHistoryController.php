@@ -63,7 +63,7 @@ class LoginHistoryController extends EloquentController
     public function feInit(): void
     {
         $this->feParams         = (object)[
-            'entity'            => UserLoginHistory::class,
+            'model'             => UserLoginHistory::class,
             'pagetitle'         => 'Login History',
             'titleSingular'     => 'Login History',
             'nameSingular'      => 'a Login History',

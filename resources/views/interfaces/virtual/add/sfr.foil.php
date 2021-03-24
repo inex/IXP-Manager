@@ -50,6 +50,11 @@
                                         <a class="btn btn-white btn-delete-sflr" href="<?= route( 'sflow-receiver@delete', [ 'sflr' => $sflr->id ] ) ?>" title="Delete Sflow Receiver">
                                             <i class="fa fa-trash"></i>
                                         </a>
+                                        <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\SflowReceiver::class, 'logSubject') ): ?>
+                                            <a class="btn btn-white btn-sm" title="View Logs" href="<?= route( 'log@list', [ 'model' => 'SflowReceiver' , 'model_id' => $sflr->id ] ) ?>">
+                                                <i class="fa fa-list"></i>
+                                            </a>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>

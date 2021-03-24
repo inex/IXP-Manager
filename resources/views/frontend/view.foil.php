@@ -43,6 +43,11 @@ $this->layout( 'layouts/ixpv4' );
             <div class="card">
                 <div class="card-header">
                     Details for <?=  $t->feParams->titleSingular  ?> <?= !isset( $t->data[ 'item' ]['id'] ) ?: '(DB ID: ' . $t->data[ 'item' ]['id'] . ')' ?>
+                    <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( $t->feParams->model, 'logSubject') ): ?>
+                        <a class="btn btn-white btn-sm float-right" href="<?= route( 'log@list', [ 'model' => explode( "IXP\\Models\\", $t->feParams->model )[1], 'model_id' => $t->data[ 'item' ]['id'] ] ) ?>">
+                            View logs
+                        </a>
+                    <?php endif; ?>
                 </div>
                 <div class="card-body">
                     <table class="table_view_info">
@@ -208,6 +213,10 @@ $this->layout( 'layouts/ixpv4' );
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'TEXT'] ): ?>
 
                                                             <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
+
+                                                        <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'JSON'] ): ?>
+
+                                                            <?= json_encode( $t->data[ 'item' ][ $col ], JSON_PRETTY_PRINT ) ?>
 
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'COUNTRY'] ): ?>
 

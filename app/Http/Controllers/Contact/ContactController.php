@@ -86,7 +86,7 @@ class ContactController extends EloquentController
     public function feInit(): void
     {
         $this->feParams         = ( object )[
-            'entity'            => Contact::class,
+            'model'             => Contact::class,
             'pagetitle'         => 'Contacts',
             'titleSingular'     => 'Contact',
             'nameSingular'      => 'contact',
@@ -343,7 +343,7 @@ class ContactController extends EloquentController
         $this->checkForm( $r );
         $custid = Auth::getUser()->isSuperUser() ? $r->custid : Auth::getUser()->custid;
 
-        $this->object = Contact::create(
+        $this->object = Contact::make(
             array_merge( $r->all(), [
                 'creator'       => Auth::getUser()->username,
                 'lastupdatedby' => Auth::id()
@@ -429,7 +429,7 @@ class ContactController extends EloquentController
             $custid = $r->custid;
         }
 
-        $this->object->update(
+        $this->object->fill(
             array_merge( $r->all(), [
                 'creator'       => Auth::getUser()->username,
                 'lastupdatedby' => Auth::id()

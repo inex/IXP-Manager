@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,11 +23,12 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-use Auth;
-use DB;
-use Eloquent;
+use Auth, DB, Eloquent, Storage;
 
-use Illuminate\Database\Eloquent\{Builder, Model};
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model
+};
 
 use Illuminate\Database\Eloquent\Relations\{
     BelongsTo,
@@ -41,7 +42,8 @@ use IXP\Mail\PatchPanelPort\{
     Loa     as LoaMail
 };
 use IXP\Exceptions\GeneralException;
-use Storage;
+
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\PatchPanelPort
@@ -115,6 +117,8 @@ use Storage;
 
 class PatchPanelPort extends Model
 {
+    use Observable;
+
     /**
      * The table associated with the model.
      *
@@ -193,10 +197,10 @@ class PatchPanelPort extends Model
     /**
      * CONST EMAIL
      */
-    const EMAIL_CONNECT                 = 1;
-    const EMAIL_CEASE                   = 2;
-    const EMAIL_INFO                    = 3;
-    const EMAIL_LOA                     = 4;
+    public const EMAIL_CONNECT                 = 1;
+    public const EMAIL_CEASE                   = 2;
+    public const EMAIL_INFO                    = 3;
+    public const EMAIL_LOA                     = 4;
 
     /**
      * Array STATES
@@ -775,5 +779,23 @@ class PatchPanelPort extends Model
         }
 
         $this->delete();
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Patch Panel Port [id:%d] '%s' belonging to Patch Panel [id:%d] '%s'",
+            $model->id,
+            $model->name(),
+            $model->patch_panel_id,
+            $model->patchPanel->name,
+        );
     }
 }

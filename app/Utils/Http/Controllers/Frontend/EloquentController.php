@@ -588,7 +588,7 @@ abstract class EloquentController extends Controller
      */
     public function delete( Request $r ): RedirectResponse
     {
-        $this->object = $this->feParams->entity::findOrFail( $r->id );
+        $this->object = $this->feParams->model::findOrFail( $r->id );
 
         $this->request = $r;
 

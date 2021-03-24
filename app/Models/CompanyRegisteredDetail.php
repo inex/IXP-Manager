@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,8 +23,12 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\{
+    Model,
+    Relations\HasOne
+};
+
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\CompanyRegisteredDetail
@@ -61,6 +65,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class CompanyRegisteredDetail extends Model
 {
+    use Observable;
+
     /**
      * The table associated with the model.
      *
@@ -91,5 +97,23 @@ class CompanyRegisteredDetail extends Model
     public function customer(): HasOne
     {
         return $this->hasOne(Customer::class, 'company_registered_detail_id' );
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Registered Detail [id:%d] belonging to %s [id:%d] '%s'",
+            $model->id,
+            config( 'ixp_fe.lang.customer.one' ),
+            $model->customer->id ?? null,
+            $model->customer->shortname ?? null
+        );
     }
 }

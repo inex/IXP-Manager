@@ -23,8 +23,15 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
-                <div class="card-header">
-                    VLAN Interface Details
+                <div class="card-header tw-flex">
+                    <div class="mr-auto">
+                        Details
+                    </div>
+                    <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\VlanInterface::class, 'logSubject') ): ?>
+                        <a class="btn btn-white btn-sm" href="<?= route( 'log@list', [ 'model' => 'VlanInterface' , 'model_id' => $vli->id ] ) ?>">
+                            View logs
+                        </a>
+                    <?php endif; ?>
                 </div>
                 <div class="card-body row">
                     <div class="col-lg-6 col-md-12">

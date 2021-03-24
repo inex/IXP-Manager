@@ -67,7 +67,7 @@ class IrrdbConfigController extends EloquentController
     public function feInit(): void
     {
         $this->feParams         = (object)[
-            'entity'            => IrrdbConfig::class,
+            'model'             => IrrdbConfig::class,
             'pagetitle'         => 'IRRDB Sources',
             'titleSingular'     => 'IRRDB Source',
             'nameSingular'      => 'an IRRDB Sources',

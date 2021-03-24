@@ -36,6 +36,9 @@ use Illuminate\Database\Eloquent\Relations\{
 };
 
 use Illuminate\Support\Carbon;
+
+use IXP\Traits\Observable;
+
 /**
  * IXP\Models\DocstoreCustomerFile
  *
@@ -75,6 +78,7 @@ use Illuminate\Support\Carbon;
 
 class DocstoreCustomerFile extends Model
 {
+    use Observable;
 
     /**
      * The attributes that are mass assignable.
@@ -213,5 +217,24 @@ class DocstoreCustomerFile extends Model
         return self::where('min_privs', '<=', $privs )
             ->where('cust_id', $cust_id )
             ->orderBy('name')->get();
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Docstore File [id:%d] '%s' belonging to %s [id:%d] '%s'",
+            $model->id,
+            $model->name,
+            ucfirst( config( 'ixp_fe.lang.customer.one' ) ),
+            $model->cust_id,
+            $model->customer->name
+        );
     }
 }

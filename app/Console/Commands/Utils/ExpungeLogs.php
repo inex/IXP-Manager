@@ -3,7 +3,7 @@
 namespace IXP\Console\Commands\Utils;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,9 +28,9 @@ use IXP\Console\Commands\Command as IXPCommand;
 
 use IXP\Models\{
     ApiKey,
+    Log,
     UserLoginHistory,
-    UserRememberToken
-};
+    UserRememberToken};
 
 /**
  * Class UpdateOuiDatabase - update OUI database from named file or IEEE website.
@@ -88,6 +88,10 @@ class ExpungeLogs extends IXPCommand
         UserRememberToken::where( 'expires', '<', now()->format( 'Y-m-d H:i:s' ) )->delete();
         $this->isVerbosityVerbose() && $this->info(' [done]' );
 
+        // Deleting Model logs older than 6 months
+        $this->isVerbosityVerbose() && $this->output->write('Expunging model logs records > 6 months...', false );
+        Log::where( 'created_at', '<', $sixmonthsago )->delete();
+        $this->isVerbosityVerbose() && $this->info(' [done]' );
 
         // we want to delete docstore file download logs > 6 months (but not the first / earliest entry).
         $this->isVerbosityVerbose() && $this->output->write('Expunging non-unique document store download logs...', false );

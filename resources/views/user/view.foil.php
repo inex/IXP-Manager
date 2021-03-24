@@ -20,6 +20,7 @@
         <a id="add-user" class="btn btn-white" href="<?= route('user@edit' , [ "u" => $t->u[ 'id' ] ] ) ?>">
             <i class="fa fa-pencil"></i>
         </a>
+
         <a id="add-user" class="btn btn-white" href="<?= route('user@create-wizard') ?>">
             <i class="fa fa-plus"></i>
         </a>
@@ -30,8 +31,16 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
-                <div class="card-header">
-                    Details for User (DB ID: <?= $t->u[ 'id' ] ?> )
+                <div class="card-header tw-flex">
+                    <div class="mr-auto">
+                        Details for User (DB ID: <?= $t->u[ 'id' ] ?>
+                    </div>
+
+                    <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\User::class, 'logSubject') ): ?>
+                        <a class="btn btn-white btn-sm" href="<?= route( 'log@list', [ 'model' => 'User' , 'model_id' => $t->u[ 'id' ]  ] ) ?>">
+                            View logs
+                        </a>
+                    <?php endif; ?>
                 </div>
                 <div class="card-body row">
                     <div class="col-lg-12 col-md-12">
@@ -76,7 +85,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?=  $t->u['privileges'] ?>
+                                    <?=  \IXP\Models\User::$PRIVILEGES_TEXT_ALL[ $t->u['privileges'] ] ?>
                                 </td>
                             </tr>
 
@@ -119,7 +128,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                        <?= $t->u['creator'] ?? '' ?>
+                                    <?= $t->u['creator'] ?? '' ?>
                                 </td>
                             </tr>
 
@@ -140,21 +149,24 @@
                                     <td colspan="2">
                                         <table class="table table-striped w-100">
                                             <thead class="thead-dark">
-                                            <th>
-                                                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
-                                            </th>
-                                            <th>
-                                                Privilege
-                                            </th>
-                                            <th>
-                                                Created By
-                                            </th>
-                                            <th>
-                                                Created
-                                            </th>
-                                            <th>
-                                                Updated
-                                            </th>
+                                                <th>
+                                                    <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
+                                                </th>
+                                                <th>
+                                                    Privilege
+                                                </th>
+                                                <th>
+                                                    Created By
+                                                </th>
+                                                <th>
+                                                    Created
+                                                </th>
+                                                <th>
+                                                    Updated
+                                                </th>
+                                                <th>
+                                                    Actions
+                                                </th>
                                             </thead>
                                             <tbody>
                                                 <?php foreach( $t->c2us as $c2u ): ?>
@@ -173,6 +185,13 @@
                                                         </td>
                                                         <td>
                                                             <?= $c2u->updated_at ?>
+                                                        </td>
+                                                        <td>
+                                                            <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\CustomerToUser::class, 'logSubject') ): ?>
+                                                                <a class="btn btn-white btn-sm" href="<?= route( 'log@list', [ 'model' => 'CustomerToUser' , 'model_id' => $c2u->id ] ) ?>">
+                                                                    View logs
+                                                                </a>
+                                                            <?php endif; ?>
                                                         </td>
                                                     </tr>
                                                 <?php endforeach;?>

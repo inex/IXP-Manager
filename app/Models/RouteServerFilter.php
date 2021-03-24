@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\{
     Relations\BelongsTo
 };
 
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\RouteServerFilter
@@ -70,6 +71,8 @@ use Illuminate\Database\Eloquent\{
  */
 class RouteServerFilter extends Model
 {
+    use Observable;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -168,5 +171,25 @@ class RouteServerFilter extends Model
     public function protocol(): string
     {
         return Router::$PROTOCOLS[ $this->protocol ] ?? 'Both';
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Route Server Filter [id:%d] belonging to %s [id:%d] '%s' and Peer [id:%d] '%s'",
+            $model->id,
+            ucfirst( config( 'ixp_fe.lang.customer.one' ) ),
+            $model->customer_id,
+            $model->customer->name,
+            $model->peer_id,
+            $model->peer->name,
+        );
     }
 }

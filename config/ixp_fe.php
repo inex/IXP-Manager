@@ -88,17 +88,14 @@ return [
             'cust-kit'                  => env( 'IXP_FE_FRONTEND_DISABLED_CUSTKIT',           false ),
             'docstore'                  => env( 'IXP_FE_FRONTEND_DISABLED_DOCSTORE',          false ),
             'docstore_customer'         => env( 'IXP_FE_FRONTEND_DISABLED_DOCSTORE_CUSTOMER', false ),
+            'filtered-prefixes'         => env( 'IXP_FE_FRONTEND_DISABLED_FILTERED_PREFIXES', true  ),
+            'logs'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGS',              false ),
             'logo'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGO',              true  ),
             'lg'                        => env( 'IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS',     true  ),
             'net-info'                  => env( 'IXP_FE_FRONTEND_DISABLED_NETINFO',           true ),
             'peering-manager'           => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MANAGER',   false ),
             'peering-matrix'            => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MATRIX',    false ),
             'rs-prefixes'               => env( 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',       true  ),
-            'filtered-prefixes'         => env( 'IXP_FE_FRONTEND_DISABLED_FILTERED_PREFIXES', true  ),
-        ],
-
-        'beta' => [
-            'core_bundles' => env( 'IXP_FE_BETA_CORE_BUNDLES', false ),
         ],
     ],
 

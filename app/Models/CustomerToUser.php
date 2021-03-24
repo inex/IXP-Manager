@@ -23,8 +23,14 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations\HasMany};
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model,
+    Relations\BelongsTo,
+    Relations\HasMany
+};
 
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\CustomerToUser
@@ -61,7 +67,7 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations
  */
 class CustomerToUser extends Model
 {
-
+    use Observable;
     /**
      * The attributes that are mass assignable.
      *
@@ -122,4 +128,24 @@ class CustomerToUser extends Model
         return $query->where('privs', User::AUTH_CUSTADMIN );
     }
 
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "%s To User [id:%d] belonging to %s [id:%d] '%s' and User [id:%d] '%s'",
+            ucfirst( config( 'ixp_fe.lang.customer.one' ) ),
+            $model->id,
+            ucfirst( config( 'ixp_fe.lang.customer.one' ) ),
+            $model->customer_id,
+            $model->customer->name,
+            $model->user_id,
+            $model->user->username,
+        );
+    }
 }

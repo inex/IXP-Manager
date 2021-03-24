@@ -160,9 +160,11 @@ class VirtualInterfaceController extends Common
     {
         // we don't allow setting channel group or name until there's >= 1 physical interface / LAG framing:
         $r->merge( [ 'name' => '' , 'channelgroup' => null ] );
-        $vi = VirtualInterface::create( $r->all() );
+        $vi = VirtualInterface::make( $r->all() );
 
         $this->setBundleDetails( $vi );
+
+        $vi->save();
 
         AlertContainer::push( 'Virtual interface created.', Alert::SUCCESS );
         return redirect( route( 'virtual-interface@edit', [ 'vi' => $vi->id ] ) );
@@ -228,8 +230,9 @@ class VirtualInterfaceController extends Common
         }
 
         DB::beginTransaction();
-        $vi->update( $r->all() );
+        $vi->fill( $r->all() );
         $this->setBundleDetails( $vi );
+        $vi->save();
 
         if( $vi->physicalInterfaces()->count() > 0 ) {
             // We need to try and make naming of the virtual interface name automatic as well as choice
@@ -302,7 +305,7 @@ class VirtualInterfaceController extends Common
 
         SwitchPort::find( $r->switchportid )->update( [ 'type' => SwitchPort::TYPE_PEERING ] );
 
-        $vli = VlanInterface::create( array_merge( $r->all(),
+        $vli = VlanInterface::make( array_merge( $r->all(),
             [
                 'virtualinterfaceid' => $vi->id,
                 'busyhost'           => false
@@ -312,6 +315,8 @@ class VirtualInterfaceController extends Common
         if( !$this->setIp( $r, $v, $vli, false ) || !$this->setIp( $r, $v, $vli, true ) ) {
             return redirect(route( 'virtual-interface@wizard' ) )->withInput( $r->all() );
         }
+
+        $vli->save();
 
         // add a warning if we're filtering on irrdb but have not configured one for the customer
         $this->warnIfIrrdbFilteringButNoIrrdbSourceSet( $vli );

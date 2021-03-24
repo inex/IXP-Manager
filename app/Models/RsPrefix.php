@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,9 +23,10 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\{
+    Model,
+    Relations\BelongsTo
+};
 
 /**
  * IXP\Models\RsPrefix
@@ -79,5 +80,4 @@ class RsPrefix extends Model
     {
         return $this->belongsTo(Customer::class, 'custid' );
     }
-
 }

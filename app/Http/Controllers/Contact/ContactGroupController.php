@@ -69,7 +69,7 @@ class ContactGroupController extends EloquentController
     public function feInit(): void
     {
         $this->feParams         = ( object )[
-            'entity'            => ContactGroup::class,
+            'model'             => ContactGroup::class,
             'pagetitle'         => 'Contact Groups',
             'titleSingular'     => 'Contact Group',
             'nameSingular'      => 'contact group',

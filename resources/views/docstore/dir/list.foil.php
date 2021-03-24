@@ -171,6 +171,11 @@
                                         <a class="dropdown-item" href="<?= route( 'docstore-log@unique-list', [ 'file' => $file ] ) ?>">Unique Downloads</a>
                                         <a class="dropdown-item" href="<?= route( 'docstore-log@list', [ 'file' => $file ] ) ?>">All Downloads</a>
                                         <div class="dropdown-divider"></div>
+                                        <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\DocstoreFile::class, 'logSubject') ): ?>
+                                            <a class="dropdown-item" href="<?= route( 'log@list', [ 'model' => 'DocstoreFile' , 'model_id' => $file->id ] ) ?>">
+                                                View logs
+                                            </a>
+                                        <?php endif; ?>
                                         <a class="dropdown-item" href="<?= route( "docstore-file@edit", [ "file" => $file ] ) ?>">Edit</a>
                                         <a class="dropdown-item btn-delete" data-object-type="file" href="<?= route( "docstore-file@delete", [ "file" => $file ] ) ?>">Delete</a>
                                     <?php endif; ?>

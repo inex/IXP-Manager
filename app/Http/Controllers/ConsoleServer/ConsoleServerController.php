@@ -67,7 +67,7 @@ class ConsoleServerController extends EloquentController
     public function feInit(): void
     {
         $this->feParams         = (object)[
-            'entity'            => ConsoleServer::class,
+            'model'             => ConsoleServer::class,
             'pagetitle'         => 'Console Servers',
             'titleSingular'     => 'Console Server',
             'nameSingular'      => 'a console server',

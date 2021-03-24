@@ -67,7 +67,7 @@ class InfrastructureController extends Eloquent2Frontend
     public function feInit(): void
     {
         $this->feParams         = (object)[
-            'entity'            =>  Infrastructure::class,
+            'model'             =>  Infrastructure::class,
             'pagetitle'         => 'Infrastructures',
             'titleSingular'     => 'Infrastructure',
             'nameSingular'      => 'infrastructure',

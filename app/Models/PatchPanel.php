@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -30,7 +30,12 @@ use Illuminate\Database\Eloquent\{
     Model
 };
 
-use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
+use Illuminate\Database\Eloquent\Relations\{
+    BelongsTo,
+    HasMany
+};
+
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\PatchPanel
@@ -76,6 +81,8 @@ use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
 
 class PatchPanel extends Model
 {
+    use Observable;
+
     /**
      * The table associated with the model.
      *
@@ -352,5 +359,21 @@ class PatchPanel extends Model
         }
 
         return $loc;
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Patch Panel [id:%d] '%s'",
+            $model->id,
+            $model->name
+        );
     }
 }

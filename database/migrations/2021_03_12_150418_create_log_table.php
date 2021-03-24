@@ -24,24 +24,31 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use IXP\Models\PatchPanelPort;
 
-class DatabaseFixes extends Migration
+class CreateLogTable extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up(): void
+    public function up()
     {
-        // Change the default value of the chargeable field to CHARGEABLE_NO
-        Schema::table('patch_panel_port',function ( $table ) {
-            $table->integer( 'chargeable' )->default( PatchPanelPort::CHARGEABLE_NO )->change();
+        Schema::create('log', function (Blueprint $table) {
+            $table->id();
+            $table->integer('user_id' )->nullable();
+            $table->string('model',100 );
+            $table->unsignedBigInteger('model_id')->nullable(true )->default(null);
+            $table->string('action',7 );
+            $table->text('message' );
+            $table->json('models' );
+            $table->timestamps();
+
+            $table->foreign('user_id' )->references('id')->on('user' );
+
+            $table->index('action' );
+            $table->index( ['model', 'model_id'] );
         });
-        // Update Patch panel ports that have chargeable set to 0 to 2 (CHARGEABLE_NO)
-        DB::table('patch_panel_port')->where('chargeable' , 0 )
-            ->update( [ 'chargeable' => PatchPanelPort::CHARGEABLE_NO ] );
     }
 
     /**
@@ -51,6 +58,6 @@ class DatabaseFixes extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('log');
     }
 }

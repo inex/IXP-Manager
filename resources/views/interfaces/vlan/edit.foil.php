@@ -61,7 +61,8 @@
                     </h3>
                     <hr>
                     <?= Former::open()->method( $t->vli ? 'put' : 'post' )
-                        ->action( $t->vli ? route( 'vlan-interface@update', [ 'vli' => $t->vli->id ] ) : route( 'vlan-interface@store' ) )
+                        ->action( $t->duplicateTo ?  route( 'vlan-interface@duplicate', [ 'vli' => $t->vli->id ] ) :
+                            ( $t->vli ? route( 'vlan-interface@update', [ 'vli' => $t->vli->id ] ) : route( 'vlan-interface@store' ) ) )
                         ->customInputWidthClass( 'col-sm-6' )
                         ->customLabelWidthClass( 'col-md-3 col-sm-3 col-lg-4' )
                         ->actionButtonsCustomClass( "grey-box")
@@ -190,7 +191,7 @@
             ?>
 
             <?= Former::hidden( 'redirect2vi' )
-                ->value( $t->vi ? true : false )
+                ->value( $t->redirect2vi )
             ?>
 
             <?=Former::actions(

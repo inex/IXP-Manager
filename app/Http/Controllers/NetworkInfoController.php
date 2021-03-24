@@ -70,7 +70,7 @@ class NetworkInfoController extends EloquentController
     public function feInit(): void
     {
         $this->feParams         = (object)[
-            'entity'            => NetworkInfo::class,
+            'model'             => NetworkInfo::class,
             'pagetitle'         => 'Network Information',
             'titleSingular'     => 'Network Information',
             'nameSingular'      => 'Network Information',

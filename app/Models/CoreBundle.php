@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -30,6 +30,8 @@ use Illuminate\Database\Eloquent\{
     Model,
     Relations\HasMany
 };
+
+use IXP\Traits\Observable;
 
 use OSS_SNMP\MIBS\Iface;
 
@@ -72,6 +74,8 @@ use OSS_SNMP\MIBS\Iface;
  */
 class CoreBundle extends Model
 {
+    use Observable;
+
     /**
      * The table associated with the model.
      *
@@ -365,5 +369,21 @@ class CoreBundle extends Model
             throw $e;
         }
         return true;
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Core Bundle [id:%d] '%s'",
+            $model->id,
+            $model->description,
+        );
     }
 }

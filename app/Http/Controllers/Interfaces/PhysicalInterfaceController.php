@@ -142,6 +142,7 @@ class PhysicalInterfaceController extends Common
             ->update( [ 'type' => SwitchPort::TYPE_PEERING ] );
 
         $this->setBundleDetails( $vi );
+        $vi->save();
 
         $pi = PhysicalInterface::create( $r->all() );
 
@@ -272,6 +273,7 @@ class PhysicalInterfaceController extends Common
         }
 
         $this->setBundleDetails( $vi );
+        $vi->save();
 
         $pi->update( $r->all() );
 

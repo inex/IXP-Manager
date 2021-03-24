@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,7 +28,7 @@ use Illuminate\Database\Eloquent\{
     Relations\BelongsTo
 };
 
-
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\Router
@@ -100,6 +100,8 @@ use Illuminate\Database\Eloquent\{
  */
 class Router extends Model
 {
+    use Observable;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -430,5 +432,23 @@ class Router extends Model
         }
 
         return $this->updated_at->diffInSeconds() > $threshold;
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Router [id:%d] '%s' belonging to Vlan [id:%d] '%s'",
+            $model->id,
+            $model->handle,
+            $model->vlan_id,
+            $model->vlan->name,
+        );
     }
 }

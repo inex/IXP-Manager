@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -32,9 +32,7 @@ use Illuminate\Database\Eloquent\{
     Relations\HasMany
 };
 
-use IXP\Exceptions\Services\Grapher\ParameterException as GrapherParameterException;
-use IXP\Services\Grapher\Graph;
-
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\VlanInterface
@@ -104,6 +102,8 @@ use IXP\Services\Grapher\Graph;
  */
 class VlanInterface extends Model
 {
+    use Observable;
+
     /**
      * The table associated with the model.
      *
@@ -251,5 +251,21 @@ class VlanInterface extends Model
             default:
                 return null;
         }
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Vlan Interface [id:%d] belonging to Virtual Interface [id:%d]",
+            $model->id,
+            $model->virtualinterfaceid,
+        );
     }
 }

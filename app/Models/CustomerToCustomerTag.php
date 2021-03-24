@@ -25,6 +25,8 @@ namespace IXP\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use IXP\Traits\Observable;
 /**
  * IXP\Models\CustomerToCustomerTag
  *
@@ -43,6 +45,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CustomerToCustomerTag extends Model
 {
+    use Observable;
+
     /**
      * The table associated with the model.
      *
@@ -59,4 +63,39 @@ class CustomerToCustomerTag extends Model
         'customer_tag_id',
         'customer_id',
     ];
+
+    /**
+     * Get the customer that own the customer to contact
+     */
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class, 'customer_id' );
+    }
+
+    /**
+     * Get the tag that own the customer to contact
+     */
+    public function tag(): BelongsTo
+    {
+        return $this->belongsTo(CustomerTag::class, 'customer_tag_id' );
+    }
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "%s Tag [id:%d] '%s' associated to %s [id:%d] '%s'",
+            ucfirst( config( 'ixp_fe.lang.customer.one' ) ),
+            $model->customer_tag_id,
+            $model->tag->tag,
+            config( 'ixp_fe.lang.customer.one' ),
+            $model->customer_id,
+            $model->customer->name
+        );
+    }
 }

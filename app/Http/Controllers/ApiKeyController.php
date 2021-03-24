@@ -79,7 +79,7 @@ class ApiKeyController extends EloquentController
     public function feInit(): void
     {
         $this->feParams         = (object)[
-            'entity'            => ApiKey::class,
+            'model'             => ApiKey::class,
             'pagetitle'         => 'API Keys',
             'titleSingular'     => 'API Key',
             'nameSingular'      => 'API key',

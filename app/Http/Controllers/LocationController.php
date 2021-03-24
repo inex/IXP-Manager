@@ -26,6 +26,7 @@ namespace IXP\Http\Controllers;
 use Countries, Former;
 
 use Illuminate\Database\Eloquent\Builder;
+
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -74,7 +75,7 @@ class LocationController extends EloquentController
     public function feInit(): void
     {
         $this->feParams = (object)[
-            'entity'            => Location::class,
+            'model'             => Location::class,
             'pagetitle'         => 'Facilities',
             'titleSingular'     => 'Facility',
             'nameSingular'      => 'facility',

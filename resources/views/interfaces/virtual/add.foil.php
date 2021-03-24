@@ -33,6 +33,12 @@
                 Virtual Interface Only...
             </a>
         </ul>
+
+        <?php if( $t->vi && !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\VirtualInterface::class, 'logSubject') ): ?>
+            <a class="btn btn-white btn-sm" href="<?= route( 'log@list', [ 'model' => 'VirtualInterface' , 'model_id' => $t->vi->id ] ) ?>">
+                View logs
+            </a>
+        <?php endif; ?>
     </div>
 <?php $this->append() ?>
 

@@ -80,7 +80,7 @@ class Layer2AddressController extends EloquentController
     public function feInit(): void
     {
         $this->feParams         = (object)[
-            'entity'            => Layer2Address::class,
+            'model'             => Layer2Address::class,
             'pagetitle'         => 'Configured MAC Addresses',
             'titleSingular'     => 'Configured MAC Address',
             'nameSingular'      => 'a configured MAC address',

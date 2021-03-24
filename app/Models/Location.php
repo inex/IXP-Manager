@@ -29,6 +29,8 @@ use Illuminate\Database\Eloquent\{
     Relations\HasMany
 };
 
+use IXP\Traits\Observable;
+
 /**
  * IXP\Models\Location
  *
@@ -75,6 +77,8 @@ use Illuminate\Database\Eloquent\{
  */
 class Location extends Model
 {
+    use Observable;
+
     /**
      * The table associated with the model.
      *
@@ -112,4 +116,19 @@ class Location extends Model
         return $this->hasMany(Cabinet::class, 'locationid' );
     }
 
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Facility (Location) [id:%d] '%s'",
+            $model->id,
+            $model->name,
+        );
+    }
 }

@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -34,14 +34,21 @@ use Illuminate\Database\Eloquent\{Builder,
 
 use Illuminate\Notifications\Notifiable;
 
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\{
+    CanResetPassword as CanResetPasswordContract,
+    Authenticatable as AuthenticatableContract
+};
+
 use Illuminate\Support\Str;
+
 use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
+
 use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
+
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\User
@@ -100,7 +107,7 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
 
-    use Authenticatable, CanResetPassword, Notifiable;
+    use Authenticatable, CanResetPassword, Notifiable, Observable;
     /**
      * The table associated with the model.
      *
@@ -386,4 +393,19 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return parent::__get( $key );
     }
 
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "User [id:%d] '%s'",
+            $model->id,
+            $model->username,
+        );
+    }
 }

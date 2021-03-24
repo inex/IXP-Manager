@@ -40,6 +40,9 @@ IXP\Http\Controllers\InfrastructureController::routes();
 IXP\Http\Controllers\IrrdbConfigController::routes();
 IXP\Http\Controllers\Layer2AddressController::routes();
 IXP\Http\Controllers\LocationController::routes();
+if( !config( 'ixp_fe.frontend.disabled.logs' ) ){
+    IXP\Http\Controllers\LogController::routes();
+}
 IXP\Http\Controllers\LoginHistoryController::routes();
 IXP\Http\Controllers\MacAddressController::routes();
 IXP\Http\Controllers\NetworkInfoController::routes();

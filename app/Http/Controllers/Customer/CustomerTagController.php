@@ -71,7 +71,7 @@ class CustomerTagController extends EloquentController
     public function feInit(): void
     {
         $this->feParams         = ( object )[
-            'entity'            => CustomerTag::class,
+            'model'             => CustomerTag::class,
             'pagetitle'         => ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' Tags',
             'titleSingular'     => ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' Tag',
             'nameSingular'      => config( 'ixp_fe.lang.customer.one' ) . ' tag',

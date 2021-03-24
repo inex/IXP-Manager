@@ -272,6 +272,16 @@
                                                             </div>
                                                         </td>
                                                     </tr>
+                                                    <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && $isSuperUser && method_exists( \IXP\Models\PatchPanelPort::class, 'logSubject') ): ?>
+                                                        <tr>
+                                                            <td></td>
+                                                            <td>
+                                                                <a class="btn btn-white btn-sm" href="<?= route( 'log@list', [ 'model' => 'PatchPanelPort' , 'model_id' => $ppp->id ] ) ?>">
+                                                                    View logs
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endif; ?>
                                                 <?php endif; ?>
 
                                             <?php if( $current && ( $isSuperUser || $history->stateAwaitingXConnect() ) && $ppp->customer ): ?>
@@ -599,6 +609,11 @@
                                                                                 <a class='btn btn-white btn-delete-file' data-object-id='<?=$file->id?>' href="<?= route( $isHistory ? 'patch-panel-port-history-file@delete' : 'patch-panel-port-file@delete', [ 'file' => $file->id ] ) ?>" title="Delete">
                                                                                     <i class="fa fa-trash"></i>
                                                                                 </a>
+                                                                                <?php if( !$isHistory && !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\PatchPanelPortFile::class, 'logSubject') ): ?>
+                                                                                    <a class="btn btn-white btn-sm" href="<?= route( 'log@list', [ 'model' => 'PatchPanelPortFile' , 'model_id' => $file->id ] ) ?>">
+                                                                                        <i class="fa fa-list"></i>
+                                                                                    </a>
+                                                                                <?php endif; ?>
                                                                             <?php endif; ?>
                                                                         </div>
                                                                     </td>

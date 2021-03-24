@@ -94,7 +94,7 @@ class UserRememberTokenController extends EloquentController
     public function feInit(): void
     {
         $this->feParams         = (object)[
-            'entity'                    => UserRememberToken::class,
+            'model'                     => UserRememberToken::class,
             'pagetitle'                 => 'Your Active Login Sessions',
             'titleSingular'             => 'Active Login Session',
             'nameSingular'              => 'active login session',

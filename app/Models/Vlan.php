@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,12 +22,15 @@ namespace IXP\Models;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Illuminate\Database\Eloquent\{
     Builder,
     Model,
     Relations\BelongsTo,
     Relations\HasMany
 };
+
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\Vlan
@@ -77,6 +80,7 @@ use Illuminate\Database\Eloquent\{
  */
 class Vlan extends Model
 {
+    use Observable;
     /**
      * The table associated with the model.
      *
@@ -199,5 +203,23 @@ class Vlan extends Model
     public function scopePeeringManager( Builder $query ): Builder
     {
         return $query->where( 'peering_manager', 1 );
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Vlan [id:%d] '%s' belonging to Infrastructure [id:%d] '%s'",
+            $model->id,
+            $model->name,
+            $model->infrastructureid,
+            $model->infrastructure->name,
+        );
     }
 }

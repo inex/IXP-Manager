@@ -117,6 +117,11 @@
                             </td>
                         <?php endif; ?>
                         <td class="align-middle">
+                            <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\CoreLink::class, 'logSubject') ): ?>
+                                <a class="btn btn-white btn-sm" href="<?= route( 'log@list', [ 'model' => 'CoreLink' , 'model_id' => $cl->id ] ) ?>">
+                                    View logs
+                                </a>
+                            <?php endif; ?>
                             <?php if( $t->cb->coreLinks()->count() > 1 ): ?>
                                 <div class="btn-group btn-group-sm" role="group">
                                     <a class="btn btn btn-white btn-delete-cl" id="btn-delete-cl-<?= $cl->id ?>" href="<?= route( 'core-link@delete', [ 'cb' => $t->cb->id , 'cl' => $cl->id ] ) ?>" title="Delete">

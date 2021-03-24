@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\{
     Relations\HasMany
 };
 
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\ConsoleServer
@@ -67,6 +68,8 @@ use Illuminate\Database\Eloquent\{
  */
 class ConsoleServer extends Model
 {
+    use Observable;
+
     /**
      * The table associated with the model.
      *
@@ -112,5 +115,21 @@ class ConsoleServer extends Model
     public function consoleServerConnections(): HasMany
     {
         return $this->hasMany(ConsoleServerConnection::class, 'console_server_id');
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Console Server [id:%d] '%s'",
+            $model->id,
+            $model->name
+        );
     }
 }

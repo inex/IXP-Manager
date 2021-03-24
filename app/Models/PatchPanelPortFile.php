@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,10 +25,13 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo};
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model,
+    Relations\BelongsTo
+};
 
-use Illuminate\Support\Collection;
-
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\PatchPanelPortFile
@@ -64,6 +67,8 @@ use Illuminate\Support\Collection;
 
 class PatchPanelPortFile extends Model
 {
+    use Observable;
+
     /**
      * The table associated with the model.
      *
@@ -174,5 +179,23 @@ class PatchPanelPortFile extends Model
     {
         return self::UPLOAD_PATH . '/' . $this->storage_location[ 0 ] . '/'
             . $this->storage_location[ 1 ] . '/' . $this->storage_location;
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Patch Panel Port File [id:%d] '%s' belonging to Patch Panel Port [id:%d] '%s'",
+            $model->id,
+            $model->name,
+            $model->patch_panel_port_id,
+            $model->patchPanelPort->name(),
+        );
     }
 }

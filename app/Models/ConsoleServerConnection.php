@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,10 +23,13 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use stdClass;
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model,
+    Relations\BelongsTo
+};
+
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\ConsoleServerConnection
@@ -67,6 +70,8 @@ use stdClass;
  */
 class ConsoleServerConnection extends Model
 {
+    use Observable;
+
     public static $SPEED = [
         300     => 300,
         600     => 600,
@@ -155,5 +160,22 @@ class ConsoleServerConnection extends Model
     public function consoleServer(): BelongsTo
     {
         return $this->belongsTo(ConsoleServer::class, 'console_server_id' );
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Console Server Connection [id:%d] belonging to Console Server [id:%d] '%s'",
+            $model->id,
+            $model->console_server_id,
+            $model->consoleServer->name
+        );
     }
 }

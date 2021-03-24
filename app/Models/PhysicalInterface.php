@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,7 +25,15 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations\HasMany, Relations\HasOne};
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model,
+    Relations\BelongsTo,
+    Relations\HasMany,
+    Relations\HasOne
+};
+
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\PhysicalInterface
@@ -68,6 +76,8 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations
  */
 class PhysicalInterface extends Model
 {
+    use Observable;
+
     /**
      * The table associated with the model.
      *
@@ -376,5 +386,21 @@ class PhysicalInterface extends Model
             return $ci->coreLink()->coreBundle;
         }
         return false;
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Physical Interface [id:%d] belonging to Virtual Interface [id:%d]",
+            $model->id,
+            $model->virtualinterfaceid,
+        );
     }
 }

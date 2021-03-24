@@ -71,7 +71,7 @@ class VlanController extends EloquentController
     public function feInit(): void
     {
         $this->feParams         = (object)[
-            'entity'            => Vlan::class,
+            'model'             => Vlan::class,
             'pagetitle'         => 'VLANs',
             'titleSingular'     => 'VLAN',
             'nameSingular'      => 'VLAN',

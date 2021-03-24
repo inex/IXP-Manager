@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,8 +23,6 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, stdClass;
-
 use Illuminate\Database\Eloquent\{
     Builder,
     Model,
@@ -32,6 +30,7 @@ use Illuminate\Database\Eloquent\{
     Relations\BelongsToMany
 };
 
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\Contact
@@ -78,6 +77,8 @@ use Illuminate\Database\Eloquent\{
  */
 class Contact extends Model
 {
+    use Observable;
+
     /**
      * The table associated with the model.
      *
@@ -148,5 +149,23 @@ class Contact extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class, 'custid' );
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Contact [id:%d] belonging to %s [id:%d] '%s'",
+            $model->id,
+            config( 'ixp_fe.lang.customer.one' ),
+            $model->customer->id,
+            $model->customer->shortname
+        );
     }
 }

@@ -62,7 +62,7 @@ class MacAddressController extends EloquentController
     public function feInit(): void
     {
         $this->feParams         = (object)[
-            'entity'            => MacAddress::class,
+            'model'             => MacAddress::class,
             'pagetitle'         => 'Discovered MAC Addresses',
             'titleSingular'     => 'MAC Address',
             'nameSingular'      => 'a MAC address',

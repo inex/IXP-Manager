@@ -376,6 +376,14 @@
                     Last Logins
                 </a>
             </li>
+
+            <?php if( !config( 'ixp_fe.frontend.disabled.logs', false ) ): ?>
+                <li class="<?= !request()->is( 'log/*' ) ?: 'active' ?>">
+                    <a href="<?= route( 'log@list' ) ?>" class="nav-link">
+                        Logs
+                    </a>
+                </li>
+            <?php endif; ?>
         </ul>
     </div>
 </nav>

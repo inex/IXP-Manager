@@ -88,7 +88,7 @@ class SwitchController extends EloquentController
     public function feInit(): void
     {
         $this->feParams         = (object)[
-            'entity'            => Switcher::class,
+            'model'             => Switcher::class,
             'pagetitle'         => 'Switches',
             'titleSingular'     => 'Switch',
             'nameSingular'      => 'switch',
