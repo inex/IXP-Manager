@@ -369,10 +369,10 @@ class Switcher extends Model
      *
      * @throws
      */
-    public function snmpPollSwitchPorts( $host, $logger = false, bool $result = false, bool $nosave = false ): Switcher
+    public function snmpPollSwitchPorts( $host, $logger = false, bool|array $result = false, bool $nosave = false ): Switcher
     {
         // clone the ports currently known to this switch as we'll be playing with this array
-        $existingPorts = clone $this->switchPorts();
+        $existingPorts = clone $this->switchPorts;
 
         // iterate over all the ports discovered on the switch:
         foreach( $host->useIface()->indexes() as $index ) {
@@ -388,7 +388,7 @@ class Switcher extends Model
             $sp = false;
             foreach( $existingPorts as $ix => $ep ) {
                 if( $ep->ifIndex === $index ) {
-                    $sp = $ep;
+                    $sp = SwitchPort::findOrFail( $ep->id );
                     if( is_array( $result ) ){
                         $result[ $index ] = [ "port" => $sp, 'bullet' => false ];
                     }

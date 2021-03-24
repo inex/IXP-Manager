@@ -38,6 +38,26 @@ class DeleteIxpTable extends Migration
             $table->drop();
         });
 
+        $sm = Schema::getConnection()->getDoctrineSchemaManager();
+
+        foreach( $sm->listTableForeignKeys('infrastructure') as $fk ) {
+            if( $fk->getForeignTableName() === 'ixp' ) {
+                Schema::table( 'infrastructure', function( Blueprint $table ) use ( $fk ) {
+                    $table->dropForeign( $fk->getName() );
+                    $table->dropColumn( 'ixp_id' );
+                } );
+            }
+        }
+
+        foreach( $sm->listTableForeignKeys('traffic_daily') as $fk ) {
+            if( $fk->getForeignTableName() === 'ixp' ) {
+                Schema::table( 'traffic_daily', function( Blueprint $table ) use ( $fk ) {
+                    $table->dropForeign( $fk->getName() );
+                    $table->dropColumn( 'ixp_id' );
+                } );
+            }
+        }
+
         Schema::table('ixp', function (Blueprint $table) {
             $table->drop();
         });

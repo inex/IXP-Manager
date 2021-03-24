@@ -37,22 +37,24 @@ use Illuminate\Database\Eloquent\{
  * @property string $apiKey
  * @property string|null $expires
  * @property string|null $allowedIPs
- * @property string|null $created
+ * @property \Illuminate\Support\Carbon $created_at
  * @property string|null $lastseenAt
  * @property string|null $lastseenFrom
  * @property string|null $description
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\User $user
  * @method static Builder|ApiKey newModelQuery()
  * @method static Builder|ApiKey newQuery()
  * @method static Builder|ApiKey query()
  * @method static Builder|ApiKey whereAllowedIPs($value)
  * @method static Builder|ApiKey whereApiKey($value)
- * @method static Builder|ApiKey whereCreated($value)
+ * @method static Builder|ApiKey whereCreatedAt($value)
  * @method static Builder|ApiKey whereDescription($value)
  * @method static Builder|ApiKey whereExpires($value)
  * @method static Builder|ApiKey whereId($value)
  * @method static Builder|ApiKey whereLastseenAt($value)
  * @method static Builder|ApiKey whereLastseenFrom($value)
+ * @method static Builder|ApiKey whereUpdatedAt($value)
  * @method static Builder|ApiKey whereUserId($value)
  * @mixin \Eloquent
  * @property \Illuminate\Support\Carbon|null $created_at

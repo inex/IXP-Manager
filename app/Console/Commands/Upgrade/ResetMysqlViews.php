@@ -61,9 +61,43 @@ class ResetMysqlViews extends IXPCommand
      */
     public function handle(): int
     {
-        DB::beginTransaction();
         DB::unprepared( resolve( 'Foil\Engine' )->render( 'database/views.foil.sql' ) );
-        DB::commit();
+
+        $sql = <<<END_SQL
+CREATE TRIGGER bgp_sessions_update AFTER INSERT ON `bgpsessiondata` FOR EACH ROW
+
+BEGIN
+
+    IF NOT EXISTS ( SELECT 1 FROM bgp_sessions WHERE srcipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND dstipaddressid = NEW.dstipaddressid ) THEN
+			INSERT INTO bgp_sessions
+                ( srcipaddressid, protocol, dstipaddressid, packetcount, last_seen, source )
+			VALUES
+                ( NEW.srcipaddressid, NEW.protocol, NEW.dstipaddressid, NEW.packetcount, NOW(), NEW.source );
+    ELSE
+			UPDATE bgp_sessions SET
+				last_seen   = NOW(),
+				packetcount = packetcount + NEW.packetcount
+			WHERE
+				srcipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND dstipaddressid = NEW.dstipaddressid;
+    END IF;
+
+    IF NOT EXISTS ( SELECT 1 FROM bgp_sessions WHERE dstipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND srcipaddressid = NEW.dstipaddressid ) THEN
+			INSERT INTO bgp_sessions
+                ( srcipaddressid, protocol, dstipaddressid, packetcount, last_seen, source )
+			VALUES
+                ( NEW.dstipaddressid, NEW.protocol, NEW.srcipaddressid, NEW.packetcount, NOW(), NEW.source );
+    ELSE
+			UPDATE bgp_sessions SET
+				last_seen   = NOW(),
+				packetcount = packetcount + NEW.packetcount
+			WHERE
+				dstipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND srcipaddressid = NEW.dstipaddressid;
+    END IF;
+
+END
+END_SQL;
+
+        DB::unprepared( $sql );
 
         return 0;
     }

@@ -87,7 +87,7 @@ CREATE VIEW view_switch_details_by_custid AS
 		sw.snmppasswd,
 		sw.infrastructure,
 		ca.name AS cabinet,
-		ca.colocation AS colocabinet,
+		ca.cololocation AS colocabinet,
 		lo.name AS locationname,
 		lo.shortname AS locationshortname
 	FROM
@@ -113,38 +113,3 @@ CREATE VIEW view_switch_details_by_custid AS
 
 DROP TRIGGER IF EXISTS `bgp_sessions_update`;
 
-DELIMITER ;;
-
-CREATE TRIGGER bgp_sessions_update AFTER INSERT ON `bgpsessiondata` FOR EACH ROW
-
-	BEGIN
-
-		IF NOT EXISTS ( SELECT 1 FROM bgp_sessions WHERE srcipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND dstipaddressid = NEW.dstipaddressid ) THEN
-			INSERT INTO bgp_sessions
-				( srcipaddressid, protocol, dstipaddressid, packetcount, last_seen, source )
-			VALUES
-				( NEW.srcipaddressid, NEW.protocol, NEW.dstipaddressid, NEW.packetcount, NOW(), NEW.source );
-		ELSE
-			UPDATE bgp_sessions SET
-				last_seen   = NOW(),
-				packetcount = packetcount + NEW.packetcount
-			WHERE
-				srcipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND dstipaddressid = NEW.dstipaddressid;
-		END IF;
-
-		IF NOT EXISTS ( SELECT 1 FROM bgp_sessions WHERE dstipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND srcipaddressid = NEW.dstipaddressid ) THEN
-			INSERT INTO bgp_sessions
-				( srcipaddressid, protocol, dstipaddressid, packetcount, last_seen, source )
-			VALUES
-				( NEW.dstipaddressid, NEW.protocol, NEW.srcipaddressid, NEW.packetcount, NOW(), NEW.source );
-		ELSE
-			UPDATE bgp_sessions SET
-				last_seen   = NOW(),
-				packetcount = packetcount + NEW.packetcount
-			WHERE
-				dstipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND srcipaddressid = NEW.dstipaddressid;
-		END IF;
-
-	END ;;
-
-DELIMITER ;
