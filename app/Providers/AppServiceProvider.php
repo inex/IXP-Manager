@@ -24,6 +24,7 @@
 namespace IXP\Providers;
 
 use Auth, Former, Horizon;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 use IXP\Models\{
     DocstoreCustomerDirectory,
@@ -65,6 +66,8 @@ class AppServiceProvider extends ServiceProvider
         DocstoreDirectory::observe( DocstoreDirectoryObserver::class );
         // observer for docstore customer directory
         DocstoreCustomerDirectory::observe( DocstoreCustomerDirectoryObserver::class );
+
+        Paginator::useBootstrap();
     }
 
     /**

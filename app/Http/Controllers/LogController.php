@@ -23,12 +23,13 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Database\Eloquent\Builder;
 
+use Illuminate\Http\Request;
 use IXP\Models\Log;
-
-use IXP\Models\User;
-use IXP\Utils\Http\Controllers\Frontend\EloquentController;
+use Illuminate\View\View;
 
 /**
  * Log Controller
@@ -41,120 +42,71 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController;
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 
-class LogController extends EloquentController
+class LogController extends Controller
 {
     /**
-     * The object being created / edited
+     * Search in logs list
      *
-     * @var Log
-     */
-    protected $object = null;
-
-    /**
-     * The URL prefix to use.
+     * @param Request   $r
      *
-     * Automatically determined based on the controller name if not set.
-     *
-     * @var string|null
+     * @return Application|Factory|\Illuminate\Contracts\View\View|View
      */
-    protected static $route_prefix = "log";
-
-    /**
-     * Is this a read only controller?
-     *
-     * @var boolean
-     */
-    public static $read_only = true;
-
-    /**
-     * This function sets up the frontend controller
-     */
-    public function feInit(): void
+    public function search( Request $r )
     {
-        $this->feParams = (object)[
-            'model'             => Log::class,
-            'pagetitle'         => 'Logs',
-            'titleSingular'     => 'Log',
-            'nameSingular'      => 'log',
-            'listOrderBy'       => 'created_at',
-            'listOrderByDir'    => 'DESC',
-            'viewFolderName'    => 'log',
-            'readonly'          => self::$read_only,
-            'listColumns'    => [
-                'model'         => 'Model',
-                'model_id'        => [
-                    'title' => 'UID'
-                ],
-                'action'        => 'Action',
-                'username'       => [
-                    'title'      => 'User',
-                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'user',
-                    'action'     => 'view',
-                    'idField'    => 'user_id'
-                ],
-                'created_at'       => [
-                    'title'         => 'Created',
-                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
-                ],
-            ]
-        ];
-
-        // display the same information in the view as the list
-        $this->feParams->viewColumns = array_merge(
-            $this->feParams->listColumns, [
-                'message'     => [
-                    'title'         => 'Message',
-                    'type'          => self::$FE_COL_TYPES[ 'ARRAY' ]
-                ],
-                'models'      => [
-                    'title'         => 'Models',
-                    'type'          => self::$FE_COL_TYPES[ 'JSON' ]
-                ],
-            ]
-        );
+        dd($r->input());
+        return $this->list( $r );
     }
-
     /**
-     * Provide array of rows for the list and view
+     * Display the Logs list
      *
-     * @param int|null $id The `id` of the row to load for `view`. `null` if `list`
+     * @param Request   $r
      *
-     * @return array
+     * @return Application|Factory|\Illuminate\Contracts\View\View|View
      */
-    protected function listGetData( ?int $id = null ): array
+    public function list( Request $r )
     {
-        $feParams   = $this->feParams;
-        $model      = request()->model ?? null;
-        $model_id   = request()->model_id ?? null;
-        $user       = request()->user ?? null;
+        $model      = $r->model ?? null;
+        $model_id   = $r->model_id ?? null;
+        $user       = $r->user ?? null;
+        $action     = $r->action ?? null;
+        $created_at = $r->created_at ?? null;
 
-        return Log::selectRaw( 'log.*, u.username' )
-        ->leftJoin( 'user AS u', 'u.id', 'log.user_id' )
-        ->when( $id , function( Builder $q, $id ) {
-            return $q->where('log.id', $id );
-        } )->when( $model, function( Builder $q, $model ) {
-            return $q->where('log.model', 'like', $model );
-        } )->when( $model_id, function( Builder $q, $model_id ) {
-            return $q->where('log.model_id', $model_id );
-        } )->when( $user, function( Builder $q, $user ) {
-                return $q->where('u.username', $user );
-        } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-        })->get()->toArray();
-    }
-
-    protected function preList(): void
-    {
-        $this->data[ 'params' ]     = [
-            'model' => request()->model ?? false,
-            'user' => request()->user ?? false,
-            'models' =>  Log::select( 'model' )->orderBy( 'model' )
-                ->distinct()->get()->pluck( 'model' )->toArray(),
-            'users'  =>  Log::select( [ 'user_id', 'username' ] )
+        return view( 'log/index' )->with([
+            'model'     => $r->model ?? false,
+            'user'      => $r->user ?? false,
+            'models'    =>  Log::select( 'model' )->orderBy( 'model' )
+                ->distinct()->get()->toArray(),
+            'users'     =>  Log::select( [ 'user_id', 'username' ] )
                 ->leftJoin( 'user AS u', 'u.id', 'log.user_id')
                 ->orderBy( 'username' )
-                ->distinct()->get()->pluck( 'username', 'user_id' )->toArray(),
-        ];
+                ->distinct()->get()->toArray(),
+            'logs'      => Log::selectRaw( 'log.*, u.username' )
+                ->leftJoin( 'user AS u', 'u.id', 'log.user_id' )
+                ->when( $model, function( Builder $q, $model ) {
+                    return $q->where('log.model', 'like', $model );
+                } )->when( $model_id, function( Builder $q, $model_id ) {
+                    return $q->where('log.model_id', $model_id );
+                } )->when( $user, function( Builder $q, $user ) {
+                    return $q->where('u.username', $user );
+                } )->when( $action, function( Builder $q, $action ) {
+                    return $q->where('log.action', $action );
+                } )->when( $created_at, function( Builder $q, $created_at ) {
+                    return $q->where('log.created_at', 'like', $created_at . '%' );
+                } )->orderByDesc( 'created_at' )->paginate( 20 )
+        ]);
+    }
+
+    /**
+     * Display the log details
+     *
+     * @param   Log $log the log
+     *
+     * @return Application|Factory|\Illuminate\Contracts\View\View|View
+     */
+    public function view( Log $log )
+    {
+        return view( 'log/view' )->with([
+            'log'   => $log
+        ]);
     }
 }

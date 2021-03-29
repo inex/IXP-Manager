@@ -55,6 +55,15 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class Log extends Model
 {
+    public const ACTION_CREATED  = 'CREATED';
+    public const ACTION_UPDATED  = 'UPDATED';
+    public const ACTION_DELETED  = 'DELETED';
+
+    public static $ACTIONS = [
+        self::ACTION_CREATED => self::ACTION_CREATED,
+        self::ACTION_UPDATED => self::ACTION_UPDATED,
+        self::ACTION_DELETED => self::ACTION_DELETED,
+    ];
     /**
      * The table associated with the model.
      *
@@ -82,7 +91,7 @@ class Log extends Model
      * @var array
      */
     protected $casts = [
-        'models' => 'array',
+        'models' => 'json',
     ];
 
     /**

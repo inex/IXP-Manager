@@ -93,6 +93,16 @@ class CustomerToUser extends Model
     ];
 
     /**
+     * The attributes that should not be logged
+     *
+     * @var array
+     */
+    public $field_log_exception = [
+        'last_login_date',
+        'updated_at',
+    ];
+
+    /**
      * Get the customer for the customertouser
      */
     public function customer(): BelongsTo

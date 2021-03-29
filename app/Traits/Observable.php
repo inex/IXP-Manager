@@ -40,7 +40,6 @@ use IXP\Models\{
  */
 trait Observable
 {
-
     public static function bootObservable(): void
     {
         if( !config( 'ixp_fe.frontend.disabled.logs' ) ){
@@ -48,20 +47,22 @@ trait Observable
                 function( Model $model ) {
                     // create or update?
                     if( $model->wasRecentlyCreated ) {
-                        static::logChange( $model, 'CREATED' );
-                    } elseif ( $model->getChanges()) {
-                        static::logChange( $model, 'UPDATED' );
+                        static::logChange( $model, Log::ACTION_CREATE );
+                    } elseif ( $model->getChanges() ) {
+                        // Check if with have field with log exception
+                        if( !( isset( $model->field_log_exception ) && empty( array_diff( array_values( $model->field_log_exception ), array_keys( $model->getChanges()  ) ) ) ) ){
+                            static::logChange( $model, Log::ACTION_UPDATE );
+                        }
                     }
                 }
             );
 
             static::deleted(
                 function( Model $model ) {
-                    static::logChange( $model, 'DELETED' );
+                    static::logChange( $model, Log::ACTION_DELETE );
                 }
             );
         }
-
     }
 
     /**
@@ -82,9 +83,9 @@ trait Observable
                 'action'    => $action,
                 'message'   => static::logSubject( $model ),
                 'models'    => [
-                    'new'       => $action !== 'DELETED' ? $model->getAttributes()  : null,
-                    'old'       => $action !== 'CREATED' ? $model->getOriginal()    : null,
-                    'changed'   => $action === 'UPDATED' ? $model->getChanges()     : null,
+                    'new'       => $action !== Log::ACTION_DELETE ? $model->getAttributes()  : null,
+                    'old'       => $action !== Log::ACTION_CREATE ? $model->getOriginal()    : null,
+                    'changed'   => $action === Log::ACTION_UPDATE ? $model->getChanges()     : null,
                 ]
             ]
         );
