@@ -50,7 +50,7 @@ trait Observable
                         static::logChange( $model, Log::ACTION_CREATE );
                     } elseif ( $model->getChanges() ) {
                         // Check if with have field with log exception
-                        if( !( isset( $model->field_log_exception ) && empty( array_diff( array_values( $model->field_log_exception ), array_keys( $model->getChanges()  ) ) ) ) ){
+                        if( !( isset( $model->field_log_exception ) && empty( array_diff( array_values( $model->field_log_exception ), array_keys( $model->getChanges() ) ) ) ) ){
                             static::logChange( $model, Log::ACTION_UPDATE );
                         }
                     }

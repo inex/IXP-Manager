@@ -8,7 +8,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
-    <div class="row">
+    <div>
         <nav id="filter-row" class="col-md-12 navbar navbar-expand-lg navbar-light d-block bg-light mb-4 shadow-sm">
             <button class="navbar-toggler float-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -31,7 +31,7 @@ $this->layout( 'layouts/ixpv4' );
                 <?= Former::text( 'created_at' )
                     ->label( '' )
                     ->addClass( 'tw-ml-4 tw-mt-2' )
-                    ->placeholder( 'Created At' );
+                    ->placeholder( 'yyyy-mm-dd hh' );
                 ?>
 
                 <?= Former::select( 'model' )
@@ -77,7 +77,7 @@ $this->layout( 'layouts/ixpv4' );
                         User
                     </th>
                     <th>
-                        Created
+                        Timestamp
                     </th>
                     <th>
                         Action
