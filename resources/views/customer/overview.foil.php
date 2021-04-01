@@ -248,6 +248,13 @@
                         </li>
                     <?php endif; ?>
                 <?php endif; ?>
+
+                <li role="cross-connects" class="nav-item ">
+                    <a class="nav-link <?php if( $t->tab == 'cross-connects' ): ?> active <?php endif; ?>" data-toggle="tab" href="#cross-connects" data-toggle="tab">
+                        Cross Connects
+                    </a>
+                </li>
+
                 <li role="users" class="nav-item ">
                     <a class="nav-link <?php if( $t->tab == 'users' ): ?> active <?php endif; ?>" data-toggle="tab" href="#users" data-toggle="tab">
                         Users
@@ -266,28 +273,6 @@
                     </a>
                 </li>
 
-                <li role="notes" class="nav-item ">
-                    <a class="nav-link <?php if( $t->tab == 'notes' ): ?> active <?php endif; ?>" data-toggle="tab" href="#notes" id="tab-notes" data-toggle="tab">
-                        Notes
-                        <?php if( $t->notesInfo[ "unreadNotes"] > 0 ): ?>
-                            <span id="notes-unread-indicator" class="badge badge-success"><?= $t->notesInfo[ "unreadNotes"] ?></span>
-                        <?php endif ?>
-                    </a>
-                </li>
-                <li role="cross-connects" class="nav-item ">
-                    <a class="nav-link <?php if( $t->tab == 'cross-connects' ): ?> active <?php endif; ?>" data-toggle="tab" href="#cross-connects" data-toggle="tab">
-                        Cross Connects
-                    </a>
-                </li>
-
-                <?php if( $t->peers ): ?>
-                    <li role="peers" class="nav-item">
-                        <a class="nav-link <?php if( $t->tab == 'peers' ): ?> active <?php endif; ?>" data-toggle="tab" href="#peers" data-toggle="tab">
-                            Peers
-                        </a>
-                    </li>
-                <?php endif; ?>
-
                 <?php if( count( $c->getConsoleServerConnections() ) ): ?>
                     <li role="console-server-connections" class="nav-item ">
                         <a class="nav-link <?php if( $t->tab == 'console-server-connections' ): ?>active<?php endif; ?>" data-toggle="tab" href="#console-server-connections" data-toggle="tab">
@@ -296,11 +281,28 @@
                     </li>
                 <?php endif ?>
 
+                <li role="notes" class="nav-item ">
+                    <a class="nav-link <?php if( $t->tab == 'notes' ): ?> active <?php endif; ?>" data-toggle="tab" href="#notes" id="tab-notes" data-toggle="tab">
+                        Notes
+                        <?php if( $t->notesInfo[ "unreadNotes"] > 0 ): ?>
+                            <span id="notes-unread-indicator" class="badge badge-success"><?= $t->notesInfo[ "unreadNotes"] ?></span>
+                        <?php endif ?>
+                    </a>
+                </li>
+
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ): ?>
                     <li class="nav-item" onclick="window.location.href = '<?= route( 'docstore-c-dir@list', [ 'cust' => $c->getId() ] ) ?>'">
                         <a class="nav-link" data-toggle="tab" href="">
                             Documents &raquo;
+                        </a>
+                    </li>
+                <?php endif; ?>
+
+                <?php if( $t->peers ): ?>
+                    <li role="peers" class="nav-item">
+                        <a class="nav-link <?php if( $t->tab == 'peers' ): ?> active <?php endif; ?>" data-toggle="tab" href="#peers" data-toggle="tab">
+                            Peers
                         </a>
                     </li>
                 <?php endif; ?>
