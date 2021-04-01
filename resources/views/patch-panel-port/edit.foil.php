@@ -124,7 +124,7 @@ $this->layout( 'layouts/ixpv4' );
                     </li>
                     <li>
                         If the switch port has been allocated to a <?= config( 'ixp_fe.lang.customer.one' ) ?>, then this patch panel port will also be allocated to that <?= config( 'ixp_fe.lang.customer.one' ) ?>.
-                        The backend logic will detect if this is the case and update the <?= config( 'ixp_fe.lang.customer.one' ) ?> field. Conversely, if you chose a <?= config( 'ixp_fe.lang.customer.one' ) ?>
+                        The backend logic will detect if this is the case and update the <?= config( 'ixp_fe.lang.customer.one' ) ?> field. Conversely, if you choose a <?= config( 'ixp_fe.lang.customer.one' ) ?>
                         first, the switch / switch port dropdowns will be populated with only that <?= config( 'ixp_fe.lang.customer.owner' ) ?> assigned ports.
                     </li>
                     <li>

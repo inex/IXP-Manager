@@ -19,7 +19,7 @@
             ->placeholder( 'Select a console server' )
             ->fromQuery( $t->data[ 'params'][ 'servers' ], 'name' )
             ->addClass( 'chzn-select' )
-            ->blockHelp( "Chose the console server." );
+            ->blockHelp( "Choose the console server." );
         ?>
 
         <?= Former::select( 'custid' )
