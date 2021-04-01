@@ -4,7 +4,7 @@
     </div>
 <?php endif; ?>
 <p>
-    To enable two factor authentication on your account, you need to do the following steps.
+    To enable two factor authentication on your account, you need to perform the following steps.
 </p>
 
 <p>

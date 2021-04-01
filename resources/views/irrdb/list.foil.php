@@ -45,13 +45,10 @@
               <div class="alert alert-info" role="alert">
                   <?php if( $t->updatingIrrdb ): ?>
                       <p>
-                          <b>Just give us a few seconds!</b>
-                      </p>
-                      <p>
                           Our queue runner is updating the IRRDB entries for you.
                       </p>
                       <p>
-                          Count to ten (slowly!) and then <a href="<?= route( "irrdb@list", [ "cust" => $t->customer->id, "type" => $t->type, "protocol" => $t->protocol ] ) ?>">click
+                          Please wait a few moments and then <a href="<?= route( "irrdb@list", [ "cust" => $t->customer->id, "type" => $t->type, "protocol" => $t->protocol ] ) ?>">click
                               here to refresh the page</a>.
                       </p>
                   <?php else: ?>
@@ -127,9 +124,8 @@
                           <?= $t->updatedIrrdb['netTime'] ?>s / <?= $t->updatedIrrdb['dbTime'] ?>s / <?= $t->updatedIrrdb['procTime'] ?>s.
                       </p>
                       <p>
-                          <b>Oh, wait, it looks like you're a super admin!</b>
-                          You can <a href="<?= route( 'irrdb@update', [ 'cust' => $t->customer->id, 'type' => $t->type, 'protocol' => $t->protocol ] ) ?>?reset_cache=1">bust the cache
-                              by clicking here</a>.
+                          <b>It looks like you're a super admin!</b>
+                          You can <a href="<?= route( 'irrdb@update', [ 'cust' => $t->customer->id, 'type' => $t->type, 'protocol' => $t->protocol ] ) ?>?reset_cache=1">force a cache refresh by clicking here</a>.
                       </p>
                   <?php endif; ?>
               </div>

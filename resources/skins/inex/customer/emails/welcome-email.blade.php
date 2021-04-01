@@ -109,16 +109,16 @@ If your network is registered with PeeringDB, then members of your organisation 
 
 ## Quarantine Procedure
 
-When you first connect to INEX, we perform what we call a *quarantine procedure*. This is to ensure that you are only transmitting permitted packet types into the INEX peering fabric. These types are set out in the [INEX MoU](https://www.inex.ie/become-a-member/inex-mou/) under *Technical Requirements / Connectivity* but the tl;dr is that you should only be transmitting ARP, IPv4 and IPv6 packets.
+When you first connect to INEX, we perform what we call a *quarantine procedure*. This is to ensure that you are only transmitting permitted packet types into the INEX peering fabric. These types are set out in the [INEX MoU](https://www.inex.ie/become-a-member/inex-mou/) under *Technical Requirements / Connectivity* but in summary you should only be transmitting ARP, IPv4 and IPv6 packets.
 
 To begin the quarantine procedure, we need you to:
 
-1. order and complete the cross connect(s) to INEX;
+1. order and complete the cross connect(s) to INEX
 2. configure your port(s) with the IP addresses provided above
-3. bring the port up;
-4. test connectivity by pinging the IPv4/IPv6 address of the route collectors (see below);
-5. configure and bring up BGP sessions to the quarantine route collector and advertise your address space.
-6. Quarantine procedures now begin - allow 24hours for this.
+3. bring the port up
+4. test connectivity by pinging the IPv4/IPv6 address of the route collectors (see below)
+5. configure and bring up BGP sessions to the quarantine route collector and advertise your address space
+6. Quarantine procedures now begin - allow 24hours for this
 
 Don't worry - we're here to help with each step of the above!
 
@@ -212,7 +212,7 @@ INEX Cork
 
 ## Route Servers
 
-{{ config( 'identity.orgname' ) }} operates a route server cluster; this facility allows all members who connect to the cluster to see all routing prefixes sent to the cluster by any other member.  I.e. it provides a quick, safe and easy way to peer with any other route server user.
+{{ config( 'identity.orgname' ) }} operates a route server cluster; this facility allows all members who connect to the cluster to see all routing prefixes sent to the cluster by any other member.  I.e. it provides a quick, safe and easy way to peer with any other route server member.
 
 The service is designed to be reliable. It operates on two physical servers, each located in a different data centre. The service is available on all networks (Peering LAN1, Peering LAN2, and INEX Cork), on both ipv4 and ipv6.  The route servers also filter inbound routing prefixes based on published RIPE IRR policies, which means that using the route servers for peering is generally much safer than peering directly with other members.
 
@@ -506,4 +506,4 @@ Welcome to INEX, Ireland's Internet hub.
 
 
 INEX Operations
-INEX - Internet Neutral Exchange Association Company Limited By Guarantee
+INEX - Internet Neutral Exchange Association CLG

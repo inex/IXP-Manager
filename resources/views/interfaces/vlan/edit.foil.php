@@ -100,14 +100,14 @@
                                 ->label('&nbsp;')
                                 ->text( 'IPv6 Enabled' )
                                 ->value( 1 )
-                                ->blockHelp( 'Click to enable IPv6 and reveal associated settings.' )
+                                ->blockHelp( 'Click to enable IPv6 and configure associated settings.' )
                             ?>
 
                             <?= Former::checkbox( 'ipv4enabled' )
                                 ->label('&nbsp;')
                                 ->text( 'IPv4 Enabled' )
                                 ->value( 1 )
-                                ->blockHelp( 'Click to enable IPv4 and reveal associated settings.' )
+                                ->blockHelp( 'Click to enable IPv4 and configure associated settings.' )
                             ?>
 
                         </div>

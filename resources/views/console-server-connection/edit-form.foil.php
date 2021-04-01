@@ -43,7 +43,7 @@
                 ->placeholder( "Choose speed")
                 ->options(   \IXP\Models\ConsoleServerConnection::$SPEED )
                 ->addClass( 'chzn-select' )
-                ->blockHelp( 'Enter the baud speed - used for your own informational purposes but could also be used for automated console server provisioning.' );
+                ->blockHelp( 'Enter the baud rate - used for your own informational purposes but could also be used for automated console server provisioning.' );
             ?>
 
             <?= Former::select( 'parity' )
@@ -78,7 +78,7 @@
             ->text( 'Autobaud' )
             ->value( 1 )
             ->inline()
-            ->blockHelp( "Indicate is autobaud is supported - used for your own informational purposes but could also be used for automated console server provisioning." );
+            ->blockHelp( "Indicate whether autobaud is supported - used for your own informational purposes but could also be used for automated console server provisioning." );
         ?>
 
         <div class="form-group col-lg-8 col-sm-12">

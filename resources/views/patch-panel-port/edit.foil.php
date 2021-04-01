@@ -69,7 +69,7 @@ $this->layout( 'layouts/ixpv4' );
     <?= Former::text( 'description' )
             ->label( 'Description' )
             ->blockHelp( 'A one line short description to be shown in the list of patch panel ports. '
-                . 'Just enough to help explain the ports purpose. Detailed information should be '
+                . 'Just enough to help explain the port\'s purpose. Detailed information should be '
                 . 'placed in the notes below. Can also be used to explain a reserved / broken / '
                 . 'other port. Note that this is parsed as Markdown.<br><br>'
                 . '<b>NB: A description is discouraged for ' . config( 'ixp_fe.lang.customer.one' ) . ' ports connected to a switch. '
@@ -89,7 +89,7 @@ $this->layout( 'layouts/ixpv4' );
 
         <?= Former::text( 'ticket_ref' )
             ->label( 'Ticket Reference(s)' )
-            ->blockHelp( 'This is a free text field to allow you to add helpdesk ticket reference(s) that deal with your member for this connection.' );
+            ->blockHelp( 'This is a free text field to allow you to add helpdesk ticket reference(s) associated with your member for this connection.' );
         ?>
     <?php endif; ?>
 

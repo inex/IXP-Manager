@@ -21,7 +21,7 @@
                             VLAN Name
                         </th>
                         <th>
-                            Router Server
+                            Route Server
                         </th>
                         <th>
                             IPv4

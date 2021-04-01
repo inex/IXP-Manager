@@ -69,7 +69,7 @@
 	       <li> the connected router or switch has been misconfigured to forward link-local frames to
 	            the INEX peering
 	       </li>
-	       <li> LAN member has accidentally set up a traffic loop
+	       <li> the LAN member has accidentally set up a traffic loop
 	            between two INEX switch ports
 	       </li>
 	       <li> a metro ethernet provider has

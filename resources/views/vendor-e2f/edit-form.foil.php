@@ -20,7 +20,7 @@
 
         <?= Former::text( 'bundle_name' )
             ->label( 'Bundle Name' )
-            ->blockHelp( "The bundle name is used for orchastration / automated switch configuration. Some switches / routers use a "
+            ->blockHelp( "The bundle name is used for orchestration / automated switch configuration. Some switches / routers use a "
                 . "specific bundle name for port channels / LAGs / aggregate ports. On Cisco this would be <code>Port-channel</code> "
                 . "for example. If your device has such a naming convention, please add the base name here (i.e. no trailing "
                 . "number as this will be added when creating the interface)." );

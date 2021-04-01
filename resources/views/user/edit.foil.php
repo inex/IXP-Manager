@@ -68,7 +68,7 @@
                             ->value( 1 )
                             ->check()
                             ->inline()
-                            ->blockHelp( 'Disabled users cannot login to IXP Manager.' )
+                            ->blockHelp( 'Disabled users cannot log in to IXP Manager.' )
                             ->disabled( $t->disableInputs );
                         ?>
 

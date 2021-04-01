@@ -162,7 +162,7 @@ class RsFilterController extends Controller
         $rsf->customer_id = $cust->id;
         $rsf->save();
 
-        Log::notice( Auth::getUser()->username . ' created a router server filter with ID ' . $rsf->id );
+        Log::notice( Auth::getUser()->username . ' created a route server filter with ID ' . $rsf->id );
         AlertContainer::push( "Route Server Filter created", Alert::SUCCESS );
         return redirect( route( "rs-filter@list", [ "cust" => $cust->id ] )  );
     }
@@ -220,7 +220,7 @@ class RsFilterController extends Controller
 
         $rsf->update( $r->all() );
 
-        Log::notice( Auth::getUser()->username . ' updated a router server filter with ID ' . $rsf->id );
+        Log::notice( Auth::getUser()->username . ' updated a route server filter with ID ' . $rsf->id );
         AlertContainer::push( "Route Server Filter updated", Alert::SUCCESS );
         return redirect( route( "rs-filter@list", [ "cust" => $rsf->customer_id ] )  );
     }
@@ -244,7 +244,7 @@ class RsFilterController extends Controller
     }
 
     /**
-     * Enable or disable a router server filter
+     * Enable or disable a route server filter
      *
      * @param RouteServerFilter $rsf
      * @param int               $enable
@@ -262,7 +262,7 @@ class RsFilterController extends Controller
         $rsf->enabled = (bool)$enable;
         $rsf->save();
 
-        Log::notice( Auth::getUser()->username . ' ' . $status . ' a router server filter with ID ' . $rsf->id );
+        Log::notice( Auth::getUser()->username . ' ' . $status . ' a route server filter with ID ' . $rsf->id );
         AlertContainer::push( 'Route server filter ' . $status . '.', Alert::SUCCESS );
         return redirect( route( "rs-filter@list", [ "cust" => $rsf->customer_id ] ) );
     }
@@ -335,7 +335,7 @@ class RsFilterController extends Controller
         $rsf->delete();
 
         Log::notice( Auth::getUser()->username." deleted the route server filter with the ID:" . $rsf->id );
-        AlertContainer::push( 'Router server filter deleted.', Alert::SUCCESS );
+        AlertContainer::push( 'Route server filter deleted.', Alert::SUCCESS );
         return Redirect::to( route( "rs-filter@list", [ "cust" => $rsf->customer_id ] ) );
     }
 

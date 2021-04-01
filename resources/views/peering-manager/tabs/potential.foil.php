@@ -6,7 +6,7 @@
         </p>
         <ul>
             <li> either you, they or both of you are not route server clients; and </li>
-            <li> you do not have a bilateral (direct) peering session that we have detected with them. </li>
+            <li> we have not detected that you have a bilateral peering session with them. </li>
         </ul>
         <?= $t->insert( 'peering-manager/tabs/table', [ "listOfCusts" => $t->potential ] ); ?>
     </div>

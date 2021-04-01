@@ -19,8 +19,8 @@
                 </div>
                 <div class="card-body">
                     <p>
-                        Two factor authentication (2FA) strengthens access security by requiring two methods (also referred
-                        to as factors) to verify your identity. Two factor authentication protects against phishing, social
+                        Two factor authentication (2FA) strengthens access security by requiring two authentication methods
+                        to verify your identity. Two-factor authentication protects against phishing, social
                         engineering and password brute force attacks and secures your logins from attackers exploiting weak
                         or stolen credentials.
                     </p>

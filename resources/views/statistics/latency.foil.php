@@ -80,7 +80,7 @@
                         <i class="fa fa-info-circle fa-2x"></i>
                     </div>
                     <div class="col-sm-12">
-                        Latency graphs are a tool for monitoring network latency and is an invaluable asset when diagnosing some IXP issues.
+                        Latency graphs are a tool for monitoring network latency and are an invaluable asset when diagnosing some IXP issues.
                         <b>While they should never be used as a tool for monitoring IXP latency or packet loss</b> (as routers de-prioritise ICMP requests
                         and/or may not have a suitably powerful management plane), they can act as an extremely useful tool for identifying and diagnosing
                         <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> issues. What we really look for here is recent changes over time.

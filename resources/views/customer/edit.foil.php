@@ -165,15 +165,15 @@
                 <?= Former::email( 'peeringemail' )
                     ->label( 'Email' )
                     ->placeholder( "peering@example.com" )
-                    ->blockHelp( "The Peering Email is used in member lists and by the Peering Manager for sending emails. We try and encourage "
-                        . "using a role alias such as peering@example.com but this does not always work out." );
+                    ->blockHelp( "The Peering Email is used in member lists and by the Peering Manager for sending emails. We encourage "
+                        . "using a role alias such as peering@example.com." );
                 ?>
 
                 <?= Former::text( 'peeringmacro' )
                     ->label( 'IPv4 Peering Macro' )
                     ->placeholder( "AS-ACME-EXAMPLE" )
                     ->blockHelp( "The IPv4 Peering Macro is used instead of the AS number when set to generate inbound prefix filters for the "
-                        . "route servers based on the member's published IRR records. AS-BTIRE in the RIPE database is an example for BT Ireland." );
+                        . "route servers based on the member's published IRR records." );
                 ?>
 
                 <?= Former::text( 'peeringmacrov6' )
@@ -239,9 +239,8 @@
                 <?= Former::email( 'nocemail' )
                     ->label( 'Email' )
                     ->placeholder( 'noc@example.com' )
-                    ->blockHelp( 'The NOC email is used in customer lists. We try and encourage "
-            . "the use of a role alias such as noc@example.com but this does not "
-            . "always work out.<br><br>'
+                    ->blockHelp( 'The NOC email is used in customer lists. We encourage "
+            . "the use of a role alias such as noc@example.com.<br><br>'
                         . 'This is available to all other customers.' );
                 ?>
 
@@ -278,7 +277,7 @@
                         ->text( 'Resold Customer' )
                         ->value( 1 )
                         ->inline()
-                        ->blockHelp( 'Check this if this customer comes via a reseller. Then chose the reseller.' );
+                        ->blockHelp( 'Check this if this customer comes via a reseller. Then choose the reseller.' );
                     ?>
 
                     <div id="reseller-area" class="collapse">

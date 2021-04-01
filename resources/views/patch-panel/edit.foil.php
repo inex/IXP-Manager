@@ -36,7 +36,7 @@
                             <i class="fa fa-question-circle fa-2x"></i>
                         </div>
                         <div class="col-sm-12">
-                            To add additional ports to an existing patch panel, just add the number of ports <b>you want to add</b> in <em>Add Number of Ports</em> below.
+                            To add additional ports to an existing patch panel, add the number of ports <b>you want to add</b> in <em>Add Number of Ports</em> below.
                         </div>
                     </div>
                 </div>
@@ -154,8 +154,7 @@
                                             ->label( '' )
                                             ->rows( 10 )
                                             ->blockHelp( "These notes are included on connection and other emails to help co-location providers correctly identify their 
-                                            own co-location references. Unfortunately, it has been the experience of the authors that co-location providers change identifiers (and ownership) 
-                                            like the wind changes direction. These notes will be parsed as Markdown." )
+                                            own co-location references. These notes will be parsed as Markdown." )
                                         ?>
                                     </div>
                                     <div role="tabpanel" class="tab-pane" id="preview">

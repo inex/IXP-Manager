@@ -2,7 +2,7 @@
     $c = $t->c; /** @var \IXP\Models\Customer $c */
 ?>
 <p>
-    This <em>Route Server Prefix Filtering Analysis</em> tool allows one to examine what routes a
+    This <em>Route Server Prefix Filtering Analysis</em> tool allows examination of what routes a
     network is advertising to the <?= config( 'identity.orgname' ) ?> Route Servers.
 </p>
 

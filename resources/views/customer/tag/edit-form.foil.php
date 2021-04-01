@@ -23,7 +23,7 @@
             <?= Former::textarea( 'description' )
                 ->label( 'Description' )
                 ->rows( 5 )
-                ->blockHelp( 'Just an internal description to help you remember the meaning of this tag.' );
+                ->blockHelp( 'An internal description to help you remember the meaning of this tag.' );
             ?>
 
             <?= Former::checkbox( 'internal_only' )

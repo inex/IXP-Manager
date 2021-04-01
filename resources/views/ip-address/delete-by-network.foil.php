@@ -52,7 +52,7 @@
                         </p>
                         <p>
                             Once you click <em>Find IP Addresses</em>, IXP Manager will find and show you the available IP addresses
-                            that would be deleted. You will have the opportunity to confirm this action before it is processes.
+                            that would be deleted. You will have the opportunity to confirm this action before it is processed.
                         </p>
                     </div>
                 </div>

@@ -21,7 +21,7 @@
             ->placeholder( 'Select a facility' )
             ->fromQuery( $t->data[ 'params'][ 'locations' ], 'name' )
             ->addClass( 'chzn-select' )
-            ->blockHelp( "Chose the facility where this rack resides." );
+            ->blockHelp( "Choose the facility where this rack resides." );
         ?>
 
         <?= Former::text( 'colocation' )

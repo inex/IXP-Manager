@@ -4,7 +4,7 @@
             <b>Warning! Customer status is not normal.</b>
             Many backend processes that configure interface related systems (for example
             MRTG, P2P statistics, Nagios, Smokeping, route collector, route servers, etc.)
-            will skip members that do not have a normal status.
+            will skip members that do not have their customer status set to normal.
         </div>
     <?php endif; ?>
 

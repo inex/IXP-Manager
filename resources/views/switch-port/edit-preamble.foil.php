@@ -8,7 +8,7 @@
                 <h4>Use of this method is strongly discouraged!</h4>
                 <p>
                     While it is possible to add switches and ports without SNMP polling, this is
-                    strongly discouraged as SNMP is built heavily into the switch and switch port management.
+                    strongly discouraged as SNMP polling will ensure that IXP Manager will pull the correct information from the switch.
                 </p>
 
                 Remember also that any information entered here that is updated by an SNMP poll from IXP Manager

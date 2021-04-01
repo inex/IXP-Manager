@@ -79,8 +79,8 @@
                         ->fromQuery( \IXP\Models\PhysicalInterface::$SPEED, 'name' )
                         ->placeholder( 'Choose a speed' )
                         ->addClass( 'chzn-select' )
-                        ->blockHelp( 'The port speed to be configured. Unless you are provisioning switches from IXP Manager, this is informational / useful for billing. It is also '
-                            . 'presented publicly to other members in a number of places. For statistics / graphing, it dictates the maximum data rate accepted also. ' );
+                        ->blockHelp( 'The port speed configured on the physical interface. This information is used for provisioning and '
+                            . 'presented publicly to other members in a number of places. For statistics / graphing, it dictates the maximum data rate accepted. ' );
                     ?>
 
                     <?= Former::select( 'duplex' )
@@ -88,7 +88,7 @@
                         ->fromQuery( \IXP\Models\PhysicalInterface::$DUPLEX, 'name' )
                         ->placeholder( 'Choose Duplex' )
                         ->addClass( 'chzn-select' )
-                        ->blockHelp( 'Is half duplex even a thing anymore?' );
+                        ->blockHelp( 'Configure the port to use half-duplex ethernet.' );
                     ?>
 
                     <?= Former::checkbox( 'autoneg' )

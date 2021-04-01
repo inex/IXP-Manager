@@ -29,7 +29,7 @@
                 <div class="col-sm-12">
                     <b>Verification Succeeded!</b> This is a valid LoA for a new cross connect
                     where our circuit ID is <?= $t->ee( $ppp->circuitReference() ) ?>.
-                    Please proceed with this cross connect installation with the following confirming details.
+                    Please proceed with this cross connect installation with the following details.
                 </div>
             </div>
         </div>

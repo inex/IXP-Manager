@@ -45,8 +45,7 @@
                     Our queue runner is checking the appropriate route servers for you and gathering the required information.
                 </p>
                 <p>
-                    Count to ten (slowly!) and then <a href="<?= route( 'filtered-prefixes@list', [ 'cust' => $t->cust->id ] ) ?>">click
-                        here to refresh the page</a>.
+                    Please wait a few moments and then <a href="<?= route( 'filtered-prefixes@list', [ 'cust' => $t->cust->id ] ) ?>">click here to refresh the page</a>.
                 </p>
             <?php else: ?>
                 <p>
