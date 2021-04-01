@@ -47,7 +47,7 @@ interface Helpdesk
     /**
      * Return the helpdesk debug information
      *
-     * Your implentation should catch API errors, set the $debug member with additional details and throw an ApiException
+     * Your implementation should catch API errors, set the $debug member with additional details and throw an ApiException
      */
     public function getDebug();
 

@@ -144,7 +144,7 @@ return [
     | Access permissions
     |--------------------------------------------------------------------------
     |
-    | Most IXPs make aggregate graphs publically available. Namely IXP,
+    | Most IXPs make aggregate graphs publicly available. Namely IXP,
     | infrastructure, switch and trunks. As such, this is our default.
     |
     | You can alter these settings to change these defaults to a specific user

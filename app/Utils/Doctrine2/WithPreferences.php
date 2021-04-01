@@ -484,7 +484,7 @@ trait WithPreferences
      *
      *
      * @param string  $attribute The attribute to load
-     * @param int     $index If an indexed preference, get a specific index, null means all indexes alowed (default: null)
+     * @param int     $index If an indexed preference, get a specific index, null means all indexes allowed (default: null)
      * @param boolean $ignoreExpired If set to false, include expired preferences
      * @return boolean|array False if no such preference(s) exist, otherwise an array.
      */

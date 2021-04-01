@@ -265,7 +265,7 @@ class UserAggregator extends User
         // refresh from database
         $user->refresh();
 
-        // do we actually have any customers afterall this?
+        // do we actually have any customers after all this?
         if( !$user->customers()->count() ) {
 
             Log::info( 'PeeringDB OAuth: user ' . $user->id . '/' . $user->username . ' has no customers - deleting...' );

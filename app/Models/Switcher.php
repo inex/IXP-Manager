@@ -347,7 +347,7 @@ class Switcher extends Model
      * Update a switches ports using SNMP polling
      *
      * There is an optional ``$results`` array which can be passed by reference. If
-     * so, it will be indexed by the SNMP port index (or a decresing nagative index
+     * so, it will be indexed by the SNMP port index (or a decreasing negative index
      * beginning -1 if the port only exists in the database). The contents of this
      * associative array is:
      *

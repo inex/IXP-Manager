@@ -28,7 +28,7 @@ use IXP\Console\Commands\Command as IXPCommand;
 use IXP\Models\{CustomerToUser, User, UserLoginHistory};
 
 /**
- * Class Customer2User - tool to migrate the Customer/User datas to customer_to_users table
+ * Class Customer2User - tool to migrate the Customer/User data to customer_to_users table
  *
  * @author      Yann Robin <yann@islandbridgenetworks.ie>
  * @author      Barry O'Donovan <barry@islandbridgenetworks.ie>

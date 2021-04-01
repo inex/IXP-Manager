@@ -15,7 +15,7 @@
 
         <?= Former::text( 'shortname' )
             ->label( 'Shortname' )
-            ->blockHelp( "A short name, ideally less than 10 characters, that can be substituted for the full name above where space is contrained." );
+            ->blockHelp( "A short name, ideally less than 10 characters, that can be substituted for the full name above where space is constrained." );
         ?>
 
         <?= Former::text( 'tag' )

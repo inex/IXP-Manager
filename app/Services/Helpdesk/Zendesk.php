@@ -129,7 +129,7 @@ class Zendesk implements HelpdeskContract
 
 
     /**
-     * Convert a IXP Customer entitiy into an associated array as rerquired by Zendesk's API
+     * Convert a IXP Customer entity into an associated array as rerquired by Zendesk's API
      *
      * @param Customer      $cust     The IXP Manager customer entity
      * @param bool          $id       If updating, set to Zendesk organisation ID
@@ -336,7 +336,7 @@ class Zendesk implements HelpdeskContract
     // ********************************************************************************************
 
     /**
-     * Convert a IXP Contact entitiy into an associated array as rerquired by Zendesk's API
+     * Convert a IXP Contact entity into an associated array as rerquired by Zendesk's API
      *
      * @param Contact       $contact  The IXP Manager customer entity
      * @param int           $org_id   The Zendesk ID of the organisation
@@ -357,7 +357,7 @@ class Zendesk implements HelpdeskContract
         $data['phone']           = $contact->mobile;
         $data['organization_id'] = $org_id;
 
-        /** FIXME contact table doesnt have user_id anymore */
+        /** FIXME contact table doesn't have user_id anymore */
         if( $contact->getUser() && $contact->getUser()->getPrivs() == User::AUTH_SUPERUSER ){
             $data['role'] = 'admin';
         } else {

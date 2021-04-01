@@ -337,7 +337,7 @@ class CoreBundle extends Model
     }
 
     /**
-     * Delete the Core Bundle ans everything related.
+     * Delete the Core Bundle and everything related.
      *
      * @return bool
      *

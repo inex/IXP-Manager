@@ -406,7 +406,7 @@ class UserController extends Controller
     }
 
     /**
-     * Display the patch panel informations
+     * Display the patch panel information
      *
      * @param   User $u ID of the patch panel
      *

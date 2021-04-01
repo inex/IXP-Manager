@@ -77,7 +77,7 @@ function updateIpAddresses() {
  *
  * 1. if both v4 and v6 md5 are empty, populate the selected one
  * 2. if the selected one is empty but the other is not, copy the value
- * 3. repected clicks cycle values
+ * 3. repeated clicks cycle values
  * 4. after repeated clicks, clicking the other will copy the value
  *
  * Such it and see - I think it makes sense ;-)   (barryo)

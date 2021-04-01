@@ -67,7 +67,7 @@ dpkg -l | grep php   (or equivalent for your OS - list of php packages installed
 (run from IXP Manager's root directory (e.g. /srv/ixpmanager)
 cat .env | egrep -v '(^#|^\s*$|^DB_|^APP_KEY|^HELPDESK|^IDENTITY|^MAIL_|^IXP_API_RIR_PASSWORD|^IXP_API_PEERING_DB_)'
 
-NB: sanity check the output to make sure you are happy you are not leaking any security infomation!
+NB: sanity check the output to make sure you are happy you are not leaking any security information!
 -->
 
 ```

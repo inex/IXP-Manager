@@ -31,7 +31,7 @@ use Illuminate\Http\Request;
 use IXP\Models\CustomerToUser;
 
 /**
- * Middleware: Ensure authentification
+ * Middleware: Ensure authentication
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yannr Robin <yann@islandbridgenetworks.ie>

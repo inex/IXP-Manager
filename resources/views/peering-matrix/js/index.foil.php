@@ -72,7 +72,7 @@
         });
 
         /**
-         * Allow to display a single colum on click
+         * Allow to display a single column on click
          */
         $( '.th-as' ).click( function( ) {
             let sdisplay = false;

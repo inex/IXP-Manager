@@ -117,7 +117,7 @@
         })
         .done( function( data ) {
             // data.prefixes = false when the customer->maxprefixes >= 2000
-            // data.prefixes.length when we didnt get any result from the request
+            // data.prefixes.length when we didn't get any result from the request
             // in those case create input text for the dedicated prefix input
             if( data.prefixes === false || data.prefixes.length === 0 ) {
                 $( `#area_${input_select}_prefix` ).html( `<input class="form-control" id="${input_select}_prefix" type="text" name="${input_select}_prefix" value="*">` )

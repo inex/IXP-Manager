@@ -108,8 +108,8 @@
                     ->placeholder( 'Choose Status' )
                     ->addClass( 'chzn-select' )
                     ->blockHelp( "The state of the customer. The most important of which is <code>Normal</code> which is what you'll use nearly 100% of the "
-                        . "time. Setting either of the other two otions (<code>Suspended</code> / <code>Not Connected</code>) will have the same effect as "
-                        . "closing the accout as described above: removing route server / collector sessions, graphing configuration, etc." );
+                        . "time. Setting either of the other two options (<code>Suspended</code> / <code>Not Connected</code>) will have the same effect as "
+                        . "closing the account as described above: removing route server / collector sessions, graphing configuration, etc." );
                 ?>
 
                 <?= Former::select( 'MD5Support' )

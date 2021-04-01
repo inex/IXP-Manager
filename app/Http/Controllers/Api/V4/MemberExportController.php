@@ -47,7 +47,7 @@ class MemberExportController extends Controller
      * API call to generate DNS ARPA records in a given format
      *
      * @param Request   $r
-     * @param string    $version Version fo schema to export
+     * @param string    $version Version of schema to export
      *
      * @return JsonResponse
      */

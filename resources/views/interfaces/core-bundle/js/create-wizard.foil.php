@@ -30,7 +30,7 @@
         // display the core link form when the page load
         if( dd_type.val() ) { displayCoreLinks( "onLoad" ) }
 
-        // instaciate Select2 dropdowns
+        // instantiate Select2 dropdowns
         dd_speed.select2();
         dd_duplex.select2();
     });

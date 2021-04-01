@@ -210,7 +210,7 @@ class InfrastructureControllerTest extends DuskTestCase
 
             $browser->assertSee( 'Infrastructure deleted.' );
 
-            // 12. check if object doesnt exist anymore
+            // 12. check if object doesn't exist anymore
             $this->assertTrue( Infrastructure::whereName( 'Infrastructure PHPUnit' )->doesntExist() );
         });
     }

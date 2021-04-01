@@ -80,7 +80,7 @@
                         ->placeholder( 'Choose a speed' )
                         ->addClass( 'chzn-select' )
                         ->blockHelp( 'The port speed to be configured. Unless you are provisioning switches from IXP Manager, this is informational / useful for billing. It is also '
-                            . 'presented publically to other members in a number of places. For statistics / graphing, it dictates the maximum data rate accepted also. ' );
+                            . 'presented publicly to other members in a number of places. For statistics / graphing, it dictates the maximum data rate accepted also. ' );
                     ?>
 
                     <?= Former::select( 'duplex' )
