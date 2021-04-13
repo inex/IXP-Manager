@@ -3,7 +3,7 @@
 namespace IXP\Utils\Foil\Extensions;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,8 +23,6 @@ namespace IXP\Utils\Foil\Extensions;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
-
 use IXP\Utils\View\Alert\Container as AlertContainer;
 
 use Foil\Contracts\ExtensionInterface;
@@ -42,7 +40,7 @@ use function count;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class IXP implements ExtensionInterface
@@ -353,13 +351,14 @@ class IXP implements ExtensionInterface
      * Replaces an IP prefix with some JS magic to invoke a bootbox.
      *
      * @param $prefix
+     * @param bool $subnet
      *
      * @return string
      */
-    public function whoisPrefix( $prefix ): string
+    public function whoisPrefix( $prefix, $subnet = true ): string
     {
         if( Auth::check() && $prefix ) {
-            return '<a href="#ixpm-prefix-whois-' . md5($prefix) . '" onClick="ixpWhoisPrefix( \'' . $prefix . '\' ); return false;">' . $prefix . '</a>';
+            return '<a href="#ixpm-prefix-whois-' . md5($prefix) . '" onClick="ixpWhoisPrefix( \'' . $prefix . '\' , \'' . $subnet . '\'); return false;">' . $prefix . '</a>';
         }
 
         return $prefix;

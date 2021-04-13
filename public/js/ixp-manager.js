@@ -205,19 +205,20 @@ function ixpAsnumber( asNumber ) {
 /**
  * Replaces a prefix  with some JS magic to invoke a BootBox.
  *
- * @param string prefix The IP prefix
- *
  * @return html
  */
-function ixpWhoisPrefix( prefix ) {
-
+function ixpWhoisPrefix( prefix, subnet = true ) {
     let parts = prefix.split('/');
+    let url = encodeURI(WHOIS_PREFIX_URL + "/" + parts[0] + "/" );
 
-    if( parts.length !== 2 ) {
+    if( subnet && parts.length !== 2 ) {
         return false;
     }
 
-    let url = encodeURI(WHOIS_PREFIX_URL + "/" + parts[0] + "/" + parts[1] );
+    if( subnet ) {
+        url = encodeURI(WHOIS_PREFIX_URL + "/" + parts[0] + "/" + parts[1] );
+    }
+
     let content = `<div class="prefix-table"><pre class="font-mono text-xs">`;
     
     let bb = bootbox.dialog({

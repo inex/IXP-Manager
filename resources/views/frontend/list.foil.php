@@ -241,6 +241,19 @@
 
                                                         <?= $t->ee( $row[ $col ] )?>
 
+                                                    <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'WHO_IS_PREFIX'] ): ?>
+                                                        <?php if( $row[ $col ] !== null ): ?>
+                                                            <?= $t->whoisPrefix( $row[ $col ], false )?>
+                                                        <?php endif; ?>
+
+                                                    <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'JSON'] ): ?>
+
+                                                        <?php if( $row[ $col ] !== null ): ?>
+                                                            <a class="<?= $cconf[ "displayAs"] !== 'btn' ?: 'btn btn-white' ?> json-view" href="#" data-type="<?= $cconf[ "valueFrom"] ?>" data-value='<?= $cconf[ "valueFrom"] === 'DB' ? $row[ $col ] : str_replace( '%%COL%%', $t->ee( $row[ $col ] ), $cconf[ 'value' ] ) ?>'>
+                                                                <?= $cconf[ "displayAs"] === 'btn' ? 'View Json' : $t->ee( $row[ $col ] ) ?>
+                                                            </a>
+                                                        <?php endif; ?>
+
                                                     <?php else: ?>
 
                                                         Type?
@@ -296,5 +309,13 @@
 <?php $this->section( 'scripts' ) ?>
     <?php if( isset( $t->data[ 'view' ][ 'listScript' ] ) ): ?>
         <?= $t->insert( $t->data[ 'view' ][ 'listScript' ] ); ?>
+    <?php endif; ?>
+
+    <?php if( isset( $t->data[ 'view' ][ 'common' ] ) ): ?>
+        <?= $t->insert( $t->data[ 'view' ][ 'common' ] ); ?>
+    <?php endif; ?>
+
+    <?php if( $t->data[ 'view' ][ 'listScriptExtra' ] ): ?>
+        <?= $t->insert( $t->data[ 'view' ][ 'listScriptExtra' ] ); ?>
     <?php endif; ?>
 <?php $this->append() ?>

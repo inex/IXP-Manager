@@ -1,7 +1,7 @@
 <script>
     $(document).ready(function() {
         <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly || isset( $t->feParams->readonly ) || $t->feParams->allowDeleteForReadOnly ): ?>
-            $( '.btn-2f-list-delete' ).on( 'click', function( event ) {
+            $( '.btn-2f-list-delete' ).click( function( event ) {
                 event.preventDefault();
                 let url = this.href;
                 let html = `<form id="d2f-form-delete" method="POST" action="${url}">

@@ -76,6 +76,8 @@ use IXP\Models\{
  * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator wherePrivate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasRun[] $atlasRun
+ * @property-read int|null $atlas_run_count
  */
 class VlanAggregator extends Vlan
 {

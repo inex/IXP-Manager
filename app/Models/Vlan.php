@@ -77,6 +77,8 @@ use IXP\Traits\Observable;
  * @method static Builder|Vlan wherePrivate($value)
  * @method static Builder|Vlan whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasRun[] $atlasRun
+ * @property-read int|null $atlas_run_count
  */
 class Vlan extends Model
 {
@@ -159,6 +161,14 @@ class Vlan extends Model
     public function networksInfo(): HasMany
     {
         return $this->hasMany(NetworkInfo::class, 'vlanid' );
+    }
+
+    /**
+     * Get the atlas run that are in this vlan
+     */
+    public function atlasRun(): HasMany
+    {
+        return $this->hasMany( AtlasRun::class, 'vlan_id', 'id');
     }
 
     /**

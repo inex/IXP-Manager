@@ -68,4 +68,4 @@ Route::post( 'irrdb-prefix/by-customer-and-protocol', 'IrrdbPrefixController@byC
 // Whois look ups for Prefix and ASN Number
 //
 Route::get( 'aut-num/{asn}',                'WhoisController@asn'       )->name('api-v4-aut-num');
-Route::get( 'prefix-whois/{prefix}/{mask}', 'WhoisController@prefix'    )->name('api-v4-prefix-whois');
+Route::get( 'prefix-whois/{prefix}/{mask?}', 'WhoisController@prefix' )->name('api-v4-prefix-whois');

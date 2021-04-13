@@ -52,6 +52,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static Builder|Log whereModels($value)
  * @method static Builder|Log whereUpdatedAt($value)
  * @method static Builder|Log whereUserId($value)
+ * @property-read \IXP\Models\User|null $user
+ * @method static Builder|Log filter(array $filters)
  */
 class Log extends Model
 {

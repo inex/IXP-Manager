@@ -23,9 +23,11 @@ $this->layout( 'layouts/ixpv4' );
         </a>
 
         <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-            <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $t->data[ 'item' ][ 'id' ] ]) ?>">
-                <span class="fa fa-pencil"></span>
-            </a>
+            <?php if( !isset( $t->feParams->disableEdit ) || !$t->feParams->disableEdit ): ?>
+                <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $t->data[ 'item' ][ 'id' ] ]) ?>">
+                    <span class="fa fa-pencil"></span>
+                </a>
+            <?php endif; ?>
             <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@create') ?>">
                 <span class="fa fa-plus"></span>
             </a>
@@ -59,7 +61,7 @@ $this->layout( 'layouts/ixpv4' );
                                     <?php if( !is_array( $cconf ) || !isset( $cconf[ 'display'] ) || $cconf[ 'display'] ): ?>
                                         <?php if( !isset( $cconf[ 'hideIfFieldTrue'] ) || !$t->data[ 'item' ][ $cconf[ 'hideIfFieldTrue'] ] ): ?>
                                             <tr>
-                                                <th>
+                                                <th style="width:20%">
                                                     <?php if( !is_array( $cconf ) ): ?>
                                                         <?= $cconf ?>
                                                     <?php else: ?>
@@ -112,7 +114,6 @@ $this->layout( 'layouts/ixpv4' );
                                                                 <?= $t->data[ 'item' ][ $col ]->format( 'H:i:s' )  ?>
 
                                                             <?php endif; ?>
-
 
                                                         <?php elseif( $cconf[ 'type' ] ===  $t->data[ 'col_types' ][ 'REPLACE'] ): ?>
 
@@ -214,14 +215,21 @@ $this->layout( 'layouts/ixpv4' );
 
                                                             <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
 
-                                                        <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'JSON'] ): ?>
-
-                                                            <?= json_encode( $t->data[ 'item' ][ $col ], JSON_PRETTY_PRINT ) ?>
-
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'COUNTRY'] ): ?>
 
                                                             <?php if( $t->ee( $t->data[ 'item' ][ $col ] ) ): ?>
                                                                 <?= array_column( Countries::getList(), 'name', 'iso_3166_2' )[ $t->ee( $t->data[ 'item' ][ $col ] ) ] ?>
+                                                            <?php endif; ?>
+
+                                                        <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'WHO_IS_PREFIX' ] ): ?>
+
+                                                            <?= $t->whoisPrefix( $t->ee( $t->data[ 'item' ][ $col ] ), false ) ?>
+
+                                                        <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'JSON'] ): ?>
+                                                            <?php if( $t->data[ 'item' ][ $col ] !== null ): ?>
+                                                                <a class="<?= $cconf[ "displayAs" ] !== 'btn' ?: 'btn btn-white' ?> json-view" href="#" data-type="<?= $cconf[ "valueFrom"] ?>" data-value='<?= $cconf[ "valueFrom"] === 'DB' ? $t->ee( $t->data[ 'item' ][ $col ] ) : str_replace( '%%COL%%', $t->ee( $t->data[ 'item' ][ $col ]), $cconf[ 'value' ] ) ?>'>
+                                                                    <?= $cconf[ "displayAs" ] === 'btn' ? 'View Json' : $t->ee( $t->data[ 'item' ][ $col ] ) ?>
+                                                                </a>
                                                             <?php endif; ?>
 
                                                         <?php else: ?>
@@ -250,4 +258,8 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'scripts' ) ?>
     <?= $t->data[ 'view' ][ 'viewScript' ] ? $t->insert( $t->data[ 'view' ][ 'viewScript' ] ) : '' ?>
+
+    <?php if( isset( $t->data[ 'view' ][ 'common' ] ) ): ?>
+        <?= $t->insert( $t->data[ 'view' ][ 'common' ] ); ?>
+    <?php endif; ?>
 <?php $this->append() ?>

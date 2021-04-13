@@ -173,8 +173,6 @@ abstract class EloquentController extends Controller
         'COUNTRY'           => 'country',
         'WHO_IS_PREFIX'     => 'who_is_prefix',
         'JSON'              => 'json',
-        'LABEL_IF_NULL'     => 'label_if_null',
-        'MULTIPLE_LABEL'    => 'multiple_label',
     ];
 
     /**

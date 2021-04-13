@@ -200,6 +200,7 @@ return [
         IXP\Providers\FoilServiceProvider::class,
         IXP\Providers\PeeringDbServiceProvider::class,
         IXP\Providers\IxpServiceProvider::class,
+        IXP\Providers\RipeAtlasProvider::class,
 
         /*
          * Third party providers

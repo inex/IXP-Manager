@@ -146,6 +146,9 @@
                     $('body').toggleClass('overflow-hidden');
                 }
             <?php endif; ?>
+
+            $('[data-toggle="tooltip"]').tooltip();
+
         </script>
 
         <?php $this->section('scripts') ?>

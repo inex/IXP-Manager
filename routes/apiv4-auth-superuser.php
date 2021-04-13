@@ -150,3 +150,11 @@ Route::group( [ 'namespace' => 'Customer\Note', 'prefix' => 'customer-note' ], f
     Route::post(    'add',                             'CustomerNotesController@add'                    )->name( 'customer-notes@add');
     Route::post(    'delete/{id}',                     'CustomerNotesController@delete'                 )->name( 'customer-notes@delete');
 });
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// RIPE ATLAS
+//
+Route::group( [ 'prefix' => 'ripe-atlas' ], function() {
+    Route::get(  'measurement/{atlasid}/info',   'RipeAtlasController@getAtlasMeasurementDetail' )->name( 'ripe-atlas@measurement-info' );
+    Route::get(  'probe/{atlasid}/info',         'RipeAtlasController@getAtlasProbeDetail'       )->name( 'ripe-atlas@probe-info'       );
+});

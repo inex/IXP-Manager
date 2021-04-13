@@ -42,6 +42,8 @@ use IXP\Traits\Observable;
  * @method static \Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag whereCustomerTagId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \IXP\Models\Customer $customer
+ * @property-read \IXP\Models\CustomerTag $tag
  */
 class CustomerToCustomerTag extends Model
 {

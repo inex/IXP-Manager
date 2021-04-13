@@ -41,6 +41,8 @@ use Illuminate\Support\{
 use IXP\Traits\Observable;
 
 use IXP\Exceptions\GeneralException as IXP_Exception;
+use IXP\Models\AtlasProbe;
+use IXP\Models\AtlasMeasurement;
 
 /**
  * IXP\Models\Customer
@@ -172,6 +174,13 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @method static Builder|Customer whereType($value)
  * @method static Builder|Customer whereUpdatedAt($value)
  * @mixin Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|AtlasMeasurement[] $AtlasMeasurementsDest
+ * @property-read int|null $atlas_measurements_dest_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|AtlasMeasurement[] $AtlasMeasurementsSource
+ * @property-read int|null $atlas_measurements_source_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|AtlasProbe[] $AtlasProbes
+ * @property-read int|null $atlas_probes_count
+ * @method static Builder|Customer addressesForVlan(int $vlanid, int $cust, int $protocol)
  */
 class Customer extends Model
 {
@@ -473,6 +482,30 @@ class Customer extends Model
     }
 
     /**
+     * Get the atlas probes for the customer
+     */
+    public function AtlasProbes(): HasMany
+    {
+        return $this->hasMany( AtlasProbe::class, 'cust_id');
+    }
+
+    /**
+     * Get the atlas measurement source for the customer
+     */
+    public function AtlasMeasurementsSource(): HasMany
+    {
+        return $this->hasMany( AtlasMeasurement::class, 'cust_source');
+    }
+
+    /**
+     * Get the atlas measurement destination for the customer
+     */
+    public function AtlasMeasurementsDest(): HasMany
+    {
+        return $this->hasMany( AtlasMeasurement::class, 'cust_dest');
+    }
+
+    /**
      * Get the logo for the customer
      */
     public function logo(): HasOne
@@ -671,7 +704,7 @@ class Customer extends Model
      */
     public function scopeTrafficking( Builder $query ): Builder
     {
-        return $query->where('type', '!=', Customer::TYPE_ASSOCIATE );
+        return $query->where('type', '!=', self::TYPE_ASSOCIATE );
     }
 
     /**
@@ -707,6 +740,17 @@ class Customer extends Model
             } )->when( $externalOnly , function( Builder $q ) {
                 return $q->whereRaw( self::SQL_CUST_EXTERNAL );
             })->orderBy( 'name' );
+    }
+
+    /**
+     * Scope a query to only include active members (not suspended)
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeActive($query)
+    {
+        return $query->whereIn( 'status', [ Customer::STATUS_NORMAL, Customer::STATUS_NOTCONNECTED ] );
     }
 
     /**
@@ -1029,5 +1073,31 @@ class Customer extends Model
             $model->id,
             $model->name,
         );
+    }
+
+    /**
+     * Scope a query to get the list of IP address for a customer on a vlan and a protocol
+     *
+     * @param Builder $query
+     * @param int $vlanid
+     * @param int $cust
+     * @param int $protocol
+     *
+     * @return Collection
+     */
+    public function scopeAddressesForVlan( $query, int $vlanid, int $cust, int $protocol ): Collection
+    {
+        $enabled    = $protocol === 4 ? 'ipv4enabled'    : 'ipv6enabled';
+        $field      = $protocol === 4 ? 'ipv4addressid'  : 'ipv6addressid';
+        $table      = $protocol === 4 ? 'ipv4address'    : 'ipv6address';
+
+        return $query->select($table.'.address' )
+            ->join( 'virtualinterface AS vi', 'cust.id', 'vi.custid' )
+            ->join( 'vlaninterface AS vli', 'vi.id','vli.virtualinterfaceid' )
+            ->join( $table, 'vli.' . $field, $table . '.id' )
+            ->where( 'vli.vlanid', $vlanid )
+            ->where( 'vi.custid', $cust )
+            ->where( 'vli.' . $enabled,  true )
+            ->get();
     }
 }

@@ -72,12 +72,12 @@ class WhoisController extends Controller
     /**
      * API call to do a Whois looking on a prefix
      *
-     * @param string    $prefix The IP address element of the prefix
-     * @param string    $mask   The mask length
+     * @param string        $prefix The IP address element of the prefix
+     * @param string|null   $mask   The mask length
      *
      * @return Response
      */
-    public function prefix( string $prefix, string $mask ): Response
+    public function prefix( string $prefix, string $mask = null ): Response
     {
         $response = Cache::remember( 'api-v4-whois-prefix-' . $prefix . '-' . $mask, config('ixp_api.whois.cache_ttl'), function () use ( $prefix, $mask ) {
             $whois = new Whois( config('ixp_api.whois.prefix.host'), config('ixp_api.whois.prefix.port') );

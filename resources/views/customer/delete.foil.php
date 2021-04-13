@@ -82,6 +82,10 @@
                         <li>
                             all route server entries learned from IRRDB for prefixes and origin ASNs as well as prefixes learned from the route servers.
                         </li>
+
+                        <li>
+                            all Ripe Atlas Probes.
+                        </li>
                     </ul>
 
                     <div class="alert alert-info mt-4" role="alert">

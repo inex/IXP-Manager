@@ -66,6 +66,7 @@ use IXP\Events\Auth\{
     ForgotPassword,
     PasswordReset
 };
+use IXP\Events\RipeAtlas\MeasurementComplete;
 
 /**
  * Event Service Provider
@@ -140,6 +141,10 @@ class EventServiceProvider extends ServiceProvider
 
         SocialiteWasCalled::class => [
             'SocialiteProviders\\PeeringDB\\PeeringDBExtendSocialite@handle',
+        ],
+
+        MeasurementComplete::class => [
+            \IXP\Listeners\RipeAtlas\MeasurementComplete::class
         ],
 
     ];

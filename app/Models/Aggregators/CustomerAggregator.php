@@ -36,6 +36,7 @@ use IXP\Models\{
     PeeringManager,
     Vlan
 };
+use Illuminate\Support\Collection;
 
 /**
  * IXP\Models\Aggregators\CustomerAggregator
@@ -167,6 +168,13 @@ use IXP\Models\{
  * @method static Builder|CustomerAggregator whereType($value)
  * @method static Builder|CustomerAggregator whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasMeasurement[] $AtlasMeasurementsDest
+ * @property-read int|null $atlas_measurements_dest_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasMeasurement[] $AtlasMeasurementsSource
+ * @property-read int|null $atlas_measurements_source_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasProbe[] $AtlasProbes
+ * @property-read int|null $atlas_probes_count
+ * @method static Builder|Customer addressesForVlan(int $vlanid, int $cust, int $protocol)
  */
 class CustomerAggregator extends Customer
 {
@@ -506,5 +514,36 @@ class CustomerAggregator extends Customer
         }
 
         return true;
+    }
+
+    /**
+     * Get atlas probes for a given customer and protocol.
+     *
+     * @param int       $protocol
+     * @param int|null  $vlanid
+     * @param array     $includeCust
+     * @param string    $orderBy
+     * @param int|null  $limit
+     *
+     * @return Collection
+     */
+    public static function withProbesForProtocol( int $protocol = 4, int $vlanid = null, array $includeCust = [], string $orderBy = 'name', int $limit = null ): Collection
+    {
+        $enabled = $protocol === 4 ? 'v4_enabled' : 'v6_enabled';
+
+        return self::select('cust.*' )
+            ->LeftJoin( 'atlas_probes', 'cust.id', 'atlas_probes.cust_id' )
+            ->when( $vlanid , function( Builder $q, $vlanid ) {
+                return $q->join( 'virtualinterface AS vi', 'cust.id', 'vi.custid' )
+                    ->join( 'vlaninterface AS vli', 'vi.id','vli.virtualinterfaceid' )
+                    ->where( 'vli.vlanid', $vlanid );
+            })
+            ->where( 'atlas_probes.' . $enabled , true )
+            ->when( count( $includeCust ) , function( Builder $q) use ( $includeCust ) {
+                return $q->whereIn( 'atlas_probes.cust_id',  $includeCust );
+            })->when( $limit , function( Builder $q, $limit ) {
+                return $q->limit( $limit );
+            })->distinct()->orderBy( 'cust.' . $orderBy )
+            ->get()->keyBy( 'autsys' );
     }
 }
