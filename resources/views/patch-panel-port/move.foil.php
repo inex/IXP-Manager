@@ -49,7 +49,7 @@
                                 ->label( 'New Slave/Duplex Port' )
                                 ->placeholder( 'Choose a Duplex port' )
                                 ->addClass( 'chzn-select' )
-                                ->blockHelp( 'The original port is a duplex port so you must also chose the slave/partner/duplex port here.' );
+                                ->blockHelp( 'The original port is a duplex port so you must also choose the slave/partner/duplex port here.' );
                             ?>
                         </div>
                     <?php endif; ?>

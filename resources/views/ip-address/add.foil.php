@@ -47,7 +47,7 @@
                         ->text( 'Enter decimal values only' )
                         ->value( 1 )
                         ->blockHelp( 'Typically IXs allocate a ' . config( 'ixp_fe.lang.customer.one' ) . ' an IPv6 address such that the last block matches the last block of the IPv4 address. '
-                            . "If you check this, IXP Manager will add the number of addresses as indicated by the CIDR block size but skip over any "
+                            . "If you check this, IXP Manager will add the number of addresses as indicated by the CIDR block size but will skip over any "
                             . "addresses containing <code>a-f</code> characters."
                         )
                     ?>
@@ -59,7 +59,7 @@
                             ->value( 1 )
                             ->check()
                             ->blockHelp( "If you are adding decimal addresses only, you would typically want the number of addresses created to match the "
-                                . "size of the subnet even if it overflows the subnet bounds. Unchecking this will limit the decimal addresses create to the subnet."
+                                . "size of the subnet even if it overflows the subnet bounds. Unchecking this will limit the decimal addresses created on the subnet."
                             )
                         ?>
                     </div>
@@ -75,7 +75,7 @@
                     ->value( 1 )
                     ->check()
                     ->blockHelp( 'When adding a range of addresses, some may already exist in the database (created during provisioning a VLAN interface, previously added, etc.) '
-                        . 'Checking this will just skip over any addresses that already exist and only add the new ones.' );
+                        . 'Checking this will just skip over any addresses that already exist and will only add the new ones.' );
                 ?>
 
                 <?=Former::actions( Former::primary_submit( 'Add Addresses' )->class( "mb-2 mb-sm-0"),
@@ -141,7 +141,7 @@
 
                 <?php endif; ?>
                 <p>
-                    To prevent you accidentally populating your database with a ridiculous number of IP addresses, there is a lower subnet
+                    To prevent you accidentally populating your database with too many IP addresses, there is a lower subnet
                     bound of <code>/<?= $t->protocol === 6 ? '120' : '24' ?></code>. If you need to add more than this, just add them in batches.
                 </p>
             </div>

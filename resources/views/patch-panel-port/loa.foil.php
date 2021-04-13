@@ -33,7 +33,7 @@
             <h4>
                 Prior to connecting to our demarcation as described below, the co-location provider must ensure that
                 this link does not terminate on any active ports. If it does, please contact our NOC immediately.
-                The co-location provider must also advise us by email to when this new connection has been completed
+                The co-location provider must also advise us by email when this new connection has been completed
                 and at that time provide the co-location reference for the cross connect as well as any test results
                 of the new circuit.
             </h4>
@@ -100,14 +100,14 @@
         </p>
         <p>
             This authority is limited to the provisioning for the purpose of the initial installation, and will expire
-            60 days from the date of issue (above left). This LoA does not obligate
+            60 days from the date of issue (above left). This LoA does not oblige
             <?= env( 'IDENTITY_LEGALNAME' ) ?>  to pay any fees or charges associated with such cross-connect services.
         </p>
         <p>
             The <?= config( 'ixp_fe.lang.customer.one' ) ?> agrees that should the applicable service to which this LoA was issued be requested
             to be cancelled at any time during service, the <?= config( 'ixp_fe.lang.customer.one' ) ?> must prior to contract cease date arrange
-            to have associated cross connects decommissioned from the equipment / ports and accept associated
-            disconnect costs where applicable.
+            to have the associated cross connects decommissioned from the equipment / ports and accept any associated
+            disconnection costs where applicable.
         </p>
         <p>
             Should you have any questions or concerns regarding this Letter of Authority, please contact our NOC

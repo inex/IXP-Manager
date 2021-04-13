@@ -37,7 +37,7 @@
             let url = this.href;
 
             bootbox.dialog({
-                message: 'Are you sure that you want to delete this Patch Panel ? It will become deactivated.',
+                message: 'Are you sure that you want to delete this Patch Panel? It will become deactivated.',
                 title: "Delete Patch Panel",
                 buttons: {
                     cancel: {

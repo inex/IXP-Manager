@@ -60,7 +60,7 @@ class GenerateConfigurationBird1ServerTest extends TestCase
             $knownGoodConf = file_get_contents( base_path() . "/data/travis-ci/known-good/ci-apiv4-{$handle}.conf" );
             $this->assertFalse( $knownGoodConf === false, "RS Conf generation - could not load known good file ci-apiv4-{$handle}.conf" );
 
-            // clean the configs to remove the comment lines which are irrelevent
+            // clean the configs to remove the comment lines which are irrelevant
             $conf          = preg_replace( "/^#.*$/m", "", $conf          );
             $knownGoodConf = preg_replace( "/^#.*$/m", "", $knownGoodConf );
             $conf          = preg_replace( "/^\s+$/m", "", $conf          );

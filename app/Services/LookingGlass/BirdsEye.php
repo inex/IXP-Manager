@@ -231,7 +231,7 @@ class BirdsEye implements LookingGlassContract
     }
 
     /**
-     * Get wildcard large communities in protocol tabe of form ( x, y, * )
+     * Get wildcard large communities in protocol table of form ( x, y, * )
      *
      * @param string    $protocol Protocol name
      * @param int       $x

@@ -16,7 +16,7 @@
         let url = this.href;
 
         let html = `<form id="form-delete" method="POST" action="${url}">
-                        <div>Do you want to delete this router ?</div>
+                        <div>Do you want to delete this router?</div>
                         <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                         <input type="hidden" name="_method" value="delete" />
                     </form>`;

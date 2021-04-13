@@ -51,7 +51,7 @@
                                 </div>
                                 <div class="col-sm-12">
                                   <b class="label label-warning">WARNING</b>
-                                  802.1q framing is not set but there are >1 VLAN interfaces:
+                                  802.1q framing is not set but there is more than one VLAN interface:
                                 </div>
                             </div>
                         </div>
@@ -73,7 +73,7 @@
                                 </div>
                                 <div class="col-sm-12">
                                     <b class="label label-warning">WARNING</b>
-                                    LAG framing is not set and there is >1 physical interfaces. This may be intended but should be verified:
+                                    LAG framing is not set but there is more than one physical interface. This may be intended but should be verified:
                                 </div>
                             </div>
                         </div>

@@ -54,7 +54,7 @@
             ->label( ( $t->file ? 'Replace' : 'Upload' ) . ' File' )
             ->class( 'form-control border-0 shadow-none' )
             ->multiple( false )
-            ->blockHelp( $t->file ? "You only need to chose a file here if you wish to replace the existing one. Do not select a file to edit other details but leave the current file in place."
+            ->blockHelp( $t->file ? "You only need to choose a file here if you wish to replace the existing one. Do not select a file to edit other details but leave the current file in place."
                 : "Select the file you wish to upload." );
         ?>
 

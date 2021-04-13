@@ -26,7 +26,7 @@
 
         <?= Former::text( 'source' )
             ->label( 'Source' )
-            ->blockHelp( "Which IRRDB dataset source(s) to use as a comma separated list. E.g. bgpq3 recommend <code>RADB,RIPE,APNIC</code>.<br><br>"
+            ->blockHelp( "A comma-separated lists of IRRDB dataset source(s) to use. E.g. bgpq3 recommend <code>RADB,RIPE,APNIC</code>.<br><br>"
                 . "A set of supported datasets supported by RADB <a href='http://www.radb.net/query/?advanced_query=1'>can be found here</a>." );
         ?>
 

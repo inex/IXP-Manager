@@ -113,7 +113,7 @@ abstract class Common extends Controller
      * If *link with fanout port* is not checked then this function checks
      * if the peering port has a related interface and, if so, removes the relation.
      *
-     * @param   Request|StoreVirtualInterfaceWizard $r instance of the current HTTP reques
+     * @param   Request|StoreVirtualInterfaceWizard $r instance of the current HTTP request
      * @param   PhysicalInterface                   $pi Peering physical interface to related with fanout physical interface (port).
      * @param   VirtualInterface                    $vi Virtual interface of peering physical interface
      *
@@ -146,7 +146,7 @@ abstract class Common extends Controller
             }
         }
 
-        // if the physical interace already has a related physical interface and it's not the same as the fanout physical interface
+        // if the physical interface already has a related physical interface and it's not the same as the fanout physical interface
         if( $pi->relatedInterface() && $pi->relatedInterface()->id !== $fnpi->id ) {
             // if fanout does not have a virtual interface, relate it with old fanout port virtual interface.
             if( !$fnpi->virtualInterface ) {

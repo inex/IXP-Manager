@@ -148,7 +148,7 @@
                         </div>
                         <div class="col-sm-12">
                             No records for port utilisation have been found.
-                            If you have Grapher with the Mrtg backend working, then please ensure you are
+                            If you have Grapher enabled with the Mrtg backend configured, then please ensure you are
                             <a href="https://docs.ixpmanager.org/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails" target="_blank">inserting
                                 traffic data into the database</a> and check the documentation via the link on the top right.
                         </div>

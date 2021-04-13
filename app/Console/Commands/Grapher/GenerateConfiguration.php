@@ -28,7 +28,7 @@ use IXP\Contracts\Grapher\Backend as GrapherBackend;
  /**
   * Artisan command to generate configuration for graphing
   *
-  * ** Grapher Impementation Dependant! **
+  * ** Grapher Implementation Dependent! **
   *
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
   * @author     Yann Robin      <yann@islandbridgenetworks.ie>

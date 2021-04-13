@@ -318,13 +318,13 @@
         </p>
         <p>
             This authority is limited to the provisioning for the purpose of the initial installation, and will expire
-            60 days from the date of issue (above left). This LoA does not obligate INEX to pay any fees or charges
+            60 days from the date of issue (above left). This LoA does not oblige INEX to pay any fees or charges
             associated with such cross-connect services.
         </p>
         <p>
             The <?= config( 'ixp_fe.lang.customer.one' ) ?> agrees that should INEX issue a request to have this cross connect disconnected at any time,
             the <?= config( 'ixp_fe.lang.customer.one' ) ?> will arrange to have the cross connect decommissioned within 30 days and accept associated
-            disconnect costs where applicable.
+            disconnection costs where applicable.
         </p>
         <p>
             Should you have any questions or concerns regarding this Letter of Authority, please contact our NOC

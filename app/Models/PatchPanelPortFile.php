@@ -113,7 +113,7 @@ class PatchPanelPortFile extends Model
     }
 
     /**
-     * Return the formated size
+     * Return the formatted size
      *
      * @return string
      */

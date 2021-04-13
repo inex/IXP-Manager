@@ -33,7 +33,7 @@ class IpAddressAggregator
     /**
      * Bulk add IP addresses from the given array.
      *
-     * The array returned contains two futher arrays:
+     * The array returned contains two further arrays:
      *
      * * `preexisting` => addresses that already existed in the database.
      * * `new`         => addresses added (if `skip == true`) or addresses that would have been added.

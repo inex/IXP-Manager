@@ -86,7 +86,7 @@ class Layer2Address extends Model
     }
 
     /**
-     * Get mac formated depending on the format selected
+     * Get mac formatted depending on the format selected
      *  - with comma (xx:xx:xx:xx:xx:xx)
      *  - with dots (xxxx.xxxx.xxxx)
      *  - with dash (xx-xx-xx-xx-xx-xx)

@@ -78,7 +78,7 @@ abstract class UpdateDb
     private $time     = 0.0;
 
     /**
-     * Stardard result array
+     * Standard result array
      *
      * @var array
      */

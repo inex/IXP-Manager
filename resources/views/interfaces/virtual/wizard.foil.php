@@ -189,7 +189,7 @@
                                 ->inline()
                                 ->blockHelp( 'If checked, then IXP Manager will configure the route server BGP peer for this connection such that it will '
                                     . 'allow more specific prefixes than those registered in the IRRDB. See the '
-                                    . '<a href="http://docs.ixpmanager.org/features/route-servers/">route server configuration documenation for more details</a>.' )
+                                    . '<a href="http://docs.ixpmanager.org/features/route-servers/">route server configuration documentation for more details</a>.' )
                             ?>
                         </div>
 

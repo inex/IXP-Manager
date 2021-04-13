@@ -54,7 +54,7 @@
                         ->label( 'Handle' )
                         ->placeholder( 'rs1-lan1-ipv4' )
                         ->blockHelp( "The handle is like the router's name. It is suggested you use something like: <code>purpose-proto-lan</code>. A
-                    good example of this is <code>rs1-lan1-ipv4</code> for <em>router server #1</em> on <em>lan1</em> using <em>IPv4</em>.
+                    good example of this is <code>rs1-lan1-ipv4</code> for <em>route server #1</em> on <em>lan1</em> using <em>IPv4</em>.
                     These handles are used in API calls and other areas such as Nagios configuration generation." );
                     ?>
 
@@ -122,8 +122,7 @@
                         ->fromQuery( \IXP\Models\Router::$SOFTWARES )
                         ->placeholder( 'Choose the platform / software' )
                         ->addClass( 'chzn-select' )
-                        ->blockHelp( 'There is no specific use for this as yet but you should choose appropriately for future correctness. If
-                    your platform does not exist here, please open an issue on GitHub.' );
+                        ->blockHelp( 'The software used for establishing BGP sessions with this router configuration.' );
                     ?>
 
                     <?= Former::text( 'software_version' )

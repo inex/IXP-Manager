@@ -13,7 +13,7 @@
     const div_ipv4            = $( "#ipv4-area" );
     const div_rsmorespecifics = $( "#div-rsmorespecifics" );
 
-    // array of AJAX requests for we can execuet other code when() then complete
+    // array of AJAX requests for we can execute other code when() then complete
     let ajaxRequests = [];
 
     //////////////////////////////////////////////////////////////////////////////////////

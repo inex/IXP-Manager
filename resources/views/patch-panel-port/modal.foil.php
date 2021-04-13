@@ -8,7 +8,7 @@
             </div>
             <div class="modal-body" id="notes-modal-body">
                 <p id="notes-modal-body-intro" class="tw-mb-2" >
-                    Consider adding details to the notes such as a internal ticket reference to the cease request / whom you have been dealing with / expected cease date / etc..
+                    Consider adding details to the notes such as a internal ticket reference to the cease request / whom you have been dealing with / expected cease date / etc.
                 </p>
 
                 <div id="notes-modal-body-div-pi-status" class="tw-mb-2">

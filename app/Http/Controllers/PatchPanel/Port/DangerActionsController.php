@@ -59,7 +59,7 @@ use IXP\Utils\View\Alert\{
 class DangerActionsController extends Controller
 {
     /**
-     * Access to the form that allow to move the informations of a port to an other port
+     * Access to the form that allow to move the information of a port to an other port
      *
      * @param  PatchPanelPort    $ppp      The patch panel port
      *

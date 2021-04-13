@@ -61,7 +61,7 @@
                 You have a number of options when assigning a port:
                 <ul>
                     <li>
-                        If you have pre-wired the patch panel to a port, enter the switch and port here. So long as no customer has been
+                        If you have pre-wired the patch panel to a port, enter the switch and port here. As long as no customer has been
                         assigned to the switch port, the patch panel port will remain available but will be marked as connected to
                         the given switch port in the patch panel port list.
                     </li>

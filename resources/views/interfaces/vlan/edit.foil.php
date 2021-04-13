@@ -100,14 +100,14 @@
                                 ->label('&nbsp;')
                                 ->text( 'IPv6 Enabled' )
                                 ->value( 1 )
-                                ->blockHelp( 'Click to enable IPv6 and reveal associated settings.' )
+                                ->blockHelp( 'Click to enable IPv6 and configure associated settings.' )
                             ?>
 
                             <?= Former::checkbox( 'ipv4enabled' )
                                 ->label('&nbsp;')
                                 ->text( 'IPv4 Enabled' )
                                 ->value( 1 )
-                                ->blockHelp( 'Click to enable IPv4 and reveal associated settings.' )
+                                ->blockHelp( 'Click to enable IPv4 and configure associated settings.' )
                             ?>
 
                         </div>
@@ -146,7 +146,7 @@
                                     ->value( 1 )
                                     ->blockHelp( 'If checked, then IXP Manager will configure the route server BGP peer for this connection such that it will '
                                         . 'allow more specific prefixes than those registered in the IRRDB. See the '
-                                        . '<a href="http://docs.ixpmanager.org/features/route-servers/">route server configuration documenation for more details</a>.' )
+                                        . '<a href="http://docs.ixpmanager.org/features/route-servers/">route server configuration documentation for more details</a>.' )
                                 ?>
                             </div>
 

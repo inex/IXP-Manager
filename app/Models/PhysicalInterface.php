@@ -326,7 +326,7 @@ class PhysicalInterface extends Model
     /**
      * Gets the related peering / fanout port for the current fanout / peering port
      *
-     * For reseller functionality, we have the option of having fanout ports connectted to
+     * For reseller functionality, we have the option of having fanout ports connected to
      * peering ports. In this case, this function will return the related peering or
      * fanout port as appropriate.
      *

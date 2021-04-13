@@ -238,7 +238,7 @@ class Router extends Model
     /**
      * Get the API type
      *
-     * Alias to allow Entities\Router and Models\Router to work interchangably
+     * Alias to allow Entities\Router and Models\Router to work interchangeably
      */
     public function apiType(): int
     {

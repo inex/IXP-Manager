@@ -37,7 +37,7 @@
             <?php if( $t->file->created_at < $sixmonthsago ): ?>
                 <p>
                     <b>Note:</b> This file is more than six months old. As such, all download logs older than six months
-                    (except the first / original download) has been expunged.
+                    (except the first / original download) have been expunged.
                 </p>
             <?php endif; ?>
 

@@ -46,7 +46,7 @@ use IXP\Models\{
 class Generator
 {
     /**
-     * Template choosen
+     * Template chosen
      *
      * @var string
      */
@@ -119,7 +119,7 @@ class Generator
     /**
      * Gather and create the IXP customer ASN details.
      *
-     * Returns an associate array indexed by ordered ASNs of active external trafficing customers:
+     * Returns an associate array indexed by ordered ASNs of active external trafficking customers:
      *
      *     [
      *         [65500] => [
@@ -129,7 +129,7 @@ class Generator
      *                    ...
      *     ]
      *
-     * @param   Collection $customers Array of all active external trafficing customers
+     * @param   Collection $customers Array of all active external trafficking customers
      *
      * @return array Associate array indexed by ordered ASNs
      *

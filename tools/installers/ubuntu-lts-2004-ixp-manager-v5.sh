@@ -609,11 +609,11 @@ DOCTRINE_CACHE_NAMESPACE=IXPMANAGERNAMESPACE
 # Your RIR password to allow the updating of a RIR object by email:
 # IXP_API_RIR_PASSWORD=soopersecret
 
-# Rather than specifiying the destination address on the command line, you can set it here
+# Rather than specifying the destination address on the command line, you can set it here
 # (useful for cronjobs and required for use with artisan schedule:run in >=v5.0)
 # IXP_API_RIR_EMAIL_TO=test-dbm@ripe.net
 
-# Rather than specifiying the from address on the command line, you can set it here
+# Rather than specifying the from address on the command line, you can set it here
 # (useful for cronjobs and required for use with artisan schedule:run in >=v5.0)
 # IXP_API_RIR_EMAIL_FROM=ixp@example.com
 
@@ -865,4 +865,4 @@ chmod u=rw,go-rwx /root/ixp-manager-install-details.txt
 chown root: $IXPROOT/.ixp-manager-installer-settingsrc
 chmod 0600 $IXPROOT/.ixp-manager-installer-settingsrc
 
-echo "(the above message and password details have been copyed to /root/ixp-manager-install-details.txt)"
+echo "(the above message and password details have been copied to /root/ixp-manager-install-details.txt)"

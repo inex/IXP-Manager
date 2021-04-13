@@ -15,7 +15,7 @@
                 Delete the Vlan
             </a>
             <a class="dropdown-item" href="<?= route( 'ip-address@delete-by-network' , [ 'vlan' => $t->row['id']  ] ) ?>">
-                Delete IP Addresses...
+                Delete IP Addresses
             </a>
         </ul>
     <?php endif;?>

@@ -181,7 +181,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <a href="<?= $rt->api?>">
+                                    <a href="<?= $rt->api ?>">
                                         <?= $t->ee( $rt->api )?>
                                     </a>
                                 </td>

@@ -62,7 +62,7 @@ return [
 
     //;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     //
-    // We use PHP-Weathermap which is publically available. Our true settings
+    // We use PHP-Weathermap which is publicly available. Our true settings
     // are commented out, please replace with your own
     'weathermap' => [
         1 => [

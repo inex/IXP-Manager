@@ -11,7 +11,7 @@
             ->placeholder( 'Choose an IPv6 Address' )
             ->class( "chzn-select-deselect-tag" )
             ->blockHelp( 'Select the IP address to assign to this VLAN interface. If empty, ensure you have selected a VLAN above and that the VLAN has available addresses.'
-                . 'You can also create a new IPv6 address by entering it here but please use clue as validation is minimal. Also ensure you use standard short form with lower case letters.' );
+                . 'You can also create a new IPv6 address by entering it here but please use discretion as validation is minimal. Also ensure you use standard short form with lower case letters.' );
         ?>
 
         <?= Former::hidden( 'original-ipv6address')

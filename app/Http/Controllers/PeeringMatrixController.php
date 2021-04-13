@@ -138,7 +138,7 @@ class PeeringMatrixController extends Controller
             }
         }
 
-        //Return all active, trafficing and external customers on a given VLAN for a given protocol
+        //Return all active, trafficking and external customers on a given VLAN for a given protocol
         //(indexed by ASN)
         $cust = Vlan::select( [ 'cust.autsys', 'cust.name', 'cust.shortname', 'vli.rsclient', 'cust.activepeeringmatrix', 'cust.id' ] )
             ->leftJoin( 'vlaninterface AS vli', 'vli.vlanid', 'vlan.id' )

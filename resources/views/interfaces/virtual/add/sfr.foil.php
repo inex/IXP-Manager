@@ -68,7 +68,7 @@
                             <i class="fa fa-question-circle fa-2x"></i>
                         </div>
                         <div class="col-sm-12">
-                            There are no Sflow receivers defined for this virtual interface.
+                            There are no sflow receivers defined for this virtual interface.
                             <a class="btn btn-white" href="<?= route('sflow-receiver@create' , [ 'vi' => $t->vi->id ] ) ?>">
                                 Create one now...
                             </a>
