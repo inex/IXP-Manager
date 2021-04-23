@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -31,11 +31,18 @@ use IXP\Utils\MailingList as ML;
 use Illuminate\Http\{
     JsonResponse, Request, Response
 };
-use Illuminate\Support\Facades\View as FacadeView;
 
-
-class MailingListController extends Controller {
-
+/**
+ * MailingListController API Controller
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   APIv4
+ * @package    IXP\Http\Controllers\Api\V4
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class MailingListController extends Controller
+{
     /**
      * @var ML
      */
@@ -46,8 +53,9 @@ class MailingListController extends Controller {
      */
     private $mlkey = null;
 
-    public function __construct() {
-        if( php_sapi_name() !== 'cli' && !config( 'mailinglists.enabled' ) ) {
+    public function __construct()
+    {
+        if( PHP_SAPI !== 'cli' && !config( 'mailinglists.enabled' ) ) {
             abort( 503, "Mailing list functionality is disabled. See: http://docs.ixpmanager.org/features/mailing-lists/" );
         }
     }
@@ -56,10 +64,12 @@ class MailingListController extends Controller {
      * For the given listname, return the appropriate mailing list object (or throw a 404 if not found)
      *
      * @param string $listname Name of the mailing list (array index from config/mailinglist.php)
+     *
      * @return ML
      */
-    private function getMailingList( string $listname ): ML {
-        if( $this->ml === null || $this->mlkey != $listname ) {
+    private function getMailingList( string $listname ): ML
+    {
+        if( $this->ml === null || $this->mlkey !== $listname ) {
             try {
                 $this->ml    = new ML( $listname );
                 $this->mlkey = $listname;
@@ -77,10 +87,11 @@ class MailingListController extends Controller {
      * All emails are validated, normalised to lowercase, duplicates removed and sorted alphabetically.
      *
      * @param string @listname Name of the mailing list (array index from config/mailinglist.php)
+     *
      * @return JsonResponse|Response
      */
-    public function subscribers( string $listname ) {
-
+    public function subscribers( string $listname )
+    {
         if( request()->is('api/v4/mailing-list/subscribers/json/*' ) ) {
             return response()->json( $this->getMailingList( $listname )->getSubscriberEmails() );
         }
@@ -95,18 +106,18 @@ class MailingListController extends Controller {
      * All emails are validated, normalised to lowercase, duplicates removed and sorted alphabetically.
      *
      * @param string @listname Name of the mailing list (array index from config/mailinglist.php)
+     *
      * @return JsonResponse|Response
      */
-    public function unsubscribed( string $listname ) {
-
+    public function unsubscribed( string $listname )
+    {
         if( request()->is('api/v4/mailing-list/unsubscribed/json/*' ) ) {
-            return response()->json( $this->getMailingList( $listname )->getSubscriberEmails(false) );
+            return response()->json( $this->getMailingList( $listname )->getSubscriberEmails(false ) );
         }
 
-        return response( implode( "\n", $this->getMailingList( $listname )->getSubscriberEmails(false) ) . "\n",
+        return response( implode( "\n", $this->getMailingList( $listname )->getSubscriberEmails(false ) ) . "\n",
             200, [ 'Content-Type' => 'text/plain; charset=utf-8' ] );
     }
-
 
     /**
      * Mailing list initialisation script
@@ -125,14 +136,15 @@ class MailingListController extends Controller {
      * curl --data "addresses=noc@blacknight.ie\nbarryo@inex.ie\nbarry@opensolutions.ie\nbarry@example.com\n" -X POST -H "X-IXP-Manager-API-Key: NIJm5aYpwrl1MQzgtUWXOx8i7DlVqinOfwfDbhorPRbmztH7" http://ixp-ibn.dev/api/v4/mailing-list/init/members
      *
      * @param Request $request
-     * @param string $listname Name of the mailing list (array index from config/mailinglist.php)
+     * @param string $listname  Name of the mailing list (array index from config/mailinglist.php)
+     *
      * @return JsonResponse|Response
      */
-    public function init( Request $request, string $listname ) {
-
+    public function init( Request $request, string $listname )
+    {
         $addresses = new Set;
 
-        foreach( explode( "\n", $request->input( 'addresses' ) ) as $a ) {
+        foreach( explode( "\n", $request->addresses ) as $a ) {
             $addresses->add( strtolower( trim( $a ) ) );
         }
 

@@ -16,12 +16,12 @@
                 Action
                 <?php if( $t->isSuperUser ): ?>
                     &nbsp;<div class="btn-group btn-group-sm ml-2">
-                        <button id="co-notes-add-btn" class="btn btn-white co-notes-add-btn">
+                        <a id="btn-create-note" href="<?= route( 'customer-notes@create', [ 'cust' => $t->c->id ]  ) ?>" class="btn btn-white btn-create-note">
                             <i class="fa fa-plus"></i>
-                        </button>
-                        <button id="co-cust-notify-<?= $t->c->id ?>"  class="btn btn-white co-cust-notify <?= $t->coNotifyAll ? 'active' : '' ?>">
-                            <i class="fa fa-bell"></i>
-                        </button>
+                        </a>
+                        <a id="co-cust-notify-<?= $t->c->id ?>" href="<?= route( 'customer-notes@notify-toggle-customer', [ 'cust' => $t->c->id ]  ) ?>" class="btn btn-white btn-watch">
+                            <?= isset( $t->user->prefs[ 'notes' ][ 'customer_watching' ][ $t->c->id ] ) ? 'Unwatch All' : 'Watch All' ?>
+                        </a>
 
                         <a class="btn btn-white" href="https://docs.ixpmanager.org/usage/customer-notes/" target="_blank">
                             Help
@@ -37,19 +37,14 @@
             /** @var \IXP\Models\CustomerNote $n */
         foreach( $t->notes as $n ):?>
             <?php if( $t->isSuperUser || !$n->private ): ?>
-                <?php
-                    $updated_at = \Carbon\Carbon::instance( $n->updated_at );
-                ?>
                 <tr id="co-notes-table-row-<?= $n->id ?>">
                     <td id="co-notes-table-row-title-<?= $n->id ?>">
-                        <?php if( ( !$t->notesInfo[ "notesLastRead" ] || $updated_at->format( 'U' ) > $t->notesInfo[ "notesLastRead" ] ) && ( !$t->notesInfo[ "notesReadUpto" ] || $updated_at->format( 'U' ) >  $t->notesInfo[ "notesReadUpto" ]  ) ): ?>
-                            <span class="badge badge-success">
-                                <?php if( $n->updated_at === $n->created_at ): ?>
-                                    NEW
-                                <?php else: ?>
-                                    UPDATED
-                                <?php endif; ?>
-                            </span>
+                        <?php if( ( !$t->notesInfo[ "notesLastRead" ] || $n->updated_at > $t->notesInfo[ "notesLastRead" ] ) && ( !$t->notesInfo[ "notesReadUpto" ] || $n->updated_at >  $t->notesInfo[ "notesReadUpto" ]  ) ): ?>
+                            <?php if( $n->updated_at->eq( $n->created_at ) ): ?>
+                                <span class="badge badge-primary"> NEW </span>
+                            <?php else: ?>
+                                <span class="badge badge-success"> UPDATED </span>
+                            <?php endif; ?>
                             &nbsp;&nbsp;
                         <?php endif; ?>
                         <?= $t->ee( $n->title ) ?>
@@ -57,31 +52,40 @@
 
                     <?php if( $t->isSuperUser ): ?>
                         <td id="co-notes-table-row-public-<?= $n->id ?>">
-                            <span class="badge badge-<?php if( !$n->private ): ?>success">PUBLIC<?php else: ?>secondary">PRIVATE<?php endif; ?></span>
+                            <?php if( !$n->private ): ?>
+                                <span class="badge badge-success">
+                                    PUBLIC
+                                </span>
+                            <?php else: ?>
+                                <span class="badge badge-secondary">
+                                    PRIVATE
+                                </span>
+                            <?php endif; ?>
                         </td>
                     <?php endif; ?>
+
                     <td id="co-notes-table-row-updated-<?= $n->id ?>">
-                        <?= $updated_at->format( 'Y-m-d H:i' ) ?>
+                        <?= $n->updated_at ?>
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm">
                             <?php if( $t->isSuperUser ): ?>
-                                <button id="co-notes-notify-<?= $n->id ?>"  class="btn btn-white co-notes-notify <?php if( is_array( $t->coNotify ) && array_key_exists( $n->id, $t->coNotify ) && $t->coNotify[ $n->id ] ): ?>active<?php endif; ?>">
-                                    <i class="fa fa-bell"></i>
-                                </button>
+                                <a href="<?= route( 'customer-notes@notify-toggle-note', [ 'cn' => $n->id ] ) ?>"  class="btn btn-white btn-watch">
+                                    <?= isset( $t->user->prefs[ 'notes' ][ 'note_watching' ][ $n->id ] ) ? 'Unwatch' : 'Watch' ?>
+                                </a>
                             <?php endif; ?>
 
-                            <button id="co-notes-view-<?= $n->id ?>"  class="btn btn-white co-notes-view">
+                            <a href="<?= route( 'customer-notes@get', [ 'cn' => $n->id ] ) ?>" class="btn btn-white btn-view-note">
                                 <i class="fa fa-eye"></i>
-                            </button>
+                            </a>
 
                             <?php if( $t->isSuperUser ): ?>
-                                <button id="co-notes-edit-<?= $n->id ?>"  class="btn btn-white co-notes-edit">
+                                <a href="<?= route( 'customer-notes@update', [ 'cn' => $n->id ]  ) ?>" data-object-id="<?= $n->id ?>" class="btn btn-white btn-edit-note">
                                     <i class="fa fa-pencil"></i>
-                                </button>
-                                <button id="co-notes-trash-<?= $n->id ?>" class="btn btn-white co-notes-trash">
+                                </a>
+                                <a href="<?= route( 'customer-notes@delete', [ 'cn' => $n->id ]  ) ?>" class="btn btn-white btn-delete-note">
                                     <i class="fa fa-trash"></i>
-                                </button>
+                                </a>
                             <?php endif; ?>
                         </div>
                     </td>
@@ -152,8 +156,7 @@
                         <p>
                             <em>Markdown formatting supported (and encouraged!)</em>
                         </p>
-                        <input type="hidden" name="custid" value="<?= $t->c->id ?>" />
-                        <input type="hidden" id="notes-dialog-noteid" name="noteid" value="0" />
+                        <input type="hidden" id="co-note-dialog-action" value="">
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -162,7 +165,7 @@
                         <i class="fa fa-times"></i> Cancel
                     </button>
                     <button id="co-notes-fadd"  type="button" class="btn btn-primary">
-                        Add
+                        Create
                     </button>
                 </div>
             </div>

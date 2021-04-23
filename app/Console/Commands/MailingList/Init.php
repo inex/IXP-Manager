@@ -1,7 +1,9 @@
-<?php namespace IXP\Console\Commands\MailingList;
+<?php
+
+namespace IXP\Console\Commands\MailingList;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -31,11 +33,11 @@ use IXP\Utils\MailingList as ML;
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
   * @category   MailingList
   * @package    IXP\Console\Commands
-  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
-class Init extends MailingList {
-
+class Init extends MailingList
+{
     /**
      * The name and signature of the console command.
      *
@@ -66,9 +68,11 @@ class Init extends MailingList {
      * but set those without a setting to on / off as appropriate.
      *
      * @return mixed
+     *
+     * @throws
      */
-    public function handle(): int {
-
+    public function handle(): int
+    {
         if( !config( 'mailinglists.enabled' ) ) {
             die( "Mailing list functionality is disabled. See: http://docs.ixpmanager.org/features/mailing-lists/\n" );
         }
@@ -76,7 +80,7 @@ class Init extends MailingList {
         $ml = new ML( $this->argument('list') );
 
         $stdin = fopen( "php://stdin","r" );
-        $addresses = new Set;
+        $addresses = collect();
 
         while( $address = strtolower( trim( fgets( $stdin ) ) ) ) {
             if( !$addresses->contains( $address ) ) {
@@ -90,9 +94,9 @@ class Init extends MailingList {
 
         $result = $ml->init( $addresses );
 
-        if( $this->isVerbosityVerbose() || $this->option('format') == 'json' ) {
-            if( $this->option( 'format' ) == 'json' ) {
-                echo json_encode( $result );
+        if( $this->isVerbosityVerbose() || $this->option('format') === 'json' ) {
+            if( $this->option( 'format' ) === 'json' ) {
+                echo json_encode( $result, JSON_THROW_ON_ERROR );
             } else {
                 foreach( $result as $k => $v ) {
                     foreach( $v as $e ) {
@@ -105,5 +109,4 @@ class Init extends MailingList {
         echo "\n";
         return 0;
     }
-
 }

@@ -91,6 +91,8 @@ use IXP\Models\{
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereUsername($value)
  * @mixin \Eloquent
+ * @property array|null $prefs
+ * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator wherePrefs($value)
  */
 class UserAggregator extends User
 {
@@ -267,15 +269,7 @@ class UserAggregator extends User
 
         // do we actually have any customers after all this?
         if( !$user->customers()->count() ) {
-
             Log::info( 'PeeringDB OAuth: user ' . $user->id . '/' . $user->username . ' has no customers - deleting...' );
-
-            // FIXME FIXME-YR
-            // delete all the user's preferences
-//            foreach( $user->getPreferences() as $pref ) {
-//                $user->removePreference( $pref );
-//                D2EM::remove( $pref );
-//            }
 
             // delete all the user's API keys
             $user->apiKeys()->delete();

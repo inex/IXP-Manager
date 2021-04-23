@@ -181,6 +181,7 @@ use IXP\Models\AtlasMeasurement;
  * @property-read \Illuminate\Database\Eloquent\Collection|AtlasProbe[] $AtlasProbes
  * @property-read int|null $atlas_probes_count
  * @method static Builder|Customer addressesForVlan(int $vlanid, int $cust, int $protocol)
+ * @method static Builder|Customer active()
  */
 class Customer extends Model
 {

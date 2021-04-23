@@ -444,11 +444,6 @@ class UserController extends Controller
     {
         $this->authorize( 'any', User::class );
 
-        // delete all the user's preferences
-        // FIXME FIXME-YR
-        \DB::table( 'user_pref' )->where( 'user_id', $u->id )
-            ->delete();
-
         // delete all the user's API keys
         $u->apiKeys()->delete();
 

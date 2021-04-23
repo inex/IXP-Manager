@@ -35,10 +35,6 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
-use Entities\{
-    User                as  UserEntity
-};
-
 use IXP\Http\Requests\Profile\{
     Notification    as NotificationRequest,
     Password        as PasswordRequest,
@@ -83,19 +79,16 @@ class ProfileController extends Controller
             'authorisedMobile'      => $user->authorisedMobile,
         ];
 
-//        $notesNotifications = [
-//            'notify'                => Auth::getUser()->getPreference( "customer-notes.notify" ),
-//        ];
+        $notesNotifications = [
+            'notify'                => Auth::getUser()->prefs[ 'notes' ][ 'global_notifs' ] ?? 'none',
+        ];
 
-        $notesNotifications      = [];
         $mailingListSubscriptions         = [];
 
         // are we using mailing lists?
-//        if( config( 'mailinglists.enabled', false ) ) {
-//            foreach( config( "mailinglists.lists") as $name => $ml ) {
-//                $mailingListSubscriptions[$name] = $user->getPreference( "mailinglist.{$name}.subscribed" );
-//            }
-//        }
+        if( config( 'mailinglists.enabled', false ) ) {
+            $mailingListSubscriptions = $user->prefs[ 'mailinglist' ] ?? [];
+        }
 
         return view( 'profile/edit' )->with([
             "details"                          =>  $details,
@@ -173,8 +166,13 @@ class ProfileController extends Controller
      */
     public function updateNotificationPreference( NotificationRequest $r ) : RedirectResponse
     {
-        Auth::getUser()->setPreference( 'customer-notes.notify', $r->input( 'notify' ) );
-        //D2EM::flush();
+        $user   = Auth::getUser();
+        $prefs  = $user->prefs;
+
+        $prefs[ 'notes' ][ 'global_notifs' ] = $r->notify;
+
+        $user->prefs = $prefs;
+        $user->save();
 
         AlertContainer::push( 'Notification preference updated.', Alert::SUCCESS );
         return Redirect::to( route( "profile@edit"  ) );
@@ -191,17 +189,23 @@ class ProfileController extends Controller
      */
     public function updateMailingLists( Request $r ) : RedirectResponse
     {
-        /** @var UserEntity $user */
-        $user = Auth::getUser();
-
         if( config( 'mailinglists.enabled', false ) ) {
+            $user           = Auth::getUser();
+            $prefs          = $user->prefs;
+            $mailintLists   = [];
+
             foreach( config( 'mailinglists.lists' ) as $name => $ml ) {
-                $user->setPreference( "mailinglist.{$name}.subscribed", $r->input( "ml_" . $name ) ?? 0 );
+                $mailintLists[ $name ] = $r->input( "ml_" . $name );
             }
-            //D2EM::flush();
+
+            $prefs[ 'mailinglist' ] = $mailintLists;
+            $user->prefs = $prefs;
+            $user->save();
+            AlertContainer::push( 'Mailing list subscriptions updated and will take effect within 12 hours.', Alert::SUCCESS );
+            return Redirect::to( route( "profile@edit"  ) );
         }
 
-        AlertContainer::push( 'Mailing list subscriptions updated and will take effect within 12 hours.', Alert::SUCCESS );
+        AlertContainer::push( 'Mailing list subscriptions is not enabled.', Alert::DANGER );
         return Redirect::to( route( "profile@edit"  ) );
     }
 }

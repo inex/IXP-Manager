@@ -175,6 +175,7 @@ use Illuminate\Support\Collection;
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasProbe[] $AtlasProbes
  * @property-read int|null $atlas_probes_count
  * @method static Builder|Customer addressesForVlan(int $vlanid, int $cust, int $protocol)
+ * @method static Builder|Customer active()
  */
 class CustomerAggregator extends Customer
 {

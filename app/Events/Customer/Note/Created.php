@@ -23,7 +23,14 @@ namespace IXP\Events\Customer\Note;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
-
-class Added extends Changed
+/**
+ * Created Event
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Events\Customer\Note
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class Created extends Changed
 {}

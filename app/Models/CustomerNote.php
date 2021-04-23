@@ -25,9 +25,9 @@ namespace IXP\Models;
 
 use Illuminate\Database\Eloquent\{
     Builder,
+    Collection,
     Model,
-    Relations\BelongsTo
-};
+    Relations\BelongsTo};
 
 use IXP\Traits\Observable;
 
@@ -116,5 +116,39 @@ class CustomerNote extends Model
             $model->customer->id,
             $model->customer->name
         );
+    }
+
+    /**
+     * Get note read statistics for a given set of notes and a user
+     *
+     * Returns an associate array with keys:
+     *
+     * * `notesReadUpto` - UNIX timestamp of when the user last read all notes / marked them as read
+     * * `notesLastRead` - UNIX timestamp of when the user last read this customer's notes
+     * * `unreadNotes`   - number of unread notes for this customer
+     *
+     * @param Collection    $notes
+     * @param Customer      $c      The customer
+     * @param User          $u       Optional user
+     *
+     * @return array
+     */
+    public static function analyseForUser( Collection $notes, Customer $c, User $u ): array
+    {
+        $unreadNotes    = 0;
+        $rut            = $u->prefs[ 'notes' ][ 'read_upto' ] ?? null;
+        $lastRead       = $u->prefs[ 'notes' ][ 'last_read' ][ $c->id ] ?? null;
+
+        if( $lastRead || $rut ) {
+            foreach( $notes as $note ) {/** @var CustomerNote  $note */
+                if( ( !$rut || $rut < $note->updated_at ) && ( !$lastRead || $lastRead < $note->updated_at ) ) {
+                    $unreadNotes++;
+                }
+            }
+        } else {
+            $unreadNotes = $notes->count();
+        }
+
+        return [ "notesReadUpto" => $rut , "notesLastRead" => $lastRead, "unreadNotes" => $unreadNotes ];
     }
 }

@@ -30,8 +30,6 @@ use Illuminate\Http\{
     Request
 };
 
-use Illuminate\View\View;
-
 use IXP\Events\Customer\BillingDetailsChanged as CustomerBillingDetailsChangedEvent;
 
 use IXP\Http\Requests\Dashboard\{
@@ -42,6 +40,7 @@ use IXP\Http\Requests\Dashboard\{
 use IXP\Models\{
     Aggregators\RsPrefixAggregator,
     Customer,
+    CustomerNote,
     NetworkInfo
 };
 
@@ -69,7 +68,7 @@ class DashboardController extends Controller
      * @param Request     $r
      * @param string|null $tab Tab from the overview selected
      *
-     * @return  View|RedirectResponse
+     * @return  \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      *
      * @throws
      */
@@ -80,8 +79,10 @@ class DashboardController extends Controller
             return Redirect::to( '/');
         }
 
-        $c = Auth::getUser()->customer;
-        $grapher = null;
+        $c          = Auth::getUser()->customer;
+        $grapher    = null;
+        $cns        = $c->customerNotes()->publicOnly()->get();
+        $cbd        = $c->companyBillingDetail;
 
         if( !$c->typeAssociate() ) {
             $resoldCustomer     = $c->reseller;
@@ -92,9 +93,6 @@ class DashboardController extends Controller
                 $rsRoutes = RsPrefixAggregator::aggregateRouteSummariesForCustomer( $c->id );
             }
         }
-
-        $cns = $c->customerNotes()->publicOnly()->get();
-        $cbd = $c->companyBillingDetail;
 
         // array used to populate the details forms
         // former doesn't allow us to populate a form the classic way when there is >1 forms on the same view.
@@ -119,12 +117,10 @@ class DashboardController extends Controller
             'invoiceEmail'              => $r->old( 'invoiceEmail',            $cbd->invoiceEmail       ),
         ];
 
-        /** FIXME FIXME-YR fix notes */
         return view( 'dashboard/index' )->with([
             'recentMembers'                 => Customer::getConnected( true, true, 'datejoin', 'desc' )->take( 5 ),
             'crossConnects'                 => $c->patchPanelPorts()->masterPort()->get(),
-            //'notesInfo'                     => D2EM::getRepository( CustomerNoteEntity::class   )->analyseForUser(      $cns, $c, Auth::getUser()  ),
-            'notesInfo'                     => [ 'unreadNotes' => 1, 'notesLastRead' => 0, 'notesReadUpto' => 1 ],
+            'notesInfo'                     => CustomerNote::analyseForUser( $cns, $c, Auth::getUser() ),
             'rsRoutes'                      => $rsRoutes        ?? null,
             'resoldCustomer'                => $resoldCustomer  ?? null,
             'netInfo'                       => $netinfo         ?? null,
@@ -150,7 +146,6 @@ class DashboardController extends Controller
     public function storeNocDetails( NocDetailsRequest $r ): RedirectResponse
     {
         $c = Auth::getUser()->customer;
-
         $c->nocphone        =   $r->nocphone;
         $c->noc24hphone     =   $r->noc24hphone;
         $c->nocemail        =   $r->nocemail;

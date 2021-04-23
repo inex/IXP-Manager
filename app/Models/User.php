@@ -103,6 +103,8 @@ use IXP\Traits\Observable;
  * @method static Builder|User whereUpdatedAt($value)
  * @method static Builder|User whereUsername($value)
  * @mixin Eloquent
+ * @property array|null $prefs
+ * @method static Builder|User wherePrefs($value)
  */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
@@ -121,11 +123,13 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      * @var array
      */
     protected $casts = [
-        'extra_attributes' => 'json',
+        'extra_attributes'  => 'json',
+        'prefs'             => 'json',
     ];
 
     protected $attributes = [
-        'extra_attributes' => '[]',
+        'extra_attributes'  => '[]',
+        'prefs'             => '{}',
     ];
 
     public const AUTH_PUBLIC    = 0;

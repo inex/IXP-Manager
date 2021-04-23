@@ -4,7 +4,8 @@
 
     /** @var \IXP\Models\Customer $c */
     $c = $t->c;
-    $isSuperUser = Auth::getUser()->isSuperUser();
+    $user = Auth::getUser();
+    $isSuperUser = $user->isSuperUser();
     $logo = $c->logo;
 ?>
 
@@ -360,7 +361,7 @@
                 </div>
 
                 <div id="notes" class="tab-pane fade <?php if( $t->tab === 'notes' ): ?> active show <?php endif; ?>">
-                    <?= $t->insert( 'customer/overview-tabs/notes', [ 'isSuperUser' => $isSuperUser ] ); ?>
+                    <?= $t->insert( 'customer/overview-tabs/notes', [ 'isSuperUser' => $isSuperUser, 'user' => $user ] ); ?>
                 </div>
 
                 <div id="cross-connects" class="tab-pane fade">

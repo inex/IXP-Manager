@@ -47,11 +47,11 @@ trait Observable
                 function( Model $model ) {
                     // create or update?
                     if( $model->wasRecentlyCreated ) {
-                        static::logChange( $model, Log::ACTION_CREATE );
+                        static::logChange( $model, Log::ACTION_CREATED );
                     } elseif ( $model->getChanges() ) {
                         // Check if with have field with log exception
                         if( !( isset( $model->field_log_exception ) && empty( array_diff( array_values( $model->field_log_exception ), array_keys( $model->getChanges() ) ) ) ) ){
-                            static::logChange( $model, Log::ACTION_UPDATE );
+                            static::logChange( $model, Log::ACTION_UPDATED );
                         }
                     }
                 }
@@ -59,7 +59,7 @@ trait Observable
 
             static::deleted(
                 function( Model $model ) {
-                    static::logChange( $model, Log::ACTION_DELETE );
+                    static::logChange( $model, Log::ACTION_DELETED );
                 }
             );
         }
@@ -83,9 +83,9 @@ trait Observable
                 'action'    => $action,
                 'message'   => static::logSubject( $model ),
                 'models'    => [
-                    'new'       => $action !== Log::ACTION_DELETE ? $model->getAttributes()  : null,
-                    'old'       => $action !== Log::ACTION_CREATE ? $model->getOriginal()    : null,
-                    'changed'   => $action === Log::ACTION_UPDATE ? $model->getChanges()     : null,
+                    'new'       => $action !== Log::ACTION_DELETED ? $model->getAttributes()  : null,
+                    'old'       => $action !== Log::ACTION_CREATED ? $model->getOriginal()    : null,
+                    'changed'   => $action === Log::ACTION_UPDATED ? $model->getChanges()     : null,
                 ]
             ]
         );

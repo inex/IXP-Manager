@@ -45,8 +45,8 @@ Route::group( [ 'prefix' => 'ixps' ], function() {
 // Customer Note
 //
 Route::group( [ 'prefix' => 'customer-note', 'namespace' => 'Customer\Note'], function() {
-    Route::get(    'ping/{id?}',            'CustomerNotesController@ping'      )->name( 'customer-notes@ping');
-    Route::get(    'get/{id}',              'CustomerNotesController@get'       )->name( 'customer-notes@get');
+    Route::get(    'ping/{c?}',            'CustomerNotesController@ping'      )->name( 'customer-notes@ping');
+    Route::get(    'get/{cn}',             'CustomerNotesController@get'       )->name( 'customer-notes@get');
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

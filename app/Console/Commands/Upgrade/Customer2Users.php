@@ -97,11 +97,6 @@ class Customer2Users extends IXPCommand
             $c2u->last_login_from =     null;
             $c2u->extra_attributes =      [ "created_by" => [ "type" => "migration-script" ] ];
             $c2u->save();
-            /** FIXME FIXME-YR */
-
-//                ->setLastLoginAt( $u->getPreference( 'auth.last_login_at' ) ? new \DateTime( date( 'Y-m-d H:i:s' , $u->getPreference( 'auth.last_login_at' ) ) ) : null )
-//                ->setLastLoginFrom(     $u->getPreference( 'auth.last_login_from' ) )
-//
 
             UserLoginHistory::where( 'user_id', $u->id )->update( ['customer_to_user_id' => $c2u->id ] );
 

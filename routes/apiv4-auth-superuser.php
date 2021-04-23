@@ -144,11 +144,12 @@ Route::group( [  'prefix' => 'vlan' ], function() {
 // Customer Note
 //
 Route::group( [ 'namespace' => 'Customer\Note', 'prefix' => 'customer-note' ], function() {
-    Route::get(    'notify-toggle/customer/{id}', 'CustomerNotesController@notifyToggleCustomer' )->name( 'customer-notes@notify-toggle-customer');
-    Route::get(    'notify-toggle/note/{id}',     'CustomerNotesController@notifyToggleNote'     )->name( 'customer-notes@notify-toggle-note');
+    Route::get(    'notify-toggle/customer/{cust}', 'CustomerNotesController@notifyToggleCustomer' )->name( 'customer-notes@notify-toggle-customer' );
+    Route::get(    'notify-toggle/note/{cn}',       'CustomerNotesController@notifyToggleNote'     )->name( 'customer-notes@notify-toggle-note'     );
 
-    Route::post(    'add',                             'CustomerNotesController@add'                    )->name( 'customer-notes@add');
-    Route::post(    'delete/{id}',                     'CustomerNotesController@delete'                 )->name( 'customer-notes@delete');
+    Route::post(    'create/customer/{cust}',      'CustomerNotesController@create'             )->name( 'customer-notes@create');
+    Route::put(    'update/{cn}',                  'CustomerNotesController@update'             )->name( 'customer-notes@update');
+    Route::delete(  'delete/{cn}',                  'CustomerNotesController@delete'            )->name( 'customer-notes@delete');
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

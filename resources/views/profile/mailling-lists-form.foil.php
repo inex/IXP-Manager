@@ -27,7 +27,7 @@
                     ->label( '' )
                     ->value( 1 )
                     ->inline()
-                    ->check( isset( $t->mailingListSubscriptions[ $name ] ) ? true : false )
+                    ->check(isset( $t->mailingListSubscriptions[ $name ] ) && $t->mailingListSubscriptions[ $name ] )
                     ->text( "<strong>".$ml[ "name"] ."</strong> - " . $ml[ "desc" ]
                         . "(" . ( ( $ml[ "email" ] ) ? "<a href='mailto:" .$ml[ "email" ]. " '>" . $ml[ "email" ] . "</a> - " : '' )
                         . "<a target='_blank' href='" . $ml[ "archive" ] ."'>archives</a>)"

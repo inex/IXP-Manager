@@ -44,12 +44,12 @@ use IXP\Models\{
     CompanyBillingDetail,
     CompanyRegisteredDetail,
     Customer,
+    CustomerNote,
     CustomerTag,
     IrrdbConfig,
     NetworkInfo,
     Router,
-    Vlan
-};
+    Vlan};
 
 use IXP\Mail\Customer\WelcomeEmail;
 
@@ -420,31 +420,20 @@ class CustomerController extends Controller
      *
      * @throws
      */
-    public function overview( Request $r, Customer $cust, string $tab = null ) : View
+    public function overview( Customer $cust, string $tab = null ) : View
     {
         $grapher = App::make( Grapher::class );
 
         // get customer's notes
-        // FIXME FIXME-YR
-        //$cns = D2EM::getRepository( CustomerNoteEntity::class )->fetchForCustomer( $c );
-        $cns = collect();
+        $notes = $cust->customerNotes()->orderByDesc( 'created_at' )->get();
   
         return view( 'customer/overview' )->with([
             'c'                         => $cust,
             'customers'                 => Customer::select([ 'id', 'name' ])->current()
                 ->orderBy( 'name' )->get()->keyBy( 'id' )->toArray(),
             'netInfo'                   => NetworkInfo::vlanProtocol(),
-            // is this user watching all notes for this customer?
-            //'coNotifyAll'               => Auth::getUser()->getPreference( "customer-notes.{$c->getId()}.notify" ) ? true : false,
-            'coNotifyAll'               => false,
-
-            // what specific notes is this user watching?
-            //'coNotify'                  => Auth::getUser()->getAssocPreference( "customer-notes.watching" ) ? Auth::getUser()->getAssocPreference( "customer-notes.watching" )[0] : [],
-            'coNotify'                  => [],
-
             'rsRoutes'                  => ( config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) && $cust->routeServerClient() )
                                                 ? RsPrefixAggregator::aggregateRouteSummariesForCustomer( $cust->id ) : false,
-
             'crossConnects'             => $cust->patchPanelPorts()->masterPort()->get(),
             'crossConnectsHistory'      => $cust->patchPanelPortHistories()->masterPort()->get(),
             'aggregateGraph'            => $cust->isGraphable() ? $grapher->customer( $cust ) : false,
@@ -454,9 +443,8 @@ class CustomerController extends Controller
             'as112UiActive'             => $this->as112UiActive(),
             'countries'                 => Countries::getList('name' ),
             'tab'                       => strtolower( $tab ) ?: false,
-            'notes'                     => $cns,
-            //'notesInfo'                 => D2EM::getRepository( CustomerNoteEntity::class )->analyseForUser( $cns, $c, D2EM::getRepository( UserEntity::class )->find( Auth::getUser()->id ) ),
-            'notesInfo'                 => [ 'unreadNotes' => 1, 'notesLastRead' => 0, 'notesReadUpto' => 1 ],
+            'notes'                     => $notes,
+            'notesInfo'                 => CustomerNote::analyseForUser( $notes, $cust, Auth::getUser() ),
             'peers'                     => CustomerAggregator::getPeeringManagerArrayByType( $cust, Vlan::peeringManager()->orderBy( 'number' )->get(), [ 4,6 ] ) ?: false
         ]);
     }

@@ -3,7 +3,7 @@
 namespace IXP\Mail\Customer\Note;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -36,7 +36,7 @@ use IXP\Events\Customer\Note\Changed as CustomerNoteChangedEvent;
  * @author     Yann Robin      <yann@islandbridgenetworks.ie>
  * @category   Customer
  * @package    IXP\Mail\Customer
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Changed extends Mailable
@@ -53,6 +53,7 @@ class Changed extends Mailable
      * Create a new message instance.
      *
      * @param CustomerNoteChangedEvent $e
+     *
      * @return void
      */
     public function __construct( CustomerNoteChangedEvent $e )
@@ -67,7 +68,7 @@ class Changed extends Mailable
      */
     public function build()
     {
-        $cust = $this->event->getNote() ? $this->event->getNote()->getCustomer() : $this->event->getOldNote()->getCustomer();
+        $cust = $this->event->note() ? $this->event->note()->customer : $this->event->oldNote()->customer;
         return $this->markdown( 'customer.emails.note-changed' )
             ->subject( env('IDENTITY_NAME') . " :: Customer Notes :: " . $cust->getFormattedName() );
     }

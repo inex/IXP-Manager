@@ -1,35 +1,35 @@
 @component('mail::message')
 
-# Note {{$event->getActionDescription()}} :: {{$event->getCustomer()->getFormattedName()}}
+# Note {{$event->actionDescription()}} :: {{$event->customer()->getFormattedName()}}
 
-**{{$event->getActionDescription()}} by:** [{{$event->getUser()->getUsername()}}](mailto:{{$event->getUser()->getEmail()}})
+**{{$event->actionDescription()}} by:** [{{$event->user()->username}}](mailto:{{$event->user()->email}})
 
-**Visibility:** @if( $event->getEitherNote()->getPrivate()) Admins only @else Admins and customer @endif
+**Visibility:** @if( $event->eitherNote()->private) Admins only @else Admins and customer @endif
 
 
-@if( $event->getNote() )
+@if( $event->note() )
 
-## {{$event->getNote()->getTitle()}}
+## {{$event->note()->title}}
 
 @component('mail::panel')
-{{$event->getNote()->getNote()}}
+{{$event->note()->note}}
 @endcomponent
 
 @endif
 
 
-@if( $event->getOldNote() )
+@if( $event->oldNote() )
 
 ## Old Note Details
 
-### {{$event->getOldNote()->getTitle()}}
+### {{$event->oldNote()->title}}
 
-@if( $event->getNote() && $event->getNote()->getPrivate() != $event->getOldNote()->getPrivate() )
-**Visibility:** @if( $event->getOldNote()->getPrivate()) Admins only @else Admins and customer @endif
+@if( $event->note() && $event->note()->private !== $event->oldNote()->private )
+**Visibility:** @if( $event->oldNote()->private) Admins only @else Admins and customer @endif
 @endif
 
 @component('mail::panel')
-{{$event->getOldNote()->getNote()}}
+{{$event->oldNote()->note}}
 @endcomponent
 
 @endif
