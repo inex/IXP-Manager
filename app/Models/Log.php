@@ -30,19 +30,20 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * IXP\Models\Log
  *
- * @method static Builder|Log newModelQuery()
- * @method static Builder|Log newQuery()
- * @method static Builder|Log query()
- * @mixin \Eloquent
  * @property int $id
  * @property int|null $user_id
  * @property string $model
  * @property int|null $model_id
  * @property string $action
  * @property string $message
- * @property mixed $models
+ * @property array $models
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\User|null $user
+ * @method static Builder|Log filter(array $filters)
+ * @method static Builder|Log newModelQuery()
+ * @method static Builder|Log newQuery()
+ * @method static Builder|Log query()
  * @method static Builder|Log whereAction($value)
  * @method static Builder|Log whereCreatedAt($value)
  * @method static Builder|Log whereId($value)
@@ -52,8 +53,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static Builder|Log whereModels($value)
  * @method static Builder|Log whereUpdatedAt($value)
  * @method static Builder|Log whereUserId($value)
- * @property-read \IXP\Models\User|null $user
- * @method static Builder|Log filter(array $filters)
+ * @mixin \Eloquent
  */
 class Log extends Model
 {

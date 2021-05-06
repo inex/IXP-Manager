@@ -47,13 +47,12 @@ class LogController extends Controller
     /**
      * Search in logs list
      *
-     * @param Request   $r
+     * @param  Request  $r
      *
-     * @return Application|Factory|\Illuminate\Contracts\View\View|View
+     * @return Factory|\Illuminate\Contracts\View\View|View|Application
      */
-    public function search( Request $r )
+    public function search( Request $r ): Factory|\Illuminate\Contracts\View\View|View|Application
     {
-        dd($r->input());
         return $this->list( $r );
     }
     /**
@@ -63,13 +62,13 @@ class LogController extends Controller
      *
      * @return Application|Factory|\Illuminate\Contracts\View\View|View
      */
-    public function list( Request $r )
+    public function list( Request $r ): \Illuminate\Contracts\View\View|Factory|View|Application
     {
-        $model      = $r->model ?? null;
-        $model_id   = $r->model_id ?? null;
-        $user       = $r->user ?? null;
-        $action     = $r->action ?? null;
-        $created_at = $r->created_at ?? null;
+        $model      = $r->model         ?? null;
+        $model_id   = $r->model_id      ?? null;
+        $user       = $r->user          ?? null;
+        $action     = $r->action        ?? null;
+        $created_at = $r->created_at    ?? null;
 
         return view( 'log/index' )->with([
             'model'     => $r->model ?? false,
@@ -99,11 +98,11 @@ class LogController extends Controller
     /**
      * Display the log details
      *
-     * @param   Log $log the log
+     * @param  Log  $log  the log
      *
-     * @return Application|Factory|\Illuminate\Contracts\View\View|View
+     * @return Factory|\Illuminate\Contracts\View\View|Application
      */
-    public function view( Log $log )
+    public function view( Log $log ): Factory|\Illuminate\Contracts\View\View|Application
     {
         return view( 'log/view' )->with([
             'log'   => $log

@@ -25,6 +25,9 @@ namespace IXP\Http\Controllers;
 
 use App, Auth, Countries, Redirect;
 
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -68,15 +71,15 @@ class DashboardController extends Controller
      * @param Request     $r
      * @param string|null $tab Tab from the overview selected
      *
-     * @return  \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @return  RedirectResponse|View
      *
      * @throws
      */
-    public function index( Request $r, string $tab = null )
+    public function index( Request $r, string $tab = null ): RedirectResponse|View
     {
         // Redirect Super user
-        if( Auth::user()->isSuperUser() ) {
-            return Redirect::to( '/');
+        if( Auth::getUser()->isSuperUser() ) {
+            return redirect( '/');
         }
 
         $c          = Auth::getUser()->customer;
@@ -155,7 +158,7 @@ class DashboardController extends Controller
         $c->save();
 
         AlertContainer::push( 'NOC details updated', Alert::SUCCESS );
-        return Redirect::to( route( "dashboard@index", [ "tab" => "details" ] ) );
+        return redirect( route( "dashboard@index", [ "tab" => "details" ] ) );
     }
 
     /**

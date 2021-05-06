@@ -30,6 +30,7 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\{
     Request,
@@ -187,7 +188,7 @@ class ApiKeyController extends EloquentController
         Former::populate( [
             'apiKey'            => request()->old( 'apiKey',    config( 'ixp_fe.api_keys.show_keys' ) ? $this->object->apiKey : Str::limit( $this->object->apiKey, 6 ) ),
             'description'       => request()->old( 'description',       $this->object->description ),
-            'expires'           => request()->old( 'expires',          $this->object->expires ? $this->object->expires->format( "Y-m-d" ) : null )
+            'expires'           => request()->old( 'expires',     $this->object->expires ? Carbon::parse( $this->object->expires )->format( 'Y-m-d' ) : null )
         ] );
 
         return [
@@ -245,11 +246,11 @@ class ApiKeyController extends EloquentController
     /**
      * Show the API Keys if the password match
      *
-     * @param Request $r
+     * @param  Request  $r
      *
-     * @return View
+     * @return RedirectResponse|View
      */
-    public function listShowKeys( Request $r ): View
+    public function listShowKeys( Request $r ): RedirectResponse|View
     {
         if( !Hash::check( $r->pass , $r->user()->password ) ) {
             AlertContainer::push( 'Incorrect password entered', Alert::DANGER );

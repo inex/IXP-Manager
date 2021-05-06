@@ -42,34 +42,26 @@ use Illuminate\Database\Eloquent\{
  * @property int $id
  * @property int|null $vlan_id
  * @property int|null $protocol
- * @property string|null $created
- * @property string|null $scheduled
- * @property string|null $started
- * @property string|null $completed
- * @property-read Collection|AtlasMeasurement[] $atlasMeasurements
- * @property-read int|null $atlas_measurements_count
- * @property-read Vlan|null $vlan
- * @method static Builder|AtlasRun newModelQuery()
- * @method static Builder|AtlasRun newQuery()
- * @method static Builder|AtlasRun query()
- * @method static Builder|AtlasRun whereCompleted($value)
- * @method static Builder|AtlasRun whereCreated($value)
- * @method static Builder|AtlasRun whereId($value)
- * @method static Builder|AtlasRun whereProtocol($value)
- * @method static Builder|AtlasRun whereScheduled($value)
- * @method static Builder|AtlasRun whereStarted($value)
- * @method static Builder|AtlasRun whereVlanId($value)
- * @mixin Eloquent
  * @property string|null $scheduled_at
  * @property string|null $started_at
  * @property string|null $completed_at
- * @property string|null $created_at
- * @property string|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasMeasurement[] $atlasMeasurements
+ * @property-read int|null $atlas_measurements_count
+ * @property-read \IXP\Models\Vlan|null $vlan
+ * @method static Builder|AtlasRun newModelQuery()
+ * @method static Builder|AtlasRun newQuery()
+ * @method static Builder|AtlasRun query()
  * @method static Builder|AtlasRun whereCompletedAt($value)
  * @method static Builder|AtlasRun whereCreatedAt($value)
+ * @method static Builder|AtlasRun whereId($value)
+ * @method static Builder|AtlasRun whereProtocol($value)
  * @method static Builder|AtlasRun whereScheduledAt($value)
  * @method static Builder|AtlasRun whereStartedAt($value)
  * @method static Builder|AtlasRun whereUpdatedAt($value)
+ * @method static Builder|AtlasRun whereVlanId($value)
+ * @mixin Eloquent
  */
 class AtlasRun extends Model
 {

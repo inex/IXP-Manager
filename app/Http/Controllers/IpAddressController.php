@@ -74,9 +74,9 @@ class IpAddressController extends Controller
      * @param int       $protocol   Protocol of the IP address
      * @param boolean   $model      Do we need to return the $model ?
      *
-     * @return IPv4Address | IPv6Address | integer
+     * @return int|string
      */
-    private function processProtocol( int $protocol , bool $model = true )
+    private function processProtocol( int $protocol , bool $model = true ): int|string
     {
         if( !in_array( $protocol, [ 4,6 ] ) ) {
             abort( 404 , 'Unknown protocol');
@@ -106,7 +106,10 @@ class IpAddressController extends Controller
             $vlan = Vlan::findOrFail( $vid );
         }
 
-        $ips = $this->processProtocol( $protocol, true )::selectRaw( 'ip.id as id, 
+        /** @var IPv4Address|IPv6Address $ipvxModel */
+        $ipvxModel = $this->processProtocol( $protocol, true );
+
+        $ips = $ipvxModel::selectRaw( 'ip.id as id, 
                         ip.address as address,' .
             ( $protocol === 4 ? 'inet_aton(ip.address) as aton' : 'hex( inet6_aton( ip.address ) ) as aton') .
                         ',v.name AS vlan, 
@@ -208,11 +211,11 @@ class IpAddressController extends Controller
      * @param DeleteByNetwork    $r Instance of the current HTTP request
      * @param Vlan                          $vlan
      *
-     * @return View | RedirectResponse
+     * @return View|RedirectResponse
      *
      * @throws
      */
-    public function deleteByNetwork( DeleteByNetwork $r, Vlan $vlan )
+    public function deleteByNetwork( DeleteByNetwork $r, Vlan $vlan ): View|RedirectResponse
     {
         $ips = [];
         if( $r->network ) {
@@ -263,7 +266,9 @@ class IpAddressController extends Controller
      */
     public function delete( Request $r, int $id ): RedirectResponse
     {
-        $ip = $this->processProtocol( $r->protocol , true )::findOrFail( $id );
+        /** @var IPv4Address|IPv6Address $ipvxModel */
+        $ipvxModel  = $this->processProtocol( $r->protocol , true );
+        $ip         = $ipvxModel::findOrFail( $id );
 
         if( $ip->vlanInterface ) {
             AlertContainer::push( 'This IP address is assigned to a VLAN interface.', Alert::DANGER );

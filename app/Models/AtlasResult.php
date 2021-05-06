@@ -38,19 +38,19 @@ use Illuminate\Database\Eloquent\{
  * @property int|null $measurement_id
  * @property string|null $routing
  * @property string|null $path
- * @property-read AtlasMeasurement $atlasMeasurement
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\AtlasMeasurement $atlasMeasurement
  * @method static Builder|AtlasResult newModelQuery()
  * @method static Builder|AtlasResult newQuery()
  * @method static Builder|AtlasResult query()
+ * @method static Builder|AtlasResult whereCreatedAt($value)
  * @method static Builder|AtlasResult whereId($value)
  * @method static Builder|AtlasResult whereMeasurementId($value)
  * @method static Builder|AtlasResult wherePath($value)
  * @method static Builder|AtlasResult whereRouting($value)
- * @mixin Eloquent
- * @property string|null $created_at
- * @property string|null $updated_at
- * @method static Builder|AtlasResult whereCreatedAt($value)
  * @method static Builder|AtlasResult whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 
 class AtlasResult extends Model
