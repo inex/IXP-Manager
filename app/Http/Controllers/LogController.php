@@ -53,7 +53,6 @@ class LogController extends Controller
      */
     public function search( Request $r )
     {
-        dd($r->input());
         return $this->list( $r );
     }
     /**
