@@ -140,7 +140,7 @@ class Contact extends Model
     public function contactGroupsAll(): BelongsToMany
     {
         return $this->belongsToMany(ContactGroup::class, 'contact_to_group', 'contact_id' )
-            ->orderBy( 'name', 'asc' );
+            ->orderBy( 'name' );
     }
 
     /**

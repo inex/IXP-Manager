@@ -764,16 +764,18 @@ class Customer extends Model
      * By default, the function will return some format of the ASN if no macro is
      * defined. To return null in this case, set `$nullIfNoMacro` to true.
      *
-     * @param int    $protocol One of 4 or 6 (defaults to 4)
-     * @param string $asnPrefix A prefix for the ASN if no macro is present. See above.
-     * @param bool   $nullIfNoMacro
+     * @param  int  $protocol  One of 4 or 6 (defaults to 4)
+     * @param  string  $asnPrefix  A prefix for the ASN if no macro is present. See above.
+     * @param  bool  $nullIfNoMacro
      *
      * @return string|null The ASN / AS macro as appropriate
+     *
+     * @throws \Exception
      */
-    public function asMacro( $protocol = 4, $asnPrefix = '', $nullIfNoMacro = false ): ?string
+    public function asMacro( int $protocol = 4, string $asnPrefix = '',bool $nullIfNoMacro = false ): ?string
     {
         if( !in_array( $protocol, [ 4, 6 ], true ) )
-            throw new \IXP_Exception( 'Invalid / unknown protocol. 4/6 accepted only.' );
+            throw new \Exception( 'Invalid / unknown protocol. 4/6 accepted only.' );
 
         // find the appropriate ASN or macro
         if( $protocol === 6 && strlen( $this->peeringmacrov6 ) > 3 ) {
@@ -792,11 +794,11 @@ class Customer extends Model
     /**
      * Get formatted name
      *
-     * @param null $fmt
+     * @param  null  $fmt
      *
-     * @return string
+     * @return null|string
      */
-    public function getFormattedName( $fmt = null ): string
+    public function getFormattedName( $fmt = null ): ?string
     {
         if( $this->type === self::TYPE_ASSOCIATE ) {
             return $this->abbreviatedName;
@@ -814,7 +816,7 @@ class Customer extends Model
                 $this->name,
                 $this->abbreviatedName,
                 $this->shortname,
-                $as ? $as          : '',
+                $as ?: '',
                 $as ? "[AS{$as}]"  : '',
                 $as ? "AS{$as}"    : '',
                 $as ? " - AS{$as}" : ''

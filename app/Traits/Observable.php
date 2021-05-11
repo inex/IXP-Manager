@@ -102,9 +102,11 @@ trait Observable
     /**
      * represents the model's attributes as a string
      *
-     * @param Model $model
+     * @param  Model  $model
      *
      * @return string
+     *
+     * @throws \JsonException
      *
      * @see logImplodeAssoc
      */
@@ -116,9 +118,11 @@ trait Observable
     /**
      * represents the array as a string
      *
-     * @param array $attrs
+     * @param  array  $attrs
      *
      * @return string
+     *
+     * @throws \JsonException
      */
     public static function logImplodeAssoc(array $attrs): string
     {
