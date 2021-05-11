@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers\Api\V4;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Illuminate\Database\Eloquent\Builder;
 
 use Illuminate\Http\{
@@ -38,8 +39,10 @@ use IXP\Models\{
     Router,
     Vlan
 };
+
 /**
  * Nagios API Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   APIv4
@@ -143,8 +146,7 @@ class NagiosController extends Controller
         $routers = Router::where( 'api_type', Router::API_TYPE_BIRDSEYE )
             ->when( $vlan, function( Builder $q, $vlan ) {
                 return $q->where( 'vlan_id', $vlan->id );
-            } )
-            ->orderBy( 'handle' )->get();
+            } )->orderBy( 'handle' )->get();
 
         if( !$routers->count() ) {
             abort( 404, "No routers for the provided VLAN ID / Bird's Eye API type." );

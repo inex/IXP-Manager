@@ -164,13 +164,13 @@ class PhysicalInterfaceController extends Common
     /**
      * Display the form to edit a physical interface from the core bundle
      *
-     * @param   Request             $r
-     * @param   PhysicalInterface   $pi the physical interface
-     * @param   CoreBundle          $cb core bundle
+     * @param  Request  $r
+     * @param  PhysicalInterface  $pi  the physical interface
+     * @param  CoreBundle  $cb  core bundle
      *
-     * @return View
+     * @return RedirectResponse|View
      */
-    public function editFromCb( Request $r, PhysicalInterface $pi , CoreBundle $cb ): View
+    public function editFromCb( Request $r, PhysicalInterface $pi , CoreBundle $cb ): View|RedirectResponse
     {
         return $this->edit( $r, $pi , null, $cb );
     }

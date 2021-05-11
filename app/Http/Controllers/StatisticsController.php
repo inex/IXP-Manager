@@ -27,6 +27,7 @@ use App, Auth, Carbon\Carbon;
 
 use Illuminate\Auth\Access\AuthorizationException;
 
+use IXP\Exceptions\Services\Grapher\ParameterException;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -231,14 +232,14 @@ class StatisticsController extends Controller
     /**
      * Show IXP trunk graphs
      *
-     * @param string|null   $trunk     ID of the trunk to show the graph of
-     * @param string        $category  Category of graph to show (e.g. bits / pkts)
+     * @param  string|null  $trunk  ID of the trunk to show the graph of
+     * @param  string  $category  Category of graph to show (e.g. bits / pkts)
      *
      * @return RedirectResponse|View
      *
-     * @throws
+     * @throws ParameterException
      */
-    public function trunk( string $trunk = null, string $category = Graph::CATEGORY_BITS )
+    public function trunk( string $trunk = null, string $category = Graph::CATEGORY_BITS ): RedirectResponse|View
     {
         if( !is_array( config('grapher.backends.mrtg.trunks') ) || !count( config('grapher.backends.mrtg.trunks') ) ) {
             AlertContainer::push(
@@ -277,11 +278,11 @@ class StatisticsController extends Controller
     /**
      * Display all member graphs
      *
-     * @param StatisticsRequest $r
+     * @param  StatisticsRequest  $r
      *
      * @return View
      *
-     * @throws
+     * @throws ParameterException
      */
     public function members( StatisticsRequest $r ): View
     {
@@ -355,7 +356,7 @@ class StatisticsController extends Controller
      * @return RedirectResponse|View
      *
      */
-    public function member( StatisticsRequest $r, Customer $cust = null )
+    public function member( StatisticsRequest $r, Customer $cust = null ): RedirectResponse|View
     {
         if( !$cust && Auth::check() ) {
             $cust = Auth::getUser()->customer;
@@ -386,13 +387,13 @@ class StatisticsController extends Controller
     /**
      * Display Aggregate/LAG/Port for all periods (day/week/month/year)
      *
-     * @param   StatisticsRequest     $r
-     * @param   string                $type       type
-     * @param   integer               $typeid     ID of type
+     * @param  StatisticsRequest  $r
+     * @param  string  $type  type
+     * @param  integer  $typeid  ID of type
      *
      * @return  View
      *
-     * @throws
+     * @throws ParameterException
      */
     public function memberDrilldown( StatisticsRequest $r, string $type, int $typeid ): View
     {
@@ -428,14 +429,14 @@ class StatisticsController extends Controller
     /**
      * Show latency graphs
      *
-     * @param VlanInterface     $vli
-     * @param string            $protocol
+     * @param  VlanInterface  $vli
+     * @param  string  $protocol
      *
      * @return View|RedirectResponse
      *
-     * @throws
+     * @throws ParameterException|AuthorizationException
      */
-    public function latency( VlanInterface $vli, string $protocol )
+    public function latency( VlanInterface $vli, string $protocol ): View|RedirectResponse
     {
         $protocol = Graph::processParameterProtocol( $protocol );
 
@@ -451,7 +452,7 @@ class StatisticsController extends Controller
                 "Protocol or ping not enabled on the requested interface",
                 Alert::WARNING
             );
-            return redirect()->to( route( "statistics@member" ), [ "id" => $vli->virtualInterface->customer->id ] );
+            return redirect( route( "statistics@member", [ "id" => $vli->virtualInterface->customer->id ] ) );
         }
 
         return view( 'statistics/latency' )->with([
@@ -467,27 +468,27 @@ class StatisticsController extends Controller
     /**
      * sFlow Peer to Peer statistics
      *
-     * @param Request $r
-     * @param Customer|null $cust
+     * @param  Request  $r
+     * @param  Customer|null  $cust
      *
      * @return RedirectResponse|View
      *
-     * @throws
+     * @throws ParameterException
      */
-    public function p2p( Request $r, Customer $cust = null )
+    public function p2p( Request $r, Customer $cust = null ): RedirectResponse|View
     {
         // default to the current user:
         if( !$cust && Auth::check() ) {
             $cust = Auth::getUser()->customer;
         }
 
+        $showGraphsOption = false;
+        $showGraphs       = true;
+
         // for larger IXPs, it's quite intensive to display all the graphs - decide if we need to do this or not
         if( config('grapher.backends.sflow.show_graphs_on_index_page') !== null ) {
             $showGraphsOption = true;
             $showGraphs       = config('grapher.backends.sflow.show_graphs_on_index_page');
-        } else {
-            $showGraphsOption = false;
-            $showGraphs       = true;
         }
 
         if( $showGraphsOption ) {
@@ -656,14 +657,14 @@ class StatisticsController extends Controller
     /**
      * Display graphs for a core bundle
      *
-     * @param StatisticsRequest   $r
-     * @param CoreBundle          $cb the core bundle
+     * @param  StatisticsRequest    $r
+     * @param  CoreBundle           $cb  the core bundle
      *
      * @return RedirectResponse|View
      *
-     * @throws
+     * @throws ParameterException
      */
-    public function coreBundle( StatisticsRequest $r, CoreBundle $cb )
+    public function coreBundle( StatisticsRequest $r, CoreBundle $cb ): RedirectResponse|View
     {
         $category = Graph::processParameterCategory( $r->input( 'category' ) );
         $graph    = App::make( Grapher::class )
@@ -692,8 +693,6 @@ class StatisticsController extends Controller
      * @param StatisticsRequest $r
      *
      * @return View
-     *
-     * @throws
      */
     public function utilisation( StatisticsRequest $r ): View
     {

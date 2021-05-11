@@ -98,10 +98,6 @@ class SwitchController extends EloquentController
             'addRoute'          => route( static::route_prefix() . '@create-by-snmp' ),
             'documentation'     => 'https://docs.ixpmanager.org/usage/switches/',
             'listColumns'       => [
-                'id'        => [
-                    'title' => 'UID',
-                    'display' => false
-                ],
                 'name'           => 'Name',
                 'cabinet'  => [
                     'title'      => 'Rack',
@@ -217,7 +213,7 @@ class SwitchController extends EloquentController
      *
      * @param Request $r
      *
-     * @return View|RedirectResponse
+     * @return View
      */
     public function list( Request $r  ) : View
     {
@@ -271,9 +267,9 @@ class SwitchController extends EloquentController
     /**
      * Set Up the the table to display the OS VIEW
      *
-     * @return bool
+     * @return void
      */
-    private function setUpOsView(): bool
+    private function setUpOsView(): void
     {
         $this->feParams->listColumns = [
             'id'        =>
@@ -305,15 +301,14 @@ class SwitchController extends EloquentController
                 'type'     => self::$FE_COL_TYPES[ 'YES_NO' ]
             ]
         ];
-        return true;
     }
 
     /**
      * Set Up the the table to display the OS VIEW
      *
-     * @return bool
+     * @return void
      */
-    private function setUpL3View(): bool
+    private function setUpL3View(): void
     {
         $this->feParams->listColumns = [
             'id'                => [
@@ -330,7 +325,6 @@ class SwitchController extends EloquentController
                 'type'     => self::$FE_COL_TYPES[ 'YES_NO' ]
             ]
         ];
-        return true;
     }
 
     /**
@@ -342,7 +336,8 @@ class SwitchController extends EloquentController
      */
     protected function listGetData( ?int $id = null ): array
     {
-        $feParams = $this->feParams;
+        $feParams   = $this->feParams;
+        $data       = $this->data;
         return Switcher::select( [
             'switch.*',
             'i.name AS infrastructure',
@@ -353,7 +348,7 @@ class SwitchController extends EloquentController
         ->leftJoin( 'vendor AS v', 'v.id', 'switch.vendorid')
         ->when( $id , function( Builder $q, $id ) {
             return $q->where('switch.id', $id );
-        } )->when( isset( $params[ 'params' ][ 'activeOnly' ] ) && $params[ 'params' ][ 'activeOnly' ] , function( Builder $q ) {
+        } )->when( isset( $data[ 'params' ][ 'activeOnly' ] ) && $data[ 'params' ][ 'activeOnly' ] , function( Builder $q ) {
             return $q->where('switch.active', true );
         } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
             return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
@@ -384,14 +379,12 @@ class SwitchController extends EloquentController
      * @param Request $r
      *
      * @return bool|RedirectResponse
-     *
-     * @throws
      */
-    public function doStore( Request $r )
+    public function doStore( Request $r ): bool|RedirectResponse
     {
         $this->checkForm( $r );
 
-        if( $r->asn && Switcher::whereAsn( $r->asn )->exists() ) {
+        if( $r->asn && Switcher::where( 'asn', $r->asn )->exists() ) {
             AlertContainer::push( "Note: this ASN is already is use by at least one other switch. If you are using eBGP, this may cause prefixes to be black-holed.", Alert::WARNING );
         }
 
@@ -452,13 +445,13 @@ class SwitchController extends EloquentController
      *
      * @throws
      */
-    public function doUpdate( Request $r, int $id )
+    public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = Switcher::findOrFail( $id );
 
         $this->checkForm( $r );
 
-        if( $r->asn && Switcher::whereAsn( $r->asn )->where( 'id', '!=', $this->object->id )->exists() ){
+        if( $r->asn && Switcher::where('asn', $r->asn )->where( 'id', '!=', $this->object->id )->exists() ){
             AlertContainer::push( "Note: this ASN is already is use by at least one other switch. If you are using eBGP, this may cause prefixes to be black-holed.", Alert::WARNING );
         }
 
@@ -485,13 +478,11 @@ class SwitchController extends EloquentController
     /**
      * Process the hostname and SNMP community, poll the switch and set up the proper add/edit form
      *
-     * @param StoreBySmtpRequest $r
+     * @param  StoreBySmtpRequest  $r
      *
-     * @return bool|RedirectResponse|View
-     *
-     * @throws
+     * @return View
      */
-    public function storeBySmtp( StoreBySmtpRequest $r )
+    public function storeBySmtp( StoreBySmtpRequest $r ): View
     {
         $vendorid = null;
 
@@ -503,7 +494,7 @@ class SwitchController extends EloquentController
             // Store the platform in session to be able to get back the information when we will create the object
             $r->session()->put( "snmp-platform", $snmp->getPlatform() );
 
-            if( $v = Vendor::whereName( $vendor )->first() ) {
+            if( $v = Vendor::where('name', $vendor )->first() ) {
                 $vendorid = $v->id;
             }
         } catch( SNMPException $e ) {
@@ -560,7 +551,6 @@ class SwitchController extends EloquentController
 
         return $okay;
     }
-
 
     /**
      * Display the Port report for a switch
@@ -699,8 +689,8 @@ class SwitchController extends EloquentController
             $location->id ?? null,
             $speed,
             $vlan->id ?? null,
-            $r->input( 'rs-client' )    ? true : false,
-            $r->input( 'ipv6-enabled' ) ? true : false
+            (bool) $r->input('rs-client'),
+            (bool) $r->input('ipv6-enabled')
         );
 
         return view( 'switches/configuration' )->with([
@@ -722,7 +712,7 @@ class SwitchController extends EloquentController
     /**
      * Check if the form is valid
      *
-     * @param $r
+     * @param Request $r
      */
     public function checkForm( Request $r ): void
     {
@@ -746,7 +736,7 @@ class SwitchController extends EloquentController
     /**
      * Add some extra attributes to the object
      *
-     * @param $r
+     * @param Request $r
      *
      * @return void
      *

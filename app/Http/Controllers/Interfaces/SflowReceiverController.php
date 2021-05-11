@@ -22,8 +22,7 @@ namespace IXP\Http\Controllers\Interfaces;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use Redirect, Former;
+use Exception, Former;
 
 use Illuminate\View\View;
 
@@ -89,14 +88,12 @@ class SflowReceiverController extends Common
      * @param   StoreSflowReceiver $r instance of the current HTTP request
      *
      * @return  RedirectResponse
-     *
-     * @throws
      */
     public function store( StoreSflowReceiver $r ): RedirectResponse
     {
         $sflr = SflowReceiver::create( $r->all() );
         AlertContainer::push( 'Sflow receiver created.', Alert::SUCCESS );
-        return Redirect::to( route( 'virtual-interface@edit', [ 'vi' => $sflr->virtual_interface_id ] ) );
+        return redirect( route( 'virtual-interface@edit', [ 'vi' => $sflr->virtual_interface_id ] ) );
     }
 
     /**
@@ -128,24 +125,22 @@ class SflowReceiverController extends Common
      * @param   SflowReceiver       $sflr
      *
      * @return  RedirectResponse
-     *
-     * @throws
      */
     public function update( StoreSflowReceiver $r, SflowReceiver $sflr ): RedirectResponse
     {
         $sflr->update( $r->all() );
         AlertContainer::push( 'Sflow receiver updated.', Alert::SUCCESS );
-        return Redirect::to( route( 'virtual-interface@edit', [ 'vi' => $sflr->virtualInterface->id ] ) );
+        return redirect( route( 'virtual-interface@edit', [ 'vi' => $sflr->virtualInterface->id ] ) );
     }
 
     /**
      * Delete a Sflow receiver
      *
-     * @param   SflowReceiver   $sflr
+     * @param  SflowReceiver  $sflr
      *
      * @return  RedirectResponse
      *
-     * @throws
+     * @throws Exception
      */
     public function delete( SflowReceiver $sflr ): RedirectResponse
     {
@@ -153,8 +148,8 @@ class SflowReceiverController extends Common
         AlertContainer::push( 'Sflow receiver deleted.', Alert::SUCCESS );
 
         if( $_SERVER[ "HTTP_REFERER" ] === route( "sflow-receiver@list" ) ){
-            return Redirect::to( route( "sflow-receiver@list" ) );
+            return redirect( route( "sflow-receiver@list" ) );
         }
-        return Redirect::to( route( "virtual-interface@edit" , [ "vi" => $sflr->virtualInterface->id ] ) );
+        return redirect( route( "virtual-interface@edit" , [ "vi" => $sflr->virtualInterface->id ] ) );
     }
 }

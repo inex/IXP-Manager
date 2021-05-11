@@ -23,8 +23,9 @@ namespace IXP\Http\Controllers\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Former, Hash, Log, Mail, Redirect;
+use Auth, Former, Hash, Log, Mail;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -74,8 +75,6 @@ class UserController extends Controller
      * Set as a session the redirect link
      *
      * @return Void
-     *
-     * @throws
      */
     private function redirectLink(): void
     {
@@ -121,8 +120,7 @@ class UserController extends Controller
             } )
             ->when( $u, function( Builder $q, $u ) {
                 return $q->where( 'u.id', $u->id );
-            } )
-            ->groupBy( 'id' )
+            } )->groupBy( 'id' )
             ->orderBy( 'username' )->get()->toArray();
     }
 
@@ -131,7 +129,7 @@ class UserController extends Controller
      *
      * @return  view
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function list(): View
     {
@@ -147,13 +145,13 @@ class UserController extends Controller
     /**
      * Display the first step form to Add a User object via email address
      *
-     * @param Request $r
+     * @param  Request  $r
      *
-     * @param Customer|null $cust
+     * @param  Customer|null  $cust
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function createForm( Request $r, Customer $cust = null ): View
     {
@@ -176,11 +174,11 @@ class UserController extends Controller
      *      if yes we get the user information and display the information of the user
      *      if no we display the create/edit form
      *
-     * @param CheckEmailRequest $r
+     * @param  CheckEmailRequest  $r
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function createCheckEmail( CheckEmailRequest $r ): RedirectResponse
     {
@@ -202,11 +200,11 @@ class UserController extends Controller
     /**
      * Allow to display the form to create a user
      *
-     * @param Request $r
+     * @param  Request  $r
      *
      * @return  View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function create( Request $r ): View
     {
@@ -239,11 +237,11 @@ class UserController extends Controller
     /**
      * Allow to create a User
      *
-     * @param   StoreUser $r instance of the current HTTP request
+     * @param  StoreUser  $r  instance of the current HTTP request
      *
      * @return  RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function store( StoreUser $r ): RedirectResponse
     {
@@ -289,12 +287,12 @@ class UserController extends Controller
     /**
      * Allow to display the form to Edit a user
      *
-     * @param User      $u
-     * @param Request   $r
+     * @param  User  $u
+     * @param  Request  $r
      *
      * @return  View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function edit( Request $r, User $u ): View
     {
@@ -331,7 +329,7 @@ class UserController extends Controller
 
         return view( 'user/edit' )->with([
             'user'                  => $u,
-            'disableInputs'         => $isSuperUser ? false : true,
+            'disableInputs'         => !$isSuperUser,
             'isAdd'                 => false,
             'custs'                 => Customer::orderBy( 'name' )->get(),
             'privs'                 => $this->getAllowedPrivs(),
@@ -342,12 +340,12 @@ class UserController extends Controller
     /**
      * Allow to update a User
      *
-     * @param UpdateUser    $r instance of the current HTTP request
-     * @param User          $u
+     * @param  UpdateUser  $r  instance of the current HTTP request
+     * @param  User  $u
      *
      * @return  RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function update( UpdateUser $r, User $u ): RedirectResponse
     {
@@ -369,6 +367,7 @@ class UserController extends Controller
         $u->save();
 
         if( !$isSuperUser ) {
+            /** @var $c2u CustomerToUser  */
             if( !( $c2u = $u->customerToUser()->where( 'customer_id', Auth::user()->custid  )->first() ) ) {
                 abort(404, 'UserToCustomer not found');
             }
@@ -384,8 +383,6 @@ class UserController extends Controller
 
     /**
      * Redirect the user post store
-     *
-     * @return RedirectResponse|string
      */
     protected function postStoreRedirect()
     {
@@ -408,11 +405,11 @@ class UserController extends Controller
     /**
      * Display the patch panel information
      *
-     * @param   User $u ID of the patch panel
+     * @param  User  $u  ID of the patch panel
      *
      * @return  view
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function view( User $u ): View
     {
@@ -433,12 +430,12 @@ class UserController extends Controller
     /**
      * Delete a user and everything related !!
      *
-     * @param   DeleteRequest   $r
-     * @param   User            $u
+     * @param  DeleteRequest  $r
+     * @param  User  $u
      *
      * @return  RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function delete( DeleteRequest $r, User $u ) : RedirectResponse
     {
@@ -462,14 +459,14 @@ class UserController extends Controller
         // If the user delete itself and is loggued as the same customer logout
         if( Auth::id() === $u->id ) {
             Auth::logout();
-            return Redirect::to( route( "login@showForm" ) );
+            return redirect( route( "login@showForm" ) );
         }
 
         if( Auth::user()->isSuperUser() && strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
-            return Redirect::to( route( "customer@overview", [ 'cust' => $u->custid , "tab" => "users"] ) );
+            return redirect( route( "customer@overview", [ 'cust' => $u->custid , "tab" => "users"] ) );
         }
 
-        return Redirect::to( route( "user@list" ) );
+        return redirect( route( "user@list" ) );
     }
 
     /**
@@ -477,17 +474,17 @@ class UserController extends Controller
      *
      * @param User      $u
      *
-     * @return bool|RedirectResponse
+     * @return RedirectResponse
      */
-    public function resendWelcomeEmail( User $u )
+    public function resendWelcomeEmail( User $u ): RedirectResponse
     {
         Mail::to( $u->email )->send( new UserCreatedeMailable( $u, true ) );
         AlertContainer::push( sprintf( 'The welcome email has been resent' ), Alert::SUCCESS );
 
         if( Auth::user()->isSuperUser() && strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
-            return Redirect::to( route( "customer@overview", [ 'cust' => $u->custid , "tab" => "users"] ) );
+            return redirect( route( "customer@overview", [ 'cust' => $u->custid , "tab" => "users"] ) );
         }
 
-        return redirect::to( route( "user@list" ) );
+        return redirect( route( "user@list" ) );
     }
 }

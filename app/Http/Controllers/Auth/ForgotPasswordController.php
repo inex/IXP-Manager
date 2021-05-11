@@ -164,7 +164,7 @@ class ForgotPasswordController extends Controller
      */
     public function sendUsernameEmail( ForgotUsernameRequest $r ) : RedirectResponse
     {
-        $users = User::whereEmail( $r->email )->get();
+        $users = User::where( 'email', $r->email )->get();
 
         if( count( $users ) ){
             event( new ForgotUsernameEvent( $users, $r->email ) );

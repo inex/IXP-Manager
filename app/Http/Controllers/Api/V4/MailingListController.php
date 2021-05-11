@@ -22,10 +22,8 @@ namespace IXP\Http\Controllers\Api\V4;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use Ds\Set;
-
 use IXP\Exceptions\MailingListException;
+
 use IXP\Utils\MailingList as ML;
 
 use Illuminate\Http\{
@@ -90,7 +88,7 @@ class MailingListController extends Controller
      *
      * @return JsonResponse|Response
      */
-    public function subscribers( string $listname )
+    public function subscribers( string $listname ): JsonResponse|Response
     {
         if( request()->is('api/v4/mailing-list/subscribers/json/*' ) ) {
             return response()->json( $this->getMailingList( $listname )->getSubscriberEmails() );
@@ -109,7 +107,7 @@ class MailingListController extends Controller
      *
      * @return JsonResponse|Response
      */
-    public function unsubscribed( string $listname )
+    public function unsubscribed( string $listname ): JsonResponse|Response
     {
         if( request()->is('api/v4/mailing-list/unsubscribed/json/*' ) ) {
             return response()->json( $this->getMailingList( $listname )->getSubscriberEmails(false ) );
@@ -140,9 +138,9 @@ class MailingListController extends Controller
      *
      * @return JsonResponse|Response
      */
-    public function init( Request $request, string $listname )
+    public function init( Request $request, string $listname ): JsonResponse|Response
     {
-        $addresses = new Set;
+        $addresses = collect();
 
         foreach( explode( "\n", $request->addresses ) as $a ) {
             $addresses->add( strtolower( trim( $a ) ) );

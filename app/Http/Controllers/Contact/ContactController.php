@@ -143,10 +143,6 @@ class ContactController extends EloquentController
                 $this->feParams->pagetitle = 'Your Contacts';
 
                 $this->feParams->listColumns = [
-                    'id'        => [
-                        'title' => 'UID',
-                        'display' => false
-                    ],
                     'name'      => 'Name',
                     'position'  => 'Position',
                     'email'     => 'Email',
@@ -337,7 +333,7 @@ class ContactController extends EloquentController
      *
      * @throws
      */
-    public function doStore( Request $r )
+    public function doStore( Request $r ): bool|RedirectResponse
     {
 
         $this->checkForm( $r );
@@ -418,7 +414,7 @@ class ContactController extends EloquentController
      *
      * @throws
      */
-    public function doUpdate( Request $r, int $id )
+    public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = Contact::findOrFail( $id );
         $this->checkForm( $r );

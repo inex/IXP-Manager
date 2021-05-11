@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\Api\V4\Customer\Note;
 
 use Auth;
 
+use Exception;
 use Illuminate\Support\Facades\Log;
 use IXP\Exceptions\GeneralException;
 
@@ -70,7 +71,6 @@ class CustomerNotesController extends Controller
     {
         $user   = Auth::getUser();
         $cn     = new CustomerNote;
-        $old    = null;
 
         $cn->title          =   $r->title;
         $cn->note           =   $r->note ;
@@ -92,12 +92,12 @@ class CustomerNotesController extends Controller
     /**
      * Update note for a customer
      *
-     * @param Request       $r      instance of the current HTTP request
-     * @param CustomerNote  $cn
+     * @param  Request  $r  instance of the current HTTP request
+     * @param  CustomerNote  $cn
      *
      * @return JsonResponse
      *
-     * @throws
+     * @throws GeneralException
      */
     public function update( Request $r, CustomerNote $cn ): JsonResponse
     {
@@ -128,8 +128,6 @@ class CustomerNotesController extends Controller
      * @param CustomerNote $cn customer note
      *
      * @return JsonResponse
-     *
-     * @throws
      */
     public function get( CustomerNote $cn ): JsonResponse
     {
@@ -150,11 +148,11 @@ class CustomerNotesController extends Controller
     /**
      * Delete a customer note
      *
-     * @param CustomerNote $cn customer note
+     * @param  CustomerNote  $cn  customer note
      *
      * @return JsonResponse
      *
-     * @throws
+     * @throws GeneralException|Exception
      */
     public function delete( CustomerNote $cn ) : JsonResponse
     {
@@ -164,15 +162,12 @@ class CustomerNotesController extends Controller
         return response()->json( [ 'noteid' => $on->id ] );
     }
 
-
     /**
      * Update the last read for this user
      *
      * @param Customer|null $c
      *
      * @return JsonResponse
-     *
-     * @throws
      */
     public function ping( Customer $c = null ): JsonResponse
     {
@@ -190,15 +185,12 @@ class CustomerNotesController extends Controller
         return response()->json( true );
     }
 
-
     /**
      * Watch/Unwatch all notes for a customer
      *
      * @param Customer $cust  Customer
      *
      * @return JsonResponse
-     *
-     * @throws
      */
     public function notifyToggleCustomer( Customer $cust ): JsonResponse
     {
@@ -211,8 +203,6 @@ class CustomerNotesController extends Controller
      * @param CustomerNote $cn
      *
      * @return JsonResponse
-     *
-     * @throws
      */
     public function notifyToggleNote( CustomerNote $cn ): JsonResponse
     {
@@ -226,8 +216,6 @@ class CustomerNotesController extends Controller
      * @param CustomerNote|null $cn
      *
      * @return JsonResponse
-     *
-     * @throws
      */
     private function notifyToggle( Customer $cust = null, CustomerNote $cn = null ): JsonResponse
     {

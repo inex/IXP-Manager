@@ -23,6 +23,8 @@ namespace IXP\Http\Controllers\DocstoreCustomer;
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
 
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Log, Storage;
 
 use Former\Facades\Former;
@@ -50,10 +52,11 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-use \League\Flysystem\Exception as FlySystemException;
+use League\Flysystem\Exception as FlySystemException;
 
 /**
  * FileController Controller
+ *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   DocstoreCustomer
@@ -66,12 +69,12 @@ class FileController extends Controller
     /**
      * View a docstore customer file apply to allowed mimetype ( DocstoreFile::$
      *
-     * @param Customer              $cust
-     * @param DocstoreCustomerFile  $file
+     * @param  Customer  $cust
+     * @param  DocstoreCustomerFile  $file
      *
      * @return mixed
      *
-     * @throws
+     * @throws AuthorizationException|FileNotFoundException
      */
     public function view( Customer $cust, DocstoreCustomerFile $file )
     {
@@ -91,12 +94,12 @@ class FileController extends Controller
     /**
      * Download a docstore customer file
      *
-     * @param Customer              $cust
-     * @param DocstoreCustomerFile  $file
+     * @param  Customer  $cust
+     * @param  DocstoreCustomerFile  $file
      *
      * @return mixed
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function download( Customer $cust, DocstoreCustomerFile $file )
     {
@@ -113,11 +116,11 @@ class FileController extends Controller
     /**
      * Get information on a docstore customer file
      *
-     * @param DocstoreCustomerFile  $file
+     * @param  DocstoreCustomerFile  $file
      *
      * @return mixed
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function info( DocstoreCustomerFile $file )
     {
@@ -136,12 +139,12 @@ class FileController extends Controller
     /**
      * Upload a new docstore customer file
      *
-     * @param Request   $r
-     * @param Customer  $cust
+     * @param  Request  $r
+     * @param  Customer  $cust
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function upload( Request $r, Customer $cust ): view
     {
@@ -161,12 +164,12 @@ class FileController extends Controller
     /**
      * Store a docstore customer file uploaded
      *
-     * @param Request   $r
-     * @param Customer  $cust
+     * @param  Request  $r
+     * @param  Customer  $cust
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function store( Request $r, Customer $cust ): RedirectResponse
     {
@@ -199,13 +202,13 @@ class FileController extends Controller
     /**
      * Edit a docstore customer file uploaded
      *
-     * @param Request               $r
-     * @param Customer              $cust
-     * @param DocstoreCustomerFile  $file
+     * @param  Request  $r
+     * @param  Customer  $cust
+     * @param  DocstoreCustomerFile  $file
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function edit( Request $r, Customer $cust, DocstoreCustomerFile $file ): View
     {
@@ -229,13 +232,13 @@ class FileController extends Controller
     /**
      * Update a docstore customer file uploaded
      *
-     * @param Request               $r
-     * @param Customer              $cust
-     * @param DocstoreCustomerFile  $file
+     * @param  Request                  $r
+     * @param  Customer                 $cust
+     * @param  DocstoreCustomerFile     $file
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function update( Request $r, Customer $cust, DocstoreCustomerFile $file ): RedirectResponse
     {
@@ -278,12 +281,12 @@ class FileController extends Controller
     /**
      * Delete a file
      *
-     * @param Request               $r
-     * @param DocstoreCustomerFile  $file
+     * @param  Request                  $r
+     * @param  DocstoreCustomerFile     $file
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function delete( Request $r , DocstoreCustomerFile $file ): RedirectResponse
     {
@@ -308,6 +311,7 @@ class FileController extends Controller
      * @param Request                       $r
      * @param DocstoreCustomerFile|null     $file
      *
+     * @return void
      */
     private function checkForm( Request $r, ?DocstoreCustomerFile $file = null ): void
     {

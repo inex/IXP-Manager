@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use App, Auth, Cache, Carbon\Carbon, Countries, Former, Mail, Redirect;
+use App, Auth, Cache, Countries, Former, Mail;
 
 use Illuminate\Database\Eloquent\Builder;
 
@@ -49,7 +49,8 @@ use IXP\Models\{
     IrrdbConfig,
     NetworkInfo,
     Router,
-    Vlan};
+    Vlan
+};
 
 use IXP\Mail\Customer\WelcomeEmail;
 
@@ -197,7 +198,7 @@ class CustomerController extends Controller
 
         Cache::forget( 'admin_home_customers' );
         AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' created.', Alert::SUCCESS );
-        return Redirect::to( route( 'customer@billing-registration' , [ 'cust' => $cust->id ] ) );
+        return redirect( route( 'customer@billing-registration' , [ 'cust' => $cust->id ] ) );
     }
 
     /**
@@ -215,8 +216,8 @@ class CustomerController extends Controller
             'type'                  => $r->old( 'type',                $cust->type              ),
             'shortname'             => $r->old( 'shortname',           $cust->shortname         ),
             'corpwww'               => $r->old( 'corpwww',             $cust->corpwww           ),
-            'datejoin'              => $r->old( 'datejoin',            !$cust->datejoin ?: Carbon::instance( $cust->datejoin )->format( "Y-m-d" ) ) ,
-            'dateleft'              => $r->old( 'dateleft',            !$cust->dateleave ?: Carbon::instance( $cust->dateleave )->format( "Y-m-d" ) ),
+            'datejoin'              => $r->old( 'datejoin',            !$cust->datejoin ?: $cust->datejoin->format( "Y-m-d" ) ) ,
+            'dateleft'              => $r->old( 'dateleft',            !$cust->dateleave ?: $cust->dateleave->format( "Y-m-d" ) ),
             'status'                => $r->old( 'status',              $cust->status                ),
             'MD5Support'            => $r->old( 'MD5Support',          $cust->MD5Support            ),
             'abbreviatedName'       => $r->old( 'abbreviatedName',     $cust->abbreviatedName       ),
@@ -269,7 +270,7 @@ class CustomerController extends Controller
 
         Cache::forget( 'admin_home_customers' );
         AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' updated ', Alert::SUCCESS );
-        return Redirect::to( route( "customer@overview" , [ "cust" => $cust->id ] ) );
+        return redirect( route( "customer@overview" , [ "cust" => $cust->id ] ) );
     }
 
     /**
@@ -353,7 +354,7 @@ class CustomerController extends Controller
         }
 
         event( new CustomerBillingDetailsChangedEvent( $ocbd, $cbd ) );
-        return Redirect::to( route( "customer@overview" , [ 'cust' => $cust->id , 'tab' => 'details' ]  ) );
+        return redirect( route( "customer@overview" , [ 'cust' => $cust->id , 'tab' => 'details' ]  ) );
     }
 
     /**
@@ -361,7 +362,7 @@ class CustomerController extends Controller
      *
      * @return RedirectResponse|View
      */
-    public function details()
+    public function details(): RedirectResponse|View
     {
         if( config( 'ixp_fe.customer.details_public') ) {
             return view( 'customer/details' )->with([
@@ -377,7 +378,7 @@ class CustomerController extends Controller
      *
      * @return RedirectResponse|View
      */
-    public function associates()
+    public function associates(): RedirectResponse|View
     {
         if( config( 'ixp_fe.customer.details_public') ) {
             return view( 'customer/details' )->with([
@@ -396,7 +397,7 @@ class CustomerController extends Controller
      *
      * @return RedirectResponse|View
      */
-    public function detail( Customer $cust )
+    public function detail( Customer $cust ): RedirectResponse|View
     {
         if( config( 'ixp_fe.customer.details_public') ) {
             return view( 'customer/detail' )->with([
@@ -412,7 +413,6 @@ class CustomerController extends Controller
     /**
      * Display the customer overview
      *
-     * @param   Request     $r
      * @param   Customer    $cust   the customer
      * @param   string|null $tab    Tab from the overview selected
      *
@@ -494,7 +494,7 @@ class CustomerController extends Controller
      *
      * @return RedirectResponse|View
      */
-    public function sendWelcomeEmail( WelcomeEmailRequest $r, Customer $cust )
+    public function sendWelcomeEmail( WelcomeEmailRequest $r, Customer $cust ): RedirectResponse|View
     {
         $mailable = new WelcomeEmail( $cust, $r );
 
@@ -507,7 +507,7 @@ class CustomerController extends Controller
 
         Mail::send( $mailable );
         AlertContainer::push( "Welcome email sent.", Alert::SUCCESS );
-        return Redirect::to( route( "customer@overview", [ "cust" => $cust->id ] ) );
+        return redirect( route( "customer@overview", [ "cust" => $cust->id ] ) );
     }
 
     /**
@@ -517,7 +517,7 @@ class CustomerController extends Controller
      *
      * @return  View|RedirectResponse
      */
-    public function deleteRecap( Customer $cust )
+    public function deleteRecap( Customer $cust ): RedirectResponse|View
     {
         // cannot delete a customer with active cross connects:
         if( $cust->patchPanelPorts->isNotEmpty() ) {
@@ -562,6 +562,6 @@ class CustomerController extends Controller
         } else {
             AlertContainer::push( "Customer could not be deleted. Please open a GitHub bug report.", Alert::DANGER );
         }
-        return Redirect::to( route( "customer@list" ) );
+        return redirect( route( "customer@list" ) );
     }
 }

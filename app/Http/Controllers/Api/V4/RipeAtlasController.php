@@ -26,7 +26,6 @@ namespace IXP\Http\Controllers\Api\V4;
 use GuzzleHttp\Client as GuzzleHttp;
 use GuzzleHttp\Exception\RequestException;
 
-
 /**
  * RipeAtlasController
  *
@@ -56,7 +55,7 @@ class RipeAtlasController extends Controller
         try {
             $req = $client->request( 'GET', $apiUrl );
 
-            if( $req->getStatusCode() == '200' ) {
+            if( $req->getStatusCode() === 200 ) {
                 return [ 'error' => false, 'response' => $req->getBody()->getContents() ];
 
             }

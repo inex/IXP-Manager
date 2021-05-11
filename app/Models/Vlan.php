@@ -65,7 +65,7 @@ use IXP\Traits\Observable;
  * @method static Builder|Vlan newQuery()
  * @method static Builder|Vlan peeringManager()
  * @method static Builder|Vlan privateOnly()
- * @method static Builder|Vlan publicOnly()
+ * @method static \Illuminate\Database\Eloquent\Builder|Vlan publicOnly()
  * @method static Builder|Vlan query()
  * @method static Builder|Vlan whereConfigName($value)
  * @method static Builder|Vlan whereCreatedAt($value)
@@ -206,7 +206,7 @@ class Vlan extends Model
     /**
      * Scope a query to only include peering manager
      *
-     * @param Builder $query
+     * @param  Builder  $query
      *
      * @return Builder
      */
