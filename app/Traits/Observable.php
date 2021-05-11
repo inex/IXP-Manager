@@ -24,6 +24,7 @@ namespace IXP\Traits;
  */
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 
@@ -42,7 +43,7 @@ trait Observable
 {
     public static function bootObservable(): void
     {
-        if( !config( 'ixp_fe.frontend.disabled.logs' ) ){
+        if( !config( 'ixp_fe.frontend.disabled.logs' ) && !App::runningInConsole() ){
             static::saved(
                 function( Model $model ) {
                     // create or update?
