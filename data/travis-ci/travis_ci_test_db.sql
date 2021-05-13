@@ -28,10 +28,10 @@ CREATE TABLE `api_keys` (
   `apiKey` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `expires` datetime DEFAULT NULL,
   `allowedIPs` mediumtext COLLATE utf8_unicode_ci,
-  `created_at` datetime DEFAULT NULL,
   `lastseenAt` datetime DEFAULT NULL,
   `lastseenFrom` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `description` longtext COLLATE utf8_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_9579321F800A1141` (`apiKey`),
@@ -46,7 +46,7 @@ CREATE TABLE `api_keys` (
 
 LOCK TABLES `api_keys` WRITE;
 /*!40000 ALTER TABLE `api_keys` DISABLE KEYS */;
-INSERT INTO `api_keys` VALUES (1,1,'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9',NULL,'','2014-01-06 14:43:19','2017-05-19 09:48:49','127.0.0.1',NULL,NULL),(3,2,'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC8',NULL,'','2014-01-06 14:43:19','2017-05-19 09:48:49','127.0.0.1',NULL,NULL),(4,3,'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC7',NULL,'','2014-01-06 14:43:19','2017-05-19 09:48:49','127.0.0.1',NULL,NULL);
+INSERT INTO `api_keys` VALUES (1,1,'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9',NULL,'','2017-05-19 09:48:49','127.0.0.1',NULL,'2014-01-06 13:43:19',NULL),(3,2,'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC8',NULL,'','2017-05-19 09:48:49','127.0.0.1',NULL,'2014-01-06 13:43:19',NULL),(4,3,'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC7',NULL,'','2017-05-19 09:48:49','127.0.0.1',NULL,'2014-01-06 13:43:19',NULL);
 /*!40000 ALTER TABLE `api_keys` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -348,7 +348,7 @@ CREATE TABLE `contact_group` (
   `type` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1',
   `limited_to` int(11) NOT NULL DEFAULT '0',
-  `created_at` datetime NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_40EA54CA5E237E06` (`name`)
@@ -361,7 +361,7 @@ CREATE TABLE `contact_group` (
 
 LOCK TABLES `contact_group` WRITE;
 /*!40000 ALTER TABLE `contact_group` DISABLE KEYS */;
-INSERT INTO `contact_group` VALUES (1,'Billing','Contact role for billing matters','ROLE',1,0,'2014-01-06 13:54:22',NULL),(2,'Technical','Contact role for technical matters','ROLE',1,0,'2014-01-06 13:54:22',NULL),(3,'Admin','Contact role for admin matters','ROLE',1,0,'2014-01-06 13:54:22',NULL),(4,'Marketing','Contact role for marketing matters','ROLE',1,0,'2014-01-06 13:54:22',NULL);
+INSERT INTO `contact_group` VALUES (1,'Billing','Contact role for billing matters','ROLE',1,0,'2014-01-06 12:54:22',NULL),(2,'Technical','Contact role for technical matters','ROLE',1,0,'2014-01-06 12:54:22',NULL),(3,'Admin','Contact role for admin matters','ROLE',1,0,'2014-01-06 12:54:22',NULL),(4,'Marketing','Contact role for marketing matters','ROLE',1,0,'2014-01-06 12:54:22',NULL);
 /*!40000 ALTER TABLE `contact_group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -529,15 +529,15 @@ CREATE TABLE `cust` (
   `dateleave` date DEFAULT NULL,
   `status` smallint(6) DEFAULT NULL,
   `activepeeringmatrix` tinyint(1) DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
   `lastupdatedby` int(11) DEFAULT NULL,
   `creator` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
   `MD5Support` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'UNKNOWN',
   `isReseller` tinyint(1) NOT NULL DEFAULT '0',
   `in_manrs` tinyint(1) NOT NULL DEFAULT '0',
   `in_peeringdb` tinyint(1) NOT NULL DEFAULT '0',
   `peeringdb_oauth` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_997B25A64082763` (`shortname`),
   UNIQUE KEY `UNIQ_997B25A98386213` (`company_registered_detail_id`),
@@ -557,7 +557,7 @@ CREATE TABLE `cust` (
 
 LOCK TABLES `cust` WRITE;
 /*!40000 ALTER TABLE `cust` DISABLE KEYS */;
-INSERT INTO `cust` VALUES (1,NULL,1,1,NULL,'INEX',3,'inex','INEX',2128,1000,'peering@siep.net','+353 1 123 4567','+353 1 123 4567','+353 1 123 4568','noc@siep.com','24x7','http://www.siep.com/noc/','AS-INEX','AS-INEX','mandatory','http://www.siep.com/','2014-01-06',NULL,1,1,NULL,NULL,'travis','2014-01-06 00:00:00','YES',0,0,0,1),(2,1,2,2,NULL,'HEAnet',1,'heanet','HEAnet',1213,1000,'peering@example.com','','','','','0','','AS-HEANET',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,NULL,'travis','2014-01-06 00:00:00','UNKNOWN',0,0,0,1),(3,13,3,3,NULL,'PCH DNS',1,'pchdns','PCH DNS',42,2000,'peering@example.com','','','','','0','','AS-PCH',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,'2014-01-06 00:00:00',1,'travis','2014-01-06 00:00:00','YES',0,0,0,1),(4,2,4,4,NULL,'AS112',4,'as112','AS112',112,20,'peering@example.com','','','','','0','','',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,NULL,'travis','2014-01-06 00:00:00','NO',0,0,0,1),(5,1,5,5,NULL,'Imagine',1,'imagine','Imagine',25441,1000,'peering@example.com','','','','','0','','AS-IBIS',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,NULL,'travis','2014-01-06 00:00:00','YES',0,0,0,1);
+INSERT INTO `cust` VALUES (1,NULL,1,1,NULL,'INEX',3,'inex','INEX',2128,1000,'peering@siep.net','+353 1 123 4567','+353 1 123 4567','+353 1 123 4568','noc@siep.com','24x7','http://www.siep.com/noc/','AS-INEX','AS-INEX','mandatory','http://www.siep.com/','2014-01-06',NULL,1,1,NULL,'travis','YES',0,0,0,1,'2014-01-05 23:00:00',NULL),(2,1,2,2,NULL,'HEAnet',1,'heanet','HEAnet',1213,1000,'peering@example.com','','','','','0','','AS-HEANET',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,'travis','UNKNOWN',0,0,0,1,'2014-01-05 23:00:00',NULL),(3,13,3,3,NULL,'PCH DNS',1,'pchdns','PCH DNS',42,2000,'peering@example.com','','','','','0','','AS-PCH',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,1,'travis','YES',0,0,0,1,'2014-01-05 23:00:00','2014-01-05 23:00:00'),(4,2,4,4,NULL,'AS112',4,'as112','AS112',112,20,'peering@example.com','','','','','0','','',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,'travis','NO',0,0,0,1,'2014-01-05 23:00:00',NULL),(5,1,5,5,NULL,'Imagine',1,'imagine','Imagine',25441,1000,'peering@example.com','','','','','0','','AS-IBIS',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,'travis','YES',0,0,0,1,'2014-01-05 23:00:00',NULL);
 /*!40000 ALTER TABLE `cust` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -574,8 +574,8 @@ CREATE TABLE `cust_notes` (
   `private` tinyint(1) NOT NULL DEFAULT '1',
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `note` longtext COLLATE utf8_unicode_ci NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_6377D8679395C3F3` (`customer_id`),
   CONSTRAINT `FK_6377D8679395C3F3` FOREIGN KEY (`customer_id`) REFERENCES `cust` (`id`) ON DELETE CASCADE
@@ -604,8 +604,8 @@ CREATE TABLE `cust_tag` (
   `display_as` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` longtext COLLATE utf8_unicode_ci,
   `internal_only` tinyint(1) NOT NULL DEFAULT '0',
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_6B54CFB8389B783` (`tag`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -617,7 +617,7 @@ CREATE TABLE `cust_tag` (
 
 LOCK TABLES `cust_tag` WRITE;
 /*!40000 ALTER TABLE `cust_tag` DISABLE KEYS */;
-INSERT INTO `cust_tag` VALUES (1,'test-tag1','Test Tag1','Yeah!',0,'2018-06-19 13:38:28','2018-06-19 13:38:28'),(2,'test-tag2','Test Tag2','Yeah!',1,'2018-06-19 13:38:44','2018-06-19 13:38:44');
+INSERT INTO `cust_tag` VALUES (1,'test-tag1','Test Tag1','Yeah!',0,'2018-06-19 11:38:28','2018-06-19 11:38:28'),(2,'test-tag2','Test Tag2','Yeah!',1,'2018-06-19 11:38:44','2018-06-19 11:38:44');
 /*!40000 ALTER TABLE `cust_tag` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -697,9 +697,9 @@ CREATE TABLE `customer_to_users` (
   `privs` int(11) NOT NULL,
   `last_login_date` datetime DEFAULT NULL,
   `last_login_from` tinytext COLLATE utf8mb4_unicode_ci,
-  `created_at` datetime DEFAULT NULL,
   `extra_attributes` json DEFAULT NULL COMMENT '(DC2Type:json)',
   `last_login_via` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `customer_user` (`customer_id`,`user_id`),
@@ -716,7 +716,7 @@ CREATE TABLE `customer_to_users` (
 
 LOCK TABLES `customer_to_users` WRITE;
 /*!40000 ALTER TABLE `customer_to_users` DISABLE KEYS */;
-INSERT INTO `customer_to_users` VALUES (1,1,1,3,'2020-07-10 07:54:18','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}','Login',NULL),(2,5,2,2,'2018-06-20 10:23:22','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}',NULL,NULL),(3,5,3,1,'2018-06-20 10:23:58','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}',NULL,NULL),(4,2,4,1,'1970-01-01 00:00:00','','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}',NULL,NULL),(5,2,5,2,'2018-06-20 10:24:24','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}',NULL,NULL);
+INSERT INTO `customer_to_users` VALUES (1,1,1,3,'2020-07-10 07:54:18','127.0.0.1','{\"created_by\": {\"type\": \"migration-script\"}}','Login','2019-05-10 11:40:45',NULL),(2,5,2,2,'2018-06-20 10:23:22','127.0.0.1','{\"created_by\": {\"type\": \"migration-script\"}}',NULL,'2019-05-10 11:40:45',NULL),(3,5,3,1,'2018-06-20 10:23:58','127.0.0.1','{\"created_by\": {\"type\": \"migration-script\"}}',NULL,'2019-05-10 11:40:45',NULL),(4,2,4,1,'1970-01-01 00:00:00','','{\"created_by\": {\"type\": \"migration-script\"}}',NULL,'2019-05-10 11:40:45',NULL),(5,2,5,2,'2018-06-20 10:24:24','127.0.0.1','{\"created_by\": {\"type\": \"migration-script\"}}',NULL,'2019-05-10 11:40:45',NULL);
 /*!40000 ALTER TABLE `customer_to_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1110,7 +1110,7 @@ CREATE TABLE `l2address` (
   `mac` varchar(12) COLLATE utf8_unicode_ci DEFAULT NULL,
   `firstseen` datetime DEFAULT NULL,
   `lastseen` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `mac_vlanint` (`mac`,`vlan_interface_id`),
@@ -1217,7 +1217,7 @@ CREATE TABLE `logos` (
   `uploaded_by` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `width` int(11) NOT NULL,
   `height` int(11) NOT NULL,
-  `created_at` datetime DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_9F54004F9395C3F3` (`customer_id`),
@@ -1276,7 +1276,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1285,7 +1285,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3),(9,'2020_07_21_094354_create_route_server_filters',4),(12,'2020_09_03_153723_add_timestamps',5),(13,'2020_09_18_095136_delete_ixp_table',6),(14,'2020_11_16_102415_database_fixes',7),(15,'2021_03_12_150418_create_log_table',8),(16,'2021_04_14_125742_user_pref',9);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3),(9,'2020_07_21_094354_create_route_server_filters',4),(12,'2020_09_03_153723_add_timestamps',5),(13,'2020_09_18_095136_delete_ixp_table',6),(14,'2020_11_16_102415_database_fixes',7),(15,'2021_03_12_150418_create_log_table',8),(16,'2021_04_14_125742_user_pref',9),(17,'2021_04_14_101948_update_timestamps',10);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1626,8 +1626,8 @@ CREATE TABLE `peering_manager` (
   `peered` tinyint(1) DEFAULT NULL,
   `rejected` tinyint(1) DEFAULT NULL,
   `notes` longtext COLLATE utf8_unicode_ci,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_35A72597DA0209B9` (`custid`),
   KEY `IDX_35A725974E5F9AFF` (`peerid`),
@@ -1785,13 +1785,13 @@ CREATE TABLE `routers` (
   `bgp_lc` tinyint(1) NOT NULL,
   `template` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `skip_md5` tinyint(1) NOT NULL,
-  `updated_at` datetime DEFAULT NULL,
   `rpki` tinyint(1) NOT NULL DEFAULT '0',
   `software_version` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `operating_system` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `operating_system_version` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `rfc1997_passthru` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_504FC9BE918020D9` (`handle`),
   KEY `IDX_504FC9BE8B4937A1` (`vlan_id`),
@@ -1805,7 +1805,7 @@ CREATE TABLE `routers` (
 
 LOCK TABLES `routers` WRITE;
 /*!40000 ALTER TABLE `routers` DISABLE KEYS */;
-INSERT INTO `routers` VALUES (1,1,'rc1-lan1-ipv4',4,2,'INEX LAN1 - Route Collector - IPv4','RC1 - LAN1 - IPv4','192.0.2.8','192.0.2.8',65500,'1','203.0.113.8','http://rc1-lan1-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL),(2,1,'rc1-lan1-ipv6',6,2,'INEX LAN1 - Route Collector - IPv6','RC1 - LAN1 - IPv6','192.0.2.8','2001:db8::8',65500,'1','2001:db8:0:0:2::8','http://rc1-lan1-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL),(3,2,'rc1-lan2-ipv4',4,2,'INEX LAN2 - Route Collector - IPv4','RC1 - LAN2 - IPv4','192.0.2.9','192.0.2.9',65500,'1','203.0.113.9','http://rc1-lan2-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL),(4,2,'rc1-lan2-ipv6',6,2,'INEX LAN2 - Route Collector - IPv6','RC1 - LAN2 - IPv6','192.0.2.9','2001:db8::9',65500,'1','2001:db8:0:0:2::9','http://rc1-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL),(5,1,'rs1-lan1-ipv4',4,1,'INEX LAN1 - Route Server - IPv4','RS1 - LAN1 - IPv4','192.0.2.18','192.0.2.18',65501,'1','203.0.113.18','http://rs1-lan1-ipv4.mgmt.example.com/api',0,0,0,0,'api/v4/router/server/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL),(6,1,'rs1-lan1-ipv6',6,1,'INEX LAN1 - Route Server - IPv6','RS1 - LAN1 - IPv6','192.0.2.18','2001:db8::18',65501,'1','2001:db8:0:0:2::18','http://rs1-lan1-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/server/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL),(7,2,'rs1-lan2-ipv4',4,1,'INEX LAN2 - Route Server - IPv4','RS1 - LAN2 - IPv4','192.0.2.19','192.0.2.19',65501,'1','203.0.113.19','http://rs1-lan2-ipv4.mgmt.example.com/api',1,0,0,1,'api/v4/router/server/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL),(8,2,'rs1-lan2-ipv6',6,1,'INEX LAN2 - Route Server - IPv6','RS1 - LAN2 - IPv6','192.0.2.19','2001:db8::19',65501,'1','2001:db8:0:0:2::19','http://rs1-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/server/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL),(9,1,'as112-lan1-ipv4',4,3,'INEX LAN1 - AS112 Service - IPv4','AS112 - LAN1 - IPv4','192.0.2.6','192.0.2.6',112,'1','203.0.113.6','http://as112-lan1-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',1,NULL,0,NULL,NULL,NULL,0,NULL),(10,1,'as112-lan1-ipv6',6,3,'INEX LAN1 - AS112 Service - IPv6','AS112 - LAN1 - IPv6','192.0.2.6','2001:db8:0:0:2::6',112,'1','203.0.113.6','http://as112-lan1-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',1,NULL,0,NULL,NULL,NULL,0,NULL),(11,2,'as112-lan2-ipv4',4,3,'INEX LAN2 - AS112 Service - IPv4','AS112 - LAN2 - IPv4','192.0.2.16','192.0.2.16',112,'1','203.0.113.16','http://as112-lan2-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL),(12,2,'as112-lan2-ipv6',6,3,'INEX LAN2 - AS112 Service - IPv6','AS112 - LAN2 - IPv6','192.0.2.16','2001:db8:0:0:2::16',112,'1','203.0.113.16','http://as112-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL),(13,1,'unknown-template',6,2,'INEX LAN2 - Route Collector - IPv6','RC1 - LAN2 - IPv6','192.0.2.9','2001:db8::9',65500,'1','2001:db8:0:0:2::9','http://rc1-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/does-not-exist',0,NULL,0,NULL,NULL,NULL,0,NULL),(29,1,'b2-rs1-lan1-ipv4',4,1,'Bird2 - INEX LAN1 - Route Server - IPv4','B2 RS1 - LAN1 - IPv4','192.0.2.18','192.0.2.18',65501,'6','203.0.113.18',NULL,0,0,0,1,'api/v4/router/server/bird2/standard',0,NULL,1,NULL,NULL,NULL,0,NULL),(30,1,'b2-rs1-lan1-ipv6',6,1,'Bird2 - INEX LAN1 - Route Server - IPv6','B2 RS1 - LAN1 - IPv6','192.0.2.18','2001:db8::8',65501,'6','203.0.113.18',NULL,0,0,0,1,'api/v4/router/server/bird2/standard',0,NULL,1,NULL,NULL,NULL,1,NULL),(31,1,'b2-rc1-lan1-ipv4',4,2,'Bird2 - INEX LAN1 - Route Collector - IPv4','B2 RC1 - LAN1 - IPv4','192.0.2.8','192.0.2.8',65500,'1','203.0.113.8','http://rc1-lan1-ipv4.mgmt.example.com/api',1,0,0,1,'api/v4/router/collector/bird2/standard',0,NULL,1,NULL,NULL,NULL,0,NULL),(32,1,'b2-rc1-lan1-ipv6',6,2,'Bird2 - INEX LAN1 - Route Collector - IPv6','B2 RC1 - LAN1 - IPv6','192.0.2.8','2001:db8::8',65500,'1','2001:db8:0:0:2::8','http://rc1-lan1-ipv6.mgmt.example.com/api',1,0,0,1,'api/v4/router/collector/bird2/standard',0,NULL,1,NULL,NULL,NULL,0,NULL);
+INSERT INTO `routers` VALUES (1,1,'rc1-lan1-ipv4',4,2,'INEX LAN1 - Route Collector - IPv4','RC1 - LAN1 - IPv4','192.0.2.8','192.0.2.8',65500,'1','203.0.113.8','http://rc1-lan1-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,0,NULL,NULL,NULL,0,NULL,NULL),(2,1,'rc1-lan1-ipv6',6,2,'INEX LAN1 - Route Collector - IPv6','RC1 - LAN1 - IPv6','192.0.2.8','2001:db8::8',65500,'1','2001:db8:0:0:2::8','http://rc1-lan1-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,0,NULL,NULL,NULL,0,NULL,NULL),(3,2,'rc1-lan2-ipv4',4,2,'INEX LAN2 - Route Collector - IPv4','RC1 - LAN2 - IPv4','192.0.2.9','192.0.2.9',65500,'1','203.0.113.9','http://rc1-lan2-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,0,NULL,NULL,NULL,0,NULL,NULL),(4,2,'rc1-lan2-ipv6',6,2,'INEX LAN2 - Route Collector - IPv6','RC1 - LAN2 - IPv6','192.0.2.9','2001:db8::9',65500,'1','2001:db8:0:0:2::9','http://rc1-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,0,NULL,NULL,NULL,0,NULL,NULL),(5,1,'rs1-lan1-ipv4',4,1,'INEX LAN1 - Route Server - IPv4','RS1 - LAN1 - IPv4','192.0.2.18','192.0.2.18',65501,'1','203.0.113.18','http://rs1-lan1-ipv4.mgmt.example.com/api',0,0,0,0,'api/v4/router/server/bird/standard',0,0,NULL,NULL,NULL,0,NULL,NULL),(6,1,'rs1-lan1-ipv6',6,1,'INEX LAN1 - Route Server - IPv6','RS1 - LAN1 - IPv6','192.0.2.18','2001:db8::18',65501,'1','2001:db8:0:0:2::18','http://rs1-lan1-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/server/bird/standard',0,0,NULL,NULL,NULL,0,NULL,NULL),(7,2,'rs1-lan2-ipv4',4,1,'INEX LAN2 - Route Server - IPv4','RS1 - LAN2 - IPv4','192.0.2.19','192.0.2.19',65501,'1','203.0.113.19','http://rs1-lan2-ipv4.mgmt.example.com/api',1,0,0,1,'api/v4/router/server/bird/standard',0,0,NULL,NULL,NULL,0,NULL,NULL),(8,2,'rs1-lan2-ipv6',6,1,'INEX LAN2 - Route Server - IPv6','RS1 - LAN2 - IPv6','192.0.2.19','2001:db8::19',65501,'1','2001:db8:0:0:2::19','http://rs1-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/server/bird/standard',0,0,NULL,NULL,NULL,0,NULL,NULL),(9,1,'as112-lan1-ipv4',4,3,'INEX LAN1 - AS112 Service - IPv4','AS112 - LAN1 - IPv4','192.0.2.6','192.0.2.6',112,'1','203.0.113.6','http://as112-lan1-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',1,0,NULL,NULL,NULL,0,NULL,NULL),(10,1,'as112-lan1-ipv6',6,3,'INEX LAN1 - AS112 Service - IPv6','AS112 - LAN1 - IPv6','192.0.2.6','2001:db8:0:0:2::6',112,'1','203.0.113.6','http://as112-lan1-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',1,0,NULL,NULL,NULL,0,NULL,NULL),(11,2,'as112-lan2-ipv4',4,3,'INEX LAN2 - AS112 Service - IPv4','AS112 - LAN2 - IPv4','192.0.2.16','192.0.2.16',112,'1','203.0.113.16','http://as112-lan2-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',0,0,NULL,NULL,NULL,0,NULL,NULL),(12,2,'as112-lan2-ipv6',6,3,'INEX LAN2 - AS112 Service - IPv6','AS112 - LAN2 - IPv6','192.0.2.16','2001:db8:0:0:2::16',112,'1','203.0.113.16','http://as112-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',0,0,NULL,NULL,NULL,0,NULL,NULL),(13,1,'unknown-template',6,2,'INEX LAN2 - Route Collector - IPv6','RC1 - LAN2 - IPv6','192.0.2.9','2001:db8::9',65500,'1','2001:db8:0:0:2::9','http://rc1-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/does-not-exist',0,0,NULL,NULL,NULL,0,NULL,NULL),(29,1,'b2-rs1-lan1-ipv4',4,1,'Bird2 - INEX LAN1 - Route Server - IPv4','B2 RS1 - LAN1 - IPv4','192.0.2.18','192.0.2.18',65501,'6','203.0.113.18',NULL,0,0,0,1,'api/v4/router/server/bird2/standard',0,1,NULL,NULL,NULL,0,NULL,NULL),(30,1,'b2-rs1-lan1-ipv6',6,1,'Bird2 - INEX LAN1 - Route Server - IPv6','B2 RS1 - LAN1 - IPv6','192.0.2.18','2001:db8::8',65501,'6','203.0.113.18',NULL,0,0,0,1,'api/v4/router/server/bird2/standard',0,1,NULL,NULL,NULL,1,NULL,NULL),(31,1,'b2-rc1-lan1-ipv4',4,2,'Bird2 - INEX LAN1 - Route Collector - IPv4','B2 RC1 - LAN1 - IPv4','192.0.2.8','192.0.2.8',65500,'1','203.0.113.8','http://rc1-lan1-ipv4.mgmt.example.com/api',1,0,0,1,'api/v4/router/collector/bird2/standard',0,1,NULL,NULL,NULL,0,NULL,NULL),(32,1,'b2-rc1-lan1-ipv6',6,2,'Bird2 - INEX LAN1 - Route Collector - IPv6','B2 RC1 - LAN1 - IPv6','192.0.2.8','2001:db8::8',65500,'1','2001:db8:0:0:2::8','http://rc1-lan1-ipv6.mgmt.example.com/api',1,0,0,1,'api/v4/router/collector/bird2/standard',0,1,NULL,NULL,NULL,0,NULL,NULL);
 /*!40000 ALTER TABLE `routers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2270,13 +2270,13 @@ CREATE TABLE `user` (
   `uid` int(11) DEFAULT NULL,
   `privs` int(11) DEFAULT NULL,
   `disabled` tinyint(1) DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
   `lastupdatedby` int(11) DEFAULT NULL,
   `creator` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `peeringdb_id` bigint(20) DEFAULT NULL,
   `extra_attributes` json DEFAULT NULL COMMENT '(DC2Type:json)',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   `prefs` json DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_8D93D649F85E0677` (`username`),
@@ -2292,7 +2292,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,1,'travis','$2y$10$FNzPyTKm64oSKeUUCwm1buLQp7h80nBj2suqdjsWH2aajVS1xz/ce','joe@siep.com',NULL,NULL,3,0,'2014-01-06 13:54:22',1,'travis','2014-01-06 13:54:22',NULL,NULL,NULL,NULL),(2,5,'imcustadmin','$2y$10$VlJG/42TCK7VQz1Wwy7yreP73Eq/1VKn55B4vJfXy4U7fIGK/9YWC','imagine-custadmin@example.com',NULL,NULL,2,0,'2019-01-16 15:37:24',2,'travis','2018-05-15 15:36:12','Test Test',NULL,NULL,NULL),(3,5,'imcustuser','$2y$10$sIUXAklQmQwalBF0nGgCLenCYYUMXWdqSESRjw6faXfiyymfmpk3y','imagine-custuser@example.com',NULL,NULL,1,0,'2019-01-16 15:44:30',3,'travis','2018-05-15 15:36:54','Joe Bloggs',NULL,NULL,NULL),(4,2,'hecustuser','$2y$10$sIUXAklQmQwalBF0nGgCLenCYYUMXWdqSESRjw6faXfiyymfmpk3y','heanet-custuser@example.com',NULL,NULL,1,0,'2018-05-15 15:36:54',1,'travis','2018-05-15 15:36:54',NULL,NULL,NULL,NULL),(5,2,'hecustadmin','$2y$10$sIUXAklQmQwalBF0nGgCLenCYYUMXWdqSESRjw6faXfiyymfmpk3y','heanet-custadmin@example.com',NULL,NULL,2,0,'2018-05-15 15:36:54',1,'travis','2018-05-15 15:36:54',NULL,NULL,NULL,NULL);
+INSERT INTO `user` VALUES (1,1,'travis','$2y$10$FNzPyTKm64oSKeUUCwm1buLQp7h80nBj2suqdjsWH2aajVS1xz/ce','joe@siep.com',NULL,NULL,3,0,1,'travis',NULL,NULL,NULL,'2014-01-06 12:54:22','2014-01-06 12:54:22',NULL),(2,5,'imcustadmin','$2y$10$VlJG/42TCK7VQz1Wwy7yreP73Eq/1VKn55B4vJfXy4U7fIGK/9YWC','imagine-custadmin@example.com',NULL,NULL,2,0,2,'travis','Test Test',NULL,NULL,'2018-05-15 13:36:12','2019-01-16 14:37:24',NULL),(3,5,'imcustuser','$2y$10$sIUXAklQmQwalBF0nGgCLenCYYUMXWdqSESRjw6faXfiyymfmpk3y','imagine-custuser@example.com',NULL,NULL,1,0,3,'travis','Joe Bloggs',NULL,NULL,'2018-05-15 13:36:54','2019-01-16 14:44:30',NULL),(4,2,'hecustuser','$2y$10$sIUXAklQmQwalBF0nGgCLenCYYUMXWdqSESRjw6faXfiyymfmpk3y','heanet-custuser@example.com',NULL,NULL,1,0,1,'travis',NULL,NULL,NULL,'2018-05-15 13:36:54','2018-05-15 13:36:54',NULL),(5,2,'hecustadmin','$2y$10$sIUXAklQmQwalBF0nGgCLenCYYUMXWdqSESRjw6faXfiyymfmpk3y','heanet-custadmin@example.com',NULL,NULL,2,0,1,'travis',NULL,NULL,NULL,'2018-05-15 13:36:54','2018-05-15 13:36:54',NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2308,8 +2308,8 @@ CREATE TABLE `user_2fa` (
   `user_id` int(11) NOT NULL,
   `enabled` tinyint(1) NOT NULL DEFAULT '0',
   `secret` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_3AAA1488A76ED395` (`user_id`),
   CONSTRAINT `FK_3AAA1488A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
@@ -2404,9 +2404,9 @@ CREATE TABLE `user_remember_tokens` (
   `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `device` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `ip` varchar(39) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` datetime DEFAULT NULL,
   `expires` datetime NOT NULL,
   `is_2fa_complete` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_token` (`user_id`,`token`),
@@ -2759,4 +2759,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-05-12 11:13:51
+-- Dump completed on 2021-05-13 13:46:29
