@@ -240,7 +240,8 @@ class ContactControllerTest extends DuskTestCase
 
             // delete this contact
             $browser->press( '#btn-delete-' . $c->id )
-                ->waitForText( 'Do you really want to delete this contact?' )
+                ->pause( 500 )
+                ->waitForText( 'Delete Contact' )
                 ->press( 'Delete' )
                 ->assertPathIs('/customer/overview/5/contacts' )
                 ->assertSee( 'Contact deleted' )

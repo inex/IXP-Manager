@@ -520,8 +520,8 @@ class SwitchController extends EloquentController
         $this->data[ 'params' ]['addBySnmp']    = true;
         $this->data[ 'params' ]['preAddForm']   = false;
         $this->data[ 'params' ]['object']       = null;
-        $this->data[ 'params' ]['cabinets']     = Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
-            ->orderBy( 'name' )->get();
+        $this->data[ 'params' ]['cabinets']     = Location::with( 'cabinets' )
+            ->has( 'cabinets' )->get()->toArray();
         $this->data[ 'params' ]['infra']        = Infrastructure::orderBy( 'name' )->get();
         $this->data[ 'params' ]['vendors']      = Vendor::orderBy( 'name' )->get();
 

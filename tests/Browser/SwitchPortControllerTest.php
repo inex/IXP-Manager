@@ -132,6 +132,7 @@ class SwitchPortControllerTest extends DuskTestCase
                 $this->assertEquals( null,              $newSp->mauAutoNegSupported     );
                 $this->assertEquals( null,              $newSp->mauAutoNegAdminState    );
 
+                $browser->type( '#table-list_filter input', 'travistest');
             /**
              * Test edit Switch port form
              */
