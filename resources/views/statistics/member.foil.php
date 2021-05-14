@@ -1,11 +1,11 @@
 <?php
     /** @var Foil\Template\Template $t */
     $this->layout( 'layouts/ixpv4' );
-    isSuperUser = Auth::check() && Auth::getUser()->isSuperUser();
+    $isSuperUser = Auth::check() && Auth::getUser()->isSuperUser();
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?php if( isSuperUser ): ?>
+    <?php if( $isSuperUser ): ?>
         <a href="<?= route( 'customer@overview', [ 'cust' => $t->c->id ] )?>" >
             <?= $t->c->getFormattedName() ?>
         </a>
@@ -205,7 +205,7 @@
                                         <?php if( $pi->isConnectedOrQuarantine() ): ?>
                                             <?= $t->grapher->physint( $pi )->setCategory( $t->category )->setPeriod( $t->period )->renderer()->boxLegacy() ?>
                                         <?php else: ?>
-                                            <?= $t->insert( 'customer/overview-tabs/ports/pi-status', [ 'pi' => $pi, 'isSuperUser' => isSuperUser ] ) ?>
+                                            <?= $t->insert( 'customer/overview-tabs/ports/pi-status', [ 'pi' => $pi, 'isSuperUser' => $isSuperUser ] ) ?>
                                         <?php endif; ?>
                                     </div>
                                 </div>

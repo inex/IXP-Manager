@@ -67,9 +67,9 @@ class User2FAController extends Controller
     /**
      * Configure 2FA
      *
-     * @return Factory|View
+     * @return View
      */
-    public function configure()
+    public function configure(): View
     {
         $user = Auth::getUser();
 
@@ -88,16 +88,16 @@ class User2FAController extends Controller
     /**
      * Enable 2FA for a user
      *
-     * @param Request $r
+     * @param  Request  $r
      *
-     * @return RedirectResponse|View
+     * @return RedirectResponse
      *
-     * @throws
+     * @throws User2FAException
      */
-    public function enable( Request $r )
+    public function enable( Request $r ): RedirectResponse
     {
         if( !$this->checkUserPassword( $r ) || !$this->testOneTimeCode( $r ) ) {
-            return redirect(route('2fa@configure'));
+            return redirect( route('2fa@configure' ) );
         }
 
         $r->user()->user2FA->update( [ 'enabled' => true ] );
@@ -122,8 +122,6 @@ class User2FAController extends Controller
      * @param Request $r
      *
      * @return RedirectResponse
-     *
-     * @throws
      */
     public function disable( Request $r ): RedirectResponse
     {
@@ -143,8 +141,6 @@ class User2FAController extends Controller
      * @param User $user
      *
      * @return void
-     *
-     * @throws
      */
     private function generateUser2FA( User $user ): void
     {
@@ -162,11 +158,11 @@ class User2FAController extends Controller
     /**
      * Get a QR Code object for the user's 2fa settings
      *
-     * @param User $user
+     * @param  User  $user
      *
      * @return mixed
      */
-    private function generateQRCode( User $user )
+    private function generateQRCode( User $user ): mixed
     {
         $google2fa = app( 'pragmarx.google2fa' );
 
@@ -224,8 +220,8 @@ class User2FAController extends Controller
      *
      * This essentially decides whether the 2fa middleware will look for a 2fa code on the next request.
      *
-     * @param Request $r
-     * @param bool $login
+     * @param Request   $r
+     * @param bool      $login
      *
      * @return void
      */

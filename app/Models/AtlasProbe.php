@@ -53,10 +53,10 @@ use Illuminate\Support\{
  * @property mixed|null $api_data
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Customer $customer
- * @method static Builder|AtlasProbe forActiveProtocol($protocol)
- * @method static Builder|AtlasProbe forAtlas($atlasid)
- * @method static Builder|AtlasProbe forCustomer($custid)
+ * @property-read \IXP\Models\Customer $customer
+ * @method static Builder|AtlasProbe forActiveProtocol(int $protocol)
+ * @method static Builder|AtlasProbe forAtlas(int $atlasid)
+ * @method static Builder|AtlasProbe forCustomer(int $custid)
  * @method static Builder|AtlasProbe newModelQuery()
  * @method static Builder|AtlasProbe newQuery()
  * @method static Builder|AtlasProbe query()

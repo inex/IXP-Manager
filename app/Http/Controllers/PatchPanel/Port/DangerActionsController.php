@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\PatchPanel\Port;
 
 use Auth, Redirect;
 
+use IXP\Exceptions\GeneralException;
 use Illuminate\Http\{
     RedirectResponse,
 };
@@ -81,12 +82,12 @@ class DangerActionsController extends Controller
     /**
      * Move a patch panel port information to an other
      *
-     * @param   MovePatchPanelPortRequest   $r instance of the current HTTP request
-     * @param   PatchPanelPort              $ppp
+     * @param  MovePatchPanelPortRequest  $r  instance of the current HTTP request
+     * @param  PatchPanelPort  $ppp
      *
      * @return  RedirectResponse
      *
-     * @throws
+     * @throws GeneralException
      */
     public function move( MovePatchPanelPortRequest $r, PatchPanelPort $ppp ): RedirectResponse
     {
@@ -119,8 +120,6 @@ class DangerActionsController extends Controller
      * @param  PatchPanelPort $ppp the patch panel **master** port from which to split the slave
      *
      * @return  RedirectResponse
-     *
-     * @throws
      */
     public function split( PatchPanelPort $ppp ): RedirectResponse
     {
@@ -160,8 +159,6 @@ class DangerActionsController extends Controller
      * @param  PatchPanelPort $ppp the patch panel port to delete
      *
      * @return  RedirectResponse
-     *
-     * @throws
      */
     public function delete( PatchPanelPort $ppp ): RedirectResponse
     {

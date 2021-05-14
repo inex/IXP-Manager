@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers\Api\V4;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Illuminate\Database\Eloquent\Builder;
 
 use Illuminate\Http\JsonResponse;
@@ -51,7 +52,7 @@ class PatchPanelPortController extends Controller
     public function detail( PatchPanelPort $ppp, bool $deep = false ): JsonResponse
     {
         return response()->json(
-            PatchPanelPort::whereId( $ppp->id )
+            PatchPanelPort::where( 'id', $ppp->id )
             ->with( 'PatchPanelPortFiles' )
             ->when( $deep, function( Builder $q ) {
                 return $q->with( 'PatchPanel', 'SwitchPort.physicalInterface' );

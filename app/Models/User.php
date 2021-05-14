@@ -62,13 +62,14 @@ use IXP\Traits\Observable;
  * @property int|null $uid
  * @property int|null $privs
  * @property int|null $disabled
- * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $lastupdatedby
  * @property string|null $creator
- * @property \Illuminate\Support\Carbon|null $created_at
  * @property string|null $name
  * @property int|null $peeringdb_id
  * @property array|null $extra_attributes
+ * @property array|null $prefs
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ApiKey[] $apiKeys
  * @property-read int|null $api_keys_count
  * @property-read \IXP\Models\Customer|null $customer
@@ -98,13 +99,12 @@ use IXP\Traits\Observable;
  * @method static Builder|User whereName($value)
  * @method static Builder|User wherePassword($value)
  * @method static Builder|User wherePeeringdbId($value)
+ * @method static Builder|User wherePrefs($value)
  * @method static Builder|User wherePrivs($value)
  * @method static Builder|User whereUid($value)
  * @method static Builder|User whereUpdatedAt($value)
  * @method static Builder|User whereUsername($value)
  * @mixin Eloquent
- * @property array|null $prefs
- * @method static Builder|User wherePrefs($value)
  */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {

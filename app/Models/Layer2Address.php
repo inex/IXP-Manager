@@ -93,9 +93,9 @@ class Layer2Address extends Model
      *
      * @param string $format
      *
-     * @return string
+     * @return null|string
      */
-    public function macFormatted( string $format ): string
+    public function macFormatted( string $format ): ?string
     {
         switch( $format ) {
             case ':':

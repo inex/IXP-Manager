@@ -187,9 +187,9 @@ class MeasurementController extends Eloquent2Frontend
     /**
      * List the contents of a database table.
      *
-     * @param Request $r
+     * @param  Request  $r
      *
-     * @return View|RedirectResponse
+     * @return View
      */
     public function list( Request $r  ) : View
     {
@@ -306,7 +306,7 @@ class MeasurementController extends Eloquent2Frontend
      *
      * @return Application|Factory|\Illuminate\Contracts\View\View|View
      */
-    public function matrix( AtlasRun $atlasRun )
+    public function matrix( AtlasRun $atlasRun ): \Illuminate\Contracts\View\View|Factory|View|Application
     {
         $custs  = AtlasMeasurement::select( [
             'cust_dest.*',

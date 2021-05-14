@@ -80,10 +80,6 @@ class ConsoleServerConnectionController extends EloquentController
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'console-server-connection',
             'listColumns'    => [
-                'id'        => [
-                    'title' => 'DB ID',
-                    'display' => false
-                ],
                 'customer'  => [
                     'title'      => 'Customer',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],

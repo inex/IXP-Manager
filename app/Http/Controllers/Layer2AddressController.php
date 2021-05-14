@@ -90,10 +90,6 @@ class Layer2AddressController extends EloquentController
             'readonly'          => self::$read_only,
             'documentation'     => 'https://docs.ixpmanager.org/features/layer2-addresses/',
             'listColumns'       => [
-                'id'                => [
-                    'title' => 'DB ID',
-                    'display' => false
-                ],
                 'customer'          => 'Customer',
                 'switchport'        => 'Interface(s)',
                 'vlan'              => 'VLAN',
@@ -191,7 +187,7 @@ class Layer2AddressController extends EloquentController
      *
      * @return  View|RedirectResponse
      */
-    public function forVlanInterface( VlanInterface $vli )
+    public function forVlanInterface( VlanInterface $vli ): View|RedirectResponse
     {
         if( Auth::getUser()->isSuperUser() ) {
             return view( 'layer2-address/vlan-interface' )->with( [ 'vli' => $vli ] );

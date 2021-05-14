@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\PatchPanel\Port;
 
 use Auth, Log, Storage;
 
+use Exception;
 use Illuminate\Http\{
     RedirectResponse,
     JsonResponse
@@ -63,8 +64,6 @@ class HistoryFileController extends Controller
      * @param  PatchPanelPortHistoryFile $file patch panel port file ID
      *
      * @return  JsonResponse
-     *
-     * @throws
      */
     public function togglePrivacy( PatchPanelPortHistoryFile $file ): JsonResponse
     {
@@ -75,11 +74,11 @@ class HistoryFileController extends Controller
     /**
      * Delete a patch panel port history file
      *
-     * @param  PatchPanelPortHistoryFile $file patch panel port history file
+     * @param  PatchPanelPortHistoryFile  $file  patch panel port history file
      *
      * @return  RedirectResponse
      *
-     * @throws
+     * @throws Exception
      */
     public function delete( PatchPanelPortHistoryFile $file ): RedirectResponse
     {
@@ -92,7 +91,7 @@ class HistoryFileController extends Controller
             AlertContainer::push( 'Patch Panel Port File could not be deleted.', Alert::DANGER );
         }
 
-        return redirect()->to( route( 'patch-panel-port@view', [ 'ppp' => $file->patchPanelPortHistory->patch_panel_port_id ] ) . '#ppp-' . $file->patch_panel_port_history_id );
+        return redirect( route( 'patch-panel-port@view', [ 'ppp' => $file->patchPanelPortHistory->patch_panel_port_id ] ) . '#ppp-' . $file->patch_panel_port_history_id );
     }
 
     /**

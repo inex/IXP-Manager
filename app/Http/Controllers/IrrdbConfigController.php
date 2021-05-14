@@ -76,10 +76,6 @@ class IrrdbConfigController extends EloquentController
             'viewFolderName'    => 'irrdb-config',
             'documentation'     => 'https://docs.ixpmanager.org/features/irrdb/',
             'listColumns'       => [
-                'id'        => [
-                    'title' => 'DB ID',
-                    'display' => false
-                ],
                 'host'      => 'Host',
                 'protocol'  => 'Protocol',
                 'source'    => 'Source'
@@ -167,7 +163,7 @@ class IrrdbConfigController extends EloquentController
      *
      * @throws
      */
-    public function doStore( Request $r )
+    public function doStore( Request $r ): bool|RedirectResponse
     {
         $this->checkForm( $r );
         $this->object = IrrdbConfig::create( $r->all() );
@@ -184,7 +180,7 @@ class IrrdbConfigController extends EloquentController
      *
      * @throws
      */
-    public function doUpdate( Request $r, int $id )
+    public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = IrrdbConfig::findOrFail( $id );
         $this->checkForm( $r );

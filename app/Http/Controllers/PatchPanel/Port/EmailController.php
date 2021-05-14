@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers\PatchPanel\Port;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Former, Mail, Redirect;
 
 use Barryvdh\DomPDF\PDF;
@@ -64,6 +65,7 @@ class EmailController extends Common
      *
      * @param  PatchPanelPort   $ppp    patch panel port
      * @param  int              $type   Email type to send
+     *
      * @return  view
      */
     public function email( PatchPanelPort $ppp, int $type ): View
@@ -86,7 +88,7 @@ class EmailController extends Common
      *
      * @return RedirectResponse|View
      */
-    public function send( EmailPatchPanelPortRequest $r, PatchPanelPort $ppp, int $type )
+    public function send( EmailPatchPanelPortRequest $r, PatchPanelPort $ppp, int $type ): RedirectResponse|View
     {
         $mailable = $this->setupEmailRoutes( $ppp, $type );
 

@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers;
 
 use Auth, Former, Log, Redirect;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\View\View;
 
 use Illuminate\Http\{
@@ -69,7 +70,7 @@ class RsFilterController extends Controller
      *
      * @return  View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function list( Customer $cust ): View
     {
@@ -90,7 +91,7 @@ class RsFilterController extends Controller
      *
      * @return  View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function create( Request $r,  Customer $cust ): View
     {
@@ -143,7 +144,7 @@ class RsFilterController extends Controller
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function store( Store $r ): RedirectResponse
     {
@@ -175,7 +176,7 @@ class RsFilterController extends Controller
      *
      * @return  View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function edit( Request $r, RouteServerFilter $rsf ): View
     {
@@ -212,7 +213,7 @@ class RsFilterController extends Controller
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function update( Store $r, RouteServerFilter $rsf ): RedirectResponse
     {
@@ -232,7 +233,7 @@ class RsFilterController extends Controller
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function view( RouteServerFilter $rsf ): View
     {
@@ -246,12 +247,12 @@ class RsFilterController extends Controller
     /**
      * Enable or disable a route server filter
      *
-     * @param RouteServerFilter $rsf
-     * @param int               $enable
+     * @param  RouteServerFilter    $rsf
+     * @param  int                  $enable
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function toggleEnable( RouteServerFilter $rsf, int $enable ): RedirectResponse
     {
@@ -259,7 +260,7 @@ class RsFilterController extends Controller
 
         $status = $enable ? 'enabled' : 'disabled';
 
-        $rsf->enabled = (bool)$enable;
+        $rsf->enabled = $enable;
         $rsf->save();
 
         Log::notice( Auth::getUser()->username . ' ' . $status . ' a route server filter with ID ' . $rsf->id );
@@ -270,12 +271,12 @@ class RsFilterController extends Controller
     /**
      * Change the order by of a route server filter (up/down)
      *
-     * @param RouteServerFilter     $rsf
-     * @param int                   $up     If true move up if false move down
+     * @param  RouteServerFilter  $rsf
+     * @param  int  $up  If true move up if false move down
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function changeOrderBy( RouteServerFilter $rsf,  int $up ): RedirectResponse
     {
@@ -323,11 +324,11 @@ class RsFilterController extends Controller
     /**
      * Function to Delete a route serve filter
      *
-     * @param RouteServerFilter $rsf
+     * @param  RouteServerFilter  $rsf
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function delete( RouteServerFilter $rsf ): RedirectResponse
     {

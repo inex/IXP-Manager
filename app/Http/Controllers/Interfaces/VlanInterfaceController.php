@@ -24,6 +24,7 @@ namespace IXP\Http\Controllers\Interfaces;
  */
 
 use DB;
+use Exception;
 use Redirect, Former;
 
 use Illuminate\View\View;
@@ -51,6 +52,7 @@ use IXP\Utils\View\Alert\{
 
 /**
  * Vlan Interface Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
@@ -119,7 +121,6 @@ class VlanInterfaceController extends Common
      * @param   StoreVlanInterface $r instance of the current HTTP request
      *
      * @return  RedirectResponse
-     * @throws
      */
     public function store( StoreVlanInterface $r ): RedirectResponse
     {
@@ -177,7 +178,7 @@ class VlanInterfaceController extends Common
             'ipv6monitorrcbgp'          => $r->old( 'ipv6monitorrcbgp',         $vli->ipv6monitorrcbgp          ),
         ]);
 
-        $redirect2vi = $vi ? true : false;
+        $redirect2vi = (bool) $vi;
         if( !$vi ){
             $vi = $vli->virtualInterface;
         }
@@ -265,7 +266,6 @@ class VlanInterfaceController extends Common
         return redirect( route( 'virtual-interface@edit', [ 'vi' => $vli->virtualinterfaceid ] ) );
     }
 
-
     /**
      * Display a VLAN interface
      *
@@ -283,11 +283,11 @@ class VlanInterfaceController extends Common
     /**
      * Delete a Vlan Interface and the Layer2Address associated
      *
-     * @param VlanInterface $vli
+     * @param  VlanInterface  $vli
      *
      * @return  RedirectResponse
      *
-     * @throws
+     * @throws Exception
      */
     public function delete( VlanInterface $vli ): RedirectResponse
     {

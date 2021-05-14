@@ -74,11 +74,6 @@ class UpdateTimestamps extends Migration
             $table->timestamp( 'created_at' )->change();
         });
 
-        Schema::table('password_security', function (Blueprint $table) {
-            $table->timestamp( 'created_at' )->change();
-            $table->timestamp( 'updated_at' )->change();
-        });
-
         Schema::table('peering_manager', function (Blueprint $table) {
             $table->timestamp( 'created_at' )->change();
             $table->timestamp( 'updated_at' )->change();
@@ -150,11 +145,6 @@ class UpdateTimestamps extends Migration
 
         Schema::table('logos', function (Blueprint $table) {
             $table->dateTime( 'created_at' )->change();
-        });
-
-        Schema::table('password_security', function (Blueprint $table) {
-            $table->dateTime( 'created_at' )->change();
-            $table->dateTime( 'updated_at' )->change();
         });
 
         Schema::table('peering_manager', function (Blueprint $table) {

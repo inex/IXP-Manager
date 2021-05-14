@@ -24,6 +24,7 @@ namespace IXP\Utils\Http\Controllers\Frontend;
  */
 use Auth, Log, Route, Str;
 
+use Illuminate\Database\Eloquent\Model;
 use IXP\Models\User;
 
 use IXP\Http\Controllers\Controller;

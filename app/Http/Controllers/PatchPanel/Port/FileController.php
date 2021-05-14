@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\PatchPanel\Port;
 
 use Auth, Log, Storage;
 
+use Exception;
 use Illuminate\Http\{
     RedirectResponse,
     Request,
@@ -65,8 +66,6 @@ class FileController extends Controller
      * @param  PatchPanelPortFile $file patch panel port file ID
      *
      * @return  JsonResponse
-     *
-     * @throws
      */
     public function togglePrivacy( PatchPanelPortFile $file ): JsonResponse
     {
@@ -77,14 +76,14 @@ class FileController extends Controller
     /**
      * Delete a patch panel port file
      *
-     * @param Request               $r
-     * @param PatchPanelPortFile    $file patch panel port file
+     * @param  Request  $r
+     * @param  PatchPanelPortFile  $file  patch panel port file
      *
      * @return  RedirectResponse|JsonResponse
      *
-     * @throws
+     * @throws Exception
      */
-    public function delete( Request $r, PatchPanelPortFile $file )
+    public function delete( Request $r, PatchPanelPortFile $file ): RedirectResponse|JsonResponse
     {
         $path = 'files/' . $file->path();
 
@@ -110,8 +109,6 @@ class FileController extends Controller
      * @param  Request          $r      instance of the current HTTP request
      *
      * @return  JsonResponse
-     *
-     * @throws
      */
     public function upload( Request $r, PatchPanelPort $ppp ): JsonResponse
     {

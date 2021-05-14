@@ -39,8 +39,8 @@ use IXP\Traits\Observable;
  * @property int $private
  * @property string $title
  * @property string $note
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer $customer
  * @method static Builder|CustomerNote newModelQuery()
  * @method static Builder|CustomerNote newQuery()

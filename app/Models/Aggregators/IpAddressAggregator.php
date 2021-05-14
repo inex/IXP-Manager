@@ -23,6 +23,7 @@ namespace IXP\Models\Aggregators;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Exception;
 use Illuminate\Support\Facades\DB;
 use IXP\Models\IPv4Address;
 use IXP\Models\IPv6Address;

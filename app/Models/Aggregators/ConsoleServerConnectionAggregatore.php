@@ -33,7 +33,6 @@ use IXP\Models\ConsoleServerConnection;
  *
  * @property int $id
  * @property int|null $custid
- * @property int|null $switchid
  * @property string|null $description
  * @property string|null $port
  * @property int|null $speed
@@ -47,7 +46,7 @@ use IXP\Models\ConsoleServerConnection;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\ConsoleServer|null $consoleServer
  * @property-read \IXP\Models\CustomerTag|null $customer
- * @property-read \IXP\Models\Switcher|null $switcher
+ * @property-read \IXP\Models\Switcher $switcher
  * @method static Builder|ConsoleServerConnectionAggregatore newModelQuery()
  * @method static Builder|ConsoleServerConnectionAggregatore newQuery()
  * @method static Builder|ConsoleServerConnectionAggregatore query()
@@ -63,7 +62,6 @@ use IXP\Models\ConsoleServerConnection;
  * @method static Builder|ConsoleServerConnectionAggregatore wherePort($value)
  * @method static Builder|ConsoleServerConnectionAggregatore whereSpeed($value)
  * @method static Builder|ConsoleServerConnectionAggregatore whereStopbits($value)
- * @method static Builder|ConsoleServerConnectionAggregatore whereSwitchid($value)
  * @method static Builder|ConsoleServerConnectionAggregatore whereUpdatedAt($value)
  * @mixin \Eloquent
  */

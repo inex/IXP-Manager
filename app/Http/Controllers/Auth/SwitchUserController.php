@@ -81,7 +81,7 @@ class SwitchUserController extends Controller
 
         Auth::login( $user );
 
-        Log::notice( Auth::user()->username . '(' . Auth::user()->name . ') logged as the user ' . $user->username . '(' . $user->name . ')' . ' for the customer ' . $user->customer->name  );
+        Log::notice( Auth::getUser()->username . '(' . Auth::getUser()->name . ') logged as the user ' . $user->username . '(' . $user->name . ')' . ' for the customer ' . $user->customer->name  );
         AlertContainer::push( "You are now logged in as {$user->username} " . " (" . Auth::getUser()->name . ") for the " . config( 'ixp_fe.lang.customer.one' ) . ' ' . $user->customer->name, Alert::SUCCESS );
         return redirect( '/' );
     }

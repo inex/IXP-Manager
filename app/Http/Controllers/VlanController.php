@@ -79,10 +79,6 @@ class VlanController extends EloquentController
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'vlan',
             'listColumns'    => [
-                'id'          => [
-                    'title'     => 'DB ID',
-                    'display'   => false,
-                ],
                 'name'                   => 'Description',
                 'config_name'            => 'Config Name',
                 'number'                 => '802.1q Tag',
@@ -188,10 +184,8 @@ class VlanController extends EloquentController
      * @param Request $r
      *
      * @return bool|RedirectResponse
-     *
-     * @throws
      */
-    public function doStore( Request $r )
+    public function doStore( Request $r ): bool|RedirectResponse
     {
         $this->checkForm( $r );
         if( $this->checkIsDuplicate( $r, null ) ) {
@@ -236,10 +230,8 @@ class VlanController extends EloquentController
      * @param int       $id
      *
      * @return bool|RedirectResponse
-     *
-     * @throws
      */
-    public function doUpdate( Request $r, int $id )
+    public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = Vlan::findOrFail( $id );
         $this->checkForm( $r );
@@ -305,12 +297,12 @@ class VlanController extends EloquentController
     /**
      * Display the Vlan for an Infrastructure
      *
-     * @param Infrastructure    $infra
-     * @param bool|null         $public only the public vlan ?
+     * @param  Infrastructure  $infra
+     * @param  null  $public  only the public vlan ?
      *
-     * @return View
+     * @return View|RedirectResponse
      */
-    public function listInfra( Infrastructure $infra, $public = null ): View
+    public function listInfra( Infrastructure $infra, $public = null ): View|RedirectResponse
     {
         if( $public ) {
             $this->feParams->publicOnly = true;
@@ -323,7 +315,7 @@ class VlanController extends EloquentController
     /**
      * Check if the form is valid
      *
-     * @param $r
+     * @param Request $r
      */
     public function checkForm( Request $r ): void
     {
@@ -349,7 +341,7 @@ class VlanController extends EloquentController
             ->where( 'config_name', $r->config_name )
             ->when( $objectid , function( Builder $q, $objectid ) {
                 return $q->where( 'id', '!=',  $objectid );
-            })->count() ? true : false;
+            })->count();
 
         if( $exist ) {
             AlertContainer::push( "The couple Infrastructure and config name already exist.", Alert::DANGER );

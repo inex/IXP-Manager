@@ -223,7 +223,7 @@ class ConsoleServerController extends EloquentController
      *
      * @throws
      */
-    public function doStore( Request $r )
+    public function doStore( Request $r ): bool|RedirectResponse
     {
         $this->checkForm( $r );
         $this->object = ConsoleServer::create( $r->all() );
@@ -240,7 +240,7 @@ class ConsoleServerController extends EloquentController
      *
      * @throws
      */
-    public function doUpdate( Request $r, int $id )
+    public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = ConsoleServer::findOrFail( $id );
         $this->checkForm( $r );
@@ -264,7 +264,7 @@ class ConsoleServerController extends EloquentController
     /**
      * Check if the form is valid
      *
-     * @param $r
+     * @param Request $r
      */
     public function checkForm( Request $r ): void
     {

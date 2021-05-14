@@ -81,7 +81,6 @@ class ProbesController extends Eloquent2Frontend
             'viewFolderName'    => 'atlas-probes',
             'readonly'       => 'true',
             'listColumns'       => [
-                'id'        => [ 'title' => 'UID', 'display' => false ],
                 'name'  => [
                     'title'      => 'Customer',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -148,7 +147,7 @@ class ProbesController extends Eloquent2Frontend
      *
      * @param Request $r
      *
-     * @return View|RedirectResponse
+     * @return View
      */
     public function list( Request $r  ): View
     {

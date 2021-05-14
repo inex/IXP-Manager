@@ -37,8 +37,8 @@ use Illuminate\Database\Eloquent\{
  * @property string $display_as
  * @property string|null $description
  * @property int $internal_only
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Customer[] $customers
  * @property-read int|null $customers_count
  * @method static Builder|CustomerTag newModelQuery()
