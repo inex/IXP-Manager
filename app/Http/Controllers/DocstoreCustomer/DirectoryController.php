@@ -22,8 +22,10 @@ namespace IXP\Http\Controllers\DocstoreCustomer;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Former;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\{
     RedirectResponse,
@@ -49,6 +51,7 @@ use IXP\Utils\View\Alert\{
 
 /**
  * DirectoryController Controller
+ *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   DocstoreCustomer
@@ -62,7 +65,7 @@ class DirectoryController extends Controller
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function listCustomers() : View
     {
@@ -82,7 +85,7 @@ class DirectoryController extends Controller
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function list( Request $r, Customer $cust, DocstoreCustomerDirectory $dir = null ) : View
     {
@@ -110,7 +113,7 @@ class DirectoryController extends Controller
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function listPatchPanelPortFiles( Request $r,  Customer $cust = null ) : View
     {
@@ -129,11 +132,11 @@ class DirectoryController extends Controller
      * Display the list of patch panel file history for a customer
      *
      * @param Request                           $r
-     * @param Customer|null                     $cust
+     * @param Customer                          $cust
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function listPatchPanelPortHistoryFiles( Request $r,  Customer $cust ) : View
     {
@@ -155,7 +158,7 @@ class DirectoryController extends Controller
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function create( Request $r, Customer $cust ): view
     {
@@ -178,7 +181,7 @@ class DirectoryController extends Controller
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function edit( Request $r, Customer $cust, DocstoreCustomerDirectory $dir ): View
     {
@@ -206,7 +209,7 @@ class DirectoryController extends Controller
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function store( Request $r, Customer $cust ): RedirectResponse
     {
@@ -231,7 +234,7 @@ class DirectoryController extends Controller
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function update( Request $r , Customer $cust, DocstoreCustomerDirectory $dir ): RedirectResponse
     {
@@ -255,7 +258,7 @@ class DirectoryController extends Controller
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function delete( Request $r , DocstoreCustomerDirectory $dir ): RedirectResponse
     {
@@ -272,11 +275,11 @@ class DirectoryController extends Controller
     /**
      * Delete a directory
      *
-     * @param Customer                  $cust
+     * @param Customer  $cust
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function deleteForCustomer( Customer $cust ): RedirectResponse
     {
@@ -293,7 +296,7 @@ class DirectoryController extends Controller
     /**
      * Check if the form is valid
      *
-     * @param $r
+     * @param Request $r
      */
     private function checkForm( Request $r ): void
     {

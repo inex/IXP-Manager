@@ -22,8 +22,7 @@ namespace IXP\Http\Controllers\Interfaces;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use Former, Log, Redirect;
+use Exception, Former, Log, Redirect;
 
 use Illuminate\Http\{
     RedirectResponse,
@@ -185,7 +184,7 @@ class CoreBundleController extends Common
 
         Log::notice( $r->user()->username . ' updated a core bundle with (id: ' . $cb->id . ')' );
         AlertContainer::push( 'Core bundle updated.', Alert::SUCCESS );
-        return Redirect::to( route( 'core-bundle@list' ) );
+        return redirect( route( 'core-bundle@list' ) );
     }
 
     /**
@@ -197,18 +196,18 @@ class CoreBundleController extends Common
      ** Delete the core Virtual Interfaces
      ** Change the status of the switch ports to UNSET
      *
-     * @param Request       $r
-     * @param CoreBundle    $cb
+     * @param  Request  $r
+     * @param  CoreBundle  $cb
      *
      * @return  RedirectResponse
      *
-     * @throws
+     * @throws Exception
      */
     public function delete( Request $r, CoreBundle $cb ): RedirectResponse
     {
         $cb->deleteObject();
         Log::notice( $r->user()->username." deleted a core bundle (id: " . $cb->id . ')' );
         AlertContainer::push( 'Core bundle deleted.', Alert::SUCCESS );
-        return Redirect::to( route( "core-bundle@list" ) );
+        return redirect( route( "core-bundle@list" ) );
     }
 }

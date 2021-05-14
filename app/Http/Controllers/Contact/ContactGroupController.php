@@ -167,13 +167,13 @@ class ContactGroupController extends EloquentController
     /**
      * Display the form to edit an object
      *
-     * @param   int $id ID of the row to edit
+     * @param   int|null $id ID of the row to edit
      *
      * @return array
      *
      * @throws
      */
-    protected function editPrepareForm( $id = null ): array
+    protected function editPrepareForm( int $id = null ): array
     {
         $this->object = ContactGroup::findOrFail( $id );
 
@@ -200,7 +200,7 @@ class ContactGroupController extends EloquentController
      *
      * @throws
      */
-    public function doStore( Request $r )
+    public function doStore( Request $r ): bool|RedirectResponse
     {
         $this->checkForm( $r );
         $this->object = ContactGroup::create( $r->all() );
@@ -217,7 +217,7 @@ class ContactGroupController extends EloquentController
      *
      * @throws
      */
-    public function doUpdate( Request $r, int $id )
+    public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = ContactGroup::findOrFail( $id );
         $this->checkForm( $r );
@@ -228,7 +228,7 @@ class ContactGroupController extends EloquentController
     /**
      * Check if the form is valid
      *
-     * @param $r
+     * @param Request $r
      */
     public function checkForm( Request $r ): void
     {

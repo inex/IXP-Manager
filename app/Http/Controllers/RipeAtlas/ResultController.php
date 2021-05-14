@@ -39,7 +39,6 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController as Eloquent2Frontend;
  */
 class ResultController extends Eloquent2Frontend
 {
-
     /**
      * The object being created / edited
      *

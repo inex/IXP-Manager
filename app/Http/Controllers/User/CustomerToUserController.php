@@ -23,8 +23,9 @@ namespace IXP\Http\Controllers\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Former, Log, Redirect;
+use Auth, Former, Log;
 
+use Exception;
 use Illuminate\Http\{
     JsonResponse,
     RedirectResponse,
@@ -102,8 +103,6 @@ class CustomerToUserController extends Controller
      * @param StoreCustomerToUser $r
      *
      * @return RedirectResponse
-     *
-     * @throws
      */
     public function store( StoreCustomerToUser $r ): RedirectResponse
     {
@@ -138,11 +137,10 @@ class CustomerToUserController extends Controller
      * @param Request $r
      *
      * @return JsonResponse
-     *
-     * @throws
      */
     public function updatePrivs( Request $r ): JsonResponse
     {
+        /** @var CustomerToUser $c2u */
         $c2u = CustomerToUser::findOrFail( $r->id );
 
         if( in_array( (int)$r->privs , User::$PRIVILEGES_ALL, true ) ) {
@@ -170,12 +168,12 @@ class CustomerToUserController extends Controller
     /**
      * Function to Delete a customer to user link
      *
-     * @param DeleteCustomerToUser  $r
-     * @param CustomerToUser        $c2u
+     * @param  DeleteCustomerToUser  $r
+     * @param  CustomerToUser  $c2u
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws Exception
      */
     public function delete( DeleteCustomerToUser $r, CustomerToUser $c2u ): RedirectResponse
     {
@@ -201,14 +199,14 @@ class CustomerToUserController extends Controller
         // If the user deleted itself and is logged in as the same customer:
         if( $r->user()->id === $disassociatedUser->id && $initialCust->id === $disassociatedCust->id ) {
             Auth::logout();
-            return Redirect::to( route( "login@showForm" ) );
+            return redirect( route( "login@showForm" ) );
         }
 
         // retrieve the customer ID
         if( strpos( $r->headers->get( 'referer', "" ), "customer/overview" ) !== false ) {
-            return Redirect::to( route( "customer@overview" , [ 'cust' => $disassociatedCust->id , "tab" => "users" ] ) );
+            return redirect( route( "customer@overview" , [ 'cust' => $disassociatedCust->id , "tab" => "users" ] ) );
         }
 
-        return Redirect::to( route( "user@list" ) );
+        return redirect( route( "user@list" ) );
     }
 }

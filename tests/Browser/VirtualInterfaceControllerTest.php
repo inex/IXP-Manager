@@ -702,7 +702,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->assertChecked( 'ipv4monitorrcbgp' )
                 ->assertChecked( 'ipv6monitorrcbgp' )
                 ->press( "Duplicate" )
-                ->assertSee( "Vlan Interface updated" );
+                ->assertSee( "Vlan Interface duplicated" );
 
         $vi->refresh();
 

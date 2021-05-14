@@ -179,7 +179,7 @@ class NetworkInfoController extends EloquentController
      *
      * @throws
      */
-    public function doStore( Request $r )
+    public function doStore( Request $r ): bool|RedirectResponse
     {
         $this->checkForm( $r );
 
@@ -201,7 +201,7 @@ class NetworkInfoController extends EloquentController
      *
      * @throws
      */
-    public function doUpdate( Request $r, int $id )
+    public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = NetworkInfo::findOrFail( $id );
         $this->checkForm( $r );
@@ -230,7 +230,7 @@ class NetworkInfoController extends EloquentController
             ->where( 'protocol' , $r->protocol )
             ->when( $objectid , function( Builder $q, $objectid ) {
                 return $q->where( 'id', '!=',  $objectid );
-            })->count() ? true : false;
+            })->count();
 
         if( $exist ) {
             AlertContainer::push( "Network information for this vlan (" . $vlan->name . ") and and protocol (ipv" . $r->protocol . ") already exists. Please edit that instead."   , Alert::DANGER );

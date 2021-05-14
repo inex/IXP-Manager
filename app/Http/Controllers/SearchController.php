@@ -60,7 +60,7 @@ class SearchController extends Controller
      *
      * @return  RedirectResponse|View
      */
-    public function do( Request $r )
+    public function do( Request $r ): RedirectResponse|View
     {
         $type       = '';
         $results    = $interfaces = [];
@@ -126,7 +126,7 @@ class SearchController extends Controller
             else if( preg_match( '/^as(\d+)$/', strtolower( $search ), $matches ) || preg_match( '/^(\d+)$/', $search, $matches ) ) {
                 // user by ASN search
                 $type       = 'asn';
-                $results    =  Customer::whereAutsys( $matches[1] )->get();
+                $results    =  Customer::where('autsys', $matches[1] )->get();
             }
             else if( preg_match( '/^AS-(.*)$/', strtoupper( $search ) ) ) {
                 // user by ASN macro search
@@ -141,8 +141,8 @@ class SearchController extends Controller
             else if( filter_var( $search, FILTER_VALIDATE_EMAIL ) !== false ) {
                 // user by email search
                 $type = 'email';
-                $results[ 'users' ]     = User::whereEmail( $search )->get();
-                $results[ 'contacts' ]  = Contact::whereEmail( $search )->get();
+                $results[ 'users' ]     = User::where( 'email', $search )->get();
+                $results[ 'contacts' ]  = Contact::where( 'email', $search )->get();
             }
             else if( preg_match( '/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\/\d{1,2}$/', $search ) || preg_match( '/^[0-9a-fA-F]{1,4}:.*:[0-9a-fA-F]{0,4}\/\d{1,3}$/', $search ) ) {
                 // rsprefix search
@@ -193,7 +193,7 @@ class SearchController extends Controller
      *
      * @return  array array composed of the the result (customer) and the interface (vlan interfaces)
      */
-    private function processMACSearch( Collection $is ): array
+    private function processMACSearch( Collection $is = null ): array
     {
         $results = $interfaces = [];
 

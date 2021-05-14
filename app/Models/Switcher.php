@@ -495,7 +495,7 @@ class Switcher extends Model
 
         // last polled:
         if( $this->lastPolled ) {
-            $lastPolled = Carbon::instance( $this->lastPolled );
+            $lastPolled = Carbon::parse( $this->lastPolled );
             if( $lastPolled->diffInMinutes() > 10 ) {
                 $okay = false;
                 $msgs[] = 'WARNING: last polled ' . $lastPolled->diffForHumans() . '.';

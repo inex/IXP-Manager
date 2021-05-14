@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Cache, Redirect;
+use Cache;
 
 use Illuminate\Http\{
     RedirectResponse
@@ -67,16 +67,16 @@ class PeeringMatrixController extends Controller
      *
      * @throws
      */
-    public function index( Request $r )
+    public function index( Request $r ): View|RedirectResponse
     {
         if( config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ) {
             AlertContainer::push( 'The peering matrix has been disabled.', Alert::DANGER );
-            return Redirect::to('');
+            return redirect('');
         }
 
         if( !ixp_min_auth( config( 'ixp.peering-matrix.min-auth' ) ) ) {
             AlertContainer::push( 'You do not have the required privileges to access the peering matrix', Alert::DANGER );
-            return Redirect::to('');
+            return redirect('');
         }
 
         $protos = [
@@ -122,7 +122,7 @@ class PeeringMatrixController extends Controller
             AlertContainer::push( 'No VLANs have been enabled for the peering matrix. Please see <a href="'
                 . 'https://github.com/inex/IXP-Manager/wiki/Peering-Matrix">these instructions</a>'
                 . ' / contact our support team.', Alert::DANGER );
-            return Redirect::to( '');
+            return redirect( '');
         }
 
 
@@ -134,7 +134,7 @@ class PeeringMatrixController extends Controller
                     . 'set <code>IDENTITY_DEFAULT_VLAN</code> in your <code>.env</code> file to a valid DB ID '
                     . 'of the VLAN you would like the peering matrix to show by default.', Alert::DANGER );
 
-                return Redirect::to( '');
+                return redirect( '');
             }
         }
 

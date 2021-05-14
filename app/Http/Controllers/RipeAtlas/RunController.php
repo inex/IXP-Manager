@@ -197,11 +197,11 @@ class RunController extends Eloquent2Frontend
     /**
      * Second step to create an Atlas run
      *
-     * @param Request $r
+     * @param  Request  $r
      *
-     * @return RedirectResponse|View
+     * @return View
      */
-    public function addStep2( Request $r )
+    public function addStep2( Request $r ): View
     {
         $this->checkForm( $r );
 
@@ -228,10 +228,8 @@ class RunController extends Eloquent2Frontend
      * @param Request $r
      *
      * @return bool|RedirectResponse
-     *
-     * @throws
      */
-    public function doStore( Request $r )
+    public function doStore( Request $r ): bool|RedirectResponse
     {
         if( !$r->selected_custs || !count( $r->selected_custs ) ) {
             AlertContainer::push( "You need to select at least one " . config( "ixp_fe.lang.customer.one" ) . ".", Alert::DANGER );
@@ -286,8 +284,6 @@ class RunController extends Eloquent2Frontend
      * @inheritdoc
      *
      * @return bool Return false to stop / cancel the deletion
-     *
-     * @throws
      */
     protected function preDelete(): bool
     {
@@ -306,7 +302,7 @@ class RunController extends Eloquent2Frontend
     /**
      * Check if the form is valid
      *
-     * @param $r
+     * @param Request $r
      */
     public function checkForm( Request $r ): void
     {

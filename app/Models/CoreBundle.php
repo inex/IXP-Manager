@@ -53,7 +53,7 @@ use OSS_SNMP\MIBS\Iface;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Collection|\IXP\Models\CoreLink[] $corelinks
  * @property-read int|null $corelinks_count
- * @method static Builder|CoreBundle active()
+ * @method static \Illuminate\Database\Eloquent\Builder|CoreBundle active()
  * @method static Builder|CoreBundle newModelQuery()
  * @method static Builder|CoreBundle newQuery()
  * @method static Builder|CoreBundle query()

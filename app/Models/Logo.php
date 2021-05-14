@@ -35,13 +35,12 @@ use IXP\Traits\Observable;
  *
  * @property int $id
  * @property int|null $customer_id
- * @property string $type
  * @property string $original_name
  * @property string $stored_name
  * @property string $uploaded_by
- * @property \Illuminate\Support\Carbon $created_at
  * @property int $width
  * @property int $height
+ * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer|null $customer
  * @method static \Illuminate\Database\Eloquent\Builder|Logo newModelQuery()
@@ -53,7 +52,6 @@ use IXP\Traits\Observable;
  * @method static \Illuminate\Database\Eloquent\Builder|Logo whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Logo whereOriginalName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Logo whereStoredName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Logo whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Logo whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Logo whereUploadedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Logo whereWidth($value)

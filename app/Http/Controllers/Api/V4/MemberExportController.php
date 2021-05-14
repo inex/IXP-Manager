@@ -34,6 +34,7 @@ use IXP\Utils\Export\JsonSchema as JsonSchemaExporter;
 
 /**
  * MemberExport API Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   APIv4

@@ -198,10 +198,8 @@ class LocationController extends EloquentController
      * @param Request $r
      *
      * @return bool|RedirectResponse
-     *
-     * @throws
      */
-    public function doStore( Request $r )
+    public function doStore( Request $r ): bool|RedirectResponse
     {
         $this->checkForm( $r );
         $this->object = Location::create( $r->all() );
@@ -215,10 +213,8 @@ class LocationController extends EloquentController
      * @param int       $id
      *
      * @return bool|RedirectResponse
-     *
-     * @throws
      */
-    public function doUpdate( Request $r, int $id )
+    public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = Location::findOrFail( $id );
         $this->checkForm( $r );
@@ -241,7 +237,7 @@ class LocationController extends EloquentController
     /**
      * Check if the form is valid
      *
-     * @param $r
+     * @param Request $r
      */
     public function checkForm( Request $r ): void
     {

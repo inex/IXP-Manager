@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\Docstore;
 
 use Auth, Former;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\{
     RedirectResponse,
@@ -85,11 +86,11 @@ class DirectoryController extends Controller
     /**
      * Create a new directory
      *
-     * @param Request $r
+     * @param  Request  $r
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function create( Request $r ): View
     {
@@ -104,11 +105,11 @@ class DirectoryController extends Controller
     /**
      * Store a directory
      *
-     * @param Request $r
+     * @param  Request  $r
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function store( Request $r ): RedirectResponse
     {
@@ -129,7 +130,7 @@ class DirectoryController extends Controller
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function edit( Request $r, DocstoreDirectory $dir ): View
     {
@@ -154,7 +155,7 @@ class DirectoryController extends Controller
      * @param DocstoreDirectory     $dir
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function update( Request $r , DocstoreDirectory $dir ): RedirectResponse
     {
@@ -175,7 +176,7 @@ class DirectoryController extends Controller
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function delete( Request $r , DocstoreDirectory $dir ): RedirectResponse
     {

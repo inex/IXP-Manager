@@ -46,6 +46,8 @@ use IXP\Traits\Observable;
  * @property string|null $config_name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasRun[] $atlasRun
+ * @property-read int|null $atlas_run_count
  * @property-read \IXP\Models\Infrastructure $infrastructure
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IPv4Address[] $ipv4Addresses
  * @property-read int|null $ipv4_addresses_count
@@ -63,7 +65,7 @@ use IXP\Traits\Observable;
  * @method static Builder|Vlan newQuery()
  * @method static Builder|Vlan peeringManager()
  * @method static Builder|Vlan privateOnly()
- * @method static Builder|Vlan publicOnly()
+ * @method static \Illuminate\Database\Eloquent\Builder|Vlan publicOnly()
  * @method static Builder|Vlan query()
  * @method static Builder|Vlan whereConfigName($value)
  * @method static Builder|Vlan whereCreatedAt($value)
@@ -77,8 +79,6 @@ use IXP\Traits\Observable;
  * @method static Builder|Vlan wherePrivate($value)
  * @method static Builder|Vlan whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasRun[] $atlasRun
- * @property-read int|null $atlas_run_count
  */
 class Vlan extends Model
 {
@@ -194,7 +194,7 @@ class Vlan extends Model
     /**
      * Scope a query to only include public / non-private VLANs
      *
-     * @param Builder $query
+     * @param  Builder  $query
      *
      * @return Builder
      */
@@ -206,7 +206,7 @@ class Vlan extends Model
     /**
      * Scope a query to only include peering manager
      *
-     * @param Builder $query
+     * @param  Builder  $query
      *
      * @return Builder
      */

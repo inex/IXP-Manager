@@ -78,6 +78,7 @@ class LocationControllerTest extends DuskTestCase
 
             $browser->visit( '/facility/create'     )
                     ->assertSee( 'Create Facility' )
+                    ->pause( 500 )
                     ->waitForText( "Choose the matching PeeringDB facility..." );
 
             $browser->driver->executeScript('window.scrollTo(0, 3000);');

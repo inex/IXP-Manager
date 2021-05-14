@@ -72,10 +72,6 @@ class MacAddressController extends EloquentController
             'readonly'          => self::$read_only,
             'documentation'     => 'https://docs.ixpmanager.org/features/layer2-addresses/',
             'listColumns'       => [
-                'id'             => [
-                    'title' => 'DB ID',
-                    'display' => false
-                ],
                 'customer'       => 'Customer',
                 'switchport'     => 'Interface(s)',
                 'ip4'            => 'IPv4',

@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers\Api\V4;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth;
 
 use Illuminate\Http\{
@@ -44,8 +45,10 @@ use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
+
 /**
  * Layer2Address API Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   APIv4
@@ -96,7 +99,7 @@ class Layer2AddressController extends Controller
             ->join( 'vlan AS v', 'v.id', 'vli.vlanid' )
             ->where( 'mac' , $mac )
             ->where( 'v.id', $vli->vlanid )
-            ->count() ? true : false;
+            ->count();
 
         if( $exist ) {
             !$showFeMessage ?: AlertContainer::push( 'The MAC address already exists within this IXP VLAN.' , Alert::DANGER );

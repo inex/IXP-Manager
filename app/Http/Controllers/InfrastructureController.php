@@ -75,10 +75,6 @@ class InfrastructureController extends Eloquent2Frontend
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'infrastructure',
             'listColumns'       => [
-                'id'        => [
-                    'title' => 'DB ID' ,
-                    'display' => false
-                ],
                 'name'      => 'Name',
                 'shortname' => 'Shortname',
                 'isPrimary' => [
@@ -180,7 +176,7 @@ class InfrastructureController extends Eloquent2Frontend
      *
      * @throws
      */
-    public function doStore( Request $r )
+    public function doStore( Request $r ): bool|RedirectResponse
     {
         $this->checkForm( $r );
         $this->object = Infrastructure::create( $r->all() );
@@ -198,7 +194,7 @@ class InfrastructureController extends Eloquent2Frontend
      *
      * @throws
      */
-    public function doUpdate( Request $r, int $id )
+    public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = Infrastructure::findOrFail( $id );
         $this->checkForm( $r );
@@ -255,7 +251,7 @@ class InfrastructureController extends Eloquent2Frontend
     /**
      * Check if the form is valid
      *
-     * @param $r
+     * @param Request $r
      */
     public function checkForm( Request $r ): void
     {

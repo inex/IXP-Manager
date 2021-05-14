@@ -364,6 +364,7 @@ abstract class Common extends Controller
                 ${ 'sp' . $side }->type = SwitchPort::TYPE_CORE;
                 ${ 'sp' . $side }->save();
 
+                // Creating $pia|$pib
                 ${ 'pi' . $side } = new PhysicalInterface;
                 ${ 'pi' . $side }->switchportid         = ${ 'sp' . $side }->id;
                 ${ 'pi' . $side }->virtualinterfaceid   = $vi->id;
@@ -374,13 +375,14 @@ abstract class Common extends Controller
                 ${ 'pi' . $side }->virtualinterfaceid = $vis[ $side ]->id;
                 ${ 'pi' . $side }->save();
 
+                // Creating $cia|$cib
                 ${ 'ci' . $side } = new CoreInterface;
                 ${ 'ci' . $side }->physical_interface_id = ${ 'pi' . $side }->id;
                 ${ 'ci' . $side }->save();
             }
 
-            $cl->core_interface_sidea_id = $cia->id;
-            $cl->core_interface_sideb_id = $cib->id;
+            $cl->core_interface_sidea_id = $cia->id;/** @var $cia CoreInterface */
+            $cl->core_interface_sideb_id = $cib->id;/** @var $cib CoreInterface */
 
             $cl->save();
         }

@@ -68,10 +68,6 @@ class VendorController extends EloquentController
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'vendor-e2f',
             'listColumns'    => [
-                'id'             => [
-                    'title' => 'UID',
-                    'display' => false
-                ],
                 'name'           => 'Name',
                 'shortname'      => 'Short Name',
                 'bundle_name'    => 'Bundle Name'
@@ -152,10 +148,8 @@ class VendorController extends EloquentController
      * @param Request $r
      *
      * @return bool|RedirectResponse
-     *
-     * @throws
      */
-    public function doStore( Request $r )
+    public function doStore( Request $r ): bool|RedirectResponse
     {
         $this->checkForm( $r );
         $this->object = Vendor::create( $r->all() );
@@ -169,10 +163,8 @@ class VendorController extends EloquentController
      * @param int       $id
      *
      * @return bool|RedirectResponse
-     *
-     * @throws
      */
-    public function doUpdate( Request $r, int $id )
+    public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = Vendor::findOrFail( $id );
         $this->checkForm( $r );
@@ -183,7 +175,7 @@ class VendorController extends EloquentController
     /**
      * Check if the form is valid
      *
-     * @param $r
+     * @param Request $r
      */
     public function checkForm( Request $r ): void
     {

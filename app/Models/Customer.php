@@ -68,10 +68,8 @@ use IXP\Models\AtlasMeasurement;
  * @property Carbon|null $dateleave
  * @property int|null $status
  * @property int|null $activepeeringmatrix
- * @property Carbon|null $updated_at
  * @property int|null $lastupdatedby
  * @property string|null $creator
- * @property Carbon|null $created_at
  * @property int|null $company_registered_detail_id
  * @property int|null $company_billing_details_id
  * @property string|null $peeringmacrov6
@@ -82,6 +80,14 @@ use IXP\Models\AtlasMeasurement;
  * @property int $in_manrs
  * @property int $in_peeringdb
  * @property int $peeringdb_oauth
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|AtlasMeasurement[] $AtlasMeasurementsDest
+ * @property-read int|null $atlas_measurements_dest_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|AtlasMeasurement[] $AtlasMeasurementsSource
+ * @property-read int|null $atlas_measurements_source_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|AtlasProbe[] $AtlasProbes
+ * @property-read int|null $atlas_probes_count
  * @property-read \IXP\Models\CompanyBillingDetail|null $companyBillingDetail
  * @property-read \IXP\Models\CompanyRegisteredDetail|null $companyRegisteredDetail
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServerConnection[] $consoleServerConnections
@@ -129,14 +135,16 @@ use IXP\Models\AtlasMeasurement;
  * @property-read int|null $virtual_interfaces_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
+ * @method static Builder|Customer active()
+ * @method static Builder|Customer addressesForVlan(int $vlanid, int $cust, int $protocol)
  * @method static Builder|Customer associate()
  * @method static Builder|Customer current()
- * @method static Builder|Customer currentActive(bool $trafficing = false, bool $externalOnly = false, bool $connected = true)
+ * @method static \Illuminate\Database\Eloquent\Builder|Customer currentActive(bool $trafficing = false, bool $externalOnly = false, bool $connected = true)
  * @method static Builder|Customer internal()
  * @method static Builder|Customer newModelQuery()
  * @method static Builder|Customer newQuery()
  * @method static Builder|Customer query()
- * @method static Builder|Customer resellerOnly()
+ * @method static \Illuminate\Database\Eloquent\Builder|Customer resellerOnly()
  * @method static Builder|Customer trafficking()
  * @method static Builder|Customer whereAbbreviatedName($value)
  * @method static Builder|Customer whereActivepeeringmatrix($value)
@@ -174,14 +182,6 @@ use IXP\Models\AtlasMeasurement;
  * @method static Builder|Customer whereType($value)
  * @method static Builder|Customer whereUpdatedAt($value)
  * @mixin Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|AtlasMeasurement[] $AtlasMeasurementsDest
- * @property-read int|null $atlas_measurements_dest_count
- * @property-read \Illuminate\Database\Eloquent\Collection|AtlasMeasurement[] $AtlasMeasurementsSource
- * @property-read int|null $atlas_measurements_source_count
- * @property-read \Illuminate\Database\Eloquent\Collection|AtlasProbe[] $AtlasProbes
- * @property-read int|null $atlas_probes_count
- * @method static Builder|Customer addressesForVlan(int $vlanid, int $cust, int $protocol)
- * @method static Builder|Customer active()
  */
 class Customer extends Model
 {
@@ -764,16 +764,18 @@ class Customer extends Model
      * By default, the function will return some format of the ASN if no macro is
      * defined. To return null in this case, set `$nullIfNoMacro` to true.
      *
-     * @param int    $protocol One of 4 or 6 (defaults to 4)
-     * @param string $asnPrefix A prefix for the ASN if no macro is present. See above.
-     * @param bool   $nullIfNoMacro
+     * @param  int  $protocol  One of 4 or 6 (defaults to 4)
+     * @param  string  $asnPrefix  A prefix for the ASN if no macro is present. See above.
+     * @param  bool  $nullIfNoMacro
      *
      * @return string|null The ASN / AS macro as appropriate
+     *
+     * @throws \Exception
      */
-    public function asMacro( $protocol = 4, $asnPrefix = '', $nullIfNoMacro = false ): ?string
+    public function asMacro( int $protocol = 4, string $asnPrefix = '',bool $nullIfNoMacro = false ): ?string
     {
         if( !in_array( $protocol, [ 4, 6 ], true ) )
-            throw new \IXP_Exception( 'Invalid / unknown protocol. 4/6 accepted only.' );
+            throw new \Exception( 'Invalid / unknown protocol. 4/6 accepted only.' );
 
         // find the appropriate ASN or macro
         if( $protocol === 6 && strlen( $this->peeringmacrov6 ) > 3 ) {
@@ -792,11 +794,11 @@ class Customer extends Model
     /**
      * Get formatted name
      *
-     * @param null $fmt
+     * @param  null  $fmt
      *
-     * @return string
+     * @return null|string
      */
-    public function getFormattedName( $fmt = null ): string
+    public function getFormattedName( $fmt = null ): ?string
     {
         if( $this->type === self::TYPE_ASSOCIATE ) {
             return $this->abbreviatedName;
@@ -814,7 +816,7 @@ class Customer extends Model
                 $this->name,
                 $this->abbreviatedName,
                 $this->shortname,
-                $as ? $as          : '',
+                $as ?: '',
                 $as ? "[AS{$as}]"  : '',
                 $as ? "AS{$as}"    : '',
                 $as ? " - AS{$as}" : ''

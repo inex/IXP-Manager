@@ -180,11 +180,11 @@ class VlanInterface extends Model
         switch( $proto ) {
             case 4:
             case 'ipv4':
-                return $this->ipv4enabled;
+                return (bool)$this->ipv4enabled;
                 break;
             case 6:
             case 'ipv6':
-                return $this->ipv6enabled;
+                return (bool)$this->ipv6enabled;
                 break;
             default:
                 return false;

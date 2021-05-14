@@ -39,7 +39,7 @@ use IXP\Traits\Observable;
  * @property int $id
  * @property int|null $locationid
  * @property string|null $name
- * @property string|null $cololocation
+ * @property string|null $colocation
  * @property int|null $height
  * @property string|null $type
  * @property string|null $notes
@@ -58,7 +58,7 @@ use IXP\Traits\Observable;
  * @method static Builder|Cabinet newModelQuery()
  * @method static Builder|Cabinet newQuery()
  * @method static Builder|Cabinet query()
- * @method static Builder|Cabinet whereCololocation($value)
+ * @method static Builder|Cabinet whereColocation($value)
  * @method static Builder|Cabinet whereCreatedAt($value)
  * @method static Builder|Cabinet whereHeight($value)
  * @method static Builder|Cabinet whereId($value)
@@ -69,8 +69,6 @@ use IXP\Traits\Observable;
  * @method static Builder|Cabinet whereUCountsFrom($value)
  * @method static Builder|Cabinet whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property string|null $colocation
- * @method static Builder|Cabinet whereColocation($value)
  */
 class Cabinet extends Model
 {

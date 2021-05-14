@@ -62,10 +62,8 @@ use Illuminate\Support\Collection;
  * @property \Illuminate\Support\Carbon|null $dateleave
  * @property int|null $status
  * @property int|null $activepeeringmatrix
- * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $lastupdatedby
  * @property string|null $creator
- * @property \Illuminate\Support\Carbon|null $created_at
  * @property int|null $company_registered_detail_id
  * @property int|null $company_billing_details_id
  * @property string|null $peeringmacrov6
@@ -76,6 +74,14 @@ use Illuminate\Support\Collection;
  * @property int $in_manrs
  * @property int $in_peeringdb
  * @property int $peeringdb_oauth
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasMeasurement[] $AtlasMeasurementsDest
+ * @property-read int|null $atlas_measurements_dest_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasMeasurement[] $AtlasMeasurementsSource
+ * @property-read int|null $atlas_measurements_source_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasProbe[] $AtlasProbes
+ * @property-read int|null $atlas_probes_count
  * @property-read \IXP\Models\CompanyBillingDetail|null $companyBillingDetail
  * @property-read \IXP\Models\CompanyRegisteredDetail|null $companyRegisteredDetail
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServerConnection[] $consoleServerConnections
@@ -123,6 +129,8 @@ use Illuminate\Support\Collection;
  * @property-read int|null $virtual_interfaces_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
+ * @method static Builder|Customer active()
+ * @method static Builder|Customer addressesForVlan(int $vlanid, int $cust, int $protocol)
  * @method static Builder|Customer associate()
  * @method static Builder|Customer current()
  * @method static Builder|Customer currentActive(bool $trafficing = false, bool $externalOnly = false, bool $connected = true)
@@ -168,14 +176,6 @@ use Illuminate\Support\Collection;
  * @method static Builder|CustomerAggregator whereType($value)
  * @method static Builder|CustomerAggregator whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasMeasurement[] $AtlasMeasurementsDest
- * @property-read int|null $atlas_measurements_dest_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasMeasurement[] $AtlasMeasurementsSource
- * @property-read int|null $atlas_measurements_source_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasProbe[] $AtlasProbes
- * @property-read int|null $atlas_probes_count
- * @method static Builder|Customer addressesForVlan(int $vlanid, int $cust, int $protocol)
- * @method static Builder|Customer active()
  */
 class CustomerAggregator extends Customer
 {

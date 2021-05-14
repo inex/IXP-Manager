@@ -50,10 +50,10 @@ use Illuminate\Support\Carbon;
  * @property string|null $atlas_state
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read AtlasResult $atlasResult
- * @property-read AtlasRun $atlasRun
- * @property-read Customer|null $custDest
- * @property-read Customer|null $custSource
+ * @property-read \IXP\Models\AtlasResult|null $atlasResult
+ * @property-read \IXP\Models\AtlasRun $atlasRun
+ * @property-read \IXP\Models\Customer|null $custDest
+ * @property-read \IXP\Models\Customer|null $custSource
  * @method static Builder|AtlasMeasurement newModelQuery()
  * @method static Builder|AtlasMeasurement newQuery()
  * @method static Builder|AtlasMeasurement query()

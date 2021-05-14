@@ -92,7 +92,7 @@ class PortController extends Controller
         $location           = is_numeric( $r->location  )       ? (int)$r->location  : 0;
         $cabinet            = is_numeric( $r->cabinet   )       ? (int) $r->cabinet  : 0;
         $cabletype          = is_numeric( $r->type      )       ? (int) $r->type     : 0;
-        $availableForUse    = $r->available                     ? true               : false;
+        $availableForUse    = (bool) $r->available;
 
         $summary = "Filtered for: ";
         $summary .= $location ? Location::find( $location )->name : 'all locations';
@@ -216,7 +216,7 @@ class PortController extends Controller
             'switchPorts'           => $switchPorts ?? [],
             'ppp'                   => $ppp,
             'partnerPorts'          => PatchPanelPortAggregator::getAvailablePorts( $ppp->patch_panel_id, [ $ppp->id ], $duplexSlaveId ),
-            'hasDuplex'             => $duplexSlaveId ? true : false,
+            'hasDuplex'             => (bool) $duplexSlaveId,
             'allocating'            => $allocating,
             'prewired'              => $prewired,
         ]);
@@ -239,7 +239,7 @@ class PortController extends Controller
 
             if( $sp->id !== $ppp->switch_port_id ){
                 // check if the switch port is available
-                if( PatchPanelPort::whereSwitchPortId( $sp->id )->doesntExist() ){
+                if( PatchPanelPort::where( 'switch_port_id', $sp->id )->doesntExist() ){
                     $ppp->update( [ 'switch_port_id' => $sp->id ] );
                 } else {
                     AlertContainer::push( 'The switch port selected is already used by an other patch panel port.', Alert::DANGER );

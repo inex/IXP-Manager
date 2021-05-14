@@ -37,10 +37,10 @@ use Illuminate\Database\Eloquent\{
  * @property string $apiKey
  * @property string|null $expires
  * @property string|null $allowedIPs
- * @property \Illuminate\Support\Carbon $created_at
  * @property string|null $lastseenAt
  * @property string|null $lastseenFrom
  * @property string|null $description
+ * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\User $user
  * @method static Builder|ApiKey newModelQuery()
@@ -57,10 +57,6 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|ApiKey whereUpdatedAt($value)
  * @method static Builder|ApiKey whereUserId($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static Builder|ApiKey whereCreatedAt($value)
- * @method static Builder|ApiKey whereUpdatedAt($value)
  */
 class ApiKey extends Model
 {

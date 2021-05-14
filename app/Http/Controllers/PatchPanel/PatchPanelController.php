@@ -68,7 +68,7 @@ class PatchPanelController extends Controller
     public function index( bool $active = true ): View
     {
         return view( 'patch-panel/index' )->with([
-            'patchPanels'       => PatchPanel::whereActive( $active )
+            'patchPanels'       => PatchPanel::where( 'active', $active )
                 ->with( 'cabinet' )->get(),
             'locations'         => Location::select( [ 'id', 'name' ] )
                 ->orderBy( 'name' )->get(),
@@ -106,8 +106,6 @@ class PatchPanelController extends Controller
      * @param   StorePatchPanel $r instance of the current HTTP request
      *
      * @return RedirectResponse
-     *
-     * @throws
      */
     public function store( StorePatchPanel $r ): RedirectResponse
     {
@@ -157,8 +155,6 @@ class PatchPanelController extends Controller
      * @param PatchPanel        $pp
      *
      * @return  RedirectResponse
-     *
-     * @throws
      */
     public function update( StorePatchPanel $r, PatchPanel $pp): RedirectResponse
     {
@@ -177,8 +173,6 @@ class PatchPanelController extends Controller
      * @param int           $active
      *
      * @return RedirectResponse
-     *
-     * @throws
      */
     public function changeStatus( PatchPanel $pp, int $active ): RedirectResponse
     {

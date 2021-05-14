@@ -89,10 +89,6 @@ class SwitchPortController extends EloquentController
             'route_prefix_page_title'   => 'switch',
             'pagetitlepostamble'        => 'Switch Port',
             'listColumns'               => [
-                'id'        => [
-                    'title' => 'UID',
-                    'display' => false
-                ],
                 'switchname'  => [
                     'title'      => 'Switch',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -150,7 +146,7 @@ class SwitchPortController extends EloquentController
      *
      * @return array
      */
-    protected function listGetData( $id = null ): array
+    protected function listGetData( int $id = null ): array
     {
         $feParams   = $this->feParams;
         $params     = $this->data;
@@ -178,7 +174,7 @@ class SwitchPortController extends EloquentController
      *
      * @param Request $r
      *
-     * @return View|RedirectResponse
+     * @return View
      */
     public function list( Request $r ) : View
     {
@@ -223,10 +219,8 @@ class SwitchPortController extends EloquentController
      * @param Request $r
      *
      * @return bool|RedirectResponse
-     *
-     * @throws
      */
-    public function doStore( Request $r )
+    public function doStore( Request $r ): bool|RedirectResponse
     {
         $rules = [
             'switchid'      => 'required|integer|exists:switch,id',
@@ -284,10 +278,8 @@ class SwitchPortController extends EloquentController
      * @param int       $id
      *
      * @return bool|RedirectResponse
-     *
-     * @throws
      */
-    public function doUpdate( Request $r, int $id )
+    public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = SwitchPort::findOrFail( $id );
 
@@ -298,7 +290,6 @@ class SwitchPortController extends EloquentController
         ] );
 
         $this->object->update( $r->all() );
-
         return true;
     }
 
@@ -352,10 +343,6 @@ class SwitchPortController extends EloquentController
         $this->feParams->readonly                   = true;
         $this->feParams->hideactioncolumn           = true;
         $this->feParams->listColumns = [
-            'ifIndex'       => [
-                'title' => 'UID',
-                'display' => false
-            ],
             'switchname'    => 'Switch',
             'ifName'        => 'Port',
             'type'          => 'Type',
@@ -416,26 +403,22 @@ class SwitchPortController extends EloquentController
         $this->feParams->hideactioncolumn           = true;
 
         $this->feParams->listColumns = [
-            'id'                    =>
-                [ 'title' => 'UID',
-                  'display' => false
-                ],
-            'ifName'                => [
+            'ifName'    => [
                 'title'     =>  'Name',
                 'data-sort' =>  'id'
             ],
-            'type'                  => [
+            'type'      => [
                 'title'     =>  'Type',
                 'type'      =>   self::$FE_COL_TYPES[ 'CONST' ],
                 'const'     =>   SwitchPort::$TYPES,
             ],
-            'state'                 => [
+            'state'     => [
                 'title'     =>  'State (Admin/Op)',
                 'type'      =>   self::$FE_COL_TYPES[ 'SCRIPT' ],
                 'script'    =>   'switch-port/port-admin-status',
                 'params'    =>   [
-                                "adminState"    => "ifAdminStatus",
-                                "operState"     => "ifOperStatus",
+                    "adminState"    => "ifAdminStatus",
+                    "operState"     => "ifOperStatus",
                 ],
             ],
             'mauType'               => 'MAU Type',
@@ -458,16 +441,14 @@ class SwitchPortController extends EloquentController
     /**
      * Display the List MAU
      *
-     * @param Switcher $switch
+     * @param  Switcher  $switch
      *
      * @return RedirectResponse|View
-     *
-     * @throws
      */
-    public function listMau( Switcher $switch  )
+    public function listMau( Switcher $switch  ): RedirectResponse|View
     {
         if( !$switch->mauSupported ) {
-            return redirect::to( route( "switch@list" ) );
+            return redirect( route( "switch@list" ) );
         }
 
         $this->setUpListMau();
@@ -497,7 +478,6 @@ class SwitchPortController extends EloquentController
         return $this->display( 'list' );
     }
 
-
     /**
      * Set up all the information to display the operation Status
      *
@@ -522,23 +502,21 @@ class SwitchPortController extends EloquentController
                 'title'    => 'Admin State',
                 'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
                 'script'   => 'switch-port/port-status',
-                'params'    =>
-                    [
-                        "state"    => "ifAdminStatus",
-                    ]
+                'params'    =>  [
+                    "state"    => "ifAdminStatus",
+                ]
             ],
             'ifOperStatus' => [
                 'title'    => 'Operational State',
                 'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
                 'script'   => 'switch-port/port-status',
-                'params'  =>
-                    [
-                        "state"    => "ifOperStatus",
-                    ],
-                    'active'       => [
-                            'title'    => 'Active',
-                            'type'     => self::$FE_COL_TYPES[ 'YES_NO' ],
-                    ],
+                'params'  => [
+                    "state"    => "ifOperStatus",
+                ],
+                'active'       => [
+                    'title'    => 'Active',
+                    'type'     => self::$FE_COL_TYPES[ 'YES_NO' ],
+                ],
             ]
         ];
 
@@ -551,14 +529,11 @@ class SwitchPortController extends EloquentController
      * @param Switcher $switch
      *
      * @return view
-     *
-     * @throws
      */
     public function listOpStatus( Switcher $switch  ): view
     {
         // to refresh switch and switch port details via SNMP
-        try
-        {
+        try {
             $host = new SNMP( $switch->hostname, $switch->snmppasswd );
             $switch->snmpPoll( $host, true );
             $switch->snmpPollSwitchPorts( $host, true, false, false );
@@ -603,7 +578,6 @@ class SwitchPortController extends EloquentController
      * @param Switcher $switch Switch
      *
      * @return view
-     * @throws
      */
     public function snmpPoll( Switcher $switch ): view
     {
@@ -628,7 +602,6 @@ class SwitchPortController extends EloquentController
             'switches'                  => Switcher::orderBy( 'name' )->get()->keyBy( 'id' ),
             's'                         => $switch,
             'ports'                     => $results,
-
         ]);
     }
 
@@ -638,8 +611,6 @@ class SwitchPortController extends EloquentController
      * @param   Request     $r          HTTP instance
      *
      * @return JsonResponse
-     *
-     * @throws
      */
     public function setType( Request $r ): JsonResponse
     {
@@ -671,8 +642,6 @@ class SwitchPortController extends EloquentController
      * @param   Request     $r          HTTP instance
      *
      * @return JsonResponse
-     *
-     * @throws
      */
     public function changeStatus( Request $r ): JsonResponse
     {
@@ -692,15 +661,15 @@ class SwitchPortController extends EloquentController
     /**
      * Delete port
      *
-     * @param   Request     $r          HTTP instance
+     * @param  Request  $r  HTTP instance
      *
      * @return JsonResponse
      *
-     * @throws
+     * @throws \Exception
      */
     public function deleteSnmpPoll( Request $r ): JsonResponse
     {
-        if( !$r->spid) {
+        if( !$r->spid ){
             return response()->json( [ 'success' => false ] );
         }
 
@@ -783,8 +752,6 @@ class SwitchPortController extends EloquentController
      * Display the Optic Inventory
      *
      * @return view
-     *
-     * @throws
      */
     public function opticInventory(): view
     {
@@ -809,7 +776,6 @@ class SwitchPortController extends EloquentController
     /**
      * Set up all the information to display the optics list
      *
-     *
      * @bool
      */
     public function setUpOpticList(): bool
@@ -822,10 +788,6 @@ class SwitchPortController extends EloquentController
         $this->feParams->hideactioncolumn           = true;
 
         $this->feParams->listColumns = [
-            'id'                    =>
-                [ 'title' => 'UID',
-                  'display' => false
-                ],
             'ifName'                => 'Name',
             'switch'                => 'Switch',
             'custname'  => [
@@ -840,7 +802,6 @@ class SwitchPortController extends EloquentController
                 'type'      =>   self::$FE_COL_TYPES[ 'CONST' ],
                 'const'     =>   SwitchPort::$TYPES,
             ],
-
             'state'                 => [
                 'title'     =>  'State (Admin/Op)',
                 'type'      =>   self::$FE_COL_TYPES[ 'SCRIPT' ],
@@ -861,8 +822,6 @@ class SwitchPortController extends EloquentController
      * Display the Optic list
      *
      * @return view
-     *
-     * @throws
      */
     public function opticList(): view
     {
@@ -874,19 +833,19 @@ class SwitchPortController extends EloquentController
             'c.name AS custname', 'c.id AS custid',
             's.id AS switchid', 's.name AS switch'
         ] )
-            ->from( 'switchport AS sp' )
-            ->leftjoin( 'physicalinterface AS pi', 'pi.switchportid', 'sp.id' )
-            ->leftjoin( 'virtualinterface AS vi', 'vi.id', 'pi.virtualinterfaceid' )
-            ->leftjoin( 'cust AS c', 'c.id', 'vi.custid' )
-            ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
-            ->when( request()->input( "mau-type" ) , function( Builder $q, $mautype ) {
-                return $q->where( 'sp.mauType', $mautype);
-            }, function ($query) {
-                return $query->where( 'sp.mauType', '!=', NULL);
-            })
-            ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-            })->get()->toArray();
+        ->from( 'switchport AS sp' )
+        ->leftjoin( 'physicalinterface AS pi', 'pi.switchportid', 'sp.id' )
+        ->leftjoin( 'virtualinterface AS vi', 'vi.id', 'pi.virtualinterfaceid' )
+        ->leftjoin( 'cust AS c', 'c.id', 'vi.custid' )
+        ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
+        ->when( request()->input( "mau-type" ) , function( Builder $q, $mautype ) {
+            return $q->where( 'sp.mauType', $mautype);
+        }, function ($query) {
+            return $query->where( 'sp.mauType', '!=', NULL);
+        })
+        ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+        })->get()->toArray();
 
         $this->listIncludeTemplates();
         $this->preList();

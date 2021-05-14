@@ -63,7 +63,7 @@ class User2FAControllerTest extends DuskTestCase
     public function test(): void
     {
         $this->browse( function ( Browser $browser) {
-            $this->deleteEnvValue( ["2FA_ENFORCE_FOR_USERS" => 1] );
+            //$this->deleteEnvValue( ["2FA_ENFORCE_FOR_USERS" => 1] );
 
             $userUsername = 'travis';
             $userPassword = 'travisci';

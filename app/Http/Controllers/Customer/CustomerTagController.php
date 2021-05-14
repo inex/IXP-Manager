@@ -83,10 +83,6 @@ class CustomerTagController extends EloquentController
             'extraDeleteMessage' => "<b>This tag will be removed from all " . config( 'ixp_fe.lang.customer.many' ) . " tagged with it.</b>",
             'documentation'     => 'https://docs.ixpmanager.org/usage/customer-tags/',
             'listColumns'    => [
-                'id'        => [
-                    'title' => 'DB ID',
-                    'display' => false
-                ],
                 'tag'               => 'Tag',
                 'display_as'        => 'Display As',
                 'internal_only'     => [
@@ -191,7 +187,7 @@ class CustomerTagController extends EloquentController
      *
      * @throws
      */
-    public function doStore( Request $r )
+    public function doStore( Request $r ): bool|RedirectResponse
     {
         $this->checkForm( $r );
         $r->request->set( 'tag', preg_replace( "/[^a-z0-9\-]/" , "", strtolower( $r->tag ) ) );
@@ -209,7 +205,7 @@ class CustomerTagController extends EloquentController
      *
      * @throws
      */
-    public function doUpdate( Request $r, int $id )
+    public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = CustomerTag::findOrFail( $r->id );
         $this->checkForm( $r );
@@ -280,7 +276,7 @@ class CustomerTagController extends EloquentController
     /**
      * Check if the form is valid
      *
-     * @param $r
+     * @param Request $r
      */
     public function checkForm( Request $r ): void
     {

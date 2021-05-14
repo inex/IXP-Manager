@@ -50,13 +50,14 @@ use IXP\Models\{
  * @property int|null $uid
  * @property int|null $privs
  * @property int|null $disabled
- * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $lastupdatedby
  * @property string|null $creator
- * @property \Illuminate\Support\Carbon|null $created_at
  * @property string|null $name
  * @property int|null $peeringdb_id
  * @property array|null $extra_attributes
+ * @property array|null $prefs
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ApiKey[] $apiKeys
  * @property-read int|null $api_keys_count
  * @property-read Customer|null $customer
@@ -86,13 +87,12 @@ use IXP\Models\{
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator wherePeeringdbId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator wherePrefs($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator wherePrivs($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereUid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereUsername($value)
  * @mixin \Eloquent
- * @property array|null $prefs
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator wherePrefs($value)
  */
 class UserAggregator extends User
 {

@@ -33,6 +33,7 @@ use IXP\Models\{
     Vlan
 };
 
+use Exception;
 use Illuminate\Http\{
     RedirectResponse,
     JsonResponse
@@ -74,7 +75,7 @@ class PeeringManagerController extends Controller
      *
      * @throws
      */
-    public function index()
+    public function index(): View|RedirectResponse
     {
         if( config( 'ixp_fe.frontend.disabled.peering-manager', false ) ) {
             AlertContainer::push( 'The peering manager has been disabled.', Alert::DANGER );
@@ -90,7 +91,7 @@ class PeeringManagerController extends Controller
             AlertContainer::push( 'No peers have been found for the peering manager. Please see <a href="'
                 . 'https://github.com/inex/IXP-Manager/wiki/Peering-Manager">these instructions</a>'
                 . ' / ensure your database is populating with peering information.', Alert::DANGER );
-            return Redirect::to( '' );
+            return redirect( '' );
         }
 
         return view( 'peering-manager/index' )->with([
@@ -186,7 +187,7 @@ class PeeringManagerController extends Controller
                 $mailable->checkIfSendable( $sendtome );
             }
 
-        } catch( \Exception $e ) {
+        } catch( Exception $e ) {
             return response()->json( [ 'error' => true, "message" => $e->getMessage() ] );
         }
 

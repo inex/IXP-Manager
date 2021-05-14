@@ -24,10 +24,13 @@ namespace IXP\Http\Controllers\Interfaces;
  */
 
 use DB;
+use Exception;
 use Former;
 
 use Illuminate\View\View;
 
+use IXP\Exceptions\GeneralException;
+use JsonException;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -51,6 +54,7 @@ use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
+use Throwable;
 
 /**
  * VirtualInterface Controller
@@ -101,9 +105,11 @@ class VirtualInterfaceController extends Common
     /**
      * Display the form to create a virtual interface
      *
-     * @param Customer $cust customer
+     * @param  Customer  $cust  customer
      *
      * @return  View
+     *
+     * @throws
      */
     public function createWizardForCust( Customer $cust ) : View
     {
@@ -153,8 +159,6 @@ class VirtualInterfaceController extends Common
      * @param   StoreVirtualInterface $r instance of the current HTTP request
      *
      * @return  RedirectResponse
-     *
-     * @throws
      */
     public function store( StoreVirtualInterface $r ): RedirectResponse
     {
@@ -213,12 +217,12 @@ class VirtualInterfaceController extends Common
     /**
      * Add or edit a virtual interface (set all the data needed)
      *
-     * @param StoreVirtualInterface $r instance of the current HTTP request
-     * @param VirtualInterface      $vi
+     * @param  StoreVirtualInterface  $r  instance of the current HTTP request
+     * @param  VirtualInterface  $vi
      *
      * @return  RedirectResponse
      *
-     * @throws
+     * @throws GeneralException|Throwable
      */
     public function update( StoreVirtualInterface $r, VirtualInterface $vi ): RedirectResponse
     {
@@ -259,7 +263,7 @@ class VirtualInterfaceController extends Common
     /**
      * Display the wizard form to add a virtual interface
      *
-     * @param Customer|null $cust Id of the customer to preselect
+     * @param  Customer|null  $cust  Id of the customer to preselect
      *
      * @return View
      *
@@ -277,7 +281,7 @@ class VirtualInterfaceController extends Common
             'custs'                 => Customer::groupBy( 'name' )->get(),
             'vli'                   => false,
             'vlans'                 => Vlan::orderBy( 'number' )->get(),
-            'pi_switches'           => Switcher::whereActive( true )
+            'pi_switches'           => Switcher::where( 'active', true )
                 ->orderBy( 'name' )->get(),
             'resoldCusts'           => $this->resellerMode() ? json_encode( Customer::join('cust AS reseller', 'reseller.reseller', 'cust.id')
                 ->orderBy('reseller.name')->get(), JSON_THROW_ON_ERROR) : json_encode([], JSON_THROW_ON_ERROR),
@@ -291,8 +295,6 @@ class VirtualInterfaceController extends Common
      * @param   StoreVirtualInterfaceWizard $r instance of the current HTTP request
      *
      * @return  RedirectResponse
-     *
-     * @throws
      */
     public function storeWizard( StoreVirtualInterfaceWizard $r ): RedirectResponse
     {
@@ -328,12 +330,12 @@ class VirtualInterfaceController extends Common
     /**
      * Delete a Virtual Interface
      *
-     * @param Request $r instance of the current HTTP request
-     * @param VirtualInterface $vi
+     * @param  Request  $r  instance of the current HTTP request
+     * @param  VirtualInterface  $vi
      *
      * @return  RedirectResponse
      *
-     * @throws
+     * @throws Exception
      */
     public function delete( Request $r, VirtualInterface $vi ): RedirectResponse
     {

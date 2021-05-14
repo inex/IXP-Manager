@@ -23,6 +23,7 @@ namespace IXP\Http\Controllers\Docstore;
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\View\View;
 
 use IXP\Http\Controllers\Controller;
@@ -47,11 +48,11 @@ class LogController extends Controller
     /**
      * Display the list of unique logs for a file
      *
-     * @param DocstoreFile $file
+     * @param  DocstoreFile  $file
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function uniqueList( DocstoreFile $file ) : View
     {
@@ -67,11 +68,11 @@ class LogController extends Controller
     /**
      * Display the list of all logs for a file
      *
-     * @param DocstoreFile $file
+     * @param  DocstoreFile  $file
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function list( DocstoreFile $file ) : View
     {

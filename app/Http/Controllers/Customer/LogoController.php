@@ -145,7 +145,7 @@ class LogoController extends Controller
         $img->save( $saveTo );
 
         AlertContainer::push( "Logo uploaded.", Alert::SUCCESS );
-        return Redirect::to( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ 'cust' => $c->id ] ) : Redirect::to( route( "dashboard@index" ) ) );
+        return redirect( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ 'cust' => $c->id ] ) : Redirect::to( route( "dashboard@index" ) ) );
     }
 
     /**
@@ -164,7 +164,7 @@ class LogoController extends Controller
         // do we have a logo?
         if( !( $oldLogo = $c->logo ) ) {
             AlertContainer::push( "Sorry, we could not find any logo for you.", Alert::DANGER );
-            return Redirect::to( '' );
+            return redirect( '' );
         }
 
         if( file_exists( $oldLogo->fullPath() ) ) {
@@ -180,6 +180,7 @@ class LogoController extends Controller
      * Load a customer from the database with the given ID (or ID in request)
      *
      * @param int|null $id The customer ID
+     *
      * @return Customer The customer object
      */
     private function loadCustomer( ?int $id ): Customer

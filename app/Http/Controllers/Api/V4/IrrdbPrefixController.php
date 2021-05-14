@@ -60,10 +60,10 @@ class IrrdbPrefixController extends Controller
             abort( 404 );
         }
 
+        $prefixes = false;
+
         if( $cust->maxprefixes < 2000 ){
             $prefixes = IrrdbPrefix::where( 'customer_id', $cust->id )->where( 'protocol', $protocol )->get()->toArray();
-        } else {
-            $prefixes = false;
         }
 
         return response()->json( [ 'prefixes' => $prefixes ] );

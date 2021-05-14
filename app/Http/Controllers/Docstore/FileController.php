@@ -26,6 +26,8 @@ namespace IXP\Http\Controllers\Docstore;
 use Auth;
 use Former\Facades\Former;
 
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -71,11 +73,11 @@ class FileController extends Controller
     /**
      * Upload a new docstore file
      *
-     * @param Request $r
+     * @param  Request  $r
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function upload( Request $r ): View
     {
@@ -98,7 +100,7 @@ class FileController extends Controller
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function store( Request $r ): RedirectResponse
     {
@@ -132,7 +134,7 @@ class FileController extends Controller
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function edit( Request $r , DocstoreFile $file ): View
     {
@@ -155,12 +157,12 @@ class FileController extends Controller
     /**
      * Update a docstore file uploaded
      *
-     * @param Request       $r
-     * @param DocstoreFile  $file
+     * @param  Request  $r
+     * @param  DocstoreFile  $file
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function update( Request $r , DocstoreFile $file ): RedirectResponse
     {
@@ -207,13 +209,13 @@ class FileController extends Controller
     /**
      * View a docstore file apply to allowed mimetype ( DocstoreFile::$
      *
-     * @param DocstoreFile      $file
+     * @param  DocstoreFile  $file
      *
      * @return RedirectResponse|View
      *
-     * @throws
+     * @throws AuthorizationException|FileNotFoundException
      */
-    public function view( DocstoreFile $file )
+    public function view( DocstoreFile $file ): RedirectResponse|View
     {
         $this->authorize( 'view', $file );
 
@@ -234,13 +236,13 @@ class FileController extends Controller
     /**
      * Download a docstore file
      *
-     * @param DocstoreFile  $file
+     * @param  DocstoreFile  $file
      *
      * @return mixed
      *
-     * @throws
+     * @throws AuthorizationException
      */
-    public function download( DocstoreFile $file )
+    public function download( DocstoreFile $file ): mixed
     {
         $this->authorize( 'download', $file );
 
@@ -259,13 +261,13 @@ class FileController extends Controller
     /**
      * Get information on a docstore file
      *
-     * @param DocstoreFile  $file
+     * @param  DocstoreFile  $file
      *
      * @return mixed
      *
-     * @throws
+     * @throws AuthorizationException
      */
-    public function info( DocstoreFile $file )
+    public function info( DocstoreFile $file ): mixed
     {
         $this->authorize( 'info', $file );
 
@@ -282,12 +284,12 @@ class FileController extends Controller
     /**
      * Delete a file
      *
-     * @param Request       $r
-     * @param DocstoreFile  $file
+     * @param  Request  $r
+     * @param  DocstoreFile  $file
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
     public function delete( Request $r , DocstoreFile $file ): RedirectResponse
     {

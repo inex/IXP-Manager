@@ -34,6 +34,8 @@ use IXP\Traits\Observable;
  * @property int $customer_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\Customer $customer
+ * @property-read \IXP\Models\CustomerTag $tag
  * @method static \Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag query()
@@ -42,8 +44,6 @@ use IXP\Traits\Observable;
  * @method static \Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag whereCustomerTagId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property-read \IXP\Models\Customer $customer
- * @property-read \IXP\Models\CustomerTag $tag
  */
 class CustomerToCustomerTag extends Model
 {

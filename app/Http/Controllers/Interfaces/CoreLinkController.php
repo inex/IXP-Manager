@@ -22,8 +22,7 @@ namespace IXP\Http\Controllers\Interfaces;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use Log, Redirect;
+use Exception, Log;
 
 use Illuminate\Http\{
     RedirectResponse,
@@ -72,7 +71,7 @@ class CoreLinkController extends Common
 
         Log::notice( $r->user()->username . ' added a core link for the core bundle with (id: ' . $cb->id . ')' );
         AlertContainer::push( 'Core link created.', Alert::SUCCESS );
-        return Redirect::to( route( "core-bundle@edit" , [ "cb" => $cb->id ] ) );
+        return redirect( route( "core-bundle@edit" , [ "cb" => $cb->id ] ) );
     }
 
     /**
@@ -82,8 +81,6 @@ class CoreLinkController extends Common
      * @param CoreBundle    $cb
      *
      * @return  RedirectResponse
-     *
-     * @throws
      */
     public function update( Request $r, CoreBundle $cb ): RedirectResponse
     {
@@ -99,7 +96,7 @@ class CoreLinkController extends Common
 
         Log::notice( $r->user()->username . ' updated the core links from the core bundle with (id: ' . $cb->id . ')' );
         AlertContainer::push( 'Core links updated.', Alert::SUCCESS );
-        return Redirect::to( route( "core-bundle@edit", [ "cb" => $cb->id ] ) );
+        return redirect( route( "core-bundle@edit", [ "cb" => $cb->id ] ) );
     }
 
     /**
@@ -108,13 +105,13 @@ class CoreLinkController extends Common
      * Delete the associated core interface/ physical interface
      * Change the type of the switch ports to UNSET
      *
-     * @param Request       $r
-     * @param CoreBundle    $cb
-     * @param CoreLink      $cl
+     * @param  Request  $r
+     * @param  CoreBundle  $cb
+     * @param  CoreLink  $cl
      *
      * @return  RedirectResponse
      *
-     * @throws
+     * @throws Exception
      */
     public function delete( Request $r, CoreBundle $cb, CoreLink $cl ) : RedirectResponse
     {
@@ -130,6 +127,6 @@ class CoreLinkController extends Common
 
         Log::notice( $r->user()->username." deleted a core link (id: " . $cl->id . ')' );
         AlertContainer::push( 'Core link deleted.', Alert::SUCCESS );
-        return Redirect::to( route( "core-bundle@edit", [ "cb" => $cb->id ] ) );
+        return redirect( route( "core-bundle@edit", [ "cb" => $cb->id ] ) );
     }
 }

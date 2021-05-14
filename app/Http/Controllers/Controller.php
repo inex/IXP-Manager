@@ -94,10 +94,9 @@ class Controller extends BaseController
      * Try to get the clients real IP address even when behind a proxy.
      *
      * Source: https://stackoverflow.com/questions/33268683/how-to-get-client-ip-address-in-laravel-5/41769505#41769505
-     *
-     * @return string
+     * @return string|null
      */
-    protected function getIp(): string
+    protected function getIp(): ?string
     {
         foreach( [ 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR' ] as $key ) {
             if( array_key_exists( $key, $_SERVER ) === true ) {
@@ -122,7 +121,7 @@ class Controller extends BaseController
     protected function getAllowedPrivs(): array
     {
         $privs          = User::$PRIVILEGES_TEXT_NONSUPERUSER;
-        $isSuperUser    = Auth::user()->isSuperUser();
+        $isSuperUser    = Auth::getUser()->isSuperUser();
 
         // If we add a user via the customer overview users list
         if( request()->custid && request()->is( 'user/create*' ) ) {
