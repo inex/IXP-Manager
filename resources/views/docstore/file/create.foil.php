@@ -58,7 +58,7 @@ $this->layout( 'layouts/ixpv4' );
             ->label( 'Name' )
             ->autofocus()
             ->blockHelp( "The name of the file (this is as it appears on listings in the web interface rather than on the filesystem). "
-                . "<b>This is also the name the downloaded file will have.</b>");
+                . "<b>This is also the name the downloaded file will have. As such - be sure to keep / set an appropriate filename extension.</b>");
         ?>
 
         <?= Former::select( 'docstore_directory_id' )
