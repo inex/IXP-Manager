@@ -101,6 +101,10 @@ class InfrastructureController extends Eloquent2Frontend
                     'title' => 'Country',
                     'type' => self::$FE_COL_TYPES[ 'COUNTRY' ]
                 ],
+                'notes'       => [
+                    'title'         => 'Notes',
+                    'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
+                ],
                 'created_at'       => [
                     'title'         => 'Created',
                     'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
@@ -159,6 +163,7 @@ class InfrastructureController extends Eloquent2Frontend
             'shortname'        => request()->old( 'shortname', $this->object->shortname     ),
             'isPrimary'        => request()->old( 'isPrimary', $this->object->isPrimary     ),
             'country'          => request()->old( 'country', in_array( $this->object->country,  array_values( Countries::getListForSelect( 'iso_3166_2' ) ), false ) ? $this->object->country : null ),
+            'notes'            => request()->old( 'notes', $this->object->notes             ),
         ]);
 
         return [

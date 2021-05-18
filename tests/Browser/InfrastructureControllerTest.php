@@ -95,6 +95,7 @@ class InfrastructureControllerTest extends DuskTestCase
                     ->check('isPrimary')
                     ->select( 'ixf_ix_id',      1 )
                     ->select( 'peeringdb_ix_id',1 )
+                    ->type( 'notes',       'I am a note')
                     ->press('Create' )
                     ->assertPathIs('/infrastructure/create'         )
                     ->assertSee( "The name has already been taken"  )
@@ -115,6 +116,7 @@ class InfrastructureControllerTest extends DuskTestCase
             $this->assertEquals( 'Infrastructure PHPUnit',   $infra->name               );
             $this->assertEquals( 'phpunit',                  $infra->shortname          );
             $this->assertEquals( 'IE',                       $infra->country            );
+            $this->assertEquals( 'I am a note',              $infra->notes            );
             $this->assertEquals( true,                       $infra->isPrimary          );
             $this->assertEquals( '1',                        $infra->ixf_ix_id          );
             $this->assertEquals( '1',                        $infra->peeringdb_ix_id    );
@@ -126,6 +128,7 @@ class InfrastructureControllerTest extends DuskTestCase
             $browser->assertInputValue('name',      'Infrastructure PHPUnit')
                     ->assertInputValue('shortname', 'phpunit'   )
                     ->assertSelected('country', 'IE'            )
+                    ->assertInputValue('notes', 'I am a note'     )
                     ->assertChecked( 'isPrimary' )
                     ->waitForText( "LINX LON1"   )
                     ->pause(5000)
@@ -150,6 +153,7 @@ class InfrastructureControllerTest extends DuskTestCase
             $this->assertInstanceOf( Infrastructure::class, $infra              );
             $this->assertEquals( 'Infrastructure PHPUnit',   $infra->name       );
             $this->assertEquals( 'phpunit',                  $infra->shortname  );
+            $this->assertEquals( 'I am a note',              $infra->notes  );
             $this->assertEquals( 'FR',                       $infra->country    );
             $this->assertEquals( false,                      $infra->isPrimary  );
             $this->assertEquals( '2',                        $infra->ixf_ix_id  );
@@ -165,6 +169,7 @@ class InfrastructureControllerTest extends DuskTestCase
 
             $browser->assertInputValue('name',      'Infrastructure PHPUnit')
                 ->assertInputValue('shortname', 'phpunit')
+                ->assertInputValue('notes', 'I am a note')
                 ->assertNotChecked( 'isPrimary' )
                 ->assertSelected('ixf_ix_id', '2')
                 ->assertSelected('country', 'FR')

@@ -59,6 +59,39 @@
                 . "cached for two hours. Use 'artisan cache:clear' to reset it.");
         ?>
 
+        <div class="form-group row">
+            <div class="col-sm-8">
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs">
+                            <li role="presentation" class="nav-item">
+                                <a class="tab-link-body-note nav-link active" href="#body1">Public Notes</a>
+                            </li>
+                            <li role="presentation" class="nav-item">
+                                <a class="tab-link-preview-note nav-link " href="#preview1">Preview</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-content card-body">
+                        <div role="tabpanel" class="tab-pane show active" id="body1">
+                            <?= Former::textarea( 'notes' )
+                                ->id( 'notes' )
+                                ->class( 'notes' )
+                                ->label( '' )
+                                ->rows( 10 )
+                                ->blockHelp( "These notes are visible (but not editable) to the member. You can use markdown here." )
+                            ?>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="preview1">
+                            <div class="bg-light p-4 well-preview">
+                                Loading...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <?= Former::actions(
             Former::primary_submit( $t->data['params']['isAdd'] ? 'Create' : 'Save Changes' )->id( 'btn-submit' )->disabled( true )->class( "mb-2 mb-sm-0" ),
             Former::secondary_link( 'Cancel' )->href( route($t->feParams->route_prefix . '@list') )->class( "mb-2 mb-sm-0" ),

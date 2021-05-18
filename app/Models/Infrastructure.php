@@ -63,6 +63,8 @@ use IXP\Traits\Observable;
  * @method static Builder|Infrastructure whereShortname($value)
  * @method static Builder|Infrastructure whereUpdatedAt($value)
  * @mixin Eloquent
+ * @property string|null $notes
+ * @method static Builder|Infrastructure whereNotes($value)
  */
 class Infrastructure extends Model
 {
@@ -87,7 +89,8 @@ class Infrastructure extends Model
         'isPrimary',
         'peeringdb_ix_id',
         'ixf_ix_id',
-        'country'
+        'country',
+        'notes',
     ];
 
     /**
