@@ -23,6 +23,8 @@
 
 namespace Repositories;
 
+use Auth;
+use Illuminate\Auth\Recaller;
 use Illuminate\Support\Facades\Session as SessionFacade;
 
 use Doctrine\ORM\EntityRepository;
@@ -71,4 +73,33 @@ class UserRememberToken extends EntityRepository
         return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
     }
 
+    /**
+     * Delete all the Remember token for the user
+     *
+     * @param int $userid
+     * @param bool $deleteCurrentToken Do we need to delete the current token
+     *
+     * @return int|mixed|string
+     */
+    public function deleteByUser( int $userid, bool $deleteCurrentToken = false )
+    {
+        $dql = "DELETE FROM Entities\\UserRememberToken urt
+                WHERE urt.User = ?1";
+        $token = null;
+        // get the token of the current session
+        if( $recallerName = request()->cookies->get( Auth::getRecallerName() ) ) {
+            $recaller = new Recaller( $recallerName );
+            $token = $recaller->token();
+        }
+
+        if( !$deleteCurrentToken ){
+            if( $token ){
+                $dql .= " AND urt.token != '" . $token . "'";
+            } else {
+                $dql .= " AND urt.token IS NOT NULL";
+            }
+        }
+
+        return $this->getEntityManager()->createQuery( $dql )->setParameter(1, $userid )->execute();
+    }
 }
