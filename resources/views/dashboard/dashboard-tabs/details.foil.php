@@ -161,4 +161,59 @@
         <?php endif; ?>
     </div>
 
+    <div class="col-lg-6">
+        <h3>
+            AS-SETS
+        </h3>
+        <hr>
+        <table class="table table-striped">
+            <tr>
+                <td>
+                    Peering Policy
+                </td>
+                <td>
+                    <?= $t->ee( $t->c->getPeeringPolicy() ) ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    IRRDB source
+                </td>
+                <td>
+                    <?php if( $t->c->getIRRDB() ): ?>
+                        <?= $t->ee( $t->c->getIRRDB()->getSource() )?>
+
+                        <?php if( $t->c->isRouteServerClient() && $t->c->isIrrdbFiltered() ): ?>
+                            (<a href="<?= route( "irrdb@list", [ "customer" => $t->c->getId(), "type" => 'prefix', "protocol" => $t->c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">entries</a>)
+                        <?php endif; ?>
+
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    ASN
+                </td>
+                <td>
+                    <?= $t->asNumber( $t->c->getAutsys() ) ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    IPv4 AS-SET
+                </td>
+                <td>
+                    <?= $t->ee( $t->c->getPeeringmacro() ) ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    IPv6 AS-SET
+                </td>
+                <td>
+                    <?= $t->ee( $t->c->getPeeringmacrov6() ) ?>
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>
