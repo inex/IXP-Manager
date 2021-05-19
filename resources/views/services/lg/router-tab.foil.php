@@ -31,7 +31,7 @@
                                     </thead>
                                     <tbody>
                                         <?php foreach ( $routers as $router ): ?>
-                                            <tr data-href="<?= url('/lg/' . $t->ee( $router[ 'handle' ] ) ) ?>">
+                                            <tr data-href="<?= route('lg::bgp-sum', [ 'handle' => $t->ee( $router[ 'handle' ] ) ] ) ?>">
                                                 <td class="align-middle">
                                                     <?= $t->ee( $router[ 'name' ] ) ?>
                                                 </td>
@@ -39,7 +39,7 @@
                                                     <?= $router[ 'updated_at' ] ? $router[ 'updated_at' ]->format( "Y-m-d H:i:s" ) : '(unknown)' ?>
                                                 </td>
                                                 <td>
-                                                    <a class="btn btn-primary" href="<?= url('/lg/' . $t->ee( $router[ 'handle' ] ) ) ?>">
+                                                    <a class="btn btn-primary" href="<?= route('lg::bgp-sum', [ 'handle' => $t->ee( $router[ 'handle' ] ) ] ) ?>">
                                                         Looking Glass
                                                     </a>
                                                 </td>
