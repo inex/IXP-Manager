@@ -26,6 +26,8 @@ namespace IXP\Http\Controllers\Services;
 
 use Auth, D2EM;
 
+use IXP\Utils\View\Alert\Alert;
+use IXP\Utils\View\Alert\Container as AlertContainer;
 use Entities\{
     Router as RouterEntity
 };
@@ -237,18 +239,22 @@ class LookingGlass extends Controller
      * @param string $handle
      * @param string $protocol
      *
-     * @return View
      *
-     * @throws
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|View
      */
-    public function routesForProtocol( string $handle, string $protocol ): View
+    public function routesForProtocol( string $handle, string $protocol )
     {
-        // get bgp protocol summary
-        $view = app()->make('view' )->make('services/lg/routes' )->with([
-            'content' => json_decode( $this->lg()->routesForProtocol($protocol) ),
-            'source' => 'protocol', 'name' => $protocol
-        ]);
-        return $this->addCommonParams( $view );
+        try{
+            // get bgp protocol summary
+            $view = app()->make('view' )->make('services/lg/routes' )->with([
+                'content' => json_decode( $this->lg()->routesForProtocol($protocol) ),
+                'source' => 'protocol', 'name' => $protocol
+            ]);
+            return $this->addCommonParams( $view );
+        } catch( \Exception $e ){
+            AlertContainer::push( 'The available resource is not available. Most likely the amount of routes exceed the APIs configured maximum threshold.', Alert::DANGER );
+            return redirect( route( "lg::bgp-sum", [ 'handle' => $handle ] ) );
+        }
     }
 
     /**
