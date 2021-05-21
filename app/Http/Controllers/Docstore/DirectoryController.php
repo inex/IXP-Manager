@@ -79,7 +79,7 @@ class DirectoryController extends Controller
         $nbTotalDirs    = count( DocstoreDirectory::getHierarchyForUserClass( User::AUTH_SUPERUSER )[ $dir->id ?? '' ] ?? [] );
         $nbTotalFiles   = count( DocstoreFile::getListing( $dir, User::AUTH_SUPERUSER ) );
 
-        if( !count($dirs) && count($dirs) <= $nbTotalDirs && !count($files) && count($files) <= $nbTotalFiles) {
+        if( !count($dirs) && count($dirs) <= $nbTotalDirs && !count($files) && count($files) <= $nbTotalFiles && ( $nbTotalDirs + $nbTotalFiles ) > 0 ) {
             // Only show a folder if there's a file (or folder) there for the user to see:
             if( !Auth::check() ){
                 return redirect( route( 'login@login' ) );
