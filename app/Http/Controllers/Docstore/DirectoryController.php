@@ -38,7 +38,8 @@ use IXP\Http\Controllers\Controller;
 
 use IXP\Models\{
     DocstoreDirectory,
-    DocstoreFile
+    DocstoreFile,
+    User
 };
 
 use IXP\Utils\View\Alert\{
@@ -63,17 +64,28 @@ class DirectoryController extends Controller
      *
      * @param DocstoreDirectory|null    $dir
      *
-     * @return View
+     * @return View|RedirectResponse
      */
-    public function list( DocstoreDirectory $dir = null ): View
+    public function list( DocstoreDirectory $dir = null ): View|RedirectResponse
     {
-        $user   = Auth::user();
-        $dirs   = DocstoreDirectory::getHierarchyForUserClass( optional( $user )->privs() ?? 0 )[ $dir->id ?? '' ] ?? [];
-        $files  = DocstoreFile::getListing( $dir, $user );
+        $privs  = User::AUTH_PUBLIC;
+        if( $user   = Auth::user() ){
+            $privs  = $user->privs;
+        }
 
-        // Only show a folder if there's a file (or folder) there for the user to see:
-        if( $dir !== null && is_array( $dir ) && !isset( $dirs[ $dir ] ) ) {
-            abort( 403, 'Nothing for you here. You either need to log in or you do not have sufficient privileges.' );
+        $dirs   = DocstoreDirectory::getHierarchyForUserClass( optional( $user )->privs() ?? 0 )[ $dir->id ?? '' ] ?? [];
+        $files  = DocstoreFile::getListing( $dir, $privs );
+
+        $nbTotalDirs    = count( DocstoreDirectory::getHierarchyForUserClass( User::AUTH_SUPERUSER )[ $dir->id ?? '' ] ?? [] );
+        $nbTotalFiles   = count( DocstoreFile::getListing( $dir, User::AUTH_SUPERUSER ) );
+
+        if( !count($dirs) && count($dirs) <= $nbTotalDirs && !count($files) && count($files) <= $nbTotalFiles) {
+            // Only show a folder if there's a file (or folder) there for the user to see:
+            if( !Auth::check() ){
+                return redirect( route( 'login@login' ) );
+            }
+
+            abort( 401, 'Nothing for you here. You either need to log in or you do not have sufficient privileges.' );
         }
 
         return view( 'docstore/dir/list', [

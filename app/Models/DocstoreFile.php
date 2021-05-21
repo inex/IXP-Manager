@@ -171,13 +171,13 @@ class DocstoreFile extends Model
      * appropriate for the user (or public access)
      *
      * @param DocstoreDirectory|null    $dir
-     * @param User|null                 $user
+     * @param int                       $privs
      *
      * @return Collection
      */
-    public static function getListing( ?DocstoreDirectory $dir = null, ?User $user = null ): Collection
+    public static function getListing( ?DocstoreDirectory $dir = null, int $privs = User::AUTH_PUBLIC ): Collection
     {
-        return self::where('min_privs', '<=', $user ? $user->privs() : User::AUTH_PUBLIC )
+        return self::where('min_privs', '<=', $privs )
             ->where('docstore_directory_id', $dir->id ?? null )
             ->withCount([ 'logs as downloads_count', 'logs as unique_downloads_count' => function( Builder $query ) {
                 $query->select( DB::raw('COUNT( DISTINCT downloaded_by )' ) );
