@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\Docstore;
 
 use Auth, Former;
 
+use Entities\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\{
     RedirectResponse,
@@ -61,16 +62,28 @@ class DirectoryController extends Controller
      * @param Request $request
      * @param DocstoreDirectory|null $dir
      *
-     * @return View
+     * @return View|RedirectResponse
      */
-    public function list( Request $request, DocstoreDirectory $dir = null ) : View
+    public function list( Request $request, DocstoreDirectory $dir = null ) : View|RedirectResponse
     {
-        $dirs  = DocstoreDirectory::getHierarchyForUserClass( optional( $request->user() )->getPrivs() ?? 0 )[ $dir ? $dir->id : '' ] ?? [];
-        $files = DocstoreFile::getListing( $dir, $request->user() );
+        $privs  = User::AUTH_PUBLIC;
+        if( $user = $request->user() ){
+            $privs = $user->getPrivs();
+        }
+
+        $dirs  = DocstoreDirectory::getHierarchyForUserClass( optional( $user )->getPrivs() ?? 0 )[ $dir ? $dir->id : '' ] ?? [];
+        $files = DocstoreFile::getListing( $dir, $privs );
+
+        $nbTotalDirs  = count( DocstoreDirectory::getHierarchyForUserClass( User::AUTH_SUPERUSER )[ $dir ? $dir->id : '' ] ?? [] );
+        $nbTotalFiles = DocstoreFile::getListing( $dir, User::AUTH_SUPERUSER )->count();
 
         // Only show a folder if there's a file (or folder) there for the user to see:
-        if( $dir !== null && is_array( $dir ) && !isset( $dirs[ $dir ] ) ) {
-            abort( 403, 'Nothing for you here. You either need to log in or you do not have sufficient privileges.' );
+        if( !count($dirs) && count($dirs) <= $nbTotalDirs && !$files->count() && $files->count() <= $nbTotalFiles && ( $nbTotalDirs + $nbTotalFiles ) > 0) {
+            if( !Auth::check() ){
+                return redirect( route( 'login@login' ) );
+            }
+
+            abort( 401, 'Nothing for you here. You either need to log in or you do not have sufficient privileges.' );
         }
 
         return view( 'docstore/dir/list', [
