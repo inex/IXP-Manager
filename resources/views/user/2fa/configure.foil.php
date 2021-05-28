@@ -46,17 +46,8 @@ $this->layout( 'layouts/ixpv4' )
                         <?= $t->insert( 'user/2fa/configure/manage' ) ?>
 
                     <?php endif; ?>
-
-
                 </div>
             </div>
-
         </div>
-
     </div>
-
-
-
-
-
 <?php $this->append() ?>
