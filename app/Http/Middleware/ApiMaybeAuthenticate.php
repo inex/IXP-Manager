@@ -28,6 +28,7 @@ use Auth, Closure;
 use Illuminate\Http\Request;
 
 use IXP\Models\ApiKey;
+use IXP\Models\User;
 
 /**
  * Middleware: ApiMaybeAuthenticate
@@ -61,6 +62,7 @@ class ApiMaybeAuthenticate
 	 */
 	public function handle( Request $r, Closure $next )
 	{
+
 		// are we already logged in?
 		if( !Auth::check() ) {
 			// find API key. Prefer header to URL:
@@ -80,6 +82,16 @@ class ApiMaybeAuthenticate
                     return response( 'API key expired', 403 );
                 }
 
+                // Check if user is disabled
+                if( $key->user->disabled ){
+                    return response( 'User is disabled', 403 );
+                }
+
+                // Check if default customer is disabled
+                if( $key->user->customer()->active()->doesntExist() ){
+                    return response( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' of the user is disabled', 403 );
+                }
+
                 Auth::onceUsingId( $key->user_id );
 
                 $key->update( [
@@ -87,7 +99,15 @@ class ApiMaybeAuthenticate
                     'lastseenFrom'  => ixp_get_client_ip(),
                 ] );
             }
-		}
+		} elseif( Auth::user()->disabled ){
+            return response( 'User is disabled', 403 );
+        }
+
+        // Check if default customer is disabled
+        if( Auth::user()->customer()->active()->doesntExist() ){
+            return response( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' of the user is disabled', 403 );
+        }
+
 		return $next( $r );
 	}
 }

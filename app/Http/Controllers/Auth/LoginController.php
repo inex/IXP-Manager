@@ -146,11 +146,27 @@ class LoginController extends Controller
             return $this->logout( $r, [ 'message' => "Your user account is not associated with any " . config( "ixp_fe.lang.customer.many" ) . ".", 'class' => Alert::DANGER ] );
         }
 
+        $activeCusts = $user->customers()->active()->get();
+
+        // Check if the user has active Customer(s) linked
+        if( !$activeCusts->count() ) {
+            return $this->logout( $r, [ 'message' => "Your user account is not associated with any active " . config( "ixp_fe.lang.customer.many" ) . ".", 'class' => Alert::DANGER ] );
+        }
+
+        $newCust = $activeCusts->first();
+
+        // Check if the default customer for the user is not active
+        if( ( $cust = $user->customer ) && $user->customer()->active()->doesntExist() ){
+            $user->custid = $newCust->id;
+            $user->save();
+            AlertContainer::push( "The default " . config( "ixp_fe.lang.customer.one" ) . " " . ucfirst( $cust->abbreviatedName ) . " is no longer active. Your default " . config( "ixp_fe.lang.customer.one" ) . " is now " . ucfirst( $newCust->abbreviatedName ) . "." , Alert::WARNING );
+        }
+
         $c2u = CustomerToUser::where( [ 'user_id' => $user->id ] )->where( [ "customer_id" => $user->custid ] )->first();
 
         // Check if the user has a default customer OR if the default customer is no longer in the C2U, then assign one
         if( !$user->customer || !$c2u ){
-            $user->custid = $user->customers()->first()->id;
+            $user->custid = $newCust->id;
             $user->save();
         }
     }

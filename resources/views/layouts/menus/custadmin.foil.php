@@ -195,14 +195,15 @@
                         Active Sessions
                     </a>
 
-                    <?php if( Auth::getUser()->customers()->count() > 1 ): ?>
+                    <?php $customers = Auth::getUser()->customers()->active()->get(); ?>
+                    <?php if( $customers->count() > 1 ): ?>
                         <div class="dropdown-divider"></div>
 
                         <h6 class="dropdown-header">
                             Switch to:
                         </h6>
 
-                        <?php foreach( Auth::getUser()->customers as $cust ): ?>
+                        <?php foreach( $customers as $cust ): ?>
                             <a id="switch-cust-<?= $cust->id ?>" class="dropdown-item <?= Auth::getUser()->custid !== $cust->id ?: 'active cursor-default' ?>"
                                 <?= Auth::getUser()->custid !== $cust->id ?: "onclick='return false;'" ?>
                                href="<?= Auth::getUser()->custid === $cust->id ? '#' : route( 'switch-customer@switch' , [ "cust" => $cust->id ]  ) ?>">

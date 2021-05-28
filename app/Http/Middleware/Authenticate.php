@@ -29,6 +29,8 @@ use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 
 use IXP\Models\CustomerToUser;
+use IXP\Utils\View\Alert\Alert;
+use IXP\Utils\View\Alert\Container as AlertContainer;
 
 /**
  * Middleware: Ensure authentication
@@ -78,7 +80,21 @@ class Authenticate
 			return redirect()->guest(route( "login@showForm" ) );
 		}
 
+		// Check if use has at least one customer linked, if not logout
         if( !Auth::getUser()->custid || !CustomerToUser::where( [ 'user_id' => Auth::id()  ] )->where( [ 'customer_id' => Auth::getUser()->custid ] )->first() ){
+            Auth::logout();
+            return redirect()->guest( route( "login@showForm" ) );
+        }
+
+        // Check if user is disabled
+        if( Auth::getUser()->disabled ){
+            AlertContainer::push( 'You account is disabled.', Alert::DANGER );
+            Auth::logout();
+            return redirect()->guest( route( "login@showForm" ) );
+        }
+
+        // Check if default customer is disabled
+        if( Auth::getUser()->customer()->active()->doesntExist() ){
             Auth::logout();
             return redirect()->guest( route( "login@showForm" ) );
         }

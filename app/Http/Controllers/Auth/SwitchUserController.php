@@ -68,7 +68,13 @@ class SwitchUserController extends Controller
             AlertContainer::push( "You are not allowed to switch users!", Alert::DANGER );
             return redirect()->to( "/" );
         }
+
         $user = $c2u->user;
+
+        if( $user->disabled ){
+            AlertContainer::push( "You cannot login as this user", Alert::DANGER );
+            return redirect( '/' );
+        }
 
         session()->put( 'switched_user_from', Auth::id() );
         session()->put( 'switched_c2u_to', $c2u->id );

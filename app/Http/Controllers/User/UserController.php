@@ -360,7 +360,12 @@ class UserController extends Controller
         if( $isSuperUser ) {
             $u->username    = strtolower( $r->username );
             $u->email       = $r->email;
-            $u->disabled    = !$r->disabled;
+            $u->disabled    = !$r->disabled;// displayed as enabled in the view
+
+            // Delete Remember Token for the user if disabled
+            if(!$r->disabled){
+                $u->userRememberTokens()->delete();
+            }
         }
 
         $u->lastupdatedby = Auth::id();

@@ -2,7 +2,7 @@
     <span class="badge badge-danger">CLOSED</span>
 <?php else: ?>
     <?php if( $t->cust->statusSuspended() ): ?>
-        <span class="badge badge-important">SUSPENDED</span>
+        <span class="badge badge-warning">SUSPENDED</span>
     <?php elseif( $t->cust->statusNormal() || ( $t->cust->typeAssociate() && $t->cust->statusNotConnected() ) ): ?>
         <span class="badge badge-success">NORMAL</span>
     <?php elseif( $t->cust->statusNotConnected() ): ?>

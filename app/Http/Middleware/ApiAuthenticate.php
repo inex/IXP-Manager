@@ -28,6 +28,7 @@ use Auth, Closure;
 use Illuminate\Http\Request;
 
 use IXP\Models\ApiKey;
+use IXP\Models\User;
 
 /**
  * Middleware: ApiAuthenticate
@@ -82,13 +83,28 @@ class ApiAuthenticate
                 return response( 'API key expired', 403 );
             }
 
+            // Check if user is disabled
+            if( $key->user->disabled ){
+                return response( 'User is disabled', 403 );
+            }
+
+            // Check if default customer is disabled
+            if( $key->user->customer()->active()->doesntExist() ){
+                return response( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' of the user is disabled', 403 );
+            }
+
             Auth::onceUsingId( $key->user_id );
 
             $key->update( [
                 'lastseenAt'    => now(),
                 'lastseenFrom'  => ixp_get_client_ip(),
             ] );
-		}
+		}elseif( Auth::user()->disabled ){
+            return response( 'User is disabled', 403 );
+        }elseif( Auth::user()->customer()->active()->doesntExist() ){// Check if default customer is disabled
+            return response( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' of the user is disabled', 403 );
+        }
+
 		return $next( $r );
 	}
 }

@@ -63,8 +63,15 @@ class SwitchCustomerController extends Controller
         /** @var User $user */
         $user = Auth::getUser();
 
+        // Check if the selected customer is associated with the current user
          if( !( $c2u = CustomerToUser::where( 'customer_id', $cust->id )->where( 'user_id', $user->id )->first() ) ){
-            AlertContainer::push( "You are not allowed to access to this customer.", Alert::DANGER );
+            AlertContainer::push( "You are not allowed to access to this " . config( "ixp_fe.lang.customer.one" ) . ".", Alert::DANGER );
+            return redirect()->to( "/" );
+        }
+
+         // Check if the selected customer is active
+        if( $c2u->customer()->active()->get()->isEmpty() ){
+            AlertContainer::push( "You are not allowed to access to this " . config( "ixp_fe.lang.customer.one" ) . ".", Alert::DANGER );
             return redirect()->to( "/" );
         }
 

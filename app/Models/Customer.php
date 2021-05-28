@@ -747,11 +747,12 @@ class Customer extends Model
      * Scope a query to only include active members (not suspended)
      *
      * @param Builder $query
+     *
      * @return Builder
      */
-    public function scopeActive($query)
+    public function scopeActive( Builder $query ): Builder
     {
-        return $query->whereIn( 'status', [ Customer::STATUS_NORMAL, Customer::STATUS_NOTCONNECTED ] );
+        return $query->whereIn( 'status', [ self::STATUS_NORMAL, self::STATUS_NOTCONNECTED ] );
     }
 
     /**

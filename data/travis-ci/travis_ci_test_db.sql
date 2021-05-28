@@ -51,6 +51,144 @@ INSERT INTO `api_keys` VALUES (1,1,'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBj
 UNLOCK TABLES;
 
 --
+-- Table structure for table `atlas_measurements`
+--
+
+DROP TABLE IF EXISTS `atlas_measurements`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `atlas_measurements` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `run_id` int(11) NOT NULL,
+  `cust_source` int(11) DEFAULT NULL,
+  `cust_dest` int(11) DEFAULT NULL,
+  `atlas_id` int(11) DEFAULT NULL,
+  `atlas_create` datetime DEFAULT NULL,
+  `atlas_start` datetime DEFAULT NULL,
+  `atlas_stop` datetime DEFAULT NULL,
+  `atlas_data` json DEFAULT NULL,
+  `atlas_request` json DEFAULT NULL,
+  `atlas_state` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `atlas_measurements_cust_source_foreign` (`cust_source`),
+  KEY `atlas_measurements_cust_dest_foreign` (`cust_dest`),
+  KEY `atlas_measurements_run_id_foreign` (`run_id`),
+  CONSTRAINT `atlas_measurements_cust_dest_foreign` FOREIGN KEY (`cust_dest`) REFERENCES `cust` (`id`),
+  CONSTRAINT `atlas_measurements_cust_source_foreign` FOREIGN KEY (`cust_source`) REFERENCES `cust` (`id`),
+  CONSTRAINT `atlas_measurements_run_id_foreign` FOREIGN KEY (`run_id`) REFERENCES `atlas_runs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `atlas_measurements`
+--
+
+LOCK TABLES `atlas_measurements` WRITE;
+/*!40000 ALTER TABLE `atlas_measurements` DISABLE KEYS */;
+/*!40000 ALTER TABLE `atlas_measurements` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `atlas_probes`
+--
+
+DROP TABLE IF EXISTS `atlas_probes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `atlas_probes` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `cust_id` int(11) NOT NULL,
+  `address_v4` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address_v6` varchar(39) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `v4_enabled` tinyint(4) DEFAULT NULL,
+  `v6_enabled` tinyint(4) DEFAULT NULL,
+  `asn` int(11) DEFAULT NULL,
+  `atlas_id` int(11) NOT NULL,
+  `is_anchor` tinyint(4) NOT NULL,
+  `is_public` tinyint(4) NOT NULL,
+  `last_connected` datetime DEFAULT NULL,
+  `status` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `api_data` json DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `atlas_probes_cust_id_foreign` (`cust_id`),
+  CONSTRAINT `atlas_probes_cust_id_foreign` FOREIGN KEY (`cust_id`) REFERENCES `cust` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `atlas_probes`
+--
+
+LOCK TABLES `atlas_probes` WRITE;
+/*!40000 ALTER TABLE `atlas_probes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `atlas_probes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `atlas_results`
+--
+
+DROP TABLE IF EXISTS `atlas_results`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `atlas_results` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `measurement_id` int(11) DEFAULT NULL,
+  `routing` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `path` longtext COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `atlas_results_measurement_id_unique` (`measurement_id`),
+  CONSTRAINT `atlas_results_measurement_id_foreign` FOREIGN KEY (`measurement_id`) REFERENCES `atlas_measurements` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `atlas_results`
+--
+
+LOCK TABLES `atlas_results` WRITE;
+/*!40000 ALTER TABLE `atlas_results` DISABLE KEYS */;
+/*!40000 ALTER TABLE `atlas_results` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `atlas_runs`
+--
+
+DROP TABLE IF EXISTS `atlas_runs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `atlas_runs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `vlan_id` int(11) DEFAULT NULL,
+  `protocol` int(11) DEFAULT NULL,
+  `scheduled_at` datetime DEFAULT NULL,
+  `started_at` datetime DEFAULT NULL,
+  `completed_at` datetime DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `atlas_runs_vlan_id_foreign` (`vlan_id`),
+  CONSTRAINT `atlas_runs_vlan_id_foreign` FOREIGN KEY (`vlan_id`) REFERENCES `vlan` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `atlas_runs`
+--
+
+LOCK TABLES `atlas_runs` WRITE;
+/*!40000 ALTER TABLE `atlas_runs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `atlas_runs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `bgp_sessions`
 --
 
@@ -843,7 +981,7 @@ CREATE TABLE `docstore_files` (
   PRIMARY KEY (`id`),
   KEY `docstore_files_docstore_directory_id_foreign` (`docstore_directory_id`),
   CONSTRAINT `docstore_files_docstore_directory_id_foreign` FOREIGN KEY (`docstore_directory_id`) REFERENCES `docstore_directories` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -852,6 +990,7 @@ CREATE TABLE `docstore_files` (
 
 LOCK TABLES `docstore_files` WRITE;
 /*!40000 ALTER TABLE `docstore_files` DISABLE KEYS */;
+INSERT INTO `docstore_files` VALUES (1,1,'test.txt','docstore','BaLvISQV7Cn48p8LPaOoPSyJ5hzaKC7rHlqMu5Hd.txt','64cdd02f0ef14bf6b8e0a51915396a002afed410459935b1209ba2d654842f10',NULL,0,'2021-05-28 14:03:38',1,'2021-05-28 12:03:38','2021-05-28 12:03:38');
 /*!40000 ALTER TABLE `docstore_files` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1191,7 +1330,7 @@ CREATE TABLE `log` (
   KEY `log_action_index` (`action`),
   KEY `log_model_model_id_index` (`model`,`model_id`),
   CONSTRAINT `log_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1200,6 +1339,7 @@ CREATE TABLE `log` (
 
 LOCK TABLES `log` WRITE;
 /*!40000 ALTER TABLE `log` DISABLE KEYS */;
+INSERT INTO `log` VALUES (1,1,'DocstoreFile',1,'CREATED','Docstore File [id:1] \'test.txt\'','{\"new\": {\"id\": 1, \"name\": \"test.txt\", \"path\": \"BaLvISQV7Cn48p8LPaOoPSyJ5hzaKC7rHlqMu5Hd.txt\", \"sha256\": \"64cdd02f0ef14bf6b8e0a51915396a002afed410459935b1209ba2d654842f10\", \"min_privs\": \"0\", \"created_at\": \"2021-05-28 14:03:38\", \"created_by\": 1, \"updated_at\": \"2021-05-28 14:03:38\", \"description\": null, \"file_last_updated\": \"2021-05-28 14:03:38\", \"docstore_directory_id\": \"1\"}, \"old\": null, \"changed\": null}','2021-05-28 12:03:38','2021-05-28 12:03:38');
 /*!40000 ALTER TABLE `log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2760,4 +2900,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-05-18 13:54:14
+-- Dump completed on 2021-05-28 16:03:57
