@@ -146,7 +146,7 @@ class LoginController extends Controller
             return $this->logout( $r, [ 'message' => "Your user account is not associated with any " . config( "ixp_fe.lang.customer.many" ) . ".", 'class' => Alert::DANGER ] );
         }
 
-        $activeCusts = $user->customers()->active()->get();
+        $activeCusts = $user->customers()->active()->notDeleted()->get();
 
         // Check if the user has active Customer(s) linked
         if( !$activeCusts->count() ) {
@@ -156,7 +156,7 @@ class LoginController extends Controller
         $newCust = $activeCusts->first();
 
         // Check if the default customer for the user is not active
-        if( ( $cust = $user->customer ) && $user->customer()->active()->doesntExist() ){
+        if( ( $cust = $user->customer ) && $user->customer()->active()->notDeleted()->doesntExist() ){
             $user->custid = $newCust->id;
             $user->save();
             AlertContainer::push( "The default " . config( "ixp_fe.lang.customer.one" ) . " " . ucfirst( $cust->abbreviatedName ) . " is no longer active. Your default " . config( "ixp_fe.lang.customer.one" ) . " is now " . ucfirst( $newCust->abbreviatedName ) . "." , Alert::WARNING );

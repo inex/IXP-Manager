@@ -64,6 +64,8 @@ use IXP\Models\ConsoleServerConnection;
  * @method static Builder|ConsoleServerConnectionAggregatore whereStopbits($value)
  * @method static Builder|ConsoleServerConnectionAggregatore whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int|null $switchid
+ * @method static Builder|ConsoleServerConnectionAggregatore whereSwitchid($value)
  */
 class ConsoleServerConnectionAggregatore extends ConsoleServerConnection
 {

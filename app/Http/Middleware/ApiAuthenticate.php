@@ -89,7 +89,7 @@ class ApiAuthenticate
             }
 
             // Check if default customer is disabled
-            if( $key->user->customer()->active()->doesntExist() ){
+            if( $key->user->customer()->active()->notDeleted()->doesntExist() ){
                 return response( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' of the user is disabled', 403 );
             }
 
@@ -101,7 +101,7 @@ class ApiAuthenticate
             ] );
 		}elseif( Auth::user()->disabled ){
             return response( 'User is disabled', 403 );
-        }elseif( Auth::user()->customer()->active()->doesntExist() ){// Check if default customer is disabled
+        }elseif( Auth::user()->customer()->active()->notDeleted()->doesntExist() ){// Check if default customer is disabled
             return response( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' of the user is disabled', 403 );
         }
 

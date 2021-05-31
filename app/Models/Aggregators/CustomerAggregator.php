@@ -176,6 +176,7 @@ use Illuminate\Support\Collection;
  * @method static Builder|CustomerAggregator whereType($value)
  * @method static Builder|CustomerAggregator whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static Builder|Customer notDeleted()
  */
 class CustomerAggregator extends Customer
 {

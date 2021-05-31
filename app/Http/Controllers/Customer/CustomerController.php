@@ -217,7 +217,7 @@ class CustomerController extends Controller
             'shortname'             => $r->old( 'shortname',           $cust->shortname         ),
             'corpwww'               => $r->old( 'corpwww',             $cust->corpwww           ),
             'datejoin'              => $r->old( 'datejoin',            !$cust->datejoin ?: $cust->datejoin->format( "Y-m-d" ) ) ,
-            'dateleft'              => $r->old( 'dateleft',            !$cust->dateleave ?: $cust->dateleave->format( "Y-m-d" ) ),
+            'dateleave'             => $r->old( 'dateleave',            !$cust->dateleave ?: $cust->dateleave->format( "Y-m-d" ) ),
             'status'                => $r->old( 'status',              $cust->status                ),
             'MD5Support'            => $r->old( 'MD5Support',          $cust->MD5Support            ),
             'abbreviatedName'       => $r->old( 'abbreviatedName',     $cust->abbreviatedName       ),

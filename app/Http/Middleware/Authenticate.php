@@ -94,7 +94,7 @@ class Authenticate
         }
 
         // Check if default customer is disabled
-        if( Auth::getUser()->customer()->active()->doesntExist() ){
+        if( Auth::getUser()->customer()->active()->notDeleted()->doesntExist() ){
             Auth::logout();
             return redirect()->guest( route( "login@showForm" ) );
         }

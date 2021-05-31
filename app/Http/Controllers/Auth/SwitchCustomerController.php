@@ -70,7 +70,7 @@ class SwitchCustomerController extends Controller
         }
 
          // Check if the selected customer is active
-        if( $c2u->customer()->active()->get()->isEmpty() ){
+        if( $c2u->customer()->active()->notDeleted()->get()->isEmpty() ){
             AlertContainer::push( "You are not allowed to access to this " . config( "ixp_fe.lang.customer.one" ) . ".", Alert::DANGER );
             return redirect()->to( "/" );
         }

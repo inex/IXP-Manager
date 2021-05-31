@@ -182,6 +182,7 @@ use IXP\Models\AtlasMeasurement;
  * @method static Builder|Customer whereType($value)
  * @method static Builder|Customer whereUpdatedAt($value)
  * @mixin Eloquent
+ * @method static Builder|Customer notDeleted()
  */
 class Customer extends Model
 {
@@ -753,6 +754,19 @@ class Customer extends Model
     public function scopeActive( Builder $query ): Builder
     {
         return $query->whereIn( 'status', [ self::STATUS_NORMAL, self::STATUS_NOTCONNECTED ] );
+    }
+
+    /**
+     * Scope a query to only include not deleted members
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeNotDeleted( Builder $query ): Builder
+    {
+        return $query->whereNull( 'dateleave' )
+            ->orWhere( 'dateleave', '>=', now() );
     }
 
     /**

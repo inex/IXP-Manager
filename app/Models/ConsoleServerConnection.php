@@ -67,6 +67,8 @@ use IXP\Traits\Observable;
  * @method static Builder|ConsoleServerConnection whereStopbits($value)
  * @method static Builder|ConsoleServerConnection whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int|null $switchid
+ * @method static Builder|ConsoleServerConnection whereSwitchid($value)
  */
 class ConsoleServerConnection extends Model
 {
