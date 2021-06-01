@@ -152,7 +152,7 @@
 
                     <a class="dropdown-item <?= !request()->is( 'customer-note/unread-notes' ) ?: 'active' ?>" href="<?= route( 'customerNotes@unreadNotes' ) ?>">Unread Notes</a>
 
-                    <?php if( count( Auth::getUser()->getCustomers() ) > 1 ): ?>
+                    <?php if( count( Auth::getUser()->getActiveCustomers() ) > 1 ): ?>
 
                         <div class="dropdown-divider"></div>
 
@@ -160,7 +160,7 @@
                             Switch to:
                         </h6>
 
-                        <?php foreach( Auth::getUser()->getCustomers() as $cust ): ?>
+                        <?php foreach( Auth::getUser()->getActiveCustomers() as $cust ): ?>
 
                             <a id="switch-cust-<?= $cust->getId() ?>"
                                class="dropdown-item <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: 'active cursor-default' ?>"

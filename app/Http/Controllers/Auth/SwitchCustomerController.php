@@ -58,9 +58,16 @@ class SwitchCustomerController extends Controller
 
         $user = Auth::getUser();
 
+        /** @var $c2u CustomerToUserEntity */
         if( !( $c2u = D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ "customer" => $cust, "user" => $user ] ) ) ){
-            AlertContainer::push( "You are not allowed to access to this customer.", Alert::DANGER );
+            AlertContainer::push( "You are not allowed to access to this " . config( "ixp_fe.lang.customer.one" ) . ".", Alert::DANGER );
 
+            return redirect()->to( "/" );
+        }
+
+        // Check if the selected customer is active
+        if( !$c2u->getCustomer()->isActive() ){
+            AlertContainer::push( "You are not allowed to access to this " . config( "ixp_fe.lang.customer.one" ) . ".", Alert::DANGER );
             return redirect()->to( "/" );
         }
 

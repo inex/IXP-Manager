@@ -714,6 +714,24 @@ class User implements Authenticatable, CanResetPasswordContract
         return $custs;
     }
 
+    /**
+     * Get Customers
+     *
+     * @return Collection|Customer[]
+     */
+    public function getActiveCustomers()
+    {
+        $custs = [];
+        foreach( $this->Customers as $c2u ){
+            $c = $c2u->getCustomer();/** @var $c CustomerEntity */
+            if( $c->isActive() ){
+                $custs[] = $c2u->getCustomer();
+            }
+        }
+
+        return $custs;
+    }
+
 
     /**
      * @return Collection|CustomerToUser[]

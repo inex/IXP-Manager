@@ -29,6 +29,9 @@ use Entities\{
     CustomerToUser as CustomerToUserEntity
 };
 
+use IXP\Utils\View\Alert\Alert;
+use IXP\Utils\View\Alert\Container as AlertContainer;
+
 class Authenticate {
 
 	/**
@@ -71,10 +74,22 @@ class Authenticate {
 			}
 		}
 
-
         if( !Auth::user()->getCustomer() || !D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => Auth::user() , "customer" => Auth::user()->getCustomer() ] ) ){
             Auth::logout();
             return redirect()->guest(route( "login@showForm" ) );
+        }
+
+        // Check if user is disabled
+        if( Auth::getUser()->getDisabled() ){
+            AlertContainer::push( 'Your account is disabled.', Alert::DANGER );
+            Auth::logout();
+            return redirect()->guest( route( "login@showForm" ) );
+        }
+
+        // Check if default customer is disabled
+        if( !Auth::getUser()->getCustomer()->isActive() ){
+            Auth::logout();
+            return redirect()->guest( route( "login@showForm" ) );
         }
 
 		return $next($request);

@@ -25,6 +25,7 @@ namespace Entities;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use Entities\Customer as CustomerEntity;
 use IXP\Exceptions\GeneralException;
 
 /**
@@ -1459,6 +1460,17 @@ class Customer
     public function isTypeProBono()
     {
         return $this->getType() == self::TYPE_PROBONO;
+    }
+
+    /**
+     * Check if this customer is active
+     *
+     * @return boolean
+     */
+    public function isActive()
+    {
+        return in_array( $this->getStatus(), [ CustomerEntity::STATUS_NORMAL, CustomerEntity::STATUS_NOTCONNECTED ], true ) &&
+            ( $this->getDateleave() === null || $this->getDateleave() >= now()  );
     }
 
 

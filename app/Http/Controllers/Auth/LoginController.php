@@ -133,9 +133,19 @@ class LoginController extends Controller
      */
     protected function authenticated( Request $request, $user, $viaPeeringDB = false )
     {
+        $activeCustomers = $user->getActiveCustomers();
         // Check if the user has Customer(s) linked
-        if( !count( $user->getCustomers() ) ) {
+        if( !count( $activeCustomers ) ) {
             return $this->logout( $request, [ 'message' => "Your user account is not associated with any " . config( "ixp_fe.lang.customer.many" ) . ".", 'class' => Alert::DANGER ] );
+        }
+
+        $newCust = reset( $activeCustomers );/** @var $newCust CustomerEntity */
+
+        // Check if the default customer for the user is not active
+        if( ( $cust = $user->getCustomer() ) && !$cust->isActive() ){
+            $user->setCustomer( $newCust );
+            D2EM::flush();
+            AlertContainer::push( "The default " . config( "ixp_fe.lang.customer.one" ) . " " . ucfirst( $cust->getAbbreviatedName() ) . " is no longer active. Your default " . config( "ixp_fe.lang.customer.one" ) . " is now " . ucfirst( $newCust->getAbbreviatedName() ) . "." , Alert::WARNING );
         }
 
         /** @var CustomerToUserEntity $c2u */
@@ -145,7 +155,6 @@ class LoginController extends Controller
         if( !$user->getCustomer() || !$c2u ){
             $user->setCustomer( $user->getCustomers()[0] );
             D2EM::flush();
-            $c2u = D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => $user , "customer" => $user->getCustomer() ] );
         }
 
         D2EM::flush();
