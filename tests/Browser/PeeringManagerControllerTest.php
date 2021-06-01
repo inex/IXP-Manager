@@ -128,8 +128,10 @@ class PeeringManagerControllerTest extends DuskTestCase
             $browser->click( "#peering-request-" . $c[ "id" ] )
                 ->waitForText( "Send Peering Request by Email" )
                 ->click('#modal-peering-request-marksent' )
+                ->pause( 500 )
                 ->waitForText( "Peering request marked as sent in your Peering Manager." )
-                ->press( "Close" );
+                ->press( "Close" )
+                ->pause( 500 );
 
             $browser->waitUntilMissing( ".modal-backdrop"  );
 
