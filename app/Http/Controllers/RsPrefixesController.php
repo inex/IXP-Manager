@@ -55,7 +55,7 @@ class RsPrefixesController extends Controller
         return view( 'rs-prefixes/list' )->with([
             'types'                 => RsPrefix::$SUMMARY_TYPES_FNS,
             'rsRouteTypes'          => array_keys( RsPrefix::$ROUTES_TYPES_FNS ),
-            'cPrefixes'             => RsPrefixAggregator::aggregateRouteSummaries()
+            'cPrefixes'             => RsPrefixAggregator:: aggregateRouteSummaries()
         ]);
     }
 

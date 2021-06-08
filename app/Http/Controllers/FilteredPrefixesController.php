@@ -69,7 +69,7 @@ class FilteredPrefixesController extends Controller
 
         if( $filteredPrefixes === false ) {
             // no cached result so schedule a job to gather them:
-            FetchFilteredPrefixesForCustomer::dispatch( $cust );
+            FetchFilteredPrefixesForCustomer::dispatchAfterResponse( $cust );
 
             // if we are using the sync queue runner, it will have completed
             $filteredPrefixes = Cache::get( 'filtered-prefixes-' . $cust->id, false );
