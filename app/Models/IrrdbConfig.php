@@ -96,7 +96,7 @@ class IrrdbConfig extends Model
     public static function logSubject( Model $model ): string
     {
         return sprintf(
-            "IRRDB Counfig [id:%d] '%s', '%s'",
+            "IRRDB Config [id:%d] '%s', '%s'",
             $model->id,
             $model->host,
             $model->source,
