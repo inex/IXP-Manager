@@ -426,14 +426,12 @@ class CustomerController extends Controller
 
         // get customer's notes
         $notes = $cust->customerNotes()->orderByDesc( 'created_at' )->get();
-  
+
         return view( 'customer/overview' )->with([
             'c'                         => $cust,
             'customers'                 => Customer::select([ 'id', 'name' ])->current()
                 ->orderBy( 'name' )->get()->keyBy( 'id' )->toArray(),
             'netInfo'                   => NetworkInfo::vlanProtocol(),
-            'rsRoutes'                  => ( config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) && $cust->routeServerClient() )
-                                                ? RsPrefixAggregator::aggregateRouteSummariesForCustomer( $cust->id ) : false,
             'crossConnects'             => $cust->patchPanelPorts()->masterPort()->get(),
             'crossConnectsHistory'      => $cust->patchPanelPortHistories()->masterPort()->get(),
             'aggregateGraph'            => $cust->isGraphable() ? $grapher->customer( $cust ) : false,

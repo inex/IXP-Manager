@@ -77,11 +77,7 @@
                                     <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes' ) ): ?>
                                     <li class="nav-item" onclick="window.location.href = '<?= route( "rs-prefixes@view", [ 'cust' =>  $c->id ] ) ?>'">
                                         <a class="nav-link" data-toggle="tab"  href="">
-                                            RS Prefixes
-                                                <?php if( $t->rsRoutes[ 'adv_nacc' ][ 'total' ] > 0 ): ?>
-                                                  <span class="badge badge-danger"><?= $t->rsRoutes[ 'adv_nacc' ][ 'total' ] ?></span>
-                                                <?php endif ?>
-                                            &raquo;
+                                            RS Prefixes &raquo;
                                         </a>
                                     </li>
                                     <?php endif ?>

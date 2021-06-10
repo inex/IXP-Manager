@@ -91,10 +91,6 @@ class DashboardController extends Controller
             $resoldCustomer     = $c->reseller;
             $netinfo            = NetworkInfo::vlanProtocol();
             $grapher            = App::make( Grapher::class );
-
-            if( $c->routeServerClient() ) {
-                $rsRoutes = RsPrefixAggregator::aggregateRouteSummariesForCustomer( $c->id );
-            }
         }
 
         // array used to populate the details forms

@@ -77,7 +77,7 @@
                                         <?php if( Auth::check() ): ?>
                                             <?=  $t->asNumber( $c->autsys, false ) ?>
                                         <?php else: ?>
-                                            <a href="https://www.peeringdb.com/asn/<?= $c->getAutsys() ?>" target="_peeringdb">
+                                            <a href="https://www.peeringdb.com/asn/<?= $c->autsys ?>" target="_peeringdb">
                                                 <?= $c->autsys ?>
                                             </a>
                                         <?php endif; ?>

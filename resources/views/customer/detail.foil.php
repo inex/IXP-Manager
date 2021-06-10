@@ -2,7 +2,7 @@
     /** @var Foil\Template\Template $t */
     $this->layout( 'layouts/ixpv4' );
     $c = $t->c;/** @var \IXP\Models\Customer $c */
-    $isSuperUser = Auth::getUser()->isSuperUser()
+    $isSuperUser = Auth::check() && Auth::getUser()->isSuperUser();
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
