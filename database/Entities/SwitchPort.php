@@ -616,10 +616,13 @@ class SwitchPort
                     break;
 
                 default:
-                    $n = $host->useIface()->$snmp()[ $this->getIfIndex() ];
+                    if(!empty($host->useIface()->$snmp()[ $this->getIfIndex() ])) {
+                        
+                        $n = $host->useIface()->$snmp()[ $this->getIfIndex() ];
 
-                    if( $logger !== false && $this->$fn() != $n )
-                        Log::info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity} from [{$this->$fn()}] to [{$n}]" );
+                        if( $logger !== false && $this->$fn() != $n )
+                            Log::info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity} from [{$this->$fn()}] to [{$n}]" );
+                    }   
                     break;
             }
 
