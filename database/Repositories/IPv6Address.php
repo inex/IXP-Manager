@@ -105,7 +105,7 @@ class IPv6Address extends EntityRepository
                         v.name AS vlan, 
                         v.id AS vlanid,
                         vli.id AS vliid,
-                        vli.ipv4hostname AS hostname,
+                        vli.ipv6hostname AS hostname,
                         c.name AS customer, 
                         c.id AS customerid,
                         vi.id AS viid
