@@ -36,7 +36,7 @@
                         Details for User (DB ID: <?= $t->u[ 'id' ] ?>
                     </div>
 
-                    <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\User::class, 'logSubject') ): ?>
+                    <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\User::class, 'logSubject') && Auth::user()->isSuperUser() ): ?>
                         <a class="btn btn-white btn-sm" href="<?= route( 'log@list', [ 'model' => 'User' , 'model_id' => $t->u[ 'id' ]  ] ) ?>">
                             View logs
                         </a>

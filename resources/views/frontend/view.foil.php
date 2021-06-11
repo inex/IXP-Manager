@@ -45,7 +45,7 @@ $this->layout( 'layouts/ixpv4' );
             <div class="card">
                 <div class="card-header">
                     Details for <?=  $t->feParams->titleSingular  ?> <?= !isset( $t->data[ 'item' ]['id'] ) ?: '(DB ID: ' . $t->data[ 'item' ]['id'] . ')' ?>
-                    <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( $t->feParams->model, 'logSubject') ): ?>
+                    <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( $t->feParams->model, 'logSubject' ) && Auth::check() && Auth::user()->isSuperUser() ): ?>
                         <a class="btn btn-white btn-sm float-right" href="<?= route( 'log@list', [ 'model' => explode( "IXP\\Models\\", $t->feParams->model )[1], 'model_id' => $t->data[ 'item' ]['id'] ] ) ?>">
                             View logs
                         </a>

@@ -129,7 +129,7 @@
                                                                 <?= $t->ee( $history->patchPanel->name ) ?>
                                                             </a>
                                                         <?php else: ?>
-                                                            <?= $t->ee( $history->patchPanelPort->patchPanel->name ) ?>
+                                                            <?= $t->ee( $history->patchPanel->name ) ?>
                                                         <?php endif; ?>
                                                     <?php else: ?>
                                                         <?php if( $isSuperUser ): ?>

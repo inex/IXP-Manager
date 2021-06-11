@@ -13,6 +13,9 @@
             ],
         } ).show();
 
+        $('.table-responsive-ixp-with-header').DataTable().columns.adjust()
+            .responsive.recalc();
+
         $( '#btn-filter-options' ).click( function( e ) {
             e.preventDefault();
             $( '#filter-row' ).slideToggle();
