@@ -107,8 +107,8 @@ class BGPSessionData extends EntityRepository
             FROM bgpsessiondata AS bs
                 LEFT JOIN ipv{$protocol}address AS srcip ON bs.srcipaddressid = srcip.id
                 LEFT JOIN ipv{$protocol}address AS dstip ON bs.dstipaddressid = dstip.id
-                LEFT JOIN vlaninterface AS vlis ON srcip.id = vlis.ipv4addressid
-                LEFT JOIN vlaninterface AS vlid ON dstip.id = vlid.ipv4addressid
+                LEFT JOIN vlaninterface AS vlis ON srcip.id = vlis.ipv{$protocol}addressid
+                LEFT JOIN vlaninterface AS vlid ON dstip.id = vlid.ipv{$protocol}addressid
                 LEFT JOIN virtualinterface AS vis ON vlis.virtualinterfaceid = vis.id
                 LEFT JOIN virtualinterface AS vid ON vlid.virtualinterfaceid = vid.id
                 LEFT JOIN cust AS cs ON vis.custid = cs.id
