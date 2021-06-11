@@ -22,6 +22,6 @@ Thanks and kind regards,
 
 {{ config( 'identity.name' ) }}
 
-[{{ config( 'identity.email' ) }}](mailto:{{ config( 'identity.email' ) }})
+[{{ config( 'identity.support_email' ) }}](mailto:{{ config( 'identity.support_email' ) }})
 
 @endcomponent

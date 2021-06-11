@@ -39,7 +39,8 @@ Once logged in, you will have access to a number of features including:
 * route server, AS112 and other service information.
 
 
-If you require any assistance, please contact {{ config('identity.name') }} on [{{ config( 'identity.email' ) }}](mailto:{{ config( 'identity.email' ) }}).
+
+If you require any assistance, please contact {{ config('identity.name') }} on [{{ config( 'identity.support_email' ) }}](mailto:{{ config( 'identity.support_email' ) }}).
 
 
 ## Getting Your Password
@@ -58,6 +59,6 @@ Thanks and kind regards,
 
 {{ config( 'identity.name' ) }}
 
-[{{ config( 'identity.email' ) }}](mailto:{{ config( 'identity.email' ) }})
+[{{ config( 'identity.support_email' ) }}](mailto:{{ config( 'identity.support_email' ) }})
 
 @endcomponent
