@@ -112,16 +112,16 @@ class IpAddressController extends Controller
         $ips = $ipvxModel::selectRaw( 'ip.id as id, 
                         ip.address as address,' .
             ( $protocol === 4 ? 'inet_aton(ip.address) as aton' : 'hex( inet6_aton( ip.address ) ) as aton') .
-                        ',v.name AS vlan, 
+                        ",v.name AS vlan,
                         v.id as vlanid,
                         vli.id AS vliid,
-                        vli.ipv4hostname AS hostname,
+                        vli.ipv{$protocol}hostname AS hostname,
                         c.name AS customer, 
                         c.id AS customerid,
-                        vi.id AS viid' )
+                        vi.id AS viid" )
             ->from( "ipv{$protocol}address AS ip" )
             ->leftJoin( 'vlan AS v', 'v.id', 'ip.vlanid' )
-            ->leftJoin( 'vlaninterface AS vli', 'vli.ipv4addressid', 'ip.id' )
+            ->leftJoin( 'vlaninterface AS vli', "vli.ipv{$protocol}addressid", 'ip.id' )
             ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
             ->leftJoin( 'cust AS c', 'c.id', 'vi.custid' )
             ->when( $vlan, function( Builder $q, $vlan ) {
