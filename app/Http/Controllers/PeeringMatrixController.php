@@ -22,9 +22,9 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Auth, Cache;
 
-use Cache;
-
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\{
     RedirectResponse
 };
@@ -138,6 +138,11 @@ class PeeringMatrixController extends Controller
             }
         }
 
+        $restrictActivePeeringMatrix = true;
+        if( Auth::check() && Auth::getUser()->isSuperUser() ){
+            $restrictActivePeeringMatrix = false;
+        }
+
         //Return all active, trafficking and external customers on a given VLAN for a given protocol
         //(indexed by ASN)
         $cust = Vlan::select( [ 'cust.autsys', 'cust.name', 'cust.shortname', 'vli.rsclient', 'cust.activepeeringmatrix', 'cust.id' ] )
@@ -147,6 +152,9 @@ class PeeringMatrixController extends Controller
             ->whereRaw( Customer::SQL_CUST_CURRENT )->whereRaw( Customer::SQL_CUST_TRAFFICING )
             ->whereRaw( Customer::SQL_CUST_EXTERNAL )->where( 'vlan.id', $vl )
             ->where( "vli.ipv{$proto}enabled", 1 )->orderBy( 'cust.autsys' )
+            ->when( $restrictActivePeeringMatrix, function( Builder $q ) {
+                return $q->where( 'cust.activepeeringmatrix', 1 );
+            } )
             ->get()->keyBy( 'autsys' )->toArray();
 
         $asns = array_keys( $cust );
@@ -210,6 +218,11 @@ class PeeringMatrixController extends Controller
             return $apeers;
         }
 
+        $restrictActivePeeringMatrix = true;
+        if( Auth::check() && Auth::getUser()->isSuperUser() ){
+            $restrictActivePeeringMatrix = false;
+        }
+
         // we've added "bs.timestamp >= NOW() - INTERVAL 7 DAY" below as we don't
         // dump old date (yet) and the time to run the query is O(n) on number
         // of rows...
@@ -233,6 +246,10 @@ class PeeringMatrixController extends Controller
             ->where( 'bs.protocol', $protocol )
             ->where( 'bs.packetcount', '>=', 1 )
             ->where( 'vlan.id', $vlan )
+            ->when( $restrictActivePeeringMatrix, function( Builder $q ) {
+                return $q->where( 'cs.activepeeringmatrix', 1 )
+                        ->where( 'cd.activepeeringmatrix', 1);
+            } )
             ->groupByRaw( 'bs.srcipaddressid, bs.dstipaddressid, bs.id, vlis.virtualinterfaceid, vlid.virtualinterfaceid' )
             ->orderBy( 'csautsys' )->get()->toArray();
 
