@@ -160,7 +160,7 @@ class PeeringMatrixController extends Controller
         $asns = array_keys( $cust );
 
         return view( 'peering-matrix/index' )->with([
-            'sessions'                      => $this->getPeers( $vl, $proto ),
+            'sessions'                      => $this->getPeers( $vl, $proto, $restrictActivePeeringMatrix ),
             'custs'                         => $cust,
             'vlans'                         => $vlans,
             'protos'                        => $protos,
@@ -203,24 +203,19 @@ class PeeringMatrixController extends Controller
      *
      * It also caches the results on a per VLAN, per protocol basis.
      *
-     * @param int $vlan         The VLAN ID of the peering LAN to query
-     * @param int $protocol     The IP protocol to query (4 or 6)
+     * @param  int      $vlan  The VLAN ID of the peering LAN to query
+     * @param  int      $protocol  The IP protocol to query (4 or 6)
+     * @param  bool     $restrictActivePeeringMatrix
      *
      * @return array Array of peerings (as described above)
      *
-     * @throws
      */
-    private function getPeers( int $vlan, int $protocol = 6 ): array
+    private function getPeers( int $vlan, int $protocol = 6, bool $restrictActivePeeringMatrix = true ): array
     {
         $key = "pm_sessions_{$vlan}_{$protocol}";
 
         if( $apeers = Cache::get( $key ) ) {
             return $apeers;
-        }
-
-        $restrictActivePeeringMatrix = true;
-        if( Auth::check() && Auth::getUser()->isSuperUser() ){
-            $restrictActivePeeringMatrix = false;
         }
 
         // we've added "bs.timestamp >= NOW() - INTERVAL 7 DAY" below as we don't
