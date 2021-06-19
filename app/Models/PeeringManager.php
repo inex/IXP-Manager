@@ -57,6 +57,8 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereRejected($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class PeeringManager extends Model
 {

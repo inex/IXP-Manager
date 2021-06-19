@@ -54,6 +54,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static Builder|Log whereUpdatedAt($value)
  * @method static Builder|Log whereUserId($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Log extends Model
 {

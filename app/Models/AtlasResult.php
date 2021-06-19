@@ -51,6 +51,8 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|AtlasResult whereRouting($value)
  * @method static Builder|AtlasResult whereUpdatedAt($value)
  * @mixin Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 
 class AtlasResult extends Model

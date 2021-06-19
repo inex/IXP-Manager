@@ -63,6 +63,8 @@ use IXP\Traits\Observable;
  * @method static Builder|PatchPanelPortFile whereUploadedAt($value)
  * @method static Builder|PatchPanelPortFile whereUploadedBy($value)
  * @mixin Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 
 class PatchPanelPortFile extends Model

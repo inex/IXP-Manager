@@ -72,6 +72,8 @@ use IXP\Traits\Observable;
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereVatNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereVatRate($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class CompanyBillingDetail extends Model
 {

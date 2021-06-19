@@ -69,8 +69,8 @@ use IXP\Traits\Observable;
  * @method static Builder|Cabinet whereUCountsFrom($value)
  * @method static Builder|Cabinet whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property string|null $cololocation
- * @method static Builder|Cabinet whereCololocation($value)
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Cabinet extends Model
 {

@@ -51,6 +51,8 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|MacAddress whereUpdatedAt($value)
  * @method static Builder|MacAddress whereVirtualinterfaceid($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class MacAddress extends Model
 {

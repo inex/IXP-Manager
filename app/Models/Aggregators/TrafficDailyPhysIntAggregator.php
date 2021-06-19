@@ -115,6 +115,8 @@ use \IXP\Models\TrafficDailyPhysInt;
  * @method static Builder|TrafficDailyPhysIntAggregator whereYearTotIn($value)
  * @method static Builder|TrafficDailyPhysIntAggregator whereYearTotOut($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class TrafficDailyPhysIntAggregator extends TrafficDailyPhysInt
 {

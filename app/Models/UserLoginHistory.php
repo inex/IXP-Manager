@@ -53,6 +53,8 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|UserLoginHistory whereUserId($value)
  * @method static Builder|UserLoginHistory whereVia($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class UserLoginHistory extends Model
 {

@@ -137,6 +137,7 @@ use Illuminate\Support\Collection;
  * @method static Builder|Customer internal()
  * @method static Builder|CustomerAggregator newModelQuery()
  * @method static Builder|CustomerAggregator newQuery()
+ * @method static Builder|Customer notDeleted()
  * @method static Builder|CustomerAggregator query()
  * @method static Builder|Customer resellerOnly()
  * @method static Builder|Customer trafficking()
@@ -176,7 +177,8 @@ use Illuminate\Support\Collection;
  * @method static Builder|CustomerAggregator whereType($value)
  * @method static Builder|CustomerAggregator whereUpdatedAt($value)
  * @mixin \Eloquent
- * @method static Builder|Customer notDeleted()
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class CustomerAggregator extends Customer
 {

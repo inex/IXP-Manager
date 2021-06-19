@@ -55,6 +55,8 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|UserRememberToken whereUpdatedAt($value)
  * @method static Builder|UserRememberToken whereUserId($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class UserRememberToken extends Model
 {

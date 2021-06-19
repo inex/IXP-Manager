@@ -43,12 +43,12 @@ use IXP\Traits\Observable;
  * @property string|null $mobile
  * @property bool $facilityaccess
  * @property bool $mayauthorize
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $lastupdatedby
  * @property string|null $creator
+ * @property \Illuminate\Support\Carbon|null $created_at
  * @property string|null $position
  * @property string|null $notes
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ContactGroup[] $contactGroups
  * @property-read int|null $contact_groups_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ContactGroup[] $contactGroupsAll
@@ -74,6 +74,8 @@ use IXP\Traits\Observable;
  * @method static Builder|Contact wherePosition($value)
  * @method static Builder|Contact whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Contact extends Model
 {

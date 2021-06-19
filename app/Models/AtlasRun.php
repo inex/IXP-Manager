@@ -62,6 +62,8 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|AtlasRun whereUpdatedAt($value)
  * @method static Builder|AtlasRun whereVlanId($value)
  * @mixin Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class AtlasRun extends Model
 {

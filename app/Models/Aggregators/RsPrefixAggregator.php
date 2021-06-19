@@ -51,6 +51,8 @@ use IXP\Models\RsPrefix;
  * @method static Builder|RsPrefixAggregator whereRsOrigin($value)
  * @method static Builder|RsPrefixAggregator whereTimestamp($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class RsPrefixAggregator extends RsPrefix
 {

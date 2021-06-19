@@ -55,6 +55,8 @@ use IXP\Traits\Observable;
  * @method static Builder|CustomerNote whereTitle($value)
  * @method static Builder|CustomerNote whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class CustomerNote extends Model
 {

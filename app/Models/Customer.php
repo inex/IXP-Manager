@@ -139,12 +139,13 @@ use IXP\Models\AtlasMeasurement;
  * @method static Builder|Customer addressesForVlan(int $vlanid, int $cust, int $protocol)
  * @method static Builder|Customer associate()
  * @method static Builder|Customer current()
- * @method static \Illuminate\Database\Eloquent\Builder|Customer currentActive(bool $trafficing = false, bool $externalOnly = false, bool $connected = true)
+ * @method static Builder|Customer currentActive(bool $trafficing = false, bool $externalOnly = false, bool $connected = true)
  * @method static Builder|Customer internal()
  * @method static Builder|Customer newModelQuery()
  * @method static Builder|Customer newQuery()
+ * @method static Builder|Customer notDeleted()
  * @method static Builder|Customer query()
- * @method static \Illuminate\Database\Eloquent\Builder|Customer resellerOnly()
+ * @method static Builder|Customer resellerOnly()
  * @method static Builder|Customer trafficking()
  * @method static Builder|Customer whereAbbreviatedName($value)
  * @method static Builder|Customer whereActivepeeringmatrix($value)
@@ -182,7 +183,8 @@ use IXP\Models\AtlasMeasurement;
  * @method static Builder|Customer whereType($value)
  * @method static Builder|Customer whereUpdatedAt($value)
  * @mixin Eloquent
- * @method static Builder|Customer notDeleted()
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Customer extends Model
 {

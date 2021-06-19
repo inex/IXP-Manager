@@ -73,6 +73,8 @@ use IXP\Traits\Observable;
  * @method static Builder|PhysicalInterface whereUpdatedAt($value)
  * @method static Builder|PhysicalInterface whereVirtualinterfaceid($value)
  * @mixin Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class PhysicalInterface extends Model
 {

@@ -62,6 +62,8 @@ use IXP\Traits\Observable;
  * @method static Builder|CoreLink whereIpv6Subnet($value)
  * @method static Builder|CoreLink whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class CoreLink extends Model
 {
