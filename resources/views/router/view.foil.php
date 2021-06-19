@@ -119,6 +119,19 @@
                             </tr>
                             <tr>
                                 <td>
+                                    <b>Configuration Last Updated:</b>
+                                </td>
+                                <td>
+                                    <?= $rt->last_updated ?: '(unknown)' ?>
+                                    <?php if( $rt->last_updated && $rt->lastUpdatedGreaterThanSeconds( 86400 ) ): ?>
+                                        <span class="badge badge-danger">
+                                            <i class="fa fa-exclamation-triangle" title="Last updated more than 1 day ago"></i>
+                                        </span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <b>Created:</b>
                                 </td>
                                 <td>
@@ -130,12 +143,7 @@
                                     <b>Updated:</b>
                                 </td>
                                 <td>
-                                    <?= $rt->updated_at ?: '(unknown)' ?>
-                                    <?php if( $rt->updated_at && $rt->lastUpdatedGreaterThanSeconds( 86400 ) ): ?>
-                                        <span class="badge badge-danger">
-                                            <i class="fa fa-exclamation-triangle" title="Last updated more than 1 day ago"></i>
-                                        </span>
-                                    <?php endif; ?>
+                                    <?= $rt->updated_at ?>
                                 </td>
                             </tr>
                         </table>

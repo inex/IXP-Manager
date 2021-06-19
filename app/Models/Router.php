@@ -52,6 +52,7 @@ use IXP\Traits\Observable;
  * @property bool $bgp_lc
  * @property string $template
  * @property bool $skip_md5
+ * @property \Illuminate\Support\Carbon|null $last_updated
  * @property bool $rpki
  * @property string|null $software_version
  * @property string|null $operating_system
@@ -77,6 +78,7 @@ use IXP\Traits\Observable;
  * @method static Builder|Router whereCreatedAt($value)
  * @method static Builder|Router whereHandle($value)
  * @method static Builder|Router whereId($value)
+ * @method static Builder|Router whereLastUpdated($value)
  * @method static Builder|Router whereLgAccess($value)
  * @method static Builder|Router whereMgmtHost($value)
  * @method static Builder|Router whereName($value)
@@ -97,6 +99,8 @@ use IXP\Traits\Observable;
  * @method static Builder|Router whereUpdatedAt($value)
  * @method static Builder|Router whereVlanId($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Router extends Model
 {
@@ -138,11 +142,12 @@ class Router extends Model
      * @var array
      */
     protected $casts = [
-        'asn'        => 'integer',
-        'quarantine' => 'boolean',
-        'bgp_lc'     => 'boolean',
-        'skip_md5'   => 'boolean',
-        'rpki'       => 'boolean',
+        'asn'          => 'integer',
+        'quarantine'   => 'boolean',
+        'bgp_lc'       => 'boolean',
+        'skip_md5'     => 'boolean',
+        'rpki'         => 'boolean',
+        'last_updated' => 'datetime',
     ];
 
     /**
@@ -426,12 +431,12 @@ class Router extends Model
      */
     public function lastUpdatedGreaterThanSeconds( int $threshold ): bool
     {
-        if( !$this->updated_at ) {
+        if( !$this->last_updated ) {
             // if null, then, as far as we know, it has never been updated....
             return true;
         }
 
-        return $this->updated_at->diffInSeconds() > $threshold;
+        return $this->last_updated->diffInSeconds() > $threshold;
     }
 
     /**
