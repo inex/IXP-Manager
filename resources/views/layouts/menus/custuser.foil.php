@@ -1,3 +1,8 @@
+<?php
+
+use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
+
+?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <?= $this->insert('layouts/ixp-logo-header'); ?>
 
@@ -5,7 +10,14 @@
         <i class="fa fa-ellipsis-v"></i>
     </button>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
+    <?php
+        // hide most things until 2fa complete:
+        $authenticator = new GoogleAuthenticator( request() );
+
+        if( !Auth::getUser()->user2FA || !Auth::getUser()->user2FA->enabled || $authenticator->isAuthenticated() ):
+    ?>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
             <li class="nav-item <?= !request()->is( 'dashboard' ) ?: 'active' ?>">
@@ -217,4 +229,7 @@
             <li>
         </ul>
     </div>
+
+    <?php endif; // 2fa test at very top ?>
+
 </nav>

@@ -1,3 +1,8 @@
+<?php
+
+use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
+
+?>
 <nav id="navbar-header" class="navbar navbar-expand-lg navbar-dark bg-dark">
     <button class="navbar-toggler d-block-sm d-md-none" type="button" id="sidebarCollapse" >
         <i id="menu-icon" class="fa fa-bars"></i>
@@ -8,6 +13,16 @@
     <button id="navbar-ixp" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <i class="fa fa-ellipsis-v"></i>
     </button>
+
+
+    <?php
+        // hide most things until 2fa complete:
+        $authenticator = new GoogleAuthenticator( request() );
+
+        if( !Auth::getUser()->user2FA || !Auth::getUser()->user2FA->enabled || $authenticator->isAuthenticated() ):
+    ?>
+
+
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
@@ -188,4 +203,7 @@
             <li>
         </ul>
     </div>
+
+    <?php endif; // 2fa test at very top ?>
+
 </nav>

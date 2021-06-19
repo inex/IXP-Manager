@@ -60,7 +60,8 @@ $this->layout( 'layouts/ixpv4' )
                         ?>
 
                         <?= Former::actions(
-                            Former::primary_submit( 'Authenticate' )
+                            Former::primary_submit( 'Authenticate' ),
+                            Former::secondary_link( 'Logout', route('login@logout') )
                         );
                         ?>
 
