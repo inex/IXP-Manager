@@ -239,7 +239,7 @@ class ContactController extends Doctrine2Frontend
                     }
                 }
 
-                if( !array_key_exists( $cg, $allGroups['ROLE'] ) ) {
+                if( !array_key_exists( $cg, $cgs ) ) {
                     $cg = null;
                 }
             }

@@ -83,13 +83,27 @@ class ApiMaybeAuthenticate {
                     return response( 'API key expired', 403 );
                 }
 
+                // Check if user is disabled
+                if( $key->getUser()->getDisabled() ){
+                    return response( 'User is disabled', 403 );
+                }
+
+                // Check if default customer is disabled
+                if( !$key->getUser()->getCustomer()->isActive() ){
+                    return response( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' of the user is disabled', 403 );
+                }
+
                 Auth::onceUsingId( $key->getUser()->getId() );
 
                 $key->setLastseenAt( new \DateTime() );
                 $key->setLastseenFrom( ixp_get_client_ip() );
                 D2EM::flush();
             }
-		}
+		} elseif( Auth::user()->getDisabled() ){
+            return response( 'User is disabled', 403 );
+        } elseif( !Auth::user()->getCustomer()->isActive() ){// Check if default customer is disabled
+            return response( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' of the user is disabled', 403 );
+        }
 		
 		return $next($request);
 	}

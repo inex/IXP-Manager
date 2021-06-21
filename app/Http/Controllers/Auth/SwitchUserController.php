@@ -67,6 +67,11 @@ class SwitchUserController extends Controller
             AlertContainer::push( "This user doesnt have customer associated.", Alert::DANGER );
             return redirect()->to( "/" );
         }
+
+        if( $user->getDisabled() ){
+            AlertContainer::push( "You cannot login as this user", Alert::DANGER );
+            return redirect( '/' );
+        }
         
         session()->put( "switched_user_from", $user->getId() );
         session()->put( "redirect_after_switch_back", request()->headers->get('referer', "" ) );

@@ -57,6 +57,7 @@ $this->layout( 'layouts/ixpv4' )
                             ->label( 'One Time Code' )
                             ->forceValue( '' )
                             ->autofocus( true )
+                            ->autocomplete( 'off' )
                         ?>
 
                         <?= Former::actions(

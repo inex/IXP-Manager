@@ -124,7 +124,7 @@ class ProfileController extends Controller
         AlertContainer::push( 'Password updated successfully', Alert::SUCCESS );
 
         // Logout all the active session except the current one
-        D2EM::getRepository( UserEntity::class )->deleteActiveSession( $user->getId(), false );
+        D2EM::getRepository( UserRememberTokenEntity::class )->deleteByUser( $user->getId(), false );
 
         return Redirect::to( route( "profile@edit"  ) );
     }
