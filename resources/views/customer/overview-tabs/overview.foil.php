@@ -17,7 +17,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="max-width: 700px;">
                     <?= $t->aggregateGraph->renderer()->boxLegacy() ?>
                 </div>
             </div>

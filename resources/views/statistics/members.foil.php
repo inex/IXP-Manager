@@ -153,7 +153,21 @@
                 </nav>
             <?php endif; ?>
 
-            <?php if( !$t->graph ): ?>
+            <?php if( !sizeof( array_intersect( ['mrtg', 'sflow'], config( 'grapher.backend' ) ) ) ): ?>
+
+                <div id="infra_reg_banner" class="tw-bg-blue-100 tw-border-l-4 tw-border-blue-500 tw-text-blue-700 p-4 alert-dismissible mb-4" role="alert">
+                    <div class="d-flex align-items-center">
+                        <div class="text-center"><i class="fa fa-info-circle fa-2x "></i></div>
+                        <div class="col-sm-12">
+                            You must have either or both the MRTG and/or the sflow grapher backend configured for this functionality.
+                        </div>
+                    </div>
+                </div>
+
+            <?php endif; ?>
+
+
+    <?php if( !$t->graph ): ?>
                 <div class="alert alert-info mt-4" role="alert">
                     <div class="d-flex align-items-center">
                         <div class="text-center">
