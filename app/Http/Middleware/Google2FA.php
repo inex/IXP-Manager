@@ -58,6 +58,11 @@ class Google2FA
      */
     public function handle( Request $r, Closure $next )
     {
+        // if we're not logged in then move on:
+        if( !Auth::check() ) {
+            return $next( $r );
+        }
+
         if( in_array( $r->route()->getName(), $this->excludes, true ) ) {
             return $next( $r );
         }
