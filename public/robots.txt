@@ -1,6 +1,8 @@
 # Crawlers should not search the looking glasses
 User-agent: *
 Disallow: /lg/
+Disallow: /ixp/lg/
+Disallow: /ixp/*/lg/
 
 User-agent: *
 Allow: /
