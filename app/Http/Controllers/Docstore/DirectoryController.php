@@ -64,7 +64,7 @@ class DirectoryController extends Controller
      *
      * @return View|RedirectResponse
      */
-    public function list( Request $request, DocstoreDirectory $dir = null ) 
+    public function list( Request $request, DocstoreDirectory $dir = null )
     {
         $privs  = User::AUTH_PUBLIC;
         if( $user = $request->user() ){

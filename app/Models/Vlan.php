@@ -35,11 +35,11 @@ use Illuminate\Database\Eloquent\{
  * IXP\Models\Vlan
  *
  * @property int $id
+ * @property int $infrastructureid
  * @property string|null $name
  * @property int|null $number
- * @property string|null $notes
  * @property int $private
- * @property int $infrastructureid
+ * @property string|null $notes
  * @property int $peering_matrix
  * @property int $peering_manager
  * @property string|null $config_name

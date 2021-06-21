@@ -47,9 +47,9 @@ use Illuminate\Support\Carbon;
  * @property int $connector_type
  * @property string|null $installation_date
  * @property string $port_prefix
- * @property int $active
  * @property int $chargeable
  * @property string $location_notes
+ * @property int $active
  * @property int|null $u_position
  * @property int|null $mounted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPort[] $patchPanelPorts

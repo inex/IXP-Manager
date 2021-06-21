@@ -57,6 +57,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/graham-campbell/testbench-core" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/orchestra/testbench" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/orchestra/testbench-core" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/cache" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/deprecations" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
