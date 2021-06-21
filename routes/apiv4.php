@@ -98,6 +98,23 @@ Route::get( 'peering-db/fac', function() {
     }));
 })->name('api-v4-peering-db-fac');
 
+Route::get( 'ixpmanager-users/ixf-ids', function() {
+    return response()->json( Cache::remember('ixpmanager-users/ixf-ids', 120, function() {
+        $ixfids = [];
+        if( $ixps = file_get_contents( 'https://www.ixpmanager.org/js/ixp-manager-users.json' ) ) {
+            foreach( json_decode( $ixps, false )->ixp_list as $ix ) {
+                if( $ix->ixf_id ) {
+                    $ixfids[] = $ix->ixf_id;
+                }
+            }
+        }
+
+        return $ixfids;
+    }));
+})->name( 'ixpmanager-users/ixf-ids' );
+
+https://www.ixpmanager.org/js/ixp-manager-users.json
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Statistics
 //
