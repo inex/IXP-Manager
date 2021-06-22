@@ -159,7 +159,7 @@ class AdminController extends Controller
             ksort($speeds, SORT_NUMERIC);
 
             usort($custsByLocation, function ($a, $b) {
-                return (int)($a[ 'count' ] < $b[ 'count' ] );
+                return $a[ 'count' ] <=> $b[ 'count' ];
             });
 
             $cTypes[ 'speeds' ]             = $speeds;
