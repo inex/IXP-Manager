@@ -147,6 +147,7 @@ class ProfileController extends Controller
         $user->setName(             $r->input( "name") );
         $user->setUsername(         $r->input( "username") );
         $user->setEmail(            $r->input( "email") );
+        $user->setAuthorisedMobile( $r->input( "authorisedMobile") );        
         $user->setLastUpdated(      new DateTime() );
         $user->setLastUpdatedBy(    $user->getId() );
 
