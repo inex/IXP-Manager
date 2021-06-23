@@ -28,7 +28,7 @@
             <li>
                 <strong>INBOUND:</strong>
 
-                There has been a <strong><?= $p['percentIn'] ?>% <?= $p['sIn'] ?></strong> is this
+                There has been a <strong><?= $p['percentIn'] ?>% <?= $p['sIn'] ?></strong> in this
                 member's average traffic as recorded yesterday
                 (<?= $this->grapher()->scale( $p['todayAvgIn'], Graph::CATEGORY_BITS ) ?>)
                 compared to the average over the same day for the past <?= floor( $p['days'] / 7 ) ?> weeks
@@ -41,7 +41,7 @@
             <li>
                 <strong>OUTBOUND:</strong>
 
-                There has been a <strong><?= $p['percentOut'] ?>% <?= $p['sOut'] ?></strong> is this
+                There has been a <strong><?= $p['percentOut'] ?>% <?= $p['sOut'] ?></strong> in this
                 member's traffic as recorded yesterday
                 (<?= $this->grapher()->scale( $p['todayAvgOut'], Graph::CATEGORY_BITS ) ?>)
                 compared to the average over the same day for the past <?= floor( $p['days'] / 7 ) ?> weeks
