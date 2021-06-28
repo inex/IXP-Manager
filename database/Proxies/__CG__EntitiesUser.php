@@ -661,6 +661,17 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getActiveCustomers()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getActiveCustomers', []);
+
+        return parent::getActiveCustomers();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getCustomers2User()
     {
 

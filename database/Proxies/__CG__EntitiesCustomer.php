@@ -1261,6 +1261,17 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function isActive()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isActive', []);
+
+        return parent::isActive();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function resolveType(): string
     {
 
