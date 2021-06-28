@@ -88,8 +88,8 @@
                                 <?= $router->asn ?>
                             </td>
                             <td>
-                                <?= $router->updated_at ? $router->updated_at->format('Y-m-d H:i:s') : '(unknown)' ?>
-                                <?php if( $router->updated_at && $router->lastUpdatedGreaterThanSeconds( 86400 ) ): ?>
+                                <?= $router->last_updated ? $router->last_updated->format('Y-m-d H:i:s') : '(unknown)' ?>
+                                <?php if( $router->last_updated && $router->lastUpdatedGreaterThanSeconds( 86400 ) ): ?>
                                     <span class="badge badge-danger">
                                         <i class="fa fa-exclamation-triangle" title="Last updated more than 1 day ago"></i>
                                     </span>

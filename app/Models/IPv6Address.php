@@ -48,6 +48,8 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder|IPv6Address whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|IPv6Address whereVlanid($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class IPv6Address extends Model
 {

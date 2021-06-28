@@ -54,6 +54,8 @@ use IXP\Models\ContactGroup;
  * @method static Builder|ContactGroupAggregator whereType($value)
  * @method static Builder|ContactGroupAggregator whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class ContactGroupAggregator extends ContactGroup
 {

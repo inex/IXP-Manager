@@ -74,6 +74,8 @@ use IXP\Traits\Observable;
  * @method static Builder|DocstoreFile whereSha256($value)
  * @method static Builder|DocstoreFile whereUpdatedAt($value)
  * @mixin Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 
 class DocstoreFile extends Model

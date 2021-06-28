@@ -44,6 +44,7 @@ use IXP\Traits\Observable;
  * @property int|null $peeringdb_ix_id
  * @property int|null $ixf_ix_id
  * @property string|null $country
+ * @property string|null $notes
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Collection|\IXP\Models\Switcher[] $switchers
@@ -59,12 +60,13 @@ use IXP\Traits\Observable;
  * @method static Builder|Infrastructure whereIsPrimary($value)
  * @method static Builder|Infrastructure whereIxfIxId($value)
  * @method static Builder|Infrastructure whereName($value)
+ * @method static Builder|Infrastructure whereNotes($value)
  * @method static Builder|Infrastructure wherePeeringdbIxId($value)
  * @method static Builder|Infrastructure whereShortname($value)
  * @method static Builder|Infrastructure whereUpdatedAt($value)
  * @mixin Eloquent
- * @property string|null $notes
- * @method static Builder|Infrastructure whereNotes($value)
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Infrastructure extends Model
 {

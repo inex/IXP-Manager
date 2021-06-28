@@ -65,7 +65,7 @@ use IXP\Traits\Observable;
  * @method static Builder|Vlan newQuery()
  * @method static Builder|Vlan peeringManager()
  * @method static Builder|Vlan privateOnly()
- * @method static \Illuminate\Database\Eloquent\Builder|Vlan publicOnly()
+ * @method static Builder|Vlan publicOnly()
  * @method static Builder|Vlan query()
  * @method static Builder|Vlan whereConfigName($value)
  * @method static Builder|Vlan whereCreatedAt($value)
@@ -79,6 +79,8 @@ use IXP\Traits\Observable;
  * @method static Builder|Vlan wherePrivate($value)
  * @method static Builder|Vlan whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Vlan extends Model
 {

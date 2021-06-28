@@ -116,6 +116,8 @@ use \OSS_SNMP\MIBS\Iface as SNMPIface;
  * @method static Builder|Switcher whereUpdatedAt($value)
  * @method static Builder|Switcher whereVendorid($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Switcher extends Model
 {

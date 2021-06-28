@@ -55,6 +55,8 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|ContactGroup whereType($value)
  * @method static Builder|ContactGroup whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class ContactGroup extends Model
 {

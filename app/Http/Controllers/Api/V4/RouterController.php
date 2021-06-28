@@ -105,7 +105,7 @@ class RouterController extends Controller
             abort( 404, "Unknown router handle" );
         }
 
-        $r->update( [ 'updated_at' => now() ] );
+        $r->update( [ 'last_updated' => now() ] );
 
         return response()->json( $this->lastUpdatedArray( $r ) );
     }
@@ -155,7 +155,7 @@ class RouterController extends Controller
     {
         $result = [];
         foreach( Router::all() as $r ) {
-            if( $r->updated_at && $r->lastUpdatedGreaterThanSeconds( $threshold ) ) {
+            if( $r->last_updated && $r->lastUpdatedGreaterThanSeconds( $threshold ) ) {
                 $result[ $r->handle ] = $this->lastUpdatedArray( $r );
             }
         }
@@ -173,8 +173,8 @@ class RouterController extends Controller
     private function lastUpdatedArray( Router $r ): array
     {
         return [
-            'last_updated'      => $r->updated_at ? Carbon::instance( $r->updated_at )->toIso8601String() : null,
-            'last_updated_unix' => $r->updated_at ? Carbon::instance( $r->updated_at )->timestamp : null,
+            'last_updated'      => $r->last_updated ? $r->last_updated->toIso8601String() : null,
+            'last_updated_unix' => $r->last_updated ? $r->last_updated->timestamp : null,
         ];
     }
 }

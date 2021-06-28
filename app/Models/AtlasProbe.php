@@ -76,6 +76,8 @@ use Illuminate\Support\{
  * @method static Builder|AtlasProbe whereV4Enabled($value)
  * @method static Builder|AtlasProbe whereV6Enabled($value)
  * @mixin Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class AtlasProbe extends Model
 {

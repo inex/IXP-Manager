@@ -99,7 +99,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes(): void
     {
         Route::group([
-            'middleware'    => 'web',
+            'middleware'    => [ 'web', '2fa' ],
             'namespace'     => $this->namespace,
         ], function () {
             require base_path('routes/web.php' );

@@ -48,6 +48,8 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder|User2FA whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User2FA whereUserId($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class User2FA extends Model
 {

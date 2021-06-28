@@ -113,6 +113,8 @@ use IXP\Traits\Observable;
  * @method static Builder|PatchPanelPort whereTicketRef($value)
  * @method static Builder|PatchPanelPort whereUpdatedAt($value)
  * @mixin Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 
 class PatchPanelPort extends Model

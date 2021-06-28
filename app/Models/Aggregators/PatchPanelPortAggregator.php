@@ -48,6 +48,8 @@ use IXP\Models\PatchPanelPort;
  * @method static Builder|PatchPanelPortAggregator newQuery()
  * @method static Builder|PatchPanelPortAggregator query()
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class PatchPanelPortAggregator extends PatchPanelPort
 {

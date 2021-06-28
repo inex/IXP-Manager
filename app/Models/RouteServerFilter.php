@@ -68,6 +68,8 @@ use IXP\Traits\Observable;
  * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|RouteServerFilter whereVlanId($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class RouteServerFilter extends Model
 {

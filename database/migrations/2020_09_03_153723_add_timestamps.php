@@ -202,8 +202,7 @@ class AddTimestamps extends Migration
         });
 
         Schema::table('routers', function (Blueprint $table) {
-            $table->renameColumn( 'last_updated', 'updated_at' );
-            $table->timestamp( 'created_at' )->nullable();
+            $table->timestamps();
         });
 
         Schema::table('sflow_receiver', function (Blueprint $table) {

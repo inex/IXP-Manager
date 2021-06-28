@@ -50,6 +50,8 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder|RsPrefix whereRsOrigin($value)
  * @method static \Illuminate\Database\Eloquent\Builder|RsPrefix whereTimestamp($value)
  * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class RsPrefix extends Model
 {
