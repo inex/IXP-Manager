@@ -130,7 +130,7 @@ class SwitchConfigurationGenerator
             /** @var \Entities\VlanInterface $vli */
             $v = [];
             $v[ 'number' ] = $vli->getVlan()->getNumber();
-
+            $v[ 'customVlanTag' ] = $vli->getCustomvlantag();
             $v[ 'macaddresses' ] = [];
             foreach( $vli->getLayer2Addresses() as $mac ) {
                 $v[ 'macaddresses' ][] = $mac->getMacFormattedWithColons();

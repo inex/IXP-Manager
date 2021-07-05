@@ -121,6 +121,7 @@ class VlanInterface extends EntityRepository
                         vli.as112client             AS as112client,
                         vli.rsclient                AS rsclient, 
                         vli.busyhost                AS busyhost, 
+                        vli.customvlantag           AS customvlantag,
                         vli.irrdbfilter             AS irrdbfilter,
                         vli.rsmorespecifics         AS rsmorespecifics,
                         vli.ipv{$proto}canping      AS canping,

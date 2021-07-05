@@ -316,6 +316,7 @@ class VirtualInterfaceController extends Common
         $vli->setRsclient(          $request->input( 'rsclient',        false ) );
         $vli->setAs112client(       $request->input( 'as112client',     false ) );
         $vli->setBusyhost(          false );
+        $vli->setCustomvlantag(     $request->input( 'customvlantag',   false ) );
 
         if( !$this->setIp($request, $v, $vli, false ) || !$this->setIp($request, $v, $vli, true ) ) {
             return Redirect::to('virtualInterface/add-wizard' )->withInput( $request->all() );

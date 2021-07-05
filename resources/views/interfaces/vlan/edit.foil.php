@@ -92,6 +92,11 @@
                                 ->blockHelp( 'Pick the VLAN for this VLAN interface. IP address dropdowns will automatically populate on change.' );
                             ?>
 
+                            <?= Former::number( 'customvlantag' )
+                                ->label( 'Custom VLAN Tag' )
+                                ->blockHelp( 'The VLAN to translate to, if required. 0 signifies untagged ');
+                            ?>
+
                             <?= Former::checkbox( 'mcastenabled' )
                                 ->label('&nbsp;')
                                 ->text( 'Multicast Enabled' )
