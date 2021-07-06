@@ -6,7 +6,7 @@ These install scripts are **opinionated**! They are intended to run exactly as s
 
 ## Video Tutorials
 
-We created a *rough and ready* video tutorial demonstrating the installation process using the automated script for IXP Manager v5.5.0 (May 2020) on Ubuntu LTS 20.04. *This is Barry's first attempt at video tutorials so please forgive the lighting and sound quality.* You can find the [video here](https://www.youtube.com/watch?v=U123-E8D-AI) in our [YouTube channel](https://www.youtube.com/channel/UCeW2fmMTBtE4fnlmg-2-evA).
+We created a *rough and ready* video tutorial demonstrating the installation process using the automated script for IXP Manager v5.5.0 (May 2020) on Ubuntu LTS 20.04. The procedure is similar for v6.0 - just be sure to use the [ubuntu-lts-2004-ixp-manager-v6.sh](https://github.com/inex/IXP-Manager/blob/release-v6/tools/installers/ubuntu-lts-2004-ixp-manager-v6.sh) script. You can find the [video here](https://www.youtube.com/watch?v=U123-E8D-AI) in our [YouTube channel](https://www.youtube.com/channel/UCeW2fmMTBtE4fnlmg-2-evA).
 
 ## IXP Manager v6 on Ubuntu LTS 20.04
 
