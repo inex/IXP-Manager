@@ -171,30 +171,33 @@
 
             <?php /**************************************** DOCSTORE ****************************************/ ?>
 
-            <li class="<?= !request()->is( 'ripe-atlas/runs*' ) ?: 'active' ?>" >
-                <a href="<?= route('ripe-atlas/runs@list' ) ?>" class="nav-link">
-                    Ripe Atlas
-                </a>
-            </li>
+            <?php if( !config( 'ixp_fe.frontend.disabled.ripe-atlas' ) ): ?>
+                <li class="<?= !request()->is( 'ripe-atlas/runs*' ) ?: 'active' ?>" >
+                    <a href="<?= route('ripe-atlas/runs@list' ) ?>" class="nav-link">
+                        Ripe Atlas
+                    </a>
+                </li>
 
-            <?php if( request()->is( 'ripe-atlas/*' ) ): ?>
-                <ul>
-                    <li class="nav-sub-menu-item <?= !request()->is( 'ripe-atlas/measurements/*' ) ?: 'active' ?>">
-                        <a class="nav-link" href="<?= route('ripe-atlas/measurements@list' ) ?>">
-                            Measurements
-                        </a>
-                    </li>
-                </ul>
-            <?php endif; ?>
+                <?php if( request()->is( 'ripe-atlas/*' ) ): ?>
+                    <ul>
+                        <li class="nav-sub-menu-item <?= !request()->is( 'ripe-atlas/measurements/*' ) ?: 'active' ?>">
+                            <a class="nav-link" href="<?= route('ripe-atlas/measurements@list' ) ?>">
+                                Measurements
+                            </a>
+                        </li>
+                    </ul>
+                <?php endif; ?>
 
-            <?php if( request()->is( 'ripe-atlas/*' ) ): ?>
-                <ul>
-                    <li class="nav-sub-menu-item <?= !request()->is( 'ripe-atlas/probes/*' ) ?: 'active' ?>">
-                        <a class="nav-link" href="<?= route('ripe-atlas/probes@list' ) ?>">
-                            Probes
-                        </a>
-                    </li>
-                </ul>
+                <?php if( request()->is( 'ripe-atlas/*' ) ): ?>
+                    <ul>
+                        <li class="nav-sub-menu-item <?= !request()->is( 'ripe-atlas/probes/*' ) ?: 'active' ?>">
+                            <a class="nav-link" href="<?= route('ripe-atlas/probes@list' ) ?>">
+                                Probes
+                            </a>
+                        </li>
+                    </ul>
+                <?php endif; ?>
+
             <?php endif; ?>
 
             <li class="<?= !request()->is( 'facility/*' ) ?: 'active' ?>">
