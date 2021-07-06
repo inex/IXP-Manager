@@ -67,8 +67,6 @@ use Illuminate\Support\Facades\{
  * @method static Builder|DocstoreDirectory whereParentDirId($value)
  * @method static Builder|DocstoreDirectory whereUpdatedAt($value)
  * @mixin Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 
 class DocstoreDirectory extends Model

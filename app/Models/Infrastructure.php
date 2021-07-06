@@ -65,8 +65,6 @@ use IXP\Traits\Observable;
  * @method static Builder|Infrastructure whereShortname($value)
  * @method static Builder|Infrastructure whereUpdatedAt($value)
  * @mixin Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Infrastructure extends Model
 {

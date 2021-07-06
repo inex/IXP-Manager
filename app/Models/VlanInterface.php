@@ -99,8 +99,6 @@ use IXP\Traits\Observable;
  * @method static Builder|VlanInterface whereVirtualinterfaceid($value)
  * @method static Builder|VlanInterface whereVlanid($value)
  * @mixin Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class VlanInterface extends Model
 {

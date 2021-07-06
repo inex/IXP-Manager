@@ -54,8 +54,6 @@ use IXP\Traits\Observable;
  * @method static Builder|IrrdbConfig whereSource($value)
  * @method static Builder|IrrdbConfig whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class IrrdbConfig extends Model
 {

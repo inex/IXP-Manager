@@ -56,8 +56,6 @@ use IXP\Traits\Observable;
  * @method static Builder|Vendor whereShortname($value)
  * @method static Builder|Vendor whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Vendor extends Model
 {

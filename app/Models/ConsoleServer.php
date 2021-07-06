@@ -65,8 +65,6 @@ use IXP\Traits\Observable;
  * @method static Builder|ConsoleServer whereUpdatedAt($value)
  * @method static Builder|ConsoleServer whereVendorId($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class ConsoleServer extends Model
 {

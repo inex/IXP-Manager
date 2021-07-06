@@ -57,8 +57,6 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|ApiKey whereUpdatedAt($value)
  * @method static Builder|ApiKey whereUserId($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class ApiKey extends Model
 {

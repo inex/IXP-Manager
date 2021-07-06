@@ -99,8 +99,6 @@ use IXP\Traits\Observable;
  * @method static Builder|Router whereUpdatedAt($value)
  * @method static Builder|Router whereVlanId($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Router extends Model
 {

@@ -102,8 +102,6 @@ use IXP\Models\SwitchPort;
  * @method static Builder|SwitcherAggregator whereUpdatedAt($value)
  * @method static Builder|SwitcherAggregator whereVendorid($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class SwitcherAggregator extends Switcher
 {

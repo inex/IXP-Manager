@@ -74,8 +74,6 @@ use IXP\Traits\Observable;
  * @method static Builder|Contact wherePosition($value)
  * @method static Builder|Contact whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Contact extends Model
 {

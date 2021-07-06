@@ -70,8 +70,6 @@ use Illuminate\Support\Facades\{
  * @method static Builder|DocstoreCustomerDirectory whereParentDirId($value)
  * @method static Builder|DocstoreCustomerDirectory whereUpdatedAt($value)
  * @mixin Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 
 class DocstoreCustomerDirectory extends Model

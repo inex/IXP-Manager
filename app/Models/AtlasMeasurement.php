@@ -71,8 +71,6 @@ use Illuminate\Support\Carbon;
  * @method static Builder|AtlasMeasurement whereRunId($value)
  * @method static Builder|AtlasMeasurement whereUpdatedAt($value)
  * @mixin Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 
 class AtlasMeasurement extends Model

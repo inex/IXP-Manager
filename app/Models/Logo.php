@@ -58,8 +58,6 @@ use IXP\Traits\Observable;
  * @method static \Illuminate\Database\Eloquent\Builder|Logo whereUploadedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Logo whereWidth($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Logo extends Model
 {

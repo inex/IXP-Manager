@@ -77,8 +77,6 @@ use IXP\Traits\Observable;
  * @method static Builder|PatchPanel whereUPosition($value)
  * @method static Builder|PatchPanel whereUpdatedAt($value)
  * @mixin Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 
 class PatchPanel extends Model

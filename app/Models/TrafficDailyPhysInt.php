@@ -113,8 +113,6 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|TrafficDailyPhysInt whereYearTotIn($value)
  * @method static Builder|TrafficDailyPhysInt whereYearTotOut($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class TrafficDailyPhysInt extends Model
 {

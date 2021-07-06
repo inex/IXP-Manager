@@ -53,8 +53,6 @@ use IXP\Traits\Observable;
  * @method static Builder|Layer2Address whereUpdatedAt($value)
  * @method static Builder|Layer2Address whereVlanInterfaceId($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Layer2Address extends Model
 {

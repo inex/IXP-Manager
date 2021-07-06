@@ -60,8 +60,6 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereUploadedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereUploadedBy($value)
  * @mixin Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 
 class PatchPanelPortHistoryFile extends Model

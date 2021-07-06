@@ -52,8 +52,6 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereProtocol($value)
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class IrrdbPrefix extends Model
 {

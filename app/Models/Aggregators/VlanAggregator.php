@@ -78,8 +78,6 @@ use IXP\Models\{
  * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator wherePrivate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class VlanAggregator extends Vlan
 {

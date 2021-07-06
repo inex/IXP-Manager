@@ -59,8 +59,6 @@ use IXP\Traits\Observable;
  * @method static Builder|NetworkInfo whereUpdatedAt($value)
  * @method static Builder|NetworkInfo whereVlanid($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class NetworkInfo extends Model
 {

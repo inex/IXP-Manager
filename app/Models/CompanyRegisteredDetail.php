@@ -62,8 +62,6 @@ use IXP\Traits\Observable;
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereTownCity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class CompanyRegisteredDetail extends Model
 {

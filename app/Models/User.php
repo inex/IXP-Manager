@@ -105,8 +105,6 @@ use IXP\Traits\Observable;
  * @method static Builder|User whereUpdatedAt($value)
  * @method static Builder|User whereUsername($value)
  * @mixin Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {

@@ -73,8 +73,6 @@ use IXP\Traits\Observable;
  * @method static Builder|VirtualInterface whereTrunk($value)
  * @method static Builder|VirtualInterface whereUpdatedAt($value)
  * @mixin Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class VirtualInterface extends Model
 {

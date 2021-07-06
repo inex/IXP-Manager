@@ -97,8 +97,6 @@ use IXP\Models\User;
  * @method static Builder|RouterAggregator whereUpdatedAt($value)
  * @method static Builder|RouterAggregator whereVlanId($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class RouterAggregator extends Router
 {

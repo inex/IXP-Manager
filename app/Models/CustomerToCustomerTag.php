@@ -44,8 +44,6 @@ use IXP\Traits\Observable;
  * @method static \Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag whereCustomerTagId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class CustomerToCustomerTag extends Model
 {
