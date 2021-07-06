@@ -23,19 +23,23 @@ namespace IXP\Http\Controllers\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Redirect;
+use Auth;
+
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 
 use IXP\Http\Controllers\Controller;
+
+use IXP\Models\Customer;
+
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
+
 use Illuminate\Http\{
     RedirectResponse
 };
-
-use Entities\{
-    CustomerNote as CustomerNoteEntity
-};
-
-use Illuminate\View\View;
-
 
 /**
  * Customer Notes Controller
@@ -47,47 +51,55 @@ use Illuminate\View\View;
  */
 class CustomerNotesController extends Controller
 {
-
     /**
      * @return RedirectResponse
      * @throws
      */
     public function readAll() : RedirectResponse
     {
-        $lastReads = Auth::getUser()->getAssocPreference( 'customer-notes' )[0];
-        foreach( $lastReads as $id => $data ) {
-            if( is_numeric( $id ) )
-                Auth::getUser()->deletePreference( "customer-notes.$id.last_read" );
+        $prefs = Auth::getUser()->prefs;
+        // Delete all last_read notes prefs
+        if( isset( $prefs[ 'notes' ][ 'last_read' ] ) ) {
+            unset( $prefs[ 'notes' ][ 'last_read' ] );
         }
 
-        Auth::getUser()->setPreference( 'customer-notes.read_upto', time() );
-        D2EM::flush();
+        // Set read_upto at now()
+        $prefs[ 'notes' ][ 'read_upto' ] = now()->format( 'Y-m-d H:i:s' );
 
-        return Redirect::to( route( "customerNotes@unreadNotes" ) );
+        Auth::getUser()->prefs = $prefs;
+        Auth::getUser()->save();
+
+        AlertContainer::push( 'All notes have been mark as read.', Alert::SUCCESS );
+
+        return redirect( route( "customerNotes@unreadNotes" ) );
     }
 
     /**
      * Get the list of unread not for the current user
      *
-     * @return View
+     * @return Application|Factory|\Illuminate\Contracts\View\View
      */
-    public function unreadNotes() : View
+    public function unreadNotes()
     {
-        $lastRead = Auth::getUser()->getAssocPreference( 'customer-notes' )[0];
+        $lastRead       = Auth::getUser()->prefs[ 'notes' ][ 'last_read' ] ?? [];
+        $readUpto       = Auth::getUser()->prefs[ 'notes' ][ 'read_upto' ] ?? null;
+        $latestNotes    = [];
 
-        $latestNotes = [];
+        $custs = Customer::selectRaw(
+            'cust.id AS cid, cust.name AS cname, cust.shortname AS cshortname, MAX( cn.updated_at) as latest'
+        )->join( 'cust_notes AS cn', 'cn.customer_id', 'cust.id' )
+        ->groupByRaw( 'cid, cname, cshortname' )
+        ->orderByDesc( 'latest' )->distinct()->get()->toArray();
 
-        foreach( D2EM::getRepository( CustomerNoteEntity::class )->getLatestUpdate() as $ln ) {
-
-            if( ( !isset( $lastRead['read_upto'] ) || $lastRead['read_upto'] < strtotime( $ln['latest']  ) )
-                && ( !isset( $lastRead[ $ln['cid'] ] ) || $lastRead[ $ln['cid'] ]['last_read'] < strtotime( $ln['latest'] ) ) ) {
-                $latestNotes[] = $ln;
+        foreach( $custs as $c ) {
+            if( ( !$readUpto || $readUpto < $c['latest'] )
+                && ( !isset( $lastRead[ $c['cid'] ] ) || $lastRead[ $c[ 'cid' ] ] < $c['latest'] ) ) {
+                $latestNotes[] = $c;
             }
         }
 
         return view( 'customer/unread-notes' )->with([
-            'notes'                     => $latestNotes,
-            'c'                         => Auth::getUser()->getCustomer()
+            'notes' => $latestNotes,
         ]);
     }
 }

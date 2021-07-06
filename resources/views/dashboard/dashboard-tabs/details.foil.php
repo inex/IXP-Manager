@@ -1,8 +1,10 @@
+<?php
+    $isCustUser = Auth::getUser()->isCustUser();
+    $c = $t->c; /** @var $c \IXP\Models\Customer */
+?>
+
 <div class="row">
-
     <div class="col-lg-6 mb-4">
-
-
         <h3>
             NOC Details
         </h3>
@@ -42,7 +44,7 @@
 
         <?= Former::select( 'nochours' )
             ->label( 'Hours' )
-            ->fromQuery( \Entities\Customer::$NOC_HOURS )
+            ->fromQuery( \IXP\Models\Customer::$NOC_HOURS )
             ->placeholder( 'Choose NOC Hours' )
             ->addClass( 'chzn-select' )
             ->blockHelp( 'The hours during which the NOC is available.' );
@@ -54,7 +56,7 @@
             ->blockHelp( 'An optional NOC information email page / status page.' );
         ?>
 
-        <?php if( !Auth::getUser()->isCustUser() ): ?>
+        <?php if( !$isCustUser ): ?>
             <?= Former::actions(
                 Former::primary_submit( 'Update NOC Details' )->class( "mb-sm-0 mb-2" ),
                 Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-sm-0 mb-2" )
@@ -63,12 +65,9 @@
         <?php endif; ?>
 
         <?= Former::close() ?>
-
-
     </div>
     <div class="col-lg-6">
-        <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode() || !$t->c->isResoldCustomer() ): ?>
-
+        <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode() || !$c->resellerObject()->exists() ): ?>
             <h3>
                 Billing Details
             </h3>
@@ -147,7 +146,7 @@
                 ->blockHelp( '' );
             ?>
 
-            <?php if( !Auth::getUser()->isCustUser() ): ?>
+            <?php if( !$isCustUser ): ?>
                 <?= Former::actions(
                     Former::primary_submit( 'Update Billing Details' ),
                     Former::success_button( 'Help' )->class( "help-btn mb-sm-0 mb-2" )
@@ -155,9 +154,7 @@
                 ?>
             <?php endif; ?>
 
-
             <?= Former::close() ?>
-
         <?php endif; ?>
     </div>
 
@@ -165,14 +162,13 @@
         <h3>
             AS-SETS
         </h3>
-        <hr>
         <table class="table table-striped">
             <tr>
                 <td>
                     Peering Policy
                 </td>
                 <td>
-                    <?= $t->ee( $t->c->getPeeringPolicy() ) ?>
+                    <?= $t->ee( $c->peeringpolicy ) ?>
                 </td>
             </tr>
             <tr>
@@ -180,11 +176,11 @@
                     IRRDB source
                 </td>
                 <td>
-                    <?php if( $t->c->getIRRDB() ): ?>
-                        <?= $t->ee( $t->c->getIRRDB()->getSource() )?>
+                    <?php if( $c->irrdb ): ?>
+                        <?= $t->ee( $c->irrdbConfig->source )?>
 
-                        <?php if( $t->c->isRouteServerClient() && $t->c->isIrrdbFiltered() ): ?>
-                            (<a href="<?= route( "irrdb@list", [ "customer" => $t->c->getId(), "type" => 'prefix', "protocol" => $t->c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">entries</a>)
+                        <?php if( $c->routeServerClient() && $c->irrdbFiltered() ): ?>
+                            (<a href="<?= route( "irrdb@list", [ "cust" => $c->id, "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">entries</a>)
                         <?php endif; ?>
 
                     <?php endif; ?>
@@ -195,7 +191,7 @@
                     ASN
                 </td>
                 <td>
-                    <?= $t->asNumber( $t->c->getAutsys() ) ?>
+                    <?= $t->asNumber( $c->autsys ) ?>
                 </td>
             </tr>
             <tr>
@@ -203,7 +199,7 @@
                     IPv4 AS-SET
                 </td>
                 <td>
-                    <?= $t->ee( $t->c->getPeeringmacro() ) ?>
+                    <?= $t->ee( $c->peeringmacro ) ?>
                 </td>
             </tr>
             <tr>
@@ -211,7 +207,7 @@
                     IPv6 AS-SET
                 </td>
                 <td>
-                    <?= $t->ee( $t->c->getPeeringmacrov6() ) ?>
+                    <?= $t->ee( $c->peeringmacrov6 ) ?>
                 </td>
             </tr>
         </table>

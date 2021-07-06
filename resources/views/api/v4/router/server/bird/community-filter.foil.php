@@ -39,7 +39,7 @@ function ixp_community_filter(int peerasn)
         if !(source = RTS_BGP) then
                 return false;
 
-<?php if( $t->router->bgpLargeCommunities() ): ?>
+<?php if( $t->router->bgp_lc ): ?>
         # support for BGP Large Communities
         if (routeserverasn, 0, peerasn) ~ bgp_large_community then
                 return false;

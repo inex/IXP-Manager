@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,144 +23,165 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Redirect, Validator;
+use Former;
 
-use Entities\{
-    Vendor   as VendorEntity
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\{
+    Request,
+    RedirectResponse
 };
 
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
+use IXP\Models\Vendor;
 
+use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
 /**
- * CustKit Controller
+ * Vendor Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class VendorController extends Doctrine2Frontend
+class VendorController extends EloquentController
 {
-
     /**
-     * The object being added / edited
-     * @var VendorEntity
+     * The object being created / edited
+     *
+     * @var Vendor
      */
     protected $object = null;
 
     /**
      * This function sets up the frontend controller
      */
-    public function feInit() {
-
+    public function feInit(): void
+    {
         $this->feParams         = (object)[
-            'entity'            => VendorEntity::class,
-
+            'model'             => Vendor::class,
             'pagetitle'         => 'Vendors',
-
             'titleSingular'     => 'Vendor',
             'nameSingular'      => 'a vendor',
-
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
-
-            'viewFolderName'    => 'vendor-d2f',
-
+            'viewFolderName'    => 'vendor-e2f',
             'listColumns'    => [
-                'id'             => [ 'title' => 'UID', 'display' => false ],
                 'name'           => 'Name',
                 'shortname'      => 'Short Name',
-//                'nagios_name'    => 'Nagios Name',
                 'bundle_name'    => 'Bundle Name'
             ]
         ];
 
         // display the same information in the view as the list
-        $this->feParams->viewColumns = $this->feParams->listColumns;
+        $this->feParams->viewColumns = array_merge(
+            $this->feParams->listColumns,
+            [
+                'created_at'       => [
+                    'title'         => 'Created',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ],
+                'updated_at'       => [
+                    'title'         => 'Updated',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ]
+            ]
+        );
 
     }
 
     /**
      * Provide array of rows for the list and view
      *
-     * @param int $id The `id` of the row to load for `view`. `null` if `list`
+     * @param int|null $id The `id` of the row to load for `view`. `null` if `list`
      *
      * @return array
      */
-    protected function listGetData( $id = null )
+    protected function listGetData( ?int $id = null ): array
     {
-        return D2EM::getRepository( VendorEntity::class )->getAllForFeList( $this->feParams, $id );
+        $feParams = $this->feParams;
+        return Vendor::when( $id , function( Builder $q, $id ) {
+            return $q->where('id', $id );
+        } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+        })->get()->toArray();
     }
 
+    /**
+     * Display the form to create an object
+     *
+     * @return array
+     */
+    protected function createPrepareForm(): array
+    {
+        return [
+            'object'       => $this->object,
+        ];
+    }
 
     /**
-     * Display the form to add/edit an object
+     * Display the form to edit an object
      *
      * @param   int $id ID of the row to edit
      *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array
+    protected function editPrepareForm( int $id ): array
     {
-        if( $id ) {
-            if( !( $this->object = D2EM::getRepository( VendorEntity::class )->find( $id ) ) ) {
-                abort(404);
-            }
+        $this->object = Vendor::findOrFail( $id );
 
-            Former::populate([
-                'name'        => request()->old( 'name',        $this->object->getName() ),
-                'shortname'   => request()->old( 'shortname',   $this->object->getShortname() ),
-                'nagios_name' => request()->old( 'nagios_name', $this->object->getNagiosName() ),
-                'bundle_name' => request()->old( 'bundle_name', $this->object->getBundleName() ),
-            ]);
-        }
+        Former::populate([
+            'name'        => request()->old( 'name',        $this->object->name         ),
+            'shortname'   => request()->old( 'shortname',   $this->object->shortname    ),
+            'bundle_name' => request()->old( 'bundle_name', $this->object->bundle_name  ),
+        ]);
 
         return [
             'object'       => $this->object,
         ];
     }
 
-
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return bool|RedirectResponse
-     *
-     * @throws
      */
-    public function doStore( Request $request )
+    public function doStore( Request $r ): bool|RedirectResponse
     {
-        $validator = Validator::make( $request->all(), [
+        $this->checkForm( $r );
+        $this->object = Vendor::create( $r->all() );
+        return true;
+    }
+
+    /**
+     * Function to do the actual validation and updating of the submitted object.
+     *
+     * @param Request   $r
+     * @param int       $id
+     *
+     * @return bool|RedirectResponse
+     */
+    public function doUpdate( Request $r, int $id ): bool|RedirectResponse
+    {
+        $this->object = Vendor::findOrFail( $id );
+        $this->checkForm( $r );
+        $this->object->update( $r->all() );
+        return true;
+    }
+
+    /**
+     * Check if the form is valid
+     *
+     * @param Request $r
+     */
+    public function checkForm( Request $r ): void
+    {
+        $r->validate( [
             'name'              => 'required|string|max:255',
             'shortname'         => 'required|string|max:255',
-            'nagios_name'       => 'nullable|string|max:255',
-
-        ]);
-
-        if( $validator->fails() ) {
-            return Redirect::back()->withErrors( $validator )->withInput();
-        }
-
-        if( $request->input( 'id', false ) ) {
-            if( !( $this->object = D2EM::getRepository( VendorEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404);
-            }
-        } else {
-            $this->object = new VendorEntity;
-            D2EM::persist( $this->object );
-        }
-
-        $this->object->setName(             $request->input( 'name'             ) );
-        $this->object->setShortname(        $request->input( 'shortname'        ) );
-        $this->object->setNagiosName(       $request->input( 'nagios_name'      ) );
-        $this->object->setBundleName(       $request->input( 'bundle_name'      ) );
-
-        D2EM::flush();
-
-        return true;
+        ] );
     }
 }

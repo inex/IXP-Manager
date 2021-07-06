@@ -1,4 +1,3 @@
-
 <div class="card">
     <div class="card-header">
         <ul class="nav nav-pills card-header-pills">
@@ -23,19 +22,14 @@
         <?php $nbVi = 1 ?>
         <div class="tab-content mt-4 ">
             <div id="peering" class="tab-pane fade show active">
-
-                <?= $t->insert( 'customer/overview-tabs/ports/port-type', [ 'nbVi' => $nbVi, 'type' => \Entities\SwitchPort::TYPE_PEERING ] ); ?>
+                <?= $t->insert( 'customer/overview-tabs/ports/port-type', [ 'nbVi' => $nbVi, 'type' => \IXP\Models\SwitchPort::TYPE_PEERING, 'isSuperUser' => $t->isSuperUser ] ); ?>
             </div>
             <div id="reseller" class="tab-pane fade">
-
-                <?= $t->insert( 'customer/overview-tabs/ports/port-type' , [ 'nbVi' => $nbVi, 'type' => \Entities\SwitchPort::TYPE_RESELLER ] ); ?>
+                <?= $t->insert( 'customer/overview-tabs/ports/port-type' , [ 'nbVi' => $nbVi, 'type' => \IXP\Models\SwitchPort::TYPE_RESELLER, 'isSuperUser' => $t->isSuperUser ] ); ?>
             </div>
             <div id="fanout" class="tab-pane fade">
-
-                <?= $t->insert( 'customer/overview-tabs/ports/port-type' , [ 'nbVi' => $nbVi, 'type' => \Entities\SwitchPort::TYPE_FANOUT ] ); ?>
+                <?= $t->insert( 'customer/overview-tabs/ports/port-type' , [ 'nbVi' => $nbVi, 'type' => \IXP\Models\SwitchPort::TYPE_FANOUT, 'isSuperUser' => $t->isSuperUser ] ); ?>
             </div>
         </div>
     </div>
 </div>
-
-

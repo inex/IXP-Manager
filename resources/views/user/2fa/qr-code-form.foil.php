@@ -5,7 +5,7 @@ $this->layout( 'layouts/ixpv4' )
 
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Security / Two Factor Authentification
+    Security / Two Factor Authentication
 <?php $this->append() ?>
 
 
@@ -24,7 +24,7 @@ $this->layout( 'layouts/ixpv4' )
                 </div>
                 <div class="card-body">
                     <p>
-                        Two factor authentication (2FA) strengthens access security by requiring two methods (also referred to as factors) to verify your identity. Two factor authentication protects against phishing, social engineering and password brute force attacks and secures your logins from attackers exploiting weak or stolen credentials.
+                        Two factor authentication (2FA) strengthens access security by requiring two authentication methods to verify your identity. Two factor authentication protects against phishing, social engineering and password brute force attacks and secures your logins from attackers exploiting weak or stolen credentials.
                     </p>
                     <p class="tw-pb-8 tw-border-b-2">
                         <b>IXP Manager</b> supports a Google Authenticator compatible HMAC-Based One-time Password (HOTP) algorithm as specified in <a href="https://tools.ietf.org/html/rfc4226">RFC 4226</a>

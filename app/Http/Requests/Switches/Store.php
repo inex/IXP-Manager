@@ -37,7 +37,7 @@ class Store extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // middleware ensures superuser access only so always authorised here:
         return Auth::getUser()->isSuperUser();
@@ -51,17 +51,17 @@ class Store extends FormRequest
     public function rules()
     {
         return [
-            'name'                      => 'required|string|max:255|unique:Entities\Switcher,name'      . ( $this->input('id') ? ','. $this->input('id') : '' ),
-            'hostname'                  => [ 'required', 'string', 'max:255', 'unique:Entities\Switcher,hostname' . ( $this->input('id') ? ','. $this->input('id') : '' ), new IdnValidate() ],
-            'cabinetid'                 => 'required|integer|exists:Entities\Cabinet,id',
-            'infrastructure'            => 'required|integer|exists:Entities\Infrastructure,id',
+            'name'                      => 'required|string|max:255|unique:switch,name'      . ( $this->input('id') ? ','. $this->input('id') : '' ),
+            'hostname'                  => [ 'required', 'string', 'max:255', 'unique:switch,hostname' . ( $this->input('id') ? ','. $this->input('id') : '' ), new IdnValidate() ],
+            'cabinetid'                 => 'required|integer|exists:cabinet,id',
+            'infrastructure'            => 'required|integer|exists:infrastructure,id',
             'snmppasswd'                => 'nullable|string|max:255',
-            'vendorid'                  => 'required|integer|exists:Entities\Vendor,id',
+            'vendorid'                  => 'required|integer|exists:vendor,id',
             'ipv4addr'                  => 'nullable|ipv4',
             'ipv6addr'                  => 'nullable|ipv6',
             'model'                     => 'nullable|string|max:255',
             'asn'                       => 'nullable|integer|min:1',
-            'loopback_ip'               => 'nullable|string|max:255|unique:Entities\Switcher,loopback_ip' . ( $this->input('id') ? ','. $this->input('id') : '' ),
+            'loopback_ip'               => 'nullable|string|max:255|unique:switch,loopback_ip' . ( $this->input('id') ? ','. $this->input('id') : '' ),
             'loopback_name'             => 'nullable|string|max:255',
             'mgmt_mac_address'          => 'nullable|string|max:17|regex:/^[a-f0-9:\.\-]{12,17}$/i',
         ];

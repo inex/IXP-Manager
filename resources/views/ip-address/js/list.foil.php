@@ -1,11 +1,14 @@
 <script>
+    //////////////////////////////////////////////////////////////////////////////////////
+    // we'll need these handles to html elements in a few places:
 
-    const protocol = "<?= $t->protocol ?>";
+    const protocol  = "<?= $t->protocol ?>";
+    const table     = $( '#ip-address-list' );
 
     $(document).ready( function() {
-        $( '#ip-address-list' ).show();
+        table.show();
 
-        $( '#ip-address-list' ).dataTable( {
+        table.dataTable( {
             stateSave: true,
             stateDuration : DATATABLE_STATE_DURATION,
             responsive : true,
@@ -23,19 +26,18 @@
         window.location = "<?= url( 'ip-address/list' ) ?>/"+ protocol + '/' + vlan;
     });
 
-    $( "a[id|='delete-ip']" ).on( 'click', function( e ) {
+    /**
+     *  Function to delete an IP address
+     */
+    $( '.delete-ip' ).click( function( e ) {
         e.preventDefault();
-        let ipid = ( this.id ).substring( 10 );
-        let vlanid  = $( "#vlan" ).val();
-        let html = `<form id="form-delete" method="POST" action="<?= route("ip-address@delete" ) ?>">
-                                <div>Do you really want to delete this IP address?</div>
-
-                                <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                                <input type="hidden" name="id" value="${ipid}">
-                                <input type="hidden" name="protocol" value="${protocol}">
-                                <input type="hidden" name="vlanid" value="${vlanid}">
-                            </form>`;
-
+        let url = this.href;
+        let html = `<form id="form-delete" method="POST" action="${url}">
+                        <div>Do you really want to delete this IP address?</div>
+                        <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                        <input type="hidden" name="protocol" value="${protocol}">
+                        <input type="hidden" name="_method" value="delete" />
+                    </form>`;
         bootbox.dialog({
             message: html,
             title: "Delete IP Address",
@@ -52,7 +54,7 @@
                     label: 'Delete',
                     className: 'btn-danger',
                     callback: function () {
-                        $('#form-delete').submit();
+                        $( '#form-delete' ).submit();
                     }
                 },
             }

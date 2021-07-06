@@ -3,7 +3,7 @@
 namespace Tests\Services\Grapher\Graph\Access\Api;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,26 +23,29 @@ namespace Tests\Services\Grapher\Graph\Access\Api;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
 use Config;
 
 use Tests\Services\Grapher\Graph\Access\Access;
-
 
 /**
  * Test access restrictions for Vlan graphs
  *
  * Class VlanAccessTest
- * @package Tests\Services\Grapher\Graph
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Tests\Services\Grapher\Graph\Access\Api
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class VlanApiAccessTest extends Access
 {
-
     /**
      * Test access restrictions for public web access
+     *
      * @return void
      */
-    public function testApiPublicAccess()
+    public function testApiPublicAccess(): void
     {
         // this should be the default
         $response = $this->get('/grapher/vlan?id=1');
@@ -55,10 +58,11 @@ class VlanApiAccessTest extends Access
     }
 
     /**
-     * Test access restrictions for verious non-public access settings
+     * Test access restrictions for various non-public access settings
+     *
      * @return void
      */
-    public function testWebNonPublicAccess()
+    public function testWebNonPublicAccess(): void
     {
         Config::set( 'grapher.access.vlan', '1' );
         $response = $this->get('/grapher/vlan?id=1');
@@ -83,9 +87,10 @@ class VlanApiAccessTest extends Access
 
     /**
      * Test access restrictions requiring minimum logged in user of CustUser (privs=1) for web access
+     *
      * @return void
      */
-    public function testWebCustUserAccess()
+    public function testWebCustUserAccess(): void
     {
         Config::set( 'grapher.access.vlan', '1' );
         $response = $this->get('/grapher/vlan?id=1');
@@ -104,9 +109,10 @@ class VlanApiAccessTest extends Access
 
     /**
      * Test access restrictions requiring minimum logged in user of CustAdmin (privs=2) for web access
+     *
      * @return void
      */
-    public function testWebCustAdminAccess()
+    public function testWebCustAdminAccess(): void
     {
         Config::set( 'grapher.access.vlan', '2' );
         $response = $this->get('/grapher/vlan?id=1');
@@ -124,9 +130,10 @@ class VlanApiAccessTest extends Access
 
     /**
      * Test access restrictions requiring logged in superuser (privs=3) for web access
+     *
      * @return void
      */
-    public function testWebSuperuserAccess()
+    public function testWebSuperuserAccess(): void
     {
         Config::set( 'grapher.access.vlan', '3' );
         $response = $this->get('/grapher/vlan?id=1');
@@ -141,5 +148,4 @@ class VlanApiAccessTest extends Access
         $response = $this->actingAs( $this->getSuperUser() )->get('/grapher/vlan?id=1');
         $response->assertStatus(200);
     }
-
 }

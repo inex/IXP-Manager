@@ -3,7 +3,7 @@
 namespace IXP\Utils\Export;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,13 +22,16 @@ namespace IXP\Utils\Export;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use Entities\{Customer, Infrastructure, IXP, Router, Switcher, VirtualInterface};
+use stdClass;
 
 use IXP\Exceptions\Utils\ExportException;
 
-use IXP\Utils\ArrayUtilities;
-
+use IXP\Models\{
+    Customer,
+    Infrastructure,
+    NetworkInfo,
+    Router
+};
 /**
  * JSON Schema Exporter
  *
@@ -38,9 +41,10 @@ use IXP\Utils\ArrayUtilities;
  *     $json_schema = $jexport->get( \IXP\Utils\Export\JsonSchema::EUROIX_JSON_LATEST );
  *
  * @see        https://github.com/euro-ix/json-schemas
- * @author     Nick Hilliard <nick@foobar.org>
- * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @author     Nick Hilliard <nick@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class JsonSchema
@@ -49,14 +53,14 @@ class JsonSchema
     // ended 201705: const EUROIX_JSON_VERSION_0_3 = "0.3";
     // ended 201705: const EUROIX_JSON_VERSION_0_4 = "0.4";
     // ended 201705: const EUROIX_JSON_VERSION_0_5 = "0.5";
-    const EUROIX_JSON_VERSION_0_6 = "0.6";
-    const EUROIX_JSON_VERSION_0_7 = "0.7";
-    const EUROIX_JSON_VERSION_1_0 = "1.0";
+    public const EUROIX_JSON_VERSION_0_6 = "0.6";
+    public const EUROIX_JSON_VERSION_0_7 = "0.7";
+    public const EUROIX_JSON_VERSION_1_0 = "1.0";
     // adding a new version? update sanitiseVersion() below also!
 
-    const EUROIX_JSON_LATEST = self::EUROIX_JSON_VERSION_1_0;
+    public const EUROIX_JSON_LATEST = self::EUROIX_JSON_VERSION_1_0;
 
-    const EUROIX_JSON_VERSIONS = [
+    public const EUROIX_JSON_VERSIONS = [
         self::EUROIX_JSON_VERSION_0_6,
         self::EUROIX_JSON_VERSION_0_7,
         self::EUROIX_JSON_VERSION_1_0,
@@ -65,19 +69,19 @@ class JsonSchema
     /**
      * Get the JSON schema (for a given version or for the latest version)
      *
-     * @param string $version The version to get (or, if null / not present then the latest)
-     * @param bool $asArray Do not convert to JSON but rather return the PHP array
-     * @param bool $detailed Create the very detailed version (usually for logged in users)
-     * @param bool $tags Include customer tags
+     * @param string|null   $version    The version to get (or, if null / not present then the latest)
+     * @param bool          $asArray    Do not convert to JSON but rather return the PHP array
+     * @param bool          $detailed   Create the very detailed version (usually for logged in users)
+     * @param bool          $tags       Include customer tags
      * @return string|array
-     * @throws ExportException
+     * @throws
      */
-    public function get( $version = null, $asArray = false, $detailed = true, $tags = false )
+    public function get( string $version = null, $asArray = false, $detailed = true, $tags = false )
     {
         if( $version === null ) {
             $version = self::EUROIX_JSON_LATEST;
         } else {
-            $version = $this->sanitiseVersion($version);
+            $version = $this->sanitiseVersion( $version );
         }
 
         $output = [
@@ -87,7 +91,7 @@ class JsonSchema
 
         // normalise times to UTC for exports
         date_default_timezone_set('UTC');
-        $output['timestamp'] = date( 'Y-m-d', time() ) . 'T' . date( 'H:i:s', time() ) . 'Z';
+        $output['timestamp'] = now()->toIso8601ZuluString();
 
         $output['ixp_list']    = $this->getIXPInfo( $version );
         $output['member_list'] = $this->getMemberInfo( $version, $detailed, $tags );
@@ -101,10 +105,12 @@ class JsonSchema
 
     /**
      * Ensure a given version exists or default to latest
+     *
      * @param string $version Version string to sanitise
+     *
      * @return string Sanitised version
      */
-    public function sanitiseVersion( $version )
+    public function sanitiseVersion( string $version ): string
     {
         if( in_array( $version, self::EUROIX_JSON_VERSIONS ) ) {
             return $version;
@@ -117,31 +123,28 @@ class JsonSchema
      * Collate the IXP specific information for the JSON schema export
      *
      * @param string $version The version to collate the detail for
+     *
      * @return array
-     * @throws ExportException
+     *
+     * @throws
      */
-    private function getIXPInfo( $version )
+    private function getIXPInfo( string $version ): array
     {
         $ixpinfo = [];
 
-        /** @var IXP $ixp */
-        $ixp = d2r( 'IXP' )->getDefault();
-
-        foreach( $ixp->getInfrastructures() as $infra ) {
-
+        foreach( Infrastructure::all() as $infra ) {
             $i = [];
-            /** @var Infrastructure $infra */
-            $i['shortname'] = $infra->getName();
+            $i['shortname'] = $infra->name;
             $i['name'] = config('identity.legalname');
-            $i['country'] = $infra->getCountry() ?? config('identity.location.country');
+            $i['country'] = $infra->country ?? config('identity.location.country');
             $i['url'] = config('identity.corporate_url');
 
-            if( $infra->getPeeringdbIxId() ) {
-                $i[ 'peeringdb_id' ] = intval( $infra->getPeeringdbIxId() );
+            if( $infra->peeringdb_ix_id ) {
+                $i[ 'peeringdb_id' ] = (int)$infra->peeringdb_ix_id;
             }
 
-            if( $infra->getIxfIxId() ) {
-                $i[ 'ixf_id' ] = intval( $infra->getIxfIxId() );
+            if( $infra->ixf_ix_id ) {
+                $i[ 'ixf_id' ] = (int)$infra->ixf_ix_id;
             } else if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
 
                 // The IX-F ID is officially required for >= v0.7 of the schema.
@@ -152,8 +155,8 @@ class JsonSchema
 
                 // first pass an ixfid for **every** infrastructure that does not have one
                 // e.g. http://ixp-inex.ldev/api/v4/member-export/ixf/1.0?ixfid_1=30&ixfid_2=31&ixfid_3=30
-                if( request('ixfid_' . $infra->getId(), false ) ) {
-                    $i[ 'ixf_id' ] = intval( request( 'ixfid_' . $infra->getId() ) );
+                if( request('ixfid_' . $infra->id, false ) ) {
+                    $i[ 'ixf_id' ] = (int)request( 'ixfid_' . $infra->id );
                 }
 
                 // second, just ignore it and set it to zero:
@@ -168,7 +171,7 @@ class JsonSchema
                 }
             }
 
-            $i['ixp_id'] = $infra->getId();    // referenced in member's connections section
+            $i['ixp_id'] = $infra->id;    // referenced in member's connections section
 
             $i['support_email'] = config('identity.support_email');
             $i['support_phone'] = config('identity.support_phone');
@@ -182,9 +185,29 @@ class JsonSchema
             $i['billing_email'] = config('identity.billing_email');
             $i['billing_phone'] = config('identity.billing_phone');
 
-            $i['peering_policy_list'] = array_values(\Entities\Customer::$PEERING_POLICIES);
+            $i['peering_policy_list'] = array_values( Customer::$PEERING_POLICIES);
 
-            $i['vlan'] = d2r('NetworkInfo')->asVlanEuroIXExportArray( $infra );
+
+            $result = NetworkInfo::leftJoin( 'vlan', 'vlan.id', 'networkinfo.vlanid' )
+                ->where( 'vlan.infrastructureid', $infra->id )
+                ->get()->toArray();
+
+            $vlanentry = [];
+            foreach( $result as $ni )
+            {
+                $id = $ni['id'];
+                $vlanentry[$id]['id']                                   = $ni['id'];
+                $vlanentry[$id]['name']                                 = $ni['name'];
+                $vlanentry[$id][ 'ipv'.$ni['protocol'] ]['prefix']      = $ni[ 'network' ];
+                $vlanentry[$id][ 'ipv'.$ni['protocol'] ]['mask_length'] = $ni[ 'masklen' ];
+            }
+
+            $data = [];
+            foreach( array_keys($vlanentry) as $id ) {
+                $data[] = $vlanentry[$id];
+            }
+
+            $i['vlan'] = $data;
 
             if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
                 if( !config( 'ixp_fe.frontend.disabled.lg' ) ) {
@@ -210,36 +233,38 @@ class JsonSchema
     /**
      * Collate the IXP's switch information for the JSON schema export
      *
+     * @param string            $version
+     * @param Infrastructure    $infra
+     *
      * @return array
      */
-    private function getSwitchInfo( $version, Infrastructure $infra )
+    private function getSwitchInfo( string $version, Infrastructure $infra ): array
     {
         $data = [];
 
-        /** @var Switcher $switch */
-        foreach( $infra->getSwitchers() as $switch ) {
-            if( !$switch->getActive() ) {
+        foreach( $infra->switchers as $switch ) {
+            if( !$switch->active ) {
                 continue;
             }
 
             $switchentry = [];
-            $switchentry['id']      = $switch->getId();
-            $switchentry['name']    = $switch->getName();
-            $switchentry['colo']    = $switch->getCabinet()->getLocation()->getName();
-            $switchentry['city']    = $switch->getCabinet()->getLocation()->getCity() ?? config( 'identity.location.city'    );
-            $switchentry['country'] = $switch->getCabinet()->getLocation()->getCountry() ?? config( 'identity.location.country' );
+            $switchentry['id']      = $switch->id;
+            $switchentry['name']    = $switch->name;
+            $switchentry['colo']    = $switch->cabinet->location->name;
+            $switchentry['city']    = $switch->cabinet->location->city ?? config( 'identity.location.city'    );
+            $switchentry['country'] = $switch->cabinet->location->country ?? config( 'identity.location.country' );
 
-            if( $switch->getCabinet()->getLocation()->getPdbFacilityId() ) {
-                $switchentry['pdb_facility_id'] = intval($switch->getCabinet()->getLocation()->getPdbFacilityId());
+            if( $switch->cabinet->location->pdb_facility_id ) {
+                $switchentry['pdb_facility_id'] = (int)$switch->cabinet->location->pdb_facility_id;
             }
 
             if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
-                $switchentry['manufacturer'] = $switch->getVendor()->getName();
-                $switchentry['model']        = $switch->getModel();
+                $switchentry['manufacturer'] = $switch->vendor->name;
+                $switchentry['model']        = $switch->model;
             }
 
             if( $version >= self::EUROIX_JSON_VERSION_1_0 ) {
-                $switchentry['software'] = trim( ( $switch->getOs() ?? '' ) . ' ' . ( $switch->getOsVersion() ?? '' ) );
+                $switchentry['software'] = trim( ( $switch->os ?? '' ) . ' ' . ( $switch->osVersion ?? '' ) );
             }
 
             $data[] = $switchentry;
@@ -252,55 +277,69 @@ class JsonSchema
      * Collate the IXP's member information for the JSON schema export
      *
      * @param string $version The version to collate the detail for
+     * @param bool $detailed
+     * @param bool $tags
+     *
      * @return array
      */
-    private function getMemberInfo( string $version, bool $detailed, bool $tags )
+    private function getMemberInfo( string $version, bool $detailed, bool $tags ): array
     {
         $memberinfo = [];
 
-        if( $version == self::EUROIX_JSON_VERSION_0_7 ) {
-            $routeServerIPs = d2r( 'Router' )->getAllPeeringIPs( Router::TYPE_ROUTE_SERVER );
-            $routeCollectorIPs = d2r( 'Router' )->getAllPeeringIPs( Router::TYPE_ROUTE_COLLECTOR );
+        if( $version === self::EUROIX_JSON_VERSION_0_7 ) {
+            $routeServerIPs = [];
+            Router::where( 'type', Router::TYPE_ROUTE_SERVER )
+                ->get()->map( function($item) use(&$routeServerIPs) {
+                    $routeServerIPs[$item->vlan_id][] = $item->peering_ip;
+                });
+
+            $routeCollectorIPs = [];
+            Router::select( [ 'vlan_id', 'peering_ip' ] )
+                ->where( 'type', Router::TYPE_ROUTE_COLLECTOR )
+                ->get()->map( function($item) use(&$routeCollectorIPs) {
+                    $routeCollectorIPs[$item->vlan_id][] = $item->peering_ip;
+                });
         }
 
-        if( $version == self::EUROIX_JSON_VERSION_1_0 ) {
-            $routeServersByIps    = d2r( 'Router' )->indexAllByPeeringIPs( Router::TYPE_ROUTE_SERVER );
-            $routeCollectorsByIps = d2r( 'Router' )->indexAllByPeeringIPs( Router::TYPE_ROUTE_COLLECTOR );
+        if( $version === self::EUROIX_JSON_VERSION_1_0 ) {
+            $routeServersByIps = [];
+            Router::where( 'type', Router::TYPE_ROUTE_SERVER )
+                ->get()->map( function($item) use(&$routeServersByIps) {
+                    $routeServersByIps[ $item->vlan_id ][ $item->peering_ip ] = $item;
+                });
+
+            $routeCollectorsByIps = [];
+            Router::where( 'type', Router::TYPE_ROUTE_COLLECTOR )
+                ->get()->map( function($item) use(&$routeCollectorsByIps) {
+                    $routeCollectorsByIps[ $item->vlan_id ][ $item->peering_ip ] = $item;
+                });
         }
 
-        $customers = ArrayUtilities::reindexObjects(
-            ArrayUtilities::reorderObjects( d2r( 'Customer' )->getConnected( false, false ),
-                'getAutsys', SORT_NUMERIC
-            ),
-            'getId'
-        );
+        $customers =  Customer::getConnected( false, false, 'autsys' )->keyBy( 'id' );
 
         $cnt = 0;
-
-        /** @var Customer $c */
         foreach( $customers as $c ) {
-
+            /** @var Customer  $c */
             $connlist = [];
-            /** @var VirtualInterface $vi */
-            foreach( $c->getVirtualInterfaces() as $vi ) {
 
+            foreach( $c->virtualInterfaces as $vi ) {
                 $iflist = [];
                 $atLeastOnePiIsPeering   = false;
                 $atLeastOnePiIsConnected = false;
 
-                foreach( $vi->getPhysicalInterfaces() as $pi ) {
+                foreach( $vi->physicalInterfaces as $pi ) {
                     // FIXME: hack for LONAP as they do peering on reseller ports :-(
-                    if( !$pi->getSwitchPort()->isTypePeering() && !$pi->getSwitchPort()->isTypeReseller() ) {
+                    if( !$pi->switchPort->typePeering() && !$pi->switchPort->typeReseller() ) {
                         continue;
                     }
                     
                     $atLeastOnePiIsPeering = true;
                     
-                    if( $pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED ) {
-                        $iflist[] = array (
-                            'switch_id'	=> $pi->getSwitchPort()->getSwitcher()->getId(),
-                            'if_speed'	=> $pi->getSpeed(),
-                        );
+                    if( $pi->statusConnected() ) {
+                        $iflist[] = [
+                            'switch_id'	=> $pi->switchPort->switcher->id,
+                            'if_speed'	=> $pi->speed,
+                        ];
                         $atLeastOnePiIsConnected = true;
                     }
                 }
@@ -310,129 +349,83 @@ class JsonSchema
                 }
 
                 $vlanentries = [];
-
-                foreach( $vi->getVlanInterfaces() as $vli ) {
-                    if( $vli->getVlan()->getPrivate() ) {
+                foreach( $vi->vlanInterfaces as $vli ) {
+                    if( $vli->vlan->private ) {
                         continue;
                     }
 
                     $vlanentry = [];
+                    $vlanentry[ 'vlan_id' ] = $vli->vlan->id;
 
-                    $vlanentry['vlan_id'] = $vli->getVlan()->getId();
 
-                    if ($vli->getIpv4enabled()) {
-                        $vlanentry['ipv4']['address'] = $vli->getIPv4Address()->getAddress();
-                        if( ( $asmacro = $vi->getCustomer()->resolveAsMacro( 4, "AS", true ) ) !== null ) {
-                            $vlanentry[ 'ipv4' ][ 'as_macro' ] = $asmacro;
-                        }
-                        $vlanentry['ipv4']['routeserver'] = $vli->getRsclient();
-                        $vlanentry['ipv4']['mac_addresses'] = $vli->getLayer2AddressesAsArray();
-                        if( !is_null ($vi->getCustomer()->getMaxprefixes()) ) {
-                            $vlanentry['ipv4']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
-                        }
+                    foreach( [ 4,6 ] as $protocol ) {
+                        $enabledfn = "ipv{$protocol}enabled";
+                        $ipvaddressfn = "ipv{$protocol}address";
+                        $ipv = "ipv{$protocol}";
 
-                        if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
-                            $services = [];
-                            if( isset( $routeServerIPs[ $vli->getVlan()->getId() ] ) && in_array( $vli->getIPv4Address()->getAddress(), $routeServerIPs[ $vli->getVlan()->getId() ] ) ) {
-                                $services[] = 'ixrouteserver';
+                        if( $vli->$enabledfn ) {
+                            $vlanentry[ $ipv ][ 'address' ] = $vli->$ipvaddressfn->address;
+                            if( ( $asmacro = $vi->customer->asMacro( $protocol, "AS", true ) ) !== null ) {
+                                $vlanentry[ $ipv ][ 'as_macro' ] = $asmacro;
                             }
-                            if( isset( $routeCollectorIPs[ $vli->getVlan()->getId() ] ) && in_array( $vli->getIPv4Address()->getAddress(), $routeCollectorIPs[ $vli->getVlan()->getId() ] ) ) {
-                                $services[] = 'ixroutecollector';
-                            }
+                            $vlanentry[ $ipv ][ 'routeserver' ] = (bool)$vli->rsclient;
 
-                            if( count( $services ) ) {
-                                $vlanentry[ 'ipv4' ][ 'service_type' ] = $services;
-                            }
-                        }
+                            $macAddresses = [];
+                            $vli->layer2addresses()->get()->map( function($item) use(&$macAddresses) {
+                                $macAddresses[] = wordwrap( $item->mac, 2, ':',true);
+                            });
 
-                        if( $version >= self::EUROIX_JSON_VERSION_1_0 ) {
-                            $services = [];
+                            $vlanentry[ $ipv ][ 'mac_addresses' ] = $macAddresses;
 
-                            if( isset( $routeServersByIps[ $vli->getVlan()->getId() ][$vli->getIPv4Address()->getAddress()] ) ) {
-                                /** @var Router $r */
-                                $r = $routeServersByIps[ $vli->getVlan()->getId() ][$vli->getIPv4Address()->getAddress()];
-                                $service = new \stdClass;
-                                $service->type           = 'ixrouteserver';
-                                $service->daemon         = $r->resolveSoftware();
-                                if( $r->getSoftwareVersion()        ) { $service->daemon_version = $r->getSoftwareVersion(); }
-                                if( $r->getOperatingSystem()        ) { $service->os             = $r->getOperatingSystem(); }
-                                if( $r->getOperatingSystemVersion() ) { $service->os_version     = $r->getOperatingSystemVersion(); }
-                                $services[] = $service;
+                            if( !is_null ( $vi->customer->maxprefixes ) ) {
+                                $vlanentry[ $ipv ][ 'max_prefix' ] = $vi->customer->maxprefixes;
                             }
 
-                            if( isset( $routeCollectorsByIps[ $vli->getVlan()->getId() ][$vli->getIPv4Address()->getAddress()] ) ) {
-                                /** @var Router $r */
-                                $r = $routeCollectorsByIps[ $vli->getVlan()->getId() ][$vli->getIPv4Address()->getAddress()];
-                                $service = new \stdClass;
-                                $service->type           = 'ixroutecollector';
-                                $service->daemon         = $r->resolveSoftware();
-                                if( $r->getSoftwareVersion()        ) { $service->daemon_version = $r->getSoftwareVersion(); }
-                                if( $r->getOperatingSystem()        ) { $service->os             = $r->getOperatingSystem(); }
-                                if( $r->getOperatingSystemVersion() ) { $service->os_version     = $r->getOperatingSystemVersion(); }
-                                $services[] = $service;
+
+                            if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
+                                $services = [];
+                                if( isset( $routeServerIPs[ $vli->vlan->id ] ) && in_array( $vli->$ipvaddressfn->address, $routeServerIPs[ $vli->vlan->id ], true ) ) {
+                                    $services[] = 'ixrouteserver';
+                                }
+                                if( isset( $routeCollectorIPs[ $vli->vlan->id ] ) && in_array( $vli->$ipvaddressfn->address, $routeCollectorIPs[ $vli->vlan->id ], true ) ) {
+                                    $services[] = 'ixroutecollector';
+                                }
+
+                                if( count( $services ) ) {
+                                    $vlanentry[ $ipv ][ 'service_type' ] = $services;
+                                }
                             }
 
-                            if( count( $services ) ) {
-                                $vlanentry[ 'ipv4' ][ 'services' ] = $services;
-                            }
-                        }
+                            if( $version >= self::EUROIX_JSON_VERSION_1_0 ) {
+                                $services = [];
 
-                    }
+                                if( isset( $routeServersByIps[ $vli->vlan->id ][ $vli->$ipvaddressfn->address ] ) ) {
+                                    /** @var Router $r */
+                                    $r = $routeServersByIps[ $vli->vlan->id ][ $vli->$ipvaddressfn->address ];
+                                    $service = new stdClass;
+                                    $service->type           = 'ixrouteserver';
+                                    $service->daemon         = $r->software();
+                                    if( $r->software_version        ) { $service->daemon_version = $r->software_version; }
+                                    if( $r->operating_system       ) { $service->os             = $r->operating_system; }
+                                    if( $r->operating_system_version ) { $service->os_version     = $r->operating_system_version; }
+                                    $services[] = $service;
+                                }
 
-                    if ($vli->getIpv6enabled()) {
-                        $vlanentry['ipv6']['address'] = $vli->getIPv6Address()->getAddress();
-                        if( ( $asmacro = $vi->getCustomer()->resolveAsMacro( 6, "AS", true ) ) !== null ) {
-                            $vlanentry[ 'ipv6' ][ 'as_macro' ] = $asmacro;
-                        }
-                        $vlanentry['ipv6']['routeserver'] = $vli->getRsclient();
-                        $vlanentry['ipv6']['mac_addresses'] = $vli->getLayer2AddressesAsArray();
-                        if( !is_null ($vi->getCustomer()->getMaxprefixes()) ) {
-                            $vlanentry['ipv6']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
-                        }
+                                if( isset( $routeCollectorsByIps[ $vli->vlan->id ][ $vli->$ipvaddressfn->address ] ) ) {
+                                    $r = $routeCollectorsByIps[ $vli->vlan->id ][ $vli->$ipvaddressfn->address ];
+                                    /** @var Router $r */
+                                    $service = new stdClass;
+                                    $service->type           = 'ixroutecollector';
+                                    $service->daemon         = $r->software();
+                                    if( $r->software_version        ) { $service->daemon_version = $r->software_version; }
+                                    if( $r->operating_system        ) { $service->os             = $r->operating_system; }
+                                    if( $r->operating_system_version ) { $service->os_version     = $r->operating_system_version; }
+                                    $services[] = $service;
+                                }
 
-                        if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
-                            $services = [];
-                            if( isset( $routeServerIPs[ $vli->getVlan()->getId() ] ) && in_array( $vli->getIPv6Address()->getAddress(), $routeServerIPs[ $vli->getVlan()->getId() ] ) ) {
-                                $services[] = 'ixrouteserver';
-                            }
-                            if( isset( $routeCollectorIPs[ $vli->getVlan()->getId() ] ) && in_array( $vli->getIPv6Address()->getAddress(), $routeCollectorIPs[ $vli->getVlan()->getId() ] ) ) {
-                                $services[] = 'ixroutecollector';
-                            }
-
-                            if( count( $services ) ) {
-                                $vlanentry[ 'ipv6' ][ 'service_type' ] = $services;
-                            }
-                        }
-
-                        if( $version >= self::EUROIX_JSON_VERSION_1_0 ) {
-                            $services = [];
-
-                            if( isset( $routeServersByIps[ $vli->getVlan()->getId() ][$vli->getIPv6Address()->getAddress()] ) ) {
-                                /** @var Router $r */
-                                $r = $routeServersByIps[ $vli->getVlan()->getId() ][$vli->getIPv6Address()->getAddress()];
-                                $service = new \stdClass;
-                                $service->type           = 'ixrouteserver';
-                                $service->daemon         = $r->resolveSoftware();
-                                if( $r->getSoftwareVersion()        ) { $service->daemon_version = $r->getSoftwareVersion(); }
-                                if( $r->getOperatingSystem()        ) { $service->os             = $r->getOperatingSystem(); }
-                                if( $r->getOperatingSystemVersion() ) { $service->os_version     = $r->getOperatingSystemVersion(); }
-                                $services[] = $service;
-                            }
-
-                            if( isset( $routeCollectorsByIps[ $vli->getVlan()->getId() ][$vli->getIPv6Address()->getAddress()] ) ) {
-                                /** @var Router $r */
-                                $r = $routeCollectorsByIps[ $vli->getVlan()->getId() ][$vli->getIPv6Address()->getAddress()];
-                                $service = new \stdClass;
-                                $service->type           = 'ixroutecollector';
-                                $service->daemon         = $r->resolveSoftware();
-                                if( $r->getSoftwareVersion()        ) { $service->daemon_version = $r->getSoftwareVersion(); }
-                                if( $r->getOperatingSystem()        ) { $service->os             = $r->getOperatingSystem(); }
-                                if( $r->getOperatingSystemVersion() ) { $service->os_version     = $r->getOperatingSystemVersion(); }
-                                $services[] = $service;
-                            }
-
-                            if( count( $services ) ) {
-                                $vlanentry[ 'ipv6' ][ 'services' ] = $services;
+                                if( count( $services ) ) {
+                                    $vlanentry[ $ipv ][ 'services' ] = $services;
+                                }
                             }
                         }
                     }
@@ -446,7 +439,7 @@ class JsonSchema
 
                 $conn = [];
 
-                $conn['ixp_id']      = $vli->getVlan()->getInfrastructure()->getId();
+                $conn['ixp_id']      = $vli->vlan->infrastructure->id;
                 $conn['state']       = 'active';
                 $conn['if_list']     = $iflist;
                 $conn['vlan_list']   = $vlanentries;
@@ -455,40 +448,39 @@ class JsonSchema
             }
 
             $memberinfo[ $cnt ] = [
-                'asnum'          => $c->getAutsys(),
-                'member_since'   => $c->getDatejoin()->format( 'Y-m-d' ).'T00:00:00Z',
-                'url'            => $c->getCorpwww(),
-                'name'           => $c->getName(),
-                'peering_policy' => $c->getPeeringpolicy(),
-                'member_type'    => $this->xlateMemberType( $c->getType() ),
+                'asnum'          => $c->autsys,
+                'member_since'   => $c->datejoin->format( 'Y-m-d' ).'T00:00:00Z',
+                'url'            => $c->corpwww,
+                'name'           => $c->name,
+                'peering_policy' => $c->peeringpolicy,
+                'member_type'    => $this->xlateMemberType( $c->type ),
             ];
 
             if( $detailed ) {
-                $memberinfo[$cnt] = array_merge($memberinfo[$cnt], [
-                    'contact_email' => [ $c->getPeeringemail() ],
-                    'contact_phone' => [ $c->getNocphone() ],
+                $memberinfo[ $cnt ] = array_merge( $memberinfo[ $cnt ], [
+                    'contact_email' => [ $c->peeringemail ],
+                    'contact_phone' => [ $c->nocphone ],
                 ]);
 
-                if( filter_var($c->getNocwww(), FILTER_VALIDATE_URL) !== false ) {
-                    $memberinfo[$cnt]['peering_policy_url'] = $c->getNocwww();
+                if( filter_var($c->nocwww, FILTER_VALIDATE_URL) !== false ) {
+                    $memberinfo[ $cnt ][ 'peering_policy_url' ] = $c->nocwww;
                 }
 
-                if( $c->getNochours() && strlen($c->getNochours()) ) {
-                    $memberinfo[$cnt]['contact_hours'] = $c->getNochours();
+                if( $c->nochours && strlen( $c->nochours ) ) {
+                    $memberinfo[ $cnt ][ 'contact_hours' ] = $c->nochours;
                 }
             }
 
-
             if( $tags ) {
-                $memberinfo[$cnt]['ixp_manager']['tags'] = [];
-                foreach( $c->getTags() as $tag ) {
-                    if( !$tag->isInternalOnly() || $detailed ) {
-                        $memberinfo[$cnt]['ixp_manager']['tags'][ $tag->getTag() ] = $tag->getDisplayAs();
+                $memberinfo[ $cnt ][ 'ixp_manager' ][ 'tags' ] = [];
+                foreach( $c->tags as $tag ) {
+                    if( !$tag->internal_only || $detailed ) {
+                        $memberinfo[ $cnt ][ 'ixp_manager' ][ 'tags' ][ $tag->tag ] = $tag->display_as;
                     }
                 }
             }
 
-            $memberinfo[$cnt]['connection_list'] = $connlist;
+            $memberinfo[ $cnt ][ 'connection_list' ] = $connlist;
 
             $cnt++;
         }
@@ -500,23 +492,20 @@ class JsonSchema
      * Translate IXP Manager member types to JSON Export schema types
      *
      * @param int $ixpmType
+     *
      * @return string
      */
-    private function xlateMemberType( $ixpmType )
+    private function xlateMemberType( int $ixpmType ) : string
     {
         switch( $ixpmType ) {
             case Customer::TYPE_FULL:
                 return 'peering';
-
             case Customer::TYPE_INTERNAL:
                 return 'ixp';
-
             case Customer::TYPE_PROBONO:
                 return 'peering';
-
             default:
                 return 'other';
         }
     }
-
 }

@@ -39,7 +39,6 @@
         display: block !important;
     }
 
-
     #slide-reveal-overlay{
         position: fixed;
         left: 0px;
@@ -201,7 +200,11 @@ COL-XL
         color: #16181b;
         text-decoration: none;
         background-color: #f8f9fa;
+    }
 
+    .dropdown-item.active:hover {
+        background-color: #005BC3!important;
+        color: white!important;
     }
     /*
     ####################################################

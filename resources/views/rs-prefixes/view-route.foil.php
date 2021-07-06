@@ -1,4 +1,4 @@
-<table class="table collapse table-striped" id="list-table-<?= $t->type ?>" width="100%">
+<table class="table collapse table-striped w-100" id="list-table-<?= $t->type ?>" width="100%">
     <thead class="thead-dark">
         <th>
             Prefix
@@ -9,10 +9,10 @@
         <th>
             First Seen
         </th>
-        <?php if( $t->type == 'adv_acc' || $t->type == 'adv_nacc' ): ?>
-                <th>
-                    Origin AS
-                </th>
+        <?php if( $t->type === 'adv_acc' || $t->type === 'adv_nacc' ): ?>
+            <th>
+                Origin AS
+            </th>
         <?php endif; ?>
     </thead>
     <tbody>
@@ -25,9 +25,9 @@
                     IPv<?= $t->ee( $r[ 'protocol'] ) ?>
                 </td>
                 <td>
-                    <?= $r[ 'timestamp']->format('Y-m-d H:i:s') ?>
+                    <?= $r[ 'timestamp'] ?>
                 </td>
-                <?php if( $t->type == 'adv_acc' || $t->type == 'adv_nacc' ): ?>
+                <?php if( $t->type === 'adv_acc' || $t->type === 'adv_nacc' ): ?>
                     <td>
                         <?= $t->asNumber( $r[ 'rsorigin' ] ) ?>
                     </td>

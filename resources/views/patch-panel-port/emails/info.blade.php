@@ -3,35 +3,35 @@ Hi,
 You or someone in your organisation requested a details on the
 following cross connect to {{ env( 'IDENTITY_ORGNAME' ) }}.
 
-@if( trim( $ppp->getDescription() ) )
-**Description**: {{ $ppp->getDescription() }}
+@if( trim( $ppp->description ) )
+**Description**: {{ $ppp->description }}
 @endif
 
 ```
-Facility:        {{ $ppp->getPatchPanel()->getCabinet()->getLocation()->getName() }}
-Rack:            {{ $ppp->getPatchPanel()->getCabinet()->getCololocation() }}
-Patch panel:     {{ $ppp->getPatchPanel()->getName() }}
-Colo Reference:  {{ $ppp->getColoCircuitRef() }}
-Type:            {{ $ppp->getPatchPanel()->resolveCableType() }}
-Port:            {{ $ppp->getName() }} @if( $ppp->hasSlavePort() ) *(duplex port)* @endif
+Facility:        {{ $ppp->patchPanel->cabinet->location->name }}
+Rack:            {{ $ppp->patchPanel->cabinet->colocation }}
+Patch panel:     {{ $ppp->patchPanel->name }}
+Colo Reference:  {{ $ppp->colo_circuit_ref }}
+Type:            {{ $ppp->patchPanel->cableType() }}
+Port:            {{ $ppp->name() }} @if( $ppp->duplexSlavePorts()->count() ) *(duplex port)* @endif
 
-State:           {{ $ppp->resolveStates() }}
-@if( $ppp->getCeaseRequestedAt() )
-Cease requested: {{  $ppp->getCeaseRequestedAt()->format('Y-m-d') }}
+State:           {{ $ppp->states() }}
+@if( $ppp->cease_requested_at )
+Cease requested: {{  $ppp->cease_requested_at }}
 @endif
-@if( $ppp->getConnectedAt() )
-Connected on:    {{  $ppp->getConnectedAt()->format('Y-m-d') }}
+@if( $ppp->connected_at )
+Connected on:    {{  $ppp->connected_at }}
 @endif
 ```
 
-@if( $ppp->hasPublicFiles() )
+@if( $ppp->patchPanelPortFilesPublic()->count() )
 We have attached all the documentation which we have on file regarding this connection.
 @endif
 
-@if( strlen( trim( $ppp->getNotes() ) ) )
+@if( strlen( trim( $ppp->notes ) ) )
 We have also recorded the following notes:
 
-@foreach( explode( "\n", $ppp->getNotes() ) as $l )
+@foreach( explode( "\n", $ppp->notes ) as $l )
 > {{$l}}
 @endforeach
 

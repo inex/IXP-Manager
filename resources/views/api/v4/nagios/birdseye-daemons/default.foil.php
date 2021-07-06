@@ -16,7 +16,7 @@
 # Limited to VLAN ID: <?= $t->vlanid ?>
 <?php endif; ?>
 #
-# Generated: <?= date( 'Y-m-d H:i:s' ) . "\n" ?>
+# Generated: <?= now()->format( 'Y-m-d H:i:s' ) . "\n" ?>
 #
 #
 # The following objects are used by inheritance here and need to be defined by your own configuration:
@@ -58,27 +58,27 @@
 <?php
     $hosts = [];
     $hg_name  = 'bird-daemons'          . ( $t->vlanid ? ('-vlanid-' . $t->vlanid) : '' );
+    /** @var  $d \IXP\Models\Router */
+foreach( $t->routers as $d ):
 
-    foreach( $t->routers as $n => $d ):
-
-    if( !$d->hasApi() ) {
+    if( !$d->api ) {
         continue;
     }
 
-    $hosts[] = "bird-{$d->getHandle()}";
+    $hosts[] = "bird-{$d->handle}";
 ?>
 
 define host     {
         use                     <?= $t->host_definition . "\n" ?>
-        host_name               bird-<?= $d->getHandle() . "\n" ?>
-        alias                   <?= $d->name() . "\n" ?>
-        address                 <?= $d->mgmtIp() . "\n" ?>
-        _apiurl                 <?= $d->api() . "\n" ?>
+        host_name               bird-<?= $d->handle . "\n" ?>
+        alias                   <?= $d->name . "\n" ?>
+        address                 <?= $d->mgmt_host . "\n" ?>
+        _apiurl                 <?= $d->api . "\n" ?>
 }
 
 define service     {
     use                     <?= $t->service_definition . "\n" ?>
-    host_name               bird-<?= $d->getHandle() . "\n" ?>
+    host_name               bird-<?= $d->handle . "\n" ?>
 }
 
 <?php endforeach; ?>

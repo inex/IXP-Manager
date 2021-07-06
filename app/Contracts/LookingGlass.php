@@ -1,13 +1,9 @@
 <?php
 
-declare(strict_types=1);
 namespace IXP\Contracts;
 
-use Entities\Router as RouterEntity;
-use IXP\Models\Router;
-
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -27,6 +23,8 @@ use IXP\Models\Router;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use IXP\Models\Router;
+
  /**
   * LookingGlassContract Contract - any concrete implementation of a LookingGlassContract
   * provider must implement this interface
@@ -35,23 +33,26 @@ use IXP\Models\Router;
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
   * @category   LookingGlassContract
   * @package    IXP\Contracts
-  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
-interface LookingGlass {
-
+interface LookingGlass
+{
     /**
      * Set the router object
-     * @param Router|RouterEntity $r
+     *
+     * @param Router $r
+     *
      * @return LookingGlass For fluent interfaces
      */
-    public function setRouter( $r ): LookingGlass;
+    public function setRouter( Router $r ): LookingGlass;
 
     /**
      * Get the router object
-     * @return Router|RouterEntity
+     *
+     * @return Router
      */
-    public function router();
+    public function router(): Router;
 
     /**
      * Get BGP Summary information as JSON
@@ -84,51 +85,61 @@ interface LookingGlass {
 
     /**
      * Get routes for a named routing table (aka. vrf)
+     *
      * @param string $table Table name
+     *
      * @return string
      */
-    public function routesForTable(string $table): string;
+    public function routesForTable( string $table ): string;
 
     /**
      * Get routes learnt from named protocol (e.g. BGP session)
+     *
      * @param string $protocol Protocol name
+     *
      * @return string
      */
-    public function routesForProtocol(string $protocol): string;
+    public function routesForProtocol( string $protocol ): string;
     
     /**
      * Get routes exported to named protocol (e.g. BGP session)
+     *
      * @param string $protocol Protocol name
+     *
      * @return string
      */
-    public function routesForExport(string $protocol): string;
+    public function routesForExport( string $protocol ): string;
 
     /**
      * Get details for a specific route as received by a protocol
-     * @param string $protocol Protocol name
-     * @param string $network The route to lookup
-     * @param int $mask The mask of the route to look up
+     *
+     * @param string    $protocol   Protocol name
+     * @param string    $network    The route to lookup
+     * @param int       $mask       The mask of the route to look up
+     *
      * @return string
      */
-    public function protocolRoute(string $protocol,string $network,int $mask): string;
+    public function protocolRoute( string $protocol, string $network, int $mask ): string;
 
     /**
      * Get details for a specific route in a named table (vrf)
-     * @param string $table Table name
-     * @param string $network The route to lookup
-     * @param int $mask The mask of the route to look up
+     *
+     * @param string    $table      Table name
+     * @param string    $network    The route to lookup
+     * @param int       $mask       The mask of the route to look up
+     *
      * @return string
      */
-    public function protocolTable(string $table,string $network,int $mask): string;
-
+    public function protocolTable( string $table, string $network, int $mask ): string;
 
     /**
-     * Get wildcard large communities in protocol tabe of form ( x, y, * )
-     * @param string $protocol Protocol name
-     * @param int $x
-     * @param int $y
+     * Get wildcard large communities in protocol table of form ( x, y, * )
+     *
+     * @param string    $protocol Protocol name
+     * @param int       $x
+     * @param int       $y
+     *
      * @return string
      */
     public function routesProtocolLargeCommunityWildXYRoutes( string $protocol, int $x, int $y ): string;
-
 }

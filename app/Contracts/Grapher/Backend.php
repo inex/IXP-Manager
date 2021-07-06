@@ -3,7 +3,7 @@
 namespace IXP\Contracts\Grapher;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,8 +23,6 @@ namespace IXP\Contracts\Grapher;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Entities\IXP;
-
 use IXP\Services\Grapher\Graph;
 
  /**
@@ -33,13 +31,14 @@ use IXP\Services\Grapher\Graph;
   *
   * @see        http://laravel.com/docs/5.0/contracts
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
-  * @category   Graphing
+  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+  * @category   IXP
   * @package    IXP\Contracts
-  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
-interface Backend {
-
+interface Backend
+{
     /**
      * The name of the backend (as would be entered in the config file for example)
      *
@@ -80,19 +79,19 @@ interface Backend {
      */
     public function isMultiFileConfigurationSupported(): bool;
 
+    /**
+     * Constant for configuration type to generate: one big file
+     *
+     * @var int
+     */
+    public const GENERATED_CONFIG_TYPE_MONOLITHIC = 1;
 
     /**
      * Constant for configuration type to generate: one big file
+     *
      * @var int
      */
-    const GENERATED_CONFIG_TYPE_MONOLITHIC = 1;
-
-    /**
-     * Constant for configuration type to generate: one big file
-     * @var int
-     */
-    const GENERATED_CONFIG_TYPE_MULTIFILE = 2;
-
+    public const GENERATED_CONFIG_TYPE_MULTIFILE = 2;
 
     /**
      * Generate the configuration file(s) for this graphing backend
@@ -141,7 +140,6 @@ interface Backend {
      */
     public function data( Graph $graph ): array;
 
-
     /**
      * Get the PNG image for a given graph
      *
@@ -170,7 +168,6 @@ interface Backend {
      */
     public function rrd( Graph $graph ): string;
 
-
     /**
      * Get a complete list of functionality that this backend supports.
      *
@@ -181,5 +178,4 @@ interface Backend {
      * @return array
      */
     public static function supports(): array;
-
 }

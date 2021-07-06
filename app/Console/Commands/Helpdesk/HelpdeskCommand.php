@@ -1,7 +1,9 @@
-<?php namespace IXP\Console\Commands\Helpdesk;
+<?php
+
+namespace IXP\Console\Commands\Helpdesk;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -24,15 +26,19 @@
 use App;
 
 use IXP\Console\Commands\Command as IXPCommand;
+use IXP\Contracts\Helpdesk;
 
-abstract class HelpdeskCommand extends IXPCommand {
-
-
+abstract class HelpdeskCommand extends IXPCommand
+{
+    /**
+     * @var null
+     */
     private $helpdesk = null;
 
-    protected function getHelpdesk() {
+    protected function getHelpdesk()
+    {
         if( $this->helpdesk === null ) {
-            $this->helpdesk = App::make('IXP\Contracts\Helpdesk');
+            $this->helpdesk = App::make( Helpdesk::class );
         }
 
         if( $this->helpdesk === false ) {
@@ -42,5 +48,4 @@ abstract class HelpdeskCommand extends IXPCommand {
 
         return $this->helpdesk;
     }
-
 }

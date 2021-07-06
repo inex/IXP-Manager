@@ -2,10 +2,8 @@
 
 namespace IXP\Utils\Grapher;
 
-use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
-
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,8 +23,11 @@ use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Services\Grapher\Graph;
+use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
+
 use IXP\Exceptions\Services\Grapher\GeneralException;
+
+use IXP\Services\Grapher\Graph;
 
 /**
  * A class to handle Mrtg log files
@@ -37,9 +38,13 @@ use IXP\Exceptions\Services\Grapher\GeneralException;
  * * 20100219 Ported to IXP Manager by barryo
  * * 20160127 Ported to IXP Manager v4 by barryo
  *
- * @author Nick Hilliard <nick@inex.ie>
- * @author Barry O'Donovan <barry@opensolutions.ie>
- * @package Grapher
+ * @author     Nick Hilliard <nick@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Utils\Grapher
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Mrtg
 {
@@ -55,25 +60,24 @@ class Mrtg
      */
     protected $array = null;
 
-
     /**
      * Period times.
      *
      * these values are taken from mrtg/src/rateup.c
      */
-    const PERIOD_TIME = [
+    public const PERIOD_TIME = [
         Graph::PERIOD_DAY   => 119988.0,     // ( 33.33 * 3600 ),
         Graph::PERIOD_WEEK  => 719712.0,     // ( 8.33  * 24 * 3600 ),
         Graph::PERIOD_MONTH => 2879712.0,    // ( 33.33 * 24 * 3600 ),
         Graph::PERIOD_YEAR  => 31622400.0    // ( 366 * 24 * 3600 )
     ];
 
-
     /**
      * Mrtg / SNMP options for the different traffic types
+     *
      * @var array
      */
-    const TRAFFIC_TYPES = [
+    public const TRAFFIC_TYPES = [
         Graph::CATEGORY_BITS   => [
             'in'      => 'oidInOctets',
             'out'     => 'oidOutOctets',
@@ -109,9 +113,9 @@ class Mrtg
     /**
      * Class constructor.
      *
-     * @param $file The MRTG log file to load for analysis
+     * @param string $file The MRTG log file to load for analysis
      */
-    function __construct( string $file )
+    public function __construct( string $file )
     {
         $this->file  = $file;
         $this->array = $this->loadMrtgFile();
@@ -119,16 +123,15 @@ class Mrtg
 
     /**
      * Accessor for PERIOD_TIME
+     *
      * @param string
+     *
      * @return float
      */
-    public function getPeriodTime( $period ): float {
-        if( isset( self::PERIOD_TIME[ $period ] ) )
-            return self::PERIOD_TIME[ $period ];
-        else
-            return 0.0;
+    public function getPeriodTime( $period ): float
+    {
+        return self::PERIOD_TIME[ $period ] ?? 0.0;
     }
-
 
     /**
      * Load data from an MRTG log file and return it as an indexed array
@@ -147,9 +150,13 @@ class Mrtg
      *     ]
      *
      * The above will be ordered with the newest first as per the log file.
-     * @throws IXP\Exceptions\Utils\Grapher\FileError
+     *
+     * @return array
+     *
+     * @throws
      */
-    protected function loadMrtgFile(): array {
+    protected function loadMrtgFile(): array
+    {
         $values  = [];
 
         if( !( $fd = @fopen( $this->file, "r" ) ) ) {
@@ -166,7 +173,6 @@ class Mrtg
 
         // drop the first record as it's traffic counters from the most recent run of mrtg.
         array_shift( $values );
-
         fclose( $fd );
 
         return $values;
@@ -176,24 +182,29 @@ class Mrtg
      * From the data loaded from an MRTG log file, process it and  and return it in the same format
      * as loadMrtgFile().
      *
+     * @param Graph $graph
+     *
+     * @return array
+     *
+     * @throws GeneralException
+     *
      * @see IXP\Utils\Grapher\Mrtg::loadMrtgFile()
      *
      * Processing means:
      * - only returning the values for the requested period
      * - MRTG provides traffic as bytes, change to bits
      *
-     * @param IXP\Services\Grapher\Graph $graph
-     * @return array
      */
-    public function data( Graph $graph ): array {
+    public function data( Graph $graph ): array
+    {
         $values = [];
 
         if( !( $periodsecs = $this->getPeriodTime( $graph->period() ) ) ) {
             throw new GeneralException('Invalid period');
         }
 
-        $starttime = time() - $periodsecs;
-        $endtime = time();
+        $starttime  = time() - $periodsecs;
+        $endtime    = time();
 
         // Run through the array and pull out the values we want
         for( $i = sizeof( $this->array )-1; $i >= 0; $i-- ) {
@@ -204,7 +215,7 @@ class Mrtg
         }
 
         // convert bytes to bits
-        if( $graph->category() == Graph::CATEGORY_BITS ) {
+        if( $graph->category() === Graph::CATEGORY_BITS ) {
             foreach( $values as $i => $v ) {
                 $values[$i][1] *= 8;
                 $values[$i][2] *= 8;
@@ -212,20 +223,16 @@ class Mrtg
                 $values[$i][4] *= 8;
             }
         }
-
         return $values;
     }
-
-
 
     /**
      * Accessor method for $array - the data from the MRTG file.
      *
      * @return array The data from the MRTG file
      */
-    public function getArray()
+    public function getArray(): array
     {
         return $this->array;
     }
-
 }

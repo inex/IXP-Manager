@@ -9,8 +9,8 @@ password: <?= config('ixp_api.rir.password') ?>
     remarks:        IXP member ASNs are listed in AS-SET-IXP-CONNECTED
     mnt-by:         IXP-NOC
 <?php foreach( $t->customers as $c ): ?>
-<?php if( $c->isRouteServerClient( 6 ) ): ?>
-    members:        <?= $c->resolveAsMacro( 6, 'AS' ) ?>
+<?php if( $c->routeServerClient( 6 ) ): ?>
+    members:        <?= $c->asMacro( 6, 'AS' ) ?>
 
 <?php endif; ?>
 <?php endforeach; ?>

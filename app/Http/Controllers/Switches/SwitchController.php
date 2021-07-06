@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Switches;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,36 +23,39 @@ namespace IXP\Http\Controllers\Switches;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Former, Log, Route;
+use Auth, DateTime, Former, Route;
 
-use Entities\{
-    Cabinet             as CabinetEntity,
-    Infrastructure      as InfrastructureEntity,
-    Location            as LocationEntity,
-    PhysicalInterface   as PhysicalInterfaceEntity,
-    Switcher            as SwitcherEntity,
-    SwitchPort          as SwitchPortEntity,
-    User                as UserEntity,
-    Vendor              as VendorEntity,
-    Vlan                as VlanEntity
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\{
+    Request,
+    RedirectResponse
 };
 
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
-use IXP\Http\Controllers\Doctrine2Frontend;
+use IXP\Http\Requests\Switches\StoreBySmtp as StoreBySmtpRequest;
 
-use IXP\Http\Requests\Switches\{
-    Store       as StoreRequest,
-    StoreBySmtp as StoreBySmtpRequest
-};
+use IXP\Models\{
+    Aggregators\SwitcherAggregator,
+    Aggregators\SwitchPortAggregator,
+    Cabinet,
+    Infrastructure,
+    Location,
+    PhysicalInterface,
+    Switcher,
+    SwitchPort,
+    User,
+    Vendor,
+    Vlan};
+
+use IXP\Rules\IdnValidate;
+
+use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
-
-use Illuminate\View\View;
 
 use OSS_SNMP\{
     Exception as SNMPException,
@@ -60,60 +63,42 @@ use OSS_SNMP\{
     SNMP
 };
 
-
 /**
  * Switch Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Switches
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class SwitchController extends Doctrine2Frontend
+class SwitchController extends EloquentController
 {
-
     /**
-     * The object being added / edited
-     * @var SwitcherEntity
+     * The object being created / edited
+     *
+     * @var Switcher
      */
     protected $object = null;
 
     /**
-     * Sometimes we need to pass a custom request object for validation / authorisation.
-     *
-     * Set the name of the function here and the route for store will be pointed to it instead of doStore()
-     *
-     * @var string
-     */
-    protected static $storeFn = 'customStore';
-
-
-    /**
      * This function sets up the frontend controller
      */
-    public function feInit(){
-
+    public function feInit(): void
+    {
         $this->feParams         = (object)[
-
-            'entity'            => SwitcherEntity::class,
+            'model'             => Switcher::class,
             'pagetitle'         => 'Switches',
-
             'titleSingular'     => 'Switch',
             'nameSingular'      => 'switch',
-
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
-
             'viewFolderName'    => 'switches',
-
-            'addRoute'          => route( static::route_prefix() . '@add-by-snmp' ),
-
+            'addRoute'          => route( static::route_prefix() . '@create-by-snmp' ),
             'documentation'     => 'https://docs.ixpmanager.org/usage/switches/',
-
             'listColumns'       => [
-                'id'        => [ 'title' => 'UID', 'display' => false ],
                 'name'           => 'Name',
-
                 'cabinet'  => [
                     'title'      => 'Rack',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -121,7 +106,6 @@ class SwitchController extends Doctrine2Frontend
                     'action'     => 'view',
                     'idField'    => 'cabinetid'
                 ],
-
                 'vendor'  => [
                     'title'      => 'Vendor',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -129,21 +113,16 @@ class SwitchController extends Doctrine2Frontend
                     'action'     => 'view',
                     'idField'    => 'vendorid'
                 ],
-
                 'infrastructure' => 'Infrastructure',
-
                 'active'       => [
                     'title'    => 'Active',
                     'type'     => self::$FE_COL_TYPES[ 'YES_NO' ]
                 ],
-
                 'poll'       => [
                     'title'    => 'Poll',
                     'type'     => self::$FE_COL_TYPES[ 'YES_NO' ]
                 ],
-
                 'model'          => 'Model',
-
                 'ipv4addr'       => 'IPv4 Address',
             ]
         ];
@@ -153,54 +132,51 @@ class SwitchController extends Doctrine2Frontend
             $this->feParams->listColumns,
             [
                 'ipv6addr'       => 'IPv6 Address',
-
                 'hostname'       => 'Hostname',
-
                 'snmppasswd'     => 'SNMP Community',
                 'os'             => 'OS',
                 'osVersion'      => 'OS Version',
-
                 'osDate'         => [
                     'title'      => 'OS Date',
                     'type'       => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ],
-
                 'lastPolled'         => [
                     'title'      => 'Last Polled',
                     'type'       => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ],
-
                 'serialNumber'   => 'Serial Number',
-
                 'mauSupported'   => [
                     'title'    => 'MAU Supported',
                     'type'     => self::$FE_COL_TYPES[ 'YES_NO_NULL' ]
                 ],
-
                 'asn'            => 'ASN',
                 'loopback_ip'    => 'Loopback IP',
                 'loopback_name'  => 'Loopback Name',
-
                 'mgmt_mac_address' => 'Mgmt MAC Address',
-
                 'notes'       => [
                     'title'         => 'Notes',
                     'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
+                ],
+                'created_at'       => [
+                    'title'         => 'Created',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ],
+                'updated_at'       => [
+                    'title'         => 'Updated',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ]
+
             ]
         );
 
         // phpunit / artisan trips up here without the cli test:
-        if( php_sapi_name() !== 'cli' ) {
-
+        if( PHP_SAPI !== 'cli' ) {
             // custom access controls:
-            switch( Auth::check() ? Auth::user()->getPrivs() : UserEntity::AUTH_PUBLIC ) {
-                case UserEntity::AUTH_SUPERUSER:
+            switch( Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC ) {
+                case User::AUTH_SUPERUSER:
                     break;
-
-                case UserEntity::AUTH_CUSTUSER || UserEntity::AUTH_CUSTADMIN:
+                case User::AUTH_CUSTUSER || User::AUTH_CUSTADMIN:
                     switch( Route::current()->getName() ) {
-
                         case 'switch@configuration':
                             break;
 
@@ -208,40 +184,40 @@ class SwitchController extends Doctrine2Frontend
                             $this->unauthorized();
                     }
                     break;
-
                 default:
                     $this->unauthorized();
             }
-
         }
-
     }
-
 
     /**
      * Additional routes
      *
-     *
      * @param string $route_prefix
+     *
      * @return void
      */
-    protected static function additionalRoutes( string $route_prefix )
+    protected static function additionalRoutes( string $route_prefix ): void
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
-
-        Route::group( [  'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-
-            Route::get(  'add-by-snmp',         'Switches\SwitchController@addBySnmp'           )->name( "switch@add-by-snmp" );
-            Route::get(  'port-report/{id}',    'Switches\SwitchController@portReport'          )->name( "switch@port-report" );
-            Route::get(  'configuration',       'Switches\SwitchController@configuration'       )->name( "switch@configuration" );
-
-            Route::post(  'store-by-snmp',      'Switches\SwitchController@storeBySmtp'         )->name( "switch@store-by-snmp" );
+        Route::group( [  'prefix' => $route_prefix ], function() {
+            Route::get(  'create-by-snmp',      'Switches\SwitchController@addBySnmp'       )->name( 'switch@create-by-snmp'   );
+            Route::get(  'port-report/{switch}','Switches\SwitchController@portReport'      )->name( "switch@port-report"   );
+            Route::get(  'configuration',       'Switches\SwitchController@configuration'   )->name( "switch@configuration" );
+            Route::post( 'store-by-snmp',       'Switches\SwitchController@storeBySmtp'     )->name( "switch@store-by-snmp" );
         });
     }
 
+    /**
+     * List the contents of a database table.
+     *
+     * @param Request $r
+     *
+     * @return View
+     */
     public function list( Request $r  ) : View
     {
-        if( ( $showActiveOnly = $r->input( 'active-only' ) ) !== null ) {
+        if( ( $showActiveOnly = $r->activeOnly ) !== null  ) {
             $r->session()->put( "switch-list-active-only", $showActiveOnly );
         } else if( $r->session()->exists( "switch-list-active-only" ) ) {
             $showActiveOnly = $r->session()->get( "switch-list-active-only" );
@@ -249,18 +225,17 @@ class SwitchController extends Doctrine2Frontend
             $showActiveOnly = false;
         }
 
-        if( ( $vtype = $r->input( 'vtype' ) ) !== null ) {
+        if( $vtype = $r->vtype ) {
             $r->session()->put( "switch-list-vtype", $vtype );
         } elseif( $r->session()->exists( "switch-list-vtype" ) ) {
             $vtype = $r->session()->get( "switch-list-vtype" );
         } else {
             $r->session()->remove( "switch-list-vtype" );
-            $vtype = "Default";
+            $vtype = Switcher::VIEW_MODE_DEFAULT;
         }
 
-        if( $r->input( 'infra' )  !== null ) {
-            /** @var SwitcherEntity $s */
-            if(  $infra = D2EM::getRepository( InfrastructureEntity::class )->find( $r->input( 'infra' ) ) ) {
+        if( $r->infra ) {
+            if(  $infra = Infrastructure::find( $r->infra ) ) {
                 $r->session()->put( "switch-list-infra", $infra );
             } else {
                 $r->session()->remove( "switch-list-infra" );
@@ -272,46 +247,36 @@ class SwitchController extends Doctrine2Frontend
             $infra = false;
         }
 
-
-        if( $vtype == "OS View" ) {
+        if( $vtype === Switcher::VIEW_MODE_OS ) {
             $this->setUpOsView();
-        } else if( $vtype == "L3 View" ){
+        } else if( $vtype === Switcher::VIEW_MODE_L3 ){
             $this->setUpL3View();
         }
 
         $this->data[ 'params' ][ 'activeOnly' ]         = $showActiveOnly;
         $this->data[ 'params' ][ 'vtype' ]              = $vtype;
         $this->data[ 'params' ][ 'infra' ]              = $infra;
-
         $this->data[ 'rows' ] = $this->listGetData();
 
-        $this->data[ 'view' ][ 'listEmptyMessage']      = $this->resolveTemplate( 'list-empty-message',     false );
-        $this->data[ 'view' ][ 'listHeadOverride']      = $this->resolveTemplate( 'list-head-override',     false );
-        $this->data[ 'view' ][ 'listRowOverride']       = $this->resolveTemplate( 'list-row-override',      false );
-        $this->data[ 'view' ][ 'listPreamble']          = $this->resolveTemplate( 'list-preamble',          false );
-        $this->data[ 'view' ][ 'listPostamble']         = $this->resolveTemplate( 'list-postamble',         false );
-        $this->data[ 'view' ][ 'listRowMenu']           = $this->resolveTemplate( 'list-row-menu',          false );
-        $this->data[ 'view' ][ 'pageHeaderPreamble']    = $this->resolveTemplate( 'page-header-preamble',   false );
-        $this->data[ 'view' ][ 'listScript' ]           = $this->resolveTemplate( 'js/list' );
-
+        $this->listIncludeTemplates();
         $this->preList();
 
         return $this->display( 'list' );
     }
 
-
     /**
      * Set Up the the table to display the OS VIEW
      *
-     * @return bool
+     * @return void
      */
-    private function setUpOsView( )
+    private function setUpOsView(): void
     {
-
         $this->feParams->listColumns = [
-            'id'        => [ 'title' => 'UID', 'display' => false ],
+            'id'        =>
+                [ 'title' => 'UID',
+                  'display' => false
+                ],
             'name'           => 'Name',
-
             'vendor'  => [
                 'title'      => 'Vendor',
                 'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -319,116 +284,182 @@ class SwitchController extends Doctrine2Frontend
                 'action'     => 'view',
                 'idField'    => 'vendorid'
             ],
-
             'model'          => 'Model',
             'os'             => 'OS',
             'osVersion'      => 'OS Version',
             'serialNumber'   => 'Serial Number',
-
             'osDate'         => [
                 'title'      => 'OS Date',
                 'type'       => self::$FE_COL_TYPES[ 'DATETIME' ]
             ],
-
             'lastPolled'         => [
                 'title'      => 'Last Polled',
                 'type'       => self::$FE_COL_TYPES[ 'DATETIME' ]
             ],
-
             'active'       => [
                 'title'    => 'Active',
                 'type'     => self::$FE_COL_TYPES[ 'YES_NO' ]
             ]
         ];
-
-        return true;
     }
-
 
     /**
      * Set Up the the table to display the OS VIEW
      *
-     * @return bool
+     * @return void
      */
-    private function setUpL3View( )
+    private function setUpL3View(): void
     {
-
         $this->feParams->listColumns = [
-            'id'                => [ 'title' => 'UID', 'display' => false ],
+            'id'                => [
+                'title' => 'UID',
+                'display' => false
+            ],
             'name'              => 'Name',
-
             'hostname'          => 'Hostname',
             'asn'               => 'ASN',
             'loopback_ip'       => 'Loopback',
             'mgmt_mac_address'  => 'Mgmt Mac',
-
             'active'            => [
                 'title'    => 'Active',
                 'type'     => self::$FE_COL_TYPES[ 'YES_NO' ]
             ]
         ];
-
-        return true;
     }
 
     /**
      * Provide array of rows for the list action and view action
      *
-     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @param int|null $id The `id` of the row to load for `view` action`. `null` if `listAction`
      *
      * @return array
      */
-    protected function listGetData( $id = null )
+    protected function listGetData( ?int $id = null ): array
     {
-        return D2EM::getRepository( SwitcherEntity::class )->getAllForFeList( $this->feParams, $id, $this->data );
+        $feParams   = $this->feParams;
+        $data       = $this->data;
+        return Switcher::select( [
+            'switch.*',
+            'i.name AS infrastructure',
+            'v.id AS vendorid', 'v.name AS vendor',
+            'c.id AS cabinetid', 'c.name AS cabinet'
+        ] )->leftJoin( 'infrastructure AS i', 'i.id', 'switch.infrastructure')
+        ->leftJoin( 'cabinet AS c', 'c.id', 'switch.cabinetid')
+        ->leftJoin( 'vendor AS v', 'v.id', 'switch.vendorid')
+        ->when( $id , function( Builder $q, $id ) {
+            return $q->where('switch.id', $id );
+        } )->when( isset( $data[ 'params' ][ 'activeOnly' ] ) && $data[ 'params' ][ 'activeOnly' ] , function( Builder $q ) {
+            return $q->where('switch.active', true );
+        } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+        })->get()->toArray();
     }
 
-
+    /**
+     * Display the form to create an object
+     *
+     * @return array
+     */
+    protected function createPrepareForm(): array
+    {
+        return [
+            'object'            => $this->object,
+            'addBySnmp'         => request()->old( 'add_by_snnp', false ),
+            'preAddForm'        => false,
+            'cabinets'          => Location::with( 'cabinets' )
+                ->has( 'cabinets' )->get()->toArray(),// getting the cabinets via the location to build the grouped options dropdown
+            'infra'             => Infrastructure::orderBy( 'name' )->get(),
+            'vendors'           => Vendor::orderBy( 'name' )->get(),
+        ];
+    }
 
     /**
-     * Display the form to add/edit an object
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request $r
+     *
+     * @return bool|RedirectResponse
+     */
+    public function doStore( Request $r ): bool|RedirectResponse
+    {
+        $this->checkForm( $r );
+
+        if( $r->asn && Switcher::where( 'asn', $r->asn )->exists() ) {
+            AlertContainer::push( "Note: this ASN is already is use by at least one other switch. If you are using eBGP, this may cause prefixes to be black-holed.", Alert::WARNING );
+        }
+
+        $r->merge( [ 'mgmt_mac_address' => preg_replace( "/[^a-f0-9]/i", '', strtolower( $r->mgmt_mac_address ) ) ] );
+
+        $this->object = Switcher::create( $r->all() );
+        $this->extraAttributes( $r );
+        return true;
+    }
+
+    /**
+     * Display the form to edit an object
      *
      * @param   int $id ID of the row to edit
      *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array
+    protected function editPrepareForm( int $id ): array
     {
-        if( $id !== null ) {
+        $this->object = Switcher::findOrFail( $id );
 
-            if( !( $this->object = D2EM::getRepository( SwitcherEntity::class )->find( $id) ) ) {
-                abort(404);
-            }
-
-            Former::populate([
-                'name'              => request()->old( 'name',                  $this->object->getName() ),
-                'hostname'          => request()->old( 'hostname',              $this->object->getHostname() ),
-                'cabinetid'         => request()->old( 'cabinetid',     $this->object->getCabinet()         ? $this->object->getCabinet()->getId()          : null ),
-                'infrastructure'    => request()->old( 'infrastructure',$this->object->getInfrastructure()  ? $this->object->getInfrastructure()->getId()   : null) ,
-                'ipv4addr'          => request()->old( 'ipv4addr',              $this->object->getIpv4addr() ),
-                'ipv6addr'          => request()->old( 'ipv6addr',              $this->object->getIpv6addr() ),
-                'snmppasswd'        => request()->old( 'snmppasswd',            $this->object->getSnmppasswd() ),
-                'vendorid'          => request()->old( 'vendorid',      $this->object->getVendor() ? $this->object->getVendor()->getId() : null ),
-                'model'             => request()->old( 'model',                 $this->object->getModel() ),
-                'active'            => request()->old( 'active',                ( $this->object->getActive() ? 1 : 0 ) ),
-                'poll'              => request()->old( 'poll',                  ( $this->object->getPoll() ? 1 : 0 ) ),
-                'asn'               => request()->old( 'asn',                   $this->object->getAsn() ),
-                'loopback_ip'       => request()->old( 'loopback_ip',           $this->object->getLoopbackIP() ),
-                'loopback_name'     => request()->old( 'loopback_name',         $this->object->getLoopbackName() ),
-                'mgmt_mac_address'  => request()->old( 'mgmt_mac_address',      $this->object->getMgmtMacAddress()) ,
-                'notes'             => request()->old( 'notes',                 $this->object->getNotes() ) ,
-            ]);
-        }
-
+        Former::populate([
+            'name'              => request()->old( 'name',                  $this->object->name ),
+            'hostname'          => request()->old( 'hostname',              $this->object->hostname ),
+            'infrastructure'    => request()->old( 'infrastructure',        $this->object->infrastructure ),
+            'ipv4addr'          => request()->old( 'ipv4addr',              $this->object->ipv4addr ),
+            'ipv6addr'          => request()->old( 'ipv6addr',              $this->object->ipv6addr ),
+            'snmppasswd'        => request()->old( 'snmppasswd',            $this->object->snmppasswd ),
+            'vendorid'          => request()->old( 'vendorid',              $this->object->vendorid ),
+            'model'             => request()->old( 'model',                 $this->object->model ),
+            'active'            => request()->old( 'active',                ( $this->object->active ? 1 : 0 ) ),
+            'poll'              => request()->old( 'poll',                  ( $this->object->poll ? 1 : 0 ) ),
+            'asn'               => request()->old( 'asn',                   $this->object->asn ),
+            'loopback_ip'       => request()->old( 'loopback_ip',           $this->object->loopback_ip ),
+            'loopback_name'     => request()->old( 'loopback_name',         $this->object->loopback_name ),
+            'mgmt_mac_address'  => request()->old( 'mgmt_mac_address',      $this->object->mgmt_mac_address ) ,
+            'notes'             => request()->old( 'notes',                 $this->object->notes ) ,
+        ]);
 
         return [
             'object'            => $this->object,
             'addBySnmp'         => request()->old( 'add_by_snnp', false ),
             'preAddForm'        => false,
-            'cabinets'          => D2EM::getRepository( CabinetEntity::class            )->getAsArray(),
-            'infra'             => D2EM::getRepository( InfrastructureEntity::class     )->getAllAsArray(),
-            'vendors'           => D2EM::getRepository( VendorEntity::class             )->getAsArray(),
+            'cabinets'          => Location::with( 'cabinets' )
+                ->has( 'cabinets' )->get()->toArray(),// getting the cabinets via the location to build the grouped options dropdown
+            'infra'             => Infrastructure::orderBy( 'name' )->get(),
+            'vendors'           => Vendor::orderBy( 'name' )->get()
         ];
+    }
+
+    /**
+     * Function to do the actual validation and editing of the submitted object.
+     *
+     * @param Request   $r
+     * @param int       $id
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doUpdate( Request $r, int $id ): bool|RedirectResponse
+    {
+        $this->object = Switcher::findOrFail( $id );
+
+        $this->checkForm( $r );
+
+        if( $r->asn && Switcher::where('asn', $r->asn )->where( 'id', '!=', $this->object->id )->exists() ){
+            AlertContainer::push( "Note: this ASN is already is use by at least one other switch. If you are using eBGP, this may cause prefixes to be black-holed.", Alert::WARNING );
+        }
+
+        $r->merge( [ 'mgmt_mac_address' => preg_replace( "/[^a-f0-9]/i", '', strtolower( $r->mgmt_mac_address ) ) ] );
+
+        $this->object->update( $r->all() );
+        $this->extraAttributes( $r );
+        return true;
     }
 
     /**
@@ -440,7 +471,6 @@ class SwitchController extends Doctrine2Frontend
     {
         // wipe any preexisting cached switch platform entry:
         session()->remove( "snmp-platform" );
-
         $this->addEditSetup();
         return $this->display( 'add-by-smtp-form' );
     }
@@ -448,40 +478,37 @@ class SwitchController extends Doctrine2Frontend
     /**
      * Process the hostname and SNMP community, poll the switch and set up the proper add/edit form
      *
-     * @param StoreBySmtpRequest $request
-     * @return bool|RedirectResponse|View
+     * @param  StoreBySmtpRequest  $r
      *
-     * @throws
+     * @return View
      */
-    public function storeBySmtp( StoreBySmtpRequest $request )
+    public function storeBySmtp( StoreBySmtpRequest $r ): View
     {
-
         $vendorid = null;
 
         // can we get it by SNMP and discover some basic details?
         try {
-            $snmp   = new SNMP( $request->input( 'hostname' ), $request->input( 'snmppasswd' ) );
+            $snmp   = new SNMP( $r->hostname, $r->snmppasswd );
             $vendor = $snmp->getPlatform()->getVendor();
 
             // Store the platform in session to be able to get back the information when we will create the object
-            $request->session()->put( "snmp-platform", $snmp->getPlatform() );
+            $r->session()->put( "snmp-platform", $snmp->getPlatform() );
 
-            /** @var VendorEntity $vendorFound */
-            if( $v = D2EM::getRepository( VendorEntity::class )->findOneBy( [ "name" => $vendor ] ) ) {
-                $vendorid = $v->getId();
+            if( $v = Vendor::where('name', $vendor )->first() ) {
+                $vendorid = $v->id;
             }
         } catch( SNMPException $e ) {
             $snmp = null;
         }
 
-        $sp = strpos( $request->input( 'hostname' ), '.' );
+        $sp = strpos( $r->hostname, '.' );
 
         Former::populate([
-            'name'              => substr( $request->input( 'hostname' ), 0, $sp ? $sp : strlen( $request->input( 'hostname' ) ) ),
-            'snmppasswd'        => $request->input( 'snmppasswd' ),
-            'hostname'          => $request->input( 'hostname' ),
-            'ipv4addr'          => resolve_dns_a(    $request->input( 'hostname' ) ) ?? '',
-            'ipv6addr'          => resolve_dns_aaaa( $request->input( 'hostname' ) ) ?? '',
+            'name'              => substr( $r->hostname, 0, $sp ?: strlen( $r->hostname ) ),
+            'snmppasswd'        => $r->snmppasswd,
+            'hostname'          => $r->hostname,
+            'ipv4addr'          => resolve_dns_a(    $r->hostname ) ?? '',
+            'ipv6addr'          => resolve_dns_aaaa( $r->hostname ) ?? '',
             'vendorid'          => $vendorid ?? "",
             'model'             => $snmp ? $snmp->getPlatform()->getModel() : "",
         ]);
@@ -493,186 +520,76 @@ class SwitchController extends Doctrine2Frontend
         $this->data[ 'params' ]['addBySnmp']    = true;
         $this->data[ 'params' ]['preAddForm']   = false;
         $this->data[ 'params' ]['object']       = null;
-        $this->data[ 'params' ]['cabinets']     = D2EM::getRepository( CabinetEntity::class            )->getAsArray();
-        $this->data[ 'params' ]['infra']        = D2EM::getRepository( InfrastructureEntity::class     )->getAllAsArray();
-        $this->data[ 'params' ]['vendors']      = D2EM::getRepository( VendorEntity::class             )->getAsArray();
-
+        $this->data[ 'params' ]['cabinets']     = Location::with( 'cabinets' )
+            ->has( 'cabinets' )->get()->toArray();
+        $this->data[ 'params' ]['infra']        = Infrastructure::orderBy( 'name' )->get();
+        $this->data[ 'params' ]['vendors']      = Vendor::orderBy( 'name' )->get();
 
         return $this->display( 'edit' );
     }
-
-
-
-    /**
-     * Function to do the actual validation and storing of the submitted object.
-     *
-     * @param StoreRequest $request
-     * @return bool|RedirectResponse
-     *
-     * @throws
-     */
-    public function customStore( StoreRequest $request )
-    {
-
-        if( $request->input( 'id', false ) ) {
-            if( !( $this->object = D2EM::getRepository( SwitcherEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404, "Unknown switch");
-            }
-        } else {
-            $this->object = new SwitcherEntity;
-            D2EM::persist( $this->object );
-        }
-
-
-        if( $request->input( 'asn' ) ){
-            if( $s = D2EM::getRepository( SwitcherEntity::class )->findBy( ['asn' => $request->input( 'asn' ) ] ) ){
-                $id = $this->object->getId();
-                $asnExist = array_filter( $s , function ( $e ) use( $id ) {
-                    /** @var $e SwitcherEntity */
-                    return $e->getId() != $id;
-                });
-
-                if( count( $asnExist ) ){
-                    AlertContainer::push( "Note: this ASN is already is use by at least one other switch. If you are using eBGP, this may cause prefixes to be black-holed.", Alert::WARNING );
-                }
-            }
-        }
-
-        $this->object->setName(           $request->input( 'name'               ) );
-        $this->object->setHostname(       $request->input( 'hostname'           ) );
-        $this->object->setIpv4addr(       $request->input( 'ipv4addr'           ) );
-        $this->object->setIpv6addr(       $request->input( 'ipv6addr'           ) );
-        $this->object->setModel(          $request->input( 'model'              ) );
-        $this->object->setSnmppasswd(     $request->input( 'snmppasswd'         ) );
-
-        $this->object->setNotes(          $request->input( 'notes'              ) );
-        $this->object->setAsn(            $request->input( 'asn'                ) );
-        $this->object->setLoopbackIP(     $request->input( 'loopback_ip'        ) );
-        $this->object->setLoopbackName(   $request->input( 'loopback_name'      ) );
-        $this->object->setMgmtMacAddress( preg_replace( "/[^a-f0-9]/i", '', strtolower( $request->input( 'mgmt_mac_address', '' ) ) ) );
-
-        $this->object->setActive(  $request->input( 'active'             ) ?? false );
-        $this->object->setPoll(    $request->input( 'poll'               ) ?? false );
-
-        $this->object->setCabinet(        D2EM::getRepository( CabinetEntity::class         )->find( $request->input( 'cabinetid'       ) ) );
-        $this->object->setInfrastructure( D2EM::getRepository( InfrastructureEntity::class  )->find( $request->input( 'infrastructure'  ) ) );
-        $this->object->setVendor(         D2EM::getRepository( VendorEntity::class          )->find( $request->input( 'vendorid'        ) ) );
-
-
-        if( $request->session()->exists( "snmp-platform" ) ) {
-            /** @var Platform $platform */
-            $platform = $request->session()->get( "snmp-platform" );
-
-            if( $platform->getOsDate() instanceof \DateTime ) {
-                $osdate = $platform->getOsDate();
-            } else if( is_string( $platform->getOsDate() ) ) {
-                $osdate = new \DateTime( $platform->getOsDate() );
-            }
-
-            if( !isset( $osdate ) || !$osdate ) {
-                $osdate = null;
-            }
-
-            $this->object->setOs(           $platform->getOs() );
-            $this->object->setOsDate(       $osdate );
-            $this->object->setOsVersion(    $platform->getOsVersion() );
-            $this->object->setSerialNumber( $platform->getSerialNumber() );
-            $request->session()->remove( "snmp-platform" );
-        }
-
-        if( $request->input( "add_by_snnp" ) ){
-            $this->object->setLastPolled(   new \DateTime );
-        }
-
-        D2EM::flush();
-
-        $action = $request->input( 'id', '' )  ? "edited" : "added";
-
-        Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' ' . $action . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
-
-        AlertContainer::push( $this->store_alert_success_message ?? $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
-
-        return redirect()->to( $this->postStoreRedirect() ?? route( self::route_prefix() . '@' . 'list' ) );
-
-    }
-
 
     /**
      * @inheritdoc
      */
     protected function preDelete() : bool
     {
-        $okay = $okayPPP = true;
+        $okay = true;
 
-        foreach( $this->object->getPorts() as $port ) {
-            /** @var SwitchPortEntity $port */
-            if( $port->getPhysicalInterface() ) {
-                $okay = false;
-                AlertContainer::push( "Cannot delete switch: there are switch ports assigned to one or more physical interfaces.", Alert::DANGER );
-                break;
-            }
+        if( $this->object->getPhysicalInterfaces()->count() ) {
+            $okay = false;
+            AlertContainer::push( "Cannot delete switch: there are switch ports assigned to one or more physical interfaces.", Alert::DANGER );
         }
 
-        foreach( $this->object->getPorts() as $port ) {
-            /** @var SwitchPortEntity $port */
-            if( $port->getPatchPanelPort() ) {
-                $okay = false;
-                AlertContainer::push( "Cannot delete switch: there are switch ports assigned to patch panel ports", Alert::DANGER );
-                break;
-            }
+        if( $this->object->getPatchPanelPorts()->count() ) {
+            $okay = false;
+            AlertContainer::push( "Cannot delete switch: there are switch ports assigned to patch panel ports", Alert::DANGER );
         }
 
         if( $okay ){
-            // if we got here, all switch ports are free
-            foreach( $this->object->getPorts() as $p ){
-                D2EM::remove( $p );
-            }
+            $this->object->switchPorts()->delete();
         }
 
         return $okay;
     }
 
-
     /**
      * Display the Port report for a switch
      *
-     * @param int $id ID for the switch
+     * @param Switcher $switch ID for the switch
      *
      * @return view
      */
-    function portReport( int $id = null ) : View
+    public function portReport( Switcher $switch ) : View
     {
-        $s = false;
+        $allPorts   = SwitchPortAggregator::getAllPortsForSwitch( $switch->id, [] , [], false );
 
-        if( $id && !( $s = D2EM::getRepository( SwitcherEntity::class )->find( $id ) ) ) {
-            abort(404, "Unknown switch.");
-        }
+        $ports      = SwitchPort::select( [
+                'sp.id AS id', 'sp.name AS name', 'sp.type AS porttype',
+                'pi.speed AS speed', 'pi.duplex AS duplex',
+                'c.name AS custname'
+            ] )->from( 'switchport AS sp' )
+            ->join( 'physicalinterface AS pi', 'pi.switchportid', 'sp.id' )
+            ->join( 'virtualinterface AS vi', 'vi.id', 'pi.virtualinterfaceid' )
+            ->join( 'cust AS c', 'c.id', 'vi.custid' )
+            ->where( 'sp.switchid', $switch->id )
+            ->orderBy( 'id' )
+            ->get()->keyBy( 'id' )->toArray();
 
-        $allPorts   = D2EM::getRepository( SwitcherEntity::class )->getAllPorts( $s->getId(), [] , [], false );
-        $ports      = D2EM::getRepository( SwitcherEntity::class )->getAllPortsAssignedToPI( $s->getId() );
+        $matchingValues = array_uintersect( $ports, $allPorts , static function ( $val1, $val2 ){
+            return strcmp( $val1['name'], $val2['name'] );
+        });
 
-        foreach( $allPorts as $id => $port ) {
-            if( isset( $ports[0] ) && $ports[0][ 'name' ] == $port[ 'name' ] ){
-                $allPorts[ $port[ 'name' ] ] = array_shift( $ports );
-            }
-            else{
-                $allPorts[ $port[ 'name' ] ] = $port;
-            }
-
-            $allPorts[ $port[ 'name' ] ]['porttype'] = SwitchPortEntity::$TYPES[ $allPorts[ $port[ 'name' ] ]['porttype'] ];
-
-            unset( $allPorts[ $id ] );
-        }
-
+        $diffValues = array_udiff( $allPorts, $ports , static function ( $val1, $val2 ){
+            return strcmp( $val1['name'], $val2['name'] );
+        });
 
         return view( 'switches/port-report' )->with([
-            'switches'                  => D2EM::getRepository( SwitcherEntity::class )->getNames(),
-            's'                         => $s,
-            'ports'                     => $allPorts,
-
+            'switches'                  => Switcher::orderBy( 'name' )
+                ->get()->keyBy( 'id' ),
+            's'                         => $switch,
+            'ports'                     => array_merge( $matchingValues, $diffValues ),
         ]);
     }
-
 
     /**
      * Display the switch configurations
@@ -685,12 +602,12 @@ class SwitchController extends Doctrine2Frontend
      */
     public function configuration( Request $r ) : View
     {
-        $speeds = D2EM::getRepository( PhysicalInterfaceEntity::class )->getAllSpeed();
+        $infra  = $location = $speed = $switch = $vlan = $summary = false;
+        $speeds = PhysicalInterface::selectRaw( 'DISTINCT physicalinterface.speed AS speed' )
+            ->orderBy( 'speed' )->get()->pluck( 'speed' )->toArray();
 
-        $switch = false;
-        if( $r->input( 'switch', null ) !== null ) {
-            /** @var SwitcherEntity $switch */
-            if(  $switch = D2EM::getRepository( SwitcherEntity::class )->find( $r->input( 'switch' ) ) ) {
+        if( $r->switch !== null ) {
+            if(  $switch = Switcher::find( $r->switch ) ) {
                 $r->session()->put( "switch-configuration-switch", $switch );
             } else {
                 $r->session()->remove( "switch-configuration-switch" );
@@ -700,10 +617,8 @@ class SwitchController extends Doctrine2Frontend
             $switch = $r->session()->get( "switch-configuration-switch" );
         }
 
-        $infra = false;
-        if( $r->input( 'infra', null ) !== null ) {
-            /** @var InfrastructureEntity $infra */
-            if(  $r->input( 'infra' ) && $infra = D2EM::getRepository( InfrastructureEntity::class )->find( $r->input( 'infra' ) ) ) {
+        if( $r->infra !== null ) {
+            if(  $infra = Infrastructure::find( $r->infra ) ) {
                 $r->session()->put( "switch-configuration-infra", $infra );
             } else {
                 $r->session()->remove( "switch-configuration-infra" );
@@ -713,10 +628,8 @@ class SwitchController extends Doctrine2Frontend
             $infra = $r->session()->get( "switch-configuration-infra" );
         }
 
-        $location = false;
-        if( $r->input( 'location', null ) !== null ) {
-            /** @var LocationEntity $facility */
-            if(  $r->input( 'location' ) && $location = D2EM::getRepository( LocationEntity::class )->find( $r->input( 'location' ) ) ) {
+        if( $r->location !== null ) {
+            if( $location = Location::find( $r->location ) ) {
                 $r->session()->put( "switch-configuration-location", $location );
             } else {
                 $r->session()->remove( "switch-configuration-location" );
@@ -726,11 +639,10 @@ class SwitchController extends Doctrine2Frontend
             $location = $r->session()->get( "switch-configuration-location" );
         }
 
-        $speed = false;
-        if( $r->input( 'speed', null ) !== null ) {
-            $speed = $r->input( 'speed' );
-            if( in_array( $r->input( 'speed' ), $speeds) ) {
-                $r->session()->put( "switch-configuration-speed", $speed );
+        if( $r->speed !== null ) {
+            $speed = (int)$r->speed;
+            if( in_array( $r->speed, $speeds, false ) ) {
+                $r->session()->put( "switch-configuration-speed", $r->speed );
             } else {
                 $r->session()->remove( "switch-configuration-speed" );
                 $speed = false;
@@ -739,9 +651,8 @@ class SwitchController extends Doctrine2Frontend
             $speed = $r->session()->get( "switch-configuration-speed" );
         }
 
-        $vlan = false;
-        if( $r->input( 'vlan', null ) !== null ) {
-            if( $vlan = D2EM::getRepository( VlanEntity::class )->find( $r->input( 'vlan' ) ) ) {
+        if( $r->vlan !== null ) {
+            if( $vlan = Vlan::find( $r->vlan ) ) {
                 $r->session()->put( "switch-configuration-vlan", $vlan );
             } else {
                 $r->session()->remove( "switch-configuration-vlan" );
@@ -755,34 +666,31 @@ class SwitchController extends Doctrine2Frontend
             $summary = "Connections details for: ";
 
             if( $switch ) {
-                $summary .= $switch->getName() . " (on " . $switch->getInfrastructure()->getName() . " at " . $switch->getCabinet()->getLocation()->getName() . ")";
+                $summary .= $switch->name . " (on " . $switch->infrastructureModel->name. " at " . $switch->cabinet->location->name . ")";
             } else {
                 if( $infra ){
-                    $summary .= $infra->getName() . ' (infrastructure); ';
+                    $summary .= $infra->name . ' (infrastructure); ';
                 }
                 if( $location ){
-                    $summary .= $location->getName() . ' (facility); ';
+                    $summary .= $location->name . ' (facility); ';
                 }
                 if( $vlan ) {
-                    $summary .= $vlan->getName() . ' (VLAN); ';
+                    $summary .= $vlan->name . ' (VLAN); ';
                 }
                 if( $speed ) {
-                    $summary .= PhysicalInterfaceEntity::$SPEED[$speed] . '; ';
+                    $summary .= PhysicalInterface::$SPEED[ $speed ] . '; ';
                 }
             }
-
-        } else{
-            $summary = false;
         }
 
-        $config = D2EM::getRepository( SwitcherEntity::class           )->getConfiguration(
-            $switch ? $switch->getId() : null,
-            $infra ? $infra->getId() : null,
-            $location ? $location->getId() : null,
+        $config = SwitcherAggregator::getConfiguration(
+            $switch->id ?? null,
+            $infra->id ?? null,
+            $location->id ?? null,
             $speed,
-            $vlan ? $vlan->getId() : null,
-            $r->input( 'rs-client' )    ? true : false,
-            $r->input( 'ipv6-enabled' ) ? true : false
+            $vlan->id ?? null,
+            (bool) $r->input('rs-client'),
+            (bool) $r->input('ipv6-enabled')
         );
 
         return view( 'switches/configuration' )->with([
@@ -793,12 +701,71 @@ class SwitchController extends Doctrine2Frontend
             'location'                  => $location,
             'summary'                   => $summary,
             'speeds'                    => $speeds,
-            'infras'                    => $switch ? [ $switch->getInfrastructure()->getId()          => $switch->getInfrastructure()->getName()           ] : D2EM::getRepository( InfrastructureEntity::class     )->getNames( true ),
-            'vlans'                     => D2EM::getRepository( VlanEntity::class )->getNames(),
-            'locations'                 => $switch ? [ $switch->getCabinet()->getLocation()->getId()  => $switch->getCabinet()->getLocation()->getName()   ] : D2EM::getRepository( LocationEntity::class           )->getNames(),
-            'switches'                  => D2EM::getRepository( SwitcherEntity::class           )->getByLocationAndInfrastructureAndSpeed( $infra, $location, $speed ),
+            'infras'                    => $switch ? [ Infrastructure::find( $switch->infrastructure ) ] : Infrastructure::orderBy( 'name' )->get(),
+            'vlans'                     => Vlan::orderBy( 'name' )->get(),
+            'locations'                 => $switch ? [ Location::find( $switch->cabinet->locationid ) ] : Location::orderBy( 'name' )->get(),
+            'switches'                  => SwitcherAggregator::getByLocationInfrastructureSpeed( $infra->id ?? null, $location->id ?? null, $speed ?: null ),
             'config'                    => $config,
         ]);
     }
 
+    /**
+     * Check if the form is valid
+     *
+     * @param Request $r
+     */
+    public function checkForm( Request $r ): void
+    {
+        $r->validate( [
+            'name'              => 'required|string|max:255|unique:switch,name' . ( $r->id ? ',' . $r->id : ''  ),
+            'hostname'          => [ 'required', 'string', 'max:255', new IdnValidate(), 'unique:switch,hostname' . ( $r->id ? ',' . $r->id : ''  ) ],
+            'cabinetid'         => 'required|integer|exists:cabinet,id',
+            'infrastructure'    => 'required|integer|exists:infrastructure,id',
+            'snmppasswd'        => 'nullable|string|max:255',
+            'vendorid'          => 'required|integer|exists:vendor,id',
+            'ipv4addr'          => 'nullable|ipv4',
+            'ipv6addr'          => 'nullable|ipv6',
+            'model'             => 'nullable|string|max:255',
+            'asn'               => 'nullable|integer|min:1',
+            'loopback_ip'       => 'nullable|string|max:255|unique:switch,loopback_ip' . ( $r->id ? ',' . $r->id : ''  ),
+            'loopback_name'     => 'nullable|string|max:255',
+            'mgmt_mac_address'  => 'nullable|string|max:17|regex:/^[a-f0-9:\.\-]{12,17}$/i',
+        ] );
+    }
+
+    /**
+     * Add some extra attributes to the object
+     *
+     * @param Request $r
+     *
+     * @return void
+     *
+     * @throws
+     */
+    private function extraAttributes( Request $r ): void
+    {
+        if( $r->session()->exists( "snmp-platform" ) ) {
+            /** @var Platform $platform */
+            $platform = $r->session()->get( "snmp-platform" );
+            $osDate = null;
+
+            if( $platform->getOsDate() instanceof DateTime ) {
+                $osDate = $platform->getOsDate();
+            } else if( is_string( $platform->getOsDate() ) ) {
+                $osDate = new DateTime( $platform->getOsDate() );
+            }
+
+            $this->object->os =             $platform->getOs();
+            $this->object->osDate =         $osDate;
+            $this->object->osVersion =      $platform->getOsVersion();
+            $this->object->serialNumber =   $platform->getSerialNumber();
+            $this->object->save();
+            $r->session()->remove( "snmp-platform" );
+        }
+
+        if( $r->add_by_snnp ) {
+            $this->object->lastPolled =   now();
+            $this->object->save();
+        }
+    }
 }

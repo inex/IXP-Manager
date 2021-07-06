@@ -34,18 +34,9 @@ class CreateDocstoreCustomerDirectories extends Migration
      */
     public function up()
     {
-        Schema::create('docstore_customer_directories', function (Blueprint $table) {
-            $table->bigIncrements( 'id' );
-            $table->integer('cust_id' )->nullable(false );
-            $table->bigInteger( 'parent_dir_id' )->nullable()->unsigned()->index();
+        // 2021-03-06 BOD: Migration no longer required as included in 2020_06_01_143931_database_schema_at_end_v5
+        // Migration file kept for anyone upgrading so that their database table of migration states remains consistent.
 
-            $table->string( 'name',100 )->nullable( false );
-            $table->text( 'description' )->nullable( true );
-
-            $table->foreign('cust_id' )->references('id' )->on('cust' );
-
-            $table->timestamps();
-        });
     }
 
     /**
@@ -55,6 +46,5 @@ class CreateDocstoreCustomerDirectories extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('docstore_customer_directories');
     }
 }

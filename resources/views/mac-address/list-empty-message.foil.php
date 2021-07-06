@@ -5,7 +5,7 @@
         </div>
         <div class="col-sm-12">
             There are no discovered MAC addresses in the database.
-            Please <a href="http://docs.ixpmanager.org/features/layer2-addresses/" target="_blank">see the official
+            Please <a href="http://docs.ixpmanager.org/features/layer2-addresses/" target="_blank">see the
                 MAC address documentation</a> for details on how to configure and set this up.
         </div>
     </div>

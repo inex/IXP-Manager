@@ -3,7 +3,7 @@
 namespace IXP\Console\Commands\Utils;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,14 +22,10 @@ namespace IXP\Console\Commands\Utils;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
-use D2EM;
-use Entities\OUI as OUIEntity;
 use IXP\Console\Commands\Command as IXPCommand;
+
+use IXP\Models\Oui;
 use IXP\Utils\OUI as OUIUtil;
-
-
 /**
  * Class UpdateOuiDatabase - update OUI database from named file or IEEE website.
  *
@@ -41,8 +37,9 @@ use IXP\Utils\OUI as OUIUtil;
  * Note that we bundle a recent OUI file in `data/oui` also.
  *
  * @author Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author Yann Robin <yann@islandbridgenetworks.ie>
  * @package IXP\Console\Commands\Utils
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class UpdateOuiDatabase extends IXPCommand
@@ -65,37 +62,37 @@ class UpdateOuiDatabase extends IXPCommand
      * Execute the console command.
      *
      * @return mixed
+     *
+     * @throws
      */
-    public function handle() {
-
+    public function handle()
+    {
         $ouitool = new OUIUtil( $this->argument( 'file' ) );
-        $ouiRepo = D2EM::getRepository( OUIEntity::class );
 
         if( $refresh = $this->option( 'refresh' ) ) {
-            $this->info( "Deleted " . $ouiRepo->clear() . " OUI entries during refresh" );
+            $this->info( "Deleted " . Oui::count() . " OUI entries during refresh" );
+            Oui::truncate();
         }
 
         $cnt = 0;
         foreach( $ouitool->loadList()->processRawData() as $oui => $organisation ) {
             if( $cnt++ >= 1000 ) {
-                D2EM::flush();
                 $this->isVerbosityVerbose() && $this->output->write('.', false);
                 $cnt = 0;
             }
 
-            if( !$refresh && ( $o = $ouiRepo->findOneBy( [ 'oui' => $oui ] ) ) ) {
-                if( $o->getOrganisation() != $organisation )
-                    $o->setOrganisation( $organisation );
-                continue;
+            if( !$refresh && ( $o = Oui::where( 'oui', $oui  )->first() ) ) {
+                if( $o->organisation !== $organisation ){
+                    $o->update( [ 'organisation' => $organisation ] );
+                }
+            } else {
+                Oui::create([
+                    'oui'           => $oui,
+                    'organisation'  => $organisation
+                ]);
             }
-
-            $o = new OUIEntity();
-            $o->setOui( $oui );
-            $o->setOrganisation( $organisation );
-            D2EM::persist( $o );
         }
 
-        D2EM::flush();
         $this->isVerbosityVerbose() && $this->output->write('.', true);
         return 0;
     }

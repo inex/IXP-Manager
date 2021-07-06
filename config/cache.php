@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -31,9 +31,9 @@ return [
 	| This option controls the default cache connection that gets used while
 	| using this caching library. This connection is used when another is
 	| not explicitly specified when executing a given caching function.
-     |
-    | Supported: "apc", "array", "database", "file",
-    |            "memcached", "redis", "dynamodb"
+    |
+    | Supported drivers: "apc", "array", "database", "file",
+    |            "memcached", "redis", "dynamodb", "null"
     |
 	*/
 
@@ -57,13 +57,15 @@ return [
 		],
 
 		'array' => [
-			'driver' => 'array'
+			'driver' => 'array',
+            'serialize' => false,
 		],
 
 		'database' => [
 			'driver' => 'database',
 			'table'  => 'cache',
 			'connection' => null,
+            'lock_connection' => null,
 		],
 
 		'file' => [
@@ -83,6 +85,7 @@ return [
 		'redis' => [
 			'driver' => 'redis',
 			'connection' => 'default',
+            'lock_connection' => 'default',
 		],
 
 

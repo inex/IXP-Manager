@@ -1,8 +1,8 @@
 <?php
-/** @var Foil\Template\Template $t */
-/** @var $t->active */
+    /** @var Foil\Template\Template $t */
+    /** @var $t->active */
 
-$this->layout( 'layouts/ixpv4' );
+    $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -12,7 +12,6 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm ml-auto" role="group">
-
         <a id="add-file" class="btn btn-white" href="<?= route('docstore-file@download', ['file' => $t->file ] ) ?>">
             Download
         </a>
@@ -27,7 +26,7 @@ $this->layout( 'layouts/ixpv4' );
 <?= $t->alerts() ?>
 
 <h3 class="tw-mt-4">Viewing File: <?= $t->file->name ?></h3>
-<div class="tw-mt-8 tw-border tw-p-5 tw-rounded-lg tw-border-gray-200 tw-bg-gray-100 tw-text-black">
+<div class="tw-mt-8 tw-border-1 tw-p-5 tw-rounded-lg tw-border-gray-200 tw-bg-gray-100 tw-text-black">
 <?php if( \Illuminate\Support\Str::endsWith( $t->file->name, '.md' ) ): ?>
 <?= @parsedown( $t->content ) ?>
 <?php else: ?>

@@ -4,30 +4,20 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-
     <?=  $t->feParams->pagetitle  ?>
-    /
-
+        /
     <?php if( isset( $t->feParams->customBreadcrumb ) ): ?>
         <?= $t->feParams->customBreadcrumb ?>
     <?php else: ?>
-        <?= $t->data[ 'params']['isAdd'] ? 'Add' : 'Edit' ?> <?= $t->feParams->titleSingular  ?>
-     <?php endif; ?>
-
+        <?= $t->data[ 'params']['isAdd'] ? 'Create' : 'Edit' ?> <?= $t->feParams->titleSingular  ?>
+    <?php endif; ?>
 <?php $this->append() ?>
 
-
 <?php $this->section( 'page-header-postamble' ) ?>
-
     <?php if( $t->data[ 'view' ]['editHeaderPreamble'] ): ?>
-
         <?= $t->insert( $t->data[ 'view' ]['editHeaderPreamble'] ) ?>
-
     <?php else: ?>
-
-
         <div class="btn-group btn-group-sm" role="group">
-
             <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
                 <a target="_blank" class="btn btn-white" href="<?= $t->feParams->documentation ?>">
                     Documentation
@@ -41,32 +31,21 @@
                     </a>
                 <?php endif; ?>
             <?php endif;?>
-
         </div>
-
-
     <?php endif;?>
-
 <?php $this->append() ?>
-
-
-
 
 <?php $this->section('content') ?>
     <div class="row">
         <div class="col-lg-12">
-
             <?= $t->alerts() ?>
 
             <?= $t->data[ 'view' ]['editPreamble'] ? $t->insert( $t->data[ 'view' ]['editPreamble'] ) : '' ?>
             <?= $t->insert( $t->data[ 'view' ]['editForm' ] ) ?>
             <?= $t->data[ 'view' ]['editPostamble'] ? $t->insert( $t->data[ 'view' ]['editPostamble'] ) : '' ?>
-
         </div>
     </div>
-
 <?php $this->append() ?>
-
 
 <?php $this->section( 'scripts' ) ?>
     <?= $t->data[ 'view' ]['editScript'] ? $t->insert( $t->data[ 'view' ]['editScript'] ) : '' ?>

@@ -2,7 +2,6 @@
     $( document ).ready( function() {
         //////////////////////////////////////////////////////////////////////////////////////
         // we'll need these handles to html elements in a few places:
-
         const input_name              = $( '#name' );
         const input_colo_ref          = $( '#colo_reference' );
 
@@ -15,7 +14,7 @@
          * set the colo_reference in empty input by the name input value
          */
         input_name.blur( function() {
-            if( input_colo_ref.val() == '' ){
+            if( input_colo_ref.val() === '' ){
                 input_colo_ref.val( input_name.val() );
             }
         });

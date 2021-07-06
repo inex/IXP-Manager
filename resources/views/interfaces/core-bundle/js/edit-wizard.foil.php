@@ -3,17 +3,17 @@
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
 
-    const btn_new_core_link              = $( '#add-new-core-link'  );
-    const div_message_new_cl             = $( '#message-new-cl'     );
-    const div_core_link_area             = $( '#core-links-area'    );
+    const btn_new_core_link              = $( '#btn-create-cl'   );
+    const div_message_new_cl             = $( '#message-new-cl'  );
+    const div_core_link_area             = $( '#core-links-area' );
+    const table                          = $( '.table-responsive-ixp-no-header' );
+    const subnet_input                   = $( "#subnet" );
 
     //////////////////////////////////////////////////////////////////////////////////////
     // action bindings:
 
     $( document ).ready( function() {
-        $('.table-responsive-ixp-no-header').show();
-
-        $('.table-responsive-ixp-no-header').DataTable( {
+        table.dataTable( {
             stateSave: true,
             stateDuration : DATATABLE_STATE_DURATION,
             responsive: true,
@@ -25,10 +25,9 @@
                 { responsivePriority: 1, targets: 0 },
                 { responsivePriority: 2, targets: -1 }
             ],
-        } );
+        } ).show();
 
         $( ".subnet-cl" ).parent().removeClass().addClass( "col-sm-8" );
-
     });
 
     //////////////////////////////////////////////////////////////////////////////////////
@@ -47,18 +46,17 @@
     /**
      * Event to delete a core link
      */
-    $( ".delete-cl" ).on( 'click', function( e ) {
+    $( ".btn-delete-cl" ).click( function( e ) {
         e.preventDefault();
-        deleteElement( true , ( this.id ).substring(10) );
+        deleteElement( true , this.href );
     });
-
 
     /**
      * Event to delete the core bundle
      */
-    $( "a[id|='cb-delete']" ).on( 'click', function( e ) {
+    $( '.btn-delete-cb' ).click( function( e ) {
         e.preventDefault();
-        deleteElement( false , ( this.id ).substring( 10 ) );
+        deleteElement( false , this.href );
     });
 
     /**
@@ -79,8 +77,8 @@
      * Check if the subnet is valid before submitting the Core Bundle settings form
      */
     $('#core-bundle-form').submit(function( e ) {
-        if( $( "#subnet" ).val() !== '' ){
-            if( !validSubnet( $( "#subnet" ).val() ) ){
+        if( subnet_input.val() !== '' ){
+            if( !validSubnet( subnet_input.val() ) ){
                 $("#message-cb").html("<div class='alert alert-danger' role='alert'> The subnet " + $( this ).val() + " is not valid! </div>");
                 e.preventDefault();
                 $("html, body").animate({ scrollTop: 0 }, "slow");
@@ -88,7 +86,6 @@
             }
         }
     });
-
 
     /**
      * Check if all the switch ports have been chosen before submitting the form to add a new Core Link
@@ -103,8 +100,8 @@
         }
 
         // check if the subnet is valid
-        if( $( "#cl-subnet-1").val() ) {
-            let subnet = $( "#cl-subnet-1").val();
+        if( $( "#cl-subnet-1" ).val() ) {
+            let subnet = $( "#cl-subnet-1" ).val();
             if( !validSubnet( subnet ) ){
                 div_message_new_cl.append(  "<div class='alert alert-danger' role='alert'>The subnet " + subnet + " is not valid! </div>" );
                 return false;
@@ -116,12 +113,12 @@
      * event Onchange on the switch port dropdowns of the Core Link form
      * Set the value of the switch port dropdown into hidden inputs
      */
-    $( document ).on( 'change', ".sp-dd" ,function( e ) {
+    $( '.sp-dd' ).change( function( e ) {
         e.preventDefault();
-        let sid     = ( this.id ).substring( 5 );
+        let sid      = $( this ).attr( 'data-id')
         let sside    = $( this ).attr( "data-value" );
 
-        $( "#hidden-sp-" + sside + '-' + sid ).val( $( "#sp-"+ sside + "-" + sid ).val() );
+        $( "#hidden-sp-" + sside + '-' + sid ).val( $( "#sp-" + sside + "-" + sid ).val() );
     });
 
 
@@ -130,31 +127,20 @@
     /// Function:
     ///
 
-
     /**
      * Function that allow to delete a Core Link or a Core Bundle
      *
      * @param {boolean}     deletecl        Do we need to delete the core link ? If not delete core bundle
-     * @param {integer}     elementId       The ID of the element to delete
+     * @param {string}     url              Url to delete te object
      *
      */
-    function deleteElement( deletecl , elementId ){
+    function deleteElement( deletecl , url ) {
+        let elementName = deletecl ? 'Core link' : 'Core Bundle'
 
-        let urlAction, elementName;
-
-        if( deletecl ){
-             urlAction = "<?= route('core-link@delete') ?>";
-             elementName = "Core link";
-        } else {
-             urlAction = "<?= route('core-bundle@delete' ) ?>";
-             elementName = "Core Bundle";
-        }
-
-
-        let html = `<form id="form-delete" method="POST" action="${urlAction}">
+        let html = `<form id="form-delete" method="POST" action="${url}">
                         <div>Do you really want to delete this ${elementName}?</div>
                         <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                        <input type="hidden" name="id" value="${elementId}">
+                        <input type="hidden" name="_method" value="delete" />
                     </form>`;
 
         bootbox.dialog({
@@ -192,6 +178,11 @@
         div_core_link_area.show();
         btn_new_core_link.attr( 'disabled', 'disabled' );
 
+        $("#sp-a-1 option:nth-child(2)").attr('selected','selected').trigger( 'change.select2' );
+        $("#sp-b-1 option:nth-child(2)").attr('selected','selected').trigger( 'change.select2' );
+
+        $( "#hidden-sp-a-1" ).val( $( "#sp-a-1" ).val() );
+        $( "#hidden-sp-b-1" ).val( $( "#sp-b-1" ).val() );
     }
 
 </script>

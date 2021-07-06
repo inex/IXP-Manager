@@ -3,7 +3,7 @@
 namespace IXP\Events\Auth;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -26,29 +26,31 @@ namespace IXP\Events\Auth;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 
-use Entities\{
-    User    as UserEntity
-};
-
-class PasswordReset{
-
+use IXP\Models\User;
+/**
+ * PasswordReset Event
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   Events\Auth
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class PasswordReset
+{
     use Dispatchable, SerializesModels;
 
-
     /**
-     * @var UserEntity user
+     * @var User
      */
     public $user;
-
 
     /**
      * Create a new event instance.
      *
-     * @param UserEntity $user
+     * @param User $user
      */
-    public function __construct( UserEntity $user )
+    public function __construct( User $user )
     {
         $this->user         = $user;
-
     }
 }

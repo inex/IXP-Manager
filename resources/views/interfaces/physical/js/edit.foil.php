@@ -1,5 +1,4 @@
 <script>
-
     let fanoutEnabled = <?= $t->enableFanout ? 'true' : 'false' ?>;
 
     const cb_fanout         = $('#fanout');
@@ -10,7 +9,6 @@
         handleFanoutEnabled();
         cb_fanout.on( 'click', handleFanoutEnabled );
     }
-
 
     function handleFanoutEnabled() {
         if( cb_fanout.is(":checked") ) {

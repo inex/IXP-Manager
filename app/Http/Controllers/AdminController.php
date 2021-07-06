@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,34 +23,34 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use App, Cache, D2EM;
+use App, Cache;
 
 use Carbon\Carbon;
-
-use IXP\Services\Grapher\Graph as Graph;
-
-use Entities\{
-    Customer            as CustomerEntity,
-    Infrastructure      as InfrastructureEntity,
-    IXP                 as IXPEntity,
-    Location            as LocationEntity,
-    VirtualInterface    as VirtualInterfaceEntity,
-    Vlan                as VlanEntity,
-    VlanInterface       as VlanInterfaceEntity
-};
 
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
+use IXP\Models\{
+    Aggregators\VirtualInterfaceAggregator,
+    Customer,
+    Infrastructure,
+    Location,
+    Vlan,
+    VlanInterface
+};
+
+use IXP\Services\Grapher\Graph;
+
+use IXP\Services\Grapher;
 
 /**
  * Admin Controller
  *
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- *
- * @category   Admin
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class AdminController extends Controller
@@ -58,133 +58,141 @@ class AdminController extends Controller
     /**
      * Display the home page
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return view
      */
-    public function dashboard( Request $request ): View
+    public function dashboard( Request $r ): View
     {
         return view( 'admin/dashboard' )->with([
-            'stats'                 => $this->dashboardStats( $request ),
-            'graphs'                => $this->publicPeeringGraphs( $request ),
-            'graph_period'          => $request->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ),
+            'stats'                 => $this->dashboardStats( $r ),
+            'graphs'                => $this->publicPeeringGraphs( $r ),
+            'graph_period'          => $r->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ),
             'graph_periods'         => Graph::PERIOD_DESCS,
         ]);
     }
 
-
     /**
      * Get type counts statistics
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return array array of statistics
      */
-    private function dashboardStats( Request $request )
+    private function dashboardStats( Request $r ): array
     {
         // only do this once every 60 minutes
-        if( $request->query( 'refresh_cache', 0 ) || !( $cTypes = Cache::get( 'admin_ctypes' ) ) ) {
-
+        if( $r->query( 'refresh_cache', 0 ) || !( $cTypes = Cache::get( 'admin_ctypes' ) ) ) {
             // Full / Associate / Probono / Internal
-            $cTypes['types'] = D2EM::getRepository( CustomerEntity::class )->getTypeCounts();
+            $cTypes[ 'types' ] = Customer::selectRaw('type AS ctype, COUNT( type ) AS cnt')
+                ->whereRaw(Customer::SQL_CUST_CURRENT)
+                ->whereRaw(Customer::SQL_CUST_ACTIVE)
+                ->groupBy('ctype')->get()->keyBy('ctype')->toArray();;
 
             // Searches for VirtualInterfaces where custtype us not internal.
             // Because it's Virtual Interfaces, it should only be current or unremoved customers, etc.
-            $vis = D2EM::getRepository( VirtualInterfaceEntity::class )->getByLocation();
+            $vis = VirtualInterfaceAggregator::getByLocation();
 
-            $speeds          = [];
-            $byLocation      = [];
-            $byLan           = [];
-            $byIxp           = [];
+            $speeds = [];
+            $byLocation = [];
+            $byLan = [];
+            $byIxp = [];
             $custsByLocation = [];
-            $custsByInfra    = [];
-            $peeringCusts    = [];
+            $custsByInfra = [];
+            $peeringCusts = [];
+
 
             foreach( $vis as $vi ) {
+                $location = $vi[ 'locationname' ];
+                $infrastructure = $vi[ 'infrastructure' ];
+                $custid = $vi[ 'customerid' ];
 
-                $location       = $vi['locationname'];
-                $infrastructure = $vi['infrastructure'];
-
-                // ----
-
-                if( !isset( $custsByLocation[ $location ] ) ) {
-                    $custsByLocation[ $location ] = 1;
-                } else {
-                    $custsByLocation[ $location ]++;
+                if ( !isset($custsByLocation[ $location ])) {
+                    $custsByLocation[ $location ] = [
+                        'count' => 1,
+                        'id' => $vi[ 'locationid' ],
+                        'name' => $location,
+                        'custs' => [ $custid ]
+                    ];
+                } elseif( !in_array( $custid, $custsByLocation[ $location ][ 'custs' ], true ) ){
+                    $custsByLocation[ $location ][ 'count' ]++;
+                    $custsByLocation[ $location ][ 'custs' ][] = $custid;
                 }
 
-                // ----
-
-                if( !isset( $speeds[ $vi['speed'] ] ) ) {
+                if ( !isset($speeds[ $vi[ 'speed' ] ])) {
                     $speeds[ $vi[ 'speed' ] ] = 1;
                 } else {
                     $speeds[ $vi[ 'speed' ] ]++;
                 }
 
-                // ----
-
-                if( !isset( $custsByInfra[ $infrastructure ] ) ) {
+                if ( !isset($custsByInfra[ $infrastructure ])) {
                     $custsByInfra[ $infrastructure ] = [];
                 }
-                if( !in_array( $vi['customerid'], $custsByInfra[ $infrastructure ] ) ) {
+                if ( !in_array($vi[ 'customerid' ], $custsByInfra[ $infrastructure ], true)) {
                     $custsByInfra[ $infrastructure ][] = $vi[ 'customerid' ];
                 }
 
-                if( !in_array( $vi['customerid'], $peeringCusts ) ) {
+                if ( !in_array($vi[ 'customerid' ], $peeringCusts, true)) {
                     $peeringCusts[] = $vi[ 'customerid' ];
                 }
 
-                // ----
-
-                if( !isset( $byLocation[ $location ] ) ) {
-                    $byLocation[ $location ] = [];
+                if ( !isset($byLocation[ $location ])) {
+                    $byLocation[ $location ] = [ 'id' => $vi[ 'locationid' ]  ];
                 }
-                if( !isset( $byLocation[ $vi['locationname'] ][ $vi['speed'] ] ) ) {
+                if ( !isset($byLocation[ $vi[ 'locationname' ] ][ $vi[ 'speed' ] ])) {
                     $byLocation[ $location ][ $vi[ 'speed' ] ] = 1;
                 } else {
                     $byLocation[ $location ][ $vi[ 'speed' ] ]++;
                 }
 
-                // ----
-
-                if( !isset( $byLan[ $infrastructure ] ) ) {
-                    $byLan[ $infrastructure ] = [];
+                if ( !isset( $byLan[ $infrastructure ] ) ) {
+                    $byLan[ $infrastructure ] = [ 'id' => $vi[ 'infrastructureid' ] ];
                 }
 
-                if( !isset( $byLan[ $infrastructure ][ $vi['speed'] ] ) ) {
+                if ( !isset( $byLan[ $infrastructure ][ $vi[ 'speed' ] ] ) ) {
                     $byLan[ $infrastructure ][ $vi[ 'speed' ] ] = 1;
                 } else {
                     $byLan[ $infrastructure ][ $vi[ 'speed' ] ]++;
                 }
             }
 
-            ksort( $speeds, SORT_NUMERIC );
-            arsort( $custsByLocation, SORT_NUMERIC );
+            ksort($speeds, SORT_NUMERIC);
 
-            $cTypes['speeds']           = $speeds;
-            $cTypes['custsByLocation']  = $custsByLocation;
-            $cTypes['byLocation']       = $byLocation;
-            $cTypes['byLan']            = $byLan;
-            $cTypes['byIxp']            = $byIxp;
-            $cTypes['custsByInfra']     = $custsByInfra;
-            $cTypes['peeringCusts']     = $peeringCusts;
+            usort($custsByLocation, function ($a, $b) {
+                return $a[ 'count' ] <=> $b[ 'count' ];
+            });
+
+            $cTypes[ 'speeds' ]             = $speeds;
+            $cTypes[ 'custsByLocation' ]    = $custsByLocation;
+            $cTypes[ 'byLocation' ]         = $byLocation;
+            $cTypes[ 'byLan' ]              = $byLan;
+            $cTypes[ 'byIxp' ]              = $byIxp;
+            $cTypes[ 'custsByInfra' ]       = $custsByInfra;
+            $cTypes[ 'peeringCusts' ]       = $peeringCusts;
 
             // FROM of query is vlaninterface so should be current:
-            $cTypes['rsUsage']          = D2EM::getRepository( VlanInterfaceEntity::class )->getRsClientUsagePerVlan();
-
-            // FROM of query is vlaninterface so should be current:
-            $cTypes['ipv6Usage']        = D2EM::getRepository( VlanInterfaceEntity::class )->getIPv6UsagePerVlan();
+            $cTypes[ 'usage' ] = VlanInterface::selectRaw(
+            'v.id AS vlanid,
+                        v.name AS vlanname,
+                        COUNT(vli.id) AS overall_count, 
+                        SUM(vli.rsclient = 1) AS rsclient_count,
+                        SUM(vli.ipv6enabled = 1) AS ipv6_count' )
+                ->from('vlaninterface AS vli')
+                ->Join('virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid')
+                ->Join('cust AS c', 'c.id', 'vi.custid')
+                ->Join('vlan AS v', 'v.id', 'vli.vlanid')
+                ->where('v.private', false)
+                ->whereIn('c.type', [1, 4])
+                ->groupBy('vlanname')->get()->toArray();
 
             // full/probono customers with connected interface by vlan
-            $cTypes['percentByVlan']    = D2EM::getRepository( VirtualInterfaceEntity::class )->getPercentageCustomersByVlan();
+            $cTypes[ 'percentByVlan' ]  = VirtualInterfaceAggregator::getPercentageCustomersByVlan();
+            $cTypes[ 'cached_at' ]      = Carbon::now();
+            $cTypes[ 'infras' ]         = Infrastructure::orderBy('name' )->get()->toArray();
+            $cTypes[ 'locations' ]      = Location::orderBy('name' )->get()->toArray();
+            $cTypes[ 'vlans' ]          = Vlan::publicOnly()->orderBy('number')->get()->keyBy('id')->toArray();
 
-            $cTypes['cached_at']        = Carbon::now();
-
-            $cTypes['infras']           = D2EM::getRepository( InfrastructureEntity::class )->getAllAsArray();
-            $cTypes['locations']        = D2EM::getRepository( LocationEntity::class )->getNames();
-            $cTypes['vlans']            = D2EM::getRepository( VlanEntity::class )->getNames();
-
-            Cache::put( 'admin_ctypes', $cTypes, 300 );
+            Cache::put('admin_ctypes', $cTypes, 300);
         }
 
         return $cTypes;
@@ -193,38 +201,37 @@ class AdminController extends Controller
     /**
      * Get public peering graphs
      *
-     * @param Request $request
+     * @param Request $r
+     *
      * @return array array of graphs
      *
      * @throws
      */
-    private function publicPeeringGraphs( Request $request )
+    private function publicPeeringGraphs( Request $r ): array
     {
-        $grapher = App::make('IXP\Services\Grapher');
+        $grapher = App::make( Grapher::class );
 
-        $period   = Graph::processParameterPeriod( $request->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ) );
+        $period   = Graph::processParameterPeriod( $r->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ) );
 
-        if( $request->query( 'refresh_cache', 0 ) || !( $graphs = Cache::get( 'admin_stats_'.$period ) ) ) {
+        if( $r->query( 'refresh_cache', 0 ) || !( $graphs = Cache::get( 'admin_stats_'.$period ) ) ) {
             $graphs = [];
 
-            $graphs['ixp'] = $grapher->ixp( D2EM::getRepository(IXPEntity::class )->getDefault() )
+            $graphs['ixp'] = $grapher->ixp()
                 ->setType(     Graph::TYPE_PNG )
                 ->setProtocol( Graph::PROTOCOL_ALL )
                 ->setPeriod(   $period )
                 ->setCategory( Graph::CATEGORY_BITS );
 
-            foreach( D2EM::getRepository(IXPEntity::class )->getDefault()->getInfrastructures() as $inf ) {
-                $graphs[ $inf->getId()] = $grapher->infrastructure( $inf )
+            foreach( Infrastructure::all() as $inf ) {
+                $graphs[ $inf->id ] = $grapher->infrastructure( $inf )
                     ->setType(     Graph::TYPE_PNG )
                     ->setProtocol( Graph::PROTOCOL_ALL )
                     ->setPeriod(   $period )
                     ->setCategory( Graph::CATEGORY_BITS );
             }
 
-            Cache::put( 'admin_stats_'.$period, $graphs, 300 );
+            Cache::put( 'admin_stats_'. $period, $graphs, 300 );
         }
-
         return $graphs;
     }
-
 }

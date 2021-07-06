@@ -3,7 +3,7 @@
 namespace Tests\Docstore\Controllers;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,9 +23,7 @@ namespace Tests\Docstore\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM;
 
-use Entities\User as UserEntity;
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 
@@ -33,13 +31,19 @@ use IXP\Models\DocstoreDirectory;
 
 use Tests\TestCase;
 
+/**
+ * Test docstore directory Controller
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Tests\Docstore\Controllers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class DirectoryControllerTest extends TestCase
 {
-
-    const testInfo = [
-        'custuser'              => 'hecustuser',
-        'custadmin'             => 'hecustadmin',
-        'superuser'             => 'travis',
+    public const testInfo = [
         'folderName'            => 'Folder 3',
         'folderDescription'     => 'This is the folder 3',
         'parentDirId'           => null,
@@ -53,7 +57,7 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testList()
+    public function testList(): void
     {
         $response = $this->get( route('docstore-dir@list' ) );
         $response->assertOk()
@@ -66,7 +70,7 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testCreateFormAccessPublicUser()
+    public function testCreateFormAccessPublicUser(): void
     {
         // public user
         $response = $this->get( route( 'docstore-dir@create' ) );
@@ -78,11 +82,11 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testCreateFormAccessCustUser()
+    public function testCreateFormAccessCustUser(): void
     {
         // test custuser
-        $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'custuser' ] ] );
-        $response = $this->actingAs( $user )->get( route( 'docstore-dir@create' ) );
+        $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+            ->get( route( 'docstore-dir@create' ) );
         $response->assertStatus(403 );
     }
 
@@ -91,11 +95,11 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testCreateFormAccessCustAdmin()
+    public function testCreateFormAccessCustAdmin(): void
     {
         // test custadmin
-        $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'custadmin' ] ] );
-        $response = $this->actingAs( $user )->get( route( 'docstore-dir@create' ) );
+        $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
+            ->get( route( 'docstore-dir@create' ) );
         $response->assertStatus(403 );
     }
 
@@ -104,11 +108,11 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testCreateFormAccessSuperUser()
+    public function testCreateFormAccessSuperUser(): void
     {
         // test Superuser
-        $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'superuser' ] ] );
-        $response = $this->actingAs( $user )->get( route( 'docstore-dir@create' ) );
+        $response = $this->actingAs( $this->getSuperUser( 'travis' ) )
+            ->get( route( 'docstore-dir@create' ) );
         $response->assertOk()
             ->assertViewIs('docstore.dir.create' );
     }
@@ -118,7 +122,7 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testEditFormAccessPublicUser()
+    public function testEditFormAccessPublicUser(): void
     {
         $dir = DocstoreDirectory::inRandomOrder()->first();
 
@@ -132,13 +136,13 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testEditFormAccessCustUser()
+    public function testEditFormAccessCustUser(): void
     {
         $dir = DocstoreDirectory::inRandomOrder()->first();
 
         // test custuser
-        $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'custuser' ]  ] );
-        $response = $this->actingAs( $user )->get( route( 'docstore-dir@edit', [ 'dir' => $dir ] ) );
+        $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+            ->get( route( 'docstore-dir@edit', [ 'dir' => $dir ] ) );
         $response->assertStatus(403 );
     }
 
@@ -147,13 +151,13 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testEditFormAccessCustAdmin()
+    public function testEditFormAccessCustAdmin(): void
     {
         $dir = DocstoreDirectory::inRandomOrder()->first();
 
         // test custadmin
-        $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'custadmin' ]  ] );
-        $response = $this->actingAs( $user )->get( route( 'docstore-dir@edit', [ 'dir' => $dir ] ) );
+        $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
+            ->get( route( 'docstore-dir@edit', [ 'dir' => $dir ] ) );
         $response->assertStatus(403 );
     }
 
@@ -162,13 +166,13 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testEditFormAccessSuperUser()
+    public function testEditFormAccessSuperUser(): void
     {
         $dir = DocstoreDirectory::inRandomOrder()->first();
 
         // test Superuser
-        $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'superuser' ] ] );
-        $response = $this->actingAs( $user )->get( route( 'docstore-dir@edit', [ 'dir' => $dir ] ) );
+        $response = $this->actingAs( $this->getSuperUser( 'travis' ) )
+            ->get( route( 'docstore-dir@edit', [ 'dir' => $dir ] ) );
         $response->assertOk()
             ->assertViewIs('docstore.dir.create' );
     }
@@ -178,7 +182,7 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testStorePublicUser()
+    public function testStorePublicUser(): void
     {
         // public user
         $response = $this->post( route( 'docstore-dir@store' ), [ 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
@@ -191,11 +195,17 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testStoreCustUser()
+    public function testStoreCustUser(): void
     {
         // test custuser
-        $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'custuser' ] ] );
-        $response = $this->actingAs( $user )->post( route( 'docstore-dir@store' ), [ 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
+        $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+            ->post( route( 'docstore-dir@store' ),
+                [
+                    'name'              =>  self::testInfo[ 'folderName' ],
+                    'description'       => self::testInfo[ 'folderDescription' ],
+                    'parent_dir_id'     => self::testInfo[ 'parentDirId' ]
+                ]
+            );
         $response->assertStatus(403 );
         $this->assertDatabaseMissing( 'docstore_directories', [ 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
     }
@@ -205,11 +215,11 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testStoreCustAdmin()
+    public function testStoreCustAdmin(): void
     {
         // test custadmin
-        $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'custadmin' ] ] );
-        $response = $this->actingAs( $user )->post( route( 'docstore-dir@store' ), [ 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
+        $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
+            ->post( route( 'docstore-dir@store' ), [ 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
         $response->assertStatus(403 );
         $this->assertDatabaseMissing( 'docstore_directories', [ 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
 
@@ -220,11 +230,17 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testStoreSuperUser()
+    public function testStoreSuperUser(): void
     {
         // test Superuser
-        $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'superuser' ] ] );
-        $this->actingAs( $user )->post( route( 'docstore-dir@store' ), [ 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
+        $this->actingAs( $this->getSuperUser( 'travis' ) )
+            ->post( route( 'docstore-dir@store' ),
+                [
+                    'name'              => self::testInfo[ 'folderName' ],
+                    'description'       => self::testInfo[ 'folderDescription' ],
+                    'parent_dir_id'     => self::testInfo[ 'parentDirId' ]
+                ]
+            );
         $this->assertDatabaseHas( 'docstore_directories', [ 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
     }
 
@@ -233,7 +249,7 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateWithPostMethod()
+    public function testUpdateWithPostMethod(): void
     {
         $dir = DocstoreDirectory::where( [ 'name' => self::testInfo[ 'folderName' ] ] )->first();
 
@@ -247,12 +263,18 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testUpdatePublicUser()
+    public function testUpdatePublicUser(): void
     {
         $dir = DocstoreDirectory::where( [ 'name' => self::testInfo[ 'folderName' ] ] )->first();
 
         // public user
-        $response = $this->put( route( 'docstore-dir@update', [ 'dir' => $dir ] ), [ 'name' =>  self::testInfo[ 'folderName2' ], 'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
+        $response = $this->put( route( 'docstore-dir@update', [ 'dir' => $dir ] ),
+            [
+                'name'          =>  self::testInfo[ 'folderName2' ],
+                'description'   => self::testInfo[ 'folderDescription2' ],
+                'parent_dir_id' => self::testInfo[ 'parentDirId2' ]
+            ]
+        );
         $response->assertStatus(403 );
         $this->assertDatabaseHas(       'docstore_directories', [ 'name' => self::testInfo[ 'folderName' ],     'description' => self::testInfo[ 'folderDescription' ],     'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
         $this->assertDatabaseMissing(   'docstore_directories', [ 'name' => self::testInfo[ 'folderName2' ],    'description' => self::testInfo[ 'folderDescription2' ],    'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
@@ -263,13 +285,19 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateCustUser()
+    public function testUpdateCustUser(): void
     {
         $dir = DocstoreDirectory::where( [ 'name' => self::testInfo[ 'folderName' ] ] )->first();
 
         // cust user
-        $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'custuser' ] ] );
-        $response = $this->actingAs( $user )->put( route( 'docstore-dir@update', [ 'dir' => $dir ] ), [ 'name' =>  self::testInfo[ 'folderName2' ], 'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
+        $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+            ->put( route( 'docstore-dir@update', [ 'dir' => $dir ] ),
+                [
+                    'name'          =>  self::testInfo[ 'folderName2' ],
+                    'description'   => self::testInfo[ 'folderDescription2' ],
+                    'parent_dir_id' => self::testInfo[ 'parentDirId2' ]
+                ]
+            );
         $response->assertStatus(403 );
         $this->assertDatabaseHas(       'docstore_directories', [ 'name' => self::testInfo[ 'folderName' ],     'description' => self::testInfo[ 'folderDescription' ],     'parent_dir_id' => self::testInfo[ 'parentDirId' ]  ] );
         $this->assertDatabaseMissing(   'docstore_directories', [ 'name' => self::testInfo[ 'folderName2' ],    'description' => self::testInfo[ 'folderDescription2' ],    'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
@@ -280,13 +308,19 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateCustAdmin()
+    public function testUpdateCustAdmin(): void
     {
         $dir = DocstoreDirectory::where( [ 'name' => self::testInfo[ 'folderName' ] ] )->first();
 
         // cust admin
-        $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'custadmin' ] ] );
-        $response = $this->actingAs( $user )->put( route( 'docstore-dir@update', [ 'dir' => $dir ] ), [ 'name' =>  self::testInfo[ 'folderName2' ], 'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
+        $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
+            ->put( route( 'docstore-dir@update', [ 'dir' => $dir ] ),
+                [
+                    'name'          =>  self::testInfo[ 'folderName2' ],
+                    'description'   => self::testInfo[ 'folderDescription2' ],
+                    'parent_dir_id' => self::testInfo[ 'parentDirId2' ]
+                ]
+            );
         $response->assertStatus(403 );
         $this->assertDatabaseHas(       'docstore_directories', [ 'name' => self::testInfo[ 'folderName' ],     'description' => self::testInfo[ 'folderDescription' ],     'parent_dir_id' => self::testInfo[ 'parentDirId' ]  ] );
         $this->assertDatabaseMissing(   'docstore_directories', [ 'name' => self::testInfo[ 'folderName2' ],    'description' => self::testInfo[ 'folderDescription2' ],    'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
@@ -297,13 +331,19 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateSuperUser()
+    public function testUpdateSuperUser(): void
     {
         $dir = DocstoreDirectory::where( [ 'name' => self::testInfo[ 'folderName' ] ] )->first();
 
         // superuser
-        $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'superuser' ] ] );
-        $this->actingAs( $user )->put( route( 'docstore-dir@update', [ 'dir' => $dir ] ), [ 'name' =>  self::testInfo[ 'folderName2' ], 'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir' => self::testInfo[ 'parentDirId2' ] ] );
+        $this->actingAs( $this->getSuperUser( 'travis' ) )
+            ->put( route( 'docstore-dir@update', [ 'dir' => $dir ] ),
+            [
+                'name'          =>  self::testInfo[ 'folderName2' ],
+                'description'   => self::testInfo[ 'folderDescription2' ],
+                'parent_dir_id' => self::testInfo[ 'parentDirId2' ]
+            ]
+        );
         $this->assertDatabaseMissing(   'docstore_directories', [ 'name' => self::testInfo[ 'folderName' ],     'description' => self::testInfo[ 'folderDescription' ],     'parent_dir_id' => self::testInfo[ 'parentDirId' ]  ] );
         $this->assertDatabaseHas(       'docstore_directories', [ 'name' => self::testInfo[ 'folderName2' ],    'description' => self::testInfo[ 'folderDescription2' ],    'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
     }
@@ -313,7 +353,7 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteWithPostMethod()
+    public function testDeleteWithPostMethod(): void
     {
         $dir = DocstoreDirectory::where( [ 'name' => self::testInfo[ 'folderName2' ] ] )->first();
 
@@ -327,7 +367,7 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteForPublicUser()
+    public function testDeleteForPublicUser(): void
     {
         $dir = DocstoreDirectory::where( [ 'name' => self::testInfo[ 'folderName2' ] ] )->first();
 
@@ -342,13 +382,13 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteCustUser()
+    public function testDeleteCustUser(): void
     {
         $dir = DocstoreDirectory::where( [ 'name' => self::testInfo[ 'folderName2' ] ] )->first();
 
         // cust user
-        $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'custuser' ] ] );
-        $response = $this->actingAs( $user )->delete( route( 'docstore-dir@delete', [ 'dir' => $dir ] ) );
+        $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+            ->delete( route( 'docstore-dir@delete', [ 'dir' => $dir ] ) );
         $response->assertStatus(403 );
         $this->assertDatabaseHas( 'docstore_directories', [ 'name' => self::testInfo[ 'folderName2' ],    'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
     }
@@ -358,13 +398,13 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteCustAdmin()
+    public function testDeleteCustAdmin(): void
     {
         $dir = DocstoreDirectory::where( [ 'name' => self::testInfo[ 'folderName2' ] ] )->first();
 
-        // cust user
-        $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'custadmin' ] ] );
-        $response = $this->actingAs( $user )->delete( route( 'docstore-dir@delete', [ 'dir' => $dir ] ) );
+        // cust admin
+        $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
+            ->delete( route( 'docstore-dir@delete', [ 'dir' => $dir ] ) );
         $response->assertStatus(403 );
         $this->assertDatabaseHas( 'docstore_directories', [ 'name' => self::testInfo[ 'folderName2' ],    'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
     }
@@ -374,13 +414,13 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteSuperUser()
+    public function testDeleteSuperUser(): void
     {
         $dir = DocstoreDirectory::where( [ 'name' => self::testInfo[ 'folderName2' ] ] )->first();
 
         // superuser
-        $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'superuser' ] ] );
-        $this->actingAs( $user )->delete( route( 'docstore-dir@delete', [ 'dir' => $dir ] ) );
+        $this->actingAs( $this->getSuperUser( 'travis' ) )
+            ->delete( route( 'docstore-dir@delete', [ 'dir' => $dir ] ) );
         $this->assertDatabaseMissing( 'docstore_directories', [ 'name' => self::testInfo[ 'folderName2' ],    'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
     }
 }

@@ -1,7 +1,9 @@
-<?php namespace IXP\Console\Commands\Grapher;
+<?php
+
+namespace IXP\Console\Commands\Grapher;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,27 +23,31 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Carbon\Carbon;
 
-use IXP\Contracts\Grapher\Backend as GrapherBackend;
+use Grapher, Mail;
 
-use D2EM;
-use Grapher;
-use IXP\Services\Grapher\Graph;
-use Mail;
 use IXP\Mail\Grapher\PortsWithCounts as PortsWithCountsMail;
 
+use IXP\Models\{
+    Customer,
+    TrafficDaily
+};
+
+use IXP\Services\Grapher\Graph;
 
  /**
   * Artisan command to email ports where a given error / discards count > 0
   *
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+  * @author     Yann Robin      <yann@islandbridgenetworks.ie>
   * @category   Grapher
   * @package    IXP\Console\Commands
-  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
-class EmailPortsWithCounts extends GrapherCommand {
-
+class EmailPortsWithCounts extends GrapherCommand
+{
     /**
      * The name and signature of the console command.
      *
@@ -91,29 +97,36 @@ class EmailPortsWithCounts extends GrapherCommand {
         return 0;
     }
 
-    private function emailPortsWithCounts( $category ): array {
-
-        $day = date( 'Y-m-d', strtotime( '-1 days' ) );
-        $data = D2EM::getRepository( 'Entities\TrafficDaily' )->load( $day, $category );
-        $ports = [];
+    /**
+     * @param $category
+     *
+     * @return array
+     *
+     * @throws
+     */
+    private function emailPortsWithCounts( $category ): array
+    {
+        $data   = TrafficDaily::loadTraffic( Carbon::yesterday(), $category );
+        $ports  = [];
 
         foreach( $data as $d ) {
-            if( $d[ 'day_tot_in' ] == 0 && $d[ 'day_tot_out' ] == 0 ) {
+            if( $d[ 'day_tot_in' ] === 0 && $d[ 'day_tot_out' ] === 0 ) {
                 continue;
             }
 
             $port = [];
 
             if( $this->isVerbosityVerbose() ) {
-                $this->info( "{$d['Customer']['name']}\n\t\tIN / OUT: {$d[ 'day_tot_in' ]} / {$d[ 'day_tot_out' ]}" );
+                $this->info( "{$d['name']}\n\t\tIN / OUT: {$d[ 'day_tot_in' ]} / {$d[ 'day_tot_out' ]}" );
             }
 
-            $graph = $this->grapher()->customer( d2r('Customer')->find($d['Customer']['id']) )->setCategory( $category )->setPeriod( Graph::PERIOD_DAY );
+            $graph = $this->grapher()->customer( Customer::find( $d[ 'cust_id' ] ) )->setCategory( $category )->setPeriod( Graph::PERIOD_DAY );
 
-            $port['cust']    = $d['Customer'];
-            $port['in']      = $d[ 'day_tot_in' ];
-            $port['out']     = $d[ 'day_tot_out' ];
-            $port['png']     = $graph->png();
+            $port['cust_id']    = $d[ 'cust_id' ];
+            $port['name']       = $d[ 'name' ];
+            $port['in']         = $d[ 'day_tot_in' ];
+            $port['out']        = $d[ 'day_tot_out' ];
+            $port['png']        = $graph->png();
 
             $ports[] = $port;
         }
@@ -121,12 +134,13 @@ class EmailPortsWithCounts extends GrapherCommand {
         return $ports;
     }
 
-
     /**
      * Check the various arguments and options that have been password to the console command
+     *
      * @return int 0 for success or else an error code
      */
-    protected function verifyArgsAndOptions(): int {
+    protected function verifyArgsAndOptions(): int
+    {
         $emails = explode( ',', $this->argument('email') );
 
         foreach( $emails as $e ) {
@@ -139,5 +153,4 @@ class EmailPortsWithCounts extends GrapherCommand {
         // all good :-D
         return 0;
     }
-
 }

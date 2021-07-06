@@ -1,7 +1,9 @@
-<?php namespace IXP\Console\Commands\Irrdb;
+<?php
+
+namespace IXP\Console\Commands\Irrdb;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,21 +23,22 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM;
-use Entities\Customer;
+use Illuminate\Database\Eloquent\Builder;
 use IXP\Console\Commands\Command;
+use IXP\Models\Customer;
 
- /**
+/**
   * Artisan command to update the IRRDB database
   *
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+  * @author     Yann Robin      <yann@islandbridgenetworks.ie>
   * @category   Irrdb
   * @package    IXP\Console\Commands
-  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
-abstract class UpdateDb extends Command {
-
+abstract class UpdateDb extends Command
+{
     protected $netTime  = 0.0;
     protected $dbTime   = 0.0;
     protected $procTime = 0.0;
@@ -48,34 +51,34 @@ abstract class UpdateDb extends Command {
         if( !extension_loaded("ds") ) {
             $this->warn( "The PHP Data Structure Ds\Set extension is not loaded/available. Falling back to polyfill which, in extreme cases, can take ~3 hours. Install the php-ds extension!" );
         }
-
         return true;
     }
 
     /**
      * Returns all customers or, if specified on the command line, a specific customer
      *
-     * @return array Customer entities
+     * @return array|Builder|Customer
      */
-    protected function resolveCustomers(): array {
-        $custarg = $this->argument('customer');
+    protected function resolveCustomers()
+    {
+        $custarg = $this->argument('customer' );
 
         // if not customer specific, return all appropriate ones:
         if( !$custarg ) {
-            return D2EM::getRepository( 'Entities\Customer' )->getCurrentActive( false, true );
+            return Customer::currentActive( true )->get();
         }
 
         // assume ASN first:
-        if( is_numeric( $custarg ) && ( $c = D2EM::getRepository( 'Entities\Customer')->findBy( [ 'autsys' => $custarg ] ) ) ) {
+        if( is_numeric( $custarg ) && count( ( $c = Customer::whereAutsys( $custarg )->get() ) ) > 0 ) {
             return $c;
         }
 
         // then ID:
-        if( is_numeric( $custarg ) && ( $c = D2EM::getRepository( 'Entities\Customer')->find( $custarg ) ) ) {
+        if( is_numeric( $custarg ) && ( $c = Customer::find( $custarg ) ) ) {
             return [ $c ];
         }
 
-        if( $c = d2r('Customer')->findBy( ['shortname' => $custarg] ) ) {
+        if( count( $c = Customer::whereShortname( $custarg )->get() ) > 0 ) {
             return $c;
         }
 
@@ -84,7 +87,15 @@ abstract class UpdateDb extends Command {
         exit(-1);
     }
 
-    public function printResults( Customer $c, array $r, $irrdbType = 'prefix' )
+    /**
+     * Print Results
+     * @param Customer $c
+     * @param array $r
+     * @param string $irrdbType
+     *
+     * @return void
+     */
+    public function printResults( Customer $c, array $r, string $irrdbType = 'prefix' ): void
     {
         $this->netTime  += $r[ 'netTime' ];
         $this->dbTime   += $r[ 'dbTime' ];
@@ -94,7 +105,7 @@ abstract class UpdateDb extends Command {
             return;
         }
 
-        $base = $c->getAbbreviatedName() . ': [IPv4: '
+        $base = $c->abbreviatedName . ': [IPv4: '
             . $r[ 'v4' ][ 'count' ] . ' total; ' . count( $r[ 'v4' ][ 'stale' ] ) . ' stale; ' . count( $r[ 'v4' ][ 'new' ] )
             . ' new; DB ' . ( $r[ 'v4' ][ 'dbUpdated' ] ? 'updated' : 'not updated' ) . '] [IPv6: '
             . $r[ 'v6' ][ 'count' ] . ' total; ' . count( $r[ 'v6' ][ 'stale' ] ) . ' stale; ' . count( $r[ 'v6' ][ 'new' ] )
@@ -119,7 +130,7 @@ abstract class UpdateDb extends Command {
                 foreach( [ 'stale', 'new' ] as $type ) {
                     if( count( $r[ 'v' . $protocol ][ $type ] ) ) {
                         foreach( $r[ 'v' . $protocol ][ $type ] as $e ) {
-                            $this->line( "        " . ( $type == 'stale' ? '-' . $e[$irrdbType] : '+' . $e ) . "  [IPv{$protocol}]" );
+                            $this->line( "        " . ( $type === 'stale' ? '-' . $e[ $irrdbType ] : '+' . $e ) . "  [IPv{$protocol}]" );
                         }
                     }
                 }

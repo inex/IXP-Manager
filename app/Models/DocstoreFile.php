@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,8 +25,6 @@ namespace IXP\Models;
 
 use DB, Eloquent;
 
-use Entities\User as UserEntity;
-
 use Illuminate\Database\Eloquent\{
     Builder,
     Collection,
@@ -39,8 +37,8 @@ use Illuminate\Database\Eloquent\Relations\{
 };
 
 use Illuminate\Support\Carbon;
-use Storage;
 
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\DocstoreFile
@@ -76,17 +74,21 @@ use Storage;
  * @method static Builder|DocstoreFile whereSha256($value)
  * @method static Builder|DocstoreFile whereUpdatedAt($value)
  * @mixin Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 
 class DocstoreFile extends Model
 {
+    use Observable;
 
     /**
-     * The attributes that aren't mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [ 'name',
+    protected $fillable = [
+        'name',
         'description',
         'docstore_directory_id',
         'path',
@@ -133,7 +135,7 @@ class DocstoreFile extends Model
      */
     public function logs(): HasMany
     {
-        return $this->hasMany('IXP\Models\DocstoreLog');
+        return $this->hasMany(DocstoreLog::class );
     }
 
     /**
@@ -143,7 +145,7 @@ class DocstoreFile extends Model
      */
     public function isViewable(): bool
     {
-        return in_array( '.' . pathinfo( $this->name, PATHINFO_EXTENSION ), self::$extensionViewable );
+        return in_array( '.' . pathinfo( $this->name, PATHINFO_EXTENSION ), self::$extensionViewable, true );
     }
 
     /**
@@ -153,7 +155,7 @@ class DocstoreFile extends Model
      */
     public function isEditable(): bool
     {
-        return in_array( '.' . pathinfo( $this->name, PATHINFO_EXTENSION ), self::$extensionEditable );
+        return in_array( '.' . pathinfo( $this->name, PATHINFO_EXTENSION ), self::$extensionEditable, true );
     }
 
     /**
@@ -170,18 +172,34 @@ class DocstoreFile extends Model
      * Gets a directory listing of files for the given (or root) directory and as
      * appropriate for the user (or public access)
      *
-     * @param DocstoreDirectory|null $dir
-     * @param int                    $privs
+     * @param DocstoreDirectory|null    $dir
+     * @param int                       $privs
      *
      * @return Collection
      */
-    public static function getListing( ?DocstoreDirectory $dir = null, int $privs = UserEntity::AUTH_PUBLIC )
+    public static function getListing( ?DocstoreDirectory $dir = null, int $privs = User::AUTH_PUBLIC ): Collection
     {
         return self::where('min_privs', '<=', $privs )
-            ->where('docstore_directory_id', $dir->id ?? null)
+            ->where('docstore_directory_id', $dir->id ?? null )
             ->withCount([ 'logs as downloads_count', 'logs as unique_downloads_count' => function( Builder $query ) {
                 $query->select( DB::raw('COUNT( DISTINCT downloaded_by )' ) );
             }])
             ->orderBy('name')->get();
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Docstore File [id:%d] '%s'",
+            $model->id,
+            $model->name,
+        );
     }
 }

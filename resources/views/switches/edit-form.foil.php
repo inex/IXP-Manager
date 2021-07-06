@@ -1,9 +1,9 @@
 <div class="card col-sm-12">
     <div class="card-body">
 
-        <?= Former::open()->method( 'POST' )
+        <?= Former::open()->method( $t->data['params']['isAdd'] ? 'POST' : 'PUT' )
             ->id( 'form' )
-            ->action( route( $t->feParams->route_prefix.'@store' ) )
+            ->action( $t->data['params']['isAdd'] ? route( $t->feParams->route_prefix . '@store' ) : route($t->feParams->route_prefix . '@update', [ 'id' => $t->data[ 'params'][ 'object']->id ] ) )
             ->customInputWidthClass( 'col-lg-8 col-sm-6' )
             ->customLabelWidthClass( 'col-lg-4 col-sm-4' )
             ->actionButtonsCustomClass( "grey-box")
@@ -31,13 +31,34 @@
                     <?= Former::hidden( 'hostname' ) ?>
                 <?php endif; ?>
 
-                <?= Former::select( 'cabinetid' )
-                    ->label( 'Rack' )
-                    ->fromQuery( $t->data[ 'params'][ 'cabinets'], 'name' )
-                    ->placeholder( 'Choose a rack' )
-                    ->addClass( 'chzn-select' )
-                    ->blockHelp( "The rack / cabinet where this switch is located." );
-                ?>
+                <div class="form-group row">
+                    <label for="cabinetid" class="control-label col-lg-4 col-sm-4">
+                        Rack
+                    </label>
+                    <div class="col-lg-8 col-sm-6">
+                        <?php
+                            $cabinetid = old('cabinetid') ?? ( $t->data[ 'params'][ 'object'][ 'cabinetid' ] ?? null );
+                        ?>
+                        <select class="form-control" id="cabinetid" name="cabinetid">
+                            <option value="" disabled="disabled" selected="selected">
+                                Choose a rack <?= $cabinetid ?>
+                            </option>
+                            <?php foreach( $t->data[ 'params'][ 'cabinets'] as $location ): ?>
+                                <optgroup label="<?= $location[ 'name' ] ?>">
+                                    <?php foreach( $location[ 'cabinets' ] as $c ): ?>
+                                        <option value="<?= $c[ 'id' ] ?>" <?= (int)$cabinetid === $c[ 'id' ] ? 'selected' : '' ?> >
+                                            <?= $c[ 'name' ] ?> [<?= $c[ 'colocation' ] ?>]
+                                        </option>
+                                    <?php endforeach; ?>
+                                </optgroup>
+                            <?php endforeach; ?>
+                        </select>
+                        <small class="form-text text-muted former-help-text tw-collapse">
+                            The rack / cabinet where this switch is located.
+                        </small>
+                    </div>
+                </div>
+
 
                 <?= Former::select( 'infrastructure' )
                     ->label( 'Infrastructure' )
@@ -93,7 +114,7 @@
                     ->inline()
                     ->check()
                     ->blockHelp( "Should this switch be polled automatically? Disabling this does not prevent you from manually polling the switch "
-                        . "via the UI or via Artisan on the command line by explicity specifying it. It will just not be polled via the all switches "
+                        . "via the UI or via Artisan on the command line by explicitly specifying it. It will just not be polled via the all switches "
                         . "Artisan <code>switch:snmp-poll</code> command." );
                 ?>
             </div>
@@ -124,7 +145,6 @@
                     ->placeholder( '00:05:78:a1:b5:2c' )
                     ->blockHelp( "This option exists for auto-provisioning / orchestration purposes and you should set it according to your own needs." );
                 ?>
-
             </div>
 
             <div class="col-lg-6 mt-4 mt-lg-0">
@@ -151,7 +171,6 @@
         </div>
 
         <div class="form-group">
-
             <div class="col-lg-offset-2 col-sm-offset-2">
                 <div class="card mt-4">
                     <div class="card-header">
@@ -184,18 +203,16 @@
             </div>
         </div>
 
-
-
         <?= Former::actions(
-                Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' )->class( "mb-2 mb-sm-0" ),
+                Former::primary_submit( $t->data['params']['isAdd'] ? 'Create' : 'Save Changes' )->id( 'btn-submit' )->class( "mb-2 mb-sm-0" ),
                 Former::secondary_link( 'Cancel' )->href( route( $t->feParams->route_prefix.'@list') )->class( "mb-2 mb-sm-0" ),
                 Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" ),
-                Former::secondary_link( $t->data[ 'params'][ 'addBySnmp'] ? "Manual / Non-SNMP Add" : "Add by SNMP" )->href( route( $t->data[ 'params'][ 'addBySnmp'] ? $t->feParams->route_prefix.'@add' : $t->feParams->route_prefix.'@add-by-snmp' ) . ( $t->data[ 'params'][ 'addBySnmp'] ? "?manual=1" : "" ) )->class( "mb-2 mb-sm-0" )
+                Former::secondary_link( $t->data[ 'params'][ 'addBySnmp'] ? "Manual / Non-SNMP Add" : "Add by SNMP" )->href( route( $t->data[ 'params'][ 'addBySnmp'] ? $t->feParams->route_prefix.'@create' : $t->feParams->route_prefix.'@create-by-snmp' ) . ( $t->data[ 'params'][ 'addBySnmp'] ? "?manual=1" : "" ) )->class( "mb-2 mb-sm-0" )
             );
         ?>
 
         <?= Former::hidden( 'id' )
-            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
+            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->id : '' )
         ?>
 
         <?= Former::hidden( 'add_by_snnp' )

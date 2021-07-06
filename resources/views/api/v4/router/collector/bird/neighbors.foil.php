@@ -1,8 +1,7 @@
-
 <?php foreach( $t->ints as $int ):
     
         // do not set up a session to ourselves!
-        if( $int['autsys'] == $t->router->asn() ):
+        if( $int['autsys'] == $t->router->asn ):
             continue;
         endif;
 ?>
@@ -16,7 +15,7 @@ protocol bgp pb_as<?= $int['autsys'] ?>_vli<?= $int['vliid'] ?>_ipv<?= $int['pro
         import all;
         export none;
         import limit <?= $int['maxprefixes'] ?> action restart;
-        <?php if( $int['bgpmd5secret'] && !$t->router->skipMD5() ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
+        <?php if( $int['bgpmd5secret'] && !$t->router->skip_md5 ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
 
 }
 

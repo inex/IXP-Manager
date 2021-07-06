@@ -22,16 +22,13 @@ namespace IXP\Console\Commands\Upgrade;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
 use Illuminate\Support\Facades\DB;
 use IXP\Console\Commands\Command as IXPCommand;
-
-
 /**
- * Class Customer2User - tool to migrate the Customer/User datas to customer_to_users table
+ * Reset MYSQL views
  *
  * @author      Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author      Yann Robin <yann@islandbridgenetworks.ie>
  * @package     IXP\Console\Commands\Upgrade
  * @copyright   Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
@@ -62,10 +59,45 @@ class ResetMysqlViews extends IXPCommand
      * @throws
      *
      */
-    public function handle(): int {
-        DB::beginTransaction();
+    public function handle(): int
+    {
         DB::unprepared( resolve( 'Foil\Engine' )->render( 'database/views.foil.sql' ) );
-        DB::commit();
+
+        $sql = <<<END_SQL
+CREATE TRIGGER bgp_sessions_update AFTER INSERT ON `bgpsessiondata` FOR EACH ROW
+
+BEGIN
+
+    IF NOT EXISTS ( SELECT 1 FROM bgp_sessions WHERE srcipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND dstipaddressid = NEW.dstipaddressid ) THEN
+			INSERT INTO bgp_sessions
+                ( srcipaddressid, protocol, dstipaddressid, packetcount, last_seen, source )
+			VALUES
+                ( NEW.srcipaddressid, NEW.protocol, NEW.dstipaddressid, NEW.packetcount, NOW(), NEW.source );
+    ELSE
+			UPDATE bgp_sessions SET
+				last_seen   = NOW(),
+				packetcount = packetcount + NEW.packetcount
+			WHERE
+				srcipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND dstipaddressid = NEW.dstipaddressid;
+    END IF;
+
+    IF NOT EXISTS ( SELECT 1 FROM bgp_sessions WHERE dstipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND srcipaddressid = NEW.dstipaddressid ) THEN
+			INSERT INTO bgp_sessions
+                ( srcipaddressid, protocol, dstipaddressid, packetcount, last_seen, source )
+			VALUES
+                ( NEW.dstipaddressid, NEW.protocol, NEW.srcipaddressid, NEW.packetcount, NOW(), NEW.source );
+    ELSE
+			UPDATE bgp_sessions SET
+				last_seen   = NOW(),
+				packetcount = packetcount + NEW.packetcount
+			WHERE
+				dstipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND srcipaddressid = NEW.dstipaddressid;
+    END IF;
+
+END
+END_SQL;
+
+        DB::unprepared( $sql );
 
         return 0;
     }

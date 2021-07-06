@@ -318,7 +318,7 @@ CREATE TABLE `contact` (
 
 LOCK TABLES `contact` WRITE;
 /*!40000 ALTER TABLE `contact` DISABLE KEYS */;
-INSERT INTO `contact` VALUES (4,1,'Docker Superuser','','joe@example.com','','',1,1,'','2018-01-18 21:27:41',1,'vagrant','2018-01-18 21:27:41'),(5,4,'AS112 CustAdmin','','joe@exmaple.com','','',0,0,'','2018-01-18 21:29:48',4,'docker','2018-01-18 21:29:48'),(6,4,'as112user','','joe@example.com','','',0,0,'','2018-01-18 21:30:16',4,'docker','2018-01-18 21:30:16');
+INSERT INTO `contact` VALUES (4,1,'Docker Superuser','','joe@example.com','','',1,1,'','2018-01-18 21:27:41',1,'vagrant','2018-01-18 21:27:41'),(5,4,'AS112 CustAdmin','','joe@example.com','','',0,0,'','2018-01-18 21:29:48',4,'docker','2018-01-18 21:29:48'),(6,4,'as112user','','joe@example.com','','',0,0,'','2018-01-18 21:30:16',4,'docker','2018-01-18 21:30:16');
 /*!40000 ALTER TABLE `contact` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2200,7 +2200,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (4,1,'docker','$2y$10$3wob28r7Oqlfwmqw0mFUq.k0/JHdXv4tONZ3wrjI87zDMCeENmg0y','joe@example.com',NULL,NULL,3,0,'2018-01-18 21:27:41',1,'vagrant','2018-01-18 21:27:41','Docker Superuser',NULL,NULL),(5,4,'as112admin','$2y$10$pW.5k3BxS74UbSH5HCOlhOJXzHgUioMAUd8hoHicW.u.lZkFFXkWS','joe@exmaple.com',NULL,NULL,2,0,'2018-01-18 21:29:48',4,'docker','2018-01-18 21:29:48','AS112 CustAdmin',NULL,NULL),(6,4,'as112user','$2y$10$WjV0rRnERI/.IFQZXxzKle03xXueC6RayuYiT6CKtuU84uQhG2a.G','joe@example.com',NULL,NULL,1,0,'2018-01-18 21:30:16',4,'docker','2018-01-18 21:30:16','as112user',NULL,NULL);
+INSERT INTO `user` VALUES (4,1,'docker','$2y$10$3wob28r7Oqlfwmqw0mFUq.k0/JHdXv4tONZ3wrjI87zDMCeENmg0y','joe@example.com',NULL,NULL,3,0,'2018-01-18 21:27:41',1,'vagrant','2018-01-18 21:27:41','Docker Superuser',NULL,NULL),(5,4,'as112admin','$2y$10$pW.5k3BxS74UbSH5HCOlhOJXzHgUioMAUd8hoHicW.u.lZkFFXkWS','joe@example.com',NULL,NULL,2,0,'2018-01-18 21:29:48',4,'docker','2018-01-18 21:29:48','AS112 CustAdmin',NULL,NULL),(6,4,'as112user','$2y$10$WjV0rRnERI/.IFQZXxzKle03xXueC6RayuYiT6CKtuU84uQhG2a.G','joe@example.com',NULL,NULL,1,0,'2018-01-18 21:30:16',4,'docker','2018-01-18 21:30:16','as112user',NULL,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 

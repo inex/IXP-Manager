@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Services;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,8 +23,10 @@ namespace IXP\Http\Controllers\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\{
+    Request,
+    Response
+};
 
 use IXP\Http\Controllers\Controller;
 
@@ -32,7 +34,6 @@ use \IXP\Services\Grapher as GrapherService;
 use \IXP\Services\Grapher\Graph;
 
 use IXP\Exceptions\Services\Grapher\GeneralException as GrapherGeneralException;
-
 
 use Carbon\Carbon;
 
@@ -51,28 +52,32 @@ use Carbon\Carbon;
  *
  * *************************************************
  *
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   Grapher
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
+ * @category   IXP
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Grapher extends Controller
 {
     /**
      * the grapher service
-     * @var \IXP\Services\Grapher
+     *
+     * @var GrapherService
      */
     private $grapher;
 
     /**
      * The graph object
-     * @var \IXP\Services\Grapher\Graph
+     *
+     * @var Graph
      */
     private $graph = null;
 
     /**
      * The request object
+     *
      * @var Request $request
      */
     private $request = null;
@@ -80,10 +85,12 @@ class Grapher extends Controller
 
     /**
      * Constructor
+     *
      * @var Request             $request
      * @var GrapherService      $grapher
      */
-    public function __construct( Request $request, GrapherService $grapher ) {
+    public function __construct( Request $request, GrapherService $grapher )
+    {
         $this->grapher = $grapher;
         $this->request = $request;
         // NB: Construtcor happens before middleware...
@@ -91,18 +98,23 @@ class Grapher extends Controller
 
     /**
      * Grapher accessor
-     * @return \IXP\Services\Grapher
+     *
+     * @return GrapherService
      */
-    private function grapher(): GrapherService {
+    private function grapher(): GrapherService
+    {
         return $this->grapher;
     }
 
     /**
      * Graph accessor
-     * @return \IXP\Services\Grapher\Graph
+     *
+     * @return Graph
+     *
      * @throws
      */
-    private function graph(): Graph {
+    private function graph(): Graph
+    {
         if( $this->graph === null ) {
             $this->graph = $this->request()->attributes->get('graph');
 
@@ -116,14 +128,16 @@ class Grapher extends Controller
 
     /**
      * Request accessor
+     *
      * @return Request
      */
-    private function request(): Request {
+    private function request(): Request
+    {
         return $this->request;
     }
 
-
-    private function simpleResponse( $request ): Response {
+    private function simpleResponse( $request ): Response
+    {
         return (new Response( call_user_func( [ $this->graph(), $this->graph()->type() ] ) ) )
               ->header('Content-Type', Graph::CONTENT_TYPES[ $this->graph()->type() ] )
               ->header('Content-Disposition', sprintf( 'inline; filename="grapher-%s-%s-%s-%s.%s"',
@@ -133,51 +147,63 @@ class Grapher extends Controller
               ->header( 'Expires', Carbon::now()->addMinutes(5)->toRfc1123String() );
     }
 
-    public function ixp( Request $request ): Response {
+    public function ixp( Request $request ): Response
+    {
         return $this->simpleResponse( $request );
     }
 
-    public function infrastructure( Request $request ): Response {
+    public function infrastructure( Request $request ): Response
+    {
         return $this->simpleResponse( $request );
     }
 
-    public function vlan( Request $request ): Response {
+    public function vlan( Request $request ): Response
+    {
         return $this->simpleResponse( $request );
     }
 
-    public function switch( Request $request ): Response {
+    public function switch( Request $request ): Response
+    {
         return $this->simpleResponse( $request );
     }
 
-    public function corebundle( Request $request ): Response {
+    public function corebundle( Request $request ): Response
+    {
         return $this->simpleResponse( $request );
     }
 
-    public function trunk( Request $request ): Response {
+    public function trunk( Request $request ): Response
+    {
         return $this->simpleResponse( $request );
     }
 
-    public function physicalInterface( Request $request ): Response {
+    public function physicalInterface( Request $request ): Response
+    {
         return $this->simpleResponse( $request );
     }
 
-    public function virtualInterface( Request $request ): Response {
+    public function virtualInterface( Request $request ): Response
+    {
         return $this->simpleResponse( $request );
     }
 
-    public function customer( Request $request ): Response {
+    public function customer( Request $request ): Response
+    {
         return $this->simpleResponse( $request );
     }
 
-    public function vlanInterface( Request $request ): Response {
+    public function vlanInterface( Request $request ): Response
+    {
         return $this->simpleResponse( $request );
     }
 
-    public function latency( Request $request ): Response {
+    public function latency( Request $request ): Response
+    {
         return $this->simpleResponse( $request );
     }
 
-    public function p2p( Request $request ): Response {
+    public function p2p( Request $request ): Response
+    {
         return $this->simpleResponse( $request );
     }
 }

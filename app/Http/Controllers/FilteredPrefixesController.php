@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,57 +25,59 @@ namespace IXP\Http\Controllers;
 
 use Auth, Cache;
 
-use IXP\Jobs\FetchFilteredPrefixesForCustomer;
-
 use Illuminate\Http\Request;
 
 use Illuminate\View\View;
+
+use IXP\Jobs\FetchFilteredPrefixesForCustomer;
 
 use IXP\Models\Customer;
 
 /**
  * Filtered Prefixes Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   Controller
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Controllers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class FilteredPrefixesController extends Controller
 {
-
     /**
+     * Get the list
      *
-     * @param Request $r
-     * @param Customer $customer
+     * @param Request   $r
+     * @param Customer  $cust
      *
      * @return View
      *
      * @throws
      */
-    public function list( Request $r, Customer $customer ) : View
+    public function list( Request $r, Customer $cust ): View
     {
-        $this->authorize('view', $customer);
+        $this->authorize('view', $cust);
 
         // are we busting the cache?
-        if( Auth::user()->isSuperUser() && $r->reset_cache === "1" ) {
-            Cache::forget('filtered-prefixes-' . $customer->id );
+        if( $r->reset_cache === "1" && Auth::getUser()->isSuperUser() ) {
+            Cache::forget('filtered-prefixes-' . $cust->id );
         }
 
         // get the prefixes
-        $filteredPrefixes = Cache::get( 'filtered-prefixes-' . $customer->id, false );
+        $filteredPrefixes = Cache::get( 'filtered-prefixes-' . $cust->id, false );
 
         if( $filteredPrefixes === false ) {
             // no cached result so schedule a job to gather them:
-            FetchFilteredPrefixesForCustomer::dispatch( $customer );
+            FetchFilteredPrefixesForCustomer::dispatchAfterResponse( $cust );
 
             // if we are using the sync queue runner, it will have completed
-            $filteredPrefixes = Cache::get( 'filtered-prefixes-' . $customer->id, false );
-        };
+            $filteredPrefixes = Cache::get( 'filtered-prefixes-' . $cust->id, false );
+        }
 
         return view( 'filtered-prefixes.view' )->with([
-            'customer'         => $customer,
-            'filteredPrefixes' => $filteredPrefixes,
+            'cust'              => $cust,
+            'filteredPrefixes'  => $filteredPrefixes,
         ]);
     }
-
 }

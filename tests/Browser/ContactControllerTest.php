@@ -1,7 +1,9 @@
 <?php
 
+namespace Tests\Browser;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,26 +23,28 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace Tests\Browser;
-
-use D2EM;
-
-use Entities\Contact as ContactEntity;
-
+use IXP\Models\Contact;
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Throwable;
 
+/**
+ * Test Contact Controller
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Tests\Browser
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class ContactControllerTest extends DuskTestCase
 {
     public function tearDown(): void
     {
         foreach( [ 'Test Contact 1', 'Test Contact 2' ] as $name ) {
-            $c = D2EM::getRepository( ContactEntity::class )->findOneBy( [ 'name' => $name ] );
-
-            if( $c ) {
-                D2EM::remove( $c );
-                D2EM::flush();
+            if( $c = Contact::whereName( $name )->first() ) {
+                $c->delete();
             }
         }
 
@@ -51,11 +55,11 @@ class ContactControllerTest extends DuskTestCase
      * A Dusk test example.
      *
      * @return void
-     * @throws \Throwable
+     *
+     * @throws Throwable
      */
-    public function testAdd()
+    public function testAdd(): void
     {
-
         $this->browse(function (Browser $browser) {
             $browser->resize( 1600,1200 )
                     ->visit('/logout')
@@ -69,128 +73,113 @@ class ContactControllerTest extends DuskTestCase
                 ->assertSee( 'HEAnet CustAdmin' )
                 ->assertSee( 'heanet-custadmin@example.com' );
 
-            $browser->visit( '/contact/add' )
-                ->assertSee( 'Add Contact' )
+            $browser->visit( '/contact/create' )
+                ->assertSee( 'Create Contact' )
                 ->assertSee( 'Name' )
                 ->assertSee( 'Position' );
 
 
             // 1. test add :
-            $browser->type( 'name', 'Test Contact 1' )
-                ->select( 'custid', 5 )
-                ->type( 'position', 'Test Position' )
+            $browser->type( 'name', 'Test Contact 1'            )
+                ->select( 'custid', 5                           )
+                ->type( 'position', 'Test Position'             )
                 ->type( 'email',    'test-contact1@example.com' )
-                ->type( 'phone',    '0209110000' )
-                ->type( 'mobile',   '0209120000' )
-                // ->check( 'facilityaccess' )
-                // ->check( 'mayauthorize' )
-                ->type( 'notes', 'Test note' )
-                ->press('Add' )
-                ->assertPathIs('/contact/list' )
-                ->assertSee( 'Contact added' )
-                ->assertSee( 'Test Contact 1' )
-                ->assertSee( 'Test Position' )
-                ->assertSee( 'test-contact1@example.com' );
+                ->type( 'phone',    '0209110000'                )
+                ->type( 'mobile',   '0209120000'                )
+                ->type( 'notes',    'Test note'                 )
+                ->press('Create' )
+                ->assertPathIs('/contact/list'             )
+                ->assertSee( 'Contact created'              )
+                ->assertSee( 'Test Contact 1'               )
+                ->assertSee( 'Test Position'                )
+                ->assertSee( 'test-contact1@example.com'    );
 
             // get the contact:
-            /** @var ContactEntity $c */
-            $c = D2EM::getRepository( ContactEntity::class )->findOneBy( [ 'name' => 'Test Contact 1' ] );
+            /** @var Contact $c */
+            $c = Contact::whereName( 'Test Contact 1' )->first();
 
             // test the values:
-            $this->assertEquals( 'Test Contact 1',            $c->getName() );
-            $this->assertEquals( 'Test Position',             $c->getPosition() );
-            $this->assertEquals( 'test-contact1@example.com', $c->getEmail() );
-            $this->assertEquals( '0209110000',                $c->getPhone() );
-            $this->assertEquals( '0209120000',                $c->getMobile() );
-            $this->assertEquals( 5,                           $c->getCustomer()->getId() );
-            // $this->assertEquals( true,                        $c->getFacilityaccess() );
-            // $this->assertEquals( true,                        $c->getMayauthorize() );
-            $this->assertEquals( 'Test note',                 $c->getNotes() );
+            $this->assertEquals( 'Test Contact 1',            $c->name      );
+            $this->assertEquals( 'Test Position',             $c->position  );
+            $this->assertEquals( 'test-contact1@example.com', $c->email     );
+            $this->assertEquals( '0209110000',                $c->phone     );
+            $this->assertEquals( '0209120000',                $c->mobile    );
+            $this->assertEquals( 5,                           $c->custid    );
+            $this->assertEquals( 'Test note',                 $c->notes     );
 
 
             // test that editing while not making any changes and saving changes nothing
 
-            $browser->visit( '/contact/edit/' . $c->getId() )
-                ->assertPathIs('/contact/edit/' . $c->getId() )
+            $browser->visit( '/contact/edit/' . $c->id      )
+                ->assertPathIs('/contact/edit/' . $c->id    )
                 ->press( 'Save Changes' )
-                ->assertPathIs('/contact/list' )
-                ->assertSee( 'Contact edited' )
-                ->assertSee( 'Test Contact 1' )
-                ->assertSee( 'Test Position' )
+                ->assertPathIs('/contact/list'  )
+                ->assertSee( 'Contact updated'  )
+                ->assertSee( 'Test Contact 1'   )
+                ->assertSee( 'Test Position'    )
                 ->assertSee( 'test-contact1@example.com' );
 
             // test the values:
-            D2EM::refresh($c);
-            $this->assertEquals( 'Test Contact 1',            $c->getName() );
-            $this->assertEquals( 'Test Position',             $c->getPosition() );
-            $this->assertEquals( 'test-contact1@example.com', $c->getEmail() );
-            $this->assertEquals( '0209110000',                $c->getPhone() );
-            $this->assertEquals( '0209120000',                $c->getMobile() );
-            $this->assertEquals( 5,                           $c->getCustomer()->getId() );
-            // $this->assertEquals( true,                        $c->getFacilityaccess() );
-            // $this->assertEquals( true,                        $c->getMayauthorize() );
-            $this->assertEquals( 'Test note',                 $c->getNotes() );
-
-
-
+            $c->refresh();
+            $this->assertEquals( 'Test Contact 1',            $c->name      );
+            $this->assertEquals( 'Test Position',             $c->position  );
+            $this->assertEquals( 'test-contact1@example.com', $c->email     );
+            $this->assertEquals( '0209110000',                $c->phone     );
+            $this->assertEquals( '0209120000',                $c->mobile    );
+            $this->assertEquals( 5,                           $c->custid    );
+            $this->assertEquals( 'Test note',                 $c->notes     );
 
             // now test that editing while making changes works
-            $browser->visit( '/contact/edit/' . $c->getId() )
-                ->assertPathIs('/contact/edit/' . $c->getId() )
+            $browser->visit( '/contact/edit/' . $c->id       )
+                ->assertPathIs('/contact/edit/' . $c->id    )
                 ->type( 'name', 'Test Contact 2' )
                 ->select( 'custid', 2 )
                 ->type( 'position', 'Test Position2' )
                 ->type( 'email',    'test-contact2@example.com' )
                 ->type( 'phone',    '0209110002' )
                 ->type( 'mobile',   '0209120002' )
-                // ->uncheck( 'facilityaccess' )
-                // ->uncheck( 'mayauthorize' )
                 ->type( 'notes', 'Test note 2' )
                 ->press( 'Save Changes' )
                 ->assertPathIs('/contact/list' )
-                ->assertSee( 'Contact edited' )
+                ->assertSee( 'Contact updated' )
                 ->assertSee( 'Test Contact 2' )
                 ->assertSee( 'Test Position2' )
                 ->assertSee( 'test-contact2@example.com' );
 
             // test the values:
-            D2EM::refresh($c);
-            $this->assertEquals( 'Test Contact 2',            $c->getName() );
-            $this->assertEquals( 'Test Position2',             $c->getPosition() );
-            $this->assertEquals( 'test-contact2@example.com', $c->getEmail() );
-            $this->assertEquals( '0209110002',                $c->getPhone() );
-            $this->assertEquals( '0209120002',                $c->getMobile() );
-            $this->assertEquals( 2,                           $c->getCustomer()->getId() );
-            // $this->assertEquals( false,                       $c->getFacilityaccess() );
-            // $this->assertEquals( false,                       $c->getMayauthorize() );
-            $this->assertEquals( 'Test note 2',                 $c->getNotes() );
+            $c->refresh();
+            $this->assertEquals( 'Test Contact 2',            $c->name );
+            $this->assertEquals( 'Test Position2',             $c->position );
+            $this->assertEquals( 'test-contact2@example.com', $c->email );
+            $this->assertEquals( '0209110002',                $c->phone );
+            $this->assertEquals( '0209120002',                $c->mobile );
+            $this->assertEquals( 2,                           $c->custid );
+            $this->assertEquals( 'Test note 2',               $c->notes );
 
 
             // test that editing while not making any changes and saving changes nothing
             // (this is a retest for, e.g. unchecked checkboxes)
-            $browser->visit( '/contact/edit/' . $c->getId() )
-                ->assertPathIs('/contact/edit/' . $c->getId() )
+            $browser->visit( '/contact/edit/' . $c->id )
+                ->assertPathIs('/contact/edit/' . $c->id )
                 ->press( 'Save Changes' )
                 ->assertPathIs('/contact/list' )
-                ->assertSee( 'Contact edited' )
+                ->assertSee( 'Contact update' )
                 ->assertSee( 'Test Contact 2' )
                 ->assertSee( 'Test Position2' )
                 ->assertSee( 'test-contact2@example.com' );
 
             // test the values:
-            D2EM::refresh($c);
-            $this->assertEquals( 'Test Contact 2',            $c->getName() );
-            $this->assertEquals( 'Test Position2',             $c->getPosition() );
-            $this->assertEquals( 'test-contact2@example.com', $c->getEmail() );
-            $this->assertEquals( '0209110002',                $c->getPhone() );
-            $this->assertEquals( '0209120002',                $c->getMobile() );
-            $this->assertEquals( 2,                           $c->getCustomer()->getId() );
-            // $this->assertEquals( false,                       $c->getFacilityaccess() );
-            // $this->assertEquals( false,                       $c->getMayauthorize() );
-            $this->assertEquals( 'Test note 2',                 $c->getNotes() );
+            $c->refresh();
+            $this->assertEquals( 'Test Contact 2',            $c->name );
+            $this->assertEquals( 'Test Position2',            $c->position );
+            $this->assertEquals( 'test-contact2@example.com', $c->email );
+            $this->assertEquals( '0209110002',                $c->phone );
+            $this->assertEquals( '0209120002',                $c->mobile );
+            $this->assertEquals( 2,                           $c->custid );
+            $this->assertEquals( 'Test note 2',                $c->notes );
 
             // delete this contact
-            $browser->press( '#d2f-list-delete-' . $c->getId() )
+            $browser->press( '#e2f-list-delete-' . $c->id )
                 ->waitForText( 'Do you really want to delete this contact?' )
                 ->press( 'Delete' )
                 ->assertPathIs('/contact/list' )
@@ -198,8 +187,7 @@ class ContactControllerTest extends DuskTestCase
                 ->assertDontSee( 'Test Position2' )
                 ->assertDontSee( 'test-contact2@example.com' );
 
-            $this->assertNull( D2EM::getRepository( ContactEntity::class )->findOneBy( [ 'name' => 'Test Contact 2' ] ) );
-
+            $this->assertTrue( Contact::whereName( 'Test Contact 2' )->doesntExist() );
         });
 
 
@@ -209,7 +197,7 @@ class ContactControllerTest extends DuskTestCase
                 ->waitForText( 'Imagine CustAdmin' )
                 ->assertSee( 'imagine-custadmin@example.com' )
                 ->press( '#contacts-add-btn' )
-                ->assertSee( 'Add Contact' )
+                ->assertSee( 'Create Contact' )
                 ->assertSee( 'Name' )
                 ->assertSee( 'Position' )
                 ->assertSelected( 'custid', 5 );
@@ -222,43 +210,38 @@ class ContactControllerTest extends DuskTestCase
                 ->type( 'email',    'test-contact1@example.com' )
                 ->type( 'phone',    '0209110000' )
                 ->type( 'mobile',   '0209120000' )
-                // ->check( 'facilityaccess' )
-                // ->check( 'mayauthorize' )
                 ->type( 'notes', 'Test note' )
-                ->press('Add' )
+                ->press('Create' )
                 ->assertPathIs('/customer/overview/5/contacts' )
-                ->assertSee( 'Contact added' )
+                ->assertSee( 'Contact created' )
                 ->assertSee( 'Test Contact 1' )
                 ->assertSee( '0209110000 / 0209120000' )
                 ->assertSee( 'test-contact1@example.com' );
 
             // get the contact:
-            /** @var ContactEntity $c */
-            $c = D2EM::getRepository( ContactEntity::class )->findOneBy( [ 'name' => 'Test Contact 1' ] );
-
+            $c = Contact::whereName( 'Test Contact 1' )->first();
             // test the values:
-            $this->assertEquals( 'Test Contact 1',            $c->getName() );
-            $this->assertEquals( 'Test Position',             $c->getPosition() );
-            $this->assertEquals( 'test-contact1@example.com', $c->getEmail() );
-            $this->assertEquals( '0209110000',                $c->getPhone() );
-            $this->assertEquals( '0209120000',                $c->getMobile() );
-            $this->assertEquals( 5,                           $c->getCustomer()->getId() );
-            // $this->assertEquals( true,                        $c->getFacilityaccess() );
-            // $this->assertEquals( true,                        $c->getMayauthorize() );
-            $this->assertEquals( 'Test note',                 $c->getNotes() );
+            $this->assertEquals( 'Test Contact 1',            $c->name );
+            $this->assertEquals( 'Test Position',             $c->position );
+            $this->assertEquals( 'test-contact1@example.com', $c->email );
+            $this->assertEquals( '0209110000',                $c->phone );
+            $this->assertEquals( '0209120000',                $c->mobile );
+            $this->assertEquals( 5,                           $c->custid );
+            $this->assertEquals( 'Test note',                 $c->notes );
 
 
             // test that editing while not making any changes and saving changes nothing
 
-            $browser->press( '#cont-list-edit-' . $c->getId() )
-                ->assertPathIs('/contact/edit/' . $c->getId() )
+            $browser->press( '#cont-list-edit-' . $c->id )
+                ->assertPathIs('/contact/edit/' . $c->id )
                 ->press( 'Save Changes' )
                 ->assertPathIs('/customer/overview/5/contacts' );
 
 
             // delete this contact
-            $browser->press( '#cont-list-delete-' . $c->getId() )
-                ->waitForText( 'Do you really want to delete this contact?' )
+            $browser->press( '#btn-delete-' . $c->id )
+                ->pause( 500 )
+                ->waitForText( 'Delete Contact' )
                 ->press( 'Delete' )
                 ->assertPathIs('/customer/overview/5/contacts' )
                 ->assertSee( 'Contact deleted' )
@@ -266,27 +249,21 @@ class ContactControllerTest extends DuskTestCase
                 ->assertDontSee( 'Test Position' )
                 ->assertDontSee( 'test-contact1@example.com' );
 
-            $this->assertNull( D2EM::getRepository( ContactEntity::class )->findOneBy( [ 'name' => 'Test Contact 1' ] ) );
+            $this->assertTrue( Contact::whereName( 'Test Contact 1' )->doesntExist() );
 
             $browser->visit('/logout')
                 ->assertPathIs( '/login' );
         });
-
     }
-
-
-
-
-
-
 
     /**
      * A Dusk test example.
      *
      * @return void
-     * @throws \Throwable
+     *
+     * @throws
      */
-    public function testAddCustAdmin()
+    public function testAddCustAdmin(): void
     {
 
         $this->browse(function (Browser $browser) {
@@ -302,8 +279,8 @@ class ContactControllerTest extends DuskTestCase
                 ->assertSee( 'Imagine CustAdmin' )
                 ->assertSee( 'imagine-custadmin@example.com' );
 
-            $browser->visit( '/contact/add' )
-                ->assertSee( 'Add Contact' )
+            $browser->visit( '/contact/create' )
+                ->assertSee( 'Create Contact' )
                 ->assertSee( 'Name' )
                 ->assertSee( 'Position' );
 
@@ -314,49 +291,48 @@ class ContactControllerTest extends DuskTestCase
                 ->type( 'email',    'test-contact1@example.com' )
                 ->type( 'phone',    '0209110000' )
                 ->type( 'mobile',   '0209120000' )
-                ->press('Add' )
+                ->press('Create' )
                 ->assertPathIs('/contact/list' )
-                ->assertSee( 'Contact added' )
+                ->assertSee( 'Contact created' )
                 ->assertSee( 'Test Contact 1' )
                 ->assertSee( 'Test Position' )
                 ->assertSee( 'test-contact1@example.com' );
 
             // get the contact:
-            /** @var ContactEntity $c */
-            $c = D2EM::getRepository( ContactEntity::class )->findOneBy( [ 'name' => 'Test Contact 1' ] );
+            $c = Contact::whereName( 'Test Contact 1' )->first();
 
             // test the values:
-            $this->assertEquals( 'Test Contact 1',            $c->getName() );
-            $this->assertEquals( 'Test Position',             $c->getPosition() );
-            $this->assertEquals( 'test-contact1@example.com', $c->getEmail() );
-            $this->assertEquals( '0209110000',                $c->getPhone() );
-            $this->assertEquals( '0209120000',                $c->getMobile() );
-            $this->assertEquals( 5,                           $c->getCustomer()->getId() );
+            $this->assertEquals( 'Test Contact 1',            $c->name );
+            $this->assertEquals( 'Test Position',             $c->position );
+            $this->assertEquals( 'test-contact1@example.com', $c->email );
+            $this->assertEquals( '0209110000',                $c->phone );
+            $this->assertEquals( '0209120000',                $c->mobile );
+            $this->assertEquals( 5,                           $c->custid );
 
             // test that editing while not making any changes and saving changes nothing
 
-            $browser->visit( '/contact/edit/' . $c->getId() )
-                ->assertPathIs('/contact/edit/' . $c->getId() )
+            $browser->visit( '/contact/edit/' . $c->id )
+                ->assertPathIs('/contact/edit/' . $c->id )
                 ->press( 'Save Changes' )
                 ->assertPathIs('/contact/list' )
-                ->assertSee( 'Contact edited' )
+                ->assertSee( 'Contact updated' )
                 ->assertSee( 'Test Contact 1' )
                 ->assertSee( 'Test Position' )
                 ->assertSee( 'test-contact1@example.com' );
 
             // test the values:
-            D2EM::refresh($c);
-            $this->assertEquals( 'Test Contact 1',            $c->getName() );
-            $this->assertEquals( 'Test Position',             $c->getPosition() );
-            $this->assertEquals( 'test-contact1@example.com', $c->getEmail() );
-            $this->assertEquals( '0209110000',                $c->getPhone() );
-            $this->assertEquals( '0209120000',                $c->getMobile() );
-            $this->assertEquals( 5,                           $c->getCustomer()->getId() );
+            $c->refresh();
+            $this->assertEquals( 'Test Contact 1',            $c->name );
+            $this->assertEquals( 'Test Position',             $c->position );
+            $this->assertEquals( 'test-contact1@example.com', $c->email );
+            $this->assertEquals( '0209110000',                $c->phone );
+            $this->assertEquals( '0209120000',                $c->mobile );
+            $this->assertEquals( 5,                           $c->custid );
 
 
             // now test that editing while making changes works
-            $browser->visit( '/contact/edit/' . $c->getId() )
-                ->assertPathIs('/contact/edit/' . $c->getId() )
+            $browser->visit( '/contact/edit/' . $c->id )
+                ->assertPathIs('/contact/edit/' . $c->id )
                 ->type( 'name', 'Test Contact 2' )
                 ->type( 'position', 'Test Position2' )
                 ->type( 'email',    'test-contact2@example.com' )
@@ -364,43 +340,43 @@ class ContactControllerTest extends DuskTestCase
                 ->type( 'mobile',   '0209120002' )
                 ->click( '.btn-primary' )
                 ->assertPathIs('/contact/list' )
-                ->assertSee( 'Contact edited' )
+                ->assertSee( 'Contact updated' )
                 ->assertSee( 'Test Contact 2' )
                 ->assertSee( 'Test Position2' )
                 ->assertSee( 'test-contact2@example.com' );
 
             // test the values:
-            D2EM::refresh($c);
-            $this->assertEquals( 'Test Contact 2',            $c->getName() );
-            $this->assertEquals( 'Test Position2',             $c->getPosition() );
-            $this->assertEquals( 'test-contact2@example.com', $c->getEmail() );
-            $this->assertEquals( '0209110002',                $c->getPhone() );
-            $this->assertEquals( '0209120002',                $c->getMobile() );
-            $this->assertEquals( 5,                           $c->getCustomer()->getId() );
+            $c->refresh();
+            $this->assertEquals( 'Test Contact 2',            $c->name );
+            $this->assertEquals( 'Test Position2',            $c->position );
+            $this->assertEquals( 'test-contact2@example.com', $c->email );
+            $this->assertEquals( '0209110002',                $c->phone );
+            $this->assertEquals( '0209120002',                $c->mobile );
+            $this->assertEquals( 5,                           $c->custid );
 
 
             // test that editing while not making any changes and saving changes nothing
             // (this is a retest for, e.g. unchecked checkboxes)
-            $browser->visit( '/contact/edit/' . $c->getId() )
-                ->assertPathIs('/contact/edit/' . $c->getId() )
+            $browser->visit( '/contact/edit/' . $c->id )
+                ->assertPathIs('/contact/edit/' . $c->id )
                 ->click( '.btn-primary' )
                 ->assertPathIs('/contact/list' )
-                ->assertSee( 'Contact edited' )
+                ->assertSee( 'Contact updated' )
                 ->assertSee( 'Test Contact 2' )
                 ->assertSee( 'Test Position2' )
                 ->assertSee( 'test-contact2@example.com' );
 
             // test the values:
-            D2EM::refresh($c);
-            $this->assertEquals( 'Test Contact 2',            $c->getName() );
-            $this->assertEquals( 'Test Position2',            $c->getPosition() );
-            $this->assertEquals( 'test-contact2@example.com', $c->getEmail() );
-            $this->assertEquals( '0209110002',                $c->getPhone() );
-            $this->assertEquals( '0209120002',                $c->getMobile() );
-            $this->assertEquals( 5,                           $c->getCustomer()->getId() );
+            $c->refresh();
+            $this->assertEquals( 'Test Contact 2',            $c->name );
+            $this->assertEquals( 'Test Position2',            $c->position );
+            $this->assertEquals( 'test-contact2@example.com', $c->email );
+            $this->assertEquals( '0209110002',                $c->phone );
+            $this->assertEquals( '0209120002',                $c->mobile );
+            $this->assertEquals( 5,                           $c->custid );
 
             // delete this contact
-            $browser->press( '#d2f-list-delete-' . $c->getId() )
+            $browser->press( '#e2f-list-delete-' . $c->id )
                 ->waitForText( 'Do you really want to delete this contact?' )
                 ->press( 'Delete' )
                 ->assertPathIs('/contact/list' )
@@ -408,13 +384,11 @@ class ContactControllerTest extends DuskTestCase
                 ->assertDontSee( 'Test Position2' )
                 ->assertDontSee( 'test-contact2@example.com' );
 
-            $this->assertNull( D2EM::getRepository( ContactEntity::class )->findOneBy( [ 'name' => 'Test Contact 2' ] ) );
+            $this->assertTrue( Contact::whereName( 'Test Contact 2' )->doesntExist() );
 
             $browser->visit('/logout')
                 ->assertPathIs( '/login' );
 
         });
-
-
     }
 }

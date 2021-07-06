@@ -8,13 +8,13 @@
 ########################################################################################
 ########################################################################################
 
-<?php if( $t->router->rpki() && config( 'ixp.rpki.rtr1.host' ) ): ?>
+<?php if( $t->router->rpki && config( 'ixp.rpki.rtr1.host' ) ): ?>
 
-roa<?= $t->router->protocol() ?> table t_roa;
+roa<?= $t->router->protocol ?> table t_roa;
 
 protocol rpki rpki1 {
 
-    roa<?= $t->router->protocol() ?> { table t_roa; };
+    roa<?= $t->router->protocol ?> { table t_roa; };
 
     remote "<?= config( 'ixp.rpki.rtr1.host' ) ?>" port <?= config( 'ixp.rpki.rtr1.port' ) ?>;
 
@@ -27,7 +27,7 @@ protocol rpki rpki1 {
 
 protocol rpki rpki2 {
 
-    roa<?= $t->router->protocol() ?> { table t_roa; };
+    roa<?= $t->router->protocol ?> { table t_roa; };
 
     remote "<?= config( 'ixp.rpki.rtr2.host' ) ?>" port <?= config( 'ixp.rpki.rtr2.port' ) ?>;
 
@@ -40,7 +40,7 @@ protocol rpki rpki2 {
 
 <?php else:  /* $t->router->getRPKI() */ ?>
 
-    <?php if( $t->router->rpki() ): ?>
+    <?php if( $t->router->rpki ): ?>
 
         # RPKI is enabled but no RPKI routers configured in your .env file.
 

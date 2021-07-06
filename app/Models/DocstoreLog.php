@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -57,6 +57,8 @@ use Illuminate\Support\Facades\DB;
  * @method static Builder|DocstoreLog whereId($value)
  * @method static Builder|DocstoreLog whereUpdatedAt($value)
  * @mixin Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class DocstoreLog extends Model
 {
@@ -72,7 +74,7 @@ class DocstoreLog extends Model
      */
     public function file(): BelongsTo
     {
-        return $this->belongsTo('IXP\Models\DocstoreFile' , 'docstore_file_id' );
+        return $this->belongsTo(DocstoreFile::class , 'docstore_file_id' );
     }
 
     /**
@@ -110,5 +112,4 @@ class DocstoreLog extends Model
             ->groupBy( 'downloaded_by' )
             ->orderBy('downloaded_by')->get();
     }
-
 }

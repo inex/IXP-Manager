@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\Profile;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,17 +25,17 @@ namespace IXP\Http\Requests\Profile;
 
 use Auth, Hash;
 
-
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
-
 /**
  * Profile Password Store Request
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Profile
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Requests\Profile
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Password extends FormRequest
@@ -45,19 +45,18 @@ class Password extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // middleware ensures the user is logged in
         return Auth::check();
     }
-
 
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'current_password'      => 'required|string',
@@ -66,24 +65,21 @@ class Password extends FormRequest
         ];
     }
 
-
     /**
      * Configure the validator instance.
      *
      * @param  Validator  $validator
+     *
      * @return void
      */
-    public function withValidator( Validator $validator )
+    public function withValidator( Validator $validator ): void
     {
         $validator->after( function( $validator ) {
-
-            if( !Hash::check( $this->input( "current_password" ), Auth::getUser()->getPassword() ) ){
-                $validator->errors()->add( 'current_password', 'The current password is incorrect.');
+            if( !Hash::check( $this->current_password, Auth::getUser()->password ) ){
+                $validator->errors()->add( 'current_password', 'The current password is incorrect.' );
                 return false;
             }
-
             return true;
         });
     }
-
 }

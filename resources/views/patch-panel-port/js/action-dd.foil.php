@@ -3,12 +3,14 @@
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
 
-    const publicNotes               = $('#notes-modal-body-public-notes' );
-    const privateNotes              = $('#notes-modal-body-private-notes' );
-    const toggle_potential_slave    = $('#toggle-potential-slaves' );
-    const note_model_intro          = $('#notes-modal-body-intro' );
+    const publicNotes                   = $('#notes-modal-body-public-notes' );
+    const privateNotes                  = $('#notes-modal-body-private-notes' );
+    const toggle_potential_slave        = $('#toggle-potential-slaves' );
+    const note_modal_intro              = $('#notes-modal-body-intro' );
+    const note_modal_body_div_colo_ref  = $( '#notes-modal-body-div-colo-ref' );
+    const note_modal_body_div_pi_status = $( '#notes-modal-body-div-pi-status' );
 
-    let notesIntro = "### <?= date("Y-m-d" ) . ' - ' . Auth::user()->getUsername() ?> \n\n\n";
+    let notesIntro = "### <?= date("Y-m-d" ) . ' - ' . Auth::getUser()->username ?> \n\n\n";
 
     //////////////////////////////////////////////////////////////////////////////////////
     // action bindings:
@@ -16,7 +18,7 @@
     toggle_potential_slave.click( () => { $('.potential-slave').toggle(); } );
 
     $('.dropdown-submenu a.submenu').on("click", function(e){
-        $(this).next('ul').toggle();
+        $( this) .next('ul').toggle();
         e.stopPropagation();
         e.preventDefault();
     });
@@ -27,47 +29,110 @@
         toggle_potential_slave.unbind( "click" );
     }
 
-    $( "a[id|='edit-notes']" ).on( 'click', function(e){
+    $( '.btn-edit-notes' ).click( function(e) {
         e.preventDefault();
-        let pppid = (this.id).substring(11);
-        popup( pppid, 'edit-notes', $(this).attr('href') );
+        popup( $( this ).attr( 'data-object-id' ), 'edit-notes', $( this ).attr( 'href' ), false );
     });
 
-    $( "a[id|='set-connected']" ).on( 'click', function(e){
+    $( '.btn-set-connected' ).click( function(e) {
         e.preventDefault();
-        let pppid = (this.id).substring(14);
-        popup( pppid, 'set-connected', $(this).attr('href') );
+        popup( $( this ).attr( 'data-object-id' ) , 'set-connected', $( this ).attr( 'href' ), true );
     });
 
-    $( "a[id|='request-cease']" ).on( 'click', function(e){
+    $( '.btn-request-cease' ).click( function(e) {
         e.preventDefault();
-        let pppid = (this.id).substring(14);
-        popup( pppid, 'request-cease', $(this).attr('href') );
+        popup( $( this ).attr( 'data-object-id' ) , 'request-cease', $( this ).attr( 'href' ), false );
     });
 
-    $( "a[id|='set-ceased']" ).on( 'click', function(e){
+    $( '.btn-set-ceased' ).click( function(e){
         e.preventDefault();
-        let pppid = (this.id).substring(11);
-        popup( pppid, 'set-ceased', $(this).attr('href') );
+        popup( $( this ).attr( 'data-object-id' ), 'set-ceased', $( this ).attr( 'href' ), false );
     });
 
-
-    $( "a[id|='attach-file']" ).on( 'click', function(e){
+    $( '.btn-upload-file' ).click( function(e){
         e.preventDefault();
-        let pppid = (this.id).substring(12);
-        uploadPopup( pppid );
+        uploadPopup( $( this ).attr( 'href' ) );
     });
 
-    $( "a[id|='delete-ppp']" ).on( 'click', function(e){
+    $( '.btn-delete-ppp' ).click( function(e){
         e.preventDefault();
-        let pppid = (this.id).substring(11);
-        dangerAction( 'delete', pppid );
+        let url = $( this ).attr( 'href' );
+        let extra_message = '';
+
+        if( $( '#danger-dropdown-' + $( this ).attr( 'data-object-id' ) ).attr( 'data-slave-port' ) ){
+            extra_message = "<b> As this is a duplex port, both individual ports will be deleted. </b> If you do not want this, then split the port first."
+        }
+        let html = `<form id="form-delete" method="POST" action="${url}">
+                        <div>Do you really want to delete this port?</div></br>
+                        <div>WARNING: Deletion is permanent and will remove the port from the patch panel including all history and files.</div>
+                        <div>${extra_message}</div>
+                        <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                        <input type="hidden" name="_method" value="delete" />
+                    </form>`;
+
+        bootbox.dialog({
+            title: "Delete Port",
+            message: html,
+            buttons: {
+                cancel: {
+                    label: 'Close',
+                    className: 'btn-secondary',
+                    callback: function () {
+                        $('.bootbox.modal').modal( 'hide' );
+                        return false;
+                    }
+                },
+                submit: {
+                    label: 'Delete',
+                    className: 'btn-danger',
+                    callback: function () {
+                        $('#form-delete').submit();
+                    }
+                },
+            }
+        });
     });
 
-    $( "a[id|='split-ppp']" ).on( 'click', function(e){
+    $( '.btn-split-ppp' ).click( function(e){
         e.preventDefault();
-        let pppid = (this.id).substring(10);
-        dangerAction( 'split', pppid );
+
+        let url       = $( this ).attr( 'href' );
+        let dd_danger = $( '#danger-dropdown-' + $( this ).attr( 'data-object-id' ) ) ;
+
+        let prefix      = dd_danger.attr( 'data-port-prefix' );
+        let slavePort   = dd_danger.attr( 'data-slave-port' );
+        let masterPort  = prefix + dd_danger.attr( 'data-master-port' );
+
+        let html = `<form id="form-delete" method="POST" action="${url}">
+                        <div>Do you really want to split this port?</div></br>
+                        <div>The slave port (${slavePort}) will be removed from the master port (${masterPort})
+                        and marked as available. If you want to split the other way (${slavePort} as master),
+                        split now and then use the move function on (${masterPort}) afterwards.</div>
+                        <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                        <input type="hidden" name="_method" value="put" />
+                    </form>`;
+
+        bootbox.dialog({
+            title: "Split Port",
+            message: html,
+            buttons: {
+                cancel: {
+                    label: 'Close',
+                    className: 'btn-secondary',
+                    callback: function () {
+                        $('.bootbox.modal').modal( 'hide' );
+                        return false;
+                    }
+                },
+                submit: {
+                    label: 'Delete',
+                    className: 'btn-danger',
+                    callback: function () {
+                        $('#form-delete').submit();
+                    }
+                },
+            }
+        });
     });
 
     //////////////////////////////////////////////////////////////////////////////////////
@@ -77,19 +142,19 @@
      * Adds a prefix when a user goes to add/edit notes (typically name and date).
      */
     function setNotesTextArea() {
-        if( $(this).val() == '' ) {
-            $(this).val(notesIntro);
+        if( $( this ).val() === '' ) {
+            $( this ).val( notesIntro );
         } else {
-            $(this).val( notesIntro  + $(this).val() );
+            $( this ).val( notesIntro  + $(this).val() );
         }
-        $(this).setCursorPosition( notesIntro.length );
+        $( this ).setCursorPosition( notesIntro.length );
     }
 
     /**
      * Removes the prefix added by setNotesTextArea() if the notes where not edited
      */
     function unsetNotesTextArea() {
-        $(this).val( $(this).val().substring( notesIntro.length ) );
+        $( this ).val( $( this ).val().substring( notesIntro.length ) );
     }
 
     /**
@@ -109,25 +174,38 @@
      * Setup the popup for adding / editing notes.
      */
     function popupSetUp( ppp, action ) {
-
-        if( action != 'edit-notes' ) {
-            note_model_intro.show();
+        if( action !== 'edit-notes' ) {
+            note_modal_intro.show();
         } else {
-            note_model_intro.hide();
+            note_modal_intro.hide();
         }
 
-        $('#notes-modal-ppp-id').val(ppp.id);
+        $( '#notes-modal-ppp-id' ).val( ppp.id );
         publicNotes.val( ppp.notes );
-        privateNotes.val( ppp.privateNotes );
+        privateNotes.val( ppp.private_notes );
 
-        $('#notes-modal-body-div-pi-status').hide();
-        if( action == 'set-connected' && ppp.switchPortId ) {
-            console.log( ppp.switchPort );
-            if( ppp.switchPort.physicalInterface !== undefined){
-                $('#notes-modal-body-pi-status').val( ppp.switchPort.physicalInterface.statusId );
+        note_modal_body_div_pi_status.hide();
+        note_modal_body_div_colo_ref.hide();
+
+        let options = '<option value="0"></option>\n';
+        $.each( <?= json_encode( \IXP\Models\PhysicalInterface::$STATES ) ?> , function ( i, elem) {
+            options += `<option value="${i}">${elem}</option>\n`;
+        });
+
+        $( '#notes-modal-body-pi-status' ).html( options );
+
+        if( action === 'set-connected' && ppp.switch_port_id ) {
+            if( ppp.switch_port.physical_interface !== null ){
+                $('#notes-modal-body-pi-status').val( ppp.switch_port.physical_interface.status );
+                $('#notes-modal-body-pi-status').trigger('change.select2');
             }
 
-            $('#notes-modal-body-div-pi-status').show();
+            note_modal_body_div_pi_status.addClass( 'd-flex' ).show();
+        }
+
+        if( action === 'set-connected' ) {
+            $('#notes-modal-body-colo-ref' ).val( ppp.coloRef );
+            note_modal_body_div_colo_ref.addClass( 'd-flex' ).show();
         }
 
         // The logic of these two blocks is:
@@ -147,18 +225,23 @@
      * Reset the popup for adding / editing notes.
      */
     function popupTearDown() {
-        $('#notes-modal-ppp-id').val('');
+        $( '#notes-modal-ppp-id' ).val('');
 
-        publicNotes.val('');
-        privateNotes.val('');
+        publicNotes.val( '' );
+        privateNotes.val( '' );
 
-        $('#notes-modal-body-pi-status').html('');
-        $('#notes-modal-body-div-pi-status').hide();
+        $( '#notes-modal-body-pi-status' ).html( '' );
+        note_modal_body_div_pi_status.removeClass( 'd-flex' ).hide();
+
+        $( '#notes-modal-body-colo-ref' ).html( '' );
+        note_modal_body_div_colo_ref.removeClass( 'd-flex' ).hide();
+
+        $( 'body' ).removeClass( 'overflow-hidden' );
 
         publicNotes.off( 'blur change click keyup focus focusout' );
         privateNotes.off( 'blur change click keyup focus focusout' );
 
-        $('#notes-modal-btn-confirm').off( 'click' );
+        $( '#notes-modal-btn-confirm' ).off( 'click' );
     }
 
     /**
@@ -171,56 +254,83 @@
      * @param pppId The ID of the patch panel port
      * @param action An indication of which option the user chose (e.g. 'edit-notes', 'set-connected', etc
      * @param url The URL of the anchor element used to trigger the popup.
+     * @param checkColoRef Do we need to check that the colo_red input is not empty
      */
-    function popup( pppId, action, url ) {
+    function popup( pppId, action, url, checkColoRef ) {
 
         ajaxGetPatchPanelPort( pppId, action, url, function( ppp, action, url ) {
-
             popupSetUp( ppp, action );
 
-            $('#notes-modal-btn-confirm').on( 'click', function() {
+            $( '#notes-modal-btn-confirm' ).on( 'click', function() {
 
-                $('#notes-modal-btn-confirm').attr("disabled", true);
+                $( '#notes-modal-btn-confirm' ).attr( "disabled", true );
 
-                $.ajax( "<?= url('patch-panel-port/notes')?>/" + ppp.id, {
-                    data: {
-                        pppId: ppp.id,
-                        notes: $('#notes-modal-body-public-notes').val(),
-                        private_notes: $('#notes-modal-body-private-notes').val(),
-                        pi_status: action == 'set-connected' && ppp.switchPortId ? $('#notes-modal-body-pi-status').val() : null
-                    },
-                    type: 'POST'
-                })
-                    .done( function( data ) {
-                        document.location.href = url;
-                    })
-                    .fail( function(){
-                        alert( 'Could not update notes. API / AJAX / network error' );
-                        throw new Error("Error running ajax query for api/v4/patch-panel-port/notes");
-                    })
-                    .always( function() {
-                        $('#notes-modal').modal('hide');
-                        $('#notes-modal-btn-confirm').attr("disabled", false);
-                        popupTearDown();
+                if( checkColoRef && action === 'set-connected' && !$( '#notes-modal-body-colo-ref' ).val() ) {
+                    bootbox.confirm({
+                        message: `You have not entered a colocation reference.
+                        You may proceed without it by clicking continue below.
+                        If you do, please return and enter the co-location reference later.`,
+                        buttons: {
+                            confirm: {
+                                label: 'Continue',
+                                className: 'btn-primary'
+                            },
+                            cancel: {
+                                label: 'Cancel',
+                                className: 'btn-secondary'
+                            }
+                        },
+                        callback: function( result ){
+                            if( result ){
+                                setNotes( ppp, action, url );
+                            } else {
+                                $( '#notes-modal-btn-confirm' ).attr( "disabled", false );
+                                $( 'body' ).addClass( 'overflow-hidden' );
+                                $( '#notes-modal' ).addClass( 'overflow-auto' );
+                            }
+                        }
                     });
+                } else {
+                    setNotes( ppp, action, url );
+                }
             });
 
-            $('#notes-modal').modal('show');
-            $('#notes-modal').on( 'hidden.bs.modal', popupTearDown );
+            $( '#notes-modal' ).modal('show');
+            $( '#notes-modal' ).on( 'hidden.bs.modal', popupTearDown );
         });
     }
 
-
+    function setNotes( ppp, action, url ){
+        $.ajax( "<?= url('patch-panel-port/notes')?>/" + ppp.id, {
+            data: {
+                pppId: ppp.id,
+                notes: $( '#notes-modal-body-public-notes' ).val(),
+                private_notes: $( '#notes-modal-body-private-notes' ).val(),
+                pi_status: action === 'set-connected' && ppp.switch_port_id ? $( '#notes-modal-body-pi-status' ).val() : null,
+                colo_circuit_ref: action === 'set-connected' ? $( '#notes-modal-body-colo-ref').val() : null,
+            },
+            type: 'POST'
+        })
+            .done( function( data ) {
+                document.location.href = url;
+            })
+            .fail( function(){
+                alert( 'Could not update notes. API / AJAX / network error' );
+                throw new Error("Error running ajax query for api/v4/patch-panel-port/notes");
+            })
+            .always( function() {
+                $( '#notes-modal' ).modal( 'hide' );
+                $( '#notes-modal-btn-confirm' ).attr( 'disabled', false) ;
+                popupTearDown();
+            });
+    }
     /**
-     * Display a dray'n'drop popup to attached files to patch panel ports.
+     * Display a drag'n'drop popup to attached files to patch panel ports.
      *
      * @param pppid The ID of the patch panel port
      */
-
-    function uploadPopup( pppid ){
-
-
-        let html = `<form id="upload" class="col-lg-12 tw-bg-gray-100 tw-border tw-rounded-sm" method="post" action='<?= url("patch-panel-port/upload-file" )?>/${pppid}' enctype='multipart/form-data'>
+    function uploadPopup( url ) {
+        let html = `<form id="upload" class="col-lg-12 tw-bg-gray-100 tw-border-gray-300 tw-border-1 tw-rounded-sm" method="post" action='${url}' enctype='multipart/form-data'>
                         <div id='drop' class="tw-py-20 tw-px-10 tw-text-center tw-font-bold tw-text-gray-600">
                             Drop Files Here &nbsp;
                             <a href="#" id="upload-drop-a" class="btn btn-success color-white">
@@ -231,12 +341,11 @@
                             <span class="tw-text-xs">
                                 (max size <?= $t->maxFileUploadSize() ?>
                             </span>
-                            <input type="file" class="tw-hidden" name="upl" multiple />
+                            <input type="file" class="tw-hidden" name="file" multiple />
                         </div>
                         <ul id="upload-ul" class="row tw-pl-0 tw-list-none tw-mb-0">
                         </ul>
                     </form>`;
-
 
         let dialog = bootbox.dialog({
             size: "large",
@@ -265,12 +374,11 @@
                 e.preventDefault();
                 // Simulate a click on the file input button
                 // to show the file browser dialog
-                $(this).parent().find('input').click();
+                $( this ).parent().find( 'input' ).click();
             });
 
             // Initialize the jQuery File Upload plugin
             $('#upload').fileupload({
-
                 // This element will accept file drag/drop uploading
                 dropZone: $('#drop'),
 
@@ -278,36 +386,35 @@
                 // either via the browse button, or via drag/drop:
                 add: function (e, data) {
 
-                    let tpl = $(`<li class="col-md-12 tw-border-t tw-relative tw-h-24 tw-p-2 tw-pl-4">
+                    let tpl = $(`<li class="col-md-12 tw-border-t-1 tw-border-gray-300 tw-relative tw-h-24 tw-p-2 tw-pl-4">
                                     <div class="row info-area">
                                         <p class="info-text tw-font-bold col-md-8 mr-auto">
                                             ${data.files[0].name}
                                             <span class="tw-block tw-font-normal tw-text-gray-500">
-                                                ${ixpFormatFileSize(data.files[0].size)}
+                                                ${ixpFormatFileSize( data.files[ 0 ].size )}
                                             </span>
                                         </p>
                                     </div>
-
                                 </li>`);
 
                     // Add the HTML to the UL element
-                    data.context = tpl.appendTo(ul);
+                    data.context = tpl.appendTo( ul );
 
                     // Automatically upload the file once it is added to the queue
                     data.submit()
-                        .done(function (result, textStatus, jqXHR){
-                            if(result.success){
+                        .done(function ( result, textStatus, jqXHR ){
+                            if( result.success ){
                                 tpl.attr( 'id','uploaded-file-' + result.id );
                                 tpl.find('.info-area').append( `<p class="col-md-2 tw-self-center">
                                             <i class="fa fa-check tw-text-green-600"></i>
-                                            <i id="uploaded-file-toggle-private-${result.id}" class="tw-cursor-pointer fa fa-unlock fa-lg"></i>
-                                            <i id="uploaded-file-delete-${result.id}" class="tw-cursor-pointer fa fa-trash"></i>
+                                            <i id="uploaded-file-toggle-private-${result.id}" data-object-id="${result.id}" class="tw-cursor-pointer fa fa-unlock fa-lg"></i>
+                                            <i id="uploaded-file-delete-${result.id}" data-object-id="${result.id}" class="tw-cursor-pointer fa fa-trash btn-delete-file"></i>
                                             </p>
                                 `);
                                 tpl.find('.info-text').addClass( 'tw-text-green-600' ).append( `<span id="message-${result.id}" class="tw-text-green-600">${result.message}</span>` );
 
-                                $('#uploaded-file-toggle-private-' + result.id).on( 'click', toggleFilePrivacy );
-                                $('#uploaded-file-delete-'         + result.id).on( 'click', deleteFile        );
+                                $( '#uploaded-file-toggle-private-' + result.id ).on( 'click', toggleFilePrivacy );
+                                $( '#uploaded-file-delete-'         + result.id ).on( 'click', deleteFile        );
                             } else {
                                 tpl.find('.info-area').append( `<p class="col-md-2 tw-self-center">
                                             <i class="fa fa-times tw-text-red-600"></i>
@@ -319,14 +426,13 @@
                 },
 
                 progress: function(e, data){
-
                     // Calculate the completion percentage of the upload
-                    let progress = parseInt(data.loaded / data.total * 100, 10);
+                    let progress = parseInt( data.loaded / data.total * 100, 10);
 
                     // Update the hidden input field and trigger a change
                     // so that the jQuery knob plugin knows to update the dial
-                    data.context.find('input').val(progress).change();
-                    if(progress == 100){
+                    data.context.find( 'input' ).val( progress ).change();
+                    if( progress == 100 ){
                         data.context.removeClass('working');
                     }
                 },
@@ -337,7 +443,6 @@
                 }
 
             });
-
 
             // Prevent the default action when a file is dropped on the window
             $(document).on('drop dragover', function (e) {
@@ -350,19 +455,22 @@
     /**
      * Delete a file that has been just uploaded via uploadPopup
      */
-    function deleteFile(e) {
-        let pppFileId = (this.id).substring(21);
+    function deleteFile( e ) {
+        let pppfid = $( this ).attr( 'data-object-id' );
 
-        $.ajax( "<?= url('patch-panel-port/delete-file') ?>/" + pppFileId, {
-            type : 'POST'
+        $.ajax( "<?= url('patch-panel-port/file/delete/') ?>/" + pppfid, {
+            type : 'delete',
+            data: {
+                jsonResponse: 1,
+            },
         } )
             .done( function( data ) {
                 if( data.success ) {
-                    $('#uploaded-file-' + pppFileId).fadeOut( "medium", function() {
-                        $('#uploaded-file-' + pppFileId).remove();
+                    $('#uploaded-file-' + pppfid ).fadeOut( "medium", function() {
+                        $('#uploaded-file-' + pppfid ).remove();
                     });
                 } else {
-                    $( '#message-' + pppFileId ).removeClass('success').addClass( 'error' ).html( data.message );
+                    $( '#message-' + pppfid ).removeClass( 'success' ).addClass( 'error' ).html( data.message );
                 }
             });
     }
@@ -370,74 +478,18 @@
     /**
      * Toggle privacy of a file that has been just uploaded via uploadPopup
      */
-    function toggleFilePrivacy(e) {
-        let pppFileId = (this.id).substring(29);
-        $.ajax( "<?= url('patch-panel-port/toggle-file-privacy') ?>/" + pppFileId ,{
+    function toggleFilePrivacy( e ) {
+        let pppfid = $( this ).attr( 'data-object-id' );
+
+        $.ajax( "<?= url('patch-panel-port/file/toggle-privacy') ?>/" + pppfid ,{
             type: 'POST'
         })
             .done( function( data ) {
                 if( data.isPrivate ) {
-                    $( '#uploaded-file-toggle-private-' + pppFileId ).removeClass('fa-unlock').addClass('fa-lock');
+                    $( '#uploaded-file-toggle-private-' + pppfid ).removeClass('fa-unlock').addClass('fa-lock');
                 } else {
-                    $( '#uploaded-file-toggle-private-' + pppFileId ).removeClass('fa-lock').addClass('fa-unlock');
+                    $( '#uploaded-file-toggle-private-' + pppfid ).removeClass('fa-lock').addClass('fa-unlock');
                 }
             });
-    }
-
-
-    function dangerAction( action, pppid){
-        let message, urlAction;
-
-        if( action == 'delete' ){
-            message = "WARNING: Deletion is permanent and will remove the port from the patch panel including all history and files.";
-            urlAction = "<?= url('patch-panel-port/delete') ?>/" + pppid;
-
-            if( $('#danger-dropdown-'+pppid).data("slave-port") ){
-                message += "<b> As this is a duplex port, both individual ports will be deleted. </b> If you do not want this, then split the port first."
-            }
-        }
-
-        if( action == 'split' ){
-            let prefix = $('#danger-dropdown-'+pppid).data("port-prefix");
-
-            let slavePort = $('#danger-dropdown-'+pppid).data("slave-port");
-            let masterPort = prefix+$('#danger-dropdown-'+pppid).data("master-port");
-
-            message = `Are you sure you want to split this port? The slave port (${slavePort}) will be removed from the master port (${masterPort}) and marked as available. If you want to split the other way (${slavePort} as master), split now and then use the move function on (${masterPort}) afterwards.`;
-            urlAction = "<?= url('patch-panel-port/split') ?>/" + pppid;
-        }
-
-        bootbox.confirm({
-            title: "Danger Action",
-            message: message,
-            buttons: {
-                cancel: {
-                    label: '<i class="fa fa-times"></i> Cancel',
-                    className : "btn-secondary",
-                },
-                confirm: {
-                    label: '<i class="fa fa-check"></i> Confirm'
-                }
-            },
-            callback: function (result) {
-                if (result) {
-                    $.ajax( urlAction, {
-                        type: 'POST'
-                    })
-                        .done( function(  ) {
-                            if( result ) {
-                                window.location = "<?= url( "patch-panel-port/list/patch-panel/" ); ?>/" + $( "#pp-id-admin-actions" ).val() ;
-                            }
-                        })
-                        .fail( function(){
-                            alert( 'Could not ' + action + ' the patch panel port . API / AJAX / network error' );
-                            throw new Error("Error running ajax query for "+urlAction);
-                        })
-                        .always( function() {
-                            $('#notes-modal').modal('hide');
-                        });
-                }
-            }
-        });
     }
 </script>

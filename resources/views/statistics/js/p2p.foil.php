@@ -1,11 +1,9 @@
-
 <script>
-
     let vlan_protocols = {
-        <?php foreach( $t->srcVlis as $svli ): /** @var Entities\VlanInterface $svli */ ?>
-        "<?= $svli->getId() ?>": {
-            "ipv4": <?= $svli->getIpv4Enabled() ? 'true' : 'false' ?>,
-            "ipv6": <?= $svli->getIpv6Enabled() ? 'true' : 'false' ?>
+        <?php foreach( $t->srcVlis as $svli ): /** @var \IXP\Models\VlanInterface $svli */ ?>
+        "<?= $svli->id ?>": {
+            "ipv4": <?= $svli->ipv4enabled ? 'true' : 'false' ?>,
+            "ipv6": <?= $svli->ipv6enabled ? 'true' : 'false' ?>
         },
         <?php endforeach; ?>
     };
@@ -14,19 +12,18 @@
     let ipv6_select_options = "";
 
     <?php foreach( $t->srcVlis as $vli ): ?>
-        <?php if( $vli->getIpv4Enabled() ): ?>
-            ipv4_select_options += `<option value="<?= $vli->getId() ?>"><?= $vli->getVlan()->getName() ?> :: `
-                + `<?= $vli->getIpv4Address() ? $vli->getIpv4Address()->getAddress() : 'No IP - VLI ID: ' . $vli->getId() ?>`
+        <?php if( $vli->ipv4enabled ): ?>
+            ipv4_select_options += `<option value="<?= $vli->id ?>"><?= $vli->vlan->name ?> :: `
+                + `<?= $vli->ipv4Address->address ?? ('No IP - VLI ID: '.$vli->id) ?>`
                 + `</option>`;
         <?php endif; ?>
 
-        <?php if( $vli->getIpv6Enabled() ): ?>
-            ipv6_select_options += `<option value="<?= $vli->getId() ?>"><?= $vli->getVlan()->getName() ?> :: `
-                + `<?= $vli->getIpv6Address() ? $vli->getIpv6Address()->getAddress() : 'No IP - VLI ID: ' . $vli->getId() ?>`
+        <?php if( $vli->ipv6enabled ): ?>
+            ipv6_select_options += `<option value="<?= $vli->id ?>"><?= $vli->vlan->name ?> :: `
+                + `<?= $vli->ipv6Address->address ?? ('No IP - VLI ID: '.$vli->id) ?>`
                 + `</option>`;
         <?php endif; ?>
     <?php endforeach; ?>
-
 
     let protocol = "<?= $t->protocol ?>";
 
@@ -34,17 +31,15 @@
     let sel_protocol  = $("#select_protocol");
 
     let fnSelNetworkChanged = function() {
-
         let protos = vlan_protocols[sel_network.val()];
-
         let options = "";
 
         if (protos.ipv4) {
-            options += `<option value="ipv4" ${sel_protocol.val() == 'ipv4' ? 'selected' : ''}>IPv4</option>`;
+            options += `<option value="ipv4" ${sel_protocol.val() === 'ipv4' ? 'selected' : ''}>IPv4</option>`;
         }
 
         if (protos.ipv6) {
-            options += `<option value="ipv6" ${sel_protocol.val() == 'ipv6' ? 'selected' : ''}>IPv6</option>`;
+            options += `<option value="ipv6" ${sel_protocol.val() === 'ipv6' ? 'selected' : ''}>IPv6</option>`;
         }
 
         sel_protocol.off( 'change', fnSelProtocolChanged );
@@ -53,7 +48,6 @@
     };
 
     let fnSelProtocolChanged = function() {
-
         let protocol         = sel_protocol.val();
         let selected_network = sel_network.val();
 
@@ -70,8 +64,6 @@
         sel_network.on( 'change', fnSelNetworkChanged );
     };
 
-
     sel_network.on( 'change', fnSelNetworkChanged );
     sel_protocol.on( 'change', fnSelProtocolChanged );
-
 </script>

@@ -1,8 +1,6 @@
 <script>
     $( document ).ready( function() {
-        $( "#table-cb" ).show();
-
-        $( '#table-cb' ).DataTable( {
+        $( '#table-cb' ).dataTable( {
             responsive: true,
             iDisplayLength: 100,
             stateSave: true,
@@ -12,7 +10,6 @@
                 { targets: -1, responsivePriority: 2 },    // visibility priority to the last column
                 { targets: 2,  type: "string" },
             ],
-        });
-
+        }).show();
     });
 </script>

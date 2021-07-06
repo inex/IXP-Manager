@@ -22,16 +22,17 @@ namespace IXP\Services\Auth;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
-use D2EM;
-
-use Entities\UserRememberToken;
-
 use Illuminate\Auth\SessionGuard as BaseGuard;
+
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
 use IXP\Exceptions\GeneralException;
+
+use IXP\Models\{
+    User,
+    UserRememberToken
+};
+
 use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 
 /**
@@ -54,7 +55,6 @@ class SessionGuard extends BaseGuard
      */
     protected $userRememberToken;
 
-
     /**
      * Get the currently authenticated user.
      *
@@ -64,66 +64,65 @@ class SessionGuard extends BaseGuard
      * We need to override so we can /immediately/ log out users if the current user session
      * was deleted (by the user) from another session.
      *
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     * @return User|AuthenticatableContract|void|null
      */
     public function user()
     {
-        if ($this->loggedOut) {
+        if( $this->loggedOut ){
             return;
         }
 
         // If we've already retrieved the user for the current request we can just
         // return it back immediately. We do not want to fetch the user data on
         // every call to this method because that would be tremendously slow.
-        if (! is_null($this->user)) {
+        if (! is_null( $this->user ) ) {
             return $this->user;
         }
 
-        $id = $this->session->get($this->getName());
+        $id = $this->session->get( $this->getName() );
         $recaller = $this->recaller();
 
         // First we will try to load the user using the identifier in the session if
         // one exists. Otherwise we will check for a "remember me" cookie in this
         // request, and if one exists, attempt to retrieve the user using that.
-        if (! is_null($id) && $this->user = $this->provider->retrieveById($id)) {
+        if (! is_null( $id ) && $this->user = $this->provider->retrieveById( $id ) ) {
 
             // User has local session - make sure it hasn't been invalidated if a remember me cookie exists.
             // This is the bit we added to allow a user to invalidate other sessions via the UI.
-            if($recaller) {
-                $urt = d2r( 'UserRememberToken' )->findOneBy( [ 'token' => $recaller->token() ] );
+            if( $recaller ) {
+                $urt = UserRememberToken::whereToken( $recaller->token() )->first();
 
-                if( !$urt || $urt->isExpired() ) {
+                if( !$urt || $urt->expired() ) {
                     $this->logout();
                     return null;
                 }
             }
 
-            $this->fireAuthenticatedEvent($this->user);
+            $this->fireAuthenticatedEvent( $this->user );
         }
 
         // If the user is null, but we decrypt a "recaller" cookie we can attempt to
         // pull the user data on that cookie which serves as a remember cookie on
         // the application. Once we have a user we can return it to the caller.
-        if (is_null($this->user) && ! is_null($recaller)) {
-            $this->user = $this->userFromRecaller($recaller);
+        if( is_null( $this->user ) && ! is_null( $recaller ) ) {
+            $this->user = $this->userFromRecaller( $recaller );
 
-            if ($this->user) {
-                $this->updateSession($this->user->getAuthIdentifier());
+            if( $this->user ) {
+                $this->updateSession( $this->user->getAuthIdentifier() );
 
                 // Get the UserRememberToken and, if 2fa has been completed, don't redo it:
-                if( $this->user->getUser2FA() && $this->user->getUser2FA()->enabled() ) {
-                    $urt = d2r( 'UserRememberToken' )->findOneBy( [ 'token' => $recaller->token() ] );
+                if( $this->user->user2FA && $this->user->user2FA->enabled ) {
+                    $urt = UserRememberToken::whereToken( $recaller->token() )->first();
 
-                    if( $urt && $urt->getIs2faComplete() ) {
+                    if( $urt && $urt->is_2fa_complete ) {
                         $authenticator = new GoogleAuthenticator( $this->request );
                         $authenticator->login();
                     }
                 }
 
-                $this->fireLoginEvent($this->user, true);
+                $this->fireLoginEvent( $this->user, true);
             }
         }
-
         return $this->user;
     }
 
@@ -146,18 +145,18 @@ class SessionGuard extends BaseGuard
      * Overrides Laravel's default version which is a single shared token so we
      * can have a per-browser / device token.
      *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
+     * @param AuthenticatableContract $user
+     *
      * @return void
      */
-    protected function ensureRememberTokenIsSet(AuthenticatableContract $user)
+    protected function ensureRememberTokenIsSet( AuthenticatableContract $user ): void
     {
-        if (!$this->userRememberToken) {
+        if( !$this->userRememberToken ) {
             // The addRememberToken() creates a new UserRememberToken for the user
             $this->userRememberToken = $this->provider->addRememberToken($user);
             $this->provider->purgeExpiredRememberTokens( $user );
         }
     }
-
 
     /**
      * Queue the recaller cookie into the cookie jar
@@ -165,11 +164,13 @@ class SessionGuard extends BaseGuard
      * We need to override this function as the parent version calls `$user->getRememberToken()`
      * which, in Laravel, is a single token. In our case we want a per-browser / session token.
      *
-     * @param AuthenticatableContract $user
-     * @return void
+     * @param   AuthenticatableContract $user
+     *
+     * @return  void
+     *
      * @throws GeneralException
      */
-    protected function queueRecallerCookie(AuthenticatableContract $user)
+    protected function queueRecallerCookie( AuthenticatableContract $user ): void
     {
         // we shouldn't have called this function unless a UserRememberToken has been created
         // (or so barryo's understanding as of 20200127). So we'll throw an exception if that happens
@@ -179,10 +180,9 @@ class SessionGuard extends BaseGuard
         }
 
         $this->getCookieJar()->queue($this->createRecaller(
-            $user->getAuthIdentifier().'|'.$this->userRememberToken->getToken().'|'.$user->getAuthPassword()
+            $user->getAuthIdentifier() . '|' . $this->userRememberToken->token . '|' . $user->getAuthPassword()
         ));
     }
-
 
     /**
      * Refresh the "remember me" token for the user.
@@ -191,17 +191,16 @@ class SessionGuard extends BaseGuard
      * as our system does not have a single token (where cycling the single token would
      * be sufficient).
      *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
+     * @param AuthenticatableContract $user
+     *
      * @return void
      */
-    protected function cycleRememberToken(AuthenticatableContract $user)
+    protected function cycleRememberToken( AuthenticatableContract $user ): void
     {
         if( $this->recaller() && $this->recaller()->token() ) {
-            foreach( $this->user()->getUserRememberTokens() as $urt ) {
-                if( $urt->getToken() === $this->recaller()->token() ) {
-                    $user->removeRememberTokens( $urt );
-                    D2EM::remove($urt);
-                    D2EM::flush();
+            foreach( $this->user()->userRememberTokens as $urt ) {
+                if( $urt->token === $this->recaller()->token() ) {
+                    $urt->delete();
                     break;
                 }
             }

@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\DocstoreCustomer;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\DocstoreCustomer;
 
 use Former;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\{
     RedirectResponse,
@@ -41,8 +42,6 @@ use IXP\Models\{
     Customer,
     DocstoreCustomerDirectory,
     DocstoreCustomerFile,
-    PatchPanelPortFile,
-    PatchPanelPortHistoryFile
 };
 
 use IXP\Utils\View\Alert\{
@@ -52,10 +51,11 @@ use IXP\Utils\View\Alert\{
 
 /**
  * DirectoryController Controller
+ *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   DocstoreCustomer
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class DirectoryController extends Controller
@@ -63,13 +63,11 @@ class DirectoryController extends Controller
     /**
      * Display the list of all Customer with docstore
      *
-     * @param Request                           $request
-     *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
-    public function listCustomers( Request $request ) : View
+    public function listCustomers() : View
     {
         $this->authorize( 'listCustomers', [ DocstoreCustomerDirectory::class ] );
 
@@ -81,191 +79,194 @@ class DirectoryController extends Controller
     /**
      * Display the list of directories for a customer
      *
-     * @param Request                           $request
-     * @param Customer|null                     $cust
+     * @param Request                           $r
+     * @param Customer                          $cust
      * @param DocstoreCustomerDirectory|null    $dir
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
-    public function list( Request $request, Customer $cust, DocstoreCustomerDirectory $dir = null ) : View
+    public function list( Request $r, Customer $cust, DocstoreCustomerDirectory $dir = null ) : View
     {
         $this->authorize( 'list', [ DocstoreCustomerDirectory::class, $cust ] );
 
         return view( 'docstore-customer/dir/list', [
             'dir'           => $dir ?? false,
             'cust'          => $cust,
-            'dirs'          => DocstoreCustomerDirectory::getHierarchyForCustomerAndUserClass( $cust, $request->user()->getPrivs(), false )[ $dir ? $dir->id : '' ] ?? [],
-            'files'         => DocstoreCustomerFile::getListing( $cust, $request->user(), $dir ),
-            'ppp_files'     => PatchPanelPortFile::getForCustomer( $cust, $request->user()->isSuperUser() )->isNotEmpty(),
-            'ppph_files'    => $request->user()->isSuperUser() ? PatchPanelPortHistoryFile::getForCustomer( $cust )->isNotEmpty() : false,
+            'dirs'          => DocstoreCustomerDirectory::getHierarchyForCustomerAndUserClass( $cust, $r->user()->privs(), false )[ $dir ? $dir->id : '' ] ?? [],
+            'files'         => DocstoreCustomerFile::getListing( $cust, $r->user(), $dir ),
+            'ppp_files'     => $cust->patchPanelPorts()->with( 'patchPanelPortFiles' )
+                ->has($r->user()->isSuperUser() ? 'patchPanelPortFiles' : 'patchPanelPortFilesPublic' )->get()
+                ->pluck( 'patchPanelPortFiles' )->isNotEmpty(),
+            'ppph_files'    => $r->user()->isSuperUser() ? $cust->patchPanelPortHistories()
+                ->with( 'patchPanelPortHistoryFiles' )->has( 'patchPanelPortHistoryFiles' )
+                ->get()->pluck( 'patchPanelPortHistoryFiles' )->isNotEmpty() : false,
         ] );
     }
 
     /**
      * Display the list of patch panel file for a customer
      *
-     * @param Request                           $request
-     * @param Customer|null                     $cust
+     * @param Request           $r
+     * @param Customer|null     $cust
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
-    public function listPatchPanelPortFiles( Request $request,  Customer $cust ) : View
+    public function listPatchPanelPortFiles( Request $r,  Customer $cust = null ) : View
     {
         $this->authorize( 'listPatchPanelPortFiles', [ DocstoreCustomerDirectory::class, $cust ] );
 
         return view( 'docstore-customer/dir/list-ppp-files', [
             'cust'          => $cust,
             'history'       => false,
-            'files'         => PatchPanelPortFile::getForCustomer( $cust, $request->user()->isSuperUser() ),
+            'files'         => $cust->patchPanelPorts()->with( $r->user()->isSuperUser() ? 'patchPanelPortFiles' : 'patchPanelPortFilesPublic' )
+                ->has($r->user()->isSuperUser() ? 'patchPanelPortFiles' : 'patchPanelPortFilesPublic' )->get()
+                ->pluck( 'patchPanelPortFiles' )->flatten(),
         ] );
     }
 
     /**
      * Display the list of patch panel file history for a customer
      *
-     * @param Request                           $request
-     * @param Customer|null                     $cust
+     * @param Request                           $r
+     * @param Customer                          $cust
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
-    public function listPatchPanelPortHistoryFiles( Request $request,  Customer $cust ) : View
+    public function listPatchPanelPortHistoryFiles( Request $r,  Customer $cust ) : View
     {
         $this->authorize( 'listPatchPanelPortFilesHistory', [ DocstoreCustomerDirectory::class, $cust ]);
 
         return view( 'docstore-customer/dir/list-ppp-files', [
             'cust'          => $cust,
             'history'       => true,
-            'files'         => $request->user()->isSuperUser() ? PatchPanelPortHistoryFile::getForCustomer( $cust ) : [],
+            'files'         => $r->user()->isSuperUser() ? $cust->patchPanelPortHistories()->with( 'patchPanelPortHistoryFiles' )
+                ->has( 'patchPanelPortHistoryFiles' )->get()
+                ->pluck( 'patchPanelPortHistoryFiles' )->flatten() : [],
         ] );
     }
     /**
      * Create a new customer directory
      *
-     * @param Request   $request
+     * @param Request   $r
      * @param Customer  $cust
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
-    public function create( Request $request, Customer $cust )
+    public function create( Request $r, Customer $cust ): view
     {
         $this->authorize( 'create', [ DocstoreCustomerDirectory::class, $cust ] );
 
         return view( 'docstore-customer/dir/create', [
-            'dir'           => false,
-            'cust'          => $cust,
-            'dirs'          => DocstoreCustomerDirectory::getListingForDropdown( DocstoreCustomerDirectory::getListing( $cust, $request->user() )  ),
-            'parent_dir'    => $request->input( 'parent_dir', false )
+            'dir'               => false,
+            'cust'              => $cust,
+            'dirs'              => DocstoreCustomerDirectory::getListingForDropdown( DocstoreCustomerDirectory::getListing( $cust, $r->user() )  ),
+            'parent_dir_id'     => $r->input( 'parent_dir_id', false )
         ] );
     }
 
     /**
      * Edit a customer directory
      *
-     * @param Request                       $request
+     * @param Request                       $r
      * @param Customer                      $cust
      * @param DocstoreCustomerDirectory     $dir
      *
      * @return View
      *
-     * @throws
+     * @throws AuthorizationException
      */
-    public function edit( Request $request, Customer $cust, DocstoreCustomerDirectory $dir ): View
+    public function edit( Request $r, Customer $cust, DocstoreCustomerDirectory $dir ): View
     {
         $this->authorize( 'update', [ DocstoreCustomerDirectory::class, $dir ] );
 
         Former::populate([
-            'name'                  => $request->old( 'name',               $dir->name          ),
-            'description'           => $request->old( 'descripton',         $dir->description   ),
-            'parent_dir'            => $request->old( 'parent_dir', $dir->parent_dir_id ?? '' ),
+            'name'                  => $r->old( 'name',                    $dir->name          ),
+            'description'           => $r->old( 'descripton',              $dir->description   ),
+            'parent_dir_id'         => $r->old( 'parent_dir_id',    $dir->parent_dir_id ?? '' ),
         ]);
 
         return view( 'docstore-customer/dir/create', [
-            'dir'           => $dir,
-            'cust'          => $cust,
-            'dirs'          => DocstoreCustomerDirectory::getListingForDropdown( DocstoreCustomerDirectory::getListing( $cust, $request->user() ) ),
-            'parent_dir'    => $dir->parent_dir_id
+            'dir'               => $dir,
+            'cust'              => $cust,
+            'dirs'              => DocstoreCustomerDirectory::getListingForDropdown( DocstoreCustomerDirectory::getListing( $cust, $r->user() ) ),
+            'parent_dir_id'     => $dir->parent_dir_id
         ] );
     }
 
     /**
      * Store a customer directory
      *
-     * @param Request   $request
+     * @param Request   $r
      * @param Customer  $cust
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
-    public function store( Request $request, Customer $cust ): RedirectResponse
+    public function store( Request $r, Customer $cust ): RedirectResponse
     {
         $this->authorize( 'create', [ DocstoreCustomerDirectory::class, $cust ] );
 
-        $this->checkForm( $request );
+        $this->checkForm( $r );
 
-        $dir = DocstoreCustomerDirectory::create( [
-            'name'          => $request->name,
-            'cust_id'       => $request->cust_id,
-            'description'   => $request->description,
-            'parent_dir_id' => $request->parent_dir ] );
+        $dir = DocstoreCustomerDirectory::create( $r->all() );
 
-        Log::info( sprintf( "DocStore: new directory [%d|%s] created by %s for the customer [%d|%s]", $dir->id, $dir->name, $request->user()->getUsername(), $cust->id, $cust->name ) );
+        Log::info( sprintf( "DocStore: new directory [%d|%s] created by %s for the customer [%d|%s]", $dir->id, $dir->name, $r->user()->username, $cust->id, $cust->name ) );
 
-        AlertContainer::push( "New per-" . config( 'ixp_fe.lang.customer.one' ) . " directory <em>{$request->name}</em> created.", Alert::SUCCESS );
+        AlertContainer::push( "New per-" . config( 'ixp_fe.lang.customer.one' ) . " directory <em>{$r->name}</em> created.", Alert::SUCCESS );
         return redirect( route( 'docstore-c-dir@list', [ 'cust' => $cust,'dir' => $dir->id ] ) );
     }
 
     /**
      * Update a customer directory
      *
-     * @param Request $request
-     *
-     * @param Customer $cust
+     * @param Request                   $r
+     * @param Customer                  $cust
      * @param DocstoreCustomerDirectory $dir
+     *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
-    public function update( Request $request , Customer $cust, DocstoreCustomerDirectory $dir ): RedirectResponse
+    public function update( Request $r , Customer $cust, DocstoreCustomerDirectory $dir ): RedirectResponse
     {
-
         $this->authorize( 'update', [ DocstoreCustomerDirectory::class, $dir ] );
 
-        $this->checkForm( $request );
+        $this->checkForm( $r );
 
-        $dir->update( [ 'name' => $request->name, 'description' => $request->description, 'parent_dir_id' => $request->parent_dir ] );
+        $dir->update( [ 'name' => $r->name, 'description' => $r->description, 'parent_dir_id' => $r->parent_dir_id ] );
 
-        Log::info( sprintf( "DocStore: customer directory [%d|%s] edited by %s", $dir->id, $dir->name, $request->user()->getUsername() ) );
+        Log::info( sprintf( "DocStore: customer directory [%d|%s] edited by %s", $dir->id, $dir->name, $r->user()->username ) );
 
-        AlertContainer::push( "Per-" . config( 'ixp_fe.lang.customer.one' ) . " directory  <em>{$request->name}</em> updated.", Alert::SUCCESS );
+        AlertContainer::push( "Per-" . config( 'ixp_fe.lang.customer.one' ) . " directory  <em>{$r->name}</em> updated.", Alert::SUCCESS );
         return redirect( route( 'docstore-c-dir@list', [ 'cust' => $cust, 'dir' => $dir->parent_dir_id ] ) );
     }
 
     /**
      * Delete a directory
      *
-     * @param Request                   $request
+     * @param Request                   $r
      * @param DocstoreCustomerDirectory $dir
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
-    public function delete( Request $request , DocstoreCustomerDirectory $dir ): RedirectResponse
+    public function delete( Request $r , DocstoreCustomerDirectory $dir ): RedirectResponse
     {
         $this->authorize( 'delete', $dir );
 
-        Log::notice( sprintf( "DocStore: start recursive deletion of directory [%d|%s] by %s for the customer [%d|%s]", $dir->id, $dir->name, $request->user()->getUsername(), $dir->customer->id, $dir->customer->name ) );
+        Log::notice( sprintf( "DocStore: start recursive deletion of directory [%d|%s] by %s for the customer [%d|%s]", $dir->id, $dir->name, $r->user()->username, $dir->customer->id, $dir->customer->name ) );
         DocstoreCustomerDirectory::recursiveDelete( $dir );
-        Log::notice( sprintf( "DocStore: finish recursive deletion of directory [%d|%s] by %s for the customer [%d|%s]", $dir->id, $dir->name, $request->user()->getUsername(), $dir->customer->id, $dir->customer->name ) );
+        Log::notice( sprintf( "DocStore: finish recursive deletion of directory [%d|%s] by %s for the customer [%d|%s]", $dir->id, $dir->name, $r->user()->username, $dir->customer->id, $dir->customer->name ) );
 
         AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) .  "Directory <em>{$dir->name}</em> deleted.", Alert::SUCCESS );
         return redirect( route( 'docstore-c-dir@list', [ 'cust' => $dir->customer , 'dir' => $dir->parent_dir_id ] ) );
@@ -274,14 +275,13 @@ class DirectoryController extends Controller
     /**
      * Delete a directory
      *
-     * @param Request                   $request
-     * @param Customer                  $cust
+     * @param Customer  $cust
      *
      * @return RedirectResponse
      *
-     * @throws
+     * @throws AuthorizationException
      */
-    public function deleteForCustomer( Request $request , Customer $cust ): RedirectResponse
+    public function deleteForCustomer( Customer $cust ): RedirectResponse
     {
         $this->authorize( 'deleteForCustomer', [ DocstoreCustomerDirectory::class, $cust ] );
 
@@ -296,11 +296,11 @@ class DirectoryController extends Controller
     /**
      * Check if the form is valid
      *
-     * @param $request
+     * @param Request $r
      */
-    private function checkForm( Request $request )
+    private function checkForm( Request $r ): void
     {
-        $request->validate( [
+        $r->validate( [
             'name' => [ 'required', 'max:100',
                 function( $attribute, $value, $fail ) {
                     if( Str::startsWith(strtolower( $value ), 'patch panel port' ) ) {
@@ -309,9 +309,9 @@ class DirectoryController extends Controller
                 }
             ],
             'cust_id'          => [ 'required', 'integer',
-                function( $attribute, $value, $fail ) use ($request) {
-                    if( !Customer::whereId( $value )->exists() ) {
-                        Log::notice( "Attempt to create/edit a directory where the customer ID [{$value}] is invalid / does not exist by user ID {$request->user()->getId()}." );
+                function( $attribute, $value, $fail ) use ($r) {
+                    if( !Customer::find( $value ) ) {
+                        Log::notice( "Attempt to create/edit a directory where the customer ID [{$value}] is invalid / does not exist by user ID {$r->user()->id}." );
                         AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' is invalid / does not exist.', Alert::DANGER );
                         return $fail( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' is invalid / does not exist.' );
                     }
@@ -320,7 +320,7 @@ class DirectoryController extends Controller
             'description'   => 'nullable',
             'parent_dir_id' => [ 'nullable', 'integer',
                 function( $attribute, $value, $fail ) {
-                    if( !DocstoreCustomerDirectory::whereId( $value )->exists() ) {
+                    if( !DocstoreCustomerDirectory::find( $value ) ) {
                         return $fail( 'Parent directory is invalid / does not exist.' );
                     }
                 }

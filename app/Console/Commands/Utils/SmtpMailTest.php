@@ -22,11 +22,11 @@ namespace IXP\Console\Commands\Utils;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
+use Illuminate\Support\Facades\Mail;
 
 use IXP\Console\Commands\Command as IXPCommand;
+
 use IXP\Mail\Utils\SmtpTest as SmtpTestMail;
-use Illuminate\Support\Facades\Mail;
 
 /**
  * Class SmtpMailTest - test sending emails
@@ -34,7 +34,7 @@ use Illuminate\Support\Facades\Mail;
  * @see https://docs.ixpmanager.org/usage/email/
  * @author Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @package IXP\Console\Commands\Utils
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SmtpMailTest extends IXPCommand
@@ -60,7 +60,6 @@ class SmtpMailTest extends IXPCommand
      */
     public function handle()
     {
-
         $email = $this->argument( 'email' );
 
         $this->info( "This utility allows you to test your SMTP settings to verify that IXP Manager can send email." );

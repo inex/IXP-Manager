@@ -1,7 +1,9 @@
 <?php
 
+namespace IXP\Http\Controllers;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,25 +23,32 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace IXP\Http\Controllers;
-
-use Auth, D2EM;
-
-use Entities\{
-    Customer as CustomerEntity,
-    User as UserEntity
-};
+use Auth;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-
 use Illuminate\Foundation\Validation\ValidatesRequests;
+
 use Illuminate\Routing\Controller as BaseController;
 
+use IXP\Models\{
+    Customer,
+    User
+};
+
+/**
+ * Controller
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Controllers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
 
     /**
      * Checks if reseller mode is enabled.
@@ -53,23 +62,6 @@ class Controller extends BaseController
     protected function resellerMode(): bool
     {
         return (bool)config( 'ixp.reseller.enabled', false );
-    }
-
-    /**
-     * Checks if multi IXP mode is enabled.
-     *
-     * To enable multi IXP mode set the env variable IXP_MULTIIXP_ENABLED
-     *
-     * NB: this functionality is deprecated in IXP Manager v4.0 and will be
-     * removed piecemeal.
-     *
-     * @see https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality
-     *
-     * @return bool
-     */
-    protected function multiIXP(): bool
-    {
-        return (bool)config( 'ixp.multiixp.enabled', false );
     }
 
     /**
@@ -93,20 +85,18 @@ class Controller extends BaseController
      *
      * @return bool
      */
-    protected function logoManagementEnabled()
+    protected function logoManagementEnabled(): bool
     {
         return !(bool)config( 'ixp_fe.frontend.disabled.logo' );
     }
-
 
     /**
      * Try to get the clients real IP address even when behind a proxy.
      *
      * Source: https://stackoverflow.com/questions/33268683/how-to-get-client-ip-address-in-laravel-5/41769505#41769505
-     *
-     * @return string
+     * @return string|null
      */
-    protected function getIp()
+    protected function getIp(): ?string
     {
         foreach( [ 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR' ] as $key ) {
             if( array_key_exists( $key, $_SERVER ) === true ) {
@@ -118,7 +108,6 @@ class Controller extends BaseController
                 }
             }
         }
-
         return request()->getClientIp();
     }
 
@@ -129,26 +118,22 @@ class Controller extends BaseController
      *
      * @throws
      */
-    protected function getAllowedPrivs()
+    protected function getAllowedPrivs(): array
     {
-        $privs = UserEntity::$PRIVILEGES_TEXT_NONSUPERUSER;
+        $privs          = User::$PRIVILEGES_TEXT_NONSUPERUSER;
+        $isSuperUser    = Auth::getUser()->isSuperUser();
 
         // If we add a user via the customer overview users list
-        if( request()->is( 'user/add*' ) && request()->input( "cust" ) ) {
-
-            /** @var $c CustomerEntity */
-            if( ( $c = D2EM::getRepository( CustomerEntity::class )->find( request()->input( "cust" ) ) ) ) {
+        if( request()->custid && request()->is( 'user/create*' ) ) {
+            if( ( $c = Customer::find( request()->custid ) ) ) {
                 // Internal customer and SuperUser
-                if( $c->isTypeInternal() && Auth::getUser()->isSuperUser() ){
-                    $privs = UserEntity::$PRIVILEGES_TEXT;
+                if( $c->typeInternal() && $isSuperUser ){
+                    $privs = User::$PRIVILEGES_TEXT;
                 }
             }
-            // If we add a user and we are a SuperUser
-        } elseif( Auth::getUser()->isSuperUser() && ( request()->is( 'user/add*' ) || request()->is( 'customer-to-user/add*' )  ) ) {
-            $privs = UserEntity::$PRIVILEGES_TEXT;
+        }elseif( $isSuperUser && ( request()->is( 'user/create*' ) || request()->is( 'customer-to-user/create*' )  ) ) {
+            $privs = User::$PRIVILEGES_TEXT;
         }
-
         return $privs;
     }
-
 }

@@ -3,7 +3,7 @@
 namespace IXP\Utils;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -55,21 +55,24 @@ class OUI
     /**
      * Constructor
      *
-     * @param string $file Where to get the OUI list from
+     * @param string|null $file Where to get the OUI list from
      */
-    public function __construct( string $file = null ) {
+    public function __construct( string $file = null )
+    {
         if( $file ) {
             $this->file = $file;
         }
     }
 
     /**
-     * Load the raw OUI data from the specificed location
+     * Load the raw OUI data from the specified location
      *
      * @return OUI An instance of this class for fluent interfaces
+     *
      * @throws GeneralException
      */
-    public function loadList(): OUI {
+    public function loadList(): OUI
+    {
         $this->raw = @file_get_contents( $this->file );
 
         if( $this->raw === false ) {
@@ -79,12 +82,20 @@ class OUI
         return $this;
     }
 
-    public function processRawData( $data = false ): array {
-        if( $data == false && $this->raw === null ) {
+    /**
+     * @param false $data
+     *
+     * @return array
+     *
+     * @throws GeneralException
+     */
+    public function processRawData( $data = false ): array
+    {
+        if( !$data && $this->raw === null ) {
             throw new GeneralException( 'IXP\\Utils\\OUI - cannot process when no data has been loaded or provided' );
         }
 
-        if( $data == false ) {
+        if( !$data ) {
             $data = $this->raw;
         }
 

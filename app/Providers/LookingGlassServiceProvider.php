@@ -1,11 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
 namespace IXP\Providers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -24,23 +22,27 @@ namespace IXP\Providers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
+use Route;
 
 use Illuminate\Support\ServiceProvider;
-use Route;
+
+use IXP\Services\LookingGlass;
 
 /**
  * Looking Glass Service Provider
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Providers
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class LookingGlassServiceProvider extends ServiceProvider {
-
+class LookingGlassServiceProvider extends ServiceProvider
+{
+    /**
+     * @var bool
+     */
     protected $defer = false;
 
     /**
@@ -48,7 +50,7 @@ class LookingGlassServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         if( config('ixp_fe.frontend.disabled.lg' ) ) {
             return;
@@ -57,18 +59,15 @@ class LookingGlassServiceProvider extends ServiceProvider {
         Route::group( [ 'middleware' => 'lookingglass', 'namespace' => 'IXP\Http\Controllers\Services',
                         'as' => 'lg::', 'prefix' => 'lg' ], function() {
 
-            Route::get( '',                                         'LookingGlass@index'             )->name('index');
-
-            Route::get( '{handle}',                                 'LookingGlass@bgpSummary'        )->name( 'bgp-sum' );
-
-            Route::get( '{handle}/routes/table/{table}',            'LookingGlass@routesForTable'    );
-            Route::get( '{handle}/routes/protocol/{protocol}',      'LookingGlass@routesForProtocol' )->name( 'route-protocol' );
-            Route::get( '{handle}/routes/export/{protocol}',        'LookingGlass@routesForExport'   );
-
-            Route::get( '{handle}/route-search',                           'LookingGlass@routeSearch'       )->name( 'route-search' );
-            Route::get( '{handle}/route/{net}/{mask}/protocol/{protocol}', 'LookingGlass@routeProtocol'     );
-            Route::get( '{handle}/route/{net}/{mask}/table/{table}',       'LookingGlass@routeTable'        );
-            Route::get( '{handle}/route/{net}/{mask}/export/{protocol}',   'LookingGlass@routeExport'       );
+            Route::get( '',                                                 'LookingGlass@index'             )->name('index');
+            Route::get( '{handle}',                                         'LookingGlass@bgpSummary'        )->name( 'bgp-sum' );
+            Route::get( '{handle}/routes/table/{table}',                    'LookingGlass@routesForTable'    );
+            Route::get( '{handle}/routes/protocol/{protocol}',              'LookingGlass@routesForProtocol' )->name( 'route-protocol' );
+            Route::get( '{handle}/routes/export/{protocol}',                'LookingGlass@routesForExport'   );
+            Route::get( '{handle}/route-search',                            'LookingGlass@routeSearch'       )->name( 'route-search' );
+            Route::get( '{handle}/route/{net}/{mask}/protocol/{protocol}',  'LookingGlass@routeProtocol'     );
+            Route::get( '{handle}/route/{net}/{mask}/table/{table}',        'LookingGlass@routeTable'        );
+            Route::get( '{handle}/route/{net}/{mask}/export/{protocol}',    'LookingGlass@routeExport'       );
         });
 
         Route::group( [ 'middleware' => 'lookingglass', 'namespace' => 'IXP\Http\Controllers\Services',
@@ -84,23 +83,20 @@ class LookingGlassServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
-        $this->app->singleton( 'IXP\Services\LookingGlass', function($app) {
-            return new \IXP\Services\LookingGlass;
+        $this->app->singleton( LookingGlass::class, function( $app ) {
+            return new LookingGlass;
         });
     }
-
 
     /**
      * Get the services provided by the provider.
      *
      * @return array
      */
-    public function provides()
+    public function provides(): array
     {
-        return [ 'IXP\Services\LookingGlass' ];
+        return [ LookingGlass::class ];
     }
-
-
 }

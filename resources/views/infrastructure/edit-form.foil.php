@@ -1,9 +1,8 @@
 <div class="card col-sm-12">
     <div class="card-body">
-
-        <?= Former::open()->method( 'POST' )
+        <?= Former::open()->method( $t->data['params']['isAdd'] ? 'POST' : 'PUT' )
             ->id( 'form' )
-            ->action( route( $t->feParams->route_prefix . '@store' ) )
+            ->action( $t->data['params']['isAdd'] ? route( $t->feParams->route_prefix . '@store' ) : route($t->feParams->route_prefix . '@update', [ 'id' => $t->data[ 'params'][ 'object']->id ] ) )
             ->customInputWidthClass( 'col-lg-4 col-md-5 col-sm-5' )
             ->customLabelWidthClass( 'col-lg-2 col-sm-3' )
             ->actionButtonsCustomClass( "grey-box")
@@ -33,7 +32,7 @@
                 in the export.' );
         ?>
 
-        <?= Former::checkbox( 'primary' )
+        <?= Former::checkbox( 'isPrimary' )
             ->label( '&nbsp;' )
             ->text( 'Primary Infrastructure' )
             ->value( 1 )
@@ -51,8 +50,8 @@
                 . "cached for two hours. Use 'artisan cache:clear' to reset it.");
         ?>
 
-        <?= Former::select( 'pdb_ixp' )
-            ->id( 'pdb_ixp' )
+        <?= Former::select( 'peeringdb_ix_id' )
+            ->id( 'peeringdb_ix_id' )
             ->label( 'Peering DB IX ID' )
             ->placeholder( 'Please wait, loading...' )
             ->blockHelp( "Identify your IXP from <a href=\"https://www.peeringdb.com/\">PeeringDB</a>. If it does not exist there, "
@@ -60,19 +59,46 @@
                 . "cached for two hours. Use 'artisan cache:clear' to reset it.");
         ?>
 
+        <div class="form-group row">
+            <div class="col-sm-8">
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs">
+                            <li role="presentation" class="nav-item">
+                                <a class="tab-link-body-note nav-link active" href="#body1">Public Notes</a>
+                            </li>
+                            <li role="presentation" class="nav-item">
+                                <a class="tab-link-preview-note nav-link " href="#preview1">Preview</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-content card-body">
+                        <div role="tabpanel" class="tab-pane show active" id="body1">
+                            <?= Former::textarea( 'notes' )
+                                ->id( 'notes' )
+                                ->class( 'notes' )
+                                ->label( '' )
+                                ->rows( 10 )
+                                ->blockHelp( "These notes are visible (but not editable) to the member. You can use markdown here." )
+                            ?>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="preview1">
+                            <div class="bg-light p-4 well-preview">
+                                Loading...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <?= Former::actions(
-            Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' )->disabled( true )->class( "mb-2 mb-sm-0" ),
+            Former::primary_submit( $t->data['params']['isAdd'] ? 'Create' : 'Save Changes' )->id( 'btn-submit' )->disabled( true )->class( "mb-2 mb-sm-0" ),
             Former::secondary_link( 'Cancel' )->href( route($t->feParams->route_prefix . '@list') )->class( "mb-2 mb-sm-0" ),
             Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
         );
         ?>
 
-        <?= Former::hidden( 'id' )
-            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
-        ?>
-
         <?= Former::close() ?>
-
     </div>
 </div>
-

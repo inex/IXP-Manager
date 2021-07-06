@@ -1,15 +1,9 @@
-<?php namespace IXP\Console\Commands\Utils\Export\JsonSchema;
+<?php
 
-use App;
-use IXP\Console\Commands\Command as IXPCommand;
-
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
-
-use GuzzleHttp\Client;
+namespace IXP\Console\Commands\Utils\Export\JsonSchema;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,6 +22,13 @@ use GuzzleHttp\Client;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use IXP\Console\Commands\Command as IXPCommand;
+
+use IXP\Utils\Export\JsonSchema;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
+
+use GuzzleHttp\Client;
 
  /**
   * Artisan command to POST the JSON Export to a given endpoint
@@ -35,17 +36,19 @@ use GuzzleHttp\Client;
   * @author     Barry O'Donovan <barry@opensolutions.ie>
   * @category   Utils
   * @package    IXP\Console\Commands
-  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
 class Post extends IXPCommand
 {
     /**
-     * The console command name.
+     * The name and signature of the console command.
      *
      * @var string
      */
-    protected $name = 'utils:json-schema-post';
+    protected $signature = 'utils:json-schema-post
+                            {url       : The url end point}
+                            {--ver=    : Schema version to export (default: v' . JsonSchema::EUROIX_JSON_LATEST . ')}';
 
     /**
      * The console command description.
@@ -61,45 +64,27 @@ class Post extends IXPCommand
      */
     public function handle()
     {
-        if( $this->getOutput()->isVerbose() ) $this->info( "{$this->name} :: Generating schema..." );
+        if( $this->getOutput()->isVerbose() ){
+            $this->info( "{$this->name} :: Generating schema..." );
+        }
 
-        $exporter = new \IXP\Utils\Export\JsonSchema();
+        $exporter = new JsonSchema();
         $json = $exporter->get( $this->option( 'ver' ) );
 
         try {
-            if( $this->getOutput()->isVerbose() ) $this->info( "{$this->name} :: Posting schema..." );
-            $client = new Client([ 'base_uri' => $this->argument( 'url' ), 'timeout'  => 60.0, ]);
+            if( $this->getOutput()->isVerbose() ){
+                $this->info( "{$this->name} :: Posting schema..." );
+            }
+
+            $client = new Client( [ 'base_uri' => $this->argument( 'url' ), 'timeout'  => 60.0, ] );
             $response = $client->post( $this->argument( 'url' ), [ 'body' => $json ] );
         } catch( \Exception $e ) {
             $this->error( 'Could not post data: ' . $e->getMessage() );
             return -1;
         }
 
-        if( $this->getOutput()->isVerbose() ) $this->info( "{$this->name} :: Schema posted." );
-    }
-
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments()
-    {
-        return [
-            [ 'url', InputArgument::REQUIRED, 'The endpoint to POST the schema to' ],
-        ];
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return [
-            [ 'ver', null, InputOption::VALUE_OPTIONAL,
-                'Schema version to export (defualt: v' . \IXP\Utils\Export\JsonSchema::EUROIX_JSON_LATEST . ')', null ],
-        ];
+        if( $this->getOutput()->isVerbose() ){
+            $this->info( "{$this->name} :: Schema posted." );
+        }
     }
 }

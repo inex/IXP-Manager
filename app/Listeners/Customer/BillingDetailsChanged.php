@@ -3,7 +3,7 @@
 namespace IXP\Listeners\Customer;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,7 +22,6 @@ namespace IXP\Listeners\Customer;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Mail;
 
 use IXP\Events\Customer\BillingDetailsChanged as BillingDetailsChangedEvent;
@@ -36,20 +35,18 @@ class BillingDetailsChanged
      *
      * @return void
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(){}
 
     /**
      * Handle the event.
      *
      * @param  BillingDetailsChangedEvent  $e
+     *
      * @return void
      */
-    public function handle( BillingDetailsChangedEvent $e )
+    public function handle( BillingDetailsChangedEvent $e ): void
     {
-        if( !config( 'ixp_fe.customer.billing_updates_notify' ) || $e->ocbd->getCustomer()->isResoldCustomer() ) {
+        if( !config( 'ixp_fe.customer.billing_updates_notify' ) || $e->ocbd->customer->resellerObject()->exists() ) {
             return;
         }
 

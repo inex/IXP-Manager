@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\ConsoleServer;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,72 +23,58 @@ namespace IXP\Http\Controllers\ConsoleServer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Former, Log;
+use Former;
 
-use Entities\{
-    ConsoleServer       as ConsoleServerEntity,
-    Cabinet             as CabinetEntity,
-    Vendor              as VendorEntity
+use Illuminate\Database\Eloquent\Builder;
+
+use Illuminate\Http\{
+    Request,
+    RedirectResponse
 };
 
-
-use Illuminate\Http\RedirectResponse;
-use IXP\Http\Controllers\Doctrine2Frontend;
-
-use IXP\Http\Requests\StoreConsoleServer as StoreConsoleServerRequest;
-
-use IXP\Utils\View\Alert\{
-    Alert,
-    Container as AlertContainer
+use IXP\Models\{
+    Cabinet,
+    ConsoleServer,
+    Vendor
 };
+
+use IXP\Rules\IdnValidate;
+
+use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
 /**
- * ConsoleServerConnection Controller
+ * ConsoleServer Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\ConsoleServer
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class ConsoleServerController extends Doctrine2Frontend {
-
+class ConsoleServerController extends EloquentController
+{
     /**
-     * The object being added / edited
-     * @var ConsoleServerEntity
+     * The object being created / edited
+     * 
+     * @var ConsoleServer
      */
     protected $object = null;
 
     /**
-     * Sometimes we need to pass a custom request object for validation / authorisation.
-     *
-     * Set the name of the function here and the route for store will be pointed to it instead of doStore()
-     *
-     * @var string
-     */
-    protected static $storeFn = 'customStore';
-
-    /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
-
         $this->feParams         = (object)[
-
-            'entity'            => ConsoleServerEntity::class,
-
+            'model'             => ConsoleServer::class,
             'pagetitle'         => 'Console Servers',
-
             'titleSingular'     => 'Console Server',
             'nameSingular'      => 'a console server',
-
             'listOrderBy'       => 'id',
             'listOrderByDir'    => 'ASC',
-
             'viewFolderName'    => 'console-server',
-
             'listColumns'    => [
-
                 'name'           => [
                     'title'      => 'Name',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -96,7 +82,6 @@ class ConsoleServerController extends Doctrine2Frontend {
                     'action'     => 'list/port',
                     'idField'    => 'id'
                 ],
-
                 'facility'  => [
                     'title'      => 'Facility',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -104,7 +89,6 @@ class ConsoleServerController extends Doctrine2Frontend {
                     'action'     => 'view',
                     'idField'    => 'locationid'
                 ],
-
                 'cabinet'  => [
                     'title'      => 'Cabinet',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -112,7 +96,6 @@ class ConsoleServerController extends Doctrine2Frontend {
                     'action'     => 'view',
                     'idField'    => 'cabinetid'
                 ],
-
                 'vendor'  => [
                     'title'       => 'Vendor',
                     'type'        => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -120,11 +103,7 @@ class ConsoleServerController extends Doctrine2Frontend {
                     'action'      => 'view',
                     'idField'     => 'vendorid'
                 ],
-
                 'model'           => 'Model',
-
-                //'num_connections' => 'Connections',
-
                 'num_connections' => [
                     'title'      => 'Connections',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -132,7 +111,6 @@ class ConsoleServerController extends Doctrine2Frontend {
                     'action'     => 'list/port',
                     'idField'    => 'id'
                 ],
-
                 'active'       => [
                     'title'    => 'Active',
                     'type'     => self::$FE_COL_TYPES[ 'YES_NO' ]
@@ -148,96 +126,127 @@ class ConsoleServerController extends Doctrine2Frontend {
                 'notes'       => [
                     'title'         => 'Notes',
                     'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
+                ],
+                'created_at'       => [
+                    'title'         => 'Created',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ],
+                'updated_at'       => [
+                    'title'         => 'Updated',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ]
             ]
         );
-
-
     }
 
     /**
      * Provide array of rows for the list action and view action
      *
-     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @param int|null $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     *
      * @return array
      */
-    protected function listGetData( $id = null )
+    protected function listGetData( $id = null ): array
     {
-        return D2EM::getRepository( ConsoleServerEntity::class )->getAllForFeList( $this->feParams, $id );
+        $feParams = $this->feParams;
+        return ConsoleServer::selectRaw(
+            'cs.*,
+            v.id AS vendorid, v.name AS vendor,
+            c.id AS cabinetid, c.name AS cabinet, 
+            l.id AS locationid, l.shortname AS facility,
+            COUNT( DISTINCT csc.id ) AS num_connections'
+        )
+        ->from( 'console_server AS cs' )
+        ->leftJoin( 'consoleserverconnection AS csc', 'csc.console_server_id', 'cs.id')
+        ->leftJoin( 'cabinet AS c', 'c.id', 'cs.cabinet_id')
+        ->leftJoin( 'location AS l', 'l.id', 'c.locationid')
+        ->leftJoin( 'vendor AS v', 'v.id', 'cs.vendor_id')
+        ->when( $id , function( Builder $q, $id ) {
+            return $q->where('cs.id', $id );
+        } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+        })
+        ->groupBy('cs.id' )->get()->toArray();
     }
 
-
-
     /**
-     * Display the form to add/edit an object
-     * @param   int $id ID of the row to edit
+     * Display the form to create an object
+     *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array
+    protected function createPrepareForm(): array
     {
-        if( $id !== null ) {
+        return [
+            'object'        => $this->object,
+            'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
+                ->orderBy( 'name' )->get(),
+            'vendors'       => Vendor::orderBy( 'name' )->get(),
+        ];
+    }
 
-            if( !( $this->object = D2EM::getRepository( ConsoleServerEntity::class )->find( $id) ) ) {
-                abort(404, 'Console server not found' );
-            }
+    /**
+     * Display the form to edit an object
+     *
+     * @param   int $id ID of the row to edit
+     *
+     * @return array
+     */
+    protected function editPrepareForm( int $id ): array
+    {
+        $this->object = ConsoleServer::findOrFail( $id );
 
-            Former::populate([
-                'name'              => request()->old( 'name',             $this->object->getName() ),
-                'hostname'          => request()->old( 'hostname',         $this->object->getHostname() ),
-                'model'             => request()->old( 'model',            $this->object->getModel() ),
-                'serial_number'     => request()->old( 'serial_number',    $this->object->getSerialNumber() ),
-                'cabinet'           => request()->old( 'cabinet',          $this->object->getCabinet()->getId() ),
-                'vendor'            => request()->old( 'vendor',           $this->object->getVendor()->getId() ),
-                'active'            => request()->old( 'active',           ( $this->object->getActive() ? 1 : 0 ) ),
-                'notes'             => request()->old( 'notes',             $this->object->getNote() ),
-            ]);
-        }
+        Former::populate([
+            'name'              => request()->old( 'name',             $this->object->name          ),
+            'hostname'          => request()->old( 'hostname',         $this->object->hostname      ),
+            'model'             => request()->old( 'model',            $this->object->model         ),
+            'serialNumber'      => request()->old( 'serial_number',    $this->object->serialNumber  ),
+            'cabinet_id'        => request()->old( 'cabinet',          $this->object->cabinet_id    ),
+            'vendor_id'         => request()->old( 'vendor',           $this->object->vendor_id     ),
+            'active'            => request()->old( 'active',           $this->object->active        ),
+            'notes'             => request()->old( 'notes',            $this->object->notes         ),
+        ]);
 
         return [
-            'object'                => $this->object,
-            'cabinets'              => D2EM::getRepository( CabinetEntity::class    )->getAsArray(),
-            'vendors'               => D2EM::getRepository( VendorEntity::class     )->getAsArray(),
+            'object'        => $this->object,
+            'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
+                ->orderBy( 'name' )->get(),
+            'vendors'       => Vendor::orderBy( 'name' )->get()
         ];
     }
 
     /**
      * Function to do the actual validation and storing of the submitted object.
-     * @param StoreConsoleServerRequest $request
+     *
+     * @param Request $r
+     *
      * @return bool|RedirectResponse
+     *
      * @throws
      */
-    public function customStore( StoreConsoleServerRequest $request )
+    public function doStore( Request $r ): bool|RedirectResponse
     {
-
-        if( $request->input( 'id', false ) ) {
-            if( !( $this->object = D2EM::getRepository( ConsoleServerEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort( 404, 'Console server not found' );
-            }
-        } else {
-            $this->object = new ConsoleServerEntity;
-            D2EM::persist( $this->object );
-        }
-
-        $this->object->setName(         $request->input( 'name'             ) );
-        $this->object->setSerialNumber( $request->input( 'serial_number'    ) );
-        $this->object->setHostname(     $request->input( 'hostname'         ) );
-        $this->object->setNote(         $request->input( 'notes'            ) );
-        $this->object->setModel(        $request->input( 'model'            ) );
-        $this->object->setActive(       $request->input( 'active' ) ? 1 : 0 );
-        $this->object->setVendor(       D2EM::getRepository( VendorEntity::class    )->find( $request->input( 'vendor'     ) ) );
-        $this->object->setCabinet(      D2EM::getRepository( CabinetEntity::class   )->find( $request->input( 'cabinet'    ) ) );
-
-        D2EM::flush( );
-
-        $action = $request->input( 'id' )  ? "edited" : "added";
-
-        Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' ' . $action . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
-
-        AlertContainer::push( $this->store_alert_success_message ?? $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
-
-        return redirect()->to( $this->postStoreRedirect() ?? route( self::route_prefix() . '@' . 'list' ) );
+        $this->checkForm( $r );
+        $this->object = ConsoleServer::create( $r->all() );
+        return true;
     }
 
+    /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request   $r
+     * @param int       $id
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doUpdate( Request $r, int $id ): bool|RedirectResponse
+    {
+        $this->object = ConsoleServer::findOrFail( $id );
+        $this->checkForm( $r );
+        $this->object->update( $r->all() );
+        return true;
+    }
 
     /**
      * Delete all console server connections before deleting the console server.
@@ -248,11 +257,26 @@ class ConsoleServerController extends Doctrine2Frontend {
      */
     protected function preDelete(): bool
     {
-        foreach( $this->object->getConsoleServerConnections() as $csc ) {
-            D2EM::remove( $csc );
-        }
-
+        $this->object->consoleServerConnections()->delete();
         return true;
     }
 
+    /**
+     * Check if the form is valid
+     *
+     * @param Request $r
+     */
+    public function checkForm( Request $r ): void
+    {
+        $r->validate( [
+            'name'              => 'required|string|max:255|unique:console_server,name' . ( $this->object ? ','. $this->object->id : '' ),
+            'vendor_id'         => 'required|integer|exists:vendor,id',
+            'cabinet_id'        => 'required|integer|exists:cabinet,id',
+            'model'             => 'nullable|string|max:255',
+            'serialNumber'      => 'nullable|string',
+            'notes'             => 'nullable|string',
+            'hostname'          => [ 'required','string', new IdnValidate() ],
+            'active'            => 'string',
+        ] );
+    }
 }

@@ -1,48 +1,48 @@
-Dear <?= $t->peer->getName() ?> Peering Team,
+Dear <?= $t->peer->name ?> Peering Team,
 
-We are <?= $t->user->getCustomer()->getName() ?> (<?= $t->user->getCustomer()->getCorpwww() ?>) and we are fellow members of <?= config( "identity.orgname" ) ?> (<?= config( "identity.location.city" ) ?>, <?= config( "identity.location.country") ?>).
+We are <?= $t->user->customer->name ?> (<?= $t->user->customer->corpwww ?>) and we are fellow members of <?= config( "identity.orgname" ) ?> (<?= config( "identity.location.city" ) ?>, <?= config( "identity.location.country") ?>).
 
 We would like to arrange peering session(s) with you on the following interface(s):
 
 <?php foreach( $t->pp as $p ): ?>
 
-<?php $pmy = $p[ "my" ] ?>
-<?php $pyour = $p[ "your" ] ?>
+<?php $pmy = $p[ "my" ] /** @var $pmy \IXP\Models\VlanInterface */ ?>
+<?php $pyour = $p[ "your" ] /** @var $pyour \IXP\Models\VlanInterface */ ?>
 
-### <?= $pmy->getVlan()->getName() ?>
-
-
-```
-Our AS Number:     <?= $t->user->getCustomer()->getAutsys() ?>
-
-<?php if( $pmy->getIpv4enabled() && $pyour->getIpv4enabled() ): ?>
-Our IPv4 Address:  <?= $pmy->getIpv4address()->getAddress() ?>
-
-<?php if( $t->user->getCustomer()->getPeeringmacro() ): ?>
-Our IPv4 AS Macro: <?= $t->user->getCustomer()->getPeeringmacro() ?>
-
-<?php endif; ?>
-<?php endif; ?>
-
-<?php if( $pmy->getIpv6enabled() && $pyour->getIpv6enabled() ): ?>
-Our IPv6 Address:  <?= $pmy->getIpv6address()->getAddress() ?>
-
-Our IPv6 AS Macro: <?= $t->user->getCustomer()->resolveAsMacro( 6 ) ?>
-<?php endif; ?>
-
-```
+### <?= $pmy->vlan->name ?>
 
 
 ```
-<?php if( $pmy->getIpv4enabled() && $pyour->getIpv4enabled() ): ?>
-Your IPv4 Address: <?= $pyour->getIpv4address()->getAddress() ?>
+Our AS Number:     <?= $t->user->customer->autsys ?>
+
+<?php if( $pmy->ipvxEnabled( 4 ) && $pyour->ipvxEnabled( 4 ) ): ?>
+Our IPv4 Address:  <?= $pmy->ipv4address->address ?>
+
+<?php if( $t->user->customer->peeringmacro ): ?>
+Our IPv4 AS Macro: <?= $t->user->customer->peeringmacro ?>
 
 <?php endif; ?>
-<?php if( $pmy->getIpv6enabled() && $pyour->getIpv6enabled() ): ?>
-Your IPv6 Address: <?= $pyour->getIpv6address()->getAddress() ?>
+<?php endif; ?>
+
+<?php if( $pmy->ipvxEnabled( 6 ) && $pyour->ipvxEnabled( 6 ) ): ?>
+Our IPv6 Address:  <?= $pmy->ipv6address->address ?>
+
+Our IPv6 AS Macro: <?= $t->user->customer->asMacro( 6 ) ?>
+<?php endif; ?>
+
+```
+
+
+```
+<?php if( $pmy->ipvxEnabled( 4 ) && $pyour->ipvxEnabled( 4 ) ): ?>
+Your IPv4 Address: <?= $pyour->ipv4address->address ?>
 
 <?php endif; ?>
-Your AS Number:    <?= $t->peer->getAutsys() ?>
+<?php if( $pmy->ipvxEnabled( 6 ) && $pyour->ipvxEnabled( 6 ) ): ?>
+Your IPv6 Address: <?= $pyour->ipv6address->address ?>
+
+<?php endif; ?>
+Your AS Number:    <?= $t->peer->autsys ?>
 
 ```
 
@@ -50,39 +50,39 @@ Your AS Number:    <?= $t->peer->getAutsys() ?>
 
 
 
-### NOC Details for <?= $t->user->getCustomer()->getName() ?>
+### NOC Details for <?= $t->user->customer->name ?>
 
 
 The following are our NOC details for your reference:
 
-* NOC Hours: <?= $t->user->getCustomer()->getNochours() ?>
+* NOC Hours: <?= $t->user->customer->nochours ?>
 
-* NOC Phone: <?= $t->user->getCustomer()->getNocphone() ?>
+* NOC Phone: <?= $t->user->customer->nocphone ?>
 
-<?php if( $t->user->getCustomer()->getNoc24hphone() ): ?>
-* NOC 24h Phone: <?= $t->user->getCustomer()->getNoc24hphone() ?>
-
-<?php endif; ?>
-<?php if( $t->user->getCustomer()->getNocfax() ): ?>
-* NOC Fax:       <?= $t->user->getCustomer()->getNocfax() ?>
+<?php if( $t->user->customer->noc24hphone ): ?>
+* NOC 24h Phone: <?= $t->user->customer->noc24hphone ?>
 
 <?php endif; ?>
-* NOC Email:     <?= $t->user->getCustomer()->getNocemail() ?>
+<?php if( $t->user->customer->nocfax ): ?>
+* NOC Fax:       <?= $t->user->customer->nocfax ?>
 
-<?php if( $t->user->getCustomer()->getNocwww() ): ?>
-* NOC WWW:       <?= $t->user->getCustomer()->getNocwww() ?>
+<?php endif; ?>
+* NOC Email:     <?= $t->user->customer->nocemail ?>
+
+<?php if( $t->user->customer->nocwww ): ?>
+* NOC WWW:       <?= $t->user->customer->nocwww ?>
 
 <?php endif; ?>
 
 
 Kind regards,
 
-The <?= $t->user->getCustomer()->getName() ?> Peering Team
+The <?= $t->user->customer->name ?> Peering Team
 
 
 --
 
-**NB:** the *From:* address of this email is a <?= config( "identity.orgname" ) ?> blackhole address to avoid SPAM tagging. The *Reply-To:* header is correctly set to [<?= $t->user->getCustomer()->getPeeringemail() ?>](<?= $t->user->getCustomer()->getPeeringemail() ?>). If your ticketing / email system does not pick this up automatically, please be sure to set it.
+**NB:** the *From:* address of this email is a <?= config( "identity.orgname" ) ?> blackhole address to avoid SPAM tagging. The *Reply-To:* header is correctly set to [<?= $t->user->customer->peeringemail ?>](<?= $t->user->customer->peeringemail ?>). If your ticketing / email system does not pick this up automatically, please be sure to set it.
 
 
 This email was composed with the assistance of the <?= config( "identity.orgname") ?> Peering Manager which is part of your members area at: <?= config( "app.url" ) ?>.

@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\Customer;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -27,11 +27,13 @@ use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Customer Store Request
+ * Customer Logo Store Request
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Customers
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Requests\Customer
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Logo extends FormRequest
@@ -41,7 +43,7 @@ class Logo extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // This is just belt and braces. Real authorization is handled via:
         // 1. routes are defined in web-auth (or web-auth-superuser)
@@ -54,12 +56,10 @@ class Logo extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
-
         return [
             'logo'        => 'required|file',
         ];
-
     }
 }

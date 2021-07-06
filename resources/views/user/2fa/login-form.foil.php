@@ -4,7 +4,7 @@ $this->layout( 'layouts/ixpv4' )
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Security / Two Factor Authentification
+    Security / Two Factor Authentication
 <?php $this->append() ?>
 
 
@@ -61,7 +61,8 @@ $this->layout( 'layouts/ixpv4' )
                         ?>
 
                         <?= Former::actions(
-                            Former::primary_submit( 'Authenticate' )
+                            Former::primary_submit( 'Authenticate' ),
+                            Former::secondary_link( 'Logout', route('login@logout') )
                         );
                         ?>
 

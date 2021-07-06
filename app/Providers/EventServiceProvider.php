@@ -1,7 +1,9 @@
 <?php
 
+namespace IXP\Providers;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,22 +23,71 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace IXP\Providers;
+use Illuminate\Auth\Events\{
+    Failed,
+    Login
+};
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
-class EventServiceProvider extends ServiceProvider {
+use IXP\Listeners\Auth\{
+    Google2FALoginSucceeded,
+    LoginFailed,
+    LoginSuccessful
+};
 
+use IXP\Listeners\Customer\Note\EmailOnChange;
+
+use PragmaRX\Google2FALaravel\Events\LoginSucceeded;
+
+use SocialiteProviders\Manager\SocialiteWasCalled;
+
+use IXP\Events\Customer\BillingDetailsChanged;
+
+use IXP\Listeners\Layer2Address\Changed;
+
+use IXP\Events\Layer2Address\{
+    Added,
+    Deleted
+};
+
+use IXP\Events\User\{
+    UserCreated,
+    UserAddedToCustomer
+};
+
+use IXP\Listeners\User\{
+    SendNewUserWelcomeEmail,
+    SendUserAddedToCustomerWelcomeEmail
+};
+
+use IXP\Events\Auth\{
+    ForgotUsername,
+    ForgotPassword,
+    PasswordReset
+};
+use IXP\Events\RipeAtlas\MeasurementComplete;
+
+/**
+ * Event Service Provider
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Providers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class EventServiceProvider extends ServiceProvider
+{
     /**
      * The subscriber classes to register.
      *
      * @var array
      */
     protected $subscribe = [
-        'IXP\Listeners\Customer\Note\EmailOnChange',
+        EmailOnChange::class,
     ];
-
-
 
     /**
      * The event handler mappings for the application.
@@ -45,68 +96,66 @@ class EventServiceProvider extends ServiceProvider {
      */
     protected $listen = [
 
-        \Illuminate\Auth\Events\Login::class => [
-            \IXP\Listeners\Auth\LoginSuccessful::class
+        Login::class => [
+            LoginSuccessful::class
         ],
 
-        \Illuminate\Auth\Events\Failed::class => [
-            \IXP\Listeners\Auth\LoginFailed::class
+        Failed::class => [
+            LoginFailed::class
         ],
 
-        'IXP\Events\Customer\BillingDetailsChanged' => [
-            'IXP\Listeners\Customer\BillingDetailsChanged'
+        BillingDetailsChanged::class => [
+            \IXP\Listeners\Customer\BillingDetailsChanged::class
         ],
 
-        'IXP\Events\Layer2Address\Added' => [
-            'IXP\Listeners\Layer2Address\Changed',
+        Added::class => [
+            Changed::class,
         ],
-        'IXP\Events\Layer2Address\Deleted' => [
-            'IXP\Listeners\Layer2Address\Changed',
-        ],
-
-        'IXP\Events\User\UserCreated' => [
-            'IXP\Listeners\User\SendNewUserWelcomeEmail'
+        Deleted::class => [
+            Changed::class,
         ],
 
-        'IXP\Events\User\UserAddedToCustomer' => [
-            'IXP\Listeners\User\SendUserAddedToCustomerWelcomeEmail'
+        UserCreated::class => [
+            SendNewUserWelcomeEmail::class
         ],
 
-        'IXP\Events\Auth\ForgotUsername' => [
-            'IXP\Listeners\Auth\ForgotUsername'
+        UserAddedToCustomer::class => [
+            SendUserAddedToCustomerWelcomeEmail::class
         ],
 
-        'IXP\Events\Auth\ForgotPassword' => [
-            'IXP\Listeners\Auth\ForgotPassword'
+        ForgotUsername::class => [
+            \IXP\Listeners\Auth\ForgotUsername::class
         ],
 
-        'IXP\Events\Auth\PasswordReset' => [
-            'IXP\Listeners\Auth\PasswordReset'
+        ForgotPassword::class => [
+            \IXP\Listeners\Auth\ForgotPassword::class
         ],
 
-        \PragmaRX\Google2FALaravel\Events\LoginSucceeded::class => [
-            \IXP\Listeners\Auth\Google2FALoginSucceeded::class
+        PasswordReset::class => [
+            \IXP\Listeners\Auth\PasswordReset::class
         ],
 
-        \SocialiteProviders\Manager\SocialiteWasCalled::class => [
+        LoginSucceeded::class => [
+            Google2FALoginSucceeded::class
+        ],
+
+        SocialiteWasCalled::class => [
             'SocialiteProviders\\PeeringDB\\PeeringDBExtendSocialite@handle',
         ],
 
+        MeasurementComplete::class => [
+            \IXP\Listeners\RipeAtlas\MeasurementComplete::class
+        ],
+
     ];
-
-
-
 
     /**
      * Register any other events for your application.
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        parent::boot();
-
         //
     }
-
 }

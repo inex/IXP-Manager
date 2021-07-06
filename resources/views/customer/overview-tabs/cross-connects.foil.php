@@ -5,7 +5,7 @@
         </h3>
     </div>
     <div class="card-body">
-        <table class="table table-striped table-responsive-ixp collapse" style="width: 100%">
+        <table class="table table-striped table-responsive-ixp collapse">
             <thead class="thead-dark">
                 <tr>
                     <th>
@@ -14,7 +14,7 @@
                     <th>
                         Colocation Circuit Ref
                     </th>
-                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                    <?php if( $t->isSuperUser ): ?>
                         <th>
                             Ticket Ref
                         </th>
@@ -25,7 +25,7 @@
                     <th>
                         Location
                     </th>
-                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                    <?php if( $t->isSuperUser ): ?>
                         <th>
                             Cabinet
                         </th>
@@ -42,45 +42,46 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach( $t->crossConnects as $patchPanelPort ): ?>
+                <?php foreach( $t->crossConnects as $ppp ):
+                    /** @var $ppp \IXP\Models\PatchPanelPort */
+                    $pp = $ppp->patchPanel;
+                    ?>
                     <tr>
                         <td>
-                            <a href="<?= route( "patch-panel-port@view" , [ "id" => $patchPanelPort->getId() ] ) ?>">
-                                <?= $t->ee($patchPanelPort->getPatchPanel()->getName() ) ?>
-                                <?= $t->ee( $patchPanelPort->getName() ) ?>
+                            <a href="<?= route( "patch-panel-port@view" , [ "ppp" => $ppp->id ] ) ?>">
+                                <?= $t->ee( $pp->name ) ?>
+                                <?= $t->ee( $ppp->name() ) ?>
                             </a>
                         </td>
                         <td>
-                            <?= $t->ee( $patchPanelPort->getColoCircuitRef() ) ?>
+                            <?= $t->ee( $ppp->colo_circuit_ref ) ?>
                         </td>
-                        <?php if( Auth::getUser()->isSuperUser() ): ?>
+                        <?php if( $t->isSuperUser ): ?>
                             <td>
-                                <?= $t->ee( $patchPanelPort->getTicketRef() ) ?>
+                                <?= $t->ee( $ppp->ticket_ref ) ?>
                             </td>
                         <?php endif; ?>
                         <td>
-                            <?php $class = $patchPanelPort->getStateCssClass() ?>
-
-                            <span title="" class="badge badge-<?=$class ?>">
-                            <?= $patchPanelPort->resolveStates() ?>
+                            <span class="badge badge-<?=$ppp->stateCssClass( $ppp->state, $t->isSuperUser ) ?>">
+                            <?= $ppp->states() ?>
                             </span>
                         </td>
                         <td>
-                            <?= $t->ee( $patchPanelPort->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?>
+                            <?= $t->ee( $pp->cabinet->location->name ) ?>
                         </td>
-                        <?php if( Auth::getUser()->isSuperUser() ): ?>
+                        <?php if( $t->isSuperUser ): ?>
                             <td>
-                                <?= $t->ee( $patchPanelPort->getPatchPanel()->getCabinet()->getName() ) ?>
+                                <?= $t->ee( $pp->cabinet->name ) ?>
                             </td>
                         <?php endif; ?>
                         <td>
-                            <?= $patchPanelPort->getAssignedAtFormated() ?>
+                            <?= $ppp->assigned_at ?>
                         </td>
                         <td>
-                            <?= $patchPanelPort->resolveChargeable() ?>
+                            <?= $ppp->chargeable() ?>
                         </td>
                         <td>
-                            <?= $patchPanelPort->resolveOwnedBy() ?>
+                            <?= $ppp->ownedBy() ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -89,6 +90,6 @@
     </div>
 </div>
 
-<?php if( Auth::getUser()->isSuperUser() ): ?>
+<?php if( $t->isSuperUser ): ?>
     <?= $t->insert( 'customer/overview-tabs/cross-connect-history' ); ?>
 <?php endif; ?>

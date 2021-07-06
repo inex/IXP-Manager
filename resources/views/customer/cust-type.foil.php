@@ -1,34 +1,36 @@
 <?php
-/** @var Foil\Template\Template $t */
+  /** @var Foil\Template\Template $t */
+  /** @var \IXP\Models\Customer $c */
+  $c = $t->cust;
 ?>
-<?php if( $t->cust->isTypeAssociate() ): ?>
+
+<?php if( $c->typeAssociate() ): ?>
     <span class="badge badge-warning tw-p-1">ASSOCIATE MEMBER</span>
-<?php elseif( $t->cust->isTypeProBono() ): ?>
+<?php elseif( $c->typeProBono() ): ?>
     <span class="badge badge-info">PROBONO MEMBER</span>
-<?php elseif( $t->cust->isTypeInternal() ): ?>
+<?php elseif( $c->typeInternal() ): ?>
     <span class="badge  badge-primary">INTERNAL INFRASTRUCTURE</span>
-<?php elseif( $t->cust->isTypeFull() == \Entities\Customer::TYPE_FULL ): ?>
+<?php elseif( $c->typeFull() ): ?>
     <span class="badge  badge-success">FULL MEMBER</span>
 <?php else: ?>
     <span class="badge">UNKNOWN MEMBER TYPE</span>
 <?php endif; ?>
 
-<?php if( $t->cust->hasLeft() ): ?>
+<?php if( $c->hasLeft() ): ?>
     <span class="badge  badge-danger">ACCOUNT CLOSED</span>
 <?php endif; ?>
 <?php if( $t->resellerMode() ): ?>
-    <?php if( $t->cust->getIsReseller() ): ?>
+    <?php if( $c->isReseller ): ?>
         <span class="badge  badge-secondary">RESELLER</span>
-    <?php elseif( $t->cust->getReseller() ): ?>
+    <?php elseif( $c->reseller ): ?>
         <span class="badge  badge-secondary">RESOLD CUSTOMER</span>
     <?php endif; ?>
 <?php endif; ?>
 
-<?php if( !$t->cust->isTypeAssociate()  &&  !$t->cust->statusIsNormal() ): ?>
-
-    <?php if( $t->cust->statusIsNotConnected() ): ?>
+<?php if( !$c->typeAssociate()  &&  !$c->statusNormal() ): ?>
+    <?php if( $c->statusNotConnected() ): ?>
         <span class="badge  badge-warning">NOT CONNECTED</span>
-    <?php elseif( $t->cust->statusIsSuspended() ): ?>
+    <?php elseif( $c->statusSuspended() ): ?>
         <span class="badge  badge-danger">SUSPENDED</span>
     <?php else: ?>
         <span class="badge  badge-primary">UNKNOWN CUSTOMER STATUS</span>

@@ -3,7 +3,7 @@
 namespace IXP\Console\Commands\Switches;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,8 +22,6 @@ namespace IXP\Console\Commands\Switches;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
 use IXP\Console\Commands\Command;
 
 use D2EM;
@@ -33,9 +31,7 @@ use OSS_SNMP\{
     SNMP
 };
 
-use Entities\{
-    Switcher    as SwitcherEntity
-};
+use IXP\Models\Switcher;
 
 /**
  * Class SnmpPoll
@@ -43,7 +39,7 @@ use Entities\{
  * @author      Yann Robin          <yann@islandbridgenetworks.ie>
  * @author      Barry O'Donovan     <barry@islandbridgenetworks.ie>
  * @package     IXP\Console\Commands
- * @copyright   Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright   Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SnmpPoll extends Command
@@ -56,7 +52,7 @@ class SnmpPoll extends Command
 
     protected $signature = 'switch:snmp-poll
                         {switch? : The name of the switch, if not name specified the command will loop over all switches}
-                        {--noflush : If specified no modification will be made to the database}
+                        {--nosave : If specified no modification will be made to the database}
                         {--log : Output detailed polling information to the log}';
 
     /**
@@ -73,64 +69,54 @@ class SnmpPoll extends Command
      *
      * @throws
      */
-    public function handle() {
-
+    public function handle()
+    {
         if( $this->argument('switch') ) {
-
-            if( ! ( $switches = D2EM::getRepository( SwitcherEntity::class )->findBy( [ "name" => $this->argument('switch') ] ) ) ) {
+            if( ! ( $switches = Switcher::where( 'name', $this->argument('switch') )->first() ) ) {
                 $this->error( "ERR: No switch found with name: " . $this->argument('switch' ) );
                 return -1;
             }
-
         } else {
-            $switches = D2EM::getRepository( SwitcherEntity::class )->getPollable();
+            $switches = Switcher::where( 'active', true )->where( 'poll', true )->get();
         }
 
         if( count( $switches ) ){
-
             foreach( $switches as $s ) {
-
-                /** @var $s SwitcherEntity */
-
-                if( $s->getSnmppasswd() === null || trim( $s->getSnmppasswd() ) === '' ) {
+                if( !$s->snmppasswd || trim( $s->snmppasswd ) === '' ) {
                     if( !$this->isVerbosityQuiet() ) {
-                        $this->info( "Skipping {$s->getName()} as no SNMP password set" );
+                        $this->info( "Skipping {$s->name} as no SNMP password set" );
                     }
                     continue;
                 }
 
                 if( !$this->isVerbosityQuiet() ) {
-                    if( $s->getLastPolled() === null ) {
-                        $this->info( "First time polling {$s->getName()} with SNMP request to {$s->getHostname()}" );
+                    if( !$s->lastPolled ) {
+                        $this->info( "First time polling {$s->name} with SNMP request to {$s->hostname}" );
                     } else {
-                        $this->info( "Polling {$s->getName()} with SNMP request to {$s->getHostname()}" );
+                        $this->info( "Polling {$s->name} with SNMP request to {$s->hostname}" );
                     }
                 }
 
                 try {
                     $sPolled = false;
-                    $host = new SNMP( $s->getHostname(), $s->getSnmppasswd() );
+                    $host = new SNMP( $s->hostname, $s->snmppasswd );
                     $s->snmpPoll( $host, $this->option( 'log', false ) );
                     $sPolled = true;
 
-                    $s->snmpPollSwitchPorts( $host, $this->option( 'log', false ) );
+                    $s->snmpPollSwitchPorts( $host, $this->option( 'log', false ), false , $this->option( 'nosave', false ) );
 
-                    if( $this->option( 'noflush', false ) ){
-                        $this->warn( '    *** --noflush parameter set - NO CHANGES MADE TO DATABASE' );
-                    } else{
-                        D2EM::flush();
+                    if( $this->option( 'nosave', false ) ){
+                        $this->warn( '    *** --nosave parameter set - NO CHANGES MADE TO DATABASE' );
                     }
-
                 } catch( Exception $e ) {
                     if( $sPolled ){
-                        $this->error("ERROR: OSS_SNMP exception polling switch {$s->getName()} by SNMP");
+                        $this->error("ERROR: OSS_SNMP exception polling switch {$s->name} by SNMP");
                     } else {
-                        $this->error("ERROR: OSS_SNMP exception polling switch ports for {$s->getName()} by SNMP");
+                        $this->error("ERROR: OSS_SNMP exception polling switch ports for {$s->name} by SNMP");
                     }
 
                 }
             }
-
         }
         return 0;
     }

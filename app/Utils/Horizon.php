@@ -3,7 +3,7 @@
 namespace IXP\Utils;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,8 +25,6 @@ namespace IXP\Utils;
 
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 
-
-
 /**
  * Class Horizon
  *
@@ -38,14 +36,14 @@ class Horizon
     public const STATUS_PAUSED   = 'paused';
     public const STATUS_RUNNING  = 'running';
 
-
     /**
      * Returns with Horizon's current status: 'inactive', 'paused' or 'running'
      *
      * @param void
      * @return string
      */
-    public static function status() {
+    public static function status()
+    {
         if( !$masters = app(MasterSupervisorRepository::class )->all() ) {
             return self::STATUS_INACTIVE;
         }

@@ -3,7 +3,7 @@
 namespace IXP\Listeners\Auth;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,32 +22,38 @@ namespace IXP\Listeners\Auth;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use Mail;
 
 use IXP\Events\Auth\PasswordReset as PasswordResetEvent;
 
 use IXP\Mail\Auth\PasswordReset as PasswordResetMailable;
 
-class PasswordReset{
+/**
+ * PasswordReset Listener
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   Listeners
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class PasswordReset
+{
     /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct() {}
 
     /**
      * Handle the event.
      *
      * @param  PasswordResetEvent  $e
+     *
      * @return void
      */
-    public function handle( PasswordResetEvent $e )
+    public function handle( PasswordResetEvent $e ): void
     {
-        Mail::to( $e->user->getEmail() )->send( new PasswordResetMailable( $e->user ) );
+        Mail::to( $e->user->email )->send( new PasswordResetMailable( $e->user ) );
     }
 }

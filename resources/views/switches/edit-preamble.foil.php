@@ -1,6 +1,4 @@
-
 <?php if( $t->data[ 'params'][ 'addBySnmp'] && $t->data[ 'params'][ 'preAddForm'] ):?>
-
     <div class="alert alert-info" role="alert">
         <div class="d-flex align-items-center ">
             <div class="text-center">
@@ -11,11 +9,9 @@
             </div>
         </div>
     </div>
-
 <?php endif; ?>
 
 <?php if( app('request')->input( 'manual' ) === "1" ):?>
-
     <div class="alert alert-danger" role="alert">
         <div class="d-flex align-items-center ">
             <div class="text-center">
@@ -23,14 +19,11 @@
             </div>
             <div class="col-sm-12">
                 <h4>Use of this method is strongly discouraged!</h4>
-
                 <p>
-                    While it is possible to add switches without SNMP polling, this is strongly discouraged as SNMP is built heavily into the switch and switch port management.
+                    While it is possible to add switches without SNMP polling, this is discouraged as the IXP Manager switch and switch port management facility is designed to pull the correct information from switches.
                 </p>
-
-                Please consider using <a href="<?= route( $t->feParams->route_prefix.'@add-by-snmp' ) ?>" >the SNMP method to add switches</a>.
+                Please consider using <a href="<?= route( $t->feParams->route_prefix.'@create-by-snmp' ) ?>" >the SNMP method to add switches</a>.
             </div>
         </div>
     </div>
-
 <?php endif; ?>

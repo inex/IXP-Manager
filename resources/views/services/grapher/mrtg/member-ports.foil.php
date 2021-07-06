@@ -40,14 +40,14 @@
 
 <?php
 
-        if( !isset( $t->data['custports'][$c->getId()] ) ):
+        if( !isset( $t->data[ 'custports' ][ $c->id ] ) ):
             continue;
         endif;
 
         // individual member ports:
-        foreach( $t->data['custports'][$c->getId()] as $piid ):
+        foreach( $t->data[ 'custports' ][ $c->id ] as $piid ):
 
-            $custmaxbytes += $t->data['pis'][$piid]->resolveDetectedSpeed() * 1000000 / 8;
+            $custmaxbytes += $t->data[ 'pis' ][ $piid ]->detectedSpeed() * 1000000 / 8;
 
             echo $this->insert(
                 "services/grapher/mrtg/target", [
@@ -55,24 +55,24 @@
                     'mrtgPrefix'   => sprintf( "pi%05d", $piid ),
                     'portIds'      => [ $piid ],
                     'data'         => $t->data,
-                    'graphTitle'   => sprintf( "%s -- %s -- %s -- %%s / second", $c->getAbbreviatedName(), $t->data['pis'][$piid]->getSwitchPort()->getName(),
-                            $t->data['pis'][$piid]->getSwitchPort()->getSwitcher()->getName()
+                    'graphTitle'   => sprintf( "%s -- %s -- %s -- %%s / second", $c->abbreviatedName, $t->data['pis'][$piid]->switchPort->name,
+                            $t->data['pis'][$piid]->switchPort->switcher->name
                         ),
-                    'directory'    => sprintf("members/%x/%05d/ints", $c->getId() % 16, $c->getId()),
-                    'maxbytes'     => $t->data['pis'][$piid]->resolveDetectedSpeed() * 1000000 / 8, // Mbps * bps / to bytes
+                    'directory'    => sprintf("members/%x/%05d/ints", $c->id % 16, $c->id ),
+                    'maxbytes'     => $t->data['pis'][$piid]->detectedSpeed() * 1000000 / 8, // Mbps * bps / to bytes
                 ]
             ) . "\n\n\n";
 
         endforeach;
 
         // individual LAG aggregates
-        if( isset( $t->data['custlags'][$c->getId()] ) ):
+        if( isset( $t->data['custlags'][$c->id] ) ):
 
-            foreach( $t->data['custlags'][$c->getId()] as $viid => $pis ):
+            foreach( $t->data['custlags'][$c->id] as $viid => $pis ):
 
                 $lagmaxbytes = 0;
                 foreach( $pis as $piid ):
-                    $lagmaxbytes += $t->data['pis'][$piid]->resolveDetectedSpeed() * 1000000 / 8;
+                    $lagmaxbytes += $t->data['pis'][$piid]->detectedSpeed() * 1000000 / 8;
                 endforeach;
 
                 echo $this->insert(
@@ -81,8 +81,8 @@
                         'mrtgPrefix'   => sprintf( "vi%05d", $viid ),
                         'portIds'      => $pis,
                         'data'         => $t->data,
-                        'graphTitle'   => sprintf( "%s -- LAG Aggregate %%s / second", $c->getAbbreviatedName() ),
-                        'directory'    => sprintf( "members/%x/%05d/lags", $c->getId() % 16, $c->getId() ),
+                        'graphTitle'   => sprintf( "%s -- LAG Aggregate %%s / second", $c->abbreviatedName ),
+                        'directory'    => sprintf( "members/%x/%05d/lags", $c->id % 16, $c->id ),
                         'maxbytes'     => $lagmaxbytes,
                     ]
                 ) . "\n\n\n";
@@ -95,11 +95,11 @@
         echo $this->insert(
             "services/grapher/mrtg/target", [
                 'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
-                'mrtgPrefix'   => sprintf( "aggregate-%05d", $c->getId() ),
-                'portIds'      => $t->data['custports'][$c->getId()],
+                'mrtgPrefix'   => sprintf( "aggregate-%05d", $c->id ),
+                'portIds'      => $t->data['custports'][ $c->id ],
                 'data'         => $t->data,
-                'graphTitle'   => sprintf( "%s -- IXP Total Aggregate -- %%s / second", $c->getAbbreviatedName() ),
-                'directory'    => sprintf("members/%x/%05d", $c->getId() % 16, $c->getId()),
+                'graphTitle'   => sprintf( "%s -- IXP Total Aggregate -- %%s / second", $c->abbreviatedName ),
+                'directory'    => sprintf("members/%x/%05d", $c->id % 16, $c->id),
                 'maxbytes'     => $custmaxbytes,
             ]
         ) . "\n\n\n";

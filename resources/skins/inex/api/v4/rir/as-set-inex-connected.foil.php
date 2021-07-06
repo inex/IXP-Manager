@@ -10,7 +10,7 @@ notify:         ripe-notify@inex.ie
 remarks:        INEX route server ASNs are listed in AS-SET-INEX-RS
 mnt-by:         INEX-NOC
 <?php foreach( $t->asns as $asn => $details ): ?>
-<?php if( $asn != 43760 ): ?>
+<?php if( $asn !== 43760 ): ?>
 members:        <?= $details[ "asmacro" ] ?>
 
 <?php endif; ?>

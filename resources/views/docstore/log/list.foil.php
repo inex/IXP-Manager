@@ -1,7 +1,6 @@
 <?php
-$this->layout( 'layouts/ixpv4' );
-
-$sixmonthsago = now()->subMonths(6)->startOfDay();
+    $this->layout( 'layouts/ixpv4' );
+    $sixmonthsago = now()->subMonths(6)->startOfDay();
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -13,11 +12,9 @@ $sixmonthsago = now()->subMonths(6)->startOfDay();
 <?php $this->section( 'page-header-postamble' ) ?>
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
         <div class="btn-group btn-group-sm ml-auto" role="group">
-
             <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/docstore/">
                 Documentation
             </a>
-
         </div>
     <?php endif; ?>
 <?php $this->append() ?>
@@ -25,9 +22,7 @@ $sixmonthsago = now()->subMonths(6)->startOfDay();
 <?php $this->section('content') ?>
     <div class="row">
         <div class="col-md-12">
-
             <?= $t->alerts() ?>
-
             <h3 class="tw-my-4">
                 <?= $t->unique ? 'Unique' : 'All' ?> Downloads for: <?= $t->file->name ?>
                 <small class="tw-ml-8 tw-text-sm">
@@ -40,12 +35,10 @@ $sixmonthsago = now()->subMonths(6)->startOfDay();
             </h3>
 
             <?php if( $t->file->created_at < $sixmonthsago ): ?>
-
                 <p>
                     <b>Note:</b> This file is more than six months old. As such, all download logs older than six months
-                    (except the first / original download) has been expunged.
+                    (except the first / original download) have been expunged.
                 </p>
-
             <?php endif; ?>
 
             <div class="tw-mt-8">
@@ -92,7 +85,7 @@ $sixmonthsago = now()->subMonths(6)->startOfDay();
                                     </td>
                                     <?php if( $t->file->created_at > $sixmonthsago ): ?>
                                         <td>
-                                            <?= $log->first_downloaded != $log->last_downloaded ? $log->last_downloaded : '' ?>
+                                            <?= $log->first_downloaded !== $log->last_downloaded ? $log->last_downloaded : '' ?>
                                         </td>
                                     <?php endif?>
                                 <?php else: ?>
@@ -107,16 +100,12 @@ $sixmonthsago = now()->subMonths(6)->startOfDay();
             </div>
         </div>
     </div>
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
     <script>
         $( document ).ready( function() {
-
-            $('#table-logs').show();
-
-            $('#table-logs').DataTable( {
+            $('#table-logs').dataTable( {
                 stateSave: true,
                 stateDuration : DATATABLE_STATE_DURATION,
                 responsive: false,
@@ -124,7 +113,7 @@ $sixmonthsago = now()->subMonths(6)->startOfDay();
                     { responsivePriority: 1, targets: 0 },
                     { responsivePriority: 2, targets: -1 }
                 ],
-            } );
+            } ).show();
         });
     </script>
 <?php $this->append() ?>

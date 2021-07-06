@@ -50,7 +50,7 @@
 <?php foreach( $t->ints as $int ):
 
         // do not set up a session to ourselves!
-        if( $int['autsys'] == $t->router->asn() ):
+        if( $int['autsys'] == $t->router->asn ):
             continue;
         endif;
 ?>
@@ -86,7 +86,7 @@ int set allas;
 ?>
 
     # Filter small prefixes
-<?php if( $t->router->protocol() == 6 ): ?>
+<?php if( $t->router->protocol == 6 ): ?>
     if ( net ~ [ ::/0{<?= config( 'ixp.irrdb.min_v6_subnet_size', 48 ) + 1 ?>,128} ] ) then {
 <?php else: ?>
     if ( net ~ [ 0.0.0.0/0{<?= config( 'ixp.irrdb.min_v4_subnet_size', 24 ) + 1 ?>,32} ] ) then {
@@ -166,7 +166,7 @@ int set allas;
 <?php
     endif; ?>
 
-<?php if( $t->router->rpki() && config( 'ixp.rpki.rtr1.host' ) ): ?>
+<?php if( $t->router->rpki && config( 'ixp.rpki.rtr1.host' ) ): ?>
 
     # RPKI test - if it's INVALID or VALID, we are done
     if filter_rpki() then accept;
@@ -187,8 +187,8 @@ int set allas;
 ?>
 
     allnet = [ <?php echo $t->softwrap( $int['rsmorespecifics']
-            ? $t->bird()->prefixExactToLessSpecific( $int['irrdbfilter_prefixes'], $t->router->protocol(), config( 'ixp.irrdb.min_v' . $t->router->protocol() . '_subnet_size' ) )
-            : $int['irrdbfilter_prefixes'], 4, ", ", ",", 15, $t->router->protocol() == 6 ? 36 : 26 ); ?>
+            ? $t->bird()->prefixExactToLessSpecific( $int['irrdbfilter_prefixes'], $t->router->protocol, config( 'ixp.irrdb.min_v' . $t->router->protocol . '_subnet_size' ) )
+            : $int['irrdbfilter_prefixes'], 4, ", ", ",", 15, $t->router->protocol === 6 ? 36 : 26 ); ?>
 
     ];
 
@@ -256,7 +256,7 @@ filter f_export_as<?= $int['autsys'] ?>
 
 protocol pipe pp_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?> {
         description "Pipe for AS<?= $int['autsys'] ?> - <?= $int['cname'] ?> - VLAN Interface <?= $int['vliid'] ?>";
-        table master<?= $t->router->protocol() ?>;
+        table master<?= $t->router->protocol ?>;
         peer table t_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?>;
         import filter f_export_to_master;
         export where ixp_community_filter(<?= $int['autsys'] ?>);
@@ -271,9 +271,9 @@ protocol bgp pb_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?> from tb_rsclient {
             table t_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?>;
             export filter f_export_as<?= $int['autsys'] ?>;
         };
-<?php if( $t->router->rfc1997Passthru() ): ?>        interpret communities off;  # enable rfc1997 well-known community pass through
+<?php if( $t->router->rfc1997_passthru ): ?>        interpret communities off;  # enable rfc1997 well-known community pass through
 <?php endif; ?>
-        <?php if( $int['bgpmd5secret'] && !$t->router->skipMD5() ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
+        <?php if( $int['bgpmd5secret'] && !$t->router->skip_md5 ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
 
 }
 

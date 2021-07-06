@@ -3,7 +3,7 @@
 namespace IXP\Utils;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -32,7 +32,6 @@ namespace IXP\Utils;
  */
 class Whois
 {
-
     /**
      * @var string Whois server hostname
      */
@@ -46,10 +45,11 @@ class Whois
 
     /**
      * Whois constructor.
-     * @param string $host     Whois server hostname
-     * @param int $port        Whois server port
+     * @param string    $host       Whois server hostname
+     * @param int       $port       Whois server port
      */
-    public function __construct(string $host, int $port) {
+    public function __construct( string $host, int $port )
+    {
         $this->host = $host;
         $this->port = $port;
     }
@@ -59,6 +59,7 @@ class Whois
      *
      * @param string $lookup   What to ask the whois server
      * @param bool $htmlencode If true, return output of htmlspecialchars()
+     *
      * @return string
      */
     public function whois( string $lookup, bool $htmlencode = true ): string
@@ -101,5 +102,4 @@ class Whois
     {
         return $this->host;
     }
-
 }

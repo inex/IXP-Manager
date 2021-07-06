@@ -1,7 +1,8 @@
 <?php
+namespace IXP\Providers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,16 +22,22 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace IXP\Providers;
+use Auth, Cache, View;
 
 use Illuminate\Support\ServiceProvider;
 
-use Entities\{
-    Customer    as CustomerEntity
-};
+use IXP\Models\Customer;
 
-use Auth, Cache, D2EM, View;
-
+/**
+ * IXP Service Provider
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Providers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class IxpServiceProvider extends ServiceProvider
 {
     /**
@@ -38,31 +45,25 @@ class IxpServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
-    {
-    }
+    public function boot():void{}
 
     /**
      * Register the application services.
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
-        $this->app->resolving('view', function($view) {
-
+        $this->app->resolving('view', function( $view ) {
             View::composer('*', function($view) {
                 if( ( Auth::check() && Auth::getUser()->isSuperUser() ) || env( 'IXP_PHPUNIT_RUNNING', false ) ) {
-
                     // get an array of customer id => names
                     if( !( $customers = Cache::get( 'admin_home_customers' ) ) ) {
-                        $customers = D2EM::getRepository( CustomerEntity::class )->getNames( true );
+                        $customers = Customer::select( [ 'id', 'name' ] )->current()->orderBy( 'name' )->get()->keyBy( 'id' )->toArray();
                         Cache::put( 'admin_home_customers', $customers, 3600 );
                     }
-
                     $view->with( 'dd_customer_id_name', $customers );
                 }
-
             });
         });
     }

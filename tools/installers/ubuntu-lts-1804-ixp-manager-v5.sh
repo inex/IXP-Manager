@@ -464,7 +464,6 @@ IXP_API_JSONEXPORTSCHEMA_PUBLIC=true
 
 #######################################################################################
 # See config/ixp.php
-IXP_MULTIIXP_ENABLED=false
 IXP_RESELLER_ENABLED=false
 IXP_AS112_UI_ACTIVE=true
 
@@ -718,4 +717,4 @@ chmod u=rw,go-rwx /root/ixp-manager-install-details.txt
 chown root: $IXPROOT/.ixp-manager-installer-settingsrc
 chmod 0600 $IXPROOT/.ixp-manager-installer-settingsrc
 
-echo "(the above message and password details have been copyed to /root/ixp-manager-install-details.txt)"
+echo "(the above message and password details have been copied to /root/ixp-manager-install-details.txt)"

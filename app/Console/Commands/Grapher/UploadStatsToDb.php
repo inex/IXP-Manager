@@ -1,7 +1,9 @@
-<?php namespace IXP\Console\Commands\Grapher;
+<?php
+
+namespace IXP\Console\Commands\Grapher;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,28 +22,28 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Carbon\Carbon;
 
-
-use IXP\Contracts\Grapher\Backend as GrapherBackend;
-
-use D2EM;
-use DateTime;
-use Entities\TrafficDaily as TrafficDailyEntity;
 use Grapher;
+
+use IXP\Models\{
+    Customer,
+    TrafficDaily
+};
+
 use IXP\Services\Grapher\Graph;
-
-
  /**
   * Artisan command to upload member traffic stats to the database
   *
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+  * @author     Yann Robin      <yann@islandbridgenetworks.ie>
   * @category   Grapher
   * @package    IXP\Console\Commands
-  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
-class UploadStatsToDb extends GrapherCommand {
-
+class UploadStatsToDb extends GrapherCommand
+{
     /**
      * The name and signature of the console command.
      *
@@ -57,52 +59,49 @@ class UploadStatsToDb extends GrapherCommand {
      */
     protected $description = 'Upload port stats to the database (daily task)';
 
-
     /**
      * Execute the console command.
      *
      * @return mixed
+     * @throws \Exception
      */
-    public function handle(): int {
-
+    public function handle(): int
+    {
         Grapher::backend( $this->option( 'backend' ) );
         $this->setGrapher( Grapher::getFacadeRoot() );
 
         // This should only be done once a day and if values already exist for 'today', just delete them.
-        $day = date( 'Y-m-d' );
-        D2EM::getRepository( 'Entities\TrafficDaily' )->deleteForDay( $day );
+        $today = now();
+        TrafficDaily::where( 'day', $today->format('Y-m-d') )->delete();
 
-        $custs = D2EM::getRepository( 'Entities\Customer')->getConnected( false, true );
+        $custs = Customer::getConnected( true );
 
         foreach( $custs as $cust )  {
             if( $this->isVerbosityVerbose() ) {
-                $this->info( "\t- processing customer " . $cust->getName() );
+                $this->info( "\t- processing customer " . $cust->name );
             }
 
             foreach( Graph::CATEGORIES as $category ) {
                 $graph = $this->grapher()->customer( $cust )->setCategory( $category );
 
-                $td = new TrafficDailyEntity;
-                $td->setDay( new DateTime( $day ) );
-                $td->setCategory( $category );
-                $td->setCustomer( $cust );
-                $td->setIXP( D2EM::getRepository('Entities\IXP')->getDefault() );
+                $td = new TrafficDaily;
+                $td->day = $today;
+                $td->category = $category;
+                $td->cust_id = $cust->id;
 
                 foreach( Graph::PERIOD_DESCS as $period => $name ) {
                     $stats = $graph->setPeriod($period)->statistics();
-
-                    $fn = "set{$name}AvgIn";  $td->$fn( $stats->averageIn()  );
-                    $fn = "set{$name}AvgOut"; $td->$fn( $stats->averageOut() );
-                    $fn = "set{$name}MaxIn";  $td->$fn( $stats->maxIn()      );
-                    $fn = "set{$name}MaxOut"; $td->$fn( $stats->maxOut()     );
-                    $fn = "set{$name}TotIn";  $td->$fn( $stats->totalIn()    );
-                    $fn = "set{$name}TotOut"; $td->$fn( $stats->totalOut()   );
+                    $lname = strtolower( $name );
+                    $fn = "{$lname}_avg_in";  $td->$fn = $stats->averageIn();
+                    $fn = "{$lname}_avg_out"; $td->$fn = $stats->averageOut();
+                    $fn = "{$lname}_max_in";  $td->$fn = $stats->maxIn();
+                    $fn = "{$lname}_max_out"; $td->$fn = $stats->maxOut();
+                    $fn = "{$lname}_tot_in";  $td->$fn = $stats->totalIn();
+                    $fn = "{$lname}_tot_out"; $td->$fn = $stats->totalOut();
                 }
 
-                D2EM::persist( $td );
+                $td->save();
             }
-
-            D2EM::flush();
         }
 
         if( config( 'grapher.cli.traffic_daily.delete_old', true ) ) {
@@ -110,9 +109,8 @@ class UploadStatsToDb extends GrapherCommand {
                 $this->warn( "Deleting old daily traffic records that are no longer required" );
             }
 
-            D2EM::getRepository( 'Entities\TrafficDaily' )->deleteBefore(
-                new DateTime( "-" . config( 'grapher.cli.traffic_daily.delete_old_days', 140 ) . " days" )
-            );
+            $day = new Carbon( "-" . config( 'grapher.cli.traffic_daily.delete_old_days', 140 ) . " days" );
+            TrafficDaily:: where( 'day', '<', $day->format('Y-m-d') )->delete();
         }
 
         return 0;

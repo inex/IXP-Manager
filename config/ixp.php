@@ -29,16 +29,6 @@ return [
 
     /* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;
-    ;; Enables multi-IXP mode.
-    ;;
-    ;; See: https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality
-    ;; */
-    'multiixp' => [
-        'enabled' => env( 'IXP_MULTIIXP_ENABLED', false ),
-    ],
-
-    /* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;;
     ;; Enables resller mode
     ;;
     ;; See: https://github.com/inex/IXP-Manager/wiki/Reseller-Functionality
@@ -93,7 +83,7 @@ return [
        ;;
        ;; */
     'peering-matrix' => [
-        'min-auth' => env( 'PEERING_MATRIX_MIN_AUTH', \Entities\User::AUTH_PUBLIC ),
+        'min-auth' => env( 'PEERING_MATRIX_MIN_AUTH', \IXP\Models\User::AUTH_PUBLIC ),
     ],
 
 

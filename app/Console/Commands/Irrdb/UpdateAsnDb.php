@@ -1,7 +1,9 @@
-<?php namespace IXP\Console\Commands\Irrdb;
+<?php
+
+namespace IXP\Console\Commands\Irrdb;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -27,13 +29,14 @@ use IXP\Tasks\Irrdb\UpdateAsnDb as UpdateAsnDbTask;
   * Artisan command to update the IRRDB ASN database
   *
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+  * @author     Yann Robin      <yann@islandbridgenetworks.ie>
   * @category   Irrdb
   * @package    IXP\Console\Commands
-  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
-class UpdateAsnDb extends UpdateDb {
-
+class UpdateAsnDb extends UpdateDb
+{
     /**
      * The name and signature of the console command.
      *
@@ -56,8 +59,8 @@ class UpdateAsnDb extends UpdateDb {
      *
      * @throws
      */
-    public function handle(): int {
-
+    public function handle(): int
+    {
         if( !$this->setupChecks() ) {
             return -99;
         }
@@ -69,7 +72,7 @@ class UpdateAsnDb extends UpdateDb {
             $this->printResults( $c, $task->update(), 'asn' );
         }
 
-        if( count($customers) > 1 && $this->isVerbosityVerbose() ) {
+        if( count( $customers ) > 1 && $this->isVerbosityVerbose() ) {
             $this->info( "Total time for net/database/processing: "
                 . sprintf( "%0.6f/", $this->netTime )
                 . sprintf( "%0.6f/", $this->dbTime )

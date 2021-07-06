@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,44 +23,45 @@ namespace IXP\Http\Controllers\Api\V4;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
-use D2EM;
+use IXP\Models\SflowReceiver;
 
-use Entities\{
-    SflowReceiver as SflowReceiverEntity
-};
-
-
-
-
-class SflowReceiverController extends Controller {
-
+/**
+ * SflowReceiverController
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
+ * @category   APIv4
+ * @package    IXP\Http\Controllers\Api\V4
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class SflowReceiverController extends Controller
+{
     /**
      *
      * @return Response
      */
-    public function pretagMap( Request $request )
+    public function pretagMap(): Response
     {
         $map = [];
 
-        foreach( d2r('SflowReceiver')->findAll() as $sr ) {
-            foreach( $sr->getVirtualInterface()->getMACAddresses() as $mac ) {
-
+        foreach( SflowReceiver::all() as $sr ) {
+            foreach( $sr->virtualInterface->macAddresses as $mac ) {
                 // looks like there's some crud in the MAC table so filter that:
-                if( strlen( $mac->getMac() ) != 12 ) {
+                if( strlen( $mac->mac ) !== 12 ) {
                     continue;
                 }
 
-                $m['virtualinterfaceid'] = $sr->getVirtualInterface()->getId();
-                $m['mac']             = $mac->getMacFormattedWithColons();
-                $map[] = $m;
+                $m['virtualinterfaceid']    = $sr->virtual_interface_id;
+                $m['mac']                   = $mac->macColonsFormatted();
+                $map[]                      = $m;
             }
         }
 
         return response()
-                ->view('api/v4/sflow-receiver/pretagMap', ['map' => $map], 200)
+                ->view('api/v4/sflow-receiver/pretagMap', [ 'map' => $map ], 200 )
                 ->header('Content-Type', 'text/html; charset=utf-8');
     }
 
@@ -68,76 +69,47 @@ class SflowReceiverController extends Controller {
      *
      * @return Response
      */
-    public function receiversLst( Request $request )
+    public function receiversLst(): Response
     {
         $map = [];
 
-        foreach( d2r('SflowReceiver')->findAll() as $sr ) {
-            $m['virtualinterfaceid'] = $sr->getVirtualInterface()->getId();
-            $m['dst_ip']          = $sr->getDstIp();
-            $m['dst_port']        = $sr->getDstPort();
-            $map[] = $m;
+        foreach( SflowReceiver::all() as $sr ) {
+            $m['virtualinterfaceid']    = $sr->virtual_interface_id;
+            $m['dst_ip']                = $sr->dst_ip;
+            $m['dst_port']              = $sr->dst_port;
+            $map[]                      = $m;
         }
 
         return response()
-                ->view('api/v4/sflow-receiver/receiversLst', ['map' => $map], 200)
+                ->view( 'api/v4/sflow-receiver/receiversLst', [ 'map' => $map ], 200 )
                 ->header('Content-Type', 'text/html; charset=utf-8');
     }
 
     /**
-     * Generate a formatted output version of the given structure.
      *
-     * This takes two arguments: the array structure and the output format.
-     *
-     * @return http response
-     */
-    public function structuredResponse ( $array, $format ) {
-
-        $output = null;
-        $contenttype = 'text/plain; charset=utf-8';
-        $httpresponse = 200;
-
-        $array['timestamp'] = date( 'Y-m-d', time() ) . 'T' . date( 'H:i:s', time() ) . 'Z';
-        $array['ixpmanager_version'] = APPLICATION_VERSION;
-
-        switch ($format) {
-            case 'yaml':
-                $output = yaml_emit ( $array, YAML_UTF8_ENCODING );
-                break;
-            case 'json':
-                $output = json_encode ( $array, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE )."\n";
-                $contenttype = 'application/json';
-                break;
-        }
-
-        if (!$output) {
-            $httpresponse = 200;
-        }
-
-        return response( $output, $httpresponse )->header('Content-Type', $contenttype);
-    }
-
-    /**
+     * @param string|null $format
      *
      * @return Response
+     *
+     * @throws
      */
-    public function getReceiverList( Request $request, string $format = null )
+    public function getReceiverList( string $format = null ): Response
     {
         $map = [];
 
-        foreach( d2r('SflowReceiver')->findAll() as $sr ) {
-            $m['virtualinterfaceid'] = $sr->getVirtualInterface()->getId();
-            $m['dst_ip']             = $sr->getDstIp();
-            $m['dst_port']           = $sr->getDstPort();
+        foreach( SflowReceiver::all() as $sr ) {
+            $m['virtualinterfaceid'] = $sr->virtual_interface_id;
+            $m['dst_ip']             = $sr->dst_ip;
+            $m['dst_port']           = $sr->dst_port;
             $macs = [];
-            foreach( $sr->getVirtualInterface()->getMACAddresses() as $mac ) {
-                $macs[] = $mac->getMacFormattedWithColons();
+            foreach( $sr->virtualInterface->macAddresses as $mac ) {
+                $macs[] = $mac->macColonsFormatted();
             }
             $m['macaddresses']['learned'] = $macs;
             $macs = [];
-            foreach( $sr->getVirtualInterface()->getVlanInterfaces() as $vli ) {
-                foreach( $vli->getLayer2Addresses() as $mac ) {
-                    $macs[] = $mac->getMacFormattedWithColons();
+            foreach( $sr->virtualInterface->vlanInterfaces as $vli ) {
+                foreach( $vli->layer2addresses as $mac ) {
+                    $macs[] = $mac->macFormatted( ':' );
                 }
             }
             $m['macaddresses']['configured'] = $macs;
@@ -146,7 +118,45 @@ class SflowReceiverController extends Controller {
 
         $output['receiver_list'] = $map;
 
-        return $this->structuredResponse($output, $format);
+        return $this->structuredResponse( $output, $format );
     }
 
+    /**
+     * Generate a formatted output version of the given structure.
+     *
+     * This takes two arguments: the array structure and the output format.
+     *
+     * @param array     $array
+     * @param string    $format
+     *
+     * @return Response
+     *
+     * @throws
+     */
+    private function structuredResponse( array $array, string $format ): Response
+    {
+        $output         = null;
+        $contenttype    = 'text/plain; charset=utf-8';
+        $httpresponse   = 200;
+
+        $array['timestamp']             = now()->format( 'Y-m-d\TH:i:s\Z' );
+        $array['ixpmanager_version']    = APPLICATION_VERSION;
+
+        switch ( $format ) {
+            case 'yaml':
+                $output = yaml_emit ( $array, YAML_UTF8_ENCODING );
+                break;
+            case 'json':
+                $output = json_encode($array,
+                        JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)."\n";
+                $contenttype = 'application/json';
+                break;
+        }
+
+        if ( !$output ) {
+            $httpresponse = 200;
+        }
+
+        return response( $output, $httpresponse )->header('Content-Type', $contenttype );
+    }
 }

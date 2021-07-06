@@ -1,7 +1,9 @@
-<?php namespace IXP\Contracts;
+<?php
+
+namespace IXP\Contracts;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,33 +23,38 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
- /**
+use IXP\Models\{
+    Contact,
+    Customer
+};
+
+use IXP\Services\Helpdesk\ApiException;
+
+/**
   * Helpdesk Contract - any concrete implementation of a Helpdesk provider must
   * implement this interface
   *
   * @see        http://laravel.com/docs/5.0/contracts
-  * @author     Barry O'Donovan <barry@opensolutions.ie>
+  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+  * @author     Yann Robin <yann@islandbridgenetworks.ie>
   * @category   Helpdesk
   * @package    IXP\Contracts
-  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
-interface Helpdesk {
-
-
+interface Helpdesk
+{
     /**
      * Return the helpdesk debug information
      *
-     * Your implentation should catch API errors, set the $debug member with additional details and throw an ApiException
+     * Your implementation should catch API errors, set the $debug member with additional details and throw an ApiException
      */
     public function getDebug();
-
 
     /**
      * Find all tickets on the helpdesk
      */
     public function ticketsFindAll();
-
 
     // ********************************************************************************************
     // ********************************************************************************************
@@ -65,12 +72,12 @@ interface Helpdesk {
      * This belongs here as the different parameters of a customer that one helpdesk
      * may support will vary from another.
      *
-     * @param \Entities\Customer $cdb The IXP customer entity as known here in the database
-     * @param \Entities\Customer $chd The IXP customer entity as known in the helpdesk
+     * @param Customer $cdb The IXP customer entity as known here in the database
+     * @param Customer $chd The IXP customer entity as known in the helpdesk
+     *
      * @return bool True if these objects are not in sync
      */
-    public function organisationNeedsUpdating( \Entities\Customer $cdb, \Entities\Customer $chd );
-
+    public function organisationNeedsUpdating( Customer $cdb, Customer $chd ):bool;
 
     /**
      * Create organisation
@@ -78,11 +85,13 @@ interface Helpdesk {
      * Create an organisation on the helpdesk. Tickets are usually aligned to
      * users and they in turn to organisations.
      *
-     * @param \IXP\Entities\Customer cust An IXP Manager customer to create as organisation
-     * @return \Entities\Customer|false A decoupled customer entity (including `helpdesk_id`)
-     * @throws \IXP\Services\Helpdesk\ApiException
+     * @param Customer $cust An IXP Manager customer to create as organisation
+     *
+     * @return Customer|bool A decoupled customer entity (including `helpdesk_id`)
+     *
+     * @throws ApiException
      */
-    public function organisationCreate( $cust );
+    public function organisationCreate( Customer $cust );
 
     /**
      * Update an organisation **where the helpdesk ID is known!**
@@ -91,13 +100,13 @@ interface Helpdesk {
      * (such as Zendesk's PHP client as of Apr 2015) require knowledge of the helpdesk's ID for
      * an organisatoin.
      *
-     * @param int                $helpdeskId The ID of the helpdesk's organisation object
-     * @param \Entities\Customer $cust       An IXP Manager customer as returned by `organisationFind()`
-     * @return \Entities\Customer|bool A decoupled customer entity (including `helpdesk_id`)
-     * @throws \IXP\Services\Helpdesk\ApiException
+     * @param int               $helpdeskId The ID of the helpdesk's organisation object
+     * @param Customer          $cust       An IXP Manager customer as returned by `organisationFind()`
+     *
+     * @return Customer|bool A decoupled customer entity (including `helpdesk_id`)
+     * @throws ApiException
      */
-    public function organisationUpdate( $helpdeskId, \Entities\Customer $cust );
-
+    public function organisationUpdate( int $helpdeskId, Customer $cust );
 
     /**
      * Find an organisation by our own customer ID
@@ -111,11 +120,12 @@ interface Helpdesk {
      * ID for this organisation.
      *
      * @param int $id Our own customer ID to find the organisation from
-     * @return \IXP\Entities\Customer|bool A shallow disassociated customer object or false
-     * @throws \IXP\Services\Helpdesk\ApiException
+     *
+     * @return Customer|bool A shallow disassociated customer object or false
+     *
+     * @throws ApiException
      */
-    public function organisationFind( $id );
-
+    public function organisationFind( int $id );
 
     // ********************************************************************************************
     // ********************************************************************************************
@@ -127,27 +137,29 @@ interface Helpdesk {
     // ********************************************************************************************
     // ********************************************************************************************
 
-
     /**
      * Examine contact and Zendesk object and see if Zendesk needs to be updated
      *
-     * @param \Entities\Contact $cdb The IXP contact entity as known here in the database
-     * @param \Entities\Comtact $chd The IXP contact entity as known in the helpdesk
+     * @param Contact $cdb The IXP contact entity as known here in the database
+     * @param Contact $chd The IXP contact entity as known in the helpdesk
+     *
      * @return bool True if these objects are not in sync
      */
-    public function contactNeedsUpdating( \Entities\Contact $cdb, \Entities\Contact $chd );
+    public function contactNeedsUpdating( Contact $cdb, Contact $chd ):bool;
 
     /**
      * Create user
      *
      * Create user on the helpdesk.
      *
-     * @param \IXP\Entities\Contact contact An IXP Manager contact to create
-     * @return \Entities\Contact|bool Decoupled contact object with `helpdesk_id`
-     * @throws \IXP\Services\Helpdesk\ApiException
+     * @param Contact   $contact An IXP Manager contact to create
+     * @param int       $org_id
+     *
+     * @return Contact|bool Decoupled contact object with `helpdesk_id`
+     *
+     * @throws ApiException
      */
-    public function userCreate( $contact, $org_id );
-
+    public function userCreate( Contact $contact, int $org_id );
 
     /**
      * Update an user **where the helpdesk ID is known!**
@@ -156,12 +168,14 @@ interface Helpdesk {
      * (such as Zendesk's PHP client as of Apr 2015) require knowledge of the helpdesk's ID for
      * an user.
      *
-     * @param int                $helpdeskId The ID of the helpdesk's user object
-     * @param \Entities\Contact  $contact    An IXP Manager contact as returned by `userFind()`
-     * @return \Entities\Contact Decoupled contact object with `helpdesk_id`
-     * @throws \IXP\Services\Helpdesk\ApiException
+     * @param int       $helpdeskId The ID of the helpdesk's user object
+     * @param Contact   $contact    An IXP Manager contact as returned by `userFind()`
+     *
+     * @return Contact Decoupled contact object with `helpdesk_id`
+     *
+     * @throws ApiException
      */
-    public function userUpdate( $helpdeskId, \Entities\Contact $contact );
+    public function userUpdate( int $helpdeskId, Contact $contact ): Contact;
 
     /**
      * Find an user by our own contact ID
@@ -175,10 +189,10 @@ interface Helpdesk {
      * ID for this organisation.
      *
      * @param int $id Our own contact ID to find the contact from
-     * @return \IXP\Entities\Contact|bool A shallow disassociated contact object or false
-     * @throws \IXP\Services\Helpdesk\ApiException
+     *
+     * @return Contact|bool A shallow disassociated contact object or false
+     *
+     * @throws ApiException
      */
-    public function userFind( $id );
-
-
+    public function userFind( int $id );
 }

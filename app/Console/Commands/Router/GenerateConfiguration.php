@@ -1,7 +1,9 @@
-<?php namespace IXP\Console\Commands\Router;
+<?php
+
+namespace IXP\Console\Commands\Router;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,27 +22,23 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use IXP\Console\Commands\Command;
 
+use IXP\Models\Router;
 use IXP\Tasks\Router\ConfigurationGenerator as RouterConfigurationGenerator;
-
-use Entities\{
-    Router as RouterEntity
-};
-
-use D2EM;
 
  /**
   * Artisan command to generate router configurations
   *
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+  * @author     Yann Robin <yann@islandbridgenetworks.ie>
   * @category   Router
   * @package    IXP\Console\Commands
-  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
-class GenerateConfiguration extends Command {
+class GenerateConfiguration extends Command
+{
 
     /**
      * The name and signature of the console command.
@@ -63,8 +61,9 @@ class GenerateConfiguration extends Command {
      *
      * @return mixed
      */
-    public function handle(): int {
-        if( !( $router = D2EM::getRepository( RouterEntity::class )->findOneBy( [ 'handle' => $this->argument('handle') ] ) ) ){
+    public function handle()
+    {
+        if( !( $router = Router::where( 'handle', $this->argument('handle')  )->first() ) ){
             $this->error( "Unknown router handle" );
             return -1;
         }
@@ -72,5 +71,4 @@ class GenerateConfiguration extends Command {
         echo ( new RouterConfigurationGenerator( $router ) )->render();
         return 0;
     }
-
 }

@@ -10,8 +10,8 @@ notify:         ripe-notify@inex.ie
 remarks:        INEX member ASNs are listed in AS-SET-INEX-CONNECTED
 mnt-by:         INEX-NOC
 <?php foreach( $t->customers as $c ): ?>
-<?php if( $c->isRouteServerClient( ) ): ?>
-members:        <?= $c->resolveAsMacro( 4, 'AS' ) ?>
+<?php if( $c->routeServerClient( ) ): ?>
+members:        <?= $c->asMacro( 4, 'AS' ) ?>
 
 <?php endif; ?>
 <?php endforeach; ?>

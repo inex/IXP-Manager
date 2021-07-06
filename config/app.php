@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -200,21 +200,23 @@ return [
         IXP\Providers\FoilServiceProvider::class,
         IXP\Providers\PeeringDbServiceProvider::class,
         IXP\Providers\IxpServiceProvider::class,
-
-        IXP\Providers\PurifierServiceProvider::class,
+        IXP\Providers\RipeAtlasProvider::class,
 
         /*
          * Third party providers
          */
-        LaravelDoctrine\Extensions\BeberleiExtensionsServiceProvider::class,
 
         Former\FormerServiceProvider::class,
+
+        //LukeTowers\Purifier\PurifierServiceProvider::class,
 
         Webpatser\Countries\CountriesServiceProvider::class,
 
         Intervention\Image\ImageServiceProvider::class,
 
         PragmaRX\Google2FALaravel\ServiceProvider::class,
+
+        //Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
     ],
 
@@ -248,6 +250,7 @@ return [
         'File'      => 'Illuminate\Support\Facades\File',
         'Gate'      => Illuminate\Support\Facades\Gate::class,
         'Hash'      => 'Illuminate\Support\Facades\Hash',
+        'Http'      => Illuminate\Support\Facades\Http::class,
         'Input'     => 'Illuminate\Support\Facades\Input',
         'Lang'      => 'Illuminate\Support\Facades\Lang',
         'Log'       => 'Illuminate\Support\Facades\Log',
@@ -256,7 +259,7 @@ return [
         'Password'  => 'Illuminate\Support\Facades\Password',
         'Queue'     => 'Illuminate\Support\Facades\Queue',
         'Redirect'  => 'Illuminate\Support\Facades\Redirect',
-        'Redis'     => 'Illuminate\Support\Facades\Redis',
+        //'Redis'     => 'Illuminate\Support\Facades\Redis',
         'Request'   => 'Illuminate\Support\Facades\Request',
         'Response'  => 'Illuminate\Support\Facades\Response',
         'Route'     => 'Illuminate\Support\Facades\Route',
@@ -268,15 +271,11 @@ return [
         'Validator' => 'Illuminate\Support\Facades\Validator',
         'View'      => 'Illuminate\Support\Facades\View',
 
-        'D2EM'      => LaravelDoctrine\ORM\Facades\EntityManager::class,
-        'Registry'  => LaravelDoctrine\ORM\Facades\Registry::class,
-        'Doctrine'  => LaravelDoctrine\ORM\Facades\Doctrine::class,
-
         'Grapher'   => IXP\Support\Facades\Grapher::class,
         'Image'     => Intervention\Image\Facades\Image::class,
 
         'Former'    => Former\Facades\Former::class,
-        'Purifier'   => IXP\Support\Facades\Purifier::class,
+        //'Purifier'  => LukeTowers\Purifier\Facades\Purifier::class,
         'PDF'       => Barryvdh\DomPDF\Facade::class,
 
         'Countries' => Webpatser\Countries\CountriesFacade::class,

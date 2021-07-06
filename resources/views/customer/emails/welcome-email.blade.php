@@ -15,53 +15,54 @@ If you are unfamiliar with how IXPs work, take some time to read this email -- i
 ## Connection Details
 
 
-You have opted to connect to <?= config( 'identity.orgname' ) ?> using {{ count( $c->getVirtualInterfaces() ) }} port(s). We have assigned the following IP address(es) and switch port(s) for your connection(s):
+You have opted to connect to <?= config( 'identity.orgname' ) ?> using {{ $c->virtualInterfaces()->count() }} port(s). We have assigned the following IP address(es) and switch port(s) for your connection(s):
 
-@foreach( $c->getVirtualInterfaces() as $vi )
+@foreach( $c->virtualInterfaces as $vi )
 
 ### Connection {{ $loop->iteration }}
 
 
 ```
-@if( $vi->getLocation() )
-Location:        {{$vi->getLocation()->getName()}}
-Colo Cabinet ID: {{$vi->getCabinet()->getName()}}
+@if( $vi->location )
+Location:        {{$vi->location->name}}
+Colo Cabinet ID: {{$vi->cabinet->name}}
 @endif
 
-LAG Port:       @if( count( $vi->getPhysicalinterfaces() ) > 1 ) Yes, comprising of: @else No @endif
+LAG Port:       @if( $vi->physicalinterfaces()->count() > 1 ) Yes, comprising of: @else No @endif
 
-@foreach( $vi->getPhysicalinterfaces() as $pi )
+@foreach( $vi->physicalinterfaces as $pi )
 
-Switch Port:     {{$pi->getSwitchPort()->getSwitcher()->getName()}}.inex.ie, {{$pi->getSwitchPort()->getName()}}
-Speed:           {{$pi->resolveSpeed()}} ({{$pi->getDuplex()}} duplex)
+Switch Port:     {{$pi->switchPort->switcher->name}}.inex.ie, {{$pi->switchPort->name}}
+Speed:           {{$pi->speed()}} ({{$pi->duplex}} duplex)
 @endforeach
 
-802.1q Tagged:  @if( $vi->getTrunk() ) Yes @else No @endif
+
+802.1q Tagged:  @if( $vi->trunk ) Yes @else No @endif
 
 ```
 
-@foreach( $vi->getVlanInterfaces() as $vli )
-@php ($vlanid = $vli->getVlan()->getId())
+@foreach( $vi->vlanInterfaces as $vli )
+@php ($vlanid = $vli->vlan_id)
 
-**{{$vli->getVlan()->getName()}}**
+**{{$vli->vlan->name}}**
 
 ```
-@if( $vi->getTrunk() )
-802.1q Tag:    {{$vli->getVlan()->getNumber()}}
+@if( $vi->trunk )
+802.1q Tag:    {{$vli->vlan->number}}
 
 @endif
-@if( $vli->getIpv6enabled() )
-IPv6 Address:  {{$vli->getIPv6Address()->getAddress()}}@isset( $netinfo[ $vlanid ][ 6 ][ 'masklen'] )/{{ $netinfo[ $vlanid ][ 6 ][ 'masklen'] }}@endisset
+@if( $vli->ipv6enabled )
+IPv6 Address:  {{$vli->ipv6Address->address}}@isset( $netinfo[ $vlanid ][ 6 ][ 'masklen'] )/{{ $netinfo[ $vlanid ][ 6 ][ 'masklen'] }}@endisset
 
-IPv6 Hostname: {{$vli->getIpv6hostname()}}
+IPv6 Hostname: {{$vli->ipv6hostname}}
 @else
 IPv6:          Please contact us to enable IPv6
 @endif
 
-@if( $vli->getIpv4enabled() )
-IPv4 Address:  {{$vli->getIPv4Address()->getAddress()}}@isset( $netinfo[ $vlanid ][ 4 ][ 'masklen'] )/{{ $netinfo[ $vlanid ][ 4 ][ 'masklen'] }}@endisset
+@if( $vli->ipv4enabled )
+IPv4 Address:  {{$vli->ipv4address->address}}@isset( $netinfo[ $vlanid ][ 4 ][ 'masklen'] )/{{ $netinfo[ $vlanid ][ 4 ][ 'masklen'] }}@endisset
 
-IPv4 Hostname: {{$vli->getIpv4hostname()}}
+IPv4 Hostname: {{$vli->ipv4hostname}}
 @else
 IPv4:          Please contact us to enable IPv4
 @endif
@@ -86,7 +87,7 @@ Customer users with *admin* privileges can create and manage other user accounts
 We have created your administration account(s) with the following username(s) and email address(es):
 
 @foreach( $admins as $a )
-* {{ $a->getUsername() }} <{{$a->getEmail()}}>
+* {{ $a->user->username }} <{{$a->user->email}}>
 @endforeach
 
 
@@ -161,14 +162,14 @@ considered private and will not be passed on to other third parties by {{ config
 We would appreciate if you could take the time to ensure that the following details we hold on file are correct:
 
 ```
-Member name:                    {{ $c->getName() }}
-Primary corporate web page:     {{ $c->getCorpwww() }}
-Peering Email Address:          {{ $c->getPeeringemail() }}
-NOC Phone number:               {{ $c->getNocphone() }}
-General NOC email address:      {{ $c->getNocemail() }}
-NOC Hours:                      {{ $c->getNochours() }}
-Dedicated NOC web page:         {{ $c->getNocwww() }}
-AS Number:                      {{ $c->getAutsys() }}
+Member name:                    {{ $c->name }}
+Primary corporate web page:     {{ $c->corpwww }}
+Peering Email Address:          {{ $c->peeringemail }}
+NOC Phone number:               {{ $c->nocphone }}
+General NOC email address:      {{ $c->nocemail }}
+NOC Hours:                      {{ $c->nochours }}
+Dedicated NOC web page:         {{ $c->nocwww }}
+AS Number:                      {{ $c->autsys }}
 ```
 
 

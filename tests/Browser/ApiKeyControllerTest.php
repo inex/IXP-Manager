@@ -1,7 +1,9 @@
 <?php
 
+namespace Tests\Browser;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,25 +23,32 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace Tests\Browser;
-
-use D2EM;
-
-use Entities\{
-    ApiKey as ApiKeyEntity
-};
-
 use Str;
-use Tests\DuskTestCase;
+
+use Carbon\Carbon;
+
+use IXP\Models\ApiKey;
+
 use Laravel\Dusk\Browser;
 
+use Tests\DuskTestCase;
+
+/**
+ * Test Apikey Controller
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Tests\Browser
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class ApiKeyControllerTest extends DuskTestCase
 {
     public function tearDown(): void
     {
-        if( $c = D2EM::getRepository( ApiKeyEntity::class )->findOneBy( [ 'id' => 5 ] ) ) {
-            D2EM::remove( $c );
-            D2EM::flush();
+        if( $key = ApiKey::find( 5 ) ) {
+            $key->delete();
         }
 
         parent::tearDown();
@@ -49,11 +58,12 @@ class ApiKeyControllerTest extends DuskTestCase
      * A Dusk test example.
      *
      * @return void
-     * @throws \Throwable
+     *
+     * @throws
      */
-    public function test()
+    public function test(): void
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse( function ( Browser $browser ) {
             $browser->resize( 1600,1200 )
                 ->visit('/login')
                 ->type( 'username', 'travis' )
@@ -66,50 +76,50 @@ class ApiKeyControllerTest extends DuskTestCase
                 ->assertSee( 'Syy4R8...' );
 
             // 1. test add empty inputs
-            $browser->visit( '/api-key/add' )
-                ->assertSee( 'Add API Key' )
-                ->press('Add')
+            $browser->visit( '/api-key/create' )
+                ->assertSee( 'Create API Key' )
+                ->press('Create')
                 ->assertPathIs('/api-key/list')
-                ->assertSee( "API Key added" )
+                ->assertSee( "API Key created" )
                 ->assertSee( "API key created:" );
 
-            /** @var ApiKeyEntity $apiKey */
-            $apiKey = D2EM::getRepository( ApiKeyEntity::class )->findOneBy( [ 'id' => 5 ] );
+
+            $apiKey = ApiKey::find( 5 );
 
             // 2. Check the api key
-            $this->assertInstanceOf( ApiKeyEntity::class, $apiKey );
+            $this->assertInstanceOf( ApiKey::class, $apiKey );
 
-            $browser->assertSee( Str::limit( $apiKey->getApiKey() , 6 ) );
+            $browser->assertSee( Str::limit( $apiKey->apiKey , 6 ) );
 
             // 3. Edit API key
-            $browser->click( '#d2f-list-edit-' . $apiKey->getId() )
+            $browser->click( '#e2f-list-edit-' . $apiKey->id )
                 ->assertSee( 'Edit API Key' )
-                ->assertInputValue('key',    $keyLimited =   Str::limit( $apiKey->getApiKey() , 6 ) )
+                ->assertInputValue('apiKey',    $keyLimited =   Str::limit( $apiKey->apiKey , 6 ) )
                 ->assertInputValue('description', '')
                 ->assertInputValue('expires', '')
-                ->assertDisabled('key' )
+                ->assertDisabled('apiKey' )
                 ->type( "description" , "description test" )
                 ->type("expires", now()->addYear()->startOfMonth()->format( "d-m-Y" ) )
                 ->press( "Save Changes" )
                 ->assertPathIs('/api-key/list')
-                ->assertSee( "API Key edited" );
+                ->assertSee( "API Key updated" );
 
-            D2EM::refresh( $apiKey );
+            $apiKey->refresh();
 
             // 4. Check Value
-            $this->assertEquals(            $keyLimited,              Str::limit( $apiKey->getApiKey() , 6 ) );
+            $this->assertEquals(            $keyLimited,              Str::limit( $apiKey->apiKey , 6 ) );
 
             // work around locale issues:
             $now = now()->addYear()->startOfMonth()->format( "Y-m-d" );
 
-            if( $now === $apiKey->getExpires()->format( "Y-m-d" ) ) {
-                $db = $apiKey->getExpires()->format( "Y-m-d" );
+            if( $now === Carbon::parse($apiKey->expires)->format( "Y-m-d" ) ) {
+                $db = Carbon::parse($apiKey->expires)->format( "Y-m-d" );
             } else {
-                $db = $apiKey->getExpires()->format( "Y-d-m" );
+                $db = Carbon::parse($apiKey->expires)->format( "Y-d-m" );
             }
 
             $this->assertEquals( $db, $now );
-            $this->assertEquals( 'description test',        $apiKey->getDescription() );
+            $this->assertEquals( 'description test',        $apiKey->description );
 
             // 5. Enter wrong password to see the not limited API KEY
             $browser->type( "pass" , "wrongPass" )
@@ -122,23 +132,21 @@ class ApiKeyControllerTest extends DuskTestCase
                 ->press( "Submit" )
                 ->assertPathIs( "/api-key/list-show-keys" )
                 ->assertSee( "API keys are visible for this request only" )
-                ->assertSee( $apiKey->getApiKey() );
+                ->assertSee( $apiKey->apiKey );
 
             // 7. Check that the API Key are restricted again
             $browser->visit( '/api-key/list' )
                     ->assertSee( $keyLimited );
 
             // 8. Delete API KEY
-            $browser->click( "#d2f-list-delete-" . $apiKey->getId() )
+            $browser->click( "#e2f-list-delete-" . $apiKey->id )
                 ->waitForText( 'Do you really want to delete this API key' )
                 ->press( 'Delete' )
                 ->assertPathIs('/api-key/list' )
                 ->assertSee( "API Key deleted" )
                 ->assertDontSee( $keyLimited );
 
-            $this->assertNull( D2EM::getRepository( ApiKeyEntity::class )->findOneBy( [ 'id' => 5 ] ) );
-
+            $this->assertTrue( ApiKey::whereId( 5 )->doesntExist() );
         });
-
     }
 }

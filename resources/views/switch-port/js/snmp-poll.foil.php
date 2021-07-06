@@ -1,7 +1,10 @@
 <script>
+    //////////////////////////////////////////////////////////////////////////////////////
+    // we'll need these handles to html elements in a few places:
+    const btn_select_all = $( "#select-all"  );
+    const dd_shared_type = $( "#shared-type" );
 
     $( document ).ready(function() {
-
         /**
          * Change the color of the row when selected
         */
@@ -15,8 +18,8 @@
          * Check or uncheck all the checkboxes
          */
         $( "#select-all"  ).on( 'change', function() {
-            $( ".sp-checkbox"   ).prop('checked',       $( "#select-all"  ).is( ":checked" ) );
-            $( ".poll-tr"       ).css( "background",    $( "#select-all"  ).is( ":checked" ) ? "#F0F0F0" : "" );
+            $( ".sp-checkbox"   ).prop('checked',       btn_select_all.is( ":checked" ) );
+            $( ".poll-tr"       ).css( "background",    btn_select_all.is( ":checked" ) ? "#F0F0F0" : "" );
         });
 
         /**
@@ -29,11 +32,10 @@
             });
         });
 
-
         /**
          * Change the type of the selected switch ports via the shared dropdown
         */
-        $( "#shared-type" ).on( 'change', function() {
+        dd_shared_type.on( 'change', function() {
             if( $( this ).val() ) {
                 setType( getSelectedSwitchPorts(), "shared-type" );
             }
@@ -68,7 +70,8 @@
          *
          *  @return    spids          array of switch port ID
          */
-        function getSelectedSwitchPorts() {
+        function getSelectedSwitchPorts()
+        {
             let spids = $('.sp-checkbox:checkbox:checked').map( function() {
                 return this.id.substr( this.id.lastIndexOf( '-' ) + 1 );
             }).get();
@@ -88,9 +91,9 @@
          *  @var    id          array of switch port IDs
          *  @var    element     from where the functions has been triggered (individual dropdown, shared dropdown)
          */
-        function setType( id, element ) {
-
-            let sharedType = $( "#shared-type" );
+        function setType( id, element )
+        {
+            let sharedType = dd_shared_type;
             let portType;
             let returnMessage = 1;
             let urlAction     = '<?= route( "switch-port@set-type" ) ?>';
@@ -118,27 +121,27 @@
                 },
                 type: 'POST'
             })
-                .done( function( data ) {
-                    if( element === "port-type" ){
-                        if( data.success ) {
-                            portType.html( '<i style="color:#3c763d" class="fa fa-check"></i>' );
-                        } else {
-                            portType.html( '<i style="color:#a94442" class="fa fa-times"></i>' );
-                        }
+            .done( function( data ) {
+                if( element === "port-type" ){
+                    if( data.success ) {
+                        portType.html( '<i style="color:#3c763d" class="fa fa-check"></i>' );
                     } else {
-                        window.location.reload();
+                        portType.html( '<i style="color:#a94442" class="fa fa-times"></i>' );
                     }
+                } else {
+                    window.location.reload();
+                }
 
-                })
-                .fail( function(){
-                    alert( 'Could not update port type(s). API / AJAX / network error' );
-                    throw new Error("Error running ajax query for " + urlAction);
-                })
-                .always( function() {
-                    if( portType ) {
-                        portType.removeClass("spinner-border");
-                    }
-                });
+            })
+            .fail( function(){
+                alert( 'Could not update port type(s). API / AJAX / network error' );
+                throw new Error("Error running ajax query for " + urlAction);
+            })
+            .always( function() {
+                if( portType ) {
+                    portType.removeClass("spinner-border");
+                }
+            });
         }
 
         /**
@@ -146,11 +149,10 @@
          */
         function disableInputsAction(){
             $( ".input-sp-action"   ).addClass( 'disabled' );
-            $( "#shared-type"       ).prop('disabled', 'disabled');
+            dd_shared_type.prop('disabled', 'disabled');
             $( ".port-type"         ).prop('disabled', 'disabled');
             $( '#loading'           ).addClass( "loader" );
         }
-
 
         /**
          * Delete the selected switch ports
@@ -167,7 +169,7 @@
                     data: {
                         spid    : id,
                     },
-                    type: 'POST'
+                    type: 'DELETE'
                 })
                 .done( function() {
                     window.location.reload();
@@ -176,12 +178,8 @@
                     alert( 'Could not delete switch ports' );
                     throw new Error("Error running ajax query for " + urlAction);
                 });
-
             }
-
         });
-
-
 
         /**
          * Change the status of selected switch ports (active or inactive)
@@ -210,6 +208,4 @@
             }
         }
     });
-
-
 </script>

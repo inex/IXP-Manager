@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,9 +23,9 @@ namespace IXP\Http\Requests;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
 use Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use IXP\Models\PatchPanelPort;
 
 class MovePatchPanelPort extends FormRequest
 {
@@ -34,7 +34,7 @@ class MovePatchPanelPort extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // middleware ensures superuser access only so always authorised here:
         return Auth::getUser()->isSuperUser();
@@ -45,12 +45,13 @@ class MovePatchPanelPort extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
+        $master = PatchPanelPort::find( $this->port_id );
         return [
-            'id'                    => 'required|integer|exists:Entities\PatchPanelPort,id',
-            'master-port'           => 'required|integer|exists:Entities\PatchPanelPort,id',
-            'slave-port'            => $this->input('has-duplex') ? 'required|integer|exists:Entities\PatchPanelPort,id' : '',
+            'id'                 => 'required|integer|exists:patch_panel_port,id',
+            'port_id'            => 'required|integer|exists:patch_panel_port,id',
+            'slave_id'           => !$master->isDuplexPort() ? 'required|integer|different:port_id|exists:patch_panel_port,id' : '',
         ];
     }
 }

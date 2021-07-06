@@ -1,3 +1,7 @@
+<?php
+    $vi = $t->vi; /** @var $vi \IXP\Models\VirtualInterface */
+?>
+
 <?php if( $t->cb ): ?>
     <div class="alert alert-warning mt-4" role="alert">
         <div class="d-flex align-items-center">
@@ -6,7 +10,7 @@
             </div>
             <div class="col-sm-12">
                 The Virtual Interface belongs to a Core Bundle: ensure you match any changes to MTU, 802.1q framing, etc. to the other half which can be
-                <a href="<?= route('core-bundle@edit' , [ 'id' => $t->cb->getId() ]) ?>"> accessed by clicking here </a>
+                <a href="<?= route('core-bundle@edit' , [ 'cb' => $t->cb->id ]) ?>"> accessed by clicking here </a>
             </div>
         </div>
     </div>
@@ -14,8 +18,8 @@
 
 <div class="card">
     <div class="card-body">
-        <?= Former::open()->method( 'POST' )
-            ->action( route( 'interfaces/virtual/store' ) )
+        <?= Former::open()->method( $t->vi ? 'PUT' :'POST' )
+            ->action( $t->vi ? route( 'virtual-interface@update', [ 'vi' => $vi->id ] ) : route( 'virtual-interface@store' ) )
             ->customInputWidthClass( 'col-lg-6 col-md-7' )
             ->customLabelWidthClass( 'col-lg-4 col-md-5' )
             ->actionButtonsCustomClass( "grey-box")
@@ -24,30 +28,36 @@
         <div class="col-lg-12">
             <div class="row">
                 <div class="col-sm-6">
-                    <?= Former::select( 'cust' )
+                    <?= Former::select( 'custid' )
                         ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
-                        ->fromQuery( $t->cust, 'name' )
+                        ->fromQuery( $t->custs, 'name' )
                         ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
                         ->addClass( 'chzn-select' )
                         ->disabled( $t->selectedCust ? true : false )
                         ->blockHelp( 'The ' . config( 'ixp_fe.lang.customer.one' ) . ' who owns this virtual interface.' );
                     ?>
 
-                    <?php if( $t->vi && count( $t->vi->getVlanInterfaces() ) > 1 && !$t->vi->getTrunk() ): ?>
-                      <div class="alert alert-warning mt-4" role="alert">
-                        <div class="d-flex align-items-center">
-                          <div class="text-center">
-                            <i class="fa fa-exclamation-circle fa-2x"></i>
-                          </div>
-                          <div class="col-sm-12">
-                            <b class="label label-warning">WARNING</b>
-                            802.1q framing is not set but there are >1 VLAN interfaces:
-                          </div>
-                        </div>
-                      </div>
+                    <?php if( $t->selectedCust ): ?>
+                        <?= Former::hidden( 'custid' )
+                            ->forceValue( $t->selectedCust->id )
+                        ?>
                     <?php endif; ?>
 
-                  <?= Former::checkbox( 'trunk' )
+                    <?php if( $vi && !$vi->trunk && $vi->vlanInterfaces()->count() > 1 ): ?>
+                        <div class="alert alert-warning mt-4" role="alert">
+                            <div class="d-flex align-items-center">
+                                <div class="text-center">
+                                  <i class="fa fa-exclamation-circle fa-2x"></i>
+                                </div>
+                                <div class="col-sm-12">
+                                  <b class="label label-warning">WARNING</b>
+                                  802.1q framing is not set but there is more than one VLAN interface:
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <?= Former::checkbox( 'trunk' )
                         ->label( '&nbsp;' )
                         ->text( 'Use 802.1q framing' )
                         ->inline()
@@ -55,7 +65,7 @@
                         ->value( 1 );
                     ?>
 
-                    <?php if( $t->vi && count( $t->vi->getPhysicalInterfaces() ) > 1 && !$t->vi->getLagFraming() ): ?>
+                    <?php if( $vi && !$vi->lag_framing && $vi->physicalInterfaces()->count() > 1 ): ?>
                         <div class="alert alert-warning mt-4" role="alert">
                             <div class="d-flex align-items-center">
                                 <div class="text-center">
@@ -63,7 +73,7 @@
                                 </div>
                                 <div class="col-sm-12">
                                     <b class="label label-warning">WARNING</b>
-                                    LAG framing is not set and there is >1 physical interfaces. This may be intended but should be verified:
+                                    LAG framing is not set but there is more than one physical interface. This may be intended but should be verified:
                                 </div>
                             </div>
                         </div>
@@ -77,7 +87,7 @@
                         ->value( 1 );
                     ?>
 
-                    <div id='fastlacp-area' style="<?= old( 'fastlacp' ) || $t->vi && $t->vi->getLagFraming() ? "" : "display: none" ?>">
+                    <div id='fastlacp-area' style="<?= old( 'fastlacp' ) || ( $vi && $vi->lag_framing ) ? "" : "display: none" ?>">
                         <?= Former::checkbox( 'fastlacp' )
                             ->label( '&nbsp;' )
                             ->text( 'Use Fast LACP' )
@@ -87,14 +97,16 @@
                         ?>
                     </div>
 
-                    <?php if ($t->vi && $t->vi->getBundleName() ): ?>
+                    <?php if( $vi && $vi->bundleName() ): ?>
                         <div class="form-group row">
-                            <label for="custid" class="control-label col-sm-4">Bundle Name</label>
+                            <label for="custid" class="control-label col-sm-4">
+                                Bundle Name
+                            </label>
                             <div class="col-sm-6">
                                 <label class="">
                                     <b>
                                         <code>
-                                            <?= $t->ee( $t->vi->getBundleName() ) ?>
+                                            <?= $t->ee( $vi->bundleName() ) ?>
                                         </code>
                                     </b>
                                 </label>
@@ -102,44 +114,39 @@
                         </div>
                     <?php endif; ?>
 
-                    <?php if ($t->vi && $t->vi->getType() ): ?>
-
+                    <?php if( $vi && $vi->type() ): ?>
                         <div class="form-group row">
-                            <label class="control-label col-sm-4">Type</label>
-
+                            <label class="control-label col-sm-4">
+                                Type
+                            </label>
                             <div class="col-sm-6">
-
-                                <span class="badge <?php if( $t->vi->isTypePeering() ): ?> badge-success <?php elseif( $t->vi->isTypeFanout() ): ?>badge-secondary <?php elseif( $t->vi->isTypeReseller() ): ?>badge-dark <?php endif; ?>">
-                                    <?= $t->vi->resolveType() ?>
+                                <span class="badge <?php if( $vi->typePeering() ): ?> badge-success <?php elseif( $vi->typeFanout() ): ?>badge-secondary <?php elseif( $vi->typeReseller() ): ?>badge-dark <?php else: ?>badge-info <?php endif; ?>">
+                                    <?= $vi->resolveType() ?>
                                 </span>
 
-                                <?php if( count( $t->vi->getPhysicalInterfaces() ) == 1 ):
-                                    $pi = $t->vi->getPhysicalInterfaces()[0]; /** @var Entities\PhysicalInterface $pi */
+                                <?php if( $vi->physicalInterfaces()->count() === 1 ):
+                                    $pi = $vi->physicalInterfaces[ 0 ]; /** @var \IXP\Models\PhysicalInterface $pi */
                                     ?>
-                                    <?php if( $t->vi->isTypePeering() && $pi->getFanoutPhysicalInterface() ): ?>
-                                        <span style="margin-left: 15px;">
-                                            <a href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi->getFanoutPhysicalInterface()->getVirtualInterface()->getId() ]) ?>" >
+                                    <?php if( $pi->fanoutPhysicalInterface && $vi->typePeering() ): ?>
+                                        <span class="ml-2">
+                                            <a href="<?= route( 'virtual-interface@edit' , [ 'vi' => $pi->fanoutPhysicalInterface->virtualinterfaceid ] ) ?>" >
                                                 See fanout port
                                             </a>
                                         </span>
-                                    <?php elseif( $t->vi->isTypeFanout() && $pi->getPeeringPhysicalInterface() ): ?>
-                                        <span style="margin-left: 15px;">
-                                            <a href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi->getPeeringPhysicalInterface()->getVirtualInterface()->getId() ]) ?>" >
+                                    <?php elseif( $pi->peeringPhysicalInterface &&  $t->vi->typeFanout() ): ?>
+                                        <span class="ml-2">
+                                            <a href="<?= route( 'virtual-interface@edit' , [ 'vi' => $pi->peeringPhysicalInterface->virtualinterfaceid ] ) ?>" >
                                                 See peering port
                                             </a>
                                         </span>
                                     <?php endif; ?>
                                 <?php endif; ?>
-
                             </div>
-
                         </div>
-
                     <?php endif; ?>
-
                 </div>
 
-                <div id='advanced-area' class="col-sm-6 mt-4 mt-sm-0" style="display: none">
+                <div id='advanced-area' class="col-sm-6 mt-4 mt-sm-0 collapse">
                     <?= Former::text( 'name' )
                         ->label( 'Virtual Interface Name' )
                         ->blockHelp( 'Ordinarily this is left blank. In the case of LAGs with provisioning systems, this is used to indicate the '
@@ -153,7 +160,7 @@
                         ->blockHelp( 'Free text, currently unusued.' );
                     ?>
 
-                    <?= Former::number( 'channel-group' )
+                    <?= Former::number( 'channelgroup' )
                         ->label( 'Channel Group Number' )
                         ->blockHelp( 'Ordinarily this is left blank. In the case of LAGs with provisioning systems, this is used to indicate the '
                             . 'unique LAG number where required.' );
@@ -167,38 +174,28 @@
                     ?>
                 </div>
 
-                <?= Former::hidden( 'id' )
-                    ->value( $t->vi ? $t->vi->getId() : null )
-                ?>
-
                 <?php if( $t->vi ): ?>
-                    <?= Former::hidden( 'custid' )
-                        ->id( "custid" )
-                        ->value( $t->vi->getCustomer()->getId() )
+                    <?= Former::hidden( 'cust' )
+                        ->id( 'cust' )
+                        ->forceValue( $t->vi->customer->id )
                     ?>
                 <?php endif; ?>
-
-                <?php if( $t->selectedCust ): ?>
-                    <?= Former::hidden( 'selectedCust' )
-                        ->value( $t->selectedCust->getId() )
-                    ?>
-                <?php endif; ?>
-
 
                 <?php
                 if( $t->cb ) {
-                    $bbtn = '<a href="' . route( 'core-bundle@edit', [ 'id' => $t->cb->getId() ] ) . '" class="btn btn-secondary mb-2 mb-md-2 mb-lg-0">Return to Core Bundle</a>';
+                    $bbtn = '<a href="' . route( 'core-bundle@edit', [ 'cb' => $t->cb->id ] ) . '" class="btn btn-secondary mb-2 mb-md-2 mb-lg-0">Return to Core Bundle</a>';
                 } elseif( $t->vi ) {
-                    $bbtn  = '<a href="' . route( "customer@overview" , [ "id" => $t->vi->getCustomer()->getId(), "tab" => "ports" ] ) . '" class="btn btn-secondary mb-2 mb-md-2 mb-lg-0">Return to ' . ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' Overview</a>';
-                    $bbtn .= '<a class="collapse btn btn-danger mb-2 mb-md-2 mt-lg-2 ml-1" id="delete-vi-' . $t->vi->getId() . '" href="">Delete Interface</a>';
+                    $bbtn  = '<a href="' . route( "customer@overview" , [ 'cust' => $t->vi->customer->id, "tab" => "ports" ] ) . '" class="btn btn-secondary mb-2 mb-md-2 mb-lg-0">Return to ' . ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' Overview</a>';
+                    $related = $t->resellerMode() && ( count( $t->vi->peeringPhysicalInterface() ) || count( $t->vi->fanoutPhysicalInterface() ) ) ? "data-related='1'" : '';
+                    $bbtn .= '<a class="collapse btn btn-danger mb-2 mb-md-2 mt-lg-2 ml-1 btn-delete-vi"  id="delete-vi-' . $t->vi->id . '" href="' . route( 'virtual-interface@delete', [ 'vi' => $t->vi->id ]  ) . '" ' . $related . ' >Delete Interface</a>';
                 } else {
-                    $bbtn = '<a href="' . action( 'Interfaces\VirtualInterfaceController@list' ) . '" class="btn btn-secondary mmb-2 mb-md-2 mb-lg-0" >Cancel</a>';
+                    $bbtn = '<a href="' . route( 'virtual-interface@list' ) . '" class="btn btn-secondary mmb-2 mb-md-2 mb-lg-0" >Cancel</a>';
                 }
                 ?>
 
                 <?=
                 Former::actions(
-                    Former::primary_submit( $t->vi ? 'Save Changes' : 'Add' )->class( "mb-2 mb-md-2 mb-lg-0" )->id( "submit-form" ),
+                    Former::primary_submit( $t->vi ? 'Save Changes' : 'Create' )->class( "mb-2 mb-md-2 mb-lg-0" )->id( "submit-form" ),
                     Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-md-2 mb-lg-0" ),
                     '<a class="btn btn-secondary mb-2 mb-md-2 mb-lg-0" href="#" id="advanced-options">Advanced Options</a>',
                     $bbtn

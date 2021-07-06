@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,13 +22,13 @@ namespace IXP\Models;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use Eloquent;
-
 use Illuminate\Database\Eloquent\{
     Builder,
-    Model
+    Model,
+    Relations\BelongsTo
 };
+
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\Router
@@ -47,21 +47,23 @@ use Illuminate\Database\Eloquent\{
  * @property string $mgmt_host
  * @property string|null $api
  * @property int $api_type
- * @property bool|null $lg_access
+ * @property int|null $lg_access
  * @property bool $quarantine
  * @property bool $bgp_lc
  * @property string $template
  * @property bool $skip_md5
- * @property string|null $last_updated
+ * @property \Illuminate\Support\Carbon|null $last_updated
  * @property bool $rpki
  * @property string|null $software_version
  * @property string|null $operating_system
  * @property string|null $operating_system_version
  * @property int $rfc1997_passthru
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Vlan $vlan
  * @method static Builder|Router hasApi()
- * @method static Builder|Router iPv4()
- * @method static Builder|Router iPv6()
+ * @method static Builder|Router ipv4()
+ * @method static Builder|Router ipv6()
  * @method static Builder|Router largeCommunities()
  * @method static Builder|Router newModelQuery()
  * @method static Builder|Router newQuery()
@@ -73,6 +75,7 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|Router whereApiType($value)
  * @method static Builder|Router whereAsn($value)
  * @method static Builder|Router whereBgpLc($value)
+ * @method static Builder|Router whereCreatedAt($value)
  * @method static Builder|Router whereHandle($value)
  * @method static Builder|Router whereId($value)
  * @method static Builder|Router whereLastUpdated($value)
@@ -93,46 +96,65 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|Router whereSoftwareVersion($value)
  * @method static Builder|Router whereTemplate($value)
  * @method static Builder|Router whereType($value)
+ * @method static Builder|Router whereUpdatedAt($value)
  * @method static Builder|Router whereVlanId($value)
- * @mixin Eloquent
+ * @mixin \Eloquent
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Router extends Model
 {
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'routers';
-
+    use Observable;
 
     /**
-     * Indicates if the model should be timestamped.
+     * The attributes that are mass assignable.
      *
-     * @var bool
+     * @var array
      */
-    public $timestamps = false;
-
-
+    protected $fillable = [
+        'vlan_id',
+        'handle',
+        'protocol',
+        'type',
+        'name',
+        'shortname',
+        'router_id',
+        'peering_ip',
+        'asn',
+        'software',
+        'mgmt_host',
+        'api',
+        'api_type',
+        'lg_access',
+        'quarantine',
+        'bgp_lc',
+        'template',
+        'skip_md5',
+        'rpki',
+        'software_version',
+        'operating_system',
+        'operating_system_version',
+        'rfc1997_passthru'
+    ];
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
     protected $casts = [
-        'asn'        => 'integer',
-        'lg_access'  => 'boolean',
-        'quarantine' => 'boolean',
-        'bgp_lc'     => 'boolean',
-        'skip_md5'   => 'boolean',
-        'rpki'       => 'boolean',
+        'asn'          => 'integer',
+        'quarantine'   => 'boolean',
+        'bgp_lc'       => 'boolean',
+        'skip_md5'     => 'boolean',
+        'rpki'         => 'boolean',
+        'last_updated' => 'datetime',
     ];
 
     /**
      * CONST PROTOCOL
      */
-    const PROTOCOL_IPV4                 = 4;
-    const PROTOCOL_IPV6                 = 6;
+    public const PROTOCOL_IPV4                 = '4';
+    public const PROTOCOL_IPV6                 = '6';
 
     /**
      * @var array Email ids to classes
@@ -145,10 +167,10 @@ class Router extends Model
     /**
      * CONST TYPES
      */
-    const TYPE_ROUTE_SERVER                 = 1;
-    const TYPE_ROUTE_COLLECTOR              = 2;
-    const TYPE_AS112                        = 3;
-    const TYPE_OTHER                        = 99;
+    public const TYPE_ROUTE_SERVER                 = 1;
+    public const TYPE_ROUTE_COLLECTOR              = 2;
+    public const TYPE_AS112                        = 3;
+    public const TYPE_OTHER                        = 99;
 
     /**
      * @var array Email ids to classes
@@ -173,13 +195,13 @@ class Router extends Model
     /**
      * CONST SOFTWARES
      */
-    const SOFTWARE_BIRD                     = 1;
-    const SOFTWARE_BIRD2                    = 6;
-    const SOFTWARE_QUAGGA                   = 2;
-    const SOFTWARE_FRROUTING                = 3;
-    const SOFTWARE_OPENBGPD                 = 4;
-    const SOFTWARE_CISCO                    = 5;
-    const SOFTWARE_OTHER                    = 99;
+    public const SOFTWARE_BIRD                     = 1;
+    public const SOFTWARE_BIRD2                    = 6;
+    public const SOFTWARE_QUAGGA                   = 2;
+    public const SOFTWARE_FRROUTING                = 3;
+    public const SOFTWARE_OPENBGPD                 = 4;
+    public const SOFTWARE_CISCO                    = 5;
+    public const SOFTWARE_OTHER                    = 99;
 
     /**
      * @var array Email ids to classes
@@ -197,11 +219,9 @@ class Router extends Model
     /**
      * CONST SOFTWARES
      */
-    const API_TYPE_NONE                     = 0;
-    const API_TYPE_BIRDSEYE                 = 1;
-    const API_TYPE_OTHER                    = 99;
-
-
+    public const API_TYPE_NONE                     = 0;
+    public const API_TYPE_BIRDSEYE                 = 1;
+    public const API_TYPE_OTHER                    = 99;
 
     /**
      * @var array Email ids to classes
@@ -212,43 +232,32 @@ class Router extends Model
         self::API_TYPE_OTHER                => 'Other'
     ];
 
-
-
     /**
-     * Get the vlan that holds the router
+     * Get the vlan that own the router
      */
-    public function vlan()
+    public function vlan(): BelongsTo
     {
-        return $this->belongsTo('IXP\Models\Vlan' );
-    }
-
-    /**
-     * Get the API
-     *
-     * Alias to allow Entities\Router and Models\Router to work interchangably
-     */
-    public function api()
-    {
-        return $this->api;
+        return $this->belongsTo(Vlan::class, 'vlan_id' );
     }
 
     /**
      * Get the API type
      *
-     * Alias to allow Entities\Router and Models\Router to work interchangably
+     * Alias to allow Entities\Router and Models\Router to work interchangeably
      */
-    public function apiType(): int {
+    public function apiType(): int
+    {
         return $this->api_type;
     }
-
 
     /**
      * Scope a query to only include servers with an API
      *
      * @param Builder $query
+     *
      * @return Builder
      */
-    public function scopeHasApi($query)
+    public function scopeHasApi( Builder $query ): Builder
     {
         return $query->where('api_type', '>', 0);
     }
@@ -257,9 +266,10 @@ class Router extends Model
      * Scope a query to only include route servers
      *
      * @param Builder $query
+     *
      * @return Builder
      */
-    public function scopeRouteServer($query)
+    public function scopeRouteServer( Builder $query ): Builder
     {
         return $query->where('type', self::TYPE_ROUTE_SERVER);
     }
@@ -268,9 +278,10 @@ class Router extends Model
      * Scope a query to match IPv4 routers only
      *
      * @param Builder $query
+     *
      * @return Builder
      */
-    public function scopeIPv4($query)
+    public function scopeIpv4( Builder $query ): Builder
     {
         return $query->where('protocol', self::PROTOCOL_IPV4);
     }
@@ -279,9 +290,10 @@ class Router extends Model
      * Scope a query to match IPv6 routers only
      *
      * @param Builder $query
+     *
      * @return Builder
      */
-    public function scopeIPv6($query)
+    public function scopeIpv6( Builder $query ): Builder
     {
         return $query->where('protocol', self::PROTOCOL_IPV6);
     }
@@ -290,9 +302,10 @@ class Router extends Model
      * Scope a query to match BGP Large Communities enabled
      *
      * @param Builder $query
+     *
      * @return Builder
      */
-    public function scopeLargeCommunities($query)
+    public function scopeLargeCommunities( Builder $query ): Builder
     {
         return $query->where('bgp_lc', true);
     }
@@ -301,9 +314,10 @@ class Router extends Model
      * Scope a query to match against quarantine routers
      *
      * @param Builder $query
+     *
      * @return Builder
      */
-    public function scopeNotQuarantine($query)
+    public function scopeNotQuarantine( Builder $query ): Builder
     {
         return $query->where('quarantine', false);
     }
@@ -312,11 +326,134 @@ class Router extends Model
      * Scope a query to match RPKI enabled
      *
      * @param Builder $query
+     *
      * @return Builder
      */
-    public function scopeRpki($query)
+    public function scopeRpki( Builder $query ): Builder
     {
         return $query->where('rpki', true);
     }
 
+
+    /**
+     * Turn the database integer representation of the software into text as
+     * defined in the self::$SOFTWARES array (or 'Unknown')
+     *
+     * @return string
+     */
+    public function software(): string
+    {
+        return self::$SOFTWARES[ $this->software ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the api type into text as
+     * defined in the self::$SOFTWARES array (or 'Unknown')
+     * @return string
+     */
+    public function resolveApiType(): string
+    {
+        return self::$API_TYPES[ $this->api_type ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the protocol into text as
+     * defined in the self::$PROTOCOLS array (or 'Unknown')
+     *
+     * @return string
+     */
+    public function protocol(): string
+    {
+        return self::$PROTOCOLS[ $this->protocol ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the type into text as
+     * defined in the self::$TYPES_SHORT array (or 'Unknown')
+     * @return string
+     */
+    public function typeShortName(): string
+    {
+        return self::$TYPES_SHORT[ $this->type ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the type into text as
+     * defined in the self::$TYPES array (or 'Unknown')
+     * @return string
+     */
+    public function type(): string
+    {
+        return self::$TYPES[ $this->type ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the lg access into text as
+     * defined in the User::$PRIVILEGES_ALL array (or 'Unknown')
+     *
+     * @return string
+     */
+    public function lgAccess(): string
+    {
+        return User::$PRIVILEGES_ALL[ $this->lg_access ] ?? 'Unknown';
+    }
+
+    /**
+     * Does the router have an API?
+     *
+     * In other words, is 'api' and 'api_type' set?
+     *
+     * @return bool
+     */
+    public function api(): bool
+    {
+        return $this->api && $this->api_type;
+    }
+
+    /**
+     * This function controls access to a router for a looking glass
+     *
+     * @param int $privs User's privileges (see \Models\User)
+     *
+     * @return bool
+     */
+    public function authorise( int $privs ): bool
+    {
+        return $privs >= $this->lg_access;
+    }
+
+    /**
+     * This function check is the last updated time is greater than the given number of seconds
+     *
+     * @param int $threshold
+     *
+     * @return bool
+     */
+    public function lastUpdatedGreaterThanSeconds( int $threshold ): bool
+    {
+        if( !$this->last_updated ) {
+            // if null, then, as far as we know, it has never been updated....
+            return true;
+        }
+
+        return $this->last_updated->diffInSeconds() > $threshold;
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Router [id:%d] '%s' belonging to Vlan [id:%d] '%s'",
+            $model->id,
+            $model->handle,
+            $model->vlan_id,
+            $model->vlan->name,
+        );
+    }
 }

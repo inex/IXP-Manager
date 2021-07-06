@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,73 +23,69 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Countries, D2EM, Former, Redirect, Validator;
+use Countries, Former;
 
-use Entities\{
-    Infrastructure      as InfrastructureEntity,
-    IXP                 as IXPEntity
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\{
+    Request,
+    RedirectResponse
 };
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
+
+use IXP\Models\{
+    Infrastructure
+};
 
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
 
-use Repositories\{
-    Infrastructure as InfrastructureRepository
-};
-
+use IXP\Utils\Http\Controllers\Frontend\EloquentController as Eloquent2Frontend;
 
 /**
  * Infrastructure Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class InfrastructureController extends Doctrine2Frontend
+class InfrastructureController extends Eloquent2Frontend
 {
-
     /**
-     * The object being added / edited
-     * @var InfrastructureEntity
+     * The object being created / edited
+     *
+     * @var Infrastructure
      */
     protected $object = null;
 
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
-
         $this->feParams         = (object)[
-
-            'entity'            => InfrastructureEntity::class,
+            'model'             =>  Infrastructure::class,
             'pagetitle'         => 'Infrastructures',
-
             'titleSingular'     => 'Infrastructure',
             'nameSingular'      => 'infrastructure',
-
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
-
             'viewFolderName'    => 'infrastructure',
-
             'listColumns'       => [
-                'id'        => [ 'title' => 'DB ID' , 'display' => true ],
                 'name'      => 'Name',
                 'shortname' => 'Shortname',
-                'isPrimary' => [ 'title' => 'Primary', 'type' => self::$FE_COL_TYPES[ 'YES_NO' ] ],
-
+                'isPrimary' => [
+                    'title' => 'Primary',
+                    'type' => self::$FE_COL_TYPES[ 'YES_NO' ]
+                ],
                 'ixf_ix_id' => [
                     'title'    => 'IXF-ID',
                     'type'     => self::$FE_COL_TYPES[ 'REPLACE' ],
                     'subject'  => '<a href="https://db.ix-f.net/api/ixp/%%COL%%" target="_blank">%%COL%%</a>',
                 ],
-
                 'peeringdb_ix_id' => [
                     'title'    => 'PeeringDB ID',
                     'type'     => self::$FE_COL_TYPES[ 'REPLACE' ],
@@ -101,26 +97,55 @@ class InfrastructureController extends Doctrine2Frontend
         // display the same information in the view as the list
         $this->feParams->viewColumns = array_merge(
             $this->feParams->listColumns, [
-                'country'   => [ 'title' => 'Country', 'type' => self::$FE_COL_TYPES[ 'COUNTRY' ] ],
+                'country'   => [
+                    'title' => 'Country',
+                    'type' => self::$FE_COL_TYPES[ 'COUNTRY' ]
+                ],
+                'notes'       => [
+                    'title'         => 'Notes',
+                    'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
+                ],
+                'created_at'       => [
+                    'title'         => 'Created',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ],
+                'updated_at'       => [
+                    'title'         => 'Updated',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ]
             ]
         );
-
-
     }
-
 
     /**
      * Provide array of rows for the list action and view action
      *
-     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @param int|null $id The `id` of the row to load for `view` action`. `null` if `listAction`
+
      * @return array
      */
-    protected function listGetData( $id = null )
+    protected function listGetData( ?int $id = null ): array
     {
-        return D2EM::getRepository( InfrastructureEntity::class )->getAllForFeList( $this->feParams, $id );
+        $feParams = $this->feParams;
+        return Infrastructure::when( $id , static function( Builder $q, $id ) {
+            return $q->where('id', $id );
+        } )->when( $feParams->listOrderBy , static function( Builder $q, $orderby ) use ( $feParams )  {
+            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+        })->get()->toArray();
     }
 
-
+    /**
+     * Display the form to create an object
+     *
+     * @return array
+     */
+    protected function createPrepareForm(): array
+    {
+        return [
+            'object'            => $this->object,
+            'countries'         => Countries::getList('name' )
+        ];
+    }
 
     /**
      * Display the form to add/edit an object
@@ -129,19 +154,17 @@ class InfrastructureController extends Doctrine2Frontend
      *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array {
-        if( $id ) {
-            if( !( $this->object = D2EM::getRepository( InfrastructureEntity::class )->find( $id) ) ) {
-                abort(404);
-            }
+    protected function editPrepareForm( int $id ): array
+    {
+        $this->object = Infrastructure::findOrFail( $id );
 
-            Former::populate([
-                'name'             => request()->old( 'name',      $this->object->getName() ),
-                'shortname'        => request()->old( 'shortname', $this->object->getShortname() ),
-                'primary'          => request()->old( 'primary', ( $this->object->getIsPrimary() ? 1 : 0 ) ),
-                'country'          => request()->old( 'country', in_array( $this->object->getCountry(),  array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ) ? $this->object->getCountry() : null ),
-            ]);
-        }
+        Former::populate([
+            'name'             => request()->old( 'name',      $this->object->name          ),
+            'shortname'        => request()->old( 'shortname', $this->object->shortname     ),
+            'isPrimary'        => request()->old( 'isPrimary', $this->object->isPrimary     ),
+            'country'          => request()->old( 'country', in_array( $this->object->country,  array_values( Countries::getListForSelect( 'iso_3166_2' ) ), false ) ? $this->object->country : null ),
+            'notes'            => request()->old( 'notes', $this->object->notes             ),
+        ]);
 
         return [
             'object'            => $this->object,
@@ -149,82 +172,79 @@ class InfrastructureController extends Doctrine2Frontend
         ];
     }
 
-
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doStore( Request $request )
+    public function doStore( Request $r ): bool|RedirectResponse
     {
-        $validator = Validator::make( $request->all(), [
-            'name'                  => 'required|string|max:255|unique:Entities\Infrastructure,name'. ( $request->input('id') ? ','. $request->input('id') : '' ),
-            'shortname'             => 'required|string|max:255',
-            'country'               => 'required|string|max:2|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
-        ]);
+        $this->checkForm( $r );
+        $this->object = Infrastructure::create( $r->all() );
+        $this->resetInfrastructures();
+        return true;
+    }
 
-        if( $validator->fails() ) {
-            return Redirect::back()->withErrors($validator)->withInput();
-        }
-
-        if( $request->input( 'id', false ) ) {
-            if( !( $this->object = D2EM::getRepository( InfrastructureEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404);
-            }
-        } else {
-            $this->object = new InfrastructureEntity;
-            D2EM::persist( $this->object );
-        }
-
-        $this->object->setName(                 $request->input( 'name'         ) );
-        $this->object->setShortname(            $request->input( 'shortname'    ) );
-        $this->object->setCountry(              $request->input( 'country'      ) );
-        $this->object->setIxfIxId(          $request->input( 'ixf_ix_id'    ) ? $request->input( 'ixf_ix_id'    ) : null );
-        $this->object->setPeeringdbIxId(    $request->input( 'pdb_ixp'      ) ? $request->input( 'pdb_ixp'      ) : null );
-        $this->object->setIsPrimary(   $request->input( 'primary'      ) ?? 0 );
-        $this->object->setIXP(                  D2EM::getRepository( IXPEntity::class )->getDefault() );
-
-        D2EM::flush();
-
-        if( $this->object->getIsPrimary() ) {
-            // reset the rest:
-            /** @var InfrastructureEntity $i */
-            foreach( D2EM::getRepository( InfrastructureEntity::class )->findAll() as $i ) {
-                if( $i->getId() == $this->object->getId() || !$i->getIsPrimary() ) {
-                    continue;
-                }
-                $i->setIsPrimary( false );
-            }
-            D2EM::flush();
-        }
+    /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request   $r
+     * @param int       $id
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doUpdate( Request $r, int $id ): bool|RedirectResponse
+    {
+        $this->object = Infrastructure::findOrFail( $id );
+        $this->checkForm( $r );
+        $this->object->update( $r->all() );
+        $this->resetInfrastructures();
 
         return true;
     }
 
+    /**
+     * Function that reset the other infrastructures (isPrimary = false)
+     *
+     * @return void
+     */
+    private function resetInfrastructures(): void
+    {
+        if( $this->object->isPrimary ) {
+            // reset the rest:
+            foreach( Infrastructure::where( 'id', '!=', $this->object->id )
+                         ->where( 'isPrimary', true )->get() as $infra ) {
+                $infra->isPrimary = false;
+                $infra->save();
+            }
+        }
+    }
 
     /**
      * @inheritdoc
      */
-    protected function preDelete() : bool
+    protected function preDelete(): bool
     {
         $okay = true;
-        if( ( $cnt = count( $this->object->getSwitchers() ) ) ) {
+        if( ( $cnt = $this->object->switchers()->count() ) ) {
             AlertContainer::push( "You cannot delete this infrastructure there are {$cnt} switch(es) associated with it. "
                 . "You can view and then reassign or delete those switches <a href=\""
-                . route("switch@list", [ "infra" => $this->object->getId() ] )
+                . route("switch@list", [ "infra" => $this->object->id ] )
                 . "\">by clicking here</a>.", Alert::DANGER
             );
             $okay = false;
         }
 
-        if( $cnt = count( $this->object->getVlans() ) ) {
+        if( $cnt = $this->object->vlans()->count() ) {
             AlertContainer::push( "You cannot delete this infrastructure there are {$cnt} VLAN(s) associated with it. "
                 . "You can view and then reassign or delete those VLANs <a href=\""
-                . route( "vlan@infra" , [ 'id' => $this->object->getId() ]  )
+                . route( "vlan@infra" , [ 'id' => $this->object->id ]  )
                 . "\">by clicking here</a>.", Alert::DANGER
             );
             $okay = false;
@@ -233,4 +253,17 @@ class InfrastructureController extends Doctrine2Frontend
         return $okay;
     }
 
+    /**
+     * Check if the form is valid
+     *
+     * @param Request $r
+     */
+    public function checkForm( Request $r ): void
+    {
+        $r->validate( [
+            'name'          => 'required|string|max:255|unique:infrastructure,name' . ( $r->id ? ','. $r->id : '' ),
+            'shortname'     => 'required|string|max:255',
+            'country'       => 'required|string|max:2|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
+        ] );
+    }
 }

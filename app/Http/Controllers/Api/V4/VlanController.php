@@ -2,9 +2,8 @@
 
 namespace IXP\Http\Controllers\Api\V4;
 
-
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -24,27 +23,31 @@ namespace IXP\Http\Controllers\Api\V4;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM;
 use Validator;
 
-use Entities\{
-    Router        as RouterEntity,
-    Vlan          as VlanEntity
+use Illuminate\Http\{
+    JsonResponse,
+    Request
 };
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use IXP\Models\{
+    Aggregators\VlanAggregator,
+    Router,
+    Vlan
+};
 
 /**
  * Vlan API Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   APIv4
+ * @package    IXP\Http\Controllers\Api\V4
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class VlanController extends Controller
 {
-
     /**
      * Get all IP addresses (v4 and v6) for a given VLAN.
      *
@@ -58,26 +61,20 @@ class VlanController extends Controller
      *         v_id: "2",                      // VLAN id
      *         vli_id: "16"                    // VlanInterface ID (or null if not assigned / in use)
      *     },
-
      *
-     * @params  Request $request instance of the current HTTP request
-     * @params  int $id Vlan id
+     * @param  Vlan    $v      Vlan
+     *
      * @return  JsonResponse array of IP addresses
+     *
+     * @throws
      */
-    public function getIPAddresses( Request $request, int $id ) : JsonResponse {
-
-        /** @var VlanEntity $vl */
-        if( !( $v = D2EM::getRepository( VlanEntity::class )->find( $id ) ) ) {
-            return abort( 404 );
-        }
-
+    public function ipAddresses( Vlan $v ) : JsonResponse
+    {
         return response()->json([
-            'ipv4' => D2EM::getRepository( VlanEntity::class )->getIpAddresses( $v->getId(), RouterEntity::PROTOCOL_IPV4 ),
-            'ipv6' => D2EM::getRepository( VlanEntity::class )->getIpAddresses( $v->getId(), RouterEntity::PROTOCOL_IPV6 )
+            'ipv4' => VlanAggregator::ipAddresses( $v->id, Router::PROTOCOL_IPV4 ),
+            'ipv6' => VlanAggregator::ipAddresses( $v->id, Router::PROTOCOL_IPV6 )
         ]);
     }
-
-
 
     /**
      * Determine is an IP address /really/ free by checking across all vlans
@@ -85,13 +82,16 @@ class VlanController extends Controller
      * Returns a array of objects where each object is the details of its usage (example below).
      * If not used, returns an empty array.
      *
-     * @see VlanEntity::usedAcrossVlans() for array structure.
+     * @param Request $r
      *
      * @return  JsonResponse array of object
+     *
+     * @see VlanAggregator::usedAcrossVlans() for array structure.
+     *
      */
-    public function usedAcrossVlans( Request $request ) : JsonResponse {
-
-        $validator = Validator::make( $request->all(), [
+    public function usedAcrossVlans( Request $r ) : JsonResponse
+    {
+        $validator = Validator::make( $r->all(), [
             'ip' => 'required|ip'
         ]);
 
@@ -100,7 +100,7 @@ class VlanController extends Controller
         }
 
         return response()->json(
-            D2EM::getRepository( VlanEntity::class )->usedAcrossVlans( $request->input( 'ip' ) )
+            VlanAggregator::usedAcrossVlans( $r->ip )
         );
     }
 }

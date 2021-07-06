@@ -3,7 +3,7 @@
 namespace IXP\Policies;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,13 +23,23 @@ namespace IXP\Policies;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Entities\User as UserEntity;
-
-use IXP\Models\Customer;
-use IXP\Models\DocstoreCustomerFile;
-
 use Illuminate\Auth\Access\HandlesAuthorization;
 
+use IXP\Models\{
+    DocstoreCustomerFile,
+    User
+};
+
+/**
+ * DocstoreCustomerFilePolicy
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Policies
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class DocstoreCustomerFilePolicy
 {
     use HandlesAuthorization;
@@ -37,38 +47,37 @@ class DocstoreCustomerFilePolicy
     /**
      * Determine whether the user can download a docstore customer file.
      *
-     * @param   UserEntity              $user
+     * @param   User                    $user
      * @param   DocstoreCustomerFile    $file
      *
      * @return mixed
      */
-    public function download( UserEntity $user, DocstoreCustomerFile $file )
+    public function download( User $user, DocstoreCustomerFile $file ): bool
     {
-        return $user->isSuperUser() || ( $file->min_privs <= $user->getPrivs() && request()->user()->getCustomer()->getId() === $file->customer->id );
+        return $user->isSuperUser() || ( $file->min_privs <= $user->privs() && request()->user()->custid === $file->customer->id );
     }
 
     /**
      * Determine whether the user can view the docstore customer file.
      *
-     * @param UserEntity            $user
-     * @param Customer              $cust
+     * @param User                  $user
      * @param DocstoreCustomerFile  $file
      *
      * @return mixed
      */
-    public function view( UserEntity $user, DocstoreCustomerFile $file )
+    public function view( User $user, DocstoreCustomerFile $file ): bool
     {
-        return $user->isSuperUser() || ( $file->min_privs <= $user->getPrivs() && request()->user()->getCustomer()->getId() === $file->customer->id );
+        return $user->isSuperUser() || ( $file->min_privs <= $user->privs() && request()->user()->custid === $file->customer->id );
     }
 
     /**
      * Determine whether the user can create docstore customer files.
      *
-     * @param  UserEntity  $user
+     * @param  User  $user
      *
      * @return mixed
      */
-    public function create( UserEntity $user )
+    public function create( User $user ): bool
     {
         return $user->isSuperUser();
     }
@@ -76,12 +85,12 @@ class DocstoreCustomerFilePolicy
     /**
      * Determine whether the user can get info on the docstore customer file.
      *
-     * @param   UserEntity              $user
+     * @param   User                    $user
      * @param   DocstoreCustomerFile    $file
      *
      * @return mixed
      */
-    public function info( UserEntity $user, DocstoreCustomerFile $file )
+    public function info( User $user, DocstoreCustomerFile $file ): bool
     {
         return $user->isSuperUser();
     }
@@ -89,12 +98,12 @@ class DocstoreCustomerFilePolicy
     /**
      * Determine whether the user can update the docstore customer file.
      *
-     * @param   UserEntity              $user
+     * @param   User                    $user
      * @param   DocstoreCustomerFile    $file
      *
      * @return mixed
      */
-    public function update( UserEntity $user, DocstoreCustomerFile $file )
+    public function update( User $user, DocstoreCustomerFile $file ): bool
     {
         return $user->isSuperUser();
     }
@@ -102,12 +111,12 @@ class DocstoreCustomerFilePolicy
     /**
      * Determine whether the user can delete the docstore customer file.
      *
-     * @param   UserEntity              $user
+     * @param   User                    $user
      * @param   DocstoreCustomerFile    $file
      *
      * @return mixed
      */
-    public function delete( UserEntity $user, DocstoreCustomerFile $file )
+    public function delete( User $user, DocstoreCustomerFile $file ): bool
     {
         return $user->isSuperUser() && $file->exists;
     }

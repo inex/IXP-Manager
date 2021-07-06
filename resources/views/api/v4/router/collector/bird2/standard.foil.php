@@ -37,6 +37,6 @@
 
 <?= $this->insert('api/v4/router/collector/bird2/filter-transit-networks')   ?>
 
-<?= $this->insert('api/v4/router/collector/bird2/neighbors', [ 'ipproto' => $t->router->protocol() == 6 ? 'ipv6' : 'ipv4' ] ) ?>
+<?= $this->insert('api/v4/router/collector/bird2/neighbors', [ 'ipproto' => $t->router->protocol === 6 ? 'ipv6' : 'ipv4' ] ) ?>
 
 <?= $this->insert('api/v4/router/collector/bird2/footer')   ?>

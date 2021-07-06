@@ -16,11 +16,11 @@ $row = $t->row;
     </td>
 
     <td>
-        <?= $row['created']->format( "Y-m-d H:i:s" ) ?>
+        <?= $row['created_at'] ? Carbon\Carbon::parse( $row['created_at'] ) : '' ?>
     </td>
     <td>
         <?php if( $row['expires'] ): ?>
-            <?= $row['expires']->format( "Y-m-d" ) ?>
+            <?= $row['expires'] ?>
         <?php else: ?>
             <em>Never</em>
         <?php endif; ?>
@@ -28,7 +28,7 @@ $row = $t->row;
 
     <td>
         <?php if( $row['lastseenAt'] ): ?>
-            <?= $row['lastseenAt']->format( "Y-m-d" ) ?>
+            <?= $row['lastseenAt'] ?>
         <?php endif; ?>
 
     </td>
@@ -36,19 +36,16 @@ $row = $t->row;
         <?= $t->ee( $row['lastseenFrom'] ) ?>
     </td>
     <td>
-
         <div class="btn-group btn-group-sm">
             <a class="btn btn-white" href="<?= route('api-key@view' , [ 'id' => $t->row[ 'id' ] ] ) ?> " title="View">
                 <i class="fa fa-eye"></i>
             </a>
-            <a class="btn btn-white" id='d2f-list-edit-<?= $t->row[ 'id' ] ?>' href="<?= route('api-key@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?> " title="Edit">
+            <a class="btn btn-white" id='e2f-list-edit-<?= $t->row[ 'id' ] ?>' href="<?= route('api-key@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?> " title="Edit">
                 <i class="fa fa-pencil"></i>
             </a>
-            <a class="btn btn-white d2f-list-delete" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="#" data-object-id="<?= $t->row[ 'id' ] ?>" title="Delete">
+            <a class="btn btn-white btn-2f-list-delete" id='e2f-list-delete-<?= $t->row[ 'id' ] ?>' data-object-id="<?= $t->row[ 'id' ] ?>" href="<?= route( $t->feParams->route_prefix.'@delete' , [ 'id' => $t->row[ 'id' ] ]  )  ?>"  title="Delete">
                 <i class="fa fa-trash"></i>
             </a>
         </div>
-
     </td>
-
 </tr>

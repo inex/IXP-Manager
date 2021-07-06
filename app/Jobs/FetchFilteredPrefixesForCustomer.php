@@ -1,10 +1,9 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace IXP\Jobs;
 
-
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -29,19 +28,37 @@ use Cache;
 use Carbon\Carbon;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
+
+use Illuminate\Queue\{
+    SerializesModels,
+    InteractsWithQueue
+};
+
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
 use IXP\Exceptions\GeneralException;
-use IXP\Models\{Customer, Router, VlanInterface};
+
+use IXP\Models\{
+    Customer,
+    Router,
+    VlanInterface
+};
+
 use IXP\Services\LookingGlass;
 
+/**
+ * FetchFilteredPrefixesForCustomer
+ *
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @category   Jobs
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
 
     /**
      * @var Customer
@@ -57,6 +74,7 @@ class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
      * Create a new job instance.
      *
      * @param Customer $customer
+     *
      * @return void
      */
     public function __construct( Customer $customer )
@@ -67,11 +85,13 @@ class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
     /**
      * Execute the job.
      *
+     * @param LookingGlass $lg
+     *
      * @return void
-     * @throws \IXP\Exceptions\Services\LookingGlass\ConfigurationException
+     *
      * @throws GeneralException
      */
-    public function handle( LookingGlass $lg )
+    public function handle( LookingGlass $lg ): void
     {
         if( !$this->havePersistentCache() ) {
             throw new GeneralException('A persistent cache is required to fetch filtered prefixes' );
@@ -82,20 +102,20 @@ class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
         // them, for each router, get a list of filtered prefixes and record reason(s) and routers
 
         /** @var VlanInterface[] $vlis */
-        $vlis = [];
-
-        foreach( $this->customer->virtualInterfaces as $vi ) {
-            foreach( $vi->vlanInterfaces as $vli ) {
-                if( $vli->rsclient && !$vli->vlan->private ) {
-                    $vlis[] = $vli;
-                }
-            }
-        }
+        $vlis = VlanInterface::select('vli.*')
+            ->from( 'vlaninterface AS vli' )
+            ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
+            ->leftJoin( 'cust AS c', 'c.id', 'vi.custid' )
+            ->leftJoin( 'vlan AS v', 'v.id', 'vli.vlanid' )
+            ->where( 'vli.rsclient', true )
+            ->where( 'v.private', false )
+            ->where( 'c.id', $this->customer->id )
+            ->get();
 
         foreach( $vlis as $vli ) {
             // query routers for this VLAN
             foreach( array_keys( Router::$PROTOCOLS ) as $ipproto ) {
-                if( $vli->protocolEnabled( $ipproto ) ) {
+                if( $vli->ipvxEnabled( $ipproto ) ) {
                     $this->queryRouteServer( $lg, $vli, $ipproto );
                 }
             }
@@ -108,11 +128,13 @@ class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
     /**
      * Query the various route servers for filtered prefixes and add them to the $this->filteredPrefixes array
      *
-     * @param LookingGlass $lg
-     * @param VlanInterface $vli
-     * @param int $ipproto
+     * @param LookingGlass      $lg
+     * @param VlanInterface     $vli
+     * @param int               $ipproto
+     *
      * @return void
-     * @throws \IXP\Exceptions\Services\LookingGlass\ConfigurationException
+     *
+     * @throws
      */
     private function queryRouteServer( LookingGlass $lg, VlanInterface $vli, int $ipproto ): void
     {
@@ -128,20 +150,19 @@ class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
             ->get();
 
         foreach( $routers as $router ) {
-
             if( !( $resp = \json_decode( $lg->forRouter( $router )->routesProtocolLargeCommunityWildXYRoutes( $bird_protocol, $router->asn, 1101 ) ) ) || !isset( $resp->routes ) ) {
                 continue;
             }
 
             foreach( $resp->routes as $route ) {
                 if( !isset( $this->filteredPrefixes[ $route->network ] ) ) {
-                    $this->filteredPrefixes[ $route->network ] = [];
-                    $this->filteredPrefixes[ $route->network ]['found_at'] = now();
-                    $this->filteredPrefixes[ $route->network ]['reasons'] = [];
+                    $this->filteredPrefixes[ $route->network ]              = [];
+                    $this->filteredPrefixes[ $route->network ]['found_at']  = now();
+                    $this->filteredPrefixes[ $route->network ]['reasons']   = [];
                 }
 
                 $this->filteredPrefixes[ $route->network ]['routers'][      $router->handle ] = $bird_protocol;
-                $this->filteredPrefixes[ $route->network ]['age'][          $router->handle ] = Carbon::parse($route->age);
+                $this->filteredPrefixes[ $route->network ]['age'][          $router->handle ] = Carbon::parse( $route->age );
                 $this->filteredPrefixes[ $route->network ]['primary'][      $router->handle ] = $route->primary;
                 $this->filteredPrefixes[ $route->network ]['as_path'][      $router->handle ] = $route->bgp->as_path;
                 $this->filteredPrefixes[ $route->network ]['gateway'][      $router->handle ] = $route->gateway;
@@ -162,5 +183,4 @@ class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
             }
         }
     }
-
 }

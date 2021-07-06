@@ -5,9 +5,9 @@
 ;; api/v4/dns/arpa API call to IXP Manager. Any local changes made to
 ;; this script will be lost.
 ;;
-;; VLAN id: <?= $t->vlan->getId() ?>; tag: <?= $t->vlan->getNumber() ?>; name: <?= $t->vlan->getName() ?>.
+;; VLAN id: <?= $t->vlan->id ?>; tag: <?= $t->vlan->number ?>; name: <?= $t->vlan->name ?>.
 ;;
-;; Generated: <?= date( 'Y-m-d H:i:s' ) . "\n" ?>
+;; Generated: <?= now()->format( 'Y-m-d H:i:s' ) . "\n" ?>
 ;;
 
 $TTL 86400

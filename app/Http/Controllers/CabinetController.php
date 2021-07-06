@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,76 +23,80 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Redirect, Validator;
+use Former;
 
-use Entities\{
-    Cabinet         as CabinetEntity,
-    Location        as LocationEntity
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\{
+    Request,
+    RedirectResponse
 };
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
+
+use IXP\Models\{
+    Cabinet,
+    Location
+};
+
+use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
 
-
-
 /**
- * Infrastructure Controller
+ * Cabinet Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Controller
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class CabinetController extends Doctrine2Frontend
+class CabinetController extends EloquentController
 {
-
     /**
-     * The object being added / edited
-     * @var CabinetEntity
+     * The object being created / edited
+     *
+     * @var Cabinet
      */
     protected $object = null;
 
+    /**
+     * The URL prefix to use.
+     *
+     * Automatically determined based on the controller name if not set.
+     *
+     * @var string|null
+     */
     protected static $route_prefix = "rack";
+
     /**
      * This function sets up the frontend controller
      */
-    public function feInit(){
-
+    public function feInit(): void
+    {
         $this->feParams         = ( object )[
-
-            'entity'            => CabinetEntity::class,
+            'model'             => Cabinet::class,
             'pagetitle'         => 'Racks',
-
             'titleSingular'     => 'Rack',
             'nameSingular'      => 'rack',
-
             'defaultAction'     => 'list',
             'defaultController' => 'CabinetController',
-
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
-
             'viewFolderName'    => 'cabinet',
-
             'listColumns'    => [
-
-                'id'        => [ 'title' => 'DB ID', 'display' => true ],
-
-                'location'  => [
+                'id'        => [ 'title' => 'DB ID', 'display' => false ],
+                'locationname'  => [
                     'title'      => 'Facility',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
                     'controller' => 'facility',
                     'action'     => 'view',
                     'idField'    => 'locationid'
                 ],
-
-                'name'         => 'Name',
-                'cololocation' => 'Colo Location',
-                'height'       => 'Height'
+                'name'          => 'Name',
+                'colocation'    => 'Colo Location',
+                'height'        => 'Height'
             ]
         ];
 
@@ -103,112 +107,116 @@ class CabinetController extends Doctrine2Frontend
                 'u_counts_from'        => [
                     'title'          => "U's Count From",
                     'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
-                    'xlator'         => CabinetEntity::$U_COUNTS_FROM
+                    'xlator'         => Cabinet::$U_COUNTS_FROM
                 ],
-
                 'type'       => 'Type',
                 'notes'       => [
                     'title'         => 'Notes',
                     'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
+                ],
+                'created_at'       => [
+                    'title'         => 'Created',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ],
+                'updated_at'       => [
+                    'title'         => 'Updated',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ]
             ]
         );
-
-
     }
-
 
     /**
      * Provide array of rows for the list action and view action
      *
-     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @param int|null $id The `id` of the row to load for `view` action`. `null` if `listAction`
+
      * @return array
      */
-    protected function listGetData( $id = null )
+    protected function listGetData( ?int $id = null ): array
     {
-        return D2EM::getRepository( CabinetEntity::class )->getAllForFeList( $this->feParams, $id );
+        $feParams = $this->feParams;
+        return Cabinet::select( [ 'cabinet.*', 'l.name AS locationname' ] )
+            ->leftJoin( 'location AS l', 'l.id', 'cabinet.locationid' )
+        ->when( $id , function( Builder $q, $id ) {
+            return $q->where('cabinet.id', $id );
+        } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+        })->get()->toArray();
     }
-
-
 
     /**
      * Display the form to add/edit an object
-     * @param   int $id ID of the row to edit
+     *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array
+    protected function createPrepareForm(): array
     {
-        if( $id ) {
-
-            if( !( $this->object = D2EM::getRepository( CabinetEntity::class )->find( $id ) ) ) {
-                abort(404);
-            }
-
-            Former::populate([
-                'name'                  => request()->old( 'name',          $this->object->getName() ),
-                'locationid'            => request()->old( 'locationid',    $this->object->getLocation()->getId() ),
-                'colocation'            => request()->old( 'colocation',    $this->object->getCololocation() ),
-                'type'                  => request()->old( 'type',          $this->object->getType() ),
-                'height'                => request()->old( 'height',        $this->object->getHeight() ),
-                'u_counts_from'         => request()->old( 'u_counts_from', $this->object->getUCountsFrom() ),
-                'notes'                 => request()->old( 'notes',         $this->object->getNotes() ),
-            ]);
-        }
-
         return [
             'object'                => $this->object,
-            'locations'             => D2EM::getRepository( LocationEntity::class )->getAsArray(),
+            'locations'             => Location::orderBy( 'name' )->get(),
         ];
     }
 
+    /**
+     * Display the form to create/edit an object
+     *
+     * @param   int $id ID of the row to edit
+     *
+     * @return array
+     */
+    protected function editPrepareForm( int $id ): array
+    {
+        $this->object = Cabinet::findOrFail( $id );
+
+        Former::populate( [
+            'name'                  => request()->old( 'name',          $this->object->name             ),
+            'locationid'            => request()->old( 'locationid',    $this->object->locationid       ),
+            'colocation'            => request()->old( 'colocation',    $this->object->colocation       ),
+            'type'                  => request()->old( 'type',          $this->object->type             ),
+            'height'                => request()->old( 'height',        $this->object->height           ),
+            'u_counts_from'         => request()->old( 'u_counts_from', $this->object->u_counts_from    ),
+            'notes'                 => request()->old( 'notes',         $this->object->notes            ),
+        ] );
+
+        return [
+            'object'                => $this->object,
+            'locations'             => Location::orderBy( 'name' )->get(),
+        ];
+    }
 
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doStore( Request $request )
+    public function doStore( Request $r )
     {
-        $validator = Validator::make( $request->all(), [
-            'name'                  => 'required|string|max:255',
-            'locationid'            => 'required|integer|exists:Entities\Location,id',
-            'colocation'            => 'required|string|max:255',
-            'height'                => 'nullable|integer',
-            'type'                  => 'nullable|string|max:255',
-            'notes'                 => 'nullable|string|max:65535',
-            'u_counts_from'         => 'required|integer|in:' . implode( ',', array_keys( CabinetEntity::$U_COUNTS_FROM ) ),
-        ]);
-
-        if( $validator->fails() ) {
-            return Redirect::back()->withErrors($validator)->withInput();
-        }
-
-        if( $request->input( 'id', false ) ) {
-            if( !( $this->object = D2EM::getRepository( CabinetEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404);
-            }
-        } else {
-            $this->object = new CabinetEntity;
-            D2EM::persist( $this->object );
-        }
-
-        $this->object->setName(              $request->input( 'name'            ) );
-        $this->object->setCololocation(      $request->input( 'colocation'      ) );
-        $this->object->setType(              $request->input( 'type'            ) );
-        $this->object->setHeight(            $request->input( 'height'          ) );
-        $this->object->setUCountsFrom(       $request->input( 'u_counts_from'   ) );
-        $this->object->setNotes(             $request->input( 'notes'           ) );
-        $this->object->setLocation(          D2EM::getRepository( LocationEntity::class )->find( $request->input( 'locationid' ) ) );
-
-        D2EM::flush();
-
+        $this->checkForm( $r );
+        $this->object = Cabinet::create( $r->all() );
         return true;
     }
 
+    /**
+     * Function to do the actual validation and updating of the submitted object.
+     *
+     * @param Request   $r
+     * @param int       $id
+     *
+     * @return bool|RedirectResponse
+     *
+     */
+    public function doUpdate( Request $r, int $id )
+    {
+        $this->checkForm( $r );
+        $this->object = Cabinet::findOrFail( $id );
+        $this->object->update( $r->all() );
+        return true;
+    }
 
     /**
      * @inheritdoc
@@ -216,13 +224,12 @@ class CabinetController extends Doctrine2Frontend
     protected function preDelete(): bool
     {
         $okay = true;
-
-        if( ( $cnt = count( $this->object->getCustomerEquipment() ) ) ) {
+        if( ( $cnt = $this->object->customerEquipment()->count() ) ) {
             AlertContainer::push( "Could not delete the rack as at least one piece of customer equipment is located here. Reassign or delete that kit first.", Alert::DANGER );
             $okay = false;
         }
 
-        if( ( $cnt = count( $this->object->getSwitches() ) ) ) {
+        if( ( $cnt = $this->object->switchers()->count() ) ) {
             AlertContainer::push( "Could not delete the rack as at least one switch is located here. Reassign or delete the switch first.", Alert::DANGER );
             $okay = false;
         }
@@ -230,5 +237,21 @@ class CabinetController extends Doctrine2Frontend
         return $okay;
     }
 
-
+    /**
+     * Check if the form is valid
+     *
+     * @param $r
+     */
+    public function checkForm( Request $r ): void
+    {
+        $r->validate( [
+            'name'                  => 'required|string|max:255',
+            'locationid'            => 'required|integer|exists:location,id',
+            'colocation'            => 'required|string|max:255',
+            'height'                => 'nullable|integer',
+            'type'                  => 'nullable|string|max:255',
+            'notes'                 => 'nullable|string|max:65535',
+            'u_counts_from'         => 'required|integer|in:' . implode( ',', array_keys( Cabinet::$U_COUNTS_FROM ) ),
+        ] );
+    }
 }

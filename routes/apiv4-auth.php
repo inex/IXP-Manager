@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,7 +21,8 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -32,23 +33,39 @@ use Illuminate\Http\Request;
 | is assigned the "api/v4" middleware group. Enjoy building your API!
 |
 */
-
-
-Route::post( 'l2-address/add',                                  'Layer2AddressController@add' );
-Route::post( 'l2-address/delete/{id}',                          'Layer2AddressController@delete' );
-
-Route::group( [ 'prefix' => 'customer-note', 'namespace' => 'Customer\Note'], function() {
-    Route::get(    'ping/{id?}',            'CustomerNotesController@ping'      )->name( 'customer-notes@ping');
-    Route::get(    'get/{id}',              'CustomerNotesController@get'       )->name( 'customer-notes@get');
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Layer2Address
+//
+Route::group( [ 'prefix' => 'ixps' ], function() {
+    Route::post(    'store/{showFeMessage?}',    'Layer2AddressController@store'  )->name( 'l2-address@create' );
+    Route::delete(  '{l2a}/{showFeMessage?}',    'Layer2AddressController@delete' )->name( 'l2-address@delete' );
 });
 
-Route::post( 'utils/markdown',                                  'UtilsController@markdown' )->name( "utils@markdown" );
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Customer Note
+//
+Route::group( [ 'prefix' => 'customer-note', 'namespace' => 'Customer\Note'], function() {
+    Route::get(    'ping/{c?}',            'CustomerNotesController@ping'      )->name( 'customer-notes@ping');
+    Route::get(    'get/{cn}',             'CustomerNotesController@get'       )->name( 'customer-notes@get');
+});
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Utils
+//
+Route::post( 'utils/markdown',  'UtilsController@markdown' )->name( "utils@markdown" );
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Customer
+//
+Route::post( 'customer/by-vlan-and-protocol', 'CustomerController@byVlanAndProtocol' )->name("customer@byVlanAndProtocol" );
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// IrrdbPrefix
+//
+Route::post( 'irrdb-prefix/by-customer-and-protocol', 'IrrdbPrefixController@byCustomerAndProtocol' )->name("irrdb-prefix@by-customer-and-protocol" );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Whois look ups for Prefix and ASN Number
 //
-Route::get( 'aut-num/{asn}', 'WhoisController@asn' )->name('api-v4-aut-num');
-Route::get( 'prefix-whois/{prefix}/{mask}', 'WhoisController@prefix' )->name('api-v4-prefix-whois');
-
+Route::get( 'aut-num/{asn}',                'WhoisController@asn'       )->name('api-v4-aut-num');
+Route::get( 'prefix-whois/{prefix}/{mask?}', 'WhoisController@prefix' )->name('api-v4-prefix-whois');

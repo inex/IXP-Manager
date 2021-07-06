@@ -81,7 +81,7 @@ $SIG{HUP} = sub { $execute_periodic = 1; };
 # flush isn't performed in the SIGALRM callback function because perl has
 # historical problems doing complicated stuff in signal handler functions.
 # Much more sensible to raise a flag and have the main code body handle this
-# during normal code exceution.
+# during normal code execution.
 $SIG{ALRM} = sub { $execute_periodic = 1 };
 ualarm ( $timer_period*1000000, $timer_period*1000000);
 

@@ -1,6 +1,6 @@
 <?php
-/** @var Foil\Template\Template $t */
-$this->layout( 'layouts/ixpv4' );
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -8,25 +8,23 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-
     <div class=" btn-group btn-group-sm" role="group">
         <button id="add-cb" type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-plus"></i> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
-            <a id="add-cb-wizard" class="dropdown-item" href="<?= route( 'core-bundle@add-wizard' )?>" >
-                Add Core Bundle Wizard...
+            <a id="add-cb-wizard" class="dropdown-item" href="<?= route( 'core-bundle@create-wizard' )?>" >
+                Create Core Bundle Wizard...
             </a>
         </ul>
     </div>
-
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
     <div class="row">
         <div class="col-sm-12">
             <?= $t->alerts() ?>
-            <table id='table-cb' class="table collapse table-striped" width="100%">
+            <table id='table-cb' class="table collapse table-striped w-100">
                 <thead class="thead-dark">
                     <tr>
                         <th>
@@ -53,35 +51,41 @@ $this->layout( 'layouts/ixpv4' );
                     </tr>
                 <thead>
                 <tbody>
-                    <?php foreach( $t->cbs as $cb ): ?>
+                    <?php foreach( $t->cbs as $cb ):
+                        /** @var \IXP\Models\CoreBundle $cb */
+                        $clsNb      = $cb->coreLinks()->count();
+                        $piSpeed    = $cb->speedPi();
+                        ?>
                         <tr>
                             <td>
-                                <?= $t->ee( $cb->getDescription() )  ?>
+                                <?= $t->ee( $cb->description ) ?>
                             </td>
                             <td>
-                                <?= $t->ee( $cb->resolveType() )  ?>
+                                <?= $t->ee( $cb->typeText() )  ?>
                             </td>
                             <td>
-                                <?php if( !$cb->getEnabled() ):?>
+                                <?php if( !$cb->enabled ):?>
                                     <i class="fa fa-remove"></i>
-                                <?php elseif( $cb->getEnabled() && $cb->areAllCoreLinksEnabled() ): ?>
+                                <?php elseif( $cb->enabled && $cb->allCoreLinksEnabled() ): ?>
                                     <i class="fa fa-check"></i>
                                 <?php else:?>
-                                    <span class="badge badge-warning"> <?= count( $cb->getCoreLinksEnabled() ) ?> / <?= count( $cb->getCoreLinks() )?> </span>
+                                    <span class="badge badge-warning">
+                                        <?= $cb->coreLinks()->active()->get()->count() ?> / <?= $clsNb ?>
+                                    </span>
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <?= $t->ee( $cb->getSwitchSideX( true )->getName() )  ?>
+                                <?= $t->ee( $cb->switchSideX( true )->name )  ?>
                             </td>
                             <td>
-                                <?= $t->ee( $cb->getSwitchSideX( false )->getName() )  ?>
+                                <?= $t->ee( $cb->switchSideX( false )->name )  ?>
                             </td>
-                            <td data-sort="<?= count( $cb->getCoreLinks() ) * $cb->getSpeedPi() ?>" >
-                                <?= $t->scaleBits( count( $cb->getCoreLinks() ) * $cb->getSpeedPi() * 1000000, 0 )  ?>
+                            <td data-sort="<?= $clsNb * $piSpeed ?>" >
+                                <?= $t->scaleBits(  $clsNb * $piSpeed * 1000000, 0 )  ?>
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a id="edit-cb-<?=  $cb->getId() ?>" class="btn btn-white" href="<?= route( 'core-bundle@edit' , [ 'id' => $cb->getId() ] ) ?>" title="Edit">
+                                    <a id="edit-cb-<?=  $cb->id ?>" class="btn btn-white" href="<?= route( 'core-bundle@edit' , [ 'cb' => $cb->id ] ) ?>" title="Edit">
                                         <i class="fa fa-pencil"></i>
                                     </a>
                                 </div>
@@ -92,20 +96,16 @@ $this->layout( 'layouts/ixpv4' );
             </table>
         </div>
     </div>
-</div>
 
-<div class="row">
-
-    <div class="col-sm-10 offset-sm-1">
-        <p class="tw-italic">
-            <br><br>
-            <sup>*</sup> Operational means the number of enabled core links for which both sides had a SNMP IFace operational state of 'up' the last time the switch
-            was polled (typically every 5 mins).
-        </p>
+    <div class="row">
+        <div class="col-sm-10 offset-sm-1">
+            <p class="tw-italic">
+                <br><br>
+                <sup>*</sup> Operational means the number of enabled core links for which both sides had a SNMP IFace operational state of 'up' the last time the switch
+                was polled (typically every 5 mins).
+            </p>
+        </div>
     </div>
-
-</div>
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>

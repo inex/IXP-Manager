@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\User;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,22 +23,32 @@ namespace IXP\Http\Requests\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Log;
+use Auth, Log;
 
-use Entities\{
-    CustomerToUser as CustomerToUserEntity,
-    User as UserEntity
+use IXP\Models\{
+    CustomerToUser,
+    User
 };
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
+/**
+ * Delete FormRequest
+ *
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Requests\User
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 
 class Delete extends FormRequest
 {
     /**
      * The User object
-     * @var UserEntity
+     * @var User
      */
     public $user = null;
 
@@ -47,12 +57,11 @@ class Delete extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         if( $this->user()->isCustUser() ){
             return false;
         }
-
         return true;
     }
 
@@ -61,42 +70,32 @@ class Delete extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
-        return [
-            'id'          => 'required|integer|exists:Entities\User,id',
-        ];
+        return [];
     }
 
-
-
-    public function withValidator( Validator $validator )
+    /**
+     * @param Validator $validator
+     *
+     * @return bool
+     */
+    public function withValidator( Validator $validator ): bool
     {
-        if( !$validator->fails() ) {
-
+        if( !$validator->fails() && !Auth::getUser()->isSuperUser() ) {
             $validator->after( function( ) {
-
-                $this->user = D2EM::getRepository( UserEntity::class )->find( request()->input( 'id' , false) );
-
-                if( !Auth::getUser()->isSuperUser() ) {
-                   // Check if the custadmin try to delete a user from an other Customer
-                    if( !D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ "user" => $this->user , "customer" => Auth::getUser()->getCustomer()->getId() ] ) ) {
-                        Log::notice( Auth::getUser()->getUsername() . " tried to delete other customer user " . $this->user->getUsername() );
-                        abort( 401, 'You are not authorised to delete this user. The administrators have been notified.' );
-                    }
-                }
-
-                // Check if a custadmin try to delete a User that has more than 1 customer to User (this should never happen)
-                if( !Auth::getUser()->isSuperUser() && count( $this->user->getCustomers() ) > 1  ) {
+                // Check if the custadmin try to delete a user from an other Customer
+                if( CustomerToUser::where( 'customer_id', Auth::getUser()->custid )->where( 'user_id', $this->u->id )->doesntExist() ) {
+                    Log::notice( Auth::user()->username . " tried to delete other customer user " . $this->u->username );
                     abort( 401, 'You are not authorised to delete this user. The administrators have been notified.' );
                 }
 
+                // Check if a custadmin try to delete a User that has more than 1 customer to User (this should never happen)
+                if( $this->u->customers()->count() > 1  ) {
+                    abort( 401, 'You are not authorised to delete this user. The administrators have been notified.' );
+                }
             });
-
         }
-
         return true;
-
     }
-
 }
