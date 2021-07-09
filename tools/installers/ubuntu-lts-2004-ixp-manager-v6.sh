@@ -840,10 +840,10 @@ If you plan to use this in production, you should:
  - install an SSL certificate and redirect HTTP access to HTTPS
  - complete the installation of the many features of IXP Manager such
    as route server generation, member stats, peer to peer graphs, etc.
-   These are all documented at: https://ixp-manager.readthedocs.org/
+   These are all documented at:
+   https://docs.ixpmanager.org/install/next-steps/
  - PLEASE TELL US! We'd like to add you to the users list at
-   http://www.ixpmanager.org/users.php - just drop us an email to
-   operations@inex.ie.
+   https://www.ixpmanager.org/community/users/submit.
 
 If your happy that the installer has successfully completed, you should:
     rm $IXPROOT/.ixp-manager-installer-settingsrc
