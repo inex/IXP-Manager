@@ -32,8 +32,6 @@ use IXP_Exception;
  * @method static Builder|BgpSessionDataAggregator whereTimestamp($value)
  * @method static Builder|BgpSessionDataAggregator whereVlan($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class BgpSessionDataAggregator extends BgpSessionData
 {

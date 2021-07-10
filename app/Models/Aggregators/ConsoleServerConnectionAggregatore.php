@@ -64,8 +64,6 @@ use IXP\Models\ConsoleServerConnection;
  * @method static Builder|ConsoleServerConnectionAggregatore whereStopbits($value)
  * @method static Builder|ConsoleServerConnectionAggregatore whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class ConsoleServerConnectionAggregatore extends ConsoleServerConnection
 {

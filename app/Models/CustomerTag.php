@@ -52,8 +52,6 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|CustomerTag whereTag($value)
  * @method static Builder|CustomerTag whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class CustomerTag extends Model
 {

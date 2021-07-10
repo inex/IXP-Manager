@@ -53,8 +53,6 @@ use IXP\Traits\Observable;
  * @method static Builder|CustomerEquipment whereName($value)
  * @method static Builder|CustomerEquipment whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class CustomerEquipment extends Model
 {

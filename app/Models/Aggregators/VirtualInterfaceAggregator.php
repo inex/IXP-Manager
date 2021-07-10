@@ -74,8 +74,6 @@ use IXP\Exceptions\GeneralException;
  * @method static Builder|VirtualInterfaceAggregator whereTrunk($value)
  * @method static Builder|VirtualInterfaceAggregator whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class VirtualInterfaceAggregator extends VirtualInterface
 {

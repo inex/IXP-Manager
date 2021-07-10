@@ -48,8 +48,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|BgpSessionData whereTimestamp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BgpSessionData whereVlan($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class BgpSessionData extends Model
 {

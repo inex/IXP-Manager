@@ -49,8 +49,6 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|IPv4Address whereUpdatedAt($value)
  * @method static Builder|IPv4Address whereVlanid($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class IPv4Address extends Model
 {

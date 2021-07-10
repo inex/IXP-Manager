@@ -183,8 +183,6 @@ use IXP\Models\AtlasMeasurement;
  * @method static Builder|Customer whereType($value)
  * @method static Builder|Customer whereUpdatedAt($value)
  * @mixin Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Customer extends Model
 {

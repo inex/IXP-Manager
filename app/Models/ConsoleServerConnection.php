@@ -67,8 +67,6 @@ use IXP\Traits\Observable;
  * @method static Builder|ConsoleServerConnection whereStopbits($value)
  * @method static Builder|ConsoleServerConnection whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class ConsoleServerConnection extends Model
 {

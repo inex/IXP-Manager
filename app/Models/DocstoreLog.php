@@ -57,8 +57,6 @@ use Illuminate\Support\Facades\DB;
  * @method static Builder|DocstoreLog whereId($value)
  * @method static Builder|DocstoreLog whereUpdatedAt($value)
  * @mixin Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class DocstoreLog extends Model
 {

@@ -64,8 +64,6 @@ use IXP\Traits\Observable;
  * @method static Builder|CustomerToUser whereUpdatedAt($value)
  * @method static Builder|CustomerToUser whereUserId($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class CustomerToUser extends Model
 {

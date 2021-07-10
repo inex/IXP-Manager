@@ -24,7 +24,7 @@
         }
     ],
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^8.0",
         "ext-json": "*",
 
         "opensolutions/oss-snmp": "^1.0",
@@ -130,9 +130,6 @@
             "optimize-autoloader": true,
             "preferred-install": "dist",
             "sort-packages": true
-        },
-        "platform": {
-            "php": "7.3.0"
         }
    },
    "minimum-stability": "stable"

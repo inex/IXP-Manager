@@ -50,7 +50,5 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|BgpSession whereSrcipaddressid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BgpSession whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class BgpSession extends Model{}

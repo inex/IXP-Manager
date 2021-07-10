@@ -95,8 +95,6 @@ use IXP\Models\{Customer, PhysicalInterface, Router, Vlan, VlanInterface};
  * @method static Builder|VlanInterfaceAggregator whereVirtualinterfaceid($value)
  * @method static Builder|VlanInterfaceAggregator whereVlanid($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class VlanInterfaceAggregator extends VlanInterface
 {

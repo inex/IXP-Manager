@@ -93,8 +93,6 @@ use IXP\Models\{
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereUsername($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class UserAggregator extends User
 {

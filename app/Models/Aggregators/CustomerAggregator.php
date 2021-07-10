@@ -177,8 +177,6 @@ use Illuminate\Support\Collection;
  * @method static Builder|CustomerAggregator whereType($value)
  * @method static Builder|CustomerAggregator whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class CustomerAggregator extends Customer
 {

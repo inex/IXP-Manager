@@ -74,8 +74,6 @@ use IXP\Traits\Observable;
  * @method static Builder|Location whereTag($value)
  * @method static Builder|Location whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Location extends Model
 {

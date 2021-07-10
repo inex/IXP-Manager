@@ -98,8 +98,6 @@ use OSS_SNMP\SNMP;
  * @method static Builder|SwitchPort whereType($value)
  * @method static Builder|SwitchPort whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class SwitchPort extends Model
 {

@@ -71,8 +71,6 @@ use OSS_SNMP\MIBS\Iface;
  * @method static Builder|CoreBundle whereType($value)
  * @method static Builder|CoreBundle whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class CoreBundle extends Model
 {

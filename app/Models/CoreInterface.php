@@ -47,8 +47,6 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface wherePhysicalInterfaceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class CoreInterface extends Model
 {

@@ -50,8 +50,6 @@ use IXP\Traits\Observable;
  * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver whereVirtualInterfaceId($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class SflowReceiver extends Model
 {

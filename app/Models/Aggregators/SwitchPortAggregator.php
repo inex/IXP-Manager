@@ -35,8 +35,6 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|SwitchPortAggregator newQuery()
  * @method static Builder|SwitchPortAggregator query()
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class SwitchPortAggregator extends Model
 {

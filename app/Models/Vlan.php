@@ -79,8 +79,6 @@ use IXP\Traits\Observable;
  * @method static Builder|Vlan wherePrivate($value)
  * @method static Builder|Vlan whereUpdatedAt($value)
  * @mixin \Eloquent
- * @noinspection PhpFullyQualifiedNameUsageInspection
- * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 class Vlan extends Model
 {
