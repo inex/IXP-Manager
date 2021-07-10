@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use IXP\Models\Log;
 use Illuminate\View\View;
+use IXP\Models\User;
 
 /**
  * Log Controller
@@ -64,17 +65,22 @@ class LogController extends Controller
      */
     public function list( Request $r ): \Illuminate\Contracts\View\View|Factory|View|Application
     {
-        $model      = $r->model         ?? null;
         $model_id   = $r->model_id      ?? null;
-        $user       = $r->user          ?? null;
-        $action     = $r->action        ?? null;
         $created_at = $r->created_at    ?? null;
 
+        $models = Log::select( 'model' )->orderBy( 'model' )
+            ->distinct()->get();
+
+        $r->merge([
+            'model'     =>  $model = in_array( $r->model, array_values( $models->pluck( 'model' )->toArray() ), false ) ? $r->model : null,
+            'action'    =>  $action = in_array( $r->action, Log::$ACTIONS , false ) ? $r->action : null,
+            'user'      =>  $user = User::where( 'username', $r->user )->exists() ? $r->user : null,
+        ]);
+
         return view( 'log/index' )->with([
-            'model'     => $r->model ?? false,
-            'user'      => $r->user ?? false,
-            'models'    =>  Log::select( 'model' )->orderBy( 'model' )
-                ->distinct()->get()->toArray(),
+            'models'    => $models->toArray(),
+            'model'     => $model,
+            'user'      => $user,
             'users'     =>  Log::select( [ 'user_id', 'username' ] )
                 ->leftJoin( 'user AS u', 'u.id', 'log.user_id')
                 ->orderBy( 'username' )

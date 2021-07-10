@@ -95,6 +95,10 @@
             const DATATABLE_STATE_DURATION  = 0;
         </script>
         <script type="text/javascript" src="<?= url ('') . mix('js/ixp-pack.js') ?>"></script><script>
+            // Focus on search input when opening dropdown
+            $( document ).on('select2:open', () => {
+                document.querySelector( '.select2-search__field' ).focus();
+            });
 
             $( ".chzn-select" ).select2( { width: '100%', placeholder: function() {
                 $( this ).data( 'placeholder' );
