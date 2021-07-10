@@ -126,7 +126,7 @@ class PeeringManagerControllerTest extends DuskTestCase
                         ->click('#modal-peering-notes-save' );
                     });
 
-            $browser->waitForText( "Peering notes updated for Imagine" )
+            $browser->waitForText( "Peering notes updated for " . $c[ "name" ] )
                 ->press( "Close" );
 
             $browser->waitUntilMissing( ".modal-backdrop" );
@@ -148,7 +148,7 @@ class PeeringManagerControllerTest extends DuskTestCase
                 ->waitForText( "Peering request marked as sent in your Peering Manager." )
                 ->press( "Close" );
 
-            $browser->waitUntilMissing( ".modal-backdrop"  );
+            $browser->waitUntilMissing( ".modal-backdrop" );
 
             // Check value in DB
             $pm->refresh();

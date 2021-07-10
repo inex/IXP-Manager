@@ -38,6 +38,7 @@
 
     <?= Former::text( 'one_time_password' )
         ->label( 'Code' )
+        ->autocomplete( 'off' )
         ->required( true )
     ?>
 
