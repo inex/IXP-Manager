@@ -1,7 +1,7 @@
 <div class="card mt-4">
     <div class="card-body">
         <h4>
-            Common Link Settings :
+            Common Link Settings:
         </h4>
         <hr>
         <div id="message-cl" class="message"></div>
@@ -15,6 +15,7 @@
                     ->placeholder( 'Choose a switch' )
                     ->addClass( 'chzn-select switch-dd' )
                     ->dataValue( "a")
+                    ->blockHelp( "Choose the 'a side' switch." )
                 ?>
 
                 <?= Former::select( 'switch-b' )
@@ -24,6 +25,7 @@
                     ->placeholder( 'Choose a switch' )
                     ->addClass( 'chzn-select switch-dd' )
                     ->dataValue( "b")
+                    ->blockHelp( "Choose the 'b side' switch." )
                 ?>
             </div>
 
@@ -36,6 +38,7 @@
                     ->required( true )
                     ->select( 'full' )
                     ->addClass( 'chzn-select' )
+                    ->blockHelp( "Duplex setting - must be the same on both sides. Informational unless you are provisioning your switches from IXP Manager." )
                 ?>
 
                 <?= Former::select( 'speed' )
@@ -43,14 +46,16 @@
                     ->id( 'speed' )
                     ->fromQuery( \IXP\Models\PhysicalInterface::$SPEED, 'name' )
                     ->required( true )
-                    ->placeholder( 'Choose a Speed' )
+                    ->placeholder( 'Choose a speed' )
                     ->addClass( 'chzn-select' )
+                    ->blockHelp( "Speed of the link(s) between the two switches. Each individual core link must have a matching speed on each end. IXP Manager only supports core bundles with multiple links if all links have the same speed." )
 
                 ?>
 
                 <?= Former::checkbox( 'auto-neg' )
                     ->label( 'Auto-Neg' )
                     ->value( 1 )
+                    ->blockHelp( "Auto-negotiation setting - must be the same on both sides. Informational unless you are provisioning your switches from IXP Manager." )
                     ->check()
                 ?>
             </div>

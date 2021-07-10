@@ -12,11 +12,17 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
+
     <div class="btn-group btn-group-sm" role="group">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/core-bundles/">
+            Documentation
+        </a>
+
         <a class="btn btn-white" href="<?= route( 'core-bundle@list' )?>" title="list">
             <span class="fa fa-th-list"></span>
         </a>
     </div>
+
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -34,9 +40,9 @@
             ?>
                 <div class="card col-sm-12">
                     <div class="card-body row">
-                        <div class="col-lg-6 col-md-12">
+                        <div class="col-lg-6 col-md-12 tw-mt-4">
                             <h4>
-                                General Core Bundle Settings :
+                                General Core Bundle Settings:
                             </h4>
                             <hr>
                             <?= Former::select( 'custid' )
@@ -45,21 +51,24 @@
                                 ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
                                 ->addClass( 'chzn-select' )
                                 ->required( true )
-                                ->blockHelp( '' );
+                                ->blockHelp( "All core bundles must be associated with the internal IXP " . config( 'ixp_fe.lang.customer.one' )
+                                        . ". This is the " . config( 'ixp_fe.lang.customer.one' ) . " you would have creating during installation "
+                                        . "to represent your own IXP and where your superadmin users are associated."
+                                    );
                             ?>
 
                             <?= Former::text( 'description' )
                                 ->label( 'Description' )
                                 ->placeholder( 'Description' )
                                 ->required( true )
-                                ->blockHelp( 'help text' );
+                                ->blockHelp( 'A short description of this core bundle to be used in lists of bundles for example.' );
                             ?>
 
                             <?= Former::text( 'graph_title' )
                                 ->label( 'Graph Title' )
                                 ->placeholder( 'Graph Title' )
                                 ->required( true )
-                                ->blockHelp( 'help text' );
+                                ->blockHelp( 'The title for graphs showing traffic on this bundle.' );
                             ?>
 
                             <div id="stp-div" class="collapse">
@@ -68,7 +77,7 @@
                                     ->label( 'STP' )
                                     ->value( 1 )
                                     ->class( 'mx-1' )
-                                    ->blockHelp( '' );
+                                    ->blockHelp( 'If spanning tree protocol (or other such as Trill) is configured on these links. Informational unless you are provisioning your switches from IXP Manager.' );
                                 ?>
                             </div>
 
@@ -76,23 +85,23 @@
                                 ->label( 'Cost' )
                                 ->placeholder( '10' )
                                 ->min( 0 )
-                                ->blockHelp( 'help text' );
+                                ->blockHelp( 'Cost for dynamic protocols as required for your provisioning configuration. E.g. can be the cost for STP, a metric for BGP, etc. Informational unless you are provisioning your switches from IXP Manager.' );
                             ?>
 
                             <?= Former::number( 'preference' )
                                 ->label( 'Preference' )
                                 ->placeholder( '10' )
                                 ->min( 0 )
-                                ->blockHelp( 'help text' );
+                                ->blockHelp( 'Preference for dynamic protocols as required for your provisioning configuration. Informational unless you are provisioning your switches from IXP Manager.' );
                             ?>
 
                             <?= Former::select( 'type' )
                                 ->label( 'Type' )
                                 ->fromQuery( \IXP\Models\CoreBundle::$TYPES , 'name' )
-                                ->placeholder( 'Choose Core Bundle type' )
+                                ->placeholder( 'Choose core bundle type' )
                                 ->addClass( 'chzn-select' )
                                 ->required( true )
-                                ->blockHelp( '' )
+                                ->blockHelp( 'See the documentation for an explanation of types.' )
                                 ->value( \IXP\Models\CoreBundle::TYPE_ECMP );
                             ?>
 
@@ -101,11 +110,11 @@
                                 ->label( 'Enabled' )
                                 ->value( 1 )
                                 ->class( 'mx-1' )
-                                ->blockHelp( '' );
+                                ->blockHelp( 'Will cease graphing and other IXP Manager features. Otherwise, informational unless you are provisioning your switches from IXP Manager.' );
                             ?>
                         </div>
 
-                        <div class="col-lg-6 col-md-12 mt-4 mt-lg-0">
+                        <div class="col-lg-6 col-md-12 tw-mt-4">
                             <h4>
                                 Virtual Interface Settings:
                             </h4>
@@ -114,19 +123,20 @@
                                 ->id( 'framing' )
                                 ->label( 'Use 802.1q framing' )
                                 ->value( 1 )
-                                ->blockHelp( "" );
+                                ->blockHelp( "Allows you to configure the interface as an access port or a VLAN trunk. Informational unless you are provisioning your switches from IXP Manager." );
                             ?>
                             <?= Former::number( 'mtu' )
                                 ->label( 'MTU' )
                                 ->value( 9000 )
                                 ->min( 0 )
-                                ->blockHelp( '' );
+                                ->blockHelp( 'The MTU of the interface - as defined / required by your provisioning scripts. Informational unless you are provisioning your switches from IXP Manager.' );
                             ?>
 
                             <div class="lag-area collapse">
                                 <?= Former::checkbox( 'fast-lacp' )
                                     ->label( 'Use Fast LACP' )
                                     ->value( 1 )
+                                    ->blockHelp( 'Your provisioning scripts should determine if a link aggregation protocol should be configured. This allows you to indicate fast or slow LACP. Informational unless you are provisioning your switches from IXP Manager.')
                                 ?>
                             </div>
 
@@ -134,12 +144,15 @@
                                 <?= Former::checkbox( 'bfd' )
                                     ->label( 'BFD' )
                                     ->value( 1 )
+                                    ->blockHelp( 'If the BFD protocol should be configured across the links of this bundle. Informational unless you are provisioning your switches from IXP Manager.')
                                 ?>
 
                                 <?= Former::text( 'ipv4_subnet' )
-                                    ->label( 'SubNet<sup>*</sup>' )
-                                    ->placeholder( '192.0.2.0/30' )
+                                    ->label( 'Subnet<sup>*</sup>' )
+                                    ->placeholder( '192.0.2.0/31' )
                                     ->class( "subnet" )
+                                    ->blockHelp( "The IP addressing to be configured by your provisioning scripts. The 'a side' should be given the lower IP by those scripts for consistency. Informational unless you are provisioning your switches from IXP Manager.")
+
                                 ?>
                             </div>
                         </div>
@@ -152,14 +165,17 @@
                                     <?= Former::text( 'vi-name-a' )
                                         ->label( 'Name<sup>*</sup>' )
                                         ->placeholder( 'Name' )
-                                        ->blockHelp( 'help text' )
+                                        ->blockHelp( 'This is used to indicate the '
+                                            . 'interface base name for LAGs. E.g. on a Cisco, this would be <code>Port-Channel</code>.<br><br>'
+                                            . 'Some systems require trailing white space after the name. For this, use double-quotes which will '
+                                            . 'be removed automatically. E.g. for a Force10 device, enter: <code>"Port-channel "</code>.' )
                                         ->class( 'input-lx-lag' );
                                     ?>
 
                                     <?= Former::number( 'vi-channel-number-a' )
                                         ->label( 'Channel Group Number<sup>*</sup>' )
                                         ->placeholder( 'Channel Group Number' )
-                                        ->blockHelp( 'help text' )
+                                        ->blockHelp( 'Used to indicate the unique LAG number / port-channel number for the interface.' )
                                         ->min( 0 )
                                         ->class( 'input-lx-lag' );
                                     ?>
@@ -171,14 +187,17 @@
                                     <?= Former::text( 'vi-name-b' )
                                         ->label( 'Name<sup>*</sup>' )
                                         ->placeholder( 'Name' )
-                                        ->blockHelp( 'help text' )
+                                        ->blockHelp( 'This is used to indicate the '
+                                            . 'interface base name for LAGs. E.g. on a Cisco, this would be <code>Port-Channel</code>.<br><br>'
+                                            . 'Some systems require trailing white space after the name. For this, use double-quotes which will '
+                                            . 'be removed automatically. E.g. for a Force10 device, enter: <code>"Port-channel "</code>.' )
                                         ->class( 'input-lx-lag' );
                                     ?>
 
                                     <?= Former::number( 'vi-channel-number-b' )
                                         ->label( 'Channel Group Number<sup>*</sup>' )
                                         ->placeholder( 'Channel Group Number' )
-                                        ->blockHelp( 'help text' )
+                                        ->blockHelp( 'Used to indicate the unique LAG number / port-channel number for the interface.' )
                                         ->min( 0 )
                                         ->class( 'input-lx-lag' );
                                     ?>
@@ -194,17 +213,18 @@
                     <div class="card-header d-flex">
                         <div class="mr-auto">
                             <h3>
-                                Core Links :
+                                Core Links:
                             </h3>
                         </div>
                     </div>
+
 
                     <div class="card-body" id="core-links-area"></div>
 
                     <div class="form-group col-sm-12">
                         <div class="p-4 text-center col-lg-12">
-                            <button id="add-new-core-link" type="button" class="btn btn-primary" title="Add Core link">
-                                Create an other Core Link
+                            <button id="add-new-core-link" type="button" class="btn btn-secondary" title="Add Core link">
+                                Add another core link to the bundle...
                             </button>
                         </div>
                     </div>

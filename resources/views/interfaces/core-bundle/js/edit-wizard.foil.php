@@ -135,10 +135,10 @@
      *
      */
     function deleteElement( deletecl , url ) {
-        let elementName = deletecl ? 'Core link' : 'Core Bundle'
+        let elementName = deletecl ? 'core link' : 'core bundle'
 
         let html = `<form id="form-delete" method="POST" action="${url}">
-                        <div>Do you really want to delete this ${elementName}?</div>
+                        <div>Do you really want to delete this ${elementName}? </div>
                         <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                         <input type="hidden" name="_method" value="delete" />
                     </form>`;

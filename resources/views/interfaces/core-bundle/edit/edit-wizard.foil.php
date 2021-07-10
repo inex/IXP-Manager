@@ -9,17 +9,12 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/core-bundles/">
+            Documentation
+        </a>
         <a class="btn btn-white" href="<?= route( 'core-bundle@list' )?>" title="list">
             <span class="fa fa-th-list"></span>
         </a>
-        <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown">
-            <i class="fa fa-plus"></i> <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="<?= route( 'core-bundle@create-wizard' )?>" >
-                Add Core Bundle Wizard...
-            </a>
-        </ul>
     </div>
 <?php $this->append() ?>
 
@@ -40,7 +35,7 @@
                     <div class="d-flex">
                         <div class="mr-auto">
                             <h3>
-                                General Core Bundle Settings :
+                                General Core Bundle Settings:
                             </h3>
                         </div>
 
@@ -60,19 +55,22 @@
                             ->fromQuery( $t->customers, 'name' )
                             ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
                             ->addClass( 'chzn-select' )
-                            ->blockHelp( '' );
+                            ->blockHelp( "All core bundles must be associated with the internal IXP " . config( 'ixp_fe.lang.customer.one' )
+                                . ". This is the " . config( 'ixp_fe.lang.customer.one' ) . " you would have creating during installation "
+                                . "to represent your own IXP and where your superadmin users are associated."
+                            );
                         ?>
 
                         <?= Former::text( 'description' )
                             ->label( 'Description' )
                             ->placeholder( 'Description' )
-                            ->blockHelp( 'help text' );
+                            ->blockHelp( 'A short description of this core bundle to be used in lists of bundles for example.' );
                         ?>
 
                         <?= Former::text( 'graph_title' )
                             ->label( 'Graph Title' )
                             ->placeholder( 'Graph Title' )
-                            ->blockHelp( 'help text' );
+                            ->blockHelp( 'The title for graphs showing traffic on this bundle.' );
                         ?>
 
                         <?= Former::select( 'type' )
@@ -80,7 +78,7 @@
                             ->fromQuery( \IXP\Models\CoreBundle::$TYPES , 'name' )
                             ->placeholder( 'Choose Core Bundle type' )
                             ->addClass( 'chzn-select' )
-                            ->blockHelp( '' )
+                            ->blockHelp( 'See the documentation for an explanation of types.' )
                             ->value( \IXP\Models\CoreBundle::TYPE_ECMP )
                             ->disabled( true );
                         ?>
@@ -94,7 +92,7 @@
                                 ->value( 1 )
                                 ->inline()
                                 ->class( 'mx-1' )
-                                ->blockHelp( '' );
+                                ->blockHelp( 'If spanning tree protocol (or other such as Trill) is configured on these links. Informational unless you are provisioning your switches from IXP Manager.' );
                             ?>
                         <?php endif; ?>
 
@@ -102,14 +100,14 @@
                             ->label( 'Cost' )
                             ->placeholder( '10' )
                             ->min( 0 )
-                            ->blockHelp( 'help text' );
+                            ->blockHelp( 'Cost for dynamic protocols as required for your provisioning configuration. E.g. can be the cost for STP, a metric for BGP, etc. Informational unless you are provisioning your switches from IXP Manager.' );
                         ?>
 
                         <?= Former::number( 'preference' )
                             ->label( 'Preference' )
                             ->placeholder( '10' )
                             ->min( 0 )
-                            ->blockHelp( 'help text' );
+                            ->blockHelp( 'Preference for dynamic protocols as required for your provisioning configuration. Informational unless you are provisioning your switches from IXP Manager.' );
                         ?>
 
                         <?= Former::checkbox( 'enabled' )
@@ -117,7 +115,7 @@
                             ->label( 'Enabled' )
                             ->value( 1 )
                             ->class( 'mx-1' )
-                            ->blockHelp( '' );
+                            ->blockHelp( 'Will cease graphing and other IXP Manager features. Otherwise, informational unless you are provisioning your switches from IXP Manager.' );
                         ?>
 
                         <?php if( $t->cb->typeL3LAG() ): ?>
@@ -125,14 +123,14 @@
                                 ->label( 'BFD' )
                                 ->value( 1 )
                                 ->inline()
-                                ->blockHelp( "" );
+                                ->blockHelp( 'If the BFD protocol should be configured across the links of this bundle. Informational unless you are provisioning your switches from IXP Manager.')
                             ?>
 
                             <?= Former::text( 'ipv4_subnet' )
-                                ->label( 'SubNet' )
-                                ->placeholder( '192.0.2.0/30' )
+                                ->label( 'Subnet' )
+                                ->placeholder( '192.0.2.0/31' )
                                 ->blockHelp( "" )
-                                ->class( "subnet" );
+                                ->blockHelp( "The IP addressing to be configured by your provisioning scripts. The 'a side' should be given the lower IP by those scripts for consistency. Informational unless you are provisioning your switches from IXP Manager.")
                             ?>
                         <?php endif; ?>
 
@@ -165,16 +163,16 @@
             <?= $t->insert( 'interfaces/core-bundle/edit/core-link/form' ); ?>
 
             <!-- Delete Core Bundle area -->
-            <div class="alert alert-danger mt-4" role="alert">
+            <div class="alert alert-warning tw-mt-8" role="alert">
                 <div class="d-flex align-items-center">
                     <div class="text-center">
-                        <i class="fa fa-exclamation-triangle fa-2x"></i>
+                        <i class="fa fa-exclamation-triangle"></i>
                     </div>
                     <div class="col-sm-12 d-flex">
                         <b class="mr-auto my-auto">
-                            Are you sure you want to delete this Core Bundle?
+                            Do you want to delete this core bundle?
                         </b>
-                        <a class="btn btn-danger mr-4 btn-delete-cb" id="btn-delete-cb" href="<?= route( 'core-bundle@delete', [ 'cb' => $t->cb->id ] ) ?>"  title="Delete">
+                        <a class="btn btn-warning mr-4 btn-delete-cb" id="btn-delete-cb" href="<?= route( 'core-bundle@delete', [ 'cb' => $t->cb->id ] ) ?>"  title="Delete">
                             Delete
                         </a>
                     </div>

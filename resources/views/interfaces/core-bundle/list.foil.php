@@ -9,14 +9,12 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class=" btn-group btn-group-sm" role="group">
-        <button id="add-cb" type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fa fa-plus"></i> <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-right">
-            <a id="add-cb-wizard" class="dropdown-item" href="<?= route( 'core-bundle@create-wizard' )?>" >
-                Create Core Bundle Wizard...
-            </a>
-        </ul>
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/core-bundles/">
+            Documentation
+        </a>
+        <a id="add-cb-wizard" type="button" class="btn btn-white" href="<?= route( 'core-bundle@create-wizard' )?>">
+            <i class="fa fa-plus"></i>
+        </a>
     </div>
 <?php $this->append() ?>
 

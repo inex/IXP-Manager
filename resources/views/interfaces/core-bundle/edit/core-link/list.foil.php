@@ -3,12 +3,15 @@
         <div id="message-cl"></div>
         <h3>
             Core Links
+
             <?php if( $t->cb->sameSwitchForEachPIFromCL( true ) && $t->cb->sameSwitchForEachPIFromCL( false ) ): ?>
                 <button id='btn-create-cl' type='button' class='btn-sm btn btn-white tw-float-right' href="#" title="Add Core link">
                     <span class="fa fa-plus"></span>
                 </button>
             <?php endif;?>
         </h3>
+
+
         <div id="area-cl">
             <?= Former::open()->method( 'PUT' )
                 ->id( 'core-link-form' )
@@ -16,21 +19,22 @@
                 ->customInputWidthClass( 'col-sm-10' )
                 ->actionButtonsCustomClass( "grey-box")
             ?>
-            <table id="" class="table table-bordered">
+
+            <table id="" class="table table-bordered tw-mt-6">
                 <tr class="active">
                     <td>
-                        Switch A :
+                        <strong>Switch A:</strong>
                         <?php if( $t->cb->sameSwitchForEachPIFromCL( true ) ): ?>
-                            <?= $t->cb->switchSideX( true )->name ?>
+                            <span class="tw-font-mono"><?= $t->cb->switchSideX( true )->name ?></span>
                             <input type="hidden" value="<?= $t->cb->switchSideX( true )->id ?>" id="switch-a">
                         <?php else: ?>
                             <span class="badge badge-warning">Multiple</span>
                         <?php endif;?>
                     </td>
                     <td>
-                        Switch B :
+                        <strong>Switch B:</strong>
                         <?php if( $t->cb->sameSwitchForEachPIFromCL( false ) ): ?>
-                            <?= $t->cb->switchSideX( false )->name ?>
+                            <span class="tw-font-mono"><?= $t->cb->switchSideX( false )->name ?></span>
                             <input type="hidden" value="<?= $t->cb->switchSideX( false )->id ?>" id="switch-b">
                         <?php else: ?>
                             <span class="badge badge-warning">Multiple</span>
