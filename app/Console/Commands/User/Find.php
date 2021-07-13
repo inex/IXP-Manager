@@ -50,7 +50,7 @@ class Find extends Command
      *
      * @var string
      */
-    protected $description = 'Command to find and print user(s) details via the Username or Email.';
+    protected $description = 'Find and print user details.';
 
     /**
      * Execute the console command.

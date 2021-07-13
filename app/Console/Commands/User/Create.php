@@ -64,7 +64,7 @@ class Create extends Command
      *
      * @var string
      */
-    protected $description = 'Command to create a user.';
+    protected $description = 'Create a new user.';
 
     /**
      * Validator rules
@@ -109,6 +109,10 @@ class Create extends Command
                 if( $value && $validator->fails() ) {
                     $this->error( $validator->errors()->first( $option ) );
                     return 0;
+                }
+
+                if( $option === 'priv' ) {
+                    $this->info('[ 1 => member, read only; 2 => member, read/write; 3 => super admin (careful!!)');
                 }
 
                 if( !$value ) {

@@ -55,7 +55,7 @@ class SetPassword extends Command
      *
      * @var string
      */
-    protected $description = 'Command that allow to set the password of a user';
+    protected $description = "Set a user's password";
 
     protected $rules = [
         'password'          => 'required|string|min:8|max:255',
