@@ -51,13 +51,14 @@ class CustomerPolicy
      * @param User  $user
      * @param       $ability
      *
-     * @return bool
+     * @return bool|null
      */
-    public function before( User $user, $ability ): bool
+    public function before( User $user, $ability ): ?bool
     {
         if( $user->isSuperUser() ) {
             return true;
         }
+        return null;
     }
 
     /**

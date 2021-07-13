@@ -465,6 +465,12 @@ class CustomerAggregator extends Customer
             }
 
             // delete contact to contact group links
+            $contacts = $cust->contacts();
+
+            DB::table( 'contact_to_group' )
+                ->whereIn( 'contact_id', $contacts->get()->pluck( 'id' )->toArray(),)
+                ->delete();
+
             $cust->contacts()->delete();
 
             foreach( $cust->customerToUser as $c2u ) {
@@ -503,7 +509,8 @@ class CustomerAggregator extends Customer
                 /** @var $cb CoreBundle */
                 $cb->deleteObject();
             }
-
+            $cust->tags()->detach();
+            
             $cust->delete();
 
             $cust->companyBillingDetail()->delete();
