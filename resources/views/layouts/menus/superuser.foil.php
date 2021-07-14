@@ -78,7 +78,7 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
                     Statistics
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item <?= !request()->is( 'statistics/ixp') ?: 'active' ?>" href="<?= route( 'statistics@ixp' ) ?>">
+                    <a class="dropdown-item <?= !request()->is( 'statistics/ixp*') ?: 'active' ?>" href="<?= route( 'statistics@ixp' ) ?>">
                         Overall Peering Graphs
                     </a>
                     <a class="dropdown-item <?= !request()->is( 'statistics/infrastructure*') ?: 'active' ?>" href="<?= route( 'statistics@infrastructure' ) ?>">

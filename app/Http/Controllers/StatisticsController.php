@@ -593,7 +593,7 @@ class StatisticsController extends Controller
             ->setCategory( $r->category )
             ->setPeriod( $r->period );
         $graph->authorise();
-
+        
         $viewOptions = [
             'c'                => $cust,
             'category'         => $r->category,

@@ -128,7 +128,7 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
                     <div class="dropdown-divider"></div>
 
                     <?php if( is_numeric( config( 'grapher.access.ixp' ) ) && config( 'grapher.access.ixp' ) <= Auth::getUser()->privs() ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'statistics/ixp' ) ?: 'active' ?>" href="<?= route( 'statistics@ixp' ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/ixp*' ) ?: 'active' ?>" href="<?= route( 'statistics@ixp' ) ?>">
                             Overall Peering Graphs
                         </a>
                     <?php endif; ?>

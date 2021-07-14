@@ -180,7 +180,7 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <h4>
-                                <?= $dvli->virtualInterface->customer->getFormattedName() ?> :: <?= $dvli->getIPAddress( $t->protocol ) ? $dvli->getIPAddress( $t->protocol )->address() : 'No IP' ?>
+                                <?= $dvli->virtualInterface->customer->getFormattedName() ?> :: <?= $dvli->getIPAddress( $t->protocol ) ? $dvli->getIPAddress( $t->protocol )->address : 'No IP' ?>
                             </h4>
                         </div>
                         <div class="card-body">

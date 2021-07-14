@@ -69,7 +69,7 @@ class CoreLinkController extends Common
         // Creating all the elements linked to the new core link (core interfaces, physical interfaces)
         $this->buildCorelink( $cb, $r, $cb->virtualInterfaces(), true );
 
-        Log::notice( $r->user()->username . ' added a core link for the core bundle with (id: ' . $cb->id . ')' );
+        Log::notice( $r->user()->username . ' created a core link for the core bundle with (id: ' . $cb->id . ')' );
         AlertContainer::push( 'Core link created.', Alert::SUCCESS );
         return redirect( route( "core-bundle@edit" , [ "cb" => $cb->id ] ) );
     }

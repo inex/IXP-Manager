@@ -125,7 +125,7 @@ class LogoController extends Controller
             $oldLogo->delete();
         }
 
-        $logo = Logo::create( [
+        $logo = Logo::make( [
             'original_name'     => $file->getClientOriginalName(),
             'stored_name'       => sha1( $img->getEncoded() ) . '.png',
             'uploaded_by'       => Auth::getUser()->username,
