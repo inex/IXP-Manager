@@ -107,13 +107,17 @@ class CoreBundleController extends Common
         foreach( [ 'a' => $via , 'b' => $vib ] as $side => $vi ){
             $vi->custid         =   $r->custid;
             $vi->mtu            =   $r->mtu;
-            $vi->name           =   $r->input( "vi-name-$side"            );
-            $vi->channelgroup   =   $r->input( "vi-channel-number-$side"  );
             $vi->trunk          =   $r->framing ?? false;
             $vi->fastlacp       =   $r->input( 'fast-lacp'  ) ?? false;
 
             if( (int)$r->type === CoreBundle::TYPE_L2_LAG ) {
                 $vi->lag_framing = true;
+            }
+
+            if( (int)$r->type !== CoreBundle::TYPE_ECMP ) {
+                $r->merge( [ "vi-name-$side" => trim( $r->input( "vi-name-$side" ) , '"') ] );
+                $vi->name           =   $r->input( "vi-name-$side"            );
+                $vi->channelgroup   =   $r->input( "vi-channel-number-$side"  );
             }
 
             $vi->save();
