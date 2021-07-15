@@ -187,12 +187,10 @@ class JsonSchema
 
             $i['peering_policy_list'] = array_values( Customer::$PEERING_POLICIES);
 
-
             $result = NetworkInfo::leftJoin( 'vlan', 'vlan.id', 'networkinfo.vlanid' )
                 ->where( 'vlan.infrastructureid', $infra->id )
                 ->get()->toArray();
 
-            $vlanentry = [];
             foreach( $result as $ni )
             {
                 $id = $ni['id'];
@@ -203,8 +201,8 @@ class JsonSchema
             }
 
             $data = [];
-            foreach( array_keys($vlanentry) as $id ) {
-                $data[] = $vlanentry[$id];
+            foreach( array_keys( $vlanentry ) as $id ) {
+                $data[] = $vlanentry[ $id ];
             }
 
             $i['vlan'] = $data;
@@ -242,7 +240,8 @@ class JsonSchema
     {
         $data = [];
 
-        foreach( $infra->switchers as $switch ) {
+        $switchers = $infra->switchers()->with( 'cabinet.location' );
+        foreach( $switchers as $switch ) {
             if( !$switch->active ) {
                 continue;
             }
@@ -315,7 +314,8 @@ class JsonSchema
                 });
         }
 
-        $customers =  Customer::getConnected( false, false, 'autsys' )->keyBy( 'id' );
+        $customers =  Customer::getConnected( false, false, 'autsys' )
+            ->keyBy( 'id' );
 
         $cnt = 0;
         foreach( $customers as $c ) {
