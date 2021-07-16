@@ -132,7 +132,7 @@ class JsonSchema
     {
         $ixpinfo = [];
 
-        foreach( Infrastructure::all() as $infra ) {
+        foreach( Infrastructure::with( ['switchers.cabinet.location'] )->get() as $infra ) {
             $i = [];
             $i['shortname'] = $infra->name;
             $i['name'] = config('identity.legalname');
@@ -191,6 +191,7 @@ class JsonSchema
                 ->where( 'vlan.infrastructureid', $infra->id )
                 ->get()->toArray();
 
+            $vlanentry = [];
             foreach( $result as $ni )
             {
                 $id = $ni['id'];
@@ -240,8 +241,7 @@ class JsonSchema
     {
         $data = [];
 
-        $switchers = $infra->switchers()->with( 'cabinet.location' );
-        foreach( $switchers as $switch ) {
+        foreach( $infra->switchers as $switch ) {
             if( !$switch->active ) {
                 continue;
             }
