@@ -38,6 +38,11 @@ return [
 
         // or - we can set a static key here if we like:
         'access_key' => env( 'IXP_API_JSONEXPORTSCHEMA_ACCESS_KEY', false ),
+
+        // some IXs want to exclude some information:
+        'excludes' => [
+            'switch'     => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_SWITCH', false ),
+        ],
     ],
 
     /*

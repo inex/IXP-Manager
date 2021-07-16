@@ -99,6 +99,9 @@ class JsonSchema
         $output['ixp_list']    = $this->getIXPInfo( $version );
         $output['member_list'] = $this->getMemberInfo( $version, $detailed, $tags );
 
+        // apply filters as some IXs don't want to export all details
+        $output = $this->filter($output);
+
         if( $asArray ) {
             return $output;
         }
@@ -511,4 +514,28 @@ class JsonSchema
                 return 'other';
         }
     }
+
+    /**
+     * Filter details if requested by the config
+     * @param array $output
+     * @return array
+     */
+    private function filter( array $output ): array
+    {
+        // switch filters
+        if( $c = config( 'ixp_api.json_export_schema.excludes.switch' ) ) {
+            foreach( explode( '|', $c ) as $exc ) {
+                foreach( $output['ixp_list'] as $ixid => $ix ) {
+                    foreach( $ix['switch'] as $sid => $sw ) {
+                        if( isset( $output['ixp_list'][ $ixid ]['switch'][$sid][$exc] ) ) {
+                            unset( $output['ixp_list'][ $ixid ]['switch'][$sid][$exc] );
+                        }
+                    }
+                }
+            }
+        }
+
+        return $output;
+    }
+
 }
