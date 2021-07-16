@@ -100,7 +100,7 @@ class SnmpPoll extends Command
                 try {
                     $sPolled = false;
                     $host = new SNMP( $s->hostname, $s->snmppasswd );
-                    $s->snmpPoll( $host, $this->option( 'log', false ) );
+                    $s->snmpPoll( $host, $this->option( 'log', false ), $this->option( 'nosave', false )  );
                     $sPolled = true;
 
                     $s->snmpPollSwitchPorts( $host, $this->option( 'log', false ), false , $this->option( 'nosave', false ) );

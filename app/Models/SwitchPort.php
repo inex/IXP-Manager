@@ -420,7 +420,7 @@ class SwitchPort extends Model
      *
      * @throws
      */
-    public function snmpUpdate( SNMP $host, bool $logger = false ): SwitchPort
+    public function snmpUpdate( SNMP $host, bool $logger = false, bool $nosave = false ): SwitchPort
     {
         foreach( self::$SNMP_MAP as $snmp => $attribute ) {
             $fn = $attribute;
@@ -498,7 +498,10 @@ class SwitchPort extends Model
         } catch( \Exception $e ){}
 
         $this->lastSnmpPoll = now();
-        $this->save();
+
+        if( !$nosave ) {
+            $this->save();
+        }
 
         return $this;
     }

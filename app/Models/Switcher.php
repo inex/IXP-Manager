@@ -283,7 +283,7 @@ class Switcher extends Model
      *
      * @return Switcher For fluent interfaces
      */
-    public function snmpPoll( $host, bool $logger = false ): Switcher
+    public function snmpPoll( $host, bool $logger = false, bool $nosave = false ): Switcher
     {
         // utility to format dates
         $formatDate = function( $d ) {
@@ -340,6 +340,11 @@ class Switcher extends Model
         }
 
         $this->lastPolled = now();
+
+        if( !$nosave ) {
+            $this->save();
+        }
+
         return $this;
     }
 
@@ -425,7 +430,7 @@ class Switcher extends Model
             }
 
             // update / set port details from SNMP
-            $sp->snmpUpdate( $host, $logger );
+            $sp->snmpUpdate( $host, $logger, $nosave );
         }
 
         if( $existingPorts->count() ) {
