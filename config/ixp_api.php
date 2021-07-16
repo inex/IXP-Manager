@@ -41,7 +41,10 @@ return [
 
         // some IXs want to exclude some information:
         'excludes' => [
-            'switch'     => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_SWITCH', false ),
+            'switch'    => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_SWITCH', false    ),
+            'ixp'       => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_IXP', false       ),
+            'member'    => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_MEMBER', false    ),
+            'intinfo'   => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_INTINFO', false   ),
         ],
     ],
 

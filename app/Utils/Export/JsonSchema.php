@@ -523,12 +523,52 @@ class JsonSchema
     private function filter( array $output ): array
     {
         // switch filters
-        if( $c = config( 'ixp_api.json_export_schema.excludes.switch' ) ) {
-            foreach( explode( '|', $c ) as $exc ) {
-                foreach( $output['ixp_list'] as $ixid => $ix ) {
-                    foreach( $ix['switch'] as $sid => $sw ) {
-                        if( isset( $output['ixp_list'][ $ixid ]['switch'][$sid][$exc] ) ) {
-                            unset( $output['ixp_list'][ $ixid ]['switch'][$sid][$exc] );
+        if( $s = config( 'ixp_api.json_export_schema.excludes.switch' ) ) {
+            foreach( explode( '|', $s ) as $exc ) {
+                foreach( $output[ 'ixp_list' ] as $ixid => $ix ) {
+                    foreach( $ix[ 'switch' ] as $sid => $sw ) {
+                        if( isset( $output[ 'ixp_list' ][ $ixid ][ 'switch' ][ $sid ][ $exc ] ) ) {
+                            unset( $output[ 'ixp_list' ][ $ixid ][ 'switch' ][ $sid ][ $exc ] );
+                        }
+                    }
+                }
+            }
+        }
+
+        // ixp filters
+        if( $i = config( 'ixp_api.json_export_schema.excludes.ixp' ) ) {
+            foreach( explode( '|', $i ) as $exc ) {
+                foreach( $output[ 'ixp_list' ] as $ixid => $ix ) {
+                    if( isset( $output[ 'ixp_list' ][ $ixid ][ $exc ] ) ) {
+                        unset( $output[ 'ixp_list' ][ $ixid ][ $exc ] );
+                    }
+                }
+            }
+        }
+
+        // member filters
+        if( $m = config( 'ixp_api.json_export_schema.excludes.member' ) ) {
+            foreach( explode( '|', $m ) as $exc ) {
+                foreach( $output[ 'member_list' ] as $membid => $memb ) {
+                    if( isset( $output[ 'member_list' ][ $membid ][ $exc ] ) ) {
+                        unset( $output[ 'member_list' ][ $membid ][ $exc ] );
+                    }
+                }
+            }
+        }
+
+        // intinfo filters
+        if( $i = config( 'ixp_api.json_export_schema.excludes.intinfo' ) ) {
+            foreach( explode( '|', $i ) as $exc ) {
+                foreach( $output[ 'ixp_list' ] as $intid => $int ) {
+                    foreach( $int[ 'vlan' ] as $vid => $v ) {
+
+                        if( isset( $output[ 'ixp_list' ][ $intid ][ 'vlan' ][ $vid ][ 'ipv4' ][ $exc ] ) ) {
+                            unset( $output[ 'ixp_list' ][ $intid ][ 'vlan' ][ $vid ][ 'ipv4' ][ $exc ] );
+                        }
+
+                        if( isset( $output[ 'ixp_list' ][ $intid ][ 'vlan' ][ $vid ][ 'ipv6' ][ $exc ] ) ) {
+                            unset( $output[ 'ixp_list' ][ $intid ][ 'vlan' ][ $vid ][ 'ipv6' ][ $exc ] );
                         }
                     }
                 }
