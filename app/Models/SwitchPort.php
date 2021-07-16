@@ -474,7 +474,7 @@ class SwitchPort extends Model
                     }
                 }
 
-                if( $this->$fn !== $n ) {
+                if( $this->$fn !== $n && $logger !== false ) {
                     Log::info( "[{$this->switcher->name}]:{$this->name} [Index: {$this->ifIndex}] Updating {$attribute['fn']} from [{$this->$fn}] to [{$n}]" );
                 }
 

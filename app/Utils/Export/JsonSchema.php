@@ -32,6 +32,9 @@ use IXP\Models\{
     NetworkInfo,
     Router
 };
+
+use Log;
+
 /**
  * JSON Schema Exporter
  *
@@ -65,7 +68,7 @@ class JsonSchema
         self::EUROIX_JSON_VERSION_0_7,
         self::EUROIX_JSON_VERSION_1_0,
     ];
-
+    
     /**
      * Get the JSON schema (for a given version or for the latest version)
      *
@@ -337,7 +340,7 @@ class JsonSchema
                     
                     if( $pi->statusConnected() ) {
                         $iflist[] = [
-                            'switch_id'	=> $pi->switchPort->switcher->id,
+                            'switch_id'	=> $pi->switchPort->switchid,
                             'if_speed'	=> $pi->speed,
                         ];
                         $atLeastOnePiIsConnected = true;
@@ -355,7 +358,7 @@ class JsonSchema
                     }
 
                     $vlanentry = [];
-                    $vlanentry[ 'vlan_id' ] = $vli->vlan->id;
+                    $vlanentry[ 'vlan_id' ] = $vli->vlanid;
 
 
                     foreach( [ 4,6 ] as $protocol ) {
@@ -365,29 +368,29 @@ class JsonSchema
 
                         if( $vli->$enabledfn ) {
                             $vlanentry[ $ipv ][ 'address' ] = $vli->$ipvaddressfn->address;
-                            if( ( $asmacro = $vi->customer->asMacro( $protocol, "AS", true ) ) !== null ) {
+                            if( ( $asmacro = $c->asMacro( $protocol, "AS", true ) ) !== null ) {
                                 $vlanentry[ $ipv ][ 'as_macro' ] = $asmacro;
                             }
                             $vlanentry[ $ipv ][ 'routeserver' ] = (bool)$vli->rsclient;
 
                             $macAddresses = [];
-                            $vli->layer2addresses()->get()->map( function($item) use(&$macAddresses) {
-                                $macAddresses[] = wordwrap( $item->mac, 2, ':',true);
-                            });
+                            foreach( $vli->layer2addresses as $l2a ) {
+                                $macAddresses[] = wordwrap( $l2a->mac, 2, ':',true);
+                            };
 
                             $vlanentry[ $ipv ][ 'mac_addresses' ] = $macAddresses;
 
-                            if( !is_null ( $vi->customer->maxprefixes ) ) {
-                                $vlanentry[ $ipv ][ 'max_prefix' ] = $vi->customer->maxprefixes;
+                            if( !is_null ( $c->maxprefixes ) ) {
+                                $vlanentry[ $ipv ][ 'max_prefix' ] = $c->maxprefixes;
                             }
 
 
                             if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
                                 $services = [];
-                                if( isset( $routeServerIPs[ $vli->vlan->id ] ) && in_array( $vli->$ipvaddressfn->address, $routeServerIPs[ $vli->vlan->id ], true ) ) {
+                                if( isset( $routeServerIPs[ $vli->vlan->id ] ) && in_array( $vli->$ipvaddressfn->address, $routeServerIPs[ $vli->vlanid ], true ) ) {
                                     $services[] = 'ixrouteserver';
                                 }
-                                if( isset( $routeCollectorIPs[ $vli->vlan->id ] ) && in_array( $vli->$ipvaddressfn->address, $routeCollectorIPs[ $vli->vlan->id ], true ) ) {
+                                if( isset( $routeCollectorIPs[ $vli->vlanid ] ) && in_array( $vli->$ipvaddressfn->address, $routeCollectorIPs[ $vli->vlanid ], true ) ) {
                                     $services[] = 'ixroutecollector';
                                 }
 
@@ -399,9 +402,9 @@ class JsonSchema
                             if( $version >= self::EUROIX_JSON_VERSION_1_0 ) {
                                 $services = [];
 
-                                if( isset( $routeServersByIps[ $vli->vlan->id ][ $vli->$ipvaddressfn->address ] ) ) {
+                                if( isset( $routeServersByIps[ $vli->vlanid ][ $vli->$ipvaddressfn->address ] ) ) {
                                     /** @var Router $r */
-                                    $r = $routeServersByIps[ $vli->vlan->id ][ $vli->$ipvaddressfn->address ];
+                                    $r = $routeServersByIps[ $vli->vlanid ][ $vli->$ipvaddressfn->address ];
                                     $service = new stdClass;
                                     $service->type           = 'ixrouteserver';
                                     $service->daemon         = $r->software();
@@ -411,8 +414,8 @@ class JsonSchema
                                     $services[] = $service;
                                 }
 
-                                if( isset( $routeCollectorsByIps[ $vli->vlan->id ][ $vli->$ipvaddressfn->address ] ) ) {
-                                    $r = $routeCollectorsByIps[ $vli->vlan->id ][ $vli->$ipvaddressfn->address ];
+                                if( isset( $routeCollectorsByIps[ $vli->vlanid ][ $vli->$ipvaddressfn->address ] ) ) {
+                                    $r = $routeCollectorsByIps[ $vli->vlanid ][ $vli->$ipvaddressfn->address ];
                                     /** @var Router $r */
                                     $service = new stdClass;
                                     $service->type           = 'ixroutecollector';
@@ -439,7 +442,7 @@ class JsonSchema
 
                 $conn = [];
 
-                $conn['ixp_id']      = $vli->vlan->infrastructure->id;
+                $conn['ixp_id']      = $vli->vlan->infrastructureid;
                 $conn['state']       = 'active';
                 $conn['if_list']     = $iflist;
                 $conn['vlan_list']   = $vlanentries;

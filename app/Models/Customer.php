@@ -1006,7 +1006,7 @@ class Customer extends Model
             ->when( $active , function( Builder $q ) {
                 return $q->whereRaw( self::SQL_CUST_ACTIVE );
             })
-            ->with( [ 'virtualInterfaces', 'virtualInterfaces.physicalInterfaces', 'virtualInterfaces.vlanInterfaces'  ] )
+            ->with( [ 'tags', 'virtualInterfaces', 'virtualInterfaces.physicalInterfaces.switchPort.switcher', 'virtualInterfaces.vlanInterfaces.ipv4address', 'virtualInterfaces.vlanInterfaces.ipv6address', 'virtualInterfaces.vlanInterfaces.layer2addresses'   ] )
             ->orderBy( 'cust.' . $orderBy , $direction )->distinct()->get();
     }
 
