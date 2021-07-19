@@ -100,6 +100,7 @@ class ContentController extends Controller
      */
     public function members( int $priv, string $page )
     {
+
         // check privilege:
         if( $priv !== User::AUTH_PUBLIC ) {
             if( Auth::guest() || Auth::getUser()->privs() < $priv ) {
@@ -122,7 +123,7 @@ class ContentController extends Controller
             abort( 404, 'Requested page not found' );
         }
 
-        $r = response()->view( $page, [ 'customers' => Customer::currentActive() ], 200 );
+        $r = response()->view( $page, [ 'customers' => Customer::currentActive()->get() ], 200 );
 
         if( $format === 'json' ) {
             $r->header( 'Content-Type', 'application/json' );
