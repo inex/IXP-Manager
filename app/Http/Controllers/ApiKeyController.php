@@ -221,7 +221,7 @@ class ApiKeyController extends EloquentController
         $this->object->user_id      = $r->user()->id;
         $this->object->save();
 
-        AlertContainer::push( "API key created: <code>" . $key . "</code>.", Alert::SUCCESS );
+        AlertContainer::push( "API key created: <code>" . $key . "</code>", Alert::SUCCESS );
         return true;
     }
 
