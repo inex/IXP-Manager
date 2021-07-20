@@ -132,7 +132,8 @@ class Router extends Model
         'software_version',
         'operating_system',
         'operating_system_version',
-        'rfc1997_passthru'
+        'rfc1997_passthru',
+        'last_updated',
     ];
     /**
      * The attributes that should be cast to native types.
