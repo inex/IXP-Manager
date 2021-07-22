@@ -65,7 +65,7 @@ class SearchController extends Controller
         $type       = '';
         $results    = $interfaces = [];
 
-        if( $search = trim( htmlspecialchars( str_replace( '%', '', $r->search ) ) ) ) {
+        if( $search = trim( trim( htmlspecialchars( $r->search ) ), '%' ) ) {
             // what kind of search are we doing?
             if( preg_match( '/^PPP\-(\d+)$/', $search, $matches ) ) {
                 // patch panel port search
@@ -136,7 +136,7 @@ class SearchController extends Controller
             else if( preg_match( '/^@([a-zA-Z0-9]+)$/', $search, $matches ) ) {
                 // user by username search
                 $type = 'username';
-                $results[ 'users' ] = User::where( 'Username', 'LIKE' , $matches[1] . '%' )->get();
+                $results[ 'users' ] = User::where( 'Username', 'LIKE' , '%' . $matches[1] . '%' )->get();
             }
             else if( filter_var( $search, FILTER_VALIDATE_EMAIL ) !== false ) {
                 // user by email search
@@ -152,9 +152,10 @@ class SearchController extends Controller
             else {
                 // wild card search
                 $type       = 'cust_wild';
+                $wildsearch = '%' . $search . '%';
                 $results    = Customer::leftJoin( 'company_registration_detail AS r', 'r.id', 'cust.company_registered_detail_id' )
-                    ->where( 'cust.name', 'LIKE' , '%' . $search . '%' )->orWhere( 'cust.shortname', 'LIKE' , $search )
-                    ->orWhere( 'cust.abbreviatedName', 'LIKE' , $search )->orWhere( 'r.registeredName', 'LIKE' , $search )
+                    ->where( 'cust.name', 'LIKE' , $wildsearch )->orWhere( 'cust.shortname', 'LIKE' , $wildsearch )
+                    ->orWhere( 'cust.abbreviatedName', 'LIKE' , $wildsearch )->orWhere( 'r.registeredName', 'LIKE' , $wildsearch )
                     ->orderBy( 'cust.name' )->get();
             }
         }
