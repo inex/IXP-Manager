@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-sm-12">
             <?= $t->alerts() ?>
-            <table id='table' class="collapse table table-striped">
+            <table id='table' class="collapse table table-striped w-100">
                 <thead class="thead-dark">
                     <tr>
                         <th>

@@ -65,7 +65,7 @@ class SearchController extends Controller
         $type       = '';
         $results    = $interfaces = [];
 
-        if( $search = trim( htmlspecialchars( $r->search ) ) ) {
+        if( $search = trim( htmlspecialchars( str_replace( '%', '', $r->search ) ) ) ) {
             // what kind of search are we doing?
             if( preg_match( '/^PPP\-(\d+)$/', $search, $matches ) ) {
                 // patch panel port search
@@ -152,9 +152,8 @@ class SearchController extends Controller
             else {
                 // wild card search
                 $type       = 'cust_wild';
-                $search     = '%' . $search . '%';
                 $results    = Customer::leftJoin( 'company_registration_detail AS r', 'r.id', 'cust.company_registered_detail_id' )
-                    ->where( 'cust.name', 'LIKE' , $search )->orWhere( 'cust.shortname', 'LIKE' , $search )
+                    ->where( 'cust.name', 'LIKE' , '%' . $search . '%' )->orWhere( 'cust.shortname', 'LIKE' , $search )
                     ->orWhere( 'cust.abbreviatedName', 'LIKE' , $search )->orWhere( 'r.registeredName', 'LIKE' , $search )
                     ->orderBy( 'cust.name' )->get();
             }

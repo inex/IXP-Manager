@@ -208,6 +208,7 @@ Route::group( [ 'namespace' => 'Customer'  ], function() {
         Route::get(     'billing-registration/{cust}',          'CustomerController@billingAndRegDetails'       )->name( 'customer@billing-registration'            );
         Route::get(     'welcome-email/{cust}',                 'CustomerController@welcomeEmail'               )->name( 'customer@welcome-email'                   );
         Route::get(     'overview/{cust}/{tab?}',               'CustomerController@overview'                   )->name( 'customer@overview'                        );
+        Route::get(     'peers/{cust}',                         'CustomerController@loadPeersFrag'              )->name( 'customer@load-peers'                      );
         Route::get(     'delete-recap/{cust}',                  'CustomerController@deleteRecap'                )->name( 'customer@delete-recap'                    );
         Route::post(    'store',                                'CustomerController@store'                      )->name( 'customer@store'                           );
         Route::put(     'update/{cust}',                        'CustomerController@update'                     )->name( 'customer@update'                         );
