@@ -28,9 +28,9 @@ use App, Auth, Cache, Countries, Former, Mail;
 use Illuminate\Database\Eloquent\Builder;
 
 use Illuminate\Http\{
+    JsonResponse,
     RedirectResponse,
-    Request
-};
+    Request};
 
 use Illuminate\View\View;
 
@@ -40,7 +40,6 @@ use IXP\Http\Controllers\Controller;
 
 use IXP\Models\{
     Aggregators\CustomerAggregator,
-    Aggregators\RsPrefixAggregator,
     CompanyBillingDetail,
     CompanyRegisteredDetail,
     Customer,
@@ -443,8 +442,25 @@ class CustomerController extends Controller
             'tab'                       => strtolower( $tab ) ?: false,
             'notes'                     => $notes,
             'notesInfo'                 => CustomerNote::analyseForUser( $notes, $cust, Auth::getUser() ),
-            'peers'                     => CustomerAggregator::getPeeringManagerArrayByType( $cust, Vlan::peeringManager()->orderBy( 'number' )->get(), [ 4,6 ] ) ?: false
         ]);
+    }
+
+    /**
+     * Display the customer overview peers
+     *
+     * @param  Request  $r
+     * @param  Customer  $cust
+     *
+     * @return JsonResponse
+     */
+    public function loadPeersFrag( Request $r, Customer $cust ): JsonResponse
+    {
+        return response()->json( [
+            'success' => true,
+            'htmlFrag' => view('customer/overview-tabs/peers')->with([
+                'peers' => CustomerAggregator::getPeeringManagerArrayByType( $cust, Vlan::peeringManager()->orderBy( 'number' )->get(), [ 4,6 ] ) ?: false
+            ])->render()
+        ] );
     }
 
     /**

@@ -250,13 +250,11 @@
                     </a>
                 </li>
 
-                <?php if( $t->peers ): ?>
-                    <li role="peers" class="nav-item">
-                        <a class="nav-link <?php if( $t->tab === 'peers' ): ?> active <?php endif; ?>" data-toggle="tab" href="#peers" data-toggle="tab">
-                            Peers
-                        </a>
-                    </li>
-                <?php endif; ?>
+                <li role="peers" class="nav-item">
+                    <a class="nav-link peers-tab <?php if( $t->tab === 'peers' ): ?> active <?php endif; ?>" data-toggle="tab" href="#peers" data-toggle="tab">
+                        Peers
+                    </a>
+                </li>
 
                 <?php if( $c->consoleServerConnections ): ?>
                     <li role="console-server-connections" class="nav-item ">
@@ -362,11 +360,12 @@
                     <?= $t->insert( 'customer/overview-tabs/cross-connects', [ 'isSuperUser' => $isSuperUser ] ); ?>
                 </div>
 
-                <?php if( $t->peers ): ?>
-                    <div id="peers" class="tab-pane fade <?php if( $t->tab === 'peers' ): ?> active show <?php endif; ?>">
-                        <?= $t->insert( 'customer/overview-tabs/peers' ); ?>
-                    </div>
-                <?php endif; ?>
+                <div id="peers" class="tab-pane peers-tab fade <?php if( $t->tab === 'peers' ): ?> active show <?php endif; ?>">
+                    <p class="tw-text-center">
+                        <br/>
+                        <b>Data loading please wait...</b>
+                    </p>
+                </div>
 
                 <div id="console-server-connections" class="tab-pane fade">
                     <?= $t->insert( 'customer/overview-tabs/console-server-connections' ); ?>
@@ -381,15 +380,9 @@
     <?= $t->insert( 'customer/js/overview/contacts' ); ?>
     <?= $t->insert( 'customer/js/overview/notes', [ 'isSuperUser' => $isSuperUser ] ); ?>
 
-    <?php if( $t->peers ): ?>
-        <?= $t->insert( 'customer/js/overview/peers' ); ?>
-    <?php endif; ?>
-
     <script>
         $(document).ready( function() {
-            $('.table-responsive-ixp').show();
-
-            $('.table-responsive-ixp').DataTable( {
+            $('.table-responsive-ixp').dataTable( {
                 responsive: true,
                 ordering: false,
                 searching: false,
@@ -397,10 +390,9 @@
                 info:   false,
                 stateSave: true,
                 stateDuration : DATATABLE_STATE_DURATION,
-            } );
-
-            $('.table-responsive-ixp-action').show();
-            $('.table-responsive-ixp-action').DataTable( {
+            } ).show();
+            
+            $('.table-responsive-ixp-action').dataTable( {
                 responsive: true,
                 ordering: false,
                 searching: false,
@@ -412,12 +404,29 @@
                     { responsivePriority: 1, targets: 0 },
                     { responsivePriority: 2, targets: -1 }
                 ],
-            } );
+            } ).show();
 
             $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
                 $($.fn.dataTable.tables(true)).DataTable()
                     .columns.adjust()
                     .responsive.recalc();
+            })
+
+            // Loads peers with ajax
+            let url = "<?= route( 'customer@load-peers', [ 'cust' => $c->id ] ) ?>";
+
+            $.ajax( url , {
+                type: 'get'
+            })
+            .done( function( data ) {
+                if( data.success ){
+                    // load th frag in the view
+                    $('#peers').html( data.htmlFrag );
+                }
+            })
+            .fail( function() {
+                alert( "Error running ajax query for " + url );
+                throw new Error( "Error running ajax query for " + url );
             })
         });
     </script>
