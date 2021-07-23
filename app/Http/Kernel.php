@@ -124,7 +124,7 @@ class Kernel extends HttpKernel
             AddQueuedCookiesToResponse::class,
             StartSession::class,
             Middleware\ControllerEnabled::class,
-            'apiauth',
+            'apimaybeauth',
             Middleware\Services\Grapher::class,
         ],
 
