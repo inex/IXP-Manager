@@ -30,7 +30,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\{
     JsonResponse,
     RedirectResponse,
-    Request};
+    Request
+};
 
 use Illuminate\View\View;
 
@@ -427,12 +428,29 @@ class CustomerController extends Controller
         $notes = $cust->customerNotes()->orderByDesc( 'created_at' )->get();
 
         return view( 'customer/overview' )->with([
-            'c'                         => $cust,
+            'c'                         => Customer::whereId( $cust->id )
+                ->with( [ 'companyRegisteredDetail', 'companyBillingDetail',
+                    'virtualInterfaces.physicalInterfaces.switchPort.switcher.infrastructureModel',
+                    'virtualInterfaces.physicalInterfaces.switchPort.switcher.cabinet.location',
+                    'virtualInterfaces.physicalInterfaces.switchPort.patchPanelPort.patchPanel',
+                    'virtualInterfaces.vlanInterfaces.ipv6address',
+                    'virtualInterfaces.vlanInterfaces.ipv4address',
+                    'virtualInterfaces.vlanInterfaces.layer2Addresses',
+                    'virtualInterfaces.vlanInterfaces.vlan.vlanInterfaces',
+                    'customerToUser.user.user2FA',
+                    'customerToUser.user.customers',
+                    'customerToUser.userLoginHistories',
+                    'contacts.contactRoles',
+                    'consoleServerConnections.consoleServer.cabinet.location',
+                    'resoldCustomers', 'irrdbConfig',
+                ] )->first(),
             'customers'                 => Customer::select([ 'id', 'name' ])->current()
                 ->orderBy( 'name' )->get()->keyBy( 'id' )->toArray(),
             'netInfo'                   => NetworkInfo::vlanProtocol(),
-            'crossConnects'             => $cust->patchPanelPorts()->masterPort()->get(),
-            'crossConnectsHistory'      => $cust->patchPanelPortHistories()->masterPort()->get(),
+            'crossConnects'             => $cust->patchPanelPorts()
+                ->with( [ 'patchPanel.cabinet.location' ] )->masterPort()->get(),
+            'crossConnectsHistory'      => $cust->patchPanelPortHistories()
+                ->with( [ 'patchPanelPort.patchPanel.cabinet.location' ] )->masterPort()->get(),
             'aggregateGraph'            => $cust->isGraphable() ? $grapher->customer( $cust ) : false,
             'grapher'                   => $grapher,
             'rsclient'                  => $cust->routeServerClient(),

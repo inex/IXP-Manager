@@ -5,7 +5,7 @@
         </h3>
     </div>
     <div class="card-body">
-        <table class="table table-striped table-responsive-ixp collapse" width="100%">
+        <table class="table table-striped table-responsive-ixp collapse w-100">
             <thead class="thead-dark">
                 <tr>
                     <th>

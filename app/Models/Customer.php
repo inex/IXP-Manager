@@ -887,11 +887,11 @@ class Customer extends Model
             throw new IXP_Exception( 'Invalid protocol' );
         }
 
-        return self::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )
-            ->leftJoin( 'vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id' )
-            ->where( 'vli.rsclient', true )
-            ->where( 'cust.id', $this->id )
-            ->where( "ipv{$proto}enabled", true )->count() ? true : false;
+        return (bool) self::leftJoin('virtualinterface AS vi', 'vi.custid', 'cust.id')
+            ->leftJoin('vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id')
+            ->where('vli.rsclient', true )
+            ->where('cust.id', $this->id)
+            ->where("ipv{$proto}enabled", true)->count();
     }
 
     /**

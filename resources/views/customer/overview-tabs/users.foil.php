@@ -1,8 +1,8 @@
 <?php
     $c = $t->c; /** @var $c \IXP\Models\Customer */
-    $isSuperUser = Auth::getUser()->isSuperUser();
+    $isSuperUser = $t->isSuperUser;
 ?>
-<table class="table tw-border-1 tw-border-grey-light tw-shadow-md table-striped table-responsive-ixp-action collapse" style="width:100%">
+<table class="table tw-border-1 tw-border-grey-light tw-shadow-md table-striped table-responsive-ixp-action collapse w-100">
     <thead class="thead-dark">
         <tr>
             <th>
@@ -33,9 +33,9 @@
     </thead>
     <tbody>
         <?php foreach( $c->customerToUser as $c2u ):
-            $user = $c2u->user;
-            $u2fa = $user->user2FA;
-            $nbCusts =  $user->customers()->count()?>
+            $user       = $c2u->user;
+            $u2fa       = $user->user2FA;
+            $nbCusts    =  $user->customers->count()?>
             <tr>
                 <td>
                     <?= $t->ee( $user->name ) ?>

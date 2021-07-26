@@ -125,7 +125,7 @@
                             <b>Created</b>
                         </td>
                         <td>
-                            <?= strpos($c->created_at, '-0') !== 0 ? $c->created_at : ''  ?>
+                            <?= strpos( $c->created_at, '-0' ) !== 0 ? $c->created_at : ''  ?>
                         </td>
                     </tr>
                     <tr>

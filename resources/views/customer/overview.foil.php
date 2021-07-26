@@ -341,7 +341,7 @@
                 <?php endif ?>
 
                 <div id="users" class="tab-pane fade <?php if( $t->tab === 'users' ): ?> active show <?php endif; ?> ">
-                    <?= $t->insert( 'customer/overview-tabs/users' ); ?>
+                    <?= $t->insert( 'customer/overview-tabs/users', [ 'isSuperUser' => $isSuperUser ] ); ?>
                 </div>
 
                 <div id="contacts" class="tab-pane fade <?php if( $t->tab === 'contacts' ): ?> active show <?php endif; ?>">
