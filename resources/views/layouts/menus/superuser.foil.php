@@ -1,8 +1,7 @@
 <?php
-
-use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
-
+    use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 ?>
+
 <nav id="navbar-header" class="navbar navbar-expand-lg navbar-dark bg-dark">
     <button class="navbar-toggler d-block-sm d-md-none" type="button" id="sidebarCollapse" >
         <i id="menu-icon" class="fa fa-bars"></i>
@@ -14,15 +13,12 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
         <i class="fa fa-ellipsis-v"></i>
     </button>
 
-
     <?php
         // hide most things until 2fa complete:
         $authenticator = new GoogleAuthenticator( request() );
 
         if( !Auth::getUser()->user2FA || !Auth::getUser()->user2FA->enabled || $authenticator->isAuthenticated() ):
     ?>
-
-
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
@@ -165,7 +161,8 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 
                     <a class="dropdown-item <?= !request()->is( 'customer-note/unread-notes' ) ?: 'active' ?>" href="<?= route( 'customerNotes@unreadNotes' ) ?>">Unread Notes</a>
 
-                    <?php $customers = Auth::getUser()->customers()->active()->notDeleted()->get();
+                    <?php
+                        $customers = Auth::getUser()->customers()->active()->notDeleted()->get();
                     if( $customers ):?>
                         <div class="dropdown-divider"></div>
 

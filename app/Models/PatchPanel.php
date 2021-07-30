@@ -272,14 +272,15 @@ class PatchPanel extends Model
     /**
      * get the css class used to display the value => available ports / total ports
      *
-     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @param  int  $total
+     * @param  int  $available
      *
      * @return string
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     *
      */
-    public function cssClassPortCount(): string
+    public function cssClassPortCount( int $total, int $available): string
     {
-        $total      = $this->patchPanelPorts()->count();
-        $available  = $this->availableForUsePortCount();
         if($total !== 0):
             if( ($total - $available) / $total < 0.7 ):
                 $class = "success";
@@ -299,14 +300,16 @@ class PatchPanel extends Model
      * get the value available port / total port
      *
      *
-     * @param  bool $divide if the value need to be divide by 2 (use when some patch panel ports have duplex port)
+     * @param  int      $availableForUsePortCount
+     * @param  int      $portCount
+     * @param  bool     $divide  if the value need to be divide by 2 (use when some patch panel ports have duplex port)
      *
      * @return string
      */
-    public function availableOnTotalPort( $divide = false ): string
+    public function availableOnTotalPort( int $availableForUsePortCount, int $portCount, bool $divide = false ): string
     {
-        $available = ($divide)? floor( $this->availableForUsePortCount() / 2 ) : $this->availableForUsePortCount();
-        $total     = ($divide)? floor( $this->patchPanelPorts()->count() / 2 ) : $this->patchPanelPorts()->count();
+        $available = ($divide)? floor( $availableForUsePortCount / 2 ) : $availableForUsePortCount;
+        $total     = ($divide)? floor( $portCount / 2 ) : $portCount;
 
         return $available . ' / ' . $total;
     }

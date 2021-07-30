@@ -78,7 +78,7 @@
 
 <?php $this->section('content') ?>
     <?= $t->alerts() ?>
-        <table id='customer-list' class="table collapse table-striped no-wrap responsive tw-shadow-md" >
+        <table id='customer-list' class="table collapse table-striped no-wrap responsive tw-shadow-md w-100" >
             <thead class="thead-dark">
                 <tr>
                     <th>
@@ -158,9 +158,7 @@
 <?php $this->section( 'scripts' ) ?>
     <script>
         $(document).ready( function() {
-            $( '#customer-list' ).show();
-
-            $('#customer-list').DataTable( {
+            $('#customer-list').dataTable( {
                 responsive: true,
                 stateSave: true,
                 stateDuration : DATATABLE_STATE_DURATION,
@@ -168,7 +166,7 @@
                     { responsivePriority: 1, targets: 0 },
                     { responsivePriority: 2, targets: -1 }
                 ],
-            } );
+            } ).show();
         });
     </script>
 <?php $this->append() ?>

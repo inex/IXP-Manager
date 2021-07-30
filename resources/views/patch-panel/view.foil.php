@@ -103,12 +103,14 @@
                                 </td>
                                 <td>
                                     <?php
-                                        $duplex       = $pp->hasDuplexPort();
-                                        $totalDivide  = $pp->availableOnTotalPort(true) ;
-                                        $total        = $pp->availableOnTotalPort(false) ;
+                                        $duplex                     = $pp->hasDuplexPort();
+                                        $availableForUsePortCount   = $pp->availableForUsePortCount();
+                                        $portCount                  = $pp->patchPanelPorts->count();
+                                        $totalDivide                = $pp->availableOnTotalPort( $availableForUsePortCount, $portCount,true );
+                                        $total                      = $pp->availableOnTotalPort( $availableForUsePortCount, $portCount,false );
                                     ?>
                                     <a href="<?= route ( 'patch-panel-port@list-for-patch-panel' , [ 'pp' => $pp->id ] ) ?>">
-                                    <span title="" class="badge badge-<?= $pp->cssClassPortCount() ?>">
+                                    <span title="" class="badge badge-<?= $pp->cssClassPortCount( $portCount, $availableForUsePortCount ) ?>">
                                             <?php if( $duplex ): ?>
                                                 <?= $totalDivide ?>
                                             <?php else: ?>

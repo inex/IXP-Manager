@@ -108,7 +108,7 @@ class PatchPanelPortAggregator extends PatchPanelPort
             ->when( $availableForUse , function( Builder $q ) {
                 return $q->whereIn('ppp.state', PatchPanelPort::$AVAILABLE_STATES );
             } )
-            ->groupByRaw( 'ppp.id, ppp.number ASC' )
+            ->groupByRaw( 'ppp.id, ppp.number' )
             ->orderBy( 'ppp.number' )->get()->keyBy( 'id' );
     }
 

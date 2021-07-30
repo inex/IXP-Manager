@@ -63,6 +63,7 @@ class ApiAuthenticate
 	{
 		// are we already logged in?
 		if( !Auth::check() ) {
+
 			// find API key. Prefer header to URL:
 			$apikey = false;
 			if( $r->header('X-IXP-Manager-API-Key') ) {
@@ -75,7 +76,7 @@ class ApiAuthenticate
 				return response('Unauthorized.', 401);
 	        }
 
-            if( !( $key = ApiKey::where( 'apiKey', $apikey )->first() ) ) {
+            if( !( $key = ApiKey::where( 'apiKey', $apikey )->with( 'user.customer' )->first() ) ) {
                 return response( 'Valid API key required', 403 );
             }
 
@@ -92,6 +93,7 @@ class ApiAuthenticate
             if( $key->user->customer()->active()->notDeleted()->doesntExist() ){
                 return response( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' of the user is disabled', 403 );
             }
+
 
             Auth::onceUsingId( $key->user_id );
 

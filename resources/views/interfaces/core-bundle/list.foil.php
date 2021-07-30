@@ -51,7 +51,7 @@
                 <tbody>
                     <?php foreach( $t->cbs as $cb ):
                         /** @var \IXP\Models\CoreBundle $cb */
-                        $clsNb      = $cb->coreLinks()->count();
+                        $clsNb      = $cb->coreLinks->count();
                         $piSpeed    = $cb->speedPi();
                         ?>
                         <tr>
@@ -68,7 +68,7 @@
                                     <i class="fa fa-check"></i>
                                 <?php else:?>
                                     <span class="badge badge-warning">
-                                        <?= $cb->coreLinks()->active()->get()->count() ?> / <?= $clsNb ?>
+                                        <?= $cb->coreLinks()->active()->count() ?> / <?= $clsNb ?>
                                     </span>
                                 <?php endif; ?>
                             </td>

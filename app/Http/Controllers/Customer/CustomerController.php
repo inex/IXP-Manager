@@ -401,7 +401,12 @@ class CustomerController extends Controller
     {
         if( config( 'ixp_fe.customer.details_public') ) {
             return view( 'customer/detail' )->with([
-                'c'       => $cust,
+                'c'       => $cust->load( [ 'logo',
+                    'virtualInterfaces.physicalInterfaces',
+                    'virtualInterfaces.vlanInterfaces.vlan',
+                    'virtualInterfaces.vlanInterfaces.ipv4address',
+                    'virtualInterfaces.vlanInterfaces.ipv6address',
+                ] ),
                 'netinfo' => NetworkInfo::vlanProtocol(),
                 'rsasns'  => Router::routeServer()
                     ->groupBy( 'asn' )->get()->pluck( 'asn' )->toArray()
@@ -428,8 +433,8 @@ class CustomerController extends Controller
         $notes = $cust->customerNotes()->orderByDesc( 'created_at' )->get();
 
         return view( 'customer/overview' )->with([
-            'c'                         => Customer::whereId( $cust->id )
-                ->with( [ 'companyRegisteredDetail', 'companyBillingDetail',
+            'c'                         => $cust
+                ->load( [ 'companyRegisteredDetail', 'companyBillingDetail',
                     'virtualInterfaces.physicalInterfaces.switchPort.switcher.infrastructureModel',
                     'virtualInterfaces.physicalInterfaces.switchPort.switcher.cabinet.location',
                     'virtualInterfaces.physicalInterfaces.switchPort.patchPanelPort.patchPanel',
@@ -443,7 +448,7 @@ class CustomerController extends Controller
                     'contacts.contactRoles',
                     'consoleServerConnections.consoleServer.cabinet.location',
                     'resoldCustomers', 'irrdbConfig',
-                ] )->first(),
+                ] ),
             'customers'                 => Customer::select([ 'id', 'name' ])->current()
                 ->orderBy( 'name' )->get()->keyBy( 'id' )->toArray(),
             'netInfo'                   => NetworkInfo::vlanProtocol(),

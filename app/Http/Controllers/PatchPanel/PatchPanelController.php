@@ -69,7 +69,7 @@ class PatchPanelController extends Controller
     {
         return view( 'patch-panel/index' )->with([
             'patchPanels'       => PatchPanel::where( 'active', $active )
-                ->with( 'cabinet' )->get(),
+                ->with( 'cabinet', 'patchPanelPorts' )->get(),
             'locations'         => Location::select( [ 'id', 'name' ] )
                 ->orderBy( 'name' )->get(),
             'cabinets'          => Cabinet::select( [ 'id', 'name', 'locationid' ] )
@@ -198,7 +198,7 @@ class PatchPanelController extends Controller
     public function view( PatchPanel $pp ): View
     {
         return view( 'patch-panel/view' )->with([
-            'pp'                        => $pp
+            'pp'    => $pp->load([ 'cabinet', 'patchPanelPorts' ] )
         ]);
     }
 }

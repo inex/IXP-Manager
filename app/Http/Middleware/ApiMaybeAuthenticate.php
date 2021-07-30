@@ -62,7 +62,6 @@ class ApiMaybeAuthenticate
 	 */
 	public function handle( Request $r, Closure $next )
 	{
-
 		// are we already logged in?
 		if( !Auth::check() ) {
 			// find API key. Prefer header to URL:
@@ -74,7 +73,7 @@ class ApiMaybeAuthenticate
 			}
 
 			if( $apikey ) {
-			    if( !( $key = ApiKey::where( 'apiKey', $apikey )->first() ) ) {
+			    if( !( $key = ApiKey::where( 'apiKey', $apikey )->with( 'user.customer' )->first() ) ) {
                     return response( 'Valid API key required', 403 );
                 }
 

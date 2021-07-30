@@ -133,9 +133,11 @@
                     <tbody>
                         <?php foreach( $t->patchPanels as $pp ):
                             /** @var \IXP\Models\PatchPanel $pp */
-                            $duplex             = $pp->hasDuplexPort();
-                            $totalPortDivide    = $pp->availableOnTotalPort( true );
-                            $totalPort          = $pp->availableOnTotalPort( false );
+                            $duplex                     = $pp->hasDuplexPort();
+                            $availableForUsePortCount   = $pp->availableForUsePortCount();
+                            $portCount                  = $pp->patchPanelPorts->count();
+                            $totalPortDivide            = $pp->availableOnTotalPort( $availableForUsePortCount , $portCount, true );
+                            $totalPort                  = $pp->availableOnTotalPort( $availableForUsePortCount , $portCount, false );
                             ?>
                             <tr>
                                 <td>
@@ -155,7 +157,7 @@
                                     <?= $pp->cableType() ?> / <?= $pp->connectorType() ?>
                                 </td>
                                 <td>
-                                    <span title="" class="badge badge-<?= $pp->cssClassPortCount() ?>">
+                                    <span title="" class="badge badge-<?= $pp->cssClassPortCount( $portCount, $availableForUsePortCount ) ?>">
                                         <?php if( $duplex ): ?>
                                             <?= $totalPortDivide ?>
                                         <?php else: ?>

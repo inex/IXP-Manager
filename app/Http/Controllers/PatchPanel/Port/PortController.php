@@ -365,7 +365,9 @@ class PortController extends Controller
      */
     public function view( PatchPanelPort $ppp ): View
     {
-        $listHistory[] = $ppp;
+        $listHistory[] = $ppp->load( [ 'patchPanel', 'duplexSlavePorts',
+            'switchPort', 'customer'
+        ] );
 
         if( !Auth::getUser()->isSuperUser() ) {
             if( !$ppp->customer || $ppp->customer_id !== Auth::getUser()->custid ) {
@@ -375,7 +377,9 @@ class PortController extends Controller
             // only load history if we're a super user
             // get the patch panel port histories
             foreach( $ppp->patchPanelPortHistories as $history ){
-                $listHistory[] = $history;
+                $listHistory[] = $history->load( [
+                    'patchPanelPort.patchPanel'
+                ] );
             }
         }
 

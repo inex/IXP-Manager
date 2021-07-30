@@ -69,7 +69,7 @@ class CoreBundleController extends Common
     public function list(): View
     {
         return view( 'interfaces/core-bundle/list' )->with([
-            'cbs'       => CoreBundle::all()
+            'cbs'       => CoreBundle::with( 'coreLinks' )->get()
         ]);
     }
 

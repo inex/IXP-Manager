@@ -197,10 +197,11 @@ class CoreBundle extends Model
      */
     public function switchSideX( bool $sideA = true )
     {
-        $cl = $this->corelinks[ 0 ] ?? false;
+        $cl = $this->corelinks->first() ?? false;
+
         if( $cl ){
             /** @var CoreInterface $side */
-            $side = $sideA ? $cl->coreInterfaceSideA : $cl->coreInterfaceSideB ;
+            $side = $sideA ? $cl->coreInterfaceSideA : $cl->coreInterfaceSideB;
             return $side->physicalinterface->switchPort->switcher;
         }
 
@@ -224,7 +225,7 @@ class CoreBundle extends Model
      */
     public function speedPi(): int
     {
-        $cl = $this->corelinks[ 0 ] ?? false;
+        $cl = $this->corelinks->first() ?? false;
         if( $cl ){
             return $cl->coreInterfaceSideA->physicalinterface->speed;
         }

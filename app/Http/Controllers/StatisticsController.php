@@ -377,7 +377,10 @@ class StatisticsController extends Controller
         }
 
         return view( 'statistics/member' )->with([
-            "c"                     => $cust,
+            "c"                     => $cust->load(  [
+                'virtualinterfaces.physicalInterfaces.switchPort.switcher',
+                'virtualinterfaces.physicalInterfaces.switchPort.switcher.cabinet.location',
+            ] ),
             "grapher"               => $grapher,
             "category"              => Graph::processParameterCategory( $r->category ),
             "period"                => Graph::processParameterPeriod( $r->period ),
@@ -513,6 +516,7 @@ class StatisticsController extends Controller
             ->Join( 'cust AS c', 'c.id', 'vi.custid' )
             ->Join( 'vlan AS v', 'v.id', 'vli.vlanid' )
             ->where( 'c.id', $cust->id )
+            ->with( [ 'vlan' ] )
             ->orderBy( 'v.number' )->get()->keyBy( 'id' );
 
         // Find the possible VLAN interfaces that this customer has for the given IXP

@@ -64,7 +64,7 @@ class RouterController extends Controller
     public function list(): View
     {
         return view( 'router/index' )->with([
-            'routers'       => Router::all()
+            'routers'       => Router::with( 'vlan' )->get()
         ]);
     }
 
@@ -195,7 +195,7 @@ class RouterController extends Controller
     public function view( Router $router ): View
     {
         return view( 'router/view' )->with([
-            'rt'                => $router
+            'rt'                => $router->load( 'vlan' )
         ]);
     }
 

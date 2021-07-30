@@ -61,8 +61,8 @@
                     <div class="tab-content">
                         <?php foreach ( $t->listHistory as $history ):
                             /** @var PatchPanelPort $history */
-                            $duplexMasterPort = $history->duplexMasterPort;
-                            $duplexSlavePort = $history->duplexSlavePorts;
+                            $duplexMasterPort   = $history->duplexMasterPort;
+                            $duplexSlavePort    = $history->duplexSlavePorts;
 
                             $current = get_class( $history ) === PatchPanelPort::class;
                             if( $current ):
