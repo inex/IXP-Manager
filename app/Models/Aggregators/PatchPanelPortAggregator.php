@@ -78,8 +78,8 @@ class PatchPanelPortAggregator extends PatchPanelPort
             pp.name as ppname, pp.port_prefix AS prefix,
             sp.name AS spname,
             s.name AS sname, c.abbreviatedName AS cname,
-            count( ppps.id ) AS nbslave, ppps.number AS slavenumber
-        ' )
+            count( ppps.id ) AS nbslave, 
+            max( ppps.number ) AS slavenumber' ) // only one slave port!
             ->from( 'patch_panel_port AS ppp' )
             ->join( 'patch_panel AS pp', 'pp.id', 'ppp.patch_panel_id')
             ->leftJoin( 'switchport AS sp', 'sp.id', 'ppp.switch_port_id')
