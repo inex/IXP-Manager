@@ -32,9 +32,15 @@
                         <?= $t->ee( $user->email ) ?>
                     </td>
                     <td>
-                        <a href="<?= route( "customer@overview" , [ 'cust' => $user->custid ] ) ?>">
-                            <?= $t->ee( $user->customer->name ) ?>
-                        </a>
+                        <?php if( ( $nb = $user->customers->count() ) > 1 ) : ?>
+                            <a href="<?= route( 'user@edit' , [ 'u' => $user->id ] ) ?>" class="badge badge-info">
+                                Multiple (<?= $nb ?>)
+                            </a>
+                        <?php else: ?>
+                            <a href="<?=  route( "customer@overview" , [ 'cust' => $user->custid ] ) ?>">
+                                <?= $t->ee( $user->customers->first()->name ) ?>
+                            </a>
+                        <?php endif; ?>
                     </td>
                     <td>
                         <?= $user->created_at ?>

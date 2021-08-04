@@ -383,16 +383,17 @@ class PatchPanelPort extends Model
     /**
      * Get name
      *
-     * @return integer
+     * @return string
      */
-    public function name()
+    public function name(): string
     {
         $name = $this->patchPanel->port_prefix . $this->number;
 
-        if( $this->duplexSlavePorts->isNotEmpty() ) {
-            $name .= '/' . $this->duplexSlavePorts[ 0 ]->name() . ' ';
+        if( $duplex = $this->duplexSlavePorts->first() ) {
+            $name .= '/' . $duplex->name() . ' ';
             $name .= '(' . ( $this->number % 2 ? ( floor( $this->number / 2 ) ) + 1 : $this->number / 2 ) . ')';
         }
+
         return $name;
     }
 

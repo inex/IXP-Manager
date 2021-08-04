@@ -46,7 +46,7 @@
                 </td>
                 <td>
                     <a href="<?= route( 'patch-panel-port@view', [ 'ppp' => $ppp->id ] ) ?>">
-                        <?= $t->ee( $ppp->name ) ?>
+                        <?= $t->ee( $ppp->name() ) ?>
                     </a>
                 </td>
                 <td>
