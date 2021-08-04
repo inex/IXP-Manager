@@ -12,7 +12,7 @@
                         </h3>
                     </div>
                     <div class="my-auto">
-                        <a class="btn btn-sm btn-white" href="<?= route( "statistics@member", [ 'id' => $c->id ] )?>">
+                        <a class="btn btn-sm btn-white" href="<?= route( "statistics@member", [ 'cust' => $c->id ] )?>">
                             <i class="fa fa-search-plus"></i>
                         </a>
                     </div>
