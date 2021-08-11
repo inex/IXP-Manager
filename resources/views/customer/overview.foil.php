@@ -217,6 +217,12 @@
                     <?php endif; ?>
                 <?php endif; ?>
 
+                <li role="cross-connects" class="nav-item ">
+                    <a class="nav-link <?php if( $t->tab === 'cross-connects' ): ?> active <?php endif; ?>" data-toggle="tab" href="#cross-connects" data-toggle="tab">
+                        Cross Connects
+                    </a>
+                </li>
+
                 <li role="users" class="nav-item ">
                     <a class="nav-link <?php if( $t->tab === 'users' ): ?> active <?php endif; ?>" data-toggle="tab" href="#users" data-toggle="tab">
                         Users
@@ -244,26 +250,6 @@
                     </a>
                 </li>
 
-                <li role="cross-connects" class="nav-item ">
-                    <a class="nav-link <?php if( $t->tab === 'cross-connects' ): ?> active <?php endif; ?>" data-toggle="tab" href="#cross-connects" data-toggle="tab">
-                        Cross Connects
-                    </a>
-                </li>
-
-                <li role="peers" class="nav-item">
-                    <a class="nav-link peers-tab <?php if( $t->tab === 'peers' ): ?> active <?php endif; ?>" data-toggle="tab" href="#peers" data-toggle="tab">
-                        Peers
-                    </a>
-                </li>
-
-                <?php if( $c->consoleServerConnections ): ?>
-                    <li role="console-server-connections" class="nav-item ">
-                        <a class="nav-link <?php if( $t->tab === 'console-server-connections' ): ?>active<?php endif; ?>" data-toggle="tab" href="#console-server-connections" data-toggle="tab">
-                            OOB Access
-                        </a>
-                    </li>
-                <?php endif ?>
-
                 <?php if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= route( 'docstore-c-dir@list', [ 'cust' => $c->id ] ) ?>">
@@ -271,6 +257,23 @@
                         </a>
                     </li>
                 <?php endif; ?>
+
+
+                <li role="peers" class="nav-item">
+                    <a class="nav-link peers-tab <?php if( $t->tab === 'peers' ): ?> active <?php endif; ?>" data-toggle="tab" href="#peers" data-toggle="tab">
+                        Peers
+                    </a>
+                </li>
+
+                 <?php if( !config( 'ixp_fe.frontend.disabled.console-server-connection' ) ): ?>
+                  <?php if( $c->consoleServerConnections ): ?>
+                    <li role="console-server-connections" class="nav-item ">
+                        <a class="nav-link <?php if( $t->tab === 'console-server-connections' ): ?>active<?php endif; ?>" data-toggle="tab" href="#console-server-connections" data-toggle="tab">
+                            OOB Access
+                        </a>
+                    </li>
+                  <?php endif ?>
+                <?php endif ?>
 
                 <?php if( !$c->typeAssociate() && !$c->hasLeft() ): ?>
                     <?php if( $c->routeServerClient() ): ?>
@@ -300,7 +303,7 @@
                     <?php if( config('grapher.backends.sflow.enabled') ) : ?>
                         <li class="nav-item">
                             <a class="nav-link" href="<?= route( "statistics@p2p", [ 'cust' => $c->id ] )  ?>">
-                              P2P &raquo;
+                              Peer to Peer Traffic &raquo;
                             </a>
                         </li>
                     <?php endif ?>
