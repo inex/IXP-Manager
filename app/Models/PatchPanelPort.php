@@ -380,19 +380,45 @@ class PatchPanelPort extends Model
         return $query->where('duplex_master_id', null );
     }
 
+
+    /**
+     * Get better description for LoA:
+     *
+     * @return string
+     */
+    public function loaname(): string
+    {
+
+        if( $duplex = $this->duplexSlavePorts->first() ) {
+
+            $name = ( $this->number % 2 ? ( floor( $this->number / 2 ) ) + 1 : $this->number / 2 );
+            $name .=  ' (Fibre Pair, Positions ' . $name = $this->patchPanel->port_prefix . $this->number;
+            $name .= '/' . $duplex->name() . ')';
+
+        } else {
+
+             $name = $this->patchPanel->port_prefix . $this->number;
+
+        }
+
+        return $name;
+    }
+
+
     /**
      * Get name
      *
-     * @return integer
+     * @return string
      */
-    public function name()
+    public function name(): string
     {
         $name = $this->patchPanel->port_prefix . $this->number;
 
-        if( $this->duplexSlavePorts->isNotEmpty() ) {
-            $name .= '/' . $this->duplexSlavePorts[ 0 ]->name() . ' ';
+        if( $duplex = $this->duplexSlavePorts->first() ) {
+            $name .= '/' . $duplex->name() . ' ';
             $name .= '(' . ( $this->number % 2 ? ( floor( $this->number / 2 ) ) + 1 : $this->number / 2 ) . ')';
         }
+
         return $name;
     }
 
