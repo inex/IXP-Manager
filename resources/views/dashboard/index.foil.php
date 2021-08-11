@@ -97,13 +97,6 @@
                                     <?php endif; ?>
                                 <?php endif ?>
 
-                                <?php if( config('grapher.backends.sflow.enabled') ) : ?>
-                                    <li class="nav-item" onclick="window.location.href = '<?= route( "statistics@p2p", [ 'cust' => $c->id ] )  ?>'">
-                                        <a class="nav-link" data-toggle="tab" href="#">
-                                            P2P &raquo;
-                                        </a>
-                                    </li>
-                                <?php endif ?>
                             <?php endif ?>
 
                             <?php if( !config( 'ixp_fe.frontend.disabled.peering-manager' ) ): ?>
