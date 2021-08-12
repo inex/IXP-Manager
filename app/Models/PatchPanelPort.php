@@ -380,6 +380,7 @@ class PatchPanelPort extends Model
         return $query->where('duplex_master_id', null );
     }
 
+
     /**
      * Get name
      *
@@ -390,12 +391,13 @@ class PatchPanelPort extends Model
         $name = $this->patchPanel->port_prefix . $this->number;
 
         if( $duplex = $this->duplexSlavePorts->first() ) {
-            $name .= '/' . $duplex->name() . ' ';
-            $name .= '(' . ( $this->number % 2 ? ( floor( $this->number / 2 ) ) + 1 : $this->number / 2 ) . ')';
+            $name .= '/' . $duplex->name() . ' (' . ( $this->patchPanel->isFibre() ? 'Fibre, duplex port: ' : '' );
+            $name .= ( $this->number % 2 ? ( floor( $this->number / 2 ) ) + 1 : $this->number / 2 ) . ')';
         }
 
         return $name;
     }
+
 
     /**
      * Turn the database integer representation of the states into text as

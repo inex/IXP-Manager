@@ -90,9 +90,6 @@
                     </td>
                     <td>
                         <?= $t->ee( $ppp->name() ) ?>
-                        <?php if( $ppp->duplexSlavePorts()->count() ){ ?>
-                            <em>(duplex port)</em>
-                        <?php } ?>
                     </td>
                 </tr>
             </table>
