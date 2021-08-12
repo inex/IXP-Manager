@@ -128,6 +128,14 @@ class PatchPanel extends Model
         self::CABLE_TYPE_OTHER          => 'Other',
     ];
 
+    /**
+     * Array 'Fibre' Cable types
+     */
+    public static $FIBRE_CABLE_TYPES = [
+        self::CABLE_TYPE_SMF,
+        self::CABLE_TYPE_MMF,
+    ];
+
 
     /**
      * CONST Connector types
@@ -188,6 +196,14 @@ class PatchPanel extends Model
     public function cableType(): string
     {
         return self::$CABLE_TYPES[ $this->cable_type ] ?? 'Unknown';
+    }
+
+    /**
+     * Identify id this patch panel is a 'fibre' patch panel
+     */
+    public function isFibre(): bool
+    {
+        return in_array( $this->cable_type, self::$FIBRE_CABLE_TYPES );
     }
 
     /**

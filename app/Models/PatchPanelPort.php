@@ -382,30 +382,6 @@ class PatchPanelPort extends Model
 
 
     /**
-     * Get better description for LoA:
-     *
-     * @return string
-     */
-    public function loaname(): string
-    {
-
-        if( $duplex = $this->duplexSlavePorts->first() ) {
-
-            $name = ( $this->number % 2 ? ( floor( $this->number / 2 ) ) + 1 : $this->number / 2 );
-            $name .=  ' (Fibre Pair, Positions ' . $name = $this->patchPanel->port_prefix . $this->number;
-            $name .= '/' . $duplex->name() . ')';
-
-        } else {
-
-             $name = $this->patchPanel->port_prefix . $this->number;
-
-        }
-
-        return $name;
-    }
-
-
-    /**
      * Get name
      *
      * @return string
@@ -415,12 +391,13 @@ class PatchPanelPort extends Model
         $name = $this->patchPanel->port_prefix . $this->number;
 
         if( $duplex = $this->duplexSlavePorts->first() ) {
-            $name .= '/' . $duplex->name() . ' ';
-            $name .= '(' . ( $this->number % 2 ? ( floor( $this->number / 2 ) ) + 1 : $this->number / 2 ) . ')';
+            $name .= '/' . $duplex->name() . ' (' . ( $this->patchPanel->isFibre() ? 'Fibre, duplex port: ' : '' );
+            $name .= ( $this->number % 2 ? ( floor( $this->number / 2 ) ) + 1 : $this->number / 2 ) . ')';
         }
 
         return $name;
     }
+
 
     /**
      * Turn the database integer representation of the states into text as

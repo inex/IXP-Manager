@@ -307,10 +307,8 @@
                     <td>
                       <b>Port:</b>
                     </td>
-                    <td><?= $ppp->name() ?>
-                        <?php if( $ppp->duplexSlavePorts()->count() ){ ?>
-                          <em>(duplex port)</em>
-                        <?php } ?>
+                    <td>
+                      <?= $ppp->name() ?>
                     </td>
                 </tr>
             </table>
