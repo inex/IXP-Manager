@@ -54,6 +54,6 @@ template bgp tb_rsclient {
         missing lladdr ignore;
 <?php endif; ?>
     };
-
+<?php if( $t->router->rfc1997_passthru ): ?>        interpret communities off;  # enable rfc1997 well-known community pass through
     rs client;
 }
