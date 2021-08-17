@@ -5,17 +5,17 @@ $data = [];
 
 /** @var \IXP\Models\Customer $c */
 foreach( $t->customers as $c ) {
-    $data[ $c->getId() ]['type']           = $c->type;
-    $data[ $c->getId() ]['corpwww']        = $c->corpwww;
-    $data[ $c->getId() ]['name']           = $c->name;
-    $data[ $c->getId() ]['autsys']         = $c->autsys;
-    $data[ $c->getId() ]['peeringpolicy']  = $c->peeringpolicy;
+    $data[ $c->id ]['type']           = $c->type;
+    $data[ $c->id ]['corpwww']        = $c->corpwww;
+    $data[ $c->id ]['name']           = $c->name;
+    $data[ $c->id ]['autsys']         = $c->autsys;
+    $data[ $c->id ]['peeringpolicy']  = $c->peeringpolicy;
 
-    $data[ $c->getId() ]['routeserver']    = 'No';
-    $data[ $c->getId() ]['ipv6']           = 'No';
-    $data[ $c->getId() ]['ports']          = '';
-    $data[ $c->getId() ]['numberofports']  = 0;
-    $data[ $c->getId() ]['joined']         = \Carbon\Carbon::parse( $c->datejoin )->format( 'Y-m-d' );
+    $data[ $c->id ]['routeserver']    = 'No';
+    $data[ $c->id ]['ipv6']           = 'No';
+    $data[ $c->id ]['ports']          = '';
+    $data[ $c->id ]['numberofports']  = 0;
+    $data[ $c->id ]['joined']         = \Carbon\Carbon::parse( $c->datejoin )->format( 'Y-m-d' );
 
     $first = true;
     foreach( $c->virtualInterfaces as $vi ) {
