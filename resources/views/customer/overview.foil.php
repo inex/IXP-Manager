@@ -256,7 +256,7 @@
                     </a>
                 </li>
 
-                <?php if( $c->consoleServerConnections ): ?>
+                <?php if( !config( 'ixp_fe.frontend.disabled.console-server-connection' ) && $c->consoleServerConnections->count() ): ?>
                     <li role="console-server-connections" class="nav-item ">
                         <a class="nav-link <?php if( $t->tab === 'console-server-connections' ): ?>active<?php endif; ?>" data-toggle="tab" href="#console-server-connections" data-toggle="tab">
                             OOB Access
