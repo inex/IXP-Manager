@@ -106,8 +106,7 @@ class VlanInterfaceController extends Common
         ]);
 
         return view( 'interfaces/vlan/edit' )->with([
-            'vlans'                     => Vlan::publicOnly()
-                ->orderBy('number')->get(),
+            'vlans'                     => Vlan::orderBy('number')->get(),
             'vli'                       => false,
             'vi'                        => $vi,
             'redirect2vi'               => $vi ? true : false,
@@ -184,8 +183,7 @@ class VlanInterfaceController extends Common
         }
 
         return view( 'interfaces/vlan/edit' )->with([
-            'vlans'                     => Vlan::publicOnly()
-                ->orderBy('number')->get(),
+            'vlans'                     => Vlan::  orderBy('number')->get(),
             'vli'                       => $vli,
             'vi'                        => $vi ?: false,
             'duplicateTo'               => $duplicateTo ?: false,
