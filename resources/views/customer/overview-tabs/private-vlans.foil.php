@@ -32,10 +32,11 @@
     <tbody>
         <?php foreach( $pvlans as $vlanid => $pv ): ?>
             <?php foreach( $pv[ "vlis" ] as $vli ):
+
                 /** @var $vli \IXP\Models\VlanInterface */
                 $pis = $vli->virtualInterface->physicalInterfaces;
-                $switcher = $pis[ 0 ]->switchPort->switcher;
-                ?>
+                $switcher = $pis->count() ? $pis[ 0 ]->switchPort->switcher : null;
+            ?>
                 <tr>
                     <td>
                         <?= $t->ee( $vli->vlan->name )?>
@@ -44,7 +45,7 @@
                         <?= $t->ee( $vli->vlan->number )?>
                     </td>
 
-                    <?php if( count( $pis ) > 0 ): ?>
+                    <?php if( $pis->count() ): ?>
                         <td>
                             <?= $t->ee( $switcher->cabinet->location->name ) ?>
                         </td>
