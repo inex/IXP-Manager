@@ -1,7 +1,9 @@
 <?php
 
+namespace Tests\Utils\Foil\Extensions;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,14 +24,17 @@
  */
 
 use IXP\Utils\Foil\Extensions\IXP as IXPFoilExtension;
+
 use Tests\TestCase;
 
 /**
  * PHPUnit test class to test the 'softwrap' Foil extension.
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   Tests
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Utils\Foil\Extensions
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class IXPTest extends TestCase
@@ -41,36 +46,40 @@ class IXPTest extends TestCase
         $this->ixp = new IXPFoilExtension;
     }
 
-
-    public function testEmptyArray() {
+    public function testEmptyArray(): void
+    {
         $this->assertEquals( '', $this->ixp->softwrap( [], 2, ", ", ",", 0 ) );
     }
 
-    public function testOneElementArray() {
+    public function testOneElementArray(): void
+    {
         $this->assertEquals( 'a', $this->ixp->softwrap( ['a'], 2, ", ", ",", 0 ) );
         $this->assertEquals( 'a', $this->ixp->softwrap( ['a'], 2, ", ", ",", 10 ) );
     }
 
-    public function testTwoElementArray() {
+    public function testTwoElementArray(): void
+    {
         $this->assertEquals( 'a, b', $this->ixp->softwrap( ['a','b'], 2, ", ", ",", 0 ) );
         $this->assertEquals( 'a, b', $this->ixp->softwrap( ['a','b'], 2, ", ", ",", 10 ) );
     }
 
-    public function testThreeElementArray() {
+    public function testThreeElementArray(): void
+    {
         $this->assertEquals( "a, b,\nc",   $this->ixp->softwrap( ['a','b','c'], 2, ", ", ",", 0 ) );
         $this->assertEquals( "a, b,\n  c", $this->ixp->softwrap( ['a','b','c'], 2, ", ", ",", 2 ) );
     }
 
-    public function testFourElementArray() {
+    public function testFourElementArray(): void
+    {
         $this->assertEquals( "a, b,\nc, d",   $this->ixp->softwrap( ['a','b','c','d'], 2, ", ", ",", 0 ) );
         $this->assertEquals( "a, b, c,\nd",   $this->ixp->softwrap( ['a','b','c','d'], 3, ", ", ",", 0 ) );
         $this->assertEquals( "a, b,\n  c, d", $this->ixp->softwrap( ['a','b','c','d'], 2, ", ", ",", 2 ) );
     }
 
-    public function testFiveElementArray() {
+    public function testFiveElementArray(): void
+    {
         $this->assertEquals( "a, b,\nc, d,\ne",     $this->ixp->softwrap( ['a','b','c','d','e'], 2, ", ", ",", 0 ) );
         $this->assertEquals( "a, b, c,\nd, e",      $this->ixp->softwrap( ['a','b','c','d','e'], 3, ", ", ",", 0 ) );
         $this->assertEquals( "a, b,\n  c, d,\n  e", $this->ixp->softwrap( ['a','b','c','d','e'], 2, ", ", ",", 2 ) );
     }
-
 }

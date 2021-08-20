@@ -1,6 +1,9 @@
 <?php
+
+namespace IXP\Http\Controllers;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,74 +23,77 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace IXP\Http\Controllers;
+use App, Auth, Carbon\Carbon;
 
-use App, Auth, D2EM;
+use Illuminate\Auth\Access\AuthorizationException;
 
-use Carbon\Carbon;
-use Entities\{
-    CoreBundle          as CoreBundleEntity,
-    Customer            as CustomerEntity,
-    Infrastructure      as InfrastructureEntity,
-    IXP                 as IXPEntity,
-    PhysicalInterface   as PhysicalInterfaceEntity,
-    Switcher            as SwitchEntity,
-    TrafficDaily        as TrafficDailyEntity,
-    TrafficDailyPhysInt as TrafficDailyPhysIntEntity,
-    VirtualInterface    as VirtualInterfaceEntity,
-    Vlan                as VlanEntity,
-    VlanInterface       as VlanInterfaceEntity,
-
-};
-
-use Repositories\Vlan as VlanRepository;
-
+use IXP\Exceptions\Services\Grapher\ParameterException;
 use Illuminate\Http\{
-    Request
+    Request,
+    RedirectResponse
 };
 
-use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 use IXP\Exceptions\Services\Grapher\GraphCannotBeProcessedException;
 use IXP\Http\Requests\StatisticsRequest;
+
+use IXP\Models\{
+    Aggregators\TrafficDailyPhysIntAggregator,
+    Aggregators\VirtualInterfaceAggregator,
+    Aggregators\VlanInterfaceAggregator,
+    CoreBundle,
+    Customer,
+    Infrastructure,
+    PhysicalInterface,
+    Switcher,
+    TrafficDaily,
+    TrafficDailyPhysInt,
+    VirtualInterface,
+    Vlan,
+    VlanInterface
+};
+
 use IXP\Services\Grapher\Graph;
+use IXP\Services\Grapher;
 
 use IXP\Services\Grapher\Graph\{
     Customer as CustomerGraph
 };
 
-use IXP\Utils\View\Alert\Alert;
-use IXP\Utils\View\Alert\Container as AlertContainer;
-
-use Illuminate\Auth\Access\AuthorizationException;
-
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
 
 /**
  * Statistics Controller
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   Statistics
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ *
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Controllers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class StatisticsController extends Controller
 {
-
     /**
      * Process and update request parameters for standard graph attributes: period, category, protocol, type.
      *
      * These are safe for use from the request.
      *
      * @param StatisticsRequest $r
+     *
+     * @return void
      */
-    private function processGraphParams( StatisticsRequest $r )
+    private function processGraphParams( StatisticsRequest $r ): void
     {
-        $r->period   = Graph::processParameterPeriod(   $r->input( 'period',   '' ) );
-        $r->category = Graph::processParameterCategory( $r->input( 'category', '' ) );
-        $r->protocol = Graph::processParameterProtocol( $r->input( 'protocol', '' ) );
-        $r->type     = Graph::processParameterType(     $r->input( 'type',     '' ) );
+        $r->period   = Graph::processParameterPeriod(   $r->period );
+        $r->category = Graph::processParameterCategory( $r->category );
+        $r->protocol = Graph::processParameterProtocol( $r->protocol );
+        $r->type     = Graph::processParameterType(     $r->type );
     }
-
 
     /**
      * Show overall IXP graphs
@@ -100,95 +106,79 @@ class StatisticsController extends Controller
      */
     public function ixp( string $category = Graph::CATEGORY_BITS ) : View
     {
-        $ixp      = D2EM::getRepository( IXPEntity::class )->getDefault();
-        $grapher  = App::make('IXP\Services\Grapher');
         $category = Graph::processParameterCategory( $category, true );
 
-        $graph = $grapher->ixp( $ixp )->setType( Graph::TYPE_PNG )->setProtocol( Graph::PROTOCOL_ALL )->setCategory( $category );
+        $graph = App::make( Grapher::class )
+            ->ixp()->setType( Graph::TYPE_PNG )
+            ->setProtocol( Graph::PROTOCOL_ALL )->setCategory( $category );
+
         $graph->authorise();
 
-        return view( 'statistics/ixp' )->with([
+        return view( 'statistics/ixp' )->with( [
             'graph'    => $graph,
             'category' => $category,
-        ]);
+        ] );
     }
 
     /**
      * Show IXP infrastructure graphs
      *
-     * @param int $infraid ID of the infrastructure to show the graph of
-     * @param string $category Category of graph to show (e.g. bits / pkts)
+     * @param Infrastructure|null   $infra      Infrastructure to show the graph of
+     * @param string                $category   Category of graph to show (e.g. bits / pkts)
      *
      * @return View
      *
      * @throws
      */
-    public function infrastructure( int $infraid = 0, string $category = Graph::CATEGORY_BITS ) : View
+    public function infrastructure( ?Infrastructure $infra = null, string $category = Graph::CATEGORY_BITS ) : View
     {
-        /** @var InfrastructureEntity[] $eInfras */
-        $eInfras  = D2EM::getRepository( InfrastructureEntity::class )->findBy( [], [ 'name' => 'ASC' ] );
-        $grapher  = App::make('IXP\Services\Grapher');
-        $category = Graph::processParameterCategory( $category, true );
+        $infras     = Infrastructure::select( [ 'name', 'id' ] )
+            ->orderBy( 'name' )->get();
 
-        $infras = [];
-        foreach( $eInfras as $i ) {
-            $infras[ $i->getId() ] = $i->getName();
-        }
+        $inf        = $infra ?? $infras->first();
+        $category   = Graph::processParameterCategory( $category, true );
 
-        $infraid  = isset( $infras[ $infraid ] ) ? $infraid : array_keys( $infras )[0];
-        /** @var InfrastructureEntity $infra */
-        $infra    = D2EM::getRepository( InfrastructureEntity::class )->find( $infraid );
-        $graph    = $grapher->infrastructure( $infra )->setType( Graph::TYPE_PNG )->setProtocol( Graph::PROTOCOL_ALL )->setCategory( $category );
+        $graph      = App::make( Grapher::class )
+            ->infrastructure( $inf )->setType( Graph::TYPE_PNG )
+            ->setProtocol( Graph::PROTOCOL_ALL )->setCategory( $category );
 
         $graph->authorise();
 
-        return view( 'statistics/infrastructure' )->with([
+        return view( 'statistics/infrastructure' )->with( [
             'infras'   => $infras,
-            'infraid'  => $infraid,
-            'infra'    => $infra,
+            'infra'    => $inf,
             'graph'    => $graph,
             'category' => $category,
-        ]);
+        ] );
     }
 
     /**
      * Show Vlan (sflow) graphs
      *
-     * @param int $vlanid ID of the VLAN to show the graph of
-     * @param string $protocol IPv4/6
-     * @param string $category
+     * @param Vlan|null     $vlan       VLAN to show the graph of
+     * @param string        $protocol   IPv4/6
+     * @param string        $category
      *
      * @return View
      *
      * @throws
      */
-    public function vlan( int $vlanid = 0, string $protocol = Graph::PROTOCOL_IPV4, string $category = Graph::CATEGORY_BITS ) : View
+    public function vlan( Vlan $vlan = null, string $protocol = Graph::PROTOCOL_IPV4, string $category = Graph::CATEGORY_BITS ) : View
     {
+        $vlans   = Vlan::publicOnly()->where( 'peering_matrix', true )
+            ->where( 'peering_manager', true )
+            ->orderBy( 'name' )->get();
 
-
-        /** @var VlanEntity[] $eVlans */
-        $eVlans   = D2EM::getRepository( VlanEntity::class )->getFiltered( VlanRepository::TYPE_NORMAL, 'name' );
-        $grapher  = App::make('IXP\Services\Grapher');
-        $protocol = Graph::processParameterRealProtocol( $protocol );
-        $category = Graph::processParameterCategory( $category, true );
-
-        $vlans = [];
-        foreach( $eVlans as $v ) {
-            // we really only want 'public' VLANs
-            if( $v->getPeeringManager() || $v->getPeeringMatrix() ) {
-                $vlans[ $v->getId() ] = $v->getName();
-            }
-        }
-
-        if( !count($vlans) ) {
+        if( !$vlans->count() ) {
             abort( 404, 'No VLANs available for graphing' );
         }
 
-        $vlanid  = isset( $vlans[ $vlanid ] ) ? $vlanid : array_keys( $vlans )[0];
-        /** @var VlanEntity $vlan */
-        $vlan     = D2EM::getRepository( VlanEntity::class )->find( $vlanid );
-        $graph    = $grapher->vlan( $vlan )->setType( Graph::TYPE_PNG )->setProtocol( $protocol )
-                        ->setCategory( $category );
+        $protocol   = Graph::processParameterRealProtocol( $protocol );
+        $category   = Graph::processParameterCategory( $category, true );
+        $vl         = $vlan ?? $vlans->first();
+        $graph      = App::make( Grapher::class )
+            ->vlan( $vl )->setType( Graph::TYPE_PNG )
+            ->setProtocol( $protocol )->setCategory( $category );
 
         try {
             $graph->backend();
@@ -198,66 +188,58 @@ class StatisticsController extends Controller
 
         $graph->authorise();
 
-        return view( 'statistics/vlan' )->with([
+        return view( 'statistics/vlan' )->with( [
             'vlans'    => $vlans,
-            'vlanid'   => $vlanid,
-            'vlan'     => $vlan,
+            'vlan'     => $vl,
             'graph'    => $graph,
             'protocol' => $protocol,
             'category' => $category,
-        ]);
+        ] );
     }
 
     /**
      * Show IXP switch graphs
      *
-     * @param int $switchid ID of the switch to show the graph of
-     * @param string $category Category of graph to show (e.g. bits / pkts)
+     * @param Switcher|null $switch         Switch to show the graph of
+     * @param string        $category       Category of graph to show (e.g. bits / pkts)
      *
      * @return View
      *
      * @throws
      */
-    public function switch( int $switchid = 0, string $category = Graph::CATEGORY_BITS ) : View
+    public function switch( Switcher $switch = null, string $category = Graph::CATEGORY_BITS ) : View
     {
-        /** @var SwitchEntity[] $eSwitches */
-        $eSwitches = D2EM::getRepository( SwitchEntity::class )->getFiltered( true );
-        $grapher = App::make('IXP\Services\Grapher');
-        $category = Graph::processParameterCategory( $category, true );
+        $switches = Switcher::where( 'active', true )
+            ->orderBy( 'name' )->get()
+            ->keyBy( 'id' );
 
-        $switches = [];
-        foreach( $eSwitches as $s ) {
-            $switches[ $s->getId() ] = $s->getName();
-        }
-
-        $switchid = isset( $switches[ $switchid ] ) ? $switchid : array_keys( $switches )[0];
-        /** @var SwitchEntity $switch */
-        $switch   = D2EM::getRepository( SwitchEntity::class )->find( $switchid );
-        $graph    = $grapher->switch( $switch )->setType( Graph::TYPE_PNG )->setProtocol( Graph::PROTOCOL_ALL )->setCategory( $category );
+        $category   = Graph::processParameterCategory( $category, true );
+        $s          = $switch ?? $switches->first();
+        $graph      = App::make( Grapher::class )
+            ->switch( $s )->setType( Graph::TYPE_PNG )
+            ->setProtocol( Graph::PROTOCOL_ALL )->setCategory( $category );
 
         $graph->authorise();
 
         return view( 'statistics/switch' )->with([
             'switches'  => $switches,
-            'switchid'  => $switchid,
-            'switch'    => $switch,
+            'switch'    => $s,
             'graph'     => $graph,
             'category'  => $category,
         ]);
     }
 
-
     /**
      * Show IXP trunk graphs
      *
-     * @param string $trunkid ID of the trunk to show the graph of
-     * @param string $category Category of graph to show (e.g. bits / pkts)
+     * @param  string|null  $trunk  ID of the trunk to show the graph of
+     * @param  string  $category  Category of graph to show (e.g. bits / pkts)
      *
      * @return RedirectResponse|View
      *
-     * @throws
+     * @throws ParameterException
      */
-    public function trunk( string $trunkid = null, string $category = Graph::CATEGORY_BITS )
+    public function trunk( string $trunk = null, string $category = Graph::CATEGORY_BITS ): RedirectResponse|View
     {
         if( !is_array( config('grapher.backends.mrtg.trunks') ) || !count( config('grapher.backends.mrtg.trunks') ) ) {
             AlertContainer::push(
@@ -267,76 +249,71 @@ class StatisticsController extends Controller
             return redirect('');
         }
 
-        $grapher = App::make('IXP\Services\Grapher');
-
         // get the available graphs
         $images = [];
         $graphs = [];
         foreach( config('grapher.backends.mrtg.trunks') as $g ) {
-            $images[]           = $g['name'];
-            $graphs[$g['name']] = $g['title'];
+            $images[]               = $g[ 'name' ];
+            $graphs[ $g['name'] ]   = $g[ 'title' ];
         }
 
-        if( !in_array( $trunkid, $images ) ) {
-            $trunkid = $images[ 0 ];
+        if( !in_array( $trunk, $images, true ) ) {
+            $trunk = $images[ 0 ];
         }
 
-        $graph = $grapher->trunk( $trunkid )->setType( Graph::TYPE_PNG )->setProtocol( Graph::PROTOCOL_ALL )->setCategory( Graph::CATEGORY_BITS );
+        $graph = App::make( Grapher::class )
+            ->trunk( $trunk )->setType( Graph::TYPE_PNG )
+            ->setProtocol( Graph::PROTOCOL_ALL )->setCategory( Graph::CATEGORY_BITS );
+
         $graph->authorise();
 
-        return view( 'statistics/trunk' )->with([
+        return view( 'statistics/trunk' )->with( [
             'graphs'    => $graphs,
-            'trunkid'   => $trunkid,
+            'trunkid'   => $trunk,
             'graph'     => $graph,
             'category'  => $category,
-        ]);
+        ] );
     }
-
-
 
     /**
      * Display all member graphs
      *
-     * @param StatisticsRequest $r
+     * @param  StatisticsRequest  $r
      *
      * @return View
      *
-     * @throws
+     * @throws ParameterException
      */
     public function members( StatisticsRequest $r ): View
     {
-
         if( !CustomerGraph::authorisedForAllCustomers() ) {
             abort( 403, "You are not authorised to view this member's graphs." );
         }
 
-        $grapher = App::make('IXP\Services\Grapher');
-        $this->processGraphParams($r);
+        $grapher = App::make( Grapher::class );
+        $this->processGraphParams( $r );
 
         // do we have an infrastructure or vlan?
-
         $vlan = $infra = false;
-        if( $r->input( 'infra' ) ) {
-            /** @var InfrastructureEntity $infra */
-            if( $infra = D2EM::getRepository(InfrastructureEntity::class) ->find($r->input('infra')) ) {
-                $targets = D2EM::getRepository( VirtualInterfaceEntity::class )->getObjectsForInfrastructure( $infra );
+
+        if( $r->infra ) {
+            if( $infra = Infrastructure::find( $r->infra ) ) {
+                $targets = VirtualInterfaceAggregator::getForInfrastructure( $infra );
             } else {
-                $targets = D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, true, false );
+                $targets = Customer::currentActive( true, false )->get();
             }
             $r->protocol = Graph::PROTOCOL_ALL;
-        } else if( $r->input( 'vlan' ) && ( $vlan = D2EM::getRepository(VlanEntity::class)->find($r->input('vlan')) ) ) {
-            /** @var VlanEntity $vlan */
-            if( !in_array( $r->protocol, Graph::PROTOCOLS_REAL ) ) {
+        } else if( $r->vlan && ( $vlan = Vlan::find( $r->vlan ) ) ) {
+            if( !in_array( $r->protocol, Graph::PROTOCOLS_REAL, true ) ) {
                 $r->protocol = Graph::PROTOCOL_IPV4;
             }
-            $targets = D2EM::getRepository( VlanInterfaceEntity::class )->getObjectsForVlan( $vlan, $r->protocol );
+            $targets = VlanInterfaceAggregator::forVlan( $vlan, $r->protocol );
         } else {
             $targets = [];
         }
 
         $graphs = [];
         foreach( $targets as $t ) {
-
             if( !$t->isGraphable() ) {
                 continue;
             }
@@ -360,116 +337,93 @@ class StatisticsController extends Controller
         }
 
         return view( 'statistics/members' )->with([
-            'graph'         => $graphs[0] ?? false,  // sample graph as all types/protocols/categories/periods will be the same
+            'graph'         => $graphs[ 0 ] ?? false,  // sample graph as all types/protocols/categories/periods will be the same
             'graphs'        => $graphs,
             'r'             => $r,
-            'infras'        => D2EM::getRepository( InfrastructureEntity::class )->getNames(),
+            'infras'        => Infrastructure::orderBy( 'name' )->get(),
             'infra'         => $infra ?? false,
-            'vlans'         => D2EM::getRepository( VlanEntity::class )->getNames(),
+            'vlans'         => Vlan::publicOnly()->orderBy('number')->get(),
             'vlan'          => $vlan ?? false,
         ]);
     }
 
-
     /**
      * Display all graphs for a member
      *
-     * @param StatisticsRequest   $r
-     * @param integer             $id ID of the member
+     * @param StatisticsRequest     $r
+     * @param Customer|null         $cust the member
      *
      * @return RedirectResponse|View
      *
-     * @throws
      */
-    public function member( StatisticsRequest $r, int $id = null )
+    public function member( StatisticsRequest $r, Customer $cust = null ): RedirectResponse|View
     {
-
-        if( $id === null && Auth::check() ) {
-            $id = Auth::user()->getCustomer()->getId();
+        if( !$cust && Auth::check() ) {
+            $cust = Auth::getUser()->customer;
         }
 
-        /** @var CustomerEntity $c */
-        if( !$id || !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
-            abort( 404, 'Customer not found' );
-        }
-
-        $grapher = App::make('IXP\Services\Grapher');
-
+        $grapher = App::make( Grapher::class );
 
         // if the customer is authorised, then so too are all of their virtual and physical interfaces:
         try {
-            $grapher->customer( $c )->authorise();
+            $grapher->customer( $cust )->authorise();
         } catch( AuthorizationException $e ) {
             abort( 403, "You are not authorised to view this member's graphs." );
         }
 
-        if( !$c->hasInterfacesConnectedOrInQuarantine() ) {
-            AlertContainer::push(
-                "This customer has no graphable interfaces (i.e. no physical interfaces in quarantine or connected)",
-                Alert::WARNING
-            );
+        if( !$cust->hasInterfacesConnectedOrInQuarantine() ) {
+            AlertContainer::push("This customer has no graphable interfaces (i.e. no physical interfaces in quarantine or connected)", Alert::WARNING);
             return redirect()->back();
         }
 
         return view( 'statistics/member' )->with([
-            "c"                     => $c,
+            "c"                     => $cust->load(  [
+                'virtualinterfaces.physicalInterfaces.switchPort.switcher',
+                'virtualinterfaces.physicalInterfaces.switchPort.switcher.cabinet.location',
+            ] ),
             "grapher"               => $grapher,
-            "category"              => Graph::processParameterCategory( $r->input( 'category' ) ),
-            "period"                => Graph::processParameterPeriod( $r->input( 'period' ) ),
+            "category"              => Graph::processParameterCategory( $r->category ),
+            "period"                => Graph::processParameterPeriod( $r->period ),
         ]);
     }
 
     /**
      * Display Aggregate/LAG/Port for all periods (day/week/month/year)
      *
-     * @param   StatisticsRequest     $r
-     * @param   string                $type       type
-     * @param   integer               $typeid     ID of type
+     * @param  StatisticsRequest  $r
+     * @param  string  $type  type
+     * @param  integer  $typeid  ID of type
      *
      * @return  View
      *
-     * @throws
+     * @throws ParameterException
      */
     public function memberDrilldown( StatisticsRequest $r, string $type, int $typeid ): View
     {
-        /** @var CustomerEntity $c */
         switch( strtolower( $type ) ) {
             case 'agg':
-
-                if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $typeid ) ) ){
-                    abort( 404, 'Unknown customer' );
-                }
-                $graph = App::make('IXP\Services\Grapher')->customer( $c );
+                $c      = Customer::findOrFail( $typeid );
+                $graph  = App::make( Grapher::class )->customer( $c );
                 break;
-
             case 'vi':
-                /** @var VirtualInterfaceEntity $vi */
-                if( !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $typeid ) ) ) {
-                    abort( 404, 'Unknown virtual interface' );
-                }
-                $c = $vi->getCustomer();
-                $graph = App::make('IXP\Services\Grapher')->virtint( $vi );
+                $vi     = VirtualInterface::findOrFail( $typeid );
+                $c      = $vi->customer;
+                $graph  = App::make( Grapher::class )->virtint( $vi );
                 break;
-
             case 'pi':
-                /** @var PhysicalInterfaceEntity $pi */
-                if( !( $pi = D2EM::getRepository( PhysicalInterfaceEntity::class )->find( $typeid ) ) ) {
-                    abort( 404, 'Unknown physical interface' );
-                }
-                $c = $pi->getVirtualInterface()->getCustomer();
-                $graph = App::make('IXP\Services\Grapher')->physint( $pi );
-
+                $pi     = PhysicalInterface::findOrFail( $typeid );
+                $c      = $pi->virtualInterface->customer;
+                $graph  = App::make( Grapher::class )->physint( $pi );
                 break;
-
             default:
                 abort( 404, 'Unknown graph type' );
         }
 
         /** @var Graph $graph */
-        $graph->setCategory( Graph::processParameterCategory( $r->input( 'category' ) ) );
+        $graph->setCategory( Graph::processParameterCategory( $r->category ) );
         $graph->authorise();
 
-        return view( 'statistics/member-drilldown' )->with([
+        return view( 'statistics/member-drilldown' )->with( [
             'c'     => $c,
             'graph' => $graph,
         ]);
@@ -478,42 +432,36 @@ class StatisticsController extends Controller
     /**
      * Show latency graphs
      *
-     * @param Request $r
-     * @param int $vliid
-     * @param string $protocol
+     * @param  VlanInterface  $vli
+     * @param  string  $protocol
      *
      * @return View|RedirectResponse
      *
-     * @throws
+     * @throws ParameterException|AuthorizationException
      */
-    public function latency( Request $r, int $vliid, string $protocol )
+    public function latency( VlanInterface $vli, string $protocol ): View|RedirectResponse
     {
-        /** @var VlanInterfaceEntity $vli */
-        if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $vliid ) ) ){
-            abort( 404, 'Unknown VLAN interface' );
-        }
-
         $protocol = Graph::processParameterProtocol( $protocol );
 
-        $graph = App::make('IXP\Services\Grapher')->latency( $vli )->setProtocol( $protocol );
+        $graph = App::make( Grapher::class )->latency( $vli )->setProtocol( $protocol );
         $graph->authorise();
 
-        $fnEnabled = 'get' . ucfirst( $protocol ) . 'enabled';
-        $fnCanping = 'get' . ucfirst( $protocol ) . 'canping';
-        $fnAddress = 'get' . ucfirst( $protocol ) . 'Address';
+        $fnEnabled = strtolower( $protocol ) . 'enabled';
+        $fnCanping = strtolower( $protocol ) . 'canping';
+        $fnAddress = strtolower( $protocol ) . 'address';
 
-        if( !$vli->$fnEnabled() || !$vli->$fnCanping() ) {
+        if( !$vli->$fnEnabled || !$vli->$fnCanping ) {
             AlertContainer::push(
                 "Protocol or ping not enabled on the requested interface",
                 Alert::WARNING
             );
-            return redirect()->to( route( "statistics@member" ), [ "id" => $vli->getVirtualInterface()->getCustomer()->getId() ] );
+            return redirect( route( "statistics@member", [ "id" => $vli->virtualInterface->customer->id ] ) );
         }
 
         return view( 'statistics/latency' )->with([
-            'c'         => $vli->getVirtualInterface()->getCustomer(),
+            'c'         => $vli->virtualInterface->customer,
             'vli'       => $vli,
-            'ip'        => $vli->$fnAddress()->getAddress(),
+            'ip'        => $vli->$fnAddress->address,
             'protocol'  => $protocol,
             'graph'     => $graph,
         ]);
@@ -523,44 +471,34 @@ class StatisticsController extends Controller
     /**
      * sFlow Peer to Peer statistics
      *
-     * @param Request $r
-     * @param null $cid
+     * @param  Request  $r
+     * @param  Customer|null  $cust
      *
      * @return RedirectResponse|View
-     * @throws
+     *
+     * @throws ParameterException
      */
-    public function p2p( Request $r, $cid = null )
+    public function p2p( Request $r, Customer $cust = null ): RedirectResponse|View
     {
         // default to the current user:
-        if( $cid === null && Auth::check() ) {
-            $cid = Auth::user()->getCustomer()->getId();
+        if( !$cust && Auth::check() ) {
+            $cust = Auth::getUser()->customer;
         }
 
-        /** @var CustomerEntity $c */
-        if( !$cid || !( $c = D2EM::getRepository( CustomerEntity::class )->find( $cid ) ) ){
-            abort( 404, 'Customer not found' );
-        }
-
-        $grapher = App::make('IXP\Services\Grapher');
-
-        $r->category = Graph::processParameterCategory(     $r->input( 'category', '' ), true );
-        $r->period   = Graph::processParameterPeriod(       $r->input( 'period', '' ) );
-        $r->protocol = Graph::processParameterRealProtocol( $r->input( 'protocol', '' ) );
+        $showGraphsOption = false;
+        $showGraphs       = true;
 
         // for larger IXPs, it's quite intensive to display all the graphs - decide if we need to do this or not
         if( config('grapher.backends.sflow.show_graphs_on_index_page') !== null ) {
             $showGraphsOption = true;
             $showGraphs       = config('grapher.backends.sflow.show_graphs_on_index_page');
-        } else {
-            $showGraphsOption = false;
-            $showGraphs       = true;
         }
 
         if( $showGraphsOption ) {
-            if( $r->input( 'submit' ) == "Show Graphs" ) {
+            if( $r->submit === "Show Graphs" ) {
                 $showGraphs = true;
                 $r->session()->put( 'controller.statistics.p2p.show_graphs', true );
-            } else if( $r->input( 'submit' ) == "Hide Graphs" ) {
+            } else if( $r->submit === "Hide Graphs" ) {
                 $showGraphs = false;
                 $r->session()->put( 'controller.statistics.p2p.show_graphs', false );
             } else {
@@ -568,45 +506,58 @@ class StatisticsController extends Controller
             }
         }
 
+        $r->category = Graph::processParameterCategory(     $r->category, true );
+        $r->period   = Graph::processParameterPeriod(       $r->period );
+        $r->protocol = Graph::processParameterRealProtocol( $r->protocol );
+
+        $srcVlis = VlanInterface::select( [ 'vli.*' ] )
+            ->from( 'vlaninterface AS vli' )
+            ->Join( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
+            ->Join( 'cust AS c', 'c.id', 'vi.custid' )
+            ->Join( 'vlan AS v', 'v.id', 'vli.vlanid' )
+            ->where( 'c.id', $cust->id )
+            ->with( [ 'vlan' ] )
+            ->orderBy( 'v.number' )->get()->keyBy( 'id' );
+
         // Find the possible VLAN interfaces that this customer has for the given IXP
-        if( !count( $srcVlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForCustomer( $c ) ) ) {
+        if( !count( $srcVlis ) ) {
             AlertContainer::push( "There were no interfaces available for the given criteria.", Alert::WARNING );
             return redirect()->back();
         }
 
-        if( ( $svlid = $r->input( 'svli', false ) ) && isset( $srcVlis[ $svlid ] ) ) {
+        if( ( $svlid = $r->svli ) && isset( $srcVlis[ $svlid ] ) ) {
+            /** @var VlanInterface $srcVli */
             $srcVli = $srcVlis[ $svlid ];
         } else {
-            $srcVli = $srcVlis[ array_keys( $srcVlis )[ 0 ] ];
+            $srcVli = $srcVlis[ $srcVlis->first()->id ];
         }
 
         // is the requested protocol support?
-        if( !$srcVli->getVlan()->getPrivate() && !$srcVli->isIPEnabled( $r->protocol ) ) {
+        if( !$srcVli->vlan->private && !$srcVli->ipvxEnabled( $r->protocol ) ) {
             AlertContainer::push( Graph::resolveProtocol( $r->protocol ) . " is not supported on the requested VLAN interface.", Alert::WARNING );
             return redirect()->back();
         }
-
         // Now find the possible other VLAN interfaces that this customer could exchange traffic with
         // (as well as removing the source vli)
-        $dstVlis = D2EM::getRepository( VlanInterfaceEntity::class )->getObjectsForVlan( $srcVli->getVlan() );
-        unset( $dstVlis[ $srcVli->getId() ] );
+        $dstVlis = VlanInterfaceAggregator::forVlan( $srcVli->vlan );
+        unset( $dstVlis[ $srcVli->id ] );
 
-        if( !count( $dstVlis ) ) {
+        if( !$dstVlis->count() ) {
             AlertContainer::push( "There were no destination interfaces available for traffic exchange for the given criteria.", Alert::WARNING );
             return redirect()->back();
         }
 
-        if( ( $dvlid = $r->input( 'dvli', false ) ) && isset( $dstVlis[ $dvlid ] ) ) {
+        if( ( $dvlid = $r->dvli ) && isset( $dstVlis[ $dvlid ] ) ) {
             $dstVli = $dstVlis[ $dvlid ];
         } else {
             $dstVli = false;
 
             // possibility that we've changed the source VLI in the UI and so the destination dli provided is on another LAN
-            if( $dvlid && $otherDstVli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $dvlid ) ) {
+            if( $dvlid && $otherDstVli = VlanInterface::find( $dvlid ) ) {
                 // does this customer have a VLAN interface on the same VLAN as the srcVli?
-                foreach( $otherDstVli->getVirtualInterface()->getCustomer()->getVirtualInterfaces() as $vi ) {
-                    foreach( $vi->getVlanInterfaces() as $vli ) {
-                        if( $srcVli->getVlan()->getId() == $vli->getVlan()->getId() ) {
+                foreach( $otherDstVli->virtualInterface->customer->virtualInterfaces as $vi ) {
+                    foreach( $vi->vlanInterfaces as $vli ) {
+                        if( $srcVli->vlan->id === $vli->vlan->id ) {
                             $dstVli = $vli;
                             break 2;
                         }
@@ -614,7 +565,7 @@ class StatisticsController extends Controller
                 }
             }
 
-            if( !$dstVli && $r->input( 'dvli', false ) !== false ) {
+            if( !$dstVli && $r->dvli !== null ) {
                 AlertContainer::push( "The customer selected for destination traffic does not have any interfaces on the requested VLAN", Alert::WARNING );
                 return redirect()->back();
             }
@@ -624,9 +575,9 @@ class StatisticsController extends Controller
         if( $dstVli ) {
             foreach( $srcVlis as $i => $svli ) {
                 $haveMatch = false;
-                foreach( $dstVli->getVirtualInterface()->getCustomer()->getVirtualInterfaces() as $vi ) {
-                    foreach( $vi->getVlanInterfaces() as $dvli ) {
-                        if( $svli->getVlan()->getId() == $dvli->getVlan()->getId() ) {
+                foreach( $dstVli->virtualInterface->customer->virtualInterfaces as $vi ) {
+                    foreach( $vi->vlanInterfaces as $dvli ) {
+                        if( $svli->vlan->id === $dvli->vlan->id ) {
                             $haveMatch = true;
                             break 2;
                         }
@@ -640,14 +591,15 @@ class StatisticsController extends Controller
         }
 
         // authenticate on one of the graphs
-        $graph = $grapher->p2p( $srcVli, $dstVli ? $dstVli : $dstVlis[ array_keys( $dstVlis )[0] ] )
+        $graph = App::make( Grapher::class )
+            ->p2p( $srcVli, $dstVli ?: $dstVlis[ $dstVlis->first()->id ])
             ->setProtocol( $r->protocol )
             ->setCategory( $r->category )
             ->setPeriod( $r->period );
         $graph->authorise();
-
+        
         $viewOptions = [
-            'c'                => $c,
+            'c'                => $cust,
             'category'         => $r->category,
             'dstVlis'          => $dstVlis,
             'dstVli'           => $dstVli,
@@ -662,9 +614,9 @@ class StatisticsController extends Controller
 
         if( $dstVli ) {
             return view( 'statistics/p2p-single', $viewOptions );
-        } else {
-            return view( 'statistics/p2p', $viewOptions );
         }
+
+        return view( 'statistics/p2p', $viewOptions );
     }
 
     /**
@@ -685,50 +637,43 @@ class StatisticsController extends Controller
         ];
 
         $metric = $r->input( 'metric', $metrics['Total'] );
-        if( !in_array( $metric, $metrics ) ) {
+        if( !in_array( $metric, $metrics, true ) ) {
             $metric = $metrics[ 'Total' ];
         }
 
-        $day = $r->input( 'day', date( 'Y-m-d', time() - 86400 ) );
-        if( !preg_match( '/^\d\d\d\d\-\d\d\-\d\d$/', $day ) ) {
-            $day = date( 'Y-m-d', time() - 86400 );
+        $tday = $r->day;
+        if( !preg_match( '/^\d\d\d\d\-\d\d\-\d\d$/', $tday ) ) {
+            $tday = Carbon::now()->format( 'Y-m-d');
         }
-        $day = new \DateTime( $day );
 
-        $category = Graph::processParameterCategory( $r->input( 'category' ) );
+        $day        = Carbon::createFromFormat( 'Y-m-d', $tday );
+        $category   = Graph::processParameterCategory( $r->category );
 
-        return view( 'statistics/league-table' )->with([
+        return view( 'statistics/league-table' )->with( [
             'metric'       => $metric,
             'metrics'      => $metrics,
             'day'          => $day,
             'category'     => $category,
-            'trafficDaily' => D2EM::getRepository( TrafficDailyEntity::class )->load( $day, $category ),
-        ]);
+            'trafficDaily' => TrafficDaily::loadTraffic( $day, $category ),
+        ] );
     }
-
-
-
 
     /**
      * Display graphs for a core bundle
      *
-     * @param StatisticsRequest   $r
-     * @param int                 $cbid ID of the core bundle
+     * @param  StatisticsRequest    $r
+     * @param  CoreBundle           $cb  the core bundle
      *
      * @return RedirectResponse|View
      *
-     * @throws
+     * @throws ParameterException
      */
-    public function coreBundle( StatisticsRequest $r, int $cbid = null )
+    public function coreBundle( StatisticsRequest $r, CoreBundle $cb ): RedirectResponse|View
     {
-        /** @var CoreBundleEntity $cb */
-        if( !$cbid || !( $cb = D2EM::getRepository( CoreBundleEntity::class )->find( $cbid ) ) ) {
-            abort( 404, 'Core bundle not found' );
-        }
-
-        $grapher  = App::make('IXP\Services\Grapher');
         $category = Graph::processParameterCategory( $r->input( 'category' ) );
-        $graph    = $grapher->coreBundle( $cb )->setCategory( $category )->setSide( $r->input( 'side', 'a' ) );
+        $graph    = App::make( Grapher::class )
+            ->coreBundle( $cb )->setCategory( $category )
+            ->setSide( $r->input( 'side', 'a' ) );
 
         // if the customer is authorised, then so too are all of their virtual and physical interfaces:
         try {
@@ -738,25 +683,22 @@ class StatisticsController extends Controller
         }
 
         return view( 'statistics/core-bundle' )->with([
+            "cbs"                   => CoreBundle::active()->get(),
             "cb"                    => $cb,
-            "grapher"               => $grapher,
             "graph"                 => $graph,
             "category"              => $category,
-            "categories"            => Auth::check() && Auth::user()->isSuperUser() ? Graph::CATEGORY_DESCS : Graph::CATEGORIES_BITS_PKTS_DESCS,
+            "categories"            => Auth::check() && Auth::getUser()->isSuperUser() ? Graph::CATEGORY_DESCS : Graph::CATEGORIES_BITS_PKTS_DESCS,
         ]);
     }
-
 
     /**
      * Show utilisation of member ports
      *
-     * @param Request $r
+     * @param StatisticsRequest $r
      *
      * @return View
-     *
-     * @throws
      */
-    public function utilisation( StatisticsRequest $r )
+    public function utilisation( StatisticsRequest $r ): View
     {
         $metrics = [
             'Max'     => 'max',
@@ -765,39 +707,42 @@ class StatisticsController extends Controller
         ];
 
         $metric = $r->input( 'metric', $metrics['Max'] );
-        if( !in_array( $metric, $metrics ) ) {
+
+        if( !in_array( $metric, $metrics, true ) ) {
             $metric = $metrics[ 'Max' ];
         }
 
-        $days = D2EM::getRepository( TrafficDailyPhysIntEntity::class )->availableForDays();
+        $days =  TrafficDailyPhysInt::select( [ 'day' ] )
+            ->distinct( 'day' )
+            ->orderBy( 'day')->get()->pluck( 'day' )->toArray();
+
         if( count( $days ) ) {
-            $day = $r->input( 'day' );
-            if( !in_array( $day, $days ) ) {
-                $day = $days[0];
+            $day = $r->day;
+            if( !in_array( $day, $days, true ) ) {
+                $day = $days[ 0 ];
             }
         } else {
             $day = null;
         }
 
         $vid = false;
-        if( $r->input( 'vlan' ) && ( $vlan = D2EM::getRepository( VlanEntity::class )->find( $r->input( 'vlan' ) ) ) ) {
-            $vid = $vlan->getId();
+        if( $r->vlan && ( $vlan = Vlan::find( $r->vlan ) ) ) {
+            $vid = $vlan->id;
         }
 
-        $category = Graph::processParameterCategory( $r->input( 'category' ) );
-        $period   = Graph::processParameterPeriod( $r->input( 'period' ), Graph::PERIOD_MONTH );
+        $category = Graph::processParameterCategory( $r->category );
+        $period   = Graph::processParameterPeriod( $r->period, Graph::PERIOD_MONTH );
 
-        return view( 'statistics/utilisation' )->with([
+        return view( 'statistics/utilisation' )->with( [
             'metric'       => $metric,
             'metrics'      => $metrics,
             'day'          => $day,
             'days'         => $days,
             'category'     => $category,
             'period'       => $period,
-            'tdpis'        => ( $day ? D2EM::getRepository( TrafficDailyPhysIntEntity::class )->load( $day, $category, $period, $vid ) : [] ),
-            'vlans'        => D2EM::getRepository( VlanEntity::class )->getNames(),
+            'tdpis'        => $day ? TrafficDailyPhysIntAggregator::loadTraffic( $day, $category, $period, $vid ) : [],
+            'vlans'        => Vlan::publicOnly()->orderBy('number')->get(),
             'vlan'         => $vid,
-        ]);
+        ] );
     }
-
 }

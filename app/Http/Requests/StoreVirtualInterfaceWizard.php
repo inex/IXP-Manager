@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,14 +25,22 @@ namespace IXP\Http\Requests;
 
 use Auth;
 
-use Entities\{
-    PhysicalInterface as PhysicalInterfaceEntity
-};
-
 use Illuminate\Foundation\Http\FormRequest;
+
+use IXP\Models\PhysicalInterface;
+
 use IXP\Rules\IdnValidate;
 
-
+/**
+ * Store VirtualInterfaceWizard FormRequest
+ *
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Requests
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class StoreVirtualInterfaceWizard extends FormRequest
 {
     /**
@@ -40,7 +48,7 @@ class StoreVirtualInterfaceWizard extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // middleware ensures superuser access only so always authorised here:
         return Auth::getUser()->isSuperUser();
@@ -51,18 +59,18 @@ class StoreVirtualInterfaceWizard extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'cust'                  => 'required|integer|exists:Entities\Customer,id',
-            'vlan'                  => 'required|integer|exists:Entities\Vlan,id',
+            'custid'                => 'required|integer|exists:cust,id',
+            'vlanid'                => 'required|integer|exists:vlan,id',
             'trunk'                 => 'boolean',
 
-            'switch'                => 'required|integer|exists:Entities\Switcher,id',
-            'switch-port'           => 'required|integer|exists:Entities\SwitchPort,id',
-            'status'                => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$STATES ) ),
-            'speed'                 => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$SPEED ) ),
-            'duplex'                => 'required|string|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$DUPLEX ) ),
+            'switch'                => 'required|integer|exists:switch,id',
+            'switchportid'          => 'required|integer|exists:switchport,id',
+            'status'                => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterface::$STATES ) ),
+            'speed'                 => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterface::$SPEED ) ),
+            'duplex'                => 'required|string|in:' . implode( ',', array_keys( PhysicalInterface::$DUPLEX ) ),
 
             'maxbgpprefix'          => 'integer|nullable',
             'mcastenabled'          => 'boolean',
@@ -71,23 +79,19 @@ class StoreVirtualInterfaceWizard extends FormRequest
             'rsmorespecifics'       => 'boolean',
             'as112client'           => 'boolean',
 
-            'ipv4-enabled'          => 'boolean',
-            'ipv4-address'          => 'ipv4' . ( $this->input('ipv4-enabled') ? '|required' : '|nullable' ),
-            'ipv4-hostname'         => [ 'string', 'max:255' , ( ( config('ixp_fe.vlaninterfaces.hostname_required' ) && $this->input('ipv4-enabled') ) ? 'required' : 'nullable' ), new IdnValidate() ],
-            'ipv4-bgp-md5-secret'   => 'string|max:255|nullable',
+            'ipv4enabled'           => 'boolean',
+            'ipv4address'           => 'ipv4|' . ( $this->ipv4enabled ? 'required' : 'nullable' ),
+            'ipv4hostname'          => [ 'string', 'max:255' , ( ( config('ixp_fe.vlaninterfaces.hostname_required' ) && $this->ipv4enabled ) ? 'required' : 'nullable' ), new IdnValidate() ],
+            'ipv4bgpmd5secret'      => 'string|max:255|nullable',
             'ipv4canping'           => 'boolean',
             'ipv4monitorrcbgp'      => 'boolean',
 
-            'ipv6-enabled'          => 'boolean',
-            'ipv6-address'          => 'ipv6' . ( $this->input('ipv6-enabled') ? '|required' : '|nullable' ),
-            'ipv6-hostname'         => [ 'string', 'max:255' , ( ( config('ixp_fe.vlaninterfaces.hostname_required' ) && $this->input('ipv6-enabled') ) ? 'required' : 'nullable' ), new IdnValidate() ],
-            'ipv6-bgp-md5-secret'   => 'string|max:255|nullable',
+            'ipv6enabled'           => 'boolean',
+            'ipv6address'           => 'ipv6|' . ( $this->ipv6enabled ? 'required' : 'nullable' ),
+            'ipv6hostname'          => [ 'string', 'max:255' , ( ( config('ixp_fe.vlaninterfaces.hostname_required' ) && $this->ipv6enabled ) ? 'required' : 'nullable' ), new IdnValidate() ],
+            'ipv6bgpmd5secret'      => 'string|max:255|nullable',
             'ipv6canping'           => 'boolean',
             'ipv6monitorrcbgp'      => 'boolean',
-
         ];
     }
-
 }
-
-

@@ -25,6 +25,7 @@ namespace IXP\Tasks\Irrdb;
  */
 
 use D2EM;
+use IXP\Models\IrrdbAsn;
 use Log;
 
 /**
@@ -41,18 +42,19 @@ class UpdateAsnDb extends UpdateDb
     /**
      * Update the prefix database
      *
-     * @throws \IXP\Exceptions\Services\Grapher\GeneralException
      * @return array
+     *
+      * @throws
      */
     public function update(): array
     {
         foreach( $this->protocols() as $protocol ) {
-
-            if( $this->customer()->isRouteServerClient($protocol) && $this->customer()->isIrrdbFiltered() ) {
-                $this->bgpq3()->setSources( $this->customer()->getIRRDB()->getSource() );
+            if( $this->customer()->irrdbConfig && $this->customer()->routeServerClient( $protocol ) && $this->customer()->irrdbFiltered() ) {
+                $this->bgpq3()->setSources( $this->customer()->irrdbConfig->source );
 
                 $this->startTimer();
-                $asns = $this->bgpq3()->getAsnList( $this->customer()->resolveAsMacro( $protocol, 'as' ), $protocol );
+                $asns = $this->bgpq3()->getAsnList( $this->customer()->asMacro( $protocol, 'as' ), $protocol );
+
                 $this->result[ 'netTime' ] += $this->timeElapsed();
 
                 $this->result[ 'v' . $protocol ][ 'count' ] = count( $asns );
@@ -64,9 +66,9 @@ class UpdateAsnDb extends UpdateDb
                 // This customer is not appropriate for IRRDB filtering.
                 // Delete any pre-existing entries just in case this has changed recently:
                 $this->startTimer();
-                D2EM::getConnection()->executeUpdate(
-                    "DELETE FROM `irrdb_asn` WHERE customer_id = ? AND protocol = ?", [ $this->customer()->getId(), $protocol ]
-                );
+                IrrdbAsn::whereCustomerId( $this->customer()->id )
+                    ->whereProtocol( $protocol )->delete();
+
                 $this->result[ 'dbTime' ] += $this->timeElapsed();
                 $this->result[ 'v' . $protocol ][ 'dbUpdated' ] = true;
                 $this->result[ 'msg' ] = "Customer not a RS client or IRRDB filtered for IPv{$protocol}. IPv{$protocol} ASNs, if any, wiped from database.";
@@ -83,16 +85,17 @@ class UpdateAsnDb extends UpdateDb
      *
      * @param array $asns ASNs from IRRDB
      * @param int $protocol Either 4/6
+     *
      * @return array Valid ASNs
      */
-    protected function validate( array $asns, int $protocol ) : array {
+    protected function validate( array $asns, int $protocol ) : array
+    {
         foreach( $asns as $i => $a ) {
             if( !is_numeric( $a ) || $a <= 0 || $a > 4294967294 ) {
                 unset( $asns[ $i ] );
                 Log::alert( 'IRRDB CLI action - removing invalid ASN ' . $a . ' from IRRDB result set!' );
             }
         }
-
         return $asns;
     }
 }

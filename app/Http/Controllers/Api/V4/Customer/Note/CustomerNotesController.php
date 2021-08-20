@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4\Customer\Note;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,24 +23,26 @@ namespace IXP\Http\Controllers\Api\V4\Customer\Note;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM;
+use Auth;
 
+use Exception;
+use Illuminate\Support\Facades\Log;
 use IXP\Exceptions\GeneralException;
 
 use IXP\Http\Controllers\Controller;
+
+use IXP\Models\{
+    Customer,
+    CustomerNote
+};
 
 use Illuminate\Http\{
     JsonResponse,
     Request
 };
 
-use Entities\{
-    Customer as CustomerEntity,
-    CustomerNote as CustomerNoteEntity
-};
-
 use IXP\Events\Customer\Note\{
-    Added       as CustomerNoteAddedEvent,
+    Created     as CustomerNoteCreatedEvent,
     Deleted     as CustomerNoteDeletedEvent,
     Edited      as CustomerNoteUpdatedEvent
 };
@@ -50,203 +52,198 @@ use IXP\Events\Customer\Note\{
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Customers
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class CustomerNotesController extends Controller
 {
     /**
-     * Add/Edit note for a customer
+     * Create note for a customer
      *
-     * @param Request $request instance of the current HTTP request
+     * @param Request   $r      instance of the current HTTP request
+     * @param Customer  $cust
      *
      * @return JsonResponse
      *
      * @throws
      */
-    public function add( Request $request ): JsonResponse
+    public function create( Request $r, Customer $cust ): JsonResponse
     {
+        $user   = Auth::getUser();
+        $cn     = new CustomerNote;
 
-        /** @var CustomerEntity $c */
-        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) ) ) {
-            abort( 404, 'Customer not found.' );
-        }
-
-        /** @var CustomerNoteEntity $old */
-        if( $request->input( 'noteid' ) ) {
-            if( !( $n = D2EM::getRepository( CustomerNoteEntity::class )->find( $request->input( 'noteid' ) ) ) ) {
-                abort( 404, 'Note not found.' );
-            }
-            $old = clone( $n );
-        } else {
-            $n = new CustomerNoteEntity();
-            $old = null;
-        }
-
-        $n->setTitle(   $request->input( 'title' ) );
-        $n->setNote(    $request->input( 'note' ) );
-        $n->setPrivate( $request->input( 'public' ) == 'makePublic' ? false : true );
-        $n->setUpdated( new \DateTime );
-
-        if( $old === null ) {
-            // new note:
-            $n->setCreated( $n->getUpdated() );
-            $n->setCustomer( $c );
-            D2EM::persist( $n );
-        }
+        $cn->title          =   $r->title;
+        $cn->note           =   $r->note ;
+        $cn->private        =   $r->public ? false : true;
+        $cn->customer_id    =   $cust->id;
+        $cn->save();
 
         // update the user's notes last read so he won't be told his own is new
-        Auth::getUser()->setPreference( "customer-notes.{$c->getId()}.last_read", time() );
+        $prefs = $user->prefs;
+        $prefs[ 'notes' ][ 'last_read' ][ $cust->id ] = now()->format( 'Y-m-d H:i:s' );
+        $user->prefs = $prefs;
+        $user->save();
 
-        D2EM::flush();
+        event( new CustomerNoteCreatedEvent( null, $cn, $user ) );
 
-        if( $old === null ) {
-            event( new CustomerNoteAddedEvent( null, $n, Auth::getUser() ) );
-        } else if( $old->getTitle() != $n->getTitle() || $old->getNote() != $n->getNote() ) {
-            event( new CustomerNoteUpdatedEvent ( $old, $n, Auth::getUser()  ) );
+        return response()->json( [ 'noteid' => $cn->id ] );
+    }
+
+    /**
+     * Update note for a customer
+     *
+     * @param  Request  $r  instance of the current HTTP request
+     * @param  CustomerNote  $cn
+     *
+     * @return JsonResponse
+     *
+     * @throws GeneralException
+     */
+    public function update( Request $r, CustomerNote $cn ): JsonResponse
+    {
+        $user = Auth::getUser();
+        $old = clone( $cn );
+
+        $cn->title   =   $r->title;
+        $cn->note    =   $r->note ;
+        $cn->private =   $r->public ? false : true;
+        $cn->save();
+
+        // update the user's notes last read so he won't be told his own is new
+        $prefs = $user->prefs;
+        $prefs[ 'notes' ][ 'last_read' ][ $cn->customer_id ] = now()->format( 'Y-m-d H:i:s' );
+        $user->prefs = $prefs;
+        $user->save();
+
+        if( $old->title !== $cn->title || $old->note !== $cn->note ) {
+            event( new CustomerNoteUpdatedEvent( $old, $cn, $user  ) );
         }
 
-        return response()->json( [ 'noteid' => $n->getId() ] );
+        return response()->json( [ 'noteid' => $cn->id ] );
     }
 
     /**
      * Get a customer note
      *
-     * @param int $id ID of the customer note
+     * @param CustomerNote $cn customer note
      *
      * @return JsonResponse
-     *
-     * @throws
      */
-    public function get( int $id = null )
+    public function get( CustomerNote $cn ): JsonResponse
     {
-        if( !( $n = D2EM::getRepository( CustomerNoteEntity::class )->find( $id ) ) ) {
-            abort( 404, 'Note not found.' );
-        }
-
         // these if's could be joined with '&&' but are separated for readability:
         if( !Auth::getUser()->isSuperUser() ) {
-            if( $n->getCustomer() != Auth::getUser()->getCustomer() || $n->getPrivate() ) {
+            if( $cn->private || $cn->customer_id !== Auth::getUser()->custid ) {
                 abort( 403, 'Insufficient Permissions.' );
             }
         }
 
-        $nArray = $n->toArray();
-        /** @noinspection PhpUndefinedMethodInspection */
-        $nArray['created'] = $nArray['created']->format( 'Y-m-d H:i' );
-        /** @noinspection PhpUndefinedMethodInspection */
-        $nArray['updated'] = $nArray['updated'] ? $nArray['updated']->format( 'Y-m-d H:i' ) : null;
-
-        return response()->json( [ 'note' => $nArray ] );
+        $note = $cn->toArray();
+        $note[ 'note_parsedown' ] = parsedown( $cn->note );
+        $note[ 'created_at' ] = $cn->created_at->format( 'Y-m-d H:i:s' );
+        
+        return response()->json( [ 'note' => $note ] );
     }
 
     /**
      * Delete a customer note
      *
-     * @param int $id ID of the customer note
+     * @param  CustomerNote  $cn  customer note
+     *
      * @return JsonResponse
      *
-     * @throws
+     * @throws GeneralException|Exception
      */
-    public function delete( int $id = null ) : JsonResponse
+    public function delete( CustomerNote $cn ) : JsonResponse
     {
-        if( !( $n = D2EM::getRepository( CustomerNoteEntity::class )->find( $id ) ) ) {
-            abort( 404, 'Note not found.' );
-        }
-
-        /** @var CustomerNoteEntity $on */
-        $on = clone( $n );
-        D2EM::remove( $n );
-        D2EM::flush();
+        $on = clone( $cn );
+        $cn->delete();
         event( new CustomerNoteDeletedEvent ( null , $on, Auth::getUser() ) );
-
-        return response()->json( [ 'noteid' => $on->getId() ] );
+        return response()->json( [ 'noteid' => $on->id ] );
     }
-
 
     /**
      * Update the last read for this user
      *
-     * @param int|null $id
+     * @param Customer|null $c
+     *
      * @return JsonResponse
-     * @throws
      */
-    public function ping( int $id = null ): JsonResponse
+    public function ping( Customer $c = null ): JsonResponse
     {
-
-        if( Auth::getUser()->isSuperUser() ) {
-            if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
-                abort( 404, 'Customer not found.' );
-            }
-        } else {
-            $c = Auth::getUser()->getCustomer();
+        $u = Auth::getUser();
+        if( !$u->isSuperUser() ) {
+            $c = Auth::getUser()->customer;
         }
 
         // update the last read for this user / customer combination
-        Auth::getUser()->setPreference( "customer-notes.{$c->getId()}.last_read", time() );
-        D2EM::flush();
+        $prefs = $u->prefs;
+        $prefs[ "notes" ][ "last_read" ][ $c->id ] = now()->format( "Y-m-d H:i:s" );
+        $u->prefs = $prefs;
+        $u->save();
 
         return response()->json( true );
     }
 
-
     /**
-     * @param int $id  Customer ID
+     * Watch/Unwatch all notes for a customer
+     *
+     * @param Customer $cust  Customer
      *
      * @return JsonResponse
-     *
-     * @throws
      */
-    public function notifyToggleCustomer( int $id ): JsonResponse
+    public function notifyToggleCustomer( Customer $cust ): JsonResponse
     {
-        return  $this->notifyToggle( $id, null );
+        return  $this->notifyToggle( $cust, null );
     }
 
     /**
-     * @param int $id Note ID
+     * Watch/Unwatch a note
+     *
+     * @param CustomerNote $cn
      *
      * @return JsonResponse
-     *
-     * @throws
      */
-    public function notifyToggleNote( int $id ): JsonResponse
+    public function notifyToggleNote( CustomerNote $cn ): JsonResponse
     {
-        return  $this->notifyToggle( null, $id );
+        return  $this->notifyToggle( null, $cn );
     }
 
     /**
+     * Watch/Unwatch a note or All notes for a customer
      *
-     * @param int|null $custid
-     * @param int|null $noteId
+     * @param Customer|null     $cust
+     * @param CustomerNote|null $cn
      *
      * @return JsonResponse
-     *
-     * @throws
      */
-    private function notifyToggle( int $custid = null, int $noteId = null ): JsonResponse
+    private function notifyToggle( Customer $cust = null, CustomerNote $cn = null ): JsonResponse
     {
-        if( $custid ) {
-            $id   = $custid;
-            $name = sprintf( "customer-notes.%d.notify", $id );
-            $value = 'all';
-        } else if( $noteId ) {
-            $id = $noteId;
-            $name = sprintf( "customer-notes.watching.%d", $id );
-            $value = 1;
+        $user   = Auth::getUser();
+        $prefs  = $user->prefs;
+
+        if( $cust ){
+            $result = 'Watch All';
+            $index  = 'customer_watching';
+            $id     = $cust->id;
         } else {
-            throw new GeneralException('Coding error');
+            $result = 'Watch';
+            $index  = 'note_watching';
+            $id     = $cn->id;
         }
 
-        // Toggles customer notes notification preference
-        if( isset( $id ) && is_numeric( $id ) ) {
-            if( !Auth::getUser()->getPreference( $name ) ) {
-                Auth::getUser()->setPreference( $name, $value );
-            } else {
-                Auth::getUser()->deletePreference( $name );
-            }
-            D2EM::flush();
+        if( isset( $prefs[ 'notes' ][ $index ][ $id ] ) ){
+            // if exist we delete the entry to unwatch the customer
+            unset( $prefs[ 'notes' ][ $index ][ $id ] );
+        } else {
+            // if doesnt exist we create the entry to watch the customer
+            $prefs[ 'notes' ][ $index ][ $id ] = now()->format( 'Y-m-d H:i:s' );
+            $result = $cust ? 'Unwatch All' : 'Unwatch';
         }
 
-        return response()->json( true );
+        $user->prefs = $prefs;
+        $user->save();
+
+        return response()->json( $result );
     }
 }

@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,8 +25,6 @@ namespace IXP\Models;
 
 use Auth, Eloquent;
 
-use Entities\User as UserEntity;
-
 use Illuminate\Database\Eloquent\{
     Builder,
     Collection,
@@ -39,6 +37,7 @@ use Illuminate\Database\Eloquent\Relations\{
 
 use Illuminate\Support\Carbon;
 
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\DocstoreCustomerFile
@@ -79,9 +78,10 @@ use Illuminate\Support\Carbon;
 
 class DocstoreCustomerFile extends Model
 {
+    use Observable;
 
     /**
-     * The attributes that aren't mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array
      */
@@ -105,7 +105,6 @@ class DocstoreCustomerFile extends Model
         'file_last_updated',
     ];
 
-
     /**
      * File extension allowed to be viewed
      *
@@ -125,7 +124,7 @@ class DocstoreCustomerFile extends Model
      *
      * @return void
      */
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -133,9 +132,9 @@ class DocstoreCustomerFile extends Model
             if( !Auth::check() ) {
                 // if public user make sure that no records is returned
                 $builder->where('id', null );
-            } elseif( !Auth::user()->isSuperUser() ) {
+            } elseif( !Auth::getUser()->isSuperUser() ) {
                 // If not super user make sure only allowed files are returned
-                $builder->where('min_privs', '<=', Auth::user()->getPrivs() );
+                $builder->where('min_privs', '<=', Auth::getUser()->privs() );
             }
         });
     }
@@ -163,7 +162,7 @@ class DocstoreCustomerFile extends Model
      */
     public function isViewable(): bool
     {
-        return in_array( '.' . pathinfo( $this->name, PATHINFO_EXTENSION ), self::$extensionViewable );
+        return in_array( '.' . pathinfo( strtolower( $this->name ), PATHINFO_EXTENSION ), self::$extensionViewable, true );
     }
 
     /**
@@ -173,7 +172,7 @@ class DocstoreCustomerFile extends Model
      */
     public function isEditable(): bool
     {
-        return in_array( '.' . pathinfo( $this->name, PATHINFO_EXTENSION ), self::$extensionEditable );
+        return in_array( '.' . pathinfo( strtolower( $this->name ), PATHINFO_EXTENSION ), self::$extensionEditable, true );
     }
 
     /**
@@ -192,13 +191,13 @@ class DocstoreCustomerFile extends Model
      *
      * @param Customer                          $cust
      * @param DocstoreCustomerDirectory|null    $dir
-     * @param UserEntity|null                   $user
+     * @param User|null                         $user
      *
      * @return Collection
      */
-    public static function getListing( Customer $cust, UserEntity $user, ?DocstoreCustomerDirectory $dir = null )
+    public static function getListing( Customer $cust, User $user, ?DocstoreCustomerDirectory $dir = null )
     {
-        return self::where('min_privs', '<=', $user->getPrivs() )
+        return self::where('min_privs', '<=', $user->privs() )
             ->where('cust_id', $cust->id )
             ->where('docstore_customer_directory_id', $dir ? $dir->id : null )
             ->orderBy('name')->get();
@@ -213,7 +212,7 @@ class DocstoreCustomerFile extends Model
      *
      * @return Collection
      */
-    public static function getListingForAllDirectories( int $cust_id, int $privs )
+    public static function getListingForAllDirectories( int $cust_id, int $privs ): Collection
     {
         return self::where('min_privs', '<=', $privs )
             ->where('cust_id', $cust_id )
@@ -221,12 +220,21 @@ class DocstoreCustomerFile extends Model
     }
 
     /**
-     * Gets listing of customers with at least a documents
+     * String to describe the model being updated / deleted / created
      *
-     * @return \Illuminate\Support\Collection
+     * @param Model $model
+     *
+     * @return string
      */
-    public static function getCustomers( )
+    public static function logSubject( Model $model ): string
     {
-        return self::groupBy('cust_id' )->get();
+        return sprintf(
+            "Docstore File [id:%d] '%s' belonging to %s [id:%d] '%s'",
+            $model->id,
+            $model->name,
+            ucfirst( config( 'ixp_fe.lang.customer.one' ) ),
+            $model->cust_id,
+            $model->customer->name
+        );
     }
 }

@@ -3,7 +3,7 @@
 set -e
 
 #
-# Script for syncronising subscriptions between mailing lists and IXP Manager.
+# Script for synchronising subscriptions between mailing lists and IXP Manager.
 #
 # Does not affect any subscriptions with email addresses that do not match a user
 # in IXP Manager.

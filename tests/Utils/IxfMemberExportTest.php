@@ -1,7 +1,9 @@
 <?php
 
+namespace Tests\Utils;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +24,7 @@
  */
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+
 use IXP\Utils\Export\JsonSchema as JsonSchemaExporter;
 
 use Tests\TestCase;
@@ -30,25 +33,24 @@ use Tests\TestCase;
  * PHPUnit test class to test the configuration generation of IX-F Member Exports
  * against known good configurations for IXP\Utils\Export\JsonSchema
  *
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   Tests
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Tests\Utils
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class IxfMemberExportTest extends TestCase
 {
     public $versions     = [ '1.0', '0.7', '0.6' ];
 
-    public function testIxfMemberExportGeneration()
+    public function testIxfMemberExportGeneration(): void
     {
         $exporter = new JsonSchemaExporter;
 
         foreach( $this->versions as $v ) {
-
             foreach( [ false, true ] as $auth ) {
-
                 $json = $exporter->get( $v, false, $auth, true );
-
                 $a = ( $auth ? '' : 'un' ) . 'auth';
 
                 $knownGoodConf = file_get_contents( base_path() . "/data/travis-ci/known-good/api-v4-member-export-{$v}-{$a}.json" );
@@ -61,7 +63,5 @@ class IxfMemberExportTest extends TestCase
                 $this->assertEquals( $knownGoodConf, $json, "Known good and generated IX-F Member Export for {$v}-{$a} do not match" );
             }
         }
-
     }
-
 }

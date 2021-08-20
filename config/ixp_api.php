@@ -38,6 +38,14 @@ return [
 
         // or - we can set a static key here if we like:
         'access_key' => env( 'IXP_API_JSONEXPORTSCHEMA_ACCESS_KEY', false ),
+
+        // some IXs want to exclude some information:
+        'excludes' => [
+            'switch'    => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_SWITCH', false    ),
+            'ixp'       => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_IXP', false       ),
+            'member'    => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_MEMBER', false    ),
+            'intinfo'   => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_INTINFO', false   ),
+        ],
     ],
 
     /*
@@ -128,5 +136,11 @@ return [
         ],
     ],
 
-
+    /*
+    |--------------------------------------------------------------------------
+    | Ripe Atlas
+    |--------------------------------------------------------------------------
+    |
+    */
+    'atlas_measurement_key' => env( 'ATLAS_MEASUREMENT_KEY', '' ),
 ];

@@ -1,7 +1,9 @@
-<?php namespace IXP\Exceptions\Utils;
+<?php
+
+namespace IXP\Exceptions\Utils;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,12 +24,14 @@
  */
 
 use Exception;
-use IXP\Utils\View\Alert\Alert;
-use IXP\Utils\View\Alert\Container as AlertContainer;
 
-class ExportException extends Exception {
+class ExportException extends Exception
+{
 
-    final public function render()
+    /**
+     * @return void
+     */
+    final public function render(): void
     {
         abort( 500, $this->getMessage() );
     }

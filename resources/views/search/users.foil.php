@@ -2,7 +2,7 @@
     <h3>
         Users
     </h3>
-    <table class="table table-striped" width="100%">
+    <table class="table table-striped w-100">
         <thead class="thead-dark">
             <tr>
                 <th>
@@ -20,27 +20,33 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach( $t->results[ 'users' ] as $user ): ?>
+            <?php foreach( $t->results[ 'users' ] as $user ):
+                /** @var $user \IXP\Models\User */?>
                 <tr>
                     <td>
-                        <a href="<?= route( "login-history@view", [ "id" => $user->getId() ] ) ?>">
-                            <?= $t->ee( $user->getUsername() ) ?>
+                        <a href="<?= route( "login-history@view", [ "id" => $user->id ] ) ?>">
+                            <?= $t->ee( $user->username ) ?>
                         </a>
                     </td>
                     <td>
-                        <?= $t->ee( $user->getEmail() ) ?>
+                        <?= $t->ee( $user->email ) ?>
                     </td>
                     <td>
-                        <a href="<?= route( "customer@overview" , [ "id" => $user->getCustomer()->getId() ] ) ?>">
-                            <?= $t->ee( $user->getCustomer()->getName() ) ?>
-                        </a>
+                        <?php if( ( $nb = $user->customers->count() ) > 1 ) : ?>
+                            <a href="<?= route( 'user@edit' , [ 'u' => $user->id ] ) ?>" class="badge badge-info">
+                                Multiple (<?= $nb ?>)
+                            </a>
+                        <?php else: ?>
+                            <a href="<?=  route( "customer@overview" , [ 'cust' => $user->custid ] ) ?>">
+                                <?= $t->ee( $user->customers->first()->name ) ?>
+                            </a>
+                        <?php endif; ?>
                     </td>
                     <td>
-                        <?= $user->getCreated()->format( "Y-m-d H:i:s") ?>
+                        <?= $user->created_at ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 </div>
-

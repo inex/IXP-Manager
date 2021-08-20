@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Interfaces;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,21 +23,9 @@ namespace IXP\Http\Controllers\Interfaces;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Exception, Redirect;
 
-use D2EM, Input, Redirect;
-
-use Entities\{
-    CoreBundle as CoreBundleEntity,
-    CoreInterface as CoreInterfaceEntity,
-    CoreLink as CoreLinkEntity,
-    IPv4Address as IPv4AddressEntity,
-    IPv6Address as IPv6AddressEntity,
-    PhysicalInterface as PhysicalInterfaceEntity,
-    SwitchPort as SwitchPortEntity,
-    VirtualInterface as VirtualInterfaceEntity,
-    Vlan as VlanEntity,
-    VlanInterface as VlanInterfaceEntity
-};
+use IXP\Exceptions\GeneralException;
 
 use Illuminate\Http\{
     Request,
@@ -47,18 +35,32 @@ use Illuminate\Http\{
 use IXP\Http\Controllers\Controller;
 use IXP\Http\Requests\StoreVirtualInterfaceWizard;
 
+use IXP\Models\{
+    CoreBundle,
+    CoreInterface,
+    CoreLink,
+    IPv4Address,
+    IPv6Address,
+    PhysicalInterface,
+    SwitchPort,
+    VirtualInterface,
+    Vlan,
+    VlanInterface
+};
+
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
 
-
 /**
  * Common Functions for the Inferfaces Controllers
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Interfaces
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Interfaces
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 abstract class Common extends Controller
@@ -68,37 +70,33 @@ abstract class Common extends Controller
      *
      * Removes a related interface and if it only has one physical interface, removes the virtual interface also
      *
-     * @param PhysicalInterfaceEntity $pi Physical interface to remove related physical interface.
+     * @param PhysicalInterface $pi Physical interface to remove related physical interface.
      *
      * @return void
+     *
      * @throws
      */
-    public function removeRelatedInterface( $pi )
+    public function removeRelatedInterface( PhysicalInterface $pi ): void
     {
-        if( $pi->getRelatedInterface() ) {
-            /** @var PhysicalInterfaceEntity $pi */
-            $pi->getRelatedInterface()->getSwitchPort()->setPhysicalInterface( null );
+        if( $related = $pi->relatedInterface() ) {
+            if( $pi->relatedInterface()->virtualInterface->physicalInterfaces()->count() === 1 ) {
+                $pi->relatedInterface()->virtualInterface->macAddresses()->delete();
 
-            if( count( $pi->getRelatedInterface()->getVirtualInterface()->getPhysicalInterfaces() ) == 1 ) {
-                foreach( $pi->getRelatedInterface()->getVirtualInterface()->getVlanInterfaces() as $vli ) {
-                    /** @var VlanInterfaceEntity $vli */
-                    foreach( $vli->getLayer2Addresses() as $l2a ) {
-                        D2EM::remove( $l2a );
-                    }
-
-                    foreach( $pi->getRelatedInterface()->getVirtualInterface()->getMACAddresses() as $mac ){
-                        D2EM::remove( $mac );
-                    }
-
-                    D2EM::remove( $vli );
+                foreach( $pi->relatedInterface()->virtualInterface->vlanInterfaces as $vli ) {
+                    $vli->layer2addresses()->delete();
+                    $vli->delete();
                 }
 
-                D2EM::remove( $pi->getRelatedInterface()->getVirtualInterface() );
-                D2EM::remove( $pi->getRelatedInterface() );
-            } else {
-                D2EM::remove( $pi->getRelatedInterface() );
+                $vi = $pi->relatedInterface()->virtualInterface();
+                $pi->relatedInterface()->update( [ 'virtualinterfaceid' => null ] );
+                $vi->delete();
             }
-            $pi->setFanoutPhysicalInterface( null );
+
+            $pi->relatedInterface()->update( [ 'switchportid' => null ] );
+            $pi->fanout_physical_interface_id = null;
+            $pi->save();
+
+            $related->delete();
         }
     }
 
@@ -115,68 +113,63 @@ abstract class Common extends Controller
      * If *link with fanout port* is not checked then this function checks
      * if the peering port has a related interface and, if so, removes the relation.
      *
-     * @param  Request|StoreVirtualInterfaceWizard $request instance of the current HTTP reques
-     * @param PhysicalInterfaceEntity   $pi Peering physical interface to related with fanout physical interface (port).
-     * @param VirtualInterfaceEntity    $vi Virtual interface of peering physical intreface
-     * @return boolean
+     * @param   Request|StoreVirtualInterfaceWizard $r instance of the current HTTP request
+     * @param   PhysicalInterface                   $pi Peering physical interface to related with fanout physical interface (port).
+     * @param   VirtualInterface                    $vi Virtual interface of peering physical interface
+     *
+     * @return bool
+     *
      * @throws
      */
-    public function processFanoutPhysicalInterface( $request, $pi, $vi )
+    public function processFanoutPhysicalInterface( $r, PhysicalInterface $pi, VirtualInterface $vi ): bool
     {
-        if( !$request->input('fanout' ) ) {
+        if( !$r->fanout ) {
             $this->removeRelatedInterface( $pi );
             return true;
         }
 
-        /** @var SwitchPortEntity $fnsp */
-        if( !( $fnsp = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( 'switch-port-fanout' ) ) ) ) {
-            abort( 404, 'Unknown customer' );
-        }
-
-        $fnsp->setType( SwitchPortEntity::TYPE_FANOUT );
+        $fnsp = SwitchPort::findOrFail( $r->input( 'switch-port-fanout' ) );
+        $fnsp->update( [ 'type' => SwitchPort::TYPE_FANOUT ] );
 
         // if switch port does not have a physical interface then create one
-        if( !$fnsp->getPhysicalInterface() ) {
-            /** @var PhysicalInterfaceEntity $fnpi */
-            $fnpi = new PhysicalInterfaceEntity();
-            $fnpi->setSwitchPort( $fnsp );
-            $fnsp->setPhysicalInterface( $fnpi );
-            D2EM::persist( $fnpi );
+        if( !$fnsp->physicalInterface ) {
+            $fnpi = new PhysicalInterface;
+            $fnpi->switchportid = $fnsp->id;
+            $fnpi->save();
         } else {
-            $fnpi = $fnsp->getPhysicalInterface();
+            $fnpi = $fnsp->physicalInterface;
 
             // check if the fanout port has a physical interface and if the physical interface is different of the current physical interface
-            if( $fnsp->getPhysicalInterface()->getRelatedInterface() && $fnsp->getPhysicalInterface()->getRelatedInterface()->getId() != $pi->getId() ) {
+            if( $fnsp->physicalInterface->relatedInterface() && $fnsp->physicalInterface->relatedInterface()->id !== $pi->id ) {
                 AlertContainer::push( "Missing bundle name not assigned as no bundle name set for this switch vendor (see Vendors)", Alert::WARNING );
                 return false;
             }
         }
 
-        // if the physical interace already has a related physical interface and it's not the same as the fanout physical interface
-        if( $pi->getRelatedInterface() && $pi->getRelatedInterface()->getId() != $fnpi->getId() ) {
+        // if the physical interface already has a related physical interface and it's not the same as the fanout physical interface
+        if( $pi->relatedInterface() && $pi->relatedInterface()->id !== $fnpi->id ) {
             // if fanout does not have a virtual interface, relate it with old fanout port virtual interface.
-            if( !$fnpi->getVirtualInterface() ) {
-                $pi->getRelatedInterface()->getVirtualInterface()->addPhysicalInterface( $fnpi );
-                $fnpi->setVirtualInterface( $pi->getRelatedInterface()->getVirtualInterface() );
+            if( !$fnpi->virtualInterface ) {
+                $fnpi->virtualinterfaceid = $pi->relatedInterface()->virtualinterfaceid;
             }
 
             $this->removeRelatedInterface( $pi );
 
-        } else if( !$fnpi->getVirtualInterface() ) {
+        } else if( !$fnpi->virtualInterface ) {
             // create virtual interface for fanout physical interface if doesn't have one
-            $fnvi = new VirtualInterfaceEntity();
-            $fnvi->setCustomer( $vi->getCustomer()->getReseller() );
-            $fnvi->addPhysicalInterface( $fnpi );
-            $fnpi->setVirtualInterface( $fnvi );
-            D2EM::persist( $fnvi );
+            $fnvi = new VirtualInterface;
+            $fnvi->custid = $vi->customer->reseller;
+            $fnvi->save();
+            $fnpi->virtualinterfaceid = $fnvi->id;
         }
 
-        $pi->setFanoutPhysicalInterface( $fnpi );
-        $fnpi->setPeeringPhysicalInterface( $pi );
+        $pi->fanout_physical_interface_id = $fnpi->id;
+        $pi->save();
 
-        $fnpi->setSpeed(  $pi->getSpeed()  );
-        $fnpi->setStatus( $pi->getStatus() );
-        $fnpi->setDuplex( $pi->getDuplex() );
+        $fnpi->speed  =  $pi->speed;
+        $fnpi->status = $pi->status;
+        $fnpi->duplex = $pi->duplex;
+        $fnpi->save();
 
         return true;
     }
@@ -184,26 +177,26 @@ abstract class Common extends Controller
     /**
      * When we have >1 phys int / LAG framing, we need to set other elements of the virtual interface appropriately:
      *
-     * @param VirtualInterfaceEntity $vi
+     * @param VirtualInterface $vi
      *
      * @throws
      */
-    public function setBundleDetails( VirtualInterfaceEntity $vi )
+    public function setBundleDetails( VirtualInterface $vi ): void
     {
-        if( count( $vi->getPhysicalInterfaces() ) ) {
-
+        if( $vi->physicalInterfaces()->count() ) {
             // LAGs must have a channel group and bundle name. But only if they have a phys int:
-            if( $vi->getLagFraming() && !$vi->getChannelgroup() ) {
-                $vi->setChannelgroup( D2EM::getRepository( VirtualInterfaceEntity::class )->assignChannelGroup( $vi ) );
+            if( $vi->lag_framing && !$vi->channelgroup ) {
+                $vi->channelgroup = $this->assignChannelGroup( $vi );
+                //$vi->save();
                 AlertContainer::push( "Missing channel group assigned as this is a LAG port", Alert::INFO );
             }
 
             // LAGs must have a bundle name
-            if( $vi->getLagFraming() && !$vi->getName() ) {
+            if( $vi->lag_framing && !$vi->name ) {
                 // assumption on no mlags (multi chassis lags) here:
-
-                if( $vi->getPhysicalInterfaces()[ 0 ]->getSwitchport()->getSwitcher()->getVendor() ) {
-                    $vi->setName( $vi->getPhysicalInterfaces()[ 0 ]->getSwitchport()->getSwitcher()->getVendor()->getBundleName() );
+                if( $vendor = $vi->physicalInterfaces()->first()->switchport->switcher->vendor ) {
+                    $vi->name = $vendor->bundle_name;
+                    //$vi->save();
                     AlertContainer::push( "Missing bundle name assigned as this is a LAG port", Alert::INFO );
                 } else {
                     AlertContainer::push( "Missing bundle name not assigned as no bundle name set for this switch vendor (see Vendors)", Alert::WARNING );
@@ -212,11 +205,53 @@ abstract class Common extends Controller
         }
         else{
             // we don't allow setting channel group or name until there's >= 1 physical interface / LAG framing:
-            $vi->setName('');
-            $vi->setChannelgroup(null);
-            $vi->setLagFraming(false);
-            $vi->setFastLACP(false);
+            $vi->name           = '';
+            $vi->channelgroup   = null;
+            $vi->lag_framing    = false;
+            $vi->fastlacp       = false;
+            //$vi->save();
         }
+    }
+
+    /**
+     * For the given $vi, assign a unique channel group
+     *
+     * @param VirtualInterface $vi
+     *
+     * @return int
+     *
+     * @throws
+     */
+    public function assignChannelGroup( VirtualInterface $vi ): int
+    {
+        if( $vi->physicalInterfaces()->count()  === 0 ) {
+            throw new GeneralException("Channel group number is only relevant when there is at least one physical interface");
+        }
+
+        $usedChannelGroups = VirtualInterface::select( [ 'vi.channelgroup' ] )
+            ->from( 'virtualinterface AS vi' )
+            ->leftJoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
+            ->leftJoin( 'switchport as sp', 'sp.id', 'pi.switchportid' )
+            ->whereNotNull( 'vi.channelgroup' )
+            ->whereIn( 'sp.switchid', function( $query ) use( $vi ) {
+                $query->select( [ 's.id' ] )
+                    ->from( 'switch AS s' )
+                    ->leftJoin( 'switchport AS sp', 'sp.switchid', 's.id')
+                    ->leftJoin( 'physicalinterface AS pi', 'pi.switchportid', 'sp.id' )
+                    ->where( 'pi.virtualinterfaceid', $vi->id );
+            })->distinct()->get()->pluck('channelgroup')->toArray();
+
+
+        $orig = $vi->channelgroup;
+        for( $i = 1; $i < 1000; $i++ ) {
+            if( !in_array( $i, $usedChannelGroups, true ) ) {
+                $vi->channelgroup = $i;
+                return $i;
+            }
+        }
+
+        $vi->channelgroup = $orig;
+        throw new GeneralException("Could not assign a free channel group number");
     }
 
     /**
@@ -230,59 +265,64 @@ abstract class Common extends Controller
      * * if it exists, it ensures is is not assigned to another interface;
      * * if !exists, creates a new one.
      *
-     * @param Request $request
-     * @param VlanEntity $v
-     * @param VlanInterfaceEntity $vli Vlan interface to assign IP to
-     * @param bool $ipv6 Bool to define if IP address is IPv4 or IPv6
+     * @param Request       $r
+     * @param Vlan          $v
+     * @param VlanInterface $vli Vlan interface to assign IP to
+     * @param bool          $ipv6 Bool to define if IP address is IPv4 or IPv6
+     *
      * @return bool
+     *
      * @throws
      */
-    public function setIp( Request $request, VlanEntity $v, VlanInterfaceEntity $vli, bool $ipv6 = false )
+    public function setIp( Request $r, Vlan $v, VlanInterface $vli, bool $ipv6 = false ): bool
     {
         $iptype         = $ipv6 ? "ipv6" : "ipv4";
-        $ipVer          = $ipv6 ? "IPv6" : "IPv4";
-        $setterIPv      = "set{$ipVer}Address";
-        $setterEnabled  = "set{$ipVer}enabled";
-        $setterHostname = "set{$ipVer}hostname";
-        $setterSecret   = "set{$ipVer}bgpmd5secret";
-        $setterPing     = "set{$ipVer}canping";
-        $setterMonitor  = "set{$ipVer}monitorrcbgp";
+        $setterIPv      = "{$iptype}addressid";
+        $setterEnabled  = "{$iptype}enabled";
+        $setterHostname = "{$iptype}hostname";
+        $setterSecret   = "{$iptype}bgpmd5secret";
+        $setterPing     = "{$iptype}canping";
+        $setterMonitor  = "{$iptype}monitorrcbgp";
 
-        $entity = $ipv6 ? IPv6AddressEntity::class : IPv4AddressEntity::class;
+        /** @var IPv4Address|IPv6Address $model */
+        $model = $ipv6 ? IPv6Address::class : IPv4Address::class;
 
-        $addressValue = $request->input( $iptype . '-address' );
+        $addressValue = $r->input( $iptype . 'address' );
 
         if( trim( $addressValue ) ) {
-            if( !( $ip = D2EM::getRepository( $entity )->findOneBy( [ "Vlan" => $v->getId(), 'address' => $addressValue ] ) ) ) {
-                /** @var IPv4AddressEntity|IPv6AddressEntity $ip */
-                $ip = new $entity();
-                $ip->setVlan( $v );
-                $ip->setAddress( $addressValue );
-                D2EM::persist( $ip );
-            } else if( $ip->getVlanInterface() && $ip->getVlanInterface() != $vli ) {
-                AlertContainer::push( "{$ipVer} address {$addressValue} is already in use by another VLAN interface on the same VLAN.", Alert::DANGER );
+            if( !( $ip = $model::where( 'vlanid', $v->id)->where( 'address', $addressValue )->first() ) ) {
+                $ip = new $model;
+                $ip->vlanid  = $v->id;
+                $ip->address = $addressValue;
+                $ip->save();
+            } else if( $ip->vlanInterface && $ip->vlanInterface->id !== $vli->id ) {
+                AlertContainer::push( ucfirst( $iptype ) . " address {$addressValue} is already in use by another VLAN interface on the same VLAN.", Alert::DANGER );
                 return false;
             }
 
-            $vli->$setterIPv( $ip );
+            $vli->$setterIPv = $ip->id;
 
         } else {
-            $vli->$setterIPv( null );
+            $vli->$setterIPv = null;
         }
 
-        $vli->$setterHostname( $request->input( $iptype . '-hostname' ) );
-        $vli->$setterEnabled(  $request->input( $iptype . '-enabled', false ) );
-        $vli->$setterSecret(   $request->input( $iptype . '-bgp-md5-secret' ) );
-        $vli->$setterPing(     $request->input( $iptype . '-can-ping', false ) );
-        $vli->$setterMonitor(  $request->input( $iptype . '-monitor-rcbgp', false ) );
-
+        $vli->$setterHostname   = $r->input( $iptype . 'hostname' );
+        $vli->$setterEnabled    = $r->input( $iptype . 'enabled'  );
+        $vli->$setterSecret     = $r->input( $iptype . 'bgpmd5secret' );
+        $vli->$setterPing       = $r->input( $iptype . 'canping' );
+        $vli->$setterMonitor    = $r->input( $iptype . 'monitorrcbgp' );
         return true;
     }
 
 
-    public function warnIfIrrdbFilteringButNoIrrdbSourceSet( VlanInterfaceEntity $vli )
+    /**
+     * @param VlanInterface $vli
+     *
+     * @return void
+     */
+    public function warnIfIrrdbFilteringButNoIrrdbSourceSet( VlanInterface $vli ): void
     {
-        if( $vli->getRsclient() && $vli->getIrrdbfilter() && !$vli->getVirtualInterface()->getCustomer()->getIRRDB() ) {
+        if( $vli->rsclient && $vli->irrdbfilter && !$vli->virtualInterface->customer->irrdb ) {
             AlertContainer::push( "You have enabled IRRDB filtering for this VLAN interface's route server sessions. "
                 . "However, the customer does not have an IRRDB source set. As such, the route servers will block all prefix "
                 . "advertisements. To rectify this, edit the customer and set an IRRDB source.", Alert::WARNING );
@@ -293,70 +333,93 @@ abstract class Common extends Controller
     /**
      * Build everything that a Core Bundle need (core link, core Interface etc)
      *
-     * @param   CoreBundleEntity $cb Core bundle object
-     * @param   Request $request instance of the current HTTP request
-     * @param   array $vis array of the Virtual interfaces ( side A and B ) linked to the core bundle
-     * @param   bool $edit Are we editing the core bundle ?
+     * @param   CoreBundle  $cb Core bundle object
+     * @param   Request     $r instance of the current HTTP request
+     * @param   array       $vis array of the Virtual interfaces ( side A and B ) linked to the core bundle
+     * @param   bool        $edit Are we editing the core bundle ?
      *
-     * @return bool
+     * @return RedirectResponse|bool
      *
      * @throws
      */
-    public function buildCorelink( $cb, $request, $vis, $edit )
+    public function buildCorelink( CoreBundle $cb, Request $r, array $vis, bool $edit )
     {
-        foreach( $request->input( "cl-details" ) as $clDetail ) {
-            /** @var CoreLinkEntity $cl */
-            $cl = new CoreLinkEntity;
-            D2EM::persist( $cl );
+        foreach( $r->input( "cl-details" ) as $clDetail ) {
+            $cl = new CoreLink;
 
-            $cl->setCoreBundle( $cb );
-            $cl->setEnabled( $clDetail[ "enabled-cl" ] ?? false );
+            $cl->core_bundle_id = $cb->id;
+            $cl->enabled = $clDetail[ 'enabled-cl' ] ?? false;
 
-            $bfd = ( $clDetail[ "bfd" ] ?? false );
+            $bfd    = $clDetail[ 'bfd' ] ?? false;
+            $type   = $edit ? $cb->type : $r->type;
 
-            $type = $edit ? $cb->getType() : $request->input('type' ) ;
+            $cl->bfd =  (int)$type === CoreBundle::TYPE_ECMP ? $bfd : false;
+            $cl->ipv4_subnet = $clDetail[ 'subnet' ] ?? null;
 
-            $cl->setBFD( ( $type == CoreBundleEntity::TYPE_ECMP ) ? $bfd : false );
-            $cl->setIPv4Subnet( $clDetail[ "subnet" ] ?? null );
-
-            foreach( $vis as $side => $vi ){
-                /** @var SwitchPortEntity $spa */
-                /** @var SwitchPortEntity $spb */
-                if( !( ${ 'sp' . $side } = D2EM::getRepository( SwitchPortEntity::class )->find( $clDetail[ "hidden-sp-$side" ] ) ) ) {
-                    return Redirect::back()->withInput( Input::all() );
+            foreach( $vis as $side => $vi ) {
+                if( !( ${ 'sp' . $side } = SwitchPort::find( $clDetail[ "hidden-sp-$side" ] ) ) ) {
+                    return Redirect::back()->withInput( $r->all() );
                 }
 
-                ${ 'sp' . $side }->setType( SwitchPortEntity::TYPE_CORE );
+                ${ 'sp' . $side }->type = SwitchPort::TYPE_CORE;
+                ${ 'sp' . $side }->save();
 
-                /** @var PhysicalInterfaceEntity $pia */
-                /** @var PhysicalInterfaceEntity $pib */
-                ${ 'pi' . $side } = new PhysicalInterfaceEntity;
-                D2EM::persist( ${ 'pi' . $side } );
+                // Creating $pia|$pib
+                ${ 'pi' . $side } = new PhysicalInterface;
+                ${ 'pi' . $side }->switchportid         = ${ 'sp' . $side }->id;
+                ${ 'pi' . $side }->virtualinterfaceid   = $vi->id;
+                ${ 'pi' . $side }->speed                = $edit ? $cb->speedPi()    : $r->speed;
+                ${ 'pi' . $side }->duplex               = $edit ? $cb->duplexPi()   : $r->duplex;
+                ${ 'pi' . $side }->autoneg              = $edit ? $cb->autoNegPi()  : $r->input('auto-neg' ) ?? false;
+                ${ 'pi' . $side }->status               = PhysicalInterface::STATUS_CONNECTED;
+                ${ 'pi' . $side }->virtualinterfaceid = $vis[ $side ]->id;
+                ${ 'pi' . $side }->save();
 
-                ${ 'pi'.$side }->setSwitchPort(        ${ 'sp' . $side } );
-                ${ 'pi'.$side }->setVirtualInterface(  $vi );
-                ${ 'pi'.$side }->setSpeed(             $edit ? $cb->getSpeedPi() : $request->input('speed' ) );
-                ${ 'pi'.$side }->setDuplex(            $edit ? $cb->getDuplexPi() : $request->input('duplex' ) );
-                ${ 'pi'.$side }->setAutoneg(           $edit ? $cb->getAutoNegPi() : $request->input('auto-neg' ) ?? false );
-                ${ 'pi'.$side }->setStatus(            PhysicalInterfaceEntity::STATUS_CONNECTED );
-
-                /** @var CoreInterfaceEntity $cia */
-                /** @var CoreInterfaceEntity $cib */
-                ${ 'ci' . $side } = new CoreInterfaceEntity;
-                D2EM::persist( ${ 'ci' . $side } );
-                ${ 'ci' . $side }->setPhysicalInterface( ${ 'pi' . $side } );
+                // Creating $cia|$cib
+                ${ 'ci' . $side } = new CoreInterface;
+                ${ 'ci' . $side }->physical_interface_id = ${ 'pi' . $side }->id;
+                ${ 'ci' . $side }->save();
             }
 
-            $cl->setCoreInterfaceSideA( $cia );
-            $cl->setCoreInterfaceSideB( $cib );
+            $cl->core_interface_sidea_id = $cia->id;/** @var $cia CoreInterface */
+            $cl->core_interface_sideb_id = $cib->id;/** @var $cib CoreInterface */
 
-            $vis[ 'a' ]->addPhysicalInterface( $pia );
-            $vis[ 'b' ]->addPhysicalInterface( $pib );
+            $cl->save();
         }
-
-
         return true;
     }
 
+    /**
+     * Delete the physical interface and everything related
+     *
+     * @param  Request              $r
+     * @param  PhysicalInterface    $pi
+     * @param  bool                 $setBunleDetails
+     *
+     * @throws Exception
+     */
+    protected function deletePi( Request $r, PhysicalInterface $pi, bool $setBunleDetails = false ): void
+    {
+        $pi2 = clone $pi;
+        if( $pi->switchPort->typePeering() && $pi->fanoutPhysicalInterface ) {
+            $pi->update( [ 'switchportid' => null ] );
+            $pi->fanoutPhysicalInterface->switchPort->update( [ 'type' => SwitchPort::TYPE_PEERING ] );
+        } else if( $pi->switchPort->typeFanout() && $pi->peeringPhysicalInterface ) {
+            if( (bool)$r->related ){
+                $this->removeRelatedInterface( $pi2 );
+            }
 
+            $pi->peeringPhysicalInterface->fanout_physical_interface_id = null;
+            $pi->peeringPhysicalInterface->save();
+        }
+        if( (bool)$r->related && $pi2->relatedInterface() ) {
+            $this->removeRelatedInterface( $pi2 );
+        }
+
+        if( $setBunleDetails ){
+            $this->setBundleDetails( $pi->virtualInterface );
+        }
+
+        $pi->delete();
+    }
 }

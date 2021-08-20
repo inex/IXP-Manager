@@ -4,17 +4,10 @@
     Forgot Username
 <?php $this->append() ?>
 
-<?php $this->section( 'page-header-postamble' ) ?>
-
-<?php $this->append() ?>
-
-
 <?php $this->section( 'content' ) ?>
     <div class="row">
         <div class="col-sm-12">
-
             <?= $t->alerts() ?>
-
             <div class="tw-text-center tw-my-6">
                 <?php if( config( "identity.biglogo" ) ) :?>
                     <img class="tw-inline img-fluid" src="<?= config( "identity.biglogo" ) ?>" />
@@ -27,18 +20,15 @@
                     </div>
                 <?php endif; ?>
             </div>
-
         </div>
     </div>
 
     <div class="row"
         <div class="col-12">
-
             <div class="tw-w-full tw-max-w-sm tw-mx-auto">
-
                 <?= Former::open()->method( 'POST' )
                     ->action( route( 'forgot-password@username-email' ) )
-                    ->class( "tw-bg-white tw-shadow-md tw-rounded tw-px-8 tw-pt-6 tw-pb-8 tw-mb-6" )
+                    ->class( "tw-bg-white tw-shadow-md tw-rounded-sm tw-px-8 tw-pt-6 tw-pb-8 tw-mb-6" )
                 ?>
 
                 <p class="tw-mb-6 tw-text-grey-dark tw-font-bold">
@@ -53,17 +43,14 @@
                     <?php foreach( $t->errors->get( 'email' ) as $err ): ?>
                         <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
                     <?php endforeach; ?>
-
                 </div>
-
 
                 <div class="tw-flex tw-items-center tw-justify-between">
                     <a href="<?= route( "forgot-password@show-form" ) ?>">
                         Forgot Password?
                     </a>
 
-                    <a class="btn btn-white"
-                       href="<?= route('login@login' ) ?>">
+                    <a class="btn btn-white" href="<?= route('login@login' ) ?>">
                         Cancel
                     </a>
 
@@ -71,13 +58,8 @@
                         Submit
                     </button>
                 </div>
-
             </div>
-
             <?= Former::close() ?>
         </div>
     </div>
-
-
-
 <?php $this->append() ?>

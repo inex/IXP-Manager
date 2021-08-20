@@ -25,13 +25,20 @@ namespace IXP\Http\Requests;
 
 use Auth;
 
-use Entities\{
-    PhysicalInterface as PhysicalInterfaceEntity
-};
+use IXP\Models\PhysicalInterface;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-
+/**
+ * Store PhysicalInterface FormRequest
+ *
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Requests
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class StorePhysicalInterface extends FormRequest
 {
     /**
@@ -39,7 +46,7 @@ class StorePhysicalInterface extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // middleware ensures superuser access only so always authorised here:
         return Auth::getUser()->isSuperUser();
@@ -50,19 +57,18 @@ class StorePhysicalInterface extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
-
         return [
-            'viid'                      => 'required|integer|exists:Entities\VirtualInterface,id',
-            'switch'                    => 'required|integer|exists:Entities\Switcher,id',
-            'switch-port'               => 'required|integer|exists:Entities\SwitchPort,id',
-            'status'                    => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$STATES ) ),
-            'speed'                     => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$SPEED ) ),
-            'duplex'                    => 'required|string|in:'  . implode( ',', array_keys( PhysicalInterfaceEntity::$DUPLEX ) ),
+            'virtualinterfaceid'        => 'required|integer|exists:virtualinterface,id',
+            'switch'                    => 'required|integer|exists:switch,id',
+            'switchportid'              => 'required|integer|exists:switchport,id',
+            'status'                    => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterface::$STATES ) ),
+            'speed'                     => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterface::$SPEED ) ),
+            'duplex'                    => 'required|string|in:'  . implode( ',', array_keys( PhysicalInterface::$DUPLEX ) ),
             'notes'                     => 'string|nullable',
-            'switch-fanout'             => 'integer' . ( $this->input('fanout') ? '|required|exists:Entities\Switcher,id'   : '|nullable' ),
-            'switch-port-fanout'        => 'integer' . ( $this->input('fanout') ? '|required|exists:Entities\SwitchPort,id' : '|nullable' ),
+            'switch-fanout'             => 'integer' . ( $this->fanout ? '|required|exists:switch,id'   : '|nullable' ),
+            'switch-port-fanout'        => 'integer' . ( $this->fanout ? '|required|exists:switchport,id' : '|nullable' ),
         ];
     }
 }

@@ -1,4 +1,3 @@
-
 <?php if( $t->data['session_token'] === null ): ?>
     <div class="alert alert-info tw-mb-8" role="alert">
         <b>Active sessions</b> are only login sessions that had <em>Remember me</em> checked. Your current session was
@@ -18,6 +17,5 @@
     </div>
 
     <div class="card-body">
-
         <div class="tab-content">
             <div id="user-remember-token" class="tab-pane fade active show">

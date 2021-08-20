@@ -30,14 +30,14 @@ return [
      |
      | Debugbar is enabled by default, when debug is set to true in app.php.
      | You can override the value by setting enable to true or false instead of null.
-     | 
+     |
      | You can provide an array of URI's that must be ignored (eg. 'api/*')
      |
      */
 
     'enabled' => env('DEBUGBAR_ENABLED', null),
     'except' => [
-        //
+        'telescope*'
     ],
 
     /*
@@ -100,7 +100,7 @@ return [
      |
      */
     'error_handler' => false,
-    
+
     /*
      |--------------------------------------------------------------------------
      | Clockwork integration
@@ -128,12 +128,12 @@ return [
         'memory'          => true,  // Memory usage
         'exceptions'      => true,  // Exception displayer
         'log'             => true,  // Logs from Monolog (merged in messages if enabled)
-                                    // ---------------------------------------------------------------------------
-                                    // barryo - 20180214 - the following is set to false as Eloquent namespace
-                                    // conflicts with Doctrine namespace for the debugbar. So, no Eloquent love
-                                    // in IXP Manager on this valentine's day xxx
-        'db'              => false, // Show database (PDO) queries and bindings
-                                    // ---------------------------------------------------------------------------
+        // ---------------------------------------------------------------------------
+        // barryo - 20180214 - the following is set to false as Eloquent namespace
+        // conflicts with Doctrine namespace for the debugbar. So, no Eloquent love
+        // in IXP Manager on this valentine's day xxx
+        'db'              => true, // Show database (PDO) queries and bindings
+        // ---------------------------------------------------------------------------
         'views'           => true,  // Views with their data
         'route'           => true,  // Current route information
         'auth'            => true, // Display Laravel authentication status
@@ -148,6 +148,7 @@ return [
         'files'           => false, // Show the included files
         'config'          => false, // Display config settings
         'cache'           => false, // Display cache events
+        'models'          => true,  // Display models
     ],
 
     /*
@@ -165,7 +166,7 @@ return [
         ],
         'db' => [
             'with_params'       => true,   // Render SQL with the parameters substituted
-            'backtrace'         => true,   // Use a backtrace to find the origin of the query in your files.
+            'backtrace'         => false,   // Use a backtrace to find the origin of the query in your files.
             'timeline'          => false,  // Add the queries to the timeline
             'explain' => [                 // Show EXPLAIN output on queries
                 'enabled' => false,

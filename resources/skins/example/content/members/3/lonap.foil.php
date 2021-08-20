@@ -1,72 +1,69 @@
 <html>
-<body>
-{* Sample member details table for LONAP - note, no formatting included *}
-{* replicates https://www.lonap.net/members.shtml as of 20130801 *}
+    <body>
+        {* Sample member details table for LONAP - note, no formatting included *}
+        {* replicates https://www.lonap.net/members.shtml as of 20130801 *}
+        <table>
+            <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>ASN</th>
+                    <th>Connections</th>
+                </tr>
+            </thead>
+            <tbody>
 
-
-<table>
-    <thead>
-    <tr>
-        <th>Company</th>
-        <th>ASN</th>
-        <th>Connections</th>
-    </tr>
-    </thead>
-
-    <tbody>
-
-    <?php
-        /** @var Entities\Customer $c */
-        foreach( $t->customers as $c ):
-    ?>
-
-        <?php
-            // let's ignore associate and internal members here, we can add them in using a second loop later if we wish
-            // we can also ignore TYPE_PROBONO if we wish
-            if( $c->isTypeAssociate() || $c->isTypeInternal() ) {
-                continue;
-            }
-        ?>
-
-        <tr>
-
-            <td>
-                <a href="<?= $c->getCorpwww() ?>"><?= $c->getName() ?></a>
-            </td>
-            <td>
-                <a href="http://www.ripe.net/perl/whois?searchtext=as<?= $c->getAutsys() ?>&form_type=simple"><?= $c->getAutsys() ?></a>
-            </td>
-
-            <?php /* LONAP shows connects as items such as FE + GE, GE, 10GE + GE, 4*10GE, etc */ ?>
-            <td>
                 <?php
-                    $first = true;
-                    foreach( $c->getVirtualInterfaces() as $vi ) {
-                        if( !count( $vi->getPhysicalInterfaces() ) ) {
+                    /** @var \IXP\Models\Customer $c */
+                    foreach( $t->customers as $c ):
+                ?>
+                    <?php
+                        // let's ignore associate and internal members here, we can add them in using a second loop later if we wish
+                        // we can also ignore TYPE_PROBONO if we wish
+                        if( $c->typeAssociate() || $c->typeInternal() ) {
                             continue;
                         }
+                    ?>
 
-                        if( !$first ) {
-                            echo ' + ';
-                        }
+                    <tr>
+                        <td>
+                            <a href="<?= $c->corpwww ?>">
+                                <?= $c->name ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="http://www.ripe.net/perl/whois?searchtext=as<?= $c->autsys ?>&form_type=simple">
+                                <?= $c->autsys ?>
+                            </a>
+                        </td>
 
-                        if( count( $vi->getPhysicalInterfaces() ) > 1 ) {
-                            echo count( $vi->getPhysicalInterfaces() ) . '*';
-                        }
+                        <?php /* LONAP shows connects as items such as FE + GE, GE, 10GE + GE, 4*10GE, etc */ ?>
+                        <td>
+                            <?php
+                                $first = true;
+                                foreach( $c->virtualInterfaces as $vi ) {
+                                    $pis = $vi->physicalInterfaces;
 
-                        echo $vi->getPhysicalInterfaces()[0]->resolveSpeed();
+                                    if( !count( $pis ) ) {
+                                        continue;
+                                    }
 
-                        $first = false;
-                    }
-                ?>
-            </td>
-        </tr>
+                                    if( !$first ) {
+                                        echo ' + ';
+                                    }
 
-    <?php endforeach; ?>
+                                    if( count( $pis ) > 1 ) {
+                                        echo count( $pis ) . '*';
+                                    }
 
-    </tbody>
+                                    echo $pis[0]->speed();
 
-</table>
-
-</body>
+                                    $first = false;
+                                }
+                            ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </body>
 </html>

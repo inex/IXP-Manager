@@ -22,14 +22,10 @@ namespace IXP\Mail\Utils;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
-
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
-
 /**
  * Mailable for SMTP test utility
  *
@@ -56,7 +52,8 @@ class SmtpTest extends Mailable
      * SmtpTest constructor.
      * @param bool $debug If true, record the SMTP dialog
      */
-    public function __construct(bool $debug = false) {
+    public function __construct( bool $debug = false )
+    {
         $this->debug = $debug;
     }
 
@@ -65,7 +62,7 @@ class SmtpTest extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): self
     {
         if( $this->debug ) {
             $this->logger = new \Swift_Plugins_Loggers_ArrayLogger;
@@ -79,7 +76,8 @@ class SmtpTest extends Mailable
     /**
      * @return SwiftMail|null
      */
-    public function logger() {
+    public function logger()
+    {
         return $this->logger;
     }
 }

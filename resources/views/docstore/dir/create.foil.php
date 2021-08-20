@@ -1,7 +1,6 @@
 <?php
     /** @var Foil\Template\Template $t */
     /** @var $t->active */
-
     $this->layout( 'layouts/ixpv4' );
 ?>
 
@@ -9,23 +8,17 @@
     Document Store / <?= $t->dir ? 'Edit' : 'Create' ?> Directory
 <?php $this->append() ?>
 
-
 <?php $this->section( 'page-header-postamble' ) ?>
-
     <div class="btn-group btn-group-sm ml-auto" role="group">
         <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/docstore/">
             Documentation
         </a>
     </div>
-
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
-
-
     <div class="card-body">
-
-        <?= Former::open()->method( $t->dir ? 'put' : 'post' )
+        <?= Former::open()->method( $t->dir ? 'PUT' : 'POST' )
             ->id( 'form' )
             ->action( $t->dir ? route ( 'docstore-dir@update', [ 'dir' => $t->dir->id ] ) : route ( 'docstore-dir@store' ) )
             ->actionButtonsCustomClass( "grey-box")
@@ -41,7 +34,7 @@
             ->blockHelp( "The name of the directory (this is as it appears on listings in the web interface rather than on the filesystem)." );
         ?>
 
-        <?= Former::select( 'parent_dir' )
+        <?= Former::select( 'parent_dir_id' )
             ->label( 'Parent Directory' )
             ->fromQuery( $t->dirs, 'name' )
             ->addClass( 'chzn-select' )
@@ -49,7 +42,6 @@
         ?>
 
         <div class="form-group">
-
             <div class="col-lg-offset-2 col-sm-offset-2">
                 <div class="card mt-4">
                     <div class="card-header">
@@ -92,19 +84,15 @@
         ?>
 
         <?= Former::close() ?>
-
     </div>
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
     <script>
-
         <?php if( $t->dir ): ?>
             $(document).ready(function() {
-                $("#parent_dir option[value=" + <?= $t->dir->id ?> +"]").attr('disabled','disabled');
+                $( "#parent_dir_id option[value=" + <?= $t->dir->id ?> +"]" ).attr( 'disabled','disabled' );
             });
         <?php endif; ?>
-
     </script>
 <?php $this->append() ?>

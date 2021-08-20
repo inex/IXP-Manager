@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,6 +21,8 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -31,18 +33,15 @@
 | to using a Closure or controller method. Build something great!
 |
 */
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
 /// Customers
 ///
-
 Route::group( [ 'prefix' => 'customer', 'namespace' => 'Customer'], function() {
     Route::get( 'details',                  'CustomerController@details'        )->name( "customer@details"    );
     Route::get( 'associates',               'CustomerController@associates'     )->name( "customer@associates" );
-    Route::get( 'detail/{id}',              'CustomerController@detail'         )->name( "customer@detail"     );
+    Route::get( 'detail/{cust}',            'CustomerController@detail'         )->name( 'customer@detail'     );
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,25 +49,24 @@ Route::group( [ 'prefix' => 'customer', 'namespace' => 'Customer'], function() {
 ///
 /// Peering Matrix
 ///
-
 Route::get( 'peering-matrix', 'PeeringMatrixController@index' )->name( "peering-matrix@index" );
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
-/// Patch Panels
+/// Patch Panel Port
 ///
-
-Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], function() {
-    Route::get( 'view/{id}',                    'PatchPanelPortController@view'         )->name( "patch-panel-port@view"        );
-    Route::get( 'loa-pdf/{id}',                 'PatchPanelPortController@loaPDF'       )->name( "patch-panel-port@loa-pdf"     );
-    Route::get( 'verify-loa/{id}/{code}',       'PatchPanelPortController@verifyLoa'    )->name( "patch-panel-port@verify-loa"  );
+Route::group( [ 'namespace' => 'PatchPanel\Port', 'prefix' => 'patch-panel-port' ], function() {
+    Route::get( 'view/{ppp}',                    'PortController@view'     )->name( "patch-panel-port@view"        );
+    Route::get( '{ppp}/loa/verify/{code}',       'LoaController@verify'    )->name( "patch-panel-port-loa@verify"  );
 });
 
-Route::get( 'verify-loa/{id}/{code}',           'PatchPanel\PatchPanelPortController@verifyLoa'    )->name( "patch-panel-port@verify-loa"  );
-
-
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// weather-map
+///
 Route::get( 'weather-map/{id}',                  'WeatherMapController@index' )->name( 'weathermap');
 
 
@@ -80,40 +78,36 @@ Route::get( 'weather-map/{id}',                  'WeatherMapController@index' )-
 /// See: http://docs.ixpmanager.org/features/static-content/
 ///
 ///
-Route::get( 'content/{priv}/{page}',     'ContentController@index' )->name( 'content' );
-Route::get( 'public-content/{page}',     'ContentController@public' )->name( 'public-content' );
-
-Route::get( 'content/members/{priv}/{page}', 'ContentController@members' )->name( 'content/members' );
+Route::get( 'content/{priv}/{page}',        'ContentController@index'   )->name( 'content'          );
+Route::get( 'public-content/{page}',        'ContentController@public'  )->name( 'public-content'   );
+Route::get( 'content/members/{priv}/{page}','ContentController@members' )->name( 'content/members'  );
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
 /// Statistics -> a dedicated request object manages authorization
 ///
-
 Route::group( [ 'prefix' => 'statistics' ], function() {
-    Route::get(  'ixp/{category?}',                             'StatisticsController@ixp'               )->name( 'statistics/ixp'                );
-    Route::get(  'infrastructure/{graphid?}/{category?}',       'StatisticsController@infrastructure'    )->name( 'statistics/infrastructure'     );
-    Route::get(  'vlan/{vlanid?}/{protocol?}/{category?}',      'StatisticsController@vlan'              )->name( 'statistics/vlan'               );
-    Route::get(  'switch/{switchid?}/{category?}',              'StatisticsController@switch'            )->name( 'statistics/switch'             );
-    Route::get(  'trunk/{trunkid?}/{category?}',                'StatisticsController@trunk'             )->name( 'statistics/trunk'              );
-
-    Route::get(  'members', 'StatisticsController@members' );
-    Route::post( 'members', 'StatisticsController@members' )->name( 'statistics/members' );
-
-    Route::get(  'p2p/{cid}', 'StatisticsController@p2p' )->name( 'statistics@p2p-get' );
-    Route::post( 'p2p/{cid}', 'StatisticsController@p2p' )->name( 'statistics@p2p' );
-
-    Route::get(  'member/{id?}',                                'StatisticsController@member'            )->name( 'statistics@member'             );
-
-    Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'   )->name( 'statistics@member-drilldown'   );
-    Route::get(  'latency/{vliid}/{protocol}',                  'StatisticsController@latency'           )->name( 'statistics@latency'            );
-
-    Route::get(  'core-bundle/{cbid}',                          'StatisticsController@coreBundle'        )->name( 'statistics@core-bundle'            );
+    Route::get(  'ixp/{category?}',                             'StatisticsController@ixp'                  )->name( 'statistics@ixp'                   );
+    Route::get(  'infrastructure/{infra?}/{category?}',         'StatisticsController@infrastructure'       )->name( 'statistics@infrastructure'        );
+    Route::get(  'vlan/{vlan?}/{protocol?}/{category?}',        'StatisticsController@vlan'                 )->name( 'statistics@vlan'                  );
+    Route::get(  'switch/{switch?}/{category?}',                'StatisticsController@switch'               )->name( 'statistics@switch'                );
+    Route::get(  'trunk/{trunk?}/{category?}',                  'StatisticsController@trunk'                )->name( 'statistics@trunk'                 );
+    Route::get(  'members',                                     'StatisticsController@members'              );
+    Route::post( 'members',                                     'StatisticsController@members'              )->name( 'statistics@members'               );
+    Route::get(  'p2p/{cust}',                                  'StatisticsController@p2p'                  )->name( 'statistics@p2p-get'               );
+    Route::post( 'p2p/{cust}',                                  'StatisticsController@p2p'                  )->name( 'statistics@p2p'                   );
+    Route::get(  'member/{cust?}',                              'StatisticsController@member'               )->name( 'statistics@member'                );
+    Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'      )->name( 'statistics@member-drilldown'      );
+    Route::get(  'latency/{vli}/{protocol}',                    'StatisticsController@latency'              )->name( 'statistics@latency'               );
+    Route::get(  'core-bundle/{cb}',                            'StatisticsController@coreBundle'           )->name( 'statistics@core-bundle'           );
 });
 
-
-// Authentication routes...
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Authentication routes
+///
 Route::group( [ 'namespace' => 'Auth' ], function() {
     Route::get( 'logout',                   'LoginController@logout'                                )->name( "login@logout"                     );
     Route::get( 'login',                    'LoginController@showLoginForm'                         )->name( "login@showForm"                   );
@@ -128,6 +122,11 @@ Route::group( [ 'namespace' => 'Auth' ], function() {
     Route::get( 'username',                 'ForgotPasswordController@showUsernameForm'             )->name( "forgot-password@showUsernameForm" );
     Route::post('forgot-username',          'ForgotPasswordController@sendUsernameEmail'            )->name( "forgot-password@username-email"   );
 
+    // PeeringDB OAuth
+    Route::group( [ 'prefix' => 'auth/login/peeringdb' ], function() {
+        Route::get('',          'LoginController@peeringdbRedirectToProvider'       )->name('auth:login-peeringdb' );
+        Route::get('callback',  'LoginController@peeringdbHandleProviderCallback'   );
+    });
 
     // IXP Manager <v4.9 aliases for static links
     Route::redirect( 'auth/logout',        url( '' ) . '/logout',          301 );
@@ -136,32 +135,12 @@ Route::group( [ 'namespace' => 'Auth' ], function() {
     Route::redirect( 'auth/lost-username', url( '' ) . '/username',        301 );
 });
 
-
-
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
 /// MEMBER EXPORT
 ///
-
-
 Route::get( 'participants.json', function() { return redirect(route('ixf-member-export')); });
-
-
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-///
-/// PeeringDB OAuth
-///
-
-Route::get('auth/login/peeringdb',          'Auth\LoginController@peeringdbRedirectToProvider')->name('auth:login-peeringdb');
-Route::get('auth/login/peeringdb/callback', 'Auth\LoginController@peeringdbHandleProviderCallback');
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,31 +170,23 @@ if( !config( 'ixp_fe.frontend.disabled.docstore' ) ) {
 
         Route::get(    '/file/{file}/logs',        'LogController@list'           )->name( 'docstore-log@list'         );
         Route::get(    '/file/{file}/unique-logs', 'LogController@uniqueList'     )->name( 'docstore-log@unique-list'  );
-
     } );
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
 /// DEFAULT ROUTE
 ///
-
 Route::get( '/', function() {
-
     if( Auth::guest() ) {
         return redirect(route( "login@showForm" ) );
     }
 
     if( Auth::getUser()->isSuperUser() ) {
         return redirect( route( "admin@dashboard" ) );
-    } else {
-        return redirect( route( "dashboard@index" ) );
     }
+    return redirect( route( "dashboard@index" ) );
 })->name( 'default' );
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-

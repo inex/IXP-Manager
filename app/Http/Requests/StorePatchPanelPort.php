@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,8 +23,22 @@ namespace IXP\Http\Requests;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Auth;
+
 use Illuminate\Foundation\Http\FormRequest;
 
+use IXP\Models\PatchPanelPort;
+
+/**
+ * Store PatchPanelPort FormRequest
+ *
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Requests
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class StorePatchPanelPort extends FormRequest
 {
     /**
@@ -32,10 +46,10 @@ class StorePatchPanelPort extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // middleware ensures superuser access only so always authorised here:
-        return true;
+        return Auth::getUser()->isSuperUser();
     }
 
     /**
@@ -43,25 +57,25 @@ class StorePatchPanelPort extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
-        $allocated = $this->input('allocated');
-
-        $prewired = $this->input('prewired');
-
-        $required = ($allocated or $prewired) ? '' : 'required';
-
+        $required   = ( $this->allocated || $this->prewired ) ? 'nullable' : 'required';
+        $required2  = $this->duplex  ? 'required' : 'nullable';
         return [
-            'number'                => $required.'|string|max:255',
+            'switch_port_id'        => 'nullable|integer|exists:switchport,id',
+            'customer_id'           => 'nullable|integer|exists:cust,id',
+            'partner_port'          => $required2 . '|integer|exists:patch_panel_port,id',
+            'number'                => $required . '|string|max:255',
             'patch_panel'           => $required,
             'description'           => 'nullable|string|max:255',
             'colo_circuit_ref'      => 'nullable|string|max:255',
             'colo_billing_ref'      => 'nullable|string|max:255',
             'ticket_ref'            => 'nullable|string|max:255',
-            'state'                 => 'required|integer',
+            'state'                 => 'nullable|integer|in:' . implode( ',', array_keys( PatchPanelPort::$STATES ) ),
+            'chargeable'            => 'nullable|integer|in:' . implode( ',', array_keys( PatchPanelPort::$CHARGEABLES ) ),
             'assigned_at'           => 'nullable|date',
             'connected_at'          => 'nullable|date',
-            'ceased_requested_at'   => 'nullable|date',
+            'cease_requested_at'    => 'nullable|date',
             'ceased_at'             => 'nullable|date',
             'last_state_change_at'  => 'nullable|date',
         ];

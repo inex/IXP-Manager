@@ -3,12 +3,11 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-   <?= $t->wm[ 'name' ]?>
+    <?= $t->wm[ 'name' ]?>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
     <div class="row">
-
         <div class="col-lg-12">
 
             <?php if( $t->wm ): ?>
@@ -33,11 +32,6 @@
                     <?php endforeach; ?>
                 </ul>
             <?php endif; ?>
-
         </div>
-
     </div>
-
-
-
 <?php $this->append() ?>

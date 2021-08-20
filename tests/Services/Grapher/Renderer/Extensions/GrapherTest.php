@@ -1,7 +1,9 @@
 <?php
 
+namespace Tests\Services\Grapher\Graph\Renderer\Extensions;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -29,42 +31,49 @@ use Tests\TestCase;
  * PHPUnit test class to test the Grapher Foil extension.
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   Tests
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Tests\Services\Grapher\Graph\Renderer\Extensions
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class GrapherTest extends TestCase
 {
+
     protected $g;
 
-    protected function setUp(): void {
+    protected function setUp(): void
+    {
         $this->g = new GrapherFoilExtension;
     }
 
-
-    public function testNormalCommunity() {
+    public function testNormalCommunity(): void
+    {
         $this->assertEquals( 'qwerty123', $this->g->escapeCommunityForMrtg( 'qwerty123' ) );
     }
 
-    public function testCommunityNeedingEscape1() {
+    public function testCommunityNeedingEscape1(): void
+    {
         $this->assertEquals( 'qwe\\ rty\@123', $this->g->escapeCommunityForMrtg( 'qwe rty@123' ) );
     }
 
-    public function testCommunityNeedingEscape2() {
+    public function testCommunityNeedingEscape2(): void
+    {
         $this->assertEquals( '\\ qwerty123', $this->g->escapeCommunityForMrtg( ' qwerty123' ) );
     }
 
-    public function testCommunityNeedingEscape3() {
+    public function testCommunityNeedingEscape3(): void
+    {
         $this->assertEquals( 'qwe\\ rty123', $this->g->escapeCommunityForMrtg( 'qwe rty123' ) );
     }
 
-    public function testCommunityNeedingEscape4() {
+    public function testCommunityNeedingEscape4(): void
+    {
         $this->assertEquals( 'qwerty123\\ ', $this->g->escapeCommunityForMrtg( 'qwerty123 ' ) );
     }
 
-    public function testCommunityNeedingEscape5() {
+    public function testCommunityNeedingEscape5(): void
+    {
         $this->assertEquals( 'qwe\@rty123', $this->g->escapeCommunityForMrtg( 'qwe@rty123' ) );
     }
-
-
 }

@@ -1,8 +1,7 @@
 <?php
 
-
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,10 +21,9 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Entities\User as UserEntity;
+use IXP\Models\User;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults
@@ -36,9 +34,8 @@ return [
     | as required, but they're a perfect start for most applications.
     |
     */
-
     'defaults' => [
-        'guard' => 'web',
+        'guard'     => 'web',
         'passwords' => 'users',
     ],
 
@@ -61,17 +58,15 @@ return [
 
     'guards' => [
         'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-            'expire' => env( 'AUTH_TOKEN_EXPIRE', 43200 ), // optional token expiration time, in minutes (30 days is the default)
+            'driver'    => 'session',
+            'provider'  => 'users',
+            'expire'    => env( 'AUTH_TOKEN_EXPIRE', 43200 ), // optional token expiration time, in minutes (30 days is the default)
         ],
 
-
-
         'api' => [
-            'driver' => 'token',
-            'provider' => 'users',
-            'hash' => false,
+            'driver'    => 'token',
+            'provider'  => 'users',
+            'hash'      => false,
         ],
     ],
 
@@ -91,11 +86,10 @@ return [
     | Supported: "database", "eloquent"
     |
     */
-
     'providers' => [
         'users' => [
-            'driver' => 'doctrine',
-            'model' => Entities\User::class,
+            'driver'    => 'eloquent',
+            'model'     => User::class,
         ],
 
 //         'users' => [
@@ -122,17 +116,14 @@ return [
     | they have less time to be guessed. You may change this as needed.
     |
     */
-
     'passwords' => [
         'users' => [
-            'provider' => 'users',
-            'email' => 'auth.emails.password',
-            'table' => 'password_resets',
-            'expire' => 10080, // 7 days
+            'provider'  => 'users',
+            'email'     => 'auth.emails.password',
+            'table'     => 'password_resets',
+            'expire'    => 10080, // 7 days
         ],
     ],
-
-
 
     /*
     |--------------------------------------------------------------------------
@@ -140,10 +131,8 @@ return [
     |--------------------------------------------------------------------------
     |
     */
-
     'peeringdb' => [
         'enabled'   => env( 'AUTH_PEERINGDB_ENABLED', false ),
-        'privs'     => env( 'AUTH_PEERINGDB_PRIVS',   UserEntity::AUTH_CUSTUSER ),
+        'privs'     => env( 'AUTH_PEERINGDB_PRIVS',   User::AUTH_CUSTUSER ),
     ],
-
 ];

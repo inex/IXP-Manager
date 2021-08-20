@@ -2,7 +2,7 @@
 namespace IXP\Providers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,9 +25,20 @@ use Auth, Gate;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
-use IXP\Services\Auth\DoctrineUserProvider;
+use IXP\Services\Auth\EloquentUserProvider;
+
 use IXP\Services\Auth\SessionGuard;
 
+/**
+ * Auth Service Provider
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Providers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class AuthServiceProvider extends ServiceProvider
 {
 
@@ -74,10 +85,8 @@ class AuthServiceProvider extends ServiceProvider
             return $guard;
         });
 
-        Auth::provider('doctrine', function ( $app, array $config ) {
-            $em = $app[ 'registry' ]->getManagerForClass( $config['model'] );
-            
-            return new DoctrineUserProvider( $app['hash'], $em , $config['model'] );
+        Auth::provider('eloquent', function ( $app, array $config ) {
+            return new EloquentUserProvider( $app['hash'], $config['model'] );
         });
     }
 }

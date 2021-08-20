@@ -9,7 +9,7 @@
  *
  * Skinning: https://ixp-manager.readthedocs.io/en/latest/features/skinning.html
  *
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -38,7 +38,7 @@
 <?php foreach( $t->ints as $int ):
 
         // do not set up a session to ourselves!
-        if( $int['autsys'] == $t->router->asn() ):
+        if( $int['autsys'] == $t->router->asn ):
             continue;
         endif;
 ?>
@@ -88,7 +88,7 @@ int set allas;
 
     allnet = [ <?= implode( ', ',
             $int['rsmorespecifics']
-                    ? $t->bird()->prefixExactToLessSpecific( $int['irrdbfilter_prefixes'], $t->router->protocol(), config( 'ixp.irrdb.min_v' . $t->router->protocol() . '_subnet_size' ) )
+                    ? $t->bird()->prefixExactToLessSpecific( $int['irrdbfilter_prefixes'], $t->router->protocol, config( 'ixp.irrdb.min_v' . $t->router->protocol . '_subnet_size' ) )
                     : $int['irrdbfilter_prefixes']
                 ) ?> ];
 
@@ -124,7 +124,7 @@ protocol bgp pb_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?> from tb_rsclient {
         neighbor <?= $int['address'] ?> as <?= $int['autsys'] ?>;
         import limit <?= $int['maxprefixes'] ?> action restart;
         table t_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?>;
-        <?php if( $int['bgpmd5secret'] && !$t->router->skipMD5() ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
+        <?php if( $int['bgpmd5secret'] && !$t->router->skip_md5 ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
 
 }
 

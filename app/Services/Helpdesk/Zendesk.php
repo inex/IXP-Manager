@@ -1,7 +1,9 @@
-<?php namespace IXP\Services\Helpdesk;
+<?php
+
+namespace IXP\Services\Helpdesk;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,25 +22,31 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 use IXP\Contracts\Helpdesk as HelpdeskContract;
 
+use IXP\Exceptions\GeneralException;
+
+use IXP\Models\{
+    Contact,
+    Customer,
+    User};
+
 use Zendesk\API\HttpClient as ZendeskAPI;
-
-
 /**
  * Helpdesk Backend -> Zendesk
  *
- * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Helpdesk
  * @package    IXP\Services
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Zendesk implements HelpdeskContract {
-
+class Zendesk implements HelpdeskContract
+{
     /**
      * The Zendesk Client
+     *
      * @var Zendesk\API\Client
      */
     private $client;
@@ -50,11 +58,20 @@ class Zendesk implements HelpdeskContract {
      */
     private $debug;
 
-    public function __construct( $config ) {
-        if( !isset( $config['subdomain'] ) || !isset( $config['token'] ) || !isset( $config['email'] ) )
+    /**
+     * Zendesk constructor.
+     *
+     * @param $config
+     *
+     * @throws
+     */
+    public function __construct( $config )
+    {
+        if( !isset( $config['subdomain'] ) || !isset( $config['token'] ) || !isset( $config['email'] ) ){
             throw new ConfigurationException( "Zendesk requires that 'subdomain', 'token', 'email' be configured" );
+        }
 
-        $this->client = new ZendeskAPI($config['subdomain'], $config['email']);
+        $this->client = new ZendeskAPI( $config['subdomain'], $config['email'] );
         $this->client->setAuth('basic', [ 'username' => $config['email'], 'token' => $config['token'] ] );
     }
 
@@ -62,7 +79,8 @@ class Zendesk implements HelpdeskContract {
      * Centralised function to perform the Zendesk API call, throw exceptions, etc
      *
      * @param function $fn Anonymous function containing API call
-     * @throws \IXP\Services\Helpdesk\ApiException
+     *
+     * @throws
      */
     protected function callApi( $fn )
     {
@@ -84,21 +102,20 @@ class Zendesk implements HelpdeskContract {
     /**
      * Return the Zendesk debug information
      */
-    public function getDebug() {
+    public function getDebug()
+    {
         return $this->debug;
     }
-
 
     /**
      * Find all tickets on the helpdesk
      *
      * @throws \IXP\Services\Helpdesk\ApiException
      */
-    public function ticketsFindAll() {
+    public function ticketsFindAll()
+    {
         $this->callApi( function() { $this->client->tickets()->findAll(); } );
     }
-
-
 
     // ********************************************************************************************
     // ********************************************************************************************
@@ -112,46 +129,49 @@ class Zendesk implements HelpdeskContract {
 
 
     /**
-     * Convert a IXP Customer entitiy into an associated array as rerquired by Zendesk's API
+     * Convert a IXP Customer entity into an associated array as rerquired by Zendesk's API
      *
-     * @param \Entity\Customer $cust     The IXP Manager customer entity
-     * @param bool             $id       If updating, set to Zendesk organisation ID
+     * @param Customer      $cust     The IXP Manager customer entity
+     * @param bool          $id       If updating, set to Zendesk organisation ID
+     *
      * @return array Data in associate array format as required by Zendesk PHP API
      */
-    private function customerEntityToZendeskObject( $cust, $id = false )
+    private function customerEntityToZendeskObject( Customer $cust, $id = false ): array
     {
-        $data = [];
-
-        $data['external_id']  = $cust->getId();
-        $data['name']         = $cust->getName();
+        $data                 = [];
+        $data['external_id']  = $cust->id;
+        $data['name']         = $cust->name;
 
         if( $id ) {
             // updating so set the Zendesk ID:
             $data['id'] = $id;
         } else {
             // creating - set the initial domains:
-            if( preg_match( '/^(http[s]*\:\/\/)?www\.([a-zA-Z0-9\.\-]+).*$/', $cust->getCorpwww(), $matches ) )
+            if( preg_match( '/^(http[s]*\:\/\/)?www\.([a-zA-Z0-9\.\-]+).*$/', $cust->corpwww, $matches ) )
                 $data['domain_names'] = $matches[2];
         }
 
         $data['organization_fields'] = [
-            'asn'           => $cust->getAutsys(),
-            'as_set'        => $cust->getPeeringmacro(),
-            'peering_email' => $cust->getPeeringemail(),
-            'noc_email'     => $cust->getNocemail(),
-            'shortname'     => $cust->getShortname(),
-            'type'          => $cust->getTypeText(),
+            'asn'           => $cust->autsys,
+            'as_set'        => $cust->peeringmacro,
+            'peering_email' => $cust->peeringemail,
+            'noc_email'     => $cust->nocemail,
+            'shortname'     => $cust->shortname,
+            'type'          => Customer::$CUST_TYPES_TEXT[ $cust->type ],
             'addresses'     => '',
-            'status'        => $cust->getStatusText(),
+            'status'        => Customer::$CUST_STATUS_TEXT[ $cust->status ],
             'has_left'      => $cust->hasLeft()
         ];
 
-        foreach( $cust->getVirtualInterfaces() as $vi ) {
-            foreach( $vi->getVlanInterfaces() as $vli ) {
-                if( $vli->getIpv4enabled() && $vli->getIPv4Address() )
-                    $data['organization_fields']['addresses'] .= $vli->getIPv4Address()->getAddress() . "\n";
-                if( $vli->getIpv6enabled() && $vli->getIPv6Address() )
-                    $data['organization_fields']['addresses'] .= $vli->getIPv6Address()->getAddress() . "\n";
+        foreach( $cust->virtualInterfaces as $vi ) {
+            foreach( $vi->vlanInterfaces as $vli ) {
+                if( $vli->ipv4enabled && $vli->ipv4address ){
+                    $data['organization_fields']['addresses'] .= $vli->ipv4address->address . "\n";
+                }
+
+                if( $vli->ipv6enabled && $vli->ipv6address ){
+                    $data['organization_fields']['addresses'] .= $vli->ipv6address->address . "\n";
+                }
             }
         }
 
@@ -164,26 +184,33 @@ class Zendesk implements HelpdeskContract {
      * Convert a Zendesk organisation object to a IXP Customer entity
      *
      * @param object $org The Zendesk organisation object
-     * @return \Entity\Customer $cust  The IXP Manager customer entity
+     *
+     * @return Customer $cust  The IXP Manager customer entity
      */
-    private function zendeskObjectToCustomerEntity( $org )
+    private function zendeskObjectToCustomerEntity( $org ): Customer
     {
-        $cust = new \Entities\Customer;
+        $cust = new Customer();
+        $cust->name = $org->name;
+        $cust->autsys = $org->organization_fields->asn ?? null;
+        $cust->peeringmacro = $org->organization_fields->as_set ?? null;
+        $cust->peeringemail = $org->organization_fields->peering_email ?? null;
+        $cust->nocemail = $org->organization_fields->noc_email ?? null;
+        $cust->shortname = $org->organization_fields->shortname ?? null;
 
-        $cust->setName(         $org->name          );
-        $cust->setAutsys(       isset( $org->organization_fields->asn           ) ? $org->organization_fields->asn           : null );
-        $cust->setPeeringmacro( isset( $org->organization_fields->as_set        ) ? $org->organization_fields->as_set        : null );
-        $cust->setPeeringemail( isset( $org->organization_fields->peering_email ) ? $org->organization_fields->peering_email : null );
-        $cust->setNocemail(     isset( $org->organization_fields->noc_email     ) ? $org->organization_fields->noc_email     : null );
-        $cust->setShortname(    isset( $org->organization_fields->shortname     ) ? $org->organization_fields->shortname     : null );
+        if( !( $type = array_search( strtolower( $org->organization_fields->type ?? null ), array_map('strtolower', Customer::$CUST_TYPES_TEXT ) ) ) ) {
+            throw new GeneralException( 'Unknown customer type' );
+        }
+        $cust->type = $type ;
 
-        // these throw an exception if we send an unknow value but the source of the data is external here so we ignore:
-        try { $cust->setTypeText(   isset( $org->organization_fields->type   ) ? $org->organization_fields->type   : null ); } catch( \IXP\Exceptions\GeneralException $e ) {}
-        try { $cust->setStatusText( isset( $org->organization_fields->status ) ? $org->organization_fields->status : null ); } catch( \IXP\Exceptions\GeneralException $e ) {}
+        if( !( $status = array_search( strtolower( $org->organization_fields->status ?? null ), array_map('strtolower', Customer::$CUST_STATUS_TEXT ) ) ) ) {
+            throw new GeneralException( 'Unknown customer status' );
+        }
+        $cust->status = $status ;
 
         // fake has left:
-        if( isset( $org->organization_fields->has_left ) && $org->organization_fields->has_left )
-            $cust->setDateLeave( new \DateTime );
+        if( isset( $org->organization_fields->has_left ) && $org->organization_fields->has_left ){
+            $cust->dateleave = now();
+        }
 
         // store Zendesk's own ID for this organisation
         $cust->helpdesk_id = $org->id;
@@ -194,22 +221,23 @@ class Zendesk implements HelpdeskContract {
     /**
      * Examine customer and Zendesk object and see if Zendesk needs to be updated
      *
-     * @param \Entities\Customer $cdb The IXP customer entity as known here in the database
-     * @param \Entities\Customer $chd The IXP customer entity as known in the helpdesk
+     * @param Customer  $cdb The IXP customer entity as known here in the database
+     * @param Customer  $chd The IXP customer entity as known in the helpdesk
+     *
      * @return bool True if these objects are not in sync
      */
-    public function organisationNeedsUpdating( \Entities\Customer $cdb, \Entities\Customer $chd )
+    public function organisationNeedsUpdating( Customer $cdb, Customer $chd ): bool
     {
         try {
-            return $cdb->getName()         != $chd->getName()
-                || $cdb->getAutsys()       != $chd->getAutsys()
-                || $cdb->getPeeringmacro() != $chd->getPeeringmacro()
-                || $cdb->getPeeringemail() != $chd->getPeeringemail()
-                || $cdb->getNocemail()     != $chd->getNocemail()
-                || $cdb->getShortname()    != $chd->getShortname()
-                || $cdb->getTypeText()     != $chd->getTypeText()
-                || $cdb->getStatusText()   != $chd->getStatusText()
-                || $cdb->hasLeft()         != $chd->hasLeft();
+            return $cdb->name         !== $chd->name
+                || $cdb->autsys       !== $chd->autsys
+                || $cdb->peeringmacro !== $chd->peeringmacro
+                || $cdb->peeringemail !== $chd->peeringemail
+                || $cdb->nocemail     !== $chd->nocemail
+                || $cdb->shortname    !== $chd->shortname
+                || $cdb->type         !== $chd->type
+                || $cdb->status       !== $chd->status
+                || $cdb->hasLeft()    !== $chd->hasLeft();
 
                 // FIXME IP addresses
         } catch( \IXP\Exceptions\GeneralException $e ) {
@@ -224,11 +252,13 @@ class Zendesk implements HelpdeskContract {
      * Create an organisation on the helpdesk. Tickets are usually aligned to
      * users and they in turn to organisations.
      *
-     * @param \IXP\Entities\Customer cust An IXP Manager customer to create as organisation
-     * @return \Entities\Customer|false A decoupled customer entity (including `helpdesk_id`)
+     * @param Customer $cust An IXP Manager customer to create as organisation
+     *
+     * @return Customer|bool A decoupled customer entity (including `helpdesk_id`)
+     *
      * @throws \IXP\Services\Helpdesk\ApiException
      */
-    public function organisationCreate( $cust )
+    public function organisationCreate( Customer $cust )
     {
         $response = $this->callApi( function() use ( $cust ) {
             return $this->client->organizations()->create( $this->customerEntityToZendeskObject( $cust ) );
@@ -240,9 +270,6 @@ class Zendesk implements HelpdeskContract {
         return false;
     }
 
-
-
-
     /**
      * Update an organisation **where the helpdesk ID is known!**
      *
@@ -250,12 +277,14 @@ class Zendesk implements HelpdeskContract {
      * (such as Zendesk's PHP client as of Apr 2015) require knowledge of the helpdesk's ID for
      * an organisatoin.
      *
-     * @param int                $helpdeskId The ID of the helpdesk's organisation object
-     * @param \Entities\Customer $cust       An IXP Manager customer as returned by `organisationFind()`
-     * @return \Entities\Customer|bool A decoupled customer entity (including `helpdesk_id`)
-     * @throws \IXP\Services\Helpdesk\ApiException
+     * @param int               $helpdeskId The ID of the helpdesk's organisation object
+     * @param Customer          $cust       An IXP Manager customer as returned by `organisationFind()`
+     *
+     * @return Customer|bool A decoupled customer entity (including `helpdesk_id`)
+     *
+     * @throws
      */
-    public function organisationUpdate( $helpdeskId, \Entities\Customer $cust )
+    public function organisationUpdate( int $helpdeskId, Customer $cust )
     {
             $response = $this->callApi( function() use ( $cust, $helpdeskId ) {
                 return $this->client->organizations()->update( $this->customerEntityToZendeskObject( $cust, $helpdeskId ) );
@@ -266,7 +295,6 @@ class Zendesk implements HelpdeskContract {
 
             return false;
     }
-
 
     /**
      * Find an organisation by our own customer ID
@@ -280,10 +308,12 @@ class Zendesk implements HelpdeskContract {
      * ID for this organisation.
      *
      * @param int $id Our own customer ID to find the organisation from
-     * @return \IXP\Entities\Customer|bool A shallow disassociated customer object or false
-     * @throws \IXP\Services\Helpdesk\ApiException
+     *
+     * @return Customer|bool A shallow disassociated customer object or false
+     *
+     * @throws
      */
-    public function organisationFind( $id )
+    public function organisationFind( int $id )
     {
             $response = $this->callApi( function() use ( $id ) {
                 return $this->client->organizations()->search( $id );
@@ -294,8 +324,6 @@ class Zendesk implements HelpdeskContract {
 
             return $this->zendeskObjectToCustomerEntity( $response->organizations[0] );
     }
-
-
 
     // ********************************************************************************************
     // ********************************************************************************************
@@ -308,41 +336,43 @@ class Zendesk implements HelpdeskContract {
     // ********************************************************************************************
 
     /**
-     * Convert a IXP Contact entitiy into an associated array as rerquired by Zendesk's API
+     * Convert a IXP Contact entity into an associated array as rerquired by Zendesk's API
      *
-     * @param \Entity\Contact  $contact  The IXP Manager customer entity
-     * @param int              $org_id   The Zendesk ID of the organisation
-     * @param int              $id       If updating, set to Zendesk contact ID
+     * @param Contact       $contact  The IXP Manager customer entity
+     * @param int           $org_id   The Zendesk ID of the organisation
+     * @param            $id       If updating, set to Zendesk contact ID
+     *
      * @return array Data in associate array format as required by Zendesk PHP API
      */
-    private function contactEntityToZendeskObject( $contact, $org_id = null, $id = false )
+    private function contactEntityToZendeskObject( Contact $contact, int $org_id = null, $id = false ): array
     {
         $data = [];
 
-        if( $contact->getId() )
-            $data['external_id']     = $contact->getId();
-        $data['name']            = $contact->getName();
-
-        $data['email']           = $contact->getEmail();
-        $data['phone']           = $contact->getMobile();
-        $data['organization_id'] = $org_id;
-
-        if( $contact->getUser() && $contact->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
-            $data['role'] = 'admin';
-        else {
-            $data['role'] = 'end-user';
-
-            if( $org_id )
-                $data['ticket_restriction'] = 'organization';
-            else
-                $data['ticket_restriction'] = 'requested';
+        if( $contact->id ){
+            $data['external_id']     = $contact->id;
         }
 
+        $data['name']            = $contact->name;
+        $data['email']           = $contact->email;
+        $data['phone']           = $contact->mobile;
+        $data['organization_id'] = $org_id;
+
+        /** FIXME contact table doesn't have user_id anymore */
+        if( $contact->getUser() && $contact->getUser()->getPrivs() == User::AUTH_SUPERUSER ){
+            $data['role'] = 'admin';
+        } else {
+            $data['role'] = 'end-user';
+
+            if( $org_id ){
+                $data['ticket_restriction'] = 'organization';
+            } else {
+                $data['ticket_restriction'] = 'requested';
+            }
+        }
 
         if( $id ) {
             // updating so set the Zendesk ID:
             $data['id'] = $id;
-
         } else {
             $data['verified']  = true;
             $data['locale_id'] = 1176;              // British English
@@ -356,15 +386,16 @@ class Zendesk implements HelpdeskContract {
      * Convert a Zendesk user object to a IXP contact entity
      *
      * @param object $user The Zendesk user object
-     * @return \Entity\Contact $contact  The IXP Manager contact entity
+     *
+     * @return Contact $contact  The IXP Manager contact entity
      */
-    private function zendeskObjectToContactEntity( $user )
+    private function zendeskObjectToContactEntity( $user ): Contact
     {
-        $contact = new \Entities\Contact;
-
-        $contact->setName(   $user->name   );
-        $contact->setEmail(  $user->email  );
-        $contact->setMobile( $user->phone  );
+        $contact = Contact::create([
+            'name'      => $user->name,
+            'email'     => $user->email,
+            'mobile'    => $user->phone,
+        ]);
 
         // store Zendesk's own ID for this organisation
         $contact->helpdesk_id = $user->id;
@@ -375,16 +406,17 @@ class Zendesk implements HelpdeskContract {
     /**
      * Examine contact and Zendesk object and see if Zendesk needs to be updated
      *
-     * @param \Entities\Contact $cdb The IXP contact entity as known here in the database
-     * @param \Entities\Comtact $chd The IXP contact entity as known in the helpdesk
+     * @param Contact   $cdb    The IXP contact entity as known here in the database
+     * @param Contact   $chd    The IXP contact entity as known in the helpdesk
+     *
      * @return bool True if these objects are not in sync
      */
-    public function contactNeedsUpdating( \Entities\Contact $cdb, \Entities\Contact $chd )
+    public function contactNeedsUpdating( Contact $cdb, Contact $chd ): bool
     {
         try {
-            return $cdb->getName()         != $chd->getName()
-                || $cdb->getMobile()       != $chd->getMobile()
-                || $cdb->getEmail()        != $chd->getEmail();
+            return $cdb->name         !== $chd->name
+                || $cdb->mobile       !== $chd->mobile
+                || $cdb->email        !== $chd->email;
         } catch( \IXP\Exceptions\GeneralException $e ) {
             // some issue with type / status - means the customer needs updating
             return true;
@@ -396,11 +428,14 @@ class Zendesk implements HelpdeskContract {
      *
      * Create user on the helpdesk.
      *
-     * @param \IXP\Entities\Contact contact An IXP Manager contact to create
-     * @return \Entities\Contact|bool Decoupled contact object with `helpdesk_id`
-     * @throws \IXP\Services\Helpdesk\ApiException
+     * @param Contact $contact An IXP Manager contact to create
+     * @param $org_id
+     *
+     * @return Contact|bool Decoupled contact object with `helpdesk_id`
+     *
+     * @throws ApiException
      */
-    public function userCreate( $contact, $org_id )
+    public function userCreate( Contact $contact, $org_id )
     {
         $response = $this->callApi( function() use ( $contact, $org_id ) {
             return $this->client->users()->create( $this->contactEntityToZendeskObject( $contact, $org_id ) );
@@ -412,9 +447,6 @@ class Zendesk implements HelpdeskContract {
         return false;
     }
 
-
-
-
     /**
      * Update an user **where the helpdesk ID is known!**
      *
@@ -422,23 +454,26 @@ class Zendesk implements HelpdeskContract {
      * (such as Zendesk's PHP client as of Apr 2015) require knowledge of the helpdesk's ID for
      * an user.
      *
-     * @param int                $helpdeskId The ID of the helpdesk's user object
-     * @param \Entities\Contact  $contact    An IXP Manager contact as returned by `userFind()`
-     * @return \Entities\Contact Decoupled contact object with `helpdesk_id`
+     * @param int       $helpdeskId The ID of the helpdesk's user object
+     * @param Contact   $contact    An IXP Manager contact as returned by `userFind()`
+     *
+     * @return Contact Decoupled contact object with `helpdesk_id`
+     *
      * @throws \IXP\Services\Helpdesk\ApiException
      */
-    public function userUpdate( $helpdeskId, \Entities\Contact $contact )
+    public function userUpdate( int $helpdeskId, Contact $contact ): Contact
     {
         $response = $this->callApi( function() use ( $contact, $helpdeskId ) {
             return $this->client->users()->update( $helpdeskId, $this->contactEntityToZendeskObject( $contact, null, $helpdeskId ) );
         });
 
-        if( isset( $response->user ) )
+        if( isset( $response->user ) ){
             return $this->zendeskObjectToContactEntity( $response->user );
+        }
+
 
         return false;
     }
-
 
     /**
      * Find an user by our own contact ID
@@ -452,10 +487,12 @@ class Zendesk implements HelpdeskContract {
      * ID for this organisation.
      *
      * @param int $id Our own contact ID to find the contact from
-     * @return \IXP\Entities\Contact|bool A shallow disassociated contact object or false
-     * @throws \IXP\Services\Helpdesk\ApiException
+     *
+     * @return Contact|bool A shallow disassociated contact object or false
+     *
+     * @throws
      */
-    public function userFind( $id )
+    public function userFind( int  $id )
     {
         $response = $this->callApi( function() use ( $id ) {
             return $this->client->users()->search( [ 'external_id' => $id ] );
@@ -466,6 +503,4 @@ class Zendesk implements HelpdeskContract {
 
         return $this->zendeskObjectToContactEntity( $response->users[0] );
     }
-
-
 }

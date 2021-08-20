@@ -1,7 +1,9 @@
-<?php namespace IXP\Services\Grapher\Graph;
+<?php
+
+namespace IXP\Services\Grapher\Graph;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,65 +23,74 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Services\Grapher;
-use IXP\Services\Grapher\{Graph};
+use Auth;
 
 use IXP\Exceptions\Services\Grapher\{ParameterException};
 
-use Entities\User as UserEntity;
+use IXP\Models\User;
 
-use Auth;
+use IXP\Services\Grapher;
+use IXP\Services\Grapher\{Graph};
 
 /**
  * Grapher -> Switch Graph
  *
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   Grapher
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
+ * @category   IXP
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Trunk extends Graph {
-
+class Trunk extends Graph
+{
     /**
      * Trunk to graph
+     *
      * @var string
      */
     private $trunkname = null;
 
-
     /**
      * Constructor
+     *
      * @param Grapher $grapher
      * @param string $n
-     * @throws ParameterException
+     *
+     * @throws
      */
-    public function __construct( Grapher $grapher, string $n ) {
+    public function __construct( Grapher $grapher, string $n )
+    {
         parent::__construct( $grapher );
         $this->setTrunkname($n);
     }
 
     /**
      * Get the trunk name we're meant to graph
+     *
      * @return string
      */
-    public function trunkname(): string {
+    public function trunkname(): string
+    {
         return $this->trunkname;
     }
 
     /**
      * Set the trunk we should use
+     *
      * @param string $n
+     *
      * @return Trunk Fluid interface
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     *
+     * @throws
      */
-    public function setTrunkname( string $n ): Trunk {
+    public function setTrunkname( string $n ): Trunk
+    {
         if( !is_array( config('grapher.backends.mrtg.trunks.'.$n) ) ) {
             throw new ParameterException("Invalid trunk name in constructor");
         }
         
         $this->trunkname = $n;
-
         return $this;
     }
 
@@ -87,17 +98,20 @@ class Trunk extends Graph {
      * The name of a graph (e.g. member name, IXP name, etc)
      * @return string
      */
-    public function name(): string {
-        return config('grapher.backends.mrtg.trunks.'.$this->trunkname().'.title');
+    public function name(): string
+    {
+        return config('grapher.backends.mrtg.trunks.' . $this->trunkname().'.title' );
     }
 
     /**
      * A unique identifier for this 'graph type'
      *
      * E.g. for an IXP, it might be ixpxxx where xxx is the database id
+     *
      * @return string
      */
-    public function identifier(): string {
+    public function identifier(): string
+    {
         return $this->trunkname();
     }
 
@@ -110,16 +124,17 @@ class Trunk extends Graph {
      *
      * @return bool
      */
-    public function authorise(): bool {
-        if( Auth::check() && Auth::user()->isSuperUser() ) {
+    public function authorise(): bool
+    {
+        if( Auth::check() && Auth::getUser()->isSuperUser() ) {
             return $this->allow();
         }
 
-        if( is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) == UserEntity::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.trunk' ) ) && (int)config( 'grapher.access.trunk' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 
-        if( Auth::check() && is_numeric( config( 'grapher.access.trunk' ) ) && Auth::user()->getPrivs() >= config( 'grapher.access.trunk' ) ) {
+        if( Auth::check() && is_numeric( config( 'grapher.access.trunk' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.trunk' ) ) {
             return $this->allow();
         }
 
@@ -131,11 +146,13 @@ class Trunk extends Graph {
      * Generate a URL to get this graphs 'file' of a given type
      *
      * @param array $overrides Allow standard parameters to be overridden (e.g. category)
+     *
      * @return string
      */
-    public function url( array $overrides = [] ): string {
+    public function url( array $overrides = [] ): string
+    {
         return parent::url( $overrides ) . sprintf("&id=%s",
-            isset( $overrides['id']   ) ? $overrides['id']   : $this->trunkname()
+                $overrides[ 'id' ] ?? $this->trunkname()
         );
     }
 
@@ -146,12 +163,12 @@ class Trunk extends Graph {
      *
      * @return array $params
      */
-    public function getParamsAsArray(): array {
-        $p = parent::getParamsAsArray();
-        $p['id'] = $this->trunkname();
+    public function getParamsAsArray(): array
+    {
+        $p          = parent::getParamsAsArray();
+        $p['id']    = $this->trunkname();
         return $p;
     }
-
 
     /**
      * Process user input for the parameter: switch
@@ -159,13 +176,14 @@ class Trunk extends Graph {
      * Does a abort(404) if invalid
      *
      * @param string $n The user input value
+     *
      * @return string The verified / sanitised / default value
      */
-    public static function processParameterTrunkname( string $n ): string {
+    public static function processParameterTrunkname( string $n ): string
+    {
         if( !is_array( config('grapher.backends.mrtg.trunks.'.$n) ) ) {
             abort(404);
         }
-
         return $n;
     }
 }

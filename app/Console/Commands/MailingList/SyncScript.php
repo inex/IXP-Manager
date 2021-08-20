@@ -1,7 +1,9 @@
-<?php namespace IXP\Console\Commands\MailingList;
+<?php
+
+namespace IXP\Console\Commands\MailingList;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,22 +23,18 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Entities\{
-    User as UserEntity
-};
-
-use IXP\Utils\MailingList as ML;
-
  /**
   * Artisan command to export subscribers to a mailing list
   *
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
-  * @category   MailingList
-  * @package    IXP\Console\Commands
-  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+  * @category   IXP
+  * @package    IXP\Console\Commands\MailingList
+  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
-class SyncScript extends MailingList {
+class SyncScript extends MailingList
+{
 
     /**
      * The name and signature of the console command.
@@ -53,7 +51,6 @@ class SyncScript extends MailingList {
      */
     protected $description = 'Generate a sample mailing list syncronisation script';
 
-
     /**
      * Mailing list initialisation script
      *
@@ -68,8 +65,8 @@ class SyncScript extends MailingList {
      *
      * @return mixed
      */
-    public function handle(): int {
-
+    public function handle(): int
+    {
         if( !config( 'mailinglists.enabled' ) ) {
             die( "Mailing list functionality is disabled. See: http://docs.ixpmanager.org/features/mailing-lists/\n" );
         }
@@ -82,10 +79,9 @@ class SyncScript extends MailingList {
         }
 
         echo view( 'console/commands/mailing-list/sync-' . ( $this->option( 'sh' ) ? 'sh' : 'apiv4' ) )
-            ->with([ 'lists' => config( 'mailinglists.lists' ) ])
+            ->with( [ 'lists' => config( 'mailinglists.lists' ) ] )
             ->render();
 
         return 0;
     }
-
 }

@@ -1,64 +1,57 @@
-
-<table class="table table-striped table-responsive-ixp collapse" style="width:100%">
+<table class="w-100 table table-striped table-responsive-ixp collapse">
     <thead class="thead-dark">
-    <tr>
-        <th>
-            Name
-        </th>
-        <th>
-            AS
-        </th>
-        <?php if( Auth::getUser()->isSuperUser() ): ?>
+        <tr>
             <th>
-                Shortname
+                Name
             </th>
-        <?php endif; ?>
-        <th>
-            Peering Email
-        </th>
-        <th>
-            NOC 24h Phone
-        </th>
-        <th>
-            Joined
-        </th>
-    </tr>
+            <th>
+                AS
+            </th>
+            <?php if( $t->isSuperUser ): ?>
+                <th>
+                    Shortname
+                </th>
+            <?php endif; ?>
+            <th>
+                Peering Email
+            </th>
+            <th>
+                NOC 24h Phone
+            </th>
+            <th>
+                Joined
+            </th>
+        </tr>
     </thead>
     <tbody>
-        <?php foreach( $t->c->getResoldCustomers() as $rc ): ?>
+        <?php foreach( $t->c->resoldCustomers as $rc ): ?>
             <?php if( $rc->hasLeft() ): ?>
                 <?php continue; ?>
             <?php endif; ?>
             <tr>
                 <td>
-                    <?php if( Auth::getUser()->isSuperUser() ): ?>
-                        <a href="<?= route( "customer@overview", [ "id" => $rc->getId() ] ) ?>">
-                            <?= $t->ee( $rc->getName() ) ?>
-                        </a>
-                    <?php else: ?>
-                        <a href="<?= route( "customer@detail", [ "id" => $rc->getId() ] ) ?>">
-                            <?= $t->ee( $rc->getName() ) ?>
-                        </a>
-                    <?php endif; ?>
+                    <a href="<?= route( $t->isSuperUser ? 'customer@overview' : 'customer@detail', [ 'cust' => $rc->id ] ) ?>">
+                        <?= $t->ee( $rc->name ) ?>
+                    </a>
                 </td>
                 <td>
-                    <?= $t->asNumber( $rc->getAutsys() ) ?>
+                    <?= $t->asNumber( $rc->autsys ) ?>
                 </td>
-                <?php if( Auth::getUser()->isSuperUser() ): ?>
+                <?php if( $t->isSuperUser ): ?>
                     <td>
-                        <a href="<?= route( "customer@overview", [ "id" => $rc->getId() ] ) ?>">
-                            <?= $t->ee( $rc->getShortname() ) ?>
+                        <a href="<?= route( "customer@overview", [ 'cust' => $rc->id ] ) ?>">
+                            <?= $t->ee( $rc->shortname ) ?>
                         </a>
                     </td>
                 <?php endif; ?>
                 <td>
-                    <?= $t->ee(  $rc->getPeeringemail() ) ?>
+                    <?= $t->ee(  $rc->peeringemail ) ?>
                 </td>
                 <td>
-                    <?= $t->ee( $rc->getNoc24hphone() ) ?>
+                    <?= $t->ee( $rc->noc24hphone ) ?>
                 </td>
                 <td>
-                    <?= $rc->getDatejoin()->format('Y-m-d H:i:s') ?>
+                    <?= $rc->datejoin ?>
                 </td>
             </tr>
         <?php endforeach; ?>

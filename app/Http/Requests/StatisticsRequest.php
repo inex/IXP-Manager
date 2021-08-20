@@ -27,7 +27,16 @@ use Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-
+/**
+ * Statistics FormRequest
+ *
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Requests
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class StatisticsRequest extends FormRequest
 {
     /**
@@ -35,7 +44,7 @@ class StatisticsRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // authorisation done on a per action basis using Grapher::Graph->authorise() in the controller
         return true;
@@ -46,7 +55,7 @@ class StatisticsRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [];
     }

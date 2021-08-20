@@ -1,4 +1,4 @@
-<table class="table collapse table-striped" id="summary-table-<?= $t->type ?>" width="100%">
+<table class="table collapse table-striped w-100" id="summary-table-<?= $t->type ?>">
     <thead class="thead-dark">
         <th>
             <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
@@ -18,22 +18,22 @@
             <?php if( $cp[ $t->type ][ 'total' ] > 0 ): ?>
                 <tr>
                     <td>
-                        <a href="<?= route( "rs-prefixes@view", [ 'cid' => $id ] ) ?>">
+                        <a href="<?= route( "rs-prefixes@view", [ 'cust' => $id ] ) ?>">
                             <?= $cp[ 'name' ] ?>
                         </a>
                     </td>
                     <td>
-                        <a href="<?= route( "rs-prefixes@view", [ 'cid' => $id ] ) ?>?type=<?= $t->type ?>&protocol=4">
+                        <a href="<?= route( "rs-prefixes@view", [ 'cust' => $id, 'type' => $t->type , 'protocol' => 4] ) ?>">
                             <?= $cp[ $t->type ][ 4 ]?>
                         </a>
                     </td>
                     <td>
-                        <a href="<?= route( "rs-prefixes@view", [ 'cid' => $id ] ) ?>?type=<?= $t->type ?>&protocol=6">
+                        <a href="<?= route( "rs-prefixes@view", [ 'cust' => $id, 'type' => $t->type , 'protocol' => 6 ] ) ?>">
                             <?= $cp[ $t->type ][ 6 ]?>
                         </a>
                     </td>
                     <td>
-                        <a href="<?= route( "rs-prefixes@view", [ 'cid' => $id ] ) ?>?type=<?= $t->type ?>">
+                        <a href="<?= route( "rs-prefixes@view", [ 'cust' => $id, 'type' => $t->type ] ) ?>">
                             <?= $cp[ $t->type ][ 'total' ]?>
                         </a>
                     </td>

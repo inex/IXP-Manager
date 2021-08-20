@@ -2,22 +2,18 @@
     $(function () {
         $('[data-toggle="tooltip"]').tooltip();
 
-        $( '.list-delete-btn' ).on( 'click', function( event ) {
+        $( '.btn-delete' ).click( function( e ) {
+            e.preventDefault();
+            let url   = this.href;
+            let type  = $(this).attr( 'data-object-type') === 'file' ? 'file' : 'directory';
+            let extra = type === 'directory' ?
+                '<b>All subdirectories and all files within those directories will also be deleted!</b>' : '';
 
-            event.preventDefault();
-
-            let url = $(this).attr( 'data-url');
-
-            let type = $(this).attr( 'data-object-type') === 'file' ? 'file' : 'directory';
-
-            let html = `<form id="form-delete" method="POST" action="${url}">
-                                <div>Do you really want to delete this ${type}?`;
-
-            if( type === 'directory' ) {
-                html += ' <b>All subdirectories and all files within those directories will also be deleted!</b>';
-            }
-
-            html += `</div>
+            html = `<form id="form-delete" method="POST" action="${url}">
+                        <div>
+                            Do you really want to delete this ${type}?
+                            ${extra}
+                        </div>
                         <input type="hidden" name="_method" value="delete" />
                         <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                     </form>`;
@@ -45,13 +41,11 @@
             });
         });
 
-        $( '.list-info-btn' ).on( 'click', function( event ) {
+        $( '.btn-meta' ).click( function( e ) {
+            e.preventDefault();
+            let url = this.href;
 
-            event.preventDefault();
-
-            let url = $(this).attr( 'data-url');
-
-            let bb = bootbox.dialog({
+             bootbox.dialog({
                 message: '<div><p class="text-center"><i class="fa fa-spinner fa-spin text-5xl"></i></p></div>',
                 size: "extra-large",
                 title: "File Metadata",
@@ -67,8 +61,7 @@
                 }
             });
 
-
-            $.ajax(url)
+            $.ajax( url )
                 .done(function (data) {
                     $('.bootbox-body').html( data ).scrollTop();
                 })
@@ -79,5 +72,4 @@
         });
 
     });
-
 </script>

@@ -144,7 +144,7 @@ return [
     | Access permissions
     |--------------------------------------------------------------------------
     |
-    | Most IXPs make aggregate graphs publically available. Namely IXP,
+    | Most IXPs make aggregate graphs publicly available. Namely IXP,
     | infrastructure, switch and trunks. As such, this is our default.
     |
     | You can alter these settings to change these defaults to a specific user
@@ -154,11 +154,11 @@ return [
     |
     */
     'access' => [
-        'ixp'            => env( 'GRAPHER_ACCESS_IXP',            Entities\User::AUTH_PUBLIC ),
-        'infrastructure' => env( 'GRAPHER_ACCESS_INFRASTRUCTURE', Entities\User::AUTH_PUBLIC ),
-        'switch'         => env( 'GRAPHER_ACCESS_SWITCH',         Entities\User::AUTH_PUBLIC ),
-        'trunk'          => env( 'GRAPHER_ACCESS_TRUNK',          Entities\User::AUTH_PUBLIC ),
-        'vlan'           => env( 'GRAPHER_ACCESS_VLAN',           Entities\User::AUTH_PUBLIC ),
+        'ixp'            => env( 'GRAPHER_ACCESS_IXP',            \IXP\Models\User::AUTH_PUBLIC ),
+        'infrastructure' => env( 'GRAPHER_ACCESS_INFRASTRUCTURE', \IXP\Models\User::AUTH_PUBLIC ),
+        'switch'         => env( 'GRAPHER_ACCESS_SWITCH',         \IXP\Models\User::AUTH_PUBLIC ),
+        'trunk'          => env( 'GRAPHER_ACCESS_TRUNK',          \IXP\Models\User::AUTH_PUBLIC ),
+        'vlan'           => env( 'GRAPHER_ACCESS_VLAN',           \IXP\Models\User::AUTH_PUBLIC ),
 
         // The follows DO NOT DEFAULT TO PUBLIC but rather customer's are only allowed access
         // their own graphs by default.

@@ -1,5 +1,8 @@
+<?php
+  $c = $t->c; /** @var $c \IXP\Models\Customer */
+?>
 
-<table class="table table-striped table-responsive-ixp-action collapse" style="width:100%">
+<table class="table table-striped table-responsive-ixp-action collapse w-100">
     <thead class="thead-dark">
         <tr>
             <th>
@@ -16,43 +19,41 @@
             </th>
             <th>
                 Actions
-                <a id="contacts-add-btn" class="btn btn-white btn-sm ml-2" href="<?= route( "contact@add" ) . "?cust=" . $t->c->getId() ?>">
+                <a id="contacts-add-btn" class="btn btn-white btn-sm ml-2" href="<?= route( 'contact@create', [ 'cust' => $c->id ] ) ?>">
                     <i class="fa fa-plus"></i>
                 </a>
             </th>
         </tr>
     </thead>
     <tbody>
-        <?php foreach( $t->c->getContacts() as $co ): ?>
+        <?php foreach( $c->contacts as $co ): ?>
             <tr>
                 <td>
-                    <?= $t->ee( $co->getName() ) ?>
+                    <?= $t->ee( $co->name ) ?>
                 </td>
                 <td>
-                    <?= $t->ee( $co->getEmail() ) ?>
+                    <?= $t->ee( $co->email ) ?>
                 </td>
                 <td>
-                    <?= $t->ee( $co->getPhone() ) ?>
-                    <?php if( $co->getPhone() && $co->getMobile() ): ?>
+                    <?= $t->ee( $co->phone ) ?>
+                    <?php if( $co->phone && $co->mobile ): ?>
                         /
                     <?php endif; ?>
-                    <?=  $t->ee( $co->getMobile() ) ?>
+                    <?=  $t->ee( $co->mobile ) ?>
                 </td>
                 <td>
-                    <?php foreach( $co->getGroups() as $group ): ?>
-                        <?php if( $group->getType() == 'ROLE' ): ?>
-                            <span class="badge badge-info">
-                                <?= $t->ee( $group->getName() ) ?>
-                            </span>
-                        <?php endif; ?>
+                    <?php foreach( $co->contactRoles as $group ): ?>
+                        <span class="badge badge-info">
+                            <?= $t->ee( $group->name ) ?>
+                        </span>
                     <?php endforeach; ?>
                 </td>
                 <td>
                     <div class="btn-group btn-group-sm">
-                        <a class="btn btn-white" id="cont-list-edit-<?= $co->getId() ?>"href="<?= route( "contact@edit", [ "id" => $co->getId() ] ) ?>">
+                        <a class="btn btn-white" id="cont-list-edit-<?= $co->id ?>"href="<?= route( "contact@edit", [ "id" => $co->id ] ) ?>">
                             <i class="fa fa-pencil"></i>
                         </a>
-                        <a class="btn btn-white cont-list-delete" id="cont-list-delete-<?= $co->getId() ?>" data-object-id="<?= $co->getId() ?>" href="#">
+                        <a class="btn btn-white btn-delete" id="btn-delete-<?= $co->id ?>" href="<?= route( 'contact@delete' , [ 'id' => $co->id ]  )  ?>" title="Delete">
                             <i class="fa fa-trash"></i>
                         </a>
                     </div>

@@ -1,7 +1,9 @@
-<?php namespace IXP\Console\Commands\Grapher;
+<?php
+
+namespace IXP\Console\Commands\Grapher;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,25 +23,28 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Grapher, Mail;
 
-use D2EM;
-use Grapher;
-use IXP\Services\Grapher\Graph;
-use Mail;
 use IXP\Mail\Grapher\PortUtilisation as PortUtilisationMail;
 
+use IXP\Models\{
+    Customer,
+};
+
+use IXP\Services\Grapher\Graph;
 
  /**
   * Artisan command to email port utilisation records
   *
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+  * @author     Yann Robin      <yann@islandbridgenetworks.ie>
   * @category   Grapher
   * @package    IXP\Console\Commands
-  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
-class EmailPortUtilisation extends GrapherCommand {
-
+class EmailPortUtilisation extends GrapherCommand
+{
     /**
      * The name and signature of the console command.
      *
@@ -62,8 +67,8 @@ class EmailPortUtilisation extends GrapherCommand {
      *
      * @return mixed
      */
-    public function handle(): int {
-
+    public function handle(): int
+    {
         Grapher::backend( $this->option( 'backend' ) );
         $this->setGrapher( Grapher::getFacadeRoot() );
 
@@ -71,44 +76,41 @@ class EmailPortUtilisation extends GrapherCommand {
             return $retval;
         }
 
-        /** @var \Entities\Customer[] $custs */
-        $custs = D2EM::getRepository( 'Entities\Customer' )->getCurrentActive( false, true, true );
-
+        $custs = Customer::currentActive(true, true )->get();
         $excess = [];
         foreach( $custs as $c ) {
-            /** @var \Entities\VirtualInterface $vi */
-            foreach( $c->getVirtualInterfaces() as $vi )
-            {
-                if( ( $speed = $vi->speed() * 1000 * 1000 ) == 0 ) {
+            foreach( $c->virtualInterfaces as $vi ) {
+                if( ( $speed = $vi->speed() * 1000 * 1000 ) === 0 ) {
                     continue;
                 }
 
-                if( count( $vi->getPhysicalInterfaces() ) == 1 ) {
-                    $graph = $this->grapher()->physint( $vi->getPhysicalInterfaces()[0] )->setCategory( Graph::CATEGORY_BITS )->setPeriod( Graph::PERIOD_WEEK );
+                if( $vi->physicalInterfaces->count() === 1 ) {
+                    $graph = $this->grapher()->physint( $vi->physicalInterfaces()->first() )->setCategory( Graph::CATEGORY_BITS )->setPeriod( Graph::PERIOD_WEEK );
                 } else {
                     $graph = $this->grapher()->virtint( $vi )->setCategory( Graph::CATEGORY_BITS )->setPeriod( Graph::PERIOD_WEEK );
                 }
+
                 $stats   = $graph->statistics();
                 $utilIn  = ( $stats->maxIn()  * 100.0 ) / $speed;
                 $utilOut = ( $stats->maxOut() * 100.0 ) / $speed;
 
                 if( $utilIn > $this->option('threshold') || $utilOut > $this->option('threshold') ) {
-                    $excess[ $c->getId() ]['cust'] = $c;
+                    $excess[ $c->id ]['cust'] = $c;
 
                     $port['speed']   = $speed/1000/1000/1000;
                     $port['utilIn']  = $utilIn;
                     $port['utilOut'] = $utilOut;
-                    $port['switch']  = $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher();
+                    $port['switch']  = $vi->physicalInterfaces()->first()->switchPort->switcher;
                     $port['png']     = $graph->png();
 
                     if( $this->isVerbosityVerbose() ) {
-                        $this->warn( sprintf( "%s\n\tIN %0.2f%%\tOUT: %0.2f%%", $c->getName(), $utilIn, $utilOut ) );
+                        $this->warn( sprintf( "%s\n\tIN %0.2f%%\tOUT: %0.2f%%", $c->name, $utilIn, $utilOut ) );
                     }
 
-                    $excess[ $c->getId() ]['ports'][] = $port;
+                    $excess[ $c->id ]['ports'][] = $port;
 
                 } elseif( $this->isVerbosityVeryVerbose() ) {
-                    $this->info( sprintf( "%s\n\tIN %0.2f%%\tOUT: %0.2f%%", $c->getName(), $utilIn, $utilOut ) );
+                    $this->info( sprintf( "%s\n\tIN %0.2f%%\tOUT: %0.2f%%", $c->name, $utilIn, $utilOut ) );
                 }
             }
         }
@@ -125,7 +127,8 @@ class EmailPortUtilisation extends GrapherCommand {
      * Check the various arguments and options that have been password to the console command
      * @return int 0 for success or else an error code
      */
-    protected function verifyArgsAndOptions(): int {
+    protected function verifyArgsAndOptions(): int
+    {
         $emails = explode( ',', $this->argument('email') );
 
         foreach( $emails as $e ) {
@@ -144,5 +147,4 @@ class EmailPortUtilisation extends GrapherCommand {
         // all good :-D
         return 0;
     }
-
 }

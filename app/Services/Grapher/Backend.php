@@ -1,4 +1,6 @@
-<?php namespace IXP\Services\Grapher;
+<?php
+
+namespace IXP\Services\Grapher;
 
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -30,8 +32,8 @@
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-abstract class Backend {
-
+abstract class Backend
+{
     /**
      * Get a complete list of functionality that this backend supports.
      *
@@ -39,7 +41,7 @@ abstract class Backend {
      */
     abstract public static function supports(): array;
 
-        /**
+    /**
      * Examines the provided graph object and determines if this backend is able to
      * process the request or not.
      *
@@ -48,12 +50,12 @@ abstract class Backend {
      * @param Graph $graph
      * @return bool
      */
-    public function canProcess( Graph $graph ): bool {
-
+    public function canProcess( Graph $graph ): bool
+    {
         // find what this backend can support
         $s = $this->supports();
 
-        if(    isset( $s[ $graph->lcClassType() ] )
+        if( isset( $s[ $graph->lcClassType() ] )
             && ( isset($s[ $graph->lcClassType() ]['categories']) && in_array( $graph->category(), $s[ $graph->lcClassType() ]['categories'] ) )
             && ( isset($s[ $graph->lcClassType() ]['periods']   ) && in_array( $graph->period(),   $s[ $graph->lcClassType() ]['periods'   ] ) )
             && ( isset($s[ $graph->lcClassType() ]['protocols'] ) && in_array( $graph->protocol(), $s[ $graph->lcClassType() ]['protocols' ] ) )
@@ -61,9 +63,6 @@ abstract class Backend {
         ) {
             return true;
         }
-
         return false;
     }
-
-
 }

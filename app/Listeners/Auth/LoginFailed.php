@@ -22,22 +22,30 @@ namespace IXP\Listeners\Auth;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Log;
 
-use Auth, Log;
 use Illuminate\Auth\Events\Failed as FailedEvent;
 
-class LoginFailed {
-
+/**
+ * LoginFailed Listener
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   Listeners
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class LoginFailed
+{
     /**
      * Handle a failed login event.
      *
-     *
      * @param  FailedEvent  $e
+     *
      * @return void
      */
-    public function handle( FailedEvent $e )
+    public function handle( FailedEvent $e ): void
     {
         // TODO: Maybe we should persist failed logs into the DB instead and create a view in the backend
-        Log::warning( 'Login failed for user [' . $e->credentials['username'] . '] from IP [' . ixp_get_client_ip() . ']' );
+        Log::warning( 'Login failed for user [' . $e->credentials[ 'username' ] . '] from IP [' . ixp_get_client_ip() . ']' );
     }
 }

@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,17 +25,13 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\Model;
-
-use Illuminate\Database\Eloquent\Relations\{
-    BelongsTo
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model,
+    Relations\BelongsTo
 };
 
-use Entities\User as UserEntity;
-
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
-
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\PatchPanelPortFile
@@ -49,30 +45,54 @@ use Illuminate\Support\Collection;
  * @property int $size
  * @property int $is_private
  * @property string $storage_location
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\PatchPanelPort|null $patchPanelPort
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile query()
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile whereIsPrivate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile wherePatchPanelPortId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile whereSize($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile whereStorageLocation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile whereUploadedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile whereUploadedBy($value)
+ * @method static Builder|PatchPanelPortFile newModelQuery()
+ * @method static Builder|PatchPanelPortFile newQuery()
+ * @method static Builder|PatchPanelPortFile query()
+ * @method static Builder|PatchPanelPortFile whereCreatedAt($value)
+ * @method static Builder|PatchPanelPortFile whereId($value)
+ * @method static Builder|PatchPanelPortFile whereIsPrivate($value)
+ * @method static Builder|PatchPanelPortFile whereName($value)
+ * @method static Builder|PatchPanelPortFile wherePatchPanelPortId($value)
+ * @method static Builder|PatchPanelPortFile whereSize($value)
+ * @method static Builder|PatchPanelPortFile whereStorageLocation($value)
+ * @method static Builder|PatchPanelPortFile whereType($value)
+ * @method static Builder|PatchPanelPortFile whereUpdatedAt($value)
+ * @method static Builder|PatchPanelPortFile whereUploadedAt($value)
+ * @method static Builder|PatchPanelPortFile whereUploadedBy($value)
  * @mixin Eloquent
  */
 
 class PatchPanelPortFile extends Model
 {
+    use Observable;
+
     /**
      * The table associated with the model.
      *
      * @var string
      */
     protected $table = 'patch_panel_port_file';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'patch_panel_port_id',
+        'name',
+        'type',
+        'uploaded_at',
+        'uploaded_by',
+        'size',
+        'is_private',
+        'storage_location',
+    ];
+
+    PUBLIC CONST UPLOAD_PATH = 'ppp';
 
     /**
      * Get the Patch Panel Port that owns this patch panel port file
@@ -83,17 +103,99 @@ class PatchPanelPortFile extends Model
     }
 
     /**
-     * Gets a listing of patch panel port files for a customer
+     * Get name
+     *
+     * @return string
      */
-    public static function getForCustomer( Customer $c, bool $includePrivate = true ): Collection
+    public function nameTruncated(): string
     {
-        $q = self::join(     'patch_panel_port as ppp' ,          'patch_panel_port_file.patch_panel_port_id',        'ppp.id' )
-            ->where('ppp.customer_id', $c->id );
+        return strlen( $this->name ) > 80 ? substr( $this->name,0,80 ) . '...' . explode('.', $this->name )[1] : $this->name;
+    }
 
-        if( !$includePrivate ) {
-            $q->where( 'patch_panel_port_file.is_private', '0' );
+    /**
+     * Return the formatted size
+     *
+     * @return string
+     */
+    public function sizeFormated(): string
+    {
+        $bytes = $this->size;
+        if( $bytes >= 1073741824 ) {
+            $bytes = number_format($bytes / 1073741824, 2 ) . ' GB';
+        } elseif ($bytes >= 1048576) {
+            $bytes = number_format($bytes / 1048576, 2) . ' MB';
+        } elseif ($bytes >= 1024) {
+            $bytes = number_format($bytes / 1024, 2) . ' kB';
+        } elseif ($bytes > 1) {
+            $bytes .= ' bytes';
+        } elseif ($bytes === 1) {
+            $bytes .= ' byte';
+        } else {
+            $bytes = '0 bytes';
         }
 
-        return $q->get();
+        return $bytes;
+    }
+
+    /**
+     * Get type as an icon from awesome font
+     *
+     * @return string
+     */
+    public function typeAsIcon(): string
+    {
+        switch ( $this->type ) {
+            case 'image/jpeg':
+                $icon = 'fa-file-image-o';
+                break;
+            case 'image/png':
+                $icon = 'fa-file-image-o';
+                break;
+            case 'image/bmp':
+                $icon = 'fa-file-image-o';
+                break;
+            case 'application/pdf':
+                $icon = 'fa-file-pdf-o';
+                break;
+            case 'application/zip':
+                $icon = 'fa-file-archive-o';
+                break;
+            case 'text/plain':
+                $icon = 'fa-file-text';
+                break;
+            default:
+                $icon = 'fa-file';
+                break;
+        }
+        return $icon;
+    }
+
+    /**
+     * Get the path for the panel port file
+     *
+     * @return string
+     */
+    public function path(): string
+    {
+        return self::UPLOAD_PATH . '/' . $this->storage_location[ 0 ] . '/'
+            . $this->storage_location[ 1 ] . '/' . $this->storage_location;
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Patch Panel Port File [id:%d] '%s' belonging to Patch Panel Port [id:%d] '%s'",
+            $model->id,
+            $model->name,
+            $model->patch_panel_port_id,
+            $model->patchPanelPort->name(),
+        );
     }
 }

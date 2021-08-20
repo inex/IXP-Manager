@@ -3,7 +3,7 @@
 namespace IXP\Console\Commands\Rir;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,26 +22,20 @@ namespace IXP\Console\Commands\Rir;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
+use Cache, Mail;
 
 use IXP\Console\Commands\Command;
-use IXP\Tasks\Rir\Generator as RirGenerator;
-use IXP\Mail\Rir\Update as RirUpdateMailable;
 
-use Cache, Mail;
+use IXP\Tasks\Rir\Generator as RirGenerator;
 
 /**
  * RIR Update command
  *
  * @see https://docs.ixpmanager.org/features/rir-objects/
- *
  * @author      Yann Robin          <yann@islandbridgenetworks.ie>
  * @author      Barry O'Donovan     <barry@islandbridgenetworks.ie>
- *
  * @package     IXP\Console\Commands\Rir
- *
- * @copyright   Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
- *
+ * @copyright   Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class GenerateObject extends Command
@@ -73,16 +67,20 @@ class GenerateObject extends Command
      *
      * @throws
      */
-    public function handle() {
-
+    public function handle()
+    {
         $gen = new RirGenerator( $this->argument ('object' ) );
 
         $obj = $gen->generate();
 
         $key = 'rir-object-' . $this->argument ('object' );
-        $cobj = Cache::store('file')->get( $key );
+        $cobj = Cache::store('file' )->get( $key );
 
-        if( $this->option( "send-email" ) && ( $this->option( "force" ) || $obj != $cobj ) ) {
+        if( $this->option( "send-email" ) && ( $this->option( "force" ) || $obj !== $cobj ) ) {
+            if( !$this->option( "to" ) && !config( 'ixp_api.rir.email.to' )   ){
+                $this->error( "Please specify the TO email address" );
+                exit( -1 );
+            }
 
             Mail::raw( $obj, function( $m ) {
                 $m->to( $this->checkEmail( 'to', $this->option( "to" ) ?? config( 'ixp_api.rir.email.to' ) ) )
@@ -94,7 +92,7 @@ class GenerateObject extends Command
                 $this->info( "Email sent." );
             }
 
-            if( $obj != $cobj ) {
+            if( $obj !== $cobj ) {
                 Cache::store('file')->forever( $key, $obj );
             }
 
@@ -105,8 +103,15 @@ class GenerateObject extends Command
         return 0;
     }
 
-    private function checkEmail( string $w, string $e ) {
-
+    /**
+     *
+     * @param string $w
+     * @param string $e
+     *
+     * @return string|null
+     */
+    private function checkEmail( string $w, string $e ): ?string
+    {
         if( filter_var( $e, FILTER_VALIDATE_EMAIL ) ) {
             return $e;
         }

@@ -1,5 +1,9 @@
+<?php
+    $c = $t->c; /** @var \IXP\Models\Customer $c */
+    $pvlans = $c->privateVlanDetails()
+?>
 
-<table class="table table-striped table-responsive-ixp collapse" style="width:100%">
+<table class="table table-striped table-responsive-ixp collapse w-100">
     <thead class="thead-dark">
         <tr>
             <th>
@@ -26,50 +30,48 @@
         </tr>
     </thead>
     <tbody>
-        <?php if( !isset( $pvlans ) ): ?>
-            <?php $pvlans = $t->c->getPrivateVlanDetails() ?>
-        <?php endif; ?>
-
         <?php foreach( $pvlans as $vlanid => $pv ): ?>
-            <?php foreach($pv[ "vlis" ] as $vli ): ?>
+            <?php foreach( $pv[ "vlis" ] as $vli ):
+                /** @var $vli \IXP\Models\VlanInterface */
+                $pis = $vli->virtualInterface->physicalInterfaces;
+                $switcher = $pis[ 0 ]->switchPort->switcher;
+                ?>
                 <tr>
                     <td>
-                        <?= $t->ee( $vli->getVlan()->getName() )?>
+                        <?= $t->ee( $vli->vlan->name )?>
                     </td>
                     <td>
-                        <?= $t->ee( $vli->getVlan()->getNumber() )?>
+                        <?= $t->ee( $vli->vlan->number )?>
                     </td>
-                    <td>
-                        <?php $pis = $vli->getVirtualInterface()->getPhysicalInterfaces() ?>
-                        <?php if( count( $pis ) > 0 ): ?>
-                            <?= $t->ee( $pis[ 0 ]->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ) ?>
-                        <?php endif; ?>
 
-                    </td>
-                    <td>
-                        <?php if( count( $pis ) > 0 ): ?>
-                            <?= $t->ee( $pis[ 0 ]->getSwitchPort()->getSwitcher()->getName() ) ?>
-                        <?php endif; ?>
-                    </td>
-                    <td>
-                        <?php foreach( $vli->getVirtualInterface()->getPhysicalInterfaces() as $p ): ?>
-                            <?= $t->ee( $p->getSwitchPort()->getName() ) ?><br />
+                    <?php if( count( $pis ) > 0 ): ?>
+                        <td>
+                            <?= $t->ee( $switcher->cabinet->location->name ) ?>
+                        </td>
+                        <td>
+                            <?= $t->ee( $switcher->name ) ?>
+                        </td>
+                    <?php else: ?>
+                        <td></td>
+                        <td></td>
+                    <?php endif; ?>
 
+                    <td>
+                        <?php foreach( $pis as $p ): ?>
+                            <?= $t->ee( $p->switchPort->name ) ?><br />
                         <?php endforeach; ?>
                     </td>
                     <td>
-                        <?php foreach( $vli->getVirtualInterface()->getPhysicalInterfaces() as $p ): ?>
-
-                            <?= $t->ee( $p->getSpeed() ) ?>/<?= $t->ee( $p->getDuplex() ) ?><br />
+                        <?php foreach( $pis as $p ): ?>
+                            <?= $t->ee( $p->speed ) ?>/<?= $t->ee( $p->duplex ) ?><br />
                         <?php endforeach; ?>
                     </td>
                     <td>
-
                         <?php $others =  0 ?>
                         <?php foreach( $pv[ "members" ] as $m ): ?>
-                            <?php if( $m->getId() != $t->c->getId() ): ?>
-                                <a href="<?= route( "customer@overview" , [ "id" => $m->getId() ]) ?>">
-                                    <?= $t->ee( $m->getAbbreviatedName() ) ?>
+                            <?php if( $m->id !== $c->id ): ?>
+                                <a href="<?= route( "customer@overview" , [ 'cust' => $m->id ]) ?>">
+                                    <?= $t->ee( $m->abbreviatedName ) ?>
                                 </a><br />
                                 <?php $others =  1 ?>
                             <?php endif; ?>
@@ -77,11 +79,9 @@
                         <?php if( !$others): ?>
                             <em>None - single member</em>
                         <?php endif; ?>
-
                     </td>
                 </tr>
             <?php endforeach; ?>
         <?php endforeach; ?>
     </tbody>
 </table>
-

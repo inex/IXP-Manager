@@ -1,7 +1,9 @@
-<?php namespace IXP\Http\Middleware;
+<?php
+
+namespace IXP\Http\Middleware;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,12 +23,12 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Auth, Closure;
 
-use Auth;
-use Closure;
-use D2EM;
+use Illuminate\Http\Request;
 
-use Illuminate\Contracts\Auth\Guard;
+use IXP\Models\ApiKey;
+use IXP\Models\User;
 
 /**
  * Middleware: ApiMaybeAuthenticate
@@ -35,13 +37,14 @@ use Illuminate\Contracts\Auth\Guard;
  * such as when auth'd users get greater detail (e.g. IX-F Member List Export)
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
- * @package    IXP\Providers
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @package    IXP\Http\Middleware
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class ApiMaybeAuthenticate {
-
+class ApiMaybeAuthenticate
+{
 	/**
 	 * Authenticate if credentials present and valid
 	 *
@@ -50,48 +53,60 @@ class ApiMaybeAuthenticate {
 	 *     curl -X GET -H "X-IXP-Manager-API-Key: mySuperSecretApiKey" http://ixpv.dev/api/v4/test
 	 *     wget http://ixpv.dev/api/v4/test?apikey=mySuperSecretApiKey
 	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  \Closure  $next
+	 * @param   Request     $r
+	 * @param   Closure     $next
      *
 	 * @return mixed
      *
      * @throws
 	 */
-	public function handle($request, Closure $next)
+	public function handle( Request $r, Closure $next )
 	{
 		// are we already logged in?
 		if( !Auth::check() ) {
-			
 			// find API key. Prefer header to URL:
 			$apikey = false;
-			if( $request->header('X-IXP-Manager-API-Key') ) {
-				$apikey = $request->header('X-IXP-Manager-API-Key');
-			} else if( $request->input('apikey') ) {
-				$apikey = $request->input('apikey');
+			if( $r->header('X-IXP-Manager-API-Key') ) {
+				$apikey = $r->header('X-IXP-Manager-API-Key');
+			} else if( $r->apikey ) {
+				$apikey = $r->apikey;
 			}
 
 			if( $apikey ) {
-                try {
-                    $key = D2EM::createQuery( "SELECT a FROM \\Entities\\ApiKey a WHERE a.apiKey = ?1" )
-                               ->setParameter( 1, $apikey )
-                               ->getSingleResult();
-                } catch( \Doctrine\ORM\NoResultException $e ) {
+			    if( !( $key = ApiKey::where( 'apiKey', $apikey )->with( 'user.customer' )->first() ) ) {
                     return response( 'Valid API key required', 403 );
                 }
 
-                if( $key->getExpires() && now() > $key->getExpires()){
+                if( $key->expires && now() > $key->expires ) {
                     return response( 'API key expired', 403 );
                 }
 
-                Auth::onceUsingId( $key->getUser()->getId() );
+                // Check if user is disabled
+                if( $key->user->disabled ){
+                    return response( 'User is disabled', 403 );
+                }
 
-                $key->setLastseenAt( new \DateTime() );
-                $key->setLastseenFrom( ixp_get_client_ip() );
-                D2EM::flush();
+                // Check if default customer is disabled
+                if( $key->user->customer()->active()->notDeleted()->doesntExist() ){
+                    return response( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' of the user is disabled', 403 );
+                }
+
+                Auth::onceUsingId( $key->user_id );
+
+                $key->update( [
+                    'lastseenAt'    => now(),
+                    'lastseenFrom'  => ixp_get_client_ip(),
+                ] );
             }
-		}
-		
-		return $next($request);
-	}
+		} elseif( Auth::user()->disabled ){
+            return response( 'User is disabled', 403 );
+        }
 
+        // Check if default customer is disabled
+        if( Auth::check() && Auth::user()->customer()->active()->notDeleted()->doesntExist() ){
+            return response( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' of the user is disabled', 403 );
+        }
+
+		return $next( $r );
+	}
 }

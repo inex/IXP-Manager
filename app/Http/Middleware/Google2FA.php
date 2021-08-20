@@ -3,7 +3,7 @@
 namespace IXP\Http\Middleware;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,12 +23,11 @@ namespace IXP\Http\Middleware;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Auth, Closure;
+
 use Illuminate\Http\Request;
 
-use Auth;
 use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
-
-use Closure;
 
 /**
  * Middleware: Google 2FA
@@ -53,25 +52,30 @@ class Google2FA
     /**
      * Handle an incoming request.
      *
-     * @param  Request  $request
+     * @param  Request  $r
      * @param  Closure  $next
      * @return mixed
      */
-    public function handle( $request, Closure $next )
+    public function handle( Request $r, Closure $next )
     {
-        if( in_array( $request->route()->getName(), $this->excludes ) ) {
-            return $next( $request );
+        // if we're not logged in then move on:
+        if( !Auth::check() ) {
+            return $next( $r );
+        }
+
+        if( in_array( $r->route()->getName(), $this->excludes, true ) ) {
+            return $next( $r );
         }
 
         // Force the superuser to enable 2FA
-        if( $request->user()->is2faEnforced() ) {
+        if( $r->user()->is2faEnforced() ) {
             return redirect( route( '2fa@configure' ) );
         }
 
-        $authenticator = new GoogleAuthenticator($request);
+        $authenticator = new GoogleAuthenticator( $r );
 
-        if( !Auth::user()->getUser2FA() || !Auth::user()->getUser2FA()->enabled() || $authenticator->isAuthenticated() ) {
-            return $next( $request );
+        if( !Auth::getUser()->user2FA || !Auth::getUser()->user2FA->enabled || $authenticator->isAuthenticated() ) {
+            return $next( $r );
         }
 
         return $authenticator->makeRequestOneTimePasswordResponse();

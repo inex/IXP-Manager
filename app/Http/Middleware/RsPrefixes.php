@@ -3,7 +3,7 @@
 namespace IXP\Http\Middleware;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,60 +23,65 @@ namespace IXP\Http\Middleware;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Auth, Closure;
 
-use Auth, Closure, Log, Route;
-
-use Entities\{
-    User as UserEntity
-};
+use Illuminate\Http\Request;
 
 use IXP\Exceptions\GeneralException;
 
-use IXP\Utils\View\Alert\Alert;
-use IXP\Utils\View\Alert\Container as AlertContainer;
+use IXP\Models\User;
+
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
 
 /**
  * Middleware: Manage RsPrefixes access
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @package    IXP\Http\Middleware
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-
 class RsPrefixes
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param   Request     $r
+     * @param   Closure     $next
+     *
      * @return mixed
+     *
+     * @throws
      */
-    public function handle( $request, Closure $next )
+    public function handle( Request $r, Closure $next )
     {
         // there are only two routes for rs prefixes - authorise each one as follows:
-        if( $request->is( 'rs-prefixes/list' ) ) {
-            if( config( 'ixp_fe.rs-prefixes.access' ) == UserEntity::AUTH_PUBLIC ) {
-                return $next($request);
+        if( $r->is( 'rs-prefixes/list' ) ) {
+            if( (int)config( 'ixp_fe.rs-prefixes.access' ) === User::AUTH_PUBLIC ) {
+                return $next( $r );
             }
 
-            if( Auth::guest() || config( 'ixp_fe.rs-prefixes.access' ) > Auth::user()->getPrivs() ) {
+            if( Auth::guest() || config( 'ixp_fe.rs-prefixes.access' ) > Auth::getUser()->privs() ) {
                 AlertContainer::push(  "You do not have the required privileges to access this function.", Alert::DANGER );
                 return redirect( '' );
             }
-        } else if( $request->is( 'rs-prefixes/view/*' ) ) {
-            if( config( 'ixp_fe.rs-prefixes.access' ) == UserEntity::AUTH_PUBLIC ) {
-                return $next( $request );
+        } else if( $r->is( 'rs-prefixes/view/*' ) ) {
+            if( (int)config( 'ixp_fe.rs-prefixes.access' ) === User::AUTH_PUBLIC ) {
+                return $next( $r );
             }
 
             if( Auth::check() ) {
-                if( config( 'ixp_fe.rs-prefixes.access' ) <= Auth::user()->getPrivs() ) {
-                    return $next( $request );
+                if( (int)config( 'ixp_fe.rs-prefixes.access' ) <= Auth::getUser()->privs() ) {
+                    return $next( $r );
                 }
 
-                if( Auth::user()->getCustomer()->getId() == $request->route()->parameter( 'cid' ) ) {
-                    return $next( $request );
+                if( Auth::getUser()->custid === $r->cust->id ) {
+                    return $next( $r );
                 }
             }
 
@@ -86,6 +91,6 @@ class RsPrefixes
             throw new GeneralException( 'Unknown route server prefix route in middleware' );
         }
 
-        return $next($request);
+        return $next( $r );
     }
 }

@@ -2,19 +2,19 @@
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "ip-address-pre": function ( a ) {
-        var i, item;
-        var m = a.split("."),
+        let i, item;
+        let m = a.split("."),
             n = a.split(":"),
             x = "",
             xa = "";
-        if (m.length == 4) {
+        if (m.length === 4) {
             // IPV4
             for(i = 0; i < m.length; i++) {
                 item = m[i];
-                if(item.length == 1) {
+                if(item.length === 1) {
                     x += "00" + item;
                 }
-                else if(item.length == 2) {
+                else if(item.length === 2) {
                     x += "0" + item;
                 }
                 else {
@@ -33,15 +33,15 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
                 if(item.length === 0) {
                     count += 0;
                 }
-                else if(item.length == 1) {
+                else if(item.length === 1) {
                     xa += "000" + item;
                     count += 4;
                 }
-                else if(item.length == 2) {
+                else if(item.length === 2) {
                     xa += "00" + item;
                     count += 4;
                 }
-                else if(item.length == 3) {
+                else if(item.length === 3) {
                     xa += "0" + item;
                     count += 4;
                 }
@@ -52,11 +52,11 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
             }
             // Padding the ::
             n = xa.split(":");
-            var paddDone = 0;
+            let paddDone = 0;
             for (i = 0; i < n.length; i++) {
                 item = n[i];
-                if (item.length === 0 && paddDone === 0) {
-                    for (var padding = 0 ; padding < (32-count) ; padding++) {
+                if ( item.length === 0 && paddDone === 0 ) {
+                    for ( let padding = 0 ; padding < ( 32-count ) ; padding++ ) {
                         x += "0";
                         paddDone = 1;
                     }

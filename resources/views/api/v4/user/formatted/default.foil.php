@@ -17,12 +17,12 @@
 
 <?php foreach( $t->users as $u ): ?>
 
-user=<?= $u->getUsername() ?> {
+user=<?= $u->username ?> {
     member=<?= $t->group ?>
 
-    login = des "<?= '$' . $t->bcrypt . substr( $u->getPassword(), 3 ) ?>"
+    login = des "<?= '$' . $t->bcrypt . substr( $u->password, 3 ) ?>"
     # some devices still require PAP authentication
-    pap = des "<?= '$' . $t->bcrypt . substr( $u->getPassword(), 3 ) ?>"
+    pap = des "<?= '$' . $t->bcrypt . substr( $u->password, 3 ) ?>"
 }
 
 <?php endforeach; ?>

@@ -1,7 +1,9 @@
 <?php
 
+namespace Tests\Browser;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,275 +23,274 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace Tests\Browser;
-
-use D2EM;
-
-use Tests\DuskTestCase;
+use IXP\Models\SwitchPort;
 
 use Laravel\Dusk\Browser;
 
-use Entities\{
-    SwitchPort              as SwitchPortEntity
-};
+use Tests\DuskTestCase;
 
+/**
+ * Test Switch Port Controller
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Tests\Browser
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class SwitchPortControllerTest extends DuskTestCase
 {
     /**
-     * Test the switch port functionnalities (add, edit, delete)
+     * Test the switch port (add, edit, delete)
      *
      * @return void
      *
      * @throws
      */
-    public function testSwitchPort()
+    public function testSwitchPort(): void
     {
         $this->browse( function ( Browser $browser ) {
-
             $browser->resize( 1600, 1200 )
-                ->visit( '/login' )
-                ->type( 'username', 'travis' )
-                ->type( 'password', 'travisci' )
-                ->press( '#login-btn' )
-                ->assertPathIs( '/admin' )
-                ->visit( '/switch-port/list' );
+                    ->visit( '/login' )
+                    ->type( 'username', 'travis' )
+                    ->type( 'password', 'travisci' )
+                    ->press( '#login-btn' )
+                    ->assertPathIs( '/admin' )
+                    ->visit( '/switch-port/list' );
 
             /**
              * Test view Switch information
              */
+            $sps = SwitchPort::select( [
+                'sp.*',
+                's.id AS switchid', 's.name AS switchname'
+            ] )
+                ->from( 'switchport AS sp' )
+                ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
+                ->get()->toArray();
 
-            /** @var array SwitchPortEntity */
-            $sps = D2EM::getRepository( SwitchPortEntity::class )->getAllForFeList( (object)[] );
+            $sp = SwitchPort::whereId( reset($sps )[ "id" ] )->first();
 
-            /** @var SwitchPortEntity $sp */
-            $sp = D2EM::getRepository( SwitchPortEntity::class )->find( reset($sps )[ "id" ] );
+            $this->assertInstanceOf( SwitchPort::class, $sp );
 
-            $this->assertInstanceOf( SwitchPortEntity::class, $sp );
+            $browser->press( "#e2f-list-view-" . $sp->id )
+                    ->assertSee( "Details for switch port: " . $sp->switcher->name . " :: " . $sp->name . " (DB ID: " . $sp->id . ")" );
 
-            $browser->press( "#d2f-list-view-" . $sp->getId() )
-                ->assertSee( "Details for switch port: " . $sp->getSwitcher()->getName() . " :: " . $sp->getName() . " (DB ID: " . $sp->getId() . ")" );
-
-            $browser->press( "#d2f-list-a" )
-            ->assertPathIs( "/switch-port/list" );
+            $browser->press( "#e2f-list-a" )
+                    ->assertPathIs( "/switch-port/list" );
 
 
             /**
              * Test add Switch port form
              */
 
-            $browser->press( "#add-switch-port" )
-                ->assertSee( "Add Switch Port" );
+            $browser->press( "#create-switch-port" )
+                    ->assertSee( "Create Switch Port" );
 
             // Fill the form with new value
             $browser->select(   'switchid', 2   )
                     ->select(   'type',     1   )
                     ->type(     'numfirst', '1' )
                     ->type(     'numports', '5' )
-                    ->type(     'prefix',   'travistest%d')
-                    ->click( "#generate-btn" )
-                    ->click( "#btn-submit" )
+                    ->type(     'prefix',   'travistest%d');
+
+            $browser->driver->executeScript('window.scrollTo(0, 3000);');
+
+            $browser->click( "#generate-btn" );
+
+            $browser->driver->executeScript('window.scrollTo(0, 3000);');
+
+            $browser->click( "#btn-submit" )
                     ->assertPathIs( "/switch-port/list" )
-                    ->assertSee( "Switch Port added" );
+                    ->assertSee( "Switch Port created" );
 
-
-
-                $newSp = D2EM::getRepository( SwitchPortEntity::class )->findOneBy( [ "name" => "travistest1"] );
-
-                /** @var SwitchPortEntity $newSp */
+                $newSp = SwitchPort::whereName( 'travistest1' )->first();
 
                 // test added data in database against expected values
-                $this->assertInstanceOf( SwitchPortEntity::class, $newSp );
+                $this->assertInstanceOf( SwitchPort::class, $newSp );
 
-                $this->assertEquals( "travistest1",     $newSp->getName() );
-                $this->assertEquals( 2,                 $newSp->getSwitcher()->getId() );
-                $this->assertEquals( 1,                 $newSp->getType() );
-                $this->assertEquals( true,              $newSp->getActive() );
-                $this->assertEquals( null,              $newSp->getIfIndex() );
-                $this->assertEquals( null,              $newSp->getIfName() );
-                $this->assertEquals( null,              $newSp->getIfAlias() );
-                $this->assertEquals( null,              $newSp->getIfHighSpeed() );
-                $this->assertEquals( null,              $newSp->getIfMtu() );
-                $this->assertEquals( null,              $newSp->getIfPhysAddress() );
-                $this->assertEquals( null,              $newSp->getIfAdminStatus() );
-                $this->assertEquals( null,              $newSp->getIfOperStatus() );
-                $this->assertEquals( null,              $newSp->getIfLastChange() );
-                $this->assertEquals( null,              $newSp->getLastSnmpPoll() );
-                $this->assertEquals( null,              $newSp->getLagIfIndex() );
-                $this->assertEquals( null,              $newSp->getMauType() );
-                $this->assertEquals( null,              $newSp->getMauState() );
-                $this->assertEquals( null,              $newSp->getMauAvailability() );
-                $this->assertEquals( null,              $newSp->getMauJacktype() );
-                $this->assertEquals( null,              $newSp->getMauAutoNegSupported() );
-                $this->assertEquals( null,              $newSp->getMauAutoNegAdminState() );
+                $this->assertEquals( "travistest1",     $newSp->name                    );
+                $this->assertEquals( 2,                 $newSp->switchid                );
+                $this->assertEquals( 1,                 $newSp->type                    );
+                $this->assertEquals( true,              $newSp->active                  );
+                $this->assertEquals( null,              $newSp->ifIndex                 );
+                $this->assertEquals( null,              $newSp->ifName                  );
+                $this->assertEquals( null,              $newSp->ifAlias                 );
+                $this->assertEquals( null,              $newSp->ifHighSpeed             );
+                $this->assertEquals( null,              $newSp->ifMtu                   );
+                $this->assertEquals( null,              $newSp->ifPhysAddress           );
+                $this->assertEquals( null,              $newSp->ifAdminStatus           );
+                $this->assertEquals( null,              $newSp->ifOperStatus            );
+                $this->assertEquals( null,              $newSp->ifLastChange            );
+                $this->assertEquals( null,              $newSp->lastSnmpPoll            );
+                $this->assertEquals( null,              $newSp->lagIfIndex              );
+                $this->assertEquals( null,              $newSp->mauType                 );
+                $this->assertEquals( null,              $newSp->mauState                );
+                $this->assertEquals( null,              $newSp->mauAvailability         );
+                $this->assertEquals( null,              $newSp->mauJacktype             );
+                $this->assertEquals( null,              $newSp->mauAutoNegSupported     );
+                $this->assertEquals( null,              $newSp->mauAutoNegAdminState    );
 
-
-
+                $browser->type( '#table-list_filter input', 'travistest');
             /**
              * Test edit Switch port form
              */
-
-                $browser->press( "#d2f-list-edit-" . $newSp->getId() )
+            $browser->press( "#e2f-list-edit-" . $newSp->id )
                     ->assertSee( "Edit Switch" );
 
-                // test that form is filled with all and the correct object informations
-                $browser->assertSelected(   'switchid',     2 )
-                        ->assertInputValue( 'name',         "travistest1" )
-                        ->assertSelected(   'type',         1 )
-                        ->assertChecked(    'active' );
+            // test that form is filled with all and the correct object information
+            $browser->assertSelected(   'switchid',     2 )
+                    ->assertInputValue( 'name',         "travistest1" )
+                    ->assertSelected(   'type',         1 )
+                    ->assertChecked(    'active' );
 
+            // submit unchanged form
+            $browser->press(    'Save Changes')
+                ->assertPathIs('/switch-port/list')
+                ->assertSee( "Switch Port updated" );
 
-                // submit unchanged form
-                $browser->press(    'Save Changes')
-                    ->assertPathIs('/switch-port/list')
-                    ->assertSee( "Switch Port edited" );
+            $newSp->refresh();
 
-                D2EM::refresh( $newSp );
+            $this->assertInstanceOf( SwitchPort::class, $newSp );
 
-                $this->assertInstanceOf( SwitchPortEntity::class, $newSp );
+            $this->assertEquals( "travistest1",     $newSp->name                    );
+            $this->assertEquals( 2,                 $newSp->switchid                );
+            $this->assertEquals( 1,                 $newSp->type                    );
+            $this->assertEquals( true,              $newSp->active                  );
+            $this->assertEquals( null,              $newSp->ifIndex                 );
+            $this->assertEquals( null,              $newSp->ifName                  );
+            $this->assertEquals( null,              $newSp->ifAlias                 );
+            $this->assertEquals( null,              $newSp->ifHighSpeed             );
+            $this->assertEquals( null,              $newSp->ifMtu                   );
+            $this->assertEquals( null,              $newSp->ifPhysAddress           );
+            $this->assertEquals( null,              $newSp->ifAdminStatus           );
+            $this->assertEquals( null,              $newSp->ifOperStatus            );
+            $this->assertEquals( null,              $newSp->ifLastChange            );
+            $this->assertEquals( null,              $newSp->lastSnmpPoll            );
+            $this->assertEquals( null,              $newSp->lagIfIndex              );
+            $this->assertEquals( null,              $newSp->mauType                 );
+            $this->assertEquals( null,              $newSp->mauState                );
+            $this->assertEquals( null,              $newSp->mauAvailability         );
+            $this->assertEquals( null,              $newSp->mauJacktype             );
+            $this->assertEquals( null,              $newSp->mauAutoNegSupported     );
+            $this->assertEquals( null,              $newSp->mauAutoNegAdminState    );
 
-                $this->assertEquals( "travistest1",     $newSp->getName() );
-                $this->assertEquals( 2,                 $newSp->getSwitcher()->getId() );
-                $this->assertEquals( 1,                 $newSp->getType() );
-                $this->assertEquals( true,              $newSp->getActive() );
-                $this->assertEquals( null,              $newSp->getIfIndex() );
-                $this->assertEquals( null,              $newSp->getIfName() );
-                $this->assertEquals( null,              $newSp->getIfAlias() );
-                $this->assertEquals( null,              $newSp->getIfHighSpeed() );
-                $this->assertEquals( null,              $newSp->getIfMtu() );
-                $this->assertEquals( null,              $newSp->getIfPhysAddress() );
-                $this->assertEquals( null,              $newSp->getIfAdminStatus() );
-                $this->assertEquals( null,              $newSp->getIfOperStatus() );
-                $this->assertEquals( null,              $newSp->getIfLastChange() );
-                $this->assertEquals( null,              $newSp->getLastSnmpPoll() );
-                $this->assertEquals( null,              $newSp->getLagIfIndex() );
-                $this->assertEquals( null,              $newSp->getMauType() );
-                $this->assertEquals( null,              $newSp->getMauState() );
-                $this->assertEquals( null,              $newSp->getMauAvailability() );
-                $this->assertEquals( null,              $newSp->getMauJacktype() );
-                $this->assertEquals( null,              $newSp->getMauAutoNegSupported() );
-                $this->assertEquals( null,              $newSp->getMauAutoNegAdminState() );
-
-                $browser->press( "#d2f-list-edit-" . $newSp->getId() )
+            $browser->press( "#e2f-list-edit-" . $newSp->id )
                     ->assertSee( "Edit Switch" );
 
-                // test that form is filled with all and the correct object informations
-                $browser->assertSelected(   'switchid',     2 )
-                        ->assertInputValue( 'name',         "travistest1" )
-                        ->assertSelected(   'type',         1 )
-                        ->assertChecked(    'active' );
+            // test that form is filled with all and the correct object information
+            $browser->assertSelected(   'switchid',     2 )
+                    ->assertInputValue( 'name',         "travistest1" )
+                    ->assertSelected(   'type',         1 )
+                    ->assertChecked(    'active' );
 
-                // Fill the form with new value
-                $browser->select(   'switchid', 2 )
-                        ->type(     'name',     'travistest6' )
-                        ->select(   'type',     2 )
-                        ->uncheck(  'active' )
-                        ->press(    'Save Changes')
-                        ->assertPathIs('/switch-port/list')
-                        ->assertSee( "Switch Port edited" );
-
-
-                $browser->press( "#d2f-list-edit-" . $newSp->getId() )
-                        ->assertSee( "Edit Switch Port" );
-
-                D2EM::refresh( $newSp );
-
-                $this->assertInstanceOf( SwitchPortEntity::class, $newSp );
-
-                $this->assertEquals( "travistest6",     $newSp->getName() );
-                $this->assertEquals( 2,                 $newSp->getSwitcher()->getId() );
-                $this->assertEquals( 2,                 $newSp->getType() );
-                $this->assertEquals( false,             $newSp->getActive() );
-                $this->assertEquals( null,              $newSp->getIfIndex() );
-                $this->assertEquals( null,              $newSp->getIfName() );
-                $this->assertEquals( null,              $newSp->getIfAlias() );
-                $this->assertEquals( null,              $newSp->getIfHighSpeed() );
-                $this->assertEquals( null,              $newSp->getIfMtu() );
-                $this->assertEquals( null,              $newSp->getIfPhysAddress() );
-                $this->assertEquals( null,              $newSp->getIfAdminStatus() );
-                $this->assertEquals( null,              $newSp->getIfOperStatus() );
-                $this->assertEquals( null,              $newSp->getIfLastChange() );
-                $this->assertEquals( null,              $newSp->getLastSnmpPoll() );
-                $this->assertEquals( null,              $newSp->getLagIfIndex() );
-                $this->assertEquals( null,              $newSp->getMauType() );
-                $this->assertEquals( null,              $newSp->getMauState() );
-                $this->assertEquals( null,              $newSp->getMauAvailability() );
-                $this->assertEquals( null,              $newSp->getMauJacktype() );
-                $this->assertEquals( null,              $newSp->getMauAutoNegSupported() );
-                $this->assertEquals( null,              $newSp->getMauAutoNegAdminState() );
+            // Fill the form with new value
+            $browser->select(   'switchid', 2 )
+                    ->type(     'name',     'travistest6' )
+                    ->select(   'type',     2 )
+                    ->uncheck(  'active' )
+                    ->press(    'Save Changes' )
+                    ->assertPathIs('/switch-port/list'  )
+                    ->assertSee( "Switch Port updated"  );
 
 
-                // test that form is filled with all and the correct object informations
-                $browser->assertSelected(   'switchid',     2 )
-                        ->assertInputValue( 'name',         "travistest6" )
-                        ->assertSelected(   'type',         2 )
-                        ->assertNotChecked(    'active' );
-
-                // Test the checkbox (checked)
-                $browser->check(  'active' )
-                    ->press(    'Save Changes')
-                    ->assertPathIs('/switch-port/list')
-                    ->assertSee( "Switch Port edited" );
-
-                D2EM::refresh( $newSp );
-
-                $this->assertEquals( true,             $newSp->getActive() );
-
-
-                $browser->press( "#d2f-list-edit-" . $newSp->getId() )
+            $browser->press( "#e2f-list-edit-" . $newSp->id )
                     ->assertSee( "Edit Switch Port" );
 
-                // Test the checkbox (unchecked)
-                $browser->uncheck(  'active' )
+            $newSp->refresh();
+
+            $this->assertInstanceOf( SwitchPort::class, $newSp );
+
+            $this->assertEquals( "travistest6",     $newSp->name                    );
+            $this->assertEquals( 2,                 $newSp->switchid                );
+            $this->assertEquals( 2,                 $newSp->type                    );
+            $this->assertEquals( false,             $newSp->active                  );
+            $this->assertEquals( null,              $newSp->ifIndex                 );
+            $this->assertEquals( null,              $newSp->ifName                  );
+            $this->assertEquals( null,              $newSp->ifAlias                 );
+            $this->assertEquals( null,              $newSp->ifHighSpeed             );
+            $this->assertEquals( null,              $newSp->ifMtu                   );
+            $this->assertEquals( null,              $newSp->ifPhysAddress           );
+            $this->assertEquals( null,              $newSp->ifAdminStatus           );
+            $this->assertEquals( null,              $newSp->ifOperStatus            );
+            $this->assertEquals( null,              $newSp->ifLastChange            );
+            $this->assertEquals( null,              $newSp->lastSnmpPoll            );
+            $this->assertEquals( null,              $newSp->lagIfIndex              );
+            $this->assertEquals( null,              $newSp->mauType                 );
+            $this->assertEquals( null,              $newSp->mauState                );
+            $this->assertEquals( null,              $newSp->mauAvailability         );
+            $this->assertEquals( null,              $newSp->mauJacktype             );
+            $this->assertEquals( null,              $newSp->mauAutoNegSupported     );
+            $this->assertEquals( null,              $newSp->mauAutoNegAdminState    );
+
+
+            // test that form is filled with all and the correct object information
+            $browser->assertSelected(   'switchid',     2 )
+                    ->assertInputValue( 'name',         "travistest6" )
+                    ->assertSelected(   'type',         2 )
+                    ->assertNotChecked(    'active' );
+
+            // Test the checkbox (checked)
+            $browser->check(  'active' )
+                ->press(    'Save Changes')
+                ->assertPathIs('/switch-port/list')
+                ->assertSee( "Switch Port updated" );
+
+            $newSp->refresh();
+
+            $this->assertEquals( true,             $newSp->active );
+
+            $browser->press( "#e2f-list-edit-" . $newSp->id )
+                    ->assertSee( "Edit Switch Port" );
+
+            // Test the checkbox (unchecked)
+            $browser->uncheck(  'active' )
                     ->press(    'Save Changes')
                     ->assertPathIs('/switch-port/list')
-                    ->assertSee( "Switch Port edited" );
+                    ->assertSee( "Switch Port updated" );
 
-                // refresh the object
-                D2EM::refresh( $newSp );
+            // refresh the object
+            $newSp->refresh();
 
-                // check that the attribute is false (unchecked checkbox)
-                $this->assertEquals( false,             $newSp->getActive() );
+            // check that the attribute is false (unchecked checkbox)
+            $this->assertEquals( false,             $newSp->active );
+
+            $browser->press( "#e2f-list-edit-" . $newSp->id )
+                    ->assertSee( "Edit Switch Port" );
 
 
+            // Test the select
+            $browser->select(  'type', 3 )
+                ->press(    'Save Changes')
+                ->assertPathIs('/switch-port/list')
+                ->assertSee( "Switch Port updated" );
 
-            $browser->press( "#d2f-list-edit-" . $newSp->getId() )
+            $newSp->refresh();
+
+            $this->assertEquals( 3,             $newSp->type );
+
+
+            $browser->press( "#e2f-list-edit-" . $newSp->id )
                 ->assertSee( "Edit Switch Port" );
 
+            // Test the select
+            $browser->select(  'type', 4 )
+                ->press(    'Save Changes')
+                ->assertPathIs('/switch-port/list')
+                ->assertSee( "Switch Port updated" );
 
-                // Test the select
-                $browser->select(  'type', 3 )
-                    ->press(    'Save Changes')
-                    ->assertPathIs('/switch-port/list')
-                    ->assertSee( "Switch Port edited" );
+             $newSp->refresh();
 
-                D2EM::refresh( $newSp );
-
-                $this->assertEquals( 3,             $newSp->getType() );
-
-
-                $browser->press( "#d2f-list-edit-" . $newSp->getId() )
-                    ->assertSee( "Edit Switch Port" );
-
-                // Test the select
-                $browser->select(  'type', 4 )
-                    ->press(    'Save Changes')
-                    ->assertPathIs('/switch-port/list')
-                    ->assertSee( "Switch Port edited" );
-
-                D2EM::refresh( $newSp );
-
-                $this->assertEquals( 4,             $newSp->getType() );
+            $this->assertEquals( 4,             $newSp->type );
 
             /**
              * Test delete Switch port
              */
-
-            // delete the switch
-            $browser->press( "#d2f-list-delete-" . $newSp->getId() )
+            $browser->press( "#e2f-list-delete-" . $newSp->id )
                 ->waitForText( "Delete Switch Port" )
                 ->press( "Delete" )
                 ->assertSee( "Switch Port deleted." );
         });
     }
-
 }

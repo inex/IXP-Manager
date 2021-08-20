@@ -1,7 +1,9 @@
-<?php namespace IXP\Console\Commands\Router;
+<?php
+
+namespace IXP\Console\Commands\Router;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -33,20 +35,21 @@ use IXP\Utils\Foil\Extensions\Bird as BirdFoilExtension;
   * Artisan command to generate router configurations
   *
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+  * @author     Yann Robin <yann@islandbridgenetworks.ie>
   * @category   Router
   * @package    IXP\Console\Commands
-  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
-class FilteredPrefixes extends Command {
-
+class FilteredPrefixes extends Command
+{
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
     protected $signature = 'router:filtered-prefixes
-                                {customer? : Customer ASN, ID or shortname (in that order). Otherwise all customers.}';
+                      {customer? : Customer ASN, ID or shortname (in that order). Otherwise all customers.}';
 
 
     /**
@@ -62,8 +65,8 @@ class FilteredPrefixes extends Command {
      *
      * @return mixed
      */
-    public function handle(): int {
-
+    public function handle(): int
+    {
         $customer = $this->resolveCustomer();
 
         $this->info( "Checking route server filtering for " . $customer->abbreviatedName . ". Please wait..." );
@@ -88,13 +91,11 @@ class FilteredPrefixes extends Command {
                 $reason .= ( $bfe_couple ? $bfe_couple[0] : 'UNKNOWN' ) . ' ';
             }
             $fp[1] = trim( $reason );
-
             $fp[2] = implode( ' ', array_keys( $p['age'] ) );
-
             $prefixes[] = $fp;
         }
 
-        $this->table($headers, $prefixes);
+        $this->table( $headers, $prefixes );
 
         return 0;
     }
@@ -105,7 +106,8 @@ class FilteredPrefixes extends Command {
      *
      * @return Customer
      */
-    protected function resolveCustomer(): Customer {
+    protected function resolveCustomer(): Customer
+    {
         $custarg = $this->argument('customer');
 
         // assume ASN first:
@@ -126,5 +128,4 @@ class FilteredPrefixes extends Command {
 
         exit(1);
     }
-
 }

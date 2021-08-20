@@ -1,7 +1,8 @@
-<?php namespace IXP\Http\Middleware;
+<?php
+namespace IXP\Http\Middleware;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,12 +22,26 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Closure;
+use Auth, Closure;
+
 use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Http\RedirectResponse;
 
-class RedirectIfAuthenticated {
+use IXP\Providers\RouteServiceProvider;
 
+use Illuminate\Http\Request;
+
+/**
+ * Middleware: RedirectIfAuthenticated
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Middleware
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class RedirectIfAuthenticated
+{
 	/**
 	 * The Guard implementation.
 	 *
@@ -34,32 +49,24 @@ class RedirectIfAuthenticated {
 	 */
 	protected $auth;
 
-	/**
-	 * Create a new filter instance.
-	 *
-	 * @param  Guard  $auth
-	 * @return void
-	 */
-	public function __construct(Guard $auth)
-	{
-		$this->auth = $auth;
-	}
+    /**
+     * Handle an incoming request.
+     *
+     * @param  Request  $request
+     * @param  Closure  $next
+     * @param  string|null  ...$guards
+     * @return mixed
+     */
+    public function handle(Request $request, Closure $next, ...$guards)
+    {
+        $guards = empty($guards) ? [null] : $guards;
 
-	/**
-	 * Handle an incoming request.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  \Closure  $next
-	 * @return mixed
-	 */
-	public function handle($request, Closure $next)
-	{
-		if ($this->auth->check())
-		{
-			return new RedirectResponse( url('') );
-		}
+        foreach ( $guards as $guard ) {
+            if ( Auth::guard( $guard )->check() ) {
+                return redirect(RouteServiceProvider::HOME );
+            }
+        }
 
-		return $next($request);
-	}
-
+        return $next($request);
+    }
 }

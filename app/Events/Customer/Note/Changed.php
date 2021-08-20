@@ -3,7 +3,7 @@
 namespace IXP\Events\Customer\Note;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,34 +23,47 @@ namespace IXP\Events\Customer\Note;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Entities\{
-    CustomerNote    as CustomerNoteEntity,
-    Customer        as CustomerEntity,
-    User            as UserEntity
-};
-
 use IXP\Exceptions\GeneralException;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 
-abstract class Changed
+use IXP\Models\{
+    Customer,
+    CustomerNote,
+    User
+};
+
+/**
+ * Changed
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Events\Customer\Note
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+abstract class Changed implements ShouldQueue
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable, SerializesModels, InteractsWithQueue;
 
     /**
      * old customer note
-     * @var CustomerNoteEntity
+     *
+     * @var CustomerNote
      */
     protected $ocn;
 
     /**
      * new customer note
-     * @var CustomerNoteEntity
+     *
+     * @var CustomerNote
      */
     protected $cn;
 
     /**
-     * @var CustomerEntity
+     * @var Customer
      */
     protected $cust;
 
@@ -60,30 +73,29 @@ abstract class Changed
     protected $type;
 
     /**
-     * @var UserEntity
+     * @var User
      */
     protected $user;
-
-
 
     /**
      * Create a new event instance.
      *
-     * @param CustomerNoteEntity|null   $ocn
-     * @param CustomerNoteEntity        $cn
+     * @param  CustomerNote|null    $ocn
+     * @param  CustomerNote         $cn
+     * @param User                  $user
      *
      * @throws GeneralException
      */
-    public function __construct( $ocn, $cn, $user )
+    public function __construct( CustomerNote $ocn = null , CustomerNote $cn, User $user )
     {
         $this->ocn      = $ocn;
         $this->cn       = $cn;
         $this->user     = $user;
 
         if( $ocn ) {
-            $this->cust = $ocn->getCustomer();
+            $this->cust = $ocn->customer;
         } else if( $cn ) {
-            $this->cust = $cn->getCustomer();
+            $this->cust = $cn->customer;
         } else {
             throw new GeneralException( "Customer note is missing." );
         }
@@ -92,56 +104,61 @@ abstract class Changed
     /**
      * Get customer
      *
-     * @return CustomerEntity
+     * @return Customer
      */
-    public function getCustomer(): CustomerEntity {
+    public function customer(): Customer
+    {
         return $this->cust;
     }
 
     /**
      * Get customer
      *
-     * @return UserEntity
+     * @return User
      */
-    public function getUser(): UserEntity {
+    public function user(): User
+    {
         return $this->user;
     }
 
     /**
      * Get old note
      *
-     * @return CustomerNoteEntity|null
+     * @return CustomerNote|null
      */
-    public function getOldNote() {
+    public function oldNote(): ?CustomerNote
+    {
         return $this->ocn;
     }
 
     /**
      * Get note
      *
-     * @return CustomerNoteEntity
+     * @return CustomerNote
      */
-    public function getNote(): CustomerNoteEntity {
+    public function note(): CustomerNote
+    {
         return $this->cn;
     }
 
     /**
      * Get either note: get the new note if set, otherwise the old note
      *
-     * @return CustomerNoteEntity
+     * @return CustomerNote
      */
-    public function getEitherNote(): CustomerNoteEntity {
-        return $this->cn ? $this->cn : $this->ocn;
+    public function eitherNote(): CustomerNote
+    {
+        return $this->cn ?: $this->ocn;
     }
-
 
     /**
      * Is the event type: a customer note was added
      *
      * @return bool
      */
-    public function isTypeAdded() {
-        return get_class($this) == Added::class;
+    public function typeCreated(): bool
+    {
+        return get_class( $this ) === Created::class;
     }
 
     /**
@@ -149,8 +166,9 @@ abstract class Changed
      *
      * @return bool
      */
-    public function isTypeDeleted() {
-        return get_class($this) == Deleted::class;
+    public function typeDeleted(): bool
+    {
+        return get_class( $this ) === Deleted::class;
     }
 
     /**
@@ -158,8 +176,9 @@ abstract class Changed
      *
      * @return bool
      */
-    public function isTypeEdited() {
-        return get_class($this) == Edited::class;
+    public function typeEdited(): bool
+    {
+        return get_class( $this ) === Edited::class;
     }
 
     /**
@@ -167,13 +186,14 @@ abstract class Changed
      *
      * @return string
      */
-    public function getActionDescription() {
-        if( $this->isTypeAdded() ){
-            return "Added";
-        }elseif( $this->isTypeEdited() ){
-            return "Edited";
-        }else{
-            return "Deleted";
+    public function actionDescription(): string
+    {
+        if( $this->typeCreated() ){
+            return "Created";
         }
+        if( $this->typeEdited() ){
+            return "Edited";
+        }
+        return "Deleted";
     }
 }

@@ -3,7 +3,7 @@
 namespace Tests\Services\Grapher\Graph\Access\Web;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,17 +23,20 @@ namespace Tests\Services\Grapher\Graph\Access\Web;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
 use Config;
 
 use Tests\Services\Grapher\Graph\Access\Access;
-
 
 /**
  * Test access restrictions for Switch graphs
  *
  * Class SwitchAccessTest
- * @package Tests\Services\Grapher\Graph
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Tests\Services\Grapher\Graph\Access\Web
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SwitchWebAccessTest extends Access
 {
@@ -56,7 +59,7 @@ class SwitchWebAccessTest extends Access
     }
 
     /**
-     * Test access restrictions for verious non-public access settings
+     * Test access restrictions for various non-public access settings
      * @return void
      */
     public function testWebNonPublicAccess()

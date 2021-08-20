@@ -1,7 +1,7 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Router / <?= ( $t->rt ) ? 'Edit : '. $t->rt->getName() : 'Add' ?></li>
+    Router / <?=  $t->rt  ? 'Edit : '. $t->rt->name : 'Create' ?></li>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -13,7 +13,7 @@
             <i class="fa fa-th-list"></i>
         </a>
         <?php if( $t->rt ): ?>
-            <a class="btn btn-white" href="<?= route ('router@add' ) ?>" title="add">
+            <a class="btn btn-white" href="<?= route ('router@create' ) ?>" title="create">
                 <i class="fa fa-plus"></i>
             </a>
         <?php endif; ?>
@@ -21,15 +21,10 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
-
     <div class="row">
-
         <div  class="col-sm-12">
-
             <?= $t->alerts() ?>
-
             <?php if( $t->rt ): ?>
-
                 <div class="alert alert-warning" role="alert">
                     <div class="d-flex align-items-center">
                         <div class="text-center">
@@ -41,14 +36,15 @@
                         </div>
                     </div>
                 </div>
-
             <?php endif; ?>
 
             <div class="card">
                 <div class="card-body">
-
-                    <?= Former::open()->method( 'POST' )
-                        ->action( route( 'router@store' ) )
+                    <?= Former::open()
+                        ->method( $t->rt ? 'PUT' : 'POST' )
+                        ->action(  $t->rt ?
+                            route('router@update', [ 'router' => $t->rt ] )
+                            : route('router@store' ) )
                         ->customInputWidthClass( 'col-sm-6' )
                         ->addClass( 'col-md-10' )
                         ->actionButtonsCustomClass( "grey-box");
@@ -58,29 +54,27 @@
                         ->label( 'Handle' )
                         ->placeholder( 'rs1-lan1-ipv4' )
                         ->blockHelp( "The handle is like the router's name. It is suggested you use something like: <code>purpose-proto-lan</code>. A
-                    good example of this is <code>rs1-lan1-ipv4</code> for <em>router server #1</em> on <em>lan1</em> using <em>IPv4</em>.
+                    good example of this is <code>rs1-lan1-ipv4</code> for <em>route server #1</em> on <em>lan1</em> using <em>IPv4</em>.
                     These handles are used in API calls and other areas such as Nagios configuration generation." );
-
                     ?>
 
-                    <?= Former::select( 'vlan' )
+                    <?= Former::select( 'vlan_id' )
                         ->label( 'Vlan' )
                         ->fromQuery( $t->vlans, 'name' )
                         ->placeholder( 'Choose a VLAN' )
                         ->addClass( 'chzn-select' );
-
                     ?>
 
                     <?= Former::select( 'protocol' )
                         ->label( 'Protocol' )
-                        ->fromQuery( Entities\Router::$PROTOCOLS )
+                        ->fromQuery( \IXP\Models\Router::$PROTOCOLS )
                         ->placeholder( 'Choose the protocol' )
                         ->addClass( 'chzn-select' );
                     ?>
 
                     <?= Former::select( 'type' )
                         ->label( 'Type' )
-                        ->fromQuery( Entities\Router::$TYPES )
+                        ->fromQuery( \IXP\Models\Router::$TYPES )
                         ->placeholder( 'Choose a type / function' )
                         ->addClass( 'chzn-select' )
                         ->blockHelp( 'The function of this router. We define three. If you use <em>Other</em> then we suggest opening a 
@@ -125,11 +119,10 @@
 
                     <?= Former::select( 'software' )
                         ->label( 'Software' )
-                        ->fromQuery( Entities\Router::$SOFTWARES )
+                        ->fromQuery( \IXP\Models\Router::$SOFTWARES )
                         ->placeholder( 'Choose the platform / software' )
                         ->addClass( 'chzn-select' )
-                        ->blockHelp( 'There is no specific use for this as yet but you should choose appropriately for future correctness. If
-                    your platform does not exist here, please open an issue on GitHub.' );
+                        ->blockHelp( 'The software used for establishing BGP sessions with this router configuration.' );
                     ?>
 
                     <?= Former::text( 'software_version' )
@@ -150,7 +143,6 @@
                         ->blockHelp( "The operating system version that runs the BGP software daemon (free text, used in IX-F export" );
                     ?>
 
-
                     <?= Former::text( 'mgmt_host' )
                         ->label( 'Management Host' )
                         ->placeholder( '192.0.2.89 / 2001:db8::89 / rs1-lan1-ipv4.mgmt.example.com')
@@ -160,7 +152,7 @@
 
                     <?= Former::select( 'api_type' )
                         ->label( 'API Type' )
-                        ->fromQuery( Entities\Router::$API_TYPES )
+                        ->fromQuery( \IXP\Models\Router::$API_TYPES )
                         ->placeholder( 'Choose an API type' )
                         ->addClass( 'chzn-select' )
                         ->blockHelp( "For monitoring and looking glass functionality, we support API access to the router. The only currently
@@ -175,7 +167,7 @@
 
                     <?= Former::select( 'lg_access' )
                         ->label( 'LG Access Privileges' )
-                        ->fromQuery( Entities\User::$PRIVILEGES_ALL )
+                        ->fromQuery( \IXP\Models\User::$PRIVILEGES_ALL )
                         ->placeholder( 'Choose Minimum Looking Glass Access Privileges' )
                         ->addClass( 'chzn-select' )
                         ->blockHelp( 'What (minimum) privileges must a user have to access the looking glass of this router. <em>Only relevant 
@@ -189,7 +181,6 @@
                         ->inline()
                         ->blockHelp( "Is this router used in quarantine rather than production? The effect of this is that BGP client
                     sessions are only generated for interfaces that have a physical interface in quarantine." );
-
                     ?>
 
                     <?= Former::checkbox( 'bgp_lc' )
@@ -248,24 +239,14 @@
                     " );
                     ?>
 
-                    <?=Former::actions( Former::primary_submit( $t->rt ? 'Save Changes' : 'Add Router' )->id('btn-submit-form')->class( "mb-2 mb-sm-0"),
+                    <?=Former::actions( Former::primary_submit( $t->rt ? 'Save Changes' : 'Create' )->id('btn-submit-form')->class( "mb-2 mb-sm-0"),
                         Former::secondary_link( 'Cancel' )->href( route( 'router@list' ) )->class( "mb-2 mb-sm-0"),
                         Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0")
                     );?>
 
-                    <?= Former::hidden( 'id' )
-                        ->value( $t->rt ? $t->rt->getId() : null )
-                    ?>
-
                     <?= Former::close() ?>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
 <?php $this->append() ?>
-

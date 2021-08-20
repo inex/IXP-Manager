@@ -27,7 +27,7 @@ Interval:5
 IconDir: /images/
 
 
-<?php if( config( 'grapher.backends.mrtg.dbtype' ) == 'rrd' ): ?>
+<?php if( config( 'grapher.backends.mrtg.dbtype' ) === 'rrd' ): ?>
 LogFormat: rrdtool
 <?php endif; ?>
 

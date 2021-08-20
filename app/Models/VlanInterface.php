@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -27,9 +27,12 @@ use Eloquent;
 
 use Illuminate\Database\Eloquent\{
     Builder,
-    Model
+    Model,
+    Relations\BelongsTo,
+    Relations\HasMany
 };
 
+use IXP\Traits\Observable;
 
 /**
  * IXP\Models\VlanInterface
@@ -58,6 +61,12 @@ use Illuminate\Database\Eloquent\{
  * @property int|null $busyhost
  * @property string|null $notes
  * @property int $rsmorespecifics
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \IXP\Models\IPv4Address|null $ipv4address
+ * @property-read \IXP\Models\IPv6Address|null $ipv6address
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Layer2Address[] $layer2addresses
+ * @property-read int|null $layer2addresses_count
  * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
  * @property-read \IXP\Models\Vlan|null $vlan
  * @method static Builder|VlanInterface newModelQuery()
@@ -66,6 +75,7 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|VlanInterface whereAs112client($value)
  * @method static Builder|VlanInterface whereBgpmd5secret($value)
  * @method static Builder|VlanInterface whereBusyhost($value)
+ * @method static Builder|VlanInterface whereCreatedAt($value)
  * @method static Builder|VlanInterface whereId($value)
  * @method static Builder|VlanInterface whereIpv4addressid($value)
  * @method static Builder|VlanInterface whereIpv4bgpmd5secret($value)
@@ -85,12 +95,15 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|VlanInterface whereNotes($value)
  * @method static Builder|VlanInterface whereRsclient($value)
  * @method static Builder|VlanInterface whereRsmorespecifics($value)
+ * @method static Builder|VlanInterface whereUpdatedAt($value)
  * @method static Builder|VlanInterface whereVirtualinterfaceid($value)
  * @method static Builder|VlanInterface whereVlanid($value)
  * @mixin Eloquent
  */
 class VlanInterface extends Model
 {
+    use Observable;
+
     /**
      * The table associated with the model.
      *
@@ -99,27 +112,160 @@ class VlanInterface extends Model
     protected $table = 'vlaninterface';
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'virtualinterfaceid',
+        'vlanid',
+        'irrdbfilter',
+        'rsmorespecifics',
+        'mcastenabled',
+        'maxbgpprefix',
+        'rsclient',
+        'as112client',
+        'busyhost',
+    ];
+
+    /**
      * Get the customer that owns the virtual interfaces.
      */
-    public function virtualInterface()
+    public function virtualInterface(): BelongsTo
     {
-        return $this->belongsTo('IXP\Models\VirtualInterface', 'virtualinterfaceid');
+        return $this->belongsTo(VirtualInterface::class, 'virtualinterfaceid');
     }
 
     /**
      * Get the vlan that holds the vlan interface.
      */
-    public function vlan()
+    public function vlan(): BelongsTo
     {
-        return $this->belongsTo('IXP\Models\Vlan', 'vlanid');
+        return $this->belongsTo(Vlan::class, 'vlanid');
     }
 
+    /**
+     * Get the layer2addresses for the vlan interface
+     */
+    public function layer2addresses(): HasMany
+    {
+        return $this->hasMany(Layer2Address::class, 'vlan_interface_id' );
+    }
+
+    /**
+     * Get the ipv4address associated with the vlaninterface.
+     */
+    public function ipv4address(): BelongsTo
+    {
+        return $this->belongsTo(IPv4Address::class, 'ipv4addressid' );
+    }
+
+    /**
+     * Get the ipv6address associated with the vlaninterface.
+     */
+    public function ipv6address(): BelongsTo
+    {
+        return $this->belongsTo(IPv6Address::class, 'ipv6addressid' );
+    }
 
     /**
      * See if a given protocol is enabled
+     *
+     * @param int|string $proto
+     *
+     * @return bool
      */
-    public function protocolEnabled( int $p ): bool {
-        return $p === 4 ? $this->ipv4enabled : $this->ipv6enabled;
+    public function ipvxEnabled( $proto ): bool
+    {
+        switch( $proto ) {
+            case 4:
+            case 'ipv4':
+                return (bool)$this->ipv4enabled;
+                break;
+            case 6:
+            case 'ipv6':
+                return (bool)$this->ipv6enabled;
+                break;
+            default:
+                return false;
+        }
     }
 
+    /**
+     * Is this VLAN interface graphable?
+     *
+     * @return bool
+     */
+    public function isGraphable(): bool
+    {
+        return $this->virtualInterface->isGraphable();
+    }
+
+    /**
+     * Convenience function to see if we can graph a VLI for latency for a given protocol
+     *
+     * @param string $proto Either ipv4 / ipv6 (as defined in Grapher)
+     *
+     * @return bool
+     *
+     * @throws
+     */
+    public function canGraphForLatency( string $proto ): bool
+    {
+        switch( $proto ) {
+            case 'ipv4':
+                return !$this->vlan->private
+                    && $this->ipv4enabled
+                    && $this->ipv4canping
+                    && $this->ipv4address;
+                break;
+            case 'ipv6':
+                return !$this->vlan->private
+                    && $this->ipv6enabled
+                    && $this->ipv6canping
+                    && $this->ipv6address;
+                break;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Convenience function to get an IP address based on a given protocol
+     *
+     * @param string $proto Either ipv4 / ipv6 (as defined in Grapher)
+     *
+     * @return null|IPv4Address|IPv6Address
+     *
+     * @throws
+     */
+    public function getIPAddress( string $proto )
+    {
+        switch( strtolower( $proto ) ) {
+            case 'ipv4':
+                return $this->ipv4address;
+                break;
+            case 'ipv6':
+                return $this->ipv6address;
+                break;
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * String to describe the model being updated / deleted / created
+     *
+     * @param Model $model
+     *
+     * @return string
+     */
+    public static function logSubject( Model $model ): string
+    {
+        return sprintf(
+            "Vlan Interface [id:%d] belonging to Virtual Interface [id:%d]",
+            $model->id,
+            $model->virtualinterfaceid,
+        );
+    }
 }

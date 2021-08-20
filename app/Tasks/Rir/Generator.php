@@ -3,7 +3,7 @@
 namespace IXP\Tasks\Rir;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,24 +22,16 @@ namespace IXP\Tasks\Rir;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use D2EM;
-
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\View as ViewFacade;
 
 use IXP\Exceptions\GeneralException;
 
-use Entities\{
-    Customer            as CustomerEntity,
-    Vlan                as VlanEntity
+use IXP\Models\{
+    Customer,
+    Router,
+    Vlan
 };
-
-use Repositories\{
-    Vlan        as VlanRepository
-};
-
-use IXP\Utils\ArrayUtilities as ArrayUtils;
-
 
 /**
  * RIR Object Generator
@@ -48,29 +40,25 @@ use IXP\Utils\ArrayUtilities as ArrayUtils;
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   Tasks
  * @package    IXP\Tasks\Router
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Generator
 {
-
     /**
-     * Template choosen
+     * Template chosen
      *
      * @var string
      */
     private $tmpl = "";
 
-
-
     /**
      * Generator constructor.
-     * @param string $tmpl
-     * @param $emailTo
-     * @param $emailFrom
      *
+     * @param string $tmpl
      */
-    public function __construct( string $tmpl ) {
+    public function __construct( string $tmpl )
+    {
         $this->setTemplate( $tmpl );
     }
 
@@ -78,9 +66,11 @@ class Generator
      * Set the template name
      *
      * @param string $tmpl
+     *
      * @return Generator
      */
-    public function setTemplate( string $tmpl ): Generator {
+    public function setTemplate( string $tmpl ): Generator
+    {
         $this->tmpl = $tmpl;
         return $this;
     }
@@ -90,21 +80,20 @@ class Generator
      *
      * @return string
      */
-    public function template(): string {
+    public function template(): string
+    {
         return $this->tmpl;
     }
-
-
 
     /**
      * Generate the RIR object
      *
      * @return string
+     *
      * @throws
      */
     public function generate(): string
     {
-
         if( !( $this->template() ) ) {
             throw new GeneralException( 'You must specify a template name so you can generate a RIR object' );
         }
@@ -117,11 +106,7 @@ class Generator
         }
 
         // populate the template variables
-        $customers =  ArrayUtils::reindexObjects(
-            ArrayUtils::reorderObjects(
-                D2EM::getRepository(  CustomerEntity::class )->getConnected( false, false ), "getAutsys", SORT_NUMERIC ),
-                "getId"
-        );
+        $customers =  Customer::getConnected( false, false, 'autsys' )->keyBy( 'id' );
 
         return view( 'api/v4/rir/' . $tmpl, [
                 'customers'     => $customers,
@@ -131,11 +116,10 @@ class Generator
             ] )->render();
     }
 
-
     /**
      * Gather and create the IXP customer ASN details.
      *
-     * Returns an associate array indexed by ordered ASNs of active external trafficing customers:
+     * Returns an associate array indexed by ordered ASNs of active external trafficking customers:
      *
      *     [
      *         [65500] => [
@@ -145,24 +129,27 @@ class Generator
      *                    ...
      *     ]
      *
-     * @param \Entities\Customer[] $customers Array of all active external trafficing customers
+     * @param   Collection $customers Array of all active external trafficking customers
+     *
      * @return array Associate array indexed by ordered ASNs
      *
      * @throws
      */
-    private function generateASNs( $customers ) {
+    private function generateASNs( Collection $customers ): array
+    {
         $asns = [];
-        foreach( $customers as $c )
-            $asns[ $c->getAutsys() ] = [
-                'asmacro' => $c->resolveAsMacro( 4, 'AS' ),
-                'name'    => $c->getName()
+        foreach( $customers as $c ) {
+            /** @var $c Customer */
+            $asns[ $c->autsys ] = [
+                'asmacro' => $c->asMacro( 4, 'AS' ),
+                'name'    => $c->name
             ];
+        }
 
         ksort( $asns, SORT_NUMERIC );
 
         return $asns;
     }
-
 
     /**
      * Gather up route server client information for building RIR objects
@@ -204,45 +191,44 @@ class Generator
      *         ],
      *     ]
      *
-     * @param array $customers
+     * @param Collection $customers
      *
      * @return array As defined above
      *
      * @throws
      */
-    private function generateRouteServerClientDetails( $customers ) {
-
+    private function generateRouteServerClientDetails( Collection $customers ): array
+    {
         // get the public peering VLANs
-        $vlans = D2EM::getRepository( VlanEntity::class )->getFiltered( VlanRepository::TYPE_NORMAL );
+        $vlans = Vlan::publicOnly()->orderBy( 'number' )->get();
 
         $rsclients = [];
 
         foreach( $vlans as $vlan ) {
             foreach( [ 4, 6 ] as $proto ) {
                 // get the available route servers
-                $servers = $vlan->getRouteServers( $proto );
+                $servers = Router::routeServer()->where( 'vlan_id', $vlan->id )
+                    ->where( 'protocol', 4 )->get()->pluck( 'peering_ip' )->toArray();
 
                 if( !count( $servers ) ){
                     continue;
                 }
 
-                $rsclients[ 'vlans' ][ $vlan->getId() ][ 'servers' ][ $proto ] = [];
+                $rsclients[ 'vlans' ][ $vlan->id ][ 'servers' ][ $proto ] = [];
 
                 foreach( $servers as $server ){
-                    $rsclients[ 'vlans' ][ $vlan->getId() ][ 'servers' ][ $proto ][] = $server[ 'ipaddress' ];
+                    $rsclients[ 'vlans' ][ $vlan->id ][ 'servers' ][ $proto ][] = $server;
                 }
 
-                foreach( $vlan->getVlanInterfaces() as $vli ) {
-
-                    if( !$vli->getRsclient() ){
+                foreach( $vlan->vlanInterfaces as $vli ) {
+                    if( !$vli->rsclient ){
                         continue;
                     }
 
                     $oneConnectedInterface = false;
 
-                    foreach( $vli->getVirtualInterface()->getPhysicalInterfaces() as $pi ) {
-
-                        if( $pi->statusIsConnected() ) {
+                    foreach( $vli->virtualInterface->physicalInterfaces as $pi ) {
+                        if( $pi->statusConnected() ) {
                             $oneConnectedInterface = true;
                             break;
                         }
@@ -252,27 +238,27 @@ class Generator
                         continue;
                     }
 
-                    $cust = $vli->getVirtualInterface()->getCustomer();
+                    $cust = $vli->virtualInterface->customer;
 
-                    if( !$cust->statusIsNormal() ){
+                    if( !$cust->statusNormal() ){
                         continue;
                     }
 
                     // Customer still active?
-                    if( !isset( $customers[ $cust->getId() ] ) ){
+                    if( !isset( $customers[ $cust->id ] ) ){
                         continue;
                     }
 
-                    if( !isset( $rsclients[ 'clients' ][ $cust->getAutsys() ] ) ) {
-                        $rsclients[ 'clients' ][ $cust->getAutsys() ][ 'id' ]       = $cust->getId();
-                        $rsclients[ 'clients' ][ $cust->getAutsys() ][ 'vlans' ]    = [];
+                    if( !isset( $rsclients[ 'clients' ][ $cust->autsys ] ) ) {
+                        $rsclients[ 'clients' ][ $cust->autsys ][ 'id' ]       = $cust->id;
+                        $rsclients[ 'clients' ][ $cust->autsys ][ 'vlans' ]    = [];
                     }
 
-                    $fnEnabled = "getIpv{$proto}enabled";
+                    $fnEnabled = "ipv{$proto}enabled";
 
-                    if( $vli->$fnEnabled() ) {
-                        $fnIpaddress = "getIPv{$proto}Address";
-                        $rsclients[ 'clients' ][ $cust->getAutsys() ][ 'vlans' ][ $vlan->getId() ][ $vli->getId() ][ $proto ] = $vli->$fnIpaddress()->getAddress();
+                    if( $vli->$fnEnabled ) {
+                        $fnIpaddress = "ipv{$proto}address";
+                        $rsclients[ 'clients' ][ $cust->autsys ][ 'vlans' ][ $vlan->id ][ $vli->id ][ $proto ] = $vli->$fnIpaddress->address;
                     }
                 }
             }
@@ -282,9 +268,6 @@ class Generator
             ksort( $rsclients[ 'clients' ], SORT_NUMERIC );
         }
 
-
         return $rsclients;
     }
-
-
 }

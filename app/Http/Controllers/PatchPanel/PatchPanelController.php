@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\PatchPanel;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,18 +23,20 @@ namespace IXP\Http\Controllers\PatchPanel;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Log, Redirect;
-
-use Entities\{
-    Cabinet     as CabinetEntity,
-    PatchPanel  as PatchPanelEntity
-};
+use Former;
 
 use Illuminate\Http\{
     RedirectResponse,
     Request
 };
+
 use Illuminate\View\View;
+
+use IXP\Models\{
+    Cabinet,
+    Location,
+    PatchPanel
+};
 
 use IXP\Http\Controllers\Controller;
 use IXP\Http\Requests\StorePatchPanel;
@@ -49,14 +51,13 @@ use IXP\Utils\View\Alert\{
  *
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- *
- * @category   PatchPanel
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\PatchPanel
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class PatchPanelController extends Controller
 {
-
     /**
      * Display the patch panel list
      *
@@ -67,14 +68,18 @@ class PatchPanelController extends Controller
     public function index( bool $active = true ): View
     {
         return view( 'patch-panel/index' )->with([
-            'patchPanels'       => D2EM::getRepository( PatchPanelEntity::class )->findBy( [ 'active' => $active ] ),
-            'locations'         => D2EM::getRepository( CabinetEntity::class    )->getByLocationAsArray(),
+            'patchPanels'       => PatchPanel::where( 'active', $active )
+                ->with( 'cabinet', 'patchPanelPorts' )->get(),
+            'locations'         => Location::select( [ 'id', 'name' ] )
+                ->orderBy( 'name' )->get(),
+            'cabinets'          => Cabinet::select( [ 'id', 'name', 'locationid' ] )
+                ->orderBy( 'name' )->get()->toArray(),
             'active'            => $active
         ]);
     }
 
     /**
-     * @inheritdoc index()
+     * @return View
      */
     public function indexInactive(): View
     {
@@ -82,150 +87,118 @@ class PatchPanelController extends Controller
     }
 
     /**
-     * Allow to display the form to create/edit a patch panel
-     *
-     * @param Request   $request
-     * @param int       $id       ID of the patch panel
+     * Allow to display the form to create a patch panel
      *
      * @return  View
      */
-    public function edit( Request $request, int $id = null ): View
+    public function create(): View
     {
-        /** @var PatchPanelEntity $pp */
-        $pp = false;
-
-        if( $id ) {
-            if( !( $pp = D2EM::getRepository( PatchPanelEntity::class )->find( $id) ) ) {
-                abort(404);
-            }
-
-            Former::populate([
-                'name'                      => $request->old( 'name',                $pp->getName() ),
-                'colo_reference'            => $request->old( 'colo_reference',      $pp->getColoReference() ),
-                'cabinet'                   => $request->old( 'cabinet',             $pp->getCabinet()->getId() ),
-                'mounted_at'                => $request->old( 'mounted_at',          $pp->getMountedAt() ),
-                'u_position'                => $request->old( 'u_position',          $pp->getUPosition() ),
-                'cable_type'                => $request->old( 'cable_type',          $pp->getCableType() ),
-                'connector_type'            => $request->old( 'connector_type',      $pp->getConnectorType() ),
-                'installation_date'         => $request->old( 'installation_date',   $pp->getInstallationDate()->format('Y-m-d') ),
-                'port_prefix'               => $request->old( 'port_prefix',         $pp->getPortPrefix() ),
-                'numberOfPorts'             => $request->old( 'numberOfPorts',       0 ),
-                'location_notes'            => $request->old( 'location_notes',      $pp->getLocationNotes() ),
-            ]);
-
-        }
-
         return view( 'patch-panel/edit' )->with([
-            'pp'                            => $pp,
-            'cabinets'                      => D2EM::getRepository( CabinetEntity::class )->getAsArray(),
+            'pp'            => false,
+            'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
+                ->orderBy( 'name' )->get(),
         ]);
     }
 
     /**
-     * Allow to create/edit a patch panel
+     * Allow to create a patch panel
      *
-     * @param   StorePatchPanel $request instance of the current HTTP request
+     * @param   StorePatchPanel $r instance of the current HTTP request
      *
-     * @return  redirect
-     *
-     * @throws
+     * @return RedirectResponse
      */
-    public function store( StorePatchPanel $request ) {
-        /** @var PatchPanelEntity $pp  */
-        if( $request->input( 'id', false ) ) {
-            // get the existing patch panel object for that ID
-            if( !( $pp = D2EM::getRepository( PatchPanelEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                Log::notice( 'Unknown patch panel when editing patch panel' );
-                abort(404);
-            }
-        } else {
-            $pp = new PatchPanelEntity;
-            D2EM::persist( $pp );
-        }
-
-        /** @var CabinetEntity $cabinet */
-        $cabinet = D2EM::getRepository( CabinetEntity::class )->find( $request->input( 'cabinet' ) );
-
-        // set the data to the object
-        $pp->setName(           $request->input( 'name'             ) );
-        $pp->setConnectorType(  $request->input( 'connector_type'   ) );
-        $pp->setCableType(      $request->input( 'cable_type'       ) );
-        $pp->setColoReference(  $request->input( 'colo_reference'   ) );
-        $pp->setChargeable(     $request->input( 'chargeable'       ) );
-
-        $pp->setLocationNotes(  clean( $request->input( 'location_notes' )  ?? '' ) );
-        $pp->setPortPrefix(     $request->input( 'port_prefix' )        ?? '' );
-
-        $pp->setActive(    true );
-        $pp->setCabinet(         $cabinet );
-
-        $pp->setInstallationDate(
-            ( $request->input( 'installation_date', false ) ? new \DateTime( $request->input( 'installation_date' ) ) : new \DateTime ) 
-        );
-
-        if( ( $u = $request->input( 'u_position' ) ) && is_numeric($u) ) {
-            $pp->setUPosition( (int)$u );
-        }
-
-        if( ( $mp = $request->input( 'mounted_at' ) ) && isset( PatchPanelEntity::$MOUNTED_AT[$mp] ) ) {
-            $pp->setMountedAt( (int)$mp );
-        }
+    public function store( StorePatchPanel $r ): RedirectResponse
+    {
+        $r->merge( [ 'location_notes' => clean( $r->location_notes ) ]);
+        $pp = PatchPanel::create( array_merge( $r->all(), [ 'active' => true ]) );
 
         // create the patch panel ports
-        $pp->createPorts( $request->input( 'numberOfPorts' ) );
+        $pp->createPorts( $r->numberOfPorts );
+        return redirect( route( 'patch-panel-port@list-for-patch-panel', [ "pp" => $pp->id ] )  );
+    }
 
-        D2EM::flush();
+    /**
+     * Allow to display the form to edit a patch panel
+     *
+     * @param Request       $r
+     * @param PatchPanel    $pp      the patch panel
+     *
+     * @return  View
+     */
+    public function edit( Request $r, PatchPanel $pp ): View
+    {
+        Former::populate([
+            'cabinet_id'                => $r->old( 'cabinet_id',          $pp->cabinet_id          ),
+            'name'                      => $r->old( 'name',                $pp->name                ),
+            'colo_reference'            => $r->old( 'colo_reference',      $pp->colo_reference      ),
+            'cable_type'                => $r->old( 'cable_type',          $pp->cable_type          ),
+            'connector_type'            => $r->old( 'connector_type',      $pp->connector_type      ),
+            'installation_date'         => $r->old( 'installation_date',   $pp->installation_date   ),
+            'port_prefix'               => $r->old( 'port_prefix',         $pp->port_prefix         ),
+            'location_notes'            => $r->old( 'location_notes',      $pp->location_notes      ),
+            'u_position'                => $r->old( 'u_position',          $pp->u_position          ),
+            'mounted_at'                => $r->old( 'mounted_at',          $pp->mounted_at          ),
+            'numberOfPorts'             => $r->old( 'numberOfPorts',0                         ),
+        ]);
 
-        return redirect( route( "patch-panel-port/list/patch-panel", [ "ppid" => $pp->getId() ] )  );
+        return view( 'patch-panel/edit' )->with([
+            'pp'            => $pp,
+            'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
+                ->orderBy( 'name' )->get(),
+        ]);
+    }
+
+    /**
+     * Allow to update a patch panel
+     *
+     * @param StorePatchPanel   $r
+     * @param PatchPanel        $pp
+     *
+     * @return  RedirectResponse
+     */
+    public function update( StorePatchPanel $r, PatchPanel $pp): RedirectResponse
+    {
+        $r->merge( [ 'location_notes' => clean( $r->location_notes ) ]);
+        $pp->update( $r->all() );
+
+        // create the patch panel ports
+        $pp->createPorts( $r->numberOfPorts );
+        return redirect( route( 'patch-panel-port@list-for-patch-panel', [ "pp" => $pp->id ] )  );
     }
 
     /**
      * Change the status to active or inactive for a patch panel
      *
-     * @param int $id
-     * @param int $active
+     * @param PatchPanel    $pp
+     * @param int           $active
      *
      * @return RedirectResponse
-     *
-     * @throws
      */
-    public function changeStatus( int $id, int $active ): RedirectResponse
+    public function changeStatus( PatchPanel $pp, int $active ): RedirectResponse
     {
-        /** @var PatchPanelEntity $pp  */
-        if( !( $pp = D2EM::getRepository( PatchPanelEntity::class )->find( $id ) ) ) {
-            abort(404);
-        }
-
         $status = $active ? 'active' : 'inactive';
 
-        if( $pp->areAllPortsAvailable() ) {
-            $pp->setActive( ( bool )$active );
-            D2EM::persist( $pp );
-            D2EM::flush();
-
-            AlertContainer::push( 'The patch panel has been marked as '.$status, Alert::SUCCESS );
+        if( $pp->patchPanelPorts()->count() === $pp->availableForUsePortCount() ) {
+            $pp->update( [ 'active' => (bool)$active ] );
+            AlertContainer::push( 'The patch panel has been marked as ' . $status, Alert::SUCCESS );
         } else {
-            AlertContainer::push( 'To make a patch panel '.$status.', all ports must be available for use.', Alert::DANGER );
+            AlertContainer::push( 'To make a patch panel ' . $status . ', all ports must be available for use.', Alert::DANGER );
         }
 
-        return redirect( route( "patch-panel/list" ) );
+        return redirect( route( "patch-panel@list" ) );
     }
 
     /**
-     * Display the patch panel informations
+     * Display the patch panel details
      *
-     * @param   int $id ID of the patch panel
+     * @param   PatchPanel $pp the patch panel
      *
      * @return  view
      */
-    public function view( int $id = null ): View
+    public function view( PatchPanel $pp ): View
     {
-        if( !( $pp = D2EM::getRepository( PatchPanelEntity::class )->find( $id ) ) ){
-            abort(404);
-        }
-
         return view( 'patch-panel/view' )->with([
-            'pp'                        => $pp
+            'pp'    => $pp->load([ 'cabinet', 'patchPanelPorts' ] )
         ]);
     }
 }

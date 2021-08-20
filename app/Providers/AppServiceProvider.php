@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -24,6 +24,7 @@
 namespace IXP\Providers;
 
 use Auth, Former, Horizon;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 use IXP\Models\{
     DocstoreCustomerDirectory,
@@ -33,35 +34,40 @@ use IXP\Observers\DocstoreCustomerDirectoryObserver;
 use IXP\Observers\DocstoreDirectoryObserver;
 use IXP\Utils\Former\Framework\TwitterBootstrap4;
 
-class AppServiceProvider extends ServiceProvider {
-
+/**
+ * App Service Provider
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Providers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class AppServiceProvider extends ServiceProvider
+{
     /**
      * Bootstrap any application services.
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        view()->composer('layouts.master', function($view)
-        {
-            $view->with('controllerAction' , app('request')->route()->getAction()['as']);
+        view()->composer( [ 'telescope::layout' ], function ( $view ) {
+            $view->with( 'telescopeScriptVariables', [
+                'path'      => config( 'telescope.url_path' ),
+                'timezone'  => config('app.timezone'),
+                'recording' => !cache('telescope:pause-recording'),
+            ]);
         });
 
-        view()->composer(['telescope::layout'], function ($view) { 
-            $view->with('telescopeScriptVariables', [ 'path' => config( 'telescope.url_path' ), 'timezone' => config('app.timezone'), 
-            'recording' => ! cache('telescope:pause-recording'), ]); });
-
-
         Former::framework( TwitterBootstrap4::class );
-
         // observer for docstore directory
         DocstoreDirectory::observe( DocstoreDirectoryObserver::class );
         // observer for docstore customer directory
         DocstoreCustomerDirectory::observe( DocstoreCustomerDirectoryObserver::class );
 
-        if(config('app.env') === 'development') {
-            \URL::forceScheme('https');
-        }
+        Paginator::useBootstrap();
     }
 
     /**
@@ -73,7 +79,7 @@ class AppServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->app->bind(
             'Illuminate\Contracts\Auth\Registrar',

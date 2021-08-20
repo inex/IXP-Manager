@@ -1,9 +1,8 @@
 <div class="card col-sm-12">
     <div class="card-body">
-
-        <?= Former::open()->method( 'POST' )
+        <?= Former::open()->method( $t->data['params']['isAdd'] ? 'POST' : 'PUT' )
             ->id( 'form' )
-            ->action( route( $t->feParams->route_prefix . '@store' ) )
+            ->action( $t->data['params']['isAdd'] ? route( $t->feParams->route_prefix . '@store' ) : route($t->feParams->route_prefix . '@update', [ 'id' => $t->data[ 'params'][ 'object']->id ] ) )
             ->customInputWidthClass( 'col-lg-4 col-md-5 col-sm-5' )
             ->customLabelWidthClass( 'col-lg-2 col-sm-3' )
             ->actionButtonsCustomClass( "grey-box")
@@ -16,7 +15,7 @@
 
         <?= Former::text( 'shortname' )
             ->label( 'Shortname' )
-            ->blockHelp( "A short name, ideally less than 10 characters, that can be substituted for the full name above where space is contrained." );
+            ->blockHelp( "A short name, ideally less than 10 characters, that can be substituted for the full name above where space is constrained." );
         ?>
 
         <?= Former::text( 'tag' )
@@ -32,7 +31,6 @@
                 . "then please contact PeeringDB directly. Note also that IXP Manager caches this data for a number of hours - so an "
                 . "<code>artisan cache:clear</code> is required if you get your facility listed and IXP Manager still does not have it." );
         ?>
-
 
         <?= Former::textarea( 'address' )
             ->label( 'Address' )
@@ -84,7 +82,6 @@
                 </div>
             </div>
 
-
             <div class="col-lg-6 col-md-12 mt-4 mt-sm-4 mt-lg-0">
                 <div class="card">
                     <div class="card-body former-input-col-sm-6 former-label-col-sm-6">
@@ -111,7 +108,6 @@
                 </div>
             </div>
         </div>
-
 
         <div class="form-group">
             <div class="col-lg-offset-2 col-sm-8">
@@ -146,20 +142,13 @@
             </div>
         </div>
 
-
-
         <?= Former::actions(
-            Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' )->disabled( true )->class( "mb-2 mb-sm-0" ),
+            Former::primary_submit( $t->data['params']['isAdd'] ? 'Create' : 'Save Changes' )->id( 'btn-submit' )->disabled( true )->class( "mb-2 mb-sm-0" ),
             Former::secondary_link( 'Cancel' )->href( route( $t->feParams->route_prefix . '@list') )->class( "mb-2 mb-sm-0" ),
             Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
         );
         ?>
 
-        <?= Former::hidden( 'id' )
-            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
-        ?>
-
         <?= Former::close() ?>
-
     </div>
 </div>

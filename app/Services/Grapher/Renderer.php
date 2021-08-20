@@ -23,7 +23,7 @@
 
 use IXP\Exceptions\Services\Grapher\RendererException;
 use IXP\Services\Grapher;
-use IXP\Services\Grapher\Graph;
+use IXP\Services\Grapher\Graph as Graph;
 
 use App;
 use View;
@@ -37,27 +37,27 @@ use View;
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Renderer {
-
-
+class Renderer
+{
     /**
      * Style for future expansion
      * @var string
      */
-    const BOX_STYLE_LEGACY = 'legacy';
+    public const BOX_STYLE_LEGACY = 'legacy';
 
     /**
      * All styles
      * @array
      */
-    const BOX_STYLES = [
+    public const BOX_STYLES = [
         self::BOX_STYLE_LEGACY,
     ];
 
 
     /**
      * Graph under consideration
-     * @var IXP\Services\Grapher\Graph
+     *
+     * @var Graph
      */
     private $graph;
 
@@ -65,39 +65,48 @@ class Renderer {
     /**
      * Constructor
      */
-    public function __construct( Graph $g ) {
+    public function __construct( Graph $g )
+    {
         $this->graph = $g;
     }
 
     /**
      * Access for the graph object under consideration
-     * @return IXP\Services\Grapher\Graph
+     *
+     * @return Graph
      */
-    private function graph(): Graph {
+    private function graph(): Graph
+    {
         return $this->graph;
     }
 
     /**
      * Render the graph box
+     *
      * @param string $style The style (See BOX_STYLES above)
+     *
      * @return string
+     *
      * @throws RendererException
      */
-    public function box( $style ): string {
+    public function box( string $style ): string
+    {
         if( !in_array($style,self::BOX_STYLES) || !View::exists('services.grapher.renderer.box.'.$style) ) {
             throw new RendererException("No box style exists for: {$style}");
         }
 
-        return View::make('services.grapher.renderer.box.'.$style)->with( ['graph' => $this->graph()])->render();
+        return View::make('services.grapher.renderer.box.'.$style)->with( [ 'graph' => $this->graph() ])->render();
     }
 
     /**
      * Alias for box renderer with legacy style
+     *
      * @return string
+     *
      * @throws RendererException
      */
-    public function boxLegacy(): string {
+    public function boxLegacy(): string
+    {
         return $this->box( self::BOX_STYLE_LEGACY );
     }
-
 }

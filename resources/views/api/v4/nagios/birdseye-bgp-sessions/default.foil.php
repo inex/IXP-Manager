@@ -12,9 +12,9 @@
 # you can't effect the changes you need with skinning, consider posting to the mailing
 # list to see if it can be achieved / incorporated.
 #
-# For VLAN id <?= $t->vlan->getId() ?> - <?= $t->vlan->getName() ?>; ipv<?= $t->protocol ?>; type: <?= $t->typeName . "\n" ?>
+# For VLAN id <?= $t->vlan->id ?> - <?= $t->vlan->name ?>; ipv<?= $t->protocol ?>; type: <?= $t->typeName . "\n" ?>
 #
-# Generated: <?= date( 'Y-m-d H:i:s' ) . "\n" ?>
+# Generated: <?= now()->format( 'Y-m-d H:i:s' ) . "\n" ?>
 #
 #
 # The following objects are used by inheritance here and need to be defined by your own configuration:
@@ -56,57 +56,57 @@
 ###
 ### <?= $t->typeName ?> Sessions for <?= $vli['cname'] . "\n" ?>
 ###
-### <?= $vli['location_name'] ?> / <?= $vli['abrevcname'] ?> / <?=  $vli['sname'] ?>.
+### <?= $vli[ 'location_name' ] ?> / <?= $vli[ 'abrevcname' ] ?> / <?=  $vli[ 'sname' ] ?>.
 ###
 
 <?php
-if( !$vli['enabled'] || !$vli['address'] ) {
+if( !(bool)$vli[ 'enabled' ] || !(bool)$vli[ 'address' ] ) {
     echo "\n\n ## ipv{$t->protocol} not enabled / no address configured, skipping\n\n";
     continue;
 }
 
-if( $t->type == \Entities\Router::TYPE_ROUTE_SERVER && !$vli['rsclient'] ) {
+if( $t->type === \IXP\Models\Router::TYPE_ROUTE_SERVER && !$vli[ 'rsclient' ] ) {
     echo "\n\n ## not enabled as an rsclient, skipping\n\n";
     continue;
-} else if( $t->type == \Entities\Router::TYPE_ROUTE_COLLECTOR && !$vli['monitorrcbgp'] ) {
+} else if( $t->type === \IXP\Models\Router::TYPE_ROUTE_COLLECTOR && !$vli[ 'monitorrcbgp' ] ) {
     echo "\n\n ## not enabled for route collector session monitoring, skipping\n\n";
     continue;
-} else if( $t->type == \Entities\Router::TYPE_AS112 && !$vli['as112client'] ) {
+} else if( $t->type === \IXP\Models\Router::TYPE_AS112 && !$vli[ 'as112client' ] ) {
     echo "\n\n ## not enabled for as112, skipping\n\n";
     continue;
-} else if( $t->type == \Entities\Router::TYPE_OTHER  ) {
+} else if( $t->type === \IXP\Models\Router::TYPE_OTHER  ) {
     echo "\n\n ## unsupported router type, skipping\n\n";
     continue;
 }
 
-$hostname = $t->nagiosHostname( $vli['abrevcname'], $vli['autsys'], $t->protocol, $vli['vid'], $vli['vliid'] );
+$hostname = $t->nagiosHostname( $vli[ 'abrevcname' ], $vli[ 'autsys' ], $t->protocol, $vli[ 'vid' ], $vli[ 'vliid' ] );
 
-if( $t->type == \Entities\Router::TYPE_ROUTE_SERVER ) {
-    $protocol = sprintf( "pb_%04d_as%d", $vli['vliid'], $vli['autsys'] );
+if( $t->type === \IXP\Models\Router::TYPE_ROUTE_SERVER ) {
+    $protocol = sprintf( "pb_%04d_as%d", $vli[ 'vliid' ], $vli[ 'autsys' ] );
 } else {
-    $protocol = sprintf( "pb_as%d_vli%d_ipv%d", $vli['autsys'],  $vli['vliid'], $t->protocol );
+    $protocol = sprintf( "pb_as%d_vli%d_ipv%d", $vli[ 'autsys' ],  $vli[ 'vliid' ], $t->protocol );
 }
 
 $all[]                                = $hostname;
-
-    foreach( $t->routers as $r ):
+    /** @var \IXP\Models\Router $r */
+        foreach( $t->routers as $r ):
     
         // no quarantine
-        if( $r->getQuarantine() ) {
+        if( $r->quarantine ) {
             continue;
         }
         
-        $byrouter[ $r->getHandle() ][] = $hostname;
+        $byrouter[ $r->handle ][] = $hostname;
 
 ?>
 
-### Router: <?= $r->getName() ?> / <?= $r->getPeeringIP() ?>.
+### Router: <?= $r->name ?> / <?= $r->peering_ip ?>.
 
 define service     {
     use                     <?= $t->service_definition . "\n" ?>
     host_name               <?= $hostname . "\n" ?>
-    service_description     BGP session to <?= $r->getHandle() . "\n" ?>
-    _api_url                <?= $r->getApi() . "\n" ?>
+    service_description     BGP session to <?= $r->handle . "\n" ?>
+    _api_url                <?= $r->api . "\n" ?>
     _protocol               <?= $protocol . "\n" ?>
 }
 
@@ -134,8 +134,8 @@ define service     {
 <?php asort( $all ); ?>
 
 define hostgroup {
-    hostgroup_name  birdseye-<?= $t->typeShort ?>-bgp-sessions-vlanid-<?= $t->vlan->getId() ?>-ipv<?= $t->protocol ?>-all
-    alias           All Birdseye <?= $t->typeName ?> IPv<?= $t->protocol ?> Sessions for VLAN <?= $t->vlan->getName() . "\n" ?>
+    hostgroup_name  birdseye-<?= $t->typeShort ?>-bgp-sessions-vlanid-<?= $t->vlan->id ?>-ipv<?= $t->protocol ?>-all
+    alias           All Birdseye <?= $t->typeName ?> IPv<?= $t->protocol ?> Sessions for VLAN <?= $t->vlan->name . "\n" ?>
     members         <?= $t->softwrap( $all, 1, ', ', ', \\', 20 ) ?>
 
 }
@@ -153,8 +153,8 @@ define hostgroup {
     ?>
 
 define hostgroup {
-    hostgroup_name  birdseye-<?= $t->typeShort ?>-bgp-sessions-vlanid-<?= $t->vlan->getId() ?>-ipv<?= $t->protocol ?>-<?= $k . "\n" ?>
-    alias           All Birdseye <?= $t->typeName ?> IPv<?= $t->protocol ?> Sessions for VLAN <?= $t->vlan->getName() ?> on <?= $r->getHandle() ?>.
+    hostgroup_name  birdseye-<?= $t->typeShort ?>-bgp-sessions-vlanid-<?= $t->vlan->id ?>-ipv<?= $t->protocol ?>-<?= $k . "\n" ?>
+    alias           All Birdseye <?= $t->typeName ?> IPv<?= $t->protocol ?> Sessions for VLAN <?= $t->vlan->name ?> on <?= $r->handle ?>.
     members         <?= $t->softwrap( $hosts, 1, ', ', ', \\', 20 ) ?>
 
 }

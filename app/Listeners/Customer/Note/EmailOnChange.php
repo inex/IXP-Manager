@@ -22,25 +22,43 @@ namespace IXP\Listeners\Customer\Note;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Mail;
 
-use D2EM, Mail;
+use Illuminate\Events\Dispatcher;
 
-use Entities\{
-    User as UserEntity
+use IXP\Models\{
+    CustomerToUser,
+    User
 };
 
-
-use IXP\Events\Customer\Note\Changed as NoteChangedEvent;
 use IXP\Mail\Customer\Note\Changed as CustomerNoteChangedMailable;
 
+use IXP\Events\Customer\Note\{
+    Changed as NoteChangedEvent,
+    Created,
+    Edited,
+    Deleted};
+
+/**
+ * EmailOnChange Listener
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Listener\Customer\Note
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class EmailOnChange
 {
     /**
      * Handle customer note added
      *
      * @param $event
+     *
+     * @return void
      */
-    public function onAddedNote( $event ) {
+    public function onCreatedNote( $event ) : void
+    {
         $this->handle( $event );
     }
 
@@ -48,38 +66,45 @@ class EmailOnChange
      * Handle customer note edited
      *
      * @param $event
+     *
+     * @return void
      */
-    public function onEditedNote( $event ) {
+    public function onEditedNote( $event ): void
+    {
         $this->handle( $event );
     }
 
     /**
      * Handle customer note deleted
+     *
      * @param $event
+     *
+     * @return void
      */
-    public function onDeletedNote( $event ) {
+    public function onDeletedNote( $event ): void
+    {
         $this->handle( $event );
     }
 
     /**
      * Register the listeners for the subscriber.
      *
-     * @param  \Illuminate\Events\Dispatcher  $events
+     * @param  Dispatcher  $events
      */
-    public function subscribe( $events )
+    public function subscribe( Dispatcher $events ): void
     {
         $events->listen(
-            'IXP\Events\Customer\Note\Added',
-            'IXP\Listeners\Customer\Note\EmailOnChange@onAddedNote'
+            Created::class,
+            'IXP\Listeners\Customer\Note\EmailOnChange@onCreatedNote'
         );
 
         $events->listen(
-            'IXP\Events\Customer\Note\Edited',
+            Edited::class,
             'IXP\Listeners\Customer\Note\EmailOnChange@onEditedNote'
         );
 
         $events->listen(
-            'IXP\Events\Customer\Note\Deleted',
+            Deleted::class,
             'IXP\Listeners\Customer\Note\EmailOnChange@onDeletedNote'
         );
     }
@@ -90,54 +115,54 @@ class EmailOnChange
      *
      * @return void
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(){}
 
     /**
      * Handle the event.
      *
      * @param  NoteChangedEvent $e
+     *
      * @return void
      */
-    public function handle( $e )
+    public function handle( $e ): void
     {
         if( config( 'ixp_fe.customer.notes.only_send_to' ) ) {
             $to = [ config( 'ixp_fe.customer.notes.only_send_to' ) ];
         } else {
             // get admin users
-            $users = D2EM::getRepository( UserEntity::class )->findBy( [ 'privs' => UserEntity::AUTH_SUPERUSER, 'disabled' => false ] );
+            $c2us = CustomerToUser::from( 'customer_to_users AS c2u' )
+                ->leftJoin( 'user AS u', 'u.id', 'c2u.user_id' )
+                ->where( 'c2u.privs', User::AUTH_SUPERUSER )
+                ->where( 'u.disabled', false )
+                ->get();
             $to = [];
 
-            foreach( $users as $user ) {
-
-                /** @var UserEntity $user */
-                if( $user->getPreference( "customer-notes.notify" ) == "none" ) {
+            foreach( $c2us as $c2u ) {
+                $user = $c2u->user;/** @var $user User */
+                if( isset( $user->prefs[ 'notes' ][ 'global_notifs' ] ) && $user->prefs[ 'notes' ][ 'global_notifs' ] === 'none' ){
                     continue;
                 }
 
-                if( !$user->getEmail() || filter_var( $user->getEmail() , FILTER_VALIDATE_EMAIL ) === false ) {
+                if( !$user->email || filter_var( $user->email , FILTER_VALIDATE_EMAIL ) === false ) {
                     continue;
                 }
 
-                if( !$user->getPreference( "customer-notes.notify" ) || $user->getPreference( "customer-notes.notify" ) == "default" || $user->getPreference( "customer-notes.notify" ) == "all" ) {
-                    $to[] = [ 'name' => $user->getUsername(), 'email' => $user->getEmail() ];
+                if( !isset( $user->prefs[ 'notes' ][ 'global_notifs' ] ) || $user->prefs[ 'notes' ][ 'global_notifs' ] === 'default' || $user->prefs[ 'notes' ][ 'global_notifs' ] === 'all' ) {
+                    $to[] = [ 'name' => $user->username, 'email' => $user->email ];
                     continue;
                 }
 
-                // watching a whole customer: customer-notes.{customer id}.notify == 1
-                if( $user->getPreference( "customer-notes.{$e->getCustomer()->getId()}.notify" ) ) {
-                    $to[] = [ 'name' => $user->getUsername(), 'email' => $user->getEmail() ];
+                // watching a whole customer
+                if( isset( $user->prefs[ 'notes' ][ 'customer_watching' ][ $e->customer()->id ] ) ) {
+                    $to[] = [ 'name' => $user->username, 'email' => $user->email ];
                     continue;
                 }
 
                 // watching a specific note: customer-notes.watching.{note id}
-                if( $user->getPreference( "customer-notes.watching.{$e->getEitherNote()->getId()}" ) ) {
-                    $to[] = [ 'name' => $user->getUsername(), 'email' => $user->getEmail() ];
+                if( isset( $user->prefs[ 'notes' ][ 'note_watching' ][ $e->eitherNote()->id ] ) ) {
+                    $to[] = [ 'name' => $user->username, 'email' => $user->email ];
                     continue;
                 }
-
                 // so, skip this user then.
             }
         }
@@ -145,6 +170,5 @@ class EmailOnChange
         if( count( $to ) ) {
             Mail::to( $to )->send( new CustomerNoteChangedMailable( $e ) );
         }
-
     }
 }

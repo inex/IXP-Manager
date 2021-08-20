@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,13 +23,17 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Entities\{
-    BGPSessionData              as BGPSessionDataEntity,
-    Customer                    as CustomerEntity,
-    PeeringManager              as PeeringManagerEntity,
-    Vlan                        as VlanEntity
+use Auth, Former, Mail, Redirect;
+
+use IXP\Models\{
+    Aggregators\CustomerAggregator,
+    Customer,
+    PeeringManager,
+    User,
+    Vlan
 };
 
+use Exception;
 use Illuminate\Http\{
     RedirectResponse,
     JsonResponse
@@ -50,21 +54,20 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-use Auth, D2EM, DateTime, Former, Mail, Redirect;
-
 use IXP\Mail\PeeringManager\RequestPeeringManager;
 
 /**
  * PeeringManagerController Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   PatchPanel
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class PeeringManagerController extends Controller
 {
-
     /**
      * Display dashboard
      *
@@ -72,113 +75,96 @@ class PeeringManagerController extends Controller
      *
      * @throws
      */
-    public function index()
+    public function index(): View|RedirectResponse
     {
-
         if( config( 'ixp_fe.frontend.disabled.peering-manager', false ) ) {
             AlertContainer::push( 'The peering manager has been disabled.', Alert::DANGER );
             return Redirect::to('');
         }
 
-        $c      = Auth::getUser()->getCustomer();
-
-        $vlans  = D2EM::getRepository( VlanEntity::class )->getPeeringManagerVLANs();
-
         $protos = [ 4, 6 ];
+        $c      = Customer::find( Auth::getUser()->custid );
+        $vlans  = Vlan::peeringManager()->orderBy( 'number' )->get();
+        $peers  = CustomerAggregator::getPeeringManagerArrayByType( $c , $vlans, $protos ) ?? [];
 
-        $peers  = D2EM::getRepository( CustomerEntity::class )->getPeeringManagerArrayByType( $c, $vlans, $protos ) ?? false;
-
-        if( !$peers ) {
+        if( !count( $peers ) ) {
             AlertContainer::push( 'No peers have been found for the peering manager. Please see <a href="'
                 . 'https://github.com/inex/IXP-Manager/wiki/Peering-Manager">these instructions</a>'
                 . ' / ensure your database is populating with peering information.', Alert::DANGER );
-            return Redirect::to( '' );
+            return redirect( '' );
         }
 
-        /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'peering-manager/index' )->with([
-            'bilat'                         => $peers[ "bilat" ],
-            'vlans'                         => $vlans,
-            'protos'                        => $protos,
-            'peers'                         => $peers[ "peers" ],
-            'me'                            => $peers[ "me" ],
-            'c'                             => $c,
-            'custs'                         => $peers[ "custs" ],
-            'potential'                     => $peers[ "potential" ],
-            'potential_bilat'               => $peers[ "potential_bilat" ],
-            'peered'                        => $peers[ "peered" ],
-            'rejected'                      => $peers[ "rejected" ],
+            'bilat'             => $peers[ "bilat" ],
+            'vlans'             => $vlans,
+            'protos'            => $protos,
+            'peers'             => $peers[ "peers" ],
+            'me'                => $peers[ "me" ],
+            'c'                 => $c,
+            'custs'             => $peers[ "custs" ],
+            'potential'         => $peers[ "potential" ],
+            'potential_bilat'   => $peers[ "potential_bilat" ],
+            'peered'            => $peers[ "peered" ],
+            'rejected'          => $peers[ "rejected" ],
         ]);
     }
-
 
     /**
      * Display the form to send email
      *
-     * @param  Request    $request        instance of the current HTTP request
+     * @param  Request    $r        instance of the current HTTP request
      *
      * @return JsonResponse
      *
      * @throws
      */
-    public function formEmailFrag( Request $request )
+    public function formEmailFrag( Request $r ): JsonResponse
     {
         $success = true;
-        $pp = $peer = $peeringManager = null;
+        $pp = $peer = $peeringManager = false;
 
-        /** @var CustomerEntity $peer */
-        if( !( $peer = D2EM::getRepository( CustomerEntity::class )->find( $request->input("peerid") ) ) ){
+        if( !( $peer = Customer::find( $r->peerid ) ) ){
             $success = false;
-        } else {
+        } elseif( $r->form === "email" ) {
+            // potential peerings
+            $pp     = [];
+            $count  = 0;
+            $cust   = Customer::find( Auth::getUser()->custid );
 
-            if( $request->input( "form" ) == "email" ) {
-
-                // potential peerings
-                $pp = [];
-                $count = 0;
-                $cust = Auth::getUser()->getCustomer();
-
-                foreach( $cust->getVirtualInterfaces() as $myvis ) {
-                    foreach( $myvis->getVlanInterfaces() as $vli ) {
-                        // does b member have one (or more than one)?
-                        foreach( $peer->getVirtualInterfaces() as $pvis ) {
-                            foreach( $pvis->getVlanInterfaces() as $pvli ) {
-                                if( $vli->getVlan()->getId() == $pvli->getVlan()->getId() ) {
-                                    $pp[ $count ][ 'my' ] = $vli;
-                                    $pp[ $count ][ 'your' ] = $pvli;
-                                    $count++;
-                                }
+            foreach( $cust->virtualInterfaces as $myvis ) {
+                foreach( $myvis->vlanInterfaces as $vli ) {
+                    // does b member have one (or more than one)?
+                    foreach( $peer->virtualInterfaces as $pvis ) {
+                        foreach( $pvis->vlanInterfaces as $pvli ) {
+                            if( $vli->vlan->id === $pvli->vlan->id ) {
+                                $pp[ $count ][ 'my' ] = $vli;
+                                $pp[ $count ][ 'your' ] = $pvli;
+                                $count++;
                             }
                         }
                     }
                 }
-
-                //$f->getElement( 'message' )->setValue( $this->view->render( 'peering-manager/peering-request-message.phtml' ) );
-
-                Former::populate( [
-                    'to'             => $peer->getPeeringemail(),
-                    'cc'             => $cust->getPeeringemail(),
-                    'bcc'            => Auth::getUser()->getEmail(),
-                    'subject'        => "[" . config( "identity.orgname" ) . "] Peering Request from " . $cust->getName() . " (ASN" . $cust->getAutsys() . ")",
-                ] );
-
-            } else {
-                $peeringManager = $this->loadPeeringManager( Auth::getUser()->getCustomer(), $peer );
             }
 
+            Former::populate( [
+                'to'             => $peer->peeringemail,
+                'cc'             => $cust->peeringemail,
+                'bcc'            => User::find( Auth::id() )->email,
+                'subject'        => "[" . config( "identity.orgname" ) . "] Peering Request from " . $cust->name . " (ASN" . $cust->autsys . ")",
+            ] );
+        } else {
+            $peeringManager = $this->loadPeeringManager( Customer::find( Auth::getUser()->custid ), $peer );
         }
 
         $returnHTML = view('peering-manager/form-email')->with([
                 'peer'                  => $peer,
                 'pp'                    => $pp,
                 'peeringManager'        => $peeringManager,
-                'form'                  => $request->input("form") ?? "email",
+                'form'                  => $r->form ?? "email",
             ])->render();
-
 
         return response()->json( ['success' => $success, 'htmlFrag' => $returnHTML ] );
     }
-
 
     /**
      * @param PeeringManagerRequest $r
@@ -189,64 +175,51 @@ class PeeringManagerController extends Controller
      */
     public function sendPeeringEmail( PeeringManagerRequest $r ) : JsonResponse
     {
-
-        /** @var CustomerEntity $peer */
-        if( !( $peer = D2EM::getRepository( CustomerEntity::class )->find( $r->input( 'peerid' ) ) ) ){
-            abort( 404);
-        }
-
-        $mailable = new RequestPeeringManager( $peer, $r );
-
-
-        $marksent = $r->input( "input-marksent" );
-        $sendtome = $r->input( "input-sendtome" );
+        $peer       = Customer::findOrFail( $r->peerid );
+        $mailable   = new RequestPeeringManager( $peer, $r );
+        $marksent   = $r->marksent;
+        $sendtome   = $r->sendtome;
+        $user       = User::find( Auth::id() );
+        $cust       = Customer::find( Auth::getUser()->custid );
 
         try {
             if( !$marksent ){
                 $mailable->checkIfSendable( $sendtome );
             }
 
-        } catch( \Exception $e ) {
+        } catch( Exception $e ) {
             return response()->json( [ 'error' => true, "message" => $e->getMessage() ] );
         }
-
 
         if( !$marksent ) {
             Mail::send( $mailable );
         }
 
         if( !$sendtome ) {
-
             // get this customer/peer peering manager table entry
-            $pm = $this->loadPeeringManager( Auth::getUser()->getCustomer(), $peer );
+            $pm = $this->loadPeeringManager( $cust , $peer );
 
             if( !( config( "ixp.peering_manager.testmode" ) ) || config( "ixp.peering_manager.testdate" ) ) {
-                $pm->setEmailLastSent(          new DateTime() );
-                $pm->setEmailsSent(  $pm->getEmailsSent() + 1 );
-                $pm->setUpdated(                new DateTime() );
+                $pm->email_last_sent = now();
+                ++$pm->emails_sent;
             }
 
             if( !( config( "ixp.peering_manager.testmode" ) ) || config( "ixp.peering_manager.testnote" ) ) {
-                $pm->setNotes(
-                    '### ' . date( 'Y-m-d' ) . " - " .Auth::getUser()->getUsername() . "\n\nPeering request " . ( $r->input( "marksent" ) ? 'marked ' : '' ) . "sent\n\n" . $pm->getNotes()
-                );
+                $pm->notes = '### ' . date( 'Y-m-d' ) . " - " . $user->username . "\n\nPeering request " . ( $r->marksent ? 'marked ' : '' ) . "sent\n\n" . $pm->notes;
             }
 
-            D2EM::flush();
+            $pm->save();
         }
 
-
         if( $sendtome ){
-            $message = "Peering request sample sent to your own email address (" . Auth::getUser()->getEmail() . ").";
+            $message = "Peering request sample sent to your own email address (" . $user->email . ").";
         } else if( $marksent ) {
             $message = "Peering request marked as sent in your Peering Manager.";
         } else {
-            $message = "Peering request sent to ". $peer->getName() . " Peering Team.";
+            $message = "Peering request sent to ". $peer->name . " Peering Team.";
         }
 
-
         return response()->json( [ 'error' => false, "message" => $message ] );
-
     }
 
     /**
@@ -254,32 +227,22 @@ class PeeringManagerController extends Controller
      *
      * @param Request $r
      *
-     * @return PeeringManagerEntity
+     * @return JsonResponse
      *
      * @throws
      */
-    public function peeringNotes( Request $r )
+    public function peeringNotes( Request $r ): JsonResponse
     {
+        $peer   = Customer::findOrFail( $r->peerid );
+        $cust   = Customer::find( Auth::getUser()->custid );
+        $pm     = $this->loadPeeringManager( $cust , $peer );
 
-        /** @var CustomerEntity $peer */
-        if( !( $peer = D2EM::getRepository( CustomerEntity::class )->find( $r->input( 'peerid' ) ) ) ){
-            return response()->json( [ 'error' => true, "message" => "Peering manager unknown" ] );
+        if( trim( stripslashes( $r->notes ) ) ) {
+            $pm->notes = trim( stripslashes( $r->notes ) );
+            $pm->save();
         }
-
-        $pm = $this->loadPeeringManager( Auth::getUser()->getCustomer(), $peer );
-
-        $pm->setUpdated( new DateTime() );
-
-        if( trim( stripslashes( $r->input( 'notes' ) ) ) ) {
-            $pm->setNotes( trim( stripslashes( $r->input( 'notes' ) ) ) );
-        }
-
-        D2EM::flush();
-
-        return response()->json( [ 'error' => false, "message" => "Peering notes updated for " . $peer->getName() ] );
-
+        return response()->json( [ 'error' => false, "message" => "Peering notes updated for " . $peer->name ] );
     }
-
 
     /**
      * Mark the peering manager as "peered" or "rejected"
@@ -291,71 +254,63 @@ class PeeringManagerController extends Controller
      *
      * @throws
      */
-    public function markPeering( $custid, $status )
+    public function markPeering( int $custid, string $status ): RedirectResponse
     {
+        $peer   = Customer::findOrFail( $custid );
+        $pm     = $this->loadPeeringManager( Customer::find( Auth::getUser()->custid ), $peer );
 
-        /** @var CustomerEntity $peer */
-        if( !( $peer = D2EM::getRepository( CustomerEntity::class )->find( $custid ) ) ){
-            abort(404);
-        }
-
-        $pm = $this->loadPeeringManager( Auth::getUser()->getCustomer(), $peer );
-
-        if( $status == "peered" ) {
-            $pm->setPeered( $pm->getPeered() ? false : true );
-            if( $pm->getPeered() && $pm->getRejected() ){
-                $pm->setRejected( false );
+        if( $status === "peered" ) {
+            $pm->peered = !$pm->peered;
+            if( $pm->peered && $pm->rejected ){
+                $pm->rejected = false;
             }
         } else{
-            $pm->setRejected( $pm->getRejected() ? false : true );
-            if( $pm->getPeered() && $pm->getRejected() ){
-                $pm->setPeered( false );
+            $pm->rejected = !$pm->rejected;
+            if( $pm->peered && $pm->rejected ){
+                $pm->peered = false;
             }
-
         }
 
-        D2EM::flush();
+        $pm->save();
 
-        if( $status == "peered" ) {
-            AlertContainer::push( "Peered flag " . ( $pm->getPeered() ? 'set' : 'cleared' ) . " for " . $peer->getName() . "." , Alert::SUCCESS );
+        if( $status === "peered" ) {
+            AlertContainer::push( "Peered flag " . ( $pm->peered ? 'set' : 'cleared' ) . " for " . $peer->name . "." , Alert::SUCCESS );
         } else {
-            AlertContainer::push( "Ignored / rejected flag " . ( $pm->getRejected() ? 'set' : 'cleared' ) . " for "  . $peer->getName() . "." , Alert::SUCCESS );
+            AlertContainer::push( "Ignored / rejected flag " . ( $pm->rejected ? 'set' : 'cleared' ) . " for "  . $peer->name . "." , Alert::SUCCESS );
         }
-
 
         return Redirect::to( route( "peering-manager@index"  ) );
     }
 
-
     /**
      * Utility function to load a PeeringManager entity and initialise one if not found
      *
-     * @param CustomerEntity $cust
-     * @param CustomerEntity $peer
+     * @param Customer $cust
+     * @param Customer $peer
      *
-     * @return PeeringManagerEntity
+     * @return PeeringManager
      *
      * @throws
      */
-    private function loadPeeringManager( CustomerEntity $cust, CustomerEntity $peer )
+    private function loadPeeringManager( Customer $cust, Customer $peer ): PeeringManager
     {
+        $pm = PeeringManager::where( 'custid' , $cust->id )->where( 'peerid' , $peer->id )->first();
 
-        /** @var $pm PeeringManagerEntity */
-        if( !( $pm = D2EM::getRepository( PeeringManagerEntity::class )->findOneBy( [ 'Customer' => $cust, 'Peer' => $peer ] ) ) ) {
-            $pm = new PeeringManagerEntity;
-            D2EM::persist( $pm );
+        if( !$pm ){
+            $pm = PeeringManager::create(
+                [
+                    'note'      => '',
+                    'peered'    => false,
+                    'rejected'  => false,
+                ]
+            );
 
-            $pm->setCustomer(   $cust );
-            $pm->setPeer(       $peer );
-            $pm->setCreated(    new \DateTime );
-            $pm->setNotes(      '' );
-            $pm->setPeered(     false );
-            $pm->setRejected(   false );
-
-            D2EM::flush();
+            $pm->custid =   $cust->id;
+            $pm->peerid =   $peer->id;
+            $pm->save();
+            return $pm;
         }
 
         return $pm;
     }
-
 }

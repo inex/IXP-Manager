@@ -1,7 +1,9 @@
 <?php
 
+namespace IXP\Mail\Grapher;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,14 +23,11 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
-namespace IXP\Mail\Grapher;
-
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 /**
  * Mailable for port deltas
@@ -54,16 +53,19 @@ class TrafficDeltas extends Mailable
     public $stddev;
 
     /**
-     * @var DateTime
+     * @var Carbon
      */
     public $day;
 
     /**
      * Create a new message instance.
      *
-     * @return void
+     * @param array     $ports
+     * @param float     $stddev
+     * @param Carbon    $day
      */
-    public function __construct( array $ports, float $stddev, DateTime $day ) {
+    public function __construct( array $ports, float $stddev, Carbon $day )
+    {
         $this->ports    = $ports;
         $this->stddev   = $stddev;
         $this->day      = $day;
@@ -74,7 +76,7 @@ class TrafficDeltas extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): self
     {
         return $this->view('services.grapher.email.traffic-deltas')
             ->subject( env('IDENTITY_NAME') . " :: Traffic Deltas Report" );

@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,57 +23,57 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Redirect, Validator;
+use Former;
 
-use Entities\{
-    CustomerEquipment   as CustomerEquipmentEntity,
-    Cabinet             as CabinetEntity,
-    Customer            as CustomerEntity
+use IXP\Models\{
+    Cabinet,
+    Customer,
+    CustomerEquipment
 };
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
 
+use Illuminate\Database\Eloquent\Builder;
+
+use Illuminate\Http\{
+    Request,
+    RedirectResponse
+};
+
+use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
 /**
  * CustKit Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   VlanInterface
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers\ConsoleServer
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class CustKitController extends Doctrine2Frontend
+class CustKitController extends EloquentController
 {
     /**
-     * The object being added / edited
-     * @var CustomerEquipmentEntity
+     * The object being created / edited
+     *
+     * @var CustomerEquipment
      */
     protected $object = null;
 
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = (object)[
-            'entity'            => CustomerEquipmentEntity::class,
-
+            'model'             => CustomerEquipment::class,
             'pagetitle'         => 'Colocated Equipment',
-
             'titleSingular'     => 'Colocated Equipment',
             'nameSingular'      => 'colocated equipment',
-
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
-
             'viewFolderName'    => 'cust-kit',
-
             'listColumns'    => [
-
-                'id'        => [ 'title' => 'DB ID', 'display' => true ],
-
+                'id'        => [ 'title' => 'DB ID', 'display' => false ],
                 'name'      => 'Name',
-
                 'customer'  => [
                     'title'         => 'Customer',
                     'type'          => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -81,7 +81,6 @@ class CustKitController extends Doctrine2Frontend
                     'action'        => 'overview',
                     'idField'       => 'custid'
                 ],
-
                 'cabinet'  => [
                     'title'      => 'Rack',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -89,101 +88,139 @@ class CustKitController extends Doctrine2Frontend
                     'action'     => 'view',
                     'idField'    => 'cabinetid'
                 ],
-
             ]
         ];
 
         // display the same information in the view as the list
         $this->feParams->viewColumns = array_merge(
             $this->feParams->listColumns, [
-                'descr'      => 'Description'
-            ]
+                'descr'      => 'Description',
+                'created_at'       => [
+                    'title'         => 'Created',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ],
+                'updated_at'       => [
+                    'title'         => 'Updated',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ]
+
+            ],
+
+
         );
-
     }
-
-
 
     /**
      * Provide array of rows for the list and view
      *
-     * @param int $id The `id` of the row to load for `view`. `null` if `list`
+     * @param int|null $id The `id` of the row to load for `view`. `null` if `list`
+     *
      * @return array
      */
-    protected function listGetData( $id = null )
+    protected function listGetData( ?int $id = null ): array
     {
-        return D2EM::getRepository( CustomerEquipmentEntity::class)->getAllForFeList( $this->feParams, $id );
+        $feParams = $this->feParams;
+        return CustomerEquipment::select( [ 'custkit.*', 'cabinet.name AS cabinet', 'cust.name as customer' ] )
+            ->leftJoin( 'cabinet', 'cabinet.id', 'custkit.cabinetid' )
+            ->leftJoin( 'cust', 'cust.id', 'custkit.custid' )
+            ->when( $id , function( Builder $q, $id ) {
+                return $q->where('custkit.id', $id );
+            } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+            })->get()->toArray();
     }
-
 
     /**
-     * Display the form to add/edit an object
-     * @param   int $id ID of the row to edit
+     * Display the form to create an object
+     *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array
+    protected function createPrepareForm(): array
     {
-        if( $id ) {
-
-            if( !( $this->object = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $id ) ) ) {
-                abort(404);
-            }
-
-            Former::populate([
-                'name'          => request()->old( 'name',        $this->object->getName() ),
-                'custid'        => request()->old( 'custid',      $this->object->getCustomer()->getId() ),
-                'cabinetid'     => request()->old( 'cabinetid',   $this->object->getCabinet()->getId() ),
-                'descr'         => request()->old( 'descr',       $this->object->getDescr() ),
-            ]);
-        }
-
         return [
             'object'        => $this->object ,
-            'cabinets'      => D2EM::getRepository( CabinetEntity::class    )->getAsArray(),
-            'custs'         => D2EM::getRepository( CustomerEntity::class   )->getAsArray(),
+            'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
+                ->orderBy( 'name' )->get(),
+            'custs'         => Customer::orderBy( 'name' )->get(),
         ];
     }
-
 
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param Request $r
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doStore( Request $request )
+    public function doStore( Request $r )
     {
+        $this->checkForm( $r );
+        $this->object = CustomerEquipment::make( $r->all() );
+        $this->object->custid = $r->custid;
+        $this->object->save();
+        return true;
+    }
 
-        $validator = Validator::make( $request->all(), [
-            'name'                  => 'required|string|max:255',
-            'custid'                => 'required|integer|exists:Entities\Customer,id',
-            'cabinetid'             => 'required|integer|exists:Entities\Cabinet,id',
-            'descr'                 => 'nullable|string|max:255',
+    /**
+     * Display the form to edit an object
+     *
+     * @param   int $id ID of the row to edit
+     *
+     * @return array
+     */
+    protected function editPrepareForm( int $id ): array
+    {
+        $this->object = CustomerEquipment::findOrFail( $id );
+
+        Former::populate([
+            'name'          => request()->old( 'name',        $this->object->name       ),
+            'custid'        => request()->old( 'custid',      $this->object->custid     ),
+            'cabinetid'     => request()->old( 'cabinetid',   $this->object->cabinetid  ),
+            'descr'         => request()->old( 'descr',       $this->object->descr      ),
         ]);
 
-        if( $validator->fails() ) {
-            return Redirect::back()->withErrors($validator)->withInput();
-        }
+        return [
+            'object'        => $this->object ,
+            'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
+                ->orderBy( 'name')->get(),
+            'custs'         => Customer::orderBy( 'name' )->get(),
+        ];
+    }
 
-        if( $request->input( 'id', false ) ) {
-            if( !( $this->object = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404);
-            }
-        } else {
-            $this->object = new CustomerEquipmentEntity;
-            D2EM::persist( $this->object );
-        }
-
-        $this->object->setName(     $request->input( 'name' ) );
-        $this->object->setCabinet(  D2EM::getRepository( CabinetEntity::class  )->find( $request->input( 'cabinetid'    ) ) );
-        $this->object->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid'       ) ) );
-        $this->object->setDescr(    $request->input( 'descr' ) );
-
-        D2EM::flush();
-
+    /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request   $r
+     * @param int       $id
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doUpdate( Request $r, int $id )
+    {
+        $this->object = CustomerEquipment::findOrFail( $id );
+        $this->checkForm( $r );
+        $this->object->fill( $r->all() );
+        $this->object->custid = $r->custid;
+        $this->object->save();
         return true;
+    }
+
+    /**
+     * Check if the form is valid
+     *
+     * @param $r
+     */
+    public function checkForm( Request $r ): void
+    {
+        $r->validate( [
+            'name'                  => 'required|string|max:255',
+            'custid'                => 'required|integer|exists:cust,id',
+            'cabinetid'             => 'required|integer|exists:cabinet,id',
+            'descr'                 => 'nullable|string|max:255',
+        ] );
     }
 }

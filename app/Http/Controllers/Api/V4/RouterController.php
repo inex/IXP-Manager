@@ -1,10 +1,9 @@
 <?php
 
-declare(strict_types=1);
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -24,6 +23,10 @@ namespace IXP\Http\Controllers\Api\V4;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Carbon\Carbon;
+
+use IXP\Models\Router;
+
 use IXP\Tasks\Router\ConfigurationGenerator as RouterConfigurationGenerator;
 
 use Illuminate\Http\{
@@ -31,34 +34,32 @@ use Illuminate\Http\{
     Response
 };
 
-use Entities\{
-    Router as RouterEntity
-};
-
-use Carbon\Carbon;
-
-use Auth, D2EM;
-
 /**
  * RouterController
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   APIv4
  * @package    IXP\Http\Controllers\Api\V4
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class RouterController extends Controller {
-
+class RouterController extends Controller
+{
     /**
      * Generate a configuration.
      *
      * This just takes one argument: the router handle to generate the configuration for.
      *
+     * @param string $handle
+     *
      * @return Response
+     *
+     * @throws
      */
-    public function genConfig( string $handle ): Response {
-        if( !( $router = D2EM::getRepository( RouterEntity::class )->findOneBy( [ 'handle' => $handle ] ) ) ) {
+    public function genConfig( string $handle ): Response
+    {
+        if( !( $router = Router::whereHandle( $handle )->first() ) ) {
             abort( 404, "Unknown router handle" );
         }
 
@@ -66,23 +67,6 @@ class RouterController extends Controller {
 
         return response( $configView->render(), 200 )
                 ->header('Content-Type', 'text/plain; charset=utf-8');
-    }
-
-    /**
-     * Set `last_updated` to the current datetime (now)
-     *
-     * @param string $handle Handle of the router that we want
-     * @return JsonResponse
-     */
-    public function setLastUpdated( string $handle ) : JsonResponse {
-        if( !( $rt = D2EM::getRepository( RouterEntity::class )->findOneBy( [ 'handle' => $handle ] ) ) ) {
-            abort( 404, "Unknown router handle" );
-        }
-
-        $rt->setLastUpdated(new \DateTime);
-        D2EM::flush();
-
-        return response()->json( $this->getLastUpdatedArray( $rt ) );
     }
 
     /**
@@ -96,15 +80,34 @@ class RouterController extends Controller {
      *     ]
      *
      * @param string $handle Handle of the router that we want
+     *
      * @return JsonResponse
      */
-    public function getLastUpdated( string $handle ) : JsonResponse {
-        /** @var RouterEntity $rt */
-        if( !( $rt = D2EM::getRepository( RouterEntity::class )->findOneBy( [ 'handle' => $handle ] ) ) ) {
+    public function getLastUpdated( string $handle ) : JsonResponse
+    {
+        if( !( $r = Router::whereHandle( $handle )->first() ) ) {
             abort( 404, "Unknown router handle" );
         }
 
-        return response()->json( $this->getLastUpdatedArray( $rt ) );
+        return response()->json( $this->lastUpdatedArray( $r ) );
+    }
+
+    /**
+     * Set `last_updated` to the current datetime (now)
+     *
+     * @param string $handle Handle of the router that we want
+     *
+     * @return JsonResponse
+     */
+    public function setLastUpdated( string $handle ): JsonResponse
+    {
+        if( !( $r = Router::whereHandle( $handle )->first() ) ) {
+            abort( 404, "Unknown router handle" );
+        }
+
+        $r->update( [ 'last_updated' => now() ] );
+
+        return response()->json( $this->lastUpdatedArray( $r ) );
     }
 
     /**
@@ -122,15 +125,12 @@ class RouterController extends Controller {
      *
      * @return JsonResponse
      */
-    public function getAllLastUpdated() : JsonResponse {
-        $routers = D2EM::getRepository( RouterEntity::class )->findAll();
+    public function getAllLastUpdated(): JsonResponse
+    {
         $result = [];
-
-        /** @var RouterEntity $rt */
-        foreach( $routers as $rt ) {
-            $result[ $rt->getHandle() ] = $this->getLastUpdatedArray( $rt );
+        foreach( Router::all() as $r ) {
+            $result[ $r->handle ] = $this->lastUpdatedArray( $r );
         }
-
         return response()->json( $result );
     }
 
@@ -147,32 +147,34 @@ class RouterController extends Controller {
      *          ...
      *     ]
      *
+     * @param int $threshold
+     *
      * @return JsonResponse
      */
-    public function getAllLastUpdatedBefore( int $threshold ) : JsonResponse {
-        $routers = D2EM::getRepository( RouterEntity::class )->findAll();
+    public function getAllLastUpdatedBefore( int $threshold ): JsonResponse
+    {
         $result = [];
-
-        /** @var RouterEntity $rt */
-        foreach( $routers as $rt ) {
-            if( $rt->getLastUpdated() && $rt->lastUpdatedGreaterThanSeconds( $threshold ) ) {
-                $result[ $rt->getHandle() ] = $this->getLastUpdatedArray( $rt );
+        foreach( Router::all() as $r ) {
+            if( $r->last_updated && $r->lastUpdatedGreaterThanSeconds( $threshold ) ) {
+                $result[ $r->handle ] = $this->lastUpdatedArray( $r );
             }
         }
 
         return response()->json( $result );
     }
 
-
     /**
      * Format the router's last updated datetime as an array
-     * @param RouterEntity $r
+     *
+     * @param Router $r
+     *
      * @return array
      */
-    private function getLastUpdatedArray( RouterEntity $rt ) {
+    private function lastUpdatedArray( Router $r ): array
+    {
         return [
-            'last_updated'      => $rt->getLastUpdated() ? $rt->getLastUpdatedCarbon()->toIso8601String() : null,
-            'last_updated_unix' => $rt->getLastUpdated() ? $rt->getLastUpdatedCarbon()->timestamp : null,
+            'last_updated'      => $r->last_updated ? $r->last_updated->toIso8601String() : null,
+            'last_updated_unix' => $r->last_updated ? $r->last_updated->timestamp : null,
         ];
     }
 }

@@ -37,7 +37,7 @@
 # Generated: <?= date('Y-m-d H:i:s') . "\n" ?>
 #
 
-# For VLAN: <?= $t->vlan->getName() ?> (Tag: <?= $t->vlan->getNumber() ?>, Database ID: <?= $t->vlan->getId() ?>)
+# For VLAN: <?= $t->vlan->name ?> (Tag: <?= $t->vlan->number ?>, Database ID: <?= $t->vlan->id ?>)
 
 # standardise time formats:
 timeformat base         iso long;
@@ -49,10 +49,10 @@ timeformat route        iso long;
 log "/var/log/bird/<?= $t->handle ?>.log" all;
 log syslog all;
 
-define routerasn     = <?= $t->router->asn()        ?>;
-define routeraddress = <?= $t->router->peeringIp() ?>;
+define routerasn     = <?= $t->router->asn        ?>;
+define routeraddress = <?= $t->router->peering_ip ?>;
 
-router id <?= $t->router->routerId() ?>;
+router id <?= $t->router->router_id ?>;
 listen bgp address routeraddress;
 
 # ignore interface up/down events
@@ -61,7 +61,7 @@ protocol device { }
 # These function excludes weird networks
 #  rfc1918, class D, class E, too long and too short prefixes
 
-<?php if( $t->router->protocol() == 4 ): ?>
+<?php if( $t->router->protocol == 4 ): ?>
 
 function avoid_martians_v4()
 prefix set martiansv4;

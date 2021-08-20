@@ -23,11 +23,14 @@ namespace IXP\Tasks\Irrdb;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use D2EM;
 use Log;
 
-use IXP\Rules\{IPv4Cidr as ValidateIPv4Cidr, IPv6Cidr as ValidateIPv6Cidr};
+use IXP\Models\IrrdbPrefix;
+
+use IXP\Rules\{
+    IPv4Cidr as ValidateIPv4Cidr,
+    IPv6Cidr as ValidateIPv6Cidr
+};
 
 /**
  * UpdatePrefixDb
@@ -43,17 +46,18 @@ class UpdatePrefixDb extends UpdateDb
     /**
      * Update the prefix database
      *
-     * @throws \IXP\Exceptions\Services\Grapher\GeneralException
      * @return array
+     *
+     * @throws
      */
-    public function update(): array {
-
+    public function update(): array
+    {
         foreach( $this->protocols() as $protocol ) {
-            if( $this->customer()->isRouteServerClient( $protocol ) && $this->customer()->isIrrdbFiltered() ) {
-                $this->bgpq3()->setSources( $this->customer()->getIRRDB()->getSource() );
+            if( $this->customer()->irrdbConfig && $this->customer()->routeServerClient( $protocol ) && $this->customer()->irrdbFiltered() ) {
+                $this->bgpq3()->setSources( $this->customer()->irrdbConfig->source );
 
                 $this->startTimer();
-                $prefixes = $this->bgpq3()->getPrefixList( $this->customer()->resolveAsMacro( $protocol, 'as' ), $protocol );
+                $prefixes = $this->bgpq3()->getPrefixList( $this->customer()->asMacro( $protocol, 'as' ), $protocol );
                 $this->result[ 'netTime' ] += $this->timeElapsed();
 
                 $this->result[ 'v' . $protocol ][ 'count' ] = count( $prefixes );
@@ -65,9 +69,9 @@ class UpdatePrefixDb extends UpdateDb
                 // This customer is not appropriate for IRRDB filtering.
                 // Delete any pre-existing entries just in case this has changed recently:
                 $this->startTimer();
-                D2EM::getConnection()->executeUpdate(
-                    "DELETE FROM `irrdb_prefix` WHERE customer_id = ? AND protocol = ?", [ $this->customer()->getId(), $protocol ]
-                );
+                IrrdbPrefix::whereCustomerId( $this->customer()->id )
+                    ->whereProtocol( $protocol )->delete();
+
                 $this->result[ 'dbTime' ] += $this->timeElapsed();
                 $this->result[ 'v' . $protocol ][ 'dbUpdated' ] = true;
                 $this->result[ 'msg' ] = "Customer not a RS client or IRRDB filtered for IPv{$protocol}. IPv{$protocol} prefixes, if any, wiped from database.";
@@ -84,10 +88,12 @@ class UpdatePrefixDb extends UpdateDb
      *
      * @param array $prefixes Prefixes in CIDR notation
      * @param int $protocol Either 4/6
+     *
      * @return array Valid prefixes
      */
-    protected function validate( array $prefixes, int $protocol ): array {
-        if( $protocol == 4 ) {
+    protected function validate( array $prefixes, int $protocol ): array
+    {
+        if( $protocol === 4 ) {
             $validator = new ValidateIPv4Cidr;
         } else {
             $validator = new ValidateIPv6Cidr;

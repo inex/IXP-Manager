@@ -25,21 +25,21 @@
 #####################################################################################################################
 
 <?php
-    foreach( $t->data['infras'] as $infraid => $infra ):
+    foreach( $t->data[ 'infras' ] as $infraid => $infra ):
 
-        if( !isset( $t->data['infraports'][$infra->getId()] ) ):
+        if( !isset( $t->data[ 'infraports' ][ $infra->id ] ) ):
             continue;
         endif;
 
         echo $t->insert(
             "services/grapher/mrtg/target", [
                 'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
-                'mrtgPrefix'   => sprintf( "ixp%03d-infra%03d", $t->ixp->getId(), $infra->getId() ),
-                'portIds'      => $t->data['infraports'][$infra->getId()],
+                'mrtgPrefix'   => sprintf( "ixp%03d-infra%03d", 1, $infra->id ),
+                'portIds'      => $t->data['infraports'][ $infra->id ],
                 'data'         => $t->data,
-                'graphTitle'   => sprintf( config('identity.orgname') . " %%s / second on %s", $infra->getName() ),
+                'graphTitle'   => sprintf( config('identity.orgname') . " %%s / second on %s", $infra->name ),
                 'directory'    => sprintf( "infras/%03d", $infraid ),
-                'maxbytes'     => $t->data['infraports_maxbytes'][$infraid],
+                'maxbytes'     => $t->data['infraports_maxbytes'][ $infraid ],
             ]
         );
 
@@ -52,7 +52,7 @@
         echo $t->insert(
             "services/grapher/mrtg/target", [
                 'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
-                'mrtgPrefix'   => sprintf( "ixp%03d", $t->ixp->getId() ),
+                'mrtgPrefix'   => sprintf( "ixp%03d", 1 ),
                 'portIds'      => $t->data['ixpports'],
                 'data'         => $t->data,
                 'graphTitle'   => sprintf( config('identity.orgname') . " - %%s / second" ),

@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,13 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth;
-use Cache, D2EM;
-
-use Entities\{
-    IrrdbAsn    as IrrdbAsnEntity,
-    IrrdbPrefix as IrrdbPrefixEntity
-};
+use Auth, Cache;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -38,17 +32,19 @@ use IXP\Jobs\UpdateIrrdb;
 
 use IXP\Http\Requests\Irrdb as IrrdbRequest;
 
-use IXP\Models\Customer as CustomerModel;
-
+use IXP\Models\{
+    Aggregators\IrrdbAggregator,
+    Customer
+};
 
 /**
- * PatchPanel Controller
+ * Irrdb Controller
  *
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- *
- * @category   PatchPanel
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   IXP
+ * @package    IXP\Http\Controllers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class IrrdbController extends Controller
@@ -57,62 +53,57 @@ class IrrdbController extends Controller
      * Display the list of IRRDB (ASN/Prefix), (IPv4/IPv6) for a customer
      *
      * @param IrrdbRequest      $r
-     * @param CustomerModel     $customer
+     * @param Customer          $cust
      * @param String            $type
-     * @param Integer           $protocol
+     * @param int               $protocol
      *
      * @return View
      */
-    public function list( IrrdbRequest $r, CustomerModel $customer, $type, $protocol ) : View
+    public function list( IrrdbRequest $r, Customer $cust, string $type, int $protocol ) : View
     {
-        $entity = $type == "asn" ? IrrdbAsnEntity::class : IrrdbPrefixEntity::class;
-
-        /** @var  $entity IrrdbAsnEntity::class|IrrdbPrefixEntity::class */
-        $irrdbList = D2EM::getRepository( $entity )->getForCustomerAndProtocol( $customer->getDoctrineObject(), $protocol );
+        $irrdbList = IrrdbAggregator::forCustomerAndProtocol( $cust->id, $protocol, $type );
 
         // are we busting the cache?
-        if( Auth::user()->isSuperUser() && $r->input( "reset_cache" ) === "1" ) {
-            Cache::forget('updated-irrdb-' . $type . '-' . $customer->id );
+        if( $r->reset_cache === "1"  && Auth::getUser()->isSuperUser() ) {
+            Cache::forget('updated-irrdb-' . $type . '-' . $cust->id );
         }
 
         return view( 'irrdb/list' )->with([
             'irrdbList'         => $irrdbList,
             'type'              => $type,
-            'customer'          => $customer,
+            'customer'          => $cust,
             'protocol'          => $protocol,
-            'updatingIrrdb'     => Cache::get( 'updating-irrdb-' . $type . '-' . $protocol . '-' . $customer->id, false ),
-            'updatedIrrdb'      => Cache::get( 'updated-irrdb-'  . $type . '-' . $protocol . '-' . $customer->id, false ),
+            'updatingIrrdb'     => Cache::get( 'updating-irrdb-' . $type . '-' . $protocol . '-' . $cust->id, false ),
+            'updatedIrrdb'      => Cache::get( 'updated-irrdb-'  . $type . '-' . $protocol . '-' . $cust->id, false ),
         ]);
-
     }
 
     /**
      * Update the list of IRRDB (ASN/Prefix) for a customer
      *
-     * @param IrrdbRequest $r
-     * @param CustomerModel $customer
-     * @param String $type
-     * @param Integer $protocol
+     * @param IrrdbRequest      $r
+     * @param Customer          $cust
+     * @param String            $type
+     * @param int               $protocol
      *
      * @return RedirectResponse
      */
-    public function update( IrrdbRequest $r, CustomerModel $customer, $type, $protocol ) : RedirectResponse
+    public function update( IrrdbRequest $r, Customer $cust, string $type, int $protocol ) : RedirectResponse
     {
         // are we busting the cache?
-        if( Auth::user()->isSuperUser() && $r->reset_cache === "1" ) {
-            Cache::forget('updated-irrdb-' . $type . '-' . $protocol . '-' . $customer->id );
+        if( $r->reset_cache === "1" && Auth::getUser()->isSuperUser() ) {
+            Cache::forget('updated-irrdb-' . $type . '-' . $protocol . '-' . $cust->id );
         }
 
         // get the status of the irrdb update function
-        $updatedIrrdb = Cache::get( 'updated-irrdb-' . $type . '-' . $protocol . '-' . $customer->id, false );
+        $updatedIrrdb = Cache::get( 'updated-irrdb-' . $type . '-' . $protocol . '-' . $cust->id, false );
 
         if( $updatedIrrdb === false ) {
             // no cached result so schedule a job to gather them:
-            Cache::put( 'updating-irrdb-' . $type . '-' . $protocol . '-' . $customer->id, true, 3600 );
-            UpdateIrrdb::dispatch( $customer, $type, $protocol );
+            Cache::put( 'updating-irrdb-' . $type . '-' . $protocol . '-' . $cust->id, true, 3600 );
+            UpdateIrrdb::dispatch( $cust, $type, $protocol );
         }
 
-        return redirect( route( "irrdb@list", [ "customer" => $customer->id, "type" => $type , "protocol" => $protocol ] )  );
+        return redirect( route( "irrdb@list", [ "cust" => $cust->id, "type" => $type , "protocol" => $protocol ] )  );
     }
-
 }

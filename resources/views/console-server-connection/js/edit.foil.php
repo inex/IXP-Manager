@@ -13,10 +13,6 @@
      * display or hide the autobaud area
      */
     cb_autobaud.change( function(){
-        if( this.checked ){
-            div_autobaud.slideUp();
-        } else {
-            div_autobaud.slideDown();
-        }
+        this.checked ? div_autobaud.slideUp() : div_autobaud.slideDown();
     });
 </script>

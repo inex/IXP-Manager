@@ -1,23 +1,22 @@
 <?php
     /** @var Foil\Template\Template $t */
-
-    $this->layout( 'layouts/ixpv4' )
+    $this->layout( 'layouts/ixpv4' );
+    $pp = $t->pp; /** @var $pp \IXP\Models\PatchPanel */
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Patch Panels / View : <?= $t->pp->getId().' '. $t->ee( $t->pp->getName() )?>
+    Patch Panels / View : <?= $pp->id.' '. $t->ee( $pp->name )?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-white" href="<?= route('patch-panel/list' ) ?>" title="Patch panel list">
+        <a class="btn btn-white" href="<?= route('patch-panel@list' ) ?>" title="Patch panel list">
             <i class="fa fa-th-list"></i>
         </a>
-        <a class="btn btn-white" href="<?= route ('patch-panel/edit' , [ 'id' => $t->pp->getId() ] ) ?>" title="Edit">
+        <a class="btn btn-white" href="<?= route ('patch-panel@edit' , [ 'pp' => $pp->id ] ) ?>" title="Edit">
             <i class="fa fa-pencil"></i>
         </a>
-        <a class="btn btn-white" href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'ppid' => $t->pp->getId() ]  ) ?>" title="Ports list">
+        <a class="btn btn-white" href="<?= route('patch-panel-port@list-for-patch-panel' ,  [ 'pp' => $pp->id ]  ) ?>" title="Ports list">
             <i class="fa fa-th"></i>
         </a>
     </div>
@@ -26,12 +25,18 @@
 
 <?php $this->section( 'content' ) ?>
     <div class="row">
-
         <div class="col-sm-12">
-
             <div class="card">
-                <div class="card-header">
-                    Informations
+                <div class="card-header tw-flex">
+                    <div class="mr-auto">
+                        Details
+                    </div>
+
+                    <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\PatchPanel::class, 'logSubject') ): ?>
+                        <a class="btn btn-white btn-sm" href="<?= route( 'log@list', [ 'model' => 'PatchPanel' , 'model_id' => $pp->id ] ) ?>">
+                            View logs
+                        </a>
+                    <?php endif; ?>
                 </div>
                 <div class="card-body row">
                     <div class="col-lg-6 col-md-12">
@@ -43,8 +48,8 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <a href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'ppid' => $t->pp->getId() ]  ) ?>">
-                                        <?= $t->ee( $t->pp->getName() ) ?>
+                                    <a href="<?= route('patch-panel-port@list-for-patch-panel' ,  [ 'pp' => $pp->id ]  ) ?>">
+                                        <?= $t->ee( $pp->name ) ?>
                                     </a>
                                 </td>
                             </tr>
@@ -55,7 +60,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $t->ee( $t->pp->getColoReference() )?>
+                                    <?= $t->ee( $pp->colo_reference )?>
                                 </td>
                             </tr>
                             <tr>
@@ -65,8 +70,8 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <a href="<?= route( 'rack@view', [ 'id' => $t->pp->getCabinet()->getId() ] ) ?>">
-                                        <?= $t->ee( $t->pp->getCabinet()->getName() ) ?>
+                                    <a href="<?= route( 'rack@view', [ 'id' => $pp->cabinet_id ] ) ?>">
+                                        <?= $t->ee( $pp->cabinet->name ) ?>
                                     </a>
                                 </td>
                             </tr>
@@ -77,7 +82,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $t->pp->resolveCableType() ?>
+                                    <?= $pp->cableType() ?>
                                 </td>
                             </tr>
                             <tr>
@@ -87,7 +92,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $t->pp->resolveConnectorType()?>
+                                    <?= $pp->connectorType()?>
                                 </td>
                             </tr>
                             <tr>
@@ -97,20 +102,27 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <a href="<?= route ( 'patch-panel-port/list/patch-panel' , [ 'ppid' => $t->pp->getId() ] ) ?>">
-                                    <span title="" class="badge badge-<?= $t->pp->getCssClassPortCount() ?>">
-                                            <?php if( $t->pp->hasDuplexPort() ): ?>
-                                                <?= $t->pp->getAvailableOnTotalPort(true) ?>
+                                    <?php
+                                        $duplex                     = $pp->hasDuplexPort();
+                                        $availableForUsePortCount   = $pp->availableForUsePortCount();
+                                        $portCount                  = $pp->patchPanelPorts->count();
+                                        $totalDivide                = $pp->availableOnTotalPort( $availableForUsePortCount, $portCount,true );
+                                        $total                      = $pp->availableOnTotalPort( $availableForUsePortCount, $portCount,false );
+                                    ?>
+                                    <a href="<?= route ( 'patch-panel-port@list-for-patch-panel' , [ 'pp' => $pp->id ] ) ?>">
+                                    <span title="" class="badge badge-<?= $pp->cssClassPortCount( $portCount, $availableForUsePortCount ) ?>">
+                                            <?php if( $duplex ): ?>
+                                                <?= $totalDivide ?>
                                             <?php else: ?>
-                                                <?= $t->pp->getAvailableOnTotalPort(false) ?>
+                                                <?= $total ?>
                                             <?php endif; ?>
                                         </span>
 
-                                        <?php if( $t->pp->hasDuplexPort() ): ?>
+                                        <?php if( $duplex ): ?>
                                             &nbsp;
                                             <span class="badge badge-info">
-                                            <?= $t->pp->getAvailableOnTotalPort(false) ?>
-                                        </span>
+                                                <?= $total ?>
+                                            </span>
                                         <?php endif; ?>
                                     </a>
                                 </td>
@@ -122,7 +134,27 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $t->pp->resolveChargeable() ?> <em>(default for ports)</em>
+                                    <?= $pp->chargeable() ?> <em>(default for ports)</em>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>
+                                        Created:
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $pp->created_at ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>
+                                        Updated:
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $pp->updated_at ?>
                                 </td>
                             </tr>
                         </table>
@@ -137,7 +169,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $t->pp->getInstallationDate() ? $t->pp->getInstallationDate()->format('Y-m-d') : 'Unknown' ?>
+                                    <?= $pp->installation_date ?? 'Unknown' ?>
                                 </td>
                             </tr>
                             <tr>
@@ -147,7 +179,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $t->pp->getActive() ? 'Yes' : 'No' ?>
+                                    <?= $pp->active ? 'Yes' : 'No' ?>
                                 </td>
                             </tr>
                             <tr>
@@ -157,7 +189,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $t->pp->resolveMountedAt() ?>
+                                    <?= $pp->mountedAt() ?>
                                 </td>
                             </tr>
                             <tr>
@@ -167,7 +199,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $t->pp->getUPosition() ?>
+                                    <?= $pp->u_position ?>
                                 </td>
                             </tr>
                             <tr>
@@ -177,7 +209,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= @parsedown( $t->ee( $t->pp->getLocationDescription() ) ) ?>
+                                    <?= @parsedown( $t->ee( $pp->locationDescription() ) ) ?>
                                 </td>
                             </tr>
                             <tr>
@@ -187,7 +219,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= @parsedown( $t->ee( $t->pp->getLocationNotes() ) ) ?>
+                                    <?= @parsedown( $t->ee( $pp->location_notes ) ) ?>
                                 </td>
                             </tr>
                         </table>

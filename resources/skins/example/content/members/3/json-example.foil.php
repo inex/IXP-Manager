@@ -3,58 +3,54 @@
 
 $data = [];
 
-/** @var Entities\Customer $c */
+/** @var \IXP\Models\Customer $c */
 foreach( $t->customers as $c ) {
+    $data[ $c->id ]['type']           = $c->type;
+    $data[ $c->id ]['corpwww']        = $c->corpwww;
+    $data[ $c->id ]['name']           = $c->name;
+    $data[ $c->id ]['autsys']         = $c->autsys;
+    $data[ $c->id ]['peeringpolicy']  = $c->peeringpolicy;
 
-    $data[ $c->getId() ]['type']           = $c->getType();
-    $data[ $c->getId() ]['corpwww']        = $c->getCorpwww();
-    $data[ $c->getId() ]['name']           = $c->getName();
-    $data[ $c->getId() ]['autsys']         = $c->getAutsys();
-    $data[ $c->getId() ]['peeringpolicy']  = $c->getPeeringpolicy();
-
-    $data[ $c->getId() ]['routeserver']    = 'No';
-    $data[ $c->getId() ]['ipv6']           = 'No';
-    $data[ $c->getId() ]['ports']          = '';
-    $data[ $c->getId() ]['numberofports']  = 0;
-    $data[ $c->getId() ]['joined']         = $c->getDatejoin()->format( 'Y-m-d' );
+    $data[ $c->id ]['routeserver']    = 'No';
+    $data[ $c->id ]['ipv6']           = 'No';
+    $data[ $c->id ]['ports']          = '';
+    $data[ $c->id ]['numberofports']  = 0;
+    $data[ $c->id ]['joined']         = \Carbon\Carbon::parse( $c->datejoin )->format( 'Y-m-d' );
 
     $first = true;
-    foreach( $c->getVirtualInterfaces() as $vi ) {
-
-        $pis = $vi->getPhysicalInterfaces();
+    foreach( $c->virtualInterfaces as $vi ) {
+        $pis = $vi->physicalInterfaces;
 
         if( !count( $pis ) ) {
             continue;
         }
 
-        $data[ $c->getId() ]['numberofports'] = $data[ $c->getId() ]['numberofports'] + count( $pis );
+        $data[ $c->id ]['numberofports'] = $data[ $c->id ]['numberofports'] + count( $pis );
 
         $pi = $pis[0];
 
         if( !$first ) {
-            $data[ $c->getId() ]['ports'] .= ' + ';
+            $data[ $c->id ]['ports'] .= ' + ';
         }
 
         if( count( $pis ) > 1 ) {
-            $data[ $c->getId() ]['ports'] .= $data[ $c->getId() ]['ports'] . count( $pis ) . '*';
+            $data[ $c->id ]['ports'] .= $data[ $c->id ]['ports'] . count( $pis ) . '*';
         }
 
-        $data[ $c->getId() ]['ports'] .= $pi->resolveSpeed();
+        $data[ $c->id ]['ports'] .= $pi->speed();
 
         $first = false;
 
-        foreach( $vi->getVlanInterfaces() as $vli ) {
-            if( $vli->getRsclient() ) {
-                $data[ $c->getId() ]['routeserver'] = 'Yes';
+        foreach( $vi->vlanInterfaces as $vli ) {
+            if( $vli->rsclient ) {
+                $data[ $c->id ]['routeserver'] = 'Yes';
             }
 
-            if( $vli->getIpv6enabled() ) {
-                $data[ $c->getId() ][ 'ipv6' ] = 'Yes';
-
+            if( $vli->ipv6enabled ) {
+                $data[ $c->id ][ 'ipv6' ] = 'Yes';
             }
         }
     }
-
 }
 
 echo json_encode( $data, JSON_PRETTY_PRINT );

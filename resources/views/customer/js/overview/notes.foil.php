@@ -1,10 +1,180 @@
 <script>
+    //////////////////////////////////////////////////////////////////////////////////////
+    // we'll need these handles to html elements in a few places:
+    const table = $('.table-note' );
 
-    function coNotesOpenDialog() {
-        $( "#co-notes-dialog" ).modal();
+
+    $(document).ready(function(){
+        table.dataTable( {
+            stateSave: true,
+            stateDuration : DATATABLE_STATE_DURATION,
+            responsive: true,
+            ordering: false,
+            searching: false,
+            paging:   false,
+            info:   false,
+            columnDefs: [
+                { responsivePriority: 1, targets: 0 },
+                { responsivePriority: 2, targets: -1 }
+            ]
+        } ).show();
+
+        <?php if( $t->isSuperUser ): ?>
+            $( '.btn-create-note' ).click( function( e ){
+                e.preventDefault();
+                $( "#co-notes-dialog-title-action" ).html( 'Create a' );
+                $( "#co-notes-fadd" ).html( 'Create' );
+                $( "#co-notes-dialog-date" ).html( '' );
+                $( "#notes-dialog-noteid" ).val( '0' );
+                coNotesClearDialog();
+                $( "#co-notes-dialog" ).modal();
+            });
+
+            $( "#co-notes-add-link" ).click( function( e ){
+                e.preventDefault();
+                $( "#btn-create-note" ).trigger( 'click' );
+            });
+
+            $( "#co-notes-fpublic" ).on( "click", function() {
+                coNotesPublicCheckbox();
+            });
+
+            $( "#co-notes-fadd" ).click( coNotesSubmitDialog );
+
+            $( '#co-notes-form' ).on( 'submit', function( event ) {
+                event.preventDefault();
+                coNotesSubmitDialog( event );
+                return false;
+            });
+
+            $( "#co-notes-dialog" ).on( 'shown', function() {
+                $( "#co-notes-ftitle" ).focus();
+            });
+
+
+            // Popup to delete a note
+            $( '.btn-delete-note' ).click( function( e ) {
+                e.preventDefault();
+                let url = this.href;
+
+                bootbox.dialog({
+                    title: "Delete Note",
+                    message: `<div>Do you really want to delete this note?</div>`,
+                    buttons: {
+                        cancel: {
+                            label: 'Close',
+                            className: 'btn-secondary',
+                            callback: function () {
+                                $('.bootbox.modal').modal('hide');
+                                return false;
+                            }
+                        },
+                        submit: {
+                            label: 'Delete',
+                            className: 'btn-danger bootbox-btn-delete',
+                            callback: function () {
+                                $('.bootbox-btn-delete').attr("disabled", "disabled");
+                                $.ajax(url, {
+                                    type: 'DELETE',
+                                })
+                                    .done(function (data) {
+                                        if (data['error']) {
+                                            bootbox.alert("Error! Server side error deleting the note.");
+                                            return;
+                                        }
+
+                                        window.location.href = "<?= route('customer@overview',
+                                            ['cust' => $t->c->id, 'tab' => 'notes']) ?>";
+                                    })
+                                    .fail(function () {
+                                        alert("Error running ajax query for " + url);
+                                        throw new Error("Error running ajax query for " + url);
+                                    })
+                            }
+                        },
+                    }
+                });
+            });
+
+            // Popup to edit a note
+            $( '.btn-edit-note' ).click( function( e ) {
+                e.preventDefault();
+                let noteid      = $( this ).attr( 'data-object-id' )
+                let urlAction   = "<?= url( '/api/v4/customer-note/get' ) ?>/"+ noteid;
+                let urlUpdate   = this.href;
+
+                $.ajax( urlAction )
+                .done( function( data ) {
+                    $( "#co-notes-fadd"         ).html( 'Save' );
+                    $( "#co-note-dialog-action" ).val( urlUpdate );
+                    $( "#co-notes-ftitle"       ).val( data.note[ 'title' ] );
+                    $( "#co-notes-fnote"        ).val( data.note[ 'note' ]  );
+                    $( "#co-notes-fpreview"     ).html("");
+                    $( "#notes-dialog-noteid"   ).val( data.note[ 'id' ] );
+                    $( "#co-notes-dialog-date"  ).html( 'Note first created: ' + data.note['created_at'] );
+                    $( "#co-notes-fpublic"      ).prop( 'checked', !data.note[ 'private' ] );
+                    coNotesPublicCheckbox();
+                    $( "#co-notes-dialog-title-action" ).html( 'Edit' );
+                    $( "#co-notes-dialog" ).modal();
+                })
+                .fail( function(){
+                    bootbox.alert( "Error running ajax query for " + urlAction );
+                    throw new Error( "Error running ajax query for " + urlAction );
+                })
+            });
+
+            // Watch/Unwatch a note or all the note for a customer
+            $( '.btn-watch' ).click( function( e ) {
+                e.preventDefault();
+                let urlAction   = this.href;
+                let btn         = $(this);
+
+                $.ajax( urlAction )
+                .done( function( data ) {
+                    if( data ){
+                        btn.html( data );
+                    }
+                })
+                .fail( function(){
+                    alert( "Error running ajax query for " + urlAction );
+                    throw new Error( "Error running ajax query for " + urlAction );
+                })
+            });
+        <?php endif; ?>
+
+        // send ping request if we access the Notes tab via the URL
+        <?php if( url()->full() === route('customer@overview', ['cust' => $t->c->id, 'tab' => 'notes' ] ) ): ?>
+            ping();
+        <?php endif; ?>
+
+        $( "#tab-notes" ).on( 'shown.bs.tab', function( ) {
+            ping();
+        });
+    });
+
+
+    function ping(){
+        // mark notes as read and update the users last read time
+        $( '#notes-unread-indicator' ).remove();
+
+        <?php if( $t->isSuperUser ): ?>
+        $.get( "<?= route( "customer-notes@ping" , [ 'c' => $t->c->id ] ) ?>");
+        <?php else: ?>
+        $.get( "<?= route( "customer-notes@ping" ) ?>");
+        <?php endif; ?>
     }
 
+    // Clear the bootbox inputs
+    function coNotesClearDialog() {
+        $( "#co-notes-ftitle" ).val('');
+        $( "#co-note-dialog-action" ).val( '' )
+        $( "#co-notes-fnote" ).val('');
+        $( "#co-notes-fpreview" ).html('');
+        $( "#co-notes-fpublic" ).prop( 'checked', false );
+        $( "#co-notes-warning" ).hide();
+    }
 
+    // Show/Hide warning message when user check public note
     function coNotesPublicCheckbox() {
         if( $( "#co-notes-fpublic" ).is( ':checked' ) ) {
             $( "#co-notes-warning" ).show();
@@ -13,103 +183,11 @@
         }
     }
 
-    function coNotesClearDialog() {
-        $( "#co-notes-ftitle" ).val("");
-        $( "#co-notes-fnote" ).val("");
-        $( "#co-notes-fpreview" ).html("");
-        $( "#co-notes-fpublic" ).prop( 'checked', false );
-        $( "#co-notes-warning" ).hide();
-    }
-
-    function coNotesEditDialog( event ) {
-
-        event.preventDefault();
-        let noteid = ( this.id ).substring( 14 );
-
-        let urlAction = "<?= url( '/api/v4/customer-note/get' ) ?>/"+ noteid;
-
-        $.ajax( urlAction )
-            .done( function( data ) {
-                $( "#co-notes-fadd"        ).html( 'Save' );
-                $( "#co-notes-ftitle"      ).val( data.note['title'] );
-                $( "#co-notes-fnote"       ).val( data.note['note']  );
-                $( "#co-notes-fpreview" ).html("");
-                $( "#notes-dialog-noteid"  ).val( data.note['id'] );
-                $( "#co-notes-dialog-date" ).html( 'Note first created: ' + data.note['created'] );
-
-                if( data.note['private'] ){
-                    $( "#co-notes-fpublic" ).prop( 'checked', false );
-                } else {
-                    $( "#co-notes-fpublic" ).prop( 'checked', true );
-                }
-
-                coNotesPublicCheckbox();
-                $( "#co-notes-dialog-title-action" ).html( 'Edit' );
-                coNotesOpenDialog();
-
-            })
-            .fail( function(){
-                bootbox.alert( "Error running ajax query for " + urlAction );
-                throw new Error( "Error running ajax query for " + urlAction );
-            })
-            .always( function() {
-
-            });
-    }
-
-
-    function coNotesDelete( event ) {
-        event.preventDefault();
-        let noteid = ( this.id ).substring( 15 );
-
-            bootbox.confirm({
-                buttons: {
-                    confirm: {
-                        label: 'Confirm',
-                        className: 'btn-primary'
-                    },
-                    cancel: {
-                        label: 'Cancel',
-                        className: 'btn-secondary'
-                    }
-                },
-                message: 'Are you sure you want to delete this note?',
-                callback: function(result) {
-                    if( result ) {
-
-                        let urlAction = "<?= url( '/api/v4/customer-note/delete' ) ?>/"+ noteid;
-
-                        $.ajax( urlAction , {
-                            type: 'POST',
-                        })
-                            .done( function( data ) {
-
-                                if( data['error'] ) {
-                                    bootbox.alert( "Error! Server side error deleting the note." );
-                                    return;
-                                }
-
-                                $( "#co-notes-table-row-" + noteid ).fadeOut( 'slow', function() {
-                                    $( "#co-notes-table-row-" + noteid ).remove();
-                                });
-                            })
-                            .fail( function(){
-                                alert( "Error running ajax query for " + urlAction );
-                                throw new Error( "Error running ajax query for " + urlAction );
-                            })
-                            .always( function() {
-
-                            });
-                    }
-                },
-
-            });
-        }
-
-
-    function coNotesSubmitDialog( event ) {
-        event.preventDefault();
-
+    // Submit request to create/edit a note
+    function coNotesSubmitDialog( e ) {
+        e.preventDefault();
+        let urlAction = "<?= route( 'customer-notes@create', [ 'cust' => $t->c->id ] ) ?>";
+        let type = "POST"
         // validation - just make sure there's a title
         if( $( "#co-notes-ftitle" ).val().length === 0 ){
             bootbox.alert( "Error! A title for the note is required.", function() {
@@ -126,220 +204,41 @@
             return;
         }
 
-        let urlAction = "<?= route( 'customer-notes@add' ) ?>";
+        if( $( "#co-note-dialog-action" ).val() !== '' ){
+            urlAction = $( "#co-note-dialog-action" ).val();
+            type = "PUT"
+        }
+
+
         $( "#co-notes-fadd" ).attr( "disabled","disabled" );
         $.ajax( urlAction, {
-            type: 'POST',
+            type: type,
             data: $( "#co-notes-form" ).serialize(),
         })
-            .done( function( data ) {
-                coNotesPost( data );
-            })
-            .fail( function() {
-                bootbox.alert( "Error! Could not save your note." );
-            })
-            .always( function() {
-                $( "#co-notes-fadd" ).attr( "disabled", false );
-            });
+        .done( function() {
+            window.location.href = "<?= route( 'customer@overview', [ 'cust' => $t->c->id, 'tab' => 'notes' ] ) ?>";
+        })
+        .fail( function() {
+            bootbox.alert( "Error! Could not save your note." );
+        })
     }
 
-
-
-    function coNotesViewDialog( event ) {
-        event.preventDefault();
-        let noteid = ( this.id ).substring( 14 );
-
-        let urlAction = "<?= url( '/api/v4/customer-note/get' ) ?>/"+ noteid;
+    // Popup that show the note
+    $( '.btn-view-note' ).click( function( e ) {
+        e.preventDefault();
+        let urlAction = this.href;
 
         $.ajax( urlAction )
-            .done( function( data ) {
-                $( "#co-notes-view-dialog-title" ).html( data.note['title'] );
-                $( "#co-notes-view-dialog-note"  ).html( data.note['noteParsedown'] );
-                $( "#co-notes-view-dialog-date"  ).html( 'Note first created: ' + data.note['created'] );
-                $( "#co-notes-view-dialog" ).modal();
-
-            })
-            .fail( function(){
-                bootbox.alert( "Error running ajax query for " + urlAction );
-                throw new Error( "Error running ajax query for " + urlAction );
-            })
-            .always( function() {
-
-            });
-    }
-
-    function coNotesPost( data ) {
-
-        $( "#co-notes-dialog" ).modal( 'hide' );
-
-        if( $( "#co-notes-fadd" ).html() === 'Add' ) {
-
-            $( "#co-notes-table-tbody" ).prepend(
-                "<tr  id=\"co-notes-table-row-" + data.noteid + "\">"
-                + "<td>" + $( "#co-notes-ftitle" ).val() + "</td>"
-                + "<td>" + "<span class=\"badge badge-"
-                + ( $( "#co-notes-fpublic" ).is( ':checked' ) ? "success\">PUBLIC" : "secondary\">PRIVATE" )
-                + "</span></td>"
-                + "<td>Just Now</td>"
-                + "<td>"
-                + "<div class=\"btn-group btn-group-sm\">"
-                + "<button id=\"co-notes-notify-" + data.noteid + "\" class=\"btn btn-white\"><i class=\"fa fa-bell\"></i></button>"
-                + "<button id=\"co-notes-view-"   + data.noteid + "\" class=\"btn btn-white\"><i class=\"fa fa-eye\"></i></button>"
-                + "<button id=\"co-notes-edit-"   + data.noteid + "\" class=\"btn btn-white\"><i class=\"fa fa-pencil\"></i></button>"
-                + "<button id=\"co-notes-trash-"  + data.noteid + "\" class=\"btn btn-white\"><i class=\"fa fa-trash\"></i></button>"
-                + "</div>"
-                + "</td>"
-                + "</tr>"
-            );
-            $( "#co-notes-notify-" + data.noteid ).on( 'click', coNotesNotifyToggle );
-            $( "#co-notes-view-"   + data.noteid ).on( 'click', coNotesViewDialog );
-            $( "#co-notes-edit-"   + data.noteid ).on( 'click', coNotesEditDialog );
-            $( "#co-notes-trash-"  + data.noteid ).on( 'click', coNotesDelete );
-
-            $( "#co-notes-no-notes-msg" ).hide();
-            $( "#co-notes-table" ).show();
-
-
-        }
-        else {
-            let noteid = $( "#notes-dialog-noteid" ).val();
-            $( "#co-notes-table-row-title-" + noteid ).html( $( "#co-notes-ftitle" ).val() );
-            $( "#co-notes-table-row-updated-" + noteid ).html( "Just Now" );
-            $( "#co-notes-table-row-public-" + noteid ).html(
-                "<span class=\"badge badge-"
-                + ( $( "#co-notes-fpublic" ).is( ':checked' ) ? "success\">PUBLIC" : "secondary\">PRIVATE" )
-                + "</span>"
-            );
-
-            $( "#co-notes-table-row-" + data.noteid ).fadeOut( 'fast', function() {
-                $( "#co-notes-table-row-" + data.noteid ).fadeIn( 'slow' );
-            });
-
-        }
-
-        coNotesClearDialog();
-    }
-
-
-
-    function coCustomerNotifyToggle( event ){
-        event.preventDefault();
-        let custid = ( this.id ).substring( 15 );
-        let btnid = $("#" + this.id );
-
-        let urlAction = "<?= url( '/api/v4/customer-note/notify-toggle/customer' ) ?>/"+ custid;
-
-        $.ajax( urlAction )
-            .done( function( data ) {
-                if( data ){
-                    btnid.addClass( "active" );
-                }
-            })
-            .fail( function(){
-                alert( "Error running ajax query for " + urlAction );
-                throw new Error( "Error running ajax query for " + urlAction );
-            })
-            .always( function() {
-
-            });
-    }
-
-    function coNotesNotifyToggle( event ){
-        event.preventDefault();
-        let noteid = ( this.id ).substring( 16 );
-        let btnid = $("#" + this.id );
-
-        let urlAction = "<?= url( '/api/v4/customer-note/notify-toggle/note' ) ?>/"+ noteid;
-
-        $.ajax( urlAction )
-            .done( function( data ) {
-                if( data ){
-                    btnid.toggleClass( "active" );
-                }
-            })
-            .fail( function(){
-                alert( "Error running ajax query for " + urlAction );
-                throw new Error( "Error running ajax query for " + urlAction );
-            })
-            .always( function() {
-
-            });
-    }
-
-    $(document).ready(function(){
-
-        $('.table-note').show();
-
-        $('.table-note').DataTable( {
-            stateSave: true,
-            stateDuration : DATATABLE_STATE_DURATION,
-            responsive: true,
-            ordering: false,
-            searching: false,
-            paging:   false,
-            info:   false,
-            columnDefs: [
-                { responsivePriority: 1, targets: 0 },
-                { responsivePriority: 2, targets: -1 }
-            ]
-        } );
-
-        <?php if( Auth::getUser()->isSuperUser() ): ?>
-
-            $( ".table-note" ).on( "click", ".co-notes-add-btn", function( event ){
-                event.preventDefault();
-                $( "#co-notes-dialog-title-action" ).html( 'Add a' );
-                $( "#co-notes-fadd" ).html( 'Add' );
-                $( "#co-notes-dialog-date" ).html( '' );
-                $( "#notes-dialog-noteid" ).val( '0' );
-                coNotesClearDialog();
-                coNotesOpenDialog();
-            });
-
-            $( "#co-notes-add-link" ).on( "click", function( event ){
-                event.preventDefault();
-                $( "#co-notes-add-btn" ).trigger( 'click' );
-            });
-
-
-            $( '.table-note' ).on( 'click', '.co-cust-notify',  coCustomerNotifyToggle );
-            $( '.table-note' ).on( 'click', '.co-notes-notify', coNotesNotifyToggle );
-            $( '.table-note' ).on( 'click', '.co-notes-edit',   coNotesEditDialog );
-            $( '.table-note' ).on( 'click', '.co-notes-trash',  coNotesDelete );
-
-            $( "#co-notes-fpublic" ).on( "click", function() {
-                coNotesPublicCheckbox();
-            });
-
-            $( "#co-notes-fadd" ).on( "click", coNotesSubmitDialog );
-
-            $( '#co-notes-form' ).on( 'submit', function( event ) {
-                event.preventDefault();
-                coNotesSubmitDialog( event );
-                return false;
-            });
-
-            $( "#co-notes-dialog" ).on( 'shown', function() {
-                $( "#co-notes-ftitle" ).focus();
-            });
-
-        <?php endif; ?>
-
-        $( '.table-note' ).on( 'click', '.co-notes-view',   coNotesViewDialog );
-
-        $( "#tab-notes" ).on( 'shown.bs.tab', function( ) {
-            // mark notes as read and update the users last read time
-            $( '#notes-unread-indicator' ).remove();
-
-            <?php if( Auth::getUser()->isSuperUser() ): ?>
-                $.get( "<?= route( "customer-notes@ping" , [ 'id' => $t->c->getId() ] ) ?>");
-            <?php else: ?>
-                $.get( "<?= route( "customer-notes@ping" ) ?>");
-            <?php endif; ?>
-        });
-
-
+        .done( function( data ) {
+            $( "#co-notes-view-dialog-title" ).html( data.note[ 'title' ] );
+            $( "#co-notes-view-dialog-note"  ).html( data.note[ 'note_parsedown' ] );
+            $( "#co-notes-view-dialog-date"  ).html( 'Note first created: ' + data.note[ 'created_at' ] );
+            $( "#co-notes-view-dialog" ).modal();
+        })
+        .fail( function(){
+            bootbox.alert( "Error running ajax query for " + urlAction );
+            throw new Error( "Error running ajax query for " + urlAction );
+        })
     });
-
 
 </script>

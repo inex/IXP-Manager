@@ -1,7 +1,9 @@
-<?php namespace IXP\Utils\Foil\Extensions;
+<?php
+
+namespace IXP\Utils\Foil\Extensions;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,8 +22,6 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use Entities\Router;
 use Foil\Contracts\ExtensionInterface;
 
 /**
@@ -32,40 +32,52 @@ use Foil\Contracts\ExtensionInterface;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Bird implements ExtensionInterface {
+class Bird implements ExtensionInterface
+{
 
+    /**
+     * @var
+     */
     private $args;
 
-    public function setup(array $args = []) {
+    public function setup( array $args = [] )
+    {
         $this->args = $args;
     }
 
-    public function provideFilters() {
+    public function provideFilters()
+    {
         return [];
     }
 
-    public function provideFunctions() {
+    public function provideFunctions()
+    {
         return [
             'bird' => [$this, 'getObject']
         ];
     }
 
 
-    public function getObject(): Bird {
+    public function getObject(): Bird
+    {
         return $this;
     }
 
     /**
      * Convert array of prefixes into less specifics
+     * @param array $prefixes
+     * @param int $proto
+     * @param int $max
+     *
+     * @return array
      */
-    public function prefixExactToLessSpecific( array $prefixes, int $proto = 6, int $max = 48 ): array {
-
+    public function prefixExactToLessSpecific( array $prefixes, int $proto = 6, int $max = 48 ): array
+    {
         foreach( $prefixes as $i => $p ) {
-
-            list( $net, $mask ) = explode( '/', $p );
+            [ $net, $mask ] = explode( '/', $p );
 
             if( $mask > $max ) {
                 // subnet is too small already so we do not allow it
@@ -125,12 +137,11 @@ class Bird implements ExtensionInterface {
         ':103:\d+'  => [ 'PREPEND TO PEERAS - THREE TIMES', 'info' ],
     ];
 
-
     /**
      * Get information on a BGP large community used for filtering / info by IXP Manager
      */
-    public function translateBgpFilteringLargeCommunity( string $lc ): ?array {
-
+    public function translateBgpFilteringLargeCommunity( string $lc ): ?array
+    {
         foreach( self::$BGPLCS as $k => $v ) {
             if( $k === $lc ) {
                 return $v;
@@ -145,5 +156,4 @@ class Bird implements ExtensionInterface {
 
         return null;
     }
-
 }

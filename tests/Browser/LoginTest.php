@@ -1,7 +1,9 @@
 <?php
 
+namespace Tests\Browser;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,28 +23,38 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace Tests\Browser;
+use Laravel\Dusk\Browser;
 
 use Tests\DuskTestCase;
-use Laravel\Dusk\Browser;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Throwable;
 
+/**
+ * Test Login Controller
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Tests\Browser
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class LoginTest extends DuskTestCase
 {
     /**
      * A Dusk test example.
      *
      * @return void
-     * @throws \Throwable
+     *
+     * @throws Throwable
      */
-    public function testExample()
+    public function testExample(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/login')
-                ->type( 'username', 'travis' )
-                ->type( 'password', 'travisci' )
-                ->press( '#login-btn' )
-                ->assertPathIs( '/admin' );
+                    ->type( 'username', 'travis' )
+                    ->type( 'password', 'travisci' )
+                    ->press( '#login-btn' )
+                    ->assertPathIs( '/admin' );
         });
     }
 }

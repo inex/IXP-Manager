@@ -6,8 +6,6 @@
     phpinfo()
 <?php $this->append() ?>
 
-
-
 <?php $this->section( 'content' ) ?>
 
     <iframe id="if-phpinfo"
@@ -16,17 +14,10 @@
 
 <?php $this->append() ?>
 
-
 <?php $this->section( 'scripts' ) ?>
-
     <script type="text/javascript">
-
-        $( "#if-phpinfo" ).on( 'load', function() {
-            // Set inline style to equal the body height of the iframed content.
-            this.style.height = this.contentWindow.document.body.offsetHeight + 'px';
-        } );
-
+        $( document ).ready(function() {
+            $( "#if-phpinfo" ).css( 'height', $('#if-phpinfo,html')[ 0 ].scrollHeight + 'px' )
+        });
     </script>
-
 <?php $this->append() ?>
-

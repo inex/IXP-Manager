@@ -2,9 +2,8 @@
 
 namespace IXP\Http\Controllers\Api\V4;
 
-
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -24,46 +23,32 @@ namespace IXP\Http\Controllers\Api\V4;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM;
-
-use Entities\{
-    VlanInterface as VlanInterfaceEntity
-};
-
 use Illuminate\Http\JsonResponse;
 
+use IXP\Models\VlanInterface;
 
 /**
  * VlanInterface API Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   APIv4
+ * @package    IXP\Http\Controllers\Api\V4
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class VlanInterfaceController extends Controller
 {
-
-
     /**
      * Get all Layer2Address for a VlanInterface
      *
-     * @param int $id VlanInterface ID
+     * @param VlanInterface $vli VlanInterface
+     *
      * @return  JsonResponse
      */
-    public function getL2A( int $id ) : JsonResponse{
-
-        /** @var VlanInterfaceEntity $vli */
-        if( !( $vli =  D2EM::getRepository( VlanInterfaceEntity::class )->find( $id ) ) ){
-            return abort( 404 );
-        }
-
-        $l2as = [];
-
-        foreach( $vli->getLayer2Addresses() as $l2a ) {
-            $l2as[ $l2a->getId() ] = $l2a->getMac();
-        }
-
-        return response()->json( $l2as );
+    public function getL2A( VlanInterface $vli ) : JsonResponse
+    {
+        return response()->json( $vli->layer2addresses()->pluck('mac', 'id')->toArray() );
     }
 
     /**
@@ -75,10 +60,17 @@ class VlanInterfaceController extends Controller
      */
     public function sflowLearnedMacs(): JsonResponse
     {
-        $mactablearray = D2EM::getRepository( VlanInterfaceEntity::class )->sflowLearnedMacsHash();
+        $macs = VlanInterface::selectRaw(
+            'vli.id AS vliid, ma.mac AS mac, vl.number as tag, vl.infrastructureid as infrastructure'
+        )->from( 'vlaninterface AS vli' )
+        ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
+        ->join( 'macaddress AS ma', 'ma.virtualinterfaceid', 'vi.id' )
+        ->leftJoin( 'vlan AS vl', 'vl.id', 'vli.vlanid' )
+        ->whereNotNull( 'ma.mac' )->whereNotNull( 'vli.id' )
+        ->orderBy( 'vliid' )->distinct()->get()->toArray();
 
-        foreach ($mactablearray as $macentry) {
-            $output[$macentry['infrastructure']][$macentry['tag']][$macentry['mac']] = $macentry['vliid'];
+        foreach( $macs as $mac ){
+            $output[ $mac[ 'infrastructure' ] ][ $mac[ 'tag' ] ][ $mac[ 'mac' ] ] = $mac[ 'vliid' ];
         }
 
         return response()->json($output ?? []);
@@ -93,13 +85,18 @@ class VlanInterfaceController extends Controller
      */
     public function sflowConfiguredMacs(): JsonResponse
     {
-        $mactablearray = D2EM::getRepository( VlanInterfaceEntity::class )->sflowConfiguredMacsHash();
+        $macs = VlanInterface::selectRaw(
+            'vli.id AS vliid, l2a.mac AS mac, vl.number as tag, vl.infrastructureid as infrastructure'
+        )->from( 'vlaninterface AS vli' )
+        ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
+        ->leftJoin( 'l2address AS l2a', 'l2a.vlan_interface_id', 'vli.id' )
+        ->leftJoin( 'vlan AS vl', 'vl.id', 'vli.vlanid' )
+        ->whereNotNull( 'l2a.mac' )
+        ->orderBy( 'vliid' )->distinct()->get()->toArray();
 
-        foreach ($mactablearray as $macentry) {
-            $output[$macentry['infrastructure']][$macentry['tag']][$macentry['mac']] = $macentry['vliid'];
+        foreach( $macs as $mac ) {
+            $output[ $mac[ 'infrastructure' ] ][ $mac[ 'tag' ] ][ $mac[ 'mac' ] ] = $mac[ 'vliid' ];
         }
-
         return response()->json($output ?? []);
     }
-
 }

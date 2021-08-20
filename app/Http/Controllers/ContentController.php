@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,41 +23,47 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM;
+use Auth;
 
-use Entities\{
-    Customer as CustomerEntity,
-    User     as UserEntity
+use Illuminate\Http\{
+    JsonResponse,
+    Response
 };
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\View as FacadeView;
 
 use Illuminate\View\View;
+
+use IXP\Models\{
+    Customer,
+    User
+};
 
 /**
  * Content Controller
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   Controller
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Controllers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class ContentController extends Controller {
-
+class ContentController extends Controller
+{
     /**
      * Display the appropriate static content page (if permissions match)
      *
      * @param  int    $priv Required privilege for access to the content
      * @param  string $page Page to display
+     *
      * @return  View
      */
-    public function index( int $priv, string $page ): View {
-
+    public function index( int $priv, string $page ): View
+    {
         // check privilege:
-        if( $priv != UserEntity::AUTH_PUBLIC ) {
-            if( Auth::guest() || Auth::user()->getPrivs() < $priv ) {
+        if( $priv !== User::AUTH_PUBLIC ) {
+            if( Auth::guest() || Auth::getUser()->privs() < $priv ) {
                 abort( 403, 'Unauthorized' );
             }
         }
@@ -69,7 +75,6 @@ class ContentController extends Controller {
             abort( 404, 'Requested page not found' );
         }
 
-
         return view( $page );
     }
 
@@ -77,9 +82,11 @@ class ContentController extends Controller {
      * Alias for public only content
      *
      * @param  string $page Page to display
+     *
      * @return  View
      */
-    public function public( string $page ): View {
+    public function public( string $page ): View
+    {
         return $this->index( 0, $page );
     }
 
@@ -88,13 +95,15 @@ class ContentController extends Controller {
      *
      * @param  int    $priv Required privilege for access to the content
      * @param  string $page Page to display
+     *
      * @return View|Response|JsonResponse
      */
     public function members( int $priv, string $page )
     {
+
         // check privilege:
-        if( $priv != UserEntity::AUTH_PUBLIC ) {
-            if( Auth::guest() || Auth::user()->getPrivs() < $priv ) {
+        if( $priv !== User::AUTH_PUBLIC ) {
+            if( Auth::guest() || Auth::getUser()->privs() < $priv ) {
                 abort( 403, 'Unauthorized' );
             }
         }
@@ -105,7 +114,7 @@ class ContentController extends Controller {
             $page .= '.html';
         }
 
-        list( $page, $format ) = explode( '.', $page );
+        [ $page, $format ] = explode( '.', $page );
 
         // sanitise page name:
         $page = "content/members/{$priv}/" . preg_replace( '/[^a-z0-9\-_]/', '', $page );
@@ -114,13 +123,23 @@ class ContentController extends Controller {
             abort( 404, 'Requested page not found' );
         }
 
-        $r = response()->view( $page, [ 'customers' => D2EM::getRepository( CustomerEntity::class )->getCurrentActive() ], 200 );
+        $r = response()->view( $page, [ 'customers' => Customer::currentActive()->get() ], 200 );
 
-        if( $format == 'json' ) {
+        if( $format === 'json' ) {
             $r->header( 'Content-Type', 'application/json' );
         }
 
         return $r;
+    }
+
+    /**
+     * Display the appropriate member details page (if permissions match)
+     *
+     * @return View|Response|JsonResponse
+     */
+    public function simpleMembers()
+    {
+        return $this->members( 0, 'list.json' );
     }
 
 }

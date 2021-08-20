@@ -83,15 +83,15 @@ return [
     /*
      * Require 2FA authentication for IXP users >= this level.
      *
-     * By default we set it to '\Entities\User::AUTH_SUPERUSER + 1' which means no users will be
+     * By default we set it to '\IXP\Models\User::AUTH_SUPERUSER + 1' which means no users will be
      * forced to enabled 2fa.
      *
      * To force:
      *
-     * - all superusers, set this to \Entities\User::AUTH_SUPERUSER (3);
-     * - all custadmins and superusers, set this to \Entities\User::AUTH_CUSTADMIN (2);
-     * - all users set this to \Entities\User::AUTH_CUSTUSER (1 or less);
+     * - all superusers, set this to \IXP\Models\User::AUTH_SUPERUSER (3);
+     * - all custadmins and superusers, set this to \IXP\Models\User::AUTH_CUSTADMIN (2);
+     * - all users set this to \IXP\Models\User::AUTH_CUSTUSER (1 or less);
      */
-    'ixpm_2fa_enforce_for_users' => env( '2FA_ENFORCE_FOR_USERS', \Entities\User::AUTH_SUPERUSER + 1 ),
+    'ixpm_2fa_enforce_for_users' => env( '2FA_ENFORCE_FOR_USERS', \IXP\Models\User::AUTH_SUPERUSER + 1 ),
 
 ];

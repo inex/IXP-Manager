@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,13 +22,32 @@ namespace IXP\Http\Requests;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Auth, Validator;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-use Validator;
-
+/**
+ * PeeringManagerRequest FormRequest
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Requests
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class PeeringManagerRequest extends FormRequest
 {
+
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
 
     public function __construct()
     {
@@ -42,10 +61,10 @@ class PeeringManagerRequest extends FormRequest
 
             foreach( $addresses as $address ) {
                 $data = [
-                    'email' => trim($address)
+                    'email' => trim( $address )
                 ];
-                $validator = Validator::make($data, $rules);
-                if ($validator->fails()) {
+                $validator = Validator::make( $data, $rules );
+                if( $validator->fails() ) {
                     return false;
                 }
             }
@@ -54,22 +73,11 @@ class PeeringManagerRequest extends FormRequest
     }
 
     /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        // middleware ensures superuser access only so always authorised here:
-        return true;
-    }
-
-    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'to'              => 'required|emails',
@@ -85,7 +93,7 @@ class PeeringManagerRequest extends FormRequest
      *
      * @return array
      */
-    public function messages()
+    public function messages(): array
     {
         return [
             'to.emails'  => 'One or more of the email addresses are invalid',

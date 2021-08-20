@@ -1,36 +1,22 @@
 <?php $this->layout( 'layouts/ixpv4' );
-/** @var object $t */
+    /** @var object $t */
 ?>
 
-
 <?php $this->section( 'page-header-preamble' ) ?>
-
-    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+    <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
         Route Server Prefix /
     <?php endif; ?>
     Route Server Prefix Filtering Analysis Tool
-
 <?php $this->append() ?>
-
-
-
 
 <?php $this->section( 'page-header-postamble' ) ?>
-
     <?= $t->insert( 'rs-prefixes/list-filter' ) ?>
-
 <?php $this->append() ?>
 
-
-
 <?php $this->section( 'content' ) ?>
-
-
-
     <div class="row">
         <div class="col-sm-12">
-
-            <?php if( $t->totalVl != $t->filteredVl ): ?>
+            <?php if( $t->totalVl !== $t->filteredVl ): ?>
                 <div class="alert alert-warning mt-4" role="alert">
                     <div class="d-flex align-items-center">
                         <div class="text-center">
@@ -51,9 +37,7 @@
 
             <div class="card mt-4">
                 <div class="card-header">
-
                     <ul class="nav nav-tabs card-header-tabs">
-
                         <li role="presentation" class="nav-item" id="nav-adv_nacc">
                             <a href="#adv_nacc" class="nav-link active" aria-controls="adv_nacc" role="tab" data-toggle="tab">
                                 Advertised but Not Accepted  (<?= count( $t->aggRoutes[ 'adv_nacc' ] )  ?>)
@@ -95,15 +79,11 @@
             </div>
         </div>
     </div>
-
-
-
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
     <script>
-        $(document).ready( function() {
+        $( document ).ready( function() {
             <?php if( $t->type ): ?>
                 $( '.tab-pane' ).removeClass( 'active' );
                 $( '.nav-tabs li' ).removeClass( 'active' );
@@ -111,14 +91,12 @@
                 $( '#nav-<?=  $t->type ?>' ).addClass( 'active' );
             <?php endif; ?>
 
-            $( '.table' ).show();
-
             $( '.table' ).dataTable({
-                    stateSave: true,
-                    stateDuration : DATATABLE_STATE_DURATION,
-                    responsive : true,
-                    pageLength: 50
-            });
+                stateSave: true,
+                stateDuration : DATATABLE_STATE_DURATION,
+                responsive : true,
+                pageLength: 50
+            }).show();
         });
     </script>
 <?php $this->append() ?>

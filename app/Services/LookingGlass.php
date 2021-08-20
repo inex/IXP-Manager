@@ -1,11 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
 namespace IXP\Services;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -31,39 +29,42 @@ use IXP\Contracts\LookingGlass as LookingGlassContract;
 use IXP\Exceptions\Services\LookingGlass\ConfigurationException;
 use IXP\Services\LookingGlass\BirdsEye as BirdseyeLookingGlass;
 
-use Entities\Router as RouterEntity;
-use IXP\Models\Router as Router;
+use IXP\Models\Router;
 
 /**
  * LookingGlass
  *
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   LookingGlass
  * @package    IXP\Services\LookingGlass
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class LookingGlass {
-
+class LookingGlass
+{
     /**
      * Get a looking glass implementation for a given router
-     * @param Router|RouterEntity $router
+     *
+     * @param Router $router
+     *
      * @return LookingGlassContract
+     *
+     * @throws
      */
-    public function forRouter( $r ) {
-        switch( $r->apiType() ) {
+    public function forRouter( Router $router )
+    {
+        switch( $router->apiType() ) {
             case Router::API_TYPE_BIRDSEYE:
-                $be = new BirdseyeLookingGlass( $r );
+                $be = new BirdseyeLookingGlass( $router );
                 //Birdseye supports caching but if the user is logged in we want to disable that:
                 if( Auth::check() ) {
                     $be->setCacheEnabled(false);
                 }
                 return $be;
                 break;
-
             default:
                 throw new ConfigurationException( 'Invalid, no or unimplemented looking glass backend requested: ' . $r->apiType() );
         }
     }
-
 }

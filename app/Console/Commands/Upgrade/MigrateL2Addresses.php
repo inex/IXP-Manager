@@ -3,7 +3,7 @@
 namespace IXP\Console\Commands\Upgrade;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,18 +22,14 @@ namespace IXP\Console\Commands\Upgrade;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use DB;
 
-
-use D2EM, DB;
-
-use Entities\{
-    Layer2Address as Layer2AddressEntity,
-    VirtualInterface as VirtualInterfaceEntity
+use IXP\Models\{
+    Layer2Address,
+    VirtualInterface
 };
 
 use IXP\Console\Commands\Command as IXPCommand;
-
-
 /**
  * Class L2Addresses - tool to copy MAC addresses from the read only global table
  * used previously to the new per-VLAN table.
@@ -41,7 +37,7 @@ use IXP\Console\Commands\Command as IXPCommand;
  * @author Yann Robin <yann@islandbridgenetworks.ie>
  * @author Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @package IXP\Console\Commands\Upgrade
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class MigrateL2Addresses extends IXPCommand
@@ -67,7 +63,8 @@ class MigrateL2Addresses extends IXPCommand
      *
      * @return mixed
      */
-    public function handle() {
+    public function handle()
+    {
         if( !$this->confirm( 'Are you sure you wish to proceed? This command will CLEAR the layer2address table and then copy '
                 . 'addresses from the read-only macaddress table. Generally, this command should only ever be run once when initially '
                 . 'populating the new table.' ) ) {
@@ -82,38 +79,39 @@ class MigrateL2Addresses extends IXPCommand
 
         // get all the entries form the macaddress table
         DB::table( 'macaddress' )->orderBy( 'virtualinterfaceid' )->chunk( 100, function( $listMacAddresses ) {
-
             foreach( $listMacAddresses as $mac) {
-                /** @var VirtualInterfaceEntity $vi */
-                $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $mac->virtualinterfaceid );
-
+                $vi = VirtualInterface::find( $mac->virtualinterfaceid );
                 $cnt = 0;
-                foreach( $vi->getVlanInterfaces() as $vli ) {
-
+                foreach( $vi->vlanInterfaces as $vli ) {
                     // Ensure the MAC address is unique for this LAN:
-                    if( D2EM::getRepository(Layer2AddressEntity::class )->existsInVlan( $mac->mac, $vli->getVlan()->getId() ) ) {
+                    $forVlan = Layer2Address::from( 'l2address AS l' )
+                        ->join( 'vlaninterface AS vli', 'vli.id',  'l.vlan_interface_id' )
+                        ->join( 'vlan AS v', 'v.id', 'vli.vlanid' )
+                        ->where( 'mac' , $mac->mac )
+                        ->where( 'v.id', $vli->vlanid )
+                        ->get();
+
+                    if( $forVlan->count() ) {
                         $this->alert( 'Could not add additional instance of ' . $mac->mac . ' for '
-                            . $vi->getCustomer()->getName() . ' with virtual interface: ' . url('virtual-interface/edit/id' )
-                            . '/' . $vi->getId() . ' as it already exists in this Vlan ' . $vli->getVlan()->getName()
+                            . $vi->customer->name . ' with virtual interface: ' . route('virtual-interface@edit', [ 'vi' => $vi->id ] )
+                            . ' as it already exists in this Vlan ' . $vli->vlan->name
                         );
                         continue;
                     }
 
                     // create the new Layer2Address entity with the information of the current macaddress table entry
-                    $l2a = new Layer2AddressEntity();
-                    $l2a->setMac( $mac->mac )
-                        ->setVlanInterface( $vli )
-                        ->setCreatedAt( new \DateTime )
-                        ->setFirstSeenAt( new \DateTime( $mac->firstseen ) );
-                    D2EM::persist( $l2a );
-                    D2EM::flush();
+                    Layer2Address::create([
+                        'mac'                   => $mac->mac,
+                        'vlan_interface_id'     => $vli->id,
+                        'firstseen'             => now(),
+                    ]);
                     $cnt++;
                 }
 
                 // if you create more than one layer2address for a virtualinterface, let the user know
                 if( $cnt > 1 ) {
-                    $this->alert( 'Created >1 layer2address for ' . $vi->getCustomer()->getName() . ' with virtual interface: '
-                        . url('virtual-interface/edit/id' ) . '/' . $vi->getId() );
+                    $this->alert( 'Created >1 layer2address for ' . $vi->customer->name . ' with virtual interface: '
+                        . route('virtual-interface@edit', [ 'vi' => $vi->id ] ) );
                 }
             }
         });

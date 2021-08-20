@@ -1,7 +1,9 @@
 <?php
 
+namespace IXP\Providers;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,20 +23,38 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace IXP\Providers;
-
-use Entities\User as UserEntity;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
-class RouteServiceProvider extends ServiceProvider {
+use IXP\Models\User;
 
+/**
+ * Route Service Provider
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Providers
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class RouteServiceProvider extends ServiceProvider
+{
     /**
-     * This namespace is applied to the controller routes in your routes file.
+     * The path to the "home" route for your application.
      *
-     * In addition, it is set as the URL generator's root namespace.
+     * This is used by Laravel authentication to redirect users after login.
      *
      * @var string
+     */
+    public const HOME = '';
+
+    /**
+     * The controller namespace for the application.
+     *
+     * When present, controller route declarations will automatically be prefixed with this namespace.
+     *
+     * @var string|null
      */
     protected $namespace = 'IXP\Http\Controllers';
 
@@ -43,10 +63,9 @@ class RouteServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         parent::boot();
-        //
     }
 
     /**
@@ -54,20 +73,20 @@ class RouteServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function map()
+    public function map(): void
     {
         $this->mapWebRoutes();
-        $this->mapWebDoctrine2FrontendRoutes();
+        $this->mapWebEloquent2FrontendRoutes();
         $this->mapWebAuthRoutes();
         $this->mapWebAuthSuperuserRoutes();
         $this->mapApiExternalAuthSuperuserRoutes();
         $this->mapApiV4Routes();
         $this->mapApiV4AuthRoutes();
         $this->mapApiAuthSuperuserRoutes();
+        $this->mapPublicApiRoutes();
 
         // aliases that need to be deprecated:
-        require base_path('routes/apiv1-aliases.php');
-
+        require base_path('routes/apiv1-aliases.php' );
     }
 
     /**
@@ -77,30 +96,30 @@ class RouteServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    protected function mapWebRoutes()
+    protected function mapWebRoutes(): void
     {
         Route::group([
-            'middleware' => 'web',
-            'namespace' => $this->namespace,
-        ], function ($router) {
-            require base_path('routes/web.php');
+            'middleware'    => [ 'web', '2fa' ],
+            'namespace'     => $this->namespace,
+        ], function () {
+            require base_path('routes/web.php' );
         });
     }
 
     /**
-     * Define the "web" routes using Doctrine2Frontend for the application.
+     * Define the "web" routes using Eloquent2Frontend for the application.
      *
      * These routes all receive session state, CSRF protection, etc.
      *
      * @return void
      */
-    protected function mapWebDoctrine2FrontendRoutes()
+    protected function mapWebEloquent2FrontendRoutes(): void
     {
         Route::group([
-            'middleware' => config( 'google2fa.enabled' ) ? ['d2frontend', '2fa'] : ['d2frontend'],
-            'namespace' => $this->namespace,
-        ], function ($router) {
-            require base_path('routes/web-doctrine2frontend.php');
+            'middleware'    => config( 'google2fa.enabled' ) ? ['e2frontend', '2fa'] : ['e2frontend'],
+            'namespace'     => $this->namespace,
+        ], function () {
+            require base_path('routes/web-eloquent2frontend.php');
         });
     }
 
@@ -111,12 +130,12 @@ class RouteServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    protected function mapWebAuthRoutes()
+    protected function mapWebAuthRoutes(): void
     {
         Route::group([
-            'middleware' => config( 'google2fa.enabled' ) ? [ 'web', 'auth', '2fa'  ] : [ 'web', 'auth' ],
-            'namespace' => $this->namespace,
-        ], function ($router) {
+            'middleware'    => config( 'google2fa.enabled' ) ? [ 'web', 'auth', '2fa'  ] : [ 'web', 'auth' ],
+            'namespace'     => $this->namespace,
+        ], function () {
             require base_path('routes/web-auth.php');
         });
     }
@@ -128,13 +147,13 @@ class RouteServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    protected function mapWebAuthSuperuserRoutes()
+    protected function mapWebAuthSuperuserRoutes(): void
     {
         Route::group([
-                         'middleware' => config( 'google2fa.enabled' ) ? [ 'web' , 'auth' , '2fa' , 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ] : [ 'web' , 'auth', 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ],
-                         'namespace' => $this->namespace,
-                     ], function ($router) {
-            require base_path('routes/web-auth-superuser.php');
+            'middleware'    => config( 'google2fa.enabled' ) ? [ 'web' , 'auth' , '2fa' , 'assert.privilege:' . User::AUTH_SUPERUSER ] : [ 'web' , 'auth', 'assert.privilege:' . User::AUTH_SUPERUSER ],
+            'namespace'     => $this->namespace,
+        ], function () {
+            require base_path('routes/web-auth-superuser.php' );
         });
     }
 
@@ -145,18 +164,13 @@ class RouteServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    protected function mapApiV4Routes()
+    protected function mapApiV4Routes(): void
     {
         Route::group([
-            'middleware' => [ 'web', 'public/api/v4' ],
-            'namespace' => $this->namespace . '\\Api\\V4',
-            'prefix' => 'api/v4',
-        ], function ($router) {
-
-//            if( class_exists( "\Debugbar" ) ) {
-//                \Debugbar::disable();
-//            }
-
+            'middleware'    => [ 'web', 'public/api/v4' ],
+            'namespace'     => $this->namespace . '\\Api\\V4',
+            'prefix'        => 'api/v4',
+        ], function () {
             require base_path('routes/apiv4.php');
         });
     }
@@ -168,21 +182,16 @@ class RouteServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    protected function mapApiV4AuthRoutes()
+    protected function mapApiV4AuthRoutes(): void
     {
         Route::group([
-            'middleware' => [ 'web', 'api/v4', 'auth' ],
-            'namespace' => $this->namespace . '\\Api\\V4',
-            'prefix' => 'api/v4',
-        ], function ($router) {
-            if( class_exists( "\Debugbar" ) ) {
-                \Debugbar::disable();
-            }
-
+            'middleware'    => [ 'web', 'api/v4', 'auth' ],
+            'namespace'     => $this->namespace . '\\Api\\V4',
+            'prefix'        => 'api/v4',
+        ], function () {
             require base_path('routes/apiv4-auth.php');
         });
     }
-
 
     /**
      * Define the "api" routes for the application.
@@ -191,22 +200,17 @@ class RouteServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    protected function mapApiAuthSuperuserRoutes()
+    protected function mapApiAuthSuperuserRoutes(): void
     {
         Route::group([
-             'middleware' => [
+             'middleware'   => [
                  'web',
                  'api/v4',
-                 'assert.privilege:' . UserEntity::AUTH_SUPERUSER
+                 'assert.privilege:' . User::AUTH_SUPERUSER
              ],
-             'namespace' => $this->namespace . '\\Api\\V4',
-             'prefix' => 'api/v4',
-        ], function ($router) {
-
-//            if( class_exists( "\Debugbar" ) ) {
-//                \Debugbar::disable();
-//            }
-
+             'namespace'    => $this->namespace . '\\Api\\V4',
+             'prefix'       => 'api/v4',
+        ], function () {
             require base_path('routes/apiv4-auth-superuser.php');
         });
     }
@@ -219,17 +223,36 @@ class RouteServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    protected function mapApiExternalAuthSuperuserRoutes()
+    protected function mapApiExternalAuthSuperuserRoutes(): void
     {
         Route::group([
-            'middleware' => [
+            'middleware'    => [
                 'api/v4',
-                'assert.privilege:' . UserEntity::AUTH_SUPERUSER
+                'assert.privilege:' . User::AUTH_SUPERUSER
             ],
-            'namespace' => $this->namespace . '\\Api\\V4',
-            'prefix' => 'api/v4',
-        ], function ($router) {
+            'namespace'     => $this->namespace . '\\Api\\V4',
+            'prefix'        => 'api/v4',
+        ], function () {
             require base_path('routes/apiv4-ext-auth-superuser.php');
+        });
+    }
+
+
+    /**
+     * Define the "web" routes for the application.
+     *
+     * These routes all receive session state, CSRF protection, etc.
+     *
+     * @return void
+     */
+    protected function mapPublicApiRoutes()
+    {
+        Route::group([
+            'middleware' => 'publicapi',
+            'namespace' => $this->namespace . '\\Api\\V4',
+            'prefix' => 'api/v4/public',
+        ], function ($router) {
+            require base_path('routes/publicapi.php');
         });
     }
 }

@@ -3,7 +3,7 @@
 namespace IXP\Events\Auth;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -26,36 +26,39 @@ namespace IXP\Events\Auth;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 
-use Entities\{
-    User    as UserEntity
-};
+use IXP\Models\User;
 
-class ForgotPassword{
-
+/**
+ * ForgotPassword Event
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   Auth\Event
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class ForgotPassword
+{
     use Dispatchable, SerializesModels;
 
-
     /**
-     * @var token
+     * @var string
      */
     public $token;
 
     /**
-     * @var UserEntity user
+     * @var User
      */
     public $user;
-
 
     /**
      * Create a new event instance.
      *
-     * @param string $token
-     * @param UserEntity $user
+     * @param string        $token
+     * @param User          $user
      */
-    public function __construct( string $token, UserEntity $user )
+    public function __construct( string $token, User $user )
     {
         $this->token        = $token;
         $this->user         = $user;
-
     }
 }

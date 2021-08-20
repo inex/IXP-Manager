@@ -1,5 +1,7 @@
 <div class="tw-max-w-lg">
-    <h3 class="tw-mb-8">Welcome to the <?= ucfirst( config( 'ixp_fe.lang.customer.one') ) ?> Document Store!</h3>
+    <h3 class="tw-mb-8">
+      Welcome to the <?= ucfirst( config( 'ixp_fe.lang.customer.one') ) ?> Document Store!
+    </h3>
 
     <p>
         This is <b>IXP Manager's</b> <b><u>per-<?= config( 'ixp_fe.lang.customer.one') ?></u></b> document store allowing

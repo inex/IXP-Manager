@@ -1,7 +1,9 @@
 <?php
 
+namespace IXP\Http\Controllers\Auth;
+
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,34 +23,43 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace IXP\Http\Controllers\Auth;
+use Password, Redirect;
 
-use D2EM, Password, Redirect;
-
-use IXP\Http\Controllers\Controller;
-use Illuminate\View\View;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+
+use Illuminate\Http\{
+    JsonResponse,
+    RedirectResponse,
+    Request
+};
+
+use Illuminate\View\View;
 
 use IXP\Events\Auth\ForgotUsername as ForgotUsernameEvent;
 
-use Entities\{
-    User    as UserEntity
+use IXP\Http\Controllers\Controller;
+
+use IXP\Http\Requests\Auth\{
+    ForgotUsername as ForgotUsernameRequest
 };
+
+use IXP\Models\User;
 
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
 
-use Illuminate\Http\{
-    RedirectResponse,
-    Request
-};
-
-use IXP\Http\Requests\Auth\{
-    ForgotUsername as ForgotUsernameRequest
-};
-
+/**
+ * ForgotPasswordController
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Controllers\Auth
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class ForgotPasswordController extends Controller
 {
 
@@ -73,7 +84,7 @@ class ForgotPasswordController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        $this->middleware('guest' );
     }
 
     /**
@@ -81,44 +92,43 @@ class ForgotPasswordController extends Controller
      *
      * @return  View
      */
-    public function showLinkRequestForm() : View {
+    public function showLinkRequestForm() : View
+    {
         return view( 'auth/forgot-password' );
     }
 
     /**
      * Send a reset link to the given user.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $r
      *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @return RedirectResponse
      *
      * @throws
      */
-    public function sendResetLinkEmail(Request $request){
-
-        $this->validate($request, ['username' => 'required'] );
+    public function sendResetLinkEmail( Request $r ): RedirectResponse
+    {
+        $this->validate( $r, ['username' => 'required'] );
 
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we
         // need to show to the user. Finally, we'll send out a proper response.
         $response = $this->broker()->sendResetLink(
-            $request->only('username')
+            $r->only('username')
         );
 
-
-        return $response == Password::RESET_LINK_SENT
-            ? $this->sendResetLinkResponse($request, $response)
-            : $this->sendResetLinkFailedResponse($request, $response);
+        return $response === Password::RESET_LINK_SENT
+            ? $this->sendResetLinkResponse()
+            : $this->sendResetLinkFailedResponse();
     }
 
     /**
      * Get the response for a successful password reset link.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $response
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     *
+     * @return RedirectResponse
      */
-    protected function sendResetLinkResponse(Request $request, $response)
+    protected function sendResetLinkResponse(): RedirectResponse
     {
         AlertContainer::push( 'The reset link has been sent to your email address.', Alert::SUCCESS );
         return redirect( route( 'login@login' ) );
@@ -127,46 +137,40 @@ class ForgotPasswordController extends Controller
     /**
      * Get the response for a failed password reset link.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $response
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @return RedirectResponse
      */
-    protected function sendResetLinkFailedResponse(Request $request, $response)
+    protected function sendResetLinkFailedResponse(): RedirectResponse
     {
         AlertContainer::push( "We can't find a user with that username" , Alert::DANGER );
         return back();
     }
-
 
     /**
      * Display the forgot username form
      *
      * @return  View
      */
-    public function showUsernameForm() : View{
+    public function showUsernameForm(): View
+    {
         return view( 'auth/forgot-username' );
     }
 
     /**
      * Send the email with the list of username for an email address
      *
-     * @param   ForgotUsernameRequest $request instance of the current HTTP request
+     * @param   ForgotUsernameRequest $r instance of the current HTTP request
      *
      * @return RedirectResponse
      */
-    public function sendUsernameEmail( ForgotUsernameRequest $request ) : RedirectResponse{
-
-        $users = D2EM::getRepository( UserEntity::class )->findBy( [ "email" => $request->input( "email" ) ] );
+    public function sendUsernameEmail( ForgotUsernameRequest $r ) : RedirectResponse
+    {
+        $users = User::where( 'email', $r->email )->get();
 
         if( count( $users ) ){
-
-            event( new ForgotUsernameEvent( $users, $request->input( "email" ) ) );
+            event( new ForgotUsernameEvent( $users, $r->email ) );
         }
 
         AlertContainer::push( 'If your email matches user(s) on the system, then an email listing those users has been sent to you.', Alert::SUCCESS );
-
         return Redirect::to( route( "login@showForm" ));
-
     }
-
 }

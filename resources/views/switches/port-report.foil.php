@@ -3,43 +3,32 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     Switches
     /
-    Port Report for <?= $t->s->getName() ?>
+    Port Report for <?= $t->s->name ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-
     <div class="btn-group btn-group-sm" role="group">
-
         <!-- Single button -->
         <div class="btn-group btn-group-sm">
-
             <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?=  $t->s->getName() ?> <span class="caret"></span>
+                <?=  $t->s->name ?> <span class="caret"></span>
             </button>
-
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
-                <?php foreach( $t->switches as $id => $name ): ?>
-                    <a class="dropdown-item <?= $t->s->getId() == $id ? 'active' : '' ?>" href="<?= route( "switch@port-report", [ "id" => $id ] ) ?>"><?= $name ?></a>
+                <?php foreach( $t->switches as $switch ): ?>
+                    <a class="dropdown-item <?= $t->s->id === $switch[ 'id' ] ? 'active' : '' ?>" href="<?= route( "switch@port-report", [ "switch" => $switch[ 'id' ] ] ) ?>"><?= $switch[ 'name' ] ?></a>
                 <?php endforeach; ?>
             </div>
         </div>
-
         <a class="btn btn-white" href="<?= route ('switch@list' ) ?>" title="list">
             <span class="fa fa-th-list"></span>
         </a>
-
     </div>
-
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
-
     <div class="row">
-
         <div class="col-sm-12">
-
             <table id="list-port" class="collapse table table-striped table-bordered" width="100%">
-
                 <thead class="thead-dark">
                     <tr>
                         <th>
@@ -59,11 +48,8 @@
                         </th>
                     </tr>
                 </thead>
-
                 <tbody>
-
                     <?php foreach( $t->ports as $port ): ?>
-
                         <tr>
                             <td>
                                 <?= $port[ "id" ] ?>
@@ -72,7 +58,7 @@
                                 <?= $port[ "name" ] ?>
                             </td>
                             <td>
-                                <?= $port[ "porttype" ] ?>
+                                <?= \IXP\Models\SwitchPort::$TYPES[ $port[ "porttype" ] ]?>
                             </td>
                             <?php if( isset( $port[ "speed" ] ) ): ?>
                                 <td>
@@ -86,21 +72,14 @@
                                 <td></td>
                             <?php endif; ?>
                         </tr>
-
                     <?php endforeach; ?>
-
                 </tbody>
-
             </table>
-
         </div>
-
     </div>
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-
     <script>
         $( document ).ready( function() {
 
@@ -128,5 +107,4 @@
 
         });
     </script>
-
 <?php $this->append() ?>

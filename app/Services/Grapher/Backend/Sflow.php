@@ -1,7 +1,9 @@
-<?php namespace IXP\Services\Grapher\Backend;
+<?php
+
+namespace IXP\Services\Grapher\Backend;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,39 +23,39 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Log;
+
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
+
 use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
-use IXP\Services\Grapher\Backend as GrapherBackend;
-
-use IXP\Services\Grapher\Graph;
-
 use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
+
+use IXP\Services\Grapher\Backend as GrapherBackend;
+use IXP\Services\Grapher\Graph;
 
 use IXP\Utils\Grapher\{
     Rrd  as RrdUtil
 };
 
-use Entities\IXP;
-
-use Log;
-
 /**
  * Grapher Backend -> Sflow
  *
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   Grapher
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <Yann@islandbridgenetworks.ie>
+ * @category   Ixp
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Sflow extends GrapherBackend implements GrapherBackendContract {
-
+class Sflow extends GrapherBackend implements GrapherBackendContract
+{
     /**
      * {@inheritDoc}
      *
      * @return string
      */
-    public function name(): string {
+    public function name(): string
+    {
         return 'sflow';
     }
 
@@ -64,7 +66,8 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      *
      * @return bool
      */
-    public function isConfigurationRequired(): bool {
+    public function isConfigurationRequired(): bool
+    {
         return false;
     }
 
@@ -72,9 +75,11 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      * This function indicates whether this graphing engine supports single monolithic text
      *
      * @see \IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
+     *
      * @return bool
      */
-    public function isMonolithicConfigurationSupported(): bool {
+    public function isMonolithicConfigurationSupported(): bool
+    {
         return false;
     }
 
@@ -82,9 +87,11 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      * This function indicates whether this graphing engine supports multiple files to a directory
      *
      * @see \IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
+     *
      * @return bool
      */
-    public function isMultiFileConfigurationSupported(): bool {
+    public function isMultiFileConfigurationSupported(): bool
+    {
         return false;
     }
 
@@ -95,6 +102,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      *
      * @param int   $type       The type of configuration to generate
      * @param array $options
+     *
      * @return array
      */
     public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC, array $options = [] ): array
@@ -109,7 +117,8 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      *
      * @return array
      */
-    public static function supports(): array {
+    public static function supports(): array
+    {
         $graphProtocols = Graph::PROTOCOLS;
         unset( $graphProtocols[ Graph::PROTOCOL_ALL ] );
 
@@ -138,19 +147,19 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
         ];
     }
 
-
     /**
      * Get the data points for a given graph
      *
      * {inheritDoc}
      *
-     * @param \IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
      *
      * @return array
      *
      * @throws
      */
-    public function data( Graph $graph ): array {
+    public function data( Graph $graph ): array
+    {
         try {
             $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
             return $rrd->data();
@@ -166,10 +175,13 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      * {inheritDoc}
      *
      * @param Graph $graph
+     *
      * @return string Path or empty string
-     * @throws CannotHandleRequestException
+     *
+     * @throws
      */
-    public function dataPath( Graph $graph ): string {
+    public function dataPath( Graph $graph ): string
+    {
         return $this->resolveFilePath( $graph, 'rrd' );
     }
 
@@ -184,7 +196,8 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      *
      * @throws
      */
-    public function png( Graph $graph ): string {
+    public function png( Graph $graph ): string
+    {
         try {
             $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
             return @file_get_contents( $rrd->png() );
@@ -205,7 +218,8 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      *
      * @throws
      */
-    public function rrd( Graph $graph ): string {
+    public function rrd( Graph $graph ): string
+    {
         try {
             $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
             return $rrd->rrd();
@@ -220,10 +234,12 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      * function just s/bits/bytes for accessing these files.
      *
      * @param string $c
+     *
      * @return string
      */
-    private function translateCategory( $c ): string {
-        if( $c == Graph::CATEGORY_BITS ) {
+    private function translateCategory( $c ): string
+    {
+        if( $c === Graph::CATEGORY_BITS ) {
             return 'bytes';
         }
         return $c;
@@ -240,29 +256,24 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      *
      * @throws
      */
-    private function resolveFileName( Graph $graph, $type ): string {
+    private function resolveFileName( Graph $graph, $type ): string
+    {
         switch( $graph->classType() ) {
             case 'Vlan':
                 /** @var Graph\Vlan $graph */
                 return sprintf( "aggregate.%s.%s.vlan%05d.%s",
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
-                    $graph->vlan()->getNumber(), $type );
-                break;
-
+                    $graph->vlan()->number, $type );
             case 'VlanInterface':
                 /** @var Graph\VlanInterface $graph */
                 return sprintf( "individual.%s.%s.src-%05d.%s",
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
-                    $graph->vlanInterface()->getId(), $type );
-                break;
-
+                    $graph->vlanInterface()->id, $type );
             case 'P2p':
                 /** @var Graph\P2p $graph */
                 return sprintf( "p2p.%s.%s.src-%05d.dst-%05d.%s",
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
-                    $graph->svli()->getId(), $graph->dvli()->getId(), $type );
-                break;
-
+                    $graph->svli()->id, $graph->dvli()->id, $type );
             default:
                 throw new CannotHandleRequestException("Backend asserted it could process but cannot handle graph of type: {$graph->type()}" );
         }
@@ -278,7 +289,8 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      *
      * @throws
      */
-    private function resolveFilePath( Graph $graph, $type ): string {
+    private function resolveFilePath( Graph $graph, $type ): string
+    {
         $config = config('grapher.backends.sflow');
 
         switch( $graph->classType() ) {
@@ -287,27 +299,18 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
                 return sprintf( "%s/%s/%s/aggregate/%s", $config['root'],
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
                     $this->resolveFileName( $graph, $type ) );
-                break;
-
             case 'VlanInterface':
                 /** @var Graph\VlanInterface $graph */
                 return sprintf( "%s/%s/%s/individual/%s", $config['root'],
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
                     $this->resolveFileName( $graph, $type ) );
-                break;
-
             case 'P2p':
                 /** @var Graph\P2p $graph */
                 return sprintf( "%s/%s/%s/p2p/src-%05d/%s", $config['root'],
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
-                    $graph->svli()->getId(), $this->resolveFileName( $graph, $type ) );
-                break;
-
+                    $graph->svli()->id, $this->resolveFileName( $graph, $type ) );
             default:
                 throw new CannotHandleRequestException("Backend asserted it could process but cannot handle graph of type: {$graph->type()}" );
         }
     }
-
-
-
 }

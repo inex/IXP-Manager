@@ -3,7 +3,7 @@
 namespace IXP\Services;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,10 +23,27 @@ namespace IXP\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Cache, Config;
+
 use IXP\Exceptions\Services\Grapher\{
         BadBackendException,
         ConfigurationException,
         GraphCannotBeProcessedException
+};
+
+use Closure;
+use Illuminate\Contracts\Cache\Repository;
+use IXP\Contracts\Grapher\Backend as BackendContract;
+
+use IXP\Models\{
+    Customer,
+    CoreBundle,
+    Infrastructure,
+    PhysicalInterface,
+    VirtualInterface,
+    VlanInterface,
+    Switcher,
+    Vlan
 };
 
 use IXP\Services\Grapher\Graph;
@@ -46,42 +63,28 @@ use IXP\Services\Grapher\Graph\{
     Latency           as LatencyGraph
 };
 
-use IXP\Contracts\Grapher\Backend as BackendContract;
-
-use Cache;
-use Config;
-
-use Entities\{
-    CoreBundle,
-    IXP,
-    Infrastructure,
-    Vlan,
-    Switcher,
-    PhysicalInterface,
-    VlanInterface,
-    VirtualInterface,
-    Customer
-};
-
 /**
  * Grapher Backend -> Mrtg
  *
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @category   Grapher
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
+ * @category   IXP
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Grapher {
-
+class Grapher
+{
     /**
      * Is the cache enabled?
+     *
      * @var bool
      */
     private $cacheEnabled = false;
 
     /**
      * Is the cache enabled?
+     *
      * @var bool
      */
     private $cacheLifetime = 300;
@@ -89,7 +92,8 @@ class Grapher {
     /**
      * Constructor
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->setupCache();
     }
 
@@ -102,12 +106,14 @@ class Grapher {
      * 1. As specified in the `$backend` parameter if not null
      * 2. First backend in `configs/grapher.php` `backend` element.
      *
-     * @param string $backend |null
+     * @param string|null $backend |null
+     *
      * @return string
-     * @throws BadBackendException
-     * @throws ConfigurationException
+     *
+     * @throws
      */
-    public function resolveBackend( string $backend = null ): string {
+    public function resolveBackend( string $backend = null ): string
+    {
         $config = config('grapher.backend');
 
         if( $backend === null ) {
@@ -118,7 +124,7 @@ class Grapher {
             }
         }
 
-        if( !is_array( $config ) || !in_array( $backend, $config ) ) {
+        if( !is_array( $config ) || !in_array( $backend, $config, true ) ) {
             throw new BadBackendException( 'No graphing provider enabled (see configs/grapher.php) for ' . $backend );
         }
 
@@ -129,13 +135,17 @@ class Grapher {
      * Return the required grapher for the specified backend
      *
      * If the backend is not specified, it is resolved via `resolveBackend()`.
+     * @param string|null $backend A specific backend to return. If not specified, we use command line arguments
+     *
+     * @return BackendContract
+     *
+     * @throws
+     *
      * @see \IXP\Console\Commands\Grapher\GrapherCommand::resolveBackend()
      *
-     * @param string|null $backend A specific backend to return. If not specified, we use command line arguments
-     * @return \IXP\Contracts\Grapher\Backend
-     * @throws
      */
-    public function backend( $backend = null ): BackendContract {
+    public function backend( $backend = null ): BackendContract
+    {
         $backend = $this->resolveBackend( $backend );
         $backendClass = Config::get( "grapher.providers.{$backend}" );
         return new $backendClass( config('grapher.backends')[ $backend ] );
@@ -144,13 +154,16 @@ class Grapher {
     /**
      * Return the required grapher for the specified graph
      *
-     * @param \IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
+     *
      * @param array|string $backends Limit search to specified backends
+     *
      * @return BackendContract
-     * @throws ConfigurationException , IXP\Exceptions\Services\Grapher\GraphCannotBeProcessedException
-     * @throws GraphCannotBeProcessedException
+     *
+     * @throws
      */
-    public function backendForGraph( Graph $graph, array $backends = [] ): BackendContract {
+    public function backendForGraph( Graph $graph, array $backends = [] ): BackendContract
+    {
         if( !count( $backends ) ) {
             $backends = config('grapher.backend');
         }
@@ -160,7 +173,6 @@ class Grapher {
         }
 
         foreach( $backends as $backend ) {
-
             if( ( $b = $this->backend( $backend ) )->canProcess( $graph ) ) {
                 return $b;
             }
@@ -172,11 +184,14 @@ class Grapher {
     /**
      * Return the available grapher backends for the specified graph
      *
-     * @param \IXP\Services\Grapher\Graph $graph
-     * @return \IXP\Contracts\Grapher\Backend[]
-     * @throws \IXP\Exceptions\Services\Grapher\ConfigurationException
+     * @param Graph $graph
+     *
+     * @return BackendContract[]
+     *
+     * @throws
      */
-    public function backendsForGraph( Graph $graph ): array {
+    public function backendsForGraph( Graph $graph ): array
+    {
         $config = config('grapher.backend');
         if( !is_array( $config ) || !count( $config ) ) {
             throw new ConfigurationException( 'No graphing backend supplied or configured (see configs/grapher.php)' );
@@ -195,9 +210,11 @@ class Grapher {
     /**
      * Iterate over all configured backends and provide a complete array of what
      * graph types are supported
+     *
      * @return array
      */
-    public function supports(): array {
+    public function supports(): array
+    {
         $s = [];
 
         foreach( config('grapher.backend') as $backend ) {
@@ -210,131 +227,166 @@ class Grapher {
 
     /**
      * Get an instance of an IXP graph
-     * @param \Entities\IXP $ixp
-     * @return \IXP\Services\Grapher\Graph\IXP
+     *
+     * @return IXPGraph
      */
-    public function ixp( IXP $ixp ): IXPGraph {
-        return new IXPGraph( $this, $ixp );
+    public function ixp(): IXPGraph
+    {
+        return new IXPGraph( $this );
     }
 
     /**
      * Get an instance of an infrastructure graph
-     * @param \Entities\Infrastructure $infra
-     * @return \IXP\Services\Grapher\Graph\Infrastructure
+     *
+     * @param Infrastructure $infra
+     *
+     * @return InfrastructureGraph
      */
-    public function infrastructure( Infrastructure $infra ): InfrastructureGraph {
+    public function infrastructure( Infrastructure $infra ): InfrastructureGraph
+    {
         return new InfrastructureGraph( $this, $infra );
     }
 
     /**
      * Get an instance of an vlan graph
-     * @param \Entities\Vlan $vlan
-     * @return \IXP\Services\Grapher\Graph\Vlan
+     *
+     * @param Vlan $vlan
+     *
+     * @return VlanGraph
      */
-    public function vlan( Vlan $vlan ): VlanGraph {
+    public function vlan( Vlan $vlan ): VlanGraph
+    {
         return new VlanGraph( $this, $vlan );
     }
 
     /**
      * Get an instance of a switch graph
-     * @param \Entities\Switcher $switch
-     * @return \IXP\Services\Grapher\Graph\Switcher
+     *
+     * @param Switcher $switch
+     *
+     * @return SwitchGraph
      */
-    public function switch( Switcher $switch ): SwitchGraph {
+    public function switch( Switcher $switch ): SwitchGraph
+    {
         return new SwitchGraph( $this, $switch );
     }
 
     /**
      * Get an instance of a trunk graph
+     *
      * @param string $trunkname
-     * @return \IXP\Services\Grapher\Graph\Trunk
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     *
+     * @return TrunkGraph
+     *
+     * @throws
      */
-    public function trunk( string $trunkname ): TrunkGraph {
+    public function trunk( string $trunkname ): TrunkGraph
+    {
         return new TrunkGraph( $this, $trunkname );
     }
 
     /**
      * Get an instance of a customer aggregate graph
-     * @param \Entities\Customer $c
-     * @return \IXP\Services\Grapher\Graph\Customer
+     *
+     * @param Customer $c
+     *
+     * @return CustomerGraph
      */
-    public function customer( Customer $c ): CustomerGraph {
+    public function customer( Customer $c ): CustomerGraph
+    {
         return new CustomerGraph( $this, $c );
     }
 
     /**
      * Get an instance of a physint graph
-     * @param \Entities\PhysicalInterface $int
-     * @return \IXP\Services\Grapher\Graph\PhysicalInterface
+     *
+     * @param PhysicalInterface $int
+     *
+     * @return PhysIntGraph
      */
-    public function physint( PhysicalInterface $int ): PhysIntGraph {
+    public function physint( PhysicalInterface $int ): PhysIntGraph
+    {
         return new PhysIntGraph( $this, $int );
     }
 
     /**
      * Get an instance of a virtint graph
-     * @param \Entities\VirtualInterface $int
-     * @return \IXP\Services\Grapher\Graph
+     *
+     * @param VirtualInterface $int
+     *
+     * @return Graph
      */
-    public function virtint( VirtualInterface $int ): Graph {
+    public function virtint( VirtualInterface $int ): Graph
+    {
         // if there is only one physint, then the user really wants that:
-        if( count( $int->getPhysicalInterfaces() ) == 1 ) {
-            return $this->physint( $int->getPhysicalInterfaces()[0] );
+        if( $int->physicalInterfaces->count()  === 1 ) {
+            return $this->physint( $int->physicalInterfaces->first() );
         }
         return new VirtIntGraph( $this, $int );
     }
 
     /**
      * Get an instance of a vlanint graph
-     * @param \Entities\VlanInterface $int
-     * @return \IXP\Services\Grapher\Graph\VlanInterface
+     *
+     * @param VlanInterface $int
+     *
+     * @return VlanIntGraph
      */
-    public function vlanint( VlanInterface $int ): VlanIntGraph {
+    public function vlanint( VlanInterface $int ): VlanIntGraph
+    {
         return new VlanIntGraph( $this, $int );
     }
 
     /**
      * Get an instance of a CoreBundle aggregate graph
-     * @param \Entities\CoreBundle $cb
-     * @param string $side
-     * @return \IXP\Services\Grapher\Graph\CoreBundle
+     *
+     * @param CoreBundle    $cb
+     * @param string        $side
+     *
+     * @return CoreBundleGraph
      */
-    public function coreBundle( CoreBundle $cb, string $side = 'a' ): CoreBundleGraph {
+    public function coreBundle( CoreBundle $cb, string $side = 'a' ): CoreBundleGraph
+    {
         return new CoreBundleGraph( $this, $cb, $side );
     }
 
     /**
      * Get an instance of a p2p graph
-     * @param \Entities\VlanInterface $svli
-     * @param \Entities\VlanInterface $dvli
-     * @return \IXP\Services\Grapher\Graph\P2p
+     *
+     * @param VlanInterface $svli
+     * @param VlanInterface $dvli
+     *
+     * @return P2pGraph
      */
-    public function p2p( VlanInterface $svli, VlanInterface $dvli ): P2pGraph {
+    public function p2p( VlanInterface $svli, VlanInterface $dvli ): P2pGraph
+    {
         return new P2pGraph( $this, $svli, $dvli );
     }
 
-
     /**
      * Get an instance of a latency graph
+     *
      * @param VlanInterface $vli
+     *
      * @return LatencyGraph
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     *
+     * @throws
      */
-    public function latency( VlanInterface $vli ): LatencyGraph {
+    public function latency( VlanInterface $vli ): LatencyGraph
+    {
         return new LatencyGraph( $this, $vli );
     }
 
-
-
     /**
      * initialise the cache
+     *
      * @return void
      */
-    private function setupCache() {
+    private function setupCache(): void
+    {
         if( config('grapher.cache.enabled', false ) ) {
-            $this->cacheEnabled = true;
-            $this->cacheLifetime = config('grapher.cache.lifetime', 5 );
+            $this->cacheEnabled     = true;
+            $this->cacheLifetime    = config('grapher.cache.lifetime', 5 );
         } else {
             $this->cacheEnabled = false;
         }
@@ -344,32 +396,35 @@ class Grapher {
      * Is the cache enabled?
      * @return bool
      */
-    public function cacheEnabled(): bool {
+    public function cacheEnabled(): bool
+    {
         return (bool)$this->cacheEnabled;
     }
 
     /**
      * Manually disable the cache
      */
-    public function disableCache(): void {
+    public function disableCache(): void
+    {
         $this->cacheEnabled = false;
     }
 
-
     /**
      * How long do we cache entries for?
+     *
      * @return int (minutes)
      */
-    public function cacheLifetime(): int {
+    public function cacheLifetime(): int
+    {
         return (int)$this->cacheLifetime;
     }
 
-
     /**
      * Get the cache repository
-     * @return \Illuminate\Contracts\Cache\Repository
+     *
+     * @return Repository
      */
-    public function cacheRepository(): \Illuminate\Contracts\Cache\Repository
+    public function cacheRepository(): Repository
     {
         return Cache::store( config('grapher.cache.store' ) );
     }
@@ -379,16 +434,16 @@ class Grapher {
      *
      * See Laravel's Cache::remember() function
      *
-     * @param string $key
-     * @param \Closure $fn Callback to populate the cache
+     * @param string    $key
+     * @param Closure   $fn Callback to populate the cache
+     *
      * @return mixed
      */
-    public function remember( $key, $fn ) {
+    public function remember( string $key, Closure $fn )
+    {
         if( $this->cacheEnabled() ) {
             return $this->cacheRepository()->remember( $key, $this->cacheLifetime(), $fn );
-        } else {
-            return $fn();
         }
+        return $fn();
     }
-
 }

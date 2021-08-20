@@ -1,9 +1,8 @@
 <div class="card">
     <div class="card-body">
-
-        <?= Former::open()->method( 'POST' )
+        <?= Former::open()->method(  $t->data['params']['isAdd'] ? 'POST' : 'PUT'  )
             ->id( 'form' )
-            ->action( route( $t->feParams->route_prefix . '@store' ) )
+            ->action( $t->data['params']['isAdd'] ? route( $t->feParams->route_prefix . '@store' ) : route($t->feParams->route_prefix . '@update', [ 'id' => $t->data[ 'params'][ 'object']->id ] ) )
             ->customInputWidthClass( 'col-lg-4 col-sm-6' )
             ->customLabelWidthClass( 'col-lg-2 col-sm-3' )
             ->actionButtonsCustomClass( "grey-box")
@@ -14,13 +13,13 @@
             ->blockHelp( "Description of the device that this console port connects to. Usually a switch hostname." );
         ?>
 
-        <?= Former::select( 'serverid' )
+        <?= Former::select( 'console_server_id' )
             ->id( 'Server' )
             ->label( 'Console Server' )
             ->placeholder( 'Select a console server' )
             ->fromQuery( $t->data[ 'params'][ 'servers' ], 'name' )
             ->addClass( 'chzn-select' )
-            ->blockHelp( "Chose the console server." );
+            ->blockHelp( "Choose the console server." );
         ?>
 
         <?= Former::select( 'custid' )
@@ -37,38 +36,36 @@
             ->blockHelp( "Enter the port number." );
         ?>
 
-        <div id="autobaud-section" style="<?= $t->data['params']['object'] && $t->data['params']['object']->getAutobaud() ? 'display: none;' : '' ?>">
+        <div id="autobaud-section" style="<?= $t->data['params']['object'] && $t->data['params']['object']->autobaud ? 'display: none;' : '' ?>">
 
             <?= Former::select( 'speed' )
                 ->label( 'Speed' )
                 ->placeholder( "Choose speed")
-                ->options(   Entities\ConsoleServerConnection::$SPEED )
+                ->options(   \IXP\Models\ConsoleServerConnection::$SPEED )
                 ->addClass( 'chzn-select' )
-                ->blockHelp( 'Enter the baud speed - used for your own informational purposes but could also be used for automated console server provisioning.' );
+                ->blockHelp( 'Enter the baud rate - used for your own informational purposes but could also be used for automated console server provisioning.' );
             ?>
 
             <?= Former::select( 'parity' )
                 ->label( 'Parity' )
                 ->placeholder( "Choose parity")
-                ->options(   Entities\ConsoleServerConnection::$PARITY )
+                ->options(   \IXP\Models\ConsoleServerConnection::$PARITY )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( 'Enter the parity - used for your own informational purposes but could also be used for automated console server provisioning.' );
             ?>
 
-
             <?= Former::select( 'stopbits' )
                 ->label( 'Stopbits' )
                 ->placeholder( "Choose stop bits")
-                ->options(   Entities\ConsoleServerConnection::$STOP_BITS )
+                ->options(   \IXP\Models\ConsoleServerConnection::$STOP_BITS )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( 'Enter the number of stop bits - used for your own informational purposes but could also be used for automated console server provisioning.' );
             ?>
 
-
             <?= Former::select( 'flowcontrol' )
                 ->label( 'Flow Control' )
                 ->placeholder( "Choose flow control")
-                ->options(   Entities\ConsoleServerConnection::$FLOW_CONTROL )
+                ->options(   \IXP\Models\ConsoleServerConnection::$FLOW_CONTROL )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( 'Enter the flowcontrol status - used for your own informational purposes but could also be used for automated console server provisioning.' );
             ?>
@@ -81,11 +78,10 @@
             ->text( 'Autobaud' )
             ->value( 1 )
             ->inline()
-            ->blockHelp( "Indicate is autobaud is supported - used for your own informational purposes but could also be used for automated console server provisioning." );
+            ->blockHelp( "Indicate whether autobaud is supported - used for your own informational purposes but could also be used for automated console server provisioning." );
         ?>
 
         <div class="form-group col-lg-8 col-sm-12">
-
             <div class="col-lg-offset-2 col-sm-offset-2">
                 <div class="card mt-4">
                     <div class="card-header">
@@ -114,28 +110,20 @@
                         </div>
                     </div>
                 </div>
-
             </div>
-
         </div>
 
-
         <?= Former::actions(
-            Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->class( "mb-2 mb-sm-0"),
-            Former::secondary_link( 'Cancel' )->href( isset( $t->data[ 'params'][ "cs" ] ) ? route ($t->feParams->route_prefix . '@listPort' , [ "port" => $t->data[ 'params'][ "cs" ] ] )  : route ($t->feParams->route_prefix . '@list') )->class( "mb-2 mb-sm-0"),
+            Former::primary_submit( $t->data['params']['isAdd'] ? 'Create' : 'Save Changes' )->class( "mb-2 mb-sm-0"),
+            Former::secondary_link( 'Cancel' )->href( isset( $t->data[ 'params'][ "cs" ] ) ? route ($t->feParams->route_prefix . '@listPort' , [ "cs" => $t->data[ 'params'][ "cs" ] ] )  : route ($t->feParams->route_prefix . '@list') )->class( "mb-2 mb-sm-0"),
             Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0")
         );
         ?>
 
-        <?= Former::hidden( 'id' )
-            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
-        ?>
-
         <?= Former::hidden( 'cs' )
-            ->value( isset( $t->data[ 'params'][ "cs" ] ) ? $t->data[ 'params'][ "cs" ] : "" )
+            ->value( $t->data[ 'params' ][ "cs" ] ?? "" )
         ?>
 
         <?= Former::close() ?>
-
     </div>
 </div>

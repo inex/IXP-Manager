@@ -22,11 +22,11 @@ namespace IXP\Console\Commands\Utils;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
+use Illuminate\Support\Facades\Mail;
 
 use IXP\Console\Commands\Command as IXPCommand;
+
 use IXP\Mail\Utils\SmtpTest as SmtpTestMail;
-use Illuminate\Support\Facades\Mail;
 
 /**
  * Class SmtpMailTest - test sending emails
@@ -34,7 +34,7 @@ use Illuminate\Support\Facades\Mail;
  * @see https://docs.ixpmanager.org/usage/email/
  * @author Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @package IXP\Console\Commands\Utils
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SmtpMailTest extends IXPCommand
@@ -60,13 +60,12 @@ class SmtpMailTest extends IXPCommand
      */
     public function handle()
     {
-
         $email = $this->argument( 'email' );
 
         $this->info( "This utility allows you to test your SMTP settings to verify that IXP Manager can send email." );
 
-        if( config( 'mail.driver' ) !== 'smtp' ) {
-            $this->error( "The mail driver ('MAIL_DRIVER' in your .env file) is not set to \"smtp\". " );
+        if( config( 'mail.default' ) !== 'smtp' ) {
+            $this->error( "The mail driver ('MAIL_MAILER' in your .env file) is not set to \"smtp\". " );
             $this->error( "SMTP is the only officially supported driver in IXP Manager. " );
             return -1;
         }
@@ -79,12 +78,12 @@ class SmtpMailTest extends IXPCommand
         $this->info( "\nTesting using the following parameters:\n" );
 
         $this->table( [], [
-            [ 'Driver', config( 'mail.driver' ) ],
-            [ 'Host', config( 'mail.host' ) ],
-            [ 'Port', config( 'mail.port' ) ],
-            [ 'Encryption', config( 'mail.encryption', '(none)' ) ],
-            [ 'Username', config( 'mail.username', '(none)' ) ],
-            [ 'Password', config( 'mail.password', '(none)' ) ],
+            [ 'Driver', config( 'mail.default' ) ],
+            [ 'Host', config( 'mail.mailers.smtp.host' ) ],
+            [ 'Port', config( 'mail.mailers.smtp.port' ) ],
+            [ 'Encryption', config( 'mail.mailers.smtp.encryption', '(none)' ) ],
+            [ 'Username', config( 'mail.mailers.smtp.username', '(none)' ) ],
+            [ 'Password', config( 'mail.mailers.smtp.password', '(none)' ) ],
             [ 'From Name', config( 'identity.name' ) ],
             [ 'From Email', config( 'identity.email' ) ],
         ] );

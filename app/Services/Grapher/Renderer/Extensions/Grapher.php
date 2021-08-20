@@ -1,4 +1,6 @@
-<?php namespace IXP\Services\Grapher\Renderer\Extensions;
+<?php
+
+namespace IXP\Services\Grapher\Renderer\Extensions;
 
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -40,26 +42,30 @@ use IXP\Services\Grapher\Graph\{
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Grapher implements ExtensionInterface {
+class Grapher implements ExtensionInterface
+{
     
     private $args;
 
-    public function setup(array $args = []) {
+    public function setup(array $args = [])
+    {
         $this->args = $args;
     }
 
-    public function provideFilters() {
+    public function provideFilters()
+    {
        return [];
     }
     
-    public function provideFunctions() {
+    public function provideFunctions()
+    {
         return [
           'grapher' => [$this, 'getObject']
         ];
     }
 
-
-    public function getObject(): Grapher {
+    public function getObject(): Grapher
+    {
        return $this;
     }
 
@@ -71,9 +77,11 @@ class Grapher implements ExtensionInterface {
      * > If your community contains a "@" or a " " these characters must be escaped with a "\".
      *
      * @param string $c The SNMP community to be escaped
+     *
      * @return string The escaped community
      */
-    public function escapeCommunityForMrtg( string $c ): string {
+    public function escapeCommunityForMrtg( string $c ): string
+    {
         return str_replace( '@', '\@', str_replace(' ', '\\ ', $c ) );
     }
 
@@ -97,10 +105,12 @@ class Grapher implements ExtensionInterface {
     * @param string $format     The format to sue (as above: bytes / pkts / errs / etc )
     * @param int    $decs       Number of decimals after the decimal point. Defaults to 3.
     * @param int    $returnType Type of string to return. Valid values are listed above. Defaults to 0.
+    *
     * @return string            Scaled / formatted number / type.
     */
-    public function scale( float $v, string $format, int $decs = 3, int $returnType = 0 ): string {
-        if( $format == "bytes" ) {
+    public function scale( float $v, string $format, int $decs = 3, int $returnType = 0 ): string
+    {
+        if( $format === "bytes" ) {
             $formats = [
                 "Bytes", "KBytes", "MBytes", "GBytes", "TBytes"
             ];
@@ -116,7 +126,7 @@ class Grapher implements ExtensionInterface {
 
         for( $i = 0; $i < sizeof( $formats ); $i++ )
         {
-            if( ( $v / 1000.0 < 1.0 ) || ( sizeof( $formats ) == $i + 1 ) ) {
+            if( ( $v / 1000.0 < 1.0 ) || ( sizeof( $formats ) === $i + 1 ) ) {
                 if( $returnType == 0 )
                     return number_format( $v, $decs ) . "&nbsp;" . $formats[$i];
                 elseif( $returnType == 1 )
@@ -131,7 +141,6 @@ class Grapher implements ExtensionInterface {
         // should not get here:
         return '';
     }
-
 
     /**
      * Utility function to determine if the currently logged in user can access 'all customer' graphs
@@ -162,5 +171,4 @@ class Grapher implements ExtensionInterface {
     {
         return LatencyGraph::authorisedForAllCustomers();
     }
-
 }
