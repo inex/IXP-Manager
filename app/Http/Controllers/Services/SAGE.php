@@ -24,25 +24,14 @@ namespace IXP\Http\Controllers\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Log;
+use DB,  Log;
 
 
 use Carbon\Carbon;
-use Laravel\Socialite\Facades\Socialite;
 
 use Cache, Config;
 
-
-use Entities\{
-    IXP,
-    Infrastructure,
-    Vlan,
-    Switcher,
-    PhysicalInterface,
-    VlanInterface,
-    VirtualInterface,
-    Customer
-};
+use IXP\Models\Customer;
 
 
 use ErrorException;
@@ -50,10 +39,6 @@ use ErrorException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
-
-use IXP\Contracts\LookingGlass as LookingGlassContract;
-
-use IXP\Exceptions\Services\LookingGlass\GeneralException as LookingGlassGeneralException;
 
 use IXP\Http\Controllers\Controller;
 
@@ -563,28 +548,30 @@ class SAGE extends Controller
      */
     private function getPhysIntsForAccounting(): array
     {
-        $pis = D2EM::createQuery(
-            "SELECT pi.id AS id, pi.speed AS speed, pi.status AS status,
-                    c.name AS customer, c.id AS custid, c.autsys AS autsys,
-                    vi.id AS vintid, 
-                    v.id AS vlanid, v.number AS vlantag, v.private AS privatevlan
-                    
-                    FROM \\Entities\\PhysicalInterface pi
-                        LEFT JOIN pi.VirtualInterface vi
-                        LEFT JOIN vi.VlanInterfaces vli
-                        LEFT JOIN vli.Vlan v 
-                        LEFT JOIN vi.Customer c
-                        
-                    WHERE c.type = " . Customer::TYPE_FULL . "
-                        AND pi.status = " . PhysicalInterface::STATUS_CONNECTED . "
-                        
-                    ORDER BY customer ASC, vlantag ASC, speed DESC"
-        )->getArrayResult();
+        $pis = \DB::table( 'physicalinterface' )
+            ->select( DB::raw(
+                    "physicalinterface.id AS physicalinterface, physicalinterface.speed AS speed, physicalinterface.status AS status,
+                    cust.name AS customer, cust.id AS custid, cust.autsys AS autsys,
+                    virtualinterface.id AS vintid, 
+                    vlan.id AS vlanid, vlan.number AS vlantag, vlan.private AS privatevlan" )
+            )
+            ->leftJoin( 'virtualinterface', 'physicalinterface.virtualinterfaceid', '=', 'virtualinterface.id' )
+            ->leftJoin( 'vlaninterface', 'vlaninterface.virtualinterfaceid', '=', 'virtualinterface.id' )
+            ->leftJoin( 'vlan', 'vlaninterface.vlanid', '=', 'vlan.id' )
+            ->leftJoin( 'cust', 'virtualinterface.custid', '=', 'cust.id' )
+
+            ->where( 'cust.type', \IXP\Models\Customer::TYPE_FULL )
+            ->where( 'physicalinterface.status', \IXP\Models\PhysicalInterface::STATUS_CONNECTED )
+            ->orderBy( 'cust.name', 'ASC' )
+            ->orderBy( 'vlan.number', 'ASC' )
+            ->orderBy( 'physicalinterface.speed', 'DESC' )
+            ->get();
 
         // rearrange into per-customer, per vlan groups
         $summary = [];
 
         foreach( $pis as $pi ) {
+            $pi = (array)$pi;
             if( !isset( $summary[ $pi['autsys'] ] ) ) {
                 $summary[ $pi['autsys'] ]['customer']     = $pi['customer'];
                 $summary[ $pi['autsys'] ]['custid']       = $pi['custid'];
@@ -696,28 +683,15 @@ class SAGE extends Controller
     {
         set_time_limit(0);
 
-        $suser = Socialite::driver('sage')->user();
+        //$suser = Socialite::driver('sage')->user();
 
-        $sageLedgers   = $this->sageGetLedgers( $suser );
-        $sageServices  = $this->sageGetServices( $suser );
-        $sageCustomers = $this->sageGetCustomers( $suser );
+//        $sageLedgers   = $this->sageGetLedgers( $suser );
+//        $sageServices  = $this->sageGetServices( $suser );
+//        $sageCustomers = $this->sageGetCustomers( $suser );
 
         $member_pis = $this->getPhysIntsForAccounting();
 
-        $fp = fopen( base_path( 'cust-for-import.csv' ), "r" );
-
-        // throw away first line
-        fgetcsv( $fp );
-
-        $custids = [];
-
-        // for 2021 we're taking customers from the Quickbooks export first and then will identify any we miss later
-        while( $csvl = fgetcsv( $fp ) ) {
-            $custids[$csvl[1]] = (int)$csvl[1];
-        }
-
-        $dbAsnToIds = \IXP\Models\Customer::get(['id', 'autsys'])->keyBy('autsys')->toArray();
-
+        $fp = fopen( base_path( 'cust-for-import.csv' ), "w" );
 
         $lan1vid = 10;
         $lan2vid = 12;
@@ -742,44 +716,23 @@ class SAGE extends Controller
             $lan2_free_applied = false;
 
             /** @var Customer $cust */
-            $cust = d2r('Customer')->find( $dbAsnToIds[$asn]['id'] );
-            unset( $dbAsnToIds[$asn] );
-            unset( $custids[$cust->getId()]);
+            $cust = Customer::whereAutsys( $asn )->whereNull('dateleave')->first();
 
-
-            if( in_array( $cust->getId(), [ 182, 183, 190, 171, 142 ] ) ) {
-                Log::info( "***** SKIPPING {$cust->getName()}");
+            if( in_array( $cust->id, [ 182, 183, 190, 171, 142 ] ) ) {
+                Log::info( "***** SKIPPING {$cust->name}");
                 continue;
             }
 
-            Log::info( "***** START {$cust->getName()}");
-
-            $invoice = [
-                'contact_id' => $sageCustomers[ $cust->getId() ],
-                'date'       => '2021-01-22',
-                'status_id'  => 'DRAFT',
-            ];
-
-            if( $cust->getBillingDetails()->getVatRate() ) {
-                $invoice['reference'] = "P/O: " . $cust->getBillingDetails()->getVatRate();
-            }
-
-            $notes .= "Billing period: " . Carbon::now()->startOfMonth()->format( 'M jS, Y' )
-                . ' - ' . Carbon::now()->startOfMonth()->addMonths( $cust->getBillingDetails()->getFrequencyAsNumMonths() - 1 )->endOfMonth()->format( 'M jS, Y' )
-                . '. ';
+            Log::info( "***** START {$cust->name}");
 
             // membership
-            $fee = round( $this->services['MEMBERFEE']['p'], 2);
-            $invoice_lines[$ilidx++] = [
-                'description'             => $this->services['MEMBERFEE']['d'],
-                'ledger_account_id'       => $sageLedgers[ $this->services['MEMBERFEE']['l'] ],
-                'quantity'                => (string)($cust->getBillingDetails()->getFrequencyAsNumMonths()/12),
-                'unit_price'              => (string)$fee,
-                'service_id'              => $sageServices['MEMBERFEE'],
-                'unit_price_includes_tax' => false,
-            ];
-
-            $totals[ 'MEMBERFEE' ] += $invoice_lines[$ilidx-1]['quantity']*$invoice_lines[$ilidx-1]['unit_price'];
+            fputcsv( $fp, [
+                'cust_asn'   => $asn,
+                'cust_name'  => $cust->name,
+                'category'   => 'MEMBER_FEE',
+                'service'    => 'MEMBER_FEE',
+                'cost'       => round( (int)$this->services['MEMBERFEE']['p'], 2)/2,
+            ]);
 
             // getPhysIntsForAccounting() query's ORDER BY is critical in how this works:
             foreach( $pis[ 'vlans' ] as $vid => $ports ) {
@@ -794,32 +747,31 @@ class SAGE extends Controller
                     if( $vid == $lan2vid && ( $p == 1000 || $p == 10000 ) && $eligable_for_lan2_free && !$lan2_free_applied ) {
 
                         $sc = $p == 1000 ? 'LAN2-1G-FREE' : 'LAN2-10G-FREE';
-
-                        $fee = $this->services[$sc]['p'];
-                        $invoice_lines[$ilidx++] = [
-                            'description'             => $this->services[ $sc ]['d'],
-                            'ledger_account_id'       => $sageLedgers[ $this->services[$sc]['l'] ],
-                            'quantity'                => $cust->getBillingDetails()->getFrequencyAsNumMonths(),
-                            'unit_price'              => (string)$fee,
-                            'service_id'              => $sageServices[$sc],
-                            'unit_price_includes_tax' => false,
-                        ];
-
                         $lan2_free_applied = true;
 
-                        $totals[ $sc ] += $invoice_lines[$ilidx-1]['quantity']*$invoice_lines[$ilidx-1]['unit_price'];
+                        fputcsv( $fp, [
+                            'cust_asn'   => $asn,
+                            'cust_name'  => $cust->name,
+                            'category'   => 'LAN2',
+                            'service'    => $sc,
+                            'cost'       => 0,
+                        ]);
 
                         continue;
                     }
 
                     $sc = '';
+                    $lan = '';
                     if( $vid == $lan1vid ) {
                         $eligable_for_lan2_free = true;
                         $sc .= 'LAN1-';
+                        $lan = 'LAN1';
                     } else if( $vid == $lan2vid ) {
                         $sc .= 'LAN2-';
+                        $lan = 'LAN2';
                     } else {
                         $sc .= 'CORK-';
+                        $lan = 'CORK';
                     }
 
                     $sc .= ( $p / 1000 ) . 'G-';
@@ -832,104 +784,97 @@ class SAGE extends Controller
                     }
 
                     $fee = $this->services[$sc]['p'];
-                    $invoice_lines[$ilidx++] = [
-                        'description'             => $this->services[ $sc ]['d'],
-                        'ledger_account_id'       => $sageLedgers[ $this->services[$sc]['l'] ],
-                        'quantity'                => $cust->getBillingDetails()->getFrequencyAsNumMonths(),
-                        'unit_price'              => (string)$fee,
-                        'service_id'              => $sageServices[$sc],
-                    ];
 
-                    $totals[ $sc ] += $invoice_lines[$ilidx-1]['quantity']*$invoice_lines[$ilidx-1]['unit_price'];
+                    fputcsv( $fp, [
+                        'cust_asn'   => $asn,
+                        'cust_name'  => $cust->name,
+                        'category'   => $lan,
+                        'service'    => $sc,
+                        'cost'       => $fee*6,
+                    ]);
 
                 }
             }
 
-            // EU ?
-            if( in_array( $cust->getBillingDetails()->getBillingCountry(), [ 'BE', 'EL', 'LT', 'PT', 'BG', 'ES', 'LU', 'RO', 'CZ', 'FR', 'HU', 'SI', 'DK', 'HR', 'MT', 'SK', 'DE', 'IT', 'NL', 'FI', 'EE', 'CY', 'AT', 'SE', 'LV', 'PL' ] ) ) {
-
-                foreach( $invoice_lines as $i => $il ) {
-                    $invoice_lines[ $i ][ 'eu_goods_services_type_id' ] = 'SERVICES';
-                    $invoice_lines[$i]['eu_sales_descriptions']     = 'STANDARD';
-
-                    $invoice_lines[ $i ][ 'tax_rate_id' ] = 'IE_ZERO';
-                    $invoice_lines[ $i ][ 'tax_amount' ] = '0.00';
-                }
-
-                $notes .= 'All supplies are an intra-community supply. ';
-
-                // Northern Ireland
-            } else if( in_array( $cust->getId(), [ 22, 172, 25, 39 ] ) ) {
-
-                    foreach( $invoice_lines as $i => $il ) {
-                        $invoice_lines[$i]['eu_goods_services_type_id'] = 'SERVICES';
-
-                        $invoice_lines[$i]['tax_rate_id']               = 'IE_ZERO';
-                        $invoice_lines[$i]['tax_amount']                = '0.00';
-                    }
-
-            } else if( $cust->getBillingDetails()->getBillingCountry() == 'IE' ) {
-
-                foreach( $invoice_lines as $i => $il ) {
-                    $invoice_lines[ $i ][ 'tax_rate_id' ] = 'IE_STANDARD';
-                    $invoice_lines[ $i ][ 'tax_amount' ] = (string)round( ( $invoice_lines[ $i ]['quantity'] * $invoice_lines[ $i ]['unit_price'] * 0.21 ), 2 );
-                }
-
-            } else {
-
-                foreach( $invoice_lines as $i => $il ) {
-                    $invoice_lines[ $i ][ 'tax_rate_id' ] = 'IE_ZERO';
-                    $invoice_lines[ $i ][ 'tax_amount' ] = '0.00';
-                }
-            }
-
-            $invoice['invoice_lines'] = $invoice_lines;
-            $invoice['notes'] = $notes;
-
-            $guzzle = new \GuzzleHttp\Client();
-
-            $r = $guzzle->post( 'https://api.accounting.sage.com/v3.1/sales_invoices', [
-                    \GuzzleHttp\RequestOptions::JSON => [ 'sales_invoice' => $invoice ],
-                    'headers'                        => [
-                        'Authorization' => 'Bearer ' . $suser->token
-                    ]
-                ]
-            );
-
-            Log::info( "***** END {$cust->getName()}");
+            Log::info( "***** END {$cust->name}");
 
             // dd( json_decode( $r->getBody()->getContents() ));
 
         }
 
-        Log::info(json_encode($totals));
 
-        Log::info( "NO INVOICES VIA PIs FOR:" );
+        //             if( in_array( $cust->id, [ 182, 183, 190, 171 ] ) ) {
+        // specials
+        fputcsv( $fp, [
+            'cust_asn'   => 39120,
+            'cust_name'  => 'Convergenze [RESOLD]',
+            'category'   => 'MEMBER_FEE',
+            'service'    => 'MEMBER_FEE',
+            'cost'       => 500,
+        ]);
+        fputcsv( $fp, [
+            'cust_asn'   => 39120,
+            'cust_name'  => 'Convergenze [RESOLD]',
+            'category'   => 'LAN1',
+            'service'    => 'LAN1-10G-FIRST',
+            'cost'       => 990,
+        ]);
 
-        foreach( $dbAsnToIds as $asn => $id ) {
-            $cust = d2r('Customer')->find($id['id']);
 
-            if( $cust->isTypeAssociate() || $cust->hasLeft() ) {
-                continue;
-            }
+        fputcsv( $fp, [
+            'cust_asn'   => 60501,
+            'cust_name'  => 'Sirius Technology SRL [RESOLD]',
+            'category'   => 'MEMBER_FEE',
+            'service'    => 'MEMBER_FEE',
+            'cost'       => 500,
+        ]);
+        fputcsv( $fp, [
+            'cust_asn'   => 60501,
+            'cust_name'  => 'Sirius Technology SRL [RESOLD]',
+            'category'   => 'LAN1',
+            'service'    => 'LAN1-1G-FIRST',
+            'cost'       => 252,
+        ]);
 
-            Log::info( "    - " . $cust->getName() );
-        }
+        fputcsv( $fp, [
+            'cust_asn'   => 6774,
+            'cust_name'  => 'BICS / Belgacom International Carrier',
+            'category'   => 'MEMBER_FEE',
+            'service'    => 'MEMBER_FEE',
+            'cost'       => 500,
+        ]);
+        fputcsv( $fp, [
+            'cust_asn'   => 3303,
+            'cust_name'  => 'Swisscom [RESOLD]',
+            'category'   => 'MEMBER_FEE',
+            'service'    => 'MEMBER_FEE',
+            'cost'       => 500,
+        ]);
+        fputcsv( $fp, [
+            'cust_asn'   => 3303,
+            'cust_name'  => 'Swisscom [RESOLD]',
+            'category'   => 'LAN1',
+            'service'    => 'LAN1-1G-FIRST',
+            'cost'       => 252,
+        ]);
 
 
-        Log::info( "NO INVOICES VIA CSV FOR:" );
+        fputcsv( $fp, [
+            'cust_asn'   => 7713,
+            'cust_name'  => 'Telin [RESOLD]',
+            'category'   => 'MEMBER_FEE',
+            'service'    => 'MEMBER_FEE',
+            'cost'       => 500,
+        ]);
+        fputcsv( $fp, [
+            'cust_asn'   => 7713,
+            'cust_name'  => 'Telin [RESOLD]',
+            'category'   => 'LAN1',
+            'service'    => 'LAN1-1G-FIRST',
+            'cost'       => 252,
+        ]);
 
-        foreach( $custids as $id ) {
-            $cust = d2r('Customer')->find($id);
 
-            if( $cust->isTypeAssociate() || $cust->hasLeft() ) {
-                continue;
-            }
-
-            Log::info( "    - " . $cust->getName() );
-        }
-
-        dd($totals);
 
     }
 
