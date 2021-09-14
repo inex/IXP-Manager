@@ -307,15 +307,15 @@ abstract class UpdateDb
             Cache::store('file')->forget( "irrdb:{$type}:ipv{$protocol}:" . $this->customer()->asMacro( $protocol ) );
             Cache::store('file')->rememberForever( "irrdb:{$type}:ipv{$protocol}:" . $this->customer()->asMacro( $protocol ), function() use ($model,$type,$protocol) {
 
-                $orderBy = 'asn';
+                $orderBy = 'asn ASC';
                 if( $type == 'prefix' ) {
-                    $orderBy = 'INET' . ( $protocol === 6 ? '6' : '' ) . '_ATON( prefix )';
+                    $orderBy = 'INET' . ( $protocol === 6 ? '6' : '' ) . '_ATON( prefix ) ASC';
                 }
 
                 return $model::select($type)
                     ->where( 'customer_id', $this->customer()->id )
                     ->where('protocol', $protocol )
-                    ->orderBy( $orderBy, 'ASC' )
+                    ->orderByRaw( $orderBy )
                     ->orderBy( 'id', 'ASC' )
                     ->pluck($type)
                     ->toArray();
