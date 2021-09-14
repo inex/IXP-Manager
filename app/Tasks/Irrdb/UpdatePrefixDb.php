@@ -23,6 +23,8 @@ namespace IXP\Tasks\Irrdb;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+use Illuminate\Support\Facades\Cache;
 use Log;
 
 use IXP\Models\IrrdbPrefix;
@@ -69,12 +71,15 @@ class UpdatePrefixDb extends UpdateDb
                 // This customer is not appropriate for IRRDB filtering.
                 // Delete any pre-existing entries just in case this has changed recently:
                 $this->startTimer();
+
+                Cache::store('file')->forget( 'irrdb:prefix:ipv' . $protocol . ':' . $this->customer()->asMacro( $protocol ) );
+
                 IrrdbPrefix::whereCustomerId( $this->customer()->id )
                     ->whereProtocol( $protocol )->delete();
 
                 $this->result[ 'dbTime' ] += $this->timeElapsed();
                 $this->result[ 'v' . $protocol ][ 'dbUpdated' ] = true;
-                $this->result[ 'msg' ] = "Customer not a RS client or IRRDB filtered for IPv{$protocol}. IPv{$protocol} prefixes, if any, wiped from database.";
+                $this->result[ 'msg' ] = "{$this->customer()->name} not a RS client or IRRDB filtered for IPv{$protocol}. IPv{$protocol} prefixes, if any, wiped from database.";
             }
         }
 

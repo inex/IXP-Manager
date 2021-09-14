@@ -378,8 +378,8 @@ class VlanInterfaceAggregator extends VlanInterface
             $int['allpeeringips'] = self::getAllIPsForASN( $vlan, $int['autsys'], $protocol );
 
             if( $int['irrdbfilter'] ) {
-                $int['irrdbfilter_prefixes'] = IrrdbAggregator::forCustomerAndProtocol( $int[ 'cid' ], $protocol, 'prefix', true );
-                $int['irrdbfilter_asns'    ] = IrrdbAggregator::forCustomerAndProtocol( $int[ 'cid' ], $protocol, 'asn', true );
+                $int['irrdbfilter_prefixes'] = IrrdbAggregator::prefixesForRouterConfiguration( $int[ 'cid' ], $protocol );
+                $int['irrdbfilter_asns'    ] = IrrdbAggregator::asnsForRouterConfiguration( $int[ 'cid' ], $protocol );
             }
 
             $newints[ $int['address'] ] = $int;

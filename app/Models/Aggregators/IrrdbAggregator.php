@@ -24,6 +24,7 @@ namespace IXP\Models\Aggregators;
  */
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use IXP\Models\Customer;
 use IXP\Models\IPv4Address;
@@ -71,5 +72,58 @@ class IrrdbAggregator
         }
 
         return $results->keyBy( 'id' )->pluck( $field, 'id'  )->toArray();
+    }
+
+    /**
+     * Utility function to get the prefixes/ASN a customer has for a given protocol
+     * for the purpose of generating router configuration
+     *
+     * Returns an array of prefixes.
+     *
+     * @param int           $custid     The customer entity
+     * @param int           $protocol   The IP protocol (4/6)
+     *
+     * @return array The prefixes found
+     */
+    public static function prefixesForRouterConfiguration( int $custid, int $protocol ): array
+    {
+        // Pull these out of the cache if possible, otherwise the database.
+        $c = Customer::find($custid);
+
+        return Cache::store('file')->rememberForever( 'irrdb:prefix:ipv' . $protocol . ':' . $c->asMacro( $protocol ), function() use ($custid,$protocol) {
+            return IrrdbPrefix::select('prefix')
+                ->where( 'customer_id', $custid )
+                ->where('protocol', $protocol )
+                ->orderBy( 'id', 'ASC' )
+                ->pluck('prefix')
+                ->toArray();
+        });
+    }
+
+
+    /**
+     * Utility function to get the prefixes/ASN a customer has for a given protocol
+     * for the purpose of generating router configuration
+     *
+     * Returns an array of prefixes.
+     *
+     * @param int           $custid     The customer entity
+     * @param int           $protocol   The IP protocol (4/6)
+     *
+     * @return array The prefixes found
+     */
+    public static function asnsForRouterConfiguration( int $custid, int $protocol ): array
+    {
+        // Pull these out of the cache if possible, otherwise the database.
+        $c = Customer::find($custid);
+
+        return Cache::store('file')->rememberForever( 'irrdb:asn:ipv' . $protocol . ':' . $c->asMacro( $protocol ), function() use ($custid,$protocol) {
+            return IrrdbAsn::select('asn')
+                ->where( 'customer_id', $custid )
+                ->where('protocol', $protocol )
+                ->orderBy( 'id', 'ASC' )
+                ->pluck('asn')
+                ->toArray();
+        });
     }
 }
