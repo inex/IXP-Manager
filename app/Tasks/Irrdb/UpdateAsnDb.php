@@ -25,6 +25,7 @@ namespace IXP\Tasks\Irrdb;
  */
 
 use D2EM;
+use Illuminate\Support\Facades\Cache;
 use IXP\Models\IrrdbAsn;
 use Log;
 
@@ -54,7 +55,6 @@ class UpdateAsnDb extends UpdateDb
 
                 $this->startTimer();
                 $asns = $this->bgpq3()->getAsnList( $this->customer()->asMacro( $protocol, 'as' ), $protocol );
-
                 $this->result[ 'netTime' ] += $this->timeElapsed();
 
                 $this->result[ 'v' . $protocol ][ 'count' ] = count( $asns );
@@ -66,6 +66,9 @@ class UpdateAsnDb extends UpdateDb
                 // This customer is not appropriate for IRRDB filtering.
                 // Delete any pre-existing entries just in case this has changed recently:
                 $this->startTimer();
+
+                Cache::store('file')->forget( 'irrdb:asns:ipv' . $protocol . ':' . $this->customer()->asMacro( $protocol ) );
+
                 IrrdbAsn::whereCustomerId( $this->customer()->id )
                     ->whereProtocol( $protocol )->delete();
 
