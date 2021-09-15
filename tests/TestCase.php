@@ -48,7 +48,11 @@ abstract class TestCase extends BaseTestCase
     public function __construct( $name = null, array $data = [], $dataName = '' )
     {
         date_default_timezone_set('Europe/Dublin');
-        define( 'LARAVEL_START', microtime(true ) );
+
+        if( !defined('LARAVEL_START') ) {
+            define( 'LARAVEL_START', microtime(true ) );
+        }
+
         parent::__construct( $name, $data, $dataName );
     }
 
