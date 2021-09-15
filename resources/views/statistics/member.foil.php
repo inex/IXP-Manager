@@ -34,7 +34,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
-                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex"  action="<?= route( "statistics@member", [ "id" => $t->c->id ] ) ?>" method="GET">
+                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex"  action="<?= route( "statistics@member", [ "cust" => $t->c->id ] ) ?>" method="GET">
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">
                                     <label for="category" class="col-sm-4 col-lg-4">Type:</label>
