@@ -24,7 +24,7 @@ Location:        {{$cabinet->location->name}}
 Colo Cabinet ID: {{$cabinet->name}}
 @endif
 
-LAG Port:       @if( $vi->physicalinterfaces()->count() > 1 ) Yes, comprising of: @else No @endif
+LAG Port:       @if( $vi->lag_framing || $vi->physicalinterfaces()->count() > 1 ) Yes, @if( $vi->physicalinterfaces()->count() === 1 )(single member)@endif comprising of: @else No @endif
 
 @foreach( $vi->physicalinterfaces as $pi )
 
