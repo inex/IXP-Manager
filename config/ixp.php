@@ -126,4 +126,26 @@ return [
     ],
 
 
+    // Filter known transit networks
+    // Inspired by: http://bgpfilterguide.nlnog.net/guides/no_transit_leaks/
+    // Overrides:
+    'no_transit_asns' => [
+        'override' => call_user_func( function() {
+            $env = env( 'IXP_NO_TRANSIT_ASNS_OVERRIDE', false );
+
+            if( $env === false ) {
+                return false;
+            }
+
+            if( !$env ) {
+                return [];
+            }
+
+            return explode( ',', $env );
+        }),
+
+        'exclude' => explode( ',', env( 'IXP_NO_TRANSIT_ASNS_EXCLUDE', '' ) ),
+    ],
+
+
 ];
