@@ -93,14 +93,14 @@ prefix set martians;
                 fe80::/10+,             # Link-local Unicast
                 fec0::/10+,             # Site-local Unicast - deprecated by RFC 3879 (replaced by ULA)
                 ff00::/8+,              # Multicast
-                ::/0{<?= config( 'ixp.irrdb.min_v6_subnet_size', 48 ) + 1 ?>,128}            # Filter small prefixes
+                ::/0{<?= config( 'ixp.irrdb.min_v6_subnet_size', 48 ) == 128 ? 128 : config( 'ixp.irrdb.min_v6_subnet_size', 48 ) + 1 ?>,128}            # Filter small prefixes
         ];
 
     <?php else: ?>
 
         martians = [
             0.0.0.0/32-,            # rfc5735 Special Use IPv4 Addresses
-            0.0.0.0/0{<?= config( 'ixp.irrdb.min_v4_subnet_size', 24 ) + 1 ?>,32},       # Filter small prefixes
+            0.0.0.0/0{<?= config( 'ixp.irrdb.min_v4_subnet_size', 24 ) == 32 ? 32 : config( 'ixp.irrdb.min_v4_subnet_size', 24 ) + 1 ?>,32},       # Filter small prefixes
             0.0.0.0/0{0,7},         # rfc1122 Requirements for Internet Hosts -- Communication Layers 3.2.1.3
             10.0.0.0/8+,            # rfc1918 Address Allocation for Private Internets
             100.64.0.0/10+,         # rfc6598 IANA-Reserved IPv4 Prefix for Shared Address Space

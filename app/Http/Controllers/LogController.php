@@ -72,14 +72,20 @@ class LogController extends Controller
             ->distinct()->get();
 
         $r->merge([
-            'model'     =>  $model = in_array( $r->model, array_values( $models->pluck( 'model' )->toArray() ), false ) ? $r->model : null,
             'action'    =>  $action = in_array( $r->action, Log::$ACTIONS , false ) ? $r->action : null,
             'user'      =>  $user = User::where( 'username', $r->user )->exists() ? $r->user : null,
         ]);
 
+        if( !in_array( $r->model, array_values( $models->pluck( 'model' )->toArray() ) ) ) {
+            $models = $models->toArray();
+            array_unshift( $models, [ 'model' => $r->model ] );
+        } else {
+            $models = $models->toArray();
+        }
+
         return view( 'log/index' )->with([
-            'models'    => $models->toArray(),
-            'model'     => $model,
+            'models'    => $models,
+            'model'     => $r->model,
             'user'      => $user,
             'users'     =>  Log::select( [ 'user_id', 'username' ] )
                 ->leftJoin( 'user AS u', 'u.id', 'log.user_id')
@@ -87,7 +93,7 @@ class LogController extends Controller
                 ->distinct()->get()->toArray(),
             'logs'      => Log::selectRaw( 'log.*, u.username' )
                 ->leftJoin( 'user AS u', 'u.id', 'log.user_id' )
-                ->when( $model, function( Builder $q, $model ) {
+                ->when( $r->model, function( Builder $q, $model ) {
                     return $q->where('log.model', 'like', $model );
                 } )->when( $model_id, function( Builder $q, $model_id ) {
                     return $q->where('log.model_id', $model_id );
