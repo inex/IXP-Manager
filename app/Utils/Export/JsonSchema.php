@@ -344,10 +344,17 @@ class JsonSchema
                     $atLeastOnePiIsPeering = true;
                     
                     if( $pi->statusConnected() ) {
-                        $iflist[] = [
+                        $ifl = [
                             'switch_id'	=> $pi->switchPort->switchid,
-                            'if_speed'	=> $pi->speed,
+                            'if_speed'	=> $pi->configuredSpeed(),
                         ];
+
+                        if( $pi->isRateLimited() ) {
+                            $ifl['if_phys_speed'] = $pi->speed;
+                        }
+
+                        $iflist[] = $ifl;
+
                         $atLeastOnePiIsConnected = true;
                     }
                 }

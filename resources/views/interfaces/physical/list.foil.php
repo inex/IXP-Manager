@@ -36,7 +36,10 @@
                             Raw Speed
                         </th>
                         <th>
-                            Duplex
+                            Rate Limit
+                        </th>
+                        <th>
+                            Raw Rate Limit
                         </th>
                         <th>
                             Auto-neg
@@ -74,10 +77,13 @@
                                 <?= $t->scaleBits( $pi['speed'] * 1000 * 1000, 0 ) ?>
                             </td>
                             <td>
-                                <?= $pi['speed']   ?>
+                                <?= $pi['speed'] ?? 0  ?>
                             </td>
                             <td>
-                                <?= $pi['duplex']   ?>
+                                <?= $pi['rate_limit'] ? $t->scaleSpeed( $pi['rate_limit'] ) : '' ?>
+                            </td>
+                            <td>
+                                <?= $pi['rate_limit'] ?? 0 ?>
                             </td>
                             <td>
                                 <?= $pi['autoneg'] ? 'Yes' : 'No'?>

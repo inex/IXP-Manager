@@ -75,6 +75,7 @@ class IXP implements ExtensionInterface
             'resellerMode'           => [ $this, 'resellerMode' ],
             'scaleBits'              => [ $this, 'scaleBits' ],
             'scaleBytes'             => [ $this, 'scaleBytes' ],
+            'scaleSpeed'             => [ $this, 'scaleSpeed' ],
             'scaleFilesize'          => [ $this, 'scaleFilesize' ],
             'softwrap'               => [ $this, 'softwrap' ],
             'whoisPrefix'            => [ $this, 'whoisPrefix' ],
@@ -152,6 +153,10 @@ class IXP implements ExtensionInterface
             $formats = [
                 'pps', 'Kpps', 'Mpps', 'Gpps', 'Tpps'
             ];
+        } else if( $format === 'speed' ) {
+            $formats = [
+                'Mbps', 'Gbps', 'Tbps'
+            ];
         } else {
             $formats = [
                 'bits', 'Kbits', 'Mbits', 'Gbits', 'Tbits'
@@ -189,6 +194,19 @@ class IXP implements ExtensionInterface
     {
         return $this->scale( $v, 'bits', $decs );
     }
+
+    /**
+     * See scale above
+     * @param float $v
+     * @param int $decs
+     *
+     * @return string
+     */
+    public function scaleSpeed( float $v, int $decs = 0 ): string
+    {
+        return $this->scale( $v, 'speed', $decs );
+    }
+
 
     /**
      * See scale above

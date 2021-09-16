@@ -45,7 +45,7 @@
                             </th>
                         <?php endif; ?>
                         <th>
-                            Speed/Duplex
+                            Speed
                         </th>
                         <?php if( $t->cb ): ?>
                             <th>
@@ -93,7 +93,12 @@
                                 </td>
                             <?php endif; ?>
                             <td>
-                                <?= $pi->speed() ?> / <?= $pi->duplex ?> duplex
+                                <?= $t->scaleSpeed( $pi->configuredSpeed() ) ?>
+                                <?php if( $pi->isRateLimited() ): ?>
+                                    / <?= $pi->speed() ?>
+                                    <span class="badge badge-info" data-toggle="tooltip" title="Rate Limited">RL</span>
+                                <?php endif; ?>
+
                                 <?php if ( $pi->autoneg ): ?>
                                     <span class="badge badge-success phys-int-autoneg-state" data-toggle="tooltip" title="Auto-Negotiation Enabled">AN</span>
                                 <?php else: ?>

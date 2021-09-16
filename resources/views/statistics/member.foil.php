@@ -156,7 +156,7 @@
                                                 <h5>
                                                     <?php if( $isLAG ): ?>
                                                         <?= $pi->switchPort->switcher->name ?> ::
-                                                        <?= $pi->switchPort->name ?> (<?= $pi->speed() ?>)
+                                                        <?= $pi->switchPort->name ?> (<?= $t->scaleSpeed( $pi->configuredSpeed() ) . ( $pi->isRateLimited() ? '/' . $pi->speed() : '' ) ?>)
                                                     <?php else: ?>
                                                         <?= $pi->switchPort->switcher->cabinet->location->name ?>
                                                         / <?= $pi->switchPort->switcher->name ?> (<?= $pi->speed() ?>)

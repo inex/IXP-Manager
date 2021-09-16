@@ -66,6 +66,7 @@ class StorePhysicalInterface extends FormRequest
             'status'                    => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterface::$STATES ) ),
             'speed'                     => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterface::$SPEED ) ),
             'duplex'                    => 'required|string|in:'  . implode( ',', array_keys( PhysicalInterface::$DUPLEX ) ),
+            'rate_limit'                => 'nullable|integer|min:0',
             'notes'                     => 'string|nullable',
             'switch-fanout'             => 'integer' . ( $this->fanout ? '|required|exists:switch,id'   : '|nullable' ),
             'switch-port-fanout'        => 'integer' . ( $this->fanout ? '|required|exists:switchport,id' : '|nullable' ),

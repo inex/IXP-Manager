@@ -80,6 +80,7 @@ class VirtualInterfaceController extends Common
             'vis'               => VirtualInterface::selectRaw(
                 'vi.id AS id, 
                             SUM( pi.speed ) AS speed,
+                            SUM( pi.rate_limit ) AS rate_limit,
                             COUNT( pi.id ) AS nbpi,
                             c.id AS custid, c.name AS custname,
                             l.id as locationid, l.name AS locationname,
