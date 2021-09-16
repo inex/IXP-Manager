@@ -22,6 +22,8 @@ namespace IXP\Utils\Export;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+use Illuminate\Support\Facades\Auth;
 use stdClass;
 
 use IXP\Exceptions\Utils\ExportException;
@@ -480,13 +482,16 @@ class JsonSchema
             if( $tags ) {
                 $memberinfo[ $cnt ][ 'ixp_manager' ][ 'tags' ] = [];
                 foreach( $c->tags as $tag ) {
-                    if( !$tag->internal_only || $detailed ) {
+                    if( !$tag->internal_only || ( Auth::check() && Auth::user()->isSuperUser ) ) {
                         $memberinfo[ $cnt ][ 'ixp_manager' ][ 'tags' ][ $tag->tag ] = $tag->display_as;
                     }
                 }
                 $memberinfo[ $cnt ][ 'ixp_manager' ][ 'in_manrs' ]    = (bool)$c->in_manrs;
                 $memberinfo[ $cnt ][ 'ixp_manager' ][ 'is_reseller' ] = (bool)$c->isReseller;
                 $memberinfo[ $cnt ][ 'ixp_manager' ][ 'is_resold' ]   = $c->reseller ? true : false;
+                if( $c->reseller ) {
+                    $memberinfo[ $cnt ][ 'ixp_manager' ][ 'resold_via_asn' ]   = $c->resellerObject->autsys;
+                }
             }
 
             $memberinfo[ $cnt ][ 'connection_list' ] = $connlist;
