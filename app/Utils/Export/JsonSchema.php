@@ -484,6 +484,9 @@ class JsonSchema
                         $memberinfo[ $cnt ][ 'ixp_manager' ][ 'tags' ][ $tag->tag ] = $tag->display_as;
                     }
                 }
+                $memberinfo[ $cnt ][ 'ixp_manager' ][ 'in_manrs' ]    = (bool)$c->in_manrs;
+                $memberinfo[ $cnt ][ 'ixp_manager' ][ 'is_reseller' ] = (bool)$c->isReseller;
+                $memberinfo[ $cnt ][ 'ixp_manager' ][ 'is_resold' ]   = $c->reseller ? true : false;
             }
 
             $memberinfo[ $cnt ][ 'connection_list' ] = $connlist;
