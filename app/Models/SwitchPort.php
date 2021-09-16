@@ -430,14 +430,19 @@ class SwitchPort extends Model
                     $n = $host->useIface()->$snmp( true )[ $this->ifIndex ];
 
                     // need to allow for small changes due to rounding errors
-                    if( $logger !== false && $this->$fn !== $n && abs( $this->$fn - $n ) > 60 )
+                    if( $logger !== false && $this->$fn !== $n && abs( $this->$fn - $n ) > 60 ) {
                         Log::info( "[{$this->switcher->name}]:{$this->name} [Index: {$this->ifIndex}] Updating {$attribute} from [{$this->$fn}] to [{$n}]" );
+                    }
                     break;
                 default:
-                    $n = $host->useIface()->$snmp()[ $this->ifIndex ];
+                    $n = null;
+                    if( !empty($host->useIface()->$snmp()[ $this->ifIndex ]) ) {
+                        $n = $host->useIface()->$snmp()[ $this->ifIndex ];
+                    }
 
-                    if( $logger !== false && $this->$fn !== $n )
+                    if( $logger !== false && $this->$fn !== $n ) {
                         Log::info( "[{$this->switcher->name}]:{$this->name} [Index: {$this->ifIndex}] Updating {$attribute} from [{$this->$fn}] to [{$n}]" );
+                    }
                     break;
             }
 
