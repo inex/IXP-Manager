@@ -302,28 +302,16 @@ abstract class UpdateDb
                 ->where( 'protocol', $protocol )
                 ->update( [ 'last_seen' => $now ] );
 
-            // Store the prefixes to cache to speed up route server configuration generation.
-            // At the end of the day, this is what we pull out of the database.
-            Cache::store('file')->forget( "irrdb:{$type}:ipv{$protocol}:" . $this->customer()->asMacro( $protocol ) );
-            Cache::store('file')->rememberForever( "irrdb:{$type}:ipv{$protocol}:" . $this->customer()->asMacro( $protocol ), function() use ($model,$type,$protocol) {
-
-                $orderBy = 'asn ASC';
-                if( $type == 'prefix' ) {
-                    $orderBy = 'INET' . ( $protocol === 6 ? '6' : '' ) . '_ATON( prefix ) ASC';
-                }
-
-                return $model::select($type)
-                    ->where( 'customer_id', $this->customer()->id )
-                    ->where('protocol', $protocol )
-                    ->orderByRaw( $orderBy )
-                    ->orderBy( 'id', 'ASC' )
-                    ->pluck($type)
-                    ->toArray();
-            });
-
             DB::commit();
-
             $this->result['dbTime'] += $this->timeElapsed();
+
+            // Store the prefixes to cache to speed up route server configuration generation.
+            if( $type === 'asn' ) {
+                IrrdbAggregator::asnsForRouterConfiguration( $this->customer(), $protocol, true );
+            } else {
+                IrrdbAggregator::prefixesForRouterConfiguration( $this->customer(), $protocol, true );
+            }
+
         } catch( Exception $e ) {
             DB::rollBack();
             $this->result['dbTime'] += $this->timeElapsed();
