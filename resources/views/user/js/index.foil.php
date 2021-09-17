@@ -1,6 +1,8 @@
 
 <?= $t->insert( 'user/js/common' ); ?>
+
 <?php if( Auth::user()->isSuperUser() ):?>
+
     <script>
         let tableList = $( '#table-list' );
 
@@ -18,7 +20,9 @@
             "aaSorting": [1,'asc'],
         });
     </script>
+
 <?php else: ?>
+
     <script>
         let tableList = $( '#table-list' );
 
@@ -41,6 +45,7 @@
         });
     </script>
 
-    <?= $t->insert( 'user/js/delete-2fa' ); ?>
-
 <?php endif; ?>
+
+<?= $t->insert( 'user/js/delete-2fa' ); ?>
+

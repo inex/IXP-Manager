@@ -6,12 +6,11 @@
 
             event.preventDefault();
 
-            let objectId = $( "#" + this.id ).attr( "data-object-id" );
+            let url = '<?= url('') ?>/2fa/delete/' + $( "#" + this.id ).attr( "data-object-id" );
 
             let html = `<p>Do you really want to delete the 2FA for this user?</p>
-                                <form id="d2f-form-delete" method="POST" action="">
+                                <form id="d2f-form-delete" method="POST" action="` + url + `">
                                     <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                                    <input type="hidden" name="id" value="${objectId}">
                                 </form>`;
 
             bootbox.dialog({

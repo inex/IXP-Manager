@@ -131,9 +131,26 @@ class User2FAController extends Controller
         $r->user()->user2FA->delete();
 
         $this->google2faLogin( $r, false );
-        AlertContainer::push( "2FA successfully disable.", Alert::SUCCESS );
+        AlertContainer::push( "2FA successfully disabled.", Alert::SUCCESS );
         return redirect( route('profile@edit' ) );
     }
+
+    /**
+     * Remove 2FA for a user
+     *
+     * @param Request $r
+     *
+     * @return RedirectResponse
+     */
+    public function delete( Request $r, User $user ): RedirectResponse
+    {
+        $user?->user2FA?->delete();
+
+        AlertContainer::push( "2FA successfully deleted for {$user->username}.", Alert::SUCCESS );
+        return redirect( route('user@list' ) );
+    }
+
+
 
     /**
      * Create Password Security if needed and generate a QR code
