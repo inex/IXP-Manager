@@ -16,6 +16,9 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
+        <a class="btn btn-white" href="<?= \Illuminate\Support\Facades\Request::url() ?>" title="Refresh">
+            <span class="fa fa-refresh"></span>
+        </a>
         <?php if( $t->pp ): ?>
             <a class="btn btn-white" href="<?= route('patch-panel@edit' , [ 'pp' => $pp->id ] ) ?>" title="Edit Patch Panel">
                 <span class="fa fa-pencil"></span>
@@ -94,7 +97,7 @@
                             /** @var \IXP\Models\PatchPanelPort $ppp */
                             $potentialSlave = false; //$t->pp && $t->pp->hasDuplexPort() && !( $ppp->getNumber() % 2 ) && $ppp->isAvailableForUse();
                             ?>
-                            <tr <?= $potentialSlave ? 'class="potential-slave" style="display: none;"' : '' ?>">
+                            <tr <?= $potentialSlave ? 'class="potential-slave" style="display: none;"' : '' ?>>
                                 <td>
                                     <?= $ppp->id ?>
                                 </td>
