@@ -285,18 +285,12 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                         $pi = $this->wrapSwitchPortInPhysicalInterface( $sp, ++$maxPiID );
                         $data[ 'pis' ][ $pi->id ] = $pi;
                         $data[ 'swports' ][ $switch->id ][] = $pi->id;
-                        $data[ 'locports' ][ $switch->cabinet->location->id][] = $pi->id;
 
                         if( !isset( $data[ 'swports_maxbytes' ][ $switch->id ] ) ) {
                             $data[ 'swports_maxbytes' ][ $switch->id ] = 0;
                         }
 
-                        if( !isset( $data[ 'locports_maxbytes' ][  $switch->cabinet->location->id ] ) ) {
-                            $data[ 'locports_maxbytes' ][  $switch->cabinet->location->id ] = 0;
-                        }
-
                         $data[ 'swports_maxbytes' ][ $switch->id ] += ( ( $pi->detectedSpeed() > 0 ) ? $pi->detectedSpeed() : 1 ) * 1000000 / 8;
-                        $data[ 'locports_maxbytes' ][ $switch->cabinet->location->id ] += ( ( $pi->detectedSpeed() > 0 ) ? $pi->detectedSpeed() : 1 ) * 1000000 / 8;
                     }
                 }
             }
