@@ -156,6 +156,7 @@ return [
     'access' => [
         'ixp'            => env( 'GRAPHER_ACCESS_IXP',            \IXP\Models\User::AUTH_PUBLIC ),
         'infrastructure' => env( 'GRAPHER_ACCESS_INFRASTRUCTURE', \IXP\Models\User::AUTH_PUBLIC ),
+        'location'       => env( 'GRAPHER_ACCESS_LOCATION',       \IXP\Models\User::AUTH_PUBLIC ),
         'switch'         => env( 'GRAPHER_ACCESS_SWITCH',         \IXP\Models\User::AUTH_PUBLIC ),
         'trunk'          => env( 'GRAPHER_ACCESS_TRUNK',          \IXP\Models\User::AUTH_PUBLIC ),
         'vlan'           => env( 'GRAPHER_ACCESS_VLAN',           \IXP\Models\User::AUTH_PUBLIC ),

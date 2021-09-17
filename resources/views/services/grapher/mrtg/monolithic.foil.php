@@ -18,6 +18,8 @@
 
 <?= $this->insert('services/grapher/mrtg/aggregates' ); ?>
 
+<?= $this->insert('services/grapher/mrtg/location-aggregates'); ?>
+
 <?= $this->insert('services/grapher/mrtg/switch-aggregates'); ?>
 
 <?= $this->insert('services/grapher/mrtg/trunks'); ?>

@@ -35,16 +35,15 @@ use Closure;
 use Illuminate\Contracts\Cache\Repository;
 use IXP\Contracts\Grapher\Backend as BackendContract;
 
-use IXP\Models\{
-    Customer,
+use IXP\Models\{Customer,
     CoreBundle,
     Infrastructure,
+    Location,
     PhysicalInterface,
     VirtualInterface,
     VlanInterface,
     Switcher,
-    Vlan
-};
+    Vlan};
 
 use IXP\Services\Grapher\Graph;
 
@@ -52,6 +51,7 @@ use IXP\Services\Grapher\Graph\{
     IXP               as IXPGraph,
     Infrastructure    as InfrastructureGraph,
     Vlan              as VlanGraph,
+    Location          as LocationGraph,
     Switcher          as SwitchGraph,
     Trunk             as TrunkGraph,
     CoreBundle        as CoreBundleGraph,
@@ -257,6 +257,18 @@ class Grapher
     public function vlan( Vlan $vlan ): VlanGraph
     {
         return new VlanGraph( $this, $vlan );
+    }
+
+    /**
+     * Get an instance of a location graph
+     *
+     * @param Location $location
+     *
+     * @return LocationGraph
+     */
+    public function location( Location $location ): LocationGraph
+    {
+        return new LocationGraph( $this, $location );
     }
 
     /**

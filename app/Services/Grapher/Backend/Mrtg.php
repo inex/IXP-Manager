@@ -133,6 +133,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
      * * array `['pis']` of PhysicalInterfaceEntity objects indexed by their ID
      * * array `['custs']` of Customer objects indexed by their ID
      * * array `['sws']` of Switcher objects indexed by their ID
+     * * array `['locs']` of Location objects indexed by their ID
      * * array `['infras']` of Infrastructure objects indexed by their ID
      * * array `['custports']` containing an array of PhysicalInterfaceEntity IDs indexed by customer ID
      * * array `['custlags']` containing an array of PhysicalInterfaceEntity IDs contained in an array indexed
@@ -155,6 +156,9 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
         $data['custs']               = [];
         $data['custports']           = [];
         $data['custlags']            = [];
+        $data['locs']                = [];
+        $data['locports']            = [];
+        $data['locports_maxbytes']   = [];
         $data['sws']                 = [];
         $data['swports']             = [];
         $data['swports_maxbytes']    = [];
@@ -194,6 +198,12 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                         $data['swports_maxbytes'][ $s->id ] = 0;
                     }
 
+                    if( !isset( $data['locs'][ $pi->switchPort->switcher->cabinet->location->id ] ) ) {
+                        $l = $pi->switchPort->switcher->cabinet->location;
+                        $data['locs'][ $l->id ] = $l;
+                        $data['locports_maxbytes'][ $l->id ] = 0;
+                    }
+
                     if( !isset( $data['infras'][ $pi->switchPort->switcher->infrastructureModel->id ] ) ) {
                         $i = $pi->switchPort->switcher->infrastructureModel;
                         $data['infras'][ $i->id ] = $i;
@@ -207,12 +217,15 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                     }
 
                     $data['swports'][ $pi->switchPort->switcher->id ][] = $pi->id;
+                    $data['locports'][ $pi->switchPort->switcher->cabinet->location->id ][] = $pi->id;
                     $data['infraports'][ $pi->switchPort->switcher->infrastructureModel->id ][] = $pi->id;
                     $data['ixpports'][] = $pi->id;
 
                     $maxbytes = $pi->detectedSpeed() * 1000000 / 8; // Mbps * bps / to bytes
                     $switcher = $pi->switchPort->switcher;
+                    $location = $pi->switchPort->switcher->cabinet->location;
                     $data['swports_maxbytes'   ][ $switcher->id ] += $maxbytes;
+                    $data['locports_maxbytes'  ][ $location->id ] += $maxbytes;
                     $data['infraports_maxbytes'][ $switcher->infrastructureModel->id ] += $maxbytes;
                     $data['ixpports_maxbytes'] += $maxbytes;
                 }
@@ -272,12 +285,18 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                         $pi = $this->wrapSwitchPortInPhysicalInterface( $sp, ++$maxPiID );
                         $data[ 'pis' ][ $pi->id ] = $pi;
                         $data[ 'swports' ][ $switch->id ][] = $pi->id;
+                        $data[ 'locports' ][ $switch->cabinet->location->id][] = $pi->id;
 
                         if( !isset( $data[ 'swports_maxbytes' ][ $switch->id ] ) ) {
                             $data[ 'swports_maxbytes' ][ $switch->id ] = 0;
                         }
 
+                        if( !isset( $data[ 'locports_maxbytes' ][  $switch->cabinet->location->id ] ) ) {
+                            $data[ 'locports_maxbytes' ][  $switch->cabinet->location->id ] = 0;
+                        }
+
                         $data[ 'swports_maxbytes' ][ $switch->id ] += ( ( $pi->detectedSpeed() > 0 ) ? $pi->detectedSpeed() : 1 ) * 1000000 / 8;
+                        $data[ 'locports_maxbytes' ][ $switch->cabinet->location->id ] += ( ( $pi->detectedSpeed() > 0 ) ? $pi->detectedSpeed() : 1 ) * 1000000 / 8;
                     }
                 }
             }
@@ -331,6 +350,13 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
+                'periods'     => Graph::PERIODS,
+                'types'       => $rrd ? Graph::TYPES : $graphTypes,
+            ],
+            'location' => [
+                'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
+                'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
+                                   Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,
                 'types'       => $rrd ? Graph::TYPES : $graphTypes,
             ],
@@ -518,6 +544,11 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                 return sprintf( "%s/infras/%03d/ixp%03d-infra%03d-%s%s.%s", $config['logdir'],
                     $graph->infrastructure()->id, 1,
                     $graph->infrastructure()->id, $graph->category(), $loggyType ? '' : "-{$graph->period()}", $type );
+            case 'Location':
+                /** @var Graph\Location $graph */
+                return sprintf( "%s/locations/%03d/location-aggregate-%05d-%s%s.%s", $config['logdir'],
+                    $graph->location()->id, $graph->location()->id,
+                    $graph->category(), $loggyType ? '' : "-{$graph->period()}", $type );
             case 'Switcher':
                 /** @var Graph\Switcher $graph */
                 return sprintf( "%s/switches/%03d/switch-aggregate-%05d-%s%s.%s", $config['logdir'],

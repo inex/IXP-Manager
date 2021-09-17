@@ -33,6 +33,7 @@ use IXP\Services\Grapher\Graph\{
     Infrastructure    as InfrastructureGraph,
     Vlan              as VlanGraph,
     Switcher          as SwitchGraph,
+    Location          as LocationGraph,
     CoreBundle        as CoreBundleGraph,
     Trunk             as TrunkGraph,
     PhysicalInterface as PhysIntGraph,  // member physical port
@@ -138,6 +139,12 @@ class Grapher
                 $r->corebundle = $corebundle->id;
                 $r->side       = $side;
                 $graph = $grapher->coreBundle( $corebundle, $side )->setParamsFromArray( $r->all() );
+                break;
+
+            case 'location':
+                $location = LocationGraph::processParameterLocation( (int)$r->input( 'id', 0 ) );
+                $r->location = $location->id;
+                $graph = $grapher->location( $location )->setParamsFromArray( $r->all() );
                 break;
 
             case 'switch':
