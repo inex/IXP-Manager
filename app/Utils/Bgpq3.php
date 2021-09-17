@@ -23,6 +23,7 @@ namespace IXP\Utils;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Illuminate\Support\Facades\Log;
 use IXP\Exceptions\GeneralException as Exception;
 use IXP\Exceptions\ConfigurationException;
 
@@ -35,24 +36,6 @@ use IXP\Exceptions\ConfigurationException;
  */
 class Bgpq3
 {
-    /**
-     * Full executable path of the BGPQ3 utility
-     * @var string Full executable path of the BGPQ3 utility
-     */
-    private $path = null;
-
-    /**
-     * Whois server - defaults to BGPQ's own default
-     * @var string Whois server - defaults to BGPQ's own default
-     */
-    private $whois = false;
-
-    /**
-     * Whois server sources - defaults to BGPQ's own default
-     * @var string Whois server sources - defaults to BGPQ's own default
-     */
-
-    private $sources = false;
 
     /**
      * Constructor
@@ -62,20 +45,10 @@ class Bgpq3
      * @param string $sources Whois server sources - defaults to BGPQ's own default
      * @throws ConfigurationException
      */
-    public function __construct( string $path, string $whois = null, string $sources = null )
+    public function __construct( private string $path, private ?string $whois = null, private ?string $sources = null )
     {
         if( !$path || !is_file( $path ) || !is_executable( $path ) ) {
             throw new ConfigurationException('You must set the configuration option IXP_IRRDB_BGPQ3_PATH and it must be the absolute path to the executable bgpq3 utility.');
-        }
-
-        $this->path = $path;
-
-        if( $whois ) {
-            $this->whois = $whois;
-        }
-
-        if( $sources ) {
-            $this->sources = $sources;
         }
     }
 
@@ -179,6 +152,7 @@ class Bgpq3
         $output = [];
         $return_var = 0;
 
+        Log::debug('[BGPQ3] executing: ' . $cmd );
         exec( $cmd, $output, $return_var );
 
         if( $return_var != 0 ){

@@ -51,6 +51,7 @@ class UpdateAsnDb extends UpdateDb
     {
         foreach( $this->protocols() as $protocol ) {
             if( $this->customer()->irrdbConfig && $this->customer()->routeServerClient( $protocol ) && $this->customer()->irrdbFiltered() ) {
+                $this->bgpq3()->setWhois( $this->customer()->irrdbConfig->host );
                 $this->bgpq3()->setSources( $this->customer()->irrdbConfig->source );
 
                 $this->startTimer();
