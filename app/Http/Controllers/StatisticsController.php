@@ -165,8 +165,9 @@ class StatisticsController extends Controller
      */
     public function vlan( Vlan $vlan = null, string $protocol = Graph::PROTOCOL_IPV4, string $category = Graph::CATEGORY_BITS ) : View
     {
-        $vlans   = Vlan::publicOnly()->where( 'peering_matrix', true )
-            ->where( 'peering_manager', true )
+        $vlans   = Vlan::publicOnly()
+            ->where( 'peering_matrix', true )
+            ->orWhere( 'peering_manager', true )
             ->orderBy( 'name' )->get();
 
         if( !$vlans->count() ) {

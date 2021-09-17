@@ -36,7 +36,6 @@ use IXP\Traits\Observable;
  *
  * @property int $id
  * @property string|null $host
- * @property string|null $protocol
  * @property string|null $source
  * @property string|null $notes
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -50,7 +49,6 @@ use IXP\Traits\Observable;
  * @method static Builder|IrrdbConfig whereHost($value)
  * @method static Builder|IrrdbConfig whereId($value)
  * @method static Builder|IrrdbConfig whereNotes($value)
- * @method static Builder|IrrdbConfig whereProtocol($value)
  * @method static Builder|IrrdbConfig whereSource($value)
  * @method static Builder|IrrdbConfig whereUpdatedAt($value)
  * @mixin \Eloquent
