@@ -24,13 +24,8 @@ Potential Todo / Feature Ideas
   Members, or 10% of other Members". A tool to list members failing this
   requirement would be useful.
 
-* Email members on >80% of port utilisation
-
 * Member audit - port states, errors / discards, route collector session
   status, route server session status, etc.
-
-* Would be useful to display last login information in the user edit screen or
-  the list of users. Also the created by, last updated date?
 
 * Member health report
 
@@ -43,8 +38,6 @@ Potential Todo / Feature Ideas
 
   Also consider adding maxprefixes to peering manager template (see #174).
 
-
-* Add PeeringDB link to PM request template
 
 * Update suggested prefix limit / real prefix limit based on IRRDB entries?
 
@@ -71,3 +64,4 @@ Potential Todo / Feature Ideas
   subscriptions. Also email to custadmins reminding them of their users.
   Probably staggered over the year to prevent a flux of inbound emails.
 
+* Single page view of all notes for a customer: https://github.com/inex/IXP-Manager/issues/273
