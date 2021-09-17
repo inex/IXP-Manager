@@ -1218,7 +1218,6 @@ DROP TABLE IF EXISTS `irrdbconfig`;
 CREATE TABLE `irrdbconfig` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `host` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `protocol` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `notes` longtext COLLATE utf8_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -1233,7 +1232,7 @@ CREATE TABLE `irrdbconfig` (
 
 LOCK TABLES `irrdbconfig` WRITE;
 /*!40000 ALTER TABLE `irrdbconfig` DISABLE KEYS */;
-INSERT INTO `irrdbconfig` VALUES (1,'whois.ripe.net','ripe','RIPE','RIPE Query from RIPE Database',NULL,NULL),(2,'whois.radb.net','irrd','RADB','RADB Query from RADB Database',NULL,NULL),(3,'whois.lacnic.net','ripe','LACNIC','LACNIC Query from LACNIC Database',NULL,NULL),(4,'whois.afrinic.net','ripe','AFRINIC','AFRINIC Query from AFRINIC Database',NULL,NULL),(5,'whois.apnic.net','ripe','APNIC','APNIC Query from APNIC Database',NULL,NULL),(6,'rr.level3.net','ripe','LEVEL3','Level3 Query from Level3 Database',NULL,NULL),(7,'whois.radb.net','irrd','ARIN','ARIN Query from RADB Database',NULL,NULL),(8,'whois.radb.net','irrd','RADB,ARIN','RADB+ARIN Query from RADB Database',NULL,NULL),(9,'whois.radb.net','irrd','ALTDB','ALTDB Query from RADB Database',NULL,NULL),(10,'whois.radb.net','irrd','RADB,RIPE','RADB+RIPE Query from RADB Database',NULL,NULL),(11,'whois.radb.net','irrd','RADB,APNIC,ARIN','RADB+APNIC+ARIN Query from RADB Database',NULL,NULL),(12,'whois.radb.net','irrd','RIPE,ARIN','RIPE+ARIN Query from RADB Database',NULL,NULL),(13,'whois.radb.net','irrd','RADB,RIPE,APNIC,ARIN','',NULL,NULL);
+INSERT INTO `irrdbconfig` VALUES (1,'whois.ripe.net','RIPE','RIPE Query from RIPE Database',NULL,NULL),(2,'whois.radb.net','RADB','RADB Query from RADB Database',NULL,NULL),(3,'whois.lacnic.net','LACNIC','LACNIC Query from LACNIC Database',NULL,NULL),(4,'whois.afrinic.net','AFRINIC','AFRINIC Query from AFRINIC Database',NULL,NULL),(5,'whois.apnic.net','APNIC','APNIC Query from APNIC Database',NULL,NULL),(6,'rr.level3.net','LEVEL3','Level3 Query from Level3 Database',NULL,NULL),(7,'whois.radb.net','ARIN','ARIN Query from RADB Database',NULL,NULL),(8,'whois.radb.net','RADB,ARIN','RADB+ARIN Query from RADB Database',NULL,NULL),(9,'whois.radb.net','ALTDB','ALTDB Query from RADB Database',NULL,NULL),(10,'whois.radb.net','RADB,RIPE','RADB+RIPE Query from RADB Database',NULL,NULL),(11,'whois.radb.net','RADB,APNIC,ARIN','RADB+APNIC+ARIN Query from RADB Database',NULL,NULL),(12,'whois.radb.net','RIPE,ARIN','RIPE+ARIN Query from RADB Database',NULL,NULL),(13,'whois.radb.net','RADB,RIPE,APNIC,ARIN','',NULL,NULL);
 /*!40000 ALTER TABLE `irrdbconfig` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2602,7 +2601,7 @@ DROP TABLE IF EXISTS `view_cust_current_active`;
 /*!50001 DROP VIEW IF EXISTS `view_cust_current_active`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-/*!50001 CREATE VIEW `view_cust_current_active` AS SELECT 
+/*!50001 CREATE VIEW `view_cust_current_active` AS SELECT
  1 AS `id`,
  1 AS `irrdb`,
  1 AS `company_registered_detail_id`,
@@ -2648,7 +2647,7 @@ DROP TABLE IF EXISTS `view_switch_details_by_custid`;
 /*!50001 DROP VIEW IF EXISTS `view_switch_details_by_custid`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-/*!50001 CREATE VIEW `view_switch_details_by_custid` AS SELECT 
+/*!50001 CREATE VIEW `view_switch_details_by_custid` AS SELECT
  1 AS `id`,
  1 AS `custid`,
  1 AS `virtualinterfacename`,
@@ -2680,7 +2679,7 @@ DROP TABLE IF EXISTS `view_vlaninterface_details_by_custid`;
 /*!50001 DROP VIEW IF EXISTS `view_vlaninterface_details_by_custid`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-/*!50001 CREATE VIEW `view_vlaninterface_details_by_custid` AS SELECT 
+/*!50001 CREATE VIEW `view_vlaninterface_details_by_custid` AS SELECT
  1 AS `id`,
  1 AS `custid`,
  1 AS `virtualinterfaceid`,
