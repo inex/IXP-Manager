@@ -65,3 +65,12 @@ Potential Todo / Feature Ideas
   Probably staggered over the year to prevent a flux of inbound emails.
 
 * Single page view of all notes for a customer: https://github.com/inex/IXP-Manager/issues/273
+
+* Billing details reorg - https://github.com/inex/IXP-Manager/issues/476
+
+* Route Servers - PeeringDB never via route server
+  * https://github.com/inex/IXP-Manager/issues/610
+
+* Link port provisioning with patch panel information
+  * https://github.com/inex/IXP-Manager/issues/660
+

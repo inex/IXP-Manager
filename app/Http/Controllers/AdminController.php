@@ -30,14 +30,13 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-use IXP\Models\{
-    Aggregators\VirtualInterfaceAggregator,
+use IXP\Models\{Aggregators\VirtualInterfaceAggregator,
+    Cabinet,
     Customer,
     Infrastructure,
     Location,
     Vlan,
-    VlanInterface
-};
+    VlanInterface};
 
 use IXP\Services\Grapher\Graph;
 
@@ -104,6 +103,7 @@ class AdminController extends Controller
 
             foreach( $vis as $vi ) {
                 $location = $vi[ 'locationname' ];
+                $cabinet  = $vi[ 'cabinetname' ];
                 $infrastructure = $vi[ 'infrastructure' ];
                 $custid = $vi[ 'customerid' ];
 
@@ -112,11 +112,24 @@ class AdminController extends Controller
                         'count' => 1,
                         'id' => $vi[ 'locationid' ],
                         'name' => $location,
-                        'custs' => [ $custid ]
+                        'custs' => [ $custid ],
+                        'cabinets' => [],
                     ];
                 } elseif( !in_array( $custid, $custsByLocation[ $location ][ 'custs' ], true ) ){
                     $custsByLocation[ $location ][ 'count' ]++;
                     $custsByLocation[ $location ][ 'custs' ][] = $custid;
+                }
+
+                if ( !isset( $custsByLocation[ $location ]['cabinets'][$cabinet] ) ) {
+                    $custsByLocation[ $location ]['cabinets'][ $cabinet ] = [
+                        'count' => 1,
+                        'id' => $vi[ 'cabinetid' ],
+                        'name' => $cabinet,
+                        'custs' => [ $custid ]
+                    ];
+                } elseif( !in_array( $custid, $custsByLocation[ $location ]['cabinets'][$cabinet][ 'custs' ], true ) ){
+                    $custsByLocation[ $location ]['cabinets'][$cabinet][ 'count' ]++;
+                    $custsByLocation[ $location ]['cabinets'][$cabinet][ 'custs' ][] = $custid;
                 }
 
                 if ( !isset($speeds[ $vi[ 'speed' ] ])) {
@@ -137,12 +150,25 @@ class AdminController extends Controller
                 }
 
                 if ( !isset($byLocation[ $location ])) {
-                    $byLocation[ $location ] = [ 'id' => $vi[ 'locationid' ]  ];
+                    $byLocation[ $location ] = [
+                        'id' => $vi[ 'locationid' ],
+                        'cabinets' => [],
+                    ];
                 }
+                if ( !isset($byLocation[ $location ]['cabinets'][ $cabinet ] )) {
+                    $byLocation[ $location ]['cabinets'][ $cabinet ] = [ 'id' => $vi[ 'cabinetid' ]  ];
+                }
+
                 if ( !isset($byLocation[ $vi[ 'locationname' ] ][ $vi[ 'speed' ] ])) {
                     $byLocation[ $location ][ $vi[ 'speed' ] ] = 1;
                 } else {
                     $byLocation[ $location ][ $vi[ 'speed' ] ]++;
+                }
+
+                if ( !isset($byLocation[ $location ]['cabinets'][ $cabinet ][ $vi[ 'speed' ] ])) {
+                    $byLocation[ $location ]['cabinets'][ $cabinet ][ $vi[ 'speed' ] ] = 1;
+                } else {
+                    $byLocation[ $location ]['cabinets'][ $cabinet ][ $vi[ 'speed' ] ]++;
                 }
 
                 if ( !isset( $byLan[ $infrastructure ] ) ) {
@@ -189,6 +215,7 @@ class AdminController extends Controller
             $cTypes[ 'percentByVlan' ]  = VirtualInterfaceAggregator::getPercentageCustomersByVlan();
             $cTypes[ 'cached_at' ]      = Carbon::now();
             $cTypes[ 'infras' ]         = Infrastructure::orderBy('name' )->get()->toArray();
+            $cTypes[ 'cabinets' ]       = Cabinet::orderBy('name' )->get()->toArray();
             $cTypes[ 'locations' ]      = Location::orderBy('name' )->get()->toArray();
             $cTypes[ 'vlans' ]          = Vlan::publicOnly()->orderBy('number')->get()->keyBy('id')->toArray();
 

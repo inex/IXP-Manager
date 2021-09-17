@@ -132,6 +132,8 @@ class VirtualInterfaceAggregator extends VirtualInterface
             'i.name AS infrastructure',
             'l.id AS locationid',
             'l.name AS locationname',
+            'ca.id AS cabinetid',
+            'ca.name AS cabinetname',
         ] )
             ->from( 'virtualinterface AS vi' )
             ->Join( 'cust AS cust', 'cust.id', 'vi.custid' )
