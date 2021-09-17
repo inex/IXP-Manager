@@ -286,6 +286,14 @@
                         </div>
                     <?php endif; ?>
 
+
+
+
+
+
+
+
+
                     <?php if( count( $t->stats[ "usage" ] ) ): ?>
                         <div class="tw-my-10">
                             <h4 class="tw-mb-6">
@@ -432,6 +440,96 @@
                             </table>
                         </div>
                     <?php endif; ?>
+
+
+
+
+
+
+
+
+
+                    <?php if( count( $t->stats[ "byLocation" ] ) ): ?>
+                        <div class="tw-my-12">
+                            <h4 class="tw-mb-6">
+                                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Ports by Rack
+                            </h4>
+
+
+                        <?php foreach( $t->stats[ "byLocation"] as $location => $locationDetails ): ?>
+
+                            <table class="table table-sm table-hover table-striped tw-shadow-md tw-rounded-sm">
+                                <thead class="tw-text-sm">
+                                <tr>
+                                    <th>
+                                        <?= $t->ee( $location ) ?>
+                                    </th>
+                                    <?php foreach( $t->stats[ "speeds" ] as $speed => $count ): ?>
+                                        <th class="tw-text-right">
+                                            <?= $t->scaleBits( $speed * 1000000, 0 ) ?>
+                                        </th>
+                                    <?php endforeach; ?>
+
+                                    <th class="tw-text-right">
+                                        Total
+                                    </th>
+                                </tr>
+                                </thead>
+
+                                <tbody class="tw-text-sm">
+                                <?php $colcount = 0 ?>
+                                <?php foreach( $locationDetails['cabinets'] as $cabinet => $speed ): ?>
+                                    <?php $rowcount = 0 ?>
+                                    <tr>
+                                        <td>
+                                            <?= $t->ee( $cabinet ) ?>
+                                        </td>
+                                        <?php foreach( $t->stats[ "speeds"] as $s => $c ): ?>
+                                            <td class="tw-text-right">
+                                                <?php if( isset( $speed[ $s ] ) ): ?>
+                                                    <?= $speed[ $s ] ?>
+                                                    <?php $rowcount += $speed[ $s ] ?>
+                                                <?php else: ?>
+                                                    0
+                                                <?php endif; ?>
+                                            </td>
+                                        <?php endforeach; ?>
+                                        <td class="tw-text-right">
+                                            <b>
+                                                <?= $rowcount ?>
+                                            </b>
+                                        </td>
+                                    </tr>
+                                    <?php $colcount = $rowcount + $colcount ?>
+                                <?php endforeach; ?>
+                                <tr>
+                                    <td>
+                                        <b>Totals</b>
+                                    </td>
+                                    <?php foreach( $t->stats[ "speeds"] as $s => $c ): ?>
+                                        <td class="tw-text-right">
+                                            <a href="<?= route( "switch@configuration", [ "location" => $locationDetails[ 'id' ], "speed" => $s ] ) ?>">
+                                                <?= $locationDetails[$s] ?? 0 ?>
+                                            </a>
+                                        </td>
+                                    <?php endforeach; ?>
+                                    <td class="tw-text-right">
+                                        <b>
+                                            <?= $colcount ?>
+                                        </b>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+
+
+
+
+
+
                 </div>
 
                 <div class="col-12 col-xl-6">
