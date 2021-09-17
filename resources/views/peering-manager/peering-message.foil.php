@@ -30,6 +30,11 @@ Our IPv6 Address:  <?= $pmy->ipv6address->address ?>
 Our IPv6 AS Macro: <?= $t->user->customer->asMacro( 6 ) ?>
 <?php endif; ?>
 
+
+<?php if( $t->user->customer->in_peeringdb ): ?>
+We're on PeeringDB: https://www.peeringdb.com/asn/<?= $t->user->customer->autsys ?>
+<?php endif; ?>
+
 ```
 
 
