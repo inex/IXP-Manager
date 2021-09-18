@@ -113,9 +113,9 @@
                     ->value( 1 )
                     ->inline()
                     ->check()
-                    ->blockHelp( "Should this switch be polled automatically? Disabling this does not prevent you from manually polling the switch "
+                    ->blockHelp( "Should this switch be polled via SNMP automatically? Disabling this does not prevent you from manually polling the switch "
                         . "via the UI or via Artisan on the command line by explicitly specifying it. It will just not be polled via the all switches "
-                        . "Artisan <code>switch:snmp-poll</code> command." );
+                        . "Artisan <code>switch:snmp-poll</code> command. Also, disabling this will exclude the switch from MRTG graphing." );
                 ?>
             </div>
         </div>

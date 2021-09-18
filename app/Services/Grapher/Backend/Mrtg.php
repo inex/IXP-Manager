@@ -182,7 +182,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                         $maxPiID = $pi->id;
                     }
 
-                    if( !$pi->isConnectedOrQuarantine() || !$pi->switchPort->switcher->active ) {
+                    if( !$pi->isConnectedOrQuarantine() || !( $pi->switchPort->switcher->active && $pi->switchPort->switcher->poll ) ) {
                         continue;
                     }
 
@@ -235,7 +235,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
         // core bundles
         foreach( Infrastructure::all() as $infra ) {
             foreach( $infra->switchers as $switch ) {
-                if( !$switch->active ) {
+                if( !( $switch->active && $switch->poll ) ) {
                     continue;
                 }
 
@@ -279,6 +279,11 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
         // This is a slight hack as the template requires PhysicalInterfaces so we wrap core SwitchPorts in temporary PhyInts.
         foreach( Infrastructure::all() as $infra ) {
             foreach( $infra->switchers as $switch ) {
+
+                if( !( $switch->active && $switch->poll ) ) {
+                    continue;
+                }
+
                 foreach( $switch->switchPorts as $sp ) {
                     if( $sp->typeCore() ) {
                         // this needs to be wrapped in a physical interface for the template
