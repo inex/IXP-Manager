@@ -80,5 +80,5 @@ Potential Todo / Feature Ideas
     * Moving existing port doesn't update patch panel port record - https://github.com/inex/IXP-Manager/issues/661
     * Customer views shows MMR ODF with cabinet position for patch-panel demarc - https://github.com/inex/IXP-Manager/issues/535
 
-
+*  Querying the signal level in optical modules - https://github.com/inex/IXP-Manager/issues/465
 
