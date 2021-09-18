@@ -115,7 +115,8 @@
                     ->check()
                     ->blockHelp( "Should this switch be polled via SNMP automatically? Disabling this does not prevent you from manually polling the switch "
                         . "via the UI or via Artisan on the command line by explicitly specifying it. It will just not be polled via the all switches "
-                        . "Artisan <code>switch:snmp-poll</code> command. Also, disabling this will exclude the switch from MRTG graphing." );
+                        . "Artisan <code>switch:snmp-poll</code> command. Also, disabling this will exclude the switch from participating in other "
+                        . "SNMP related functions such as MRTG graphing and MAC address discovery." );
                 ?>
             </div>
         </div>
