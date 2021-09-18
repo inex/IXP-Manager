@@ -106,7 +106,7 @@ if (defined $vlanid) {
 	}
 
 	# then retrieve a list of relevant switches
-	$query = "SELECT sw.hostname, sw.snmppasswd FROM (vlan vl, switch sw) WHERE vl.infrastructureid = sw.infrastructure AND sw.active AND vl.id = ?";
+	$query = "SELECT sw.hostname, sw.snmppasswd FROM (vlan vl, switch sw) WHERE vl.infrastructureid = sw.infrastructure AND sw.active AND sw.poll AND vl.id = ?";
 	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
 	$sth->execute($vlanid) or die "$dbh->errstr\n";
 
@@ -116,13 +116,13 @@ if (defined $vlanid) {
 	# IXP, so this is not recommended.
 
 	print STDERR "WARNING: executing this program without the \"--vlanid\" parameter is deprecated and will be removed in a future version of IXP Manager.\n";
-	$query = "SELECT sw.hostname, sw.snmppasswd FROM (vlan vl, switch sw) WHERE vl.infrastructureid = sw.infrastructure AND sw.active AND vl.number = ?";
+	$query = "SELECT sw.hostname, sw.snmppasswd FROM (vlan vl, switch sw) WHERE vl.infrastructureid = sw.infrastructure AND sw.active AND sw.poll AND vl.number = ?";
 	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
 	$sth->execute($vlan) or die "$dbh->errstr\n";
 } else {
 	print STDERR "WARNING: executing this program without the \"--vlanid\" parameter is deprecated and will be removed in a future version of IXP Manager.\n";
 	# otherwise query all switches for legacy behaviour
-	$query = "SELECT hostname, snmppasswd FROM switch WHERE active";
+	$query = "SELECT hostname, snmppasswd FROM switch WHERE active AND poll";
 	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
 	$sth->execute() or die "$dbh->errstr\n";
 }
