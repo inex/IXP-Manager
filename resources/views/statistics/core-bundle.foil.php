@@ -138,6 +138,18 @@
             </div>
         </div>
     <?php endif; ?>
+
+    <div class="tw-bg-blue-100 tw-border-l-4 tw-border-blue-500 tw-text-blue-700 p-4 alert-dismissible mb-4 tw-mt-16" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="text-center"><i class="fa fa-info-circle fa-2x "></i></div>
+            <div class="col-sm-12">
+                Core bundle graphs shows traffic between our switches - this can between inter-switch links
+                between switches within the same facility or between switches connecting facilities together.
+                More details in <a href="https://docs.ixpmanager.org/grapher/introduction/">the documentation</a>.
+            </div>
+        </div>
+    </div>
+
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>

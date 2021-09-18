@@ -72,7 +72,7 @@ class SnmpPoll extends Command
     public function handle()
     {
         if( $this->argument('switch') ) {
-            if( ! ( $switches = Switcher::where( 'name', $this->argument('switch') )->first() ) ) {
+            if( ! ( $switches = Switcher::where( 'name', $this->argument('switch') )->get() ) ) {
                 $this->error( "ERR: No switch found with name: " . $this->argument('switch' ) );
                 return -1;
             }

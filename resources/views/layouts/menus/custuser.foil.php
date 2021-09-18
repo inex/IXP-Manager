@@ -128,6 +128,12 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
                         </a>
                     <?php endif; ?>
 
+                    <?php if( is_numeric( config( 'grapher.access.location' ) ) && config( 'grapher.access.location' ) <= Auth::getUser()->privs() ): ?>
+                        <a class="dropdown-item <?= !request()->is( 'statistics/location' ) ?: 'active' ?>" href="<?= route('statistics@location' ) ?>">
+                            Facility Graphs
+                        </a>
+                    <?php endif; ?>
+
                     <?php if( is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) <= Auth::getUser()->privs() ): ?>
                         <?php if( count( config( 'grapher.backends.mrtg.trunks' ) ?? [] ) ): ?>
                             <a class="dropdown-item <?= !request()->is( 'statistics/trunk*' ) ?: 'active' ?>" href="<?= route('statistics@trunk') ?>">

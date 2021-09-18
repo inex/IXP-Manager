@@ -91,6 +91,7 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'ixp/{category?}',                             'StatisticsController@ixp'                  )->name( 'statistics@ixp'                   );
     Route::get(  'infrastructure/{infra?}/{category?}',         'StatisticsController@infrastructure'       )->name( 'statistics@infrastructure'        );
     Route::get(  'vlan/{vlan?}/{protocol?}/{category?}',        'StatisticsController@vlan'                 )->name( 'statistics@vlan'                  );
+    Route::get(  'location/{location?}/{category?}',            'StatisticsController@location'             )->name( 'statistics@location'              );
     Route::get(  'switch/{switch?}/{category?}',                'StatisticsController@switch'               )->name( 'statistics@switch'                );
     Route::get(  'trunk/{trunk?}/{category?}',                  'StatisticsController@trunk'                )->name( 'statistics@trunk'                 );
     Route::get(  'members',                                     'StatisticsController@members'              );

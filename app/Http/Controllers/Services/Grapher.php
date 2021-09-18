@@ -162,6 +162,11 @@ class Grapher extends Controller
         return $this->simpleResponse( $request );
     }
 
+    public function location( Request $request ): Response
+    {
+        return $this->simpleResponse( $request );
+    }
+
     public function switch( Request $request ): Response
     {
         return $this->simpleResponse( $request );

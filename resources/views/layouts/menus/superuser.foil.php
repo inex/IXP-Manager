@@ -87,6 +87,10 @@
                         </a>
                     <?php endif; ?>
 
+                    <a class="dropdown-item <?= !request()->is( 'statistics/location' ) ?: 'active' ?>" href="<?= route('statistics@location' ) ?>">
+                        Facility Graphs
+                    </a>
+
                     <?php if( count( config( 'grapher.backends.mrtg.trunks' ) ?? [] ) ): ?>
                         <a class="dropdown-item <?= !request()->is( 'statistics/trunk*' ) ?: 'active' ?>" href="<?= route('statistics@trunk') ?>">
                             Inter-Switch / PoP Graphs

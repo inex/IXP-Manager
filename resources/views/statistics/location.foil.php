@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    Switch Aggregate Graphs - <?= $t->switch->name ?> (<?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>)
+    Location Aggregate Graphs - <?= $t->location->name ?> (<?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>)
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -13,7 +13,7 @@
             <?= $t->alerts() ?>
 
             <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
-                <a class="navbar-brand" href="<?= route( "statistics@switch" ) ?>">
+                <a class="navbar-brand" href="<?= route( "statistics@location" ) ?>">
                     Graph Options:
                 </a>
 
@@ -26,10 +26,10 @@
                         <form class="navbar-form navbar-left form-inline d-block d-lg-flex">
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">
-                                    <label for="switchid" class="col-sm-4 col-lg-4">Switch:</label>
-                                    <select id="form-select-switchid" name="switchid" class="form-control">
-                                        <?php foreach( $t->switches as $s ): ?>
-                                            <option value="<?= $s->id ?>" <?= $t->switch->id !== $s->id ?: 'selected="selected"' ?>><?= $s->name ?></option>
+                                    <label for="locationid" class="col-sm-4 col-lg-4">Location:</label>
+                                    <select id="form-select-locationid" name="locationid" class="form-control">
+                                        <?php foreach( $t->locations as $s ): ?>
+                                            <option value="<?= $s->id ?>" <?= $t->location->id !== $s->id ?: 'selected="selected"' ?>><?= $s->name ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -66,12 +66,14 @@
         </div>
     </div>
 
+
     <div class="tw-bg-blue-100 tw-border-l-4 tw-border-blue-500 tw-text-blue-700 p-4 alert-dismissible mb-4 tw-mt-16" role="alert">
         <div class="d-flex align-items-center">
             <div class="text-center"><i class="fa fa-info-circle fa-2x "></i></div>
             <div class="col-sm-12">
-                Switch graphs show all traffic handled by a given switch - a measure of <em>how busy</em> a switch is.
-                This includes traffic that originates, terminates and passes through a switch. More details in
+                Facility graphs show traffic exchanged that originates and/or terminates in a given facility.
+                It <em>does not</em> include traffic <em>passing through</em> facility. You can see inter-facility
+                traffic via the Inter-Switch / PoP graphs. More details in
                 <a href="https://docs.ixpmanager.org/grapher/introduction/">the documentation</a>.
             </div>
         </div>
@@ -81,15 +83,15 @@
 
 <?php $this->section( 'scripts' ) ?>
     <script>
-        let base_route   = "<?= route( 'statistics@switch' ) ?>";
-        let sel_switchid = $("#form-select-switchid");
-        let sel_category = $("#form-select-category");
+        let base_route     = "<?= route( 'statistics@location' ) ?>";
+        let sel_locationid = $("#form-select-locationid");
+        let sel_category   = $("#form-select-category");
 
         function changeGraph() {
-            window.location = `${base_route}/${sel_switchid.val()}/${sel_category.val()}`;
+            window.location = `${base_route}/${sel_locationid.val()}/${sel_category.val()}`;
         }
 
-        sel_switchid.on( 'change', changeGraph );
+        sel_locationid.on( 'change', changeGraph );
         sel_category.on( 'change', changeGraph );
 
     </script>
