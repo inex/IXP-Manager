@@ -77,6 +77,7 @@ Potential Todo / Feature Ideas
 * Patch Panel Updates:
     * Link port provisioning with patch panel information - https://github.com/inex/IXP-Manager/issues/660
     * Moving existing port doesn't update patch panel port record - https://github.com/inex/IXP-Manager/issues/661
+    * Customer views shows MMR ODF with cabinet position for patch-panel demarc - https://github.com/inex/IXP-Manager/issues/535
 
 
 
