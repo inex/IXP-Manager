@@ -71,6 +71,7 @@ Potential Todo / Feature Ideas
 * Route Servers - PeeringDB never via route server
   * https://github.com/inex/IXP-Manager/issues/610
 
-* Link port provisioning with patch panel information
-  * https://github.com/inex/IXP-Manager/issues/660
+* Patch Panel Updates:
+    * Link port provisioning with patch panel information - https://github.com/inex/IXP-Manager/issues/660
+    * Moving existing port doesn't update patch panel port record - https://github.com/inex/IXP-Manager/issues/661
 
