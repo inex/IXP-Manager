@@ -48,12 +48,15 @@ template bgp tb_rsclient {
     # (RPKI is /really/ quick)
     connect delay time 30;
 
+<?php if( $t->router->rfc1997_passthru ): ?>    interpret communities off;  # enable rfc1997 well-known community pass through
+<?php endif; ?>
+
     <?= $t->ipproto ?> {
         export all;
 <?php if( $t->router->protocol == 6 ): ?>
         missing lladdr ignore;
 <?php endif; ?>
     };
-<?php if( $t->router->rfc1997_passthru ): ?>        interpret communities off;  # enable rfc1997 well-known community pass through
+
     rs client;
 }
