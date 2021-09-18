@@ -65,6 +65,20 @@
             </div>
         </div>
     </div>
+
+
+    <div class="tw-bg-blue-100 tw-border-l-4 tw-border-blue-500 tw-text-blue-700 p-4 alert-dismissible mb-4 tw-mt-16" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="text-center"><i class="fa fa-info-circle fa-2x "></i></div>
+            <div class="col-sm-12">
+                Facility graphs show traffic exchanged that originates and/or terminates in a given facility.
+                It <em>does not</em> include traffic <em>passing through</em> facility. You can see inter-facility
+                traffic via the Inter-Switch / PoP graphs. More details in
+                <a href="https://docs.ixpmanager.org/grapher/introduction/">the documentation</a>.
+            </div>
+        </div>
+    </div>
+
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
