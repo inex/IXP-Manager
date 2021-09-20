@@ -1,4 +1,4 @@
-name: CI (exc. Dusk/Browser)
+name: CI Tests (ex Dusk)
 
 on: [ push, pull_request ]
 
