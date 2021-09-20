@@ -4,7 +4,7 @@
 GNU Public License V2) which we hope will benefit the wider IXP community,
 and especially new and small IXPs looking to expand.
 
-[![Build Status](https://travis-ci.org/inex/IXP-Manager.png?branch=master)](https://travis-ci.org/inex/IXP-Manager) - courtesy of [Travis CI](https://travis-ci.org/inex/IXP-Manager).
+[![CI Tests (ex Dusk)](https://github.com/inex/IXP-Manager/actions/workflows/ci-ex-dusk.yml/badge.svg)](https://github.com/inex/IXP-Manager/actions/workflows/ci-ex-dusk.yml)  - courtesy of [GitHub Actions](https://github.com/inex/IXP-Manager/actions/workflows/ci-ex-dusk.yml).
 
 ## Main Links
 
