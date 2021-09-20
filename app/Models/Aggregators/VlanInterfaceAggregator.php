@@ -311,6 +311,7 @@ class VlanInterfaceAggregator extends VlanInterface
      *         [location_name] => Interxion DUB1
      *         [location_shortname] => IX-DUB1
      *         [location_tag] => ix1
+     *         [vlanid] => 2
      *     ]
      *
      * @param Vlan  $vlan
@@ -334,6 +335,7 @@ class VlanInterfaceAggregator extends VlanInterface
             }
 
             $int['protocol'] = $protocol;
+            $int['vlanid']   = $int['vid'];
 
             // don't need this anymore:
             unset( $int['enabled'] );

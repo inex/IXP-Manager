@@ -237,6 +237,9 @@ filter f_export_as<?= $int['autsys'] ?>
 {
 
 <?php
+    // IXP Manauger UI based filters:
+    echo $t->insert( 'api/v4/router/server/bird2/f_ui_export', [ 'int' => $int ] );
+
     // We allow per customer AS export code here which IXPs can define as skinned files.
     // For example, to solve a Facebook issue, INEX created the following:
     //     resources/skins/api/v4/router/server/bird2/f_export_as32934.foil.php

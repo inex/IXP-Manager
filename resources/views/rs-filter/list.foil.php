@@ -78,7 +78,7 @@
                     <tbody>
                         <?php foreach( $t->rsFilters as $index => $rsf ):
                             /** @var $rsf \IXP\Models\RouteServerFilter */?>
-                            <tr>
+                            <tr class="<?= $rsf->enabled ?: 'tw-italic' ?>">
                                 <td>
                                     <?php if( $isSuperUser ): ?>
                                         <?php if( $rsf->peer ): ?>
@@ -143,7 +143,7 @@
                                                 <i class="fa fa-pencil"></i>
                                             </a>
                                             <a class="btn btn-white" href="<?= route( "rs-filter@toggle-enable", [ "rsf" => $rsf->id, "enable" => $rsf->enabled ? 0 : 1 ] ) ?>" title="<?= $rsf->enabled ? "Disable" : "Enable" ?>">
-                                                <i class="fa <?= $rsf->enabled ? "fa-times-circle" : "fa-check-circle" ?>"></i>
+                                                <i class="fa <?= $rsf->enabled ? "fa-times-circle tw-text-green-800" : "fa-check-circle tw-text-red-800" ?>"></i>
                                             </a>
                                             <a class="btn btn-white delete-rsf" id="delete-rsf-<?= $rsf->id ?>" data-object-id="<?=  $rsf->id ?>"  href="<?= route( 'rs-filter@delete' , [ 'rsf' => $rsf->id ]  )  ?>" title="Delete">
                                                 <i class="fa fa-trash"></i>
