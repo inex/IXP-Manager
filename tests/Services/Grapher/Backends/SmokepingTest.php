@@ -58,7 +58,7 @@ class SmokepingTest extends TestCase
 
                 $config = $grapher->generateConfiguration( GrapherBackendContract::GENERATED_CONFIG_TYPE_MONOLITHIC, $options )[ 0 ];
 
-                $knownGoodConf = file_get_contents( base_path() . "/data/travis-ci/known-good/ci-services-grapher-smokeping-vlanid{$vlanid}-{$proto}.conf" );
+                $knownGoodConf = file_get_contents( base_path() . "/data/ci/known-good/ci-services-grapher-smokeping-vlanid{$vlanid}-{$proto}.conf" );
                 $this->assertFalse( $knownGoodConf === false, "Smokeping Conf generation - could not load known good file ci-services-grapher-smokeping-vlanid{$vlanid}-{$proto}.conf" );
 
                 // clean the configs to remove the comment lines which are irrelevant

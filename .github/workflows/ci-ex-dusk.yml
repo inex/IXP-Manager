@@ -1,13 +1,9 @@
-name: Laravel
+name: CI (exc. Dusk/Browser)
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [ push, pull_request ]
 
 jobs:
-  laravel-tests:
+  ci-ex-dusk:
 
     runs-on: ubuntu-latest
 
@@ -26,16 +22,14 @@ jobs:
       run: sudo apt-get install bgpq3
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-    - name: Set up Dusk chrome-drover
-      run: php artisan dusk:chrome-driver
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Database
       run: |
-        cat data/travis-ci/travis_ci_test_db.sql  | mysql --default-character-set=utf8mb4 -h 127.0.0.1 -u root myapp_test
-    - name: Set up Dusk and php serve
+        cat data/ci/ci_test_db.sql  | mysql --default-character-set=utf8mb4 -h 127.0.0.1 -u root myapp_test
+    - name: Set up php server
       run: |
         php ./artisan serve  &>php-built-in.log &
-        google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
     - name: Execute tests (Unit and Feature tests) via PHPUnit
-      run: vendor/bin/phpunit
+      run: vendor/bin/phpunit --testsuite 'Docstore Test Suite,IXP Manager Test Suite'
+

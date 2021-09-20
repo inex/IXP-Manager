@@ -1,7 +1,7 @@
 {
     "version": "0.7",
     "generator": "IXP Manager v999.9.9",
-    "timestamp": "2018-06-19T13:57:41Z",
+    "timestamp": "2021-09-20T09:12:54Z",
     "ixp_list": [
         {
             "shortname": "Infrastructure #1",
@@ -84,8 +84,17 @@
             "name": "PCH DNS",
             "peering_policy": "open",
             "member_type": "peering",
+            "contact_email": [
+                "peering@example.com"
+            ],
+            "contact_phone": [
+                ""
+            ],
             "ixp_manager": {
-                "tags": []
+                "tags": [],
+                "in_manrs": false,
+                "is_reseller": false,
+                "is_resold": false
             },
             "connection_list": [
                 {
@@ -119,10 +128,19 @@
             "name": "AS112",
             "peering_policy": "open",
             "member_type": "peering",
+            "contact_email": [
+                "peering@example.com"
+            ],
+            "contact_phone": [
+                ""
+            ],
             "ixp_manager": {
                 "tags": {
                     "test-tag1": "Test Tag1"
-                }
+                },
+                "in_manrs": false,
+                "is_reseller": false,
+                "is_resold": false
             },
             "connection_list": [
                 {
@@ -176,8 +194,17 @@
             "name": "HEAnet",
             "peering_policy": "open",
             "member_type": "peering",
+            "contact_email": [
+                "peering@example.com"
+            ],
+            "contact_phone": [
+                ""
+            ],
             "ixp_manager": {
-                "tags": []
+                "tags": [],
+                "in_manrs": false,
+                "is_reseller": false,
+                "is_resold": false
             },
             "connection_list": [
                 {
@@ -251,8 +278,19 @@
             "name": "INEX",
             "peering_policy": "mandatory",
             "member_type": "ixp",
+            "contact_email": [
+                "peering@siep.net"
+            ],
+            "contact_phone": [
+                "+353 1 123 4567"
+            ],
+            "peering_policy_url": "http:\/\/www.siep.com\/noc\/",
+            "contact_hours": "24x7",
             "ixp_manager": {
-                "tags": []
+                "tags": [],
+                "in_manrs": false,
+                "is_reseller": false,
+                "is_resold": false
             },
             "connection_list": []
         },
@@ -263,10 +301,19 @@
             "name": "Imagine",
             "peering_policy": "open",
             "member_type": "peering",
+            "contact_email": [
+                "peering@example.com"
+            ],
+            "contact_phone": [
+                ""
+            ],
             "ixp_manager": {
                 "tags": {
                     "test-tag1": "Test Tag1"
-                }
+                },
+                "in_manrs": false,
+                "is_reseller": false,
+                "is_resold": false
             },
             "connection_list": [
                 {

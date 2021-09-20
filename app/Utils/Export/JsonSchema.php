@@ -482,7 +482,7 @@ class JsonSchema
             if( $tags ) {
                 $memberinfo[ $cnt ][ 'ixp_manager' ][ 'tags' ] = [];
                 foreach( $c->tags as $tag ) {
-                    if( !$tag->internal_only || ( Auth::check() && Auth::user()->isSuperUser ) ) {
+                    if( !$tag->internal_only || ( Auth::check() && Auth::user()->isSuperUser() ) ) {
                         $memberinfo[ $cnt ][ 'ixp_manager' ][ 'tags' ][ $tag->tag ] = $tag->display_as;
                     }
                 }

@@ -9,8 +9,18 @@
          processIsolation="false"
          stopOnFailure="false">
     <testsuites>
-        <testsuite name="Application Test Suite">
-            <directory suffix="Test.php">./tests</directory>
+        <testsuite name="Dusk / Browser Test Suite">
+            <directory suffix="Test.php">./tests/Browser</directory>
+        </testsuite>
+        <testsuite name="Docstore Test Suite">
+            <directory suffix="Test.php">./tests/Docstore</directory>
+            <directory suffix="Test.php">./tests/DocstoreCustomer</directory>
+        </testsuite>
+        <testsuite name="IXP Manager Test Suite">
+            <directory suffix="Test.php">./tests/IXP</directory>
+            <directory suffix="Test.php">./tests/Services</directory>
+            <directory suffix="Test.php">./tests/Tasks</directory>
+            <directory suffix="Test.php">./tests/Utils</directory>
         </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">

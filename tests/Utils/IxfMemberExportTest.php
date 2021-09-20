@@ -53,7 +53,7 @@ class IxfMemberExportTest extends TestCase
                 $json = $exporter->get( $v, false, $auth, true );
                 $a = ( $auth ? '' : 'un' ) . 'auth';
 
-                $knownGoodConf = file_get_contents( base_path() . "/data/travis-ci/known-good/api-v4-member-export-{$v}-{$a}.json" );
+                $knownGoodConf = file_get_contents( base_path() . "/data/ci/known-good/api-v4-member-export-{$v}-{$a}.json" );
                 $this->assertFalse( $knownGoodConf === false, "IX-F Member Export - could not load known good file api-v4-member-export-{$v}-{$a}.json" );
 
                 // clean the exports to set timestamp the same

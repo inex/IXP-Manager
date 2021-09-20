@@ -54,7 +54,7 @@ class GenerateConfigurationBird1AS112Test extends TestCase
             $router = Router::whereHandle( $handle )->get()->first();
             $conf = ( new RouterConfigurationGenerator( $router ) )->render();
 
-            $knownGoodConf = file_get_contents( base_path() . "/data/travis-ci/known-good/ci-apiv4-{$handle}.conf" );
+            $knownGoodConf = file_get_contents( base_path() . "/data/ci/known-good/ci-apiv4-{$handle}.conf" );
             $this->assertFalse( $knownGoodConf === false, "AS112 Conf generation - could not load known good file ci-apiv4-{$handle}.conf" );
 
             // clean the configs to remove the comment lines which are irrelevant

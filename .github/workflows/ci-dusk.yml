@@ -1,0 +1,39 @@
+name: CI - Dusk / Browser
+
+on: workflow_dispatch
+
+jobs:
+  laravel-tests:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+      with:
+        php-version: '8.0'
+    - uses: actions/checkout@v2
+    - uses: shogo82148/actions-setup-mysql@v1
+      with:
+        mysql-version: '8.0'
+    - run: mysql -uroot -h127.0.0.1 -e 'CREATE DATABASE myapp_test'
+    - name: Copy .env
+      run: php -r "file_exists('.env') || copy('.env.ci', '.env');"
+    - name: Install bgpq3
+      run: sudo apt-get install bgpq3
+    - name: Install Dependencies
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+    - name: Set up Dusk chrome-drover
+      run: php artisan dusk:chrome-driver
+    - name: Directory Permissions
+      run: chmod -R 777 storage bootstrap/cache
+    - name: Create Database
+      run: |
+        cat data/ci/ci_test_db.sql  | mysql --default-character-set=utf8mb4 -h 127.0.0.1 -u root myapp_test
+    - name: Set up Dusk and php serve
+      run: |
+        php ./artisan serve  &>php-built-in.log &
+        google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+    - name: Execute tests (Unit and Feature tests) via PHPUnit
+      run: vendor/bin/phpunit --testsuite 'Dusk / Browser Test Suite'
+
+
