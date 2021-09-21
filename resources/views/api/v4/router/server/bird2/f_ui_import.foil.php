@@ -51,6 +51,36 @@
  *         [location_tag] => ix1
  *
  *
+ * Prevent announcement of a prefix to a peer
+
+43760:0:peer-as
+
+Announce a route to a certain peer
+
+43760:1:peer-as
+
+Prevent announcement of a prefix to all peers
+
+43760:0:0
+
+Announce a route to all peers
+
+43760:1:0
+
+INEX’s route server clusters also support BGP large community AS path prepending control on all peering LANs, using the following policy:
+Description	Community
+Prepend to peer AS once
+
+43760:101:peer-as
+
+Prepend to peer AS twice
+
+43760:102:peer-as
+
+Prepend to peer AS three times
+
+43760:103:peer-as
+ *
  *
  */
 
@@ -74,7 +104,7 @@ if( $filters->count() ): ?>
     ########################################################################################
     ########################################################################################
     #
-    # UI Based Filtering (export rules)
+    # UI Based Filtering (import rules)
     #
     ########################################################################################
     ########################################################################################
@@ -82,46 +112,46 @@ if( $filters->count() ): ?>
 <?php
     foreach( $filters as $filter ) {
 
-    $indent = '    ';
-    echo "\n";
-    echo "    # Filter id:{$filter->id} created:{$filter->created_at} updated:{$filter->created_at}\n";
-    if( $filter->peer_id ):
-    $indent .= '    '; ?>    if ( bgp_path.first = <?= \IXP\Models\Customer::find( $filter->peer_id )->autsys ?> ) then {
-<?php endif;
 
-    if( $filter->received_prefix ):
-echo $indent; ?>if ( net = <?= $filter->received_prefix ?> ) then {
+        $peer = null;
+
+        $indent = '    ';
+        echo "\n";
+        echo "    # Filter id:{$filter->id} created:{$filter->created_at} updated:{$filter->created_at}\n";
+        if( $filter->peer_id ) {
+            $peer = \IXP\Models\Customer::find( $filter->peer_id );
+        }
+
+    if( $filter->advertised_prefix ):
+echo $indent; ?>if ( net = <?= $filter->advertised_prefix ?> ) then {
 <?php
     $indent .= '    ';
     endif;
 
-    switch( $filter->action_receive ):
+    switch( $filter->action_advertise ):
 
         case 'AS_IS':
-            echo "{$indent}# AS_IS - a no-op but we accept here as 'first rule matches'\n";
-            echo "{$indent}accept;'\n";
+            echo "{$indent}# AS_IS\n";
+            echo "{$indent}bgp_large_community.add( routeserverasn:1:" . ( $peer ? $peer->autsys : '0' ) . " );\n";
             break;
 
         case 'NO_ADVERTISE':
-            echo "{$indent}# NO_ADVERTISE - do not advertise this to the route server client\n";
-            echo "{$indent}reject;\n";
+            echo "{$indent}# NO_ADVERTISE " . ( $peer ? 'to ' . $peer->abbreviatedName : 'to all' ) . "\n";
+            echo "{$indent}bgp_large_community.add( routeserverasn:0:" . ( $peer ? $peer->autsys : '0' ) . " );\n";
             break;
 
         case 'PREPEND_THRICE':
-            echo "{$indent}# PREPEND_THRICE\n";
             echo "{$indent}bgp_path.prepend( bgp_path.first );\n";
             echo "{$indent}bgp_path.prepend( bgp_path.first );\n";
             echo "{$indent}bgp_path.prepend( bgp_path.first );\n";
             break;
 
         case 'PREPEND_TWICE':
-            echo "{$indent}# PREPEND_TWICE\n";
             echo "{$indent}bgp_path.prepend( bgp_path.first );\n";
             echo "{$indent}bgp_path.prepend( bgp_path.first );\n";
             break;
 
         case 'PREPEND_ONCE':
-            echo "{$indent}# PREPEND_ONCE\n";
             echo "{$indent}bgp_path.prepend( bgp_path.first );\n";
             break;
 
@@ -129,12 +159,6 @@ echo $indent; ?>if ( net = <?= $filter->received_prefix ?> ) then {
 
 
     if( $filter->received_prefix ):
-    $indent = substr( $indent, 0, -4 );
-    echo $indent;
-?>}
-<?php endif;
-
-if( $filter->peer_id ):
     $indent = substr( $indent, 0, -4 );
     echo $indent;
 ?>}
