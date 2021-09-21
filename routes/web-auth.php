@@ -221,6 +221,10 @@ Route::group( [ 'prefix' => 'rs-filter' ], function() {
     Route::get('toogle-enable/{rsf}/{enable}',   'RsFilterController@toggleEnable'   )->name("rs-filter@toggle-enable"   );
     Route::get('change-order/{rsf}/{up}',        'RsFilterController@changeOrderBy'  )->name("rs-filter@change-order"    );
 
+    Route::post('revert/{cust}',                 'RsFilterController@revert'         )->name("rs-filter@revert"          );
+    Route::post('commit/{cust}',                 'RsFilterController@commit'         )->name("rs-filter@commit"          );
+
+
     Route::post('store',                        'RsFilterController@store'          )->name("rs-filter@store"           );
     Route::put('update/{rsf}',                  'RsFilterController@update'         )->name("rs-filter@update"          );
     Route::delete('delete/{rsf}',               'RsFilterController@delete'       )->name("rs-filter@delete"          );

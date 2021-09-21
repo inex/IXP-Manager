@@ -28,17 +28,7 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-?>
 
-    ########################################################################################
-    ########################################################################################
-    #
-    # UI Based Filtering - export rules
-    #
-    ########################################################################################
-    ########################################################################################
-
-<?php
 /**
  * $t->int contains:
  *
@@ -65,7 +55,7 @@
  */
 
 // Get all filters for this customer:
-$filters = \IXP\Models\RouteServerFilter::whereCustomerId( $t->int['cid'] )
+$filters = \IXP\Models\RouteServerFilterProd::whereCustomerId( $t->int['cid'] )
     ->where( 'enabled', 1 )
     ->where(function ($query) use ($t) {
         $query->whereNull( 'vlan_id' )
@@ -79,8 +69,23 @@ $filters = \IXP\Models\RouteServerFilter::whereCustomerId( $t->int['cid'] )
     ->get();
 
 
+if( $filters->count() ): ?>
 
-foreach( $filters as $filter ) {
+    ########################################################################################
+    ########################################################################################
+    #
+    # UI Based Filtering (export rules)
+    #
+    ########################################################################################
+    ########################################################################################
+
+<?php else: ?>
+
+    # No UI Based Filtering (export rules)
+
+<?php endif;
+
+    foreach( $filters as $filter ) {
 
     $indent = '    ';
     echo "\n";

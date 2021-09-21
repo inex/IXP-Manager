@@ -122,6 +122,19 @@ return [
         'access'  => env( 'IXP_FE_RS_PREFIXES_ACCESS', \IXP\Models\User::AUTH_SUPERUSER ),
     ],
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Route Server Filters
+    |--------------------------------------------------------------------------
+    |
+    */
+    'rs-filters' => [
+        'ttl'  => env( 'IXP_FE_RS_FILTERS_TIME_TO_LIVE', 'There is no information available as to how often the route servers are updated.' ),
+    ],
+
+
     /*
     |--------------------------------------------------------------------------
     | Customer Controller Options

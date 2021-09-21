@@ -37,14 +37,14 @@ use IXP\Http\Requests\RouteServerFilter\{
     Store
 };
 
-use IXP\Models\{
-    Aggregators\CustomerAggregator,
+use IXP\Models\{Aggregators\CustomerAggregator,
+    Aggregators\RouteServerFilterAggregator,
     Customer,
     IrrdbPrefix,
     Router,
     RouteServerFilter,
-    Vlan
-};
+    RouteServerFilterProd,
+    Vlan};
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -79,9 +79,42 @@ class RsFilterController extends Controller
         return view( 'rs-filter/list' )->with([
             "rsFilters"         => RouteServerFilter::where( "customer_id" , $cust->id )
                 ->orderBy( 'order_by' )->get(),
-            "c"                 => $cust
+            "rsFiltersProd"     => RouteServerFilterProd::where( "customer_id" , $cust->id )
+                ->orderBy( 'order_by' )->get(),
+            "c"                 => $cust,
+            'in_sync'           => RouteServerFilterAggregator::inSync( $cust ),
         ]);
     }
+
+
+
+    /**
+     * Revert changes
+     */
+    public function revert( Customer $cust ): RedirectResponse
+    {
+        $this->authorize( 'checkCustObject',  [ RouteServerFilter::class, $cust ] );
+
+        RouteServerFilterAggregator::revert( $cust );
+
+        AlertContainer::push( "Staged changes reverted.", Alert::SUCCESS );
+        return redirect( route( 'rs-filter@list', [ 'cust' => $cust->id ] ) );
+    }
+
+    /**
+     * Commit changes
+     */
+    public function commit( Customer $cust ): RedirectResponse
+    {
+        $this->authorize( 'checkCustObject',  [ RouteServerFilter::class, $cust ] );
+
+        RouteServerFilterAggregator::commit( $cust );
+
+        Log::notice( Auth::getUser()->username . ' commited route server filter changes' );
+        AlertContainer::push( "Staged changes commited. " . config('ixp_fe.rs-filters.ttl' ), Alert::SUCCESS );
+        return redirect( route( 'rs-filter@list', [ 'cust' => $cust->id ] ) );
+    }
+
 
     /**
      * Allow to display the form to create a route server filter
