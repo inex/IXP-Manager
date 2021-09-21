@@ -32,6 +32,7 @@ use IXP\Models\User;
  * IXP\Models\Aggregators\RouterAggregator
  *
  * @property int $id
+ * @property int|null $pair_id
  * @property int $vlan_id
  * @property string $handle
  * @property int $protocol
@@ -50,6 +51,7 @@ use IXP\Models\User;
  * @property bool $bgp_lc
  * @property string $template
  * @property bool $skip_md5
+ * @property string|null $last_started
  * @property \Illuminate\Support\Carbon|null $last_updated
  * @property bool $rpki
  * @property string|null $software_version
@@ -76,12 +78,14 @@ use IXP\Models\User;
  * @method static Builder|RouterAggregator whereCreatedAt($value)
  * @method static Builder|RouterAggregator whereHandle($value)
  * @method static Builder|RouterAggregator whereId($value)
+ * @method static Builder|RouterAggregator whereLastStarted($value)
  * @method static Builder|RouterAggregator whereLastUpdated($value)
  * @method static Builder|RouterAggregator whereLgAccess($value)
  * @method static Builder|RouterAggregator whereMgmtHost($value)
  * @method static Builder|RouterAggregator whereName($value)
  * @method static Builder|RouterAggregator whereOperatingSystem($value)
  * @method static Builder|RouterAggregator whereOperatingSystemVersion($value)
+ * @method static Builder|RouterAggregator wherePairId($value)
  * @method static Builder|RouterAggregator wherePeeringIp($value)
  * @method static Builder|RouterAggregator whereProtocol($value)
  * @method static Builder|RouterAggregator whereQuarantine($value)

@@ -81,6 +81,7 @@ class StoreRouter extends FormRequest
             'mgmt_host'                => 'required|string|max:255',
             'api_type'                 => 'required|integer|in:' . implode( ',', array_keys( Router::$API_TYPES ) ),
             'api'                      => ( $this->api_type !== Router::API_TYPE_NONE ? 'url|required|regex:/.*[^\/]$/' : '' ),
+            'pair_id'                  => 'nullable|integer' . ( $this->db_id ? '|not_in:' . $this->db_id : '' ) . '|exists:routers,id',
             'lg_access'                => 'integer' . ( $this->api ? '|required|in:' . implode( ',', array_keys( User::$PRIVILEGES_ALL ) ) : '' ),
         ];
     }
@@ -94,6 +95,7 @@ class StoreRouter extends FormRequest
     {
         return [
             'api.regex' => 'The API URL must not end with a trailing slash',
+            'pair_id.not_in' => 'Cannot pair a router with itself',
         ];
     }
 }

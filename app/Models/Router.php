@@ -34,6 +34,7 @@ use IXP\Traits\Observable;
  * IXP\Models\Router
  *
  * @property int $id
+ * @property int|null $pair_id
  * @property int $vlan_id
  * @property string $handle
  * @property int $protocol
@@ -52,6 +53,7 @@ use IXP\Traits\Observable;
  * @property bool $bgp_lc
  * @property string $template
  * @property bool $skip_md5
+ * @property string|null $last_started
  * @property \Illuminate\Support\Carbon|null $last_updated
  * @property bool $rpki
  * @property string|null $software_version
@@ -78,12 +80,14 @@ use IXP\Traits\Observable;
  * @method static Builder|Router whereCreatedAt($value)
  * @method static Builder|Router whereHandle($value)
  * @method static Builder|Router whereId($value)
+ * @method static Builder|Router whereLastStarted($value)
  * @method static Builder|Router whereLastUpdated($value)
  * @method static Builder|Router whereLgAccess($value)
  * @method static Builder|Router whereMgmtHost($value)
  * @method static Builder|Router whereName($value)
  * @method static Builder|Router whereOperatingSystem($value)
  * @method static Builder|Router whereOperatingSystemVersion($value)
+ * @method static Builder|Router wherePairId($value)
  * @method static Builder|Router wherePeeringIp($value)
  * @method static Builder|Router whereProtocol($value)
  * @method static Builder|Router whereQuarantine($value)
@@ -110,6 +114,7 @@ class Router extends Model
      * @var array
      */
     protected $fillable = [
+        'pair_id',
         'vlan_id',
         'handle',
         'protocol',

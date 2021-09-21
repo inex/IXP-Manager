@@ -102,7 +102,7 @@ class RouterController extends Controller
     {
         return view( 'router/edit' )->with([
             'rt'                => false,
-            'vlans'             => Vlan::publicOnly()->orderBy( 'number' )->get()
+            'vlans'             => Vlan::publicOnly()->orderBy( 'number' )->get(),
         ]);
     }
 
@@ -159,6 +159,7 @@ class RouterController extends Controller
             'rpki'                      => request()->old( 'rpki',              $router->rpki               ),
             'rfc1997_passthru'          => request()->old( 'rfc1997_passthru',  $router->rfc1997_passthru   ),
             'skip_md5'                  => request()->old( 'skip_md5',          $router->skip_md5           ),
+            'pair_id'                   => request()->old( 'pait_id',           $router->pair_id            ),
             'template'                  => request()->old( 'template',          $router->template           ),
         ]);
 
