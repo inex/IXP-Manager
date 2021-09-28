@@ -24,8 +24,6 @@ namespace IXP\Console\Commands\Switches;
  */
 use IXP\Console\Commands\Command;
 
-use D2EM;
-
 use OSS_SNMP\{
     Exception,
     SNMP

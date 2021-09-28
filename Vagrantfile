@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "ubuntu/bionic64"
+  config.vm.box = "ubuntu/focal64"
 
   config.vm.network "forwarded_port", guest: 80, host: 8088
 
@@ -10,11 +10,6 @@ Vagrant.configure(2) do |config|
     owner: "ubuntu"
 
   config.vm.synced_folder "./storage", "/vagrant/storage", id: "vagrant-root1",
-      owner: "ubuntu",
-      group: "www-data",
-      mount_options: ["dmode=775,fmode=664"]
-
-  config.vm.synced_folder "./database/Proxies", "/vagrant/database/Proxies", id: "vagrant-root3",
       owner: "ubuntu",
       group: "www-data",
       mount_options: ["dmode=775,fmode=664"]
@@ -30,4 +25,5 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.provision :shell, path: "bootstrap.sh"
+
 end

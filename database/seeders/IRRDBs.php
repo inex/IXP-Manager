@@ -117,7 +117,6 @@ class IRRDBs extends Seeder
         foreach( $irrdbs as $irrdb ) {
             IrrdbConfig::create([
                 'host'      => $irrdb['host'],
-                'protocol'  => $irrdb['protocol'],
                 'source'    => $irrdb['source'],
                 'notes'     => $irrdb['notes'],
             ]);

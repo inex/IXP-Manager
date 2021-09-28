@@ -31,6 +31,7 @@ use IXP\Models\Infrastructure;
 use IXP\Models\Location;
 use IXP\Models\Switcher;
 use IXP\Models\SwitchPort;
+use IXP\Models\Vlan;
 
 /**
  * IXP\Models\Aggregators\SwitcherAggregator
@@ -304,5 +305,31 @@ class SwitcherAggregator extends Switcher
             })
             ->whereIn( 'cb.type', [ CoreBundle::TYPE_ECMP, CoreBundle::TYPE_L3_LAG ] )
             ->get()->toArray();
+    }
+
+
+    /**
+     * Get switches that participate in a given VLAN
+     * @param Vlan $v
+     * @param bool|null $pollable If true, only return pollable switches
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function getForVlan( Vlan $v, ?bool $pollable = null )
+    {
+        /** @var Builder $q */
+        $q = Switcher::select( 'switch.*' )
+            ->distinct()
+            ->join( 'switchport', 'switch.id', '=', 'switchport.switchid' )
+            ->join( 'physicalinterface', 'physicalinterface.switchportid', '=', 'switchport.id' )
+            ->join( 'virtualinterface', 'virtualinterface.id', '=', 'physicalinterface.virtualinterfaceid' )
+            ->join( 'vlaninterface', 'vlaninterface.virtualinterfaceid', '=', 'virtualinterface.id' )
+            ->where( 'vlaninterface.vlanid', $v->id );
+
+        if( $pollable ) {
+            $q->where( 'switch.active', true )
+                ->where( 'switch.poll', true );
+        }
+
+        return $q->get();
     }
 }

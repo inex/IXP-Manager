@@ -243,6 +243,28 @@ class Switcher extends Model
     }
 
     /**
+     * Scope a query for active switches
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('active', true);
+    }
+
+    /**
+     * Scope a query for pollable switches **which must also be active**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopePollable(Builder $query): Builder
+    {
+        return $query->where('active', true)
+            ->where('poll', true);
+    }
+
+
+    /**
      * Gets a listing of patch panel ports for a switch
      *
      * @return Collection
