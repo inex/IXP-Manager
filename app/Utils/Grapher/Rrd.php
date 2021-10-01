@@ -341,7 +341,12 @@ class Rrd
 
         $i = 0;
          foreach( $tin as $ts => $v ) {
-            if( is_numeric( $v ) && is_numeric( $avgRrd['data'][$indexOut][$ts] ) ) {
+            if(
+                is_numeric( $v )
+                && is_numeric( $avgRrd['data'][$indexOut][$ts] )
+                && is_numeric( $maxRrd['data'][$indexIn][$ts] )
+                && is_numeric( $maxRrd['data'][$indexOut][$ts] )
+            ) {
                 // first couple are often blank
                 if( $ts > time() - $this->step ) {
                     continue;
