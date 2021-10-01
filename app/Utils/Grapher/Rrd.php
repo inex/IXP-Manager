@@ -310,25 +310,30 @@ class Rrd
      */
     public function data(): array
     {
-        $rrd = rrd_fetch( $this->file, [
+        $avgRrd = rrd_fetch( $this->file, [
             'AVERAGE',
             '--start', time() - self::PERIOD_TIME[ $this->graph()->period() ]
         ]);
 
-        if( $rrd === false || !is_array( $rrd ) ) {
+        $maxRrd = rrd_fetch( $this->file, [
+            'AVERAGE',
+            '--start', time() - self::PERIOD_TIME[ $this->graph()->period() ]
+        ]);
+
+        if( !is_array( $avgRrd ) || !is_array( $maxRrd ) ) {
             throw new FileErrorException("Could not open RRD file");
         }
 
-        $this->start = $rrd['start'];
-        $this->end   = $rrd['end'];
-        $this->step  = $rrd['step'];
+        $this->start = $avgRrd['start'];
+        $this->end   = $avgRrd['end'];
+        $this->step  = $avgRrd['step'];
 
         list( $indexIn, $indexOut ) = $this->getIndexKeys();
 
         // we want newest first, so iterate in reverse
         // but.... do, we?
         // $tin = array_reverse( $rrd['data'][ $indexIn ], true );
-        $tin = $rrd['data'][ $indexIn ];
+        $tin = $avgRrd['data'][ $indexIn ];
 
         $values  = [];
 
@@ -336,13 +341,19 @@ class Rrd
 
         $i = 0;
          foreach( $tin as $ts => $v ) {
-            if( is_numeric( $v ) && is_numeric( $rrd['data'][$indexOut][$ts] ) ) {
+            if( is_numeric( $v ) && is_numeric( $avgRrd['data'][$indexOut][$ts] ) ) {
                 // first couple are often blank
                 if( $ts > time() - $this->step ) {
                     continue;
                 }
 
-                $values[$i] = [ (int)$ts, (int)$v, (int)$rrd['data'][$indexOut][$ts], (int)$v, (int)$rrd['data'][$indexOut][$ts] ];
+                $values[$i] = [
+                    (int)$ts,
+                    (int)$v,
+                    (int)$avgRrd['data'][$indexOut][$ts],
+                    (int)$maxRrd['data'][$indexIn][$ts],
+                    (int)$maxRrd['data'][$indexOut][$ts]
+                ];
 
                 if( $isBits ) {
                     $values[$i][1] *= 8;
