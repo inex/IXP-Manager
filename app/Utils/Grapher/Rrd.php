@@ -316,7 +316,7 @@ class Rrd
         ]);
 
         $maxRrd = rrd_fetch( $this->file, [
-            'AVERAGE',
+            'MAX',
             '--start', time() - self::PERIOD_TIME[ $this->graph()->period() ]
         ]);
 
