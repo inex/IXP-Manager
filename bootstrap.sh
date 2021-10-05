@@ -73,7 +73,6 @@ DROP DATABASE IF EXISTS \`ixpmanager\`;
 CREATE DATABASE \`ixpmanager\` CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';
 CREATE USER \`ixpmanager\`@\`127.0.0.1\` IDENTIFIED BY 'ixpmanager';
 GRANT ALL ON \`ixpmanager\`.* TO \`ixpmanager\`@\`127.0.0.1\`;
-GRANT ALL ON \`ixpmanager\`.* TO \`ixpmanager\`@\`localhost\`;
 FLUSH PRIVILEGES;
 END_SQL
 

@@ -97,7 +97,14 @@ class FdbTrawl extends Command
 
         foreach( $switches as $s ) {
 
-            $trawler = ( new FdbTrawler( $s, $vlan ) )->trawl();
+            try {
+                $trawler = ( new FdbTrawler( $s, $vlan ) )->trawl();
+            } catch( \Exception $e ) {
+                $this->error( "{$s->name}: could not trawl - exeception thrown - {$e->getMessage()}." );
+                continue;
+            }
+
+
 die("\n\n\==ENDS==\n\n");
             if( !$this->isVerbosityQuiet() ) {
                 $this->info( "Polling {$s->name} with SNMP requests to {$s->hostname}" );
