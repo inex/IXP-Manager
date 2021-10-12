@@ -109,8 +109,12 @@ class PatchPanelController extends Controller
      */
     public function store( StorePatchPanel $r ): RedirectResponse
     {
-        $r->merge( [ 'location_notes' => clean( $r->location_notes ) ]);
-        $pp = PatchPanel::create( array_merge( $r->all(), [ 'active' => true ]) );
+        $pp = PatchPanel::create( $r->merge( [
+                'location_notes' => clean( $r->location_notes ),
+                'active' => true,
+                'port_prefix' => $r->port_prefix ?? '',
+            ])->all()
+        );
 
         // create the patch panel ports
         $pp->createPorts( $r->numberOfPorts );
