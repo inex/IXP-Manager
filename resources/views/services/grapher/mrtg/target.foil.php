@@ -12,6 +12,9 @@ Target[<?=$mrtglabel?>]:    <?php
         $cnt = 0;
         $numports = count( $this->portIds );
         foreach( $this->portIds as $piid ):
+            if(!$this->data['pis'][$piid]->switchPort->ifnameToSNMPIdentifier()){
+                continue;
+            }
 
             if( $numports > 1 && $cnt === 0 ):
                 echo "\n          ";
