@@ -5,11 +5,7 @@
         $( '#layer-2-interface-list' ).DataTable( {
             stateSave: true,
             stateDuration : DATATABLE_STATE_DURATION,
-            responsive : true,
-            columnDefs: [
-                { responsivePriority: 1, targets: 0 },
-                { responsivePriority: 2, targets: -1 },
-            ],
+            responsive : false,
             "order": [[ 0, "asc" ]]
         });
     });
