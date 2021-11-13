@@ -45,7 +45,7 @@
                                     </select>
                                 </div>
                             </li>
-                            <a class="btn btn-white float-right" href="<?= route( 'statistics@member', [ 'id' => $t->c->id ] ) ?>?category=<?= $t->graph->category() ?>">
+                            <a class="btn btn-white float-right" href="<?= route( 'statistics@member', [ 'cust' => $t->c->id ] ) ?>?category=<?= $t->graph->category() ?>">
                                 All Ports
                             </a>
                         </form>
