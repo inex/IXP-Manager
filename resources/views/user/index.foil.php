@@ -87,7 +87,7 @@
                                 </td>
                             <?php endif; ?>
                             <td>
-                                <?= \IXP\Models\User::$PRIVILEGES_TEXT_VSHORT[ $u[ "privileges" ] ]  ?>
+                                <?= \IXP\Models\User::$PRIVILEGES_TEXT_VSHORT[ $u[ "privileges" ] ] ?? 'X' ?>
                                 <?= ( $u[ 'nbC2U' ] > 1 ) ? "*": "" ?>
                             </td>
                             <td>
@@ -133,9 +133,11 @@
                                             <a class="dropdown-item" href="<?= route( "login-history@view", [ 'id' => $u['id'] ] ) ?>">
                                                 Login history
                                             </a>
-                                            <a id="d2f-option-login-as-<?= $u[ 'id' ] ?>" class="dropdown-item <?= $u[ 'disabled' ] || $authId  === $u['id'] ? "disabled" : "" ?>" href="<?= route( "switch-user@switch", [ "c2u" => $u['c2uid'] ] ) ?>">
-                                                Login as
-                                            </a>
+                                            <?php if( $u['c2uid'] ): ?>
+                                                <a id="d2f-option-login-as-<?= $u[ 'id' ] ?>" class="dropdown-item <?= $u[ 'disabled' ] || $authId  === $u['id'] ? "disabled" : "" ?>" href="<?= route( "switch-user@switch", [ "c2u" => $u['c2uid'] ] ) ?>">
+                                                    Login as
+                                                </a>
+                                            <?php endif; ?>
 
                                             <?php if( $u['u2fa_enabled'] ): ?>
                                                 <a id="d2f-option-remove-2fa-<?= $u[ 'id' ] ?>" class="dropdown-item remove-2fa" data-object-id="<?= $u[ 'id' ] ?>" href="#">
