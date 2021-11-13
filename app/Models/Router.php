@@ -52,7 +52,6 @@ use IXP\Traits\Observable;
  * @property bool $bgp_lc
  * @property string $template
  * @property bool $skip_md5
- * @property \Illuminate\Support\Carbon|null $last_updated
  * @property bool $rpki
  * @property string|null $software_version
  * @property string|null $operating_system
@@ -78,7 +77,6 @@ use IXP\Traits\Observable;
  * @method static Builder|Router whereCreatedAt($value)
  * @method static Builder|Router whereHandle($value)
  * @method static Builder|Router whereId($value)
- * @method static Builder|Router whereLastUpdated($value)
  * @method static Builder|Router whereLgAccess($value)
  * @method static Builder|Router whereMgmtHost($value)
  * @method static Builder|Router whereName($value)
