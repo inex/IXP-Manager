@@ -128,6 +128,7 @@ class VirtualInterfaceAggregator extends VirtualInterface
             'cust.id AS customerid',
             'vi.id AS id',
             'pi.speed AS speed',
+            'pi.rate_limit AS rlspeed',
             'i.id AS infrastructureid',
             'i.name AS infrastructure',
             'l.id AS locationid',
