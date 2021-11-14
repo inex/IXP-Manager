@@ -158,8 +158,8 @@ class TrafficDailyPhysIntAggregator extends TrafficDailyPhysInt
                         SUM( tdpi.{$period}_max_in ) AS max_in,
                         SUM( tdpi.{$period}_max_out ) AS max_out,
                         COUNT( pi.id ) AS num_ports_in_lag,
-                        SUM( pi.speed ) AS vi_speed,
-                        ROUND( GREATEST( (MAX( tdpi.{$period}_max_in )/1000000/MAX( pi.speed ))*100, (MAX( tdpi.{$period}_max_out )/1000000/MAX( pi.speed ))*100 ), 2) AS util"
+                        SUM( COALESCE( pi.rate_limit, pi.speed ) ) AS vi_speed,
+                        ROUND( GREATEST( (MAX( tdpi.{$period}_max_in )/1000000/MAX( COALESCE( pi.rate_limit, pi.speed ) ))*100, (MAX( tdpi.{$period}_max_out )/1000000/MAX( COALESCE( pi.rate_limit, pi.speed ) ))*100 ), 2) AS util"
         )
             ->from( 'traffic_daily_phys_ints AS tdpi' )
             ->leftJoin( 'physicalinterface AS pi', 'pi.id', 'tdpi.physicalinterface_id' )

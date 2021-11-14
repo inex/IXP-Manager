@@ -45,6 +45,7 @@ use IXP\Traits\Observable;
  * @property int|null $status
  * @property int|null $speed
  * @property string|null $duplex
+ * @property int|null $rate_limit
  * @property string|null $notes
  * @property bool $autoneg
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -67,6 +68,7 @@ use IXP\Traits\Observable;
  * @method static Builder|PhysicalInterface whereFanoutPhysicalInterfaceId($value)
  * @method static Builder|PhysicalInterface whereId($value)
  * @method static Builder|PhysicalInterface whereNotes($value)
+ * @method static Builder|PhysicalInterface whereRateLimit($value)
  * @method static Builder|PhysicalInterface whereSpeed($value)
  * @method static Builder|PhysicalInterface whereStatus($value)
  * @method static Builder|PhysicalInterface whereSwitchportid($value)
@@ -96,6 +98,7 @@ class PhysicalInterface extends Model
         'status',
         'speed',
         'duplex',
+        'rate_limit',
         'autoneg',
         'notes',
     ];
@@ -108,6 +111,17 @@ class PhysicalInterface extends Model
     protected $casts = [
         'autoneg'         => 'boolean',
     ];
+
+    /**
+     * Mutator for rate limit
+     *
+     * @param  ?int  $value
+     * @return void
+     */
+    public function setRateLimitAttribute($value)
+    {
+        $this->attributes['rate_limit'] = $value ?: null;
+    }
 
     public const STATUS_CONNECTED       = 1;
     public const STATUS_DISABLED        = 2;
@@ -278,6 +292,24 @@ class PhysicalInterface extends Model
     {
         return self::$SPEED[ $this->speed ] ?? 'Unknown';
     }
+
+    /**
+     * Is this port rate limited?
+     */
+    public function isRateLimited(): bool
+    {
+        return $this->rate_limit !== null;
+    }
+
+    /**
+     * Get the configured speed
+     */
+    public function configuredSpeed(): int
+    {
+        return $this->rate_limit ?: $this->speed;
+    }
+
+
 
     /**
      * Turn the database integer representation of the states into text as

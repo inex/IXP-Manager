@@ -131,7 +131,10 @@ class SwitcherAggregator extends Switcher
                     ->leftjoin( 'vlaninterface AS vli', 'vli.virtualinterfaceid','vi.id' )
                     ->leftjoin( 'ipv4address AS ipv4', 'ipv4.id', '=', 'vli.ipv4addressid' )
                     ->leftjoin( 'ipv6address AS ipv6', 'ipv4.id', '=', 'vli.ipv6addressid' )
-                    ->where( 'pi.speed', $speed );
+                    ->where( function($query ) use ($speed) {
+                        $query->where( 'pi.speed', $speed )
+                            ->orWhere( 'pi.rate_limit', $speed );
+                    });
             })
             ->where( 'switch.active', true )
             ->orderBy( 'switch.name' )->distinct()->get();
@@ -157,6 +160,7 @@ class SwitcherAggregator extends Switcher
                 s.id AS switchid,
                 GROUP_CONCAT( sp.ifName ) AS ifName,
                 GROUP_CONCAT( pi.speed )  AS speed,
+                GROUP_CONCAT( pi.rate_limit ) AS rate_limit,
                 GROUP_CONCAT( pi.status ) AS portstatus,
                 cust.name AS customer, 
                 cust.id AS custid, 
@@ -189,7 +193,10 @@ class SwitcherAggregator extends Switcher
                 return $q->where( 'cab.locationid', $facilityid );
             })
             ->when( $speed , function( Builder $q, $speed ) {
-                return $q->where( 'pi.speed', $speed );
+                return $q->where( function($query ) use ($speed) {
+                    $query->where( 'pi.speed', $speed )
+                        ->orWhere( 'pi.rate_limit', $speed );
+                } );
             })
             ->when( $vlanid , function( Builder $q, $vlanid ) {
                 return $q->where( 'vli.vlanid', $vlanid );
