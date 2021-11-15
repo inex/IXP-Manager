@@ -15,7 +15,7 @@ and especially new and small IXPs looking to expand.
     and [manually](https://docs.ixpmanager.org/install/manually/)
   * [Upgrade Instructions](https://docs.ixpmanager.org/install/upgrading/)
 * [Releases](https://github.com/inex/IXP-Manager/releases)
-* [List of Users](https://www.ixpmanager.org/community/world-map) ([registyer here](https://www.ixpmanager.org/community/users/submit))
+* [List of Users](https://www.ixpmanager.org/community/world-map) ([register here](https://www.ixpmanager.org/community/users/submit))
 * [How to Get Help](https://www.ixpmanager.org/support)
 * [Presentations & Talks](https://www.ixpmanager.org/support/talks)
 * [Sponsors and Sponsorship](https://www.ixpmanager.org/sponsors)
