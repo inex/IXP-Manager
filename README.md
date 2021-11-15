@@ -15,9 +15,9 @@ and especially new and small IXPs looking to expand.
     and [manually](https://docs.ixpmanager.org/install/manually/)
   * [Upgrade Instructions](https://docs.ixpmanager.org/install/upgrading/)
 * [Releases](https://github.com/inex/IXP-Manager/releases)
-* [List of Users](https://www.ixpmanager.org/users.php) (contact us if you are missing!)
+* [List of Users](https://www.ixpmanager.org/community/world-map) ([registyer here](https://www.ixpmanager.org/community/users/submit))
 * [How to Get Help](https://www.ixpmanager.org/support)
-* [Presentations & Talks](https://www.ixpmanager.org/presentations)
+* [Presentations & Talks](https://www.ixpmanager.org/support/talks)
 * [Sponsors and Sponsorship](https://www.ixpmanager.org/sponsors)
 * Follow [@ixpmanager](https://twitter.com/ixpmanager) on Twitter
 
@@ -29,29 +29,24 @@ Our documentation is hosted on GitHub pages: http://docs.ixpmanager.org/.
 
 For detailed information, see: https://www.ixpmanager.org/
 
-IXP Manager is a full stack management system for Internet eXchange 
-Points (IXPs) which includes an administration and customer portal; 
-provides end to end provisioning; and both teaches and implements 
-best practice.
+IXP Manager is a full stack management platform for Internet eXchange Points (IXPs) which includes an administration and customer portal; provides end to end provisioning; and both teaches and implements best practice.
 
-It allows IXPs to manage new customers, provision new connections / 
-services and monitor traffic usage. It has a number of provisioning 
-templates including its ability to generate secure proven route 
-server configuration and provides a built in looking glass for these.
+IXP Manager began as an internal project at INEX circa 2007. Over that time it has changed a lot, but always for the better and always to help us run INEX efficiently and with lower overhead. Three of our key requirements as an IXP are security, consistency and reliability. IXP Manager has been designed to help us achieve these.
 
-[INEX](https://www.inex.ie/) is an Internet eXchange Point and Ireland's IP 
-peering hub. It is a neutral, industry-owned Association, founded in 1996, 
-that provides IP peering facilities for its members. INEX membership is open 
-to all organisations that can benefit from peering their IP traffic.
+> Our vision for IXP Manager as a technology is that it will enable the creation of IXPs wherever they are required which in turn will create a stronger, open, more robust and better connected internet. And not only is it hoped that IXP Manager will help start these new IXPs but that it will also enable these IXPs to launch from the best place possible: secure by default, proven configurations and designs, implementing best practice.
 
-See: https://www.inex.ie/
+Our hope is also to gather and foster an *IXP Manager community* - a place where the many IXPs that use IXP Manager can come and help each other, learn from each other and share their stories. Our website will highlight some of the internet heroes in the IXP space and feature case studies.
+
+Today, IXP Manager is in use by many IXPs around the world - with more being added every month. This is something that gives all of the team at INEX, our community sponsors, the developers and contributors immense pride. It is also quite sobering - it reminds us all to keep all the community in mind when developing and prioritising new features. And it focuses our attention on maintaining the excellent reliability and security standards that have been set over the past two decades. 
+
+See also: https://www.inex.ie/
 
 Authors:
 
-* [Barry O'Donovan](https://www.barryodonovan.com/contact) / [@barryo79](https://twitter.com/#!/barryo79)
+* [Barry O'Donovan](https://www.barryodonovan.com/) / [@barryo79](https://twitter.com/#!/barryo79)
 * Nick Hilliard
 
-Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+Copyright (C) 2009 - 2022 Internet Neutral Exchange Association Company Limited By Guarantee.
 All Rights Reserved.
 
 
