@@ -5,7 +5,8 @@
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 5.x.y   | :white_check_mark: |
+| 6.x.y   | :white_check_mark: |
+| 5.x.y   | :x: |
 | 4.x.y   | :x:                |
 | < 4.0   | :x:                |
 
