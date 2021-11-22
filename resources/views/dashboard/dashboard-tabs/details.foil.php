@@ -1,6 +1,7 @@
 <?php
     $isCustUser = Auth::getUser()->isCustUser();
     $c = $t->c; /** @var $c \IXP\Models\Customer */
+    $rdetails = $c->companyRegisteredDetail; /** @var \IXP\Models\CompanyRegisteredDetail $rdetails */    
 ?>
 
 <div class="row">
@@ -65,7 +66,62 @@
         <?php endif; ?>
 
         <?= Former::close() ?>
+
+        <h3>
+            AS-SETS
+        </h3>
+        <table class="table table-striped">
+            <tr>
+                <th>
+                    Peering Policy
+                </th>
+                <td>
+                    <?= $t->ee( $c->peeringpolicy ) ?>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    IRRDB source
+                </th>
+                <td>
+                    <?php if( $c->irrdb ): ?>
+                        <?= $t->ee( $c->irrdbConfig->source )?>
+
+                        <?php if( $c->routeServerClient() && $c->irrdbFiltered() ): ?>
+                            (<a href="<?= route( "irrdb@list", [ "cust" => $c->id, "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">entries</a>)
+                        <?php endif; ?>
+
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    ASN
+                </th>
+                <td>
+                    <?= $t->asNumber( $c->autsys ) ?>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    IPv4 AS-SET
+                </th>
+                <td>
+                    <?= $t->ee( $c->peeringmacro ) ?>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    IPv6 AS-SET
+                </th>
+                <td>
+                    <?= $t->ee( $c->peeringmacrov6 ) ?>
+                </td>
+            </tr>
+        </table>
     </div>
+
+
     <div class="col-lg-6">
         <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode() || !$c->resellerObject()->exists() ): ?>
             <h3>
@@ -148,68 +204,65 @@
 
             <?php if( !$isCustUser ): ?>
                 <?= Former::actions(
-                    Former::primary_submit( 'Update Billing Details' ),
-                    Former::success_button( 'Help' )->class( "help-btn mb-sm-0 mb-2" )
+                    Former::primary_submit( 'Update Billing Details' )
                 );
                 ?>
             <?php endif; ?>
 
             <?= Former::close() ?>
         <?php endif; ?>
-    </div>
-
-    <div class="col-lg-6">
         <h3>
-            AS-SETS
+            Registration Details
         </h3>
+        <div class="mb-4 tw-text-sm">
+                   To update these details, please contact us at <a href="mailto:<?= config( 'identity.support_email' ) ?>"><?= config( 'identity.support_email' ) ?></a> </div>
         <table class="table table-striped">
-            <tr>
-                <td>
-                    Peering Policy
-                </td>
-                <td>
-                    <?= $t->ee( $c->peeringpolicy ) ?>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    IRRDB source
-                </td>
-                <td>
-                    <?php if( $c->irrdb ): ?>
-                        <?= $t->ee( $c->irrdbConfig->source )?>
-
-                        <?php if( $c->routeServerClient() && $c->irrdbFiltered() ): ?>
-                            (<a href="<?= route( "irrdb@list", [ "cust" => $c->id, "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">entries</a>)
-                        <?php endif; ?>
-
-                    <?php endif; ?>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    ASN
-                </td>
-                <td>
-                    <?= $t->asNumber( $c->autsys ) ?>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    IPv4 AS-SET
-                </td>
-                <td>
-                    <?= $t->ee( $c->peeringmacro ) ?>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    IPv6 AS-SET
-                </td>
-                <td>
-                    <?= $t->ee( $c->peeringmacrov6 ) ?>
-                </td>
-            </tr>
-        </table>
+                <tr>
+                    <th>
+                        Registered Name
+                    </th>
+                    <td>
+                        <?= $t->ee( $rdetails->registeredName ) ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Company Number
+                    </th>
+                    <td>
+                        <?= $t->ee( $rdetails->companyNumber ) ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Jurisdiction
+                    </th>
+                    <td>
+                        <?= $t->ee( $rdetails->jurisdiction ) ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Address
+                    </th>
+                    <td>
+                        <?php if( $rdetails->address1 ): ?><?= $t->ee( $rdetails->address1 ) ?><br/><?php endif; ?>
+                        <?php if( $rdetails->address2 ): ?><?= $t->ee( $rdetails->address2 ) ?><br/><?php endif; ?>
+                        <?php if( $rdetails->address3 ): ?><?= $t->ee( $rdetails->address3 ) ?><br/><?php endif; ?>
+                        <?php if( $rdetails->townCity ): ?><?= $t->ee( $rdetails->townCity ) ?><br/><?php endif; ?>
+                        <?php if( $rdetails->postcode ): ?><?= $t->ee( $rdetails->postcode ) ?><?php endif; ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Country
+                    </th>
+                    <td>
+                        <?= $rdetails->country ? array_column( Countries::getList(), 'name', 'iso_3166_2')[ $rdetails->country ] : null ?>
+                    </td>
+                </tr>
+            </table>
     </div>
+
+
 </div>
