@@ -314,12 +314,12 @@ echo -n "Installing PHP, Apache, MySQL, etc. Please be very patient..."
 # Prevent mrtg from prompting
 echo mrtg mrtg/conf_mods boolean true | debconf-set-selections
 
-log_break && apt install -qy apache2 php8.0 php8.0-intl php-rrd php8.0-cgi php8.0-cli   \
-    php8.0-snmp php8.0-curl  php-memcached libapache2-mod-php8.0 mysql-server           \
-    mysql-client php8.0-mysql memcached snmp php8.0-mbstring php8.0-xml php8.0-gd       \
-    php8.0-bcmath bgpq3 php-memcache unzip php8.0-zip git php-yaml                      \
-    php-ds libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl       \
-    libnetaddr-ip-perl rrdtool librrds-perl curl composer                               \
+log_break && apt install -qy apache2 php8.0 php8.0-intl php8.0-rrd php8.0-cgi php8.0-cli \
+    php8.0-snmp php8.0-curl  php8.0-memcached libapache2-mod-php8.0 mysql-server         \
+    mysql-client php8.0-mysql memcached snmp php8.0-mbstring php8.0-xml php8.0-gd        \
+    php8.0-bcmath bgpq3 php8.0-memcache unzip php8.0-zip git php8.0-yaml                 \
+    php8.0-ds libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl     \
+    libnetaddr-ip-perl rrdtool librrds-perl curl composer                                \
         &>> /tmp/ixp-manager-install.log
 echo '[done]'
 
