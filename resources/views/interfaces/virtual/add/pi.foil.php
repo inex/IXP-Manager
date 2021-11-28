@@ -102,7 +102,7 @@
                                 <?php if ( $pi->autoneg ): ?>
                                     <span class="badge badge-success phys-int-autoneg-state" data-toggle="tooltip" title="Auto-Negotiation Enabled">AN</span>
                                 <?php else: ?>
-                                    <span class="badge badge-important phys-int-autoneg-state" data-toggle="tooltip" title="Hard-Coded - Auto-Negotiation DISABLED">HC</span>
+                                    <span class="badge badge-danger phys-int-autoneg-state" data-toggle="tooltip" title="Hard-Coded - Auto-Negotiation DISABLED">HC</span>
                                 <?php endif; ?>
                             </td>
                             <?php if( $t->cb ): ?>
