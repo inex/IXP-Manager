@@ -36,22 +36,22 @@ use IXP\Models\SwitchPort;
  * IXP\Models\Aggregators\SwitcherAggregator
  *
  * @property int $id
- * @property int|null $infrastructure
  * @property int|null $cabinetid
  * @property int|null $vendorid
  * @property string|null $name
- * @property string|null $hostname
  * @property string|null $ipv4addr
  * @property string|null $ipv6addr
  * @property string|null $snmppasswd
+ * @property int|null $infrastructure
  * @property string|null $model
  * @property bool|null $active
+ * @property string|null $notes
+ * @property string|null $hostname
  * @property string|null $os
  * @property string|null $osDate
  * @property string|null $osVersion
- * @property string|null $lastPolled
- * @property string|null $notes
  * @property string|null $serialNumber
+ * @property string|null $lastPolled
  * @property int|null $mauSupported
  * @property int|null $asn
  * @property string|null $loopback_ip
@@ -155,6 +155,9 @@ class SwitcherAggregator extends Switcher
      */
     public static function getConfiguration( int $switchid = null, int $infraid = null, int $facilityid = null, int $speed = null, int $vlanid = null, bool $rsclient = false, bool $ipv6enabled = false ): array
     {
+        // BUGLET: see https://github.com/inex/IXP-Manager/issues/757
+        // "Switch configuration port list erroneously lists non-rate limited port as rate limited"
+
         return self::selectRaw(
             's.name AS switchname, 
                 s.id AS switchid,
