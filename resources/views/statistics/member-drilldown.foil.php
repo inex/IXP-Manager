@@ -86,7 +86,7 @@
                         <?php if( $t->resellerMode() && $c->isReseller ): ?>
                             <br />
                             <small>
-                                <?php if( $t->graph->physicalInterface()->switchport->isTypePeering() ): ?>
+                                <?php if( $t->graph->physicalInterface()->switchport->typePeering() ): ?>
                                     Peering Port
                                 <?php elseif( $t->graph->physicalInterface()->switchport->typeFanout() ): ?>
                                     Fanout Port for <a href="<?= route( 'customer@overview', [ 'cust' => $t->graph->physicalInterface()->relatedInterface()->virtualInterface->customer->id ] ) ?>">
