@@ -76,13 +76,15 @@
                             <?= Former::hidden( 'disabled' ) ?>
                         <?php endif; ?>
 
+                        <?php if( !config( 'ixp_fe.user.hide_mobile') ): ?>
+
                         <?= Former::text( 'authorisedMobile' )
                             ->label( 'Mobile' )
                             ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
                             ->blockHelp( "The user's mobile phone number." )
                             ->disabled( $t->user ? ( !$isSuperUser && $auth->id !== $t->user->id ? true : false ) : $t->disableInputs);
                         ?>
-
+                        <?php endif; ?>
 
                         <?php if( $isSuperUser && $t->user ): ?>
                             <?= Former::actions(
