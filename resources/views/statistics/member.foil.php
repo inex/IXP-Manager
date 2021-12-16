@@ -188,9 +188,9 @@
 
                                             <?php if( $t->resellerMode() && $t->c->isReseller ): ?>
                                                 <br />
-                                                <?php if( $pi->switchPort->isTypePeering() ): ?>
+                                                <?php if( $pi->switchPort->typePeering() ): ?>
                                                 Peering Port
-                                                <?php elseif( $pi->switchPort->isTypeFanout() ):
+                                                <?php elseif( $pi->switchPort->typeFanout() ):
                                                     $cust = $pi->relatedInterface()->virtualInterface->customer?>
                                                     Fanout Port for <a href="<?= route( 'customer@overview', [ 'cust' => $cust->id ] ) ?>">
                                                     <?= $cust->abbreviatedName ?>

@@ -76,14 +76,16 @@ return [
     ],
 
 
-    /* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-       ;; Minimum user auth level for the peering matrix
-       ;;
-       ;; See https://docs.ixpmanager.org/usage/users/#types-of-users
-       ;;
-       ;; */
     'peering-matrix' => [
+
+        // Minimum user auth level for the peering matrix
+        // See https://docs.ixpmanager.org/usage/users/#types-of-users
         'min-auth' => env( 'PEERING_MATRIX_MIN_AUTH', \IXP\Models\User::AUTH_PUBLIC ),
+
+        // the number of days back we look is not a perfect science. generally, the bigger the interface / more
+        // traffic, the less likely we'll find bgp sessions recently via sflow sampling.
+        // 28 days seems good in practice but his can be changed in config/ixp.php
+        'lookback_days' => env( 'PEERING_MATRIX_LOOKBACK_DAYS', 28 ),
     ],
 
 
