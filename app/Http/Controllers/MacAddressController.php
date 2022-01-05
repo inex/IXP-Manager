@@ -95,11 +95,15 @@ class MacAddressController extends EloquentController
     protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
-        return MacAddress::selectRaw( "m.*,
+        return MacAddress::selectRaw( "m.mac,
+            ANY_VALUE(m.id) AS id,
+            m.virtualinterfaceid,
+            m.created_at,
+            m.updated_at,
             vi.id AS viid,
             c.id AS customerid, c.abbreviatedName AS customer,
             s.name AS switchname, 
-            GROUP_CONCAT( sp.name ) AS switchport,
+            GROUP_CONCAT( DISTINCT sp.name ) AS switchport,
             GROUP_CONCAT( DISTINCT ipv4.address ) AS ip4,
             GROUP_CONCAT( DISTINCT ipv6.address ) AS ip6,
             COALESCE( o.organisation, 'Unknown' ) AS organisation"
@@ -116,7 +120,7 @@ class MacAddressController extends EloquentController
             ->leftjoin( 'oui AS o', 'o.oui', '=', DB::raw("SUBSTRING( m.mac, 1, 6 )") )
             ->when( $id , function( Builder $q, $id ) {
                 return $q->where('m.id', $id );
-            } )->groupBy( 'm.mac', 'vi.id', 'm.id', 'm.firstseen', 'm.lastseen',
+            } )->groupBy( 'm.mac', 'vi.id',
                 'c.id', 'c.abbreviatedName', 's.name', 'o.organisation'
             )
             ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
