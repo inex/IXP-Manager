@@ -48,9 +48,9 @@ use IXP\Traits\Observable;
  * @property int $connector_type
  * @property string|null $installation_date
  * @property string $port_prefix
+ * @property int $active
  * @property int $chargeable
  * @property string $location_notes
- * @property int $active
  * @property int|null $u_position
  * @property int|null $mounted_at
  * @property \Illuminate\Support\Carbon|null $created_at

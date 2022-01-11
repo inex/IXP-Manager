@@ -50,6 +50,7 @@ use IXP\Models\User;
  * @property bool $bgp_lc
  * @property string $template
  * @property bool $skip_md5
+ * @property \Illuminate\Support\Carbon|null $last_updated
  * @property bool $rpki
  * @property string|null $software_version
  * @property string|null $operating_system
@@ -75,6 +76,7 @@ use IXP\Models\User;
  * @method static Builder|RouterAggregator whereCreatedAt($value)
  * @method static Builder|RouterAggregator whereHandle($value)
  * @method static Builder|RouterAggregator whereId($value)
+ * @method static Builder|RouterAggregator whereLastUpdated($value)
  * @method static Builder|RouterAggregator whereLgAccess($value)
  * @method static Builder|RouterAggregator whereMgmtHost($value)
  * @method static Builder|RouterAggregator whereName($value)

@@ -46,7 +46,8 @@ apt-get install -y apache2 php8.0 php8.0-intl php8.0-mysql php-rrd php8.0-cgi ph
     php8.0-snmp php8.0-curl php8.0-memcached libapache2-mod-php8.0 mysql-server mysql-client \
     php8.0-mysql memcached snmp php8.0-mbstring php8.0-xml php8.0-gd bgpq3 php8.0-memcache   \
     unzip php8.0-zip git php8.0-yaml php8.0-ds php8.0-bcmath libconfig-general-perl joe      \
-    libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl
+    libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl  \
+    phpmyadmin
 
 if ! [ -L /var/www ]; then
   rm -rf /var/www

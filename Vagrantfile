@@ -5,6 +5,7 @@ Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/focal64"
 
   config.vm.network "forwarded_port", guest: 80, host: 8088
+  config.vm.network "forwarded_port", guest: 3306, host: 33061
 
   config.vm.synced_folder ".", "/vagrant/", id: "vagrant-root0",
     owner: "vagrant"
@@ -25,5 +26,5 @@ Vagrant.configure(2) do |config|
     vb.gui = true
   end
 
-#  config.vm.provision :shell, path: "bootstrap.sh"
+  config.vm.provision :shell, path: "bootstrap.sh"
 end
