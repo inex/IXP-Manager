@@ -24,15 +24,14 @@ namespace IXP\Http\Controllers\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use DB,  Log;
+use Auth, D2EM, Log;
 
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Laravel\Socialite\Facades\Socialite;
 
 use Cache, Config;
-
-use IXP\Models\Customer;
-
 
 use ErrorException;
 
@@ -40,7 +39,13 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 
+use IXP\Contracts\LookingGlass as LookingGlassContract;
+
+use IXP\Exceptions\Services\LookingGlass\GeneralException as LookingGlassGeneralException;
+
 use IXP\Http\Controllers\Controller;
+
+use IXP\Models\Customer;
 
 
 /**
@@ -62,32 +67,32 @@ class SAGE extends Controller
 
     private array $services = [
 
-        'MEMBERFEE' => [ 'd' => 'Membership Fee (Annual)',           'l' => 4500, 'p' => '1000.00' ],
-        'ASSOCFEE'  => [ 'd' => 'Associate Membership Fee (Annual)', 'l' => 4501, 'p' => '1000.00' ],
+        'MEMBERFEE' => [ 'd' => 'Membership Fee (Annual)',           'l' => 4500, 'p' => 1000.00 ],
+        'ASSOCFEE'  => [ 'd' => 'Associate Membership Fee (Annual)', 'l' => 4501, 'p' => 1000.00 ],
 
-        'LAN1-1G-FIRST' => [ 'd' => 'INEX LAN1 - First 1Gb Port (per month)',      'l' => 4510, 'p' => '70.00' ],
-        'LAN1-1G-ADDNL' => [ 'd' => 'INEX LAN1 - Additional 1Gb Port (per month)', 'l' => 4510, 'p' => '56.00' ],
+        'LAN1-1G-FIRST' => [ 'd' => 'INEX LAN1 - First 1Gb Port (per month)',      'l' => 4510, 'p' => 0.00 ],
+        'LAN1-1G-ADDNL' => [ 'd' => 'INEX LAN1 - Additional 1Gb Port (per month)', 'l' => 4510, 'p' => 56.00 ],
 
-        'LAN1-10G-FIRST' => [ 'd' => 'INEX LAN1 - First 10Gb Port (per month)',      'l' => 4510, 'p' => '275.00' ],
-        'LAN1-10G-ADDNL' => [ 'd' => 'INEX LAN1 - Additional 10Gb Port (per month)', 'l' => 4510, 'p' => '220.00' ],
+        'LAN1-10G-FIRST' => [ 'd' => 'INEX LAN1 - First 10Gb Port (per month)',      'l' => 4510, 'p' => 250.00 ],
+        'LAN1-10G-ADDNL' => [ 'd' => 'INEX LAN1 - Additional 10Gb Port (per month)', 'l' => 4510, 'p' => 200.00 ],
 
-        'LAN1-100G-FIRST' => [ 'd' => 'INEX LAN1 - First 100Gb Port (per month)',      'l' => 4510, 'p' => '1375.00' ],
-        'LAN1-100G-ADDNL' => [ 'd' => 'INEX LAN1 - Additional 100Gb Port (per month)', 'l' => 4510, 'p' => '1100.00' ],
+        'LAN1-100G-FIRST' => [ 'd' => 'INEX LAN1 - First 100Gb Port (per month)',      'l' => 4510, 'p' => 1250.00 ],
+        'LAN1-100G-ADDNL' => [ 'd' => 'INEX LAN1 - Additional 100Gb Port (per month)', 'l' => 4510, 'p' => 1000.00 ],
 
-        'LAN2-1G-FREE'  => [ 'd' => 'INEX LAN2 - First 1Gb Port (free with LAN1) (per month)',  'l' => 4511, 'p' => '0.00' ],
-        'LAN2-1G-ADDNL' => [ 'd' => 'INEX LAN2 - Additional 1Gb Port (per month)',              'l' => 4511, 'p' => '56.00' ],
+        'LAN2-1G-FREE'  => [ 'd' => 'INEX LAN2 - First 1Gb Port (free with LAN1) (per month)',  'l' => 4511, 'p' => 0.00 ],
+        'LAN2-1G-ADDNL' => [ 'd' => 'INEX LAN2 - Additional 1Gb Port (per month)',              'l' => 4511, 'p' => 56.00 ],
 
-        'LAN2-10G-FREE'  => [ 'd' => 'INEX LAN2 - First 10Gb Port (free with LAN1) (per month)',      'l' => 4511, 'p' => '0.00' ],
-        'LAN2-10G-ADDNL' => [ 'd' => 'INEX LAN2 - Additional 10Gb Port (per month)',                  'l' => 4511, 'p' => '220.00' ],
+        'LAN2-10G-FREE'  => [ 'd' => 'INEX LAN2 - First 10Gb Port (free with LAN1) (per month)',      'l' => 4511, 'p' => 0.00 ],
+        'LAN2-10G-ADDNL' => [ 'd' => 'INEX LAN2 - Additional 10Gb Port (per month)',                  'l' => 4511, 'p' => 200.00 ],
 
-        'LAN2-100G-FIRST' => [ 'd' => 'INEX LAN2 - First 100Gb Port (per month)',                      'l' => 4511, 'p' => '1100.00' ],
-        'LAN2-100G-ADDNL' => [ 'd' => 'INEX LAN2 - Additional 100Gb Port (per month)',                 'l' => 4511, 'p' => '1100.00' ],
+        'LAN2-100G-FIRST' => [ 'd' => 'INEX LAN2 - First 100Gb Port (per month)',                      'l' => 4511, 'p' => 1100.00 ],
+        'LAN2-100G-ADDNL' => [ 'd' => 'INEX LAN2 - Additional 100Gb Port (per month)',                 'l' => 4511, 'p' => 1000.00 ],
 
-        'CORK-1G-FIRST' => [ 'd' => 'INEX Cork - First 1Gb Port (per month)',      'l' => 4512, 'p' => '0.00' ],
-        'CORK-1G-ADDNL' => [ 'd' => 'INEX Cork - Additional 1Gb Port (per month)', 'l' => 4512, 'p' => '0.00' ],
+        'CORK-1G-FIRST' => [ 'd' => 'INEX Cork - First 1Gb Port (per month)',      'l' => 4512, 'p' => 0.00 ],
+        'CORK-1G-ADDNL' => [ 'd' => 'INEX Cork - Additional 1Gb Port (per month)', 'l' => 4512, 'p' => 0.00 ],
 
-        'CORK-10G-FIRST' => [ 'd' => 'INEX Cork - First 10Gb Port (per month)',       'l' => 4512, 'p' => '0.00' ],
-        'CORK-10G-ADDNL' => [ 'd' => 'INEX Cork - Additional 10Gb Port (per month)',  'l' => 4512, 'p' => '0.00' ],
+        'CORK-10G-FIRST' => [ 'd' => 'INEX Cork - First 10Gb Port (per month)',       'l' => 4512, 'p' => 0.00 ],
+        'CORK-10G-ADDNL' => [ 'd' => 'INEX Cork - Additional 10Gb Port (per month)',  'l' => 4512, 'p' => 0.00 ],
 
     ];
 
@@ -148,7 +153,7 @@ class SAGE extends Controller
         return $this->invoices();
 
 
-        return view( 'services/sage/index', [ 'suser' => Socialite::driver('sage')->user() ] );
+        //return view( 'services/sage/index', [ 'suser' => Socialite::driver('sage')->user() ] );
     }
 
     public function pull()
@@ -272,6 +277,28 @@ class SAGE extends Controller
             [ 'c' => 4550, 'n' => 'Sales - Cross Connects', ],
             [ 'c' => 4551, 'n' => 'Sales - Private VLANs', ],
         ];
+
+        // as at 2021-01:
+        //  4000 => "77e046ce330811ebb6a30662051ba57b"
+        //  4010 => "77e08ef3330811ebb6a30662051ba57b"
+        //  4020 => "77e0c9a5330811ebb6a30662051ba57b"
+        //  4200 => "77e0e7c4330811ebb6a30662051ba57b"
+        //  4400 => "77e1253c330811ebb6a30662051ba57b"
+        //  4900 => "77e16735330811ebb6a30662051ba57b"
+        //  4910 => "77e1a46a330811ebb6a30662051ba57b"
+        //  4920 => "77f132c8330811ebb6a30662051ba57b"
+        //  4930 => "77f1be64330811ebb6a30662051ba57b"
+        //  4940 => "77f1f49c330811ebb6a30662051ba57b"
+        //  4500 => "46681eff6743457bb2c33f567a3aeaa3"
+        //  4501 => "f6ff842cb1d5417db8d256b174e04a34"
+        //  4510 => "4137b16419ce4a37926cf2e27be50dd3"
+        //  4511 => "37a1d03a2dc24daa89fd9955a173b3da"
+        //  4512 => "a4125c9171734b3999dd3840f2abfa0f"
+        //  4550 => "fda2ab6d58de4ea78086a1ec01069dfe"
+        //  4551 => "f0a2e44c02f6434e968c5117b482f8e4"
+        //  4600 => "c6c0f2a0e28f456884385d6a0de51e5d"
+        //  4905 => "6a7dcd0e6ebc444c8016aab2d4f53288"
+
 
         $suser = Socialite::driver('sage')->user();
 
@@ -548,9 +575,30 @@ class SAGE extends Controller
      */
     private function getPhysIntsForAccounting(): array
     {
+        /*
+        $pis = D2EM::createQuery(
+            "SELECT pi.id AS id, pi.speed AS speed, pi.status AS status,
+                    c.name AS customer, c.id AS custid, c.autsys AS autsys,
+                    vi.id AS vintid, 
+                    v.id AS vlanid, v.number AS vlantag, v.private AS privatevlan
+                    
+                    FROM \\Entities\\PhysicalInterface pi
+                        LEFT JOIN pi.VirtualInterface vi
+                        LEFT JOIN vi.VlanInterfaces vli
+                        LEFT JOIN vli.Vlan v 
+                        LEFT JOIN vi.Customer c
+                        
+                    WHERE c.type = " . Customer::TYPE_FULL . "
+                        AND pi.status = " . PhysicalInterface::STATUS_CONNECTED . "
+                        
+                    ORDER BY customer ASC, vlantag ASC, speed DESC"
+        )->getArrayResult();
+        */
+
         $pis = \DB::table( 'physicalinterface' )
             ->select( DB::raw(
-                    "physicalinterface.id AS physicalinterface, physicalinterface.speed AS speed, physicalinterface.status AS status,
+                    "physicalinterface.id AS physicalinterface, physicalinterface.speed AS speed,  physicalinterface.rate_limit AS rate_limit, 
+                    physicalinterface.status AS status,
                     cust.name AS customer, cust.id AS custid, cust.autsys AS autsys,
                     virtualinterface.id AS vintid, 
                     vlan.id AS vlanid, vlan.number AS vlantag, vlan.private AS privatevlan" )
@@ -571,15 +619,14 @@ class SAGE extends Controller
         $summary = [];
 
         foreach( $pis as $pi ) {
-            $pi = (array)$pi;
-            if( !isset( $summary[ $pi['autsys'] ] ) ) {
-                $summary[ $pi['autsys'] ]['customer']     = $pi['customer'];
-                $summary[ $pi['autsys'] ]['custid']       = $pi['custid'];
-                $summary[ $pi['autsys'] ]['vlans']        = [];
-                $summary[ $pi['autsys'] ]['privatevlans'] = [];
+            if( !isset( $summary[ $pi->autsys ] ) ) {
+                $summary[ $pi->autsys ]['customer']     = $pi->customer;
+                $summary[ $pi->autsys ]['custid']       = $pi->custid;
+                $summary[ $pi->autsys ]['vlans']        = [];
+                $summary[ $pi->autsys ]['privatevlans'] = [];
             }
 
-            $summary[ $pi['autsys'] ][ $pi['privatevlan'] ? 'privatevlans' : 'vlans' ] [ $pi['vlantag'] ][] = $pi['speed'];
+            $summary[ $pi->autsys ][ $pi->privatevlan ? 'privatevlans' : 'vlans' ][ $pi->vlantag ][] = $pi->speed;
         }
 
         return $summary;
@@ -588,30 +635,29 @@ class SAGE extends Controller
 
     private function sageGetServices( $suser )
     {
-        /*
-         * e.g.
-         *
-         * array:18 [▼
-              "MEMBERFEE" => "0e63d7139ddf4e8489b848793bad8927"
-              "ASSOCFEE" => "c7792d9d1c5e4f05b028fcb709d4e71f"
-              "LAN1-1G-FIRST" => "3381ab6a0dca43208f42984632122515"
-              "LAN1-1G-ADDNL" => "b47e7729320d4a96abf99a838e70a863"
-              "LAN1-10G-FIRST" => "caf5dd819c1041bb92611e5a61a0d621"
-              "LAN1-10G-ADDNL" => "f5468a4b9c5841ddb27cf71174f3b667"
-              "LAN1-100G-FIRST" => "e0f8941560d94c368689a507d00991cd"
-              "LAN1-100G-ADDNL" => "730e2e686f954d32931328465d84a051"
-              "LAN2-1G-FREE" => "beda89368a18492aaa749cb63de531fb"
-              "LAN2-1G-ADDNL" => "58b2db4a25984eb39eb477b890902c58"
-              "LAN2-10G-FREE" => "9355d13ba6e6452c9aebe89b50d359d2"
-              "LAN2-10G-ADDNL" => "c47210a7a4b64219850c8cb3bd1b1320"
-              "LAN2-100G-FIRST" => "bf547046b19e4dc189cba59495574469"
-              "LAN2-100G-ADDNL" => "9e786d966d374967bda22faf967a1899"
-              "CORK-1G-FIRST" => "be068952c4b64549a800d28580f156d3"
-              "CORK-1G-ADDNL" => "c7d9dcc1f5d7474d827b048eded94b16"
-              "CORK-10G-FIRST" => "d7a03edb857248d5bfb70a905daa12a1"
-              "CORK-10G-ADDNL" => "18a9e50d4fc6416a9492c602e2470039"
-            ]
-         */
+        // as at 2022-01
+        //  "MEMBERFEE" => "e55c9c57ab304a1795a8ea16a6a7af71"
+        //  "ASSOCFEE" => "c2ead80bebdf4bfd9d2d82ba5cfd3474"
+        //  "LAN1-1G-FIRST" => "0a09a1b16f1f410fbb51b8da06bfc60b"
+        //  "LAN1-1G-ADDNL" => "9f047564115848b8afe43c923e0dde57"
+        //  "LAN1-10G-FIRST" => "ab0d5475596e48e091e5e15e19c6f2d2"
+        //  "LAN1-10G-ADDNL" => "da149423cd2e4894af5b5e6df6edc955"
+        //  "LAN1-100G-FIRST" => "eda4b5ced92a4916bd701baf20c96268"
+        //  "LAN1-100G-ADDNL" => "2da95779856a40c29d9598f655b06669"
+        //  "LAN2-1G-FREE" => "d9b44cda01a74692b8e5d137eef3d71d"
+        //  "LAN2-1G-ADDNL" => "0c035ee109e54668bfb244fdf84c3168"
+        //  "LAN2-10G-FREE" => "0c9ce99e43134215a997e1b5dd5ce7ec"
+        //  "LAN2-10G-ADDNL" => "ab1217c07f6748f49f210c2b83b8c82a"
+        //  "LAN2-100G-FIRST" => "a5656b816d9743669d49c4e490f64031"
+        //  "LAN2-100G-ADDNL" => "6bc3d69e12784c0b9aa10111bbc412b8"
+        //  "CORK-1G-FIRST" => "1cc07bb2af124e3ba7464b3fecb2170a"
+        //  "CORK-1G-ADDNL" => "f6522d68bf0c44d9998484e8abe91154"
+        //  "CORK-10G-FIRST" => "6bef031be1794f479a18feff826a8e38"
+        //  "CORK-10G-ADDNL" => "b3b9f5a45af041319f67197d5e8676d9"
+        //  "XCONNECT" => "32be0e66257c401eb1abec98790f5d29"
+        //  "RESELLER-LAN1-1G-FIRST" => "4ff1e78e2822449cbd60dc16626b3a0a"
+        //  "RESELLER-LAN1-1G-ADDNL" => "ab453e6bc63a45a89d343ceb793fd55c"
+        //  "POWER" => "87ec8e8bcdcb454d823f38fbe6207dc9"
 
         $c = new \GuzzleHttp\Client();
 
@@ -634,6 +680,49 @@ class SAGE extends Controller
 
     private function sageGetCustomers( $suser )
     {
+        // example as at 2022-01
+        //  2 => "acef0b940e4a427c92ff6a20fefa7334"
+        //  21 => "399e91a2d14e4505b52ea001c8db17ab"
+        //  71 => "5da9e1a1353c4a71aa9eb1867d70fac6"
+        //  161 => "cd894054695b4760b731c6466d35e062"
+        //  69 => "d7a2f19298424254be42c38c2cbb218e"
+        //  106 => "e4ab461ac88a407eabff7ec8b9f7e166"
+        //  146 => "c4eeb5371e4a4626a778c303fdf254ad"
+        //  94 => "0ad5440a56974efdb5bf48681b0b1c03"
+        //  159 => "c95e91b0b8a44f87948f9e00af7d00e5"
+        //  150 => "2d8db4e3b0b84327aced9f829872dd37"
+        //  64 => "8970091a17af46f5bcd9490c68e05608"
+        //  65 => "d059cde83c554f7c9f22b01f929b8739"
+        //  56 => "8543cd210f4d4c5ea5f5b163acf3e1b5"
+        //  166 => "cc2b15d804304f5f88556ec72cf03f82"
+        //  167 => "62efe73add4b42d4b99ceac07090fa08"
+        //  75 => "ccc8ffddb9c64e7bb4de3c97a41ac7ba"
+        //  177 => "2d062759ee0f4f11b7acbd04650d10ea"
+        //  22 => "e3f24bfe8add477ea13d15dd30f2a9d2"
+        //  46 => "94d3d4263d8541609f59e1e77d9737ea"
+        //  172 => "1d5e63fecd6a4ff7ae034d7ba32d7252"
+        //  76 => "a5743fbc21ed467f8dc8fb70310eebdd"
+        //  189 => "9e7875b78de4406d9c6c5a108e668576"
+        //  29 => "806350b9ad5d4e2e85bef6da0f739286"
+        //  87 => "b0eb0741537d462997eae88e3d7cb2c8"
+        //  34 => "51c94fc3d61b4e6a83f16214cf20b515"
+        //  154 => "5410c808f3934e34a196971918544b42"
+        //  4 => "81fdada6e5a14b9d86a3d3570672fa73"
+        //  160 => "1c56798cebcf413b89b22a61499b452f"
+        //  144 => "fe377487d7a94733a05986082ad9fc89"
+        //  175 => "e7a4f6d0fd7e4f5cab039236b32890cc"
+        //  131 => "5e1db9522aaa47b08b3ff51ba8ccd34b"
+        //  133 => "e4950947d56d45fab0d11bb8558e2218"
+        //  66 => "42c2a927e0b0469493234a744858c6be"
+        //  3 => "1ff5f2e2f0514af6a21a9367cdedb1a1"
+        //  165 => "db8cb69f02934ce7a1c7492c7a4674bc"
+        //  129 => "215bd8940c3e40aead3b32dd25973fc6"
+        //  113 => "497cf2a285f646dda17ab9ce0c0d73a8"
+        //  118 => "f8c4f1c25e1d487cac479de4d1daac47"
+        //  105 => "ea486181dcd940278914d6538ec23c1e"
+        //  88 => "37cc5c86f980438f9b303826db821388"
+        //  116 => "2ccd86be6255422998e4d12ee7d9839b"
+
 
         $c = new \GuzzleHttp\Client();
 
@@ -683,15 +772,13 @@ class SAGE extends Controller
     {
         set_time_limit(0);
 
-        //$suser = Socialite::driver('sage')->user();
+        $suser = Socialite::driver('sage')->user();
 
-//        $sageLedgers   = $this->sageGetLedgers( $suser );
-//        $sageServices  = $this->sageGetServices( $suser );
-//        $sageCustomers = $this->sageGetCustomers( $suser );
+        $sageLedgers   = $this->sageGetLedgers( $suser );
+        $sageServices  = $this->sageGetServices( $suser );
+        $sageCustomers = $this->sageGetCustomers( $suser );
 
         $member_pis = $this->getPhysIntsForAccounting();
-
-        $fp = fopen( base_path( 'cust-for-import.csv' ), "w" );
 
         $lan1vid = 10;
         $lan2vid = 12;
@@ -705,7 +792,12 @@ class SAGE extends Controller
             $totals[$k] = 0.0;
         }
 
+        $continue = true;
+
         foreach( $member_pis as $asn => $pis ) {
+
+            die();
+
 
             $invoice_lines = [];
             $notes = '';
@@ -714,25 +806,48 @@ class SAGE extends Controller
             $first_port_charge_done = false;
             $eligable_for_lan2_free = false;
             $lan2_free_applied = false;
+            $lan1_free_applied = false;
 
-            /** @var Customer $cust */
-            $cust = Customer::whereAutsys( $asn )->whereNull('dateleave')->first();
+            if( !( $cust = Customer::find( $pis['custid'] ) ) ) {
+                Log::error("Could not load model for customer ID {$pis['custid']}");
+                continue;
+            }
 
-            if( in_array( $cust->id, [ 182, 183, 190, 171, 142 ] ) ) {
+            if( in_array( $cust->id, [ 182, 183, 190, 171 ] ) ) {
                 Log::info( "***** SKIPPING {$cust->name}");
                 continue;
             }
 
             Log::info( "***** START {$cust->name}");
 
+            $invoice = [
+                'contact_id' => $sageCustomers[ $cust->id ],
+                'date'       => '2022-01-11',
+                'status_id'  => 'DRAFT',
+            ];
+
+            if( $cust->companyBillingDetail->vatRate ) {
+                $invoice['reference'] = "P/O: " . $cust->companyBillingDetail->vatRate;
+            }
+
+            $notes .= "Billing period: " . Carbon::now()->startOfMonth()->format( 'M jS, Y' )
+                . ' - ' . Carbon::now()->startOfMonth()->addMonths( $cust->companyBillingDetail->getFrequencyAsNumMonths() - 1 )->endOfMonth()->format( 'M jS, Y' )
+                . '. ';
+
             // membership
-            fputcsv( $fp, [
-                'cust_asn'   => $asn,
-                'cust_name'  => $cust->name,
-                'category'   => 'MEMBER_FEE',
-                'service'    => 'MEMBER_FEE',
-                'cost'       => round( (int)$this->services['MEMBERFEE']['p'], 2)/2,
-            ]);
+            $fee = round( $this->services['MEMBERFEE']['p'], 2);
+            $invoice_lines[$ilidx++] = [
+                'description'             => $this->services['MEMBERFEE']['d'],
+                'ledger_account_id'       => $sageLedgers[ $this->services['MEMBERFEE']['l'] ],
+                'quantity'                => (string)($cust->companyBillingDetail->getFrequencyAsNumMonths()/12),
+                'unit_price'              => (string)$fee,
+                'service_id'              => $sageServices['MEMBERFEE'],
+                'unit_price_includes_tax' => false,
+            ];
+
+            Log::info( "    - Fee {$invoice_lines[$ilidx-1]['description']} @ {$invoice_lines[$ilidx-1]['unit_price']} x {$invoice_lines[$ilidx-1]['quantity']}" );
+
+            $totals[ 'MEMBERFEE' ] += $invoice_lines[$ilidx-1]['quantity']*$invoice_lines[$ilidx-1]['unit_price'];
 
             // getPhysIntsForAccounting() query's ORDER BY is critical in how this works:
             foreach( $pis[ 'vlans' ] as $vid => $ports ) {
@@ -747,31 +862,58 @@ class SAGE extends Controller
                     if( $vid == $lan2vid && ( $p == 1000 || $p == 10000 ) && $eligable_for_lan2_free && !$lan2_free_applied ) {
 
                         $sc = $p == 1000 ? 'LAN2-1G-FREE' : 'LAN2-10G-FREE';
+
+                        $fee = $this->services[$sc]['p'];
+                        $invoice_lines[$ilidx++] = [
+                            'description'             => $this->services[ $sc ]['d'],
+                            'ledger_account_id'       => $sageLedgers[ $this->services[$sc]['l'] ],
+                            'quantity'                => $cust->companyBillingDetail->getFrequencyAsNumMonths(),
+                            'unit_price'              => (string)$fee,
+                            'service_id'              => $sageServices[$sc],
+                            'unit_price_includes_tax' => false,
+                        ];
+                        Log::info( "    -     {$invoice_lines[$ilidx-1]['description']} @ {$invoice_lines[$ilidx-1]['unit_price']} x {$invoice_lines[$ilidx-1]['quantity']}" );
+
                         $lan2_free_applied = true;
 
-                        fputcsv( $fp, [
-                            'cust_asn'   => $asn,
-                            'cust_name'  => $cust->name,
-                            'category'   => 'LAN2',
-                            'service'    => $sc,
-                            'cost'       => 0,
-                        ]);
+                        $totals[ $sc ] += $invoice_lines[$ilidx-1]['quantity']*$invoice_lines[$ilidx-1]['unit_price'];
+
+                        continue;
+                    }
+
+                    // lan1 1st 1Gb port free
+                    if( $vid == $lan1vid && ( $p == 1000 ) && !$lan1_free_applied ) {
+
+                        $sc = 'LAN1-1G-FIRST';
+
+                        $fee = $this->services[$sc]['p'];
+                        $invoice_lines[$ilidx++] = [
+                            'description'             => $this->services[ $sc ]['d'],
+                            'ledger_account_id'       => $sageLedgers[ $this->services[$sc]['l'] ],
+                            'quantity'                => $cust->companyBillingDetail->getFrequencyAsNumMonths(),
+                            'unit_price'              => (string)$fee,
+                            'service_id'              => $sageServices[$sc],
+                            'unit_price_includes_tax' => false,
+                        ];
+                        Log::info( "    -     {$invoice_lines[$ilidx-1]['description']} @ {$invoice_lines[$ilidx-1]['unit_price']} x {$invoice_lines[$ilidx-1]['quantity']}" );
+
+                        $lan1_free_applied = true;
+                        $first_port_charge_done = true;
+                        $eligable_for_lan2_free = true;
+
+                        $totals[ $sc ] += $invoice_lines[$ilidx-1]['quantity']*$invoice_lines[$ilidx-1]['unit_price'];
 
                         continue;
                     }
 
                     $sc = '';
-                    $lan = '';
                     if( $vid == $lan1vid ) {
                         $eligable_for_lan2_free = true;
                         $sc .= 'LAN1-';
-                        $lan = 'LAN1';
                     } else if( $vid == $lan2vid ) {
                         $sc .= 'LAN2-';
-                        $lan = 'LAN2';
                     } else {
                         $sc .= 'CORK-';
-                        $lan = 'CORK';
                     }
 
                     $sc .= ( $p / 1000 ) . 'G-';
@@ -784,97 +926,78 @@ class SAGE extends Controller
                     }
 
                     $fee = $this->services[$sc]['p'];
+                    $invoice_lines[$ilidx++] = [
+                        'description'             => $this->services[ $sc ]['d'],
+                        'ledger_account_id'       => $sageLedgers[ $this->services[$sc]['l'] ],
+                        'quantity'                => $cust->companyBillingDetail->getFrequencyAsNumMonths(),
+                        'unit_price'              => (string)$fee,
+                        'service_id'              => $sageServices[$sc],
+                    ];
+                    Log::info( "    -     {$invoice_lines[$ilidx-1]['description']} @ {$invoice_lines[$ilidx-1]['unit_price']} x {$invoice_lines[$ilidx-1]['quantity']}" );
 
-                    fputcsv( $fp, [
-                        'cust_asn'   => $asn,
-                        'cust_name'  => $cust->name,
-                        'category'   => $lan,
-                        'service'    => $sc,
-                        'cost'       => $fee*6,
-                    ]);
+                    $totals[ $sc ] += $invoice_lines[$ilidx-1]['quantity']*$invoice_lines[$ilidx-1]['unit_price'];
 
                 }
             }
 
-            Log::info( "***** END {$cust->name}");
+            // EU ?
+            if( in_array( $cust->companyBillingDetail->billingCountry, [ 'BE', 'EL', 'LT', 'PT', 'BG', 'ES', 'LU', 'RO', 'CZ', 'FR', 'HU', 'SI', 'DK', 'HR', 'MT', 'SK', 'DE', 'IT', 'NL', 'FI', 'EE', 'CY', 'AT', 'SE', 'LV', 'PL' ] ) ) {
 
-            // dd( json_decode( $r->getBody()->getContents() ));
+                foreach( $invoice_lines as $i => $il ) {
+                    $invoice_lines[ $i ][ 'eu_goods_services_type_id' ] = 'SERVICES';
+                    $invoice_lines[$i]['eu_sales_descriptions']     = 'STANDARD';
+
+                    $invoice_lines[ $i ][ 'tax_rate_id' ] = 'IE_ZERO';
+                    $invoice_lines[ $i ][ 'tax_amount' ] = '0.00';
+                }
+
+                $notes .= 'All supplies are an intra-community supply. ';
+
+                // Northern Ireland
+            } else if( in_array( $cust->id, [ 22, 172, 25, 39 ] ) ) {
+
+                foreach( $invoice_lines as $i => $il ) {
+                    $invoice_lines[$i]['eu_goods_services_type_id'] = 'SERVICES';
+
+                    $invoice_lines[$i]['tax_rate_id']               = 'IE_ZERO';
+                    $invoice_lines[$i]['tax_amount']                = '0.00';
+                }
+
+            } else if( $cust->companyBillingDetail->billingCountry == 'IE' ) {
+
+                foreach( $invoice_lines as $i => $il ) {
+                    $invoice_lines[ $i ][ 'tax_rate_id' ] = 'IE_STANDARD';
+                    $invoice_lines[ $i ][ 'tax_amount' ] = (string)round( ( $invoice_lines[ $i ]['quantity'] * $invoice_lines[ $i ]['unit_price'] * 0.23 ), 2 );
+                }
+
+            } else {
+
+                foreach( $invoice_lines as $i => $il ) {
+                    $invoice_lines[ $i ][ 'tax_rate_id' ] = 'IE_ZERO';
+                    $invoice_lines[ $i ][ 'tax_amount' ] = '0.00';
+                }
+            }
+
+            $invoice['invoice_lines'] = $invoice_lines;
+            $invoice['notes'] = $notes;
+
+            $guzzle = new \GuzzleHttp\Client();
+
+            $r = $guzzle->post( 'https://api.accounting.sage.com/v3.1/sales_invoices', [
+                    \GuzzleHttp\RequestOptions::JSON => [ 'sales_invoice' => $invoice ],
+                    'headers'                        => [
+                        'Authorization' => 'Bearer ' . $suser->token
+                    ]
+                ]
+            );
+
+            Log::info( "***** END {$cust->name}");
 
         }
 
+        Log::info(json_encode($totals));
 
-        //             if( in_array( $cust->id, [ 182, 183, 190, 171 ] ) ) {
-        // specials
-        fputcsv( $fp, [
-            'cust_asn'   => 39120,
-            'cust_name'  => 'Convergenze [RESOLD]',
-            'category'   => 'MEMBER_FEE',
-            'service'    => 'MEMBER_FEE',
-            'cost'       => 500,
-        ]);
-        fputcsv( $fp, [
-            'cust_asn'   => 39120,
-            'cust_name'  => 'Convergenze [RESOLD]',
-            'category'   => 'LAN1',
-            'service'    => 'LAN1-10G-FIRST',
-            'cost'       => 990,
-        ]);
-
-
-        fputcsv( $fp, [
-            'cust_asn'   => 60501,
-            'cust_name'  => 'Sirius Technology SRL [RESOLD]',
-            'category'   => 'MEMBER_FEE',
-            'service'    => 'MEMBER_FEE',
-            'cost'       => 500,
-        ]);
-        fputcsv( $fp, [
-            'cust_asn'   => 60501,
-            'cust_name'  => 'Sirius Technology SRL [RESOLD]',
-            'category'   => 'LAN1',
-            'service'    => 'LAN1-1G-FIRST',
-            'cost'       => 252,
-        ]);
-
-        fputcsv( $fp, [
-            'cust_asn'   => 6774,
-            'cust_name'  => 'BICS / Belgacom International Carrier',
-            'category'   => 'MEMBER_FEE',
-            'service'    => 'MEMBER_FEE',
-            'cost'       => 500,
-        ]);
-        fputcsv( $fp, [
-            'cust_asn'   => 3303,
-            'cust_name'  => 'Swisscom [RESOLD]',
-            'category'   => 'MEMBER_FEE',
-            'service'    => 'MEMBER_FEE',
-            'cost'       => 500,
-        ]);
-        fputcsv( $fp, [
-            'cust_asn'   => 3303,
-            'cust_name'  => 'Swisscom [RESOLD]',
-            'category'   => 'LAN1',
-            'service'    => 'LAN1-1G-FIRST',
-            'cost'       => 252,
-        ]);
-
-
-        fputcsv( $fp, [
-            'cust_asn'   => 7713,
-            'cust_name'  => 'Telin [RESOLD]',
-            'category'   => 'MEMBER_FEE',
-            'service'    => 'MEMBER_FEE',
-            'cost'       => 500,
-        ]);
-        fputcsv( $fp, [
-            'cust_asn'   => 7713,
-            'cust_name'  => 'Telin [RESOLD]',
-            'category'   => 'LAN1',
-            'service'    => 'LAN1-1G-FIRST',
-            'cost'       => 252,
-        ]);
-
-
+        dd($totals);
 
     }
 

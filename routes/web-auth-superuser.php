@@ -319,3 +319,18 @@ Route::group( [ 'prefix' => 'utils' ], function() {
         return view( 'utils/phpinfo' );
     })->name('utils/phpinfo');
 });
+
+
+
+Route::group( [ 'namespace' => 'Services', 'prefix' => 'sage' ], function() {
+
+    Route::get( '', function() {
+        return view( 'services/sage/index' );
+    })->name('sage/index');
+
+    Route::get('login', 'SAGE@login' )->name( 'sage/login'  );
+    Route::get('callback', 'SAGE@callback' )->name( 'sage/callback'  );
+
+
+});
+

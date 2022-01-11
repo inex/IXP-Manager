@@ -156,4 +156,34 @@ class CompanyBillingDetail extends Model
             $model->customer->shortname ?? null
         );
     }
+
+
+
+    public function getFrequencyAsNumMonths(): int
+    {
+        switch( $this->billingFrequency ) {
+
+            case self::BILLING_FREQUENCY_MONTHLY:
+                return 1;
+
+            case self::BILLING_FREQUENCY_2MONTHLY:
+                return 2;
+
+            case self::BILLING_FREQUENCY_QUARTERLY:
+                return 3;
+
+            case self::BILLING_FREQUENCY_HALFYEARLY:
+                return 6;
+
+            case self::BILLING_FREQUENCY_ANNUALLY:
+                return 12;
+
+            case self::BILLING_FREQUENCY_NOBILLING:
+                return 12;
+
+            default:
+                return 12;
+
+        }
+    }
 }
