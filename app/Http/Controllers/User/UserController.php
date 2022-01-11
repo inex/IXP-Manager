@@ -456,6 +456,12 @@ class UserController extends Controller
             $c2u->delete();
         }
 
+        // preserve and delete logs
+        foreach( \IXP\Models\Log::whereUserId( $u->id )->orderBy( 'id', 'ASC' )->get() as $l ) {
+            Log::info( "[USER DEL - PRESERVING LOG {$l->id}] {$l->model}:{$l->model_id}:{$l->action} ::: {$l->message} ::: " . json_encode( $l->models ) . " ::: {$l->created_at->format('Y-m-d H:i:s')} :::ENDS:::" );
+            $l->delete();
+        }
+
         $u->delete();
 
         AlertContainer::push('User deleted.', Alert::SUCCESS );

@@ -91,6 +91,12 @@
                         ->blockHelp( 'Configure the port to use half-duplex ethernet.' );
                     ?>
 
+                    <?= Former::number( 'rate_limit' )
+                        ->label( 'Rate Limit <u>(Mbps)</u>' )
+                        ->blockHelp( 'Enter the provisioned speed if the port has been rate limited below its line rate. <strong>Enter in Mbps!</strong> Leave blank if port is not rate limited. Zero will be converted to null (blank - not rate limited).');
+                    ?>
+
+
                     <?= Former::checkbox( 'autoneg' )
                         ->label( '&nbsp;' )
                         ->text( 'Auto-Negotiation Enabled' )

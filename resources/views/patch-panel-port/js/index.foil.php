@@ -14,6 +14,10 @@
         $( '#table-ppp' ).dataTable({
             stateSave: true,
             stateDuration : DATATABLE_STATE_DURATION,
+            // skip ordering per https://github.com/inex/IXP-Manager/issues/639
+            "stateSaveParams": function (settings, data) {
+                data.order = undefined;
+            },
             responsive : true,
             "paging":   pagination,
             columnDefs: [

@@ -21,7 +21,7 @@
 
 ## VAGRANT provisioning script - IXP Manager v5 / 18.04 LTS / php7.3
 ##
-## Barry O'Donovan 2015-2019
+## Barry O'Donovan 2015-2021
 
 apt update
 
@@ -42,10 +42,12 @@ apt-get update
 apt full-upgrade -y
 apt autoremove -y
 
-apt-get install -y apache2 php7.3 php7.3-intl php7.3-mysql php-rrd php7.3-cgi php7.3-cli php7.3-snmp php7.3-curl               \
-    php-memcached libapache2-mod-php7.3 mysql-server mysql-client php-mysql memcached snmp                                     \
-    php7.3-mbstring php7.3-xml php7.3-gd php-gettext bgpq3 php-memcache unzip php-zip git php-yaml php-ds php7.3-bcmath        \
-    libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl
+apt-get install -y apache2 php8.0 php8.0-intl php8.0-mysql php-rrd php8.0-cgi php8.0-cli     \
+    php8.0-snmp php8.0-curl php8.0-memcached libapache2-mod-php8.0 mysql-server mysql-client \
+    php8.0-mysql memcached snmp php8.0-mbstring php8.0-xml php8.0-gd bgpq3 php8.0-memcache   \
+    unzip php8.0-zip git php8.0-yaml php8.0-ds php8.0-bcmath libconfig-general-perl joe      \
+    libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl  \
+    phpmyadmin
 
 if ! [ -L /var/www ]; then
   rm -rf /var/www
@@ -59,8 +61,10 @@ export MYSQL_PWD=password
 mysql -u root <<END_SQL
 DROP DATABASE IF EXISTS \`ixp\`;
 CREATE DATABASE \`ixp\` CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';
-GRANT ALL ON \`ixp\`.* TO \`ixp\`@\`127.0.0.1\` IDENTIFIED BY 'password';
-GRANT ALL ON \`ixp\`.* TO \`ixp\`@\`localhost\` IDENTIFIED BY 'password';
+CREATE USER \`ixp\`@\`127.0.0.1\` IDENTIFIED BY 'password';
+CREATE USER \`ixp\`@\`localhost\` IDENTIFIED BY 'password';
+GRANT ALL ON \`ixp\`.* TO \`ixp\`@\`127.0.0.1\`;
+GRANT ALL ON \`ixp\`.* TO \`ixp\`@\`localhost\`;
 FLUSH PRIVILEGES;
 END_SQL
 
@@ -79,7 +83,7 @@ php /vagrant/artisan key:generate --force
 
 
 cd /vagrant
-su - ubuntu -c "cd /vagrant && composer install --prefer-dist --no-dev"
+su - vagrant -c "cd /vagrant && composer install"
 
 cat >/etc/apache2/sites-available/000-default.conf <<END_APACHE
 <VirtualHost *:80>
@@ -108,7 +112,7 @@ chmod -R a+rwX /vagrant/storage /vagrant/bootstrap/cache
 service apache2 restart
 
 # Useful screen settings for barryo:
-cat >/home/ubuntu/.screenrc <<END_SCREEN
+cat >/home/vagrant/.screenrc <<END_SCREEN
 termcapinfo xterm* ti@:te@
 vbell off
 startup_message off
@@ -124,6 +128,6 @@ END_SCREEN
 
 
 # enable scheduler
-echo -e "\n\n# IXP Manager cron jobs:\n*  *   * * *   www-data    /usr/bin/php /vagrant/artisan schedule:run\n\n" >>/etc/crontab
+#echo -e "\n\n# IXP Manager cron jobs:\n*  *   * * *   www-data    /usr/bin/php /vagrant/artisan schedule:run\n\n" >>/etc/crontab
 
 cd /vagrant

@@ -90,7 +90,7 @@ prefix set martiansv4;
                 224.0.0.0/4+,           # RFC3171 - Multicast
                 240.0.0.0/4+,           # RFC1112 - Reserved
                 0.0.0.0/32-,
-                0.0.0.0/0{<?= config( 'ixp.irrdb.min_v4_subnet_size', 24 ) + 1 ?>,32},
+                0.0.0.0/0{<?= config( 'ixp.irrdb.min_v4_subnet_size', 24 ) == 32 ? 32 : config( 'ixp.irrdb.min_v4_subnet_size', 24 ) + 1 ?>,32},
                 0.0.0.0/0{0,7}
         ];
 
@@ -146,7 +146,7 @@ prefix set martiansv6;
                 fe80::/10+,             # Link-local Unicast
                 fec0::/10+,             # Site-local Unicast - deprecated by RFC 3879 (replaced by ULA)
                 ff00::/8+,              # Multicast
-                ::/0{<?= config( 'ixp.irrdb.min_v6_subnet_size', 48 ) + 1 ?>,128}            # Filter small prefixes
+                ::/0{<?= config( 'ixp.irrdb.min_v6_subnet_size', 48 ) == 128 ? 128 : config( 'ixp.irrdb.min_v6_subnet_size', 48 ) + 1 ?>,128}            # Filter small prefixes
         ];
 
         # Avoid RFC1918 and similar networks

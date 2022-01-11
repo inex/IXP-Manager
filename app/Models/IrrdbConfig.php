@@ -73,7 +73,6 @@ class IrrdbConfig extends Model
      */
     protected $fillable = [
         'host',
-        'protocol',
         'source',
         'notes',
     ];

@@ -222,7 +222,7 @@ class CoreBundleControllerTest extends DuskTestCase
             foreach( $coreBundlesList as $type => $coreBundle ) {
                 $browser->visit(    '/interfaces/core-bundle/list' )
                     ->assertSee(    'Core Bundle / List' )
-                    ->click(    '#add-cb' )
+//                    ->click(    '#add-cb' )
                     ->click(    '#add-cb-wizard' )
                     ->assertPathIs('/interfaces/core-bundle/create-wizard' )
                     ->assertSee(    'Core Bundles / Create Wizard' );
@@ -429,10 +429,6 @@ class CoreBundleControllerTest extends DuskTestCase
 
                 $browser->click( '#core-bundle-submit-btn' );
 
-                if( $type === CoreBundle::TYPE_L3_LAG ){
-                    $browser->click( '#core-bundle-submit-btn' );
-                }
-
                 $browser->assertSee('Core bundle updated' );
 
 
@@ -462,8 +458,8 @@ class CoreBundleControllerTest extends DuskTestCase
 
                 $browser->assertSee( 'Side A' )
                         ->assertSee( 'Side B' )
-                        ->assertSee( 'Switch A : ' . $coreBundle[ 'switch-a-name' ] )
-                        ->assertSee( 'Switch B : ' . $coreBundle[ 'switch-b-name' ] );
+                        ->assertSee( 'Switch A: ' . $coreBundle[ 'switch-a-name' ] )
+                        ->assertSee( 'Switch B: ' . $coreBundle[ 'switch-b-name' ] );
 
                 foreach( $cb->corelinks as $cl ){
                     $browser->assertSee( $cl->coreInterfaceSideA->physicalInterface->switchPort->name );

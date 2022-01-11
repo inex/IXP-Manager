@@ -79,12 +79,12 @@
                             </td>
                             <td>
                                 <?php foreach( $row->vlanInterfaces as $vli ): ?>
-                                    <?= $t->ee( $vli->virtualInterface->physicalInterfaces[ 0 ]->switchPort->switcher->cabinet->location->name ) ?><br />
+                                    <?= !$vli->virtualInterface->physicalInterfaces->count() ?: $t->ee( $vli->virtualInterface->physicalInterfaces[ 0 ]->switchPort->switcher->cabinet->location->name ) ?><br />
                                 <?php endforeach; ?>
                             </td>
                             <td>
                                 <?php foreach( $row->vlanInterfaces as $vli ): ?>
-                                    <?= $t->ee( $vli->virtualInterface->physicalInterfaces[ 0 ]->switchPort->switcher->name ) ?><br />
+                                    <?= !$vli->virtualInterface->physicalInterfaces->count() ?: $t->ee( $vli->virtualInterface->physicalInterfaces[ 0 ]->switchPort->switcher->name ) ?><br />
                                 <?php endforeach; ?>
                             </td>
                         </tr>

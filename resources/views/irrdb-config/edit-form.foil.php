@@ -18,12 +18,6 @@
             );
         ?>
 
-        <?= Former::text( 'protocol' )
-            ->label( 'Protocol' )
-            ->blockHelp( "This is no longer used as bgpq3 does not require this parameter and we will most likely deprecate this in time.<br><br>"
-                . "For now, if querying RADB, set it to <code>irrd</code>; otherwise use <code>ripe</code>." );
-        ?>
-
         <?= Former::text( 'source' )
             ->label( 'Source' )
             ->blockHelp( "A comma-separated lists of IRRDB dataset source(s) to use. E.g. bgpq3 recommend <code>RADB,RIPE,APNIC</code>.<br><br>"

@@ -51,7 +51,7 @@ class MovePatchPanelPort extends FormRequest
         return [
             'id'                 => 'required|integer|exists:patch_panel_port,id',
             'port_id'            => 'required|integer|exists:patch_panel_port,id',
-            'slave_id'           => !$master->isDuplexPort() ? 'required|integer|different:port_id|exists:patch_panel_port,id' : '',
+            'slave_id'           => $master->isDuplexPort() ? 'required|integer|different:port_id|exists:patch_panel_port,id' : '',
         ];
     }
 }

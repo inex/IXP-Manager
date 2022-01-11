@@ -51,11 +51,8 @@ return [
     |   -  %l  - the customer's ASN ($cust->getAutsys()): " - ASXXX"
     |
     | The %j,k,l options exist so that the extra characters can be excluded if the customer does not have an ASN (e.g. Associate member)
-    |
-    | Default (as of v4.1):
-    | "%a [AS%j]"
     */
-    'customer_name_format' => "%a (AS%i)",
+    'customer_name_format' => env( 'IXP_FE_CUSTOMER_NAME_FORMAT', "%a (AS%i)" ),
 
     /*
      * Customer or Member?

@@ -155,7 +155,7 @@ Route::group( [ 'namespace' => 'Customer\Note', 'prefix' => 'customer-note' ], f
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // RIPE ATLAS
 //
-Route::group( [ 'prefix' => 'ripe-atlas' ], function() {
-    Route::get(  'measurement/{atlasid}/info',   'RipeAtlasController@getAtlasMeasurementDetail' )->name( 'ripe-atlas@measurement-info' );
-    Route::get(  'probe/{atlasid}/info',         'RipeAtlasController@getAtlasProbeDetail'       )->name( 'ripe-atlas@probe-info'       );
-});
+//Route::group( [ 'prefix' => 'ripe-atlas' ], function() {
+//    Route::get(  'measurement/{atlasid}/info',   'RipeAtlasController@getAtlasMeasurementDetail' )->name( 'ripe-atlas@measurement-info' );
+//    Route::get(  'probe/{atlasid}/info',         'RipeAtlasController@getAtlasProbeDetail'       )->name( 'ripe-atlas@probe-info'       );
+//});

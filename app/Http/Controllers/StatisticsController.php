@@ -38,21 +38,20 @@ use Illuminate\View\View;
 use IXP\Exceptions\Services\Grapher\GraphCannotBeProcessedException;
 use IXP\Http\Requests\StatisticsRequest;
 
-use IXP\Models\{
-    Aggregators\TrafficDailyPhysIntAggregator,
+use IXP\Models\{Aggregators\TrafficDailyPhysIntAggregator,
     Aggregators\VirtualInterfaceAggregator,
     Aggregators\VlanInterfaceAggregator,
     CoreBundle,
     Customer,
     Infrastructure,
+    Location,
     PhysicalInterface,
     Switcher,
     TrafficDaily,
     TrafficDailyPhysInt,
     VirtualInterface,
     Vlan,
-    VlanInterface
-};
+    VlanInterface};
 
 use IXP\Services\Grapher\Graph;
 use IXP\Services\Grapher;
@@ -165,8 +164,9 @@ class StatisticsController extends Controller
      */
     public function vlan( Vlan $vlan = null, string $protocol = Graph::PROTOCOL_IPV4, string $category = Graph::CATEGORY_BITS ) : View
     {
-        $vlans   = Vlan::publicOnly()->where( 'peering_matrix', true )
-            ->where( 'peering_manager', true )
+        $vlans   = Vlan::publicOnly()
+            ->where( 'peering_matrix', true )
+            ->orWhere( 'peering_manager', true )
             ->orderBy( 'name' )->get();
 
         if( !$vlans->count() ) {
@@ -224,6 +224,37 @@ class StatisticsController extends Controller
         return view( 'statistics/switch' )->with([
             'switches'  => $switches,
             'switch'    => $s,
+            'graph'     => $graph,
+            'category'  => $category,
+        ]);
+    }
+
+    /**
+     * Show IXP location graphs
+     *
+     * @param Location|null $location       Location§ to show the graph of
+     * @param string        $category       Category of graph to show (e.g. bits / pkts)
+     *
+     * @return View
+     *
+     * @throws
+     */
+    public function location( Location $location = null, string $category = Graph::CATEGORY_BITS ) : View
+    {
+        $locations = Location::orderBy( 'name' )->get()
+            ->keyBy( 'id' );
+
+        $category   = Graph::processParameterCategory( $category, true );
+        $l          = $location ?? $locations->first();
+        $graph      = App::make( Grapher::class )
+            ->location( $l )->setType( Graph::TYPE_PNG )
+            ->setProtocol( Graph::PROTOCOL_ALL )->setCategory( $category );
+
+        $graph->authorise();
+
+        return view( 'statistics/location' )->with([
+            'locations' => $locations,
+            'location'  => $l,
             'graph'     => $graph,
             'category'  => $category,
         ]);

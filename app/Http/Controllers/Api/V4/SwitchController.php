@@ -59,7 +59,7 @@ class SwitchController extends Controller
     public function ports( Request $r, Switcher $s ): JsonResponse
     {
         return response()->json( [
-            'ports' => SwitcherAggregator::allPorts( $s->id , $r->types , $r->spIdsExcluded, (bool)$r->notAssignToPI, (bool)$r->piNull )
+            'ports' => SwitcherAggregator::allPorts( $s->id , $r->types ?? [] , $r->spIdsExcluded ?? [], (bool)$r->notAssignToPI, (bool)$r->piNull )
         ] );
     }
 

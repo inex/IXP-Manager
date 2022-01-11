@@ -80,6 +80,7 @@ class GrapherServiceProvider extends ServiceProvider
             Route::get( 'infrastructure',    'Grapher@infrastructure'    );
             Route::get( 'vlan',              'Grapher@vlan'              );
             Route::get( 'switch',            'Grapher@switch'            );
+            Route::get( 'location',          'Grapher@location'          );
             Route::get( 'trunk',             'Grapher@trunk'             );
             Route::get( 'corebundle',        'Grapher@coreBundle'        );
             Route::get( 'physicalinterface', 'Grapher@physicalInterface' ); // individual member port

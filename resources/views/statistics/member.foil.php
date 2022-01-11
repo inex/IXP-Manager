@@ -34,7 +34,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
-                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex"  action="<?= route( "statistics@member", [ "id" => $t->c->id ] ) ?>" method="GET">
+                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex"  action="<?= route( "statistics@member", [ "cust" => $t->c->id ] ) ?>" method="GET">
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">
                                     <label for="category" class="col-sm-4 col-lg-4">Type:</label>
@@ -156,7 +156,7 @@
                                                 <h5>
                                                     <?php if( $isLAG ): ?>
                                                         <?= $pi->switchPort->switcher->name ?> ::
-                                                        <?= $pi->switchPort->name ?> (<?= $pi->speed() ?>)
+                                                        <?= $pi->switchPort->name ?> (<?= $t->scaleSpeed( $pi->configuredSpeed() ) . ( $pi->isRateLimited() ? '/' . $pi->speed() : '' ) ?>)
                                                     <?php else: ?>
                                                         <?= $pi->switchPort->switcher->cabinet->location->name ?>
                                                         / <?= $pi->switchPort->switcher->name ?> (<?= $pi->speed() ?>)
@@ -188,9 +188,9 @@
 
                                             <?php if( $t->resellerMode() && $t->c->isReseller ): ?>
                                                 <br />
-                                                <?php if( $pi->switchPort->isTypePeering() ): ?>
+                                                <?php if( $pi->switchPort->typePeering() ): ?>
                                                 Peering Port
-                                                <?php elseif( $pi->switchPort->isTypeFanout() ):
+                                                <?php elseif( $pi->switchPort->typeFanout() ):
                                                     $cust = $pi->relatedInterface()->virtualInterface->customer?>
                                                     Fanout Port for <a href="<?= route( 'customer@overview', [ 'cust' => $cust->id ] ) ?>">
                                                     <?= $cust->abbreviatedName ?>

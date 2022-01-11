@@ -52,6 +52,7 @@ use IXP\Traits\Observable;
  * @property-read \IXP\Models\CoreInterface|null $coreInterface
  * @property-read PhysicalInterface|null $fanoutPhysicalInterface
  * @property-read PhysicalInterface|null $peeringPhysicalInterface
+ * @property-write mixed $rate_limit
  * @property-read \IXP\Models\SwitchPort|null $switchPort
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\TrafficDailyPhysInt[] $trafficDailiesPhysInt
  * @property-read int|null $traffic_dailies_phys_int_count
@@ -96,6 +97,7 @@ class PhysicalInterface extends Model
         'status',
         'speed',
         'duplex',
+        'rate_limit',
         'autoneg',
         'notes',
     ];
@@ -108,6 +110,17 @@ class PhysicalInterface extends Model
     protected $casts = [
         'autoneg'         => 'boolean',
     ];
+
+    /**
+     * Mutator for rate limit
+     *
+     * @param  ?int  $value
+     * @return void
+     */
+    public function setRateLimitAttribute($value)
+    {
+        $this->attributes['rate_limit'] = $value ?: null;
+    }
 
     public const STATUS_CONNECTED       = 1;
     public const STATUS_DISABLED        = 2;
@@ -278,6 +291,24 @@ class PhysicalInterface extends Model
     {
         return self::$SPEED[ $this->speed ] ?? 'Unknown';
     }
+
+    /**
+     * Is this port rate limited?
+     */
+    public function isRateLimited(): bool
+    {
+        return $this->rate_limit !== null;
+    }
+
+    /**
+     * Get the configured speed
+     */
+    public function configuredSpeed(): int
+    {
+        return $this->rate_limit ?: $this->speed;
+    }
+
+
 
     /**
      * Turn the database integer representation of the states into text as

@@ -133,6 +133,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
      * * array `['pis']` of PhysicalInterfaceEntity objects indexed by their ID
      * * array `['custs']` of Customer objects indexed by their ID
      * * array `['sws']` of Switcher objects indexed by their ID
+     * * array `['locs']` of Location objects indexed by their ID
      * * array `['infras']` of Infrastructure objects indexed by their ID
      * * array `['custports']` containing an array of PhysicalInterfaceEntity IDs indexed by customer ID
      * * array `['custlags']` containing an array of PhysicalInterfaceEntity IDs contained in an array indexed
@@ -155,6 +156,9 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
         $data['custs']               = [];
         $data['custports']           = [];
         $data['custlags']            = [];
+        $data['locs']                = [];
+        $data['locports']            = [];
+        $data['locports_maxbytes']   = [];
         $data['sws']                 = [];
         $data['swports']             = [];
         $data['swports_maxbytes']    = [];
@@ -178,7 +182,8 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                         $maxPiID = $pi->id;
                     }
 
-                    if( !$pi->isConnectedOrQuarantine() || !$pi->switchPort->switcher->active ) {
+                    // per inex/IXP-Manager##746 - added ifIndex check to skip manually added dummy ports
+                    if( !$pi->isConnectedOrQuarantine() || !$pi->switchPort->ifIndex || !( $pi->switchPort->switcher->active && $pi->switchPort->switcher->poll ) ) {
                         continue;
                     }
 
@@ -194,6 +199,12 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                         $data['swports_maxbytes'][ $s->id ] = 0;
                     }
 
+                    if( !isset( $data['locs'][ $pi->switchPort->switcher->cabinet->location->id ] ) ) {
+                        $l = $pi->switchPort->switcher->cabinet->location;
+                        $data['locs'][ $l->id ] = $l;
+                        $data['locports_maxbytes'][ $l->id ] = 0;
+                    }
+
                     if( !isset( $data['infras'][ $pi->switchPort->switcher->infrastructureModel->id ] ) ) {
                         $i = $pi->switchPort->switcher->infrastructureModel;
                         $data['infras'][ $i->id ] = $i;
@@ -207,12 +218,15 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                     }
 
                     $data['swports'][ $pi->switchPort->switcher->id ][] = $pi->id;
+                    $data['locports'][ $pi->switchPort->switcher->cabinet->location->id ][] = $pi->id;
                     $data['infraports'][ $pi->switchPort->switcher->infrastructureModel->id ][] = $pi->id;
                     $data['ixpports'][] = $pi->id;
 
                     $maxbytes = $pi->detectedSpeed() * 1000000 / 8; // Mbps * bps / to bytes
                     $switcher = $pi->switchPort->switcher;
+                    $location = $pi->switchPort->switcher->cabinet->location;
                     $data['swports_maxbytes'   ][ $switcher->id ] += $maxbytes;
+                    $data['locports_maxbytes'  ][ $location->id ] += $maxbytes;
                     $data['infraports_maxbytes'][ $switcher->infrastructureModel->id ] += $maxbytes;
                     $data['ixpports_maxbytes'] += $maxbytes;
                 }
@@ -222,7 +236,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
         // core bundles
         foreach( Infrastructure::all() as $infra ) {
             foreach( $infra->switchers as $switch ) {
-                if( !$switch->active ) {
+                if( !( $switch->active && $switch->poll ) ) {
                     continue;
                 }
 
@@ -266,6 +280,11 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
         // This is a slight hack as the template requires PhysicalInterfaces so we wrap core SwitchPorts in temporary PhyInts.
         foreach( Infrastructure::all() as $infra ) {
             foreach( $infra->switchers as $switch ) {
+
+                if( !( $switch->active && $switch->poll ) ) {
+                    continue;
+                }
+
                 foreach( $switch->switchPorts as $sp ) {
                     if( $sp->typeCore() ) {
                         // this needs to be wrapped in a physical interface for the template
@@ -331,6 +350,13 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
+                'periods'     => Graph::PERIODS,
+                'types'       => $rrd ? Graph::TYPES : $graphTypes,
+            ],
+            'location' => [
+                'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
+                'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
+                                   Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,
                 'types'       => $rrd ? Graph::TYPES : $graphTypes,
             ],
@@ -518,6 +544,11 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                 return sprintf( "%s/infras/%03d/ixp%03d-infra%03d-%s%s.%s", $config['logdir'],
                     $graph->infrastructure()->id, 1,
                     $graph->infrastructure()->id, $graph->category(), $loggyType ? '' : "-{$graph->period()}", $type );
+            case 'Location':
+                /** @var Graph\Location $graph */
+                return sprintf( "%s/locations/%03d/location-aggregate-%05d-%s%s.%s", $config['logdir'],
+                    $graph->location()->id, $graph->location()->id,
+                    $graph->category(), $loggyType ? '' : "-{$graph->period()}", $type );
             case 'Switcher':
                 /** @var Graph\Switcher $graph */
                 return sprintf( "%s/switches/%03d/switch-aggregate-%05d-%s%s.%s", $config['logdir'],

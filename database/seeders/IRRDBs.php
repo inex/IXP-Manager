@@ -48,80 +48,67 @@ class IRRDBs extends Seeder
     {
         $irrdbs = [
             [
-                'host'     => 'whois.ripe.net',
-                'protocol' => 'ripe',
+                'host'     => 'whois.radb.net',
                 'source'   => 'RIPE',
                 'notes'    => 'RIPE Query from RIPE Database'
             ],
             [
-                'host'     => 'whois.ripe.net',
-                'protocol' => 'ripe',
+                'host'     => 'whois.radb.net',
                 'source'   => 'RIPE,RIPE-NONAUTH',
                 'notes'    => 'RIPE+RIPE-NONAUTH Query from RIPE Database'
             ],
             [
                 'host'     => 'whois.radb.net',
-                'protocol' => 'irrd',
                 'source'   => 'RADB',
                 'notes'    => 'RADB Query from RADB Database'
             ],
             [
-                'host'     => 'whois.lacnic.net',
-                'protocol' => 'ripe',
+                'host'     => 'whois.radb.net',
                 'source'   => 'LACNIC',
                 'notes'    => 'LACNIC Query from LACNIC Database'
             ],
             [
-                'host'     => 'whois.afrinic.net',
-                'protocol' => 'ripe',
+                'host'     => 'whois.radb.net',
                 'source'   => 'AFRINIC',
                 'notes'    => 'AFRINIC Query from AFRINIC Database'
             ],
             [
-                'host'     => 'whois.apnic.net',
-                'protocol' => 'ripe',
+                'host'     => 'whois.radb.net',
                 'source'   => 'APNIC',
                 'notes'    => 'APNIC Query from APNIC Database'
             ],
             [
-                'host'     => 'rr.level3.net',
-                'protocol' => 'ripe',
+                'host'     => 'whois.radb.net',
                 'source'   => 'LEVEL3',
                 'notes'    => 'Level3 Query from Level3 Database'
             ],
             [
                 'host'     => 'whois.radb.net',
-                'protocol' => 'irrd',
                 'source'   => 'ARIN',
                 'notes'    => 'ARIN Query from RADB Database'
             ],
             [
                 'host'     => 'whois.radb.net',
-                'protocol' => 'irrd',
                 'source'   => 'RADB,ARIN',
                 'notes'    => 'RADB+ARIN Query from RADB Database'
             ],
             [
                 'host'     => 'whois.radb.net',
-                'protocol' => 'irrd',
                 'source'   => 'ALTDB',
                 'notes'    => 'ALTDB Query from RADB Database'
             ],
             [
                 'host'     => 'whois.radb.net',
-                'protocol' => 'irrd',
                 'source'   => 'RADB,RIPE',
                 'notes'    => 'RADB+RIPE Query from RADB Database'
             ],
             [
                 'host'     => 'whois.radb.net',
-                'protocol' => 'irrd',
                 'source'   => 'RADB,APNIC,ARIN',
                 'notes'    => 'RADB+APNIC+ARIN Query from RADB Database'
             ],
             [
                 'host'     => 'whois.radb.net',
-                'protocol' => 'irrd',
                 'source'   => 'RIPE,ARIN',
                 'notes'    => 'RIPE+ARIN Query from RADB Database'
             ]
@@ -130,7 +117,6 @@ class IRRDBs extends Seeder
         foreach( $irrdbs as $irrdb ) {
             IrrdbConfig::create([
                 'host'      => $irrdb['host'],
-                'protocol'  => $irrdb['protocol'],
                 'source'    => $irrdb['source'],
                 'notes'     => $irrdb['notes'],
             ]);

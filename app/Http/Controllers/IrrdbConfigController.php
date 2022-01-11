@@ -77,7 +77,6 @@ class IrrdbConfigController extends EloquentController
             'documentation'     => 'https://docs.ixpmanager.org/features/irrdb/',
             'listColumns'       => [
                 'host'      => 'Host',
-                'protocol'  => 'Protocol',
                 'source'    => 'Source'
             ],
         ];
@@ -144,7 +143,6 @@ class IrrdbConfigController extends EloquentController
 
         Former::populate([
             'host'              => request()->old( 'host',         $this->object->host      ),
-            'protocol'          => request()->old( 'protocol',     $this->object->protocol  ),
             'source'            => request()->old( 'source',       $this->object->source    ),
             'notes'             => request()->old( 'notes',        $this->object->notes     ),
         ]);
@@ -210,7 +208,6 @@ class IrrdbConfigController extends EloquentController
     {
         $r->validate( [
             'host'                  => [ 'required', 'max:255', 'string', new IdnValidate() ],
-            'protocol'              => 'required|string|max:255',
             'source'                => 'required|string|max:255',
         ] );
     }

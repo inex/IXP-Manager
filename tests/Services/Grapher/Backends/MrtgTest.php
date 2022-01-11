@@ -47,7 +47,7 @@ class MrtgTest extends TestCase
 
         $config = $grapher->generateConfiguration()[0];
 
-        $knownGoodConf = file_get_contents( base_path() . "/data/travis-ci/known-good/ci-services-grapher-mrtg.conf" );
+        $knownGoodConf = file_get_contents( base_path() . "/data/ci/known-good/ci-services-grapher-mrtg.conf" );
 
         $this->assertFalse( $knownGoodConf === false, "Mrtg Conf generation - could not load known good file ci-services-grapher-mrtg.conf" );
 

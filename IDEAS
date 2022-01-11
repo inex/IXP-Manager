@@ -24,13 +24,8 @@ Potential Todo / Feature Ideas
   Members, or 10% of other Members". A tool to list members failing this
   requirement would be useful.
 
-* Email members on >80% of port utilisation
-
 * Member audit - port states, errors / discards, route collector session
   status, route server session status, etc.
-
-* Would be useful to display last login information in the user edit screen or
-  the list of users. Also the created by, last updated date?
 
 * Member health report
 
@@ -43,8 +38,6 @@ Potential Todo / Feature Ideas
 
   Also consider adding maxprefixes to peering manager template (see #174).
 
-
-* Add PeeringDB link to PM request template
 
 * Update suggested prefix limit / real prefix limit based on IRRDB entries?
 
@@ -70,4 +63,22 @@ Potential Todo / Feature Ideas
 * An annual (or more frequent?) email to members reminding them of their
   subscriptions. Also email to custadmins reminding them of their users.
   Probably staggered over the year to prevent a flux of inbound emails.
+
+* Single page view of all notes for a customer: https://github.com/inex/IXP-Manager/issues/273
+
+* Billing details reorg - https://github.com/inex/IXP-Manager/issues/476
+
+* Route Servers - PeeringDB never via route server
+  * Never via route servers - https://github.com/inex/IXP-Manager/issues/610
+  * BFD - https://github.com/inex/IXP-Manager/issues/351
+  * Prefix aggregation - https://github.com/inex/IXP-Manager/issues/281
+  * Update templates to use bgp_path.last instead of last_nonaggregated - https://github.com/inex/IXP-Manager/pull/692
+
+
+* Patch Panel Updates:
+    * Link port provisioning with patch panel information - https://github.com/inex/IXP-Manager/issues/660
+    * Moving existing port doesn't update patch panel port record - https://github.com/inex/IXP-Manager/issues/661
+    * Customer views shows MMR ODF with cabinet position for patch-panel demarc - https://github.com/inex/IXP-Manager/issues/535
+
+*  Querying the signal level in optical modules - https://github.com/inex/IXP-Manager/issues/465
 

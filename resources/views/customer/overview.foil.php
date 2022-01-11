@@ -11,7 +11,7 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm ml-auto" role="group" aria-label="...">
-        <a class="btn btn-white" href="<?= route('statistics@member', [ 'id' => $c->id ] ) ?>">
+        <a class="btn btn-white" href="<?= route('statistics@member', [ 'cust' => $c->id ] ) ?>">
             Port Graphs
         </a>
         <div class="btn-group btn-group-sm">

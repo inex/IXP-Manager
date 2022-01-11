@@ -128,10 +128,13 @@ class VirtualInterfaceAggregator extends VirtualInterface
             'cust.id AS customerid',
             'vi.id AS id',
             'pi.speed AS speed',
+            'pi.rate_limit AS rlspeed',
             'i.id AS infrastructureid',
             'i.name AS infrastructure',
             'l.id AS locationid',
             'l.name AS locationname',
+            'ca.id AS cabinetid',
+            'ca.name AS cabinetname',
         ] )
             ->from( 'virtualinterface AS vi' )
             ->Join( 'cust AS cust', 'cust.id', 'vi.custid' )

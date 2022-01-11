@@ -37,6 +37,7 @@ use IXP\Models\{
     IrrdbPrefix
 };
 
+use Illuminate\Support\Facades\Cache;
 use IXP\Utils\Bgpq3;
 
 /**
@@ -302,8 +303,15 @@ abstract class UpdateDb
                 ->update( [ 'last_seen' => $now ] );
 
             DB::commit();
-
             $this->result['dbTime'] += $this->timeElapsed();
+
+            // Store the prefixes to cache to speed up route server configuration generation.
+            if( $type === 'asn' ) {
+                IrrdbAggregator::asnsForRouterConfiguration( $this->customer(), $protocol, true );
+            } else {
+                IrrdbAggregator::prefixesForRouterConfiguration( $this->customer(), $protocol, true );
+            }
+
         } catch( Exception $e ) {
             DB::rollBack();
             $this->result['dbTime'] += $this->timeElapsed();

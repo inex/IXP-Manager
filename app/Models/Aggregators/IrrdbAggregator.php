@@ -24,6 +24,7 @@ namespace IXP\Models\Aggregators;
  */
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use IXP\Models\Customer;
 use IXP\Models\IPv4Address;
@@ -71,5 +72,74 @@ class IrrdbAggregator
         }
 
         return $results->keyBy( 'id' )->pluck( $field, 'id'  )->toArray();
+    }
+
+    /**
+     * Utility function to get the prefixes/ASN a customer has for a given protocol
+     * for the purpose of generating router configuration
+     *
+     * Returns an array of prefixes.
+     *
+     * @param int|Customer  $cust       The customer entity | id
+     * @param int           $protocol   The IP protocol (4/6)
+     * @param bool          $resetCache If true, delete and reseed the cache
+     *
+     * @return array The prefixes found
+     */
+    public static function prefixesForRouterConfiguration( int|Customer $cust, int $protocol, bool $resetCache = false ): array
+    {
+        if( is_int( $cust ) ) {
+            $cust = Customer::find( $cust );
+        }
+
+        if( $resetCache ) {
+            Cache::store('file')->forget( 'irrdb:prefix:ipv' . $protocol . ':' . $cust->asMacro( $protocol ) );
+        }
+
+        // Pull these out of the cache if possible, otherwise the database.
+        return Cache::store('file')->rememberForever( 'irrdb:prefix:ipv' . $protocol . ':' . $cust->asMacro( $protocol ), function() use ($cust,$protocol) {
+            return IrrdbPrefix::select('prefix')
+                ->where( 'customer_id', $cust->id )
+                ->where('protocol', $protocol )
+                ->orderByRaw( 'INET' . ( $protocol === 6 ? '6' : '' ) . '_ATON( prefix ) ASC' )
+                ->orderBy( 'id', 'ASC' )
+                ->pluck('prefix')
+                ->toArray();
+        });
+    }
+
+
+    /**
+     * Utility function to get the prefixes/ASN a customer has for a given protocol
+     * for the purpose of generating router configuration
+     *
+     * Returns an array of prefixes.
+     *
+     * @param int|Customer  $cust       The customer entity | id
+     * @param int           $protocol   The IP protocol (4/6)
+     * @param bool          $resetCache If true, delete and reseed the cache
+     *
+     * @return array The prefixes found
+     */
+    public static function asnsForRouterConfiguration( int|Customer $cust, int $protocol, bool $resetCache = false ): array
+    {
+        if( is_int( $cust ) ) {
+            $cust = Customer::find( $cust );
+        }
+
+        if( $resetCache ) {
+            Cache::store('file')->forget( 'irrdb:asn:ipv' . $protocol . ':' . $cust->asMacro( $protocol ) );
+        }
+
+        // Pull these out of the cache if possible, otherwise the database.
+        return Cache::store('file')->rememberForever( 'irrdb:asn:ipv' . $protocol . ':' . $cust->asMacro( $protocol ), function() use ($cust,$protocol) {
+            return IrrdbAsn::select('asn')
+                ->where( 'customer_id', $cust->id )
+                ->where('protocol', $protocol )
+                ->orderBy( 'asn', 'ASC' )
+                ->orderBy( 'id', 'ASC' )
+                ->pluck('asn')
+                ->toArray();
+        });
     }
 }

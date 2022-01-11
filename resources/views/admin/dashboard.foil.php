@@ -195,6 +195,17 @@
                                     </tr>
                                 </tbody>
                             </table>
+
+                            <?php if( count( $t->stats[ "rateLimitedPorts" ] ) ): ?>
+                                <p>
+                                    <i>These statistics take account of rate limited / partial speed ports. See <a href="<?= route('admin@dashboard') ?>#rate_limited_details">
+                                            here for details</a>.
+                                    </i>
+                                </p>
+                            <?php endif; ?>
+
+
+
                         </div>
                     <?php endif; ?>
 
@@ -285,6 +296,14 @@
                             </table>
                         </div>
                     <?php endif; ?>
+
+
+
+
+
+
+
+
 
                     <?php if( count( $t->stats[ "usage" ] ) ): ?>
                         <div class="tw-my-10">
@@ -432,6 +451,145 @@
                             </table>
                         </div>
                     <?php endif; ?>
+
+
+
+
+
+
+
+
+
+                    <?php if( count( $t->stats[ "byLocation" ] ) ): ?>
+                        <div class="tw-my-12">
+                            <h4 class="tw-mb-6">
+                                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Ports by Rack
+                            </h4>
+
+
+                        <?php foreach( $t->stats[ "byLocation"] as $location => $locationDetails ): ?>
+
+                            <table class="table table-sm table-hover table-striped tw-shadow-md tw-rounded-sm">
+                                <thead class="tw-text-sm">
+                                <tr>
+                                    <th>
+                                        <?= $t->ee( $location ) ?>
+                                    </th>
+                                    <?php foreach( $t->stats[ "speeds" ] as $speed => $count ): ?>
+                                        <th class="tw-text-right">
+                                            <?= $t->scaleBits( $speed * 1000000, 0 ) ?>
+                                        </th>
+                                    <?php endforeach; ?>
+
+                                    <th class="tw-text-right">
+                                        Total
+                                    </th>
+                                </tr>
+                                </thead>
+
+                                <tbody class="tw-text-sm">
+                                <?php $colcount = 0 ?>
+                                <?php foreach( $locationDetails['cabinets'] as $cabinet => $speed ): ?>
+                                    <?php $rowcount = 0 ?>
+                                    <tr>
+                                        <td>
+                                            <?= $t->ee( $cabinet ) ?>
+                                        </td>
+                                        <?php foreach( $t->stats[ "speeds"] as $s => $c ): ?>
+                                            <td class="tw-text-right">
+                                                <?php if( isset( $speed[ $s ] ) ): ?>
+                                                    <?= $speed[ $s ] ?>
+                                                    <?php $rowcount += $speed[ $s ] ?>
+                                                <?php else: ?>
+                                                    0
+                                                <?php endif; ?>
+                                            </td>
+                                        <?php endforeach; ?>
+                                        <td class="tw-text-right">
+                                            <b>
+                                                <?= $rowcount ?>
+                                            </b>
+                                        </td>
+                                    </tr>
+                                    <?php $colcount = $rowcount + $colcount ?>
+                                <?php endforeach; ?>
+                                <tr>
+                                    <td>
+                                        <b>Totals</b>
+                                    </td>
+                                    <?php foreach( $t->stats[ "speeds"] as $s => $c ): ?>
+                                        <td class="tw-text-right">
+                                            <a href="<?= route( "switch@configuration", [ "location" => $locationDetails[ 'id' ], "speed" => $s ] ) ?>">
+                                                <?= $locationDetails[$s] ?? 0 ?>
+                                            </a>
+                                        </td>
+                                    <?php endforeach; ?>
+                                    <td class="tw-text-right">
+                                        <b>
+                                            <?= $colcount ?>
+                                        </b>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+
+
+
+
+                    <?php if( count( $t->stats[ "rateLimitedPorts" ] ) ): ?>
+                        <div class="tw-my-12">
+                            <h4 class="tw-mb-6" id="rate_limited_details">
+                                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Rate Limited / Partial Speed Ports
+                            </h4>
+
+                            <p>
+                                The above statistics take account of the following rate limited ports. By <i>take account of</i> we
+                                mean that if a 10Gb port is rate limited as 2Gb then the above statistics reflect it as 2 x 1Gb
+                                ports and the 10Gb is ignored.
+                            </p>
+
+                            <table class="table table-sm table-hover table-striped tw-shadow-md tw-rounded-sm">
+                                <thead class="tw-text-sm">
+                                <tr>
+                                    <th>
+                                        Physical Port Speed
+                                    </th>
+                                    <th class="tw-text-sm">
+                                        Rate Limit
+                                    </th>
+                                    <th class="tw-text-sm">
+                                        Account For As
+                                    </th>
+                                </tr>
+                                </thead>
+
+                                <tbody class="tw-text-sm">
+                                <?php foreach( $t->stats[ "rateLimitedPorts"] as $rateLimitedPorts => $rlp ): ?>
+                                    <tr>
+                                        <td>
+                                            <?= $t->scaleSpeed( $rlp['physint']) ?>
+                                        </td>
+                                        <td>
+                                            <?= $t->scaleSpeed( $rlp['numports'] * $rlp['rlspeed'] ) ?>
+                                        </td>
+                                        <td>
+                                            <?= $rlp['numports'] ?> x <?= $t->scaleSpeed( $rlp['rlspeed']) ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
+
+
+
+
+
                 </div>
 
                 <div class="col-12 col-xl-6">

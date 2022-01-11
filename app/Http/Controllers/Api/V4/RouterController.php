@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\Api\V4;
 
 use Carbon\Carbon;
 
+use Illuminate\Support\Facades\App;
 use IXP\Models\Router;
 
 use IXP\Tasks\Router\ConfigurationGenerator as RouterConfigurationGenerator;
@@ -63,9 +64,14 @@ class RouterController extends Controller
             abort( 404, "Unknown router handle" );
         }
 
-        $configView = ( new RouterConfigurationGenerator( $router ) )->render();
+        $configView = ( new RouterConfigurationGenerator( $router ) )->render()->render();
 
-        return response( $configView->render(), 200 )
+        \Illuminate\Support\Facades\Log::info( sprintf( "Generated router configuration for %s and used %0.1f MB ( %0.1f MB real) of memory in %0.3f seconds.",
+                $router->handle, memory_get_peak_usage() / 1024 / 1024, memory_get_peak_usage( true ) / 1024 / 1024,
+                microtime( true ) - LARAVEL_START )
+        );
+
+        return response( $configView, 200 )
                 ->header('Content-Type', 'text/plain; charset=utf-8');
     }
 

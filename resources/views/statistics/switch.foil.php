@@ -65,6 +65,18 @@
             </div>
         </div>
     </div>
+
+    <div class="tw-bg-blue-100 tw-border-l-4 tw-border-blue-500 tw-text-blue-700 p-4 alert-dismissible mb-4 tw-mt-16" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="text-center"><i class="fa fa-info-circle fa-2x "></i></div>
+            <div class="col-sm-12">
+                Switch graphs show all traffic handled by a given switch - a measure of <em>how busy</em> a switch is.
+                This includes traffic that originates, terminates and passes through a switch. More details in
+                <a href="https://docs.ixpmanager.org/grapher/introduction/">the documentation</a>.
+            </div>
+        </div>
+    </div>
+
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>

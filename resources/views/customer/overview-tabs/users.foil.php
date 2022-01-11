@@ -87,7 +87,7 @@
                             </a>
                             <?php if( $isSuperUser ): ?>
                                 <?php if( $u2fa && $u2fa->enabled ): ?>
-                                    <a id="d2f-option-remove-2fa-<?= $u2fa->id ?>" class="dropdown-item remove-2fa" data-object-id="<?= $u2fa->id ?>" href="#">
+                                    <a id="d2f-option-remove-2fa-<?= $u2fa->id ?>" class="dropdown-item remove-2fa" data-object-id="<?= $c2u->user_id ?>" href="#">
                                         Remove 2FA
                                     </a>
                                 <?php endif; ?>

@@ -72,7 +72,7 @@ class SnmpPoll extends Command
     public function handle()
     {
         if( $this->argument('switch') ) {
-            if( ! ( $switches = Switcher::where( 'name', $this->argument('switch') )->first() ) ) {
+            if( ! ( $switches = Switcher::where( 'name', $this->argument('switch') )->get() ) ) {
                 $this->error( "ERR: No switch found with name: " . $this->argument('switch' ) );
                 return -1;
             }
@@ -103,7 +103,8 @@ class SnmpPoll extends Command
                     $s->snmpPoll( $host, $this->option( 'log', false ), $this->option( 'nosave', false )  );
                     $sPolled = true;
 
-                    $s->snmpPollSwitchPorts( $host, $this->option( 'log', false ), false , $this->option( 'nosave', false ) );
+                    $result = false;
+                    $s->snmpPollSwitchPorts( $host, $this->option( 'log', false ), $result , $this->option( 'nosave', false ) );
 
                     if( $this->option( 'nosave', false ) ){
                         $this->warn( '    *** --nosave parameter set - NO CHANGES MADE TO DATABASE' );

@@ -374,18 +374,15 @@ class Switcher extends Model
      *
      * @throws
      */
-    public function snmpPollSwitchPorts( $host, $logger = false, bool|array $result = false, bool $nosave = false ): Switcher
+    public function snmpPollSwitchPorts( $host, $logger = false, bool|array &$result = false, bool $nosave = false ): Switcher
     {
         // clone the ports currently known to this switch as we'll be playing with this array
         $existingPorts = clone $this->switchPorts;
 
         // iterate over all the ports discovered on the switch:
         foreach( $host->useIface()->indexes() as $index ) {
-            // we're only interested in Ethernet ports here (right?)
-            if( $host->useIface()->types()[ $index ] !== SNMPIface::IF_TYPE_ETHERNETCSMACD 
-                    && $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_L2VLAN 
-                    && $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_L3IPVLAN
-            ) {
+            // Port types - see https://docs.ixpmanager.org/usage/switches/#snmp-and-port-types-iftype
+            if( !in_array( $host->useIface()->types()[ $index ], config('ixp.snmp.allowed_interface_types') ) ) {
                 continue;
             }
 

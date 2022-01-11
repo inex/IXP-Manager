@@ -102,6 +102,33 @@ class ExpungeLogs extends IXPCommand
         );
         $this->isVerbosityVerbose() && $this->info(' [done]' );
 
+        // delete all learned mac address records which can't be linked to a vlaninterface
+        $this->isVerbosityVerbose() && $this->output->write('Expunging unused entries from macaddress database table...', false );
+        DB::table('macaddress')->whereRaw(
+            'id NOT IN (
+                SELECT id FROM (
+                    SELECT m.id FROM macaddress AS m
+                    INNER JOIN virtualinterface vi ON m.virtualinterfaceid = vi.id
+                    INNER JOIN vlaninterface vli ON (vli.virtualinterfaceid = vi.id)
+                ) sq_hoodwink_sql
+            )'
+        )->delete();
+        $this->isVerbosityVerbose() && $this->info(' [done]' );
+
+        // delete learned mac address records from deleted vlans
+        $this->isVerbosityVerbose() && $this->output->write('Expunging macaddress entries for unreferenced vlans...', false );
+        DB::table('macaddress')->whereRaw(
+            'id IN (
+                SELECT id FROM (
+                    SELECT m.id FROM macaddress AS m
+                    INNER JOIN virtualinterface vi ON m.virtualinterfaceid = vi.id
+                    INNER JOIN vlaninterface vli ON (vli.virtualinterfaceid = vi.id)
+                    WHERE vli.vlanid NOT IN (SELECT id FROM vlan)
+                ) sq_hoodwink_sql
+            )'
+        )->delete();
+        $this->isVerbosityVerbose() && $this->info(' [done]' );
+
         return 0;
     }
 }

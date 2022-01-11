@@ -45,7 +45,7 @@
                                     </select>
                                 </div>
                             </li>
-                            <a class="btn btn-white float-right" href="<?= route( 'statistics@member', [ 'id' => $t->c->id ] ) ?>?category=<?= $t->graph->category() ?>">
+                            <a class="btn btn-white float-right" href="<?= route( 'statistics@member', [ 'cust' => $t->c->id ] ) ?>?category=<?= $t->graph->category() ?>">
                                 All Ports
                             </a>
                         </form>
@@ -86,7 +86,7 @@
                         <?php if( $t->resellerMode() && $c->isReseller ): ?>
                             <br />
                             <small>
-                                <?php if( $t->graph->physicalInterface()->switchport->isTypePeering() ): ?>
+                                <?php if( $t->graph->physicalInterface()->switchport->typePeering() ): ?>
                                     Peering Port
                                 <?php elseif( $t->graph->physicalInterface()->switchport->typeFanout() ): ?>
                                     Fanout Port for <a href="<?= route( 'customer@overview', [ 'cust' => $t->graph->physicalInterface()->relatedInterface()->virtualInterface->customer->id ] ) ?>">

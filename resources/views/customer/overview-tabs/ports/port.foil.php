@@ -85,7 +85,10 @@
                                     <b>Speed:</b>
                                 </td>
                                 <td>
-                                    <?= $pi->speed() ?>
+                                    <?= $t->scaleSpeed( $pi->configuredSpeed() ) ?>
+                                    <?php if( $pi->isRateLimited() ): ?>
+                                        <span class="badge badge-info" data-toggle="tooltip" title="Rate Limited">RL</span>
+                                    <?php endif; ?>
                                     <?php if( $pi->duplex !== 'full' ): ?>
                                         (HD)
                                     <?php endif; ?>

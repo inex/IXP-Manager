@@ -35,7 +35,9 @@
     //   for the same customer in the same peering LAN
 
     // only define one filter per ASN
-    $asn_filters = [];
+use IXP\Models\Aggregators\IrrdbAggregator;
+
+$asn_filters = [];
 ?>
 
 
@@ -87,9 +89,9 @@ int set allas;
 
     # Filter small prefixes
 <?php if( $t->router->protocol == 6 ): ?>
-    if ( net ~ [ ::/0{<?= config( 'ixp.irrdb.min_v6_subnet_size', 48 ) + 1 ?>,128} ] ) then {
+    if ( net ~ [ ::/0{<?= config( 'ixp.irrdb.min_v6_subnet_size', 48 ) == 128 ? 128 : config( 'ixp.irrdb.min_v6_subnet_size', 48 ) + 1 ?>,128} ] ) then {
 <?php else: ?>
-    if ( net ~ [ 0.0.0.0/0{<?= config( 'ixp.irrdb.min_v4_subnet_size', 24 ) + 1 ?>,32} ] ) then {
+    if ( net ~ [ 0.0.0.0/0{<?= config( 'ixp.irrdb.min_v4_subnet_size', 24 ) == 32 ? 32 : config( 'ixp.irrdb.min_v4_subnet_size', 24 ) + 1 ?>,32} ] ) then {
 <?php endif; ?>
         bgp_large_community.add( IXP_LC_FILTERED_PREFIX_LEN_TOO_LONG );
         accept;
@@ -142,12 +144,13 @@ int set allas;
 
         <?php
     // Only do IRRDB ASN filtering if this is enabled per client:
+    $asns = [];
     if( $int['irrdbfilter'] ?? true ):
-
-        if( count( $int['irrdbfilter_asns'] ) ):
+        $asns = IrrdbAggregator::asnsForRouterConfiguration( $int[ 'cid' ], $t->router->protocol );
+        if( count( $asns ) ):
 ?>
 
-    allas = [ <?php echo $t->softwrap( $int['irrdbfilter_asns'], 10, ", ", ",", 14, 7 ); ?>
+    allas = [ <?php echo $t->softwrap( $asns, 10, ", ", ",", 14, 7 ); ?>
 
     ];
 
@@ -181,16 +184,21 @@ int set allas;
 
 <?php
     // Only do IRRDB prefix filtering if this is enabled per client:
+    $prefixes = [];
     if( $int['irrdbfilter'] ?? true ):
 
-        if( count( $int['irrdbfilter_prefixes'] ) ):
+        $prefixes = IrrdbAggregator::prefixesForRouterConfiguration( $int[ 'cid' ], $t->router->protocol );
+
+        if( count( $prefixes ) ):
 ?>
 
     allnet = [ <?php echo $t->softwrap( $int['rsmorespecifics']
-            ? $t->bird()->prefixExactToLessSpecific( $int['irrdbfilter_prefixes'], $t->router->protocol, config( 'ixp.irrdb.min_v' . $t->router->protocol . '_subnet_size' ) )
-            : $int['irrdbfilter_prefixes'], 4, ", ", ",", 15, $t->router->protocol === 6 ? 36 : 26 ); ?>
+            ? $t->bird()->prefixExactToLessSpecific( $prefixes, $t->router->protocol, config( 'ixp.irrdb.min_v' . $t->router->protocol . '_subnet_size' ) )
+            : $prefixes, 4, ", ", ",", 15, $t->router->protocol === 6 ? 36 : 26 ); ?>
 
     ];
+
+    <?php unset( $prefixes ); ?>
 
     if ! (net ~ allnet) then {
         bgp_large_community.add( IXP_LC_FILTERED_IRRDB_PREFIX_FILTERED );
@@ -271,8 +279,6 @@ protocol bgp pb_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?> from tb_rsclient {
             table t_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?>;
             export filter f_export_as<?= $int['autsys'] ?>;
         };
-<?php if( $t->router->rfc1997_passthru ): ?>        interpret communities off;  # enable rfc1997 well-known community pass through
-<?php endif; ?>
         <?php if( $int['bgpmd5secret'] && !$t->router->skip_md5 ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
 
 }
