@@ -52,7 +52,8 @@
         "bacon/bacon-qr-code": "^2.0.3",
         "wolfcast/browser-detection": "^2.9.5",
         "laravel/ui": "^3.0",
-        "doctrine/dbal": "^3.0"
+        "doctrine/dbal": "^3.0",
+        "socialiteproviders/sage": "^4.1"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -130,6 +131,9 @@
             "optimize-autoloader": true,
             "preferred-install": "dist",
             "sort-packages": true
+        },
+        "allow-plugins": {
+            "composer/package-versions-deprecated": false
         }
    },
    "minimum-stability": "stable"
