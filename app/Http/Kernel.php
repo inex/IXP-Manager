@@ -119,6 +119,14 @@ class Kernel extends HttpKernel
             'eloquent2Frontend',
         ],
 
+        'accounting' => [
+            'web',
+            'auth',
+        ],
+
+
+
+
         'grapher' => [
             Middleware\EncryptCookies::class,
             AddQueuedCookiesToResponse::class,

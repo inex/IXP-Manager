@@ -150,10 +150,10 @@ class SAGE extends Controller
         // return dd( $this->customers() );
 
         // 4 - Invoices
-        return $this->invoices();
+        // return $this->invoices();
 
 
-        //return view( 'services/sage/index', [ 'suser' => Socialite::driver('sage')->user() ] );
+        return view( 'services/sage/index', [ 'suser' => Socialite::driver('sage')->user() ] );
     }
 
     public function pull()
@@ -792,12 +792,9 @@ class SAGE extends Controller
             $totals[$k] = 0.0;
         }
 
-        $continue = true;
+        $fp = fopen( base_path( 'custs-invoiced.csv' ), "w" );
 
         foreach( $member_pis as $asn => $pis ) {
-
-            die();
-
 
             $invoice_lines = [];
             $notes = '';
@@ -845,6 +842,15 @@ class SAGE extends Controller
                 'unit_price_includes_tax' => false,
             ];
 
+            // membership
+            fputcsv( $fp, [
+                'cust_asn'   => $asn,
+                'cust_name'  => $cust->name,
+                'category'   => 'MEMBER_FEE',
+                'service'    => 'MEMBER_FEE',
+                'cost'       => round( (int)$this->services['MEMBERFEE']['p'], 2) * ( $cust->companyBillingDetail->getFrequencyAsNumMonths() / 12 ),
+            ]);
+
             Log::info( "    - Fee {$invoice_lines[$ilidx-1]['description']} @ {$invoice_lines[$ilidx-1]['unit_price']} x {$invoice_lines[$ilidx-1]['quantity']}" );
 
             $totals[ 'MEMBERFEE' ] += $invoice_lines[$ilidx-1]['quantity']*$invoice_lines[$ilidx-1]['unit_price'];
@@ -876,6 +882,14 @@ class SAGE extends Controller
 
                         $lan2_free_applied = true;
 
+                        fputcsv( $fp, [
+                            'cust_asn'   => $asn,
+                            'cust_name'  => $cust->name,
+                            'category'   => 'LAN2',
+                            'service'    => $sc,
+                            'cost'       => 0,
+                        ]);
+
                         $totals[ $sc ] += $invoice_lines[$ilidx-1]['quantity']*$invoice_lines[$ilidx-1]['unit_price'];
 
                         continue;
@@ -900,6 +914,14 @@ class SAGE extends Controller
                         $lan1_free_applied = true;
                         $first_port_charge_done = true;
                         $eligable_for_lan2_free = true;
+
+                        fputcsv( $fp, [
+                            'cust_asn'   => $asn,
+                            'cust_name'  => $cust->name,
+                            'category'   => 'LAN1',
+                            'service'    => $sc,
+                            'cost'       => 0,
+                        ]);
 
                         $totals[ $sc ] += $invoice_lines[$ilidx-1]['quantity']*$invoice_lines[$ilidx-1]['unit_price'];
 
@@ -934,6 +956,14 @@ class SAGE extends Controller
                         'service_id'              => $sageServices[$sc],
                     ];
                     Log::info( "    -     {$invoice_lines[$ilidx-1]['description']} @ {$invoice_lines[$ilidx-1]['unit_price']} x {$invoice_lines[$ilidx-1]['quantity']}" );
+
+                    fputcsv( $fp, [
+                        'cust_asn'   => $asn,
+                        'cust_name'  => $cust->name,
+                        'category'   => substr( $sc, 0, 4 ),
+                        'service'    => $sc,
+                        'cost'       => $fee * $cust->companyBillingDetail->getFrequencyAsNumMonths(),
+                    ]);
 
                     $totals[ $sc ] += $invoice_lines[$ilidx-1]['quantity']*$invoice_lines[$ilidx-1]['unit_price'];
 
@@ -981,19 +1011,103 @@ class SAGE extends Controller
             $invoice['invoice_lines'] = $invoice_lines;
             $invoice['notes'] = $notes;
 
-            $guzzle = new \GuzzleHttp\Client();
 
-            $r = $guzzle->post( 'https://api.accounting.sage.com/v3.1/sales_invoices', [
-                    \GuzzleHttp\RequestOptions::JSON => [ 'sales_invoice' => $invoice ],
-                    'headers'                        => [
-                        'Authorization' => 'Bearer ' . $suser->token
-                    ]
-                ]
-            );
+
+
+//            $guzzle = new \GuzzleHttp\Client();
+//
+//            $r = $guzzle->post( 'https://api.accounting.sage.com/v3.1/sales_invoices', [
+//                    \GuzzleHttp\RequestOptions::JSON => [ 'sales_invoice' => $invoice ],
+//                    'headers'                        => [
+//                        'Authorization' => 'Bearer ' . $suser->token
+//                    ]
+//                ]
+//            );
 
             Log::info( "***** END {$cust->name}");
 
         }
+
+        //             if( in_array( $cust->id, [ 182, 183, 190, 171 ] ) ) {
+        // specials
+        fputcsv( $fp, [
+            'cust_asn'   => 39120,
+            'cust_name'  => 'Convergenze [RESOLD]',
+            'category'   => 'MEMBER_FEE',
+            'service'    => 'MEMBER_FEE',
+            'cost'       => 1000,
+        ]);
+        fputcsv( $fp, [
+            'cust_asn'   => 39120,
+            'cust_name'  => 'Convergenze [RESOLD]',
+            'category'   => 'LAN1',
+            'service'    => 'LAN1-1G-FIRST',
+            'cost'       => 0,
+        ]);
+        fputcsv( $fp, [
+            'cust_asn'   => 39120,
+            'cust_name'  => 'Convergenze [RESOLD]',
+            'category'   => 'LAN1',
+            'service'    => 'LAN1-1G-ADDNL',
+            'cost'       => 403,
+        ]);
+
+
+        fputcsv( $fp, [
+            'cust_asn'   => 60501,
+            'cust_name'  => 'Sirius Technology SRL [RESOLD]',
+            'category'   => 'MEMBER_FEE',
+            'service'    => 'MEMBER_FEE',
+            'cost'       => 1000,
+        ]);
+        fputcsv( $fp, [
+            'cust_asn'   => 60501,
+            'cust_name'  => 'Sirius Technology SRL [RESOLD]',
+            'category'   => 'LAN1',
+            'service'    => 'LAN1-1G-FIRST',
+            'cost'       => 0,
+        ]);
+
+        fputcsv( $fp, [
+            'cust_asn'   => 6774,
+            'cust_name'  => 'BICS / Belgacom International Carrier',
+            'category'   => 'MEMBER_FEE',
+            'service'    => 'MEMBER_FEE',
+            'cost'       => 1000,
+        ]);
+        fputcsv( $fp, [
+            'cust_asn'   => 3303,
+            'cust_name'  => 'Swisscom [RESOLD]',
+            'category'   => 'MEMBER_FEE',
+            'service'    => 'MEMBER_FEE',
+            'cost'       => 1000,
+        ]);
+        fputcsv( $fp, [
+            'cust_asn'   => 3303,
+            'cust_name'  => 'Swisscom [RESOLD]',
+            'category'   => 'LAN1',
+            'service'    => 'LAN1-1G-FIRST',
+            'cost'       => 0,
+        ]);
+
+
+        fputcsv( $fp, [
+            'cust_asn'   => 7713,
+            'cust_name'  => 'Telin [RESOLD]',
+            'category'   => 'MEMBER_FEE',
+            'service'    => 'MEMBER_FEE',
+            'cost'       => 1000,
+        ]);
+
+        fputcsv( $fp, [
+            'cust_asn'   => 7713,
+            'cust_name'  => 'Telin [RESOLD]',
+            'category'   => 'LAN1',
+            'service'    => 'LAN1-1G-FIRST',
+            'cost'       => 0,
+        ]);
+
+        fclose( $fp );
 
         Log::info(json_encode($totals));
 
