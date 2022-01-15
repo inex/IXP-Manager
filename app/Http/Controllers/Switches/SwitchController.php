@@ -767,7 +767,7 @@ class SwitchController extends EloquentController
             $this->object->os =             $platform->getOs();
             $this->object->osDate =         $osDate;
             $this->object->osVersion =      $platform->getOsVersion();
-            $this->object->serialNumber =   $platform->getSerialNumber();
+            $this->object->serialNumber =   $platform->getSerialNumber() ?? '(not implemented)';
             $this->object->save();
             $r->session()->remove( "snmp-platform" );
         }
