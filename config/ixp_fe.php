@@ -219,4 +219,31 @@ return [
     'vlaninterfaces' => [
         'hostname_required'  => env( 'IXP_FE_VLANINTERFACES_HOSTNAME_REQUIRED', true ),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | IX-F Sources
+    |--------------------------------------------------------------------------
+    |
+    */
+    'ixfsources' => [
+        'INEX LAN1' => [ 'url' => 'https://www.inex.ie/ixp/api/v4/member-export/ixf/1.0', 'ixid' => 1 ],
+        'INEX LAN2' => [ 'url' => 'https://www.inex.ie/ixp/api/v4/member-export/ixf/1.0', 'ixid' => 2 ],
+        'INEX LAN3' => [ 'url' => 'https://www.inex.ie/ixp/api/v4/member-export/ixf/1.0', 'ixid' => 3 ],
+
+        'LONAP' => [ 'url' => 'https://portal.lonap.net/api/v4/member-export/ixf/1.0', 'ixid' => 1 ],
+
+        'LINX LON1' => [ 'url' => 'https://portal.linx.net/members.json',       'ixid' => 0 ],
+        'LINX LON2' => [ 'url' => 'https://portal.linx.net/members.json',       'ixid' => 1 ],
+        'LINX Manchester' => [ 'url' => 'https://portal.linx.net/members.json', 'ixid' => 2 ],
+        'LINX Scotland' => [ 'url' => 'https://portal.linx.net/members.json',   'ixid' => 3 ],
+        'LINX NoVA' => [ 'url' => 'https://portal.linx.net/members.json',       'ixid' => 4 ],
+        'LINX Wales' => [ 'url' => 'https://portal.linx.net/members.json',      'ixid' => 5 ],
+        'LINX JED-IX' => [ 'url' => 'https://portal.linx.net/members.json',     'ixid' => 6 ],
+        'LINX ManxIX' => [ 'url' => 'https://portal.linx.net/members.json',     'ixid' => 7 ],
+
+    ],
+
+
+
 ];
