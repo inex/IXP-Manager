@@ -745,7 +745,7 @@ class StatisticsController extends Controller
 
         $days =  TrafficDailyPhysInt::select( [ 'day' ] )
             ->distinct( 'day' )
-            ->orderBy( 'day')->get()->pluck( 'day' )->toArray();
+            ->orderBy( 'day', 'desc')->get()->pluck( 'day' )->toArray();
 
         if( count( $days ) ) {
             $day = $r->day;
