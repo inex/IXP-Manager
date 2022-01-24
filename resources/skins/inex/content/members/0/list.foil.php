@@ -12,6 +12,7 @@ echo Cache::remember('skin-inex-content-members-list.json', '14400', function() 
         $data[ $c->id ][ 'name' ] = $c->name;
         $data[ $c->id ][ 'numberofports' ] = 0;
         $data[ $c->id ][ 'joined' ] = \Carbon\Carbon::parse( $c->datejoin )->format( 'Y-m-d' );
+        $data[ $c->id ][ 'ports' ] = '';
 
         if( $l = $c->logo ) {
             $data[ $c->id ][ 'logo' ] = url( '' ) . '/logos/' . $l->shardedPath();
@@ -26,7 +27,6 @@ echo Cache::remember('skin-inex-content-members-list.json', '14400', function() 
             $data[ $c->id ][ 'routeserver' ] = 'No';
             $data[ $c->id ][ 'ipv4' ] = 'No';
             $data[ $c->id ][ 'ipv6' ] = 'No';
-            $data[ $c->id ][ 'ports' ] = '';
         }
 
         $first = true;
