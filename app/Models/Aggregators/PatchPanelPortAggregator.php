@@ -75,7 +75,11 @@ class PatchPanelPortAggregator extends PatchPanelPort
         return self::selectRaw( '
             ppp.*,
             count( pppf.id ) AS files, count( ppph.id ) AS histories,
-            pp.name as ppname, pp.port_prefix AS prefix,
+            pp.name as ppname,
+            pp.colo_reference as ppcolo_reference,
+            pp.port_prefix AS prefix,
+            pp.cable_type AS ppcable_type,
+            pp.colo_pp_type,
             sp.name AS spname,
             s.name AS sname, c.abbreviatedName AS cname,
             count( ppps.id ) AS nbslave, 

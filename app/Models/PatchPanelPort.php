@@ -253,6 +253,14 @@ class PatchPanelPort extends Model
     ];
 
     /**
+     * Array STATES for cross-connects where there may be a circuit installed by the colo
+     */
+    public static $COLO_ASSIGNED_STATES = [
+        self::STATE_CONNECTED,
+        self::STATE_AWAITING_CEASE,
+    ];
+
+    /**
      * Array $CHARGEABLES
      */
     public static $OWNED_BY = [
