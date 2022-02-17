@@ -149,7 +149,7 @@ class CoreBundleController extends Common
             'cost'                      => $r->old('cost',        $cb->cost             ),
             'preference'                => $r->old('preference',  $cb->preference       ),
             'type'                      => $r->old('type',        $cb->type             ),
-            'subnet'                    => $r->old('subnet',      $cb->ipv4_subnet      ),
+            'ipv4_subnet'               => $r->old('ipv4_subnet', $cb->ipv4_subnet      ),
             'enabled'                   => $r->old('enabled',     $cb->enabled          ),
             'bfd'                       => $r->old('bfd',         $cb->bfd              ),
             'stp'                       => $r->old('stp',         $cb->stp              ),
