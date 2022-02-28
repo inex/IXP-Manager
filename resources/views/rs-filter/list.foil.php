@@ -32,7 +32,7 @@
                         </div>
                         <div class="col-sm-12 d-flex">
                             <b class="mr-auto my-auto">
-                                If you want to grant your privileges click on the following link: <a href="<?= route( "rs-filter@grant-cust-user" ) ?>">here</a>
+                                As a read-only user, you can only view the rules below and cannot alter them. Please contact a member of your organisation with read/write access.
                             </b>
                         </div>
                     </div>
@@ -384,8 +384,12 @@
                       This tool is intended to help you make relatively simple routing policies.
                   </li>
                   <li>
-                      When processing routes, <b>the first matching rule wins</b>. Please consider the ordering of your rules
+                      When processing routes, please consider the ordering of your rules
                       and ensure to put more specific rules first.
+                  </li>
+                  <li>
+                        When processing routes, please consider the ordering of your rules
+                        and ensure to put more specific rules first.
                   </li>
                   <li>
                       You are responsible for your own routing policy and ensuring any rules you set here have the desired effect.
