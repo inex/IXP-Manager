@@ -47,8 +47,8 @@ use IXP\Models\RouteServerFilterProd;
  * @property string $live
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \IXP\Models\Customer|null $customer
- * @property-read \IXP\Models\Customer|null $peer
+ * @property-read Customer|null $customer
+ * @property-read Customer|null $peer
  * @property-read \IXP\Models\Vlan|null $vlan
  * @method static Builder|RouteServerFilterAggregator newModelQuery()
  * @method static Builder|RouteServerFilterAggregator newQuery()

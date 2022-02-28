@@ -49,7 +49,7 @@ use IXP\Traits\Observable;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\ConsoleServer|null $consoleServer
  * @property-read \IXP\Models\CustomerTag|null $customer
- * @property-read \IXP\Models\Switcher $switcher
+ * @property-read \IXP\Models\Switcher|null $switcher
  * @method static Builder|ConsoleServerConnection newModelQuery()
  * @method static Builder|ConsoleServerConnection newQuery()
  * @method static Builder|ConsoleServerConnection query()

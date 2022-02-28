@@ -44,6 +44,7 @@ use IXP\Traits\Observable;
  * @property int|null $status
  * @property int|null $speed
  * @property string|null $duplex
+ * @property int|null $rate_limit
  * @property string|null $notes
  * @property int|null $fanout_physical_interface_id
  * @property bool $autoneg
@@ -67,6 +68,7 @@ use IXP\Traits\Observable;
  * @method static Builder|PhysicalInterface whereFanoutPhysicalInterfaceId($value)
  * @method static Builder|PhysicalInterface whereId($value)
  * @method static Builder|PhysicalInterface whereNotes($value)
+ * @method static Builder|PhysicalInterface whereRateLimit($value)
  * @method static Builder|PhysicalInterface whereSpeed($value)
  * @method static Builder|PhysicalInterface whereStatus($value)
  * @method static Builder|PhysicalInterface whereSwitchportid($value)
