@@ -153,6 +153,7 @@ class RsFilterController extends Controller
         $peers = array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ],
             CustomerAggregator::getByVlanAndProtocol( $vlanid , $protocol ) );
 
+        // exclude this network
         foreach( $peers as $i => $p ) {
             if( $p['id'] === $cust->id ) {
                 unset( $peers[$i] );
@@ -165,7 +166,7 @@ class RsFilterController extends Controller
             'c'                     => $cust,
             'vlans'                 => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], $this->getPublicPeeringVLANs( $cust->id ) ),
             'protocols'             => Router::$PROTOCOLS,
-            'peers'                 => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], CustomerAggregator::getByVlanAndProtocol( $vlanid , $protocol ) ),
+            'peers'                 => $peers,
             'advertisedPrefixes'    => $advertisedPrefixes
         ] );
     }

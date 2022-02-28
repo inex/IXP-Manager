@@ -99,7 +99,7 @@ echo $indent; ?>if ( net = <?= $filter->received_prefix ?> ) then {
 
         case 'AS_IS':
             echo "{$indent}# AS_IS - a no-op but we accept here as 'first rule matches'\n";
-            echo "{$indent}accept;'\n";
+            echo "{$indent}accept;\n";
             break;
 
         case 'NO_ADVERTISE':

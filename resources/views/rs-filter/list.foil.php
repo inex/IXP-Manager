@@ -6,7 +6,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Route Server Filtering <?= $isSuperUser ? ' for ' . $t->c->name : '' ?>
+    Route Server Filtering <?= $isSuperUser ? ' for <a href="' . route( 'customer@overview', $t->c ) . '">' . $t->c->name . '</a>' : '' ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
