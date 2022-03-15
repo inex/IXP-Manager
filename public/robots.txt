@@ -1,6 +1,7 @@
 # Crawlers should not search the looking glasses
 User-agent: *
 Disallow: /lg/
+Disallow: *index.php/lg/*
 
 User-agent: *
 Allow: /
