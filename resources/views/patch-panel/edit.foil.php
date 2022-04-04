@@ -133,6 +133,16 @@
                         ->value( date( 'Y-m-d' ) );
                     ?>
 
+                    <?= Former::select( 'colo_pp_type' )
+                        ->label( 'Co-lo Patch Panel Port Type' )
+                        ->options( \IXP\Models\PatchPanel::$COLO_PP_TYPES )
+                        ->addClass( 'chzn-select' )
+                        ->blockHelp( 'Specify whether the co-location provider uses simplex ("Port 1") or duplex ("fibre 1 / fibre 2")'
+                            . 'notation in their cross-connect database.' )
+                        ;
+                    ?>
+
+
                     <div class="form-group row">
                         <div class="col-sm-8">
                             <div class="card mt-4">
