@@ -68,6 +68,7 @@ class StorePatchPanel extends FormRequest
             'installation_date' => 'date',
             'port_prefix'       => 'string|nullable',
             'u_position'        => 'numeric|nullable',
+            'colo_pp_type'      => 'numeric',
             'mounted_at'        => 'string|nullable|in:' . implode( ',', array_keys( PatchPanel::$MOUNTED_AT ) ),
             'numberOfPorts'     => 'required|integer',
         ];
