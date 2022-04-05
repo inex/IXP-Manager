@@ -314,12 +314,15 @@ if( !config( 'ixp_fe.frontend.disabled.logs' ) ){
 ///
 Route::get( 'phpinfo', function() { phpinfo(); } )->name('phpinfo' );
 
-Route::group( [ 'prefix' => 'utils' ], function() {
+Route::group( [ 'prefix' => 'utils', 'namespace' => 'Utils' ], function() {
     Route::get( 'phpinfo', function() {
         return view( 'utils/phpinfo' );
     })->name('utils/phpinfo');
-});
 
+    Route::get( 'ixf-compare', 'IxfCompareController@index' )->name('utils/ixf-compare');
+    Route::post( 'do-ixf-compare', 'IxfCompareController@compare' )->name('utils/do-ixf-compare');
+
+});
 
 
 Route::group( [ 'namespace' => 'Services', 'prefix' => 'sage' ], function() {

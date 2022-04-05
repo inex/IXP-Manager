@@ -91,7 +91,8 @@ class SearchController extends Controller
             else if( preg_match( '/^\.\d{1,3}$/', $search ) || preg_match( '/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $search ) ) {
                 // IPv4 search
                 $type   = 'ipv4';
-                $result = VlanInterface::leftJoin( 'ipv4address AS ip', 'ip.id', 'vlaninterface.ipv4addressid' )
+                $result = VlanInterface::select( 'vlaninterface.*' )
+                    ->leftJoin( 'ipv4address AS ip', 'ip.id', 'vlaninterface.ipv4addressid' )
                     ->where( 'ip.address', 'LIKE', strtolower( '%' . $search ) )
                     ->with( 'virtualInterface.customer' )->get();
 

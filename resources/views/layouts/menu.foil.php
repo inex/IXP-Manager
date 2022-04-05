@@ -400,6 +400,12 @@
                 </a>
             </li>
 
+            <li class="<?= !request()->is( 'utils/ixf-compare' ) ?: 'active' ?>">
+                <a href="<?= route( 'utils/ixf-compare' ) ?>" class="nav-link">
+                    IX-F Compare
+                </a>
+            </li>
+
             <li class="<?= !request()->is( 'login-history/*' ) ?: 'active' ?>">
                 <a href="<?= route( 'login-history@list' ) ?>" class="nav-link">
                     Last Logins
