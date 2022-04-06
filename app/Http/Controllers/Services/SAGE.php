@@ -29,6 +29,7 @@ use Auth, D2EM, Log;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use IXP\Models\CompanyBillingDetail;
 use Laravel\Socialite\Facades\Socialite;
 
 use Cache, Config;
@@ -150,7 +151,7 @@ class SAGE extends Controller
         // return dd( $this->customers() );
 
         // 4 - Invoices
-        // return $this->invoices();
+        return $this->invoices();
 
 
         return view( 'services/sage/index', [ 'suser' => Socialite::driver('sage')->user() ] );
@@ -810,6 +811,11 @@ class SAGE extends Controller
                 continue;
             }
 
+            if( $cust->companyBillingDetail->billingFrequency != CompanyBillingDetail::BILLING_FREQUENCY_QUARTERLY ) {
+                continue;
+            }
+
+
             if( in_array( $cust->id, [ 182, 183, 190, 171 ] ) ) {
                 Log::info( "***** SKIPPING {$cust->name}");
                 continue;
@@ -818,8 +824,8 @@ class SAGE extends Controller
             Log::info( "***** START {$cust->name}");
 
             $invoice = [
-                'contact_id' => $sageCustomers[ $cust->id ],
-                'date'       => '2022-01-11',
+                'contact_id' => $sageCustomers[ $cust->id ] ?? 'XXX',
+                'date'       => '2022-04-01',
                 'status_id'  => 'DRAFT',
             ];
 
@@ -1012,7 +1018,7 @@ class SAGE extends Controller
             $invoice['notes'] = $notes;
 
 
-
+            dump($invoice);
 
 //            $guzzle = new \GuzzleHttp\Client();
 //
@@ -1030,82 +1036,82 @@ class SAGE extends Controller
 
         //             if( in_array( $cust->id, [ 182, 183, 190, 171 ] ) ) {
         // specials
-        fputcsv( $fp, [
-            'cust_asn'   => 39120,
-            'cust_name'  => 'Convergenze [RESOLD]',
-            'category'   => 'MEMBER_FEE',
-            'service'    => 'MEMBER_FEE',
-            'cost'       => 1000,
-        ]);
-        fputcsv( $fp, [
-            'cust_asn'   => 39120,
-            'cust_name'  => 'Convergenze [RESOLD]',
-            'category'   => 'LAN1',
-            'service'    => 'LAN1-1G-FIRST',
-            'cost'       => 0,
-        ]);
-        fputcsv( $fp, [
-            'cust_asn'   => 39120,
-            'cust_name'  => 'Convergenze [RESOLD]',
-            'category'   => 'LAN1',
-            'service'    => 'LAN1-1G-ADDNL',
-            'cost'       => 403,
-        ]);
-
-
-        fputcsv( $fp, [
-            'cust_asn'   => 60501,
-            'cust_name'  => 'Sirius Technology SRL [RESOLD]',
-            'category'   => 'MEMBER_FEE',
-            'service'    => 'MEMBER_FEE',
-            'cost'       => 1000,
-        ]);
-        fputcsv( $fp, [
-            'cust_asn'   => 60501,
-            'cust_name'  => 'Sirius Technology SRL [RESOLD]',
-            'category'   => 'LAN1',
-            'service'    => 'LAN1-1G-FIRST',
-            'cost'       => 0,
-        ]);
-
-        fputcsv( $fp, [
-            'cust_asn'   => 6774,
-            'cust_name'  => 'BICS / Belgacom International Carrier',
-            'category'   => 'MEMBER_FEE',
-            'service'    => 'MEMBER_FEE',
-            'cost'       => 1000,
-        ]);
-        fputcsv( $fp, [
-            'cust_asn'   => 3303,
-            'cust_name'  => 'Swisscom [RESOLD]',
-            'category'   => 'MEMBER_FEE',
-            'service'    => 'MEMBER_FEE',
-            'cost'       => 1000,
-        ]);
-        fputcsv( $fp, [
-            'cust_asn'   => 3303,
-            'cust_name'  => 'Swisscom [RESOLD]',
-            'category'   => 'LAN1',
-            'service'    => 'LAN1-1G-FIRST',
-            'cost'       => 0,
-        ]);
-
-
-        fputcsv( $fp, [
-            'cust_asn'   => 7713,
-            'cust_name'  => 'Telin [RESOLD]',
-            'category'   => 'MEMBER_FEE',
-            'service'    => 'MEMBER_FEE',
-            'cost'       => 1000,
-        ]);
-
-        fputcsv( $fp, [
-            'cust_asn'   => 7713,
-            'cust_name'  => 'Telin [RESOLD]',
-            'category'   => 'LAN1',
-            'service'    => 'LAN1-1G-FIRST',
-            'cost'       => 0,
-        ]);
+//        fputcsv( $fp, [
+//            'cust_asn'   => 39120,
+//            'cust_name'  => 'Convergenze [RESOLD]',
+//            'category'   => 'MEMBER_FEE',
+//            'service'    => 'MEMBER_FEE',
+//            'cost'       => 1000,
+//        ]);
+//        fputcsv( $fp, [
+//            'cust_asn'   => 39120,
+//            'cust_name'  => 'Convergenze [RESOLD]',
+//            'category'   => 'LAN1',
+//            'service'    => 'LAN1-1G-FIRST',
+//            'cost'       => 0,
+//        ]);
+//        fputcsv( $fp, [
+//            'cust_asn'   => 39120,
+//            'cust_name'  => 'Convergenze [RESOLD]',
+//            'category'   => 'LAN1',
+//            'service'    => 'LAN1-1G-ADDNL',
+//            'cost'       => 403,
+//        ]);
+//
+//
+//        fputcsv( $fp, [
+//            'cust_asn'   => 60501,
+//            'cust_name'  => 'Sirius Technology SRL [RESOLD]',
+//            'category'   => 'MEMBER_FEE',
+//            'service'    => 'MEMBER_FEE',
+//            'cost'       => 1000,
+//        ]);
+//        fputcsv( $fp, [
+//            'cust_asn'   => 60501,
+//            'cust_name'  => 'Sirius Technology SRL [RESOLD]',
+//            'category'   => 'LAN1',
+//            'service'    => 'LAN1-1G-FIRST',
+//            'cost'       => 0,
+//        ]);
+//
+//        fputcsv( $fp, [
+//            'cust_asn'   => 6774,
+//            'cust_name'  => 'BICS / Belgacom International Carrier',
+//            'category'   => 'MEMBER_FEE',
+//            'service'    => 'MEMBER_FEE',
+//            'cost'       => 1000,
+//        ]);
+//        fputcsv( $fp, [
+//            'cust_asn'   => 3303,
+//            'cust_name'  => 'Swisscom [RESOLD]',
+//            'category'   => 'MEMBER_FEE',
+//            'service'    => 'MEMBER_FEE',
+//            'cost'       => 1000,
+//        ]);
+//        fputcsv( $fp, [
+//            'cust_asn'   => 3303,
+//            'cust_name'  => 'Swisscom [RESOLD]',
+//            'category'   => 'LAN1',
+//            'service'    => 'LAN1-1G-FIRST',
+//            'cost'       => 0,
+//        ]);
+//
+//
+//        fputcsv( $fp, [
+//            'cust_asn'   => 7713,
+//            'cust_name'  => 'Telin [RESOLD]',
+//            'category'   => 'MEMBER_FEE',
+//            'service'    => 'MEMBER_FEE',
+//            'cost'       => 1000,
+//        ]);
+//
+//        fputcsv( $fp, [
+//            'cust_asn'   => 7713,
+//            'cust_name'  => 'Telin [RESOLD]',
+//            'category'   => 'LAN1',
+//            'service'    => 'LAN1-1G-FIRST',
+//            'cost'       => 0,
+//        ]);
 
         fclose( $fp );
 
