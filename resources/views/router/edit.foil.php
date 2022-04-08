@@ -53,7 +53,7 @@
                     <?= Former::text( 'handle' )
                         ->label( 'Handle' )
                         ->placeholder( 'rs1-lan1-ipv4' )
-                        ->blockHelp( "The handle is like the router's name. It is suggested you use something like: <code>purpose-proto-lan</code>. A
+                        ->blockHelp( "The handle is like the router's name. It is suggested you use something like: <code>purpose-lan-proto</code>. A
                     good example of this is <code>rs1-lan1-ipv4</code> for <em>route server #1</em> on <em>lan1</em> using <em>IPv4</em>.
                     These handles are used in API calls and other areas such as Nagios configuration generation." );
                     ?>
