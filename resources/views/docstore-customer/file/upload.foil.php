@@ -21,13 +21,23 @@
             ->actionButtonsCustomClass( "grey-box")
             ->class('col-8')
             ->rules([
-                'name' => 'required|max:100'
+                'name' => ['required', 'max:100', 'match:"/^(?:^..*)\.\w{1,5}$/"']
             ])
+        ?>
+        
+        <?= Former::file( 'uploadedFile' )
+            ->id( 'uploadedFile' )
+            ->label( ( $t->file ? 'Replace' : 'Upload' ) . ' File' )
+            ->class( 'form-control border-0 shadow-none' )
+            ->multiple( false )
+            ->blockHelp( $t->file ? "You only need to choose a file here if you wish to replace the existing one. Do not select a file to edit other details but leave the current file in place."
+                : "Select the file you wish to upload." );
         ?>
 
         <?= Former::text( 'name' )
             ->id('name')
-            ->label( 'Name' )
+            ->label( 'File Name' )
+            ->title( 'File name including extension' )
             ->blockHelp( "The name of the file (this is as it appears on listings in the web interface rather than on the filesystem). "
                 . "<b>This is also the name the downloaded file will have - so use the appropriate extension.</b>");
         ?>
@@ -53,15 +63,6 @@
             ->fromQuery( \IXP\Models\User::$PRIVILEGES_TEXT , 'name' )
             ->addClass( 'chzn-select' )
             ->blockHelp( "The minimum privilege a user is required to have to view and download the file." );
-        ?>
-
-        <?= Former::file( 'uploadedFile' )
-            ->id( 'uploadedFile' )
-            ->label( ( $t->file ? 'Replace' : 'Upload' ) . ' File' )
-            ->class( 'form-control border-0 shadow-none' )
-            ->multiple( false )
-            ->blockHelp( $t->file ? "You only need to choose a file here if you wish to replace the existing one. Do not select a file to edit other details but leave the current file in place."
-                : "Select the file you wish to upload." );
         ?>
 
         <div class="form-group">
