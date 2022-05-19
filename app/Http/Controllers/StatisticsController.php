@@ -393,6 +393,10 @@ class StatisticsController extends Controller
             $cust = Auth::getUser()->customer;
         }
 
+        if( $cust == null ) {
+            abort( 403, "You are not authorised to view this member's graphs." );
+        }
+
         $grapher = App::make( Grapher::class );
 
         // if the customer is authorised, then so too are all of their virtual and physical interfaces:
