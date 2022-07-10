@@ -99,9 +99,13 @@ $this->layout( 'layouts/ixpv4' );
                             <?= $t->ee( $log->action ) ?>
                         </td>
                         <td>
-                            <a href="<?= route( 'user@view', [ 'u' => $log->user_id ] ) ?>">
-                                <?= $log->username ?>
-                            </a>
+                            <?php if( $log->user_id ): ?>
+                                <a href="<?= route( 'user@view', [ 'u' => $log->user_id ] ) ?>">
+                                    <?= $log->username ?>
+                                </a>
+                            <?php else: ?>
+                                    <?= $log->username ?>
+                            <?php endif; ?>
                         </td>
                         <td>
                             <?= $log->created_at ?>
