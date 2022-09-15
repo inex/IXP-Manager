@@ -35,13 +35,13 @@ use IXP\Models\{
  * IXP\Models\Aggregators\VlanAggregator
  *
  * @property int $id
+ * @property int $infrastructureid
  * @property string|null $name
  * @property int|null $number
- * @property string|null $notes
  * @property bool $private
- * @property int $infrastructureid
  * @property int $peering_matrix
  * @property int $peering_manager
+ * @property string|null $notes
  * @property string|null $config_name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

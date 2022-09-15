@@ -40,19 +40,19 @@ use IXP\Traits\Observable;
  *
  * @property int $id
  * @property int|null $switchportid
+ * @property int|null $fanout_physical_interface_id
  * @property int|null $virtualinterfaceid
  * @property int|null $status
  * @property int|null $speed
  * @property string|null $duplex
- * @property string|null $notes
- * @property int|null $fanout_physical_interface_id
+ * @property int|null $rate_limit
  * @property bool $autoneg
+ * @property string|null $notes
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\CoreInterface|null $coreInterface
  * @property-read PhysicalInterface|null $fanoutPhysicalInterface
  * @property-read PhysicalInterface|null $peeringPhysicalInterface
- * @property-write mixed $rate_limit
  * @property-read \IXP\Models\SwitchPort|null $switchPort
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\TrafficDailyPhysInt[] $trafficDailiesPhysInt
  * @property-read int|null $traffic_dailies_phys_int_count
@@ -68,6 +68,7 @@ use IXP\Traits\Observable;
  * @method static Builder|PhysicalInterface whereFanoutPhysicalInterfaceId($value)
  * @method static Builder|PhysicalInterface whereId($value)
  * @method static Builder|PhysicalInterface whereNotes($value)
+ * @method static Builder|PhysicalInterface whereRateLimit($value)
  * @method static Builder|PhysicalInterface whereSpeed($value)
  * @method static Builder|PhysicalInterface whereStatus($value)
  * @method static Builder|PhysicalInterface whereSwitchportid($value)

@@ -40,7 +40,7 @@ use Illuminate\Database\Eloquent\{
  * @property string|null $path
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \IXP\Models\AtlasMeasurement $atlasMeasurement
+ * @property-read \IXP\Models\AtlasMeasurement|null $atlasMeasurement
  * @method static Builder|AtlasResult newModelQuery()
  * @method static Builder|AtlasResult newQuery()
  * @method static Builder|AtlasResult query()

@@ -31,18 +31,18 @@ use IXP\Models\PatchPanelPort;
 /**
  * IXP\Models\Aggregators\PatchPanelPortAggregator
  *
- * @property-read \IXP\Models\Customer $customer
- * @property-read PatchPanelPort $duplexMasterPort
+ * @property-read \IXP\Models\Customer|null $customer
+ * @property-read PatchPanelPort|null $duplexMasterPort
  * @property-read Collection|PatchPanelPort[] $duplexSlavePorts
  * @property-read int|null $duplex_slave_ports_count
- * @property-read \IXP\Models\PatchPanel $patchPanel
+ * @property-read \IXP\Models\PatchPanel|null $patchPanel
  * @property-read Collection|\IXP\Models\PatchPanelPortFile[] $patchPanelPortFiles
  * @property-read int|null $patch_panel_port_files_count
  * @property-read Collection|\IXP\Models\PatchPanelPortFile[] $patchPanelPortFilesPublic
  * @property-read int|null $patch_panel_port_files_public_count
  * @property-read Collection|\IXP\Models\PatchPanelPortHistory[] $patchPanelPortHistories
  * @property-read int|null $patch_panel_port_histories_count
- * @property-read \IXP\Models\SwitchPort $switchPort
+ * @property-read \IXP\Models\SwitchPort|null $switchPort
  * @method static Builder|PatchPanelPort masterPort()
  * @method static Builder|PatchPanelPortAggregator newModelQuery()
  * @method static Builder|PatchPanelPortAggregator newQuery()
