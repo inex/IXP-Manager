@@ -722,7 +722,7 @@ class StatisticsController extends Controller
             "cb"                    => $cb,
             "graph"                 => $graph,
             "category"              => $category,
-            "categories"            => Auth::check() && Auth::getUser()->isSuperUser() ? Graph::CATEGORY_DESCS : Graph::CATEGORIES_BITS_PKTS_DESCS,
+            "categories"            => Auth::check() && Auth::getUser() && Auth::getUser()->isSuperUser() ? Graph::CATEGORY_DESCS : Graph::CATEGORIES_BITS_PKTS_DESCS,
         ]);
     }
 
