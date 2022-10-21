@@ -54,7 +54,7 @@ class UtilsController extends Controller
     {
         $pd = new Parsedown();
         return response()->json([
-            'html' => $pd->text( $r->text )
+            'html' => htmlspecialchars( $pd->text( $r->text ) )
         ]);
     }
 }
