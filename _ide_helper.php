@@ -4,7 +4,7 @@
 
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
- * Generated for Laravel 8.83.23.
+ * Generated for Laravel 8.83.25.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -2173,6 +2173,17 @@
         {            //Method inherited from \Illuminate\Auth\SessionGuard         
                         /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->setRequest($request);
+        }
+                    /**
+         * Get the timebox instance used by the guard.
+         *
+         * @return \Illuminate\Support\Timebox 
+         * @static 
+         */ 
+        public static function getTimebox()
+        {            //Method inherited from \Illuminate\Auth\SessionGuard         
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
+                        return $instance->getTimebox();
         }
                     /**
          * Determine if the current user is authenticated. If not, throw an exception.

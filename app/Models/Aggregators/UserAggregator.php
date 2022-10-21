@@ -50,6 +50,8 @@ use IXP\Models\{
  * @property int|null $uid
  * @property int|null $privs
  * @property int|null $disabled
+ * @property int $fail_count
+ * @property string|null $fail_locked_until
  * @property int|null $lastupdatedby
  * @property string|null $creator
  * @property string|null $name
@@ -82,6 +84,8 @@ use IXP\Models\{
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereDisabled($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereExtraAttributes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereFailCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereFailLockedUntil($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereLastupdatedby($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereName($value)

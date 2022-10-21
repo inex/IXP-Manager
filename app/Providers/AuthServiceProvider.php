@@ -68,7 +68,11 @@ class AuthServiceProvider extends ServiceProvider
         Auth::extend('session', function ( $app, $name, $config ) {
             $provider = $app[ 'auth' ]->createUserProvider( $config['provider'] ?? null );
 
-            $guard = new SessionGuard( $name, $provider, $app[ 'session.store' ], request(), $config[ 'expire' ] ?? null );
+            $guard = new SessionGuard( $name, $provider, $app[ 'session.store' ], request() );
+
+            if( $config[ 'expire' ] ) {
+                $guard->setRememberDuration( $config[ 'expire' ] );
+            }
 
             if( method_exists( $guard, 'setCookieJar' ) ) {
                 $guard->setCookieJar( $app['cookie'] );

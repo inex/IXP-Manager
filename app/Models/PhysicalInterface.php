@@ -40,14 +40,14 @@ use IXP\Traits\Observable;
  *
  * @property int $id
  * @property int|null $switchportid
- * @property int|null $fanout_physical_interface_id
  * @property int|null $virtualinterfaceid
  * @property int|null $status
  * @property int|null $speed
  * @property string|null $duplex
  * @property int|null $rate_limit
- * @property bool $autoneg
  * @property string|null $notes
+ * @property int|null $fanout_physical_interface_id
+ * @property bool $autoneg
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\CoreInterface|null $coreInterface
