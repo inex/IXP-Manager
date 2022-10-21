@@ -234,6 +234,12 @@ class CabinetController extends EloquentController
             $okay = false;
         }
 
+        if( ( $cnt = $this->object->patchPanels()->count() ) ) {
+            AlertContainer::push( "Could not delete the rack as at least one patch panel is located here. Reassign or delete the panel first.", Alert::DANGER );
+            $okay = false;
+        }
+
+
         return $okay;
     }
 
