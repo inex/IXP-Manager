@@ -312,7 +312,13 @@ if( !config( 'ixp_fe.frontend.disabled.logs' ) ){
 ///
 /// Utilities
 ///
-Route::get( 'phpinfo', function() { phpinfo(); } )->name('phpinfo' );
+Route::get( 'phpinfo', function() {
+        if( config('app.debug') || !config( 'ixp_fe.frontend.disabled.phpinfo' ) ) {
+            phpinfo();
+        } else {
+            echo "phpinfo() disabled. In your .env file, set IXP_FE_FRONTEND_DISABLED_PHPINFO to false to enable phpinfo() [or place the application in debug mode).";
+        }
+    } )->name('phpinfo' );
 
 Route::group( [ 'prefix' => 'utils', 'namespace' => 'Utils' ], function() {
     Route::get( 'phpinfo', function() {

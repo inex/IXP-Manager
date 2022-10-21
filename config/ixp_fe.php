@@ -92,6 +92,7 @@ return [
             'net-info'                  => env( 'IXP_FE_FRONTEND_DISABLED_NETINFO',           true ),
             'peering-manager'           => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MANAGER',   false ),
             'peering-matrix'            => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MATRIX',    false ),
+            'phpinfo'                   => env( 'IXP_FE_FRONTEND_DISABLED_PHPINFO',           true  ),
             'ripe-atlas'                => true, // not ready for use yet
             'rs-prefixes'               => env( 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',       true  ),
         ],
