@@ -102,7 +102,7 @@ class SwitchConfigurationGenerator
             if( ( $sp->typeUnset() || $sp->typePeering() ) && !in_array( $pi->virtualinterfaceid, $visProcessed )  ) {
                 $ports = array_merge( $ports, $this->processVirtualInterface( $pi->virtualInterface ));
                 $visProcessed[] = $pi->virtualinterfaceid;
-            } else if( $sp->typeCore() && !in_array( $pi->virtualinterfaceid, $cbsProcessed ) && $pi->coreBundle()->typeL2Lag() ) {
+            } else if( $sp->typeCore() && !in_array( $pi->virtualinterfaceid, $cbsProcessed ) && $pi->coreBundle() && $pi->coreBundle()->typeL2Lag() ) {
                 $ports = array_merge( $ports, $this->processCoreBundleInterface( $pi ) );
                 $cbsProcessed[] = $pi->virtualinterfaceid;
             }
