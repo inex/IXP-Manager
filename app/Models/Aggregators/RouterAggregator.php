@@ -51,7 +51,7 @@ use IXP\Models\User;
  * @property bool $bgp_lc
  * @property string $template
  * @property bool $skip_md5
- * @property string|null $last_started
+ * @property string|null $last_update_started
  * @property \Illuminate\Support\Carbon|null $last_updated
  * @property bool $rpki
  * @property string|null $software_version
@@ -60,6 +60,7 @@ use IXP\Models\User;
  * @property int $rfc1997_passthru
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read Router|null $pair
  * @property-read \IXP\Models\Vlan $vlan
  * @method static Builder|Router hasApi()
  * @method static Builder|Router ipv4()
@@ -78,7 +79,7 @@ use IXP\Models\User;
  * @method static Builder|RouterAggregator whereCreatedAt($value)
  * @method static Builder|RouterAggregator whereHandle($value)
  * @method static Builder|RouterAggregator whereId($value)
- * @method static Builder|RouterAggregator whereLastStarted($value)
+ * @method static Builder|RouterAggregator whereLastUpdateStarted($value)
  * @method static Builder|RouterAggregator whereLastUpdated($value)
  * @method static Builder|RouterAggregator whereLgAccess($value)
  * @method static Builder|RouterAggregator whereMgmtHost($value)

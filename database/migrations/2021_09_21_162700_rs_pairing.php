@@ -14,8 +14,11 @@ class RsPairing extends Migration
     public function up()
     {
         Schema::table('routers', function (Blueprint $table) {
-            $table->datetime( 'last_started' )->nullable()->after('skip_md5');
-            $table->unsignedInteger('pair_id')->nullable()->after('id');
+            $table->datetime( 'last_update_started' )->nullable()->after('skip_md5');
+
+            $table->integer('pair_id')->nullable()->after('id');
+            $table->foreign('pair_id')->references('id')->on('routers')->nullOnDelete();
+
         });
     }
 
@@ -27,7 +30,9 @@ class RsPairing extends Migration
     public function down()
     {
         Schema::table('routers', function (Blueprint $table) {
-            $table->dropColumn('last_started');
+            $table->dropColumn('last_update_started');
+
+            $table->dropForeign('routers_pair_id_foreign');
             $table->dropColumn('pair_id');
         });
     }

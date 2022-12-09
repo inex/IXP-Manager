@@ -58,6 +58,21 @@
                     These handles are used in API calls and other areas such as Nagios configuration generation." );
                     ?>
 
+                    <?= Former::select( 'pair_id' )
+                        ->label( 'Pair With' )
+                        ->fromQuery( \IXP\Models\Router::pluck('handle', 'id')->toArray() )
+                        ->placeholder( 'Production pairing / reconfigure isolation' )
+                        ->addClass( 'chzn-select' )
+                        ->blockHelp( 'The stock router configuration update scripts that ship with IXP Manager (>=v6.3.0) will '
+                            . 'look to ensure that only one router in a pair can be updated at the one time and will pause '
+                            . 'updating if either has not reported that the last update was successful. The idea being that '
+                            . 'a mid- / post-configuration update to one router will not cascade to the second and thus '
+                            . 'prevent both being taken offline.'
+                            . '<br><br>If the pair has no pair set for itself, it will be set to this router.'
+                        );
+                    ?>
+
+
                     <?= Former::select( 'vlan_id' )
                         ->label( 'Vlan' )
                         ->fromQuery( $t->vlans, 'name' )
@@ -220,19 +235,6 @@
                         ->inline()
                         ->blockHelp( 'If checked, all sessions will be configured without MD5 whether they have an
                     MD5 password set on an interface or not.' );
-                    ?>
-
-                    <?= Former::select( 'pair_id' )
-                        ->label( 'Pair With' )
-                        ->fromQuery( \IXP\Models\Router::pluck('name')->toArray() )
-                        ->placeholder( 'Production pairing / reconfigure isolation' )
-                        ->addClass( 'chzn-select' )
-                        ->blockHelp( 'The stock router configuration update scripts that ship with IXP Manager (>=v6.2.0) will '
-                            . 'look to ensure that only one router in a pair can be updated at the one time and will pause '
-                            . 'updated if either has not reported that the last update was successful. The idea being that '
-                            . 'a mid- / post-configuration update to one router will not cascade to the second and thus '
-                            . 'prevent both being taken offline.'
-                        );
                     ?>
 
 

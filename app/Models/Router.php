@@ -22,11 +22,8 @@ namespace IXP\Models;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Model,
-    Relations\BelongsTo
-};
+
+use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations\HasOne};
 
 use IXP\Traits\Observable;
 
@@ -53,7 +50,7 @@ use IXP\Traits\Observable;
  * @property bool $bgp_lc
  * @property string $template
  * @property bool $skip_md5
- * @property string|null $last_started
+ * @property string|null $last_update_started
  * @property \Illuminate\Support\Carbon|null $last_updated
  * @property bool $rpki
  * @property string|null $software_version
@@ -62,6 +59,7 @@ use IXP\Traits\Observable;
  * @property int $rfc1997_passthru
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read Router|null $pair
  * @property-read \IXP\Models\Vlan $vlan
  * @method static Builder|Router hasApi()
  * @method static Builder|Router ipv4()
@@ -80,7 +78,7 @@ use IXP\Traits\Observable;
  * @method static Builder|Router whereCreatedAt($value)
  * @method static Builder|Router whereHandle($value)
  * @method static Builder|Router whereId($value)
- * @method static Builder|Router whereLastStarted($value)
+ * @method static Builder|Router whereLastUpdateStarted($value)
  * @method static Builder|Router whereLastUpdated($value)
  * @method static Builder|Router whereLgAccess($value)
  * @method static Builder|Router whereMgmtHost($value)
@@ -243,6 +241,15 @@ class Router extends Model
     {
         return $this->belongsTo(Vlan::class, 'vlan_id' );
     }
+
+    /**
+     * Get the router's configuration / isolation pair
+     */
+    public function pair(): BelongsTo
+    {
+        return $this->belongsTo(Router::class, 'pair_id' );
+    }
+
 
     /**
      * Get the API type

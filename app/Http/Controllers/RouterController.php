@@ -123,6 +123,7 @@ class RouterController extends Controller
         }
 
         Router::create( $r->all() );
+
         AlertContainer::push( 'Router created.', Alert::SUCCESS );
         return Redirect::to( route( "router@list" ) );
     }
@@ -159,7 +160,7 @@ class RouterController extends Controller
             'rpki'                      => request()->old( 'rpki',              $router->rpki               ),
             'rfc1997_passthru'          => request()->old( 'rfc1997_passthru',  $router->rfc1997_passthru   ),
             'skip_md5'                  => request()->old( 'skip_md5',          $router->skip_md5           ),
-            'pair_id'                   => request()->old( 'pait_id',           $router->pair_id            ),
+            'pair_id'                   => request()->old( 'pair_id',           $router->pair_id            ),
             'template'                  => request()->old( 'template',          $router->template           ),
         ]);
 

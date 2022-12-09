@@ -66,6 +66,7 @@ class StoreRouter extends FormRequest
 
         return [
             'handle'                   => 'required|string|max:255|unique:routers,handle' . ( $this->router ? ','. $this->router->id : '' ),
+            'pair_id'                  => 'nullable|integer' . ( $this->db_id ? '|not_in:' . $this->db_id : '' ) . '|exists:routers,id',
             'vlan_id'                  => 'required|integer|exists:vlan,id',
             'protocol'                 => 'required|integer|in:' . implode( ',', array_keys( Router::$PROTOCOLS ) ),
             'type'                     => 'required|integer|in:' . implode( ',', array_keys( Router::$TYPES ) ),
@@ -81,7 +82,6 @@ class StoreRouter extends FormRequest
             'mgmt_host'                => 'required|string|max:255',
             'api_type'                 => 'required|integer|in:' . implode( ',', array_keys( Router::$API_TYPES ) ),
             'api'                      => ( $this->api_type !== Router::API_TYPE_NONE ? 'url|required|regex:/.*[^\/]$/' : '' ),
-            'pair_id'                  => 'nullable|integer' . ( $this->db_id ? '|not_in:' . $this->db_id : '' ) . '|exists:routers,id',
             'lg_access'                => 'integer' . ( $this->api ? '|required|in:' . implode( ',', array_keys( User::$PRIVILEGES_ALL ) ) : '' ),
         ];
     }

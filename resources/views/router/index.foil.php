@@ -35,13 +35,7 @@
                             Vlan
                         </th>
                         <th>
-                            Protocol
-                        </th>
-                        <th>
-                            Type
-                        </th>
-                        <th>
-                            Router
+                            Pair
                         </th>
                         <th>
                             Peering IP
@@ -73,13 +67,7 @@
                               </a>
                             </td>
                             <td>
-                                <?= $router->protocol() ?>
-                            </td>
-                            <td>
-                                <?= $router->typeShortName() ?>
-                            </td>
-                            <td>
-                                <?= $router->router_id ?>
+                                <?= $t->ee( $router->pair?->handle )?>
                             </td>
                             <td>
                                 <?= $router->peering_ip ?>
@@ -88,7 +76,9 @@
                                 <?= $router->asn ?>
                             </td>
                             <td>
-                                <?= $router->last_updated ? $router->last_updated->format('Y-m-d H:i:s') : '(unknown)' ?>
+                                <span title="<?= $router->last_updated?->format('Y-m-d H:i:s') ?>">
+                                    <?= $router->last_updated ? $router->last_updated->diffForHumans() : '(unknown)' ?>
+                                </span>
                                 <?php if( $router->last_updated && $router->lastUpdatedGreaterThanSeconds( 86400 ) ): ?>
                                     <span class="badge badge-danger">
                                         <i class="fa fa-exclamation-triangle" title="Last updated more than 1 day ago"></i>
