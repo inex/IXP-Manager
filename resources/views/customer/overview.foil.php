@@ -11,7 +11,7 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm ml-auto" role="group" aria-label="...">
-        <a class="btn btn-white" href="<?= route('statistics@member', [ 'id' => $c->id ] ) ?>">
+        <a class="btn btn-white" href="<?= route('statistics@member', [ 'cust' => $c->id ] ) ?>">
             Port Graphs
         </a>
         <div class="btn-group btn-group-sm">
@@ -137,7 +137,7 @@
                     <span class="tw-text-gray-600">
                          joined <?= \Carbon\Carbon::instance( $c->datejoin )->format('Y') ?>
                         <?php if( $r = $c->resellerObject ): ?>
-                            - resold via <?= $r->name ?>
+                           - resold via <a href="<?= route( "customer@overview" , [ 'cust' => $r->id ] ) ?>"><?= $t->ee($r->abbreviatedName)?></a>
                         <?php endif; ?>
                     </span>
                 </p>

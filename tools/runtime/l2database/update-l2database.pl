@@ -138,7 +138,23 @@ if ($debug) {
 	print STDERR $debug_output;
 }
 
-$query = "SELECT id, switchport, switchportid, spifname, switch, switchhostname, status, infrastructure, virtualinterfacename FROM view_switch_details_by_custid";
+$query = "
+SELECT
+        vi.id AS id,
+        CONCAT(vi.name,vi.channelgroup) AS virtualinterfacename,
+        pi.status,
+        sp.name AS switchport,
+        sp.id AS switchportid,
+        sp.ifName AS spifname,
+        sw.name AS switch,
+        sw.hostname AS switchhostname,
+        sw.infrastructure
+FROM
+        virtualinterface AS vi
+        INNER JOIN physicalinterface pi ON pi.virtualinterfaceid = vi.id
+        INNER JOIN switchport sp ON sp.id = pi.switchportid
+        INNER JOIN switch sw ON sw.id = sp.switchid
+";
 ($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
 $sth->execute() or die "$dbh->errstr\n";
 my $ports = $sth->fetchall_hashref( [qw (switchhostname switchport)] );
@@ -155,7 +171,11 @@ $query = "INSERT INTO macaddress (id, firstseen, virtualinterfaceid, mac) VALUES
 $do_nothing or $dbh->do('START TRANSACTION') or die $dbh->errstr;
 if (defined ($vlanid)) {
 	# delete all MAC addresses which reference this vlanid
-	$query = "DELETE macaddress FROM macaddress INNER JOIN (view_vlaninterface_details_by_custid vi) ON (macaddress.virtualinterfaceid = vi.virtualinterfaceid AND vi.vlanid = ?)";
+	$query = "
+		DELETE m FROM macaddress AS m
+		INNER JOIN virtualinterface vi ON m.virtualinterfaceid = vi.id
+		INNER JOIN vlaninterface vli ON (vli.virtualinterfaceid = vi.id AND vli.vlanid = ?)
+	";
 	$do_nothing or $dbh->do($query, undef, $vlanid) or die "$dbh->errstr\n";
 } else {
 	$do_nothing or $dbh->do('DELETE FROM macaddress') or die $dbh->errstr;

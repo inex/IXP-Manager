@@ -145,7 +145,7 @@ class LogoController extends Controller
         $img->save( $saveTo );
 
         AlertContainer::push( "Logo uploaded.", Alert::SUCCESS );
-        return redirect( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ 'cust' => $c->id ] ) : Redirect::to( route( "dashboard@index" ) ) );
+        return redirect( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ 'cust' => $c->id ] ) : route( "dashboard@index" ) );
     }
 
     /**

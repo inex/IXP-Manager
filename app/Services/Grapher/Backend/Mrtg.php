@@ -182,7 +182,8 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                         $maxPiID = $pi->id;
                     }
 
-                    if( !$pi->isConnectedOrQuarantine() || !( $pi->switchPort->switcher->active && $pi->switchPort->switcher->poll ) ) {
+                    // per inex/IXP-Manager##746 - added ifIndex check to skip manually added dummy ports
+                    if( !$pi->isConnectedOrQuarantine() || !$pi->switchPort->ifIndex || !( $pi->switchPort->switcher->active && $pi->switchPort->switcher->poll ) ) {
                         continue;
                     }
 

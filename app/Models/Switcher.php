@@ -374,7 +374,7 @@ class Switcher extends Model
      *
      * @throws
      */
-    public function snmpPollSwitchPorts( $host, $logger = false, bool|array $result = false, bool $nosave = false ): Switcher
+    public function snmpPollSwitchPorts( $host, $logger = false, bool|array &$result = false, bool $nosave = false ): Switcher
     {
         // clone the ports currently known to this switch as we'll be playing with this array
         $existingPorts = clone $this->switchPorts;

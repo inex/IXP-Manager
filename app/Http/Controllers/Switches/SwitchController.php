@@ -603,8 +603,17 @@ class SwitchController extends EloquentController
     public function configuration( Request $r ) : View
     {
         $infra  = $location = $speed = $switch = $vlan = $summary = false;
+
         $speeds = PhysicalInterface::selectRaw( 'DISTINCT physicalinterface.speed AS speed' )
             ->orderBy( 'speed' )->get()->pluck( 'speed' )->toArray();
+
+        $rate_limits = PhysicalInterface::selectRaw( 'DISTINCT physicalinterface.rate_limit AS rate_limit' )
+            ->whereNotNull( 'rate_limit' )
+            ->orderBy( 'rate_limit' )->get()->pluck( 'rate_limit' )->toArray();
+
+        $speeds = array_merge( $speeds, $rate_limits );
+        asort( $speeds, SORT_NUMERIC );
+        $speeds = array_values($speeds);
 
         if( $r->switch !== null ) {
             if(  $switch = Switcher::find( $r->switch ) ) {
@@ -758,7 +767,7 @@ class SwitchController extends EloquentController
             $this->object->os =             $platform->getOs();
             $this->object->osDate =         $osDate;
             $this->object->osVersion =      $platform->getOsVersion();
-            $this->object->serialNumber =   $platform->getSerialNumber();
+            $this->object->serialNumber =   $platform->getSerialNumber() ?? '(not implemented)';
             $this->object->save();
             $r->session()->remove( "snmp-platform" );
         }

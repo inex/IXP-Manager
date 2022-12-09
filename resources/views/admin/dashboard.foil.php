@@ -195,6 +195,17 @@
                                     </tr>
                                 </tbody>
                             </table>
+
+                            <?php if( count( $t->stats[ "rateLimitedPorts" ] ) ): ?>
+                                <p>
+                                    <i>These statistics take account of rate limited / partial speed ports. See <a href="<?= route('admin@dashboard') ?>#rate_limited_details">
+                                            here for details</a>.
+                                    </i>
+                                </p>
+                            <?php endif; ?>
+
+
+
                         </div>
                     <?php endif; ?>
 
@@ -525,6 +536,55 @@
                         </div>
                     <?php endif; ?>
 
+
+
+
+                    <?php if( count( $t->stats[ "rateLimitedPorts" ] ) ): ?>
+                        <div class="tw-my-12">
+                            <h4 class="tw-mb-6" id="rate_limited_details">
+                                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Rate Limited / Partial Speed Ports
+                            </h4>
+
+                            <p>
+                                The above statistics take account of the following rate limited ports. By <i>take account of</i> we
+                                mean that if a 10Gb port is rate limited as 2Gb then the above statistics reflect it as 2 x 1Gb
+                                ports and the 10Gb is ignored.
+                            </p>
+
+                            <table class="table table-sm table-hover table-striped tw-shadow-md tw-rounded-sm">
+                                <thead class="tw-text-sm">
+                                <tr>
+                                    <th>
+                                        Physical Port Speed
+                                    </th>
+                                    <th class="tw-text-sm">
+                                        Rate Limit
+                                    </th>
+                                    <th class="tw-text-sm">
+                                        Account For As
+                                    </th>
+                                </tr>
+                                </thead>
+
+                                <tbody class="tw-text-sm">
+                                <?php foreach( $t->stats[ "rateLimitedPorts"] as $rateLimitedPorts => $rlp ): ?>
+                                    <tr>
+                                        <td>
+                                            <?= $t->scaleSpeed( $rlp['physint']) ?>
+                                        </td>
+                                        <td>
+                                            <?= $t->scaleSpeed( $rlp['numports'] * $rlp['rlspeed'] ) ?>
+                                        </td>
+                                        <td>
+                                            <?= $rlp['numports'] ?> x <?= $t->scaleSpeed( $rlp['rlspeed']) ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
 
 
 

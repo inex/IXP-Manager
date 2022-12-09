@@ -47,6 +47,7 @@ class Google2FA
     protected $excludes = [
         '2fa@configure',
         '2fa@enable',
+        'login@logout',
     ];
 
     /**

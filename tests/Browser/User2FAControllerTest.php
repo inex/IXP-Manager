@@ -143,7 +143,7 @@ class User2FAControllerTest extends DuskTestCase
             $browser->type('password', $userPassword)
                 ->press('Disable 2FA')
                 ->assertPathIs('/profile')
-                ->assertSee('2FA successfully disable.');
+                ->assertSee('2FA successfully disabled.');
 
             /**
              * Logout and set .env to force user to create 2fa

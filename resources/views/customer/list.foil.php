@@ -53,7 +53,7 @@
 
         <div class="btn-group btn-group-sm">
             <button class="btn btn-white btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?= $t->tag ? 'Tag: ' . $t->tags[ $t->tag ][ 'display_as' ] : "Limit to tag..." ?>
+                <?= $t->tag ? 'Tag: ' . $t->ee( $t->tags[ $t->tag ][ 'display_as' ] ) : "Limit to tag..." ?>
             </button>
 
             <ul class="dropdown-menu dropdown-menu-right">
@@ -64,7 +64,7 @@
                 <div class="dropdown-divider"></div>
                 <?php foreach( $t->tags as $tag ): ?>
                     <a class="dropdown-item <?= $t->tag !== $tag[ 'id' ] ?: "active" ?>"href="<?= route( 'customer@list' , [ 'tag' => $tag[ 'id' ] ] ) ?>">
-                        <?= $tag[ 'display_as' ] ?>
+                        <?= $t->ee( $tag[ 'display_as' ] ) ?>
                     </a>
                 <?php endforeach; ?>
             </ul>

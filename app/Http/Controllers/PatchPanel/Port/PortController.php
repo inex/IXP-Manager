@@ -93,16 +93,19 @@ class PortController extends Controller
         $cabinet            = is_numeric( $r->cabinet   )       ? (int) $r->cabinet  : 0;
         $cabletype          = is_numeric( $r->type      )       ? (int) $r->type     : 0;
         $availableForUse    = (bool) $r->available;
+        $prewiredOnly       = (bool) $r->prewiredOnly;
 
         $summary = "Filtered for: ";
         $summary .= $location ? Location::find( $location )->name : 'all locations';
         $summary .= ', ' . ( $cabinet ? Cabinet::find( $cabinet )->name : 'all cabinets' );
         $summary .= ', ' . ( $cabletype ? PatchPanel::$CABLE_TYPES[ $cabletype ] : 'all cable types' );
-        $summary .= ( $availableForUse ? ', available for use.' : '.' );
+        $summary .= ( $availableForUse ? ', available for use' : '' );
+        $summary .= ( $prewiredOnly ? ', prewired only' : '' );
+        $summary .= '.';
 
         return view( 'patch-panel-port/index' )->with([
             'patchPanelPorts'               => PatchPanelPortAggregator::list(
-                null, true, $location, $cabinet, $cabletype, $availableForUse
+                null, true, $location, $cabinet, $cabletype, $availableForUse, $prewiredOnly
             ),
             'pp'                            => false,
             'summary'                       => $summary,

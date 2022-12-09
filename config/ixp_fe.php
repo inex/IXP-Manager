@@ -51,11 +51,8 @@ return [
     |   -  %l  - the customer's ASN ($cust->getAutsys()): " - ASXXX"
     |
     | The %j,k,l options exist so that the extra characters can be excluded if the customer does not have an ASN (e.g. Associate member)
-    |
-    | Default (as of v4.1):
-    | "%a [AS%j]"
     */
-    'customer_name_format' => "%a (AS%i)",
+    'customer_name_format' => env( 'IXP_FE_CUSTOMER_NAME_FORMAT', "%a (AS%i)" ),
 
     /*
      * Customer or Member?
@@ -95,6 +92,7 @@ return [
             'net-info'                  => env( 'IXP_FE_FRONTEND_DISABLED_NETINFO',           true ),
             'peering-manager'           => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MANAGER',   false ),
             'peering-matrix'            => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MATRIX',    false ),
+            'phpinfo'                   => env( 'IXP_FE_FRONTEND_DISABLED_PHPINFO',           true  ),
             'ripe-atlas'                => true, // not ready for use yet
             'rs-prefixes'               => env( 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',       true  ),
             'rs-filters'                => env( 'IXP_FE_FRONTEND_DISABLED_RS_FILTERS',        true  ),
@@ -236,4 +234,31 @@ return [
     'vlaninterfaces' => [
         'hostname_required'  => env( 'IXP_FE_VLANINTERFACES_HOSTNAME_REQUIRED', true ),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | IX-F Sources
+    |--------------------------------------------------------------------------
+    |
+    */
+    'ixfsources' => [
+        'INEX LAN1' => [ 'url' => 'https://www.inex.ie/ixp/api/v4/member-export/ixf/1.0', 'ixid' => 1 ],
+        'INEX LAN2' => [ 'url' => 'https://www.inex.ie/ixp/api/v4/member-export/ixf/1.0', 'ixid' => 2 ],
+        'INEX LAN3' => [ 'url' => 'https://www.inex.ie/ixp/api/v4/member-export/ixf/1.0', 'ixid' => 3 ],
+
+        'LONAP' => [ 'url' => 'https://portal.lonap.net/api/v4/member-export/ixf/1.0', 'ixid' => 1 ],
+
+        'LINX LON1' => [ 'url' => 'https://portal.linx.net/members.json',       'ixid' => 0 ],
+        'LINX LON2' => [ 'url' => 'https://portal.linx.net/members.json',       'ixid' => 1 ],
+        'LINX Manchester' => [ 'url' => 'https://portal.linx.net/members.json', 'ixid' => 2 ],
+        'LINX Scotland' => [ 'url' => 'https://portal.linx.net/members.json',   'ixid' => 3 ],
+        'LINX NoVA' => [ 'url' => 'https://portal.linx.net/members.json',       'ixid' => 4 ],
+        'LINX Wales' => [ 'url' => 'https://portal.linx.net/members.json',      'ixid' => 5 ],
+        'LINX JED-IX' => [ 'url' => 'https://portal.linx.net/members.json',     'ixid' => 6 ],
+        'LINX ManxIX' => [ 'url' => 'https://portal.linx.net/members.json',     'ixid' => 7 ],
+
+    ],
+
+
+
 ];

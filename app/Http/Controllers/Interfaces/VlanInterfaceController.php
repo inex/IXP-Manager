@@ -237,14 +237,6 @@ class VlanInterfaceController extends Common
 
         DB::beginTransaction();
         $vli    = VlanInterface::make();
-        foreach( $source->layer2addresses as $l2a ) {
-            Layer2Address::create(
-                [
-                    'vlan_interface_id' => $vli->id,
-                    'mac'               => $l2a->mac
-                ]
-            );
-        }
 
         if( !$this->setIp( $r, $v, $vli, false ) || !$this->setIp( $r, $v, $vli, true ) ) {
             // Rollback if there is issue to avoid to insert the data created above
@@ -254,6 +246,16 @@ class VlanInterfaceController extends Common
 
         $vli->fill( $r->all() );
         $vli->save();
+
+        foreach( $source->layer2addresses as $l2a ) {
+            Layer2Address::create(
+                [
+                    'vlan_interface_id' => $vli->id,
+                    'mac'               => $l2a->mac
+                ]
+            );
+        }
+
         DB::commit();
 
         // add a warning if we're filtering on irrdb but have not configured one for the customer
