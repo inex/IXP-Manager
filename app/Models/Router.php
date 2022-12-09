@@ -526,6 +526,11 @@ class Router extends Model
      */
     public function canUpdate( bool $lock = false ): ?bool
     {
+        // if we're paused, we don't need to check anything else
+        if( $this->pause_updates ) {
+            return false;
+        }
+
         $canUpdate = false;
 
         try {
