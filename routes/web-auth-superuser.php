@@ -124,8 +124,12 @@ Route::group( [ 'prefix' => 'router' ], function() {
     Route::get(     'view/{router}',    'RouterController@view'     )->name( 'router@view'   );
     Route::get(     'gen-config/{id}',  'RouterController@genConfig');
     Route::delete(  'delete/{router}',  'RouterController@delete'   )->name( 'router@delete'  );
+    Route::post(    'pause/{router}',   'RouterController@pause'    )->name( 'router@pause'   );
+    Route::post(    'resume/{router}',  'RouterController@resume'   )->name( 'router@resume'  );
     Route::post(   'store',             'RouterController@store'    )->name( 'router@store'   );
     Route::put(    'update/{router}',   'RouterController@update'   )->name( 'router@update'  );
+
+    Route::post(   'reset-update-timestamps/{router}', 'RouterController@resetUpdateTimestamps'    )->name( 'router@resetUpdateTimestamps'   );
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

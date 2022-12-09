@@ -216,4 +216,59 @@ class RouterController extends Controller
         AlertContainer::push( 'Router deleted.', Alert::SUCCESS );
         return Redirect::to( route( "router@list" ) );
     }
+
+    /**
+     * Pause a router
+     *
+     * @param Router $router
+     *
+     * @return redirectresponse
+     *
+     * @throws
+     */
+    public function pause( Router $router): RedirectResponse
+    {
+        $router->pause_updates = true;
+        $router->save();
+
+        AlertContainer::push( 'Automatic updates for router ' . $router->handle . ' paused.', Alert::SUCCESS );
+        return Redirect::to( route( "router@list" ) );
+    }
+
+    /**
+     * Resume a router
+     *
+     * @param Router $router
+     *
+     * @return redirectresponse
+     *
+     * @throws
+     */
+    public function resume( Router $router): RedirectResponse
+    {
+        $router->pause_updates = false;
+        $router->save();
+
+        AlertContainer::push( 'Automatic updates for router ' . $router->handle . ' resumed.', Alert::SUCCESS );
+        return Redirect::to( route( "router@list" ) );
+    }
+
+    /**
+     * Reset update timestamps
+     *
+     * @param Router $router
+     *
+     * @return redirectresponse
+     *
+     * @throws
+     */
+    public function resetUpdateTimestamps( Router $router): RedirectResponse
+    {
+        $router->last_update_started = null;
+        $router->last_updated        = null;
+        $router->save();
+
+        AlertContainer::push( 'Update timestamps for router ' . $router->handle . ' set to null.', Alert::SUCCESS );
+        return Redirect::to( route( "router@list" ) );
+    }
 }
