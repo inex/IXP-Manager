@@ -70,7 +70,7 @@ class PhysicalInterfaceController extends Common
         return view( 'interfaces/physical/list' )->with([
             'pis'   => PhysicalInterface::selectRaw(
                 'pi.id AS id, pi.speed AS speed, pi.duplex AS duplex, pi.status AS status,
-                    pi.notes AS notes, pi.autoneg AS autoneg,
+                    pi.notes AS notes, pi.autoneg AS autoneg, pi.rate_limit as rate_limit,
                     c.name AS customer, c.id AS custid,
                     s.name AS switch, s.id AS switchid,
                     vi.id AS vintid,
@@ -205,6 +205,7 @@ class PhysicalInterfaceController extends Common
             'status'        => $r->old( 'status',        $pi->status                ),
             'speed'         => $r->old( 'speed',         $pi->speed                 ),
             'duplex'        => $r->old( 'duplex',        $pi->duplex                ),
+            'rate_limit'    => $r->old( 'rate_limit',    $pi->rate_limit            ),
             'autoneg'       => $r->old( 'autoneg',       $pi->autoneg               ),
             'notes'         => $r->old( 'notes',         $pi->notes                 ),
         ];
@@ -284,7 +285,7 @@ class PhysicalInterfaceController extends Common
         if( $related = $pi->relatedInterface() ) {
             $related->speed =    $r->speed;
             $related->status =   $r->status;
-            $related->duplex =    $r->duplex;
+            $related->duplex =   $r->duplex;
             $related->save();
         }
 

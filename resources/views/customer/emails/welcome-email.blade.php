@@ -42,7 +42,7 @@ Speed:           {{$pi->speed()}} ({{$pi->duplex}} duplex)
 ```
 
 @foreach( $vi->vlanInterfaces as $vli )
-@php ($vlanid = $vli->vlan_id)
+@php ($vlanid = $vli->vlanid)
 
 **{{$vli->vlan->name}}**
 

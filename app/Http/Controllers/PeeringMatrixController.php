@@ -218,6 +218,14 @@ class PeeringMatrixController extends Controller
             return $apeers;
         }
 
+        // the number of days back we look is not a perfect science. generally, the bigger the interface / more
+        // traffic, the less likely we'll find bgp sessions recently via sflow sampling.
+        // 28 days seems good in practice but his can be changed in config/ixp.php
+        $lookback_days = (int)config( 'ixp.peering-matrix.lookback_days' );
+        if( !is_int( $lookback_days ) || $lookback_days < 1 ) {
+            $lookback_days = 30;
+        }
+
         // we've added "bs.timestamp >= NOW() - INTERVAL 7 DAY" below as we don't
         // dump old date (yet) and the time to run the query is O(n) on number
         // of rows...
@@ -237,7 +245,7 @@ class PeeringMatrixController extends Controller
             ->leftJoin( 'cust AS cs', 'cs.id', 'vis.custid' )
             ->leftJoin( 'cust AS cd', 'cd.id', 'vid.custid' )
             ->leftJoin( 'vlan', 'vlan.id', 'srcip.vlanid' )
-            ->whereRaw( 'bs.last_seen >= NOW() - INTERVAL 7 DAY' )
+            ->whereRaw( 'bs.last_seen >= NOW() - INTERVAL ' . $lookback_days . ' DAY' )
             ->where( 'bs.protocol', $protocol )
             ->where( 'bs.packetcount', '>=', 1 )
             ->where( 'vlan.id', $vlan )

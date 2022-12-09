@@ -31,18 +31,18 @@ use IXP\Models\PatchPanelPort;
 /**
  * IXP\Models\Aggregators\PatchPanelPortAggregator
  *
- * @property-read \IXP\Models\Customer $customer
- * @property-read PatchPanelPort $duplexMasterPort
+ * @property-read \IXP\Models\Customer|null $customer
+ * @property-read PatchPanelPort|null $duplexMasterPort
  * @property-read Collection|PatchPanelPort[] $duplexSlavePorts
  * @property-read int|null $duplex_slave_ports_count
- * @property-read \IXP\Models\PatchPanel $patchPanel
+ * @property-read \IXP\Models\PatchPanel|null $patchPanel
  * @property-read Collection|\IXP\Models\PatchPanelPortFile[] $patchPanelPortFiles
  * @property-read int|null $patch_panel_port_files_count
  * @property-read Collection|\IXP\Models\PatchPanelPortFile[] $patchPanelPortFilesPublic
  * @property-read int|null $patch_panel_port_files_public_count
  * @property-read Collection|\IXP\Models\PatchPanelPortHistory[] $patchPanelPortHistories
  * @property-read int|null $patch_panel_port_histories_count
- * @property-read \IXP\Models\SwitchPort $switchPort
+ * @property-read \IXP\Models\SwitchPort|null $switchPort
  * @method static Builder|PatchPanelPort masterPort()
  * @method static Builder|PatchPanelPortAggregator newModelQuery()
  * @method static Builder|PatchPanelPortAggregator newQuery()
@@ -70,12 +70,16 @@ class PatchPanelPortAggregator extends PatchPanelPort
      *
      * @return Collection
      */
-    public static function list( int $ppid = null, bool $advanced = false, int $location = null, int $cabinet = null, int $cabletype = null, bool $availableForUse = false ): Collection
+    public static function list( int $ppid = null, bool $advanced = false, int $location = null, int $cabinet = null, int $cabletype = null, bool $availableForUse = false, bool $prewiredOnly = false ): Collection
     {
         return self::selectRaw( '
             ppp.*,
             count( pppf.id ) AS files, count( ppph.id ) AS histories,
-            pp.name as ppname, pp.port_prefix AS prefix,
+            pp.name as ppname,
+            pp.colo_reference as ppcolo_reference,
+            pp.port_prefix AS prefix,
+            pp.cable_type AS ppcable_type,
+            pp.colo_pp_type,
             sp.name AS spname,
             s.name AS sname, c.abbreviatedName AS cname,
             count( ppps.id ) AS nbslave, 
@@ -104,6 +108,9 @@ class PatchPanelPortAggregator extends PatchPanelPort
             } )
             ->when( $cabletype , function( Builder $q, $cabletype ) {
                 return $q->where('pp.cable_type', $cabletype );
+            } )
+            ->when( $prewiredOnly, function( Builder $q, $prewired ) {
+                return $q->where( 'ppp.state', '=', PatchPanelPort::STATE_PREWIRED );
             } )
             ->when( $availableForUse , function( Builder $q ) {
                 return $q->whereIn('ppp.state', PatchPanelPort::$AVAILABLE_STATES );

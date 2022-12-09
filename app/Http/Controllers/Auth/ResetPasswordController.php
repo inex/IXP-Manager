@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\Auth;
 
 use Former, Hash;
 
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Http\{
     JsonResponse,
     RedirectResponse
@@ -119,7 +120,7 @@ class ResetPasswordController extends Controller
         return [
             'token'     => 'required',
             'username'  => 'required|string',
-            'password'  => 'required|confirmed|min:8',
+            'password'  => [ 'required', 'confirmed', Password::min(8)->letters()->mixedCase()->numbers() ],
         ];
     }
 

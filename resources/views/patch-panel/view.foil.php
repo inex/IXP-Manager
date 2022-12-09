@@ -140,6 +140,16 @@
                             <tr>
                                 <td>
                                     <b>
+                                        Co-lo Patch Panel Type:
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $pp->coloPpType() ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>
                                         Created:
                                     </b>
                                 </td>

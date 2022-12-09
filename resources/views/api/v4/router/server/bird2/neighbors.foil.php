@@ -80,6 +80,9 @@ int set allas;
 {
 
 <?php
+    // IXP Manauger UI based filters:
+    echo $t->insert( 'api/v4/router/server/bird2/f_ui_import', [ 'int' => $int ] );
+
     // We allow per customer AS headers here which IXPs can define as skinned files.
     // For example, to solve a Facebook issue, INEX created the following:
     //     resources/skins/inex/api/v4/router/server/bird2/f_import_as32934.foil.php
@@ -236,17 +239,19 @@ int set allas;
 filter f_export_as<?= $int['autsys'] ?>
 {
 
+    # we should strip our own communities which we used for the looking glass
+    bgp_large_community.delete( [( routeserverasn, *, * )] );
+    bgp_community.delete( [( routeserverasn, * )] );
+
 <?php
+    // IXP Manauger UI based filters:
+    echo $t->insert( 'api/v4/router/server/bird2/f_ui_export', [ 'int' => $int ] );
+
     // We allow per customer AS export code here which IXPs can define as skinned files.
     // For example, to solve a Facebook issue, INEX created the following:
     //     resources/skins/api/v4/router/server/bird2/f_export_as32934.foil.php
     echo $t->insertif( 'api/v4/router/server/bird2/f_export_as' . $int['autsys'] );
 ?>
-
-
-    # we should strip our own communities which we used for the looking glass
-    bgp_large_community.delete( [( routeserverasn, *, * )] );
-    bgp_community.delete( [( routeserverasn, * )] );
 
     # default position is to accept:
     accept;

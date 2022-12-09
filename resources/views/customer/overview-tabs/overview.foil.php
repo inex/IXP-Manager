@@ -156,6 +156,24 @@
                             <?php endif; ?>
                         </td>
                     </tr>
+                    <?php if( $t->rsclient ): ?>
+                        <tr>
+                            <td>
+                                <b>Route Server Filters</b>
+                            </td>
+                            <td>
+                                <a href="<?= route( 'rs-filter@list', [ 'cust' => $c ] ) ?>">
+                                    <?= $c->routeServerFiltersInProduction()->count() ?>
+                                </a>
+                                <?php if( $c->routeServerFiltersInProduction()->count() ): ?>
+                                    <span class="ml-4 badge badge-info">
+                                        Active Filters
+                                    </span>
+                                <?php endif; ?>
+
+                            </td>
+                            <?php endif; ?>
+                        </tr>
                     <tr>
                         <?php if( $c->typeAssociate() ): ?>
                             <td colspan="2"></td>

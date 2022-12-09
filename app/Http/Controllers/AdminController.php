@@ -35,6 +35,7 @@ use IXP\Models\{Aggregators\VirtualInterfaceAggregator,
     Customer,
     Infrastructure,
     Location,
+    PhysicalInterface,
     Vlan,
     VlanInterface};
 
@@ -100,6 +101,11 @@ class AdminController extends Controller
             $custsByInfra = [];
             $peeringCusts = [];
 
+            // for rate limited ports:
+            $rateLimitedPorts = [];
+            $pispeeds = PhysicalInterface::$SPEED;
+            krsort( $pispeeds, SORT_NUMERIC );
+
 
             foreach( $vis as $vi ) {
                 $location = $vi[ 'locationname' ];
@@ -132,10 +138,27 @@ class AdminController extends Controller
                     $custsByLocation[ $location ]['cabinets'][$cabinet][ 'custs' ][] = $custid;
                 }
 
-                if ( !isset($speeds[ $vi[ 'speed' ] ])) {
-                    $speeds[ $vi[ 'speed' ] ] = 1;
+                // Speeds have gotten more complex now that we've add rate limiters, sigh.
+                // We're not going to go around the houses here to solve odd services - speeds
+                // should be a multiple of physical speeds.
+                $speed    = $vi[ 'speed' ];
+                $numports = 1;
+
+                if( $vi[ 'rlspeed' ] ) {
+                    foreach( array_keys( $pispeeds ) as $kspeed ) {
+                        if( $vi[ 'rlspeed' ] >= $kspeed ) {
+                            $speed = $kspeed;
+                            $numports = round( $vi[ 'rlspeed' ] / $kspeed );
+                            $rateLimitedPorts[] = [ 'physint' => $vi['speed'], 'numports' => $numports, 'rlspeed' => $speed ];
+                            break;
+                        }
+                    }
+                }
+
+                if ( !isset($speeds[ $speed ])) {
+                    $speeds[ $speed ] = $numports;
                 } else {
-                    $speeds[ $vi[ 'speed' ] ]++;
+                    $speeds[ $speed ] += $numports;
                 }
 
                 if ( !isset($custsByInfra[ $infrastructure ])) {
@@ -159,10 +182,10 @@ class AdminController extends Controller
                     $byLocation[ $location ]['cabinets'][ $cabinet ] = [ 'id' => $vi[ 'cabinetid' ]  ];
                 }
 
-                if ( !isset($byLocation[ $vi[ 'locationname' ] ][ $vi[ 'speed' ] ])) {
-                    $byLocation[ $location ][ $vi[ 'speed' ] ] = 1;
+                if ( !isset($byLocation[ $vi[ 'locationname' ] ][ $speed ])) {
+                    $byLocation[ $location ][ $speed ] = $numports;
                 } else {
-                    $byLocation[ $location ][ $vi[ 'speed' ] ]++;
+                    $byLocation[ $location ][ $speed ] += $numports;
                 }
 
                 if ( !isset($byLocation[ $location ]['cabinets'][ $cabinet ][ $vi[ 'speed' ] ])) {
@@ -175,10 +198,10 @@ class AdminController extends Controller
                     $byLan[ $infrastructure ] = [ 'id' => $vi[ 'infrastructureid' ] ];
                 }
 
-                if ( !isset( $byLan[ $infrastructure ][ $vi[ 'speed' ] ] ) ) {
-                    $byLan[ $infrastructure ][ $vi[ 'speed' ] ] = 1;
+                if ( !isset( $byLan[ $infrastructure ][ $speed ] ) ) {
+                    $byLan[ $infrastructure ][ $speed ] = $numports;
                 } else {
-                    $byLan[ $infrastructure ][ $vi[ 'speed' ] ]++;
+                    $byLan[ $infrastructure ][ $speed ] += $numports;
                 }
             }
 
@@ -195,6 +218,7 @@ class AdminController extends Controller
             $cTypes[ 'byIxp' ]              = $byIxp;
             $cTypes[ 'custsByInfra' ]       = $custsByInfra;
             $cTypes[ 'peeringCusts' ]       = $peeringCusts;
+            $cTypes[ 'rateLimitedPorts' ]   = $rateLimitedPorts;
 
             // FROM of query is vlaninterface so should be current:
             $cTypes[ 'usage' ] = VlanInterface::selectRaw(

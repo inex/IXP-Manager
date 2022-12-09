@@ -60,7 +60,7 @@ class Password extends FormRequest
     {
         return [
             'current_password'      => 'required|string',
-            'new_password'          => 'required|string|min:8|max:255|different:current_password',
+            'new_password'          => [ 'required', 'max:255', 'different:current_password', \Illuminate\Validation\Rules\Password::min(8)->letters()->mixedCase()->numbers() ],
             'confirm_password'      => 'required|same:new_password',
         ];
     }

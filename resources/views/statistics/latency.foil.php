@@ -10,7 +10,7 @@
             <?= $t->c->getFormattedName() ?>
         </a>
        /
-        <a href="<?= route( 'statistics@member', [ 'id' => $t->c->id ] ) ?>" >
+        <a href="<?= route( 'statistics@member', [ 'cust' => $t->c->id ] ) ?>" >
             Statistics
         </a>
         /
@@ -24,7 +24,7 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <?php if( Auth::check() && !$isSuperUser ): ?>
-        <a class="btn btn-white" href="<?= route( 'statistics@member', [ 'id' => $t->c->id ] ) ?>">All Ports</a>
+        <a class="btn btn-white" href="<?= route( 'statistics@member', [ 'cust' => $t->c->id ] ) ?>">All Ports</a>
     <?php endif; ?>
 <?php $this->append() ?>
 

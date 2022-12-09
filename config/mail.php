@@ -59,7 +59,7 @@ return [
             'transport' => 'smtp',
             'host' => env('MAIL_HOST', 'localhost'),
             'port' => env('MAIL_PORT', 25),
-            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'encryption' => env('MAIL_ENCRYPTION', false),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
@@ -80,7 +80,7 @@ return [
 
         'sendmail' => [
             'transport' => 'sendmail',
-            'path' => '/usr/sbin/sendmail -bs',
+            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -t'),
         ],
 
         'log' => [

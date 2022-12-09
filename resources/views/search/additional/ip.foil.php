@@ -24,7 +24,7 @@
                     <?php if( $vli->ipv4address ): ?>
                         <li>
                             <a href="<?= route( 'vlan-interface@edit' , [ 'vli' => $vli->id ] ) ?>">
-                                <span class="badge badge-<?php if( $vli->ipv6enabled ): ?>success<?php else: ?>danger<?php endif; ?>">
+                                <span class="badge badge-<?php if( $vli->ipv4enabled ): ?>success<?php else: ?>danger<?php endif; ?>">
                                     <?= $t->ee( $vli->ipv4address->address ) ?>
                                 </span>
                             </a>

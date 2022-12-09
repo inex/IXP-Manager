@@ -80,10 +80,13 @@
                                     ?>
                                 </td>
                                 <td>
-                                    <?= $t->scaleBits( $vi[ 'speed' ] * 1000 * 1000, 0 ) ?>
+                                    <?= $t->scaleBits( ( $vi['rate_limit'] ?: $vi[ 'speed' ] ) * 1000 * 1000, 0 ) ?>
+                                    <?php if( $vi['rate_limit'] ): ?>
+                                        <span class="badge badge-info" data-toggle="tooltip" title="Rate Limited">RL</span>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
-                                    <?= $vi[ 'speed' ] ?>
+                                    <?= $vi['rate_limit'] ?: $vi[ 'speed' ] ?>
                                 </td>
                             <?php else: ?>
                                 <td></td>

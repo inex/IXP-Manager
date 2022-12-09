@@ -6,12 +6,12 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Route Server Filtering <?= $isSuperUser ? ' for ' . $t->c->name : '' ?>
+    Route Server Filtering <?= $isSuperUser ? ' for <a href="' . route( 'customer@overview', $t->c ) . '">' . $t->c->name . '</a>' : '' ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <?php if( !$isCustUser ): ?>
-        <div class="btn-group btn-group-sm" role="group">
+        <div class="btn-group btn-group-sm" role="group" xmlns="http://www.w3.org/1999/html">
             <a class="btn btn-white" href="<?= route('rs-filter@create', [ "cust" => $t->c->id ] ) ?>">
                 <span class="fa fa-plus"></span>
             </a>
@@ -32,11 +32,58 @@
                         </div>
                         <div class="col-sm-12 d-flex">
                             <b class="mr-auto my-auto">
-                                If you want to grant your privileges click on the following link: <a href="<?= route( "rs-filter@grant-cust-user" ) ?>">here</a>
+                                As a read-only user, you can only view the rules below and cannot alter them. Please contact a member of your organisation with read/write access.
                             </b>
                         </div>
                     </div>
                 </div>
+            <?php endif; ?>
+
+
+            <?php if( $t->in_sync ): ?>
+                <div class="alert alert-success mt-4" role="alert">
+                    <div class="d-flex align-items-center">
+                        <div class="text-center">
+                            <i class="fa <?= $t->rsFilters->count() ? 'fa-check' : 'fa-info-circle' ?> fa-2x"></i>
+                        </div>
+                        <div class="col-sm-12 d-flex">
+                            <b class="mr-auto my-auto">
+                                <?= $t->rsFilters->count() ? 'Your filters are in sync with our production configuration.' : 'You have no filters in production.' ?>
+                            </b>
+                        </div>
+                    </div>
+                </div>
+            <?php else: ?>
+                <div class="alert alert-warning mt-4" role="alert">
+                    <div class="d-flex align-items-center">
+                        <div class="text-center">
+                            <i class="fa fa-exclamation fa-2x"></i>
+                        </div>
+                        <div class="col-sm-12 d-flex">
+                            <b class="mr-auto my-auto">
+                                Your filters are not in sync with our production configuration. You can continue editing or:
+                            </b>
+                            <div class="pull-right d-flex">
+                                <form id="form-revert" action="<?= route( 'rs-filter@revert', [ 'cust' => $t->c->id ] ) ?>" method="post">
+                                    <input type="hidden" name="_token" value="<?= csrf_token() ?>" />
+                                    <button type="submit" class="btn btn-warning mr-4" id="submit-revert"  href="  title="Revert Changes">
+                                        Revert
+                                    </button>
+                                </form>
+                                <form id="form-commit" action="<?= route( 'rs-filter@commit', [ 'cust' => $t->c->id ] ) ?>" method="post">
+                                    <input type="hidden" name="_token" value="<?= csrf_token() ?>" />
+                                    <button type="submit" class="btn btn-warning mr-4" id="submit-commit"  title="Commit Changes to Production">
+                                        Commit
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <?php if( !$t->in_sync ): ?>
+                <h3 class="my-4">Staged Rules (Deploy via Commit above)</h3>
             <?php endif; ?>
 
             <?php if( $t->rsFilters->count() ): ?>
@@ -78,7 +125,7 @@
                     <tbody>
                         <?php foreach( $t->rsFilters as $index => $rsf ):
                             /** @var $rsf \IXP\Models\RouteServerFilter */?>
-                            <tr>
+                            <tr class="<?= $rsf->enabled ?: 'tw-italic tw-line-through' ?>">
                                 <td>
                                     <?php if( $isSuperUser ): ?>
                                         <?php if( $rsf->peer ): ?>
@@ -148,18 +195,12 @@
                                             <a class="btn btn-white delete-rsf" id="delete-rsf-<?= $rsf->id ?>" data-object-id="<?=  $rsf->id ?>"  href="<?= route( 'rs-filter@delete' , [ 'rsf' => $rsf->id ]  )  ?>" title="Delete">
                                                 <i class="fa fa-trash"></i>
                                             </a>
-                                            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <h6 class="dropdown-header">
-                                                    Sorting Actions
-                                                </h6>
-                                                <a class="dropdown-item <?= $t->rsFilters->first()->id !== $rsf->id ?: "disabled" ?>" href="<?= route( "rs-filter@change-order", [ "rsf" => $rsf->id, "up" => 1 ] ) ?>">
-                                                    Move Up
-                                                </a>
-                                                <a class="dropdown-item <?= $t->rsFilters->last()->id !== $rsf->id ?: "disabled"  ?>" href="<?= route( "rs-filter@change-order", [ "rsf" => $rsf->id , "up" => 0 ] ) ?>">
-                                                    Move Down
-                                                </a>
-                                            </div>
+                                            <a class="btn btn-white <?= $t->rsFilters->first()->id !== $rsf->id ?: "disabled" ?>" href="<?= route( "rs-filter@change-order", [ "rsf" => $rsf->id, "up" => 1 ] ) ?>">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </a>
+                                            <a class="btn btn-white <?= $t->rsFilters->last()->id !== $rsf->id ?: "disabled"  ?>" href="<?= route( "rs-filter@change-order", [ "rsf" => $rsf->id , "up" => 0 ] ) ?>">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </a>
                                         <?php endif; ?>
                                     </div>
                                 </td>
@@ -175,18 +216,143 @@
                         </div>
                         <div class="col-sm-12 d-flex">
                             <b class="mr-auto my-auto">
-                                No route server filters have been defined.
+                                <?= $t->in_sync ? 'No route server filters have been defined.' : 'Commit now to remove all filters from production.' ?>
                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                 <a class="btn btn-sm btn-white" href="<?= route( "rs-filter@create", [ "cust" => $t->c->id ] ) ?>">
-                                    Create One
+                                    Create Route Filter
                                 </a>
                             </b>
                         </div>
                     </div>
                 </div>
             <?php endif; ?>
+
+
+            <?php if( !$t->in_sync ): ?>
+                <h3 class="my-4">Rules in Production</h3>
+
+                <?php if( $t->rsFiltersProd->count() ): ?>
+                    <table id='table-list' class="table table-striped table-responsive-ixp-with-header" width="100%">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>
+                                Peer
+                            </th>
+                            <th>
+                                LAN
+                            </th>
+                            <th>
+                                Protocol
+                            </th>
+                            <th>
+                                Advertised Prefix
+                            </th>
+                            <th>
+                                Advertise Action
+                            </th>
+                            <th>
+                                Received Prefix
+                            </th>
+                            <th>
+                                Receive Action
+                            </th>
+                            <th>
+                                Enabled
+                            </th>
+                            <th>
+                                Order
+                            </th>
+                            <th></th>
+                        </tr>
+                        <thead>
+                        <tbody>
+                        <?php foreach( $t->rsFiltersProd as $index => $rsf ):
+                            /** @var $rsf \IXP\Models\RouteServerFilter */?>
+                            <tr class="<?= $rsf->enabled ?: 'tw-italic' ?>">
+                                <td>
+                                    <?php if( $isSuperUser ): ?>
+                                        <?php if( $rsf->peer ): ?>
+                                            <a href="<?= route( 'customer@overview', [ 'cust' => $rsf->peer->id ] ) ?>">
+                                                <?= $t->ee( $rsf->peer->name ) ?>
+                                            </a>
+                                        <?php else: ?>
+                                            All
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <?php if( $rsf->peer ): ?>
+                                            <?= $t->ee( $rsf->peer->name ) ?>
+                                        <?php else: ?>
+                                            All
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if( $rsf->vlan ): ?>
+                                        <?= $t->ee( $rsf->vlan->name ) ?>
+                                    <?php else: ?>
+                                        All
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?= $rsf->protocol() ?>
+                                </td>
+                                <td>
+                                    <?php if( $t->ee( $rsf->advertised_prefix ) ): ?>
+                                        <?= $t->ee( $rsf->advertised_prefix ) ?>
+                                    <?php else: ?>
+                                        *
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?= $t->ee( $rsf->actionAdvertise() ) ?>
+                                </td>
+                                <td>
+                                    <?php if( $t->ee( $rsf->received_prefix ) ): ?>
+                                        <?= $t->ee( $rsf->received_prefix ) ?>
+                                    <?php else: ?>
+                                        *
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?= $t->ee( $rsf->actionReceive() ) ?>
+                                </td>
+                                <td>
+                                    <?= $rsf->enabled ? "Yes" : "No" ?>
+                                </td>
+                                <td>
+                                    <?= $rsf->order_by ?>
+                                </td>
+                                <td>
+                                    <em><?= $rsf->enabled ? '' : "(disabled)" ?></em>
+                                </td>
+                            </tr>
+                        <?php endforeach;?>
+                        <tbody>
+                    </table>
+                <?php else: ?>
+                    <div class="alert alert-success mt-4" role="alert">
+                        <div class="d-flex align-items-center">
+                            <div class="text-center">
+                                <i class="fa fa-check fa-2x"></i>
+                            </div>
+                            <div class="col-sm-12 d-flex">
+                                <b class="mr-auto my-auto">
+                                    There are no filters in production.
+                                </b>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
+
+
+
+
         </div>
     </div>
+
+
+
 
     <div class="alert alert-info mt-4" role="alert">
         <div class="d-flex align-items-center">
@@ -218,8 +384,12 @@
                       This tool is intended to help you make relatively simple routing policies.
                   </li>
                   <li>
-                      When processing routes, <b>the first matching rule wins</b>. Please consider the ordering of your rules
+                      When processing routes, please consider the ordering of your rules
                       and ensure to put more specific rules first.
+                  </li>
+                  <li>
+                        When processing routes, please consider the ordering of your rules
+                        and ensure to put more specific rules first.
                   </li>
                   <li>
                       You are responsible for your own routing policy and ensuring any rules you set here have the desired effect.

@@ -176,10 +176,10 @@
                                 <?= str_replace( ",", "<br>", $conf[ "ifName" ] ) ?>
                             </td>
                             <td>
-                                <?= $t->scaleBits( array_sum( explode( "," , $conf[ "speed" ]) )*1000*1000, 0 ) ?>
+                                <?= $t->scaleBits( array_sum( explode( "," , $conf[ "rate_limit" ] ?: $conf[ "speed" ]) )*1000*1000, 0 ) ?>
                             </td>
                             <td>
-                                <?= array_sum( explode( ',' , $conf[ 'speed' ] ) ) ?>
+                                <?= array_sum( explode( ',' , $conf[ "rate_limit" ] ?: $conf[ 'speed' ] ) ) ?>
                             </td>
                             <td>
                                 <?= $conf[ "vlan" ] ?>
@@ -202,7 +202,11 @@
                             </td>
                             <td>
                                 <?php foreach( explode( "," , $conf[ "portstatus" ] ) as $portstatus ): ?>
-                                    <?= \IXP\Models\PhysicalInterface::$STATES[ $portstatus ] ?? '' . '<br>' ?>
+                                    <?= \IXP\Models\PhysicalInterface::$STATES[ $portstatus ] ?? '' ?>
+                                    <?php if( $conf[ "rate_limit" ] ): ?>
+                                        <span class="badge badge-info" data-toggle="tooltip" title="Rate Limited">RL</span>
+                                    <?php endif; ?>
+                                    <br>
                                 <?php endforeach; ?>
                             </td>
                         </tr>

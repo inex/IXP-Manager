@@ -46,7 +46,7 @@ use IXP\Models\ConsoleServerConnection;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\ConsoleServer|null $consoleServer
  * @property-read \IXP\Models\CustomerTag|null $customer
- * @property-read \IXP\Models\Switcher $switcher
+ * @property-read \IXP\Models\Switcher|null $switcher
  * @method static Builder|ConsoleServerConnectionAggregatore newModelQuery()
  * @method static Builder|ConsoleServerConnectionAggregatore newQuery()
  * @method static Builder|ConsoleServerConnectionAggregatore query()

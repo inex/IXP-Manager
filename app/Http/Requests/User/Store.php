@@ -72,7 +72,7 @@ class Store extends FormRequest
             'email'                     => 'required|email|max:255',
             'authorisedMobile'          => 'nullable|string|max:50',
             'custid'                    => 'required|integer|exists:cust,id',
-            'privs'                     => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES_ALL ) ),
+            'privs'                     => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES ) ),
         ];
     }
 

@@ -74,6 +74,15 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
                             </a>
                         <?php endif; ?>
                     <?php endif; ?>
+
+                    <?php if( !config( 'ixp_fe.frontend.disabled.rs-filer', false ) ): ?>
+                        <?php if( Auth::getUser()->customer->routeServerClient() ): ?>
+                            <a class="dropdown-item <?= !request()->is( 'rs-filters/list' ) ?: 'active' ?>" href="<?= route('rs-filter@list', [ 'cust' => Auth::getUser()->customer ] ) ?>">
+                                Route Server Filtering
+                            </a>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
                     <?php if( !config('ixp_fe.frontend.disabled.lg' ) ): ?>
                         <a class="dropdown-item <?= !request()->is( 'lg'  ) ?: 'active' ?>" href="<?= url('lg') ?>">
                             Looking Glass

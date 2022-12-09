@@ -102,7 +102,7 @@ class SwitchConfigurationGenerator
             if( ( $sp->typeUnset() || $sp->typePeering() ) && !in_array( $pi->virtualinterfaceid, $visProcessed )  ) {
                 $ports = array_merge( $ports, $this->processVirtualInterface( $pi->virtualInterface ));
                 $visProcessed[] = $pi->virtualinterfaceid;
-            } else if( $sp->typeCore() && !in_array( $pi->virtualinterfaceid, $cbsProcessed ) && $pi->coreBundle()->typeL2Lag() ) {
+            } else if( $sp->typeCore() && !in_array( $pi->virtualinterfaceid, $cbsProcessed ) && $pi->coreBundle() && $pi->coreBundle()->typeL2Lag() ) {
                 $ports = array_merge( $ports, $this->processCoreBundleInterface( $pi ) );
                 $cbsProcessed[] = $pi->virtualinterfaceid;
             }
@@ -163,6 +163,7 @@ class SwitchConfigurationGenerator
             $p['status']             = $pi->apiStatus();
             $p['name']               = $pi->switchPort->ifName;
             $p['speed']              = $pi->speed;
+            $p['rate_limit']         = $pi->rate_limit;
             $p['autoneg']            = $pi->autoneg;
             return [ $p ];
         }
@@ -213,12 +214,13 @@ class SwitchConfigurationGenerator
             if( !$pi->switchPort ) {
                 continue;
             }
-            $p['shutdown']  = !$pi->isConnectedOrQuarantine();
-            $p['status']    = $pi->apiStatus();
-            $p['name']      = $pi->switchPort->ifName;
-            $p['lagmaster'] = false;
-            $p['autoneg']   = $pi->autoneg;
-            $p['speed']     = $pi->speed;
+            $p['shutdown']   = !$pi->isConnectedOrQuarantine();
+            $p['status']     = $pi->apiStatus();
+            $p['name']       = $pi->switchPort->ifName;
+            $p['lagmaster']  = false;
+            $p['autoneg']    = $pi->autoneg;
+            $p['speed']      = $pi->speed;
+            $p['rate_limit'] = $pi->rate_limit;
             $ports[] = $p;
         }
 
@@ -317,11 +319,11 @@ class SwitchConfigurationGenerator
             if( !$_pi->switchPort ) {
                 continue;
             }
-            $p['shutdown']  = !$pi->isConnectedOrQuarantine();
-            $p['name']      = $_pi->switchPort->ifName;
-            $p['lagmaster'] = false;
-            $p['autoneg']   = $_pi->autoneg;
-            $p['speed']     = $_pi->speed;
+            $p['shutdown']   = !$pi->isConnectedOrQuarantine();
+            $p['name']       = $_pi->switchPort->ifName;
+            $p['lagmaster']  = false;
+            $p['autoneg']    = $_pi->autoneg;
+            $p['speed']      = $_pi->speed;
             $ports[] = $p;
         }
 
