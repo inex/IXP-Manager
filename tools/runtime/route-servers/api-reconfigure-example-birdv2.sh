@@ -39,7 +39,7 @@ function show_help {
 }
 
 
-while getopts "?qdh:" opt; do
+while getopts "?qdfh:" opt; do
     case "$opt" in
         \?)
             show_help
