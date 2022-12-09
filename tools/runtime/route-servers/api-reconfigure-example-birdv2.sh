@@ -177,8 +177,6 @@ elif [[ RELOAD_REQUIRED -eq 1 ]]; then
 else
     if [[ $DEBUG -eq 1 ]]; then
         echo "Bird running and no reload required so skipping configure";
-    else
-        echo -n ' [NORELOAD] ';
     fi
 fi
 
