@@ -32,19 +32,22 @@ BIN="/usr/sbin/bird"
 
 # Parse arguments
 export DEBUG=0
+export FORCE_RELOAD=0
 
 function show_help {
-    echo "$0 [-d] -h <handle> [-?]"
+    echo "$0 [-d] [-f] -h <handle> [-?]"
 }
 
 
-while getopts "?qdh:" opt; do
+while getopts "?qdfh:" opt; do
     case "$opt" in
         \?)
             show_help
             exit 0
             ;;
         d)  export DEBUG=1
+            ;;
+        f)  export FORCE_RELOAD=1
             ;;
         h)  handle=$OPTARG
             ;;
@@ -122,8 +125,10 @@ if [[ -f $cfile ]]; then
     fi
 fi
 
-
-
+# are we forcing a reload?
+if [[ $FORCE_RELOAD -eq 1 ]]; then
+    RELOAD_REQUIRED=1
+fi
 
 # config file should be okay; back up the current one
 if [[ -e ${cfile} ]]; then
@@ -146,7 +151,7 @@ if [[ $? -ne 0 ]]; then
         echo "ERROR: ${BIN} was not running for $dest and could not be started"
         exit 5
     fi
-else if [[ RELOAD_REQUIRED -eq 1 ]]
+elif [[ RELOAD_REQUIRED -eq 1 ]]; then
     cmd="${BIN}c -s $socket configure"
     if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
     eval $cmd &>/dev/null
@@ -169,7 +174,10 @@ else if [[ RELOAD_REQUIRED -eq 1 ]]
             fi
         fi
     fi
-
+else
+    if [[ $DEBUG -eq 1 ]]; then
+        echo "Bird running and no reload required so skipping configure";
+    fi
 fi
 
 # tell IXP Manager the router has been updated:
