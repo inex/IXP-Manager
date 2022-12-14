@@ -156,7 +156,7 @@
                             <?php endif; ?>
                         </td>
                     </tr>
-                    <?php if( $t->rsclient ): ?>
+                    <?php if( $t->rsclient && !config( 'ixp_fe.frontend.disabled.rs-filters') ): ?>
                         <tr>
                             <td>
                                 <b>Route Server Filters</b>

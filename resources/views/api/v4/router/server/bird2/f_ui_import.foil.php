@@ -104,7 +104,7 @@ if( $filters->count() ): ?>
     ########################################################################################
     ########################################################################################
     #
-    # UI Based Filtering (import rules)
+    # UI Based Filtering (import rules) - **WHAT THE RS IS LEARNING FROM THE MEMBER**
     #
     ########################################################################################
     ########################################################################################
@@ -116,8 +116,7 @@ if( $filters->count() ): ?>
         $peer = null;
 
         $indent = '    ';
-        echo "\n";
-        echo "    # Filter id:{$filter->id} created:{$filter->created_at} updated:{$filter->created_at}\n";
+        echo "\n\n";
         if( $filter->peer_id ) {
             $peer = \IXP\Models\Customer::find( $filter->peer_id );
         }
@@ -130,11 +129,11 @@ echo $indent; ?>if ( net = <?= $filter->advertised_prefix ?> ) then {
 
     switch( $filter->action_advertise ):
 
-        case 'AS_IS':
-            echo "{$indent}# AS_IS\n";
-            echo "{$indent}bgp_large_community.add( (routeserverasn,1," . ( $peer ? $peer->autsys : '0' ) . ") );\n";
-            break;
-
+//        case 'AS_IS':
+//            echo "{$indent}# AS_IS\n";
+//            echo "{$indent}bgp_large_community.add( (routeserverasn,1," . ( $peer ? $peer->autsys : '0' ) . ") );\n";
+//            break;
+//
         case 'NO_ADVERTISE':
             echo "{$indent}# NO_ADVERTISE " . ( $peer ? 'to ' . $peer->abbreviatedName : 'to all' ) . "\n";
             echo "{$indent}bgp_large_community.add( (routeserverasn,0," . ( $peer ? $peer->autsys : '0' ) . ") );\n";

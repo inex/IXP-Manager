@@ -239,7 +239,7 @@ int set allas;
 filter f_export_as<?= $int['autsys'] ?>
 {
 
-    # we should strip our own communities which we used for the looking glass
+    # we should strip our own communities which we used for the looking glass and filtering
     bgp_large_community.delete( [( routeserverasn, *, * )] );
     bgp_community.delete( [( routeserverasn, * )] );
 

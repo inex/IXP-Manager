@@ -22,7 +22,7 @@
         <?= $t->insert( 'dashboard/dashboard-tabs/associate' ); ?>
     </div>
 
-    <?php if( $t->c->routeServerFiltersInProduction()->count() ): ?>
+    <?php if( $t->c->routeServerFiltersInProduction()->count() && !config( 'ixp_fe.frontend.disabled.rs-filters') ): ?>
 
         <div class="alert alert-info mb-16" role="alert">
             <div class="d-flex align-items-center">

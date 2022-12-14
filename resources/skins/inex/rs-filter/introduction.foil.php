@@ -33,7 +33,8 @@
                 </li>
                 <li>
                     Changes should be live within ten minutes. Each route server pair pulls fresh configuration at least once every 10 minutes. You can see
-                    the last reconfigure times for each router on <a href="<?= route('lg::index') ?>">the looking glasses</a>.
+                    the last reconfigure times for each router on <a href="<?= route('lg::index') ?>">the looking glasses</a>. <em>Do note that a
+                    configuration 'diff' is performed and the configuration is only reloaded when it changes.</em>
                 </li>
                 <li>
                     This tool is intended to help you make relatively simple routing policies.
