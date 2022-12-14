@@ -157,7 +157,7 @@ echo $indent; ?>if ( net = <?= $filter->advertised_prefix ?> ) then {
     endswitch;
 
 
-    if( $filter->received_prefix ):
+    if( $filter->advertised_prefix ):
     $indent = substr( $indent, 0, -4 );
     echo $indent;
 ?>}

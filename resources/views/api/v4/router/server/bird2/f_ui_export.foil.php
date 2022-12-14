@@ -127,11 +127,11 @@ echo $indent; ?>if ( net = <?= $filter->received_prefix ?> ) then {
     endswitch;
 
 
-    if( $filter->received_prefix ):
-    $indent = substr( $indent, 0, -4 );
-    echo $indent;
-?>}
-<?php endif;
+
+    if( $filter->received_prefix ) {
+        $indent = substr( $indent, 0, -4 );
+        echo $indent . "}\n";
+    }
 
 if( $filter->peer_id ):
     $indent = substr( $indent, 0, -4 );
