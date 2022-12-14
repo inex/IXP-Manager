@@ -54,6 +54,15 @@ function ixp_community_filter(int peerasn)
         bgp_path.prepend( bgp_path.first );
     } else if (routeserverasn, 101, peerasn) ~ bgp_large_community then {
         bgp_path.prepend( bgp_path.first );
+    } else if (routeserverasn, 103, 0) ~ bgp_large_community then {
+        bgp_path.prepend( bgp_path.first );
+        bgp_path.prepend( bgp_path.first );
+        bgp_path.prepend( bgp_path.first );
+    } else if (routeserverasn, 102, 0) ~ bgp_large_community then {
+        bgp_path.prepend( bgp_path.first );
+        bgp_path.prepend( bgp_path.first );
+    } else if (routeserverasn, 101, 0) ~ bgp_large_community then {
+        bgp_path.prepend( bgp_path.first );
     }
 
 

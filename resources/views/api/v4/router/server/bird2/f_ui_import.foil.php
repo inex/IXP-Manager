@@ -132,29 +132,29 @@ echo $indent; ?>if ( net = <?= $filter->advertised_prefix ?> ) then {
 
         case 'AS_IS':
             echo "{$indent}# AS_IS\n";
-            echo "{$indent}bgp_large_community.add( routeserverasn:1:" . ( $peer ? $peer->autsys : '0' ) . " );\n";
+            echo "{$indent}bgp_large_community.add( (routeserverasn,1," . ( $peer ? $peer->autsys : '0' ) . ") );\n";
             break;
 
         case 'NO_ADVERTISE':
             echo "{$indent}# NO_ADVERTISE " . ( $peer ? 'to ' . $peer->abbreviatedName : 'to all' ) . "\n";
-            echo "{$indent}bgp_large_community.add( routeserverasn:0:" . ( $peer ? $peer->autsys : '0' ) . " );\n";
-            break;
-
-        case 'PREPEND_THRICE':
-            echo "{$indent}bgp_path.prepend( bgp_path.first );\n";
-            echo "{$indent}bgp_path.prepend( bgp_path.first );\n";
-            echo "{$indent}bgp_path.prepend( bgp_path.first );\n";
-            break;
-
-        case 'PREPEND_TWICE':
-            echo "{$indent}bgp_path.prepend( bgp_path.first );\n";
-            echo "{$indent}bgp_path.prepend( bgp_path.first );\n";
+            echo "{$indent}bgp_large_community.add( (routeserverasn,0," . ( $peer ? $peer->autsys : '0' ) . ") );\n";
             break;
 
         case 'PREPEND_ONCE':
-            echo "{$indent}bgp_path.prepend( bgp_path.first );\n";
+            echo "{$indent}# PREPEND_ONCE " . ( $peer ? 'to ' . $peer->abbreviatedName : 'to all' ) . "\n";
+            echo "{$indent}bgp_large_community.add( (routeserverasn,101," . ( $peer ? $peer->autsys : '0' ) . ") );\n";
             break;
-
+            
+        case 'PREPEND_TWICE':
+            echo "{$indent}# PREPEND_TWICE " . ( $peer ? 'to ' . $peer->abbreviatedName : 'to all' ) . "\n";
+            echo "{$indent}bgp_large_community.add( (routeserverasn,102," . ( $peer ? $peer->autsys : '0' ) . ") );\n";
+            break;
+            
+        case 'PREPEND_THRICE':
+            echo "{$indent}# PREPEND_THRICE " . ( $peer ? 'to ' . $peer->abbreviatedName : 'to all' ) . "\n";
+            echo "{$indent}bgp_large_community.add( (routeserverasn,103," . ( $peer ? $peer->autsys : '0' ) . ") );\n";
+            break;
+            
     endswitch;
 
 
@@ -168,7 +168,7 @@ echo $indent; ?>if ( net = <?= $filter->advertised_prefix ?> ) then {
 ?>
 
     ########################################################################################
-    # End UI Based Filtering - export rules
+    # End UI Based Filtering - import rules
     ########################################################################################
 
 
