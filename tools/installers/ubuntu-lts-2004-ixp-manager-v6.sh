@@ -319,7 +319,7 @@ log_break && apt install -qy apache2 php8.0 php8.0-intl php8.0-rrd php8.0-cgi ph
     mysql-client php8.0-mysql memcached snmp php8.0-mbstring php8.0-xml php8.0-gd        \
     php8.0-bcmath bgpq3 php8.0-memcache unzip php8.0-zip git php8.0-yaml                 \
     php8.0-ds libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl     \
-    libnetaddr-ip-perl rrdtool librrds-perl curl composer                                \
+    libnetaddr-ip-perl rrdtool librrds-perl curl                                         \
         &>> /tmp/ixp-manager-install.log
 echo '[done]'
 
@@ -667,10 +667,28 @@ echo '[done]'
 ### Install PHP packages
 ##################################################################
 
+echo -n "Installing composer for PHP dependencies... "
+cd $IXPROOT
+
+EXPECTED_CHECKSUM="$(php -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')"
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+ACTUAL_CHECKSUM="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
+
+if [ "$EXPECTED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]
+then
+    >&2 echo 'ERROR: Invalid installer checksum'
+    rm composer-setup.php
+    exit 1
+fi
+
+php composer-setup.php --quiet
+rm composer-setup.php
+echo '[done]'
+
 echo -n "Running composer to install PHP dependencies (please be patient)... "
 cd $IXPROOT
 log_break
-sudo -u www-data bash -c "HOME=$IXPROOT && cd $IXPROOT && composer --no-ansi --no-interaction --no-dev --prefer-dist install &>> /tmp/ixp-manager-install.log"
+sudo -u www-data bash -c "HOME=$IXPROOT && cd $IXPROOT && php composer.phar --no-ansi --no-interaction --no-dev --prefer-dist install &>> /tmp/ixp-manager-install.log"
 echo '[done]'
 
 
