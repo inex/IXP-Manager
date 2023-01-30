@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Former, Log, Redirect;
+use Auth, DB, Former, Log, Redirect;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\View\View;
@@ -75,7 +75,11 @@ class RsFilterController extends Controller
         $this->authorize( 'checkListCustomers',  [ RouteServerFilter::class ] );
 
         return view( 'rs-filter/list-customers' )->with([
-            "customers"         => []
+            "customers"         => Customer::select( DB::raw('cust.id, cust.name, COUNT("route_server_filters_prod.id") as prod_rules') )
+                                        ->join('route_server_filters_prod', 'cust.id', '=', 'route_server_filters_prod.customer_id')
+                                        ->groupBy( DB::raw('cust.id, cust.name') )
+                                        ->orderBy('cust.name')
+                                        ->get()
         ]);
     }
 

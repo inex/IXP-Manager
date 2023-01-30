@@ -283,7 +283,7 @@
                 </a>
             </li>
 
-            <?php if( request()->is( 'router/*' ) ): ?>
+            <?php if( request()->is( 'router/*' ) || request()->is( 'rs-filters/list-customers' ) ): ?>
                 <ul>
                     <li class="nav-sub-menu-item <?= request()->is( 'router/status' ) ? 'active' : '' ?>" >
                         <a href="<?= route('router@status' ) ?>" class="nav-link" >
@@ -291,8 +291,8 @@
                         </a>
                     </li>
 
-                    <li class="nav-sub-menu-item <?= request()->is( 'rs-filters@list-customer' ) ? 'active' : '' ?>" >
-                        <a href="<?= route('rs-filters@list-customer' ) ?>" class="nav-link" >
+                    <li class="nav-sub-menu-item <?= request()->is( 'rs-filters/list-customers' ) ? 'active' : '' ?>" >
+                        <a href="<?= route('rs-filters@list-customers' ) ?>" class="nav-link" >
                             Customers with Filters
                         </a>
                     </li>
