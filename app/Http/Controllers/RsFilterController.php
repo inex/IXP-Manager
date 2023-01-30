@@ -64,6 +64,23 @@ use IXP\Utils\View\Alert\{
 class RsFilterController extends Controller
 {
     /**
+     * Display the list of customers with Route Server Filters
+     *
+     * @return  View
+     *
+     * @throws AuthorizationException
+     */
+    public function listCustomers(): View
+    {
+        $this->authorize( 'checkListCustomers',  [ RouteServerFilter::class ] );
+
+        return view( 'rs-filter/list-customers' )->with([
+            "customers"         => []
+        ]);
+    }
+
+
+    /**
      * Display the list of Route Server Filter
      *
      * @param Customer $cust

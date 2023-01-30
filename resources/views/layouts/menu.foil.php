@@ -290,8 +290,16 @@
                             Live Status
                         </a>
                     </li>
+
+                    <li class="nav-sub-menu-item <?= request()->is( 'rs-filters@list-customer' ) ? 'active' : '' ?>" >
+                        <a href="<?= route('rs-filters@list-customer' ) ?>" class="nav-link" >
+                            Customers with Filters
+                        </a>
+                    </li>
                 </ul>
             <?php endif;?>
+
+
 
             <li class="<?= !request()->is( 'switch/*' ) ?: 'active' ?>" >
                 <a id="lhs-menu-switches" class="nav-link" href="<?= route('switch@list') ?>">
