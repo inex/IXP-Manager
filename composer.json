@@ -2,7 +2,12 @@
     "name": "inex/ixp-manager",
     "description": "An application by INEX to manage Internet Exchange Points (IXPs) - https://www.ixpmanager.org/",
     "type": "project",
-    "keywords": ["ixp manager", "ixpm", "inex", "ixp"],
+    "keywords": [
+        "ixp manager",
+        "ixpm",
+        "inex",
+        "ixp"
+    ],
     "homepage": "https://github.com/inex/IXP-Manager/wiki",
     "license": "GPL-2.0",
     "authors": [
@@ -17,7 +22,7 @@
             "homepage": "https://www.ixpmanager.org/"
         }
     ],
-    "repositories":[
+    "repositories": [
         {
             "type": "vcs",
             "url": "git@github.com:barryo/Purifier.git"
@@ -26,15 +31,12 @@
     "require": {
         "php": "^8.0",
         "ext-json": "*",
-
         "opensolutions/oss-snmp": "^1.0",
-
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",
         "foil/foil": "^0.6.7",
-
         "zendesk/zendesk_api_client_php": "2.2.10",
         "guzzlehttp/guzzle": "^7.0.1",
         "intervention/image": "^2.3",
@@ -68,7 +70,7 @@
         "barryvdh/laravel-debugbar": "^3.5.2",
         "vimeo/psalm": "^4.7",
         "psalm/plugin-laravel": "^1.4"
-     },
+    },
     "support": {
         "issues": "https://www.ixpmanager.org/support.php",
         "forum": "https://www.inex.ie/mailman/listinfo/ixpmanager",
@@ -80,19 +82,19 @@
             "IXP\\": "app/",
             "Database\\Seeders\\": "database/seeders/",
             "Database\\": "database",
-             "SocialiteProviders\\PeeringDB\\": "data/SocialiteProviders/PeeringDB/"
-       },
+            "SocialiteProviders\\PeeringDB\\": "data/SocialiteProviders/PeeringDB/"
+        },
         "files": [
             "app/Support/helpers.php"
         ]
-     },
-     "autoload-dev": {
-         "classmap": [
-             "tests/TestCase.php"
-         ],
-         "psr-4": {
-             "Tests\\": "tests/"
-         }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/TestCase.php"
+        ],
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     },
     "extra": {
         "laravel": {
@@ -110,11 +112,9 @@
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover"
         ],
-
         "post-install-cmd": [
             "@php artisan clear-compiled"
         ],
-
         "post-update-cmd": [
             "@php artisan clear-compiled",
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
@@ -131,6 +131,6 @@
             "preferred-install": "dist",
             "sort-packages": true
         }
-   },
-   "minimum-stability": "stable"
+    },
+    "minimum-stability": "stable"
 }
