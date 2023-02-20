@@ -49,6 +49,7 @@ use IXP\Traits\Observable;
  * @property string|null $installation_date
  * @property string $port_prefix
  * @property int $active
+ * @property int $colo_pp_type
  * @property int $chargeable
  * @property string $location_notes
  * @property int|null $u_position
@@ -65,6 +66,7 @@ use IXP\Traits\Observable;
  * @method static Builder|PatchPanel whereCabinetId($value)
  * @method static Builder|PatchPanel whereCableType($value)
  * @method static Builder|PatchPanel whereChargeable($value)
+ * @method static Builder|PatchPanel whereColoPpType($value)
  * @method static Builder|PatchPanel whereColoReference($value)
  * @method static Builder|PatchPanel whereConnectorType($value)
  * @method static Builder|PatchPanel whereCreatedAt($value)
@@ -104,6 +106,7 @@ class PatchPanel extends Model
         'installation_date',
         'port_prefix',
         'active',
+        'colo_pp_type',
         'chargeable',
         'location_notes',
         'u_position',
@@ -136,6 +139,19 @@ class PatchPanel extends Model
         self::CABLE_TYPE_MMF,
     ];
 
+    /**
+     * CONST Co-lo simplex/duplex specification
+     */
+    public const COLO_PP_TYPE_SIMPLEX   = 0;
+    public const COLO_PP_TYPE_DUPLEX    = 1;
+
+    /**
+     * Array Co-lo simplex/duplex specification
+     */
+    public static $COLO_PP_TYPES = [
+        self::COLO_PP_TYPE_SIMPLEX      => 'Simplex',
+        self::COLO_PP_TYPE_DUPLEX       => 'Duplex',
+    ];
 
     /**
      * CONST Connector types
@@ -226,6 +242,17 @@ class PatchPanel extends Model
     public function chargeable(): string
     {
         return PatchPanelPort::$CHARGEABLES[ $this->chargeable ] ?? 'Unknown';
+    }
+
+    /**
+     * Specifies whether the co-location provider uses simplex ("port 1") or
+     * duplex ("fibre 1 / fibre 2") notation in their cross-connect database.
+     *
+     * @return string
+     */
+    public function coloPpType(): string
+    {
+        return self::$COLO_PP_TYPES[ $this->colo_pp_type ] ?? 'Other';
     }
 
     /**

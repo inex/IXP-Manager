@@ -141,6 +141,7 @@ class PatchPanelController extends Controller
             'port_prefix'               => $r->old( 'port_prefix',         $pp->port_prefix         ),
             'location_notes'            => $r->old( 'location_notes',      $pp->location_notes      ),
             'u_position'                => $r->old( 'u_position',          $pp->u_position          ),
+            'colo_pp_type'              => $r->old( 'colo_pp_type',        $pp->colo_pp_type        ),
             'mounted_at'                => $r->old( 'mounted_at',          $pp->mounted_at          ),
             'numberOfPorts'             => $r->old( 'numberOfPorts',0                         ),
         ]);

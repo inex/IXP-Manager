@@ -78,6 +78,16 @@
                             </li>
 
                             <li class="nav-item">
+                                <div class="nav-link d-flex ">
+                                    <label>
+                                        <input name="prewiredOnly" value='true' id="prewiredOnly" class="mr-2" type="checkbox">
+                                        Prewired Only
+                                    </label>
+                                </div>
+                            </li>
+
+
+                            <li class="nav-item">
                                 <button type="submit" class="float-right btn btn-white">
                                     Filter Ports
                                 </button>

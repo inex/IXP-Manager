@@ -212,7 +212,7 @@ class SwitcherAggregator extends Switcher
             ->when( $ipv6enabled , function( Builder $q ) {
                 return $q->where( 'vli.ipv6enabled', true );
             })
-            ->groupBy( 'customer', 'custid', 'asn', 'switchname', 'switchid', 'vlan' )
+            ->groupBy( 'customer', 'custid', 'asn', 'switchname', 'switchid', 'vlan', 'vi.id' )
             ->orderBy( 'customer', 'ASC' )
             ->get()->toArray();
     }

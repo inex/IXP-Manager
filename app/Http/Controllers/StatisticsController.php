@@ -393,6 +393,10 @@ class StatisticsController extends Controller
             $cust = Auth::getUser()->customer;
         }
 
+        if( $cust == null ) {
+            abort( 403, "You are not authorised to view this member's graphs." );
+        }
+
         $grapher = App::make( Grapher::class );
 
         // if the customer is authorised, then so too are all of their virtual and physical interfaces:
@@ -718,7 +722,7 @@ class StatisticsController extends Controller
             "cb"                    => $cb,
             "graph"                 => $graph,
             "category"              => $category,
-            "categories"            => Auth::check() && Auth::getUser()->isSuperUser() ? Graph::CATEGORY_DESCS : Graph::CATEGORIES_BITS_PKTS_DESCS,
+            "categories"            => Auth::check() && Auth::getUser() && Auth::getUser()->isSuperUser() ? Graph::CATEGORY_DESCS : Graph::CATEGORIES_BITS_PKTS_DESCS,
         ]);
     }
 
@@ -745,7 +749,7 @@ class StatisticsController extends Controller
 
         $days =  TrafficDailyPhysInt::select( [ 'day' ] )
             ->distinct( 'day' )
-            ->orderBy( 'day')->get()->pluck( 'day' )->toArray();
+            ->orderBy( 'day', 'desc')->get()->pluck( 'day' )->toArray();
 
         if( count( $days ) ) {
             $day = $r->day;

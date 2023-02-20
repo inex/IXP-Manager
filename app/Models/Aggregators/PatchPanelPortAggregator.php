@@ -70,12 +70,16 @@ class PatchPanelPortAggregator extends PatchPanelPort
      *
      * @return Collection
      */
-    public static function list( int $ppid = null, bool $advanced = false, int $location = null, int $cabinet = null, int $cabletype = null, bool $availableForUse = false ): Collection
+    public static function list( int $ppid = null, bool $advanced = false, int $location = null, int $cabinet = null, int $cabletype = null, bool $availableForUse = false, bool $prewiredOnly = false ): Collection
     {
         return self::selectRaw( '
             ppp.*,
             count( pppf.id ) AS files, count( ppph.id ) AS histories,
-            pp.name as ppname, pp.port_prefix AS prefix,
+            pp.name as ppname,
+            pp.colo_reference as ppcolo_reference,
+            pp.port_prefix AS prefix,
+            pp.cable_type AS ppcable_type,
+            pp.colo_pp_type,
             sp.name AS spname,
             s.name AS sname, c.abbreviatedName AS cname,
             count( ppps.id ) AS nbslave, 
@@ -104,6 +108,9 @@ class PatchPanelPortAggregator extends PatchPanelPort
             } )
             ->when( $cabletype , function( Builder $q, $cabletype ) {
                 return $q->where('pp.cable_type', $cabletype );
+            } )
+            ->when( $prewiredOnly, function( Builder $q, $prewired ) {
+                return $q->where( 'ppp.state', '=', PatchPanelPort::STATE_PREWIRED );
             } )
             ->when( $availableForUse , function( Builder $q ) {
                 return $q->whereIn('ppp.state', PatchPanelPort::$AVAILABLE_STATES );

@@ -64,7 +64,7 @@ class Store extends FormRequest
             'type'                  => 'required|integer|in:' . implode( ',', array_keys( Customer::$CUST_TYPES_TEXT ) ),
             'shortname'             => 'required|string|max:30|regex:/[a-z0-9]+/|unique:cust,shortname'. ( $this->cust ? ','. $this->cust->id : '' ),
             'corpwww'               => 'nullable|url|max:255',
-            'datejoin'              => 'date',
+            'datejoin'              => 'required|date',
             'dateleft'              => 'nullable|date',
             'status'                => 'required|integer|in:' . implode( ',', array_keys( Customer::$CUST_STATUS_TEXT ) ),
             'md5support'            => 'nullable|string|in:'  . implode( ',', array_keys( Customer::$MD5_SUPPORT ) ),
@@ -87,7 +87,7 @@ class Store extends FormRequest
             'reseller'              => 'nullable|integer|exists:cust,id',
         ];
 
-        return $this-> type === Customer::TYPE_ASSOCIATE  ? $validateCommonDetails : array_merge( $validateCommonDetails, $validateOtherDetails ) ;
+        return $this->type == Customer::TYPE_ASSOCIATE  ? $validateCommonDetails : array_merge( $validateCommonDetails, $validateOtherDetails ) ;
     }
 
     /**
@@ -100,7 +100,9 @@ class Store extends FormRequest
     public function withValidator( Validator $validator ): void
     {
         $validator->after( function( $validator ) {
-            $this->checkReseller( $validator );
+            if( $this->type != Customer::TYPE_ASSOCIATE ) {
+                $this->checkReseller( $validator );
+            }
         });
     }
 

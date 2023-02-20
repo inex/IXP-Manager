@@ -40,9 +40,9 @@
                          Username
                      </label>
 
-                    <input name="username" class="form-control" id="username" type="text" placeholder="Username" value="<?= $t->username ?? old('username') ?>">
+                    <input name="username" class="form-control" id="username" type="text" placeholder="Username" value="<?= $t->username ? $t->ee( $t->username ) : $t->ee( old('username') ) ?>">
                     <?php foreach( $t->errors->get( 'username' ) as $err ): ?>
-                        <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
+                        <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $t->ee( $err ) ?></p>
                     <?php endforeach; ?>
                 </div>
 
@@ -50,9 +50,9 @@
                      <label class="control-label" for="token">
                          Token
                      </label>
-                    <input name="token" class="form-control" id="token" type="text" placeholder="" value="<?= $t->token ?? old('token') ?>">
+                    <input name="token" class="form-control" id="token" type="text" placeholder="" value="<?= $t->token ? $t->ee( $t->token ) : $t->ee( old('token') ) ?>">
                     <?php foreach( $t->errors->get( 'token' ) as $err ): ?>
-                        <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
+                        <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $t->ee( $err ) ?></p>
                     <?php endforeach; ?>
                 </div>
 
@@ -62,7 +62,7 @@
                      </label>
                     <input name="password" class="form-control" id="password" type="password" autofocus placeholder="******************">
                     <?php foreach( $t->errors->get( 'password' ) as $err ): ?>
-                        <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
+                        <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $t->ee( $err ) ?></p>
                     <?php endforeach; ?>
                  </div>
 
@@ -72,7 +72,7 @@
                      </label>
                     <input name="password_confirmation" class="form-control" id="password_confirmation" type="password" placeholder="******************">
                     <?php foreach( $t->errors->get( 'password_confirmation' ) as $err ): ?>
-                        <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
+                        <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $t->ee( $err ) ?></p>
                     <?php endforeach; ?>
                 </div>
 
