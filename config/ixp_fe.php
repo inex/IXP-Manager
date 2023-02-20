@@ -33,6 +33,13 @@ return [
         'smarty' => env( 'VIEW_SMARTY_SKIN', "" ),
     ],
 
+
+    /*
+     * SSL - sometimes we need to force this for all URLs
+     */
+    'forcessl' => env( 'IXP_FE_FORCE_SSL', false ),
+
+
     /*
     |--------------------------------------------------------------------------
     | Customer Name Format

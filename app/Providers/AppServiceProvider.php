@@ -68,6 +68,10 @@ class AppServiceProvider extends ServiceProvider
         DocstoreCustomerDirectory::observe( DocstoreCustomerDirectoryObserver::class );
 
         Paginator::useBootstrap();
+
+        if(config('ixp_fe.forcessl', false)) {
+            \URL::forceScheme('https');
+        }
     }
 
     /**
