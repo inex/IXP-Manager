@@ -57,7 +57,7 @@ listen bgp address routeraddress;
 
 protocol kernel {
     export all;
-    scan time 60;
+    scan time 120;
 }
 
 protocol device {
