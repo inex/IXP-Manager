@@ -795,6 +795,7 @@ class SAGE extends Controller
 
         $fp = fopen( base_path( 'custs-invoiced.csv' ), "w" );
 
+        $reached = false;
         foreach( $member_pis as $asn => $pis ) {
 
             $invoice_lines = [];
@@ -811,12 +812,25 @@ class SAGE extends Controller
                 continue;
             }
 
-            if( $cust->companyBillingDetail->billingFrequency != CompanyBillingDetail::BILLING_FREQUENCY_QUARTERLY ) {
-                continue;
-            }
+
+//            if( $cust->id == 39 ) {
+//                $reached = true;
+//            }
+//
+//            if( !$reached ) {
+//                continue;
+//            }
+
+//            if( $cust->companyBillingDetail->billingFrequency != CompanyBillingDetail::BILLING_FREQUENCY_QUARTERLY ) {
+//                continue;
+//            }
 
 
-            if( in_array( $cust->id, [ 182, 183, 190, 171 ] ) ) {
+            // 182 -  Convergenze [AS39120] FULL MEMBER RESOLD CUSTOMER
+            // 183 - Sirius Technology SRL [AS60501] FULL MEMBER RESOLD CUSTOMER
+            // 190 -  Swisscom [AS3303] FULL MEMBER RESOLD CUSTOMER
+            // 171 -  Telin [AS7713] FULL MEMBER ACCOUNT CLOSED RESOLD CUSTOMER
+            if( in_array( $cust->id, [ 182, 183, 190, 171, ] ) ) {
                 Log::info( "***** SKIPPING {$cust->name}");
                 continue;
             }
@@ -825,7 +839,7 @@ class SAGE extends Controller
 
             $invoice = [
                 'contact_id' => $sageCustomers[ $cust->id ] ?? 'XXX',
-                'date'       => '2022-04-01',
+                'date'       => '2023-02-20',
                 'status_id'  => 'DRAFT',
             ];
 
@@ -990,7 +1004,7 @@ class SAGE extends Controller
                 $notes .= 'All supplies are an intra-community supply. ';
 
                 // Northern Ireland
-            } else if( in_array( $cust->id, [ 22, 172, 25, 39 ] ) ) {
+            } else if( in_array( $cust->id, [ 22, 87, 113 ] ) ) {
 
                 foreach( $invoice_lines as $i => $il ) {
                     $invoice_lines[$i]['eu_goods_services_type_id'] = 'SERVICES';
@@ -1002,6 +1016,7 @@ class SAGE extends Controller
             } else if( $cust->companyBillingDetail->billingCountry == 'IE' ) {
 
                 foreach( $invoice_lines as $i => $il ) {
+                    $invoice_lines[ $i ]['eu_goods_services_type_id'] = 'SERVICES';
                     $invoice_lines[ $i ][ 'tax_rate_id' ] = 'IE_STANDARD';
                     $invoice_lines[ $i ][ 'tax_amount' ] = (string)round( ( $invoice_lines[ $i ]['quantity'] * $invoice_lines[ $i ]['unit_price'] * 0.23 ), 2 );
                 }
@@ -1009,6 +1024,7 @@ class SAGE extends Controller
             } else {
 
                 foreach( $invoice_lines as $i => $il ) {
+                    $invoice_lines[ $i ]['eu_goods_services_type_id'] = 'SERVICES';
                     $invoice_lines[ $i ][ 'tax_rate_id' ] = 'IE_ZERO';
                     $invoice_lines[ $i ][ 'tax_amount' ] = '0.00';
                 }
