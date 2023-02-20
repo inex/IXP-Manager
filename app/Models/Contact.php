@@ -49,11 +49,11 @@ use IXP\Traits\Observable;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property string|null $position
  * @property string|null $notes
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ContactGroup[] $contactGroups
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ContactGroup> $contactGroups
  * @property-read int|null $contact_groups_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ContactGroup[] $contactGroupsAll
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ContactGroup> $contactGroupsAll
  * @property-read int|null $contact_groups_all_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ContactGroup[] $contactRoles
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ContactGroup> $contactRoles
  * @property-read int|null $contact_roles_count
  * @property-read \IXP\Models\Customer|null $customer
  * @method static Builder|Contact newModelQuery()

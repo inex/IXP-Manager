@@ -50,13 +50,13 @@ use IXP\Traits\Observable;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer|null $customer
- * @property-read Collection|\IXP\Models\MacAddress[] $macAddresses
+ * @property-read Collection<int, \IXP\Models\MacAddress> $macAddresses
  * @property-read int|null $mac_addresses_count
- * @property-read Collection|\IXP\Models\PhysicalInterface[] $physicalInterfaces
+ * @property-read Collection<int, \IXP\Models\PhysicalInterface> $physicalInterfaces
  * @property-read int|null $physical_interfaces_count
- * @property-read Collection|\IXP\Models\SflowReceiver[] $sflowReceivers
+ * @property-read Collection<int, \IXP\Models\SflowReceiver> $sflowReceivers
  * @property-read int|null $sflow_receivers_count
- * @property-read Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
+ * @property-read Collection<int, \IXP\Models\VlanInterface> $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
  * @method static Builder|VirtualInterface newModelQuery()
  * @method static Builder|VirtualInterface newQuery()

@@ -51,7 +51,7 @@ use OSS_SNMP\MIBS\Iface;
  * @property int $enabled
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read Collection|\IXP\Models\CoreLink[] $corelinks
+ * @property-read Collection<int, \IXP\Models\CoreLink> $corelinks
  * @property-read int|null $corelinks_count
  * @method static Builder|CoreBundle active()
  * @method static Builder|CoreBundle newModelQuery()

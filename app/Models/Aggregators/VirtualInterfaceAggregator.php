@@ -51,13 +51,13 @@ use IXP\Exceptions\GeneralException;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Customer|null $customer
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\MacAddress[] $macAddresses
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\MacAddress> $macAddresses
  * @property-read int|null $mac_addresses_count
- * @property-read \Illuminate\Database\Eloquent\Collection|PhysicalInterface[] $physicalInterfaces
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, PhysicalInterface> $physicalInterfaces
  * @property-read int|null $physical_interfaces_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\SflowReceiver[] $sflowReceivers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\SflowReceiver> $sflowReceivers
  * @property-read int|null $sflow_receivers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\VlanInterface> $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
  * @method static Builder|VirtualInterfaceAggregator newModelQuery()
  * @method static Builder|VirtualInterfaceAggregator newQuery()

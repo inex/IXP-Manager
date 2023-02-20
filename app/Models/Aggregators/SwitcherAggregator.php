@@ -64,10 +64,10 @@ use IXP\Models\SwitchPort;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Cabinet|null $cabinet
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServerConnection[] $consoleServerConnections
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ConsoleServerConnection> $consoleServerConnections
  * @property-read int|null $console_server_connections_count
  * @property-read Infrastructure|null $infrastructureModel
- * @property-read \Illuminate\Database\Eloquent\Collection|SwitchPort[] $switchPorts
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, SwitchPort> $switchPorts
  * @property-read int|null $switch_ports_count
  * @property-read \IXP\Models\Vendor|null $vendor
  * @method static Builder|SwitcherAggregator newModelQuery()

@@ -54,7 +54,7 @@ use IXP\Traits\Observable;
  * @property-read PhysicalInterface|null $fanoutPhysicalInterface
  * @property-read PhysicalInterface|null $peeringPhysicalInterface
  * @property-read \IXP\Models\SwitchPort|null $switchPort
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\TrafficDailyPhysInt[] $trafficDailiesPhysInt
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\TrafficDailyPhysInt> $trafficDailiesPhysInt
  * @property-read int|null $traffic_dailies_phys_int_count
  * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
  * @method static Builder|PhysicalInterface connected()

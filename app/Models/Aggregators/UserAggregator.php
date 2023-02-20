@@ -50,8 +50,6 @@ use IXP\Models\{
  * @property int|null $uid
  * @property int|null $privs
  * @property int|null $disabled
- * @property int $fail_count
- * @property string|null $fail_locked_until
  * @property int|null $lastupdatedby
  * @property string|null $creator
  * @property string|null $name
@@ -60,17 +58,17 @@ use IXP\Models\{
  * @property array|null $prefs
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ApiKey[] $apiKeys
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ApiKey> $apiKeys
  * @property-read int|null $api_keys_count
  * @property-read Customer|null $customer
- * @property-read \Illuminate\Database\Eloquent\Collection|CustomerToUser[] $customerToUser
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, CustomerToUser> $customerToUser
  * @property-read int|null $customer_to_user_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Customer[] $customers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Customer> $customers
  * @property-read int|null $customers_count
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read \IXP\Models\User2FA|null $user2FA
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\UserRememberToken[] $userRememberTokens
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\UserRememberToken> $userRememberTokens
  * @property-read int|null $user_remember_tokens_count
  * @method static Builder|User activeOnly()
  * @method static Builder|User byPrivs(?int $priv = null)
@@ -84,8 +82,6 @@ use IXP\Models\{
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereDisabled($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereExtraAttributes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereFailCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereFailLockedUntil($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereLastupdatedby($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereName($value)

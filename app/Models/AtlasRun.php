@@ -47,7 +47,7 @@ use Illuminate\Database\Eloquent\{
  * @property string|null $completed_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasMeasurement[] $atlasMeasurements
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AtlasMeasurement> $atlasMeasurements
  * @property-read int|null $atlas_measurements_count
  * @property-read \IXP\Models\Vlan|null $vlan
  * @method static Builder|AtlasRun newModelQuery()

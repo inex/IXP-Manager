@@ -226,7 +226,6 @@ namespace PHPSTORM_META {
             'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
             'migrator' => \Illuminate\Database\Migrations\Migrator::class,
             'parsedown' => \Parsedown::class,
-            'purifier' => \Mews\Purifier\Purifier::class,
             'queue' => \Illuminate\Queue\QueueManager::class,
             'queue.connection' => \Illuminate\Queue\SyncQueue::class,
             'queue.failer' => \Illuminate\Queue\Failed\DatabaseUuidFailedJobProvider::class,
@@ -463,7 +462,6 @@ namespace PHPSTORM_META {
             'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
             'migrator' => \Illuminate\Database\Migrations\Migrator::class,
             'parsedown' => \Parsedown::class,
-            'purifier' => \Mews\Purifier\Purifier::class,
             'queue' => \Illuminate\Queue\QueueManager::class,
             'queue.connection' => \Illuminate\Queue\SyncQueue::class,
             'queue.failer' => \Illuminate\Queue\Failed\DatabaseUuidFailedJobProvider::class,
@@ -700,7 +698,6 @@ namespace PHPSTORM_META {
             'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
             'migrator' => \Illuminate\Database\Migrations\Migrator::class,
             'parsedown' => \Parsedown::class,
-            'purifier' => \Mews\Purifier\Purifier::class,
             'queue' => \Illuminate\Queue\QueueManager::class,
             'queue.connection' => \Illuminate\Queue\SyncQueue::class,
             'queue.failer' => \Illuminate\Queue\Failed\DatabaseUuidFailedJobProvider::class,
@@ -937,7 +934,6 @@ namespace PHPSTORM_META {
             'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
             'migrator' => \Illuminate\Database\Migrations\Migrator::class,
             'parsedown' => \Parsedown::class,
-            'purifier' => \Mews\Purifier\Purifier::class,
             'queue' => \Illuminate\Queue\QueueManager::class,
             'queue.connection' => \Illuminate\Queue\SyncQueue::class,
             'queue.failer' => \Illuminate\Queue\Failed\DatabaseUuidFailedJobProvider::class,
@@ -1174,7 +1170,6 @@ namespace PHPSTORM_META {
             'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
             'migrator' => \Illuminate\Database\Migrations\Migrator::class,
             'parsedown' => \Parsedown::class,
-            'purifier' => \Mews\Purifier\Purifier::class,
             'queue' => \Illuminate\Queue\QueueManager::class,
             'queue.connection' => \Illuminate\Queue\SyncQueue::class,
             'queue.failer' => \Illuminate\Queue\Failed\DatabaseUuidFailedJobProvider::class,
@@ -1411,7 +1406,6 @@ namespace PHPSTORM_META {
             'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
             'migrator' => \Illuminate\Database\Migrations\Migrator::class,
             'parsedown' => \Parsedown::class,
-            'purifier' => \Mews\Purifier\Purifier::class,
             'queue' => \Illuminate\Queue\QueueManager::class,
             'queue.connection' => \Illuminate\Queue\SyncQueue::class,
             'queue.failer' => \Illuminate\Queue\Failed\DatabaseUuidFailedJobProvider::class,
@@ -1648,7 +1642,6 @@ namespace PHPSTORM_META {
             'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
             'migrator' => \Illuminate\Database\Migrations\Migrator::class,
             'parsedown' => \Parsedown::class,
-            'purifier' => \Mews\Purifier\Purifier::class,
             'queue' => \Illuminate\Queue\QueueManager::class,
             'queue.connection' => \Illuminate\Queue\SyncQueue::class,
             'queue.failer' => \Illuminate\Queue\Failed\DatabaseUuidFailedJobProvider::class,
@@ -1885,7 +1878,6 @@ namespace PHPSTORM_META {
             'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
             'migrator' => \Illuminate\Database\Migrations\Migrator::class,
             'parsedown' => \Parsedown::class,
-            'purifier' => \Mews\Purifier\Purifier::class,
             'queue' => \Illuminate\Queue\QueueManager::class,
             'queue.connection' => \Illuminate\Queue\SyncQueue::class,
             'queue.failer' => \Illuminate\Queue\Failed\DatabaseUuidFailedJobProvider::class,
@@ -2122,7 +2114,6 @@ namespace PHPSTORM_META {
             'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
             'migrator' => \Illuminate\Database\Migrations\Migrator::class,
             'parsedown' => \Parsedown::class,
-            'purifier' => \Mews\Purifier\Purifier::class,
             'queue' => \Illuminate\Queue\QueueManager::class,
             'queue.connection' => \Illuminate\Queue\SyncQueue::class,
             'queue.failer' => \Illuminate\Queue\Failed\DatabaseUuidFailedJobProvider::class,
@@ -2359,7 +2350,6 @@ namespace PHPSTORM_META {
             'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
             'migrator' => \Illuminate\Database\Migrations\Migrator::class,
             'parsedown' => \Parsedown::class,
-            'purifier' => \Mews\Purifier\Purifier::class,
             'queue' => \Illuminate\Queue\QueueManager::class,
             'queue.connection' => \Illuminate\Queue\SyncQueue::class,
             'queue.failer' => \Illuminate\Queue\Failed\DatabaseUuidFailedJobProvider::class,
@@ -2596,7 +2586,6 @@ namespace PHPSTORM_META {
             'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
             'migrator' => \Illuminate\Database\Migrations\Migrator::class,
             'parsedown' => \Parsedown::class,
-            'purifier' => \Mews\Purifier\Purifier::class,
             'queue' => \Illuminate\Queue\QueueManager::class,
             'queue.connection' => \Illuminate\Queue\SyncQueue::class,
             'queue.failer' => \Illuminate\Queue\Failed\DatabaseUuidFailedJobProvider::class,
@@ -2618,6 +2607,10 @@ namespace PHPSTORM_META {
         ]));
 
 
+    override(\Illuminate\Foundation\Testing\Concerns\InteractsWithContainer::mock(0), map(["" => "@&\Mockery\MockInterface"]));
+    override(\Illuminate\Foundation\Testing\Concerns\InteractsWithContainer::partialMock(0), map(["" => "@&\Mockery\MockInterface"]));
+    override(\Illuminate\Foundation\Testing\Concerns\InteractsWithContainer::instance(0), type(1));
+    override(\Illuminate\Foundation\Testing\Concerns\InteractsWithContainer::spy(0), map(["" => "@&\Mockery\MockInterface"]));
     override(\Illuminate\Support\Arr::add(0), type(0));
     override(\Illuminate\Support\Arr::except(0), type(0));
     override(\Illuminate\Support\Arr::first(0), elementType(0));
