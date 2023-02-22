@@ -849,7 +849,7 @@ class Customer extends Model
      */
     public static function givenType( int $t ): string
     {
-        return self::$CUST_TYPES_TEXT[ $t ] ?? 'Unknwon';
+        return self::$CUST_TYPES_TEXT[ $t ] ?? 'Unknown';
     }
 
     /**
