@@ -1001,7 +1001,7 @@ class SAGE extends Controller
                     $invoice_lines[ $i ][ 'tax_amount' ] = '0.00';
                 }
 
-                $notes .= 'All supplies are an intra-community supply. ';
+                $notes .= 'All supplies are an intra-community supply; VAT reverse charge applies. ';
 
                 // Northern Ireland
             } else if( in_array( $cust->id, [ 22, 87, 113 ] ) ) {
