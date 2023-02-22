@@ -41,9 +41,9 @@ use IXP\Traits\Observable;
  * @property string|null $bundle_name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServer[] $consoleServers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ConsoleServer> $consoleServers
  * @property-read int|null $console_servers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Switcher[] $switchers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\Switcher> $switchers
  * @property-read int|null $switchers_count
  * @method static Builder|Vendor newModelQuery()
  * @method static Builder|Vendor newQuery()

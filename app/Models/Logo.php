@@ -35,7 +35,6 @@ use IXP\Traits\Observable;
  *
  * @property int $id
  * @property int|null $customer_id
- * @property string $type
  * @property string $original_name
  * @property string $stored_name
  * @property string $uploaded_by
@@ -53,7 +52,6 @@ use IXP\Traits\Observable;
  * @method static \Illuminate\Database\Eloquent\Builder|Logo whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Logo whereOriginalName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Logo whereStoredName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Logo whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Logo whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Logo whereUploadedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Logo whereWidth($value)

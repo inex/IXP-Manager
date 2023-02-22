@@ -39,15 +39,15 @@ use IXP\Traits\Observable;
  * @property int $customer_id
  * @property int $user_id
  * @property int $privs
- * @property array|null $extra_attributes
  * @property string|null $last_login_date
  * @property string|null $last_login_from
+ * @property array|null $extra_attributes
  * @property string|null $last_login_via
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer $customer
  * @property-read \IXP\Models\User $user
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\UserLoginHistory[] $userLoginHistories
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\UserLoginHistory> $userLoginHistories
  * @property-read int|null $user_login_histories_count
  * @method static Builder|CustomerToUser custAdmin()
  * @method static Builder|CustomerToUser newModelQuery()

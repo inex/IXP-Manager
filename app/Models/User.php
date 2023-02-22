@@ -62,27 +62,25 @@ use IXP\Traits\Observable;
  * @property int|null $uid
  * @property int|null $privs
  * @property int|null $disabled
- * @property int $fail_count
- * @property string|null $fail_locked_until
  * @property int|null $lastupdatedby
  * @property string|null $creator
  * @property string|null $name
  * @property int|null $peeringdb_id
  * @property array|null $extra_attributes
- * @property array|null $prefs
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ApiKey[] $apiKeys
+ * @property array|null $prefs
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ApiKey> $apiKeys
  * @property-read int|null $api_keys_count
  * @property-read \IXP\Models\Customer|null $customer
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerToUser[] $customerToUser
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\CustomerToUser> $customerToUser
  * @property-read int|null $customer_to_user_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Customer[] $customers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\Customer> $customers
  * @property-read int|null $customers_count
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read \IXP\Models\User2FA|null $user2FA
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\UserRememberToken[] $userRememberTokens
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\UserRememberToken> $userRememberTokens
  * @property-read int|null $user_remember_tokens_count
  * @method static Builder|User activeOnly()
  * @method static Builder|User byPrivs(?int $priv = null)
@@ -96,8 +94,6 @@ use IXP\Traits\Observable;
  * @method static Builder|User whereDisabled($value)
  * @method static Builder|User whereEmail($value)
  * @method static Builder|User whereExtraAttributes($value)
- * @method static Builder|User whereFailCount($value)
- * @method static Builder|User whereFailLockedUntil($value)
  * @method static Builder|User whereId($value)
  * @method static Builder|User whereLastupdatedby($value)
  * @method static Builder|User whereName($value)

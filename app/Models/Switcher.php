@@ -50,22 +50,22 @@ use \OSS_SNMP\MIBS\Iface as SNMPIface;
  * IXP\Models\Switcher
  *
  * @property int $id
+ * @property int|null $infrastructure
  * @property int|null $cabinetid
  * @property int|null $vendorid
  * @property string|null $name
+ * @property string|null $hostname
  * @property string|null $ipv4addr
  * @property string|null $ipv6addr
  * @property string|null $snmppasswd
- * @property int|null $infrastructure
  * @property string|null $model
  * @property bool|null $active
- * @property string|null $notes
- * @property string|null $hostname
  * @property string|null $os
  * @property string|null $osDate
  * @property string|null $osVersion
- * @property string|null $serialNumber
  * @property string|null $lastPolled
+ * @property string|null $notes
+ * @property string|null $serialNumber
  * @property int|null $mauSupported
  * @property int|null $asn
  * @property string|null $loopback_ip
@@ -78,10 +78,10 @@ use \OSS_SNMP\MIBS\Iface as SNMPIface;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Cabinet|null $cabinet
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServerConnection[] $consoleServerConnections
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ConsoleServerConnection> $consoleServerConnections
  * @property-read int|null $console_server_connections_count
  * @property-read \IXP\Models\Infrastructure|null $infrastructureModel
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\SwitchPort[] $switchPorts
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\SwitchPort> $switchPorts
  * @property-read int|null $switch_ports_count
  * @property-read \IXP\Models\Vendor|null $vendor
  * @method static Builder|Switcher newModelQuery()

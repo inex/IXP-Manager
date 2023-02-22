@@ -35,30 +35,30 @@ use IXP\Models\{
  * IXP\Models\Aggregators\VlanAggregator
  *
  * @property int $id
+ * @property int $infrastructureid
  * @property string|null $name
  * @property int|null $number
- * @property string|null $notes
  * @property bool $private
- * @property int $infrastructureid
+ * @property string|null $notes
  * @property int $peering_matrix
  * @property int $peering_manager
  * @property string|null $config_name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasRun[] $atlasRun
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AtlasRun> $atlasRun
  * @property-read int|null $atlas_run_count
  * @property-read \IXP\Models\Infrastructure $infrastructure
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IPv4Address[] $ipv4Addresses
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\IPv4Address> $ipv4Addresses
  * @property-read int|null $ipv4_addresses_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IPv6Address[] $ipv6Addresses
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\IPv6Address> $ipv6Addresses
  * @property-read int|null $ipv6_addresses_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\NetworkInfo[] $networksInfo
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\NetworkInfo> $networksInfo
  * @property-read int|null $networks_info_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $routeServerFilters
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\RouteServerFilter> $routeServerFilters
  * @property-read int|null $route_server_filters_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Router[] $routers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Router> $routers
  * @property-read int|null $routers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\VlanInterface> $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
  * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator newQuery()

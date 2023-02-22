@@ -40,7 +40,7 @@ use IXP\Models\ContactGroup;
  * @property int $limited_to
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Contact[] $contacts
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\Contact> $contacts
  * @property-read int|null $contacts_count
  * @method static Builder|ContactGroupAggregator newModelQuery()
  * @method static Builder|ContactGroupAggregator newQuery()
