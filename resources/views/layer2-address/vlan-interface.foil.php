@@ -38,11 +38,11 @@
                             <?= $t->ee( $t->vli->vlan->name ) ?>
                         </dd>
                         <dt class="col-sm-2">
-                            Addresses
+                            IP Addresses
                         </dt>
                         <dd class="col-sm-9">
-                            <?= $t->vli->ipvv4Address ? $t->vli->ipvv4Address->address . ( $t->vli->ipvv6Address ? ' / ': '' ) : ''  ?>
-                            <?= $t->vli->ipvv6Address->address ?? '' ?>
+                            <?= $t->vli->ipv4Address ? $t->vli->ipv4Address->address . ( $t->vli->ipv6Address ? ' / ': '' ) : ''  ?>
+                            <?= $t->vli->ipv6Address->address ?? '' ?>
                         </dd>
                     </dl>
                 </div>
