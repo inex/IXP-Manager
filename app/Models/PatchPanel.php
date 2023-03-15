@@ -48,16 +48,16 @@ use IXP\Traits\Observable;
  * @property int $connector_type
  * @property string|null $installation_date
  * @property string $port_prefix
- * @property int $active
- * @property int $colo_pp_type
  * @property int $chargeable
  * @property string $location_notes
+ * @property int $active
+ * @property int $colo_pp_type
  * @property int|null $u_position
  * @property int|null $mounted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Cabinet|null $cabinet
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPort[] $patchPanelPorts
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\PatchPanelPort> $patchPanelPorts
  * @property-read int|null $patch_panel_ports_count
  * @method static Builder|PatchPanel newModelQuery()
  * @method static Builder|PatchPanel newQuery()

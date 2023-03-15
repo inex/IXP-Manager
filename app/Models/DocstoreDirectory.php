@@ -52,10 +52,10 @@ use Illuminate\Support\Facades\{
  * @property string|null $description
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read EloquentCollection|\IXP\Models\DocstoreFile[] $files
+ * @property-read EloquentCollection<int, \IXP\Models\DocstoreFile> $files
  * @property-read int|null $files_count
  * @property-read DocstoreDirectory|null $parentDirectory
- * @property-read EloquentCollection|DocstoreDirectory[] $subDirectories
+ * @property-read EloquentCollection<int, DocstoreDirectory> $subDirectories
  * @property-read int|null $sub_directories_count
  * @method static Builder|DocstoreDirectory newModelQuery()
  * @method static Builder|DocstoreDirectory newQuery()

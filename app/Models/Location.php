@@ -51,7 +51,7 @@ use IXP\Traits\Observable;
  * @property string|null $country
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Cabinet[] $cabinets
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\Cabinet> $cabinets
  * @property-read int|null $cabinets_count
  * @method static Builder|Location newModelQuery()
  * @method static Builder|Location newQuery()

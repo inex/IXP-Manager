@@ -47,9 +47,9 @@ use IXP\Traits\Observable;
  * @property string|null $notes
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read Collection|\IXP\Models\Switcher[] $switchers
+ * @property-read Collection<int, \IXP\Models\Switcher> $switchers
  * @property-read int|null $switchers_count
- * @property-read Collection|\IXP\Models\Vlan[] $vlans
+ * @property-read Collection<int, \IXP\Models\Vlan> $vlans
  * @property-read int|null $vlans_count
  * @method static Builder|Infrastructure newModelQuery()
  * @method static Builder|Infrastructure newQuery()

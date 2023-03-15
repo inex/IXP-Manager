@@ -40,7 +40,7 @@ use IXP\Traits\Observable;
  * @property string|null $notes
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Customer[] $customers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\Customer> $customers
  * @property-read int|null $customers_count
  * @method static Builder|IrrdbConfig newModelQuery()
  * @method static Builder|IrrdbConfig newQuery()

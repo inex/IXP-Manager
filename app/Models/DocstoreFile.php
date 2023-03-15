@@ -56,7 +56,7 @@ use IXP\Traits\Observable;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read \IXP\Models\DocstoreDirectory|null $directory
- * @property-read Collection|\IXP\Models\DocstoreLog[] $logs
+ * @property-read Collection<int, \IXP\Models\DocstoreLog> $logs
  * @property-read int|null $logs_count
  * @method static Builder|DocstoreFile newModelQuery()
  * @method static Builder|DocstoreFile newQuery()
