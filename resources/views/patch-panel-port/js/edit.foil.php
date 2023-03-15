@@ -124,10 +124,20 @@
             dd_switch.html( '' );
             if( data.hasSwitches ) {
                 let options = `<option value=''>Choose a switch</option>`;
+                let xcount = 0;
+                let xid = null;
+
                 $.each( data.switches, function( key, value ){
                     options += `<option value='${value.id}'>${value.name}</option>`;
+                    xcount++;
+                    xid = value.id;
                 });
                 dd_switch.html( options );
+
+                if( xcount === 1 ) {
+                    dd_switch.val(xid);
+                    setSwitchPort();
+                }
             }
         })
         .fail( function() {
