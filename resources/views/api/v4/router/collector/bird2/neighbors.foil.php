@@ -238,7 +238,6 @@ protocol bgp pb_as<?= $int['autsys'] ?>_vli<?= $int['vliid'] ?>_ipv<?= $int['pro
         # The import filter listed here just accepts everything but adds tags.
         import where f_import_as<?= $int['autsys'] ?>();
         export none;
-        <?php if( $t->router->protocol === 6 ): ?>missing lladdr ignore;<?php endif; ?>
 
     };
 
