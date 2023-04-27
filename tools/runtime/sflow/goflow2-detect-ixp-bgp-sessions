@@ -1,0 +1,241 @@
+#!/usr/bin/env perl
+#
+# goflow2-detect-ixp-bgp-sessions
+#
+# Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+# All Rights Reserved.
+#
+# This file is part of IXP Manager.
+#
+# IXP Manager is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation, version v2.0 of the License.
+#
+# IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License v2.0
+# along with IXP Manager.  If not, see:
+#
+# http://www.gnu.org/licenses/gpl-2.0.html
+#
+# Description:
+#
+# This script take the JSON output from goflow2, traps active BGP/tcp sessions
+# and populates the IXP Manager peering database with this data.  This
+# allows the IXP operator to create a live peering matrix.
+#
+# goflow2 supports both sFlow and IPFix
+
+use v5.10.1;
+use warnings;
+use strict;
+use Getopt::Long;
+use Data::Dumper;
+use Socket;
+use NetAddr::IP qw (:lower);
+use Time::HiRes qw(ualarm gettimeofday tv_interval);
+
+# To install: cpanm JSON::Tiny
+use JSON::Tiny qw(decode_json);
+
+use FindBin qw($Bin);
+use File::Spec;
+use lib File::Spec->catdir( $Bin, File::Spec->updir(), File::Spec->updir(), 'perl-lib', 'IXPManager', 'lib' );
+
+use IXPManager::Config;
+
+my $ixp = new IXPManager::Config;	# (configfile => $configfile);
+my $dbh = $ixp->{db};
+
+my $debug = defined($ixp->{ixp}->{debug}) ? $ixp->{ixp}->{debug} : 0;
+my $insanedebug = 0;
+my $sflowtool = defined($ixp->{ixp}->{sflowtool}) ? $ixp->{ixp}->{sflowtool} : '/usr/bin/goflow2';
+my $sflowtool_opts = defined($ixp->{ixp}->{sflowtool_bgp_opts}) ? $ixp->{ixp}->{sflowtool_bgp_opts} : '';
+my $timer_period = 600;
+my $bgpretaindays = 14;
+my $daemon = 1;
+
+GetOptions(
+	'bgpretaindays=i'	=> \$bgpretaindays,
+	'debug!'		=> \$debug,
+	'insanedebug!'		=> \$insanedebug,
+	'daemon!'		=> \$daemon,
+	'sflowtool=s'		=> \$sflowtool,
+	'sflowtool_bgp_opts=s'	=> \$sflowtool_opts,
+	'periodictimer=i'	=> \$timer_period
+);
+
+if ($insanedebug) {
+	$debug = 1;
+}
+
+my $ipmappings = reload_ipmappings($dbh);
+
+my $execute_periodic = 0;
+my $quit_after_periodic = 0;
+
+# handle signals gracefully
+$SIG{TERM} = sub { $execute_periodic = 1; $quit_after_periodic = 1; };
+$SIG{QUIT} = sub { $execute_periodic = 1; $quit_after_periodic = 1; };
+$SIG{HUP} = sub { $execute_periodic = 1; };
+
+# set up a periodic timer to signal that stuff should be flushed out.  The
+# flush isn't performed in the SIGALRM callback function because perl has
+# historical problems doing complicated stuff in signal handler functions.
+# Much more sensible to raise a flag and have the main code body handle this
+# during normal code execution.
+$SIG{ALRM} = sub { $execute_periodic = 1 };
+ualarm ( $timer_period*1000000, $timer_period*1000000);
+
+my $tv = [gettimeofday()];
+my $lastdailyrun = 0;
+
+# FIXME - spaces embedded *within* args will be split too
+my $sflowpid = open (SFLOWTOOL, '-|', $sflowtool, split(' ', $sflowtool_opts));
+
+my $sth = $dbh->prepare('INSERT INTO bgpsessiondata (srcipaddressid, dstipaddressid, protocol, vlan, packetcount, source, timestamp) VALUES (?, ?, ?, ?, 1, ?, NOW())');
+my $expiresth = $dbh->prepare('DELETE FROM bgpsessiondata WHERE timestampdiff(DAY, timestamp, NOW()) > ?');
+
+# methodology is to throw away as much crap as possible before parsing
+while (<SFLOWTOOL>) {
+	my ($ipprotocol);
+
+	chomp;
+
+	$insanedebug && print STDERR "DEBUG: $_\n";
+
+	# parse and split out all the data.  most of this is unused at the
+	# moment, but it's useful to collect it anyway
+	# FLOW,193.242.111.152,2,21,0013136f2fc0,0010a52f261f,0x0800,10,10,94.1.115.114,80.1.2.222,6,0x00,124,1863,750,0x18,179,165,1024
+	my $sample = decode_json( $_ );
+	# my (undef, $agent, $srcswport, $dstswport, $srcmac, $dstmac, $ethertype, $vlan, undef,
+	# 	$srcip, $dstip, $protocol, $tos, $ttl,
+	# 	$srcport, $dstport, $tcpflags, $pktsize, $payloadsize, $samplerate) = @sample;
+
+  # SrcAddr,DstAddr,Etype,Proto,SrcPort,DstPort,TCPFlags
+	my $ethertype = $sample->{ Etype }
+	my $srcip = $sample->{ SrcAddr }
+	my $dstip = $sample->{ DstAddr }
+
+	if ($ethertype eq '0x0800') {
+		$ipprotocol = 4;
+	} elsif ($ethertype eq '0x86dd') {
+		$ipprotocol = 6;
+		$srcip = NetAddr::IP->new($srcip)->short();
+		$dstip = NetAddr::IP->new($dstip)->short();
+	} else {
+		next;
+	}
+
+  my $protocol = $sample->{ Proto }
+	my $srcport = $sample->{ SrcPort }
+	my $dstport = $sample->{ DstPort }
+
+	# BGP data is protocol 6 (tcp) and one port == 179
+	if ($protocol == 6 && ($srcport == 179 || $dstport == 179)) {
+		use NetPacket::TCP;
+
+		my $tcpflags = hex($sample->{TCPFlags});
+
+		# we're only interested in established sessions
+		if (($tcpflags & ACK) && !(($tcpflags & SYN) || ($tcpflags & RST) ||($tcpflags & FIN))) {
+			if ($debug) {
+				print STDERR "DEBUG: [$srcip]:$srcport - [$dstip]:$dstport ".debug_tcpflags($tcpflags).".";
+			}
+
+			# we're also only interested in ip addresses that have a database match
+			if ($ipmappings->{$ipprotocol}->{$srcip} && $ipmappings->{$ipprotocol}->{$dstip}) {
+				print STDERR " database updated" if ($debug);
+				if (!$sth->execute($ipmappings->{$ipprotocol}->{$srcip}, $ipmappings->{$ipprotocol}->{$dstip}, $ipprotocol, $vlan, $agent)) {
+					print STDERR " unsuccessfully" if ($debug);
+				}
+			} else {
+				print STDERR " ignored - no address match in database" if ($debug);
+			}
+			print STDERR ".\n" if ($debug);
+		}
+	}
+
+	if ($execute_periodic) {
+		if ($quit_after_periodic) {
+			# sometimes sflowtool doesn't die properly. Need to prioritise kill.
+			kill 9, $sflowpid;
+		}
+		my $newtv = [gettimeofday()];
+		my $interval = tv_interval($tv, $newtv);
+		$tv = $newtv;
+		$debug && print STDERR "DEBUG: periodic reload at time interval: $interval, time: ".time()."\n";
+		if ($quit_after_periodic) {
+			$debug && print STDERR "DEBUG: orderly quit at ".time()."\n";
+			exit 0;
+		}
+		$execute_periodic = 0;
+		$ipmappings = reload_ipmappings($dbh);
+		$debug && print STDERR "DEBUG: periodic reload completed at ".time()."\n";
+		$debug && print Dumper ($ipmappings);
+
+		if (time() - $lastdailyrun > 86400) {
+			$lastdailyrun = time();
+			$debug && print STDERR "DEBUG: started daily run at ".time()."\n";
+			$debug && print STDERR "DEBUG: clearing out stale bgp session data older than $bgpretaindays days\n";
+			if (!$expiresth->execute($bgpretaindays)) {
+				$debug && print STDERR "WARNING: could not expire session data";
+			}
+			$debug && print STDERR "DEBUG: completed daily run at ".time()."\n";
+		}
+	}
+}
+
+close (SFLOWTOOL);
+
+# try to kill off sflowtool if it's not already dead
+kill 9, $sflowpid;
+
+# oops, we should never exit
+die "Oops, input pipe died. Aborting.\n";
+
+sub debug_tcpflags
+{
+	my ($tcpflags) = @_;
+
+	use NetPacket::TCP;
+
+	my $ret = sprintf ("tcpflags %09b:", $tcpflags);
+
+	$ret .= " cwr" if ($tcpflags & CWR);
+	$ret .= " ece" if ($tcpflags & ECE);
+	$ret .= " urg" if ($tcpflags & URG);
+	$ret .= " ack" if ($tcpflags & ACK);
+	$ret .= " psh" if ($tcpflags & PSH);
+	$ret .= " rst" if ($tcpflags & RST);
+	$ret .= " syn" if ($tcpflags & SYN);
+	$ret .= " fin" if ($tcpflags & FIN);
+
+	return $ret;
+}
+
+#
+# Create a mapping from $ipmappings->{address}
+#
+sub reload_ipmappings
+{
+	my ($d) = @_;
+	my ($rec, $s, $mapping);
+
+	$s = $d->prepare('SELECT ipv4address.id AS id, ipv4address.address AS address FROM ipv4address LEFT JOIN vlan ON vlan.id = ipv4address.vlanid WHERE vlan.peering_matrix = 1');
+	$s->execute();
+	while (my $rec = $s->fetchrow_hashref) {
+		$mapping->{4}->{$rec->{address}} = $rec->{id};
+	}
+
+	$s = $d->prepare('SELECT ipv6address.id AS id, ipv6address.address AS address FROM ipv6address LEFT JOIN vlan ON vlan.id = ipv6address.vlanid WHERE vlan.peering_matrix = 1');
+	$s->execute();
+	while (my $rec = $s->fetchrow_hashref) {
+		$mapping->{6}->{NetAddr::IP->new($rec->{address})->short()} = $rec->{id};
+	}
+
+	return $mapping;
+}
