@@ -38,8 +38,7 @@ use Socket;
 use NetAddr::IP qw (:lower);
 use Time::HiRes qw(ualarm gettimeofday tv_interval);
 
-# To install: cpanm JSON::Tiny
-use JSON::Tiny qw(decode_json);
+use JSON qw(decode_json);
 
 use FindBin qw($Bin);
 use File::Spec;
@@ -115,10 +114,11 @@ while (<SFLOWTOOL>) {
 	# 	$srcip, $dstip, $protocol, $tos, $ttl,
 	# 	$srcport, $dstport, $tcpflags, $pktsize, $payloadsize, $samplerate) = @sample;
 
-  # SrcAddr,DstAddr,Etype,Proto,SrcPort,DstPort,TCPFlags
-	my $ethertype = $sample->{ Etype }
-	my $srcip = $sample->{ SrcAddr }
-	my $dstip = $sample->{ DstAddr }
+  # SrcAddr,DstAddr,Etype,Proto,SrcPort,DstPort,TCPFlags,SamplerAddress,VlanId
+	# see https://github.com/netsampler/goflow2/blob/main/docs/protocols.md for more fields
+	my $ethertype = $sample->{ Etype };
+	my $srcip = $sample->{ SrcAddr };
+	my $dstip = $sample->{ DstAddr };
 
 	if ($ethertype eq '0x0800') {
 		$ipprotocol = 4;
@@ -130,9 +130,9 @@ while (<SFLOWTOOL>) {
 		next;
 	}
 
-  my $protocol = $sample->{ Proto }
-	my $srcport = $sample->{ SrcPort }
-	my $dstport = $sample->{ DstPort }
+	my $protocol = $sample->{ Proto };
+	my $srcport = $sample->{ SrcPort };
+	my $dstport = $sample->{ DstPort };
 
 	# BGP data is protocol 6 (tcp) and one port == 179
 	if ($protocol == 6 && ($srcport == 179 || $dstport == 179)) {
@@ -147,6 +147,8 @@ while (<SFLOWTOOL>) {
 			}
 
 			# we're also only interested in ip addresses that have a database match
+			my $agent = $sample->{ SamplerAddress };
+			my $vlan = $sample->{ VlanId };
 			if ($ipmappings->{$ipprotocol}->{$srcip} && $ipmappings->{$ipprotocol}->{$dstip}) {
 				print STDERR " database updated" if ($debug);
 				if (!$sth->execute($ipmappings->{$ipprotocol}->{$srcip}, $ipmappings->{$ipprotocol}->{$dstip}, $ipprotocol, $vlan, $agent)) {
