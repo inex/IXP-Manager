@@ -40,13 +40,17 @@ return [
         'access_key' => env( 'IXP_API_JSONEXPORTSCHEMA_ACCESS_KEY', false ),
 
         // some IXs want to exclude some information:
-        'excludes' => [
-            'switch'    => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_SWITCH', false    ),
-            'ixp'       => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_IXP', false       ),
-            'member'    => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_MEMBER', false    ),
-            'intinfo'   => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_INTINFO', false   ),
-        ],
-    ],
+            'excludes' => [
+                'rfc5398'   => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_RFC5398', true    ),
+                'rfc6996'   => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_RFC6996', false   ),
+                'tags'      => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_TAGS', false      ),
+                'asnum'     => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_ASNUM', false     ),
+                'switch'    => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_SWITCH', false    ),
+                'ixp'       => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_IXP', false       ),
+                'member'    => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_MEMBER', false    ),
+                'intinfo'   => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_INTINFO', false   ),
+            ],
+     ],
 
     /*
     |--------------------------------------------------------------------------
