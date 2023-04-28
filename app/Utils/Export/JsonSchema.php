@@ -3,7 +3,7 @@
 namespace IXP\Utils\Export;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2023 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -326,9 +326,48 @@ class JsonSchema
             ->keyBy( 'id' );
 
         $cnt = 0;
+        $exclude_asns = array();
+        $exclude_tags = array();
+
+        if( $xas = config( 'ixp_api.json_export_schema.excludes.asnum' ) ) {
+            $exclude_asns = explode( '|', $xas );
+        }
+
+        if( $xt = config( 'ixp_api.json_export_schema.excludes.tags' ) ) {
+            $exclude_tags = explode( '|', $xt );
+        }
+
         foreach( $customers as $c ) {
             /** @var Customer  $c */
             $connlist = [];
+
+            if (config( 'ixp_api.json_export_schema.excludes.rfc6996' )) {
+                if ( ($c->autsys >= 64512 && $c->autsys <= 65534) || 
+                      ( $c->autsys >= 4200000000  && $c->autsys <= 4294967294 ) ) {
+                    continue;
+                }
+            }
+
+            if (config( 'ixp_api.json_export_schema.excludes.rfc5398' )) {
+                if ( ($c->autsys >= 64496 && $c->autsys <= 64511) || 
+                      ( $c->autsys >= 65536  && $c->autsys <= 65551 ) ) {
+                    continue;
+                }
+            }
+
+            if (count($exclude_asns) > 0) {
+                 if (in_array($c->autsys, $exclude_asns)) {
+                      continue;
+                    }
+                }
+
+            if (count($exclude_tags) > 0) {
+                foreach( $c->tags as $tag ) {
+                    if (in_array($tag->tag, $exclude_tags)) {
+                        continue 2;
+                    }
+                }
+            }
 
             foreach( $c->virtualInterfaces as $vi ) {
                 $iflist = [];
