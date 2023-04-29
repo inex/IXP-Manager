@@ -115,7 +115,7 @@
                         <div class="col-md-12 col-lg-6">
                             <?= Former::number( 'maxbgpprefix' )
                                 ->label( 'Max BGP Prefixes' )
-                                ->blockHelp( 'The maximum IPv4/6 prefixes that any router configured via IXP Manager should accept for this endpoing. '
+                                ->blockHelp( 'The maximum IPv4/6 prefixes that any router configured via IXP Manager should accept for this endpoint. '
                                     . 'See <a href="http://docs.ixpmanager.org/usage/customers/#peering-details">the official documentation</a> for more details.' );
                             ?>
 
