@@ -210,7 +210,6 @@ while (<SFLOWTOOL>) {
 		my $newmactable = reload_mactable($client, $macdbrest);
 		if ($newmactable) {
 			$mactable = $newmactable;
-			$matrix = matrix_init($mactable, $infraid);
 			$mactablereloadfails = 0;
 		} else {
 			$mactablereloadfails++;
@@ -221,6 +220,7 @@ while (<SFLOWTOOL>) {
 				die "FATAL: could not reload mactable after $mactabletimeout seconds. Aborting.\n";
 			}
 		}
+		$matrix = matrix_init($mactable, $infraid);
 		$debug && print STDERR "DEBUG: flush completed at ".time()."\n";
 	}
 }
