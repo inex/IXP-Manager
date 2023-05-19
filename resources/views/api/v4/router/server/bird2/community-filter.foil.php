@@ -44,6 +44,7 @@ function ixp_community_filter(int peerasn)
     if !(source = RTS_BGP) then
             return false;
 
+<?php if( $t->router->bgp_lc ): ?>
     # AS path prepending
     if (routeserverasn, 103, peerasn) ~ bgp_large_community then {
         bgp_path.prepend( bgp_path.first );
@@ -57,7 +58,6 @@ function ixp_community_filter(int peerasn)
     }
 
 
-<?php if( $t->router->bgp_lc ): ?>
     # support for BGP Large Communities
     if (routeserverasn, 0, peerasn) ~ bgp_large_community then
             return false;
@@ -73,6 +73,7 @@ function ixp_community_filter(int peerasn)
     if routeserverasn > 65535 || peerasn > 65535 then
             return true;
 
+<?php if( $t->router->asn <= 65535 ): ?>
     # Implement widely used community filtering schema.
     if (0, peerasn) ~ bgp_community then
             return false;
@@ -81,6 +82,7 @@ function ixp_community_filter(int peerasn)
     if (0, routeserverasn) ~ bgp_community then
             return false;
 
+<?php endif; ?>
     return true;
 }
 

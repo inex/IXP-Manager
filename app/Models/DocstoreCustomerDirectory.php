@@ -54,10 +54,10 @@ use Illuminate\Support\Facades\{
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read \IXP\Models\Customer $customer
- * @property-read Collection|\IXP\Models\DocstoreCustomerFile[] $files
+ * @property-read Collection<int, \IXP\Models\DocstoreCustomerFile> $files
  * @property-read int|null $files_count
  * @property-read DocstoreCustomerDirectory|null $parentDirectory
- * @property-read Collection|DocstoreCustomerDirectory[] $subDirectories
+ * @property-read Collection<int, DocstoreCustomerDirectory> $subDirectories
  * @property-read int|null $sub_directories_count
  * @method static Builder|DocstoreCustomerDirectory newModelQuery()
  * @method static Builder|DocstoreCustomerDirectory newQuery()

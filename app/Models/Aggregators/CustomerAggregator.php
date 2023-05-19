@@ -76,58 +76,58 @@ use Illuminate\Support\Collection;
  * @property int $peeringdb_oauth
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasMeasurement[] $AtlasMeasurementsDest
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AtlasMeasurement> $AtlasMeasurementsDest
  * @property-read int|null $atlas_measurements_dest_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasMeasurement[] $AtlasMeasurementsSource
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AtlasMeasurement> $AtlasMeasurementsSource
  * @property-read int|null $atlas_measurements_source_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\AtlasProbe[] $AtlasProbes
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AtlasProbe> $AtlasProbes
  * @property-read int|null $atlas_probes_count
  * @property-read \IXP\Models\CompanyBillingDetail|null $companyBillingDetail
  * @property-read \IXP\Models\CompanyRegisteredDetail|null $companyRegisteredDetail
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServerConnection[] $consoleServerConnections
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ConsoleServerConnection> $consoleServerConnections
  * @property-read int|null $console_server_connections_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Contact[] $contacts
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\Contact> $contacts
  * @property-read int|null $contacts_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerEquipment[] $customerEquipments
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\CustomerEquipment> $customerEquipments
  * @property-read int|null $customer_equipments_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerNote[] $customerNotes
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\CustomerNote> $customerNotes
  * @property-read int|null $customer_notes_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerToUser[] $customerToUser
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\CustomerToUser> $customerToUser
  * @property-read int|null $customer_to_user_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerDirectory[] $docstoreCustomerDirectories
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\DocstoreCustomerDirectory> $docstoreCustomerDirectories
  * @property-read int|null $docstore_customer_directories_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerFile[] $docstoreCustomerFiles
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\DocstoreCustomerFile> $docstoreCustomerFiles
  * @property-read int|null $docstore_customer_files_count
  * @property-read \IXP\Models\IrrdbConfig|null $irrdbConfig
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IrrdbPrefix[] $irrdbPrefixes
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\IrrdbPrefix> $irrdbPrefixes
  * @property-read int|null $irrdb_prefixes_count
  * @property-read \IXP\Models\Logo|null $logo
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortHistory[] $patchPanelPortHistories
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\PatchPanelPortHistory> $patchPanelPortHistories
  * @property-read int|null $patch_panel_port_histories_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPort[] $patchPanelPorts
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\PatchPanelPort> $patchPanelPorts
  * @property-read int|null $patch_panel_ports_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $peerRouteServerFilters
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\RouteServerFilter> $peerRouteServerFilters
  * @property-read int|null $peer_route_server_filters_count
- * @property-read \Illuminate\Database\Eloquent\Collection|PeeringManager[] $peers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, PeeringManager> $peers
  * @property-read int|null $peers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|PeeringManager[] $peersWith
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, PeeringManager> $peersWith
  * @property-read int|null $peers_with_count
  * @property-read Customer|null $resellerObject
- * @property-read \Illuminate\Database\Eloquent\Collection|Customer[] $resoldCustomers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Customer> $resoldCustomers
  * @property-read int|null $resold_customers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $routeServerFilters
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\RouteServerFilter> $routeServerFilters
  * @property-read int|null $route_server_filters_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RsPrefix[] $rsPrefixes
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\RsPrefix> $rsPrefixes
  * @property-read int|null $rs_prefixes_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerTag[] $tags
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\CustomerTag> $tags
  * @property-read int|null $tags_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\TrafficDaily[] $trafficDailies
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\TrafficDaily> $trafficDailies
  * @property-read int|null $traffic_dailies_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\User[] $users
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\User> $users
  * @property-read int|null $users_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VirtualInterface[] $virtualInterfaces
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\VirtualInterface> $virtualInterfaces
  * @property-read int|null $virtual_interfaces_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\VlanInterface> $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
  * @method static Builder|Customer active()
  * @method static Builder|Customer addressesForVlan(int $vlanid, int $cust, int $protocol)

@@ -65,7 +65,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read \IXP\Models\PatchPanelPort|null $patchPanelPort
- * @property-read Collection|\IXP\Models\PatchPanelPortHistoryFile[] $patchPanelPortHistoryFiles
+ * @property-read Collection<int, \IXP\Models\PatchPanelPortHistoryFile> $patchPanelPortHistoryFiles
  * @property-read int|null $patch_panel_port_history_files_count
  * @method static Builder|PatchPanelPortHistory masterPort()
  * @method static Builder|PatchPanelPortHistory newModelQuery()
