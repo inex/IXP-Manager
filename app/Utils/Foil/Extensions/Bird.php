@@ -93,6 +93,17 @@ class Bird implements ExtensionInterface
         return $prefixes;
     }
 
+    # https://www.iana.org/assignments/bgp-well-known-communities/bgp-well-known-communities.xhtml
+    public static $BGPCS = [
+        ':0' => ['GRACEFUL_SHUTDOWN', 'warning'],
+        ':1' => ['ACCEPT_OWN', 'info'],
+        ':9' => ['STANDBY_PE', 'info'],
+        ':666' => ['BLACKHOLE', 'warning'],
+        ':65281' => ['NO_EXPORT', 'info'],
+        ':65282' => ['NO_ADVERTISE', 'info'],
+        ':65283' => ['NO_EXPORT_SUBCONFED', 'info'],
+        ':65284' => ['NOPEER', 'info'],
+    ];
 
     // FIXME: need to find a place for this that allows end users to customise it
     public static $BGPLCS = [
@@ -136,6 +147,20 @@ class Bird implements ExtensionInterface
         ':102:\d+'  => [ 'PREPEND TO PEERAS - TWICE', 'info' ],
         ':103:\d+'  => [ 'PREPEND TO PEERAS - THREE TIMES', 'info' ],
     ];
+
+    /**
+     * Get information on a BGP well-known community
+     */
+    public function translateBgpCommunity( string $c ): ?array
+    {
+        foreach( self::$BGPCS as $k => $v ) {
+            if( $k === $c ) {
+                return $v;
+            }
+        }
+
+        return null;
+    }
 
     /**
      * Get information on a BGP large community used for filtering / info by IXP Manager
