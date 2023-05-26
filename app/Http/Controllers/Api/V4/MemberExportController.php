@@ -45,7 +45,7 @@ use IXP\Utils\Export\JsonSchema as JsonSchemaExporter;
 class MemberExportController extends Controller
 {
     /**
-     * API call to generate DNS ARPA records in a given format
+     * API call to generate IX-F export in a given version
      *
      * @param Request   $r
      * @param string    $version Version of schema to export
