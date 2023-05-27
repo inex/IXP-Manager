@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Vlan Interface / Configured MAC Address Management
+    VLAN Interface / Configured MAC Address Management
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
