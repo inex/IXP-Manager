@@ -239,9 +239,9 @@ protocol bgp pb_as<?= $int['autsys'] ?>_vli<?= $int['vliid'] ?>_ipv<?= $int['pro
         import where f_import_as<?= $int['autsys'] ?>();
         export none;
     };
-
-    <?php if( $int['bgpmd5secret'] && !$t->router->skip_md5 ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
-
+<?php if( $int['bgpmd5secret'] && !$t->router->skip_md5 ): ?>
+    password "<?= $int['bgpmd5secret'] ?>";
+<?php endif; ?>
 }
 
 <?php endforeach; ?>
