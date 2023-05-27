@@ -71,7 +71,7 @@
                     <div class="row">
                         <div class="col-md-12 col-lg-6">
                             <?= Former::select( 'vlanid' )
-                                ->label( 'Vlan' )
+                                ->label( 'VLAN' )
                                 ->fromQuery( $t->vlans, 'name' )
                                 ->placeholder( 'Choose a VLAN' )
                                 ->addClass( 'chzn-select' )
