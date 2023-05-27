@@ -284,6 +284,7 @@ protocol bgp pb_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?> from tb_rsclient {
 <?php if( $int['bgpmd5secret'] && !$t->router->skip_md5 ): ?>
         password "<?= $int['bgpmd5secret'] ?>";
 <?php endif; ?>
+        bfd on;
 }
 
 <?php endforeach; ?>

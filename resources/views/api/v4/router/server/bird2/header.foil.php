@@ -60,6 +60,17 @@ router id <?= $t->router->router_id ?>;
 # ignore interface up/down events
 protocol device { }
 
+protocol bfd
+{
+        accept ipv<?= $t->router->protocol ?> direct;
+        interface "*" {
+                passive on;
+                multiplier 3;
+                min rx interval 500ms;
+                min tx interval 500ms;
+        };
+}
+
 # This function excludes weird networks
 #  rfc1918, class D, class E, too long and too short prefixes
 function avoid_martians()
