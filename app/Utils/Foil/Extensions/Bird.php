@@ -142,10 +142,8 @@ class Bird implements ExtensionInterface
      */
     public function translateBgpFilteringLargeCommunity( string $lc ): ?array
     {
-        foreach( self::$BGPLCS as $k => $v ) {
-            if( $k === $lc ) {
-                return $v;
-            }
+        if( isset( self::$BGPLCS[$lc] ) ) {
+            return self::$BGPLCS[$lc];
         }
 
         foreach( self::$BGPLCS_REGEX as $re => $v ) {
