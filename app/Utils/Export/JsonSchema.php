@@ -326,7 +326,6 @@ class JsonSchema
             ->keyBy( 'id' );
 
         $cnt = 0;
-
         $exclude_asns = [];
         $exclude_tags = [];
 
