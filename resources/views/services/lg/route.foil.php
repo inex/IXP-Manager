@@ -140,12 +140,9 @@
                           <?php foreach( $r->bgp->communities as $c ): ?>
                               <tt><?= implode(':',$c) ?></tt>
 
-                           <?php if( $c[0] === 65535 ): ?>
-                                  <?php if( $cinfo = $t->bird()->translateBgpCommunity( ':' . $c[1] ) ): ?>
-                                      <span class="badge badge-<?= $cinfo[1] ?>"><?= $cinfo[0] ?></span>
-                                  <?php endif; ?>
+                              <?php if( $cinfo = $t->bird()->translateBgpCommunity( implode(':',$c) ) ): ?>
+                                  <span class="badge badge-<?= $cinfo[1] ?>"><?= $cinfo[0] ?></span>
                               <?php endif; ?>
-
                               <br>
                           <?php endforeach; ?>
                       </td>

@@ -95,14 +95,14 @@ class Bird implements ExtensionInterface
 
     # https://www.iana.org/assignments/bgp-well-known-communities/bgp-well-known-communities.xhtml
     public static $BGPCS = [
-        ':0' => ['GRACEFUL_SHUTDOWN', 'warning'],
-        ':1' => ['ACCEPT_OWN', 'info'],
-        ':9' => ['STANDBY_PE', 'info'],
-        ':666' => ['BLACKHOLE', 'warning'],
-        ':65281' => ['NO_EXPORT', 'info'],
-        ':65282' => ['NO_ADVERTISE', 'info'],
-        ':65283' => ['NO_EXPORT_SUBCONFED', 'info'],
-        ':65284' => ['NOPEER', 'info'],
+        '65535:0' => ['GRACEFUL_SHUTDOWN', 'warning'],
+        '65535:1' => ['ACCEPT_OWN', 'info'],
+        '65535:9' => ['STANDBY_PE', 'info'],
+        '65535:666' => ['BLACKHOLE', 'warning'],
+        '65535:65281' => ['NO_EXPORT', 'info'],
+        '65535:65282' => ['NO_ADVERTISE', 'info'],
+        '65535:65283' => ['NO_EXPORT_SUBCONFED', 'info'],
+        '65535:65284' => ['NOPEER', 'info'],
     ];
 
     // FIXME: need to find a place for this that allows end users to customise it
@@ -153,13 +153,7 @@ class Bird implements ExtensionInterface
      */
     public function translateBgpCommunity( string $c ): ?array
     {
-        foreach( self::$BGPCS as $k => $v ) {
-            if( $k === $c ) {
-                return $v;
-            }
-        }
-
-        return null;
+        return self::$BGPCS[$c] ?? null;
     }
 
     /**
@@ -167,10 +161,8 @@ class Bird implements ExtensionInterface
      */
     public function translateBgpFilteringLargeCommunity( string $lc ): ?array
     {
-        foreach( self::$BGPLCS as $k => $v ) {
-            if( $k === $lc ) {
-                return $v;
-            }
+        if( isset( self::$BGPLCS[$lc] ) ) {
+            return self::$BGPLCS[$lc];
         }
 
         foreach( self::$BGPLCS_REGEX as $re => $v ) {
