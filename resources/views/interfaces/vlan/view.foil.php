@@ -5,7 +5,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Vlan Interfaces / View
+    VLAN Interfaces / View
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>

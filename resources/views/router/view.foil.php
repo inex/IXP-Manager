@@ -52,7 +52,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <b>Vlan:</b>
+                                    <b>VLAN:</b>
                                 </td>
                                 <td>
                                     <a href="<?= route( "vlan@view" , [ "id" => $rt->vlan_id ] )?> ">

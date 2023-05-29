@@ -39,7 +39,7 @@
                         <form class="navbar-form navbar-left form-inline d-block d-lg-flex">
                             <li class="nav-item mr-md-2">
                                 <div class="nav-link d-flex ">
-                                    <label class="col-4 col-md-4 col-lg-3" for="form-select-vlanid">Vlan:</label>
+                                    <label class="col-4 col-md-4 col-lg-3" for="form-select-vlanid">VLAN:</label>
                                     <select id="form-select-vlanid" name="vlanid" class="form-control" >
                                         <?php foreach( $t->vlans as $v ): ?>
                                             <option value="<?= $v->id ?>" <?= $t->vlan->id !== $v->id ?: 'selected="selected"' ?>><?= $v->name ?></option>

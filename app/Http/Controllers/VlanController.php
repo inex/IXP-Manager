@@ -250,22 +250,22 @@ class VlanController extends EloquentController
     {
         $okay = true;
         if( ( $cnt = $this->object->routers()->count() ) ) {
-            AlertContainer::push( "Could not delete this Vlan as {$cnt} router(s) are assigned to it", Alert::DANGER );
+            AlertContainer::push( "Could not delete this VLAN as {$cnt} router(s) are assigned to it", Alert::DANGER );
             $okay = false;
         }
 
         if( ( $cnt = $this->object->ipv4addresses()->count() ) ) {
-            AlertContainer::push( "Could not delete this Vlan as {$cnt} IPv4 address(es) are assigned to it", Alert::DANGER );
+            AlertContainer::push( "Could not delete this VLAN as {$cnt} IPv4 address(es) are assigned to it", Alert::DANGER );
             $okay = false;
         }
 
         if( ( $cnt = $this->object->ipv6addresses()->count() ) ) {
-            AlertContainer::push( "Could not delete this Vlan as {$cnt} IPv6 address(es) are assigned to it", Alert::DANGER );
+            AlertContainer::push( "Could not delete this VLAN as {$cnt} IPv6 address(es) are assigned to it", Alert::DANGER );
             $okay = false;
         }
 
         if( ( $cnt = $this->object->vlanInterfaces()->count() ) ) {
-            AlertContainer::push( "Could not delete this Vlan as {$cnt} Vlan Interfaces are assigned to it", Alert::DANGER );
+            AlertContainer::push( "Could not delete this VLAN as {$cnt} VLAN Interfaces are assigned to it", Alert::DANGER );
             $okay = false;
         }
 

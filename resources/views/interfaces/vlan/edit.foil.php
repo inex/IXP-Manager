@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Vlan Interfaces
+    VLAN Interfaces
     /
     <?= $t->duplicateTo ? 'Duplicate' : ( $t->vli ? 'Edit' : 'Create' ) ?> VLAN Interface
     (<?= $t->vi ? $t->vi->customer->getFormattedName() : $t->vli->virtualInterface->customer->getFormattedName() ?>)
@@ -71,7 +71,7 @@
                     <div class="row">
                         <div class="col-md-12 col-lg-6">
                             <?= Former::select( 'vlanid' )
-                                ->label( 'Vlan' )
+                                ->label( 'VLAN' )
                                 ->fromQuery( $t->vlans, 'name' )
                                 ->placeholder( 'Choose a VLAN' )
                                 ->addClass( 'chzn-select' )
