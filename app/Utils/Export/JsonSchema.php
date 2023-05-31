@@ -326,8 +326,8 @@ class JsonSchema
             ->keyBy( 'id' );
 
         $cnt = 0;
-        $exclude_asns = array();
-        $exclude_tags = array();
+        $exclude_asns = [];
+        $exclude_tags = [];
 
         if( $xas = config( 'ixp_api.json_export_schema.excludes.asnum' ) ) {
             $exclude_asns = explode( '|', $xas );
@@ -341,29 +341,27 @@ class JsonSchema
             /** @var Customer  $c */
             $connlist = [];
 
-            if (config( 'ixp_api.json_export_schema.excludes.rfc6996' )) {
-                if ( ($c->autsys >= 64512 && $c->autsys <= 65534) || 
-                      ( $c->autsys >= 4200000000  && $c->autsys <= 4294967294 ) ) {
+            if( config( 'ixp_api.json_export_schema.excludes.rfc6996' ) ) {
+                if( ( $c->autsys >= 64512 && $c->autsys <= 65534 ) ||
+                      ( $c->autsys >= 4200000000 && $c->autsys <= 4294967294 ) ) {
                     continue;
                 }
             }
 
-            if (config( 'ixp_api.json_export_schema.excludes.rfc5398' )) {
-                if ( ($c->autsys >= 64496 && $c->autsys <= 64511) || 
+            if( config( 'ixp_api.json_export_schema.excludes.rfc5398' ) ) {
+                if( ( $c->autsys >= 64496 && $c->autsys <= 64511 ) ||
                       ( $c->autsys >= 65536  && $c->autsys <= 65551 ) ) {
                     continue;
                 }
             }
 
-            if (count($exclude_asns) > 0) {
-                 if (in_array($c->autsys, $exclude_asns)) {
-                      continue;
-                    }
-                }
+            if( count( $exclude_asns ) && in_array( $c->autsys, $exclude_asns ) ) {
+                continue;
+            }
 
-            if (count($exclude_tags) > 0) {
+            if( count( $exclude_tags ) ) {
                 foreach( $c->tags as $tag ) {
-                    if (in_array($tag->tag, $exclude_tags)) {
+                    if( in_array( $tag->tag, $exclude_tags ) ) {
                         continue 2;
                     }
                 }
