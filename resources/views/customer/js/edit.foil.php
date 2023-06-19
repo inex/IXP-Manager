@@ -128,6 +128,7 @@
                             case "Open":
                                 peering_policy = "open";
                                 break;
+                            case "Restrictive":
                             case "Selective":
                                 peering_policy = "selective";
                                 break;
