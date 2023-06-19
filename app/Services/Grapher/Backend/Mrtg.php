@@ -177,13 +177,19 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                     continue;
                 }
 
+                /** @var PhysicalInterface $pi */
                 foreach( $vi->physicalInterfaces as $pi ) {
                     if( $pi->id > $maxPiID ) {
                         $maxPiID = $pi->id;
                     }
 
                     // per inex/IXP-Manager##746 - added ifIndex check to skip manually added dummy ports
-                    if( !$pi->isConnectedOrQuarantine() || !$pi->switchPort->ifIndex || !( $pi->switchPort->switcher->active && $pi->switchPort->switcher->poll ) ) {
+                    if( !$pi->isConnectedOrQuarantine()
+                            || !$pi->switchPort->ifIndex
+                            || !( $pi->switchPort->switcher->active && $pi->switchPort->switcher->poll )
+                            || $pi->switchPort->typeReseller()
+                            || $pi->switchPort->typeFanout()
+                    ) {
                         continue;
                     }
 
@@ -210,6 +216,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                         $data['infras'][ $i->id ] = $i;
                         $data['infraports_maxbytes'][ $i->id ] = 0;
                     }
+
 
                     $data[ 'custports' ][ $c->id ][] = $pi->id;
 
@@ -276,7 +283,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
             }
         }
 
-        // include core switch ports.
+        // include core + fanout + reseller switch ports in switch aggregates ("how much work is the switch doing?")
         // This is a slight hack as the template requires PhysicalInterfaces so we wrap core SwitchPorts in temporary PhyInts.
         foreach( Infrastructure::all() as $infra ) {
             foreach( $infra->switchers as $switch ) {
@@ -285,10 +292,17 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                     continue;
                 }
 
+                /** @var SwitchPort $sp */
                 foreach( $switch->switchPorts as $sp ) {
-                    if( $sp->typeCore() ) {
+                    if( $sp->typeCore() || $sp->typeReseller() || $sp->typeFanout() ) {
+
                         // this needs to be wrapped in a physical interface for the template
-                        $pi = $this->wrapSwitchPortInPhysicalInterface( $sp, ++$maxPiID );
+                        // [TODO 2023-06 is this necessary with CoreBundles? Probably for anyone not using them...]
+                        if( $sp->physicalInterface ) {
+                            $pi = $sp->physicalInterface;
+                        } else {
+                            $pi = $this->wrapSwitchPortInPhysicalInterface( $sp, ++$maxPiID );
+                        }
                         $data[ 'pis' ][ $pi->id ] = $pi;
                         $data[ 'swports' ][ $switch->id ][] = $pi->id;
 
