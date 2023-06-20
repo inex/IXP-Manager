@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Services\Grapher\Graph\Renderer\Extensions;
+namespace Tests\Services\Grapher\Renderer\Extensions;
 
 /*
  * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
