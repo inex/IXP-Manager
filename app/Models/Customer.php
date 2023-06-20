@@ -428,6 +428,14 @@ class Customer extends Model
     }
 
     /**
+     * Get the route server filters for the customer (in production)
+     */
+    public function routeServerFiltersInProduction(): HasMany
+    {
+        return $this->hasMany(RouteServerFilterProd::class, 'customer_id' );
+    }
+
+    /**
      * Get the peer route server filters for the customer
      */
     public function peerRouteServerFilters(): HasMany
