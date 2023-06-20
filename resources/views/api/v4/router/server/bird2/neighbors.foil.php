@@ -241,7 +241,10 @@ filter f_export_as<?= $int['autsys'] ?>
 
     # we should strip our own communities which we used for the looking glass and filtering
     bgp_large_community.delete( [( routeserverasn, *, * )] );
+<?php if( $t->router->asn <= 65535 ): ?>
     bgp_community.delete( [( routeserverasn, * )] );
+<?php endif; ?>
+
 
 <?php
     // IXP Manauger UI based filters:
@@ -252,13 +255,6 @@ filter f_export_as<?= $int['autsys'] ?>
     //     resources/skins/api/v4/router/server/bird2/f_export_as32934.foil.php
     echo $t->insertif( 'api/v4/router/server/bird2/f_export_as' . $int['autsys'] );
 ?>
-
-
-    # we should strip our own communities which we used for the looking glass
-    bgp_large_community.delete( [( routeserverasn, *, * )] );
-<?php if( $t->router->asn <= 65535 ): ?>
-    bgp_community.delete( [( routeserverasn, * )] );
-<?php endif; ?>
 
     # default position is to accept:
     accept;
