@@ -8,7 +8,7 @@
 
         <?php if( config('contact_group.types.ROLE') ): ?>
             <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?= isset( $t->data[ 'params'][ "role" ] ) ? $t->data[ 'params'][ "roles" ][ $t->data[ 'params'][ "role" ] ][ 'name']  : "All Roles" ?>
+                <?= isset( $t->data[ 'params'][ "role" ] ) ? $t->ee( $t->data[ 'params'][ "roles" ][ $t->data[ 'params'][ "role" ] ][ 'name'] ) : "All Roles" ?>
             </button>
             <ul class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item <?= isset( $t->data[ 'params'][ "role" ]) ?: "active" ?>" href="<?= route( $t->feParams->route_prefix . "@list" ) ?>">
@@ -19,7 +19,7 @@
 
                 <?php foreach( $t->data[ 'params'][ "roles" ] as $index => $role ): ?>
                     <a class="dropdown-item <?= isset($t->data[ 'params'][ "role" ]) && (int)$t->data[ 'params'][ "role" ] === $role[ 'id'] ? 'active' : '' ?>" href="<?= route( $t->feParams->route_prefix . "@list" ) ?>?role=<?= $role[ 'id' ] ?>">
-                        <?= $role[ 'name' ] ?>
+                        <?= $t->ee( $role[ 'name' ] ) ?>
                     </a>
                 <?php endforeach; ?>
             </ul>

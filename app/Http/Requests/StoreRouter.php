@@ -81,7 +81,7 @@ class StoreRouter extends FormRequest
             'operating_system_version' => 'nullable|string|max:255',
             'mgmt_host'                => 'required|string|max:255',
             'api_type'                 => 'required|integer|in:' . implode( ',', array_keys( Router::$API_TYPES ) ),
-            'api'                      => ( $this->api_type !== Router::API_TYPE_NONE ? 'url|required|regex:/.*[^\/]$/' : '' ),
+            'api'                      => ( $this->api_type != Router::API_TYPE_NONE ? 'url|required|regex:/.*[^\/]$/' : '' ),
             'lg_access'                => 'integer' . ( $this->api ? '|required|in:' . implode( ',', array_keys( User::$PRIVILEGES_ALL ) ) : '' ),
         ];
     }

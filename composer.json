@@ -126,11 +126,12 @@
         ]
     },
     "config": {
-        "config": {
-            "optimize-autoloader": true,
-            "preferred-install": "dist",
-            "sort-packages": true
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "platform": {
+            "php": "8.0.0"
         }
-   },
+    },
    "minimum-stability": "stable"
 }
