@@ -31,11 +31,11 @@
                                     <div class="form-check form-check-inline">
                                         <input id='tag_<?= $tag->id ?>' type='checkbox' name='tags[]' <?= $t->c->tags->contains( 'id', $tag->id ) ? 'checked' : ''  ?> value='<?= $tag->id ?>'>
                                         <label for="tag_<?= $tag->id ?>" class="form-check-label">
-                                            <?= $tag->display_as . " (" . $tag->tag . ")" ?>
+                                            <?= $t->ee( $tag->display_as ) . " (" . $t->ee( $tag->tag ) . ")" ?>
                                         </label>
                                     </div>
                                   <small class="form-text text-muted former-help-text">
-                                      <?= $tag->description ?>
+                                      <?= $t->ee( $tag->description ) ?>
                                   </small>
                                 </div>
                             </div>

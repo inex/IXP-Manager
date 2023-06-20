@@ -156,7 +156,7 @@
                     <?php if( $c->tags ): ?>
                         <?php foreach( $c->tags as $tag ): ?>
                             <span class="badge badge-secondary">
-                                <?= $tag->display_as ?>
+                                <?= $t->ee( $tag->display_as ) ?>
                             </span>
                         <?php endforeach; ?>
 

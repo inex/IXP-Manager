@@ -22,9 +22,11 @@ namespace IXP\Models;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo};
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model,
+    Relations\BelongsTo
+};
 
 use IXP\Traits\Observable;
 
@@ -51,7 +53,7 @@ use IXP\Traits\Observable;
  * @property bool $bgp_lc
  * @property string $template
  * @property bool $skip_md5
- * @property \Illuminate\Support\Carbon|null $last_update_started
+ * @property string|null $last_update_started
  * @property bool $rpki
  * @property string|null $software_version
  * @property string|null $operating_system
@@ -61,7 +63,6 @@ use IXP\Traits\Observable;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $last_updated
  * @property int $pause_updates
- * @property-read Router|null $pair
  * @property-read \IXP\Models\Vlan $vlan
  * @method static Builder|Router hasApi()
  * @method static Builder|Router ipv4()
@@ -115,7 +116,6 @@ class Router extends Model
      * @var array
      */
     protected $fillable = [
-        'pair_id',
         'vlan_id',
         'handle',
         'protocol',
@@ -147,13 +147,12 @@ class Router extends Model
      * @var array
      */
     protected $casts = [
-        'asn'                 => 'integer',
-        'quarantine'          => 'boolean',
-        'bgp_lc'              => 'boolean',
-        'skip_md5'            => 'boolean',
-        'rpki'                => 'boolean',
-        'last_updated'        => 'datetime',
-        'last_update_started' => 'datetime',
+        'asn'          => 'integer',
+        'quarantine'   => 'boolean',
+        'bgp_lc'       => 'boolean',
+        'skip_md5'     => 'boolean',
+        'rpki'         => 'boolean',
+        'last_updated' => 'datetime',
     ];
 
     /**
@@ -245,15 +244,6 @@ class Router extends Model
     {
         return $this->belongsTo(Vlan::class, 'vlan_id' );
     }
-
-    /**
-     * Get the router's configuration / isolation pair
-     */
-    public function pair(): BelongsTo
-    {
-        return $this->belongsTo(Router::class, 'pair_id' );
-    }
-
 
     /**
      * Get the API type
@@ -444,131 +434,15 @@ class Router extends Model
      *
      * @return bool
      */
-    public function lastUpdatedGreaterThanSeconds( int $threshold ): ?bool
+    public function lastUpdatedGreaterThanSeconds( int $threshold ): bool
     {
-        // TESTS: covered
-
         if( !$this->last_updated ) {
             // if null, then, as far as we know, it has never been updated....
-            return null;
+            return true;
         }
 
         return $this->last_updated->diffInSeconds() > $threshold;
     }
-
-    /**
-     * Is the router being updated?
-     *
-     * If null, then we can't determine this as the appropriate columns
-     * have not been set.
-     *
-     * @return bool|null
-     */
-    public function isUpdating(): ?bool
-    {
-        // TESTS: covered
-
-        if( !$this->last_updated && !$this->last_update_started ) {
-            return null; // don't know
-        }
-
-        if( !$this->last_updated && $this->last_update_started ) {
-            return true; // looks like it, first time though.
-        }
-
-        if( $this->last_updated >= $this->last_update_started ) {
-            return false; // nope, updates done
-        }
-
-        return true;
-    }
-
-    /**
-     * This function check is the last updated time is greater than the given number of seconds
-     *
-     * If null, then we can't determine this as the appropriate columns
-     * have not been set or it is not mid-update.
-     *
-     * Best to use this with isUpdating() first.
-     *
-     * @param int $threshold
-     *
-     * @return bool|null
-     */
-    public function isUpdateTakingLongerThanSeconds( int $threshold ): ?bool
-    {
-        // TESTS: covered
-
-        if( $this->isUpdating() !== true ) {
-            return null;
-        }
-
-        return $this->last_update_started->diffInSeconds() > $threshold;
-    }
-
-
-    /**
-     * This function checks to see if this router can be updated.
-     *
-     * This uses database read/write locks to ensure it is transaction / concurrency safe.
-     *
-     * It can be updated if:
-     *
-     * 1. Fresh router - last update start and finish times are null.
-     * 2. It doesn't have a pair and it itself is not mid-update.
-     * 3. It does have a pair and neither it nor itself are mid-update.
-     *
-     * The lock parameter should be set to true to take an update lock (i.e. to
-     * set last_update_started).
-     *
-     * @param bool $lock As well as querying the update status, we should lock it also.
-     * @return bool
-     */
-    public function canUpdate( bool $lock = false ): ?bool
-    {
-        // if we're paused, we don't need to check anything else
-        if( $this->pause_updates ) {
-            return false;
-        }
-
-        $canUpdate = false;
-
-        try {
-            // get a total lock on the table so only this thread can read and write
-            DB::raw( 'LOCK TABLES routers WRITE' );
-
-            // Got to assume yes here as we're asking the question.
-            if( !$this->last_updated && !$this->last_update_started ) {
-                $canUpdate = true;
-            }
-
-            // else if I don't have a pair and I'm not updating or I have a pair but neither of us are updating
-            else if( ( !$this->pair || !$this->pair->isUpdating() ) && !$this->isUpdating() ) {
-                $canUpdate = true;
-            }
-
-        } finally {
-            // finally is always executed even when we return() out of the try.
-
-            if( $canUpdate && $lock ) {
-
-                // need to avoid a same-second race condition
-                while( $this->last_updated?->format('Y-m-d H:i:s') == now()->format('Y-m-d H:i:s') ) {
-                    sleep(1);
-                }
-
-                $this->last_update_started = now();
-                $this->save();
-            }
-
-            DB::raw('UNLOCK TABLES');
-
-            // do not return out of finally or any exception will be silently handled.
-        }
-
-        return $canUpdate;
-    }
-
 
     /**
      * String to describe the model being updated / deleted / created
