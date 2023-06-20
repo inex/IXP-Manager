@@ -81,7 +81,7 @@
                                         <div class="form-check form-check-inline">
                                             <input id='role_<?= $role[ 'id' ] ?>' type='checkbox' name='roles[]' <?= in_array( $role[ 'id' ], $checkedRoles, false ) ? 'checked' : '' ?> value='<?= $role[ 'id' ] ?>'>
                                             <label for="role_<?= $role[ 'id' ] ?>" class="form-check-label">
-                                                <?= $role[ 'name' ] ?>
+                                                <?= $t->ee( $role[ 'name' ] ) ?>
                                             </label>
                                         </div>
                                     </div>
