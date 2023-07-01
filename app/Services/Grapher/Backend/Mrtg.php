@@ -187,8 +187,6 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                     if( !$pi->isConnectedOrQuarantine()
                             || !$pi->switchPort->ifIndex
                             || !( $pi->switchPort->switcher->active && $pi->switchPort->switcher->poll )
-                            || $pi->switchPort->typeReseller()
-                            || $pi->switchPort->typeFanout()
                     ) {
                         continue;
                     }
@@ -196,7 +194,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                     $data[ 'pis' ][ $pi->id ] = $pi;
 
                     if( !isset( $data[ 'custs' ][ $c->id ] ) ) {
-                            $data[ 'custs' ][ $c->id ] = $c;
+                        $data[ 'custs' ][ $c->id ] = $c;
                     }
 
                     if( !isset( $data['sws'][ $pi->switchPort->switcher->id ] ) ) {
@@ -224,18 +222,23 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                         $data[ 'custlags' ][ $c->id ][ $vi->id ][] = $pi->id;
                     }
 
-                    $data['swports'][ $pi->switchPort->switcher->id ][] = $pi->id;
-                    $data['locports'][ $pi->switchPort->switcher->cabinet->location->id ][] = $pi->id;
-                    $data['infraports'][ $pi->switchPort->switcher->infrastructureModel->id ][] = $pi->id;
-                    $data['ixpports'][] = $pi->id;
-
                     $maxbytes = $pi->detectedSpeed() * 1000000 / 8; // Mbps * bps / to bytes
                     $switcher = $pi->switchPort->switcher;
                     $location = $pi->switchPort->switcher->cabinet->location;
-                    $data['swports_maxbytes'   ][ $switcher->id ] += $maxbytes;
-                    $data['locports_maxbytes'  ][ $location->id ] += $maxbytes;
-                    $data['infraports_maxbytes'][ $switcher->infrastructureModel->id ] += $maxbytes;
-                    $data['ixpports_maxbytes'] += $maxbytes;
+
+                    // don't count reseller ports or fanout ports in agregates
+                    if( !$pi->switchPort->typeReseller() && !$pi->switchPort->typeFanout() ) {
+                        $data[ 'swports' ][ $pi->switchPort->switcher->id ][] = $pi->id;
+                        $data[ 'locports' ][ $pi->switchPort->switcher->cabinet->location->id ][] = $pi->id;
+                        $data[ 'infraports' ][ $pi->switchPort->switcher->infrastructureModel->id ][] = $pi->id;
+                        $data[ 'ixpports' ][] = $pi->id;
+
+                        $data['swports_maxbytes'   ][ $switcher->id ] += $maxbytes;
+                        $data['locports_maxbytes'  ][ $location->id ] += $maxbytes;
+                        $data['infraports_maxbytes'][ $switcher->infrastructureModel->id ] += $maxbytes;
+                        $data['ixpports_maxbytes'] += $maxbytes;
+                    }
+
                 }
             }
         }
