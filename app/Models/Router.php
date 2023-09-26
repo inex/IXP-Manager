@@ -150,6 +150,17 @@ class Router extends Model
     ];
 
     /**
+     * The attributes that should not be logged
+     *
+     * @var array
+     */
+    public $field_log_exception = [
+        'last_updated',
+        'updated_at',
+    ];
+
+
+    /**
      * CONST PROTOCOL
      */
     public const PROTOCOL_IPV4                 = '4';
