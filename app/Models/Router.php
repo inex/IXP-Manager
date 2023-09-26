@@ -163,6 +163,7 @@ class Router extends Model
     public $field_log_exception = [
         'last_updated',
         'updated_at',
+        'last_update_started',
     ];
 
 
