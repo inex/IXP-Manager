@@ -66,7 +66,6 @@ use IXP\Traits\Observable;
  * @method static Builder|PatchPanel whereCabinetId($value)
  * @method static Builder|PatchPanel whereCableType($value)
  * @method static Builder|PatchPanel whereChargeable($value)
- * @method static Builder|PatchPanel whereColoPpType($value)
  * @method static Builder|PatchPanel whereColoReference($value)
  * @method static Builder|PatchPanel whereConnectorType($value)
  * @method static Builder|PatchPanel whereCreatedAt($value)
