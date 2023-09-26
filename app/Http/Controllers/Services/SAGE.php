@@ -835,11 +835,16 @@ class SAGE extends Controller
                 continue;
             }
 
+            if( $cust->companyBillingDetail->billingFrequency != CompanyBillingDetail::BILLING_FREQUENCY_QUARTERLY ) {
+                Log::info( "***** SKIPPING {$cust->name} - non quarterly");
+                continue;
+            }
+
             Log::info( "***** START {$cust->name}");
 
             $invoice = [
                 'contact_id' => $sageCustomers[ $cust->id ] ?? 'XXX',
-                'date'       => '2023-02-20',
+                'date'       => '2023-10-01',
                 'status_id'  => 'DRAFT',
             ];
 
@@ -847,8 +852,8 @@ class SAGE extends Controller
                 $invoice['reference'] = "P/O: " . $cust->companyBillingDetail->vatRate;
             }
 
-            $notes .= "Billing period: " . Carbon::now()->startOfMonth()->format( 'M jS, Y' )
-                . ' - ' . Carbon::now()->startOfMonth()->addMonths( $cust->companyBillingDetail->getFrequencyAsNumMonths() - 1 )->endOfMonth()->format( 'M jS, Y' )
+            $notes .= "Billing period: " . Carbon::now()->addMonths()->startOfMonth()->format( 'M jS, Y' )
+                . ' - ' . Carbon::now()->startOfMonth()->addMonths()->addMonths( $cust->companyBillingDetail->getFrequencyAsNumMonths() - 1 )->endOfMonth()->format( 'M jS, Y' )
                 . '. ';
 
             // membership
