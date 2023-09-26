@@ -70,6 +70,7 @@ class BillingInformation extends FormRequest
             'townCity'              => 'nullable|string|max:255',
             'postcode'              => 'nullable|string|max:255',
             'country'               => 'nullable|string|max:255|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
+            'notes'                 => 'nullable|string',
 
             'billingContactName'    => 'nullable|string|max:255',
             'billingFrequency'      => 'nullable|string|max:255|in:' . implode( ',', array_keys( CompanyBillingDetail::$BILLING_FREQUENCIES ) ),
@@ -85,6 +86,8 @@ class BillingInformation extends FormRequest
             'invoiceEmail'          => 'nullable|string|max:255',
             'vatRate'               => 'nullable|string|max:255',
             'vatNumber'             => 'nullable|string|max:255',
+            'purchaseOrderNumber'   => 'nullable|string|max:50',
+            'billingNotes'          => 'nullable|string',
         ];
     }
 }
