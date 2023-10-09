@@ -26,6 +26,12 @@ RUN git clone https://github.com/sflow/sflowtool.git && \
     make && \
     make install
 
+# goflow2 script dependencies
+RUN cpanm install JSON
+RUN apt-get install -y wget
+RUN wget https://github.com/netsampler/goflow2/releases/download/v1.3.6/goflow2_1.3.6_amd64.deb
+RUN apt install -y goflow2_1.3.6_amd64.deb
+
 WORKDIR /
 
 ENTRYPOINT "/bin/bash"
