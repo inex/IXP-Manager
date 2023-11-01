@@ -138,13 +138,9 @@ while (<SFLOWTOOL>) {
 
 	$insanedebug && print STDERR "DEBUG: $_\n";
 
-	# parse and split out all the data.  most of this is unused at the
-	# moment, but it's useful to collect it anyway
-	# FLOW,193.242.111.152,2,21,0013136f2fc0,0010a52f261f,0x0800,10,10,94.1.115.114,80.1.2.222,6,0x00,124,1863,750,0x18,179,165,1024
-	my @sample = split (/,/);			# don't use regexp here for performance reasons
-	my ($sampletype, $agent, $srcswport, $dstswport, $srcmac, $dstmac, $ethertype, $vlan, undef,
-		$srcip, $dstip, $protocol, $tos, $ttl,
-		$srcport, $dstport, $tcpflags, $pktsize, $payloadsize, $samplerate) = @sample;
+	# FLOW,193.242.111.152,2,21,0013136faaaa,0010a52fbbbb,0x0800,10,10,192.168.1.1,172.16.12.255,6,0x00,124,1863,750,0x18,179,165,1024
+	# don't use regexp here for performance reasons
+	my ($sampletype, $agent, $srcmac, $dstmac, $ethertype, $vlan, $pktsize, $samplerate) = (split (/,/))[0,1,4,5,6,7,17,19];
 
 	next unless ($sampletype eq 'FLOW');
 
