@@ -99,6 +99,8 @@ services:
             context: tools/docker/containers/sflow-scripts
         depends_on:
             - "mysql"
+        ports:
+            - 6343:6343/udp # sFlow
         networks:
             ixpmanager:
                 ipv4_address: 172.30.201.21

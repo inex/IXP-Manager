@@ -22,7 +22,7 @@ RUN apt-get install -y git autoconf
 RUN git clone https://github.com/sflow/sflowtool.git && \
     cd sflowtool && \
     ./boot.sh && \
-    ./configure && \
+    ./configure --prefix=/usr && \
     make && \
     make install
 
@@ -30,7 +30,7 @@ RUN git clone https://github.com/sflow/sflowtool.git && \
 RUN cpanm install JSON
 RUN apt-get install -y wget
 RUN wget https://github.com/netsampler/goflow2/releases/download/v1.3.6/goflow2_1.3.6_amd64.deb
-RUN apt install -y goflow2_1.3.6_amd64.deb
+RUN apt install -y ./goflow2_1.3.6_amd64.deb
 
 WORKDIR /
 

@@ -1,0 +1,100 @@
+# Based on https://blog.sflow.com/2021/04/containerlab.html
+
+name: srl-sflow-latest
+
+mgmt:
+  network: ixpm_ixpmanager # Connect to IXP manager network
+  # bridge: mgmt-bridge
+  ipv4-subnet: 172.30.201.0/24
+
+# Features used in this Containerlab config, and the minimum version that supports it
+# - connect-to-mgmt:0.13 # See https://containerlab.srlinux.dev/manual/network/#additional-connections-to-management-network
+
+topology:
+  kinds:
+    srl:
+      # Use default SRL device type
+      # type: ixr6 # See https://www.nokia.com/networks/products/7250-interconnect-router/
+      image: ghcr.io/nokia/srlinux:latest
+    
+    linux:
+      image: ghcr.io/hellt/network-multitool
+
+  nodes:
+    srl:
+      kind: srl
+      # config: leaf1.cfg.json
+      startup-config: |
+       set / interface ethernet-1/1 description "To spine1"
+       set / interface ethernet-1/1 admin-state enable
+       set / interface ethernet-1/1 subinterface 0 admin-state enable
+       set / interface ethernet-1/1 subinterface 0 ipv4 admin-state enable address 192.168.0.0/31
+       set / interface ethernet-1/1 sflow admin-state enable
+       set / interface ethernet-1/2 description "sFlow to collector"
+       set / interface ethernet-1/2 admin-state enable
+       set / interface ethernet-1/2 subinterface 0 admin-state enable
+       set / interface ethernet-1/2 subinterface 0 ipv4 admin-state enable address 172.30.201.200/24
+       set / interface lo0 subinterface 0 ipv4 admin-state enable address 1.1.1.1/32
+       set / network-instance default interface ethernet-1/1.0
+       set / network-instance default interface ethernet-1/2.0
+       set / network-instance default interface ethernet-1/3.0
+       set / network-instance default interface lo0.0
+       set / network-instance default protocols bgp admin-state enable
+       set / network-instance default protocols bgp autonomous-system 65001
+       set / network-instance default protocols bgp router-id 1.1.1.1
+       set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
+       set / network-instance default protocols bgp ebgp-default-policy
+       set / network-instance default protocols bgp ebgp-default-policy import-reject-all false
+       set / network-instance default protocols bgp ebgp-default-policy export-reject-all false
+       set / network-instance default protocols bgp group spines admin-state enable
+       # set / network-instance default protocols bgp group spines export-policy export-hosts
+       set / network-instance default protocols bgp group spines peer-as 65000
+       set / network-instance default protocols bgp afi-safi ipv4-unicast multipath max-paths-level-1 4
+       set / network-instance default protocols bgp afi-safi ipv4-unicast multipath max-paths-level-2 4
+       set / network-instance default protocols bgp afi-safi ipv6-unicast multipath max-paths-level-1 4
+       set / network-instance default protocols bgp afi-safi ipv6-unicast multipath max-paths-level-2 4
+       set / network-instance default protocols bgp neighbor 192.168.0.1 admin-state enable
+       set / network-instance default protocols bgp neighbor 192.168.0.1 peer-group spines
+       set / network-instance default protocols bgp route-advertisement rapid-withdrawal true
+       set / system sflow admin-state enable 
+       set / system sflow sample-rate 1
+       set / system sflow collector 1 collector-address 172.30.201.21
+       set / system sflow collector 1 network-instance default
+       set / system sflow collector 1 source-address 172.30.201.200
+       set / system sflow collector 1 port 6343
+       
+    sros:
+      kind: vr-nokia_sros
+      image: vrnetlab/vr-sros:23.3.R3
+      license: /Projects/SR_OS_VSR-SIM_license.txt
+      startup-config: |
+        /configure policy-options policy-statement accept-all default-action action-type accept
+        /configure port 1/1/c1 admin-state enable connector breakout c1-100g
+        /configure port 1/1/c1/1 admin-state enable
+        /configure router "Base" interface i1 port 1/1/c1/1 ipv4 primary address 192.168.0.1 prefix-length 31
+        /configure router "Base" autonomous-system 65000 bgp router-id 1.1.1.2
+        /configure router "Base" bgp group srl peer-as 65001
+        /configure router "Base" bgp neighbor 192.168.0.0 group "srl"
+        /configure router "Base" interface i1 cflowd-parameters sampling unicast sample-profile 1 type interface
+        # /configure service ipfix export-policy "ixp-mgr" collector router-instance "Base" ip-address 172.30.201.21 admin-state enable source-ip-address 172.30.201.201
+        # /configure cflowd collector 172.30.201.21 port 2055 version 10 router-instance "management" admin-state enable autonomous-system-type origin template-set l2-ip 
+        # /configure cflowd collector 172.30.201.21 port 2055 version 8 router-instance "management" admin-state enable autonomous-system-type peer aggregation { protocol-port true source-destination-prefix true }
+        /configure cflowd collector 172.30.201.21 port 2055 version 9 router-instance "management" admin-state enable template-set basic
+        /configure cflowd active-flow-timeout 30 sample-profile 1 sample-rate 1
+
+    ### CLIENTS ###
+    client1:
+      kind: linux
+      exec:
+        - ip address add 192.168.0.1/31 dev eth1
+        - ip -6 address add 2002::192:168:0:1/64 dev eth1
+        # - iperf3 -s -p 5201 -D > iperf3_1.log
+        # - iperf3 -s -p 5202 -D > iperf3_2.log
+      group: server
+       
+  links:
+    - endpoints: ["srl:e1-1","sros:eth1"]
+    - endpoints: ["srl:e1-2","client1:eth1"]
+
+    # Connect to sFlow connector via port e1-2 (inband)
+    - endpoints: ["srl:e1-3","mgmt-net:srl-e1-3"] # clab 0.13 feature, bridged to mgmt
