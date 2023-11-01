@@ -120,9 +120,9 @@ while (<SFLOWTOOL>) {
 	my $srcip = $sample->{ SrcAddr };
 	my $dstip = $sample->{ DstAddr };
 
-	if ($ethertype eq '0x0800') {
+	if ($ethertype == 2048) {
 		$ipprotocol = 4;
-	} elsif ($ethertype eq '0x86dd') {
+	} elsif ($ethertype == 34525) { # 0x86dd
 		$ipprotocol = 6;
 		$srcip = NetAddr::IP->new($srcip)->short();
 		$dstip = NetAddr::IP->new($dstip)->short();
@@ -138,7 +138,7 @@ while (<SFLOWTOOL>) {
 	if ($protocol == 6 && ($srcport == 179 || $dstport == 179)) {
 		use NetPacket::TCP;
 
-		my $tcpflags = hex($sample->{TCPFlags});
+		my $tcpflags = hex($sample->{TcpFlags});
 
 		# we're only interested in established sessions
 		if (($tcpflags & ACK) && !(($tcpflags & SYN) || ($tcpflags & RST) ||($tcpflags & FIN))) {
@@ -158,6 +158,10 @@ while (<SFLOWTOOL>) {
 				print STDERR " ignored - no address match in database" if ($debug);
 			}
 			print STDERR ".\n" if ($debug);
+		} else {
+			if ($debug) {
+				print STDERR "DEBUG: ignoring [$srcip]:$srcport - [$dstip]:$dstport ".debug_tcpflags($tcpflags).".";
+			}
 		}
 	}
 
