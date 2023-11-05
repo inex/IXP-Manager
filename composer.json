@@ -39,7 +39,7 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "intervention/image": "^2.3",
         "anahkiasen/former": "^4.6",
-        "barryvdh/laravel-dompdf": "^0.9.0",
+        "barryvdh/laravel-dompdf": "^2.0.0",
         "mews/purifier": "^3.2",
         "php-ds/php-ds": "^1.1",
         "s1lentium/iptools": "^1.1",
