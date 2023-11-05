@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fed36e00edf211c4fa6501927778fe4d",
+    "content-hash": "22ecbcd51d33795380dd6c0545e158fc",
     "packages": [
         {
             "name": "anahkiasen/former",
