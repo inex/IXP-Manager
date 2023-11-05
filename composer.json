@@ -35,7 +35,7 @@
         "laravel/tinker": "^2.5",
         "foil/foil": "^0.6.7",
 
-        "zendesk/zendesk_api_client_php": "2.2.10",
+        "zendesk/zendesk_api_client_php": "^2.2.10",
         "guzzlehttp/guzzle": "^7.0.1",
         "intervention/image": "^2.3",
         "anahkiasen/former": "^4.6",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f9827034c3d7db699390c290bf8f4bb6",
+    "content-hash": "cab4cb44b9b5af9663e13b629d36a3b3",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -8006,20 +8006,21 @@
         },
         {
             "name": "zendesk/zendesk_api_client_php",
-            "version": "v2.2.10",
+            "version": "v2.2.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendesk/zendesk_api_client_php.git",
-                "reference": "13f0c1f299796cc271a2b84c7eda98b3ab0c97a9"
+                "reference": "453c9777a0677b57f018c42d13c9c3cce043bf0f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/13f0c1f299796cc271a2b84c7eda98b3ab0c97a9",
-                "reference": "13f0c1f299796cc271a2b84c7eda98b3ab0c97a9",
+                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/453c9777a0677b57f018c42d13c9c3cce043bf0f",
+                "reference": "453c9777a0677b57f018c42d13c9c3cce043bf0f",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^6.0 || ^7.0",
+                "guzzlehttp/psr7": "^1.7 || ^2.0",
                 "mmucklo/inflect": "0.3.*",
                 "php": ">=5.5.0"
             },
@@ -8045,10 +8046,10 @@
             "homepage": "https://github.com/zendesk/zendesk_api_client_php",
             "support": {
                 "issues": "https://github.com/zendesk/zendesk_api_client_php/issues",
-                "source": "https://github.com/zendesk/zendesk_api_client_php/tree/v2.2.10"
+                "source": "https://github.com/zendesk/zendesk_api_client_php/tree/v2.2.17"
             },
             "abandoned": true,
-            "time": "2020-10-02T15:42:03+00:00"
+            "time": "2023-07-11T04:06:41+00:00"
         }
     ],
     "packages-dev": [
