@@ -146,17 +146,21 @@ while (<SFLOWTOOL>) {
 	# next unless ($sampletype eq 'FLOW');
 
 	my $ethertype = $sample->{ Etype };
+
+	# Note: MAC addresses require template-set 'l2-ip' which is only supported with IPFIX version 10
+	# (which is not yet supported by goflow2)
 	my $srcmac = $sample->{ SrcMac };
 	my $dstmac = $sample->{ DstMac };
-	my $vlan = $sample->{ Vlan };
-	my $pktsize = $sample->{ PktSize }; 		# XXX probably wrong
-	my $samplerate = $sample->{ SampleRate };   # XXX probably wrong
+	my $vlan = $sample->{ VlanId };  # or 'SrcVlan' and 'DstVlan'
+	my $pktsize = int( $sample->{ Bytes } / $sample->{ Packets });
+	my $samplerate = $sample->{ SamplingRate };
 
 	if ($ethertype == 2048) {
 		$ipprotocol = 4;
 	} elsif ($ethertype == 34525) { # 0x86dd
 		$ipprotocol = 6;
 	} else {
+		$insanedebug && print STDERR "DEBUG: unknown Ethertype $ethertype";
 		next;
 	}
 

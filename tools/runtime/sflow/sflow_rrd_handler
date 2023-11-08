@@ -26,18 +26,21 @@
 # sflow_rrd_handler_enable="YES"
 # sflow_rrd_handler_flags="<set as needed>"
 
+# To use goflow2 instead of sflowtool:
+# sflow_rrd_handler_command="/usr/local/bin/goflow2-to-rrd-handler"
+
 . /etc/rc.subr
 
 name="sflow_rrd_handler"
 rcvar=sflow_rrd_handler_enable
-command="/usr/local/bin/sflow-to-rrd-handler"
 
 load_rc_config $name
 # Set defaults
 : ${sflow_rrd_handler_enable="NO"}
 : ${sflow_rrd_handler_pidfile="/var/run/${name}.pid"}
+: ${sflow_rrd_handler_command="/usr/local/bin/sflow-to-rrd-handler"}
 
-start_cmd="/usr/sbin/daemon -f -p ${sflow_rrd_handler_pidfile} ${command} ${sflow_rrd_handler_flags}"
+start_cmd="/usr/sbin/daemon -f -p ${sflow_rrd_handler_pidfile} ${sflow_rrd_handler_command} ${sflow_rrd_handler_flags}"
 start_postcmd="echo Starting ${name}."
 
 run_rc_command "$1"
