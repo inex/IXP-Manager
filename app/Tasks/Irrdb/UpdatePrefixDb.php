@@ -80,7 +80,7 @@ class UpdatePrefixDb extends UpdateDb
 
                 $this->result[ 'dbTime' ] += $this->timeElapsed();
                 $this->result[ 'v' . $protocol ][ 'dbUpdated' ] = true;
-                $this->result[ 'msg' ] = "{$this->customer()->name} not a RS client or IRRDB filtered for IPv{$protocol}. IPv{$protocol} prefixes, if any, wiped from database.";
+                $this->result[ 'msg' ] .= "{$this->customer()->name} not a RS client or IRRDB filtered for IPv{$protocol}. IPv{$protocol} prefixes, if any, wiped from database. ";
             }
         }
 
