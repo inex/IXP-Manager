@@ -260,6 +260,9 @@
       <path value="$PROJECT_DIR$/vendor/psr/cache" />
       <path value="$PROJECT_DIR$/vendor/socialiteproviders/sage" />
       <path value="$PROJECT_DIR$/vendor/kylekatarnls/html-object" />
+      <path value="$PROJECT_DIR$/vendor/_laravel_idea" />
+      <path value="$PROJECT_DIR$/vendor/masterminds/html5" />
+      <path value="$PROJECT_DIR$/vendor/psr/clock" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.0">
@@ -270,7 +273,7 @@
   </component>
   <component name="PhpUnit">
     <phpunit_settings>
-      <PhpUnitSettings custom_loader_path="$PROJECT_DIR$/../ixpv/vendor/autoload.php" />
+      <PhpUnitSettings configuration_file_path="$PROJECT_DIR$/phpunit.xml" custom_loader_path="$PROJECT_DIR$/vendor/autoload.php" use_configuration_file="true" />
     </phpunit_settings>
   </component>
   <component name="Psalm">

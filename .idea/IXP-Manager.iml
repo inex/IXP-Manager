@@ -8,6 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/database" isTestSource="false" packagePrefix="Database\" />
       <sourceFolder url="file://$MODULE_DIR$/database/seeders" isTestSource="false" packagePrefix="Database\Seeders\" />
       <sourceFolder url="file://$MODULE_DIR$/data/SocialiteProviders/PeeringDB/" isTestSource="false" packagePrefix="SocialiteProviders\PeeringDB\" />
+      <sourceFolder url="file://$MODULE_DIR$/data/SocialiteProviders/src/PeeringDB/" isTestSource="false" packagePrefix="SocialiteProviders\PeeringDB\" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/barryvdh/laravel-debugbar" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/beyondcode/laravel-dump-server" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/dasprid/enum" />
@@ -96,6 +97,15 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-intl-normalizer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/serializable-closure" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/kylekatarnls/html-object" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/app" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/debugbar" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/docstore" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/docstore_customers" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/files" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/framework" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/grapher" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/_laravel_idea" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
