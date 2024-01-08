@@ -106,6 +106,7 @@
       <excludeFolder url="file://$MODULE_DIR$/storage/grapher" />
       <excludeFolder url="file://$MODULE_DIR$/storage/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/_laravel_idea" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/carbonphp/carbon-doctrine-types" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
