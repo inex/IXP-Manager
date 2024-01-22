@@ -5,7 +5,7 @@
 ?>
     <tr>
         <th>
-            Vlan
+            VLAN
         </th>
         <td>
             <a href="<?= route( 'vlan@view', [ 'id' => $row[ 'vlan_id' ] ] ) ?>">

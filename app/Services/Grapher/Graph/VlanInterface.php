@@ -107,7 +107,7 @@ class VlanInterface extends Graph
      */
     public function name(): string
     {
-        $n = "Vlan Interface Traffic";
+        $n = "VLAN Interface Traffic";
 
         if( $this->vlanInterface()->ipv4enabled || $this->vlanInterface()->ipv6enabled ) {
             $n .= ' :: ';

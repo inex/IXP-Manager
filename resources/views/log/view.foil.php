@@ -113,20 +113,20 @@
                                             <tr>
                                                 <td>
                                                     <b>
-                                                        <?= $key ?>
+                                                        <?= $t->ee( $key ) ?>
                                                     </b>
                                                 </td>
                                                 <?php if( $new ): ?>
                                                     <td class="<?= isset( $changed[ $key ] ) ? 'tw-bg-gray-500': '' ?> ">
-                                                        <?= $new[ $key ] ?>
+                                                        <?= $t->ee( $new[ $key ] ) ?>
                                                     </td>
                                                 <?php endif; ?>
                                                 <?php if( $old ): ?>
                                                     <td>
                                                         <?php if( !is_array( $old[ $key ] ) ): ?>
-                                                            <?= $old[ $key ] ?>
+                                                            <?= $t->ee( $old[ $key ] ) ?>
                                                         <?php else: ?>
-                                                            <?= json_encode($old[ $key ], JSON_THROW_ON_ERROR) ?>
+                                                            <?= json_encode($old[ $key ], JSON_HEX_QUOT|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_THROW_ON_ERROR) ?>
                                                         <?php endif; ?>
                                                     </td>
                                                 <?php endif; ?>

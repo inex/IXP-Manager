@@ -76,3 +76,4 @@ tools/docker/containers/mysql/docker.sql
 
 tests/Browser/ExampleTest.php
 app/Console/Commands/Redcentric.php
+.env.sage

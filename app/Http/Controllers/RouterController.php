@@ -122,7 +122,10 @@ class RouterController extends Controller
             return Redirect::to( route( 'router@create' ) )->withInput( $r->all() );
         }
 
-        Router::create( $r->all() );
+        $router = Router::create( $r->all() );
+
+        $this->checkASN32( $router );
+
         AlertContainer::push( 'Router created.', Alert::SUCCESS );
         return Redirect::to( route( "router@list" ) );
     }
@@ -181,6 +184,9 @@ class RouterController extends Controller
     public function update( StoreRouter $r, Router $router ): RedirectResponse
     {
         $router->update( $r->all() );
+
+        $this->checkASN32( $router );
+
         AlertContainer::push( 'Router updated.', Alert::SUCCESS );
         return Redirect::to( route( "router@list" ) );
     }
@@ -214,4 +220,25 @@ class RouterController extends Controller
         AlertContainer::push( 'Router deleted.', Alert::SUCCESS );
         return Redirect::to( route( "router@list" ) );
     }
+
+    /**
+     * Warning about asn32's with route servers.
+     *
+     *
+     *
+     * @param Router $router
+     * @return void
+     */
+    private function checkASN32( Router $router )
+    {
+        if( $router->type == Router::TYPE_ROUTE_SERVER && $router->asn > 65535 ) {
+            AlertContainer::push( 'You are strongly advised to use / request a dedicated 16-bit ASN from your RIR '
+                . 'for route server use and in our experience, all RIRs understand this and accommodate it. The route server '
+                . 'configurations will support an asn32 but to our knowledge, this has never been used in production. '
+                . 'Also, withouot an asn16, you will be unable to offer your members standard community based filtering. ',
+         Alert::WARNING
+            );
+        }
+    }
+
 }
