@@ -35,7 +35,7 @@
         "laravel/tinker": "^2.5",
         "foil/foil": "^0.6.7",
 
-        "zendesk/zendesk_api_client_php": "^2.2.10",
+        "zendesk/zendesk_api_client_php": "^2.2.11",
         "guzzlehttp/guzzle": "^7.0.1",
         "intervention/image": "^2.3",
         "anahkiasen/former": "^4.6",
@@ -55,20 +55,20 @@
         "doctrine/dbal": "^3.0"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.5.2",
-        "barryvdh/laravel-ide-helper": "^2.9",
-        "beyondcode/laravel-dump-server": "^1.7",
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
-        "laravel/dusk": "^6.25",
         "laravel/sail": "^1.0.1",
-        "mockery/mockery": "^1.4.2",
-        "nunomaduro/collision": "^5.0",
+        "beyondcode/laravel-dump-server": "^1.7",
         "phpunit/phpunit": "^9.3.3",
-        "psalm/plugin-laravel": "^1.4",
+        "mockery/mockery": "^1.4.2",
+        "barryvdh/laravel-ide-helper": "^2.9",
+        "laravel/dusk": "^6.13.0",
+        "nunomaduro/collision": "^5.0",
         "staudenmeir/dusk-updater": "^1.2.2",
-        "vimeo/psalm": "^4.7"
-    },
+        "barryvdh/laravel-debugbar": "^3.5.2",
+        "vimeo/psalm": "^4.7",
+        "psalm/plugin-laravel": "^1.4"
+     },
     "support": {
         "issues": "https://www.ixpmanager.org/support.php",
         "forum": "https://www.inex.ie/mailman/listinfo/ixpmanager",

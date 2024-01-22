@@ -8,6 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/database" isTestSource="false" packagePrefix="Database\" />
       <sourceFolder url="file://$MODULE_DIR$/database/seeders" isTestSource="false" packagePrefix="Database\Seeders\" />
       <sourceFolder url="file://$MODULE_DIR$/data/SocialiteProviders/PeeringDB/" isTestSource="false" packagePrefix="SocialiteProviders\PeeringDB\" />
+      <sourceFolder url="file://$MODULE_DIR$/data/SocialiteProviders/src/PeeringDB/" isTestSource="false" packagePrefix="SocialiteProviders\PeeringDB\" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/barryvdh/laravel-debugbar" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/beyondcode/laravel-dump-server" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/dasprid/enum" />
@@ -105,7 +106,8 @@
       <excludeFolder url="file://$MODULE_DIR$/storage/grapher" />
       <excludeFolder url="file://$MODULE_DIR$/storage/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/_laravel_idea" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/clock" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/carbonphp/carbon-doctrine-types" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/masterminds/html5" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

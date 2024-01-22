@@ -3940,6 +3940,28 @@
                         return $instance->macroCall($method, $parameters);
         }
                     /**
+         * Remove all items from the cache.
+         *
+         * @return bool 
+         * @static 
+         */ 
+        public static function flush()
+        {
+                        /** @var \Illuminate\Cache\ArrayStore $instance */
+                        return $instance->flush();
+        }
+                    /**
+         * Get the cache key prefix.
+         *
+         * @return string 
+         * @static 
+         */ 
+        public static function getPrefix()
+        {
+                        /** @var \Illuminate\Cache\ArrayStore $instance */
+                        return $instance->getPrefix();
+        }
+                    /**
          * Get a lock instance.
          *
          * @param string $name
@@ -3950,7 +3972,7 @@
          */ 
         public static function lock($name, $seconds = 0, $owner = null)
         {
-                        /** @var \Illuminate\Cache\NullStore $instance */
+                        /** @var \Illuminate\Cache\ArrayStore $instance */
                         return $instance->lock($name, $seconds, $owner);
         }
                     /**
@@ -3963,30 +3985,8 @@
          */ 
         public static function restoreLock($name, $owner)
         {
-                        /** @var \Illuminate\Cache\NullStore $instance */
+                        /** @var \Illuminate\Cache\ArrayStore $instance */
                         return $instance->restoreLock($name, $owner);
-        }
-                    /**
-         * Remove all items from the cache.
-         *
-         * @return bool 
-         * @static 
-         */ 
-        public static function flush()
-        {
-                        /** @var \Illuminate\Cache\NullStore $instance */
-                        return $instance->flush();
-        }
-                    /**
-         * Get the cache key prefix.
-         *
-         * @return string 
-         * @static 
-         */ 
-        public static function getPrefix()
-        {
-                        /** @var \Illuminate\Cache\NullStore $instance */
-                        return $instance->getPrefix();
         }
          
     }

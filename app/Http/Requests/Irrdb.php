@@ -82,12 +82,12 @@ class Irrdb extends FormRequest
      */
     public function withValidator(): void
     {
-        if( !( $this->cust->routeServerClient() && $this->cust->irrdbFiltered() ) ) {
-            throw new IrrdbManage( 'IRRDB only applies to customers who are route server clients which are configured for IRRDB filtering.' );
-        }
-
         if( !in_array( $this->protocol, [ 4,6 ], false ) ) {
             abort( 404 , 'Unknown protocol');
+        }
+
+        if( !( $this->cust->routeServerClient( $this->protocol ) && $this->cust->irrdbFiltered() ) ) {
+            throw new IrrdbManage( 'IRRDB only applies to customers who are route server clients which are configured for IRRDB filtering.' );
         }
 
         if( !in_array( $this->type, [ "asn", 'prefix' ] ) ) {
