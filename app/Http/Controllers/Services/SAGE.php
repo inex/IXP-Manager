@@ -780,7 +780,10 @@ class SAGE extends Controller
             }
         }
 
-
+        $headings = [];
+        foreach( $this->services as $srv ) {
+            $headings[$srv['l']] = $srv['l'];
+        }
 
         $suser = Socialite::driver('sage')->user();
 
@@ -802,9 +805,66 @@ class SAGE extends Controller
             $totals[$k] = 0.0;
         }
 
-        $fp = fopen( base_path( 'custs-invoiced.csv' ), "w" );
+        $fp = fopen( base_path( 'custs-invoiced-shite.csv' ), "w" );
+
+        $fpq = fopen( base_path( 'custs-invoiced-quarterly.csv' ), "w" );
+
+        fputcsv( $fpq, array_merge(
+                [
+                    'cust_asn',
+                    'cust_name',
+                ],
+                $headings,
+                $headings,
+                $headings,
+                $headings,
+            )
+        );
+
+
+
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+        //// **** RATE LIMITED PORTS *******
+
+
+//        $reached = false;
 
         foreach( $member_pis as $asn => $pis ) {
+
+//            if( $pis['custid'] == 39 ) {
+//                $reached = true;
+//            }
+//
+//            if( !$reached ) {
+//                continue;
+//            }
+
+
+
+            foreach( ['revenue_month', 'deferred_revenue_quarter', 'deferred_revenue_6months', 'deferred_revenue_year'] as $dr ) {
+                foreach( $this->services as $srv ) {
+                    $$dr[ $srv['l'] ] = 0.0;
+                }
+            }
+
 
             $invoice_lines = [];
             $notes = '';
@@ -819,6 +879,8 @@ class SAGE extends Controller
                 Log::error("Could not load model for customer ID {$pis['custid']}");
                 continue;
             }
+
+
 
             // 182 -  Convergenze [AS39120] FULL MEMBER RESOLD CUSTOMER
             // 183 - Sirius Technology SRL [AS60501] FULL MEMBER RESOLD CUSTOMER
@@ -864,11 +926,11 @@ class SAGE extends Controller
             $revenue_month[ $this->services['MEMBERFEE']['l'] ]   += $fee / 12;
 
             if( $cust->companyBillingDetail->billingFrequency == CompanyBillingDetail::BILLING_FREQUENCY_QUARTERLY ) {
-                $deferred_revenue_quarter[ $this->services['MEMBERFEE']['l'] ] += $fee / 6; // 2 months
+                $deferred_revenue_quarter[ $this->services['MEMBERFEE']['l'] ] += $fee / 4; // 2 months
             } else if( $cust->companyBillingDetail->billingFrequency == CompanyBillingDetail::BILLING_FREQUENCY_HALFYEARLY ) {
-                $deferred_revenue_6months[ $this->services['MEMBERFEE']['l'] ] += $fee / 12 * 5;
+                $deferred_revenue_6months[ $this->services['MEMBERFEE']['l'] ] += $fee / 2;
             } else { // annually
-                $deferred_revenue_year[ $this->services['MEMBERFEE']['l'] ] += $fee / 12 * 11;
+                $deferred_revenue_year[ $this->services['MEMBERFEE']['l'] ] += $fee;
             }
 
 
@@ -992,11 +1054,11 @@ class SAGE extends Controller
                     $revenue_month[ $this->services[$sc]['l'] ]   += $fee;   // per month
 
                     if( $cust->companyBillingDetail->billingFrequency == CompanyBillingDetail::BILLING_FREQUENCY_QUARTERLY ) {
-                        $deferred_revenue_quarter[ $this->services[$sc]['l'] ] += $fee * 2; // 2 months
+                        $deferred_revenue_quarter[ $this->services[$sc]['l'] ] += $fee * 3; // 2 months
                     } else if( $cust->companyBillingDetail->billingFrequency == CompanyBillingDetail::BILLING_FREQUENCY_HALFYEARLY ) {
-                        $deferred_revenue_6months[ $this->services[$sc]['l'] ] += $fee * 5;
+                        $deferred_revenue_6months[ $this->services[$sc]['l'] ] += $fee * 6;
                     } else { // annually
-                        $deferred_revenue_year[ $this->services[$sc]['l'] ] += $fee * 11;
+                        $deferred_revenue_year[ $this->services[$sc]['l'] ] += $fee * 12;
                     }
 
 
@@ -1014,6 +1076,19 @@ class SAGE extends Controller
 
                 }
             }
+
+            fputcsv( $fpq, array_merge(
+                    [
+                        'cust_asn'   => $asn,
+                        'cust_name'  => $cust->name,
+                    ],
+                    $revenue_month,
+                    $deferred_revenue_quarter,
+                    $deferred_revenue_6months,
+                    $deferred_revenue_year
+                )
+            );
+
 
             // EU ?
             if( in_array( $cust->companyBillingDetail->billingCountry, [ 'BE', 'EL', 'LT', 'PT', 'BG', 'ES', 'LU', 'RO', 'CZ', 'FR', 'HU', 'SI', 'DK', 'HR', 'MT', 'SK', 'DE', 'IT', 'NL', 'FI', 'EE', 'CY', 'AT', 'SE', 'LV', 'PL' ] ) ) {
@@ -1051,15 +1126,15 @@ class SAGE extends Controller
 
             dump($invoice);
 
-            $guzzle = new \GuzzleHttp\Client();
-
-            $r = $guzzle->post( 'https://api.accounting.sage.com/v3.1/sales_invoices', [
-                    \GuzzleHttp\RequestOptions::JSON => [ 'sales_invoice' => $invoice ],
-                    'headers'                        => [
-                        'Authorization' => 'Bearer ' . $suser->token
-                    ]
-                ]
-            );
+//            $guzzle = new \GuzzleHttp\Client();
+//
+//            $r = $guzzle->post( 'https://api.accounting.sage.com/v3.1/sales_invoices', [
+//                    \GuzzleHttp\RequestOptions::JSON => [ 'sales_invoice' => $invoice ],
+//                    'headers'                        => [
+//                        'Authorization' => 'Bearer ' . $suser->token
+//                    ]
+//                ]
+//            );
 
             Log::info( "***** END {$cust->name}");
 
@@ -1151,6 +1226,7 @@ class SAGE extends Controller
         dump($deferred_revenue_year);
 
         fclose( $fp );
+        fclose( $fpq );
 
         Log::info(json_encode($totals));
 

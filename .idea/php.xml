@@ -257,19 +257,15 @@
       <path value="$PROJECT_DIR$/vendor/nette/schema" />
       <path value="$PROJECT_DIR$/vendor/laravel/serializable-closure" />
       <path value="$PROJECT_DIR$/vendor/psr/cache" />
+      <path value="$PROJECT_DIR$/vendor/socialiteproviders/sage" />
       <path value="$PROJECT_DIR$/vendor/kylekatarnls/html-object" />
       <path value="$PROJECT_DIR$/vendor/_laravel_idea" />
-<<<<<<< HEAD
       <path value="$PROJECT_DIR$/vendor/psr/clock" />
       <path value="$PROJECT_DIR$/vendor/carbonphp/carbon-doctrine-types" />
-=======
       <path value="$PROJECT_DIR$/vendor/masterminds/html5" />
->>>>>>> origin/rs-pairing
     </include_path>
   </component>
-  <component name="PhpProjectSharedConfiguration" php_language_level="8.0">
-    <option name="suggestChangeDefaultLanguageLevel" value="false" />
-  </component>
+  <component name="PhpProjectSharedConfiguration" php_language_level="8.0" />
   <component name="PhpStanOptionsConfiguration">
     <option name="transferred" value="true" />
   </component>
@@ -284,6 +280,7 @@
     </Psalm_settings>
   </component>
   <component name="PsalmOptionsConfiguration">
+    <option name="config" value="$PROJECT_DIR$/psalm.xml" />
     <option name="transferred" value="true" />
   </component>
 </project>
