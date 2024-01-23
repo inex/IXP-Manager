@@ -24,7 +24,7 @@ namespace IXP\Http\Controllers\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Log;
+use Log;
 
 
 use Carbon\Carbon;
@@ -32,17 +32,7 @@ use Illuminate\Support\Facades\DB;
 use IXP\Models\CompanyBillingDetail;
 use Laravel\Socialite\Facades\Socialite;
 
-use Cache, Config;
-
-use ErrorException;
-
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\View\View;
-
-use IXP\Contracts\LookingGlass as LookingGlassContract;
-
-use IXP\Exceptions\Services\LookingGlass\GeneralException as LookingGlassGeneralException;
 
 use IXP\Http\Controllers\Controller;
 
@@ -773,6 +763,25 @@ class SAGE extends Controller
     {
         set_time_limit(0);
 
+        $revenue_month   = [];
+        $deferred_revenue_quarter = [];
+        $deferred_revenue_6months = [];
+        $deferred_revenue_year    = [];
+
+
+//        private array $services = [
+//
+//        'MEMBERFEE' => [ 'd' => 'Membership Fee (Annual)',           'l' => 4500, 'p' => 1000.00 ],
+//        'ASSOCFEE'  => [ 'd' => 'Associate Membership Fee (Annual)', 'l' => 4501, 'p' => 1000.00 ],
+
+        foreach( ['revenue_month', 'deferred_revenue_quarter', 'deferred_revenue_6months', 'deferred_revenue_year'] as $dr ) {
+            foreach( $this->services as $srv ) {
+                $$dr[ $srv['l'] ] = 0.0;
+            }
+        }
+
+
+
         $suser = Socialite::driver('sage')->user();
 
         $sageLedgers   = $this->sageGetLedgers( $suser );
@@ -795,7 +804,6 @@ class SAGE extends Controller
 
         $fp = fopen( base_path( 'custs-invoiced.csv' ), "w" );
 
-        $reached = false;
         foreach( $member_pis as $asn => $pis ) {
 
             $invoice_lines = [];
@@ -812,48 +820,34 @@ class SAGE extends Controller
                 continue;
             }
 
-
-//            if( $cust->id == 39 ) {
-//                $reached = true;
-//            }
-//
-//            if( !$reached ) {
-//                continue;
-//            }
-
-//            if( $cust->companyBillingDetail->billingFrequency != CompanyBillingDetail::BILLING_FREQUENCY_QUARTERLY ) {
-//                continue;
-//            }
-
-
             // 182 -  Convergenze [AS39120] FULL MEMBER RESOLD CUSTOMER
             // 183 - Sirius Technology SRL [AS60501] FULL MEMBER RESOLD CUSTOMER
             // 190 -  Swisscom [AS3303] FULL MEMBER RESOLD CUSTOMER
             // 171 -  Telin [AS7713] FULL MEMBER ACCOUNT CLOSED RESOLD CUSTOMER
-            if( in_array( $cust->id, [ 182, 183, 190, 171, ] ) ) {
+            if( in_array( $cust->id, [ 182, 190, ] ) ) {
                 Log::info( "***** SKIPPING {$cust->name}");
                 continue;
             }
 
-            if( $cust->companyBillingDetail->billingFrequency != CompanyBillingDetail::BILLING_FREQUENCY_QUARTERLY ) {
-                Log::info( "***** SKIPPING {$cust->name} - non quarterly");
-                continue;
-            }
+//            if( $cust->companyBillingDetail->billingFrequency != CompanyBillingDetail::BILLING_FREQUENCY_QUARTERLY ) {
+//                Log::info( "***** SKIPPING {$cust->name} - non quarterly");
+//                continue;
+//            }
 
             Log::info( "***** START {$cust->name}");
 
             $invoice = [
                 'contact_id' => $sageCustomers[ $cust->id ] ?? 'XXX',
-                'date'       => '2023-10-01',
+                'date'       => '2024-01-23',
                 'status_id'  => 'DRAFT',
             ];
 
-            if( $cust->companyBillingDetail->vatRate ) {
-                $invoice['reference'] = "P/O: " . $cust->companyBillingDetail->vatRate;
+            if( $cust->companyBillingDetail->purchaseOrderNumber ) {
+                $invoice['reference'] = "P/O: " . $cust->companyBillingDetail->purchaseOrderNumber;
             }
 
-            $notes .= "Billing period: " . Carbon::now()->addMonths()->startOfMonth()->format( 'M jS, Y' )
-                . ' - ' . Carbon::now()->startOfMonth()->addMonths()->addMonths( $cust->companyBillingDetail->getFrequencyAsNumMonths() - 1 )->endOfMonth()->format( 'M jS, Y' )
+            $notes .= "Billing period: " . Carbon::now()->startOfMonth()->format( 'M jS, Y' )
+                . ' - ' . Carbon::now()->startOfMonth()->addMonths( $cust->companyBillingDetail->getFrequencyAsNumMonths() - 1 )->endOfMonth()->format( 'M jS, Y' )
                 . '. ';
 
             // membership
@@ -866,6 +860,18 @@ class SAGE extends Controller
                 'service_id'              => $sageServices['MEMBERFEE'],
                 'unit_price_includes_tax' => false,
             ];
+
+            $revenue_month[ $this->services['MEMBERFEE']['l'] ]   += $fee / 12;
+
+            if( $cust->companyBillingDetail->billingFrequency == CompanyBillingDetail::BILLING_FREQUENCY_QUARTERLY ) {
+                $deferred_revenue_quarter[ $this->services['MEMBERFEE']['l'] ] += $fee / 6; // 2 months
+            } else if( $cust->companyBillingDetail->billingFrequency == CompanyBillingDetail::BILLING_FREQUENCY_HALFYEARLY ) {
+                $deferred_revenue_6months[ $this->services['MEMBERFEE']['l'] ] += $fee / 12 * 5;
+            } else { // annually
+                $deferred_revenue_year[ $this->services['MEMBERFEE']['l'] ] += $fee / 12 * 11;
+            }
+
+
 
             // membership
             fputcsv( $fp, [
@@ -982,6 +988,20 @@ class SAGE extends Controller
                     ];
                     Log::info( "    -     {$invoice_lines[$ilidx-1]['description']} @ {$invoice_lines[$ilidx-1]['unit_price']} x {$invoice_lines[$ilidx-1]['quantity']}" );
 
+
+                    $revenue_month[ $this->services[$sc]['l'] ]   += $fee;   // per month
+
+                    if( $cust->companyBillingDetail->billingFrequency == CompanyBillingDetail::BILLING_FREQUENCY_QUARTERLY ) {
+                        $deferred_revenue_quarter[ $this->services[$sc]['l'] ] += $fee * 2; // 2 months
+                    } else if( $cust->companyBillingDetail->billingFrequency == CompanyBillingDetail::BILLING_FREQUENCY_HALFYEARLY ) {
+                        $deferred_revenue_6months[ $this->services[$sc]['l'] ] += $fee * 5;
+                    } else { // annually
+                        $deferred_revenue_year[ $this->services[$sc]['l'] ] += $fee * 11;
+                    }
+
+
+
+
                     fputcsv( $fp, [
                         'cust_asn'   => $asn,
                         'cust_name'  => $cust->name,
@@ -1008,16 +1028,6 @@ class SAGE extends Controller
 
                 $notes .= 'All supplies are an intra-community supply; VAT reverse charge applies. ';
 
-                // Northern Ireland
-            } else if( in_array( $cust->id, [ 22, 87, 113 ] ) ) {
-
-                foreach( $invoice_lines as $i => $il ) {
-                    $invoice_lines[$i]['eu_goods_services_type_id'] = 'SERVICES';
-
-                    $invoice_lines[$i]['tax_rate_id']               = 'IE_ZERO';
-                    $invoice_lines[$i]['tax_amount']                = '0.00';
-                }
-
             } else if( $cust->companyBillingDetail->billingCountry == 'IE' ) {
 
                 foreach( $invoice_lines as $i => $il ) {
@@ -1041,15 +1051,15 @@ class SAGE extends Controller
 
             dump($invoice);
 
-//            $guzzle = new \GuzzleHttp\Client();
-//
-//            $r = $guzzle->post( 'https://api.accounting.sage.com/v3.1/sales_invoices', [
-//                    \GuzzleHttp\RequestOptions::JSON => [ 'sales_invoice' => $invoice ],
-//                    'headers'                        => [
-//                        'Authorization' => 'Bearer ' . $suser->token
-//                    ]
-//                ]
-//            );
+            $guzzle = new \GuzzleHttp\Client();
+
+            $r = $guzzle->post( 'https://api.accounting.sage.com/v3.1/sales_invoices', [
+                    \GuzzleHttp\RequestOptions::JSON => [ 'sales_invoice' => $invoice ],
+                    'headers'                        => [
+                        'Authorization' => 'Bearer ' . $suser->token
+                    ]
+                ]
+            );
 
             Log::info( "***** END {$cust->name}");
 
@@ -1133,6 +1143,12 @@ class SAGE extends Controller
 //            'service'    => 'LAN1-1G-FIRST',
 //            'cost'       => 0,
 //        ]);
+
+
+        dump( $revenue_month );
+        dump($deferred_revenue_quarter);
+        dump($deferred_revenue_6months);
+        dump($deferred_revenue_year);
 
         fclose( $fp );
 
