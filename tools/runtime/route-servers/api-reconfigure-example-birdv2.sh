@@ -1,6 +1,6 @@
 #! /bin/bash
 #
-# Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+# Copyright (C) 2009 - 2022 Internet Neutral Exchange Association Company Limited By Guarantee.
 # All Rights Reserved.
 #
 # This file is part of IXP Manager.
@@ -21,28 +21,33 @@
 #
 
 KEY="your-api-key"
-URL="https://ixp.example.com/ixp/api/v4/router/gen-config"
-URL_DONE="https://ixp.example.com/ixp/api/v4/router/updated"
+URL_LOCK="https://ixp.example.com/api/v4/router/get-update-lock"
+URL="https://ixp.example.com/api/v4/router/gen-config"
+URL_DONE="https://ixp.example.com/api/v4/router/updated"
 ETCPATH="/usr/local/etc/bird"
 RUNPATH="/var/run/bird"
 LOGPATH="/var/log/bird"
 BIN="/usr/sbin/bird"
 
+
 # Parse arguments
 export DEBUG=0
+export FORCE_RELOAD=0
 
 function show_help {
-    echo "$0 [-d] -h <handle> [-?]"
+    echo "$0 [-d] [-f] -h <handle> [-?]"
 }
 
 
-while getopts "?qdh:" opt; do
+while getopts "?qdfh:" opt; do
     case "$opt" in
         \?)
             show_help
             exit 0
             ;;
         d)  export DEBUG=1
+            ;;
+        f)  export FORCE_RELOAD=1
             ;;
         h)  handle=$OPTARG
             ;;
@@ -62,6 +67,16 @@ cfile="${ETCPATH}/bird-${handle}.conf"
 dest="${cfile}.$$"
 socket="${RUNPATH}/bird-${handle}.ctl"
 
+cmd="curl --fail -s -X POST -H \"X-IXP-Manager-API-Key: ${KEY}\" ${URL_LOCK}/${handle} >/dev/null"
+
+if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
+eval $cmd
+
+if [[ $? -ne 0 ]]; then
+    echo "ABORTING: router not available for update"
+    exit 200
+fi
+
 cmd="curl --fail -s -H \"X-IXP-Manager-API-Key: ${KEY}\" ${URL}/${handle} >${dest}"
 
 if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
@@ -69,7 +84,6 @@ eval $cmd
 
 # We want to be safe here so check the generated file to see whether it
 # looks valid
-
 if [[ $? -ne 0 ]]; then
     echo "ERROR: non-zero return from curl when generating $dest"
     exit 2
@@ -94,6 +108,28 @@ if [[ $? -ne 0 ]]; then
     exit 7
 fi
 
+# config file should be okay; If everything is up and running, do we need a reload?
+
+RELOAD_REQUIRED=1
+if [[ -f $cfile ]]; then
+    cat $cfile    | egrep -v '^#.*$' >${cfile}.filtered
+    cat $dest     | egrep -v '^#.*$' >${dest}.filtered
+
+    diff ${cfile}.filtered ${dest}.filtered >/dev/null
+    DIFF=$?
+
+    rm -f ${cfile}.filtered ${dest}.filtered
+
+    if [[ $DIFF -eq 0 ]]; then
+        RELOAD_REQUIRED=0
+    fi
+fi
+
+# are we forcing a reload?
+if [[ $FORCE_RELOAD -eq 1 ]]; then
+    RELOAD_REQUIRED=1
+fi
+
 # config file should be okay; back up the current one
 if [[ -e ${cfile} ]]; then
     cp "${cfile}" "${cfile}.old"
@@ -115,7 +151,7 @@ if [[ $? -ne 0 ]]; then
         echo "ERROR: ${BIN} was not running for $dest and could not be started"
         exit 5
     fi
-else
+elif [[ RELOAD_REQUIRED -eq 1 ]]; then
     cmd="${BIN}c -s $socket configure"
     if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
     eval $cmd &>/dev/null
@@ -138,7 +174,10 @@ else
             fi
         fi
     fi
-
+else
+    if [[ $DEBUG -eq 1 ]]; then
+        echo "Bird running and no reload required so skipping configure";
+    fi
 fi
 
 # tell IXP Manager the router has been updated:

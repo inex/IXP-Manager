@@ -73,6 +73,7 @@ class Store extends FormRequest
             $ipvCheckRec       = $this->protocol === '4' ? new IPv4Cidr()          : new IPv6Cidr();
             $subnetCheckRec    = $this->protocol === '4' ? new Ipv4SubnetSize()    : new Ipv6SubnetSize();
         } else {
+            $this->merge(['received_prefix' => null]);
             $ipvCheckRec        = "string";
             $subnetCheckRec     = "";
         }
@@ -81,6 +82,7 @@ class Store extends FormRequest
             $ipvCheckAdv       = $this->protocol === '4' ? new IPv4Cidr()          : new IPv6Cidr();
             $subnetCheckAdv    = $this->protocol === '4' ? new Ipv4SubnetSize()    : new Ipv6SubnetSize();
         } else {
+            $this->merge(['advertised_prefix' => null]);
             $ipvCheckAdv = "string";
             $subnetCheckAdv = "";
         }

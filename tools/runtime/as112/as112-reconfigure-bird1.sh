@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 #
-# Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+# Copyright (C) 2009 - 2022 Internet Neutral Exchange Association Company Limited By Guarantee.
 # All Rights Reserved.
 #
 # This file is part of IXP Manager.
@@ -26,6 +26,7 @@
 
 # For keys, see: http://docs.ixpmanager.org/features/api/
 KEY="my-ixp-manager-api-key"
+URL_LOCK="https://ixp.example.com/api/v4/router/get-update-lock"
 URL="https://ixp.example.com/api/v4/router/gen-config"
 URL_DONE="https://ixp.example.com/api/v4/router/updated"
 ETCPATH="/usr/local/etc/bird"
@@ -70,7 +71,19 @@ for handle in my-as112-router1-ipv4 my-as112-router1-ipv6; do
         PROTOCOL=""
     fi
 
-    log  "Instance for ${handle}:\tConfig: "
+    log  "Instance for ${handle}:\tLock: "
+
+    cmd="curl --fail -s -X POST -H \"X-IXP-Manager-API-Key: ${KEY}\" ${URL_LOCK}/${handle} >/dev/null"
+
+    if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
+    eval $cmd
+
+    if [[ $? -ne 0 ]]; then
+        log "UNAVAILABLE\n"
+        continue
+    fi
+
+    log  "LOCKED \tConfig: "
 
     cmd="curl --fail -s -H \"X-IXP-Manager-API-Key: ${KEY}\" ${URL}/${handle} >${ETCPATH}/bird-${handle}.conf"
 

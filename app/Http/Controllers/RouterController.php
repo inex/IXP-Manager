@@ -102,7 +102,7 @@ class RouterController extends Controller
     {
         return view( 'router/edit' )->with([
             'rt'                => false,
-            'vlans'             => Vlan::publicOnly()->orderBy( 'number' )->get()
+            'vlans'             => Vlan::publicOnly()->orderBy( 'number' )->get(),
         ]);
     }
 
@@ -162,6 +162,7 @@ class RouterController extends Controller
             'rpki'                      => request()->old( 'rpki',              $router->rpki               ),
             'rfc1997_passthru'          => request()->old( 'rfc1997_passthru',  $router->rfc1997_passthru   ),
             'skip_md5'                  => request()->old( 'skip_md5',          $router->skip_md5           ),
+            'pair_id'                   => request()->old( 'pair_id',           $router->pair_id            ),
             'template'                  => request()->old( 'template',          $router->template           ),
         ]);
 
@@ -218,6 +219,61 @@ class RouterController extends Controller
     {
         $router->delete();
         AlertContainer::push( 'Router deleted.', Alert::SUCCESS );
+        return Redirect::to( route( "router@list" ) );
+    }
+
+    /**
+     * Pause a router
+     *
+     * @param Router $router
+     *
+     * @return redirectresponse
+     *
+     * @throws
+     */
+    public function pause( Router $router): RedirectResponse
+    {
+        $router->pause_updates = true;
+        $router->save();
+
+        AlertContainer::push( 'Automatic updates for router ' . $router->handle . ' paused.', Alert::SUCCESS );
+        return Redirect::to( route( "router@list" ) );
+    }
+
+    /**
+     * Resume a router
+     *
+     * @param Router $router
+     *
+     * @return redirectresponse
+     *
+     * @throws
+     */
+    public function resume( Router $router): RedirectResponse
+    {
+        $router->pause_updates = false;
+        $router->save();
+
+        AlertContainer::push( 'Automatic updates for router ' . $router->handle . ' resumed.', Alert::SUCCESS );
+        return Redirect::to( route( "router@list" ) );
+    }
+
+    /**
+     * Reset update timestamps
+     *
+     * @param Router $router
+     *
+     * @return redirectresponse
+     *
+     * @throws
+     */
+    public function resetUpdateTimestamps( Router $router): RedirectResponse
+    {
+        $router->last_update_started = null;
+        $router->last_updated        = null;
+        $router->save();
+
+        AlertContainer::push( 'Update timestamps for router ' . $router->handle . ' set to null.', Alert::SUCCESS );
         return Redirect::to( route( "router@list" ) );
     }
 

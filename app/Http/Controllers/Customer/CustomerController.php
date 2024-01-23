@@ -301,10 +301,12 @@ class CustomerController extends Controller
                 'billingEmail'              => $r->old( 'billingEmail',           $cbd->billingEmail ),
                 'billingTelephone'          => $r->old( 'billingTelephone',       $cbd->billingTelephone ),
                 'purchaseOrderRequired'     => $r->old( 'purchaseOrderRequired',  $cbd->purchaseOrderRequired ),
+                'purchaseOrderNumber'       => $r->old( 'purchaseOrderNumber',    $cbd->purchaseOrderNumber ),
                 'invoiceMethod'             => $r->old( 'invoiceMethod',          $cbd->invoiceMethod ),
                 'invoiceEmail'              => $r->old( 'invoiceEmail',           $cbd->invoiceEmail ),
                 'vatRate'                   => $r->old( 'vatRate',                $cbd->vatRate ),
                 'vatNumber'                 => $r->old( 'vatNumber',              $cbd->vatNumber ),
+                'billingNotes'              => $r->old( 'billingNotes',           $cbd->notes ),
             ];
         }
 
@@ -318,6 +320,7 @@ class CustomerController extends Controller
             'townCity'                  => $r->old( 'townCity',                   $crd->townCity ),
             'postcode'                  => $r->old( 'postcode',                   $crd->postcode ),
             'country'                   => $r->old( 'country',            in_array( $crd->country,  array_values( Countries::getListForSelect( 'iso_3166_2' ) ), false ) ? $crd->country : null ),
+            'notes'                     => $r->old( 'notes',                      $crd->notes ),
         ];
 
         Former::populate( array_merge( $dataRegistrationDetail, $dataBillingDetail ) );
@@ -350,7 +353,8 @@ class CustomerController extends Controller
         $crd->update( $r->all() );
 
         if( !( $cust->reseller && $this->resellerMode() ) ) {
-            $cbd->update( $r->all() );
+            // resolve name clash before saving
+            $cbd->update( array_merge( $r->all(), [ 'notes' => $r->billingNotes ] ) );
         }
 
         event( new CustomerBillingDetailsChangedEvent( $ocbd, $cbd ) );
