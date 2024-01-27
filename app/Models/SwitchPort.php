@@ -180,27 +180,27 @@ class SwitchPort extends Model
     // This array is for matching data from OSS_SNMP to the switchport database table.
     // See snmpUpdate() below
     public static $SNMP_MAP = [
-        'descriptions'    => 'Name',
-        'names'           => 'IfName',
-        'aliases'         => 'IfAlias',
-        'highSpeeds'      => 'IfHighspeed',
-        'mtus'            => 'IfMtu',
-        'physAddresses'   => 'IfPhysAddress',
-        'adminStates'     => 'IfAdminStatus',
-        'operationStates' => 'IfOperStatus',
-        'lastChanges'     => 'IfLastChange'
+        'descriptions'    => 'name',
+        'names'           => 'ifName',
+        'aliases'         => 'ifAlias',
+        'highSpeeds'      => 'ifHighSpeed',
+        'mtus'            => 'ifMtu',
+        'physAddresses'   => 'ifPhysAddress',
+        'adminStates'     => 'ifAdminStatus',
+        'operationStates' => 'ifOperStatus',
+        'lastChanges'     => 'ifLastChange'
     ];
 
     /**
      * Mappings for OSS_SNMP functions to SwitchPort members
      */
     public static $OSS_SNMP_MAU_MAP = [
-        'types'             => [ 'fn' => 'MauType',         'xlate' => false ],
-        'states'            => [ 'fn' => 'MauState',        'xlate' => true ],
-        'mediaAvailable'    => [ 'fn' => 'MauAvailability', 'xlate' => true ],
-        'jackTypes'         => [ 'fn' => 'MauJacktype',     'xlate' => true ],
-        'autonegSupported'  => [ 'fn' => 'MauAutoNegSupported'  ],
-        'autonegAdminState' => [ 'fn' => 'MauAutoNegAdminState' ]
+        'types'             => [ 'fn' => 'mauType',         'xlate' => false ],
+        'states'            => [ 'fn' => 'mauState',        'xlate' => true ],
+        'mediaAvailable'    => [ 'fn' => 'mauAvailability', 'xlate' => true ],
+        'jackTypes'         => [ 'fn' => 'mauJacktype',     'xlate' => true ],
+        'autonegSupported'  => [ 'fn' => 'mauAutoNegSupported'  ],
+        'autonegAdminState' => [ 'fn' => 'mauAutoNegAdminState' ]
     ];
 
 
@@ -477,6 +477,9 @@ class SwitchPort extends Model
                     } else {
                         $n = '(unknown type - oid: ' . $n . ')';
                     }
+                }
+                if ( $fn == 'mauAutoNegSupported' || $fn == 'mauAutoNegAdminState' ) {
+                    $n =  (isset ($n) && !empty ($n) && $n) ? 1 : 0;
                 }
 
                 if( $this->$fn !== $n && $logger !== false ) {
