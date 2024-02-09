@@ -599,16 +599,15 @@ class Router extends Model
     /**
      * We don't want to log router config updates via the API
      */
-    public function observerSkipUpdateLogging(): bool {
-        $fields_changed = array_keys( $this->getChanges() );
+    public function observerSkipUpdateLogging( array $changes ): bool {
 
         foreach( [ 'last_updated', 'updated_at', 'last_update_started', ] as $ignore ) {
-            if( in_array( $ignore, $fields_changed ) ) {
-                unset( $fields_changed[ array_search( $ignore, $fields_changed ) ] );
+            if( in_array( $ignore, $changes ) ) {
+                unset( $changes[ array_search( $ignore, $changes ) ] );
             }
         }
 
-        return count( $fields_changed ) === 0;
+        return count( $changes ) === 0;
     }
 
 
