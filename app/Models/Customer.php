@@ -859,7 +859,7 @@ class Customer extends Model
      */
     public static function givenType( int $t ): string
     {
-        return self::$CUST_TYPES_TEXT[ $t ] ?? 'Unknwon';
+        return self::$CUST_TYPES_TEXT[ $t ] ?? 'Unknown';
     }
 
     /**
@@ -891,17 +891,25 @@ class Customer extends Model
      *
      * @throws
      */
-    public function routeServerClient( int $proto = 4 ): bool
+    public function routeServerClient( ?int $proto = null ): bool
     {
-        if( !in_array( $proto, [ 4, 6 ] ) ) {
+        if( !in_array( $proto, [ null, 4, 6 ] ) ) {
             throw new IXP_Exception( 'Invalid protocol' );
         }
 
-        return (bool) self::leftJoin('virtualinterface AS vi', 'vi.custid', 'cust.id')
-            ->leftJoin('vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id')
-            ->where('vli.rsclient', true )
-            ->where('cust.id', $this->id)
-            ->where("ipv{$proto}enabled", true)->count();
+        $protos = $proto === null ? [ 4, 6 ] : [ $proto ];
+
+        foreach( $protos as $p ) {
+            if( self::leftJoin('virtualinterface AS vi', 'vi.custid', 'cust.id')
+                    ->leftJoin('vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id')
+                    ->where('vli.rsclient', true )
+                    ->where('cust.id', $this->id)
+                    ->where("ipv{$p}enabled", true)->count() ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -37,7 +37,7 @@
         let urlDelete  = btn_delete.attr( 'href' );
 
         if( type === "vli") {
-            objectName = "Vlan Interface";
+            objectName = "VLAN Interface";
         } else if( type === "vi" ) {
             objectName = "Virtual Interface";
             if( $( "#custid" ).val() !== undefined ){

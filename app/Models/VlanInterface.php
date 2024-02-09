@@ -263,7 +263,7 @@ class VlanInterface extends Model
     public static function logSubject( Model $model ): string
     {
         return sprintf(
-            "Vlan Interface [id:%d] belonging to Virtual Interface [id:%d]",
+            "VLAN Interface [id:%d] belonging to Virtual Interface [id:%d]",
             $model->id,
             $model->virtualinterfaceid,
         );

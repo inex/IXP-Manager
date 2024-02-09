@@ -109,7 +109,7 @@ Route::get('sflow-receivers.{format}',         'SflowReceiverController@getRecei
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Vlan Interface
+// VLAN Interface
 //
 Route::get( 'vlan-interface/l2-addresses/{vli}',                'VlanInterfaceController@getL2A' );
 Route::get( 'sflow-db-mapper/learned-macs',                     'VlanInterfaceController@sflowLearnedMacs' );

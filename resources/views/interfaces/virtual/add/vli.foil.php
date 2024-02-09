@@ -81,10 +81,10 @@
                                     <a class="btn btn-white" id="edit-vli-<?= $vli->id?>" href="<?= route ( 'vlan-interface@edit-from-virtual-interface', [ 'vli' => $vli->id, 'vi' => $t->vi->id ] ) ?>" title="Edit">
                                         <i class="fa fa-pencil"></i>
                                     </a>
-                                    <a class="btn btn-white btn-delete-vli" id="btn-delete-vli-<?= $vli->id ?>"  href="<?= route( 'vlan-interface@delete', [ 'vli' => $vli->id ] ) ?>" title="Delete Vlan Interface">
+                                    <a class="btn btn-white btn-delete-vli" id="btn-delete-vli-<?= $vli->id ?>"  href="<?= route( 'vlan-interface@delete', [ 'vli' => $vli->id ] ) ?>" title="Delete VLAN Interface">
                                         <i class="fa fa-trash"></i>
                                     </a>
-                                    <a class="btn btn-white btn-duplicate-vli" id="btn-duplicate-vli-<?= $vli->id ?>" data-object-id="<?= $vli->id?>" href="#" title="Duplicate Vlan Interface">
+                                    <a class="btn btn-white btn-duplicate-vli" id="btn-duplicate-vli-<?= $vli->id ?>" data-object-id="<?= $vli->id?>" href="#" title="Duplicate VLAN Interface">
                                         <i class="fa fa-copy"></i>
                                     </a>
                                 </div>
