@@ -601,13 +601,11 @@ class Router extends Model
      */
     public function observerSkipUpdateLogging( array $changes ): bool {
 
-        foreach( [ 'last_updated', 'updated_at', 'last_update_started', ] as $ignore ) {
-            if( in_array( $ignore, $changes ) ) {
-                unset( $changes[ array_search( $ignore, $changes ) ] );
-            }
-        }
+        $interesting = array_filter( array_keys($changes), function( $v ) {
+            return !in_array( $v, [ 'last_updated', 'updated_at', 'last_update_started', 'handle' ] );
+        } );
 
-        return count( $changes ) === 0;
+        return count( $interesting ) === 0;
     }
 
 

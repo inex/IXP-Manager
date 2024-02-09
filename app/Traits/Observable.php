@@ -54,7 +54,7 @@ trait Observable
                     static::logChange( $model, Log::ACTION_CREATED );
                 } elseif ( $model->getChanges() ) {
                     // Check if with have field with log exception
-                    if( !method_exists( $model, 'observerSkipLogging' ) || !$model->observerSkipUpdateLogging( $this->getChanges() ) ) {
+                    if( !method_exists( $model, 'observerSkipUpdateLogging' ) || !$model->observerSkipUpdateLogging( $model->getChanges() ) ) {
                         static::logChange( $model, Log::ACTION_UPDATED );
                     }
                 }
