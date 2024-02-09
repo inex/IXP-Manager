@@ -365,10 +365,10 @@ class SwitchPort extends Model
         switch( $this->switcher->os ) {
             case 'ExtremeXOS':
                 return Port::OID_PORT_CONG_DROP_PKTS;
-                break;
+
             default:
                 return Iface::OID_IF_OUT_DISCARDS;
-                break;
+
         }
     }
 
@@ -423,15 +423,14 @@ class SwitchPort extends Model
     public function snmpUpdate( SNMP $host, bool $logger = false, bool $nosave = false ): SwitchPort
     {
         foreach( self::$SNMP_MAP as $snmp => $attribute ) {
-            $fn = $attribute;
 
             switch( $snmp ) {
                 case 'lastChanges':
                     $n = $host->useIface()->$snmp( true )[ $this->ifIndex ];
 
                     // need to allow for small changes due to rounding errors
-                    if( $logger !== false && $this->$fn !== $n && abs( $this->$fn - $n ) > 60 ) {
-                        Log::info( "[{$this->switcher->name}]:{$this->name} [Index: {$this->ifIndex}] Updating {$attribute} from [{$this->$fn}] to [{$n}]" );
+                    if( $logger !== false && $this->$attribute !== $n && abs( $this->$attribute - $n ) > 60 ) {
+                        Log::info( "[{$this->switcher->name}]:{$this->name} [Index: {$this->ifIndex}] Updating {$attribute} from [{$this->$attribute}] to [{$n}]" );
                     }
                     break;
                 default:
@@ -440,13 +439,13 @@ class SwitchPort extends Model
                         $n = $host->useIface()->$snmp()[ $this->ifIndex ];
                     }
 
-                    if( $logger !== false && $this->$fn !== $n ) {
-                        Log::info( "[{$this->switcher->name}]:{$this->name} [Index: {$this->ifIndex}] Updating {$attribute} from [{$this->$fn}] to [{$n}]" );
+                    if( $logger !== false && $this->$attribute !== $n ) {
+                        Log::info( "[{$this->switcher->name}]:{$this->name} [Index: {$this->ifIndex}] Updating {$attribute} from [{$this->$attribute}] to [{$n}]" );
                     }
                     break;
             }
 
-            $this->$fn = $n;
+            $this->$attribute = $n;
         }
 
         if( $this->switcher->mauSupported ) {
@@ -478,8 +477,10 @@ class SwitchPort extends Model
                         $n = '(unknown type - oid: ' . $n . ')';
                     }
                 }
+
                 if ( $fn == 'mauAutoNegSupported' || $fn == 'mauAutoNegAdminState' ) {
-                    $n =  (isset ($n) && !empty ($n) && $n) ? 1 : 0;
+                    // both these OSS_SNMP functions return a bool so really only testing for null.
+                    $n = $n ? 1 : 0;
                 }
 
                 if( $this->$fn !== $n && $logger !== false ) {
