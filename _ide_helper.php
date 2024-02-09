@@ -1239,7 +1239,7 @@
          * Call the given Closure / class@method and inject its dependencies.
          *
          * @param callable|string $callback
-         * @param \Illuminate\Container\array<string,  mixed>  $parameters
+         * @param array<string, mixed> $parameters
          * @param string|null $defaultMethod
          * @return mixed 
          * @throws \InvalidArgumentException
@@ -16477,7 +16477,7 @@
                     /**
          * Add metadata info
          *
-         * @param \Barryvdh\DomPDF\array<string,  string> $info
+         * @param array<string, string> $info
          * @return static 
          * @static 
          */ 
@@ -16489,8 +16489,8 @@
                     /**
          * Load a View and convert to HTML
          *
-         * @param \Barryvdh\DomPDF\array<string,  mixed> $data
-         * @param \Barryvdh\DomPDF\array<string,  mixed> $mergeData
+         * @param array<string, mixed> $data
+         * @param array<string, mixed> $mergeData
          * @param string|null $encoding Not used yet
          * @static 
          */ 
@@ -16502,7 +16502,7 @@
                     /**
          * Set/Change an option (or array of options) in Dompdf
          *
-         * @param \Barryvdh\DomPDF\array<string,  mixed>|string $attribute
+         * @param array<string, mixed>|string $attribute
          * @param null|mixed $value
          * @return \Barryvdh\DomPDF\PDF 
          * @static 
@@ -16516,7 +16516,7 @@
          * Replace all the Options from DomPDF
          *
          * @deprecated Use setOption to override individual options.
-         * @param \Barryvdh\DomPDF\array<string,  mixed> $options
+         * @param array<string, mixed> $options
          * @static 
          */ 
         public static function setOptions($options)
@@ -16532,7 +16532,7 @@
          * 'compress' = > 1 or 0 - apply content stream compression, this is
          *    on (1) by default
          *
-         * @param \Barryvdh\DomPDF\array<string,  int> $options
+         * @param array<string, int> $options
          * @return string The rendered PDF as string
          * @static 
          */ 
@@ -16649,7 +16649,7 @@
                     /**
          * Add metadata info
          *
-         * @param \Barryvdh\DomPDF\array<string,  string> $info
+         * @param array<string, string> $info
          * @return static 
          * @static 
          */ 
@@ -16661,8 +16661,8 @@
                     /**
          * Load a View and convert to HTML
          *
-         * @param \Barryvdh\DomPDF\array<string,  mixed> $data
-         * @param \Barryvdh\DomPDF\array<string,  mixed> $mergeData
+         * @param array<string, mixed> $data
+         * @param array<string, mixed> $mergeData
          * @param string|null $encoding Not used yet
          * @static 
          */ 
@@ -16674,7 +16674,7 @@
                     /**
          * Set/Change an option (or array of options) in Dompdf
          *
-         * @param \Barryvdh\DomPDF\array<string,  mixed>|string $attribute
+         * @param array<string, mixed>|string $attribute
          * @param null|mixed $value
          * @return \Barryvdh\DomPDF\PDF 
          * @static 
@@ -16688,7 +16688,7 @@
          * Replace all the Options from DomPDF
          *
          * @deprecated Use setOption to override individual options.
-         * @param \Barryvdh\DomPDF\array<string,  mixed> $options
+         * @param array<string, mixed> $options
          * @static 
          */ 
         public static function setOptions($options)
@@ -16704,7 +16704,7 @@
          * 'compress' = > 1 or 0 - apply content stream compression, this is
          *    on (1) by default
          *
-         * @param \Barryvdh\DomPDF\array<string,  int> $options
+         * @param array<string, int> $options
          * @return string The rendered PDF as string
          * @static 
          */ 
