@@ -160,17 +160,6 @@ class Router extends Model
         'last_update_started' => 'datetime',
     ];
 
-    /**
-     * The attributes that should not be logged
-     *
-     * @var array
-     */
-    public $field_log_exception = [
-        'last_updated',
-        'updated_at',
-        'last_update_started',
-    ];
-
 
     /**
      * CONST PROTOCOL
@@ -605,4 +594,22 @@ class Router extends Model
             $model->vlan->name,
         );
     }
+
+
+    /**
+     * We don't want to log router config updates via the API
+     */
+    public function observerSkipUpdateLogging(): bool {
+        $fields_changed = array_keys( $this->getChanges() );
+
+        foreach( [ 'last_updated', 'updated_at', 'last_update_started', ] as $ignore ) {
+            if( in_array( $ignore, $fields_changed ) ) {
+                unset( $fields_changed[ array_search( $ignore, $fields_changed ) ] );
+            }
+        }
+
+        return count( $fields_changed ) === 0;
+    }
+
+
 }
