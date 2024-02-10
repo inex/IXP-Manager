@@ -54,6 +54,11 @@ class Whois
         $this->port = $port;
     }
 
+
+    /**
+     *
+     */
+
     /**
      * Do a whois lookup
      *
