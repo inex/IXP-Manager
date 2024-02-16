@@ -113,8 +113,6 @@ Route::get( 'ixpmanager-users/ixf-ids', function() {
     }));
 })->name( 'ixpmanager-users/ixf-ids' );
 
-https://www.ixpmanager.org/js/ixp-manager-users.json
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Statistics
 //
