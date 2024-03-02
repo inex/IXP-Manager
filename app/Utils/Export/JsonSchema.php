@@ -3,7 +3,7 @@
 namespace IXP\Utils\Export;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -326,9 +326,46 @@ class JsonSchema
             ->keyBy( 'id' );
 
         $cnt = 0;
+        $exclude_asns = [];
+        $exclude_tags = [];
+
+        if( $xas = config( 'ixp_api.json_export_schema.excludes.asnum' ) ) {
+            $exclude_asns = explode( '|', $xas );
+        }
+
+        if( $xt = config( 'ixp_api.json_export_schema.excludes.tags' ) ) {
+            $exclude_tags = explode( '|', $xt );
+        }
+
         foreach( $customers as $c ) {
             /** @var Customer  $c */
             $connlist = [];
+
+            if( config( 'ixp_api.json_export_schema.excludes.rfc6996' ) ) {
+                if( ( $c->autsys >= 64512 && $c->autsys <= 65534 ) ||
+                      ( $c->autsys >= 4200000000 && $c->autsys <= 4294967294 ) ) {
+                    continue;
+                }
+            }
+
+            if( config( 'ixp_api.json_export_schema.excludes.rfc5398' ) ) {
+                if( ( $c->autsys >= 64496 && $c->autsys <= 64511 ) ||
+                      ( $c->autsys >= 65536  && $c->autsys <= 65551 ) ) {
+                    continue;
+                }
+            }
+
+            if( count( $exclude_asns ) && in_array( $c->autsys, $exclude_asns ) ) {
+                continue;
+            }
+
+            if( count( $exclude_tags ) ) {
+                foreach( $c->tags as $tag ) {
+                    if( in_array( $tag->tag, $exclude_tags ) ) {
+                        continue 2;
+                    }
+                }
+            }
 
             foreach( $c->virtualInterfaces as $vi ) {
                 $iflist = [];
@@ -575,15 +612,18 @@ class JsonSchema
         // intinfo filters
         if( $i = config( 'ixp_api.json_export_schema.excludes.intinfo' ) ) {
             foreach( explode( '|', $i ) as $exc ) {
-                foreach( $output[ 'ixp_list' ] as $intid => $int ) {
-                    foreach( $int[ 'vlan' ] as $vid => $v ) {
+                foreach( $output[ 'member_list' ] as $mid => $member ) {
+                    foreach( $member[ 'connection_list' ] as $clid => $connection ) {
+                        foreach( $member[ 'connection_list' ][$clid]['vlan_list'] as $vid => $vlanint ) {
 
-                        if( isset( $output[ 'ixp_list' ][ $intid ][ 'vlan' ][ $vid ][ 'ipv4' ][ $exc ] ) ) {
-                            unset( $output[ 'ixp_list' ][ $intid ][ 'vlan' ][ $vid ][ 'ipv4' ][ $exc ] );
-                        }
+                            if( isset( $output[ 'member_list' ][ $mid ][ 'connection_list' ][ $clid ][ 'vlan_list' ][ $vid ][ 'ipv4' ][ $exc ] ) ) {
+                                unset( $output[ 'member_list' ][ $mid ][ 'connection_list' ][ $clid ][ 'vlan_list' ][ $vid ][ 'ipv4' ][ $exc ] );
+                            }
 
-                        if( isset( $output[ 'ixp_list' ][ $intid ][ 'vlan' ][ $vid ][ 'ipv6' ][ $exc ] ) ) {
-                            unset( $output[ 'ixp_list' ][ $intid ][ 'vlan' ][ $vid ][ 'ipv6' ][ $exc ] );
+                            if( isset( $output[ 'member_list' ][ $mid ][ 'connection_list' ][ $clid ][ 'vlan_list' ][ $vid ][ 'ipv6' ][ $exc ] ) ) {
+                                unset( $output[ 'member_list' ][ $mid ][ 'connection_list' ][ $clid ][ 'vlan_list' ][ $vid ][ 'ipv6' ][ $exc ] );
+                            }
+
                         }
                     }
                 }
