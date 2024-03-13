@@ -328,6 +328,7 @@ class JsonSchema
         $cnt = 0;
         $exclude_asns = [];
         $exclude_tags = [];
+        $exclude_vlans = [];
 
         if( $xas = config( 'ixp_api.json_export_schema.excludes.asnum' ) ) {
             $exclude_asns = explode( '|', $xas );
@@ -335,6 +336,10 @@ class JsonSchema
 
         if( $xt = config( 'ixp_api.json_export_schema.excludes.tags' ) ) {
             $exclude_tags = explode( '|', $xt );
+        }
+
+        if( $xv = config( 'ixp_api.json_export_schema.excludes.vlans' ) ) {
+            $exclude_vlans = explode( '|', $xv );
         }
 
         foreach( $customers as $c ) {
@@ -403,6 +408,9 @@ class JsonSchema
                 $vlanentries = [];
                 foreach( $vi->vlanInterfaces as $vli ) {
                     if( $vli->vlan->private ) {
+                        continue;
+                    }
+                    if( count( $exclude_vlans ) && in_array( $vli->vlanid, $exclude_vlans ) ) {
                         continue;
                     }
 
