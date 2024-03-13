@@ -49,6 +49,7 @@ return [
             'ixp'       => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_IXP',     false   ),
             'member'    => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_MEMBER',  false   ),
             'intinfo'   => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_INTINFO', false   ),
+            'vlans'     => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_VLANS',   false   ),
         ],
     ],
 
