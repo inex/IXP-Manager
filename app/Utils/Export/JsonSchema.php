@@ -197,6 +197,7 @@ class JsonSchema
 
             $result = NetworkInfo::leftJoin( 'vlan', 'vlan.id', 'networkinfo.vlanid' )
                 ->where( 'vlan.infrastructureid', $infra->id )
+                ->where( 'vlan.export_to_ixf', 1 )
                 ->get()->toArray();
 
             $vlanentry = [];

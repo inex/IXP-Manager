@@ -43,6 +43,7 @@ use IXP\Traits\Observable;
  * @property int $infrastructureid
  * @property int $peering_matrix
  * @property int $peering_manager
+ * @property int $export_to_ixf
  * @property string|null $config_name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -103,6 +104,7 @@ class Vlan extends Model
         'infrastructureid',
         'peering_matrix',
         'peering_manager',
+        'export_to_ixf',
         'config_name',
     ];
 

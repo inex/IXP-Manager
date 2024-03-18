@@ -62,6 +62,13 @@
                 Note that this does not mean that it will be populated. For that, you need to <a href='https://github.com/inex/IXP-Manager/wiki/Peering-Matrix'>configure
                 sflow support for this</a>." );
         ?>
+        <?= Former::checkbox( 'export_to_ixf' )
+            ->label( ' ' )
+            ->text( 'Include VLAN in data export to IX-F' )
+            ->value( 1 )
+            ->inline()
+            ->blockHelp( "Include this VLAN in the export process to the global IX-F database." );
+        ?>
 
         <div class="form-group col-sm-8">
             <div class="col-lg-offset-2 col-sm-offset-2">

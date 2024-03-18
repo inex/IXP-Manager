@@ -102,6 +102,10 @@ class VlanController extends EloquentController
                     'title'          => 'Peering Manager',
                     'type'           => self::$FE_COL_TYPES[ 'YES_NO' ],
                 ],
+                'export_to_ixf' => [
+                    'title'          => 'Export to IX-F',
+                    'type'           => self::$FE_COL_TYPES[ 'YES_NO' ],
+                ],
                 'notes' => [
                     'title'         => 'Notes',
                     'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
@@ -214,6 +218,7 @@ class VlanController extends EloquentController
             'private'                   =>  request()->old( 'private',            $this->object->private            ),
             'peering_matrix'            =>  request()->old( 'peering_matrix',     $this->object->peering_matrix     ),
             'peering_manager'           =>  request()->old( 'peering_manager',    $this->object->peering_manager    ),
+            'export_to_ixf'             =>  request()->old( 'export_to_ixf',      $this->object->export_to_ixf      ),
             'notes'                     =>  request()->old( 'notes',              $this->object->notes              ),
         ]);
 
