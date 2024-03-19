@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1d48be1bf00e0001f35b780246bbe220",
+    "content-hash": "22ecbcd51d33795380dd6c0545e158fc",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -8781,16 +8781,16 @@
         },
         {
             "name": "composer/pcre",
-            "version": "3.1.2",
+            "version": "3.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/pcre.git",
-                "reference": "4775f35b2d70865807c89d32c8e7385b86eb0ace"
+                "reference": "5b16e25a5355f1f3afdfc2f954a0a80aec4826a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/pcre/zipball/4775f35b2d70865807c89d32c8e7385b86eb0ace",
-                "reference": "4775f35b2d70865807c89d32c8e7385b86eb0ace",
+                "url": "https://api.github.com/repos/composer/pcre/zipball/5b16e25a5355f1f3afdfc2f954a0a80aec4826a8",
+                "reference": "5b16e25a5355f1f3afdfc2f954a0a80aec4826a8",
                 "shasum": ""
             },
             "require": {
@@ -8832,7 +8832,7 @@
             ],
             "support": {
                 "issues": "https://github.com/composer/pcre/issues",
-                "source": "https://github.com/composer/pcre/tree/3.1.2"
+                "source": "https://github.com/composer/pcre/tree/3.1.3"
             },
             "funding": [
                 {
@@ -8848,7 +8848,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-03-07T15:38:35+00:00"
+            "time": "2024-03-19T10:26:25+00:00"
         },
         {
             "name": "composer/semver",
@@ -10175,16 +10175,16 @@
         },
         {
             "name": "orchestra/testbench-core",
-            "version": "v6.49.3",
+            "version": "v6.49.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/orchestral/testbench-core.git",
-                "reference": "c9010622e39ad800d1218cdaa95741760be1c0aa"
+                "reference": "e99d51d095da503373ae47f508d9df426a2fe9d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/orchestral/testbench-core/zipball/c9010622e39ad800d1218cdaa95741760be1c0aa",
-                "reference": "c9010622e39ad800d1218cdaa95741760be1c0aa",
+                "url": "https://api.github.com/repos/orchestral/testbench-core/zipball/e99d51d095da503373ae47f508d9df426a2fe9d2",
+                "reference": "e99d51d095da503373ae47f508d9df426a2fe9d2",
                 "shasum": ""
             },
             "require": {
@@ -10260,7 +10260,7 @@
                 "issues": "https://github.com/orchestral/testbench/issues",
                 "source": "https://github.com/orchestral/testbench-core"
             },
-            "time": "2024-03-19T01:14:57+00:00"
+            "time": "2024-03-19T11:14:04+00:00"
         },
         {
             "name": "phar-io/manifest",
