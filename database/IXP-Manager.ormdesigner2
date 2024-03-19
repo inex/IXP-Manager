@@ -678,6 +678,7 @@
       <field name="private" type="boolean" default="0" required="true" uuid="0dab2335-8f1b-446e-a53e-b669a132cf09"/>
       <field name="peering_matrix" type="boolean" default="0" required="true" uuid="c2635dd8-8b82-420d-b0c4-a688b52cfc39"/>
       <field name="peering_manager" type="boolean" default="0" required="true" uuid="8ccb17e4-b4f3-4a01-91e1-a639a49b6445"/>
+      <field name="export_to_ixf" type="boolean" default="1" required="true" uuid="1f8586ba-e565-11ee-acd3-af3830c624fb"/>
       <field name="notes" type="text" uuid="6f0d5a85-0441-4611-97a7-af2596fab0d0"/>
       <index name="infra_config_name" unique="true" uuid="a4fa1226-ee20-42e1-97b1-c39c333d6f4a">
         <index-field name="infrastructureid" uuid="9f772490-9248-4288-95b0-78b9d77b7d35"/>
