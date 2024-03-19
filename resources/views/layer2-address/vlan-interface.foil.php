@@ -4,16 +4,13 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Vlan Interface / Configured MAC Address Management
+    VLAN Interface / Configured MAC Address Management
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-sm">
         <a href="<?= route( 'virtual-interface@edit' , [ "vi" => $t->vli->virtualInterface->id ] ) ?>" class="btn btn-sm btn-white">
             Virtual Interface Details
-        </a>
-        <a class="btn btn-sm btn-white" href="#" id="add-l2a">
-            <i class="fa fa-plus"></i>
         </a>
     </div>
 <?php $this->append() ?>
@@ -38,11 +35,11 @@
                             <?= $t->ee( $t->vli->vlan->name ) ?>
                         </dd>
                         <dt class="col-sm-2">
-                            Addresses
+                            IP Addresses
                         </dt>
                         <dd class="col-sm-9">
-                            <?= $t->vli->ipvv4Address ? $t->vli->ipvv4Address->address . ( $t->vli->ipvv6Address ? ' / ': '' ) : ''  ?>
-                            <?= $t->vli->ipvv6Address->address ?? '' ?>
+                            <?= $t->vli->ipv4Address ? $t->vli->ipv4Address->address . ( $t->vli->ipv6Address ? ' / ': '' ) : ''  ?>
+                            <?= $t->vli->ipv6Address->address ?? '' ?>
                         </dd>
                     </dl>
                 </div>
@@ -64,11 +61,11 @@
                                 Updated
                             </th>
                             <th>
-                                Action
+                                Action <a class="btn btn-sm btn-white" href="#" id="add-l2a"><i class="fa fa-plus"></i></a>
                             </th>
-                        </tr>
-                    <thead>
-                    <tbody >
+                            </tr>
+                    </thead>
+                    <tbody>
                         <?php foreach( $t->vli->layer2Addresses as $l2a ):?>
                             <tr>
                                 <td>
@@ -92,7 +89,7 @@
                                 </td>
                             </tr>
                         <?php endforeach;?>
-                    <tbody>
+                    </tbody>
                 </table>
             </div>
             <?= $t->insert( 'layer2-address/modal-mac' ); ?>

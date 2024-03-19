@@ -492,7 +492,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->check( 'ipv6monitorrcbgp' )
                 ->press('Create')
                 ->assertPathIs('/interfaces/virtual/edit/' . $vi->id )
-                ->assertSee('Vlan Interface created.');
+                ->assertSee('VLAN Interface created.');
 
         // check data in DB
         $this->assertGreaterThan( 1, $vi->vlanInterfaces()->count() );
@@ -524,7 +524,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $this->assertEquals( true,              $vli->rsmorespecifics       );
 
 
-        // Edit the Vlan Interface
+        // Edit the VLAN Interface
         $browser->click( "#edit-vli-" . $vli->id )
             ->assertPathIs('/interfaces/vlan/edit/' . $vli->id . "/vintid/" . $vi->id )
             ->assertSee( "Edit VLAN Interface" );
@@ -573,7 +573,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->uncheck( 'ipv6monitorrcbgp' )
                 ->press('Save Changes')
                 ->assertPathIs('/interfaces/virtual/edit/' . $vi->id )
-                ->assertSee('Vlan Interface updated');
+                ->assertSee('VLAN Interface updated');
 
         $vli->refresh();
 
@@ -598,7 +598,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $this->assertEquals( null,                  $vli->notes                 );
         $this->assertEquals( false,                 $vli->rsmorespecifics       );
 
-        // Edit the Vlan Interface
+        // Edit the VLAN Interface
         $browser->click( "#edit-vli-" . $vli->id )
                 ->assertPathIs('/interfaces/vlan/edit/' . $vli->id . "/vintid/" . $vi->id )
                 ->assertSee( "Edit VLAN Interface" );
@@ -639,7 +639,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->press('Save Changes')
                 ->pause( 5000 )
                 ->assertPathIs('/interfaces/virtual/edit/' . $vi->id )
-                ->assertSee('Vlan Interface updated.');
+                ->assertSee('VLAN Interface updated.');
 
         $vli->refresh();
 
@@ -653,7 +653,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $this->assertEquals( true, $vli->busyhost           );
         $this->assertEquals( true, $vli->rsmorespecifics    );
 
-        // Edit the Vlan Interface
+        // Edit the VLAN Interface
         $browser->click( "#edit-vli-" . $vli->id )
             ->assertPathIs('/interfaces/vlan/edit/' . $vli->id . "/vintid/" . $vi->id )
             ->assertSee( "Edit VLAN Interface" );
@@ -702,7 +702,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->assertChecked( 'ipv4monitorrcbgp' )
                 ->assertChecked( 'ipv6monitorrcbgp' )
                 ->press( "Duplicate" )
-                ->assertSee( "Vlan Interface duplicated" );
+                ->assertSee( "VLAN Interface duplicated" );
 
         $vi->refresh();
 
@@ -732,10 +732,10 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
         // Delete Vlan interface
         $browser->press("#btn-delete-vli-" . $vli->id )
-                ->waitForText( 'Do you really want to delete this Vlan Interface?' )
+                ->waitForText( 'Do you really want to delete this VLAN Interface?' )
                 ->press('Delete')
                 ->assertPathIs('/interfaces/virtual/edit/' . $vi->id )
-                ->assertSee( 'Vlan Interface deleted' );
+                ->assertSee( 'VLAN Interface deleted' );
 
     }
 }

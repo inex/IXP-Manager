@@ -117,7 +117,7 @@ class Layer2AddressController extends Controller
     }
 
     /**
-     * Delete a mac address from a Vlan Interface
+     * Delete a MAC address from a VLAN Interface
      *
      * @param Layer2Address     $l2a
      * @param bool              $showFeMessage Should we show the frontend message ?

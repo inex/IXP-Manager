@@ -61,9 +61,9 @@
                         <?php endif; ?>
 
                         <?= Former::select( 'vlanid' )
-                            ->label( 'Vlan' )
+                            ->label( 'VLAN' )
                             ->fromQuery( $t->vlans, 'name' )
-                            ->placeholder( 'Choose a Vlan' )
+                            ->placeholder( 'Choose a VLAN' )
                             ->addClass( 'chzn-select' )
                             ->blockHelp( '' );
                         ?>

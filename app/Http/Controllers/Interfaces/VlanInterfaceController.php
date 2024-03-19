@@ -51,7 +51,7 @@ use IXP\Utils\View\Alert\{
 };
 
 /**
- * Vlan Interface Controller
+ * VLAN Interface Controller
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
@@ -135,7 +135,7 @@ class VlanInterfaceController extends Common
         // add a warning if we're filtering on irrdb but have not configured one for the customer
         $this->warnIfIrrdbFilteringButNoIrrdbSourceSet( $vli );
 
-        AlertContainer::push( 'Vlan Interface created.', Alert::SUCCESS );
+        AlertContainer::push( 'VLAN Interface created.', Alert::SUCCESS );
         return redirect( route( 'virtual-interface@edit', [ 'vi' => $r->virtualinterfaceid ] ) );
     }
 
@@ -214,7 +214,7 @@ class VlanInterfaceController extends Common
         // add a warning if we're filtering on irrdb but have not configured one for the customer
         $this->warnIfIrrdbFilteringButNoIrrdbSourceSet( $vli );
 
-        AlertContainer::push( 'Vlan Interface updated.', Alert::SUCCESS );
+        AlertContainer::push( 'VLAN Interface updated.', Alert::SUCCESS );
 
         return redirect( $r->redirect2vi ? route( 'virtual-interface@edit', [ 'vi' => $vli->virtualinterfaceid ] ) : route( 'vlan-interface@list' ) );
     }
@@ -261,13 +261,13 @@ class VlanInterfaceController extends Common
         // add a warning if we're filtering on irrdb but have not configured one for the customer
         $this->warnIfIrrdbFilteringButNoIrrdbSourceSet( $vli );
 
-        AlertContainer::push( 'Vlan Interface duplicated.', Alert::SUCCESS );
+        AlertContainer::push( 'VLAN Interface duplicated.', Alert::SUCCESS );
 
         return redirect( route( 'virtual-interface@edit', [ 'vi' => $vli->virtualinterfaceid ] ) );
     }
 
     /**
-     * Display a VLAN interface
+     * Display a VLAN Interface
      *
      * @param VlanInterface $vli
      *
@@ -281,7 +281,7 @@ class VlanInterfaceController extends Common
     }
 
     /**
-     * Delete a Vlan Interface and the Layer2Address associated
+     * Delete a VLAN Interface and the Layer2Address associated
      *
      * @param  VlanInterface  $vli
      *
@@ -294,7 +294,7 @@ class VlanInterfaceController extends Common
         $vli->layer2addresses()->delete();
         $vli->delete();
 
-        AlertContainer::push( 'The Vlan Interface deleted', Alert::SUCCESS );
+        AlertContainer::push( 'VLAN Interface deleted.', Alert::SUCCESS );
 
         if( $_SERVER[ "HTTP_REFERER" ] === route( 'vlan-interface@list' ) ){
             return redirect( route( 'vlan-interface@list' ) );

@@ -199,9 +199,8 @@ class VirtualInterface extends Model
     }
 
     /**
-     * Get peerring PhysicalInterfaces
+     * Get peering PhysicalInterfaces
      *
-
      */
     public function peeringPhysicalInterface(): array
     {

@@ -10,9 +10,9 @@
         ?>
 
         <?= Former::select( 'vlanid' )
-            ->label( 'Vlan' )
+            ->label( 'VLAN' )
             ->fromQuery( $t->data[ 'params'][ 'vlans'], 'name' )
-            ->placeholder( 'Choose a vlan' )
+            ->placeholder( 'Choose a VLAN' )
             ->addClass( 'chzn-select' )
             ->blockHelp( "" );
         ?>

@@ -86,7 +86,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Vlan:
+                                        VLAN:
                                     </b>
                                 </td>
                                 <td>

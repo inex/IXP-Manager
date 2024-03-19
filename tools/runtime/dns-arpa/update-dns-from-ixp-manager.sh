@@ -99,7 +99,7 @@ done
 
 for f in $SOAFILES; do
     calculate_serial $SOAPATH/$f
-    sed -E -i '.bup' "s/[0-9]{10}[[:space:]]+;[[:space:]]+Serial/${SERIAL}      ; Serial/" $SOAPATH/$f
+    sed -E -i'.bup' "s/[0-9]{10}[[:space:]]+;[[:space:]]+Serial/${SERIAL}      ; Serial/" $SOAPATH/$f
 done
 
 checkzone=0

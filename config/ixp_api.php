@@ -41,9 +41,13 @@ return [
 
         // some IXs want to exclude some information:
         'excludes' => [
-            'switch'    => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_SWITCH', false    ),
-            'ixp'       => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_IXP', false       ),
-            'member'    => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_MEMBER', false    ),
+            'rfc5398'   => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_RFC5398', true    ),
+            'rfc6996'   => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_RFC6996', true    ),
+            'tags'      => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_TAGS',    false   ),
+            'asnum'     => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_ASNUM',   false   ),
+            'switch'    => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_SWITCH',  false   ),
+            'ixp'       => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_IXP',     false   ),
+            'member'    => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_MEMBER',  false   ),
             'intinfo'   => env( 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_INTINFO', false   ),
         ],
     ],
@@ -90,8 +94,9 @@ return [
     'peeringDB' => [
         'username'        => env( 'IXP_API_PEERING_DB_USERNAME', null ),
         'password'        => env( 'IXP_API_PEERING_DB_PASSWORD', null ),
+        'api-key'         => env( 'IXP_API_PEERING_DB_API_KEY',  null ),
         // you should not need to change this. The %s is either "$un:$pw@" or an empty string
-        'url'             => env( 'IXP_API_PEERING_DB_URL',      "https://%speeringdb.com/api" ),
+        'url'             => env( 'IXP_API_PEERING_DB_URL',      "https://%swww.peeringdb.com/api" ),
 
         'fac_api'         => env( 'IXP_API_PEERING_DB_FAC_URL',  "https://api.peeringdb.com/api/fac" ),
         'ixp_api'         => env( 'IXP_API_PEERING_DB_IXP_URL',  "https://api.peeringdb.com/api/ix"  ),
