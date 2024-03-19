@@ -1489,6 +1489,9 @@ CREATE TABLE `networkinfo` (
 
 LOCK TABLES `networkinfo` WRITE;
 /*!40000 ALTER TABLE `networkinfo` DISABLE KEYS */;
+INSERT INTO `networkinfo` VALUES (1,1,4,'192.0.2.0',25,'192.0.2.8','192.0.2.9',NULL,NULL,NULL),(2,1,6,'2001:db8::',64,'2001:db8::8','2001:db8::9',NULL,NULL,NULL),
+                                 (3,2,4,'192.0.2.128',25,'192.0.2.136','192.0.2.137',NULL,NULL,NULL),(4,2,6,'2001:db8:0:2::',64,'2001:db8:0:2::8','2001:db8:0:2::9',NULL,NULL,NULL),
+                                 (5,3,4,'192.0.2.0',25,'192.0.2.8','192.0.2.9',NULL,NULL,NULL),(6,3,6,'2001:db8::',64,'2001:db8::8','2001:db8::9',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `networkinfo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2762,6 +2765,7 @@ CREATE TABLE `vlan` (
   `notes` longtext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   `peering_matrix` tinyint(1) NOT NULL DEFAULT '0',
   `peering_manager` tinyint(1) NOT NULL DEFAULT '0',
+  `export_to_ixf` tinyint(1) NOT NULL DEFAULT '1',
   `config_name` varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -2778,7 +2782,7 @@ CREATE TABLE `vlan` (
 
 LOCK TABLES `vlan` WRITE;
 /*!40000 ALTER TABLE `vlan` DISABLE KEYS */;
-INSERT INTO `vlan` VALUES (1,1,'Peering LAN 1',1,0,'',1,1,NULL,NULL,NULL),(2,2,'Peering LAN 2',2,0,'',1,1,NULL,NULL,NULL);
+INSERT INTO `vlan` VALUES (1,1,'Peering LAN 1',1,0,'',1,1,1,NULL,NULL,NULL),(2,2,'Peering LAN 2',2,0,'',1,1,1,NULL,NULL,NULL),(3,1,'Quarantine LAN 1',3,0,'',1,1,0,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `vlan` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -42,6 +42,7 @@ use IXP\Models\{
  * @property int $infrastructureid
  * @property int $peering_matrix
  * @property int $peering_manager
+ * @property bool $export_to_ixf
  * @property string|null $config_name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -68,6 +69,7 @@ use IXP\Models\{
  * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator query()
  * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator whereConfigName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator whereExportToIxf($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator whereInfrastructureid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator whereName($value)

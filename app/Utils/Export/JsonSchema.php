@@ -195,12 +195,13 @@ class JsonSchema
 
             $i['peering_policy_list'] = array_values( Customer::$PEERING_POLICIES);
 
-            $result = NetworkInfo::leftJoin( 'vlan', 'vlan.id', 'networkinfo.vlanid' )
+            $vlansToExport = NetworkInfo::join( 'vlan', 'vlan.id', 'networkinfo.vlanid' )
                 ->where( 'vlan.infrastructureid', $infra->id )
+                ->where( 'vlan.export_to_ixf', true )
                 ->get()->toArray();
 
             $vlanentry = [];
-            foreach( $result as $ni )
+            foreach( $vlansToExport as $ni )
             {
                 $id = $ni['id'];
                 $vlanentry[$id]['id']                                   = $ni['id'];
@@ -402,7 +403,7 @@ class JsonSchema
 
                 $vlanentries = [];
                 foreach( $vi->vlanInterfaces as $vli ) {
-                    if( $vli->vlan->private ) {
+                    if( $vli->vlan->private || !$vli->vlan->export_to_ixf ) {
                         continue;
                     }
 

@@ -16425,17 +16425,23 @@
             /**
      * 
      *
-     * @method static \Barryvdh\DomPDF\PDF setPaper($paper, $orientation = 'portrait')
-     * @method static \Barryvdh\DomPDF\PDF setBaseHost(string $baseHost)
-     * @method static \Barryvdh\DomPDF\PDF setProtocol(string $protocol)
-     * @method static \Barryvdh\DomPDF\PDF setHttpContext($httpContext)
-     * @method static \Barryvdh\DomPDF\PDF setCallbacks(array $callbacks)
+     * @method static BasePDF setBaseHost(string $baseHost)
+     * @method static BasePDF setBasePath(string $basePath)
+     * @method static BasePDF setCanvas(\Dompdf\Canvas $canvas)
+     * @method static BasePDF setCallbacks(array $callbacks)
+     * @method static BasePDF setCss(\Dompdf\Css\Stylesheet $css)
+     * @method static BasePDF setDefaultView(string $defaultView, array $options)
+     * @method static BasePDF setDom(\DOMDocument $dom)
+     * @method static BasePDF setFontMetrics(\Dompdf\FontMetrics $fontMetrics)
+     * @method static BasePDF setHttpContext(resource|array $httpContext)
+     * @method static BasePDF setPaper(string|float[] $paper, string $orientation = 'portrait')
+     * @method static BasePDF setProtocol(string $protocol)
+     * @method static BasePDF setTree(\Dompdf\Frame\FrameTree $tree)
      */ 
         class Pdf {
                     /**
          * Get the DomPDF instance
          *
-         * @return \Dompdf\Dompdf 
          * @static 
          */ 
         public static function getDomPDF()
@@ -16478,7 +16484,6 @@
          * Add metadata info
          *
          * @param array<string, string> $info
-         * @return static 
          * @static 
          */ 
         public static function addInfo($info)
@@ -16504,7 +16509,6 @@
          *
          * @param array<string, mixed>|string $attribute
          * @param null|mixed $value
-         * @return \Barryvdh\DomPDF\PDF 
          * @static 
          */ 
         public static function setOption($attribute, $value = null)
@@ -16597,17 +16601,23 @@
             /**
      * 
      *
-     * @method static \Barryvdh\DomPDF\PDF setPaper($paper, $orientation = 'portrait')
-     * @method static \Barryvdh\DomPDF\PDF setBaseHost(string $baseHost)
-     * @method static \Barryvdh\DomPDF\PDF setProtocol(string $protocol)
-     * @method static \Barryvdh\DomPDF\PDF setHttpContext($httpContext)
-     * @method static \Barryvdh\DomPDF\PDF setCallbacks(array $callbacks)
+     * @method static BasePDF setBaseHost(string $baseHost)
+     * @method static BasePDF setBasePath(string $basePath)
+     * @method static BasePDF setCanvas(\Dompdf\Canvas $canvas)
+     * @method static BasePDF setCallbacks(array $callbacks)
+     * @method static BasePDF setCss(\Dompdf\Css\Stylesheet $css)
+     * @method static BasePDF setDefaultView(string $defaultView, array $options)
+     * @method static BasePDF setDom(\DOMDocument $dom)
+     * @method static BasePDF setFontMetrics(\Dompdf\FontMetrics $fontMetrics)
+     * @method static BasePDF setHttpContext(resource|array $httpContext)
+     * @method static BasePDF setPaper(string|float[] $paper, string $orientation = 'portrait')
+     * @method static BasePDF setProtocol(string $protocol)
+     * @method static BasePDF setTree(\Dompdf\Frame\FrameTree $tree)
      */ 
         class Pdf {
                     /**
          * Get the DomPDF instance
          *
-         * @return \Dompdf\Dompdf 
          * @static 
          */ 
         public static function getDomPDF()
@@ -16650,7 +16660,6 @@
          * Add metadata info
          *
          * @param array<string, string> $info
-         * @return static 
          * @static 
          */ 
         public static function addInfo($info)
@@ -16676,7 +16685,6 @@
          *
          * @param array<string, mixed>|string $attribute
          * @param null|mixed $value
-         * @return \Barryvdh\DomPDF\PDF 
          * @static 
          */ 
         public static function setOption($attribute, $value = null)

@@ -109,6 +109,7 @@ class VlanControllerTest extends DuskTestCase
             $this->assertEquals( true,              (bool)$vlan->private            );
             $this->assertEquals( true,              (bool)$vlan->peering_matrix     );
             $this->assertEquals( true,              (bool)$vlan->peering_manager    );
+            $this->assertEquals( false,             (bool)$vlan->export_to_ixf      );
             $this->assertEquals( 'test notes',      $vlan->notes                    );
 
             // 3. browse to edit vlan object:
@@ -122,6 +123,7 @@ class VlanControllerTest extends DuskTestCase
                     ->assertChecked(    'private'           )
                     ->assertChecked(    'peering_matrix'    )
                     ->assertChecked(    'peering_manager'   )
+                    ->assertDisabled(    'export_to_ixf'    )
                     ->assertInputValue( 'notes',    'test notes' );
 
             // 5. uncheck checkboxes, change selects and values, ->press('Save Changes'), assertPathIs(....)  (repeat 1)
@@ -129,6 +131,7 @@ class VlanControllerTest extends DuskTestCase
                     ->uncheck('private'         )
                     ->uncheck('peering_matrix'  )
                     ->uncheck('peering_manager' )
+                    ->check(  'export_to_ixf'   )
                     ->press('Save Changes' )
                     ->assertPathIs('/vlan/list' )
                     ->assertSee( "VLAN updated" );
@@ -145,6 +148,7 @@ class VlanControllerTest extends DuskTestCase
             $this->assertEquals( false,             (bool)$vlan->private            );
             $this->assertEquals( false,             (bool)$vlan->peering_matrix     );
             $this->assertEquals( false,             (bool)$vlan->peering_manager    );
+            $this->assertEquals( true,              (bool)$vlan->export_to_ixf      );
             $this->assertEquals( 'test notes',      $vlan->notes                    );
 
 
@@ -159,6 +163,7 @@ class VlanControllerTest extends DuskTestCase
                     ->assertNotChecked( 'private'           )
                     ->assertNotChecked( 'peering_matrix'    )
                     ->assertNotChecked( 'peering_manager'   )
+                    ->assertChecked(    'export_to_ixf'     )
                     ->assertInputValue( 'notes',    'test notes' );
 
 
@@ -178,6 +183,7 @@ class VlanControllerTest extends DuskTestCase
             $this->assertEquals( false,             (bool)$vlan->private            );
             $this->assertEquals( false,             (bool)$vlan->peering_matrix     );
             $this->assertEquals( false,             (bool)$vlan->peering_manager    );
+            $this->assertEquals( true,              (bool)$vlan->export_to_ixf      );
             $this->assertEquals( 'test notes',      $vlan->notes                    );
 
             // 10. edit again and check all checkboxes and submit
@@ -188,6 +194,7 @@ class VlanControllerTest extends DuskTestCase
                     ->check('peering_matrix'    )
                     ->check('peering_manager'   )
                     ->press('Save Changes' )
+                    // export_to_ixf should be automatically unchecked and disabled
                     ->assertPathIs('/vlan/list');
 
 
@@ -202,6 +209,7 @@ class VlanControllerTest extends DuskTestCase
             $this->assertEquals( true,              (bool)$vlan->private            );
             $this->assertEquals( true,              (bool)$vlan->peering_matrix     );
             $this->assertEquals( true,              (bool)$vlan->peering_manager    );
+            $this->assertEquals( false,             (bool)$vlan->export_to_ixf      );
             $this->assertEquals( 'test notes',      $vlan->notes                    );
 
             // 12. edit all inputs
@@ -229,6 +237,7 @@ class VlanControllerTest extends DuskTestCase
             $this->assertEquals( true,              (bool)$vlan->private            );
             $this->assertEquals( true,              (bool)$vlan->peering_matrix     );
             $this->assertEquals( true,              (bool)$vlan->peering_manager    );
+            $this->assertEquals( false,             (bool)$vlan->export_to_ixf      );
             $this->assertEquals( 'test notes2',     $vlan->notes                    );
 
             // 13. Add duplicate vlan
@@ -247,7 +256,7 @@ class VlanControllerTest extends DuskTestCase
                     ->assertSee( "The couple Infrastructure and config name already exist" )
                     ->visit( '/vlan/list' );
 
-            // 14. delete the router in the UI and verify via success message text and location
+            // 14. delete the vlan in the UI and verify via success message text and location
             $browser->visit( '/vlan/list/' )
                     ->press('#e2f-list-delete-dd-' . $vlan->id      )
                     ->press('#e2f-list-delete-' . $vlan->id         )

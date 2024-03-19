@@ -62,6 +62,14 @@
                 Note that this does not mean that it will be populated. For that, you need to <a href='https://github.com/inex/IXP-Manager/wiki/Peering-Matrix'>configure
                 sflow support for this</a>." );
         ?>
+        <?= Former::checkbox( 'export_to_ixf' )
+            ->label( ' ' )
+            ->text( 'Include VLAN in IX-F data export <em>(yes if peering LAN)</em>' )
+            ->value( 1 )
+            ->inline()
+            ->blockHelp( "The IX-F export <a href='https://docs.ixpmanager.org/features/ixf-export/'>is documented here</a>. In summary, if this is a peering LAN for your members, 
+                then it should be exported. If it has another puporse, such as for quarantine procedures or testing, then it should not be exported." );
+        ?>
 
         <div class="form-group col-sm-8">
             <div class="col-lg-offset-2 col-sm-offset-2">
