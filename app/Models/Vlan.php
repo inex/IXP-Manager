@@ -43,7 +43,7 @@ use IXP\Traits\Observable;
  * @property int $infrastructureid
  * @property int $peering_matrix
  * @property int $peering_manager
- * @property int $export_to_ixf
+ * @property bool $export_to_ixf
  * @property string|null $config_name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -70,6 +70,7 @@ use IXP\Traits\Observable;
  * @method static Builder|Vlan query()
  * @method static Builder|Vlan whereConfigName($value)
  * @method static Builder|Vlan whereCreatedAt($value)
+ * @method static Builder|Vlan whereExportToIxf($value)
  * @method static Builder|Vlan whereId($value)
  * @method static Builder|Vlan whereInfrastructureid($value)
  * @method static Builder|Vlan whereName($value)
@@ -115,6 +116,7 @@ class Vlan extends Model
      */
     protected $casts = [
         'private'         => 'boolean',
+        'export_to_ixf'   => 'boolean',
     ];
 
     /**

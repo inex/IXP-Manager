@@ -16,6 +16,8 @@ class AddExportToIxfVlan extends Migration
         Schema::table('vlan', function (Blueprint $table) {
             $table->tinyInteger( 'export_to_ixf' )->after( 'peering_manager' )->nullable( false )->default(1);
         });
+
+        \IXP\Models\Vlan::wherePrivate(1)->update(['export_to_ixf' => false]);
     }
 
     /**

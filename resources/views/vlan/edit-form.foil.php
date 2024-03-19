@@ -64,10 +64,11 @@
         ?>
         <?= Former::checkbox( 'export_to_ixf' )
             ->label( ' ' )
-            ->text( 'Include VLAN in data export to IX-F' )
+            ->text( 'Include VLAN in IX-F data export <em>(yes if peering LAN)</em>' )
             ->value( 1 )
             ->inline()
-            ->blockHelp( "Include this VLAN in the export process to the global IX-F database." );
+            ->blockHelp( "The IX-F export <a href='https://docs.ixpmanager.org/features/ixf-export/'>is documented here</a>. In summary, if this is a peering LAN for your members, 
+                then it should be exported. If it has another puporse, such as for quarantine procedures or testing, then it should not be exported." );
         ?>
 
         <div class="form-group col-sm-8">
