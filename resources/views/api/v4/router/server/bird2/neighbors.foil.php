@@ -281,8 +281,9 @@ protocol bgp pb_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?> from tb_rsclient {
             table t_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?>;
             export filter f_export_as<?= $int['autsys'] ?>;
         };
-        <?php if( $int['bgpmd5secret'] && !$t->router->skip_md5 ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
-
+<?php if( $int['bgpmd5secret'] && !$t->router->skip_md5 ): ?>
+        password "<?= $int['bgpmd5secret'] ?>";
+<?php endif; ?>
 }
 
 <?php endforeach; ?>
