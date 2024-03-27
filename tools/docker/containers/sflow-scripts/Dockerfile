@@ -26,11 +26,15 @@ RUN git clone https://github.com/sflow/sflowtool.git && \
     make && \
     make install
 
-# goflow2 script dependencies
+# goflow2 script dependencies - does not support IPFIX v10 format
 RUN cpanm install JSON REST::Client
 RUN apt-get install -y wget librrds-perl
 RUN wget https://github.com/netsampler/goflow2/releases/download/v1.3.6/goflow2_1.3.6_amd64.deb
 RUN apt install -y ./goflow2_1.3.6_amd64.deb
+
+# nfdump does support v10 with MAC addresses
+RUN apt-get install -y nfdump
+# Usage: sudo nfcapd -M /tmp -b 172.30.201.1 -E
 
 WORKDIR /
 
