@@ -170,6 +170,12 @@ class SetupWizard extends Command
     protected function populateData(): array
     {
 
+        /* Do not use laravel's `env()` because it reads the .env file.
+         * Instead explicitly require the variable to be set from the OS or the SAPI to avoid someone accidentally leaving it set in the .env file.
+         */
+        $envPassword = getenv('IXP_SETUP_ADMIN_PASSWORD');
+        putenv('IXP_SETUP_ADMIN_PASSWORD'); // Unset the variable as soon as we read it to reduce the risk of it leaking.
+
         $data = [
             "asn" => $this->option('asn') ?? $this->ask('Enter the ASN of your IXP'),
             "company_name" => $this->option('company-name') ?? $this->ask('Enter the name of your company'),
@@ -177,9 +183,9 @@ class SetupWizard extends Command
             "name" => $this->option('name') ?? $this->ask('Enter the full name(s) of the admin user'),
             "username" => $this->option('username') ?? $this->ask('Enter the username of the admin user'),
             "email" => $this->option('email') ?? $this->ask('Enter the email of the admin user'),
-            "password" => $this->secret('Enter the password of the admin user'),
+            "password" => $envPassword === false ? $this->secret('Enter the password of the admin user') : $envPassword,
         ];
-        if ($data['password'] !== $this->secret('Confirm the password of the admin user')) {
+        if ($envPassword === false && $data['password'] !== $this->secret('Confirm the password of the admin user')) {
             $this->error('Passwords do not match. Exiting.');
             exit(1);
         }
