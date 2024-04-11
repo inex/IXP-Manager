@@ -128,7 +128,7 @@ if (ref $flowrecords eq 'ARRAY') {
 		my $dstmac = $flow->{ in_dst_mac };
 		my $vlan = $flow->{ vlanID };  # or 'cust_vlanID' when using QinQ
 		my $pktsize = int( $flow->{ in_bytes } / $flow->{ in_packets });
-		my $samplerate = $flow->{ SamplingRate };
+		my $samplerate = $flow->{ sampled }; # Sampling Packet Interval, i.e. 1 out of every X packets sampled
 		my $ipprotocol = int( $flow->{ ip_version } );
 
 		my $srcvli = getvlifrommactable ($mactable, $infraid, $vlan, $srcmac);
