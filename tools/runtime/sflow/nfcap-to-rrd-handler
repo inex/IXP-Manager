@@ -56,7 +56,7 @@ my $basedir = defined($ixp->{ixp}->{sflow_rrddir}) ? $ixp->{ixp}->{sflow_rrddir}
 my $apikey = defined($ixp->{ixp}->{apikey}) ? $ixp->{ixp}->{apikey} : undef;
 my $apibaseurl = defined($ixp->{ixp}->{apibaseurl}) ? $ixp->{ixp}->{apibaseurl} : undef;
 
-my $timer_period = 60;
+my $interval = 60; # Sampling interval in seconds
 my $mactabletimeout = 86400;
 my $daemon = 1;
 my $infraid = undef;
@@ -75,7 +75,7 @@ GetOptions(
 	'sflowtool=s'		=> \$sflowtool,
 	'sflowtool_opts=s'	=> \$sflowtool_opts,
 	'sflow_rrddir=s'	=> \$basedir,
-	'flushtimer=i'		=> \$timer_period,
+	'interval=i'		=> \$interval,
 	'infraid=i'		=> \$infraid,
 	'macdbtype=s'		=> \$macdbtype,
 	'apikey=s'		=> \$apikey,
@@ -109,139 +109,66 @@ my $mactable = reload_mactable($client, $macdbrest);
 $mactable || die "FATAL: could not read IXP Manager API call on $apibaseurl$macdbrest\n";
 my $matrix = matrix_init($mactable, $infraid);
 
-my $execute_periodic = 0;
-my $quit_after_periodic = 0;
-my $mactablereloadfails = 0;
+# Read JSON input from stdin
+my $json_input = do { local $/; <STDIN> };
 
-# handle signals gracefully
-$SIG{TERM} = sub { $execute_periodic = 1; $quit_after_periodic = 1; };
-$SIG{QUIT} = sub { $execute_periodic = 1; $quit_after_periodic = 1; };
-$SIG{HUP} = sub { $execute_periodic = 1; };
+# Attempt to decode the JSON input
+my $flowrecords;
+eval {
+    $flowrecords = decode_json($json_input);
+};
 
-# set up a periodic timer to signal that stuff should be flushed out.  The
-# flush isn't performed in the SIGALRM callback function because perl has
-# historical problems doing complicated stuff in signal handler functions.
-# Much more sensible to raise a flag and have the main code body handle this
-# during normal code execution.
-$SIG{ALRM} = sub { $execute_periodic = 1 };
-ualarm ( $timer_period*1000000, $timer_period*1000000);
-
-my $tv = [gettimeofday()];
-
-# FIXME - spaces embedded *within* sflowtool args will be split too
-#         Should only ever matter for the "-r" option if the filename has spaces in it...
-my $sflowpid = open (SFLOWTOOL, '-|', $sflowtool, split(' ', $sflowtool_opts));
-
-# methodology is to throw away as much crap as possible before parsing
-while (<SFLOWTOOL>) {
-	# next unless (substr($_, 0, 4) eq 'FLOW');	# don't use regexp here for performance reasons
-	my ($ipprotocol);
-
-	chomp;
-
-	$insanedebug && print STDERR "DEBUG: $_\n";
-
-	# FLOW,193.242.111.152,2,21,0013136faaaa,0010a52fbbbb,0x0800,10,10,192.168.1.1,172.16.12.255,6,0x00,124,1863,750,0x18,179,165,1024
-	# don't use regexp here for performance reasons
-	# my ($sampletype, $agent, $srcmac, $dstmac, $ethertype, $vlan, $pktsize, $samplerate) = (split (/,/))[0,1,4,5,6,7,17,19];
-    my $sample = decode_json( $_ );
-	# next unless ($sampletype eq 'FLOW');
-
-	# my $ethertype = $sample->{ Etype };
-
-	# Note: MAC addresses require template-set 'l2-ip' which is only supported with IPFIX version 10
-	# (which is not yet supported by goflow2)
-	my $srcmac = $sample->{ in_src_mac };
-	my $dstmac = $sample->{ in_dst_mac };
-	# my $vlan = $sample->{ VlanId };  # or 'SrcVlan' and 'DstVlan'
-	my $pktsize = int( $sample->{ in_bytes } / $sample->{ in_packets });
-	my $samplerate = $sample->{ SamplingRate };
-
-	if ($sample->{ src4_addr }) {
-		$ipprotocol = 4;
-	} elsif ($sample->{ src6_addr }) {
-		$ipprotocol = 6;
-	} else {
-		$insanedebug && print STDERR "DEBUG: unable to determine IP version";
-		next;
-	}
-
-	my $srcvli = getvlifrommactable ($mactable, $infraid, $vlan, $srcmac);
-	my $dstvli = getvlifrommactable ($mactable, $infraid, $vlan, $dstmac);
-
-	# the sflow accounting perimeter on the switches will ensure that
-	# each packet will be counted exactly once.  because of this, the
-	# packet sample needs to be added to both the source vlaninterface
-	# for bytes in and the destination vlaninterface for bytes out for
-	# the individual counts.
-
-	if ($ipprotocol && $srcvli && $dstvli && ($srcvli != $dstvli) ) {
-		$insanedebug && print STDERR "DEBUG: accepted update for: ".
-			"protocol: $ipprotocol ".
-			"vlan: $vlan ".
-			"srcvli: $srcvli ".
-			"dstvli: $dstvli ".
-			"pktsize: $pktsize ".
-			"samplerate: $samplerate ".
-			"\n";
-		$matrix->{p2p}->{$ipprotocol}->{bytes}->{$srcvli}->{$dstvli} += $pktsize * $samplerate;
-		$matrix->{p2p}->{$ipprotocol}->{pkts}->{$srcvli}->{$dstvli} += $samplerate;
-		$matrix->{individual}->{$ipprotocol}->{bytes}->{$srcvli}->{in}  += $pktsize * $samplerate;
-		$matrix->{individual}->{$ipprotocol}->{bytes}->{$dstvli}->{out} += $pktsize * $samplerate;
-		$matrix->{individual}->{$ipprotocol}->{pkts}->{$srcvli}->{in}   += $samplerate;
-		$matrix->{individual}->{$ipprotocol}->{pkts}->{$dstvli}->{out}  += $samplerate;
-	} else {
-		$debug && print STDERR "DEBUG: dropped update for: ".
-			"protocol: $ipprotocol ".
-			"vlan: $vlan ".
-			"srcvli: $srcvli ".
-			"dstvli: $dstvli ".
-			"pktsize: $pktsize ".
-			"samplerate: $samplerate ".
-			"\n";
-		$debug && print STDERR "DEBUG: rejected: ".$_."\n";
-	}
-	
-	if ($execute_periodic) {
-		if ($quit_after_periodic) {
-			# sometimes sflowtool doesn't die properly. Need to prioritise kill.
-			kill 9, $sflowpid;
-		}
-		my $newtv = [gettimeofday()];
-		my $interval = tv_interval($tv, $newtv);
-		$tv = $newtv;
-		$debug && print STDERR "DEBUG: starting rrd flush at time interval: $interval, time: ".time()."\n";
-		process_rrd($interval, $matrix, $rrdcached);
-		if ($quit_after_periodic) {
-			$debug && print STDERR "DEBUG: orderly quit at ".time()."\n";
-			exit 0;
-		}
-		$execute_periodic = 0;
-		my $newmactable = reload_mactable($client, $macdbrest);
-		if ($newmactable) {
-			$mactable = $newmactable;
-			$matrix = matrix_init($mactable, $infraid);
-			$mactablereloadfails = 0;
-		} else {
-			$mactablereloadfails++;
-			$debug && print STDERR "DEBUG: mactable reload failed: $mactablereloadfails\n";
-			# quit after specified period of unavailability
-			if ($mactablereloadfails > ($mactabletimeout / $timer_period)) {
-				kill 9, $sflowpid;
-				die "FATAL: could not reload mactable after $mactabletimeout seconds. Aborting.\n";
-			}
-		}
-		$debug && print STDERR "DEBUG: flush completed at ".time()."\n";
-	}
+if ($@) {
+    die "Error decoding JSON: $@";
 }
 
-close (SFLOWTOOL);
+if (ref $flowrecords eq 'ARRAY') {
+    foreach my $flow (@{ $flowrecords }) {
+		my $srcmac = $flow->{ in_src_mac };
+		my $dstmac = $flow->{ in_dst_mac };
+		my $vlan = $flow->{ vlanID };  # or 'cust_vlanID' when using QinQ
+		my $pktsize = int( $flow->{ in_bytes } / $flow->{ in_packets });
+		my $samplerate = $flow->{ SamplingRate };
+		my $ipprotocol = int( $flow->{ ip_version } );
 
-# try to kill off sflowtool if it's not already dead
-kill 9, $sflowpid;
+		my $srcvli = getvlifrommactable ($mactable, $infraid, $vlan, $srcmac);
+		my $dstvli = getvlifrommactable ($mactable, $infraid, $vlan, $dstmac);
 
-# oops, we should never exit
-die "Oops, input pipe died. Aborting.\n";
+		if ($srcvli && $dstvli && ($srcvli != $dstvli) ) { # if $ipprotocol && ...
+			$insanedebug && print STDERR "DEBUG: accepted update for: ".
+				"protocol: $ipprotocol ".
+				"vlan: $vlan ".
+				"srcvli: $srcvli ".
+				"dstvli: $dstvli ".
+				"pktsize: $pktsize ".
+				"samplerate: $samplerate ".
+				"\n";
+			$matrix->{p2p}->{$ipprotocol}->{bytes}->{$srcvli}->{$dstvli} += $pktsize * $samplerate;
+			$matrix->{p2p}->{$ipprotocol}->{pkts}->{$srcvli}->{$dstvli} += $samplerate;
+			$matrix->{individual}->{$ipprotocol}->{bytes}->{$srcvli}->{in}  += $pktsize * $samplerate;
+			$matrix->{individual}->{$ipprotocol}->{bytes}->{$dstvli}->{out} += $pktsize * $samplerate;
+			$matrix->{individual}->{$ipprotocol}->{pkts}->{$srcvli}->{in}   += $samplerate;
+			$matrix->{individual}->{$ipprotocol}->{pkts}->{$dstvli}->{out}  += $samplerate;
+		} else {
+			$debug && print STDERR "DEBUG: dropped update for: ".
+				"protocol: $ipprotocol ".
+				"vlan: $vlan ".
+				"srcvli: $srcvli ".
+				"dstvli: $dstvli ".
+				"pktsize: $pktsize ".
+				"samplerate: $samplerate ".
+				"\n";
+			$debug && print STDERR "DEBUG: rejected: ".$_."\n";
+		}
+    }
+
+	$debug && print STDERR "DEBUG: starting rrd flush at time interval: $interval, time: ".time()."\n";
+	process_rrd($interval, $matrix, $rrdcached);
+} else {
+    print "No flows found in the JSON data.\n";
+}
+
+exit 0;
 
 #
 # write traffic matrix out to RRD file while calculating totals
