@@ -124,8 +124,8 @@ if ($@) {
 
 if (ref $flowrecords eq 'ARRAY') {
     foreach my $flow (@{ $flowrecords }) {
-		my $srcmac = $flow->{ in_src_mac };
-		my $dstmac = $flow->{ in_dst_mac };
+		my $srcmac = $flow->{ in_src_mac }; $srcmac =~ tr/://d; # Remove colons
+		my $dstmac = $flow->{ in_dst_mac }; $dstmac =~ tr/://d;
 		my $vlan = $flow->{ vlanID };  # or 'cust_vlanID' when using QinQ
 		my $pktsize = int( $flow->{ in_bytes } / $flow->{ in_packets });
 		my $samplerate = $flow->{ sampled }; # Sampling Packet Interval, i.e. 1 out of every X packets sampled
@@ -150,7 +150,7 @@ if (ref $flowrecords eq 'ARRAY') {
 			$matrix->{individual}->{$ipprotocol}->{pkts}->{$srcvli}->{in}   += $samplerate;
 			$matrix->{individual}->{$ipprotocol}->{pkts}->{$dstvli}->{out}  += $samplerate;
 		} else {
-			$debug && print STDERR "DEBUG: dropped update for: ".
+			$debug && print STDERR "DEBUG: VLAN(s) not found, dropped update for: ".
 				"protocol: $ipprotocol ".
 				"vlan: $vlan ".
 				"srcvli: $srcvli ".
