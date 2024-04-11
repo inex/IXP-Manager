@@ -18,7 +18,7 @@ topology:
       startup-config: |
         /configure port 1/1/c1 admin-state enable connector breakout c1-100g
         /configure port 1/1/c1/1 admin-state enable ethernet mode access encap-type dot1q
-        /configure cflowd collector 172.30.201.1 port 9995 version 10 router-instance "management" admin-state enable template-set l2-ip
+        /configure cflowd collector 172.30.201.1 port 2056 version 10 router-instance "management" admin-state enable template-set l2-ip
         /configure cflowd active-flow-timeout 30 sample-profile 1 sample-rate 1
         /configure service vpls "1" admin-state enable service-id 1 customer "1" sap 1/1/c1/1:100 { cflowd true }
         /configure service vpls "1" interface "i" { ipv4 primary address 192.168.0.0 prefix-length 31 }

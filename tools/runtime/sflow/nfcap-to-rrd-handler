@@ -373,7 +373,7 @@ sub reload_mactable
 		return undef;
 	}
 
-	my $json = eval { from_json($content) };
+	my $json = eval { decode_json($content) };
 	if (!$json) {
 		$debug && print STDERR "WARNING: HTTP response was not legitimate json: '$content'\n";
 		return undef;

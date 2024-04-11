@@ -6,6 +6,12 @@ mysql --protocol=TCP --port 33060 -u root
 ALTER USER 'ixpmanager' IDENTIFIED WITH mysql_native_password BY 'ixpmanager';
 ```
 
+## nfcapd
+
+```nfcapd -p 9995 -w /tmp -E```
+
+This will listen for IPFIX UDP packets on port 9995, and print them out to the console for debugging
+
 ## nfdump
 
 Only accept from from a single exporter and only extension 6,7,8,10,11 are accepted. Run a given command when files are rotated 
