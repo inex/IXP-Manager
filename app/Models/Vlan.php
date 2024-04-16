@@ -36,13 +36,14 @@ use IXP\Traits\Observable;
  * IXP\Models\Vlan
  *
  * @property int $id
+ * @property int $infrastructureid
  * @property string|null $name
  * @property int|null $number
- * @property string|null $notes
  * @property bool $private
- * @property int $infrastructureid
+ * @property string|null $notes
  * @property int $peering_matrix
  * @property int $peering_manager
+ * @property bool $export_to_ixf
  * @property string|null $config_name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -69,6 +70,7 @@ use IXP\Traits\Observable;
  * @method static Builder|Vlan query()
  * @method static Builder|Vlan whereConfigName($value)
  * @method static Builder|Vlan whereCreatedAt($value)
+ * @method static Builder|Vlan whereExportToIxf($value)
  * @method static Builder|Vlan whereId($value)
  * @method static Builder|Vlan whereInfrastructureid($value)
  * @method static Builder|Vlan whereName($value)

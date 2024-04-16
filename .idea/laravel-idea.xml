@@ -5,8 +5,10 @@
       <LaravelCodeGeneration>
         <option name="generationStringSettings">
           <map>
+            <entry key="createEloquentScope:inModuleNamespace" value="Models\Scopes" />
             <entry key="createEloquentScope:namespace" value="Models\Scopes" />
             <entry key="createFormRequest:baseClass" value="App\Http\Requests\Request" />
+            <entry key="createModel:inModuleNamespace" value="Models" />
             <entry key="createModel:namespace" value="Models" />
           </map>
         </option>

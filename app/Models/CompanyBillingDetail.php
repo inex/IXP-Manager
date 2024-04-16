@@ -44,11 +44,9 @@ use IXP\Traits\Observable;
  * @property string|null $vatNumber
  * @property string|null $vatRate
  * @property int $purchaseOrderRequired
- * @property string|null $purchaseOrderNumber
  * @property string|null $invoiceMethod
  * @property string|null $invoiceEmail
  * @property string|null $billingFrequency
- * @property string|null $notes
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer|null $customer
@@ -69,8 +67,6 @@ use IXP\Traits\Observable;
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereInvoiceEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereInvoiceMethod($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail wherePurchaseOrderNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail wherePurchaseOrderRequired($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereVatNumber($value)
