@@ -24,14 +24,14 @@
         }
     ],
     "require": {
-        "php": "^8.0",
+        "php": "^8.0.2",
         "ext-json": "*",
 
         "opensolutions/oss-snmp": "^1.0",
 
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
-        "laravel/framework": "^8.12",
+        "laravel/framework": "^9.0",
         "laravel/tinker": "^2.5",
         "foil/foil": "^0.6.7",
 
@@ -58,14 +58,14 @@
         "barryvdh/laravel-debugbar": "^3.5.2",
         "barryvdh/laravel-ide-helper": "^2.9",
         "beyondcode/laravel-dump-server": "^1.7",
-        "facade/ignition": "^2.5",
+        "spatie/laravel-ignition": "^1.0",
         "fakerphp/faker": "^1.9.1",
         "laravel/dusk": "^6.25",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.2",
-        "nunomaduro/collision": "^5.0",
+        "nunomaduro/collision": "^6.1",
         "phpunit/phpunit": "^9.3.3",
-        "psalm/plugin-laravel": "^1.4",
+        "psalm/plugin-laravel": "^2.9",
         "staudenmeir/dusk-updater": "^1.2.2",
         "vimeo/psalm": "^4.7"
     },
@@ -130,7 +130,7 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "platform": {
-            "php": "8.0.0"
+            "php": "8.0.2"
         }
     },
    "minimum-stability": "stable"

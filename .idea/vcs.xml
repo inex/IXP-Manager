@@ -5,4 +5,7 @@
       <inspection_tool class="GrazieCommit" enabled="true" level="TYPO" enabled_by_default="true" />
     </profile>
   </component>
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+  </component>
 </project>
