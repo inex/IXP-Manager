@@ -36,6 +36,7 @@ use IXP\Traits\Observable;
  * IXP\Models\Router
  *
  * @property int $id
+ * @property int|null $pair_id
  * @property int $vlan_id
  * @property string $handle
  * @property int $protocol
@@ -54,6 +55,9 @@ use IXP\Traits\Observable;
  * @property bool $bgp_lc
  * @property string $template
  * @property bool $skip_md5
+ * @property \Illuminate\Support\Carbon|null $last_update_started
+ * @property \Illuminate\Support\Carbon|null $last_updated
+ * @property int $pause_updates
  * @property bool $rpki
  * @property string|null $software_version
  * @property string|null $operating_system
@@ -61,7 +65,6 @@ use IXP\Traits\Observable;
  * @property int $rfc1997_passthru
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $last_updated
  * @property-read Router|null $pair
  * @property-read \IXP\Models\Vlan $vlan
  * @method static Builder|Router hasApi()
@@ -81,12 +84,15 @@ use IXP\Traits\Observable;
  * @method static Builder|Router whereCreatedAt($value)
  * @method static Builder|Router whereHandle($value)
  * @method static Builder|Router whereId($value)
+ * @method static Builder|Router whereLastUpdateStarted($value)
  * @method static Builder|Router whereLastUpdated($value)
  * @method static Builder|Router whereLgAccess($value)
  * @method static Builder|Router whereMgmtHost($value)
  * @method static Builder|Router whereName($value)
  * @method static Builder|Router whereOperatingSystem($value)
  * @method static Builder|Router whereOperatingSystemVersion($value)
+ * @method static Builder|Router wherePairId($value)
+ * @method static Builder|Router wherePauseUpdates($value)
  * @method static Builder|Router wherePeeringIp($value)
  * @method static Builder|Router whereProtocol($value)
  * @method static Builder|Router whereQuarantine($value)

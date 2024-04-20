@@ -43,6 +43,7 @@ use IXP\Traits\Observable;
  * @property string|null $townCity
  * @property string|null $postcode
  * @property string|null $country
+ * @property string|null $notes
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer|null $customer
@@ -57,6 +58,7 @@ use IXP\Traits\Observable;
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereJurisdiction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereNotes($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail wherePostcode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereRegisteredName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereTownCity($value)

@@ -39,9 +39,9 @@ use IXP\Traits\Observable;
  * @property int $customer_id
  * @property int $user_id
  * @property int $privs
+ * @property array|null $extra_attributes
  * @property string|null $last_login_date
  * @property string|null $last_login_from
- * @property array|null $extra_attributes
  * @property string|null $last_login_via
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

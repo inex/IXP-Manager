@@ -55,9 +55,9 @@ use IXP\Models\{
  * @property string|null $name
  * @property int|null $peeringdb_id
  * @property array|null $extra_attributes
+ * @property array|null $prefs
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property array|null $prefs
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ApiKey> $apiKeys
  * @property-read int|null $api_keys_count
  * @property-read Customer|null $customer
