@@ -132,3 +132,36 @@ if( !function_exists( 'rrd_graph' ) )
 {
     function rrd_graph( $a, $b ) { return []; }
 }
+
+
+/**
+ *  Originally copied as is from https://github.com/parsedown/laravel
+ *  on 21 Apr 2024 as that repo has switched to read-only and was
+ *  marked as no longer supported. MIT licensed.
+ *
+ * @param string $value
+ * @param bool $inline
+ * @return Parsedown|string
+ */
+function parsedown(?string $value = null, bool $inline = null)
+{
+    /**
+     * @var Parsedown $parser
+     */
+    $parser = app('parsedown');
+
+    if (!func_num_args()) {
+        return $parser;
+    }
+
+    if (is_null($inline)) {
+        $inline = config('parsedown.inline');
+    }
+
+    if ($inline) {
+        return $parser->line($value);
+    }
+
+    return $parser->text($value);
+}
+

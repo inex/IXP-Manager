@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5d63bdc85051f1d5b1a0105c2fe58265",
+    "content-hash": "20473b967d0bb0db620a754427d709c6",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -4258,68 +4258,6 @@
                 "source": "https://github.com/paragonie/random_compat"
             },
             "time": "2020-10-15T08:29:30+00:00"
-        },
-        {
-            "name": "parsedown/laravel",
-            "version": "1.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/parsedown/laravel.git",
-                "reference": "c713ffe28c76730754389180e86e93e8e84087e7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/parsedown/laravel/zipball/c713ffe28c76730754389180e86e93e8e84087e7",
-                "reference": "c713ffe28c76730754389180e86e93e8e84087e7",
-                "shasum": ""
-            },
-            "require": {
-                "erusev/parsedown": "^1.7",
-                "php": ">=7.1.3"
-            },
-            "require-dev": {
-                "orchestra/testbench": "^3.8",
-                "php": ">=7.2",
-                "phpunit/phpunit": "^8.3"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Parsedown\\Providers\\ParsedownServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "files": [
-                    "src/Support/helpers.php"
-                ],
-                "psr-4": {
-                    "Parsedown\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Eduardo Agostini",
-                    "email": "edu.agostini@gmail.com"
-                }
-            ],
-            "description": "Official Parsedown's Laravel Wrapper.",
-            "homepage": "http://parsedown.org",
-            "keywords": [
-                "laravel",
-                "parsedown"
-            ],
-            "support": {
-                "issues": "https://github.com/parsedown/laravel/issues",
-                "source": "https://github.com/parsedown/laravel"
-            },
-            "abandoned": true,
-            "time": "2020-01-07T02:12:55+00:00"
         },
         {
             "name": "phenx/php-font-lib",
