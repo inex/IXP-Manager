@@ -46,6 +46,9 @@ module.exports = {
     './resources/**/*.foil.php',
     './resources/**/*.js',
     './resources/**/*.jsx',
+
+    '../public/css/ixp-manager.css',
+    '../public/js/ixp-manager.css',
   ],
 
   theme: {
