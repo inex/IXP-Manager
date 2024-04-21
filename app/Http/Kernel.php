@@ -43,8 +43,7 @@ use Illuminate\Http\Middleware\SetCacheHeaders;
 
 use Illuminate\Routing\Middleware\{
     SubstituteBindings,
-    ThrottleRequests,
-    ValidateSignature
+    ThrottleRequests
 };
 
 use Illuminate\Session\Middleware\StartSession;
@@ -149,11 +148,12 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'auth'                  => Middleware\Authenticate::class,
         'auth.basic'            => AuthenticateWithBasicAuth::class,
+        'auth.session'          => \Illuminate\Session\Middleware\AuthenticateSession::class,
         //'bindings'              => SubstituteBindings::class,
         'can'                   => Authorize::class,
         'cache.headers'         => SetCacheHeaders::class,
         'guest'                 => Middleware\RedirectIfAuthenticated::class,
-        'signed'                => ValidateSignature::class,
+        'signed'                => Middleware\ValidateSignature::class,
         'throttle'              => ThrottleRequests::class,
         'verified'              => EnsureEmailIsVerified::class,
         'apiauth'               => Middleware\ApiAuthenticate::class,

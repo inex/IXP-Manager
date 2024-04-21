@@ -31,12 +31,12 @@
 
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
-        "laravel/framework": "^9.0",
-        "laravel/tinker": "^2.5",
+        "laravel/framework": "^9.19",
+        "laravel/tinker": "^2.7",
         "foil/foil": "^0.6.7",
 
         "zendesk/zendesk_api_client_php": "^2.2.10",
-        "guzzlehttp/guzzle": "^7.0.1",
+        "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "^2.3",
         "anahkiasen/former": "^4.6",
         "barryvdh/laravel-dompdf": "^2.0.0",
@@ -62,9 +62,10 @@
         "fakerphp/faker": "^1.9.1",
         "laravel/dusk": "^6.25",
         "laravel/sail": "^1.0.1",
+        "laravel/pint": "^1.0",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^6.1",
-        "phpunit/phpunit": "^9.3.3",
+        "phpunit/phpunit": "^9.5.10",
         "psalm/plugin-laravel": "^2.9",
         "staudenmeir/dusk-updater": "^1.2.2",
         "vimeo/psalm": "^4.7"
@@ -129,6 +130,9 @@
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        },
         "platform": {
             "php": "8.0.2"
         }
