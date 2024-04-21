@@ -30,7 +30,6 @@
         "opensolutions/oss-snmp": "^1.0",
 
         "fideloper/proxy": "^4.4",
-        "fruitcake/laravel-cors": "^2.0",
         "laravel/framework": "^9.19",
         "laravel/tinker": "^2.7",
         "foil/foil": "^0.6.7",

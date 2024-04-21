@@ -28,7 +28,6 @@ use Illuminate\Auth\Middleware\{
     EnsureEmailIsVerified
 };
 
-use Fruitcake\Cors\HandleCors;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -39,6 +38,7 @@ use Illuminate\Foundation\Http\Middleware\{
     ValidatePostSize
 };
 
+use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Http\Middleware\SetCacheHeaders;
 
 use Illuminate\Routing\Middleware\{
