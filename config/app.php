@@ -223,6 +223,9 @@ return [
          * Third party providers
          */
 
+
+        IXP\Providers\ParsedownServiceProvider::class,
+
         Former\FormerServiceProvider::class,
 
         //LukeTowers\Purifier\PurifierServiceProvider::class,
