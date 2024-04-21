@@ -115,6 +115,9 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-php83" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-uuid" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/uid" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/firebase/php-jwt" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpseclib/phpseclib" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
