@@ -72,7 +72,25 @@ class RouterController extends Controller
         );
 
         return response( $configView, 200 )
-                ->header('Content-Type', 'text/plain; charset=utf-8');
+            ->header('Content-Type', 'text/plain');
+    }
+
+
+    /**
+     *
+     * @param string $handle Handle of the router that we want
+     *
+     * @return JsonResponse
+     */
+    public function getCanUpdate( string $handle ) : JsonResponse
+    {
+        if( !( $r = Router::whereHandle( $handle )->first() ) ) {
+            abort( 404, "Unknown router handle" );
+        }
+
+
+
+        // return response()->json( $this->lastUpdatedArray( $r ) );
     }
 
     /**
@@ -81,8 +99,10 @@ class RouterController extends Controller
      * Returns the JSON version of the array:
      *
      *     [
-     *         'last_updated'      => '2017-05-23T13:50:45+00:00',
-     *         'last_updated_unix' => 1495547445
+     *         'last_update_started'      => '2017-05-23T13:50:25+00:00',
+     *         'last_update_started_unix' => 1495547425
+     *         'last_updated'             => '2017-05-23T13:50:45+00:00',
+     *         'last_updated_unix'        => 1495547445
      *     ]
      *
      * @param string $handle Handle of the router that we want
@@ -96,6 +116,29 @@ class RouterController extends Controller
         }
 
         return response()->json( $this->lastUpdatedArray( $r ) );
+    }
+
+    /**
+     * Set `last_update_started` to the current datetime (now) if
+     * we can update the router.
+     *
+     * @param string $handle Handle of the router that we want
+     *
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|JsonResponse|Response
+     */
+    public function getUpdateLock( string $handle )
+    {
+        if( !( $r = Router::whereHandle( $handle )->first() ) ) {
+            abort( 404, "Unknown router handle" );
+        }
+
+        if( $r->canUpdate( true ) ) {
+            $r->refresh();
+            return response()->json( $this->lastUpdatedArray( $r ) );
+        }
+
+        return response( 'Router not available for update', 423 )
+            ->header('Content-Type', 'text/plain');
     }
 
     /**
@@ -179,8 +222,11 @@ class RouterController extends Controller
     private function lastUpdatedArray( Router $r ): array
     {
         return [
-            'last_updated'      => $r->last_updated ? $r->last_updated->toIso8601String() : null,
-            'last_updated_unix' => $r->last_updated ? $r->last_updated->timestamp : null,
+            'last_update_started'      => $r->last_update_started ? $r->last_update_started->toIso8601String() : null,
+            'last_update_started_unix' => $r->last_update_started ? $r->last_update_started->timestamp : null,
+
+            'last_updated'             => $r->last_updated ? $r->last_updated->toIso8601String() : null,
+            'last_updated_unix'        => $r->last_updated ? $r->last_updated->timestamp : null,
         ];
     }
 }

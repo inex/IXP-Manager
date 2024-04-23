@@ -105,6 +105,41 @@
                             ->addClass( 'chzn-select' )
                             ->blockHelp( '' );
                         ?>
+
+
+                        <div class="form-group">
+                            <div class="col-lg-offset-2 col-sm-10">
+                                <div class="card mt-4">
+                                    <div class="card-header">
+                                        <ul class="nav nav-tabs card-header-tabs">
+                                            <li role="presentation" class="nav-item">
+                                                <a class="tab-link-body-note nav-link active" href="#body">Registration Notes</a>
+                                            </li>
+                                            <li role="presentation" class="nav-item">
+                                                <a class="tab-link-preview-note nav-link" href="#preview">Preview</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="tab-content card-body">
+                                        <div role="tabpanel" class="tab-pane show active" id="body">
+                                            <?= Former::textarea( 'notes' )
+                                                ->id( 'notes' )
+                                                ->label( '' )
+                                                ->rows( 8 )
+                                                ->blockHelp( "This field supports Markdown..." )
+                                            ?>
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane" id="preview">
+                                            <div class="bg-light p-4 well-preview">
+                                                Loading...
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
                     <?php if( !( $t->resellerMode() && $t->c->reseller ) ): ?>
@@ -186,6 +221,13 @@
                                 ->blockHelp('' );
                             ?>
 
+                            <?= Former::text( 'purchaseOrderNumber' )
+                                ->id( 'purchaseOrderNumber' )
+                                ->label( 'Purchase Order Number' )
+                                ->placeholder( '' )
+                                ->blockHelp( '' );
+                            ?>
+
                             <?= Former::select( 'invoiceMethod' )
                                 ->label( 'Invoice Method' )
                                 ->fromQuery( \IXP\Models\CompanyBillingDetail::$INVOICE_METHODS )
@@ -211,6 +253,42 @@
                                 ->label( 'VAT Number' )
                                 ->blockHelp( '' );
                             ?>
+
+
+
+                            <div class="form-group">
+                                <div class="col-lg-offset-2 col-sm-10">
+                                    <div class="card mt-4">
+                                        <div class="card-header">
+                                            <ul class="nav nav-tabs card-header-tabs">
+                                                <li role="presentation" class="nav-item">
+                                                    <a class="tab-link-body-note nav-link active" href="#body">Billing Notes</a>
+                                                </li>
+                                                <li role="presentation" class="nav-item">
+                                                    <a class="tab-link-preview-note nav-link" href="#preview">Preview</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="tab-content card-body">
+                                            <div role="tabpanel" class="tab-pane show active" id="body">
+                                                <?= Former::textarea( 'billingNotes' )
+                                                    ->id( 'billingNotes' )
+                                                    ->label( '' )
+                                                    ->rows( 8 )
+                                                    ->blockHelp( "This field supports Markdown..." )
+                                                ?>
+                                            </div>
+                                            <div role="tabpanel" class="tab-pane" id="preview">
+                                                <div class="bg-light p-4 well-preview">
+                                                    Loading...
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     <?php endif; ?>
                 </div>
@@ -241,6 +319,12 @@
                 $( "#postcode" ).val(  ) !== ''   ? $( "#billingPostcode"   ).val( $( "#postcode" ).val() ): '';
                 $( "#country" ).val(  )  !== ''   ? $( "#billingCountry"    ).val( $( "#country"  ).val() ).trigger('change.select2') : '';
             } );
+
+
+            $( "#notes" ).parent().removeClass().addClass( "col-sm-12" )
+            $( "#billingNotes" ).parent().removeClass().addClass( "col-sm-12" )
+
+
         });
     </script>
 <?php $this->append() ?>

@@ -51,7 +51,7 @@ use IXP\Models\User;
  * @property bool $bgp_lc
  * @property string $template
  * @property bool $skip_md5
- * @property string|null $last_update_started
+ * @property \Illuminate\Support\Carbon|null $last_update_started
  * @property \Illuminate\Support\Carbon|null $last_updated
  * @property int $pause_updates
  * @property bool $rpki
@@ -61,6 +61,7 @@ use IXP\Models\User;
  * @property int $rfc1997_passthru
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read Router|null $pair
  * @property-read \IXP\Models\Vlan $vlan
  * @method static Builder|Router hasApi()
  * @method static Builder|Router ipv4()

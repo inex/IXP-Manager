@@ -77,13 +77,15 @@ class SmtpMailTest extends IXPCommand
 
         $this->info( "\nTesting using the following parameters:\n" );
 
+        $mail_default = config( 'mail.default' );
+
         $this->table( [], [
-            [ 'Driver', config( 'mail.default' ) ],
-            [ 'Host', config( 'mail.mailers.smtp.host' ) ],
-            [ 'Port', config( 'mail.mailers.smtp.port' ) ],
-            [ 'Encryption', config( 'mail.mailers.smtp.encryption', '(none)' ) ],
-            [ 'Username', config( 'mail.mailers.smtp.username', '(none)' ) ],
-            [ 'Password', config( 'mail.mailers.smtp.password', '(none)' ) ],
+            [ 'Driver', $mail_default ],
+            [ 'Host', config( "mail.mailers.{$mail_default}.host", '(not set)' ) ],
+            [ 'Port', config( "mail.mailers.{$mail_default}.port", '(not set)' ) ],
+            [ 'Encryption', config( "mail.mailers.{$mail_default}.encryption", '(not set)' ) ],
+            [ 'Username', config( "mail.mailers.{$mail_default}.username", '(not set)' ) ],
+            [ 'Password', config( "mail.mailers.{$mail_default}.password", '(not set)' ) ],
             [ 'From Name', config( 'identity.name' ) ],
             [ 'From Email', config( 'identity.email' ) ],
         ] );

@@ -14,9 +14,14 @@
                 </div>
                 <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\CompanyRegisteredDetail::class, 'logSubject') ): ?>
                     <div>
-                        <a class="btn btn-white btn-sm" href="<?= route( 'log@list', [ 'model' => 'CompanyRegisteredDetail' , 'model_id' => $rdetails->id ] ) ?>">
-                            View logs
-                        </a>
+                        <div class="btn-group btn-group-sm">
+                            <a class="btn btn-white btn-sm" href="<?= route( 'customer@billing-registration' , [ 'cust' => $c->id ] ) ?>">
+                                <i class="fa fa-pencil"></i>
+                            </a>
+                            <a class="btn btn-white btn-sm" href="<?= route( 'log@list', [ 'model' => 'CompanyRegisteredDetail' , 'model_id' => $rdetails->id ] ) ?>">
+                                View logs
+                            </a>
+                        </div>
                     </div>
                 <?php endif; ?>
             </header>
@@ -67,11 +72,30 @@
                 </tr>
             </table>
         </div>
+
+        <?php if( $rdetails->notes ): ?>
+            <div class="tw-mt-8 tw-rounded-sm tw-p-4 tw-shadow-md tw-border-1 tw-border-grey-light">
+                <header class="tw-pb-2 tw-pl-2 tw-flex tw-border-b-1 tw-border-gray-300">
+                    <div class="mr-auto">
+                        <h3>
+                            Registration Details - Notes
+                        </h3>
+                    </div>
+                </header>
+
+                <br>
+
+                <?= @parsedown( $rdetails->notes )?>
+            </div>
+        <?php endif; ?>
+
+
     </div>
 
     <div class="col-md-6">
         <?php if( !config('ixp.reseller.no_billing') && !$c->reseller ): ?>
             <?php $bdetails = $c->companyBillingDetail /** @var $bdetails \IXP\Models\CompanyBillingDetail  */ ?>
+
             <div class="tw-rounded-sm tw-p-4 tw-shadow-md tw-border-1 tw-border-grey-light">
                 <header class="tw-pb-2 tw-pl-2 tw-flex tw-border-b-1 tw-border-gray-300">
                     <div class="mr-auto">
@@ -81,9 +105,14 @@
                     </div>
                     <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\CompanyBillingDetail::class, 'logSubject') ): ?>
                         <div>
-                            <a class="btn btn-white btn-sm" href="<?= route( 'log@list', [ 'model' => 'CompanyBillingDetail' , 'model_id' => $bdetails->id ] ) ?>">
-                                View logs
-                            </a>
+                            <div class="btn-group btn-group-sm">
+                                <a class="btn btn-white btn-sm" href="<?= route( 'customer@billing-registration' , [ 'cust' => $c->id ] ) ?>">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                                <a class="btn btn-white btn-sm" href="<?= route( 'log@list', [ 'model' => 'CompanyBillingDetail' , 'model_id' => $bdetails->id ] ) ?>">
+                                    View logs
+                                </a>
+                            </div>
                         </div>
                     <?php endif; ?>
                 </header>
@@ -166,6 +195,14 @@
                     </tr>
                     <tr>
                         <th>
+                            P/O Number
+                        </th>
+                        <td>
+                            <?= $bdetails->purchaseOrderNumber ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             Invoice Method
                         </th>
                         <td>
@@ -182,6 +219,23 @@
                     </tr>
                 </table>
             </div>
+
+            <?php if( $bdetails->notes ): ?>
+                <div class="tw-mt-8 tw-rounded-sm tw-p-4 tw-shadow-md tw-border-1 tw-border-grey-light">
+                    <header class="tw-pb-2 tw-pl-2 tw-flex tw-border-b-1 tw-border-gray-300">
+                        <div class="mr-auto">
+                            <h3>
+                                Billing Details - Notes
+                            </h3>
+                        </div>
+                    </header>
+
+                    <br>
+
+                    <?= @parsedown( $bdetails->notes )?>
+                </div>
+            <?php endif; ?>
+
         <?php endif; ?>
     </div>
 </div>

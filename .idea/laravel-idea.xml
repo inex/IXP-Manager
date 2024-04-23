@@ -5,14 +5,21 @@
       <LaravelCodeGeneration>
         <option name="generationStringSettings">
           <map>
+            <entry key="createEloquentScope:inModuleNamespace" value="Models\Scopes" />
             <entry key="createEloquentScope:namespace" value="Models\Scopes" />
             <entry key="createFormRequest:baseClass" value="App\Http\Requests\Request" />
+            <entry key="createModel:inModuleNamespace" value="Models" />
             <entry key="createModel:namespace" value="Models" />
           </map>
         </option>
       </LaravelCodeGeneration>
     </option>
     <option name="frameworkFound" value="true" />
+    <option name="translation">
+      <LaravelTranslation>
+        <option name="defaultPath" value="lang" />
+      </LaravelTranslation>
+    </option>
     <option name="userClassName" value="\AppModels\User" />
   </component>
 </project>

@@ -51,7 +51,7 @@ class Ipv6SubnetSize implements Rule
 
         // mask:
         $mask = (int)$parts[1];
-        if( $mask < config( "ixp.irrdb.min_v6_subnet_size" ) ) {
+        if( $mask > config( "ixp.irrdb.min_v6_subnet_size" ) ) {
             return false;
         }
 

@@ -95,6 +95,7 @@ return [
             'phpinfo'                   => env( 'IXP_FE_FRONTEND_DISABLED_PHPINFO',           true  ),
             'ripe-atlas'                => true, // not ready for use yet
             'rs-prefixes'               => env( 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',       true  ),
+            'rs-filters'                => env( 'IXP_FE_FRONTEND_DISABLED_RS_FILTERS',        true  ),
         ],
     ],
 
@@ -119,6 +120,19 @@ return [
     'rs-prefixes' => [
         'access'  => env( 'IXP_FE_RS_PREFIXES_ACCESS', \IXP\Models\User::AUTH_SUPERUSER ),
     ],
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Route Server Filters
+    |--------------------------------------------------------------------------
+    |
+    */
+    'rs-filters' => [
+        'ttl'  => env( 'IXP_FE_RS_FILTERS_TIME_TO_LIVE', 'There is no information available as to how often the route servers are updated.' ),
+    ],
+
 
     /*
     |--------------------------------------------------------------------------
