@@ -1234,6 +1234,14 @@ a:hover {
   --tw-border-opacity: 1;
   border-color: rgb(241 245 248 / var(--tw-border-opacity));
 }
+.tw-border-orange-500 {
+  --tw-border-opacity: 1;
+  border-color: rgb(237 137 54 / var(--tw-border-opacity));
+}
+.tw-border-red-500 {
+  --tw-border-opacity: 1;
+  border-color: rgb(245 101 101 / var(--tw-border-opacity));
+}
 .tw-border-red-lighter {
   --tw-border-opacity: 1;
   border-color: rgb(249 172 170 / var(--tw-border-opacity));
@@ -1258,9 +1266,21 @@ a:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(160 174 192 / var(--tw-bg-opacity));
 }
+.tw-bg-green-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(240 255 244 / var(--tw-bg-opacity));
+}
 .tw-bg-grey-lighter {
   --tw-bg-opacity: 1;
   background-color: rgb(241 245 248 / var(--tw-bg-opacity));
+}
+.tw-bg-orange-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 250 240 / var(--tw-bg-opacity));
+}
+.tw-bg-red-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 245 245 / var(--tw-bg-opacity));
 }
 .tw-bg-white {
   --tw-bg-opacity: 1;
@@ -1439,6 +1459,10 @@ a:hover {
   --tw-text-opacity: 1;
   color: rgb(56 161 105 / var(--tw-text-opacity));
 }
+.tw-text-green-700 {
+  --tw-text-opacity: 1;
+  color: rgb(47 133 90 / var(--tw-text-opacity));
+}
 .tw-text-green-dark {
   --tw-text-opacity: 1;
   color: rgb(31 157 85 / var(--tw-text-opacity));
@@ -1459,6 +1483,10 @@ a:hover {
   --tw-text-opacity: 1;
   color: rgb(237 137 54 / var(--tw-text-opacity));
 }
+.tw-text-orange-700 {
+  --tw-text-opacity: 1;
+  color: rgb(192 86 33 / var(--tw-text-opacity));
+}
 .tw-text-red-500 {
   --tw-text-opacity: 1;
   color: rgb(245 101 101 / var(--tw-text-opacity));
@@ -1466,6 +1494,10 @@ a:hover {
 .tw-text-red-600 {
   --tw-text-opacity: 1;
   color: rgb(229 62 62 / var(--tw-text-opacity));
+}
+.tw-text-red-700 {
+  --tw-text-opacity: 1;
+  color: rgb(197 48 48 / var(--tw-text-opacity));
 }
 .tw-text-red-lighter {
   --tw-text-opacity: 1;
@@ -1484,6 +1516,12 @@ a:hover {
   --tw-shadow: 0 4px 8px 0 rgba(0,0,0,0.12), 0 2px 4px 0 rgba(0,0,0,0.08);
   --tw-shadow-colored: 0 4px 8px 0 var(--tw-shadow-color), 0 2px 4px 0 var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.\[a-f0-9\:\\\.\\-\] {
+  a-f0-9: \.\-;
+}
+.\[id\:\%d\] {
+  id: %d;
 }
 /**
  * Here you would add any custom utilities you need that don't come out of the

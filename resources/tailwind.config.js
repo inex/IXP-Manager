@@ -41,14 +41,17 @@ module.exports = {
 
   prefix: 'tw-',
 
+
   content: [
     './resources/**/*.blade.php',
     './resources/**/*.foil.php',
     './resources/**/*.js',
     './resources/**/*.jsx',
 
-    '../public/css/ixp-manager.css',
-    '../public/js/ixp-manager.css',
+    './public/css/ixp-manager.css',
+    './public/js/ixp-manager.css',
+
+    './app/**/*.php',
   ],
 
   theme: {
@@ -71,6 +74,7 @@ module.exports = {
 
     colors: {
       'transparent': 'transparent',
+
 
       black: '#000',
       white: '#fff',
