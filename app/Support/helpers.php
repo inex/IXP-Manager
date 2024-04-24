@@ -166,104 +166,10 @@ function parsedown(?string $value = null, bool $inline = null)
     return $parser->text($value);
 }
 
-if( !function_exists( 'generalApiGet' ) )
+if( !function_exists( 'app_env_is' ) )
 {
-    /**
-     * General Guzzle API Get request parser
-     * + faker for data testing
-     *
-     * $query array sample
-     * [
-     *   'key1' => 'value1',
-     *   'key2' => 'value2',
-     * ]
-     *
-     * $structure array sample:
-     * ["name" => "item_id", "cell" => "id"], <-- that will be the ID of the record
-     * ["name" => "user_name", "cell" => "name"],
-     * ["name" => "mobile_number", "cell" => "mobile"], ...
-     * $structure single sample:
-     * "id_cell"
-     *
-     * @param $url
-     * @param $query
-     * @param $structure
-     * @return array|mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    function generalApiGet( $url, $query = null, $structure = null, $test = false )
+    function app_env_is( string $env )
     {
-        info("generalApiGet() running");
-        if($test) {
-            $faker = \Faker\Factory::create();
-            $itemNum = 20;
-            $result = [];
-            if(!$structure) {
-                for($i=1; $i<=$itemNum; $i++) {
-                    $item['id'] = $i;
-                    $item['content'] = $faker->firstName();
-                    $result[] = $item;
-                }
-            } else {
-                for($i=1; $i<=$itemNum; $i++) {
-                    if(!is_array($structure)) {
-                        $result[] = $faker->firstName();
-                    } else {
-                        $resultId = $i;
-                        $result[ $resultId ] = [];
-                        foreach($structure as $structureItem) {
-                            switch($structureItem[ "cell" ]) {
-                                case 'id':
-                                    $resultContent = $resultId;
-                                    break;
-                                case 'name':
-                                    $resultContent = $faker->company();
-                                    break;
-                                case 'city':
-                                    $resultContent = $faker->city();
-                                    break;
-                                case 'country':
-                                    $resultContent = $faker->stateAbbr();
-                                    break;
-                                default:
-                                    $resultContent = $faker->bothify('?????###');
-                            }
-
-                            $result[ $resultId ][ $structureItem[ "name" ] ] = htmlentities( $resultContent, ENT_QUOTES );
-                        }
-                    }
-                }
-            }
-        } else {
-            $client = new GuzzleHttp\Client();
-            if($query) {
-                $response = $client->request('GET', $url, ['query' => $query]);
-            } else {
-                $response = $client->request('GET', $url);
-            }
-            $statusCode = $response->getStatusCode();
-            $content = json_decode($response->getBody(), true);
-            $result = [];
-            if(!$structure) {
-                $result = $content;
-            } else {
-                if ($content && $statusCode < 400) {
-                    foreach( $content as $item ) {
-                        if(!is_array($structure)) {
-                            if($item[ $structure ]) {
-                                $result[] = $item[ $structure ];
-                            }
-                        } else {
-                            $resultId = $structure[ 0 ][ "cell" ];
-                            $result[ $item[ $resultId ] ] = [];
-                            foreach($structure as $structureItem) {
-                                $result[ $item[ $resultId ] ][ $structureItem[ "name" ] ] = htmlentities( $item[ $structureItem[ "cell" ] ], ENT_QUOTES );
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return $result;
+        return config('app.env') === $env;
     }
 }

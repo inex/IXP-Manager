@@ -48,10 +48,10 @@ class AsnLookup extends Command
             );
         }
 
-        $pdb = new PeeringDb();
+        $pdb = app()->make( PeeringDb::class );
 
-        if( $pdb->getNetworkByAsn($this->argument('asn')) ) {
-            echo $pdb->netAsAscii();
+        if( $net = $pdb->getNetworkByAsn($this->argument('asn')) ) {
+            echo $pdb->netAsAscii($net);
             return 0;
         }
 

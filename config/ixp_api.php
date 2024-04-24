@@ -101,6 +101,8 @@ return [
         'fac_api'         => env( 'IXP_API_PEERING_DB_FAC_URL',  "https://api.peeringdb.com/api/fac" ),
         'ixp_api'         => env( 'IXP_API_PEERING_DB_IXP_URL',  "https://api.peeringdb.com/api/ix"  ),
         'ixp_www'         => env( 'IXP_WWW_PEERING_DB_IXP_URL',  "https://www.peeringdb.com/ix"  ),
+
+        'api_cache_ttl'   => 3600,      // how long to cache /ix results
     ],
 
     /*

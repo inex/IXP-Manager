@@ -53,30 +53,16 @@ class PeeringDbServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Route::get( 'peeringdb/ix', function() {
-            return response()->json( Cache::remember('peeringdb/ix', 3600, function() {
-                $faker = $_ENV["APP_ENV"] === 'testing';
-                $url = 'https://api.peeringdb.com/api/ix';
-                $structure = [
-                    ["name" => 'pdb_id', "cell" => 'id'],
-                    ["name" => 'name', "cell" => 'name'],
-                    ["name" => 'city', "cell" => 'city'],
-                    ["name" => 'country', "cell" => 'country'],
-                ];
-                return generalApiGet($url,null,$structure,$faker);
-            }) );
+            return response()->json(
+                app()->make(PeeringDb::class)->ixps()
+            );
         })->name('api-v4-peeringdb-ixs');
 
 
         Route::get( 'peering-db/fac', function() {
-            return response()->json( Cache::remember('peering-db/fac', 3600, function() {
-                $faker = $_ENV["APP_ENV"] === 'testing';
-                $url = 'https://api.peeringdb.com/api/fac';
-                $structure = [
-                    ["name" => 'id', "cell" => 'id'],
-                    ["name" => 'name', "cell" => 'name'],
-                ];
-                return generalApiGet($url,null,$structure,$faker);
-            }));
+            return response()->json(
+                app()->make(PeeringDb::class)->facilities()
+            );
         })->name('api-v4-peering-db-fac');
     }
 
