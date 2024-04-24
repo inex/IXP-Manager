@@ -19,14 +19,14 @@
         </include>
     </coverage>
     <php>
-        <server name="APP_ENV" value="testing"/>
-        <server name="BCRYPT_ROUNDS" value="4"/>
-        <server name="CACHE_DRIVER" value="array"/>
-        <server name="MAIL_DRIVER" value="array"/>
-        <server name="QUEUE_CONNECTION" value="sync"/>
-        <server name="SESSION_DRIVER" value="array"/>
-        <server name="IXP_PHPUNIT_RUNNING" value="1"/>
-        <server name="TELESCOPE_ENABLED" value="false"/>
+        <env name="APP_ENV" value="testing" force="true"/>
+        <env name="BCRYPT_ROUNDS" value="4" force="true"/>
+        <env name="CACHE_DRIVER" value="array" force="true"/>
+        <env name="MAIL_DRIVER" value="array" force="true"/>
+        <env name="QUEUE_CONNECTION" value="sync" force="true"/>
+        <env name="SESSION_DRIVER" value="array" force="true"/>
+        <env name="IXP_PHPUNIT_RUNNING" value="1" force="true"/>
+        <env name="TELESCOPE_ENABLED" value="false" force="true"/>
         <const name="IXP_PHPUNIT_API_URL" value="http://localhost:8000/apiv1" />
         <const name="IXP_PHPUNIT_API_KEY" value="Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9" />
         <const name="APPLICATION_VERSION" value="999.9.9" />

@@ -54,34 +54,28 @@ class PeeringDbServiceProvider extends ServiceProvider
     {
         Route::get( 'peeringdb/ix', function() {
             return response()->json( Cache::remember('peeringdb/ix', 3600, function() {
-                $ixps = [];
-                if( $ixs = file_get_contents('https://www.peeringdb.com/api/ix') ) {
-                    foreach( json_decode( $ixs, false )->data as $ix ) {
-                        $ixps[ $ix->id ] = [
-                            'pdb_id'    => $ix->id,
-                            'name'      => htmlentities( $ix->name, ENT_QUOTES ),
-                            'city'      => htmlentities( $ix->city, ENT_QUOTES ),
-                            'country'   => htmlentities( $ix->country,ENT_QUOTES ),
-                        ];
-                    }
-                }
-                return $ixps;
+                $faker = $_ENV["APP_ENV"] === 'testing';
+                $url = 'https://api.peeringdb.com/api/ix';
+                $structure = [
+                    ["name" => 'pdb_id', "cell" => 'id'],
+                    ["name" => 'name', "cell" => 'name'],
+                    ["name" => 'city', "cell" => 'city'],
+                    ["name" => 'country', "cell" => 'country'],
+                ];
+                return generalApiGet($url,null,$structure,$faker);
             }) );
         })->name('api-v4-peeringdb-ixs');
 
 
         Route::get( 'peering-db/fac', function() {
             return response()->json( Cache::remember('peering-db/fac', 3600, function() {
-                $pdbs = [];
-                if( $pdb = file_get_contents('https://api.peeringdb.com/api/fac') ) {
-                    foreach( json_decode( $pdb, false )->data as $db ) {
-                        $pdbs[ $db->id ] = [
-                            'id'    => $db->id,
-                            'name'  => htmlentities( $db->name, ENT_QUOTES ),
-                        ];
-                    }
-                }
-                return $pdbs;
+                $faker = $_ENV["APP_ENV"] === 'testing';
+                $url = 'https://api.peeringdb.com/api/fac';
+                $structure = [
+                    ["name" => 'id', "cell" => 'id'],
+                    ["name" => 'name', "cell" => 'name'],
+                ];
+                return generalApiGet($url,null,$structure,$faker);
             }));
         })->name('api-v4-peering-db-fac');
     }

@@ -28,6 +28,7 @@
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
+
 if( !function_exists( 'resolve_dns_a' ) )
 {
     /**
@@ -165,3 +166,104 @@ function parsedown(?string $value = null, bool $inline = null)
     return $parser->text($value);
 }
 
+if( !function_exists( 'generalApiGet' ) )
+{
+    /**
+     * General Guzzle API Get request parser
+     * + faker for data testing
+     *
+     * $query array sample
+     * [
+     *   'key1' => 'value1',
+     *   'key2' => 'value2',
+     * ]
+     *
+     * $structure array sample:
+     * ["name" => "item_id", "cell" => "id"], <-- that will be the ID of the record
+     * ["name" => "user_name", "cell" => "name"],
+     * ["name" => "mobile_number", "cell" => "mobile"], ...
+     * $structure single sample:
+     * "id_cell"
+     *
+     * @param $url
+     * @param $query
+     * @param $structure
+     * @return array|mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    function generalApiGet( $url, $query = null, $structure = null, $test = false )
+    {
+        info("generalApiGet() running");
+        if($test) {
+            $faker = \Faker\Factory::create();
+            $itemNum = 20;
+            $result = [];
+            if(!$structure) {
+                for($i=1; $i<=$itemNum; $i++) {
+                    $item['id'] = $i;
+                    $item['content'] = $faker->firstName();
+                    $result[] = $item;
+                }
+            } else {
+                for($i=1; $i<=$itemNum; $i++) {
+                    if(!is_array($structure)) {
+                        $result[] = $faker->firstName();
+                    } else {
+                        $resultId = $i;
+                        $result[ $resultId ] = [];
+                        foreach($structure as $structureItem) {
+                            switch($structureItem[ "cell" ]) {
+                                case 'id':
+                                    $resultContent = $resultId;
+                                    break;
+                                case 'name':
+                                    $resultContent = $faker->company();
+                                    break;
+                                case 'city':
+                                    $resultContent = $faker->city();
+                                    break;
+                                case 'country':
+                                    $resultContent = $faker->stateAbbr();
+                                    break;
+                                default:
+                                    $resultContent = $faker->bothify('?????###');
+                            }
+
+                            $result[ $resultId ][ $structureItem[ "name" ] ] = htmlentities( $resultContent, ENT_QUOTES );
+                        }
+                    }
+                }
+            }
+        } else {
+            $client = new GuzzleHttp\Client();
+            if($query) {
+                $response = $client->request('GET', $url, ['query' => $query]);
+            } else {
+                $response = $client->request('GET', $url);
+            }
+            $statusCode = $response->getStatusCode();
+            $content = json_decode($response->getBody(), true);
+            $result = [];
+            if(!$structure) {
+                $result = $content;
+            } else {
+                if ($content && $statusCode < 400) {
+                    foreach( $content as $item ) {
+                        if(!is_array($structure)) {
+                            if($item[ $structure ]) {
+                                $result[] = $item[ $structure ];
+                            }
+                        } else {
+                            $resultId = $structure[ 0 ][ "cell" ];
+                            $result[ $item[ $resultId ] ] = [];
+                            foreach($structure as $structureItem) {
+                                $result[ $item[ $resultId ] ][ $structureItem[ "name" ] ] = htmlentities( $item[ $structureItem[ "cell" ] ], ENT_QUOTES );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return $result;
+    }
+}

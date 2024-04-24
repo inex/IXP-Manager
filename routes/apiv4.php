@@ -21,6 +21,7 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Illuminate\Support\Env;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -51,50 +52,41 @@ Route::group( [  'prefix' => 'member-export' ], function() {
 
 Route::get( 'peeringdb/ix', function() {
     return response()->json( Cache::remember('peeringdb/ix', 120, function() {
-        $ixps = [];
-        if( $ixs = file_get_contents( config( 'ixp_api.peeringDB.ixp_api' ) ) ) {
-            foreach( json_decode( $ixs, false )->data as $ix ) {
-                $ixps[ $ix->id ] = [
-                    'pdb_id'    => $ix->id,
-                    'name'      => htmlentities( $ix->name, ENT_QUOTES      ),
-                    'city'      => htmlentities( $ix->city, ENT_QUOTES      ),
-                    'country'   => htmlentities( $ix->country, ENT_QUOTES   ),
-                ];
-            }
-        }
-        return $ixps;
+        $faker = $_ENV["APP_ENV"] === 'testing';
+        $url = config('ixp_api.peeringDB.ixp_api' );
+        $structure = [
+            ["name" => 'pdb_id', "cell" => 'id'],
+            ["name" => 'name', "cell" => 'name'],
+            ["name" => 'city', "cell" => 'city'],
+            ["name" => 'country', "cell" => 'country'],
+        ];
+        return generalApiGet($url,null,$structure,$faker);
     } ) );
 })->name('api-v4-peeringdb-ixs');
 
 Route::get( 'ix-f/ixp', function() {
     return response()->json( Cache::remember('ix-f/ixp', 120, function() {
-        $ixps = [];
-        if( $ixs = file_get_contents( config('ixp_api.IXPDB.ixp_api' ) ) ) {
-            foreach( json_decode( $ixs, false ) as $ix ) {
-                $ixps[ $ix->id ] = [
-                    'ixf_id'    => $ix->id,
-                    'name'      => htmlentities( $ix->name, ENT_QUOTES      ),
-                    'city'      => htmlentities( $ix->city, ENT_QUOTES      ),
-                    'country'   => htmlentities( $ix->country, ENT_QUOTES   ),
-                ];
-            }
-        }
-        return $ixps;
+        $faker = $_ENV["APP_ENV"] === 'testing';
+        $url = config('ixp_api.IXPDB.ixp_api' );
+        $structure = [
+            ["name" => 'ixf_id', "cell" => 'id'],
+            ["name" => 'name', "cell" => 'name'],
+            ["name" => 'city', "cell" => 'city'],
+            ["name" => 'country', "cell" => 'country'],
+        ];
+        return generalApiGet($url,null,$structure,$faker);
     } ) );
 } )->name('api-v4-ixf-ixs' );
 
 Route::get( 'peering-db/fac', function() {
     return response()->json( Cache::remember('peering-db/fac', 120, function() {
-        $pdbs = [];
-        if( $pdb = file_get_contents( config( 'ixp_api.peeringDB.fac_api' ) ) ) {
-            foreach( json_decode( $pdb, false )->data as $db ) {
-                $pdbs[ $db->id ] = [
-                    'id' => $db->id,
-                    'name' => htmlentities( $db->name, ENT_QUOTES ),
-                ];
-            }
-        }
-        return $pdbs;
+        $faker = $_ENV["APP_ENV"] === 'testing';
+        $url = config( 'ixp_api.peeringDB.fac_api' );
+        $structure = [
+            ["name" => 'id', "cell" => 'id'],
+            ["name" => 'name', "cell" => 'name'],
+        ];
+        return generalApiGet($url,null,$structure,$faker);
     }));
 })->name('api-v4-peering-db-fac');
 
