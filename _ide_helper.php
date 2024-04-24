@@ -20938,6 +20938,11 @@ namespace Illuminate\Testing {
             /**
      * 
      *
+     */        class LoggedExceptionCollection {
+            }
+            /**
+     * 
+     *
      * @mixin \Illuminate\Http\Response
      */        class TestResponse {
                     /**
