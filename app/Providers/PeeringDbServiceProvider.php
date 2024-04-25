@@ -59,11 +59,11 @@ class PeeringDbServiceProvider extends ServiceProvider
         })->name('api-v4-peeringdb-ixs');
 
 
-        Route::get( 'peering-db/fac', function() {
+        Route::get( 'peeringdb/fac', function() {
             return response()->json(
                 app()->make(PeeringDb::class)->facilities()
             );
-        })->name('api-v4-peering-db-fac');
+        })->name('api-v4-peeringdb-fac');
     }
 
     /**

@@ -9,7 +9,7 @@
             allowClear: true
         });
 
-        $.ajax( "<?= url('peering-db/fac') ?>" )
+        $.ajax( "<?= url('peeringdb/fac') ?>" )
             .done( function( data ) {
                 let selectedpdb, selectNow;
                 let options = `<option value=''>Choose the matching PeeringDB Facility...</option>\n`;

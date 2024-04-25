@@ -50,20 +50,6 @@ Route::group( [  'prefix' => 'member-export' ], function() {
     Route::get('ixf/{version}',  'MemberExportController@ixf' );
 });
 
-Route::get( 'peeringdb/ix', function() {
-    return response()->json( Cache::remember('peeringdb/ix', 120, function() {
-        $faker = $_ENV["APP_ENV"] === 'testing';
-        $url = config('ixp_api.peeringDB.ixp_api' );
-        $structure = [
-            ["name" => 'pdb_id', "cell" => 'id'],
-            ["name" => 'name', "cell" => 'name'],
-            ["name" => 'city', "cell" => 'city'],
-            ["name" => 'country', "cell" => 'country'],
-        ];
-        return generalApiGet($url,null,$structure,$faker);
-    } ) );
-})->name('api-v4-peeringdb-ixs');
-
 Route::get( 'ix-f/ixp', function() {
     return response()->json( Cache::remember('ix-f/ixp', 120, function() {
         $faker = $_ENV["APP_ENV"] === 'testing';
@@ -77,18 +63,6 @@ Route::get( 'ix-f/ixp', function() {
         return generalApiGet($url,null,$structure,$faker);
     } ) );
 } )->name('api-v4-ixf-ixs' );
-
-Route::get( 'peering-db/fac', function() {
-    return response()->json( Cache::remember('peering-db/fac', 120, function() {
-        $faker = $_ENV["APP_ENV"] === 'testing';
-        $url = config( 'ixp_api.peeringDB.fac_api' );
-        $structure = [
-            ["name" => 'id', "cell" => 'id'],
-            ["name" => 'name', "cell" => 'name'],
-        ];
-        return generalApiGet($url,null,$structure,$faker);
-    }));
-})->name('api-v4-peering-db-fac');
 
 // https://www.ixpmanager.org/js/ixp-manager-users.json
 Route::get( 'ixpmanager-users/ixf-ids', function() {
