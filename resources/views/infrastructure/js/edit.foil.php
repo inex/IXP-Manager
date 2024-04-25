@@ -21,7 +21,7 @@
     $(document).ready(function() {
         $( "#notes" ).parent().removeClass().addClass( "col-sm-12" )
 
-        $.ajax( "<?= url('api/v4/ix-f/ixp') ?>" )
+        $.ajax( "<?= url('ix-f/ixp') ?>" )
             .done( function( data ) {
                 let selectedixp, selectNow;
                 let options = `<option value=''>Choose the matching IX-F IXP...</option>\n`;

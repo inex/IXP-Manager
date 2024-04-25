@@ -50,20 +50,6 @@ Route::group( [  'prefix' => 'member-export' ], function() {
     Route::get('ixf/{version}',  'MemberExportController@ixf' );
 });
 
-Route::get( 'ix-f/ixp', function() {
-    return response()->json( Cache::remember('ix-f/ixp', 120, function() {
-        $faker = $_ENV["APP_ENV"] === 'testing';
-        $url = config('ixp_api.IXPDB.ixp_api' );
-        $structure = [
-            ["name" => 'ixf_id', "cell" => 'id'],
-            ["name" => 'name', "cell" => 'name'],
-            ["name" => 'city', "cell" => 'city'],
-            ["name" => 'country', "cell" => 'country'],
-        ];
-        return generalApiGet($url,null,$structure,$faker);
-    } ) );
-} )->name('api-v4-ixf-ixs' );
-
 // https://www.ixpmanager.org/js/ixp-manager-users.json
 Route::get( 'ixpmanager-users/ixf-ids', function() {
     return response()->json( Cache::remember('ixpmanager-users/ixf-ids', 120, function() {
