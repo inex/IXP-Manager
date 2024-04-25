@@ -80,18 +80,15 @@ class PeeringDb
      */
     public function getNetworkByAsn( int $asn ): array|false
     {
-        // reset in case of reuse
-        $this->reset();
-
-        $response = $this-> execute(
+        $response = $this->execute(
             $this->generateBasePeeringDbUrl( "/net.json?asn={$asn}&depth=2" )
         );
 
-        if( $response->status() === 200 ) {
+        if( $response->ok() ) {
             return $response->json()['data'][0];
         }
 
-        if( $response->status() === 404 ) {
+        if( $response->notFound() ) {
             $this->error = "No network with AS{$asn} found in PeeringDB";
             return false;
         }
@@ -247,6 +244,8 @@ ENDWHOIS;
     {
         $this->reset();
 
+        // Typically testing Http::fake() belongs in unit test classes but we require it here as
+        // we are using Laravel Dusk browser tests which make a new http request.
         if( app_env_is('testing') ) {
             $this->fake($query);
         }
@@ -293,6 +292,9 @@ ENDWHOIS;
     /**
      * Fake the API calls to PeeringDB for testing
      *
+     * Typically testing Http::fake() belongs in unit test classes but we require it here as
+     * we are using Laravel Dusk browser tests which make a new http request.
+     *
      * @return void
      */
     private function fake(): void
@@ -321,6 +323,7 @@ ENDWHOIS;
             $credentials = urlencode( $un ) . ":" . urlencode( $pw ) . "@";
         }
 
+        // e.g. https://username:password@www.peeringdb.com/api/ix.json
         return sprintf( config( 'ixp_api.peeringDB.url' ), $credentials ) . $query;
     }
 

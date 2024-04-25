@@ -129,6 +129,8 @@ if( !function_exists( 'ixp_get_client_ip' ) )
     }
 }
 
+// Many development environments do not have the php_rrd extension and this
+// simple allows the dev system to return a blank graph.
 if( !function_exists( 'rrd_graph' ) )
 {
     function rrd_graph( $a, $b ) { return []; }
