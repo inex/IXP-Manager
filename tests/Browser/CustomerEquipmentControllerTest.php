@@ -23,15 +23,13 @@ namespace Tests\Browser;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Models\Cabinet;
-
 use IXP\Models\CustomerEquipment;
 use Laravel\Dusk\Browser;
 
 use Tests\DuskTestCase;
 
 /**
- * Cabinet Controller
+ * Customer Equipment Controller
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Laszlo Kiss <laszlo@islandbridgenetworks.ie>
@@ -57,7 +55,7 @@ class CustomerEquipmentControllerTest extends DuskTestCase
     }
 
     /**
-     * Cabinet list, add, edit, remove test
+     * Customer Equipment list, add, edit, remove test
      *
      * @return void
      * @throws \Throwable
