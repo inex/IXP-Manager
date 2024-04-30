@@ -167,7 +167,7 @@ class IpAddressControllerTest extends DuskTestCase
                     ->where('address', $cat[ "ip1" ] )
                     ->where('vlanid', $vlanId )
                     ->first();
-                info("Prot: ".$prot."\nIP: ".$cat["ip1"]."\nData:\n".var_export($pickedIp,1));
+
                 $deleteUrl = route('ip-address@delete',$pickedIp->id);
                 $browser->click('a.delete-ip[href="'.$deleteUrl.'"]')
                     ->waitForText('Do you really want to delete this IP address?')
