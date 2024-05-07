@@ -44,14 +44,20 @@ use Tests\DuskTestCase;
  */
 class IpAddressControllerTest extends DuskTestCase
 {
-    public string $vlan = "Test VLAN";
-    public array $category = [
+    private array $vlan = [
+        "name" => "Test VLAN",
+        'number' => '10',
+        'infrastructureid' => 1,
+        'config_name' => 'test-vlan',
+        'notes' => 'test notes',
+    ];
+    private array $category = [
         "ipv4" => [
             "protocol" => "4",
             "net1"     => "192.0.2.24/29",
             "net2"     => "192.0.2.16/28",
-            "ip1"     => "192.0.2.17",
-            "ip2"     => "10.1.0.6",
+            "ip1"      => "192.0.2.17",
+            "ip2"      => "10.1.0.6",
             "del1"     => "192.0.2.16/29",
             "del2"     => "192.0.2.0/24",
             "del3"     => "10.1.0.0/29",
@@ -60,8 +66,8 @@ class IpAddressControllerTest extends DuskTestCase
             "protocol" => "6",
             "net1"     => "2001:db8:23::18/125",
             "net2"     => "2001:db8:23::10/124",
-            "ip1"     => "2001:db8:23::12",
-            "ip2"     => "2001:db8:1::8",
+            "ip1"      => "2001:db8:23::12",
+            "ip2"      => "2001:db8:1::8",
             "del1"     => "2001:db8:23::10/125",
             "del2"     => "2001:db8:23::0/120",
             "del3"     => "2001:db8:1::0/125",
@@ -98,18 +104,7 @@ class IpAddressControllerTest extends DuskTestCase
                 ->press( '#login-btn' )
                 ->assertPathIs( '/admin' );
 
-            $browser->visit( '/vlan/create' )
-                ->type( 'name', $this->vlan )
-                ->type( 'number', '10' )
-                ->select( 'infrastructureid', 1 )
-                ->type( 'config_name', 'test-vlan' )
-                ->type( 'notes', 'test notes' )
-                ->press( 'Create' )
-                ->assertPathIs( '/vlan/list' )
-                ->assertSee( "VLAN created" )
-                ->assertSee( $this->vlan );
-
-            $vlan = Vlan::whereName( $this->vlan )->first();
+            $vlan = Vlan::create( $this->vlan );
             $vlanId = $vlan->id;
 
             // II.tests for IP addresses

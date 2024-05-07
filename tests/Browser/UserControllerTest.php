@@ -51,10 +51,21 @@ class UserControllerTest extends DuskTestCase
     public function tearDown(): void
     {
         foreach( [ 'test-user1@example.com', 'test13@example.com' ] as $email ) {
-            if( $u = User::whereEmail( $email )->first() ) {
-                $u->delete();
+            if ($user = User::whereEmail($email)->first()) {
+                CustomerToUser::where('user_id',$user->id)->delete();
+                $user->delete();
             }
         }
+
+        // set back the changed attributes
+        $customAdmin = User::whereEmail('imagine-custadmin@example.com')->first();
+        $customAdmin->Name = "Test Test";
+        $customAdmin->authorisedMobile = null;
+        $customAdmin->save();
+
+        CustomerToUser::where('user_id',5)
+            ->where('customer_id', 1)->forceDelete();
+
         parent::tearDown();
     }
 
@@ -732,7 +743,6 @@ class UserControllerTest extends DuskTestCase
 
             // 1. customer overview -> non internal customer -> add user from tab -> no super option
             $browser->visit( 'customer/overview/' . $nonInternalCust->id . '/users' )
-                ->pause( 5000 )
                 ->press( "#users-add-btn" )
                 ->type( '#email', 'test@example.com' )
                 ->click( '.btn-primary' );
@@ -816,7 +826,8 @@ class UserControllerTest extends DuskTestCase
             $browser->visit( 'user/list' )
                 ->click( "#add-user" )
                 ->type( "#email", "heanet-custadmin@example.com" )
-                ->click( '.btn-primary' )
+                ->press( 'Create' )
+                ->waitForText('hecustadmin')
                 ->click( '#user-5' )
                 ->select( 'privs', 3 )
                 ->select( 'customer_id', 1 )
@@ -874,8 +885,6 @@ class UserControllerTest extends DuskTestCase
 
 
             // Deleting created users for the tests
-
-
             $browser->visit( '/switch-user-back' );
 
             $addedUser = User::whereEmail( 'test13@example.com' )->first();
@@ -883,11 +892,10 @@ class UserControllerTest extends DuskTestCase
 
             $browser->visit( '/user/list' )
                 ->click( "#btn-delete-" . $addedUser->id )
-                ->waitForText( 'Do you really want to unlink this ' . config( 'ixp_fe.lang.customer.one' ) . ' from this user' )
+                ->waitForText( 'Are you sure you want to delete this user' )
                 ->press( "Delete" );
 
             $browser->visit( "/user/edit/" . $addedUser2->id )
-                ->pause( 2000 )
                 ->click( "#btn-delete-c2u-" . $c2u->id )
                 ->waitForText( "Delete " . ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . " To User" )
                 ->press( "Delete" );
