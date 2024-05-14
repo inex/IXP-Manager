@@ -278,6 +278,8 @@ class CoreBundleControllerTest extends DuskTestCase
 
                 $browser->waitForText( 'Choose a switch port' );
 
+                $browser->driver->executeScript( 'window.scrollTo(0, 1000);' );
+
                 $browser->assertSelectHasOption( '#sp-a-1', $coreBundle[ 'switch-port-a-1' ] )
                     ->assertSelectHasOption( '#sp-b-1', $coreBundle[ 'switch-port-b-1' ] );
 
@@ -293,7 +295,7 @@ class CoreBundleControllerTest extends DuskTestCase
 
                 $browser->click( '#add-new-core-link' );
 
-                $browser->driver->executeScript( 'window.scrollTo(0, 1000);' );
+                $browser->driver->executeScript( 'window.scrollTo(0, 2000);' );
 
                 $browser->assertSee( 'Link 2' )
                     ->assertSelected( '#sp-a-2', $coreBundle[ 'switch-port-a-2' ] )
@@ -307,7 +309,7 @@ class CoreBundleControllerTest extends DuskTestCase
 
                 $browser->click( '#add-new-core-link' );
 
-                $browser->driver->executeScript( 'window.scrollTo(0, 1000);' );
+                $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
                 $browser->assertSee( 'Link 3' )
                     ->assertSelected( '#sp-a-3', $coreBundle[ 'switch-port-a-3' ] )

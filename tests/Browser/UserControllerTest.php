@@ -558,7 +558,8 @@ class UserControllerTest extends DuskTestCase
 
 
             // 1. test add :
-            $browser->assertInputValue( "email", 'test-user11@example.com' )
+            $browser->waitForText('Privilege')
+                ->assertInputValue( "email", 'test-user11@example.com' )
                 ->type( 'name', 'Test User 11' )
                 ->type( 'username', 'testuser11' )
                 ->select( 'privs', 1 )

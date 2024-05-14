@@ -63,12 +63,14 @@ class User2FAControllerTest extends DuskTestCase
     public function test(): void
     {
         $this->browse( function ( Browser $browser) {
-            //$this->deleteEnvValue( ["2FA_ENFORCE_FOR_USERS" => 1] );
+            $this->deleteEnvValue( '2FA_ENFORCE_FOR_USERS="1"' );
 
             $userUsername = 'travis';
             $userPassword = 'travisci';
 
-            $browser->visit('/login')
+            $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
+                ->visit('/login')
                 ->type('username', $userUsername )
                 ->type('password', $userPassword )
                 ->press('#login-btn'    )
@@ -152,7 +154,9 @@ class User2FAControllerTest extends DuskTestCase
                 ->click("#logout")
                 ->assertPathIs('/login');
 
-            $this->overrideEnv( ["2FA_ENFORCE_FOR_USERS" => 1] );
+            //$this->overrideEnv( ["2FA_ENFORCE_FOR_USERS" => 1] );
+            $this->replaceEnvAttr( '2FA_ENFORCE_FOR_USERS="4"','2FA_ENFORCE_FOR_USERS="1"' );
+            $browser->pause(1000);
 
             $browser->visit('/login')
                     ->type('username', $userUsername)
@@ -198,7 +202,7 @@ class User2FAControllerTest extends DuskTestCase
                 ->type( 'password', 'wrongPassword')
                 ->press( 'Enable 2FA' )
                 ->assertPathIs( '/2fa/configure')
-                ->assertSee( 'Incorrect user password - please check your password and try again.');
+                ->waitForText( 'Incorrect user password - please check your password and try again.',1);
 
         /**
          * Test to enable the 2FA with wrong OTP and good Password
@@ -207,7 +211,7 @@ class User2FAControllerTest extends DuskTestCase
                 ->type( 'password', $userPassword )
                 ->press( 'Enable 2FA' )
                 ->assertPathIs( '/2fa/configure')
-                ->assertSee( 'Incorrect one time code - please check your code and try again.');
+                ->waitForText( 'Incorrect one time code - please check your code and try again.',1);
 
         /**
          * Test to enable the 2FA with good OTP and wrong Password
@@ -216,7 +220,7 @@ class User2FAControllerTest extends DuskTestCase
                 ->type( 'password', 'wrongPassword')
                 ->press( 'Enable 2FA' )
                 ->assertPathIs( '/2fa/configure')
-                ->assertSee( 'Incorrect user password - please check your password and try again.');
+                ->waitForText( 'Incorrect user password - please check your password and try again.',1);
 
         /**
          * Test to enable the 2FA with good OTP and wrong Password
@@ -225,7 +229,7 @@ class User2FAControllerTest extends DuskTestCase
                 ->type( 'password', $userPassword )
                 ->press( 'Enable 2FA' )
                 ->assertPathIs( '/admin')
-                ->assertSee( '2FA successfully enabled.');
+                ->waitForText( '2FA successfully enabled.',1);
 
         //Check 2fa is enabled
         $u2fa->refresh();
