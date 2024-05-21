@@ -135,7 +135,7 @@
                     <?php endif; ?>
 
                     <span class="tw-text-gray-600">
-                         joined <?= \Carbon\Carbon::instance( $c->datejoin )->format('Y') ?>
+                         joined <?= \Carbon\Carbon::parse( $c->datejoin )->format('Y') ?>
                         <?php if( $r = $c->resellerObject ): ?>
                            - resold via <a href="<?= route( "customer@overview" , [ 'cust' => $r->id ] ) ?>"><?= $t->ee($r->abbreviatedName)?></a>
                         <?php endif; ?>

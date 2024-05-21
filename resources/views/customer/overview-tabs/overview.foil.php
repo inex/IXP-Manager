@@ -195,7 +195,7 @@
                             <b>Joined</b>
                         </td>
                         <td>
-                            <?= \Carbon\Carbon::instance( $c->datejoin )->format( 'Y-m-d' ) ?>
+                            <?= \Carbon\Carbon::parse( $c->datejoin )->format( 'Y-m-d' ) ?>
                         </td>
                     </tr>
                     <tr>
@@ -204,7 +204,7 @@
                         </td>
                         <td>
                             <?php if( $c->hasLeft() ):?>
-                                <?= \Carbon\Carbon::instance( $c->dateleave )->format( 'Y-m-d' ) ?>
+                                <?= \Carbon\Carbon::parse( $c->dateleave )->format( 'Y-m-d' ) ?>
                             <?php endif; ?>
                         </td>
                     </tr>
