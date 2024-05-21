@@ -147,7 +147,7 @@
 
                         <td class="<?= $i ? '' : 'tw-border-t-2' ?> meta">
                             <span class="tw-text-gray-700 tw-text-sm tw-align-middle tw-border-gray-200 tw-border-1 tw-rounded-sm tw-bg-gray-200 tw-px-1">
-                                <?= $file->file_last_updated->toFormattedDateString() ?>
+                                <?= \Carbon\Carbon::parse($file->file_last_updated)->toFormattedDateString() ?>
                             </span>
                         </td>
 

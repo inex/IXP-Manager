@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false">
+    <testsuites>
+        <testsuite name="Dusk / Browser Test Suite">
+            <directory suffix="Test.php">./tests/Browser</directory>
+        </testsuite>
+        <testsuite name="Docstore Test Suite">
+            <directory suffix="Test.php">./tests/Docstore</directory>
+            <directory suffix="Test.php">./tests/DocstoreCustomer</directory>
+        </testsuite>
+        <testsuite name="IXP Manager Test Suite">
+            <directory suffix="Test.php">./tests/IXP</directory>
+            <directory suffix="Test.php">./tests/Services</directory>
+            <directory suffix="Test.php">./tests/Tasks</directory>
+            <directory suffix="Test.php">./tests/Utils</directory>
+        </testsuite>
+    </testsuites>
+    <coverage>
+        <include>
+            <directory suffix=".php">./app</directory>
+        </include>
+    </coverage>
+    <php>
+        <const name="APPLICATION_VERSION" value="999.9.9" />
+        <const name="APPLICATION_VERDATE" value="9999999999" />
+        <const name="APPLICATION_STARTTIME" value="0" />
+    </php>
+</phpunit>

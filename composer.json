@@ -24,12 +24,12 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.2 || ^8.3",
         "ext-json": "*",
 
-        "laravel/framework": "^10.0",
+        "laravel/framework": "^11.0",
         "laravel/horizon": "^5.7",
-        "laravel/telescope": "^4.17",
+        "laravel/telescope": "^5.0",
         "laravel/tinker": "^2.7",
         "laravel/ui": "^4.0",
         "anahkiasen/former": "^4.6",
@@ -51,17 +51,17 @@
         "zendesk/zendesk_api_client_php": "^2.2.10"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^2.15",
-        "beyondcode/laravel-dump-server": "^1.8",
+        "barryvdh/laravel-ide-helper": "^3.0",
+        "beyondcode/laravel-dump-server": "^2.0",
         "fakerphp/faker": "^1.23",
-        "laravel/dusk": "^7.13",
+        "laravel/dusk": "^8.0",
         "laravel/pint": "^1.15",
         "laravel/sail": "^1.29",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^7.10",
-        "sebastian/diff": "^4.0",
-        "phpunit/phpunit": "^9.6",
-        "vimeo/psalm": "^4.30",
+        "nunomaduro/collision": "^8.1",
+        "sebastian/diff": "^5.0",
+        "phpunit/phpunit": "^10.5.1",
+        "vimeo/psalm": "^5.0",
         "spatie/laravel-ignition": "^2.7",
         "staudenmeir/dusk-updater": "^1.5"
     },
@@ -116,9 +116,11 @@
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "@php artisan ide-helper:generate",
             "@php artisan ide-helper:meta --filename=.phpstorm.meta.php/laravel.meta.php",
-            "@php artisan ide-helper:models -Wr",
+            "@php artisan ide-helper:models -W",
             "@php artisan telescope:publish",
-            "@php artisan horizon:install"
+            "@php artisan horizon:install",
+            "@vendor/bin/phpunit --migrate-configuration",
+            "@vendor/bin/phpunit -c phpunit.dusk.xml --migrate-configuration"
         ]
     },
     "config": {
@@ -129,7 +131,7 @@
             "pestphp/pest-plugin": true
         },
         "platform": {
-            "php": "8.1.0"
+            "php": "8.3.0"
         }
     },
    "minimum-stability": "stable"
