@@ -69,8 +69,8 @@ use IXP\Models\AtlasMeasurement;
  * @property string|null $peeringmacrov6
  * @property string|null $peeringpolicy
  * @property string|null $corpwww
- * @property Carbon|null $datejoin
- * @property Carbon|null $dateleave
+ * @property string|null $datejoin
+ * @property string|null $dateleave
  * @property int|null $status
  * @property int|null $activepeeringmatrix
  * @property int|null $lastupdatedby

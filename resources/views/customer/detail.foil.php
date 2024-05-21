@@ -39,7 +39,7 @@
                             </a>
 
                             <span class="tw-text-gray-600">
-                                - joined <?= \Carbon\Carbon::instance( $c->datejoin )->format('Y') ?>
+                                - joined <?= \Carbon\Carbon::parse( $c->datejoin )->format('Y') ?>
                             </span>
                         </p>
 

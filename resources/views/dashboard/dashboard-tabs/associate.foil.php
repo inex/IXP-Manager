@@ -35,7 +35,7 @@
                     </td>
                     <td>
                         <?php if( $recent->datejoin ): ?>
-                            <?= \Carbon\Carbon::instance( $recent->datejoin )->format( 'Y-m-d' ) ?>
+                            <?= \Carbon\Carbon::parse( $recent->datejoin )->format( 'Y-m-d' ) ?>
                         <?php endif; ?>
                     </td>
                 </tr>

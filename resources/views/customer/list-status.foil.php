@@ -1,4 +1,4 @@
-<?php if( $t->cust->dateleave && \Carbon\Carbon::instance( $t->cust->dateleave )->format( 'Y-m-d' ) !== '0000-00-00' && \Carbon\Carbon::instance( $t->cust->dateleave )->format( 'Y-m-d' ) !== '-0001-11-30' ): ?>
+<?php if( $t->cust->dateleave && \Carbon\Carbon::parse( $t->cust->dateleave )->format( 'Y-m-d' ) !== '0000-00-00' && \Carbon\Carbon::parse( $t->cust->dateleave )->format( 'Y-m-d' ) !== '-0001-11-30' ): ?>
     <span class="badge badge-danger">CLOSED</span>
 <?php else: ?>
     <?php if( $t->cust->statusSuspended() ): ?>
