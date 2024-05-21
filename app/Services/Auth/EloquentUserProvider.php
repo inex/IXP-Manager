@@ -194,4 +194,18 @@ class EloquentUserProvider implements IlluminateUserProvider
     {
         return $this->hasher->check( $credentials['password'], $user->getAuthPassword() );
     }
+
+
+    /**
+     * Rehash the user's password if required and supported.
+     *
+     * @param \Illuminate\Contracts\Auth\Authenticatable $user
+     * @param array $credentials
+     * @param bool $force
+     * @return void
+     */
+    public function rehashPasswordIfRequired( Authenticatable $user, array $credentials, bool $force = false )
+    {
+        // TODO: Implement rehashPasswordIfRequired() method.
+    }
 }
