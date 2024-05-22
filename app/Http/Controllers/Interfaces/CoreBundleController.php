@@ -134,33 +134,41 @@ class CoreBundleController extends Common
     /**
      * Display the form to edit a core bundle
      *
-     * @param  Request      $r      Instance of the current HTTP request
-     * @param  CoreBundle   $cb     Core bundle
+     * @param  Request      $request      Instance of the current HTTP request
+     * @param  CoreBundle   $coreBundle     Core bundle
      *
      * @return  View
      */
-    public function edit( Request $r,  CoreBundle $cb ): View
+    public function edit( Request $request, CoreBundle $coreBundle ): View
     {
-        // fill the form with the core bundle data
-        Former::populate([
-            'custid'                    => $r->old('custid',      $cb->customer()->id   ),
-            'description'               => $r->old('description', $cb->description      ),
-            'graph_title'               => $r->old('graph_title', $cb->graph_title      ),
-            'cost'                      => $r->old('cost',        $cb->cost             ),
-            'preference'                => $r->old('preference',  $cb->preference       ),
-            'type'                      => $r->old('type',        $cb->type             ),
-            'ipv4_subnet'               => $r->old('ipv4_subnet', $cb->ipv4_subnet      ),
-            'enabled'                   => $r->old('enabled',     $cb->enabled          ),
-            'bfd'                       => $r->old('bfd',         $cb->bfd              ),
-            'stp'                       => $r->old('stp',         $cb->stp              ),
-        ]);
+        $customer = $coreBundle->customer();
+        $customerId = !$customer ? 0 : $customer->id;
 
-        return view( 'interfaces/core-bundle/edit/edit-wizard' )->with([
-            'cb'                            => $cb,
-            'customers'                     => Customer::internal()->get(),
-            'switchPortsSideA'              => SwitcherAggregator::allPorts( $cb->switchSideX( true  )->id ,[ SwitchPort::TYPE_CORE, SwitchPort::TYPE_UNSET ], notAssignToPI: true ),
-            'switchPortsSideB'              => SwitcherAggregator::allPorts( $cb->switchSideX( false )->id ,[ SwitchPort::TYPE_CORE, SwitchPort::TYPE_UNSET ], notAssignToPI: true ),
-        ]);
+        // fill the form with the core bundle data
+        Former::populate( [
+            'custid'      => $request->old( 'custid', (string)$customerId ),
+            'description' => $request->old( 'description', $coreBundle->description ),
+            'graph_title' => $request->old( 'graph_title', $coreBundle->graph_title ),
+            'cost'        => $request->old( 'cost', (string)$coreBundle->cost ),
+            'preference'  => $request->old( 'preference', (string)$coreBundle->preference ),
+            'type'        => $request->old( 'type', (string)$coreBundle->type ),
+            'ipv4_subnet' => $request->old( 'ipv4_subnet', $coreBundle->ipv4_subnet ),
+            'enabled'     => $request->old( 'enabled', (string)$coreBundle->enabled ),
+            'bfd'         => $request->old( 'bfd', (string)$coreBundle->bfd ),
+            'stp'         => $request->old( 'stp', (string)$coreBundle->stp ),
+        ] );
+
+        $switchSideA = $coreBundle->switchSideX();
+        $switchSideAId = $switchSideA ? $switchSideA->id : null;
+        $switchSideB = $coreBundle->switchSideX( false );
+        $switchSideBId = $switchSideB ? $switchSideB->id : null;
+
+        return view( 'interfaces/core-bundle/edit/edit-wizard' )->with( [
+            'cb'               => $coreBundle,
+            'customers'        => Customer::internal()->get(),
+            'switchPortsSideA' => SwitcherAggregator::allPorts( $switchSideAId, [ SwitchPort::TYPE_CORE, SwitchPort::TYPE_UNSET ], notAssignToPI: true ),
+            'switchPortsSideB' => SwitcherAggregator::allPorts( $switchSideBId, [ SwitchPort::TYPE_CORE, SwitchPort::TYPE_UNSET ], notAssignToPI: true ),
+        ] );
     }
 
     /**

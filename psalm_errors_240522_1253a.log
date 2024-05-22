@@ -379,67 +379,20 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/Common.php:
 Cannot fetch property on non-object $relatedInterface of type true (see https://psalm.dev/029)
                 $fnpi->virtualinterfaceid = $relatedInterface->virtualinterfaceid;
 
-ERROR: UndefinedVariable
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/Common.php:386:44
-Cannot find referenced variable $cia (see https://psalm.dev/024)
-            $cl->core_interface_sidea_id = $cia->id;/** @var $cia CoreInterface */
-
-ERROR: UndefinedVariable
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/Common.php:387:44
-Cannot find referenced variable $cib (see https://psalm.dev/024)
-            $cl->core_interface_sideb_id = $cib->id;/** @var $cib CoreInterface */
-
-
+ERROR: InvalidPropertyFetch
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:145:40
+Cannot fetch property on non-object $customer of type true (see https://psalm.dev/029)
+        $customerId = !$customer ? 0 : $customer->id;
 
 ERROR: InvalidPropertyFetch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:146:67
-Cannot fetch property on non-object  of type bool (see https://psalm.dev/029)
-            'custid'                    => $r->old('custid',      $cb->customer()->id   ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:146:67
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'custid'                    => $r->old('custid',      $cb->customer()->id   ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:149:67
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'cost'                      => $r->old('cost',        $cb->cost             ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:150:67
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'preference'                => $r->old('preference',  $cb->preference       ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:151:67
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'type'                      => $r->old('type',        $cb->type             ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:153:67
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'enabled'                   => $r->old('enabled',     $cb->enabled          ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:154:67
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'bfd'                       => $r->old('bfd',         $cb->bfd              ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:155:67
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but bool provided (see https://psalm.dev/004)
-            'stp'                       => $r->old('stp',         $cb->stp              ),
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:162:41
+Cannot fetch property on non-object $switchSideA of type true (see https://psalm.dev/029)
+        $switchSideAId = $switchSideA ? $switchSideA->id : null;
 
 ERROR: InvalidPropertyFetch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:161:78
-Cannot fetch property on non-object  of type bool (see https://psalm.dev/029)
-            'switchPortsSideA'              => SwitcherAggregator::allPorts( $cb->switchSideX( true  )->id ,[ SwitchPort::TYPE_CORE, SwitchPort::TYPE_UNSET ], notAssignToPI: true ),
-
-ERROR: InvalidPropertyFetch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:162:78
-Cannot fetch property on non-object  of type bool (see https://psalm.dev/029)
-            'switchPortsSideB'              => SwitcherAggregator::allPorts( $cb->switchSideX( false )->id ,[ SwitchPort::TYPE_CORE, SwitchPort::TYPE_UNSET ], notAssignToPI: true ),
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:164:41
+Cannot fetch property on non-object $switchSideB of type true (see https://psalm.dev/029)
+        $switchSideBId = $switchSideB ? $switchSideB->id : null;
 
 ERROR: InvalidArgument
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/PhysicalInterfaceController.php:204:58
@@ -2320,11 +2273,16 @@ Argument 1 of Illuminate\Database\Schema\Blueprint::string expects string, but 2
             $table->string(255)->nullable()->after('host');
 
 ------------------------------
-458 errors found
+449 errors found
 ------------------------------
 3448 other issues found.
 You can display them with --show-info=true
 ------------------------------
+Psalm can automatically fix 1 of these issues.
+Run Psalm again with 
+--alter --issues=MissingReturnType --dry-run
+to see what it can fix.
+------------------------------
 
-Checks took 6.03 seconds and used 616.547MB of memory
-Psalm was able to infer types for 80.6251% of the codebase
+Checks took 6.16 seconds and used 613.923MB of memory
+Psalm was able to infer types for 80.7823% of the codebase

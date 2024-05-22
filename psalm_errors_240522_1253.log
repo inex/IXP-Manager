@@ -448,57 +448,6 @@ Cannot find referenced variable $cib (see https://psalm.dev/024)
 
 
 
-------
-
-ERROR: InvalidPropertyFetch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:146:67
-Cannot fetch property on non-object  of type bool (see https://psalm.dev/029)
-            'custid'                    => $r->old('custid',      $cb->customer()->id   ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:146:67
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'custid'                    => $r->old('custid',      $cb->customer()->id   ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:149:67
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'cost'                      => $r->old('cost',        $cb->cost             ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:150:67
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'preference'                => $r->old('preference',  $cb->preference       ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:151:67
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'type'                      => $r->old('type',        $cb->type             ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:153:67
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'enabled'                   => $r->old('enabled',     $cb->enabled          ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:154:67
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'bfd'                       => $r->old('bfd',         $cb->bfd              ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:155:67
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but bool provided (see https://psalm.dev/004)
-            'stp'                       => $r->old('stp',         $cb->stp              ),
-
-ERROR: InvalidPropertyFetch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:161:78
-Cannot fetch property on non-object  of type bool (see https://psalm.dev/029)
-            'switchPortsSideA'              => SwitcherAggregator::allPorts( $cb->switchSideX( true  )->id ,[ SwitchPort::TYPE_CORE, SwitchPort::TYPE_UNSET ], notAssignToPI: true ),
-
-ERROR: InvalidPropertyFetch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:162:78
-Cannot fetch property on non-object  of type bool (see https://psalm.dev/029)
-            'switchPortsSideB'              => SwitcherAggregator::allPorts( $cb->switchSideX( false )->id ,[ SwitchPort::TYPE_CORE, SwitchPort::TYPE_UNSET ], notAssignToPI: true ),
 
 ERROR: InvalidArgument
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/PhysicalInterfaceController.php:204:58
