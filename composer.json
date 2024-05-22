@@ -24,7 +24,7 @@
         }
     ],
     "require": {
-        "php": "^8.3",
+        "php": "^8.2 || ^8.3",
         "ext-json": "*",
 
         "laravel/framework": "^11.0",
@@ -39,7 +39,6 @@
         "erusev/parsedown": "^1.7",
         "foil/foil": "^0.6.7",
         "guzzlehttp/guzzle": "^7.8",
-        "spatie/laravel-ignition": "^2.7",
         "intervention/image": "^2.7",
         "mews/purifier": "^3.4",
         "opensolutions/oss-snmp": "^1.0",
@@ -63,6 +62,7 @@
         "sebastian/diff": "^5.0",
         "phpunit/phpunit": "^10.5.1",
         "vimeo/psalm": "^5.0",
+        "spatie/laravel-ignition": "^2.7",
         "staudenmeir/dusk-updater": "^1.5"
     },
     "support": {
@@ -108,9 +108,7 @@
         ],
 
         "post-install-cmd": [
-            "@php artisan clear-compiled",
-            "@./vendor/bin/phpunit --migrate-configuration",
-            "@./vendor/bin/phpunit -c phpunit.dusk.xml --migrate-configuration"
+            "@php artisan clear-compiled"
         ],
 
         "post-update-cmd": [
@@ -120,7 +118,9 @@
             "@php artisan ide-helper:meta --filename=.phpstorm.meta.php/laravel.meta.php",
             "@php artisan ide-helper:models -W",
             "@php artisan telescope:publish",
-            "@php artisan horizon:install"
+            "@php artisan horizon:install",
+            "@vendor/bin/phpunit --migrate-configuration",
+            "@vendor/bin/phpunit -c phpunit.dusk.xml --migrate-configuration"
         ]
     },
     "config": {
@@ -134,6 +134,5 @@
             "php": "8.3.0"
         }
     },
-   "minimum-stability": "dev",
-   "prefer-stable": true
+   "minimum-stability": "stable"
 }
