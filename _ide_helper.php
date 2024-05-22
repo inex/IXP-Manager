@@ -5,7 +5,7 @@
 
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
- * Generated for Laravel 11.7.0.
+ * Generated for Laravel 11.8.0.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -1498,6 +1498,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -2339,6 +2340,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -4059,6 +4061,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -4110,26 +4113,6 @@ namespace Illuminate\Support\Facades {
                         return $instance->macroCall($method, $parameters);
         }
                     /**
-         * Remove all items from the cache.
-         *
-         * @return bool 
-         * @static 
-         */        public static function flush()
-        {
-                        /** @var \Illuminate\Cache\ArrayStore $instance */
-                        return $instance->flush();
-        }
-                    /**
-         * Get the cache key prefix.
-         *
-         * @return string 
-         * @static 
-         */        public static function getPrefix()
-        {
-                        /** @var \Illuminate\Cache\ArrayStore $instance */
-                        return $instance->getPrefix();
-        }
-                    /**
          * Get a lock instance.
          *
          * @param string $name
@@ -4139,7 +4122,7 @@ namespace Illuminate\Support\Facades {
          * @static 
          */        public static function lock($name, $seconds = 0, $owner = null)
         {
-                        /** @var \Illuminate\Cache\ArrayStore $instance */
+                        /** @var \Illuminate\Cache\NullStore $instance */
                         return $instance->lock($name, $seconds, $owner);
         }
                     /**
@@ -4151,8 +4134,28 @@ namespace Illuminate\Support\Facades {
          * @static 
          */        public static function restoreLock($name, $owner)
         {
-                        /** @var \Illuminate\Cache\ArrayStore $instance */
+                        /** @var \Illuminate\Cache\NullStore $instance */
                         return $instance->restoreLock($name, $owner);
+        }
+                    /**
+         * Remove all items from the cache.
+         *
+         * @return bool 
+         * @static 
+         */        public static function flush()
+        {
+                        /** @var \Illuminate\Cache\NullStore $instance */
+                        return $instance->flush();
+        }
+                    /**
+         * Get the cache key prefix.
+         *
+         * @return string 
+         * @static 
+         */        public static function getPrefix()
+        {
+                        /** @var \Illuminate\Cache\NullStore $instance */
+                        return $instance->getPrefix();
         }
             }
             /**
@@ -4350,6 +4353,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -4543,6 +4547,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -4874,6 +4879,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -6021,6 +6027,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -6751,6 +6758,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -7586,6 +7594,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -7911,6 +7920,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -8251,7 +8261,7 @@ namespace Illuminate\Support\Facades {
      * @method static \Illuminate\Contracts\View\Factory getViewFactory()
      * @method static void setSymfonyTransport(\Symfony\Component\Mailer\Transport\TransportInterface $transport)
      * @method static \Illuminate\Mail\Mailer setQueue(\Illuminate\Contracts\Queue\Factory $queue)
-     * @method static void macro(string $name, object|callable $macro)
+     * @method static void macro(string $name, object|callable $macro, object|callable $macro = null)
      * @method static void mixin(object $mixin, bool $replace = true)
      * @method static bool hasMacro(string $name)
      * @method static void flushMacros()
@@ -8944,6 +8954,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -9762,6 +9773,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -11764,6 +11776,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -12081,6 +12094,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -12980,6 +12994,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -13496,6 +13511,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -14191,6 +14207,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -14964,6 +14981,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -15492,6 +15510,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -16073,6 +16092,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param object|callable $macro
+         * @param-closure-this static  $macro
          * @return void 
          * @static 
          */        public static function macro($name, $macro)
@@ -18538,7 +18558,7 @@ namespace Webpatser\Countries {
          * @param \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\Relation $query
          * @param mixed $value
          * @param string|null $field
-         * @return \Illuminate\Database\Eloquent\Relations\Relation 
+         * @return \Illuminate\Contracts\Database\Eloquent\Builder 
          * @static 
          */        public static function resolveRouteBindingQuery($query, $value, $field = null)
         {            //Method inherited from \Illuminate\Database\Eloquent\Model         
@@ -19368,6 +19388,16 @@ namespace Webpatser\Countries {
          */        public static function flushEventListeners()
         {            //Method inherited from \Illuminate\Database\Eloquent\Model         
                         \Webpatser\Countries\Countries::flushEventListeners();
+        }
+                    /**
+         * Get the event map for the model.
+         *
+         * @return array 
+         * @static 
+         */        public static function dispatchesEvents()
+        {            //Method inherited from \Illuminate\Database\Eloquent\Model         
+                        /** @var \Webpatser\Countries\Countries $instance */
+                        return $instance->dispatchesEvents();
         }
                     /**
          * Get the event dispatcher instance.
@@ -24969,6 +24999,7 @@ namespace  {
              *
              * @param string $name
              * @param object|callable $macro
+             * @param-closure-this static  $macro
              * @return void 
              * @static 
              */            public static function macro($name, $macro)
