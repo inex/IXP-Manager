@@ -51,7 +51,7 @@ use IXP\Traits\Observable;
  * @property string|null $sha256
  * @property string|null $description
  * @property int $min_privs
- * @property string $file_last_updated
+ * @property Carbon $file_last_updated
  * @property int|null $created_by
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at

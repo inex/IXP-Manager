@@ -24,46 +24,50 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.0.2",
         "ext-json": "*",
 
-        "laravel/framework": "^10.0",
-        "laravel/horizon": "^5.7",
-        "laravel/telescope": "^4.17",
-        "laravel/tinker": "^2.7",
-        "laravel/ui": "^4.0",
-        "anahkiasen/former": "^4.6",
-        "bacon/bacon-qr-code": "^2.0.3",
-        "barryvdh/laravel-dompdf": "^2.0.0",
-        "doctrine/dbal": "^3.8",
-        "erusev/parsedown": "^1.7",
-        "foil/foil": "^0.6.7",
-        "guzzlehttp/guzzle": "^7.8",
-        "intervention/image": "^2.7",
-        "mews/purifier": "^3.4",
         "opensolutions/oss-snmp": "^1.0",
-        "php-ds/php-ds": "^1.5",
-        "pragmarx/google2fa-laravel": "^1.4.1",
-        "s1lentium/iptools": "^1.2",
-        "socialiteproviders/manager": "^4.6",
+
+        "fideloper/proxy": "^4.4",
+        "laravel/framework": "^9.19",
+        "laravel/tinker": "^2.7",
+        "foil/foil": "^0.6.7",
+
+        "zendesk/zendesk_api_client_php": "^2.2.10",
+        "guzzlehttp/guzzle": "^7.2",
+        "intervention/image": "^2.3",
+        "anahkiasen/former": "^4.6",
+        "barryvdh/laravel-dompdf": "^2.0.0",
+        "mews/purifier": "^3.2",
+        "php-ds/php-ds": "^1.1",
+        "erusev/parsedown": "^1.7",
+        "s1lentium/iptools": "^1.1",
         "webpatser/laravel-countries": "^1.5.4",
+        "laravel/telescope": "^4.4.4",
+        "laravel/horizon": "^5.7",
+        "socialiteproviders/manager": "^4",
+        "pragmarx/google2fa-laravel": "^1.4.1",
+        "bacon/bacon-qr-code": "^2.0.3",
         "wolfcast/browser-detection": "^2.9.5",
-        "zendesk/zendesk_api_client_php": "^2.2.10"
+        "laravel/ui": "^3.0",
+        "doctrine/dbal": "^3.0"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^2.15",
-        "beyondcode/laravel-dump-server": "^1.8",
-        "fakerphp/faker": "^1.23",
+        "barryvdh/laravel-debugbar": "^3.5.2",
+        "barryvdh/laravel-ide-helper": "^2.9",
+        "beyondcode/laravel-dump-server": "^1.7",
+        "fakerphp/faker": "^1.9.1",
         "laravel/dusk": "^7.13",
-        "laravel/pint": "^1.15",
-        "laravel/sail": "^1.29",
-        "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^7.10",
-        "sebastian/diff": "^4.0",
-        "phpunit/phpunit": "^9.6",
-        "vimeo/psalm": "^4.30",
-        "spatie/laravel-ignition": "^2.7",
-        "staudenmeir/dusk-updater": "^1.5"
+        "laravel/pint": "^1.0",
+        "laravel/sail": "^1.0.1",
+        "mockery/mockery": "^1.4.2",
+        "nunomaduro/collision": "^6.1",
+        "phpunit/phpunit": "^9.5.10",
+        "psalm/plugin-laravel": "^2.9",
+        "spatie/laravel-ignition": "^1.0",
+        "staudenmeir/dusk-updater": "^1.2.2",
+        "vimeo/psalm": "^4.7"
     },
     "support": {
         "issues": "https://www.ixpmanager.org/support.php",
@@ -129,7 +133,7 @@
             "pestphp/pest-plugin": true
         },
         "platform": {
-            "php": "8.1.0"
+            "php": "8.0.2"
         }
     },
    "minimum-stability": "stable"

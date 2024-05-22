@@ -53,8 +53,8 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 use IXP\Http\Middleware\{
     PreventRequestsDuringMaintenance,
+    TrustProxies,
     Authenticate};
-use Illuminate\Http\Middleware\TrustProxies;
 
 class Kernel extends HttpKernel
 {

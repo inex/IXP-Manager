@@ -63,8 +63,8 @@ use Illuminate\Support\Collection;
  * @property string|null $peeringmacrov6
  * @property string|null $peeringpolicy
  * @property string|null $corpwww
- * @property string|null $datejoin
- * @property string|null $dateleave
+ * @property \Illuminate\Support\Carbon|null $datejoin
+ * @property \Illuminate\Support\Carbon|null $dateleave
  * @property int|null $status
  * @property int|null $activepeeringmatrix
  * @property int|null $lastupdatedby

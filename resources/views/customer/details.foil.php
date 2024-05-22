@@ -68,7 +68,7 @@
                             </td>
 
                             <td class="tw-font-mono tw-hidden md:tw-table-cell">
-                                <?= \Carbon\Carbon::parse( $c->datejoin )->format( 'Y-m-d' ) ?>
+                                <?= \Carbon\Carbon::instance( $c->datejoin )->format( 'Y-m-d' ) ?>
                             </td>
 
                             <?php if( !$t->associates ): ?>

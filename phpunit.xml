@@ -23,7 +23,7 @@
             <directory suffix="Test.php">./tests/Utils</directory>
         </testsuite>
     </testsuites>
-    <coverage>
+    <coverage processUncoveredFiles="true">
         <include>
             <directory suffix=".php">./app</directory>
         </include>
