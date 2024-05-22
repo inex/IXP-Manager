@@ -2275,14 +2275,9 @@ Argument 1 of Illuminate\Database\Schema\Blueprint::string expects string, but 2
 ------------------------------
 449 errors found
 ------------------------------
-3448 other issues found.
+3450 other issues found.
 You can display them with --show-info=true
 ------------------------------
-Psalm can automatically fix 1 of these issues.
-Run Psalm again with 
---alter --issues=MissingReturnType --dry-run
-to see what it can fix.
-------------------------------
 
-Checks took 6.16 seconds and used 613.923MB of memory
-Psalm was able to infer types for 80.7823% of the codebase
+Checks took 6.24 seconds and used 613.448MB of memory
+Psalm was able to infer types for 80.7594% of the codebase

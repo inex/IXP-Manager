@@ -120,13 +120,13 @@ class VlanAggregator extends Vlan
         }
 
         return Vlan::select( [
-                "${table}.id", "${table}.address",
+                "{$table}.id", "{$table}.address",
                 'vlan.id AS vid', 'vli.id as vliid'
             ] )
-            ->leftJoin( $table, "${table}.vlanid", 'vlan.id' )
-            ->leftJoin( 'vlaninterface as vli', "vli.${table}id", "${table}.id" )
+            ->leftJoin( $table, "{$table}.vlanid", 'vlan.id' )
+            ->leftJoin( 'vlaninterface as vli', "vli.{$table}id", "{$table}.id" )
             ->where( 'vlan.id', $vid )
-            ->orderByRaw( "${orderBy}(address) ASC" )
+            ->orderByRaw( "{$orderBy}(address) ASC" )
             ->get()->toArray();
 
     }
@@ -174,11 +174,11 @@ class VlanAggregator extends Vlan
                 'v.id AS vid', 'v.name AS vname', 'v.number AS vnumber'
             ] )
             ->from( 'vlaninterface AS vli' )
-            ->leftJoin( $table, "${table}.id", "vli.${table}id" )
+            ->leftJoin( $table, "{$table}.id", "vli.{$table}id" )
             ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid')
             ->leftJoin( 'cust AS c', 'c.id', 'vi.custid' )
             ->leftJoin( 'vlan AS v', 'v.id', 'vli.vlanid')
-            ->where( "${table}.address", $ip )->get()->toArray();
+            ->where( "{$table}.address", $ip )->get()->toArray();
     }
 
     /**
@@ -219,7 +219,7 @@ class VlanAggregator extends Vlan
         )
         ->from( 'vlan AS v' )
         ->join( 'vlaninterface AS vli', 'vli.vlanid', 'v.id' )
-        ->join(  "{$table} AS addr", 'addr.id', "vli.${table}id" )
+        ->join(  "{$table} AS addr", 'addr.id', "vli.{$table}id" )
         ->where( 'v.id', $vlan->id )
         ->whereNotNull( "vli.ipv{$proto}hostname" )
         ->where( "vli.ipv{$proto}hostname", '!=', '' )
