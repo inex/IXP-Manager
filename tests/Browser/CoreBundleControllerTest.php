@@ -72,11 +72,13 @@ class CoreBundleControllerTest extends DuskTestCase
     public function testAddWizard(): void
     {
         $this->browse( function( Browser $browser ) {
-            $browser->visit( '/login' )
-                ->type( 'username', 'travis' )
+            $browser->visit( '/login' );
+            $browser->pause(15000);
+                $browser->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
                 ->assertPathIs( '/admin' );
+
 
             $coreBundlesList = [
                 CoreBundle::TYPE_ECMP => [
