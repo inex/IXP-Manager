@@ -502,7 +502,7 @@ class JsonSchema
 
             $memberinfo[ $cnt ] = [
                 'asnum'          => $c->autsys,
-                'member_since'   => \Carbon\Carbon::parse($c->datejoin)->format( 'Y-m-d' ).'T00:00:00Z',
+                'member_since'   => $c->datejoin->format( 'Y-m-d' ).'T00:00:00Z',
                 'url'            => $c->corpwww,
                 'name'           => $c->name,
                 'peering_policy' => $c->peeringpolicy,
