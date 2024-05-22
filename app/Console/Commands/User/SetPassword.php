@@ -101,7 +101,7 @@ class SetPassword extends Command
             return 0;
         }
 
-        $validate = $this->validateInput( [ 'password' => $this->rules[ 'password' ] ] , $password );
+        $validate = $this->validateInput( 'password', $password );
         if( $password && $validate !== true ){
             $this->error( $validate );
             return 0;
@@ -110,7 +110,7 @@ class SetPassword extends Command
         if( !$password ){// --password option not specified, ask for password
             $password = $this->secret( 'Password or (return to have one generated)' );
             if( $password ){// if the user type a password
-                $validate = $this->validateInput( [ 'password' => $this->rules[ 'password' ] ] , $password );
+                $validate = $this->validateInput( 'password', $password );
                 if( $validate !== true ){
                     $this->error( $validate );
                     return 0;
@@ -132,5 +132,25 @@ class SetPassword extends Command
         $this->info( "Password set." );
 
         return 0;
+    }
+
+    /**
+     * @param array     $rules
+     * @param mixed     $value
+     *
+     * @return bool|string
+     */
+    private function validateInput( string $rule, string $value ): bool|string
+    {
+        if( !isset( $this->rules[$rule] ) ) {
+            throw new \Exception('Non-existent rule - coding error');
+        }
+
+        $validator = \Validator::make( [ $rule => $value ], $this->rules );
+
+        if ($validator->fails()) {
+            return $validator->errors()->first( $rule );
+        }
+        return true;
     }
 }

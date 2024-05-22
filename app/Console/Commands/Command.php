@@ -147,19 +147,4 @@ abstract class Command extends \Illuminate\Console\Command
         return $value;
     }
 
-    /**
-     * @param array     $rules
-     * @param mixed     $value
-     *
-     * @return bool|string
-     */
-    protected function validateInput( array $rules, mixed $value ): bool|string
-    {
-        $validator = \Validator::make( [key( $rules ) => $value], $rules );
-
-        if ($validator->fails()) {
-            return $validator->errors()->first( key( $rules ) );
-        }
-        return true;
-    }
 }
