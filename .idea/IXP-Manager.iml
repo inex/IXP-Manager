@@ -9,6 +9,7 @@
       <sourceFolder url="file://$MODULE_DIR$/database/seeders" isTestSource="false" packagePrefix="Database\Seeders\" />
       <sourceFolder url="file://$MODULE_DIR$/data/SocialiteProviders/PeeringDB/" isTestSource="false" packagePrefix="SocialiteProviders\PeeringDB\" />
       <sourceFolder url="file://$MODULE_DIR$/data/SocialiteProviders/src/PeeringDB/" isTestSource="false" packagePrefix="SocialiteProviders\PeeringDB\" />
+      <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/storage/app" />
       <excludeFolder url="file://$MODULE_DIR$/storage/debugbar" />
       <excludeFolder url="file://$MODULE_DIR$/storage/docstore" />

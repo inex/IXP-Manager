@@ -231,7 +231,7 @@ class ContactController extends EloquentController
         $cgs = [];
 
         if( config('contact_group.types.ROLE') ) {
-            $activeGroups   = ContactGroupAggregator::getGroupNamesTypeArray( false, false , true);
+            $activeGroups   = ContactGroupAggregator::getGroupNamesTypeArray( null, null , true);
 
             if( !in_array( $role = request()->role, array_column( $activeGroups[ "ROLE" ], 'id' ), false ) ) {
                 $role = null;
@@ -385,11 +385,11 @@ class ContactController extends EloquentController
         ];
 
         $contactGroupDetail = [];
-        $contactGroup       =  ContactGroupAggregator::getGroupNamesTypeArray( false, $this->object->id );
+        $contactGroup       =  ContactGroupAggregator::getGroupNamesTypeArray( null, $this->object->id );
 
         foreach( $data[ 'allGroups' ] as $gname => $gvalue ) {
             foreach( $gvalue as $g ){
-                $contactGroupDetail[ $gname . '_' . $g[ 'id' ] ] =  request()->old( $gname . '_' . $g[ 'id' ] , isset( $contactGroup[ $gname ][  $g[ 'id' ] ] ) ? 1 : 0 ) ;
+                $contactGroupDetail[ $gname . '_' . $g[ 'id' ] ] =  request()->old( $gname . '_' . $g[ 'id' ] , isset( $contactGroup[ $gname ][  $g[ 'id' ] ] ) ? '1' : '0' ) ;
             }
         }
 
@@ -573,7 +573,7 @@ class ContactController extends EloquentController
         if( config('contact_group.types.ROLE') ) {
             return [
                 'roles'     => ContactGroupAggregator::getGroupNamesTypeArray( 'ROLE' )[ "ROLE" ],
-                'allGroups' => ContactGroupAggregator::getGroupNamesTypeArray( false, false, true )
+                'allGroups' => ContactGroupAggregator::getGroupNamesTypeArray( null, null, true )
             ];
         }
         return [ 'roles' => null, 'allGroups' => [] ];

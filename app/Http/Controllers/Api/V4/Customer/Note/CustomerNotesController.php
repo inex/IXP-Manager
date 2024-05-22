@@ -74,7 +74,7 @@ class CustomerNotesController extends Controller
 
         $cn->title          =   $r->title;
         $cn->note           =   $r->note ;
-        $cn->private        =   $r->public ? false : true;
+        $cn->private        =   $r->public ? 0 : 1;
         $cn->customer_id    =   $cust->id;
         $cn->save();
 
@@ -106,7 +106,7 @@ class CustomerNotesController extends Controller
 
         $cn->title   =   $r->title;
         $cn->note    =   $r->note ;
-        $cn->private =   $r->public ? false : true;
+        $cn->private =   $r->public ? 0 : 1;
         $cn->save();
 
         // update the user's notes last read so he won't be told his own is new

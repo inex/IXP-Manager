@@ -70,7 +70,7 @@ class ExportGroup extends Command
         $type = $this->option('type');
         $name = $this->option('name');
         // Imported from Zend Framework with little change on 2017-11
-        if( ( !$type && !$name ) || ( $type && $name ) )  {
+        if( ( is_null($type) && is_null($name) ) || ( !is_null($type) && !is_null($name) ) )  {
             $this->error( "Group name or type must be set (and not both)." );
             return -1;
         }

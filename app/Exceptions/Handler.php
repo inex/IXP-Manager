@@ -80,17 +80,17 @@ class Handler extends ExceptionHandler
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  Throwable  $exception
+     * @param  Throwable  $e
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function render($request, Throwable $exception)
+    public function render($request, Throwable $e)
     {
-        if( $exception instanceof GraphCannotBeProcessedException ) {
+        if( $e instanceof GraphCannotBeProcessedException ) {
             AlertContainer::push( 'No graphing backend configured to support the requested graph type.', Alert::DANGER );
             return Redirect::to('');
         }
 
-        return parent::render($request, $exception);
+        return parent::render($request, $e);
     }
 }

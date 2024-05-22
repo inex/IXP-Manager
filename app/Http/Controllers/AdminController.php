@@ -82,7 +82,7 @@ class AdminController extends Controller
     private function dashboardStats( Request $r ): array
     {
         // only do this once every 60 minutes
-        if( $r->query( 'refresh_cache', 0 ) || !( $cTypes = Cache::get( 'admin_ctypes' ) ) ) {
+        if( $r->query( 'refresh_cache' ) || !( $cTypes = Cache::get( 'admin_ctypes' ) ) ) {
             // Full / Associate / Probono / Internal
             $cTypes[ 'types' ] = Customer::selectRaw('type AS ctype, COUNT( type ) AS cnt')
                 ->whereRaw(Customer::SQL_CUST_CURRENT)
@@ -264,7 +264,7 @@ class AdminController extends Controller
 
         $period   = Graph::processParameterPeriod( $r->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ) );
 
-        if( $r->query( 'refresh_cache', 0 ) || !( $graphs = Cache::get( 'admin_stats_'.$period ) ) ) {
+        if( $r->query( 'refresh_cache' ) || !( $graphs = Cache::get( 'admin_stats_'.$period ) ) ) {
             $graphs = [];
 
             $graphs['ixp'] = $grapher->ixp()

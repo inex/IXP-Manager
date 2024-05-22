@@ -42,7 +42,7 @@ use Illuminate\Validation\Rule;
 
 use Illuminate\View\View;
 
-use League\Flysystem\Exception as FlySystemException;
+use League\Flysystem\FilesystemException;
 
 use IXP\Http\Controllers\Controller;
 
@@ -84,7 +84,7 @@ class FileController extends Controller
         $this->authorize( 'create', DocstoreFile::class );
 
         Former::populate([
-            'min_privs' => $r->old( 'min_privs', User::AUTH_SUPERUSER )
+            'min_privs' => $r->old( 'min_privs', (string) User::AUTH_SUPERUSER )
         ]);
 
         return view( 'docstore/file/upload', [
@@ -116,7 +116,7 @@ class FileController extends Controller
             'docstore_directory_id' => $r->docstore_directory_id,
             'min_privs'             => $r->min_privs,
             'path'                  => $path,
-            'sha256'                => hash_file( 'sha256', $file ),
+            'sha256'                => hash_file( 'sha256', $file->getFilename() ),
             'created_by'            => Auth::id(),
             'file_last_updated'     => now(),
         ] );
@@ -144,7 +144,7 @@ class FileController extends Controller
             'name'                  => $r->old( 'name',                         $file->name                         ),
             'description'           => $r->old( 'descripton',                   $file->description                  ),
             'sha256'                => $r->old( 'sha256',                       $file->sha256                       ),
-            'min_privs'             => $r->old( 'min_privs',                    $file->min_privs                    ),
+            'min_privs'             => $r->old( 'min_privs',                    (string) $file->min_privs                    ),
             'docstore_directory_id' => $r->old( 'docstore_directory_id', $file->docstore_directory_id ?: ''  ),
         ]);
 
@@ -180,7 +180,7 @@ class FileController extends Controller
 
             $file->update([
                 'path'                  => $path,
-                'sha256'                => hash_file( 'sha256', $uploadedFile ),
+                'sha256'                => hash_file( 'sha256', $uploadedFile->getFilename() ),
                 'file_last_updated'     => now(),
             ]);
 
@@ -252,7 +252,7 @@ class FileController extends Controller
 
         try {
             return Storage::disk( $file->disk )->download( $file->path, $file->name );
-        } catch( FlySystemException $e ) {
+        } catch( FilesystemException $e ) {
             AlertContainer::push( "This file could not be found / downloaded. Please report this error to the support team.", Alert::DANGER );
             return redirect()->back();
         }
@@ -321,7 +321,7 @@ class FileController extends Controller
             'uploadedFile'          => Rule::requiredIf( function() use ( $r, $file ) {
                 return !$file;
             }),
-            'sha256'                => 'nullable|max:64' . ( $r->file( 'uploadedFile' ) ? '|in:' . hash_file( 'sha256', $r->file( 'uploadedFile' ) ) : '' ) ,
+            'sha256'                => 'nullable|max:64' . ( $r->file( 'uploadedFile' ) ? '|in:' . hash_file( 'sha256', $r->file( 'uploadedFile' )->getFilename() ) : '' ) ,
             'min_privs'             => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES_TEXT_ALL ) ),
             'docstore_directory_id' => 'nullable|integer|exists:docstore_directories,id',
         ] );

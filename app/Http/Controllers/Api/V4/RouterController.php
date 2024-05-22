@@ -88,9 +88,8 @@ class RouterController extends Controller
             abort( 404, "Unknown router handle" );
         }
 
-
-
-        // return response()->json( $this->lastUpdatedArray( $r ) );
+        return response()->json();
+        //return response()->json( $this->lastUpdatedArray( $r ) );
     }
 
     /**

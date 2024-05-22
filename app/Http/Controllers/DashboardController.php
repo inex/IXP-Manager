@@ -120,7 +120,7 @@ class DashboardController extends Controller
             'recentMembers'                 => Customer::getConnected( true, true, 'datejoin', 'desc' )->take( 5 ),
             'crossConnects'                 => $c->patchPanelPorts()->masterPort()->get(),
             'notesInfo'                     => CustomerNote::analyseForUser( $cns, $c, Auth::getUser() ),
-            'rsRoutes'                      => $rsRoutes        ?? null,
+            //'rsRoutes'                      => $rsRoutes        ?? null, /* undeclared variable */
             'resoldCustomer'                => $resoldCustomer  ?? null,
             'netInfo'                       => $netinfo         ?? null,
             'c'                             => $c->load( [
