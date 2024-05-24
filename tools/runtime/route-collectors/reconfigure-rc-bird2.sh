@@ -185,6 +185,7 @@ for handle in $HANDLES; do
 
         if [[ $DIFF -eq 0 ]]; then
             RELOAD_REQUIRED=0
+            rm -f $dest
             log "UNCHANGED \tBIRD: "
         else
             # back up the current one and replace
