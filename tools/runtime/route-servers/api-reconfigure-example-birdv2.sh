@@ -209,7 +209,14 @@ if [[ -f $cfile ]]; then
 
     if [[ $DIFF -eq 0 ]]; then
         RELOAD_REQUIRED=0
+        rm -f $dest
+    else
+        # back up the current one and replace
+        cp "${cfile}" "${cfile}.old"
+        mv $dest $cfile
     fi
+else
+    mv $dest $cfile
 fi
 
 # are we forcing a reload?
@@ -217,11 +224,6 @@ if [[ $FORCE_RELOAD -eq 1 ]]; then
     RELOAD_REQUIRED=1
 fi
 
-# config file should be okay; back up the current one
-if [[ -e ${cfile} ]]; then
-    cp "${cfile}" "${cfile}.old"
-fi
-mv $dest $cfile
 
 # are we running or do we need to be started?
 cmd="${BIRDBIN}c -s $socket show memory"
@@ -238,7 +240,7 @@ if [[ $? -ne 0 ]]; then
         echo "ERROR: ${BIRDBIN} was not running for $dest and could not be started"
         exit 5
     fi
-elif [[ RELOAD_REQUIRED -eq 1 ]]; then
+elif [[ $RELOAD_REQUIRED -eq 1 ]]; then
     cmd="${BIRDBIN}c -s $socket configure"
     if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
     eval $cmd &>/dev/null
@@ -248,7 +250,7 @@ elif [[ RELOAD_REQUIRED -eq 1 ]]; then
 
         if [[ -e ${cfile}.old ]]; then
             echo "Trying to revert to previous"
-            mv ${cfile}.conf $dest
+            mv ${cfile}.conf $dest.failed
             mv ${cfile}.old ${cfile}
             cmd="${BIRDBIN}c -s $socket configure"
             if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
