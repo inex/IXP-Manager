@@ -201,18 +201,18 @@ class PhysicalInterfaceController extends Common
         // fill the form with physical interface data
         $data = [
             'switch'        => $r->old( 'switch',        $pi->switchPort->switchid  ),
-            'switchportid'  => $r->old( 'switchportid',  $pi->switchportid          ),
+            'switchportid'  => $r->old( 'switchportid',  (string)$pi->switchportid          ),
             'status'        => $r->old( 'status',        $pi->status                ),
             'speed'         => $r->old( 'speed',         $pi->speed                 ),
             'duplex'        => $r->old( 'duplex',        $pi->duplex                ),
-            'rate_limit'    => $r->old( 'rate_limit',    $pi->rate_limit            ),
-            'autoneg'       => $r->old( 'autoneg',       $pi->autoneg               ),
+            'rate_limit'    => $r->old( 'rate_limit',    (string)$pi->rate_limit            ),
+            'autoneg'       => $r->old( 'autoneg',       (string)$pi->autoneg               ),
             'notes'         => $r->old( 'notes',         $pi->notes                 ),
         ];
 
         // get all the switch ports available and add the switch port associated to the physical interface in the list
         $switchports = SwitcherAggregator::allPorts( $pi->switchPort->switchid, [], [], true, true ) +
-                        [ $pi->switchportid =>
+                        [ (string)$pi->switchportid =>
                               [ "name" => $pi->switchPort->name,
                                 "id" => $pi->switchportid,
                                 "type" => $pi->switchPort->type,

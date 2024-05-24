@@ -1,3 +1,4 @@
+# console command errors
 
 ERROR: InvalidArgument
 at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/Grapher/EmailPortUtilisation.php:119:109
@@ -149,6 +150,14 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/Utils/SmtpMailTest.php
 Docblock-defined class, interface or enum named IXP\Mail\Utils\SwiftMail does not exist (see https://psalm.dev/200)
             $this->line( $mail->logger()->dump() );
 
+
+
+
+
+
+
+# false alarm for existing interface methods
+
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/Customer/Note/CustomerNotesController.php:85:16
 Method Illuminate\Contracts\Auth\Authenticatable::save does not exist (see https://psalm.dev/181)
@@ -189,15 +198,25 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/Layer2AddressCo
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         if( !Auth::getUser()->isSuperUser() ) {
 
+
+
+# not invalid, weirdly declared...
+
 ERROR: InvalidArgument
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/MailingListController.php:146:30
 Argument 1 of Illuminate\Support\Collection::add expects never, but lowercase-string provided (see https://psalm.dev/004)
             $addresses->add( strtolower( trim( $a ) ) );
 
+
+# declared in php.jar
+
 ERROR: UndefinedConstant
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/Provisioner/YamlController.php:73:46
 Const YAML_UTF8_ENCODING is not defined (see https://psalm.dev/020)
                 $output = yaml_emit( $array, YAML_UTF8_ENCODING );
+
+
+# don't see the issues in those
 
 ERROR: InvalidPropertyFetch
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/Provisioner/YamlController.php:446:55
@@ -209,6 +228,10 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/Provisioner/Yam
 Cannot fetch property on non-object $switchSideB of type true (see https://psalm.dev/029)
             $entry['switchsideb']  	=  $switchSideB ? $switchSideB->name : null;
 
+
+
+# declared in version.php
+
 ERROR: UndefinedConstant
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/PublicController.php:72:27
 Const APPLICATION_VERSION is not defined (see https://psalm.dev/020)
@@ -219,10 +242,16 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/PublicControlle
 Const APPLICATION_VERDATE is not defined (see https://psalm.dev/020)
             'verdate'  => APPLICATION_VERDATE,
 
+
+# declared in public/index.php
+
 ERROR: UndefinedConstant
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/RouterController.php:71:37
 Const LARAVEL_START is not defined (see https://psalm.dev/020)
                 microtime( true ) - LARAVEL_START )
+
+
+# declarations exists
 
 ERROR: UndefinedConstant
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/SflowReceiverController.php:143:43
@@ -234,6 +263,9 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/SflowReceiverCo
 Const YAML_UTF8_ENCODING is not defined (see https://psalm.dev/020)
                 $output = yaml_emit ( $array, YAML_UTF8_ENCODING );
 
+
+# no issues here
+
 ERROR: InvalidPropertyFetch
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/SwitchController.php:148:39
 Cannot fetch property on non-object $switchA of type true (see https://psalm.dev/029)
@@ -243,6 +275,10 @@ ERROR: InvalidPropertyFetch
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/SwitchController.php:150:39
 Cannot fetch property on non-object $switchB of type true (see https://psalm.dev/029)
             $switchBName = $switchB ? $switchB->name : 'none';
+
+
+
+# false alarm for existing interface methods
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/ApiKeyController.php:120:54
@@ -264,7 +300,7 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Contact/ContactControl
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         $isSuperUser = Auth::getUser()->isSuperUser();
 
-ERROR: UndefinedInterfaceMethod
+\ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Contact/ContactController.php:276:102
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         if( Auth::getUser()->custid !== (int)$this->data[ 'item' ][ 'custid' ]  && !Auth::getUser()->isSuperUser() ) {
@@ -314,20 +350,35 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Controller.php:124:44
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         $isSuperUser    = Auth::getUser()->isSuperUser();
 
+
+# I don't see issue here
+
 ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Customer/CustomerController.php:489:85
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Customer/CustomerController.php:488:85
 Argument 2 of IXP\Models\Aggregators\CustomerAggregator::getPeeringManagerArrayByType expects array<array-key, IXP\Models\Vlan>, but Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model> provided (see https://psalm.dev/004)
                 'peers' => CustomerAggregator::getPeeringManagerArrayByType( $cust, Vlan::peeringManager()->orderBy( 'number' )->get(), [ 4,6 ] ) ?: false
+
+
+
+
+# false alarm for existing interface methods
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Customer/CustomerNotesController.php:70:26
 Method Illuminate\Contracts\Auth\Authenticatable::save does not exist (see https://psalm.dev/181)
         Auth::getUser()->save();
 
+
+# I don't see any issue here
+
 ERROR: EmptyArrayAccess
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Customer/CustomerNotesController.php:96:58
 Cannot access value on empty array variable $lastRead (see https://psalm.dev/100)
                 && ( !isset( $lastRead[ $c['cid'] ] ) || $lastRead[ $c[ 'cid' ] ] < $c['latest'] ) ) {
+
+
+
+# false alarm for existing interface methods
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Customer/LogoController.php:148:43
@@ -369,6 +420,9 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/FilteredPrefixesContro
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         if( $r->reset_cache === "1" && Auth::getUser()->isSuperUser() ) {
 
+
+# don't see issues here
+
 ERROR: InvalidPropertyFetch
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/Common.php:152:44
 Cannot fetch property on non-object $relatedInterface of type true (see https://psalm.dev/029)
@@ -379,45 +433,21 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/Common.php:
 Cannot fetch property on non-object $relatedInterface of type true (see https://psalm.dev/029)
                 $fnpi->virtualinterfaceid = $relatedInterface->virtualinterfaceid;
 
-ERROR: InvalidPropertyFetch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:145:40
-Cannot fetch property on non-object $customer of type true (see https://psalm.dev/029)
-        $customerId = !$customer ? 0 : $customer->id;
 
-ERROR: InvalidPropertyFetch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:162:41
-Cannot fetch property on non-object $switchSideA of type true (see https://psalm.dev/029)
-        $switchSideAId = $switchSideA ? $switchSideA->id : null;
+# weirdly declared variables
 
-ERROR: InvalidPropertyFetch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:164:41
-Cannot fetch property on non-object $switchSideB of type true (see https://psalm.dev/029)
-        $switchSideBId = $switchSideB ? $switchSideB->id : null;
+ERROR: UndefinedVariable
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/Common.php:384:44
+Cannot find referenced variable $cia (see https://psalm.dev/024)
+            $cl->core_interface_sidea_id = $cia->id;/** @var $cia CoreInterface */
 
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/PhysicalInterfaceController.php:204:58
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'switchportid'  => $r->old( 'switchportid',  $pi->switchportid          ),
+ERROR: UndefinedVariable
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/Common.php:385:44
+Cannot find referenced variable $cib (see https://psalm.dev/024)
+            $cl->core_interface_sideb_id = $cib->id;/** @var $cib CoreInterface */
 
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/PhysicalInterfaceController.php:208:58
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'rate_limit'    => $r->old( 'rate_limit',    $pi->rate_limit            ),
 
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/PhysicalInterfaceController.php:209:58
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but bool provided (see https://psalm.dev/004)
-            'autoneg'       => $r->old( 'autoneg',       $pi->autoneg               ),
-
-ERROR: InvalidArrayOffset
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/PhysicalInterfaceController.php:215:25
-Cannot create offset of type int|null, expecting array-key (see https://psalm.dev/115)
-                        [ $pi->switchportid =>
-                              [ "name" => $pi->switchPort->name,
-                                "id" => $pi->switchportid,
-                                "type" => $pi->switchPort->type,
-                                "porttype" => $pi->switchPort->type ]
-                        ];
+# don't see issues here
 
 ERROR: InvalidPropertyFetch
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/PhysicalInterfaceController.php:346:36
@@ -439,125 +469,8 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/PhysicalInt
 Cannot fetch property on non-object $piB of type true (see https://psalm.dev/029)
         $data['notes-b']         = $piB->notes ?? '';
 
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/SflowReceiverController.php:112:56
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'dst_port'      => $r->old( 'dst_port',    $sflr->dst_port  ),
 
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VirtualInterfaceController.php:144:46
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-                'custid' => $r->old( 'cust', $cust->id ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VirtualInterfaceController.php:199:70
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'custid'                => $r->old( 'custid',            $vi->custid        ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VirtualInterfaceController.php:200:70
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but bool|null provided (see https://psalm.dev/004)
-            'trunk'                 => $r->old( 'trunk',             $vi->trunk         ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VirtualInterfaceController.php:201:70
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but bool provided (see https://psalm.dev/004)
-            'lag_framing'           => $r->old( 'lag_framing',       $vi->lag_framing   ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VirtualInterfaceController.php:202:70
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but bool provided (see https://psalm.dev/004)
-            'fastlacp'              => $r->old( 'fastlacp',          $vi->fastlacp      ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VirtualInterfaceController.php:204:70
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'channelgroup'          => $r->old( 'channel-group',     $vi->channelgroup  ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VirtualInterfaceController.php:205:70
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'mtu'                   => $r->old( 'mtu',               $vi->mtu           ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VlanInterfaceController.php:155:73
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'vlanid'                    => $r->old( 'vlanid',           $duplicateTo->id ?? $vli->vlanid ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VlanInterfaceController.php:156:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'irrdbfilter'               => $r->old( 'irrdbfilter',              $vli->irrdbfilter               ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VlanInterfaceController.php:157:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'mcastenabled'              => $r->old( 'mcastenabled',             $vli->mcastenabled              ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VlanInterfaceController.php:159:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'ipv4enabled'               => $r->old( 'ipv4enabled',              $vli->ipv4enabled               ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VlanInterfaceController.php:160:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'ipv4address'               => $r->old( 'ipv4address',              $vli->ipv4addressid             ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VlanInterfaceController.php:163:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'ipv4canping'               => $r->old( 'ipv4canping',              $vli->ipv4canping               ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VlanInterfaceController.php:164:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'ipv4monitorrcbgp'          => $r->old( 'ipv4monitorrcbgp',         $vli->ipv4monitorrcbgp          ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VlanInterfaceController.php:166:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'maxbgpprefix'              => $r->old( 'maxbgpprefix',             $vli->maxbgpprefix              ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VlanInterfaceController.php:167:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'rsclient'                  => $r->old( 'rsclient',                 $vli->rsclient                  ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VlanInterfaceController.php:168:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'rsmorespecifics'           => $r->old( 'rsmorespecifics',          $vli->rsmorespecifics           ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VlanInterfaceController.php:169:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'as112client'               => $r->old( 'as112client',              $vli->as112client               ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VlanInterfaceController.php:170:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'busyhost'                  => $r->old( 'busyhost',                 $vli->busyhost                  ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VlanInterfaceController.php:172:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'ipv6enabled'               => $r->old( 'ipv6enabled',              $vli->ipv6enabled               ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VlanInterfaceController.php:173:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'ipv6address'               => $r->old( 'ipv6address',              $vli->ipv6addressid             ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VlanInterfaceController.php:176:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'ipv6canping'               => $r->old( 'ipv6canping',              $vli->ipv6canping               ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/VlanInterfaceController.php:177:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'ipv6monitorrcbgp'          => $r->old( 'ipv6monitorrcbgp',         $vli->ipv6monitorrcbgp          ),
+# false alarm for existing interface methods
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/IrrdbController.php:67:58
@@ -584,61 +497,6 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/LoginHistoryController
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
             switch( Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC ) {
 
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/PatchPanel/PatchPanelController.php:135:76
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'cabinet_id'                => $r->old( 'cabinet_id',          $pp->cabinet_id          ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/PatchPanel/PatchPanelController.php:138:76
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'cable_type'                => $r->old( 'cable_type',          $pp->cable_type          ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/PatchPanel/PatchPanelController.php:139:76
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'connector_type'            => $r->old( 'connector_type',      $pp->connector_type      ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/PatchPanel/PatchPanelController.php:143:76
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'u_position'                => $r->old( 'u_position',          $pp->u_position          ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/PatchPanel/PatchPanelController.php:144:76
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'colo_pp_type'              => $r->old( 'colo_pp_type',        $pp->colo_pp_type        ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/PatchPanel/PatchPanelController.php:145:76
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'mounted_at'                => $r->old( 'mounted_at',          $pp->mounted_at          ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/PatchPanel/PatchPanelController.php:146:69
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but 0 provided (see https://psalm.dev/004)
-            'numberOfPorts'             => $r->old( 'numberOfPorts',0                         ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/PatchPanel/Port/PortController.php:187:80
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'switch_port_id'            => $r->old( 'switch_port_id',          $ppp->switch_port_id     ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/PatchPanel/Port/PortController.php:189:80
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'customer_id'               => $r->old( 'customer_id',             $ppp->customer_id        ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/PatchPanel/Port/PortController.php:190:80
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'state'                     => $r->old( 'state',                   $ppp->state              ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/PatchPanel/Port/PortController.php:202:80
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'owned_by'                  => $r->old( 'owned_by',                $ppp->owned_by           ),
-
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/PatchPanel/Port/PortController.php:375:31
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
@@ -648,16 +506,6 @@ ERROR: InvalidArgument
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/PeeringManagerController.php:88:74
 Argument 2 of IXP\Models\Aggregators\CustomerAggregator::getPeeringManagerArrayByType expects array<array-key, IXP\Models\Vlan>, but Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model> provided (see https://psalm.dev/004)
         $peers  = CustomerAggregator::getPeeringManagerArrayByType( $c , $vlans, $protos ) ?? [];
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/PeeringManagerController.php:263:27
-$pm->peered with declared type 'int|null' cannot be assigned type 'bool' (see https://psalm.dev/145)
-            $pm->peered = !$pm->peered;
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/PeeringManagerController.php:268:29
-$pm->rejected with declared type 'int|null' cannot be assigned type 'bool' (see https://psalm.dev/145)
-            $pm->rejected = !$pm->rejected;
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/PeeringMatrixController.php:142:47
@@ -674,170 +522,9 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/ProfileController.php:
 Method Illuminate\Contracts\Auth\Authenticatable::save does not exist (see https://psalm.dev/181)
             $user->save();
 
-ERROR: ParamNameMismatch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RipeAtlas/MeasurementController.php:194:35
-Argument 1 of IXP\Http\Controllers\RipeAtlas\MeasurementController::list has wrong name $r, expecting $param as defined by IXP\Utils\Http\Controllers\Frontend\EloquentController::list (see https://psalm.dev/230)
-    public function list( Request $r  ) : View
 
-ERROR: ParamNameMismatch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RipeAtlas/ProbesController.php:152:35
-Argument 1 of IXP\Http\Controllers\RipeAtlas\ProbesController::list has wrong name $r, expecting $param as defined by IXP\Utils\Http\Controllers\Frontend\EloquentController::list (see https://psalm.dev/230)
-    public function list( Request $r  ): View
 
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RipeAtlas/RunController.php:185:69
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but 1 provided (see https://psalm.dev/004)
-            'scheduled_at'      => request()->old( 'scheduled_at',  AtlasRun::SCHEDULED_AT_NOW ),
-
-ERROR: UndefinedMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RipeAtlas/RunController.php:247:9
-Method IXP\Jobs\RipeAtlas\CreateMeasurements::dispatchnow does not exist (see https://psalm.dev/022)
-        CreateMeasurementsJob::dispatchNow( $this->object, $r->selected_custs );
-
-ERROR: UndefinedMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RipeAtlas/RunController.php:272:19
-Method IXP\Jobs\RipeAtlas\CompleteRequests::dispatchnow does not exist (see https://psalm.dev/022)
-        } elseif( CompleteRequestsJob::dispatchNow( $atlasrun ) ) {
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RouterController.php:144:75
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'vlan_id'                   => request()->old( 'vlan_id',     $router->vlan_id      ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RouterController.php:151:75
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'asn'                       => request()->old( 'asn',         $router->asn          ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RouterController.php:157:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'api_type'                  => request()->old( 'api_type',          $router->api_type           ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RouterController.php:159:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'lg_access'                 => request()->old( 'lg_access',         $router->lg_access          ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RouterController.php:160:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but bool provided (see https://psalm.dev/004)
-            'quarantine'                => request()->old( 'quarantine',        $router->quarantine         ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RouterController.php:161:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but bool provided (see https://psalm.dev/004)
-            'bgp_lc'                    => request()->old( 'bgp_lc',            $router->bgp_lc             ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RouterController.php:162:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but bool provided (see https://psalm.dev/004)
-            'rpki'                      => request()->old( 'rpki',              $router->rpki               ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RouterController.php:163:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int provided (see https://psalm.dev/004)
-            'rfc1997_passthru'          => request()->old( 'rfc1997_passthru',  $router->rfc1997_passthru   ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RouterController.php:164:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but bool provided (see https://psalm.dev/004)
-            'skip_md5'                  => request()->old( 'skip_md5',          $router->skip_md5           ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RouterController.php:165:81
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-            'pair_id'                   => request()->old( 'pair_id',           $router->pair_id            ),
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RouterController.php:236:34
-$router->pause_updates with declared type 'int' cannot be assigned type 'true' (see https://psalm.dev/145)
-        $router->pause_updates = true;
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RsFilterController.php:175:55
-Argument 1 of IXP\Models\Aggregators\CustomerAggregator::getByVlanAndProtocol expects int|null, but array<array-key, mixed>|null|string provided (see https://psalm.dev/004)
-            CustomerAggregator::getByVlanAndProtocol( $vlanid , $protocol ) );
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RsFilterController.php:175:65
-Argument 2 of IXP\Models\Aggregators\CustomerAggregator::getByVlanAndProtocol expects int|null, but array<array-key, mixed>|null|string provided (see https://psalm.dev/004)
-            CustomerAggregator::getByVlanAndProtocol( $vlanid , $protocol ) );
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RsFilterController.php:240:47
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-        $vlanid     = $r->old( 'vlan_id',     $rsf->vlan_id  ?? null );
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RsFilterController.php:242:47
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but int|null provided (see https://psalm.dev/004)
-        $peerid     = $r->old( 'peer_id',     $rsf->peer_id  ?? null );
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RsFilterController.php:259:134
-Argument 1 of IXP\Models\Aggregators\CustomerAggregator::getByVlanAndProtocol expects int|null, but array<array-key, mixed>|null|string provided (see https://psalm.dev/004)
-            'peers'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], CustomerAggregator::getByVlanAndProtocol( $vlanid , $protocol ) ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RsFilterController.php:259:144
-Argument 2 of IXP\Models\Aggregators\CustomerAggregator::getByVlanAndProtocol expects int|null, but array<array-key, mixed>|null|string provided (see https://psalm.dev/004)
-            'peers'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], CustomerAggregator::getByVlanAndProtocol( $vlanid , $protocol ) ),
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Services/Grapher/Api.php:64:26
-$this->grapher with declared type 'IXP\Services\Grapher' cannot be assigned type 'Grapher' (see https://psalm.dev/145)
-        $this->grapher = $grapher;
-
-ERROR: InvalidReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Services/Grapher/Api.php:70:16
-The declared return type 'Grapher' for IXP\Http\Controllers\Services\Grapher\Api::grapher is incorrect, got 'IXP\Services\Grapher' (see https://psalm.dev/011)
-     * @return GrapherService
-
-ERROR: InvalidReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Services/Grapher/Api.php:74:16
-The inferred type 'IXP\Services\Grapher' does not match the declared return type 'Grapher' for IXP\Http\Controllers\Services\Grapher\Api::grapher (see https://psalm.dev/128)
-        return $this->grapher;
-
-ERROR: UndefinedInterfaceMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Services/LookingGlass.php:353:54
-Method IXP\Contracts\LookingGlass::exportRoute does not exist (see https://psalm.dev/181)
-            'content'   => json_decode( $this->lg()->exportRoute( $protocol, $network, (int)$mask ), false ),
-
-ERROR: UndefinedPropertyAssignment
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/StatisticsController.php:91:9
-Instance property IXP\Http\Requests\StatisticsRequest::$period is not defined (see https://psalm.dev/038)
-        $r->period   = Graph::processParameterPeriod(   $r->period );
-
-ERROR: UndefinedPropertyAssignment
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/StatisticsController.php:92:9
-Instance property IXP\Http\Requests\StatisticsRequest::$category is not defined (see https://psalm.dev/038)
-        $r->category = Graph::processParameterCategory( $r->category );
-
-ERROR: UndefinedPropertyAssignment
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/StatisticsController.php:93:9
-Instance property IXP\Http\Requests\StatisticsRequest::$protocol is not defined (see https://psalm.dev/038)
-        $r->protocol = Graph::processParameterProtocol( $r->protocol );
-
-ERROR: UndefinedPropertyAssignment
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/StatisticsController.php:94:9
-Instance property IXP\Http\Requests\StatisticsRequest::$type is not defined (see https://psalm.dev/038)
-        $r->type     = Graph::processParameterType(     $r->type );
-
-ERROR: UndefinedPropertyAssignment
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/StatisticsController.php:336:13
-Instance property IXP\Http\Requests\StatisticsRequest::$protocol is not defined (see https://psalm.dev/038)
-            $r->protocol = Graph::PROTOCOL_ALL;
-
-ERROR: UndefinedPropertyAssignment
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/StatisticsController.php:339:17
-Instance property IXP\Http\Requests\StatisticsRequest::$protocol is not defined (see https://psalm.dev/038)
-                $r->protocol = Graph::PROTOCOL_IPV4;
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/StatisticsController.php:341:65
-Argument 2 of IXP\Models\Aggregators\VlanInterfaceAggregator::forVlan expects bool, but 'ipv4'|'ipv6' provided (see https://psalm.dev/004)
-            $targets = VlanInterfaceAggregator::forVlan( $vlan, $r->protocol );
+# I don't see issue here
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/StatisticsController.php:544:9
@@ -863,6 +550,10 @@ ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Switches/SwitchController.php:175:54
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
             switch( Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC ) {
+
+
+
+
 
 ERROR: ParamNameMismatch
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Switches/SwitchController.php:218:35
@@ -1283,6 +974,11 @@ ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Requests/User/Update.php:103:38
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         $isSuperUser = Auth::user()->isSuperUser();
+
+ERROR: InvalidArgument
+at /Users/laszlo/dev/ibn-ixp-manager/app/Listeners/Auth/ForgotUsername.php:57:66
+Argument 1 of IXP\Mail\Auth\ForgotUsername::__construct expects Illuminate\Database\Eloquent\Collection<array-key, Illuminate\Database\Eloquent\Model>, but array<array-key, mixed> provided (see https://psalm.dev/004)
+        Mail::to( $e->email )->send( new ForgotPasswordMailable( $e->users ) );
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Listeners/Auth/LoginSuccessful.php:52:78
@@ -2273,11 +1969,12 @@ Argument 1 of Illuminate\Database\Schema\Blueprint::string expects string, but 2
             $table->string(255)->nullable()->after('host');
 
 ------------------------------
-449 errors found
+503 errors found
 ------------------------------
-3450 other issues found.
+3433 other issues found.
 You can display them with --show-info=true
 ------------------------------
 
-Checks took 6.24 seconds and used 613.448MB of memory
-Psalm was able to infer types for 80.7594% of the codebase
+Checks took 0.19 seconds and used 33.183MB of memory
+No files analyzed
+Psalm was able to infer types for 80.5560% of the codebase

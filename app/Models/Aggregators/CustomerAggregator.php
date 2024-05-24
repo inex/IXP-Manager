@@ -303,13 +303,13 @@ class CustomerAggregator extends Customer
      *     ]
      *
      * @param Customer  $cust   Current customer
-     * @param Vlan[]    $vlans  Array of Vlans
+     * @param Vlan[] $vlans  Array of Vlans
      * @param array     $protos Array of protos
      *
      * @return array|null
      *
      */
-    public static function getPeeringManagerArrayByType( Customer $cust, $vlans, array $protos ): ?array
+    public static function getPeeringManagerArrayByType( Customer $cust, array $vlans, array $protos ): ?array
     {
         if( !count( $vlans ) ) {
             return null;

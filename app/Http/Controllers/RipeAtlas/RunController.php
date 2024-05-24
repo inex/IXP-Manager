@@ -182,7 +182,7 @@ class RunController extends Eloquent2Frontend
     {
         Former::populate( [
             'protocol'          => request()->old( 'protocol',      Router::PROTOCOL_IPV4      ),
-            'scheduled_at'      => request()->old( 'scheduled_at',  AtlasRun::SCHEDULED_AT_NOW ),
+            'scheduled_at'      => request()->old( 'scheduled_at',  (string)AtlasRun::SCHEDULED_AT_NOW ),
             'scheduled_date'    => request()->old( 'scheduled_date' ),
             'scheduled_time'    => request()->old( 'scheduled_time' ),
         ] );
@@ -225,28 +225,28 @@ class RunController extends Eloquent2Frontend
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $r
+     * @param Request $request
      *
      * @return bool|RedirectResponse
      */
-    public function doStore( Request $r ): bool|RedirectResponse
+    public function doStore( Request $request ): bool|RedirectResponse
     {
-        if( !$r->selected_custs || !count( $r->selected_custs ) ) {
+        if( !$request->selected_custs || !count( $request->selected_custs ) ) {
             AlertContainer::push( "You need to select at least one " . config( "ixp_fe.lang.customer.one" ) . ".", Alert::DANGER );
             return Redirect::back()->withInput();
         }
 
-        $this->checkForm( $r );
+        $this->checkForm( $request );
 
         $this->object = AtlasRun::create( [
-            'protocol'      => $r->protocol,
-            'scheduled_at'  => $r->scheduled_at === AtlasRun::SCHEDULED_AT_NOW ? now() : new Carbon( $r->scheduled_date . $r->scheduled_time ),
-            'vlan_id'       => $r->vlan_id
+            'protocol'      => $request->protocol,
+            'scheduled_at'  => $request->scheduled_at === AtlasRun::SCHEDULED_AT_NOW ? now() : new Carbon( $request->scheduled_date . $request->scheduled_time ),
+            'vlan_id'       => $request->vlan_id
         ] );
 
-        CreateMeasurementsJob::dispatchNow( $this->object, $r->selected_custs );
+        CreateMeasurementsJob::dispatchSync( $this->object, $request->selected_custs );
 
-        if( (int)$r->scheduled_at === AtlasRun::SCHEDULED_AT_NOW ) {
+        if( (int)$request->scheduled_at === AtlasRun::SCHEDULED_AT_NOW ) {
             $this->object->atlasMeasurements()->each( function( $am ) {
                 RunMeasurementsJob::dispatchAfterResponse( $am );
             } );
@@ -269,7 +269,7 @@ class RunController extends Eloquent2Frontend
     {
         if( $atlasrun->completed_at ) {
             AlertContainer::push( 'The command complete atlas run have already executed.', Alert::DANGER );
-        } elseif( CompleteRequestsJob::dispatchNow( $atlasrun ) ) {
+        } elseif( CompleteRequestsJob::dispatchSync( $atlasrun ) ) {
             AlertContainer::push( 'The command complete atlas run executed with success.', Alert::SUCCESS );
         } else {
             AlertContainer::push( 'The command complete atlas run cannot be executed, some atlas measurements are not ended.', Alert::DANGER );

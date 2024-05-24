@@ -82,16 +82,16 @@ class StatisticsController extends Controller
      *
      * These are safe for use from the request.
      *
-     * @param StatisticsRequest $r
+     * @param StatisticsRequest $request
      *
      * @return void
      */
-    private function processGraphParams( StatisticsRequest $r ): void
+    private function processGraphParams( StatisticsRequest $request ): void
     {
-        $r->period   = Graph::processParameterPeriod(   $r->period );
-        $r->category = Graph::processParameterCategory( $r->category );
-        $r->protocol = Graph::processParameterProtocol( $r->protocol );
-        $r->type     = Graph::processParameterType(     $r->type );
+        $request->period   = Graph::processParameterPeriod( $request->period );
+        $request->category = Graph::processParameterCategory( $request->category );
+        $request->protocol = Graph::processParameterProtocol( $request->protocol );
+        $request->type     = Graph::processParameterType( $request->type );
     }
 
     /**
@@ -506,18 +506,18 @@ class StatisticsController extends Controller
     /**
      * sFlow Peer to Peer statistics
      *
-     * @param  Request  $r
-     * @param  Customer|null  $cust
+     * @param  Request  $request
+     * @param  Customer|null  $customer
      *
      * @return RedirectResponse|View
      *
      * @throws ParameterException
      */
-    public function p2p( Request $r, Customer $cust = null ): RedirectResponse|View
+    public function p2p( Request $request, Customer $customer = null ): RedirectResponse|View
     {
         // default to the current user:
-        if( !$cust && Auth::check() ) {
-            $cust = Auth::getUser()->customer;
+        if( !$customer && Auth::check() ) {
+            $customer = Auth::getUser()->customer;
         }
 
         $showGraphsOption = false;
@@ -530,27 +530,27 @@ class StatisticsController extends Controller
         }
 
         if( $showGraphsOption ) {
-            if( $r->submit === "Show Graphs" ) {
+            if( $request->submit === "Show Graphs" ) {
                 $showGraphs = true;
-                $r->session()->put( 'controller.statistics.p2p.show_graphs', true );
-            } else if( $r->submit === "Hide Graphs" ) {
+                $request->session()->put( 'controller.statistics.p2p.show_graphs', true );
+            } else if( $request->submit === "Hide Graphs" ) {
                 $showGraphs = false;
-                $r->session()->put( 'controller.statistics.p2p.show_graphs', false );
+                $request->session()->put( 'controller.statistics.p2p.show_graphs', false );
             } else {
-                $showGraphs = $r->session()->get( 'controller.statistics.p2p.show_graphs', config('grapher.backends.sflow.show_graphs_on_index_page') );
+                $showGraphs = $request->session()->get( 'controller.statistics.p2p.show_graphs', config('grapher.backends.sflow.show_graphs_on_index_page') );
             }
         }
 
-        $r->category = Graph::processParameterCategory(     $r->category, true );
-        $r->period   = Graph::processParameterPeriod(       $r->period );
-        $r->protocol = Graph::processParameterRealProtocol( $r->protocol );
+        $request->category = Graph::processParameterCategory( $request->category, true );
+        $request->period   = Graph::processParameterPeriod( $request->period );
+        $request->protocol = Graph::processParameterRealProtocol( $request->protocol );
 
         $srcVlis = VlanInterface::select( [ 'vli.*' ] )
             ->from( 'vlaninterface AS vli' )
             ->Join( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
             ->Join( 'cust AS c', 'c.id', 'vi.custid' )
             ->Join( 'vlan AS v', 'v.id', 'vli.vlanid' )
-            ->where( 'c.id', $cust->id )
+            ->where( 'c.id', $customer->id )
             ->with( [ 'vlan' ] )
             ->orderBy( 'v.number' )->get()->keyBy( 'id' );
 
@@ -560,7 +560,7 @@ class StatisticsController extends Controller
             return redirect()->back();
         }
 
-        if( ( $svlid = $r->svli ) && isset( $srcVlis[ $svlid ] ) ) {
+        if( ( $svlid = $request->svli ) && isset( $srcVlis[ $svlid ] ) ) {
             /** @var VlanInterface $srcVli */
             $srcVli = $srcVlis[ $svlid ];
         } else {
@@ -568,8 +568,8 @@ class StatisticsController extends Controller
         }
 
         // is the requested protocol support?
-        if( !$srcVli->vlan->private && !$srcVli->ipvxEnabled( $r->protocol ) ) {
-            AlertContainer::push( Graph::resolveProtocol( $r->protocol ) . " is not supported on the requested VLAN interface.", Alert::WARNING );
+        if( !$srcVli->vlan->private && !$srcVli->ipvxEnabled( $request->protocol ) ) {
+            AlertContainer::push( Graph::resolveProtocol( $request->protocol ) . " is not supported on the requested VLAN interface.", Alert::WARNING );
             return redirect()->back();
         }
         // Now find the possible other VLAN interfaces that this customer could exchange traffic with
@@ -582,7 +582,7 @@ class StatisticsController extends Controller
             return redirect()->back();
         }
 
-        if( ( $dvlid = $r->dvli ) && isset( $dstVlis[ $dvlid ] ) ) {
+        if( ( $dvlid = $request->dvli ) && isset( $dstVlis[ $dvlid ] ) ) {
             $dstVli = $dstVlis[ $dvlid ];
         } else {
             $dstVli = false;
@@ -600,7 +600,7 @@ class StatisticsController extends Controller
                 }
             }
 
-            if( !$dstVli && $r->dvli !== null ) {
+            if( !$dstVli && $request->dvli !== null ) {
                 AlertContainer::push( "The customer selected for destination traffic does not have any interfaces on the requested VLAN", Alert::WARNING );
                 return redirect()->back();
             }
@@ -628,19 +628,19 @@ class StatisticsController extends Controller
         // authenticate on one of the graphs
         $graph = App::make( Grapher::class )
             ->p2p( $srcVli, $dstVli ?: $dstVlis[ $dstVlis->first()->id ])
-            ->setProtocol( $r->protocol )
-            ->setCategory( $r->category )
-            ->setPeriod( $r->period );
+            ->setProtocol( $request->protocol )
+            ->setCategory( $request->category )
+            ->setPeriod( $request->period );
         $graph->authorise();
         
         $viewOptions = [
-            'c'                => $cust,
-            'category'         => $r->category,
+            'c'                => $customer,
+            'category'         => $request->category,
             'dstVlis'          => $dstVlis,
             'dstVli'           => $dstVli,
             'graph'            => $graph,
-            'period'           => $r->period,
-            'protocol'         => $r->protocol,
+            'period'           => $request->period,
+            'protocol'         => $request->protocol,
             'showGraphs'       => $showGraphs,
             'showGraphsOption' => $showGraphsOption,
             'srcVlis'          => $srcVlis,

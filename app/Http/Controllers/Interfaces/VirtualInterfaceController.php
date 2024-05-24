@@ -141,7 +141,7 @@ class VirtualInterfaceController extends Common
     {
         if( $cust ) {
             Former::populate( [
-                'custid' => $r->old( 'cust', $cust->id ),
+                'custid' => $r->old( 'cust', (string)$cust->id ),
             ] );
         }
 
@@ -196,13 +196,13 @@ class VirtualInterfaceController extends Common
 
         // fill the form with Virtual interface data
         Former::populate([
-            'custid'                => $r->old( 'custid',            $vi->custid        ),
-            'trunk'                 => $r->old( 'trunk',             $vi->trunk         ),
-            'lag_framing'           => $r->old( 'lag_framing',       $vi->lag_framing   ),
-            'fastlacp'              => $r->old( 'fastlacp',          $vi->fastlacp      ),
+            'custid'                => $r->old( 'custid',            (string)$vi->custid        ),
+            'trunk'                 => $r->old( 'trunk',             (string)$vi->trunk         ),
+            'lag_framing'           => $r->old( 'lag_framing',       (string)$vi->lag_framing   ),
+            'fastlacp'              => $r->old( 'fastlacp',          (string)$vi->fastlacp      ),
             'description'           => $r->old( 'description',       $vi->description   ),
-            'channelgroup'          => $r->old( 'channel-group',     $vi->channelgroup  ),
-            'mtu'                   => $r->old( 'mtu',               $vi->mtu           ),
+            'channelgroup'          => $r->old( 'channel-group',     (string)$vi->channelgroup  ),
+            'mtu'                   => $r->old( 'mtu',               (string)$vi->mtu           ),
             'name'                  => $name,
         ]);
 

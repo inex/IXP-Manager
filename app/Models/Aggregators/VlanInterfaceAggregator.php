@@ -103,7 +103,7 @@ class VlanInterfaceAggregator extends VlanInterface
      * Utility function to provide an array of VLAN interface objects on a given VLAN.
      *
      * @param Vlan $vlan The VLAN to gather VlanInterfaces for
-     * @param bool $protocol Either 4 or 6 to limit the results to interface with IPv4 / IPv6
+     * @param bool|mixed $protocol Either 4 or 6 to limit the results to interface with IPv4 / IPv6
      *
      * @return Collection
      *

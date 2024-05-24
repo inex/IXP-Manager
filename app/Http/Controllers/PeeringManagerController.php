@@ -260,12 +260,12 @@ class PeeringManagerController extends Controller
         $pm     = $this->loadPeeringManager( Customer::find( Auth::getUser()->custid ), $peer );
 
         if( $status === "peered" ) {
-            $pm->peered = !$pm->peered;
+            $pm->peered = $pm->peered === 0 ? 1 : 0;
             if( $pm->peered && $pm->rejected ){
                 $pm->rejected = false;
             }
         } else{
-            $pm->rejected = !$pm->rejected;
+            $pm->rejected = $pm->rejected === 0 ? 1 : 0;
             if( $pm->peered && $pm->rejected ){
                 $pm->peered = false;
             }

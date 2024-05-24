@@ -187,14 +187,14 @@ class MeasurementController extends Eloquent2Frontend
     /**
      * List the contents of a database table.
      *
-     * @param  Request  $r
+     * @param  Request  $param
      *
      * @return View
      */
-    public function list( Request $r  ) : View
+    public function list( Request $param  ) : View
     {
         $rid = false;
-        if(  $run = AtlasRun::find( $r->atlasrun ) ) {
+        if(  $run = AtlasRun::find( $param->atlasrun ) ) {
             $rid = $run->id;
         }
 
