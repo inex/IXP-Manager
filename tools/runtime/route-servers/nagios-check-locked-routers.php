@@ -43,12 +43,12 @@ if( !curl_getinfo($s,CURLINFO_HTTP_CODE) == 200 ) {
     exit( 3 );
 }
 
-if( $json === "[]" ) {
+if( trim($json) === "[]" ) {
     echo sprintf( "OK: no routers stuck mid-configuration for >%d seconds\n", $threshold );
     exit(0);
 }
 
-if( !( $routers = json_decode( $json ) ) ) {
+if( !( $routers = json_decode( $json, true ) ) ) {
     echo "UNKNOWN: could not decode JSON response from API\n";
     exit( 3 );
 }
