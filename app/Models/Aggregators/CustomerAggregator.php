@@ -42,9 +42,14 @@ use Illuminate\Support\Collection;
  * IXP\Models\Aggregators\CustomerAggregator
  *
  * @property int $id
+ * @property int|null $irrdb
+ * @property int|null $company_registered_detail_id
+ * @property int|null $company_billing_details_id
+ * @property int|null $reseller
  * @property string|null $name
  * @property int|null $type
  * @property string|null $shortname
+ * @property string|null $abbreviatedName
  * @property int|null $autsys
  * @property int|null $maxprefixes
  * @property string|null $peeringemail
@@ -54,8 +59,8 @@ use Illuminate\Support\Collection;
  * @property string|null $nocemail
  * @property string|null $nochours
  * @property string|null $nocwww
- * @property int|null $irrdb
  * @property string|null $peeringmacro
+ * @property string|null $peeringmacrov6
  * @property string|null $peeringpolicy
  * @property string|null $corpwww
  * @property \Illuminate\Support\Carbon|null $datejoin
@@ -64,12 +69,7 @@ use Illuminate\Support\Collection;
  * @property int|null $activepeeringmatrix
  * @property int|null $lastupdatedby
  * @property string|null $creator
- * @property int|null $company_registered_detail_id
- * @property int|null $company_billing_details_id
- * @property string|null $peeringmacrov6
- * @property string|null $abbreviatedName
  * @property string|null $MD5Support
- * @property int|null $reseller
  * @property int $isReseller
  * @property int $in_manrs
  * @property int $in_peeringdb
@@ -117,6 +117,8 @@ use Illuminate\Support\Collection;
  * @property-read int|null $resold_customers_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\RouteServerFilter> $routeServerFilters
  * @property-read int|null $route_server_filters_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\RouteServerFilterProd> $routeServerFiltersInProduction
+ * @property-read int|null $route_server_filters_in_production_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\RsPrefix> $rsPrefixes
  * @property-read int|null $rs_prefixes_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\CustomerTag> $tags

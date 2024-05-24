@@ -1,6 +1,6 @@
 <?php
 
-// Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+// Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
 // All Rights Reserved.
 //
 // This file is part of IXP Manager.
@@ -22,7 +22,7 @@
 
 // variables - you need to change these!
 $key="your-api-key";
-$url="https://ixp.example.com/ixp/api/v4/router/updated-before";
+$url="https://ixp.example.com/api/v4/router/updated";
 $threshold=86400;
 
 // is curl available?
@@ -33,17 +33,18 @@ if( !function_exists( 'curl_init' ) ) {
 
 // get the JSON of routers last updated >$threshold seconds ago
 $s = curl_init();
-curl_setopt( $s, CURLOPT_URL,  $url . '/' . $threshold );
+curl_setopt( $s, CURLOPT_URL,  $url );
 curl_setopt( $s, CURLOPT_HTTPHEADER, [ 'X-IXP-Manager-API-Key: ' . $key ] );
-curl_setopt( $s, CURLOPT_HEADER, true );
+curl_setopt( $s, CURLOPT_RETURNTRANSFER, true );
 $json = curl_exec($s);
+
 
 if( !curl_getinfo($s,CURLINFO_HTTP_CODE) == 200 ) {
     echo "UNKNOWN: non-200 status code returned by API: " . curl_getinfo($s,CURLINFO_HTTP_CODE) . "\n";
     exit( 3 );
 }
 
-if( !( $routers = json_decode( $json ) ) ) {
+if( !( $routers = json_decode( $json, true ) ) ) {
     echo "UNKNOWN: could not decode JSON response from API\n";
     exit( 3 );
 }
@@ -63,9 +64,10 @@ foreach( $routers as $handle => $r ) {
     } else if( time()-$threshold > $r['last_updated_unix'] ) {
         $bad[] = $handle;
     } else {
-        $ok = $handle;
+        $ok[] = $handle;
     }
 }
+
 
 $resp = '';
 if( count( $bad ) ) {

@@ -42,6 +42,17 @@ module.exports = {
   prefix: 'tw-',
 
 
+  content: [
+    './resources/**/*.blade.php',
+    './resources/**/*.foil.php',
+    './resources/**/*.js',
+    './resources/**/*.jsx',
+
+    './public/css/ixp-manager.css',
+    './public/js/ixp-manager.css',
+
+    './app/**/*.php',
+  ],
 
   theme: {
 
@@ -63,6 +74,7 @@ module.exports = {
 
     colors: {
       'transparent': 'transparent',
+
 
       black: '#000',
       white: '#fff',
@@ -974,73 +986,6 @@ module.exports = {
       */
 
   }, // theme
-
-  variants: {
-    appearance: ['responsive'],
-    backgroundAttachment: ['responsive'],
-    backgroundColor: ['responsive', 'hover', 'focus'],
-    backgroundPosition: ['responsive'],
-    backgroundRepeat: ['responsive'],
-    backgroundSize: ['responsive'],
-    borderCollapse: [],
-    borderColor: ['responsive', 'hover', 'focus'],
-    borderRadius: ['responsive', 'hover'],
-    borderStyle: ['responsive', 'hover'],
-    borderWidth: ['responsive', 'hover'],
-    cursor: ['responsive'],
-    display: ['responsive'],
-    flexDirection: ['responsive'],
-    flexWrap: ['responsive'],
-    alignItems: ['responsive'],
-    alignSelf: ['responsive'],
-    justifyContent: ['responsive'],
-    alignContent: ['responsive'],
-    flex: ['responsive'],
-    flexGrow: ['responsive'],
-    flexShrink: ['responsive'],
-    float: ['responsive'],
-    fontFamily: ['responsive'],
-    fontWeight: ['responsive', 'hover', 'focus'],
-    height: ['responsive'],
-    lineHeight: ['responsive'],
-    listStylePosition: ['responsive'],
-    listStyleType: ['responsive'],
-    margin: ['responsive'],
-    maxHeight: ['responsive'],
-    maxWidth: ['responsive'],
-    minHeight: ['responsive'],
-    minWidth: ['responsive'],
-    negativeMargin: ['responsive'],
-    objectFit: ['responsive'],
-    objectPosition: ['responsive'],
-    opacity: ['responsive'],
-    outline: ['focus'],
-    overflow: ['responsive'],
-    padding: ['responsive'],
-    pointerEvents: ['responsive'],
-    position: ['responsive'],
-    inset: ['responsive'],
-    resize: ['responsive'],
-    boxShadow: ['responsive', 'hover', 'focus'],
-    fill: [],
-    stroke: [],
-    tableLayout: ['responsive'],
-    textAlign: ['responsive'],
-    textColor: ['responsive', 'hover', 'focus'],
-    fontSize: ['responsive'],
-    fontStyle: ['responsive'],
-    textTransform: ['responsive'],
-    textDecoration: ['responsive', 'hover', 'focus'],
-    fontSmoothing: ['responsive'],
-    letterSpacing: ['responsive'],
-    userSelect: ['responsive'],
-    verticalAlign: ['responsive'],
-    visibility: ['responsive'],
-    whitespace: ['responsive'],
-    wordBreak: ['responsive'],
-    width: ['responsive'],
-    zIndex: ['responsive'],
-  },
 
 
   /*

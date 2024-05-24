@@ -106,9 +106,11 @@ class CompanyBillingDetail extends Model
         'vatNumber',
         'vatRate',
         'purchaseOrderRequired',
+        'purchaseOrderNumber',
         'invoiceMethod',
         'invoiceEmail',
         'billingFrequency',
+        'notes',
     ];
 
     public const INVOICE_METHOD_EMAIL = 'EMAIL';

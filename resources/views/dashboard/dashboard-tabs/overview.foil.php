@@ -22,6 +22,20 @@
         <?= $t->insert( 'dashboard/dashboard-tabs/associate' ); ?>
     </div>
 
+    <?php if( $t->c->routeServerFiltersInProduction()->count() && !config( 'ixp_fe.frontend.disabled.rs-filters') ): ?>
+
+        <div class="alert alert-info mb-16" role="alert">
+            <div class="d-flex align-items-center">
+                <div class="text-center"><i class="fa fa-info-circle fa-2x "></i></div>
+                <div class="col-sm-12">
+                    You have <?= $t->c->routeServerFiltersInProduction()->count() ?> active route server filter(s) configured.
+                    <a href="<?= route('rs-filter@list', [ 'cust' => Auth::getUser()->customer ] ) ?>">Click here</a> to view/edit them.
+                </div>
+            </div>
+        </div>
+
+    <?php endif; ?>
+
     <?php if( $t->logoManagementEnabled() ): ?>
         <div class="col-lg-12 mt-4">
             <h3>Your Logo</h3>

@@ -91,6 +91,7 @@ class CompanyRegisteredDetail extends Model
         'townCity',
         'postcode',
         'country',
+        'notes',
     ];
 
     /**

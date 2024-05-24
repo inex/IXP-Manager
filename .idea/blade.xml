@@ -10,7 +10,7 @@
       <data directive="@canany" injection="true" prefix="&lt;?php&#10;if (app(\Illuminate\Contracts\Auth\Access\Gate::class)-&gt;any(" suffix=")): ?&gt;" />
       <data directive="@cannot" injection="true" prefix="&lt;?php&#10;if (app(\Illuminate\Contracts\Auth\Access\Gate::class)-&gt;denies(" suffix=")): ?&gt;" />
       <data directive="@case" injection="true" prefix="&lt;?php&#10;case (" suffix="): ?&gt;" />
-      <data directive="@checked" injection="true" prefix="&lt;?php&#10;if(" suffix="): echo 'checked'; endif; ?&gt;" />
+      <data directive="@checked" injection="true" prefix="&lt;?php if(" suffix=") {echo 'checked';}?&gt;" />
       <data directive="@choice" injection="true" prefix="&lt;?php&#10;echo app('translator')-&gt;choice(" suffix="); ?&gt;" />
       <data directive="@class" injection="true" prefix="class=&quot;&lt;?php echo \Illuminate\Support\Arr::toCssClasses(" suffix=")?&gt;&quot;" />
       <data directive="@component" injection="true" prefix="&lt;?php&#10;$__env-&gt;startComponent(" suffix="); ?&gt;" />
@@ -19,7 +19,7 @@
       <data directive="@csrf" />
       <data directive="@dd" injection="true" prefix="&lt;?php&#10;dd(" suffix="); ?&gt;" />
       <data directive="@default" />
-      <data directive="@disabled" injection="true" prefix="&lt;?php&#10;if(" suffix="): echo 'disabled'; endif; ?&gt;" />
+      <data directive="@disabled" injection="true" prefix="&lt;?php if(" suffix=") {echo 'disabled';}?&gt;" />
       <data directive="@dump" injection="true" prefix="&lt;?php&#10;dump(" suffix="); ?&gt;" />
       <data directive="@each" injection="true" prefix="&lt;?php&#10;echo $__env-&gt;renderEach(" suffix="); ?&gt;" />
       <data directive="@else" />
@@ -99,17 +99,18 @@
       <data directive="@required" injection="true" prefix="&lt;?php&#10;if(" suffix="): echo 'required'; endif; ?&gt;" />
       <data directive="@section" injection="true" prefix="&lt;?php&#10;$__env-&gt;startSection(" suffix="); ?&gt;" />
       <data directive="@sectionMissing" injection="true" prefix="&lt;?php&#10;if (empty(trim($__env-&gt;yieldContent(" suffix=")))): ?&gt;" />
-      <data directive="@selected" injection="true" prefix="&lt;?php&#10;if(" suffix="): echo 'selected'; endif; ?&gt;" />
+      <data directive="@selected" injection="true" prefix="&lt;?php if(" suffix=") {echo 'selected';}?&gt;" />
       <data directive="@show" />
       <data directive="@slot" injection="true" prefix="&lt;?php&#10;$__env-&gt;slot(" suffix="); ?&gt;" />
       <data directive="@stack" injection="true" prefix="&lt;?php&#10;echo $__env-&gt;yieldPushContent(" suffix="); ?&gt;" />
       <data directive="@stop" />
-      <data directive="@style" injection="true" prefix="style=&quot;&lt;?php&#10;echo \Illuminate\Support\Arr::toCssStyles(" suffix=") ?&gt;&quot;" />
+      <data directive="@style" injection="true" prefix="class=&quot;&lt;?php echo \Illuminate\Support\Arr::toCssStyles(" suffix=")?&gt;&quot;" />
       <data directive="@switch" injection="true" prefix="&lt;?php&#10;switch(" suffix="): ?&gt;" />
       <data directive="@unless" injection="true" prefix="&lt;?php&#10;if (! (" suffix=")): ?&gt;" />
       <data directive="@unset" injection="true" prefix="&lt;?php&#10;unset(" suffix="); ?&gt;" />
       <data directive="@verbatim" />
-      <data directive="@vite" injection="true" prefix="&lt;?php&#10;$__vite_arguments = " suffix=" ?? '()'; echo app(Illuminate\Foundation\Vite::class){$__vite_arguments}; ?&gt;" />
+      <data directive="@vite" injection="true" prefix="&lt;?php echo vite_func(" suffix="); ?&gt;" />
+      <data directive="@viteReactRefresh" />
       <data directive="@vitereactrefresh" />
       <data directive="@while" injection="true" prefix="&lt;?php&#10;while(" suffix="): ?&gt;" />
       <data directive="@yield" injection="true" prefix="&lt;?php&#10;echo $__env-&gt;yieldContent(" suffix="); ?&gt;" />

@@ -75,6 +75,11 @@ return [
             'days' => 14,
         ],
 
+        'deprecations' => [
+            'channel' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
+            'trace' => false,
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
@@ -86,10 +91,11 @@ return [
         'papertrail' => [
             'driver' => 'monolog',
             'level' => env( 'LOG_LEVEL', env( 'APP_LOG_LEVEL', 'debug' ) ),
-            'handler' => SyslogUdpHandler::class,
+            'handler' => env('LOG_PAPERTRAIL_HANDLER', SyslogUdpHandler::class),
             'handler_with' => [
                 'host' => env('PAPERTRAIL_URL'),
                 'port' => env('PAPERTRAIL_PORT'),
+                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
             ],
         ],
 

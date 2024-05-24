@@ -43,4 +43,107 @@
             }
         });
     });
+
+
+    $( '.btn-pause' ).click( function( e ) {
+        e.preventDefault();
+        let url = this.href;
+
+        let html = `<form id="form-pause" method="POST" action="${url}">
+                        <div>Do you want to pause this router from automatic updates?</div>
+                        <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                    </form>`;
+
+        bootbox.dialog({
+            message: html,
+            title: "Pause Router",
+            buttons: {
+                cancel: {
+                    label: 'Close',
+                    className: 'btn-secondary',
+                    callback: function () {
+                        $( '.bootbox.modal' ).modal('hide');
+                        return false;
+                    }
+                },
+                submit: {
+                    label: 'Pause',
+                    className: 'btn-danger',
+                    callback: function () {
+                        $( '#form-pause' ).submit();
+                    }
+                },
+            }
+        });
+    });
+
+
+
+    $( '.btn-resume' ).click( function( e ) {
+        e.preventDefault();
+        let url = this.href;
+
+        let html = `<form id="form-resume" method="POST" action="${url}">
+                        <div>Do you want to resume automatic updates for this router?</div>
+                        <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                    </form>`;
+
+        bootbox.dialog({
+            message: html,
+            title: "Resume Router",
+            buttons: {
+                cancel: {
+                    label: 'Close',
+                    className: 'btn-secondary',
+                    callback: function () {
+                        $( '.bootbox.modal' ).modal('hide');
+                        return false;
+                    }
+                },
+                submit: {
+                    label: 'Resume',
+                    className: 'btn-danger',
+                    callback: function () {
+                        $( '#form-resume' ).submit();
+                    }
+                },
+            }
+        });
+    });
+
+
+
+    $( '.btn-reset-ts' ).click( function( e ) {
+        e.preventDefault();
+        let url = this.href;
+
+        let html = `<form id="form-reset-ts" method="POST" action="${url}">
+                        <div>Do you want to reset the update timestamps for this router?</div>
+                        <br>
+                        <div>This is typically something you may need to do when an update script fails or you have corrected an issue.</div>
+                        <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                    </form>`;
+
+        bootbox.dialog({
+            message: html,
+            title: "Reset Router Update Timestamps",
+            buttons: {
+                cancel: {
+                    label: 'Close',
+                    className: 'btn-secondary',
+                    callback: function () {
+                        $( '.bootbox.modal' ).modal('hide');
+                        return false;
+                    }
+                },
+                submit: {
+                    label: 'Reset',
+                    className: 'btn-danger',
+                    callback: function () {
+                        $( '#form-reset-ts' ).submit();
+                    }
+                },
+            }
+        });
+    });
 </script>

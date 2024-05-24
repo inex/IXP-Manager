@@ -124,8 +124,12 @@ Route::group( [ 'prefix' => 'router' ], function() {
     Route::get(     'view/{router}',    'RouterController@view'     )->name( 'router@view'   );
     Route::get(     'gen-config/{id}',  'RouterController@genConfig');
     Route::delete(  'delete/{router}',  'RouterController@delete'   )->name( 'router@delete'  );
+    Route::post(    'pause/{router}',   'RouterController@pause'    )->name( 'router@pause'   );
+    Route::post(    'resume/{router}',  'RouterController@resume'   )->name( 'router@resume'  );
     Route::post(   'store',             'RouterController@store'    )->name( 'router@store'   );
     Route::put(    'update/{router}',   'RouterController@update'   )->name( 'router@update'  );
+
+    Route::post(   'reset-update-timestamps/{router}', 'RouterController@resetUpdateTimestamps'    )->name( 'router@resetUpdateTimestamps'   );
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -307,6 +311,21 @@ if( !config( 'ixp_fe.frontend.disabled.logs' ) ){
         Route::get(     'view/{log}',   'LogController@view'    )->name( 'log@view'     );
     } );
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Route Server Filters
+///
+
+Route::get( 'rs-filters/list-customers', 'RsFilterController@listCustomers' )->name( 'rs-filters@list-customers' );
+
+
+
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///

@@ -56,8 +56,8 @@ class WhoisController extends Controller
 
             // try PeeringDB first
             $pdb = new PeeringDb();
-            if( $pdb->getNetworkByAsn( $asn ) ) {
-                return $pdb->netAsAscii();
+            if( $net = $pdb->getNetworkByAsn( $asn ) ) {
+                return $pdb->netAsAscii( $net );
             }
 
             if( $pdb->status === 404 ) {
