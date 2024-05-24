@@ -66,7 +66,7 @@ if [[ -n $1 && $1 = '--quiet' ]]; then
     export QUIET=1
 else
     export QUIET=0
-    echo -en "\Route Collector BGPd Lisenters\n==============================\n\n"
+    echo -en "\nRoute Collector BGPd Lisenters\n==============================\n\n"
     echo -e "Verbose mode enabled. Issue --quiet for non-verbose mode (--debug also available)\n"
 fi
 
@@ -158,11 +158,6 @@ for handle in $HANDLES; do
         continue
     fi
 
-    if [[ $( cat $dest | grep "protocol bgp pb_" | wc -l ) -lt 2 ]]; then
-        echo "ERROR: fewer than 2 BGP protocol definitions in config file $dest - something has gone wrong..."
-        continue
-    fi
-
     # parse and check the config
     cmd="${BIRDBIN} -p -c $dest"
     if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
@@ -248,7 +243,7 @@ for handle in $HANDLES; do
             echo "Bird running and no reload required so skipping configure";
         fi
 
-        log "NO OP        \tIXP Manager Updated: "
+        log "NO RECONFIG  \tIXP Manager Updated: "
     fi
 
 
