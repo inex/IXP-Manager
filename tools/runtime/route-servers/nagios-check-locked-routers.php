@@ -22,8 +22,8 @@
 
 // variables - you need to change these!
 $key="your-api-key";
-$url="https://ixp.example.com/api/v4/router/updated";
-$threshold=86400;
+$url="https://ixp.example.com/api/v4/router/locked-longer-than";
+$threshold=7200;
 
 // is curl available?
 if( !function_exists( 'curl_init' ) ) {
@@ -33,15 +33,19 @@ if( !function_exists( 'curl_init' ) ) {
 
 // get the JSON of routers last updated >$threshold seconds ago
 $s = curl_init();
-curl_setopt( $s, CURLOPT_URL,  $url );
+curl_setopt( $s, CURLOPT_URL,  $url . '/' . $threshold );
 curl_setopt( $s, CURLOPT_HTTPHEADER, [ 'X-IXP-Manager-API-Key: ' . $key ] );
 curl_setopt( $s, CURLOPT_RETURNTRANSFER, true );
 $json = curl_exec($s);
 
-
 if( !curl_getinfo($s,CURLINFO_HTTP_CODE) == 200 ) {
     echo "UNKNOWN: non-200 status code returned by API: " . curl_getinfo($s,CURLINFO_HTTP_CODE) . "\n";
     exit( 3 );
+}
+
+if( trim($json) === "[]" ) {
+    echo sprintf( "OK: no routers stuck mid-configuration for >%d seconds\n", $threshold );
+    exit(0);
 }
 
 if( !( $routers = json_decode( $json, true ) ) ) {
@@ -49,44 +53,10 @@ if( !( $routers = json_decode( $json, true ) ) ) {
     exit( 3 );
 }
 
-if( !count( $routers ) ) {
-    echo "UNKNOWN: no routers configured in IXP Manager?\n";
-    exit( 3 );
-}
-
-$ok      = [];
 $bad     = [];
-$unknown = [];
-
 foreach( $routers as $handle => $r ) {
-    if( !$r['last_updated_unix'] ) {
-        $unknown[] = $handle;
-    } else if( time()-$threshold > $r['last_updated_unix'] ) {
-        $bad[] = $handle;
-    } else {
-        $ok[] = $handle;
-    }
+    $bad[] = $handle;
 }
 
-
-$resp = '';
-if( count( $bad ) ) {
-    $resp .= 'ERROR: the following router(s) have not updated in more than ' . $threshold . 'secs: ' . implode( ', ', $bad ) . '. ';
-}
-if( count( $unknown ) ) {
-    $resp .= 'WARNING: the following router(s) have never updated: ' . implode( ', ', $unknown ) . '. ';
-}
-if( count( $ok ) ) {
-    $resp .= 'OK: the following router(s) have updated within the last ' . $threshold . 'secs: ' . implode( ', ', $ok ) . '. ';
-}
-
-echo $resp . "\n";
-
-if( count( $bad ) ) {
-    exit(2);
-}
-if( count( $unknown ) ) {
-    exit(1);
-}
-
-exit(0);
+echo 'ERROR: the following router(s) have been locked for more than ' . $threshold . 'secs: ' . implode( ', ', $bad ) . ".\n";
+exit(2);
