@@ -3,7 +3,7 @@
 namespace IXP\Providers;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,23 +22,22 @@ namespace IXP\Providers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Cache, Route;
+use Route;
 
 use Illuminate\Support\ServiceProvider;
 
-use IXP\Services\PeeringDb;
+use IXP\Services\IXF;
 
 /**
  * PeeringDB Service Provider
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Providers
- * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class PeeringDbServiceProvider extends ServiceProvider
+class IXFServiceProvider extends ServiceProvider
 {
     /**
      * @var bool
@@ -52,18 +51,11 @@ class PeeringDbServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Route::get( 'peeringdb/ix', function() {
+        Route::get( 'ix-f/ixp', function() {
             return response()->json(
-                app()->make(PeeringDb::class)->ixps()
+                app()->make(IXF::class)->ixps()
             );
-        })->name('api-v4-peeringdb-ixs');
-
-
-        Route::get( 'peeringdb/fac', function() {
-            return response()->json(
-                app()->make(PeeringDb::class)->facilities()
-            );
-        })->name('api-v4-peeringdb-fac');
+        })->name('api-v4-ixf-ixs');
     }
 
     /**
@@ -73,8 +65,8 @@ class PeeringDbServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton( PeeringDb::class, function( $app ) {
-            return new PeeringDb();
+        $this->app->singleton( IXF::class, function( $app ) {
+            return new IXF();
         });
     }
 }

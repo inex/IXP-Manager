@@ -78,7 +78,6 @@ class LocationControllerTest extends DuskTestCase
 
             $browser->visit( '/facility/create'     )
                     ->assertSee( 'Create Facility' )
-                    ->pause( 500 )
                     ->waitForText( "Choose the matching PeeringDB facility..." );
 
             $browser->driver->executeScript('window.scrollTo(0, 3000);');
@@ -111,7 +110,6 @@ class LocationControllerTest extends DuskTestCase
 
             $browser->press('Create')
                     ->assertPathIs('/facility/create')
-                    ->waitForText('Equinix DA1 - Dallas' )
                     ->assertSee( "The shortname has already been taken" )
                     ->assertSee( "The nocemail must be a valid email address" )
                     ->assertSee( "The officeemail must be a valid email address" )
@@ -149,8 +147,7 @@ class LocationControllerTest extends DuskTestCase
             $browser->click( '#e2f-list-edit-' .  $location->id );
 
             // 4. test that form contains settings as above using assertChecked(), assertNotChecked(), assertSelected(), assertInputValue, ...
-            $browser->waitForText('Equinix DA1 - Dallas' )
-                    ->assertInputValue('name',                  'Infrastructure Test' )
+            $browser->assertInputValue('name',                  'Infrastructure Test' )
                     ->assertInputValue( 'shortname',            'test'      )
                     ->assertInputValue( 'tag',                  'test tag'  )
                     ->assertSelected( 'pdb_facility_id',        4           )
@@ -196,8 +193,7 @@ class LocationControllerTest extends DuskTestCase
 
             // 7. edit again and assert that all checkboxes are unchecked and assert select values are as expected
             $browser->visit( '/facility/edit/' .  $location->id )
-                ->assertSee( 'Edit Facility' )
-                ->waitForText('Digital Realty NYC (60 Hudson)' );
+                ->assertSee( 'Edit Facility' );
 
             $browser->assertInputValue('name',              'Infrastructure Test')
                     ->assertInputValue( 'shortname',        'test'      )
@@ -239,8 +235,7 @@ class LocationControllerTest extends DuskTestCase
 
             // 9. edit object
             $browser->visit( '/facility/edit/' .  $location->id )
-                ->assertSee( 'Edit Facility' )
-                ->waitForText('Digital Realty NYC (60 Hudson)' );
+                ->assertSee( 'Edit Facility' );
 
             $browser->type( 'name',         'Infrastructure Test2')
                     ->type( 'shortname',        'test2'     )

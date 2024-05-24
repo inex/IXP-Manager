@@ -28,6 +28,7 @@
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
+
 if( !function_exists( 'resolve_dns_a' ) )
 {
     /**
@@ -128,6 +129,8 @@ if( !function_exists( 'ixp_get_client_ip' ) )
     }
 }
 
+// Many development environments do not have the php_rrd extension and this
+// simple allows the dev system to return a blank graph.
 if( !function_exists( 'rrd_graph' ) )
 {
     function rrd_graph( $a, $b ) { return []; }
@@ -165,3 +168,10 @@ function parsedown(?string $value = null, bool $inline = null)
     return $parser->text($value);
 }
 
+if( !function_exists( 'app_env_is' ) )
+{
+    function app_env_is( string $env )
+    {
+        return config('app.env') === $env;
+    }
+}

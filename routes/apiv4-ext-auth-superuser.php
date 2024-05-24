@@ -93,6 +93,8 @@ Route::group( [  'prefix' => 'router' ], function() {
 
     Route::get('updated',                                    'RouterController@getAllLastUpdated'       );
     Route::get('updated-before/{threshold}',                 'RouterController@getAllLastUpdatedBefore' );
+
+    Route::get('locked-longer-than/{threshold}',             'RouterController@getAllLockedLongerThan' );
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

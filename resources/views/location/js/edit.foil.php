@@ -9,7 +9,7 @@
             allowClear: true
         });
 
-        $.ajax( "<?= url('peering-db/fac') ?>" )
+        $.ajax( "<?= url('peeringdb/fac') ?>" )
             .done( function( data ) {
                 let selectedpdb, selectNow;
                 let options = `<option value=''>Choose the matching PeeringDB Facility...</option>\n`;
@@ -23,11 +23,11 @@
                 <?php endif; ?>
 
                 $.each( data, function ( i, pdb ) {
-                    selectNow = null;
-                    if( selectedpdb === pdb.id ){
-                        selectNow = 'selected="selected"';
+                    selectNow = '';
+                    if( selectedpdb === parseInt(pdb.id) ){
+                        selectNow = 'selected="selected" ';
                     }
-                    options += `<option ${selectNow} value="${pdb.id}">${pdb.name}</option>\n`;
+                    options += `<option ${selectNow}value="${pdb.id}">${pdb.name}</option>\n`;
                 });
                 dd_pdb.html( options );
             })
@@ -46,7 +46,7 @@
             })
             .always( function() {
                 dd_pdb.select2({ allowClear: true, placeholder: 'Choose the matching PeeringDB facility...' });
-                dd_pdb.trigger( "changed.select2" );
+                dd_pdb.trigger( "change" );
                 $( '#btn-submit' ).prop('disabled', false);
             });
 

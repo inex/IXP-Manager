@@ -78,7 +78,6 @@
       <path value="$PROJECT_DIR$/vendor/egulias/email-validator" />
       <path value="$PROJECT_DIR$/vendor/fideloper/proxy" />
       <path value="$PROJECT_DIR$/vendor/symfony/yaml" />
-      <path value="$PROJECT_DIR$/vendor/parsedown/laravel" />
       <path value="$PROJECT_DIR$/vendor/oss2/auth" />
       <path value="$PROJECT_DIR$/vendor/oss2/doctrine2" />
       <path value="$PROJECT_DIR$/vendor/oss2/var-utils" />
