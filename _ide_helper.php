@@ -3841,6 +3841,26 @@ namespace Illuminate\Support\Facades {
                         return $instance->macroCall($method, $parameters);
         }
                     /**
+         * Remove all items from the cache.
+         *
+         * @return bool 
+         * @static 
+         */        public static function flush()
+        {
+                        /** @var \Illuminate\Cache\ArrayStore $instance */
+                        return $instance->flush();
+        }
+                    /**
+         * Get the cache key prefix.
+         *
+         * @return string 
+         * @static 
+         */        public static function getPrefix()
+        {
+                        /** @var \Illuminate\Cache\ArrayStore $instance */
+                        return $instance->getPrefix();
+        }
+                    /**
          * Get a lock instance.
          *
          * @param string $name
@@ -3850,7 +3870,7 @@ namespace Illuminate\Support\Facades {
          * @static 
          */        public static function lock($name, $seconds = 0, $owner = null)
         {
-                        /** @var \Illuminate\Cache\NullStore $instance */
+                        /** @var \Illuminate\Cache\ArrayStore $instance */
                         return $instance->lock($name, $seconds, $owner);
         }
                     /**
@@ -3862,28 +3882,8 @@ namespace Illuminate\Support\Facades {
          * @static 
          */        public static function restoreLock($name, $owner)
         {
-                        /** @var \Illuminate\Cache\NullStore $instance */
+                        /** @var \Illuminate\Cache\ArrayStore $instance */
                         return $instance->restoreLock($name, $owner);
-        }
-                    /**
-         * Remove all items from the cache.
-         *
-         * @return bool 
-         * @static 
-         */        public static function flush()
-        {
-                        /** @var \Illuminate\Cache\NullStore $instance */
-                        return $instance->flush();
-        }
-                    /**
-         * Get the cache key prefix.
-         *
-         * @return string 
-         * @static 
-         */        public static function getPrefix()
-        {
-                        /** @var \Illuminate\Cache\NullStore $instance */
-                        return $instance->getPrefix();
         }
             }
             /**
@@ -16307,13 +16307,12 @@ namespace Barryvdh\DomPDF\Facade {
                     /**
          * Replace all the Options from DomPDF
          *
-         * @deprecated Use setOption to override individual options.
          * @param array<string, mixed> $options
          * @static 
-         */        public static function setOptions($options)
+         */        public static function setOptions($options, $mergeWithDefaults = false)
         {
                         /** @var \Barryvdh\DomPDF\PDF $instance */
-                        return $instance->setOptions($options);
+                        return $instance->setOptions($options, $mergeWithDefaults);
         }
                     /**
          * Output the PDF as a string.
@@ -16467,13 +16466,12 @@ namespace Barryvdh\DomPDF\Facade {
                     /**
          * Replace all the Options from DomPDF
          *
-         * @deprecated Use setOption to override individual options.
          * @param array<string, mixed> $options
          * @static 
-         */        public static function setOptions($options)
+         */        public static function setOptions($options, $mergeWithDefaults = false)
         {
                         /** @var \Barryvdh\DomPDF\PDF $instance */
-                        return $instance->setOptions($options);
+                        return $instance->setOptions($options, $mergeWithDefaults);
         }
                     /**
          * Output the PDF as a string.
@@ -20312,6 +20310,10 @@ namespace Laravel\Socialite\Facades {
             /**
      * 
      *
+     * @method array getScopes()
+     * @method \Laravel\Socialite\Contracts\Provider scopes(array|string $scopes)
+     * @method \Laravel\Socialite\Contracts\Provider setScopes(array|string $scopes)
+     * @method \Laravel\Socialite\Contracts\Provider redirectUrl(string $url)
      * @see \Laravel\Socialite\SocialiteManager
      */        class Socialite {
                     /**
@@ -20632,10 +20634,10 @@ namespace Spatie\LaravelIgnition\Facades {
          * 
          *
          * @static 
-         */        public static function registerErrorHandler()
+         */        public static function registerErrorHandler($errorLevels = null)
         {
                         /** @var \Spatie\FlareClient\Flare $instance */
-                        return $instance->registerErrorHandler();
+                        return $instance->registerErrorHandler($errorLevels);
         }
                     /**
          * 
@@ -20703,10 +20705,19 @@ namespace Spatie\LaravelIgnition\Facades {
          * 
          *
          * @static 
-         */        public static function report($throwable, $callback = null, $report = null)
+         */        public static function report($throwable, $callback = null, $report = null, $handled = null)
         {
                         /** @var \Spatie\FlareClient\Flare $instance */
-                        return $instance->report($throwable, $callback, $report);
+                        return $instance->report($throwable, $callback, $report, $handled);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */        public static function reportHandled($throwable)
+        {
+                        /** @var \Spatie\FlareClient\Flare $instance */
+                        return $instance->reportHandled($throwable);
         }
                     /**
          * 
@@ -20827,52 +20838,6 @@ namespace Spatie\LaravelIgnition\Facades {
             }
     }
 
-namespace Illuminate\Support {
-            /**
-     * 
-     *
-     * @template TKey of array-key
-     * @template TValue
-     * @implements \ArrayAccess<TKey, TValue>
-     * @implements \Illuminate\Support\Enumerable<TKey, TValue>
-     */        class Collection {
-                    /**
-         * 
-         *
-         * @see \Barryvdh\Debugbar\ServiceProvider::register()
-         * @static 
-         */        public static function debug()
-        {
-                        return \Illuminate\Support\Collection::debug();
-        }
-                    /**
-         * 
-         *
-         * @see \Spatie\LaravelRay\RayServiceProvider::registerMacros()
-         * @param string $description
-         * @static 
-         */        public static function ray($description = '')
-        {
-                        return \Illuminate\Support\Collection::ray($description);
-        }
-            }
-            /**
-     * 
-     *
-     */        class Stringable {
-                    /**
-         * 
-         *
-         * @see \Spatie\LaravelRay\RayServiceProvider::registerMacros()
-         * @param string $description
-         * @static 
-         */        public static function ray($description = '')
-        {
-                        return \Illuminate\Support\Stringable::ray($description);
-        }
-            }
-    }
-
 namespace Illuminate\Http {
             /**
      * 
@@ -20934,12 +20899,53 @@ namespace Illuminate\Http {
             }
     }
 
-namespace Illuminate\Testing {
+namespace Illuminate\Support {
             /**
      * 
      *
-     */        class LoggedExceptionCollection {
+     * @template TKey of array-key
+     * @template TValue
+     * @implements \ArrayAccess<TKey, TValue>
+     * @implements \Illuminate\Support\Enumerable<TKey, TValue>
+     */        class Collection {
+                    /**
+         * 
+         *
+         * @see \Barryvdh\Debugbar\ServiceProvider::register()
+         * @static 
+         */        public static function debug()
+        {
+                        return \Illuminate\Support\Collection::debug();
+        }
+                    /**
+         * 
+         *
+         * @see \Spatie\LaravelRay\RayServiceProvider::registerMacros()
+         * @param string $description
+         * @static 
+         */        public static function ray($description = '')
+        {
+                        return \Illuminate\Support\Collection::ray($description);
+        }
             }
+            /**
+     * 
+     *
+     */        class Stringable {
+                    /**
+         * 
+         *
+         * @see \Spatie\LaravelRay\RayServiceProvider::registerMacros()
+         * @param string $description
+         * @static 
+         */        public static function ray($description = '')
+        {
+                        return \Illuminate\Support\Stringable::ray($description);
+        }
+            }
+    }
+
+namespace Illuminate\Testing {
             /**
      * 
      *
