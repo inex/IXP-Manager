@@ -125,9 +125,5 @@ class SmtpMailTest extends IXPCommand
             }
         }
 
-        if( $this->getOutput()->isVerbose() ) {
-            $this->line( "\n\n" . str_repeat( '=', 40 ) . "\nSMTP Dialog:\n\n" );
-            $this->line( $mail->logger()->dump() );
-        }
     }
 }
