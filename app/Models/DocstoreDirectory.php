@@ -207,7 +207,7 @@ class DocstoreDirectory extends Model
                     } )->get()->isNotEmpty();
 
                 if( $rootDirVisible ) {
-                    self::$dirs[null]  = [ 'id' => null, 'name' => 'Root Directory' ];
+                    self::$dirs[]  = [ 'id' => null, 'name' => 'Root Directory' ];
                 }
             }
             return self::$dirs;

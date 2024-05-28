@@ -97,7 +97,7 @@ class Location extends Graph
      */
     public function name(): string
     {
-        return $this->location()->name;
+        return $this->location()->name ?: '';
     }
 
     /**

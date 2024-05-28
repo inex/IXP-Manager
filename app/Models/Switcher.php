@@ -320,9 +320,9 @@ class Switcher extends Model
         // does this switch support the IANA MAU MIB?
         try {
             $host->useMAU()->types();
-            $this->mauSupported = true;
+            $this->mauSupported = 1;
         } catch( \OSS_SNMP\Exception $e ) {
-            $this->mauSupported = false;
+            $this->mauSupported = 0;
         }
 
         // uptime data

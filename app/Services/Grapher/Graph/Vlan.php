@@ -99,7 +99,7 @@ class Vlan extends Graph
      */
     public function name(): string
     {
-        return $this->vlan()->name;
+        return $this->vlan()->name ?: '';
     }
 
     /**

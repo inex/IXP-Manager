@@ -47,9 +47,9 @@ class Zendesk implements HelpdeskContract
     /**
      * The Zendesk Client
      *
-     * @var Zendesk\API\Client
+     * @var ZendeskAPI
      */
-    private $client;
+    private ZendeskAPI $client;
 
     /**
      * Debug object
@@ -93,7 +93,7 @@ class Zendesk implements HelpdeskContract
             $apie = new ApiException( "Zendesk API error - further details available from \$helpdeskInstance->getDebug() / \$this->getErrorDetails()" );
 
             if( $e instanceof \Zendesk\API\Exceptions\ApiResponseException )
-                $apie->setErrorDetails( json_decode( $e->getErrorDetails() ) );
+                $apie->setErrorDetails( (object)$e->getErrorDetails() );
 
             throw $apie;
         }
@@ -132,11 +132,11 @@ class Zendesk implements HelpdeskContract
      * Convert a IXP Customer entity into an associated array as rerquired by Zendesk's API
      *
      * @param Customer      $cust     The IXP Manager customer entity
-     * @param bool          $id       If updating, set to Zendesk organisation ID
+     * @param bool|int $id       If updating, set to Zendesk organisation ID
      *
      * @return array Data in associate array format as required by Zendesk PHP API
      */
-    private function customerEntityToZendeskObject( Customer $cust, $id = false ): array
+    private function customerEntityToZendeskObject( Customer $cust, bool|int $id = false ): array
     {
         $data                 = [];
         $data['external_id']  = $cust->id;
@@ -287,7 +287,7 @@ class Zendesk implements HelpdeskContract
     public function organisationUpdate( int $helpdeskId, Customer $cust )
     {
             $response = $this->callApi( function() use ( $cust, $helpdeskId ) {
-                return $this->client->organizations()->update( $this->customerEntityToZendeskObject( $cust, $helpdeskId ) );
+                return $this->client->organizations()->update( null, $this->customerEntityToZendeskObject( $cust, $helpdeskId ) );
             });
 
             if( isset( $response->organization ) )
@@ -457,7 +457,7 @@ class Zendesk implements HelpdeskContract
      * @param int       $helpdeskId The ID of the helpdesk's user object
      * @param Contact   $contact    An IXP Manager contact as returned by `userFind()`
      *
-     * @return Contact Decoupled contact object with `helpdesk_id`
+     * @return Contact|bool Decoupled contact object with `helpdesk_id`
      *
      * @throws \IXP\Services\Helpdesk\ApiException
      */
@@ -470,7 +470,6 @@ class Zendesk implements HelpdeskContract
         if( isset( $response->user ) ){
             return $this->zendeskObjectToContactEntity( $response->user );
         }
-
 
         return false;
     }

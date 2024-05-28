@@ -99,10 +99,10 @@ class IXP implements ExtensionInterface
 
             if( $unit ) {
                 // Find the position of the unit in the ordered string which is the power of magnitude to multiply a kilobyte by.
-                return round( $size * ( 1024 ** stripos( 'bkmgtpezy', $unit[0] ) ) );
+                return (string)round( $size * ( 1024 ** stripos( 'bkmgtpezy', $unit[0] ) ) );
             }
 
-            return round( $size );
+            return (string)round( $size * 1 );
         };
 
         if( $max_size === null ) {
@@ -165,16 +165,17 @@ class IXP implements ExtensionInterface
 
         $num_formats = count( $formats );
         for( $i = 0; $i < $num_formats; $i++ ) {
+            $format = $i > 4 ? $formats[ 4 ] : $formats[ $i ];
             if( ( $v / 1000.0 < 1.0 ) || ( $num_formats === $i + 1 ) ) {
                 if( $returnType === 0 ) {
-                    return number_format( $v, $decs ) . ' ' . $formats[ $i ];
+                    return number_format( $v, $decs ) . ' ' . $format;
                 }
 
                 if( $returnType === 1 ) {
                     return number_format( $v, $decs );
                 }
 
-                return $formats[ $i ];
+                return $format;
             }
 
             $v /= 1000.0;

@@ -27,6 +27,7 @@ use Auth, Closure, Log, Route;
 
 use Illuminate\Http\Request;
 
+use IXP\Http\Controllers\Contact\ContactController;
 use IXP\Models\User;
 
 use IXP\Utils\View\Alert\{

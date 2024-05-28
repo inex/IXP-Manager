@@ -102,7 +102,7 @@ class Bgpq3
      */
     public function getAsnList( string $asmacro, int $proto = 4 ): array
     {
-        $json = $this->execute( '-3j -l pl -f 999 ' . escapeshellarg( $asmacro ), false );
+        $json = $this->execute( '-3j -l pl -f 999 ' . escapeshellarg( $asmacro ), $proto );
         $array = json_decode( $json, true );
 
         if( $array === null ){

@@ -1,109 +1,28 @@
-# console command errors
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/Grapher/EmailPortUtilisation.php:119:109
-Argument 2 of IXP\Mail\Grapher\PortUtilisation::__construct expects float, but array<array-key, mixed>|bool|null|string provided (see https://psalm.dev/004)
-            Mail::to( explode( ',', $this->argument( 'email' ) ) )->send( new PortUtilisationMail( $excess, $this->option('threshold') ) );
-
-ERROR: InvalidReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/Irrdb/UpdateDb.php:60:16
-The declared return type 'IXP\Models\Customer|Illuminate\Database\Eloquent\Builder|array<array-key, mixed>' for IXP\Console\Commands\Irrdb\UpdateDb::resolveCustomers is incorrect, got 'Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model>|list{non-empty-mixed}' (see https://psalm.dev/011)
-     * @return array|Builder|Customer
-
-ERROR: InvalidReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/Irrdb/UpdateDb.php:68:20
-The inferred type 'Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model>' does not match the declared return type 'IXP\Models\Customer|Illuminate\Database\Eloquent\Builder|array<array-key, mixed>' for IXP\Console\Commands\Irrdb\UpdateDb::resolveCustomers (see https://psalm.dev/128)
-            return Customer::currentActive( true )->get();
-
-ERROR: InvalidReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/Irrdb/UpdateDb.php:73:20
-The inferred type 'Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model>' does not match the declared return type 'IXP\Models\Customer|Illuminate\Database\Eloquent\Builder|array<array-key, mixed>' for IXP\Console\Commands\Irrdb\UpdateDb::resolveCustomers (see https://psalm.dev/128)
-            return $c;
-
-ERROR: InvalidReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/Irrdb/UpdateDb.php:82:20
-The inferred type 'Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model>' does not match the declared return type 'IXP\Models\Customer|Illuminate\Database\Eloquent\Builder|array<array-key, mixed>' for IXP\Console\Commands\Irrdb\UpdateDb::resolveCustomers (see https://psalm.dev/128)
-            return $c;
+# package wrong variable type declarations
 
 ERROR: InvalidArgument
 at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/MailingList/Init.php:87:34
 Argument 1 of Illuminate\Support\Collection::add expects never, but non-empty-lowercase-string provided (see https://psalm.dev/004)
                 $addresses->add( $address );
 
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/PeeringDB/AsnLookup.php:53:42
-Argument 1 of IXP\Services\PeeringDb::getNetworkByAsn expects int, but array<array-key, mixed>|bool|null|string provided (see https://psalm.dev/004)
-        if( $net = $pdb->getNetworkByAsn($this->argument('asn')) ) {
 
-ERROR: UndefinedMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/RipeAtlas/CompleteRequests.php:85:17
-Method IXP\Jobs\RipeAtlas\CompleteRequests::dispatchnow does not exist (see https://psalm.dev/022)
-            if( CompleteRequestsJob::dispatchNow( $ar ) && $this->isVerbosityVerbose() ) {
-
-ERROR: UndefinedMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/RipeAtlas/CreateMeasurements.php:77:13
-Method IXP\Jobs\RipeAtlas\CreateMeasurements::dispatchnow does not exist (see https://psalm.dev/022)
-            CreateMeasurementsJob::dispatchNow( $ar );
-
-ERROR: UndefinedMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/RipeAtlas/RunMeasurements.php:91:13
-Method IXP\Jobs\RipeAtlas\RunMeasurements::dispatchnow does not exist (see https://psalm.dev/022)
-            RunMeasurementsJob::dispatchNow( $am );
-
-ERROR: UndefinedMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/RipeAtlas/StopAllMeasurements.php:87:17
-Method IXP\Jobs\RipeAtlas\StopAllMeasurements::dispatchnow does not exist (see https://psalm.dev/022)
-                StopAllMeasurementsJob::dispatchNow( $am->id );
-
-ERROR: UndefinedMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/RipeAtlas/UpdateMeasurements.php:79:13
-Method IXP\Jobs\RipeAtlas\UpdateMeasurements::dispatchnow does not exist (see https://psalm.dev/022)
-            UpdateMeasurementsJob::dispatchNow( $am );
-
-ERROR: UndefinedMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/RipeAtlas/UpdateProbes.php:78:13
-Method IXP\Jobs\RipeAtlas\UpdateProbes::dispatchnow does not exist (see https://psalm.dev/022)
-            UpdateProbesJob::dispatchNow( $c );
-
-ERROR: InvalidReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/RipeAtlas/UpdateProbes.php:95:16
-The declared return type 'array<array-key, mixed>' for IXP\Console\Commands\RipeAtlas\UpdateProbes::resolveCustomers is incorrect, got 'Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model>|list{non-empty-mixed}' (see https://psalm.dev/011)
-     * @return array Customer
-
-ERROR: InvalidReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/RipeAtlas/UpdateProbes.php:103:20
-The inferred type 'Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model>' does not match the declared return type 'array<array-key, mixed>' for IXP\Console\Commands\RipeAtlas\UpdateProbes::resolveCustomers (see https://psalm.dev/128)
-            return Customer::CurrentActive( true, false, false )->get();
-
-ERROR: ParadoxicalCondition
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/RipeAtlas/UpdateProbes.php:112:13
-Condition (($c) && ($cust is numeric)) contradicts a previously-established condition ((!$c) || ($cust is not numeric)) (see https://psalm.dev/089)
-        if( is_numeric( $cust ) && ( $c = Customer::find( $cust ) ) ) {
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/Rir/GenerateObject.php:87:58
-Isset only works with variables and array elements (see https://psalm.dev/004)
-                    ->from( $this->checkEmail( 'from', ( $this->option( "from" ) ?? config( 'ixp_api.rir.email.from' ) ) ?? config( 'mail.from.address' ) ) )
-
-ERROR: UndefinedMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/Router/FilteredPrefixes.php:74:9
-Method IXP\Jobs\FetchFilteredPrefixesForCustomer::dispatchnow does not exist (see https://psalm.dev/022)
-        FetchFilteredPrefixesForCustomer::dispatchNow( $customer );
-
-ERROR: ParadoxicalCondition
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/Router/FilteredPrefixes.php:119:13
-Condition (($c) && ($custarg is numeric)) contradicts a previously-established condition ((!$c) || ($custarg is not numeric)) (see https://psalm.dev/089)
-        if( is_numeric( $custarg ) && ( $c = Customer::find( $custarg ) ) ) {
+# I am not sure what is the goal here, but the echo doesn't work like this
 
 ERROR: InvalidArgument
 at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/Router/GenerateConfiguration.php:73:14
 Argument 1 of echo expects string, but Illuminate\Contracts\View\View provided (see https://psalm.dev/004)
         echo ( new RouterConfigurationGenerator( $router ) )->render();
 
+
+# superglobal defined elsewhere
+
 ERROR: UndefinedConstant
 at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/Router/GenerateConfiguration.php:77:35
 Const LARAVEL_START is not defined (see https://psalm.dev/020)
                 microtime(true) - LARAVEL_START )
+
+
+# false positive - check line #128
 
 ERROR: UndefinedVariable
 at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/User/Create.php:145:47
@@ -144,14 +63,6 @@ ERROR: UndefinedVariable
 at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/User/Create.php:159:31
 Cannot find referenced variable $priv (see https://psalm.dev/024)
         $c2u->privs         = $priv;
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/Utils/SmtpMailTest.php:130:26
-Docblock-defined class, interface or enum named IXP\Mail\Utils\SwiftMail does not exist (see https://psalm.dev/200)
-            $this->line( $mail->logger()->dump() );
-
-
-
 
 
 
@@ -522,8 +433,6 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/ProfileController.php:
 Method Illuminate\Contracts\Auth\Authenticatable::save does not exist (see https://psalm.dev/181)
             $user->save();
 
-
-
 # I don't see issue here
 
 ERROR: UndefinedPropertyAssignment
@@ -551,60 +460,6 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Switches/SwitchControl
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
             switch( Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC ) {
 
-
-
-
-
-ERROR: ParamNameMismatch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Switches/SwitchController.php:218:35
-Argument 1 of IXP\Http\Controllers\Switches\SwitchController::list has wrong name $r, expecting $param as defined by IXP\Utils\Http\Controllers\Frontend\EloquentController::list (see https://psalm.dev/230)
-    public function list( Request $r  ) : View
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Switches/SwitchController.php:367:67
-Argument 2 of Illuminate\Http\Request::old cannot be false, Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string value expected (see https://psalm.dev/004)
-            'addBySnmp'         => request()->old( 'add_by_snnp', false ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Switches/SwitchController.php:418:79
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but 0|1 provided (see https://psalm.dev/004)
-            'active'            => request()->old( 'active',                ( $this->object->active ? 1 : 0 ) ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Switches/SwitchController.php:419:79
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but 0|1 provided (see https://psalm.dev/004)
-            'poll'              => request()->old( 'poll',                  ( $this->object->poll ? 1 : 0 ) ),
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Switches/SwitchController.php:429:67
-Argument 2 of Illuminate\Http\Request::old cannot be false, Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string value expected (see https://psalm.dev/004)
-            'addBySnmp'         => request()->old( 'add_by_snnp', false ),
-
-ERROR: InvalidPropertyFetch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Switches/SwitchController.php:696:13
-Cannot fetch property on non-object $switch of type false (see https://psalm.dev/029)
-            $switch->id ?? null,
-
-ERROR: InvalidPropertyFetch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Switches/SwitchController.php:697:13
-Cannot fetch property on non-object $infra of type false (see https://psalm.dev/029)
-            $infra->id ?? null,
-
-ERROR: InvalidPropertyFetch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Switches/SwitchController.php:698:13
-Cannot fetch property on non-object $location of type false (see https://psalm.dev/029)
-            $location->id ?? null,
-
-ERROR: InvalidPropertyFetch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Switches/SwitchController.php:700:13
-Cannot fetch property on non-object $vlan of type false (see https://psalm.dev/029)
-            $vlan->id ?? null,
-
-ERROR: ParamNameMismatch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Switches/SwitchPortController.php:179:35
-Argument 1 of IXP\Http\Controllers\Switches\SwitchPortController::list has wrong name $r, expecting $param as defined by IXP\Utils\Http\Controllers\Frontend\EloquentController::list (see https://psalm.dev/230)
-    public function list( Request $r ) : View
-
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/CustomerToUserController.php:79:30
 Method Illuminate\Contracts\Auth\Authenticatable::isCustUser does not exist (see https://psalm.dev/181)
@@ -620,55 +475,20 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/User2FAController
 Method Illuminate\Contracts\Auth\Authenticatable::refresh does not exist (see https://psalm.dev/181)
             $user->refresh();
 
-ERROR: InvalidReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:242:17
-The declared return type 'Illuminate\Http\RedirectResponse' for IXP\Http\Controllers\User\UserController::store is incorrect, got 'Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector' (see https://psalm.dev/011)
-     * @return  RedirectResponse
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:258:35
-$user->disabled with declared type 'int|null' cannot be assigned type 'bool' (see https://psalm.dev/145)
-        $user->disabled         = !$r->disabled; // input as enable in the view
-
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:261:49
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         $user->custid           = Auth::user()->isSuperUser() ? $r->custid : Auth::user()->custid;
-
-ERROR: InvalidReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:284:16
-The inferred type 'Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector' does not match the declared return type 'Illuminate\Http\RedirectResponse' for IXP\Http\Controllers\User\UserController::store (see https://psalm.dev/128)
-        return redirect( $this->postStoreRedirect() );
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:301:38
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         $isSuperUser = Auth::user()->isSuperUser();
 
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:312:69
-Argument 2 of Illuminate\Http\Request::old expects Illuminate\Database\Eloquent\Model|array<array-key, mixed>|null|string, but bool provided (see https://psalm.dev/004)
-            'disabled'         => $r->old( 'disabled',              !$u->disabled           ),
-
-ERROR: InvalidReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:346:17
-The declared return type 'Illuminate\Http\RedirectResponse' for IXP\Http\Controllers\User\UserController::update is incorrect, got 'Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector' (see https://psalm.dev/011)
-     * @return  RedirectResponse
-
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:355:44
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         if( ( $isSuperUser = Auth::user()->isSuperUser() ) || $u->id === Auth::id() ) {
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:363:31
-$u->disabled with declared type 'int|null' cannot be assigned type 'bool' (see https://psalm.dev/145)
-            $u->disabled    = !$r->disabled;// displayed as enabled in the view
-
-ERROR: InvalidReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:386:16
-The inferred type 'Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector' does not match the declared return type 'Illuminate\Http\RedirectResponse' for IXP\Http\Controllers\User\UserController::update (see https://psalm.dev/128)
-        return redirect( $this->postStoreRedirect() );
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:394:27
@@ -715,10 +535,14 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Eloquent2Frontend.php:6
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
         $user_priv = Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC;
 
+# false positive error
+
 ERROR: InvalidPropertyFetch
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Eloquent2Frontend.php:66:26
 Cannot fetch property on non-object $__fake_var_2005 of type string (see https://psalm.dev/029)
         if( $user_priv < $controller::$minimum_privilege ) {
+
+# Auth::getUser() provide a Model that has the Method -> false positive
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/RsPrefixes.php:69:91
@@ -729,6 +553,8 @@ ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/RsPrefixes.php:79:84
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
                 if( (int)config( 'ixp_fe.rs-prefixes.access' ) <= Auth::getUser()->privs() ) {
+
+# I don't see issue here (Grapher got weird methods)
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:107:9
@@ -749,6 +575,8 @@ ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:110:9
 Instance property Illuminate\Http\Request::$type is not defined (see https://psalm.dev/038)
         $r->type     = Graph::processParameterType(     $r->type );
+
+# false positive, the properties existence depends on the target
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:114:17
@@ -825,15 +653,12 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:19
 Instance property Illuminate\Http\Request::$dstvlanint is not defined (see https://psalm.dev/038)
                 $r->dstvlanint = $dstvlanint->id;
 
+# Auth::getUser() provide a Model that has the Method -> false positive
+
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/LookingGlass.php:151:66
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
         if( $router->authorise( Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC ) ) {
-
-ERROR: UndefinedClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/TrustProxies.php:40:28
-Class, interface or enum named Fideloper\Proxy\TrustProxies does not exist (see https://psalm.dev/019)
-class TrustProxies extends Middleware
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Requests/CoreBundle/Store.php:62:33
@@ -975,63 +800,7 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Requests/User/Update.php:103:38
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         $isSuperUser = Auth::user()->isSuperUser();
 
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Listeners/Auth/ForgotUsername.php:57:66
-Argument 1 of IXP\Mail\Auth\ForgotUsername::__construct expects Illuminate\Database\Eloquent\Collection<array-key, Illuminate\Database\Eloquent\Model>, but array<array-key, mixed> provided (see https://psalm.dev/004)
-        Mail::to( $e->email )->send( new ForgotPasswordMailable( $e->users ) );
-
-ERROR: UndefinedInterfaceMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Listeners/Auth/LoginSuccessful.php:52:78
-Method Illuminate\Contracts\Auth\Authenticatable::currentCustomerToUser does not exist (see https://psalm.dev/181)
-        if( !session()->exists( "switched_user_from" ) && ( $c2u = $e->user->currentCustomerToUser() ) ) {
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Mail/Grapher/PortsWithCounts.php:62:27
-$this->category with declared type 'float' cannot be assigned type 'string' (see https://psalm.dev/145)
-        $this->category = $category;
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Mail/User/UserCreated.php:82:24
-$this->token with declared type 'bool' cannot be assigned type 'string' (see https://psalm.dev/145)
-        $this->token = app('auth.password.broker')->createToken( $this->user );
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Mail/Utils/SmtpTest.php:42:13
-Docblock-defined class, interface or enum named IXP\Mail\Utils\SwiftMail does not exist (see https://psalm.dev/200)
-     * @var SwiftMail SMTP dialog logging
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Mail/Utils/SmtpTest.php:44:5
-Docblock-defined class, interface or enum named IXP\Mail\Utils\SwiftMail does not exist (see https://psalm.dev/200)
-    /**
-     * @var SwiftMail SMTP dialog logging
-     */
-    private $logger = null;
-
-ERROR: UndefinedClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Mail/Utils/SmtpTest.php:68:33
-Class, interface or enum named Swift_Plugins_Loggers_ArrayLogger does not exist (see https://psalm.dev/019)
-            $this->logger = new \Swift_Plugins_Loggers_ArrayLogger;
-
-ERROR: UndefinedClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Mail/Utils/SmtpTest.php:69:57
-Class, interface or enum named Swift_Plugins_LoggerPlugin does not exist (see https://psalm.dev/019)
-            Mail::getSwiftMailer()->registerPlugin( new \Swift_Plugins_LoggerPlugin($this->logger));
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Mail/Utils/SmtpTest.php:77:16
-Docblock-defined class, interface or enum named IXP\Mail\Utils\SwiftMail does not exist (see https://psalm.dev/200)
-     * @return SwiftMail|null
-
-ERROR: UndefinedClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Models/Aggregators/BgpSessionDataAggregator.php:90:23
-Class, interface or enum named IXP_Exception does not exist (see https://psalm.dev/019)
-            throw new IXP_Exception( 'Invalid protocol' );
-
-ERROR: UndefinedClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Models/Aggregators/BgpSessionDataAggregator.php:94:23
-Class, interface or enum named IXP_Exception does not exist (see https://psalm.dev/019)
-            throw new IXP_Exception( 'Invalid VLAN' );
+# I didn't see issues here
 
 ERROR: InvalidArgument
 at /Users/laszlo/dev/ibn-ixp-manager/app/Models/Aggregators/SwitcherAggregator.php:134:30
@@ -1069,28 +838,12 @@ The inferred type 'Illuminate\Database\Eloquent\Builder<TRelatedModel:Illuminate
             ->where( 'type', '!=', ContactGroup::TYPE_ROLE )
             ->orderBy( 'name' );
 
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Models/Customer.php:840:13
-Argument 2 of str_replace expects array<array-key, float|int|string>|string, but list{null|string, null|string, null|string, ''|int, string, string, string} provided (see https://psalm.dev/004)
-            [
-                $this->name,
-                $this->abbreviatedName,
-                $this->shortname,
-                $as ?: '',
-                $as ? "[AS{$as}]"  : '',
-                $as ? "AS{$as}"    : '',
-                $as ? " - AS{$as}" : ''
-            ],
+# Auth::getUser() provide a Model that has the Method -> false positive
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Models/DocstoreCustomerDirectory.php:125:41
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
             } elseif( !Auth::getUser()->isSuperUser() ) {
-
-ERROR: NullArrayOffset
-at /Users/laszlo/dev/ibn-ixp-manager/app/Models/DocstoreCustomerDirectory.php:244:21
-Cannot access value on variable IXP\Models\DocstoreCustomerDirectory::$dirs[null] using null offset (see https://psalm.dev/124)
-                    self::$dirs[null]  = [ 'id' => null, 'name' => 'Root Directory' ];
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Models/DocstoreCustomerFile.php:135:41
@@ -1102,10 +855,7 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Models/DocstoreCustomerFile.php:137:69
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
                 $builder->where('min_privs', '<=', Auth::getUser()->privs() );
 
-ERROR: NullArrayOffset
-at /Users/laszlo/dev/ibn-ixp-manager/app/Models/DocstoreDirectory.php:210:21
-Cannot access value on variable IXP\Models\DocstoreDirectory::$dirs[null] using null offset (see https://psalm.dev/124)
-                    self::$dirs[null]  = [ 'id' => null, 'name' => 'Root Directory' ];
+# I don't see issues here
 
 ERROR: InvalidReturnType
 at /Users/laszlo/dev/ibn-ixp-manager/app/Models/PatchPanelPort.php:345:50
@@ -1118,55 +868,7 @@ The inferred type 'Illuminate\Database\Eloquent\Builder<TRelatedModel:Illuminate
         return $this->hasMany(PatchPanelPortFile::class, 'patch_panel_port_id' )
             ->where( 'is_private', 0 );
 
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Models/Switcher.php:323:35
-$this->mauSupported with declared type 'int|null' cannot be assigned type 'true' (see https://psalm.dev/145)
-            $this->mauSupported = true;
-
-ERROR: NullableReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Models/VirtualInterface.php:240:20
-The declared return type 'IXP\Models\SwitchPort|bool' for IXP\Models\VirtualInterface::switchPort is not nullable, but the function returns 'mixed|null' (see https://psalm.dev/139)
-            return $this->physicalInterfaces()->first()->switchPort;
-
-ERROR: InvalidReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Policies/CustomerPolicy.php:82:16
-No return statements were found for method IXP\Policies\CustomerPolicy::create but return type 'mixed' was expected (see https://psalm.dev/011)
-     * @return mixed
-
-ERROR: InvalidReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Policies/CustomerPolicy.php:95:16
-No return statements were found for method IXP\Policies\CustomerPolicy::update but return type 'mixed' was expected (see https://psalm.dev/011)
-     * @return mixed
-
-ERROR: InvalidReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Policies/CustomerPolicy.php:107:16
-No return statements were found for method IXP\Policies\CustomerPolicy::delete but return type 'mixed' was expected (see https://psalm.dev/011)
-     * @return mixed
-
-ERROR: InvalidReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Policies/CustomerPolicy.php:119:16
-No return statements were found for method IXP\Policies\CustomerPolicy::restore but return type 'mixed' was expected (see https://psalm.dev/011)
-     * @return mixed
-
-ERROR: InvalidReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Policies/CustomerPolicy.php:132:16
-No return statements were found for method IXP\Policies\CustomerPolicy::forceDelete but return type 'mixed' was expected (see https://psalm.dev/011)
-     * @return mixed
-
-ERROR: InvalidReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Policies/DocstoreLogPolicy.php:58:16
-No return statements were found for method IXP\Policies\DocstoreLogPolicy::viewAny but return type 'mixed' was expected (see https://psalm.dev/011)
-     * @return mixed
-
-ERROR: MissingFile
-at /Users/laszlo/dev/ibn-ixp-manager/app/Providers/BroadcastServiceProvider.php:48:9
-Cannot find file /Users/laszlo/dev/ibn-ixp-manager/routes/channels.php to include (see https://psalm.dev/107)
-        require base_path('routes/channels.php');
-
-ERROR: UndefinedClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Providers/HelpdeskServiceProvider.php:93:33
-Class, interface or enum named IXP\Providers\arrau does not exist (see https://psalm.dev/019)
-    public function provides(): arrau
+# Auth::getUser() provide a Model that has the Method -> false positive
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Providers/HorizonServiceProvider.php:69:54
@@ -1178,15 +880,12 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Providers/IxpServiceProvider.php:59:57
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
                 if( ( Auth::check() && Auth::getUser()->isSuperUser() ) || env( 'IXP_PHPUNIT_RUNNING', false ) ) {
 
+# I don't see issues here
+
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Providers/ParsedownServiceProvider.php:44:15
 Method Illuminate\Contracts\View\Engine::getCompiler does not exist (see https://psalm.dev/181)
             ->getCompiler();
-
-ERROR: UndefinedClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Providers/PurifierServiceProvider.php:40:35
-Class, interface or enum named IXP\Providers\LaravelApplication does not exist (see https://psalm.dev/019)
-        if ($this->app instanceof LaravelApplication && $this->app->runningInConsole()) {
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Providers/TelescopeServiceProvider.php:55:29
@@ -1198,6 +897,8 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Providers/TelescopeServiceProvider.php:
 Method Illuminate\Contracts\Foundation\Application::isLocal does not exist (see https://psalm.dev/181)
         if( $this->app->isLocal() ) {
 
+# false positive, it is a polymorphic call
+
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Auth/SessionGuard.php:156:57
 Method Illuminate\Contracts\Auth\UserProvider::addRememberToken does not exist (see https://psalm.dev/181)
@@ -1208,90 +909,7 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Auth/SessionGuard.php:157:30
 Method Illuminate\Contracts\Auth\UserProvider::purgeExpiredRememberTokens does not exist (see https://psalm.dev/181)
             $this->provider->purgeExpiredRememberTokens( $user );
 
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/FoilEngine.php:31:14
-Docblock-defined class, interface or enum named IXP\Services\PlatesEngine does not exist (see https://psalm.dev/200)
-    /** @var PlatesEngine */
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/FoilEngine.php:36:25
-$this->engine with declared type 'IXP\Services\PlatesEngine' cannot be assigned type 'Foil\Engine' (see https://psalm.dev/145)
-        $this->engine = $engine;
-
-ERROR: InvalidReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/FoilEngine.php:39:31
-The declared return type 'Foil\Engine' for IXP\Services\FoilEngine::engine is incorrect, got 'IXP\Services\PlatesEngine' (see https://psalm.dev/011)
-    public function engine(): EngineFoil
-
-ERROR: InvalidReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/FoilEngine.php:41:16
-The inferred type 'IXP\Services\PlatesEngine' does not match the declared return type 'Foil\Engine' for IXP\Services\FoilEngine::engine (see https://psalm.dev/128)
-        return $this->engine;
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/FoilEngine.php:54:16
-Docblock-defined class, interface or enum named IXP\Services\PlatesEngine does not exist (see https://psalm.dev/200)
-        return $this->engine->render( $path, $data );
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher.php:90:30
-$this->cacheLifetime with declared type 'bool' cannot be assigned type '300' (see https://psalm.dev/145)
-    private $cacheLifetime = 300;
-
-ERROR: FalsableReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Backend/Mrtg.php:474:20
-The declared return type 'string' for IXP\Services\Grapher\Backend\Mrtg::png does not allow false, but the function returns 'false' (see https://psalm.dev/137)
-            return false; // FIXME check handling of this
-
-ERROR: FalsableReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Backend/Sflow.php:206:20
-The declared return type 'string' for IXP\Services\Grapher\Backend\Sflow::png does not allow false, but the function returns 'false' (see https://psalm.dev/137)
-            return false; // FIXME check handling of this
-
-ERROR: FalsableReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Backend/Sflow.php:228:20
-The declared return type 'string' for IXP\Services\Grapher\Backend\Sflow::rrd does not allow false, but the function returns 'false' (see https://psalm.dev/137)
-            return false; // FIXME check handling of this
-
-ERROR: InvalidNullableReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph.php:919:16
-The declared return type 'string' for IXP\Services\Grapher\Graph::processParameterPeriod is not nullable, but 'null|string' contains null (see https://psalm.dev/144)
-     * @return string The verified / sanitised / default value
-
-ERROR: NullableReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph.php:926:16
-The declared return type 'string' for IXP\Services\Grapher\Graph::processParameterPeriod is not nullable, but the function returns 'null|string' (see https://psalm.dev/139)
-        return $v;
-
-ERROR: InvalidNullableReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph.php:937:16
-The declared return type 'string' for IXP\Services\Grapher\Graph::processParameterProtocol is not nullable, but 'null|string' contains null (see https://psalm.dev/144)
-     * @return string The verified / sanitised / default value
-
-ERROR: NullableReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph.php:944:16
-The declared return type 'string' for IXP\Services\Grapher\Graph::processParameterProtocol is not nullable, but the function returns 'null|string' (see https://psalm.dev/139)
-        return $v;
-
-ERROR: InvalidNullableReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph.php:954:16
-The declared return type 'string' for IXP\Services\Grapher\Graph::processParameterRealProtocol is not nullable, but 'null|string' contains null (see https://psalm.dev/144)
-     * @return string The verified / sanitised / default value
-
-ERROR: NullableReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph.php:961:16
-The declared return type 'string' for IXP\Services\Grapher\Graph::processParameterRealProtocol is not nullable, but the function returns 'null|string' (see https://psalm.dev/139)
-        return $v;
-
-ERROR: InvalidNullableReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph.php:973:16
-The declared return type 'string' for IXP\Services\Grapher\Graph::processParameterCategory is not nullable, but 'null|string' contains null (see https://psalm.dev/144)
-     * @return string The verified / sanitised / default value
-
-ERROR: NullableReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph.php:980:16
-The declared return type 'string' for IXP\Services\Grapher\Graph::processParameterCategory is not nullable, but the function returns 'null|string' (see https://psalm.dev/139)
-        return $v;
+# Auth::getUser() provide a Model that has the Method -> false positive
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/CoreBundle.php:164:47
@@ -1302,16 +920,6 @@ ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/CoreBundle.php:177:97
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
         if( Auth::check() && is_numeric( config( 'grapher.access.trunk' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.trunk' ) ) {
-
-ERROR: InvalidNullableReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Customer.php:98:16
-The declared return type 'string' for IXP\Services\Grapher\Graph\Customer::name is not nullable, but 'null|string' contains null (see https://psalm.dev/144)
-     * @return string
-
-ERROR: NullableReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Customer.php:102:16
-The declared return type 'string' for IXP\Services\Grapher\Graph\Customer::name is not nullable, but the function returns 'null|string' (see https://psalm.dev/139)
-        return $this->customer()->name;
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Customer.php:124:47
@@ -1338,16 +946,6 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Customer.php:219
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         if( !$i && Auth::check() && !Auth::getUser()->isSuperUser() && !Auth::getUser()->customer->typeAssociate() ) {
 
-ERROR: InvalidReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/IXP.php:52:16
-The declared return type 'IXP\Services\Grapher' for IXP\Services\Grapher\Graph\IXP::setParamsFromArray is incorrect, got 'IXP\Services\Grapher\Graph\IXP&static' (see https://psalm.dev/011)
-     * @return Grapher Fluid interface
-
-ERROR: InvalidReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/IXP.php:57:16
-The inferred type 'IXP\Services\Grapher\Graph\IXP&static' does not match the declared return type 'IXP\Services\Grapher' for IXP\Services\Grapher\Graph\IXP::setParamsFromArray (see https://psalm.dev/128)
-        return $this;
-
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/IXP.php:92:47
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
@@ -1357,16 +955,6 @@ ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/IXP.php:105:95
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
         if( Auth::check() && is_numeric( config( 'grapher.access.ixp' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.ixp' ) ) {
-
-ERROR: InvalidNullableReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Infrastructure.php:98:16
-The declared return type 'string' for IXP\Services\Grapher\Graph\Infrastructure::name is not nullable, but 'null|string' contains null (see https://psalm.dev/144)
-     * @return string
-
-ERROR: NullableReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Infrastructure.php:102:16
-The declared return type 'string' for IXP\Services\Grapher\Graph\Infrastructure::name is not nullable, but the function returns 'null|string' (see https://psalm.dev/139)
-        return $this->infrastructure()->name;
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Infrastructure.php:128:47
@@ -1392,16 +980,6 @@ ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Latency.php:236:30
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         if( Auth::getUser()->isSuperUser() ) {
-
-ERROR: InvalidNullableReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Location.php:96:16
-The declared return type 'string' for IXP\Services\Grapher\Graph\Location::name is not nullable, but 'null|string' contains null (see https://psalm.dev/144)
-     * @return string
-
-ERROR: NullableReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Location.php:100:16
-The declared return type 'string' for IXP\Services\Grapher\Graph\Location::name is not nullable, but the function returns 'null|string' (see https://psalm.dev/139)
-        return $this->location()->name;
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Location.php:126:47
@@ -1438,16 +1016,6 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/PhysicalInterfac
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         if( Auth::getUser()->isSuperUser() ) {
 
-ERROR: InvalidNullableReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Switcher.php:97:16
-The declared return type 'string' for IXP\Services\Grapher\Graph\Switcher::name is not nullable, but 'null|string' contains null (see https://psalm.dev/144)
-     * @return string
-
-ERROR: NullableReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Switcher.php:101:16
-The declared return type 'string' for IXP\Services\Grapher\Graph\Switcher::name is not nullable, but the function returns 'null|string' (see https://psalm.dev/139)
-        return $this->switch()->name;
-
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Switcher.php:127:47
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
@@ -1478,16 +1046,6 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/VirtualInterface
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
             && Auth::getUser()->privs() >= config( 'grapher.access.customer' )
 
-ERROR: InvalidNullableReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Vlan.php:98:16
-The declared return type 'string' for IXP\Services\Grapher\Graph\Vlan::name is not nullable, but 'null|string' contains null (see https://psalm.dev/144)
-     * @return string
-
-ERROR: NullableReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Vlan.php:102:16
-The declared return type 'string' for IXP\Services\Grapher\Graph\Vlan::name is not nullable, but the function returns 'null|string' (see https://psalm.dev/139)
-        return $this->vlan()->name;
-
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Vlan.php:128:47
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
@@ -1508,320 +1066,28 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/VlanInterface.ph
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
             && Auth::getUser()->privs() >= config( 'grapher.access.customer' )
 
-ERROR: InvalidArrayOffset
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Renderer/Extensions/Grapher.php:131:68
-Cannot access value on variable $formats using a int<0, max> offset, expecting int<0, 4> (see https://psalm.dev/115)
-                    return number_format( $v, $decs ) . "&nbsp;" . $formats[$i];
-
-ERROR: InvalidArrayOffset
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Renderer/Extensions/Grapher.php:135:28
-Cannot access value on variable $formats using a int<0, max> offset, expecting int<0, 4> (see https://psalm.dev/115)
-                    return $formats[$i];
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Statistics.php:221:26
-$this->totalIn with declared type 'int' cannot be assigned type 'float' (see https://psalm.dev/145)
-        $this->totalIn = $v;
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Statistics.php:234:27
-$this->totalOut with declared type 'int' cannot be assigned type 'float' (see https://psalm.dev/145)
-        $this->totalOut = $v;
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Statistics.php:247:24
-$this->curIn with declared type 'int' cannot be assigned type 'float' (see https://psalm.dev/145)
-        $this->curIn = $v;
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Statistics.php:260:25
-$this->curOut with declared type 'int' cannot be assigned type 'float' (see https://psalm.dev/145)
-        $this->curOut = $v;
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Statistics.php:273:28
-$this->averageIn with declared type 'int' cannot be assigned type 'float' (see https://psalm.dev/145)
-        $this->averageIn = $v;
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Statistics.php:286:29
-$this->averageOut with declared type 'int' cannot be assigned type 'float' (see https://psalm.dev/145)
-        $this->averageOut = $v;
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Statistics.php:299:24
-$this->maxIn with declared type 'int' cannot be assigned type 'float' (see https://psalm.dev/145)
-        $this->maxIn = $v;
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Statistics.php:327:25
-$this->maxOut with declared type 'int' cannot be assigned type 'float' (see https://psalm.dev/145)
-        $this->maxOut = $v;
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Helpdesk/Zendesk.php:50:13
-Docblock-defined class, interface or enum named IXP\Services\Helpdesk\Zendesk\API\Client does not exist (see https://psalm.dev/200)
-     * @var Zendesk\API\Client
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Helpdesk/Zendesk.php:74:25
-$this->client with declared type 'IXP\Services\Helpdesk\Zendesk\API\Client' cannot be assigned type 'Zendesk\API\HttpClient' (see https://psalm.dev/145)
-        $this->client = new ZendeskAPI( $config['subdomain'], $config['email'] );
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Helpdesk/Zendesk.php:91:28
-Docblock-defined class, interface or enum named IXP\Services\Helpdesk\Zendesk\API\Client does not exist (see https://psalm.dev/200)
-            $this->debug = $this->client->getDebug();
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Helpdesk/Zendesk.php:96:54
-Argument 1 of json_decode expects string, but array<array-key, mixed> provided (see https://psalm.dev/004)
-                $apie->setErrorDetails( json_decode( $e->getErrorDetails() ) );
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Helpdesk/Zendesk.php:117:38
-Docblock-defined class, interface or enum named IXP\Services\Helpdesk\Zendesk\API\Client does not exist (see https://psalm.dev/200)
-        $this->callApi( function() { $this->client->tickets()->findAll(); } );
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Helpdesk/Zendesk.php:264:20
-Docblock-defined class, interface or enum named IXP\Services\Helpdesk\Zendesk\API\Client does not exist (see https://psalm.dev/200)
-            return $this->client->organizations()->create( $this->customerEntityToZendeskObject( $cust ) );
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Helpdesk/Zendesk.php:290:24
-Docblock-defined class, interface or enum named IXP\Services\Helpdesk\Zendesk\API\Client does not exist (see https://psalm.dev/200)
-                return $this->client->organizations()->update( $this->customerEntityToZendeskObject( $cust, $helpdeskId ) );
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Helpdesk/Zendesk.php:290:109
-Argument 2 of IXP\Services\Helpdesk\Zendesk::customerEntityToZendeskObject expects bool, but int provided (see https://psalm.dev/004)
-                return $this->client->organizations()->update( $this->customerEntityToZendeskObject( $cust, $helpdeskId ) );
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Helpdesk/Zendesk.php:319:24
-Docblock-defined class, interface or enum named IXP\Services\Helpdesk\Zendesk\API\Client does not exist (see https://psalm.dev/200)
-                return $this->client->organizations()->search( $id );
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Helpdesk/Zendesk.php:441:20
-Docblock-defined class, interface or enum named IXP\Services\Helpdesk\Zendesk\API\Client does not exist (see https://psalm.dev/200)
-            return $this->client->users()->create( $this->contactEntityToZendeskObject( $contact, $org_id ) );
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Helpdesk/Zendesk.php:467:20
-Docblock-defined class, interface or enum named IXP\Services\Helpdesk\Zendesk\API\Client does not exist (see https://psalm.dev/200)
-            return $this->client->users()->update( $helpdeskId, $this->contactEntityToZendeskObject( $contact, null, $helpdeskId ) );
-
-ERROR: FalsableReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Helpdesk/Zendesk.php:475:16
-The declared return type 'IXP\Models\Contact' for IXP\Services\Helpdesk\Zendesk::userUpdate does not allow false, but the function returns 'false' (see https://psalm.dev/137)
-        return false;
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Helpdesk/Zendesk.php:498:20
-Docblock-defined class, interface or enum named IXP\Services\Helpdesk\Zendesk\API\Client does not exist (see https://psalm.dev/200)
-            return $this->client->users()->search( [ 'external_id' => $id ] );
-
-ERROR: InvalidThrow
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/IXF.php:95:13
-Cannot throw null as it does not extend Exception or implement Throwable (see https://psalm.dev/133)
-            throw $this->exception;
-
-ERROR: UndefinedVariable
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/LookingGlass.php:67:118
-Cannot find referenced variable $r (see https://psalm.dev/024)
-                throw new ConfigurationException( 'Invalid, no or unimplemented looking glass backend requested: ' . $r->apiType() );
-
-ERROR: InvalidClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/LookingGlass/BirdsEye.php:72:49
-Class, interface or enum IXP\Services\LookingGlass\Birdseye has wrong casing (see https://psalm.dev/007)
-    public function setCacheEnabled( bool $b ): Birdseye
-
-ERROR: InvalidThrow
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/PeeringDb.php:133:13
-Cannot throw null as it does not extend Exception or implement Throwable (see https://psalm.dev/133)
-            throw $this->exception;
-
-ERROR: InvalidThrow
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/PeeringDb.php:185:13
-Cannot throw null as it does not extend Exception or implement Throwable (see https://psalm.dev/133)
-            throw $this->exception;
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:86:59
-Argument 2 of IXP\Services\Purifier::addCustomDefinition expects IXP\Services\HTML_Purifier_Config|null, but HTMLPurifier_Config provided (see https://psalm.dev/004)
-            $this->addCustomDefinition($definitionConfig, $config);
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:92:53
-Argument 2 of IXP\Services\Purifier::addCustomElements expects IXP\Services\HTMLPurifier_HTMLDefinition, but HTMLPurifier_HTMLDefinition provided (see https://psalm.dev/004)
-                $this->addCustomElements($elements, $def);
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:99:57
-Argument 2 of IXP\Services\Purifier::addCustomAttributes expects IXP\Services\HTMLPurifier_HTMLDefinition, but HTMLPurifier_HTMLDefinition provided (see https://psalm.dev/004)
-                $this->addCustomAttributes($attributes, $def);
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:112:15
-Docblock-defined class, interface or enum named IXP\Services\HTML_Purifier_Config does not exist (see https://psalm.dev/200)
-     * @param HTML_Purifier_Config $configObject Defaults to using default config
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:114:16
-Docblock-defined class, interface or enum named IXP\Services\HTML_Purifier_Config does not exist (see https://psalm.dev/200)
-     * @return HTML_Purifier_Config $configObject
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:124:9
-Docblock-defined class, interface or enum named IXP\Services\HTML_Purifier_Config does not exist (see https://psalm.dev/200)
-        $configObject->set('HTML.DefinitionID', $definitionConfig['id']);
-
-ERROR: UndefinedClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:125:9
-Class, interface or enum named IXP\Services\HTML_Purifier_Config does not exist (see https://psalm.dev/019)
-        $configObject->set('HTML.DefinitionRev', $definitionConfig['rev']);
-
-ERROR: UndefinedClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:129:13
-Class, interface or enum named IXP\Services\HTML_Purifier_Config does not exist (see https://psalm.dev/019)
-            $configObject->set('Cache.DefinitionImpl', null);
-
-ERROR: UndefinedClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:133:20
-Class, interface or enum named IXP\Services\HTML_Purifier_Config does not exist (see https://psalm.dev/019)
-        if ($def = $configObject->maybeGetRawHTMLDefinition()) {
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:136:77
-Argument 2 of IXP\Services\Purifier::addCustomAttributes expects IXP\Services\HTMLPurifier_HTMLDefinition, but HTMLPurifier_HTMLDefinition provided (see https://psalm.dev/004)
-                $this->addCustomAttributes($definitionConfig['attributes'], $def);
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:141:73
-Argument 2 of IXP\Services\Purifier::addCustomElements expects IXP\Services\HTMLPurifier_HTMLDefinition, but HTMLPurifier_HTMLDefinition provided (see https://psalm.dev/004)
-                $this->addCustomElements($definitionConfig['elements'], $def);
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:152:15
-Docblock-defined class, interface or enum named IXP\Services\HTMLPurifier_HTMLDefinition does not exist (see https://psalm.dev/200)
-     * @param HTMLPurifier_HTMLDefinition $definition
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:154:16
-Docblock-defined class, interface or enum named IXP\Services\HTMLPurifier_HTMLDefinition does not exist (see https://psalm.dev/200)
-     * @return HTMLPurifier_HTMLDefinition $definition
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:165:13
-Docblock-defined class, interface or enum named IXP\Services\HTMLPurifier_HTMLDefinition does not exist (see https://psalm.dev/200)
-            $definition->addAttribute($onElement, $attrName, $validValues);
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:175:15
-Docblock-defined class, interface or enum named IXP\Services\HTMLPurifier_HTMLDefinition does not exist (see https://psalm.dev/200)
-     * @param HTMLPurifier_HTMLDefinition $definition
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:177:16
-Docblock-defined class, interface or enum named IXP\Services\HTMLPurifier_HTMLDefinition does not exist (see https://psalm.dev/200)
-     * @return HTMLPurifier_HTMLDefinition $definition
-
-ERROR: InvalidReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:177:16
-No return statements were found for method IXP\Services\Purifier::addCustomElements but return type 'IXP\Services\HTMLPurifier_HTMLDefinition' was expected (see https://psalm.dev/011)
-     * @return HTMLPurifier_HTMLDefinition $definition
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:190:17
-Docblock-defined class, interface or enum named IXP\Services\HTMLPurifier_HTMLDefinition does not exist (see https://psalm.dev/200)
-                $definition->addElement($name, $contentSet, $allowedChildren, $attributeCollection, $attributes);
-
-ERROR: UndefinedDocblockClass
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Purifier.php:192:17
-Docblock-defined class, interface or enum named IXP\Services\HTMLPurifier_HTMLDefinition does not exist (see https://psalm.dev/200)
-                $definition->addElement($name, $contentSet, $allowedChildren, $attributeCollection);
-
-ERROR: InvalidReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/RipeAtlas/Interpretor.php:145:16
-The declared return type 'bool' for IXP\Services\RipeAtlas\Interpretor::queryPassesThrough is incorrect, got 'int<0, max>' (see https://psalm.dev/011)
-     * @return bool
-
-ERROR: InvalidReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/RipeAtlas/Interpretor.php:158:16
-The inferred type 'int<0, max>' does not match the declared return type 'bool' for IXP\Services\RipeAtlas\Interpretor::queryPassesThrough (see https://psalm.dev/128)
-        return count( $path[ 'ixpx' ] );
-
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Support/helpers.php:84:37
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
             return Auth::getUser()->privs() >= $minAuth;
 
-ERROR: InvalidNullableReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Support/helpers.php:97:16
-The declared return type 'string' for ixp_get_client_ip is not nullable, but 'null|string' contains null (see https://psalm.dev/144)
-     * @return string
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Support/helpers.php:104:39
-Argument 2 of explode expects string, but non-empty-list<string>|scalar provided (see https://psalm.dev/004)
-                foreach( explode(',', $_SERVER[ $key ] ) as $ip ) {
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Support/helpers.php:116:39
-Argument 2 of explode expects string, but non-empty-list<string>|scalar provided (see https://psalm.dev/004)
-                foreach( explode(',', $_SERVER[ $key ] ) as $ip ) {
-
-ERROR: NullableReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Support/helpers.php:126:20
-The declared return type 'string' for ixp_get_client_ip is not nullable, but the function returns 'null|string' (see https://psalm.dev/139)
-            return request()->getClientIp();
-
-ERROR: ParamNameMismatch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Tasks/Irrdb/UpdateAsnDb.php:95:40
-Argument 1 of IXP\Tasks\Irrdb\UpdateAsnDb::validate has wrong name $asns, expecting $prefixes as defined by IXP\Tasks\Irrdb\UpdateDb::validate (see https://psalm.dev/230)
-    protected function validate( array $asns, int $protocol ) : array
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Tasks/Irrdb/UpdatePrefixDb.php:109:38
-Argument 1 of IXP\Rules\IPv4Cidr::passes expects string, but array<never, never> provided (see https://psalm.dev/004)
-            if( !$validator->passes( [], $p ) ) {
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Tasks/Irrdb/UpdatePrefixDb.php:109:38
-Argument 1 of IXP\Rules\IPv6Cidr::passes expects string, but array<never, never> provided (see https://psalm.dev/004)
-            if( !$validator->passes( [], $p ) ) {
+# Not really known what this method does, it is unused. It is callable as polymrophic
 
 ERROR: UndefinedThisPropertyFetch
 at /Users/laszlo/dev/ibn-ixp-manager/app/Traits/Observable.php:151:48
 Instance property IXP\Models\CustomerToCustomerTag::$id is not defined (see https://psalm.dev/041)
         return Log::entries( self::getClass(), $this->id, $user );
 
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/Bgpq3.php:105:83
-Argument 2 of IXP\Utils\Bgpq3::execute cannot be false, int value expected (see https://psalm.dev/004)
-        $json = $this->execute( '-3j -l pl -f 999 ' . escapeshellarg( $asmacro ), false );
+
+# global variable defined in version.php
 
 ERROR: UndefinedConstant
 at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/Export/JsonSchema.php:94:46
 Const APPLICATION_VERSION is not defined (see https://psalm.dev/020)
             'generator' => 'IXP Manager v' . APPLICATION_VERSION,
 
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/Foil/Extensions/IXP.php:105:27
-Argument 1 of round expects float|int, but array<array-key, string>|null|string provided (see https://psalm.dev/004)
-            return round( $size );
 
-ERROR: InvalidArrayOffset
-at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/Foil/Extensions/IXP.php:170:63
-Cannot access value on variable $formats using a int<0, max> offset, expecting int<0, 4> (see https://psalm.dev/115)
-                    return number_format( $v, $decs ) . ' ' . $formats[ $i ];
-
-ERROR: InvalidArrayOffset
-at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/Foil/Extensions/IXP.php:177:24
-Cannot access value on variable $formats using a int<0, max> offset, expecting int<0, 4> (see https://psalm.dev/115)
-                return $formats[ $i ];
+# issue inside the Former package
 
 ERROR: UndefinedDocblockClass
 at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/Former/Framework/TwitterBootstrap4.php:61:18
@@ -1833,10 +1099,16 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/Former/Framework/TwitterBootstrap
 Docblock-defined class, interface or enum named Former\Traits\Container does not exist (see https://psalm.dev/200)
         if( $this->app[ 'former.form' ]->isOfType( 'horizontal' ) ) {
 
+
+# it isn't error...
+
 ERROR: LessSpecificImplementedReturnType
 at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/Former/Framework/TwitterBootstrap4.php:72:16
 The inherited return type 'array<array-key, string>' for Former\Framework\TwitterBootstrap4::getLabelClasses is more specific than the implemented return type for IXP\Utils\Former\Framework\TwitterBootstrap4::getlabelclasses 'array<array-key, mixed>' (see https://psalm.dev/166)
      * @return array An array of attributes with the label class
+
+
+# issue inside the Former package
 
 ERROR: UndefinedDocblockClass
 at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/Former/Framework/TwitterBootstrap4.php:76:18
@@ -1908,65 +1180,14 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/Former/Framework/TwitterBootstrap
 Docblock-defined class, interface or enum named Former\Traits\Container does not exist (see https://psalm.dev/200)
             $class = $this->app[ 'former.form' ]->getAttributes()[ 'action-buttons-custom-class' ] ?? "";
 
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/Former/Framework/TwitterBootstrap4.php:179:66
-Argument 1 of HtmlObject\Element::addClass expects string, but list{string, string, ''|mixed} provided (see https://psalm.dev/004)
-            return  Element::create('div', $actions )->addClass( [ $this->fieldOffset, $this->fieldWidth , $class ]);
-
-ERROR: InvalidNullableReturnType
-at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/IpAddress.php:75:16
-The declared return type 'string' for IXP\Utils\IpAddress::getIp is not nullable, but 'null|string' contains null (see https://psalm.dev/144)
-     * @return string
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/IpAddress.php:81:39
-Argument 2 of explode expects string, but non-empty-list<string>|scalar provided (see https://psalm.dev/004)
-                foreach( explode(',', $_SERVER[ $key ] ) as $ip ) {
-
-ERROR: NullableReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/IpAddress.php:89:16
-The declared return type 'string' for IXP\Utils\IpAddress::getIp is not nullable, but the function returns 'null|string' (see https://psalm.dev/139)
-        return request()->getClientIp();
-
-ERROR: InvalidPropertyAssignmentValue
-at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/MailingList.php:65:22
-$this->key with declared type 'array<array-key, mixed>' cannot be assigned type 'string' (see https://psalm.dev/145)
-        $this->key = $listname;
-
-ERROR: InvalidArrayOffset
-at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/MailingList.php:84:69
-Cannot create offset of type array, expecting array-key (see https://psalm.dev/115)
-            return $query->whereJsonContains( 'prefs->mailinglist', [ $this->key => "1" ] );
-
-ERROR: InvalidArrayOffset
-at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/MailingList.php:86:69
-Cannot create offset of type array, expecting array-key (see https://psalm.dev/115)
-            return $query->whereJsonContains( 'prefs->mailinglist', [ $this->key => "0" ] );
+# issue of the package: variable type wrong declared (no errors caused)
 
 ERROR: InvalidArgument
 at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/MailingList.php:92:39
 Argument 1 of Illuminate\Support\Collection::add expects never, but lowercase-string provided (see https://psalm.dev/004)
                 $filtered_users->add( $e );
 
-ERROR: InvalidArrayOffset
-at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/MailingList.php:143:13
-Cannot access value on variable $prefs['mailinglist'][$this->key] using a array<array-key, mixed> offset, expecting array-key (see https://psalm.dev/115)
-            $prefs[ 'mailinglist' ][ $this->key ] = $value;
 
-ERROR: NullableReturnStatement
-at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/View/Alert/Container.php:66:20
-The declared return type 'IXP\Utils\View\Alert\Alert' for IXP\Utils\View\Alert\Container::pop is not nullable, but the function returns 'null' (see https://psalm.dev/139)
-            return null;
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/database/migrations/2021_03_30_124916_create_atlas_probes.php:28:38
-Argument 2 of Illuminate\Database\Schema\Blueprint::string expects int|null, but '255' provided (see https://psalm.dev/004)
-            $table->string('status', '255' )->nullable();
-
-ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/database/migrations/2021_09_17_144421_modernise_irrdb_conf_table.php:30:28
-Argument 1 of Illuminate\Database\Schema\Blueprint::string expects string, but 255 provided (see https://psalm.dev/004)
-            $table->string(255)->nullable()->after('host');
 
 ------------------------------
 503 errors found

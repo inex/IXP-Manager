@@ -99,7 +99,7 @@ class Customer extends Graph
      */
     public function name(): string
     {
-        return $this->customer()->name;
+        return $this->customer()->name ?: '';
     }
 
     /**

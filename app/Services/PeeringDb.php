@@ -40,7 +40,7 @@ use Illuminate\Support\Facades\Log;
  * @copyright  Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class PeeringDb
+class PeeringDb extends Exception
 {
 
     /** @const Cache key for IXs  */
@@ -60,9 +60,9 @@ class PeeringDb
     public int $status = 0;
 
     /**
-     * @var ?Exception If the api call threw an exception, it is caught and stored here.
+     * @var Exception If the api call threw an exception, it is caught and stored here.
      */
-    public ?Exception $exception;
+    public Exception $exception;
 
 
 

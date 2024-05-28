@@ -88,7 +88,7 @@ class RunMeasurements extends Command
 
         foreach( $ams as $am ){
             $atlasRuns[ $am->run_id ] = $am->atlasRun();
-            RunMeasurementsJob::dispatchNow( $am );
+            RunMeasurementsJob::dispatchSync( $am );
             $bar->advance();
         }
 

@@ -98,7 +98,7 @@ class Switcher extends Graph
      */
     public function name(): string
     {
-        return $this->switch()->name;
+        return $this->switch()->name ?: '';
     }
 
     /**

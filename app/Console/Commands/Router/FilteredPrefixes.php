@@ -71,7 +71,7 @@ class FilteredPrefixes extends Command
 
         $this->info( "Checking route server filtering for " . $customer->abbreviatedName . ". Please wait..." );
 
-        FetchFilteredPrefixesForCustomer::dispatchNow( $customer );
+        FetchFilteredPrefixesForCustomer::dispatchSync( $customer );
         $filteredPrefixes = Cache::get( 'filtered-prefixes-' . $customer->id );
 
         if( $filteredPrefixes === [] ) {
@@ -111,16 +111,18 @@ class FilteredPrefixes extends Command
         $custarg = $this->argument('customer');
 
         // assume ASN first:
-        if( is_numeric( $custarg ) && ( $c = Customer::where( 'autsys', $custarg )->first() ) ) {
-            return $c;
+        if( is_numeric( $custarg )) {
+            $c = Customer::where( 'autsys', $custarg )->first();
+            if(!$c) {
+                // then ID:
+                $c = Customer::find( $custarg );
+            }
+        } else {
+            // then check shortname:
+            $c = Customer::where( 'shortname', $custarg  )->first();
         }
 
-        // then ID:
-        if( is_numeric( $custarg ) && ( $c = Customer::find( $custarg ) ) ) {
-            return $c;
-        }
-
-        if( $c = Customer::where( 'shortname', $custarg  )->first() ) {
+        if ($c) {
             return $c;
         }
 

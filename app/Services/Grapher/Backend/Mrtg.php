@@ -471,7 +471,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
             return @file_get_contents( $rrd->png() );
         } catch( FileErrorException $e ) {
             Log::notice("[Grapher] {$this->name()} png(): could not load rrd file " . ( isset( $rrd ) ? $rrd->file() : '???' ) );
-            return false; // FIXME check handling of this
+            return ''; // FIXME check handling of this
         }
     }
 

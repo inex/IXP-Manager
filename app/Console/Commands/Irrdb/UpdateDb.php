@@ -57,9 +57,9 @@ abstract class UpdateDb extends Command
     /**
      * Returns all customers or, if specified on the command line, a specific customer
      *
-     * @return array|Builder|Customer
+     * @return mixed
      */
-    protected function resolveCustomers()
+    protected function resolveCustomers(): mixed
     {
         $custarg = $this->argument('customer' );
 

@@ -176,7 +176,7 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4
             if( $class === 'grey-box' ){
                 return Element::create('div', $actions )->addClass( "bg-light p-4 mt-4 shadow-sm text-center col-lg-12" );
             }
-            return  Element::create('div', $actions )->addClass( [ $this->fieldOffset, $this->fieldWidth , $class ]);
+            return  Element::create('div', $actions )->addClass( $this->fieldOffset.' '.$this->fieldWidth.' '.$class );
         }
 
         return $actions;

@@ -54,6 +54,7 @@ class ForgotUsername
      */
     public function handle( ForgotUsernameEvent $e ): void
     {
-        Mail::to( $e->email )->send( new ForgotPasswordMailable( $e->users ) );
+        Mail::to( $e->email )
+            ->send( new ForgotPasswordMailable( $e->users ) );
     }
 }

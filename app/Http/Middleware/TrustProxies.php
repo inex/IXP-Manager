@@ -25,7 +25,7 @@ namespace IXP\Http\Middleware;
 
 use Illuminate\Http\Request;
 
-use Fideloper\Proxy\TrustProxies as Middleware;
+use Illuminate\Http\Middleware\TrustProxies as Middleware;
 
 /**
  * Middleware: TrustProxies

@@ -211,38 +211,38 @@ class SwitchController extends EloquentController
     /**
      * List the contents of a database table.
      *
-     * @param Request $r
+     * @param Request $param
      *
      * @return View
      */
-    public function list( Request $r  ) : View
+    public function list( Request $param  ) : View
     {
-        if( ( $showActiveOnly = $r->activeOnly ) !== null  ) {
-            $r->session()->put( "switch-list-active-only", $showActiveOnly );
-        } else if( $r->session()->exists( "switch-list-active-only" ) ) {
-            $showActiveOnly = $r->session()->get( "switch-list-active-only" );
+        if( ( $showActiveOnly = $param->activeOnly ) !== null  ) {
+            $param->session()->put( "switch-list-active-only", $showActiveOnly );
+        } else if( $param->session()->exists( "switch-list-active-only" ) ) {
+            $showActiveOnly = $param->session()->get( "switch-list-active-only" );
         } else {
             $showActiveOnly = false;
         }
 
-        if( $vtype = $r->vtype ) {
-            $r->session()->put( "switch-list-vtype", $vtype );
-        } elseif( $r->session()->exists( "switch-list-vtype" ) ) {
-            $vtype = $r->session()->get( "switch-list-vtype" );
+        if( $vtype = $param->vtype ) {
+            $param->session()->put( "switch-list-vtype", $vtype );
+        } elseif( $param->session()->exists( "switch-list-vtype" ) ) {
+            $vtype = $param->session()->get( "switch-list-vtype" );
         } else {
-            $r->session()->remove( "switch-list-vtype" );
+            $param->session()->remove( "switch-list-vtype" );
             $vtype = Switcher::VIEW_MODE_DEFAULT;
         }
 
-        if( $r->infra ) {
-            if(  $infra = Infrastructure::find( $r->infra ) ) {
-                $r->session()->put( "switch-list-infra", $infra );
+        if( $param->infra ) {
+            if(  $infra = Infrastructure::find( $param->infra ) ) {
+                $param->session()->put( "switch-list-infra", $infra );
             } else {
-                $r->session()->remove( "switch-list-infra" );
+                $param->session()->remove( "switch-list-infra" );
                 $infra = false;
             }
-        } else if( $r->session()->exists( "switch-list-infra" ) ) {
-            $infra = $r->session()->get( "switch-list-infra" );
+        } else if( $param->session()->exists( "switch-list-infra" ) ) {
+            $infra = $param->session()->get( "switch-list-infra" );
         } else {
             $infra = false;
         }
@@ -364,7 +364,7 @@ class SwitchController extends EloquentController
     {
         return [
             'object'            => $this->object,
-            'addBySnmp'         => request()->old( 'add_by_snnp', false ),
+            'addBySnmp'         => request()->old( 'add_by_snnp', null ),
             'preAddForm'        => false,
             'cabinets'          => Location::with( 'cabinets' )
                 ->has( 'cabinets' )->get()->toArray(),// getting the cabinets via the location to build the grouped options dropdown
@@ -415,8 +415,8 @@ class SwitchController extends EloquentController
             'snmppasswd'        => request()->old( 'snmppasswd',            $this->object->snmppasswd ),
             'vendorid'          => request()->old( 'vendorid',              $this->object->vendorid ),
             'model'             => request()->old( 'model',                 $this->object->model ),
-            'active'            => request()->old( 'active',                ( $this->object->active ? 1 : 0 ) ),
-            'poll'              => request()->old( 'poll',                  ( $this->object->poll ? 1 : 0 ) ),
+            'active'            => request()->old( 'active',                ( $this->object->active ? '1' : '0' ) ),
+            'poll'              => request()->old( 'poll',                  ( $this->object->poll ? '1' : '0' ) ),
             'asn'               => request()->old( 'asn',                   $this->object->asn ),
             'loopback_ip'       => request()->old( 'loopback_ip',           $this->object->loopback_ip ),
             'loopback_name'     => request()->old( 'loopback_name',         $this->object->loopback_name ),
@@ -426,7 +426,7 @@ class SwitchController extends EloquentController
 
         return [
             'object'            => $this->object,
-            'addBySnmp'         => request()->old( 'add_by_snnp', false ),
+            'addBySnmp'         => request()->old( 'add_by_snnp', null ),
             'preAddForm'        => false,
             'cabinets'          => Location::with( 'cabinets' )
                 ->has( 'cabinets' )->get()->toArray(),// getting the cabinets via the location to build the grouped options dropdown
@@ -693,11 +693,11 @@ class SwitchController extends EloquentController
         }
 
         $config = SwitcherAggregator::getConfiguration(
-            $switch->id ?? null,
-            $infra->id ?? null,
-            $location->id ?? null,
+            $switch ? $switch->id : null,
+            $infra ? $infra->id : null,
+            $location ? $location->id : null,
             $speed,
-            $vlan->id ?? null,
+            $vlan ? $vlan->id : null,
             (bool) $r->input('rs-client'),
             (bool) $r->input('ipv6-enabled')
         );
@@ -713,7 +713,7 @@ class SwitchController extends EloquentController
             'infras'                    => $switch ? [ Infrastructure::find( $switch->infrastructure ) ] : Infrastructure::orderBy( 'name' )->get(),
             'vlans'                     => Vlan::orderBy( 'name' )->get(),
             'locations'                 => $switch ? [ Location::find( $switch->cabinet->locationid ) ] : Location::orderBy( 'name' )->get(),
-            'switches'                  => SwitcherAggregator::getByLocationInfrastructureSpeed( $infra->id ?? null, $location->id ?? null, $speed ?: null ),
+            'switches'                  => SwitcherAggregator::getByLocationInfrastructureSpeed( $infra ? $infra->id : null, $location ? $location->id : null, $speed ?: null ),
             'config'                    => $config,
         ]);
     }

@@ -126,23 +126,23 @@ class Latency extends Graph
     /**
      * Set the period we should use
      *
-     * @param string $v
+     * @param string $value
      *
      * @return Graph Fluid interface
      *
      * @throws ParameterException
      */
-    public function setPeriod( string $v ): Graph
+    public function setPeriod( string $value ): Graph
     {
-        if( !isset( self::PERIODS[ $v ] ) ) {
-            throw new ParameterException('Invalid period ' . $v );
+        if( !isset( self::PERIODS[ $value ] ) ) {
+            throw new ParameterException('Invalid period ' . $value );
         }
 
-        if( $this->period() !== $v ) {
+        if( $this->period() !== $value ) {
             $this->wipe();
         }
 
-        $this->period = $v;
+        $this->period = $value;
         return $this;
     }
 
