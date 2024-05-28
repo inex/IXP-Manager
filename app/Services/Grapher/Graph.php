@@ -664,14 +664,14 @@ abstract class Graph
      *
      * UNFINISHED METHOD!
      *
-     * @return void //bool
+     * @return bool
      *
      * @throws
      */
-    public function authorise(): void
+    public function authorise(): bool
     {
         $this->deny();
-        /*return false;*/
+        return false;
     }
 
     /**

@@ -162,19 +162,20 @@ class Customer extends Graph
         }
 
         if( config( 'grapher.access.customer' ) !== 'own_graphs_only'
-                && is_numeric( config( 'grapher.access.customer' ) )
-                && Auth::getUser()->privs() >= config( 'grapher.access.customer' )
+            && is_numeric( config( 'grapher.access.customer' ) )
+            && Auth::getUser()->privs() >= config( 'grapher.access.customer' )
         ) {
             return $this->allow();
         }
 
         Log::notice( sprintf( "[Grapher] [Customer]: user %d::%s tried to access a customer aggregate graph "
-            . "{$this->customer()->id} which is not theirs", Auth::id(), Auth::getUser()->username )
+                . "{$this->customer()->id} which is not theirs", Auth::id(), Auth::getUser()->username )
         );
 
         $this->deny();
         return false;
     }
+
 
     /**
      * Generate a URL to get this graphs 'file' of a given type
