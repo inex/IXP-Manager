@@ -212,6 +212,56 @@ class RouterController extends Controller
     }
 
     /**
+     * Find any routers that are stuck in a configuration upgrade / locked for longer than $threashold seconds
+     *
+     * Returns the JSON version of the array:
+     *
+     *     [
+     *         "handle" => [
+     *             "last_update_started"      => "2024-05-23T19:55:29+01:00",
+     *             "last_update_started_unix" => 1716490529,
+     *             "last_updated"             => '2024-05-23T19:55:28+01:00',
+     *             "last_updated_unix"        => 1716490528
+     *          ],
+     *          ...
+     *     ]
+     *
+     * @param int $threshold
+     *
+     * @return JsonResponse
+     */
+    public function getAllLockedLongerThan( int $threshold ): JsonResponse
+    {
+        $result = [];
+        foreach( Router::all() as $r ) {
+
+            if( $r->pause_updates ) {
+                continue; // skip paused routers
+            }
+
+            if( !$r->last_update_started && !$r->last_updated ) {
+                continue; // never updated / never used
+            }
+
+            if( $r->last_update_started && $r->last_updated && $r->last_updated->gte( $r->last_update_started ) ) {
+                continue;
+            }
+
+            if( !$r->last_updated && $r->last_update_started->diffInSeconds( Carbon::now() ) > $threshold ) {
+                $result[ $r->handle ] = $this->lastUpdatedArray( $r );
+                continue;
+            }
+
+            if( $r->last_updated && $r->last_updated->diffInSeconds( $r->last_update_started ) >= $threshold ) {
+                $result[ $r->handle ] = $this->lastUpdatedArray( $r );
+            }
+
+        }
+
+        return response()->json( $result );
+    }
+
+    /**
      * Format the router's last updated datetime as an array
      *
      * @param Router $r

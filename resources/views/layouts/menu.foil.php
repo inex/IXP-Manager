@@ -291,11 +291,13 @@
                         </a>
                     </li>
 
-                    <li class="nav-sub-menu-item <?= request()->is( 'rs-filters/list-customers' ) ? 'active' : '' ?>" >
-                        <a href="<?= route('rs-filters@list-customers' ) ?>" class="nav-link" >
-                            Customers with Filters
-                        </a>
-                    </li>
+                    <?php if( !config( 'ixp_fe.frontend.disabled.rs-filters') ): ?>
+                        <li class="nav-sub-menu-item <?= request()->is( 'rs-filters/list-customers' ) ? 'active' : '' ?>" >
+                            <a href="<?= route('rs-filters@list-customers' ) ?>" class="nav-link" >
+                                Customers with Filters
+                            </a>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             <?php endif;?>
 
