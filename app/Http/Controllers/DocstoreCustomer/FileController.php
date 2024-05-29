@@ -179,7 +179,7 @@ class FileController extends Controller
 
         $uploadedFile = $r->file('uploadedFile' );
 
-        $path = $uploadedFile->store( (string) $cust->id, 'docstore_customers' );
+        $path = $uploadedFile->store( $cust->id, 'docstore_customers' );
 
         $file = DocstoreCustomerFile::create( [
             'name'                              => $r->name,
@@ -187,7 +187,7 @@ class FileController extends Controller
             'cust_id'                           => $cust->id,
             'min_privs'                         => $r->min_privs,
             'path'                              => $path,
-            'sha256'                            => hash_file( 'sha256', $uploadedFile->getFilename() ),
+            'sha256'                            => hash_file( 'sha256', $uploadedFile ),
             'created_by'                        => $r->user()->id,
             'file_last_updated'                 => now(),
             'docstore_customer_directory_id'    => $r->docstore_customer_directory_id,
@@ -256,7 +256,7 @@ class FileController extends Controller
 
             $file->update([
                 'path'                  => $path,
-                'sha256'                => hash_file( 'sha256', $uploadedFile->getFilename() ),
+                'sha256'                => hash_file( 'sha256', $uploadedFile ),
                 'file_last_updated'     => now(),
             ]);
 
@@ -322,9 +322,10 @@ class FileController extends Controller
             }),
             'sha256'                            => [ 'nullable', 'max:64',
                 function ( $attribute, $value, $fail ) use( $r ) {
-                    if( $value && $r->file('uploadedFile' ) && $value !== hash_file( 'sha256', $r->file( 'uploadedFile' )->getFilename() ) ) {
+                    if( $value && $r->file('uploadedFile' ) && $value !== hash_file( 'sha256', $r->file( 'uploadedFile' ) ) ) {
                         return $fail( 'The sha256 checksum calculated on the server does not match the one you provided.' );
                     }
+                    return null;
                 },
             ],
             'min_privs'                         => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES ) ),

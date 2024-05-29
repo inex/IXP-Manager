@@ -116,7 +116,7 @@ class FileController extends Controller
             'docstore_directory_id' => $r->docstore_directory_id,
             'min_privs'             => $r->min_privs,
             'path'                  => $path,
-            'sha256'                => hash_file( 'sha256', $file->getFilename() ),
+            'sha256'                => hash_file( 'sha256', $file ),
             'created_by'            => Auth::id(),
             'file_last_updated'     => now(),
         ] );
@@ -180,7 +180,7 @@ class FileController extends Controller
 
             $file->update([
                 'path'                  => $path,
-                'sha256'                => hash_file( 'sha256', $uploadedFile->getFilename() ),
+                'sha256'                => hash_file( 'sha256', $uploadedFile ),
                 'file_last_updated'     => now(),
             ]);
 
@@ -321,7 +321,7 @@ class FileController extends Controller
             'uploadedFile'          => Rule::requiredIf( function() use ( $r, $file ) {
                 return !$file;
             }),
-            'sha256'                => 'nullable|max:64' . ( $r->file( 'uploadedFile' ) ? '|in:' . hash_file( 'sha256', $r->file( 'uploadedFile' )->getFilename() ) : '' ) ,
+            'sha256'                => 'nullable|max:64' . ( $r->file( 'uploadedFile' ) ? '|in:' . hash_file( 'sha256', $r->file( 'uploadedFile' ) ) : '' ) ,
             'min_privs'             => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES_TEXT_ALL ) ),
             'docstore_directory_id' => 'nullable|integer|exists:docstore_directories,id',
         ] );
