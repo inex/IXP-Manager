@@ -23,7 +23,6 @@ namespace IXP\Http\Requests;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use AllowDynamicProperties;
 use Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -40,23 +39,6 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class StatisticsRequest extends FormRequest
 {
-    /**
-     * @var mixed|string
-     */
-    public mixed $period;
-    /**
-     * @var mixed|string
-     */
-    public mixed $category;
-    /**
-     * @var mixed|string
-     */
-    public mixed $protocol;
-    /**
-     * @var mixed|string
-     */
-    public mixed $type;
-
     /**
      * Determine if the user is authorized to make this request.
      *
