@@ -151,31 +151,32 @@ class VlanInterfaceController extends Common
      */
     public function edit( Request $r,  VlanInterface $vli, VirtualInterface $vi = null, Vlan $duplicateTo = null ): View
     {
-        Former::populate([
-            'vlanid'                    => $r->old( 'vlanid',           (string)$duplicateTo->id ?? $vli->vlanid ),
-            'irrdbfilter'               => $r->old( 'irrdbfilter',              (string)$vli->irrdbfilter               ),
-            'mcastenabled'              => $r->old( 'mcastenabled',             (string)$vli->mcastenabled              ),
+        $vlanId = $duplicateTo->id ?? $vli->vlanid;
+        Former::populate( [
+            'vlanid'       => $r->old( 'vlanid', (string)$vlanId ),
+            'irrdbfilter'  => $r->old( 'irrdbfilter', (string)$vli->irrdbfilter ),
+            'mcastenabled' => $r->old( 'mcastenabled', (string)$vli->mcastenabled ),
 
-            'ipv4enabled'               => $r->old( 'ipv4enabled',              (string)$vli->ipv4enabled               ),
-            'ipv4address'               => $r->old( 'ipv4address',              (string)$vli->ipv4addressid             ),
-            'ipv4hostname'              => $r->old( 'ipv4hostname',             $vli->ipv4hostname              ),
-            'ipv4bgpmd5secret'          => $r->old( 'ipv4bgpmd5secret',         $vli->ipv4bgpmd5secret          ),
-            'ipv4canping'               => $r->old( 'ipv4canping',              (string)$vli->ipv4canping               ),
-            'ipv4monitorrcbgp'          => $r->old( 'ipv4monitorrcbgp',         (string)$vli->ipv4monitorrcbgp          ),
+            'ipv4enabled'      => $r->old( 'ipv4enabled', (string)$vli->ipv4enabled ),
+            'ipv4address'      => $r->old( 'ipv4address', (string)$vli->ipv4addressid ),
+            'ipv4hostname'     => $r->old( 'ipv4hostname', $vli->ipv4hostname ),
+            'ipv4bgpmd5secret' => $r->old( 'ipv4bgpmd5secret', $vli->ipv4bgpmd5secret ),
+            'ipv4canping'      => $r->old( 'ipv4canping', (string)$vli->ipv4canping ),
+            'ipv4monitorrcbgp' => $r->old( 'ipv4monitorrcbgp', (string)$vli->ipv4monitorrcbgp ),
 
-            'maxbgpprefix'              => $r->old( 'maxbgpprefix',             (string)$vli->maxbgpprefix              ),
-            'rsclient'                  => $r->old( 'rsclient',                 (string)$vli->rsclient                  ),
-            'rsmorespecifics'           => $r->old( 'rsmorespecifics',          (string)$vli->rsmorespecifics           ),
-            'as112client'               => $r->old( 'as112client',              (string)$vli->as112client               ),
-            'busyhost'                  => $r->old( 'busyhost',                 (string)$vli->busyhost                  ),
+            'maxbgpprefix'    => $r->old( 'maxbgpprefix', (string)$vli->maxbgpprefix ),
+            'rsclient'        => $r->old( 'rsclient', (string)$vli->rsclient ),
+            'rsmorespecifics' => $r->old( 'rsmorespecifics', (string)$vli->rsmorespecifics ),
+            'as112client'     => $r->old( 'as112client', (string)$vli->as112client ),
+            'busyhost'        => $r->old( 'busyhost', (string)$vli->busyhost ),
 
-            'ipv6enabled'               => $r->old( 'ipv6enabled',              (string)$vli->ipv6enabled               ),
-            'ipv6address'               => $r->old( 'ipv6address',              (string)$vli->ipv6addressid             ),
-            'ipv6hostname'              => $r->old( 'ipv6hostname',             $vli->ipv6hostname              ),
-            'ipv6bgpmd5secret'          => $r->old( 'ipv6bgpmd5secret',         $vli->ipv6bgpmd5secret          ),
-            'ipv6canping'               => $r->old( 'ipv6canping',              (string)$vli->ipv6canping               ),
-            'ipv6monitorrcbgp'          => $r->old( 'ipv6monitorrcbgp',         (string)$vli->ipv6monitorrcbgp          ),
-        ]);
+            'ipv6enabled'      => $r->old( 'ipv6enabled', (string)$vli->ipv6enabled ),
+            'ipv6address'      => $r->old( 'ipv6address', (string)$vli->ipv6addressid ),
+            'ipv6hostname'     => $r->old( 'ipv6hostname', $vli->ipv6hostname ),
+            'ipv6bgpmd5secret' => $r->old( 'ipv6bgpmd5secret', $vli->ipv6bgpmd5secret ),
+            'ipv6canping'      => $r->old( 'ipv6canping', (string)$vli->ipv6canping ),
+            'ipv6monitorrcbgp' => $r->old( 'ipv6monitorrcbgp', (string)$vli->ipv6monitorrcbgp ),
+        ] );
 
         $redirect2vi = (bool) $vi;
         if( !$vi ){
