@@ -87,19 +87,19 @@ class UpdateAsnDb extends UpdateDb
      * Validate a given array of CIDR formatted prefixes for the given protocol and
      * remove (and alert on) any elements failing validation.
      *
-     * @param array $asns ASNs from IRRDB
+     * @param array $prefixes ASNs from IRRDB
      * @param int $protocol Either 4/6
      *
      * @return array Valid ASNs
      */
-    protected function validate( array $asns, int $protocol ) : array
+    protected function validate( array $prefixes, int $protocol ) : array
     {
-        foreach( $asns as $i => $a ) {
-            if( !is_numeric( $a ) || $a <= 0 || $a > 4294967294 ) {
-                unset( $asns[ $i ] );
-                Log::alert( 'IRRDB CLI action - removing invalid ASN ' . $a . ' from IRRDB result set!' );
+        foreach( $prefixes as $key => $value ) {
+            if( !is_numeric( $value ) || $value <= 0 || $value > 4294967294 ) {
+                unset( $prefixes[ $key ] );
+                Log::alert( 'IRRDB CLI action - removing invalid ASN ' . $value . ' from IRRDB result set!' );
             }
         }
-        return $asns;
+        return $prefixes;
     }
 }

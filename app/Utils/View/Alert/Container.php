@@ -56,7 +56,7 @@ class Container
      *
      * FIXME: when PHP 7.1 is a req, fix the return type
      *
-     * @return Alert null for none ( === null)
+     * @return Alert|null for none ( === null)
      */
     public static function pop()
     {

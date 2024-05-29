@@ -134,37 +134,37 @@ class CoreBundleController extends Common
     /**
      * Display the form to edit a core bundle
      *
-     * @param  Request      $request      Instance of the current HTTP request
-     * @param  CoreBundle   $coreBundle     Core bundle
+     * @param  Request      $r      Instance of the current HTTP request
+     * @param  CoreBundle   $cb     Core bundle
      *
      * @return  View
      */
-    public function edit( Request $request, CoreBundle $coreBundle ): View
+    public function edit( Request $r, CoreBundle $cb ): View
     {
-        $customer = $coreBundle->customer();
+        $customer = $cb->customer();
         $customerId = !$customer ? 0 : $customer->id;
 
         // fill the form with the core bundle data
         Former::populate( [
-            'custid'      => $request->old( 'custid', (string)$customerId ),
-            'description' => $request->old( 'description', $coreBundle->description ),
-            'graph_title' => $request->old( 'graph_title', $coreBundle->graph_title ),
-            'cost'        => $request->old( 'cost', (string)$coreBundle->cost ),
-            'preference'  => $request->old( 'preference', (string)$coreBundle->preference ),
-            'type'        => $request->old( 'type', (string)$coreBundle->type ),
-            'ipv4_subnet' => $request->old( 'ipv4_subnet', $coreBundle->ipv4_subnet ),
-            'enabled'     => $request->old( 'enabled', (string)$coreBundle->enabled ),
-            'bfd'         => $request->old( 'bfd', (string)$coreBundle->bfd ),
-            'stp'         => $request->old( 'stp', (string)$coreBundle->stp ),
+            'custid'      => $r->old( 'custid', (string)$customerId ),
+            'description' => $r->old( 'description', $cb->description ),
+            'graph_title' => $r->old( 'graph_title', $cb->graph_title ),
+            'cost'        => $r->old( 'cost', (string)$cb->cost ),
+            'preference'  => $r->old( 'preference', (string)$cb->preference ),
+            'type'        => $r->old( 'type', (string)$cb->type ),
+            'ipv4_subnet' => $r->old( 'ipv4_subnet', $cb->ipv4_subnet ),
+            'enabled'     => $r->old( 'enabled', (string)$cb->enabled ),
+            'bfd'         => $r->old( 'bfd', (string)$cb->bfd ),
+            'stp'         => $r->old( 'stp', (string)$cb->stp ),
         ] );
 
-        $switchSideA = $coreBundle->switchSideX();
+        $switchSideA = $cb->switchSideX();
         $switchSideAId = $switchSideA ? $switchSideA->id : null;
-        $switchSideB = $coreBundle->switchSideX( false );
+        $switchSideB = $cb->switchSideX( false );
         $switchSideBId = $switchSideB ? $switchSideB->id : null;
 
         return view( 'interfaces/core-bundle/edit/edit-wizard' )->with( [
-            'cb'               => $coreBundle,
+            'cb'               => $cb,
             'customers'        => Customer::internal()->get(),
             'switchPortsSideA' => SwitcherAggregator::allPorts( $switchSideAId, [ SwitchPort::TYPE_CORE, SwitchPort::TYPE_UNSET ], notAssignToPI: true ),
             'switchPortsSideB' => SwitcherAggregator::allPorts( $switchSideBId, [ SwitchPort::TYPE_CORE, SwitchPort::TYPE_UNSET ], notAssignToPI: true ),

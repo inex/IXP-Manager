@@ -46,7 +46,7 @@ class PortsWithCounts extends Mailable
     public $ports;
 
     /**
-     * @var float
+     * @var string
      */
     public $category;
 

@@ -49,9 +49,9 @@ class IXP extends Graph
      *
      * @param array $params
      *
-     * @return Grapher Fluid interface
+     * @return IXP Fluid interface
      */
-    public function setParamsFromArray( array $params ): Graph
+    public function setParamsFromArray( array $params ): IXP
     {
         parent::setParamsFromArray( $params );
         return $this;
@@ -95,7 +95,6 @@ class IXP extends Graph
 
         if( in_array( $this->category(), [ self::CATEGORY_ERRORS, self::CATEGORY_DISCARDS ], true ) ) {
             $this->deny();
-            return false;
         }
 
         if( is_numeric( config( 'grapher.access.ixp' ) ) && (int)config( 'grapher.access.ixp' ) === User::AUTH_PUBLIC ) {
@@ -107,7 +106,6 @@ class IXP extends Graph
         }
 
         $this->deny();
-        return false;
     }
 
     /**

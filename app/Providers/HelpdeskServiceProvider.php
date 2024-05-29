@@ -90,7 +90,7 @@ class HelpdeskServiceProvider extends ServiceProvider
      *
      * @return array
      */
-    public function provides(): arrau
+    public function provides(): array
     {
         return [ Helpdesk::class ];
     }

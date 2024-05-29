@@ -26,8 +26,6 @@ use Illuminate\Support\Facades\Mail;
 
 use IXP\Console\Commands\Command as IXPCommand;
 
-use IXP\Mail\Utils\SmtpTest as SmtpTestMail;
-
 /**
  * Class SmtpMailTest - test sending emails
  *
@@ -94,11 +92,10 @@ class SmtpMailTest extends IXPCommand
 
         $this->info( "Trying to send email...\n" );
 
-        if( $this->getOutput()->isVerbose() ) {
-            $mail = new SmtpTestMail( true );
-        } else {
-            $mail = new SmtpTestMail;
-        }
+        $mail = (object) [
+            "markdown" => 'utils.emails.smtp-test',
+            "subject" =>'SMTP test email from IXP Manager'
+        ];
 
         try {
             Mail::to( $email )->send( $mail );

@@ -662,6 +662,8 @@ abstract class Graph
      * In it's default incarnation, this will **always** fail. You need to explicitly
      * allow graph access based on your own requirements.
      *
+     * UNFINISHED METHOD!
+     *
      * @return bool
      *
      * @throws
@@ -706,23 +708,23 @@ abstract class Graph
     /**
      * Set the period we should use
      *
-     * @param string $v
+     * @param string $value
      *
      * @return Graph Fluid interface
      *
      * @throws ParameterException
      */
-    public function setPeriod( string $v ): Graph
+    public function setPeriod( string $value ): Graph
     {
-        if( !isset( $this::PERIODS[ $v ] ) ) {
-            throw new ParameterException('Invalid period ' . $v );
+        if( !isset( $this::PERIODS[ $value ] ) ) {
+            throw new ParameterException('Invalid period ' . $value );
         }
 
-        if( $this->period() !== $v ) {
+        if( $this->period() !== $value ) {
             $this->wipe();
         }
 
-        $this->period = $v;
+        $this->period = $value;
         return $this;
     }
 
@@ -751,23 +753,23 @@ abstract class Graph
     /**
      * Set the protocol we should use
      *
-     * @param string $v
+     * @param string $value
      *
      * @return Graph Fluid interface
      *
      * @throws ParameterException
      */
-    public function setProtocol( string $v ): Graph
+    public function setProtocol( string $value ): Graph
     {
-        if( !isset( $this::PROTOCOLS[ $v ] ) ) {
-            throw new ParameterException('Invalid protocol ' . $v );
+        if( !isset( $this::PROTOCOLS[ $value ] ) ) {
+            throw new ParameterException('Invalid protocol ' . $value );
         }
 
-        if( $this->protocol() !== $v ) {
+        if( $this->protocol() !== $value ) {
             $this->wipe();
         }
 
-        $this->protocol = $v;
+        $this->protocol = $value;
         return $this;
     }
 
@@ -817,23 +819,23 @@ abstract class Graph
     /**
      * Set the category we should use
      *
-     * @param string $v
+     * @param string $category_value
      *
      * @return Graph Fluid interface
      *
      * @throws ParameterException
      */
-    public function setCategory( string $v ): Graph
+    public function setCategory( string $category_value ): Graph
     {
-        if( !isset( $this::CATEGORIES[ $v ] ) ) {
-            throw new ParameterException('Invalid category ' . $v );
+        if( !isset( $this::CATEGORIES[ $category_value ] ) ) {
+            throw new ParameterException('Invalid category ' . $category_value );
         }
 
-        if( $this->category() !== $v ) {
+        if( $this->category() !== $category_value ) {
             $this->wipe();
         }
 
-        $this->category = $v;
+        $this->category = $category_value;
         return $this;
     }
 
@@ -849,23 +851,23 @@ abstract class Graph
     /**
      * Set the type we should use
      *
-     * @param string $v
+     * @param string $type_value
      *
      * @return Graph Fluid interface
      *
      * @throws ParameterException
      */
-    public function setType( string $v ): Graph
+    public function setType( string $type_value ): Graph
     {
-        if( !isset( $this::TYPES[ $v ] ) ) {
-            throw new ParameterException('Invalid type ' . $v );
+        if( !isset( $this::TYPES[ $type_value ] ) ) {
+            throw new ParameterException('Invalid type ' . $type_value );
         }
 
-        if( $this->type() !== $v ) {
+        if( $this->type() !== $type_value ) {
             $this->wipe();
         }
 
-        $this->type = $v;
+        $this->type = $type_value;
         return $this;
     }
 
@@ -900,11 +902,11 @@ abstract class Graph
      */
     public function getParamsAsArray(): array
     {
-        $p = [];
+        $parameters = [];
         foreach( [ 'type', 'category', 'period', 'protocol'] as $param ){
-            $p[ $param ] = $this->$param();
+            $parameters[ $param ] = $this->$param();
         }
-        return $p;
+        return $parameters;
     }
 
     /**
@@ -913,17 +915,17 @@ abstract class Graph
      * Note that this function just sets the default if the input is invalid.
      * If you want to force an exception in such cases, use setPeriod()
      *
-     * @param string|null  $v The user input value
-     * @param string|null  $d The preferred default value
+     * @param string|null $value The user input value
+     * @param string|null $default The preferred default value
      *
-     * @return string The verified / sanitised / default value
+     * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterPeriod( $v = null, $d = null ): string
+    public static function processParameterPeriod( string $value = null, string $default = null ): string|null
     {
-        if( !isset( self::PERIODS[ $v ] ) ) {
-            $v = $d ?? self::PERIOD_DEFAULT;
+        if( !isset( self::PERIODS[ $value ] ) ) {
+            $value = $default ?? self::PERIOD_DEFAULT;
         }
-        return $v;
+        return $value;
     }
 
     /**
@@ -932,16 +934,16 @@ abstract class Graph
      * Note that this function just sets the default if the input is invalid.
      * If you want to force an exception in such cases, use setProtocol()
      *
-     * @param string|null $v The user input value
+     * @param string|null $value The user input value
      *
-     * @return string The verified / sanitised / default value
+     * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterProtocol( $v = null ): string
+    public static function processParameterProtocol( string $value = null ): string|null
     {
-        if( !isset( self::PROTOCOLS[ $v ] ) ) {
-            $v = self::PROTOCOL_DEFAULT;
+        if( !isset( self::PROTOCOLS[ $value ] ) ) {
+            $value = self::PROTOCOL_DEFAULT;
         }
-        return $v;
+        return $value;
     }
 
     /**
@@ -950,15 +952,15 @@ abstract class Graph
      * Note that this function just sets the default (ipv4) if the input is invalid.
      * If you want to force an exception in such cases, use setProtocol()
      *
-     * @param string|null $v The user input value
-     * @return string The verified / sanitised / default value
+     * @param string|null $value The user input value
+     * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterRealProtocol( $v = null ): string
+    public static function processParameterRealProtocol( string $value = null ): string|null
     {
-        if( !isset( self::PROTOCOLS_REAL[ $v ] ) ) {
-            $v = self::PROTOCOL_IPV4;
+        if( !isset( self::PROTOCOLS_REAL[ $value ] ) ) {
+            $value = self::PROTOCOL_IPV4;
         }
-        return $v;
+        return $value;
     }
 
     /**
@@ -967,17 +969,17 @@ abstract class Graph
      * Note that this function just sets the default if the input is invalid.
      * If you want to force an exception in such cases, use setCategory()
      *
-     * @param string|null $v The user input value
+     * @param string|null $value The user input value
      * @param bool $bits_pkts_only
      *
-     * @return string The verified / sanitised / default value
+     * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterCategory( $v = null, $bits_pkts_only = false ): string
+    public static function processParameterCategory( string $value = null, bool $bits_pkts_only = false ): string|null
     {
-        if( ( $bits_pkts_only && !isset( self::CATEGORIES_BITS_PKTS[$v] ) ) || ( !$bits_pkts_only && !isset( self::CATEGORIES[ $v ] ) ) ) {
-            $v = self::CATEGORY_DEFAULT;
+        if( ( $bits_pkts_only && !isset( self::CATEGORIES_BITS_PKTS[$value] ) ) || ( !$bits_pkts_only && !isset( self::CATEGORIES[ $value ] ) ) ) {
+            $value = self::CATEGORY_DEFAULT;
         }
-        return $v;
+        return $value;
     }
 
     /**
@@ -986,15 +988,15 @@ abstract class Graph
      * Note that this function just sets the default if the input is invalid.
      * If you want to force an exception in such cases, use setType()
      *
-     * @param string|null $v The user input value
+     * @param string|null $value The user input value
      *
-     * @return string The verified / sanitised / default value
+     * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterType( $v = null ): string
+    public static function processParameterType( string $value = null ): string|null
     {
-        if( !isset( self::TYPES[ $v ] ) ) {
-            $v = self::TYPE_DEFAULT;
+        if( !isset( self::TYPES[ $value ] ) ) {
+            $value = self::TYPE_DEFAULT;
         }
-        return $v;
+        return $value;
     }
 }

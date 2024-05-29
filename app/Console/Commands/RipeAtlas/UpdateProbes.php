@@ -23,6 +23,7 @@ namespace IXP\Console\Commands\RipeAtlas;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Illuminate\Database\Eloquent\Collection;
 use IXP\Console\Commands\Command;
 
 use IXP\Jobs\RipeAtlas\UpdateProbes as UpdateProbesJob;
@@ -75,7 +76,7 @@ class UpdateProbes extends Command
         $bar->start();
 
         foreach( $customers as $c ){
-            UpdateProbesJob::dispatchNow( $c );
+            UpdateProbesJob::dispatchSync( $c );
             $bar->advance();
         }
 
@@ -92,9 +93,9 @@ class UpdateProbes extends Command
     /**
      * Returns all customers or, if specified on the command line, a specific customer
      *
-     * @return array Customer
+     * @return Collection|array Customer
      */
-    protected function resolveCustomers()
+    protected function resolveCustomers(): Collection|array
     {
         $cust = $this->argument('customer');
 
@@ -104,17 +105,18 @@ class UpdateProbes extends Command
         }
 
         // assume ASN first:
-        if( is_numeric( $cust ) && ( $c = Customer::where( 'autsys', $cust )->first() ) ) {
-            return [ $c ];
+        if( is_numeric( $cust )) {
+            $c = Customer::where( 'autsys', $cust )->first();
+            if ( !$c ) {
+                // then ID:
+                $c = Customer::find( $cust );
+            }
+        } else {
+            // then check shortname:
+            $c = Customer::where( 'shortname', $cust )->first();
         }
 
-        // then ID:
-        if( is_numeric( $cust ) && ( $c = Customer::find( $cust ) ) ) {
-            return [ $c ];
-        }
-
-        // then check shortname:
-        if( $c = Customer::where( 'shortname', $cust )->first() ) {
+        if($c) {
             return [ $c ];
         }
 

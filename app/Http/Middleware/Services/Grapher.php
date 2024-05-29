@@ -91,104 +91,104 @@ class Grapher
     /**
      * All graphs have common parameters. We process these here for every request - and set sensible defaults.
      *
-     * @param Request           $r
+     * @param Request           $request
      * @param GrapherService    $grapher
      *
      * @return Graph
      */
-    private function processParameters( Request $r, GrapherService $grapher ): Graph
+    private function processParameters( Request $request, GrapherService $grapher ): Graph
     {
         // while the Grapher service stores the processed parameters in its own object, we update the $request
         // parameters here also just in case we need to final versions later in the request.
 
-        $target = explode( '/', $r->path() );
+        $target = explode( '/', $request->path() );
         $target = array_pop( $target );
 
-        $r->period   = Graph::processParameterPeriod(   $r->period );
-        $r->category = Graph::processParameterCategory( $r->category );
-        $r->protocol = Graph::processParameterProtocol( $r->protocol );
-        $r->type     = Graph::processParameterType(     $r->type );
+        $request->period   = Graph::processParameterPeriod(   $request->period );
+        $request->category = Graph::processParameterCategory( $request->category );
+        $request->protocol = Graph::processParameterProtocol( $request->protocol );
+        $request->type     = Graph::processParameterType(     $request->type );
 
         switch( $target ) {
             case 'ixp':
-                $r->id = 1;
-                $graph = $grapher->ixp()->setParamsFromArray( $r->all() );
+                $request->id = 1;
+                $graph = $grapher->ixp()->setParamsFromArray( $request->all() );
                 break;
 
             case 'infrastructure':
-                $infra = InfrastructureGraph::processParameterInfrastructure( (int)$r->input( 'id', 0 ) );
-                $r->infrastructure = $infra->id;
-                $graph = $grapher->infrastructure( $infra )->setParamsFromArray( $r->all() );
+                $infra = InfrastructureGraph::processParameterInfrastructure( (int)$request->input( 'id', 0 ) );
+                $request->infrastructure = $infra->id;
+                $graph = $grapher->infrastructure( $infra )->setParamsFromArray( $request->all() );
                 break;
 
             case 'vlan':
-                $vlan = VlanGraph::processParameterVlan( (int)$r->input( 'id', 0 ) );
-                $r->vlan = $vlan->id;
-                $graph = $grapher->vlan( $vlan )->setParamsFromArray( $r->all() );
+                $vlan = VlanGraph::processParameterVlan( (int)$request->input( 'id', 0 ) );
+                $request->vlan = $vlan->id;
+                $graph = $grapher->vlan( $vlan )->setParamsFromArray( $request->all() );
                 break;
 
             case 'trunk':
-                $trunkname = TrunkGraph::processParameterTrunkname( (string)$r->input( 'id', '' ) );
-                $r->trunkname = $trunkname;
-                $graph = $grapher->trunk( $trunkname )->setParamsFromArray( $r->all() );
+                $trunkname = TrunkGraph::processParameterTrunkname( (string)$request->input( 'id', '' ) );
+                $request->trunkname = $trunkname;
+                $graph = $grapher->trunk( $trunkname )->setParamsFromArray( $request->all() );
                 break;
 
             case 'corebundle':
-                $corebundle = CoreBundleGraph::processParameterCoreBundle( (int)$r->input( 'id', 0 ) );
-                $side       = CoreBundleGraph::processParameterSide( $r->input( 'side', 'a' ) );
-                $r->corebundle = $corebundle->id;
-                $r->side       = $side;
-                $graph = $grapher->coreBundle( $corebundle, $side )->setParamsFromArray( $r->all() );
+                $corebundle = CoreBundleGraph::processParameterCoreBundle( (int)$request->input( 'id', 0 ) );
+                $side       = CoreBundleGraph::processParameterSide( $request->input( 'side', 'a' ) );
+                $request->corebundle = $corebundle->id;
+                $request->side       = $side;
+                $graph = $grapher->coreBundle( $corebundle, $side )->setParamsFromArray( $request->all() );
                 break;
 
             case 'location':
-                $location = LocationGraph::processParameterLocation( (int)$r->input( 'id', 0 ) );
-                $r->location = $location->id;
-                $graph = $grapher->location( $location )->setParamsFromArray( $r->all() );
+                $location = LocationGraph::processParameterLocation( (int)$request->input( 'id', 0 ) );
+                $request->location = $location->id;
+                $graph = $grapher->location( $location )->setParamsFromArray( $request->all() );
                 break;
 
             case 'switch':
-                $switch = SwitchGraph::processParameterSwitch( (int)$r->input( 'id', 0 ) );
-                $r->switch = $switch->id;
-                $graph = $grapher->switch( $switch )->setParamsFromArray( $r->all() );
+                $switch = SwitchGraph::processParameterSwitch( (int)$request->input( 'id', 0 ) );
+                $request->switch = $switch->id;
+                $graph = $grapher->switch( $switch )->setParamsFromArray( $request->all() );
                 break;
 
             case 'physicalinterface':
-                $physint = PhysIntGraph::processParameterPhysicalInterface( (int)$r->input( 'id', 0 ) );
-                $r->physint = $physint->id;
-                $graph = $grapher->physint( $physint )->setParamsFromArray( $r->all() );
+                $physint = PhysIntGraph::processParameterPhysicalInterface( (int)$request->input( 'id', 0 ) );
+                $request->physint = $physint->id;
+                $graph = $grapher->physint( $physint )->setParamsFromArray( $request->all() );
                 break;
 
             case 'virtualinterface':
-                $virtint = VirtIntGraph::processParameterVirtualInterface( (int)$r->input( 'id', 0 ) );
-                $r->virtint = $virtint->id;
-                $graph = $grapher->virtint( $virtint )->setParamsFromArray( $r->all() );
+                $virtint = VirtIntGraph::processParameterVirtualInterface( (int)$request->input( 'id', 0 ) );
+                $request->virtint = $virtint->id;
+                $graph = $grapher->virtint( $virtint )->setParamsFromArray( $request->all() );
                 break;
 
             case 'customer':
-                $customer = CustomerGraph::processParameterCustomer( (int)$r->input( 'id', 0 ) );
-                $r->customer = $customer->id;
-                $graph = $grapher->customer( $customer )->setParamsFromArray( $r->all() );
+                $customer = CustomerGraph::processParameterCustomer( (int)$request->input( 'id', 0 ) );
+                $request->customer = $customer->id;
+                $graph = $grapher->customer( $customer )->setParamsFromArray( $request->all() );
                 break;
 
             case 'vlaninterface':
-                $vlanint = VlanIntGraph::processParameterVlanInterface( (int)$r->input( 'id', 0 ) );
-                $r->vlanint = $vlanint->id;
-                $graph = $grapher->vlanint( $vlanint )->setParamsFromArray( $r->all() );
+                $vlanint = VlanIntGraph::processParameterVlanInterface( (int)$request->input( 'id', 0 ) );
+                $request->vlanint = $vlanint->id;
+                $graph = $grapher->vlanint( $vlanint )->setParamsFromArray( $request->all() );
                 break;
 
             case 'latency':
-                $vli = LatencyGraph::processParameterVlanInterface( (int)$r->input( 'id', 0 ) );
-                $r->vli = $vli;
-                $graph = $grapher->latency( $vli )->setParamsFromArray( $r->all() );
+                $vli = LatencyGraph::processParameterVlanInterface( (int)$request->input( 'id', 0 ) );
+                $request->vli = $vli;
+                $graph = $grapher->latency( $vli )->setParamsFromArray( $request->all() );
                 break;
 
             case 'p2p':
-                $srcvlanint = P2pGraph::processParameterSourceVlanInterface(      (int)$r->input( 'svli', 0 ) );
-                $dstvlanint = P2pGraph::processParameterDestinationVlanInterface( (int)$r->input( 'dvli', 0 ) );
-                $r->srcvlanint = $srcvlanint->id;
-                $r->dstvlanint = $dstvlanint->id;
-                $graph = $grapher->p2p( $srcvlanint, $dstvlanint )->setParamsFromArray( $r->all() );
+                $srcvlanint = P2pGraph::processParameterSourceVlanInterface(      (int)$request->input( 'svli', 0 ) );
+                $dstvlanint = P2pGraph::processParameterDestinationVlanInterface( (int)$request->input( 'dvli', 0 ) );
+                $request->srcvlanint = $srcvlanint->id;
+                $request->dstvlanint = $dstvlanint->id;
+                $graph = $grapher->p2p( $srcvlanint, $dstvlanint )->setParamsFromArray( $request->all() );
                 break;
             default:
                 abort(404, 'No such graph type');

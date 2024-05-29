@@ -838,10 +838,10 @@ class Customer extends Model
         return str_replace(
             [ '%n', '%a', '%s', '%i', '%j', '%k', '%l' ],
             [
-                $this->name,
-                $this->abbreviatedName,
-                $this->shortname,
-                $as ?: '',
+                $this->name ?: '',
+                $this->abbreviatedName ?: '',
+                $this->shortname ?: '',
+                $as ? (string) $as : '',
                 $as ? "[AS{$as}]"  : '',
                 $as ? "AS{$as}"    : '',
                 $as ? " - AS{$as}" : ''

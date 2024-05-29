@@ -172,25 +172,25 @@ class SwitchPortController extends EloquentController
     /**
      * List the contents of a database table.
      *
-     * @param Request $r
+     * @param Request $param
      *
      * @return View
      */
-    public function list( Request $r ) : View
+    public function list( Request $param ) : View
     {
-        $s = false;
-        if( $r->switch !== null ) {
-            if(  $s = Switcher::find( $r->switch ) ) {
-                $r->session()->put( "switch-port-list", $s->id );
+        $switch = false;
+        if( $param->switch !== null ) {
+            if(  $switch = Switcher::find( $param->switch ) ) {
+                $param->session()->put( "switch-port-list", $switch->id );
             } else {
-                $r->session()->remove( "switch-port-list" );
-                $s = false;
+                $param->session()->remove( "switch-port-list" );
+                $switch = false;
             }
-        } else if( $r->session()->exists( "switch-port-list" ) ) {
-            $s = Switcher::find( $r->session()->get( "switch-port-list" ) );
+        } else if( $param->session()->exists( "switch-port-list" ) ) {
+            $switch = Switcher::find( $param->session()->get( "switch-port-list" ) );
         }
 
-        $this->data[ 'params' ][ 'switch' ]     = $s;
+        $this->data[ 'params' ][ 'switch' ]     = $switch;
         $this->data[ 'params' ][ 'switches' ]   = Switcher::orderBy( 'name' )->get()->keyBy( 'id' );
 
         $this->data[ 'rows' ] = $this->listGetData();

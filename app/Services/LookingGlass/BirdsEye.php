@@ -69,7 +69,7 @@ class BirdsEye implements LookingGlassContract
      *
      * @return BirdsEye
      */
-    public function setCacheEnabled( bool $b ): Birdseye
+    public function setCacheEnabled( bool $b ): BirdsEye
     {
         $this->cacheEnabled = $b;
         return $this;

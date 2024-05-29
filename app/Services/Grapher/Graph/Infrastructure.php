@@ -99,7 +99,7 @@ class Infrastructure extends Graph
      */
     public function name(): string
     {
-        return $this->infrastructure()->name;
+        return $this->infrastructure()->name ?: '';
     }
 
     /**

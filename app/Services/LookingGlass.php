@@ -64,7 +64,7 @@ class LookingGlass
                 return $be;
                 break;
             default:
-                throw new ConfigurationException( 'Invalid, no or unimplemented looking glass backend requested: ' . $r->apiType() );
+                throw new ConfigurationException( 'Invalid, no or unimplemented looking glass backend requested: ' . $router->apiType() );
         }
     }
 }

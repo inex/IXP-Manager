@@ -1,28 +1,18 @@
-# package wrong variable type declarations
 
 ERROR: InvalidArgument
 at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/MailingList/Init.php:87:34
 Argument 1 of Illuminate\Support\Collection::add expects never, but non-empty-lowercase-string provided (see https://psalm.dev/004)
                 $addresses->add( $address );
 
-
-# I am not sure what is the goal here, but the echo doesn't work like this
-
 ERROR: InvalidArgument
 at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/Router/GenerateConfiguration.php:73:14
 Argument 1 of echo expects string, but Illuminate\Contracts\View\View provided (see https://psalm.dev/004)
         echo ( new RouterConfigurationGenerator( $router ) )->render();
 
-
-# superglobal defined elsewhere
-
 ERROR: UndefinedConstant
 at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/Router/GenerateConfiguration.php:77:35
 Const LARAVEL_START is not defined (see https://psalm.dev/020)
                 microtime(true) - LARAVEL_START )
-
-
-# false positive - check line #128
 
 ERROR: UndefinedVariable
 at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/User/Create.php:145:47
@@ -64,11 +54,6 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Console/Commands/User/Create.php:159:31
 Cannot find referenced variable $priv (see https://psalm.dev/024)
         $c2u->privs         = $priv;
 
-
-
-
-# false alarm for existing interface methods
-
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/Customer/Note/CustomerNotesController.php:85:16
 Method Illuminate\Contracts\Auth\Authenticatable::save does not exist (see https://psalm.dev/181)
@@ -109,25 +94,15 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/Layer2AddressCo
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         if( !Auth::getUser()->isSuperUser() ) {
 
-
-
-# not invalid, weirdly declared...
-
 ERROR: InvalidArgument
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/MailingListController.php:146:30
 Argument 1 of Illuminate\Support\Collection::add expects never, but lowercase-string provided (see https://psalm.dev/004)
             $addresses->add( strtolower( trim( $a ) ) );
 
-
-# declared in php.jar
-
 ERROR: UndefinedConstant
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/Provisioner/YamlController.php:73:46
 Const YAML_UTF8_ENCODING is not defined (see https://psalm.dev/020)
                 $output = yaml_emit( $array, YAML_UTF8_ENCODING );
-
-
-# don't see the issues in those
 
 ERROR: InvalidPropertyFetch
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/Provisioner/YamlController.php:446:55
@@ -139,10 +114,6 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/Provisioner/Yam
 Cannot fetch property on non-object $switchSideB of type true (see https://psalm.dev/029)
             $entry['switchsideb']  	=  $switchSideB ? $switchSideB->name : null;
 
-
-
-# declared in version.php
-
 ERROR: UndefinedConstant
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/PublicController.php:72:27
 Const APPLICATION_VERSION is not defined (see https://psalm.dev/020)
@@ -153,16 +124,10 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/PublicControlle
 Const APPLICATION_VERDATE is not defined (see https://psalm.dev/020)
             'verdate'  => APPLICATION_VERDATE,
 
-
-# declared in public/index.php
-
 ERROR: UndefinedConstant
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/RouterController.php:71:37
 Const LARAVEL_START is not defined (see https://psalm.dev/020)
                 microtime( true ) - LARAVEL_START )
-
-
-# declarations exists
 
 ERROR: UndefinedConstant
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/SflowReceiverController.php:143:43
@@ -174,9 +139,6 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/SflowReceiverCo
 Const YAML_UTF8_ENCODING is not defined (see https://psalm.dev/020)
                 $output = yaml_emit ( $array, YAML_UTF8_ENCODING );
 
-
-# no issues here
-
 ERROR: InvalidPropertyFetch
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/SwitchController.php:148:39
 Cannot fetch property on non-object $switchA of type true (see https://psalm.dev/029)
@@ -186,10 +148,6 @@ ERROR: InvalidPropertyFetch
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Api/V4/SwitchController.php:150:39
 Cannot fetch property on non-object $switchB of type true (see https://psalm.dev/029)
             $switchBName = $switchB ? $switchB->name : 'none';
-
-
-
-# false alarm for existing interface methods
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/ApiKeyController.php:120:54
@@ -211,7 +169,7 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Contact/ContactControl
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         $isSuperUser = Auth::getUser()->isSuperUser();
 
-\ERROR: UndefinedInterfaceMethod
+ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Contact/ContactController.php:276:102
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         if( Auth::getUser()->custid !== (int)$this->data[ 'item' ][ 'custid' ]  && !Auth::getUser()->isSuperUser() ) {
@@ -261,35 +219,20 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Controller.php:124:44
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         $isSuperUser    = Auth::getUser()->isSuperUser();
 
-
-# I don't see issue here
-
 ERROR: InvalidArgument
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Customer/CustomerController.php:488:85
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Customer/CustomerController.php:489:85
 Argument 2 of IXP\Models\Aggregators\CustomerAggregator::getPeeringManagerArrayByType expects array<array-key, IXP\Models\Vlan>, but Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model> provided (see https://psalm.dev/004)
                 'peers' => CustomerAggregator::getPeeringManagerArrayByType( $cust, Vlan::peeringManager()->orderBy( 'number' )->get(), [ 4,6 ] ) ?: false
-
-
-
-
-# false alarm for existing interface methods
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Customer/CustomerNotesController.php:70:26
 Method Illuminate\Contracts\Auth\Authenticatable::save does not exist (see https://psalm.dev/181)
         Auth::getUser()->save();
 
-
-# I don't see any issue here
-
 ERROR: EmptyArrayAccess
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Customer/CustomerNotesController.php:96:58
 Cannot access value on empty array variable $lastRead (see https://psalm.dev/100)
                 && ( !isset( $lastRead[ $c['cid'] ] ) || $lastRead[ $c[ 'cid' ] ] < $c['latest'] ) ) {
-
-
-
-# false alarm for existing interface methods
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Customer/LogoController.php:148:43
@@ -331,9 +274,6 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/FilteredPrefixesContro
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         if( $r->reset_cache === "1" && Auth::getUser()->isSuperUser() ) {
 
-
-# don't see issues here
-
 ERROR: InvalidPropertyFetch
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/Common.php:152:44
 Cannot fetch property on non-object $relatedInterface of type true (see https://psalm.dev/029)
@@ -344,21 +284,20 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/Common.php:
 Cannot fetch property on non-object $relatedInterface of type true (see https://psalm.dev/029)
                 $fnpi->virtualinterfaceid = $relatedInterface->virtualinterfaceid;
 
+ERROR: InvalidPropertyFetch
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:145:40
+Cannot fetch property on non-object $customer of type true (see https://psalm.dev/029)
+        $customerId = !$customer ? 0 : $customer->id;
 
-# weirdly declared variables
+ERROR: InvalidPropertyFetch
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:162:41
+Cannot fetch property on non-object $switchSideA of type true (see https://psalm.dev/029)
+        $switchSideAId = $switchSideA ? $switchSideA->id : null;
 
-ERROR: UndefinedVariable
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/Common.php:384:44
-Cannot find referenced variable $cia (see https://psalm.dev/024)
-            $cl->core_interface_sidea_id = $cia->id;/** @var $cia CoreInterface */
-
-ERROR: UndefinedVariable
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/Common.php:385:44
-Cannot find referenced variable $cib (see https://psalm.dev/024)
-            $cl->core_interface_sideb_id = $cib->id;/** @var $cib CoreInterface */
-
-
-# don't see issues here
+ERROR: InvalidPropertyFetch
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/CoreBundleController.php:164:41
+Cannot fetch property on non-object $switchSideB of type true (see https://psalm.dev/029)
+        $switchSideBId = $switchSideB ? $switchSideB->id : null;
 
 ERROR: InvalidPropertyFetch
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/PhysicalInterfaceController.php:346:36
@@ -379,9 +318,6 @@ ERROR: InvalidPropertyFetch
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/Interfaces/PhysicalInterfaceController.php:351:36
 Cannot fetch property on non-object $piB of type true (see https://psalm.dev/029)
         $data['notes-b']         = $piB->notes ?? '';
-
-
-# false alarm for existing interface methods
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/IrrdbController.php:67:58
@@ -433,22 +369,25 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/ProfileController.php:
 Method Illuminate\Contracts\Auth\Authenticatable::save does not exist (see https://psalm.dev/181)
             $user->save();
 
-# I don't see issue here
+ERROR: ParamNameMismatch
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/RipeAtlas/RunController.php:232:38
+Argument 1 of IXP\Http\Controllers\RipeAtlas\RunController::doStore has wrong name $request, expecting $r as defined by IXP\Utils\Http\Controllers\Frontend\EloquentController::doStore (see https://psalm.dev/230)
+    public function doStore( Request $request ): bool|RedirectResponse
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/StatisticsController.php:544:9
 Instance property Illuminate\Http\Request::$category is not defined (see https://psalm.dev/038)
-        $r->category = Graph::processParameterCategory(     $r->category, true );
+        $request->category = Graph::processParameterCategory( $request->category, true );
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/StatisticsController.php:545:9
 Instance property Illuminate\Http\Request::$period is not defined (see https://psalm.dev/038)
-        $r->period   = Graph::processParameterPeriod(       $r->period );
+        $request->period   = Graph::processParameterPeriod( $request->period );
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/StatisticsController.php:546:9
 Instance property Illuminate\Http\Request::$protocol is not defined (see https://psalm.dev/038)
-        $r->protocol = Graph::processParameterRealProtocol( $r->protocol );
+        $request->protocol = Graph::processParameterRealProtocol( $request->protocol );
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/StatisticsController.php:725:93
@@ -476,37 +415,37 @@ Method Illuminate\Contracts\Auth\Authenticatable::refresh does not exist (see ht
             $user->refresh();
 
 ERROR: UndefinedInterfaceMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:261:49
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:262:49
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         $user->custid           = Auth::user()->isSuperUser() ? $r->custid : Auth::user()->custid;
 
 ERROR: UndefinedInterfaceMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:301:38
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:302:38
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         $isSuperUser = Auth::user()->isSuperUser();
 
 ERROR: UndefinedInterfaceMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:355:44
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:356:44
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         if( ( $isSuperUser = Auth::user()->isSuperUser() ) || $u->id === Auth::id() ) {
 
 ERROR: UndefinedInterfaceMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:394:27
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:395:27
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         if( Auth::user()->isSuperUser() ) {
 
 ERROR: UndefinedInterfaceMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:403:27
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:404:27
 Method Illuminate\Contracts\Auth\Authenticatable::isCustUser does not exist (see https://psalm.dev/181)
         if( Auth::user()->isCustUser() ) {
 
 ERROR: UndefinedInterfaceMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:476:27
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:477:27
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         if( Auth::user()->isSuperUser() && strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
 
 ERROR: UndefinedInterfaceMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:495:27
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Controllers/User/UserController.php:496:27
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         if( Auth::user()->isSuperUser() && strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
 
@@ -531,18 +470,14 @@ Method Illuminate\Contracts\Auth\Authenticatable::customer does not exist (see h
         if( Auth::getUser()->customer()->active()->notDeleted()->doesntExist() ){
 
 ERROR: UndefinedInterfaceMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Eloquent2Frontend.php:63:55
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Eloquent2Frontend.php:64:55
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
         $user_priv = Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC;
 
-# false positive error
-
 ERROR: InvalidPropertyFetch
-at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Eloquent2Frontend.php:66:26
-Cannot fetch property on non-object $__fake_var_2005 of type string (see https://psalm.dev/029)
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Eloquent2Frontend.php:67:26
+Cannot fetch property on non-object $__fake_var_2057 of type string (see https://psalm.dev/029)
         if( $user_priv < $controller::$minimum_privilege ) {
-
-# Auth::getUser() provide a Model that has the Method -> false positive
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/RsPrefixes.php:69:91
@@ -554,111 +489,114 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/RsPrefixes.php:79:84
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
                 if( (int)config( 'ixp_fe.rs-prefixes.access' ) <= Auth::getUser()->privs() ) {
 
-# I don't see issue here (Grapher got weird methods)
-
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:107:9
 Instance property Illuminate\Http\Request::$period is not defined (see https://psalm.dev/038)
-        $r->period   = Graph::processParameterPeriod(   $r->period );
+        $request->period   = Graph::processParameterPeriod(   $request->period );
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:108:9
 Instance property Illuminate\Http\Request::$category is not defined (see https://psalm.dev/038)
-        $r->category = Graph::processParameterCategory( $r->category );
+        $request->category = Graph::processParameterCategory( $request->category );
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:109:9
 Instance property Illuminate\Http\Request::$protocol is not defined (see https://psalm.dev/038)
-        $r->protocol = Graph::processParameterProtocol( $r->protocol );
+        $request->protocol = Graph::processParameterProtocol( $request->protocol );
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:110:9
 Instance property Illuminate\Http\Request::$type is not defined (see https://psalm.dev/038)
-        $r->type     = Graph::processParameterType(     $r->type );
-
-# false positive, the properties existence depends on the target
+        $request->type     = Graph::processParameterType(     $request->type );
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:114:17
 Instance property Illuminate\Http\Request::$id is not defined (see https://psalm.dev/038)
-                $r->id = 1;
+                $request->id = 1;
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:120:17
 Instance property Illuminate\Http\Request::$infrastructure is not defined (see https://psalm.dev/038)
-                $r->infrastructure = $infra->id;
+                $request->infrastructure = $infra->id;
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:126:17
 Instance property Illuminate\Http\Request::$vlan is not defined (see https://psalm.dev/038)
-                $r->vlan = $vlan->id;
+                $request->vlan = $vlan->id;
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:132:17
 Instance property Illuminate\Http\Request::$trunkname is not defined (see https://psalm.dev/038)
-                $r->trunkname = $trunkname;
+                $request->trunkname = $trunkname;
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:139:17
 Instance property Illuminate\Http\Request::$corebundle is not defined (see https://psalm.dev/038)
-                $r->corebundle = $corebundle->id;
+                $request->corebundle = $corebundle->id;
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:140:17
 Instance property Illuminate\Http\Request::$side is not defined (see https://psalm.dev/038)
-                $r->side       = $side;
+                $request->side       = $side;
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:146:17
 Instance property Illuminate\Http\Request::$location is not defined (see https://psalm.dev/038)
-                $r->location = $location->id;
+                $request->location = $location->id;
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:152:17
 Instance property Illuminate\Http\Request::$switch is not defined (see https://psalm.dev/038)
-                $r->switch = $switch->id;
+                $request->switch = $switch->id;
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:158:17
 Instance property Illuminate\Http\Request::$physint is not defined (see https://psalm.dev/038)
-                $r->physint = $physint->id;
+                $request->physint = $physint->id;
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:164:17
 Instance property Illuminate\Http\Request::$virtint is not defined (see https://psalm.dev/038)
-                $r->virtint = $virtint->id;
+                $request->virtint = $virtint->id;
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:170:17
 Instance property Illuminate\Http\Request::$customer is not defined (see https://psalm.dev/038)
-                $r->customer = $customer->id;
+                $request->customer = $customer->id;
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:176:17
 Instance property Illuminate\Http\Request::$vlanint is not defined (see https://psalm.dev/038)
-                $r->vlanint = $vlanint->id;
+                $request->vlanint = $vlanint->id;
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:182:17
 Instance property Illuminate\Http\Request::$vli is not defined (see https://psalm.dev/038)
-                $r->vli = $vli;
+                $request->vli = $vli;
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:189:17
 Instance property Illuminate\Http\Request::$srcvlanint is not defined (see https://psalm.dev/038)
-                $r->srcvlanint = $srcvlanint->id;
+                $request->srcvlanint = $srcvlanint->id;
 
 ERROR: UndefinedPropertyAssignment
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/Grapher.php:190:17
 Instance property Illuminate\Http\Request::$dstvlanint is not defined (see https://psalm.dev/038)
-                $r->dstvlanint = $dstvlanint->id;
-
-# Auth::getUser() provide a Model that has the Method -> false positive
+                $request->dstvlanint = $dstvlanint->id;
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/Services/LookingGlass.php:151:66
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
         if( $router->authorise( Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC ) ) {
+
+ERROR: InvalidPropertyAssignmentValue
+at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Middleware/TrustProxies.php:54:26
+$this->headers with declared type 'array<array-key, mixed>' cannot be assigned type '30' (see https://psalm.dev/145)
+    protected $headers = Request::HEADER_X_FORWARDED_FOR |
+    Request::HEADER_X_FORWARDED_HOST |
+    Request::HEADER_X_FORWARDED_PORT |
+    Request::HEADER_X_FORWARDED_PROTO |
+    Request::HEADER_X_FORWARDED_AWS_ELB;
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Requests/CoreBundle/Store.php:62:33
@@ -800,7 +738,10 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Http/Requests/User/Update.php:103:38
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         $isSuperUser = Auth::user()->isSuperUser();
 
-# I didn't see issues here
+ERROR: UndefinedInterfaceMethod
+at /Users/laszlo/dev/ibn-ixp-manager/app/Listeners/Auth/LoginSuccessful.php:52:78
+Method Illuminate\Contracts\Auth\Authenticatable::currentCustomerToUser does not exist (see https://psalm.dev/181)
+        if( !session()->exists( "switched_user_from" ) && ( $c2u = $e->user->currentCustomerToUser() ) ) {
 
 ERROR: InvalidArgument
 at /Users/laszlo/dev/ibn-ixp-manager/app/Models/Aggregators/SwitcherAggregator.php:134:30
@@ -838,8 +779,6 @@ The inferred type 'Illuminate\Database\Eloquent\Builder<TRelatedModel:Illuminate
             ->where( 'type', '!=', ContactGroup::TYPE_ROLE )
             ->orderBy( 'name' );
 
-# Auth::getUser() provide a Model that has the Method -> false positive
-
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Models/DocstoreCustomerDirectory.php:125:41
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
@@ -855,8 +794,6 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Models/DocstoreCustomerFile.php:137:69
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
                 $builder->where('min_privs', '<=', Auth::getUser()->privs() );
 
-# I don't see issues here
-
 ERROR: InvalidReturnType
 at /Users/laszlo/dev/ibn-ixp-manager/app/Models/PatchPanelPort.php:345:50
 The declared return type 'Illuminate\Database\Eloquent\Relations\HasMany' for IXP\Models\PatchPanelPort::patchPanelPortFilesPublic is incorrect, got 'Illuminate\Database\Eloquent\Builder<TRelatedModel:Illuminate\Database\Eloquent\Relations\HasMany as Illuminate\Database\Eloquent\Model>' (see https://psalm.dev/011)
@@ -868,8 +805,6 @@ The inferred type 'Illuminate\Database\Eloquent\Builder<TRelatedModel:Illuminate
         return $this->hasMany(PatchPanelPortFile::class, 'patch_panel_port_id' )
             ->where( 'is_private', 0 );
 
-# Auth::getUser() provide a Model that has the Method -> false positive
-
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Providers/HorizonServiceProvider.php:69:54
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
@@ -879,8 +814,6 @@ ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Providers/IxpServiceProvider.php:59:57
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
                 if( ( Auth::check() && Auth::getUser()->isSuperUser() ) || env( 'IXP_PHPUNIT_RUNNING', false ) ) {
-
-# I don't see issues here
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Providers/ParsedownServiceProvider.php:44:15
@@ -897,8 +830,6 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Providers/TelescopeServiceProvider.php:
 Method Illuminate\Contracts\Foundation\Application::isLocal does not exist (see https://psalm.dev/181)
         if( $this->app->isLocal() ) {
 
-# false positive, it is a polymorphic call
-
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Auth/SessionGuard.php:156:57
 Method Illuminate\Contracts\Auth\UserProvider::addRememberToken does not exist (see https://psalm.dev/181)
@@ -908,8 +839,6 @@ ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Auth/SessionGuard.php:157:30
 Method Illuminate\Contracts\Auth\UserProvider::purgeExpiredRememberTokens does not exist (see https://psalm.dev/181)
             $this->provider->purgeExpiredRememberTokens( $user );
-
-# Auth::getUser() provide a Model that has the Method -> false positive
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/CoreBundle.php:164:47
@@ -937,14 +866,19 @@ Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (se
         if( Auth::getUser()->isSuperUser() ) {
 
 ERROR: UndefinedInterfaceMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Customer.php:166:37
+at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Customer.php:166:33
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
-                && Auth::getUser()->privs() >= config( 'grapher.access.customer' )
+            && Auth::getUser()->privs() >= config( 'grapher.access.customer' )
 
 ERROR: UndefinedInterfaceMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Customer.php:219:55
+at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/Customer.php:220:55
 Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (see https://psalm.dev/181)
         if( !$i && Auth::check() && !Auth::getUser()->isSuperUser() && !Auth::getUser()->customer->typeAssociate() ) {
+
+ERROR: InvalidReturnType
+at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/IXP.php:88:16
+Not all code paths of IXP\Services\Grapher\Graph\IXP::authorise end in a return statement, return type bool expected (see https://psalm.dev/011)
+     * @return bool
 
 ERROR: UndefinedInterfaceMethod
 at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/IXP.php:92:47
@@ -952,7 +886,7 @@ Method Illuminate\Contracts\Auth\Authenticatable::isSuperUser does not exist (se
         if( Auth::check() && Auth::getUser()->isSuperUser() ) {
 
 ERROR: UndefinedInterfaceMethod
-at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/IXP.php:105:95
+at /Users/laszlo/dev/ibn-ixp-manager/app/Services/Grapher/Graph/IXP.php:104:95
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
         if( Auth::check() && is_numeric( config( 'grapher.access.ixp' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.ixp' ) ) {
 
@@ -1071,23 +1005,15 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Support/helpers.php:84:37
 Method Illuminate\Contracts\Auth\Authenticatable::privs does not exist (see https://psalm.dev/181)
             return Auth::getUser()->privs() >= $minAuth;
 
-# Not really known what this method does, it is unused. It is callable as polymrophic
-
 ERROR: UndefinedThisPropertyFetch
 at /Users/laszlo/dev/ibn-ixp-manager/app/Traits/Observable.php:151:48
 Instance property IXP\Models\CustomerToCustomerTag::$id is not defined (see https://psalm.dev/041)
         return Log::entries( self::getClass(), $this->id, $user );
 
-
-# global variable defined in version.php
-
 ERROR: UndefinedConstant
 at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/Export/JsonSchema.php:94:46
 Const APPLICATION_VERSION is not defined (see https://psalm.dev/020)
             'generator' => 'IXP Manager v' . APPLICATION_VERSION,
-
-
-# issue inside the Former package
 
 ERROR: UndefinedDocblockClass
 at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/Former/Framework/TwitterBootstrap4.php:61:18
@@ -1099,16 +1025,10 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/Former/Framework/TwitterBootstrap
 Docblock-defined class, interface or enum named Former\Traits\Container does not exist (see https://psalm.dev/200)
         if( $this->app[ 'former.form' ]->isOfType( 'horizontal' ) ) {
 
-
-# it isn't error...
-
 ERROR: LessSpecificImplementedReturnType
 at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/Former/Framework/TwitterBootstrap4.php:72:16
 The inherited return type 'array<array-key, string>' for Former\Framework\TwitterBootstrap4::getLabelClasses is more specific than the implemented return type for IXP\Utils\Former\Framework\TwitterBootstrap4::getlabelclasses 'array<array-key, mixed>' (see https://psalm.dev/166)
      * @return array An array of attributes with the label class
-
-
-# issue inside the Former package
 
 ERROR: UndefinedDocblockClass
 at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/Former/Framework/TwitterBootstrap4.php:76:18
@@ -1180,22 +1100,22 @@ at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/Former/Framework/TwitterBootstrap
 Docblock-defined class, interface or enum named Former\Traits\Container does not exist (see https://psalm.dev/200)
             $class = $this->app[ 'former.form' ]->getAttributes()[ 'action-buttons-custom-class' ] ?? "";
 
-# issue of the package: variable type wrong declared (no errors caused)
-
 ERROR: InvalidArgument
 at /Users/laszlo/dev/ibn-ixp-manager/app/Utils/MailingList.php:92:39
 Argument 1 of Illuminate\Support\Collection::add expects never, but lowercase-string provided (see https://psalm.dev/004)
-                $filtered_users->add( $e );
-
-
+                $filtered_users->add( $email );
 
 ------------------------------
-503 errors found
+218 errors found
 ------------------------------
-3433 other issues found.
+3488 other issues found.
 You can display them with --show-info=true
 ------------------------------
+Psalm can automatically fix 68 of these issues.
+Run Psalm again with 
+--alter --issues=MissingReturnType,InvalidReturnType,MissingClosureReturnType,MismatchingDocblockParamType,MismatchingDocblockReturnType,LessSpecificReturnType,MissingParamType --dry-run
+to see what it can fix.
+------------------------------
 
-Checks took 0.19 seconds and used 33.183MB of memory
-No files analyzed
-Psalm was able to infer types for 80.5560% of the codebase
+Checks took 17.84 seconds and used 1,554.291MB of memory
+Psalm was able to infer types for 80.5999% of the codebase

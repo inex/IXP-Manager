@@ -22,6 +22,7 @@ namespace IXP\Services;
 use Exception;
 use HTMLPurifier;
 use HTMLPurifier_Config;
+use HTMLPurifier_HTMLDefinition;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Filesystem\Filesystem;
 
@@ -109,9 +110,9 @@ class Purifier
      *
      * @see http://htmlpurifier.org/docs/enduser-customize.html
      * @param array $definitionConfig
-     * @param HTML_Purifier_Config $configObject Defaults to using default config
+     * @param HTMLPurifier_Config $configObject Defaults to using default config
      *
-     * @return HTML_Purifier_Config $configObject
+     * @return HTMLPurifier_Config $configObject
      */
     private function addCustomDefinition(array $definitionConfig, $configObject = null)
     {
@@ -174,9 +175,9 @@ class Purifier
      * @param array $elements
      * @param HTMLPurifier_HTMLDefinition $definition
      *
-     * @return HTMLPurifier_HTMLDefinition $definition
+     * @return void $definition
      */
-    private function addCustomElements(array $elements, $definition)
+    private function addCustomElements(array $elements, $definition): void
     {
         foreach ($elements as $element) {
             // Get configuration of element

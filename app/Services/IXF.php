@@ -24,6 +24,7 @@ namespace IXP\Services;
  */
 
 use Exception;
+use Throwable;
 use Illuminate\Http\Client\Response as HttpResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -38,7 +39,7 @@ use Illuminate\Support\Facades\Log;
  * @copyright  Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class IXF
+class IXF extends Exception
 {
 
     /** @const Cache key for IXs  */
@@ -56,9 +57,9 @@ class IXF
     public int $status = 0;
 
     /**
-     * @var ?Exception If the api call threw an exception, it is caught and stored here.
+     * @var Exception If the api call threw an exception, it is caught and stored here.
      */
-    public ?Exception $exception;
+    public Exception $exception;
 
 
 

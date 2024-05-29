@@ -84,7 +84,7 @@ class GenerateObject extends Command
 
             Mail::raw( $obj, function( $m ) {
                 $m->to( $this->checkEmail( 'to', $this->option( "to" ) ?? config( 'ixp_api.rir.email.to' ) ) )
-                    ->from( $this->checkEmail( 'from', ( $this->option( "from" ) ?? config( 'ixp_api.rir.email.from' ) ) ?? config( 'mail.from.address' ) ) )
+                    ->from( $this->checkEmail( 'from', ( $this->option( "from" ) ?: config( 'ixp_api.rir.email.from' ) ) ?: config( 'mail.from.address' ) ) )
                     ->subject( "Changes to {$this->argument ('object' )} via IXP Manager" );
             } );
 

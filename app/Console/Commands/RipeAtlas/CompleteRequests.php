@@ -82,7 +82,7 @@ class CompleteRequests extends Command
         }
 
         $ars->each( function ( $ar ) use ( $bar ) {
-            if( CompleteRequestsJob::dispatchNow( $ar ) && $this->isVerbosityVerbose() ) {
+            if( CompleteRequestsJob::dispatchSync( $ar ) && $this->isVerbosityVerbose() ) {
                 $this->info("Marking request: Atals Run ID:{$ar->id} complete");
             }
             $bar->advance();

@@ -28,8 +28,7 @@ use Foil\Engine as EngineFoil;
 
 class FoilEngine implements EngineInterface
 {
-    /** @var PlatesEngine */
-    private $engine;
+    private EngineFoil $engine;
 
     public function __construct( EngineFoil $engine )
     {
@@ -49,7 +48,7 @@ class FoilEngine implements EngineInterface
      *
      * @return string
      */
-    public function get( $path, array $data = array() )
+    public function get( $path, array $data = array() ): string
     {
         return $this->engine->render( $path, $data );
     }

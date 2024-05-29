@@ -105,10 +105,10 @@ class UpdatePrefixDb extends UpdateDb
             $validator = new ValidateIPv6Cidr;
         }
 
-        foreach( $prefixes as $i => $p ) {
-            if( !$validator->passes( [], $p ) ) {
-                unset( $prefixes[$i] );
-                Log::alert( 'IRRDB CLI action - removing invalid prefix ' . $p . ' from IRRDB result set!' );
+        foreach( $prefixes as $key => $prefix ) {
+            if( !$validator->passes( '', $prefix ) ) {
+                unset( $prefixes[$key] );
+                Log::alert( 'IRRDB CLI action - removing invalid prefix ' . $prefix . ' from IRRDB result set!' );
             }
         }
 

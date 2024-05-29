@@ -28,6 +28,7 @@ use IXP\Models\{
     AtlasResult,
     Customer
 };
+use phpseclib3\Math\PrimeField\Integer;
 
 /**
  * RipeAtlas Interpretor
@@ -142,9 +143,9 @@ class Interpretor
      * @param array $path Path of IP addresses
      * @param array $addrs List of addresses to find in $path
      *
-     * @return bool
+     * @return integer
      */
-    private function queryPassesThrough( array &$path, array $addrs )
+    private function queryPassesThrough( array &$path, array $addrs ): integer
     {
 
         foreach( $path[ 'hops' ] as $ipset ) {

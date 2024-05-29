@@ -76,7 +76,7 @@ class UpdateMeasurements extends Command
 
         // find uncompleted measurements:
         $ams->each( function( $am ) use( $bar ) {
-            UpdateMeasurementsJob::dispatchNow( $am );
+            UpdateMeasurementsJob::dispatchSync( $am );
             $bar->advance();
         });
 

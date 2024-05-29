@@ -215,13 +215,13 @@ class ContactControllerTest extends DuskTestCase
                 ->type( 'phone', '0209110000' )
                 ->type( 'mobile', '0209120000' )
                 ->type( 'notes', 'Test note' )
-                ->press( 'Create' )
-                ->assertPathIs( '/customer/overview/5/contacts' )
+                ->press( 'Create' );
+
+            $browser->assertPathIs( '/customer/overview/5/contacts' )
                 ->assertSee( 'Contact created' )
                 ->assertSee( 'Test Contact 1' )
                 ->assertSee( '0209110000 / 0209120000' )
                 ->assertSee( 'test-contact1@example.com' );
-
             // get the contact:
             $c = Contact::whereName( 'Test Contact 1' )->first();
             // test the values:

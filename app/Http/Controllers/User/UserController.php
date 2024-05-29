@@ -27,6 +27,7 @@ use Auth, Former, Hash, Log, Mail;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -239,11 +240,11 @@ class UserController extends Controller
      *
      * @param  StoreUser  $r  instance of the current HTTP request
      *
-     * @return  RedirectResponse
+     * @return  RedirectResponse|Redirector
      *
      * @throws AuthorizationException
      */
-    public function store( StoreUser $r ): RedirectResponse
+    public function store( StoreUser $r ): RedirectResponse|Redirector
     {
         $this->authorize( 'any', User::class );
 
@@ -255,7 +256,7 @@ class UserController extends Controller
         $user->authorisedMobile = $r->authorisedMobile;
         $user->username         = strtolower( $r->username );
         $user->email            = strtolower( $r->email );
-        $user->disabled         = !$r->disabled; // input as enable in the view
+        $user->disabled         = $r->disabled ? 0 : 1; // input as enable in the view
         $user->lastupdatedby    = Auth::id();
         $user->privs            = $r->privs;
         $user->custid           = Auth::user()->isSuperUser() ? $r->custid : Auth::user()->custid;
@@ -309,7 +310,7 @@ class UserController extends Controller
             'username'         => $r->old( 'username',              $u->username            ),
             'email'            => $r->old( 'email',                 $u->email               ),
             'authorisedMobile' => $r->old( 'authorisedMobile',      $u->authorisedMobile    ),
-            'disabled'         => $r->old( 'disabled',              !$u->disabled           ),
+            'disabled'         => $r->old( 'disabled',              $u->disabled ? '0' : '1' ),
             'linkCancel'       => $r->old( 'linkCancel',            $r->headers->get( 'referer', "" ) ),
         ];
 
@@ -340,14 +341,14 @@ class UserController extends Controller
     /**
      * Allow to update a User
      *
-     * @param  UpdateUser  $r  instance of the current HTTP request
-     * @param  User  $u
+     * @param UpdateUser $r instance of the current HTTP request
+     * @param User $u
      *
-     * @return  RedirectResponse
+     * @return RedirectResponse|Redirector
      *
      * @throws AuthorizationException
      */
-    public function update( UpdateUser $r, User $u ): RedirectResponse
+    public function update( UpdateUser $r, User $u ): RedirectResponse|Redirector
     {
         $this->authorize( 'access', $u );
 
@@ -360,7 +361,7 @@ class UserController extends Controller
         if( $isSuperUser ) {
             $u->username    = strtolower( $r->username );
             $u->email       = $r->email;
-            $u->disabled    = !$r->disabled;// displayed as enabled in the view
+            $u->disabled    = $r->disabled ? 0 : 1;// displayed as enabled in the view
 
             // Delete Remember Token for the user if disabled
             if(!$r->disabled){

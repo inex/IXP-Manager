@@ -309,7 +309,7 @@ class CustomerAggregator extends Customer
      * @return array|null
      *
      */
-    public static function getPeeringManagerArrayByType( Customer $cust, array $vlans, array $protos ): ?array
+    public static function getPeeringManagerArrayByType( Customer $cust, $vlans, array $protos ): ?array
     {
         if( !count( $vlans ) ) {
             return null;
