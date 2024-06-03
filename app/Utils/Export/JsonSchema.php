@@ -328,6 +328,7 @@ class JsonSchema
 
         $cnt = 0;
         $exclude_asns = [];
+        $exclude_asns_if = [];
         $exclude_tags = [];
 
         if( $xas = config( 'ixp_api.json_export_schema.excludes.asnum' ) ) {
@@ -336,6 +337,10 @@ class JsonSchema
 
         if( $xt = config( 'ixp_api.json_export_schema.excludes.tags' ) ) {
             $exclude_tags = explode( '|', $xt );
+        }
+
+        if( $xas = config( 'ixp_api.json_export_schema.excludes.asnumif' ) ) {
+            $exclude_asns_if = explode( '|', $xas );
         }
 
         foreach( $customers as $c ) {
@@ -494,7 +499,9 @@ class JsonSchema
 
                 $conn['ixp_id']      = $vli->vlan->infrastructureid;
                 $conn['state']       = 'active';
-                $conn['if_list']     = $iflist;
+                if( ! (count( $exclude_asns_if ) && in_array( $c->autsys, $exclude_asns_if ) ) ) {
+                    $conn['if_list'] = $iflist;
+                }
                 $conn['vlan_list']   = $vlanentries;
 
                 $connlist[] = $conn;
