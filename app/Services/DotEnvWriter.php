@@ -4,11 +4,6 @@
  * https://github.com/MirazMac/DotEnvWriter
  *
  * A PHP library to write values to .env files.
- *
- * Heavily inspired from https://github.com/msztorc/laravel-env
- *
- * @author Miraz Mac <mirazmac@gmail.com>
- * @link https://mirazmac.com
  */
 
 namespace IXP\Services;
