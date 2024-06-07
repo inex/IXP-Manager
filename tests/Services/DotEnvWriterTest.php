@@ -38,6 +38,8 @@ use Tests\TestCase;
 class DotEnvWriterTest extends TestCase
 {
     protected string $testFile = '.env.test';
+    protected string $testWriteFile = '.env.test2';
+
     protected DotEnvWriter $writer;
 
     /**
@@ -46,13 +48,78 @@ class DotEnvWriterTest extends TestCase
      */
     public function testReader(): void
     {
-        $this->testFile = base_path($this->testFile);
-        $this->writer = new DotEnvWriter($this->testFile);
-        $variables = $this->writer->getAll();
+        $testFile = base_path($this->testFile);
+        $this->writer = new DotEnvWriter($testFile);
+        $variables = $this->writer->sanitize(false)->getAll();
 
-        info("Variables:\n".var_export($variables,1));
         $this->assertIsArray($variables);
-
     }
 
+    /**
+     * Utility function to set variables to the .env.test file
+     *
+     */
+    public function testSetVariables(): void
+    {
+        $testFile = base_path($this->testFile);
+        $this->writer = new DotEnvWriter($testFile);
+        $this->writer->set("APP_LOG","daily","not showing description");
+        $this->writer->set("TEST_KEY","Test value","It is a test description");
+        $this->writer->enable("MAIL_PORT");
+        $this->writer->disable("APP_KEY");
+        $this->writer->delete("GRAPHER_BACKEND_MRTG_DBTYPE",true);
+        $variables = $this->writer->getAll();
+
+        $mail = $this->writer->get("MAIL_PORT");
+        $app = $this->writer->get("APP_KEY");
+        $log = $this->writer->get("APP_LOG");
+        $test = $this->writer->get("TEST_KEY");
+        $testDescription = $test - 1;
+        $graph = $this->writer->get("GRAPHER_BACKEND_MRTG_DBTYPE");
+
+        $this->assertIsArray($variables);
+
+        $this->assertTrue($variables[$mail]["status"]);
+        $this->assertTrue($variables[$mail]["changed"]);
+        $this->assertFalse($variables[$app]["status"]);
+        $this->assertTrue($variables[$app]["changed"]);
+        $this->assertEquals("daily",$variables[$log]["value"]);
+        $this->assertTrue($variables[$log]["changed"]);
+        $this->assertEquals("Test value",$variables[$test]["value"]);
+        $this->assertTrue($variables[$test]["changed"]);
+        $this->assertNull($variables[$testDescription]["key"]);
+        $this->assertEquals("It is a test description",$variables[$testDescription]["value"]);
+        $this->assertFalse($variables[$testDescription]["status"]);
+        $this->assertTrue($variables[$testDescription]["changed"]);
+        $this->assertFalse($graph);
+    }
+
+    /**
+     * Utility function to write the .env.test file content from the variables
+     *
+     */
+    public function testWrite(): void
+    {
+        $testFile = base_path($this->testFile);
+        $testWriteFile = base_path($this->testWriteFile);
+        $this->writer = new DotEnvWriter($testFile);
+
+        $this->writer->set("APP_LOG","daily","not showing description");
+        $this->writer->enable("MAIL_PORT");
+        $this->writer->disable("APP_KEY");
+        $this->writer->delete("GRAPHER_BACKEND_MRTG_DBTYPE",true);
+
+        $this->writer->set("TEST_KEY","Test value","It is a test description");
+
+        $variables = $this->writer->getAll();
+
+        $created1 = $this->writer->write(false, $testWriteFile);
+        $created2 = $this->writer->write();
+
+        $this->assertIsArray($variables);
+        $this->assertFileExists($created1[0]); // old file
+        $this->assertFileExists($created1[1]); // new file
+        $this->assertFileExists($created2[0]); // old file
+        $this->assertFileExists($created2[1]); // new file
+    }
 }

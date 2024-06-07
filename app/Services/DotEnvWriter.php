@@ -10,10 +10,13 @@
  * @author Miraz Mac <mirazmac@gmail.com>
  * @link https://mirazmac.com
  */
+
 namespace IXP\Services;
 
+use Carbon\Carbon;
 use InvalidArgumentException;
 use LogicException;
+use const LOCK_EX;
 
 class DotEnvWriter
 {
@@ -39,7 +42,7 @@ class DotEnvWriter
     protected array $variables = [];
 
     /**
-     * Stores if a change was made todo: Disposable
+     * Stores if a change was made
      *
      * @var        bool
      */
@@ -48,81 +51,93 @@ class DotEnvWriter
     /**
      * Constructs a new instance.
      *
-     * @param      string|null      $sourceFile  The environment path
+     * @param string|null $sourceFile The environment path
      * @throws     LogicException  If the file is missing
      */
-    public function __construct(?string $sourceFile = null)
+    public function __construct( ?string $sourceFile = null )
     {
-        if (null !== $sourceFile) {
+        if( null !== $sourceFile ) {
             $this->sourceFile = $sourceFile;
-            $this->content = file_get_contents($sourceFile);
+            $this->content = file_get_contents( $sourceFile );
             $this->parse();
         }
     }
 
     /**
-     * Set the value of an environment variable, updated if exists, added if doesn't todo: Refactor
+     * Set the value of an environment variable,
+     * updated if exists and enabled if disabled,
+     * added if it doesn't exist
      *
-     * @param      string  $key         The key
-     * @param      string  $value       The value
-     * @param      bool    $forceQuote  By default the whether the value is wrapped
-     *                                  in double quotes is determined automatically.
-     *                                  However, you may wish to force quote a value
+     * @param string $key The key
+     * @param string $value The value
+     * @param string|null $description The description (remarked line before variable, only on new variable)
      *
-     * @throws     InvalidArgumentException If a new key contains invalid characters
      * @return     self
+     * @throws     InvalidArgumentException  If a new key contains invalid characters
      */
-    public function set(string $key, string $value, bool $forceQuote = false) : self
+    public function set( string $key, string $value, string|null $description = null ): self
     {
-        $originalValue = $value;
-
-        // Quote properly
-        $value = $this->escapeValue($value, $forceQuote);
-
-        // If the key exists, replace it's value
-        if ($this->exists($key)) {
-            $this->content = preg_replace("/^{$key}=.*$/mu", "{$key}={$value}", $this->content);
+        // If the key exists, replace its value
+        if( $lineId = $this->findVariable( $key ) ) {
+            $this->variables[ $lineId ][ "value" ] = $this->formatValue( $value );
+            $this->variables[ $lineId ][ "status" ] = true;
+            $this->variables[ $lineId ][ "changed" ] = true;
+            $this->changed = true;
         } else {
             // otherwise append to the end
-            if (!$this->isValidName($key)) {
-                throw new InvalidArgumentException("Failed to add new key `{$key}`. As it contains invalid characters, please use only ASCII letters, digits and underscores only.");
+            if( !$this->isValidName( $key ) ) {
+                throw new InvalidArgumentException( "Failed to add new key `{$key}`. As it contains invalid characters, please use only ASCII letters, digits and underscores only." );
             }
 
-            $this->content .= "{$key}={$value}" . PHP_EOL;
-        }
-
-        $this->variables[$key] = $originalValue;
-        $this->changed = true;
-
-        return $this;
-    }
-
-    /**
-     * Set more values at once, downside of this is you can't set "forceQuote" specificly todo: Disposable
-     *
-     * @param      array  $values  The values as key => value pairs
-     * @return     self
-     */
-    public function setValues(array $values) : self
-    {
-        foreach ($values as $key => $value) {
-            $this->set($key, $value);
+            if( $description ) {
+                $this->variables[] = [
+                    "key"     => null,
+                    "value"   => $description,
+                    "status"  => false,
+                    "changed" => true,
+                ];
+            }
+            $this->variables[] = [
+                "key"     => $key,
+                "value"   => $this->formatValue( $value ),
+                "status"  => true,
+                "changed" => true,
+            ];
+            $this->changed = true;
         }
 
         return $this;
     }
 
     /**
-     * Delete an environment variable if present todo: Refactor
+     * Set more values at once
      *
-     * @param      string  $key    The key
+     * @param array $values The values as key => value pairs
      * @return     self
      */
-    public function delete(string $key) : self
+    public function setValues( array $values ): self
     {
-        if ($this->exists($key)) {
-            $this->content = preg_replace("/^{$key}=.*\s{0,1}/mu", '', $this->content);
-            unset($this->variables[$key]);
+        foreach( $values as $key => $value ) {
+            $this->set( $key, $value );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Delete an environment variable if present
+     *
+     * @param string $key The key
+     * @param bool $removeDescription Remove the description before the variable
+     * @return     self
+     */
+    public function delete( string $key, bool $removeDescription = false ): self
+    {
+        if( $lineId = $this->findVariable( $key ) ) {
+            unset( $this->variables[ $lineId ] );
+            if( $removeDescription && $this->variables[ $lineId - 1 ][ "key" ] === null ) {
+                unset( $this->variables[ $lineId - 1 ] );
+            }
             $this->changed = true;
         }
 
@@ -132,18 +147,15 @@ class DotEnvWriter
     /**
      * Remark an environment variable if present
      *
-     * @param      string  $key    The key
+     * @param string $key The key
      * @return     self
      */
-    public function disable(string $key) : self
+    public function disable( string $key ): self
     {
-        $lineId = $this->findVariable( $key );
-
-        if ($lineId !== false) {
-            if(!$this->variables[$lineId]["changed"]) {
-                $this->variables[$lineId]["status"] = false;
-                $this->variables[$lineId]["changed"] = true;
-            }
+        if( $lineId = $this->findVariable( $key ) ) {
+            $this->variables[ $lineId ][ "status" ] = false;
+            $this->variables[ $lineId ][ "changed" ] = true;
+            $this->changed = true;
         }
 
         return $this;
@@ -152,50 +164,74 @@ class DotEnvWriter
     /**
      * Unremarked an environment variable if present
      *
-     * @param      string  $key    The key
+     * @param string $key The key
      * @return     self
      */
-    public function enable(string $key) : self
+    public function enable( string $key ): self
     {
-        $lineId = $this->findVariable( $key );
-
-        if ($lineId !== false) {
-            if($this->variables[$lineId]["changed"]) {
-                $this->variables[$lineId]["status"] = true;
-                $this->variables[$lineId]["changed"] = true;
-            }
+        if( $lineId = $this->findVariable( $key ) ) {
+            $this->variables[ $lineId ][ "status" ] = true;
+            $this->variables[ $lineId ][ "changed" ] = true;
+            $this->changed = true;
         }
 
         return $this;
     }
 
     /**
-     * States if one or more values has changed todo: Disposable
+     * Sanitize the variable collection
+     * Remove all remarked line
+     *
+     * @param bool $leaveRemarkedVariables Don't remove remarked variables if it is true
+     *
+     * @return self
+     */
+    public function sanitize( bool $leaveRemarkedVariables = true ): self {
+        $collection = [];
+        foreach($this->variables as $variable) {
+            if($variable["key"] !== null) {
+                if($variable["status"] || ($variable["status"] === false && $leaveRemarkedVariables)) {
+                    $collection[] = $variable;
+                }
+            }
+        }
+        $this->variables = $collection;
+        return $this;
+    }
+
+    /**
+     * States if one or more values has changed
      *
      * @return     bool
      */
-    public function hasChanged() : bool
+    public function hasChanged(): bool
     {
         return $this->changed;
     }
 
     /**
-     * Returns the value for a variable is present todo: Refactor
+     * Returns the id of the variable array or the full content for a variable is present
      *
-     * NOTE: This is a writer library so all values are parsed as string.
-     * Don't use this as an way to read values from dot env files. Instead use something robust like:
-     * https://github.com/vlucas/phpdotenv
-     *
-     * @param      string  $key       The key
-     * @return     string
+     * @param string $key The key
+     * @param bool $full Give full content of the found variable
+     * @return array|int|false
      */
-    public function get(string $key): string
+    public function get( string $key, bool $full = false ): array|int|false
     {
-        return $this->exists($key) ? $this->variables[$key] : '';
+        $lineId = $this->findVariable( $key );
+        if ($full) {
+            if($lineId !== false) {
+                return [$lineId => $this->variables[ $lineId ]];
+            } else {
+                return false;
+            }
+        } else {
+            return $lineId;
+        }
     }
 
     /**
-     * Returns all the variables parsed
+     * Returns all full variable collection parsed
      *
      * @return     array
      */
@@ -205,51 +241,61 @@ class DotEnvWriter
     }
 
     /**
-     * Returns the current content
+     * Write the contents to the env file
+     * Without a $destFile it will modify the original file, but it creates a backup with the timestamp and a .bak extension
      *
-     * @return     string
+     * @param bool $force By default, we only write when something has changed, but you can force to write the file
+     * @param string|null $destFile Destination file. By default it's the same as $sourceFile is provided
+     *
+     * @return array Array of old and new file.
      */
-    public function getContent() : string
+    public function write( bool $force = false, ?string $destFile = null ): array
     {
-        return $this->content;
+        if( $this->hasChanged() || $force ) {
+            if( is_null($destFile) ) {
+                $backupFile = $this->sourceFile . Carbon::now()->format("YmdHis") . ".bak";
+                if( is_null($this->sourceFile) ) {
+                    throw new LogicException( "No file provided" );
+                }
+                $destFile = $this->sourceFile;
+                rename($destFile, $backupFile);
+            } else if (file_exists($destFile)) {
+                throw new LogicException( "Given destination file already exists." );
+            } else {
+                $backupFile = $this->sourceFile;
+            }
+
+            $content = "";
+            foreach($this->variables as $lineId => $variable) {
+                if(is_null($variable["key"])) {
+                    $pre = "";
+                    if( !str_starts_with( $variable[ "value" ], "#") && trim($variable[ "value" ]) !== '' ) {
+                        $pre = "# ";
+                    }
+                    $content .= $pre.$variable["value"]."\n";
+                } else if($variable["status"] === false) {
+                    $content .= "# ".$variable["key"]."=".$this->escapeValue($variable["value"])."\n";
+                } else {
+                    $content .= $variable["key"]."=".$this->escapeValue($variable["value"])."\n";
+                }
+            }
+            file_put_contents($destFile, $content, LOCK_EX);
+
+            return [$backupFile,$destFile];
+        } else {
+            throw new LogicException( "No change made on source file." );
+        }
     }
 
     /**
-     * Write the contents to the env file todo: Refactor
+     * Check if a variable exists or not
      *
-     * @param      bool  $force     By default we only write when something has changed,
-     *                              but you can force to write the file
-     * @param      string $destFile Destionation file. By default it's the same as $sourceFile is provided
-     *
+     * @param string $key The key
      * @return     bool
      */
-    public function write(bool $force = false, ?string $destFile = null) : bool
+    public function exists( string $key ): bool
     {
-        if (null === $destFile) {
-            $destFile = $this->sourceFile;
-        }
-
-        if (null === $destFile) {
-            throw new LogicException("No file provided");
-        }
-
-        // If nothing is changed don't bother writing unless forced
-        if (!$this->hasChanged() && !$force) {
-            return true;
-        }
-
-        return (false !== file_put_contents($destFile, $this->content, \LOCK_EX)  ?? true);
-    }
-
-    /**
-     * Check if a variable exists or not todo: Refactor
-     *
-     * @param      string  $key    The key
-     * @return     bool
-     */
-    public function exists(string $key): bool
-    {
-        return array_key_exists($key, $this->variables);
+        return in_array( $key, array_column( $this->variables, 'key' ) );
     }
 
     /**
@@ -258,19 +304,23 @@ class DotEnvWriter
      * @param string $key
      * @return false|int
      */
-    protected function findVariable( string $key): false|int
+    protected function findVariable( string $key ): false|int
     {
-        return array_search( $key, array_column( $this->variables, 'key' ) );
+        $result = false;
+        foreach($this->variables as $index => $variable) {
+            if($variable["key"] === $key) { $result = $index; break; }
+        }
+        return $result;
     }
 
     /**
      * Determines whether the specified key is valid name for .env files.
      *
-     * @param      string  $key    The key
+     * @param string $key The key
      *
      * @return     bool
      */
-    protected function isValidName(string $key) : bool
+    protected function isValidName( string $key ): bool
     {
         return (bool)preg_match( '/^[\w\.]+$/', $key );
     }
@@ -278,34 +328,33 @@ class DotEnvWriter
     /**
      * Parses the environment file line by line and store the variables
      */
-    protected function parse() : void
+    protected function parse(): void
     {
-        $lines = preg_split('/\r\n|\r|\n/', $this->content);
+        $lines = preg_split( '/\r\n|\r|\n/', $this->content );
 
-        foreach ($lines as $index => $line) {
-            if (mb_strlen(trim($line)) && !(mb_strpos(trim($line), '#') === 0)) {
-                [$key, $value] = explode('=', (string) $line);
+        foreach( $lines as $index => $line ) {
+            if( mb_strlen( trim( $line ) ) && !( mb_strpos( trim( $line ), '#' ) === 0 ) ) {
+                [ $key, $value ] = explode( '=', (string)$line );
                 $this->variables[] = [
-                    "key" => $key,
-                    "value" => $this->formatValue($value),
-                    "status" => true,
+                    "key"     => $key,
+                    "value"   => $this->formatValue( $value ),
+                    "status"  => true,
                     "changed" => false,
                 ];
             } else {
-                $unremarkedLine = trim(substr((string) $line, 1));
-                $validVariable = preg_match("/^([A-Z_]+)=(.+)$/", $unremarkedLine, $matches);
-                if ($validVariable) {
+                $validVariable = preg_match( "/^#\s{0,1}(\w+)=(.+)$/", $line, $matches );
+                if( $validVariable ) {
                     $this->variables[] = [
-                        "key" => $matches[1],
-                        "value" => $this->formatValue($matches[2]),
-                        "status" => false,
+                        "key"     => $matches[ 1 ],
+                        "value"   => $this->formatValue( $matches[ 2 ] ),
+                        "status"  => false,
                         "changed" => false,
                     ];
                 } else {
                     $this->variables[] = [
-                        "key" => null,
-                        "value" => $line,
-                        "status" => false,
+                        "key"     => null,
+                        "value"   => $line,
+                        "status"  => false,
                         "changed" => false,
                     ];
                 }
@@ -316,49 +365,46 @@ class DotEnvWriter
     /**
      * Strips quotes from the values when reading
      *
-     * @param      string  $value  The value
+     * @param string $value The value
      * @return     string
      */
-    protected function stripQuotes(string $value): string
+    protected function stripQuotes( string $value ): string
     {
-        return preg_replace('/^(\'(.*)\'|"(.*)")$/u', '$2$3', $value);
+        return preg_replace( '/^(\'(.*)\'|"(.*)")$/u', '$2$3', $value );
     }
 
     /**
      * Formats the value for human friendly output
      *
-     * @param      string  $value  The value
+     * @param string $value The value
      * @return     string
      */
-    protected function formatValue(string $value): string
+    protected function formatValue( string $value ): string
     {
-        $value = trim(explode('#', trim($value))[0]);
+        $value = trim( explode( '#', trim( $value ) )[ 0 ] );
 
-        return stripslashes($this->stripQuotes($value));
+        return stripslashes( $this->stripQuotes( $value ) );
     }
 
     /**
      * Escapes the value before writing to the contents
      *
-     * @param      string  $value       The value
-     * @param      bool    $forceQuote  Whether force quoting is preferred
+     * @param string $value The value
      * @return     string
      */
-    protected function escapeValue(string $value, bool $forceQuote): string
+    protected function escapeValue( string $value ): string
     {
-        if ('' === $value) {
+        if( '' === $value ) {
             return '';
         }
 
         // Quote the values if
         // it contains white-space or the following characters: " \ = : . $ ( )
         // or simply force quote is enabled
-        if (preg_match('/\s|"|\\\\|=|:|\.|\$|\(|\)/u', $value) || $forceQuote) {
+        if( preg_match( '/\s|"|\\\\|=|:|\.|\$|\(|\)/u', $value ) ) {
             // Replace backslashes with even more backslashes so when writing we can have escaped backslashes
-            // damn.. that rhymes
-            $value = str_replace('\\', '\\\\\\\\', $value);
-            // Wrap the
-            $value = '"' . addcslashes($value, '"') . '"';
+            $value = str_replace( '\\', '\\\\\\\\', $value );
+            $value = '"' . addcslashes( $value, '"' ) . '"';
         }
 
         return $value;
