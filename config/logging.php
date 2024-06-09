@@ -76,6 +76,7 @@ return [
         ],
 
         'deprecations' => [
+            'driver' => 'null',
             'channel' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
             'trace' => false,
         ],
