@@ -31,7 +31,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class Command extends \Illuminate\Console\Command
 {
-     /**
+
+    /**
       * Returns true if verbosity is EXACTLY: VERBOSITY_QUIET
       *
       * @return bool

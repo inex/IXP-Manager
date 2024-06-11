@@ -25,6 +25,7 @@ namespace IXP\Console\Commands\MailingList;
 
 use Ds\Set;
 
+use Illuminate\Support\Collection;
 use IXP\Utils\MailingList as ML;
 
  /**
@@ -80,6 +81,7 @@ class Init extends MailingList
         $ml = new ML( $this->argument('list') );
 
         $stdin = fopen( "php://stdin","r" );
+        /** @var Collection $addresses   */
         $addresses = collect();
 
         while( $address = strtolower( trim( fgets( $stdin ) ) ) ) {

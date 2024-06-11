@@ -6,6 +6,13 @@
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
 >
+
+    <extraFiles>
+        <file name="artisan"/>
+        <file name="version.php"/>
+        <file name="public/index.php"/>
+    </extraFiles>
+
     <projectFiles>
         <directory name="app"/>
         <directory name="data/SocialiteProviders/PeeringDB"/>

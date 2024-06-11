@@ -31,10 +31,7 @@ use IXP\Exceptions\GeneralException;
 
 use IXP\Http\Controllers\Controller;
 
-use IXP\Models\{
-    Customer,
-    CustomerNote
-};
+use IXP\Models\{Customer, CustomerNote, User};
 
 use Illuminate\Http\{
     JsonResponse,
@@ -69,6 +66,7 @@ class CustomerNotesController extends Controller
      */
     public function create( Request $r, Customer $cust ): JsonResponse
     {
+        /** @var User $user */
         $user   = Auth::getUser();
         $cn     = new CustomerNote;
 
@@ -101,6 +99,7 @@ class CustomerNotesController extends Controller
      */
     public function update( Request $r, CustomerNote $cn ): JsonResponse
     {
+        /** @var User $user */
         $user = Auth::getUser();
         $old = clone( $cn );
 
@@ -131,8 +130,11 @@ class CustomerNotesController extends Controller
      */
     public function get( CustomerNote $cn ): JsonResponse
     {
+        /** @var User $user */
+        $user = Auth::getUser();
+
         // these if's could be joined with '&&' but are separated for readability:
-        if( !Auth::getUser()->isSuperUser() ) {
+        if( !$user->isSuperUser() ) {
             if( $cn->private || $cn->customer_id !== Auth::getUser()->custid ) {
                 abort( 403, 'Insufficient Permissions.' );
             }
@@ -171,6 +173,7 @@ class CustomerNotesController extends Controller
      */
     public function ping( Customer $c = null ): JsonResponse
     {
+        /** @var User $u */
         $u = Auth::getUser();
         if( !$u->isSuperUser() ) {
             $c = Auth::getUser()->customer;
@@ -219,6 +222,7 @@ class CustomerNotesController extends Controller
      */
     private function notifyToggle( Customer $cust = null, CustomerNote $cn = null ): JsonResponse
     {
+        /** @var User $user */
         $user   = Auth::getUser();
         $prefs  = $user->prefs;
 
