@@ -90,8 +90,8 @@ class CustomerController extends Controller
     {
         $pdb = App::make( PeeringDb::class );
 
-        if( $pdb->getNetworkByAsn( $asn ) ) {
-            return response()->json( [ 'net' => $pdb->net ] );
+        if( $response = $pdb->getNetworkByAsn( $asn ) ) {
+            return response()->json( [ 'net' => $response ] );
         }
 
         return response()->json( [ 'error' => $pdb->error ] );
