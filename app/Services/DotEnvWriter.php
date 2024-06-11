@@ -47,15 +47,25 @@ class DotEnvWriter
      * Constructs a new instance.
      *
      * @param string|null $sourceFile The environment path
-     * @throws     LogicException  If the file is missing
+     * @throws     InvalidArgumentException  If the file is missing
      */
     public function __construct( ?string $sourceFile = null )
     {
-        if( null !== $sourceFile ) {
-            $this->sourceFile = $sourceFile;
-            $this->content = file_get_contents( $sourceFile );
-            $this->parse();
+        if( $sourceFile === null ) {
+            $sourceFile = base_path( '.env' );
         }
+
+        if( !file_exists($sourceFile) || !is_readable($sourceFile) ) {
+            throw new InvalidArgumentException("File '$sourceFile' does not exist or is not readable");
+        }
+
+        if( !is_writable($sourceFile) ) {
+            throw new InvalidArgumentException("File '$sourceFile' is not writable");
+        }
+
+        $this->sourceFile = $sourceFile;
+        $this->content = file_get_contents( $sourceFile );
+        $this->parse();
     }
 
     /**
@@ -79,11 +89,6 @@ class DotEnvWriter
             $this->variables[ $lineId ][ "changed" ] = true;
             $this->changed = true;
         } else {
-            // otherwise append to the end
-            if( !$this->isValidName( $key ) ) {
-                throw new InvalidArgumentException( "Failed to add new key `{$key}`. As it contains invalid characters, please use only ASCII letters, digits and underscores only." );
-            }
-
             if( $description ) {
                 $this->variables[] = [
                     "key"     => null,
@@ -140,7 +145,7 @@ class DotEnvWriter
     }
 
     /**
-     * Remark an environment variable if present
+     * Comment out an environment variable if present
      *
      * @param string $key The key
      * @return     self
@@ -157,7 +162,7 @@ class DotEnvWriter
     }
 
     /**
-     * Unremarked an environment variable if present
+     * Uncomment out an environment variable if present
      *
      * @param string $key The key
      * @return     self
@@ -173,26 +178,7 @@ class DotEnvWriter
         return $this;
     }
 
-    /**
-     * Sanitize the variable collection
-     * Remove all remarked line
-     *
-     * @param bool $leaveRemarkedVariables Don't remove remarked variables if it is true
-     *
-     * @return self
-     */
-    public function sanitize( bool $leaveRemarkedVariables = true ): self {
-        $collection = [];
-        foreach($this->variables as $variable) {
-            if($variable["key"] !== null) {
-                if($variable["status"] || ($variable["status"] === false && $leaveRemarkedVariables)) {
-                    $collection[] = $variable;
-                }
-            }
-        }
-        $this->variables = $collection;
-        return $this;
-    }
+
 
     /**
      * States if one or more values has changed
@@ -244,21 +230,9 @@ class DotEnvWriter
      *
      * @return array Array of old and new file.
      */
-    public function write( bool $force = false, ?string $destFile = null ): array
+    public function write( bool $force = false, ?string $destFile = null ): void
     {
         if( $this->hasChanged() || $force ) {
-            if( is_null($destFile) ) {
-                $backupFile = $this->sourceFile . Carbon::now()->format("YmdHis") . ".bak";
-                if( is_null($this->sourceFile) ) {
-                    throw new LogicException( "No file provided" );
-                }
-                $destFile = $this->sourceFile;
-                rename($destFile, $backupFile);
-            } else if (file_exists($destFile)) {
-                throw new LogicException( "Given destination file already exists." );
-            } else {
-                $backupFile = $this->sourceFile;
-            }
 
             $content = "";
             foreach($this->variables as $lineId => $variable) {
@@ -274,11 +248,7 @@ class DotEnvWriter
                     $content .= $variable["key"]."=".$this->escapeValue($variable["value"])."\n";
                 }
             }
-            file_put_contents($destFile, $content, LOCK_EX);
-
-            return [$backupFile,$destFile];
-        } else {
-            throw new LogicException( "No change made on source file." );
+            file_put_contents($this->sourceFile, $content, LOCK_EX);
         }
     }
 
@@ -327,9 +297,12 @@ class DotEnvWriter
     {
         $lines = preg_split( '/\r\n|\r|\n/', $this->content );
 
-        foreach( $lines as $index => $line ) {
-            if( mb_strlen( trim( $line ) ) && !( mb_strpos( trim( $line ), '#' ) === 0 ) ) {
-                [ $key, $value ] = explode( '=', (string)$line );
+        foreach( $lines as $line ) {
+
+            $line = trim($line);
+
+            if( mb_strlen( $line ) && !( mb_strpos( $line, '#' ) === 0 ) ) {
+                [ $key, $value ] = explode( '=', $line );
                 $this->variables[] = [
                     "key"     => $key,
                     "value"   => $this->formatValue( $value ),
@@ -337,7 +310,7 @@ class DotEnvWriter
                     "changed" => false,
                 ];
             } else {
-                $validVariable = preg_match( "/^#\s{0,1}(\w+)=(.+)$/", $line, $matches );
+                $validVariable = preg_match( "/^#\s{0,}(\w+)=(.+)$/", $line, $matches );
                 if( $validVariable ) {
                     $this->variables[] = [
                         "key"     => $matches[ 1 ],
