@@ -143,6 +143,7 @@ class MailingListController extends Controller
         $addresses = collect();
 
         foreach( explode( "\n", $request->addresses ) as $a ) {
+            /** @psalm-suppress InvalidArgument  - no issue here */
             $addresses->add( strtolower( trim( $a ) ) );
         }
 

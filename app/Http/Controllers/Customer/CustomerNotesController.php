@@ -37,6 +37,7 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
+use IXP\Models\User;
 use Illuminate\Http\{
     RedirectResponse
 };
@@ -57,7 +58,10 @@ class CustomerNotesController extends Controller
      */
     public function readAll() : RedirectResponse
     {
-        $prefs = Auth::getUser()->prefs;
+        /** @var User $us */
+        $us = Auth::getUser();
+
+        $prefs = $us->prefs;
         // Delete all last_read notes prefs
         if( isset( $prefs[ 'notes' ][ 'last_read' ] ) ) {
             unset( $prefs[ 'notes' ][ 'last_read' ] );
@@ -66,8 +70,8 @@ class CustomerNotesController extends Controller
         // Set read_upto at now()
         $prefs[ 'notes' ][ 'read_upto' ] = now()->format( 'Y-m-d H:i:s' );
 
-        Auth::getUser()->prefs = $prefs;
-        Auth::getUser()->save();
+        $us->prefs = $prefs;
+        $us->save();
 
         AlertContainer::push( 'All notes have been mark as read.', Alert::SUCCESS );
 
@@ -81,8 +85,10 @@ class CustomerNotesController extends Controller
      */
     public function unreadNotes()
     {
-        $lastRead       = Auth::getUser()->prefs[ 'notes' ][ 'last_read' ] ?? [];
-        $readUpto       = Auth::getUser()->prefs[ 'notes' ][ 'read_upto' ] ?? null;
+        /** @var User $us */
+        $us = Auth::getUser();
+        $lastRead       = $us->prefs[ 'notes' ][ 'last_read' ] ?? [];
+        $readUpto       = $us->prefs[ 'notes' ][ 'read_upto' ] ?? null;
         $latestNotes    = [];
 
         $custs = Customer::selectRaw(

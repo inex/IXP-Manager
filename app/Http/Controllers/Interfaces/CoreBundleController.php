@@ -142,6 +142,7 @@ class CoreBundleController extends Common
     public function edit( Request $r, CoreBundle $cb ): View
     {
         $customer = $cb->customer();
+        /** @psalm-suppress InvalidPropertyFetch */
         $customerId = !$customer ? 0 : $customer->id;
 
         // fill the form with the core bundle data
@@ -159,8 +160,10 @@ class CoreBundleController extends Common
         ] );
 
         $switchSideA = $cb->switchSideX();
+        /** @psalm-suppress InvalidPropertyFetch */
         $switchSideAId = $switchSideA ? $switchSideA->id : null;
         $switchSideB = $cb->switchSideX( false );
+        /** @psalm-suppress InvalidPropertyFetch */
         $switchSideBId = $switchSideB ? $switchSideB->id : null;
 
         return view( 'interfaces/core-bundle/edit/edit-wizard' )->with( [

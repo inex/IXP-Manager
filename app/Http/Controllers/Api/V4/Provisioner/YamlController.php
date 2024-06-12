@@ -70,6 +70,7 @@ class YamlController extends Controller
 
         switch ( $format ) {
             case 'yaml':
+                /** @psalm-suppress UndefinedConstant */
                 $output = yaml_emit( $array, YAML_UTF8_ENCODING );
                 break;
             case 'json':
@@ -443,8 +444,10 @@ class YamlController extends Controller
             $entry['preference']   	=  $cb->preference;
             $entry['enabled'] 	   	=  (bool)$cb->enabled;
             $entry['type'] 	   	    =  $cb->type;
-            $entry['switchsidea']  	=  $switchSideA ? $switchSideA->name : null;
-            $entry['switchsideb']  	=  $switchSideB ? $switchSideB->name : null;
+            /** @psalm-suppress InvalidPropertyFetch */
+            $entry['switchsidea']  	=  $switchSideA !== false ? $switchSideA->name : null;
+            /** @psalm-suppress InvalidPropertyFetch */
+            $entry['switchsideb']  	=  $switchSideB !== false ? $switchSideB->name : null;
 
             $speed = $cb->corelinks()->count() * $cb->speedPi() * 1000000;
 

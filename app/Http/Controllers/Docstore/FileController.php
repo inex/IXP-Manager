@@ -110,6 +110,7 @@ class FileController extends Controller
         $file = $r->file('uploadedFile');
         $path = $file->store( '', 'docstore' );
 
+        /** @psalm-suppress InvalidArgument */
         $file = DocstoreFile::create( [
             'name'                  => $r->name,
             'description'           => $r->description,
@@ -178,6 +179,7 @@ class FileController extends Controller
             $uploadedFile   = $r->file('uploadedFile');
             $path           = $uploadedFile->store( '', 'docstore' );
 
+            /** @psalm-suppress InvalidArgument */
             $file->update([
                 'path'                  => $path,
                 'sha256'                => hash_file( 'sha256', $uploadedFile ),
@@ -251,6 +253,7 @@ class FileController extends Controller
         }
 
         try {
+            /** @psalm-suppress UndefinedInterfaceMethod */
             return Storage::disk( $file->disk )->download( $file->path, $file->name );
         } catch( FilesystemException $e ) {
             AlertContainer::push( "This file could not be found / downloaded. Please report this error to the support team.", Alert::DANGER );
@@ -316,6 +319,7 @@ class FileController extends Controller
      */
     private function checkForm( Request $r, ?DocstoreFile $file = null ): void
     {
+        /** @psalm-suppress InvalidArgument */
         $r->validate( [
             'name'                  => 'required|max:100',
             'uploadedFile'          => Rule::requiredIf( function() use ( $r, $file ) {

@@ -85,6 +85,7 @@ class PeeringManagerController extends Controller
         $protos = [ 4, 6 ];
         $c      = Customer::find( Auth::getUser()->custid );
         $vlans  = Vlan::peeringManager()->orderBy( 'number' )->get();
+        /** @psalm-suppress InvalidArgument */
         $peers  = CustomerAggregator::getPeeringManagerArrayByType( $c , $vlans, $protos ) ?? [];
 
         if( !count( $peers ) ) {

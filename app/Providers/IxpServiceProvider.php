@@ -27,6 +27,7 @@ use Auth, Cache, View;
 use Illuminate\Support\ServiceProvider;
 
 use IXP\Models\Customer;
+use IXP\Models\User;
 
 /**
  * IXP Service Provider
@@ -56,7 +57,10 @@ class IxpServiceProvider extends ServiceProvider
     {
         $this->app->resolving('view', function( $view ) {
             View::composer('*', function($view) {
-                if( ( Auth::check() && Auth::getUser()->isSuperUser() ) || env( 'IXP_PHPUNIT_RUNNING', false ) ) {
+                /** @var User $us */
+                $us = Auth::getUser();
+
+                if( ( Auth::check() && $us->isSuperUser() ) || config( 'IXP_PHPUNIT_RUNNING', false ) ) {
                     // get an array of customer id => names
                     if( !( $customers = Cache::get( 'admin_home_customers' ) ) ) {
                         $customers = Customer::select( [ 'id', 'name' ] )->current()->orderBy( 'name' )->get()->keyBy( 'id' )->toArray();

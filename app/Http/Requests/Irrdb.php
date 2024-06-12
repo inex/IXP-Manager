@@ -50,7 +50,9 @@ class Irrdb extends FormRequest
      */
     public function authorize(): bool
     {
-        $privs = Auth::getUser()->privs();
+        /** @var User $us */
+        $us = Auth::getUser();
+        $privs = $us->privs();
 
         if( $privs < User::AUTH_CUSTUSER ) {
             return false;

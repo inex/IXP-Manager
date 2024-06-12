@@ -124,7 +124,10 @@ class Switcher extends Graph
      */
     public function authorise(): bool
     {
-        if( Auth::check() && Auth::getUser()->isSuperUser() ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+
+        if( Auth::check() && $us->isSuperUser() ) {
             return $this->allow();
         }
 
@@ -132,7 +135,7 @@ class Switcher extends Graph
             return $this->allow();
         }
 
-        if( Auth::check() && is_numeric( config( 'grapher.access.switch' ) ) && Auth::getUser()->privs() >= (int)config( 'grapher.access.switch' ) ) {
+        if( Auth::check() && is_numeric( config( 'grapher.access.switch' ) ) && $us->privs() >= (int)config( 'grapher.access.switch' ) ) {
             return $this->allow();
         }
 

@@ -89,6 +89,7 @@ class MailingList
         foreach( $users as $user ) {
             $email = strtolower( $user->email );
             if( !$filtered_users->contains( $email ) && filter_var( $email, FILTER_VALIDATE_EMAIL ) !== false ) {
+                /** @psalm-suppress InvalidArgument - it is not invalid */
                 $filtered_users->add( $email );
             }
         }

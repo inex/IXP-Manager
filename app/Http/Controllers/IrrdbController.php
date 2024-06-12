@@ -32,10 +32,7 @@ use IXP\Jobs\UpdateIrrdb;
 
 use IXP\Http\Requests\Irrdb as IrrdbRequest;
 
-use IXP\Models\{
-    Aggregators\IrrdbAggregator,
-    Customer
-};
+use IXP\Models\{Aggregators\IrrdbAggregator, Customer, User};
 
 /**
  * Irrdb Controller
@@ -61,10 +58,13 @@ class IrrdbController extends Controller
      */
     public function list( IrrdbRequest $r, Customer $cust, string $type, int $protocol ) : View
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         $irrdbList = IrrdbAggregator::forCustomerAndProtocol( $cust->id, $protocol, $type );
 
         // are we busting the cache?
-        if( $r->reset_cache === "1"  && Auth::getUser()->isSuperUser() ) {
+        if( $r->reset_cache === "1"  && $us->isSuperUser() ) {
             Cache::forget('updated-irrdb-' . $type . '-' . $cust->id );
         }
 
@@ -90,8 +90,10 @@ class IrrdbController extends Controller
      */
     public function update( IrrdbRequest $r, Customer $cust, string $type, int $protocol ) : RedirectResponse
     {
+        /** @var User $us */
+        $us = Auth::getUser();
         // are we busting the cache?
-        if( $r->reset_cache === "1" && Auth::getUser()->isSuperUser() ) {
+        if( $r->reset_cache === "1" && $us->isSuperUser() ) {
             Cache::forget('updated-irrdb-' . $type . '-' . $protocol . '-' . $cust->id );
         }
 

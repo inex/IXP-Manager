@@ -98,7 +98,9 @@ class ContactController extends EloquentController
             'viewFolderName'    => 'contact',
         ];
 
-        switch( $privs = Auth::getUser()->privs() ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+        switch( $privs = $us->privs() ) {
             case User::AUTH_SUPERUSER:
                 $this->feParams->listColumns = [
                     'customer'  => [
@@ -188,7 +190,9 @@ class ContactController extends EloquentController
      */
     private function getFeList( stdClass $feParams, int $id = null, int $role = null, int $cgid = null ): array
     {
-        $isSuperUser = Auth::getUser()->isSuperUser();
+        /** @var User $us */
+        $us = Auth::getUser();
+        $isSuperUser = $us->isSuperUser();
         $query = Contact::select( [ 'contact.*', 'cust.name AS customer', 'cust.id AS custid' ])
             ->leftJoin( 'cust', 'cust.id', 'contact.custid'  )
             ->when( $id , function ( Builder $query, $id ) {
@@ -273,7 +277,9 @@ class ContactController extends EloquentController
      */
     protected function preView(): void
     {
-        if( Auth::getUser()->custid !== (int)$this->data[ 'item' ][ 'custid' ]  && !Auth::getUser()->isSuperUser() ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+        if( $us->custid !== (int)$this->data[ 'item' ][ 'custid' ]  && !$us->isSuperUser() ) {
             $this->unauthorized();
         }
 
@@ -335,13 +341,15 @@ class ContactController extends EloquentController
      */
     public function doStore( Request $r ): bool|RedirectResponse
     {
+        /** @var User $us */
+        $us = Auth::getUser();
 
         $this->checkForm( $r );
-        $custid = Auth::getUser()->isSuperUser() ? $r->custid : Auth::getUser()->custid;
+        $custid = $us->isSuperUser() ? $r->custid : $us->custid;
 
         $this->object = Contact::make(
             array_merge( $r->all(), [
-                'creator'       => Auth::getUser()->username,
+                'creator'       => $us->username,
                 'lastupdatedby' => Auth::id()
             ] )
         );
@@ -366,11 +374,14 @@ class ContactController extends EloquentController
      */
     protected function editPrepareForm( int $id ): array
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         $this->setRedirectSession();
         $this->object   = Contact::findOrFail( $id );
         $data           = $this->getContactsData();
 
-        if( Auth::getUser()->custid !== $this->object->customer->id && !Auth::getUser()->isSuperUser() ){
+        if( $us->custid !== $this->object->customer->id && !$us->isSuperUser() ){
             $this->unauthorized();
         }
 
@@ -416,18 +427,21 @@ class ContactController extends EloquentController
      */
     public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         $this->object = Contact::findOrFail( $id );
         $this->checkForm( $r );
 
-        $custid = Auth::getUser()->custid;
+        $custid = $us->custid;
 
-        if( Auth::getUser()->isSuperUser() ) {
+        if( $us->isSuperUser() ) {
             $custid = $r->custid;
         }
 
         $this->object->fill(
             array_merge( $r->all(), [
-                'creator'       => Auth::getUser()->username,
+                'creator'       => $us->username,
                 'lastupdatedby' => Auth::id()
             ] )
         );
@@ -458,7 +472,10 @@ class ContactController extends EloquentController
      */
     protected function postStoreRedirect(): ?string
     {
-        if( !Auth::getUser()->isSuperUser() ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+
+        if( !$us->isSuperUser() ) {
             return route( 'contact@list' );
         }
 
@@ -485,11 +502,14 @@ class ContactController extends EloquentController
      */
     protected function preDelete(): bool
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         session()->remove( 'ixp_contact_delete_custid' );
-        if( Auth::getUser()->isSuperUser() ) {
+        if( $us->isSuperUser() ) {
             // keep the customer ID for redirection on success
             $this->request->session()->put( "ixp_contact_delete_custid", $this->object->customer->id );
-        } elseif( $this->object->customer->id !== Auth::getUser()->custid ) {
+        } elseif( $this->object->customer->id !== $us->custid ) {
             AlertContainer::push( 'You are not authorised to delete this contact.', Alert::DANGER );
             return false;
         }
@@ -535,7 +555,9 @@ class ContactController extends EloquentController
             'notes'                 => 'nullable|string|max:255',
         ];
 
-        if( Auth::getUser()->isSuperUser() ){
+        /** @var User $us */
+        $us = Auth::getUser();
+        if( $us->isSuperUser() ){
             $rules = array_merge( $rules,
                 [ 'custid' => 'required|integer|exists:cust,id' ]
             );

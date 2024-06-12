@@ -67,6 +67,7 @@ class PublicController extends Controller
      */
     public function ping(): JsonResponse
     {
+        /** @psalm-suppress UndefinedConstant */
         return response()->json([
             'software' => "IXP Manager",
             'version'  => APPLICATION_VERSION,

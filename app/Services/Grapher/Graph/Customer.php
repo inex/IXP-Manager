@@ -121,7 +121,10 @@ class Customer extends Graph
      */
     public static function authorisedForAllCustomers(): bool
     {
-        if( Auth::check() && Auth::getUser()->isSuperUser() ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+
+        if( Auth::check() && $us->isSuperUser() ) {
             return true;
         }
 
@@ -129,7 +132,7 @@ class Customer extends Graph
             return true;
         }
 
-        return Auth::check() && is_numeric( config( 'grapher.access.customer' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.customer' );
+        return Auth::check() && is_numeric( config( 'grapher.access.customer' ) ) && $us->privs() >= config( 'grapher.access.customer' );
     }
 
     /**
@@ -143,6 +146,9 @@ class Customer extends Graph
      */
     public function authorise(): bool
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         // NB: see above authorisedForAllCustomers()
         if( is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
@@ -153,23 +159,23 @@ class Customer extends Graph
             return false;
         }
 
-        if( Auth::getUser()->isSuperUser() ) {
+        if( $us->isSuperUser() ) {
             return $this->allow();
         }
 
-        if( Auth::getUser()->custid === $this->customer()->id ) {
+        if( $us->custid === $this->customer()->id ) {
             return $this->allow();
         }
 
         if( config( 'grapher.access.customer' ) !== 'own_graphs_only'
             && is_numeric( config( 'grapher.access.customer' ) )
-            && Auth::getUser()->privs() >= config( 'grapher.access.customer' )
+            && $us->privs() >= config( 'grapher.access.customer' )
         ) {
             return $this->allow();
         }
 
         Log::notice( sprintf( "[Grapher] [Customer]: user %d::%s tried to access a customer aggregate graph "
-                . "{$this->customer()->id} which is not theirs", Auth::id(), Auth::getUser()->username )
+                . "{$this->customer()->id} which is not theirs", Auth::id(), $us->username )
         );
 
         $this->deny();
@@ -216,9 +222,12 @@ class Customer extends Graph
      */
     public static function processParameterCustomer( int $i ): CustomerModel
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         // if we're not an admin, default to the currently logged in customer
-        if( !$i && Auth::check() && !Auth::getUser()->isSuperUser() && !Auth::getUser()->customer->typeAssociate() ) {
-            return CustomerModel::find( Auth::getUser()->custid );
+        if( !$i && Auth::check() && !$us->isSuperUser() && !$us->customer->typeAssociate() ) {
+            return CustomerModel::find( $us->custid );
         }
 
         return CustomerModel::findOrFail( $i );

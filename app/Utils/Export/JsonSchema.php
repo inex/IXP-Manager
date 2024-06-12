@@ -89,6 +89,7 @@ class JsonSchema
             $version = $this->sanitiseVersion( $version );
         }
 
+        /** @psalm-suppress UndefinedConstant */
         $output = [
             'version' => $version,
             'generator' => 'IXP Manager v' . APPLICATION_VERSION,

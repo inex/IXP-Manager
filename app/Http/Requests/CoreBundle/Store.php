@@ -29,10 +29,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 use Illuminate\Validation\Validator;
 
-use IXP\Models\{
-    CoreBundle,
-    SwitchPort
-};
+use IXP\Models\{CoreBundle, SwitchPort, User};
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -58,8 +55,10 @@ class Store extends FormRequest
      */
     public function authorize(): bool
     {
+        /** @var User $us */
+        $us = Auth::getUser();
         // middleware ensures superuser access only so always authorised here:
-        return Auth::getUser()->isSuperUser();
+        return $us->isSuperUser();
     }
 
     /**

@@ -28,6 +28,7 @@ use Auth;
 use IXP\Models\PhysicalInterface;
 
 use Illuminate\Foundation\Http\FormRequest;
+use IXP\Models\User;
 
 /**
  * Store PhysicalInterface FormRequest
@@ -48,8 +49,10 @@ class StorePhysicalInterface extends FormRequest
      */
     public function authorize(): bool
     {
+        /** @var User $us */
+        $us = Auth::getUser();
         // middleware ensures superuser access only so always authorised here:
-        return Auth::getUser()->isSuperUser();
+        return $us->isSuperUser();
     }
 
     /**

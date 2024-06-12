@@ -83,10 +83,12 @@ class Store extends FormRequest
      */
     public function withValidator( Validator $validator ): bool
     {
+        /** @var User $us */
+        $us = Auth::getUser();
         if( !$validator->fails() ) {
-            $validator->after( function( Validator $validator ) {
-                $isSuperUser = Auth::getUser()->isSuperUser();
-                $cust = $isSuperUser ? Customer::find( $this->custid ) : Auth::user()->customer;
+            $validator->after( function( Validator $validator ) use( $us ) {
+                $isSuperUser = $us->isSuperUser();
+                $cust = $isSuperUser ? Customer::find( $this->custid ) : $us->customer;
 
                 if( (int)$this->privs === User::AUTH_SUPERUSER ) {
                     if( !$isSuperUser || ( $isSuperUser && !$cust->typeInternal() ) ) {

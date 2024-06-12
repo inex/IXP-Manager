@@ -223,14 +223,12 @@ class DotEnvWriter
 
     /**
      * Write the contents to the env file
-     * Without a $destFile it will modify the original file, but it creates a backup with the timestamp and a .bak extension
      *
      * @param bool $force By default, we only write when something has changed, but you can force to write the file
-     * @param string|null $destFile Destination file. By default it's the same as $sourceFile is provided
      *
-     * @return array Array of old and new file.
+     * @return void
      */
-    public function write( bool $force = false, ?string $destFile = null ): void
+    public function write( bool $force = false ): void
     {
         if( $this->hasChanged() || $force ) {
 

@@ -120,8 +120,11 @@ class Controller extends BaseController
      */
     protected function getAllowedPrivs(): array
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         $privs          = User::$PRIVILEGES_TEXT_NONSUPERUSER;
-        $isSuperUser    = Auth::getUser()->isSuperUser();
+        $isSuperUser    = $us->isSuperUser();
 
         // If we add a user via the customer overview users list
         if( request()->custid && request()->is( 'user/create*' ) ) {

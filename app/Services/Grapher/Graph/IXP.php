@@ -89,23 +89,28 @@ class IXP extends Graph
      */
     public function authorise(): bool
     {
-        if( Auth::check() && Auth::getUser()->isSuperUser() ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+
+        if( Auth::check() && $us->isSuperUser() ) {
             return $this->allow();
         }
 
         if( in_array( $this->category(), [ self::CATEGORY_ERRORS, self::CATEGORY_DISCARDS ], true ) ) {
             $this->deny();
+            return false;
         }
 
         if( is_numeric( config( 'grapher.access.ixp' ) ) && (int)config( 'grapher.access.ixp' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 
-        if( Auth::check() && is_numeric( config( 'grapher.access.ixp' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.ixp' ) ) {
+        if( Auth::check() && is_numeric( config( 'grapher.access.ixp' ) ) && $us->privs() >= config( 'grapher.access.ixp' ) ) {
             return $this->allow();
         }
 
         $this->deny();
+        return false;
     }
 
     /**

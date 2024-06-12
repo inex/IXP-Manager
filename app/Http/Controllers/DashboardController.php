@@ -40,12 +40,7 @@ use IXP\Http\Requests\Dashboard\{
     BillingDetailsRequest
 };
 
-use IXP\Models\{
-    Aggregators\RsPrefixAggregator,
-    Customer,
-    CustomerNote,
-    NetworkInfo
-};
+use IXP\Models\{Aggregators\RsPrefixAggregator, Customer, CustomerNote, NetworkInfo, User};
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -77,8 +72,10 @@ class DashboardController extends Controller
      */
     public function index( Request $r, string $tab = null ): RedirectResponse|View
     {
+        /** @var User $us */
+        $us = Auth::getUser();
         // Redirect Super user
-        if( Auth::getUser()->isSuperUser() ) {
+        if( $us->isSuperUser() ) {
             return redirect( '/');
         }
 

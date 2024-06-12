@@ -149,9 +149,11 @@ abstract class Common extends Controller
         $relatedInterface = $pi->relatedInterface();
 
         // if the physical interface already has a related physical interface and it's not the same as the fanout physical interface
+        /** @psalm-suppress InvalidPropertyFetch */
         if( $relatedInterface !== false && $relatedInterface->id !== $fnpi->id ) {
             // if fanout does not have a virtual interface, relate it with old fanout port virtual interface.
             if( !$fnpi->virtualInterface ) {
+                /** @psalm-suppress InvalidPropertyFetch */
                 $fnpi->virtualinterfaceid = $relatedInterface->virtualinterfaceid;
             }
 

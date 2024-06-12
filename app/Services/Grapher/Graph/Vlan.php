@@ -125,7 +125,10 @@ class Vlan extends Graph
      */
     public function authorise(): bool
     {
-        if( Auth::check() && Auth::getUser()->isSuperUser() ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+
+        if( Auth::check() && $us->isSuperUser() ) {
             return $this->allow();
         }
 
@@ -139,7 +142,7 @@ class Vlan extends Graph
             return $this->allow();
         }
 
-        if( Auth::check() && is_numeric( config( 'grapher.access.vlan' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.vlan' ) ) {
+        if( Auth::check() && is_numeric( config( 'grapher.access.vlan' ) ) && $us->privs() >= config( 'grapher.access.vlan' ) ) {
             return $this->allow();
         }
 

@@ -106,6 +106,7 @@ class FileController extends Controller
         $this->authorize( 'download', $file );
 
         try {
+            /** @psalm-suppress UndefinedInterfaceMethod */
             return Storage::disk( $file->disk )->download( $file->path, $file->name );
         } catch( FilesystemException $e ) {
             AlertContainer::push( "This customer file could not be found / downloaded. Please report this error to the support team.", Alert::DANGER );
@@ -179,8 +180,9 @@ class FileController extends Controller
 
         $uploadedFile = $r->file('uploadedFile' );
 
-        $path = $uploadedFile->store( $cust->id, 'docstore_customers' );
+        $path = $uploadedFile->store( (string) $cust->id, 'docstore_customers' );
 
+        /** @psalm-suppress InvalidArgument */
         $file = DocstoreCustomerFile::create( [
             'name'                              => $r->name,
             'description'                       => $r->description,
@@ -254,6 +256,7 @@ class FileController extends Controller
             $uploadedFile = $r->file('uploadedFile');
             $path = $uploadedFile->store( $file->customer->id, 'docstore_customers' );
 
+            /** @psalm-suppress InvalidArgument */
             $file->update([
                 'path'                  => $path,
                 'sha256'                => hash_file( 'sha256', $uploadedFile ),
@@ -322,6 +325,7 @@ class FileController extends Controller
             }),
             'sha256'                            => [ 'nullable', 'max:64',
                 function ( $attribute, $value, $fail ) use( $r ) {
+                    /** @psalm-suppress InvalidArgument */
                     if( $value && $r->file('uploadedFile' ) && $value !== hash_file( 'sha256', $r->file( 'uploadedFile' ) ) ) {
                         return $fail( 'The sha256 checksum calculated on the server does not match the one you provided.' );
                     }

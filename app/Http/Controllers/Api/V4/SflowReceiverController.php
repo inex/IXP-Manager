@@ -140,10 +140,12 @@ class SflowReceiverController extends Controller
         $httpresponse   = 200;
 
         $array['timestamp']             = now()->format( 'Y-m-d\TH:i:s\Z' );
+        /** @psalm-suppress UndefinedConstant */
         $array['ixpmanager_version']    = APPLICATION_VERSION;
 
         switch ( $format ) {
             case 'yaml':
+                /** @psalm-suppress UndefinedConstant */
                 $output = yaml_emit ( $array, YAML_UTF8_ENCODING );
                 break;
             case 'json':

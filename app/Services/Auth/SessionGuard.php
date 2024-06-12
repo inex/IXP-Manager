@@ -148,6 +148,7 @@ class SessionGuard extends BaseGuard
      * @param AuthenticatableContract $user
      *
      * @return void
+     * @psalm-suppress UndefinedInterfaceMethod
      */
     protected function ensureRememberTokenIsSet( AuthenticatableContract $user ): void
     {

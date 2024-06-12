@@ -486,7 +486,7 @@ class CustomerController extends Controller
         return response()->json( [
             'success' => true,
             'htmlFrag' => view('customer/overview-tabs/peers')->with([
-                'peers' => CustomerAggregator::getPeeringManagerArrayByType( $cust, Vlan::peeringManager()->orderBy( 'number' )->get(), [ 4,6 ] ) ?: false
+                'peers' => CustomerAggregator::getPeeringManagerArrayByType( $cust, Vlan::peeringManager()->orderBy( 'number' )->get()->toArray(), [ 4,6 ] ) ?: false
             ])->render()
         ] );
     }

@@ -201,7 +201,10 @@ class Latency extends Graph
      */
     public static function authorisedForAllCustomers(): bool
     {
-        if( Auth::check() && Auth::getUser()->isSuperUser() ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+
+        if( Auth::check() && $us->isSuperUser() ) {
             return true;
         }
 
@@ -209,7 +212,7 @@ class Latency extends Graph
             return true;
         }
 
-        return Auth::check() && is_numeric( config( 'grapher.access.latency' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.latency' );
+        return Auth::check() && is_numeric( config( 'grapher.access.latency' ) ) && $us->privs() >= config( 'grapher.access.latency' );
     }
 
     /**
@@ -223,6 +226,9 @@ class Latency extends Graph
      */
     public function authorise(): bool
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         // NB: see above authorisedForAllCustomers()
         if( is_numeric( config( 'grapher.access.latency' ) ) && config( 'grapher.access.latency' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
@@ -233,23 +239,23 @@ class Latency extends Graph
             return false;
         }
 
-        if( Auth::getUser()->isSuperUser() ) {
+        if( $us->isSuperUser() ) {
             return $this->allow();
         }
 
-        if( Auth::getUser()->custid === $this->vli()->virtualInterface->customer->id ) {
+        if( $us->custid === $this->vli()->virtualInterface->customer->id ) {
             return $this->allow();
         }
 
         if( config( 'grapher.access.latency' ) !== 'own_graphs_only'
             && is_numeric( config( 'grapher.access.latency' ) )
-            && Auth::getUser()->privs >= config( 'grapher.access.latency' )
+            && $us->privs >= config( 'grapher.access.latency' )
         ) {
             return $this->allow();
         }
 
         Log::notice( sprintf( "[Grapher] [Latency]: user %d::%s tried to access a latency graph for vli "
-                . "{$this->vli()->id} which is not theirs", Auth::id(), Auth::getUser()->username )
+                . "{$this->vli()->id} which is not theirs", Auth::id(), $us->username )
         );
 
         $this->deny();

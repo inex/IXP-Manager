@@ -145,9 +145,11 @@ class SwitchController extends Controller
 
         foreach( $s->getCoreBundles() as $cb ) {
             $switchA = $cb->switchSideX();
-            $switchAName = $switchA ? $switchA->name : 'none';
+            /** @psalm-suppress InvalidPropertyFetch */
+            $switchAName = $switchA !== false ? $switchA->name : 'none';
             $switchB = $cb->switchSideX( false );
-            $switchBName = $switchB ? $switchB->name : 'none';
+            /** @psalm-suppress InvalidPropertyFetch */
+            $switchBName = $switchB !== false ? $switchB->name : 'none';
 
             if( $cb->enabled ) {
                 $linksup      = count( $cb->coreLinksWithIfOperStateX() ); // with no args this defaults to X = oper state up for enabled links

@@ -37,16 +37,15 @@ use IXP\Http\Controllers\Controller;
 
 use IXP\Http\Requests\StorePatchPanelPort as StorePatchPanelPortRequest;
 
-use IXP\Models\{
-    Aggregators\PatchPanelPortAggregator,
+use IXP\Models\{Aggregators\PatchPanelPortAggregator,
     Cabinet,
     Customer,
     Location,
     PatchPanel,
     PatchPanelPort,
     Switcher,
-    SwitchPort
-};
+    SwitchPort,
+    User};
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -368,12 +367,15 @@ class PortController extends Controller
      */
     public function view( PatchPanelPort $ppp ): View
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         $listHistory[] = $ppp->load( [ 'patchPanel', 'duplexSlavePorts',
             'switchPort', 'customer'
         ] );
 
-        if( !Auth::getUser()->isSuperUser() ) {
-            if( !$ppp->customer || $ppp->customer_id !== Auth::getUser()->custid ) {
+        if( !$us->isSuperUser() ) {
+            if( !$ppp->customer || $ppp->customer_id !== $us->custid ) {
                 abort(404);
             }
         } else {

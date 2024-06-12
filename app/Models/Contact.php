@@ -131,7 +131,7 @@ class Contact extends Model
     {
         return $this->belongsToMany(ContactGroup::class, 'contact_to_group', 'contact_id' )
             ->where( 'type', '!=', ContactGroup::TYPE_ROLE )
-            ->orderBy( 'name' );
+            ->orderBy( 'name' )->withTimestamps();
     }
 
     /**

@@ -78,10 +78,12 @@ class CheckEmail extends FormRequest
      */
     public function withValidator( Validator $validator ): void
     {
-        $validator->after( function( Validator $validator ) {
-            if( !Auth::user()->isSuperUser() && User::leftJoin( 'customer_to_users AS c2u', 'c2u.user_id', 'user.id' )
+        /** @var User $us */
+        $us = Auth::user();
+        $validator->after( function( Validator $validator ) use ( $us ) {
+            if( !$us->isSuperUser() && User::leftJoin( 'customer_to_users AS c2u', 'c2u.user_id', 'user.id' )
                     ->where( 'email', $this->email )
-                    ->where( 'customer_id', Auth::user()->custid )->exists() ) {
+                    ->where( 'customer_id', $us->custid )->exists() ) {
 
                 AlertContainer::push( "A user already exists with that email address for your company." , Alert::DANGER );
                 $validator->errors()->add( 'email',  " " );

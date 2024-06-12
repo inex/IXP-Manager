@@ -81,7 +81,10 @@ if( !function_exists( 'ixp_min_auth' ) )
     function ixp_min_auth( int $minAuth ): bool
     {
         if( Auth::check() ) {
-            return Auth::getUser()->privs() >= $minAuth;
+            /** @var IXP\Models\User $us */
+            $us = Auth::getUser();
+
+            return $us->privs() >= $minAuth;
         }
         return $minAuth === 0;
     }

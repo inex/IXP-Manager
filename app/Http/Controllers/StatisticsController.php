@@ -49,6 +49,7 @@ use IXP\Models\{Aggregators\TrafficDailyPhysIntAggregator,
     Switcher,
     TrafficDaily,
     TrafficDailyPhysInt,
+    User,
     VirtualInterface,
     Vlan,
     VlanInterface};
@@ -541,9 +542,9 @@ class StatisticsController extends Controller
             }
         }
 
-        $request->category = Graph::processParameterCategory( $request->category, true );
-        $request->period   = Graph::processParameterPeriod( $request->period );
-        $request->protocol = Graph::processParameterRealProtocol( $request->protocol );
+        $requestCategory = Graph::processParameterCategory( $request->category, true );
+        $requestPeriod   = Graph::processParameterPeriod( $request->period );
+        $requestProtocol = Graph::processParameterRealProtocol( $request->protocol );
 
         $srcVlis = VlanInterface::select( [ 'vli.*' ] )
             ->from( 'vlaninterface AS vli' )
@@ -568,8 +569,8 @@ class StatisticsController extends Controller
         }
 
         // is the requested protocol support?
-        if( !$srcVli->vlan->private && !$srcVli->ipvxEnabled( $request->protocol ) ) {
-            AlertContainer::push( Graph::resolveProtocol( $request->protocol ) . " is not supported on the requested VLAN interface.", Alert::WARNING );
+        if( !$srcVli->vlan->private && !$srcVli->ipvxEnabled( $requestProtocol ) ) {
+            AlertContainer::push( Graph::resolveProtocol( $requestProtocol ) . " is not supported on the requested VLAN interface.", Alert::WARNING );
             return redirect()->back();
         }
         // Now find the possible other VLAN interfaces that this customer could exchange traffic with
@@ -628,19 +629,19 @@ class StatisticsController extends Controller
         // authenticate on one of the graphs
         $graph = App::make( Grapher::class )
             ->p2p( $srcVli, $dstVli ?: $dstVlis[ $dstVlis->first()->id ])
-            ->setProtocol( $request->protocol )
-            ->setCategory( $request->category )
-            ->setPeriod( $request->period );
+            ->setProtocol( $requestProtocol )
+            ->setCategory( $requestCategory )
+            ->setPeriod( $requestPeriod );
         $graph->authorise();
         
         $viewOptions = [
             'c'                => $customer,
-            'category'         => $request->category,
+            'category'         => $requestCategory,
             'dstVlis'          => $dstVlis,
             'dstVli'           => $dstVli,
             'graph'            => $graph,
-            'period'           => $request->period,
-            'protocol'         => $request->protocol,
+            'period'           => $requestPeriod,
+            'protocol'         => $requestProtocol,
             'showGraphs'       => $showGraphs,
             'showGraphsOption' => $showGraphsOption,
             'srcVlis'          => $srcVlis,
@@ -705,6 +706,9 @@ class StatisticsController extends Controller
      */
     public function coreBundle( StatisticsRequest $r, CoreBundle $cb ): RedirectResponse|View
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         $category = Graph::processParameterCategory( $r->input( 'category' ) );
         $graph    = App::make( Grapher::class )
             ->coreBundle( $cb )->setCategory( $category )
@@ -722,7 +726,7 @@ class StatisticsController extends Controller
             "cb"                    => $cb,
             "graph"                 => $graph,
             "category"              => $category,
-            "categories"            => Auth::check() && Auth::getUser() && Auth::getUser()->isSuperUser() ? Graph::CATEGORY_DESCS : Graph::CATEGORIES_BITS_PKTS_DESCS,
+            "categories"            => Auth::check() && $us && $us->isSuperUser() ? Graph::CATEGORY_DESCS : Graph::CATEGORIES_BITS_PKTS_DESCS,
         ]);
     }
 

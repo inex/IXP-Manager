@@ -60,13 +60,16 @@ class RsPrefixes
      */
     public function handle( Request $r, Closure $next )
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         // there are only two routes for rs prefixes - authorise each one as follows:
         if( $r->is( 'rs-prefixes/list' ) ) {
             if( (int)config( 'ixp_fe.rs-prefixes.access' ) === User::AUTH_PUBLIC ) {
                 return $next( $r );
             }
 
-            if( Auth::guest() || config( 'ixp_fe.rs-prefixes.access' ) > Auth::getUser()->privs() ) {
+            if( Auth::guest() || config( 'ixp_fe.rs-prefixes.access' ) > $us->privs() ) {
                 AlertContainer::push(  "You do not have the required privileges to access this function.", Alert::DANGER );
                 return redirect( '' );
             }
@@ -76,11 +79,11 @@ class RsPrefixes
             }
 
             if( Auth::check() ) {
-                if( (int)config( 'ixp_fe.rs-prefixes.access' ) <= Auth::getUser()->privs() ) {
+                if( (int)config( 'ixp_fe.rs-prefixes.access' ) <= $us->privs() ) {
                     return $next( $r );
                 }
 
-                if( Auth::getUser()->custid === $r->cust->id ) {
+                if( $us->custid === $r->cust->id ) {
                     return $next( $r );
                 }
             }

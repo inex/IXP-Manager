@@ -123,7 +123,10 @@ class Location extends Graph
      */
     public function authorise(): bool
     {
-        if( Auth::check() && Auth::getUser()->isSuperUser() ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+
+        if( Auth::check() && $us->isSuperUser() ) {
             return $this->allow();
         }
 
@@ -131,7 +134,7 @@ class Location extends Graph
             return $this->allow();
         }
 
-        if( Auth::check() && is_numeric( config( 'grapher.access.location' ) ) && Auth::getUser()->privs() >= (int)config( 'grapher.access.location' ) ) {
+        if( Auth::check() && is_numeric( config( 'grapher.access.location' ) ) && $us->privs() >= (int)config( 'grapher.access.location' ) ) {
             return $this->allow();
         }
 

@@ -341,7 +341,7 @@ class PhysicalInterfaceController extends Common
             return $data;
         }
 
-        /** @var $piB PhysicalInterface */
+        /** @var PhysicalInterface $piB */
         $data['switch-b']        = $piB->switchPort->switchid;
         $data['switch-port-b']   = $piB->switchportid;
         $data['status-b']        = $piB->status;

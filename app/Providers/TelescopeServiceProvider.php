@@ -52,6 +52,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
         $this->hideSensitiveRequestDetails();
 
         Telescope::filter( function ( IncomingEntry $entry ) {
+            /** @psalm-suppress UndefinedInterfaceMethod - Telescope package provides the isLocal method */
             if ($this->app->isLocal()) {
                 return true;
             }
@@ -70,6 +71,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
      */
     protected function hideSensitiveRequestDetails(): void
     {
+        /** @psalm-suppress UndefinedInterfaceMethod - Telescope package provides the isLocal method */
         if( $this->app->isLocal() ) {
             return;
         }

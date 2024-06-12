@@ -32,6 +32,7 @@ use Illuminate\View\View;
 use IXP\Jobs\FetchFilteredPrefixesForCustomer;
 
 use IXP\Models\Customer;
+use IXP\Models\User;
 
 /**
  * Filtered Prefixes Controller
@@ -57,10 +58,13 @@ class FilteredPrefixesController extends Controller
      */
     public function list( Request $r, Customer $cust ): View
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         $this->authorize('view', $cust);
 
         // are we busting the cache?
-        if( $r->reset_cache === "1" && Auth::getUser()->isSuperUser() ) {
+        if( $r->reset_cache === "1" && $us->isSuperUser() ) {
             Cache::forget('filtered-prefixes-' . $cust->id );
         }
 
