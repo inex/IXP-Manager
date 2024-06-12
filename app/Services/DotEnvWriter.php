@@ -92,7 +92,7 @@ class DotEnvWriter
             if( $description ) {
                 $this->variables[] = [
                     "key"     => null,
-                    "value"   => $description,
+                    "value"   => "# " . $description,
                     "status"  => false,
                     "changed" => true,
                 ];
@@ -349,7 +349,7 @@ class DotEnvWriter
     {
         $value = trim( explode( '#', trim( $value ) )[ 0 ] );
 
-        return stripslashes( $this->stripQuotes( $value ) );
+        return htmlspecialchars($this->stripQuotes( $value ), ENT_QUOTES, 'UTF-8');
     }
 
     /**
@@ -360,17 +360,8 @@ class DotEnvWriter
      */
     protected function escapeValue( string $value ): string
     {
-        if( '' === $value ) {
-            return '';
-        }
-
-        // Quote the values if
-        // it contains white-space or the following characters: " \ = : . $ ( )
-        // or simply force quote is enabled
-        if( preg_match( '/\s|"|\\\\|=|:|\.|\$|\(|\)/u', $value ) ) {
-            // Replace backslashes with even more backslashes so when writing we can have escaped backslashes
-            $value = str_replace( '\\', '\\\\\\\\', $value );
-            $value = '"' . addcslashes( $value, '"' ) . '"';
+        if( $value !== '' ) {
+            $value = '"' . htmlspecialchars_decode( $value ) . '"';
         }
 
         return $value;

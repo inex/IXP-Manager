@@ -37,8 +37,8 @@ use Tests\TestCase;
  */
 class DotEnvWriterTest extends TestCase
 {
+    protected string $originalFile = '.env.example';
     protected string $testFile = '.env.test';
-    protected string $testWriteFile = '.env.test2';
 
     protected DotEnvWriter $writer;
 
@@ -48,9 +48,14 @@ class DotEnvWriterTest extends TestCase
      */
     public function testReader(): void
     {
+        $originalFile = base_path($this->originalFile);
         $testFile = base_path($this->testFile);
+
+        @unlink($testFile);
+        copy($originalFile, $testFile);
+
         $this->writer = new DotEnvWriter($testFile);
-        $variables = $this->writer->sanitize(false)->getAll();
+        $variables = $this->writer->getAll();
 
         $this->assertIsArray($variables);
     }
@@ -73,6 +78,7 @@ class DotEnvWriterTest extends TestCase
         $mail = $this->writer->get("MAIL_PORT");
         $app = $this->writer->get("APP_KEY");
         $log = $this->writer->get("APP_LOG");
+        $logDescription = $log - 1;
         $test = $this->writer->get("TEST_KEY");
         $testDescription = $test - 1;
         $graph = $this->writer->get("GRAPHER_BACKEND_MRTG_DBTYPE");
@@ -85,10 +91,11 @@ class DotEnvWriterTest extends TestCase
         $this->assertTrue($variables[$app]["changed"]);
         $this->assertEquals("daily",$variables[$log]["value"]);
         $this->assertTrue($variables[$log]["changed"]);
+        $this->assertNotEquals("# not showing description",$variables[$logDescription]["value"]);
         $this->assertEquals("Test value",$variables[$test]["value"]);
         $this->assertTrue($variables[$test]["changed"]);
         $this->assertNull($variables[$testDescription]["key"]);
-        $this->assertEquals("It is a test description",$variables[$testDescription]["value"]);
+        $this->assertEquals("# It is a test description",$variables[$testDescription]["value"]);
         $this->assertFalse($variables[$testDescription]["status"]);
         $this->assertTrue($variables[$testDescription]["changed"]);
         $this->assertFalse($graph);
@@ -101,7 +108,6 @@ class DotEnvWriterTest extends TestCase
     public function testWrite(): void
     {
         $testFile = base_path($this->testFile);
-        $testWriteFile = base_path($this->testWriteFile);
         $this->writer = new DotEnvWriter($testFile);
 
         $this->writer->set("APP_LOG","daily","not showing description");
@@ -109,17 +115,32 @@ class DotEnvWriterTest extends TestCase
         $this->writer->disable("APP_KEY");
         $this->writer->delete("GRAPHER_BACKEND_MRTG_DBTYPE",true);
 
-        $this->writer->set("TEST_KEY","Test value","It is a test description");
+        $this->writer->set("TEST_KEY","Test value","It is a test 'description' with /slashes\ and \"quotes\"");
 
-        $variables = $this->writer->getAll();
+        $this->writer->write();
 
-        $created1 = $this->writer->write(false, $testWriteFile);
-        $created2 = $this->writer->write();
+        // reload file
+        $_newEnv = new DotEnvWriter($testFile);
+        $variables = $_newEnv->getAll();
 
         $this->assertIsArray($variables);
-        $this->assertFileExists($created1[0]); // old file
-        $this->assertFileExists($created1[1]); // new file
-        $this->assertFileExists($created2[0]); // old file
-        $this->assertFileExists($created2[1]); // new file
+
+        $log = $_newEnv->get("APP_LOG");
+        $logDescription = $log - 1;
+        $mail = $_newEnv->get("MAIL_PORT");
+        $app = $_newEnv->get("APP_KEY");
+        $test = $_newEnv->get("TEST_KEY");
+        $testDescription = $test - 1;
+        $graph = $_newEnv->get("GRAPHER_BACKEND_MRTG_DBTYPE");
+
+        $this->assertEquals("daily",$variables[$log]["value"]);
+        $this->assertNotEquals("# not showing description",$variables[$logDescription]["value"]);
+        $this->assertTrue($variables[$mail]["status"]);
+        $this->assertFalse($variables[$app]["status"]);
+        $this->assertEquals("Test value",$variables[$test]["value"]);
+        $this->assertNull($variables[$testDescription]["key"]);
+        $this->assertEquals("# It is a test 'description' with /slashes\ and \"quotes\"",$variables[$testDescription]["value"]);
+        $this->assertFalse($variables[$testDescription]["status"]);
+        $this->assertFalse($graph);
     }
 }
