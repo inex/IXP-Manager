@@ -324,10 +324,10 @@ abstract class UpdateDb
     /**
      * Validate ASNs/prefixes. Implement in subclasses.
      *
-     * @param array $prefixes
+     * @param array $entries
      * @param int $protocol
      *
      * @return array
      */
-    abstract protected function validate( array $prefixes, int $protocol ): array;
+    abstract protected function validate( array $entries, int $protocol ): array;
 }

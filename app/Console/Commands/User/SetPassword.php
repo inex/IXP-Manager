@@ -3,7 +3,7 @@
 namespace IXP\Console\Commands\User;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -61,22 +61,14 @@ class SetPassword extends Command
         'password'          => 'required|string|min:8|max:255',
         'confirm_password'  => 'required|same:password',
     ];
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.
      *
      * @return int
+     * @throws \Exception
      */
-    public function handle()
+    public function handle(): int
     {
         $search     = $this->option('search' );
         $uid        = $this->option('uid' );
@@ -84,10 +76,10 @@ class SetPassword extends Command
 
         if( ( !$search && !$uid ) || ( $search && $uid ) ){
             $this->error( "Search or UID must be set (and not both)." );
-            return 0;
+            return -1;
         }
 
-        if( $search ){// Display result the --search parameter
+        if( $search ){        // Display result the --search parameter
             $this->table(
                 ['ID', 'Name', 'Username', 'Email', 'Customers', 'Privs'],
                 $u = $this->usersViaUsernameOrEmail( $search )
@@ -98,32 +90,26 @@ class SetPassword extends Command
 
         if( !$user = User::find( $uid ) ){
             $this->error( "UID does not exist !" );
-            return 0;
+            return -1;
         }
 
-        $validate = $this->validateInput( 'password', $password );
-        if( $password && $validate !== true ){
-            $this->error( $validate );
-            return 0;
-        }
-
-        if( !$password ){// --password option not specified, ask for password
+        if( !$password ){  // --password option not specified, ask for password
             $password = $this->secret( 'Password or (return to have one generated)' );
-            if( $password ){// if the user type a password
-                $validate = $this->validateInput( 'password', $password );
-                if( $validate !== true ){
-                    $this->error( $validate );
-                    return 0;
-                }
-                $confirmPassword    = $this->secret( 'Confirm password' );
+            if( $password ){ // if the user type a password
+                $pw_valid = $this->validateOrExit( $this->rules['password'], 'password', $password );
+
+                $confirmPassword = $this->secret( 'Confirm password' );
+
                 if( $password !== $confirmPassword ){// check if password match
                     $this->error( "The passwords does not match!" );
-                    return 0;
+                    return -1;
                 }
             } else {// if the user type return generate password
                 $password = Str::random(16 );
                 $this->info( "Generated password: " . $password );
             }
+        } else {
+            $this->validateOrExit( $this->rules['password'], 'password', $password );
         }
 
         $user->password = Hash::make( $password );
@@ -134,23 +120,4 @@ class SetPassword extends Command
         return 0;
     }
 
-    /**
-     * @param array     $rules
-     * @param mixed     $value
-     *
-     * @return bool|string
-     */
-    private function validateInput( string $rule, string $value ): bool|string
-    {
-        if( !isset( $this->rules[$rule] ) ) {
-            throw new \Exception('Non-existent rule - coding error');
-        }
-
-        $validator = \Validator::make( [ $rule => $value ], $this->rules );
-
-        if ($validator->fails()) {
-            return $validator->errors()->first( $rule );
-        }
-        return true;
-    }
 }

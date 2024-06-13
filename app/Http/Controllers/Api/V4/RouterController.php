@@ -78,22 +78,6 @@ class RouterController extends Controller
 
 
     /**
-     *
-     * @param string $handle Handle of the router that we want
-     *
-     * @return JsonResponse
-     */
-    public function getCanUpdate( string $handle ) : JsonResponse
-    {
-        if( !( $r = Router::whereHandle( $handle )->first() ) ) {
-            abort( 404, "Unknown router handle" );
-        }
-
-        return response()->json();
-        //return response()->json( $this->lastUpdatedArray( $r ) );
-    }
-
-    /**
      * Get 'last_updated' for the router with the handle provided
      *
      * Returns the JSON version of the array:

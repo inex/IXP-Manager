@@ -350,7 +350,7 @@ class LookingGlass extends Controller
     public function routeExport( string $handle, string $network, string $mask, string $protocol ): View
     {
         return view('services/lg/route' )->with([
-            'content'   => json_decode( $this->lg()->protocolRoute( $protocol, $network, (int)$mask ), false ),
+            'content'   => json_decode( $this->lg()->exportRoute( $protocol, $network, (int)$mask ), false ),
             'source'    => 'export',
             'name'      => $protocol,
             'lg'        => $this->lg(),

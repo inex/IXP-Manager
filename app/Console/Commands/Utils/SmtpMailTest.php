@@ -25,6 +25,7 @@ namespace IXP\Console\Commands\Utils;
 use Illuminate\Support\Facades\Mail;
 
 use IXP\Console\Commands\Command as IXPCommand;
+use IXP\Mail\Utils\SmtpTest;
 
 /**
  * Class SmtpMailTest - test sending emails
@@ -92,10 +93,7 @@ class SmtpMailTest extends IXPCommand
 
         $this->info( "Trying to send email...\n" );
 
-        $mail = (object) [
-            "markdown" => 'utils.emails.smtp-test',
-            "subject" =>'SMTP test email from IXP Manager'
-        ];
+        $mail = new SmtpTest();
 
         try {
             Mail::to( $email )->send( $mail );
@@ -113,18 +111,7 @@ class SmtpMailTest extends IXPCommand
 
             if( $this->getOutput()->isVerbose() ) {
                 echo $e->getTraceAsString();
-            } else {
-                $this->warn( "If you plan to request support from the IXP Manager team, please rerun this test with the -v (verbose) "
-                    . "option and paste the complete output to an online pastebin such as https://pastebin.ibn.ie/. Please also ensure "
-                    . "you have read the documentation for configuring email at https://docs.ixpmanager.org/usage/email/. Lastly, if "
-                    . "you have configured a username and password, PLEASE remove these before pasting online!"
-                );
             }
-        }
-
-        if( $this->getOutput()->isVerbose() ) {
-            $this->line( "\n\n" . str_repeat( '=', 40 ) . "\nSMTP Dialog:\n\n" );
-            $this->line( $mail->logger()->dump() );
         }
     }
 }

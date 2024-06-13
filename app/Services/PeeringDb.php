@@ -40,7 +40,7 @@ use Illuminate\Support\Facades\Log;
  * @copyright  Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class PeeringDb extends Exception
+class PeeringDb
 {
 
     /** @const Cache key for IXs  */
@@ -60,9 +60,9 @@ class PeeringDb extends Exception
     public int $status = 0;
 
     /**
-     * @var Exception If the api call threw an exception, it is caught and stored here.
+     * @var ?Exception If the api call threw an exception, it is caught and stored here.
      */
-    public Exception $exception;
+    public ?Exception $exception;
 
 
 
@@ -130,7 +130,11 @@ class PeeringDb extends Exception
         );
 
         if( $ixs === null ) {
-            throw $this->exception;
+            if( $this->exception ) {
+                throw $this->exception;
+            } else {
+                throw new Exception( 'Failed to retrieve peering db data' );
+            }
         }
 
         foreach( $ixs->json()['data'] as $ix ) {
@@ -182,7 +186,11 @@ class PeeringDb extends Exception
         );
 
         if( $facs === null ) {
-            throw $this->exception;
+            if( $this->exception ) {
+                throw $this->exception;
+            } else {
+                throw new Exception( 'Failed to retrieve peering db data' );
+            }
         }
 
         foreach( $facs->json()['data'] as $fac ) {

@@ -662,8 +662,6 @@ abstract class Graph
      * In it's default incarnation, this will **always** fail. You need to explicitly
      * allow graph access based on your own requirements.
      *
-     * UNFINISHED METHOD!
-     *
      * @return bool
      *
      * @throws

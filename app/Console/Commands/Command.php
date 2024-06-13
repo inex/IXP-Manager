@@ -148,4 +148,27 @@ abstract class Command extends \Illuminate\Console\Command
         return $value;
     }
 
+
+    /**
+     * Simple validator function for validating a single value against a given rule
+     * and error and exit it if fails.
+     *
+     * @param string $rule The Laravel validator rule e.g. 'required|string|min:8|max:255'
+     * @param string $name The parameter name for output in error messages
+     * @param mixed $value The value to validate against $rule
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    protected function validateOrExit( string $rule, string $name, string $value ): bool
+    {
+        $validator = \Validator::make( [ $name => $value ], [ $name => $rule ] );
+
+        if ($validator->fails()) {
+            $this->error( $validator->errors()->first( $name ) );
+            exit -1;
+        }
+
+        return true;
+    }
 }

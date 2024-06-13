@@ -39,7 +39,7 @@ use Illuminate\Support\Facades\Log;
  * @copyright  Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class IXF extends Exception
+class IXF
 {
 
     /** @const Cache key for IXs  */
@@ -59,7 +59,7 @@ class IXF extends Exception
     /**
      * @var Exception If the api call threw an exception, it is caught and stored here.
      */
-    public Exception $exception;
+    public ?Exception $exception = null;
 
 
 
@@ -93,7 +93,11 @@ class IXF extends Exception
         $ixs = $this->execute( config( 'ixp_api.IXPDB.ixp_api' ) );
 
         if( $ixs === null ) {
-            throw $this->exception;
+            if( $this->exception ) {
+                throw $this->exception;
+            } else {
+                throw new Exception( 'IXF ixps error' );
+            }
         }
 
         foreach( $ixs->json() as $ix ) {

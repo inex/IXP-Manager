@@ -122,6 +122,17 @@ interface LookingGlass
     public function protocolRoute( string $protocol, string $network, int $mask ): string;
 
     /**
+     * Get details for a specific route in a named protocol export
+     *
+     * @param string    $protocol   Protocol name
+     * @param string    $network    The route to lookup
+     * @param int       $mask       The mask of the route to look up
+     *
+     * @return string
+     */
+    public function exportRoute( string $protocol, string $network, int $mask ): string;
+
+    /**
      * Get details for a specific route in a named table (vrf)
      *
      * @param string    $table      Table name
