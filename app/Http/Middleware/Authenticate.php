@@ -74,9 +74,6 @@ class Authenticate
 	 */
 	public function handle( Request $r, Closure $next )
 	{
-        /** @var User $us */
-        $us = $this->auth->user();
-
 		if( $this->auth->guest() ) {
 			if( $r->ajax() ) {
 				return response('Unauthorized.', 401);
@@ -84,7 +81,10 @@ class Authenticate
 			return redirect()->guest(route( "login@showForm" ) );
 		}
 
-		// Check if use has at least one customer linked, if not logout
+        /** @var User $us */
+        $us = Auth::user();
+
+        // Check if use has at least one customer linked, if not logout
         if( !$us->custid || !CustomerToUser::where( [ 'user_id' => Auth::id()  ] )->where( [ 'customer_id' => $us->custid ] )->first() ){
             Auth::logout();
             return redirect()->guest( route( "login@showForm" ) );
