@@ -96,8 +96,8 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'trunk/{trunk?}/{category?}',                  'StatisticsController@trunk'                )->name( 'statistics@trunk'                 );
     Route::get(  'members',                                     'StatisticsController@members'              );
     Route::post( 'members',                                     'StatisticsController@members'              )->name( 'statistics@members'               );
-    Route::get(  'p2p/{cust}',                                  'StatisticsController@p2p'                  )->name( 'statistics@p2p-get'               );
-    Route::post( 'p2p/{cust}',                                  'StatisticsController@p2p'                  )->name( 'statistics@p2p'                   );
+    Route::get(  'p2p/{customer?}',                             'StatisticsController@p2p'                  )->name( 'statistics@p2p-get'               );
+    Route::post( 'p2p/{customer?}',                             'StatisticsController@p2p'                  )->name( 'statistics@p2p'                   );
     Route::get(  'member/{cust?}',                              'StatisticsController@member'               )->name( 'statistics@member'                );
     Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'      )->name( 'statistics@member-drilldown'      );
     Route::get(  'latency/{vli}/{protocol}',                    'StatisticsController@latency'              )->name( 'statistics@latency'               );
