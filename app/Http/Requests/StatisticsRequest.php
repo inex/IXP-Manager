@@ -39,7 +39,10 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class StatisticsRequest extends FormRequest
 {
-    public string $period, $category, $protocol, $type;
+    public ?string $period   = null;
+    public ?string $category = null;
+    public ?string $protocol = null;
+    public ?string $type     = null;
 
     /**
      * Determine if the user is authorized to make this request.
