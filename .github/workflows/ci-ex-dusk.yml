@@ -32,4 +32,6 @@ jobs:
         php ./artisan serve  &>php-built-in.log &
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       run: vendor/bin/phpunit --testsuite 'Docstore Test Suite,IXP Manager Test Suite'
+    - name: Static code analysis
+      run: vendor/bin/psalm
 
