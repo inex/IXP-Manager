@@ -58,7 +58,7 @@ class Eloquent2Frontend
     public function handle( Request $r, Closure $next )
     {
         /** @var User $us */
-        $us = Auth::getUser();
+        $us = Auth::user();
 
         // get the class and method that has been called:
         [ $controller, $method ] = explode('@', Route::currentRouteAction() );

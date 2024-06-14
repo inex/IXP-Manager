@@ -75,7 +75,7 @@ class Authenticate
 	public function handle( Request $r, Closure $next )
 	{
         /** @var User $us */
-        $us = Auth::getUser();
+        $us = $this->auth->user();
 
 		if( $this->auth->guest() ) {
 			if( $r->ajax() ) {
