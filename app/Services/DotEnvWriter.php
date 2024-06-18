@@ -222,6 +222,22 @@ class DotEnvWriter
     }
 
     /**
+     * Returns the variable collection without empty lines, key as env key
+     *
+     * @return     array
+     */
+    public function getVariables(): array
+    {
+        $varList = [];
+        foreach($this->variables as $var) {
+            if(!is_null($var["key"])) {
+                $varList[$var["key"]] = ["value" => $var["value"], "status" => $var["status"]];
+            }
+        }
+        return $varList;
+    }
+
+    /**
      * Write the contents to the env file
      *
      * @param bool $force By default, we only write when something has changed, but you can force to write the file

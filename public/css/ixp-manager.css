@@ -688,3 +688,72 @@ td a:hover{
     opacity: 1; /* Firefox */
 }
 
+
+
+/***** Tab Panels START *****/
+.tabNavMenu{
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+.tabButton {
+    margin-bottom: -1px;
+    padding: .5rem 1rem;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-bottom: 0;
+    border-top-left-radius: .5rem;
+    border-top-right-radius: .5rem;
+    color: #718096;
+    font-size: .85em;
+    margin-right: .25rem;
+}
+.tabButton:hover {
+    border-color: rgba(0,0,0,.075);
+}
+.tabButton.active {
+    color: #4a5568;
+    background-color: #fff;
+    border-color: rgba(0,0,0,.125);
+}
+.tabContent {}
+.tabContent .tabPanel {
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 0;
+    height: 0;
+    border: none;
+    border-bottom-left-radius: .5rem;
+    border-bottom-right-radius: .5rem;
+    opacity: 0;
+    transition: opacity 500ms;
+}
+.tabContent .tabPanel.active {
+    opacity: 1;
+    border: 1px solid rgba(0,0,0,.125);
+    border-top: none;
+    height: auto;
+    padding: 1rem 1.5rem;
+}
+.tabContent .tabPanel .description {
+    font-size: 0.9rem;
+    color: #718096;
+}
+.inputWrapper {
+    margin-bottom: 2rem;
+}
+.inputWrapper .form-group {
+    margin-bottom: 0;
+}
+.inputWrapper .form-group .form-check label {
+    display: block;
+    font-size: .875rem;
+    font-weight: 700;
+    color: rgb(96 111 123);
+}
+/***** Tab Panels END *******/

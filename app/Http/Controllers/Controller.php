@@ -139,4 +139,20 @@ class Controller extends BaseController
         }
         return $privs;
     }
+
+    /**
+     * create an option list for a select input element
+     * @param array $data array of query data eg. ["model" => 'User', "keys" => 'id', "values" => 'name']
+     * @return array
+     */
+    protected function getSelectOptions( array $data): array {
+        $modelName = "IXP\\Models\\" . $data["model"];
+        $model = new $modelName;
+        $rawList = $model::select($data["keys"],$data["values"])->get();
+        $list = [];
+        foreach($rawList as $raw) {
+            $list[$raw[$data["keys"]]] = $raw[$data["values"]];
+        }
+        return $list;
+    }
 }

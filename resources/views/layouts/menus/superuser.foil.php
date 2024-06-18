@@ -157,6 +157,10 @@
                       API Keys
                     </a>
 
+                    <a class="dropdown-item <?= !request()->is( 'env_config/edit' ) ?: 'active' ?>" href="<?= route('env_config@edit' )?>">
+                      .ENV Config
+                    </a>
+
                     <a id="active-sessions" class="dropdown-item <?= !request()->is( 'active-sessions/list' ) ?: 'active' ?>" href="<?= route('active-sessions@list' )?>">
                         Active Sessions
                     </a>
