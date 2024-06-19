@@ -742,10 +742,17 @@ td a:hover{
 }
 .tabContent .tabPanel .description {
     font-size: 0.9rem;
-    color: #718096;
+    background-color: #a0aec0;
+    margin: 0 -1.5rem 1rem -1.5rem;
+    padding: .5rem 2rem;
+    color: #ffffff;
+    text-shadow: 0 0 .5rem #718096;
 }
 .inputWrapper {
-    margin-bottom: 2rem;
+    padding: 1rem;
+}
+.inputWrapper:nth-child(odd) {
+    background: rgba(0,0,0,.025);
 }
 .inputWrapper .form-group {
     margin-bottom: 0;

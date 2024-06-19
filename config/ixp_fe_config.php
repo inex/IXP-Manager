@@ -6,13 +6,13 @@
 // Laslzo - what else might you think about:
 
 
-// everything in identity.php
+// everything in identity.php    - done
 //   vlans.default -> should be a dropdown of VLANs so we'll need a new select options in the array below:
 //           'optionsdb' => [ 'model' => 'Vlan', 'keys' => 'id', 'values' => 'name' ]
 
-// ixp_api.json_export_schema
-// ixp.as112 as part of modules
-// ixp.rpki
+// ixp_api.json_export_schema    - done
+// ixp.as112 as part of modules  - done
+// ixp.rpki                      - done
 
 
 return [
@@ -140,6 +140,14 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
+                'as112'                     => [
+                    'config_key' => 'ixp.as112.ui_active',
+                    'dotenv_key' => 'IXP_AS112_UI_ACTIVE',
+                    'type'       => 'radio',
+                    'name'       => 'AS112 functionality',
+                    'docs_url'   => 'https://github.com/inex/IXP-Manager/wiki/AS112',
+                    'help'       => 'Specifies whether to display and enable control of AS112 functionality for customers',
+                ],
             ],
         ],
 
@@ -150,7 +158,7 @@ return [
             'description' => 'IXP Identity Information.',
 
             'fields' => [
-                'legalname'       => [
+                'legalname'        => [
                     'config_key' => 'identity.legalname',
                     'dotenv_key' => 'IDENTITY_LEGALNAME',
                     'type'       => 'text',
@@ -159,7 +167,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'location.city'   => [
+                'location_city'    => [
                     'config_key' => 'identity.location.city',
                     'dotenv_key' => 'IDENTITY_CITY',
                     'type'       => 'text',
@@ -168,7 +176,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'locationcountry' => [
+                'location_country' => [
                     'config_key' => 'identity.location.country',
                     'dotenv_key' => 'IDENTITY_COUNTRY',
                     'type'       => 'text',
@@ -177,7 +185,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'orgname'         => [
+                'orgname'          => [
                     'config_key' => 'identity.orgname',
                     'dotenv_key' => 'IDENTITY_ORGNAME',
                     'type'       => 'text',
@@ -186,7 +194,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'name'            => [
+                'name'             => [
                     'config_key' => 'identity.name',
                     'dotenv_key' => 'IDENTITY_NAME',
                     'type'       => 'text',
@@ -195,7 +203,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'email'           => [
+                'email'            => [
                     'config_key' => 'identity.email',
                     'dotenv_key' => 'IDENTITY_EMAIL',
                     'type'       => 'text',
@@ -204,7 +212,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'testemail'       => [
+                'testemail'        => [
                     'config_key' => 'identity.testemail',
                     'dotenv_key' => 'IDENTITY_TESTEMAIL',
                     'type'       => 'text',
@@ -213,7 +221,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'rsvpemail'       => [
+                'rsvpemail'        => [
                     'config_key' => 'identity.rsvpemail',
                     'dotenv_key' => 'IDENTITY_RSVPEMAIL',
                     'type'       => 'text',
@@ -222,7 +230,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'watermark'       => [
+                'watermark'        => [
                     'config_key' => 'identity.watermark',
                     'dotenv_key' => 'IDENTITY_WATERMARK',
                     'type'       => 'text',
@@ -231,7 +239,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'support_email'   => [
+                'support_email'    => [
                     'config_key' => 'identity.support_email',
                     'dotenv_key' => 'IDENTITY_SUPPORT_EMAIL',
                     'type'       => 'text',
@@ -240,7 +248,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'support_phone'   => [
+                'support_phone'    => [
                     'config_key' => 'identity.support_phone',
                     'dotenv_key' => 'IDENTITY_SUPPORT_PHONE',
                     'type'       => 'text',
@@ -249,7 +257,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'support_hours'   => [
+                'support_hours'    => [
                     'config_key' => 'identity.support_hours',
                     'dotenv_key' => 'IDENTITY_SUPPORT_HOURS',
                     'type'       => 'text',
@@ -258,7 +266,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'billing_email'   => [
+                'billing_email'    => [
                     'config_key' => 'identity.billing_email',
                     'dotenv_key' => 'IDENTITY_BILLING_EMAIL',
                     'type'       => 'text',
@@ -267,7 +275,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'billing_phone'   => [
+                'billing_phone'    => [
                     'config_key' => 'identity.billing_phone',
                     'dotenv_key' => 'IDENTITY_BILLING_PHONE',
                     'type'       => 'text',
@@ -276,7 +284,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'billing_hours'   => [
+                'billing_hours'    => [
                     'config_key' => 'identity.billing_hours',
                     'dotenv_key' => 'IDENTITY_BILLING_HOURS',
                     'type'       => 'text',
@@ -285,7 +293,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'sitename'        => [
+                'sitename'         => [
                     'config_key' => 'identity.sitename',
                     'dotenv_key' => 'IDENTITY_SITENAME',
                     'type'       => 'text',
@@ -294,7 +302,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'titlename'       => [
+                'titlename'        => [
                     'config_key' => 'identity.titlename',
                     'dotenv_key' => 'IDENTITY_TITLENAME',
                     'type'       => 'text',
@@ -303,7 +311,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'corporate_url'   => [
+                'corporate_url'    => [
                     'config_key' => 'identity.corporate_url',
                     'dotenv_key' => 'IDENTITY_CORPORATE_URL',
                     'type'       => 'text',
@@ -312,7 +320,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'url'             => [
+                'url'              => [
                     'config_key' => 'identity.url',
                     'dotenv_key' => 'APP_URL',
                     'type'       => 'text',
@@ -321,7 +329,7 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'biglogo'         => [
+                'biglogo'          => [
                     'config_key' => 'identity.biglogo',
                     'dotenv_key' => 'IDENTITY_BIGLOGO',
                     'type'       => 'text',
@@ -330,11 +338,11 @@ return [
                     'docs_url'   => null,
                     'help'       => '',
                 ],
-                'vlans.default'   => [
+                'vlans_default'    => [
                     'config_key' => 'identity.vlans.default',
                     'dotenv_key' => 'IDENTITY_DEFAULT_VLAN',
                     'type'       => 'select',
-                    'options'    => ['type' => 'collection', 'list' => [ 'model' => 'Vlan', 'keys' => 'id', 'values' => 'name' ]],
+                    'options'    => [ 'type' => 'collection', 'list' => [ 'model' => 'Vlan', 'keys' => 'id', 'values' => 'name' ] ],
                     'name'       => 'Default Vlans',
                     'docs_url'   => null,
                     'help'       => '',
@@ -345,19 +353,20 @@ return [
 
         'auth' => [
 
-            'title' => 'Authentication',
-            // 'description' => "Authentication related options.",
+            'title'       => 'Authentication',
+            'description' => "Authentication related options.",
 
             'fields' => [
 
                 'login_history' => [
-
                     'config_key' => 'ixp_fe.login_history.enabled',
                     'dotenv_key' => 'IXP_FE_LOGIN_HISTORY_ENABLED',
                     'type'       => 'radio',
                     'name'       => "Record Login History",
                     'help'       => 'Record the login history for users. Expunged after six months by default.',
                 ],
+
+                // do wee need here add the peeringdb api authentication and oauth data?
 
             ],
 
@@ -382,10 +391,100 @@ return [
                                         rate limited can be avoided.",
                 ],
 
+                'public'           => [
+                    'config_key' => 'ixp_api.public',
+                    'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_PUBLIC',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'JSON Export is Public',
+                    'docs_url'   => null,
+                    'help'       => 'If false, an API key is required',
+                ],
+                'access_key'       => [
+                    'config_key' => 'ixp_api.access_key',
+                    'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_ACCESS_KEY',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'JSON Export Access Key',
+                    'docs_url'   => null,
+                    'help'       => '',
+                ],
+                'excludes_rfc5398' => [
+                    'config_key' => 'ixp_api.excludes.rfc5398',
+                    'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_RFC5398',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'JSON Export Excludes RFC5398',
+                    'docs_url'   => null,
+                    'help'       => '',
+                ],
+                'excludes_rfc6996' => [
+                    'config_key' => 'ixp_api.excludes.rfc6996',
+                    'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_RFC6996',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'JSON Export Excludes RFC6996',
+                    'docs_url'   => null,
+                    'help'       => '',
+                ],
+                'excludes_tags'    => [
+                    'config_key' => 'ixp_api.excludes.tags',
+                    'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_TAGS',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'JSON Export Excludes Tags',
+                    'docs_url'   => null,
+                    'help'       => '',
+                ],
+                'excludes_asnum'   => [
+                    'config_key' => 'ixp_api.excludes.asnum',
+                    'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_ASNUM',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'JSON Export Excludes AS Num',
+                    'docs_url'   => null,
+                    'help'       => '',
+                ],
+                'excludes_switch'  => [
+                    'config_key' => 'ixp_api.excludes.switch',
+                    'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_SWITCH',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'JSON Export Excludes Switches',
+                    'docs_url'   => null,
+                    'help'       => '',
+                ],
+                'excludes_ixp'     => [
+                    'config_key' => 'ixp_api.excludes.ixp',
+                    'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_IXP',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'JSON Export Excludes IXPs',
+                    'docs_url'   => null,
+                    'help'       => '',
+                ],
+                'excludes_member'  => [
+                    'config_key' => 'ixp_api.excludes.member',
+                    'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_MEMBER',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'JSON Export Excludes Members',
+                    'docs_url'   => null,
+                    'help'       => '',
+                ],
+                'excludes_intinfo' => [
+                    'config_key' => 'ixp_api.excludes.intinfo',
+                    'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_INTINFO',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'JSON Export Excludes Int Info',
+                    'docs_url'   => null,
+                    'help'       => '',
+                ],
+
             ],
 
         ],
-
 
         'admin_options' => [
 
@@ -399,7 +498,7 @@ return [
                     'config_key' => 'ixp_fe.admin.default_graph_period',
                     'dotenv_key' => 'IXP_FE_ADMIN_DASHBOARD_DEFAULT_GRAPH_PERIOD',
                     'type'       => 'select',
-                    'options'    => ['type' => 'array', 'list' => IXP\Services\Grapher\Graph::PERIODS],
+                    'options'    => [ 'type' => 'array', 'list' => IXP\Services\Grapher\Graph::PERIODS ],
                     'name'       => "Admin Dashbaord Graph Period",
                     'help'       => 'Default graph period on the admin dashboard.',
                 ],
@@ -417,9 +516,9 @@ return [
                                         this address. If left blank, then no emails will be sent.",
                 ],
 
+                // do we need more Grapher attributes here?
             ],
         ],
-
 
         'misc_options' => [
 
@@ -440,6 +539,44 @@ return [
                                         need to know how often you update their configurations. The text you enter here will be 
                                         displayed on the route server filters page.",
                 ],
+                'rpki_rtr1_host' => [
+                    'config_key' => 'ixp.rpki.rtr1.host',
+                    'dotenv_key' => 'IXP_RPKI_RTR1_HOST',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'RPKI RTR1 Host',
+                    'docs_url'   => null,
+                    'help'       => '',
+                ],
+                'rpki_rtr1_port' => [
+                    'config_key' => 'ixp.rpki.rtr1.port',
+                    'dotenv_key' => 'IXP_RPKI_RTR1_PORT',
+                    'type'       => 'text',
+                    'rules'      => 'between:1000,9999',
+                    'name'       => 'RPKI RTR1 Port',
+                    'docs_url'   => null,
+                    'help'       => '',
+                ],
+                'rpki_rtr2_host' => [
+                    'config_key' => 'ixp.rpki.rtr2.host',
+                    'dotenv_key' => 'IXP_RPKI_RTR2_HOST',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'RPKI RTR2 Host',
+                    'docs_url'   => null,
+                    'help'       => '',
+                ],
+                'rpki_rtr2_port' => [
+                    'config_key' => 'ixp.rpki.rtr2.port',
+                    'dotenv_key' => 'IXP_RPKI_RTR2_PORT',
+                    'type'       => 'text',
+                    'rules'      => 'between:1000,9999',
+                    'name'       => 'RPKI RTR2 Port',
+                    'docs_url'   => null,
+                    'help'       => '',
+                ],
+
+
             ],
         ],
 

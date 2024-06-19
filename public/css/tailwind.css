@@ -1195,9 +1195,6 @@ a:hover {
 .tw-border-r-4 {
   border-right-width: 4px;
 }
-.tw-border-t-0 {
-  border-top-width: 0;
-}
 .tw-border-t-2 {
   border-top-width: 2px;
 }
@@ -1433,6 +1430,10 @@ a:hover {
 .tw-text-black {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+.tw-text-blue-600 {
+  --tw-text-opacity: 1;
+  color: rgb(49 130 206 / var(--tw-text-opacity));
 }
 .tw-text-blue-700 {
   --tw-text-opacity: 1;

@@ -76,6 +76,49 @@ class EnvConfigController extends Controller
     }
 
     /**
+     * Collect rules from the panelconfig
+     *
+     * @param array $panels
+     *
+     * @return array
+     */
+    protected function gatherRules($panels): array
+    {
+        $rules = [];
+        foreach($panels as $panel) {
+            foreach($panel["fields"] as $label => $field) {
+                if(isset($field["rules"]) && $field["rules"] !== '') {
+                    $rules[$label] = $field["rules"];
+                }
+            }
+        }
+        return $rules;
+    }
+
+    /**
+     * Replace substitution in value
+     *
+     * @param string|null $value
+     * @param array $attributes
+     *
+     * @return string
+     */
+    protected function patternReplace(string|null $value,array $attributes): string
+    {
+        // check value: if it is points to another value grab that and replace it
+        preg_match_all('/\${([\w\.]+)}/',$value,$matches);
+        if (count($matches) > 0) {
+            $search = $matches[0];
+            $replace = [];
+            foreach($matches[1] as $key) {
+                $replace[] = $attributes[$key]["value"] ?: '';
+            }
+            $value = str_replace($search,$replace,$value);
+        }
+        return $value;
+    }
+
+    /**
      * Display the form to update the .env
      */
     protected function createForm()
@@ -88,7 +131,9 @@ class EnvConfigController extends Controller
             ->action(route('env_config@update'))
             ->customInputWidthClass( 'col-8' )
             ->customLabelWidthClass( 'col-4' )
-            ->actionButtonsCustomClass( "grey-box");
+            ->actionButtonsCustomClass( "grey-box")
+            ->rules($this->gatherRules($this->panelConfig["panels"]));
+
         $form .= '<ul class="tabNavMenu" id="envFormTabs">';
         $first = true;
         $tabContents = [];
@@ -117,7 +162,7 @@ class EnvConfigController extends Controller
 
                     switch($param["type"]) {
                         case 'radio':
-                            $input = Former::checkbox($field)->label(' ')->text($title)->check( $value === 'true' );
+                            $input = Former::checkbox($field)->label($title)->check( $value === 'true' );
                             break;
                         case 'select':
                             if($param["options"]["type"] === 'array') {
@@ -128,24 +173,20 @@ class EnvConfigController extends Controller
 
                             $input = Former::select($field)->label($title)->options($options,$value)->placeholder('Select an Option')->addClass( 'chzn-select' );
                             break;
+                        case 'textarea':
+                            $value = $this->patternReplace($value,$envValues);
+
+                            $input = Former::textarea($field)->label($title)->value($value);
+                            break;
                         default: // text
-                            // check value: if it is points to another value grab that and replace it
-                            preg_match_all('/\${([\w\.]+)}/',$value,$matches);
-                            if (count($matches) > 0) {
-                                $search = $matches[0];
-                                $replace = [];
-                                foreach($matches[1] as $key) {
-                                    $replace[] = $envValues[$key]["value"] ?: '';
-                                }
-                                $value = str_replace($search,$replace,$value);
-                            }
+                            $value = $this->patternReplace($value,$envValues);
 
                             $input = Former::text($field)->label($title)->value($value);
                     }
 
                     $tab .= '<div class="inputWrapper">'.$input;
                     if(isset($param["help"]) && $param["help"] !== '') {
-                        $tab .= '<div class="small">'.$param["help"].'</div>';
+                        $tab .= '<div class="small"><i class="fa fa-info-circle tw-text-blue-600"></i> '.$param["help"].'</div>';
                     }
                     $tab .= '</div>';
                 }
@@ -159,7 +200,7 @@ class EnvConfigController extends Controller
         $form .= '</ul><div class="tabContent" id="envFormTabContents">';
         $form .= implode('',$tabContents).'</div>';
         $form .= $this->former::actions(
-            Former::primary_submit( 'Save Changes' )->class( "mb-2 mb-sm-0" )
+            Former::primary_button( 'Save Changes' )->id('updateButton')->class( "mb-2 mb-sm-0" )
         );
         $form .= $this->former::close();
         return $form;
@@ -171,7 +212,7 @@ class EnvConfigController extends Controller
      */
     protected function index()
     {
-        //AlertContainer::push("test alert",Alert::SUCCESS);
+        AlertContainer::push("test alert",Alert::SUCCESS);
 
         return view( 'env-config.index' )->with( [
             'form' => $this->createForm(),
@@ -183,15 +224,37 @@ class EnvConfigController extends Controller
      *
      * @param Request $request
      *
-     * @return bool|RedirectResponse
+     * @return array
      *
      * @throws
      */
-    public function update( Request $request )
+    public function update( Request $request ): array
     {
         $changes = $request->all();
-        info("Changes:\n".var_export($changes, true));
-        return true;
+
+        $envConfig = new $this->envWriter();
+        foreach($this->panelConfig["panels"] as $panel) {
+            foreach($panel["fields"] as $label => $field) {
+                switch($field["type"]) {
+                    case 'radio':
+                        $value = $changes[$label] === '1' ? "true" : "false";
+                        $envConfig->set($field["dotenv_key"],$value);
+                        break;
+                    default:
+                        if(!isset($changes[$label]) || $changes[$label] === NULL || $changes[$label] === '') {
+                            $envConfig->disable($field["dotenv_key"]);
+                            $value = '-';
+                        } else {
+                            $envConfig->set($field["dotenv_key"],$changes[$label]);
+                            $value = $changes[$label];
+                        }
+                }
+
+            }
+        }
+        $envConfig->write();
+
+        return ["status" => "success", "message" => "Modification done"];
     }
 
 }

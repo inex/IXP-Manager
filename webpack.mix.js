@@ -19,6 +19,7 @@ mix.scripts(
         'node_modules/popper.js/dist/umd/popper.min.js',
         'node_modules/bootstrap/dist/js/bootstrap.min.js',
         'node_modules/bootbox/dist/bootbox.min.js',
+        'node_modules/axios/dist/axios.min.js',
         'node_modules/datatables.net/js/jquery.dataTables.min.js',
         'node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js',
         'node_modules/datatables.net-responsive/js/dataTables.responsive.min.js',
