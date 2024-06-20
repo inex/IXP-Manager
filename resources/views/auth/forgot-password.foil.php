@@ -10,7 +10,7 @@
             <?= $t->alerts() ?>
             <div class="tw-text-center tw-my-6">
                 <?php if( config( "identity.biglogo" ) ) :?>
-                    <img class="tw-inline img-fluid" src="<?= config( "identity.biglogo" ) ?>" />
+                    <img class="tw-inline img-fluid tw-w-full tw-max-w-sm tw-mx-auto" src="<?= config( "identity.biglogo" ) ?>" />
                 <?php else: ?>
                     <h2>
                         [Your Logo Here]
