@@ -94,6 +94,31 @@ services:
             - .:/srv/ixpmanager
             - mrtg-data:/srv/mrtg
 
+    sflow-scripts:
+        build:
+            context: tools/docker/containers/sflow-scripts
+        depends_on:
+            - "mysql"
+        ports:
+            - 6343:6343/udp # sFlow
+        networks:
+            ixpmanager:
+                ipv4_address: 172.30.201.21
+                ipv6_address: fd99::21
+                aliases:
+                    - ixpmanager-sflow-scripts
+        extra_hosts:
+            - "rs1-ipv4:172.30.201.30"
+            - "rs1-ipv4.ixpmanager:172.30.201.30"
+            - "rs1-ipv6:172.30.201.30"
+            - "rs1-ipv6.ixpmanager:172.30.201.30"
+            - "switch1:172.30.201.60"
+            - "switch2:172.30.201.61"
+        volumes:
+            - .:/srv/ixpmanager
+        stdin_open: true
+        tty: true
+
     routinator:
         build:
             context: tools/docker/containers/routinator
