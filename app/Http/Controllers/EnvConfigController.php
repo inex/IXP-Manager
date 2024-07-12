@@ -23,23 +23,15 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Former, Hash, Redirect, Route, Str;
+use Former;
 
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
 
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use IXP\Services\DotEnvWriter;
-use Illuminate\Http\{
-    Request,
-    RedirectResponse
-};
-
-use Illuminate\View\View;
-
+use Illuminate\Http\Request;
 use IXP\Models\User;
 
 /**
@@ -101,9 +93,9 @@ class EnvConfigController extends Controller
      * @param string|null $value
      * @param array $attributes
      *
-     * @return string
+     * @return string|null
      */
-    protected function patternReplace(string|null $value,array $attributes): string
+    protected function patternReplace(string|null $value,array $attributes): string|null
     {
         // check value: if it is points to another value grab that and replace it
         preg_match_all('/\${([\w\.]+)}/',$value,$matches);
