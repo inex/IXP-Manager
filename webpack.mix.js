@@ -16,7 +16,6 @@ mix.scripts(
         'node_modules/jquery/dist/jquery.min.js',
         'node_modules/jquery-ui-dist/jquery-ui.min.js',
         'node_modules/select2/dist/js/select2.min.js',
-        'node_modules/popper.js/dist/umd/popper.min.js',
         'node_modules/bootstrap/dist/js/bootstrap.min.js',
         'node_modules/bootbox/dist/bootbox.min.js',
         'node_modules/axios/dist/axios.min.js',
@@ -27,7 +26,6 @@ mix.scripts(
 
         'node_modules/blueimp-file-upload/js/jquery.fileupload.js',
         'node_modules/jquery-knob/dist/jquery.knob.min.js',
-        'node_modules/clipboard/dist/clipboard.min.js',
         'node_modules/moment/moment.js',
         'node_modules/ip-address/dist/ip-address-globals.js',
 
