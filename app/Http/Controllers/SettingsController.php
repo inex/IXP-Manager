@@ -27,8 +27,6 @@ use Former;
 
 use IXP\Services\DotEnvWriter;
 use Illuminate\Http\Request;
-use IXP\Models\User;
-use Webpatser\Countries\Countries;
 
 /**
  * .env file configurator Controller
