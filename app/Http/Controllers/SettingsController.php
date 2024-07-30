@@ -212,25 +212,24 @@ class SettingsController extends Controller
     {
         $changes = $request->all();
 
-        $envConfig = new $this->envWriter();
-        foreach($this->panelConfig["panels"] as $panel) {
+        foreach($this->fe_settings["panels"] as $panel) {
             foreach($panel["fields"] as $label => $field) {
                 switch($field["type"]) {
                     case 'radio':
                         $value = $changes[$label] === '1' ? "true" : "false";
-                        $envConfig->set($field["dotenv_key"],$value);
+                        $this->envWriter->set($field["dotenv_key"],$value);
                         break;
                     default:
                         if(!isset($changes[$label]) || $changes[$label] === NULL || $changes[$label] === '') {
-                            $envConfig->disable($field["dotenv_key"]);
+                            $this->envWriter->disable($field["dotenv_key"]);
                         } else {
-                            $envConfig->set($field["dotenv_key"],$changes[$label]);
+                            $this->envWriter->set($field["dotenv_key"],$changes[$label]);
                         }
                 }
 
             }
         }
-        $envConfig->write();
+        $this->envWriter->write();
 
         return ["status" => "success", "message" => "Modification done"];
     }
