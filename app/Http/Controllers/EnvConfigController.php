@@ -25,11 +25,6 @@ namespace IXP\Http\Controllers;
 
 use Former;
 
-use IXP\Utils\View\Alert\{
-    Alert,
-    Container as AlertContainer
-};
-
 use IXP\Services\DotEnvWriter;
 use Illuminate\Http\Request;
 use IXP\Models\User;
@@ -203,8 +198,6 @@ class EnvConfigController extends Controller
      */
     protected function index()
     {
-        AlertContainer::push("test alert",Alert::SUCCESS);
-
         return view( 'env-config.index' )->with( [
             'form' => $this->createForm(),
         ] );
