@@ -383,6 +383,12 @@
                 IXP UTILITIES
             </h6>
 
+            <li class="<?= !request()->is( 'settings/*' ) ?: 'active' ?>">
+                <a href="<?= route( 'settings@edit' ) ?>" class="nav-link">
+                    Settings
+                </a>
+            </li>
+
             <?php if( Gate::allows( 'viewHorizon' ) && config( 'queue.default' ) === 'redis' ): ?>
                 <li>
                     <a href="<?= route( 'horizon.index' ) ?>" class="nav-link" target="_ixpm_horizon">

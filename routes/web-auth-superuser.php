@@ -273,10 +273,15 @@ Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );
 ///
 Route::get( 'search', 'SearchController@do' )->name( 'search' );
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
 /// .ENV Configurator
-Route::group( [ 'prefix' => 'env_config' ], function() {
-    Route::get( 'edit', 'EnvConfigController@index' )->name( 'env_config@edit' );
-    Route::post( 'update', 'EnvConfigController@update' )->name( 'env_config@update' );
+///
+Route::group( [ 'prefix' => 'settings' ], function() {
+    Route::get( 'edit', 'SettingsController@index' )->name( 'settings@edit' );
+    Route::post( 'update', 'SettingsController@update' )->name( 'settings@update' );
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
