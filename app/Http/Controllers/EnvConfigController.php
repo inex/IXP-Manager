@@ -74,7 +74,7 @@ class EnvConfigController extends Controller
      *
      * @return array
      */
-    protected function gatherRules($panels): array
+    protected function gatherRules(array $panels): array
     {
         $rules = [];
         foreach($panels as $panel) {
@@ -150,7 +150,6 @@ class EnvConfigController extends Controller
                     if(isset($envValues[$param['dotenv_key']])) {
                         $value = $envValues[$param['dotenv_key']]["value"];
                     }
-                    //info($field.': '.var_export($value,1));
 
                     switch($param["type"]) {
                         case 'radio':
@@ -235,10 +234,8 @@ class EnvConfigController extends Controller
                     default:
                         if(!isset($changes[$label]) || $changes[$label] === NULL || $changes[$label] === '') {
                             $envConfig->disable($field["dotenv_key"]);
-                            $value = '-';
                         } else {
                             $envConfig->set($field["dotenv_key"],$changes[$label]);
-                            $value = $changes[$label];
                         }
                 }
 
