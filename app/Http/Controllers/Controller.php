@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth;
+use Auth, Countries;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -138,6 +138,15 @@ class Controller extends BaseController
             $privs = User::$PRIVILEGES_TEXT;
         }
         return $privs;
+    }
+
+    protected function getCountriesSelection() {
+        $countries = Countries::getList();
+        $list = [];
+        foreach($countries as $country) {
+            $list[$country['iso_3166_2']] = $country['name'];
+        }
+        return $list;
     }
 
     /**

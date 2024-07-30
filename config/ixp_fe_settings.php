@@ -179,7 +179,8 @@ return [
                 'location_country' => [
                     'config_key' => 'identity.location.country',
                     'dotenv_key' => 'IDENTITY_COUNTRY',
-                    'type'       => 'text',
+                    'type'       => 'select',
+                    'options'    => [ 'type' => 'countries' ], // special option list for countries
                     'rules'      => '',
                     'name'       => 'Location: Country',
                     'docs_url'   => null,

@@ -68,7 +68,7 @@ class DotEnvWriterTest extends TestCase
     {
         $testFile = base_path($this->testFile);
         $this->writer = new DotEnvWriter($testFile);
-        $this->writer->set("APP_LOG","daily","not showing description");
+        $this->writer->set("LOG_CHANNEL","daily","not showing description");
         $this->writer->set("TEST_KEY","Test value","It is a test description");
         $this->writer->enable("MAIL_PORT");
         $this->writer->disable("APP_KEY");
@@ -77,7 +77,7 @@ class DotEnvWriterTest extends TestCase
 
         $mail = $this->writer->get("MAIL_PORT");
         $app = $this->writer->get("APP_KEY");
-        $log = $this->writer->get("APP_LOG");
+        $log = $this->writer->get("LOG_CHANNEL");
         $logDescription = $log - 1;
         $test = $this->writer->get("TEST_KEY");
         $testDescription = $test - 1;
@@ -110,7 +110,7 @@ class DotEnvWriterTest extends TestCase
         $testFile = base_path($this->testFile);
         $this->writer = new DotEnvWriter($testFile);
 
-        $this->writer->set("APP_LOG","daily","not showing description");
+        $this->writer->set("LOG_CHANNEL","daily","not showing description");
         $this->writer->enable("MAIL_PORT");
         $this->writer->disable("APP_KEY");
         $this->writer->delete("GRAPHER_BACKEND_MRTG_DBTYPE",true);
@@ -125,7 +125,7 @@ class DotEnvWriterTest extends TestCase
 
         $this->assertIsArray($variables);
 
-        $log = $_newEnv->get("APP_LOG");
+        $log = $_newEnv->get("LOG_CHANNEL");
         $logDescription = $log - 1;
         $mail = $_newEnv->get("MAIL_PORT");
         $app = $_newEnv->get("APP_KEY");

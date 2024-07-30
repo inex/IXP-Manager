@@ -46,7 +46,7 @@ IXP Manager Settings
         const data = envForm.serialize();
         axios.post(url,data)
             .then(function(response) {
-                showAlert("tw-bg-green-100 tw-border-green-500 tw-text-green-700",response.data.message,true);
+                showAlert("tw-bg-green-100 tw-border-green-500 tw-text-green-700",response.data.message);
             })
             .catch(function (error) {
                 showAlert("tw-bg-red-100 tw-border-red-500 tw-text-red-700",error.message);

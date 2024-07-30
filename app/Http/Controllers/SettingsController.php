@@ -28,6 +28,7 @@ use Former;
 use IXP\Services\DotEnvWriter;
 use Illuminate\Http\Request;
 use IXP\Models\User;
+use Webpatser\Countries\Countries;
 
 /**
  * .env file configurator Controller
@@ -120,7 +121,7 @@ class SettingsController extends Controller
             $tab = '<div class="tabPanel'.($first ? ' active' : '').'" id="'.$panel.'-content" role="tabpanel" aria-labelledby="'.$panel.'-content">';
 
             if(isset($content["description"]) && $content["description"] !== "") {
-                $tab .= '<p class="description">'.$content["description"].'</p>';
+                $tab .= '<div class="alert alert-info" role="alert"><div class="d-flex align-items-center"><div class="text-center"><i class="fa fa-question-circle fa-2x"></i></div><div class="col-sm-12">'.$content["description"].'</div></div></div>';
             }
 
             if(isset($content["fields"]) && count($content["fields"])) {
@@ -145,6 +146,8 @@ class SettingsController extends Controller
                         case 'select':
                             if($param["options"]["type"] === 'array') {
                                 $options = $param["options"]["list"];
+                            } else if($param["options"]["type"] === 'countries') {
+                                $options = $this->getCountriesSelection();;
                             } else {
                                 $options = $this->getSelectOptions($param["options"]["list"]);
                             }
