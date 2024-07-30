@@ -33,6 +33,7 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @method static Builder|BgpSessionDataAggregator whereVlan($value)
  * @mixin \Eloquent
  */
+/** @psalm-suppress InvalidTemplateParam  - @extends valid */
 class BgpSessionDataAggregator extends BgpSessionData
 {
 
