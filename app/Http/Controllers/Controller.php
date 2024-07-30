@@ -140,7 +140,12 @@ class Controller extends BaseController
         return $privs;
     }
 
-    protected function getCountriesSelection() {
+    /**
+     * Get an array of countries for a select dropdown.
+     *
+     * @return array in form [ISO 2-letter Code] => "Name"
+     */
+    protected function getCountriesSelection(): array {
         $countries = Countries::getList();
         $list = [];
         foreach($countries as $country) {

@@ -3,7 +3,7 @@
 namespace Tests\Services;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -32,15 +32,29 @@ use Tests\TestCase;
  * @author     Laszlo Kiss <laszlo@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Tests
- * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class DotEnvWriterTest extends TestCase
 {
     protected string $originalFile = '.env.example';
-    protected string $testFile = '.env.test';
+    protected string $testFile;
 
     protected DotEnvWriter $writer;
+
+
+
+    protected function setUp(): void
+    {
+        parent::Setup();
+        $this->testFile = tempnam( base_path(), '.env-' );
+        copy(base_path($this->originalFile), $this->testFile);
+    }
+
+    protected function tearDown(): void
+    {
+        @unlink($this->testFile);
+    }
 
     /**
      * Utility function to get a .env.test file content and variable list
@@ -48,13 +62,7 @@ class DotEnvWriterTest extends TestCase
      */
     public function testReader(): void
     {
-        $originalFile = base_path($this->originalFile);
-        $testFile = base_path($this->testFile);
-
-        @unlink($testFile);
-        copy($originalFile, $testFile);
-
-        $this->writer = new DotEnvWriter($testFile);
+        $this->writer = new DotEnvWriter($this->testFile);
         $variables = $this->writer->getAll();
 
         $this->assertIsArray($variables);
@@ -66,8 +74,7 @@ class DotEnvWriterTest extends TestCase
      */
     public function testSetVariables(): void
     {
-        $testFile = base_path($this->testFile);
-        $this->writer = new DotEnvWriter($testFile);
+        $this->writer = new DotEnvWriter($this->testFile);
         $this->writer->set("LOG_CHANNEL","daily","not showing description");
         $this->writer->set("TEST_KEY","Test value","It is a test description");
         $this->writer->enable("MAIL_PORT");
@@ -107,8 +114,7 @@ class DotEnvWriterTest extends TestCase
      */
     public function testWrite(): void
     {
-        $testFile = base_path($this->testFile);
-        $this->writer = new DotEnvWriter($testFile);
+        $this->writer = new DotEnvWriter($this->testFile);
 
         $this->writer->set("LOG_CHANNEL","daily","not showing description");
         $this->writer->enable("MAIL_PORT");
@@ -120,7 +126,7 @@ class DotEnvWriterTest extends TestCase
         $this->writer->write();
 
         // reload file
-        $_newEnv = new DotEnvWriter($testFile);
+        $_newEnv = new DotEnvWriter($this->testFile);
         $variables = $_newEnv->getAll();
 
         $this->assertIsArray($variables);

@@ -3203,7 +3203,32 @@ td a:hover{
     opacity: 1; /* Firefox */
 }
 
-
+.select2-container--default .select2-selection {
+    width: 100%;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: .125rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: .5rem;
+    padding-right: 1.5rem;
+    line-height: 1.25;
+    --tw-text-opacity: 1;
+    border-width: 1px;
+    --tw-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-ring-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-shadow);
+    height: 2.25rem;
+    border-color: #ced4da;
+}
+.select2-container--default .select2-selection .select2-selection__rendered {
+    color: rgb(96 111 123 / var(--tw-text-opacity));
+    line-height: 1.25rem;
+}
+.select2-container--default .select2-selection .select2-selection__arrow {
+    height: 2.25rem;
+    width: 1.5rem;
+}
 
 /***** Tab Panels START *****/
 .tabNavMenu{
@@ -3254,14 +3279,6 @@ td a:hover{
     border-top: none;
     height: auto;
     padding: 1rem 1.5rem;
-}
-.tabContent .tabPanel .description {
-    font-size: 0.9rem;
-    background-color: #a0aec0;
-    margin: 0 -1.5rem 1rem -1.5rem;
-    padding: .5rem 2rem;
-    color: #ffffff;
-    text-shadow: 0 0 .5rem #718096;
 }
 .inputWrapper {
     padding: 1rem;
