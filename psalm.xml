@@ -29,4 +29,11 @@
         <pluginClass class="Psalm\LaravelPlugin\Plugin"/>
     </plugins>
 
+    <issueHandlers>
+        <InvalidTemplateParam>
+            <errorLevel type="suppress">
+                <directory name="app/Models" /> <!-- all InvalidReturnType issues in this directory are suppressed -->
+            </errorLevel>
+        </InvalidTemplateParam>
+    </issueHandlers>
 </psalm>
