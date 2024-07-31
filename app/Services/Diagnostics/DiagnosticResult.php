@@ -36,7 +36,6 @@ namespace IXP\Services\Diagnostics;
 
 class DiagnosticResult
 {
-
     public const int TYPE_OKAY    = 1;
     public const int TYPE_WARNING = 2;
     public const int TYPE_ERROR   = 3;
@@ -52,21 +51,18 @@ class DiagnosticResult
     ];
 
     public static $RESULT_TYPES_ICON = [
-        self::TYPE_OKAY          => 'fa-check',
-//        self::TYPE_WARNING       => 'Warning',
-//        self::TYPE_ERROR         => 'Error',
-//        self::TYPE_INFO          => 'Info',
-//        self::TYPE_UNKNOWN       => 'Unknown',
+        self::TYPE_OKAY          => 'fa-check tw-text-green-600',
+        self::TYPE_WARNING       => 'fa-exclamation-triangle tw-text-yellow-600',
+        self::TYPE_ERROR         => 'fa-times tw-text-red-600',
+        self::TYPE_INFO          => 'fa-info-circle tw-text-blue-600',
+        self::TYPE_UNKNOWN       => 'fa-question tw-text-gray-600',
     ];
 
 
-
-
-
     public function __construct(
-        protected string $name,
-        protected int $result,
-        protected string $narrative,
+        public string $name,
+        public int $result,
+        public string $narrative,
     ) { }
 
 

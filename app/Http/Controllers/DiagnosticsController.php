@@ -43,14 +43,15 @@ class DiagnosticsController extends Controller
 
     /**
      */
-    public function run( Diagnostics $diagnostics, Customer $customer ): View
+    public function run( Customer $customer, Diagnostics $diagnostics ): View
     {
-        $results = [];
+        $diagnosticsResult = $diagnostics->runCustomerDiagnostics($customer);
+        $customerData = $customer->toArray();
+        info("diagnostics result: " . var_export($diagnosticsResult, true));
 
-        array_merge( $results, $diagnostics->runCustomerDiagnostics() );
-
-        return view( 'diagnostics.run' )->with([
-            'results' => $results
+        return view( 'diagnostics.customer-detail')->with([
+            "customer" => $customerData,
+            "results" => $diagnosticsResult,
         ]);
     }
 

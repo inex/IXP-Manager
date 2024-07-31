@@ -83,7 +83,8 @@ class Diagnostics
     {
     }
 
-    public function runCustomerDiagnostics(Customer $customer) {
+    public function runCustomerDiagnostics(Customer $customer): array
+    {
         return ( new CustomerDiagnosticSuite( $customer ) )->run()->results();
     }
 

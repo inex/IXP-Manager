@@ -53,12 +53,12 @@ class DiagnosticsServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Route::group([
-                'middleware'    => config( 'google2fa.enabled' )
-                        ? [ 'web' , 'auth' , '2fa' , 'assert.privilege:' . User::AUTH_SUPERUSER ]
-                        : [ 'web' , 'auth',          'assert.privilege:' . User::AUTH_SUPERUSER ],
-                'namespace' => 'IXP\Http\Controllers\Services' ], function(){
+            'middleware'    => config( 'google2fa.enabled' )
+                ? [ 'web' , 'auth' , '2fa' , 'assert.privilege:' . User::AUTH_SUPERUSER ]
+                : [ 'web' , 'auth',          'assert.privilege:' . User::AUTH_SUPERUSER ],
+            'namespace' => 'IXP\Http\Controllers' ], function(){
 
-            Route::get(  'customer/diagnostics/{id}', 'Diagnostics@run' );
+            Route::get(  'customer/diagnostics/{customer}', 'DiagnosticsController@run')->name('diagnostics@run' );
         });
 
         // we have a few rendering functions we want to include here:
