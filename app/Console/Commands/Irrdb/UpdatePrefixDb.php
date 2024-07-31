@@ -24,18 +24,22 @@ namespace IXP\Console\Commands\Irrdb;
  */
 
 use Exception;
+use IXP\Events\User\UserWarning as UserWarningEvent;
+use IXP\Mail\User\UserWarning;
 use IXP\Tasks\Irrdb\UpdatePrefixDb as UpdatePrefixDbTask;
+use Mail;
 
- /**
-  * Artisan command to update the IRRDB prefix database
-  *
-  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
-  * @author     Yann Robin      <yann@islandbridgenetworks.ie>
-  * @category   Irrdb
-  * @package    IXP\Console\Commands
-  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
-  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
-  */
+/**
+ * Artisan command to update the IRRDB prefix database
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin      <yann@islandbridgenetworks.ie>
+ * @author     Laszlo Kiss     <laszlo@islandbridgenetworks.ie>
+ * @category   Irrdb
+ * @package    IXP\Console\Commands
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class UpdatePrefixDb extends UpdateDb
 {
     /**
@@ -44,7 +48,8 @@ class UpdatePrefixDb extends UpdateDb
      * @var string
      */
     protected $signature = 'irrdb:update-prefix-db
-                        {customer? : Customer ASN, ID or shortname (in that order). Otherwise all customers.}';
+                        {customer? : Customer ASN, ID or shortname (in that order). Otherwise all customers.}
+                        {--no-alert-email : On set it will not send alert email on error}';
 
     /**
      * The console command description.
@@ -66,15 +71,27 @@ class UpdatePrefixDb extends UpdateDb
             return -99;
         }
 
+        $warningRecipient = [[ 'name' => config('mail.alerts_recipient.name'), 'email' => config('mail.alerts_recipient.address') ]];
+        $warningMail = true;
+        if($this->option('no-alert-email')) {
+            $warningMail = false;
+        }
+
         $customers = $this->resolveCustomers();
 
         foreach( $customers as $c ) {
             try {
                 $task = new UpdatePrefixDbTask( $c );
             } catch( Exception $e ) {
+                $eMessage = $e->getMessage();
                 $this->error( "IRRDB ASN update failed for {$c->name}/AS{$c->autsys}" );
-                $this->error( $e->getMessage() );
+                $this->error( $eMessage );
                 $this->info( "Continuing to next customer...");
+
+                if( $warningMail ) {
+                    $e = new UserWarningEvent("IRRDB prefix update failed for {$c->name}/AS{$c->autsys}", $eMessage);
+                    Mail::to($warningRecipient)->send(new UserWarning($e));
+                }
                 continue;
             }
 
