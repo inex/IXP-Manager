@@ -926,6 +926,23 @@ class Customer extends Model
     }
 
     /**
+     * If the customer is IRRDB filtered on any of their VLAN interfaces, are more specifics allowed?
+     *
+     * @return boolean
+     */
+    public function irrdbMoreSpecificsAllowed(): bool
+    {
+        if( !$this->irrdbFiltered() ) {
+            return false;
+        }
+
+        return (bool)self::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )
+            ->leftJoin( 'vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id' )
+            ->where( 'cust.id', $this->id )->where( 'rsmorespecifics', true )
+            ->get()->count();
+    }
+
+    /**
      * Is the customer an AS112 client on any of their VLAN interfaces?
      *
      * @return boolean
