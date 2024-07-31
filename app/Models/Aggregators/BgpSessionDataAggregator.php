@@ -4,12 +4,38 @@ namespace IXP\Models\Aggregators;
 
 use Cache;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use IXP\Models\BgpSessionData;
 use IXP\Models\Vlan;
 use IXP\Exceptions\GeneralException as IXP_Exception;
 
-class BgpSessionDataAggregator
+/**
+ * IXP\Models\BGPSessionData
+ *
+ * @property int $id
+ * @property int|null $srcipaddressid
+ * @property int|null $dstipaddressid
+ * @property int|null $protocol
+ * @property int|null $vlan
+ * @property int|null $packetcount
+ * @property string|null $timestamp
+ * @property string|null $source
+ * @method static Builder|BgpSessionDataAggregator newModelQuery()
+ * @method static Builder|BgpSessionDataAggregator newQuery()
+ * @method static Builder|BgpSessionDataAggregator query()
+ * @method static Builder|BgpSessionDataAggregator whereDstipaddressid($value)
+ * @method static Builder|BgpSessionDataAggregator whereId($value)
+ * @method static Builder|BgpSessionDataAggregator wherePacketcount($value)
+ * @method static Builder|BgpSessionDataAggregator whereProtocol($value)
+ * @method static Builder|BgpSessionDataAggregator whereSource($value)
+ * @method static Builder|BgpSessionDataAggregator whereSrcipaddressid($value)
+ * @method static Builder|BgpSessionDataAggregator whereTimestamp($value)
+ * @method static Builder|BgpSessionDataAggregator whereVlan($value)
+ * @mixin \Eloquent
+ */
+class BgpSessionDataAggregator extends BgpSessionData
 {
+
     /**
      * Get all the BGP peers of all peers
      *
@@ -64,8 +90,7 @@ class BgpSessionDataAggregator
             throw new IXP_Exception( 'Invalid protocol' );
         }
 
-        $evlan = Vlan::find( $vlan );
-        if( $vlan !== null && !$evlan )
+        if( $vlan !== null && !( $evlan = Vlan::find( $vlan ) ) )
             throw new IXP_Exception( 'Invalid VLAN' );
 
         // we've added "bs.timestamp >= NOW() - INTERVAL 7 DAY" below as we don't
@@ -74,7 +99,7 @@ class BgpSessionDataAggregator
         // also: CREATE INDEX idx_timestamp ON bgpsessiondata (timestamp)
 
         // need to construct a raw SQL here due to the schema design by NH
-        $peers = BgpSessionData::selectRaw(
+        $peers = self::selectRaw(
             'bs.*, srcip.*, dstip.*,
             vlis.virtualinterfaceid as visid, vlid.virtualinterfaceid as vidid,
             cs.shortname AS csshortname, cs.name AS csname, cs.autsys AS csautsys,
@@ -119,8 +144,8 @@ class BgpSessionDataAggregator
 
         ksort( $apeers, SORT_NUMERIC );
 
-        foreach( $apeers as $p ) {
-            ksort( $p[ 'peers' ], SORT_NUMERIC );
+        foreach( $apeers as $asn => $p ) {
+            ksort( $apeers[ $asn ][ 'peers' ], SORT_NUMERIC );
         }
 
         Cache::put( $key, $apeers, 3600 );
