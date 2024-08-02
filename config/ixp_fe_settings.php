@@ -37,28 +37,28 @@ return [
 
         /*
          *
-         *             'console-server-connection' => env( 'IXP_FE_FRONTEND_DISABLED_CONSOLE',           false ),
-            'cust-kit'                  => env( 'IXP_FE_FRONTEND_DISABLED_CUSTKIT',           false ),
-            'docstore'                  => env( 'IXP_FE_FRONTEND_DISABLED_DOCSTORE',          false ),
-            'docstore_customer'         => env( 'IXP_FE_FRONTEND_DISABLED_DOCSTORE_CUSTOMER', false ),
-            'filtered-prefixes'         => env( 'IXP_FE_FRONTEND_DISABLED_FILTERED_PREFIXES', true  ),
-            'logs'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGS',              false ),
-            'logo'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGO',              true  ),
-            'lg'                        => env( 'IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS',     true  ),
-            'net-info'                  => env( 'IXP_FE_FRONTEND_DISABLED_NETINFO',           true ),
-            'peering-manager'           => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MANAGER',   false ),
-            'peering-matrix'            => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MATRIX',    false ),
-            'phpinfo'                   => env( 'IXP_FE_FRONTEND_DISABLED_PHPINFO',           true  ),
-            'ripe-atlas'                => true, // not ready for use yet
             'rs-prefixes'               => env( 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',       true  ),
             'rs-filters'                => env( 'IXP_FE_FRONTEND_DISABLED_RS_FILTERS',        true  ),
          */
         'frontend_controllers' => [
             'title'       => 'Features',
             'description' => "These are features or modules that can be enabled or disabled. Some are
-                                    disabled by default as they may require extra configuration settings.",
+                                    disabled by default as they may require extra configuration settings. 
+                                    Disabling a module will remove frontend elements such as menus and links also.",
 
             'fields' => [
+
+                'as112'                     => [
+                    'config_key' => 'ixp.as112.ui_active',
+                    'dotenv_key' => 'IXP_AS112_UI_ACTIVE',
+                    'type'       => 'radio',
+                    'invert'     => true,
+                    'name'       => 'AS112 functionality',
+                    'docs_url'   => 'https://docs.ixpmanager.org/features/as112/',
+                    'help'       => 'AS112 is a service which provides anycast reverse DNS lookup for several prefixes, 
+                                        particularly rfc1918 space. If you are providing an AS112 service to your members,
+                                        this feature enables UI elements for that.',
+                ],
 
                 'console-server-connection' => [
                     'config_key' => 'ixp_fe.frontend.disabled.console-server-connection',
@@ -69,120 +69,149 @@ return [
                     'docs_url'   => 'https://docs.ixpmanager.org/features/console-servers/', // can be null
                     'help'       => 'An IXP would typically have out of band access (for emergencies, firmware upgrades, 
                                         etc) to critical infrastructure devices by means of a console server. This 
-                                        module allows you to record console server port connections.',
+                                        module allows you to record what equipment console server ports connect to.
+                                        For larger exchanges, a modern DCIM system such as
+                                        <a href="https://netboxlabs.com/dcim/" target="_blank">NetBox</a>
+                                        is recrommended.',
                 ],
+
                 'cust-kit'                  => [
                     'config_key' => 'ixp_fe.frontend.disabled.cust-kit',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_CUSTKIT',
                     'type'       => 'radio',
-                    'name'       => 'Customer Kit',
+                    'invert'     => true,
+                    'name'       => 'Colocated Equipment',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'If you provide equipment colocation services for members, the module will allow you to 
+                                        maintain an inventory of this. For larger exchanges, a modern DCIM system such as
+                                        <a href="https://netboxlabs.com/dcim/" target="_blank">NetBox</a> is recrommended.',
                 ],
-                'docstore'                  => [
-                    'config_key' => 'ixp_fe.frontend.disabled.docstore',
-                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_DOCSTORE',
-                    'type'       => 'radio',
-                    'name'       => 'Document Store',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
-                'docstore_customer'         => [
-                    'config_key' => 'ixp_fe.frontend.disabled.docstore_customer',
-                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_DOCSTORE_CUSTOMER',
-                    'type'       => 'radio',
-                    'name'       => 'Customer Document Store',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
-                'filtered-prefixes'         => [
-                    'config_key' => 'ixp_fe.frontend.disabled.filtered-prefixes',
-                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_FILTERED_PREFIXES',
-                    'type'       => 'radio',
-                    'name'       => 'Filtered Prefixes',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
+
                 'logs'                      => [
                     'config_key' => 'ixp_fe.frontend.disabled.logs',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_LOGS',
                     'type'       => 'radio',
-                    'name'       => 'Logs',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'invert'     => true,
+                    'name'       => 'Database Change Logging',
+                    'docs_url'   => 'https://docs.ixpmanager.org/usage/dblogs/',
+                    'help'       => 'Database change logging for changes made via the UI.',
                 ],
-                'logo'                      => [
-                    'config_key' => 'ixp_fe.frontend.disabled.logo',
-                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_LOGO',
+
+                'docstore_customer'         => [
+                    'config_key' => 'ixp_fe.frontend.disabled.docstore_customer',
+                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_DOCSTORE_CUSTOMER',
                     'type'       => 'radio',
-                    'name'       => 'Logo',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'invert'     => true,
+                    'name'       => 'Customer Document Store',
+                    'docs_url'   => 'https://docs.ixpmanager.org/features/docstore/',
+                    'help'       => 'A per-member document store which allows administrators to upload documents on a 
+                                        per-member basis. These can be made visible to administrators only or also to 
+                                        users assigned to that specific member. Example use cases for this are member 
+                                        application forms / contracts, completed / signed port upgrade forms, etc.',
                 ],
+
+                'docstore'                  => [
+                    'config_key' => 'ixp_fe.frontend.disabled.docstore',
+                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_DOCSTORE',
+                    'type'       => 'radio',
+                    'invert'     => true,
+                    'name'       => 'Document Store',
+                    'docs_url'   => 'https://docs.ixpmanager.org/features/docstore/',
+                    'help'       => 'A general document store which allows administrators to make documents generally available 
+                                        for specific user classes (public, customer user, customer admin, superadmin). Example 
+                                        use cases for this are member upgrade forms, distribution of board or management minutes, etc.',
+                ],
+
+                'filtered-prefixes'         => [
+                    'config_key' => 'ixp_fe.frontend.disabled.filtered-prefixes',
+                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_FILTERED_PREFIXES',
+                    'type'       => 'radio',
+                    'invert'     => true,
+                    'name'       => 'Filtered Prefixes',
+                    'docs_url'   => 'https://docs.ixpmanager.org/features/route-servers/#displaying-filtered-prefixes',
+                    'help'       => 'This feature provides member\'s a live view of member prefixes filtered on the IXP\'s route servers.
+                                        It requires that you are using IXP Manager\'s Bird v2 route server configuration and
+                                        have enabled the looking glass.'
+                ],
+
                 'lg'                        => [
                     'config_key' => 'ixp_fe.frontend.disabled.lg',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS',
                     'type'       => 'radio',
+                    'invert'     => true,
                     'name'       => 'Looking Glass',
                     'docs_url'   => 'https://docs.ixpmanager.org/features/looking-glass/',
-                    'help'       => 'IXP Manager supports full looking glass features when using the Bird BGP daemon and Bird\'s Eye (a simple secure micro service for querying Bird).',
+                    'help'       => 'IXP Manager supports full looking glass features when using the Bird BGP daemon and 
+                                        Bird\'s Eye (a simple secure micro service for querying Bird). This feature is an
+                                        required element of some other features such as the filtered prefixes.',
                 ],
-                'net-info'                  => [
-                    'config_key' => 'ixp_fe.frontend.disabled.net-info',
-                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_NETINFO',
+
+                'logo'                      => [
+                    'config_key' => 'ixp_fe.frontend.disabled.logo',
+                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_LOGO',
                     'type'       => 'radio',
-                    'name'       => 'Net Information',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'invert'     => true,
+                    'name'       => 'Member Logos',
+                    'docs_url'   => 'https://docs.ixpmanager.org/usage/customers/#customer-logos',
+                    'help'       => 'Allows customer users and administrators to upload and manage their organisation\'s logo.',
                 ],
+
                 'peering-manager'           => [
                     'config_key' => 'ixp_fe.frontend.disabled.peering-manager',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_PEERING_MANAGER',
                     'type'       => 'radio',
+                    'invert'     => true,
                     'name'       => 'Peering Manager',
                     'docs_url'   => 'https://docs.ixpmanager.org/features/peering-manager/',
-                    'help'       => 'The Peering Manager is a fantastic tool that allows your members to view and track their peerings with other IXP members.',
+                    'help'       => 'The Peering Manager is a fantastic tool that allows your members to view, compose, 
+                                        request and track their peering requests with other IXP members.',
                 ],
+
                 'peering-matrix'            => [
                     'config_key' => 'ixp_fe.frontend.disabled.peering-matrix',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_PEERING_MATRIX',
                     'type'       => 'radio',
+                    'invert'     => true,
                     'name'       => 'Peering Matrix',
                     'docs_url'   => 'https://docs.ixpmanager.org/features/peering-matrix/',
-                    'help'       => 'The peering matrix system builds up a list of who is peering with whom over your IXP.',
+                    'help'       => 'The peering matrix system builds up a list of who is peering with whom over your IXP. You 
+                                        will need sflow running with a 
+                                        <a href="https://docs.ixpmanager.org/features/peering-matrix/#data-source-sflow-bgp-session-detection" 
+                                        target="_blank">BGP detector</a> running.',
                 ],
+
                 'phpinfo'                   => [
                     'config_key' => 'ixp_fe.frontend.disabled.phpinfo',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_PHPINFO',
                     'type'       => 'radio',
-                    'name'       => 'PHP Information',
+                    'invert'     => true,
+                    'name'       => 'PHP Info',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'The PHP Info option under IXP Utilities on the left hand menu. This is available to 
+                                        administrators only and shows the output of <code>phpinfo()</code>.',
                 ],
+
                 'rs-prefixes'               => [
                     'config_key' => 'ixp_fe.frontend.disabled.rs-prefixes',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',
                     'type'       => 'radio',
+                    'invert'     => true,
                     'name'       => 'RS Prefixes',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => '[DEPRECATED] <em>Filtered Prefixes</em> above should be used instead of this.',
                 ],
+
                 'rs-filters'                => [
                     'config_key' => 'ixp_fe.frontend.disabled.rs-filters',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_RS_FILTERS',
                     'type'       => 'radio',
-                    'name'       => 'RS Filters',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'invert'     => true,
+                    'name'       => 'Route Server Filtering UI',
+                    'docs_url'   => 'https://github.com/inex/IXP-Manager/releases/tag/v6.4.0',
+                    'help'       => 'Community-based filtering is the standard way to allow route server participants at an IXP 
+                        to control their routing policy. This feature allows IXP members to configure route server filtering in a web-based UI.',
                 ],
-                'as112'                     => [
-                    'config_key' => 'ixp.as112.ui_active',
-                    'dotenv_key' => 'IXP_AS112_UI_ACTIVE',
-                    'type'       => 'radio',
-                    'name'       => 'AS112 functionality',
-                    'docs_url'   => 'https://github.com/inex/IXP-Manager/wiki/AS112',
-                    'help'       => 'Specifies whether to display and enable control of AS112 functionality for customers',
-                ],
+
             ],
         ],
 
