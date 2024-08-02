@@ -12,10 +12,6 @@ auth.json
 bin/fixtures.php
 public/.htaccess
 public/logos/*
-public/css/ixp-pack.css
-public/css/tailwind.css
-public/js/ixp-pack.js
-public/mix-manifest.json
 /public/build
 
 public/favicon.ico
