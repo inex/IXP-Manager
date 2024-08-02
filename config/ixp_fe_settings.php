@@ -1,27 +1,61 @@
 <?php
 
-// Not a traditional Laravel config file - determines what is configurable
-// on the IXP Manager frontend
+/*
+ * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ */
 
-// Laslzo - what else might you think about:
 
-
-// everything in identity.php    - done
-//   vlans.default -> should be a dropdown of VLANs so we'll need a new select options in the array below:
-//           'optionsdb' => [ 'model' => 'Vlan', 'keys' => 'id', 'values' => 'name' ]
-
-// ixp_api.json_export_schema    - done
-// ixp.as112 as part of modules  - done
-// ixp.rpki                      - done
-
+// Not a traditional Laravel config file - this is an IXP Manager config file which
+// determines what .env elements are configurable via the frontend and sets up the
+// form for this.
 
 return [
 
+    /*
+     * Configuration elements are arranged into panels
+     */
     'panels' => [
 
+
+        /*
+         *
+         *             'console-server-connection' => env( 'IXP_FE_FRONTEND_DISABLED_CONSOLE',           false ),
+            'cust-kit'                  => env( 'IXP_FE_FRONTEND_DISABLED_CUSTKIT',           false ),
+            'docstore'                  => env( 'IXP_FE_FRONTEND_DISABLED_DOCSTORE',          false ),
+            'docstore_customer'         => env( 'IXP_FE_FRONTEND_DISABLED_DOCSTORE_CUSTOMER', false ),
+            'filtered-prefixes'         => env( 'IXP_FE_FRONTEND_DISABLED_FILTERED_PREFIXES', true  ),
+            'logs'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGS',              false ),
+            'logo'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGO',              true  ),
+            'lg'                        => env( 'IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS',     true  ),
+            'net-info'                  => env( 'IXP_FE_FRONTEND_DISABLED_NETINFO',           true ),
+            'peering-manager'           => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MANAGER',   false ),
+            'peering-matrix'            => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MATRIX',    false ),
+            'phpinfo'                   => env( 'IXP_FE_FRONTEND_DISABLED_PHPINFO',           true  ),
+            'ripe-atlas'                => true, // not ready for use yet
+            'rs-prefixes'               => env( 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',       true  ),
+            'rs-filters'                => env( 'IXP_FE_FRONTEND_DISABLED_RS_FILTERS',        true  ),
+         */
         'frontend_controllers' => [
-            'title'       => 'Modules',
-            'description' => "These are features that can be enabled or disabled. Some are
+            'title'       => 'Features',
+            'description' => "These are features or modules that can be enabled or disabled. Some are
                                     disabled by default as they may require extra configuration settings.",
 
             'fields' => [
@@ -30,6 +64,7 @@ return [
                     'config_key' => 'ixp_fe.frontend.disabled.console-server-connection',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_CONSOLE',
                     'type'       => 'radio',
+                    'invert'     => true,
                     'name'       => 'Console Server Connections',
                     'docs_url'   => 'https://docs.ixpmanager.org/features/console-servers/', // can be null
                     'help'       => 'An IXP would typically have out of band access (for emergencies, firmware upgrades, 

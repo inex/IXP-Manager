@@ -39,14 +39,13 @@ use Illuminate\Http\Request;
  */
 class SettingsController extends Controller
 {
-    protected DotEnvWriter $envWriter;
-    protected Former $former;
     protected array $fe_settings;
 
 
-    public function __construct(Former $former, DotEnvWriter $envWriter) {
-        $this->envWriter = $envWriter;
-        $this->former = $former;
+    public function __construct(
+        protected Former $former,
+        protected DotEnvWriter $envWriter
+    ) {
         $this->fe_settings = config( 'ixp_fe_settings');
     }
 
@@ -130,15 +129,18 @@ class SettingsController extends Controller
                         $title .= '<a href="'.$param["docs_url"].'" target="_blank"><i class="ml-2 fa fa-external-link"></i></a>';
                     }
 
-                    $value = null;
-                    if(isset($envValues[$param['dotenv_key']])) {
-                        $value = $envValues[$param['dotenv_key']]["value"];
-                    }
+                    // value comes from config, not .env. Config includes defaults not covered by .env and so
+                    // using .env could overwrite defaults.
+                    $value = config( $param['config_key'] );
 
                     switch($param["type"]) {
 
                         case 'radio':
-                            $input = Former::checkbox($field)->label($title)->check( $value === 'true' );
+                            if( isset( $param["invert"] ) && $param["invert"] ) {
+                                $input = Former::checkbox($field)->label($title)->check( !$value );
+                            } else {
+                                $input = Former::checkbox($field)->label($title)->check( $value );
+                            }
                             break;
 
                         case 'select':
@@ -217,7 +219,12 @@ class SettingsController extends Controller
             foreach($panel["fields"] as $label => $field) {
                 switch($field["type"]) {
                     case 'radio':
-                        $value = $changes[$label] === '1' ? "true" : "false";
+                        if( isset( $param["invert"] ) && $param["invert"] ) {
+                            $value = $changes[ $label ] === '1' ? "false" : "true";
+                        } else {
+                            $value = $changes[ $label ] === '1' ? "true" : "false";
+                        }
+
                         $this->envWriter->set($field["dotenv_key"],$value);
                         break;
                     default:
