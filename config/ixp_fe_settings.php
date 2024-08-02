@@ -36,9 +36,6 @@ return [
 
 
         /*
-         *
-            'rs-prefixes'               => env( 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',       true  ),
-            'rs-filters'                => env( 'IXP_FE_FRONTEND_DISABLED_RS_FILTERS',        true  ),
          */
         'frontend_controllers' => [
             'title'       => 'Features',
@@ -52,7 +49,7 @@ return [
                     'config_key' => 'ixp.as112.ui_active',
                     'dotenv_key' => 'IXP_AS112_UI_ACTIVE',
                     'type'       => 'radio',
-                    'invert'     => true,
+                    'invert'     => false,
                     'name'       => 'AS112 functionality',
                     'docs_url'   => 'https://docs.ixpmanager.org/features/as112/',
                     'help'       => 'AS112 is a service which provides anycast reverse DNS lookup for several prefixes, 
@@ -146,6 +143,16 @@ return [
                                         required element of some other features such as the filtered prefixes.',
                 ],
 
+                'login_history' => [
+                    'config_key' => 'ixp_fe.login_history.enabled',
+                    'dotenv_key' => 'IXP_FE_LOGIN_HISTORY_ENABLED',
+                    'type'       => 'radio',
+                    'invert'     => true,
+                    'name'       => "Login History",
+                    'help'       => 'Record user logins and view it in the UI. Expunged after six months by default.',
+                ],
+
+
                 'logo'                      => [
                     'config_key' => 'ixp_fe.frontend.disabled.logo',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_LOGO',
@@ -222,6 +229,42 @@ return [
             'description' => 'IXP Identity Information.',
 
             'fields' => [
+                'orgname'          => [
+                    'config_key' => 'identity.orgname',
+                    'dotenv_key' => 'IDENTITY_ORGNAME',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'Organisation Name',
+                    'docs_url'   => null,
+                    'help'       => 'What your IXP is generally known as. E.g. INEX, LONAP, etc.',
+                ],
+                'name'             => [
+                    'config_key' => 'identity.name',
+                    'dotenv_key' => 'IDENTITY_NAME',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'Name',
+                    'docs_url'   => null,
+                    'help'       => 'What your IXP is generally known as. E.g. INEX, LONAP, etc.',
+                ],
+                'sitename'         => [
+                    'config_key' => 'identity.sitename',
+                    'dotenv_key' => 'IDENTITY_SITENAME',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'Site Name',
+                    'docs_url'   => null,
+                    'help'       => 'The name of this website. E.g. INEX IXP Manager',
+                ],
+                'titlename'        => [
+                    'config_key' => 'identity.titlename',
+                    'dotenv_key' => 'IDENTITY_TITLENAME',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'Site Title',
+                    'docs_url'   => null,
+                    'help'       => 'Your site/IXP name in the top left menu of IXP Manager.',
+                ],
                 'legalname'        => [
                     'config_key' => 'identity.legalname',
                     'dotenv_key' => 'IDENTITY_LEGALNAME',
@@ -229,14 +272,14 @@ return [
                     'rules'      => '',
                     'name'       => 'Legal Name',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'The full legal name of the IXP.',
                 ],
                 'location_city'    => [
                     'config_key' => 'identity.location.city',
                     'dotenv_key' => 'IDENTITY_CITY',
                     'type'       => 'text',
                     'rules'      => '',
-                    'name'       => 'Location: City',
+                    'name'       => 'City',
                     'docs_url'   => null,
                     'help'       => '',
                 ],
@@ -246,25 +289,7 @@ return [
                     'type'       => 'select',
                     'options'    => [ 'type' => 'countries' ], // special option list for countries
                     'rules'      => '',
-                    'name'       => 'Location: Country',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
-                'orgname'          => [
-                    'config_key' => 'identity.orgname',
-                    'dotenv_key' => 'IDENTITY_ORGNAME',
-                    'type'       => 'text',
-                    'rules'      => '',
-                    'name'       => 'Organisation Name',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
-                'name'             => [
-                    'config_key' => 'identity.name',
-                    'dotenv_key' => 'IDENTITY_NAME',
-                    'type'       => 'text',
-                    'rules'      => '',
-                    'name'       => 'Name',
+                    'name'       => 'Country',
                     'docs_url'   => null,
                     'help'       => '',
                 ],
@@ -275,26 +300,61 @@ return [
                     'rules'      => 'nullable|max:255|email',
                     'name'       => 'Email Address',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'Typically your support or other generic contact email address.',
                 ],
-                'testemail'        => [
-                    'config_key' => 'identity.testemail',
-                    'dotenv_key' => 'IDENTITY_TESTEMAIL',
+
+
+                'corporate_url'    => [
+                    'config_key' => 'identity.corporate_url',
+                    'dotenv_key' => 'IDENTITY_CORPORATE_URL',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'Corporate URL',
+                    'docs_url'   => null,
+                    'help'       => 'E.g. https://www.example.com/',
+                ],
+                'url'              => [
+                    'config_key' => 'identity.url',
+                    'dotenv_key' => 'APP_URL',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'IXP Manager URL',
+                    'docs_url'   => null,
+                    'help'       => 'E.g. https://www.example.com/portal/',
+                ],
+
+
+                'alerts_recipient_name' => [
+                    'config_key' => 'mail.alerts_recipient.name',
+                    'dotenv_key' => 'IDENTITY_ALERTS_NAME',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'Alert Recipient Name',
+                    'docs_url'   => null,
+                    'help'       => 'IXP Manager will need to send alert emails. This is the recipient name for these alerts. 
+                                        E.g. MyIXP Ops Team',
+                ],
+
+                'alerts_recipient_address' => [
+                    'config_key' => 'mail.alerts_recipient.address',
+                    'dotenv_key' => 'IDENTITY_ALERTS_EMAIL',
                     'type'       => 'text',
                     'rules'      => 'nullable|max:255|email',
-                    'name'       => 'Test Email Address',
+                    'name'       => 'Alert Recipient Email Address',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'IXP Manager will need to send alert emails. This is the recipient email for these alerts. 
+                                        E.g. ops@example.com',
                 ],
-                'rsvpemail'        => [
-                    'config_key' => 'identity.rsvpemail',
-                    'dotenv_key' => 'IDENTITY_RSVPEMAIL',
-                    'type'       => 'text',
-                    'rules'      => 'nullable|max:255|email',
-                    'name'       => 'RSVP Email Address',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
+
+//                'testemail'        => [
+//                    'config_key' => 'identity.testemail',
+//                    'dotenv_key' => 'IDENTITY_TESTEMAIL',
+//                    'type'       => 'text',
+//                    'rules'      => 'nullable|max:255|email',
+//                    'name'       => 'Test Email Address',
+//                    'docs_url'   => null,
+//                    'help'       => 'Used by the peering manager for testing when `ixp.peering_manager.testemail` is set to true.',
+//                ],
                 'watermark'        => [
                     'config_key' => 'identity.watermark',
                     'dotenv_key' => 'IDENTITY_WATERMARK',
@@ -302,7 +362,7 @@ return [
                     'rules'      => '',
                     'name'       => 'Watermark',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'Printed on some graphes, etc. E.g., "INEX, Ireland"',
                 ],
                 'support_email'    => [
                     'config_key' => 'identity.support_email',
@@ -311,7 +371,7 @@ return [
                     'rules'      => 'nullable|max:255|email',
                     'name'       => 'Support Email Address',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'Your support/operations email address.',
                 ],
                 'support_phone'    => [
                     'config_key' => 'identity.support_phone',
@@ -320,7 +380,7 @@ return [
                     'rules'      => '',
                     'name'       => 'Support Phone Number',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'Your support/operations phone number.',
                 ],
                 'support_hours'    => [
                     'config_key' => 'identity.support_hours',
@@ -329,7 +389,7 @@ return [
                     'rules'      => '',
                     'name'       => 'Support Hours',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'Hours that support is normally available. Standard industry nomenclature includes: 24/7, 8x5, 8x7, 12x5, 12x7',
                 ],
                 'billing_email'    => [
                     'config_key' => 'identity.billing_email',
@@ -338,7 +398,7 @@ return [
                     'rules'      => 'nullable|max:255|email',
                     'name'       => 'Billing Email Address',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'Your billing/accounting contact email address.',
                 ],
                 'billing_phone'    => [
                     'config_key' => 'identity.billing_phone',
@@ -347,7 +407,7 @@ return [
                     'rules'      => '',
                     'name'       => 'Billing Phone Number',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'Your billing/accounting contact phone number.',
                 ],
                 'billing_hours'    => [
                     'config_key' => 'identity.billing_hours',
@@ -356,44 +416,9 @@ return [
                     'rules'      => '',
                     'name'       => 'Billing Hours',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'Hours that billing support is normally available. Standard industry nomenclature includes: 24/7, 8x5, 8x7, 12x5, 12x7',
                 ],
-                'sitename'         => [
-                    'config_key' => 'identity.sitename',
-                    'dotenv_key' => 'IDENTITY_SITENAME',
-                    'type'       => 'text',
-                    'rules'      => '',
-                    'name'       => 'Site Name',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
-                'titlename'        => [
-                    'config_key' => 'identity.titlename',
-                    'dotenv_key' => 'IDENTITY_TITLENAME',
-                    'type'       => 'text',
-                    'rules'      => '',
-                    'name'       => 'Site Title',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
-                'corporate_url'    => [
-                    'config_key' => 'identity.corporate_url',
-                    'dotenv_key' => 'IDENTITY_CORPORATE_URL',
-                    'type'       => 'text',
-                    'rules'      => '',
-                    'name'       => 'Corporate Url Address',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
-                'url'              => [
-                    'config_key' => 'identity.url',
-                    'dotenv_key' => 'APP_URL',
-                    'type'       => 'text',
-                    'rules'      => '',
-                    'name'       => 'Url Address',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
+
                 'biglogo'          => [
                     'config_key' => 'identity.biglogo',
                     'dotenv_key' => 'IDENTITY_BIGLOGO',
@@ -401,7 +426,7 @@ return [
                     'rules'      => '',
                     'name'       => 'Big Logo',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'URL of the logo to use on the login page. Can be <code>https://...</code> or <code>file:///home/...</code>',
                 ],
                 'vlans_default'    => [
                     'config_key' => 'identity.vlans.default',
@@ -409,24 +434,6 @@ return [
                     'type'       => 'select',
                     'options'    => [ 'type' => 'collection', 'list' => [ 'model' => 'Vlan', 'keys' => 'id', 'values' => 'name' ] ],
                     'name'       => 'Default Vlans',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
-                'alerts_recipient_name' => [
-                    'config_key' => 'mail.alerts_recipient.name',
-                    'dotenv_key' => 'IDENTITY_ALERTS_NAME',
-                    'type'       => 'text',
-                    'rules'      => '',
-                    'name'       => 'Alert Recipient Name',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
-                'alerts_recipient_address' => [
-                    'config_key' => 'mail.alerts_recipient.address',
-                    'dotenv_key' => 'IDENTITY_ALERTS_EMAIL',
-                    'type'       => 'text',
-                    'rules'      => 'nullable|max:255|email',
-                    'name'       => 'Alert Recipient Email Address',
                     'docs_url'   => null,
                     'help'       => '',
                 ],
@@ -441,13 +448,6 @@ return [
 
             'fields' => [
 
-                'login_history' => [
-                    'config_key' => 'ixp_fe.login_history.enabled',
-                    'dotenv_key' => 'IXP_FE_LOGIN_HISTORY_ENABLED',
-                    'type'       => 'radio',
-                    'name'       => "Record Login History",
-                    'help'       => 'Record the login history for users. Expunged after six months by default.',
-                ],
 
                 // do wee need here add the peeringdb api authentication and oauth data?
 
