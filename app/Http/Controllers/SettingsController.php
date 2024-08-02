@@ -137,10 +137,9 @@ class SettingsController extends Controller
 
                         case 'radio':
                             if( isset( $param["invert"] ) && $param["invert"] ) {
-                                $input = Former::checkbox($field)->label($title)->check( !$value );
-                            } else {
-                                $input = Former::checkbox($field)->label($title)->check( $value );
+                                $value = !$value;
                             }
+                            $input = Former::checkbox($field)->label($title)->check( $value );
                             break;
 
                         case 'select':
@@ -219,13 +218,12 @@ class SettingsController extends Controller
             foreach($panel["fields"] as $label => $field) {
                 switch($field["type"]) {
                     case 'radio':
-                        if( isset( $param["invert"] ) && $param["invert"] ) {
-                            $value = $changes[ $label ] === '1' ? "false" : "true";
-                        } else {
-                            $value = $changes[ $label ] === '1' ? "true" : "false";
+                        $value = $changes[ $label ] === '1';
+                        if( isset( $field["invert"] ) && $field["invert"] ) {
+                            $value = !$value;
                         }
 
-                        $this->envWriter->set($field["dotenv_key"],$value);
+                        $this->envWriter->set($field["dotenv_key"],$value ? "true" : "false");
                         break;
                     default:
                         if(!isset($changes[$label]) || $changes[$label] === NULL || $changes[$label] === '') {
