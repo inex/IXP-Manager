@@ -13,6 +13,7 @@
     "autoprefixer": "^10.4.19",
     "axios": "^1.6.4",
     "blueimp-file-upload": "^10.32.0",
+    "clipboard": "^2.0.11",
     "font-awesome": "^4.7.0",
     "ip-address": "^5.9.4",
     "laravel-mix": "^6.0.49",
@@ -26,8 +27,8 @@
   },
   "dependencies": {
     "bootbox": "^6.0.0",
-    "braces": "^3.0.3",
     "bootstrap": "^4.6.2",
+    "braces": "^3.0.3",
     "cross-env": "^7.0.3",
     "css-loader": "^7.1.2",
     "datatables-responsive": "^1.0.7",
