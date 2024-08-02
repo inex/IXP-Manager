@@ -19,18 +19,18 @@
                 <h4>Diagnostics Data</h4>
             </div>
             <div class="card-body">
-                <?php foreach($t->results as $result): ?>
+                <?php foreach( $t->statusDiags as $status): ?>
                 <div class="row tw-p-2 even:tw-bg-gray-100">
                     <div class="col-lg-3 col-9">
-                        <?= $result->name ?>
+                        <?= $status->name ?>
                     </div>
                     <div class="col-lg-1 col-3 text-center">
                         <i class="fa fa-2x
-                        <?= \IXP\Services\Diagnostics\DiagnosticResult::$RESULT_TYPES_ICON[$result->result] ?>
+                        <?= \IXP\Services\Diagnostics\DiagnosticResult::$RESULT_TYPES_ICON[$status->result] ?>
                         "></i>
                     </div>
                     <div class="col-lg-8 col-12">
-                        <?= $result->narrative ?>
+                        <?= $status->narrative ?>
                     </div>
                 </div>
                 <?php endforeach; ?>

@@ -9,7 +9,7 @@
  *
  * @import "tailwindcss/preflight";
  */
-/*! tailwindcss v3.4.4 | MIT License | https://tailwindcss.com
+/*! tailwindcss v3.4.7 | MIT License | https://tailwindcss.com
  */
 /*
 1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
@@ -578,8 +578,7 @@ a {
 }
 
 a:hover {
-  -webkit-text-decoration-line: underline;
-          text-decoration-line: underline;
+  text-decoration-line: underline;
 }
 
 .tw-border-t-1 {
@@ -649,8 +648,7 @@ a:hover {
   font-size: .875rem;
   --tw-text-opacity: 1;
   color: rgb(96 111 123 / var(--tw-text-opacity));
-  -webkit-text-decoration-line: none;
-          text-decoration-line: none;
+  text-decoration-line: none;
 }
 
 .nav-link:hover {
@@ -693,15 +691,13 @@ a:hover {
 .ixpm-table a {
   --tw-text-opacity: 1;
   color: rgb(39 121 189 / var(--tw-text-opacity));
-  -webkit-text-decoration-line: none;
-          text-decoration-line: none;
+  text-decoration-line: none;
 }
 
 .ixpm-table a:hover {
   --tw-text-opacity: 1;
   color: rgb(66 153 225 / var(--tw-text-opacity));
-  -webkit-text-decoration-line: underline;
-          text-decoration-line: underline;
+  text-decoration-line: underline;
 }
 
 /****************************************************************************************
@@ -925,8 +921,7 @@ a {
 a:hover {
   --tw-text-opacity: 1;
   color: rgb(39 121 189 / var(--tw-text-opacity));
-  -webkit-text-decoration-line: none;
-          text-decoration-line: none;
+  text-decoration-line: none;
 }
 
 /****************************************************************************************
@@ -1507,9 +1502,12 @@ a:hover {
   --tw-text-opacity: 1;
   color: rgb(249 172 170 / var(--tw-text-opacity));
 }
+.tw-text-yellow-600 {
+  --tw-text-opacity: 1;
+  color: rgb(214 158 46 / var(--tw-text-opacity));
+}
 .tw-line-through {
-  -webkit-text-decoration-line: line-through;
-          text-decoration-line: line-through;
+  text-decoration-line: line-through;
 }
 .tw-shadow-lg {
   --tw-shadow: 0 15px 30px 0 rgba(0,0,0,0.11), 0 5px 15px 0 rgba(0,0,0,0.08);
@@ -1541,13 +1539,16 @@ a:hover {
  * @import "utilities/background-patterns";
  * @import "utilities/skew-transforms";
  */
+.even\:tw-bg-gray-100:nth-child(even) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(247 250 252 / var(--tw-bg-opacity));
+}
 .hover\:tw-bg-grey-lighter:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(241 245 248 / var(--tw-bg-opacity));
 }
 .hover\:tw-no-underline:hover {
-  -webkit-text-decoration-line: none;
-          text-decoration-line: none;
+  text-decoration-line: none;
 }
 @media (min-width: 768px) {
   .md\:tw-mt-0 {

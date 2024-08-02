@@ -46,6 +46,7 @@ use IXP\Models\{Customer,
     Vlan};
 
 use IXP\Services\Diagnostics\Suites\CustomerDiagnosticSuite;
+use IXP\Services\Diagnostics\Suites\VirtualInterfaceDiagnosticSuite;
 use IXP\Services\Grapher\Graph;
 
 use IXP\Services\Grapher\Graph\{
@@ -83,10 +84,14 @@ class Diagnostics
     {
     }
 
-    public function runCustomerDiagnostics(Customer $customer): array
+    public function getStatusDiagnostics(Customer $customer): array
     {
         return ( new CustomerDiagnosticSuite( $customer ) )->run()->results();
     }
 
+    public function getVirtualInterfaceDiagnostics(Customer $customer): array
+    {
+        return ( new VirtualInterfaceDiagnosticSuite( $customer ) )->run()->results();
+    }
 
 }
