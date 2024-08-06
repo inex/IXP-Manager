@@ -77,12 +77,6 @@ use IXP\Services\Grapher\Graph\{
  */
 class Diagnostics
 {
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-    }
 
     public function getStatusDiagnostics(Customer $customer): array
     {

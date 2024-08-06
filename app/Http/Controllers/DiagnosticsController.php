@@ -30,7 +30,7 @@ use IXP\Services\Diagnostics;
 
 
 /**
- * .env file configurator Controller
+ * Diagnostics Controller
  * @author     Laszlo Kiss <laszlo@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @category   IXP
@@ -48,8 +48,6 @@ class DiagnosticsController extends Controller
         $customerData = $customer->toArray();
         $statusDiagnostics = $diagnostics->getStatusDiagnostics($customer);
         $interfaceDiagnostics = $diagnostics->getVirtualInterfaceDiagnostics($customer);
-        // info("status diagnostics result:\n" . var_export($statusDiagnostics, true));
-        info("virtual interface diagnostics result:\n" . var_export($interfaceDiagnostics, true));
 
         return view( 'diagnostics.customer-detail')->with([
             "customer" => $customerData,

@@ -35,7 +35,7 @@ use IXP\Services\Diagnostics\Suite;
  * @author     Barry O'Donovan  <barry@opensolutions.ie>
  * @author     Laszlo Kiss      <laszlo@islandbridgenetworks.ie>
  * @category   IXP
- * @package    IXP\Services\Grapher
+ * @package    IXP\Services\Diagnostics
  * @copyright  Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */

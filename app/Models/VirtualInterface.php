@@ -111,15 +111,6 @@ class VirtualInterface extends Model
         'fastlacp'      => 'boolean',
     ];
 
-    // maybe it belongs to the SwitchPort Model...
-    public const TYPE_ONE = 1;
-    public const TYPE_TWO = 2;
-
-    public static $VI_TYPES_TEXT = [
-        self::TYPE_ONE => 'Type One',
-        self::TYPE_TWO => 'Type Two',
-    ];
-
     /**
      * Get the customer that owns the virtual interfaces.
      */
