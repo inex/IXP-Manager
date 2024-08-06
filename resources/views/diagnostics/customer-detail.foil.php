@@ -38,8 +38,8 @@
             </div>
         </div>
 
-        <div class="card mt-4">
-            <?php foreach($t->interfaceDiags as $interface): ?>
+        <?php foreach($t->interfaceDiags as $interface): ?>
+            <div class="card mt-4">
                 <div class="card-header">
                     <h4>Virtual Interface Diagnostics Data</h4>
                 </div>
@@ -60,8 +60,11 @@
                         </div>
                     <?php endforeach; ?>
                 </div>
-            <?php endforeach; ?>
-        </div>
+            </div>
+
+<!--        Physical Interface Diagnostics Data
+-->
+        <?php endforeach; ?>
 
     </div>
 <?php $this->append() ?>

@@ -23,7 +23,6 @@ namespace IXP\Services\Diagnostics\Suites;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Exceptions\GeneralException;
 use IXP\Models\Customer;
 use IXP\Models\VirtualInterface;
 use IXP\Services\Diagnostics\DiagnosticResult;
@@ -80,6 +79,9 @@ class VirtualInterfaceDiagnosticSuite extends Suite
             }
 
             $this->results[$virtualInterface["id"]][] = $this->virtualInterfaceMtu($virtualInterface);
+
+            // get the Physical Interface Diagnostics Data and integrate here into the VI array
+
 
         }
 
