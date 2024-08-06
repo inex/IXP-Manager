@@ -15,11 +15,11 @@
             </div>
         </div>
 
-        <div class="card-mt4">
+        <div class="card mt-4">
             <div class="card-header">
                 <h4>Member Overview Diagnostics Data</h4>
             </div>
-            <div class="card-body">
+            <div class="card-body px-3 py-0">
                 <?php foreach( $t->statusDiags as $status): ?>
                 <div class="row tw-p-2 even:tw-bg-gray-100">
                     <div class="col-lg-3 col-9">
@@ -38,12 +38,12 @@
             </div>
         </div>
 
-        <div class="card-mt4">
+        <div class="card mt-4">
             <?php foreach($t->interfaceDiags as $interface): ?>
                 <div class="card-header">
                     <h4>Virtual Interface Diagnostics Data</h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body px-3 py-0">
                     <?php foreach( $interface as $data): ?>
                         <div class="row tw-p-2 even:tw-bg-gray-100">
                             <div class="col-lg-3 col-9">

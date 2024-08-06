@@ -58,7 +58,6 @@ class VirtualInterfaceDiagnosticSuite extends Suite
 
     /**
      * Run the diagnostics suite
-     * @throws GeneralException
      */
     public function run(): VirtualInterfaceDiagnosticSuite
     {
