@@ -86,7 +86,9 @@ class SwitchController extends Controller
                 ->when( $r->spId , function( Builder $q, $r ) {
                     return $q->where('sp.id', '!=', $r->spId );
                 })
-                ->whereNull( 'ppp.switch_port_id' )
+                ->when( !$r->custId  && !$r->spId, function( Builder $q ) {
+                    return $q->whereNull( 'ppp.switch_port_id' );
+                })
                 ->orderBy( 'sp.id' )->get()->toArray()
         ] );
     }

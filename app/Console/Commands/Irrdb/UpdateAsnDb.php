@@ -23,6 +23,7 @@ namespace IXP\Console\Commands\Irrdb;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Exception;
 use IXP\Tasks\Irrdb\UpdateAsnDb as UpdateAsnDbTask;
 
  /**
@@ -68,7 +69,15 @@ class UpdateAsnDb extends UpdateDb
         $customers = $this->resolveCustomers();
 
         foreach( $customers as $c ) {
-            $task = new UpdateAsnDbTask( $c );
+            try {
+                $task = new UpdateAsnDbTask( $c );
+            } catch( Exception $e ) {
+                $this->error( "IRRDB ASN update failed for {$c->name}/AS{$c->autsys}" );
+                $this->error( $e->getMessage() );
+                $this->info( "Continuing to next customer...");
+                continue;
+            }
+
             $this->printResults( $c, $task->update(), 'asn' );
         }
 

@@ -88,7 +88,13 @@ class CustomerController extends Controller
      */
     public function queryPeeringDbWithAsn( string $asn ): JsonResponse
     {
-        return response()->json( App::make( PeeringDb::class )->getNetworkByAsn( $asn ) );
+        $pdb = App::make( PeeringDb::class );
+
+        if( $response = $pdb->getNetworkByAsn( $asn ) ) {
+            return response()->json( [ 'net' => $response ] );
+        }
+
+        return response()->json( [ 'error' => $pdb->error ] );
     }
 
     /**

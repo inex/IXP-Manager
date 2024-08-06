@@ -74,6 +74,22 @@ class RouteServerFilterPolicy
         return true;
     }
 
+
+    /**
+     * Determine whether the user can access the list of customers with filters
+     *
+     * @param User          $user
+     *
+     * @return bool
+     *
+     * @throws
+     */
+    public function checkListCustomers( User $user ): bool
+    {
+        return $user->isSuperUser();
+    }
+
+
     /**
      * Determine whether the user can access to that route
      *

@@ -283,15 +283,25 @@
                 </a>
             </li>
 
-            <?php if( request()->is( 'router/*' ) ): ?>
+            <?php if( request()->is( 'router/*' ) || request()->is( 'rs-filters/list-customers' ) ): ?>
                 <ul>
                     <li class="nav-sub-menu-item <?= request()->is( 'router/status' ) ? 'active' : '' ?>" >
                         <a href="<?= route('router@status' ) ?>" class="nav-link" >
                             Live Status
                         </a>
                     </li>
+
+                    <?php if( !config( 'ixp_fe.frontend.disabled.rs-filters') ): ?>
+                        <li class="nav-sub-menu-item <?= request()->is( 'rs-filters/list-customers' ) ? 'active' : '' ?>" >
+                            <a href="<?= route('rs-filters@list-customers' ) ?>" class="nav-link" >
+                                Customers with Filters
+                            </a>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             <?php endif;?>
+
+
 
             <li class="<?= !request()->is( 'switch/*' ) ?: 'active' ?>" >
                 <a id="lhs-menu-switches" class="nav-link" href="<?= route('switch@list') ?>">

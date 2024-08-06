@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\Api\V4;
 
 use Cache;
 
+use IXP\Services\PeeringDb;
 use Illuminate\Http\{Request,Response};
 
 use IXP\Utils\Whois;
@@ -52,16 +53,21 @@ class WhoisController extends Controller
     public function asn( Request $r, string $asn ): Response
     {
         $response = Cache::remember( 'api-v4-whois-asn-' . $asn, config('ixp_api.whois.cache_ttl'), function () use ( $asn ) {
-            $whois = new Whois( config( 'ixp_api.whois.asn.host' ), config( 'ixp_api.whois.asn.port' ) );
-            $response = $whois->whois( 'AS' . (int)$asn );
 
-            // nicer error message than PeeringDB's
-            if( $whois->host() === 'whois.peeringdb.com' && stripos( $response, "network matching query does not exist" ) !== false ) {
-                // sigh, nothing in PeeringDB. Try Team Cymru (which is asn2 by default) to get at least some info.
-                $whois = new Whois( config( 'ixp_api.whois.asn2.host' ), config( 'ixp_api.whois.asn2.port' ) );
-                $response = $whois->whois( 'AS' . (int)$asn );
-                $response = "{$asn} does not appear to have a record in PeeringDB.\n\nTrying {$whois->host()}:\n\n" . $response;
+            // try PeeringDB first
+            $pdb = new PeeringDb();
+            if( $net = $pdb->getNetworkByAsn( $asn ) ) {
+                return $pdb->netAsAscii( $net );
             }
+
+            if( $pdb->status === 404 ) {
+                $response = "ASN not registered in PeeringDB. Trying " . config( 'ixp_api.whois.asn2.host' ) . ":\n\n";
+            } else {
+                $response = "Querying PeeringDB failed:\n\nError:{$pdb->error}\n\nTrying " . config( 'ixp_api.whois.asn2.host' ) . ":\n\n";
+            }
+
+            $whois = new Whois( config( 'ixp_api.whois.asn2.host' ), config( 'ixp_api.whois.asn2.port' ) );
+            $response .= $whois->whois( 'AS' . (int)$asn );
 
             return $response;
         });

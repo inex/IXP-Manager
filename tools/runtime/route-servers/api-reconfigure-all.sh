@@ -30,7 +30,7 @@ echo "Reconfiguring all bird instances:"
 
 for handle in rs1-lan1-ipv4 rs1-lan1-ipv6 rs1-lan2-ipv4 rs1-lan2-ipv6; do
     echo -ne "HANDLE: ${handle}: "
-    /usr/local/sbin/api-reconfigure-example.sh -h $handle -q
+    /usr/local/sbin/api-reconfigure-example.sh -f -h $handle -q
     if [[ $? -eq 0 ]]; then
         echo -ne "OK    "
     else

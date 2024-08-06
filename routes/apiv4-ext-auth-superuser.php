@@ -85,10 +85,16 @@ Route::group( [  'prefix' => 'router' ], function() {
     Route::get('gen-config/{handle}',    'RouterController@genConfig'    )->name( 'apiv4-router-gen-config' );
 
     // Get / set a routers last updated time:
+    Route::post('get-update-lock/{handle}',                  'RouterController@getUpdateLock'           );
+
     Route::post('updated/{handle}',                          'RouterController@setLastUpdated'          );
+
     Route::get('updated/{handle}',                           'RouterController@getLastUpdated'          );
+
     Route::get('updated',                                    'RouterController@getAllLastUpdated'       );
     Route::get('updated-before/{threshold}',                 'RouterController@getAllLastUpdatedBefore' );
+
+    Route::get('locked-longer-than/{threshold}',             'RouterController@getAllLockedLongerThan' );
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

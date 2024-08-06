@@ -48,14 +48,9 @@ use IXP\Models\AtlasMeasurement;
  * IXP\Models\Customer
  *
  * @property int $id
- * @property int|null $irrdb
- * @property int|null $company_registered_detail_id
- * @property int|null $company_billing_details_id
- * @property int|null $reseller
  * @property string|null $name
  * @property int|null $type
  * @property string|null $shortname
- * @property string|null $abbreviatedName
  * @property int|null $autsys
  * @property int|null $maxprefixes
  * @property string|null $peeringemail
@@ -65,8 +60,8 @@ use IXP\Models\AtlasMeasurement;
  * @property string|null $nocemail
  * @property string|null $nochours
  * @property string|null $nocwww
+ * @property int|null $irrdb
  * @property string|null $peeringmacro
- * @property string|null $peeringmacrov6
  * @property string|null $peeringpolicy
  * @property string|null $corpwww
  * @property Carbon|null $datejoin
@@ -75,7 +70,12 @@ use IXP\Models\AtlasMeasurement;
  * @property int|null $activepeeringmatrix
  * @property int|null $lastupdatedby
  * @property string|null $creator
+ * @property int|null $company_registered_detail_id
+ * @property int|null $company_billing_details_id
+ * @property string|null $peeringmacrov6
+ * @property string|null $abbreviatedName
  * @property string|null $MD5Support
+ * @property int|null $reseller
  * @property int $isReseller
  * @property int $in_manrs
  * @property int $in_peeringdb
@@ -123,6 +123,8 @@ use IXP\Models\AtlasMeasurement;
  * @property-read int|null $resold_customers_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\RouteServerFilter> $routeServerFilters
  * @property-read int|null $route_server_filters_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\RouteServerFilterProd> $routeServerFiltersInProduction
+ * @property-read int|null $route_server_filters_in_production_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\RsPrefix> $rsPrefixes
  * @property-read int|null $rs_prefixes_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\CustomerTag> $tags
@@ -425,6 +427,14 @@ class Customer extends Model
     public function routeServerFilters(): HasMany
     {
         return $this->hasMany(RouteServerFilter::class, 'customer_id' );
+    }
+
+    /**
+     * Get the route server filters for the customer (in production)
+     */
+    public function routeServerFiltersInProduction(): HasMany
+    {
+        return $this->hasMany(RouteServerFilterProd::class, 'customer_id' );
     }
 
     /**
@@ -881,17 +891,25 @@ class Customer extends Model
      *
      * @throws
      */
-    public function routeServerClient( int $proto = 4 ): bool
+    public function routeServerClient( ?int $proto = null ): bool
     {
-        if( !in_array( $proto, [ 4, 6 ] ) ) {
+        if( !in_array( $proto, [ null, 4, 6 ] ) ) {
             throw new IXP_Exception( 'Invalid protocol' );
         }
 
-        return (bool) self::leftJoin('virtualinterface AS vi', 'vi.custid', 'cust.id')
-            ->leftJoin('vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id')
-            ->where('vli.rsclient', true )
-            ->where('cust.id', $this->id)
-            ->where("ipv{$proto}enabled", true)->count();
+        $protos = $proto === null ? [ 4, 6 ] : [ $proto ];
+
+        foreach( $protos as $p ) {
+            if( self::leftJoin('virtualinterface AS vi', 'vi.custid', 'cust.id')
+                    ->leftJoin('vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id')
+                    ->where('vli.rsclient', true )
+                    ->where('cust.id', $this->id)
+                    ->where("ipv{$p}enabled", true)->count() ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

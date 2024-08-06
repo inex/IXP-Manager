@@ -290,7 +290,12 @@ class PhysicalInterfaceController extends Common
         }
 
         AlertContainer::push( 'Physical Interface updated.', Alert::SUCCESS );
-        return Redirect::to( $r->cb ? route( "core-bundle@edit", [ "cb" => $r->cb ] ) : route( "virtual-interface@edit", [ "vi" => $pi->virtualinterfaceid ] ) );
+
+        if( $r->cb ) {
+            return redirect( route( "core-bundle@edit", [ "cb" => json_decode($r->cb)->id ] ) );
+        }
+
+        return redirect( route( "virtual-interface@edit", [ "vi" => $pi->virtualinterfaceid ] ) );
     }
 
     /**

@@ -23,6 +23,7 @@ namespace IXP\Console\Commands\Irrdb;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Exception;
 use IXP\Tasks\Irrdb\UpdatePrefixDb as UpdatePrefixDbTask;
 
  /**
@@ -68,9 +69,18 @@ class UpdatePrefixDb extends UpdateDb
         $customers = $this->resolveCustomers();
 
         foreach( $customers as $c ) {
-            $task = new UpdatePrefixDbTask( $c );
+            try {
+                $task = new UpdatePrefixDbTask( $c );
+            } catch( Exception $e ) {
+                $this->error( "IRRDB ASN update failed for {$c->name}/AS{$c->autsys}" );
+                $this->error( $e->getMessage() );
+                $this->info( "Continuing to next customer...");
+                continue;
+            }
+
             $this->printResults( $c, $task->update(), 'prefix' );
         }
+
 
         if( count( $customers ) > 1 && $this->isVerbosityVerbose() ) {
             $this->info( "Total time for net/database/processing: "

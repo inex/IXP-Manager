@@ -5,11 +5,13 @@
 .buildpath
 .settings/
 .vagrant/
-
+auth.json
+/.fleet
 /vendor/
 bin/fixtures.php
 public/.htaccess
 public/logos/*
+/public/build
 
 public/favicon.ico
 
@@ -77,3 +79,7 @@ tools/docker/containers/mysql/docker.sql
 tests/Browser/ExampleTest.php
 app/Console/Commands/Redcentric.php
 .env.sage
+
+.idea/httpRequests
+.phpactor.json
+

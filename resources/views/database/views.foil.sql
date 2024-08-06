@@ -87,7 +87,7 @@ CREATE VIEW view_switch_details_by_custid AS
 		sw.snmppasswd,
 		sw.infrastructure,
 		ca.name AS cabinet,
-		ca.cololocation AS colocabinet,
+		ca.colocation AS colocabinet,
 		lo.name AS locationname,
 		lo.shortname AS locationshortname
 	FROM

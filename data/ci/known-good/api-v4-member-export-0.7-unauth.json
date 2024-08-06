@@ -26,7 +26,20 @@
                 "mandatory",
                 "closed"
             ],
-            "vlan": [],
+            "vlan": [
+                {
+                    "id": 1,
+                    "name": "Peering LAN 1",
+                    "ipv4": {
+                        "prefix": "192.0.2.0",
+                        "mask_length": 25
+                    },
+                    "ipv6": {
+                        "prefix": "2001:db8::",
+                        "mask_length": 64
+                    }
+                }
+            ],
             "switch": [
                 {
                     "id": 1,
@@ -62,7 +75,20 @@
                 "mandatory",
                 "closed"
             ],
-            "vlan": [],
+            "vlan": [
+                {
+                    "id": 2,
+                    "name": "Peering LAN 2",
+                    "ipv4": {
+                        "prefix": "192.0.2.128",
+                        "mask_length": 25
+                    },
+                    "ipv6": {
+                        "prefix": "2001:db8:0:2::",
+                        "mask_length": 64
+                    }
+                }
+            ],
             "switch": [
                 {
                     "id": 2,

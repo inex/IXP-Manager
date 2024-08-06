@@ -47,8 +47,6 @@ use OSS_SNMP\SNMP;
  * @property int|null $switchid
  * @property int|null $type
  * @property string|null $name
- * @property int $active
- * @property int|null $ifIndex
  * @property string|null $ifName
  * @property string|null $ifAlias
  * @property int|null $ifHighSpeed
@@ -58,6 +56,8 @@ use OSS_SNMP\SNMP;
  * @property int|null $ifOperStatus
  * @property int|null $ifLastChange
  * @property string|null $lastSnmpPoll
+ * @property int|null $ifIndex
+ * @property int $active
  * @property int|null $lagIfIndex
  * @property string|null $mauType
  * @property string|null $mauState
@@ -180,27 +180,27 @@ class SwitchPort extends Model
     // This array is for matching data from OSS_SNMP to the switchport database table.
     // See snmpUpdate() below
     public static $SNMP_MAP = [
-        'descriptions'    => 'Name',
-        'names'           => 'IfName',
-        'aliases'         => 'IfAlias',
-        'highSpeeds'      => 'IfHighspeed',
-        'mtus'            => 'IfMtu',
-        'physAddresses'   => 'IfPhysAddress',
-        'adminStates'     => 'IfAdminStatus',
-        'operationStates' => 'IfOperStatus',
-        'lastChanges'     => 'IfLastChange'
+        'descriptions'    => 'name',
+        'names'           => 'ifName',
+        'aliases'         => 'ifAlias',
+        'highSpeeds'      => 'ifHighSpeed',
+        'mtus'            => 'ifMtu',
+        'physAddresses'   => 'ifPhysAddress',
+        'adminStates'     => 'ifAdminStatus',
+        'operationStates' => 'ifOperStatus',
+        'lastChanges'     => 'ifLastChange'
     ];
 
     /**
      * Mappings for OSS_SNMP functions to SwitchPort members
      */
     public static $OSS_SNMP_MAU_MAP = [
-        'types'             => [ 'fn' => 'MauType',         'xlate' => false ],
-        'states'            => [ 'fn' => 'MauState',        'xlate' => true ],
-        'mediaAvailable'    => [ 'fn' => 'MauAvailability', 'xlate' => true ],
-        'jackTypes'         => [ 'fn' => 'MauJacktype',     'xlate' => true ],
-        'autonegSupported'  => [ 'fn' => 'MauAutoNegSupported'  ],
-        'autonegAdminState' => [ 'fn' => 'MauAutoNegAdminState' ]
+        'types'             => [ 'fn' => 'mauType',         'xlate' => false ],
+        'states'            => [ 'fn' => 'mauState',        'xlate' => true ],
+        'mediaAvailable'    => [ 'fn' => 'mauAvailability', 'xlate' => true ],
+        'jackTypes'         => [ 'fn' => 'mauJacktype',     'xlate' => true ],
+        'autonegSupported'  => [ 'fn' => 'mauAutoNegSupported'  ],
+        'autonegAdminState' => [ 'fn' => 'mauAutoNegAdminState' ]
     ];
 
 
@@ -365,10 +365,10 @@ class SwitchPort extends Model
         switch( $this->switcher->os ) {
             case 'ExtremeXOS':
                 return Port::OID_PORT_CONG_DROP_PKTS;
-                break;
+
             default:
                 return Iface::OID_IF_OUT_DISCARDS;
-                break;
+
         }
     }
 
@@ -423,15 +423,14 @@ class SwitchPort extends Model
     public function snmpUpdate( SNMP $host, bool $logger = false, bool $nosave = false ): SwitchPort
     {
         foreach( self::$SNMP_MAP as $snmp => $attribute ) {
-            $fn = $attribute;
 
             switch( $snmp ) {
                 case 'lastChanges':
                     $n = $host->useIface()->$snmp( true )[ $this->ifIndex ];
 
                     // need to allow for small changes due to rounding errors
-                    if( $logger !== false && $this->$fn !== $n && abs( $this->$fn - $n ) > 60 ) {
-                        Log::info( "[{$this->switcher->name}]:{$this->name} [Index: {$this->ifIndex}] Updating {$attribute} from [{$this->$fn}] to [{$n}]" );
+                    if( $logger !== false && $this->$attribute !== $n && abs( $this->$attribute - $n ) > 60 ) {
+                        Log::info( "[{$this->switcher->name}]:{$this->name} [Index: {$this->ifIndex}] Updating {$attribute} from [{$this->$attribute}] to [{$n}]" );
                     }
                     break;
                 default:
@@ -440,13 +439,13 @@ class SwitchPort extends Model
                         $n = $host->useIface()->$snmp()[ $this->ifIndex ];
                     }
 
-                    if( $logger !== false && $this->$fn !== $n ) {
-                        Log::info( "[{$this->switcher->name}]:{$this->name} [Index: {$this->ifIndex}] Updating {$attribute} from [{$this->$fn}] to [{$n}]" );
+                    if( $logger !== false && $this->$attribute !== $n ) {
+                        Log::info( "[{$this->switcher->name}]:{$this->name} [Index: {$this->ifIndex}] Updating {$attribute} from [{$this->$attribute}] to [{$n}]" );
                     }
                     break;
             }
 
-            $this->$fn = $n;
+            $this->$attribute = $n;
         }
 
         if( $this->switcher->mauSupported ) {
@@ -477,6 +476,11 @@ class SwitchPort extends Model
                     } else {
                         $n = '(unknown type - oid: ' . $n . ')';
                     }
+                }
+
+                if ( $fn == 'mauAutoNegSupported' || $fn == 'mauAutoNegAdminState' ) {
+                    // both these OSS_SNMP functions return a bool so really only testing for null.
+                    $n = $n ? 1 : 0;
                 }
 
                 if( $this->$fn !== $n && $logger !== false ) {

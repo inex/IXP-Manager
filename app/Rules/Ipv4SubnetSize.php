@@ -52,7 +52,7 @@ class Ipv4SubnetSize implements Rule
         // mask:
         $mask = (int)$parts[1];
 
-        if( $mask < config( "ixp.irrdb.min_v4_subnet_size" ) ) {
+        if( $mask > config( "ixp.irrdb.min_v4_subnet_size" ) ) {
             return false;
         }
 
