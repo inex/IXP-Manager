@@ -44,7 +44,8 @@
                     <h4>Virtual Interface Diagnostics Data</h4>
                 </div>
                 <div class="card-body px-3 py-0">
-                    <?php foreach( $interface as $data): ?>
+                    <?php foreach( $interface as $index => $data): ?>
+                        <?php if($index !== "PhysicalInterfaceDiagnostics"): ?>
                         <div class="row tw-p-2 even:tw-bg-gray-100">
                             <div class="col-lg-3 col-9">
                                 <?= $data->name ?>
@@ -58,12 +59,35 @@
                                 <?= $data->narrative ?>
                             </div>
                         </div>
+                        <?php endif; ?>
                     <?php endforeach; ?>
                 </div>
             </div>
-
-<!--        Physical Interface Diagnostics Data
--->
+<!-- Physical Interface Diagnostics Data -->
+            <?php foreach($interface["PhysicalInterfaceDiagnostics"] as $physical): ?>
+                <div class="card mt-4 ml-4">
+                    <div class="card-header">
+                        <h4>Physical Interface Diagnostics Data</h4>
+                    </div>
+                    <div class="card-body px-3 py-0">
+                        <?php foreach( $physical as $data): ?>
+                            <div class="row tw-p-2 even:tw-bg-gray-100">
+                                <div class="col-lg-3 col-9">
+                                    <?= $data->name ?>
+                                </div>
+                                <div class="col-lg-1 col-3 text-center">
+                                    <i class="fa fa-2x
+                        <?= \IXP\Services\Diagnostics\DiagnosticResult::$RESULT_TYPES_ICON[$data->result] ?>
+                        "></i>
+                                </div>
+                                <div class="col-lg-8 col-12">
+                                    <?= $data->narrative ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         <?php endforeach; ?>
 
     </div>

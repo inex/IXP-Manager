@@ -23,18 +23,6 @@ namespace IXP\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Cache, Config;
-
-use IXP\Exceptions\Services\Grapher\{
-        BadBackendException,
-        ConfigurationException,
-        GraphCannotBeProcessedException
-};
-
-use Closure;
-use Illuminate\Contracts\Cache\Repository;
-use IXP\Contracts\Grapher\Backend as BackendContract;
-
 use IXP\Models\{Customer,
     CoreBundle,
     Infrastructure,
@@ -46,24 +34,8 @@ use IXP\Models\{Customer,
     Vlan};
 
 use IXP\Services\Diagnostics\Suites\CustomerDiagnosticSuite;
+use IXP\Services\Diagnostics\Suites\PhysicalInterfaceDiagnosticSuite;
 use IXP\Services\Diagnostics\Suites\VirtualInterfaceDiagnosticSuite;
-use IXP\Services\Grapher\Graph;
-
-use IXP\Services\Grapher\Graph\{
-    IXP               as IXPGraph,
-    Infrastructure    as InfrastructureGraph,
-    Vlan              as VlanGraph,
-    Location          as LocationGraph,
-    Switcher          as SwitchGraph,
-    Trunk             as TrunkGraph,
-    CoreBundle        as CoreBundleGraph,
-    PhysicalInterface as PhysIntGraph,  // member physical port
-    VirtualInterface  as VirtIntGraph,  // member LAG
-    Customer          as CustomerGraph, // member agg over all physical ports
-    VlanInterface     as VlanIntGraph,  // member VLAN interface
-    P2p               as P2pGraph,
-    Latency           as LatencyGraph
-};
 
 /**
  * Diagnostics Service
@@ -71,7 +43,7 @@ use IXP\Services\Grapher\Graph\{
  * @author     Barry O'Donovan  <barry@opensolutions.ie>
  * @author     Laszlo Kiss      <laszlo@islandbridgenetworks.ie>
  * @category   IXP
- * @package    IXP\Services\Grapher
+ * @package    IXP\Services
  * @copyright  Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -86,6 +58,11 @@ class Diagnostics
     public function getVirtualInterfaceDiagnostics(Customer $customer): array
     {
         return ( new VirtualInterfaceDiagnosticSuite( $customer ) )->run()->results();
+    }
+
+    public function getPhysicalInterfaceDiagnostics(VirtualInterface $virtualInterface): array
+    {
+        return ( new PhysicalInterfaceDiagnosticSuite( $virtualInterface ) )->run()->results();
     }
 
 }

@@ -25,6 +25,7 @@ namespace IXP\Services\Diagnostics\Suites;
 
 use IXP\Models\Customer;
 use IXP\Models\VirtualInterface;
+use IXP\Services\Diagnostics;
 use IXP\Services\Diagnostics\DiagnosticResult;
 use IXP\Services\Diagnostics\Suite;
 
@@ -66,7 +67,7 @@ class VirtualInterfaceDiagnosticSuite extends Suite
         foreach ($this->virtualInterfaces as $virtualInterface) {
             $this->results[$virtualInterface["id"]][] = $this->virtualInterfaceType($virtualInterface);
 
-            if(count($virtualInterface->physicalInterfaces) > 1) {
+            if(count($virtualInterface->physicalInterfaces) > 0) {
                 $this->results[$virtualInterface["id"]][] = $this->virtualInterfaceSameSwitch($virtualInterface);
             }
 
@@ -81,7 +82,9 @@ class VirtualInterfaceDiagnosticSuite extends Suite
             $this->results[$virtualInterface["id"]][] = $this->virtualInterfaceMtu($virtualInterface);
 
             // get the Physical Interface Diagnostics Data and integrate here into the VI array
-
+            if(count($virtualInterface->physicalInterfaces) > 0) {
+                $this->results[$virtualInterface["id"]]["PhysicalInterfaceDiagnostics"] = ( new Diagnostics() )->getPhysicalInterfaceDiagnostics($virtualInterface);
+            }
 
         }
 
