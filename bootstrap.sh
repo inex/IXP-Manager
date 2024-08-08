@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+# Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
 # All Rights Reserved.
 #
 # This file is part of IXP Manager.
@@ -19,11 +19,12 @@
 #
 # http://www.gnu.org/licenses/gpl-2.0.html
 
-## VAGRANT provisioning script - IXP Manager v5 / 18.04 LTS / php7.3
+## VAGRANT provisioning script - IXP Manager v7 / 24.04 LTS / php8.3
 ##
-## Barry O'Donovan 2015-2021
+## Barry O'Donovan 2015-2024
 
 apt update
+apt dist-upgrade -y
 
 # Defaults for MySQL and phpMyAdmin:
 debconf-set-selections <<< 'mysql-server mysql-server/root_password password password'
@@ -34,20 +35,22 @@ echo 'phpmyadmin phpmyadmin/mysql/admin-pass password password' | debconf-set-se
 echo 'phpmyadmin phpmyadmin/mysql/app-pass password password' | debconf-set-selections
 echo 'phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2' | debconf-set-selections
 echo 'mrtg mrtg/conf_mods boolean true' | debconf-set-selections
+echo 'mrtg mrtg/create_www boolean true' | debconf-set-selections
+echo 'mrtg mrtg/fix_permissions boolean true' | debconf-set-selections
 
-apt-get install -y software-properties-common
-add-apt-repository -y ppa:ondrej/php
-apt-get update
 
-apt full-upgrade -y
-apt autoremove -y
+apt install -y mysql-server mysql-client
 
-apt-get install -y apache2 php8.0 php8.0-intl php8.0-mysql php-rrd php8.0-cgi php8.0-cli     \
-    php8.0-snmp php8.0-curl php8.0-memcached libapache2-mod-php8.0 mysql-server mysql-client \
-    php8.0-mysql memcached snmp php8.0-mbstring php8.0-xml php8.0-gd bgpq3 php8.0-memcache   \
-    unzip php8.0-zip git php8.0-yaml php8.0-ds php8.0-bcmath libconfig-general-perl joe      \
+apt install -y apache2 php8.3 php8.3-intl php8.3-mysql php-rrd php8.3-cgi php8.3-cli     \
+    php8.3-snmp php8.3-curl php8.3-memcached libapache2-mod-php8.3 bash-completion \
+    php8.3-mysql memcached snmp php8.3-mbstring php8.3-xml php8.3-gd bgpq3 php8.3-memcache   \
+    unzip php8.3-zip git php8.3-yaml php8.3-ds php8.3-bcmath libconfig-general-perl joe      \
     libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl  \
     phpmyadmin
+
+
+sed -i 's/^bind-address\s\+=\s\+127.0.0.1/#bind-address            = 127.0.0.1/' /etc/mysql/mysql.conf.d/mysqld.cnf
+
 
 if ! [ -L /var/www ]; then
   rm -rf /var/www
@@ -61,21 +64,21 @@ export MYSQL_PWD=password
 mysql -u root <<END_SQL
 DROP DATABASE IF EXISTS \`ixp\`;
 CREATE DATABASE \`ixp\` CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';
-CREATE USER \`ixp\`@\`127.0.0.1\` IDENTIFIED BY 'password';
-CREATE USER \`ixp\`@\`localhost\` IDENTIFIED BY 'password';
-GRANT ALL ON \`ixp\`.* TO \`ixp\`@\`127.0.0.1\`;
-GRANT ALL ON \`ixp\`.* TO \`ixp\`@\`localhost\`;
+CREATE USER IF NOT EXISTS \`ixp\`@\`%\` IDENTIFIED BY 'password';
+CREATE USER IF NOT EXISTS \`root\`@\`%\` IDENTIFIED BY 'password';
+GRANT ALL ON *.* TO \`root\`@\`%\`;
+GRANT ALL ON \`ixp\`.* TO \`ixp\`@\`%\`;
 FLUSH PRIVILEGES;
 END_SQL
 
 if [[ -f /vagrant/ixpmanager-preferred.sql.bz2 ]]; then
     bzcat /vagrant/ixpmanager-preferred.sql.bz2 | mysql -u root ixp
-elif [[ -f /vagrant/database/vagrant-base.sql ]]; then
-    cat /vagrant/database/vagrant-base.sql | mysql -u root ixp
+elif [[ -f /vagrant/database/schema/vagrant-base.sql ]]; then
+    cat /vagrant/database/schema/vagrant-base.sql | mysql -u root ixp
 fi
 
 if [[ -f /vagrant/.env ]]; then
-    cp /vagrant/.env /vagrant/.env.by-vagrant.$$
+    cp /vagrant/.env /vagrant/.env.by-vagrant.$(date +%Y%m%d-%H%M%S)
 fi
 
 cat /vagrant/.env.vagrant > /vagrant/.env
@@ -83,7 +86,9 @@ php /vagrant/artisan key:generate --force
 
 
 cd /vagrant
-su - vagrant -c "cd /vagrant && composer install"
+su - vagrant -c "cd /vagrant && COMPOSER_ALLOW_SUPERUSER=1 composer install"
+
+php /vagrant/artisan migrate --force
 
 cat >/etc/apache2/sites-available/000-default.conf <<END_APACHE
 <VirtualHost *:80>
@@ -108,7 +113,10 @@ cat >/etc/apache2/sites-available/000-default.conf <<END_APACHE
 END_APACHE
 
 a2enmod rewrite
-chmod -R a+rwX /vagrant/storage /vagrant/bootstrap/cache
+
+sed -i 's/export APACHE_RUN_USER=www-data/export APACHE_RUN_USER=vagrant/' /etc/apache2/envvars
+sed -i 's/export APACHE_RUN_GROUP=www-data/export APACHE_RUN_GROUP=vagrant/' /etc/apache2/envvars
+
 service apache2 restart
 
 # Useful screen settings for barryo:
