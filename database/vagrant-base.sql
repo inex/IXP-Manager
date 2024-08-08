@@ -23,19 +23,20 @@ DROP TABLE IF EXISTS `api_keys`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `api_keys` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `apiKey` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `expires` datetime DEFAULT NULL,
-  `allowedIPs` mediumtext COLLATE utf8_unicode_ci,
-  `created` datetime NOT NULL,
-  `lastseenAt` datetime DEFAULT NULL,
-  `lastseenFrom` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_9579321F800A1141` (`apiKey`),
-  KEY `IDX_9579321FA76ED395` (`user_id`),
-  CONSTRAINT `FK_9579321FA76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) NOT NULL,
+    `apiKey` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+    `expires` datetime DEFAULT NULL,
+    `allowedIPs` mediumtext COLLATE utf8_unicode_ci,
+    `created` datetime NOT NULL,
+    `lastseenAt` datetime DEFAULT NULL,
+    `lastseenFrom` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+    `description` longtext COLLATE utf8_unicode_ci,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `UNIQ_9579321F800A1141` (`apiKey`),
+    KEY `IDX_9579321FA76ED395` (`user_id`),
+    CONSTRAINT `FK_9579321FA76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,7 +45,7 @@ CREATE TABLE `api_keys` (
 
 LOCK TABLES `api_keys` WRITE;
 /*!40000 ALTER TABLE `api_keys` DISABLE KEYS */;
-INSERT INTO `api_keys` VALUES (1,1,'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9',NULL,'','2014-01-06 14:43:19','2014-12-08 21:02:12','127.0.0.1');
+INSERT INTO `api_keys` VALUES (1,1,'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9',NULL,'','2014-01-06 14:43:19','2014-12-08 21:02:12','127.0.0.1','Vagrant Test API Key');
 /*!40000 ALTER TABLE `api_keys` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -515,6 +516,7 @@ CREATE TABLE `cust` (
   `isReseller` tinyint(1) NOT NULL DEFAULT '0',
   `in_manrs` tinyint(1) NOT NULL DEFAULT '0',
   `in_peeringdb` tinyint(1) NOT NULL DEFAULT '0',
+  `peeringdb_oauth` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_997B25A64082763` (`shortname`),
   UNIQUE KEY `UNIQ_997B25A98386213` (`company_registered_detail_id`),
@@ -534,7 +536,7 @@ CREATE TABLE `cust` (
 
 LOCK TABLES `cust` WRITE;
 /*!40000 ALTER TABLE `cust` DISABLE KEYS */;
-INSERT INTO `cust` VALUES (1,NULL,1,1,NULL,'VAGRANT IXP',3,'vagrant','VAGRANT IXP',2128,1000,'peering@example.com','+353 1 123 4567','+353 1 123 4567','+353 1 123 4568','noc@siep.com','24x7','http://www.example.com/noc/','AS-INEX','AS-INEX','mandatory','http://www.example.com/','2014-01-06',NULL,1,1,'2015-08-20',1,'travis','2014-01-06','YES',0,0,0),(2,1,2,2,NULL,'HEAnet',1,'heanet','HEAnet',1213,1000,'peering@example.com','','','','','0','','AS-HEANET',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,NULL,'travis','2014-01-06','UNKNOWN',0,0,0),(3,13,3,3,NULL,'PCH DNS',1,'pchdns','PCH DNS',42,2000,'peering@example.com','','','','','0','','AS-PCH',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,'2014-01-06',1,'travis','2014-01-06','YES',0,0,0),(4,2,4,4,NULL,'AS112',4,'as112','AS112',112,20,'peering@example.com','','','','','0','','',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,NULL,'travis','2014-01-06','NO',0,0,0),(5,1,5,5,NULL,'Imagine',1,'imagine','Imagine',25441,1000,'peering@example.com','','','','','0','','AS-IBIS',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,NULL,'travis','2014-01-06','YES',0,0,0);
+INSERT INTO `cust` VALUES (1,NULL,1,1,NULL,'VAGRANT IXP',3,'vagrant','VAGRANT IXP',2128,1000,'peering@example.com','+353 1 123 4567','+353 1 123 4567','+353 1 123 4568','noc@siep.com','24x7','http://www.example.com/noc/','AS-INEX','AS-INEX','mandatory','http://www.example.com/','2014-01-06',NULL,1,1,'2015-08-20',1,'travis','2014-01-06','YES',0,0,0,1),(2,1,2,2,NULL,'HEAnet',1,'heanet','HEAnet',1213,1000,'peering@example.com','','','','','0','','AS-HEANET',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,NULL,'travis','2014-01-06','UNKNOWN',0,0,0,1),(3,13,3,3,NULL,'PCH DNS',1,'pchdns','PCH DNS',42,2000,'peering@example.com','','','','','0','','AS-PCH',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,'2014-01-06',1,'travis','2014-01-06','YES',0,0,0,1),(4,2,4,4,NULL,'AS112',4,'as112','AS112',112,20,'peering@example.com','','','','','0','','',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,NULL,'travis','2014-01-06','NO',0,0,0,1),(5,1,5,5,NULL,'Imagine',1,'imagine','Imagine',25441,1000,'peering@example.com','','','','','0','','AS-IBIS',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,NULL,'travis','2014-01-06','YES',0,0,0,1);
 /*!40000 ALTER TABLE `cust` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -698,6 +700,7 @@ CREATE TABLE `customer_to_users` (
   `last_login_from` tinytext COLLATE utf8mb4_unicode_ci,
   `created_at` datetime NOT NULL,
   `extra_attributes` json DEFAULT NULL COMMENT '(DC2Type:json)',
+  `last_login_via` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `customer_user` (`customer_id`,`user_id`),
   KEY `IDX_337AD7F69395C3F3` (`customer_id`),
@@ -713,9 +716,128 @@ CREATE TABLE `customer_to_users` (
 
 LOCK TABLES `customer_to_users` WRITE;
 /*!40000 ALTER TABLE `customer_to_users` DISABLE KEYS */;
-INSERT INTO `customer_to_users` VALUES (1,1,1,3,'2019-05-11 14:37:47','127.0.0.1','2019-05-11 14:37:17','{\"created_by\": {\"type\": \"migration-script\"}}'),(2,4,2,2,'1970-01-01 00:00:00','','2019-05-11 14:37:17','{\"created_by\": {\"type\": \"migration-script\"}}'),(3,4,3,1,'1970-01-01 00:00:00','','2019-05-11 14:37:17','{\"created_by\": {\"type\": \"migration-script\"}}');
+INSERT INTO `customer_to_users` VALUES (1,1,1,3,'2019-05-11 14:37:47','127.0.0.1','2019-05-11 14:37:17','{\"created_by\": {\"type\": \"migration-script\"}}',NULL),(2,4,2,2,'1970-01-01 00:00:00','','2019-05-11 14:37:17','{\"created_by\": {\"type\": \"migration-script\"}}',NULL),(3,4,3,1,'1970-01-01 00:00:00','','2019-05-11 14:37:17','{\"created_by\": {\"type\": \"migration-script\"}}',NULL);
 /*!40000 ALTER TABLE `customer_to_users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+
+--
+-- Table structure for table `docstore_customer_directories`
+--
+
+DROP TABLE IF EXISTS `docstore_customer_directories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `docstore_customer_directories` (
+                                                 `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                                                 `cust_id` int(11) NOT NULL,
+                                                 `parent_dir_id` bigint(20) unsigned DEFAULT NULL,
+                                                 `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                                 `description` text COLLATE utf8mb4_unicode_ci,
+                                                 `created_at` timestamp NULL DEFAULT NULL,
+                                                 `updated_at` timestamp NULL DEFAULT NULL,
+                                                 PRIMARY KEY (`id`),
+                                                 KEY `docstore_customer_directories_cust_id_foreign` (`cust_id`),
+                                                 KEY `docstore_customer_directories_parent_dir_id_index` (`parent_dir_id`),
+                                                 CONSTRAINT `docstore_customer_directories_cust_id_foreign` FOREIGN KEY (`cust_id`) REFERENCES `cust` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `docstore_customer_files`
+--
+
+DROP TABLE IF EXISTS `docstore_customer_files`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `docstore_customer_files` (
+                                           `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                                           `cust_id` int(11) NOT NULL,
+                                           `docstore_customer_directory_id` bigint(20) unsigned DEFAULT NULL,
+                                           `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                           `disk` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'docstore_customers',
+                                           `path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                                           `sha256` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                                           `description` text COLLATE utf8mb4_unicode_ci,
+                                           `min_privs` smallint(6) NOT NULL,
+                                           `file_last_updated` datetime NOT NULL,
+                                           `created_by` int(11) DEFAULT NULL,
+                                           `created_at` timestamp NULL DEFAULT NULL,
+                                           `updated_at` timestamp NULL DEFAULT NULL,
+                                           PRIMARY KEY (`id`),
+                                           KEY `docstore_customer_files_cust_id_foreign` (`cust_id`),
+                                           KEY `docstore_customer_files_docstore_customer_directory_id_foreign` (`docstore_customer_directory_id`),
+                                           CONSTRAINT `docstore_customer_files_cust_id_foreign` FOREIGN KEY (`cust_id`) REFERENCES `cust` (`id`),
+                                           CONSTRAINT `docstore_customer_files_docstore_customer_directory_id_foreign` FOREIGN KEY (`docstore_customer_directory_id`) REFERENCES `docstore_customer_directories` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `docstore_directories`
+--
+
+DROP TABLE IF EXISTS `docstore_directories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `docstore_directories` (
+                                        `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                                        `parent_dir_id` bigint(20) unsigned DEFAULT NULL,
+                                        `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                        `description` text COLLATE utf8mb4_unicode_ci,
+                                        `created_at` timestamp NULL DEFAULT NULL,
+                                        `updated_at` timestamp NULL DEFAULT NULL,
+                                        PRIMARY KEY (`id`),
+                                        KEY `docstore_directories_parent_dir_id_index` (`parent_dir_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `docstore_files`
+--
+
+DROP TABLE IF EXISTS `docstore_files`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `docstore_files` (
+                                  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                                  `docstore_directory_id` bigint(20) unsigned DEFAULT NULL,
+                                  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                  `disk` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'docstore',
+                                  `path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                                  `sha256` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                                  `description` text COLLATE utf8mb4_unicode_ci,
+                                  `min_privs` smallint(6) NOT NULL,
+                                  `file_last_updated` datetime NOT NULL,
+                                  `created_by` int(11) DEFAULT NULL,
+                                  `created_at` timestamp NULL DEFAULT NULL,
+                                  `updated_at` timestamp NULL DEFAULT NULL,
+                                  PRIMARY KEY (`id`),
+                                  KEY `docstore_files_docstore_directory_id_foreign` (`docstore_directory_id`),
+                                  CONSTRAINT `docstore_files_docstore_directory_id_foreign` FOREIGN KEY (`docstore_directory_id`) REFERENCES `docstore_directories` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `docstore_logs`
+--
+
+DROP TABLE IF EXISTS `docstore_logs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `docstore_logs` (
+                                 `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                                 `docstore_file_id` bigint(20) unsigned NOT NULL,
+                                 `downloaded_by` int(11) DEFAULT NULL,
+                                 `created_at` timestamp NULL DEFAULT NULL,
+                                 `updated_at` timestamp NULL DEFAULT NULL,
+                                 PRIMARY KEY (`id`),
+                                 KEY `docstore_logs_docstore_file_id_foreign` (`docstore_file_id`),
+                                 KEY `docstore_logs_created_at_index` (`created_at`),
+                                 CONSTRAINT `docstore_logs_docstore_file_id_foreign` FOREIGN KEY (`docstore_file_id`) REFERENCES `docstore_files` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 
 --
 -- Table structure for table `failed_jobs`
@@ -759,6 +881,7 @@ CREATE TABLE `infrastructure` (
   `isPrimary` tinyint(1) NOT NULL DEFAULT '0',
   `peeringdb_ix_id` bigint(20) DEFAULT NULL,
   `ixf_ix_id` bigint(20) DEFAULT NULL,
+  `country` varchar(2) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `IXPSN` (`shortname`,`ixp_id`),
   KEY `IDX_D129B190A5A4E881` (`ixp_id`),
@@ -772,7 +895,7 @@ CREATE TABLE `infrastructure` (
 
 LOCK TABLES `infrastructure` WRITE;
 /*!40000 ALTER TABLE `infrastructure` DISABLE KEYS */;
-INSERT INTO `infrastructure` VALUES (1,1,'Infrastructure #1','#1',1,NULL,NULL),(2,1,'Infrastructure #2','#2',0,NULL,NULL);
+INSERT INTO `infrastructure` VALUES (1,1,'Infrastructure #1','#1',1,NULL,NULL,NULL),(2,1,'Infrastructure #2','#2',0,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `infrastructure` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1543,6 +1666,10 @@ CREATE TABLE `routers` (
   `skip_md5` tinyint(1) NOT NULL,
   `last_updated` datetime DEFAULT NULL,
   `rpki` tinyint(1) NOT NULL DEFAULT '0',
+  `software_version` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `operating_system` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `operating_system_version` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `rfc1997_passthru` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_504FC9BE918020D9` (`handle`),
   KEY `IDX_504FC9BE8B4937A1` (`vlan_id`),
@@ -1926,7 +2053,8 @@ CREATE TABLE `user` (
   `creator` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `peeringdb_id` bigint(20) DEFAULT NULL,
+  `extra_attributes` json DEFAULT NULL COMMENT '(DC2Type:json)',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_8D93D649F85E0677` (`username`),
   KEY `IDX_8D93D649DA0209B9` (`custid`),
@@ -1940,7 +2068,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,1,'vagrant','$2a$09$kI2ORSzVnuekb9XERfL1we2tENnDJXsR.oxlWM5ELHX9G3aoCdvne','joe@example.com',NULL,NULL,3,0,'2015-08-20 15:19:12',1,'travis','2014-01-06 13:54:22','Vagrant',NULL),(2,4,'as112','$2a$09$bYMQzLJs6VdISr3OlwqGAe7LVe0K6xALQUkThuhQ27hwB4EJ.g/1a','none@example.com',NULL,NULL,2,0,'2015-08-20 15:24:41',1,'vagrant','2015-08-20 15:24:41','Customer AS112',NULL),(3,4,'as112user','$2a$09$O1rXly8ResuQdbkZGQx6perb2FH72PvFsoVvjVvY5bd6DlyVNKwna','none@example.com',NULL,NULL,1,0,'2015-08-20 15:25:30',1,'vagrant','2015-08-20 15:25:20','AS112 User',NULL);
+INSERT INTO `user` VALUES (1,1,'vagrant','$2a$09$kI2ORSzVnuekb9XERfL1we2tENnDJXsR.oxlWM5ELHX9G3aoCdvne','joe@example.com',NULL,NULL,3,0,'2015-08-20 15:19:12',1,'travis','2014-01-06 13:54:22','Vagrant',NULL,NULL),(2,4,'as112','$2a$09$bYMQzLJs6VdISr3OlwqGAe7LVe0K6xALQUkThuhQ27hwB4EJ.g/1a','none@example.com',NULL,NULL,2,0,'2015-08-20 15:24:41',1,'vagrant','2015-08-20 15:24:41','Customer AS112',NULL,NULL),(3,4,'as112user','$2a$09$O1rXly8ResuQdbkZGQx6perb2FH72PvFsoVvjVvY5bd6DlyVNKwna','none@example.com',NULL,NULL,1,0,'2015-08-20 15:25:30',1,'vagrant','2015-08-20 15:25:20','AS112 User',NULL,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2155,6 +2283,132 @@ LOCK TABLES `vlaninterface` WRITE;
 INSERT INTO `vlaninterface` VALUES (1,10,16,1,1,1,'a.heanet.ie',1,'a.heanet.ie',0,1,NULL,'N7rX2SdfbRsyBLTm','N7rX2SdfbRsyBLTm',1000,1,1,1,1,1,1,0,NULL,0),(2,137,417,2,2,1,'b.heanet.ie',1,'b.heanet.ie',0,1,NULL,'u5zSNJLAVT87RGXQ','u5zSNJLAVT87RGXQ',1000,1,1,1,1,1,0,0,NULL,0),(3,36,NULL,3,1,1,'a.pch.ie',0,'',0,1,NULL,'mcWsqMdzGwTKt67g','mcWsqMdzGwTKt67g',2000,1,1,0,1,0,1,0,NULL,0),(4,6,NULL,4,1,1,'a.as112.net',0,'',0,1,NULL,'w83fmGpRDtaKomQo','w83fmGpRDtaKomQo',20,1,1,0,1,0,0,0,NULL,0),(5,132,NULL,5,2,1,'b.as112.net',0,'',0,1,NULL,'Pz8VYMNwEdCjKz68','Pz8VYMNwEdCjKz68',20,1,1,0,1,0,0,0,NULL,0),(6,NULL,8,6,1,0,'',1,'a.imagine.ie',0,1,NULL,'X8Ks9QnbER9cyzU3','X8Ks9QnbER9cyzU3',1000,1,0,1,0,1,0,0,NULL,0),(7,172,470,7,2,1,'b.imagine.ie',1,'b.imagine.ie',0,1,NULL,'LyJND4eoKuQz5j49','LyJND4eoKuQz5j49',1000,1,1,1,1,1,0,0,NULL,0);
 /*!40000 ALTER TABLE `vlaninterface` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+--
+-- 20240808 - Missing tables from IXP Manager @ end v6 and Vagrant SQL
+--
+
+
+DROP TABLE IF EXISTS `traffic_daily_phys_ints`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `traffic_daily_phys_ints` (
+                                           `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                           `physicalinterface_id` int(11) NOT NULL,
+                                           `day` date DEFAULT NULL,
+                                           `category` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                                           `day_avg_in` bigint(20) DEFAULT NULL,
+                                           `day_avg_out` bigint(20) DEFAULT NULL,
+                                           `day_max_in` bigint(20) DEFAULT NULL,
+                                           `day_max_out` bigint(20) DEFAULT NULL,
+                                           `day_max_in_at` datetime DEFAULT NULL,
+                                           `day_max_out_at` datetime DEFAULT NULL,
+                                           `day_tot_in` bigint(20) DEFAULT NULL,
+                                           `day_tot_out` bigint(20) DEFAULT NULL,
+                                           `week_avg_in` bigint(20) DEFAULT NULL,
+                                           `week_avg_out` bigint(20) DEFAULT NULL,
+                                           `week_max_in` bigint(20) DEFAULT NULL,
+                                           `week_max_out` bigint(20) DEFAULT NULL,
+                                           `week_max_in_at` datetime DEFAULT NULL,
+                                           `week_max_out_at` datetime DEFAULT NULL,
+                                           `week_tot_in` bigint(20) DEFAULT NULL,
+                                           `week_tot_out` bigint(20) DEFAULT NULL,
+                                           `month_avg_in` bigint(20) DEFAULT NULL,
+                                           `month_avg_out` bigint(20) DEFAULT NULL,
+                                           `month_max_in` bigint(20) DEFAULT NULL,
+                                           `month_max_out` bigint(20) DEFAULT NULL,
+                                           `month_max_in_at` datetime DEFAULT NULL,
+                                           `month_max_out_at` datetime DEFAULT NULL,
+                                           `month_tot_in` bigint(20) DEFAULT NULL,
+                                           `month_tot_out` bigint(20) DEFAULT NULL,
+                                           `year_avg_in` bigint(20) DEFAULT NULL,
+                                           `year_avg_out` bigint(20) DEFAULT NULL,
+                                           `year_max_in` bigint(20) DEFAULT NULL,
+                                           `year_max_out` bigint(20) DEFAULT NULL,
+                                           `year_max_in_at` datetime DEFAULT NULL,
+                                           `year_max_out_at` datetime DEFAULT NULL,
+                                           `year_tot_in` bigint(20) DEFAULT NULL,
+                                           `year_tot_out` bigint(20) DEFAULT NULL,
+                                           PRIMARY KEY (`id`),
+                                           KEY `IDX_E219461D4643D08A` (`physicalinterface_id`),
+                                           CONSTRAINT `FK_E219461D4643D08A` FOREIGN KEY (`physicalinterface_id`) REFERENCES `physicalinterface` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `user_remember_tokens`
+--
+
+DROP TABLE IF EXISTS `user_remember_tokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_remember_tokens` (
+                                        `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                        `user_id` int(11) NOT NULL,
+                                        `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                        `device` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                        `ip` varchar(39) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                        `created` datetime NOT NULL,
+                                        `expires` datetime NOT NULL,
+                                        `is_2fa_complete` tinyint(1) NOT NULL DEFAULT '0',
+                                        PRIMARY KEY (`id`),
+                                        UNIQUE KEY `user_token` (`user_id`,`token`),
+                                        KEY `IDX_E253302EA76ED395` (`user_id`),
+                                        CONSTRAINT `FK_E253302EA76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+
+--
+-- Table structure for table `user_2fa`
+--
+
+DROP TABLE IF EXISTS `user_2fa`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_2fa` (
+                            `id` int(11) NOT NULL AUTO_INCREMENT,
+                            `user_id` int(11) NOT NULL,
+                            `enabled` tinyint(1) NOT NULL DEFAULT '0',
+                            `secret` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                            `created_at` datetime DEFAULT NULL,
+                            `updated_at` datetime DEFAULT NULL,
+                            PRIMARY KEY (`id`),
+                            UNIQUE KEY `UNIQ_3AAA1488A76ED395` (`user_id`),
+                            CONSTRAINT `FK_3AAA1488A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `user_logins`
+--
+
+DROP TABLE IF EXISTS `user_logins`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_logins` (
+                               `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                               `user_id` int(11) DEFAULT NULL,
+                               `ip` varchar(39) COLLATE utf8_unicode_ci NOT NULL,
+                               `at` datetime NOT NULL,
+                               `customer_to_user_id` int(11) DEFAULT NULL,
+                               `via` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+                               PRIMARY KEY (`id`),
+                               KEY `IDX_6341CC99D43FEAE2` (`customer_to_user_id`),
+                               KEY `at_idx` (`at`),
+                               KEY `user_id_idx` (`user_id`),
+                               CONSTRAINT `FK_6341CC99D43FEAE2` FOREIGN KEY (`customer_to_user_id`) REFERENCES `customer_to_users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+
+
+
+
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
