@@ -47,7 +47,7 @@ class UpdateTimestamps extends Migration
             DB::statement("ALTER TABLE cust MODIFY COLUMN created_at DATETIME AFTER peeringdb_oauth");
             DB::statement("ALTER TABLE cust MODIFY COLUMN updated_at DATETIME AFTER created_at");
             $table->timestamp( 'created_at' )->change();
-            $table->timestamp( 'updated_at' )->change();
+            $table->timestamp( 'updated_at' )->nullable()->change();
         });
 
         Schema::table('cust_notes', function (Blueprint $table) {
@@ -76,24 +76,24 @@ class UpdateTimestamps extends Migration
 
         Schema::table('peering_manager', function (Blueprint $table) {
             $table->timestamp( 'created_at' )->change();
-            $table->timestamp( 'updated_at' )->change();
+            $table->timestamp( 'updated_at' )->nullable()->change();
         });
 
         Schema::table('routers', function (Blueprint $table) {
             DB::statement("ALTER TABLE routers MODIFY COLUMN updated_at DATETIME AFTER created_at");
-            $table->timestamp( 'updated_at' )->change();
+            $table->timestamp( 'updated_at' )->nullable()->change();
         });
 
         Schema::table('user', function (Blueprint $table) {
             DB::statement("ALTER TABLE user MODIFY COLUMN created_at DATETIME AFTER extra_attributes");
             DB::statement("ALTER TABLE user MODIFY COLUMN updated_at DATETIME AFTER created_at");
             $table->timestamp( 'created_at' )->change();
-            $table->timestamp( 'updated_at' )->change();
+            $table->timestamp( 'updated_at' )->nullable()->change();
         });
 
         Schema::table('user_2fa', function (Blueprint $table) {
             $table->timestamp( 'created_at' )->change();
-            $table->timestamp( 'updated_at' )->change();
+            $table->timestamp( 'updated_at' )->nullable()->change();
         });
 
         Schema::table('user_remember_tokens', function (Blueprint $table) {
