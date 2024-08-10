@@ -318,7 +318,7 @@ class CustomerAggregator extends Customer
         $bilat = [];
         foreach( $vlans as $vlan ) {
             foreach( $protos as $proto ) {
-                $bilat[ $vlan->number ][ $proto ] = BgpSessionDataAggregator::getPeers( $vlan->id, $proto );
+                $bilat[ $vlan['number'] ][ $proto ] = BgpSessionDataAggregator::getPeers( $vlan['id'], $proto );
             }
         }
         $vlanNumbers = Vlan::select( ['id', 'number'] )->get()->keyBy( 'id' )->toArray();
@@ -346,17 +346,17 @@ class CustomerAggregator extends Customer
         foreach( $custs as $c ) {
             $custs[ $c[ 'autsys' ] ][ 'ispotential' ] = false;
             foreach( $vlans as $vlan ) {
-                if( isset( $me[ 'vlan_interfaces' ][ $vlan->number ] ) ) {
-                    if( isset( $c[ 'vlan_interfaces' ][$vlan->number] ) ) {
+                if( isset( $me[ 'vlan_interfaces' ][ $vlan['number'] ] ) ) {
+                    if( isset( $c[ 'vlan_interfaces' ][$vlan['number']] ) ) {
                         foreach( $protos as $proto ) {
-                            if( $me[ 'vlan_interfaces' ][ $vlan->number ][ 0 ][ "ipv{$proto}enabled" ] && $c[ 'vlan_interfaces' ][ $vlan->number ][ 0 ][ "ipv{$proto}enabled" ] ) {
-                                if( isset( $bilat[ $vlan->number ][ 4 ][ $me['autsys' ] ][ 'peers' ] ) && in_array( $c[ 'autsys' ], $bilat[ $vlan->number ][ 4 ][ $me[ 'autsys' ] ][ 'peers' ] ) ){
-                                    $custs[ $c[ 'autsys' ] ][ $vlan->number ][$proto] = 2;
-                                } else if( $me[ 'vlan_interfaces' ][ $vlan->number ][ 0 ][ 'rsclient' ] && $c[ 'vlan_interfaces' ][ $vlan->number ][ 0 ][ 'rsclient' ] ){
-                                    $custs[ $c[ 'autsys' ] ][ $vlan->number ][ $proto ] = 1;
+                            if( $me[ 'vlan_interfaces' ][ $vlan['number'] ][ 0 ][ "ipv{$proto}enabled" ] && $c[ 'vlan_interfaces' ][ $vlan['number'] ][ 0 ][ "ipv{$proto}enabled" ] ) {
+                                if( isset( $bilat[ $vlan['number'] ][ 4 ][ $me['autsys' ] ][ 'peers' ] ) && in_array( $c[ 'autsys' ], $bilat[ $vlan['number'] ][ 4 ][ $me[ 'autsys' ] ][ 'peers' ] ) ){
+                                    $custs[ $c[ 'autsys' ] ][ $vlan['number'] ][$proto] = 2;
+                                } else if( $me[ 'vlan_interfaces' ][ $vlan['number'] ][ 0 ][ 'rsclient' ] && $c[ 'vlan_interfaces' ][ $vlan['number'] ][ 0 ][ 'rsclient' ] ){
+                                    $custs[ $c[ 'autsys' ] ][ $vlan['number'] ][ $proto ] = 1;
                                     $custs[ $c[ 'autsys' ] ][ 'ispotential' ] = true;
                                 } else {
-                                    $custs[ $c[ 'autsys' ] ][ $vlan->number ][ $proto ] = 0;
+                                    $custs[ $c[ 'autsys' ] ][ $vlan['number'] ][ $proto ] = 0;
                                     $custs[ $c[ 'autsys' ] ][ 'ispotential' ] = true;
                                 }
                             }
@@ -374,8 +374,8 @@ class CustomerAggregator extends Customer
 
             foreach( $vlans as $vlan ) {
                 foreach( $protos as $proto ) {
-                    if( isset( $c[ $vlan->number ][ $proto ] ) ) {
-                        switch( $c[ $vlan->number ][ $proto ] ) {
+                    if( isset( $c[ $vlan['number'] ][ $proto ] ) ) {
+                        switch( $c[ $vlan['number'] ][ $proto ] ) {
                             case 2:
                                 $peered[ $c[ 'autsys' ] ] = true;
                                 break;

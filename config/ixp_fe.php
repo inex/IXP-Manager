@@ -89,7 +89,6 @@ return [
             'logs'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGS',              false ),
             'logo'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGO',              true  ),
             'lg'                        => env( 'IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS',     true  ),
-            'net-info'                  => env( 'IXP_FE_FRONTEND_DISABLED_NETINFO',           true ),
             'peering-manager'           => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MANAGER',   false ),
             'peering-matrix'            => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MATRIX',    false ),
             'phpinfo'                   => env( 'IXP_FE_FRONTEND_DISABLED_PHPINFO',           true  ),

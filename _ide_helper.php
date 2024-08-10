@@ -5,7 +5,7 @@
 
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
- * Generated for Laravel 11.18.1.
+ * Generated for Laravel 11.20.0.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -3579,7 +3579,7 @@ namespace Illuminate\Support\Facades {
      * 
      *
      * @see \Illuminate\Cache\CacheManager
-     * @mixin \Illuminate\Cache\Repository
+     * @see \Illuminate\Cache\Repository
      */        class Cache {
                     /**
          * Get a cache store instance by name, wrapped in a repository.
@@ -4986,6 +4986,39 @@ namespace Illuminate\Support\Facades {
                         return $instance->macroCall($method, $parameters);
         }
                     /**
+         * Get a human-readable name for the given connection driver.
+         *
+         * @return string 
+         * @static 
+         */        public static function getDriverTitle()
+        {
+                        /** @var \Illuminate\Database\MySqlConnection $instance */
+                        return $instance->getDriverTitle();
+        }
+                    /**
+         * Run an insert statement against the database.
+         *
+         * @param string $query
+         * @param array $bindings
+         * @param string|null $sequence
+         * @return bool 
+         * @static 
+         */        public static function insert($query, $bindings = [], $sequence = null)
+        {
+                        /** @var \Illuminate\Database\MySqlConnection $instance */
+                        return $instance->insert($query, $bindings, $sequence);
+        }
+                    /**
+         * Get the connection's last insert ID.
+         *
+         * @return string|int|null 
+         * @static 
+         */        public static function getLastInsertId()
+        {
+                        /** @var \Illuminate\Database\MySqlConnection $instance */
+                        return $instance->getLastInsertId();
+        }
+                    /**
          * Determine if the connected database is a MariaDB database.
          *
          * @return bool 
@@ -5158,18 +5191,6 @@ namespace Illuminate\Support\Facades {
                         return $instance->cursor($query, $bindings, $useReadPdo);
         }
                     /**
-         * Run an insert statement against the database.
-         *
-         * @param string $query
-         * @param array $bindings
-         * @return bool 
-         * @static 
-         */        public static function insert($query, $bindings = [])
-        {            //Method inherited from \Illuminate\Database\Connection         
-                        /** @var \Illuminate\Database\MySqlConnection $instance */
-                        return $instance->insert($query, $bindings);
-        }
-                    /**
          * Run an update statement against the database.
          *
          * @param string $query
@@ -5227,6 +5248,16 @@ namespace Illuminate\Support\Facades {
         {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->unprepared($query);
+        }
+                    /**
+         * Get the number of open connections for the database.
+         *
+         * @return int|null 
+         * @static 
+         */        public static function threadCount()
+        {            //Method inherited from \Illuminate\Database\Connection         
+                        /** @var \Illuminate\Database\MySqlConnection $instance */
+                        return $instance->threadCount();
         }
                     /**
          * Execute the given callback in "dry run" mode.
@@ -7271,6 +7302,18 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Hashing\HashManager $instance */
                         return $instance->getDefaultDriver();
+        }
+                    /**
+         * Verifies that the configuration is less than or equal to what is configured.
+         *
+         * @param array $value
+         * @return bool 
+         * @internal 
+         * @static 
+         */        public static function verifyConfiguration($value)
+        {
+                        /** @var \Illuminate\Hashing\HashManager $instance */
+                        return $instance->verifyConfiguration($value);
         }
                     /**
          * Get a driver instance.
@@ -18620,7 +18663,7 @@ namespace Webpatser\Countries {
                     /**
          * Retrieve the model for a bound value.
          *
-         * @param \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\Relation $query
+         * @param \Illuminate\Database\Eloquent\Model|\Illuminate\Contracts\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation $query
          * @param mixed $value
          * @param string|null $field
          * @return \Illuminate\Contracts\Database\Eloquent\Builder 
@@ -18932,7 +18975,7 @@ namespace Webpatser\Countries {
                     /**
          * Decode the given JSON back into an array or object.
          *
-         * @param string $value
+         * @param string|null $value
          * @param bool $asObject
          * @return mixed 
          * @static 
@@ -23425,7 +23468,7 @@ namespace  {
                             /**
              * Add a "where like" clause to the query.
              *
-             * @param string $column
+             * @param \Illuminate\Contracts\Database\Query\Expression|string $column
              * @param string $value
              * @param bool $caseSensitive
              * @param string $boolean
@@ -23440,7 +23483,7 @@ namespace  {
                             /**
              * Add an "or where like" clause to the query.
              *
-             * @param string $column
+             * @param \Illuminate\Contracts\Database\Query\Expression|string $column
              * @param string $value
              * @param bool $caseSensitive
              * @return \Illuminate\Database\Query\Builder 
@@ -23453,7 +23496,7 @@ namespace  {
                             /**
              * Add a "where not like" clause to the query.
              *
-             * @param string $column
+             * @param \Illuminate\Contracts\Database\Query\Expression|string $column
              * @param string $value
              * @param bool $caseSensitive
              * @param string $boolean
@@ -23467,7 +23510,7 @@ namespace  {
                             /**
              * Add an "or where not like" clause to the query.
              *
-             * @param string $columns
+             * @param \Illuminate\Contracts\Database\Query\Expression|string $column
              * @param string $value
              * @param bool $caseSensitive
              * @return \Illuminate\Database\Query\Builder 
@@ -24202,7 +24245,7 @@ namespace  {
                             /**
              * Add a "where" clause to the query for multiple columns with "and" conditions between them.
              *
-             * @param string[] $columns
+             * @param \Illuminate\Contracts\Database\Query\Expression[]|string[] $columns
              * @param mixed $operator
              * @param mixed $value
              * @param string $boolean
@@ -24216,8 +24259,8 @@ namespace  {
                             /**
              * Add an "or where" clause to the query for multiple columns with "and" conditions between them.
              *
-             * @param string[] $columns
-             * @param string $operator
+             * @param \Illuminate\Contracts\Database\Query\Expression[]|string[] $columns
+             * @param mixed $operator
              * @param mixed $value
              * @return \Illuminate\Database\Query\Builder 
              * @static 
@@ -24227,10 +24270,10 @@ namespace  {
                                 return $instance->orWhereAll($columns, $operator, $value);
             }
                             /**
-             * Add an "where" clause to the query for multiple columns with "or" conditions between them.
+             * Add a "where" clause to the query for multiple columns with "or" conditions between them.
              *
-             * @param string[] $columns
-             * @param string $operator
+             * @param \Illuminate\Contracts\Database\Query\Expression[]|string[] $columns
+             * @param mixed $operator
              * @param mixed $value
              * @param string $boolean
              * @return \Illuminate\Database\Query\Builder 
@@ -24243,8 +24286,8 @@ namespace  {
                             /**
              * Add an "or where" clause to the query for multiple columns with "or" conditions between them.
              *
-             * @param string[] $columns
-             * @param string $operator
+             * @param \Illuminate\Contracts\Database\Query\Expression[]|string[] $columns
+             * @param mixed $operator
              * @param mixed $value
              * @return \Illuminate\Database\Query\Builder 
              * @static 
@@ -24252,6 +24295,33 @@ namespace  {
             {
                                 /** @var \Illuminate\Database\Query\Builder $instance */
                                 return $instance->orWhereAny($columns, $operator, $value);
+            }
+                            /**
+             * Add a "where not" clause to the query for multiple columns where none of the conditions should be true.
+             *
+             * @param \Illuminate\Contracts\Database\Query\Expression[]|string[] $columns
+             * @param mixed $operator
+             * @param mixed $value
+             * @param string $boolean
+             * @return \Illuminate\Database\Query\Builder 
+             * @static 
+             */            public static function whereNone($columns, $operator = null, $value = null, $boolean = 'and')
+            {
+                                /** @var \Illuminate\Database\Query\Builder $instance */
+                                return $instance->whereNone($columns, $operator, $value, $boolean);
+            }
+                            /**
+             * Add an "or where not" clause to the query for multiple columns where none of the conditions should be true.
+             *
+             * @param \Illuminate\Contracts\Database\Query\Expression[]|string[] $columns
+             * @param mixed $operator
+             * @param mixed $value
+             * @return \Illuminate\Database\Query\Builder 
+             * @static 
+             */            public static function orWhereNone($columns, $operator = null, $value = null)
+            {
+                                /** @var \Illuminate\Database\Query\Builder $instance */
+                                return $instance->orWhereNone($columns, $operator, $value);
             }
                             /**
              * Add a "group by" clause to the query.

@@ -9,7 +9,7 @@
                     ASN
                 </th>
                 <?php foreach( $t->peers[ 'vlan' ] as $vlan ): ?>
-                    <?php $vlanid = $vlan->number ?>
+                    <?php $vlanid = $vlan['number'] ?>
                     <?php if( isset( $t->peers[ "me" ][ 'vlan_interfaces' ][ $vlanid ] ) ): ?>
                         <th>
                             <?= $vlan->name ?>
@@ -34,7 +34,7 @@
                         </td>
 
                         <?php foreach( $t->peers[ "vlan" ] as $avlan ): ?>
-                            <?php $vlan = $avlan->number ?>
+                            <?php $vlan = $avlan['number'] ?>
                             <?php if( isset( $c[ $vlan ] ) ): ?>
                                 <td>
                                     <?php foreach( $t->peers[ "protos" ] as $proto ): ?>

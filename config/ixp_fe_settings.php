@@ -1,153 +1,224 @@
 <?php
 
-// Not a traditional Laravel config file - determines what is configurable
-// on the IXP Manager frontend
+/*
+ * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ */
 
-// Laslzo - what else might you think about:
 
-
-// everything in identity.php    - done
-//   vlans.default -> should be a dropdown of VLANs so we'll need a new select options in the array below:
-//           'optionsdb' => [ 'model' => 'Vlan', 'keys' => 'id', 'values' => 'name' ]
-
-// ixp_api.json_export_schema    - done
-// ixp.as112 as part of modules  - done
-// ixp.rpki                      - done
-
+// Not a traditional Laravel config file - this is an IXP Manager config file which
+// determines what .env elements are configurable via the frontend and sets up the
+// form for this.
 
 return [
 
+    /*
+     * Configuration elements are arranged into panels
+     */
     'panels' => [
 
+
+        /*
+         */
         'frontend_controllers' => [
-            'title'       => 'Modules',
-            'description' => "These are features that can be enabled or disabled. Some are
-                                    disabled by default as they may require extra configuration settings.",
+            'title'       => 'Features',
+            'description' => "These are features or modules that can be enabled or disabled. Some are
+                                    disabled by default as they may require extra configuration settings. 
+                                    Disabling a module will remove frontend elements such as menus and links also.",
 
             'fields' => [
+
+                'as112'                     => [
+                    'config_key' => 'ixp.as112.ui_active',
+                    'dotenv_key' => 'IXP_AS112_UI_ACTIVE',
+                    'type'       => 'radio',
+                    'invert'     => false,
+                    'name'       => 'AS112 functionality',
+                    'docs_url'   => 'https://docs.ixpmanager.org/features/as112/',
+                    'help'       => 'AS112 is a service which provides anycast reverse DNS lookup for several prefixes, 
+                                        particularly rfc1918 space. If you are providing an AS112 service to your members,
+                                        this feature enables UI elements for that.',
+                ],
 
                 'console-server-connection' => [
                     'config_key' => 'ixp_fe.frontend.disabled.console-server-connection',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_CONSOLE',
                     'type'       => 'radio',
+                    'invert'     => true,
                     'name'       => 'Console Server Connections',
                     'docs_url'   => 'https://docs.ixpmanager.org/features/console-servers/', // can be null
                     'help'       => 'An IXP would typically have out of band access (for emergencies, firmware upgrades, 
                                         etc) to critical infrastructure devices by means of a console server. This 
-                                        module allows you to record console server port connections.',
+                                        module allows you to record what equipment console server ports connect to.
+                                        For larger exchanges, a modern DCIM system such as
+                                        <a href="https://netboxlabs.com/dcim/" target="_blank">NetBox</a>
+                                        is recrommended.',
                 ],
+
                 'cust-kit'                  => [
                     'config_key' => 'ixp_fe.frontend.disabled.cust-kit',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_CUSTKIT',
                     'type'       => 'radio',
-                    'name'       => 'Customer Kit',
+                    'invert'     => true,
+                    'name'       => 'Colocated Equipment',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'If you provide equipment colocation services for members, the module will allow you to 
+                                        maintain an inventory of this. For larger exchanges, a modern DCIM system such as
+                                        <a href="https://netboxlabs.com/dcim/" target="_blank">NetBox</a> is recrommended.',
                 ],
-                'docstore'                  => [
-                    'config_key' => 'ixp_fe.frontend.disabled.docstore',
-                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_DOCSTORE',
-                    'type'       => 'radio',
-                    'name'       => 'Document Store',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
-                'docstore_customer'         => [
-                    'config_key' => 'ixp_fe.frontend.disabled.docstore_customer',
-                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_DOCSTORE_CUSTOMER',
-                    'type'       => 'radio',
-                    'name'       => 'Customer Document Store',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
-                'filtered-prefixes'         => [
-                    'config_key' => 'ixp_fe.frontend.disabled.filtered-prefixes',
-                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_FILTERED_PREFIXES',
-                    'type'       => 'radio',
-                    'name'       => 'Filtered Prefixes',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
+
                 'logs'                      => [
                     'config_key' => 'ixp_fe.frontend.disabled.logs',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_LOGS',
                     'type'       => 'radio',
-                    'name'       => 'Logs',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'invert'     => true,
+                    'name'       => 'Database Change Logging',
+                    'docs_url'   => 'https://docs.ixpmanager.org/usage/dblogs/',
+                    'help'       => 'Database change logging for changes made via the UI.',
                 ],
-                'logo'                      => [
-                    'config_key' => 'ixp_fe.frontend.disabled.logo',
-                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_LOGO',
+
+                'docstore_customer'         => [
+                    'config_key' => 'ixp_fe.frontend.disabled.docstore_customer',
+                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_DOCSTORE_CUSTOMER',
                     'type'       => 'radio',
-                    'name'       => 'Logo',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'invert'     => true,
+                    'name'       => 'Customer Document Store',
+                    'docs_url'   => 'https://docs.ixpmanager.org/features/docstore/',
+                    'help'       => 'A per-member document store which allows administrators to upload documents on a 
+                                        per-member basis. These can be made visible to administrators only or also to 
+                                        users assigned to that specific member. Example use cases for this are member 
+                                        application forms / contracts, completed / signed port upgrade forms, etc.',
                 ],
+
+                'docstore'                  => [
+                    'config_key' => 'ixp_fe.frontend.disabled.docstore',
+                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_DOCSTORE',
+                    'type'       => 'radio',
+                    'invert'     => true,
+                    'name'       => 'Document Store',
+                    'docs_url'   => 'https://docs.ixpmanager.org/features/docstore/',
+                    'help'       => 'A general document store which allows administrators to make documents generally available 
+                                        for specific user classes (public, customer user, customer admin, superadmin). Example 
+                                        use cases for this are member upgrade forms, distribution of board or management minutes, etc.',
+                ],
+
+                'filtered-prefixes'         => [
+                    'config_key' => 'ixp_fe.frontend.disabled.filtered-prefixes',
+                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_FILTERED_PREFIXES',
+                    'type'       => 'radio',
+                    'invert'     => true,
+                    'name'       => 'Filtered Prefixes',
+                    'docs_url'   => 'https://docs.ixpmanager.org/features/route-servers/#displaying-filtered-prefixes',
+                    'help'       => 'This feature provides member\'s a live view of member prefixes filtered on the IXP\'s route servers.
+                                        It requires that you are using IXP Manager\'s Bird v2 route server configuration and
+                                        have enabled the looking glass.'
+                ],
+
                 'lg'                        => [
                     'config_key' => 'ixp_fe.frontend.disabled.lg',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS',
                     'type'       => 'radio',
+                    'invert'     => true,
                     'name'       => 'Looking Glass',
                     'docs_url'   => 'https://docs.ixpmanager.org/features/looking-glass/',
-                    'help'       => 'IXP Manager supports full looking glass features when using the Bird BGP daemon and Bird\'s Eye (a simple secure micro service for querying Bird).',
+                    'help'       => 'IXP Manager supports full looking glass features when using the Bird BGP daemon and 
+                                        Bird\'s Eye (a simple secure micro service for querying Bird). This feature is an
+                                        required element of some other features such as the filtered prefixes.',
                 ],
-                'net-info'                  => [
-                    'config_key' => 'ixp_fe.frontend.disabled.net-info',
-                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_NETINFO',
+
+                'login_history' => [
+                    'config_key' => 'ixp_fe.login_history.enabled',
+                    'dotenv_key' => 'IXP_FE_LOGIN_HISTORY_ENABLED',
                     'type'       => 'radio',
-                    'name'       => 'Net Information',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'invert'     => true,
+                    'name'       => "Login History",
+                    'help'       => 'Record user logins and view it in the UI. Expunged after six months by default.',
                 ],
+
+
+                'logo'                      => [
+                    'config_key' => 'ixp_fe.frontend.disabled.logo',
+                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_LOGO',
+                    'type'       => 'radio',
+                    'invert'     => true,
+                    'name'       => 'Member Logos',
+                    'docs_url'   => 'https://docs.ixpmanager.org/usage/customers/#customer-logos',
+                    'help'       => 'Allows customer users and administrators to upload and manage their organisation\'s logo.',
+                ],
+
                 'peering-manager'           => [
                     'config_key' => 'ixp_fe.frontend.disabled.peering-manager',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_PEERING_MANAGER',
                     'type'       => 'radio',
+                    'invert'     => true,
                     'name'       => 'Peering Manager',
                     'docs_url'   => 'https://docs.ixpmanager.org/features/peering-manager/',
-                    'help'       => 'The Peering Manager is a fantastic tool that allows your members to view and track their peerings with other IXP members.',
+                    'help'       => 'The Peering Manager is a fantastic tool that allows your members to view, compose, 
+                                        request and track their peering requests with other IXP members.',
                 ],
+
                 'peering-matrix'            => [
                     'config_key' => 'ixp_fe.frontend.disabled.peering-matrix',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_PEERING_MATRIX',
                     'type'       => 'radio',
+                    'invert'     => true,
                     'name'       => 'Peering Matrix',
                     'docs_url'   => 'https://docs.ixpmanager.org/features/peering-matrix/',
-                    'help'       => 'The peering matrix system builds up a list of who is peering with whom over your IXP.',
+                    'help'       => 'The peering matrix system builds up a list of who is peering with whom over your IXP. You 
+                                        will need sflow running with a 
+                                        <a href="https://docs.ixpmanager.org/features/peering-matrix/#data-source-sflow-bgp-session-detection" 
+                                        target="_blank">BGP detector</a> running.',
                 ],
+
                 'phpinfo'                   => [
                     'config_key' => 'ixp_fe.frontend.disabled.phpinfo',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_PHPINFO',
                     'type'       => 'radio',
-                    'name'       => 'PHP Information',
+                    'invert'     => true,
+                    'name'       => 'PHP Info',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'The PHP Info option under IXP Utilities on the left hand menu. This is available to 
+                                        administrators only and shows the output of <code>phpinfo()</code>.',
                 ],
+
                 'rs-prefixes'               => [
                     'config_key' => 'ixp_fe.frontend.disabled.rs-prefixes',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',
                     'type'       => 'radio',
+                    'invert'     => true,
                     'name'       => 'RS Prefixes',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => '[DEPRECATED] <em>Filtered Prefixes</em> above should be used instead of this.',
                 ],
+
                 'rs-filters'                => [
                     'config_key' => 'ixp_fe.frontend.disabled.rs-filters',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_RS_FILTERS',
                     'type'       => 'radio',
-                    'name'       => 'RS Filters',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'invert'     => true,
+                    'name'       => 'Route Server Filtering UI',
+                    'docs_url'   => 'https://github.com/inex/IXP-Manager/releases/tag/v6.4.0',
+                    'help'       => 'Community-based filtering is the standard way to allow route server participants at an IXP 
+                        to control their routing policy. This feature allows IXP members to configure route server filtering in a web-based UI.',
                 ],
-                'as112'                     => [
-                    'config_key' => 'ixp.as112.ui_active',
-                    'dotenv_key' => 'IXP_AS112_UI_ACTIVE',
-                    'type'       => 'radio',
-                    'name'       => 'AS112 functionality',
-                    'docs_url'   => 'https://github.com/inex/IXP-Manager/wiki/AS112',
-                    'help'       => 'Specifies whether to display and enable control of AS112 functionality for customers',
-                ],
+
             ],
         ],
 
@@ -158,6 +229,42 @@ return [
             'description' => 'IXP Identity Information.',
 
             'fields' => [
+                'orgname'          => [
+                    'config_key' => 'identity.orgname',
+                    'dotenv_key' => 'IDENTITY_ORGNAME',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'Organisation Name',
+                    'docs_url'   => null,
+                    'help'       => 'What your IXP is generally known as. E.g. INEX, LONAP, etc.',
+                ],
+                'name'             => [
+                    'config_key' => 'identity.name',
+                    'dotenv_key' => 'IDENTITY_NAME',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'Name',
+                    'docs_url'   => null,
+                    'help'       => 'What your IXP is generally known as. E.g. INEX, LONAP, etc.',
+                ],
+                'sitename'         => [
+                    'config_key' => 'identity.sitename',
+                    'dotenv_key' => 'IDENTITY_SITENAME',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'Site Name',
+                    'docs_url'   => null,
+                    'help'       => 'The name of this website. E.g. INEX IXP Manager',
+                ],
+                'titlename'        => [
+                    'config_key' => 'identity.titlename',
+                    'dotenv_key' => 'IDENTITY_TITLENAME',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'Site Title',
+                    'docs_url'   => null,
+                    'help'       => 'Your site/IXP name in the top left menu of IXP Manager.',
+                ],
                 'legalname'        => [
                     'config_key' => 'identity.legalname',
                     'dotenv_key' => 'IDENTITY_LEGALNAME',
@@ -165,14 +272,14 @@ return [
                     'rules'      => '',
                     'name'       => 'Legal Name',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'The full legal name of the IXP.',
                 ],
                 'location_city'    => [
                     'config_key' => 'identity.location.city',
                     'dotenv_key' => 'IDENTITY_CITY',
                     'type'       => 'text',
                     'rules'      => '',
-                    'name'       => 'Location: City',
+                    'name'       => 'City',
                     'docs_url'   => null,
                     'help'       => '',
                 ],
@@ -182,25 +289,7 @@ return [
                     'type'       => 'select',
                     'options'    => [ 'type' => 'countries' ], // special option list for countries
                     'rules'      => '',
-                    'name'       => 'Location: Country',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
-                'orgname'          => [
-                    'config_key' => 'identity.orgname',
-                    'dotenv_key' => 'IDENTITY_ORGNAME',
-                    'type'       => 'text',
-                    'rules'      => '',
-                    'name'       => 'Organisation Name',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
-                'name'             => [
-                    'config_key' => 'identity.name',
-                    'dotenv_key' => 'IDENTITY_NAME',
-                    'type'       => 'text',
-                    'rules'      => '',
-                    'name'       => 'Name',
+                    'name'       => 'Country',
                     'docs_url'   => null,
                     'help'       => '',
                 ],
@@ -211,26 +300,61 @@ return [
                     'rules'      => 'nullable|max:255|email',
                     'name'       => 'Email Address',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'Typically your support or other generic contact email address.',
                 ],
-                'testemail'        => [
-                    'config_key' => 'identity.testemail',
-                    'dotenv_key' => 'IDENTITY_TESTEMAIL',
+
+
+                'corporate_url'    => [
+                    'config_key' => 'identity.corporate_url',
+                    'dotenv_key' => 'IDENTITY_CORPORATE_URL',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'Corporate URL',
+                    'docs_url'   => null,
+                    'help'       => 'E.g. https://www.example.com/',
+                ],
+                'url'              => [
+                    'config_key' => 'identity.url',
+                    'dotenv_key' => 'APP_URL',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'IXP Manager URL',
+                    'docs_url'   => null,
+                    'help'       => 'E.g. https://www.example.com/portal/',
+                ],
+
+
+                'alerts_recipient_name' => [
+                    'config_key' => 'mail.alerts_recipient.name',
+                    'dotenv_key' => 'IDENTITY_ALERTS_NAME',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'Alert Recipient Name',
+                    'docs_url'   => null,
+                    'help'       => 'IXP Manager will need to send alert emails. This is the recipient name for these alerts. 
+                                        E.g. MyIXP Ops Team',
+                ],
+
+                'alerts_recipient_address' => [
+                    'config_key' => 'mail.alerts_recipient.address',
+                    'dotenv_key' => 'IDENTITY_ALERTS_EMAIL',
                     'type'       => 'text',
                     'rules'      => 'nullable|max:255|email',
-                    'name'       => 'Test Email Address',
+                    'name'       => 'Alert Recipient Email Address',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'IXP Manager will need to send alert emails. This is the recipient email for these alerts. 
+                                        E.g. ops@example.com',
                 ],
-                'rsvpemail'        => [
-                    'config_key' => 'identity.rsvpemail',
-                    'dotenv_key' => 'IDENTITY_RSVPEMAIL',
-                    'type'       => 'text',
-                    'rules'      => 'nullable|max:255|email',
-                    'name'       => 'RSVP Email Address',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
+
+//                'testemail'        => [
+//                    'config_key' => 'identity.testemail',
+//                    'dotenv_key' => 'IDENTITY_TESTEMAIL',
+//                    'type'       => 'text',
+//                    'rules'      => 'nullable|max:255|email',
+//                    'name'       => 'Test Email Address',
+//                    'docs_url'   => null,
+//                    'help'       => 'Used by the peering manager for testing when `ixp.peering_manager.testemail` is set to true.',
+//                ],
                 'watermark'        => [
                     'config_key' => 'identity.watermark',
                     'dotenv_key' => 'IDENTITY_WATERMARK',
@@ -238,7 +362,7 @@ return [
                     'rules'      => '',
                     'name'       => 'Watermark',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'Printed on some graphes, etc. E.g., "INEX, Ireland"',
                 ],
                 'support_email'    => [
                     'config_key' => 'identity.support_email',
@@ -247,7 +371,7 @@ return [
                     'rules'      => 'nullable|max:255|email',
                     'name'       => 'Support Email Address',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'Your support/operations email address.',
                 ],
                 'support_phone'    => [
                     'config_key' => 'identity.support_phone',
@@ -256,7 +380,7 @@ return [
                     'rules'      => '',
                     'name'       => 'Support Phone Number',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'Your support/operations phone number.',
                 ],
                 'support_hours'    => [
                     'config_key' => 'identity.support_hours',
@@ -265,7 +389,7 @@ return [
                     'rules'      => '',
                     'name'       => 'Support Hours',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'Hours that support is normally available. Standard industry nomenclature includes: 24/7, 8x5, 8x7, 12x5, 12x7',
                 ],
                 'billing_email'    => [
                     'config_key' => 'identity.billing_email',
@@ -274,7 +398,7 @@ return [
                     'rules'      => 'nullable|max:255|email',
                     'name'       => 'Billing Email Address',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'Your billing/accounting contact email address.',
                 ],
                 'billing_phone'    => [
                     'config_key' => 'identity.billing_phone',
@@ -283,7 +407,7 @@ return [
                     'rules'      => '',
                     'name'       => 'Billing Phone Number',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'Your billing/accounting contact phone number.',
                 ],
                 'billing_hours'    => [
                     'config_key' => 'identity.billing_hours',
@@ -292,44 +416,9 @@ return [
                     'rules'      => '',
                     'name'       => 'Billing Hours',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'Hours that billing support is normally available. Standard industry nomenclature includes: 24/7, 8x5, 8x7, 12x5, 12x7',
                 ],
-                'sitename'         => [
-                    'config_key' => 'identity.sitename',
-                    'dotenv_key' => 'IDENTITY_SITENAME',
-                    'type'       => 'text',
-                    'rules'      => '',
-                    'name'       => 'Site Name',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
-                'titlename'        => [
-                    'config_key' => 'identity.titlename',
-                    'dotenv_key' => 'IDENTITY_TITLENAME',
-                    'type'       => 'text',
-                    'rules'      => '',
-                    'name'       => 'Site Title',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
-                'corporate_url'    => [
-                    'config_key' => 'identity.corporate_url',
-                    'dotenv_key' => 'IDENTITY_CORPORATE_URL',
-                    'type'       => 'text',
-                    'rules'      => '',
-                    'name'       => 'Corporate Url Address',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
-                'url'              => [
-                    'config_key' => 'identity.url',
-                    'dotenv_key' => 'APP_URL',
-                    'type'       => 'text',
-                    'rules'      => '',
-                    'name'       => 'Url Address',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
+
                 'biglogo'          => [
                     'config_key' => 'identity.biglogo',
                     'dotenv_key' => 'IDENTITY_BIGLOGO',
@@ -337,7 +426,7 @@ return [
                     'rules'      => '',
                     'name'       => 'Big Logo',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'URL of the logo to use on the login page. Can be <code>https://...</code> or <code>file:///home/...</code>',
                 ],
                 'vlans_default'    => [
                     'config_key' => 'identity.vlans.default',
@@ -345,24 +434,6 @@ return [
                     'type'       => 'select',
                     'options'    => [ 'type' => 'collection', 'list' => [ 'model' => 'Vlan', 'keys' => 'id', 'values' => 'name' ] ],
                     'name'       => 'Default Vlans',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
-                'alerts_recipient_name' => [
-                    'config_key' => 'mail.alerts_recipient.name',
-                    'dotenv_key' => 'IDENTITY_ALERTS_NAME',
-                    'type'       => 'text',
-                    'rules'      => '',
-                    'name'       => 'Alert Recipient Name',
-                    'docs_url'   => null,
-                    'help'       => '',
-                ],
-                'alerts_recipient_address' => [
-                    'config_key' => 'mail.alerts_recipient.address',
-                    'dotenv_key' => 'IDENTITY_ALERTS_EMAIL',
-                    'type'       => 'text',
-                    'rules'      => 'nullable|max:255|email',
-                    'name'       => 'Alert Recipient Email Address',
                     'docs_url'   => null,
                     'help'       => '',
                 ],
@@ -377,13 +448,6 @@ return [
 
             'fields' => [
 
-                'login_history' => [
-                    'config_key' => 'ixp_fe.login_history.enabled',
-                    'dotenv_key' => 'IXP_FE_LOGIN_HISTORY_ENABLED',
-                    'type'       => 'radio',
-                    'name'       => "Record Login History",
-                    'help'       => 'Record the login history for users. Expunged after six months by default.',
-                ],
 
                 // do wee need here add the peeringdb api authentication and oauth data?
 

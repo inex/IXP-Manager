@@ -120,11 +120,13 @@
                 <span>IXP ADMIN ACTIONS</span>
             </h6>
 
-            <li class="<?= !request()->is( 'console-server/*' ) ?: 'active' ?>">
-                <a href="<?= route('console-server@list' ) ?>" class="nav-link">
-                    Console Servers
-                </a>
-            </li>
+            <?php if( !config( 'ixp_fe.frontend.disabled.console-server-connection' ) ): ?>
+                <li class="<?= !request()->is( 'console-server/*' ) ?: 'active' ?>">
+                    <a href="<?= route('console-server@list' ) ?>" class="nav-link">
+                        Console Servers
+                    </a>
+                </li>
+            <?php endif; ?>
 
             <?php if( request()->is( 'console-server/*' ) || request()->is( 'console-server-connection/*' ) ): ?>
                 <?php if( !config( 'ixp_fe.frontend.disabled.console-server-connection', false ) ): ?>
