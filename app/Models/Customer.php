@@ -921,7 +921,8 @@ class Customer extends Model
     {
         return (bool)self::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )
             ->leftJoin( 'vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id' )
-            ->where( 'cust.id', $this->id )->where( 'irrdbfilter', true )
+            ->where( 'cust.id', $this->id )->where( 'rsclient', true )
+            ->where( 'irrdbfilter', true )
             ->get()->count();
     }
 

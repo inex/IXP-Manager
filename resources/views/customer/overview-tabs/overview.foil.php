@@ -1,5 +1,8 @@
 <?php
-    $c = $t->c; /** @var \IXP\Models\Customer $c */
+
+use IXP\Models\IrrdbUpdateLog;
+
+$c = $t->c; /** @var \IXP\Models\Customer $c */
 ?>
 <div class="d-flex row">
     <div class="col-sm-12">
@@ -94,11 +97,30 @@
                                 <b>IRRDB</b>
                             </td>
                             <td>
-                                <?php if( $irrdb = $c->irrdbConfig ): ?>
+                                <?php if( $c->irrdbFiltered() && $irrdb = $c->irrdbConfig ): ?>
                                     <?= $t->ee( $irrdb->source )?>
                                     <?php if( $c->routeServerClient() && $c->irrdbFiltered() ): ?>
-                                        (<a href="<?= route( "irrdb@list", [ "cust" => $c->id, "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">entries</a>)
+                                        (<a href="<?= route( "irrdb@list", [ "cust" => $c->id, "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">entries</a>)<br>
+
+                                        <?php
+                                            $lastUpdatedWarn = false;
+                                            if( $lastUpdated = IrrdbUpdateLog::lastUpdatedMax($c) ) {
+                                                if( $lastUpdated->isBefore( now()->subDay() ) ) {
+                                                    $lastUpdatedWarn = true;
+                                                }
+                                                $lastUpdated = $lastUpdated->format('Y-m-d H:i');
+                                            } else {
+                                                $lastUpdatedWarn = true;
+                                                $lastUpdated = 'NEVER';
+                                            }
+                                        ?>
+                                        Last updated:
+                                            <?= $lastUpdatedWarn ? '<span class="tw-inline-flex tw-items-center tw-rounded-md tw-ml-2  tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-yellow-50 -text-yellow-800 tw-ring-yellow-600/20">' : '' ?>
+                                            <?= $lastUpdated ?>
+                                            <?= $lastUpdatedWarn ? '</span>' : '' ?>
                                     <?php endif; ?>
+                                <?php else: ?>
+                                    <em>(no IRRDB filtering)</em>
                                 <?php endif; ?>
                             </td>
                         </tr>

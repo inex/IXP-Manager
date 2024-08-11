@@ -3308,7 +3308,7 @@ td a:hover{
  *
  * @import "tailwindcss/preflight";
  */
-/*! tailwindcss v3.4.7 | MIT License | https://tailwindcss.com
+/*! tailwindcss v3.4.9 | MIT License | https://tailwindcss.com
  */
 /*
 1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
@@ -4417,6 +4417,9 @@ a:hover {
 .tw-flex {
   display: flex;
 }
+.tw-inline-flex {
+  display: inline-flex;
+}
 .tw-hidden {
   display: none;
 }
@@ -4606,6 +4609,10 @@ a:hover {
   padding-left: 2.5rem;
   padding-right: 2.5rem;
 }
+.tw-px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
 .tw-px-3 {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
@@ -4705,6 +4712,9 @@ a:hover {
 }
 .tw-font-bold {
   font-weight: 700;
+}
+.tw-font-medium {
+  font-weight: 500;
 }
 .tw-font-normal {
   font-weight: 400;
@@ -4813,6 +4823,9 @@ a:hover {
   --tw-shadow: 0 4px 8px 0 rgba(0,0,0,0.12), 0 2px 4px 0 rgba(0,0,0,0.08);
   --tw-shadow-colored: 0 4px 8px 0 var(--tw-shadow-color), 0 2px 4px 0 var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.tw-ring-yellow-600\/20 {
+  --tw-ring-color: rgb(214 158 46 / 0.2);
 }
 .\[a-f0-9\:\\\.\\-\] {
   a-f0-9: \.\-;
