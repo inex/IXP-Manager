@@ -111,13 +111,13 @@ class VirtualInterfaceDiagnosticSuite extends Suite
                 if(count($uniqueTypes) > 1) {
                     return new DiagnosticResult(
                         name: $mainName,
-                        result: DiagnosticResult::TYPE_WARNING,
+                        result: DiagnosticResult::TYPE_WARN,
                         narrative: "Physical Interfaces are NOT the same type",
                     );
                 } else {
                     return new DiagnosticResult(
                         name: $mainName,
-                        result: DiagnosticResult::TYPE_OKAY,
+                        result: DiagnosticResult::TYPE_GOOD,
                         narrative: "All Physical Interfaces are the same type",
                     );
                 }
@@ -125,7 +125,7 @@ class VirtualInterfaceDiagnosticSuite extends Suite
                 if($virtualInterface->typePeering()) {
                     return new DiagnosticResult(
                         name: $mainName,
-                        result: DiagnosticResult::TYPE_OKAY,
+                        result: DiagnosticResult::TYPE_GOOD,
                         narrative: "Peering Interface type",
                     );
                 } else {
@@ -160,7 +160,7 @@ class VirtualInterfaceDiagnosticSuite extends Suite
         if($virtualInterface->sameSwitchForEachPI()) {
             return new DiagnosticResult(
                 name: $mainName,
-                result: DiagnosticResult::TYPE_OKAY,
+                result: DiagnosticResult::TYPE_GOOD,
                 narrative: "The Physical Interfaces are in the same Switch",
             );
         }
@@ -211,7 +211,7 @@ class VirtualInterfaceDiagnosticSuite extends Suite
         } else {
             return new DiagnosticResult(
                 name: $mainName,
-                result: DiagnosticResult::TYPE_WARNING,
+                result: DiagnosticResult::TYPE_WARN,
                 narrative: "No physical interfaces configured for this connection",
             );
         }
@@ -256,7 +256,7 @@ class VirtualInterfaceDiagnosticSuite extends Suite
         } else {
             return new DiagnosticResult(
                 name: $mainName,
-                result: DiagnosticResult::TYPE_WARNING,
+                result: DiagnosticResult::TYPE_WARN,
                 narrative: "No VLAN interfaces configured for this connection",
             );
         }
@@ -335,7 +335,7 @@ class VirtualInterfaceDiagnosticSuite extends Suite
         } else {
             return new DiagnosticResult(
                 name: $mainName,
-                result: DiagnosticResult::TYPE_WARNING,
+                result: DiagnosticResult::TYPE_WARN,
                 narrative: "Non-standard mtu is set to " . $viMtu,
             );
         }

@@ -97,14 +97,14 @@ class PhysicalInterfaceDiagnosticSuite extends Suite
         if ($diff >= 1 || is_null($physicalInterface->switchPort->lastSnmpPoll)) {
             return new DiagnosticResult(
                 name: $mainName,
-                result: DiagnosticResult::TYPE_WARNING,
+                result: DiagnosticResult::TYPE_WARN,
                 narrative: "Some diagnostic tests are not real time",
             );
         }
 
         return new DiagnosticResult(
             name: $mainName,
-            result: DiagnosticResult::TYPE_OKAY,
+            result: DiagnosticResult::TYPE_GOOD,
             narrative: "Diagnostic tests are in real time",
         );
     }
@@ -125,7 +125,7 @@ class PhysicalInterfaceDiagnosticSuite extends Suite
         if ($physicalInterface->switchPort->ifMtu === $viMtu) {
             return new DiagnosticResult(
                 name: $mainName,
-                result: DiagnosticResult::TYPE_OKAY,
+                result: DiagnosticResult::TYPE_GOOD,
                 narrative: "MTU values matching",
             );
         } else if ($physicalInterface->switchPort->ifMtu < $viMtu) {
@@ -137,7 +137,7 @@ class PhysicalInterfaceDiagnosticSuite extends Suite
         } else {
             return new DiagnosticResult(
                 name: $mainName,
-                result: DiagnosticResult::TYPE_WARNING,
+                result: DiagnosticResult::TYPE_WARN,
                 narrative: "MTU values NOT matching",
             );
         }

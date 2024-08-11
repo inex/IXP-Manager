@@ -44,7 +44,7 @@ class CustomerDiagnosticSuite extends Suite
 {
     public const string DIAGNOSTIC_SUITE_NAME = 'Member Overview';
 
-    public const string DIAGNOSTIC_SUITE_DESCRIPTION = "General member overview diagnostics.";
+    public const string DIAGNOSTIC_SUITE_DESCRIPTION = "Diagnostics for the overall member's set-up.";
 
     public const string DIAGNOSTIC_SUITE_TYPE = 'CUSTOMER';
 
@@ -55,7 +55,6 @@ class CustomerDiagnosticSuite extends Suite
 
     /**
      * Run the diagnostics suite
-     * @throws GeneralException
      */
     public function run(): CustomerDiagnosticSuite
     {
@@ -63,8 +62,9 @@ class CustomerDiagnosticSuite extends Suite
         $this->results[] = $this->customerType();
         $this->results[] = $this->customerStatus();
         $this->results[] = $this->customerHasLeft();
-        $this->results[] = $this->customerServerClient();
-        $this->results[] = $this->customerIRRDBFiltered();
+        $this->results[] = $this->customerRouteServerClient();
+//        $this->results[] = $this->customerIrrdbFiltered();
+//        $this->results[] = $this->customerIrrdbAsnsPresent();
 
         return $this;
     }
@@ -83,7 +83,7 @@ class CustomerDiagnosticSuite extends Suite
             case Customer::TYPE_FULL:
                 return new DiagnosticResult(
                     name: $mainName,
-                    result: DiagnosticResult::TYPE_OKAY,
+                    result: DiagnosticResult::TYPE_DEBUG,
                     narrative: "The member is a standard 'full' member",
                 );
                 break;
@@ -99,7 +99,7 @@ class CustomerDiagnosticSuite extends Suite
             case Customer::TYPE_INTERNAL:
                 return new DiagnosticResult(
                     name: $mainName,
-                    result: DiagnosticResult::TYPE_WARNING,
+                    result: DiagnosticResult::TYPE_WARN,
                     narrative: "The member is an internal member used for IXP infrastructure. Do not assume normal member interfaces and behaviors.",
                 );
                 break;
@@ -107,7 +107,7 @@ class CustomerDiagnosticSuite extends Suite
             case Customer::TYPE_ASSOCIATE:
                 return new DiagnosticResult(
                     name: $mainName,
-                    result: DiagnosticResult::TYPE_ERROR,
+                    result: DiagnosticResult::TYPE_WARN,
                     narrative: "The member is an associate member and should not have any connections or other services.",
                 );
                 break;
@@ -115,8 +115,8 @@ class CustomerDiagnosticSuite extends Suite
 
         return new DiagnosticResult(
             name: $mainName,
-            result: DiagnosticResult::TYPE_UNKNOWN,
-            narrative: "The member is an unknown type to the diagnostic logic.",
+            result: DiagnosticResult::TYPE_FATAL,
+            narrative: "The member type {$this->customer->type()} is an unknown type to the diagnostic logic.",
         );
     }
 
@@ -132,27 +132,27 @@ class CustomerDiagnosticSuite extends Suite
         switch( $this->customer->status ) {
 
             case Customer::STATUS_NOTCONNECTED:
-                return new DiagnosticResult(
-                    name: $mainName,
-                    result: DiagnosticResult::TYPE_WARNING,
-                    narrative: "The member's status is ".Customer::$CUST_STATUS_TEXT[$this->customer->status],
-                );
-                break;
-
             case Customer::STATUS_SUSPENDED:
                 return new DiagnosticResult(
                     name: $mainName,
-                    result: DiagnosticResult::TYPE_ERROR,
-                    narrative: "The member's status is ".Customer::$CUST_STATUS_TEXT[$this->customer->status],
+                    result: DiagnosticResult::TYPE_WARN,
+                    narrative: "The member's status is " . $this->customer->status(),
                 );
                 break;
 
+            case Customer::STATUS_NORMAL:
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_DEBUG,
+                    narrative: "The member's status is " . $this->customer->status(),
+                );
+                break;
         }
 
         return new DiagnosticResult(
             name: $mainName,
-            result: DiagnosticResult::TYPE_OKAY,
-            narrative: "The member's status is ".Customer::$CUST_STATUS_TEXT[Customer::STATUS_NORMAL],
+            result: DiagnosticResult::TYPE_FATAL,
+            narrative: "The member's status {$this->customer->status()} is an unknown status to the diagnostic logic.",
         );
     }
 
@@ -160,22 +160,21 @@ class CustomerDiagnosticSuite extends Suite
     /**
      * Examine the customer left the IXP and provide information on it.
      *
-     * @return DiagnosticResult
      */
     private function customerHasLeft(): DiagnosticResult {
-        $mainName = 'Member Has Left?';
+        $mainName = 'Member Left';
 
-        if($this->customer->hasLeft() ) {
+        if( $this->customer->hasLeft() ) {
              return new DiagnosticResult(
                     name: $mainName,
                     result: DiagnosticResult::TYPE_ERROR,
-                    narrative: "The member left the IXP on ".Carbon::parse($this->customer->dateleave)->format('Y-m-d'),
-                );
+                    narrative: "The member left the IXP on " . Carbon::parse($this->customer->dateleave)->format('Y-m-d'),
+            );
         }
 
         return new DiagnosticResult(
             name: $mainName,
-            result: DiagnosticResult::TYPE_OKAY,
+            result: DiagnosticResult::TYPE_TRACE,
             narrative: "The member not left the IXP",
         );
     }
@@ -185,23 +184,22 @@ class CustomerDiagnosticSuite extends Suite
      * Examine the customer Route Server Client status and provide information on it.
      *
      * @return DiagnosticResult
-     * @throws GeneralException
      */
-    private function customerServerClient(): DiagnosticResult {
-        $mainName = 'Route Server Client Status';
+    private function customerRouteServerClient(): DiagnosticResult {
+        $mainName = 'Route Server Client';
 
-        if($this->customer->routeServerClient()) {
+        if( $this->customer->routeServerClient() ) {
             return new DiagnosticResult(
                 name: $mainName,
-                result: DiagnosticResult::TYPE_OKAY,
-                narrative: "The member is a Route Server Client",
+                result: DiagnosticResult::TYPE_INFO,
+                narrative: "The member is a route server client",
             );
         }
 
         return new DiagnosticResult(
             name: $mainName,
-            result: DiagnosticResult::TYPE_ERROR,
-            narrative: "The member is not a Route Server Client",
+            result: DiagnosticResult::TYPE_INFO,
+            narrative: "The member <strong>is not</strong> a route server client",
         );
 
     }
@@ -212,29 +210,83 @@ class CustomerDiagnosticSuite extends Suite
      *
      * @return DiagnosticResult
      */
-    private function customerIRRDBFiltered(): DiagnosticResult {
+    private function customerIrrdbFiltered(): DiagnosticResult {
         $mainName = "IRRDB Filtered Status";
 
-        if($this->customer->irrdbFiltered()) {
-            if($this->customer->irrdbMoreSpecificsAllowed()) {
-                $narrative = "The member is IRRDB Filtered, and more specific prefixes are allowed";
-            } else {
-                $narrative = "The member is strict IRRDB Filtering applied";
-            }
+        if( !$this->customer->routeServerClient() ) {
             return new DiagnosticResult(
                 name: $mainName,
-                result: DiagnosticResult::TYPE_OKAY,
-                narrative: $narrative,
+                result: DiagnosticResult::TYPE_TRACE,
+                narrative: "The member is not a route server client so IRRDB filtering not considered",
             );
+        }
+
+        if( $this->customer->irrdbFiltered() ) {
+
+            if($this->customer->irrdbMoreSpecificsAllowed()) {
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_WARN,
+                    narrative: "The member is IRRDB filtered but note that more specific prefixes are allowed",
+                );
+            }
+
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_GOOD,
+                narrative: "The member is IRRDB filtered",
+            );
+
         }
 
         return new DiagnosticResult(
             name: $mainName,
             result: DiagnosticResult::TYPE_ERROR,
-            narrative: "The member is not IRRDB Filtered",
+            narrative: "The member is not IRRDB filtered",
         );
     }
 
+
+    /**
+     * Examine the customer IRRDB filtering status and provide information on it.
+     *
+     * @return DiagnosticResult
+     */
+    private function customerIrrdbAsnsPresent(): DiagnosticResult {
+        $mainName = "IRRDB Filtered Status";
+
+        if( !$this->customer->routeServerClient() ) {
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_TRACE,
+                narrative: "The member is not a route server client so IRRDB filtering not considered",
+            );
+        }
+
+        if( $this->customer->irrdbFiltered() ) {
+
+            if($this->customer->irrdbMoreSpecificsAllowed()) {
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_WARN,
+                    narrative: "The member is IRRDB filtered but note that more specific prefixes are allowed",
+                );
+            }
+
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_GOOD,
+                narrative: "The member is IRRDB filtered",
+            );
+
+        }
+
+        return new DiagnosticResult(
+            name: $mainName,
+            result: DiagnosticResult::TYPE_ERROR,
+            narrative: "The member is not IRRDB filtered",
+        );
+    }
 
 
 

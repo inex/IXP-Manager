@@ -50,9 +50,14 @@ use IXP\Services\Diagnostics\Suites\VirtualInterfaceDiagnosticSuite;
 class Diagnostics
 {
 
-    public function getStatusDiagnostics(Customer $customer): array
+    /**
+     * @param Customer $customer
+     * @return array
+     */
+    public function getCustomerDiagnostics(Customer $customer): array
     {
-        return ( new CustomerDiagnosticSuite( $customer ) )->run()->results();
+        $d = new CustomerDiagnosticSuite( $customer );
+        return [ 'suite' => $d, 'results' => $d->run()->results() ];
     }
 
     public function getVirtualInterfaceDiagnostics(Customer $customer): array

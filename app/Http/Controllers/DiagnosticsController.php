@@ -45,14 +45,14 @@ class DiagnosticsController extends Controller
      */
     public function run( Customer $customer, Diagnostics $diagnostics ): View
     {
-        $customerData = $customer->toArray();
-        $statusDiagnostics = $diagnostics->getStatusDiagnostics($customer);
-        $interfaceDiagnostics = $diagnostics->getVirtualInterfaceDiagnostics($customer);
+        $results = [];
 
-        return view( 'diagnostics.customer-detail')->with([
-            "customer" => $customerData,
-            "statusDiags" => $statusDiagnostics,
-            "interfaceDiags" => $interfaceDiagnostics,
+        $results[] = $diagnostics->getCustomerDiagnostics($customer);
+        // $results[] = $diagnostics->getVirtualInterfaceDiagnostics($customer);
+
+        return view( 'diagnostics.results')->with([
+            "customer" => $customer,
+            "results"  => $results,
         ]);
     }
 
