@@ -206,7 +206,7 @@
                     </li>
                 <?php endif; ?>
 
-                <?php if( count( $c->virtualInterfaces() ) ):?>
+                <?php if( count( $c->virtualInterfaces ) ):?>
                     <li role="ports" class="nav-item ">
                         <a class="nav-link <?php if( $t->tab === 'ports' ): ?> active <?php endif; ?>" data-toggle="tab" href="#ports" data-toggle="tab">
                             Ports

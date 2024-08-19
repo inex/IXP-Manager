@@ -31,8 +31,8 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
             <div class="tw-px-4 sm:tw-px-6 lg:tw-px-8">
                 <div class="sm:tw-flex sm:tw-items-center">
                     <div class="sm:tw-flex-auto">
-                        <h1 class="tw-text-base tw-font-semibold tw-leading-6 tw-text-gray-900"><?= $suite_results['suite']::DIAGNOSTIC_SUITE_NAME ?></h1>
-                        <p class="tw-mt-2 tw-text-sm tw-text-gray-700"><?= $suite_results['suite']::DIAGNOSTIC_SUITE_DESCRIPTION ?></p>
+                        <h1 class="tw-text-base tw-font-semibold tw-leading-6 tw-text-gray-900"><?= $suite_results['suite']->name() ?></h1>
+                        <p class="tw-mt-2 tw-text-sm tw-text-gray-700"><?= $suite_results['suite']->description() ?></p>
                     </div>
                     <!-- div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                         <button type="button" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Add user</button>

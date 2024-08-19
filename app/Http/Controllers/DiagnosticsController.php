@@ -48,7 +48,18 @@ class DiagnosticsController extends Controller
         $results = [];
 
         $results[] = $diagnostics->getCustomerDiagnostics($customer);
-        // $results[] = $diagnostics->getVirtualInterfaceDiagnostics($customer);
+        $results[] = $diagnostics->getCustomerIrrdbDiagnostics($customer);
+
+        foreach( $customer->virtualInterfaces as $vi ) {
+            $results[] = $diagnostics->getVirtualInterfaceDiagnostics( $vi );
+
+            // get the Physical Interface Diagnostics Data and integrate here into the VI array
+//            if(count($vi->physicalInterfaces) > 0) {
+//                $this->results[$vi["id"]]["PhysicalInterfaceDiagnostics"] = ( new Diagnostics() )->getPhysicalInterfaceDiagnostics($vi);
+//            }
+
+
+        }
 
         return view( 'diagnostics.results')->with([
             "customer" => $customer,

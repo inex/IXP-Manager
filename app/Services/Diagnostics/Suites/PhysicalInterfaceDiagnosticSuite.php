@@ -54,6 +54,10 @@ class PhysicalInterfaceDiagnosticSuite extends Suite
         private VirtualInterface $virtualInterface,
     ) {
         $this->physicalInterfaces = $this->virtualInterface->physicalInterfaces;
+
+//        $this->name        = ;
+//        $this->description = ;
+//        $this->type        = ;
     }
 
     /**

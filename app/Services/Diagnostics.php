@@ -23,17 +23,14 @@ namespace IXP\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Models\{Customer,
-    CoreBundle,
-    Infrastructure,
-    Location,
-    PhysicalInterface,
+use IXP\Models\{
+    Customer,
     VirtualInterface,
-    VlanInterface,
-    Switcher,
-    Vlan};
+};
 
+use IXP\Exceptions\GeneralException;
 use IXP\Services\Diagnostics\Suites\CustomerDiagnosticSuite;
+use IXP\Services\Diagnostics\Suites\IrrdbDiagnosticSuite;
 use IXP\Services\Diagnostics\Suites\PhysicalInterfaceDiagnosticSuite;
 use IXP\Services\Diagnostics\Suites\VirtualInterfaceDiagnosticSuite;
 
@@ -53,6 +50,7 @@ class Diagnostics
     /**
      * @param Customer $customer
      * @return array
+     * @throws GeneralException
      */
     public function getCustomerDiagnostics(Customer $customer): array
     {
@@ -60,9 +58,21 @@ class Diagnostics
         return [ 'suite' => $d, 'results' => $d->run()->results() ];
     }
 
-    public function getVirtualInterfaceDiagnostics(Customer $customer): array
+    /**
+     * @param Customer $customer
+     * @return array
+     */
+    public function getCustomerIrrdbDiagnostics(Customer $customer): array
     {
-        return ( new VirtualInterfaceDiagnosticSuite( $customer ) )->run()->results();
+        $d = new IrrdbDiagnosticSuite( $customer );
+        return [ 'suite' => $d, 'results' => $d->run()->results() ];
+    }
+
+
+    public function getVirtualInterfaceDiagnostics( VirtualInterface $vi ): array
+    {
+        $d = new VirtualInterfaceDiagnosticSuite( $vi );
+        return [ 'suite' => $d, 'results' => $d->run()->results() ];
     }
 
     public function getPhysicalInterfaceDiagnostics(VirtualInterface $virtualInterface): array

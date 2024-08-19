@@ -927,6 +927,21 @@ class Customer extends Model
     }
 
     /**
+     * Is the customer IRRDB filtered (usually for route server clients) on ALL of their rsclient VLAN interfaces?
+     *
+     * @return boolean
+     */
+    public function fullyIrrdbFiltered(): bool
+    {
+        return !(bool)self::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )
+            ->leftJoin( 'vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id' )
+            ->where( 'cust.id', $this->id )->where( 'rsclient', true )
+            ->where( 'irrdbfilter', false )
+            ->get()->count();
+    }
+
+
+    /**
      * If the customer is IRRDB filtered on any of their VLAN interfaces, are more specifics allowed?
      *
      * @return boolean

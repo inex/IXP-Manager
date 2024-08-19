@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Services\Diagnostics;
+namespace IXP;
 
 /*
  * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -24,44 +24,27 @@ namespace IXP\Services\Diagnostics;
  */
 
 /**
- * Diagnostics Service - Abstract Definition for a Diagnostic Suite
+ * IXP - top level class for constants, etc.
  *
  * @author     Barry O'Donovan  <barry@opensolutions.ie>
- * @author     Laszlo Kiss      <laszlo@islandbridgenetworks.ie>
  * @category   IXP
- * @package    IXP\Services\Grapher
+ * @package    IXP
  * @copyright  Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-abstract class Suite
+
+class IXP
 {
-    protected string $name        = 'Err: Suite name not set!';
-    protected string $description = 'Err: No suite description set!';
-    protected string $type        = 'Err: No suite type set!';
+    public const int IPv4 = 4;
+    public const int IPv6 = 6;
 
-    /**
-     * @var DiagnosticResult[]
-     */
-    protected array $results = [];
+    public static array $PROTOCOLS = [
+        self::IPv4 => 'IPv4',
+        self::IPv6 => 'IPv6',
+    ];
 
-
-    /**
-     * @return DiagnosticResult[]
-     */
-    public function results(): array {
-        return $this->results;
-    }
-
-    public function name(): string {
-        return $this->name;
-    }
-
-    public function description(): string {
-        return $this->description;
-    }
-
-    public function type(): string {
-        return $this->type;
+    public static function protocol( int $p ): string {
+        return self::$PROTOCOLS[$p] ?? '';
     }
 
 }
