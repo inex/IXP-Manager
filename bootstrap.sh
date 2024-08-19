@@ -51,6 +51,7 @@ apt install -y apache2 php8.3 php8.3-intl php8.3-mysql php-rrd php8.3-cgi php8.3
 
 sed -i 's/^bind-address\s\+=\s\+127.0.0.1/#bind-address            = 127.0.0.1/' /etc/mysql/mysql.conf.d/mysqld.cnf
 
+systemctl restart mysql.service
 
 if ! [ -L /var/www ]; then
   rm -rf /var/www
@@ -117,7 +118,7 @@ a2enmod rewrite
 sed -i 's/export APACHE_RUN_USER=www-data/export APACHE_RUN_USER=vagrant/' /etc/apache2/envvars
 sed -i 's/export APACHE_RUN_GROUP=www-data/export APACHE_RUN_GROUP=vagrant/' /etc/apache2/envvars
 
-service apache2 restart
+systemctl restart apache2.service
 
 # Useful screen settings for barryo:
 cat >/home/vagrant/.screenrc <<END_SCREEN
@@ -133,6 +134,23 @@ hardstatus string '%{= kG}%-Lw%{= kW}%50> %n%f* %t%{= kG}%+Lw%<'
 screen -t bash     0
 altscreen on
 END_SCREEN
+
+
+
+### snmpsim
+apt install -y python3-pip python3-venv python3-full
+mkdir /srv/venv
+python3 -m venv /srv/venv/
+cd /srv/venv/
+./bin/pip install snmpsim
+mkdir /srv/snmpclients
+cp /vagrant/tools/docker/snmpwalks/*snmprec /srv/snmpclients/
+chown -R vagrant: /srv/snmpclients
+/srv/venv/bin/snmpsim-command-responder --data-dir=/srv/snmpclients/                    \
+      --agent-udpv4-endpoint=127.0.0.1:16100 --quiet --daemonize --process-user vagrant \
+      --process-group vagrant --pid-file /tmp/snmpsim.pid --logging-method null
+
+
 
 
 # enable scheduler
