@@ -171,19 +171,19 @@ class VlanInterfaceAggregator extends VlanInterface
      *
      * @param Vlan  $vlan       The VLAN
      * @param int   $proto      Either 4 or 6
-     * @param int   $pistatus   The status of the physical interface
+     * @param ?int  $pistatus   The status of the physical interface
      *
      * @return array
      *
      * @throws
      */
-    public static function forProto( Vlan $vlan, int $proto, int $pistatus = PhysicalInterface::STATUS_CONNECTED ) : array
+    public static function forProto( Vlan $vlan, int $proto, ?int $pistatus = PhysicalInterface::STATUS_CONNECTED ) : array
     {
         if( !in_array( $proto, [ 4, 6 ] ) ){
             $proto = 4;
         }
 
-        return self::select( [
+        $q = self::select( [
             'cust.id AS cid', 'cust.name AS cname',
             'cust.abbreviatedName AS abrevcname',
             'cust.shortname AS cshortname',
@@ -232,9 +232,13 @@ class VlanInterfaceAggregator extends VlanInterface
             ->where( 'v.id', $vlan->id )
             ->whereRaw( Customer::SQL_CUST_ACTIVE )
             ->whereRaw( Customer::SQL_CUST_CURRENT )
-            ->whereRaw( Customer::SQL_CUST_TRAFFICING )
-            ->where( 'pi.status', $pistatus )
-            ->groupByRaw( "vli.id, cust.id, cust.name, cust.abbreviatedName, cust.shortname, cust.autsys,
+            ->whereRaw( Customer::SQL_CUST_TRAFFICING );
+
+        if( $pistatus !== null ) {
+            $q->where( 'pi.status', $pistatus );
+        }
+
+        $q->groupByRaw( "vli.id, cust.id, cust.name, cust.abbreviatedName, cust.shortname, cust.autsys,
                         cust.maxprefixes, cust.peeringmacro, cust.peeringmacrov6,
                         vli.ipv{$proto}enabled, addr.address, vli.ipv{$proto}bgpmd5secret, vli.maxbgpprefix,
                         vli.ipv{$proto}hostname, vli.ipv{$proto}monitorrcbgp, vli.busyhost,
@@ -242,7 +246,9 @@ class VlanInterfaceAggregator extends VlanInterface
                         s.id, s.name,
                         cab.id, cab.name,
                         l.name, l.shortname, l.tag" )
-            ->orderByRaw( 'cust.autsys ASC, vli.id ASC' )->get()->toArray();
+            ->orderByRaw( 'cust.autsys ASC, vli.id ASC' );
+
+        return $q->get()->toArray();
     }
 
 
@@ -324,7 +330,7 @@ class VlanInterfaceAggregator extends VlanInterface
      */
     public static function sanitiseVlanInterfaces( Vlan $vlan, int $protocol = 4, int $target = Router::TYPE_ROUTE_SERVER, bool $quarantine = false ): array
     {
-        $ints = self::forProto( $vlan, $protocol, $quarantine  ? PhysicalInterface::STATUS_QUARANTINE : PhysicalInterface::STATUS_CONNECTED );
+        $ints = self::forProto( $vlan, $protocol, $quarantine ? null : PhysicalInterface::STATUS_CONNECTED );
 
         $newints = [];
 
