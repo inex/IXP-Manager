@@ -147,8 +147,9 @@ mkdir /srv/snmpclients
 cp /vagrant/tools/docker/snmpwalks/*snmprec /srv/snmpclients/
 chown -R vagrant: /srv/snmpclients
 /srv/venv/bin/snmpsim-command-responder --data-dir=/srv/snmpclients/                    \
-      --agent-udpv4-endpoint=127.0.0.1:16100 --quiet --daemonize --process-user vagrant \
-      --process-group vagrant --pid-file /tmp/snmpsim.pid --logging-method null
+      --agent-udpv4-endpoint=127.0.0.1:161 --quiet --daemonize --process-user root      \
+      --process-group root --pid-file /tmp/snmpsim.pid --logging-method null
+sed -i 's/127.0.0.1 localhost/127.0.0.1 localhost switch1 switch2/' /etc/hosts
 
 
 
