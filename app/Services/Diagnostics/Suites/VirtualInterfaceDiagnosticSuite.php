@@ -47,6 +47,8 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
         $this->name        = 'Virtual Interface #' . $vi->id;
         $this->description = "Virtual interfaces general diagnostics.";
         $this->type        = 'INTERFACE';
+
+        parent::__construct();
     }
 
     /**
@@ -54,11 +56,9 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
      */
     public function run(): VirtualInterfaceDiagnosticSuite
     {
-        $this->results = [];
-
-        $this->results[] = $this->portType();
-        $this->results[] = $this->sameSwitch();
-        $this->results[] = $this->lag();
+        $this->results->add( $this->portType() );
+        $this->results->add( $this->sameSwitch() );
+        $this->results->add( $this->lag() );
 //
 //        $this->results[] = $this->virtualInterfaceVlanTrunk();
 //

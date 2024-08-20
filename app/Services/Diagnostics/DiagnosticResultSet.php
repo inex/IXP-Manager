@@ -24,7 +24,7 @@ namespace IXP\Services\Diagnostics;
  */
 
 /**
- * Diagnostics Service - Abstract Definition for a Diagnostic Suite
+ * Diagnostics Service - Result Container
  *
  * @author     Barry O'Donovan  <barry@opensolutions.ie>
  * @author     Laszlo Kiss      <laszlo@islandbridgenetworks.ie>
@@ -33,37 +33,39 @@ namespace IXP\Services\Diagnostics;
  * @copyright  Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-abstract class DiagnosticSuite
+
+class DiagnosticResultSet
 {
-    protected string $name        = 'Err: Suite name not set!';
-    protected string $description = 'Err: No suite description set!';
-    protected string $type        = 'Err: No suite type set!';
+    public DiagnosticSuite $suite;
 
-    protected DiagnosticResultSet $results;
-
-
-    public function __construct() {
-        $this->results = new DiagnosticResultSet( $this );
-    }
-
+    /** @var DiagnosticResult[]  */
+    public array $results = [];
 
     /**
-     * @return DiagnosticResultSet
+     * @param DiagnosticResult|null $result
      */
-    public function results(): DiagnosticResultSet {
-        return $this->results;
+    public function __construct( DiagnosticSuite $suite, ?DiagnosticResult $result = null ) {
+        $this->suite = $suite;
+
+        if ($result !== null) {
+            $this->results[] = $result;
+        }
     }
 
-    public function name(): string {
-        return $this->name;
-    }
+    /**
+     * Adds a diagnostic result to the result set.
+     *
+     * @param DiagnosticResult $result The diagnostic result to add.
+     * @return DiagnosticResultSet This diagnostic result set.
+     */
+    public function add( DiagnosticResult|array $result ): DiagnosticResultSet {
 
-    public function description(): string {
-        return $this->description;
-    }
+        $this->results = array_merge(
+            $this->results,
+            is_array($result) ? $result : [$result]
+        );
 
-    public function type(): string {
-        return $this->type;
+        return $this;
     }
 
 }

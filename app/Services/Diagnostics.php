@@ -29,6 +29,7 @@ use IXP\Models\{
 };
 
 use IXP\Exceptions\GeneralException;
+use IXP\Services\Diagnostics\DiagnosticResultSet;
 use IXP\Services\Diagnostics\Suites\CustomerDiagnosticSuite;
 use IXP\Services\Diagnostics\Suites\IrrdbDiagnosticSuite;
 use IXP\Services\Diagnostics\Suites\PhysicalInterfaceDiagnosticSuite;
@@ -49,33 +50,33 @@ class Diagnostics
 
     /**
      * @param Customer $customer
-     * @return array
+     * @return DiagnosticResultSet
      * @throws GeneralException
      */
-    public function getCustomerDiagnostics(Customer $customer): array
+    public function getCustomerDiagnostics(Customer $customer): DiagnosticResultSet
     {
         $d = new CustomerDiagnosticSuite( $customer );
-        return [ 'suite' => $d, 'results' => $d->run()->results() ];
+        return $d->run()->results();
     }
 
     /**
      * @param Customer $customer
-     * @return array
+     * @return DiagnosticResultSet
      */
-    public function getCustomerIrrdbDiagnostics(Customer $customer): array
+    public function getCustomerIrrdbDiagnostics(Customer $customer): DiagnosticResultSet
     {
         $d = new IrrdbDiagnosticSuite( $customer );
-        return [ 'suite' => $d, 'results' => $d->run()->results() ];
+        return $d->run()->results();
     }
 
 
-    public function getVirtualInterfaceDiagnostics( VirtualInterface $vi ): array
+    public function getVirtualInterfaceDiagnostics( VirtualInterface $vi ): DiagnosticResultSet
     {
         $d = new VirtualInterfaceDiagnosticSuite( $vi );
-        return [ 'suite' => $d, 'results' => $d->run()->results() ];
+        return $d->run()->results();
     }
 
-    public function getPhysicalInterfaceDiagnostics(VirtualInterface $virtualInterface): array
+    public function getPhysicalInterfaceDiagnostics(VirtualInterface $virtualInterface): DiagnosticResultSet
     {
         return ( new PhysicalInterfaceDiagnosticSuite( $virtualInterface ) )->run()->results();
     }

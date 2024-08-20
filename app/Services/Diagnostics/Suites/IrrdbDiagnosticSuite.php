@@ -53,6 +53,8 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
         $this->name        = 'IRRDB Filtering';
         $this->description = "Diagnostics related to IRRDB filtering.";
         $this->type        = 'CUSTOMER';
+
+        parent::__construct();
     }
 
     /**
@@ -62,14 +64,13 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
     public function run(): IrrdbDiagnosticSuite
     {
         // ordering here will determine order on view
-        $this->results[] = $this->customerIrrdbFiltered();
+        $this->results->add( $this->customerIrrdbFiltered() );
 
         if( $this->customer->routeServerClient() && $this->customer->irrdbFiltered() ) {
-
-            $this->results[] = $this->customerIrrdbAsnsPresent( IXP::IPv4 );
-            $this->results[] = $this->customerIrrdbAsnsPresent( IXP::IPv6 );
-            $this->results[] = $this->customerIrrdbPrefixesPresent( IXP::IPv4 );
-            $this->results[] = $this->customerIrrdbPrefixesPresent( IXP::IPv6 );
+            $this->results->add( $this->customerIrrdbAsnsPresent( IXP::IPv4 ) );
+            $this->results->add( $this->customerIrrdbAsnsPresent( IXP::IPv6 ) );
+            $this->results->add( $this->customerIrrdbPrefixesPresent( IXP::IPv4 ) );
+            $this->results->add( $this->customerIrrdbPrefixesPresent( IXP::IPv6 ) );
         }
 
         return $this;

@@ -24,15 +24,15 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
         <?= $t->alerts() ?>
 
 
-        <?php foreach( $t->results as $suite_results ): ?>
 
-
+        <?php   /** @var \IXP\Services\Diagnostics\DiagnosticResultSet $drs */
+            foreach( $t->resultSets as $drs ): ?>
 
             <div class="tw-px-4 sm:tw-px-6 lg:tw-px-8">
                 <div class="sm:tw-flex sm:tw-items-center">
                     <div class="sm:tw-flex-auto">
-                        <h1 class="tw-text-base tw-font-semibold tw-leading-6 tw-text-gray-900"><?= $suite_results['suite']->name() ?></h1>
-                        <p class="tw-mt-2 tw-text-sm tw-text-gray-700"><?= $suite_results['suite']->description() ?></p>
+                        <h1 class="tw-text-base tw-font-semibold tw-leading-6 tw-text-gray-900"><?= $drs->suite->name() ?></h1>
+                        <p class="tw-mt-2 tw-text-sm tw-text-gray-700"><?= $drs->suite->description() ?></p>
                     </div>
                     <!-- div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                         <button type="button" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Add user</button>
@@ -53,7 +53,7 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
                         </thead -->
                         <tbody class="tw-divide-y tw-divide-gray-200 tw-bg-white">
 
-                        <?php foreach( $suite_results['results'] as $r ): ?>
+                        <?php foreach( $drs->results as $r ): ?>
 
                             <tr>
                                 <td class="tw-whitespace-nowrap tw-py-5 tw-pl-4 tw-px-3 tw-text-sm sm:tw-pl-0">

@@ -49,6 +49,8 @@ class CustomerDiagnosticSuite extends DiagnosticSuite
         $this->name        = 'Member Overview';
         $this->description = 'Diagnostics for the overall member\'s set-up.';
         $this->type        = 'CUSTOMER';
+
+        parent::__construct();
     }
 
     /**
@@ -58,10 +60,10 @@ class CustomerDiagnosticSuite extends DiagnosticSuite
     public function run(): CustomerDiagnosticSuite
     {
         // ordering here will determine order on view
-        $this->results[] = $this->customerType();
-        $this->results[] = $this->customerStatus();
-        $this->results[] = $this->customerHasLeft();
-        $this->results[] = $this->customerRouteServerClient();
+        $this->results->add( $this->customerType() );
+        $this->results->add( $this->customerStatus() );
+        $this->results->add( $this->customerHasLeft() );
+        $this->results->add( $this->customerRouteServerClient() );
 
         return $this;
     }
