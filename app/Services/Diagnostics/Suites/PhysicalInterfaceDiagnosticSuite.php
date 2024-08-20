@@ -27,7 +27,7 @@ use Carbon\Carbon;
 use IXP\Models\VirtualInterface;
 use IXP\Models\PhysicalInterface;
 use IXP\Services\Diagnostics\DiagnosticResult;
-use IXP\Services\Diagnostics\Suite;
+use IXP\Services\Diagnostics\DiagnosticSuite;
 
 /**
  * Diagnostics Service - Physical Interfaces Suite
@@ -40,7 +40,7 @@ use IXP\Services\Diagnostics\Suite;
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 
-class PhysicalInterfaceDiagnosticSuite extends Suite
+class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
 {
     public const string DIAGNOSTIC_SUITE_NAME = 'Physical Interfaces Overview';
 

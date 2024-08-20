@@ -31,7 +31,7 @@ use IXP\Models\IrrdbAsn;
 use IXP\Models\IrrdbPrefix;
 use IXP\Models\IrrdbUpdateLog;
 use IXP\Services\Diagnostics\DiagnosticResult;
-use IXP\Services\Diagnostics\Suite;
+use IXP\Services\Diagnostics\DiagnosticSuite;
 
 /**
  * Diagnostics Service - Customer IRRDB Suite
@@ -44,7 +44,7 @@ use IXP\Services\Diagnostics\Suite;
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 
-class IrrdbDiagnosticSuite extends Suite
+class IrrdbDiagnosticSuite extends DiagnosticSuite
 {
 
     public function __construct(

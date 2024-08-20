@@ -26,7 +26,7 @@ namespace IXP\Services\Diagnostics\Suites;
 use IXP\Models\SwitchPort;
 use IXP\Models\VirtualInterface;
 use IXP\Services\Diagnostics\DiagnosticResult;
-use IXP\Services\Diagnostics\Suite;
+use IXP\Services\Diagnostics\DiagnosticSuite;
 
 /**
  * Diagnostics Service - Virtual Interfaces Suite
@@ -39,7 +39,7 @@ use IXP\Services\Diagnostics\Suite;
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 
-class VirtualInterfaceDiagnosticSuite extends Suite
+class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
 {
     public function __construct(
         private readonly VirtualInterface $vi,

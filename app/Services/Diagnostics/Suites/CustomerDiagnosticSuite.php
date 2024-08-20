@@ -27,7 +27,7 @@ use Carbon\Carbon;
 use IXP\Exceptions\GeneralException;
 use IXP\Models\Customer;
 use IXP\Services\Diagnostics\DiagnosticResult;
-use IXP\Services\Diagnostics\Suite;
+use IXP\Services\Diagnostics\DiagnosticSuite;
 
 /**
  * Diagnostics Service - Customer Suite
@@ -40,7 +40,7 @@ use IXP\Services\Diagnostics\Suite;
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 
-class CustomerDiagnosticSuite extends Suite
+class CustomerDiagnosticSuite extends DiagnosticSuite
 {
 
     public function __construct(
