@@ -3,13 +3,21 @@
     <words>
       <w>asns</w>
       <w>cust</w>
+      <w>channelgroup</w>
       <w>facs</w>
       <w>irrdb</w>
       <w>irrdblog</w>
       <w>ixps</w>
       <w>lacp</w>
       <w>peeringdb</w>
+      <w>physicalinterface</w>
+      <w>switchid</w>
+      <w>switchport</w>
+      <w>switchportid</w>
+      <w>virtualinterface</w>
+      <w>virtualinterfaceid</w>
       <w>vlan</w>
+      <w>vlis</w>
     </words>
   </dictionary>
 </component>

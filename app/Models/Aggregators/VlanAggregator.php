@@ -79,6 +79,7 @@ use IXP\Models\{
  * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator wherePeeringMatrix($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator wherePrivate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator whereUpdatedAt($value)
+ * @method static Builder|VlanAggregator publicProductionPeeringLan()
  * @mixin \Eloquent
  */
 class VlanAggregator extends Vlan

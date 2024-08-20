@@ -365,6 +365,8 @@ DROP TABLE IF EXISTS `contact_to_group`;
 CREATE TABLE `contact_to_group` (
   `contact_id` int(11) NOT NULL,
   `contact_group_id` bigint(20) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
   PRIMARY KEY (`contact_id`,`contact_group_id`),
   KEY `IDX_FCD9E962E7A1254A` (`contact_id`),
   KEY `IDX_FCD9E962647145D0` (`contact_group_id`),
@@ -553,8 +555,8 @@ CREATE TABLE `cust_notes` (
   `private` tinyint(1) NOT NULL DEFAULT '1',
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `note` longtext COLLATE utf8_unicode_ci NOT NULL,
-  `created` datetime NOT NULL,
-  `updated` datetime NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_6377D8679395C3F3` (`customer_id`),
   CONSTRAINT `FK_6377D8679395C3F3` FOREIGN KEY (`customer_id`) REFERENCES `cust` (`id`) ON DELETE CASCADE
@@ -1483,6 +1485,7 @@ CREATE TABLE `patch_panel_port_history` (
   `customer` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `switchport` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `colo_billing_ref` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cust_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_CB80B54AB0F978FF` (`patch_panel_port_id`),
   KEY `IDX_CB80B54A3838446` (`duplex_master_id`),
@@ -1791,7 +1794,7 @@ CREATE TABLE `switch` (
 
 LOCK TABLES `switch` WRITE;
 /*!40000 ALTER TABLE `switch` DISABLE KEYS */;
-INSERT INTO `switch` VALUES (1,1,1,12,'Switch 1','s1','10.0.0.1','','public','FESX624',1,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL),(2,2,1,12,'Switch 2','s2','10.0.0.2','','public','FESX624',1,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `switch` VALUES (1,1,1,12,'Switch 1','switch1','127.0.0.1','','switch1','FESX624',1,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL),(2,2,1,12,'Switch 2','switch2','127.0.0.1','','switch2','FESX624',1,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `switch` ENABLE KEYS */;
 UNLOCK TABLES;
 

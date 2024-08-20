@@ -45,25 +45,25 @@ class DiagnosticsController extends Controller
      */
     public function run( Customer $customer, Diagnostics $diagnostics ): View
     {
-        $results = [];
+        $resultSets = [];
 
-        $results[] = $diagnostics->getCustomerDiagnostics($customer);
-        $results[] = $diagnostics->getCustomerIrrdbDiagnostics($customer);
+        $resultSets[] = $diagnostics->getCustomerDiagnostics($customer);
+        $resultSets[] = $diagnostics->getCustomerIrrdbDiagnostics($customer);
 
         foreach( $customer->virtualInterfaces as $vi ) {
-            $results[] = $diagnostics->getVirtualInterfaceDiagnostics( $vi );
+            $resultSets[] = $diagnostics->getVirtualInterfaceDiagnostics( $vi );
 
             // get the Physical Interface Diagnostics Data and integrate here into the VI array
-//            if(count($vi->physicalInterfaces) > 0) {
-//                $this->results[$vi["id"]]["PhysicalInterfaceDiagnostics"] = ( new Diagnostics() )->getPhysicalInterfaceDiagnostics($vi);
-//            }
+            foreach( $vi->physicalInterfaces as $pi ) {
+                $resultSets[] = $diagnostics->getPhysicalInterfaceDiagnostics( $pi );
+            }
 
 
         }
 
         return view( 'diagnostics.results')->with([
             "customer" => $customer,
-            "results"  => $results,
+            "resultSets"  => $resultSets,
         ]);
     }
 

@@ -44,7 +44,7 @@ class DiagnosticResult
     public const int TYPE_DEBUG = 200;
     public const int TYPE_TRACE = 100;
 
-    public static $RESULT_TYPES_TEXT = [
+    public static array $RESULT_TYPES_TEXT = [
         self::TYPE_FATAL   => 'Fatal',
         self::TYPE_ERROR   => 'Error',
         self::TYPE_WARN    => 'Warning',
@@ -54,7 +54,7 @@ class DiagnosticResult
         self::TYPE_TRACE   => 'Trace',
     ];
 
-    public static $RESULT_TYPES_ICON_STYLE = [
+    public static array $RESULT_TYPES_ICON_STYLE = [
         self::TYPE_FATAL   => 'tw-bg-red-50 tw-text-red-700 tw-ring-red-600/10',
         self::TYPE_ERROR   => 'tw-bg-pink-50 tw-text-pink-700 tw-ring-pink-700/10',
         self::TYPE_WARN    => 'tw-bg-yellow-50 -text-yellow-800 tw-ring-yellow-600/20',
@@ -69,6 +69,7 @@ class DiagnosticResult
         public string $name,
         public int $result,
         public string $narrative,
+        public bool $public = false,    // whether the diagnostic result should be visible to the member
     ) { }
 
     public function iconStyle(): string {

@@ -31,7 +31,7 @@ use IXP\Models\IrrdbAsn;
 use IXP\Models\IrrdbPrefix;
 use IXP\Models\IrrdbUpdateLog;
 use IXP\Services\Diagnostics\DiagnosticResult;
-use IXP\Services\Diagnostics\Suite;
+use IXP\Services\Diagnostics\DiagnosticSuite;
 
 /**
  * Diagnostics Service - Customer IRRDB Suite
@@ -44,7 +44,7 @@ use IXP\Services\Diagnostics\Suite;
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 
-class IrrdbDiagnosticSuite extends Suite
+class IrrdbDiagnosticSuite extends DiagnosticSuite
 {
 
     public function __construct(
@@ -53,6 +53,8 @@ class IrrdbDiagnosticSuite extends Suite
         $this->name        = 'IRRDB Filtering';
         $this->description = "Diagnostics related to IRRDB filtering.";
         $this->type        = 'CUSTOMER';
+
+        parent::__construct();
     }
 
     /**
@@ -62,14 +64,13 @@ class IrrdbDiagnosticSuite extends Suite
     public function run(): IrrdbDiagnosticSuite
     {
         // ordering here will determine order on view
-        $this->results[] = $this->customerIrrdbFiltered();
+        $this->results->add( $this->customerIrrdbFiltered() );
 
         if( $this->customer->routeServerClient() && $this->customer->irrdbFiltered() ) {
-
-            $this->results[] = $this->customerIrrdbAsnsPresent( IXP::IPv4 );
-            $this->results[] = $this->customerIrrdbAsnsPresent( IXP::IPv6 );
-            $this->results[] = $this->customerIrrdbPrefixesPresent( IXP::IPv4 );
-            $this->results[] = $this->customerIrrdbPrefixesPresent( IXP::IPv6 );
+            $this->results->add( $this->customerIrrdbAsnsPresent( IXP::IPv4 ) );
+            $this->results->add( $this->customerIrrdbAsnsPresent( IXP::IPv6 ) );
+            $this->results->add( $this->customerIrrdbPrefixesPresent( IXP::IPv4 ) );
+            $this->results->add( $this->customerIrrdbPrefixesPresent( IXP::IPv6 ) );
         }
 
         return $this;

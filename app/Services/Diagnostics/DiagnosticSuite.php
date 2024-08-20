@@ -33,22 +33,24 @@ namespace IXP\Services\Diagnostics;
  * @copyright  Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-abstract class Suite
+abstract class DiagnosticSuite
 {
     protected string $name        = 'Err: Suite name not set!';
     protected string $description = 'Err: No suite description set!';
     protected string $type        = 'Err: No suite type set!';
 
-    /**
-     * @var DiagnosticResult[]
-     */
-    protected array $results = [];
+    protected DiagnosticResultSet $results;
+
+
+    public function __construct() {
+        $this->results = new DiagnosticResultSet( $this );
+    }
 
 
     /**
-     * @return DiagnosticResult[]
+     * @return DiagnosticResultSet
      */
-    public function results(): array {
+    public function results(): DiagnosticResultSet {
         return $this->results;
     }
 
