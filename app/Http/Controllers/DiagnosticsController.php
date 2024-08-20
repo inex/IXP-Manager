@@ -54,9 +54,9 @@ class DiagnosticsController extends Controller
             $resultSets[] = $diagnostics->getVirtualInterfaceDiagnostics( $vi );
 
             // get the Physical Interface Diagnostics Data and integrate here into the VI array
-//            foreach( $vi->physicalInterfaces as $pi ) {
-//                $resultSets[] = $diagnostics->getPhysicalInterfaceDiagnostics( $pi );
-//            }
+            foreach( $vi->physicalInterfaces as $pi ) {
+                $resultSets[] = $diagnostics->getPhysicalInterfaceDiagnostics( $pi );
+            }
 
 
         }

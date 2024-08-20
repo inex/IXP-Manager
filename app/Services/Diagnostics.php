@@ -23,10 +23,7 @@ namespace IXP\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Models\{
-    Customer,
-    VirtualInterface,
-};
+use IXP\Models\{Customer, PhysicalInterface, VirtualInterface};
 
 use IXP\Exceptions\GeneralException;
 use IXP\Services\Diagnostics\DiagnosticResultSet;
@@ -69,16 +66,24 @@ class Diagnostics
         return $d->run()->results();
     }
 
-
+    /**
+     * @param VirtualInterface $vi
+     * @return DiagnosticResultSet
+     */
     public function getVirtualInterfaceDiagnostics( VirtualInterface $vi ): DiagnosticResultSet
     {
         $d = new VirtualInterfaceDiagnosticSuite( $vi );
         return $d->run()->results();
     }
 
-    public function getPhysicalInterfaceDiagnostics(VirtualInterface $virtualInterface): DiagnosticResultSet
+    /**
+     * @param PhysicalInterface $pi
+     * @return DiagnosticResultSet
+     */
+    public function getPhysicalInterfaceDiagnostics(PhysicalInterface $pi): DiagnosticResultSet
     {
-        return ( new PhysicalInterfaceDiagnosticSuite( $virtualInterface ) )->run()->results();
+        $d = new PhysicalInterfaceDiagnosticSuite( $pi );
+        return $d->run()->results();
     }
 
 }

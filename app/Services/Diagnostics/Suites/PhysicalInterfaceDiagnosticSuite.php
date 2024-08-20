@@ -29,6 +29,9 @@ use IXP\Models\PhysicalInterface;
 use IXP\Services\Diagnostics\DiagnosticResult;
 use IXP\Services\Diagnostics\DiagnosticSuite;
 
+use OSS_SNMP\Exception;
+use OSS_SNMP\SNMP;
+
 /**
  * Diagnostics Service - Physical Interfaces Suite
  *
@@ -48,16 +51,25 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
 
     public const string DIAGNOSTIC_SUITE_TYPE = 'PHYSICAL_INTERFACE';
 
-    private \Illuminate\Database\Eloquent\Collection $physicalInterfaces;
+    private VirtualInterface $vi;
+    private SNMP|bool $snmpHost;
 
     public function __construct(
-        private VirtualInterface $virtualInterface,
+        private PhysicalInterface $pi,
     ) {
-        $this->physicalInterfaces = $this->virtualInterface->physicalInterfaces;
+        $this->name        = 'Physical Interface #' . $pi->id;
+        $this->description = 'Physical Interfaces general diagnostics.';
+        $this->type        = 'INTERFACE';
 
-//        $this->name        = ;
-//        $this->description = ;
-//        $this->type        = ;
+        $this->vi = $pi->virtualInterface;
+
+        if( !$pi->switchPort->switcher->snmppasswd || trim( $pi->switchPort->switcher->snmppasswd ) === '' ) {
+            $this->snmpHost = false;
+        } else {
+            $this->snmpHost = new SNMP( $pi->switchPort->switcher->hostname, $pi->switchPort->switcher->snmppasswd );
+        }
+
+        parent::__construct();
     }
 
     /**
@@ -65,40 +77,52 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
      */
     public function run(): PhysicalInterfaceDiagnosticSuite
     {
-        $this->results = [];
+        $this->results->add( $this->physicalInterfaceLastPoll() );
+        $this->results->add( $this->physicalInterfaceMTU() );
+        if(!$this->snmpHost) {
 
-        //info("all PI\n".var_export($this->physicalInterfaces->toArray(), true));
+            $this->results->add(
+                new DiagnosticResult(
+                    name: "SNMP diagnostics",
+                    result: DiagnosticResult::TYPE_WARN,
+                    narrative: "No SNMP host - diagnostics not available",
+                )
+            );
 
-        // ordering here will determine order on view
-        foreach ($this->physicalInterfaces as $physicalInterface) {
-            $this->results[$physicalInterface["id"]][] = $this->physicalInterfaceLastPoll($physicalInterface);
+        } else {
 
-            if(!is_null($this->virtualInterface->mtu) && $this->virtualInterface->mtu > 0) {
-                $this->results[$physicalInterface["id"]][] = $this->physicalInterfaceMTU($physicalInterface);
-            }
-
+            $this->results->add( $this->physicalInterfaceOperating() );
+            $this->results->add( $this->physicalInterfaceSwitchPortStatus() );
+            $this->results->add( $this->physicalInterfaceAdminStatus() );
+            $this->results->add( $this->physicalInterfaceSwitchSpeed() );
 
         }
-
 
         return $this;
     }
 
 
+    private function snmpReachError($mainName) {
+        return new DiagnosticResult(
+            name: $mainName,
+            result: DiagnosticResult::TYPE_WARN,
+            narrative: "SNMP host cannot be reached",
+        );
+    }
+
     /**
      * Examine the physical interface last poll and provide information on it.
      *
-     * @param PhysicalInterface $physicalInterface
      * @return DiagnosticResult
      */
-    private function physicalInterfaceLastPoll(PhysicalInterface $physicalInterface): DiagnosticResult
+    private function physicalInterfaceLastPoll(): DiagnosticResult
     {
         $mainName = "Diagnostic tests";
 
-        $lastPoll = $physicalInterface->switchPort->lastSnmpPoll;
+        $lastPoll = $this->pi->switchPort->lastSnmpPoll;
         $diff = Carbon::now()->diffInDays(Carbon::parse($lastPoll));
 
-        if ($diff >= 1 || is_null($physicalInterface->switchPort->lastSnmpPoll)) {
+        if ($diff >= 1 || is_null($this->pi->switchPort->lastSnmpPoll)) {
             return new DiagnosticResult(
                 name: $mainName,
                 result: DiagnosticResult::TYPE_WARN,
@@ -117,22 +141,21 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
     /**
      * Examine the physical interface mtu and provide information on it.
      *
-     * @param PhysicalInterface $physicalInterface
      * @return DiagnosticResult
      */
-    private function physicalInterfaceMTU(PhysicalInterface $physicalInterface): DiagnosticResult
+    private function physicalInterfaceMTU(): DiagnosticResult
     {
         $mainName = "MTU diagnostic";
 
-        $viMtu = $this->virtualInterface->mtu;
+        $viMtu = $this->vi->mtu;
 
-        if ($physicalInterface->switchPort->ifMtu === $viMtu) {
+        if ($this->pi->switchPort->ifMtu === $viMtu) {
             return new DiagnosticResult(
                 name: $mainName,
                 result: DiagnosticResult::TYPE_GOOD,
                 narrative: "MTU values matching",
             );
-        } else if ($physicalInterface->switchPort->ifMtu < $viMtu) {
+        } else if ($this->pi->switchPort->ifMtu < $viMtu) {
             return new DiagnosticResult(
                 name: $mainName,
                 result: DiagnosticResult::TYPE_ERROR,
@@ -148,6 +171,187 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
 
     }
 
+
+    /**
+     * Examine the physical interface operating and admin statuses and provide information on it.
+     *
+     * @return DiagnosticResult
+     */
+    private function physicalInterfaceOperating():  DiagnosticResult
+    {
+        $mainName = "Operating Status";
+
+        try {
+
+            $adminStatus = $this->snmpHost->useIface()->adminStates(1)[$this->pi->switchPort->ifIndex];
+            $operationStatus = $this->snmpHost->useIface()->operationStates(1)[$this->pi->switchPort->ifIndex];
+
+            if ($adminStatus !== $operationStatus) {
+
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_WARN,
+                    narrative: "Operating status failed",
+                );
+
+            } else {
+
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_GOOD,
+                    narrative: "Operating status good",
+                );
+
+
+            }
+
+        } catch(Exception $exception) {
+            info("Issue\n".$exception);
+
+            return $this->snmpReachError($mainName);
+
+        }
+
+    }
+
+
+    /**
+     * Examine the switch port status and provide information on it.
+     *
+     * @return DiagnosticResult
+     */
+    private function physicalInterfaceSwitchPortStatus():  DiagnosticResult
+    {
+        $mainName = "Switch Port Status";
+
+        try {
+
+            $adminStatus = $this->snmpHost->useIface()->adminStates(1)[$this->pi->switchPort->ifIndex];
+
+            if ($adminStatus == "up" && $this->pi->switchPort->active == 1) {
+
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_GOOD,
+                    narrative: "The physical interface switch port is up and running",
+                );
+
+            } else if ($adminStatus != "up" && $this->pi->switchPort->active != 1) {
+
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_WARN,
+                    narrative: "The physical interface switch port is down",
+                );
+
+            } else {
+
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_WARN,
+                    narrative: "The physical interface switch port status is not match to the database",
+                );
+
+            }
+
+        } catch(Exception $exception) {
+            info("Issue\n".$exception);
+
+            return $this->snmpReachError($mainName);
+
+        }
+
+    }
+
+
+    /**
+     * Examine the physical interface status and provide information on it.
+     *
+     * @return DiagnosticResult
+     */
+    private function physicalInterfaceAdminStatus():  DiagnosticResult
+    {
+        $mainName = "Physical Interface Status";
+
+        try {
+
+            $adminStatus = $this->snmpHost->useIface()->adminStates(1)[$this->pi->switchPort->ifIndex];
+
+            if ($adminStatus == "up" && $this->pi->status == 1) {
+
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_GOOD,
+                    narrative: "The physical interface is up and running",
+                );
+
+            } else if ($adminStatus != "up" && $this->pi->status != 1) {
+
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_WARN,
+                    narrative: "The physical interface is down",
+                );
+
+            } else {
+
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_WARN,
+                    narrative: "The physical interface admin status is not match to the database",
+                );
+
+            }
+
+        } catch(Exception $exception) {
+            info("Issue\n".$exception);
+
+            return $this->snmpReachError($mainName);
+
+        }
+
+    }
+
+
+    /**
+     * Examine the Switch Port physical speed and provide information on it.
+     *
+     * @return DiagnosticResult
+     */
+    private function physicalInterfaceSwitchSpeed():  DiagnosticResult
+    {
+        $mainName = "Switch Port physical speed diagnostics";
+
+        try {
+
+            $highSpeed = $this->snmpHost->useIface()->highSpeeds()[$this->pi->switchPort->ifIndex];
+
+            if ($highSpeed == $this->pi->speed) {
+
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_GOOD,
+                    narrative: "The speed of the physical interface match the database data",
+                );
+
+            } else {
+
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_WARN,
+                    narrative: 'The speed of the physical interface don\'t match the database data',
+                );
+
+            }
+
+        } catch(Exception $exception) {
+            info("Issue\n".$exception);
+
+            return $this->snmpReachError($mainName);
+
+        }
+
+    }
 
 
 
