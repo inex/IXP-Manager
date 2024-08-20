@@ -1,4 +1,6 @@
 <?php
+/** @noinspection UnknownColumnInspection */
+/** @noinspection UnknownTableOrViewInspection */
 
 namespace IXP\Services\Diagnostics\Suites;
 
@@ -56,17 +58,12 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
      */
     public function run(): VirtualInterfaceDiagnosticSuite
     {
-        $this->results->add( $this->portType() );
-        $this->results->add( $this->sameSwitch() );
-        $this->results->add( $this->lag() );
-//
-//        $this->results[] = $this->virtualInterfaceVlanTrunk();
-//
-//        if($this->vi->lag_framing) {
-//            $this->results[] = $this->virtualInterfaceLagFraming();
-//        }
-//
-//        $this->results[] = $this->virtualInterfaceMtu($this->vi);
+        $this->results->add( $this->portType( $this->vi ) );
+        $this->results->add( $this->sameSwitch( $this->vi ) );
+        $this->results->add( $this->lag( $this->vi ) );
+        $this->results->add( $this->lagName( $this->vi ) );
+        $this->results->add( $this->trunk( $this->vi ) );
+        $this->results->add( $this->mtu( $this->vi ) );
 
         return $this;
     }
@@ -75,13 +72,14 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
     /**
      * Examine the virtual interface type and provide information on it.
      *
+     * @param VirtualInterface $vi
      * @return DiagnosticResult
      */
-    private function portType(): DiagnosticResult {
+    public function portType( VirtualInterface $vi ): DiagnosticResult {
 
         $mainName = 'Switch Port Type(s)';
 
-        if( $this->vi->physicalInterfaces->isEmpty() ) {
+        if( $vi->physicalInterfaces->isEmpty() ) {
 
             return new DiagnosticResult(
                 name: $mainName,
@@ -92,7 +90,7 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
         }
 
         $piTypes = [];
-        foreach( $this->vi->physicalInterfaces as $pi ) {
+        foreach( $vi->physicalInterfaces as $pi ) {
             $piTypes[] = $pi->switchPort->type;
         }
 
@@ -112,7 +110,7 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
             );
         }
 
-        if( $this->vi->typePeering() ) {
+        if( $vi->typePeering() ) {
             return new DiagnosticResult(
                 name: $mainName,
                 result: DiagnosticResult::TYPE_GOOD,
@@ -123,7 +121,7 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
         return new DiagnosticResult(
             name: $mainName,
             result: DiagnosticResult::TYPE_WARN,
-            narrative: "The physical interface(s) type is: " . $this->vi->resolveType(),
+            narrative: "The physical interface(s) type is: " . $vi->resolveType(),
         );
 
     }
@@ -132,12 +130,13 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
     /**
      * Examine the virtual interface physical interfaces position in switch and provide information on it.
      *
+     * @param VirtualInterface $vi
      * @return DiagnosticResult
      */
-    private function sameSwitch(): DiagnosticResult {
+    public function sameSwitch( VirtualInterface $vi ): DiagnosticResult {
         $mainName = 'Physical Interfaces on the Same Switch';
 
-        if( count( $this->vi->physicalInterfaces ) <= 1 ) {
+        if( count( $vi->physicalInterfaces ) <= 1 ) {
             return new DiagnosticResult(
                 name: $mainName,
                 result: DiagnosticResult::TYPE_TRACE,
@@ -145,7 +144,7 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
             );
         }
 
-        if( $this->vi->sameSwitchForEachPI() ) {
+        if( $vi->sameSwitchForEachPI() ) {
             return new DiagnosticResult(
                 name: $mainName,
                 result: DiagnosticResult::TYPE_DEBUG,
@@ -164,18 +163,19 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
     /**
      * Examine the virtual interface LAG and provide information on it.
      *
+     * @param VirtualInterface $vi
      * @return DiagnosticResult
      */
-    private function lag(): DiagnosticResult {
+    public function lag( VirtualInterface $vi ): DiagnosticResult {
 
         $mainName = 'LAG/LACP Configuration';
 
-        $countPis = count( $this->vi->physicalInterfaces );
-        $lacpMode = $this->vi->fastlacp ? 'fast' : 'slow';
+        $numPis = count( $vi->physicalInterfaces );
+        $lacpMode = $vi->fastlacp ? 'fast' : 'slow';
 
-        if( $countPis > 1 ) {
+        if( $numPis > 1 ) {
 
-            if( $this->vi->lag_framing ) {
+            if( $vi->lag_framing ) {
 
                 return new DiagnosticResult(
                     name: $mainName,
@@ -183,7 +183,7 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
                     narrative: "Configured as a LAG with " . $lacpMode . " timeout",
                 );
 
-            } else {   // !$this->vi->lag_framing
+            } else {   // !$vi->lag_framing
 
                 return new DiagnosticResult(
                     name: $mainName,
@@ -192,9 +192,9 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
                 );
             }
 
-        } else if( $countPis === 1 ) {
+        } else if( $numPis === 1 ) {
 
-            if( $this->vi->lag_framing ) {
+            if( $vi->lag_framing ) {
 
                 return new DiagnosticResult(
                     name: $mainName,
@@ -222,93 +222,132 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
 
 
     /**
-     * Examine the virtual interface VLAN and Trunks and provide information on it.
-     *
-     * @param VirtualInterface $vi
-     * @return DiagnosticResult
-     */
-    private function virtualInterfaceVlanTrunk(VirtualInterface $vi): DiagnosticResult {
-        $mainName = 'VLANs vs Trunks';
-        $countVL = count($vi->vlanInterfaces);
-
-        if ($countVL > 1 && !$vi->trunk) {
-            return new DiagnosticResult(
-                name: $mainName,
-                result: DiagnosticResult::TYPE_ERROR,
-                narrative: "Multiple vlan interfaces exists but not configured as a trunk port",
-            );
-        } else if ($countVL > 1 && $vi->trunk) {
-            return new DiagnosticResult(
-                name: $mainName,
-                result: DiagnosticResult::TYPE_INFO,
-                narrative: "Configured as a trunk port",
-            );
-        } else if ($countVL === 1 && $vi->trunk) {
-            return new DiagnosticResult(
-                name: $mainName,
-                result: DiagnosticResult::TYPE_INFO,
-                narrative: "Configured as a trunk port but only one vlan interface exists",
-            );
-        } else if ($countVL === 1 && !$vi->trunk) {
-            return new DiagnosticResult(
-                name: $mainName,
-                result: DiagnosticResult::TYPE_ERROR,
-                narrative: "Single vlan interface but not configured as a trunk port",
-            );
-        } else {
-            return new DiagnosticResult(
-                name: $mainName,
-                result: DiagnosticResult::TYPE_WARN,
-                narrative: "No VLAN interfaces configured for this connection",
-            );
-        }
-
-    }
-
-
-    /**
      * Examine the virtual interface LAG framing and provide information on it.
      *
      * @param VirtualInterface $vi
      * @return DiagnosticResult
      */
-    private function virtualInterfaceLagFraming(VirtualInterface $vi): DiagnosticResult {
-        $mainName = 'LAG Framing';
+    public function lagName(VirtualInterface $vi): DiagnosticResult {
 
-        if(!$vi->name || !$vi->channelgroup) {
+        $mainName = 'LAG Interface Naming';
+
+        if( !$vi->lag_framing && count( $vi->physicalInterfaces ) <= 1 ) {
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_TRACE,
+                narrative: "N/A - LAG framing not set and <= 1 physical interface",
+            );
+        }
+
+        if( !$vi->name || !$vi->channelgroup ) {
+
             $narratives = [];
+
             if(!$vi->name) {
                 $narratives[] = "no name";
             } else if(!$vi->channelgroup) {
-                $narratives[] = "no channelgroup";
+                $narratives[] = "no channel group number";
             }
-            $narrative = implode(' and ', $narratives);
+
+            $narrative = implode(', ', $narratives);
+
             return new DiagnosticResult(
                 name: $mainName,
                 result: DiagnosticResult::TYPE_ERROR,
-                narrative: "LAG framing set but " . $narrative,
+                narrative: "LAG framing required but " . $narrative . " defined on the virtual interface",
+            );
+        }
+
+
+        $switchIds = SwitchPort::join( 'physicalinterface', 'switchport.id', '=', 'physicalinterface.switchportid' )
+            ->join( 'virtualinterface', 'virtualinterface.id', '=', 'physicalinterface.virtualinterfaceid' )
+            ->where( 'virtualinterface.id', $vi->id )
+            ->pluck('switchport.switchid');
+
+        $bundleNamesCount = VirtualInterface::select('virtualinterface.id')
+            ->where( 'virtualinterface.name', $vi->name )
+            ->where( 'virtualinterface.channelgroup', $vi->channelgroup )
+            ->join( 'physicalinterface', 'virtualinterface.id', '=', 'physicalinterface.virtualinterfaceid' )
+            ->join( 'switchport', 'physicalinterface.switchportid', '=', 'switchport.id' )
+            ->whereIn( 'switchport.switchid', $switchIds )
+            ->groupBy('virtualinterface.id')
+            ->get()->toArray();
+
+        if( count($bundleNamesCount) > 1 ) {
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_ERROR,
+                narrative: "LAG interface bundle name (" . $vi->bundleName() . ") is not unique for the switch",
             );
         } else {
-            $bundleName = $vi->bundleName();
-            $bundleNamesCount = VirtualInterface::selectRaw("COUNT( CONCAT('name','channelgroup') ) as bundleCount")
-                ->whereRaw("CONCAT('name','channelgroup') = '$bundleName' ")->first()->bundleCount;
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_DEBUG,
+                narrative: "LAG interface bundle name (" . $vi->bundleName() . ") is unique for the switch",
+            );
+        }
+    }
 
-            if($bundleNamesCount > 1) {
+
+    /**
+     * Examine the virtual interface VLAN and Trunks and provide information on it.
+     *
+     * @param VirtualInterface $vi
+     * @return DiagnosticResult
+     */
+    public function trunk( VirtualInterface $vi ): DiagnosticResult {
+        $mainName = 'Trunk / 802.1q Configuration';
+
+        $numVlis = count( $vi->vlanInterfaces );
+
+        if( $numVlis > 1 ) {
+
+            if( $vi->trunk ) {
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_DEBUG,
+                    narrative: "More than one vlan interface and so correctly configured as a trunk port",
+                );
+
+            } else {   // !$vi->trunk
+
                 return new DiagnosticResult(
                     name: $mainName,
                     result: DiagnosticResult::TYPE_ERROR,
-                    narrative: "LAG interface configured as: <b>" . $bundleName . "</b> but it isn't unique",
+                    narrative: "Multiple vlan interfaces exist but virtual interface is not configured as a trunk port",
                 );
-            } else {
+
+            }
+
+        } else if( $numVlis === 1 ) {
+
+            if( $vi->trunk ) {
+
                 return new DiagnosticResult(
                     name: $mainName,
                     result: DiagnosticResult::TYPE_INFO,
-                    narrative: "LAG interface configured as: <b>" . $bundleName . "</b> and it is unique",
+                    narrative: "Configured as a trunk port while there is only one vlan interface",
                 );
+
+            } else {     // !$vi->trunk
+
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_DEBUG,
+                    narrative: "Single vlan interface and not configured as a trunk port",
+                );
+
             }
         }
 
+        return new DiagnosticResult(
+            name: $mainName,
+            result: DiagnosticResult::TYPE_WARN,
+            narrative: "No VLAN interfaces configured for this virtual interface",
+        );
+
     }
+
 
 
     /**
@@ -317,31 +356,28 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
      * @param VirtualInterface $vi
      * @return DiagnosticResult
      */
-    private function virtualInterfaceMtu(VirtualInterface $vi): DiagnosticResult {
-        $mainName = 'MTU';
+    public function mtu(VirtualInterface $vi): DiagnosticResult {
+        $mainName = 'L2 MTU';
 
-        $viMtu = $vi->mtu;
-
-        if(is_null($viMtu) || $viMtu === 1500 || $viMtu === 9000) {
+        if(is_null($vi->mtu) || $vi->mtu === 1500 || $vi->mtu >= 9000) {
             return new DiagnosticResult(
                 name: $mainName,
-                result: DiagnosticResult::TYPE_INFO,
-                narrative: "Mtu is set to " . (is_null($viMtu) ? 'null' : $viMtu),
+                result: DiagnosticResult::TYPE_DEBUG,
+                narrative: "L2 MTU is set to " . ( $vi->mtu ?: 'null' ),
             );
-        } else if ($viMtu < 1500) {
+        } else if ($vi->mtu < 1500) {
             return new DiagnosticResult(
                 name: $mainName,
                 result: DiagnosticResult::TYPE_ERROR,
-                narrative: "Mtu is lower than 1500",
-            );
-        } else {
-            return new DiagnosticResult(
-                name: $mainName,
-                result: DiagnosticResult::TYPE_WARN,
-                narrative: "Non-standard mtu is set to " . $viMtu,
+                narrative: "L2 MTU on virtual interface is <1500 (" . $vi->mtu . ")",
             );
         }
 
+        return new DiagnosticResult(
+            name: $mainName,
+            result: DiagnosticResult::TYPE_WARN,
+            narrative: "Non-standard L2 MTU on the virtual interface: " . $vi->mtu,
+        );
     }
 
 
