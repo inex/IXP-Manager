@@ -81,19 +81,19 @@ class CustomerDiagnosticSuite extends DiagnosticSuite
         return match ( $customer->type ) {
 
             Customer::TYPE_FULL => new DiagnosticResult(
-                name: $mainName .$customer->type(),
+                name: $mainName . $customer->type(),
                 result: DiagnosticResult::TYPE_DEBUG,
-                narrative: "The member is a standard 'full' member",
+                narrative: "The member is a standard full member",
             ),
 
             Customer::TYPE_PROBONO => new DiagnosticResult(
-                name: $mainName .$customer->type(),
+                name: $mainName . $customer->type(),
                 result: DiagnosticResult::TYPE_INFO,
-                narrative: "The member is a <b>pro bono</b> member",
+                narrative: "The member is a pro bono member",
             ),
 
             Customer::TYPE_INTERNAL => new DiagnosticResult(
-                name: $mainName .$customer->type(),
+                name: $mainName . $customer->type(),
                 result: DiagnosticResult::TYPE_WARN,
                 narrative: "The member is an internal member used for IXP infrastructure. Do not assume normal member interfaces and behaviors.",
             ),
@@ -152,20 +152,19 @@ class CustomerDiagnosticSuite extends DiagnosticSuite
      *
      */
     public function customerHasLeft( Customer $customer ): DiagnosticResult {
-        $mainName = 'Member Left: ';
 
         if($customer->hasLeft() ) {
              return new DiagnosticResult(
-                    name: $mainName . 'Yes',
+                    name: "This member left the IXP " . Carbon::parse($this->customer->dateleave)->diffForHumans(),
                     result: DiagnosticResult::TYPE_ERROR,
                     narrative: "The member left the IXP on " . Carbon::parse($this->customer->dateleave)->format('Y-m-d'),
             );
         }
 
         return new DiagnosticResult(
-            name: $mainName . 'No',
+            name: "This member has not left the IXP",
             result: DiagnosticResult::TYPE_TRACE,
-            narrative: "The member not left the IXP",
+            narrative: "The member has not left the IXP",
         );
     }
 
@@ -191,7 +190,7 @@ class CustomerDiagnosticSuite extends DiagnosticSuite
         return new DiagnosticResult(
             name: $mainName . 'No',
             result: DiagnosticResult::TYPE_INFO,
-            narrative: "The member <strong>is not</strong> a route server client",
+            narrative: "The member is not a route server client",
         );
 
     }
