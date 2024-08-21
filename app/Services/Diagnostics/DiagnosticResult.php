@@ -73,7 +73,7 @@ class DiagnosticResult
     ) { }
 
     public function iconStyle(): string {
-        return "tw-inline-flex tw-items-center tw-rounded-md tw-ml-2  tw-px-2 tw-py-1 tw-text-xs tw-font-medium "
+        return "tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium "
             . self::$RESULT_TYPES_ICON_STYLE[$this->result]
             . " tw-ring-1 tw-ring-inset";
     }

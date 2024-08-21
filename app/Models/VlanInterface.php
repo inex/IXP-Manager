@@ -241,6 +241,15 @@ class VlanInterface extends Model
      */
     public function getIPAddress( int|string $proto )
     {
+        if( is_string( $proto ) ) {
+            $proto = strtolower( $proto );
+        }
+
+        return match( $proto ) {
+            4, 'ipv4' => $this->ipv4address,
+            6, 'ipv6' => $this->ipv6address,
+        };
+/*
         if( is_int( $proto ) ) {
             return match( $proto ) {
                 4 => $this->ipv4address,
@@ -258,6 +267,7 @@ class VlanInterface extends Model
             default:
                 return null;
         }
+*/
     }
 
     /**

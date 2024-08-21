@@ -27,6 +27,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use IXP\Models\Customer;
 use IXP\Services\Diagnostics;
+use IXP\Services\Diagnostics\DiagnosticResult;
 
 
 /**
@@ -42,6 +43,7 @@ class DiagnosticsController extends Controller
 {
 
     /**
+     * Run the diagnostics suite
      */
     public function run( Customer $customer, Diagnostics $diagnostics ): View
     {
@@ -58,10 +60,43 @@ class DiagnosticsController extends Controller
                 $resultSets[] = $diagnostics->getPhysicalInterfaceDiagnostics( $pi );
             }
 
+            // get the Vlan Interface Diagnostics data
+            $protocols = [4,6];
+            foreach( $vi->vlanInterfaces as $vli ) {
+                foreach( $protocols as $protocol ) {
+
+                    // if the protocol disabled, there is no diagnostics info
+                    $protocolCellEnabled = "ipv" . $protocol . "enabled";
+                    if($vli->$protocolCellEnabled) {
+                        $resultSets[] = $diagnostics->getVlanInterfaceDiagnostics( $vli, $protocol );
+                    }
+
+                }
+
+            }
 
         }
 
+        $_badges = [];
+        $enabledBadges = ['Fatal','Error'];
+        foreach(DiagnosticResult::$RESULT_TYPES_TEXT as $result => $text) {
+            $plainResult = new DiagnosticResult(
+                name: '',
+                result: $result,
+                narrative: '',
+            );
+            $enable = ' tw-opacity-40';
+            if(in_array($text, $enabledBadges)) {
+                $enable = '';
+            }
+            $badgeExtension = '<span data-target="'.$text.'" class="badgeButton '.$enable.' hover:tw-opacity-80 tw-cursor-pointer ';
+            $_badges[$text] = str_replace('<span class="',$badgeExtension,$plainResult->badge());
+        }
+
+        info("badges:\n".var_export($_badges, true));
+
         return view( 'diagnostics.results')->with([
+            "badges" => $_badges,
             "customer" => $customer,
             "resultSets"  => $resultSets,
         ]);
