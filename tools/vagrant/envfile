@@ -3,7 +3,7 @@
 # IXP Manager V7+ configuration for Vagrant.
 
 # Run "artisan key:generate" to set the application key:
-APP_KEY=base64:roFqU4u63HeIjfikz2n1b8CQ4sh1546fYmZUTeJi22g=
+APP_KEY=
 
 #
 ## Web address where IXP Manager is accessed. This is a **required** setting. It is

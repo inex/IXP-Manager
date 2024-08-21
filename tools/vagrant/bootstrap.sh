@@ -74,15 +74,15 @@ END_SQL
 
 if [[ -f /vagrant/ixpmanager-preferred.sql.bz2 ]]; then
     bzcat /vagrant/ixpmanager-preferred.sql.bz2 | mysql -u root ixp
-elif [[ -f /vagrant/database/schema/vagrant-base.sql ]]; then
-    cat /vagrant/database/schema/vagrant-base.sql | mysql -u root ixp
+elif [[ -f /vagrant/tools/vagrant/vagrant-base.sql ]]; then
+    cat /vagrant/tools/vagrant/vagrant-base.sql | mysql -u root ixp
 fi
 
 if [[ -f /vagrant/.env ]]; then
     cp /vagrant/.env /vagrant/.env.by-vagrant.$(date +%Y%m%d-%H%M%S)
 fi
 
-cat /vagrant/.env.vagrant > /vagrant/.env
+cat /vagrant/tools/vagrant/envfile > /vagrant/.env
 php /vagrant/artisan key:generate --force
 
 
@@ -144,11 +144,13 @@ python3 -m venv /srv/venv/
 cd /srv/venv/
 ./bin/pip install snmpsim
 mkdir /srv/snmpclients
-cp /vagrant/tools/docker/snmpwalks/*snmprec /srv/snmpclients/
+cp /vagrant/tools/vagrant/snmpwalks/*snmprec /srv/snmpclients/
 chown -R vagrant: /srv/snmpclients
+
 /srv/venv/bin/snmpsim-command-responder --data-dir=/srv/snmpclients/                    \
       --agent-udpv4-endpoint=127.0.0.1:161 --quiet --daemonize --process-user root      \
       --process-group root --pid-file /tmp/snmpsim.pid --logging-method null
+
 sed -i 's/127.0.0.1 localhost/127.0.0.1 localhost swi1-fac1-1 swi1-fac2-1 swi2-fac1-1/' /etc/hosts
 
 
