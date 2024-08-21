@@ -45,7 +45,7 @@ class DiagnosticsController extends Controller
     /**
      * Run the diagnostics suite
      */
-    public function run( Customer $customer, Diagnostics $diagnostics ): View
+    public function customer( Customer $customer, Diagnostics $diagnostics ): View
     {
         $resultSets = [];
 
@@ -55,25 +55,25 @@ class DiagnosticsController extends Controller
         foreach( $customer->virtualInterfaces as $vi ) {
             $resultSets[] = $diagnostics->getVirtualInterfaceDiagnostics( $vi );
 
-            // get the Physical Interface Diagnostics Data and integrate here into the VI array
-            foreach( $vi->physicalInterfaces as $pi ) {
-                $resultSets[] = $diagnostics->getPhysicalInterfaceDiagnostics( $pi );
-            }
-
-            // get the Vlan Interface Diagnostics data
-            $protocols = [4,6];
-            foreach( $vi->vlanInterfaces as $vli ) {
-                foreach( $protocols as $protocol ) {
-
-                    // if the protocol disabled, there is no diagnostics info
-                    $protocolCellEnabled = "ipv" . $protocol . "enabled";
-                    if($vli->$protocolCellEnabled) {
-                        $resultSets[] = $diagnostics->getVlanInterfaceDiagnostics( $vli, $protocol );
-                    }
-
-                }
-
-            }
+//            // get the Physical Interface Diagnostics Data and integrate here into the VI array
+//            foreach( $vi->physicalInterfaces as $pi ) {
+//                $resultSets[] = $diagnostics->getPhysicalInterfaceDiagnostics( $pi );
+//            }
+//
+//            // get the Vlan Interface Diagnostics data
+//            $protocols = [4,6];
+//            foreach( $vi->vlanInterfaces as $vli ) {
+//                foreach( $protocols as $protocol ) {
+//
+//                    // if the protocol disabled, there is no diagnostics info
+//                    $protocolCellEnabled = "ipv" . $protocol . "enabled";
+//                    if($vli->$protocolCellEnabled) {
+//                        $resultSets[] = $diagnostics->getVlanInterfaceDiagnostics( $vli, $protocol );
+//                    }
+//
+//                }
+//
+//            }
 
         }
 
@@ -85,9 +85,10 @@ class DiagnosticsController extends Controller
                 result: $result,
                 narrative: '',
             );
-            $enable = ' tw-opacity-40';
+            //$enable = ' tw-opacity-40';
+            $enable = '';
             if(in_array($text, $enabledBadges)) {
-                $enable = '';
+                //$enable = '';
             }
             $badgeExtension = '<span data-target="'.$text.'" class="badgeButton '.$enable.' hover:tw-opacity-80 tw-cursor-pointer ';
             $_badges[$text] = str_replace('<span class="',$badgeExtension,$plainResult->badge());

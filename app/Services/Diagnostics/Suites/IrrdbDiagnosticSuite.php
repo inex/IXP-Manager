@@ -86,11 +86,10 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
      * @throws GeneralException
      */
     public function customerIrrdbFiltered( Customer $customer ): DiagnosticResult {
-        $mainName = "IRRDB Filtered Status";
 
         if( !$this->customer->routeServerClient() ) {
             return new DiagnosticResult(
-                name: $mainName,
+                name: 'IRRDB Filtering: not a route server client so no IRRDB filtering',
                 result: DiagnosticResult::TYPE_INFO,
                 narrative: "The member is not a route server client so IRRDB filtering not considered",
             );
@@ -100,14 +99,14 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
 
             if($this->customer->irrdbMoreSpecificsAllowed()) {
                 return new DiagnosticResult(
-                    name: $mainName,
+                    name: 'IRRDB Filtering: yes but more specifics allowed',
                     result: DiagnosticResult::TYPE_WARN,
                     narrative: "The member is IRRDB filtered but note that more specific prefixes are allowed on at least one VLAN interface",
                 );
             }
 
             return new DiagnosticResult(
-                name: $mainName,
+                name: 'IRRDB Filtering: yes',
                 result: DiagnosticResult::TYPE_GOOD,
                 narrative: "The member is IRRDB filtered",
             );
@@ -115,7 +114,7 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
         }
 
         return new DiagnosticResult(
-            name: $mainName,
+            name: 'IRRDB Filtering: no, route server sessions not secured with IRRDB',
             result: DiagnosticResult::TYPE_ERROR,
             narrative: "The member is a route server client but is not IRRDB filtered on at least one VLAN interface",
         );
@@ -131,11 +130,10 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
      * @throws GeneralException
      */
     public function customerIrrdbAsnsPresent( Customer $customer, int $proto ): DiagnosticResult {
-        $mainName = "IRRDB - " . IXP::protocol($proto) . " ASNs Present and Current";
 
         if( !$this->customer->isIPvXEnabled($proto) ) {
             return new DiagnosticResult(
-                name: $mainName,
+                name: "No IRRDB ASNs as " . IXP::protocol($proto) . ' not enabled for this member',
                 result: DiagnosticResult::TYPE_TRACE,
                 narrative: IXP::protocol($proto) . ' not enabled for this member',
             );
@@ -153,7 +151,7 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
 
         } catch( Exception ) {
             return new DiagnosticResult(
-                name: $mainName,
+                name: "IRRDB ASNs have never been updated for " . IXP::protocol($proto),
                 result: DiagnosticResult::TYPE_ERROR,
                 narrative: "IRRDB ASNs have never been updated for " . IXP::protocol($proto),
             );
@@ -165,7 +163,7 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
 
         if( $count === 0 ) {
             return new DiagnosticResult(
-                name: $mainName,
+                name: "Zero IRRDB ASNs for " . IXP::protocol($proto) . "(last update was " . $irrdblog->$m->diffForHumans() . ")",
                 result: DiagnosticResult::TYPE_ERROR,
                 narrative: "There are zero IRRDB ASNs for " . IXP::protocol($proto) . " (last update was " . $irrdblog->$m->diffForHumans() . ")",
             );
@@ -173,7 +171,7 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
 
         if( $irrdblog->$m < now()->subDay() ) {
             return new DiagnosticResult(
-                name: $mainName,
+                name: "IRRDB ASNs (x{$count}) for " . IXP::protocol($proto) . " have not been updated since " . $irrdblog->$m->diffForHumans(),
                 result: DiagnosticResult::TYPE_WARN,
                 narrative: "IRRDB ASNs (x{$count}) for " . IXP::protocol($proto) . " have not been updated since " . $irrdblog->$m->diffForHumans(),
             );
@@ -181,7 +179,7 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
 
 
         return new DiagnosticResult(
-            name: $mainName,
+            name: "IRRDB ASNs (x{$count}) for " . IXP::protocol($proto) . " last updated " . $irrdblog->$m->diffForHumans(),
             result: DiagnosticResult::TYPE_GOOD,
             narrative: "IRRDB ASNs (x{$count}) for " . IXP::protocol($proto) . " last updated " . $irrdblog->$m->diffForHumans(),
         );
@@ -198,11 +196,10 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
      * @throws GeneralException
      */
     public function customerIrrdbPrefixesPresent( Customer $customer , int $proto ): DiagnosticResult {
-        $mainName = "IRRDB - " . IXP::protocol($proto) . " Prefixes Present and Current";
 
         if( !$this->customer->isIPvXEnabled($proto) ) {
             return new DiagnosticResult(
-                name: $mainName,
+                name: "No " . IXP::protocol($proto) . " IRRDB prefixes, " . IXP::protocol($proto) . ' not enabled for this member',
                 result: DiagnosticResult::TYPE_TRACE,
                 narrative: IXP::protocol($proto) . ' not enabled for this member',
             );
@@ -219,7 +216,7 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
             }
         } catch( Exception ) {
             return new DiagnosticResult(
-                name: $mainName,
+                name: "IRRDB prefixes have never been updated for " . IXP::protocol($proto),
                 result: DiagnosticResult::TYPE_ERROR,
                 narrative: "IRRDB prefixes have never been updated for " . IXP::protocol($proto),
             );
@@ -231,7 +228,7 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
 
         if( $count === 0 ) {
             return new DiagnosticResult(
-                name: $mainName,
+                name: "There are zero IRRDB prefixes for " . IXP::protocol($proto) . " (last update was " . $irrdblog->$m->diffForHumans() . ")",
                 result: DiagnosticResult::TYPE_ERROR,
                 narrative: "There are zero IRRDB prefixes for " . IXP::protocol($proto) . " (last update was " . $irrdblog->$m->diffForHumans() . ")",
             );
@@ -239,7 +236,7 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
 
         if( $irrdblog->$m < now()->subDay() ) {
             return new DiagnosticResult(
-                name: $mainName,
+                name: "IRRDB prefixes (x{$count}) for " . IXP::protocol($proto) . " have not been updated since " . $irrdblog->$m->diffForHumans(),
                 result: DiagnosticResult::TYPE_WARN,
                 narrative: "IRRDB prefixes (x{$count}) for " . IXP::protocol($proto) . " have not been updated since " . $irrdblog->$m->diffForHumans(),
             );
@@ -247,7 +244,7 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
 
 
         return new DiagnosticResult(
-            name: $mainName,
+            name: "IRRDB prefixes (x{$count}) for " . IXP::protocol($proto) . " last updated " . $irrdblog->$m->diffForHumans(),
             result: DiagnosticResult::TYPE_GOOD,
             narrative: "IRRDB prefixes (x{$count}) for " . IXP::protocol($proto) . " last updated " . $irrdblog->$m->diffForHumans(),
         );

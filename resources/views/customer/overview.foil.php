@@ -19,7 +19,7 @@
                 <i class="fa fa-cog"></i>
             </button>
             <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item" href="<?= route( 'diagnostics@run', [ 'customer' => $c->id ] ) ?>">
+                <a class="dropdown-item" href="<?= route( 'diagnostics@customer', [ 'customer' => $c->id ] ) ?>">
                     Run diagnostics...
                 </a>
 

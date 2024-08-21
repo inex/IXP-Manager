@@ -14,7 +14,7 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
     <?php endforeach ?>
 </div>
 <div class="btn-group btn-group-sm tw-ml-2" role="group">
-    <a class="btn btn-white" href="<?= route('diagnostics@run', [ "customer" => $t->customer ] ) ?>">
+    <a class="btn btn-white" href="<?= route('diagnostics@customer', [ "customer" => $t->customer ] ) ?>">
         <span class="fa fa-repeat"></span>
     </a>
 </div>
@@ -93,9 +93,9 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
 <?php $this->section('scripts') ?>
 <script type="module">
 
-$(function () {
-    $('[data-toggle="popover"]').popover()
-})
+    $(function () {
+        $('[data-toggle="popover"]').popover()
+    })
 
     /**
      * Regenerate diagnostics data show or hide based on badge buttons state
