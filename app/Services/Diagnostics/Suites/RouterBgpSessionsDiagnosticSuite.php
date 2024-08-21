@@ -24,8 +24,6 @@ namespace IXP\Services\Diagnostics\Suites;
  */
 
 use IXP\Models\Router;
-use IXP\Models\SwitchPort;
-use IXP\Models\VirtualInterface;
 use IXP\Services\Diagnostics\DiagnosticResult;
 use IXP\Services\Diagnostics\DiagnosticSuite;
 use IXP\Models\VlanInterface;
@@ -34,7 +32,7 @@ use IXP\Services\LookingGlass as LookingGlassService;
 use App;
 
 /**
- * Diagnostics Service - Virtual Interfaces Suite
+ * Diagnostics Service - Router BGP Suite
  *
  * @author     Barry O'Donovan  <barry@opensolutions.ie>
  * @author     Laszlo Kiss      <laszlo@islandbridgenetworks.ie>
@@ -46,6 +44,10 @@ use App;
 
 class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
 {
+
+    private Router|null $router;
+    private LookingGlassService|null $lookingGlass;
+
     /**
      * @param VlanInterface $vli
      * @param int $protocol
@@ -54,9 +56,31 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
         private readonly VlanInterface $vli,
         private readonly int $protocol,
     ) {
-        $this->name        = 'Router BGP Sessions for ' . $vli->vlan->name . ' over ' . $vli->getIPAddress($this->protocol);
-        $this->description = ".";
+        $ipAddressObject = $vli->getIPAddress($this->protocol);
+        $_address = '';
+        if($ipAddressObject) {
+            $_address = ' over ' . $ipAddressObject->address;
+        }
+
+        $this->name        = 'Router BGP Sessions for ' . $vli->vlan->name . $_address;
+        $this->description = " ";
         $this->type        = 'INTERFACE';
+
+        // route collector peerings are mandatory
+        // this makes the protocol Builder type, not Router!
+        //$this->router = Router::notQuarantine()->routeCollector()->ipProtocol( $protocol );
+
+        $protocolValidated = $protocol === 4 ? Router::PROTOCOL_IPV4 : Router::PROTOCOL_IPV6;
+        $this->router = Router::where( 'protocol', $protocolValidated )
+            ->where('quarantine', false)
+            ->where('type', Router::TYPE_ROUTE_COLLECTOR)
+            ->first();
+
+        // now we get the looking glass:
+        $this->lookingGlass = null;
+        if($this->router) {
+            $this->lookingGlass = App::make( LookingGlassService::class )->forRouter( $this->router );
+        }
 
         parent::__construct();
     }
@@ -66,23 +90,68 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
      */
     public function run(): RouterBgpSessionsDiagnosticSuite
     {
-        // route collector peerings are mandatory
+        $this->results->add( $this->vlanRouterTest() );
+        $this->results->add( $this->protocolStatusDiagnostics() );
 
-        $router = Router::notQuarantine()->routeCollector()->ipProtocol( $this->protocol );
 
-        // test: !$router || !$router->api()  -> if not, DEBUG not API available
+        // todo: I'm not sure what these means...
+        // protocol bgp pb_as<?= $int['autsys'] ? >_vli<?= $int[ 'vliid' ] ? >_ipv<?= $int[ 'protocol' ] ?? 4 ? > {
 
-        // now we get the looking glass:
-        $lg = App::make( LookingGlassService::class )->forRouter( $router );
+        // "pb_as{$vli->virtualinterface->customer->autsys}_vli{$vli->id}_ipv{$protocol}
+
+
+
+
+        return $this;
+    }
+
+    /**
+     * Examine the Vlan Router and provide information on it.
+     *
+     * @return DiagnosticResult
+     */
+    public function vlanRouterTest(): DiagnosticResult
+    {
+        $mainName = "Router existence diagnostics";
+
+        if ( !$this->router || !$this->router->hasApi() ) {
+
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_ERROR,
+                narrative: "Router DEBUG or API not available",
+            );
+
+        } else {
+
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_GOOD,
+                narrative: "Router DEBUG and API available",
+            );
+
+        }
+
+    }
+
+
+    /**
+     * Examine the Router Protocol Status and provide information on it.
+     *
+     * @return DiagnosticResult
+     */
+    public function protocolStatusDiagnostics(): DiagnosticResult
+    {
+        $mainName = "Protocol Status diagnostics";
 
         // sample url for protocol status: http://rc1-ipv4.cork.inex.ie/api/protocol/pb_as112_vli249_ipv4
         // https://www.inex.ie/rc1-cork-ipv4/api/protocol/pb_as112_vli249_ipv4
 
         // actually use: https://www.inex.ie/rc1-cork-ipv4/
-
-        // protocol bgp pb_as<?= $int['autsys'] ? >_vli<?= $int[ 'vliid' ] ? >_ipv<?= $int[ 'protocol' ] ?? 4 ? > {
-
-        // "pb_as{$vli->virtualinterface->customer->autsys}_vli{$vli->id}_ipv{$protocol}
+        // todo: make the statusUrl dynamic
+        $statusUrl = 'https://www.inex.ie/rc1-cork-ipv4/api/protocol/pb_as112_vli249_ipv4';
+        $protocolStatus = json_decode(file_get_contents($statusUrl));
+        //info("prs\n".var_export($protocolStatus, true));
 
         // json content of interest:
 
@@ -90,11 +159,38 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
         // interesting info if !up: state_changed
         // interesting info if up: route_limit_at vs import_limit => if within 80% -> warning
 
+        if ( $protocolStatus->protocol->state !== 'up' ) {
 
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_WARN,
+                narrative: "Router Protocol Status is " . $protocolStatus->protocol->state,
+            );
 
-        return $this;
+        } else {
+
+            $importPercent = $protocolStatus->protocol->routes->imported / $protocolStatus->protocol->route_limit_at;
+            if($importPercent < .8) {
+
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_WARN,
+                    narrative: "Router Protocol Status is up, but import rate is low",
+                );
+
+            } else {
+
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_GOOD,
+                    narrative: "Router Protocol Status is up, and import rate is good",
+                );
+
+            }
+
+        }
+
     }
-
 
 
 }

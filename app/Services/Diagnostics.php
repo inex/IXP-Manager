@@ -23,13 +23,14 @@ namespace IXP\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Models\{Customer, PhysicalInterface, VirtualInterface};
+use IXP\Models\{Customer, PhysicalInterface, VirtualInterface, VlanInterface};
 
 use IXP\Exceptions\GeneralException;
 use IXP\Services\Diagnostics\DiagnosticResultSet;
 use IXP\Services\Diagnostics\Suites\CustomerDiagnosticSuite;
 use IXP\Services\Diagnostics\Suites\IrrdbDiagnosticSuite;
 use IXP\Services\Diagnostics\Suites\PhysicalInterfaceDiagnosticSuite;
+use IXP\Services\Diagnostics\Suites\RouterBgpSessionsDiagnosticSuite;
 use IXP\Services\Diagnostics\Suites\VirtualInterfaceDiagnosticSuite;
 
 /**
@@ -83,6 +84,12 @@ class Diagnostics
     public function getPhysicalInterfaceDiagnostics(PhysicalInterface $pi): DiagnosticResultSet
     {
         $d = new PhysicalInterfaceDiagnosticSuite( $pi );
+        return $d->run()->results();
+    }
+
+    public function getVlanInterfaceDiagnostics(VlanInterface $vli, int $protocol): DiagnosticResultSet
+    {
+        $d = new RouterBgpSessionsDiagnosticSuite( $vli, $protocol );
         return $d->run()->results();
     }
 

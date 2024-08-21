@@ -8,7 +8,12 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-<div class="btn-group btn-group-sm" role="group" xmlns="http://www.w3.org/1999/html">
+<div>
+    <?php foreach($t->badges as $badge): ?>
+    <?= $badge ?>
+    <?php endforeach ?>
+</div>
+<div class="btn-group btn-group-sm tw-ml-2" role="group">
     <a class="btn btn-white" href="<?= route('diagnostics@run', [ "customer" => $t->customer ] ) ?>">
         <span class="fa fa-repeat"></span>
     </a>
@@ -22,7 +27,6 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
 <div class="row">
     <div class="col-md-12">
         <?= $t->alerts() ?>
-
 
 
         <?php   /** @var \IXP\Services\Diagnostics\DiagnosticResultSet $drs */
@@ -43,13 +47,9 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
 
 
                     </div>
-                    <!-- div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                        <button type="button" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Add user</button>
-                    </div -->
                 </div>
                 <div class="-tw-mx-4 tw-mb-8 sm:-tw-mx-0">
                     <table class="tw-min-w-full tw-divide-y tw-divide-gray-300">
-
                         <tbody class="tw-divide-y tw-divide-gray-200 tw-bg-white">
 
                         <?php foreach( $drs->results as $r ): ?>
@@ -82,10 +82,7 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
                 </div>
             </div>
 
-
         <?php endforeach; ?>
-
-
 
 
     </div>
@@ -94,9 +91,41 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
 
 
 <?php $this->section('scripts') ?>
-<script>
+<script type="module">
+
 $(function () {
     $('[data-toggle="popover"]').popover()
 })
+
+    /**
+     * Regenerate diagnostics data show or hide based on badge buttons state
+     */
+    function toggleInformation() {
+        const badgeButtons = $('.badgeButton');
+        badgeButtons.each( function() {
+            var target = $(this).data("target");
+            var disable = $(this).hasClass('tw-opacity-40');
+
+            $("tr td span:contains('" + target + "')").each( function() {
+                var row = $(this).closest('tr');
+                row.removeClass('tw-hidden');
+                if(disable) {
+                    row.addClass('tw-hidden');
+                }
+            })
+        })
+    }
+
+    /**
+     * Enable/disable badges
+     */
+    $(document).on('click','.badgeButton',function() {
+        $(this).toggleClass('tw-opacity-40');
+        toggleInformation();
+    })
+
+    $(document).ready(function() {
+        toggleInformation()
+    })
 </script>
 <?php $this->append() ?>
