@@ -78,8 +78,11 @@ class DiagnosticsController extends Controller
         }
 
         $_badges = [];
-        $enabledBadges = ['Fatal','Error'];
+        // $enabledBadges = ['Fatal','Error'];
+        $enabledBadges = [ DiagnosticResult::TYPE_FATAL, DiagnosticResult::TYPE_ERROR ];
+
         foreach(DiagnosticResult::$RESULT_TYPES_TEXT as $result => $text) {
+
             $plainResult = new DiagnosticResult(
                 name: '',
                 result: $result,
@@ -87,10 +90,13 @@ class DiagnosticsController extends Controller
             );
             //$enable = ' tw-opacity-40';
             $enable = '';
-            if(in_array($text, $enabledBadges)) {
+            if(in_array($result, $enabledBadges)) {
+            //if(in_array($text, $enabledBadges)) {
                 //$enable = '';
             }
+
             $badgeExtension = '<span data-target="'.$text.'" class="badgeButton '.$enable.' hover:tw-opacity-80 tw-cursor-pointer ';
+
             $_badges[$text] = str_replace('<span class="',$badgeExtension,$plainResult->badge());
         }
 
@@ -98,6 +104,22 @@ class DiagnosticsController extends Controller
 
         return view( 'diagnostics.results')->with([
             "badges" => $_badges,
+            "customer" => $customer,
+            "resultSets"  => $resultSets,
+        ]);
+    }
+
+
+    /**
+     * Run the diagnostics suite
+     */
+    public function irrdb( Customer $customer, Diagnostics $diagnostics ): View
+    {
+        $resultSets = [];
+
+        $resultSets[] = $diagnostics->getCustomerIrrdbDiagnostics($customer);
+
+        return view( 'diagnostics.results')->with([
             "customer" => $customer,
             "resultSets"  => $resultSets,
         ]);

@@ -100,7 +100,16 @@ $c = $t->c; /** @var \IXP\Models\Customer $c */
                                 <?php if( $c->irrdbFiltered() && $irrdb = $c->irrdbConfig ): ?>
                                     <?= $t->ee( $irrdb->source )?>
                                     <?php if( $c->routeServerClient() && $c->irrdbFiltered() ): ?>
-                                        (<a href="<?= route( "irrdb@list", [ "cust" => $c->id, "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">entries</a>)<br>
+                                        (<a href="<?= route( "irrdb@list", [ "cust" => $c->id, "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">entries</a>)
+
+                                        <a type="button" class="tw-ml-2 tw-rounded tw-bg-white tw-px-2 tw-py-1 tw-text-xs tw-font-semibold tw-text-gray-900 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-gray-300 hover:tw-bg-gray-50"
+                                            href="<?= route( 'diagnostics@irrdb', $c ) ?>"
+                                        >
+                                            <i class="fa fa-wrench" aria-hidden="true"></i>
+                                        </a>
+
+
+                                        <br>
 
                                         <?php
                                             $lastUpdatedWarn = false;
