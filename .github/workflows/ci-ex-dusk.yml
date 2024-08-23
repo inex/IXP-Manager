@@ -15,7 +15,7 @@ jobs:
     - uses: shogo82148/actions-setup-mysql@v1
       with:
         mysql-version: '8.0'
-    - run: mysql -uroot -h127.0.0.1 -e 'CREATE DATABASE myapp_test'
+    - run: mysql -uroot -h127.0.0.1 -e 'CREATE DATABASE ixp_ci; CREATE USER IF NOT EXISTS ixp_ci@\`127.0.0.1\` IDENTIFIED BY 'ixp_ci'; GRANT ALL ON ixp_ci.* TO ixp_ci@\`127.0.0.1\`;'
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.ci', '.env');"
     - name: Install bgpq3
@@ -26,7 +26,7 @@ jobs:
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Database
       run: |
-        cat data/ci/ci_test_db.sql  | mysql --default-character-set=utf8mb4 -h 127.0.0.1 -u root myapp_test
+        cat data/ci/ci_test_db.sql  | mysql --default-character-set=utf8mb4 -h 127.0.0.1 -u root ixp_ci
     - name: Set up php server
       run: |
         php ./artisan serve  &>php-built-in.log &
