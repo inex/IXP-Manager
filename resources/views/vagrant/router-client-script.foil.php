@@ -21,6 +21,7 @@
 #
 
 mkdir -p <?= $t->directory ?>
+
 chown -R vagrant: <?= $t->directory ?>
 
 mkdir -p /var/log/bird
