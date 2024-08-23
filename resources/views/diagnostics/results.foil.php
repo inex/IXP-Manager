@@ -127,5 +127,6 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
     $(document).ready(function() {
         toggleInformation()
     })
+
 </script>
 <?php $this->append() ?>
