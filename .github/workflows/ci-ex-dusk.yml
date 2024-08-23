@@ -15,7 +15,7 @@ jobs:
     - uses: shogo82148/actions-setup-mysql@v1
       with:
         mysql-version: '8.0'
-    - run: mysql -uroot -h127.0.0.1 -e 'CREATE DATABASE ixp_ci; CREATE USER IF NOT EXISTS ixp_ci@\`127.0.0.1\` IDENTIFIED BY 'ixp_ci'; GRANT ALL ON ixp_ci.* TO ixp_ci@\`127.0.0.1\`;'
+    - run: mysql -u root -h 127.0.0.1 -e 'CREATE DATABASE ixp_ci; CREATE USER IF NOT EXISTS ixp_ci@localhost IDENTIFIED BY "ixp_ci"; GRANT ALL ON ixp_ci.* TO ixp_ci@localhost;'
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.ci', '.env');"
     - name: Install bgpq3
