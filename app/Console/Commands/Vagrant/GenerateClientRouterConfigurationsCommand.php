@@ -44,7 +44,7 @@ class GenerateClientRouterConfigurationsCommand extends Command
 
             file_put_contents(
                 $confFile,
-                view('vagrant/router-client', [ 'vli' => $vli, 'confName' => $confName ] )
+                view('vagrant/router-client', [ 'vli' => $vli, 'confName' => $confName ] )->render()
             );
         }
 
@@ -53,7 +53,7 @@ class GenerateClientRouterConfigurationsCommand extends Command
                 view('vagrant/router-client-script', [
                     'directory' => $this->option('directory' ),
                     'confNames' => $confNames,
-                ])
+                ])->render()
         );
 
     }
