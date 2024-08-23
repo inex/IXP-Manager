@@ -346,6 +346,33 @@ END_CRON
 
 
 
+####################################################################################
+#######
+####### Startup script on reboot
+#######
+
+
+cat >/etc/systemd/system/ixpmanager.service <<END_SERVICE
+[Unit]
+ Description=IXP Manager Reboot Script
+
+[Service]
+ Type=forking
+ ExecStart=/vagrant/tools/vagrant/startup.sh
+ TimeoutSec=0
+ StandardOutput=tty
+ RemainAfterExit=yes
+ SysVStartPriority=99
+ ExecStartPre=/usr/bin/test -f /vagrant/tools/vagrant/startup.sh
+ RestartSec=1m
+ Restart=on-failure
+
+[Install]
+ WantedBy=multi-user.target
+
+END_SERVICE
+
+/usr/bin/systemctl enable ixpmanager.service
 
 
 ####################################################################################
