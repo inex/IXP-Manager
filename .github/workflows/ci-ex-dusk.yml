@@ -26,7 +26,7 @@ jobs:
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Database
       run: |
-        cat data/ci/ci_test_db.sql  | mysql --default-character-set=utf8mb4 -h 127.0.0.1 -u root ixp_ci
+        cat data/ci/ci_test_db.sql  | mysql --default-character-set=utf8mb4 -h localhost -u root ixp_ci
     - name: Set up php server
       run: |
         php ./artisan serve  &>php-built-in.log &
