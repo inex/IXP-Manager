@@ -3,7 +3,7 @@
 # IXP Manager V7+ configuration for Vagrant.
 
 # Run "artisan key:generate" to set the application key:
-APP_KEY=
+APP_KEY=base64:rsd9Ejasqsa9WVZNtsTfcykszTtaDwJJSA58ySjh5xQ=
 
 #
 ## Web address where IXP Manager is accessed. This is a **required** setting. It is
@@ -23,7 +23,7 @@ LOG_CHANNEL="single"
 ## info by default, one of: debug, info, notice, warning, error, critical, alert, emergency.
 LOG_LEVEL=debug
 APP_DEBUG=false
-APP_ENV="local"
+APP_ENV="vagrant"
 
 # This option may be used to disable all Telescope watchers regardless
 # of their individual configuration, which simply provides a single
