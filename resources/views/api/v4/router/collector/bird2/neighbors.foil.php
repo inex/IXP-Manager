@@ -68,7 +68,7 @@
 ?>
 
 
-function f_import_as<?= $int['autsys'] ?>()
+function f_import_as<?= $int['autsys'] ?>() -> bool
 
 prefix set allnet;
 ip set allips;
