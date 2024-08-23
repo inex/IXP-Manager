@@ -1,4 +1,5 @@
 <?php
+/** @noinspection UnknownColumnInspection */
 
 namespace IXP\Services\Diagnostics\Suites;
 
@@ -64,13 +65,13 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
     public function run(): IrrdbDiagnosticSuite
     {
         // ordering here will determine order on view
-        $this->results->add( $this->customerIrrdbFiltered() );
+        $this->results->add( $this->customerIrrdbFiltered( $this->customer ) );
 
         if( $this->customer->routeServerClient() && $this->customer->irrdbFiltered() ) {
-            $this->results->add( $this->customerIrrdbAsnsPresent( IXP::IPv4 ) );
-            $this->results->add( $this->customerIrrdbAsnsPresent( IXP::IPv6 ) );
-            $this->results->add( $this->customerIrrdbPrefixesPresent( IXP::IPv4 ) );
-            $this->results->add( $this->customerIrrdbPrefixesPresent( IXP::IPv6 ) );
+            $this->results->add( $this->customerIrrdbAsnsPresent( $this->customer,IXP::IPv4 ) );
+            $this->results->add( $this->customerIrrdbAsnsPresent( $this->customer,IXP::IPv6 ) );
+            $this->results->add( $this->customerIrrdbPrefixesPresent( $this->customer,IXP::IPv4 ) );
+            $this->results->add( $this->customerIrrdbPrefixesPresent( $this->customer,IXP::IPv6 ) );
         }
 
         return $this;
@@ -80,10 +81,11 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
     /**
      * Examine the customer IRRDB filtering status and provide information on it.
      *
+     * @param Customer $customer
      * @return DiagnosticResult
      * @throws GeneralException
      */
-    private function customerIrrdbFiltered(): DiagnosticResult {
+    public function customerIrrdbFiltered( Customer $customer ): DiagnosticResult {
         $mainName = "IRRDB Filtered Status";
 
         if( !$this->customer->routeServerClient() ) {
@@ -94,7 +96,7 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
             );
         }
 
-        if( $this->customer->fullyIrrdbFiltered() ) {
+        if($customer->fullyIrrdbFiltered() ) {
 
             if($this->customer->irrdbMoreSpecificsAllowed()) {
                 return new DiagnosticResult(
@@ -123,11 +125,12 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
     /**
      * Examine the customer IRRDB filtering status and provide information on it.
      *
+     * @param Customer $customer
      * @param int $proto
      * @return DiagnosticResult
      * @throws GeneralException
      */
-    private function customerIrrdbAsnsPresent( int $proto ): DiagnosticResult {
+    public function customerIrrdbAsnsPresent( Customer $customer, int $proto ): DiagnosticResult {
         $mainName = "IRRDB - " . IXP::protocol($proto) . " ASNs Present and Current";
 
         if( !$this->customer->isIPvXEnabled($proto) ) {
@@ -139,7 +142,7 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
         }
 
         try {
-            $irrdblog = IrrdbUpdateLog::where( [ 'cust_id' => $this->customer->id ] )->firstOrFail();
+            $irrdblog = IrrdbUpdateLog::where( [ 'cust_id' =>$customer->id ] )->firstOrFail();
 
             $m = 'asn_v' . $proto;
 
@@ -148,7 +151,7 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
                 throw new Exception();
             }
 
-        } catch( Exception $e ) {
+        } catch( Exception ) {
             return new DiagnosticResult(
                 name: $mainName,
                 result: DiagnosticResult::TYPE_ERROR,
@@ -156,7 +159,7 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
             );
         }
 
-        $count = IrrdbAsn::where( 'customer_id', $this->customer->id )
+        $count = IrrdbAsn::where( 'customer_id',$customer->id )
             ->where( 'protocol', $proto )
             ->count();
 
@@ -189,11 +192,12 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
     /**
      * Examine the customer IRRDB filtering status and provide information on it.
      *
+     * @param Customer $customer
      * @param int $proto
      * @return DiagnosticResult
      * @throws GeneralException
      */
-    private function customerIrrdbPrefixesPresent( int $proto ): DiagnosticResult {
+    public function customerIrrdbPrefixesPresent( Customer $customer , int $proto ): DiagnosticResult {
         $mainName = "IRRDB - " . IXP::protocol($proto) . " Prefixes Present and Current";
 
         if( !$this->customer->isIPvXEnabled($proto) ) {
@@ -205,7 +209,7 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
         }
 
         try {
-            $irrdblog = IrrdbUpdateLog::where( [ 'cust_id' => $this->customer->id ] )->firstOrFail();
+            $irrdblog = IrrdbUpdateLog::where( [ 'cust_id' =>$customer->id ] )->firstOrFail();
 
             $m = 'prefix_v' . $proto;
 
@@ -213,7 +217,7 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
                 // the exception is irrelevant as we just want to catch and send a diagnostic result.
                 throw new Exception();
             }
-        } catch( Exception $e ) {
+        } catch( Exception ) {
             return new DiagnosticResult(
                 name: $mainName,
                 result: DiagnosticResult::TYPE_ERROR,
@@ -221,7 +225,7 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
             );
         }
 
-        $count = IrrdbPrefix::where( 'customer_id', $this->customer->id )
+        $count = IrrdbPrefix::where( 'customer_id',$customer->id )
             ->where( 'protocol', $proto )
             ->count();
 

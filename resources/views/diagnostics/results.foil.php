@@ -35,8 +35,17 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
             <div class="tw-px-4 sm:tw-px-6 lg:tw-px-8">
                 <div class="sm:tw-flex sm:tw-items-center">
                     <div class="sm:tw-flex-auto">
-                        <h1 class="tw-text-base tw-font-semibold tw-leading-6 tw-text-gray-900"><?= $drs->suite->name() ?></h1>
-                        <p class="tw-mt-2 tw-text-sm tw-text-gray-700"><?= $drs->suite->description() ?></p>
+                        <h1 class="tw-text-base tw-font-semibold tw-leading-6 tw-text-gray-900">
+                            <?= $t->ee( $drs->suite->name() ) ?>
+
+                            <button type="button" class="tw-ml-2 tw-rounded tw-bg-white tw-px-2 tw-py-1 tw-text-xs tw-font-semibold tw-text-gray-900 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-gray-300 hover:tw-bg-gray-50"
+                                    data-toggle="popover" title="<?= $t->ee( $drs->suite->name() ) ?>" data-content="<?= $t->ee( $drs->suite->description() ) ?>"
+                            >
+                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                            </button>
+                        </h1>
+
+
                     </div>
                 </div>
                 <div class="-tw-mx-4 tw-mb-8 sm:-tw-mx-0">
@@ -46,13 +55,23 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
                         <?php foreach( $drs->results as $r ): ?>
 
                             <tr>
-                                <td class="tw-whitespace-nowrap tw-py-5 tw-pl-4 tw-px-3 tw-text-sm sm:tw-pl-0 tw-w-40">
+                                <td class="tw-whitespace-nowrap tw-py-2 tw-pl-4 tw-px-3 tw-text-sm sm:tw-pl-0 tw-w-20">
                                     <?= $r->badge() ?>
                                 </td>
 
-                                <td class="tw-whitespace-nowrap tw-px-3 tw-py-5 tw-text-sm tw-text-gray-500">
-                                    <div class="tw-font-medium tw-text-gray-900"><?= $r->name ?></div>
-                                    <div class="tw-mt-1 tw-text-gray-500"><?= $r->narrative ?></div>
+                                <td class="tw-whitespace-nowrap tw-pl-4 tw-px-3 tw-text-sm sm:tw-pl-0 tw-w-10">
+                                    <button type="button" class="tw-ml-4 tw-rounded tw-bg-white tw-px-2 tw-py-1 tw-text-xs tw-font-semibold tw-text-gray-900 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-gray-300 hover:tw-bg-gray-50"
+                                            data-toggle="popover" title="<?= $t->ee( $r->name ) ?>" data-content="<?= $t->ee( $r->narrative ) ?>"
+                                    >
+                                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                    </button>
+                                </td>
+
+                                <td class="tw-whitespace-nowrap tw-px-3 tw-text-sm">
+                                    <div class="tw-text-gray-700">
+                                        <?= $t->ee( $r->name ) ?>
+
+                                    </div>
                                 </td>
                             </tr>
 
@@ -73,6 +92,10 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
 
 <?php $this->section('scripts') ?>
 <script type="module">
+
+$(function () {
+    $('[data-toggle="popover"]').popover()
+})
 
     /**
      * Regenerate diagnostics data show or hide based on badge buttons state

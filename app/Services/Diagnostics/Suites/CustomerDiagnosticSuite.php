@@ -60,10 +60,10 @@ class CustomerDiagnosticSuite extends DiagnosticSuite
     public function run(): CustomerDiagnosticSuite
     {
         // ordering here will determine order on view
-        $this->results->add( $this->customerType() );
-        $this->results->add( $this->customerStatus() );
-        $this->results->add( $this->customerHasLeft() );
-        $this->results->add( $this->customerRouteServerClient() );
+        $this->results->add( $this->customerType( $this->customer ) );
+        $this->results->add( $this->customerStatus( $this->customer ) );
+        $this->results->add( $this->customerHasLeft( $this->customer ) );
+        $this->results->add( $this->customerRouteServerClient( $this->customer ) );
 
         return $this;
     }
@@ -72,33 +72,34 @@ class CustomerDiagnosticSuite extends DiagnosticSuite
     /**
      * Examine the customer type and provide information on it.
      *
+     * @param Customer $customer
      * @return DiagnosticResult
      */
-    private function customerType(): DiagnosticResult {
+    public function customerType( Customer $customer ): DiagnosticResult {
         $mainName = 'Member Type: ';
 
-        return match ( $this->customer->type ) {
+        return match ( $customer->type ) {
 
             Customer::TYPE_FULL => new DiagnosticResult(
-                name: $mainName . $this->customer->type(),
+                name: $mainName . $customer->type(),
                 result: DiagnosticResult::TYPE_DEBUG,
-                narrative: "The member is a standard 'full' member",
+                narrative: "The member is a standard full member",
             ),
 
             Customer::TYPE_PROBONO => new DiagnosticResult(
-                name: $mainName . $this->customer->type(),
+                name: $mainName . $customer->type(),
                 result: DiagnosticResult::TYPE_INFO,
-                narrative: "The member is a <b>pro bono</b> member",
+                narrative: "The member is a pro bono member",
             ),
 
             Customer::TYPE_INTERNAL => new DiagnosticResult(
-                name: $mainName . $this->customer->type(),
+                name: $mainName . $customer->type(),
                 result: DiagnosticResult::TYPE_WARN,
                 narrative: "The member is an internal member used for IXP infrastructure. Do not assume normal member interfaces and behaviors.",
             ),
 
             Customer::TYPE_ASSOCIATE => new DiagnosticResult(
-                name: $mainName . $this->customer->type(),
+                name: $mainName .$customer->type(),
                 result: DiagnosticResult::TYPE_WARN,
                 narrative: "The member is an associate member and should not have any connections or other services.",
             ),
@@ -116,23 +117,24 @@ class CustomerDiagnosticSuite extends DiagnosticSuite
     /**
      * Examine the customer status and provide information on it.
      *
+     * @param Customer $customer
      * @return DiagnosticResult
      */
-    private function customerStatus(): DiagnosticResult {
+    public function customerStatus( Customer $customer ): DiagnosticResult {
         $mainName = 'Member Status: ';
 
-        return match ( $this->customer->status ) {
+        return match ($customer->status ) {
 
             Customer::STATUS_NOTCONNECTED, Customer::STATUS_SUSPENDED => new DiagnosticResult(
-                name: $mainName . $this->customer->status(),
+                name: $mainName .$customer->status(),
                 result: DiagnosticResult::TYPE_WARN,
-                narrative: "The member's status is " . $this->customer->status(),
+                narrative: "The member's status is " .$customer->status(),
             ),
 
             Customer::STATUS_NORMAL => new DiagnosticResult(
-                name: $mainName . $this->customer->status(),
+                name: $mainName .$customer->status(),
                 result: DiagnosticResult::TYPE_DEBUG,
-                narrative: "The member's status is " . $this->customer->status(),
+                narrative: "The member's status is " .$customer->status(),
             ),
 
             default => new DiagnosticResult(
@@ -149,21 +151,20 @@ class CustomerDiagnosticSuite extends DiagnosticSuite
      * Examine the customer left the IXP and provide information on it.
      *
      */
-    private function customerHasLeft(): DiagnosticResult {
-        $mainName = 'Member Left: ';
+    public function customerHasLeft( Customer $customer ): DiagnosticResult {
 
-        if( $this->customer->hasLeft() ) {
+        if($customer->hasLeft() ) {
              return new DiagnosticResult(
-                    name: $mainName . 'Yes',
+                    name: "This member left the IXP " . Carbon::parse($this->customer->dateleave)->diffForHumans(),
                     result: DiagnosticResult::TYPE_ERROR,
                     narrative: "The member left the IXP on " . Carbon::parse($this->customer->dateleave)->format('Y-m-d'),
             );
         }
 
         return new DiagnosticResult(
-            name: $mainName . 'No',
+            name: "This member has not left the IXP",
             result: DiagnosticResult::TYPE_TRACE,
-            narrative: "The member not left the IXP",
+            narrative: "The member has not left the IXP",
         );
     }
 
@@ -171,13 +172,14 @@ class CustomerDiagnosticSuite extends DiagnosticSuite
     /**
      * Examine the customer Route Server Client status and provide information on it.
      *
+     * @param Customer $customer
      * @return DiagnosticResult
      * @throws GeneralException
      */
-    private function customerRouteServerClient(): DiagnosticResult {
+    public function customerRouteServerClient( Customer $customer ): DiagnosticResult {
         $mainName = 'Route Server Client: ';
 
-        if( $this->customer->routeServerClient() ) {
+        if($customer->routeServerClient() ) {
             return new DiagnosticResult(
                 name: $mainName . 'Yes',
                 result: DiagnosticResult::TYPE_INFO,
@@ -188,7 +190,7 @@ class CustomerDiagnosticSuite extends DiagnosticSuite
         return new DiagnosticResult(
             name: $mainName . 'No',
             result: DiagnosticResult::TYPE_INFO,
-            narrative: "The member <strong>is not</strong> a route server client",
+            narrative: "The member is not a route server client",
         );
 
     }
