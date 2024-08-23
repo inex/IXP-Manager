@@ -29,6 +29,7 @@ mix.scripts(
         'node_modules/moment/moment.js',
         'node_modules/clipboard/dist/clipboard.min.js',
         'node_modules/ip-address/dist/ip-address-globals.js',
+        'node_modules/alpinejs/dist/cdn.min.js',
 
         'public/js/ixp-manager.js',
 

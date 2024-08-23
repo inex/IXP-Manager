@@ -93,8 +93,6 @@ class DiagnosticsController extends Controller
             $_badges[$text] = str_replace('<span class="',$badgeExtension,$plainResult->badge());
         }
 
-        info("badges:\n".var_export($_badges, true));
-
         return view( 'diagnostics.results')->with([
             "badges" => $_badges,
             "customer" => $customer,

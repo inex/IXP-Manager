@@ -67,7 +67,7 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
         $this->type        = 'INTERFACE';
 
         // route collector peerings are mandatory
-        // this makes the protocol Builder type, not Router!
+        // this makes the protocol Builder type, not Router type, what is important for lookingGlass
         //$this->router = Router::notQuarantine()->routeCollector()->ipProtocol( $protocol );
 
         $protocolValidated = $protocol === 4 ? Router::PROTOCOL_IPV4 : Router::PROTOCOL_IPV6;
