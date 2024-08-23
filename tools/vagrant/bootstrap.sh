@@ -71,14 +71,25 @@ host = "127.0.0.1"
 END_MYSQLCNF
 
 mysql -u root <<END_SQL
-DROP DATABASE IF EXISTS \`ixp\`;
-CREATE DATABASE \`ixp\` CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';
-CREATE USER IF NOT EXISTS \`ixp\`@\`%\` IDENTIFIED BY 'password';
 CREATE USER IF NOT EXISTS \`root\`@\`%\` IDENTIFIED BY 'password';
 GRANT ALL ON *.* TO \`root\`@\`%\`;
+
+DROP DATABASE IF EXISTS \`ixp\`;
+CREATE DATABASE \`ixp\` CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';
 GRANT ALL ON \`ixp\`.* TO \`ixp\`@\`%\`;
+CREATE USER IF NOT EXISTS \`ixp\`@\`%\` IDENTIFIED BY 'password';
+GRANT SUPER,SYSTEM_USER ON *.* TO \`ixp\`@\`%\`;
+
+DROP DATABASE IF EXISTS \`ixp_ci\`;
+CREATE DATABASE \`ixp_ci\` CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';
+CREATE USER IF NOT EXISTS \`ixp_ci\`@\`%\` IDENTIFIED BY 'ixp_ci';
+GRANT ALL ON \`ixp_ci\`.* TO \`ixp_ci\`@\`%\` WITH SUPER;
+GRANT SUPER,SYSTEM_USER ON *.* TO \`ixp_ci\`@\`%\`;
+
 FLUSH PRIVILEGES;
 END_SQL
+
+
 
 if [[ -f /vagrant/ixpmanager-preferred.sql.bz2 ]]; then
     bzcat /vagrant/ixpmanager-preferred.sql.bz2 | mysql -u root ixp
@@ -86,12 +97,13 @@ elif [[ -f /vagrant/tools/vagrant/vagrant-base.sql ]]; then
     cat /vagrant/tools/vagrant/vagrant-base.sql | mysql -u root ixp
 fi
 
+cat /vagrant/data/ci/ci_test_db.sql  | mysql -h localhost -u ixp_ci -pixp_ci ixp_ci
+
 if [[ -f /vagrant/.env ]]; then
     cp /vagrant/.env /vagrant/.env.by-vagrant.$(date +%Y%m%d-%H%M%S)
 fi
 
 cat /vagrant/tools/vagrant/envfile > /vagrant/.env
-php /vagrant/artisan key:generate --force
 
 
 cd /vagrant
@@ -200,9 +212,14 @@ IPS=`mysql --defaults-extra-file=/etc/mysql/ixpmanager.cnf --skip-column-names  
 
 for ip in $IPS; do /usr/sbin/ip address add $ip/64 dev lo; done
 
-# mysql --defaults-extra-file=/etc/mysql/ixpmanager.cnf --skip-column-names  --silent --raw ixp \
-#  -e 'SELECT CONCAT( peering_ip, ' ', handle ) FROM routers'
+mysql --defaults-extra-file=/etc/mysql/ixpmanager.cnf --skip-column-names  --silent --raw ixp \
+  -e 'SELECT CONCAT( peering_ip, " ", handle ) FROM routers' >> /etc/hosts
 
+/vagrant/tools/vagrant/scripts/rs-api-reconfigure-all.sh
+
+php /vagrant/artisan vagrant:generate-client-router-configurations
+chmod a+x /srv/clients/start-reload-clients.sh
+/srv/clients/start-reload-clients.sh
 
 
 
