@@ -46,7 +46,7 @@ CREATE TABLE `api_keys` (
 
 LOCK TABLES `api_keys` WRITE;
 /*!40000 ALTER TABLE `api_keys` DISABLE KEYS */;
-INSERT INTO `api_keys` VALUES (1,1,'r8sFfkGamCjrbbLC12yIoCJooIRXzY9CYPaLVz92GFQyGqLq',NULL,NULL,NULL,NULL,'Vagrant Dev API Key','2024-08-21 18:56:07','2024-08-21 18:56:07');
+INSERT INTO `api_keys` VALUES (1,1,'r8sFfkGamCjrbbLC12yIoCJooIRXzY9CYPaLVz92GFQyGqLq',NULL,NULL,'2024-08-23 14:02:11','127.0.0.1','Vagrant Dev API Key','2024-08-21 18:56:07','2024-08-23 19:02:11');
 /*!40000 ALTER TABLE `api_keys` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -68,7 +68,7 @@ CREATE TABLE `atlas_measurements` (
   `atlas_stop` datetime DEFAULT NULL,
   `atlas_data` json DEFAULT NULL,
   `atlas_request` json DEFAULT NULL,
-  `atlas_state` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `atlas_state` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -100,8 +100,8 @@ DROP TABLE IF EXISTS `atlas_probes`;
 CREATE TABLE `atlas_probes` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `cust_id` int NOT NULL,
-  `address_v4` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `address_v6` varchar(39) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address_v4` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address_v6` varchar(39) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `v4_enabled` tinyint DEFAULT NULL,
   `v6_enabled` tinyint DEFAULT NULL,
   `asn` int DEFAULT NULL,
@@ -109,7 +109,7 @@ CREATE TABLE `atlas_probes` (
   `is_anchor` tinyint NOT NULL,
   `is_public` tinyint NOT NULL,
   `last_connected` datetime DEFAULT NULL,
-  `status` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `api_data` json DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -138,8 +138,8 @@ DROP TABLE IF EXISTS `atlas_results`;
 CREATE TABLE `atlas_results` (
   `id` int NOT NULL AUTO_INCREMENT,
   `measurement_id` int DEFAULT NULL,
-  `routing` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `path` longtext COLLATE utf8mb4_unicode_ci,
+  `routing` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `path` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1062,7 +1062,7 @@ CREATE TABLE `infrastructure` (
   `peeringdb_ix_id` bigint DEFAULT NULL,
   `ixf_ix_id` bigint DEFAULT NULL,
   `country` varchar(2) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `notes` longtext COLLATE utf8mb3_unicode_ci,
+  `notes` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1348,10 +1348,10 @@ DROP TABLE IF EXISTS `log`;
 CREATE TABLE `log` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int DEFAULT NULL,
-  `model` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `model_id` bigint unsigned DEFAULT NULL,
-  `action` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `action` varchar(7) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `models` json NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -1360,7 +1360,7 @@ CREATE TABLE `log` (
   KEY `log_action_index` (`action`),
   KEY `log_model_model_id_index` (`model`,`model_id`),
   CONSTRAINT `log_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=324 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=326 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1590,7 +1590,7 @@ CREATE TABLE `patch_panel` (
   `cable_type` int NOT NULL,
   `connector_type` int NOT NULL,
   `installation_date` date DEFAULT NULL,
-  `port_prefix` varchar(20) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `port_prefix` varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1',
   `colo_pp_type` tinyint NOT NULL DEFAULT '1',
   `chargeable` int NOT NULL DEFAULT '0',
@@ -1905,14 +1905,14 @@ CREATE TABLE `route_server_filters` (
   `customer_id` int DEFAULT NULL,
   `peer_id` int DEFAULT NULL,
   `vlan_id` int DEFAULT NULL,
-  `received_prefix` varchar(43) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `advertised_prefix` varchar(43) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `received_prefix` varchar(43) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `advertised_prefix` varchar(43) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `protocol` smallint DEFAULT NULL,
-  `action_advertise` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `action_receive` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `action_advertise` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `action_receive` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `enabled` tinyint(1) NOT NULL DEFAULT '1',
   `order_by` int NOT NULL,
-  `live` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `live` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1946,14 +1946,14 @@ CREATE TABLE `route_server_filters_prod` (
   `customer_id` int DEFAULT NULL,
   `peer_id` int DEFAULT NULL,
   `vlan_id` int DEFAULT NULL,
-  `received_prefix` varchar(43) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `advertised_prefix` varchar(43) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `received_prefix` varchar(43) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `advertised_prefix` varchar(43) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `protocol` smallint DEFAULT NULL,
-  `action_advertise` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `action_receive` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `action_advertise` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `action_receive` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `enabled` tinyint(1) NOT NULL DEFAULT '1',
   `order_by` int NOT NULL,
-  `live` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `live` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2028,7 +2028,7 @@ CREATE TABLE `routers` (
 
 LOCK TABLES `routers` WRITE;
 /*!40000 ALTER TABLE `routers` DISABLE KEYS */;
-INSERT INTO `routers` VALUES (1,2,1,'rs1-vix1-ipv4',4,1,'Route Server #1 - VIX1 - IPv4','RS1 - VIX1 - IPv4','192.0.2.8','192.0.2.8',65501,'6','192.0.2.8',NULL,0,0,0,1,'api/v4/router/server/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:12:45','2024-08-21 21:15:11'),(2,1,1,'rs2-vix1-ipv4',4,1,'Route Server #2 - VIX1 - IPv4','RS2 - VIX1 - IPv4','192.0.2.9','192.0.2.9',65501,'6','192.0.2.9',NULL,0,NULL,0,1,'api/v4/router/server/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:13:52','2024-08-21 21:13:52'),(3,4,1,'rs1-vix1-ipv6',6,1,'Route Server #1 - VIX1 - IPv6','RS1 - VIX1 - IPv6','192.0.2.8','2001:db8:0:10::8',65501,'6','192.0.2.8',NULL,0,0,0,1,'api/v4/router/server/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:14:45','2024-08-21 21:16:13'),(4,3,1,'rs2-vix1-ipv6',6,1,'Route Server #2 - VIX1 - IPv6','RS2 - VIX1 - IPv6','192.0.2.9','2001:db8:0:10::9',65501,'6','192.0.2.9',NULL,0,NULL,0,1,'api/v4/router/server/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:16:04','2024-08-21 21:16:04'),(5,6,2,'rs1-vix2-ipv4',4,1,'Route Server #1 - VIX2 - IPv4','RS1 - VIX2 - IPv4','198.51.100.8','198.51.100.8',65501,'6','198.51.100.8',NULL,0,0,0,1,'api/v4/router/server/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:17:26','2024-08-21 21:18:23'),(6,5,2,'rs1-vix2-ipv6',6,1,'Route Server #1 - VIX2 - IPv6','RS2 - VIX1 - IPv6','198.51.100.8','2001:db8:0:20::8',65501,'6','198.51.100.8',NULL,0,NULL,0,1,'api/v4/router/server/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:18:12','2024-08-21 21:18:12'),(7,8,1,'rc1-vix1-ipv4',4,2,'Route Collector #1 - VIX1 - IPv4','RC1 - VIX1 - IPv4','192.0.2.126','192.0.2.126',65500,'6','192.0.2.126',NULL,0,NULL,0,1,'api/v4/router/collector/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:19:34','2024-08-21 21:19:34'),(8,7,1,'rc1-vix1-ipv6',6,2,'Route Collector #1 - VIX1 - IPv6','RC1 - VIX1 - IPv6','192.0.2.126','2001:db8:0:10::126',65500,'6','192.0.2.126',NULL,0,NULL,0,1,'api/v4/router/collector/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:20:34','2024-08-21 21:20:34'),(9,10,2,'rc1-vix2-ipv4',4,2,'Route Collector #1 - VIX2 - IPv4','RC1 - VIX2 - IPv4','192.0.2.126','198.51.100.126',65500,'6','198.51.100.126',NULL,0,NULL,0,1,'api/v4/router/collector/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:19:34','2024-08-21 21:19:34'),(10,9,2,'rc1-vix2-ipv6',6,2,'Route Collector #1 - VIX2 - IPv6','RC1 - VIX2 - IPv6','192.0.2.126','2001:db8:0:20::126',65500,'6','198.51.100.126',NULL,0,NULL,0,1,'api/v4/router/collector/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:20:34','2024-08-21 21:20:34'),(11,12,3,'rc1q-vix1-ipv4',4,2,'Quarantine Route Collector #1 - VIX1 - IPv4','RC1Q - VIX1 - IPv4','192.0.2.126','192.0.2.126',65500,'6','192.0.2.126',NULL,0,NULL,1,1,'api/v4/router/collector/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:19:34','2024-08-21 21:19:34'),(12,11,3,'rc1q-vix1-ipv6',6,2,'Quarantine Route Collector #1 - VIX1 - IPv6','RC1Q - VIX1 - IPv6','192.0.2.126','2001:db8:0:10::126',65500,'6','192.0.2.126',NULL,0,NULL,1,1,'api/v4/router/collector/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:20:34','2024-08-21 21:20:34'),(13,14,4,'rc1q-vix2-ipv4',4,2,'Quarantine Route Collector #1 - VIX2 - IPv4','RC1Q - VIX2 - IPv4','198.51.100.126','198.51.100.126',65500,'6','198.51.100.126',NULL,0,NULL,1,1,'api/v4/router/collector/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:19:34','2024-08-21 21:19:34'),(14,13,4,'rc1q-vix2-ipv6',6,2,'Quarantine Route Collector #1 - VIX2 - IPv6','RC1Q - VIX2 - IPv6','198.51.100.126','2001:db8:0:20::126',65500,'6','198.51.100.126',NULL,0,NULL,1,1,'api/v4/router/collector/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:20:34','2024-08-21 21:20:34'),(15,16,1,'as112-vix1-ipv4',4,3,'AS112 - VIX1 - IPv4','AS112 - VIX1 - IPv4','192.0.2.6','192.0.2.6',112,'1','192.0.2.6',NULL,0,NULL,0,1,'api/v4/router/as112/bird/standard',1,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:24:52','2024-08-21 21:24:52'),(16,15,1,'as112-vix1-ipv6',6,3,'AS112 - VIX1 - IPv6','AS112 - VIX1 - IPv6','192.0.2.6','2001:db8:0:10::6',112,'1','192.0.2.6',NULL,0,NULL,0,1,'api/v4/router/as112/bird/standard',1,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:24:52','2024-08-21 21:24:52'),(17,18,2,'as112-vix2-ipv4',4,3,'AS112 - VIX2 - IPv4','AS112 - VIX2 - IPv4','198.51.100.6','198.51.100.6',112,'1','198.51.100.6',NULL,0,NULL,0,1,'api/v4/router/as112/bird/standard',1,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:24:52','2024-08-21 21:24:52'),(18,17,2,'as112-vix2-ipv6',6,3,'AS112 - VIX2 - IPv6','AS112 - VIX2 - IPv6','198.51.100.6','2001:db8:0:20::6',112,'1','198.51.100.6',NULL,0,NULL,0,1,'api/v4/router/as112/bird/standard',1,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:24:52','2024-08-21 21:24:52');
+INSERT INTO `routers` VALUES (1,2,1,'rs1-vix1-ipv4',4,1,'Route Server #1 - VIX1 - IPv4','RS1 - VIX1 - IPv4','192.0.2.8','192.0.2.8',65501,'6','192.0.2.8','http://rs1-vix1-ipv4:81/api',1,0,0,1,'api/v4/router/server/bird2/standard',0,'2024-08-23 14:02:10','2024-08-23 14:02:10',0,0,NULL,NULL,NULL,1,'2024-08-21 21:12:45','2024-08-23 19:02:10'),(2,1,1,'rs2-vix1-ipv4',4,1,'Route Server #2 - VIX1 - IPv4','RS2 - VIX1 - IPv4','192.0.2.9','192.0.2.9',65501,'6','192.0.2.9','http://rs2-vix1-ipv4:81/api',1,0,0,1,'api/v4/router/server/bird2/standard',0,'2024-08-23 14:02:10','2024-08-23 14:02:10',0,0,NULL,NULL,NULL,1,'2024-08-21 21:13:52','2024-08-23 19:02:10'),(3,4,1,'rs1-vix1-ipv6',6,1,'Route Server #1 - VIX1 - IPv6','RS1 - VIX1 - IPv6','192.0.2.8','2001:db8:0:10::8',65501,'6','192.0.2.8','http://rs1-vix1-ipv6:81/api',1,0,0,1,'api/v4/router/server/bird2/standard',0,'2024-08-23 14:02:10','2024-08-23 14:02:11',0,0,NULL,NULL,NULL,1,'2024-08-21 21:14:45','2024-08-23 19:02:11'),(4,3,1,'rs2-vix1-ipv6',6,1,'Route Server #2 - VIX1 - IPv6','RS2 - VIX1 - IPv6','192.0.2.9','2001:db8:0:10::9',65501,'6','192.0.2.9','http://rs2-vix1-ipv6:81/api',1,0,0,1,'api/v4/router/server/bird2/standard',0,'2024-08-23 14:02:11','2024-08-23 14:02:11',0,0,NULL,NULL,NULL,1,'2024-08-21 21:16:04','2024-08-23 19:02:11'),(5,6,2,'rs1-vix2-ipv4',4,1,'Route Server #1 - VIX2 - IPv4','RS1 - VIX2 - IPv4','198.51.100.8','198.51.100.8',65501,'6','198.51.100.8','http://rs1-vix2-ipv4:81/api',1,0,0,1,'api/v4/router/server/bird2/standard',0,'2024-08-23 14:02:11','2024-08-23 14:02:11',0,0,NULL,NULL,NULL,1,'2024-08-21 21:17:26','2024-08-23 19:02:11'),(6,5,2,'rs1-vix2-ipv6',6,1,'Route Server #1 - VIX2 - IPv6','RS2 - VIX1 - IPv6','198.51.100.8','2001:db8:0:20::8',65501,'6','198.51.100.8','http://rs2-vix2-ipv6:81/api',1,0,0,1,'api/v4/router/server/bird2/standard',0,'2024-08-23 14:02:11','2024-08-23 14:02:11',0,0,NULL,NULL,NULL,1,'2024-08-21 21:18:12','2024-08-23 19:02:11'),(7,8,1,'rc1-vix1-ipv4',4,2,'Route Collector #1 - VIX1 - IPv4','RC1 - VIX1 - IPv4','192.0.2.126','192.0.2.126',65500,'6','192.0.2.126','http://rc1-vix1-ipv4:81/api',1,0,0,1,'api/v4/router/collector/bird2/standard',0,'2024-08-23 14:02:11','2024-08-23 14:02:11',0,0,NULL,NULL,NULL,1,'2024-08-21 21:19:34','2024-08-23 19:02:11'),(8,7,1,'rc1-vix1-ipv6',6,2,'Route Collector #1 - VIX1 - IPv6','RC1 - VIX1 - IPv6','192.0.2.126','2001:db8:0:10::126',65500,'6','192.0.2.126','http://rc1-vix1-ipv6:81/api',1,0,0,1,'api/v4/router/collector/bird2/standard',0,'2024-08-23 14:02:11','2024-08-23 14:02:11',0,0,NULL,NULL,NULL,1,'2024-08-21 21:20:34','2024-08-23 19:02:11'),(9,10,2,'rc1-vix2-ipv4',4,2,'Route Collector #1 - VIX2 - IPv4','RC1 - VIX2 - IPv4','192.0.2.126','198.51.100.126',65500,'6','198.51.100.126','http://rc1-vix2-ipv4:81/api',1,0,0,1,'api/v4/router/collector/bird2/standard',0,'2024-08-23 14:02:11','2024-08-23 14:02:11',0,0,NULL,NULL,NULL,1,'2024-08-21 21:19:34','2024-08-23 19:02:11'),(10,9,2,'rc1-vix2-ipv6',6,2,'Route Collector #1 - VIX2 - IPv6','RC1 - VIX2 - IPv6','192.0.2.126','2001:db8:0:20::126',65500,'6','198.51.100.126','http://rc1-vix2-ipv6:81/api',1,0,0,1,'api/v4/router/collector/bird2/standard',0,'2024-08-23 14:02:11','2024-08-23 14:02:11',0,0,NULL,NULL,NULL,1,'2024-08-21 21:20:34','2024-08-23 19:02:11'),(11,12,3,'rc1q-vix1-ipv4',4,2,'Quarantine Route Collector #1 - VIX1 - IPv4','RC1Q - VIX1 - IPv4','192.0.2.126','192.0.2.126',65500,'6','192.0.2.126',NULL,0,NULL,1,1,'api/v4/router/collector/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:19:34','2024-08-21 21:19:34'),(12,11,3,'rc1q-vix1-ipv6',6,2,'Quarantine Route Collector #1 - VIX1 - IPv6','RC1Q - VIX1 - IPv6','192.0.2.126','2001:db8:0:10::126',65500,'6','192.0.2.126',NULL,0,NULL,1,1,'api/v4/router/collector/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:20:34','2024-08-21 21:20:34'),(13,14,4,'rc1q-vix2-ipv4',4,2,'Quarantine Route Collector #1 - VIX2 - IPv4','RC1Q - VIX2 - IPv4','198.51.100.126','198.51.100.126',65500,'6','198.51.100.126',NULL,0,NULL,1,1,'api/v4/router/collector/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:19:34','2024-08-21 21:19:34'),(14,13,4,'rc1q-vix2-ipv6',6,2,'Quarantine Route Collector #1 - VIX2 - IPv6','RC1Q - VIX2 - IPv6','198.51.100.126','2001:db8:0:20::126',65500,'6','198.51.100.126',NULL,0,NULL,1,1,'api/v4/router/collector/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,1,'2024-08-21 21:20:34','2024-08-21 21:20:34'),(15,16,1,'as112-vix1-ipv4',4,3,'AS112 - VIX1 - IPv4','AS112 - VIX1 - IPv4','192.0.2.6','192.0.2.6',112,'1','192.0.2.6','http://as112-vix1-ipv4:81/api',1,0,0,1,'api/v4/router/as112/bird2/standard',1,NULL,'2024-08-23 14:02:11',0,0,NULL,NULL,NULL,1,'2024-08-21 21:24:52','2024-08-23 19:02:11'),(16,15,1,'as112-vix1-ipv6',6,3,'AS112 - VIX1 - IPv6','AS112 - VIX1 - IPv6','192.0.2.6','2001:db8:0:10::6',112,'1','192.0.2.6','http://as112-vix1-ipv6:81/api',1,0,0,1,'api/v4/router/as112/bird2/standard',1,NULL,'2024-08-23 14:02:11',0,0,NULL,NULL,NULL,1,'2024-08-21 21:24:52','2024-08-23 19:02:11'),(17,18,2,'as112-vix2-ipv4',4,3,'AS112 - VIX2 - IPv4','AS112 - VIX2 - IPv4','198.51.100.6','198.51.100.6',112,'1','198.51.100.6','http://as112-vix2-ipv4:81/api',1,0,0,1,'api/v4/router/as112/bird2/standard',1,NULL,'2024-08-23 14:02:11',0,0,NULL,NULL,NULL,1,'2024-08-21 21:24:52','2024-08-23 19:02:11'),(18,17,2,'as112-vix2-ipv6',6,3,'AS112 - VIX2 - IPv6','AS112 - VIX2 - IPv6','198.51.100.6','2001:db8:0:20::6',112,'1','198.51.100.6','http://as112-vix2-ipv6:81/api',1,0,0,1,'api/v4/router/as112/bird2/standard',1,NULL,'2024-08-23 14:02:11',0,0,NULL,NULL,NULL,1,'2024-08-21 21:24:52','2024-08-23 19:02:11');
 /*!40000 ALTER TABLE `routers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2575,7 +2575,6 @@ CREATE TABLE `user_logins` (
 
 LOCK TABLES `user_logins` WRITE;
 /*!40000 ALTER TABLE `user_logins` DISABLE KEYS */;
-INSERT INTO `user_logins` VALUES (1,NULL,'10.211.55.1','2024-08-21 13:54:00',1,'Login','2024-08-21 18:54:00','2024-08-21 18:54:00'),(2,NULL,'10.211.55.1','2024-08-21 14:53:05',2,'Login','2024-08-21 19:53:05','2024-08-21 19:53:05'),(3,NULL,'10.211.55.1','2024-08-21 14:53:58',2,'Login','2024-08-21 19:53:58','2024-08-21 19:53:58'),(4,NULL,'10.211.55.1','2024-08-21 15:03:15',1,'Login','2024-08-21 20:03:15','2024-08-21 20:03:15'),(5,NULL,'10.211.55.1','2024-08-21 15:05:59',2,'Login','2024-08-21 20:05:59','2024-08-21 20:05:59'),(6,NULL,'10.211.55.1','2024-08-21 15:06:34',3,'Login','2024-08-21 20:06:34','2024-08-21 20:06:34'),(7,NULL,'10.211.55.1','2024-08-21 15:06:56',1,'Login','2024-08-21 20:06:56','2024-08-21 20:06:56');
 /*!40000 ALTER TABLE `user_logins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2809,4 +2808,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-21 11:55:22
+-- Dump completed on 2024-08-23  9:05:56

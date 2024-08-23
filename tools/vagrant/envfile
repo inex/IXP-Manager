@@ -100,6 +100,9 @@ IXP_AS112_UI_ACTIVE=true
 #
 ## Enable the UI for route server community-based filtering by uncommenting this line:
 ## IXP_FE_FRONTEND_DISABLED_RS_FILTERS=false
+
+IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS=false
+
 #
 ########################################################################################
 #### Graphing - see https://docs.ixpmanager.org/grapher/introduction

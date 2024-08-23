@@ -25,6 +25,13 @@ class GenerateClientRouterConfigurationsCommand extends Command
 
         foreach( $vlis as $vli ) {
 
+            // skip route servers, collector and as112
+            if( in_array( $vli->virtualInterface->customer->autsys, [ 112, 65500, 65501 ] ) ) { continue; }
+
+
+
+
+
             $this->info( "Generating route server client for {$vli->virtualInterface->customer->name} / {$vli->vlan->name}" );
 
             $confName = "as{$vli->virtualInterface->customer->autsys}-"

@@ -196,7 +196,7 @@ sed -i 's/127.0.0.1 localhost/127.0.0.1 localhost swi1-fac1-1 swi1-fac2-1 swi2-f
 
 ####################################################################################
 #######
-####### Route Servers / Collectors
+####### Route Servers / Collectors / AS112 / Clients
 
 apt-get -y install bird2
 /usr/bin/systemctl stop bird.service
@@ -216,10 +216,54 @@ mysql --defaults-extra-file=/etc/mysql/ixpmanager.cnf --skip-column-names  --sil
   -e 'SELECT CONCAT( peering_ip, " ", handle ) FROM routers' >> /etc/hosts
 
 /vagrant/tools/vagrant/scripts/rs-api-reconfigure-all.sh
+/vagrant/tools/vagrant/scripts/rc-reconfigure.sh
+/vagrant/tools/vagrant/scripts/as112-reconfigure-bird2.sh
 
 php /vagrant/artisan vagrant:generate-client-router-configurations
 chmod a+x /srv/clients/start-reload-clients.sh
 /srv/clients/start-reload-clients.sh
+
+
+####################################################################################
+#######
+####### Birdseye Looking Glass
+#######
+
+git clone https://github.com/inex/birdseye.git /srv/birdseye
+cd /srv/birdseye
+git checkout php83
+chown -R vagrant: /srv/birdseye
+
+
+cat >/etc/apache2/sites-enabled/birdseye.conf <<END_APACHE
+Listen 81
+
+<VirtualHost *:81>
+    DocumentRoot /srv/birdseye/public
+
+    <Directory /srv/birdseye/public>
+        Options FollowSymLinks
+        AllowOverride None
+        Require all granted
+
+        RewriteEngine On
+        RewriteCond %{REQUEST_FILENAME} -s [OR]
+        RewriteCond %{REQUEST_FILENAME} -l [OR]
+        RewriteCond %{REQUEST_FILENAME} -d
+        RewriteRule ^.*$ - [NC,L]
+        RewriteRule ^.*$ /index.php [NC,L]
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/birdseye-error.log
+    CustomLog ${APACHE_LOG_DIR}/birdseye-access.log combined
+</VirtualHost>
+
+END_APACHE
+
+systemctl restart apache2.service
+
+php /vagrant/artisan vagrant:generate-birdseye-configurations
+echo -e "\nvagrant        ALL=(ALL)       NOPASSWD: /srv/birdseye/bin/birdc\n" >>/etc/sudoers
 
 
 

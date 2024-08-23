@@ -36,11 +36,7 @@ protocol static static_bgp4 {
 }
 
 
-<?php foreach( Router::where('protocol', 4)->where('vlan_id', $vli->vlanid)->get() as $r ):
-
-    if( $vli->virtualInterface->customer->autsys == $r->asn ) { continue; }
-
-?>
+<?php foreach( Router::where('protocol', 4)->where('vlan_id', $vli->vlanid)->get() as $r ): ?>
 
 # <?= $r->name ?>
 
@@ -77,11 +73,7 @@ protocol static static_bgp6 {
 
 
 
-<?php foreach( Router::where('protocol', 6)->where('vlan_id', $vli->vlanid)->get() as $r ):
-
-        if( $vli->virtualInterface->customer->autsys == $r->asn ) { continue; }
-
-?>
+<?php foreach( Router::where('protocol', 6)->where('vlan_id', $vli->vlanid)->get() as $r ): ?>
 
 # <?= $r->name ?>
 
