@@ -23,6 +23,23 @@
 ##
 ## Barry O'Donovan 2015-2024
 
+
+
+
+####################################################################################
+#######
+####### Time time time...
+#######
+
+/usr/bin/timedatectl set-timezone 'Europe/Dublin'
+
+
+
+####################################################################################
+#######
+####### Packages
+#######
+
 echo "Updating packages...."
 apt-get update &>/dev/null
 #apt-get dist-upgrade -y
@@ -298,9 +315,43 @@ echo -e "\nvagrant        ALL=(ALL)       NOPASSWD: /srv/birdseye/bin/birdc\n" >
 
 ####################################################################################
 #######
+####### Graphing mrtg
+#######
 
-# enable scheduler
-#echo -e "\n\n# IXP Manager cron jobs:\n*  *   * * *   www-data    /usr/bin/php /vagrant/artisan schedule:run\n\n" >>/etc/crontab
+mkdir -p /srv/mrtg
+chown -R mrtg: /srv/mrtg
+chmod a+rwX /srv/mrtg
+
+/vagrant/tools/vagrant/scripts/update-mrtg.sh
+
+
+
+
+
+####################################################################################
+#######
+####### Cron / Scheduler
+#######
+
+
+
+cat >/etc/cron.d/ixpmanager <<END_CRON
+
+* *             * * *   www-data        /vagrant/artisan schedule:run >> /dev/null 2>&1
+
+*/5 *           * * *   root            /vagrant/tools/vagrant/scripts/update-mrtg.sh
+
+
+END_CRON
+
+
+
+
+
+####################################################################################
+#######
+####### Done!
+#######
 
 cd /vagrant
 

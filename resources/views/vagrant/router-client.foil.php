@@ -38,6 +38,20 @@ protocol static static_bgp4 {
 
 <?php foreach( Router::where('protocol', 4)->where('vlan_id', $vli->vlanid)->get() as $r ): ?>
 
+
+<?php
+
+    if( $r->type == Router::TYPE_ROUTE_SERVER && !$vli->rsclient ) {
+        continue;
+    }
+
+    if( $r->type == Router::TYPE_AS112 && !$vli->as112client ) {
+        continue;
+    }
+
+?>
+
+
 # <?= $r->name ?>
 
 protocol bgp <?= str_replace( '-', '_', $r->handle ) ?> {
@@ -74,6 +88,19 @@ protocol static static_bgp6 {
 
 
 <?php foreach( Router::where('protocol', 6)->where('vlan_id', $vli->vlanid)->get() as $r ): ?>
+
+
+<?php
+
+    if( $r->type == Router::TYPE_ROUTE_SERVER && !$vli->rsclient ) {
+        continue;
+    }
+
+    if( $r->type == Router::TYPE_AS112 && !$vli->as112client ) {
+        continue;
+    }
+
+?>
 
 # <?= $r->name ?>
 

@@ -14,7 +14,7 @@ APP_URL="http://localhost:8088"
 APP_NAME="Vagrant Dev Environment"
 
 ## See http://php.net/manual/en/timezones.php for a list of timezones:
-APP_TIMEZONE="UTC"
+APP_TIMEZONE="Europe/Dublin"
 
 ## Laravel log format (storage/log). See config/log.php and
 ## https://laravel.com/docs/11.x/logging
@@ -29,6 +29,11 @@ APP_ENV="vagrant"
 # of their individual configuration, which simply provides a single
 # and convenient way to enable or disable Telescope data storage.
 TELESCOPE_ENABLED=false
+
+
+## Email to logs
+MAIL_MAILER=log
+
 
 ## MySQL Connection Details
 DB_CONNECTION="mysql"

@@ -6,8 +6,8 @@ if [ "$EUID" -ne 0 ]
 fi
 
 # Kill all bird instances
-killall bird
-rm /srv/clients/*.conf
+#killall bird
+#rm /srv/clients/*.conf
 
 # Clients
 sudo -u vagrant php /vagrant/artisan vagrant:generate-client-router-configurations
