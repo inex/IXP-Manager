@@ -116,24 +116,24 @@ IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS=false
 ## GRAPHER_BACKENDS="mrtg|sflow|smokeping"
 #
 ## On a new installation, we just use placeholders from the dummy backend:
-GRAPHER_BACKENDS="dummy"
+GRAPHER_BACKENDS="mrtg"
 #
 ## With the cache enabled, IXP Manager does not have to regenerate / reload / reprocess
 ## log / rrd / image files if we have cached them and they are less than 5mins old. This
 ## is enabled by default which is the recommended setting.
-#GRAPHER_CACHE_ENABLED=true
+GRAPHER_CACHE_ENABLED=false
 #
 ##################################################################################
 ### Grapher - Mrtg - see: https://docs.ixpmanager.org/grapher/mrtg/
 ###
 #
 ## For backwards compatibility, the default is 'log' but 'rrd' is more modern:
-#GRAPHER_BACKEND_MRTG_DBTYPE="rrd"
+GRAPHER_BACKEND_MRTG_DBTYPE="rrd"
 #
 ## The defaults for these are '/tmp' to require you to change them to something
 ## more sensible such as:
-## GRAPHER_BACKEND_MRTG_WORKDIR="/srv/mrtg"
-## GRAPHER_BACKEND_MRTG_LOGDIR="/srv/mrtg"
+GRAPHER_BACKEND_MRTG_WORKDIR="/srv/mrtg"
+GRAPHER_BACKEND_MRTG_LOGDIR="/srv/mrtg"
 #
 ##################################################################################
 ### Grapher - sflow - see: https://docs.ixpmanager.org/grapher/sflow/

@@ -99,6 +99,9 @@ host = "127.0.0.1"
 END_MYSQLCNF
 
 mysql --defaults-extra-file=/etc/mysql/root-client.cnf <<"END_SQL"
+CREATE USER IF NOT EXISTS root@`%` IDENTIFIED BY 'password';
+GRANT ALL ON *.* TO root@`%` WITH GRANT OPTION;
+
 DROP DATABASE IF EXISTS ixp;
 CREATE DATABASE ixp CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';
 CREATE USER IF NOT EXISTS ixp@`%` IDENTIFIED BY 'password';
