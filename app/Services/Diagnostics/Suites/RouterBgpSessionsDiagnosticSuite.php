@@ -29,6 +29,7 @@ use IXP\Services\Diagnostics\DiagnosticSuite;
 use IXP\Models\VlanInterface;
 
 use IXP\Services\LookingGlass as LookingGlassService;
+use IXP\Contracts\LookingGlass as LookingGlassContract;
 use App;
 
 /**
@@ -46,7 +47,7 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
 {
 
     private Router|null $router;
-    private LookingGlassService|null $lookingGlass;
+    private LookingGlassContract|null $lookingGlass;
 
     /**
      * @param VlanInterface $vli
@@ -93,14 +94,6 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
         $this->results->add( $this->vlanRouterTest() );
         $this->results->add( $this->protocolStatusDiagnostics() );
 
-
-        // protocol bgp pb_as<?= $int['autsys'] ? >_vli<?= $int[ 'vliid' ] ? >_ipv<?= $int[ 'protocol' ] ?? 4 ? > {
-
-        // "pb_as{$vli->virtualinterface->customer->autsys}_vli{$vli->id}_ipv{$protocol}
-
-
-
-
         return $this;
     }
 
@@ -143,14 +136,27 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
     {
         $mainName = "Protocol Status diagnostics";
 
-        if ( !$this->router || !$this->router->hasApi() ) {
+        if ( $this->router && $this->router->hasApi() ) {
             // sample url for protocol status: http://rc1-ipv4.cork.inex.ie/api/protocol/pb_as112_vli249_ipv4
             // https://www.inex.ie/rc1-cork-ipv4/api/protocol/pb_as112_vli249_ipv4
-
             // test api use: https://www.inex.ie/rc1-cork-ipv4/api
-            $statusUrl = $this->router->api . '/protocol/' . $this->router->handle;
-            $protocolStatus = json_decode( file_get_contents( $statusUrl ) );
-            //info("prs\n".var_export($protocolStatus, true));
+            //$statusUrl = 'https://www.inex.ie/rc1-cork-ipv4/api/protocol/pb_as112_vli249_ipv4';
+
+            $statusUrl = $this->router->api . '/protocol/pb_as' . $this->vli->virtualinterface->customer->autsys . "_vli" . $this->vli->id . "_ipv" . $this->protocol;
+
+            try {
+                $fileContent = file_get_contents( $statusUrl );
+            } catch(\Exception $e ) {
+                info("ERROR: Status content inaccessible.\n".$e->getMessage());
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_FATAL,
+                    narrative: "ERROR: Status content inaccessible. More info in log",
+                );
+
+            }
+
+            $protocolStatus = json_decode( $fileContent );
 
             // json content of interest:
 
