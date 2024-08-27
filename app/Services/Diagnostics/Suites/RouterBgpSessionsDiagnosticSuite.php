@@ -94,7 +94,6 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
         $this->results->add( $this->protocolStatusDiagnostics() );
 
 
-        // todo: I'm not sure what these means...
         // protocol bgp pb_as<?= $int['autsys'] ? >_vli<?= $int[ 'vliid' ] ? >_ipv<?= $int[ 'protocol' ] ?? 4 ? > {
 
         // "pb_as{$vli->virtualinterface->customer->autsys}_vli{$vli->id}_ipv{$protocol}
@@ -144,49 +143,58 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
     {
         $mainName = "Protocol Status diagnostics";
 
-        // sample url for protocol status: http://rc1-ipv4.cork.inex.ie/api/protocol/pb_as112_vli249_ipv4
-        // https://www.inex.ie/rc1-cork-ipv4/api/protocol/pb_as112_vli249_ipv4
+        if ( !$this->router || !$this->router->hasApi() ) {
+            // sample url for protocol status: http://rc1-ipv4.cork.inex.ie/api/protocol/pb_as112_vli249_ipv4
+            // https://www.inex.ie/rc1-cork-ipv4/api/protocol/pb_as112_vli249_ipv4
 
-        // actually use: https://www.inex.ie/rc1-cork-ipv4/
-        // todo: make the statusUrl dynamic
-        $statusUrl = 'https://www.inex.ie/rc1-cork-ipv4/api/protocol/pb_as112_vli249_ipv4';
-        $protocolStatus = json_decode(file_get_contents($statusUrl));
-        //info("prs\n".var_export($protocolStatus, true));
+            // test api use: https://www.inex.ie/rc1-cork-ipv4/api
+            $statusUrl = $this->router->api . '/protocol/' . $this->router->handle;
+            $protocolStatus = json_decode( file_get_contents( $statusUrl ) );
+            //info("prs\n".var_export($protocolStatus, true));
 
-        // json content of interest:
+            // json content of interest:
 
-        // state: up  -> okay, otherwise warn
-        // interesting info if !up: state_changed
-        // interesting info if up: route_limit_at vs import_limit => if within 80% -> warning
+            // state: up  -> okay, otherwise warn
+            // interesting info if !up: state_changed
+            // interesting info if up: route_limit_at vs import_limit => if within 80% -> warning
 
-        if ( $protocolStatus->protocol->state !== 'up' ) {
-
-            return new DiagnosticResult(
-                name: $mainName,
-                result: DiagnosticResult::TYPE_WARN,
-                narrative: "Router Protocol Status is " . $protocolStatus->protocol->state,
-            );
-
-        } else {
-
-            $importPercent = $protocolStatus->protocol->routes->imported / $protocolStatus->protocol->route_limit_at;
-            if($importPercent < .8) {
+            if( $protocolStatus->protocol->state !== 'up' ) {
 
                 return new DiagnosticResult(
                     name: $mainName,
                     result: DiagnosticResult::TYPE_WARN,
-                    narrative: "Router Protocol Status is up, but import rate is low",
+                    narrative: "Router Protocol Status is " . $protocolStatus->protocol->state,
                 );
 
             } else {
 
-                return new DiagnosticResult(
-                    name: $mainName,
-                    result: DiagnosticResult::TYPE_GOOD,
-                    narrative: "Router Protocol Status is up, and import rate is good",
-                );
+                $importPercent = $protocolStatus->protocol->routes->imported / $protocolStatus->protocol->route_limit_at;
+                if( $importPercent < .8 ) {
+
+                    return new DiagnosticResult(
+                        name: $mainName,
+                        result: DiagnosticResult::TYPE_WARN,
+                        narrative: "Router Protocol Status is up, but import rate is low",
+                    );
+
+                } else {
+
+                    return new DiagnosticResult(
+                        name: $mainName,
+                        result: DiagnosticResult::TYPE_GOOD,
+                        narrative: "Router Protocol Status is up, and import rate is good",
+                    );
+
+                }
 
             }
+        } else {
+
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_ERROR,
+                narrative: "Router DEBUG or API not available",
+            );
 
         }
 
