@@ -38,7 +38,6 @@ function ixp_community_filter(int peerasn)
 {
         if !(source = RTS_BGP) then
                 return false;
-
 <?php if( $t->router->bgp_lc ): ?>
         # support for BGP Large Communities
         if (routeserverasn, 0, peerasn) ~ bgp_large_community then
@@ -51,7 +50,10 @@ function ixp_community_filter(int peerasn)
                 return true;
 
 <?php endif; ?>
-        # it's unwise to conduct a 32-bit check on a 16-bit value
+        # it's unwise to conduct a 32-bit check on a 16-bit value however need to check 0:routeserverasn
+        if (0, routeserverasn) ~ bgp_community then
+                return false;
+
         if peerasn > 65535 then
                 return true;
 
@@ -60,8 +62,6 @@ function ixp_community_filter(int peerasn)
                 return false;
         if (routeserverasn, peerasn) ~ bgp_community then
                 return true;
-        if (0, routeserverasn) ~ bgp_community then
-                return false;
 
         return true;
 }
