@@ -25,17 +25,20 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
 <?php $this->section('content') ?>
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12 tw-bg-gray-100 tw-py-4 tw-rounded-lg">
         <?= $t->alerts() ?>
 
 
         <?php   /** @var \IXP\Services\Diagnostics\DiagnosticResultSet $drs */
             foreach( $t->resultSets as $drs ): ?>
 
-            <div class="tw-px-4 sm:tw-px-6 lg:tw-px-8">
-                <div class="sm:tw-flex sm:tw-items-center">
-                    <div class="sm:tw-flex-auto">
-                        <h1 class="tw-text-base tw-font-semibold tw-leading-6 tw-text-gray-900">
+
+
+
+        <div class="tw-divide-y tw-divide-gray-200 tw-overflow-hidden tw-rounded-lg tw-bg-white tw-shadow tw-mb-8">
+            <div class="tw-px-4 tw-py-5 sm:tw-px-6">
+
+                        <h1 class="tw-text-lg tw-font-semibold tw-leading-6 tw-text-gray-900">
                             <?= $t->ee( $drs->suite->name() ) ?>
 
                             <button type="button" class="tw-ml-2 tw-rounded tw-bg-white tw-px-2 tw-py-1 tw-text-xs tw-font-semibold tw-text-gray-900 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-gray-300 hover:tw-bg-gray-50"
@@ -45,10 +48,10 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
                             </button>
                         </h1>
 
+            </div>
+            <div class="tw-px-4 tw-py-5 sm:tw-p-6">
 
-                    </div>
-                </div>
-                <div class="-tw-mx-4 tw-mb-8 sm:-tw-mx-0">
+                <div>
                     <table class="tw-min-w-full tw-divide-y tw-divide-gray-300">
                         <tbody class="tw-divide-y tw-divide-gray-200 tw-bg-white">
 
@@ -80,7 +83,78 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
                         </tbody>
                     </table>
                 </div>
+
+                <?php foreach( $drs->subsets() as $drs ): ?>
+
+                    <div class="tw-relative tw-mt-8 tw-mb-8">
+                        <div class="tw-absolute tw-inset-0 tw-flex tw-items-center" aria-hidden="true">
+                            <div class="tw-w-full tw-border-t tw-border-gray-300"></div>
+                        </div>
+                        <div class="tw-relative tw-flex tw-justify-center">
+                            <span class="tw-bg-white tw-px-2 tw-text-sm tw-text-gray-500"></span>
+                        </div>
+                    </div>
+
+
+
+                    <div class="tw-px-4 tw-py-5 sm:tw-px-6">
+
+                        <h1 class="tw-text-base tw-font-semibold tw-leading-6 tw-text-gray-900">
+                            <?= $t->ee( $drs->suite->name() ) ?>
+
+                            <button type="button" class="tw-ml-2 tw-rounded tw-bg-white tw-px-2 tw-py-1 tw-text-xs tw-font-semibold tw-text-gray-900 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-gray-300 hover:tw-bg-gray-50"
+                                    data-toggle="popover" title="<?= $t->ee( $drs->suite->name() ) ?>" data-content="<?= $t->ee( $drs->suite->description() ) ?>"
+                            >
+                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                            </button>
+                        </h1>
+
+                    </div>
+
+
+                    <div class="tw-px-4 tw-py-5 sm:tw-p-6">
+
+                        <div>
+                            <table class="tw-min-w-full tw-divide-y tw-divide-gray-300">
+                                <tbody class="tw-divide-y tw-divide-gray-200 tw-bg-white">
+
+                                <?php foreach( $drs->results as $r ): ?>
+
+                                    <tr>
+                                        <td class="tw-whitespace-nowrap tw-py-2 tw-pl-4 tw-px-3 tw-text-sm sm:tw-pl-0 tw-w-20">
+                                            <?= $r->badge() ?>
+                                        </td>
+
+                                        <td class="tw-whitespace-nowrap tw-pl-4 tw-px-3 tw-text-sm sm:tw-pl-0 tw-w-10">
+                                            <button type="button" class="tw-ml-4 tw-rounded tw-bg-white tw-px-2 tw-py-1 tw-text-xs tw-font-semibold tw-text-gray-900 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-gray-300 hover:tw-bg-gray-50"
+                                                    data-toggle="popover" title="<?= $t->ee( $r->name ) ?>" data-content="<?= $t->ee( $r->narrative ) ?>"
+                                            >
+                                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                            </button>
+                                        </td>
+
+                                        <td class="tw-whitespace-nowrap tw-px-3 tw-text-sm">
+                                            <div class="tw-text-gray-700">
+                                                <?= $t->ee( $r->name ) ?>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                <?php endforeach; ?>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                <?php endforeach; ?>
+
+
             </div>
+        </div>
+
 
         <?php endforeach; ?>
 

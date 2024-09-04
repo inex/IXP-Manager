@@ -52,21 +52,28 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
     public const string DIAGNOSTIC_SUITE_TYPE = 'PHYSICAL_INTERFACE';
 
     private VirtualInterface $vi;
-    private SNMP|bool $snmpHost;
+
+    private SNMP|bool $snmpClient;
 
     public function __construct(
         private PhysicalInterface $pi,
     ) {
-        $this->name        = 'Physical Interface #' . $pi->id;
+
+        if( $pi?->switchPort ) {
+            $this->name = $pi->switchPort->switcher->name . ' :: ' . $pi->switchPort->name . ' [Physical Interface #' . $pi->id . ']';
+        } else {
+            $this->name        = 'Physical Interface #' . $pi->id;
+        }
+
         $this->description = 'Physical Interfaces general diagnostics.';
         $this->type        = 'INTERFACE';
 
         $this->vi = $pi->virtualInterface;
 
-        if( !$pi->switchPort->switcher->snmppasswd || trim( $pi->switchPort->switcher->snmppasswd ) === '' ) {
-            $this->snmpHost = false;
+        if( empty( $pi?->switchPort->switcher->snmppasswd ) ) {
+            $this->snmpClient = false;
         } else {
-            $this->snmpHost = new SNMP( $pi->switchPort->switcher->hostname, $pi->switchPort->switcher->snmppasswd );
+            $this->snmpClient = new SNMP( $pi->switchPort->switcher->hostname, $pi->switchPort->switcher->snmppasswd );
         }
 
         parent::__construct();
@@ -77,9 +84,12 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
      */
     public function run(): PhysicalInterfaceDiagnosticSuite
     {
-        $this->results->add( $this->physicalInterfaceLastPoll() );
-        $this->results->add( $this->physicalInterfaceMTU() );
-        if(!$this->snmpHost) {
+        $this->results->add( $this->switchportLastPoll() );
+        $this->results->add( $this->switchportCanPoll() );
+
+        $this->results->add( $this->physicalInterfaceMtu() );
+
+        if(!$this->snmpClient) {
 
             $this->results->add(
                 new DiagnosticResult(
@@ -115,59 +125,101 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
      *
      * @return DiagnosticResult
      */
-    private function physicalInterfaceLastPoll(): DiagnosticResult
+    private function switchportLastPoll(): DiagnosticResult
     {
-        $mainName = "Diagnostic tests";
+        $mainName = "Switch port information current?";
 
-        $lastPoll = $this->pi->switchPort->lastSnmpPoll;
-        $diff = Carbon::now()->diffInDays(Carbon::parse($lastPoll));
+        $lastPolled = Carbon::parse( $this->pi->switchPort->lastSnmpPoll );
 
-        if ($diff >= 1 || is_null($this->pi->switchPort->lastSnmpPoll)) {
+        if( now()->diffInHours( $lastPolled ) >= 1 || is_null($this->pi->switchPort->lastSnmpPoll ) ) {
             return new DiagnosticResult(
-                name: $mainName,
+                name: $mainName . " No, last polled: " . $lastPolled ? $lastPolled->diffForHumans() : 'never',
                 result: DiagnosticResult::TYPE_WARN,
-                narrative: "Some diagnostic tests are not real time",
+                narrative: "No, last polled: " . $lastPolled ? $lastPolled->diffForHumans() : 'never',
             );
         }
 
         return new DiagnosticResult(
-            name: $mainName,
+            name: $mainName . " Yes, last polled: " . $lastPolled->diffForHumans(),
             result: DiagnosticResult::TYPE_GOOD,
-            narrative: "Diagnostic tests are in real time",
+            narrative: "SNMP information has been recently retrieved for this port.",
         );
     }
 
+    /**
+     * We want to poll the port now to (a) make sure we can and (b) use live data
+     * for the remaining tests without making multiple snmp get requests.
+     *
+     * @return DiagnosticResult
+     */
+    private function switchportCanPoll(): DiagnosticResult
+    {
+        $mainName = "Can poll switch port via snmp?";
+
+        $before = $this->pi->switchPort->lastSnmpPoll;
+
+        while( $before === now()->format('Y-m-d H:i:s') ) {
+            sleep(1);
+        }
+
+        $this->pi->switchPort->snmpUpdate( $this->snmpClient );
+
+        if( $before !== $this->pi->switchPort->lastSnmpPoll->format('Y-m-d H:i:s') ) {
+            return new DiagnosticResult(
+                name: $mainName . " Yes, polled successfully",
+                result: DiagnosticResult::TYPE_GOOD,
+                narrative: "SNMP information has been retrieved for this port.",
+            );
+        }
+
+        return new DiagnosticResult(
+            name: $mainName . " No, could not poll the switch port",
+            result: DiagnosticResult::TYPE_FATAL,
+            narrative: "As we could not poll the switch port via SNMP, all other diagnostics tests relying on this information may not be accurate.",
+        );
+
+    }
 
     /**
      * Examine the physical interface mtu and provide information on it.
      *
      * @return DiagnosticResult
      */
-    private function physicalInterfaceMTU(): DiagnosticResult
+    private function physicalInterfaceMtu(): DiagnosticResult
     {
-        $mainName = "MTU diagnostic";
+        $mainName = "MTU - ";
 
-        $viMtu = $this->vi->mtu;
+        if ( $this->pi->switchPort->ifMtu < 1500 ) {
 
-        if ($this->pi->switchPort->ifMtu === $viMtu) {
             return new DiagnosticResult(
-                name: $mainName,
+                name: $mainName . "switch port is reporting a MTU of {$this->pi->switchPort->ifMtu} which is <1500",
+                result: DiagnosticResult::TYPE_FATAL,
+                narrative: "Switch port is reporting a MTU of <1500",
+            );
+
+        } else if( $this->pi->switchPort->ifMtu === $this->pi->virtualInterface->mtu ) {
+
+            return new DiagnosticResult(
+                name: $mainName . "both set to {$this->pi->virtualInterface->mtu}",
                 result: DiagnosticResult::TYPE_GOOD,
-                narrative: "MTU values matching",
+                narrative: "Switch port matches configured MTU of {$this->pi->virtualInterface->mtu}",
             );
-        } else if ($this->pi->switchPort->ifMtu < $viMtu) {
+
+        } else if ( !$this->pi->virtualInterface->mtu ) {
+
             return new DiagnosticResult(
-                name: $mainName,
-                result: DiagnosticResult::TYPE_ERROR,
-                narrative: "Error: MTU value too low",
+                name: $mainName ."configured as null/0 but switch port reports " . $this->pi->switchPort->ifMtu ?? 'null',
+                result: DiagnosticResult::TYPE_INFO,
+                narrative: "Configured MTU is null/0 but switch port reports " . $this->pi->switchPort->ifMtu ?? 'null',
             );
-        } else {
-            return new DiagnosticResult(
-                name: $mainName,
-                result: DiagnosticResult::TYPE_WARN,
-                narrative: "MTU values NOT matching",
-            );
+
         }
+
+        return new DiagnosticResult(
+            name: $mainName . ( $this->pi->virtualInterface->mtu ?? 'null' ) . " configured but switch port reports ({$this->pi->switchPort->ifMtu})",
+            result: DiagnosticResult::TYPE_ERROR,
+            narrative: "Configured MTU of {$this->pi->virtualInterface->mtu} does not match the switch port MTU of {$this->pi->switchPort->ifMtu}",
+        );
 
     }
 
@@ -183,8 +235,8 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
 
         try {
 
-            $adminStatus = $this->snmpHost->useIface()->adminStates(1)[$this->pi->switchPort->ifIndex];
-            $operationStatus = $this->snmpHost->useIface()->operationStates(1)[$this->pi->switchPort->ifIndex];
+            $adminStatus = $this->snmpClient->useIface()->adminStates(1)[ $this->pi->switchPort->ifIndex];
+            $operationStatus = $this->snmpClient->useIface()->operationStates(1)[ $this->pi->switchPort->ifIndex];
 
             if ($adminStatus !== $operationStatus) {
 
@@ -226,7 +278,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
 
         try {
 
-            $adminStatus = $this->snmpHost->useIface()->adminStates(1)[$this->pi->switchPort->ifIndex];
+            $adminStatus = $this->snmpClient->useIface()->adminStates(1)[ $this->pi->switchPort->ifIndex];
 
             if ($adminStatus == "up" && $this->pi->switchPort->active == 1) {
 
@@ -275,7 +327,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
 
         try {
 
-            $adminStatus = $this->snmpHost->useIface()->adminStates(1)[$this->pi->switchPort->ifIndex];
+            $adminStatus = $this->snmpClient->useIface()->adminStates(1)[ $this->pi->switchPort->ifIndex];
 
             if ($adminStatus == "up" && $this->pi->status == 1) {
 
@@ -324,7 +376,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
 
         try {
 
-            $highSpeed = $this->snmpHost->useIface()->highSpeeds()[$this->pi->switchPort->ifIndex];
+            $highSpeed = $this->snmpClient->useIface()->highSpeeds()[ $this->pi->switchPort->ifIndex];
 
             if ($highSpeed == $this->pi->speed) {
 

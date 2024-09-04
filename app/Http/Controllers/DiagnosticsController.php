@@ -53,27 +53,29 @@ class DiagnosticsController extends Controller
         $resultSets[] = $diagnostics->getCustomerIrrdbDiagnostics($customer);
 
         foreach( $customer->virtualInterfaces as $vi ) {
-            $resultSets[] = $diagnostics->getVirtualInterfaceDiagnostics( $vi );
+            $viSet = $diagnostics->getVirtualInterfaceDiagnostics( $vi );
 
             // get the Physical Interface Diagnostics Data and integrate here into the VI array
             foreach( $vi->physicalInterfaces as $pi ) {
-                $resultSets[] = $diagnostics->getPhysicalInterfaceDiagnostics( $pi );
+                $viSet->addSubset( $diagnostics->getPhysicalInterfaceDiagnostics( $pi ) );
             }
 
-            // get the Vlan Interface Diagnostics data
-            $protocols = [4,6];
-            foreach( $vi->vlanInterfaces as $vli ) {
-                foreach( $protocols as $protocol ) {
+//            // get the Vlan Interface Diagnostics data
+//            $protocols = [4,6];
+//            foreach( $vi->vlanInterfaces as $vli ) {
+//                foreach( $protocols as $protocol ) {
+//
+//                    // if the protocol disabled, there is no diagnostics info
+//                    $protocolCellEnabled = "ipv" . $protocol . "enabled";
+//                    if($vli->$protocolCellEnabled) {
+//                        $resultSets[] = $diagnostics->getVlanInterfaceDiagnostics( $vli, $protocol );
+//                    }
+//
+//                }
+//
+//            }
 
-                    // if the protocol disabled, there is no diagnostics info
-                    $protocolCellEnabled = "ipv" . $protocol . "enabled";
-                    if($vli->$protocolCellEnabled) {
-                        $resultSets[] = $diagnostics->getVlanInterfaceDiagnostics( $vli, $protocol );
-                    }
-
-                }
-
-            }
+            $resultSets[] = $viSet;
 
         }
 

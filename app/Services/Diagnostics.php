@@ -27,6 +27,7 @@ use IXP\Models\{Customer, PhysicalInterface, VirtualInterface, VlanInterface};
 
 use IXP\Exceptions\GeneralException;
 use IXP\Services\Diagnostics\DiagnosticResultSet;
+use IXP\Services\Diagnostics\DiagnosticSuite;
 use IXP\Services\Diagnostics\Suites\CustomerDiagnosticSuite;
 use IXP\Services\Diagnostics\Suites\IrrdbDiagnosticSuite;
 use IXP\Services\Diagnostics\Suites\PhysicalInterfaceDiagnosticSuite;
@@ -92,5 +93,6 @@ class Diagnostics
         $d = new RouterBgpSessionsDiagnosticSuite( $vli, $protocol );
         return $d->run()->results();
     }
+
 
 }

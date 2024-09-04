@@ -23,6 +23,8 @@ namespace IXP\Services\Diagnostics;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use IXP\Models\User;
+
 /**
  * Diagnostics Service - Result Container
  *
@@ -69,7 +71,7 @@ class DiagnosticResult
         public string $name,
         public int $result,
         public string $narrative,
-        public bool $public = false,    // whether the diagnostic result should be visible to the member
+        public bool $auth = User::AUTH_SUPERUSER ,    // whether the diagnostic result should be visible to the member
     ) { }
 
     public function iconStyle(): string {

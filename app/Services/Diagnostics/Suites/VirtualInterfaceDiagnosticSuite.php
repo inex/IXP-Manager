@@ -46,7 +46,16 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
     public function __construct(
         private readonly VirtualInterface $vi,
     ) {
-        $this->name        = 'Virtual Interface #' . $vi->id;
+
+        $name = 'Connection to ';
+
+        if( $vi->physicalInterfaces ) {
+            $name .= $vi->physicalInterfaces[0]?->switchPort?->switcher?->infrastructureModel->name
+                    . ' - ' . $vi->physicalInterfaces[0]?->switchPort?->switcher?->name . ' '
+                ?? '';
+        }
+
+        $this->name        = $name . '[Virtual Interface #' . $vi->id . ']';
         $this->description = "Virtual interfaces general diagnostics.";
         $this->type        = 'INTERFACE';
 
@@ -61,6 +70,7 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
         $this->results->add( $this->portType( $this->vi ) );
         $this->results->add( $this->sameSwitch( $this->vi ) );
         $this->results->add( $this->lag( $this->vi ) );
+        $this->results->add( $this->lagSpeeds( $this->vi ) );
         $this->results->add( $this->lagName( $this->vi ) );
         $this->results->add( $this->trunk( $this->vi ) );
         $this->results->add( $this->mtu( $this->vi ) );
@@ -218,6 +228,56 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
             result: DiagnosticResult::TYPE_TRACE,
             narrative: "No physical interfaces configured for this connection",
         );
+    }
+
+
+    /**
+     * All ports in a LAG have the same speed?
+     *
+     * @param VirtualInterface $vi
+     * @return DiagnosticResult
+     */
+    public function lagSpeeds( VirtualInterface $vi ): DiagnosticResult {
+
+        $mainName = 'LAG - Port Speeds Match?';
+
+        $numPis = count( $vi->physicalInterfaces );
+
+        if( $numPis <= 1 ) {
+
+            // no physical interfaces
+            return new DiagnosticResult(
+                name: $mainName . ' - n/a, applies only if multiple physical interfaces',
+                result: DiagnosticResult::TYPE_TRACE,
+                narrative: "The connection does not have multiple physical interfaces and so we cannot compare speeds.",
+            );
+
+        }
+
+        $speeds = [];
+
+        foreach( $vi->physicalInterfaces as $pi ) {
+            $speeds[] = $pi->speed();
+        }
+
+        $speeds = array_unique($speeds);
+
+        if( count( $speeds ) > 1 ) {
+
+            return new DiagnosticResult(
+                name: $mainName . " - no, multiple speeds found: " . implode( ', ', $speeds ),
+                result: DiagnosticResult::TYPE_ERROR,
+                narrative: "Physical interfaces in a LAG port must all have the same speed but we found different speeds configured.",
+            );
+
+        }
+
+        return new DiagnosticResult(
+            name: $mainName . ' - yes, all speeds configured as ' . array_pop( $speeds ),
+            result: DiagnosticResult::TYPE_INFO,
+            narrative: "Physical interfaces in a LAG port must all have the same speed, which is what we found.",
+        );
+
     }
 
 
