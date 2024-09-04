@@ -67,17 +67,13 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
         $this->description = " ";
         $this->type        = 'INTERFACE';
 
-        // route collector peerings are mandatory
-        // this makes the protocol Builder type, not Router type, what is important for lookingGlass
-        //$this->router = Router::notQuarantine()->routeCollector()->ipProtocol( $protocol );
-
         $protocolValidated = $protocol === 4 ? Router::PROTOCOL_IPV4 : Router::PROTOCOL_IPV6;
         $this->router = Router::where( 'protocol', $protocolValidated )
+            ->where( 'vlan_id', $vli->vlan->id )
             ->where('quarantine', false)
             ->where('type', Router::TYPE_ROUTE_COLLECTOR)
             ->first();
 
-        // now we get the looking glass:
         $this->lookingGlass = null;
         if($this->router) {
             $this->lookingGlass = App::make( LookingGlassService::class )->forRouter( $this->router );
@@ -137,10 +133,6 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
         $mainName = "Protocol Status diagnostics";
 
         if ( $this->router && $this->router->hasApi() ) {
-            // sample url for protocol status: http://rc1-ipv4.cork.inex.ie/api/protocol/pb_as112_vli249_ipv4
-            // https://www.inex.ie/rc1-cork-ipv4/api/protocol/pb_as112_vli249_ipv4
-            // test api use: https://www.inex.ie/rc1-cork-ipv4/api
-            //$statusUrl = 'https://www.inex.ie/rc1-cork-ipv4/api/protocol/pb_as112_vli249_ipv4';
 
             $statusUrl = $this->router->api . '/protocol/pb_as' . $this->vli->virtualinterface->customer->autsys . "_vli" . $this->vli->id . "_ipv" . $this->protocol;
 
@@ -157,12 +149,6 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
             }
 
             $protocolStatus = json_decode( $fileContent );
-
-            // json content of interest:
-
-            // state: up  -> okay, otherwise warn
-            // interesting info if !up: state_changed
-            // interesting info if up: route_limit_at vs import_limit => if within 80% -> warning
 
             if( $protocolStatus->protocol->state !== 'up' ) {
 
