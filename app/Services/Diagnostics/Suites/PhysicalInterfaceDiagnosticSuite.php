@@ -30,6 +30,8 @@ use IXP\Services\Diagnostics\DiagnosticResult;
 use IXP\Services\Diagnostics\DiagnosticSuite;
 
 use OSS_SNMP\Exception;
+use OSS_SNMP\MIBS\Iface;
+use OSS_SNMP\MIBS\MAU;
 use OSS_SNMP\SNMP;
 
 /**
@@ -55,6 +57,13 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
 
     private SNMP|bool $snmpClient;
 
+    private bool $stale = true;
+
+    private static string $badgeStale = '<span class="tw-inline-flex tw-items-center tw-rounded-full tw-bg-red-50   tw-px-1.5 tw-py-0.5 tw-text-xs tw-font-medium tw-text-red-700   tw-ring-1 tw-ring-inset tw-ring-red-600/10"  >Stale</span>';
+    private static string $badgeLive  = '<span class="tw-inline-flex tw-items-center tw-rounded-full tw-bg-green-50 tw-px-1.5 tw-py-0.5 tw-text-xs tw-font-medium tw-text-green-700 tw-ring-1 tw-ring-inset tw-ring-green-600/20">Live</span>';
+
+
+
     public function __construct(
         private PhysicalInterface $pi,
     ) {
@@ -67,8 +76,6 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
 
         $this->description = 'Physical Interfaces general diagnostics.';
         $this->type        = 'INTERFACE';
-
-        $this->vi = $pi->virtualInterface;
 
         if( empty( $pi?->switchPort->switcher->snmppasswd ) ) {
             $this->snmpClient = false;
@@ -87,26 +94,23 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
         $this->results->add( $this->switchportLastPoll() );
         $this->results->add( $this->switchportCanPoll() );
 
-        $this->results->add( $this->physicalInterfaceMtu() );
+        $this->results->add( new DiagnosticResult(
+            name: "Switch port last change registered "
+                . ( $this->pi->switchPort->ifLastChange ? Carbon::parse($this->pi->switchPort->ifLastChange)->diffForHumans() : 'never' ),
+            result: DiagnosticResult::TYPE_INFO,
+            narrative: "Switch port last change counter: "
+                . ( $this->pi->switchPort->ifLastChange ? Carbon::parse($this->pi->switchPort->ifLastChange)->format('Y-m-d H:i:s') : 'never' ),
+            infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
+        ) );
 
-        if(!$this->snmpClient) {
+        $this->results->add( $this->mtu() );
 
-            $this->results->add(
-                new DiagnosticResult(
-                    name: "SNMP diagnostics",
-                    result: DiagnosticResult::TYPE_WARN,
-                    narrative: "No SNMP host - diagnostics not available",
-                )
-            );
+        $this->results->add( $this->adminStatus() );
+        $this->results->add( $this->operatingStatus() );
+        $this->results->add( $this->switchPortActive() );
+        $this->results->add( $this->speed() );
+        $this->results->add( $this->mauState() );
 
-        } else {
-
-            $this->results->add( $this->physicalInterfaceOperating() );
-            $this->results->add( $this->physicalInterfaceSwitchPortStatus() );
-            $this->results->add( $this->physicalInterfaceAdminStatus() );
-            $this->results->add( $this->physicalInterfaceSwitchSpeed() );
-
-        }
 
         return $this;
     }
@@ -165,13 +169,15 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
         $this->pi->switchPort->snmpUpdate( $this->snmpClient );
 
         if( $before !== $this->pi->switchPort->lastSnmpPoll->format('Y-m-d H:i:s') ) {
+            $this->stale = false;
             return new DiagnosticResult(
-                name: $mainName . " Yes, polled successfully",
+                name: $mainName . " Yes, refreshed successfully now",
                 result: DiagnosticResult::TYPE_GOOD,
                 narrative: "SNMP information has been retrieved for this port.",
             );
         }
 
+        $this->stale = true;
         return new DiagnosticResult(
             name: $mainName . " No, could not poll the switch port",
             result: DiagnosticResult::TYPE_FATAL,
@@ -185,9 +191,9 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
      *
      * @return DiagnosticResult
      */
-    private function physicalInterfaceMtu(): DiagnosticResult
+    private function mtu(): DiagnosticResult
     {
-        $mainName = "MTU - ";
+        $mainName = " MTU - ";
 
         if ( $this->pi->switchPort->ifMtu < 1500 ) {
 
@@ -195,6 +201,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
                 name: $mainName . "switch port is reporting a MTU of {$this->pi->switchPort->ifMtu} which is <1500",
                 result: DiagnosticResult::TYPE_FATAL,
                 narrative: "Switch port is reporting a MTU of <1500",
+                infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
             );
 
         } else if( $this->pi->switchPort->ifMtu === $this->pi->virtualInterface->mtu ) {
@@ -203,6 +210,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
                 name: $mainName . "both set to {$this->pi->virtualInterface->mtu}",
                 result: DiagnosticResult::TYPE_GOOD,
                 narrative: "Switch port matches configured MTU of {$this->pi->virtualInterface->mtu}",
+                infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
             );
 
         } else if ( !$this->pi->virtualInterface->mtu ) {
@@ -211,6 +219,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
                 name: $mainName ."configured as null/0 but switch port reports " . $this->pi->switchPort->ifMtu ?? 'null',
                 result: DiagnosticResult::TYPE_INFO,
                 narrative: "Configured MTU is null/0 but switch port reports " . $this->pi->switchPort->ifMtu ?? 'null',
+                infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
             );
 
         }
@@ -219,99 +228,61 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
             name: $mainName . ( $this->pi->virtualInterface->mtu ?? 'null' ) . " configured but switch port reports ({$this->pi->switchPort->ifMtu})",
             result: DiagnosticResult::TYPE_ERROR,
             narrative: "Configured MTU of {$this->pi->virtualInterface->mtu} does not match the switch port MTU of {$this->pi->switchPort->ifMtu}",
+            infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
         );
 
     }
 
 
-    /**
-     * Examine the physical interface operating and admin statuses and provide information on it.
-     *
-     * @return DiagnosticResult
-     */
-    private function physicalInterfaceOperating():  DiagnosticResult
-    {
-        $mainName = "Operating Status";
-
-        try {
-
-            $adminStatus = $this->snmpClient->useIface()->adminStates(1)[ $this->pi->switchPort->ifIndex];
-            $operationStatus = $this->snmpClient->useIface()->operationStates(1)[ $this->pi->switchPort->ifIndex];
-
-            if ($adminStatus !== $operationStatus) {
-
-                return new DiagnosticResult(
-                    name: $mainName,
-                    result: DiagnosticResult::TYPE_WARN,
-                    narrative: "Operating status failed",
-                );
-
-            } else {
-
-                return new DiagnosticResult(
-                    name: $mainName,
-                    result: DiagnosticResult::TYPE_GOOD,
-                    narrative: "Operating status good",
-                );
-
-
-            }
-
-        } catch(Exception $exception) {
-            info("Issue\n".$exception);
-
-            return $this->snmpReachError($mainName);
-
-        }
-
-    }
 
 
     /**
-     * Examine the switch port status and provide information on it.
+     * Examine the physical interface status and provide information on it.
      *
      * @return DiagnosticResult
      */
-    private function physicalInterfaceSwitchPortStatus():  DiagnosticResult
+    private function adminStatus():  DiagnosticResult
     {
-        $mainName = "Switch Port Status";
+        $mainName = 'Admin status: ' . ( $this->pi->status ? 'Enabled' : 'Disabled' )
+            . " in IXP Manager; Switch port configured as " . Iface::$IF_ADMIN_STATES[$this->pi->switchPort->ifAdminStatus];
 
-        try {
+        if( $this->pi->status && $this->pi->switchPort->ifAdminStatus != Iface::IF_ADMIN_STATUS_UP ) {
 
-            $adminStatus = $this->snmpClient->useIface()->adminStates(1)[ $this->pi->switchPort->ifIndex];
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_ERROR,
+                narrative: "The switch configuration state of the switch port is not up - perhaps it is shutdown/disabled in switch configuration? "
+                    . "However, the configuration of the physical interface on IXP Manager is enabled.",
+                infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
+            );
 
-            if ($adminStatus == "up" && $this->pi->switchPort->active == 1) {
+        } else if( !$this->pi->status && $this->pi->switchPort->ifAdminStatus == Iface::IF_ADMIN_STATUS_UP ) {
 
-                return new DiagnosticResult(
-                    name: $mainName,
-                    result: DiagnosticResult::TYPE_GOOD,
-                    narrative: "The physical interface switch port is up and running",
-                );
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_ERROR,
+                narrative: "The switch configuration state of the switch port is up. "
+                    . "However, the configuration of the physical interface on IXP Manager is disabled.",
+                infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
+            );
 
-            } else if ($adminStatus != "up" && $this->pi->switchPort->active != 1) {
+        } else if( $this->pi->status && $this->pi->switchPort->ifAdminStatus == Iface::IF_ADMIN_STATUS_UP ) {
 
-                return new DiagnosticResult(
-                    name: $mainName,
-                    result: DiagnosticResult::TYPE_WARN,
-                    narrative: "The physical interface switch port is down",
-                );
-
-            } else {
-
-                return new DiagnosticResult(
-                    name: $mainName,
-                    result: DiagnosticResult::TYPE_WARN,
-                    narrative: "The physical interface switch port status is not match to the database",
-                );
-
-            }
-
-        } catch(Exception $exception) {
-            info("Issue\n".$exception);
-
-            return $this->snmpReachError($mainName);
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_INFO,
+                narrative: "The physical interface admin status is up.",
+                infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
+            );
 
         }
+
+        return new DiagnosticResult(
+            name: $mainName,
+            result: DiagnosticResult::TYPE_WARN,
+            narrative: "Unknown administrative (configuration) state on switch.",
+            infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
+        );
 
     }
 
@@ -321,48 +292,85 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
      *
      * @return DiagnosticResult
      */
-    private function physicalInterfaceAdminStatus():  DiagnosticResult
+    private function switchPortActive():  DiagnosticResult
     {
-        $mainName = "Physical Interface Status";
+        $mainName = 'Within IXP Manager, the phsyical interface is '
+            . ( $this->pi->status ? 'enabled' : 'disabled' )
+            . ' and the switchport is '
+            . ( $this->pi->switchPort->active ? 'active' : 'inactive' );
 
-        try {
+        if( $this->pi->status != $this->pi->switchPort->active ) {
 
-            $adminStatus = $this->snmpClient->useIface()->adminStates(1)[ $this->pi->switchPort->ifIndex];
-
-            if ($adminStatus == "up" && $this->pi->status == 1) {
-
-                return new DiagnosticResult(
-                    name: $mainName,
-                    result: DiagnosticResult::TYPE_GOOD,
-                    narrative: "The physical interface is up and running",
-                );
-
-            } else if ($adminStatus != "up" && $this->pi->status != 1) {
-
-                return new DiagnosticResult(
-                    name: $mainName,
-                    result: DiagnosticResult::TYPE_WARN,
-                    narrative: "The physical interface is down",
-                );
-
-            } else {
-
-                return new DiagnosticResult(
-                    name: $mainName,
-                    result: DiagnosticResult::TYPE_WARN,
-                    narrative: "The physical interface admin status is not match to the database",
-                );
-
-            }
-
-        } catch(Exception $exception) {
-            info("Issue\n".$exception);
-
-            return $this->snmpReachError($mainName);
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_ERROR,
+                narrative: "IXP Manager is configured with conflicted state for physical interface and switch port.",
+                infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
+            );
 
         }
 
+        return new DiagnosticResult(
+            name: $mainName,
+            result: DiagnosticResult::TYPE_DEBUG,
+            narrative: "IXP Manager is configured with a consistent state for physical interface and switch port.",
+            infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
+        );
+
     }
+
+
+
+    /**
+     * Examine the physical interface status and provide information on it.
+     *
+     * @return DiagnosticResult
+     */
+    private function operatingStatus():  DiagnosticResult
+    {
+        $mainName = 'Operating status: ' . ( $this->pi->status ? 'Enabled' : 'Disabled' )
+            . " in IXP Manager; Switch port reports as " . Iface::$IF_OPER_STATES[$this->pi->switchPort->ifOperStatus];
+
+        if( $this->pi->status && $this->pi->switchPort->ifOperStatus != Iface::IF_OPER_STATUS_UP ) {
+
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_ERROR,
+                narrative: "The switch port is not up - perhaps it is shutdown/disabled in switch configuration or disconnected or no light rx? "
+                    . "The configuration of the physical interface on IXP Manager is enabled.",
+                infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
+            );
+
+        } else if( !$this->pi->status && $this->pi->switchPort->ifOperStatus == Iface::IF_OPER_STATUS_UP ) {
+
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_ERROR,
+                narrative: "The switch port is up. "
+                    . "However, the configuration of the physical interface on IXP Manager is disabled.",
+                infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
+            );
+
+        } else if( $this->pi->status && $this->pi->switchPort->ifOperStatus == Iface::IF_OPER_STATUS_UP ) {
+
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_GOOD,
+                narrative: "The physical interface is up.",
+                infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
+            );
+
+        }
+
+        return new DiagnosticResult(
+            name: $mainName,
+            result: DiagnosticResult::TYPE_WARN,
+            narrative: "Unknown port operating state on switch.",
+            infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
+        );
+
+    }
+
 
 
     /**
@@ -370,38 +378,76 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
      *
      * @return DiagnosticResult
      */
-    private function physicalInterfaceSwitchSpeed():  DiagnosticResult
+    private function speed():  DiagnosticResult
     {
-        $mainName = "Switch Port physical speed diagnostics";
+        $mainName = "Switch port speed configured as {$this->pi->speed()}; actual switch port speed: " . ( PhysicalInterface::$SPEED[$this->pi->switchPort->ifSpeed] ?? $this->pi->switchPort->ifSpeed ?? 'null' );
 
-        try {
+        if( $this->pi->switchPort->ifSpeed == $this->pi->speed ) {
 
-            $highSpeed = $this->snmpClient->useIface()->highSpeeds()[ $this->pi->switchPort->ifIndex];
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_GOOD,
+                narrative: "The configured and actual switch port speeds match",
+                infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
+            );
 
-            if ($highSpeed == $this->pi->speed) {
+        } else {
 
-                return new DiagnosticResult(
-                    name: $mainName,
-                    result: DiagnosticResult::TYPE_GOOD,
-                    narrative: "The speed of the physical interface match the database data",
-                );
-
-            } else {
-
-                return new DiagnosticResult(
-                    name: $mainName,
-                    result: DiagnosticResult::TYPE_WARN,
-                    narrative: 'The speed of the physical interface don\'t match the database data',
-                );
-
-            }
-
-        } catch(Exception $exception) {
-            info("Issue\n".$exception);
-
-            return $this->snmpReachError($mainName);
+            return new DiagnosticResult(
+                name: $mainName,
+                result: DiagnosticResult::TYPE_ERROR,
+                narrative: "The configured and actual switch port speeds DO NOT match",
+                infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
+            );
 
         }
+
+    }
+
+    /**
+     * Examine the Switch Port physical speed and provide information on it.
+     *
+     * @return DiagnosticResult[]
+     */
+    private function mauState():  array
+    {
+        $results = [];
+
+        if( !$this->pi->switchPort->switcher->mauSupported ) {
+
+            return [ new DiagnosticResult(
+                name: "Switch does not support MAU (optic) information via SNMP",
+                result: DiagnosticResult::TYPE_WARN,
+                narrative: "Switch does not support MAU (optic) information via SNMP",
+                infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
+            ) ];
+
+        }
+
+
+        $results[] = new DiagnosticResult(
+            name: "Switch supports MAU (optic) information via SNMP",
+            result: DiagnosticResult::TYPE_TRACE,
+            narrative: "Switch supports MAU (optic) information via SNMP",
+            infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
+        );
+
+        $results[] = new DiagnosticResult(
+            name: "MAU type:  " . $this->pi->switchPort->mauType . ( $this->pi->switchPort->mauJacktype ? '(jack type: ' . $this->pi->switchPort->mauJacktype . ')' : '' ),
+            result: DiagnosticResult::TYPE_INFO,
+            narrative: "MAU type:  " . $this->pi->switchPort->mauType . ( $this->pi->switchPort->mauJacktype ? '(jack type: ' . $this->pi->switchPort->mauJacktype . ')' : '' ),
+            infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
+        );
+
+        $results[] = new DiagnosticResult(
+            name: "MAU state:  " . $this->pi->switchPort->mauState,
+            result: DiagnosticResult::TYPE_INFO,
+            narrative: "MAU state:  " . $this->pi->switchPort->mauState,
+            infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
+        );
+
+
+        return $results;
 
     }
 

@@ -71,7 +71,8 @@ class DiagnosticResult
         public string $name,
         public int $result,
         public string $narrative,
-        public bool $auth = User::AUTH_SUPERUSER ,    // whether the diagnostic result should be visible to the member
+        public bool $auth = User::AUTH_SUPERUSER,    // whether the diagnostic result should be visible to the member
+        public ?string $infoBadge = null,
     ) { }
 
     public function iconStyle(): string {

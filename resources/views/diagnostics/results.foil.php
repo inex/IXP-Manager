@@ -72,8 +72,8 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
 
                                 <td class="tw-whitespace-nowrap tw-px-3 tw-text-sm">
                                     <div class="tw-text-gray-700">
+                                        <?php if( $r->infoBadge ): ?><?= $r->infoBadge ?><?php endif; ?>
                                         <?= $t->ee( $r->name ) ?>
-
                                     </div>
                                 </td>
                             </tr>
@@ -135,8 +135,8 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
 
                                         <td class="tw-whitespace-nowrap tw-px-3 tw-text-sm">
                                             <div class="tw-text-gray-700">
+                                                <?php if( $r->infoBadge ): ?><?= $r->infoBadge ?><?php endif; ?>
                                                 <?= $t->ee( $r->name ) ?>
-
                                             </div>
                                         </td>
                                     </tr>
