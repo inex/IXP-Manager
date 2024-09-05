@@ -310,9 +310,15 @@ class Rrd
      */
     public function data(): array
     {
+        return $this->dataCollect(time() - self::PERIOD_TIME[ $this->graph()->period() ], time());
+    }
+
+    public function dataCollect($start,$end): array
+    {
         $rrd = rrd_fetch( $this->file, [
             'AVERAGE',
-            '--start', time() - self::PERIOD_TIME[ $this->graph()->period() ]
+            '--start', $start,
+            '--end', $end,
         ]);
 
         if( $rrd === false || !is_array( $rrd ) ) {
