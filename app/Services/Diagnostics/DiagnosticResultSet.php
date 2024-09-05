@@ -41,6 +41,10 @@ class DiagnosticResultSet
     /** @var DiagnosticResult[]  */
     public array $results = [];
 
+    /** @var DiagnosticResultSet[]  */
+    protected array $subsets = [];
+
+
     /**
      * @param DiagnosticResult|null $result
      */
@@ -66,6 +70,18 @@ class DiagnosticResultSet
         );
 
         return $this;
+    }
+
+
+    public function addSubset(DiagnosticResultSet $subset) {
+        $this->subsets[] = $subset;
+    }
+
+    /**
+     * @return DiagnosticResultSet[]
+     */
+    public function subsets(): array {
+        return $this->subsets;
     }
 
 

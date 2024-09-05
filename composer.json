@@ -75,8 +75,7 @@
         "psr-4": {
             "IXP\\": "app/",
             "Database\\Seeders\\": "database/seeders/",
-            "Database\\": "database",
-             "SocialiteProviders\\PeeringDB\\": "data/SocialiteProviders/PeeringDB/"
+            "SocialiteProviders\\PeeringDB\\": "data/SocialiteProviders/PeeringDB/"
        },
         "files": [
             "app/Support/helpers.php"
