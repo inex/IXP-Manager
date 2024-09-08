@@ -55,25 +55,25 @@ class DiagnosticsController extends Controller
         foreach( $customer->virtualInterfaces as $vi ) {
             $viSet = $diagnostics->getVirtualInterfaceDiagnostics( $vi );
 
-            // get the Physical Interface Diagnostics Data and integrate here into the VI array
-            foreach( $vi->physicalInterfaces as $pi ) {
-                $viSet->addSubset( $diagnostics->getPhysicalInterfaceDiagnostics( $pi ) );
-                $viSet->addSubset( $diagnostics->getTransceiverDiagnostics( $pi ) );
-            }
-//            // get the Vlan Interface Diagnostics data
-//            $protocols = [4,6];
-//            foreach( $vi->vlanInterfaces as $vli ) {
-//                foreach( $protocols as $protocol ) {
-//
-//                    // if the protocol disabled, there is no diagnostics info
-//                    $protocolCellEnabled = "ipv" . $protocol . "enabled";
-//                    if($vli->$protocolCellEnabled) {
-//                        $resultSets[] = $diagnostics->getVlanInterfaceDiagnostics( $vli, $protocol );
-//                    }
-//
-//                }
-//
+//            // get the Physical Interface Diagnostics Data and integrate here into the VI array
+//            foreach( $vi->physicalInterfaces as $pi ) {
+//                $viSet->addSubset( $diagnostics->getPhysicalInterfaceDiagnostics( $pi ) );
+//                $viSet->addSubset( $diagnostics->getTransceiverDiagnostics( $pi ) );
 //            }
+            // get the Vlan Interface Diagnostics data
+            $protocols = [4,6];
+            foreach( $vi->vlanInterfaces as $vli ) {
+                foreach( $protocols as $protocol ) {
+
+                    // if the protocol disabled, there is no diagnostics info
+                    $protocolCellEnabled = "ipv" . $protocol . "enabled";
+                    if($vli->$protocolCellEnabled) {
+                        $viSet->addSubset( $diagnostics->getVlanInterfaceDiagnostics( $vli, $protocol ) );
+                    }
+
+                }
+
+            }
 
             $resultSets[] = $viSet;
 

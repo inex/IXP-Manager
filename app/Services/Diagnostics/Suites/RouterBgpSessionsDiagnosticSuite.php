@@ -23,6 +23,7 @@ namespace IXP\Services\Diagnostics\Suites;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Carbon\Carbon;
 use IXP\Models\Router;
 use IXP\Services\Diagnostics\DiagnosticResult;
 use IXP\Services\Diagnostics\DiagnosticSuite;
@@ -45,9 +46,11 @@ use App;
 
 class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
 {
+    /** @var Router[]  */
+    private $routers = [];
 
-    private Router|null $router;
-    private LookingGlassContract|null $lookingGlass;
+    /** @var LookingGlassContract[] */
+    private array $lg = [];
 
     /**
      * @param VlanInterface $vli
@@ -57,27 +60,16 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
         private readonly VlanInterface $vli,
         private readonly int $protocol,
     ) {
-        $ipAddressObject = $vli->getIPAddress($this->protocol);
-        $_address = '';
-        if($ipAddressObject) {
-            $_address = ' over ' . $ipAddressObject->address;
-        }
 
-        $this->name        = 'Router BGP Sessions for ' . $vli->vlan->name . $_address;
+        $this->name        = 'BGP Sessions over ' . $vli->vlan->name . ' via ' . $vli->getIPAddress($this->protocol)->address;
         $this->description = " ";
-        $this->type        = 'INTERFACE';
+        $this->type        = 'VLAN_INTERFACE';
 
-        $protocolValidated = $protocol === 4 ? Router::PROTOCOL_IPV4 : Router::PROTOCOL_IPV6;
-        $this->router = Router::where( 'protocol', $protocolValidated )
+        $this->routers = Router::where( 'protocol', $protocol === 4 ? Router::PROTOCOL_IPV4 : Router::PROTOCOL_IPV6 )
             ->where( 'vlan_id', $vli->vlan->id )
-            ->where('quarantine', false)
-            ->where('type', Router::TYPE_ROUTE_COLLECTOR)
-            ->first();
-
-        $this->lookingGlass = null;
-        if($this->router) {
-            $this->lookingGlass = App::make( LookingGlassService::class )->forRouter( $this->router );
-        }
+//            ->where('quarantine', false)
+//            ->where('type', Router::TYPE_ROUTE_COLLECTOR)
+            ->get();
 
         parent::__construct();
     }
@@ -87,39 +79,38 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
      */
     public function run(): RouterBgpSessionsDiagnosticSuite
     {
-        $this->results->add( $this->vlanRouterTest() );
-        $this->results->add( $this->protocolStatusDiagnostics() );
+        foreach( $this->routers as $router ) {
+            $this->lg[$router->handle] = App::make( LookingGlassService::class )->forRouter( $router );
 
-        return $this;
-    }
+            if( $router->hasApi() ) {
 
-    /**
-     * Examine the Vlan Router and provide information on it.
-     *
-     * @return DiagnosticResult
-     */
-    public function vlanRouterTest(): DiagnosticResult
-    {
-        $mainName = "Router existence diagnostics";
+                if( $status = json_decode( $this->lg[ $router->handle ]->status() ) ) {
+                    $this->results->add( new DiagnosticResult(
+                        name: "Router {$router->handle} up, last reconfig " .
+                        Carbon::parse( $status->status->last_reconfig )->diffForHumans(),
+                        result: DiagnosticResult::TYPE_TRACE,
+                    ) );
+                } else {
+                    $this->results->add( new DiagnosticResult(
+                        name: "Router {$router->handle} not up or looking glass failure",
+                        result: DiagnosticResult::TYPE_ERROR,
+                    ) );
+                    continue;
+                }
+            } else {
 
-        if ( !$this->router || !$this->router->hasApi() ) {
+                $this->results->add( new DiagnosticResult(
+                    name: "Router {$router->handle} does not have an API, skipping tests",
+                    result: DiagnosticResult::TYPE_DEBUG
+                ) );
+                continue;
+            }
 
-            return new DiagnosticResult(
-                name: $mainName,
-                result: DiagnosticResult::TYPE_ERROR,
-                narrative: "Router DEBUG or API not available",
-            );
-
-        } else {
-
-            return new DiagnosticResult(
-                name: $mainName,
-                result: DiagnosticResult::TYPE_GOOD,
-                narrative: "Router DEBUG and API available",
-            );
+            $this->results->add( $this->protocolStatus( $this->vli, $router, $this->lg[ $router->handle ] ) );
 
         }
 
+        return $this;
     }
 
 
@@ -128,7 +119,7 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
      *
      * @return DiagnosticResult
      */
-    public function protocolStatusDiagnostics(): DiagnosticResult
+    public function protocolStatus( VlanInterface $vli, Router $r, LookingGlassContract $lg )
     {
         $mainName = "Protocol Status diagnostics";
 

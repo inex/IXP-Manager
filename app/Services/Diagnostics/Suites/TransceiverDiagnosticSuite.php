@@ -318,15 +318,15 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
         }
 
         $swoutput = <<<ENDSWOUTPUT
-                       Bias      Optical   Optical
-                       Current   Tx Power  Rx Power
-            Lane       (mA)      (dBm)     (dBm)    
-            -----     --------  --------  -------- 
+                Bias      Optical   Optical
+                Current   Tx Power  Rx Power
+            L   (mA)      (dBm)     (dBm)    
+            -  --------  --------  -------- 
 
             ENDSWOUTPUT;
 
         foreach( $lanes as $lane ) {
-            $swoutput .= "Lane 1    {$readings[1][$lane]}    {$readings[2][$lane]}     {$readings[3][$lane]}\n";
+            $swoutput .= "{$lane}  {$readings[1][$lane]}    {$readings[2][$lane]}     {$readings[3][$lane]}\n";
         }
 
         $results[] = new DiagnosticResult(
