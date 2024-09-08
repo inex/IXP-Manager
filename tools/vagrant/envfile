@@ -22,7 +22,7 @@ LOG_CHANNEL="single"
 
 ## info by default, one of: debug, info, notice, warning, error, critical, alert, emergency.
 LOG_LEVEL=debug
-APP_DEBUG=false
+APP_DEBUG=true
 APP_ENV="vagrant"
 
 # This option may be used to disable all Telescope watchers regardless

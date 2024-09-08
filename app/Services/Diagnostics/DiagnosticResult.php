@@ -70,8 +70,9 @@ class DiagnosticResult
     public function __construct(
         public string $name,
         public int $result,
-        public string $narrative,
+        public ?string $narrative = null,
         public bool $auth = User::AUTH_SUPERUSER,    // whether the diagnostic result should be visible to the member
+        public ?string $narrativeHtml = null,
         public ?string $infoBadge = null,
     ) { }
 

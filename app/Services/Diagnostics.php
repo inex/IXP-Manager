@@ -32,6 +32,7 @@ use IXP\Services\Diagnostics\Suites\CustomerDiagnosticSuite;
 use IXP\Services\Diagnostics\Suites\IrrdbDiagnosticSuite;
 use IXP\Services\Diagnostics\Suites\PhysicalInterfaceDiagnosticSuite;
 use IXP\Services\Diagnostics\Suites\RouterBgpSessionsDiagnosticSuite;
+use IXP\Services\Diagnostics\Suites\TransceiverDiagnosticSuite;
 use IXP\Services\Diagnostics\Suites\VirtualInterfaceDiagnosticSuite;
 
 /**
@@ -85,6 +86,16 @@ class Diagnostics
     public function getPhysicalInterfaceDiagnostics(PhysicalInterface $pi): DiagnosticResultSet
     {
         $d = new PhysicalInterfaceDiagnosticSuite( $pi );
+        return $d->run()->results();
+    }
+
+    /**
+     * @param PhysicalInterface $pi
+     * @return DiagnosticResultSet
+     */
+    public function getTransceiverDiagnostics(PhysicalInterface $pi): DiagnosticResultSet
+    {
+        $d = new TransceiverDiagnosticSuite( $pi );
         return $d->run()->results();
     }
 

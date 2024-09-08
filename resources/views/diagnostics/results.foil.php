@@ -64,7 +64,8 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
 
                                 <td class="tw-whitespace-nowrap tw-pl-4 tw-px-3 tw-text-sm sm:tw-pl-0 tw-w-10">
                                     <button type="button" class="tw-ml-4 tw-rounded tw-bg-white tw-px-2 tw-py-1 tw-text-xs tw-font-semibold tw-text-gray-900 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-gray-300 hover:tw-bg-gray-50"
-                                            data-toggle="popover" title="<?= $t->ee( $r->name ) ?>" data-content="<?= $t->ee( $r->narrative ) ?>"
+                                            data-toggle="popover" title="<?= $t->ee( $r->name ) ?>" <?= $r->narrativeHtml ? 'data-html="true"' : '' ?>
+                                            data-content="<?= $r->narrative ? $t->ee( $r->narrative ) : ( $r->narrativeHtml ?: '' ) ?>"
                                     >
                                         <i class="fa fa-info-circle" aria-hidden="true"></i>
                                     </button>
@@ -127,7 +128,8 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
 
                                         <td class="tw-whitespace-nowrap tw-pl-4 tw-px-3 tw-text-sm sm:tw-pl-0 tw-w-10">
                                             <button type="button" class="tw-ml-4 tw-rounded tw-bg-white tw-px-2 tw-py-1 tw-text-xs tw-font-semibold tw-text-gray-900 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-gray-300 hover:tw-bg-gray-50"
-                                                    data-toggle="popover" title="<?= $t->ee( $r->name ) ?>" data-content="<?= $t->ee( $r->narrative ) ?>"
+                                                    data-toggle="popover" title="<?= $t->ee( $r->name ) ?>" <?= $r->narrativeHtml ? 'data-html="true"' : '' ?>
+                                                    data-content="<?= $r->narrative ? $t->ee( $r->narrative ) : ( $r->narrativeHtml ?: '' ) ?>"
                                             >
                                                 <i class="fa fa-info-circle" aria-hidden="true"></i>
                                             </button>

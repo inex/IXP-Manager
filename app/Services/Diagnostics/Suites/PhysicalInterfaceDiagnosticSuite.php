@@ -145,7 +145,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
 
         return new DiagnosticResult(
             name: $mainName . " Yes, last polled: " . $lastPolled->diffForHumans(),
-            result: DiagnosticResult::TYPE_GOOD,
+            result: DiagnosticResult::TYPE_DEBUG,
             narrative: "SNMP information has been recently retrieved for this port.",
         );
     }
@@ -172,7 +172,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
             $this->stale = false;
             return new DiagnosticResult(
                 name: $mainName . " Yes, refreshed successfully now",
-                result: DiagnosticResult::TYPE_GOOD,
+                result: DiagnosticResult::TYPE_DEBUG,
                 narrative: "SNMP information has been retrieved for this port.",
             );
         }
@@ -208,7 +208,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
 
             return new DiagnosticResult(
                 name: $mainName . "both set to {$this->pi->virtualInterface->mtu}",
-                result: DiagnosticResult::TYPE_GOOD,
+                result: DiagnosticResult::TYPE_DEBUG,
                 narrative: "Switch port matches configured MTU of {$this->pi->virtualInterface->mtu}",
                 infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
             );
@@ -270,7 +270,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
 
             return new DiagnosticResult(
                 name: $mainName,
-                result: DiagnosticResult::TYPE_INFO,
+                result: DiagnosticResult::TYPE_DEBUG,
                 narrative: "The physical interface admin status is up.",
                 infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
             );
@@ -356,7 +356,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
             return new DiagnosticResult(
                 name: $mainName,
                 result: DiagnosticResult::TYPE_GOOD,
-                narrative: "The physical interface is up.",
+                narrative: "The switch port is up/up.",
                 infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
             );
 
@@ -386,7 +386,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
 
             return new DiagnosticResult(
                 name: $mainName,
-                result: DiagnosticResult::TYPE_GOOD,
+                result: DiagnosticResult::TYPE_DEBUG,
                 narrative: "The configured and actual switch port speeds match",
                 infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
             );
@@ -417,7 +417,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
 
             return [ new DiagnosticResult(
                 name: "Switch does not support MAU (optic) information via SNMP",
-                result: DiagnosticResult::TYPE_WARN,
+                result: DiagnosticResult::TYPE_INFO,
                 narrative: "Switch does not support MAU (optic) information via SNMP",
                 infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
             ) ];
@@ -441,7 +441,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
 
         $results[] = new DiagnosticResult(
             name: "MAU state:  " . $this->pi->switchPort->mauState,
-            result: DiagnosticResult::TYPE_INFO,
+            result: DiagnosticResult::TYPE_DEBUG,
             narrative: "MAU state:  " . $this->pi->switchPort->mauState,
             infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
         );
