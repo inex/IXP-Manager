@@ -310,10 +310,10 @@ class Rrd
      */
     public function data(): array
     {
-        return $this->dataCollect(time() - self::PERIOD_TIME[ $this->graph()->period() ], time());
+        return $this->dataWindow(time() - self::PERIOD_TIME[ $this->graph()->period() ], time());
     }
 
-    public function dataCollect($start,$end): array
+    public function dataWindow($start,$end): array
     {
         $rrd = rrd_fetch( $this->file, [
             'AVERAGE',
