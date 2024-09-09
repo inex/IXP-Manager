@@ -73,6 +73,12 @@ use IXP\Traits\Observable;
  * @method static Builder|Contact wherePhone($value)
  * @method static Builder|Contact wherePosition($value)
  * @method static Builder|Contact whereUpdatedAt($value)
+ * @property int|null $user_id
+ * @property string|null $lastupdated
+ * @property string|null $created
+ * @method static Builder|Contact whereCreated($value)
+ * @method static Builder|Contact whereLastupdated($value)
+ * @method static Builder|Contact whereUserId($value)
  * @mixin \Eloquent
  */
 class Contact extends Model

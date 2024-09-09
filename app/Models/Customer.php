@@ -184,6 +184,10 @@ use IXP\Models\AtlasMeasurement;
  * @method static Builder|Customer whereStatus($value)
  * @method static Builder|Customer whereType($value)
  * @method static Builder|Customer whereUpdatedAt($value)
+ * @property string|null $lastupdated
+ * @property string|null $created
+ * @method static Builder|Customer whereCreated($value)
+ * @method static Builder|Customer whereLastupdated($value)
  * @mixin Eloquent
  */
 class Customer extends Model
