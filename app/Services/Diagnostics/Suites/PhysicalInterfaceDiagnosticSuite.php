@@ -97,7 +97,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
         $this->results->add( new DiagnosticResult(
             name: "Switch port last change registered "
                 . ( $this->pi->switchPort->ifLastChange ? Carbon::parse($this->pi->switchPort->ifLastChange)->diffForHumans() : 'never' ),
-            result: DiagnosticResult::TYPE_INFO,
+            result: DiagnosticResult::TYPE_DEBUG,
             narrative: "Switch port last change counter: "
                 . ( $this->pi->switchPort->ifLastChange ? Carbon::parse($this->pi->switchPort->ifLastChange)->format('Y-m-d H:i:s') : 'never' ),
             infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive

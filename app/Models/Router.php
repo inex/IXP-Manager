@@ -435,6 +435,18 @@ class Router extends Model
     }
 
     /**
+     * Check if the given type matches the routers's type.
+     *
+     * @param int $type The type to check against.
+     * @return bool True if the given type matches, false otherwise.
+     */
+    public function isType( int $type ): bool
+    {
+        return $this->type === $type;
+    }
+
+
+    /**
      * Turn the database integer representation of the lg access into text as
      * defined in the User::$PRIVILEGES_ALL array (or 'Unknown')
      *

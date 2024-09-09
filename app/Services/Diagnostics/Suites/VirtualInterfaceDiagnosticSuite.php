@@ -123,7 +123,7 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
         if( $vi->typePeering() ) {
             return new DiagnosticResult(
                 name: $mainName . " peering",
-                result: DiagnosticResult::TYPE_GOOD,
+                result: DiagnosticResult::TYPE_DEBUG,
                 narrative: "The physical interface(s) type is: peering",
             );
         }

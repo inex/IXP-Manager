@@ -182,14 +182,14 @@ class CustomerDiagnosticSuite extends DiagnosticSuite
         if($customer->routeServerClient() ) {
             return new DiagnosticResult(
                 name: $mainName . 'Yes',
-                result: DiagnosticResult::TYPE_INFO,
+                result: DiagnosticResult::TYPE_DEBUG,
                 narrative: "The member is a route server client",
             );
         }
 
         return new DiagnosticResult(
             name: $mainName . 'No',
-            result: DiagnosticResult::TYPE_INFO,
+            result: DiagnosticResult::TYPE_DEBUG,
             narrative: "The member is not a route server client",
         );
 

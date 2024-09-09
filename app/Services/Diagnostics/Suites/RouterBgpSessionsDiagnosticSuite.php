@@ -24,6 +24,7 @@ namespace IXP\Services\Diagnostics\Suites;
  */
 
 use Carbon\Carbon;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use IXP\Models\Router;
 use IXP\Services\Diagnostics\DiagnosticResult;
 use IXP\Services\Diagnostics\DiagnosticSuite;
@@ -67,8 +68,6 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
 
         $this->routers = Router::where( 'protocol', $protocol === 4 ? Router::PROTOCOL_IPV4 : Router::PROTOCOL_IPV6 )
             ->where( 'vlan_id', $vli->vlan->id )
-//            ->where('quarantine', false)
-//            ->where('type', Router::TYPE_ROUTE_COLLECTOR)
             ->get();
 
         parent::__construct();
@@ -76,27 +75,33 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
 
     /**
      * Run the diagnostics suite
+     * @throws BindingResolutionException
      */
     public function run(): RouterBgpSessionsDiagnosticSuite
     {
         foreach( $this->routers as $router ) {
-            $this->lg[$router->handle] = App::make( LookingGlassService::class )->forRouter( $router );
 
             if( $router->hasApi() ) {
 
+                $this->lg[$router->handle] = App::make( LookingGlassService::class )->forRouter( $router );
+
                 if( $status = json_decode( $this->lg[ $router->handle ]->status() ) ) {
+
                     $this->results->add( new DiagnosticResult(
                         name: "Router {$router->handle} up, last reconfig " .
                         Carbon::parse( $status->status->last_reconfig )->diffForHumans(),
                         result: DiagnosticResult::TYPE_TRACE,
                     ) );
+
                 } else {
+
                     $this->results->add( new DiagnosticResult(
                         name: "Router {$router->handle} not up or looking glass failure",
-                        result: DiagnosticResult::TYPE_ERROR,
+                        result: DiagnosticResult::TYPE_FATAL,
                     ) );
                     continue;
                 }
+
             } else {
 
                 $this->results->add( new DiagnosticResult(
@@ -106,7 +111,7 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
                 continue;
             }
 
-            $this->results->add( $this->protocolStatus( $this->vli, $router, $this->lg[ $router->handle ] ) );
+            $this->results->add( $this->protocolStatus( $this->vli, $this->protocol, $router, $this->lg[ $router->handle ] ) );
 
         }
 
@@ -119,68 +124,84 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
      *
      * @return DiagnosticResult
      */
-    public function protocolStatus( VlanInterface $vli, Router $r, LookingGlassContract $lg )
+    public function protocolStatus( VlanInterface $vli, int $protocol, Router $r, LookingGlassContract $lg )
     {
-        $mainName = "Protocol Status diagnostics";
+        $mainName = "BGP status for {$r->handle} - ";
 
-        if ( $this->router && $this->router->hasApi() ) {
-
-            $statusUrl = $this->router->api . '/protocol/pb_as' . $this->vli->virtualinterface->customer->autsys . "_vli" . $this->vli->id . "_ipv" . $this->protocol;
-
-            try {
-                $fileContent = file_get_contents( $statusUrl );
-            } catch(\Exception $e ) {
-                info("ERROR: Status content inaccessible.\n".$e->getMessage());
-                return new DiagnosticResult(
-                    name: $mainName,
-                    result: DiagnosticResult::TYPE_FATAL,
-                    narrative: "ERROR: Status content inaccessible. More info in log",
-                );
-
-            }
-
-            $protocolStatus = json_decode( $fileContent );
-
-            if( $protocolStatus->protocol->state !== 'up' ) {
-
-                return new DiagnosticResult(
-                    name: $mainName,
-                    result: DiagnosticResult::TYPE_WARN,
-                    narrative: "Router Protocol Status is " . $protocolStatus->protocol->state,
-                );
-
-            } else {
-
-                $importPercent = $protocolStatus->protocol->routes->imported / $protocolStatus->protocol->route_limit_at;
-                if( $importPercent < .8 ) {
-
-                    return new DiagnosticResult(
-                        name: $mainName,
-                        result: DiagnosticResult::TYPE_WARN,
-                        narrative: "Router Protocol Status is up, but import rate is low",
-                    );
-
-                } else {
-
-                    return new DiagnosticResult(
-                        name: $mainName,
-                        result: DiagnosticResult::TYPE_GOOD,
-                        narrative: "Router Protocol Status is up, and import rate is good",
-                    );
-
-                }
-
-            }
+        // we have inconsistent protocol naming which needs to be corrected
+        if( $r->isType( Router::TYPE_ROUTE_SERVER ) ) {
+            $pb = "pb_" . sprintf( "%04d", $vli->id ) . "_as" . $vli->virtualInterface->customer->autsys;
         } else {
+            $pb = "pb_as" . $vli->virtualInterface->customer->autsys . "_vli{$vli->id}_ipv{$protocol}";
+        }
+
+        try {
+            if( !( $bgpsum = json_decode( $lg->bgpNeighbourSummary( $pb ) ) ) ) {
+
+                return new DiagnosticResult(
+                    name: $mainName . 'could not query looking glass',
+                    result: DiagnosticResult::TYPE_FATAL,
+                    narrative: "API call to looking glass failed.",
+                );
+
+            }
+        } catch( \Exception $e ) {
 
             return new DiagnosticResult(
-                name: $mainName,
-                result: DiagnosticResult::TYPE_ERROR,
-                narrative: "Router DEBUG or API not available",
+                name: $mainName . 'exception thrown when querying looking glass',
+                result: DiagnosticResult::TYPE_FATAL,
+                narrative: $e->getMessage(),
             );
 
         }
 
+        $bgpsum = $bgpsum->protocol; // narrow focus to what interests us
+
+        if( !isset($bgpsum->import_limit) ) {
+            $bgpsum->import_limit = 0;
+            $max_prefixes = false;
+        } else {
+            $max_prefixes = true;
+            $max_prefixes_percent = (int) ($bgpsum->route_limit_at / $bgpsum->import_limit) * 100;
+        }
+
+        $narrative = <<<ENDNARR
+        <b>State:</b> {$bgpsum->state}<br>
+        <b>Changed:</b> {$bgpsum->state_changed}<br>
+        <b>Connection:</b> {$bgpsum->connection}<br>
+        <b>Hold timer (now):</b> {$bgpsum->hold_timer} ({$bgpsum->hold_timer_now})<br>
+        <b>Keepalive (now):</b> {$bgpsum->keepalive} ({$bgpsum->keepalive_now})<br>
+        <b>Max prefixes:</b> {$bgpsum->import_limit}<br>
+        <b># Routes:</b> {$bgpsum->route_limit_at}<br>
+        ENDNARR;
+
+        if( $bgpsum->state !== 'up' ) {
+
+            return new DiagnosticResult(
+                name: $mainName . 'session state ' . $bgpsum->state,
+                result: DiagnosticResult::TYPE_ERROR,
+                narrativeHtml: $narrative,
+            );
+
+        }
+
+
+        if( $max_prefixes && $max_prefixes_percent > 80 ) {
+
+            return new DiagnosticResult(
+                name: $mainName . "session up but max prefixes at {$max_prefixes_percent}% ({$bgpsum->route_limit_at}/{$bgpsum->import_limit})",
+                result: DiagnosticResult::TYPE_WARN,
+                narrativeHtml: $narrative,
+            );
+
+        }
+
+        return new DiagnosticResult(
+            name: $mainName . "session up " . ( $max_prefixes ? "({$bgpsum->route_limit_at}/{$bgpsum->import_limit} prefixes) " : "(no max prefixes) " )
+                . "(last keepalive " . ($bgpsum->keepalive-$bgpsum->keepalive_now) . "/{$bgpsum->keepalive})",
+            result: DiagnosticResult::TYPE_GOOD,
+            narrativeHtml: $narrative,
+        );
     }
 
 

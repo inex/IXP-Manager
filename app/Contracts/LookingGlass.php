@@ -65,6 +65,18 @@ interface LookingGlass
     public function bgpSummary(): string;
 
     /**
+     * Get BGP neighbour information as JSON
+     *
+     * Response must use equivalent structure as Bird's Eye:
+     *     https://github.com/inex/birdseye/
+     *
+     * @param string $protocol Protocol name
+     * @return string
+     */
+    public function bgpNeighbourSummary( string $protocol ): string;
+
+
+    /**
      * Get the router status information as JSON
      *
      * Response must use equivalent structure as Bird's Eye:

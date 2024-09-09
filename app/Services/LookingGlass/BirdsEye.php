@@ -133,6 +133,17 @@ class BirdsEye implements LookingGlassContract
     }
 
     /**
+     * Get BGP neighbour information as JSON
+     *
+     * @param string $protocol Protocol name
+     * @return string
+     */
+    public function bgpNeighbourSummary( string $protocol ): string
+    {
+        return $this->apiCall( 'protocol/' . urlencode( $protocol ) );
+    }
+
+    /**
      * Get the router's status as JSON
      *
      * @return string

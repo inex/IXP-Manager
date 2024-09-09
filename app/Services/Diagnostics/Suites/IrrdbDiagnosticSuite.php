@@ -90,7 +90,7 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
         if( !$this->customer->routeServerClient() ) {
             return new DiagnosticResult(
                 name: 'IRRDB Filtering: not a route server client so no IRRDB filtering',
-                result: DiagnosticResult::TYPE_INFO,
+                result: DiagnosticResult::TYPE_DEBUG,
                 narrative: "The member is not a route server client so IRRDB filtering not considered",
             );
         }
@@ -100,14 +100,14 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
             if($this->customer->irrdbMoreSpecificsAllowed()) {
                 return new DiagnosticResult(
                     name: 'IRRDB Filtering: yes but more specifics allowed',
-                    result: DiagnosticResult::TYPE_WARN,
+                    result: DiagnosticResult::TYPE_INFO,
                     narrative: "The member is IRRDB filtered but note that more specific prefixes are allowed on at least one VLAN interface",
                 );
             }
 
             return new DiagnosticResult(
                 name: 'IRRDB Filtering: yes',
-                result: DiagnosticResult::TYPE_GOOD,
+                result: DiagnosticResult::TYPE_DEBUG,
                 narrative: "The member is IRRDB filtered",
             );
 
