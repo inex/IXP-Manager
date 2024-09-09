@@ -34,6 +34,8 @@ use IXP\Services\Diagnostics\Suites\PhysicalInterfaceDiagnosticSuite;
 use IXP\Services\Diagnostics\Suites\RouterBgpSessionsDiagnosticSuite;
 use IXP\Services\Diagnostics\Suites\TransceiverDiagnosticSuite;
 use IXP\Services\Diagnostics\Suites\VirtualInterfaceDiagnosticSuite;
+use IXP\Services\Diagnostics\Suites\VlanInterfaceL2DiagnosticSuite;
+use IXP\Services\Diagnostics\Suites\VlanInterfaceL3DiagnosticSuite;
 
 /**
  * Diagnostics Service
@@ -99,11 +101,39 @@ class Diagnostics
         return $d->run()->results();
     }
 
-    public function getVlanInterfaceDiagnostics(VlanInterface $vli, int $protocol): DiagnosticResultSet
+    /**
+     * @param VlanInterface $vli
+     * @param int $protocol
+     * @return DiagnosticResultSet
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function getRouterBgpSessionsDiagnostics(VlanInterface $vli, int $protocol): DiagnosticResultSet
     {
         $d = new RouterBgpSessionsDiagnosticSuite( $vli, $protocol );
         return $d->run()->results();
     }
 
+    /**
+     * @param VlanInterface $vli
+     * @return DiagnosticResultSet
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function getVlanInterfaceL2Diagnostics(VlanInterface $vli): DiagnosticResultSet
+    {
+        $d = new VlanInterfaceL2DiagnosticSuite( $vli );
+        return $d->run()->results();
+    }
+
+    /**
+     * @param VlanInterface $vli
+     * @param int $protocol
+     * @return DiagnosticResultSet
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function getVlanInterfaceL3Diagnostics(VlanInterface $vli, int $protocol): DiagnosticResultSet
+    {
+        $d = new VlanInterfaceL3DiagnosticSuite( $vli, $protocol );
+        return $d->run()->results();
+    }
 
 }

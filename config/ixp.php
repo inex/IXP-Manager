@@ -116,6 +116,31 @@ return [
 
     ],
 
+
+    'exec' => [
+
+        // printf style string:
+        'ping4' => env( 'IXP_EXEC_PING4', "ping -4 -i 0.01 -w 2 -c 5 %s" ),
+        'ping6' => env( 'IXP_EXEC_PING6', "ping -6 -i 0.01 -w 2 -c 5 %s" ),
+
+        // arping is index on vlan.id so interfaces can be set appropriately
+        // prepopulating some entries for ease but will need to find an alternate way
+        // to handle this
+        'arping' => [
+            1  => env( 'IXP_EXEC_ARPING_1',  false ),
+            2  => env( 'IXP_EXEC_ARPING_2',  false ),
+            3  => env( 'IXP_EXEC_ARPING_3',  false ),
+            4  => env( 'IXP_EXEC_ARPING_4',  false ),
+            5  => env( 'IXP_EXEC_ARPING_5',  false ),
+            6  => env( 'IXP_EXEC_ARPING_6',  false ),
+            7  => env( 'IXP_EXEC_ARPING_7',  false ),
+            8  => env( 'IXP_EXEC_ARPING_8',  false ),
+            9  => env( 'IXP_EXEC_ARPING_9',  false ),
+            10 => env( 'IXP_EXEC_ARPING_10', false ),
+        ],
+    ],
+
+
     'rpki' => [
         'rtr1' => [
             'host' => env( 'IXP_RPKI_RTR1_HOST', false ),
