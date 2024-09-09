@@ -3,10 +3,11 @@
 namespace IXP\Console\Commands\Grapher;
 
 use Carbon\Carbon;
-use Illuminate\Console\Command;
 use Illuminate\Database\Query\Builder;
+use IXP\Console\Commands\Command;
 use IXP\Models\Aggregators\VlanInterfaceAggregator;
 use IXP\Models\Customer;
+use IXP\Models\VlanInterface;
 use Log;
 
 class UploadDailyP2p extends Command
@@ -41,6 +42,7 @@ class UploadDailyP2p extends Command
         $end       = $start->copy()->endOfDay();
         $startTime = microtime(true);
 
+
         Customer::currentActive(true,true,true)
             ->when( $this->option('customer-id'), function (Builder $query, string $cid) {
                 $query->where('id', $cid);
@@ -50,14 +52,14 @@ class UploadDailyP2p extends Command
                 $itertime = microtime(true);
 
                 if($this->isVerbosityNormal()) {
-                    Log::debug("Processing {$c->name} for " . $start->format('Y-m-d'));
+                    $this->info("Processing {$c->name} for " . $start->format('Y-m-d'));
                 }
 
                 $stats = [];
-                $peerId = null;
 
                 foreach($c->virtualinterfaces as $vi) {
 
+                    /** @var VlanInterface $svli */
                     foreach($vi->vlaninterfaces as $svli) {
 
                         if(!$svli->vlan->export_to_ixf) { continue; }
@@ -68,17 +70,17 @@ class UploadDailyP2p extends Command
                             if( !$svli->$fnIpEnabled ) { continue; }
 
 
-                            foreach( VlanInterfaceAggregator::forVlan( $svli->vlan->id, $protocol ) as $dvli ) {
+                            /** @var VlanInterface $dvli */
+                            foreach( VlanInterfaceAggregator::forVlan( $svli->vlan, $protocol ) as $dvli ) {
 
-                                if( $svli->id === $dvli->id ) { continue; }
+                                // skip if it's this customer's own vlan interface or another of their own connections
+                                if( $svli->id === $dvli->id || $c->id == $dvli->virtualInterface->custid ) { continue; }
 
-                                if($this->isVerbosityNormal()) {
-                                    Log::debug("Processing $c->name -> $svli->vlan->name ipv$protocol");
+                                if($this->isVerbosityVeryVerbose() ) {
+                                    $this->line( "\t- $svli->vlan->name ipv$protocol with " . $dvli->virtualInterface->customer->name );
                                 }
 
-                                // todo: check the peer id for usability
-                                $peerId = $c->id . "-" . $svli->id . "-" . $dvli->id;
-
+                                $peerId = $dvli->virtualInterface->custid;
                                 if(!isset($stats[$peerId])) {
                                     $stats[$peerId] = [
                                         'ipv4_total_in' => 0,
@@ -92,10 +94,16 @@ class UploadDailyP2p extends Command
                                     ];
                                 }
 
+
+
                                 // need to get p2p graph for $svli, $dvli
                                 // need to get p2p stats for window yyyy-mm-dd 00:00:00 -> yyyy-mm-dd 23:59:59
                                 // $p2pGraph = ...;
                                 // add stats from p2pgraph statistics
+
+                                //
+                                // $stats[$peerId]['ipv4_total_in'] += .... >ipv4_total_in;
+
 
 
                             }
@@ -108,15 +116,18 @@ class UploadDailyP2p extends Command
                 }
 
 
-/*
-                if( $peerId ) {
-                    P2pDailyStats::updateOrCreate(
-                        [ 'customer_id' => $c->id, 'day' => 'YYYY-MM-DD', 'peer_id' => $peerId  ]
-                        [ stats .... ] => unsigned bigInts
-                    );
-                    isVerbosityVerbose-> Processing $custname -> $peername: stored in database
+
+
+                foreach( $stats as $peerId => $traffic ) {
+
+                    // insert total customer data
+//                    P2pDailyStats::updateOrCreate(
+//                        [ 'customer_id' => $c->id, 'day' => 'YYYY-MM-DD', 'peer_id' => $peerId  ]
+//                        [ stats .... ] => unsigned bigInts
+//                    );
+//                    isVerbosityVerbose-> Processing $custname -> $peername: stored in database
+
                 }
-*/
 
 
                 if($this->isVerbosityNormal()) {

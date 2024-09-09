@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('p2p_daily_stats', function (Blueprint $table) {
             $table->id();
+            $table->date('day');
             $table->integer('cust_id');
             $table->foreign('cust_id')->references('id')->on('cust')->onDelete('cascade');
-            $table->date('day');
             $table->string('peer_id');
             $table->integer('ipv4_total_in')->nullable();
             $table->integer('ipv4_total_out')->nullable();
@@ -25,6 +25,9 @@ return new class extends Migration
             $table->integer('ipv4_max_out')->nullable();
             $table->integer('ipv6_max_in')->nullable();
             $table->integer('ipv6_max_out')->nullable();
+
+            $table->unique(['day', 'cust_id', 'peer_id']);
+
             $table->timestamps();
         });
     }
