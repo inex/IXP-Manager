@@ -45,6 +45,7 @@ use IXP\Models\{Aggregators\TrafficDailyPhysIntAggregator,
     Customer,
     Infrastructure,
     Location,
+    P2pDailyStats,
     PhysicalInterface,
     Switcher,
     TrafficDaily,
@@ -528,10 +529,19 @@ class StatisticsController extends Controller
         if( config('grapher.backends.sflow.show_graphs_on_index_page') !== null ) {
             $showGraphsOption = true;
             $showGraphs       = config('grapher.backends.sflow.show_graphs_on_index_page');
+            $orderList        = "alphabet";
         }
 
         if( $showGraphsOption ) {
-            if( $request->submit === "Show Graphs" ) {
+            if( $request->submit === "Order by Traffic" ) {
+                $orderList  = "traffic";
+                $showGraphs = false;
+                $request->session()->put( 'controller.statistics.p2p.show_graphs', false );
+            } else if( $request->submit === "Order by Alphabet" ) {
+                $orderList  = "alphabet";
+                $showGraphs = false;
+                $request->session()->put( 'controller.statistics.p2p.show_graphs', false );
+            } else if( $request->submit === "Show Graphs" ) {
                 $showGraphs = true;
                 $request->session()->put( 'controller.statistics.p2p.show_graphs', true );
             } else if( $request->submit === "Hide Graphs" ) {
@@ -605,6 +615,36 @@ class StatisticsController extends Controller
                 AlertContainer::push( "The customer selected for destination traffic does not have any interfaces on the requested VLAN", Alert::WARNING );
                 return redirect()->back();
             }
+
+            if($dstVlis->count()) {
+                $ordering_cell = "max_in";
+
+                foreach( $dstVlis as $index => $dvli ) {
+                    $last = P2pDailyStats::where( "cust_id", $customer->id )
+                        ->where( "peer_id", $dvli->virtualInterface->customer->id )
+                        ->orderBy( "day", "desc" )
+                        ->first();
+
+                    $cell = "ipv" . $requestProtocol . "_" . $ordering_cell;
+                    if( !$last ) {
+                        $ordValue = 0.0;
+                    } else {
+                        $ordValue = $last->$cell;
+                    }
+
+                    $dstVlis[ $index ]->$ordering_cell = $ordValue;
+                    $dstVlis[ $index ]->customer_name = $dvli->virtualInterface->customer->name;
+                }
+
+                if($orderList === 'traffic') {
+                    $dstVlis = $dstVlis->sortBy($ordering_cell, SORT_NUMERIC, true);
+                } else { // alphabet
+                    $dstVlis = $dstVlis->sortBy("customer_name", SORT_STRING);
+                }
+
+            }
+
+
         }
 
         // if we have a $dstVli, then remove any VLANs from $srcVlis where both src and dst do not have VLIs on the same VLAN:
@@ -642,6 +682,7 @@ class StatisticsController extends Controller
             'graph'            => $graph,
             'period'           => $requestPeriod,
             'protocol'         => $requestProtocol,
+            'orderList'        => $orderList,
             'showGraphs'       => $showGraphs,
             'showGraphsOption' => $showGraphsOption,
             'srcVlis'          => $srcVlis,

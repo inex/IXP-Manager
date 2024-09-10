@@ -118,6 +118,14 @@
                                 <?php if( $t->showGraphsOption ): ?>
                                     <input class="btn btn-white " type="submit" name="submit" value="<?= $t->showGraphs ? 'Hide' : 'Show' ?> Graphs" />
                                 <?php endif; ?>
+
+                                <?php if( !$t->showGraphs ): ?>
+                                    <?php if( $t->orderList === 'alphabet' ): ?>
+                                        <input class="btn btn-white ml-2" type="submit" name="submit" value="Order by Traffic" />
+                                    <?php else: ?>
+                                        <input class="btn btn-white ml-2" type="submit" name="submit" value="Order by Alphabet" />
+                                    <?php endif; ?>
+                                <?php endif; ?>
                             </div>
                         </form>
                     </ul>
