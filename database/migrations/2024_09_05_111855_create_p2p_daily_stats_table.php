@@ -16,15 +16,15 @@ return new class extends Migration
             $table->date('day');
             $table->integer('cust_id');
             $table->foreign('cust_id')->references('id')->on('cust')->onDelete('cascade');
-            $table->string('peer_id');
-            $table->integer('ipv4_total_in')->nullable();
-            $table->integer('ipv4_total_out')->nullable();
-            $table->integer('ipv6_total_in')->nullable();
-            $table->integer('ipv6_total_out')->nullable();
-            $table->integer('ipv4_max_in')->nullable();
-            $table->integer('ipv4_max_out')->nullable();
-            $table->integer('ipv6_max_in')->nullable();
-            $table->integer('ipv6_max_out')->nullable();
+            $table->integer('peer_id');
+            $table->float('ipv4_total_in')->nullable();
+            $table->float('ipv4_total_out')->nullable();
+            $table->float('ipv6_total_in')->nullable();
+            $table->float('ipv6_total_out')->nullable();
+            $table->float('ipv4_max_in')->nullable();
+            $table->float('ipv4_max_out')->nullable();
+            $table->float('ipv6_max_in')->nullable();
+            $table->float('ipv6_max_out')->nullable();
 
             $table->unique(['day', 'cust_id', 'peer_id']);
 

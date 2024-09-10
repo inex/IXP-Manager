@@ -310,10 +310,27 @@ class Rrd
      */
     public function data(): array
     {
-        return $this->dataWindow(time() - self::PERIOD_TIME[ $this->graph()->period() ], time());
+        if($this->graph()->period() === Graph::PERIOD_CUSTOM) {
+
+            return $this->dataWindow(
+                $this->graph()->custom_date_start->timestamp,
+                $this->graph()->custom_date_end->timestamp
+            );
+
+        } else {
+
+            return $this->dataWindow(time() - self::PERIOD_TIME[ $this->graph()->period() ], time());
+
+        }
     }
 
-    public function dataWindow($start,$end): array
+    /**
+     * @param integer $start : timestamp
+     * @param integer $end : timestamp
+     * @return array
+     * @throws FileErrorException
+     */
+    public function dataWindow( int $start, int $end): array
     {
         $rrd = rrd_fetch( $this->file, [
             'AVERAGE',
@@ -329,7 +346,7 @@ class Rrd
         $this->end   = $rrd['end'];
         $this->step  = $rrd['step'];
 
-        list( $indexIn, $indexOut ) = $this->getIndexKeys();
+        [ $indexIn, $indexOut ] = $this->getIndexKeys();
 
         // we want newest first, so iterate in reverse
         // but.... do, we?
@@ -371,7 +388,7 @@ class Rrd
     {
         $separated_maxima = self::PERIOD_TIME[ $this->graph()->period() ] > 60*60*24*2;
 
-        list( $indexIn, $indexOut ) = $this->getIndexKeys();
+        [ $indexIn, $indexOut ] = $this->getIndexKeys();
 
         $options = [
             '--width=600',

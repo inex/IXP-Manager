@@ -23,6 +23,7 @@ namespace IXP\Services\Grapher;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Carbon\Carbon;
 use IXP\Services\Grapher;
 
 use IXP\Contracts\Grapher\Backend as GrapherBackend;
@@ -115,6 +116,14 @@ abstract class Graph
     public const PERIOD_YEAR  = 'year';
 
     /**
+     * Period of one year for graphs
+     */
+    public const PERIOD_CUSTOM  = 'custom';
+
+    public $custom_date_start, $custom_date_end;
+
+
+    /**
      * Default period
      */
     public const PERIOD_DEFAULT  = self::PERIOD_DAY;
@@ -129,20 +138,22 @@ abstract class Graph
      * Array of valid periods for drill down graphs
      */
     public const PERIODS = [
-        self::PERIOD_DAY   => self::PERIOD_DAY,
-        self::PERIOD_WEEK  => self::PERIOD_WEEK,
-        self::PERIOD_MONTH => self::PERIOD_MONTH,
-        self::PERIOD_YEAR  => self::PERIOD_YEAR
+        self::PERIOD_DAY     => self::PERIOD_DAY,
+        self::PERIOD_WEEK    => self::PERIOD_WEEK,
+        self::PERIOD_MONTH   => self::PERIOD_MONTH,
+        self::PERIOD_YEAR    => self::PERIOD_YEAR,
+        self::PERIOD_CUSTOM  => self::PERIOD_CUSTOM
     ];
 
     /**
      * Array of valid periods for drill down graphs
      */
     public const PERIOD_DESCS = [
-        self::PERIOD_DAY   => 'Day',
-        self::PERIOD_WEEK  => 'Week',
-        self::PERIOD_MONTH => 'Month',
-        self::PERIOD_YEAR  => 'Year'
+        self::PERIOD_DAY     => 'Day',
+        self::PERIOD_WEEK    => 'Week',
+        self::PERIOD_MONTH   => 'Month',
+        self::PERIOD_YEAR    => 'Year',
+        self::PERIOD_CUSTOM  => 'Custom'
     ];
 
     /**
@@ -352,6 +363,9 @@ abstract class Graph
      */
     public function __construct( Grapher $grapher )
     {
+        $this->custom_date_start = Carbon::now()->subDays(1);
+        $this->custom_date_end = Carbon::now();
+
         $this->setGrapher( $grapher );
     }
 
@@ -707,12 +721,14 @@ abstract class Graph
      * Set the period we should use
      *
      * @param string $value
+     * @param string $start
+     * @param string $end
      *
      * @return Graph Fluid interface
      *
      * @throws ParameterException
      */
-    public function setPeriod( string $value ): Graph
+    public function setPeriod( string $value, string $start = "", string $end = "" ): Graph
     {
         if( !isset( $this::PERIODS[ $value ] ) ) {
             throw new ParameterException('Invalid period ' . $value );
@@ -723,6 +739,30 @@ abstract class Graph
         }
 
         $this->period = $value;
+
+        if($value === $this::PERIOD_CUSTOM) {
+            $this->setPeriodStart( $start );
+            $this->setPeriodEnd( $end );
+        }
+
+        return $this;
+    }
+
+    public function setPeriodStart( string $value ): Graph
+    {
+        if ($value) {
+            $this->custom_date_start = Carbon::parse( $value );
+        }
+
+        return $this;
+    }
+
+    public function setPeriodEnd( string $value ): Graph
+    {
+        if ($value) {
+            $this->custom_date_end = Carbon::parse( $value );
+        }
+
         return $this;
     }
 
@@ -886,6 +926,15 @@ abstract class Graph
             if( isset( $params[$param] ) ) {
                 $fn = 'set' . ucfirst( $param );
                 $this->$fn( $params[$param] );
+
+                if($param === 'period' && $params[ 'period' ] === $this::PERIOD_CUSTOM) {
+                    if(isset($params[ 'period_start' ])) {
+                        $this->setPeriodStart($params[ 'period_start' ]);
+                    }
+                    if(isset($params[ 'period_end' ])) {
+                        $this->setPeriodEnd($params[ 'period_end' ]);
+                    }
+                }
             }
         }
         return $this;
@@ -900,9 +949,14 @@ abstract class Graph
      */
     public function getParamsAsArray(): array
     {
+        // todo: extend for PERIOD_CUSTOM
         $parameters = [];
         foreach( [ 'type', 'category', 'period', 'protocol'] as $param ){
             $parameters[ $param ] = $this->$param();
+            if($param === 'period' && $this->period === $this::PERIOD_CUSTOM) {
+                $parameters[ 'period_start' ] = $this->custom_date_start;
+                $parameters[ 'period_end' ]   = $this->custom_date_end;
+            }
         }
         return $parameters;
     }

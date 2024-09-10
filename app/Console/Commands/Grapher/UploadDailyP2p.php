@@ -4,13 +4,22 @@ namespace IXP\Console\Commands\Grapher;
 
 use Carbon\Carbon;
 use Illuminate\Database\Query\Builder;
-use IXP\Console\Commands\Command;
+use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
+use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
 use IXP\Models\Aggregators\VlanInterfaceAggregator;
 use IXP\Models\Customer;
+use IXP\Models\P2pDailyStats;
 use IXP\Models\VlanInterface;
+use Grapher;
 use Log;
 
-class UploadDailyP2p extends Command
+use IXP\Services\Grapher\Graph;
+
+use IXP\Utils\Grapher\{
+    Rrd  as RrdUtil
+};
+
+class UploadDailyP2p extends GrapherCommand
 {
     /**
      * The name and signature of the console command.
@@ -33,29 +42,31 @@ class UploadDailyP2p extends Command
      */
     public function handle(): int
     {
-        if( !preg_match( "/\d\d\d\d\-\d\d\-\d\d", $this->argument('day') ) ) {
+        if( !preg_match( "/\d\d\d\d\-\d\d\-\d\d/", $this->argument('day') ) ) {
             $this->error("Invalid day parameter - expected format is " . now()->subDay()->format('Y-m-d') );
             return -1;
         }
+
+        $this->setGrapher( Grapher::getFacadeRoot() );
 
         $start     = Carbon::parse( $this->argument('day') . ' 00:00:00' );
         $end       = $start->copy()->endOfDay();
         $startTime = microtime(true);
 
-
         Customer::currentActive(true,true,true)
-            ->when( $this->option('customer-id'), function (Builder $query, string $cid) {
+            ->when( $this->option('customer-id'), function ($query, string $cid) {
                 $query->where('id', $cid);
             })
             ->each( function( Customer $c ) use ( $start, $end, $startTime ) {
 
-                $itertime = microtime(true);
+                $iterTime = microtime(true);
 
                 if($this->isVerbosityNormal()) {
                     $this->info("Processing {$c->name} for " . $start->format('Y-m-d'));
                 }
 
                 $stats = [];
+
 
                 foreach($c->virtualinterfaces as $vi) {
 
@@ -95,16 +106,28 @@ class UploadDailyP2p extends Command
                                 }
 
 
-
                                 // need to get p2p graph for $svli, $dvli
-                                // need to get p2p stats for window yyyy-mm-dd 00:00:00 -> yyyy-mm-dd 23:59:59
-                                // $p2pGraph = ...;
-                                // add stats from p2pgraph statistics
 
-                                //
-                                // $stats[$peerId]['ipv4_total_in'] += .... >ipv4_total_in;
+                                $graph = $this->grapher()->p2p($svli, $dvli)
+                                    ->setProtocol('ipv'.$protocol)
+                                    //->setPeriod(Graph::PERIOD_DAY);
+                                    ->setPeriod(Graph::PERIOD_CUSTOM, $start, $end);
+
+                                $statistics = $graph->statistics()->all();
+
+                                $checkParams = $graph->getParamsAsArray();
+                                info("parameters:\n".var_export($checkParams, true));
+
+/*                                $file = $graph->dataPath();
+                                info("file:\n".var_export($file, true));
+                                info("stats:\n".var_export($statistics, true));*/
 
 
+
+                                $stats[$peerId]["ipv{$protocol}_total_in"] += $statistics['totalin'];
+                                $stats[$peerId]["ipv{$protocol}_total_out"] += $statistics['totalout'];
+                                $stats[$peerId]["ipv{$protocol}_max_in"] += $statistics['maxin'];
+                                $stats[$peerId]["ipv{$protocol}_max_out"] += $statistics['maxout'];
 
                             }
 
@@ -116,25 +139,50 @@ class UploadDailyP2p extends Command
                 }
 
 
-
-
                 foreach( $stats as $peerId => $traffic ) {
 
-                    // insert total customer data
-//                    P2pDailyStats::updateOrCreate(
-//                        [ 'customer_id' => $c->id, 'day' => 'YYYY-MM-DD', 'peer_id' => $peerId  ]
-//                        [ stats .... ] => unsigned bigInts
-//                    );
-//                    isVerbosityVerbose-> Processing $custname -> $peername: stored in database
+                    $statData = [];
+                    foreach($traffic as $key => $val) {
+                        $statData[$key] = $val;
+                    }
+
+                    if(!$dailyStat = P2pDailyStats::where('cust_id', $c->id)
+                        ->where('day', $start->format('Y-m-d'))
+                        ->where('peer_id', $peerId)
+                        ->first()) {
+
+                        // insert total customer data
+                        $customerData = [
+                            'cust_id' => $c->id,
+                            'day' => $start->format('Y-m-d'),
+                            'peer_id' => $peerId,
+                        ];
+
+                        $customerData = array_merge($customerData, $statData);
+
+                        P2pDailyStats::create($customerData);
+
+                        if($this->isVerbosityNormal()) {
+                            $this->line("Processing {$c->name} stored in database");
+                        }
+                    } else {
+                        $dailyStat->update($statData);
+
+                        if($this->isVerbosityNormal()) {
+                            $this->line("Processing {$c->name} updated in database");
+                        }
+                    }
+
 
                 }
 
 
                 if($this->isVerbosityNormal()) {
-                    Log::debug("Completed {$c->name} in " . (microtime(true) - $itertime) . " seconds");
+                    Log::debug("Completed {$c->name} in " . (microtime(true) - $iterTime) . " seconds");
                 }
             });
 
         return 0;
     }
+
 }

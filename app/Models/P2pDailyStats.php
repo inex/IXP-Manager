@@ -2,8 +2,30 @@
 
 namespace IXP\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+/*
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+
 use Illuminate\Database\Eloquent\Model;
+use IXP\Traits\Observable;
 
 /**
  * 
@@ -43,5 +65,33 @@ use Illuminate\Database\Eloquent\Model;
  */
 class P2pDailyStats extends Model
 {
-    use HasFactory;
+    use Observable;
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'p2p_daily_stats';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'cust_id',
+        'day',
+        'peer_id',
+        '$ipv4_total_in',
+        '$ipv4_total_out',
+        '$ipv4_max_in',
+        '$ipv4_max_out',
+        '$ipv6_total_in',
+        '$ipv6_total_out',
+        '$ipv6_max_in',
+        '$ipv6_max_out',
+    ];
+
+
 }
