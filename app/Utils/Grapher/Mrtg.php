@@ -70,7 +70,7 @@ class Mrtg
         Graph::PERIOD_WEEK    => 719712.0,     // ( 8.33  * 24 * 3600 ),
         Graph::PERIOD_MONTH   => 2879712.0,    // ( 33.33 * 24 * 3600 ),
         Graph::PERIOD_YEAR    => 31622400.0,   // ( 366 * 24 * 3600 )
-        Graph::PERIOD_CUSTOM  => 0.0,   // ( it will calculated by custom dates )
+        Graph::PERIOD_CUSTOM  => 86400.0,      // ( 24 * 3600 but it will calculated by custom dates )
     ];
 
     /**
@@ -200,7 +200,7 @@ class Mrtg
     {
         $values = [];
 
-        if( !( $periodsecs = $this->getPeriodTime( $graph->period() ) ) && $graph->period() !== GRAPH::PERIOD_CUSTOM ) {
+        if( !( $periodsecs = $this->getPeriodTime( $graph->period() ) ) ) {
             throw new GeneralException('Invalid period');
         }
 

@@ -120,7 +120,11 @@ abstract class Graph
      */
     public const PERIOD_CUSTOM  = 'custom';
 
-    public $custom_date_start, $custom_date_end;
+    /**
+     * Custom Period range parameters
+     */
+    public $custom_date_start;
+    public $custom_date_end;
 
 
     /**
@@ -752,6 +756,8 @@ abstract class Graph
     {
         if ($value) {
             $this->custom_date_start = Carbon::parse( $value );
+        } else {
+            $this->custom_date_start = Carbon::now()->subDays(1);
         }
 
         return $this;
@@ -761,6 +767,8 @@ abstract class Graph
     {
         if ($value) {
             $this->custom_date_end = Carbon::parse( $value );
+        } else {
+            $this->custom_date_end = Carbon::now();
         }
 
         return $this;
