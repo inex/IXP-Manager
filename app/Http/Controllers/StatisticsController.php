@@ -618,6 +618,7 @@ class StatisticsController extends Controller
 
             if($dstVlis->count()) {
                 $ordering_cell = "max_in";
+                $cell = $requestProtocol . "_" . $ordering_cell;
 
                 foreach( $dstVlis as $index => $dvli ) {
                     $last = P2pDailyStats::where( "cust_id", $customer->id )
@@ -625,7 +626,6 @@ class StatisticsController extends Controller
                         ->orderBy( "day", "desc" )
                         ->first();
 
-                    $cell = "ipv" . $requestProtocol . "_" . $ordering_cell;
                     if( !$last ) {
                         $ordValue = 0.0;
                     } else {
