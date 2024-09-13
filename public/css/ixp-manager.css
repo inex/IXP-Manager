@@ -781,3 +781,13 @@ td a:hover{
     color: rgb(96 111 123);
 }
 /***** Tab Panels END *******/
+
+/* above 80px scrolldown */
+.badgeSwitcherFix {
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: .5rem;
+    background: rgba(255, 255, 255, .9);
+    border-radius: 0 0 0 1rem;
+}
