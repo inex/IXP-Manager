@@ -99,8 +99,7 @@ class UploadDailyP2p extends GrapherCommand
 
                 foreach([4,6] as $protocol) {
 
-                    $fnIpEnabled = "ipv{$protocol}enabled";
-                    if( !$svli->$fnIpEnabled ) {
+                    if( !$svli->ipvxEnabled($protocol) ) {
                         continue;
                     }
 
@@ -114,7 +113,7 @@ class UploadDailyP2p extends GrapherCommand
                         }
 
                         if($this->isVerbosityVeryVerbose() ) {
-                            $this->line( "\t- " . $svli->vlan->name . " ipv" . $protocol . " with " . $dvli->virtualInterface->customer->name );
+                            $this->line( "\t- {$svli->vlan->name} ipv$protocol with {$dvli->virtualInterface->customer->name}" );
                         }
 
                         $peerId = $dvli->virtualInterface->custid;

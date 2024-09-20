@@ -116,15 +116,19 @@ abstract class Graph
     public const PERIOD_YEAR  = 'year';
 
     /**
-     * Period of one year for graphs
+     * Custom periods allow any start time and an end time that is not "now"
      */
     public const PERIOD_CUSTOM  = 'custom';
 
     /**
-     * Custom Period range parameters
+     * Custom Period range parameters - start
      */
-    public $custom_date_start;
-    public $custom_date_end;
+    public ?Carbon $custom_date_start;
+
+    /**
+     * Custom Period range parameters - end
+     */
+    public ?Carbon $custom_date_end;
 
 
     /**
@@ -732,7 +736,7 @@ abstract class Graph
      *
      * @throws ParameterException
      */
-    public function setPeriod( string $value, string $start = "", string $end = "" ): Graph
+    public function setPeriod( string $value, ?Carbon $start = null, ?Carbon $end = null ): Graph
     {
         if( !isset( $this::PERIODS[ $value ] ) ) {
             throw new ParameterException('Invalid period ' . $value );
@@ -747,30 +751,23 @@ abstract class Graph
         if($value === $this::PERIOD_CUSTOM) {
             $this->setPeriodStart( $start );
             $this->setPeriodEnd( $end );
+        } else {
+            $this->setPeriodStart();
+            $this->setPeriodEnd();
         }
 
         return $this;
     }
 
-    public function setPeriodStart( string $value ): Graph
+    public function setPeriodStart( ?Carbon $value = null ): Graph
     {
-        if ($value) {
-            $this->custom_date_start = Carbon::parse( $value );
-        } else {
-            $this->custom_date_start = Carbon::now()->subDays(1);
-        }
-
+        $this->custom_date_start = $value;
         return $this;
     }
 
-    public function setPeriodEnd( string $value ): Graph
+    public function setPeriodEnd( ?Carbon $value = null ): Graph
     {
-        if ($value) {
-            $this->custom_date_end = Carbon::parse( $value );
-        } else {
-            $this->custom_date_end = Carbon::now();
-        }
-
+        $this->custom_date_end = $value;
         return $this;
     }
 

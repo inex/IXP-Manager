@@ -25,6 +25,7 @@ namespace IXP\Services\Grapher\Graph;
 
 use Auth, Log;
 
+use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 
 use IXP\Exceptions\Services\Grapher\{
@@ -132,10 +133,14 @@ class Latency extends Graph
      *
      * @throws ParameterException
      */
-    public function setPeriod( string $value ): Graph
+    public function setPeriod( string $value, ?Carbon $start = null, ?Carbon $end = null ): Graph
     {
         if( !isset( self::PERIODS[ $value ] ) ) {
             throw new ParameterException('Invalid period ' . $value );
+        }
+
+        if( $value === self::PERIOD_CUSTOM ) {
+            throw new ParameterException('Invalid period ' . $value . ' for Graph/Latency graphs' );
         }
 
         if( $this->period() !== $value ) {
