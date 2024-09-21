@@ -31,14 +31,14 @@ need contributors to follow so that we can accept them.
 
 ## Submitting Changes
 
-* Sign the [Contributor License Agreement](https://docs.ixpmanager.org/dev/cla/) (`gpg --clearsign inex-cla.txt`) and email it to ''operations (at) inex (dot) ie''.
+* Sign the [Contributor License Agreement](https://docs.ixpmanager.org/latest/dev/cla/) (`gpg --clearsign inex-cla.txt`) and email it to ''operations (at) inex (dot) ie''.
 * Push your changes to a topic branch in your fork of the repository.
 * Submit a pull request to the repository in the inex organisation.
 * Submit a parallel pull request [with new/updated documentation](http://docs.ixpmanager.org/dev/docs/)
 
 # Additional Resources
 
-* [Contributor License Agreement](https://docs.ixpmanager.org/dev/cla/)
+* [Contributor License Agreement](https://docs.ixpmanager.org/latest/dev/cla/)
 * [General GitHub documentation](http://help.github.com/)
 * [GitHub pull request documentation](http://help.github.com/send-pull-requests/)
 * [IXP Manager Mailing List](https://www.inex.ie/mailman/listinfo/ixpmanager)

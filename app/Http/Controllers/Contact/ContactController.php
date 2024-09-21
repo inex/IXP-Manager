@@ -90,7 +90,7 @@ class ContactController extends EloquentController
             'pagetitle'         => 'Contacts',
             'titleSingular'     => 'Contact',
             'nameSingular'      => 'contact',
-            'documentation'     => 'https://docs.ixpmanager.org/usage/contacts/',
+            'documentation'     => 'https://docs.ixpmanager.org/latest/usage/contacts/',
             'defaultAction'     => 'list',
             'defaultController' => 'ContactController',
             'listOrderBy'       => 'name',

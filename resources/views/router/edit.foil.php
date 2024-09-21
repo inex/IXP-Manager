@@ -6,7 +6,7 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/routers/">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/features/routers/">
             Documentation
         </a>
         <a class="btn btn-white" href="<?= route('router@list' ) ?>" title="list">
@@ -224,7 +224,7 @@
                         ->blockHelp( 'Pass through RFC1997 well-known communities on route servers. It is recommended that this be
                             enabled on route servers (note that it will reset BGP sessions on Bird so should be changed in a 
                             planned maintenance window only). See 
-                            <a href="https://docs.ixpmanager.org/features/route-servers/#rfc1997-passthru">this documentation</a>
+                            <a href="https://docs.ixpmanager.org/latest/features/route-servers/#rfc1997-passthru">this documentation</a>
                             for more details.' );
                     ?>
 

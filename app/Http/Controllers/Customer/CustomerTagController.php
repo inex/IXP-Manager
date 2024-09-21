@@ -81,7 +81,7 @@ class CustomerTagController extends EloquentController
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'customer/tag',
             'extraDeleteMessage' => "<b>This tag will be removed from all " . config( 'ixp_fe.lang.customer.many' ) . " tagged with it.</b>",
-            'documentation'     => 'https://docs.ixpmanager.org/usage/customer-tags/',
+            'documentation'     => 'https://docs.ixpmanager.org/latest/usage/customer-tags/',
             'listColumns'    => [
                 'tag'               => 'Tag',
                 'display_as'        => 'Display As',

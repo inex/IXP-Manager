@@ -99,7 +99,7 @@ class SwitchController extends EloquentController
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'switches',
             'addRoute'          => route( static::route_prefix() . '@create-by-snmp' ),
-            'documentation'     => 'https://docs.ixpmanager.org/usage/switches/',
+            'documentation'     => 'https://docs.ixpmanager.org/latest/usage/switches/',
             'listColumns'       => [
                 'name'           => 'Name',
                 'cabinet'  => [

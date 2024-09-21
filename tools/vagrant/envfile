@@ -110,7 +110,7 @@ IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS=false
 
 #
 ########################################################################################
-#### Graphing - see https://docs.ixpmanager.org/grapher/introduction
+#### Graphing - see https://docs.ixpmanager.org/latest/grapher/introduction
 #
 ## Enable the backends you have configured. E.g.:
 ## GRAPHER_BACKENDS="mrtg|sflow|smokeping"
@@ -124,7 +124,7 @@ GRAPHER_BACKENDS="mrtg"
 GRAPHER_CACHE_ENABLED=false
 #
 ##################################################################################
-### Grapher - Mrtg - see: https://docs.ixpmanager.org/grapher/mrtg/
+### Grapher - Mrtg - see: https://docs.ixpmanager.org/latest/grapher/mrtg/
 ###
 #
 ## For backwards compatibility, the default is 'log' but 'rrd' is more modern:
@@ -136,7 +136,7 @@ GRAPHER_BACKEND_MRTG_WORKDIR="/srv/mrtg"
 GRAPHER_BACKEND_MRTG_LOGDIR="/srv/mrtg"
 #
 ##################################################################################
-### Grapher - sflow - see: https://docs.ixpmanager.org/grapher/sflow/
+### Grapher - sflow - see: https://docs.ixpmanager.org/latest/grapher/sflow/
 ###
 #
 ## GRAPHER_BACKEND_SFLOW_ENABLED=false
@@ -144,7 +144,7 @@ GRAPHER_BACKEND_MRTG_LOGDIR="/srv/mrtg"
 #
 #
 ##################################################################################
-### Grapher - smokeping - see: https://docs.ixpmanager.org/grapher/smokeping/
+### Grapher - smokeping - see: https://docs.ixpmanager.org/latest/grapher/smokeping/
 ###
 #
 ## Mark it as enabled (this just affects whether certain UI elements are shown):
@@ -155,13 +155,13 @@ GRAPHER_BACKEND_MRTG_LOGDIR="/srv/mrtg"
 #
 #
 ##################################################################################
-### IX-F Member Export - see: https://docs.ixpmanager.org/features/ixf-export/
+### IX-F Member Export - see: https://docs.ixpmanager.org/latest/features/ixf-export/
 #
 #
 ## IXP_API_JSONEXPORTSCHEMA_PUBLIC=true
 #
 ## Some variables can be excluded as required.
-## See: https://docs.ixpmanager.org/features/ixf-export/
+## See: https://docs.ixpmanager.org/latest/features/ixf-export/
 ##
 ## IXP_API_JSONEXPORTSCHEMA_EXCLUDE_SWITCH="model|software"
 ## IXP_API_JSONEXPORTSCHEMA_EXCLUDE_IXP="name|url"
@@ -194,7 +194,7 @@ GRAPHER_BACKEND_MRTG_LOGDIR="/srv/mrtg"
 ########################################################################################
 ## Session Lifetimes - standard and remember me.
 ##
-## See https://docs.ixpmanager.org/usage/authentication/
+## See https://docs.ixpmanager.org/latest/usage/authentication/
 ##
 ## SESSION_LIFETIME=120
 ## AUTH_TOKEN_EXPIRE=43200
@@ -213,7 +213,7 @@ GRAPHER_BACKEND_MRTG_LOGDIR="/srv/mrtg"
 #
 #
 ########################################################################################
-## Options for updating RIR Objects - see https://docs.ixpmanager.org/features/rir-objects/
+## Options for updating RIR Objects - see https://docs.ixpmanager.org/latest/features/rir-objects/
 #
 ## Your RIR password to allow the updating of a RIR object by email:
 ## IXP_API_RIR_PASSWORD=soopersecret
@@ -231,10 +231,10 @@ GRAPHER_BACKEND_MRTG_LOGDIR="/srv/mrtg"
 ########################################################################################
 ## Utility paths
 #
-## See: https://docs.ixpmanager.org/features/irrdb/
+## See: https://docs.ixpmanager.org/latest/features/irrdb/
 IXP_IRRDB_BGPQ3_PATH=/usr/bin/bgpq3
 #
-## See: https://docs.ixpmanager.org/features/rpki/
+## See: https://docs.ixpmanager.org/latest/features/rpki/
 ## IXP_RPKI_RTR1_HOST=192.0.2.11
 ## IXP_RPKI_RTR1_PORT=3323
 ## IXP_RPKI_RTR2_HOST=192.0.2.12
@@ -252,7 +252,7 @@ IXP_IRRDB_BGPQ3_PATH=/usr/bin/bgpq3
 ##########################################################################################
 #### PeeringDB OAuth
 ####
-#### https://docs.ixpmanager.org/features/peeringdb-oauth/
+#### https://docs.ixpmanager.org/latest/features/peeringdb-oauth/
 ####
 #
 ## AUTH_PEERINGDB_ENABLED=true
@@ -263,7 +263,7 @@ IXP_IRRDB_BGPQ3_PATH=/usr/bin/bgpq3
 #
 #
 ##########################################################################################
-#### See: https://docs.ixpmanager.org/features/routers/#filtering-known-transit-networks
+#### See: https://docs.ixpmanager.org/latest/features/routers/#filtering-known-transit-networks
 ## IXP_NO_TRANSIT_ASNS_EXCLUDE=65501,65502
 ## IXP_NO_TRANSIT_ASNS_OVERRIDE=65501,65502,65503
 #

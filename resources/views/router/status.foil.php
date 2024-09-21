@@ -9,7 +9,7 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/routers/">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/features/routers/">
             Documentation
         </a>
         <a class="btn btn-white" href="<?= route('router@create') ?>">

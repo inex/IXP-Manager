@@ -276,7 +276,7 @@ class StatisticsController extends Controller
     {
         if( !is_array( config('grapher.backends.mrtg.trunks') ) || !count( config('grapher.backends.mrtg.trunks') ) ) {
             AlertContainer::push(
-                "Trunk graphs have not been configured. Please see <a target='_blank' href=\"https://docs.ixpmanager.org/grapher/introduction/\">this documentation</a> for instructions.",
+                "Trunk graphs have not been configured. Please see <a target='_blank' href=\"https://docs.ixpmanager.org/latest/grapher/introduction/\">this documentation</a> for instructions.",
                 Alert::DANGER
             );
             return redirect('');

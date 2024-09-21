@@ -145,7 +145,7 @@
             <div class="col-sm-12">
                 Core bundle graphs shows traffic between our switches - this can between inter-switch links
                 between switches within the same facility or between switches connecting facilities together.
-                More details in <a href="https://docs.ixpmanager.org/grapher/introduction/">the documentation</a>.
+                More details in <a href="https://docs.ixpmanager.org/latest/grapher/introduction/">the documentation</a>.
             </div>
         </div>
     </div>

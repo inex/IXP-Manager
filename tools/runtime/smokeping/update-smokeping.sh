@@ -23,7 +23,7 @@
 
 # Script correct of API usage in IXP Manager >= v4.8
 
-# See: https://docs.ixpmanager.org/grapher/smokeping/
+# See: https://docs.ixpmanager.org/latest/grapher/smokeping/
 
 KEY="my-ixp-manager-api-key"
 URL="https://ixp.example.com/api/v4/grapher/config?backend=smokeping"

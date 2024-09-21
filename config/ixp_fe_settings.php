@@ -51,7 +51,7 @@ return [
                     'type'       => 'radio',
                     'invert'     => false,
                     'name'       => 'AS112 functionality',
-                    'docs_url'   => 'https://docs.ixpmanager.org/features/as112/',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/as112/',
                     'help'       => 'AS112 is a service which provides anycast reverse DNS lookup for several prefixes, 
                                         particularly rfc1918 space. If you are providing an AS112 service to your members,
                                         this feature enables UI elements for that.',
@@ -63,7 +63,7 @@ return [
                     'type'       => 'radio',
                     'invert'     => true,
                     'name'       => 'Console Server Connections',
-                    'docs_url'   => 'https://docs.ixpmanager.org/features/console-servers/', // can be null
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/console-servers/', // can be null
                     'help'       => 'An IXP would typically have out of band access (for emergencies, firmware upgrades, 
                                         etc) to critical infrastructure devices by means of a console server. This 
                                         module allows you to record what equipment console server ports connect to.
@@ -90,7 +90,7 @@ return [
                     'type'       => 'radio',
                     'invert'     => true,
                     'name'       => 'Database Change Logging',
-                    'docs_url'   => 'https://docs.ixpmanager.org/usage/dblogs/',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/dblogs/',
                     'help'       => 'Database change logging for changes made via the UI.',
                 ],
 
@@ -100,7 +100,7 @@ return [
                     'type'       => 'radio',
                     'invert'     => true,
                     'name'       => 'Customer Document Store',
-                    'docs_url'   => 'https://docs.ixpmanager.org/features/docstore/',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/docstore/',
                     'help'       => 'A per-member document store which allows administrators to upload documents on a 
                                         per-member basis. These can be made visible to administrators only or also to 
                                         users assigned to that specific member. Example use cases for this are member 
@@ -113,7 +113,7 @@ return [
                     'type'       => 'radio',
                     'invert'     => true,
                     'name'       => 'Document Store',
-                    'docs_url'   => 'https://docs.ixpmanager.org/features/docstore/',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/docstore/',
                     'help'       => 'A general document store which allows administrators to make documents generally available 
                                         for specific user classes (public, customer user, customer admin, superadmin). Example 
                                         use cases for this are member upgrade forms, distribution of board or management minutes, etc.',
@@ -125,7 +125,7 @@ return [
                     'type'       => 'radio',
                     'invert'     => true,
                     'name'       => 'Filtered Prefixes',
-                    'docs_url'   => 'https://docs.ixpmanager.org/features/route-servers/#displaying-filtered-prefixes',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/route-servers/#displaying-filtered-prefixes',
                     'help'       => 'This feature provides member\'s a live view of member prefixes filtered on the IXP\'s route servers.
                                         It requires that you are using IXP Manager\'s Bird v2 route server configuration and
                                         have enabled the looking glass.'
@@ -137,7 +137,7 @@ return [
                     'type'       => 'radio',
                     'invert'     => true,
                     'name'       => 'Looking Glass',
-                    'docs_url'   => 'https://docs.ixpmanager.org/features/looking-glass/',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/looking-glass/',
                     'help'       => 'IXP Manager supports full looking glass features when using the Bird BGP daemon and 
                                         Bird\'s Eye (a simple secure micro service for querying Bird). This feature is an
                                         required element of some other features such as the filtered prefixes.',
@@ -159,7 +159,7 @@ return [
                     'type'       => 'radio',
                     'invert'     => true,
                     'name'       => 'Member Logos',
-                    'docs_url'   => 'https://docs.ixpmanager.org/usage/customers/#customer-logos',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/customers/#customer-logos',
                     'help'       => 'Allows customer users and administrators to upload and manage their organisation\'s logo.',
                 ],
 
@@ -169,7 +169,7 @@ return [
                     'type'       => 'radio',
                     'invert'     => true,
                     'name'       => 'Peering Manager',
-                    'docs_url'   => 'https://docs.ixpmanager.org/features/peering-manager/',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/peering-manager/',
                     'help'       => 'The Peering Manager is a fantastic tool that allows your members to view, compose, 
                                         request and track their peering requests with other IXP members.',
                 ],
@@ -180,10 +180,10 @@ return [
                     'type'       => 'radio',
                     'invert'     => true,
                     'name'       => 'Peering Matrix',
-                    'docs_url'   => 'https://docs.ixpmanager.org/features/peering-matrix/',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/peering-matrix/',
                     'help'       => 'The peering matrix system builds up a list of who is peering with whom over your IXP. You 
                                         will need sflow running with a 
-                                        <a href="https://docs.ixpmanager.org/features/peering-matrix/#data-source-sflow-bgp-session-detection" 
+                                        <a href="https://docs.ixpmanager.org/latest/features/peering-matrix/#data-source-sflow-bgp-session-detection" 
                                         target="_blank">BGP detector</a> running.',
                 ],
 
@@ -448,6 +448,23 @@ return [
 
             'fields' => [
 
+                'peeringdb_oauth_enabled'                => [
+                    'config_key' => 'auth.peeringdb_oauth_enabled',
+                    'dotenv_key' => 'AUTH_PEERINGDB_ENABLED',
+                    'type'       => 'radio',
+                    'name'       => 'PeeringDB OAuth Enabled',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/customers/#customer-logos',
+                    'help'       => 'Allows customer users and administrators to upload and manage their organisation\'s logo.',
+                ],
+
+
+                //
+                # AUTH_PEERINGDB_ENABLED=true
+
+                # PEERINGDB_OAUTH_CLIENT_ID="xxx"
+                # PEERINGDB_OAUTH_CLIENT_SECRET="xxx"
+                # PEERINGDB_OAUTH_REDIRECT="https://www.example.com/auth/login/peeringdb/callback"
+
 
                 // do wee need here add the peeringdb api authentication and oauth data?
 
@@ -594,7 +611,7 @@ return [
                     'type'       => 'text',
                     'rules'      => 'nullable|max:255|email',
                     'name'       => 'Billing Updates Notification',
-                    'docs_url'   => 'https://docs.ixpmanager.org/usage/customers/#notification-of-billing-details-changed',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/customers/#notification-of-billing-details-changed',
                     'help'       => "If a member edits their billing details in their portal, the changes can be emailed to 
                                         this address. If left blank, then no emails will be sent.",
                 ],

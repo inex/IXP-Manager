@@ -9,7 +9,7 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/patch-panels/">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/features/patch-panels/">
             Documentation
         </a>
         <a id="btn-filter-options" class="btn btn-white" href="<?= url()->current() ?>">

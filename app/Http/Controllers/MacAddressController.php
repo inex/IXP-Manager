@@ -70,7 +70,7 @@ class MacAddressController extends EloquentController
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'mac-address',
             'readonly'          => self::$read_only,
-            'documentation'     => 'https://docs.ixpmanager.org/features/layer2-addresses/',
+            'documentation'     => 'https://docs.ixpmanager.org/latest/features/layer2-addresses/',
             'listColumns'       => [
                 'customer'       => 'Customer',
                 'switchport'     => 'Interface(s)',

@@ -87,7 +87,7 @@ class ApiKeyController extends EloquentController
             'listOrderBy'       => 'created_at',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'api-key',
-            'documentation'     => 'https://docs.ixpmanager.org/features/api/',
+            'documentation'     => 'https://docs.ixpmanager.org/latest/features/api/',
             'listColumns'    => [
                 'id'           => [ 'title' => 'UID', 'display' => false ],
                 'apiKey'       => [

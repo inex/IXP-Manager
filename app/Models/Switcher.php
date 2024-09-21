@@ -381,7 +381,7 @@ class Switcher extends Model
 
         // iterate over all the ports discovered on the switch:
         foreach( $host->useIface()->indexes() as $index ) {
-            // Port types - see https://docs.ixpmanager.org/usage/switches/#snmp-and-port-types-iftype
+            // Port types - see https://docs.ixpmanager.org/latest/usage/switches/#snmp-and-port-types-iftype
             if( !in_array( $host->useIface()->types()[ $index ], config('ixp.snmp.allowed_interface_types') ) ) {
                 continue;
             }

@@ -78,7 +78,7 @@ class ContactGroupController extends EloquentController
             'listOrderBy'       => 'type',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'contact-group',
-            'documentation'     => 'https://docs.ixpmanager.org/usage/contacts/#contact-groups',
+            'documentation'     => 'https://docs.ixpmanager.org/latest/usage/contacts/#contact-groups',
             'listColumns'    => [
                 'type'       => [
                     'title'             => 'Group Name',
@@ -143,7 +143,7 @@ class ContactGroupController extends EloquentController
     {
         // are contact groups configured?
         if( config( 'contact_group.types', false ) === false ) {
-            AlertContainer::push( 'Contact groups are not configured. Please see <a href="https://docs.ixpmanager.org/usage/contacts/#contact-groups">the documentation here</a>.', Alert::INFO );
+            AlertContainer::push( 'Contact groups are not configured. Please see <a href="https://docs.ixpmanager.org/latest/usage/contacts/#contact-groups">the documentation here</a>.', Alert::INFO );
             return redirect( route( 'contact@list' ) );
         }
         return null;

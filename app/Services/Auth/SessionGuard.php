@@ -41,7 +41,7 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
  * A small set of functions we need to override from Laravel's SessionGuard to allow for IXP Manager's
  * user session management functionality.
  *
- * @see        https://docs.ixpmanager.org/dev/authentication/
+ * @see        https://docs.ixpmanager.org/latest/dev/authentication/
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @package    IXP\Services\Auth

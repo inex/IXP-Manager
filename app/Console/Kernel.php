@@ -40,21 +40,21 @@ class Kernel extends ConsoleKernel
         // Expunge logs / GDPR data / etc.
         $schedule->command( 'utils:expunge-logs' )->dailyAt( '3:04' );
         
-        // Grapher - https://docs.ixpmanager.org/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails
+        // Grapher - https://docs.ixpmanager.org/latest/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails
         $schedule->command( 'grapher:upload-stats-to-db' )->dailyAt( '2:00' )
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_GRAPHER_UPLOAD_STATS_TO_DB', false ); } );
         $schedule->command( 'grapher:upload-pi-stats-to-db' )->dailyAt( '2:10' )
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_GRAPHER_UPLOAD_STATS_TO_DB', false ); } );
 
-        // https://docs.ixpmanager.org/features/peeringdb/#existence-of-peeringdb-records
+        // https://docs.ixpmanager.org/latest/features/peeringdb/#existence-of-peeringdb-records
         $schedule->command('ixp-manager:update-in-peeringdb')->daily()
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UPDATE_IN_PEERINGDB', false ); } );
 
-        // https://docs.ixpmanager.org/features/manrs/
+        // https://docs.ixpmanager.org/latest/features/manrs/
         $schedule->command('ixp-manager:update-in-manrs')->daily()
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UPDATE_IN_MANRS', false ); } );
 
-        // IRRDB - https://docs.ixpmanager.org/features/irrdb/
+        // IRRDB - https://docs.ixpmanager.org/latest/features/irrdb/
         if( config( 'ixp.irrdb.bgpq3.path' ) && is_executable( config( 'ixp.irrdb.bgpq3.path' ) ) ) {
             $schedule->command( 'irrdb:update-prefix-db' )->cron( '7 */6 * * *' )
                 ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_IRRDB_UPDATE_PREFIX_DB', false ); } );
@@ -66,11 +66,11 @@ class Kernel extends ConsoleKernel
         // https://laravel.com/docs/5.8/telescope#data-pruning
         $schedule->command('telescope:prune --hours=72')->daily();
 
-        // OUI Update - https://docs.ixpmanager.org/features/layer2-addresses/#oui-database
+        // OUI Update - https://docs.ixpmanager.org/latest/features/layer2-addresses/#oui-database
         $schedule->command( 'utils:oui-update' )->weekly()->mondays()->at('9:15')
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UTILS_OUI_UPDATE', false ); } );
 
-        // Switch SNMP pool - https://docs.ixpmanager.org/usage/switches/#automated-polling-snmp-updates
+        // Switch SNMP pool - https://docs.ixpmanager.org/latest/usage/switches/#automated-polling-snmp-updates
         $schedule->command( 'switch:snmp-poll' )->everyFiveMinutes()
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_SWITCH_SNMP_POLL', false ); } );
 

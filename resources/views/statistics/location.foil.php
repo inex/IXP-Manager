@@ -74,7 +74,7 @@
                 Facility graphs show traffic exchanged that originates and/or terminates in a given facility.
                 It <em>does not</em> include traffic <em>passing through</em> facility. You can see inter-facility
                 traffic via the Inter-Switch / PoP graphs. More details in
-                <a href="https://docs.ixpmanager.org/grapher/introduction/">the documentation</a>.
+                <a href="https://docs.ixpmanager.org/latest/grapher/introduction/">the documentation</a>.
             </div>
         </div>
     </div>
