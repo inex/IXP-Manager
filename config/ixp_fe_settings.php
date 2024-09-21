@@ -453,20 +453,40 @@ return [
                     'dotenv_key' => 'AUTH_PEERINGDB_ENABLED',
                     'type'       => 'radio',
                     'name'       => 'PeeringDB OAuth Enabled',
-                    'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/customers/#customer-logos',
-                    'help'       => 'Allows customer users and administrators to upload and manage their organisation\'s logo.',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/peeringdb-oauth/',
+                    'help'       => 'Enable OAuth with PeeringDB. Note a number of additional settings below are required.',
                 ],
 
+                'peeringdb_oauth_client_id'          => [
+                    'config_key' => 'services.peeringdb_oauth_client_id',
+                    'dotenv_key' => 'PEERINGDB_OAUTH_CLIENT_ID',
+                    'type'       => 'text',
+                    'rules'      => 'nullable|max:255',
+                    'name'       => 'PeeringDB OAuth Client ID',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/peeringdb-oauth/',
+                    'help'       => 'PeeringDB OAuth client ID - you will receive this from PeeringDB',
+                ],
 
-                //
-                # AUTH_PEERINGDB_ENABLED=true
+                'peeringdb_oauth_client_secret'          => [
+                    'config_key' => 'services.peeringdb_oauth_client_secret',
+                    'dotenv_key' => 'PEERINGDB_OAUTH_CLIENT_SECRET',
+                    'type'       => 'text',
+                    'rules'      => 'nullable|max:255',
+                    'name'       => 'PeeringDB OAuth Client Secret',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/peeringdb-oauth/',
+                    'help'       => 'PeeringDB OAuth client secret - you will receive this from PeeringDB',
+                ],
 
-                # PEERINGDB_OAUTH_CLIENT_ID="xxx"
-                # PEERINGDB_OAUTH_CLIENT_SECRET="xxx"
-                # PEERINGDB_OAUTH_REDIRECT="https://www.example.com/auth/login/peeringdb/callback"
-
-
-                // do wee need here add the peeringdb api authentication and oauth data?
+                'peeringdb_oauth_redirect'          => [
+                    'config_key' => 'services.peeringdb_oauth_redirect',
+                    'dotenv_key' => 'PEERINGDB_OAUTH_REDIRECT',
+                    'type'       => 'text',
+                    'rules'      => 'nullable|max:255',
+                    'name'       => 'PeeringDB OAuth Redirect',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/peeringdb-oauth/',
+                    'help'       => 'PeeringDB OAuth - post authentication redirect target on IXP Manager. Assuming your '
+                                        . 'APP_URL is correct, then: <code>' . config('app.url') . '/auth/login/peeringdb/callback</code>'
+                ],
 
             ],
 
@@ -491,95 +511,116 @@ return [
                                         rate limited can be avoided.",
                 ],
 
+            ],
+        ],
+
+        'ixf_export' => [
+
+            'title'       => 'IX-F Export',
+            'description' => "Configuration options for the IX-F export.",
+
+            'fields' => [
+
                 'public'           => [
-                    'config_key' => 'ixp_api.public',
+                    'config_key' => 'ixp_api.json_export_schema.public',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_PUBLIC',
-                    'type'       => 'text',
+                    'type'       => 'radio',
                     'rules'      => '',
-                    'name'       => 'JSON Export is Public',
-                    'docs_url'   => null,
-                    'help'       => 'If false, an API key is required',
+                    'name'       => 'IX-F Export is Public',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/ixf-export/',
+                    'help'       => 'We strongly advise you <b>not</b> to disable public access if you are a standard IXP. Remember, the '
+                                        . 'public version is essentially the same list as you would provide on your standard website\'s list of members. '
+                                        . 'If you disable this then only logged in users can access the IX-F export.',
                 ],
+
                 'access_key'       => [
-                    'config_key' => 'ixp_api.access_key',
+                    'config_key' => 'ixp_api.json_export_schema.access_key',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_ACCESS_KEY',
                     'type'       => 'text',
                     'rules'      => '',
-                    'name'       => 'JSON Export Access Key',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'name'       => 'IX-F Export Access Key',
+                    'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#configuration-options',
+                    'help'       => 'If you disable public access, then you can set an access key (password) here to allow remote non-logged in access.',
                 ],
+
                 'excludes_rfc5398' => [
-                    'config_key' => 'ixp_api.excludes.rfc5398',
+                    'config_key' => 'ixp_api.json_export_schema.excludes.rfc5398',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_RFC5398',
-                    'type'       => 'text',
+                    'type'       => 'radio',
                     'rules'      => '',
-                    'name'       => 'JSON Export Excludes RFC5398',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'name'       => 'IX-F Export - Exclude rfc5398 ASNs',
+                    'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#excluding-members',
+                    'help'       => 'Excludes members with documentation ASNs (64496 - 64511, 65536 - 65551)',
                 ],
+
                 'excludes_rfc6996' => [
-                    'config_key' => 'ixp_api.excludes.rfc6996',
+                    'config_key' => 'ixp_api.json_export_schema.excludes.rfc6996',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_RFC6996',
-                    'type'       => 'text',
+                    'type'       => 'radio',
                     'rules'      => '',
-                    'name'       => 'JSON Export Excludes RFC6996',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'name'       => 'IX-F Export - Exclude rfc6996 ASNs',
+                    'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#excluding-members',
+                    'help'       => 'Excludes members with private ASNs (64512 - 65534, 4200000000 - 4294967294)',
                 ],
+
                 'excludes_tags'    => [
-                    'config_key' => 'ixp_api.excludes.tags',
+                    'config_key' => 'ixp_api.json_export_schema.excludes.tags',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_TAGS',
                     'type'       => 'text',
                     'rules'      => '',
-                    'name'       => 'JSON Export Excludes Tags',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'name'       => 'IX-F Export - Excludes Tags',
+                    'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#excluding-members',
+                    'help'       => 'You can exclude members by tag by setting this option. E.g. <code>tag1|tag2</code>',
                 ],
-                'excludes_asnum'   => [
-                    'config_key' => 'ixp_api.excludes.asnum',
+
+                'excludes_asnum'    => [
+                    'config_key' => 'ixp_api.json_export_schema.excludes.asnum',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_ASNUM',
                     'type'       => 'text',
                     'rules'      => '',
-                    'name'       => 'JSON Export Excludes AS Num',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'name'       => 'IX-F Export - Excludes ASNs',
+                    'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#excluding-members',
+                    'help'       => 'You can exclude members by ASN by setting this option. E.g. <code>64496|64497|...</code>',
                 ],
+
                 'excludes_switch'  => [
-                    'config_key' => 'ixp_api.excludes.switch',
+                    'config_key' => 'ixp_api.json_export_schema.excludes.switch',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_SWITCH',
                     'type'       => 'text',
                     'rules'      => '',
-                    'name'       => 'JSON Export Excludes Switches',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'name'       => 'IX-F Export - Exclude Switch Info',
+                    'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#excluding-some-data',
+                    'help'       => 'If you need, e.g., to exclude the model and software version from switch information, you can set the following: <code>model|software</code>',
                 ],
-                'excludes_ixp'     => [
-                    'config_key' => 'ixp_api.excludes.ixp',
+
+                'excludes_ixp'  => [
+                    'config_key' => 'ixp_api.json_export_schema.excludes.ixp',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_IXP',
                     'type'       => 'text',
                     'rules'      => '',
-                    'name'       => 'JSON Export Excludes IXPs',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'name'       => 'IX-F Export - Exclude IXP Info',
+                    'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#excluding-some-data',
+                    'help'       => 'If you need, e.g., to exclude some of your IXP information, you can set the following: <code>name|url</code>',
                 ],
+
                 'excludes_member'  => [
-                    'config_key' => 'ixp_api.excludes.member',
+                    'config_key' => 'ixp_api.json_export_schema.excludes.member',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_MEMBER',
                     'type'       => 'text',
                     'rules'      => '',
-                    'name'       => 'JSON Export Excludes Members',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'name'       => 'IX-F Export - Exclude Member Info',
+                    'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#excluding-some-data',
+                    'help'       => 'If you need, e.g., to exclude some member information, you can set the following: <code>peering_policy|member_type</code>',
                 ],
-                'excludes_intinfo' => [
-                    'config_key' => 'ixp_api.excludes.intinfo',
+
+                'excludes_intinfo'  => [
+                    'config_key' => 'ixp_api.json_export_schema.excludes.intinfo',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_INTINFO',
                     'type'       => 'text',
                     'rules'      => '',
-                    'name'       => 'JSON Export Excludes Int Info',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'name'       => 'IX-F Export - Exclude Interface Info',
+                    'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#excluding-some-data',
+                    'help'       => 'If you need, e.g., to exclude some of your members\' interface information, you can set the following: <code>mac_addresses|routeserver</code>',
                 ],
 
             ],
@@ -598,8 +639,10 @@ return [
                     'config_key' => 'ixp_fe.admin.default_graph_period',
                     'dotenv_key' => 'IXP_FE_ADMIN_DASHBOARD_DEFAULT_GRAPH_PERIOD',
                     'type'       => 'select',
-                    'options'    => [ 'type' => 'array', 'list' => IXP\Services\Grapher\Graph::PERIODS ],
-                    'name'       => "Admin Dashbaord Graph Period",
+                    'options'    => [ 'type' => 'array', 'list' => array_filter( IXP\Services\Grapher\Graph::PERIODS, function( $k ) {
+                            return $k !== IXP\Services\Grapher\Graph::PERIOD_CUSTOM;
+                        }, ARRAY_FILTER_USE_KEY  ) ],
+                    'name'       => "Default Graph Period",
                     'help'       => 'Default graph period on the admin dashboard.',
                 ],
 
@@ -620,12 +663,33 @@ return [
             ],
         ],
 
-        'misc_options' => [
+        'route_servers' => [
 
-            'title'       => 'Miscellaneous',
-            'description' => "These are various frontend options which you can tweak as appropriate.",
+            'title'       => 'Route Servers',
+            'description' => "Options for route servers. <b>Changing any of these will affect production route servers! Proceed with caution.</b> ",
 
             'fields' => [
+
+                'min_v4_subnet_size' => [
+                    'config_key' => 'ixp.irrdb.min_v4_subnet_size',
+                    'dotenv_key' => 'IXP_IRRDB_MIN_V4_SUBNET_SIZE',
+                    'type'       => 'text',
+                    'rules'      => 'between:1,32',
+                    'name'       => 'Minimum IPv4 Subnet Size',
+                    'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/route-servers/',
+                    'help'       => 'Minimum ipv4 subnet size accepted by route servers. Should be no more specific than a /24.',
+                ],
+
+                'min_v6_subnet_size' => [
+                    'config_key' => 'ixp.irrdb.min_v6_subnet_size',
+                    'dotenv_key' => 'IXP_IRRDB_MIN_V6_SUBNET_SIZE',
+                    'type'       => 'text',
+                    'rules'      => 'between:1,128',
+                    'name'       => 'Minimum IPv6 Subnet Size',
+                    'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/route-servers/',
+                    'help'       => 'Minimum ipv6 subnet size accepted by route servers. Should be no more specific than a /48.',
+                ],
+
 
                 'rs-filters-ttl' => [
                     // this via config() will give default value
@@ -639,45 +703,91 @@ return [
                                         need to know how often you update their configurations. The text you enter here will be 
                                         displayed on the route server filters page.",
                 ],
+
                 'rpki_rtr1_host' => [
                     'config_key' => 'ixp.rpki.rtr1.host',
                     'dotenv_key' => 'IXP_RPKI_RTR1_HOST',
                     'type'       => 'text',
                     'rules'      => '',
-                    'name'       => 'RPKI RTR1 Host',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'name'       => 'RPKI Validator #1 Host',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/rpki/',
+                    'help'       => 'IP address of the first RPKI local cache / validator. This will be inserted into the generated route server configuration if RPKI is enabled.',
                 ],
+
                 'rpki_rtr1_port' => [
                     'config_key' => 'ixp.rpki.rtr1.port',
                     'dotenv_key' => 'IXP_RPKI_RTR1_PORT',
                     'type'       => 'text',
-                    'rules'      => 'between:1000,9999',
-                    'name'       => 'RPKI RTR1 Port',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'rules'      => 'between:1,65535',
+                    'name'       => 'RPKI Validator #1 Port',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/rpki/',
+                    'help'       => 'Port to connect to on the first RPKI local cache / validator. This will be inserted into the generated route server configuration if RPKI is enabled.',
                 ],
+
                 'rpki_rtr2_host' => [
                     'config_key' => 'ixp.rpki.rtr2.host',
                     'dotenv_key' => 'IXP_RPKI_RTR2_HOST',
                     'type'       => 'text',
                     'rules'      => '',
-                    'name'       => 'RPKI RTR2 Host',
-                    'docs_url'   => null,
-                    'help'       => '',
+                    'name'       => 'RPKI Validator #2 Host',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/rpki/',
+                    'help'       => 'IP address of the second RPKI local cache / validator. This will be inserted into the generated route server configuration if RPKI is enabled.',
                 ],
+
                 'rpki_rtr2_port' => [
                     'config_key' => 'ixp.rpki.rtr2.port',
                     'dotenv_key' => 'IXP_RPKI_RTR2_PORT',
                     'type'       => 'text',
-                    'rules'      => 'between:1000,9999',
-                    'name'       => 'RPKI RTR2 Port',
+                    'rules'      => 'between:1,65535',
+                    'name'       => 'RPKI Validator #2 Port',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/rpki/',
+                    'help'       => 'Port to connect to on the second RPKI local cache / validator. This will be inserted into the generated route server configuration if RPKI is enabled.',
+                ],
+
+            ],
+        ],
+
+
+        'utilities' => [
+
+            'title'       => 'System Utilities',
+            'description' => "Paths and options for system utilities.",
+
+            'fields' => [
+
+                'bgpq3' => [
+                    'config_key' => 'ixp.irrdb.bgpq3.path',
+                    'dotenv_key' => 'IXP_IRRDB_BGPQ3_PATH',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'Path to bgpq3 utility',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/irrdb/',
+                    'help'       => 'Full path to the bgpq3 utility.',
+                ],
+
+                'ping4' => [
+                    'config_key' => 'ixp.exec.ping4',
+                    'dotenv_key' => 'IXP_EXEC_PING4',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'Diagnostics - ipv4 ping',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'ping command for ipv4 diagnostics. <code>%s</code> is the placeholder for the target IP.',
+                ],
+
+                'ping6' => [
+                    'config_key' => 'ixp.exec.ping6',
+                    'dotenv_key' => 'IXP_EXEC_PING6',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'Diagnostics - ipv6 ping',
+                    'docs_url'   => null,
+                    'help'       => 'ping command for ipv6 diagnostics. <code>%s</code> is the placeholder for the target IP.',
                 ],
 
 
             ],
+
         ],
 
     ],
