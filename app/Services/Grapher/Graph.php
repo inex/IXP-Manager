@@ -729,8 +729,8 @@ abstract class Graph
      * Set the period we should use
      *
      * @param string $value
-     * @param string $start
-     * @param string $end
+     * @param Carbon $start
+     * @param Carbon $end
      *
      * @return Graph Fluid interface
      *
@@ -748,7 +748,7 @@ abstract class Graph
 
         $this->period = $value;
 
-        if($value === $this::PERIOD_CUSTOM) {
+        if( $value === $this::PERIOD_CUSTOM ) {
             $this->setPeriodStart( $start );
             $this->setPeriodEnd( $end );
         } else {
@@ -934,10 +934,10 @@ abstract class Graph
 
                 if($param === 'period' && $params[ 'period' ] === $this::PERIOD_CUSTOM) {
                     if(isset($params[ 'period_start' ])) {
-                        $this->setPeriodStart($params[ 'period_start' ]);
+                        $this->setPeriodStart( Carbon::parse( $params[ 'period_start' ] ) );
                     }
                     if(isset($params[ 'period_end' ])) {
-                        $this->setPeriodEnd($params[ 'period_end' ]);
+                        $this->setPeriodEnd( Carbon::parse( $params[ 'period_end' ] ) );
                     }
                 }
             }

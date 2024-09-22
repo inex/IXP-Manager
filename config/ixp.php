@@ -123,7 +123,7 @@ return [
         'ping4' => env( 'IXP_EXEC_PING4', "ping -4 -i 0.01 -w 2 -c 5 %s" ),
         'ping6' => env( 'IXP_EXEC_PING6', "ping -6 -i 0.01 -w 2 -c 5 %s" ),
 
-        // arping is index on vlan.id so interfaces can be set appropriately
+        // arping is indexed on vlan.id so interfaces can be set appropriately
         // prepopulating some entries for ease but will need to find an alternate way
         // to handle this
         'arping' => [

@@ -51,8 +51,7 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
 
         if( $vi->physicalInterfaces ) {
             $name .= $vi->physicalInterfaces[0]?->switchPort?->switcher?->infrastructureModel->name
-                    . ' - ' . $vi->physicalInterfaces[0]?->switchPort?->switcher?->name . ' '
-                ?? '';
+                    . ' - ' . $vi->physicalInterfaces[0]?->switchPort?->switcher?->name;
         }
 
         $this->name        = $name . '[Virtual Interface #' . $vi->id . ']';

@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.36, for macos14 (arm64)
 --
--- Host: 127.0.0.1    Database: myapp_test
+-- Host: 127.0.0.1    Database: ixp_ci
 -- ------------------------------------------------------
 -- Server version	8.0.36
 
@@ -1450,7 +1450,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1459,7 +1459,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3),(9,'2020_07_21_094354_create_route_server_filters',4),(12,'2020_09_03_153723_add_timestamps',5),(13,'2020_09_18_095136_delete_ixp_table',6),(14,'2020_11_16_102415_database_fixes',7),(15,'2021_03_12_150418_create_log_table',8),(16,'2021_04_14_125742_user_pref',9),(17,'2021_04_14_101948_update_timestamps',10),(18,'2021_05_18_085721_add_note_infrastructure',11),(19,'2021_05_18_114206_update_pp_prefix_size',12),(20,'2020_06_01_143931_database_schema_at_end_v5',13),(21,'2021_03_30_124916_create_atlas_probes',13),(22,'2021_03_30_125238_create_atlas_runs',13),(23,'2021_03_30_125422_create_atlas_measurements',13),(24,'2021_03_30_125723_create_atlas_results',13),(25,'2021_06_11_141137_update_db_doctrine2eloquent',13),(26,'2021_07_20_134716_fix_last_updated_and_timestamps',13),(27,'2021_09_16_195333_add_rate_limit_col_to_physint',13),(28,'2021_09_17_144421_modernise_irrdb_conf_table',13),(29,'2021_09_21_100354_create_route_server_filters_prod',14),(30,'2021_09_21_162700_rs_pairing',15),(31,'2022_02_12_183121_add_colo_pp_type_patch_panel',15),(32,'2023_09_26_191150_add_registration_details',15),(33,'2024_03_18_191322_add_export_to_ixf_vlan',15),(34,'2024_08_10_125003_create_irrdb_update_logs',16);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3),(9,'2020_07_21_094354_create_route_server_filters',4),(12,'2020_09_03_153723_add_timestamps',5),(13,'2020_09_18_095136_delete_ixp_table',6),(14,'2020_11_16_102415_database_fixes',7),(15,'2021_03_12_150418_create_log_table',8),(16,'2021_04_14_125742_user_pref',9),(17,'2021_04_14_101948_update_timestamps',10),(18,'2021_05_18_085721_add_note_infrastructure',11),(19,'2021_05_18_114206_update_pp_prefix_size',12),(20,'2020_06_01_143931_database_schema_at_end_v5',13),(21,'2021_03_30_124916_create_atlas_probes',13),(22,'2021_03_30_125238_create_atlas_runs',13),(23,'2021_03_30_125422_create_atlas_measurements',13),(24,'2021_03_30_125723_create_atlas_results',13),(25,'2021_06_11_141137_update_db_doctrine2eloquent',13),(26,'2021_07_20_134716_fix_last_updated_and_timestamps',13),(27,'2021_09_16_195333_add_rate_limit_col_to_physint',13),(28,'2021_09_17_144421_modernise_irrdb_conf_table',13),(29,'2021_09_21_100354_create_route_server_filters_prod',14),(30,'2021_09_21_162700_rs_pairing',15),(31,'2022_02_12_183121_add_colo_pp_type_patch_panel',15),(32,'2023_09_26_191150_add_registration_details',15),(33,'2024_03_18_191322_add_export_to_ixf_vlan',15),(34,'2024_08_10_125003_create_irrdb_update_logs',16),(35,'2024_09_05_111855_create_p2p_daily_stats_table',17);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1552,6 +1552,44 @@ CREATE TABLE `oui` (
 LOCK TABLES `oui` WRITE;
 /*!40000 ALTER TABLE `oui` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oui` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `p2p_daily_stats`
+--
+
+DROP TABLE IF EXISTS `p2p_daily_stats`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `p2p_daily_stats` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `day` date NOT NULL,
+  `cust_id` int NOT NULL,
+  `peer_id` int NOT NULL,
+  `ipv4_total_in` double DEFAULT NULL,
+  `ipv4_total_out` double DEFAULT NULL,
+  `ipv6_total_in` double DEFAULT NULL,
+  `ipv6_total_out` double DEFAULT NULL,
+  `ipv4_max_in` double DEFAULT NULL,
+  `ipv4_max_out` double DEFAULT NULL,
+  `ipv6_max_in` double DEFAULT NULL,
+  `ipv6_max_out` double DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `p2p_daily_stats_day_cust_id_peer_id_unique` (`day`,`cust_id`,`peer_id`),
+  KEY `p2p_daily_stats_cust_id_foreign` (`cust_id`),
+  CONSTRAINT `p2p_daily_stats_cust_id_foreign` FOREIGN KEY (`cust_id`) REFERENCES `cust` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `p2p_daily_stats`
+--
+
+LOCK TABLES `p2p_daily_stats` WRITE;
+/*!40000 ALTER TABLE `p2p_daily_stats` DISABLE KEYS */;
+/*!40000 ALTER TABLE `p2p_daily_stats` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2986,4 +3024,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-19  9:47:53
+-- Dump completed on 2024-09-22 14:43:01

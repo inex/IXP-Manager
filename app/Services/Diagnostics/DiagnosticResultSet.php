@@ -59,7 +59,7 @@ class DiagnosticResultSet
     /**
      * Adds a diagnostic result to the result set.
      *
-     * @param DiagnosticResult $result The diagnostic result to add.
+     * @param DiagnosticResult|DiagnosticResult[] $result The diagnostic result to add.
      * @return DiagnosticResultSet This diagnostic result set.
      */
     public function add( DiagnosticResult|array $result ): DiagnosticResultSet {

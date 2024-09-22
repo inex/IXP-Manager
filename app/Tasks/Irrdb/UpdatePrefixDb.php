@@ -73,7 +73,7 @@ class UpdatePrefixDb extends UpdateDb
                 // Delete any pre-existing entries just in case this has changed recently:
                 $this->startTimer();
 
-                Cache::store('file')->forget( 'irrdb:prefix:ipv' . $protocol . ':' . $this->customer()->asMacro( $protocol ) );
+                Cache::store()->forget( 'irrdb:prefix:ipv' . $protocol . ':' . $this->customer()->asMacro( $protocol ) );
 
                 IrrdbPrefix::whereCustomerId( $this->customer()->id )
                     ->whereProtocol( $protocol )->delete();

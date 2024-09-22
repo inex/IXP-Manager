@@ -216,9 +216,9 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
         } else if ( !$this->pi->virtualInterface->mtu ) {
 
             return new DiagnosticResult(
-                name: $mainName ."configured as null/0 but switch port reports " . $this->pi->switchPort->ifMtu ?? 'null',
+                name: $mainName ."configured as null/0 but switch port reports " . $this->pi->switchPort->ifMtu ?: 'null',
                 result: DiagnosticResult::TYPE_INFO,
-                narrative: "Configured MTU is null/0 but switch port reports " . $this->pi->switchPort->ifMtu ?? 'null',
+                narrative: "Configured MTU is null/0 but switch port reports " . $this->pi->switchPort->ifMtu ?: 'null',
                 infoBadge: $this->stale ? self::$badgeStale : self::$badgeLive
             );
 
