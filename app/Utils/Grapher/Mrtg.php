@@ -204,9 +204,9 @@ class Mrtg
             throw new GeneralException('Invalid period');
         }
 
-        if($graph->period() === GRAPH::PERIOD_CUSTOM) {
-            $starttime = $graph->custom_date_start->timestamp;
-            $endtime   = $graph->custom_date_end->timestamp;
+        if($graph->period() === Graph::PERIOD_CUSTOM) {
+            $starttime = $graph->periodStart()->timestamp;
+            $endtime   = $graph->periodEnd()->timestamp;
         } else {
             $starttime  = time() - $periodsecs;
             $endtime    = time();

@@ -514,7 +514,7 @@ class StatisticsController extends Controller
      * @param  Request  $request
      * @param  Customer|null  $customer
      *
-     * @return RedirectResponse|View
+     * @return array
      *
      * @throws ParameterException
      */
