@@ -598,6 +598,19 @@ class StatisticsController extends Controller
         $showGraphs       = $request->input( 'show_graphs', config('grapher.backends.sflow.show_graphs_on_index_page') ? 'show' : 'hide' ) === 'show';
         $orderBy          = $request->input( 'order_by', 'traffic' );
 
+        // ordering is by customer name by default due to VlanInterfaceAggregator::forVlan()
+        if( $orderBy !== 'name' ) {
+            $trafficByPeerId = P2pDailyStats::latestTotalTraffic( $data['c']);
+
+            /** @var VlanInterface $dstVli */
+            foreach( $data['dstVlis'] as $idx => $dstVli) {
+                $data['dstVlis'][$idx]->total_traffic = $trafficByPeerId[ $dstVli->virtualInterface->custid ] ?? 0;
+            }
+
+            $data['dstVlis'] = $data['dstVlis']->sortByDesc( 'total_traffic', SORT_NUMERIC );
+        }
+
+
         // authenticate on one of the graphs
         $graph = App::make( Grapher::class )
             ->p2p( $data['srcVli'], $data['dstVlis'][ $data['dstVlis']->first()->id ] )
@@ -705,7 +718,7 @@ class StatisticsController extends Controller
         $metrics = [
             'Total'   => 'data',
             'Max'     => 'max',
-            'Average' => 'average'
+            'Average' => 'average',
         ];
 
         $metric = $r->input( 'metric', $metrics['Total'] );
@@ -785,7 +798,7 @@ class StatisticsController extends Controller
         $metrics = [
             'Max'     => 'max',
             'Total'   => 'data',
-            'Average' => 'average'
+            'Average' => 'average',
         ];
 
         $metric = $r->input( 'metric', $metrics['Max'] );

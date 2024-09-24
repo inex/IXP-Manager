@@ -167,6 +167,9 @@
                             ?>">
                                 <?= $dvli->virtualInterface->customer->getFormattedName() ?>
                             </a>
+                            <?php if( $t->orderBy === 'traffic' && $dvli->total_traffic ): ?>
+                                <em>(<?= \IXP\IXP::scaleBits( $dvli->total_traffic ) ?>)</em>
+                            <?php endif; ?>
                         </li>
 
                         <?php $cnt++; ?>

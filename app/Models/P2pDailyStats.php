@@ -25,6 +25,7 @@ namespace IXP\Models;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use IXP\Traits\Observable;
 
 /**
@@ -92,6 +93,27 @@ class P2pDailyStats extends Model
         '$ipv6_max_in',
         '$ipv6_max_out',
     ];
+
+
+    /**
+     * Get the total traffic a customer exchanges with its peers for the latest day in the database.
+     *
+     * Only peers with entries on the the most recent day for this customer will be included.
+     *
+     * @param Customer $c
+     * @return array [ peerid => total_traffic, ... ]
+     */
+    public static function latestTotalTraffic( Customer $c ): array
+    {
+        // latest day for which we have results
+        if( !( $day = self::whereCustId( $c->id )->max('day') ) ) {
+            return [];
+        }
+
+        return self::select( DB::raw('peer_id, ipv6_total_out + ipv4_total_out + ipv6_total_in + ipv4_total_in as total_traffic') )
+            ->where( 'cust_id', $c->id )->where( 'day', $day)
+            ->get()->pluck('total_traffic', 'peer_id')->toArray();
+    }
 
 
 }
