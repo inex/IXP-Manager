@@ -18,15 +18,13 @@
             Statistics
         </a>
         /
-        <a href="<?= route( 'statistics@p2p', [ 'cust' => $t->c->id ] ) ?>" >
+        <a href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] ) ?>" >
             Peer to Peer Graphs
         </a>
         /
         Traffic Exchanged with
-            <a href="<?= route( 'statistics@p2p', [ 'cust' => $dstVli->virtualInterface->customer->id ] )
-                . '?svli='     . $dstVli->id
-                . '&dvli='     . $srcVli->id
-                . '&category=' . $t->category
+            <a href="<?= route( 'statistics@p2p-get', [ 'srcVli' => $dstVli->id, 'dstVli' => $srcVli->id ] )
+                . '?category=' . $t->category
                 . '&period='   . $t->period
                 . '&protocol=' . $t->protocol
             ?>">
@@ -39,7 +37,7 @@
 
 <?php if( Auth::check() && !$isSuperUser ): ?>
     <?php $this->section( 'page-header-postamble' ) ?>
-        <a class="btn btn-white btn-sm" href="<?= route( 'statistics@p2p', [ 'cust' => $t->c->id ] ) ?>">P2P Overview</a>
+        <a class="btn btn-white btn-sm" href="<?= route( 'statistics@p2ps-get', [ 'cust' => $t->c->id ] ) ?>">P2P Overview</a>
     <?php $this->append() ?>
 <?php endif; ?>
 
@@ -62,7 +60,9 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
-                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex" action="<?= route( 'statistics@p2p', [ 'cust' => $this->c->id ] ) ?>" method="post">
+
+                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex" action="<?= route( 'statistics@p2p-post' ) ?>" method="post">
+
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">
                                     <label for="select_network" class="col-sm-4 col-lg-3">Interface:</label>
@@ -94,12 +94,10 @@
                                 <div class="nav-link d-flex ">
                                     <label for="select_protocol" class="col-sm-4 col-lg-6">Protocol:</label>
                                     <select id="select_protocol" name="protocol" class="form-control">
-                                        <?php foreach( IXP\Services\Grapher\Graph::PROTOCOL_REAL_DESCS as $pvalue => $pname ): ?>
-                                            <?php if( $srcVli->ipvxEnabled( $pvalue ) ): ?>
-                                                <option value="<?= $pvalue ?>" <?php if( $t->protocol === $pvalue ): ?> selected <?php endif; ?>  >
-                                                    <?= $pname ?>
-                                                </option>
-                                            <?php endif; ?>
+                                        <?php foreach( $t->possibleProtocols as $pvalue => $pname ): ?>
+                                            <option value="<?= $pvalue ?>" <?php if( $t->protocol === $pvalue ): ?> selected <?php endif; ?>  >
+                                                <?= $pname ?>
+                                            </option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>

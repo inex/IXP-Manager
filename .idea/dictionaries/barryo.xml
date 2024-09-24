@@ -12,6 +12,7 @@
       <w>lacp</w>
       <w>peeringdb</w>
       <w>physicalinterface</w>
+      <w>svlid</w>
       <w>switchid</w>
       <w>switchport</w>
       <w>switchportid</w>

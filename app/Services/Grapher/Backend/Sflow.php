@@ -141,11 +141,14 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
                 'protocols'   => $graphProtocols,
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
-                'periods'     => Graph::PERIODS,
+                'periods'     => Graph::PERIODS_EXTENDED,
                 'types'       => Graph::TYPES,
             ],
         ];
     }
+
+
+
 
     /**
      * Get the data points for a given graph

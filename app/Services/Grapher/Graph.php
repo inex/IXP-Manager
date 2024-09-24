@@ -123,12 +123,12 @@ abstract class Graph
     /**
      * Custom Period range parameters - start
      */
-    public ?Carbon $custom_date_start;
+    protected ?Carbon $custom_date_start;
 
     /**
      * Custom Period range parameters - end
      */
-    public ?Carbon $custom_date_end;
+    protected ?Carbon $custom_date_end;
 
 
     /**
@@ -150,8 +150,19 @@ abstract class Graph
         self::PERIOD_WEEK    => self::PERIOD_WEEK,
         self::PERIOD_MONTH   => self::PERIOD_MONTH,
         self::PERIOD_YEAR    => self::PERIOD_YEAR,
-        self::PERIOD_CUSTOM  => self::PERIOD_CUSTOM
     ];
+
+    /**
+     * Array of valid periods for drill down graphs
+     */
+    public const PERIODS_EXTENDED = [
+        self::PERIOD_DAY     => self::PERIOD_DAY,
+        self::PERIOD_WEEK    => self::PERIOD_WEEK,
+        self::PERIOD_MONTH   => self::PERIOD_MONTH,
+        self::PERIOD_YEAR    => self::PERIOD_YEAR,
+        self::PERIOD_CUSTOM  => self::PERIOD_CUSTOM,
+    ];
+
 
     /**
      * Array of valid periods for drill down graphs
@@ -161,8 +172,19 @@ abstract class Graph
         self::PERIOD_WEEK    => 'Week',
         self::PERIOD_MONTH   => 'Month',
         self::PERIOD_YEAR    => 'Year',
-        self::PERIOD_CUSTOM  => 'Custom'
     ];
+
+    /**
+     * Array of valid periods for drill down graphs
+     */
+    public const PERIOD_DESCS_EXTENDED = [
+        self::PERIOD_DAY     => 'Day',
+        self::PERIOD_WEEK    => 'Week',
+        self::PERIOD_MONTH   => 'Month',
+        self::PERIOD_YEAR    => 'Year',
+        self::PERIOD_CUSTOM  => 'Custom',
+    ];
+
 
     /**
      * 'Bits' category for graphs
@@ -371,9 +393,6 @@ abstract class Graph
      */
     public function __construct( Grapher $grapher )
     {
-        $this->custom_date_start = Carbon::now()->subDays(1);
-        $this->custom_date_end = Carbon::now();
-
         $this->setGrapher( $grapher );
     }
 
@@ -759,16 +778,50 @@ abstract class Graph
         return $this;
     }
 
+    /**
+     * Set the start date for the custom period
+     *
+     * @param Carbon|null $value
+     *
+     * @return Graph
+     */
     public function setPeriodStart( ?Carbon $value = null ): Graph
     {
         $this->custom_date_start = $value;
         return $this;
     }
 
+    /**
+     * Get the start date for the custom period
+     *
+     * @return Carbon|null $value
+     */
+    public function periodStart(): ?Carbon
+    {
+        return $this->custom_date_start;
+    }
+
+    /**
+     * Set the start date for the custom period
+     *
+     * @param Carbon|null $value
+     *
+     * @return Graph
+     */
     public function setPeriodEnd( ?Carbon $value = null ): Graph
     {
         $this->custom_date_end = $value;
         return $this;
+    }
+
+    /**
+     * Get the end date for the custom period
+     *
+     * @return Carbon|null $value
+     */
+    public function periodEnd(): ?Carbon
+    {
+        return $this->custom_date_end;
     }
 
     /**
@@ -977,11 +1030,14 @@ abstract class Graph
      *
      * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterPeriod( string $value = null, string $default = null ): string|null
+    public static function processParameterPeriod( string $value = null, string $default = null, $withExtended = false ): string|null
     {
-        if( !isset( self::PERIODS[ $value ] ) ) {
+        if( $withExtended && !isset( self::PERIODS_EXTENDED[ $value ] ) ) {
+            $value = $default ?? self::PERIOD_DEFAULT;
+        } else if( !isset( self::PERIODS[ $value ] ) ) {
             $value = $default ?? self::PERIOD_DEFAULT;
         }
+
         return $value;
     }
 

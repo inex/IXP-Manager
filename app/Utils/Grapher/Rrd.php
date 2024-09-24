@@ -23,6 +23,7 @@ namespace IXP\Utils\Grapher;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use IXP\Exceptions\Services\Grapher\ParameterException;
 use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
 
 use IXP\Services\Grapher\Graph;
@@ -312,9 +313,13 @@ class Rrd
     {
         if($this->graph()->period() === Graph::PERIOD_CUSTOM) {
 
+            if( !$this->graph()->periodStart() || !$this->graph()->periodEnd() ) {
+                throw new ParameterException('Period Start and Period End must be set for custom period graphs');
+            }
+
             return $this->dataWindow(
-                $this->graph()->custom_date_start->timestamp,
-                $this->graph()->custom_date_end->timestamp
+                $this->graph()->periodStart()->timestamp,
+                $this->graph()->periodEnd()->timestamp
             );
 
         } else {
@@ -458,6 +463,7 @@ class Rrd
         if( $png === false ) {
             throw new FileErrorException("Could not open/create RRD/PNG file");
         }
+
         return $this->getLocalFilename('png');
     }
 
