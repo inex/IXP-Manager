@@ -84,14 +84,14 @@ class P2pDailyStats extends Model
         'cust_id',
         'day',
         'peer_id',
-        '$ipv4_total_in',
-        '$ipv4_total_out',
-        '$ipv4_max_in',
-        '$ipv4_max_out',
-        '$ipv6_total_in',
-        '$ipv6_total_out',
-        '$ipv6_max_in',
-        '$ipv6_max_out',
+        'ipv4_total_in',
+        'ipv4_total_out',
+        'ipv4_max_in',
+        'ipv4_max_out',
+        'ipv6_total_in',
+        'ipv6_total_out',
+        'ipv6_max_in',
+        'ipv6_max_out',
     ];
 
 

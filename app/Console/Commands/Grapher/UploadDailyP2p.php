@@ -9,6 +9,7 @@ use IXP\Models\P2pDailyStats;
 use IXP\Models\VlanInterface;
 use Grapher;
 use Log;
+use Illuminate\Support\Facades\DB;
 
 use IXP\Services\Grapher\Graph;
 
@@ -58,10 +59,8 @@ class UploadDailyP2p extends GrapherCommand
                     $this->info("Processing {$c->name} for " . $start->format('Y-m-d'));
                 }
 
-                $stats = $this->collectStatistics($c, $start, $end);
-
-                $this->storeStatistics($stats, $c, $start);
-
+                $stats = $this->collectStatistics( $c, $start, $end );
+                $this->storeStatistics( $stats, $c, $start );
 
                 if($this->isVerbosityNormal()) {
                     Log::debug("Completed {$c->name} in " . (microtime(true) - $iterTime) . " seconds");
@@ -137,11 +136,10 @@ class UploadDailyP2p extends GrapherCommand
 
                         $statistics = $graph->statistics()->all();
 
-                        $stats[$peerId]["ipv{$protocol}_total_in"] += $statistics['totalin'];
-                        $stats[$peerId]["ipv{$protocol}_total_out"] += $statistics['totalout'];
-                        $stats[$peerId]["ipv{$protocol}_max_in"] += $statistics['maxin'];
-                        $stats[$peerId]["ipv{$protocol}_max_out"] += $statistics['maxout'];
-
+                        $stats[$peerId]["ipv{$protocol}_total_in"]  += (int)$statistics['totalin'];
+                        $stats[$peerId]["ipv{$protocol}_total_out"] += (int)$statistics['totalout'];
+                        $stats[$peerId]["ipv{$protocol}_max_in"]    += (int)$statistics['maxin'];
+                        $stats[$peerId]["ipv{$protocol}_max_out"]   += (int)$statistics['maxout'];
                     }
 
 
@@ -163,42 +161,25 @@ class UploadDailyP2p extends GrapherCommand
      * @return void
      */
     protected function storeStatistics(array $stats, Customer $customer, Carbon $start) : void {
-        foreach( $stats as $peerId => $traffic ) {
 
-            $statData = [];
-            foreach($traffic as $key => $val) {
-                $statData[$key] = $val;
-            }
-
-            if(!$dailyStat = P2pDailyStats::where('cust_id', $customer->id)
-                ->where('day', $start->format('Y-m-d'))
-                ->where('peer_id', $peerId)
-                ->first()) {
-
-                // insert total customer data
-                $customerData = [
-                    'cust_id' => $customer->id,
-                    'day' => $start->format('Y-m-d'),
-                    'peer_id' => $peerId,
-                ];
-
-                $customerData = array_merge($customerData, $statData);
-
-                P2pDailyStats::create($customerData);
-
-                if($this->isVerbosityNormal()) {
-                    $this->line("\tProcessing {$customer->name} stored in database");
-                }
-            } else {
-                $dailyStat->update($statData);
-
-                if($this->isVerbosityNormal()) {
-                    $this->line("\tProcessing {$customer->name} updated in database");
-                }
-            }
-
+        if( $this->isVerbosityVerbose() ) {
+            $this->line( "\tStoring date for {$customer->name} in database" );
         }
 
+        DB::transaction(function () use( $stats, $customer, $start ) {
+
+            foreach( $stats as $peerId => $traffic ) {
+
+                P2pDailyStats::updateOrCreate( [
+                        'cust_id' => $customer->id,
+                        'day'     => $start->format( 'Y-m-d' ),
+                        'peer_id' => $peerId,
+                    ],
+                    $traffic
+                );
+
+            }
+        });
 
     }
 }

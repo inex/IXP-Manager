@@ -757,7 +757,7 @@ abstract class Graph
      */
     public function setPeriod( string $value, ?Carbon $start = null, ?Carbon $end = null ): Graph
     {
-        if( !isset( $this::PERIODS[ $value ] ) ) {
+        if( !isset( $this::PERIODS_EXTENDED[ $value ] ) ) {
             throw new ParameterException('Invalid period ' . $value );
         }
 

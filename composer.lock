@@ -4094,16 +4094,16 @@
         },
         {
             "name": "opensolutions/oss-snmp",
-            "version": "v1.0.3",
+            "version": "v1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opensolutions/OSS_SNMP.git",
-                "reference": "1445daf3b3a99c71246afa97c8e5e96d1f8586bc"
+                "reference": "2ca10d2fc14b35e3c1297741a51e2b23b02b8b53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opensolutions/OSS_SNMP/zipball/1445daf3b3a99c71246afa97c8e5e96d1f8586bc",
-                "reference": "1445daf3b3a99c71246afa97c8e5e96d1f8586bc",
+                "url": "https://api.github.com/repos/opensolutions/OSS_SNMP/zipball/2ca10d2fc14b35e3c1297741a51e2b23b02b8b53",
+                "reference": "2ca10d2fc14b35e3c1297741a51e2b23b02b8b53",
                 "shasum": ""
             },
             "require": {
@@ -4133,9 +4133,9 @@
             ],
             "support": {
                 "issues": "https://github.com/opensolutions/OSS_SNMP/issues",
-                "source": "https://github.com/opensolutions/OSS_SNMP/tree/v1.0.3"
+                "source": "https://github.com/opensolutions/OSS_SNMP/tree/v1.0.4"
             },
-            "time": "2023-02-22T20:58:07+00:00"
+            "time": "2024-09-23T19:29:34+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",

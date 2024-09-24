@@ -17,14 +17,14 @@ return new class extends Migration
             $table->integer('cust_id');
             $table->foreign('cust_id')->references('id')->on('cust')->onDelete('cascade');
             $table->integer('peer_id');
-            $table->float('ipv4_total_in')->nullable();
-            $table->float('ipv4_total_out')->nullable();
-            $table->float('ipv6_total_in')->nullable();
-            $table->float('ipv6_total_out')->nullable();
-            $table->float('ipv4_max_in')->nullable();
-            $table->float('ipv4_max_out')->nullable();
-            $table->float('ipv6_max_in')->nullable();
-            $table->float('ipv6_max_out')->nullable();
+            $table->bigInteger('ipv4_total_in')->nullable()->unsigned();
+            $table->bigInteger('ipv4_total_out')->nullable()->unsigned();
+            $table->bigInteger('ipv6_total_in')->nullable()->unsigned();
+            $table->bigInteger('ipv6_total_out')->nullable()->unsigned();
+            $table->bigInteger('ipv4_max_in')->nullable()->unsigned();
+            $table->bigInteger('ipv4_max_out')->nullable()->unsigned();
+            $table->bigInteger('ipv6_max_in')->nullable()->unsigned();
+            $table->bigInteger('ipv6_max_out')->nullable()->unsigned();
 
             $table->unique(['day', 'cust_id', 'peer_id']);
 
