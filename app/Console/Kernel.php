@@ -46,7 +46,14 @@ class Kernel extends ConsoleKernel
         $schedule->command( 'grapher:upload-pi-stats-to-db' )->dailyAt( '2:10' )
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_GRAPHER_UPLOAD_STATS_TO_DB', false ); } );
 
-        // https://docs.ixpmanager.org/latest/features/peeringdb/#existence-of-peeringdb-records
+        if( config( 'grapher.backends.sflow.enabled' ) ) {
+            $schedule->command( 'grapher:prune-daily-p2p --days=30' )->dailyAt( '0:05' );
+            $schedule->command( 'grapher:upload-daily-p2p ' . now()->subDay()->format( 'Y-m-d' ) )->dailyAt( '0:10' );
+        }
+
+
+
+            // https://docs.ixpmanager.org/latest/features/peeringdb/#existence-of-peeringdb-records
         $schedule->command('ixp-manager:update-in-peeringdb')->daily()
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UPDATE_IN_PEERINGDB', false ); } );
 

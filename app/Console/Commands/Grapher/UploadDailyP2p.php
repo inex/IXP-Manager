@@ -7,8 +7,7 @@ use IXP\Models\Aggregators\VlanInterfaceAggregator;
 use IXP\Models\Customer;
 use IXP\Models\P2pDailyStats;
 use IXP\Models\VlanInterface;
-use Grapher;
-use Log;
+use IXP\Support\Facades\Grapher;
 use Illuminate\Support\Facades\DB;
 
 use IXP\Services\Grapher\Graph;
@@ -63,12 +62,12 @@ class UploadDailyP2p extends GrapherCommand
                 $this->storeStatistics( $stats, $c, $start );
 
                 if($this->isVerbosityNormal()) {
-                    Log::debug("Completed {$c->name} in " . (microtime(true) - $iterTime) . " seconds");
+                    $this->info("Completed {$c->name} in " . (microtime(true) - $iterTime) . " seconds");
                 }
             });
 
         if($this->isVerbosityNormal()) {
-            Log::debug("All Completed in " . (microtime(true) - $startTime) . " seconds");
+            $this->info("All Completed in " . (microtime(true) - $startTime) . " seconds");
         }
         return 0;
     }

@@ -131,6 +131,9 @@
                             <div class="float-right">
                                 <input class="btn btn-white  mr-2" type="submit" name="submit" value="Submit" />
                             </div>
+                            <div class="float-right">
+                                <a class="btn btn-white mr-2" href="<?= route( 'statistics@p2p-table', [ 'custid' => $t->c->id ] ) ?>">Table</a>
+                            </div>
                         </form>
                     </ul>
                 </div>
@@ -168,7 +171,7 @@
                                 <?= $dvli->virtualInterface->customer->getFormattedName() ?>
                             </a>
                             <?php if( $t->orderBy === 'traffic' && $dvli->total_traffic ): ?>
-                                <em>(<?= \IXP\IXP::scaleBits( $dvli->total_traffic ) ?>)</em>
+                                <em>(<?= \IXP\IXP::scaleBytes( $dvli->total_traffic ) ?>)</em>
                             <?php endif; ?>
                         </li>
 

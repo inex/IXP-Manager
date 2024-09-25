@@ -518,8 +518,11 @@ class StatisticsController extends Controller
      *
      * @throws ParameterException
      */
-    public function p2pPrepare( Request $request, Customer $customer ): array
+    public function p2pPrepare( Request $request, ?Customer $customer, ?VlanInterface $dstVli = null ): array
     {
+        if( !$customer ) {
+            $customer = Auth::user()->customer;
+        }
 
         $requestCategory = Graph::processParameterCategory( $request->category, true );
         $requestPeriod   = Graph::processParameterPeriod( $request->period );
@@ -562,6 +565,25 @@ class StatisticsController extends Controller
             throw new ParameterException("There were no destination interfaces available for traffic exchange for the given criteria." );
         }
 
+        if( $dstVli ) {
+            if( $srcVli->vlan->id !== $dstVli->vlan->id ) {
+                // otherwise, is there an appropriate dstVLi on srcVli->vlan?
+                foreach( $dstVli->virtualInterface->customer->virtualInterfaces as $vi ) {
+                    foreach( $vi->vlanInterfaces as $vli ) {
+                        if( $vli->vlan->id === $srcVli->vlan->id ) {
+                            $dstVli = $vli;
+                        }
+                    }
+                }
+            }
+
+            if( $srcVli->vlan->id !== $dstVli->vlan->id ) {
+                // okay, bounce back to p2p overview page
+                throw new ParameterException( "No valid destination customer in this peering LAN" );
+            }
+        }
+
+
         return [
             'c'                => $customer,
             'category'         => $requestCategory,
@@ -570,6 +592,7 @@ class StatisticsController extends Controller
             'srcVlis'          => $srcVlis,
             'srcVli'           => $srcVli,
             'dstVlis'          => $dstVlis,
+            'dstVli'           => $dstVli,
         ];
     }
 
@@ -585,7 +608,7 @@ class StatisticsController extends Controller
      *
      * @throws ParameterException
      */
-    public function p2ps( Request $request, Customer $customer = null ): RedirectResponse|View
+    public function p2ps( Request $request, ?Customer $customer = null ): RedirectResponse|View
     {
         try {
             $data = $this->p2pPrepare( $request, $customer );
@@ -642,22 +665,7 @@ class StatisticsController extends Controller
         $srcVli = VlanInterface::findOrFail($request->svli);
         $dstVli = VlanInterface::findOrFail($request->dvli);
 
-        if( $srcVli->vlan->id === $dstVli->vlan->id ) {
-            return $this->p2p( $request, $srcVli, $dstVli );
-        }
-
-        // otherwise, is there an appropriate dstVLi on srcVli->vlan?
-        foreach( $dstVli->virtualInterface->customer->virtualInterfaces as $vi ) {
-            foreach( $vi->vlanInterfaces as $vli ) {
-                if( $vli->vlan->id === $srcVli->vlan->id ) {
-                    return $this->p2p( $request, $srcVli, $vli );
-                }
-            }
-        }
-
-        // okay, bounce back to p2p overview page
-        AlertContainer::push( 'No valid destination customer in this peering LAN', Alert::WARNING );
-        return redirect( route('statistics@p2ps-get', ['customer' => $srcVli->virtualInterface->custid ] ) );
+        return $this->p2p( $request, $srcVli, $dstVli );
     }
 
     /**
@@ -672,7 +680,9 @@ class StatisticsController extends Controller
     public function p2p( Request $request, VlanInterface $srcVli, VlanInterface $dstVli ): RedirectResponse|View
     {
         try {
-            $data = $this->p2pPrepare( $request, $srcVli->virtualInterface->customer );
+            $data = $this->p2pPrepare( $request, $srcVli->virtualInterface->customer, $dstVli );
+            $srcVli = $data['srcVli'];
+            $dstVli = $data['dstVli'];
         } catch( ParameterException $e ) {
             AlertContainer::push( $e->getMessage(), Alert::WARNING );
             return redirect()->back();
@@ -703,6 +713,61 @@ class StatisticsController extends Controller
             'possibleProtocols' => $possibleProtocols,
         ]) );
     }
+
+
+
+    /**
+     * Show p2p stats for a given customer and day.
+     *
+     * @param Request $r
+     *
+     * @return \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|RedirectResponse
+     *
+     * @throws
+     */
+    public function p2pTable( Request $r ): View|RedirectResponse
+    {
+        if( !Auth::check() ) {
+            abort( 403, "You are not authorised to view this page." );
+        }
+
+        if( !Auth::user()->isSuperUser() ) {
+            $r->merge( [ 'custid' => Auth::user()->custid ] );
+        }
+
+        $days = P2pDailyStats::select('day')->distinct('day')->orderBy('day','desc')->get()->pluck('day')->toArray();
+
+        if( empty( $days ) ) {
+            AlertContainer::push( "The P2P daily stats database table is empty.", Alert::WARNING );
+            return redirect( route('statistics@member', ['cust' => $r->custid ] ) );
+        }
+
+        if( !$r->day || !in_array( $r->day, $days ) ) {
+            $r->merge( [ 'day' => $days[0] ] );
+        }
+
+        $customers = Customer::currentActive(true,true,true)
+            ->get()->keyBy('id');
+
+        $stats = [];
+        if( $r->custid ) {
+            $stats = P2pDailyStats::with('peer')
+                ->where('day', $r->day)->where('cust_id', $r->custid )->get();
+        }
+
+        return view( 'statistics/p2p-table' )->with( [
+            'day'          => $r->day,
+            'days'         => $days,
+            'stats'        => $stats,
+            'customers'    => $customers,
+            'c'            => $r->custid ? $customers[$r->custid] : false,
+        ] );
+    }
+
+
+
+
+
 
     /**
      * Show daily traffic for customers in a table.

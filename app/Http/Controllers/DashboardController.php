@@ -40,7 +40,7 @@ use IXP\Http\Requests\Dashboard\{
     BillingDetailsRequest
 };
 
-use IXP\Models\{Aggregators\RsPrefixAggregator, Customer, CustomerNote, NetworkInfo, User};
+use IXP\Models\{Aggregators\RsPrefixAggregator, Customer, CustomerNote, NetworkInfo, P2pDailyStats, User};
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -134,6 +134,8 @@ class DashboardController extends Controller
             'dataNocDetail'                 => $dataNocDetail,
             'countries'                     => Countries::getList('name' ),
             'tab'                           => strtolower( $tab ) ?: false,
+            'p2pstats'                      => P2pDailyStats::latestN( $c ),
+
         ]);
     }
 

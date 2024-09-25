@@ -101,6 +101,8 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'p2p/{srcVli}/{dstVli}',                       'StatisticsController@p2p'                  )->name( 'statistics@p2p-get'               );
     Route::post( 'p2p/{srcVli}/{dstVli}',                       'StatisticsController@p2p'                  )->name( 'statistics@p2p'                   );
     Route::post( 'p2p',                                         'StatisticsController@p2pPost'              )->name( 'statistics@p2p-post'              );
+    Route::get(  'p2p-table',                                   'StatisticsController@p2pTable'             )->name( 'statistics@p2p-table'             );
+    Route::post( 'p2p-table',                                   'StatisticsController@p2pTable'             )->name( 'statistics@p2p-table'             );
     Route::get(  'member/{cust?}',                              'StatisticsController@member'               )->name( 'statistics@member'                );
     Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'      )->name( 'statistics@member-drilldown'      );
     Route::get(  'latency/{vli}/{protocol}',                    'StatisticsController@latency'              )->name( 'statistics@latency'               );
