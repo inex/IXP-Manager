@@ -14,7 +14,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
     <?php if( Auth::check() && $isSuperUser ): ?>
         <div class="btn-group btn-group-sm ml-auto" role="group">
-            <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/docstore/">
+            <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/features/docstore/">
                 Documentation
             </a>
 

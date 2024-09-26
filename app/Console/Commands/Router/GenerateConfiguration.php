@@ -70,8 +70,10 @@ class GenerateConfiguration extends Command
             return -1;
         }
 
+        /** @psalm-suppress InvalidArgument  - render() casts as a string, no issue here */
         echo ( new RouterConfigurationGenerator( $router ) )->render();
 
+        /** @psalm-suppress UndefinedConstant - LARAVEL_START defined in artisan command line tool */
         Log::info( sprintf( "Generated router configuration for %s and used %0.1f MB ( %0.1f MB real) of memory in %0.3f seconds.",
                 $router->handle, memory_get_peak_usage()/1024/1024, memory_get_peak_usage( true )/1024/1024,
                 microtime(true) - LARAVEL_START )

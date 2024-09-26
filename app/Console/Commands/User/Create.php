@@ -102,7 +102,7 @@ class Create extends Command
         $sendEmail =  $this->option('send-welcome-email');
 
         foreach( $options as $option => $value ){
-            ${$option} = $value;
+            //${$option} = $value;
 
             if( $option !== 'send-welcome-email' ){
                 $validator = \Validator::make( [ $option => $value], [$option => $this->rules[ $option ] ] );
@@ -125,7 +125,7 @@ class Create extends Command
                         );
                     }
 
-                    ${$option} = $this->validate_cmd( function() use( $option ) {
+                    $options[$option] = $this->validate_cmd( function() use( $option ) {
                         if( $option === 'password' ){
                             return $this->secret('Enter '. $option);
                         }
@@ -142,21 +142,21 @@ class Create extends Command
         // Creating the User object
         $user = new User;
         $user->creator          = 'artisan';
-        $user->password         = Hash::make( $password );
-        $user->name             = $name;
-        $user->authorisedMobile = $mobile;
-        $user->username         = strtolower( $username );
-        $user->email            = strtolower( $email );
+        $user->password         = Hash::make( $options['password'] );
+        $user->name             = $options['name'];
+        $user->authorisedMobile = $options['mobile'];
+        $user->username         = strtolower( $options['username'] );
+        $user->email            = strtolower( $options['email'] );
         $user->disabled         = false;
-        $user->privs            = $priv;
-        $user->custid           = $custid;
+        $user->privs            = (int) $options['priv'];
+        $user->custid           = (int) $options['custid'];
         $user->save();
 
         // Creating the CustomerToUser object
         $c2u = new CustomerToUser;
         $c2u->customer_id   = $user->custid;
         $c2u->user_id       = $user->id;
-        $c2u->privs         = $priv;
+        $c2u->privs         = $user->privs;
         $c2u->extra_attributes = [ "created_by" => [ "type" => "artisan" , "user_id" => $user->id ] ];
         $c2u->save();
 

@@ -15,7 +15,7 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm ml-auto" role="group">
-        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/usage/customers">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/usage/customers">
             Documentation
         </a>
     </div>

@@ -52,6 +52,8 @@ use IXP\Traits\Observable;
  * @method static Builder|Layer2Address whereMac($value)
  * @method static Builder|Layer2Address whereUpdatedAt($value)
  * @method static Builder|Layer2Address whereVlanInterfaceId($value)
+ * @property string|null $created
+ * @method static Builder|Layer2Address whereCreated($value)
  * @mixin \Eloquent
  */
 class Layer2Address extends Model

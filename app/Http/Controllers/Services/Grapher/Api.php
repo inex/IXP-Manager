@@ -22,7 +22,7 @@ namespace IXP\Http\Controllers\Services\Grapher;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Grapher as GrapherService;
+use IXP\Services\Grapher as GrapherService;
 
 use Illuminate\Http\{
     Request,
@@ -32,8 +32,6 @@ use Illuminate\Http\{
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
 
 use IXP\Http\Controllers\Controller;
-
-use IXP\Services\Grapher;
 
 /**
  * Grapher Controller
@@ -50,9 +48,9 @@ class Api extends Controller
     /**
      * The grapher service
      *
-     * @var Grapher
+     * @var GrapherService
      */
-    private $grapher;
+    private GrapherService $grapher;
 
     /**
      * Constructor
@@ -77,7 +75,7 @@ class Api extends Controller
     public function generateConfiguration( Request $request ): Response
     {
         // get the appropriate backend
-        $grapher = GrapherService::backend( $request->input( 'backend', 'mrtg' ) );
+        $grapher = $this->grapher()->backend( $request->input( 'backend', 'mrtg' ) );
 
         if( !$grapher->isConfigurationRequired() ) {
             abort( 404, "This grapher backend (" . $grapher->name() . ") does not require any configuration to be generated" );

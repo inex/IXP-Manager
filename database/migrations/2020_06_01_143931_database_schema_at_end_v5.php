@@ -21,6 +21,7 @@ class DatabaseSchemaAtEndV5 extends Migration
 
         echo "*** Importing base IXP Manager schema...\n";
         DB::connection()->getPdo()->exec( file_get_contents( database_path('schema/2021-as-at-end-v5.sql') ) );
+
     }
 
     /**

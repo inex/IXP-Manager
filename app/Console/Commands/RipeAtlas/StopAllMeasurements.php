@@ -84,7 +84,7 @@ class StopAllMeasurements extends Command
             $bar->start();
 
             foreach( $measurements->results as $am ) {
-                StopAllMeasurementsJob::dispatchNow( $am->id );
+                StopAllMeasurementsJob::dispatchSync( $am->id );
                 $this->info("Stop requested for {$am->id}");
                 $bar->advance();
             }

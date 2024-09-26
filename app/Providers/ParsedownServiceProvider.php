@@ -35,6 +35,7 @@ class ParsedownServiceProvider extends ServiceProvider
 
     /**
      * @return BladeCompiler
+     * @psalm-suppress all
      */
     protected function compiler(): BladeCompiler
     {

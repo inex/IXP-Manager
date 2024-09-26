@@ -55,6 +55,7 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4
      * @param $field
      *
      * @return Element A wrapped field
+     * @psalm-suppress UndefinedDocblockClass - Former Container type confusing psalm
      */
     public function wrapField( $field ): Element
     {
@@ -69,9 +70,9 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4
     /**
      * Add label classes
      *
-     * @return array An array of attributes with the label class
+     * @psalm-suppress UndefinedDocblockClass - Former Container type confusing psalm
      */
-    public function getLabelClasses(): array
+    public function getLabelClasses()
     {
         $width = $this->app[ 'former.form' ]->getAttributes()[ 'custom-label-width-class' ] ?? $this->labelWidth;
 
@@ -121,6 +122,7 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4
      * Add group classes
      *
      * @return string A list of group classes
+     * @psalm-suppress UndefinedDocblockClass - Former Container type confusing psalm
      */
     public function getGroupClasses(): string
     {
@@ -140,6 +142,7 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4
      * Add actions block class
      *
      * @return string|null
+     * @psalm-suppress UndefinedDocblockClass - Former Container type confusing psalm
      */
     public function getActionClasses(): ?string
     {
@@ -166,6 +169,7 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4
      * @param  $actions
      *
      * @return string A wrapped actions block
+     * @psalm-suppress UndefinedDocblockClass - Former Container type confusing psalm
      */
     public function wrapActions( $actions ): string
     {
@@ -176,7 +180,7 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4
             if( $class === 'grey-box' ){
                 return Element::create('div', $actions )->addClass( "bg-light p-4 mt-4 shadow-sm text-center col-lg-12" );
             }
-            return  Element::create('div', $actions )->addClass( [ $this->fieldOffset, $this->fieldWidth , $class ]);
+            return  Element::create('div', $actions )->addClass( $this->fieldOffset.' '.$this->fieldWidth.' '.$class );
         }
 
         return $actions;

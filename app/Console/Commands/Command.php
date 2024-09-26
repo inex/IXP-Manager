@@ -31,7 +31,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class Command extends \Illuminate\Console\Command
 {
-     /**
+
+    /**
       * Returns true if verbosity is EXACTLY: VERBOSITY_QUIET
       *
       * @return bool
@@ -147,19 +148,27 @@ abstract class Command extends \Illuminate\Console\Command
         return $value;
     }
 
+
     /**
-     * @param array     $rules
-     * @param mixed     $value
+     * Simple validator function for validating a single value against a given rule
+     * and error and exit it if fails.
      *
-     * @return bool|string
+     * @param string $rule The Laravel validator rule e.g. 'required|string|min:8|max:255'
+     * @param string $name The parameter name for output in error messages
+     * @param mixed $value The value to validate against $rule
+     *
+     * @return bool
+     * @throws \Exception
      */
-    protected function validateInput( array $rules, mixed $value ): bool|string
+    protected function validateOrExit( string $rule, string $name, string $value ): bool
     {
-        $validator = \Validator::make( [key( $rules ) => $value], $rules );
+        $validator = \Validator::make( [ $name => $value ], [ $name => $rule ] );
 
         if ($validator->fails()) {
-            return $validator->errors()->first( key( $rules ) );
+            $this->error( $validator->errors()->first( $name ) );
+            exit -1;
         }
+
         return true;
     }
 }

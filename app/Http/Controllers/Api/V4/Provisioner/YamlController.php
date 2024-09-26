@@ -70,6 +70,7 @@ class YamlController extends Controller
 
         switch ( $format ) {
             case 'yaml':
+                /** @psalm-suppress UndefinedConstant */
                 $output = yaml_emit( $array, YAML_UTF8_ENCODING );
                 break;
             case 'json':
@@ -433,6 +434,9 @@ class YamlController extends Controller
         foreach( CoreBundle::all() as $cb ) {
             $entry = [];
 
+            $switchSideA = $cb->switchSideX();
+            $switchSideB = $cb->switchSideX( false );
+
             $entry['id']           	=  $cb->id;
             $entry['description']  	=  $cb->description;
             $entry['graphtitle']   	=  $cb->graph_title;
@@ -440,8 +444,10 @@ class YamlController extends Controller
             $entry['preference']   	=  $cb->preference;
             $entry['enabled'] 	   	=  (bool)$cb->enabled;
             $entry['type'] 	   	    =  $cb->type;
-            $entry['switchsidea']  	=  $cb->switchSideX( true )->name;
-            $entry['switchsideb']  	=  $cb->switchSideX( false )->name;
+            /** @psalm-suppress InvalidPropertyFetch */
+            $entry['switchsidea']  	=  $switchSideA !== false ? $switchSideA->name : null;
+            /** @psalm-suppress InvalidPropertyFetch */
+            $entry['switchsideb']  	=  $switchSideB !== false ? $switchSideB->name : null;
 
             $speed = $cb->corelinks()->count() * $cb->speedPi() * 1000000;
 
@@ -451,7 +457,8 @@ class YamlController extends Controller
             $nb = count( $formats );
             for( $i = 0; $i < $nb; $i++ ) {
                 if( ( $speed / 1000.0 < 1.0 ) || ( count( $formats ) === $i + 1 ) ) {
-                    $prettybandwidth =  round( $speed ) . $formats[ $i ];
+                    $offset = min( $i, 4 );
+                    $prettybandwidth =  round( $speed ) . $formats[ $offset ];
                     break;
                 }
                 $speed /= 1000.0;

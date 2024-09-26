@@ -26,6 +26,7 @@ namespace IXP\Http\Middleware;
 use Auth, Closure;
 
 use Illuminate\Http\Request;
+use IXP\Models\User;
 
 /**
  * Middleware: Assert an authenticated user is of a given privilege
@@ -51,7 +52,10 @@ class AssertUserPrivilege
      */
     public function handle( Request $r, Closure $next, int $privilege )
     {
-        if( Auth::getUser()->privs() !== $privilege ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+
+        if( $us->privs() !== $privilege ) {
             return response( 'Insufficient permissions', 403 );
         }
 

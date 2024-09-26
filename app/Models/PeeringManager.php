@@ -56,6 +56,10 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager wherePeerid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereRejected($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereUpdatedAt($value)
+ * @property string|null $created
+ * @property string|null $updated
+ * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereUpdated($value)
  * @mixin \Eloquent
  */
 class PeeringManager extends Model

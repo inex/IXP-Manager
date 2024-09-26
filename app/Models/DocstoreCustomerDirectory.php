@@ -119,12 +119,15 @@ class DocstoreCustomerDirectory extends Model
         parent::boot();
 
         static::addGlobalScope('privs', function ( Builder $builder ) {
+            /** @var User $us */
+            $us = Auth::getUser();
+
             if( !Auth::check() ) {
                 // if public user make sure that no records is returned
                 $builder->where('id', null );
-            } elseif( !Auth::getUser()->isSuperUser() ) {
+            } elseif( !$us->isSuperUser() ) {
                 // if not super user make sure only records from the same customer are returned
-                $builder->where('cust_id', Auth::getUser()->custid );
+                $builder->where('cust_id', $us->custid );
             }
         });
     }
@@ -241,7 +244,7 @@ class DocstoreCustomerDirectory extends Model
                     } )->get()->isNotEmpty();
 
                 if( $rootDirVisible && $showRoot ) {
-                    self::$dirs[null]  = [ 'id' => null, 'name' => 'Root Directory' ];
+                    self::$dirs[] = [ 'id' => null, 'name' => 'Root Directory' ];
                 }
             }
 

@@ -1,7 +1,7 @@
 <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
     <div class="btn-group btn-group-sm" role="group">
         <div class="btn-group btn-group-sm">
-            <a class="btn btn-white"  target="_blank" href="https://docs.ixpmanager.org/usage/switches/">
+            <a class="btn btn-white"  target="_blank" href="https://docs.ixpmanager.org/latest/usage/switches/">
                 Documentation
             </a>
             <?php if( isset($t->data[ 'params'][ "activeOnly" ] ) && $t->data[ 'params'][ "activeOnly" ] ): ?>

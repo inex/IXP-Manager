@@ -85,8 +85,17 @@ class ControllerEnabled
         }
         $name = substr( $name, 0, -1 );
 
+        $enabled = true;
+
         // is the controller enabled?
         if( config( 'ixp_fe.frontend.disabled.' . $name, false ) ) {
+            $enabled = false;
+        } else if( str_starts_with( $controller, 'ConsoleServer' ) && config( 'ixp_fe.frontend.disabled.console-server-connection', false ) ) {
+            dump('here');
+            $enabled = false;
+        }
+
+        if( !$enabled ) {
             AlertContainer::push(  "This controller has been disabled (see: config/ixp_fe.php).", Alert::DANGER );
             return redirect( '' );
         }

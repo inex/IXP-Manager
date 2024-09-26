@@ -120,11 +120,13 @@
                 <span>IXP ADMIN ACTIONS</span>
             </h6>
 
-            <li class="<?= !request()->is( 'console-server/*' ) ?: 'active' ?>">
-                <a href="<?= route('console-server@list' ) ?>" class="nav-link">
-                    Console Servers
-                </a>
-            </li>
+            <?php if( !config( 'ixp_fe.frontend.disabled.console-server-connection' ) ): ?>
+                <li class="<?= !request()->is( 'console-server/*' ) ?: 'active' ?>">
+                    <a href="<?= route('console-server@list' ) ?>" class="nav-link">
+                        Console Servers
+                    </a>
+                </li>
+            <?php endif; ?>
 
             <?php if( request()->is( 'console-server/*' ) || request()->is( 'console-server-connection/*' ) ): ?>
                 <?php if( !config( 'ixp_fe.frontend.disabled.console-server-connection', false ) ): ?>
@@ -373,6 +375,14 @@
                 </a>
             </li>
 
+            <?php if( config('grapher.backends.sflow.enabled') ) : ?>
+                <li class="<?= !request()->is( 'statistics/p2p-table' ) ?: 'active' ?>">
+                    <a href="<?= route( 'statistics@p2p-table' ) ?>" class="nav-link">
+                        P2P Table
+                    </a>
+                </li>
+            <?php endif; ?>
+
             <li class="<?= !request()->is( 'statistics/league-table' ) ?: 'active' ?>">
                 <a href="<?= route( 'statistics@league-table' ) ?>" class="nav-link">
                     League Table
@@ -382,6 +392,12 @@
             <h6>
                 IXP UTILITIES
             </h6>
+
+            <li class="<?= !request()->is( 'settings/*' ) ?: 'active' ?>">
+                <a href="<?= route( 'settings@edit' ) ?>" class="nav-link">
+                    Settings
+                </a>
+            </li>
 
             <?php if( Gate::allows( 'viewHorizon' ) && config( 'queue.default' ) === 'redis' ): ?>
                 <li>

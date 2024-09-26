@@ -87,7 +87,7 @@ class ApiKeyController extends EloquentController
             'listOrderBy'       => 'created_at',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'api-key',
-            'documentation'     => 'https://docs.ixpmanager.org/features/api/',
+            'documentation'     => 'https://docs.ixpmanager.org/latest/features/api/',
             'listColumns'    => [
                 'id'           => [ 'title' => 'UID', 'display' => false ],
                 'apiKey'       => [
@@ -116,8 +116,10 @@ class ApiKeyController extends EloquentController
 
         // phpunit / artisan trips up here without the cli test:
         if( PHP_SAPI !== 'cli' ) {
+            /** @var User $user */
+            $user = Auth::getUser();
             // custom access controls:
-            switch( Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC ) {
+            switch( Auth::check() ? $user->privs() : User::AUTH_PUBLIC ) {
                 case User::AUTH_SUPERUSER:
                 case User::AUTH_CUSTUSER || User::AUTH_CUSTADMIN:
                     break;

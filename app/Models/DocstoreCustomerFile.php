@@ -129,12 +129,15 @@ class DocstoreCustomerFile extends Model
         parent::boot();
 
         static::addGlobalScope('privs', function ( Builder $builder ) {
+            /** @var User $us */
+            $us = Auth::getUser();
+
             if( !Auth::check() ) {
                 // if public user make sure that no records is returned
                 $builder->where('id', null );
-            } elseif( !Auth::getUser()->isSuperUser() ) {
+            } elseif( !$us->isSuperUser() ) {
                 // If not super user make sure only allowed files are returned
-                $builder->where('min_privs', '<=', Auth::getUser()->privs() );
+                $builder->where('min_privs', '<=', $us->privs() );
             }
         });
     }

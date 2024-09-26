@@ -42,7 +42,7 @@ use Illuminate\Validation\Rule;
 
 use Illuminate\View\View;
 
-use League\Flysystem\Exception as FlySystemException;
+use League\Flysystem\FilesystemException;
 
 use IXP\Http\Controllers\Controller;
 
@@ -84,7 +84,7 @@ class FileController extends Controller
         $this->authorize( 'create', DocstoreFile::class );
 
         Former::populate([
-            'min_privs' => $r->old( 'min_privs', User::AUTH_SUPERUSER )
+            'min_privs' => $r->old( 'min_privs', (string) User::AUTH_SUPERUSER )
         ]);
 
         return view( 'docstore/file/upload', [
@@ -110,6 +110,7 @@ class FileController extends Controller
         $file = $r->file('uploadedFile');
         $path = $file->store( '', 'docstore' );
 
+        /** @psalm-suppress InvalidArgument */
         $file = DocstoreFile::create( [
             'name'                  => $r->name,
             'description'           => $r->description,
@@ -144,7 +145,7 @@ class FileController extends Controller
             'name'                  => $r->old( 'name',                         $file->name                         ),
             'description'           => $r->old( 'descripton',                   $file->description                  ),
             'sha256'                => $r->old( 'sha256',                       $file->sha256                       ),
-            'min_privs'             => $r->old( 'min_privs',                    $file->min_privs                    ),
+            'min_privs'             => $r->old( 'min_privs',                    (string) $file->min_privs                    ),
             'docstore_directory_id' => $r->old( 'docstore_directory_id', $file->docstore_directory_id ?: ''  ),
         ]);
 
@@ -178,6 +179,7 @@ class FileController extends Controller
             $uploadedFile   = $r->file('uploadedFile');
             $path           = $uploadedFile->store( '', 'docstore' );
 
+            /** @psalm-suppress InvalidArgument */
             $file->update([
                 'path'                  => $path,
                 'sha256'                => hash_file( 'sha256', $uploadedFile ),
@@ -251,8 +253,9 @@ class FileController extends Controller
         }
 
         try {
+            /** @psalm-suppress UndefinedInterfaceMethod */
             return Storage::disk( $file->disk )->download( $file->path, $file->name );
-        } catch( FlySystemException $e ) {
+        } catch( FilesystemException $e ) {
             AlertContainer::push( "This file could not be found / downloaded. Please report this error to the support team.", Alert::DANGER );
             return redirect()->back();
         }
@@ -316,6 +319,7 @@ class FileController extends Controller
      */
     private function checkForm( Request $r, ?DocstoreFile $file = null ): void
     {
+        /** @psalm-suppress InvalidArgument */
         $r->validate( [
             'name'                  => 'required|max:100',
             'uploadedFile'          => Rule::requiredIf( function() use ( $r, $file ) {

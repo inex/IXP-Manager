@@ -27,7 +27,7 @@ class ModerniseIrrdbConfTable extends Migration
     public function down()
     {
         Schema::table('irrdbconfig', function (Blueprint $table) {
-            $table->string(255)->nullable()->after('host');
+            $table->string('protocol')->nullable()->after('host');
         });
     }
 }

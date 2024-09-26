@@ -117,6 +117,11 @@ return [
         'name' => env('IDENTITY_NAME', 'Newly Installed IXP Manager'),
     ],
 
+    'alerts_recipient' => [
+        'address' => env('IDENTITY_ALERTS_EMAIL','ixp-alerts@example.com'),
+        'name' => env('IDENTITY_ALERTS_NAME','IXP Ops Alerts'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Markdown Mail Settings

@@ -1,10 +1,12 @@
 
 .env
 .env*.local
+.env.by-vagrant.*
 .project
 .buildpath
 .settings/
 .vagrant/
+.phpunit.cache/
 auth.json
 /.fleet
 /vendor/

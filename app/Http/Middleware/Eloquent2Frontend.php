@@ -27,6 +27,7 @@ use Auth, Closure, Log, Route;
 
 use Illuminate\Http\Request;
 
+use IXP\Http\Controllers\Contact\ContactController;
 use IXP\Models\User;
 
 use IXP\Utils\View\Alert\{
@@ -56,16 +57,20 @@ class Eloquent2Frontend
      */
     public function handle( Request $r, Closure $next )
     {
+        /** @var User $us */
+        $us = Auth::user();
+
         // get the class and method that has been called:
         [ $controller, $method ] = explode('@', Route::currentRouteAction() );
 
         // what's the user's privilege?
-        $user_priv = Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC;
+        $user_priv = Auth::check() ? $us->privs() : User::AUTH_PUBLIC;
 
         // first check - do we have the necessary privileges to access this?
+        /** @psalm-suppress InvalidPropertyFetch */
         if( $user_priv < $controller::$minimum_privilege ) {
             AlertContainer::push(  "You do not have the required privileges to access this function.", Alert::DANGER );
-            Log::info( ( Auth::check() ? Auth::getUser()->username : 'Anonymous user' ) . " tried to access {$controller}@{$method} but does not have the required privileges" );
+            Log::info( ( Auth::check() ? $us->username : 'Anonymous user' ) . " tried to access {$controller}@{$method} but does not have the required privileges" );
             return redirect( '' );
         }
 

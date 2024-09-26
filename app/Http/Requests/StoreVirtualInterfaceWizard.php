@@ -29,6 +29,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 use IXP\Models\PhysicalInterface;
 
+use IXP\Models\User;
 use IXP\Rules\IdnValidate;
 
 /**
@@ -50,8 +51,10 @@ class StoreVirtualInterfaceWizard extends FormRequest
      */
     public function authorize(): bool
     {
+        /** @var User $us */
+        $us = Auth::getUser();
         // middleware ensures superuser access only so always authorised here:
-        return Auth::getUser()->isSuperUser();
+        return $us->isSuperUser();
     }
 
     /**

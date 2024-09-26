@@ -95,8 +95,8 @@ class AddTimestamps extends Migration
         });
 
         Schema::table('cust', function (Blueprint $table) {
-            $table->dateTime( 'created_at' )->change();
-            $table->dateTime( 'updated_at' )->change();
+            $table->dateTime( 'created_at' )->nullable()->change();
+            $table->dateTime( 'updated_at' )->nullable()->change();
         });
 
         Schema::table('cust_notes', function (Blueprint $table) {
@@ -173,7 +173,7 @@ class AddTimestamps extends Migration
 
         Schema::table('patch_panel', function (Blueprint $table) {
             $table->timestamps();
-            $table->date( 'installation_date' )->change();
+            $table->date( 'installation_date' )->nullable()->change();
         });
 
         Schema::table('patch_panel_port', function (Blueprint $table) {
@@ -326,8 +326,8 @@ class AddTimestamps extends Migration
         });
 
         Schema::table('cust', function (Blueprint $table) {
-            $table->date( 'created' )->change();
-            $table->date( 'lastupdated' )->change();
+            $table->date( 'created' )->nullable()->change();
+            $table->date( 'lastupdated' )->nullable()->change();
         });
 
         Schema::table('cust_notes', function (Blueprint $table) {

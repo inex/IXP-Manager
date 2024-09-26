@@ -62,7 +62,10 @@ class ApiMaybeAuthenticate
 	 */
 	public function handle( Request $r, Closure $next )
 	{
-		// are we already logged in?
+        /** @var User $us */
+        $us = Auth::user();
+
+        // are we already logged in?
 		if( !Auth::check() ) {
 			// find API key. Prefer header to URL:
 			$apikey = false;
@@ -98,12 +101,12 @@ class ApiMaybeAuthenticate
                     'lastseenFrom'  => ixp_get_client_ip(),
                 ] );
             }
-		} elseif( Auth::user()->disabled ){
+		} elseif( $us->disabled ){
             return response( 'User is disabled', 403 );
         }
 
         // Check if default customer is disabled
-        if( Auth::check() && Auth::user()->customer()->active()->notDeleted()->doesntExist() ){
+        if( Auth::check() && $us->customer()->active()->notDeleted()->doesntExist() ){
             return response( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' of the user is disabled', 403 );
         }
 

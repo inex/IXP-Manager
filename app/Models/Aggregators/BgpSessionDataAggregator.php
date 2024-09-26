@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use IXP\Models\BgpSessionData;
 use IXP\Models\Vlan;
-use IXP_Exception;
+use IXP\Exceptions\GeneralException as IXP_Exception;
 
 /**
  * IXP\Models\BGPSessionData
@@ -74,11 +74,11 @@ class BgpSessionDataAggregator extends BgpSessionData
      * @param int|null  $asn            Optional ASN to limit the query to
      * @param bool      $forceDb        Set to true to ignore the cache and force the query to the database
      *
-     * @return array            Array of peerings (as described above)
+     * @return array|string            Array of peerings (as described above)
      *
      * @throws
      */
-    public static function getPeers( ?int $vlan = null, int $protocol = 6, ?int $asn = null, bool $forceDb = false ): array
+    public static function getPeers( ?int $vlan = null, int $protocol = 6, ?int $asn = null, bool $forceDb = false ): array|string
     {
         $key = "pm_sessions_{$vlan}_{$protocol}";
 

@@ -109,7 +109,7 @@ class SflowReceiverController extends Common
     {
         Former::populate([
             'dst_ip'        => $r->old( 'dst_ip',      $sflr->dst_ip    ),
-            'dst_port'      => $r->old( 'dst_port',    $sflr->dst_port  ),
+            'dst_port'      => $r->old( 'dst_port',    (string)$sflr->dst_port  ),
         ]);
 
         return view( 'interfaces/sflow-receiver/edit' )->with([

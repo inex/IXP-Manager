@@ -66,10 +66,12 @@ class Update extends FormRequest
      */
     public function rules(): array
     {
-         $addUserInfo = [];
+        /** @var User $us */
+        $us = Auth::user();
+        $addUserInfo = [];
 
         // If its a superuser
-        if( Auth::user()->isSuperUser() ) {
+        if( $us->isSuperUser() ) {
             $infoArray = [
                 'name'                                              => 'required|string|max:255',
                 'username'                                          => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/|unique:user,username,' . $this->u->id,
@@ -100,10 +102,12 @@ class Update extends FormRequest
      */
     public function withValidator( Validator $validator ): bool
     {
-        $isSuperUser = Auth::user()->isSuperUser();
+        /** @var User $us */
+        $us = Auth::user();
+        $isSuperUser = $us->isSuperUser();
         if( !$validator->fails() && !$isSuperUser ) {
-            $validator->after( function( Validator $validator ) use ( $isSuperUser ) {
-                $cust = $isSuperUser ? Customer::find( $this->custid ) : Auth::user()->customer;
+            $validator->after( function( Validator $validator ) use ( $us, $isSuperUser ) {
+                $cust = $isSuperUser ? Customer::find( $this->custid ) : $us->customer;
 
                 if( (int)$this->privs === User::AUTH_SUPERUSER ) {
                     if( !$isSuperUser || ( $isSuperUser && !$cust->typeInternal() ) ) {

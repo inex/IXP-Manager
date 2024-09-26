@@ -30,12 +30,7 @@ use IXP\Exceptions\{
     GeneralException
 };
 
-use IXP\Models\{
-    Aggregators\IrrdbAggregator,
-    Customer,
-    IrrdbAsn,
-    IrrdbPrefix
-};
+use IXP\Models\{Aggregators\IrrdbAggregator, Customer, IrrdbAsn, IrrdbPrefix, IrrdbUpdateLog};
 
 use Illuminate\Support\Facades\Cache;
 use IXP\Utils\Bgpq3;
@@ -318,16 +313,32 @@ abstract class UpdateDb
             throw $e;
         }
 
+        $this->logUpdate( $protocol, $type );
+
         return true;
+    }
+
+    /**
+     * Update the database to record that a IRRDB update completed successfully.
+     *
+     * @param int       $protocol   The protocol to use (4 or 6)
+     * @param string    $type
+     */
+    protected function logUpdate( int $protocol, string $type ): void
+    {
+        IrrdbUpdateLog::updateOrCreate(
+            [ 'cust_id' => $this->customer()->id ],
+            [ "{$type}_v{$protocol}" => now() ]
+        );
     }
 
     /**
      * Validate ASNs/prefixes. Implement in subclasses.
      *
-     * @param array $prefixes
+     * @param array $entries
      * @param int $protocol
      *
      * @return array
      */
-    abstract protected function validate( array $prefixes, int $protocol ): array;
+    abstract protected function validate( array $entries, int $protocol ): array;
 }

@@ -182,7 +182,7 @@ class RunController extends Eloquent2Frontend
     {
         Former::populate( [
             'protocol'          => request()->old( 'protocol',      Router::PROTOCOL_IPV4      ),
-            'scheduled_at'      => request()->old( 'scheduled_at',  AtlasRun::SCHEDULED_AT_NOW ),
+            'scheduled_at'      => request()->old( 'scheduled_at',  (string)AtlasRun::SCHEDULED_AT_NOW ),
             'scheduled_date'    => request()->old( 'scheduled_date' ),
             'scheduled_time'    => request()->old( 'scheduled_time' ),
         ] );
@@ -244,7 +244,7 @@ class RunController extends Eloquent2Frontend
             'vlan_id'       => $r->vlan_id
         ] );
 
-        CreateMeasurementsJob::dispatchNow( $this->object, $r->selected_custs );
+        CreateMeasurementsJob::dispatchSync( $this->object, $r->selected_custs );
 
         if( (int)$r->scheduled_at === AtlasRun::SCHEDULED_AT_NOW ) {
             $this->object->atlasMeasurements()->each( function( $am ) {
@@ -269,7 +269,7 @@ class RunController extends Eloquent2Frontend
     {
         if( $atlasrun->completed_at ) {
             AlertContainer::push( 'The command complete atlas run have already executed.', Alert::DANGER );
-        } elseif( CompleteRequestsJob::dispatchNow( $atlasrun ) ) {
+        } elseif( CompleteRequestsJob::dispatchSync( $atlasrun ) ) {
             AlertContainer::push( 'The command complete atlas run executed with success.', Alert::SUCCESS );
         } else {
             AlertContainer::push( 'The command complete atlas run cannot be executed, some atlas measurements are not ended.', Alert::DANGER );

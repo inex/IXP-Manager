@@ -23,7 +23,7 @@
                             <?= isset( $t->user->prefs[ 'notes' ][ 'customer_watching' ][ $t->c->id ] ) ? 'Unwatch All' : 'Watch All' ?>
                         </a>
 
-                        <a class="btn btn-white" href="https://docs.ixpmanager.org/usage/customer-notes/" target="_blank">
+                        <a class="btn btn-white" href="https://docs.ixpmanager.org/latest/usage/customer-notes/" target="_blank">
                             Help
                         </a>
                     </div>

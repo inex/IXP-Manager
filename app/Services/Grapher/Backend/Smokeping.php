@@ -236,7 +236,7 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
      *
      * However we allow per VLAN overrides. See the documentation for details above this:
      *
-     * @see https://docs.ixpmanager.org/grapher/smokeping/
+     * @see https://docs.ixpmanager.org/latest/grapher/smokeping/
      *
      * @param LatencyGraph $graph
      *

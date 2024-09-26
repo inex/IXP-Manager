@@ -220,6 +220,8 @@ return [
         IXP\Providers\IxpServiceProvider::class,
         IXP\Providers\RipeAtlasProvider::class,
 
+        IXP\Providers\DiagnosticsServiceProvider::class,
+
         /*
          * Third party providers
          */

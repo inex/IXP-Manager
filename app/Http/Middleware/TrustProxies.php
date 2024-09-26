@@ -25,7 +25,7 @@ namespace IXP\Http\Middleware;
 
 use Illuminate\Http\Request;
 
-use Fideloper\Proxy\TrustProxies as Middleware;
+use Illuminate\Http\Middleware\TrustProxies as Middleware;
 
 /**
  * Middleware: TrustProxies
@@ -49,7 +49,7 @@ class TrustProxies extends Middleware
     /**
      * The current proxy header mappings.
      *
-     * @var array
+     * @var int
      */
     protected $headers = Request::HEADER_X_FORWARDED_FOR |
     Request::HEADER_X_FORWARDED_HOST |

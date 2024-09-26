@@ -250,5 +250,14 @@ function ixpWhoisPrefix( prefix, subnet = true ) {
         })
 }
 
+/***** Tab Panels START *****/
+$(document).on('click','.tabButton',function(e) {
+    $('.tabButton').removeClass('active');
+    $(this).addClass('active');
+    $('.tabPanel').removeClass('active');
+    const target = $(this).data('target');
+    $(target).addClass('active');
+});
+/***** Tab Panels END *******/
 
 

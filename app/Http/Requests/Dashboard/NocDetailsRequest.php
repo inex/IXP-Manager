@@ -28,6 +28,7 @@ use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 use IXP\Models\Customer;
+use IXP\Models\User;
 
 /**
  * Dashboard Noc details Request
@@ -48,8 +49,10 @@ class NocDetailsRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        /** @var User $us */
+        $us = Auth::getUser();
         // middleware ensures custadmin access only so always authorised here:
-        return Auth::getUser()->isCustAdmin();
+        return $us->isCustAdmin();
     }
 
     /**

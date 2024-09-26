@@ -146,11 +146,15 @@ abstract class Common extends Controller
             }
         }
 
+        $relatedInterface = $pi->relatedInterface();
+
         // if the physical interface already has a related physical interface and it's not the same as the fanout physical interface
-        if( $pi->relatedInterface() && $pi->relatedInterface()->id !== $fnpi->id ) {
+        /** @psalm-suppress InvalidPropertyFetch */
+        if( $relatedInterface !== false && $relatedInterface->id !== $fnpi->id ) {
             // if fanout does not have a virtual interface, relate it with old fanout port virtual interface.
             if( !$fnpi->virtualInterface ) {
-                $fnpi->virtualinterfaceid = $pi->relatedInterface()->virtualinterfaceid;
+                /** @psalm-suppress InvalidPropertyFetch */
+                $fnpi->virtualinterfaceid = $relatedInterface->virtualinterfaceid;
             }
 
             $this->removeRelatedInterface( $pi );
@@ -333,58 +337,61 @@ abstract class Common extends Controller
     /**
      * Build everything that a Core Bundle need (core link, core Interface etc)
      *
-     * @param   CoreBundle  $cb Core bundle object
-     * @param   Request     $r instance of the current HTTP request
-     * @param   array       $vis array of the Virtual interfaces ( side A and B ) linked to the core bundle
+     * @param   CoreBundle  $coreBundle Core bundle object
+     * @param   Request     $request instance of the current HTTP request
+     * @param   array       $virtualInterfaces array of the Virtual interfaces ( side A and B ) linked to the core bundle
      * @param   bool        $edit Are we editing the core bundle ?
      *
      * @return RedirectResponse|bool
      *
      * @throws
      */
-    public function buildCorelink( CoreBundle $cb, Request $r, array $vis, bool $edit )
+    public function buildCorelink( CoreBundle $coreBundle, Request $request, array $virtualInterfaces, bool $edit )
     {
-        foreach( $r->input( "cl-details" ) as $clDetail ) {
-            $cl = new CoreLink;
+        foreach( $request->input( "cl-details" ) as $coreLinkDetail ) {
+            $coreLink = new CoreLink;
 
-            $cl->core_bundle_id = $cb->id;
-            $cl->enabled = $clDetail[ 'enabled-cl' ] ?? false;
+            $coreLink->core_bundle_id = $coreBundle->id;
+            $coreLink->enabled = $coreLinkDetail[ 'enabled-cl' ] ?? false;
 
-            $bfd    = $clDetail[ 'bfd' ] ?? false;
-            $type   = $edit ? $cb->type : $r->type;
+            $bfd    = $coreLinkDetail[ 'bfd' ] ?? false;
+            $type   = $edit ? $coreBundle->type : $request->type;
 
-            $cl->bfd =  (int)$type === CoreBundle::TYPE_ECMP ? $bfd : false;
-            $cl->ipv4_subnet = $clDetail[ 'subnet' ] ?? null;
+            $coreLink->bfd =  (int)$type === CoreBundle::TYPE_ECMP ? $bfd : false;
+            $coreLink->ipv4_subnet = $coreLinkDetail[ 'subnet' ] ?? null;
 
-            foreach( $vis as $side => $vi ) {
-                if( !( ${ 'sp' . $side } = SwitchPort::find( $clDetail[ "hidden-sp-$side" ] ) ) ) {
-                    return Redirect::back()->withInput( $r->all() );
+            $switchPort = [];
+            $physicalInterface = [];
+            $coreInterface = [];
+            foreach( $virtualInterfaces as $side => $virtualInterface ) {
+                $switchPort[$side] = SwitchPort::find( $coreLinkDetail[ "hidden-sp-$side" ] );
+                if( !$switchPort[$side] ) {
+                    return Redirect::back()->withInput( $request->all() );
                 }
 
-                ${ 'sp' . $side }->type = SwitchPort::TYPE_CORE;
-                ${ 'sp' . $side }->save();
+                $switchPort[$side]->type = SwitchPort::TYPE_CORE;
+                $switchPort[$side]->save();
 
-                // Creating $pia|$pib
-                ${ 'pi' . $side } = new PhysicalInterface;
-                ${ 'pi' . $side }->switchportid         = ${ 'sp' . $side }->id;
-                ${ 'pi' . $side }->virtualinterfaceid   = $vi->id;
-                ${ 'pi' . $side }->speed                = $edit ? $cb->speedPi()    : $r->speed;
-                ${ 'pi' . $side }->duplex               = $edit ? $cb->duplexPi()   : $r->duplex;
-                ${ 'pi' . $side }->autoneg              = $edit ? $cb->autoNegPi()  : $r->input('auto-neg' ) ?? false;
-                ${ 'pi' . $side }->status               = PhysicalInterface::STATUS_CONNECTED;
-                ${ 'pi' . $side }->virtualinterfaceid = $vis[ $side ]->id;
-                ${ 'pi' . $side }->save();
+                // Creating $physicalInterface A/B
+                $physicalInterface[$side] = new PhysicalInterface;
+                $physicalInterface[$side]->switchportid         = $switchPort[$side]->id;
+                $physicalInterface[$side]->virtualinterfaceid   = $virtualInterface->id;
+                $physicalInterface[$side]->speed                = $edit ? $coreBundle->speedPi()    : $request->speed;
+                $physicalInterface[$side]->duplex               = $edit ? $coreBundle->duplexPi()   : $request->duplex;
+                $physicalInterface[$side]->autoneg              = $edit ? $coreBundle->autoNegPi()  : $request->input('auto-neg' ) ?? false;
+                $physicalInterface[$side]->status               = PhysicalInterface::STATUS_CONNECTED;
+                $physicalInterface[$side]->save();
 
-                // Creating $cia|$cib
-                ${ 'ci' . $side } = new CoreInterface;
-                ${ 'ci' . $side }->physical_interface_id = ${ 'pi' . $side }->id;
-                ${ 'ci' . $side }->save();
+                // Creating $coreInterface A/B
+                $coreInterface[$side] = new CoreInterface;
+                $coreInterface[$side]->physical_interface_id = $physicalInterface[$side]->id;
+                $coreInterface[$side]->save();
             }
 
-            $cl->core_interface_sidea_id = $cia->id;/** @var $cia CoreInterface */
-            $cl->core_interface_sideb_id = $cib->id;/** @var $cib CoreInterface */
+            $coreLink->core_interface_sidea_id = $coreInterface['a']->id;
+            $coreLink->core_interface_sideb_id = $coreInterface['b']->id;
 
-            $cl->save();
+            $coreLink->save();
         }
         return true;
     }

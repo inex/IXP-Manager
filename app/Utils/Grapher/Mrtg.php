@@ -66,10 +66,11 @@ class Mrtg
      * these values are taken from mrtg/src/rateup.c
      */
     public const PERIOD_TIME = [
-        Graph::PERIOD_DAY   => 119988.0,     // ( 33.33 * 3600 ),
-        Graph::PERIOD_WEEK  => 719712.0,     // ( 8.33  * 24 * 3600 ),
-        Graph::PERIOD_MONTH => 2879712.0,    // ( 33.33 * 24 * 3600 ),
-        Graph::PERIOD_YEAR  => 31622400.0    // ( 366 * 24 * 3600 )
+        Graph::PERIOD_DAY     => 119988.0,     // ( 33.33 * 3600 ),
+        Graph::PERIOD_WEEK    => 719712.0,     // ( 8.33  * 24 * 3600 ),
+        Graph::PERIOD_MONTH   => 2879712.0,    // ( 33.33 * 24 * 3600 ),
+        Graph::PERIOD_YEAR    => 31622400.0,   // ( 366 * 24 * 3600 )
+        Graph::PERIOD_CUSTOM  => 86400.0,      // ( placeholder - it will calculated by custom dates )
     ];
 
     /**
@@ -203,8 +204,13 @@ class Mrtg
             throw new GeneralException('Invalid period');
         }
 
-        $starttime  = time() - $periodsecs;
-        $endtime    = time();
+        if($graph->period() === Graph::PERIOD_CUSTOM) {
+            $starttime = $graph->periodStart()->timestamp;
+            $endtime   = $graph->periodEnd()->timestamp;
+        } else {
+            $starttime  = time() - $periodsecs;
+            $endtime    = time();
+        }
 
         // Run through the array and pull out the values we want
         for( $i = sizeof( $this->array )-1; $i >= 0; $i-- ) {

@@ -70,13 +70,14 @@ class Layer2AddressController extends Controller
     public function store( Request $r, bool $showFeMessage = false ): JsonResponse
     {
         $vli = VlanInterface::findOrFail( $r->vlan_interface_id );
-
-        if( !Auth::getUser()->isSuperUser() ) {
+        /** @var User $user */
+        $user = Auth::getUser();
+        if( !$user->isSuperUser() ) {
             if( !config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ) {
                 abort( 404 );
             }
 
-            if( Auth::getUser()->custid !== $vli->virtualInterface->custid ) {
+            if( $user->custid !== $vli->virtualInterface->custid ) {
                 abort( 403, 'VLI / Customer mismatch' );
             }
 
@@ -128,12 +129,14 @@ class Layer2AddressController extends Controller
      */
     public function delete( Layer2Address $l2a, bool $showFeMessage = false  ): JsonResponse
     {
-        if( !Auth::getUser()->isSuperUser() ) {
+        /** @var User $user */
+        $user = Auth::getUser();
+        if( !$user->isSuperUser() ) {
             if( !config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ) {
                 abort( 404 );
             }
 
-            if( Auth::getUser()->custid !== $l2a->vlanInterface->virtualInterface->custid ) {
+            if( $user->custid !== $l2a->vlanInterface->virtualInterface->custid ) {
                 abort( 403, 'MAC address / Customer mismatch' );
             }
 

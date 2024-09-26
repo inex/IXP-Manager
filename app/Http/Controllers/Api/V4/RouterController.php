@@ -66,6 +66,7 @@ class RouterController extends Controller
 
         $configView = ( new RouterConfigurationGenerator( $router ) )->render()->render();
 
+        /** @psalm-suppress UndefinedConstant */
         \Illuminate\Support\Facades\Log::info( sprintf( "Generated router configuration for %s and used %0.1f MB ( %0.1f MB real) of memory in %0.3f seconds.",
                 $router->handle, memory_get_peak_usage() / 1024 / 1024, memory_get_peak_usage( true ) / 1024 / 1024,
                 microtime( true ) - LARAVEL_START )
@@ -75,23 +76,6 @@ class RouterController extends Controller
             ->header('Content-Type', 'text/plain');
     }
 
-
-    /**
-     *
-     * @param string $handle Handle of the router that we want
-     *
-     * @return JsonResponse
-     */
-    public function getCanUpdate( string $handle ) : JsonResponse
-    {
-        if( !( $r = Router::whereHandle( $handle )->first() ) ) {
-            abort( 404, "Unknown router handle" );
-        }
-
-
-
-        // return response()->json( $this->lastUpdatedArray( $r ) );
-    }
 
     /**
      * Get 'last_updated' for the router with the handle provided

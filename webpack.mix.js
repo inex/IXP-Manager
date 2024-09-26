@@ -16,9 +16,9 @@ mix.scripts(
         'node_modules/jquery/dist/jquery.min.js',
         'node_modules/jquery-ui-dist/jquery-ui.min.js',
         'node_modules/select2/dist/js/select2.min.js',
-        'node_modules/popper.js/dist/umd/popper.min.js',
-        'node_modules/bootstrap/dist/js/bootstrap.min.js',
+        'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
         'node_modules/bootbox/dist/bootbox.min.js',
+        'node_modules/axios/dist/axios.min.js',
         'node_modules/datatables.net/js/jquery.dataTables.min.js',
         'node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js',
         'node_modules/datatables.net-responsive/js/dataTables.responsive.min.js',
@@ -26,9 +26,10 @@ mix.scripts(
 
         'node_modules/blueimp-file-upload/js/jquery.fileupload.js',
         'node_modules/jquery-knob/dist/jquery.knob.min.js',
-        'node_modules/clipboard/dist/clipboard.min.js',
         'node_modules/moment/moment.js',
+        'node_modules/clipboard/dist/clipboard.min.js',
         'node_modules/ip-address/dist/ip-address-globals.js',
+        'node_modules/alpinejs/dist/cdn.min.js',
 
         'public/js/ixp-manager.js',
 

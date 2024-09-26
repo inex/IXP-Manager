@@ -141,28 +141,28 @@ class RouterController extends Controller
     {
         Former::populate([
             'handle'                    => request()->old( 'handle',      $router->handle       ),
-            'vlan_id'                   => request()->old( 'vlan_id',     $router->vlan_id      ),
+            'vlan_id'                   => request()->old( 'vlan_id',     (string)$router->vlan_id      ),
             'protocol'                  => request()->old( 'protocol',    $router->protocol     ),
             'type'                      => request()->old( 'type',        $router->type         ),
             'name'                      => request()->old( 'name',        $router->name         ),
             'shortname'                 => request()->old( 'shortname',   $router->shortname    ),
             'router_id'                 => request()->old( 'router_id',   $router->router_id    ),
             'peering_ip'                => request()->old( 'peering_ip',  $router->peering_ip   ),
-            'asn'                       => request()->old( 'asn',         $router->asn          ),
+            'asn'                       => request()->old( 'asn',         (string)$router->asn          ),
             'software'                  => request()->old( 'software',                    $router->software                  ),
             'software_version'          => request()->old( 'software_version',            $router->software_version          ),
             'operating_system'          => request()->old( 'operating_system',            $router->operating_system          ),
             'operating_system_version'  => request()->old( 'operating_system_version',    $router->operating_system_version  ),
             'mgmt_host'                 => request()->old( 'mgmt_host',         $router->mgmt_host          ),
-            'api_type'                  => request()->old( 'api_type',          $router->api_type           ),
+            'api_type'                  => request()->old( 'api_type',          (string)$router->api_type           ),
             'api'                       => request()->old( 'api',               $router->api                ),
-            'lg_access'                 => request()->old( 'lg_access',         $router->lg_access          ),
-            'quarantine'                => request()->old( 'quarantine',        $router->quarantine         ),
-            'bgp_lc'                    => request()->old( 'bgp_lc',            $router->bgp_lc             ),
-            'rpki'                      => request()->old( 'rpki',              $router->rpki               ),
-            'rfc1997_passthru'          => request()->old( 'rfc1997_passthru',  $router->rfc1997_passthru   ),
-            'skip_md5'                  => request()->old( 'skip_md5',          $router->skip_md5           ),
-            'pair_id'                   => request()->old( 'pair_id',           $router->pair_id            ),
+            'lg_access'                 => request()->old( 'lg_access',         (string)$router->lg_access          ),
+            'quarantine'                => request()->old( 'quarantine',        (string)$router->quarantine         ),
+            'bgp_lc'                    => request()->old( 'bgp_lc',            (string)$router->bgp_lc             ),
+            'rpki'                      => request()->old( 'rpki',              (string)$router->rpki               ),
+            'rfc1997_passthru'          => request()->old( 'rfc1997_passthru',  (string)$router->rfc1997_passthru   ),
+            'skip_md5'                  => request()->old( 'skip_md5',          (string)$router->skip_md5           ),
+            'pair_id'                   => request()->old( 'pair_id',           (string)$router->pair_id            ),
             'template'                  => request()->old( 'template',          $router->template           ),
         ]);
 
@@ -233,7 +233,7 @@ class RouterController extends Controller
      */
     public function pause( Router $router): RedirectResponse
     {
-        $router->pause_updates = true;
+        $router->pause_updates = 1;
         $router->save();
 
         AlertContainer::push( 'Automatic updates for router ' . $router->handle . ' paused.', Alert::SUCCESS );

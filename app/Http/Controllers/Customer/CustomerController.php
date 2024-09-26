@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\Customer;
 
 use App, Auth, Cache, Countries, Former, Mail;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
 use Illuminate\Http\{
@@ -216,28 +217,28 @@ class CustomerController extends Controller
             'type'                  => $r->old( 'type',                $cust->type              ),
             'shortname'             => $r->old( 'shortname',           $cust->shortname         ),
             'corpwww'               => $r->old( 'corpwww',             $cust->corpwww           ),
-            'datejoin'              => $r->old( 'datejoin',            !$cust->datejoin ?: $cust->datejoin->format( "Y-m-d" ) ) ,
-            'dateleave'             => $r->old( 'dateleave',           !$cust->dateleave ?: $cust->dateleave->format( "Y-m-d" ) ),
+            'datejoin'              => $r->old( 'datejoin',            !$cust->datejoin ?: Carbon::parse($cust->datejoin)->format( "Y-m-d" ) ) ,
+            'dateleave'             => $r->old( 'dateleave',           !$cust->dateleave ?: Carbon::parse($cust->dateleave)->format( "Y-m-d" ) ),
             'status'                => $r->old( 'status',              $cust->status                ),
             'MD5Support'            => $r->old( 'MD5Support',          $cust->MD5Support            ),
             'abbreviatedName'       => $r->old( 'abbreviatedName',     $cust->abbreviatedName       ),
-            'autsys'                => $r->old( 'autsys',              $cust->autsys                ),
-            'maxprefixes'           => $r->old( 'maxprefixes',         $cust->maxprefixes           ),
+            'autsys'                => $r->old( 'autsys',              (string) $cust->autsys       ),
+            'maxprefixes'           => $r->old( 'maxprefixes',         (string) $cust->maxprefixes           ),
             'peeringpolicy'         => $r->old( 'peeringpolicy',       $cust->peeringpolicy         ),
             'peeringemail'          => $r->old( 'peeringemail',        $cust->peeringemail          ),
             'peeringmacro'          => $r->old( 'peeringmacro',        $cust->peeringmacro          ),
             'peeringmacrov6'        => $r->old( 'peeringmacrov6',      $cust->peeringmacrov6        ),
-            'irrdb'                 => $r->old( 'irrdb',               $cust->irrdb                 ),
-            'activepeeringmatrix'   => $r->old( 'activepeeringmatrix', $cust->activepeeringmatrix   ),
+            'irrdb'                 => $r->old( 'irrdb',               (string) $cust->irrdb                 ),
+            'activepeeringmatrix'   => $r->old( 'activepeeringmatrix', (string) $cust->activepeeringmatrix   ),
             'nocphone'              => $r->old( 'nocphone',            $cust->nocphone              ),
             'noc24hphone'           => $r->old( 'noc24hphone',         $cust->noc24hphone           ),
             'nocemail'              => $r->old( 'nocemail',            $cust->nocemail              ),
             'nochours'              => $r->old( 'nochours',            $cust->nochours              ),
             'nocwww'                => $r->old( 'nocwww',              $cust->nocwww                ),
-            'isReseller'            => $r->old( 'isReseller',          $cust->isReseller            ),
-            'isResold'              => $r->old( 'isResold',            ( $this->resellerMode() && $cust->reseller ) ),
-            'reseller'              => $r->old( 'reseller',            ( $this->resellerMode() && $cust->reseller ) ? $cust->reseller : false ),
-            'peeringdb_oauth'       => $r->old( 'peeringdb_oauth',     $cust->peeringdb_oauth       ),
+            'isReseller'            => $r->old( 'isReseller',          (string) $cust->isReseller            ),
+            'isResold'              => $r->old( 'isResold',            ( $this->resellerMode() && $cust->reseller ) ? '1' : '0' ),
+            'reseller'              => $r->old( 'reseller',            ( $this->resellerMode() && $cust->reseller ) ? (string) $cust->reseller : null ),
+            'peeringdb_oauth'       => $r->old( 'peeringdb_oauth',     (string) $cust->peeringdb_oauth       ),
         ]);
 
         return view( 'customer/edit' )->with([
@@ -485,7 +486,7 @@ class CustomerController extends Controller
         return response()->json( [
             'success' => true,
             'htmlFrag' => view('customer/overview-tabs/peers')->with([
-                'peers' => CustomerAggregator::getPeeringManagerArrayByType( $cust, Vlan::peeringManager()->orderBy( 'number' )->get(), [ 4,6 ] ) ?: false
+                'peers' => CustomerAggregator::getPeeringManagerArrayByType( $cust, Vlan::peeringManager()->orderBy( 'number' )->get()->toArray(), [ 4,6 ] ) ?: false
             ])->render()
         ] );
     }

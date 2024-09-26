@@ -56,6 +56,8 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|ApiKey whereLastseenFrom($value)
  * @method static Builder|ApiKey whereUpdatedAt($value)
  * @method static Builder|ApiKey whereUserId($value)
+ * @property string $created
+ * @method static Builder|ApiKey whereCreated($value)
  * @mixin \Eloquent
  */
 class ApiKey extends Model

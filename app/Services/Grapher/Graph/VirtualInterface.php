@@ -135,6 +135,9 @@ class VirtualInterface extends Graph
      */
     public function authorise(): bool
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         if( is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
@@ -144,23 +147,23 @@ class VirtualInterface extends Graph
             return false;
         }
 
-        if( Auth::getUser()->isSuperUser() ) {
+        if( $us->isSuperUser() ) {
             return $this->allow();
         }
 
-        if( Auth::getUser()->custid === $this->virtualInterface()->customer->id ) {
+        if( $us->custid === $this->virtualInterface()->customer->id ) {
             return $this->allow();
         }
 
         if( config( 'grapher.access.customer' ) !== 'own_graphs_only'
             && is_numeric( config( 'grapher.access.customer' ) )
-            && Auth::getUser()->privs() >= config( 'grapher.access.customer' )
+            && $us->privs() >= config( 'grapher.access.customer' )
         ) {
             return $this->allow();
         }
 
         Log::notice( sprintf( "[Grapher] [VirtualInterface]: user %d::%s tried to access a virtual interface graph "
-                . "{$this->virtualInterface()->id} which is not theirs", Auth::id(), Auth::getUser()->username )
+                . "{$this->virtualInterface()->id} which is not theirs", Auth::id(), $us->username )
         );
 
         $this->deny();

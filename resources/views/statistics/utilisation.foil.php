@@ -9,7 +9,7 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm ml-auto" role="group">
-        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/grapher/mrtg/#port-utilisation">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/grapher/mrtg/#port-utilisation">
             Documentation
         </a>
     </div>
@@ -149,7 +149,7 @@
                         <div class="col-sm-12">
                             No records for port utilisation have been found.
                             If you have Grapher enabled with the Mrtg backend configured, then please ensure you are
-                            <a href="https://docs.ixpmanager.org/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails" target="_blank">inserting
+                            <a href="https://docs.ixpmanager.org/latest/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails" target="_blank">inserting
                                 traffic data into the database</a> and check the documentation via the link on the top right.
                         </div>
                     </div>

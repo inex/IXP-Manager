@@ -384,7 +384,7 @@ class PhysicalInterface extends Model
      *
      * @return PhysicalInterface|bool
      */
-    public function otherPICoreLink()
+    public function otherPICoreLink(): PhysicalInterface|bool
     {
         if( $ci = $this->coreInterface ){
             if( $this->id === $ci->coreLink()->coreInterfaceSideA->physical_interface_id ){

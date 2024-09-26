@@ -69,7 +69,7 @@ class BirdsEye implements LookingGlassContract
      *
      * @return BirdsEye
      */
-    public function setCacheEnabled( bool $b ): Birdseye
+    public function setCacheEnabled( bool $b ): BirdsEye
     {
         $this->cacheEnabled = $b;
         return $this;
@@ -130,6 +130,17 @@ class BirdsEye implements LookingGlassContract
     public function bgpSummary(): string
     {
         return $this->apiCall( 'protocols/bgp' );
+    }
+
+    /**
+     * Get BGP neighbour information as JSON
+     *
+     * @param string $protocol Protocol name
+     * @return string
+     */
+    public function bgpNeighbourSummary( string $protocol ): string
+    {
+        return $this->apiCall( 'protocol/' . urlencode( $protocol ) );
     }
 
     /**

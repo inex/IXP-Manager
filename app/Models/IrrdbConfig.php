@@ -51,6 +51,8 @@ use IXP\Traits\Observable;
  * @method static Builder|IrrdbConfig whereNotes($value)
  * @method static Builder|IrrdbConfig whereSource($value)
  * @method static Builder|IrrdbConfig whereUpdatedAt($value)
+ * @property string|null $protocol
+ * @method static Builder|IrrdbConfig whereProtocol($value)
  * @mixin \Eloquent
  */
 class IrrdbConfig extends Model

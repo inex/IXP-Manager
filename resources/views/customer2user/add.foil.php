@@ -9,7 +9,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
 
 <div class="btn-group btn-group-sm ml-auto" role="group">
-    <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/usage/users/">
+    <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/usage/users/">
         Documentation
     </a>
     <a id="add-user" class="btn btn-white" href="<?= route('user@create-wizard') ?>">
@@ -110,7 +110,7 @@
                     ->placeholder( 'Select a privilege' )
                     ->fromQuery( $t->privs , 'name' )
                     ->addClass( 'chzn-select' )
-                    ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/usage/users/#types-of-users">'
+                    ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/latest/usage/users/#types-of-users">'
                         . 'the official documentation here</a>.'
                     );
                 ?>

@@ -16,7 +16,7 @@
         </p>
 
         <p>
-            <b>For more information, <a target="_blank" href="https://docs.ixpmanager.org/features/docstore/">see the official documentation here</a>.</b>
+            <b>For more information, <a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/">see the official documentation here</a>.</b>
         </p>
 
     <?php else: ?>
@@ -33,7 +33,7 @@
         </p>
 
         <p>
-            <b>For more information, <a target="_blank" href="https://docs.ixpmanager.org/features/docstore/">see the official documentation here</a>.</b>
+            <b>For more information, <a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/">see the official documentation here</a>.</b>
         </p>
     <?php endif; ?>
 </div>

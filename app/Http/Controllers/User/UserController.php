@@ -27,6 +27,7 @@ use Auth, Former, Hash, Log, Mail;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -239,26 +240,29 @@ class UserController extends Controller
      *
      * @param  StoreUser  $r  instance of the current HTTP request
      *
-     * @return  RedirectResponse
+     * @return  RedirectResponse|Redirector
      *
      * @throws AuthorizationException
      */
-    public function store( StoreUser $r ): RedirectResponse
+    public function store( StoreUser $r ): RedirectResponse|Redirector
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         $this->authorize( 'any', User::class );
 
         // Creating the User object
         $user = new User;
-        $user->creator          = Auth::user()->username;
+        $user->creator          = $us->username;
         $user->password         = Hash::make( Str::random(16) );
         $user->name             = $r->name;
         $user->authorisedMobile = $r->authorisedMobile;
         $user->username         = strtolower( $r->username );
         $user->email            = strtolower( $r->email );
-        $user->disabled         = !$r->disabled; // input as enable in the view
+        $user->disabled         = $r->disabled ? 0 : 1; // input as enable in the view
         $user->lastupdatedby    = Auth::id();
         $user->privs            = $r->privs;
-        $user->custid           = Auth::user()->isSuperUser() ? $r->custid : Auth::user()->custid;
+        $user->custid           = $us->isSuperUser() ? $r->custid : $us->custid;
         $user->save();
 
         // Creating the CustomerToUser object
@@ -296,9 +300,11 @@ class UserController extends Controller
      */
     public function edit( Request $r, User $u ): View
     {
+        /** @var User $us */
+        $us = Auth::user();
         $this->authorize( 'access', $u );
 
-        $isSuperUser = Auth::user()->isSuperUser();
+        $isSuperUser = $us->isSuperUser();
 
         if( !request()->session()->exists( 'user_post_store_redirect' ) ) {
             $this->redirectLink();
@@ -309,7 +315,7 @@ class UserController extends Controller
             'username'         => $r->old( 'username',              $u->username            ),
             'email'            => $r->old( 'email',                 $u->email               ),
             'authorisedMobile' => $r->old( 'authorisedMobile',      $u->authorisedMobile    ),
-            'disabled'         => $r->old( 'disabled',              !$u->disabled           ),
+            'disabled'         => $r->old( 'disabled',              $u->disabled ? '0' : '1' ),
             'linkCancel'       => $r->old( 'linkCancel',            $r->headers->get( 'referer', "" ) ),
         ];
 
@@ -340,19 +346,21 @@ class UserController extends Controller
     /**
      * Allow to update a User
      *
-     * @param  UpdateUser  $r  instance of the current HTTP request
-     * @param  User  $u
+     * @param UpdateUser $r instance of the current HTTP request
+     * @param User $u
      *
-     * @return  RedirectResponse
+     * @return RedirectResponse|Redirector
      *
      * @throws AuthorizationException
      */
-    public function update( UpdateUser $r, User $u ): RedirectResponse
+    public function update( UpdateUser $r, User $u ): RedirectResponse|Redirector
     {
+        /** @var User $us */
+        $us = Auth::user();
         $this->authorize( 'access', $u );
 
         // Superuser OR Logged User edit his own user
-        if( ( $isSuperUser = Auth::user()->isSuperUser() ) || $u->id === Auth::id() ) {
+        if( ( $isSuperUser = $us->isSuperUser() ) || $u->id === Auth::id() ) {
             $u->name = $r->name;
             $u->authorisedMobile = $r->authorisedMobile;
         }
@@ -360,7 +368,7 @@ class UserController extends Controller
         if( $isSuperUser ) {
             $u->username    = strtolower( $r->username );
             $u->email       = $r->email;
-            $u->disabled    = !$r->disabled;// displayed as enabled in the view
+            $u->disabled    = $r->disabled ? 0 : 1;// displayed as enabled in the view
 
             // Delete Remember Token for the user if disabled
             if(!$r->disabled){
@@ -391,7 +399,10 @@ class UserController extends Controller
      */
     protected function postStoreRedirect()
     {
-        if( Auth::user()->isSuperUser() ) {
+        /** @var User $us */
+        $us = Auth::user();
+
+        if( $us->isSuperUser() ) {
             $redirect = session( "user_post_store_redirect" );
             session()->forget( "user_post_store_redirect" );
 
@@ -400,7 +411,7 @@ class UserController extends Controller
             }
         }
 
-        if( Auth::user()->isCustUser() ) {
+        if( $us->isCustUser() ) {
             return '';
         }
 
@@ -444,6 +455,9 @@ class UserController extends Controller
      */
     public function delete( DeleteRequest $r, User $u ) : RedirectResponse
     {
+        /** @var User $us */
+        $us = Auth::user();
+
         $this->authorize( 'any', User::class );
 
         // delete all the user's API keys
@@ -465,7 +479,7 @@ class UserController extends Controller
         $u->delete();
 
         AlertContainer::push('User deleted.', Alert::SUCCESS );
-        Log::notice( Auth::user()->username." deleted user" . $u->username );
+        Log::notice( $us->username." deleted user" . $u->username );
 
         // If the user delete itself and is loggued as the same customer logout
         if( Auth::id() === $u->id ) {
@@ -473,7 +487,7 @@ class UserController extends Controller
             return redirect( route( "login@showForm" ) );
         }
 
-        if( Auth::user()->isSuperUser() && strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
+        if( $us->isSuperUser() && strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
             return redirect( route( "customer@overview", [ 'cust' => $u->custid , "tab" => "users"] ) );
         }
 
@@ -489,10 +503,13 @@ class UserController extends Controller
      */
     public function resendWelcomeEmail( User $u ): RedirectResponse
     {
+        /** @var User $us */
+        $us = Auth::user();
+
         Mail::to( $u->email )->send( new UserCreatedeMailable( $u, true ) );
         AlertContainer::push( sprintf( 'The welcome email has been resent' ), Alert::SUCCESS );
 
-        if( Auth::user()->isSuperUser() && strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
+        if( $us->isSuperUser() && strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
             return redirect( route( "customer@overview", [ 'cust' => $u->custid , "tab" => "users"] ) );
         }
 

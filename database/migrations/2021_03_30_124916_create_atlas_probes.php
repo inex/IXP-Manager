@@ -25,7 +25,7 @@ class CreateAtlasProbes extends Migration
             $table->tinyInteger('is_anchor' );
             $table->tinyInteger('is_public' );
             $table->dateTime('last_connected' )->nullable();
-            $table->string('status', '255' )->nullable();
+            $table->string('status', 255 )->nullable();
             $table->json('api_data' )->nullable();
             $table->timestamps();
             $table->foreign('cust_id')->references('id')->on('cust');

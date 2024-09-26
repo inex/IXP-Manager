@@ -31,7 +31,7 @@ use IXP\Tasks\Rir\Generator as RirGenerator;
 /**
  * RIR Update command
  *
- * @see https://docs.ixpmanager.org/features/rir-objects/
+ * @see https://docs.ixpmanager.org/latest/features/rir-objects/
  * @author      Yann Robin          <yann@islandbridgenetworks.ie>
  * @author      Barry O'Donovan     <barry@islandbridgenetworks.ie>
  * @package     IXP\Console\Commands\Rir
@@ -84,7 +84,7 @@ class GenerateObject extends Command
 
             Mail::raw( $obj, function( $m ) {
                 $m->to( $this->checkEmail( 'to', $this->option( "to" ) ?? config( 'ixp_api.rir.email.to' ) ) )
-                    ->from( $this->checkEmail( 'from', ( $this->option( "from" ) ?? config( 'ixp_api.rir.email.from' ) ) ?? config( 'mail.from.address' ) ) )
+                    ->from( $this->checkEmail( 'from', ( $this->option( "from" ) ?: config( 'ixp_api.rir.email.from' ) ) ?: config( 'mail.from.address' ) ) )
                     ->subject( "Changes to {$this->argument ('object' )} via IXP Manager" );
             } );
 

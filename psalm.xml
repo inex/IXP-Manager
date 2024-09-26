@@ -2,10 +2,19 @@
 <psalm
     errorLevel="5"
     resolveFromConfigFile="true"
+    findUnusedBaselineEntry="false"
+    findUnusedCode="false"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
 >
+
+    <extraFiles>
+        <file name="artisan"/>
+        <file name="version.php"/>
+        <file name="public/index.php"/>
+    </extraFiles>
+
     <projectFiles>
         <directory name="app"/>
         <directory name="data/SocialiteProviders/PeeringDB"/>
@@ -15,4 +24,16 @@
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
-<plugins><pluginClass class="Psalm\LaravelPlugin\Plugin"/></plugins></psalm>
+
+    <plugins>
+        <pluginClass class="Psalm\LaravelPlugin\Plugin"/>
+    </plugins>
+
+    <issueHandlers>
+        <InvalidTemplateParam>
+            <errorLevel type="suppress">
+                <directory name="app/Models" /> <!-- all InvalidReturnType issues in this directory are suppressed -->
+            </errorLevel>
+        </InvalidTemplateParam>
+    </issueHandlers>
+</psalm>

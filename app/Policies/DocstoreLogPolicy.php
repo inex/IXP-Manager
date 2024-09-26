@@ -55,7 +55,6 @@ class DocstoreLogPolicy
      *
      * @param User $user
      *
-     * @return mixed
      */
     public function viewAny( User $user ) {}
 }
