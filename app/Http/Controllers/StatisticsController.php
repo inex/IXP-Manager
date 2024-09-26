@@ -23,7 +23,9 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use App, Auth, Carbon\Carbon;
+use App, Carbon\Carbon;
+
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Auth\Access\AuthorizationException;
 
@@ -705,6 +707,7 @@ class StatisticsController extends Controller
             ->setProtocol( $data['protocol'] )
             ->setCategory( $data['category'] )
             ->setPeriod( $data['period'] );
+
         $graph->authorise();
 
         return view( 'statistics/p2p-single', array_merge( $data, [

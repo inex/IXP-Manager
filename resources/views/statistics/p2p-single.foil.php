@@ -37,7 +37,7 @@
 
 <?php if( Auth::check() && !$isSuperUser ): ?>
     <?php $this->section( 'page-header-postamble' ) ?>
-        <a class="btn btn-white btn-sm" href="<?= route( 'statistics@p2ps-get', [ 'cust' => $t->c->id ] ) ?>">P2P Overview</a>
+        <a class="btn btn-white btn-sm" href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] ) ?>">P2P Overview</a>
     <?php $this->append() ?>
 <?php endif; ?>
 

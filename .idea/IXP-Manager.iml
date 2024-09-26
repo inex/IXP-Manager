@@ -22,6 +22,11 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/_laravel_idea" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/error-solutions" />
       <excludeFolder url="file://$MODULE_DIR$/storage/grapher" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/aura/html" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/evenement/evenement" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/foil/foil" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/igorw/get-in" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/pimple/pimple" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

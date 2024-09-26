@@ -48,23 +48,23 @@ class P2pWebAccessTest extends Access
     public function testApiPublicAccess(): void
     {
         // this should be the default
-        $response = $this->get('/statistics/p2p/2');
+        $response = $this->get('/statistics/p2ps/2');
         $response->assertStatus(403);
-        $response = $this->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(403);
 
         // force the default
         Config::set( 'grapher.access.p2p', 'own_graphs_only' );
-        $response = $this->get('/statistics/p2p/2');
+        $response = $this->get('/statistics/p2ps/2');
         $response->assertStatus(403);
-        $response = $this->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(403);
 
         // force public access
         Config::set( 'grapher.access.p2p', 0 );
-        $response = $this->get('/statistics/p2p/2');
+        $response = $this->get('/statistics/p2ps/2');
         $response->assertStatus(200);
-        $response = $this->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(200);
     }
 
@@ -76,33 +76,33 @@ class P2pWebAccessTest extends Access
     public function testWebNonPublicAccess(): void
     {
         Config::set( 'grapher.access.p2p', '1' );
-        $response = $this->get('/statistics/p2p/2');
+        $response = $this->get('/statistics/p2ps/2');
         $response->assertStatus(403);
-        $response = $this->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(403);
 
         Config::set( 'grapher.access.p2p', '2' );
-        $response = $this->get('/statistics/p2p/2');
+        $response = $this->get('/statistics/p2ps/2');
         $response->assertStatus(403);
-        $response = $this->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(403);
 
         Config::set( 'grapher.access.p2p', '3' );
-        $response = $this->get('/statistics/p2p/2');
+        $response = $this->get('/statistics/p2ps/2');
         $response->assertStatus(403);
-        $response = $this->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(403);
 
         Config::set( 'grapher.access.p2p', 'blah' );
-        $response = $this->get('/statistics/p2p/2');
+        $response = $this->get('/statistics/p2ps/2');
         $response->assertStatus(403);
-        $response = $this->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(403);
 
         Config::set( 'grapher.access.p2p', null );
-        $response = $this->get('/statistics/p2p/2');
+        $response = $this->get('/statistics/p2ps/2');
         $response->assertStatus(403);
-        $response = $this->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(403);
     }
 
@@ -114,39 +114,39 @@ class P2pWebAccessTest extends Access
     public function testWebOwnUserCustUserAccess(): void
     {
         Config::set( 'grapher.access.p2p', 'own_graphs_only' );
-        $response = $this->get('/statistics/p2p/2');
+        $response = $this->get('/statistics/p2ps/2');
         $response->assertStatus(403);
-        $response = $this->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(403);
 
         // customer user
-        $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )->get('/statistics/p2p/2');
+        $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )->get('/statistics/p2ps/2');
         $response->assertStatus(200);
-        $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(200);
 
         // customer admin user
-        $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )->get('/statistics/p2p/2');
+        $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )->get('/statistics/p2ps/2');
         $response->assertStatus(200);
-        $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(200);
 
         // non-customer user
-        $response = $this->actingAs( $this->getCustUser( 'imcustuser' ) )->get('/statistics/p2p/2');
+        $response = $this->actingAs( $this->getCustUser( 'imcustuser' ) )->get('/statistics/p2ps/2');
         $response->assertStatus(403);
-        $response = $this->actingAs( $this->getCustUser( 'imcustuser' ) )->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->actingAs( $this->getCustUser( 'imcustuser' ) )->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(403);
 
         // non-customer admin user
-        $response = $this->actingAs( $this->getCustAdminUser( 'imcustadmin' ) )->get('/statistics/p2p/2');
+        $response = $this->actingAs( $this->getCustAdminUser( 'imcustadmin' ) )->get('/statistics/p2ps/2');
         $response->assertStatus(403);
-        $response = $this->actingAs( $this->getCustAdminUser( 'imcustadmin' ) )->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->actingAs( $this->getCustAdminUser( 'imcustadmin' ) )->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(403);
 
         // superadmin
-        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/p2p/2');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/p2ps/2');
         $response->assertStatus(200);
-        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(200);
     }
 
@@ -158,24 +158,24 @@ class P2pWebAccessTest extends Access
     public function testWebCustUserAccess(): void
     {
         Config::set( 'grapher.access.p2p', '1' );
-        $response = $this->get('/statistics/p2p/2');
+        $response = $this->get('/statistics/p2ps/2');
         $response->assertStatus(403);
-        $response = $this->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/p2p/2');
+        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/p2ps/2');
         $response->assertStatus(200);
-        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
-        $response->assertStatus(200);
-
-        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/p2p/2');
-        $response->assertStatus(200);
-        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(200);
 
-        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/p2p/2');
+        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/p2ps/2');
         $response->assertStatus(200);
-        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/p2p/1/6?protocol=ipv6');
+        $response->assertStatus(200);
+
+        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/p2ps/2');
+        $response->assertStatus(200);
+        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(200);
     }
 
@@ -187,24 +187,24 @@ class P2pWebAccessTest extends Access
     public function testWebCustAdminAccess(): void
     {
         Config::set( 'grapher.access.p2p', '2' );
-        $response = $this->get('/statistics/p2p/2');
+        $response = $this->get('/statistics/p2ps/2');
         $response->assertStatus(403);
-        $response = $this->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
-        $response->assertStatus(403);
-
-        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/p2p/2');
-        $response->assertStatus(403);
-        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/p2p/2');
+        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/p2ps/2');
+        $response->assertStatus(403);
+        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/p2p/1/6?protocol=ipv6');
+        $response->assertStatus(403);
+
+        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/p2ps/2');
         $response->assertStatus(200);
-        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(200);
 
-        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/p2p/2');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/p2ps/2');
         $response->assertStatus(200);
-        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(200);
     }
 
@@ -216,24 +216,24 @@ class P2pWebAccessTest extends Access
     public function testWebSuperuserAccess(): void
     {
         Config::set( 'grapher.access.p2p', '3' );
-        $response = $this->get('/statistics/p2p/2');
+        $response = $this->get('/statistics/p2ps/2');
         $response->assertStatus(403);
-        $response = $this->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
-        $response->assertStatus(403);
-
-        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/p2p/2');
-        $response->assertStatus(403);
-        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/p2p/2');
+        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/p2ps/2');
         $response->assertStatus(403);
-        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/p2p/2');
+        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/p2ps/2');
+        $response->assertStatus(403);
+        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/p2p/1/6?protocol=ipv6');
+        $response->assertStatus(403);
+
+        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/p2ps/2');
         $response->assertStatus(200);
-        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/p2p/2?svli=1&dvli=6&protocol=ipv6');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/p2p/1/6?protocol=ipv6');
         $response->assertStatus(200);
     }
 }
