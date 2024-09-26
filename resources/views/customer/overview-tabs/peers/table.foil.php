@@ -12,7 +12,7 @@
                     <?php $vlanid = $vlan['number'] ?>
                     <?php if( isset( $t->peers[ "me" ][ 'vlan_interfaces' ][ $vlanid ] ) ): ?>
                         <th>
-                            <?= $vlan->name ?>
+                            <?= $vlan['name'] ?>
                         </th>
                     <?php endif; ?>
                 <?php endforeach; ?>

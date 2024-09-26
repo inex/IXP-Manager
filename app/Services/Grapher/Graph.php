@@ -23,6 +23,7 @@ namespace IXP\Services\Grapher;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Carbon\Carbon;
 use IXP\Services\Grapher;
 
 use IXP\Contracts\Grapher\Backend as GrapherBackend;
@@ -115,6 +116,22 @@ abstract class Graph
     public const PERIOD_YEAR  = 'year';
 
     /**
+     * Custom periods allow any start time and an end time that is not "now"
+     */
+    public const PERIOD_CUSTOM  = 'custom';
+
+    /**
+     * Custom Period range parameters - start
+     */
+    protected ?Carbon $custom_date_start;
+
+    /**
+     * Custom Period range parameters - end
+     */
+    protected ?Carbon $custom_date_end;
+
+
+    /**
      * Default period
      */
     public const PERIOD_DEFAULT  = self::PERIOD_DAY;
@@ -129,21 +146,45 @@ abstract class Graph
      * Array of valid periods for drill down graphs
      */
     public const PERIODS = [
-        self::PERIOD_DAY   => self::PERIOD_DAY,
-        self::PERIOD_WEEK  => self::PERIOD_WEEK,
-        self::PERIOD_MONTH => self::PERIOD_MONTH,
-        self::PERIOD_YEAR  => self::PERIOD_YEAR
+        self::PERIOD_DAY     => self::PERIOD_DAY,
+        self::PERIOD_WEEK    => self::PERIOD_WEEK,
+        self::PERIOD_MONTH   => self::PERIOD_MONTH,
+        self::PERIOD_YEAR    => self::PERIOD_YEAR,
     ];
 
     /**
      * Array of valid periods for drill down graphs
      */
-    public const PERIOD_DESCS = [
-        self::PERIOD_DAY   => 'Day',
-        self::PERIOD_WEEK  => 'Week',
-        self::PERIOD_MONTH => 'Month',
-        self::PERIOD_YEAR  => 'Year'
+    public const PERIODS_EXTENDED = [
+        self::PERIOD_DAY     => self::PERIOD_DAY,
+        self::PERIOD_WEEK    => self::PERIOD_WEEK,
+        self::PERIOD_MONTH   => self::PERIOD_MONTH,
+        self::PERIOD_YEAR    => self::PERIOD_YEAR,
+        self::PERIOD_CUSTOM  => self::PERIOD_CUSTOM,
     ];
+
+
+    /**
+     * Array of valid periods for drill down graphs
+     */
+    public const PERIOD_DESCS = [
+        self::PERIOD_DAY     => 'Day',
+        self::PERIOD_WEEK    => 'Week',
+        self::PERIOD_MONTH   => 'Month',
+        self::PERIOD_YEAR    => 'Year',
+    ];
+
+    /**
+     * Array of valid periods for drill down graphs
+     */
+    public const PERIOD_DESCS_EXTENDED = [
+        self::PERIOD_DAY     => 'Day',
+        self::PERIOD_WEEK    => 'Week',
+        self::PERIOD_MONTH   => 'Month',
+        self::PERIOD_YEAR    => 'Year',
+        self::PERIOD_CUSTOM  => 'Custom',
+    ];
+
 
     /**
      * 'Bits' category for graphs
@@ -707,14 +748,16 @@ abstract class Graph
      * Set the period we should use
      *
      * @param string $value
+     * @param Carbon $start
+     * @param Carbon $end
      *
      * @return Graph Fluid interface
      *
      * @throws ParameterException
      */
-    public function setPeriod( string $value ): Graph
+    public function setPeriod( string $value, ?Carbon $start = null, ?Carbon $end = null ): Graph
     {
-        if( !isset( $this::PERIODS[ $value ] ) ) {
+        if( !isset( $this::PERIODS_EXTENDED[ $value ] ) ) {
             throw new ParameterException('Invalid period ' . $value );
         }
 
@@ -723,7 +766,62 @@ abstract class Graph
         }
 
         $this->period = $value;
+
+        if( $value === $this::PERIOD_CUSTOM ) {
+            $this->setPeriodStart( $start );
+            $this->setPeriodEnd( $end );
+        } else {
+            $this->setPeriodStart();
+            $this->setPeriodEnd();
+        }
+
         return $this;
+    }
+
+    /**
+     * Set the start date for the custom period
+     *
+     * @param Carbon|null $value
+     *
+     * @return Graph
+     */
+    public function setPeriodStart( ?Carbon $value = null ): Graph
+    {
+        $this->custom_date_start = $value;
+        return $this;
+    }
+
+    /**
+     * Get the start date for the custom period
+     *
+     * @return Carbon|null $value
+     */
+    public function periodStart(): ?Carbon
+    {
+        return $this->custom_date_start;
+    }
+
+    /**
+     * Set the start date for the custom period
+     *
+     * @param Carbon|null $value
+     *
+     * @return Graph
+     */
+    public function setPeriodEnd( ?Carbon $value = null ): Graph
+    {
+        $this->custom_date_end = $value;
+        return $this;
+    }
+
+    /**
+     * Get the end date for the custom period
+     *
+     * @return Carbon|null $value
+     */
+    public function periodEnd(): ?Carbon
+    {
+        return $this->custom_date_end;
     }
 
     /**
@@ -886,6 +984,15 @@ abstract class Graph
             if( isset( $params[$param] ) ) {
                 $fn = 'set' . ucfirst( $param );
                 $this->$fn( $params[$param] );
+
+                if($param === 'period' && $params[ 'period' ] === $this::PERIOD_CUSTOM) {
+                    if(isset($params[ 'period_start' ])) {
+                        $this->setPeriodStart( Carbon::parse( $params[ 'period_start' ] ) );
+                    }
+                    if(isset($params[ 'period_end' ])) {
+                        $this->setPeriodEnd( Carbon::parse( $params[ 'period_end' ] ) );
+                    }
+                }
             }
         }
         return $this;
@@ -900,9 +1007,14 @@ abstract class Graph
      */
     public function getParamsAsArray(): array
     {
+        // todo: extend for PERIOD_CUSTOM
         $parameters = [];
         foreach( [ 'type', 'category', 'period', 'protocol'] as $param ){
             $parameters[ $param ] = $this->$param();
+            if($param === 'period' && $this->period === $this::PERIOD_CUSTOM) {
+                $parameters[ 'period_start' ] = $this->custom_date_start;
+                $parameters[ 'period_end' ]   = $this->custom_date_end;
+            }
         }
         return $parameters;
     }
@@ -918,11 +1030,14 @@ abstract class Graph
      *
      * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterPeriod( string $value = null, string $default = null ): string|null
+    public static function processParameterPeriod( string $value = null, string $default = null, $withExtended = false ): string|null
     {
-        if( !isset( self::PERIODS[ $value ] ) ) {
+        if( $withExtended && !isset( self::PERIODS_EXTENDED[ $value ] ) ) {
+            $value = $default ?? self::PERIOD_DEFAULT;
+        } else if( !isset( self::PERIODS[ $value ] ) ) {
             $value = $default ?? self::PERIOD_DEFAULT;
         }
+
         return $value;
     }
 

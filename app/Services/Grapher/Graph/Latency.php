@@ -25,6 +25,7 @@ namespace IXP\Services\Grapher\Graph;
 
 use Auth, Log;
 
+use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 
 use IXP\Exceptions\Services\Grapher\{
@@ -132,10 +133,14 @@ class Latency extends Graph
      *
      * @throws ParameterException
      */
-    public function setPeriod( string $value ): Graph
+    public function setPeriod( string $value, ?Carbon $start = null, ?Carbon $end = null ): Graph
     {
         if( !isset( self::PERIODS[ $value ] ) ) {
             throw new ParameterException('Invalid period ' . $value );
+        }
+
+        if( $value === self::PERIOD_CUSTOM ) {
+            throw new ParameterException('Invalid period ' . $value . ' for Graph/Latency graphs' );
         }
 
         if( $this->period() !== $value ) {
@@ -156,6 +161,29 @@ class Latency extends Graph
     public static function resolvePeriod( $period = null ): string
     {
         return self::PERIODS[ $period ] ?? 'Unknown';
+    }
+
+
+    /**
+     * Process user input for the parameter: period
+     *
+     * Note that this function just sets the default if the input is invalid.
+     * If you want to force an exception in such cases, use setPeriod()
+     *
+     * @param string|null $value The user input value
+     * @param string|null $default The preferred default value
+     *
+     * @return string|null The verified / sanitised / default value
+     */
+    public static function processParameterPeriod( string $value = null, string $default = null, $withExtended = false ): string|null
+    {
+        if( $withExtended && !isset( self::PERIODS_EXTENDED[ $value ] ) ) {
+            $value = $default ?? self::PERIOD_DEFAULT;
+        } else if( !isset( self::PERIODS[ $value ] ) ) {
+            $value = $default ?? self::PERIOD_DEFAULT;
+        }
+
+        return $value;
     }
 
     /**

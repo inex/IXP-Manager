@@ -155,7 +155,7 @@ return [
         //
         'billing_updates_notify' => env( 'IXP_FE_CUSTOMER_BILLING_UPDATES_NOTIFY', false ),
 
-        // customer notes - see: https://docs.ixpmanager.org/usage/notes/
+        // customer notes - see: https://docs.ixpmanager.org/latest/usage/notes/
         //
         // Admin users can opt to get notified when a customer note is added / edited / deleted.
         // For testing and demonstration purposes, this can be disabled and all updates

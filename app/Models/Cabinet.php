@@ -68,6 +68,8 @@ use IXP\Traits\Observable;
  * @method static Builder|Cabinet whereType($value)
  * @method static Builder|Cabinet whereUCountsFrom($value)
  * @method static Builder|Cabinet whereUpdatedAt($value)
+ * @property string|null $cololocation
+ * @method static Builder|Cabinet whereCololocation($value)
  * @mixin \Eloquent
  */
 class Cabinet extends Model

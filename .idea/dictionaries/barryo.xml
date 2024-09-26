@@ -1,10 +1,25 @@
 <component name="ProjectDictionaryState">
   <dictionary name="barryo">
     <words>
+      <w>asns</w>
+      <w>channelgroup</w>
+      <w>cust</w>
+      <w>dvli</w>
       <w>facs</w>
+      <w>irrdb</w>
+      <w>irrdblog</w>
       <w>ixps</w>
+      <w>lacp</w>
       <w>peeringdb</w>
+      <w>physicalinterface</w>
+      <w>svlid</w>
+      <w>switchid</w>
+      <w>switchport</w>
+      <w>switchportid</w>
+      <w>virtualinterface</w>
+      <w>virtualinterfaceid</w>
       <w>vlan</w>
+      <w>vlis</w>
     </words>
   </dictionary>
 </component>

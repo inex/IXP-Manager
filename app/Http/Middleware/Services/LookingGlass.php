@@ -149,7 +149,7 @@ class LookingGlass
     private function authorise( Router $router ): bool
     {
         /** @var User $us */
-        $us = Auth::getUser();
+        $us = Auth::user();
 
         if( $router->authorise( Auth::check() ? $us->privs() : User::AUTH_PUBLIC ) ) {
             return true;

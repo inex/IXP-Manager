@@ -193,6 +193,9 @@ for handle in $HANDLES; do
             mv $dest $cfile
             log "CHANGED   \tBIRD: "
         fi
+    else
+        mv $dest $cfile
+        log "NEW       \tBIRD: "
     fi
 
     # are we running or do we need to be started?

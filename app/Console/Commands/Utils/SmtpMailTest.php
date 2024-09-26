@@ -30,7 +30,7 @@ use IXP\Mail\Utils\SmtpTest;
 /**
  * Class SmtpMailTest - test sending emails
  *
- * @see https://docs.ixpmanager.org/usage/email/
+ * @see https://docs.ixpmanager.org/latest/usage/email/
  * @author Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @package IXP\Console\Commands\Utils
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee

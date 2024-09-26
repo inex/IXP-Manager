@@ -31,7 +31,7 @@ use IXP\Tasks\Rir\Generator as RirGenerator;
 /**
  * RIR Update command
  *
- * @see https://docs.ixpmanager.org/features/rir-objects/
+ * @see https://docs.ixpmanager.org/latest/features/rir-objects/
  * @author      Yann Robin          <yann@islandbridgenetworks.ie>
  * @author      Barry O'Donovan     <barry@islandbridgenetworks.ie>
  * @package     IXP\Console\Commands\Rir

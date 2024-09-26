@@ -175,10 +175,10 @@ class Grapher
                 abort(404, 'No such graph type');
         }
 
-        $graph->processParameterPeriod(   $request->period );
-        $graph->processParameterCategory( $request->category );
-        $graph->processParameterProtocol( $request->protocol );
-        $graph->processParameterType(     $request->type );
+        $graph->setPeriod(   $graph->processParameterPeriod(   $request->period ) );
+        $graph->setCategory( $graph->processParameterCategory( $request->category ) );
+        $graph->setProtocol( $graph->processParameterProtocol( $request->protocol ) );
+        $graph->setType(     $graph->processParameterType(     $request->type ) );
 
         /** @var Graph $graph */
         return $graph;

@@ -64,6 +64,8 @@ use IXP\Traits\Observable;
  * @method static Builder|Infrastructure wherePeeringdbIxId($value)
  * @method static Builder|Infrastructure whereShortname($value)
  * @method static Builder|Infrastructure whereUpdatedAt($value)
+ * @property int $ixp_id
+ * @method static Builder|Infrastructure whereIxpId($value)
  * @mixin Eloquent
  */
 class Infrastructure extends Model

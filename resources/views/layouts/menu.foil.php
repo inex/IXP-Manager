@@ -375,6 +375,14 @@
                 </a>
             </li>
 
+            <?php if( config('grapher.backends.sflow.enabled') ) : ?>
+                <li class="<?= !request()->is( 'statistics/p2p-table' ) ?: 'active' ?>">
+                    <a href="<?= route( 'statistics@p2p-table' ) ?>" class="nav-link">
+                        P2P Table
+                    </a>
+                </li>
+            <?php endif; ?>
+
             <li class="<?= !request()->is( 'statistics/league-table' ) ?: 'active' ?>">
                 <a href="<?= route( 'statistics@league-table' ) ?>" class="nav-link">
                     League Table

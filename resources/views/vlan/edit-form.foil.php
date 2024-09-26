@@ -67,7 +67,7 @@
             ->text( 'Include VLAN in IX-F data export <em>(yes if peering LAN)</em>' )
             ->value( 1 )
             ->inline()
-            ->blockHelp( "The IX-F export <a href='https://docs.ixpmanager.org/features/ixf-export/'>is documented here</a>. In summary, if this is a peering LAN for your members, 
+            ->blockHelp( "The IX-F export <a href='https://docs.ixpmanager.org/latest/features/ixf-export/'>is documented here</a>. In summary, if this is a peering LAN for your members, 
                 then it should be exported. If it has another puporse, such as for quarantine procedures or testing, then it should not be exported." );
         ?>
 

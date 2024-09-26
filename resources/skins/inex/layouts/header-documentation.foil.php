@@ -17,6 +17,6 @@
         <div class="dropdown-divider"></div>
         <h6 class="dropdown-header">Official IXP Manager Sites</h6>
         <a class="dropdown-item" href="https://www.ixpmanager.org/" target="_blank">Homepage</a>
-        <a class="dropdown-item" href="https://docs.ixpmanager.org/" target="_blank">Documentation</a>
+        <a class="dropdown-item" href="https://docs.ixpmanager.org/latest/" target="_blank">Documentation</a>
     </div>
 </li>

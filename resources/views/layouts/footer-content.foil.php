@@ -32,7 +32,7 @@
                     <i class="fa fa-github fa-inverse mx-1"></i>
                 </a>
 
-                <a  href="https://docs.ixpmanager.org/">
+                <a  href="https://docs.ixpmanager.org/latest/">
                     <i class="fa fa-book fa-inverse mx-1"></i>
                 </a>
 

@@ -68,7 +68,7 @@ class UpdateAsnDb extends UpdateDb
                 // Delete any pre-existing entries just in case this has changed recently:
                 $this->startTimer();
 
-                Cache::store('file')->forget( 'irrdb:asns:ipv' . $protocol . ':' . $this->customer()->asMacro( $protocol ) );
+                Cache::store()->forget( 'irrdb:asns:ipv' . $protocol . ':' . $this->customer()->asMacro( $protocol ) );
 
                 IrrdbAsn::whereCustomerId( $this->customer()->id )
                     ->whereProtocol( $protocol )->delete();

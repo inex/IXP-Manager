@@ -1,6 +1,7 @@
 
 .env
 .env*.local
+.env.by-vagrant.*
 .project
 .buildpath
 .settings/

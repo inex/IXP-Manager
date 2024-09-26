@@ -14,7 +14,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
 
     <div class="btn-group btn-group-sm" role="group">
-        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/core-bundles/">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/features/core-bundles/">
             Documentation
         </a>
 

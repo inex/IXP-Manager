@@ -281,6 +281,10 @@ protocol pipe pp_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?> {
 protocol bgp pb_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?> from tb_rsclient {
         description "AS<?= $int['autsys'] ?> - <?= $int['cname'] ?>";
         neighbor <?= $int['address'] ?> as <?= $int['autsys'] ?>;
+<?php if( config('app.env') === 'vagrant' ): ?>
+        strict bind yes; # Needed to bind multiple listeners on the same machine / loopback interface
+        multihop;        # needed for loopback interface binding
+<?php endif; ?>
         <?= $t->ipproto ?> {
             import limit <?= $int['maxprefixes'] ?> action restart;
             import filter f_import_as<?= $int['autsys'] ?>;

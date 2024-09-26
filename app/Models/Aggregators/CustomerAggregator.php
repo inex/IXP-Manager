@@ -178,6 +178,10 @@ use Illuminate\Support\Collection;
  * @method static Builder|CustomerAggregator whereStatus($value)
  * @method static Builder|CustomerAggregator whereType($value)
  * @method static Builder|CustomerAggregator whereUpdatedAt($value)
+ * @property string|null $lastupdated
+ * @property string|null $created
+ * @method static Builder|CustomerAggregator whereCreated($value)
+ * @method static Builder|CustomerAggregator whereLastupdated($value)
  * @mixin \Eloquent
  */
 class CustomerAggregator extends Customer

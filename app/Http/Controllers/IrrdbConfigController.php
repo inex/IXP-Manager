@@ -74,7 +74,7 @@ class IrrdbConfigController extends EloquentController
             'listOrderBy'       => 'host',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'irrdb-config',
-            'documentation'     => 'https://docs.ixpmanager.org/features/irrdb/',
+            'documentation'     => 'https://docs.ixpmanager.org/latest/features/irrdb/',
             'listColumns'       => [
                 'host'      => 'Host',
                 'source'    => 'Source'

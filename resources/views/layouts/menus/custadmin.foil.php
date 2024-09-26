@@ -129,7 +129,7 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
                     </a>
 
                     <?php if( config('grapher.backends.sflow.enabled') ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'statistics/p2p/*' ) ?: 'active' ?>" href="<?= route( 'statistics@p2p', ['cust' => Auth::getUser()->custid ] ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/p2p*' ) ?: 'active' ?>" href="<?= route( 'statistics@p2ps-get', ['customer' => Auth::getUser()->custid ] ) ?>">
                             My Peer to Peer Traffic
                         </a>
                     <?php endif; ?>

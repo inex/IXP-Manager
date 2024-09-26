@@ -103,11 +103,11 @@
 
                 <dt>Sflow MAC Address Mapping</dt>
                 <dd>
-                    When configuring <a href="https://docs.ixpmanager.org/features/sflow-p2p/">Sflow based peer to peer graphs</a>,
+                    When configuring <a href="https://docs.ixpmanager.org/latest/features/sflow-p2p/">Sflow based peer to peer graphs</a>,
                     the mechanism to associate sflow samples (based on source and destination MAC addreesses) to VLAN interfaces
                     requires a MAC to VLAN interface dictionary.
                     <br><br>
-                    As IXP Manager <a href="https://docs.ixpmanager.org/features/layer2-addresses/">supports layer2 / MAC addresses in two ways</a>
+                    As IXP Manager <a href="https://docs.ixpmanager.org/latest/features/layer2-addresses/">supports layer2 / MAC addresses in two ways</a>
                     (learned versus configured), there are two endpoints.
                     <ul>
                         <li>Learned: <code><a href="<?= url( "/api/v4/sflow-db-mapper/learned-macs" ) ?>"><?= url( "/api/v4/sflow-db-mapper/learned-macs" ) ?></a></code></li>

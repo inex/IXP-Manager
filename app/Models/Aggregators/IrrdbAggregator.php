@@ -93,11 +93,11 @@ class IrrdbAggregator
         }
 
         if( $resetCache ) {
-            Cache::store('file')->forget( 'irrdb:prefix:ipv' . $protocol . ':' . $cust->asMacro( $protocol ) );
+            Cache::store()->forget( 'irrdb:prefix:ipv' . $protocol . ':' . $cust->asMacro( $protocol ) );
         }
 
         // Pull these out of the cache if possible, otherwise the database.
-        return Cache::store('file')->rememberForever( 'irrdb:prefix:ipv' . $protocol . ':' . $cust->asMacro( $protocol ), function() use ($cust,$protocol) {
+        return Cache::store()->rememberForever( 'irrdb:prefix:ipv' . $protocol . ':' . $cust->asMacro( $protocol ), function() use ($cust,$protocol) {
             return IrrdbPrefix::select('prefix')
                 ->where( 'customer_id', $cust->id )
                 ->where('protocol', $protocol )
@@ -128,11 +128,11 @@ class IrrdbAggregator
         }
 
         if( $resetCache ) {
-            Cache::store('file')->forget( 'irrdb:asn:ipv' . $protocol . ':' . $cust->asMacro( $protocol ) );
+            Cache::store()->forget( 'irrdb:asn:ipv' . $protocol . ':' . $cust->asMacro( $protocol ) );
         }
 
         // Pull these out of the cache if possible, otherwise the database.
-        return Cache::store('file')->rememberForever( 'irrdb:asn:ipv' . $protocol . ':' . $cust->asMacro( $protocol ), function() use ($cust,$protocol) {
+        return Cache::store()->rememberForever( 'irrdb:asn:ipv' . $protocol . ':' . $cust->asMacro( $protocol ), function() use ($cust,$protocol) {
             return IrrdbAsn::select('asn')
                 ->where( 'customer_id', $cust->id )
                 ->where('protocol', $protocol )

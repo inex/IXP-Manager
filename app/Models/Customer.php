@@ -184,6 +184,10 @@ use IXP\Models\AtlasMeasurement;
  * @method static Builder|Customer whereStatus($value)
  * @method static Builder|Customer whereType($value)
  * @method static Builder|Customer whereUpdatedAt($value)
+ * @property string|null $lastupdated
+ * @property string|null $created
+ * @method static Builder|Customer whereCreated($value)
+ * @method static Builder|Customer whereLastupdated($value)
  * @mixin Eloquent
  */
 class Customer extends Model
@@ -925,6 +929,21 @@ class Customer extends Model
             ->where( 'irrdbfilter', true )
             ->get()->count();
     }
+
+    /**
+     * Is the customer IRRDB filtered (usually for route server clients) on ALL of their rsclient VLAN interfaces?
+     *
+     * @return boolean
+     */
+    public function fullyIrrdbFiltered(): bool
+    {
+        return !(bool)self::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )
+            ->leftJoin( 'vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id' )
+            ->where( 'cust.id', $this->id )->where( 'rsclient', true )
+            ->where( 'irrdbfilter', false )
+            ->get()->count();
+    }
+
 
     /**
      * If the customer is IRRDB filtered on any of their VLAN interfaces, are more specifics allowed?

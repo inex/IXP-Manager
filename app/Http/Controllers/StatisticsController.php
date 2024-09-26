@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,11 +23,14 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use App, Auth, Carbon\Carbon;
+use App, Carbon\Carbon;
+
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Auth\Access\AuthorizationException;
 
 use IXP\Exceptions\Services\Grapher\ParameterException;
+use IXP\Http\Requests\StatisticsP2pRequest;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -45,6 +48,7 @@ use IXP\Models\{Aggregators\TrafficDailyPhysIntAggregator,
     Customer,
     Infrastructure,
     Location,
+    P2pDailyStats,
     PhysicalInterface,
     Switcher,
     TrafficDaily,
@@ -73,7 +77,7 @@ use IXP\Utils\View\Alert\{
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers
- * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class StatisticsController extends Controller
@@ -275,7 +279,7 @@ class StatisticsController extends Controller
     {
         if( !is_array( config('grapher.backends.mrtg.trunks') ) || !count( config('grapher.backends.mrtg.trunks') ) ) {
             AlertContainer::push(
-                "Trunk graphs have not been configured. Please see <a target='_blank' href=\"https://docs.ixpmanager.org/grapher/introduction/\">this documentation</a> for instructions.",
+                "Trunk graphs have not been configured. Please see <a target='_blank' href=\"https://docs.ixpmanager.org/latest/grapher/introduction/\">this documentation</a> for instructions.",
                 Alert::DANGER
             );
             return redirect('');
@@ -504,6 +508,98 @@ class StatisticsController extends Controller
     }
 
 
+
+
+    /**
+     * sFlow Peer to Peer statistics
+     *
+     * @param  Request  $request
+     * @param  Customer|null  $customer
+     *
+     * @return array
+     *
+     * @throws ParameterException
+     */
+    public function p2pPrepare( Request $request, ?Customer $customer, ?VlanInterface $dstVli = null ): array
+    {
+        if( !$customer ) {
+            $customer = Auth::user()->customer;
+        }
+
+        $requestCategory = Graph::processParameterCategory( $request->category, true );
+        $requestPeriod   = Graph::processParameterPeriod( $request->period );
+        $requestProtocol = Graph::processParameterRealProtocol( $request->protocol );
+
+        // on the p2ps page, we need to provide a dropdown of all possible source vlis for this customer
+        $srcVlis = VlanInterface::select( [ 'vli.*' ] )
+            ->from( 'vlaninterface AS vli' )
+            ->join( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
+            ->join( 'cust AS c', 'c.id', 'vi.custid' )
+            ->join( 'vlan AS v', 'v.id', 'vli.vlanid' )
+            ->where( 'c.id', $customer->id )
+            ->where( 'vli.' . $requestProtocol . 'enabled', '1' )
+            ->with( [ 'vlan' ] )
+            ->orderBy( 'v.number' )->get()->keyBy( 'id' );
+
+        // Find the possible VLAN interfaces that this customer has for the given IXP
+        if( !count( $srcVlis ) ) {
+            throw new ParameterException("There were no interfaces available for the given criteria.");
+        }
+
+        // svli will hold a source vli selected by the user on the p2ps page or else a default
+        /** @var VlanInterface $srcVli */
+        $srcVli = $srcVlis[ $srcVlis->first()->id ];
+        if( ( $svlid = $request->svli ) && isset( $srcVlis[ $svlid ] ) ) {
+            $srcVli = $srcVlis[ $svlid ];
+        }
+
+        // is the requested protocol supported? (we have no protocols on private vlans)
+        if( !$srcVli->vlan->private && !$srcVli->ipvxEnabled( $requestProtocol ) ) {
+            throw new ParameterException(Graph::resolveProtocol( $requestProtocol ) . " is not supported on the requested VLAN interface." );
+        }
+
+        // Now find the possible other VLAN interfaces that this customer could exchange traffic with
+        // (as well as removing the source vli)
+        $dstVlis = VlanInterfaceAggregator::forVlan( $srcVli->vlan );
+        unset( $dstVlis[ $srcVli->id ] );
+
+        if( !$dstVlis->count() ) {
+            throw new ParameterException("There were no destination interfaces available for traffic exchange for the given criteria." );
+        }
+
+        if( $dstVli ) {
+            if( $srcVli->vlan->id !== $dstVli->vlan->id ) {
+                // otherwise, is there an appropriate dstVLi on srcVli->vlan?
+                foreach( $dstVli->virtualInterface->customer->virtualInterfaces as $vi ) {
+                    foreach( $vi->vlanInterfaces as $vli ) {
+                        if( $vli->vlan->id === $srcVli->vlan->id ) {
+                            $dstVli = $vli;
+                        }
+                    }
+                }
+            }
+
+            if( $srcVli->vlan->id !== $dstVli->vlan->id ) {
+                // okay, bounce back to p2p overview page
+                throw new ParameterException( "No valid destination customer in this peering LAN" );
+            }
+        }
+
+
+        return [
+            'c'                => $customer,
+            'category'         => $requestCategory,
+            'period'           => $requestPeriod,
+            'protocol'         => $requestProtocol,
+            'srcVlis'          => $srcVlis,
+            'srcVli'           => $srcVli,
+            'dstVlis'          => $dstVlis,
+            'dstVli'           => $dstVli,
+        ];
+    }
+
+
+
     /**
      * sFlow Peer to Peer statistics
      *
@@ -514,146 +610,167 @@ class StatisticsController extends Controller
      *
      * @throws ParameterException
      */
-    public function p2p( Request $request, Customer $customer = null ): RedirectResponse|View
+    public function p2ps( Request $request, ?Customer $customer = null ): RedirectResponse|View
     {
-        // default to the current user:
-        if( !$customer && Auth::check() ) {
-            $customer = Auth::getUser()->customer;
+        try {
+            $data = $this->p2pPrepare( $request, $customer );
+        } catch( ParameterException $e ) {
+            AlertContainer::push( $e->getMessage(), Alert::WARNING );
+            return redirect()->back();
         }
-
-        $showGraphsOption = false;
-        $showGraphs       = true;
 
         // for larger IXPs, it's quite intensive to display all the graphs - decide if we need to do this or not
-        if( config('grapher.backends.sflow.show_graphs_on_index_page') !== null ) {
-            $showGraphsOption = true;
-            $showGraphs       = config('grapher.backends.sflow.show_graphs_on_index_page');
-        }
+        $showGraphs       = $request->input( 'show_graphs', config('grapher.backends.sflow.show_graphs_on_index_page') ? 'show' : 'hide' ) === 'show';
+        $orderBy          = $request->input( 'order_by', 'traffic' );
 
-        if( $showGraphsOption ) {
-            if( $request->submit === "Show Graphs" ) {
-                $showGraphs = true;
-                $request->session()->put( 'controller.statistics.p2p.show_graphs', true );
-            } else if( $request->submit === "Hide Graphs" ) {
-                $showGraphs = false;
-                $request->session()->put( 'controller.statistics.p2p.show_graphs', false );
-            } else {
-                $showGraphs = $request->session()->get( 'controller.statistics.p2p.show_graphs', config('grapher.backends.sflow.show_graphs_on_index_page') );
-            }
-        }
+        // ordering is by customer name by default due to VlanInterfaceAggregator::forVlan()
+        if( $orderBy !== 'name' ) {
+            $trafficByPeerId = P2pDailyStats::latestTotalTraffic( $data['c']);
 
-        $requestCategory = Graph::processParameterCategory( $request->category, true );
-        $requestPeriod   = Graph::processParameterPeriod( $request->period );
-        $requestProtocol = Graph::processParameterRealProtocol( $request->protocol );
-
-        $srcVlis = VlanInterface::select( [ 'vli.*' ] )
-            ->from( 'vlaninterface AS vli' )
-            ->Join( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
-            ->Join( 'cust AS c', 'c.id', 'vi.custid' )
-            ->Join( 'vlan AS v', 'v.id', 'vli.vlanid' )
-            ->where( 'c.id', $customer->id )
-            ->with( [ 'vlan' ] )
-            ->orderBy( 'v.number' )->get()->keyBy( 'id' );
-
-        // Find the possible VLAN interfaces that this customer has for the given IXP
-        if( !count( $srcVlis ) ) {
-            AlertContainer::push( "There were no interfaces available for the given criteria.", Alert::WARNING );
-            return redirect()->back();
-        }
-
-        if( ( $svlid = $request->svli ) && isset( $srcVlis[ $svlid ] ) ) {
-            /** @var VlanInterface $srcVli */
-            $srcVli = $srcVlis[ $svlid ];
-        } else {
-            $srcVli = $srcVlis[ $srcVlis->first()->id ];
-        }
-
-        // is the requested protocol support?
-        if( !$srcVli->vlan->private && !$srcVli->ipvxEnabled( $requestProtocol ) ) {
-            AlertContainer::push( Graph::resolveProtocol( $requestProtocol ) . " is not supported on the requested VLAN interface.", Alert::WARNING );
-            return redirect()->back();
-        }
-        // Now find the possible other VLAN interfaces that this customer could exchange traffic with
-        // (as well as removing the source vli)
-        $dstVlis = VlanInterfaceAggregator::forVlan( $srcVli->vlan );
-        unset( $dstVlis[ $srcVli->id ] );
-
-        if( !$dstVlis->count() ) {
-            AlertContainer::push( "There were no destination interfaces available for traffic exchange for the given criteria.", Alert::WARNING );
-            return redirect()->back();
-        }
-
-        if( ( $dvlid = $request->dvli ) && isset( $dstVlis[ $dvlid ] ) ) {
-            $dstVli = $dstVlis[ $dvlid ];
-        } else {
-            $dstVli = false;
-
-            // possibility that we've changed the source VLI in the UI and so the destination dli provided is on another LAN
-            if( $dvlid && $otherDstVli = VlanInterface::find( $dvlid ) ) {
-                // does this customer have a VLAN interface on the same VLAN as the srcVli?
-                foreach( $otherDstVli->virtualInterface->customer->virtualInterfaces as $vi ) {
-                    foreach( $vi->vlanInterfaces as $vli ) {
-                        if( $srcVli->vlan->id === $vli->vlan->id ) {
-                            $dstVli = $vli;
-                            break 2;
-                        }
-                    }
-                }
+            /** @var VlanInterface $dstVli */
+            foreach( $data['dstVlis'] as $idx => $dstVli) {
+                $data['dstVlis'][$idx]->total_traffic = $trafficByPeerId[ $dstVli->virtualInterface->custid ] ?? 0;
             }
 
-            if( !$dstVli && $request->dvli !== null ) {
-                AlertContainer::push( "The customer selected for destination traffic does not have any interfaces on the requested VLAN", Alert::WARNING );
-                return redirect()->back();
-            }
+            $data['dstVlis'] = $data['dstVlis']->sortByDesc( 'total_traffic', SORT_NUMERIC );
         }
 
-        // if we have a $dstVli, then remove any VLANs from $srcVlis where both src and dst do not have VLIs on the same VLAN:
-        if( $dstVli ) {
-            foreach( $srcVlis as $i => $svli ) {
-                $haveMatch = false;
-                foreach( $dstVli->virtualInterface->customer->virtualInterfaces as $vi ) {
-                    foreach( $vi->vlanInterfaces as $dvli ) {
-                        if( $svli->vlan->id === $dvli->vlan->id ) {
-                            $haveMatch = true;
-                            break 2;
-                        }
-                    }
-                }
-
-                if( !$haveMatch ) {
-                    unset( $srcVlis[ $i ] );
-                }
-            }
-        }
 
         // authenticate on one of the graphs
         $graph = App::make( Grapher::class )
-            ->p2p( $srcVli, $dstVli ?: $dstVlis[ $dstVlis->first()->id ])
-            ->setProtocol( $requestProtocol )
-            ->setCategory( $requestCategory )
-            ->setPeriod( $requestPeriod );
+            ->p2p( $data['srcVli'], $data['dstVlis'][ $data['dstVlis']->first()->id ] )
+            ->setProtocol( $data['protocol'] )
+            ->setCategory( $data['category'] )
+            ->setPeriod( $data['period'] );
         $graph->authorise();
-        
-        $viewOptions = [
-            'c'                => $customer,
-            'category'         => $requestCategory,
-            'dstVlis'          => $dstVlis,
-            'dstVli'           => $dstVli,
-            'graph'            => $graph,
-            'period'           => $requestPeriod,
-            'protocol'         => $requestProtocol,
-            'showGraphs'       => $showGraphs,
-            'showGraphsOption' => $showGraphsOption,
-            'srcVlis'          => $srcVlis,
-            'srcVli'           => $srcVli,
-        ];
 
-        if( $dstVli ) {
-            return view( 'statistics/p2p-single', $viewOptions );
+        return view( 'statistics/p2ps', array_merge( $data, [
+            'graph'            => $graph,
+            'orderBy'          => $orderBy,
+            'showGraphs'       => $showGraphs,
+        ]) );
+    }
+
+    /**
+     * sFlow Peer to Peer statistics
+     *
+     * @param  Request  $request
+     * @param  VlanInterface $srcVli
+     * @param VlanInterface $dstVli
+     * @return RedirectResponse|View
+     * @throws ParameterException
+     */
+    public function p2pPost( Request $request ): RedirectResponse|View
+    {
+        // svli and dvli via top of page post form.
+        // svli may have changed and so dvli may not be appropriate anymore
+        $srcVli = VlanInterface::findOrFail($request->svli);
+        $dstVli = VlanInterface::findOrFail($request->dvli);
+
+        return $this->p2p( $request, $srcVli, $dstVli );
+    }
+
+    /**
+     * sFlow Peer to Peer statistics
+     *
+     * @param  Request  $request
+     * @param  VlanInterface $srcVli
+     * @param VlanInterface $dstVli
+     * @return RedirectResponse|View
+     * @throws ParameterException
+     */
+    public function p2p( Request $request, VlanInterface $srcVli, VlanInterface $dstVli ): RedirectResponse|View
+    {
+        try {
+            $data = $this->p2pPrepare( $request, $srcVli->virtualInterface->customer, $dstVli );
+            $srcVli = $data['srcVli'];
+            $dstVli = $data['dstVli'];
+        } catch( ParameterException $e ) {
+            AlertContainer::push( $e->getMessage(), Alert::WARNING );
+            return redirect()->back();
         }
 
-        return view( 'statistics/p2p', $viewOptions );
+        if( !$srcVli->ipvxEnabled( $data['protocol'] ) || !$dstVli->ipvxEnabled( $data['protocol'] ) ) {
+            AlertContainer::push( Graph::resolveProtocol( $data['protocol'] ) . " is not supported on the requested VLAN interfaces.", Alert::WARNING );
+            return redirect( route('statistics@p2ps-get', ['customer' => $srcVli->virtualInterface->custid ] ) );
+        }
+
+        $possibleProtocols = [];
+        foreach( Graph::PROTOCOL_REAL_DESCS as $p => $desc ) {
+            if( $srcVli->ipvxEnabled($p) && $dstVli->ipvxEnabled($p) ) {
+                $possibleProtocols[$p] = $desc;
+            }
+        }
+
+        $graph = App::make( Grapher::class )
+            ->p2p( $srcVli, $dstVli )
+            ->setProtocol( $data['protocol'] )
+            ->setCategory( $data['category'] )
+            ->setPeriod( $data['period'] );
+
+        $graph->authorise();
+
+        return view( 'statistics/p2p-single', array_merge( $data, [
+            'graph'             => $graph,
+            'dstVli'            => $dstVli,
+            'possibleProtocols' => $possibleProtocols,
+        ]) );
     }
+
+
+
+    /**
+     * Show p2p stats for a given customer and day.
+     *
+     * @param Request $r
+     *
+     * @return \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|RedirectResponse
+     *
+     * @throws
+     */
+    public function p2pTable( Request $r ): View|RedirectResponse
+    {
+        if( !Auth::check() ) {
+            abort( 403, "You are not authorised to view this page." );
+        }
+
+        if( !Auth::user()->isSuperUser() ) {
+            $r->merge( [ 'custid' => Auth::user()->custid ] );
+        }
+
+        $days = P2pDailyStats::select('day')->distinct('day')->orderBy('day','desc')->get()->pluck('day')->toArray();
+
+        if( empty( $days ) ) {
+            AlertContainer::push( "The P2P daily stats database table is empty.", Alert::WARNING );
+            return redirect( route('statistics@member', ['cust' => $r->custid ] ) );
+        }
+
+        if( !$r->day || !in_array( $r->day, $days ) ) {
+            $r->merge( [ 'day' => $days[0] ] );
+        }
+
+        $customers = Customer::currentActive(true,true,true)
+            ->get()->keyBy('id');
+
+        $stats = [];
+        if( $r->custid ) {
+            $stats = P2pDailyStats::with('peer')
+                ->where('day', $r->day)->where('cust_id', $r->custid )->get();
+        }
+
+        return view( 'statistics/p2p-table' )->with( [
+            'day'          => $r->day,
+            'days'         => $days,
+            'stats'        => $stats,
+            'customers'    => $customers,
+            'c'            => $r->custid ? $customers[$r->custid] : false,
+        ] );
+    }
+
+
+
+
+
 
     /**
      * Show daily traffic for customers in a table.
@@ -669,7 +786,7 @@ class StatisticsController extends Controller
         $metrics = [
             'Total'   => 'data',
             'Max'     => 'max',
-            'Average' => 'average'
+            'Average' => 'average',
         ];
 
         $metric = $r->input( 'metric', $metrics['Total'] );
@@ -693,6 +810,13 @@ class StatisticsController extends Controller
             'trafficDaily' => TrafficDaily::loadTraffic( $day, $category ),
         ] );
     }
+
+
+
+
+
+
+
 
     /**
      * Display graphs for a core bundle
@@ -742,7 +866,7 @@ class StatisticsController extends Controller
         $metrics = [
             'Max'     => 'max',
             'Total'   => 'data',
-            'Average' => 'average'
+            'Average' => 'average',
         ];
 
         $metric = $r->input( 'metric', $metrics['Max'] );

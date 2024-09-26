@@ -92,6 +92,10 @@ use IXP\Models\{
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereUid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereUsername($value)
+ * @property string|null $lastupdated
+ * @property string|null $created
+ * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereLastupdated($value)
  * @mixin \Eloquent
  */
 class UserAggregator extends User
