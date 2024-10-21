@@ -53,7 +53,6 @@ class Diagnostics
     /**
      * @param Customer $customer
      * @return DiagnosticResultSet
-     * @throws GeneralException
      */
     public function getCustomerDiagnostics(Customer $customer): DiagnosticResultSet
     {

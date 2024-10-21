@@ -85,24 +85,36 @@ class VlanInterfaceL3DiagnosticSuite extends DiagnosticSuite
     {
         $mainName = $vli->getIPAddress($protocol)->address . ' responds to pings';
 
-        $result = Process::run( sprintf( config( "ixp.exec.ping{$protocol}" ),  $vli->getIPAddress($protocol)->address ) );
+        try {
+            $result = Process::run( sprintf( config( "ixp.exec.ping{$protocol}" ),  $vli->getIPAddress($protocol)->address ) );
 
-        if( $result->successful() ) {
+            if( $result->successful() ) {
+
+                return new DiagnosticResult(
+                    name: $mainName,
+                    result: DiagnosticResult::TYPE_GOOD,
+                    narrativeHtml: "<pre>{$result->output()}</pre>",
+                );
+
+            } else {
+
+                return new DiagnosticResult(
+                    name: $mainName . ' - no, see detail for more information',
+                    result: DiagnosticResult::TYPE_ERROR,
+                    narrativeHtml: "<pre>{$result->output()}</pre>",
+                );
+
+            }
+
+        } catch ( \Exception $e ) {
 
             return new DiagnosticResult(
-                name: $mainName,
-                result: DiagnosticResult::TYPE_GOOD,
-                narrativeHtml: "<pre>{$result->output()}</pre>",
+                name: $mainName . ' - unknown error',
+                result: DiagnosticResult::TYPE_UNKNOWN,
+                narrativeHtml: "<pre>No accessible process result</pre>",
             );
 
         }
-
-        return new DiagnosticResult(
-            name: $mainName . ' - no, see detail for more information',
-            result: DiagnosticResult::TYPE_ERROR,
-            narrativeHtml: "<pre>{$result->output()}</pre>",
-        );
-
     }
 
 }

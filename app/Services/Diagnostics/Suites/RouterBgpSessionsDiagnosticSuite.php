@@ -79,6 +79,7 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
      */
     public function run(): RouterBgpSessionsDiagnosticSuite
     {
+        info('run bgp sessions diagnostic suite');
         foreach( $this->routers as $router ) {
 
             if( $router->hasApi() ) {
