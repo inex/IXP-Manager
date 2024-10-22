@@ -791,3 +791,27 @@ td a:hover{
     background: rgba(255, 255, 255, .9);
     border-radius: 0 0 0 1rem;
 }
+
+/*** Diagnostics Result Page Start ***/
+.info-line {
+    position: relative;
+    height: fit-content !important;
+}
+.info-content {
+    position: relative;
+    overflow: hidden;
+    width: calc(100% - 6.5rem);
+    line-height: 1.2rem;
+    height: 1.2rem;
+    border: 1px solid transparent;
+    font-size: .9rem;
+    transition: height .25s;
+}
+.info-content .info-extra-content {
+    font-size: .75rem;
+    position: relative;
+}
+.info-content .info-extra-content pre {
+    margin: 0;
+}
+/**** Diagnostics Result Page End ****/

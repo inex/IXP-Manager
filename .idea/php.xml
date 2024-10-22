@@ -84,7 +84,6 @@
       <path value="$PROJECT_DIR$/vendor/vlucas/phpdotenv" />
       <path value="$PROJECT_DIR$/vendor/dnoegel/php-xdg-base-dir" />
       <path value="$PROJECT_DIR$/vendor/dflydev/dot-access-data" />
-      <path value="$PROJECT_DIR$/vendor/laravel/pint" />
       <path value="$PROJECT_DIR$/vendor/egulias/email-validator" />
       <path value="$PROJECT_DIR$/vendor/laravel/tinker" />
       <path value="$PROJECT_DIR$/vendor/laravel/ui" />
@@ -292,6 +291,7 @@
       <path value="$PROJECT_DIR$/vendor/igorw/get-in" />
       <path value="$PROJECT_DIR$/vendor/evenement/evenement" />
       <path value="$PROJECT_DIR$/vendor/foil/foil" />
+      <path value="$PROJECT_DIR$/vendor/laravel/pint" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.3">
