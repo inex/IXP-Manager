@@ -55,7 +55,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
 
     private VirtualInterface $vi;
 
-    private SNMP|bool $snmpClient;
+    private SNMP|bool|null $snmpClient = null;
 
     private bool $stale = true;
 
@@ -77,14 +77,26 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
         $this->description = 'Physical Interfaces general diagnostics.';
         $this->type        = 'INTERFACE';
 
-        if( empty( $pi?->switchPort->switcher->snmppasswd ) ) {
-            $this->snmpClient = false;
-        } else {
-            $this->snmpClient = new SNMP( $pi->switchPort->switcher->hostname, $pi->switchPort->switcher->snmppasswd );
-        }
-
         parent::__construct();
     }
+
+    /**
+     * Get / instantiate the snmp client
+     * @return SNMP|bool|null
+     */
+    private function snmpClient(): SNMP|bool|null {
+
+        if( $this->snmpClient === null ) {
+            if( empty( $pi?->switchPort->switcher->snmppasswd ) ) {
+                $this->snmpClient = false;
+            } else {
+                $this->snmpClient = new SNMP( $pi->switchPort->switcher->hostname, $pi->switchPort->switcher->snmppasswd );
+            }
+        }
+
+        return $this->snmpClient;
+    }
+
 
     /**
      * Run the diagnostics suite
@@ -92,6 +104,9 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
     public function run(): PhysicalInterfaceDiagnosticSuite
     {
         $this->results->add( $this->switchportLastPoll() );
+
+        // We want to poll the port now to (a) make sure we can and (b) use live data
+        // for the remaining tests without making multiple snmp get requests.
         $this->results->add( $this->switchportCanPoll() );
 
         $this->results->add( new DiagnosticResult(
@@ -115,14 +130,6 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
         return $this;
     }
 
-
-    private function snmpReachError($mainName) {
-        return new DiagnosticResult(
-            name: $mainName,
-            result: DiagnosticResult::TYPE_WARN,
-            narrative: "SNMP host cannot be reached",
-        );
-    }
 
     /**
      * Examine the physical interface last poll and provide information on it.
@@ -166,7 +173,8 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
             sleep(1);
         }
 
-        $this->pi->switchPort->snmpUpdate( $this->snmpClient );
+        ### TRYCATCH
+        $this->pi->switchPort->snmpUpdate( $this->snmpClient() );
 
         if( $before !== $this->pi->switchPort->lastSnmpPoll->format('Y-m-d H:i:s') ) {
             $this->stale = false;

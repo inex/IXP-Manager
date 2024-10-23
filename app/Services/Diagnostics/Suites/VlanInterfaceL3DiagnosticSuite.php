@@ -109,9 +109,9 @@ class VlanInterfaceL3DiagnosticSuite extends DiagnosticSuite
         } catch ( \Exception $e ) {
 
             return new DiagnosticResult(
-                name: $mainName . ' - unknown error',
+                name: $mainName . ' - diagnostic failed to run',
                 result: DiagnosticResult::TYPE_UNKNOWN,
-                narrativeHtml: "<pre>No accessible process result</pre>",
+                narrativeHtml: $e->getMessage(),
             );
 
         }

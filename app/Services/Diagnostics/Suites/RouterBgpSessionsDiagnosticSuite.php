@@ -79,11 +79,11 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
      */
     public function run(): RouterBgpSessionsDiagnosticSuite
     {
-        info('run bgp sessions diagnostic suite');
         foreach( $this->routers as $router ) {
 
             if( $router->hasApi() ) {
 
+                ## TRYCATCH
                 $this->lg[$router->handle] = App::make( LookingGlassService::class )->forRouter( $router );
 
                 if( $status = json_decode( $this->lg[ $router->handle ]->status() ) ) {
@@ -136,6 +136,7 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
             $pb = "pb_as" . $vli->virtualInterface->customer->autsys . "_vli{$vli->id}_ipv{$protocol}";
         }
 
+        ## TRYCATCH - update to new unknown result
         try {
             if( !( $bgpsum = json_decode( $lg->bgpNeighbourSummary( $pb ) ) ) ) {
 

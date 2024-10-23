@@ -82,6 +82,7 @@ class VlanInterfaceL2DiagnosticSuite extends DiagnosticSuite
 
             $mainName = $l2a->macFormatted(':') . ' responds to arp pings';
 
+            ## TRYCATCH
             $result = Process::run( sprintf( config( "ixp.exec.arping.{$vli->vlanid}" ), $l2a->macFormatted(':') ) );
 
             if( $result->successful() ) {
