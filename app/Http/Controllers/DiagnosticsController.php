@@ -50,9 +50,9 @@ class DiagnosticsController extends Controller
             DiagnosticResult::TYPE_ERROR   => 'tw-border-red-400 tw-bg-red-400',
             DiagnosticResult::TYPE_WARN    => 'tw-border-amber-400 tw-bg-amber-400',
             DiagnosticResult::TYPE_INFO    => 'tw-border-teal-400 tw-bg-teal-400',
-            DiagnosticResult::TYPE_UNKNOWN => 'tw-border-black-600 tw-bg-red-600',
-            DiagnosticResult::TYPE_DEBUG   => 'tw-border-gray-400 tw-bg-gray-400',
-            DiagnosticResult::TYPE_TRACE   => 'tw-border-gray-300 tw-bg-gray-300',
+            DiagnosticResult::TYPE_UNKNOWN => 'tw-border-gray-600 tw-bg-gray-800',
+            DiagnosticResult::TYPE_DEBUG   => 'tw-border-gray-300 tw-bg-gray-300',
+            DiagnosticResult::TYPE_TRACE   => 'tw-border-gray-400 tw-bg-gray-400',
             DiagnosticResult::TYPE_GOOD    => 'tw-border-lime-500 tw-bg-lime-500',
         ];
     }

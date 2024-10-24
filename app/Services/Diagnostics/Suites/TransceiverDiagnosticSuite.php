@@ -116,7 +116,7 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
      * Get / instantiate the snmp client
      * @return SNMP|bool|null
      */
-    private function snmpClient(): SNMP|bool|null {
+    private function snmpClient($pi): SNMP|bool|null {
 
         if( $this->snmpClient === null ) {
             if( empty( $pi?->switchPort->switcher->snmppasswd ) ) {
@@ -139,7 +139,7 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
     {
 
         // check if we can even run these first
-        if( !$this->snmpClient() ) {
+        if( !$this->snmpClient($this->pi) ) {
 
             $this->results->add( new DiagnosticResult(
                 name: "Transceiver diagnostics not available via SNMP for this switch.",
@@ -180,15 +180,18 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
     {
         $mainName = "Transceiver temperature - ";
 
-        ## TRYCATCH - update to unknown
         try {
-            $t = $this->snmpClient()->get( sprintf( self::OID_XCVR_DOM_TEMPERATURE_THRESHOLD, $this->oidPort( $this->pi->switchPort->name ) ) );
+
+            $t = $this->snmpClient($this->pi)->get( sprintf( self::OID_XCVR_DOM_TEMPERATURE_THRESHOLD, $this->oidPort( $this->pi->switchPort->name ) ) );
+
         } catch( \Exception $e ) {
+
             return new DiagnosticResult(
-                name: $mainName . "could not find xcvr temperature thresholds",
-                result: DiagnosticResult::TYPE_ERROR,
-                narrative: $e->getMessage(),
+                name: $mainName . ' - diagnostic failed to run',
+                result: DiagnosticResult::TYPE_UNKNOWN,
+                narrativeHtml: $e->getMessage(),
             );
+
         }
 
         if( str_ends_with( $t, 'is within bounds' ) ) {
@@ -219,16 +222,18 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
     {
         $mainName = "Transceiver voltage - ";
 
-        ## TRYCATCH - update to unknown
-
         try {
-            $v = $this->snmpClient()->get( sprintf( self::OID_XCVR_DOM_VOLTAGE_UNITS_THRESHOLD, $this->oidPort( $this->pi->switchPort->name ) ) );
+
+            $v = $this->snmpClient($this->pi)->get( sprintf( self::OID_XCVR_DOM_VOLTAGE_UNITS_THRESHOLD, $this->oidPort( $this->pi->switchPort->name ) ) );
+
         } catch( \Exception $e ) {
+
             return new DiagnosticResult(
-                name: $mainName . "could not find xcvr voltage thresholds",
-                result: DiagnosticResult::TYPE_ERROR,
-                narrative: $e->getMessage(),
+                name: $mainName . ' - diagnostic failed to run',
+                result: DiagnosticResult::TYPE_UNKNOWN,
+                narrativeHtml: $e->getMessage(),
             );
+
         }
 
         if( str_ends_with( $v, 'is within bounds' ) ) {
@@ -285,19 +290,19 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
             foreach( $lanes as $lane ) {
                 $v = null;
 
-                ## TRYCATCH - update to unknown
-
                 try {
-                    $v = $this->snmpClient()->get( sprintf( self::OID_XCVR_DOM_LANE_SENSOR_UNITS_THRESHOLD, $this->oidPort( $this->pi->switchPort->name ), $lane, $sensor ) );
+
+                    $v = $this->snmpClient($this->pi)->get( sprintf( self::OID_XCVR_DOM_LANE_SENSOR_UNITS_THRESHOLD, $this->oidPort( $this->pi->switchPort->name ), $lane, $sensor ) );
+
                 } catch( \Exception $e ) {
                     if( $lane > 1) {
                         continue;
                     }
 
                     $results[] = new DiagnosticResult(
-                        name: $mainName . "could not find {$sensors[$sensor]} for lane {$lane} thresholds",
-                        result: DiagnosticResult::TYPE_ERROR,
-                        narrative: $e->getMessage(),
+                        name: $mainName . ' - diagnostic failed to run',
+                        result: DiagnosticResult::TYPE_UNKNOWN,
+                        narrativeHtml: $e->getMessage(),
                     );
 
                     $readings[ $sensor ][ $lane ] = 'ERR';
@@ -368,17 +373,20 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
     {
         $mainName = "Transceiver information - ";
 
-        ## TRYCATCH
         try {
-            $serial = trim( $this->snmpClient()->get( sprintf( self::OID_XCVR_SERIAL_NUMBER, $this->oidPort($pi->switchPort->name) ) ) );
-            $manuf  = trim( $this->snmpClient()->get( sprintf( self::OID_XCVR_MANUFACTURER,  $this->oidPort($pi->switchPort->name) ) ) );
-            $model  = trim( $this->snmpClient()->get( sprintf( self::OID_XCVR_MODEL,         $this->oidPort($pi->switchPort->name) ) ) );
+
+            $serial = trim( $this->snmpClient($this->pi)->get( sprintf( self::OID_XCVR_SERIAL_NUMBER, $this->oidPort($pi->switchPort->name) ) ) );
+            $manuf  = trim( $this->snmpClient($this->pi)->get( sprintf( self::OID_XCVR_MANUFACTURER,  $this->oidPort($pi->switchPort->name) ) ) );
+            $model  = trim( $this->snmpClient($this->pi)->get( sprintf( self::OID_XCVR_MODEL,         $this->oidPort($pi->switchPort->name) ) ) );
+
         } catch( \Exception $e ) {
+
             return new DiagnosticResult(
-                name: $mainName . "could not find xcvr serial, model and/or manufacturer",
-                result: DiagnosticResult::TYPE_ERROR,
-                narrative: $e->getMessage(),
+                name: $mainName . ' - diagnostic failed to run',
+                result: DiagnosticResult::TYPE_UNKNOWN,
+                narrativeHtml: $e->getMessage(),
             );
+
         }
 
         return new DiagnosticResult(

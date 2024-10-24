@@ -84,7 +84,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
      * Get / instantiate the snmp client
      * @return SNMP|bool|null
      */
-    private function snmpClient(): SNMP|bool|null {
+    private function snmpClient($pi): SNMP|bool|null {
 
         if( $this->snmpClient === null ) {
             if( empty( $pi?->switchPort->switcher->snmppasswd ) ) {
@@ -173,24 +173,35 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
             sleep(1);
         }
 
-        ### TRYCATCH
-        $this->pi->switchPort->snmpUpdate( $this->snmpClient() );
+        try {
 
-        if( $before !== $this->pi->switchPort->lastSnmpPoll->format('Y-m-d H:i:s') ) {
-            $this->stale = false;
+            $this->pi->switchPort->snmpUpdate( $this->snmpClient($this->pi) );
+
+            if( $before !== $this->pi->switchPort->lastSnmpPoll->format('Y-m-d H:i:s') ) {
+                $this->stale = false;
+                return new DiagnosticResult(
+                    name: $mainName . " Yes, refreshed successfully now",
+                    result: DiagnosticResult::TYPE_DEBUG,
+                    narrative: "SNMP information has been retrieved for this port.",
+                );
+            }
+
+            $this->stale = true;
             return new DiagnosticResult(
-                name: $mainName . " Yes, refreshed successfully now",
-                result: DiagnosticResult::TYPE_DEBUG,
-                narrative: "SNMP information has been retrieved for this port.",
+                name: $mainName . " No, could not poll the switch port",
+                result: DiagnosticResult::TYPE_FATAL,
+                narrative: "As we could not poll the switch port via SNMP, all other diagnostics tests relying on this information may not be accurate.",
             );
-        }
 
-        $this->stale = true;
-        return new DiagnosticResult(
-            name: $mainName . " No, could not poll the switch port",
-            result: DiagnosticResult::TYPE_FATAL,
-            narrative: "As we could not poll the switch port via SNMP, all other diagnostics tests relying on this information may not be accurate.",
-        );
+        } catch(\Exception $e) {
+
+            return new DiagnosticResult(
+                name: $mainName . ' - diagnostic failed to run',
+                result: DiagnosticResult::TYPE_UNKNOWN,
+                narrativeHtml: $e->getMessage(),
+            );
+
+        }
 
     }
 
