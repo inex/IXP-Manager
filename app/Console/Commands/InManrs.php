@@ -24,6 +24,7 @@ namespace IXP\Console\Commands;
  */
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\Http;
 use IXP\Models\Customer;
  /**
   * Artisan command to update the in_peeringdb flag of members
@@ -59,12 +60,18 @@ class InManrs extends  Command
     public function handle(): int
     {
         // get list of peeringdb networks:
-        if( !( $json = file_get_contents( 'https://www.manrs.org/wp-json/manrs/v1/asn' ) ) ) {
-            $this->error( 'Could not load ASNs via MANRS\'s API' );
+        try {
+            $resp = Http::withHeaders( [
+                'X-Request-Client'         => 'IXP Manager',
+                'X-Request-Client-Version' => APPLICATION_VERSION,
+            ] )->throw()->acceptJson()
+                ->get( 'https://api.manrs.org/asns' );
+        } catch(\Exception $e) {
+            $this->error( 'Could not load ASNs via MANRS\'s API: ' . $e->getMessage() );
             return 1;
         }
 
-        $asns = json_decode( $json, true );
+        $asns = $resp['asns'];
 
         if( !is_array( $asns ) || !count( $asns ) ) {
             $this->error( 'Empty or no ASNs returned from MANRS\'s API' );
