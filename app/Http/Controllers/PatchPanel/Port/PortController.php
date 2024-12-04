@@ -210,7 +210,7 @@ class PortController extends Controller
 
         return view( 'patch-panel-port/edit' )->with([
             'states'                => $states,
-            'customers'             => Customer::select( [ 'id', 'name' ] )->orderBy( 'name' )->get(),
+            'customers'             => Customer::select( [ 'id', 'name' ] )->current()->orderBy( 'name' )->get(),
             'switches'              => Switcher::select( [ 'switch.id', 'switch.name' ] )
                                         ->leftJoin( 'cabinet AS cab', 'cab.id', 'switch.cabinetid' )
                                         ->where( 'active', true )
