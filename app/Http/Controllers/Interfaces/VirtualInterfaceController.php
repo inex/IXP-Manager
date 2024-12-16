@@ -36,7 +36,8 @@ use Illuminate\Http\{
     RedirectResponse
 };
 
-use IXP\Models\{Aggregators\VirtualInterfaceAggregator,
+use IXP\Models\{Aggregators\CustomerAggregator,
+    Aggregators\VirtualInterfaceAggregator,
     Customer,
     PhysicalInterface,
     Switcher,
@@ -146,7 +147,7 @@ class VirtualInterfaceController extends Common
         }
 
         return view( 'interfaces/virtual/add' )->with([
-            'custs'             => Customer::groupBy( 'name' )->get(),
+            'custs'             => CustomerAggregator::reformatNameWithDetail( Customer::trafficking()->current()->orderBy('name')->get() ),
             'vlans'             => [],
             'vi'                => false,
             'cb'                => false,
@@ -207,7 +208,7 @@ class VirtualInterfaceController extends Common
         ]);
 
         return view( 'interfaces/virtual/add' )->with([
-            'custs'             => Customer::groupBy( 'name' )->get(),
+            'custs'             => CustomerAggregator::reformatNameWithDetail( Customer::trafficking()->orderBy('name')->get() ),
             'vlans'             => Vlan::orderBy( 'number' )->get(),
             'vi'                => $vi,
             'cb'                => $vi->getCoreBundle(),
@@ -279,7 +280,7 @@ class VirtualInterfaceController extends Common
         }
 
         return view( 'interfaces/virtual/wizard' )->with([
-            'custs'                 => Customer::groupBy( 'name' )->get(),
+            'custs'                 => CustomerAggregator::reformatNameWithDetail( Customer::trafficking()->current()->orderBy('name')->get() ),
             'vli'                   => false,
             'vlans'                 => Vlan::orderBy( 'number' )->get(),
             'pi_switches'           => Switcher::where( 'active', true )

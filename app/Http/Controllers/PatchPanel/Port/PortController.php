@@ -37,7 +37,8 @@ use IXP\Http\Controllers\Controller;
 
 use IXP\Http\Requests\StorePatchPanelPort as StorePatchPanelPortRequest;
 
-use IXP\Models\{Aggregators\PatchPanelPortAggregator,
+use IXP\Models\{Aggregators\CustomerAggregator,
+    Aggregators\PatchPanelPortAggregator,
     Cabinet,
     Customer,
     Location,
@@ -209,7 +210,7 @@ class PortController extends Controller
 
         return view( 'patch-panel-port/edit' )->with([
             'states'                => $states,
-            'customers'             => Customer::select( [ 'id', 'name' ] )->orderBy( 'name' )->get(),
+            'customers'             => CustomerAggregator::reformatNameWithDetail( Customer::trafficking()->orderBy( 'name' )->get() ),
             'switches'              => Switcher::select( [ 'switch.id', 'switch.name' ] )
                                         ->leftJoin( 'cabinet AS cab', 'cab.id', 'switch.cabinetid' )
                                         ->where( 'active', true )
