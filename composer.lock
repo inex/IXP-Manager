@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eb95be8220f6c6f08b8eb73843d73ee6",
+    "content-hash": "fbe3ca4c78d2ee80a0b1bd9b8ca89dba",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -5725,6 +5725,47 @@
                 "source": "https://github.com/socialiteproviders/manager"
             },
             "time": "2024-11-10T01:56:18+00:00"
+        },
+        {
+            "name": "socialiteproviders/sage",
+            "version": "4.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SocialiteProviders/Sage.git",
+                "reference": "0fb51116946573b4fb4831b2e7f9f54fadca29e8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SocialiteProviders/Sage/zipball/0fb51116946573b4fb4831b2e7f9f54fadca29e8",
+                "reference": "0fb51116946573b4fb4831b2e7f9f54fadca29e8",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^7.2 || ^8.0",
+                "socialiteproviders/manager": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SocialiteProviders\\Sage\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Luke Curtis",
+                    "email": "lukesimoncurtis@gmail.com"
+                }
+            ],
+            "description": "Sage OAuth2 Provider for Laravel Socialite",
+            "support": {
+                "source": "https://github.com/SocialiteProviders/Sage/tree/4.1.0"
+            },
+            "time": "2020-12-01T23:10:59+00:00"
         },
         {
             "name": "symfony/console",
@@ -13019,14 +13060,14 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.0.2",
         "ext-json": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "platform-overrides": {
         "php": "8.0.2"
     },

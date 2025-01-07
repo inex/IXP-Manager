@@ -64,19 +64,19 @@ class SAGE extends Controller
         'LAN1-1G-FIRST' => [ 'd' => 'INEX LAN1 - First 1Gb Port (per month)',      'l' => 4510, 'p' => 0.00 ],
         'LAN1-1G-ADDNL' => [ 'd' => 'INEX LAN1 - Additional 1Gb Port (per month)', 'l' => 4510, 'p' => 56.00 ],
 
-        'LAN1-10G-FIRST' => [ 'd' => 'INEX LAN1 - First 10Gb Port (per month)',      'l' => 4510, 'p' => 250.00 ],
-        'LAN1-10G-ADDNL' => [ 'd' => 'INEX LAN1 - Additional 10Gb Port (per month)', 'l' => 4510, 'p' => 200.00 ],
+        'LAN1-10G-FIRST' => [ 'd' => 'INEX LAN1 - First 10Gb Port (per month)',      'l' => 4510, 'p' => 210.00 ],
+        'LAN1-10G-ADDNL' => [ 'd' => 'INEX LAN1 - Additional 10Gb Port (per month)', 'l' => 4510, 'p' => 210.00 ],
 
-        'LAN1-100G-FIRST' => [ 'd' => 'INEX LAN1 - First 100Gb Port (per month)',      'l' => 4510, 'p' => 1250.00 ],
+        'LAN1-100G-FIRST' => [ 'd' => 'INEX LAN1 - First 100Gb Port (per month)',      'l' => 4510, 'p' => 1000.00 ],
         'LAN1-100G-ADDNL' => [ 'd' => 'INEX LAN1 - Additional 100Gb Port (per month)', 'l' => 4510, 'p' => 1000.00 ],
 
         'LAN2-1G-FREE'  => [ 'd' => 'INEX LAN2 - First 1Gb Port (free with LAN1) (per month)',  'l' => 4511, 'p' => 0.00 ],
         'LAN2-1G-ADDNL' => [ 'd' => 'INEX LAN2 - Additional 1Gb Port (per month)',              'l' => 4511, 'p' => 56.00 ],
 
         'LAN2-10G-FREE'  => [ 'd' => 'INEX LAN2 - First 10Gb Port (free with LAN1) (per month)',      'l' => 4511, 'p' => 0.00 ],
-        'LAN2-10G-ADDNL' => [ 'd' => 'INEX LAN2 - Additional 10Gb Port (per month)',                  'l' => 4511, 'p' => 200.00 ],
+        'LAN2-10G-ADDNL' => [ 'd' => 'INEX LAN2 - Additional 10Gb Port (per month)',                  'l' => 4511, 'p' => 210.00 ],
 
-        'LAN2-100G-FIRST' => [ 'd' => 'INEX LAN2 - First 100Gb Port (per month)',                      'l' => 4511, 'p' => 1100.00 ],
+        'LAN2-100G-FIRST' => [ 'd' => 'INEX LAN2 - First 100Gb Port (per month)',                      'l' => 4511, 'p' => 1000.00 ],
         'LAN2-100G-ADDNL' => [ 'd' => 'INEX LAN2 - Additional 100Gb Port (per month)',                 'l' => 4511, 'p' => 1000.00 ],
 
         'CORK-1G-FIRST' => [ 'd' => 'INEX Cork - First 1Gb Port (per month)',      'l' => 4512, 'p' => 0.00 ],
@@ -327,235 +327,237 @@ class SAGE extends Controller
         return $results;
     }
 
-
-    public function customers()
-    {
-        set_time_limit(0);
-
-        $suser = Socialite::driver('sage')->user();
-
-        $fp = fopen( base_path( 'cust-for-import.csv' ), "r" );
-
-        // throw away first line
-        fgetcsv( $fp );
-
-        $results = [];
-
-        while( $csvl = fgetcsv( $fp ) ) {
-
-            // clean the entries
-            foreach( $csvl as $i => $v ) {
-                $v = trim( $v );
-                if( substr( $v, -1 ) === ',' ) {
-                    $v = substr( $v, 0, -1 );
-                }
-                $csvl[ $i ] = $v;
-            }
-
-            $e = [];
-
-            $e[ 'cycle' ] = $csvl[ 0 ];
-            $e[ 'ref' ]   = $csvl[ 1 ];  // Reference
-
-
-            // resolds, etc.
-            if( in_array( $e[ 'ref' ], [ 182, 183, 190, 171, 142 ] ) ) {
-                Log::info( "***** SKIPPING {$e[ 'ref' ]}");
-                continue;
-            }
-
-
-
-            $e[ 'cname' ] = $csvl[ 2 ]; // Company Name
-            $e[ 'a1' ]    = $csvl[ 3 ];
-            $e[ 'a2' ]    = $csvl[ 4 ];
-            $e[ 'a3' ]    = $csvl[ 5 ];
-            $e[ 'atc' ]   = $csvl[ 6 ];
-            $e[ 'apc' ]   = $csvl[ 7 ];
-            $e[ 'acc' ]   = ( $csvl[ 8 ] == 'UK' ? 'GB' : $csvl[ 8 ] );
-            $e[ 'pcn' ]   = $csvl[ 9 ];
-            $e[ 'pnp' ]   = $csvl[ 10 ];
-            $e[ 'pnf' ]   = $csvl[ 11 ];
-            $e[ 'pnp2' ]  = $csvl[ 12 ];
-
-            $e['po'] = $csvl[14];
-            $emails = explode( ',', $csvl[ 15 ] );
-
-            if( $emails ) {
-                foreach( $emails as $ei => $ee ) {
-                    $emails[ $ei ] = trim( $ee );
-                }
-            }
-
-            $e[ 'pne' ] = $emails;
-
-            $e[ 'notes' ] = 'Quickbooks Import: ' . ( $csvl[ 13 ] ? $csvl[ 13 ] . " - " : '' ) . ( $csvl[ 14 ] ? $csvl[ 14 ] . " - " : '' ) . ( $csvl[ 17 ] ? ' - VAT: ' . $csvl[ 17 ] : '' );
-
-            $e[ 'vat' ] = $csvl[ 17 ] ?? '';
-
-            if( $e[ 'acc' ] === 'IE' || substr( $e[ 'vat' ], 0, 2 ) == 'IE' || in_array( $e[ 'ref' ], [ 186 ] ) ) {
-                $e[ 'vat' ] = '';
-            }
-//            else if( !is_numeric( substr( $e[ 'vat' ], 0, 2 ) ) ) {
-//                $e[ 'vat' ] = substr( $e[ 'vat' ], 2 );
+//
+//    public function customers()
+//    {
+//        set_time_limit(0);
+//
+//        $suser = Socialite::driver('sage')->user();
+//
+//        $fp = fopen( base_path( 'cust-for-import.csv' ), "r" );
+//
+//        // throw away first line
+//        fgetcsv( $fp );
+//
+//        $results = [];
+//
+//        while( $csvl = fgetcsv( $fp ) ) {
+//
+//            // clean the entries
+//            foreach( $csvl as $i => $v ) {
+//                $v = trim( $v );
+//                if( substr( $v, -1 ) === ',' ) {
+//                    $v = substr( $v, 0, -1 );
+//                }
+//                $csvl[ $i ] = $v;
 //            }
-
-
-            // country group
-            switch( $e[ 'acc' ] ) {
-                case 'IE':
-                case 'GB':
-                    $cg = 'GBIE';
-                    break;
-
-                case 'US':
-                    $cg = 'US';
-                    break;
-
-                case 'CA':
-                    $cg = 'CA';
-                    break;
-
-                case 'AT':
-                case 'BE':
-                case 'DE':
-                case 'IT':
-                case 'NL':
-                    $cg = 'EU';
-                    break;
-
-                default:
-                    $cg = 'ALL';
-                    break;
-            }
-
-
-            /** @var \Entities\Customer $c */
-            if( !( $c = d2r( 'Customer' )->find( $e['ref'] ) ) ) {
-                $results[] = "ERROR: " . $e['cname'] . ' NOT FOUND';
-                continue;
-            }
-
-            $cc = $c->getRegistrationDetails();
-            $cb = $c->getBillingDetails();
-
-            $cc->setRegisteredName( $e['cname'] );
-            $cc->setAddress1( $e[ 'a1' ] );     $cb->setBillingAddress1( $e[ 'a1' ] );
-            $cc->setAddress2( $e[ 'a2' ] );     $cb->setBillingAddress2( $e[ 'a2' ] );
-            $cc->setAddress3( $e[ 'a3' ] );     $cb->setBillingAddress3( $e[ 'a3' ] );
-            $cc->setTownCity( $e[ 'atc' ] );    $cb->setBillingTownCity( $e[ 'atc' ] );
-            $cc->setPostcode( $e[ 'apc' ] );    $cb->setBillingPostcode( $e[ 'apc' ] );
-            $cc->setCountry( $e['acc'] );       $cb->setBillingCountry( $e['acc'] );
-
-            $cb->setVatNumber( trim( $csvl[ 17 ] ) ?? '' );
-            $cb->setBillingEmail( implode( ',', $emails ) );
-            $cb->setInvoiceMethod( $cb::INVOICE_METHOD_EMAIL );
-            $cb->setVatRate( $e['po'] ?? '' );
-
-//            switch( $e['cycle'] ) {
-//                case 'A':
-//                    $cb->setBillingFrequency( \Entities\CompanyBillingDetail::BILLING_FREQUENCY_ANNUALLY );
+//
+//            $e = [];
+//
+//            $e[ 'cycle' ] = $csvl[ 0 ];
+//            $e[ 'ref' ]   = $csvl[ 1 ];  // Reference
+//
+//            $skip = [
+//                182 => 'Convergenze via Warian',
+//                190 => 'Swisscom via BICS',
+//            ];
+//
+//            // resolds, etc.
+//            if( in_array( $e[ 'ref' ], array_keys( $skip ) ) ) {
+//                Log::info( "***** SKIPPING {$e[ 'ref' ]} - {$skip[ $e[ 'ref' ] ]}");
+//                continue;
+//            }
+//
+//
+//            $e[ 'cname' ] = $csvl[ 2 ]; // Company Name
+//            $e[ 'a1' ]    = $csvl[ 3 ];
+//            $e[ 'a2' ]    = $csvl[ 4 ];
+//            $e[ 'a3' ]    = $csvl[ 5 ];
+//            $e[ 'atc' ]   = $csvl[ 6 ];
+//            $e[ 'apc' ]   = $csvl[ 7 ];
+//            $e[ 'acc' ]   = ( $csvl[ 8 ] == 'UK' ? 'GB' : $csvl[ 8 ] );
+//            $e[ 'pcn' ]   = $csvl[ 9 ];
+//            $e[ 'pnp' ]   = $csvl[ 10 ];
+//            $e[ 'pnf' ]   = $csvl[ 11 ];
+//            $e[ 'pnp2' ]  = $csvl[ 12 ];
+//
+//            $e['po'] = $csvl[14];
+//            $emails = explode( ',', $csvl[ 15 ] );
+//
+//            if( $emails ) {
+//                foreach( $emails as $ei => $ee ) {
+//                    $emails[ $ei ] = trim( $ee );
+//                }
+//            }
+//
+//            $e[ 'pne' ] = $emails;
+//
+//            $e[ 'vat' ] = $csvl[ 17 ] ?? '';
+//
+//            // 186 -> Expereo ->
+//            if( $e[ 'acc' ] === 'IE' || substr( $e[ 'vat' ], 0, 2 ) == 'IE' || in_array( $e[ 'ref' ], [ 186 ] ) ) {
+//                $e[ 'vat' ] = '';
+//            }
+////            else if( !is_numeric( substr( $e[ 'vat' ], 0, 2 ) ) ) {
+////                $e[ 'vat' ] = substr( $e[ 'vat' ], 2 );
+////            }
+//
+//
+//            // country group
+//            switch( $e[ 'acc' ] ) {
+//                case 'IE':
+//                case 'GB':
+//                    $cg = 'GBIE';
 //                    break;
 //
-//                case 'H':
-//                    $cb->setBillingFrequency( \Entities\CompanyBillingDetail::BILLING_FREQUENCY_HALFYEARLY );
+//                case 'US':
+//                    $cg = 'US';
 //                    break;
 //
-//                case 'Q':
-//                    $cb->setBillingFrequency( \Entities\CompanyBillingDetail::BILLING_FREQUENCY_QUARTERLY );
+//                case 'CA':
+//                    $cg = 'CA';
+//                    break;
+//
+//                case 'AT':
+//                case 'BE':
+//                case 'DE':
+//                case 'IT':
+//                case 'NL':
+//                    $cg = 'EU';
 //                    break;
 //
 //                default:
-//                    $results[] = "ERROR: " . $e['cname'] . ' - BAD BILLING CYCLE';
+//                    $cg = 'ALL';
+//                    break;
 //            }
-
-            D2EM::flush();
-
-            Log::info( "***** {$c->getName()}");
-
-            $scust = [
-                'name'             => $cc->getRegisteredName(),
-                'contact_type_ids' => [ 'CUSTOMER' ],
-                'reference'        => $c->getId(),
-                'main_address'     => [
-                    'address_type_id'  => 'ACCOUNTS',
-                    'address_line_1'   => $cb->getBillingAddress1(),
-                    'address_line_2'   => $cb->getBillingAddress2(),
-                    'city'             => $cb->getBillingAddress3(),
-                    'region'           => $cb->getBillingTownCity(),
-                    'postal_code'      => $cb->getBillingPostcode(),
-                    'country_id'       => $cb->getBillingCountry(),
-                    'country_group_id' => $cg,
-                    'is_main_address'  => true,
-                ],
-                'notes'            => $e[ 'notes' ],
-                'credit_days'      => 30,
-                'currency_id'      => 'EUR',
-                'main_contact_person' => [
-                    'name'      => $e[ 'pcn' ],
-                    'telephone' => $e[ 'pnp' ],
-                    'mobile'    => $e[ 'pnp2' ],
-                    'fax'       => $e[ 'pnf' ],
-                    'is_main_contact' => true,
-                    'is_preferred_contact' => false,
-                ]
-            ];
-
-            if( $e['vat'] ) {
-                $scust['tax_number'] = $e['vat'];
-            }
-
-            if( count( $e['pne'] ) ) {
-                $scust['main_contact_person']['email'] = array_shift($e['pne']);
-            }
-
-
-            $guzzle = new \GuzzleHttp\Client();
-
-            $scust = [ 'contact' => $scust ];
-
-            $r = $guzzle->post( 'https://api.accounting.sage.com/v3.1/contacts', [
-                    \GuzzleHttp\RequestOptions::JSON => $scust,
-                    'headers'                        => [
-                        'Authorization' => 'Bearer ' . $suser->token
-                    ]
-                ]
-            );
-
-            $newcust = json_decode( $r->getBody()->getContents() );
-            //$results[] = $c->getName();
-            // $results[] = [ 'name' => $l['n'], 'id' => json_decode( $r->getBody()->getContents() )->id ];
-            // dd(json_decode( $r->getBody()->getContents() ));
-
-            foreach( $e['pne'] as $e ) {
-                $newcontact = [
-                    'contact_person' => [
-                        'address_id' => $newcust->main_address->id,
-                        'name' => $e,
-                        'contact_person_type_ids' => [ 'ACCOUNTS' ],
-                        'email' => $e,
-                        'is_preferred_contact' => true,
-                    ]
-                ];
-
-                $guzzle = new \GuzzleHttp\Client();
-
-                $r = $guzzle->post( 'https://api.accounting.sage.com/v3.1/contact_persons', [
-                        \GuzzleHttp\RequestOptions::JSON => $newcontact,
-                        'headers'                        => [
-                            'Authorization' => 'Bearer ' . $suser->token
-                        ]
-                    ]
-                );
-
-            }
-
-        }
-
-        return $results;
-
-    }
-
+//
+//
+//            /** @var \Entities\Customer $c */
+//            if( !( $c = d2r( 'Customer' )->find( $e['ref'] ) ) ) {
+//                $results[] = "ERROR: " . $e['cname'] . ' NOT FOUND';
+//                continue;
+//            }
+//
+//            $cc = $c->getRegistrationDetails();
+//            $cb = $c->getBillingDetails();
+//
+//            $cc->setRegisteredName( $e['cname'] );
+//            $cc->setAddress1( $e[ 'a1' ] );     $cb->setBillingAddress1( $e[ 'a1' ] );
+//            $cc->setAddress2( $e[ 'a2' ] );     $cb->setBillingAddress2( $e[ 'a2' ] );
+//            $cc->setAddress3( $e[ 'a3' ] );     $cb->setBillingAddress3( $e[ 'a3' ] );
+//            $cc->setTownCity( $e[ 'atc' ] );    $cb->setBillingTownCity( $e[ 'atc' ] );
+//            $cc->setPostcode( $e[ 'apc' ] );    $cb->setBillingPostcode( $e[ 'apc' ] );
+//            $cc->setCountry( $e['acc'] );       $cb->setBillingCountry( $e['acc'] );
+//
+//            $cb->setVatNumber( trim( $csvl[ 17 ] ) ?? '' );
+//            $cb->setBillingEmail( implode( ',', $emails ) );
+//            $cb->setInvoiceMethod( $cb::INVOICE_METHOD_EMAIL );
+//            $cb->setVatRate( $e['po'] ?? '' );
+//
+////            switch( $e['cycle'] ) {
+////                case 'A':
+////                    $cb->setBillingFrequency( \Entities\CompanyBillingDetail::BILLING_FREQUENCY_ANNUALLY );
+////                    break;
+////
+////                case 'H':
+////                    $cb->setBillingFrequency( \Entities\CompanyBillingDetail::BILLING_FREQUENCY_HALFYEARLY );
+////                    break;
+////
+////                case 'Q':
+////                    $cb->setBillingFrequency( \Entities\CompanyBillingDetail::BILLING_FREQUENCY_QUARTERLY );
+////                    break;
+////
+////                default:
+////                    $results[] = "ERROR: " . $e['cname'] . ' - BAD BILLING CYCLE';
+////            }
+//
+//            D2EM::flush();
+//
+//            Log::info( "***** {$c->getName()}");
+//
+//            $scust = [
+//                'name'             => $cc->getRegisteredName(),
+//                'contact_type_ids' => [ 'CUSTOMER' ],
+//                'reference'        => $c->getId(),
+//                'main_address'     => [
+//                    'address_type_id'  => 'ACCOUNTS',
+//                    'address_line_1'   => $cb->getBillingAddress1(),
+//                    'address_line_2'   => $cb->getBillingAddress2(),
+//                    'city'             => $cb->getBillingAddress3(),
+//                    'region'           => $cb->getBillingTownCity(),
+//                    'postal_code'      => $cb->getBillingPostcode(),
+//                    'country_id'       => $cb->getBillingCountry(),
+//                    'country_group_id' => $cg,
+//                    'is_main_address'  => true,
+//                ],
+//                'notes'            => $e[ 'notes' ],
+//                'credit_days'      => 30,
+//                'currency_id'      => 'EUR',
+//                'main_contact_person' => [
+//                    'name'      => $e[ 'pcn' ],
+//                    'telephone' => $e[ 'pnp' ],
+//                    'mobile'    => $e[ 'pnp2' ],
+//                    'fax'       => $e[ 'pnf' ],
+//                    'is_main_contact' => true,
+//                    'is_preferred_contact' => false,
+//                ]
+//            ];
+//
+//            if( $e['vat'] ) {
+//                $scust['tax_number'] = $e['vat'];
+//            }
+//
+//            if( count( $e['pne'] ) ) {
+//                $scust['main_contact_person']['email'] = array_shift($e['pne']);
+//            }
+//
+//
+//            $guzzle = new \GuzzleHttp\Client();
+//
+//            $scust = [ 'contact' => $scust ];
+//
+//            $r = $guzzle->post( 'https://api.accounting.sage.com/v3.1/contacts', [
+//                    \GuzzleHttp\RequestOptions::JSON => $scust,
+//                    'headers'                        => [
+//                        'Authorization' => 'Bearer ' . $suser->token
+//                    ]
+//                ]
+//            );
+//
+//            $newcust = json_decode( $r->getBody()->getContents() );
+//            //$results[] = $c->getName();
+//            // $results[] = [ 'name' => $l['n'], 'id' => json_decode( $r->getBody()->getContents() )->id ];
+//            // dd(json_decode( $r->getBody()->getContents() ));
+//
+//            foreach( $e['pne'] as $e ) {
+//                $newcontact = [
+//                    'contact_person' => [
+//                        'address_id' => $newcust->main_address->id,
+//                        'name' => $e,
+//                        'contact_person_type_ids' => [ 'ACCOUNTS' ],
+//                        'email' => $e,
+//                        'is_preferred_contact' => true,
+//                    ]
+//                ];
+//
+//                $guzzle = new \GuzzleHttp\Client();
+//
+//                $r = $guzzle->post( 'https://api.accounting.sage.com/v3.1/contact_persons', [
+//                        \GuzzleHttp\RequestOptions::JSON => $newcontact,
+//                        'headers'                        => [
+//                            'Authorization' => 'Bearer ' . $suser->token
+//                        ]
+//                    ]
+//                );
+//
+//            }
+//
+//        }
+//
+//        return $results;
+//
+//    }
+//
 
 
 
@@ -805,9 +807,8 @@ class SAGE extends Controller
             $totals[$k] = 0.0;
         }
 
-        $fp = fopen( base_path( 'custs-invoiced-shite.csv' ), "w" );
-
-        $fpq = fopen( base_path( 'custs-invoiced-quarterly.csv' ), "w" );
+        $fp  = fopen( base_path( 'custs-invoiced-shite.csv' ), "w" );
+        $fpq = fopen( base_path( 'custs-invoiced-deferred.csv' ), "w" );
 
         fputcsv( $fpq, array_merge(
                 [
@@ -861,18 +862,7 @@ class SAGE extends Controller
         //// **** VAT 56 certificates!!   *******
 
 
-//        $reached = false;
-
         foreach( $member_pis as $asn => $pis ) {
-
-//            if( $pis['custid'] == 39 ) {
-//                $reached = true;
-//            }
-//
-//            if( !$reached ) {
-//                continue;
-//            }
-
 
 
             foreach( ['revenue_month', 'deferred_revenue_quarter', 'deferred_revenue_6months', 'deferred_revenue_year'] as $dr ) {
@@ -899,9 +889,7 @@ class SAGE extends Controller
 
 
             // 182 -  Convergenze [AS39120] FULL MEMBER RESOLD CUSTOMER
-            // 183 - Sirius Technology SRL [AS60501] FULL MEMBER RESOLD CUSTOMER
             // 190 -  Swisscom [AS3303] FULL MEMBER RESOLD CUSTOMER
-            // 171 -  Telin [AS7713] FULL MEMBER ACCOUNT CLOSED RESOLD CUSTOMER
             if( in_array( $cust->id, [ 182, 190, ] ) ) {
                 Log::info( "***** SKIPPING {$cust->name}");
                 continue;
@@ -916,7 +904,7 @@ class SAGE extends Controller
 
             $invoice = [
                 'contact_id' => $sageCustomers[ $cust->id ] ?? 'XXX',
-                'date'       => '2024-01-23',
+                'date'       => '2025-01-01',
                 'status_id'  => 'DRAFT',
             ];
 
@@ -1142,17 +1130,22 @@ class SAGE extends Controller
 
             dump($invoice);
 
-//            $guzzle = new \GuzzleHttp\Client();
-//
-//            $r = $guzzle->post( 'https://api.accounting.sage.com/v3.1/sales_invoices', [
-//                    \GuzzleHttp\RequestOptions::JSON => [ 'sales_invoice' => $invoice ],
-//                    'headers'                        => [
-//                        'Authorization' => 'Bearer ' . $suser->token
-//                    ]
-//                ]
-//            );
+            $guzzle = new \GuzzleHttp\Client();
 
-            Log::info( "***** END {$cust->name}");
+            try {
+                $r = $guzzle->post( 'https://api.accounting.sage.com/v3.1/sales_invoices', [
+                        \GuzzleHttp\RequestOptions::JSON => [ 'sales_invoice' => $invoice ],
+                        'headers'                        => [
+                            'Authorization' => 'Bearer ' . $suser->token
+                        ]
+                    ]
+                );
+
+                Log::info( "***** END {$cust->name}" );
+            } catch( \Exception $e ) {
+                dump("***** ERROR {$cust->name} - {$e->getMessage()}");
+                Log::error( "***** ERROR {$cust->name} - {$e->getMessage()}" );
+            }
 
         }
 
