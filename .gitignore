@@ -5,11 +5,13 @@
 .buildpath
 .settings/
 .vagrant/
-
+auth.json
+/.fleet
 /vendor/
 bin/fixtures.php
 public/.htaccess
 public/logos/*
+/public/build
 
 public/favicon.ico
 
@@ -78,4 +80,6 @@ tests/Browser/ExampleTest.php
 app/Console/Commands/Redcentric.php
 .env.sage
 
-custs-invoice*
+.idea/httpRequests
+.phpactor.json
+

@@ -21,7 +21,7 @@
     $(document).ready(function() {
         $( "#notes" ).parent().removeClass().addClass( "col-sm-12" )
 
-        $.ajax( "<?= url('api/v4/ix-f/ixp') ?>" )
+        $.ajax( "<?= url('ix-f/ixp') ?>" )
             .done( function( data ) {
                 let selectedixp, selectNow;
                 let options = `<option value=''>Choose the matching IX-F IXP...</option>\n`;
@@ -33,13 +33,12 @@
                 <?php else: ?>
                     selectedixp = false;
                 <?php endif; ?>
-
                 $.each( data, function ( i, ixp ) {
-                    selectNow = null;
-                    if( selectedixp === ixp.ixf_id ){
-                        selectNow = 'selected="selected"';
+                    selectNow = '';
+                    if( selectedixp === parseInt(ixp.ixf_id) ){
+                        selectNow = 'selected="selected" ';
                     }
-                    options += `<option ${selectNow} value="${ixp.ixf_id}">${ixp.name}</option>\n`;
+                    options += `<option ${selectNow}value="${ixp.ixf_id}">${ixp.name}</option>\n`;
                 });
                 dd_ixp.html( options );
                 dd_ixp.attr("placeholder", "Choose the matching IX-F IXP...");
@@ -58,7 +57,7 @@
             })
             .always( function() {
                 dd_ixp.select2({ allowClear: true, placeholder: 'Choose the matching IX-F IXP...' });
-                dd_ixp.trigger( "changed.select2" );
+                dd_ixp.trigger( "change" );
                 ixp_req_finish = true;
 
                 if( pdb_req_finish ){
@@ -82,10 +81,10 @@
 
                 $.each( data, function ( i, ixp ) {
                     selectNow = '';
-                    if( selectedpdb === ixp.pdb_id ){
-                        selectNow = 'selected="selected"';
+                    if( selectedpdb === parseInt(ixp.pdb_id) ){
+                        selectNow = 'selected="selected" ';
                     }
-                    options += `<option ${selectNow} value="${ixp.pdb_id}">${ixp.name}</option>\n`;
+                    options += `<option ${selectNow}value="${ixp.pdb_id}">${ixp.name}</option>\n`;
                 });
                 dd_pdb.html( options );
             })
@@ -103,7 +102,7 @@
             })
             .always( function() {
                 dd_pdb.select2({ allowClear: true, placeholder: 'Choose the matching PeeringDB IXP...' });
-                dd_pdb.trigger( "changed.select2" );
+                dd_pdb.trigger( "change" );
                 pdb_req_finish = true;
 
                 if( ixp_req_finish ){

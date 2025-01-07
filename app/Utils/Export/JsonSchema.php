@@ -3,7 +3,7 @@
 namespace IXP\Utils\Export;
 
 /*
- * Copyright (C) 2009 - 2023 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -195,12 +195,13 @@ class JsonSchema
 
             $i['peering_policy_list'] = array_values( Customer::$PEERING_POLICIES);
 
-            $result = NetworkInfo::leftJoin( 'vlan', 'vlan.id', 'networkinfo.vlanid' )
+            $vlansToExport = NetworkInfo::join( 'vlan', 'vlan.id', 'networkinfo.vlanid' )
                 ->where( 'vlan.infrastructureid', $infra->id )
+                ->where( 'vlan.export_to_ixf', true )
                 ->get()->toArray();
 
             $vlanentry = [];
-            foreach( $result as $ni )
+            foreach( $vlansToExport as $ni )
             {
                 $id = $ni['id'];
                 $vlanentry[$id]['id']                                   = $ni['id'];
@@ -402,7 +403,7 @@ class JsonSchema
 
                 $vlanentries = [];
                 foreach( $vi->vlanInterfaces as $vli ) {
-                    if( $vli->vlan->private ) {
+                    if( $vli->vlan->private || !$vli->vlan->export_to_ixf ) {
                         continue;
                     }
 
@@ -612,15 +613,18 @@ class JsonSchema
         // intinfo filters
         if( $i = config( 'ixp_api.json_export_schema.excludes.intinfo' ) ) {
             foreach( explode( '|', $i ) as $exc ) {
-                foreach( $output[ 'ixp_list' ] as $intid => $int ) {
-                    foreach( $int[ 'vlan' ] as $vid => $v ) {
+                foreach( $output[ 'member_list' ] as $mid => $member ) {
+                    foreach( $member[ 'connection_list' ] as $clid => $connection ) {
+                        foreach( $member[ 'connection_list' ][$clid]['vlan_list'] as $vid => $vlanint ) {
 
-                        if( isset( $output[ 'ixp_list' ][ $intid ][ 'vlan' ][ $vid ][ 'ipv4' ][ $exc ] ) ) {
-                            unset( $output[ 'ixp_list' ][ $intid ][ 'vlan' ][ $vid ][ 'ipv4' ][ $exc ] );
-                        }
+                            if( isset( $output[ 'member_list' ][ $mid ][ 'connection_list' ][ $clid ][ 'vlan_list' ][ $vid ][ 'ipv4' ][ $exc ] ) ) {
+                                unset( $output[ 'member_list' ][ $mid ][ 'connection_list' ][ $clid ][ 'vlan_list' ][ $vid ][ 'ipv4' ][ $exc ] );
+                            }
 
-                        if( isset( $output[ 'ixp_list' ][ $intid ][ 'vlan' ][ $vid ][ 'ipv6' ][ $exc ] ) ) {
-                            unset( $output[ 'ixp_list' ][ $intid ][ 'vlan' ][ $vid ][ 'ipv6' ][ $exc ] );
+                            if( isset( $output[ 'member_list' ][ $mid ][ 'connection_list' ][ $clid ][ 'vlan_list' ][ $vid ][ 'ipv6' ][ $exc ] ) ) {
+                                unset( $output[ 'member_list' ][ $mid ][ 'connection_list' ][ $clid ][ 'vlan_list' ][ $vid ][ 'ipv6' ][ $exc ] );
+                            }
+
                         }
                     }
                 }

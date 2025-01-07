@@ -43,27 +43,29 @@ trait Observable
 {
     public static function bootObservable(): void
     {
-        if( !config( 'ixp_fe.frontend.disabled.logs' ) && !App::runningInConsole() ){
-            static::saved(
-                function( Model $model ) {
-                    // create or update?
-                    if( $model->wasRecentlyCreated ) {
-                        static::logChange( $model, Log::ACTION_CREATED );
-                    } elseif ( $model->getChanges() ) {
-                        // Check if with have field with log exception
-                        if( !( isset( $model->field_log_exception ) && empty( array_diff( array_values( $model->field_log_exception ), array_keys( $model->getChanges() ) ) ) ) ){
-                            static::logChange( $model, Log::ACTION_UPDATED );
-                        }
+        if( config( 'ixp_fe.frontend.disabled.logs' ) || App::runningInConsole() ) {
+            return;
+        }
+
+        static::saved(
+            function( Model $model ) {
+                // create or update?
+                if( $model->wasRecentlyCreated ) {
+                    static::logChange( $model, Log::ACTION_CREATED );
+                } elseif ( $model->getChanges() ) {
+                    // Check if with have field with log exception
+                    if( !method_exists( $model, 'observerSkipUpdateLogging' ) || !$model->observerSkipUpdateLogging( $model->getChanges() ) ) {
+                        static::logChange( $model, Log::ACTION_UPDATED );
                     }
                 }
-            );
+            }
+        );
 
-            static::deleted(
-                function( Model $model ) {
-                    static::logChange( $model, Log::ACTION_DELETED );
-                }
-            );
-        }
+        static::deleted(
+            function( Model $model ) {
+                static::logChange( $model, Log::ACTION_DELETED );
+            }
+        );
     }
 
     /**

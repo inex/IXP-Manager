@@ -107,11 +107,54 @@ abstract class DuskTestCase extends BaseTestCase
     }
 
     /**
+     * Replace any .env file attribute for dusk tests
+     * If there are no attribute find, add it at the end of file
+     *
+     * @param string $fromAttribute
+     * @param string $toAttribute
+     */
+    protected function replaceEnvAttr( string $fromAttribute, string $toAttribute): void
+    {
+        $path = '.env';
+
+        if (file_exists($path)) {
+
+            // Grab original .env file contents
+            $original = explode("\n", file_get_contents( $path ) );
+            $output = '';
+            $replaced = false;
+            $exist = false;
+            // Iterate through the attributes
+            foreach ( $original as $value ) {
+                if ( $value == $toAttribute ) {
+                    $exist = true;
+                }
+                if ( $value != $fromAttribute ) {
+                    // write in the rest of the values
+                    $output .= $value . PHP_EOL;
+                } else {
+                    // Replace the Attribute
+                    $output .= $toAttribute . PHP_EOL;
+                    $replaced = true;
+                }
+            }
+
+            //if not replaced, and doesn't exist the attribute, add it
+            if ( !$replaced && !$exist ) {
+                $output .= $toAttribute . PHP_EOL;
+            }
+
+            // Write all to .env file for dusk test
+            file_put_contents($path, $output );
+        }
+    }
+
+    /**
      * Delete a value in .env files for dusk tests
      *
-     * @param array $variables
+     * @param string $attribute
      */
-    protected function deleteEnvValue($variables = [])
+    protected function deleteEnvValue( string $attribute)
     {
         $path = '.env';
 
@@ -120,9 +163,9 @@ abstract class DuskTestCase extends BaseTestCase
             // Grab original .env file contents
             $original = explode("\n", file_get_contents( $path ) );
             $output = '';
-            // Convert all new parameters to expected format
+            // Iterate through the attributes
             foreach ( $original as $value ) {
-                if ( $value != $variables ) {
+                if ( $value != $attribute ) {
                     $output .= $value . PHP_EOL;
                 }
             }

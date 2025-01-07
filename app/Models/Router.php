@@ -56,8 +56,6 @@ use IXP\Traits\Observable;
  * @property string $template
  * @property bool $skip_md5
  * @property \Illuminate\Support\Carbon|null $last_update_started
- * @property \Illuminate\Support\Carbon|null $last_updated
- * @property int $pause_updates
  * @property bool $rpki
  * @property string|null $software_version
  * @property string|null $operating_system
@@ -65,6 +63,8 @@ use IXP\Traits\Observable;
  * @property int $rfc1997_passthru
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $last_updated
+ * @property int $pause_updates
  * @property-read Router|null $pair
  * @property-read \IXP\Models\Vlan $vlan
  * @method static Builder|Router hasApi()
@@ -158,17 +158,6 @@ class Router extends Model
         'rpki'                => 'boolean',
         'last_updated'        => 'datetime',
         'last_update_started' => 'datetime',
-    ];
-
-    /**
-     * The attributes that should not be logged
-     *
-     * @var array
-     */
-    public $field_log_exception = [
-        'last_updated',
-        'updated_at',
-        'last_update_started',
     ];
 
 
@@ -605,4 +594,19 @@ class Router extends Model
             $model->vlan->name,
         );
     }
+
+
+    /**
+     * We don't want to log router config updates via the API
+     */
+    public function observerSkipUpdateLogging( array $changes ): bool {
+
+        $interesting = array_filter( array_keys($changes), function( $v ) {
+            return !in_array( $v, [ 'last_updated', 'updated_at', 'last_update_started' ] );
+        } );
+
+        return count( $interesting ) === 0;
+    }
+
+
 }

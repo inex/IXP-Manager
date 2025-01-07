@@ -19,18 +19,6 @@
         </include>
     </coverage>
     <php>
-        <server name="APP_ENV" value="testing"/>
-        <server name="BCRYPT_ROUNDS" value="4"/>
-        <server name="CACHE_DRIVER" value="array"/>
-        <server name="MAIL_DRIVER" value="array"/>
-        <server name="QUEUE_CONNECTION" value="sync"/>
-        <server name="SESSION_DRIVER" value="array"/>
-        <server name="IXP_PHPUNIT_RUNNING" value="1"/>
-        <server name="TELESCOPE_ENABLED" value="false"/>
-        <const name="IXP_PHPUNIT_API_URL" value="http://localhost:8000/apiv1" />
-        <const name="IXP_PHPUNIT_API_KEY" value="Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9" />
-        <const name="APPLICATION_VERSION" value="999.9.9" />
-        <const name="APPLICATION_VERDATE" value="9999999999" />
         <const name="APPLICATION_STARTTIME" value="0" />
     </php>
 </phpunit>

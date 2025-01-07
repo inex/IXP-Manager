@@ -28,6 +28,7 @@
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
+
 if( !function_exists( 'resolve_dns_a' ) )
 {
     /**
@@ -128,7 +129,49 @@ if( !function_exists( 'ixp_get_client_ip' ) )
     }
 }
 
+// Many development environments do not have the php_rrd extension and this
+// simple allows the dev system to return a blank graph.
 if( !function_exists( 'rrd_graph' ) )
 {
     function rrd_graph( $a, $b ) { return []; }
+}
+
+
+/**
+ *  Originally copied as is from https://github.com/parsedown/laravel
+ *  on 21 Apr 2024 as that repo has switched to read-only and was
+ *  marked as no longer supported. MIT licensed.
+ *
+ * @param string $value
+ * @param bool $inline
+ * @return Parsedown|string
+ */
+function parsedown(?string $value = null, bool $inline = null)
+{
+    /**
+     * @var Parsedown $parser
+     */
+    $parser = app('parsedown');
+
+    if (!func_num_args()) {
+        return $parser;
+    }
+
+    if (is_null($inline)) {
+        $inline = config('parsedown.inline');
+    }
+
+    if ($inline) {
+        return $parser->line($value);
+    }
+
+    return $parser->text($value);
+}
+
+if( !function_exists( 'app_env_is' ) )
+{
+    function app_env_is( string $env )
+    {
+        return config('app.env') === $env;
+    }
 }

@@ -64,10 +64,10 @@ class SmtpTest extends Mailable
      */
     public function build(): self
     {
-        if( $this->debug ) {
-            $this->logger = new \Swift_Plugins_Loggers_ArrayLogger;
-            Mail::getSwiftMailer()->registerPlugin( new \Swift_Plugins_LoggerPlugin($this->logger));
-        }
+//        if( $this->debug ) {
+//            $this->logger = new \Swift_Plugins_Loggers_ArrayLogger;
+//            Mail::getSwiftMailer()->registerPlugin( new \Swift_Plugins_LoggerPlugin($this->logger));
+//        }
 
         return $this->markdown( 'utils.emails.smtp-test' )
                     ->subject( 'SMTP test email from IXP Manager' );
