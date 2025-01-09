@@ -1,8 +1,8 @@
 # How to contribute
 
-Third-party patches are welcomed for adding functionality, fixing bugs and just correcting typos on IXP Manager.
+Third-party patches are welcomed for adding functionality, fixing bugs, and just correcting typos on IXP Manager.
 
-We want to keep it as easy as possible to contribute changes but there are a few guidelines that we 
+We want to keep it as easy as possible to contribute changes, but there are a few guidelines that we 
 need contributors to follow so that we can accept them.
 
 
@@ -11,8 +11,8 @@ need contributors to follow so that we can accept them.
 
 * Make sure you have a [GitHub account](https://github.com/)
 * Submit a ticket for your issue, assuming one does not already exist.
-  * Clearly describe the issue including steps to reproduce when it is a bug.
-  * Make sure you fill in the earliest version that you know has the issue.
+  * Clearly describe the issue, including steps to reproduce when it is a bug.
+  * Make sure you fill in the earliest version you know has the issue.
 * Fork the repository on GitHub
 
 ## Making Changes
@@ -31,14 +31,14 @@ need contributors to follow so that we can accept them.
 
 ## Submitting Changes
 
-* Sign the [Contributor License Agreement](https://docs.ixpmanager.org/dev/cla/) (`gpg --clearsign inex-cla.txt`) and email it to ''operations (at) inex (dot) ie''.
+* Sign the [Contributor License Agreement](https://docs.ixpmanager.org/latest/dev/cla/) (`gpg --clearsign inex-cla.txt`) and email it to ''operations (at) inex (dot) ie''.
 * Push your changes to a topic branch in your fork of the repository.
 * Submit a pull request to the repository in the inex organisation.
-* Submit a parallel pull request [with new/updated documentation](http://docs.ixpmanager.org/dev/docs/)
+* Submit a parallel pull request [with new/updated documentation](http://docs.ixpmanager.org/latest/dev/docs/)
 
 # Additional Resources
 
-* [Contributor License Agreement](https://docs.ixpmanager.org/dev/cla/)
+* [Contributor License Agreement](https://docs.ixpmanager.org/latest/dev/cla/)
 * [General GitHub documentation](http://help.github.com/)
 * [GitHub pull request documentation](http://help.github.com/send-pull-requests/)
 * [IXP Manager Mailing List](https://www.inex.ie/mailman/listinfo/ixpmanager)
