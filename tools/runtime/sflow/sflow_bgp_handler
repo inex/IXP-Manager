@@ -25,19 +25,22 @@
 # Add the following line to /etc/rc.conf to enable sflow_bgp_handler:
 # sflow_bgp_handler_enable="YES"
 # sflow_bgp_handler_flags="<set as needed>"
+#
+# To use goflow2 instead of sflowtool:
+# sflow_bgp_handler_command="/usr/local/bin/goflow2-detect-ixp-bgp-sessions"
 
 . /etc/rc.subr
 
 name="sflow_bgp_handler"
 rcvar=sflow_bgp_handler_enable
-command="/usr/local/bin/sflow-detect-ixp-bgp-sessions"
 
 load_rc_config $name
 # Set defaults
 : ${sflow_bgp_handler_enable="NO"}
+: ${sflow_bgp_handler_command="/usr/local/bin/sflow-detect-ixp-bgp-sessions"}
 : ${sflow_bgp_handler_pidfile="/var/run/${name}.pid"}
 
-start_cmd="/usr/sbin/daemon -f -p ${sflow_bgp_handler_pidfile} ${command} ${sflow_bgp_handler_flags}"
+start_cmd="/usr/sbin/daemon -f -p ${sflow_bgp_handler_pidfile} ${sflow_bgp_handler_command} ${sflow_bgp_handler_flags}"
 start_postcmd="echo Starting ${name}."
 
 run_rc_command "$1"
