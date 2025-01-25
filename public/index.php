@@ -81,7 +81,7 @@ require __DIR__.'/../vendor/autoload.php';
 
 $app = require_once __DIR__.'/../bootstrap/app.php';
 
-include base_path() . '/version.php';
+require_once base_path() . '/version.php';
 
 $kernel = $app->make( Kernel::class );
 
