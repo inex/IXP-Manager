@@ -95,6 +95,7 @@ class ApiMaybeAuthenticate
                 }
 
                 Auth::onceUsingId( $key->user_id );
+                $us = Auth::user();
 
                 $key->update( [
                     'lastseenAt'    => now(),
@@ -103,11 +104,6 @@ class ApiMaybeAuthenticate
             }
 		} elseif( $us->disabled ){
             return response( 'User is disabled', 403 );
-        }
-
-        // Check if default customer is disabled
-        if( Auth::check() && $us->customer()->active()->notDeleted()->doesntExist() ){
-            return response( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' of the user is disabled', 403 );
         }
 
 		return $next( $r );
