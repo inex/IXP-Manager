@@ -992,6 +992,9 @@ class SAGE extends Controller
                         continue;
                     }
 
+                    // FIXME - On line description of the 1st LAN2 – this should have been 1st 100Gb Port (per month). Rather than additional port. The price was good as they're the same cost.
+
+
                     // lan1 1st 1Gb port free
                     if( $vid == $lan1vid && ( $p == 1000 ) && !$lan1_free_applied ) {
 
