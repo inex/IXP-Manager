@@ -120,6 +120,9 @@
     </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/InManrs.php">
+    <UndefinedConstant>
+      <code><![CDATA[APPLICATION_VERSION]]></code>
+    </UndefinedConstant>
     <UndefinedMagicMethod>
       <code><![CDATA[current]]></code>
       <code><![CDATA[current]]></code>
@@ -163,6 +166,45 @@
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/Redcentric.php">
+    <UndefinedMagicMethod>
+      <code><![CDATA[CustomerToUser::updateOrCreate(
+                [
+                    'customer_id' => $u->custid,
+                    'user_id'     => $u->id,
+                ],
+                [
+                    'privs' => $u->privs,
+                ]
+            )]]></code>
+      <code><![CDATA[User2FA::updateOrCreate(
+                [ 'user_id' => $uid ],
+                [
+                    'enabled' => isset( $up['tfa.totp.enabled'] ) && ( $up['tfa.totp.enabled'][0] == 1 ),
+                    'secret' => isset( $up['tfa.totp.secret'] ) ? $up['tfa.totp.secret'][0] : null,
+                ]
+            )]]></code>
+      <code><![CDATA[User::find( $uid )]]></code>
+      <code><![CDATA[User::updateOrCreate(
+                [ 'id' => $uc[0] ],
+                [
+                    'custid' => $uc[1],
+                    'username' => $uc[2],
+                    'password' => $uc[3],
+                    'email' => $uc[4],
+                    'authorisedMobile' => $uc[5],
+                    'uid' => $uc[6],
+                    'privs' => $uc[7],
+                    'disabled' => $uc[8],
+                    'lastupdatedby' => $uc[10],
+                    'creator' => $uc[11],
+                    'created_at' => $uc[12],
+                    'updated_at' => $uc[9],
+                ],
+            )]]></code>
+      <code><![CDATA[User::where('username', $uc[2] )]]></code>
+    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/RipeAtlas/CompleteRequests.php">
     <MissingDocblockType>
@@ -380,6 +422,10 @@
     <MissingDocblockType>
       <code><![CDATA[public function create( Request $r, Customer $cust ): JsonResponse]]></code>
     </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+      <code><![CDATA[Auth::getUser()->customer]]></code>
+    </NoInterfaceProperties>
   </file>
   <file src="app/Http/Controllers/Api/V4/CustomerController.php">
     <UndefinedMagicMethod>
@@ -455,6 +501,14 @@
     <MissingDocblockType>
       <code><![CDATA[public function test( Request $r ): Response|JsonResponse]]></code>
     </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->customer]]></code>
+      <code><![CDATA[Auth::getUser()->customer]]></code>
+      <code><![CDATA[Auth::getUser()->id]]></code>
+      <code><![CDATA[Auth::getUser()->privs]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+    </NoInterfaceProperties>
     <UndefinedMagicMethod>
       <code><![CDATA[Infrastructure::select( [ 'i.name', 'i.shortname', 'i.ixf_ix_id', 'i.peeringdb_ix_id' ] )]]></code>
     </UndefinedMagicMethod>
@@ -598,6 +652,14 @@
       <code><![CDATA[config( 'ixp_fe.lang.customer.one' )]]></code>
       <code><![CDATA[config( 'ixp_fe.lang.customer.one' )]]></code>
     </InvalidOperand>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->name]]></code>
+      <code><![CDATA[Auth::getUser()->name]]></code>
+      <code><![CDATA[Auth::getUser()->name]]></code>
+      <code><![CDATA[Auth::getUser()->name]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+    </NoInterfaceProperties>
     <UndefinedMagicMethod>
       <code><![CDATA[Customer::find( session()->get( "switched_customer_from" ) )]]></code>
       <code><![CDATA[CustomerToUser::find( session()->get( "switched_c2u_to" ) )]]></code>
@@ -664,6 +726,9 @@
       <code><![CDATA[public function doStore( Request $r ): bool|RedirectResponse]]></code>
       <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
     </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+    </NoInterfaceProperties>
     <RedundantCondition>
       <code><![CDATA[User::AUTH_CUSTADMIN]]></code>
       <code><![CDATA[User::AUTH_CUSTUSER]]></code>
@@ -822,6 +887,9 @@
       <code><![CDATA[public function logos(): View]]></code>
       <code><![CDATA[public function store( LogoRequest $r ): RedirectResponse]]></code>
     </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+    </NoInterfaceProperties>
     <UndefinedMagicMethod>
       <code><![CDATA[Customer::find( Auth::getUser()->custid )]]></code>
       <code><![CDATA[Customer::findOrFail( $id )]]></code>
@@ -840,8 +908,18 @@
       <code><![CDATA[public function storeBillingDetails( BillingDetailsRequest $r ): RedirectResponse]]></code>
       <code><![CDATA[public function storeNocDetails( NocDetailsRequest $r ): RedirectResponse]]></code>
     </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->customer]]></code>
+      <code><![CDATA[Auth::getUser()->customer]]></code>
+      <code><![CDATA[Auth::getUser()->customer]]></code>
+    </NoInterfaceProperties>
   </file>
   <file src="app/Http/Controllers/Docstore/DirectoryController.php">
+    <NoInterfaceProperties>
+      <code><![CDATA[$user->privs]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::user()->username]]></code>
+    </NoInterfaceProperties>
     <UndefinedMagicMethod>
       <code><![CDATA[DocstoreDirectory::create( $r->all() )]]></code>
     </UndefinedMagicMethod>
@@ -850,6 +928,11 @@
     <InvalidOperand>
       <code><![CDATA[config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' )]]></code>
     </InvalidOperand>
+    <NoInterfaceProperties>
+      <code><![CDATA[$user->username]]></code>
+      <code><![CDATA[$user->username]]></code>
+      <code><![CDATA[Auth::user()->username]]></code>
+    </NoInterfaceProperties>
     <UndefinedMagicMethod>
       <code><![CDATA[DocstoreFile::create( [
             'name'                  => $r->name,
@@ -1254,6 +1337,12 @@
     </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/PatchPanel/Port/DangerActionsController.php">
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+    </NoInterfaceProperties>
     <UndefinedMagicMethod>
       <code><![CDATA[PatchPanel::select( [ 'pp.id', 'pp.name' ] )]]></code>
       <code><![CDATA[PatchPanelPort::find( $r->port_id )]]></code>
@@ -1261,6 +1350,9 @@
     </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/PatchPanel/Port/FileController.php">
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+    </NoInterfaceProperties>
     <UndefinedMagicMethod>
       <code><![CDATA[PatchPanelPortFile::create( [
                 'patch_panel_port_id'   => $ppp->id,
@@ -1322,6 +1414,14 @@
       <code><![CDATA[public function peeringNotes( Request $r ): JsonResponse]]></code>
       <code><![CDATA[public function sendPeeringEmail( PeeringManagerRequest $r ) : JsonResponse]]></code>
     </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+    </NoInterfaceProperties>
     <UndefinedMagicMethod>
       <code><![CDATA[Customer::find( $r->peerid )]]></code>
       <code><![CDATA[Customer::find( Auth::getUser()->custid )]]></code>
@@ -1379,6 +1479,12 @@
       <code><![CDATA[public function updatePassword( PasswordRequest $r  ): RedirectResponse]]></code>
       <code><![CDATA[public function updateProfile( ProfileRequest $r  ): RedirectResponse]]></code>
     </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->prefs]]></code>
+    </NoInterfaceProperties>
+    <TypeDoesNotContainType>
+      <code><![CDATA[Auth::getUser()->prefs[ 'notes' ][ 'global_notifs' ]]]></code>
+    </TypeDoesNotContainType>
     <UndefinedMagicMethod>
       <code><![CDATA[UserRememberToken::where( 'user_id', $user->id )]]></code>
     </UndefinedMagicMethod>
@@ -1466,6 +1572,13 @@
     <InvalidOperand>
       <code><![CDATA[config('ixp_fe.rs-filters.ttl' )]]></code>
     </InvalidOperand>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+    </NoInterfaceProperties>
     <RedundantCondition>
       <code><![CDATA[(string)$rsf->peer_id]]></code>
       <code><![CDATA[(string)$rsf->vlan_id]]></code>
@@ -1539,6 +1652,10 @@
       <code><![CDATA[public function routesForTable( string $handle, string $table )]]></code>
       <code><![CDATA[public function status( string $handle ): Response]]></code>
     </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+    </NoInterfaceProperties>
     <UndefinedMagicMethod>
       <code><![CDATA[Customer::find( Auth::getUser()->custid )]]></code>
       <code><![CDATA[Customer::find( Auth::getUser()->custid )]]></code>
@@ -1703,6 +1820,11 @@
     </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/User/CustomerToUserController.php">
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::user()->customer]]></code>
+    </NoInterfaceProperties>
     <RedundantCondition>
       <code><![CDATA[$disassociatedUser->customers()]]></code>
     </RedundantCondition>
@@ -1739,6 +1861,13 @@
                 abort(404, 'UserToCustomer not found');
             }]]></code>
     </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::user()->custid]]></code>
+      <code><![CDATA[Auth::user()->custid]]></code>
+      <code><![CDATA[Auth::user()->custid]]></code>
+      <code><![CDATA[Auth::user()->username]]></code>
+      <code><![CDATA[Auth::user()->username]]></code>
+    </NoInterfaceProperties>
     <RedundantFunctionCall>
       <code><![CDATA[sprintf]]></code>
     </RedundantFunctionCall>
@@ -1839,6 +1968,12 @@
       <code><![CDATA[CustomerToUser::where( [ 'user_id' => Auth::id()  ] )]]></code>
     </UndefinedMagicMethod>
   </file>
+  <file src="app/Http/Middleware/Google2FA.php">
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->user2FA]]></code>
+      <code><![CDATA[Auth::getUser()->user2FA]]></code>
+    </NoInterfaceProperties>
+  </file>
   <file src="app/Http/Middleware/RsPrefixes.php">
     <InvalidCast>
       <code><![CDATA[config( 'ixp_fe.rs-prefixes.access' )]]></code>
@@ -1892,6 +2027,16 @@
       <code><![CDATA[PatchPanelPort::find( $this->port_id )]]></code>
     </UndefinedMagicMethod>
   </file>
+  <file src="app/Http/Requests/Profile/Password.php">
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->password]]></code>
+    </NoInterfaceProperties>
+  </file>
+  <file src="app/Http/Requests/Profile/Profile.php">
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->password]]></code>
+    </NoInterfaceProperties>
+  </file>
   <file src="app/Http/Requests/RouteServerFilter/Store.php">
     <UndefinedMagicMethod>
       <code><![CDATA[Customer::find( $value )]]></code>
@@ -1910,6 +2055,9 @@
     </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Requests/User/Delete.php">
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::user()->username]]></code>
+    </NoInterfaceProperties>
     <UndefinedMagicMethod>
       <code><![CDATA[CustomerToUser::where( 'customer_id', $us->custid )]]></code>
     </UndefinedMagicMethod>
@@ -2881,6 +3029,11 @@
       <code><![CDATA[public function move( PatchPanelPort $dest, PatchPanelPort $slave = null ): bool]]></code>
       <code><![CDATA[public function remove(): void]]></code>
     </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+    </NoInterfaceProperties>
     <TypeDoesNotContainType>
       <code><![CDATA[!( $history = $this->archive() )]]></code>
     </TypeDoesNotContainType>
@@ -3174,6 +3327,13 @@
     <UndefinedMagicMethod>
       <code><![CDATA[CustomerToUser::where( 'customer_id', $auth->custid )]]></code>
     </UndefinedMagicMethod>
+  </file>
+  <file src="app/Providers/AuthServiceProvider.php">
+    <RedundantCondition>
+      <code><![CDATA[method_exists( $guard, 'setCookieJar' )]]></code>
+      <code><![CDATA[method_exists( $guard, 'setDispatcher' )]]></code>
+      <code><![CDATA[method_exists( $guard, 'setRequest' )]]></code>
+    </RedundantCondition>
   </file>
   <file src="app/Providers/DiagnosticsServiceProvider.php">
     <MissingDocblockType>
@@ -3595,11 +3755,6 @@
       <code><![CDATA[public function forRouter( Router $router )]]></code>
     </MissingDocblockType>
   </file>
-  <file src="app/Services/LookingGlass/BirdsEye.php">
-    <InvalidDocblock>
-      <code><![CDATA[public function setCacheEnabled( bool $b ): BirdsEye]]></code>
-    </InvalidDocblock>
-  </file>
   <file src="app/Services/PeeringDb.php">
     <InvalidOperand>
       <code><![CDATA[config( 'ixp_api.peeringDB.api-key' )]]></code>
@@ -3758,17 +3913,11 @@
     </ImplementedReturnTypeMismatch>
   </file>
   <file src="app/Utils/Grapher/Mrtg.php">
-    <InvalidDocblock>
-      <code><![CDATA[public function getPeriodTime( $period ): float]]></code>
-    </InvalidDocblock>
     <MissingDocblockType>
       <code><![CDATA[protected function loadMrtgFile(): array]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Utils/Grapher/Rrd.php">
-    <InvalidDocblock>
-      <code><![CDATA[public function getPeriodTime( $period ): float]]></code>
-    </InvalidDocblock>
     <InvalidScalarArgument>
       <code><![CDATA[$this->graph()->periodEnd()->timestamp]]></code>
       <code><![CDATA[$this->graph()->periodStart()->timestamp]]></code>
@@ -3791,17 +3940,16 @@
       <code><![CDATA[$rrd === false || !is_array( $rrd )]]></code>
     </TypeDoesNotContainType>
   </file>
-  <file src="app/Utils/Horizon.php">
-    <InvalidDocblock>
-      <code><![CDATA[public static function status()]]></code>
-    </InvalidDocblock>
-  </file>
   <file src="app/Utils/Http/Controllers/Frontend/EloquentController.php">
     <MissingDocblockType>
       <code><![CDATA[public function delete( Request $r ): RedirectResponse]]></code>
       <code><![CDATA[public function edit( int $id ): View]]></code>
       <code><![CDATA[public function store( Request $r )]]></code>
     </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+    </NoInterfaceProperties>
     <RedundantCondition>
       <code><![CDATA[is_array( $data )]]></code>
     </RedundantCondition>
