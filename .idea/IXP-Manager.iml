@@ -27,6 +27,9 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/foil/foil" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/igorw/get-in" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/pimple/pimple" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/league/uri" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/league/uri-interfaces" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-php84" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -78,6 +78,11 @@ class SmtpMailTest extends IXPCommand
 
         $mail_default = config( 'mail.default' );
 
+        if( !$mail_default ) {
+            $this->error( "The mail driver ('MAIL_MAILER' in your .env file) is not set." );
+            return -3;
+        }
+
         $this->table( [], [
             [ 'Driver', $mail_default ],
             [ 'Host', config( "mail.mailers.{$mail_default}.host", '(not set)' ) ],
