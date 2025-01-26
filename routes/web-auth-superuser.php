@@ -333,6 +333,15 @@ if( !config( 'ixp_fe.frontend.disabled.logs' ) ){
 Route::get( 'rs-filters/list-customers', 'RsFilterController@listCustomers' )->name( 'rs-filters@list-customers' );
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// IRRDB
+///
+
+Route::get( 'irrdb/summary', 'Irrdb\IrrdbController@summary' )->name( 'irrdb@summary' );
+
+
 
 
 

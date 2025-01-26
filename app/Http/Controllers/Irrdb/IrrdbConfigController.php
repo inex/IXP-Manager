@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Http\Controllers;
+namespace IXP\Http\Controllers\Irrdb;
 
 /*
  * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.

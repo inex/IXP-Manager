@@ -9942,16 +9942,16 @@
         },
         {
             "name": "filp/whoops",
-            "version": "2.16.0",
+            "version": "2.17.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filp/whoops.git",
-                "reference": "befcdc0e5dce67252aa6322d82424be928214fa2"
+                "reference": "075bc0c26631110584175de6523ab3f1652eb28e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filp/whoops/zipball/befcdc0e5dce67252aa6322d82424be928214fa2",
-                "reference": "befcdc0e5dce67252aa6322d82424be928214fa2",
+                "url": "https://api.github.com/repos/filp/whoops/zipball/075bc0c26631110584175de6523ab3f1652eb28e",
+                "reference": "075bc0c26631110584175de6523ab3f1652eb28e",
                 "shasum": ""
             },
             "require": {
@@ -10001,7 +10001,7 @@
             ],
             "support": {
                 "issues": "https://github.com/filp/whoops/issues",
-                "source": "https://github.com/filp/whoops/tree/2.16.0"
+                "source": "https://github.com/filp/whoops/tree/2.17.0"
             },
             "funding": [
                 {
@@ -10009,7 +10009,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-09-25T12:00:00+00:00"
+            "time": "2025-01-25T12:00:00+00:00"
         },
         {
             "name": "hamcrest/hamcrest-php",
@@ -11477,16 +11477,16 @@
         },
         {
             "name": "psalm/plugin-laravel",
-            "version": "v2.11.0",
+            "version": "v2.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/psalm/psalm-plugin-laravel.git",
-                "reference": "ffd51399b672959331ed3ef4eaae13984474e2f0"
+                "reference": "fc013ac3995e57b4ce804b8ef4478f4e41d7e7b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/psalm/psalm-plugin-laravel/zipball/ffd51399b672959331ed3ef4eaae13984474e2f0",
-                "reference": "ffd51399b672959331ed3ef4eaae13984474e2f0",
+                "url": "https://api.github.com/repos/psalm/psalm-plugin-laravel/zipball/fc013ac3995e57b4ce804b8ef4478f4e41d7e7b4",
+                "reference": "fc013ac3995e57b4ce804b8ef4478f4e41d7e7b4",
                 "shasum": ""
             },
             "require": {
@@ -11506,7 +11506,7 @@
                 "php": "^8.1",
                 "symfony/console": "^6.0 || ^7.0",
                 "symfony/finder": "^6.0 || ^7.0",
-                "vimeo/psalm": "^5.20"
+                "vimeo/psalm": "^5.20|^6"
             },
             "require-dev": {
                 "laravel/framework": "^10.48 || ^11.0",
@@ -11543,9 +11543,9 @@
             "homepage": "https://github.com/psalm/psalm-plugin-laravel",
             "support": {
                 "issues": "https://github.com/psalm/psalm-plugin-laravel/issues",
-                "source": "https://github.com/psalm/psalm-plugin-laravel/tree/v2.11.0"
+                "source": "https://github.com/psalm/psalm-plugin-laravel/tree/v2.11.1"
             },
-            "time": "2024-03-19T21:40:03+00:00"
+            "time": "2025-01-26T11:20:28+00:00"
         },
         {
             "name": "sebastian/cli-parser",

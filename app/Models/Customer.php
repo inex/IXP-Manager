@@ -368,6 +368,16 @@ class Customer extends Model
     }
 
     /**
+     * Get the virtual interfaces for the customer
+     */
+    public function irrdbUpdateLog(): Hasone
+    {
+        return $this->hasOne(IrrdbUpdateLog::class, 'cust_id');
+    }
+
+
+
+    /**
      * Get the peers for the customer
      */
     public function peers(): HasMany
