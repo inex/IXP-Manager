@@ -188,6 +188,7 @@ use IXP\Models\AtlasMeasurement;
  * @property string|null $created
  * @method static Builder|Customer whereCreated($value)
  * @method static Builder|Customer whereLastupdated($value)
+ * @property-read \IXP\Models\IrrdbUpdateLog|null $irrdbUpdateLog
  * @mixin Eloquent
  */
 class Customer extends Model

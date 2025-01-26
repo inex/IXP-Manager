@@ -1,49 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="5.26.1@d747f6500b38ac4f7dfc5edbcae6e4b637d7add0">
-  <file src="app/Console/Commands/Audit/PortSpeeds.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[PhysicalInterface::whereNotIn( 'id', $ignorepiids )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Console/Commands/Command.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::selectRaw( 'id,name,autsys' )]]></code>
-      <code><![CDATA[User::selectRaw(
-            'user.id as id, user.name as name, 
-                      user.username as username, user.email as email,
-                      GROUP_CONCAT( c.name SEPARATOR "\n" ) AS cname, 
-                      GROUP_CONCAT( 
-                      CASE 
-                        WHEN c2u.privs = 3 THEN "SU"
-                        WHEN c2u.privs = 2 THEN "CA"
-                        WHEN c2u.privs = 1 THEN "CU"
-                      END 
-                      SEPARATOR "\n" ) 
-                      AS privs' )]]></code>
-    </UndefinedMagicMethod>
-  </file>
   <file src="app/Console/Commands/Contact/ExportGroup.php">
     <RedundantCondition>
       <code><![CDATA[$name]]></code>
       <code><![CDATA[$type]]></code>
     </RedundantCondition>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Contact::selectRaw( 'c.name AS name, c.position as position, c.email AS email, c.phone AS phone, c.mobile AS mobile,
-                    c.facilityaccess AS facilityaccess, c.mayauthorize AS mayauthorize, c.notes as notes' )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Console/Commands/Grapher/EmailPortUtilisation.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[get]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/Grapher/EmailPortsWithCounts.php">
     <MissingDocblockType>
       <code><![CDATA[private function emailPortsWithCounts( $category ): array]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( $d[ 'cust_id' ] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/Grapher/EmailTrafficDeltas.php">
     <InvalidOperand>
@@ -52,27 +18,8 @@
     <MissingDocblockType>
       <code><![CDATA[private function portsWithDelta( Carbon $day, float $stddev ): array]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[TrafficDaily::where( 'cust_id', $c->id )]]></code>
-      <code><![CDATA[get]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Console/Commands/Grapher/PruneDailyP2p.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[P2pDailyStats::where( 'day', '<', $before->format('Y-m-d') )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/Grapher/UploadDailyP2p.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[P2pDailyStats::updateOrCreate( [
-                        'cust_id' => $customer->id,
-                        'day'     => $start->format( 'Y-m-d' ),
-                        'peer_id' => $peerId,
-                    ],
-                    $traffic
-                )]]></code>
-      <code><![CDATA[when]]></code>
-    </UndefinedMagicMethod>
     <UndefinedMagicPropertyFetch>
       <code><![CDATA[$customer->virtualinterfaces]]></code>
     </UndefinedMagicPropertyFetch>
@@ -87,10 +34,6 @@
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[TrafficDailyPhysInt::where( 'day', $today->format('Y-m-d') )]]></code>
-      <code><![CDATA[TrafficDailyPhysInt::where( 'day', '<', $day->format('Y-m-d') )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/Grapher/UploadStatsToDb.php">
     <ImplicitToStringCast>
@@ -99,58 +42,21 @@
     <InvalidOperand>
       <code><![CDATA[config( 'grapher.cli.traffic_daily.delete_old_days', 140 )]]></code>
     </InvalidOperand>
-    <UndefinedMagicMethod>
-      <code><![CDATA[TrafficDaily:: where( 'day', '<', $day->format('Y-m-d') )]]></code>
-      <code><![CDATA[TrafficDaily::where( 'day', $today->format('Y-m-d') )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Console/Commands/Helpdesk/UpdateOrganisations.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Contact::create([
-            'name'      => $cust->name . ' - NOC',
-            'email'     => $cust->nocemail,
-            'mobile'    => $cust->nocphone,
-        ])]]></code>
-      <code><![CDATA[Contact::create([
-            'name'      => $cust->name . ' - Peering',
-            'email'     => $cust->peeringemail,
-        ])]]></code>
-      <code><![CDATA[getUser]]></code>
-      <code><![CDATA[getUser]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/InManrs.php">
     <UndefinedConstant>
       <code><![CDATA[APPLICATION_VERSION]]></code>
     </UndefinedConstant>
-    <UndefinedMagicMethod>
-      <code><![CDATA[current]]></code>
-      <code><![CDATA[current]]></code>
-      <code><![CDATA[current]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/InPeeringDb.php">
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[current]]></code>
-      <code><![CDATA[current]]></code>
-      <code><![CDATA[current]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/Irrdb/UpdateAsnDb.php">
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
-  </file>
-  <file src="app/Console/Commands/Irrdb/UpdateDb.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( $custarg )]]></code>
-      <code><![CDATA[get]]></code>
-      <code><![CDATA[get]]></code>
-      <code><![CDATA[get]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/Irrdb/UpdatePrefixDb.php">
     <MissingDocblockType>
@@ -167,68 +73,20 @@
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
   </file>
-  <file src="app/Console/Commands/Redcentric.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[CustomerToUser::updateOrCreate(
-                [
-                    'customer_id' => $u->custid,
-                    'user_id'     => $u->id,
-                ],
-                [
-                    'privs' => $u->privs,
-                ]
-            )]]></code>
-      <code><![CDATA[User2FA::updateOrCreate(
-                [ 'user_id' => $uid ],
-                [
-                    'enabled' => isset( $up['tfa.totp.enabled'] ) && ( $up['tfa.totp.enabled'][0] == 1 ),
-                    'secret' => isset( $up['tfa.totp.secret'] ) ? $up['tfa.totp.secret'][0] : null,
-                ]
-            )]]></code>
-      <code><![CDATA[User::find( $uid )]]></code>
-      <code><![CDATA[User::updateOrCreate(
-                [ 'id' => $uc[0] ],
-                [
-                    'custid' => $uc[1],
-                    'username' => $uc[2],
-                    'password' => $uc[3],
-                    'email' => $uc[4],
-                    'authorisedMobile' => $uc[5],
-                    'uid' => $uc[6],
-                    'privs' => $uc[7],
-                    'disabled' => $uc[8],
-                    'lastupdatedby' => $uc[10],
-                    'creator' => $uc[11],
-                    'created_at' => $uc[12],
-                    'updated_at' => $uc[9],
-                ],
-            )]]></code>
-      <code><![CDATA[User::where('username', $uc[2] )]]></code>
-    </UndefinedMagicMethod>
-  </file>
   <file src="app/Console/Commands/RipeAtlas/CompleteRequests.php">
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[AtlasRun::whereNull( 'completed_at' )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/RipeAtlas/CreateMeasurements.php">
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[AtlasRun::whereNull('started_at' )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/RipeAtlas/RunMeasurements.php">
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[AtlasMeasurement::select('am.*' )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/RipeAtlas/StopAllMeasurements.php">
     <MissingDocblockType>
@@ -239,37 +97,16 @@
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[AtlasMeasurement::whereNull( 'atlas_stop' )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/RipeAtlas/UpdateProbes.php">
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( $cust )]]></code>
-      <code><![CDATA[Customer::where( 'autsys', $cust )]]></code>
-      <code><![CDATA[Customer::where( 'shortname', $cust )]]></code>
-      <code><![CDATA[get]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/Rir/GenerateObject.php">
     <MissingDocblockType>
       <code><![CDATA[public function handle()]]></code>
     </MissingDocblockType>
-  </file>
-  <file src="app/Console/Commands/Router/FilteredPrefixes.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( $custarg )]]></code>
-      <code><![CDATA[Customer::where( 'autsys', $custarg )]]></code>
-      <code><![CDATA[Customer::where( 'shortname', $custarg  )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Console/Commands/Router/GenerateConfiguration.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Router::where( 'handle', $this->argument('handle')  )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/Switches/ReindexIfIndex.php">
     <MissingDocblockType>
@@ -278,9 +115,6 @@
     <TooManyArguments>
       <code><![CDATA[option]]></code>
     </TooManyArguments>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Switcher::where( 'name', $this->argument('switch') )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/Switches/SnmpPoll.php">
     <MissingDocblockType>
@@ -293,47 +127,21 @@
       <code><![CDATA[option]]></code>
       <code><![CDATA[option]]></code>
     </TooManyArguments>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Switcher::where( 'active', true )]]></code>
-      <code><![CDATA[Switcher::where( 'name', $this->argument('switch') )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/Upgrade/Customer2Users.php">
     <MissingDocblockType>
       <code><![CDATA[public function handle()]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[UserLoginHistory::where( 'user_id', $u->id )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Console/Commands/Upgrade/MigrateL2Addresses.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Layer2Address::create([
-                        'mac'                   => $mac->mac,
-                        'vlan_interface_id'     => $vli->id,
-                        'firstseen'             => now(),
-                    ])]]></code>
-      <code><![CDATA[Layer2Address::from( 'l2address AS l' )]]></code>
-      <code><![CDATA[VirtualInterface::find( $mac->virtualinterfaceid )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/Upgrade/PromoteCustUser.php">
     <MissingDocblockType>
       <code><![CDATA[public function handle()]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[CustomerToUser::where( 'privs', User::AUTH_CUSTUSER )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/Upgrade/RemoveCustAdmin.php">
     <MissingDocblockType>
       <code><![CDATA[public function handle()]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[ApiKey::where( 'user_id', $user->id )]]></code>
-      <code><![CDATA[CustomerToUser::where( 'privs', User::AUTH_CUSTADMIN )]]></code>
-      <code><![CDATA[UserLoginHistory::where( 'customer_to_user_id', $c2u->id )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/Upgrade/ResetMysqlViews.php">
     <MissingDocblockType>
@@ -350,17 +158,6 @@
     <InvalidScalarArgument>
       <code><![CDATA[$search]]></code>
     </InvalidScalarArgument>
-    <UndefinedMagicMethod>
-      <code><![CDATA[User::find( $uid )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Console/Commands/Utils/ExpungeLogs.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[ApiKey::whereNotNull( 'expires' )]]></code>
-      <code><![CDATA[Log::where( 'created_at', '<', $sixmonthsago )]]></code>
-      <code><![CDATA[UserLoginHistory::where( 'at', '<', $sixmonthsago )]]></code>
-      <code><![CDATA[UserRememberToken::where( 'expires', '<', now()->format( 'Y-m-d H:i:s' ) )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Console/Commands/Utils/SmtpMailTest.php">
     <InvalidCast>
@@ -375,25 +172,6 @@
     <MissingDocblockType>
       <code><![CDATA[public function handle()]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Oui::count()]]></code>
-      <code><![CDATA[Oui::create([
-                    'oui'           => $oui,
-                    'organisation'  => $organisation
-                ])]]></code>
-      <code><![CDATA[Oui::truncate()]]></code>
-      <code><![CDATA[Oui::where( 'oui', $oui  )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Console/Commands/Vagrant/GenerateBirdseyeConfigurationsCommand.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Router::get()]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Console/Commands/Vagrant/GenerateClientRouterConfigurationsCommand.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[VlanInterface::where( 'rsclient', 1 )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Events/Customer/Note/Changed.php">
     <RedundantCondition>
@@ -404,19 +182,6 @@
     <MissingDocblockType>
       <code><![CDATA[private function publicPeeringGraphs( Request $r ): array]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Cabinet::orderBy('name' )]]></code>
-      <code><![CDATA[Customer::selectRaw('type AS ctype, COUNT( type ) AS cnt')]]></code>
-      <code><![CDATA[Infrastructure::orderBy('name' )]]></code>
-      <code><![CDATA[Location::orderBy('name' )]]></code>
-      <code><![CDATA[VlanInterface::selectRaw(
-            'v.id AS vlanid,
-                        v.name AS vlanname,
-                        COUNT(vli.id) AS overall_count, 
-                        SUM(vli.rsclient = 1) AS rsclient_count,
-                        SUM(vli.ipv6enabled = 1) AS ipv6_count' )]]></code>
-      <code><![CDATA[orderBy]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Api/V4/Customer/Note/CustomerNotesController.php">
     <MissingDocblockType>
@@ -427,49 +192,15 @@
       <code><![CDATA[Auth::getUser()->customer]]></code>
     </NoInterfaceProperties>
   </file>
-  <file src="app/Http/Controllers/Api/V4/CustomerController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::select( [ 's.id AS id', 's.name' ] )]]></code>
-      <code><![CDATA[PatchPanel::findOrFail( $r->patch_panel_id )]]></code>
-      <code><![CDATA[Vlan::findOrFail( $r->vlanid )]]></code>
-    </UndefinedMagicMethod>
-  </file>
   <file src="app/Http/Controllers/Api/V4/DnsController.php">
     <MissingDocblockType>
       <code><![CDATA[private function loadRecords( Vlan $vlan, int $protocol ): array]]></code>
     </MissingDocblockType>
   </file>
-  <file src="app/Http/Controllers/Api/V4/IrrdbPrefixController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( $r->custid )]]></code>
-      <code><![CDATA[IrrdbPrefix::where( 'customer_id', $cust->id )]]></code>
-    </UndefinedMagicMethod>
-  </file>
   <file src="app/Http/Controllers/Api/V4/Layer2AddressController.php">
     <MissingDocblockType>
       <code><![CDATA[public function delete( Layer2Address $l2a, bool $showFeMessage = false  ): JsonResponse]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Layer2Address::create( [
-            'mac' => $mac,
-            'vlan_interface_id' => $r->vlan_interface_id
-        ] )]]></code>
-      <code><![CDATA[Layer2Address::from( 'l2address AS l' )]]></code>
-      <code><![CDATA[User::find( Auth::id() )]]></code>
-      <code><![CDATA[User::find( Auth::id() )]]></code>
-      <code><![CDATA[VlanInterface::findOrFail( $r->vlan_interface_id )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Controllers/Api/V4/NagiosController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Router::where( 'api_type', Router::API_TYPE_BIRDSEYE )]]></code>
-      <code><![CDATA[Router::where( 'api_type', Router::API_TYPE_BIRDSEYE )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Controllers/Api/V4/PatchPanelPortController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[PatchPanelPort::where( 'id', $ppp->id )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Api/V4/Provisioner/YamlController.php">
     <MissingDocblockType>
@@ -483,19 +214,6 @@
       <code><![CDATA[public function showSwitchByName( string $switchname, string $format ): Response]]></code>
       <code><![CDATA[public function vlansForSwitch( Switcher $switch, string $format ): Response]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[CoreBundle::selectRaw( "cb.type, cb.ipv4_subnet as cbSubnet, cb.enabled as cbEnabled, 
-                        cl.enabled as clEnabled, cb.description, cl.bfd, sp{$side}.name,
-                        pi{$side}.speed, pi{$side}.autoneg, cl.ipv4_subnet as clSubnet, s{$side}.id as saId" )]]></code>
-      <code><![CDATA[Switcher::selectRaw( 'loopback_ip' )]]></code>
-      <code><![CDATA[Switcher::selectRaw( 's.name AS name, s.id AS id, i.id AS infrastructure, s.active AS active' )]]></code>
-      <code><![CDATA[Vlan::selectRaw( 'v.name, v.number as tag, v.private, v.config_name' )]]></code>
-      <code><![CDATA[first]]></code>
-      <code><![CDATA[first]]></code>
-      <code><![CDATA[first]]></code>
-      <code><![CDATA[first]]></code>
-      <code><![CDATA[first]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Api/V4/PublicController.php">
     <MissingDocblockType>
@@ -509,9 +227,6 @@
       <code><![CDATA[Auth::getUser()->username]]></code>
       <code><![CDATA[Auth::getUser()->username]]></code>
     </NoInterfaceProperties>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Infrastructure::select( [ 'i.name', 'i.shortname', 'i.ixf_ix_id', 'i.peeringdb_ix_id' ] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Api/V4/RipeAtlasController.php">
     <MissingDocblockType>
@@ -523,37 +238,12 @@
     <MissingDocblockType>
       <code><![CDATA[public function genConfig( string $handle ): Response]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[first]]></code>
-      <code><![CDATA[first]]></code>
-      <code><![CDATA[first]]></code>
-      <code><![CDATA[first]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Api/V4/SflowReceiverController.php">
     <MissingDocblockType>
       <code><![CDATA[private function structuredResponse( array $array, string $format ): Response]]></code>
       <code><![CDATA[public function getReceiverList( string $format = null ): Response]]></code>
     </MissingDocblockType>
-  </file>
-  <file src="app/Http/Controllers/Api/V4/SwitchController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[SwitchPort::selectRaw( 'sp.name AS name, sp.type AS type, sp.id AS id' )]]></code>
-      <code><![CDATA[SwitchPort::selectRaw( 'sp.name AS name, sp.type AS type, sp.id AS id' )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Controllers/Api/V4/SwitchPortController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[SwitchPort::selectRaw( 'COUNT( c.id ) as nb, c.id, c.name' )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Controllers/Api/V4/UserController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[activeOnly]]></code>
-      <code><![CDATA[get]]></code>
-      <code><![CDATA[get]]></code>
-      <code><![CDATA[whereIn]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Api/V4/VlanController.php">
     <InvalidScalarArgument>
@@ -563,16 +253,6 @@
     <MissingDocblockType>
       <code><![CDATA[public function ipAddresses( Vlan $v ) : JsonResponse]]></code>
     </MissingDocblockType>
-  </file>
-  <file src="app/Http/Controllers/Api/V4/VlanInterfaceController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[VlanInterface::selectRaw(
-            'vli.id AS vliid, l2a.mac AS mac, vl.number as tag, vl.infrastructureid as infrastructure'
-        )]]></code>
-      <code><![CDATA[VlanInterface::selectRaw(
-            'vli.id AS vliid, ma.mac AS mac, vl.number as tag, vl.infrastructureid as infrastructure'
-        )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Api/V4/WhoisController.php">
     <InvalidOperand>
@@ -595,19 +275,11 @@
       <code><![CDATA[User::AUTH_CUSTADMIN]]></code>
       <code><![CDATA[User::AUTH_CUSTUSER]]></code>
     </RedundantCondition>
-    <UndefinedMagicMethod>
-      <code><![CDATA[ApiKey::findOrFail( $id )]]></code>
-      <code><![CDATA[ApiKey::findOrFail( $id )]]></code>
-      <code><![CDATA[ApiKey::where( 'user_id', Auth::id() )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Auth/ForgotPasswordController.php">
     <MissingDocblockType>
       <code><![CDATA[public function sendResetLinkEmail( Request $r ): RedirectResponse]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[User::where( 'email', $r->email )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Auth/LoginController.php">
     <InvalidOperand>
@@ -623,9 +295,6 @@
     <NoInterfaceProperties>
       <code><![CDATA[$suser->user]]></code>
     </NoInterfaceProperties>
-    <UndefinedMagicMethod>
-      <code><![CDATA[CustomerToUser::where( [ 'user_id' => $user->id ] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Auth/ResetPasswordController.php">
     <MissingDocblockType>
@@ -637,15 +306,6 @@
       <code><![CDATA[config( "ixp_fe.lang.customer.one" )]]></code>
       <code><![CDATA[config( "ixp_fe.lang.customer.one" )]]></code>
     </InvalidOperand>
-    <UndefinedMagicMethod>
-      <code><![CDATA[CustomerToUser::where( 'customer_id', $cust->id )]]></code>
-      <code><![CDATA[UserLoginHistory::create( [
-                'ip'                    => $this->getIp(),
-                'at'                    => now(),
-                'customer_to_user_id'   => $c2u->id,
-                'via'                   => 'SwitchCustomer'
-            ] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Auth/SwitchUserController.php">
     <InvalidOperand>
@@ -660,63 +320,22 @@
       <code><![CDATA[Auth::getUser()->username]]></code>
       <code><![CDATA[Auth::getUser()->username]]></code>
     </NoInterfaceProperties>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( session()->get( "switched_customer_from" ) )]]></code>
-      <code><![CDATA[CustomerToUser::find( session()->get( "switched_c2u_to" ) )]]></code>
-      <code><![CDATA[User::find( session()->get( "switched_user_from" ) )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/CabinetController.php">
     <MissingDocblockType>
       <code><![CDATA[public function doStore( Request $r )]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Cabinet::create( $r->all() )]]></code>
-      <code><![CDATA[Cabinet::findOrFail( $id )]]></code>
-      <code><![CDATA[Cabinet::findOrFail( $id )]]></code>
-      <code><![CDATA[Cabinet::select( [ 'cabinet.*', 'l.name AS locationname' ] )]]></code>
-      <code><![CDATA[Location::orderBy( 'name' )]]></code>
-      <code><![CDATA[Location::orderBy( 'name' )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/ConsoleServer/ConsoleServerConnectionController.php">
     <MissingDocblockType>
       <code><![CDATA[public function doStore( Request $r )]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[ConsoleServer::find( request()->cs )]]></code>
-      <code><![CDATA[ConsoleServer::orderBy( 'name' )]]></code>
-      <code><![CDATA[ConsoleServer::orderBy( 'name' )]]></code>
-      <code><![CDATA[ConsoleServer::orderBy( 'name' )]]></code>
-      <code><![CDATA[ConsoleServerConnection::find( $id )]]></code>
-      <code><![CDATA[ConsoleServerConnection::findOrFail( $id )]]></code>
-      <code><![CDATA[ConsoleServerConnection::make( $r->all() )]]></code>
-      <code><![CDATA[ConsoleServerConnection::where( "console_server_id" , $r->console_server_id  )]]></code>
-      <code><![CDATA[Customer::orderBy( 'name' )]]></code>
-      <code><![CDATA[Customer::orderBy( 'name' )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/ConsoleServer/ConsoleServerController.php">
     <MissingDocblockType>
       <code><![CDATA[public function doStore( Request $r ): bool|RedirectResponse]]></code>
       <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )]]></code>
-      <code><![CDATA[Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )]]></code>
-      <code><![CDATA[ConsoleServer::create( $r->all() )]]></code>
-      <code><![CDATA[ConsoleServer::findOrFail( $id )]]></code>
-      <code><![CDATA[ConsoleServer::findOrFail( $id )]]></code>
-      <code><![CDATA[ConsoleServer::selectRaw(
-            'cs.*,
-            v.id AS vendorid, v.name AS vendor,
-            c.id AS cabinetid, c.name AS cabinet, 
-            l.id AS locationid, l.shortname AS facility,
-            COUNT( DISTINCT csc.id ) AS num_connections'
-        )]]></code>
-      <code><![CDATA[Vendor::orderBy( 'name' )]]></code>
-      <code><![CDATA[Vendor::orderBy( 'name' )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Contact/ContactController.php">
     <MissingDocblockType>
@@ -733,27 +352,6 @@
       <code><![CDATA[User::AUTH_CUSTADMIN]]></code>
       <code><![CDATA[User::AUTH_CUSTUSER]]></code>
     </RedundantCondition>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Contact::findOrFail( $id )]]></code>
-      <code><![CDATA[Contact::findOrFail( $id )]]></code>
-      <code><![CDATA[Contact::make(
-            array_merge( $r->all(), [
-                'creator'       => $us->username,
-                'lastupdatedby' => Auth::id()
-            ] )
-        )]]></code>
-      <code><![CDATA[Contact::select( [ 'contact.*', 'cust.name AS customer', 'cust.id AS custid' ])]]></code>
-      <code><![CDATA[Contact::when( $groupid , function ( Builder $query, $groupid ) {
-                        return $query->leftJoin( 'contact_to_group', function( $join ) {
-                            $join->on( 'contact.id', 'contact_to_group.contact_id');
-                        })->where('contact_to_group.contact_group_id', $groupid );
-                    })]]></code>
-      <code><![CDATA[ContactGroup::find( $gToDelete )]]></code>
-      <code><![CDATA[ContactGroup::find( $groupid )]]></code>
-      <code><![CDATA[Customer::find( request()->cust )]]></code>
-      <code><![CDATA[Customer::orderBy( 'name' )]]></code>
-      <code><![CDATA[Customer::orderBy( 'name' )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Contact/ContactGroupController.php">
     <InvalidArgument>
@@ -766,43 +364,17 @@
       <code><![CDATA[public function doStore( Request $r ): bool|RedirectResponse]]></code>
       <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[ContactGroup::create( $r->all() )]]></code>
-      <code><![CDATA[ContactGroup::findOrFail( $id )]]></code>
-      <code><![CDATA[ContactGroup::findOrFail( $id )]]></code>
-      <code><![CDATA[ContactGroup::when( $id , function( Builder $q, $id ) {
-                return $q->where('id', $id );
-            } )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Controllers/ContentController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[get]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Controller.php">
     <MissingDocblockType>
       <code><![CDATA[protected function getAllowedPrivs(): array]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( request()->custid )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/CustKitController.php">
     <MissingDocblockType>
       <code><![CDATA[public function doStore( Request $r )]]></code>
       <code><![CDATA[public function doUpdate( Request $r, int $id )]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )]]></code>
-      <code><![CDATA[Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )]]></code>
-      <code><![CDATA[Customer::orderBy( 'name' )]]></code>
-      <code><![CDATA[Customer::orderBy( 'name' )]]></code>
-      <code><![CDATA[CustomerEquipment::findOrFail( $id )]]></code>
-      <code><![CDATA[CustomerEquipment::findOrFail( $id )]]></code>
-      <code><![CDATA[CustomerEquipment::make( $r->all() )]]></code>
-      <code><![CDATA[CustomerEquipment::select( [ 'custkit.*', 'cabinet.name AS cabinet', 'cust.name as customer' ] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Customer/CustomerController.php">
     <InvalidArgument>
@@ -821,40 +393,11 @@
       <code><![CDATA[public function update( CustomerRequest $r, Customer $cust ): RedirectResponse]]></code>
       <code><![CDATA[public function welcomeEmail( Customer $cust ) : View]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[CompanyBillingDetail::create( [ 'purchaseOrderRequired' => 0 ] )]]></code>
-      <code><![CDATA[CompanyRegisteredDetail::create( [ 'registeredName' => $r->name ] )]]></code>
-      <code><![CDATA[CompanyRegisteredDetail::select( 'jurisdiction' )]]></code>
-      <code><![CDATA[Customer::create( array_merge( $r->all(),
-            [
-                'reseller'                      => $r->isResold ? $r->reseller : null,
-                'company_registered_detail_id'  =>  $rdetail->id,
-                'company_billing_details_id'    =>  $bdetail->id,
-                'creator'                       =>  Auth::id()
-            ]
-        ) )]]></code>
-      <code><![CDATA[Customer::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )]]></code>
-      <code><![CDATA[Customer::select( [ 'id', 'name' ] )]]></code>
-      <code><![CDATA[Customer::select( [ 'id', 'name' ] )]]></code>
-      <code><![CDATA[Customer::select([ 'id', 'name' ])]]></code>
-      <code><![CDATA[Customer::selectRaw( 'cust.*' )]]></code>
-      <code><![CDATA[IrrdbConfig::orderBy( 'source' )]]></code>
-      <code><![CDATA[IrrdbConfig::orderBy( 'source' )]]></code>
-      <code><![CDATA[associate]]></code>
-      <code><![CDATA[get]]></code>
-      <code><![CDATA[groupBy]]></code>
-      <code><![CDATA[orderBy]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Customer/CustomerNotesController.php">
     <MissingDocblockType>
       <code><![CDATA[public function readAll() : RedirectResponse]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::selectRaw(
-            'cust.id AS cid, cust.name AS cname, cust.shortname AS cshortname, MAX( cn.updated_at) as latest'
-        )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Customer/CustomerTagController.php">
     <InvalidOperand>
@@ -866,21 +409,6 @@
       <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
       <code><![CDATA[public function link( Request $r, Customer $cust ): RedirectResponse]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[CustomerTag::create( $r->all() )]]></code>
-      <code><![CDATA[CustomerTag::findOrFail( $id )]]></code>
-      <code><![CDATA[CustomerTag::findOrFail( $r->id )]]></code>
-      <code><![CDATA[CustomerTag::orderBy( 'display_as' )]]></code>
-      <code><![CDATA[CustomerTag::when( $id , function( Builder $q, $id ) {
-            return $q->where('id', $id );
-        } )]]></code>
-      <code><![CDATA[CustomerToCustomerTag::create([
-                    'customer_tag_id'   => $ctag,
-                    'customer_id'       => $cust->id,
-                ])]]></code>
-      <code><![CDATA[CustomerToCustomerTag::where( 'customer_tag_id' , $ctag )]]></code>
-      <code><![CDATA[CustomerToCustomerTag::where( 'customer_tag_id' ,$dtag )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Customer/LogoController.php">
     <MissingDocblockType>
@@ -890,17 +418,6 @@
     <NoInterfaceProperties>
       <code><![CDATA[Auth::getUser()->custid]]></code>
     </NoInterfaceProperties>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( Auth::getUser()->custid )]]></code>
-      <code><![CDATA[Customer::findOrFail( $id )]]></code>
-      <code><![CDATA[Logo::make( [
-            'original_name'     => $file->getClientOriginalName(),
-            'stored_name'       => sha1( $img->getEncoded() ) . '.png',
-            'uploaded_by'       => $us->username,
-            'width'             => $img->width(),
-            'height'            => $img->height(),
-        ] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/DashboardController.php">
     <MissingDocblockType>
@@ -920,9 +437,6 @@
       <code><![CDATA[Auth::getUser()->username]]></code>
       <code><![CDATA[Auth::user()->username]]></code>
     </NoInterfaceProperties>
-    <UndefinedMagicMethod>
-      <code><![CDATA[DocstoreDirectory::create( $r->all() )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Docstore/FileController.php">
     <InvalidOperand>
@@ -933,31 +447,12 @@
       <code><![CDATA[$user->username]]></code>
       <code><![CDATA[Auth::user()->username]]></code>
     </NoInterfaceProperties>
-    <UndefinedMagicMethod>
-      <code><![CDATA[DocstoreFile::create( [
-            'name'                  => $r->name,
-            'description'           => $r->description,
-            'docstore_directory_id' => $r->docstore_directory_id,
-            'min_privs'             => $r->min_privs,
-            'path'                  => $path,
-            'sha256'                => hash_file( 'sha256', $file ),
-            'created_by'            => Auth::id(),
-            'file_last_updated'     => now(),
-        ] )]]></code>
-      <code><![CDATA[User::find( $file->created_by )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/DocstoreCustomer/DirectoryController.php">
     <InvalidOperand>
       <code><![CDATA[config( 'ixp_fe.lang.customer.one' )]]></code>
       <code><![CDATA[config( 'ixp_fe.lang.customer.one' )]]></code>
     </InvalidOperand>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( $value )]]></code>
-      <code><![CDATA[DocstoreCustomerDirectory::create( $r->all() )]]></code>
-      <code><![CDATA[DocstoreCustomerDirectory::find( $value )]]></code>
-      <code><![CDATA[DocstoreCustomerFile::groupBy( 'cust_id' )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/DocstoreCustomer/FileController.php">
     <InvalidArgument>
@@ -966,20 +461,6 @@
     <InvalidOperand>
       <code><![CDATA[config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' )]]></code>
     </InvalidOperand>
-    <UndefinedMagicMethod>
-      <code><![CDATA[DocstoreCustomerFile::create( [
-            'name'                              => $r->name,
-            'description'                       => $r->description,
-            'cust_id'                           => $cust->id,
-            'min_privs'                         => $r->min_privs,
-            'path'                              => $path,
-            'sha256'                            => hash_file( 'sha256', $uploadedFile ),
-            'created_by'                        => $r->user()->id,
-            'file_last_updated'                 => now(),
-            'docstore_customer_directory_id'    => $r->docstore_customer_directory_id,
-        ] )]]></code>
-      <code><![CDATA[User::find( $file->created_by )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/FilteredPrefixesController.php">
     <MissingDocblockType>
@@ -998,15 +479,6 @@
       <code><![CDATA[public function doStore( Request $r ): bool|RedirectResponse]]></code>
       <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Infrastructure::create( $r->all() )]]></code>
-      <code><![CDATA[Infrastructure::findOrFail( $id )]]></code>
-      <code><![CDATA[Infrastructure::findOrFail( $id )]]></code>
-      <code><![CDATA[Infrastructure::when( $id , static function( Builder $q, $id ) {
-            return $q->where('id', $id );
-        } )]]></code>
-      <code><![CDATA[Infrastructure::where( 'id', '!=', $this->object->id )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Interfaces/Common.php">
     <InvalidPropertyFetch>
@@ -1022,13 +494,6 @@
       <code><![CDATA[public function setBundleDetails( VirtualInterface $vi ): void]]></code>
       <code><![CDATA[public function setIp( Request $r, Vlan $v, VlanInterface $vli, bool $ipv6 = false ): bool]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[$model::where( 'vlanid', $v->id)]]></code>
-      <code><![CDATA[$model::where( 'vlanid', $v->id)]]></code>
-      <code><![CDATA[SwitchPort::find( $coreLinkDetail[ "hidden-sp-$side" ] )]]></code>
-      <code><![CDATA[SwitchPort::findOrFail( $r->input( 'switch-port-fanout' ) )]]></code>
-      <code><![CDATA[VirtualInterface::select( [ 'vi.channelgroup' ] )]]></code>
-    </UndefinedMagicMethod>
     <UndefinedMagicPropertyAssignment>
       <code><![CDATA[$coreInterface[$side]->physical_interface_id]]></code>
       <code><![CDATA[$physicalInterface[$side]->autoneg]]></code>
@@ -1044,12 +509,6 @@
       <code><![CDATA[public function storeWizard( Store $r ): RedirectResponse]]></code>
       <code><![CDATA[public function updateWizard( Store $r, CoreBundle $cb): RedirectResponse]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[CoreBundle::create( $r->all() )]]></code>
-      <code><![CDATA[Switcher::select( [ 'id', 'name' ] )]]></code>
-      <code><![CDATA[get]]></code>
-      <code><![CDATA[get]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Interfaces/PhysicalInterfaceController.php">
     <InvalidArgument>
@@ -1073,29 +532,6 @@
     <TypeDoesNotContainNull>
       <code><![CDATA[[]]]></code>
     </TypeDoesNotContainNull>
-    <UndefinedMagicMethod>
-      <code><![CDATA[PhysicalInterface::create( $r->all() )]]></code>
-      <code><![CDATA[PhysicalInterface::selectRaw(
-                'pi.id AS id, pi.speed AS speed, pi.duplex AS duplex, pi.status AS status,
-                    pi.notes AS notes, pi.autoneg AS autoneg, pi.rate_limit as rate_limit,
-                    c.name AS customer, c.id AS custid,
-                    s.name AS switch, s.id AS switchid,
-                    vi.id AS vintid,
-                    sp.type as type, ppi.id as ppid, fpi.id as fpid,
-                    sp.name AS port, l.id AS locid, l.name AS location'
-            )]]></code>
-      <code><![CDATA[SwitchPort::find( $r->switchportid )]]></code>
-      <code><![CDATA[SwitchPort::find( $r->switchportid )]]></code>
-      <code><![CDATA[Switcher::orderBy( 'name' )]]></code>
-      <code><![CDATA[Switcher::orderBy( 'name' )]]></code>
-      <code><![CDATA[VirtualInterface::find( $r->virtualinterfaceid )]]></code>
-      <code><![CDATA[VirtualInterface::find( $r->virtualinterfaceid )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Controllers/Interfaces/SflowReceiverController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[SflowReceiver::create( $r->all() )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Interfaces/VirtualInterfaceController.php">
     <InvalidArgument>
@@ -1108,41 +544,6 @@
     <TooManyArguments>
       <code><![CDATA[exceptInput]]></code>
     </TooManyArguments>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::join('cust AS reseller', 'reseller.reseller', 'cust.id')]]></code>
-      <code><![CDATA[PhysicalInterface::create( array_merge( $r->all(), [
-            'virtualinterfaceid' => $vi->id,
-        ] ) )]]></code>
-      <code><![CDATA[SwitchPort::find( $r->switchportid )]]></code>
-      <code><![CDATA[Switcher::where( 'active', true )]]></code>
-      <code><![CDATA[VirtualInterface::create( $r->all() )]]></code>
-      <code><![CDATA[VirtualInterface::make( $r->all() )]]></code>
-      <code><![CDATA[VirtualInterface::selectRaw(
-                'vi.id AS id, 
-                            SUM( pi.speed ) AS speed,
-                            SUM( pi.rate_limit ) AS rate_limit,
-                            COUNT( pi.id ) AS nbpi,
-                            c.id AS custid, c.name AS custname,
-                            l.id as locationid, l.name AS locationname,
-                            s.id AS switchid, s.name AS switchname,
-                            GROUP_CONCAT( sp.name ) AS switchport,
-                            GROUP_CONCAT( sp.type ) AS switchporttype,
-                            GROUP_CONCAT( ppi.id ) AS peering,
-                            GROUP_CONCAT( fpi.id ) AS fanout'
-                        )]]></code>
-      <code><![CDATA[Vlan::find( $r->vlanid )]]></code>
-      <code><![CDATA[Vlan::orderBy( 'number' )]]></code>
-      <code><![CDATA[Vlan::orderBy( 'number' )]]></code>
-      <code><![CDATA[VlanInterface::make( array_merge( $r->all(),
-            [
-                'virtualinterfaceid' => $vi->id,
-                'busyhost'           => false
-            ]
-        ) )]]></code>
-      <code><![CDATA[current]]></code>
-      <code><![CDATA[current]]></code>
-      <code><![CDATA[orderBy]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Interfaces/VlanInterfaceController.php">
     <InvalidArgument>
@@ -1158,21 +559,6 @@
     <TypeDoesNotContainType>
       <code><![CDATA[false]]></code>
     </TypeDoesNotContainType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Layer2Address::create(
-                [
-                    'vlan_interface_id' => $vli->id,
-                    'mac'               => $l2a->mac,
-                ]
-            )]]></code>
-      <code><![CDATA[Vlan::  orderBy( 'number' )]]></code>
-      <code><![CDATA[Vlan::find( $r->vlanid )]]></code>
-      <code><![CDATA[Vlan::find( $r->vlanid )]]></code>
-      <code><![CDATA[Vlan::find( $r->vlanid )]]></code>
-      <code><![CDATA[Vlan::orderBy( 'number' )]]></code>
-      <code><![CDATA[VlanInterface::make( $r->all() )]]></code>
-      <code><![CDATA[VlanInterface::make()]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/IpAddressController.php">
     <ImplicitToStringCast>
@@ -1186,123 +572,17 @@
       <code><![CDATA[public function list( int $protocol, int $vid = null ): View]]></code>
       <code><![CDATA[public function store( Store $r ): RedirectResponse]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[$ipvxModel::findOrFail( $id )]]></code>
-      <code><![CDATA[$ipvxModel::findOrFail( $id )]]></code>
-      <code><![CDATA[$ipvxModel::selectRaw( 'ip.id as id, 
-                        ip.address as address,' .
-            ( $protocol === 4 ? 'inet_aton(ip.address) as aton' : 'hex( inet6_aton( ip.address ) ) as aton') .
-                        ",v.name AS vlan,
-                        v.id as vlanid,
-                        vli.id AS vliid,
-                        vli.ipv{$protocol}hostname AS hostname,
-                        c.name AS customer, 
-                        c.id AS customerid,
-                        vi.id AS viid" )]]></code>
-      <code><![CDATA[$ipvxModel::selectRaw( 'ip.id as id, 
-                        ip.address as address,' .
-            ( $protocol === 4 ? 'inet_aton(ip.address) as aton' : 'hex( inet6_aton( ip.address ) ) as aton') .
-                        ",v.name AS vlan,
-                        v.id as vlanid,
-                        vli.id AS vliid,
-                        vli.ipv{$protocol}hostname AS hostname,
-                        c.name AS customer, 
-                        c.id AS customerid,
-                        vi.id AS viid" )]]></code>
-      <code><![CDATA[$model::whereIn( 'id', $ips->pluck( 'id' ) )]]></code>
-      <code><![CDATA[$model::whereIn( 'id', $ips->pluck( 'id' ) )]]></code>
-      <code><![CDATA[Vlan::find( $r->vlan )]]></code>
-      <code><![CDATA[Vlan::findOrFail( $vid )]]></code>
-      <code><![CDATA[orderBy]]></code>
-      <code><![CDATA[orderBy]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Controllers/IrrdbConfigController.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function doStore( Request $r ): bool|RedirectResponse]]></code>
-      <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
-    </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[IrrdbConfig::create( $r->all() )]]></code>
-      <code><![CDATA[IrrdbConfig::findOrFail( $id )]]></code>
-      <code><![CDATA[IrrdbConfig::findOrFail( $id )]]></code>
-      <code><![CDATA[IrrdbConfig::when( $id , function( Builder $q, $id ) {
-            return $q->where('id', $id );
-        } )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Layer2AddressController.php">
     <RedundantCondition>
       <code><![CDATA[User::AUTH_CUSTADMIN]]></code>
       <code><![CDATA[User::AUTH_CUSTUSER]]></code>
     </RedundantCondition>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Layer2Address::selectRaw( "l.*,
-            vi.id AS viid,
-            c.id AS customerid, c.abbreviatedName AS customer,
-            s.name AS switchname,
-            vl.name as vlan, vl.id as vlanid, 
-            vli.id as vliid,
-            GROUP_CONCAT( sp.name ) AS switchport,
-            GROUP_CONCAT( DISTINCT ipv4.address ) AS ip4,
-            GROUP_CONCAT( DISTINCT ipv6.address ) AS ip6,
-            COALESCE( o.organisation, 'Unknown' ) AS organisation"
-        )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/LocationController.php">
     <InvalidArgument>
       <code><![CDATA[array_values( Countries::getListForSelect( 'iso_3166_2' ) )]]></code>
     </InvalidArgument>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Location::create( $r->all() )]]></code>
-      <code><![CDATA[Location::findOrFail( $id )]]></code>
-      <code><![CDATA[Location::findOrFail( $id )]]></code>
-      <code><![CDATA[Location::when( $id , function( Builder $q, $id ) {
-            return $q->where('id', $id );
-        } )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Controllers/LogController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Log::select( 'model' )]]></code>
-      <code><![CDATA[Log::select( [ 'user_id', 'username' ] )]]></code>
-      <code><![CDATA[Log::selectRaw( 'log.*, u.username' )]]></code>
-      <code><![CDATA[User::where( 'username', $r->user )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Controllers/LoginHistoryController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[CustomerToUser::select( [
-            'customer_to_users.last_login_date AS last_login_date',
-            'customer_to_users.last_login_via AS last_login_via',
-            'customer_to_users.id AS AS c2u_id',
-            'user.id AS id',
-            'user.username AS username',
-            'user.email AS email',
-            'cust.id AS cust_id',
-            'cust.name AS cust_name'
-        ] )]]></code>
-      <code><![CDATA[User::findOrFail( $id )]]></code>
-      <code><![CDATA[UserLoginHistory::select( [ 'user_logins.*', 'user.id AS user_id', 'cust.name AS cust_name' ] )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Controllers/MacAddressController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[MacAddress::selectRaw( "m.mac,
-            ANY_VALUE(m.id) AS id,
-            m.virtualinterfaceid,
-            m.created_at,
-            m.updated_at,
-            vi.id AS viid,
-            c.id AS customerid, c.abbreviatedName AS customer,
-            s.name AS switchname, 
-            GROUP_CONCAT( DISTINCT sp.name ) AS switchport,
-            GROUP_CONCAT( DISTINCT ipv4.address ) AS ip4,
-            GROUP_CONCAT( DISTINCT ipv6.address ) AS ip6,
-            COALESCE( o.organisation, 'Unknown' ) AS organisation"
-        )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/NetworkInfoController.php">
     <MissingDocblockType>
@@ -1310,31 +590,6 @@
       <code><![CDATA[public function doStore( Request $r ): bool|RedirectResponse]]></code>
       <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[NetworkInfo::create( $r->all() )]]></code>
-      <code><![CDATA[NetworkInfo::findOrFail( $id )]]></code>
-      <code><![CDATA[NetworkInfo::findOrFail( $id )]]></code>
-      <code><![CDATA[NetworkInfo::select( [ 'networkinfo.*', 'vlan.id AS vlan_id', 'vlan.name AS vlanname' ] )]]></code>
-      <code><![CDATA[NetworkInfo::where( "vlanid" , $vlan->id  )]]></code>
-      <code><![CDATA[Vlan::find( $r->vlanid )]]></code>
-      <code><![CDATA[orderBy]]></code>
-      <code><![CDATA[orderBy]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Controllers/PatchPanel/PatchPanelController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Cabinet::select( [ 'id', 'name', 'locationid' ] )]]></code>
-      <code><![CDATA[Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )]]></code>
-      <code><![CDATA[Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )]]></code>
-      <code><![CDATA[Location::select( [ 'id', 'name' ] )]]></code>
-      <code><![CDATA[PatchPanel::create( $r->merge( [
-                'location_notes' => clean( $r->location_notes ),
-                'active' => true,
-                'port_prefix' => $r->port_prefix ?? '',
-            ])->all()
-        )]]></code>
-      <code><![CDATA[PatchPanel::where( 'active', $active )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/PatchPanel/Port/DangerActionsController.php">
     <NoInterfaceProperties>
@@ -1343,38 +598,11 @@
       <code><![CDATA[Auth::getUser()->username]]></code>
       <code><![CDATA[Auth::getUser()->username]]></code>
     </NoInterfaceProperties>
-    <UndefinedMagicMethod>
-      <code><![CDATA[PatchPanel::select( [ 'pp.id', 'pp.name' ] )]]></code>
-      <code><![CDATA[PatchPanelPort::find( $r->port_id )]]></code>
-      <code><![CDATA[PatchPanelPort::find( $r->slave_id )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/PatchPanel/Port/FileController.php">
     <NoInterfaceProperties>
       <code><![CDATA[Auth::getUser()->username]]></code>
     </NoInterfaceProperties>
-    <UndefinedMagicMethod>
-      <code><![CDATA[PatchPanelPortFile::create( [
-                'patch_panel_port_id'   => $ppp->id,
-                'name'                  => $file->getClientOriginalName(),
-                'type'                  => Storage::mimeType( $path ),
-                'uploaded_at'           => now(),
-                'uploaded_by'           => Auth::getUser()->username,
-                'size'                  => Storage::size( $path ),
-                'storage_location'      => $hash
-            ] )]]></code>
-      <code><![CDATA[User::find( Auth::id() )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Controllers/PatchPanel/Port/HistoryFileController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[User::find( Auth::id() )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Controllers/PatchPanel/Port/LoaController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[User::find( Auth::id() )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/PatchPanel/Port/PortController.php">
     <InvalidArgument>
@@ -1387,17 +615,6 @@
       <code><![CDATA[public function setNotes( Request $r, PatchPanelPort $ppp ) : JsonResponse]]></code>
       <code><![CDATA[public function update( StorePatchPanelPortRequest $r, PatchPanelPort $ppp ): RedirectResponse]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Cabinet::find( $cabinet )]]></code>
-      <code><![CDATA[Location::find( $location )]]></code>
-      <code><![CDATA[PatchPanelPort::find( $r->partner_port )]]></code>
-      <code><![CDATA[PatchPanelPort::where( 'switch_port_id', $sp->id )]]></code>
-      <code><![CDATA[SwitchPort::findOrFail( $r->switch_port_id )]]></code>
-      <code><![CDATA[SwitchPort::select( 'vi.custid' )]]></code>
-      <code><![CDATA[SwitchPort::selectRaw( 'sp.name, sp.type, sp.id' )]]></code>
-      <code><![CDATA[Switcher::select( [ 'switch.id', 'switch.name' ] )]]></code>
-      <code><![CDATA[orderBy]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/PeeringManagerController.php">
     <ImplicitToStringCast>
@@ -1422,29 +639,6 @@
       <code><![CDATA[Auth::getUser()->custid]]></code>
       <code><![CDATA[Auth::getUser()->custid]]></code>
     </NoInterfaceProperties>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( $r->peerid )]]></code>
-      <code><![CDATA[Customer::find( Auth::getUser()->custid )]]></code>
-      <code><![CDATA[Customer::find( Auth::getUser()->custid )]]></code>
-      <code><![CDATA[Customer::find( Auth::getUser()->custid )]]></code>
-      <code><![CDATA[Customer::find( Auth::getUser()->custid )]]></code>
-      <code><![CDATA[Customer::find( Auth::getUser()->custid )]]></code>
-      <code><![CDATA[Customer::find( Auth::getUser()->custid )]]></code>
-      <code><![CDATA[Customer::findOrFail( $custid )]]></code>
-      <code><![CDATA[Customer::findOrFail( $r->peerid )]]></code>
-      <code><![CDATA[Customer::findOrFail( $r->peerid )]]></code>
-      <code><![CDATA[PeeringManager::create(
-                [
-                    'note'      => '',
-                    'peered'    => false,
-                    'rejected'  => false,
-                ]
-            )]]></code>
-      <code><![CDATA[PeeringManager::where( 'custid' , $cust->id )]]></code>
-      <code><![CDATA[User::find( Auth::id() )]]></code>
-      <code><![CDATA[User::find( Auth::id() )]]></code>
-      <code><![CDATA[orderBy]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/PeeringMatrixController.php">
     <InvalidCast>
@@ -1459,18 +653,6 @@
       <code><![CDATA[!is_int( $lookback_days ) || $lookback_days < 1]]></code>
       <code><![CDATA[$lookback_days < 1]]></code>
     </TypeDoesNotContainType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[BgpSession::selectRaw(
-            'cs.shortname AS csshortname, 
-                        cs.name AS csname, 
-                        cs.autsys AS csautsys,
-                        cs.activepeeringmatrix AS csactivepeeringmatrix,
-                        cd.autsys AS cdautsys'
-            )]]></code>
-      <code><![CDATA[Vlan::find( $r->vlan )]]></code>
-      <code><![CDATA[Vlan::select( [ 'cust.autsys', 'cust.name', 'cust.shortname', 'vli.rsclient', 'cust.activepeeringmatrix', 'cust.id' ] )]]></code>
-      <code><![CDATA[Vlan::select( [ 'id', 'name' ] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/ProfileController.php">
     <MissingDocblockType>
@@ -1485,65 +667,16 @@
     <TypeDoesNotContainType>
       <code><![CDATA[Auth::getUser()->prefs[ 'notes' ][ 'global_notifs' ]]]></code>
     </TypeDoesNotContainType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[UserRememberToken::where( 'user_id', $user->id )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/RipeAtlas/MeasurementController.php">
     <MissingDocblockType>
       <code><![CDATA[StopAllMeasurementsJob::dispatchAfterResponse( $am->atlas_id );]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[AtlasMeasurement::select( [
-            'cust_dest.*',
-            'cust_source.*'
-        ] )]]></code>
-      <code><![CDATA[AtlasMeasurement::selectRaw(
-            'atlas_measurements.*,
-            cs.abbreviatedName as cs_name,
-            cd.abbreviatedName as cd_name,
-            atlas_results.id as atlas_result_id'
-        )]]></code>
-      <code><![CDATA[AtlasRun::find( $param->atlasrun )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Controllers/RipeAtlas/ProbesController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[AtlasProbe::select( [
-            'atlas_probes.*',
-            'cust.name'
-        ] )]]></code>
-      <code><![CDATA[Customer::find( $param->cust )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Controllers/RipeAtlas/ResultController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[AtlasResult::when( $id, function( Builder $q, $id ) {
-            return $q->where( 'atlas_results.id', $id );
-        } )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/RipeAtlas/RunController.php">
     <InvalidOperand>
       <code><![CDATA[config( "ixp_fe.lang.customer.one" )]]></code>
     </InvalidOperand>
-    <UndefinedMagicMethod>
-      <code><![CDATA[AtlasRun::create( [
-            'protocol'      => $r->protocol,
-            'scheduled_at'  => $r->scheduled_at === AtlasRun::SCHEDULED_AT_NOW ? now() : new Carbon( $r->scheduled_date . $r->scheduled_time ),
-            'vlan_id'       => $r->vlan_id
-        ] )]]></code>
-      <code><![CDATA[AtlasRun::select( [
-            'atlas_runs.*',
-            'vlan.name as vlan_name',
-            DB::raw('COUNT( am.run_id ) as nb_am'),
-            DB::raw('COUNT( am.atlas_create ) as nb_am_created'),
-            DB::raw('COUNT( am.atlas_start ) as nb_am_started'),
-            DB::raw('COUNT( am.atlas_stop ) as nb_am_stopped')
-        ])]]></code>
-      <code><![CDATA[get]]></code>
-      <code><![CDATA[get]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/RouterController.php">
     <InvalidArgument>
@@ -1558,12 +691,6 @@
       <code><![CDATA[public function store( StoreRouter $r ): RedirectResponse]]></code>
       <code><![CDATA[public function update( StoreRouter $r, Router $router ): RedirectResponse]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Router::create( $r->all() )]]></code>
-      <code><![CDATA[Router::whereNotNull( 'api' )]]></code>
-      <code><![CDATA[orderBy]]></code>
-      <code><![CDATA[orderBy]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/RsFilterController.php">
     <InvalidArgument>
@@ -1587,45 +714,11 @@
       <code><![CDATA[null]]></code>
       <code><![CDATA[null]]></code>
     </TypeDoesNotContainNull>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::findOrFail( $r->custid )]]></code>
-      <code><![CDATA[Customer::select( DB::raw('cust.id, cust.name, COUNT("route_server_filters_prod.id") as prod_rules') )]]></code>
-      <code><![CDATA[IrrdbPrefix::where( 'customer_id', $cust->id )]]></code>
-      <code><![CDATA[RouteServerFilter::make( array_merge( $r->except( [ 'enabled', 'order_by' ] ),
-            [
-                'enabled'       => true,
-                'order_by'      => RouteServerFilter::where( 'customer_id', $cust->id )
-                        ->get()->max( 'order_by' ) +1,
-            ]
-        ))]]></code>
-      <code><![CDATA[RouteServerFilter::where( "customer_id" , $cust->id )]]></code>
-      <code><![CDATA[RouteServerFilter::where( "customer_id", $rsf->customer_id )]]></code>
-      <code><![CDATA[RouteServerFilter::where( 'customer_id', $cust->id )]]></code>
-      <code><![CDATA[RouteServerFilterProd::where( "customer_id" , $cust->id )]]></code>
-      <code><![CDATA[Vlan::select( [ 'vlan.id AS id', 'vlan.name' ] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/SearchController.php">
     <MissingDocblockType>
       <code><![CDATA[$results[ $vli->virtualInterface->custid ]]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Contact::where( 'email', $search )]]></code>
-      <code><![CDATA[Customer::select( 'cust.*' )]]></code>
-      <code><![CDATA[Customer::where( 'peeringmacro', $search )]]></code>
-      <code><![CDATA[Customer::where('autsys', $matches[1] )]]></code>
-      <code><![CDATA[PatchPanelPort::find( $matches[1] )]]></code>
-      <code><![CDATA[PatchPanelPort::where( function( $query ) use( $matches ){
-                    $query->where( 'colo_circuit_ref', 'LIKE', '%' . $matches[1] . '%'  )
-                        ->orWhere( 'colo_billing_ref', 'LIKE', '%' . $matches[1] . '%' );
-                } )]]></code>
-      <code><![CDATA[User::where( 'email', $search )]]></code>
-      <code><![CDATA[User::where( 'username', 'LIKE' , '%' . $matches[1] . '%' )]]></code>
-      <code><![CDATA[VirtualInterface::select( 'virtualinterface.*' )]]></code>
-      <code><![CDATA[VlanInterface::select( 'vlaninterface.*' )]]></code>
-      <code><![CDATA[VlanInterface::select( 'vlaninterface.*' )]]></code>
-      <code><![CDATA[VlanInterface::select( 'vlaninterface.*' )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Services/Grapher.php">
     <MissingDocblockType>
@@ -1656,12 +749,6 @@
       <code><![CDATA[Auth::getUser()->custid]]></code>
       <code><![CDATA[Auth::getUser()->custid]]></code>
     </NoInterfaceProperties>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( Auth::getUser()->custid )]]></code>
-      <code><![CDATA[Customer::find( Auth::getUser()->custid )]]></code>
-      <code><![CDATA[User::find( Auth::id() )]]></code>
-      <code><![CDATA[User::find( Auth::id() )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/SettingsController.php">
     <MissingDocblockType>
@@ -1696,29 +783,6 @@
     <UndefinedInterfaceMethod>
       <code><![CDATA[isSuperUser]]></code>
     </UndefinedInterfaceMethod>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::findOrFail( $typeid )]]></code>
-      <code><![CDATA[Infrastructure::find( $r->infra )]]></code>
-      <code><![CDATA[Infrastructure::orderBy( 'name' )]]></code>
-      <code><![CDATA[Infrastructure::select( [ 'name', 'id' ] )]]></code>
-      <code><![CDATA[Location::orderBy( 'name' )]]></code>
-      <code><![CDATA[P2pDailyStats::select('day')]]></code>
-      <code><![CDATA[PhysicalInterface::findOrFail( $typeid )]]></code>
-      <code><![CDATA[Switcher::where( 'active', true )]]></code>
-      <code><![CDATA[TrafficDailyPhysInt::select( [ 'day' ] )]]></code>
-      <code><![CDATA[VirtualInterface::findOrFail( $typeid )]]></code>
-      <code><![CDATA[Vlan::find( $r->vlan )]]></code>
-      <code><![CDATA[Vlan::find( $r->vlan )]]></code>
-      <code><![CDATA[VlanInterface::findOrFail($request->dvli)]]></code>
-      <code><![CDATA[VlanInterface::findOrFail($request->svli)]]></code>
-      <code><![CDATA[VlanInterface::select( [ 'vli.*' ] )]]></code>
-      <code><![CDATA[get]]></code>
-      <code><![CDATA[get]]></code>
-      <code><![CDATA[get]]></code>
-      <code><![CDATA[orderBy]]></code>
-      <code><![CDATA[orderBy]]></code>
-      <code><![CDATA[where]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Switches/SwitchController.php">
     <ImplicitToStringCast>
@@ -1733,91 +797,11 @@
       <code><![CDATA[User::AUTH_CUSTADMIN]]></code>
       <code><![CDATA[User::AUTH_CUSTUSER]]></code>
     </RedundantCondition>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Infrastructure::find( $param->infra )]]></code>
-      <code><![CDATA[Infrastructure::find( $r->infra )]]></code>
-      <code><![CDATA[Infrastructure::find( $switch->infrastructure )]]></code>
-      <code><![CDATA[Infrastructure::orderBy( 'name' )]]></code>
-      <code><![CDATA[Infrastructure::orderBy( 'name' )]]></code>
-      <code><![CDATA[Infrastructure::orderBy( 'name' )]]></code>
-      <code><![CDATA[Infrastructure::orderBy( 'name' )]]></code>
-      <code><![CDATA[Location::find( $r->location )]]></code>
-      <code><![CDATA[Location::find( $switch->cabinet->locationid )]]></code>
-      <code><![CDATA[Location::orderBy( 'name' )]]></code>
-      <code><![CDATA[PhysicalInterface::selectRaw( 'DISTINCT physicalinterface.rate_limit AS rate_limit' )]]></code>
-      <code><![CDATA[PhysicalInterface::selectRaw( 'DISTINCT physicalinterface.speed AS speed' )]]></code>
-      <code><![CDATA[SwitchPort::select( [
-                'sp.id AS id', 'sp.name AS name', 'sp.type AS porttype',
-                'pi.speed AS speed', 'pi.duplex AS duplex',
-                'c.name AS custname'
-            ] )]]></code>
-      <code><![CDATA[Switcher::create( $r->all() )]]></code>
-      <code><![CDATA[Switcher::find( $r->switch )]]></code>
-      <code><![CDATA[Switcher::findOrFail( $id )]]></code>
-      <code><![CDATA[Switcher::findOrFail( $id )]]></code>
-      <code><![CDATA[Switcher::orderBy( 'name' )]]></code>
-      <code><![CDATA[Switcher::select( [
-            'switch.*',
-            'i.name AS infrastructure',
-            'v.id AS vendorid', 'v.name AS vendor',
-            'c.id AS cabinetid', 'c.name AS cabinet'
-        ] )]]></code>
-      <code><![CDATA[Switcher::where( 'asn', $r->asn )]]></code>
-      <code><![CDATA[Switcher::where('asn', $r->asn )]]></code>
-      <code><![CDATA[Vendor::orderBy( 'name' )]]></code>
-      <code><![CDATA[Vendor::orderBy( 'name' )]]></code>
-      <code><![CDATA[Vendor::orderBy( 'name' )]]></code>
-      <code><![CDATA[Vendor::where('name', $vendor )]]></code>
-      <code><![CDATA[Vlan::find( $r->vlan )]]></code>
-      <code><![CDATA[Vlan::orderBy( 'name' )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Switches/SwitchPortController.php">
     <MissingDocblockType>
       <code><![CDATA[public function unusedOptics() : View]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[SwitchPort::create( [
-                'switchid'  => $r->switchid,
-                'type'      => $r->input('portType' . $i ),
-                'name'      => $r->input('portName' . $i ),
-                'active'    => true,
-            ] )]]></code>
-      <code><![CDATA[SwitchPort::findOrFail( $id )]]></code>
-      <code><![CDATA[SwitchPort::findOrFail( $id )]]></code>
-      <code><![CDATA[SwitchPort::findOrFail( $id )]]></code>
-      <code><![CDATA[SwitchPort::findOrFail( $id )]]></code>
-      <code><![CDATA[SwitchPort::findOrFail( $id )]]></code>
-      <code><![CDATA[SwitchPort::select( [
-                'sp.*',
-                's.id AS switchid'
-            ] )]]></code>
-      <code><![CDATA[SwitchPort::select( [
-                'sp.ifIndex AS ifIndex', 'sp.ifName AS ifName', 'sp.type AS type', 'sp.mauType AS mauType', 'sp.mauState AS mauState', 'sp.mauJacktype AS mauJacktype',
-                's.id AS switchid', 's.name AS switchname'
-            ] )]]></code>
-      <code><![CDATA[SwitchPort::select( [
-            'sp.*',
-            'c.name AS custname', 'c.id AS custid',
-            's.id AS switchid', 's.name AS switch'
-        ] )]]></code>
-      <code><![CDATA[SwitchPort::select( [
-            'sp.*',
-            's.id AS switchid', 's.name AS switchname'
-        ] )]]></code>
-      <code><![CDATA[SwitchPort::selectRaw(
-                'switchport.mauType AS mauType,
-                COUNT( switchport.mauType ) AS cnt'
-            )]]></code>
-      <code><![CDATA[Switcher::find( $param->session()->get( "switch-port-list" ) )]]></code>
-      <code><![CDATA[Switcher::find( $param->switch )]]></code>
-      <code><![CDATA[Switcher::orderBy( 'name' )]]></code>
-      <code><![CDATA[Switcher::orderBy( 'name' )]]></code>
-      <code><![CDATA[Switcher::orderBy( 'name' )]]></code>
-      <code><![CDATA[Switcher::orderBy( 'name' )]]></code>
-      <code><![CDATA[Switcher::orderBy( 'name' )]]></code>
-      <code><![CDATA[Switcher::where( 'mauSupported', true )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/User/CustomerToUserController.php">
     <NoInterfaceProperties>
@@ -1828,12 +812,6 @@
     <RedundantCondition>
       <code><![CDATA[$disassociatedUser->customers()]]></code>
     </RedundantCondition>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( $r->cust )]]></code>
-      <code><![CDATA[Customer::orderBy( 'name' )]]></code>
-      <code><![CDATA[CustomerToUser::findOrFail( $r->id )]]></code>
-      <code><![CDATA[User::where( 'email', strtolower( trim( $email ) ) )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/User/User2FAController.php">
     <RedundantCondition>
@@ -1842,14 +820,6 @@
     <TypeDoesNotContainNull>
       <code><![CDATA[$user]]></code>
     </TypeDoesNotContainNull>
-    <UndefinedMagicMethod>
-      <code><![CDATA[User2FA::create([
-                'user_id'   => $user->id,
-                'enabled'   => false,
-                'secret'    => $google2fa->generateSecretKey( 32 ),
-            ])]]></code>
-      <code><![CDATA[UserRememberToken::where( 'token', $recaller->token() )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/User/UserController.php">
     <InvalidArgument>
@@ -1871,38 +841,6 @@
     <RedundantFunctionCall>
       <code><![CDATA[sprintf]]></code>
     </RedundantFunctionCall>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( $r->custid )]]></code>
-      <code><![CDATA[Customer::find( $r->custid )]]></code>
-      <code><![CDATA[Customer::find( $r->custid )]]></code>
-      <code><![CDATA[Customer::orderBy( 'name' )]]></code>
-      <code><![CDATA[Customer::orderBy( 'name' )]]></code>
-      <code><![CDATA[CustomerToUser::selectRaw( 'user_id, COUNT( id ) AS nbC2U' )]]></code>
-      <code><![CDATA[User::selectRaw(
-            'u.id as id, 
-                        u.name AS name,
-                        u.username as username, 
-                        u.email as email,
-                        u.created_at as created,
-                        u.disabled as disabled, 
-                        u.peeringdb_id as peeringdb_id,
-                        u.updated_at AS lastupdated,
-                        u.creator as creator, 
-                        c.id as custid, 
-                        c.name as customer,
-                        COUNT( c2u.id ) as nbC2U,
-                        MAX( c2u.privs ) as privileges,
-                        c2u.id as c2uid,
-                        u2fa.enabled as u2fa_enabled,
-                        u2fa.id as psid ' )]]></code>
-      <code><![CDATA[User::where( 'email',  $r->email )]]></code>
-      <code><![CDATA[orderBy]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Controllers/User/UserRememberTokenController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[UserRememberToken::where( 'user_id', request()->user()->id )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/Utils/IxfCompareController.php">
     <InvalidArgument>
@@ -1913,30 +851,10 @@
       <code><![CDATA[$sources[ $r->sourcea_dd ]]]></code>
     </InvalidArrayAccess>
   </file>
-  <file src="app/Http/Controllers/VendorController.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Vendor::create( $r->all() )]]></code>
-      <code><![CDATA[Vendor::findOrFail( $id )]]></code>
-      <code><![CDATA[Vendor::findOrFail( $id )]]></code>
-      <code><![CDATA[Vendor::when( $id , function( Builder $q, $id ) {
-            return $q->where('id', $id );
-        } )]]></code>
-    </UndefinedMagicMethod>
-  </file>
   <file src="app/Http/Controllers/VlanController.php">
     <ImplementedParamTypeMismatch>
       <code><![CDATA[$id]]></code>
     </ImplementedParamTypeMismatch>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Infrastructure::orderBy( 'name' )]]></code>
-      <code><![CDATA[Infrastructure::orderBy( 'name' )]]></code>
-      <code><![CDATA[Vlan::create( $r->all() )]]></code>
-      <code><![CDATA[Vlan::findOrFail( $id )]]></code>
-      <code><![CDATA[Vlan::findOrFail( $id )]]></code>
-      <code><![CDATA[Vlan::select( [ 'vlan.*', 'i.shortname AS infrastructure_name' ] )]]></code>
-      <code><![CDATA[Vlan::where( 'infrastructureid', $r->infrastructureid )]]></code>
-      <code><![CDATA[Vlan::where( 'private', 1 )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Controllers/WeatherMapController.php">
     <InvalidArrayAccess>
@@ -1951,22 +869,11 @@
     <MissingDocblockType>
       <code><![CDATA[public function handle( Request $r, Closure $next )]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[ApiKey::where( 'apiKey', $apikey )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Middleware/ApiMaybeAuthenticate.php">
     <MissingDocblockType>
       <code><![CDATA[public function handle( Request $r, Closure $next )]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[ApiKey::where( 'apiKey', $apikey )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Middleware/Authenticate.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[CustomerToUser::where( [ 'user_id' => Auth::id()  ] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Middleware/Google2FA.php">
     <NoInterfaceProperties>
@@ -1992,25 +899,12 @@
     <MissingDocblockType>
       <code><![CDATA[public function handle( Request $r, Closure $next )]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[first]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Requests/CoreBundle/Store.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[SwitchPort::find( $detail[ "hidden-sp-" . $side ] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Requests/Customer/BillingInformation.php">
     <InvalidArgument>
       <code><![CDATA[array_values( Countries::getListForSelect( 'iso_3166_2' ) )]]></code>
       <code><![CDATA[array_values( Countries::getListForSelect( 'iso_3166_2' ) )]]></code>
     </InvalidArgument>
-  </file>
-  <file src="app/Http/Requests/Customer/Store.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( $this->reseller )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Requests/Dashboard/BillingDetailsRequest.php">
     <InvalidArgument>
@@ -2022,11 +916,6 @@
       <code><![CDATA[public function withValidator(): void]]></code>
     </MissingDocblockType>
   </file>
-  <file src="app/Http/Requests/MovePatchPanelPort.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[PatchPanelPort::find( $this->port_id )]]></code>
-    </UndefinedMagicMethod>
-  </file>
   <file src="app/Http/Requests/Profile/Password.php">
     <NoInterfaceProperties>
       <code><![CDATA[Auth::getUser()->password]]></code>
@@ -2037,38 +926,15 @@
       <code><![CDATA[Auth::getUser()->password]]></code>
     </NoInterfaceProperties>
   </file>
-  <file src="app/Http/Requests/RouteServerFilter/Store.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( $value )]]></code>
-      <code><![CDATA[Vlan::find( $value )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Requests/User/CheckEmail.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[User::leftJoin( 'customer_to_users AS c2u', 'c2u.user_id', 'user.id' )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Http/Requests/User/CustomerToUser/Store.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( $this->customer_id )]]></code>
-      <code><![CDATA[CustomerToUser::where( 'customer_id', $this->cust->id )]]></code>
-    </UndefinedMagicMethod>
-  </file>
   <file src="app/Http/Requests/User/Delete.php">
     <NoInterfaceProperties>
       <code><![CDATA[Auth::user()->username]]></code>
     </NoInterfaceProperties>
-    <UndefinedMagicMethod>
-      <code><![CDATA[CustomerToUser::where( 'customer_id', $us->custid )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Requests/User/Store.php">
     <RedundantCondition>
       <code><![CDATA[$isSuperUser]]></code>
     </RedundantCondition>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( $this->custid )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Http/Requests/User/Update.php">
     <RedundantCondition>
@@ -2080,18 +946,11 @@
       <code><![CDATA[$isSuperUser]]></code>
       <code><![CDATA[$isSuperUser]]></code>
     </TypeDoesNotContainType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( $this->custid )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Jobs/FetchFilteredPrefixesForCustomer.php">
     <MissingDocblockType>
       <code><![CDATA[private function queryRouteServer( LookingGlass $lg, VlanInterface $vli, int $ipproto ): void]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Router::where( 'vlan_id', $vli->vlan->id )]]></code>
-      <code><![CDATA[VlanInterface::select('vli.*')]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Jobs/RipeAtlas/CompleteRequests.php">
     <MissingDocblockType>
@@ -2102,17 +961,11 @@
     <MissingDocblockType>
       <code><![CDATA[public function handle(): void]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[AtlasMeasurement::create( [ 'run_id' => $this->atlasRun->id, 'cust_source' => $src->id, 'cust_dest' => $dest->id ] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Jobs/RipeAtlas/RunMeasurements.php">
     <MissingDocblockType>
       <code><![CDATA[public function handle(): void]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[forCustomer]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Jobs/RipeAtlas/StopAllMeasurements.php">
     <MissingDocblockType>
@@ -2128,35 +981,11 @@
     <MissingDocblockType>
       <code><![CDATA[public function handle(): void]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[AtlasProbe::create([
-                            'cust_id'       => $this->customer->id,
-                            'atlas_id'      => $probe->id,
-                            'v4_enabled'    => false,
-                            'v6_enabled'    => false,
-                        ])]]></code>
-      <code><![CDATA[forAtlas]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Jobs/UpdateIrrdb.php">
     <MissingDocblockType>
       <code><![CDATA[public function handle(): void]]></code>
     </MissingDocblockType>
-  </file>
-  <file src="app/Listeners/Auth/Google2FALoginSucceeded.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[UserRememberToken::where( 'token',  $recaller->token() )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Listeners/Auth/LoginSuccessful.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[UserLoginHistory::create( [
-                    'ip'                    => ixp_get_client_ip(),
-                    'at'                    => now(),
-                    'via'                   => Auth::viaRemember() ?  'RememberMe' : 'Login',
-                    'customer_to_user_id'   => $c2u->id,
-                ] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Listeners/Customer/Note/EmailOnChange.php">
     <MissingDocblockType>
@@ -2164,9 +993,6 @@
                     continue;
                 }]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[CustomerToUser::from( 'customer_to_users AS c2u' )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Listeners/RipeAtlas/MeasurementComplete.php">
     <RedundantCondition>
@@ -2203,9 +1029,6 @@
     <RedundantCondition>
       <code><![CDATA[!filter_var( config( "ixp.peering_manager.testemail" ) , FILTER_VALIDATE_EMAIL )]]></code>
     </RedundantCondition>
-    <UndefinedMagicMethod>
-      <code><![CDATA[User::find( Auth::id() )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Mail/User/UserAddedToCustomer.php">
     <InvalidOperand>
@@ -2226,17 +1049,6 @@
     <MissingDocblockType>
       <code><![CDATA[public static function getPeers( ?int $vlan = null, int $protocol = 6, ?int $asn = null, bool $forceDb = false ): array|string]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Vlan::find( $vlan )]]></code>
-      <code><![CDATA[self::selectRaw(
-            'bs.*, srcip.*, dstip.*,
-            vlis.virtualinterfaceid as visid, vlid.virtualinterfaceid as vidid,
-            cs.shortname AS csshortname, cs.name AS csname, cs.autsys AS csautsys,
-            cd.shortname AS cdshortname, cd.name AS cdname, cd.autsys AS cdautsys,
-            vlan.id AS vlanid, vlan.name AS vlanname, vlan.number AS vlantag,
-            COUNT( bs.packetcount ) AS packetcount'
-        )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/Aggregators/ConsoleServerConnectionAggregatore.php">
     <LessSpecificImplementedReturnType>
@@ -2244,15 +1056,6 @@
       <code><![CDATA[Builder|ConsoleServerConnectionAggregatore]]></code>
       <code><![CDATA[Builder|ConsoleServerConnectionAggregatore]]></code>
     </LessSpecificImplementedReturnType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[self::select(
-            [
-                'csc.*',
-                'c.name AS customer', 'c.id AS customerid',
-                'cs.id  AS consoleserver_id', 'cs.name AS consoleserver_name'
-            ]
-        )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/Aggregators/ContactGroupAggregator.php">
     <LessSpecificImplementedReturnType>
@@ -2260,14 +1063,6 @@
       <code><![CDATA[Builder|ContactGroupAggregator]]></code>
       <code><![CDATA[Builder|ContactGroupAggregator]]></code>
     </LessSpecificImplementedReturnType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[self::when( $cid , function( Builder $q, $cid ) {
-            return $q->leftJoin( 'contact_to_group', function( $join ) use( $cid ) {
-                $join->on( 'contact_group.id', 'contact_to_group.contact_group_id')
-                    ->where('contact_to_group.contact_id', $cid );
-            });
-        })]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/Aggregators/CustomerAggregator.php">
     <LessSpecificImplementedReturnType>
@@ -2279,33 +1074,11 @@
       <code><![CDATA[$cb->deleteObject();]]></code>
       <code><![CDATA[public static function deleteObject( Customer $cust ): bool]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[CoreBundle::select( 'cb.*' )]]></code>
-      <code><![CDATA[PeeringManager::selectRaw(
-            'pm.id AS id, c.id AS custid, p.id AS peerid,
-                pm.email_last_sent AS email_last_sent, pm.emails_sent AS emails_sent,
-                pm.peered AS peered, pm.rejected AS rejected, pm.notes AS notes,
-                pm.created_at AS created_at, pm.updated_at AS updated_at'
-        )]]></code>
-      <code><![CDATA[Vlan::select( ['id', 'number'] )]]></code>
-      <code><![CDATA[self::select( [ 'c.id', 'c.name' ] )]]></code>
-      <code><![CDATA[self::select('cust.*' )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/Aggregators/IpAddressAggregator.php">
     <MissingDocblockType>
       <code><![CDATA[public static function bulkAdd( array $addresses, Vlan $vlan, $model, bool $skip = true ): array]]></code>
     </MissingDocblockType>
-  </file>
-  <file src="app/Models/Aggregators/IrrdbAggregator.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[$model::select( [ 'id', $field , 'first_seen', 'last_seen' ] )]]></code>
-      <code><![CDATA[$model::select( [ 'id', $field , 'first_seen', 'last_seen' ] )]]></code>
-      <code><![CDATA[Customer::find( $cust )]]></code>
-      <code><![CDATA[Customer::find( $cust )]]></code>
-      <code><![CDATA[IrrdbAsn::select('asn')]]></code>
-      <code><![CDATA[IrrdbPrefix::select('prefix')]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/Aggregators/PatchPanelPortAggregator.php">
     <LessSpecificImplementedReturnType>
@@ -2316,24 +1089,6 @@
     <MissingDocblockType>
       <code><![CDATA[$result[ $ppp->id ]]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[PatchPanelPort::selectRaw(
-            'ppp.id, ppp.number, 
-            ppp.patch_panel_id, ppp.duplex_master_id,
-            GROUP_CONCAT( pp.port_prefix, ppp.number ) AS name' )]]></code>
-      <code><![CDATA[self::selectRaw( '
-            ppp.*,
-            count( pppf.id ) AS files, count( ppph.id ) AS histories,
-            pp.name as ppname,
-            pp.colo_reference as ppcolo_reference,
-            pp.port_prefix AS prefix,
-            pp.cable_type AS ppcable_type,
-            pp.colo_pp_type,
-            sp.name AS spname,
-            s.name AS sname, c.abbreviatedName AS cname,
-            count( ppps.id ) AS nbslave, 
-            max( ppps.number ) AS slavenumber' )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/Aggregators/RouteServerFilterAggregator.php">
     <LessSpecificImplementedReturnType>
@@ -2341,18 +1096,6 @@
       <code><![CDATA[Builder|RouteServerFilterAggregator]]></code>
       <code><![CDATA[Builder|RouteServerFilterAggregator]]></code>
     </LessSpecificImplementedReturnType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[RouteServerFilter::forceCreate( array_merge(
-                        $pf->getAttributes(),
-                        [ 'id' => null ]
-                    ) )]]></code>
-      <code><![CDATA[RouteServerFilterProd::forceCreate( array_merge(
-                        $pf->getAttributes(),
-                        [ 'id' => null ]
-                    ) )]]></code>
-      <code><![CDATA[orderBy]]></code>
-      <code><![CDATA[orderBy]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/Aggregators/RouterAggregator.php">
     <LessSpecificImplementedReturnType>
@@ -2360,16 +1103,6 @@
       <code><![CDATA[Builder|RouterAggregator]]></code>
       <code><![CDATA[Builder|RouterAggregator]]></code>
     </LessSpecificImplementedReturnType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[self::
-//        select( [
-//            'routers.handle', 'routers.name', 'routers.updated_at'
-//        ] )
-//            leftJoin( 'vlan as v', 'v.id', 'routers.vlan_id' )
-//            ->leftJoin( 'infrastructure as i', 'i.id', 'v.infrastructureid' )
-            whereNotNull( 'api' )]]></code>
-      <code><![CDATA[self::whereNotNull( 'api' )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/Aggregators/RsPrefixAggregator.php">
     <LessSpecificImplementedReturnType>
@@ -2377,18 +1110,6 @@
       <code><![CDATA[Builder|RsPrefixAggregator]]></code>
       <code><![CDATA[Builder|RsPrefixAggregator]]></code>
     </LessSpecificImplementedReturnType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[self::selectRaw(
-            'cust.id AS id, cust.name AS name,
-            rs_prefixes.protocol AS protocol, rs_prefixes.irrdb AS irrdb,
-            count( rs_prefixes.protocol ) AS prefixes'
-        )]]></code>
-      <code><![CDATA[self::selectRaw(
-            'cust.id AS id, cust.name AS name, rs_prefixes.protocol AS protocol,
-                        rs_prefixes.irrdb AS irrdb, rs_prefixes.prefix AS prefix,
-                        rs_prefixes.timestamp AS timestamp, rs_prefixes.rs_origin AS rsorigin'
-        )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/Aggregators/SwitchPortAggregator.php">
     <LessSpecificImplementedReturnType>
@@ -2396,11 +1117,6 @@
       <code><![CDATA[Builder|SwitchPortAggregator]]></code>
       <code><![CDATA[Builder|SwitchPortAggregator]]></code>
     </LessSpecificImplementedReturnType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[self::select( [
-            'sp.id AS id', 'sp.name AS name', 'sp.type AS porttype'
-        ] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/Aggregators/SwitcherAggregator.php">
     <InvalidOperand>
@@ -2418,31 +1134,6 @@
     <MismatchingDocblockParamType>
       <code><![CDATA[string|null]]></code>
     </MismatchingDocblockParamType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[selectRaw]]></code>
-      <code><![CDATA[self::select( 'switch.*' )]]></code>
-      <code><![CDATA[self::select( [ 'sp.name AS name', 'sp.type AS porttype', 'sp.id AS id' ] )]]></code>
-      <code><![CDATA[self::selectRaw(
-            's.name AS switchname, 
-                s.id AS switchid,
-                GROUP_CONCAT( sp.ifName ) AS ifName,
-                GROUP_CONCAT( pi.speed )  AS speed,
-                GROUP_CONCAT( pi.rate_limit ) AS rate_limit,
-                GROUP_CONCAT( pi.status ) AS portstatus,
-                cust.name AS customer, 
-                cust.id AS custid, 
-                cust.autsys AS asn,
-                MAX( vli.rsclient    ) AS rsclient,
-                MAX( vli.ipv4enabled ) AS ipv4enabled, 
-                MAX( vli.ipv6enabled ) AS ipv6enabled, 
-                v.name AS vlan,
-                GROUP_CONCAT( DISTINCT ipv4.address ) AS ipv4address, 
-                GROUP_CONCAT( DISTINCT ipv6.address ) AS ipv6address'
-        )]]></code>
-      <code><![CDATA[where]]></code>
-      <code><![CDATA[where]]></code>
-      <code><![CDATA[where]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/Aggregators/TrafficDailyPhysIntAggregator.php">
     <LessSpecificImplementedReturnType>
@@ -2450,17 +1141,6 @@
       <code><![CDATA[Builder|TrafficDailyPhysIntAggregator]]></code>
       <code><![CDATA[Builder|TrafficDailyPhysIntAggregator]]></code>
     </LessSpecificImplementedReturnType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[self::selectRaw(
-            "c.id AS cid, c.abbreviatedName AS cname, ANY_VALUE( s.name ) as switch,
-                        vi.id AS viid,
-                        SUM( tdpi.{$period}_max_in ) AS max_in,
-                        SUM( tdpi.{$period}_max_out ) AS max_out,
-                        COUNT( pi.id ) AS num_ports_in_lag,
-                        SUM( COALESCE( pi.rate_limit, pi.speed ) ) AS vi_speed,
-                        ROUND( GREATEST( (MAX( tdpi.{$period}_max_in )/1000000/MAX( COALESCE( pi.rate_limit, pi.speed ) ))*100, (MAX( tdpi.{$period}_max_out )/1000000/MAX( COALESCE( pi.rate_limit, pi.speed ) ))*100 ), 2) AS util"
-        )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/Aggregators/UserAggregator.php">
     <LessSpecificImplementedReturnType>
@@ -2468,19 +1148,6 @@
       <code><![CDATA[\Illuminate\Database\Eloquent\Builder|UserAggregator]]></code>
       <code><![CDATA[\Illuminate\Database\Eloquent\Builder|UserAggregator]]></code>
     </LessSpecificImplementedReturnType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::where( 'autsys', $asn )]]></code>
-      <code><![CDATA[Customer::whereIn( 'autsys', $asns )]]></code>
-      <code><![CDATA[CustomerToUser::create([
-                    'customer_id'       => $cust->id,
-                    'user_id'           => $user->id,
-                    'privs'             => $priv,
-                    'extra_attributes'  => [ "created_by" => [ "type" => "PeeringDB"  ] ],
-                ])]]></code>
-      <code><![CDATA[User::where( 'peeringdb_id', $pdbuser['id'] )]]></code>
-      <code><![CDATA[User::where( 'username', $uname )]]></code>
-      <code><![CDATA[UserLoginHistory::where( 'customer_to_user_id', $c2u->id )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/Aggregators/VirtualInterfaceAggregator.php">
     <LessSpecificImplementedReturnType>
@@ -2493,34 +1160,6 @@
       <code><![CDATA[public static function getForInfrastructure( Infrastructure $infra, $proto = false, $externalOnly = true ): Collection]]></code>
       <code><![CDATA[public static function validateChannelGroup( VirtualInterface $vi ): bool]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[VirtualInterface::select( [ 'vi.id AS id' ] )]]></code>
-      <code><![CDATA[self::select( [
-            'cust.id AS customerid',
-            'vi.id AS id',
-            'pi.speed AS speed',
-            'pi.rate_limit AS rlspeed',
-            'i.id AS infrastructureid',
-            'i.name AS infrastructure',
-            'l.id AS locationid',
-            'l.name AS locationname',
-            'ca.id AS cabinetid',
-            'ca.name AS cabinetname',
-        ] )]]></code>
-      <code><![CDATA[self::select( [ 'vi.*' ] )]]></code>
-      <code><![CDATA[self::selectRaw(
-            "v.name AS vlanname,
-            v.id AS vlanid, 
-            COUNT( DISTINCT vi.custid ) AS count, 
-            COUNT( DISTINCT vi.custid ) / ( 
-            SELECT COUNT( DISTINCT vi.custid ) FROM virtualinterface AS vi
-                        JOIN vlaninterface as vli ON vli.virtualinterfaceid = vi.id
-                        JOIN vlan AS v ON v.id = vli.vlanid
-                        JOIN cust AS c ON c.id = vi.custid
-                        LEFT JOIN physicalinterface AS pi ON pi.virtualinterfaceid = vi.id
-                        WHERE v.private = 0 AND pi.status = 1 AND c.`type`IN (1,4) ) * 100 AS percent"
-        )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/Aggregators/VlanAggregator.php">
     <LessSpecificImplementedReturnType>
@@ -2532,23 +1171,6 @@
       <code><![CDATA[public static function arpaDetails( Vlan $vlan, int $proto ): array]]></code>
       <code><![CDATA[public static function ipAddresses( int $vid, int $proto ) : array]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Vlan::select( [
-                "{$table}.id", "{$table}.address",
-                'vlan.id AS vid', 'vli.id as vliid'
-            ] )]]></code>
-      <code><![CDATA[Vlan::select( [
-                'c.id AS cid', 'c.name AS cname', 'c.autsys AS cautsys', 'c.abbreviatedName AS cabbreviatedname',
-                'vi.id AS viid', 'vli.id AS vliid',
-                'v.id AS vid', 'v.name AS vname', 'v.number AS vnumber'
-            ] )]]></code>
-      <code><![CDATA[Vlan::selectRaw(
-                "vli.ipv{$proto}enabled as enabled, 
-                            addr.address AS address,
-                            vli.ipv{$proto}hostname AS hostname,
-                            {$address} AS aton"
-        )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/Aggregators/VlanInterfaceAggregator.php">
     <LessSpecificImplementedReturnType>
@@ -2560,46 +1182,6 @@
       <code><![CDATA[public static function forProto( Vlan $vlan, int $proto, ?int $pistatus = PhysicalInterface::STATUS_CONNECTED ) : array]]></code>
       <code><![CDATA[public static function getAllIPsForASN( Vlan $v, int $asn, int $proto ): array]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Vlan::select( [ 'ip.address' ] )]]></code>
-      <code><![CDATA[self::select( [
-            'cust.id AS cid', 'cust.name AS cname',
-            'cust.abbreviatedName AS abrevcname',
-            'cust.shortname AS cshortname',
-            'cust.autsys AS autsys', 'cust.maxprefixes AS gmaxprefixes',
-            'cust.peeringmacro AS peeringmacro', 'cust.peeringmacrov6  AS peeringmacrov6',
-
-            'v.id AS vid', 'v.number AS vtag', 'v.name AS vname', 'vi.id AS viid',
-
-            'vli.id AS vliid',
-
-            "vli.ipv{$proto}enabled      AS enabled" ,
-            "vli.ipv{$proto}hostname     AS hostname" ,
-            "vli.ipv{$proto}monitorrcbgp AS monitorrcbgp" ,
-            "vli.ipv{$proto}bgpmd5secret AS bgpmd5secret" ,
-            'vli.maxbgpprefix            AS maxbgpprefix' ,
-            'vli.as112client             AS as112client' ,
-            'vli.rsclient                AS rsclient' ,
-            'vli.busyhost                AS busyhost' ,
-            'vli.irrdbfilter             AS irrdbfilter' ,
-            'vli.rsmorespecifics         AS rsmorespecifics' ,
-            "vli.ipv{$proto}canping      AS canping" ,
-
-            'addr.address AS address',
-
-            's.id   AS sid' ,
-            's.name AS sname' ,
-
-            'cab.id   AS cabid' ,
-            'cab.name AS cabname' ,
-
-            'l.id        AS location_id' ,
-            'l.name      AS location_name' ,
-            'l.shortname AS location_shortname' ,
-            'l.tag       AS location_tag'
-        ] )]]></code>
-      <code><![CDATA[self::select( [ 'vli.*' ] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/ApiKey.php">
     <LessSpecificImplementedReturnType>
@@ -2708,9 +1290,6 @@
     <MissingDocblockType>
       <code><![CDATA[public function deleteObject(): bool]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[self::select( 'cl.*' )]]></code>
-    </UndefinedMagicMethod>
     <UndefinedMagicPropertyFetch>
       <code><![CDATA[$cl->coreInterfaceSideA->physicalinterface]]></code>
       <code><![CDATA[$cl->coreInterfaceSideA->physicalinterface]]></code>
@@ -2747,16 +1326,6 @@
     <MissingDocblockType>
       <code><![CDATA[public function routeServerClient( ?int $proto = null ): bool]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[self::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )]]></code>
-      <code><![CDATA[self::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )]]></code>
-      <code><![CDATA[self::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )]]></code>
-      <code><![CDATA[self::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )]]></code>
-      <code><![CDATA[self::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )]]></code>
-      <code><![CDATA[self::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )]]></code>
-      <code><![CDATA[self::leftJoin('virtualinterface AS vi', 'vi.custid', 'cust.id')]]></code>
-      <code><![CDATA[self::select( 'cust.*' )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/CustomerEquipment.php">
     <LessSpecificImplementedReturnType>
@@ -2806,13 +1375,6 @@
       <code><![CDATA[public static function deleteAllForCustomer( Customer $cust ): void]]></code>
       <code><![CDATA[public static function recursiveDelete( DocstoreCustomerDirectory $dir ): void]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[self::where( 'cust_id', $cust->id )]]></code>
-      <code><![CDATA[self::where( 'cust_id', $cust->id )]]></code>
-      <code><![CDATA[self::where( 'cust_id', $cust->id )]]></code>
-      <code><![CDATA[self::where( 'id', $subdir->id )]]></code>
-      <code><![CDATA[self::where('parent_dir_id', null )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/DocstoreCustomerFile.php">
     <LessSpecificImplementedReturnType>
@@ -2823,10 +1385,6 @@
     <MismatchingDocblockParamType>
       <code><![CDATA[User|null]]></code>
     </MismatchingDocblockParamType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[self::where('min_privs', '<=', $privs )]]></code>
-      <code><![CDATA[self::where('min_privs', '<=', $user->privs() )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/DocstoreDirectory.php">
     <LessSpecificImplementedReturnType>
@@ -2837,12 +1395,6 @@
     <MissingDocblockType>
       <code><![CDATA[public static function recursiveDelete( DocstoreDirectory $dir ): void]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[self::where( 'id', $subdir->id )]]></code>
-      <code><![CDATA[self::where('parent_dir_id', $dir->id ?? null )]]></code>
-      <code><![CDATA[self::where('parent_dir_id', null )]]></code>
-      <code><![CDATA[self::where('parent_dir_id', null )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/DocstoreFile.php">
     <LessSpecificImplementedReturnType>
@@ -2850,9 +1402,6 @@
       <code><![CDATA[Builder|DocstoreFile]]></code>
       <code><![CDATA[Builder|DocstoreFile]]></code>
     </LessSpecificImplementedReturnType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[self::where('min_privs', '<=', $privs )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/DocstoreLog.php">
     <LessSpecificImplementedReturnType>
@@ -2860,15 +1409,6 @@
       <code><![CDATA[Builder|DocstoreLog]]></code>
       <code><![CDATA[Builder|DocstoreLog]]></code>
     </LessSpecificImplementedReturnType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[self::select([ 'docstore_logs.*', 'user.name AS name', 'user.username AS username' ])]]></code>
-      <code><![CDATA[self::select([ 'docstore_logs.id', 'docstore_logs.downloaded_by',
-                DB::raw( 'COUNT(docstore_logs.downloaded_by) AS downloads' ),
-                DB::raw( 'MAX(docstore_logs.created_at) AS last_downloaded' ),
-                DB::raw( 'MIN(docstore_logs.created_at) AS first_downloaded' ),
-                'user.name AS name', 'user.username AS username'
-            ])]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/IPv4Address.php">
     <LessSpecificImplementedReturnType>
@@ -2926,9 +1466,6 @@
       <code><![CDATA[$oldest]]></code>
       <code><![CDATA[$oldest]]></code>
     </TypeDoesNotContainType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[self::firstWhere('cust_id', $c->id)]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/Layer2Address.php">
     <LessSpecificImplementedReturnType>
@@ -2988,10 +1525,6 @@
     <MismatchingDocblockReturnType>
       <code><![CDATA[P2pDailyStats[]]]></code>
     </MismatchingDocblockReturnType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[max]]></code>
-      <code><![CDATA[self::select( DB::raw('peer_id, ipv6_total_out + ipv4_total_out + ipv6_total_in + ipv4_total_in as total_traffic') )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/PatchPanel.php">
     <LessSpecificImplementedReturnType>
@@ -2999,19 +1532,6 @@
       <code><![CDATA[Builder|PatchPanel]]></code>
       <code><![CDATA[Builder|PatchPanel]]></code>
     </LessSpecificImplementedReturnType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[PatchPanelPort::create( [
-                'number'            => ( $max + $i ),
-                'state'             => PatchPanelPort::STATE_AVAILABLE,
-                'patch_panel_id'    => $this->id,
-                'chargeable'        => $this->chargeable,
-                'last_state_change' => now(),
-            ] )]]></code>
-      <code><![CDATA[self::select( [ 'ppp.*' ] )]]></code>
-      <code><![CDATA[self::select( [ 'ppp.id' ] )]]></code>
-      <code><![CDATA[self::select( [ 'pppm.*' ] )]]></code>
-      <code><![CDATA[self::select( [ 'ppps.id' ] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/PatchPanelPort.php">
     <ImplicitToStringCast>
@@ -3037,20 +1557,6 @@
     <TypeDoesNotContainType>
       <code><![CDATA[!( $history = $this->archive() )]]></code>
     </TypeDoesNotContainType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[PatchPanelPortHistory::create(
-                array_merge(
-                    $historyPort->replicate( [ 'id', 'duplex_master_id', 'number', 'patch_panel_port_id' ] )->toArray(),
-                    [
-                        'number'                => $slave->number,
-                        'duplex_master_id'      => $historyPort->id,
-                        'patch_panel_port_id'   => $slave->id,
-                    ]
-                )
-            )]]></code>
-      <code><![CDATA[get]]></code>
-      <code><![CDATA[getPath]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/PatchPanelPortFile.php">
     <LessSpecificImplementedReturnType>
@@ -3068,29 +1574,6 @@
     <MissingDocblockType>
       <code><![CDATA[public static function createFromPort( PatchPanelPort $ppp ): PatchPanelPortHistory]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[self::create( [
-            'switchport'            => $ppp->switchPort ? $ppp->switchPort->switcher->name . '::' . $ppp->switchPort->name : '',
-            'patch_panel_port_id'   => $ppp->id,
-            'customer'              => $ppp->customer->name ?? '',
-            'cust_id'               => $ppp->customer->id ?? '',
-            'state'                 => $ppp->state,
-            'notes'                 => $ppp->notes,
-            'assigned_at'           => $ppp->assigned_at,
-            'connected_at'          => $ppp->connected_at,
-            'cease_requested_at'    => $ppp->cease_requested_at,
-            'ceased_at'             => $ppp->ceased_at ?? now(),
-            'internal_use'          => $ppp->internal_use,
-            'chargeable'            => $ppp->chargeable,
-            'number'                => $ppp->number,
-            'colo_circuit_ref'      => $ppp->colo_circuit_ref,
-            'ticket_ref'            => $ppp->ticket_ref,
-            'private_notes'         => $ppp->private_notes,
-            'owned_by'              => $ppp->owned_by,
-            'description'           => $ppp->description,
-            'colo_billing_ref'      => $ppp->colo_billing_ref,
-        ] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/PatchPanelPortHistoryFile.php">
     <LessSpecificImplementedReturnType>
@@ -3098,18 +1581,6 @@
       <code><![CDATA[\Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile]]></code>
       <code><![CDATA[\Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile]]></code>
     </LessSpecificImplementedReturnType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[self::create([
-            'patch_panel_port_history_id'   => $portHistory->id,
-            'name'                          => $file->name,
-            'type'                          => $file->type,
-            'uploaded_at'                   => $file->uploaded_at,
-            'uploaded_by'                   => $file->uploaded_by,
-            'size'                          => $file->size,
-            'is_private'                    => $file->is_private,
-            'storage_location'              => $file->storage_location,
-        ])]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/PeeringManager.php">
     <LessSpecificImplementedReturnType>
@@ -3147,9 +1618,6 @@
       <code><![CDATA[\Illuminate\Database\Eloquent\Builder|RouteServerFilterProd]]></code>
       <code><![CDATA[\Illuminate\Database\Eloquent\Builder|RouteServerFilterProd]]></code>
     </LessSpecificImplementedReturnType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::find( $model->customer_id )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/Router.php">
     <LessSpecificImplementedReturnType>
@@ -3200,17 +1668,6 @@
     <RedundantCondition>
       <code><![CDATA[$logger]]></code>
     </RedundantCondition>
-    <UndefinedMagicMethod>
-      <code><![CDATA[SwitchPort::create( [
-                        'switchid'  => $this->id,
-                        'ifIndex'   => $index,
-                        'active'    => true,
-                        'type'      => SwitchPort::TYPE_UNSET,
-                    ])]]></code>
-      <code><![CDATA[SwitchPort::findOrFail( $ep->id )]]></code>
-      <code><![CDATA[self::select( 'pi.*' )]]></code>
-      <code><![CDATA[self::select( 'ppp.*' )]]></code>
-    </UndefinedMagicMethod>
     <UndefinedMagicPropertyFetch>
       <code><![CDATA[$sp->physicalInterface->coreinterface]]></code>
     </UndefinedMagicPropertyFetch>
@@ -3221,9 +1678,6 @@
       <code><![CDATA[Builder|TrafficDaily]]></code>
       <code><![CDATA[Builder|TrafficDaily]]></code>
     </LessSpecificImplementedReturnType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[self::select( [ 'td.*', 'c.*'] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/TrafficDailyPhysInt.php">
     <LessSpecificImplementedReturnType>
@@ -3238,10 +1692,6 @@
       <code><![CDATA[Builder|User]]></code>
       <code><![CDATA[Builder|User]]></code>
     </LessSpecificImplementedReturnType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[CustomerToUser::where( 'customer_id' , $this->custid )]]></code>
-      <code><![CDATA[CustomerToUser::where( 'customer_id', $this->custid )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Models/User2FA.php">
     <LessSpecificImplementedReturnType>
@@ -3289,10 +1739,6 @@
     <NullableReturnStatement>
       <code><![CDATA[$this->physicalInterfaces[ 0 ]->switchPort->type]]></code>
     </NullableReturnStatement>
-    <UndefinedMagicMethod>
-      <code><![CDATA[self::from( 'virtualinterface AS vi' )]]></code>
-      <code><![CDATA[self::select( 'sp.switchid AS switchid' )]]></code>
-    </UndefinedMagicMethod>
     <UndefinedMagicPropertyFetch>
       <code><![CDATA[$pi->coreinterface]]></code>
     </UndefinedMagicPropertyFetch>
@@ -3323,11 +1769,6 @@
       <code><![CDATA[public function checkRsfObject( User $user, RouteServerFilter $rsf ): bool]]></code>
     </MissingDocblockType>
   </file>
-  <file src="app/Policies/UserPolicy.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[CustomerToUser::where( 'customer_id', $auth->custid )]]></code>
-    </UndefinedMagicMethod>
-  </file>
   <file src="app/Providers/AuthServiceProvider.php">
     <RedundantCondition>
       <code><![CDATA[method_exists( $guard, 'setCookieJar' )]]></code>
@@ -3351,11 +1792,6 @@
       <code><![CDATA[$this->app]]></code>
     </UndefinedInterfaceMethod>
   </file>
-  <file src="app/Providers/IxpServiceProvider.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Customer::select( [ 'id', 'name' ] )]]></code>
-    </UndefinedMagicMethod>
-  </file>
   <file src="app/Rules/Ipv4SubnetSize.php">
     <InvalidOperand>
       <code><![CDATA[config( "ixp.irrdb.min_v4_subnet_size" )]]></code>
@@ -3375,17 +1811,6 @@
       <code><![CDATA[public function purgeExpiredRememberTokens( User $user ): void]]></code>
       <code><![CDATA[public function retrieveByToken( $identifier, $token ): ?Authenticatable]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[UserRememberToken::create([
-            'user_id'   => $user->id,
-            'token'     => Str::random(60),
-            'device'    => $browser->getPlatform() . " " . $browser->getPlatformVersion(true) . " / " . $browser->getName() . " " . $browser->getVersion() ,
-            'ip'        => IpAddress::getIp(),
-            'expires'   => now()->addMinutes( config('auth.guards.web.expire', 60) ),
-        ])]]></code>
-      <code><![CDATA[UserRememberToken::where( 'user_id', $user->id )]]></code>
-      <code><![CDATA[UserRememberToken::where( [ 'user_id' => $identifier ] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Services/Auth/SessionGuard.php">
     <InvalidDocblock>
@@ -3394,18 +1819,6 @@
     <NoInterfaceProperties>
       <code><![CDATA[$this->user()->userRememberTokens]]></code>
     </NoInterfaceProperties>
-    <UndefinedMagicMethod>
-      <code><![CDATA[first]]></code>
-      <code><![CDATA[first]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Services/Diagnostics/Suites/IrrdbDiagnosticSuite.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[IrrdbAsn::where( 'customer_id',$customer->id )]]></code>
-      <code><![CDATA[IrrdbPrefix::where( 'customer_id',$customer->id )]]></code>
-      <code><![CDATA[IrrdbUpdateLog::where( [ 'cust_id' =>$customer->id ] )]]></code>
-      <code><![CDATA[IrrdbUpdateLog::where( [ 'cust_id' =>$customer->id ] )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Services/Diagnostics/Suites/PhysicalInterfaceDiagnosticSuite.php">
     <RedundantCondition>
@@ -3424,12 +1837,6 @@
       <code><![CDATA[$this->pi->switchPort->ifSpeed]]></code>
     </UndefinedMagicPropertyFetch>
   </file>
-  <file src="app/Services/Diagnostics/Suites/RouterBgpSessionsDiagnosticSuite.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Router::where( 'protocol', $protocol === 4 ? Router::PROTOCOL_IPV4 : Router::PROTOCOL_IPV6 )]]></code>
-      <code><![CDATA[hasApi]]></code>
-    </UndefinedMagicMethod>
-  </file>
   <file src="app/Services/Diagnostics/Suites/TransceiverDiagnosticSuite.php">
     <InvalidScalarArgument>
       <code><![CDATA[$matches[1]]]></code>
@@ -3442,12 +1849,6 @@
       <code><![CDATA[$pi]]></code>
       <code><![CDATA[$pi]]></code>
     </TypeDoesNotContainNull>
-  </file>
-  <file src="app/Services/Diagnostics/Suites/VirtualInterfaceDiagnosticSuite.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[SwitchPort::join( 'physicalinterface', 'switchport.id', '=', 'physicalinterface.switchportid' )]]></code>
-      <code><![CDATA[VirtualInterface::select('virtualinterface.id')]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Services/Grapher.php">
     <InvalidArrayAccess>
@@ -3526,9 +1927,6 @@
       <code><![CDATA[public function dataPath( Graph $graph ): string]]></code>
       <code><![CDATA[public function png( Graph $graph ): string]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Vlan::findOrFail( $options[ 'vlanid' ] ?? null )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Services/Grapher/Graph.php">
     <InvalidCast>
@@ -3549,18 +1947,11 @@
     <RedundantCondition>
       <code><![CDATA[$this->coreBundle()]]></code>
     </RedundantCondition>
-    <UndefinedMagicMethod>
-      <code><![CDATA[CoreBundleModel::findOrFail( $cb )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Services/Grapher/Graph/Customer.php">
     <RedundantCondition>
       <code><![CDATA[$this->customer()]]></code>
     </RedundantCondition>
-    <UndefinedMagicMethod>
-      <code><![CDATA[CustomerModel::find( $us->custid )]]></code>
-      <code><![CDATA[CustomerModel::findOrFail( $i )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Services/Grapher/Graph/IXP.php">
     <InvalidCast>
@@ -3580,14 +1971,6 @@
     <TypeDoesNotContainType>
       <code><![CDATA[(int)config( 'grapher.access.infrastructure' ) === User::AUTH_PUBLIC]]></code>
     </TypeDoesNotContainType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[InfrastructureModel::findOrFail( $v )]]></code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="app/Services/Grapher/Graph/Latency.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[VlanInterfaceModel::findOrFail( $vliid )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Services/Grapher/Graph/Location.php">
     <InvalidCast>
@@ -3600,9 +1983,6 @@
     <TypeDoesNotContainType>
       <code><![CDATA[(int)config( 'grapher.access.location' ) === User::AUTH_PUBLIC]]></code>
     </TypeDoesNotContainType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[LocationModel::findOrFail( $l )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Services/Grapher/Graph/P2p.php">
     <InvalidCast>
@@ -3612,9 +1992,6 @@
       <code><![CDATA[$this->dvli()]]></code>
       <code><![CDATA[$this->svli()]]></code>
     </RedundantCondition>
-    <UndefinedMagicMethod>
-      <code><![CDATA[VlanInterfaceModel::findOrFail( $vli )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Services/Grapher/Graph/PhysicalInterface.php">
     <InvalidNullableReturnType>
@@ -3628,9 +2005,6 @@
     <RedundantCondition>
       <code><![CDATA[$this->physicalInterface()]]></code>
     </RedundantCondition>
-    <UndefinedMagicMethod>
-      <code><![CDATA[PhysicalInterfaceModel::findOrFail( $pi )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Services/Grapher/Graph/Switcher.php">
     <InvalidCast>
@@ -3643,9 +2017,6 @@
     <TypeDoesNotContainType>
       <code><![CDATA[(int)config( 'grapher.access.switch' ) === User::AUTH_PUBLIC]]></code>
     </TypeDoesNotContainType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[SwitcherModel::findOrFail( $s )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Services/Grapher/Graph/Trunk.php">
     <InvalidCast>
@@ -3669,9 +2040,6 @@
     <RedundantCondition>
       <code><![CDATA[$this->virtualInterface()]]></code>
     </RedundantCondition>
-    <UndefinedMagicMethod>
-      <code><![CDATA[VirtualInterfaceModel::findOrFail( $vi )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Services/Grapher/Graph/Vlan.php">
     <InvalidCast>
@@ -3683,9 +2051,6 @@
     <TypeDoesNotContainType>
       <code><![CDATA[(int)config( 'grapher.access.vlan' ) === User::AUTH_PUBLIC]]></code>
     </TypeDoesNotContainType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[VlanModel::findOrFail( $v )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Services/Grapher/Graph/VlanInterface.php">
     <InvalidCast>
@@ -3703,9 +2068,6 @@
     <TypeDoesNotContainType>
       <code><![CDATA[(int)config( 'grapher.access.customer' ) === User::AUTH_PUBLIC]]></code>
     </TypeDoesNotContainType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[VlanInterfaceModel::findOrFail( $vli )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Services/Grapher/Statistics.php">
     <RedundantCondition>
@@ -3732,15 +2094,6 @@
       <code><![CDATA[public function organisationUpdate( int $helpdeskId, Customer $cust )]]></code>
       <code><![CDATA[public function userFind( int  $id )]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[Contact::create([
-            'name'      => $user->name,
-            'email'     => $user->email,
-            'mobile'    => $user->phone,
-        ])]]></code>
-      <code><![CDATA[getUser]]></code>
-      <code><![CDATA[getUser]]></code>
-    </UndefinedMagicMethod>
     <UndefinedMagicPropertyAssignment>
       <code><![CDATA[$cust->helpdesk_id]]></code>
     </UndefinedMagicPropertyAssignment>
@@ -3793,51 +2146,17 @@
     <MissingDocblockType>
       <code><![CDATA[public function update(): array]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[whereProtocol]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Tasks/Irrdb/UpdateDb.php">
     <MissingDocblockType>
       <code><![CDATA[protected function updateDb( array $fromIrrdb, int $protocol, $type = 'prefix' ): bool]]></code>
       <code><![CDATA[public function setBgpq3( Bgpq3 $bgpq3 ): UpdateDb]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[$model::create(
-                    [
-                        'customer_id'   => $this->customer()->id,
-                        $type           => $p,
-                        'protocol'      => $protocol,
-                        'last_seen'     => $now,
-                        'first_seen'    => $now,
-                    ]
-                )]]></code>
-      <code><![CDATA[$model::create(
-                    [
-                        'customer_id'   => $this->customer()->id,
-                        $type           => $p,
-                        'protocol'      => $protocol,
-                        'last_seen'     => $now,
-                        'first_seen'    => $now,
-                    ]
-                )]]></code>
-      <code><![CDATA[$model::where( 'customer_id', $this->customer()->id )]]></code>
-      <code><![CDATA[$model::where( 'customer_id', $this->customer()->id )]]></code>
-      <code><![CDATA[$model::where( 'id', $p['id'] )]]></code>
-      <code><![CDATA[$model::where( 'id', $p['id'] )]]></code>
-      <code><![CDATA[IrrdbUpdateLog::updateOrCreate(
-            [ 'cust_id' => $this->customer()->id ],
-            [ "{$type}_v{$protocol}" => now() ]
-        )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Tasks/Irrdb/UpdatePrefixDb.php">
     <MissingDocblockType>
       <code><![CDATA[public function update(): array]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[whereProtocol]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Tasks/Rir/Generator.php">
     <MissingDocblockType>
@@ -3846,10 +2165,6 @@
       <code><![CDATA[private function generateRouteServerClientDetails( Collection $customers ): array]]></code>
       <code><![CDATA[public function generate(): string]]></code>
     </MissingDocblockType>
-    <UndefinedMagicMethod>
-      <code><![CDATA[orderBy]]></code>
-      <code><![CDATA[where]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Tasks/Router/ConfigurationGenerator.php">
     <MissingDocblockType>
@@ -3862,24 +2177,6 @@
     <MissingDocblockType>
       <code><![CDATA[public function generate(): array]]></code>
     </MissingDocblockType>
-  </file>
-  <file src="app/Traits/Observable.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[Log::create(
-            [
-                'user_id'   => Auth::check() ? Auth::id() : null,
-                'model'     => self::getClass(),
-                'model_id'  => $model->id,
-                'action'    => $action,
-                'message'   => static::logSubject( $model ),
-                'models'    => [
-                    'new'       => $action !== Log::ACTION_DELETED ? $model->getAttributes()  : null,
-                    'old'       => $action !== Log::ACTION_CREATED ? $model->getOriginal()    : null,
-                    'changed'   => $action === Log::ACTION_UPDATED ? $model->getChanges()     : null,
-                ]
-            ]
-        )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Utils/Bgpq3.php">
     <InvalidOperand>
@@ -3894,13 +2191,6 @@
     <UndefinedInterfaceMethod>
       <code><![CDATA[isSuperUser]]></code>
     </UndefinedInterfaceMethod>
-    <UndefinedMagicMethod>
-      <code><![CDATA[NetworkInfo::join( 'vlan', 'vlan.id', 'networkinfo.vlanid' )]]></code>
-      <code><![CDATA[Router::select( [ 'vlan_id', 'peering_ip' ] )]]></code>
-      <code><![CDATA[Router::where( 'type', Router::TYPE_ROUTE_COLLECTOR )]]></code>
-      <code><![CDATA[Router::where( 'type', Router::TYPE_ROUTE_SERVER )]]></code>
-      <code><![CDATA[Router::where( 'type', Router::TYPE_ROUTE_SERVER )]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="app/Utils/Foil/Extensions/IXP.php">
     <InvalidLiteralArgument>
@@ -3958,15 +2248,6 @@
     <MissingDocblockType>
       <code><![CDATA[public static function toArpa( string $ip, int $protocol ): string]]></code>
     </MissingDocblockType>
-  </file>
-  <file src="app/Utils/MailingList.php">
-    <UndefinedMagicMethod>
-      <code><![CDATA[User::when( $subscribed, function ( $query ) {
-            return $query->whereJsonContains( 'prefs->mailinglist', [ $this->key => "1" ] );
-        }, function ($query) {
-            return $query->whereJsonContains( 'prefs->mailinglist', [ $this->key => "0" ] );
-        })]]></code>
-    </UndefinedMagicMethod>
   </file>
   <file src="data/SocialiteProviders/src/PeeringDB/Provider.php">
     <ImplicitToStringCast>

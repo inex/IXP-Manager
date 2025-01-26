@@ -183,6 +183,7 @@ use Illuminate\Support\Collection;
  * @property string|null $created
  * @method static Builder|CustomerAggregator whereCreated($value)
  * @method static Builder|CustomerAggregator whereLastupdated($value)
+ * @property-read \IXP\Models\IrrdbUpdateLog|null $irrdbUpdateLog
  * @mixin \Eloquent
  */
 class CustomerAggregator extends Customer

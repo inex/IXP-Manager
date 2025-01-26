@@ -155,11 +155,6 @@ class IrrdbConfigController extends EloquentController
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $r
-     *
-     * @return bool|RedirectResponse
-     *
-     * @throws
      */
     public function doStore( Request $r ): bool|RedirectResponse
     {
@@ -171,12 +166,7 @@ class IrrdbConfigController extends EloquentController
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request   $r
-     * @param int       $id
      *
-     * @return bool|RedirectResponse
-     *
-     * @throws
      */
     public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {

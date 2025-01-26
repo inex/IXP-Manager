@@ -5133,30 +5133,6 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Remove all items from the cache.
-         *
-         * @return bool 
-         * @static 
-         */
-        public static function flush()
-        {
-            /** @var \Illuminate\Cache\ArrayStore $instance */
-            return $instance->flush();
-        }
-
-        /**
-         * Get the cache key prefix.
-         *
-         * @return string 
-         * @static 
-         */
-        public static function getPrefix()
-        {
-            /** @var \Illuminate\Cache\ArrayStore $instance */
-            return $instance->getPrefix();
-        }
-
-        /**
          * Get a lock instance.
          *
          * @param string $name
@@ -5167,7 +5143,7 @@ namespace Illuminate\Support\Facades {
          */
         public static function lock($name, $seconds = 0, $owner = null)
         {
-            /** @var \Illuminate\Cache\ArrayStore $instance */
+            /** @var \Illuminate\Cache\RedisStore $instance */
             return $instance->lock($name, $seconds, $owner);
         }
 
@@ -5181,8 +5157,119 @@ namespace Illuminate\Support\Facades {
          */
         public static function restoreLock($name, $owner)
         {
-            /** @var \Illuminate\Cache\ArrayStore $instance */
+            /** @var \Illuminate\Cache\RedisStore $instance */
             return $instance->restoreLock($name, $owner);
+        }
+
+        /**
+         * Remove all items from the cache.
+         *
+         * @return bool 
+         * @static 
+         */
+        public static function flush()
+        {
+            /** @var \Illuminate\Cache\RedisStore $instance */
+            return $instance->flush();
+        }
+
+        /**
+         * Remove all expired tag set entries.
+         *
+         * @return void 
+         * @static 
+         */
+        public static function flushStaleTags()
+        {
+            /** @var \Illuminate\Cache\RedisStore $instance */
+            $instance->flushStaleTags();
+        }
+
+        /**
+         * Get the Redis connection instance.
+         *
+         * @return \Illuminate\Redis\Connections\Connection 
+         * @static 
+         */
+        public static function connection()
+        {
+            /** @var \Illuminate\Cache\RedisStore $instance */
+            return $instance->connection();
+        }
+
+        /**
+         * Get the Redis connection instance that should be used to manage locks.
+         *
+         * @return \Illuminate\Redis\Connections\Connection 
+         * @static 
+         */
+        public static function lockConnection()
+        {
+            /** @var \Illuminate\Cache\RedisStore $instance */
+            return $instance->lockConnection();
+        }
+
+        /**
+         * Specify the name of the connection that should be used to store data.
+         *
+         * @param string $connection
+         * @return void 
+         * @static 
+         */
+        public static function setConnection($connection)
+        {
+            /** @var \Illuminate\Cache\RedisStore $instance */
+            $instance->setConnection($connection);
+        }
+
+        /**
+         * Specify the name of the connection that should be used to manage locks.
+         *
+         * @param string $connection
+         * @return \Illuminate\Cache\RedisStore 
+         * @static 
+         */
+        public static function setLockConnection($connection)
+        {
+            /** @var \Illuminate\Cache\RedisStore $instance */
+            return $instance->setLockConnection($connection);
+        }
+
+        /**
+         * Get the Redis database instance.
+         *
+         * @return \Illuminate\Contracts\Redis\Factory 
+         * @static 
+         */
+        public static function getRedis()
+        {
+            /** @var \Illuminate\Cache\RedisStore $instance */
+            return $instance->getRedis();
+        }
+
+        /**
+         * Get the cache key prefix.
+         *
+         * @return string 
+         * @static 
+         */
+        public static function getPrefix()
+        {
+            /** @var \Illuminate\Cache\RedisStore $instance */
+            return $instance->getPrefix();
+        }
+
+        /**
+         * Set the cache key prefix.
+         *
+         * @param string $prefix
+         * @return void 
+         * @static 
+         */
+        public static function setPrefix($prefix)
+        {
+            /** @var \Illuminate\Cache\RedisStore $instance */
+            $instance->setPrefix($prefix);
         }
 
             }
