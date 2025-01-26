@@ -6,7 +6,6 @@
       <sourceFolder url="file://$MODULE_DIR$/data/SocialiteProviders/PeeringDB" isTestSource="false" packagePrefix="SocialiteProviders\PeeringDB\" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" packagePrefix="Tests\" />
-      <sourceFolder url="file://$MODULE_DIR$/database" isTestSource="false" packagePrefix="Database\" />
       <sourceFolder url="file://$MODULE_DIR$/database/seeders" isTestSource="false" packagePrefix="Database\Seeders\" />
       <sourceFolder url="file://$MODULE_DIR$/data/SocialiteProviders/PeeringDB/" isTestSource="false" packagePrefix="SocialiteProviders\PeeringDB\" />
       <sourceFolder url="file://$MODULE_DIR$/data/SocialiteProviders/src/PeeringDB/" isTestSource="false" packagePrefix="SocialiteProviders\PeeringDB\" />

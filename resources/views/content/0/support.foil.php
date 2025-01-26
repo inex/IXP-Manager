@@ -12,7 +12,7 @@
 
 <div class="alert alert-danger">
     Please see the official IXP Manager documentation on
-    <a target="_blank" href="http://docs.ixpmanager.org/features/static-content/">static content here</a>
+    <a target="_blank" href="https://docs.ixpmanager.org/latest/features/static-content/">static content here</a>
     for information and instructions on how to customise this page.
 </div>
 

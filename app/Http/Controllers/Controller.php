@@ -55,7 +55,7 @@ class Controller extends BaseController
      *
      * To enable reseller mode set the env variable IXP_RESELLER_ENABLED
      *
-     * @see http://docs.ixpmanager.org/features/reseller/
+     * @see https://docs.ixpmanager.org/latest/features/reseller/
      *
      * @return bool
      */
@@ -69,7 +69,7 @@ class Controller extends BaseController
      *
      * To disable as112 in the UI set the env variable IXP_AS112_UI_ACTIVE
      *
-     * @see http://docs.ixpmanager.org/features/as112/
+     * @see https://docs.ixpmanager.org/latest/features/as112/
      *
      * @return bool
      */

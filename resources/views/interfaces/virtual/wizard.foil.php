@@ -189,7 +189,7 @@
                                 ->inline()
                                 ->blockHelp( 'If checked, then IXP Manager will configure the route server BGP peer for this connection such that it will '
                                     . 'allow more specific prefixes than those registered in the IRRDB. See the '
-                                    . '<a href="http://docs.ixpmanager.org/features/route-servers/">route server configuration documentation for more details</a>.' )
+                                    . '<a href="https://docs.ixpmanager.org/latest/features/route-servers/">route server configuration documentation for more details</a>.' )
                             ?>
                         </div>
 
@@ -218,7 +218,7 @@
                     Former::primary_submit( 'Create' )->class( "mb-2 mb-sm-0" ),
                     Former::secondary_link( 'Cancel' )->href( route( 'virtual-interface@list' ) )->class( "mb-2 mb-sm-0" ),
                     Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" ),
-                    Former::info_link( 'External Documentation &Gt;' )->href( 'http://docs.ixpmanager.org/usage/interfaces/' )->target( '_blank' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
+                    Former::info_link( 'External Documentation &Gt;' )->href( 'https://docs.ixpmanager.org/latest/usage/interfaces/' )->target( '_blank' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
                 )->id('btn-group')
                 ?>
 

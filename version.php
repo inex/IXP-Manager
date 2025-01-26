@@ -27,4 +27,5 @@
 
 define( 'APPLICATION_VERSION', '6.4.1' );
 define( 'APPLICATION_VERDATE', '2024060900' );
+define( 'DOCUMENTATION_VERSION', '6.4' );
 

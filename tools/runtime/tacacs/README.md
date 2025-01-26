@@ -2,5 +2,5 @@
 
 Example script(s) for generating and updating TACACS configuration.
 
-Please see the documentation at: http://docs.ixpmanager.org/features/tacacs/
+Please see the documentation at: https://docs.ixpmanager.org/latest/features/tacacs/
 

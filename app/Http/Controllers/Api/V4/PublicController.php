@@ -44,7 +44,7 @@ class PublicController extends Controller
     /**
      * Simple test route for API authentication
      *
-     * Documented at: http://docs.ixpmanager.org/features/api/
+     * Documented at: https://docs.ixpmanager.org/latest/features/api/
      *
      * @return Response
      *

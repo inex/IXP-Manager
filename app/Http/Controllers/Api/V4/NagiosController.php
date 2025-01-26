@@ -55,7 +55,7 @@ class NagiosController extends Controller
     /**
      * An API call to generate customer reachability Nagios configuration for a given VLAN and protocol.
      *
-     * @see http://docs.ixpmanager.org/features/nagios/
+     * @see https://docs.ixpmanager.org/latest/features/nagios/
      *
      * @param Request           $r
      * @param Vlan              $vlan
@@ -99,7 +99,7 @@ class NagiosController extends Controller
     /**
      * An API call to generate production switch host and hostgroups for Nagios configuration for a given infrastructure.
      *
-     * @see http://docs.ixpmanager.org/features/nagios/
+     * @see https://docs.ixpmanager.org/latest/features/nagios/
      *
      * @param Request               $r
      * @param Infrastructure        $infra
@@ -133,7 +133,7 @@ class NagiosController extends Controller
     /**
      * An API call to generate Birdseye daemon checks for Nagios configuration for all or a given vlan.
      *
-     * @see http://docs.ixpmanager.org/features/nagios/
+     * @see https://docs.ixpmanager.org/latest/features/nagios/
      *
      * @param Request           $r
      * @param string|null       $template
@@ -179,7 +179,7 @@ class NagiosController extends Controller
     /**
      * An API call to generate customer BGP session checks for Nagios for a given router type, VLAN and protocol.
      *
-     * @see http://docs.ixpmanager.org/features/nagios/
+     * @see https://docs.ixpmanager.org/latest/features/nagios/
      *
      * @param Request           $r
      * @param Vlan              $vlan
