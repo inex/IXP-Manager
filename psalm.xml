@@ -22,6 +22,7 @@
         <directory name="database"/>
         <directory name="database/seeders"/>
         <ignoreFiles>
+            <file name="psalm-baseline.xml"/>
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>

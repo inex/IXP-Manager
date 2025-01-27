@@ -58,6 +58,11 @@
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
   </file>
+  <file src="app/Console/Commands/Irrdb/UpdateDb.php">
+    <InvalidOperand>
+      <code><![CDATA[config( 'mail.alerts_recipient.address' )]]></code>
+    </InvalidOperand>
+  </file>
   <file src="app/Console/Commands/Irrdb/UpdatePrefixDb.php">
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
@@ -998,6 +1003,11 @@
     <RedundantCondition>
       <code><![CDATA[$r = $am->atlasResult()]]></code>
     </RedundantCondition>
+  </file>
+  <file src="app/Mail/Alert.php">
+    <InvalidOperand>
+      <code><![CDATA[config('identity.sitename' )]]></code>
+    </InvalidOperand>
   </file>
   <file src="app/Mail/Auth/ForgotPassword.php">
     <InvalidOperand>

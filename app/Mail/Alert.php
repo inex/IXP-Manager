@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Mail\User;
+namespace IXP\Mail;
 
 /*
  * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -25,30 +25,27 @@ namespace IXP\Mail\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use IXP\Events\User\UserWarning as UserWarningEvent;
 
 /**
- * Mailable for warning email User
+ * Mailable for alerts
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Laszlo Kiss <laszlo@islandbridgenetworks.ie>
  * @category   User
- * @package    IXP\Mail\User
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @package    IXP\Mail
+ * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class UserWarning extends Mailable
+class Alert extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
-     *
-     * @param UserWarningEvent $e
-     * @return void
-     */
+     **/
     public function __construct(
-        public UserWarningEvent $event
+        public string $alert,
+        public \Exception $exception,
     ) {}
 
     /**
@@ -58,7 +55,7 @@ class UserWarning extends Mailable
      */
     public function build(): self
     {
-        return $this->markdown( 'user.emails.warning' )
+        return $this->markdown( 'user.emails.alert' )
             ->subject( config('identity.sitename' ) . " - Alert" );
     }
 }

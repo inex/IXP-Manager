@@ -23,11 +23,9 @@ namespace IXP\Console\Commands\Irrdb;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Mail;
 use IXP\Console\Commands\Command;
-use IXP\Events\User\UserWarning as UserWarningEvent;
-use IXP\Mail\User\UserWarning;
+use IXP\Mail\Alert;
 use IXP\Models\Customer;
 
 /**
@@ -158,9 +156,7 @@ abstract class UpdateDb extends Command
         }
 
         Mail::to( [ [ 'name' => config( 'mail.alerts_recipient.name' ), 'email' => config( 'mail.alerts_recipient.address' ) ] ] )
-            ->send( new UserWarning(
-                new UserWarningEvent( "IRRDB {$type} update failed for {$c->name}/AS{$c->autsys}", $e->getMessage() )
-            ) );
+            ->send( new Alert("IRRDB {$type} update failed for {$c->name}/AS{$c->autsys}", $e ) );
 
         $this->info( "Alert email sent to " . config( 'mail.alerts_recipient.address' ) );
     }

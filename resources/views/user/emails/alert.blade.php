@@ -2,10 +2,10 @@
 
     ## {{ config('identity.sitename') }} Alert
 
-    {{ $event->warningTitle }}
+    {{ $alert }}
 
     @component('mail::panel')
-        {{ $event->errorMessage }}
+        {{ $exception->getMessage() }}
     @endcomponent
 
 
