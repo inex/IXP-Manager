@@ -1,22 +1,12 @@
 @component('mail::message')
 
-    ## Warning Message
+    ## {{ config('identity.sitename') }} Alert
 
-    {{ $warningTitle }}
+    {{ $event->warningTitle }}
 
     @component('mail::panel')
-        {{ $errorMessage }}
+        {{ $event->errorMessage }}
     @endcomponent
 
-    @component('mail::subcopy')
-        &nbsp;
-    @endcomponent
-
-    Thanks and kind regards,
-
-
-    {{ config( 'identity.name' ) }}
-
-    [{{ config( 'identity.email' ) }}](mailto:{{ config( 'identity.email' ) }})
 
 @endcomponent

@@ -24,7 +24,10 @@ namespace IXP\Console\Commands\Irrdb;
  */
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Mail;
 use IXP\Console\Commands\Command;
+use IXP\Events\User\UserWarning as UserWarningEvent;
+use IXP\Mail\User\UserWarning;
 use IXP\Models\Customer;
 
 /**
@@ -94,7 +97,7 @@ abstract class UpdateDb extends Command
      *
      * @return void
      */
-    public function printResults( Customer $c, array $r, string $irrdbType = 'prefix' ): void
+    protected function printResults( Customer $c, array $r, string $irrdbType = 'prefix' ): void
     {
         $this->netTime  += $r[ 'netTime' ];
         $this->dbTime   += $r[ 'dbTime' ];
@@ -136,4 +139,30 @@ abstract class UpdateDb extends Command
             }
         }
     }
+
+    /**
+     * Handle exceptions
+     */
+    protected function handleException( Customer $c, \Exception $e, string $type ): void
+    {
+        $this->error( "IRRDB {$type} update failed for {$c->name}/AS{$c->autsys}" );
+        $this->error( $e->getMessage() );
+
+        if( !$this->option('alert-email') ) {
+            return;
+        }
+
+        if( !config('mail.alerts_recipient.address') ) {
+            $this->warn( "Alert email not sent as IDENTITY_ALERTS_EMAIL .env option not set." );
+            return;
+        }
+
+        Mail::to( [ [ 'name' => config( 'mail.alerts_recipient.name' ), 'email' => config( 'mail.alerts_recipient.address' ) ] ] )
+            ->send( new UserWarning(
+                new UserWarningEvent( "IRRDB {$type} update failed for {$c->name}/AS{$c->autsys}", $e->getMessage() )
+            ) );
+
+        $this->info( "Alert email sent to " . config( 'mail.alerts_recipient.address' ) );
+    }
+
 }

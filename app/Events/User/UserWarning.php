@@ -3,7 +3,7 @@
 namespace IXP\Events\User;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -31,10 +31,9 @@ use Illuminate\Foundation\Events\Dispatchable;
 /**
  * User Warning Event
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Laszlo Kiss <laszlo@islandbridgenetworks.ie>
  * @category   Events\User
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class UserWarning implements ShouldQueue
@@ -42,41 +41,14 @@ class UserWarning implements ShouldQueue
     use Dispatchable, SerializesModels, InteractsWithQueue;
 
     /**
-     * @var string
-     * @var string
-     */
-    public string $warningTitle;
-    public string $errorMessage;
-
-    /**
      * Create a new event instance.
      *
      * @param string $warningTitle
      * @param string $errorMessage
      */
-    public function __construct(  string $warningTitle, string $errorMessage )
-    {
-        $this->warningTitle = $warningTitle;
-        $this->errorMessage = $errorMessage;
-    }
+    public function __construct(
+        public string $warningTitle,
+        public string $errorMessage )
+    {}
 
-    /**
-     * Get asn string
-     *
-     * @return string
-     */
-    public function getTitle(): string
-    {
-        return $this->warningTitle;
-    }
-
-    /**
-     * Get error message string
-     *
-     * @return string
-     */
-    public function getErrorMessage(): string
-    {
-        return $this->errorMessage;
-    }
 }

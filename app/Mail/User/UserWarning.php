@@ -3,7 +3,7 @@
 namespace IXP\Mail\User;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -31,7 +31,6 @@ use IXP\Events\User\UserWarning as UserWarningEvent;
  * Mailable for warning email User
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Laszlo Kiss <laszlo@islandbridgenetworks.ie>
  * @category   User
  * @package    IXP\Mail\User
@@ -43,25 +42,14 @@ class UserWarning extends Mailable
     use Queueable, SerializesModels;
 
     /**
-     *
-     * @var UserWarningEvent
-     */
-    public UserWarningEvent $event;
-
-    public string $warningTitle;
-    public string $errorMessage;
-
-    /**
      * Create a new message instance.
      *
      * @param UserWarningEvent $e
-     *
      * @return void
      */
-    public function __construct( UserWarningEvent $e )
-    {
-        $this->event = $e;
-    }
+    public function __construct(
+        public UserWarningEvent $event
+    ) {}
 
     /**
      * Build the message.
@@ -70,9 +58,7 @@ class UserWarning extends Mailable
      */
     public function build(): self
     {
-        $this->warningTitle = $this->event->getTitle();
-        $this->errorMessage = $this->event->getErrorMessage();
-
-        return $this->markdown( 'user.emails.warning' )->subject( config('identity.sitename' ) . " - Warning" );
+        return $this->markdown( 'user.emails.warning' )
+            ->subject( config('identity.sitename' ) . " - Alert" );
     }
 }
