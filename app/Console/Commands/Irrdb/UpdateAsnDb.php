@@ -43,8 +43,9 @@ class UpdateAsnDb extends UpdateDb
      *
      * @var string
      */
-    protected $signature = 'irrdb:update-asn-db
-                        {customer? : Customer ASN, ID or shortname (in that order). Otherwise all customers.}';
+    protected $signature = 'irrdb:update-asn-db 
+                        {--asn= : Only update the member with this ASN}
+                        {--id= : Only update the member with this customer ID}';
 
     /**
      * The console command description.
@@ -66,7 +67,7 @@ class UpdateAsnDb extends UpdateDb
             return -99;
         }
 
-        $customers = $this->resolveCustomers();
+        $customers = $this->resolveCustomers( $this->options() );
 
         foreach( $customers as $c ) {
             try {

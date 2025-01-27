@@ -59,32 +59,31 @@ abstract class UpdateDb extends Command
      *
      * @return mixed
      */
-    protected function resolveCustomers(): mixed
+    protected function resolveCustomers( array $options ): mixed
     {
-        $custarg = $this->argument('customer' );
+        if( $options[ 'asn' ] ) {
+            $c = Customer::whereAutsys( $options[ 'asn' ] )->get();
 
-        // if not customer specific, return all appropriate ones:
-        if( !$custarg ) {
-            return Customer::currentActive( true )->get();
-        }
+            if( !count( $c ) ) {
+                $this->error( "No customer found with ASN {$options[ 'asn' ]}" );
+                exit(-1);
+            }
 
-        // assume ASN first:
-        if( is_numeric( $custarg ) && count( ( $c = Customer::whereAutsys( $custarg )->get() ) ) > 0 ) {
             return $c;
         }
 
-        // then ID:
-        if( is_numeric( $custarg ) && ( $c = Customer::find( $custarg ) ) ) {
-            return [ $c ];
-        }
+        if( $options[ 'id' ] ) {
+            $c = Customer::whereId( $options[ 'id' ] )->get();
 
-        if( count( $c = Customer::whereShortname( $custarg )->get() ) > 0 ) {
+            if( !count( $c ) ) {
+                $this->error( "No customer found with ID {$options[ 'id' ]}" );
+                exit(-1);
+            }
+
             return $c;
         }
 
-        $this->error( "Could not find a customer matching id/shortname: " . $custarg );
-
-        exit(-1);
+        return Customer::currentActive( true )->get();
     }
 
     /**

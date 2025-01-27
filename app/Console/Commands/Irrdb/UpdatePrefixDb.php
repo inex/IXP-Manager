@@ -44,7 +44,8 @@ class UpdatePrefixDb extends UpdateDb
      * @var string
      */
     protected $signature = 'irrdb:update-prefix-db
-                        {customer? : Customer ASN, ID or shortname (in that order). Otherwise all customers.}';
+                        {--asn= : Only update the member with this ASN}
+                        {--id= : Only update the member with this customer ID}';
 
     /**
      * The console command description.
@@ -66,7 +67,7 @@ class UpdatePrefixDb extends UpdateDb
             return -99;
         }
 
-        $customers = $this->resolveCustomers();
+        $customers = $this->resolveCustomers( $this->options() );
 
         foreach( $customers as $c ) {
             try {
