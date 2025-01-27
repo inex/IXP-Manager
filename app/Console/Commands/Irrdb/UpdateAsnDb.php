@@ -26,16 +26,17 @@ namespace IXP\Console\Commands\Irrdb;
 use Exception;
 use IXP\Tasks\Irrdb\UpdateAsnDb as UpdateAsnDbTask;
 
- /**
-  * Artisan command to update the IRRDB ASN database
-  *
-  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
-  * @author     Yann Robin      <yann@islandbridgenetworks.ie>
-  * @category   Irrdb
-  * @package    IXP\Console\Commands
-  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
-  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
-  */
+/**
+ * Artisan command to update the IRRDB ASN database
+ *
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin      <yann@islandbridgenetworks.ie>
+ * @author     Laszlo Kiss     <laszlo@islandbridgenetworks.ie>
+ * @category   Irrdb
+ * @package    IXP\Console\Commands
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class UpdateAsnDb extends UpdateDb
 {
     /**
@@ -45,7 +46,8 @@ class UpdateAsnDb extends UpdateDb
      */
     protected $signature = 'irrdb:update-asn-db 
                         {--asn= : Only update the member with this ASN}
-                        {--id= : Only update the member with this customer ID}';
+                        {--id= : Only update the member with this customer ID}
+                        {--alert-email : If set, send an alert email to IDENTITY_ALERTS_EMAIL on error}';
 
     /**
      * The console command description.
@@ -72,14 +74,12 @@ class UpdateAsnDb extends UpdateDb
         foreach( $customers as $c ) {
             try {
                 $task = new UpdateAsnDbTask( $c );
+                $this->printResults( $c, $task->update(), 'asn' );
             } catch( Exception $e ) {
-                $this->error( "IRRDB ASN update failed for {$c->name}/AS{$c->autsys}" );
-                $this->error( $e->getMessage() );
+                $this->handleException( $c, $e, 'ASN' );
                 $this->info( "Continuing to next customer...");
                 continue;
             }
-
-            $this->printResults( $c, $task->update(), 'asn' );
         }
 
         if( count( $customers ) > 1 && $this->isVerbosityVerbose() ) {
