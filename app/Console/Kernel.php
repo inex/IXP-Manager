@@ -42,18 +42,22 @@ class Kernel extends ConsoleKernel
         
         // Grapher - https://docs.ixpmanager.org/latest/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails
         $schedule->command( 'grapher:upload-stats-to-db' )->dailyAt( '2:00' )
-            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_GRAPHER_UPLOAD_STATS_TO_DB', false ); } );
+            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_GRAPHER_UPLOAD_STATS_TO_DB', false ); } )
+            ->withoutOverlapping();
+
         $schedule->command( 'grapher:upload-pi-stats-to-db' )->dailyAt( '2:10' )
-            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_GRAPHER_UPLOAD_STATS_TO_DB', false ); } );
+            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_GRAPHER_UPLOAD_STATS_TO_DB', false ); } )
+            ->withoutOverlapping();
 
         if( config( 'grapher.backends.sflow.enabled' ) ) {
             $schedule->command( 'grapher:prune-daily-p2p --days=30' )->dailyAt( '0:05' );
-            $schedule->command( 'grapher:upload-daily-p2p ' . now()->subDay()->format( 'Y-m-d' ) )->dailyAt( '0:10' );
+            $schedule->command( 'grapher:upload-daily-p2p ' . now()->subDay()->format( 'Y-m-d' ) )
+                ->dailyAt( '0:10' )->withoutOverlapping();
         }
 
 
 
-            // https://docs.ixpmanager.org/latest/features/peeringdb/#existence-of-peeringdb-records
+        // https://docs.ixpmanager.org/latest/features/peeringdb/#existence-of-peeringdb-records
         $schedule->command('ixp-manager:update-in-peeringdb')->daily()
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UPDATE_IN_PEERINGDB', false ); } );
 
@@ -64,10 +68,12 @@ class Kernel extends ConsoleKernel
         // IRRDB - https://docs.ixpmanager.org/latest/features/irrdb/
         if( config( 'ixp.irrdb.bgpq3.path' ) && is_executable( config( 'ixp.irrdb.bgpq3.path' ) ) ) {
             $schedule->command( 'irrdb:update-prefix-db' )->cron( '7 */6 * * *' )
-                ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_IRRDB_UPDATE_PREFIX_DB', false ); } );
+                ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_IRRDB_UPDATE_PREFIX_DB', false ); } )
+                ->withoutOverlapping();
 
             $schedule->command( 'irrdb:update-asn-db' )->cron( '37 */6 * * *' )
-                ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_IRRDB_UPDATE_ASN_DB', false ); } );
+                ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_IRRDB_UPDATE_ASN_DB', false ); } )
+                ->withoutOverlapping();
         }
 
         // https://laravel.com/docs/5.8/telescope#data-pruning
@@ -75,11 +81,13 @@ class Kernel extends ConsoleKernel
 
         // OUI Update - https://docs.ixpmanager.org/latest/features/layer2-addresses/#oui-database
         $schedule->command( 'utils:oui-update' )->weekly()->mondays()->at('9:15')
-            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UTILS_OUI_UPDATE', false ); } );
+            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UTILS_OUI_UPDATE', false ); } )
+            ->withoutOverlapping();
 
         // Switch SNMP pool - https://docs.ixpmanager.org/latest/usage/switches/#automated-polling-snmp-updates
         $schedule->command( 'switch:snmp-poll' )->everyFiveMinutes()
-            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_SWITCH_SNMP_POLL', false ); } );
+            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_SWITCH_SNMP_POLL', false ); } )
+            ->withoutOverlapping();
 
     }
 
