@@ -1,5 +1,6 @@
 
 .env
+.env.barryo
 .env*.local
 .env.by-vagrant.*
 /*.rrd
@@ -33,6 +34,8 @@ storage/.local
 storage/grapher/
 storage/files/*
 storage/tmp/*
+
+tests/Browser/ExampleTest.php
 
 tools/perl-lib/IXPManager/MYMETA.yml
 tools/perl-lib/IXPManager/Makefile
