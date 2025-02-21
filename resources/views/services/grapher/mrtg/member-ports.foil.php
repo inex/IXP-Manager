@@ -92,17 +92,19 @@
         endif;
 
         // overall aggregate
-        echo $this->insert(
-            "services/grapher/mrtg/target", [
-                'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
-                'mrtgPrefix'   => sprintf( "aggregate-%05d", $c->id ),
-                'portIds'      => $t->data['custports'][ $c->id ],
-                'data'         => $t->data,
-                'graphTitle'   => sprintf( "%s -- IXP Total Aggregate -- %%s / second", $c->abbreviatedName ),
-                'directory'    => sprintf("members/%x/%05d", $c->id % 16, $c->id),
-                'maxbytes'     => $custmaxbytes,
-            ]
-        ) . "\n\n\n";
+        if( isset( $t->data['custaggr'][$c->id] ) ):
+            echo $this->insert(
+                "services/grapher/mrtg/target", [
+                    'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
+                    'mrtgPrefix'   => sprintf( "aggregate-%05d", $c->id ),
+                    'portIds'      => $t->data['custaggr'][ $c->id ],
+                    'data'         => $t->data,
+                    'graphTitle'   => sprintf( "%s -- IXP Total Aggregate -- %%s / second", $c->abbreviatedName ),
+                    'directory'    => sprintf("members/%x/%05d", $c->id % 16, $c->id),
+                    'maxbytes'     => $custmaxbytes,
+                ]
+            ) . "\n\n\n";
+        endif;
 
     endforeach;
 ?>

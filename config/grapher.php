@@ -71,6 +71,9 @@ return [
             // local directory or a URL to remote web server
             'logdir'  => env( 'GRAPHER_BACKEND_MRTG_LOGDIR', '/tmp' ),
 
+            // aggregate graph behaviour for resellers.
+            'reseller_agg'  => env( 'GRAPHER_BACKEND_MRTG_RESELLER_AGGREGATE', 'include' ), // options: include, exclude, ppp
+
             'trunks'  => call_user_func( function() {
                 if( file_exists( config_path() . '/grapher_trunks.php' ) ) {
                     return include( config_path() . '/grapher_trunks.php' );
