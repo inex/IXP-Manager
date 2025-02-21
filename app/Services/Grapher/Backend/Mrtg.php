@@ -172,6 +172,8 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
         // we need to wrap switch ports in physical interfaces for switch aggregates and, as such, we need to use unused physical interface IDs
         $maxPiID = 0;
 
+        $reseller_agg = config('grapher.backends.mrtg.reseller_agg');
+
         foreach( Customer::all() as $c ) {
             foreach( $c->virtualInterfaces as $vi ) {
                 // we do not include core bundle interfaces here
