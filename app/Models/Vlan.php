@@ -80,6 +80,7 @@ use IXP\Traits\Observable;
  * @method static Builder|Vlan wherePeeringMatrix($value)
  * @method static Builder|Vlan wherePrivate($value)
  * @method static Builder|Vlan whereUpdatedAt($value)
+ * @method static Builder|Vlan publicProductionPeeringLan()
  * @mixin \Eloquent
  */
 class Vlan extends Model
@@ -218,6 +219,23 @@ class Vlan extends Model
     {
         return $query->where( 'peering_manager', 1 );
     }
+
+    /**
+     * Scope a query to only include public production peering LANs
+     *
+     * This is a bit of a hack right now as there is no specific flag for
+     * this but we'll use export_to_ixf for now as that is as good an
+     * inidicator as any.
+     *
+     * @param  Builder  $query
+     * @return Builder
+     */
+    public function scopePublicProductionPeeringLan( Builder $query ): Builder
+    {
+        return $query->where( 'export_to_ixf', 1 );
+    }
+
+
 
     /**
      * String to describe the model being updated / deleted / created

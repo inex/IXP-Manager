@@ -51,6 +51,10 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|CustomerTag whereInternalOnly($value)
  * @method static Builder|CustomerTag whereTag($value)
  * @method static Builder|CustomerTag whereUpdatedAt($value)
+ * @property string $created
+ * @property string $updated
+ * @method static Builder|CustomerTag whereCreated($value)
+ * @method static Builder|CustomerTag whereUpdated($value)
  * @mixin \Eloquent
  */
 class CustomerTag extends Model

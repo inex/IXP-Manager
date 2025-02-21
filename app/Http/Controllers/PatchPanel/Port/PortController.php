@@ -37,7 +37,7 @@ use IXP\Http\Controllers\Controller;
 
 use IXP\Http\Requests\StorePatchPanelPort as StorePatchPanelPortRequest;
 
-use IXP\Models\{
+use IXP\Models\{Aggregators\CustomerAggregator,
     Aggregators\PatchPanelPortAggregator,
     Cabinet,
     Customer,
@@ -45,8 +45,8 @@ use IXP\Models\{
     PatchPanel,
     PatchPanelPort,
     Switcher,
-    SwitchPort
-};
+    SwitchPort,
+    User};
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -184,10 +184,10 @@ class PortController extends Controller
         $duplexSlaveId = $ppp->duplexSlavePorts()->exists() ? $ppp->duplexSlavePorts()->first()->id : null;
         // fill the form with patch panel port data
         Former::populate( [
-            'switch_port_id'            => $r->old( 'switch_port_id',          $ppp->switch_port_id     ),
+            'switch_port_id'            => $r->old( 'switch_port_id',          (string)$ppp->switch_port_id     ),
             'patch_panel'               => $ppp->patchPanel->name,
-            'customer_id'               => $r->old( 'customer_id',             $ppp->customer_id        ),
-            'state'                     => $r->old( 'state',                   $ppp->state              ),
+            'customer_id'               => $r->old( 'customer_id',             (string)$ppp->customer_id        ),
+            'state'                     => $r->old( 'state',                   (string)$ppp->state              ),
             'notes'                     => $r->old( 'notes',                   $ppp->notes              ),
             'assigned_at'               => $r->old( 'assigned_at',             $ppp->assigned_at        ),
             'connected_at'              => $r->old( 'connected_at',            $ppp->connected_at       ),
@@ -199,7 +199,7 @@ class PortController extends Controller
             'colo_circuit_ref'          => $r->old( 'colo_circuit_ref',        $ppp->colo_circuit_ref   ),
             'ticket_ref'                => $r->old( 'ticket_ref',              $ppp->ticket_ref         ),
             'private_notes'             => $r->old( 'private_notes',           $ppp->private_notes      ),
-            'owned_by'                  => $r->old( 'owned_by',                $ppp->owned_by           ),
+            'owned_by'                  => $r->old( 'owned_by',                (string)$ppp->owned_by           ),
             'description'               => $r->old( 'description',             $ppp->description        ),
             'colo_billing_ref'          => $r->old( 'colo_billing_ref',        $ppp->colo_billing_ref   ),
             'cabinet_name'              => $ppp->patchPanel->cabinet->name,
@@ -210,7 +210,7 @@ class PortController extends Controller
 
         return view( 'patch-panel-port/edit' )->with([
             'states'                => $states,
-            'customers'             => Customer::select( [ 'id', 'name' ] )->orderBy( 'name' )->get(),
+            'customers'             => CustomerAggregator::reformatNameWithDetail( Customer::trafficking()->orderBy( 'name' )->get() ),
             'switches'              => Switcher::select( [ 'switch.id', 'switch.name' ] )
                                         ->leftJoin( 'cabinet AS cab', 'cab.id', 'switch.cabinetid' )
                                         ->where( 'active', true )
@@ -368,12 +368,15 @@ class PortController extends Controller
      */
     public function view( PatchPanelPort $ppp ): View
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         $listHistory[] = $ppp->load( [ 'patchPanel', 'duplexSlavePorts',
             'switchPort', 'customer'
         ] );
 
-        if( !Auth::getUser()->isSuperUser() ) {
-            if( !$ppp->customer || $ppp->customer_id !== Auth::getUser()->custid ) {
+        if( !$us->isSuperUser() ) {
+            if( !$ppp->customer || $ppp->customer_id !== $us->custid ) {
                 abort(404);
             }
         } else {

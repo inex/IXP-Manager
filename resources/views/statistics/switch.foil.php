@@ -72,7 +72,7 @@
             <div class="col-sm-12">
                 Switch graphs show all traffic handled by a given switch - a measure of <em>how busy</em> a switch is.
                 This includes traffic that originates, terminates and passes through a switch. More details in
-                <a href="https://docs.ixpmanager.org/grapher/introduction/">the documentation</a>.
+                <a href="https://docs.ixpmanager.org/latest/grapher/introduction/">the documentation</a>.
             </div>
         </div>
     </div>

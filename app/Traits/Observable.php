@@ -145,6 +145,7 @@ trait Observable
      * @param User|null $user limit the log entries to the actions of this user
      *
      * @return Builder
+     * @psalm-suppress UndefinedThisPropertyFetch
      */
     public function getLogEntries( ?User $user = null ): Builder
     {

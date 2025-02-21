@@ -24,7 +24,7 @@
 
 # Example script for updating Nagios target configuration from IXP Manager
 
-# See: http://docs.ixpmanager.org/features/nagios/
+# See: https://docs.ixpmanager.org/latest/features/nagios/
 
 ## SET THE FOLLOWING VARIABLES APPROPRIATELY
 

@@ -55,14 +55,14 @@ class ExpungeLogs extends IXPCommand
      *
      * @var string
      */
-    protected $signature = 'utils:expunge-logs';
+    protected $signature = 'utils:expunge-logs {--all}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'This command will delete old data from database tables > 6 months old';
+    protected $description = 'This command will delete old data from database tables > 6 months old (or all if --all set)';
 
     /**
      * Execute the console command.
@@ -71,7 +71,11 @@ class ExpungeLogs extends IXPCommand
      */
     public function handle()
     {
-        $sixmonthsago   = now()->subMonths(6)->format( 'Y-m-d 00:00:00' );
+        if( $this->option('all') ) {
+            $sixmonthsago = now()->addDay();
+        } else {
+            $sixmonthsago = now()->subMonths( 6 )->format( 'Y-m-d 00:00:00' );
+        }
 
         // Deleting user login logs older than 6 months
         $this->isVerbosityVerbose() && $this->output->write('Expunging user login records > 6 months...', false );

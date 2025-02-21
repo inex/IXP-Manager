@@ -23,6 +23,7 @@ namespace IXP\Utils\Grapher;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use IXP\Exceptions\Services\Grapher\ParameterException;
 use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
 
 use IXP\Services\Grapher\Graph;
@@ -141,11 +142,10 @@ class Rrd
     /**
      * Accessor for PERIOD_TIME
      *
-     * @param string
-     *
+     * @param string $period
      * @return float
      */
-    public function getPeriodTime( $period ): float
+    public function getPeriodTime( string $period ): float
     {
         return self::PERIOD_TIME[ $period ] ?? 0.0;
     }
@@ -310,9 +310,36 @@ class Rrd
      */
     public function data(): array
     {
+        if($this->graph()->period() === Graph::PERIOD_CUSTOM) {
+
+            if( !$this->graph()->periodStart() || !$this->graph()->periodEnd() ) {
+                throw new ParameterException('Period Start and Period End must be set for custom period graphs');
+            }
+
+            return $this->dataWindow(
+                $this->graph()->periodStart()->timestamp,
+                $this->graph()->periodEnd()->timestamp
+            );
+
+        } else {
+
+            return $this->dataWindow(time() - self::PERIOD_TIME[ $this->graph()->period() ], time());
+
+        }
+    }
+
+    /**
+     * @param integer $start : timestamp
+     * @param integer $end : timestamp
+     * @return array
+     * @throws FileErrorException
+     */
+    public function dataWindow( int $start, int $end): array
+    {
         $rrd = rrd_fetch( $this->file, [
             'AVERAGE',
-            '--start', time() - self::PERIOD_TIME[ $this->graph()->period() ]
+            '--start', $start,
+            '--end', $end,
         ]);
 
         if( $rrd === false || !is_array( $rrd ) ) {
@@ -323,7 +350,7 @@ class Rrd
         $this->end   = $rrd['end'];
         $this->step  = $rrd['step'];
 
-        list( $indexIn, $indexOut ) = $this->getIndexKeys();
+        [ $indexIn, $indexOut ] = $this->getIndexKeys();
 
         // we want newest first, so iterate in reverse
         // but.... do, we?
@@ -365,7 +392,7 @@ class Rrd
     {
         $separated_maxima = self::PERIOD_TIME[ $this->graph()->period() ] > 60*60*24*2;
 
-        list( $indexIn, $indexOut ) = $this->getIndexKeys();
+        [ $indexIn, $indexOut ] = $this->getIndexKeys();
 
         $options = [
             '--width=600',
@@ -435,6 +462,7 @@ class Rrd
         if( $png === false ) {
             throw new FileErrorException("Could not open/create RRD/PNG file");
         }
+
         return $this->getLocalFilename('png');
     }
 

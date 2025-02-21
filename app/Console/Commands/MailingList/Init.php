@@ -25,6 +25,7 @@ namespace IXP\Console\Commands\MailingList;
 
 use Ds\Set;
 
+use Illuminate\Support\Collection;
 use IXP\Utils\MailingList as ML;
 
  /**
@@ -74,12 +75,13 @@ class Init extends MailingList
     public function handle(): int
     {
         if( !config( 'mailinglists.enabled' ) ) {
-            die( "Mailing list functionality is disabled. See: http://docs.ixpmanager.org/features/mailing-lists/\n" );
+            die( "Mailing list functionality is disabled. See: https://docs.ixpmanager.org/latest/features/mailing-lists/\n" );
         }
 
         $ml = new ML( $this->argument('list') );
 
         $stdin = fopen( "php://stdin","r" );
+        /** @var Collection $addresses   */
         $addresses = collect();
 
         while( $address = strtolower( trim( fgets( $stdin ) ) ) ) {

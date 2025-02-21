@@ -23,7 +23,7 @@
 #
 # **ALTER FOR YOUR OWN ENVIRONMENT**
 
-# See: http://docs.ixpmanager.org/features/tacacs/
+# See: https://docs.ixpmanager.org/latest/features/tacacs/
 
 # Target configuration file:
 DEST="/usr/local/etc/tac_plus.conf"

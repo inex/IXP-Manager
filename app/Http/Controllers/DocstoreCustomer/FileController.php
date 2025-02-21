@@ -52,7 +52,7 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-use League\Flysystem\Exception as FlySystemException;
+use League\Flysystem\FilesystemException;
 
 /**
  * FileController Controller
@@ -106,8 +106,9 @@ class FileController extends Controller
         $this->authorize( 'download', $file );
 
         try {
+            /** @psalm-suppress UndefinedInterfaceMethod */
             return Storage::disk( $file->disk )->download( $file->path, $file->name );
-        } catch( FlySystemException $e ) {
+        } catch( FilesystemException $e ) {
             AlertContainer::push( "This customer file could not be found / downloaded. Please report this error to the support team.", Alert::DANGER );
             return redirect( route( 'docstore-c-dir@list', [ 'cust' => $file->customer->id , 'dir' => $file->docstore_customer_directory_id ] ) );
         }
@@ -151,7 +152,7 @@ class FileController extends Controller
         $this->authorize( 'create', DocstoreCustomerFile::class );
 
         Former::populate([
-            'min_privs' => $r->old( 'min_privs', User::AUTH_SUPERUSER )
+            'min_privs' => $r->old( 'min_privs', (string) User::AUTH_SUPERUSER )
         ]);
 
         return view( 'docstore-customer/file/upload', [
@@ -179,8 +180,9 @@ class FileController extends Controller
 
         $uploadedFile = $r->file('uploadedFile' );
 
-        $path = $uploadedFile->store( $cust->id, 'docstore_customers' );
+        $path = $uploadedFile->store( (string) $cust->id, 'docstore_customers' );
 
+        /** @psalm-suppress InvalidArgument */
         $file = DocstoreCustomerFile::create( [
             'name'                              => $r->name,
             'description'                       => $r->description,
@@ -218,7 +220,7 @@ class FileController extends Controller
             'name'                              => $r->old( 'name',           $file->name         ),
             'description'                       => $r->old( 'descripton',     $file->description  ),
             'sha256'                            => $r->old( 'sha256',         $file->sha256       ),
-            'min_privs'                         => $r->old( 'min_privs',      $file->min_privs    ),
+            'min_privs'                         => $r->old( 'min_privs',      (string) $file->min_privs    ),
             'docstore_customer_directory_id'    => $r->old( 'docstore_customer_directory_id',$file->docstore_customer_directory_id ?? '' ),
         ]);
 
@@ -254,6 +256,7 @@ class FileController extends Controller
             $uploadedFile = $r->file('uploadedFile');
             $path = $uploadedFile->store( $file->customer->id, 'docstore_customers' );
 
+            /** @psalm-suppress InvalidArgument */
             $file->update([
                 'path'                  => $path,
                 'sha256'                => hash_file( 'sha256', $uploadedFile ),
@@ -322,9 +325,11 @@ class FileController extends Controller
             }),
             'sha256'                            => [ 'nullable', 'max:64',
                 function ( $attribute, $value, $fail ) use( $r ) {
+                    /** @psalm-suppress InvalidArgument */
                     if( $value && $r->file('uploadedFile' ) && $value !== hash_file( 'sha256', $r->file( 'uploadedFile' ) ) ) {
                         return $fail( 'The sha256 checksum calculated on the server does not match the one you provided.' );
                     }
+                    return null;
                 },
             ],
             'min_privs'                         => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES ) ),

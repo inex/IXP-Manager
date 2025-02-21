@@ -279,7 +279,7 @@ fi
 ###########################################################################################
 
 # tell IXP Manager the router has been updated:
-cmd="curl -s -X POST -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_DONE}/${handle} >/dev/null"
+cmd="curl --fail -s -X POST -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_DONE}/${handle} >/dev/null"
 if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
 
 until eval $cmd; do

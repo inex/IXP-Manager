@@ -76,7 +76,9 @@ class CustomerToUserController extends Controller
      */
     public function create( Request $r, string $email ): View
     {
-        if( Auth::getUser()->isCustUser() ){
+        /** @var User $us */
+        $us = Auth::getUser();
+        if( $us->isCustUser() ){
             abort( 403, 'Action no allowed' );
         }
         // search user via email address
@@ -140,6 +142,9 @@ class CustomerToUserController extends Controller
      */
     public function updatePrivs( Request $r ): JsonResponse
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         /** @var CustomerToUser $c2u */
         $c2u = CustomerToUser::findOrFail( $r->id );
 
@@ -148,7 +153,7 @@ class CustomerToUserController extends Controller
         }
 
         if( (int)$r->privs === User::AUTH_SUPERUSER ) {
-            if( !Auth::user()->isSuperUser() ) {
+            if( !$us->isSuperUser() ) {
                 return response()->json( [ 'success' => false, 'message' => "You are not allowed to set the super user privilege" ] );
             }
 

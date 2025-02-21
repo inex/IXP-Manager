@@ -40,9 +40,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::any( 'ping', 'PublicController@ping' )->name('api-v4:ping');
-Route::any( 'test', 'PublicController@test' )->name('api-v4:test');
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Statistics

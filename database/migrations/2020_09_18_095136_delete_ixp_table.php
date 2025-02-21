@@ -38,24 +38,32 @@ class DeleteIxpTable extends Migration
             $table->drop();
         });
 
-        $sm = Schema::getConnection()->getDoctrineSchemaManager();
+        $infrastructure_fks = array_column(
+            Schema::getConnection()->select('SELECT CONSTRAINT_NAME FROM information_schema.KEY_COLUMN_USAGE '
+                . 'WHERE TABLE_SCHEMA = "ixp" AND TABLE_NAME = "infrastructure" AND '
+                . 'REFERENCED_TABLE_SCHEMA = "ixp" AND REFERENCED_TABLE_NAME = "ixp"'
+            ), 'CONSTRAINT_NAME'
+        );
 
-        foreach( $sm->listTableForeignKeys('infrastructure') as $fk ) {
-            if( $fk->getForeignTableName() === 'ixp' ) {
-                Schema::table( 'infrastructure', function( Blueprint $table ) use ( $fk ) {
-                    $table->dropForeign( $fk->getName() );
-                    $table->dropColumn( 'ixp_id' );
-                } );
-            }
+        foreach( $infrastructure_fks as $fk ) {
+            Schema::table( 'infrastructure', function( Blueprint $table ) use ( $fk ) {
+                $table->dropForeign( $fk );
+                $table->dropColumn( 'ixp_id' );
+            } );
         }
 
-        foreach( $sm->listTableForeignKeys('traffic_daily') as $fk ) {
-            if( $fk->getForeignTableName() === 'ixp' ) {
-                Schema::table( 'traffic_daily', function( Blueprint $table ) use ( $fk ) {
-                    $table->dropForeign( $fk->getName() );
-                    $table->dropColumn( 'ixp_id' );
-                } );
-            }
+        $traffic_daily_fks = array_column(
+            Schema::getConnection()->select('SELECT CONSTRAINT_NAME FROM information_schema.KEY_COLUMN_USAGE '
+                . 'WHERE TABLE_SCHEMA = "ixp" AND TABLE_NAME = "traffic_daily" AND '
+                . 'REFERENCED_TABLE_SCHEMA = "ixp" AND REFERENCED_TABLE_NAME = "ixp"'
+            ), 'CONSTRAINT_NAME'
+        );
+
+        foreach( $traffic_daily_fks as $fk ) {
+            Schema::table( 'traffic_daily', function( Blueprint $table ) use ( $fk ) {
+                $table->dropForeign( $fk );
+                $table->dropColumn( 'ixp_id' );
+            } );
         }
 
         Schema::table('ixp', function (Blueprint $table) {

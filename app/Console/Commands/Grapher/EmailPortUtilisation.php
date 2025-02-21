@@ -116,7 +116,8 @@ class EmailPortUtilisation extends GrapherCommand
         }
 
         if( count( $excess ) ) {
-            Mail::to( explode( ',', $this->argument( 'email' ) ) )->send( new PortUtilisationMail( $excess, $this->option('threshold') ) );
+            Mail::to( explode( ',', $this->argument( 'email' ) ) )
+                ->send( new PortUtilisationMail( $excess, (float)$this->option('threshold') ) );
         }
 
         return 0;

@@ -49,9 +49,9 @@ class IXP extends Graph
      *
      * @param array $params
      *
-     * @return Grapher Fluid interface
+     * @return IXP Fluid interface
      */
-    public function setParamsFromArray( array $params ): Graph
+    public function setParamsFromArray( array $params ): IXP
     {
         parent::setParamsFromArray( $params );
         return $this;
@@ -89,7 +89,10 @@ class IXP extends Graph
      */
     public function authorise(): bool
     {
-        if( Auth::check() && Auth::getUser()->isSuperUser() ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+
+        if( Auth::check() && $us->isSuperUser() ) {
             return $this->allow();
         }
 
@@ -102,7 +105,7 @@ class IXP extends Graph
             return $this->allow();
         }
 
-        if( Auth::check() && is_numeric( config( 'grapher.access.ixp' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.ixp' ) ) {
+        if( Auth::check() && is_numeric( config( 'grapher.access.ixp' ) ) && $us->privs() >= config( 'grapher.access.ixp' ) ) {
             return $this->allow();
         }
 

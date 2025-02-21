@@ -24,63 +24,58 @@
         }
     ],
     "require": {
-        "php": "^8.0.2",
+        "php": "^8.3",
         "ext-json": "*",
-
-        "opensolutions/oss-snmp": "^1.0",
-
-        "fideloper/proxy": "^4.4",
-        "laravel/framework": "^9.19",
-        "laravel/tinker": "^2.7",
-        "foil/foil": "^0.6.7",
-
-        "zendesk/zendesk_api_client_php": "^2.2.10",
-        "guzzlehttp/guzzle": "^7.2",
-        "intervention/image": "^2.3",
         "anahkiasen/former": "^4.6",
-        "barryvdh/laravel-dompdf": "^2.0.0",
-        "mews/purifier": "^3.2",
-        "php-ds/php-ds": "^1.1",
-        "erusev/parsedown": "^1.7",
-        "s1lentium/iptools": "^1.1",
-        "webpatser/laravel-countries": "^1.5.4",
-        "laravel/telescope": "^4.4.4",
-        "laravel/horizon": "^5.7",
-        "socialiteproviders/manager": "^4",
-        "pragmarx/google2fa-laravel": "^1.4.1",
         "bacon/bacon-qr-code": "^2.0.3",
+        "barryvdh/laravel-dompdf": "^2.0.0",
+        "doctrine/dbal": "^3.8",
+        "erusev/parsedown": "^1.7",
+        "foil/foil": "^0.6.7",
+        "guzzlehttp/guzzle": "^7.8",
+        "intervention/image": "^2.7",
+        "laravel/framework": "^11.0",
+        "laravel/horizon": "^5.7",
+        "laravel/telescope": "^5.0",
+        "laravel/tinker": "^2.7",
+        "laravel/ui": "^4.0",
+        "mews/purifier": "^3.4",
+        "opensolutions/oss-snmp": "^1.0",
+        "php-ds/php-ds": "^1.5",
+        "pragmarx/google2fa-laravel": "^1.4.1",
+        "s1lentium/iptools": "^1.2",
+        "socialiteproviders/manager": "^4.6",
+        "spatie/laravel-ignition": "^2.7",
+        "webpatser/laravel-countries": "^1.5.4",
         "wolfcast/browser-detection": "^2.9.5",
-        "laravel/ui": "^3.0",
-        "doctrine/dbal": "^3.0"
+        "zendesk/zendesk_api_client_php": "^2.2.10"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.5.2",
-        "barryvdh/laravel-ide-helper": "^2.9",
-        "beyondcode/laravel-dump-server": "^1.7",
-        "fakerphp/faker": "^1.9.1",
-        "laravel/dusk": "^7.13",
-        "laravel/pint": "^1.0",
-        "laravel/sail": "^1.0.1",
-        "mockery/mockery": "^1.4.2",
-        "nunomaduro/collision": "^6.1",
-        "phpunit/phpunit": "^9.5.10",
-        "psalm/plugin-laravel": "^2.9",
-        "spatie/laravel-ignition": "^1.0",
-        "staudenmeir/dusk-updater": "^1.2.2",
-        "vimeo/psalm": "^4.7"
+        "barryvdh/laravel-ide-helper": "^3.0",
+        "beyondcode/laravel-dump-server": "^2.0",
+        "fakerphp/faker": "^1.23",
+        "laravel/dusk": "^8.0",
+        "laravel/pint": "^1.15",
+        "laravel/sail": "^1.29",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.1",
+        "phpunit/phpunit": "^10.5.1",
+        "psalm/plugin-laravel": "^2.11",
+        "sebastian/diff": "^5.0",
+        "staudenmeir/dusk-updater": "^1.5",
+        "vimeo/psalm": "^5.0"
     },
     "support": {
         "issues": "https://www.ixpmanager.org/support.php",
         "forum": "https://www.inex.ie/mailman/listinfo/ixpmanager",
-        "docs": "http://docs.ixpmanager.org/",
+        "docs": "https://docs.ixpmanager.org/",
         "source": "https://github.com/inex/IXP-Manager"
     },
     "autoload": {
         "psr-4": {
             "IXP\\": "app/",
             "Database\\Seeders\\": "database/seeders/",
-            "Database\\": "database",
-             "SocialiteProviders\\PeeringDB\\": "data/SocialiteProviders/PeeringDB/"
+            "SocialiteProviders\\PeeringDB\\": "data/SocialiteProviders/PeeringDB/"
        },
         "files": [
             "app/Support/helpers.php"
@@ -112,7 +107,9 @@
         ],
 
         "post-install-cmd": [
-            "@php artisan clear-compiled"
+            "@php artisan clear-compiled",
+            "@./vendor/bin/phpunit --migrate-configuration",
+            "@./vendor/bin/phpunit -c phpunit.dusk.xml --migrate-configuration"
         ],
 
         "post-update-cmd": [
@@ -120,7 +117,7 @@
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "@php artisan ide-helper:generate",
             "@php artisan ide-helper:meta --filename=.phpstorm.meta.php/laravel.meta.php",
-            "@php artisan ide-helper:models -Wr",
+            "@php artisan ide-helper:models -W",
             "@php artisan telescope:publish",
             "@php artisan horizon:install"
         ]
@@ -133,8 +130,9 @@
             "pestphp/pest-plugin": true
         },
         "platform": {
-            "php": "8.0.2"
+            "php": "8.3.0"
         }
     },
-   "minimum-stability": "stable"
+   "minimum-stability": "dev",
+   "prefer-stable": true
 }

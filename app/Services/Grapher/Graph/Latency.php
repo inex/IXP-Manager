@@ -25,6 +25,7 @@ namespace IXP\Services\Grapher\Graph;
 
 use Auth, Log;
 
+use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 
 use IXP\Exceptions\Services\Grapher\{
@@ -126,23 +127,27 @@ class Latency extends Graph
     /**
      * Set the period we should use
      *
-     * @param string $v
+     * @param string $value
      *
      * @return Graph Fluid interface
      *
      * @throws ParameterException
      */
-    public function setPeriod( string $v ): Graph
+    public function setPeriod( string $value, ?Carbon $start = null, ?Carbon $end = null ): Graph
     {
-        if( !isset( self::PERIODS[ $v ] ) ) {
-            throw new ParameterException('Invalid period ' . $v );
+        if( !isset( self::PERIODS[ $value ] ) ) {
+            throw new ParameterException('Invalid period ' . $value );
         }
 
-        if( $this->period() !== $v ) {
+        if( $value === self::PERIOD_CUSTOM ) {
+            throw new ParameterException('Invalid period ' . $value . ' for Graph/Latency graphs' );
+        }
+
+        if( $this->period() !== $value ) {
             $this->wipe();
         }
 
-        $this->period = $v;
+        $this->period = $value;
         return $this;
     }
 
@@ -156,6 +161,29 @@ class Latency extends Graph
     public static function resolvePeriod( $period = null ): string
     {
         return self::PERIODS[ $period ] ?? 'Unknown';
+    }
+
+
+    /**
+     * Process user input for the parameter: period
+     *
+     * Note that this function just sets the default if the input is invalid.
+     * If you want to force an exception in such cases, use setPeriod()
+     *
+     * @param string|null $value The user input value
+     * @param string|null $default The preferred default value
+     *
+     * @return string|null The verified / sanitised / default value
+     */
+    public static function processParameterPeriod( string $value = null, string $default = null, $withExtended = false ): string|null
+    {
+        if( $withExtended && !isset( self::PERIODS_EXTENDED[ $value ] ) ) {
+            $value = $default ?? self::PERIOD_DEFAULT;
+        } else if( !isset( self::PERIODS[ $value ] ) ) {
+            $value = $default ?? self::PERIOD_DEFAULT;
+        }
+
+        return $value;
     }
 
     /**
@@ -201,7 +229,10 @@ class Latency extends Graph
      */
     public static function authorisedForAllCustomers(): bool
     {
-        if( Auth::check() && Auth::getUser()->isSuperUser() ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+
+        if( Auth::check() && $us->isSuperUser() ) {
             return true;
         }
 
@@ -209,7 +240,7 @@ class Latency extends Graph
             return true;
         }
 
-        return Auth::check() && is_numeric( config( 'grapher.access.latency' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.latency' );
+        return Auth::check() && is_numeric( config( 'grapher.access.latency' ) ) && $us->privs() >= config( 'grapher.access.latency' );
     }
 
     /**
@@ -223,6 +254,9 @@ class Latency extends Graph
      */
     public function authorise(): bool
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         // NB: see above authorisedForAllCustomers()
         if( is_numeric( config( 'grapher.access.latency' ) ) && config( 'grapher.access.latency' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
@@ -233,23 +267,23 @@ class Latency extends Graph
             return false;
         }
 
-        if( Auth::getUser()->isSuperUser() ) {
+        if( $us->isSuperUser() ) {
             return $this->allow();
         }
 
-        if( Auth::getUser()->custid === $this->vli()->virtualInterface->customer->id ) {
+        if( $us->custid === $this->vli()->virtualInterface->customer->id ) {
             return $this->allow();
         }
 
         if( config( 'grapher.access.latency' ) !== 'own_graphs_only'
             && is_numeric( config( 'grapher.access.latency' ) )
-            && Auth::getUser()->privs >= config( 'grapher.access.latency' )
+            && $us->privs >= config( 'grapher.access.latency' )
         ) {
             return $this->allow();
         }
 
         Log::notice( sprintf( "[Grapher] [Latency]: user %d::%s tried to access a latency graph for vli "
-                . "{$this->vli()->id} which is not theirs", Auth::id(), Auth::getUser()->username )
+                . "{$this->vli()->id} which is not theirs", Auth::id(), $us->username )
         );
 
         $this->deny();

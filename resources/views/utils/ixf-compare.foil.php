@@ -104,7 +104,7 @@
 
 <?php else: ?>
 <p>
-    This tool will allow you to compare members between IXPs that support the <a href="https://docs.ixpmanager.org/features/ixf-export/">IX-F Member Export</a> schema.
+    This tool will allow you to compare members between IXPs that support the <a href="https://docs.ixpmanager.org/latest/features/ixf-export/">IX-F Member Export</a> schema.
     The pre-populated list is currently taken from a static configuration file but we will make that more dynamic / configurable in a future release.
 </p>
 <?php endif; ?>

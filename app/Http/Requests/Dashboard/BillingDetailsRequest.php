@@ -26,6 +26,7 @@ namespace IXP\Http\Requests\Dashboard;
 use Auth, Countries;
 
 use Illuminate\Foundation\Http\FormRequest;
+use IXP\Models\User;
 
 /**
  * Dashboard Billing Store Request
@@ -46,8 +47,10 @@ class BillingDetailsRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        /** @var User $us */
+        $us = Auth::getUser();
         // middleware ensures custadmin access only so always authorised here:
-        return Auth::getUser()->isCustAdmin();
+        return $us->isCustAdmin();
     }
 
     /**

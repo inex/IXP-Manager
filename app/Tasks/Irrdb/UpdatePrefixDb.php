@@ -73,7 +73,7 @@ class UpdatePrefixDb extends UpdateDb
                 // Delete any pre-existing entries just in case this has changed recently:
                 $this->startTimer();
 
-                Cache::store('file')->forget( 'irrdb:prefix:ipv' . $protocol . ':' . $this->customer()->asMacro( $protocol ) );
+                Cache::store()->forget( 'irrdb:prefix:ipv' . $protocol . ':' . $this->customer()->asMacro( $protocol ) );
 
                 IrrdbPrefix::whereCustomerId( $this->customer()->id )
                     ->whereProtocol( $protocol )->delete();
@@ -92,12 +92,12 @@ class UpdatePrefixDb extends UpdateDb
      * Validate a given array of CIDR formatted prefixes for the given protocol and
      * remove (and alert on) any elements failing validation.
      *
-     * @param array $prefixes Prefixes in CIDR notation
+     * @param array $entries Prefixes in CIDR notation
      * @param int $protocol Either 4/6
      *
      * @return array Valid prefixes
      */
-    protected function validate( array $prefixes, int $protocol ): array
+    protected function validate( array $entries, int $protocol ): array
     {
         if( $protocol === 4 ) {
             $validator = new ValidateIPv4Cidr;
@@ -105,13 +105,13 @@ class UpdatePrefixDb extends UpdateDb
             $validator = new ValidateIPv6Cidr;
         }
 
-        foreach( $prefixes as $i => $p ) {
-            if( !$validator->passes( [], $p ) ) {
-                unset( $prefixes[$i] );
-                Log::alert( 'IRRDB CLI action - removing invalid prefix ' . $p . ' from IRRDB result set!' );
+        foreach( $entries as $key => $prefix ) {
+            if( !$validator->passes( '', $prefix ) ) {
+                unset( $entries[$key] );
+                Log::alert( 'IRRDB CLI action - removing invalid prefix ' . $prefix . ' from IRRDB result set!' );
             }
         }
 
-        return $prefixes;
+        return $entries;
     }
 }

@@ -320,9 +320,9 @@ class Switcher extends Model
         // does this switch support the IANA MAU MIB?
         try {
             $host->useMAU()->types();
-            $this->mauSupported = true;
+            $this->mauSupported = 1;
         } catch( \OSS_SNMP\Exception $e ) {
-            $this->mauSupported = false;
+            $this->mauSupported = 0;
         }
 
         // uptime data
@@ -381,8 +381,8 @@ class Switcher extends Model
 
         // iterate over all the ports discovered on the switch:
         foreach( $host->useIface()->indexes() as $index ) {
-            // Port types - see https://docs.ixpmanager.org/usage/switches/#snmp-and-port-types-iftype
-            if( !in_array( $host->useIface()->types()[ $index ], config('ixp.snmp.allowed_interface_types') ) ) {
+            // Port types - see https://docs.ixpmanager.org/latest/usage/switches/#snmp-and-port-types-iftype
+            if( isset( $host->useIface()->types()[ $index ] ) && !in_array( $host->useIface()->types()[ $index ], config('ixp.snmp.allowed_interface_types') ) ) {
                 continue;
             }
 

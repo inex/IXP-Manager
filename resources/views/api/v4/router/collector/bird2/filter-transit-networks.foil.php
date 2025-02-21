@@ -57,7 +57,7 @@
 
 <?php if( count( $no_transit_asns ) === 0 ): ?>
 # .env file has disabled transit ASN filtering with an empty IXP_NO_TRANSIT_ASNS_OVERRIDE setting:
-function filter_has_transit_path()
+function filter_has_transit_path() -> bool
 {
     return false;
 }
@@ -65,7 +65,7 @@ function filter_has_transit_path()
 <?php else: ?>
 define TRANSIT_ASNS = [ <?= implode( ', ', array_keys( $no_transit_asns ) ) ?> ];
 
-function filter_has_transit_path()
+function filter_has_transit_path() -> bool
 int set transit_asns;
 {
     transit_asns = TRANSIT_ASNS;

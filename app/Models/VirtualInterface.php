@@ -232,9 +232,9 @@ class VirtualInterface extends Model
     /**
      * Get a Switch Port of a virtual interface.
      *
-     * @return SwitchPort|bool The switch port or false if no switch port.
+     * @return bool|SwitchPort|null The switch port or false if no switch port.
      */
-    public function switchPort()
+    public function switchPort(): bool|SwitchPort|null
     {
         if( $this->physicalInterfaces()->count() ){
             return $this->physicalInterfaces()->first()->switchPort;

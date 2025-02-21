@@ -40,14 +40,14 @@ class ForgotUsername
     use Dispatchable, SerializesModels;
 
     /**
-     * @var array of users
+     * @var Collection of users
      */
-    public $users;
+    public Collection $users;
 
     /**
      * @var String Email
      */
-    public $email;
+    public string $email;
 
     /**
      * Create a new event instance.

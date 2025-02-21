@@ -24,7 +24,7 @@
             ->placeholder( 'Choose a country' )
             ->addClass( 'chzn-select' )
             ->blockHelp( 'The country is shown in the <a
-                href="https://docs.ixpmanager.org/features/ixf-export/">IX-F Member
+                href="https://docs.ixpmanager.org/latest/features/ixf-export/">IX-F Member
                 Export</a> for the IXP. For IXPs that span more than one country, this
                 should represent the head office / administrative location. Specific
                 city and country information can be added to the facility / location

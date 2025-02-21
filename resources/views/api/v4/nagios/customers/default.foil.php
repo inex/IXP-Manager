@@ -5,7 +5,7 @@
 #   api/v4/nagios/customers/{vlan}/{protocol} API call to IXP Manager.
 # Any local changes made to this script will be lost.
 #
-# See: http://docs.ixpmanager.org/features/nagios/
+# See: https://docs.ixpmanager.org/latest/features/nagios/
 #
 # You should not need to edit these files - instead use your own custom skins. If
 # you can't effect the changes you need with skinning, consider posting to the mailing

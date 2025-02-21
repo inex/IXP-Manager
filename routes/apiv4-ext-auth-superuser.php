@@ -54,7 +54,7 @@ Route::group( [  'prefix' => 'user' ], function() {
     Route::get('json/{priv}',  'UserController@json');
 
     // Returns all users (or users with given integer privilege) as a formatted template (e.g. for TACACS)
-    // see: http://docs.ixpmanager.org/features/tacacs/
+    // see: https://docs.ixpmanager.org/latest/features/tacacs/
     Route::get( 'formatted',                   'UserController@formatted' );
     Route::get( 'formatted/{priv}',            'UserController@formatted' );
     Route::get( 'formatted/{priv}/{template}', 'UserController@formatted' );

@@ -31,6 +31,7 @@ use IPTools\{
     IP,
     Network
 };
+use IXP\Models\User;
 
 /**
  * IP Address Request
@@ -51,8 +52,10 @@ class Store extends FormRequest
      */
     public function authorize(): bool
     {
+        /** @var User $us */
+        $us = Auth::getUser();
         // middleware ensures superuser access only so always authorised here:
-        return Auth::getUser()->isSuperUser();
+        return $us->isSuperUser();
     }
 
     /**

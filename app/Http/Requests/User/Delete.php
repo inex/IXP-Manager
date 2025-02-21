@@ -82,10 +82,12 @@ class Delete extends FormRequest
      */
     public function withValidator( Validator $validator ): bool
     {
-        if( !$validator->fails() && !Auth::getUser()->isSuperUser() ) {
-            $validator->after( function( ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+        if( !$validator->fails() && !$us->isSuperUser() ) {
+            $validator->after( function( ) use ($us) {
                 // Check if the custadmin try to delete a user from an other Customer
-                if( CustomerToUser::where( 'customer_id', Auth::getUser()->custid )->where( 'user_id', $this->u->id )->doesntExist() ) {
+                if( CustomerToUser::where( 'customer_id', $us->custid )->where( 'user_id', $this->u->id )->doesntExist() ) {
                     Log::notice( Auth::user()->username . " tried to delete other customer user " . $this->u->username );
                     abort( 401, 'You are not authorised to delete this user. The administrators have been notified.' );
                 }

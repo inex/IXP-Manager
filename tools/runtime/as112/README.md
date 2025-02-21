@@ -2,5 +2,5 @@
 
 Example scripts for AS112.
 
-Please see the documentation at: http://docs.ixpmanager.org/features/as112/
+Please see the documentation at: https://docs.ixpmanager.org/latest/features/as112/
 

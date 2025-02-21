@@ -85,6 +85,7 @@ class PeeringManagerController extends Controller
         $protos = [ 4, 6 ];
         $c      = Customer::find( Auth::getUser()->custid );
         $vlans  = Vlan::peeringManager()->orderBy( 'number' )->get();
+        /** @psalm-suppress InvalidArgument */
         $peers  = CustomerAggregator::getPeeringManagerArrayByType( $c , $vlans, $protos ) ?? [];
 
         if( !count( $peers ) ) {
@@ -260,12 +261,12 @@ class PeeringManagerController extends Controller
         $pm     = $this->loadPeeringManager( Customer::find( Auth::getUser()->custid ), $peer );
 
         if( $status === "peered" ) {
-            $pm->peered = !$pm->peered;
+            $pm->peered = $pm->peered === 0 ? 1 : 0;
             if( $pm->peered && $pm->rejected ){
                 $pm->rejected = false;
             }
         } else{
-            $pm->rejected = !$pm->rejected;
+            $pm->rejected = $pm->rejected === 0 ? 1 : 0;
             if( $pm->peered && $pm->rejected ){
                 $pm->peered = false;
             }

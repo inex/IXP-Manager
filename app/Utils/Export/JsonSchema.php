@@ -89,6 +89,7 @@ class JsonSchema
             $version = $this->sanitiseVersion( $version );
         }
 
+        /** @psalm-suppress UndefinedConstant */
         $output = [
             'version' => $version,
             'generator' => 'IXP Manager v' . APPLICATION_VERSION,
@@ -502,7 +503,7 @@ class JsonSchema
 
             $memberinfo[ $cnt ] = [
                 'asnum'          => $c->autsys,
-                'member_since'   => $c->datejoin->format( 'Y-m-d' ).'T00:00:00Z',
+                'member_since'   => \Carbon\Carbon::parse($c->datejoin)->format( 'Y-m-d' ).'T00:00:00Z',
                 'url'            => $c->corpwww,
                 'name'           => $c->name,
                 'peering_policy' => $c->peeringpolicy,

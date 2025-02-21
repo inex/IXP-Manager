@@ -48,7 +48,7 @@
                         <i class="fa fa-question-circle fa-2x"></i>
                     </div>
                     <div class="col-sm-12">
-                        <b>Instructions: </b> You are strongly advised to review <a href="http://docs.ixpmanager.org/usage/interfaces/">the official documentation</a> before adding / editing interfaces
+                        <b>Instructions: </b> You are strongly advised to review <a href="https://docs.ixpmanager.org/latest/usage/interfaces/">the official documentation</a> before adding / editing interfaces
                         on a production system.
                     </div>
                 </div>
@@ -116,14 +116,14 @@
                             <?= Former::number( 'maxbgpprefix' )
                                 ->label( 'Max BGP Prefixes' )
                                 ->blockHelp( 'The maximum IPv4/6 prefixes that any router configured via IXP Manager should accept for this endpoint. '
-                                    . 'See <a href="http://docs.ixpmanager.org/usage/customers/#peering-details">the official documentation</a> for more details.' );
+                                    . 'See <a href="https://docs.ixpmanager.org/latest/usage/customers/#peering-details">the official documentation</a> for more details.' );
                             ?>
 
                             <?= Former::checkbox( 'rsclient' )
                                 ->label('&nbsp;')
                                 ->text( 'Route Server Client' )
                                 ->value( 1 )
-                                ->blockHelp( 'If checked, then IXP Manager will configure a BGP peer for this connection when <a href="http://docs.ixpmanager.org/features/route-servers/">generating route server configurations</a>. '
+                                ->blockHelp( 'If checked, then IXP Manager will configure a BGP peer for this connection when <a href="https://docs.ixpmanager.org/latest/features/route-servers/">generating route server configurations</a>. '
                                     . 'It is also used in other areas to show if a member uses the route servers or not, by the Peering Manager to calculate missing '
                                     . 'BGP sessions, etc.' )
                             ?>
@@ -136,7 +136,7 @@
                                 ->blockHelp( 'If Apply IRRDB Filtering is <b>not</b> set, then the route servers will accept any prefixes advertised by the  ' . config( 'ixp_fe.lang.customer.one' )
                                     . '(note that the default templates will filter martians and apply a max prefix limit). Generally speaking this is a very bad idea '
                                     . 'and should only be used in exceptional cases. INEX never uses this setting - but demand from other IX\'s had it added. '
-                                    . 'See <a href=""http://docs.ixpmanager.org/features/irrdb/">the documentation</a> for more information.' )
+                                    . 'See <a href=""https://docs.ixpmanager.org/latest/features/irrdb/">the documentation</a> for more information.' )
                             ?>
 
                             <div id="div-rsmorespecifics" class="<?= old( 'irrdbfilter' ) || $t->vli && $t->vli->irrdbfilter ?: 'collapse' ?>" >
@@ -146,7 +146,7 @@
                                     ->value( 1 )
                                     ->blockHelp( 'If checked, then IXP Manager will configure the route server BGP peer for this connection such that it will '
                                         . 'allow more specific prefixes than those registered in the IRRDB. See the '
-                                        . '<a href="http://docs.ixpmanager.org/features/route-servers/">route server configuration documentation for more details</a>.' )
+                                        . '<a href="https://docs.ixpmanager.org/latest/features/route-servers/">route server configuration documentation for more details</a>.' )
                                 ?>
                             </div>
 
@@ -155,7 +155,7 @@
                                     ->label('&nbsp;')
                                     ->text( 'AS112 Client' )
                                     ->value( 1 )
-                                    ->blockHelp( 'If checked, then IXP Manager will configure a BGP peer for this connection when generating <a href="http://docs.ixpmanager.org/features/as112/">AS112 router configurations</a>.' )
+                                    ->blockHelp( 'If checked, then IXP Manager will configure a BGP peer for this connection when generating <a href="https://docs.ixpmanager.org/latest/features/as112/">AS112 router configurations</a>.' )
                                 ?>
                             <?php endif; ?>
                         </div>

@@ -42,7 +42,7 @@
         <?= Former::text( 'city' )
             ->label( 'City' )
             ->blockHelp( "The city is shown in the <a
-                href=\"https://docs.ixpmanager.org/features/ixf-export/\">IX-F Member
+                href=\"https://docs.ixpmanager.org/latest/features/ixf-export/\">IX-F Member
                 Export</a> for each switch that is attached to this facility." );
         ?>
 
@@ -52,7 +52,7 @@
             ->placeholder( 'Choose a country' )
             ->addClass( 'chzn-select' )
             ->blockHelp( 'The country is shown in the <a
-                href="https://docs.ixpmanager.org/features/ixf-export/">IX-F Member
+                href="https://docs.ixpmanager.org/latest/features/ixf-export/">IX-F Member
                 Export</a> for each switch that is attached to this facility.' );
         ?>
 

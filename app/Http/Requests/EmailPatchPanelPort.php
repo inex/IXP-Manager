@@ -25,6 +25,7 @@ namespace IXP\Http\Requests;
 
 use Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use IXP\Models\User;
 
 class EmailPatchPanelPort extends FormRequest
 {
@@ -35,8 +36,10 @@ class EmailPatchPanelPort extends FormRequest
      */
     public function authorize(): bool
     {
+        /** @var User $us */
+        $us = Auth::getUser();
         // middleware ensures superuser access only so always authorised here:
-        return Auth::getUser()->isSuperUser();
+        return $us->isSuperUser();
     }
 
     /**

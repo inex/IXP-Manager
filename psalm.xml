@@ -1,18 +1,51 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="5"
+    errorLevel="4"
     resolveFromConfigFile="true"
+    findUnusedBaselineEntry="false"
+    findUnusedCode="false"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+    errorBaseline="psalm-baseline.xml"
 >
+
+    <extraFiles>
+        <file name="artisan"/>
+        <file name="version.php"/>
+        <file name="public/index.php"/>
+    </extraFiles>
+
     <projectFiles>
         <directory name="app"/>
         <directory name="data/SocialiteProviders/PeeringDB"/>
         <directory name="database"/>
         <directory name="database/seeders"/>
         <ignoreFiles>
+            <file name="psalm-baseline.xml"/>
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
-<plugins><pluginClass class="Psalm\LaravelPlugin\Plugin"/></plugins></psalm>
+
+    <plugins>
+        <pluginClass class="Psalm\LaravelPlugin\Plugin"/>
+    </plugins>
+
+    <issueHandlers>
+        <InvalidTemplateParam>
+            <errorLevel type="suppress">
+                <directory name="app/Models" /> <!-- all InvalidReturnType issues in this directory are suppressed -->
+            </errorLevel>
+        </InvalidTemplateParam>
+        <UndefinedMagicMethod>
+            <errorLevel type="suppress">
+                <directory name="app" /> <!-- all InvalidReturnType issues in this directory are suppressed -->
+            </errorLevel>
+        </UndefinedMagicMethod>
+        <UndefinedClass>
+            <errorLevel type="suppress">
+                <referencedClass name="Auth" />
+            </errorLevel>
+        </UndefinedClass>
+    </issueHandlers>
+</psalm>

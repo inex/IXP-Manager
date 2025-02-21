@@ -74,7 +74,7 @@ class CreateMeasurements extends Command
         $bar->start();
 
         $ars->each( function( $ar ) use ( $bar ) {
-            CreateMeasurementsJob::dispatchNow( $ar );
+            CreateMeasurementsJob::dispatchSync( $ar );
             $bar->advance();
         });
 

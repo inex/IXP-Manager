@@ -99,7 +99,7 @@ class Infrastructure extends Graph
      */
     public function name(): string
     {
-        return $this->infrastructure()->name;
+        return $this->infrastructure()->name ?: '';
     }
 
     /**
@@ -125,7 +125,10 @@ class Infrastructure extends Graph
      */
     public function authorise(): bool
     {
-        if( Auth::check() && Auth::getUser()->isSuperUser() ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+
+        if( Auth::check() && $us->isSuperUser() ) {
             return $this->allow();
         }
 
@@ -138,7 +141,7 @@ class Infrastructure extends Graph
             return $this->allow();
         }
 
-        if( Auth::check() && is_numeric( config( 'grapher.access.infrastructure' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.infrastructure' ) ) {
+        if( Auth::check() && is_numeric( config( 'grapher.access.infrastructure' ) ) && $us->privs() >= config( 'grapher.access.infrastructure' ) ) {
             return $this->allow();
         }
 

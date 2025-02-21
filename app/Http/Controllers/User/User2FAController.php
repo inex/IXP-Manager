@@ -71,6 +71,7 @@ class User2FAController extends Controller
      */
     public function configure(): View
     {
+        /** @var User $user */
         $user = Auth::getUser();
 
         if( !$user->user2FA ) {

@@ -341,6 +341,7 @@ class PatchPanelPort extends Model
 
     /**
      * Get the public patch panel port files for this patch panel port
+     * @psalm-suppress all
      */
     public function patchPanelPortFilesPublic(): HasMany
     {

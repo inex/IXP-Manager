@@ -51,7 +51,7 @@
                         <i class="fa fa-question-circle fa-2x"></i>
                     </div>
                     <div class="col-sm-12">
-                        <b>Instructions: </b> You are strongly advised to review <a href="http://docs.ixpmanager.org/usage/interfaces/">the documentation</a> before adding / editing interfaces
+                        <b>Instructions: </b> You are strongly advised to review <a href="https://docs.ixpmanager.org/latest/usage/interfaces/">the documentation</a> before adding / editing interfaces
                         on a production system.
                     </div>
                 </div>

@@ -233,14 +233,30 @@ class VlanInterface extends Model
     /**
      * Convenience function to get an IP address based on a given protocol
      *
-     * @param string $proto Either ipv4 / ipv6 (as defined in Grapher)
+     * @param int|string $proto Either 4/ipv4 / 6/ipv6 (as defined in Grapher)
      *
      * @return null|IPv4Address|IPv6Address
      *
      * @throws
      */
-    public function getIPAddress( string $proto )
+    public function getIPAddress( int|string $proto )
     {
+        if( is_string( $proto ) ) {
+            $proto = strtolower( $proto );
+        }
+
+        return match( $proto ) {
+            4, 'ipv4' => $this->ipv4address,
+            6, 'ipv6' => $this->ipv6address,
+        };
+/*
+        if( is_int( $proto ) ) {
+            return match( $proto ) {
+                4 => $this->ipv4address,
+                6 => $this->ipv6address,
+            };
+        }
+
         switch( strtolower( $proto ) ) {
             case 'ipv4':
                 return $this->ipv4address;
@@ -251,6 +267,7 @@ class VlanInterface extends Model
             default:
                 return null;
         }
+*/
     }
 
     /**

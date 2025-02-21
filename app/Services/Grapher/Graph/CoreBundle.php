@@ -161,7 +161,10 @@ class CoreBundle extends Graph
      */
     public function authorise(): bool
     {
-        if( Auth::check() && Auth::getUser()->isSuperUser() ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+
+        if( Auth::check() && $us->isSuperUser() ) {
             return $this->allow();
         }
 
@@ -174,7 +177,7 @@ class CoreBundle extends Graph
             return $this->allow();
         }
 
-        if( Auth::check() && is_numeric( config( 'grapher.access.trunk' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.trunk' ) ) {
+        if( Auth::check() && is_numeric( config( 'grapher.access.trunk' ) ) && $us->privs() >= config( 'grapher.access.trunk' ) ) {
             return $this->allow();
         }
 

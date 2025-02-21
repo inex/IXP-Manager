@@ -79,7 +79,6 @@ class CustomerPolicy
      *
      * @param  User  $user
      *
-     * @return mixed
      */
     public function create( User $user )
     {
@@ -92,7 +91,6 @@ class CustomerPolicy
      * @param  User         $user
      * @param  Customer     $customer
      *
-     * @return mixed
      */
     public function update(User $user, Customer $customer)
     {
@@ -104,7 +102,7 @@ class CustomerPolicy
      *
      * @param  User         $user
      * @param  Customer     $customer
-     * @return mixed
+     *
      */
     public function delete( User $user, Customer $customer )
     {
@@ -116,7 +114,7 @@ class CustomerPolicy
      *
      * @param  User         $user
      * @param  Customer     $customer
-     * @return mixed
+     *
      */
     public function restore( User $user, Customer $customer )
     {
@@ -129,7 +127,6 @@ class CustomerPolicy
      * @param  User         $user
      * @param  Customer     $customer
      *
-     * @return mixed
      */
     public function forceDelete( User $user, Customer $customer )
     {

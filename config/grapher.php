@@ -164,7 +164,7 @@ return [
         // The follows DO NOT DEFAULT TO PUBLIC but rather customer's are only allowed access
         // their own graphs by default.
         //
-        // See: https://docs.ixpmanager.org/grapher/api/#access-to-member-graphs
+        // See: https://docs.ixpmanager.org/latest/grapher/api/#access-to-member-graphs
         'customer'          => env( 'GRAPHER_ACCESS_CUSTOMER', 'own_graphs_only' ),
         'p2p'               => env( 'GRAPHER_ACCESS_P2P',      'own_graphs_only' ),
         'latency'           => env( 'GRAPHER_ACCESS_LATENCY',  'own_graphs_only' ),

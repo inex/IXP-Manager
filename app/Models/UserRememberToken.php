@@ -54,6 +54,8 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|UserRememberToken whereToken($value)
  * @method static Builder|UserRememberToken whereUpdatedAt($value)
  * @method static Builder|UserRememberToken whereUserId($value)
+ * @property string $created
+ * @method static Builder|UserRememberToken whereCreated($value)
  * @mixin \Eloquent
  */
 class UserRememberToken extends Model

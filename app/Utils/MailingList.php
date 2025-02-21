@@ -41,7 +41,7 @@ use IXP\Exceptions\MailingListException as Exception;
 class MailingList
 {
     /**
-     * @var array Mailing list config key (from config/mailinglist.php)
+     * @var array-key Mailing list config key (from config/mailinglist.php)
      */
     private $key = null;
 
@@ -86,10 +86,11 @@ class MailingList
             return $query->whereJsonContains( 'prefs->mailinglist', [ $this->key => "0" ] );
         })->orderBy( 'email' )->get();
 
-        foreach( $users as $u ) {
-            $e = strtolower( $u->email );
-            if( !$filtered_users->contains( $e ) && filter_var( $e, FILTER_VALIDATE_EMAIL ) !== false ) {
-                $filtered_users->add( $e );
+        foreach( $users as $user ) {
+            $email = strtolower( $user->email );
+            if( !$filtered_users->contains( $email ) && filter_var( $email, FILTER_VALIDATE_EMAIL ) !== false ) {
+                /** @psalm-suppress InvalidArgument - it is not invalid */
+                $filtered_users->add( $email );
             }
         }
 
@@ -99,7 +100,7 @@ class MailingList
     /**
      * Initialise a new mailing list.
      *
-     * See documentation for full details: http://docs.ixpmanager.org/features/mailing-lists/
+     * See documentation for full details: https://docs.ixpmanager.org/latest/features/mailing-lists/
      *
      * Returns an array with three arrays keyed as:
      *

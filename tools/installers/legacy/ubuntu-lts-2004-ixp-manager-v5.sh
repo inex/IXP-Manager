@@ -467,10 +467,10 @@ IDENTITY_DEFAULT_VLAN=1
 ### Features
 #
 
-# See: http://docs.ixpmanager.org/features/reseller/
+# See: https://docs.ixpmanager.org/latest/features/reseller/
 IXP_RESELLER_ENABLED=false
 
-# See: http://docs.ixpmanager.org/features/as112/
+# See: https://docs.ixpmanager.org/latest/features/as112/
 IXP_AS112_UI_ACTIVE=false
 
 
@@ -482,12 +482,12 @@ IXP_AS112_UI_ACTIVE=false
 # compatibility, etc.
 
 # Allow customers / admins to upload logos for members. Set to false to enabled.
-# See: http://docs.ixpmanager.org/usage/customers/#customer-logos
+# See: https://docs.ixpmanager.org/latest/usage/customers/#customer-logos
 IXP_FE_FRONTEND_DISABLED_LOGO=false
 
 
 # Send email notifications when a customer's billing details are updated.
-# See: http://docs.ixpmanager.org/usage/customers/#notification-of-billing-details-changed
+# See: https://docs.ixpmanager.org/latest/usage/customers/#notification-of-billing-details-changed
 # IXP_FE_CUSTOMER_BILLING_UPDATES_NOTIFY="mail@example.com"
 
 
@@ -525,7 +525,7 @@ GRAPHER_BACKENDS="dummy"
 GRAPHER_CACHE_ENABLED=true
 
 #################################################################################
-## Grapher - Mrtg - see: https://docs.ixpmanager.org/grapher/mrtg/
+## Grapher - Mrtg - see: https://docs.ixpmanager.org/latest/grapher/mrtg/
 ##
 
 # For backwards compatibility, the default is 'log' but 'rrd' is more modern:
@@ -537,7 +537,7 @@ GRAPHER_BACKEND_MRTG_DBTYPE="rrd"
 # GRAPHER_BACKEND_MRTG_LOGDIR="/srv/mrtg"
 
 #################################################################################
-## Grapher - sflow - see: https://docs.ixpmanager.org/grapher/sflow/
+## Grapher - sflow - see: https://docs.ixpmanager.org/latest/grapher/sflow/
 ##
 
 # GRAPHER_BACKEND_SFLOW_ENABLED=false
@@ -545,7 +545,7 @@ GRAPHER_BACKEND_MRTG_DBTYPE="rrd"
 
 
 #################################################################################
-## Grapher - smokeping - see: https://docs.ixpmanager.org/grapher/smokeping/
+## Grapher - smokeping - see: https://docs.ixpmanager.org/latest/grapher/smokeping/
 ##
 
 # Mark it as enabled (this just affects whether certain UI elements are shown):
@@ -559,7 +559,7 @@ GRAPHER_BACKEND_MRTG_DBTYPE="rrd"
 
 
 #################################################################################
-## IX-F Member Export - see: https://docs.ixpmanager.org/features/ixf-export/
+## IX-F Member Export - see: https://docs.ixpmanager.org/latest/features/ixf-export/
 
 IXP_API_JSONEXPORTSCHEMA_PUBLIC=true
 
@@ -580,7 +580,7 @@ CACHE_DRIVER=memcached
 #######################################################################################
 # Session Lifetimes - standard and remember me.
 #
-# See https://docs.ixpmanager.org/usage/authentication/
+# See https://docs.ixpmanager.org/latest/usage/authentication/
 #
 # SESSION_LIFETIME=120
 # AUTH_TOKEN_EXPIRE=43200
@@ -604,7 +604,7 @@ DOCTRINE_CACHE_NAMESPACE=IXPMANAGERNAMESPACE
 
 
 #######################################################################################
-# Options for updating RIR Objects - see https://docs.ixpmanager.org/features/rir-objects/
+# Options for updating RIR Objects - see https://docs.ixpmanager.org/latest/features/rir-objects/
 
 # Your RIR password to allow the updating of a RIR object by email:
 # IXP_API_RIR_PASSWORD=soopersecret
@@ -621,10 +621,10 @@ DOCTRINE_CACHE_NAMESPACE=IXPMANAGERNAMESPACE
 #######################################################################################
 # Utility paths
 
-# See: https://docs.ixpmanager.org/features/irrdb/
+# See: https://docs.ixpmanager.org/latest/features/irrdb/
 IXP_IRRDB_BGPQ3_PATH=/usr/bin/bgpq3
 
-# See: https://docs.ixpmanager.org/features/rpki/
+# See: https://docs.ixpmanager.org/latest/features/rpki/
 # IXP_RPKI_RTR1_HOST=192.0.2.11
 # IXP_RPKI_RTR1_PORT=3323
 # IXP_RPKI_RTR2_HOST=192.0.2.12
@@ -641,7 +641,7 @@ IXP_IRRDB_BGPQ3_PATH=/usr/bin/bgpq3
 #########################################################################################
 ### PeeringDB OAuth
 ###
-### https://docs.ixpmanager.org/features/peeringdb-oauth/
+### https://docs.ixpmanager.org/latest/features/peeringdb-oauth/
 ###
 
 # AUTH_PEERINGDB_ENABLED=true

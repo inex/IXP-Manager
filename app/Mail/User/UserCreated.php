@@ -55,7 +55,7 @@ class UserCreated extends Mailable
 
     /**
      * Existing?
-     * @var bool
+     * @var mixed
      */
     public $token = null;
 

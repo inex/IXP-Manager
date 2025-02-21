@@ -75,7 +75,6 @@ class InfrastructureControllerTest extends DuskTestCase
 
             $browser->visit( '/infrastructure/create' )
                 ->assertSee( 'Create Infrastructure' )
-                ->waitForText( "Choose the matching IX-F IXP" )
                 ->waitForText( "Choose the matching IX-F IXP" );
 
             // 1. test add empty inputs

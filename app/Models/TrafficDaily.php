@@ -98,6 +98,8 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|TrafficDaily whereYearMaxOut($value)
  * @method static Builder|TrafficDaily whereYearTotIn($value)
  * @method static Builder|TrafficDaily whereYearTotOut($value)
+ * @property int $ixp_id
+ * @method static Builder|TrafficDaily whereIxpId($value)
  * @mixin \Eloquent
  */
 class TrafficDaily extends Model

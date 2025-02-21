@@ -309,7 +309,7 @@ input.form-control{
 }
 
 input.form-control:focus{
-    @apply tw-outline-none tw-shadow-outline tw-text-grey-darker tw-leading-tight;
+    @apply tw-outline-none tw-ring tw-text-grey-darker tw-leading-tight;
 }
 
 .input-group-append .btn{

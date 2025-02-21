@@ -71,13 +71,13 @@ class User2FAControllerTest extends DuskTestCase
             $browser->resize( 1600, 1200 )
                 ->visit( '/logout' )
                 ->visit('/login')
+                ->waitForLocation('/login')
                 ->type('username', $userUsername )
                 ->type('password', $userPassword )
-                ->press('#login-btn'    )
-                ->assertPathIs('/admin' );
+                ->press('#login-btn' )
+                ->waitForLocation('/admin');
 
-            $browser->click('#my-account')
-                    ->click("#profile")
+            $browser->visit('/profile')
                     ->assertPathIs('/profile');
 
             $browser->click("#configue-2fa")
@@ -91,11 +91,11 @@ class User2FAControllerTest extends DuskTestCase
             /**
              * Logout and test that OTP is required
              */
-            $browser->click('#my-account')
-                    ->click("#logout")
+            $browser->visit('/logout')
                     ->assertPathIs('/login');
 
             $browser->visit('/login')
+                    ->waitForLocation('/login')
                     ->type('username', $userUsername)
                     ->type('password', $userPassword)
                     ->press('#login-btn')
@@ -129,8 +129,7 @@ class User2FAControllerTest extends DuskTestCase
             /**
              * Trying disable 2FA with wrong password
              */
-            $browser->click('#my-account')
-                ->click("#profile")
+            $browser->visit('/profile')
                 ->assertPathIs('/profile');
 
             $browser->click("#configue-2fa")
@@ -150,8 +149,7 @@ class User2FAControllerTest extends DuskTestCase
             /**
              * Logout and set .env to force user to create 2fa
              */
-            $browser->click('#my-account')
-                ->click("#logout")
+            $browser->visit('/logout')
                 ->assertPathIs('/login');
 
             //$this->overrideEnv( ["2FA_ENFORCE_FOR_USERS" => 1] );
@@ -159,9 +157,11 @@ class User2FAControllerTest extends DuskTestCase
             $browser->pause(1000);
 
             $browser->visit('/login')
-                    ->type('username', $userUsername)
-                    ->type('password', $userPassword)
-                    ->press('#login-btn')
+                    ->waitForLocation('/login')
+                    ->type('username', $userUsername )
+                    ->type('password', $userPassword )
+                    ->press('#login-btn' )
+                    ->waitForLocation('/2fa/configure')
                     ->assertPathIs('/2fa/configure')
                     ->assertSee('You do not have two-factor authentication enabled but it is compulsory for your user account. Please configure and enable 2fa below to proceed.');
 

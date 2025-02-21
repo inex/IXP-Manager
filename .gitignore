@@ -1,10 +1,12 @@
 
 .env
 .env*.local
+.env.by-vagrant.*
 .project
 .buildpath
 .settings/
 .vagrant/
+.phpunit.cache/
 auth.json
 /.fleet
 /vendor/
@@ -76,7 +78,6 @@ tools/docker/containers/mysql/docker.sql
 
 .phpunit.result.cache
 
-tests/Browser/ExampleTest.php
 app/Console/Commands/Redcentric.php
 .env.sage
 

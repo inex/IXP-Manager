@@ -53,6 +53,8 @@ use IXP\Models\ContactGroup;
  * @method static Builder|ContactGroupAggregator whereName($value)
  * @method static Builder|ContactGroupAggregator whereType($value)
  * @method static Builder|ContactGroupAggregator whereUpdatedAt($value)
+ * @property string $created
+ * @method static Builder|ContactGroupAggregator whereCreated($value)
  * @mixin \Eloquent
  */
 class ContactGroupAggregator extends ContactGroup

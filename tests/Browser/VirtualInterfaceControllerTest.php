@@ -117,7 +117,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->check( 'ipv4monitorrcbgp'   )
                 ->check( 'ipv6monitorrcbgp'        )
                 ->press( 'Create' )
-                ->assertSee('Virtual interface created' );
+                ->waitForText('Virtual interface created', 10000 );
 
         $url = explode( '/', $browser->driver->getCurrentURL() );
 

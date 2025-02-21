@@ -193,6 +193,9 @@ for handle in $HANDLES; do
             mv $dest $cfile
             log "CHANGED   \tBIRD: "
         fi
+    else
+        mv $dest $cfile
+        log "NEW       \tBIRD: "
     fi
 
     # are we running or do we need to be started?
@@ -255,7 +258,7 @@ for handle in $HANDLES; do
     ### Tell IXP Manager that the config is complete and release the lock
 
     # tell IXP Manager the router has been updated:
-    cmd="curl -s -X POST -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_DONE}/${handle} >/dev/null"
+    cmd="curl --fail -s -X POST -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_DONE}/${handle} >/dev/null"
     if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
 
     until eval $cmd; do

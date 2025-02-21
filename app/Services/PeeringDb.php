@@ -130,7 +130,11 @@ class PeeringDb
         );
 
         if( $ixs === null ) {
-            throw $this->exception;
+            if( $this->exception ) {
+                throw $this->exception;
+            } else {
+                throw new Exception( 'Failed to retrieve peering db data' );
+            }
         }
 
         foreach( $ixs->json()['data'] as $ix ) {
@@ -182,7 +186,11 @@ class PeeringDb
         );
 
         if( $facs === null ) {
-            throw $this->exception;
+            if( $this->exception ) {
+                throw $this->exception;
+            } else {
+                throw new Exception( 'Failed to retrieve peering db data' );
+            }
         }
 
         foreach( $facs->json()['data'] as $fac ) {

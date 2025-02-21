@@ -29,6 +29,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 use IXP\Models\CompanyBillingDetail;
 
+use IXP\Models\User;
 use Webpatser\Countries\CountriesFacade as Countries;
 
 /**
@@ -50,7 +51,9 @@ class BillingInformation extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::getUser()->isSuperUser();
+        /** @var User $us */
+        $us = Auth::getUser();
+        return $us->isSuperUser();
     }
 
     /**

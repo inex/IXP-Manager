@@ -25,13 +25,12 @@ namespace IXP\Console\Commands\Utils;
 use Illuminate\Support\Facades\Mail;
 
 use IXP\Console\Commands\Command as IXPCommand;
-
-use IXP\Mail\Utils\SmtpTest as SmtpTestMail;
+use IXP\Mail\Utils\SmtpTest;
 
 /**
  * Class SmtpMailTest - test sending emails
  *
- * @see https://docs.ixpmanager.org/usage/email/
+ * @see https://docs.ixpmanager.org/latest/usage/email/
  * @author Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @package IXP\Console\Commands\Utils
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -79,6 +78,11 @@ class SmtpMailTest extends IXPCommand
 
         $mail_default = config( 'mail.default' );
 
+        if( !$mail_default ) {
+            $this->error( "The mail driver ('MAIL_MAILER' in your .env file) is not set." );
+            return -3;
+        }
+
         $this->table( [], [
             [ 'Driver', $mail_default ],
             [ 'Host', config( "mail.mailers.{$mail_default}.host", '(not set)' ) ],
@@ -94,11 +98,7 @@ class SmtpMailTest extends IXPCommand
 
         $this->info( "Trying to send email...\n" );
 
-        if( $this->getOutput()->isVerbose() ) {
-            $mail = new SmtpTestMail( true );
-        } else {
-            $mail = new SmtpTestMail;
-        }
+        $mail = new SmtpTest();
 
         try {
             Mail::to( $email )->send( $mail );
@@ -116,14 +116,7 @@ class SmtpMailTest extends IXPCommand
 
             if( $this->getOutput()->isVerbose() ) {
                 echo $e->getTraceAsString();
-            } else {
-                $this->warn( "If you plan to request support from the IXP Manager team, please rerun this test with the -v (verbose) "
-                    . "option and paste the complete output to an online pastebin such as https://pastebin.ibn.ie/. Please also ensure "
-                    . "you have read the documentation for configuring email at https://docs.ixpmanager.org/usage/email/. Lastly, if "
-                    . "you have configured a username and password, PLEASE remove these before pasting online!"
-                );
             }
         }
-
     }
 }

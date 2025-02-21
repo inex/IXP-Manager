@@ -21,6 +21,8 @@ require __DIR__.'/vendor/autoload.php';
 
 $app = require_once __DIR__.'/bootstrap/app.php';
 
+require_once base_path() . '/version.php';
+
 /*
 |--------------------------------------------------------------------------
 | Run The Artisan Application

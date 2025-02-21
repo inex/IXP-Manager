@@ -141,11 +141,14 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
                 'protocols'   => $graphProtocols,
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
-                'periods'     => Graph::PERIODS,
+                'periods'     => Graph::PERIODS_EXTENDED,
                 'types'       => Graph::TYPES,
             ],
         ];
     }
+
+
+
 
     /**
      * Get the data points for a given graph
@@ -203,7 +206,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
             return @file_get_contents( $rrd->png() );
         } catch( FileErrorException $e ) {
             Log::notice("[Grapher] {$this->name()} png(): could not load rrd file " . ( isset( $rrd ) ? $rrd->file() : '???' ) );
-            return false; // FIXME check handling of this
+            return ''; // FIXME check handling of this
         }
     }
 
@@ -225,7 +228,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
             return $rrd->rrd();
         } catch( FileErrorException $e ) {
             Log::notice("[Grapher] {$this->name()} rrd(): could not load rrd file {$rrd->file()}");
-            return false; // FIXME check handling of this
+            return ''; // FIXME check handling of this
         }
     }
 

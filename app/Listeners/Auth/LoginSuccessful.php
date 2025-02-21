@@ -26,6 +26,7 @@ use Auth, Log;
 
 use Illuminate\Auth\Events\Login as LoginEvent;
 
+use IXP\Models\User;
 use IXP\Models\UserLoginHistory;
 
 /**
@@ -47,9 +48,12 @@ class LoginSuccessful
      */
     public function handle( LoginEvent $e ): void
     {
-        Log::notice( 'Login successful for user "' . $e->user->username. '" from IP ' . ixp_get_client_ip() . '.' );
+        /** @var User $user */
+        $user = $e->user;
 
-        if( !session()->exists( "switched_user_from" ) && ( $c2u = $e->user->currentCustomerToUser() ) ) {
+        Log::notice( 'Login successful for user "' . $user->username. '" from IP ' . ixp_get_client_ip() . '.' );
+
+        if( !session()->exists( "switched_user_from" ) && ( $c2u = $user->currentCustomerToUser() ) ) {
             $c2u->update( [
                 'last_login_date'   => now(),
                 'last_login_from'   => ixp_get_client_ip(),

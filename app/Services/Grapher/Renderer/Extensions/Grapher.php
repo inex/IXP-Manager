@@ -101,14 +101,14 @@ class Grapher implements ExtensionInterface
     *    1 => scaled value without string. E.g. 12,354.235
     *    2 => just the string. E.g. Tbits
     *
-    * @param float  $v          The value to scale
+    * @param float  $value          The value to scale
     * @param string $format     The format to sue (as above: bytes / pkts / errs / etc )
-    * @param int    $decs       Number of decimals after the decimal point. Defaults to 3.
+    * @param int    $decimals       Number of decimals after the decimal point. Defaults to 3.
     * @param int    $returnType Type of string to return. Valid values are listed above. Defaults to 0.
     *
     * @return string            Scaled / formatted number / type.
     */
-    public function scale( float $v, string $format, int $decs = 3, int $returnType = 0 ): string
+    public function scale( float $value, string $format, int $decimals = 3, int $returnType = 0 ): string
     {
         if( $format === "bytes" ) {
             $formats = [
@@ -126,15 +126,16 @@ class Grapher implements ExtensionInterface
 
         for( $i = 0; $i < sizeof( $formats ); $i++ )
         {
-            if( ( $v / 1000.0 < 1.0 ) || ( sizeof( $formats ) === $i + 1 ) ) {
+            $format = $i>4 ? $formats[4] : $formats[$i];
+            if( ( $value / 1000.0 < 1.0 ) || ( sizeof( $formats ) === $i + 1 ) ) {
                 if( $returnType == 0 )
-                    return number_format( $v, $decs ) . "&nbsp;" . $formats[$i];
+                    return number_format( $value, $decimals ) . "&nbsp;" . $format;
                 elseif( $returnType == 1 )
-                    return number_format( $v, $decs );
+                    return number_format( $value, $decimals );
                 else
-                    return $formats[$i];
+                    return $format;
             } else {
-                $v /= 1000.0;
+                $value /= 1000.0;
             }
         }
 

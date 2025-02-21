@@ -89,7 +89,7 @@
                                             <a class="btn btn-white" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $cust->id, "type" => "agg" ] ) ?>">
                                                 Statistics
                                             </a>
-                                            <a class="btn btn-white" href="<?= route( 'statistics@p2p-get', [ 'cust' => $cust->id ] )?>">
+                                            <a class="btn btn-white" href="<?= route( 'statistics@p2ps', [ 'customer' => $cust->id ] )?>">
                                                 P2P
                                             </a>
                                             <a class="btn btn-white" href="<?= route( "customer@overview" , [ 'cust' => $cust->id, "tab" => "users" ] ) ?>">

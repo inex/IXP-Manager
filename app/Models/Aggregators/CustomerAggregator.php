@@ -28,6 +28,7 @@ use Carbon\Carbon;
 
 use Illuminate\Database\Eloquent\{
     Builder,
+    Collection as EloquentCollection,
 };
 
 use IXP\Models\{
@@ -58,8 +59,8 @@ use Illuminate\Support\Collection;
  * @property string|null $peeringmacro
  * @property string|null $peeringpolicy
  * @property string|null $corpwww
- * @property \Illuminate\Support\Carbon|null $datejoin
- * @property \Illuminate\Support\Carbon|null $dateleave
+ * @property string|null $datejoin
+ * @property string|null $dateleave
  * @property int|null $status
  * @property int|null $activepeeringmatrix
  * @property int|null $lastupdatedby
@@ -178,6 +179,11 @@ use Illuminate\Support\Collection;
  * @method static Builder|CustomerAggregator whereStatus($value)
  * @method static Builder|CustomerAggregator whereType($value)
  * @method static Builder|CustomerAggregator whereUpdatedAt($value)
+ * @property string|null $lastupdated
+ * @property string|null $created
+ * @method static Builder|CustomerAggregator whereCreated($value)
+ * @method static Builder|CustomerAggregator whereLastupdated($value)
+ * @property-read \IXP\Models\IrrdbUpdateLog|null $irrdbUpdateLog
  * @mixin \Eloquent
  */
 class CustomerAggregator extends Customer
@@ -303,7 +309,7 @@ class CustomerAggregator extends Customer
      *     ]
      *
      * @param Customer  $cust   Current customer
-     * @param Vlan[]    $vlans  Array of Vlans
+     * @param Vlan[] $vlans  Array of Vlans
      * @param array     $protos Array of protos
      *
      * @return array|null
@@ -318,7 +324,7 @@ class CustomerAggregator extends Customer
         $bilat = [];
         foreach( $vlans as $vlan ) {
             foreach( $protos as $proto ) {
-                $bilat[ $vlan->number ][ $proto ] = BgpSessionDataAggregator::getPeers( $vlan->id, $proto );
+                $bilat[ $vlan['number'] ][ $proto ] = BgpSessionDataAggregator::getPeers( $vlan['id'], $proto );
             }
         }
         $vlanNumbers = Vlan::select( ['id', 'number'] )->get()->keyBy( 'id' )->toArray();
@@ -346,17 +352,17 @@ class CustomerAggregator extends Customer
         foreach( $custs as $c ) {
             $custs[ $c[ 'autsys' ] ][ 'ispotential' ] = false;
             foreach( $vlans as $vlan ) {
-                if( isset( $me[ 'vlan_interfaces' ][ $vlan->number ] ) ) {
-                    if( isset( $c[ 'vlan_interfaces' ][$vlan->number] ) ) {
+                if( isset( $me[ 'vlan_interfaces' ][ $vlan['number'] ] ) ) {
+                    if( isset( $c[ 'vlan_interfaces' ][$vlan['number']] ) ) {
                         foreach( $protos as $proto ) {
-                            if( $me[ 'vlan_interfaces' ][ $vlan->number ][ 0 ][ "ipv{$proto}enabled" ] && $c[ 'vlan_interfaces' ][ $vlan->number ][ 0 ][ "ipv{$proto}enabled" ] ) {
-                                if( isset( $bilat[ $vlan->number ][ 4 ][ $me['autsys' ] ][ 'peers' ] ) && in_array( $c[ 'autsys' ], $bilat[ $vlan->number ][ 4 ][ $me[ 'autsys' ] ][ 'peers' ] ) ){
-                                    $custs[ $c[ 'autsys' ] ][ $vlan->number ][$proto] = 2;
-                                } else if( $me[ 'vlan_interfaces' ][ $vlan->number ][ 0 ][ 'rsclient' ] && $c[ 'vlan_interfaces' ][ $vlan->number ][ 0 ][ 'rsclient' ] ){
-                                    $custs[ $c[ 'autsys' ] ][ $vlan->number ][ $proto ] = 1;
+                            if( $me[ 'vlan_interfaces' ][ $vlan['number'] ][ 0 ][ "ipv{$proto}enabled" ] && $c[ 'vlan_interfaces' ][ $vlan['number'] ][ 0 ][ "ipv{$proto}enabled" ] ) {
+                                if( isset( $bilat[ $vlan['number'] ][ 4 ][ $me['autsys' ] ][ 'peers' ] ) && in_array( $c[ 'autsys' ], $bilat[ $vlan['number'] ][ 4 ][ $me[ 'autsys' ] ][ 'peers' ] ) ){
+                                    $custs[ $c[ 'autsys' ] ][ $vlan['number'] ][$proto] = 2;
+                                } else if( $me[ 'vlan_interfaces' ][ $vlan['number'] ][ 0 ][ 'rsclient' ] && $c[ 'vlan_interfaces' ][ $vlan['number'] ][ 0 ][ 'rsclient' ] ){
+                                    $custs[ $c[ 'autsys' ] ][ $vlan['number'] ][ $proto ] = 1;
                                     $custs[ $c[ 'autsys' ] ][ 'ispotential' ] = true;
                                 } else {
-                                    $custs[ $c[ 'autsys' ] ][ $vlan->number ][ $proto ] = 0;
+                                    $custs[ $c[ 'autsys' ] ][ $vlan['number'] ][ $proto ] = 0;
                                     $custs[ $c[ 'autsys' ] ][ 'ispotential' ] = true;
                                 }
                             }
@@ -374,8 +380,8 @@ class CustomerAggregator extends Customer
 
             foreach( $vlans as $vlan ) {
                 foreach( $protos as $proto ) {
-                    if( isset( $c[ $vlan->number ][ $proto ] ) ) {
-                        switch( $c[ $vlan->number ][ $proto ] ) {
+                    if( isset( $c[ $vlan['number'] ][ $proto ] ) ) {
+                        switch( $c[ $vlan['number'] ][ $proto ] ) {
                             case 2:
                                 $peered[ $c[ 'autsys' ] ] = true;
                                 break;
@@ -438,7 +444,7 @@ class CustomerAggregator extends Customer
                     "custs"             => $custs,
                     "bilat"             => $bilat,
                     "vlan"              => $vlans ,
-                    "protos"            => $protos
+                    "protos"            => $protos,
         ];
     }
 
@@ -470,7 +476,7 @@ class CustomerAggregator extends Customer
             $contacts = $cust->contacts();
 
             DB::table( 'contact_to_group' )
-                ->whereIn( 'contact_id', $contacts->get()->pluck( 'id' )->toArray(),)
+                ->whereIn( 'contact_id', $contacts->get()->pluck( 'id' )->toArray() )
                 ->delete();
 
             $cust->contacts()->delete();
@@ -526,6 +532,28 @@ class CustomerAggregator extends Customer
 
         return true;
     }
+
+    /**
+     * Reformat the name of the customers with additional details such as their date of leaving,
+     * if they have left, appended to the name.
+     *
+     * @param \Illuminate\Database\Eloquent\Collection $custs Collection of customers
+     * @return \Illuminate\Database\Eloquent\Collection Updated collection with reformatted names
+     */
+    public static function reformatNameWithDetail( EloquentCollection $custs ): EloquentCollection {
+
+        /** @var Customer $cust */
+        foreach( $custs as $id => $cust ) {
+
+            if( $cust->hasLeft() ) {
+                $custs[$id]->name .= " [Left $cust->dateleave]";
+            }
+
+        }
+
+        return $custs;
+    }
+
 
     /**
      * Get atlas probes for a given customer and protocol.

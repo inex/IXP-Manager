@@ -35,11 +35,7 @@ use Illuminate\Http\{
     Request
 };
 
-use IXP\Models\{
-    BgpSession,
-    Customer,
-    Vlan
-};
+use IXP\Models\{BgpSession, Customer, User, Vlan};
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -138,8 +134,10 @@ class PeeringMatrixController extends Controller
             }
         }
 
+        /** @var User $us */
+        $us = Auth::getUser();
         $restrictActivePeeringMatrix = true;
-        if( Auth::check() && Auth::getUser()->isSuperUser() ){
+        if( Auth::check() && $us->isSuperUser() ){
             $restrictActivePeeringMatrix = false;
         }
 
