@@ -49,7 +49,7 @@ timeformat route        iso long;
 
 
 log "/var/log/bird/<?= $t->handle ?>.log" all;
-log syslog all;
+log syslog name "bird-<?= $t->handle ?>" all;
 
 define routeserverasn     = <?= $t->router->asn ?>;
 define routeserveraddress = <?= $t->router->peering_ip ?>;
