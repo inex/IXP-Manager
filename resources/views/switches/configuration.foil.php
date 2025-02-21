@@ -175,11 +175,16 @@
                             <td>
                                 <?= str_replace( ",", "<br>", $conf[ "ifName" ] ) ?>
                             </td>
-                            <td>
-                                <?= $t->scaleBits( array_sum( explode( "," , $conf[ "rate_limit" ] ?: $conf[ "speed" ]) )*1000*1000, 0 ) ?>
-                            </td>
-                            <td>
-                                <?= array_sum( explode( ',' , $conf[ "rate_limit" ] ?: $conf[ 'speed' ] ) ) ?>
+                <td>
+               <?php $sp_scale = '' ?>
+               <?php $sp_total = array_sum( explode( "," , $conf["rate_limit" ] ?? $conf[ "speed" ] ?? 0 ) ); ?>
+                <?php if( $sp_total > 0 ): ?>
+                <?php $sp_scale = $t->scaleBits( $sp_total *1000*1000, 0 ) ?>
+                <?php endif; ?>
+                <?= $sp_scale ?>
+                </td>
+                <td>
+                <?= array_sum( explode( ',' , $conf[ "rate_limit" ] ?? $conf[ 'speed' ] ?? 0 ) ) ?>
                             </td>
                             <td>
                                 <?= $conf[ "vlan" ] ?>
