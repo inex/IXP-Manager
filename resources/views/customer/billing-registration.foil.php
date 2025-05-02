@@ -113,16 +113,16 @@
                                     <div class="card-header">
                                         <ul class="nav nav-tabs card-header-tabs">
                                             <li role="presentation" class="nav-item">
-                                                <a class="tab-link-body-note nav-link active" href="#body">Registration Notes</a>
+                                                <a class="tab-link-body-note nav-link active" href="#regbody">Registration Notes</a>
                                             </li>
                                             <li role="presentation" class="nav-item">
-                                                <a class="tab-link-preview-note nav-link" href="#preview">Preview</a>
+                                                <a class="tab-link-preview-note nav-link" href="#regpreview">Preview</a>
                                             </li>
                                         </ul>
                                     </div>
 
                                     <div class="tab-content card-body">
-                                        <div role="tabpanel" class="tab-pane show active" id="body">
+                                        <div role="tabpanel" class="tab-pane show active" id="regbody">
                                             <?= Former::textarea( 'notes' )
                                                 ->id( 'notes' )
                                                 ->label( '' )
@@ -130,7 +130,7 @@
                                                 ->blockHelp( "This field supports Markdown..." )
                                             ?>
                                         </div>
-                                        <div role="tabpanel" class="tab-pane" id="preview">
+                                        <div role="tabpanel" class="tab-pane" id="regpreview">
                                             <div class="bg-light p-4 well-preview">
                                                 Loading...
                                             </div>
@@ -262,16 +262,16 @@
                                         <div class="card-header">
                                             <ul class="nav nav-tabs card-header-tabs">
                                                 <li role="presentation" class="nav-item">
-                                                    <a class="tab-link-body-note nav-link active" href="#body">Billing Notes</a>
+                                                    <a class="tab-link-body-note nav-link active" href="#billbody">Billing Notes</a>
                                                 </li>
                                                 <li role="presentation" class="nav-item">
-                                                    <a class="tab-link-preview-note nav-link" href="#preview">Preview</a>
+                                                    <a class="tab-link-preview-note nav-link" href="#billpreview">Preview</a>
                                                 </li>
                                             </ul>
                                         </div>
 
                                         <div class="tab-content card-body">
-                                            <div role="tabpanel" class="tab-pane show active" id="body">
+                                            <div role="tabpanel" class="tab-pane show active" id="billbody">
                                                 <?= Former::textarea( 'billingNotes' )
                                                     ->id( 'billingNotes' )
                                                     ->label( '' )
@@ -279,7 +279,7 @@
                                                     ->blockHelp( "This field supports Markdown..." )
                                                 ?>
                                             </div>
-                                            <div role="tabpanel" class="tab-pane" id="preview">
+                                            <div role="tabpanel" class="tab-pane" id="billpreview">
                                                 <div class="bg-light p-4 well-preview">
                                                     Loading...
                                                 </div>
