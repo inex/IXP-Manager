@@ -152,14 +152,6 @@
                                 ->blockHelp( '' );
                             ?>
 
-                            <?= Former::select( 'billingFrequency' )
-                                ->label( 'Billing Frequency' )
-                                ->fromQuery( \IXP\Models\CompanyBillingDetail::$BILLING_FREQUENCIES )
-                                ->placeholder( 'Choose a billing frequency' )
-                                ->addClass( 'chzn-select' )
-                                ->blockHelp( '' );
-                            ?>
-
                             <?= Former::text( 'billingAddress1' )
                                 ->id( 'billingAddress1' )
                                 ->label( 'Address' )
@@ -210,6 +202,14 @@
                                 ->id( 'billingTelephone' )
                                 ->label( 'Telephone' )
                                 ->placeholder( '+353 1 234 5678' )
+                                ->blockHelp( '' );
+                            ?>
+
+                            <?= Former::select( 'billingFrequency' )
+                                ->label( 'Billing Frequency' )
+                                ->fromQuery( \IXP\Models\CompanyBillingDetail::$BILLING_FREQUENCIES )
+                                ->placeholder( 'Choose a billing frequency' )
+                                ->addClass( 'chzn-select' )
                                 ->blockHelp( '' );
                             ?>
 
