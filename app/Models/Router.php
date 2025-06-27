@@ -171,7 +171,7 @@ class Router extends Model
     public const PROTOCOL_IPV6                 = '6';
 
     /**
-     * @var array Email ids to classes
+     * @var array Router Protocols
      */
     public static $PROTOCOLS = [
         self::PROTOCOL_IPV4     =>      'IPv4',
@@ -187,7 +187,7 @@ class Router extends Model
     public const TYPE_OTHER                        = 99;
 
     /**
-     * @var array Email ids to classes
+     * @var array Router types textual description
      */
     public static $TYPES = [
         self::TYPE_ROUTE_SERVER             => 'Route Server',
@@ -197,7 +197,7 @@ class Router extends Model
     ];
 
     /**
-     * @var array Email ids to classes
+     * @var array Router types short description
      */
     public static $TYPES_SHORT = [
         self::TYPE_ROUTE_SERVER             => 'RS',
@@ -211,6 +211,7 @@ class Router extends Model
      */
     public const SOFTWARE_BIRD                     = 1;
     public const SOFTWARE_BIRD2                    = 6;
+    public const SOFTWARE_BIRD3                    = 7;
     public const SOFTWARE_QUAGGA                   = 2;
     public const SOFTWARE_FRROUTING                = 3;
     public const SOFTWARE_OPENBGPD                 = 4;
@@ -218,11 +219,12 @@ class Router extends Model
     public const SOFTWARE_OTHER                    = 99;
 
     /**
-     * @var array Email ids to classes
+     * @var array Router softwares textual description
      */
     public static $SOFTWARES = [
         self::SOFTWARE_BIRD                 => 'Bird v1',
         self::SOFTWARE_BIRD2                => 'Bird v2',
+        self::SOFTWARE_BIRD3                => 'Bird v3',        
         self::SOFTWARE_QUAGGA               => 'Quagga',
         self::SOFTWARE_FRROUTING            => 'FRRouting',
         self::SOFTWARE_OPENBGPD             => 'OpenBGPd',
@@ -238,7 +240,7 @@ class Router extends Model
     public const API_TYPE_OTHER                    = 99;
 
     /**
-     * @var array Email ids to classes
+     * @var array Router API types
      */
     public static $API_TYPES = [
         self::API_TYPE_NONE                 => 'None',
