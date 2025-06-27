@@ -136,6 +136,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
      * * array `['locs']` of Location objects indexed by their ID
      * * array `['infras']` of Infrastructure objects indexed by their ID
      * * array `['custports']` containing an array of PhysicalInterfaceEntity IDs indexed by customer ID
+     * * array `['custaggr']` containing an array of PhysicalInterfaceEntity IDs indexed by customer ID for aggregate graph
      * * array `['custlags']` containing an array of PhysicalInterfaceEntity IDs contained in an array indexed
      *       by VirtualInterfaceEntity IDs in turn in an array of customer IDs:
      *       `['custlags'][$custid][$viid][]`
@@ -155,6 +156,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
         $data['infraports_maxbytes'] = [];
         $data['custs']               = [];
         $data['custports']           = [];
+        $data['custaggr']            = [];
         $data['custlags']            = [];
         $data['locs']                = [];
         $data['locports']            = [];
@@ -169,6 +171,8 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
 
         // we need to wrap switch ports in physical interfaces for switch aggregates and, as such, we need to use unused physical interface IDs
         $maxPiID = 0;
+
+        $reseller_agg = config('grapher.backends.mrtg.reseller_agg');
 
         foreach( Customer::all() as $c ) {
             foreach( $c->virtualInterfaces as $vi ) {
@@ -226,8 +230,50 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                     $switcher = $pi->switchPort->switcher;
                     $location = $pi->switchPort->switcher->cabinet->location;
 
-                    // don't count reseller ports or fanout ports in agregates
-                    if( !$pi->switchPort->typeReseller() && !$pi->switchPort->typeFanout() ) {
+            $do_aggregate = 1;
+
+            // For resellers, include reseller uplink / peering ports having a physical
+            // Patch panel port associated with them in the member aggregate graph.
+            //
+            // (For resellers having only uplink ports, or where they peer on
+            // a subinterface of their uplink port, don't double-count the uplink
+            // port with the reseller's own peering port in the aggregate graph.
+
+            if ( $c->isReseller && $reseller_agg == 'ppp' ) {
+
+                $do_aggregate = 0;
+                $ppp = $pi->switchPort->patchPanelPort;
+
+                // Include only ports which have a crossconnect:
+                if( isset ( $ppp->id ) ) { 
+                    $do_aggregate = 1; 
+                }
+
+                // For other port types, assume include:
+                if( !$pi->switchPort->typeReseller() && !$pi->switchPort->typePeering() ) {
+                    $do_aggregate = 1;
+                }
+            }
+
+
+            if ( $c->isReseller && $reseller_agg == 'exclude' ) {
+
+                if( $pi->switchPort->typeReseller() ) {
+                    $do_aggregate = 0;
+                }
+
+            }
+
+            // Always exclude fanout ports:
+            if ( $pi->switchPort->typeFanout() ) { $do_aggregate = 0; }
+
+            // Add to member aggregate graph:
+            if( $do_aggregate == 1 ) {
+                  $data[ 'custaggr' ][ $c->id ][] = $pi->id;
+            }
+
+            // Add to overall aggregate graphs if not reseller / fanout (don't double-count)
+            if( !$pi->switchPort->typeReseller() && !$pi->switchPort->typeFanout() ) {
                         $data[ 'swports' ][ $pi->switchPort->switcher->id ][] = $pi->id;
                         $data[ 'locports' ][ $pi->switchPort->switcher->cabinet->location->id ][] = $pi->id;
                         $data[ 'infraports' ][ $pi->switchPort->switcher->infrastructureModel->id ][] = $pi->id;
