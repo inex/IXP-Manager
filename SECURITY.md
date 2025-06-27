@@ -1,5 +1,9 @@
 # Security Policy
 
+## Secure Application Development Policy
+
+Please see: [https://docs.ixpmanager.org/dev/policy/](https://docs.ixpmanager.org/dev/policy/).
+
 ## Reporting a Vulnerability
 
 Thank you in advance for looking to responsibly report security issues. 
