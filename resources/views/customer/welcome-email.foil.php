@@ -16,7 +16,7 @@
         <div class="col-md-12">
             <?= $t->alerts() ?>
             <div class="alert alert-info" role="alert">
-                Please see the <a target="_blank" href="http://docs.ixpmanager.org/usage/customers/#welcome-emails">official documentation</a> for information on welcome emails and instructions on how to customise the content.
+                Please see the <a target="_blank" href="https://docs.ixpmanager.org/latest/usage/customers/#welcome-emails">official documentation</a> for information on welcome emails and instructions on how to customise the content.
             </div>
             <legend>
                 Send Welcome Email

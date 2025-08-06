@@ -1,0 +1,2306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="5.26.1@d747f6500b38ac4f7dfc5edbcae6e4b637d7add0">
+  <file src="app/Console/Commands/Contact/ExportGroup.php">
+    <RedundantCondition>
+      <code><![CDATA[$name]]></code>
+      <code><![CDATA[$type]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Console/Commands/Grapher/EmailPortsWithCounts.php">
+    <MissingDocblockType>
+      <code><![CDATA[private function emailPortsWithCounts( $category ): array]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/Grapher/EmailTrafficDeltas.php">
+    <InvalidOperand>
+      <code><![CDATA[config('grapher.cli.traffic_differentials.stddev_calc_length', 60)]]></code>
+    </InvalidOperand>
+    <MissingDocblockType>
+      <code><![CDATA[private function portsWithDelta( Carbon $day, float $stddev ): array]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/Grapher/UploadDailyP2p.php">
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$customer->virtualinterfaces]]></code>
+    </UndefinedMagicPropertyFetch>
+  </file>
+  <file src="app/Console/Commands/Grapher/UploadPhysIntStatsToDb.php">
+    <ImplicitToStringCast>
+      <code><![CDATA[$today]]></code>
+    </ImplicitToStringCast>
+    <InvalidOperand>
+      <code><![CDATA[config( 'grapher.cli.traffic_daily.delete_old_days', 140 )]]></code>
+    </InvalidOperand>
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): int]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/Grapher/UploadStatsToDb.php">
+    <ImplicitToStringCast>
+      <code><![CDATA[$today]]></code>
+    </ImplicitToStringCast>
+    <InvalidOperand>
+      <code><![CDATA[config( 'grapher.cli.traffic_daily.delete_old_days', 140 )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Console/Commands/InManrs.php">
+    <UndefinedConstant>
+      <code><![CDATA[APPLICATION_VERSION]]></code>
+    </UndefinedConstant>
+  </file>
+  <file src="app/Console/Commands/InPeeringDb.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): int]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/Irrdb/UpdateAsnDb.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): int]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/Irrdb/UpdateDb.php">
+    <InvalidOperand>
+      <code><![CDATA[config( 'mail.alerts_recipient.address' )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Console/Commands/Irrdb/UpdatePrefixDb.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): int]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/MailingList/GetSubscribers.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): int]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/MailingList/Init.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): int]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/RipeAtlas/CompleteRequests.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): int]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/RipeAtlas/CreateMeasurements.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): int]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/RipeAtlas/RunMeasurements.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): int]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/RipeAtlas/StopAllMeasurements.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): int]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/RipeAtlas/UpdateMeasurements.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): int]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/RipeAtlas/UpdateProbes.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): int]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/Rir/GenerateObject.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle()]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/Switches/ReindexIfIndex.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle()]]></code>
+    </MissingDocblockType>
+    <TooManyArguments>
+      <code><![CDATA[option]]></code>
+    </TooManyArguments>
+  </file>
+  <file src="app/Console/Commands/Switches/SnmpPoll.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle()]]></code>
+    </MissingDocblockType>
+    <TooManyArguments>
+      <code><![CDATA[option]]></code>
+      <code><![CDATA[option]]></code>
+      <code><![CDATA[option]]></code>
+      <code><![CDATA[option]]></code>
+      <code><![CDATA[option]]></code>
+    </TooManyArguments>
+  </file>
+  <file src="app/Console/Commands/Upgrade/Customer2Users.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle()]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/Upgrade/PromoteCustUser.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle()]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/Upgrade/RemoveCustAdmin.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle()]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/Upgrade/ResetMysqlViews.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): int]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/User/Create.php">
+    <RedundantCondition>
+      <code><![CDATA[$option !== 'send-welcome-email']]></code>
+      <code><![CDATA[$option !== 'send-welcome-email']]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Console/Commands/User/SetPassword.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$search]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="app/Console/Commands/Utils/SmtpMailTest.php">
+    <InvalidCast>
+      <code><![CDATA[$mail_default]]></code>
+      <code><![CDATA[$mail_default]]></code>
+      <code><![CDATA[$mail_default]]></code>
+      <code><![CDATA[$mail_default]]></code>
+      <code><![CDATA[$mail_default]]></code>
+    </InvalidCast>
+  </file>
+  <file src="app/Console/Commands/Utils/UpdateOuiDatabase.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle()]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Events/Customer/Note/Changed.php">
+    <RedundantCondition>
+      <code><![CDATA[$cn]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Http/Controllers/AdminController.php">
+    <MissingDocblockType>
+      <code><![CDATA[private function publicPeeringGraphs( Request $r ): array]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Api/V4/Customer/Note/CustomerNotesController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function create( Request $r, Customer $cust ): JsonResponse]]></code>
+    </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+      <code><![CDATA[Auth::getUser()->customer]]></code>
+    </NoInterfaceProperties>
+  </file>
+  <file src="app/Http/Controllers/Api/V4/DnsController.php">
+    <MissingDocblockType>
+      <code><![CDATA[private function loadRecords( Vlan $vlan, int $protocol ): array]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Api/V4/Layer2AddressController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function delete( Layer2Address $l2a, bool $showFeMessage = false  ): JsonResponse]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Api/V4/Provisioner/YamlController.php">
+    <MissingDocblockType>
+      <code><![CDATA[private function structuredResponse( array $array, string $format ): Response]]></code>
+      <code><![CDATA[public function bgpForSwitch( Switcher $switch, string $format ): Response]]></code>
+      <code><![CDATA[public function coreLinkForSwitch( Switcher $switch, string $format ): Response]]></code>
+      <code><![CDATA[public function forSwitch( Switcher $switch, string $format ): Response]]></code>
+      <code><![CDATA[public function listCoreBundle( string $format ): Response]]></code>
+      <code><![CDATA[public function listSwitch( string $format ): Response]]></code>
+      <code><![CDATA[public function showSwitch( Switcher $switch, string $format ): Response]]></code>
+      <code><![CDATA[public function showSwitchByName( string $switchname, string $format ): Response]]></code>
+      <code><![CDATA[public function vlansForSwitch( Switcher $switch, string $format ): Response]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Api/V4/PublicController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function test( Request $r ): Response|JsonResponse]]></code>
+    </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->customer]]></code>
+      <code><![CDATA[Auth::getUser()->customer]]></code>
+      <code><![CDATA[Auth::getUser()->id]]></code>
+      <code><![CDATA[Auth::getUser()->privs]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+    </NoInterfaceProperties>
+  </file>
+  <file src="app/Http/Controllers/Api/V4/RipeAtlasController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function getAtlasMeasurementDetail( int $atlasId ): array]]></code>
+      <code><![CDATA[public function getAtlasProbeDetail( int $atlasid ): array]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Api/V4/RouterController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function genConfig( string $handle ): Response]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Api/V4/SflowReceiverController.php">
+    <MissingDocblockType>
+      <code><![CDATA[private function structuredResponse( array $array, string $format ): Response]]></code>
+      <code><![CDATA[public function getReceiverList( string $format = null ): Response]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Api/V4/VlanController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[Router::PROTOCOL_IPV4]]></code>
+      <code><![CDATA[Router::PROTOCOL_IPV6]]></code>
+    </InvalidScalarArgument>
+    <MissingDocblockType>
+      <code><![CDATA[public function ipAddresses( Vlan $v ) : JsonResponse]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Api/V4/WhoisController.php">
+    <InvalidOperand>
+      <code><![CDATA[config( 'ixp_api.whois.asn2.host' )]]></code>
+      <code><![CDATA[config( 'ixp_api.whois.asn2.host' )]]></code>
+    </InvalidOperand>
+    <InvalidScalarArgument>
+      <code><![CDATA[$asn]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="app/Http/Controllers/ApiKeyController.php">
+    <InvalidOperand>
+      <code><![CDATA[config( 'ixp_fe.api_keys.max_keys' )]]></code>
+    </InvalidOperand>
+    <MissingDocblockType>
+      <code><![CDATA[public function doStore( Request $r )]]></code>
+      <code><![CDATA[public function doUpdate( Request $r, int $id )]]></code>
+    </MissingDocblockType>
+    <RedundantCondition>
+      <code><![CDATA[User::AUTH_CUSTADMIN]]></code>
+      <code><![CDATA[User::AUTH_CUSTUSER]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Http/Controllers/Auth/ForgotPasswordController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function sendResetLinkEmail( Request $r ): RedirectResponse]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Auth/LoginController.php">
+    <InvalidOperand>
+      <code><![CDATA[config( "ixp_fe.lang.customer.many" )]]></code>
+      <code><![CDATA[config( "ixp_fe.lang.customer.many" )]]></code>
+      <code><![CDATA[config( "ixp_fe.lang.customer.many" )]]></code>
+      <code><![CDATA[config( "ixp_fe.lang.customer.one" )]]></code>
+      <code><![CDATA[config( "ixp_fe.lang.customer.one" )]]></code>
+    </InvalidOperand>
+    <MissingDocblockType>
+      <code><![CDATA[public function peeringdbHandleProviderCallback( Request $r )]]></code>
+    </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[$suser->user]]></code>
+    </NoInterfaceProperties>
+  </file>
+  <file src="app/Http/Controllers/Auth/ResetPasswordController.php">
+    <MissingDocblockType>
+      <code><![CDATA[protected function resetPassword( User $user, string $password ): void]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Auth/SwitchCustomerController.php">
+    <InvalidOperand>
+      <code><![CDATA[config( "ixp_fe.lang.customer.one" )]]></code>
+      <code><![CDATA[config( "ixp_fe.lang.customer.one" )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Http/Controllers/Auth/SwitchUserController.php">
+    <InvalidOperand>
+      <code><![CDATA[config( 'ixp_fe.lang.customer.one' )]]></code>
+      <code><![CDATA[config( 'ixp_fe.lang.customer.one' )]]></code>
+    </InvalidOperand>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->name]]></code>
+      <code><![CDATA[Auth::getUser()->name]]></code>
+      <code><![CDATA[Auth::getUser()->name]]></code>
+      <code><![CDATA[Auth::getUser()->name]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+    </NoInterfaceProperties>
+  </file>
+  <file src="app/Http/Controllers/CabinetController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function doStore( Request $r )]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/ConsoleServer/ConsoleServerConnectionController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function doStore( Request $r )]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/ConsoleServer/ConsoleServerController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function doStore( Request $r ): bool|RedirectResponse]]></code>
+      <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Contact/ContactController.php">
+    <MissingDocblockType>
+      <code><![CDATA[protected function createPrepareForm(): array]]></code>
+      <code><![CDATA[protected function editPrepareForm( int $id ): array]]></code>
+      <code><![CDATA[protected function listGetData( ?int $id = null ): array]]></code>
+      <code><![CDATA[public function doStore( Request $r ): bool|RedirectResponse]]></code>
+      <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
+    </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+    </NoInterfaceProperties>
+    <RedundantCondition>
+      <code><![CDATA[User::AUTH_CUSTADMIN]]></code>
+      <code><![CDATA[User::AUTH_CUSTUSER]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Http/Controllers/Contact/ContactGroupController.php">
+    <InvalidArgument>
+      <code><![CDATA[array_keys( config( 'contact_group.types' ) )]]></code>
+    </InvalidArgument>
+    <MissingDocblockType>
+      <code><![CDATA[protected function createPrepareForm(): array]]></code>
+      <code><![CDATA[protected function editPrepareForm( int $id = null ): array]]></code>
+      <code><![CDATA[protected function listGetData( ?int $id = null ): array]]></code>
+      <code><![CDATA[public function doStore( Request $r ): bool|RedirectResponse]]></code>
+      <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Controller.php">
+    <MissingDocblockType>
+      <code><![CDATA[protected function getAllowedPrivs(): array]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/CustKitController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function doStore( Request $r )]]></code>
+      <code><![CDATA[public function doUpdate( Request $r, int $id )]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Customer/CustomerController.php">
+    <InvalidArgument>
+      <code><![CDATA[$cbd->purchaseOrderRequired]]></code>
+      <code><![CDATA[$cust->status]]></code>
+      <code><![CDATA[$cust->type]]></code>
+    </InvalidArgument>
+    <InvalidOperand>
+      <code><![CDATA[config('identity.name')]]></code>
+    </InvalidOperand>
+    <MissingDocblockType>
+      <code><![CDATA[public function delete( Customer $cust ) : RedirectResponse]]></code>
+      <code><![CDATA[public function overview( Customer $cust, string $tab = null ) : View]]></code>
+      <code><![CDATA[public function store( CustomerRequest $r ): RedirectResponse]]></code>
+      <code><![CDATA[public function storeBillingAndRegDetails( BillingInformationRequest $r, Customer $cust ): RedirectResponse]]></code>
+      <code><![CDATA[public function update( CustomerRequest $r, Customer $cust ): RedirectResponse]]></code>
+      <code><![CDATA[public function welcomeEmail( Customer $cust ) : View]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Customer/CustomerNotesController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function readAll() : RedirectResponse]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Customer/CustomerTagController.php">
+    <InvalidOperand>
+      <code><![CDATA[config( 'ixp_fe.lang.customer.many' )]]></code>
+      <code><![CDATA[config( 'ixp_fe.lang.customer.one' )]]></code>
+    </InvalidOperand>
+    <MissingDocblockType>
+      <code><![CDATA[public function doStore( Request $r ): bool|RedirectResponse]]></code>
+      <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
+      <code><![CDATA[public function link( Request $r, Customer $cust ): RedirectResponse]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Customer/LogoController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function logos(): View]]></code>
+      <code><![CDATA[public function store( LogoRequest $r ): RedirectResponse]]></code>
+    </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+    </NoInterfaceProperties>
+  </file>
+  <file src="app/Http/Controllers/DashboardController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function index( Request $r, string $tab = null ): RedirectResponse|View]]></code>
+      <code><![CDATA[public function storeBillingDetails( BillingDetailsRequest $r ): RedirectResponse]]></code>
+      <code><![CDATA[public function storeNocDetails( NocDetailsRequest $r ): RedirectResponse]]></code>
+    </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->customer]]></code>
+      <code><![CDATA[Auth::getUser()->customer]]></code>
+      <code><![CDATA[Auth::getUser()->customer]]></code>
+    </NoInterfaceProperties>
+  </file>
+  <file src="app/Http/Controllers/Docstore/DirectoryController.php">
+    <NoInterfaceProperties>
+      <code><![CDATA[$user->privs]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::user()->username]]></code>
+    </NoInterfaceProperties>
+  </file>
+  <file src="app/Http/Controllers/Docstore/FileController.php">
+    <InvalidOperand>
+      <code><![CDATA[config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' )]]></code>
+    </InvalidOperand>
+    <NoInterfaceProperties>
+      <code><![CDATA[$user->username]]></code>
+      <code><![CDATA[$user->username]]></code>
+      <code><![CDATA[Auth::user()->username]]></code>
+    </NoInterfaceProperties>
+  </file>
+  <file src="app/Http/Controllers/DocstoreCustomer/DirectoryController.php">
+    <InvalidOperand>
+      <code><![CDATA[config( 'ixp_fe.lang.customer.one' )]]></code>
+      <code><![CDATA[config( 'ixp_fe.lang.customer.one' )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Http/Controllers/DocstoreCustomer/FileController.php">
+    <InvalidArgument>
+      <code><![CDATA[$file->customer->id]]></code>
+    </InvalidArgument>
+    <InvalidOperand>
+      <code><![CDATA[config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Http/Controllers/FilteredPrefixesController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function list( Request $r, Customer $cust ): View]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/InfrastructureController.php">
+    <InvalidArgument>
+      <code><![CDATA[array_values( Countries::getListForSelect( 'iso_3166_2' ) )]]></code>
+    </InvalidArgument>
+    <InvalidOperand>
+      <code><![CDATA[config( 'ixp_api.IXPDB.ixp_www' )]]></code>
+      <code><![CDATA[config( 'ixp_api.peeringDB.ixp_www' )]]></code>
+    </InvalidOperand>
+    <MissingDocblockType>
+      <code><![CDATA[public function doStore( Request $r ): bool|RedirectResponse]]></code>
+      <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Interfaces/Common.php">
+    <InvalidPropertyFetch>
+      <code><![CDATA[$pi->relatedInterface()->virtualInterface]]></code>
+      <code><![CDATA[$pi->relatedInterface()->virtualInterface]]></code>
+      <code><![CDATA[$pi->relatedInterface()->virtualInterface]]></code>
+    </InvalidPropertyFetch>
+    <MissingDocblockType>
+      <code><![CDATA[public function assignChannelGroup( VirtualInterface $vi ): int]]></code>
+      <code><![CDATA[public function buildCorelink( CoreBundle $coreBundle, Request $request, array $virtualInterfaces, bool $edit )]]></code>
+      <code><![CDATA[public function processFanoutPhysicalInterface( $r, PhysicalInterface $pi, VirtualInterface $vi ): bool]]></code>
+      <code><![CDATA[public function removeRelatedInterface( PhysicalInterface $pi ): void]]></code>
+      <code><![CDATA[public function setBundleDetails( VirtualInterface $vi ): void]]></code>
+      <code><![CDATA[public function setIp( Request $r, Vlan $v, VlanInterface $vli, bool $ipv6 = false ): bool]]></code>
+    </MissingDocblockType>
+    <UndefinedMagicPropertyAssignment>
+      <code><![CDATA[$coreInterface[$side]->physical_interface_id]]></code>
+      <code><![CDATA[$physicalInterface[$side]->autoneg]]></code>
+      <code><![CDATA[$physicalInterface[$side]->duplex]]></code>
+      <code><![CDATA[$physicalInterface[$side]->speed]]></code>
+      <code><![CDATA[$physicalInterface[$side]->status]]></code>
+      <code><![CDATA[$physicalInterface[$side]->switchportid]]></code>
+      <code><![CDATA[$physicalInterface[$side]->virtualinterfaceid]]></code>
+    </UndefinedMagicPropertyAssignment>
+  </file>
+  <file src="app/Http/Controllers/Interfaces/CoreBundleController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function storeWizard( Store $r ): RedirectResponse]]></code>
+      <code><![CDATA[public function updateWizard( Store $r, CoreBundle $cb): RedirectResponse]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Interfaces/PhysicalInterfaceController.php">
+    <InvalidArgument>
+      <code><![CDATA[$pi->speed]]></code>
+      <code><![CDATA[$pi->status]]></code>
+      <code><![CDATA[$pi->switchPort->switchid]]></code>
+    </InvalidArgument>
+    <InvalidPropertyFetch>
+      <code><![CDATA[$pi->otherPICoreLink()->switchPort]]></code>
+    </InvalidPropertyFetch>
+    <MissingDocblockType>
+      <code><![CDATA[public function delete( Request $r, PhysicalInterface $pi): RedirectResponse]]></code>
+      <code><![CDATA[public function store( StorePhysicalInterface $r ): RedirectResponse]]></code>
+      <code><![CDATA[public function update( StorePhysicalInterface $r, PhysicalInterface $pi ): RedirectResponse]]></code>
+    </MissingDocblockType>
+    <RedundantCondition>
+      <code><![CDATA[$switchports]]></code>
+      <code><![CDATA[$this->resellerMode() && $vi]]></code>
+      <code><![CDATA[$vi]]></code>
+    </RedundantCondition>
+    <TypeDoesNotContainNull>
+      <code><![CDATA[[]]]></code>
+    </TypeDoesNotContainNull>
+  </file>
+  <file src="app/Http/Controllers/Interfaces/VirtualInterfaceController.php">
+    <InvalidArgument>
+      <code><![CDATA[Customer::trafficking()->orderBy('name')->get()]]></code>
+    </InvalidArgument>
+    <MissingDocblockType>
+      <code><![CDATA[public function createWizardForCust( Customer $cust ) : View]]></code>
+      <code><![CDATA[public function wizard( Customer $cust = null ): View]]></code>
+    </MissingDocblockType>
+    <TooManyArguments>
+      <code><![CDATA[exceptInput]]></code>
+    </TooManyArguments>
+  </file>
+  <file src="app/Http/Controllers/Interfaces/VlanInterfaceController.php">
+    <InvalidArgument>
+      <code><![CDATA[$vi->customer->maxprefixes]]></code>
+    </InvalidArgument>
+    <MissingDocblockType>
+      <code><![CDATA[public function duplicate( StoreVlanInterface $r, VlanInterface $vli ): RedirectResponse]]></code>
+      <code><![CDATA[public function update( StoreVlanInterface $r, VlanInterface $vli ): RedirectResponse]]></code>
+    </MissingDocblockType>
+    <RedundantCondition>
+      <code><![CDATA[$vi]]></code>
+    </RedundantCondition>
+    <TypeDoesNotContainType>
+      <code><![CDATA[false]]></code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="app/Http/Controllers/IpAddressController.php">
+    <ImplicitToStringCast>
+      <code><![CDATA[$ip]]></code>
+      <code><![CDATA[$ip]]></code>
+    </ImplicitToStringCast>
+    <MissingDocblockType>
+      <code><![CDATA[private static function generateSequentialAddresses( IPToolsNetwork $network, bool $decimal = false, bool $overflow = true ): array]]></code>
+      <code><![CDATA[public function delete( Request $r, int $id ): RedirectResponse]]></code>
+      <code><![CDATA[public function deleteByNetwork( DeleteByNetwork $r, Vlan $vlan ): View|RedirectResponse]]></code>
+      <code><![CDATA[public function list( int $protocol, int $vid = null ): View]]></code>
+      <code><![CDATA[public function store( Store $r ): RedirectResponse]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Layer2AddressController.php">
+    <RedundantCondition>
+      <code><![CDATA[User::AUTH_CUSTADMIN]]></code>
+      <code><![CDATA[User::AUTH_CUSTUSER]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Http/Controllers/LocationController.php">
+    <InvalidArgument>
+      <code><![CDATA[array_values( Countries::getListForSelect( 'iso_3166_2' ) )]]></code>
+    </InvalidArgument>
+  </file>
+  <file src="app/Http/Controllers/NetworkInfoController.php">
+    <MissingDocblockType>
+      <code><![CDATA[protected function listGetData( ?int $id = null ): array]]></code>
+      <code><![CDATA[public function doStore( Request $r ): bool|RedirectResponse]]></code>
+      <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/PatchPanel/Port/DangerActionsController.php">
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+    </NoInterfaceProperties>
+  </file>
+  <file src="app/Http/Controllers/PatchPanel/Port/FileController.php">
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+    </NoInterfaceProperties>
+  </file>
+  <file src="app/Http/Controllers/PatchPanel/Port/PortController.php">
+    <InvalidArgument>
+      <code><![CDATA[$chargeable]]></code>
+      <code><![CDATA[$ppp->switchPort->switchid ?? null]]></code>
+      <code><![CDATA[Customer::trafficking()->orderBy( 'name' )->get()]]></code>
+    </InvalidArgument>
+    <MissingDocblockType>
+      <code><![CDATA[public function changeStatus( PatchPanelPort $ppp, int $status ): RedirectResponse]]></code>
+      <code><![CDATA[public function setNotes( Request $r, PatchPanelPort $ppp ) : JsonResponse]]></code>
+      <code><![CDATA[public function update( StorePatchPanelPortRequest $r, PatchPanelPort $ppp ): RedirectResponse]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/PeeringManagerController.php">
+    <ImplicitToStringCast>
+      <code><![CDATA[now()]]></code>
+    </ImplicitToStringCast>
+    <InvalidOperand>
+      <code><![CDATA[config( "identity.orgname" )]]></code>
+    </InvalidOperand>
+    <MissingDocblockType>
+      <code><![CDATA[private function loadPeeringManager( Customer $cust, Customer $peer ): PeeringManager]]></code>
+      <code><![CDATA[public function formEmailFrag( Request $r ): JsonResponse]]></code>
+      <code><![CDATA[public function index(): View|RedirectResponse]]></code>
+      <code><![CDATA[public function markPeering( int $custid, string $status ): RedirectResponse]]></code>
+      <code><![CDATA[public function peeringNotes( Request $r ): JsonResponse]]></code>
+      <code><![CDATA[public function sendPeeringEmail( PeeringManagerRequest $r ) : JsonResponse]]></code>
+    </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+    </NoInterfaceProperties>
+  </file>
+  <file src="app/Http/Controllers/PeeringMatrixController.php">
+    <InvalidCast>
+      <code><![CDATA[config( 'ixp.peering-matrix.lookback_days' )]]></code>
+    </InvalidCast>
+    <MissingDocblockType>
+      <code><![CDATA[public function index( Request $r ): View|RedirectResponse]]></code>
+    </MissingDocblockType>
+    <TypeDoesNotContainType>
+      <code><![CDATA[!is_int( $lookback_days )]]></code>
+      <code><![CDATA[!is_int( $lookback_days ) || $lookback_days < 1]]></code>
+      <code><![CDATA[!is_int( $lookback_days ) || $lookback_days < 1]]></code>
+      <code><![CDATA[$lookback_days < 1]]></code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="app/Http/Controllers/ProfileController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function updateMailingLists( Request $r ) : RedirectResponse]]></code>
+      <code><![CDATA[public function updateNotificationPreference( NotificationRequest $r ) : RedirectResponse]]></code>
+      <code><![CDATA[public function updatePassword( PasswordRequest $r  ): RedirectResponse]]></code>
+      <code><![CDATA[public function updateProfile( ProfileRequest $r  ): RedirectResponse]]></code>
+    </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->prefs]]></code>
+    </NoInterfaceProperties>
+    <TypeDoesNotContainType>
+      <code><![CDATA[Auth::getUser()->prefs[ 'notes' ][ 'global_notifs' ]]]></code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="app/Http/Controllers/RipeAtlas/MeasurementController.php">
+    <MissingDocblockType>
+      <code><![CDATA[StopAllMeasurementsJob::dispatchAfterResponse( $am->atlas_id );]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/RipeAtlas/RunController.php">
+    <InvalidOperand>
+      <code><![CDATA[config( "ixp_fe.lang.customer.one" )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Http/Controllers/RouterController.php">
+    <InvalidArgument>
+      <code><![CDATA[$router->protocol]]></code>
+      <code><![CDATA[$router->type]]></code>
+    </InvalidArgument>
+    <MissingDocblockType>
+      <code><![CDATA[public function delete( Router $router): RedirectResponse]]></code>
+      <code><![CDATA[public function pause( Router $router): RedirectResponse]]></code>
+      <code><![CDATA[public function resetUpdateTimestamps( Router $router): RedirectResponse]]></code>
+      <code><![CDATA[public function resume( Router $router): RedirectResponse]]></code>
+      <code><![CDATA[public function store( StoreRouter $r ): RedirectResponse]]></code>
+      <code><![CDATA[public function update( StoreRouter $r, Router $router ): RedirectResponse]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/RsFilterController.php">
+    <InvalidArgument>
+      <code><![CDATA[$rsf->protocol ?? null]]></code>
+    </InvalidArgument>
+    <InvalidOperand>
+      <code><![CDATA[config('ixp_fe.rs-filters.ttl' )]]></code>
+    </InvalidOperand>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+    </NoInterfaceProperties>
+    <RedundantCondition>
+      <code><![CDATA[(string)$rsf->peer_id]]></code>
+      <code><![CDATA[(string)$rsf->vlan_id]]></code>
+    </RedundantCondition>
+    <TypeDoesNotContainNull>
+      <code><![CDATA[null]]></code>
+      <code><![CDATA[null]]></code>
+    </TypeDoesNotContainNull>
+  </file>
+  <file src="app/Http/Controllers/SearchController.php">
+    <MissingDocblockType>
+      <code><![CDATA[$results[ $vli->virtualInterface->custid ]]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Services/Grapher.php">
+    <MissingDocblockType>
+      <code><![CDATA[private function graph(): Graph]]></code>
+    </MissingDocblockType>
+    <PossiblyInvalidDocblockTag>
+      <code><![CDATA[@var GrapherService      $grapher]]></code>
+      <code><![CDATA[@var Request             $request]]></code>
+    </PossiblyInvalidDocblockTag>
+  </file>
+  <file src="app/Http/Controllers/Services/LookingGlass.php">
+    <MissingDocblockType>
+      <code><![CDATA[private function addCommonParams( View $view ): View]]></code>
+      <code><![CDATA[private function lg(): LookingGlassContract]]></code>
+      <code><![CDATA[public function bgpSummary(string $handle ): View]]></code>
+      <code><![CDATA[public function bgpSummaryApi( string $handle ): Response]]></code>
+      <code><![CDATA[public function index(): View]]></code>
+      <code><![CDATA[public function routeExport( string $handle, string $network, string $mask, string $protocol ): View]]></code>
+      <code><![CDATA[public function routeProtocol( string $handle, string $network, string $mask, string $protocol ): View]]></code>
+      <code><![CDATA[public function routeSearch( string $handle ): View]]></code>
+      <code><![CDATA[public function routeTable( string $handle, string $network, string $mask, string $table ): View]]></code>
+      <code><![CDATA[public function routesForExport( string $handle, string $protocol ): View]]></code>
+      <code><![CDATA[public function routesForProtocol( string $handle, string $protocol )]]></code>
+      <code><![CDATA[public function routesForTable( string $handle, string $table )]]></code>
+      <code><![CDATA[public function status( string $handle ): Response]]></code>
+    </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+      <code><![CDATA[Auth::getUser()->custid]]></code>
+    </NoInterfaceProperties>
+  </file>
+  <file src="app/Http/Controllers/SettingsController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function update( Request $request ): array]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/StatisticsController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function infrastructure( ?Infrastructure $infra = null, string $category = Graph::CATEGORY_BITS ) : View]]></code>
+      <code><![CDATA[public function ixp( string $category = Graph::CATEGORY_BITS ) : View]]></code>
+      <code><![CDATA[public function leagueTable( Request $r ): View]]></code>
+      <code><![CDATA[public function location( Location $location = null, string $category = Graph::CATEGORY_BITS ) : View]]></code>
+      <code><![CDATA[public function p2pTable( Request $r ): View|RedirectResponse]]></code>
+      <code><![CDATA[public function switch( Switcher $switch = null, string $category = Graph::CATEGORY_BITS ) : View]]></code>
+      <code><![CDATA[public function vlan( Vlan $vlan = null, string $protocol = Graph::PROTOCOL_IPV4, string $category = Graph::CATEGORY_BITS ) : View]]></code>
+    </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->customer]]></code>
+      <code><![CDATA[Auth::user()->custid]]></code>
+      <code><![CDATA[Auth::user()->customer]]></code>
+    </NoInterfaceProperties>
+    <RedundantCondition>
+      <code><![CDATA[$vlan]]></code>
+    </RedundantCondition>
+    <TypeDoesNotContainNull>
+      <code><![CDATA[false]]></code>
+    </TypeDoesNotContainNull>
+    <TypeDoesNotContainType>
+      <code><![CDATA[$vlan]]></code>
+      <code><![CDATA[$vlan]]></code>
+    </TypeDoesNotContainType>
+    <UndefinedInterfaceMethod>
+      <code><![CDATA[isSuperUser]]></code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="app/Http/Controllers/Switches/SwitchController.php">
+    <ImplicitToStringCast>
+      <code><![CDATA[now()]]></code>
+    </ImplicitToStringCast>
+    <MissingDocblockType>
+      <code><![CDATA[private function extraAttributes( Request $r ): void]]></code>
+      <code><![CDATA[public function configuration( Request $r ) : View]]></code>
+      <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
+    </MissingDocblockType>
+    <RedundantCondition>
+      <code><![CDATA[User::AUTH_CUSTADMIN]]></code>
+      <code><![CDATA[User::AUTH_CUSTUSER]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Http/Controllers/Switches/SwitchPortController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function unusedOptics() : View]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/User/CustomerToUserController.php">
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::user()->customer]]></code>
+    </NoInterfaceProperties>
+    <RedundantCondition>
+      <code><![CDATA[$disassociatedUser->customers()]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Http/Controllers/User/User2FAController.php">
+    <RedundantCondition>
+      <code><![CDATA[$user?->user2FA]]></code>
+    </RedundantCondition>
+    <TypeDoesNotContainNull>
+      <code><![CDATA[$user]]></code>
+    </TypeDoesNotContainNull>
+  </file>
+  <file src="app/Http/Controllers/User/UserController.php">
+    <InvalidArgument>
+      <code><![CDATA[$c2u->privs]]></code>
+      <code><![CDATA[$c2u->privs]]></code>
+    </InvalidArgument>
+    <MissingDocblockType>
+      <code><![CDATA[if( !( $c2u = $u->customerToUser()->where( 'customer_id', Auth::user()->custid  )->first() ) ) {
+                abort(404, 'UserToCustomer not found');
+            }]]></code>
+    </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::user()->custid]]></code>
+      <code><![CDATA[Auth::user()->custid]]></code>
+      <code><![CDATA[Auth::user()->custid]]></code>
+      <code><![CDATA[Auth::user()->username]]></code>
+      <code><![CDATA[Auth::user()->username]]></code>
+    </NoInterfaceProperties>
+    <RedundantFunctionCall>
+      <code><![CDATA[sprintf]]></code>
+    </RedundantFunctionCall>
+  </file>
+  <file src="app/Http/Controllers/Utils/IxfCompareController.php">
+    <InvalidArgument>
+      <code><![CDATA[array_keys( config('ixp_fe.ixfsources'))]]></code>
+      <code><![CDATA[array_keys( config('ixp_fe.ixfsources'))]]></code>
+    </InvalidArgument>
+    <InvalidArrayAccess>
+      <code><![CDATA[$sources[ $r->sourcea_dd ]]]></code>
+    </InvalidArrayAccess>
+  </file>
+  <file src="app/Http/Controllers/VlanController.php">
+    <ImplementedParamTypeMismatch>
+      <code><![CDATA[$id]]></code>
+    </ImplementedParamTypeMismatch>
+  </file>
+  <file src="app/Http/Controllers/WeatherMapController.php">
+    <InvalidArrayAccess>
+      <code><![CDATA[config( 'ixp_tools.weathermap' )[ $id ]]]></code>
+      <code><![CDATA[config( 'ixp_tools.weathermap' )[ $id ]]]></code>
+    </InvalidArrayAccess>
+    <TypeDoesNotContainType>
+      <code><![CDATA[!is_numeric( $id )]]></code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="app/Http/Middleware/ApiAuthenticate.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle( Request $r, Closure $next )]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Middleware/ApiMaybeAuthenticate.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle( Request $r, Closure $next )]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Middleware/Google2FA.php">
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->user2FA]]></code>
+      <code><![CDATA[Auth::getUser()->user2FA]]></code>
+    </NoInterfaceProperties>
+  </file>
+  <file src="app/Http/Middleware/RsPrefixes.php">
+    <InvalidCast>
+      <code><![CDATA[config( 'ixp_fe.rs-prefixes.access' )]]></code>
+      <code><![CDATA[config( 'ixp_fe.rs-prefixes.access' )]]></code>
+      <code><![CDATA[config( 'ixp_fe.rs-prefixes.access' )]]></code>
+    </InvalidCast>
+    <MissingDocblockType>
+      <code><![CDATA[public function handle( Request $r, Closure $next )]]></code>
+    </MissingDocblockType>
+    <TypeDoesNotContainType>
+      <code><![CDATA[(int)config( 'ixp_fe.rs-prefixes.access' ) === User::AUTH_PUBLIC]]></code>
+      <code><![CDATA[(int)config( 'ixp_fe.rs-prefixes.access' ) === User::AUTH_PUBLIC]]></code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="app/Http/Middleware/Services/LookingGlass.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle( Request $r, Closure $next )]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Requests/Customer/BillingInformation.php">
+    <InvalidArgument>
+      <code><![CDATA[array_values( Countries::getListForSelect( 'iso_3166_2' ) )]]></code>
+      <code><![CDATA[array_values( Countries::getListForSelect( 'iso_3166_2' ) )]]></code>
+    </InvalidArgument>
+  </file>
+  <file src="app/Http/Requests/Dashboard/BillingDetailsRequest.php">
+    <InvalidArgument>
+      <code><![CDATA[array_values( Countries::getListForSelect( 'iso_3166_2' ) )]]></code>
+    </InvalidArgument>
+  </file>
+  <file src="app/Http/Requests/Irrdb.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function withValidator(): void]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Http/Requests/Profile/Password.php">
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->password]]></code>
+    </NoInterfaceProperties>
+  </file>
+  <file src="app/Http/Requests/Profile/Profile.php">
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->password]]></code>
+    </NoInterfaceProperties>
+  </file>
+  <file src="app/Http/Requests/User/Delete.php">
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::user()->username]]></code>
+    </NoInterfaceProperties>
+  </file>
+  <file src="app/Http/Requests/User/Store.php">
+    <RedundantCondition>
+      <code><![CDATA[$isSuperUser]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Http/Requests/User/Update.php">
+    <RedundantCondition>
+      <code><![CDATA[!$isSuperUser]]></code>
+      <code><![CDATA[!$isSuperUser]]></code>
+      <code><![CDATA[$us->customer]]></code>
+    </RedundantCondition>
+    <TypeDoesNotContainType>
+      <code><![CDATA[$isSuperUser]]></code>
+      <code><![CDATA[$isSuperUser]]></code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="app/Jobs/FetchFilteredPrefixesForCustomer.php">
+    <MissingDocblockType>
+      <code><![CDATA[private function queryRouteServer( LookingGlass $lg, VlanInterface $vli, int $ipproto ): void]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Jobs/RipeAtlas/CompleteRequests.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle()]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Jobs/RipeAtlas/CreateMeasurements.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): void]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Jobs/RipeAtlas/RunMeasurements.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): void]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Jobs/RipeAtlas/StopAllMeasurements.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): void]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Jobs/RipeAtlas/UpdateMeasurements.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): int]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Jobs/RipeAtlas/UpdateProbes.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): void]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Jobs/UpdateIrrdb.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function handle(): void]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Listeners/Customer/Note/EmailOnChange.php">
+    <MissingDocblockType>
+      <code><![CDATA[if( isset( $user->prefs[ 'notes' ][ 'global_notifs' ] ) && $user->prefs[ 'notes' ][ 'global_notifs' ] === 'none' ){
+                    continue;
+                }]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Listeners/RipeAtlas/MeasurementComplete.php">
+    <RedundantCondition>
+      <code><![CDATA[$r = $am->atlasResult()]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Mail/Alert.php">
+    <InvalidOperand>
+      <code><![CDATA[config('identity.sitename' )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Mail/Auth/ForgotPassword.php">
+    <InvalidOperand>
+      <code><![CDATA[config('identity.sitename' )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Mail/Auth/ForgotUsername.php">
+    <InvalidDocblock>
+      <code><![CDATA[public $users;]]></code>
+    </InvalidDocblock>
+    <InvalidOperand>
+      <code><![CDATA[config('identity.sitename' )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Mail/Auth/PasswordReset.php">
+    <InvalidOperand>
+      <code><![CDATA[config('identity.sitename' )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Mail/Customer/Note/Changed.php">
+    <RedundantCondition>
+      <code><![CDATA[$this->event->note()]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Mail/PeeringManager/RequestPeeringManager.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function checkIfSendable( bool $sendtome ): void]]></code>
+    </MissingDocblockType>
+    <RedundantCondition>
+      <code><![CDATA[!filter_var( config( "ixp.peering_manager.testemail" ) , FILTER_VALIDATE_EMAIL )]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Mail/User/UserAddedToCustomer.php">
+    <InvalidOperand>
+      <code><![CDATA[config('identity.sitename' )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Mail/User/UserCreated.php">
+    <InvalidOperand>
+      <code><![CDATA[config('identity.sitename' )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Models/Aggregators/BgpSessionDataAggregator.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|BgpSessionDataAggregator]]></code>
+      <code><![CDATA[Builder|BgpSessionDataAggregator]]></code>
+      <code><![CDATA[Builder|BgpSessionDataAggregator]]></code>
+    </LessSpecificImplementedReturnType>
+    <MissingDocblockType>
+      <code><![CDATA[public static function getPeers( ?int $vlan = null, int $protocol = 6, ?int $asn = null, bool $forceDb = false ): array|string]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Models/Aggregators/ConsoleServerConnectionAggregatore.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|ConsoleServerConnectionAggregatore]]></code>
+      <code><![CDATA[Builder|ConsoleServerConnectionAggregatore]]></code>
+      <code><![CDATA[Builder|ConsoleServerConnectionAggregatore]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/Aggregators/ContactGroupAggregator.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|ContactGroupAggregator]]></code>
+      <code><![CDATA[Builder|ContactGroupAggregator]]></code>
+      <code><![CDATA[Builder|ContactGroupAggregator]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/Aggregators/CustomerAggregator.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|CustomerAggregator]]></code>
+      <code><![CDATA[Builder|CustomerAggregator]]></code>
+      <code><![CDATA[Builder|CustomerAggregator]]></code>
+    </LessSpecificImplementedReturnType>
+    <MissingDocblockType>
+      <code><![CDATA[$cb->deleteObject();]]></code>
+      <code><![CDATA[public static function deleteObject( Customer $cust ): bool]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Models/Aggregators/IpAddressAggregator.php">
+    <MissingDocblockType>
+      <code><![CDATA[public static function bulkAdd( array $addresses, Vlan $vlan, $model, bool $skip = true ): array]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Models/Aggregators/PatchPanelPortAggregator.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|PatchPanelPortAggregator]]></code>
+      <code><![CDATA[Builder|PatchPanelPortAggregator]]></code>
+      <code><![CDATA[Builder|PatchPanelPortAggregator]]></code>
+    </LessSpecificImplementedReturnType>
+    <MissingDocblockType>
+      <code><![CDATA[$result[ $ppp->id ]]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Models/Aggregators/RouteServerFilterAggregator.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|RouteServerFilterAggregator]]></code>
+      <code><![CDATA[Builder|RouteServerFilterAggregator]]></code>
+      <code><![CDATA[Builder|RouteServerFilterAggregator]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/Aggregators/RouterAggregator.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|RouterAggregator]]></code>
+      <code><![CDATA[Builder|RouterAggregator]]></code>
+      <code><![CDATA[Builder|RouterAggregator]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/Aggregators/RsPrefixAggregator.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|RsPrefixAggregator]]></code>
+      <code><![CDATA[Builder|RsPrefixAggregator]]></code>
+      <code><![CDATA[Builder|RsPrefixAggregator]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/Aggregators/SwitchPortAggregator.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|SwitchPortAggregator]]></code>
+      <code><![CDATA[Builder|SwitchPortAggregator]]></code>
+      <code><![CDATA[Builder|SwitchPortAggregator]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/Aggregators/SwitcherAggregator.php">
+    <InvalidOperand>
+      <code><![CDATA[$mask]]></code>
+    </InvalidOperand>
+    <InvalidScalarArgument>
+      <code><![CDATA[$firstip]]></code>
+      <code><![CDATA[$firstip + 1]]></code>
+    </InvalidScalarArgument>
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|SwitcherAggregator]]></code>
+      <code><![CDATA[Builder|SwitcherAggregator]]></code>
+      <code><![CDATA[Builder|SwitcherAggregator]]></code>
+    </LessSpecificImplementedReturnType>
+    <MismatchingDocblockParamType>
+      <code><![CDATA[string|null]]></code>
+    </MismatchingDocblockParamType>
+  </file>
+  <file src="app/Models/Aggregators/TrafficDailyPhysIntAggregator.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|TrafficDailyPhysIntAggregator]]></code>
+      <code><![CDATA[Builder|TrafficDailyPhysIntAggregator]]></code>
+      <code><![CDATA[Builder|TrafficDailyPhysIntAggregator]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/Aggregators/UserAggregator.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|UserAggregator]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|UserAggregator]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|UserAggregator]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/Aggregators/VirtualInterfaceAggregator.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|VirtualInterfaceAggregator]]></code>
+      <code><![CDATA[Builder|VirtualInterfaceAggregator]]></code>
+      <code><![CDATA[Builder|VirtualInterfaceAggregator]]></code>
+    </LessSpecificImplementedReturnType>
+    <MissingDocblockType>
+      <code><![CDATA[public static function getByLocation(): array]]></code>
+      <code><![CDATA[public static function getForInfrastructure( Infrastructure $infra, $proto = false, $externalOnly = true ): Collection]]></code>
+      <code><![CDATA[public static function validateChannelGroup( VirtualInterface $vi ): bool]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Models/Aggregators/VlanAggregator.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|VlanAggregator]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|VlanAggregator]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|VlanAggregator]]></code>
+    </LessSpecificImplementedReturnType>
+    <MissingDocblockType>
+      <code><![CDATA[public static function arpaDetails( Vlan $vlan, int $proto ): array]]></code>
+      <code><![CDATA[public static function ipAddresses( int $vid, int $proto ) : array]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Models/Aggregators/VlanInterfaceAggregator.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|VlanInterfaceAggregator]]></code>
+      <code><![CDATA[Builder|VlanInterfaceAggregator]]></code>
+      <code><![CDATA[Builder|VlanInterfaceAggregator]]></code>
+    </LessSpecificImplementedReturnType>
+    <MissingDocblockType>
+      <code><![CDATA[public static function forProto( Vlan $vlan, int $proto, ?int $pistatus = PhysicalInterface::STATUS_CONNECTED ) : array]]></code>
+      <code><![CDATA[public static function getAllIPsForASN( Vlan $v, int $asn, int $proto ): array]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Models/ApiKey.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|ApiKey]]></code>
+      <code><![CDATA[Builder|ApiKey]]></code>
+      <code><![CDATA[Builder|ApiKey]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/AtlasMeasurement.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|AtlasMeasurement]]></code>
+      <code><![CDATA[Builder|AtlasMeasurement]]></code>
+      <code><![CDATA[Builder|AtlasMeasurement]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/AtlasProbe.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|AtlasProbe]]></code>
+      <code><![CDATA[Builder|AtlasProbe]]></code>
+      <code><![CDATA[Builder|AtlasProbe]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/AtlasResult.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|AtlasResult]]></code>
+      <code><![CDATA[Builder|AtlasResult]]></code>
+      <code><![CDATA[Builder|AtlasResult]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/AtlasRun.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|AtlasRun]]></code>
+      <code><![CDATA[Builder|AtlasRun]]></code>
+      <code><![CDATA[Builder|AtlasRun]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/BgpSession.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|BgpSession]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|BgpSession]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|BgpSession]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/BgpSessionData.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[Builder|BgpSessionDataAggregator]]></code>
+      <code><![CDATA[Builder|BgpSessionDataAggregator]]></code>
+      <code><![CDATA[Builder|BgpSessionDataAggregator]]></code>
+    </ImplementedReturnTypeMismatch>
+  </file>
+  <file src="app/Models/Cabinet.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|Cabinet]]></code>
+      <code><![CDATA[Builder|Cabinet]]></code>
+      <code><![CDATA[Builder|Cabinet]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/CompanyBillingDetail.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|CompanyBillingDetail]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|CompanyBillingDetail]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|CompanyBillingDetail]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/CompanyRegisteredDetail.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/ConsoleServer.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|ConsoleServer]]></code>
+      <code><![CDATA[Builder|ConsoleServer]]></code>
+      <code><![CDATA[Builder|ConsoleServer]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/ConsoleServerConnection.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|ConsoleServerConnection]]></code>
+      <code><![CDATA[Builder|ConsoleServerConnection]]></code>
+      <code><![CDATA[Builder|ConsoleServerConnection]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/Contact.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|Contact]]></code>
+      <code><![CDATA[Builder|Contact]]></code>
+      <code><![CDATA[Builder|Contact]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/ContactGroup.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|ContactGroup]]></code>
+      <code><![CDATA[Builder|ContactGroup]]></code>
+      <code><![CDATA[Builder|ContactGroup]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/CoreBundle.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|CoreBundle]]></code>
+      <code><![CDATA[Builder|CoreBundle]]></code>
+      <code><![CDATA[Builder|CoreBundle]]></code>
+    </LessSpecificImplementedReturnType>
+    <MissingDocblockType>
+      <code><![CDATA[public function deleteObject(): bool]]></code>
+    </MissingDocblockType>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$cl->coreInterfaceSideA->physicalinterface]]></code>
+      <code><![CDATA[$cl->coreInterfaceSideA->physicalinterface]]></code>
+      <code><![CDATA[$side->physicalinterface]]></code>
+    </UndefinedMagicPropertyFetch>
+  </file>
+  <file src="app/Models/CoreInterface.php">
+    <InvalidNullableReturnType>
+      <code><![CDATA[CoreLink]]></code>
+    </InvalidNullableReturnType>
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|CoreInterface]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|CoreInterface]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|CoreInterface]]></code>
+    </LessSpecificImplementedReturnType>
+    <NullableReturnStatement>
+      <code><![CDATA[$this->coreLinkSideA]]></code>
+      <code><![CDATA[$this->coreLinkSideB]]></code>
+    </NullableReturnStatement>
+  </file>
+  <file src="app/Models/CoreLink.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|CoreLink]]></code>
+      <code><![CDATA[Builder|CoreLink]]></code>
+      <code><![CDATA[Builder|CoreLink]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/Customer.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|Customer]]></code>
+      <code><![CDATA[Builder|Customer]]></code>
+      <code><![CDATA[Builder|Customer]]></code>
+    </LessSpecificImplementedReturnType>
+    <MissingDocblockType>
+      <code><![CDATA[public function routeServerClient( ?int $proto = null ): bool]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Models/CustomerEquipment.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|CustomerEquipment]]></code>
+      <code><![CDATA[Builder|CustomerEquipment]]></code>
+      <code><![CDATA[Builder|CustomerEquipment]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/CustomerNote.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|CustomerNote]]></code>
+      <code><![CDATA[Builder|CustomerNote]]></code>
+      <code><![CDATA[Builder|CustomerNote]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/CustomerTag.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|CustomerTag]]></code>
+      <code><![CDATA[Builder|CustomerTag]]></code>
+      <code><![CDATA[Builder|CustomerTag]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/CustomerToCustomerTag.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/CustomerToUser.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|CustomerToUser]]></code>
+      <code><![CDATA[Builder|CustomerToUser]]></code>
+      <code><![CDATA[Builder|CustomerToUser]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/DocstoreCustomerDirectory.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|DocstoreCustomerDirectory]]></code>
+      <code><![CDATA[Builder|DocstoreCustomerDirectory]]></code>
+      <code><![CDATA[Builder|DocstoreCustomerDirectory]]></code>
+    </LessSpecificImplementedReturnType>
+    <MismatchingDocblockParamType>
+      <code><![CDATA[User|null]]></code>
+    </MismatchingDocblockParamType>
+    <MissingDocblockType>
+      <code><![CDATA[public static function deleteAllForCustomer( Customer $cust ): void]]></code>
+      <code><![CDATA[public static function recursiveDelete( DocstoreCustomerDirectory $dir ): void]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Models/DocstoreCustomerFile.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|DocstoreCustomerFile]]></code>
+      <code><![CDATA[Builder|DocstoreCustomerFile]]></code>
+      <code><![CDATA[Builder|DocstoreCustomerFile]]></code>
+    </LessSpecificImplementedReturnType>
+    <MismatchingDocblockParamType>
+      <code><![CDATA[User|null]]></code>
+    </MismatchingDocblockParamType>
+  </file>
+  <file src="app/Models/DocstoreDirectory.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|DocstoreDirectory]]></code>
+      <code><![CDATA[Builder|DocstoreDirectory]]></code>
+      <code><![CDATA[Builder|DocstoreDirectory]]></code>
+    </LessSpecificImplementedReturnType>
+    <MissingDocblockType>
+      <code><![CDATA[public static function recursiveDelete( DocstoreDirectory $dir ): void]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Models/DocstoreFile.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|DocstoreFile]]></code>
+      <code><![CDATA[Builder|DocstoreFile]]></code>
+      <code><![CDATA[Builder|DocstoreFile]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/DocstoreLog.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|DocstoreLog]]></code>
+      <code><![CDATA[Builder|DocstoreLog]]></code>
+      <code><![CDATA[Builder|DocstoreLog]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/IPv4Address.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|IPv4Address]]></code>
+      <code><![CDATA[Builder|IPv4Address]]></code>
+      <code><![CDATA[Builder|IPv4Address]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/IPv6Address.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|IPv6Address]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|IPv6Address]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|IPv6Address]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/Infrastructure.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|Infrastructure]]></code>
+      <code><![CDATA[Builder|Infrastructure]]></code>
+      <code><![CDATA[Builder|Infrastructure]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/IrrdbAsn.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|IrrdbAsn]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|IrrdbAsn]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|IrrdbAsn]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/IrrdbConfig.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|IrrdbConfig]]></code>
+      <code><![CDATA[Builder|IrrdbConfig]]></code>
+      <code><![CDATA[Builder|IrrdbConfig]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/IrrdbPrefix.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|IrrdbPrefix]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|IrrdbPrefix]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|IrrdbPrefix]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/IrrdbUpdateLog.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog]]></code>
+    </LessSpecificImplementedReturnType>
+    <RedundantCondition>
+      <code><![CDATA[!$oldest]]></code>
+      <code><![CDATA[!$oldest]]></code>
+    </RedundantCondition>
+    <TypeDoesNotContainType>
+      <code><![CDATA[$oldest]]></code>
+      <code><![CDATA[$oldest]]></code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="app/Models/Layer2Address.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|Layer2Address]]></code>
+      <code><![CDATA[Builder|Layer2Address]]></code>
+      <code><![CDATA[Builder|Layer2Address]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/Location.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|Location]]></code>
+      <code><![CDATA[Builder|Location]]></code>
+      <code><![CDATA[Builder|Location]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/Log.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|Log]]></code>
+      <code><![CDATA[Builder|Log]]></code>
+      <code><![CDATA[Builder|Log]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/Logo.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|Logo]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|Logo]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|Logo]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/MacAddress.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|MacAddress]]></code>
+      <code><![CDATA[Builder|MacAddress]]></code>
+      <code><![CDATA[Builder|MacAddress]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/NetworkInfo.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|NetworkInfo]]></code>
+      <code><![CDATA[Builder|NetworkInfo]]></code>
+      <code><![CDATA[Builder|NetworkInfo]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/Oui.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|Oui]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|Oui]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|Oui]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/P2pDailyStats.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|P2pDailyStats]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|P2pDailyStats]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|P2pDailyStats]]></code>
+    </LessSpecificImplementedReturnType>
+    <MismatchingDocblockReturnType>
+      <code><![CDATA[P2pDailyStats[]]]></code>
+    </MismatchingDocblockReturnType>
+  </file>
+  <file src="app/Models/PatchPanel.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|PatchPanel]]></code>
+      <code><![CDATA[Builder|PatchPanel]]></code>
+      <code><![CDATA[Builder|PatchPanel]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/PatchPanelPort.php">
+    <ImplicitToStringCast>
+      <code><![CDATA[now()]]></code>
+    </ImplicitToStringCast>
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|PatchPanelPort]]></code>
+      <code><![CDATA[Builder|PatchPanelPort]]></code>
+      <code><![CDATA[Builder|PatchPanelPort]]></code>
+    </LessSpecificImplementedReturnType>
+    <MissingDocblockType>
+      <code><![CDATA[$slave->remove();]]></code>
+      <code><![CDATA[$user]]></code>
+      <code><![CDATA[public function archive(): PatchPanelPortHistory]]></code>
+      <code><![CDATA[public function move( PatchPanelPort $dest, PatchPanelPort $slave = null ): bool]]></code>
+      <code><![CDATA[public function remove(): void]]></code>
+    </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+    </NoInterfaceProperties>
+    <TypeDoesNotContainType>
+      <code><![CDATA[!( $history = $this->archive() )]]></code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="app/Models/PatchPanelPortFile.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|PatchPanelPortFile]]></code>
+      <code><![CDATA[Builder|PatchPanelPortFile]]></code>
+      <code><![CDATA[Builder|PatchPanelPortFile]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/PatchPanelPortHistory.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|PatchPanelPortHistory]]></code>
+      <code><![CDATA[Builder|PatchPanelPortHistory]]></code>
+      <code><![CDATA[Builder|PatchPanelPortHistory]]></code>
+    </LessSpecificImplementedReturnType>
+    <MissingDocblockType>
+      <code><![CDATA[public static function createFromPort( PatchPanelPort $ppp ): PatchPanelPortHistory]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Models/PatchPanelPortHistoryFile.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/PeeringManager.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|PeeringManager]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|PeeringManager]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|PeeringManager]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/PhysicalInterface.php">
+    <InvalidNullableReturnType>
+      <code><![CDATA[PhysicalInterface|bool]]></code>
+      <code><![CDATA[int]]></code>
+    </InvalidNullableReturnType>
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|PhysicalInterface]]></code>
+      <code><![CDATA[Builder|PhysicalInterface]]></code>
+      <code><![CDATA[Builder|PhysicalInterface]]></code>
+    </LessSpecificImplementedReturnType>
+    <NullableReturnStatement>
+      <code><![CDATA[$ci->coreLink()->coreInterfaceSideA->physicalInterface]]></code>
+      <code><![CDATA[$ci->coreLink()->coreInterfaceSideB->physicalInterface]]></code>
+      <code><![CDATA[$this->rate_limit ?: $this->speed]]></code>
+    </NullableReturnStatement>
+  </file>
+  <file src="app/Models/RouteServerFilter.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|RouteServerFilter]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|RouteServerFilter]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|RouteServerFilter]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/RouteServerFilterProd.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|RouteServerFilterProd]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|RouteServerFilterProd]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|RouteServerFilterProd]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/Router.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|Router]]></code>
+      <code><![CDATA[Builder|Router]]></code>
+      <code><![CDATA[Builder|Router]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/RsPrefix.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|RsPrefix]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|RsPrefix]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|RsPrefix]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/SflowReceiver.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|SflowReceiver]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|SflowReceiver]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|SflowReceiver]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/SwitchPort.php">
+    <ImplicitToStringCast>
+      <code><![CDATA[now()]]></code>
+    </ImplicitToStringCast>
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|SwitchPort]]></code>
+      <code><![CDATA[Builder|SwitchPort]]></code>
+      <code><![CDATA[Builder|SwitchPort]]></code>
+    </LessSpecificImplementedReturnType>
+    <MissingDocblockType>
+      <code><![CDATA[public function snmpUpdate( SNMP $host, bool $logger = false, bool $nosave = false ): SwitchPort]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Models/Switcher.php">
+    <ImplicitToStringCast>
+      <code><![CDATA[now()]]></code>
+    </ImplicitToStringCast>
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|Switcher]]></code>
+      <code><![CDATA[Builder|Switcher]]></code>
+      <code><![CDATA[Builder|Switcher]]></code>
+    </LessSpecificImplementedReturnType>
+    <MissingDocblockType>
+      <code><![CDATA[public function snmpPollSwitchPorts( $host, $logger = false, bool|array &$result = false, bool $nosave = false ): Switcher]]></code>
+    </MissingDocblockType>
+    <RedundantCondition>
+      <code><![CDATA[$logger]]></code>
+    </RedundantCondition>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$sp->physicalInterface->coreinterface]]></code>
+    </UndefinedMagicPropertyFetch>
+  </file>
+  <file src="app/Models/TrafficDaily.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|TrafficDaily]]></code>
+      <code><![CDATA[Builder|TrafficDaily]]></code>
+      <code><![CDATA[Builder|TrafficDaily]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/TrafficDailyPhysInt.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|TrafficDailyPhysInt]]></code>
+      <code><![CDATA[Builder|TrafficDailyPhysInt]]></code>
+      <code><![CDATA[Builder|TrafficDailyPhysInt]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/User.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|User]]></code>
+      <code><![CDATA[Builder|User]]></code>
+      <code><![CDATA[Builder|User]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/User2FA.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|User2FA]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|User2FA]]></code>
+      <code><![CDATA[\Illuminate\Database\Eloquent\Builder|User2FA]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/UserLoginHistory.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|UserLoginHistory]]></code>
+      <code><![CDATA[Builder|UserLoginHistory]]></code>
+      <code><![CDATA[Builder|UserLoginHistory]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/UserRememberToken.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|UserRememberToken]]></code>
+      <code><![CDATA[Builder|UserRememberToken]]></code>
+      <code><![CDATA[Builder|UserRememberToken]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/Vendor.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|Vendor]]></code>
+      <code><![CDATA[Builder|Vendor]]></code>
+      <code><![CDATA[Builder|Vendor]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/VirtualInterface.php">
+    <InvalidDocblock>
+      <code><![CDATA[return $ci->coreLink()->coreBundle;]]></code>
+    </InvalidDocblock>
+    <InvalidReturnStatement>
+      <code><![CDATA[$this->physicalInterfaces[ 0 ]->switchPort->type]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[string|bool]]></code>
+    </InvalidReturnType>
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|VirtualInterface]]></code>
+      <code><![CDATA[Builder|VirtualInterface]]></code>
+      <code><![CDATA[Builder|VirtualInterface]]></code>
+    </LessSpecificImplementedReturnType>
+    <NullableReturnStatement>
+      <code><![CDATA[$this->physicalInterfaces[ 0 ]->switchPort->type]]></code>
+    </NullableReturnStatement>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$pi->coreinterface]]></code>
+    </UndefinedMagicPropertyFetch>
+  </file>
+  <file src="app/Models/Vlan.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|Vlan]]></code>
+      <code><![CDATA[Builder|Vlan]]></code>
+      <code><![CDATA[Builder|Vlan]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="app/Models/VlanInterface.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[Builder|VlanInterface]]></code>
+      <code><![CDATA[Builder|VlanInterface]]></code>
+      <code><![CDATA[Builder|VlanInterface]]></code>
+    </LessSpecificImplementedReturnType>
+    <MissingDocblockType>
+      <code><![CDATA[public function canGraphForLatency( string $proto ): bool]]></code>
+      <code><![CDATA[public function getIPAddress( int|string $proto )]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Policies/RouteServerFilterPolicy.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function before( User $user, $ability): bool]]></code>
+      <code><![CDATA[public function checkCustObject( User $user, Customer $cust ): bool]]></code>
+      <code><![CDATA[public function checkListCustomers( User $user ): bool]]></code>
+      <code><![CDATA[public function checkRsfObject( User $user, RouteServerFilter $rsf ): bool]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Providers/AuthServiceProvider.php">
+    <RedundantCondition>
+      <code><![CDATA[method_exists( $guard, 'setCookieJar' )]]></code>
+      <code><![CDATA[method_exists( $guard, 'setDispatcher' )]]></code>
+      <code><![CDATA[method_exists( $guard, 'setRequest' )]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Providers/DiagnosticsServiceProvider.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function boot(): void]]></code>
+      <code><![CDATA[public function register()]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Providers/GrapherServiceProvider.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function boot(): void]]></code>
+      <code><![CDATA[public function register()]]></code>
+    </MissingDocblockType>
+    <UndefinedInterfaceMethod>
+      <code><![CDATA[$this->app]]></code>
+      <code><![CDATA[$this->app]]></code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="app/Rules/Ipv4SubnetSize.php">
+    <InvalidOperand>
+      <code><![CDATA[config( "ixp.irrdb.min_v4_subnet_size" )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Rules/Ipv6SubnetSize.php">
+    <InvalidOperand>
+      <code><![CDATA[config( "ixp.irrdb.min_v6_subnet_size" )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Services/Auth/EloquentUserProvider.php">
+    <MismatchingDocblockParamType>
+      <code><![CDATA[Authenticatable|Model]]></code>
+    </MismatchingDocblockParamType>
+    <MissingDocblockType>
+      <code><![CDATA[public function addRememberToken( $user ): UserRememberToken]]></code>
+      <code><![CDATA[public function purgeExpiredRememberTokens( User $user ): void]]></code>
+      <code><![CDATA[public function retrieveByToken( $identifier, $token ): ?Authenticatable]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Services/Auth/SessionGuard.php">
+    <InvalidDocblock>
+      <code><![CDATA[protected $userRememberToken;]]></code>
+    </InvalidDocblock>
+    <NoInterfaceProperties>
+      <code><![CDATA[$this->user()->userRememberTokens]]></code>
+    </NoInterfaceProperties>
+  </file>
+  <file src="app/Services/Diagnostics/Suites/PhysicalInterfaceDiagnosticSuite.php">
+    <RedundantCondition>
+      <code><![CDATA["Configured MTU is null/0 but switch port reports " . $this->pi->switchPort->ifMtu]]></code>
+      <code><![CDATA["No, last polled: " . $lastPolled]]></code>
+      <code><![CDATA[$mainName . " No, last polled: " . $lastPolled]]></code>
+      <code><![CDATA[$mainName ."configured as null/0 but switch port reports " . $this->pi->switchPort->ifMtu]]></code>
+      <code><![CDATA[$pi?->switchPort]]></code>
+      <code><![CDATA[$pi?->switchPort]]></code>
+    </RedundantCondition>
+    <TypeDoesNotContainNull>
+      <code><![CDATA[$pi]]></code>
+      <code><![CDATA[$pi]]></code>
+    </TypeDoesNotContainNull>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$this->pi->switchPort->ifSpeed]]></code>
+    </UndefinedMagicPropertyFetch>
+  </file>
+  <file src="app/Services/Diagnostics/Suites/TransceiverDiagnosticSuite.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$matches[1]]]></code>
+    </InvalidScalarArgument>
+    <RedundantCondition>
+      <code><![CDATA[$pi?->switchPort]]></code>
+      <code><![CDATA[$pi?->switchPort]]></code>
+    </RedundantCondition>
+    <TypeDoesNotContainNull>
+      <code><![CDATA[$pi]]></code>
+      <code><![CDATA[$pi]]></code>
+    </TypeDoesNotContainNull>
+  </file>
+  <file src="app/Services/Grapher.php">
+    <InvalidArrayAccess>
+      <code><![CDATA[config('grapher.backend')[0]]]></code>
+      <code><![CDATA[config('grapher.backends')[ $backend ]]]></code>
+    </InvalidArrayAccess>
+    <MissingDocblockType>
+      <code><![CDATA[public function backend( $backend = null ): BackendContract]]></code>
+      <code><![CDATA[public function backendForGraph( Graph $graph, array $backends = [] ): BackendContract]]></code>
+      <code><![CDATA[public function backendsForGraph( Graph $graph ): array]]></code>
+      <code><![CDATA[public function latency( VlanInterface $vli ): LatencyGraph]]></code>
+      <code><![CDATA[public function resolveBackend( string $backend = null ): string]]></code>
+      <code><![CDATA[public function trunk( string $trunkname ): TrunkGraph]]></code>
+    </MissingDocblockType>
+    <NoValue>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+    </NoValue>
+  </file>
+  <file src="app/Services/Grapher/Backend/Dummy.php">
+    <InvalidArrayAccess>
+      <code><![CDATA[$config['logdir']]]></code>
+    </InvalidArrayAccess>
+    <MissingDocblockType>
+      <code><![CDATA[private function resolveFilePath( Graph $graph, $type ): string]]></code>
+      <code><![CDATA[public function data( Graph $graph ): array]]></code>
+      <code><![CDATA[public function png( Graph $graph ): string]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Services/Grapher/Backend/Mrtg.php">
+    <InvalidArrayAccess>
+      <code><![CDATA[$config[ 'logdir' ]]]></code>
+      <code><![CDATA[$config['logdir']]]></code>
+      <code><![CDATA[$config['logdir']]]></code>
+      <code><![CDATA[$config['logdir']]]></code>
+      <code><![CDATA[$config['logdir']]]></code>
+      <code><![CDATA[$config['logdir']]]></code>
+      <code><![CDATA[$config['logdir']]]></code>
+      <code><![CDATA[$config['logdir']]]></code>
+      <code><![CDATA[$config['logdir']]]></code>
+    </InvalidArrayAccess>
+    <MissingDocblockType>
+      <code><![CDATA[public function data( Graph $graph ): array]]></code>
+      <code><![CDATA[public function dataPath( Graph $graph ): string]]></code>
+      <code><![CDATA[public function png( Graph $graph ): string]]></code>
+      <code><![CDATA[public function resolveFilePath( Graph $graph, string $type ): string]]></code>
+      <code><![CDATA[public function rrd( Graph $graph ): string]]></code>
+    </MissingDocblockType>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$cl->coreinterfacesidea]]></code>
+      <code><![CDATA[$cl->coreinterfacesideb]]></code>
+    </UndefinedMagicPropertyFetch>
+  </file>
+  <file src="app/Services/Grapher/Backend/Sflow.php">
+    <InvalidArrayAccess>
+      <code><![CDATA[$config['root']]]></code>
+      <code><![CDATA[$config['root']]]></code>
+      <code><![CDATA[$config['root']]]></code>
+    </InvalidArrayAccess>
+    <MissingDocblockType>
+      <code><![CDATA[private function resolveFileName( Graph $graph, $type ): string]]></code>
+      <code><![CDATA[private function resolveFilePath( Graph $graph, $type ): string]]></code>
+      <code><![CDATA[public function data( Graph $graph ): array]]></code>
+      <code><![CDATA[public function dataPath( Graph $graph ): string]]></code>
+      <code><![CDATA[public function png( Graph $graph ): string]]></code>
+      <code><![CDATA[public function rrd( Graph $graph ): string]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Services/Grapher/Backend/Smokeping.php">
+    <InvalidArrayAccess>
+      <code><![CDATA[$urls[ $graph->vli()->vlan->id ]]]></code>
+    </InvalidArrayAccess>
+    <MissingDocblockType>
+      <code><![CDATA[private function resolveFilePath( Graph $graph ): string]]></code>
+      <code><![CDATA[public function dataPath( Graph $graph ): string]]></code>
+      <code><![CDATA[public function png( Graph $graph ): string]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Services/Grapher/Graph.php">
+    <InvalidCast>
+      <code><![CDATA[config( 'identity.watermark' )]]></code>
+    </InvalidCast>
+    <InvalidOperand>
+      <code><![CDATA[config( 'identity.orgname')]]></code>
+    </InvalidOperand>
+    <MissingDocblockType>
+      <code><![CDATA[public function authorise(): bool]]></code>
+      <code><![CDATA[public function backend(): GrapherBackend]]></code>
+      <code><![CDATA[public function json(): string]]></code>
+      <code><![CDATA[public function log(): string]]></code>
+      <code><![CDATA[public function toc(): array]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Services/Grapher/Graph/CoreBundle.php">
+    <RedundantCondition>
+      <code><![CDATA[$this->coreBundle()]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Services/Grapher/Graph/Customer.php">
+    <RedundantCondition>
+      <code><![CDATA[$this->customer()]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Services/Grapher/Graph/IXP.php">
+    <InvalidCast>
+      <code><![CDATA[config( 'grapher.access.ixp' )]]></code>
+    </InvalidCast>
+    <TypeDoesNotContainType>
+      <code><![CDATA[(int)config( 'grapher.access.ixp' ) === User::AUTH_PUBLIC]]></code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="app/Services/Grapher/Graph/Infrastructure.php">
+    <InvalidCast>
+      <code><![CDATA[config( 'grapher.access.infrastructure' )]]></code>
+    </InvalidCast>
+    <RedundantCondition>
+      <code><![CDATA[$this->infrastructure()]]></code>
+    </RedundantCondition>
+    <TypeDoesNotContainType>
+      <code><![CDATA[(int)config( 'grapher.access.infrastructure' ) === User::AUTH_PUBLIC]]></code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="app/Services/Grapher/Graph/Location.php">
+    <InvalidCast>
+      <code><![CDATA[config( 'grapher.access.location' )]]></code>
+      <code><![CDATA[config( 'grapher.access.location' )]]></code>
+    </InvalidCast>
+    <RedundantCondition>
+      <code><![CDATA[$this->location()]]></code>
+    </RedundantCondition>
+    <TypeDoesNotContainType>
+      <code><![CDATA[(int)config( 'grapher.access.location' ) === User::AUTH_PUBLIC]]></code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="app/Services/Grapher/Graph/P2p.php">
+    <InvalidCast>
+      <code><![CDATA[config( 'grapher.access.p2p' )]]></code>
+    </InvalidCast>
+    <RedundantCondition>
+      <code><![CDATA[$this->dvli()]]></code>
+      <code><![CDATA[$this->svli()]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Services/Grapher/Graph/PhysicalInterface.php">
+    <InvalidNullableReturnType>
+      <code><![CDATA[Customer]]></code>
+      <code><![CDATA[string]]></code>
+    </InvalidNullableReturnType>
+    <NullableReturnStatement>
+      <code><![CDATA[$this->physicalInterface()->switchPort->name]]></code>
+      <code><![CDATA[$this->physint->virtualInterface->customer]]></code>
+    </NullableReturnStatement>
+    <RedundantCondition>
+      <code><![CDATA[$this->physicalInterface()]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Services/Grapher/Graph/Switcher.php">
+    <InvalidCast>
+      <code><![CDATA[config( 'grapher.access.switch' )]]></code>
+      <code><![CDATA[config( 'grapher.access.switch' )]]></code>
+    </InvalidCast>
+    <RedundantCondition>
+      <code><![CDATA[$this->switch()]]></code>
+    </RedundantCondition>
+    <TypeDoesNotContainType>
+      <code><![CDATA[(int)config( 'grapher.access.switch' ) === User::AUTH_PUBLIC]]></code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="app/Services/Grapher/Graph/Trunk.php">
+    <InvalidCast>
+      <code><![CDATA[config( 'grapher.access.trunk' )]]></code>
+    </InvalidCast>
+    <MissingDocblockType>
+      <code><![CDATA[public function __construct( Grapher $grapher, string $n )]]></code>
+      <code><![CDATA[public function setTrunkname( string $n ): Trunk]]></code>
+    </MissingDocblockType>
+    <TypeDoesNotContainType>
+      <code><![CDATA[(int)config( 'grapher.access.trunk' ) === User::AUTH_PUBLIC]]></code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="app/Services/Grapher/Graph/VirtualInterface.php">
+    <InvalidNullableReturnType>
+      <code><![CDATA[Customer]]></code>
+    </InvalidNullableReturnType>
+    <NullableReturnStatement>
+      <code><![CDATA[$this->virtint->customer]]></code>
+    </NullableReturnStatement>
+    <RedundantCondition>
+      <code><![CDATA[$this->virtualInterface()]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Services/Grapher/Graph/Vlan.php">
+    <InvalidCast>
+      <code><![CDATA[config( 'grapher.access.vlan' )]]></code>
+    </InvalidCast>
+    <RedundantCondition>
+      <code><![CDATA[$this->vlan()]]></code>
+    </RedundantCondition>
+    <TypeDoesNotContainType>
+      <code><![CDATA[(int)config( 'grapher.access.vlan' ) === User::AUTH_PUBLIC]]></code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="app/Services/Grapher/Graph/VlanInterface.php">
+    <InvalidCast>
+      <code><![CDATA[config( 'grapher.access.customer' )]]></code>
+    </InvalidCast>
+    <InvalidNullableReturnType>
+      <code><![CDATA[Customer]]></code>
+    </InvalidNullableReturnType>
+    <NullableReturnStatement>
+      <code><![CDATA[$this->vlanint->virtualInterface->customer]]></code>
+    </NullableReturnStatement>
+    <RedundantCondition>
+      <code><![CDATA[$this->vlanInterface()]]></code>
+    </RedundantCondition>
+    <TypeDoesNotContainType>
+      <code><![CDATA[(int)config( 'grapher.access.customer' ) === User::AUTH_PUBLIC]]></code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="app/Services/Grapher/Statistics.php">
+    <RedundantCondition>
+      <code><![CDATA[is_array( $data )]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Services/Helpdesk/Zendesk.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[Contact|bool]]></code>
+    </ImplementedReturnTypeMismatch>
+    <ImplicitToStringCast>
+      <code><![CDATA[now()]]></code>
+    </ImplicitToStringCast>
+    <InvalidScalarArgument>
+      <code><![CDATA[60/200]]></code>
+    </InvalidScalarArgument>
+    <MismatchingDocblockReturnType>
+      <code><![CDATA[Contact|bool]]></code>
+    </MismatchingDocblockReturnType>
+    <MissingDocblockType>
+      <code><![CDATA[protected function callApi( $fn )]]></code>
+      <code><![CDATA[public function __construct( $config )]]></code>
+      <code><![CDATA[public function organisationFind( int $id )]]></code>
+      <code><![CDATA[public function organisationUpdate( int $helpdeskId, Customer $cust )]]></code>
+      <code><![CDATA[public function userFind( int  $id )]]></code>
+    </MissingDocblockType>
+    <UndefinedMagicPropertyAssignment>
+      <code><![CDATA[$cust->helpdesk_id]]></code>
+    </UndefinedMagicPropertyAssignment>
+  </file>
+  <file src="app/Services/IXF.php">
+    <TooManyArguments>
+      <code><![CDATA[fake]]></code>
+    </TooManyArguments>
+  </file>
+  <file src="app/Services/LookingGlass.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function forRouter( Router $router )]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Services/PeeringDb.php">
+    <InvalidOperand>
+      <code><![CDATA[config( 'ixp_api.peeringDB.api-key' )]]></code>
+    </InvalidOperand>
+    <TooManyArguments>
+      <code><![CDATA[fake]]></code>
+    </TooManyArguments>
+  </file>
+  <file src="app/Services/Purifier.php">
+    <TypeDoesNotContainType>
+      <code><![CDATA[is_string($config)]]></code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="app/Services/RipeAtlas/ApiCall.php">
+    <InvalidOperand>
+      <code><![CDATA[config( "ixp_api.atlas_measurement_key" )]]></code>
+      <code><![CDATA[config('ixp_api.atlas_measurement_key' )]]></code>
+      <code><![CDATA[config('ixp_api.atlas_measurement_key')]]></code>
+    </InvalidOperand>
+    <MissingDocblockType>
+      <code><![CDATA[public function myAtlasMeasurements(): array]]></code>
+      <code><![CDATA[public function queryAtlasForProbes( $customer, $protocol ): array]]></code>
+      <code><![CDATA[public function requestAtlasTraceroute( $fromASN, $target, $protocol ): ?int]]></code>
+      <code><![CDATA[public function updateAtlasMeasurement( int $atlasId ): array]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Services/RipeAtlas/Interpretor.php">
+    <MismatchingDocblockReturnType>
+      <code><![CDATA[integer]]></code>
+    </MismatchingDocblockReturnType>
+    <MissingDocblockType>
+      <code><![CDATA[public function interpret( AtlasMeasurement $atlasMeasurement ): AtlasResult]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Tasks/Irrdb/UpdateAsnDb.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function update(): array]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Tasks/Irrdb/UpdateDb.php">
+    <MissingDocblockType>
+      <code><![CDATA[protected function updateDb( array $fromIrrdb, int $protocol, $type = 'prefix' ): bool]]></code>
+      <code><![CDATA[public function setBgpq3( Bgpq3 $bgpq3 ): UpdateDb]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Tasks/Irrdb/UpdatePrefixDb.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function update(): array]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Tasks/Rir/Generator.php">
+    <MissingDocblockType>
+      <code><![CDATA[$asns[ $c->autsys ]]]></code>
+      <code><![CDATA[private function generateASNs( Collection $customers ): array]]></code>
+      <code><![CDATA[private function generateRouteServerClientDetails( Collection $customers ): array]]></code>
+      <code><![CDATA[public function generate(): string]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Tasks/Router/ConfigurationGenerator.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function __construct( Router $r )]]></code>
+      <code><![CDATA[public function render(): ViewContract]]></code>
+      <code><![CDATA[public function setRouter( Router $router ): ConfigurationGenerator]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Tasks/Yaml/SwitchConfigurationGenerator.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function generate(): array]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Utils/Bgpq3.php">
+    <InvalidOperand>
+      <code><![CDATA[$minSubnetSize]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Utils/Export/JsonSchema.php">
+    <MissingDocblockType>
+      <code><![CDATA[private function getIXPInfo( string $version ): array]]></code>
+      <code><![CDATA[public function get( string $version = null, $asArray = false, $detailed = true, $tags = false )]]></code>
+    </MissingDocblockType>
+    <UndefinedInterfaceMethod>
+      <code><![CDATA[isSuperUser]]></code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="app/Utils/Foil/Extensions/IXP.php">
+    <InvalidLiteralArgument>
+      <code><![CDATA['bkmgtpezy']]></code>
+    </InvalidLiteralArgument>
+  </file>
+  <file src="app/Utils/Former/Framework/TwitterBootstrap4.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[string|null]]></code>
+    </ImplementedReturnTypeMismatch>
+  </file>
+  <file src="app/Utils/Grapher/Mrtg.php">
+    <MissingDocblockType>
+      <code><![CDATA[protected function loadMrtgFile(): array]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="app/Utils/Grapher/Rrd.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$this->graph()->periodEnd()->timestamp]]></code>
+      <code><![CDATA[$this->graph()->periodStart()->timestamp]]></code>
+      <code><![CDATA[time() - self::PERIOD_TIME[ $this->graph()->period() ]]]></code>
+    </InvalidScalarArgument>
+    <MissingDocblockType>
+      <code><![CDATA[private function getLocalCopy(): string]]></code>
+      <code><![CDATA[private function getLocalDirectory(): string]]></code>
+      <code><![CDATA[private function getLocalFilename( $ext = 'rrd' ): string]]></code>
+      <code><![CDATA[protected function loadRrdFile(): void]]></code>
+      <code><![CDATA[public function __construct( string $file, Graph $graph )]]></code>
+      <code><![CDATA[public function data(): array]]></code>
+      <code><![CDATA[public function png(): string]]></code>
+      <code><![CDATA[public function rrd()]]></code>
+    </MissingDocblockType>
+    <TypeDoesNotContainType>
+      <code><![CDATA[!is_array( $rrd )]]></code>
+      <code><![CDATA[$rrd === false]]></code>
+      <code><![CDATA[$rrd === false]]></code>
+      <code><![CDATA[$rrd === false || !is_array( $rrd )]]></code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="app/Utils/Http/Controllers/Frontend/EloquentController.php">
+    <MissingDocblockType>
+      <code><![CDATA[public function delete( Request $r ): RedirectResponse]]></code>
+      <code><![CDATA[public function edit( int $id ): View]]></code>
+      <code><![CDATA[public function store( Request $r )]]></code>
+    </MissingDocblockType>
+    <NoInterfaceProperties>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+      <code><![CDATA[Auth::getUser()->username]]></code>
+    </NoInterfaceProperties>
+    <RedundantCondition>
+      <code><![CDATA[is_array( $data )]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Utils/IpAddress.php">
+    <MissingDocblockType>
+      <code><![CDATA[public static function toArpa( string $ip, int $protocol ): string]]></code>
+    </MissingDocblockType>
+  </file>
+  <file src="data/SocialiteProviders/src/PeeringDB/Provider.php">
+    <ImplicitToStringCast>
+      <code><![CDATA[$response->getBody()]]></code>
+    </ImplicitToStringCast>
+  </file>
+  <file src="database/migrations/2021_04_14_125742_user_pref.php">
+    <UndefinedMagicMethod>
+      <code><![CDATA[User::find( $user_id )]]></code>
+      <code><![CDATA[User::find( $user_id )]]></code>
+      <code><![CDATA[User::find( $user_id )]]></code>
+      <code><![CDATA[User::find( $user_id )]]></code>
+      <code><![CDATA[User::find( $user_id )]]></code>
+    </UndefinedMagicMethod>
+  </file>
+  <file src="database/seeders/ContactGroups.php">
+    <UndefinedMagicMethod>
+      <code><![CDATA[ContactGroup::create([
+                'name'          => $name,
+                'description'   => sprintf( "Contact role for %s matters", strtolower( $name ) ),
+                'type'          => ContactGroup::TYPE_ROLE,
+                'active'        => true,
+                'limited_to'    => 0,
+            ])]]></code>
+    </UndefinedMagicMethod>
+  </file>
+  <file src="database/seeders/IRRDBs.php">
+    <UndefinedMagicMethod>
+      <code><![CDATA[IrrdbConfig::create([
+                'host'      => $irrdb['host'],
+                'source'    => $irrdb['source'],
+                'notes'     => $irrdb['notes'],
+            ])]]></code>
+    </UndefinedMagicMethod>
+  </file>
+  <file src="database/seeders/Vendors.php">
+    <UndefinedMagicMethod>
+      <code><![CDATA[Vendor::create([
+                'name'          => $vendor[0],
+                'shortname'     => $vendor[1],
+                'nagios_name'   => $vendor[2],
+                'bundle_name'   => $vendor[3] ?? null,
+            ])]]></code>
+    </UndefinedMagicMethod>
+  </file>
+</files>

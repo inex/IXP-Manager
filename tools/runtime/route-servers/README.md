@@ -1,5 +1,5 @@
 # Route Server Example Scripts
 
-Please see the documentation at: http://docs.ixpmanager.org/features/routers/
+Please see the documentation at: https://docs.ixpmanager.org/latest/features/routers/
 
 

@@ -24,7 +24,7 @@
 # Example script for updating AS112 Bird BGP configs
 
 
-# For keys, see: http://docs.ixpmanager.org/features/api/
+# For keys, see: https://docs.ixpmanager.org/latest/features/api/
 KEY="my-ixp-manager-api-key"
 URL_LOCK="https://ixp.example.com/api/v4/router/get-update-lock"
 URL="https://ixp.example.com/api/v4/router/gen-config"
@@ -59,7 +59,7 @@ function log {
     fi
 }
 
-# These are the handles as configured in your IXP Manager - see: http://docs.ixpmanager.org/features/routers/
+# These are the handles as configured in your IXP Manager - see: https://docs.ixpmanager.org/latest/features/routers/
 #
 # This script assumes v6 versions end in -ipv6
 

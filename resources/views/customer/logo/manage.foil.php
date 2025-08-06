@@ -74,7 +74,7 @@
                     <?= Former::actions(
                         Former::primary_submit( 'Upload' )->class( "mb-2 mb-sm-0" ),
                         Former::secondary_link( 'Cancel' )->href( $isSuperUser ? route( "customer@overview" , [ 'cust' => $t->c->id ] ) : route( "dashboard@index" ) )->class( "mb-2 mb-sm-0" ),
-                        $isSuperUser ? Former::success_link( 'Help' )->href('http://docs.ixpmanager.org/usage/customers/#customer-logos')->class( "mb-2 mb-sm-0" ) : ''
+                        $isSuperUser ? Former::success_link( 'Help' )->href('https://docs.ixpmanager.org/latest/usage/customers/#customer-logos')->class( "mb-2 mb-sm-0" ) : ''
                     );
                     ?>
 

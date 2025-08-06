@@ -1,7 +1,9 @@
 
 .env
+.env.barryo
 .env*.local
 .env.by-vagrant.*
+/*.rrd
 .project
 .buildpath
 .settings/
@@ -32,6 +34,8 @@ storage/.local
 storage/grapher/
 storage/files/*
 storage/tmp/*
+
+tests/Browser/ExampleTest.php
 
 tools/perl-lib/IXPManager/MYMETA.yml
 tools/perl-lib/IXPManager/Makefile
@@ -78,7 +82,6 @@ tools/docker/containers/mysql/docker.sql
 
 .phpunit.result.cache
 
-tests/Browser/ExampleTest.php
 app/Console/Commands/Redcentric.php
 .env.sage
 

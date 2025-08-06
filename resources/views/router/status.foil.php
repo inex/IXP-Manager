@@ -29,7 +29,7 @@
                 <div class="col-sm-12">
                     <b>Warning:</b> the looking glass functionality is currently disabled and thus this <em>Live Status</em> feature will not work.
                     Additionally, the <em>Looking Glass</em> links will not appear in IXP Manager. To enable looking glass functionality, first
-                    configure it <a href="http://docs.ixpmanager.org/features/looking-glass/">as per the documentation</a> and ensure you set the
+                    configure it <a href="https://docs.ixpmanager.org/latest/features/looking-glass/">as per the documentation</a> and ensure you set the
                     following in your <code>.env</code> file: <br><br>
                     <code>IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS=false</code>
                 </div>

@@ -25,8 +25,6 @@ namespace IXP\Console\Commands\Contact;
 
 use Illuminate\Database\Eloquent\Builder;
 use IXP\Console\Commands\Command;
-
-use D2EM;
 use IXP\Models\Contact;
 
 /**

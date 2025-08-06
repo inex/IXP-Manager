@@ -165,7 +165,7 @@ Route::group( [ 'prefix' => 'peering-manager' ], function() {
 ///
 /// IRRDB
 ///
-Route::group( [ 'prefix' => 'irrdb' ], function() {
+Route::group( [ 'namespace' => 'Irrdb', 'prefix' => 'irrdb' ], function() {
     Route::get(  'customer/{cust}/{type}/{protocol}',   'IrrdbController@list'            )->name( 'irrdb@list'            );
     Route::get(  'update/{cust}/{type}/{protocol}',     'IrrdbController@update'          )->name( 'irrdb@update'          );
 });

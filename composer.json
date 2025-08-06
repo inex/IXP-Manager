@@ -68,7 +68,7 @@
     "support": {
         "issues": "https://www.ixpmanager.org/support.php",
         "forum": "https://www.inex.ie/mailman/listinfo/ixpmanager",
-        "docs": "http://docs.ixpmanager.org/",
+        "docs": "https://docs.ixpmanager.org/",
         "source": "https://github.com/inex/IXP-Manager"
     },
     "autoload": {

@@ -188,6 +188,7 @@ use IXP\Models\AtlasMeasurement;
  * @property string|null $created
  * @method static Builder|Customer whereCreated($value)
  * @method static Builder|Customer whereLastupdated($value)
+ * @property-read \IXP\Models\IrrdbUpdateLog|null $irrdbUpdateLog
  * @mixin Eloquent
  */
 class Customer extends Model
@@ -366,6 +367,16 @@ class Customer extends Model
     {
         return $this->hasMany(VirtualInterface::class, 'custid');
     }
+
+    /**
+     * Get the virtual interfaces for the customer
+     */
+    public function irrdbUpdateLog(): Hasone
+    {
+        return $this->hasOne(IrrdbUpdateLog::class, 'cust_id');
+    }
+
+
 
     /**
      * Get the peers for the customer

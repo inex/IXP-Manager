@@ -2,5 +2,5 @@
 
 Example script(s) for generating and updating Smokeping configuration.
 
-Please see the documentation at: http://docs.ixpmanager.org/features/smokeping/
+Please see the documentation at: https://docs.ixpmanager.org/latest/features/smokeping/
 

@@ -117,9 +117,11 @@ return [
         'name' => env('IDENTITY_NAME', 'Newly Installed IXP Manager'),
     ],
 
+    // IXP Manager will need to send alert emails. This is the recipient email for these alerts.
+    // E.g. ops@example.com
     'alerts_recipient' => [
-        'address' => env('IDENTITY_ALERTS_EMAIL','ixp-alerts@example.com'),
-        'name' => env('IDENTITY_ALERTS_NAME','IXP Ops Alerts'),
+        'address' => env('IDENTITY_ALERTS_EMAIL',false ),
+        'name' => env('IDENTITY_ALERTS_NAME','IXP Manager Alerts'),
     ],
 
     /*

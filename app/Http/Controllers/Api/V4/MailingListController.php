@@ -54,7 +54,7 @@ class MailingListController extends Controller
     public function __construct()
     {
         if( PHP_SAPI !== 'cli' && !config( 'mailinglists.enabled' ) ) {
-            abort( 503, "Mailing list functionality is disabled. See: http://docs.ixpmanager.org/features/mailing-lists/" );
+            abort( 503, "Mailing list functionality is disabled. See: https://docs.ixpmanager.org/latest/features/mailing-lists/" );
         }
     }
 

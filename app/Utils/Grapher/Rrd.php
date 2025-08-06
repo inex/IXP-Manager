@@ -142,11 +142,10 @@ class Rrd
     /**
      * Accessor for PERIOD_TIME
      *
-     * @param string
-     *
+     * @param string $period
      * @return float
      */
-    public function getPeriodTime( $period ): float
+    public function getPeriodTime( string $period ): float
     {
         return self::PERIOD_TIME[ $period ] ?? 0.0;
     }

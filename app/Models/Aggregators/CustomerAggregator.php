@@ -28,6 +28,7 @@ use Carbon\Carbon;
 
 use Illuminate\Database\Eloquent\{
     Builder,
+    Collection as EloquentCollection,
 };
 
 use IXP\Models\{
@@ -182,6 +183,7 @@ use Illuminate\Support\Collection;
  * @property string|null $created
  * @method static Builder|CustomerAggregator whereCreated($value)
  * @method static Builder|CustomerAggregator whereLastupdated($value)
+ * @property-read \IXP\Models\IrrdbUpdateLog|null $irrdbUpdateLog
  * @mixin \Eloquent
  */
 class CustomerAggregator extends Customer
@@ -442,7 +444,7 @@ class CustomerAggregator extends Customer
                     "custs"             => $custs,
                     "bilat"             => $bilat,
                     "vlan"              => $vlans ,
-                    "protos"            => $protos
+                    "protos"            => $protos,
         ];
     }
 
@@ -474,7 +476,7 @@ class CustomerAggregator extends Customer
             $contacts = $cust->contacts();
 
             DB::table( 'contact_to_group' )
-                ->whereIn( 'contact_id', $contacts->get()->pluck( 'id' )->toArray(),)
+                ->whereIn( 'contact_id', $contacts->get()->pluck( 'id' )->toArray() )
                 ->delete();
 
             $cust->contacts()->delete();
@@ -530,6 +532,28 @@ class CustomerAggregator extends Customer
 
         return true;
     }
+
+    /**
+     * Reformat the name of the customers with additional details such as their date of leaving,
+     * if they have left, appended to the name.
+     *
+     * @param \Illuminate\Database\Eloquent\Collection $custs Collection of customers
+     * @return \Illuminate\Database\Eloquent\Collection Updated collection with reformatted names
+     */
+    public static function reformatNameWithDetail( EloquentCollection $custs ): EloquentCollection {
+
+        /** @var Customer $cust */
+        foreach( $custs as $id => $cust ) {
+
+            if( $cust->hasLeft() ) {
+                $custs[$id]->name .= " [Left $cust->dateleave]";
+            }
+
+        }
+
+        return $custs;
+    }
+
 
     /**
      * Get atlas probes for a given customer and protocol.

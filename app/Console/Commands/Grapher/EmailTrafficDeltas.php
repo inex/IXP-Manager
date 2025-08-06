@@ -24,9 +24,6 @@ namespace IXP\Console\Commands\Grapher;
  */
 
 use Carbon\Carbon;
-use D2EM;
-
-
 use Grapher;
 
 use IXP\Mail\Grapher\TrafficDeltas as TrafficDeltasMailable;

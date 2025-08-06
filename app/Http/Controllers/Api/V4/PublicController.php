@@ -25,10 +25,7 @@ namespace IXP\Http\Controllers\Api\V4;
 
 use Auth;
 
-use Illuminate\Http\{
-    JsonResponse,
-    Response
-};
+use Illuminate\Http\{JsonResponse, Request, Response};
 
 use IXP\Models\Infrastructure;
 
@@ -47,17 +44,33 @@ class PublicController extends Controller
     /**
      * Simple test route for API authentication
      *
-     * Documented at: http://docs.ixpmanager.org/features/api/
+     * Documented at: https://docs.ixpmanager.org/latest/features/api/
      *
      * @return Response
      *
      * @throws
      */
-    public function test(): Response
+    public function test( Request $r ): Response|JsonResponse
     {
-        return response()->make( "API Test Function!\n\nAuthenticated: "
-                . ( Auth::check() ? 'Yes, as: ' . Auth::getUser()->username : 'No' ) . "\n\n", 200 )
-            ->header( 'Content-Type', 'text/plain; charset=utf-8' );
+        if( $r->get( 'format' ) !== 'json' ) {
+            return response()->make( "API Test Function!\n\nAuthenticated: "
+                    . ( Auth::check() ? 'Yes, as: ' . Auth::getUser()->username : 'No' ) . "\n\n", 200 )
+                ->header( 'Content-Type', 'text/plain; charset=utf-8' );
+        }
+
+        if( !Auth::check() ) {
+            return response()->json(['authenticated' => false ]);
+        }
+
+        return response()->json([
+            'authenticated' => true,
+            'user_id' => Auth::getUser()->id,
+            'username' => Auth::getUser()->username,
+            'priv' => Auth::getUser()->privs,
+            'current_customer_id' => Auth::getUser()->customer->id,
+            'current_customer' => Auth::getUser()->customer->name,
+        ]);
+
     }
 
     /**

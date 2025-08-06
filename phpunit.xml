@@ -9,6 +9,7 @@
       <directory suffix="Test.php">./tests/DocstoreCustomer</directory>
     </testsuite>
     <testsuite name="IXP Manager Test Suite">
+      <directory suffix="Test.php">./tests/API</directory>
       <directory suffix="Test.php">./tests/IXP</directory>
       <directory suffix="Test.php">./tests/Services</directory>
       <directory suffix="Test.php">./tests/Tasks</directory>

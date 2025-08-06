@@ -93,7 +93,7 @@ class PeeringManagerControllerTest extends DuskTestCase
                 ->assertPathIs( '/dashboard' );
 
 
-            $browser->press( "#peering-manager-a" )
+            $browser->visit( "/peering-manager" )
                 ->waitForText( 'Potential Peers' );
 
             $user = User::whereUsername( 'hecustadmin' )->get()->first();

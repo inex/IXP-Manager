@@ -23,7 +23,7 @@ and especially new and small IXPs looking to expand.
 
 ## Documentation
 
-Our documentation is hosted on GitHub pages: http://docs.ixpmanager.org/.
+Our documentation is hosted on GitHub pages: https://docs.ixpmanager.org/.
 
 ## About IXP Manager
 

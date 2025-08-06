@@ -39,7 +39,6 @@ class Horizon
     /**
      * Returns with Horizon's current status: 'inactive', 'paused' or 'running'
      *
-     * @param void
      * @return string
      */
     public static function status()

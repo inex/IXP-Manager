@@ -146,7 +146,7 @@ class P2pDailyStats extends Model
     {
         // latest day for which we have results
         if( !( $day = self::whereCustId( $c->id )->max('day') ) ) {
-            return [];
+            return new Collection();
         }
 
         return self::select( DB::raw( '*, ipv6_total_out + ipv4_total_out + ipv6_total_in + ipv4_total_in as total_traffic' ) )

@@ -1,50 +1,113 @@
 <?php
 
-/*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
- * All Rights Reserved.
- *
- * This file is part of IXP Manager.
- *
- * IXP Manager is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, version v2.0 of the License.
- *
- * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License v2.0
- * along with IXP Manager.  If not, see:
- *
- * http://www.gnu.org/licenses/gpl-2.0.html
- */
-
-return array(
+return [
 
     /*
     |--------------------------------------------------------------------------
-    | Filename & Format
+    | Filename
     |--------------------------------------------------------------------------
     |
-    | The default filename (without extension) and the format (php or json)
+    | The default filename.
     |
     */
 
-    'filename'  => '_ide_helper',
-    'format'    => 'php',
+    'filename' => '_ide_helper.php',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Models filename
+    |--------------------------------------------------------------------------
+    |
+    | The default filename for the models helper file.
+    |
+    */
+
+    'models_filename' => '_ide_helper_models.php',
+
+    /*
+    |--------------------------------------------------------------------------
+    | PhpStorm meta filename
+    |--------------------------------------------------------------------------
+    |
+    | PhpStorm also supports the directory `.phpstorm.meta.php/` with arbitrary
+    | files in it, should you need additional files for your project; e.g.
+    | `.phpstorm.meta.php/laravel_ide_Helper.php'.
+    |
+    */
+    'meta_filename' => '.phpstorm.meta.php',
 
     /*
     |--------------------------------------------------------------------------
     | Fluent helpers
     |--------------------------------------------------------------------------
     |
-    | Set to true to generate commonly used Fluent methods
+    | Set to true to generate commonly used Fluent methods.
     |
     */
 
     'include_fluent' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Factory builders
+    |--------------------------------------------------------------------------
+    |
+    | Set to true to generate factory generators for better factory()
+    | method auto-completion.
+    |
+    | Deprecated for Laravel 8 or latest.
+    |
+    */
+
+    'include_factory_builders' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Write model magic methods
+    |--------------------------------------------------------------------------
+    |
+    | Set to false to disable write magic methods of model.
+    |
+    */
+
+    'write_model_magic_where' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Write model external Eloquent builder methods
+    |--------------------------------------------------------------------------
+    |
+    | Set to false to disable write external Eloquent builder methods.
+    |
+    */
+
+    'write_model_external_builder_methods' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Write model relation count properties
+    |--------------------------------------------------------------------------
+    |
+    | Set to false to disable writing of relation count properties to model DocBlocks.
+    |
+    */
+
+    'write_model_relation_count_properties' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Write Eloquent model mixins
+    |--------------------------------------------------------------------------
+    |
+    | This will add the necessary DocBlock mixins to the model class
+    | contained in the Laravel framework. This helps the IDE with
+    | auto-completion.
+    |
+    | Please be aware that this setting changes a file within the /vendor directory.
+    |
+    */
+
+    'write_eloquent_model_mixins' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -58,10 +121,10 @@ return array(
 
     'include_helpers' => true,
 
-
-    'helper_files' => array(
-        base_path().'/vendor/laravel/framework/src/Illuminate/Support/helpers.php',
-    ),
+    'helper_files' => [
+        base_path() . '/vendor/laravel/framework/src/Illuminate/Support/helpers.php',
+        base_path() . '/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php',
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -71,39 +134,59 @@ return array(
     | Define in which directories the ide-helper:models command should look
     | for models.
     |
+    | glob patterns are supported to easier reach models in sub-directories,
+    | e.g. `app/Services/* /Models` (without the space).
+    |
     */
 
-    'model_locations' => array(
+    'model_locations' => [
         'app/Models',
-    ),
+        'app/Models/Aggregators',
+    ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Models to ignore
+    |--------------------------------------------------------------------------
+    |
+    | Define which models should be ignored.
+    |
+    */
+
+    'ignored_models' => [
+        // App\MyModel::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Models hooks
+    |--------------------------------------------------------------------------
+    |
+    | Define which hook classes you want to run for models to add custom information.
+    |
+    | Hooks should implement Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface.
+    |
+    */
+
+    'model_hooks' => [
+        // App\Support\IdeHelper\MyModelHook::class
+    ],
 
     /*
     |--------------------------------------------------------------------------
     | Extra classes
     |--------------------------------------------------------------------------
     |
-    | These implementations are not really extended, but called with magic functions
+    | These implementations are not really extended, but called with magic functions.
     |
     */
 
-    'extra' => array(
-        'Eloquent' => array('Illuminate\Database\Eloquent\Builder', 'Illuminate\Database\Query\Builder'),
-        'Session' => array('Illuminate\Session\Store'),
-    ),
+    'extra' => [
+        'Eloquent' => ['Illuminate\Database\Eloquent\Builder', 'Illuminate\Database\Query\Builder'],
+        'Session' => ['Illuminate\Session\Store'],
+    ],
 
-    'magic' => array(
-        'Log' => array(
-            'debug'     => 'Monolog\Logger::addDebug',
-            'info'      => 'Monolog\Logger::addInfo',
-            'notice'    => 'Monolog\Logger::addNotice',
-            'warning'   => 'Monolog\Logger::addWarning',
-            'error'     => 'Monolog\Logger::addError',
-            'critical'  => 'Monolog\Logger::addCritical',
-            'alert'     => 'Monolog\Logger::addAlert',
-            'emergency' => 'Monolog\Logger::addEmergency',
-        )
-    ),
+    'magic' => [],
 
     /*
     |--------------------------------------------------------------------------
@@ -115,39 +198,9 @@ return array(
     |
     */
 
-    'interfaces' => array(
-
-    ),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Support for custom DB types
-    |--------------------------------------------------------------------------
-    |
-    | This setting allow you to map any custom database type (that you may have
-    | created using CREATE TYPE statement or imported using database plugin
-    | / extension to a Doctrine type.
-    |
-    | Each key in this array is a name of the Doctrine2 DBAL Platform. Currently valid names are:
-    | 'postgresql', 'db2', 'drizzle', 'mysql', 'oracle', 'sqlanywhere', 'sqlite', 'mssql'
-    |
-    | This name is returned by getName() method of the specific Doctrine/DBAL/Platforms/AbstractPlatform descendant
-    |
-    | The value of the array is an array of type mappings. Key is the name of the custom type,
-    | (for example, "jsonb" from Postgres 9.4) and the value is the name of the corresponding Doctrine2 type (in
-    | our case it is 'json_array'. Doctrine types are listed here:
-    | http://doctrine-dbal.readthedocs.org/en/latest/reference/types.html
-    |
-    | So to support jsonb in your models when working with Postgres, just add the following entry to the array below:
-    |
-    | "postgresql" => array(
-    |       "jsonb" => "json_array",
-    |  ),
-    |
-    */
-    'custom_db_types' => array(
-
-    ),
+    'interfaces' => [
+        // App\MyInterface::class => App\MyImplementation::class,
+    ],
 
     /*
      |--------------------------------------------------------------------------
@@ -162,13 +215,13 @@ return array(
      |
      | For example, normally you would see this:
      |
-     |  * @property \Carbon\Carbon $created_at
-     |  * @property \Carbon\Carbon $updated_at
+     |  * @property \Illuminate\Support\Carbon $created_at
+     |  * @property \Illuminate\Support\Carbon $updated_at
      |
      | With this enabled, the properties will be this:
      |
-     |  * @property \Carbon\Carbon $createdAt
-     |  * @property \Carbon\Carbon $updatedAt
+     |  * @property \Illuminate\Support\Carbon $createdAt
+     |  * @property \Illuminate\Support\Carbon $updatedAt
      |
      | Note, it is currently an all-or-nothing option.
      |
@@ -177,14 +230,124 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
-    | Property Casts
+    | Property casts
     |--------------------------------------------------------------------------
     |
     | Cast the given "real type" to the given "type".
     |
     */
-   'type_overrides' => array(
+    'type_overrides' => [
         'integer' => 'int',
         'boolean' => 'bool',
-   ),
-);
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Include DocBlocks from classes
+    |--------------------------------------------------------------------------
+    |
+    | Include DocBlocks from classes to allow additional code inspection for
+    | magic methods and properties.
+    |
+    */
+    'include_class_docblocks' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Force FQN usage
+    |--------------------------------------------------------------------------
+    |
+    | Use the fully qualified (class) name in DocBlocks,
+    | even if the class exists in the same namespace
+    | or there is an import (use className) of the class.
+    |
+    */
+    'force_fqn' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Use generics syntax
+    |--------------------------------------------------------------------------
+    |
+    | Use generics syntax within DocBlocks,
+    | e.g. `Collection<User>` instead of `Collection|User[]`.
+    |
+    */
+    'use_generics_annotations' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Additional relation types
+    |--------------------------------------------------------------------------
+    |
+    | Sometimes it's needed to create custom relation types. The key of the array
+    | is the relationship method name. The value of the array is the fully-qualified
+    | class name of the relationship, e.g. `'relationName' => RelationShipClass::class`.
+    |
+    */
+    'additional_relation_types' => [],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Additional relation return types
+    |--------------------------------------------------------------------------
+    |
+    | When using custom relation types its possible for the class name to not contain
+    | the proper return type of the relation. The key of the array is the relationship
+    | method name. The value of the array is the return type of the relation ('many'
+    | or 'morphTo').
+    | e.g. `'relationName' => 'many'`.
+    |
+    */
+    'additional_relation_return_types' => [],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enforce nullable Eloquent relationships on not null columns
+    |--------------------------------------------------------------------------
+    |
+    | When set to true (default), this option enforces nullable Eloquent relationships.
+    | However, in cases where the application logic ensures the presence of related
+    | records it may be desirable to set this option to false to avoid unwanted null warnings.
+    |
+    | Default: true
+    | A not null column with no foreign key constraint will have a "nullable" relationship.
+    |  * @property int $not_null_column_with_no_foreign_key_constraint
+    |  * @property-read BelongsToVariation|null $notNullColumnWithNoForeignKeyConstraint
+    |
+    | Option: false
+    | A not null column with no foreign key constraint will have a "not nullable" relationship.
+    |  * @property int $not_null_column_with_no_foreign_key_constraint
+    |  * @property-read BelongsToVariation $notNullColumnWithNoForeignKeyConstraint
+    |
+    */
+
+    'enforce_nullable_relationships' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Run artisan commands after migrations to generate model helpers
+    |--------------------------------------------------------------------------
+    |
+    | The specified commands should run after migrations are finished running.
+    |
+    */
+    'post_migrate' => [
+        // 'ide-helper:models --nowrite',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Macroable Traits
+    |--------------------------------------------------------------------------
+    |
+    | Define which traits should be considered capable of adding Macro.
+    | You can add any custom trait that behaves like the original Laravel one.
+    |
+    */
+    'macroable_traits' => [
+        Filament\Support\Concerns\Macroable::class,
+        Spatie\Macroable\Macroable::class,
+    ],
+
+];

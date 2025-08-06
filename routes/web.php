@@ -75,7 +75,7 @@ Route::get( 'weather-map/{id}',                  'WeatherMapController@index' )-
 ///
 /// Static content
 ///
-/// See: http://docs.ixpmanager.org/features/static-content/
+/// See: https://docs.ixpmanager.org/latest/features/static-content/
 ///
 ///
 Route::get( 'content/{priv}/{page}',        'ContentController@index'   )->name( 'content'          );

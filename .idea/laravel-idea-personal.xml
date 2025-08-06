@@ -3,6 +3,7 @@
   <component name="LaravelIdeaPersonalSettings">
     <option name="generationStringOptionValues">
       <map>
+        <entry key="createController.singleAction" value="1" />
         <entry key="createDatabaseMigration.create" value="" />
       </map>
     </option>

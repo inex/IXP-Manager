@@ -8,7 +8,7 @@
                 You can use this page to manage your switch vendors. Then, when adding a switch, please ensure to select the vendor correctly.
             </p>
             The vendor entries are used in a number of places such as: switch configuration orchestration using the <em>bundle name</em>,
-            <a href="http://docs.ixpmanager.org/features/nagios/">Nagios configuration generation</a> to create vendor groups, vendor
+            <a href="https://docs.ixpmanager.org/latest/features/nagios/">Nagios configuration generation</a> to create vendor groups, vendor
             chassis checks, etc.
         </div>
     </div>

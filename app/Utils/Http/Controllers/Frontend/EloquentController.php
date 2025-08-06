@@ -50,7 +50,7 @@ use IXP\Utils\View\Alert\{
  *     https://github.com/opensolutions/OSS-Framework/blob/master/src/OSS/Controller/Action/Trait/Doctrine2Frontend.php
  *
  *
- * @see        http://docs.ixpmanager.org/dev/frontend-crud/
+ * @see        https://docs.ixpmanager.org/latest/dev/frontend-crud/
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Utils\Http\Controllers\Frontend

@@ -100,7 +100,7 @@ class MailingList
     /**
      * Initialise a new mailing list.
      *
-     * See documentation for full details: http://docs.ixpmanager.org/features/mailing-lists/
+     * See documentation for full details: https://docs.ixpmanager.org/latest/features/mailing-lists/
      *
      * Returns an array with three arrays keyed as:
      *
