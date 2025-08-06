@@ -6,8 +6,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
- *
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog query()

@@ -32,8 +32,6 @@ use Illuminate\Support\Facades\DB;
 use IXP\Traits\Observable;
 
 /**
- * 
- *
  * @property int $id
  * @property int $cust_id
  * @property string $day
