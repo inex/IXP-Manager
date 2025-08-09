@@ -34,8 +34,8 @@ jobs:
     - name: Set up Dusk and php serve
       run: |
         php ./artisan serve  &>php-built-in.log &
-        ls vendor/laravel/dusk/bin
-        ./vendor/laravel/dusk/bin/chromedriver-linux64 --port=9515 &
+        ls -la vendor/laravel/dusk/bin/*
+        ./vendor/laravel/dusk/bin/chromedriver-linux --port=9515 &
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       run: vendor/bin/phpunit --testsuite 'Dusk / Browser Test Suite'
 
