@@ -25,7 +25,9 @@ jobs:
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
     - name: Set up Dusk chrome-driver
-      run: php artisan dusk:install
+      run: |
+        php artisan dusk:install
+        php artisan dusk:chrome-driver 138
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Database
