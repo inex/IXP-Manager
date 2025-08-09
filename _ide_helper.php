@@ -12051,6 +12051,9 @@ namespace Illuminate\Support\Facades {
 
             }
     /**
+     * @method static array validate(array $rules, ...$params)
+     * @method static array validateWithBag(string $errorBag, array $rules, ...$params)
+     * @method static bool hasValidSignature(bool $absolute = true)
      * @see \Illuminate\Http\Request
      */
     class Request {
@@ -14557,69 +14560,6 @@ namespace Illuminate\Support\Facades {
             \Illuminate\Http\Request::flushMacros();
         }
 
-        /**
-         * @see \Illuminate\Foundation\Providers\FoundationServiceProvider::registerRequestValidation()
-         * @param array $rules
-         * @param mixed $params
-         * @static
-         */
-        public static function validate($rules, ...$params)
-        {
-            return \Illuminate\Http\Request::validate($rules, ...$params);
-        }
-
-        /**
-         * @see \Illuminate\Foundation\Providers\FoundationServiceProvider::registerRequestValidation()
-         * @param string $errorBag
-         * @param array $rules
-         * @param mixed $params
-         * @static
-         */
-        public static function validateWithBag($errorBag, $rules, ...$params)
-        {
-            return \Illuminate\Http\Request::validateWithBag($errorBag, $rules, ...$params);
-        }
-
-        /**
-         * @see \Illuminate\Foundation\Providers\FoundationServiceProvider::registerRequestSignatureValidation()
-         * @param mixed $absolute
-         * @static
-         */
-        public static function hasValidSignature($absolute = true)
-        {
-            return \Illuminate\Http\Request::hasValidSignature($absolute);
-        }
-
-        /**
-         * @see \Illuminate\Foundation\Providers\FoundationServiceProvider::registerRequestSignatureValidation()
-         * @static
-         */
-        public static function hasValidRelativeSignature()
-        {
-            return \Illuminate\Http\Request::hasValidRelativeSignature();
-        }
-
-        /**
-         * @see \Illuminate\Foundation\Providers\FoundationServiceProvider::registerRequestSignatureValidation()
-         * @param mixed $ignoreQuery
-         * @param mixed $absolute
-         * @static
-         */
-        public static function hasValidSignatureWhileIgnoring($ignoreQuery = [], $absolute = true)
-        {
-            return \Illuminate\Http\Request::hasValidSignatureWhileIgnoring($ignoreQuery, $absolute);
-        }
-
-        /**
-         * @see \Illuminate\Foundation\Providers\FoundationServiceProvider::registerRequestSignatureValidation()
-         * @param mixed $ignoreQuery
-         * @static
-         */
-        public static function hasValidRelativeSignatureWhileIgnoring($ignoreQuery = [])
-        {
-            return \Illuminate\Http\Request::hasValidRelativeSignatureWhileIgnoring($ignoreQuery);
-        }
-
             }
     /**
      * @see \Illuminate\Routing\ResponseFactory
@@ -16005,43 +15945,6 @@ namespace Illuminate\Support\Facades {
         {
             /** @var \Illuminate\Routing\Router $instance */
             return $instance->tap($callback);
-        }
-
-        /**
-         * @see \Laravel\Ui\AuthRouteMethods::auth()
-         * @param mixed $options
-         * @static
-         */
-        public static function auth($options = [])
-        {
-            return \Illuminate\Routing\Router::auth($options);
-        }
-
-        /**
-         * @see \Laravel\Ui\AuthRouteMethods::resetPassword()
-         * @static
-         */
-        public static function resetPassword()
-        {
-            return \Illuminate\Routing\Router::resetPassword();
-        }
-
-        /**
-         * @see \Laravel\Ui\AuthRouteMethods::confirmPassword()
-         * @static
-         */
-        public static function confirmPassword()
-        {
-            return \Illuminate\Routing\Router::confirmPassword();
-        }
-
-        /**
-         * @see \Laravel\Ui\AuthRouteMethods::emailVerification()
-         * @static
-         */
-        public static function emailVerification()
-        {
-            return \Illuminate\Routing\Router::emailVerification();
         }
 
             }
@@ -21397,7 +21300,7 @@ namespace Webpatser\Countries {
      * CountriesFacade
      *
      */
-    class CountriesFacade extends \Illuminate\Database\Eloquent\Model {
+    class CountriesFacade {
         /**
          * Returns one country
          *
@@ -25138,7 +25041,7 @@ namespace Webpatser\Countries {
 namespace PragmaRX\Google2FALaravel {
     /**
      */
-    class Facade extends \PragmaRX\Google2FAQRCode\Google2FA {
+    class Facade {
         /**
          * Set the QRCode Backend.
          *
@@ -25766,7 +25669,7 @@ namespace Laravel\Socialite\Facades {
      * @method \Laravel\Socialite\Contracts\Provider redirectUrl(string $url)
      * @see \Laravel\Socialite\SocialiteManager
      */
-    class Socialite extends \Illuminate\Support\Manager {
+    class Socialite {
         /**
          * Get a driver instance.
          *
@@ -26326,7 +26229,7 @@ namespace Spatie\LaravelIgnition\Facades {
 namespace Illuminate\Http {
     /**
      */
-    class Request extends \Symfony\Component\HttpFoundation\Request {
+    class Request {
         /**
          * @see \Illuminate\Foundation\Providers\FoundationServiceProvider::registerRequestValidation()
          * @param array $rules

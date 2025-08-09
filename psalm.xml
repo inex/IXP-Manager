@@ -32,20 +32,10 @@
     </plugins>
 
     <issueHandlers>
-        <InvalidTemplateParam>
-            <errorLevel type="suppress">
-                <directory name="app/Models" /> <!-- all InvalidReturnType issues in this directory are suppressed -->
-            </errorLevel>
-        </InvalidTemplateParam>
         <UndefinedMagicMethod>
             <errorLevel type="suppress">
                 <directory name="app" /> <!-- all InvalidReturnType issues in this directory are suppressed -->
             </errorLevel>
         </UndefinedMagicMethod>
-        <UndefinedClass>
-            <errorLevel type="suppress">
-                <referencedClass name="Auth" />
-            </errorLevel>
-        </UndefinedClass>
     </issueHandlers>
 </psalm>

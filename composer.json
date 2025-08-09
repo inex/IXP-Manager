@@ -60,10 +60,10 @@
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.1",
         "phpunit/phpunit": "^10.5.1",
-        "psalm/plugin-laravel": "^2.11",
+        "psalm/plugin-laravel": "^3.0.3",
         "sebastian/diff": "^5.0",
         "staudenmeir/dusk-updater": "^1.5",
-        "vimeo/psalm": "^5.0"
+        "vimeo/psalm": "^6.0"
     },
     "support": {
         "issues": "https://www.ixpmanager.org/support.php",
