@@ -12,7 +12,7 @@ jobs:
       with:
         php-version: '8.3'
       env:
-        update: true 
+        update: true
     - uses: actions/checkout@v2
     - uses: shogo82148/actions-setup-mysql@v1
       with:

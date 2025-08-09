@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d00df9f7f2d98e4f032e1a169f1f3818",
+    "content-hash": "1809c00ada8029edaa49de1bd163e7e9",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -1373,70 +1373,6 @@
                 "source": "https://github.com/firebase/php-jwt/tree/v6.11.1"
             },
             "time": "2025-04-09T20:32:01+00:00"
-        },
-        {
-            "name": "foil/foil",
-            "version": "0.6.7",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/FoilPHP/Foil.git",
-                "reference": "b820f5fd759b3f187439fcd0359126ea25ea199b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/FoilPHP/Foil/zipball/b820f5fd759b3f187439fcd0359126ea25ea199b",
-                "reference": "b820f5fd759b3f187439fcd0359126ea25ea199b",
-                "shasum": ""
-            },
-            "require": {
-                "aura/html": "~2.4",
-                "evenement/evenement": "~2.0",
-                "igorw/get-in": "~1.0",
-                "php": ">=5.4",
-                "pimple/pimple": "~3.0"
-            },
-            "require-dev": {
-                "brain/monkey": "~1.1",
-                "mockery/mockery": "0.9.3",
-                "phpunit/phpunit": "~4.8"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "0.6.x-dev"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "inc/functions.php"
-                ],
-                "psr-4": {
-                    "Foil\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Giuseppe Mazzapica",
-                    "email": "giuseppe.mazzapica@gmail.com",
-                    "homepage": "http://gm.zoomlab.it",
-                    "role": "Developer"
-                }
-            ],
-            "description": "PHP template engine for native PHP templates",
-            "homepage": "https://github.com/Giuseppe-Mazzapica/Foil",
-            "keywords": [
-                "template engine",
-                "templates"
-            ],
-            "support": {
-                "issues": "https://github.com/FoilPHP/Foil/issues",
-                "source": "https://github.com/FoilPHP/Foil/tree/master"
-            },
-            "time": "2017-05-04T06:50:51+00:00"
         },
         {
             "name": "fruitcake/php-cors",
@@ -4195,6 +4131,64 @@
                 }
             ],
             "time": "2025-05-08T08:14:37+00:00"
+        },
+        {
+            "name": "opensolutions/foil",
+            "version": "0.7.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opensolutions/foil.git",
+                "reference": "ca15194f73a9768d276f79565bba79c0fa52ab0c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opensolutions/foil/zipball/ca15194f73a9768d276f79565bba79c0fa52ab0c",
+                "reference": "ca15194f73a9768d276f79565bba79c0fa52ab0c",
+                "shasum": ""
+            },
+            "require": {
+                "aura/html": "~2.4",
+                "evenement/evenement": "~2.0",
+                "igorw/get-in": "~1.0",
+                "php": ">=5.4",
+                "pimple/pimple": "~3.0"
+            },
+            "require-dev": {
+                "brain/monkey": "~1.1",
+                "mockery/mockery": "0.9.3",
+                "phpunit/phpunit": "~4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "inc/functions.php"
+                ],
+                "psr-4": {
+                    "Foil\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Giuseppe Mazzapica",
+                    "email": "giuseppe.mazzapica@gmail.com",
+                    "homepage": "http://gm.zoomlab.it",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP template engine for native PHP templates",
+            "homepage": "https://github.com/opensolutions/foil",
+            "keywords": [
+                "template engine",
+                "templates"
+            ],
+            "support": {
+                "source": "https://github.com/opensolutions/foil/tree/0.7.1"
+            },
+            "time": "2025-08-09T12:57:28+00:00"
         },
         {
             "name": "opensolutions/oss-snmp",

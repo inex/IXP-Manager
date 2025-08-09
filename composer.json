@@ -31,7 +31,7 @@
         "barryvdh/laravel-dompdf": "^2.0.0",
         "doctrine/dbal": "^3.8",
         "erusev/parsedown": "^1.7",
-        "foil/foil": "^0.6.7",
+        "opensolutions/foil": "^0.7.0",
         "guzzlehttp/guzzle": "^7.8",
         "intervention/image": "^2.7",
         "laravel/framework": "^11.0",

@@ -8,9 +8,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+    - uses: shivammathur/setup-php@v2
       with:
         php-version: '8.3'
+      env:
+        update: true
     - uses: actions/checkout@v2
     - uses: shogo82148/actions-setup-mysql@v1
       with:
