@@ -66,10 +66,10 @@ class UserRememberTokenControllerTest extends DuskTestCase
                     ->type('username', $user->username )
                     ->type('password', 'travisci' )
                     ->press('#login-btn' )
-                    ->assertPathIs( '/admin' );
+                    ->waitForLocation( '/admin' );
 
             /**
-             * Check that the remember cookie and DB entry is not existing as we didn't checked the remember me checkbox
+             * Check that the remember cookie and DB entry is not existing as we didn't check the remember me checkbox
              */
             $listUrt = UserRememberToken::whereUserId( $user->id )->get();
 
@@ -85,7 +85,7 @@ class UserRememberTokenControllerTest extends DuskTestCase
                     ->type('password', 'travisci' )
                     ->check( '#remember-me')
                     ->press('#login-btn' )
-                    ->assertPathIs( '/admin' );
+                    ->waitForLocation( '/admin' );
 
             /**
              * Check that the remember cookie and DB entry is existing as we checked the remember me checkbox
@@ -105,7 +105,7 @@ class UserRememberTokenControllerTest extends DuskTestCase
                 ->type('password', 'travisci' )
                 ->check( '#remember-me')
                 ->press('#login-btn' )
-                ->assertPathIs( '/admin' );
+                ->waitForLocation( '/admin' );
 
             /**
              * Check that the remember cookie exist in the new browser
@@ -131,7 +131,7 @@ class UserRememberTokenControllerTest extends DuskTestCase
             $browser->press("#d2f-list-delete-" . $lastUrt->id)
                 ->waitForText( 'Do you really want to delete this active login session?' )
                 ->press('Delete')
-                ->assertPathIs('/active-sessions/list' )
+                ->waitForLocation('/active-sessions/list' )
                 ->assertSee( 'Active Login Session deleted.' );
 
             $listUrt = UserRememberToken::whereUserId( $user->id )->get();
@@ -141,12 +141,14 @@ class UserRememberTokenControllerTest extends DuskTestCase
              * Refresh the second browser and check that we have been logged out
              */
             $browser2->refresh()
+                    //->pause(500)
                     ->assertPathIs( '/login' );
 
             /**
              * Refresh the first browser and check that we are still logged in
              */
             $browser->refresh()
+                //->pause(500)
                 ->assertPathIs( '/active-sessions/list' );
 
 
@@ -159,7 +161,7 @@ class UserRememberTokenControllerTest extends DuskTestCase
             $browser->press("#d2f-list-delete-" . $urt->id )
                 ->waitForText( 'Do you really want to delete this active login session?' )
                 ->press('Delete')
-                ->assertPathIs('/login' )
+                ->waitForLocation('/login' )
                 ->assertSee( 'You have been logged out.' );
         });
     }

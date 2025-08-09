@@ -66,11 +66,12 @@ class SwitchControllerTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->resize( 1600,1200 )
+                    ->visit('/logout')
                     ->visit('/login')
                     ->type( 'username', 'travis' )
                     ->type( 'password', 'travisci' )
                     ->press( '#login-btn' )
-                    ->assertPathIs( '/admin' );
+                    ->waitForLocation( '/admin' );
 
             $browser->visit( '/switch/list' )
                 ->assertSee( 'switch1' )
@@ -86,7 +87,7 @@ class SwitchControllerTest extends DuskTestCase
             $browser->type( 'hostname', 'phpunit.test.example.com'  )
                 ->type( 'snmppasswd', 'mXPOSpC52cSFg1qN'            )
                 ->press('Next ≫' )
-                ->assertPathIs('/switch/store-by-snmp' )
+                ->waitForLocation('/switch/store-by-snmp' )
                 ->assertInputValue( 'name',       'phpunit' )
                 ->assertInputValue( 'hostname',   'phpunit.test.example.com'    )
                 ->assertInputValue( 'snmppasswd', 'mXPOSpC52cSFg1qN'            )
@@ -109,7 +110,7 @@ class SwitchControllerTest extends DuskTestCase
             $browser->driver->executeScript('window.scrollTo(0, 3000);');
 
             $browser->press( 'Create' )
-                    ->assertPathIs('/switch/list' )
+                    ->waitForLocation('/switch/list' )
                     ->assertSee( 'phpunit' )
                     ->assertSee( 'FESX648' );
 
@@ -136,12 +137,12 @@ class SwitchControllerTest extends DuskTestCase
 
             // test that editing while not making any changes and saving changes nothing
             $browser->visit( '/switch/edit/' . $switch->id          )
-                    ->assertPathIs('/switch/edit/' . $switch->id    );
+                    ->waitForLocation('/switch/edit/' . $switch->id    );
 
             $browser->driver->executeScript('window.scrollTo(0, 3000);');
 
             $browser->press( 'Save Changes'     )
-                    ->assertPathIs('/switch/list' )
+                    ->waitForLocation('/switch/list' )
                     ->assertSee( 'phpunit' )
                     ->assertSee( 'FESX648' );
 
@@ -169,7 +170,7 @@ class SwitchControllerTest extends DuskTestCase
             // now test that editing while making changes works
 
             $browser->visit( '/switch/edit/' . $switch->id                     )
-                    ->assertPathIs('/switch/edit/' . $switch->id              )
+                    ->waitForLocation('/switch/edit/' . $switch->id              )
                     ->type( 'name', 'phpunit2'                          )
                     ->type( 'hostname', 'phpunit2.test.example.com'     )
                     ->type( 'snmppasswd', 'newpassword'                 )
@@ -189,7 +190,7 @@ class SwitchControllerTest extends DuskTestCase
             $browser->driver->executeScript('window.scrollTo(0, 3000);' );
 
             $browser->press( 'Save Changes'        )
-                    ->assertPathIs('/switch/list'   )
+                    ->waitForLocation('/switch/list'   )
                     ->assertSee( 'phpunit2'         )
                     ->assertSee( 'TI24X'            );
 
@@ -223,7 +224,7 @@ class SwitchControllerTest extends DuskTestCase
             $browser->driver->executeScript('window.scrollTo(0, 3000);');
 
             $browser->press( 'Save Changes'        )
-                    ->assertPathIs('/switch/list'   )
+                    ->waitForLocation('/switch/list'   )
                     ->assertSee( 'phpunit2'         )
                     ->assertSee( 'TI24X'            );
 
@@ -249,7 +250,7 @@ class SwitchControllerTest extends DuskTestCase
             $browser->press( '#d2f-list-delete-' . $switch->id      )
                 ->waitForText( 'Do you really want to delete this'    )
                 ->press( 'Delete' )
-                ->assertPathIs('/switch/list'   )
+                ->waitForLocation('/switch/list'   )
                 ->assertDontSee( 'phpunit2'     )
                 ->assertDontSee( 'TI24X'        );
         });

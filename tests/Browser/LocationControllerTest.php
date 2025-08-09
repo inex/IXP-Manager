@@ -66,11 +66,12 @@ class LocationControllerTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->resize( 1600,1200 )
+                    ->visit('/logout')
                     ->visit('/login')
                     ->type( 'username', 'travis'    )
                     ->type( 'password', 'travisci'  )
                     ->press( '#login-btn'   )
-                    ->assertPathIs( '/admin'    );
+                    ->waitForLocation( '/admin'    );
 
             $browser->visit( '/facility/list'   )
                     ->assertSee( 'Facilities'   )
@@ -84,7 +85,7 @@ class LocationControllerTest extends DuskTestCase
 
             // 1. test add empty inputs
             $browser->press('Create' )
-                ->assertPathIs('/facility/create' )
+                ->waitForLocation('/facility/create' )
                 ->waitForText( "Choose the matching PeeringDB facility..." )
                 ->assertSee( "The name field is required." )
                 ->assertSee( "The shortname field is required." )
@@ -109,7 +110,7 @@ class LocationControllerTest extends DuskTestCase
             $browser->driver->executeScript('window.scrollTo(0, 3000);');
 
             $browser->press('Create')
-                    ->assertPathIs('/facility/create')
+                    ->waitForLocation('/facility/create')
                     ->assertSee( "The shortname has already been taken" )
                     ->assertSee( "The nocemail must be a valid email address" )
                     ->assertSee( "The officeemail must be a valid email address" )
@@ -120,7 +121,7 @@ class LocationControllerTest extends DuskTestCase
             $browser->driver->executeScript('window.scrollTo(0, 3000);');
 
             $browser->press('Create')
-                    ->assertPathIs('/facility/list')
+                    ->waitForLocation('/facility/list')
                     ->assertSee( "Facility created" );
 
             $location = Location::whereName( 'Infrastructure Test' )->first();
@@ -144,7 +145,8 @@ class LocationControllerTest extends DuskTestCase
             $this->assertEquals( 'test notes',                 $location->notes             );
 
             // 3. browse to edit infrastructure object:
-            $browser->click( '#e2f-list-edit-' .  $location->id );
+            $browser->click( '#e2f-list-edit-' .  $location->id )
+                ->waitForLocation( '/facility/edit/' . $location->id );
 
             // 4. test that form contains settings as above using assertChecked(), assertNotChecked(), assertSelected(), assertInputValue, ...
             $browser->assertInputValue('name',                  'Infrastructure Test' )
@@ -168,7 +170,7 @@ class LocationControllerTest extends DuskTestCase
             $browser->driver->executeScript('window.scrollTo(0, 3000);');
 
             $browser->press('Save Changes'  )
-                    ->assertPathIs('/facility/list' )
+                    ->waitForLocation('/facility/list' )
                     ->assertSee( "Facility updated" );
 
 
@@ -212,7 +214,7 @@ class LocationControllerTest extends DuskTestCase
 
             // 8. submit with no changes and verify no changes in database
             $browser->press('Save Changes')
-                ->assertPathIs('/facility/list');
+                ->waitForLocation('/facility/list');
 
 
             // 6. repeat database load and database object check for new values (repeat 2)
@@ -255,7 +257,7 @@ class LocationControllerTest extends DuskTestCase
             $browser->driver->executeScript('window.scrollTo(0, 3000);');
 
             $browser->press('Save Changes')
-                    ->assertPathIs('/facility/list');
+                    ->waitForLocation('/facility/list');
 
 
             // 10. verify object values
@@ -282,7 +284,7 @@ class LocationControllerTest extends DuskTestCase
                 ->waitForText( 'Do you really want to delete this facility' )
                 ->press('Delete' );
 
-            $browser->assertSee( 'Facility deleted.' );
+            $browser->waitForText( 'Facility deleted.' );
 
             // 12. do a D2EM findOneBy and verify false/null
             $this->assertTrue( Location::whereName( 'Infrastructure Test2' )->doesntExist() );

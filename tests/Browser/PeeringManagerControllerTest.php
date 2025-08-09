@@ -86,11 +86,12 @@ class PeeringManagerControllerTest extends DuskTestCase
         $this->browse( function( Browser $browser ) {
 
             $browser->resize( 1600, 1400 )
+                ->visit( '/logout' )
                 ->visit( '/login' )
                 ->type( 'username', 'hecustadmin' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->assertPathIs( '/dashboard' );
+                ->waitForLocation( '/dashboard' );
 
 
             $browser->visit( "/peering-manager" )
@@ -134,6 +135,7 @@ class PeeringManagerControllerTest extends DuskTestCase
 
             $browser->waitForText( 'Peering notes updated for ' . $c[ "name" ])
                 ->press( 'Close' );
+
             // the following line is for Laravel Dusk only - model close not works without it
             $browser->driver->executeScript("$('.bootbox').removeClass('show').css({display:'none'});$('.modal-backdrop').remove();");
 
@@ -229,7 +231,7 @@ class PeeringManagerControllerTest extends DuskTestCase
 
         $browser->press( "#dropdown-mark-peering-" . $c[ "id" ] )
             ->press( $status === "peered" ? "#mark-peered-" . $c[ "id" ] : "#mark-rejected-" . $c[ "id" ] )
-            ->assertPathIs( '/peering-manager' )
+            ->waitForLocation( '/peering-manager' )
             ->assertSee( $status === "peered" ? 'Peered flag set for ' . $c[ "name" ] : 'Ignored / rejected flag set for ' . $c[ "name" ] );
 
         // Check value in DB
@@ -237,11 +239,11 @@ class PeeringManagerControllerTest extends DuskTestCase
         $this->assertEquals( true, $status === "peered" ? $pm->peered : $pm->rejected );
 
         $browser->press( $status === "peered" ? "#peering-peers-li" : "#peering-rejected-li" )
-            ->assertSee( $c[ "name" ] )
+            ->waitForText( $c[ "name" ] )
             ->waitFor( "#dropdown-mark-peering-" . $c[ "id" ] )
             ->press( "#dropdown-mark-peering-" . $c[ "id" ] )
             ->press( $status === "peered" ? "#mark-peered-" . $c[ "id" ] : "#mark-rejected-" . $c[ "id" ] )
-            ->assertPathIs( '/peering-manager' )
+            ->waitForLocation( '/peering-manager' )
             ->assertSee( $status == "peered" ? 'Peered flag cleared for ' . $c[ "name" ] : 'Ignored / rejected flag cleared for ' . $c[ "name" ] );
 
         // Check value in DB

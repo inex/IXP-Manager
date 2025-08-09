@@ -67,7 +67,7 @@ class ContactControllerTest extends DuskTestCase
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->assertPathIs( '/admin' );
+                ->waitForLocation( '/admin' );
 
             $browser->visit( '/contact/list' )
                 ->assertSee( 'HEAnet CustAdmin' )
@@ -79,7 +79,7 @@ class ContactControllerTest extends DuskTestCase
                 ->assertSee( 'Name' )
                 ->assertSee( 'Position' )
                 ->press( 'Create' )
-                ->assertPathIs( '/contact/create' )
+                ->waitForLocation( '/contact/create' )
                 ->assertSee( 'The name field is required.' )
                 ->assertSee( 'The custid field is required.' );
 
@@ -92,7 +92,7 @@ class ContactControllerTest extends DuskTestCase
                 ->type( 'mobile', '0209120000' )
                 ->type( 'notes', 'Test note' )
                 ->press( 'Create' )
-                ->assertPathIs( '/contact/list' )
+                ->waitForLocation( '/contact/list' )
                 ->assertSee( 'Contact created' )
                 ->assertSee( 'Test Contact 1' )
                 ->assertSee( 'Test Position' )
@@ -117,7 +117,7 @@ class ContactControllerTest extends DuskTestCase
             $browser->visit( '/contact/edit/' . $c->id )
                 ->assertSee( 'Contacts / Edit Contact' )
                 ->press( 'Save Changes' )
-                ->assertPathIs( '/contact/list' )
+                ->waitForLocation( '/contact/list' )
                 ->assertSee( 'Contact updated' )
                 ->assertSee( 'Test Contact 1' )
                 ->assertSee( 'Test Position' )
@@ -144,7 +144,7 @@ class ContactControllerTest extends DuskTestCase
                 ->type( 'mobile', '0209120002' )
                 ->type( 'notes', 'Test note 2' )
                 ->press( 'Save Changes' )
-                ->assertPathIs( '/contact/list' )
+                ->waitForLocation( '/contact/list' )
                 ->assertSee( 'Contact updated' )
                 ->assertSee( 'Test Contact 2' )
                 ->assertSee( 'Test Position2' )
@@ -166,7 +166,7 @@ class ContactControllerTest extends DuskTestCase
             $browser->visit( '/contact/edit/' . $c->id )
                 ->assertSee( 'Contacts / Edit Contact' )
                 ->press( 'Save Changes' )
-                ->assertPathIs( '/contact/list' )
+                ->waitForLocation( '/contact/list' )
                 ->assertSee( 'Contact update' )
                 ->assertSee( 'Test Contact 2' )
                 ->assertSee( 'Test Position2' )
@@ -186,7 +186,7 @@ class ContactControllerTest extends DuskTestCase
             $browser->press( '#e2f-list-delete-' . $c->id )
                 ->waitForText( 'Do you really want to delete this contact?' )
                 ->press( 'Delete' )
-                ->assertPathIs( '/contact/list' )
+                ->waitForLocation( '/contact/list' )
                 ->assertDontSee( 'Test Contact 2' )
                 ->assertDontSee( 'Test Position2' )
                 ->assertDontSee( 'test-contact2@example.com' );
@@ -201,7 +201,7 @@ class ContactControllerTest extends DuskTestCase
                 ->waitForText( 'Imagine CustAdmin' )
                 ->assertSee( 'imagine-custadmin@example.com' )
                 ->press( '#contacts-add-btn' )
-                ->assertSee( 'Create Contact' )
+                ->waitForText( 'Create Contact' )
                 ->assertSee( 'Name' )
                 ->assertSee( 'Position' )
                 ->assertSelected( 'custid', 5 );
@@ -217,7 +217,7 @@ class ContactControllerTest extends DuskTestCase
                 ->type( 'notes', 'Test note' )
                 ->press( 'Create' );
 
-            $browser->assertPathIs( '/customer/overview/5/contacts' )
+            $browser->waitForLocation( '/customer/overview/5/contacts' )
                 ->assertSee( 'Contact created' )
                 ->assertSee( 'Test Contact 1' )
                 ->assertSee( '0209110000 / 0209120000' )
@@ -237,17 +237,16 @@ class ContactControllerTest extends DuskTestCase
             // test that editing while not making any changes and saving changes nothing
 
             $browser->press( '#cont-list-edit-' . $c->id )
-                ->assertPathIs( '/contact/edit/' . $c->id )
+                ->waitForLocation( '/contact/edit/' . $c->id )
                 ->press( 'Save Changes' )
-                ->assertPathIs( '/customer/overview/5/contacts' );
+                ->waitForLocation( '/customer/overview/5/contacts' );
 
 
             // delete this contact
             $browser->press( '#btn-delete-' . $c->id )
-                ->pause( 500 )
                 ->waitForText( 'Delete Contact' )
                 ->press( 'Delete' )
-                ->assertPathIs( '/customer/overview/5/contacts' )
+                ->waitForLocation( '/customer/overview/5/contacts' )
                 ->assertSee( 'Contact deleted' )
                 ->assertDontSee( 'Test Contact 1' )
                 ->assertDontSee( 'Test Position' )
@@ -256,7 +255,7 @@ class ContactControllerTest extends DuskTestCase
             $this->assertTrue( Contact::whereName( 'Test Contact 1' )->doesntExist() );
 
             $browser->visit( '/logout' )
-                ->assertPathIs( '/login' );
+                ->waitForLocation( '/login' );
         } );
     }
 
@@ -276,7 +275,7 @@ class ContactControllerTest extends DuskTestCase
                 ->type( 'username', 'imcustadmin' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->assertPathIs( '/dashboard' )
+                ->waitForLocation( '/dashboard' )
                 ->visit( '/contact/list' )
                 ->assertSee( 'Your Contacts' )
                 ->assertSee( 'Imagine CustAdmin' )
@@ -295,7 +294,7 @@ class ContactControllerTest extends DuskTestCase
                 ->type( 'phone', '0209110000' )
                 ->type( 'mobile', '0209120000' )
                 ->press( 'Create' )
-                ->assertPathIs( '/contact/list' )
+                ->waitForLocation( '/contact/list' )
                 ->assertSee( 'Contact created' )
                 ->assertSee( 'Test Contact 1' )
                 ->assertSee( 'Test Position' )
@@ -315,9 +314,9 @@ class ContactControllerTest extends DuskTestCase
             // test that editing while not making any changes and saving changes nothing
 
             $browser->visit( '/contact/edit/' . $c->id )
-                ->assertPathIs( '/contact/edit/' . $c->id )
+                ->waitForLocation( '/contact/edit/' . $c->id )
                 ->press( 'Save Changes' )
-                ->assertPathIs( '/contact/list' )
+                ->waitForLocation( '/contact/list' )
                 ->assertSee( 'Contact updated' )
                 ->assertSee( 'Test Contact 1' )
                 ->assertSee( 'Test Position' )
@@ -334,14 +333,14 @@ class ContactControllerTest extends DuskTestCase
 
             // now test that editing while making changes works
             $browser->visit( '/contact/edit/' . $c->id )
-                ->assertPathIs( '/contact/edit/' . $c->id )
+                ->waitForLocation( '/contact/edit/' . $c->id )
                 ->type( 'name', 'Test Contact 2' )
                 ->type( 'position', 'Test Position2' )
                 ->type( 'email', 'test-contact2@example.com' )
                 ->type( 'phone', '0209110002' )
                 ->type( 'mobile', '0209120002' )
                 ->click( '.btn-primary' )
-                ->assertPathIs( '/contact/list' )
+                ->waitForLocation( '/contact/list' )
                 ->assertSee( 'Contact updated' )
                 ->assertSee( 'Test Contact 2' )
                 ->assertSee( 'Test Position2' )
@@ -360,9 +359,9 @@ class ContactControllerTest extends DuskTestCase
             // test that editing while not making any changes and saving changes nothing
             // (this is a retest for, e.g. unchecked checkboxes)
             $browser->visit( '/contact/edit/' . $c->id )
-                ->assertPathIs( '/contact/edit/' . $c->id )
+                ->waitForLocation( '/contact/edit/' . $c->id )
                 ->click( '.btn-primary' )
-                ->assertPathIs( '/contact/list' )
+                ->waitForLocation( '/contact/list' )
                 ->assertSee( 'Contact updated' )
                 ->assertSee( 'Test Contact 2' )
                 ->assertSee( 'Test Position2' )
@@ -381,7 +380,7 @@ class ContactControllerTest extends DuskTestCase
             $browser->press( '#e2f-list-delete-' . $c->id )
                 ->waitForText( 'Do you really want to delete this contact?' )
                 ->press( 'Delete' )
-                ->assertPathIs( '/contact/list' )
+                ->waitForLocation( '/contact/list' )
                 ->assertDontSee( 'Test Contact 2' )
                 ->assertDontSee( 'Test Position2' )
                 ->assertDontSee( 'test-contact2@example.com' );
@@ -389,7 +388,7 @@ class ContactControllerTest extends DuskTestCase
             $this->assertTrue( Contact::whereName( 'Test Contact 2' )->doesntExist() );
 
             $browser->visit( '/logout' )
-                ->assertPathIs( '/login' );
+                ->waitForLocation( '/login' );
 
         } );
     }

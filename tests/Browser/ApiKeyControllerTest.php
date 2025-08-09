@@ -65,11 +65,12 @@ class ApiKeyControllerTest extends DuskTestCase
     {
         $this->browse( function( Browser $browser ) {
             $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
                 ->visit( '/login' )
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->assertPathIs( '/admin' );
+                ->waitForLocation( '/admin' );
 
             $browser->visit( '/api-key/list' )
                 ->assertSee( 'API Keys' )
@@ -79,7 +80,7 @@ class ApiKeyControllerTest extends DuskTestCase
             $browser->visit( '/api-key/create' )
                 ->assertSee( 'Create API Key' )
                 ->press( 'Create' )
-                ->assertPathIs( '/api-key/list' )
+                ->waitForLocation( '/api-key/list' )
                 ->assertSee( "API Key created" )
                 ->assertSee( "API key created:" );
 
@@ -93,7 +94,7 @@ class ApiKeyControllerTest extends DuskTestCase
 
             // 3. Edit API key
             $browser->click( '#e2f-list-edit-' . $apiKey->id )
-                ->assertSee( 'Edit API Key' )
+                ->waitForText( 'Edit API Key' )
                 ->assertInputValue( 'apiKey', $keyLimited = Str::limit( $apiKey->apiKey, 6 ) )
                 ->assertInputValue( 'description', '' )
                 ->assertInputValue( 'expires', '' )
@@ -101,7 +102,7 @@ class ApiKeyControllerTest extends DuskTestCase
                 ->type( "description", "Temporally Test API Key" )
                 ->type( "expires", now()->addYear()->startOfMonth()->format( "d-m-Y" ) )
                 ->press( "Save Changes" )
-                ->assertPathIs( '/api-key/list' )
+                ->waitForLocation( '/api-key/list' )
                 ->assertSee( "API Key updated" );
 
             $apiKey->refresh();
@@ -124,13 +125,13 @@ class ApiKeyControllerTest extends DuskTestCase
             // 5. Enter wrong password to see the not limited API KEY
             $browser->type( "pass", "wrongPass" )
                 ->press( "Submit" )
-                ->assertPathIs( "/api-key/list-show-keys" )
+                ->waitForLocation( "/api-key/list-show-keys" )
                 ->assertSee( "Incorrect password entered" );
 
             // 6. Enter good password to see the not limited API KEY
             $browser->type( "pass", 'travisci' )
                 ->press( "Submit" )
-                ->assertPathIs( "/api-key/list-show-keys" )
+                ->waitForLocation( "/api-key/list-show-keys" )
                 ->assertSee( "API keys are visible for this request only" )
                 ->assertSee( $apiKey->apiKey );
 
@@ -142,7 +143,7 @@ class ApiKeyControllerTest extends DuskTestCase
             $browser->click( "#e2f-list-delete-" . $apiKey->id )
                 ->waitForText( 'Do you really want to delete this API key' )
                 ->press( 'Delete' )
-                ->assertPathIs( '/api-key/list' )
+                ->waitForLocation( '/api-key/list' )
                 ->assertSee( "API Key deleted" )
                 ->assertDontSee( $keyLimited );
 

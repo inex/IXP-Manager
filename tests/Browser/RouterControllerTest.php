@@ -62,11 +62,12 @@ class RouterControllerTest extends DuskTestCase
     {
         $this->browse( function( Browser $browser ) {
             $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
                 ->visit( '/login' )
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->assertPathIs( '/admin' );
+                ->waitForLocation( '/admin' );
 
             $browser->visit( '/router/create' )
                 ->assertSee( 'Handle' );
@@ -98,7 +99,7 @@ class RouterControllerTest extends DuskTestCase
                 ->check( 'skip_md5' )
                 ->type( 'template', 'api/v4/router/server/bird/standard' )
                 ->press( 'Create' )
-                ->assertPathIs( '/router/list' )
+                ->waitForLocation( '/router/list' )
                 ->assertSee( 'Router created' );
 
             /** @var Router $router */
@@ -182,7 +183,7 @@ class RouterControllerTest extends DuskTestCase
                 ->uncheck( 'skip_md5' )
                 ->type( 'template', 'api/v4/router/as112/bird/standard' )
                 ->press( 'Save Changes' )
-                ->assertPathIs( '/router/list' );
+                ->waitForLocation( '/router/list' );
 
 
             // 6. repeat database load and database object check for new values (repeat 2)
@@ -232,7 +233,7 @@ class RouterControllerTest extends DuskTestCase
 
             // 8. submit with no changes and verify no changes in database
             $browser->press( 'Save Changes' )
-                ->assertPathIs( '/router/list' );
+                ->waitForLocation( '/router/list' );
 
             // . repeat database load and database object check for new values (repeat 2)
             $router->refresh();
@@ -272,7 +273,7 @@ class RouterControllerTest extends DuskTestCase
                 ->check( 'rpki' )
                 ->check( 'skip_md5' )
                 ->press( 'Save Changes' )
-                ->assertPathIs( '/router/list' );
+                ->waitForLocation( '/router/list' );
 
 
             // 10. verify checkbox bool elements in database are all true
@@ -290,7 +291,7 @@ class RouterControllerTest extends DuskTestCase
                 ->waitForText( 'Do you want to delete this router' )
                 ->press( 'Delete' );
 
-            $browser->assertSee( 'Router deleted.' );
+            $browser->waitForText( 'Router deleted.' );
 
             // 12. do a D2EM findOneBy and verify false/null
             $this->assertEquals( null, Router::whereHandle( 'dusk-ci-test' )->get()->first() );
