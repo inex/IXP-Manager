@@ -24,8 +24,8 @@ jobs:
       run: sudo apt-get install bgpq3
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-    - name: Set up Dusk chrome-drover
-      run: php artisan dusk:update 124
+    - name: Set up Dusk chrome-driver
+      run: php artisan dusk:install
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Database
@@ -34,7 +34,8 @@ jobs:
     - name: Set up Dusk and php serve
       run: |
         php ./artisan serve  &>php-built-in.log &
-        google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+        ls vendor/laravel/dusk/bin
+        ./vendor/laravel/dusk/bin/chromedriver-mac-arm --port=9515 &
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       run: vendor/bin/phpunit --testsuite 'Dusk / Browser Test Suite'
 
