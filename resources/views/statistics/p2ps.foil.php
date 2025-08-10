@@ -157,8 +157,25 @@
 
     <?php if( !$t->showGraphs ): ?>
         <div class="row">
+
+            <?php if( $t->orderBy === 'traffic' ): ?>
+                <div class="alert alert-info mt-4 ml-4" role="alert">
+                    <div class="d-flex align-items-center">
+                        <div class="mr-4 text-center">
+                            <i class="fa fa-info-circle fa-2x"></i>
+                        </div>
+                        <div>
+                            <p>
+                                Volume of traffic shown is yesterday's total across all possible peering sessions and protocols in both directions.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            <?php endif; ?>
+
             <div class="col-md-6">
-                <ul>
+                <ol>
                     <?php
                         foreach( $dstVlis as $dvli ):
                     ?>
@@ -171,21 +188,21 @@
                                 <?= $dvli->virtualInterface->customer->getFormattedName() ?>
                             </a>
                             <?php if( $t->orderBy === 'traffic' && $dvli->total_traffic ): ?>
-                                <em>(<?= \IXP\IXP::scaleBytes( $dvli->total_traffic ) ?>)</em>
+                                <span class="tw-tabular-nums">(<?= \IXP\IXP::scaleBytes( $dvli->total_traffic, 1 ) ?>)</span>
                             <?php endif; ?>
                         </li>
 
                         <?php $cnt++; ?>
                         <?php if( !$firstColComplete && $cnt > ( $total / 2 ) ): ?>
-                            </ul>
+                            </ol>
                             </div>
                             <div class="col-md-6">
-                            <ul>
+                            <ol start="<?= $cnt+1  ?>">
                             <?php $firstColComplete = true; ?>
                         <?php endif; ?>
 
                     <?php endforeach; ?>
-                </ul>
+                </ol>
             </div>
         </div>
 
