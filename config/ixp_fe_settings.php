@@ -448,6 +448,27 @@ return [
 
             'fields' => [
 
+                '2fa_enabled'                => [
+                    'config_key' => 'google2fa.enabled',
+                    'dotenv_key' => '2FA_ENABLED',
+                    'type'       => 'radio',
+                    'name'       => 'Two-factor Authentication (2fa) Enabled',
+                    'docs_url'   => 'https://docs.ixpmanager.org/usage/authentication/#two-factor-authentication-2fa',
+                    'help'       => 'If you disable this, 2fa will not be an option for securing users login, and any users with existing 2fa will not be required to confirm it on login.',
+                ],
+
+                'ixpm_2fa_enforce_for_users' => [
+
+                    'config_key' => 'google2fa.ixpm_2fa_enforce_for_users',
+                    'dotenv_key' => '2FA_IXPM_ENFORCE_FOR_USERS',
+                    'type'       => 'select',
+                    'options'    => [ 'type' => 'array', 'list' => \IXP\Models\User::$PRIVILEGES_TEXT + [ 4 => 'Do not enforce for any user' ] ],
+                    'name'       => "Enforce 2FA for Users >=",
+                    'docs_url'   => 'https://docs.ixpmanager.org/usage/authentication/#enforcing-2fa-for-users',
+                    'help'       => 'Chose between allowing users to opt into 2fa, or requiring all users with minimum selected previlege.',
+                ],
+
+
                 'peeringdb_oauth_enabled'                => [
                     'config_key' => 'auth.peeringdb_oauth_enabled',
                     'dotenv_key' => 'AUTH_PEERINGDB_ENABLED',
