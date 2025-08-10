@@ -1,0 +1,383 @@
+#!/usr/bin/env perl
+#
+# nfcap-to-rrd-handler
+#
+# Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+# All Rights Reserved.
+#
+# This file is part of IXP Manager.
+#
+# IXP Manager is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation, version v2.0 of the License.
+#
+# IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License v2.0
+# along with IXP Manager.  If not, see:
+#
+# http://www.gnu.org/licenses/gpl-2.0.html
+#
+# Description:
+#
+# This script take the JSON output from nfdump, builds up a peer-to-peer
+# traffic matrix + aggregate stats and periodically writes the results out
+# to a stash of RRD files.
+#
+# TODO: Could be invoked as script by 'nfcapd' upon rotating capture file
+
+use warnings;
+use strict;
+use Getopt::Long;
+use Data::Dumper;
+use RRDs;
+use Time::HiRes qw(ualarm gettimeofday tv_interval);
+use REST::Client;
+
+use JSON qw(decode_json);
+
+use FindBin qw($Bin);
+use File::Spec;
+use lib File::Spec->catdir( $Bin, File::Spec->updir(), File::Spec->updir(), 'perl-lib', 'IXPManager', 'lib' );
+
+use IXPManager::Config;
+
+my $ixp = new IXPManager::Config (dbase_disable => 1);	# (configfile => $configfile);
+
+my $debug = defined($ixp->{ixp}->{debug}) ? $ixp->{ixp}->{debug} : 0;
+my $insanedebug = 0;
+my $rrdcached = defined($ixp->{ixp}->{sflow_rrdcached}) ? $ixp->{ixp}->{sflow_rrdcached} : 1;
+my $sflowtool = defined($ixp->{ixp}->{sflowtool}) ? $ixp->{ixp}->{sflowtool} : '/usr/bin/sflowtool';
+my $sflowtool_opts = defined($ixp->{ixp}->{sflowtool_opts}) ? $ixp->{ixp}->{sflowtool_opts} : '-l';
+my $basedir = defined($ixp->{ixp}->{sflow_rrddir}) ? $ixp->{ixp}->{sflow_rrddir} : '/data/ixpmatrix';
+my $apikey = defined($ixp->{ixp}->{apikey}) ? $ixp->{ixp}->{apikey} : undef;
+my $apibaseurl = defined($ixp->{ixp}->{apibaseurl}) ? $ixp->{ixp}->{apibaseurl} : undef;
+
+my $interval = 60; # Sampling interval in seconds
+my $mactabletimeout = 86400;
+my $daemon = 1;
+my $infraid = undef;
+my $macdbtype = defined($ixp->{ixp}->{macdbtype}) ? $ixp->{ixp}->{macdbtype} : '';
+my $macdbrest;
+
+# conundrum: do we run GetOptions() before creating a new IXPManager::Config
+# object, which would allow us to set the configfile location on the command
+# line?  Or do we do it after, which allows us to override the config file
+# arguments on the command line. first world problems.
+
+GetOptions(
+	'debug!'		=> \$debug,
+	'insanedebug!'		=> \$insanedebug,
+	'daemon!'		=> \$daemon,
+	'sflowtool=s'		=> \$sflowtool,
+	'sflowtool_opts=s'	=> \$sflowtool_opts,
+	'sflow_rrddir=s'	=> \$basedir,
+	'interval=i'		=> \$interval,
+	'infraid=i'		=> \$infraid,
+	'macdbtype=s'		=> \$macdbtype,
+	'apikey=s'		=> \$apikey,
+	'apibaseurl=s'		=> \$apibaseurl,
+);
+
+if ($macdbtype eq 'configured') {
+	$macdbrest = '/sflow-db-mapper/configured-macs';
+} else {
+	$macdbrest = '/sflow-db-mapper/learned-macs';
+}
+
+if ($insanedebug) {
+	$debug = 1;
+}
+
+if (!defined ($apikey)) {
+	die "FATAL: must set 'apikey' parameter in <ixp> section of ixpmanager.conf\n";
+}
+
+if (!defined ($apibaseurl)) {
+	die "FATAL: must set 'apibaseurl' parameter in <ixp> section of ixpmanager.conf\n";
+}
+
+my $client = REST::Client->new();
+$client->setTimeout(5);
+$client->setHost($apibaseurl);
+$client->addHeader('X-IXP-Manager-API-Key', $apikey);
+
+my $mactable = reload_mactable($client, $macdbrest);
+$mactable || die "FATAL: could not read IXP Manager API call on $apibaseurl$macdbrest\n";
+my $matrix = matrix_init($mactable, $infraid);
+
+# Read JSON input from stdin
+my $json_input = do { local $/; <STDIN> };
+
+# Attempt to decode the JSON input
+my $flowrecords;
+eval {
+    $flowrecords = decode_json($json_input);
+};
+
+if ($@) {
+    die "Error decoding JSON: $@";
+}
+
+if (ref $flowrecords eq 'ARRAY') {
+    foreach my $flow (@{ $flowrecords }) {
+		my $srcmac = $flow->{ in_src_mac }; $srcmac =~ tr/://d; # Remove colons
+		my $dstmac = $flow->{ in_dst_mac }; $dstmac =~ tr/://d;
+		my $vlan = $flow->{ vlanID };  # or 'cust_vlanID' when using QinQ
+		my $pktsize = int( $flow->{ in_bytes } / $flow->{ in_packets });
+		my $samplerate = $flow->{ sampled }; # Sampling Packet Interval, i.e. 1 out of every X packets sampled
+		my $ipprotocol = int( $flow->{ ip_version } );
+
+		my $srcvli = getvlifrommactable ($mactable, $infraid, $vlan, $srcmac);
+		my $dstvli = getvlifrommactable ($mactable, $infraid, $vlan, $dstmac);
+
+		if ($srcvli && $dstvli && ($srcvli != $dstvli) ) { # if $ipprotocol && ...
+			$insanedebug && print STDERR "DEBUG: accepted update for: ".
+				"protocol: $ipprotocol ".
+				"vlan: $vlan ".
+				"srcvli: $srcvli ".
+				"dstvli: $dstvli ".
+				"pktsize: $pktsize ".
+				"samplerate: $samplerate ".
+				"\n";
+			$matrix->{p2p}->{$ipprotocol}->{bytes}->{$srcvli}->{$dstvli} += $pktsize * $samplerate;
+			$matrix->{p2p}->{$ipprotocol}->{pkts}->{$srcvli}->{$dstvli} += $samplerate;
+			$matrix->{individual}->{$ipprotocol}->{bytes}->{$srcvli}->{in}  += $pktsize * $samplerate;
+			$matrix->{individual}->{$ipprotocol}->{bytes}->{$dstvli}->{out} += $pktsize * $samplerate;
+			$matrix->{individual}->{$ipprotocol}->{pkts}->{$srcvli}->{in}   += $samplerate;
+			$matrix->{individual}->{$ipprotocol}->{pkts}->{$dstvli}->{out}  += $samplerate;
+		} else {
+			$debug && print STDERR "DEBUG: VLAN(s) not found, dropped update for: ".
+				"protocol: $ipprotocol ".
+				"vlan: $vlan ".
+				"srcvli: $srcvli ".
+				"dstvli: $dstvli ".
+				"pktsize: $pktsize ".
+				"samplerate: $samplerate ".
+				"\n";
+			$debug && print STDERR "DEBUG: rejected: ".$_."\n";
+		}
+    }
+
+	$debug && print STDERR "DEBUG: starting rrd flush at time interval: $interval, time: ".time()."\n";
+	process_rrd($interval, $matrix, $rrdcached);
+} else {
+    print "No flows found in the JSON data.\n";
+}
+
+exit 0;
+
+#
+# write traffic matrix out to RRD file while calculating totals
+#
+sub process_rrd {
+	my ($interval, $matrix, $rrdcached) = @_;
+	my ($aggregate, $rrdfile);
+	
+	foreach my $ipprotocol (qw(4 6)) {
+		foreach my $rrdtype (qw(bytes pkts)) {
+			foreach my $vlan (keys %{$matrix->{vlilist}}) {
+				foreach my $srcvli (keys %{$matrix->{vlilist}->{$vlan}}) {
+					foreach my $dstvli (keys %{$matrix->{vlilist}->{$vlan}}) {
+						next if ($srcvli == $dstvli);
+
+						$rrdfile = sprintf("$basedir/ipv$ipprotocol/$rrdtype/p2p/src-%05d/p2p.ipv$ipprotocol.$rrdtype.src-%05d.dst-%05d.rrd", $srcvli, $srcvli, $dstvli);
+
+						# look up peer-to-peer traffic
+						my $in  = $matrix->{p2p}->{$ipprotocol}->{$rrdtype}->{$dstvli}->{$srcvli};
+						my $out = $matrix->{p2p}->{$ipprotocol}->{$rrdtype}->{$srcvli}->{$dstvli};
+
+						# this is too noisy for normal debugging.
+						$insanedebug && print STDERR "DEBUG: p2p: building update for ".
+								"protocol: $ipprotocol ".
+								"type: $rrdtype ".
+								"srcvli: $srcvli ".
+								"dstvli: $dstvli ".
+								"in: $in out: $out ".
+								"\n";
+						build_update_rrd ($rrdfile, $rrdtype, $ipprotocol, $in, $out, $interval, $rrdcached);
+					}
+
+					# Handle aggregate per-vli traffic
+					$rrdfile = sprintf("$basedir/ipv$ipprotocol/$rrdtype/individual/individual.ipv$ipprotocol.$rrdtype.src-%05d.rrd", $srcvli);
+
+					# these hashrefs are guaranteed to be defined due to matrix_init
+					my $in =  $matrix->{individual}->{$ipprotocol}->{$rrdtype}->{$srcvli}->{in};
+					my $out = $matrix->{individual}->{$ipprotocol}->{$rrdtype}->{$srcvli}->{out};
+
+					# build a running total for the per-vlan traffic.  these
+					# hashrefs are guaranteed to be defined due to matrix_init
+					$matrix->{aggregate}->{$ipprotocol}->{$rrdtype}->{$vlan}->{in}  += $in;
+					$matrix->{aggregate}->{$ipprotocol}->{$rrdtype}->{$vlan}->{out} += $out;
+
+					$debug && print STDERR "DEBUG: individual: building update for ".
+							"vlan: $vlan ".
+							"type: $rrdtype ".
+							"protocol: $ipprotocol ".
+							"srcvli: $srcvli ".
+							"\n";
+					build_update_rrd ($rrdfile, $rrdtype, $ipprotocol, $in, $out, $interval, $rrdcached);
+				}
+
+				# write per-vlan aggregates out to rrd
+				$rrdfile = sprintf ("$basedir/ipv$ipprotocol/$rrdtype/aggregate/aggregate.ipv$ipprotocol.$rrdtype.vlan%05d.rrd", $vlan);
+				$debug && print STDERR "DEBUG: aggregate: building update for vlan: $vlan type: $rrdtype protocol: $ipprotocol file: $rrdfile\n";
+
+				my $in =  $matrix->{aggregate}->{$ipprotocol}->{$rrdtype}->{$vlan}->{in};
+				my $out = $matrix->{aggregate}->{$ipprotocol}->{$rrdtype}->{$vlan}->{out};
+
+				build_update_rrd ($rrdfile, $rrdtype, $ipprotocol, $in, $out, $interval, $rrdcached);
+			}
+		}
+	}
+}
+
+sub build_update_rrd
+{
+	use File::Path qw(make_path);
+	use File::Basename;
+		
+	my ($rrdfile, $rrdtype, $ipprotocol, $in, $out, $interval, $rrdcached) = @_;
+	my @rrds_options = ();
+	my $rrd_err;
+
+	$in = 0 if (!defined($in));
+	$out = 0 if (!defined($out));
+	
+
+	if (!-s $rrdfile) {
+		my $dir = dirname($rrdfile);
+		if (!-d $dir) {
+			make_path($dir) or die "Could not make directory: $dir: $!\n";
+		}
+		my @rrds_create_options = (
+			'DS:traffic_in:GAUGE:600:U:U',
+			'DS:traffic_out:GAUGE:600:U:U',
+			'RRA:AVERAGE:0.5:1:600',    'RRA:MAX:0.5:1:600',
+			'RRA:AVERAGE:0.5:6:700',    'RRA:MAX:0.5:6:700', 
+			'RRA:AVERAGE:0.5:24:750',   'RRA:MAX:0.5:24:750',  
+			'RRA:AVERAGE:0.5:288:3650', 'RRA:MAX:0.5:288:3650',
+		);
+
+		RRDs::create ($rrdfile, @rrds_create_options);
+		$rrd_err = RRDs::error;
+		print STDERR "WARNING: while updating $rrdfile: $rrd_err\n" if $rrd_err;
+	}
+
+	if ($rrdcached) {
+		push @rrds_options, '--daemon', 'unix:/var/run/rrdcached.sock';
+	}
+
+	my $rrdvalues = "N:".int($in/$interval).":".int($out/$interval);
+	RRDs::update ($rrdfile, @rrds_options, $rrdvalues);
+
+	$rrd_err = RRDs::error;
+	print STDERR "WARNING: while updating $rrdfile: $rrd_err\n" if $rrd_err;
+}
+
+#
+# extract vli from mac table, given input from sflow
+#
+
+sub getvlifrommactable {
+	my ($mactable, $infraid, $vlan, $mac) = @_;
+
+	my @infras;
+
+	if (defined ($infraid)) {
+		@infras = qw ( $infraid );
+	} else {
+		@infras = keys %{$mactable};
+	}
+
+	foreach my $infra (@infras) {
+		# we need some sanitisation here because sflowtool could pass in anything
+		next unless (
+			defined ($mactable->{$infra}) &&
+			defined ($vlan) && defined ($mactable->{$infra}->{$vlan}) &&
+			defined ($mac) && defined ($mactable->{$infra}->{$vlan}->{$mac})
+		);
+
+		return $mactable->{$infra}->{$vlan}->{$mac};
+	}
+
+	return 0;
+}
+
+#
+# build up complete up-to-date blank matrix of all relevant traffic data
+#
+
+sub matrix_init
+{
+	my ($mactable, $infraid) = @_;
+	my (@infras, $matrix);
+
+	if (defined ($infraid)) {
+		@infras = qw ( $infraid );
+	} else {
+		@infras = keys %{$mactable};
+	}
+
+	# create list of all vlan interface IDs per vlan
+	foreach my $infra (@infras) {
+		next unless (defined ($mactable->{$infra}));
+		foreach my $vlan (keys %{$mactable->{$infra}}) {
+			foreach my $mac (keys %{$mactable->{$infra}->{$vlan}}) {
+				$matrix->{vlilist}->{$vlan}->{$mactable->{$infra}->{$vlan}->{$mac}} = 1;
+			}
+		}
+	}
+
+	# Not all srcvli/dstvli combinations are valid.  We only consider
+	# those which are on the same vlan.
+
+	foreach my $ipprotocol (qw(4 6)) {
+		foreach my $rrdtype (qw(bytes pkts)) {
+			foreach my $vlan (keys %{$matrix->{vlilist}}) {
+				foreach my $srcvli (keys %{$matrix->{vlilist}->{$vlan}}) {
+					foreach my $dstvli (keys %{$matrix->{vlilist}->{$vlan}}) {
+						next if ($srcvli == $dstvli);
+						$matrix->{p2p}->{$ipprotocol}->{$rrdtype}->{$dstvli}->{$srcvli} = 0;
+					}
+					$matrix->{individual}->{$ipprotocol}->{$rrdtype}->{$srcvli}->{in} = 0;
+					$matrix->{individual}->{$ipprotocol}->{$rrdtype}->{$srcvli}->{out} = 0;
+				}
+				$matrix->{aggregate}->{$ipprotocol}->{$rrdtype}->{$vlan}->{in}  = 0;
+				$matrix->{aggregate}->{$ipprotocol}->{$rrdtype}->{$vlan}->{out} = 0;
+			}
+		}
+	}
+
+	return $matrix;
+}
+
+
+# 
+# Create a mapping from macaddress->virtualinterfaceid
+# 
+
+sub reload_mactable
+{
+	my ($client, $uri) = @_;
+
+	$client->GET($uri);
+
+	my $content = $client->responseContent();
+	my $code = $client->responseCode();
+	if ($code != 200) {
+		$debug && print STDERR "WARNING: HTTP response $code: $content\n";
+		return undef;
+	}
+
+	my $json = eval { decode_json($content) };
+	if (!$json) {
+		$debug && print STDERR "WARNING: HTTP response was not legitimate json: '$content'\n";
+		return undef;
+	}
+
+	return $json;
+}
