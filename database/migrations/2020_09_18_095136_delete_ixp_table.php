@@ -40,8 +40,8 @@ class DeleteIxpTable extends Migration
 
         $infrastructure_fks = array_column(
             Schema::getConnection()->select('SELECT CONSTRAINT_NAME FROM information_schema.KEY_COLUMN_USAGE '
-                . 'WHERE TABLE_SCHEMA = "' . config('database.connections.mysql.database') . '" AND TABLE_NAME = "infrastructure" AND '
-                . 'REFERENCED_TABLE_SCHEMA = "' . config('database.connections.mysql.database') . '" AND REFERENCED_TABLE_NAME = "ixp"'
+                . 'WHERE TABLE_SCHEMA = "' . ( config('database.connections.mysql.database') ?? '' ) . '" AND TABLE_NAME = "infrastructure" AND '
+                . 'REFERENCED_TABLE_SCHEMA = "' . ( config('database.connections.mysql.database') ?? '' ) . '" AND REFERENCED_TABLE_NAME = "ixp"'
             ), 'CONSTRAINT_NAME'
         );
 
@@ -54,8 +54,8 @@ class DeleteIxpTable extends Migration
 
         $traffic_daily_fks = array_column(
             Schema::getConnection()->select('SELECT CONSTRAINT_NAME FROM information_schema.KEY_COLUMN_USAGE '
-                . 'WHERE TABLE_SCHEMA = "' . config('database.connections.mysql.database') . '" AND TABLE_NAME = "traffic_daily" AND '
-                . 'REFERENCED_TABLE_SCHEMA = "' . config('database.connections.mysql.database') . '" AND REFERENCED_TABLE_NAME = "ixp"'
+                . 'WHERE TABLE_SCHEMA = "' . ( config('database.connections.mysql.database') ?? '' ) . '" AND TABLE_NAME = "traffic_daily" AND '
+                . 'REFERENCED_TABLE_SCHEMA = "' . ( config('database.connections.mysql.database') ?? '' ) . '" AND REFERENCED_TABLE_NAME = "ixp"'
             ), 'CONSTRAINT_NAME'
         );
 
