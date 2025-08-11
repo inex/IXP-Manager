@@ -43,10 +43,10 @@ See also: https://www.inex.ie/
 
 Authors:
 
-* [Barry O'Donovan](https://www.barryodonovan.com/) / [@barryo79](https://twitter.com/#!/barryo79)
+* [Barry O'Donovan](https://www.barryodonovan.com/) 
 * Nick Hilliard
 
-Copyright (C) 2009 - 2022 Internet Neutral Exchange Association Company Limited By Guarantee.
+Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
 All Rights Reserved.
 
 
