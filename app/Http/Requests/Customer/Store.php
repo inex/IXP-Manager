@@ -78,8 +78,8 @@ class Store extends FormRequest
             'autsys'                => 'int|min:1',
             'maxprefixes'           => 'nullable|int|min:0',
             'peeringemail'          => 'email',
-            'peeringmacro'          => 'nullable|string|max:255',
-            'peeringmacrov6'        => 'nullable|string|max:255',
+            'peeringmacro'          => [ 'nullable', 'string', 'max:255', 'regex:/^(AS-[A-Z0-9]+(?:-[A-Z0-9]+)*|AS[1-9]\d*(?::AS-[A-Z0-9]+(?:-[A-Z0-9]+)*)?)$/i' ],
+            'peeringmacrov6'        => [ 'nullable', 'string', 'max:255', 'regex:/^(AS-[A-Z0-9]+(?:-[A-Z0-9]+)*|AS[1-9]\d*(?::AS-[A-Z0-9]+(?:-[A-Z0-9]+)*)?)$/i' ],
             'peeringpolicy'         => 'string|in:' . implode( ',', array_keys( Customer::$PEERING_POLICIES ) ),
             'irrdb'                 => 'nullable|integer|exists:irrdbconfig,id',
             'nocphone'              => 'nullable|string|max:255',
@@ -89,6 +89,7 @@ class Store extends FormRequest
             'nocwww'                => 'nullable|url|max:255',
             'reseller'              => 'nullable|integer|exists:cust,id',
         ];
+
 
         return $this->type == Customer::TYPE_ASSOCIATE  ? $validateCommonDetails : array_merge( $validateCommonDetails, $validateOtherDetails ) ;
     }

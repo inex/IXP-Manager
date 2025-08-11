@@ -173,15 +173,16 @@
                     ->label( 'IPv4 Peering Macro' )
                     ->placeholder( "AS-ACME-EXAMPLE" )
                     ->blockHelp( "The IPv4 Peering Macro is used instead of the AS number when set to generate inbound prefix filters for the "
-                        . "route servers based on the member's published IRR records." );
+                        . "route servers based on the member's published IRR records. Must be a valid as-macro. One of:<br><code>ASNNNNN,  AS-MACRONAME, ASNNNNN:AS-MACRONAME</code><br>");
                 ?>
-
+                
                 <?= Former::text( 'peeringmacrov6' )
                     ->label( 'IPv6 Peering Macro' )
                     ->placeholder( "AS-ACME-V6-EXAMPLE" )
                     ->blockHelp( "In the event that IPv6 Peering Macro is set, this will be used to generate IPv6 inbound prefix filters, "
                         . "otherwise the IPv4 Peering Macro will be used for both. If neither is set, the IRR policy of the AS number will "
-                        . "be used. Use <code>AS-NULL</code> to disable one or the other protocol peering macro if only one is required." );
+                        . "be used. Use <code>AS-NULL</code> to disable one or the other protocol peering macro if only one is required. "
+                        . "Must be a valid as-macro. One of:<br><code>ASNNNNN,  AS-MACRONAME, ASNNNNN:AS-MACRONAME</code><br>" );
                 ?>
 
                 <?= Former::select( 'peeringpolicy' )
