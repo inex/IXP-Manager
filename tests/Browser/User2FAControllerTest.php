@@ -42,13 +42,26 @@ use Tests\DuskTestCase;
  */
 class User2FAControllerTest extends DuskTestCase
 {
+
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->replaceEnvAttr( '2FA_ENFORCE_FOR_USERS="1"','2FA_ENFORCE_FOR_USERS="4"' );
+        $this->replaceEnvAttr( '2FA_ENABLED=false','2FA_ENABLED=true' );
+        // changing the environment causes the server to restart
+        // Environment modified. Restarting server...
+        sleep(2);
+
+    }
     public function tearDown(): void
     {
         if( $u2fa = User2FA::whereUserId( 1 )->first() ) {
             $u2fa->delete();
         }
 
-        $this->deleteEnvValue( '2FA_ENFORCE_FOR_USERS="1"' );
+        $this->replaceEnvAttr( '2FA_ENABLED=true','2FA_ENABLED=false' );
         // changing the environment causes the server to restart
         // Environment modified. Restarting server...
         sleep(2);
