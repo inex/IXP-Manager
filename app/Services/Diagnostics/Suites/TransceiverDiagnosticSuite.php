@@ -102,7 +102,7 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
     ) {
 
         if( $pi?->switchPort ) {
-            $this->name = 'Transceiver diagnostics for: ' . $pi->switchPort->switcher->name . ' :: ' . $pi->switchPort->name . ' [Physical Interface #' . $pi->id . ']';
+            $this->name = 'Transceiver diagnostics for: ' . $pi->switchPort->switcher->name . ' :: ' . $pi->switchPort->name . ' / Physical Interface #' . $pi->id;
         } else {
             $this->name        = 'Physical Interface #' . $pi->id;
         }

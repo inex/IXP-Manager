@@ -69,13 +69,14 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
     ) {
 
         if( $pi?->switchPort ) {
-            $this->name = $pi->switchPort->switcher->name . ' :: ' . $pi->switchPort->name . ' [Physical Interface #' . $pi->id . ']';
+            $this->name = $pi->switchPort->switcher->name . ' :: ' . $pi->switchPort->name . ' / Physical Interface #' . $pi->id;
         } else {
             $this->name        = 'Physical Interface #' . $pi->id;
         }
 
         $this->description = 'Physical Interfaces general diagnostics.';
         $this->type        = 'INTERFACE';
+        $this->link        = route( 'virtual-interface@edit', ['vi' => $pi->virtualInterface] );;
 
         parent::__construct();
     }

@@ -49,6 +49,8 @@ class CustomerDiagnosticSuite extends DiagnosticSuite
         $this->name        = 'Member Overview';
         $this->description = 'Diagnostics for the overall member\'s set-up.';
         $this->type        = 'CUSTOMER';
+        $this->link        = route( 'customer@overview', ['cust' => $this->customer] );
+
 
         parent::__construct();
     }

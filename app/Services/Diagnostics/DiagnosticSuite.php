@@ -38,6 +38,7 @@ abstract class DiagnosticSuite
     protected string $name        = 'Err: Suite name not set!';
     protected string $description = 'Err: No suite description set!';
     protected string $type        = 'Err: No suite type set!';
+    protected ?string $link        = null;
 
     protected DiagnosticResultSet $results;
 
@@ -64,6 +65,10 @@ abstract class DiagnosticSuite
 
     public function type(): string {
         return $this->type;
+    }
+
+    public function link(): ?string {
+        return $this->link;
     }
 
 }

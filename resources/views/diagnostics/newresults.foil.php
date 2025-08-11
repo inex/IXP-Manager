@@ -38,6 +38,10 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
                         <i class="fa fa-info" aria-hidden="true"></i>
                     </button>
                     <?= $t->ee( $drs->suite->name() ) ?>
+
+                    <?php if( $drs->suite->link() ): ?>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<a href="<?= $drs->suite->link() ?>"><i class="ml-2 fa fa-arrow-circle-o-right"></i></a>
+                    <?php endif; ?>
                 </h1>
 
                 <?php foreach( $drs->results as $r ): ?>

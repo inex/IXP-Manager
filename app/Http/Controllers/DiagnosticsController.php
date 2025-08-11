@@ -111,13 +111,13 @@ class DiagnosticsController extends Controller
             // get the Vlan Interface Diagnostics data
             $protocols = [4,6];
             foreach( $vi->vlanInterfaces as $vli ) {
-                $viSet->addSubset( $diagnostics->getVlanInterfaceL2Diagnostics( $vli ) );
+                // not ready: $viSet->addSubset( $diagnostics->getVlanInterfaceL2Diagnostics( $vli ) );
 
                 foreach( $protocols as $protocol ) {
                     // if the protocol disabled, there is no diagnostics info
                     $protocolCellEnabled = "ipv" . $protocol . "enabled";
                     if($vli->$protocolCellEnabled) {
-                        $viSet->addSubset( $diagnostics->getVlanInterfaceL3Diagnostics( $vli, $protocol ) );
+                        // not ready: $viSet->addSubset( $diagnostics->getVlanInterfaceL3Diagnostics( $vli, $protocol ) );
                         $viSet->addSubset( $diagnostics->getRouterBgpSessionsDiagnostics( $vli, $protocol ) );
                     }
 
