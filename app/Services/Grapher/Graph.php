@@ -1030,7 +1030,7 @@ abstract class Graph
      *
      * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterPeriod( string $value = null, string $default = null, $withExtended = false ): string|null
+    public static function processParameterPeriod( ?string $value = null, ?string $default = null, $withExtended = false ): string|null
     {
         if( $withExtended && !isset( self::PERIODS_EXTENDED[ $value ] ) ) {
             $value = $default ?? self::PERIOD_DEFAULT;
@@ -1051,7 +1051,7 @@ abstract class Graph
      *
      * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterProtocol( string $value = null ): string|null
+    public static function processParameterProtocol( ?string $value = null ): string|null
     {
         if( !isset( self::PROTOCOLS[ $value ] ) ) {
             $value = self::PROTOCOL_DEFAULT;
@@ -1068,7 +1068,7 @@ abstract class Graph
      * @param string|null $value The user input value
      * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterRealProtocol( string $value = null ): string|null
+    public static function processParameterRealProtocol( ?string $value = null ): string|null
     {
         if( !isset( self::PROTOCOLS_REAL[ $value ] ) ) {
             $value = self::PROTOCOL_IPV4;
@@ -1087,7 +1087,7 @@ abstract class Graph
      *
      * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterCategory( string $value = null, bool $bits_pkts_only = false ): string|null
+    public static function processParameterCategory( ?string $value = null, bool $bits_pkts_only = false ): string|null
     {
         if( ( $bits_pkts_only && !isset( self::CATEGORIES_BITS_PKTS[$value] ) ) || ( !$bits_pkts_only && !isset( self::CATEGORIES[ $value ] ) ) ) {
             $value = self::CATEGORY_DEFAULT;
@@ -1105,7 +1105,7 @@ abstract class Graph
      *
      * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterType( string $value = null ): string|null
+    public static function processParameterType( ?string $value = null ): string|null
     {
         if( !isset( self::TYPES[ $value ] ) ) {
             $value = self::TYPE_DEFAULT;

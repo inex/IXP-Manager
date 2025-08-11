@@ -147,11 +147,11 @@ if( !function_exists( 'rrd_graph' ) )
  *  on 21 Apr 2024 as that repo has switched to read-only and was
  *  marked as no longer supported. MIT licensed.
  *
- * @param string $value
- * @param bool $inline
+ * @param ?string $value
+ * @param ?bool $inline
  * @return Parsedown|string
  */
-function parsedown(?string $value = null, bool $inline = null)
+function parsedown(?string $value = null, ?bool $inline = null): Parsedown|string
 {
     /**
      * @var Parsedown $parser

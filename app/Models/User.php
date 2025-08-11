@@ -247,7 +247,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      *
      * @return Builder
      */
-    public function scopeByPrivs( Builder $query, int $priv = null ): Builder
+    public function scopeByPrivs( Builder $query, ?int $priv = null ): Builder
     {
         return $query->select( 'user.*' )->leftJoin( 'customer_to_users AS c2u', 'c2u.user_id', 'user.id' )
             ->when( $priv, function( Builder $q, $priv ){
