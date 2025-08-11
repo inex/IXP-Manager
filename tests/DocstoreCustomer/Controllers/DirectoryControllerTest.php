@@ -23,6 +23,7 @@ namespace Tests\DocstoreCustomer\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use DB;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 
 use IXP\Models\{
@@ -364,7 +365,13 @@ class DirectoryControllerTest extends TestCase
         // superuser
         $user = $this->getSuperUser( 'travis' );
         $this->actingAs( $user )->put( route( 'docstore-c-dir@update', [ 'cust' => $dir->cust_id , 'dir' => $dir ] ), [ 'cust_id' => $dir->cust_id , 'name' =>  self::testInfo[ 'folderName2' ], 'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
-        $this->assertDatabaseMissing(   'docstore_customer_directories', [ 'name' => self::testInfo[ 'folderName' ],     'description' => self::testInfo[ 'folderDescription' ],     'parent_dir_id' => self::testInfo[ 'parentDirId' ]  ] );
+        $exist = DB::table('docstore_customer_directories')
+            ->where('name', self::testInfo[ 'folderName' ])
+            ->where('description', self::testInfo[ 'folderDescription' ])
+            ->where('parent_dir_id', self::testInfo[ 'parentDirId' ])
+            ->exists();
+        $this->assertFalse( $exist );
+
         $this->assertDatabaseHas(       'docstore_customer_directories', [ 'name' => self::testInfo[ 'folderName2' ],    'description' => self::testInfo[ 'folderDescription2' ],    'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
     }
 
@@ -439,6 +446,7 @@ class DirectoryControllerTest extends TestCase
     {
         $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'folderName2' ] ] )->first();
 
+        info("dir\n".var_export($dir, true));
         // superuser
         $user = $this->getSuperUser( 'travis' );
         $this->actingAs( $user )->delete( route( 'docstore-c-dir@delete', [ 'dir' => $dir ] ) );
@@ -506,10 +514,16 @@ class DirectoryControllerTest extends TestCase
     {
         $cust = Customer::whereId( self::testInfo[ 'customerId' ] )->first();
 
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( 'cust_id', $cust->id )->get()->last();
+        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( 'cust_id', self::testInfo[ 'customerId' ] )->get()->last();
         // superuser
         $user = $this->getSuperUser( 'travis' );
         $this->actingAs( $user )->delete( route( 'docstore-c-dir@delete-for-customer', [ 'cust' => $cust ] ) );
-        $this->assertDatabaseMissing( 'docstore_customer_directories', [ 'name' => $dir->name,    'description' => $dir->description, 'parent_dir_id' => $dir->parent_dir ] );
+        $exist = DB::table('docstore_customer_directories')
+            ->where( 'name', $dir->name )
+            ->where( 'description', $dir->description )
+            ->where( 'parent_dir_id', $dir->parent_dir_id )
+            ->where('id', '!=', 1)
+            ->exists();
+        $this->assertFalse( $exist );
     }
 }

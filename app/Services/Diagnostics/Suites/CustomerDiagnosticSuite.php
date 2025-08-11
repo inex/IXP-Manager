@@ -55,7 +55,6 @@ class CustomerDiagnosticSuite extends DiagnosticSuite
 
     /**
      * Run the diagnostics suite
-     * @throws GeneralException
      */
     public function run(): CustomerDiagnosticSuite
     {

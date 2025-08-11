@@ -30,7 +30,7 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
 
         <?php   /** @var \IXP\Services\Diagnostics\DiagnosticResultSet $drs */
             foreach( $t->resultSets as $drs ): ?>
-            <div class="set-wrapper col-lg-6 col-md-12 tw-mb-8">
+            <div class="set-wrapper col-12 tw-mb-8">
                 <h1 class="head-set tw-font-semibold tw-text-base tw-border-b-1 tw-h-8 tw-leading-8 tw-text-gray-900 tw-mb-0 tw-mt-3 tw-border-gray-600 tw-overflow-hidden">
                     <button type="button" class="tw-mr-1 tw-rounded tw-bg-white tw-text-gray-700 hover:tw-bg-gray-50 hover:tw-border-gray-800 tw-border-2 tw-border-gray-600 tw-w-6 tw-h-6 tw-leading-5"
                             data-toggle="popover" title="<?= $t->ee( $drs->suite->name() ) ?>" data-content="<?= $t->ee( $drs->suite->description() ) ?>"
@@ -44,14 +44,10 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
                 <?php $resultText = IXP\Services\Diagnostics\DiagnosticResult::$RESULT_TYPES_TEXT[$r->result]; ?>
                 <div class="info-line tw-text-xs tw-border-b-1 tw-h-6 tw-leading-6 tw-text-gray-900 tw-pl-4 tw-mt-2 tw-flex tw-justify-start tw-align-middle" data-status="<?= $r->result ?>">
                     <div class="badgeDot tw-rounded-full tw-border-2 tw-w-5 tw-h-5 tw-mr-1 <?= $t->badgeTypes[$r->result] ?>" title="<?= $resultText ?>"></div>
-                    <div class="tw-min-w-16 tw-text-right tw-mr-1"><?= strtoupper($resultText) ?></div>
-                    <button type="button" class="tw-mr-1 tw-rounded tw-bg-white tw-text-gray-700 hover:tw-bg-gray-50 hover:tw-border-gray-800 tw-border-2 tw-border-gray-600 tw-w-4 tw-h-4 tw-leading-3"
-                            data-toggle="popover" title="<?= $t->ee( $r->name ) ?>" <?= $r->narrativeHtml ? 'data-html="true"' : '' ?>
-                            data-content="<?= $r->narrative ? $t->ee( $r->narrative ) : ( $r->narrativeHtml ?: '' ) ?>"
-                    >
-                        <i class="fa fa-info" aria-hidden="true"></i>
-                    </button>
-                    <div class="tw-overflow-hidden"><?= $t->ee( $r->name ) ?></div>
+                    <div class="tw-min-w-16 tw-ml-1"><?= strtoupper($resultText) ?></div>
+                    <div class="info-content"><?= $t->ee( $r->name ) ?><div class="info-extra-content">
+                            <?= $r->narrative ? $t->ee( $r->narrative ) : ( $r->narrativeHtml ?: '' ) ?></div>
+                    </div>
                 </div>
 
                     <?php foreach( $drs->subsets() as $drs ): ?>
@@ -69,14 +65,10 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
                             <?php $resultText = IXP\Services\Diagnostics\DiagnosticResult::$RESULT_TYPES_TEXT[$r->result]; ?>
                             <div class="info-line tw-text-xs tw-border-b-1 tw-h-6 tw-leading-6 tw-text-gray-900 tw-pl-4 tw-mt-2 tw-flex tw-justify-start tw-align-middle" data-status="<?= $r->result ?>">
                                 <div class="badgeDot tw-rounded-full tw-border-2 tw-w-5 tw-h-5 tw-mr-1 <?= $t->badgeTypes[$r->result] ?>" title="<?= $resultText ?>"></div>
-                                <div class="tw-min-w-16 tw-text-right tw-mr-1"><?= strtoupper($resultText) ?></div>
-                                <button type="button" class="tw-mr-1 tw-rounded tw-bg-white tw-text-gray-700 hover:tw-bg-gray-50 hover:tw-border-gray-800 tw-border-2 tw-border-gray-600 tw-w-4 tw-h-4 tw-leading-3"
-                                        data-toggle="popover" title="<?= $t->ee( $r->name ) ?>" <?= $r->narrativeHtml ? 'data-html="true"' : '' ?>
-                                        data-content="<?= $r->narrative ? $t->ee( $r->narrative ) : ( $r->narrativeHtml ?: '' ) ?>"
-                                >
-                                    <i class="fa fa-info" aria-hidden="true"></i>
-                                </button>
-                                <div class="tw-overflow-hidden"><?= $t->ee( $r->name ) ?></div>
+                                <div class="tw-min-w-16 tw-ml-1"><?= strtoupper($resultText) ?></div>
+                                <div class="info-content"><?= $t->ee( $r->name ) ?><div class="info-extra-content">
+                                        <?= $r->narrative ? $t->ee( $r->narrative ) : ( $r->narrativeHtml ?: '' ) ?></div>
+                                </div>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -152,6 +144,20 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
 
     $(document).ready(function() {
         toggleInformation()
+    })
+
+    $(document).on('click','.info-line', function() {
+        const content = $(this).find('.info-content');
+        const extra = content.find('.info-extra-content');
+        if(extra.length) {
+            const contentHeight = content.outerHeight(true);
+            const extraHeight = extra.outerHeight(true);
+            let newHeight = contentHeight + extraHeight;
+            if(contentHeight > extraHeight) {
+                newHeight = contentHeight - extraHeight;
+            }
+            content.css({height: newHeight + "px"});
+        }
     })
 
 </script>

@@ -32,6 +32,7 @@ use Facebook\WebDriver\Remote\{
     RemoteWebDriver,
 
 };
+use PHPUnit\Framework\Attributes\BeforeClass;
 
 /**
  * DuskTestCase
@@ -53,9 +54,12 @@ abstract class DuskTestCase extends BaseTestCase
      * @beforeClass
      * @return void
      */
-    public static function prepare()
+    #[BeforeClass]
+    public static function prepare(): void
     {
-        static::startChromeDriver();
+        static::startChromeDriver([
+            '--port=9515'
+        ]);
     }
 
     /**
@@ -63,7 +67,7 @@ abstract class DuskTestCase extends BaseTestCase
      *
      * @return RemoteWebDriver
      */
-    protected function driver()
+    protected function driver(): RemoteWebDriver
     {
         $options = (new ChromeOptions)->addArguments([
             '--disable-gpu',
@@ -84,7 +88,7 @@ abstract class DuskTestCase extends BaseTestCase
      *
      * @param array $variables
      */
-    protected function overrideEnv($variables = [])
+    protected function overrideEnv( array $variables = []): void
     {
         $path = '.env';
 
@@ -154,7 +158,7 @@ abstract class DuskTestCase extends BaseTestCase
      *
      * @param string $attribute
      */
-    protected function deleteEnvValue( string $attribute)
+    protected function deleteEnvValue( string $attribute): void
     {
         $path = '.env';
 

@@ -30,6 +30,7 @@ use IXP\Services\Diagnostics\DiagnosticResult;
 use IXP\Services\Diagnostics\DiagnosticSuite;
 use IXP\Models\VlanInterface;
 
+use IXP\Services\Diagnostics\Exception;
 use IXP\Services\LookingGlass as LookingGlassService;
 use IXP\Contracts\LookingGlass as LookingGlassContract;
 use App;
@@ -83,23 +84,34 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
 
             if( $router->hasApi() ) {
 
-                $this->lg[$router->handle] = App::make( LookingGlassService::class )->forRouter( $router );
+                try {
+                    $this->lg[$router->handle] = App::make( LookingGlassService::class )->forRouter( $router );
 
-                if( $status = json_decode( $this->lg[ $router->handle ]->status() ) ) {
+                    if( $status = json_decode( $this->lg[ $router->handle ]->status() ) ) {
 
-                    $this->results->add( new DiagnosticResult(
-                        name: "Router {$router->handle} up, last reconfig " .
-                        Carbon::parse( $status->status->last_reconfig )->diffForHumans(),
-                        result: DiagnosticResult::TYPE_TRACE,
+                        $this->results->add( new DiagnosticResult(
+                            name: "Router {$router->handle} up, last reconfig " .
+                            Carbon::parse( $status->status->last_reconfig )->diffForHumans(),
+                            result: DiagnosticResult::TYPE_TRACE,
+                        ) );
+
+                    } else {
+
+                        $this->results->add( new DiagnosticResult(
+                            name: "Router {$router->handle} not up or looking glass failure",
+                            result: DiagnosticResult::TYPE_FATAL,
+                        ) );
+                        continue;
+                    }
+
+                } catch( \Exception $e) {
+
+                    $this->results->add(new DiagnosticResult(
+                        name: 'Router diagnostic failed to run',
+                        result: DiagnosticResult::TYPE_UNKNOWN,
+                        narrativeHtml: $e->getMessage(),
                     ) );
 
-                } else {
-
-                    $this->results->add( new DiagnosticResult(
-                        name: "Router {$router->handle} not up or looking glass failure",
-                        result: DiagnosticResult::TYPE_FATAL,
-                    ) );
-                    continue;
                 }
 
             } else {
@@ -148,9 +160,9 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
         } catch( \Exception $e ) {
 
             return new DiagnosticResult(
-                name: $mainName . 'exception thrown when querying looking glass',
-                result: DiagnosticResult::TYPE_FATAL,
-                narrative: $e->getMessage(),
+                name: $mainName . ' - diagnostic failed to run',
+                result: DiagnosticResult::TYPE_UNKNOWN,
+                narrativeHtml: $e->getMessage(),
             );
 
         }
