@@ -27,6 +27,9 @@
 composer.phar
 /tools/installers/Vagrantfile
 
+/.phpstorm.meta.php
+/_ide_helper.php
+
 /storage/.local
 /storage/grapher/
 /storage/files/*
