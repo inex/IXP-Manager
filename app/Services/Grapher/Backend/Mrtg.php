@@ -451,11 +451,9 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
      *
      * @param Graph $graph
      *
-     * @return string
-     *
-     * @throws
+     * @return false|string
      */
-    public function png( Graph $graph ): string
+    public function png( Graph $graph ): false|string
     {
         try {
             if( config('grapher.backends.mrtg.dbtype') === 'log' ) {
@@ -481,12 +479,9 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
      * {inheritDoc}
      *
      * @param Graph $graph
-     *
-     * @return string
-     *
-     * @throws
+     * @return false|string
      */
-    public function rrd( Graph $graph ): string
+    public function rrd( Graph $graph ): false|string
     {
         try {
             if( config('grapher.backends.mrtg.dbtype') === 'log' ) {

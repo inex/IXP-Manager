@@ -369,7 +369,7 @@ class DotEnvWriter
      */
     protected function stripQuotes( string $value ): string
     {
-        return preg_replace( '/^(\'(.*)\'|"(.*)")$/u', '$2$3', $value );
+        return preg_replace( '/^(\'(.*)\'|"(.*)")$/u', '$2$3', $value ) ?? '';
     }
 
     /**

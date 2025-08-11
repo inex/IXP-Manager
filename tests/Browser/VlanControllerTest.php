@@ -65,11 +65,12 @@ class VlanControllerTest extends DuskTestCase
     {
         $this->browse( function( Browser $browser ) {
             $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
                 ->visit( '/login' )
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->assertPathIs( '/admin' );
+                ->waitForLocation( '/admin' );
 
             $browser->visit( '/vlan/list' )
                 ->assertSee( 'VLANs' );
@@ -79,7 +80,7 @@ class VlanControllerTest extends DuskTestCase
 
             // 1. test add empty inputs
             $browser->press( 'Create' )
-                ->assertPathIs( '/vlan/create' )
+                ->waitForLocation( '/vlan/create' )
                 ->assertSee( "The name field is required." )
                 ->assertSee( "The number field is required." )
                 ->assertSee( "The infrastructureid field is required." )
@@ -95,7 +96,7 @@ class VlanControllerTest extends DuskTestCase
                 ->check( 'peering_manager' )
                 ->type( 'notes', 'test notes' )
                 ->press( 'Create' )
-                ->assertPathIs( '/vlan/list' )
+                ->waitForLocation( '/vlan/list' )
                 ->assertSee( "VLAN created" );
 
             $vlan = Vlan::whereName( 'Vlan test' )->first();
@@ -113,8 +114,9 @@ class VlanControllerTest extends DuskTestCase
             $this->assertEquals( 'test notes', $vlan->notes );
 
             // 3. browse to edit vlan object:
-            $browser->click( '#e2f-list-edit-' . $vlan->id );
-            $browser->pause( 1000 );
+            $browser->click( '#e2f-list-edit-' . $vlan->id )
+                ->waitForLocation( '/vlan/edit/' . $vlan->id );
+
             // 4. test that form contains settings as above using assertChecked(), assertNotChecked(), assertSelected(), assertInputValue, ...
             $browser->assertInputValue( 'name', 'Vlan test' )
                 ->assertInputValue( 'number', '10' )
@@ -134,7 +136,7 @@ class VlanControllerTest extends DuskTestCase
                 ->uncheck( 'peering_manager' )
                 ->check( 'export_to_ixf' )
                 ->press( 'Save Changes' )
-                ->assertPathIs( '/vlan/list' )
+                ->waitForLocation( '/vlan/list' )
                 ->assertSee( "VLAN updated" );
 
 
@@ -170,7 +172,7 @@ class VlanControllerTest extends DuskTestCase
 
             // 8. submit with no changes and verify no changes in database
             $browser->press( 'Save Changes' )
-                ->assertPathIs( '/vlan/list' );
+                ->waitForLocation( '/vlan/list' );
 
 
             // 9. repeat database load and database object check for new values (repeat 2)
@@ -196,7 +198,7 @@ class VlanControllerTest extends DuskTestCase
                 ->check( 'peering_manager' )
                 ->press( 'Save Changes' )
                 // export_to_ixf should be automatically unchecked and disabled
-                ->assertPathIs( '/vlan/list' );
+                ->waitForLocation( '/vlan/list' );
 
 
             // 11. verify checkbox bool elements in database are all true
@@ -226,7 +228,7 @@ class VlanControllerTest extends DuskTestCase
                 ->check( 'peering_manager' )
                 ->type( 'notes', 'test notes2' )
                 ->press( 'Save Changes' )
-                ->assertPathIs( '/vlan/list' );
+                ->waitForLocation( '/vlan/list' );
 
             $vlan->refresh();
 
@@ -253,9 +255,8 @@ class VlanControllerTest extends DuskTestCase
                 ->check( 'peering_manager' )
                 ->type( 'notes', 'test notes2' )
                 ->press( 'Create' )
-                ->assertPathIs( '/vlan/create' )
-                ->assertSee( "The couple Infrastructure and config name already exist" )
-                ->visit( '/vlan/list' );
+                ->waitForLocation( '/vlan/create' )
+                ->assertSee( "The couple Infrastructure and config name already exist" );
 
             // 14. delete the vlan in the UI and verify via success message text and location
             $browser->visit( '/vlan/list/' )
@@ -264,7 +265,7 @@ class VlanControllerTest extends DuskTestCase
                 ->waitForText( 'Do you really want to delete this VLAN' )
                 ->press( 'Delete' );
 
-            $browser->assertSee( 'VLAN deleted.' );
+            $browser->waitForText( 'VLAN deleted.' );
 
             // 12. do a D2EM findOneBy and verify false/null
             $this->assertTrue( Vlan::whereName( 'Vlan test' )->doesntExist() );

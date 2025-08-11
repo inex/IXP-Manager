@@ -8,7 +8,7 @@
     "authors": [
         {
             "name": "Barry O'Donovan",
-            "email": "barry.odonovan@inex.ie",
+            "email": "barry@opensolutions.ie",
             "homepage": "https://www.ixpmanager.org/"
         },
         {
@@ -26,18 +26,18 @@
     "require": {
         "php": "^8.3",
         "ext-json": "*",
+        "laravel/framework": "^11.31",
         "anahkiasen/former": "^4.6",
         "bacon/bacon-qr-code": "^2.0.3",
         "barryvdh/laravel-dompdf": "^2.0.0",
         "doctrine/dbal": "^3.8",
         "erusev/parsedown": "^1.7",
-        "foil/foil": "^0.6.7",
+        "opensolutions/foil": "^0.7.0",
         "guzzlehttp/guzzle": "^7.8",
         "intervention/image": "^2.7",
-        "laravel/framework": "^11.0",
         "laravel/horizon": "^5.7",
         "laravel/telescope": "^5.0",
-        "laravel/tinker": "^2.7",
+        "laravel/tinker": "^2.9",
         "laravel/ui": "^4.0",
         "mews/purifier": "^3.4",
         "opensolutions/oss-snmp": "^1.0",
@@ -59,11 +59,10 @@
         "laravel/sail": "^1.29",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.1",
-        "phpunit/phpunit": "^10.5.1",
-        "psalm/plugin-laravel": "^2.11",
-        "sebastian/diff": "^5.0",
+        "phpunit/phpunit": "^11.0.1",
+        "psalm/plugin-laravel": "^3.0.3",
         "staudenmeir/dusk-updater": "^1.5",
-        "vimeo/psalm": "^5.0"
+        "vimeo/psalm": "^6.0"
     },
     "support": {
         "issues": "https://www.ixpmanager.org/support.php",

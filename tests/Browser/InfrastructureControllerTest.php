@@ -63,11 +63,12 @@ class InfrastructureControllerTest extends DuskTestCase
     {
         $this->browse( function( Browser $browser ) {
             $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
                 ->visit( '/login' )
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->assertPathIs( '/admin' );
+                ->waitForLocation( '/admin' );
 
             $browser->visit( '/infrastructure/list' )
                 ->assertSee( 'Infrastructures' )
@@ -79,7 +80,7 @@ class InfrastructureControllerTest extends DuskTestCase
 
             // 1. test add empty inputs
             $browser->press( 'Create' )
-                ->assertPathIs( '/infrastructure/create' )
+                ->waitForLocation( '/infrastructure/create' )
                 ->assertSee( "The name field is required." )
                 ->assertSee( "The shortname field is required." );
 
@@ -92,13 +93,13 @@ class InfrastructureControllerTest extends DuskTestCase
                 ->select( 'peeringdb_ix_id', '1' )
                 ->type( 'notes', 'I am a note' )
                 ->press( 'Create' )
-                ->assertPathIs( '/infrastructure/create' )
+                ->waitForLocation( '/infrastructure/create' )
                 ->assertSee( "The name has already been taken" )
                 ->type( 'name', 'Infrastructure PHPUnit' )
                 ->select( 'ixf_ix_id', '1' )
                 ->select( 'peeringdb_ix_id', '1' )
                 ->press( 'Create' )
-                ->assertPathIs( '/infrastructure/list' )
+                ->waitForLocation( '/infrastructure/list' )
                 ->assertSee( "Infrastructure created" )
                 ->assertSee( "Infrastructure PHPUnit" )
                 ->assertSee( "phpunit" );
@@ -116,7 +117,8 @@ class InfrastructureControllerTest extends DuskTestCase
             $this->assertEquals( '1', $infra->peeringdb_ix_id );
 
             // 3. browse to edit infrastructure object:
-            $browser->click( '#e2f-list-edit-' . $infra->id );
+            $browser->click( '#e2f-list-edit-' . $infra->id )
+                ->waitForText( 'Edit Infrastructure' );
 
             // 4. test that form contains settings as above using assertChecked(), assertNotChecked(), assertSelected(), assertInputValue, ...
             $browser->assertInputValue( 'name', 'Infrastructure PHPUnit' )
@@ -134,7 +136,7 @@ class InfrastructureControllerTest extends DuskTestCase
                 ->select( 'country', 'FR' )
                 ->uncheck( 'isPrimary' )
                 ->press( 'Save Changes' )
-                ->assertPathIs( '/infrastructure/list' )
+                ->waitForLocation( '/infrastructure/list' )
                 ->assertSee( "Infrastructure updated" );
 
 
@@ -165,7 +167,9 @@ class InfrastructureControllerTest extends DuskTestCase
 
 
             // 8. submit with no changes and verify no changes in database
-            $browser->press( 'Save Changes' );
+            $browser->press( 'Save Changes' )
+                ->waitForLocation( '/infrastructure/list' );
+
 
             // 6. repeat database load and database object check for new values (repeat 2)
             $infra->refresh();
@@ -181,10 +185,10 @@ class InfrastructureControllerTest extends DuskTestCase
 
             // 9. edit again and check all checkboxes and submit
             $browser->visit( '/infrastructure/edit/' . $infra->id )
-                ->assertSee( 'Edit Infrastructure' )
+                ->waitForText( 'Edit Infrastructure' )
                 ->check( 'isPrimary' )
                 ->press( 'Save Changes' )
-                ->assertPathIs( '/infrastructure/list' );
+                ->waitForLocation( '/infrastructure/list' );
 
 
             // 10. verify checkbox bool elements in database are all true
@@ -198,7 +202,7 @@ class InfrastructureControllerTest extends DuskTestCase
                 ->waitForText( 'Do you really want to delete this infrastructure' )
                 ->press( 'Delete' );
 
-            $browser->assertSee( 'Infrastructure deleted.' );
+            $browser->waitForText( 'Infrastructure deleted.' );
 
             // 12. check if object doesn't exist anymore
             $this->assertTrue( Infrastructure::whereName( 'Infrastructure PHPUnit' )->doesntExist() );

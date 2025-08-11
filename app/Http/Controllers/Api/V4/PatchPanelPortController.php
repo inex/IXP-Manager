@@ -55,7 +55,7 @@ class PatchPanelPortController extends Controller
             PatchPanelPort::where( 'id', $ppp->id )
             ->with( 'PatchPanelPortFiles' )
             ->when( $deep, function( Builder $q ) {
-                return $q->with( 'PatchPanel', 'SwitchPort.physicalInterface' );
+                return $q->with( [ 'PatchPanel', 'SwitchPort.physicalInterface' ] );
             } )
             ->first()
         );

@@ -42,13 +42,29 @@ use Tests\DuskTestCase;
  */
 class User2FAControllerTest extends DuskTestCase
 {
+
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->replaceEnvAttr( '2FA_ENFORCE_FOR_USERS="1"','2FA_ENFORCE_FOR_USERS="4"' );
+        $this->replaceEnvAttr( '2FA_ENABLED=false','2FA_ENABLED=true' );
+        // changing the environment causes the server to restart
+        // Environment modified. Restarting server...
+        sleep(2);
+
+    }
     public function tearDown(): void
     {
         if( $u2fa = User2FA::whereUserId( 1 )->first() ) {
             $u2fa->delete();
         }
 
-        $this->deleteEnvValue( '2FA_ENFORCE_FOR_USERS="1"' );
+        $this->replaceEnvAttr( '2FA_ENABLED=true','2FA_ENABLED=false' );
+        // changing the environment causes the server to restart
+        // Environment modified. Restarting server...
+        sleep(2);
 
         parent::tearDown();
     }
@@ -63,7 +79,12 @@ class User2FAControllerTest extends DuskTestCase
     public function test(): void
     {
         $this->browse( function ( Browser $browser) {
+
             $this->deleteEnvValue( '2FA_ENFORCE_FOR_USERS="1"' );
+
+            // changing the environment causes the server to restart
+            // Environment modified. Restarting server...
+            sleep(2);
 
             $userUsername = 'travis';
             $userPassword = 'travisci';
@@ -81,7 +102,7 @@ class User2FAControllerTest extends DuskTestCase
                     ->assertPathIs('/profile');
 
             $browser->click("#configue-2fa")
-                    ->assertPathIs('/2fa/configure');
+                    ->waitForLocation('/2fa/configure');
 
             // Check if the 2FA object has been created
             $u2fa = User2FA::whereUserId( 1 )->first();
@@ -92,14 +113,14 @@ class User2FAControllerTest extends DuskTestCase
              * Logout and test that OTP is required
              */
             $browser->visit('/logout')
-                    ->assertPathIs('/login');
+                    ->waitForLocation('/login');
 
             $browser->visit('/login')
                     ->waitForLocation('/login')
                     ->type('username', $userUsername)
                     ->type('password', $userPassword)
                     ->press('#login-btn')
-                    ->assertSee('Enter the one time code from your authenticator app');
+                    ->waitForText('Enter the one time code from your authenticator app');
 
             /**
              * Try to access to a page without typing the OTP
@@ -112,7 +133,7 @@ class User2FAControllerTest extends DuskTestCase
              */
             $browser->type('one_time_password', 'wrongOTP')
                     ->press('Authenticate')
-                    ->assertPathIs('/2fa/authenticate')
+                    ->waitForLocation('/2fa/authenticate')
                     ->assertSee('The one time password entered was wrong.');
 
             $google2FA = new Google2FA( request() );
@@ -123,8 +144,9 @@ class User2FAControllerTest extends DuskTestCase
              */
             $browser->type('one_time_password', $otp)
                 ->press('Authenticate')
-                ->assertDontSee('The one time password entered was wrong.')
-                ->assertPathIs('/admin');
+                ->waitForLocation('/admin')
+                ->assertDontSee('The one time password entered was wrong.');
+
 
             /**
              * Trying disable 2FA with wrong password
@@ -133,31 +155,32 @@ class User2FAControllerTest extends DuskTestCase
                 ->assertPathIs('/profile');
 
             $browser->click("#configue-2fa")
-                ->assertPathIs('/2fa/configure')
+                ->waitForLocation('/2fa/configure')
                 ->type('password', 'wrongPassword')
                 ->press('Disable 2FA')
-                ->assertSee('Incorrect user password - please check your password and try again.');
+                ->waitForText('Incorrect user password - please check your password and try again.');
 
             /**
              * Trying disable 2FA with good password
              */
             $browser->type('password', $userPassword)
                 ->press('Disable 2FA')
-                ->assertPathIs('/profile')
+                ->waitForLocation('/profile')
                 ->assertSee('2FA successfully disabled.');
 
             /**
              * Logout and set .env to force user to create 2fa
              */
             $browser->visit('/logout')
-                ->assertPathIs('/login');
+                ->waitForLocation('/login');
 
             //$this->overrideEnv( ["2FA_ENFORCE_FOR_USERS" => 1] );
             $this->replaceEnvAttr( '2FA_ENFORCE_FOR_USERS="4"','2FA_ENFORCE_FOR_USERS="1"' );
-            $browser->pause(1000);
+            // changing the environment causes the server to restart
+            // Environment modified. Restarting server...
+            sleep(2);
 
             $browser->visit('/login')
-                    ->waitForLocation('/login')
                     ->type('username', $userUsername )
                     ->type('password', $userPassword )
                     ->press('#login-btn' )
@@ -201,8 +224,8 @@ class User2FAControllerTest extends DuskTestCase
         $browser->type( '#one_time_password', 'wrongOTP' )
                 ->type( 'password', 'wrongPassword')
                 ->press( 'Enable 2FA' )
-                ->assertPathIs( '/2fa/configure')
-                ->waitForText( 'Incorrect user password - please check your password and try again.',1);
+                ->waitForLocation( '/2fa/configure')
+                ->assertSee( 'Incorrect user password - please check your password and try again.',1);
 
         /**
          * Test to enable the 2FA with wrong OTP and good Password
@@ -210,8 +233,8 @@ class User2FAControllerTest extends DuskTestCase
         $browser->type( '#one_time_password', 'wrongOTP' )
                 ->type( 'password', $userPassword )
                 ->press( 'Enable 2FA' )
-                ->assertPathIs( '/2fa/configure')
-                ->waitForText( 'Incorrect one time code - please check your code and try again.',1);
+                ->waitForLocation( '/2fa/configure')
+                ->assertSee( 'Incorrect one time code - please check your code and try again.',1);
 
         /**
          * Test to enable the 2FA with good OTP and wrong Password
@@ -219,8 +242,8 @@ class User2FAControllerTest extends DuskTestCase
         $browser->type( '#one_time_password', $otp )
                 ->type( 'password', 'wrongPassword')
                 ->press( 'Enable 2FA' )
-                ->assertPathIs( '/2fa/configure')
-                ->waitForText( 'Incorrect user password - please check your password and try again.',1);
+                ->waitForLocation( '/2fa/configure')
+                ->assertSee( 'Incorrect user password - please check your password and try again.',1);
 
         /**
          * Test to enable the 2FA with good OTP and wrong Password
@@ -228,8 +251,8 @@ class User2FAControllerTest extends DuskTestCase
         $browser->type( '#one_time_password', $otp )
                 ->type( 'password', $userPassword )
                 ->press( 'Enable 2FA' )
-                ->assertPathIs( '/admin')
-                ->waitForText( '2FA successfully enabled.',1);
+                ->waitForLocation( '/admin')
+                ->assertSee( '2FA successfully enabled.',1);
 
         //Check 2fa is enabled
         $u2fa->refresh();

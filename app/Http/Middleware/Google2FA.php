@@ -68,7 +68,7 @@ class Google2FA
             return $next( $r );
         }
 
-        // Force the superuser to enable 2FA
+        // Force the user to enable 2FA?
         if( $r->user()->is2faEnforced() ) {
             return redirect( route( '2fa@configure' ) );
         }

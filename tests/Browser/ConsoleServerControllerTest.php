@@ -71,23 +71,24 @@ class ConsoleServerControllerTest extends DuskTestCase
     {
         $this->browse( function( Browser $browser ) {
             $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
                 ->visit( '/login' )
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->assertPathIs( '/admin' );
+                ->waitForLocation( '/admin' );
 
             $browser->visit( '/console-server/list' )
-                ->assertSee( 'Console Servers' );
+                ->waitForText( 'Console Servers' );
 
             $browser->visit( '/console-server/create' )
-                ->assertSee( 'Console Servers / Create Console Server' );
+                ->waitForText( 'Console Servers / Create Console Server' );
 
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             // 1. test add empty inputs
             $browser->press( 'Create' )
-                ->assertPathIs( '/console-server/create' )
+                ->waitForLocation( '/console-server/create' )
                 ->assertSee( "The name field is required." )
                 ->assertSee( "The hostname field is required." )
                 ->assertSee( "The cabinet id field is required." )
@@ -106,13 +107,13 @@ class ConsoleServerControllerTest extends DuskTestCase
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             $browser->press( 'Create' )
-                ->assertPathIs( '/console-server/list' )
+                ->waitForLocation( '/console-server/list' )
                 ->assertSee( "Console Server created." )
                 ->assertSee( "Console Server Test" );
 
             // 3. test create same name
             $browser->visit( '/console-server/create' )
-                ->assertSee( 'Console Servers / Create Console Server' );
+                ->waitForText( 'Console Servers / Create Console Server' );
 
             $browser->type( 'name', 'Console Server Test' )
                 ->type( 'hostname', 'test2.host.local' )
@@ -126,7 +127,7 @@ class ConsoleServerControllerTest extends DuskTestCase
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             $browser->press( 'Create' )
-                ->assertPathIs( '/console-server/create' )
+                ->waitForLocation( '/console-server/create' )
                 ->assertSee( "The name has already been taken" );
 
             $consoleServer = ConsoleServer::whereName( 'Console Server Test' )->first();
@@ -163,7 +164,7 @@ class ConsoleServerControllerTest extends DuskTestCase
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             $browser->press( 'Save Changes' )
-                ->assertPathIs( '/console-server/list' )
+                ->waitForLocation( '/console-server/list' )
                 ->assertSee( "Console Server updated" );
 
 
@@ -197,7 +198,7 @@ class ConsoleServerControllerTest extends DuskTestCase
 
             // 10. submit with no changes and verify no changes in database
             $browser->press( 'Save Changes' )
-                ->assertPathIs( '/console-server/list' );
+                ->waitForLocation( '/console-server/list' );
 
             // 11. repeat database load and database object check for new values (repeat 2)
             $consoleServer->refresh();
@@ -227,7 +228,7 @@ class ConsoleServerControllerTest extends DuskTestCase
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             $browser->press( 'Save Changes' )
-                ->assertPathIs( '/console-server/list' );
+                ->waitForLocation( '/console-server/list' );
 
             // 13. verify object values
             $consoleServer->refresh();
@@ -251,7 +252,7 @@ class ConsoleServerControllerTest extends DuskTestCase
 
             // 1. test add empty inputs
             $browser->press( 'Create' )
-                ->assertPathIs( '/console-server-connection/create' )
+                ->waitForLocation( '/console-server-connection/create' )
                 ->assertSee( "The description field is required." )
                 ->assertSee( "The console server id field is required." )
                 ->assertSee( "The custid field is required." )
@@ -271,7 +272,7 @@ class ConsoleServerControllerTest extends DuskTestCase
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             $browser->press( 'Create' )
-                ->assertPathIs( '/console-server-connection/list' )
+                ->waitForLocation( '/console-server-connection/list' )
                 ->assertSee( "Console Server Connection created." )
                 ->assertSee( "Server Connect to Console Server Test2" );
 
@@ -307,7 +308,7 @@ class ConsoleServerControllerTest extends DuskTestCase
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             $browser->press( 'Create' )
-                ->assertPathIs( '/console-server-connection/list' )
+                ->waitForLocation( '/console-server-connection/list' )
                 ->assertSee( "Console Server Connection created." )
                 ->assertSee( "Remove test Connect to Console Server Test2" );
 
@@ -349,7 +350,7 @@ class ConsoleServerControllerTest extends DuskTestCase
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             $browser->press( 'Save Changes' )
-                ->assertPathIs( '/console-server-connection/list' )
+                ->waitForLocation( '/console-server-connection/list' )
                 ->assertSee( "Console Server Connection updated" );
 
 
@@ -384,7 +385,7 @@ class ConsoleServerControllerTest extends DuskTestCase
 
             // 10. submit with no changes and verify no changes in database
             $browser->press( 'Save Changes' )
-                ->assertPathIs( '/console-server-connection/list' );
+                ->waitForLocation( '/console-server-connection/list' );
 
             // 11. repeat database load and database object check for new values (repeat 2)
             $serverConnection->refresh();
@@ -419,7 +420,7 @@ class ConsoleServerControllerTest extends DuskTestCase
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             $browser->press( 'Save Changes' )
-                ->assertPathIs( '/console-server-connection/list' );
+                ->waitForLocation( '/console-server-connection/list' );
 
             // 13. verify object values
             $serverConnection->refresh();
@@ -441,7 +442,7 @@ class ConsoleServerControllerTest extends DuskTestCase
                 ->waitForText( 'Do you really want to delete this' )
                 ->press( 'Delete' );
 
-            $browser->assertSee( 'Console Server Connection deleted.' );
+            $browser->waitForText( 'Console Server Connection deleted.' );
             $this->assertTrue( ConsoleServerConnection::where( 'description','Remove test Connect to Console Server Test2' )->doesntExist() );
 
             $browser->visit( '/console-server/list/' )
@@ -449,7 +450,7 @@ class ConsoleServerControllerTest extends DuskTestCase
                 ->waitForText( 'Do you really want to delete this' )
                 ->press( 'Delete' );
 
-            $browser->assertSee( 'Console Server deleted.' );
+            $browser->waitForText( 'Console Server deleted.' );
 
             $this->assertTrue( ConsoleServer::whereName( 'Console Server Test2' )->doesntExist() );
             $this->assertTrue( ConsoleServerConnection::where( 'description','Server Connect2 to Console Server Test2' )->doesntExist() );

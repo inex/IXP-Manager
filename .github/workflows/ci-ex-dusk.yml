@@ -5,16 +5,20 @@ on: [ push, pull_request ]
 jobs:
   ci-ex-dusk:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
-    - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+    - uses: shivammathur/setup-php@v2
       with:
         php-version: '8.3'
+      env:
+        update: true
     - uses: actions/checkout@v2
     - uses: shogo82148/actions-setup-mysql@v1
       with:
         mysql-version: '8.0'
+    - name: Print PHP version
+      run: echo ${{ steps.setup-php.outputs.php-version }}
     - run: mysql -u root -h 127.0.0.1 -e 'CREATE DATABASE ixp_ci; CREATE USER IF NOT EXISTS ixp_ci@localhost IDENTIFIED BY "ixp_ci"; GRANT ALL ON ixp_ci.* TO ixp_ci@localhost;'
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.ci', '.env');"

@@ -54,6 +54,7 @@ class DotEnvWriterTest extends TestCase
     protected function tearDown(): void
     {
         @unlink($this->testFile);
+        parent::tearDown();
     }
 
     /**

@@ -98,11 +98,12 @@ class IpAddressControllerTest extends DuskTestCase
         $this->browse( function( Browser $browser ) {
             // I. prerequisites
             $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
                 ->visit( '/login' )
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->assertPathIs( '/admin' );
+                ->waitForLocation( '/admin' );
 
             $vlan = Vlan::create( $this->vlan );
             $vlanId = $vlan->id;
@@ -115,7 +116,7 @@ class IpAddressControllerTest extends DuskTestCase
                 $browser->visit( "/ip-address/list/$prot" )
                     ->assertSee( "IPv$prot Addresses" )
                     ->select( 'vlan', $vlanId )
-                    ->assertSee( "There are no IPv$prot addresses in this VLAN." );
+                    ->waitForText( "There are no IPv$prot addresses in this VLAN." );
 
                 // 2. create some ip addresses in the test VLAN
                 $browser->visit( "/ip-address/create/$prot?vlan=$vlanId" )
@@ -124,7 +125,7 @@ class IpAddressControllerTest extends DuskTestCase
                     ->type( "network", $cat[ "net1" ] )
                     ->check( 'skip' )
                     ->press( "Add Addresses" )
-                    ->assertPathIs( "/ip-address/list/$prot/$vlanId" )
+                    ->waitForLocation( "/ip-address/list/$prot/$vlanId" )
                     ->assertSee( "8 new IP addresses added to ".$vlan->name.". There were 0 preexisting address(es)." )
                     ->assertSee( "Showing 1 to 8 of 8 entries" );
 
@@ -133,14 +134,14 @@ class IpAddressControllerTest extends DuskTestCase
                     ->type( "network", $cat[ "net1" ] )
                     ->check( 'skip' )
                     ->press( "Add Addresses" )
-                    ->assertPathIs( "/ip-address/create/$prot" )
+                    ->waitForLocation( "/ip-address/create/$prot" )
                     ->assertQueryStringHas("vlan",$vlanId)
                     ->assertSee( "No addresses were added. 8 already exist in the database.");
 
                 // 3. add again w/o skip
                 $browser->uncheck( 'skip' )
                     ->press( "Add Addresses" )
-                    ->assertPathIs( "/ip-address/create/$prot" )
+                    ->waitForLocation( "/ip-address/create/$prot" )
                     ->assertQueryStringHas("vlan",$vlanId)
                     ->assertSee( "No addresses were added as the following addresses already exist in the database:" );
 
@@ -149,7 +150,7 @@ class IpAddressControllerTest extends DuskTestCase
                     ->type( "network", $cat[ "net2" ] )
                     ->check( 'skip' )
                     ->press( "Add Addresses" )
-                    ->assertPathIs( "/ip-address/list/$prot/$vlanId" )
+                    ->waitForLocation( "/ip-address/list/$prot/$vlanId" )
                     ->assertSee( "8 new IP addresses added to ".$vlan->name.". There were 8 preexisting address(es)." );
 
                 $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
@@ -164,10 +165,11 @@ class IpAddressControllerTest extends DuskTestCase
                     ->first();
 
                 $deleteUrl = route('ip-address@delete',$pickedIp->id);
+
                 $browser->click('a.delete-ip[href="'.$deleteUrl.'"]')
                     ->waitForText('Do you really want to delete this IP address?')
                     ->press( 'Delete' )
-                    ->assertPathIs( "/ip-address/list/$prot/$vlanId" )
+                    ->waitForLocation( "/ip-address/list/$prot/$vlanId" )
                     ->assertSee('The IP has been successfully deleted.')
                     ->assertDontSee($cat["ip1"]);
 
@@ -180,13 +182,14 @@ class IpAddressControllerTest extends DuskTestCase
                     ->assertDontSee($cat["ip1"]);
 
                 $availableIpAddresses = $browser->elements('#table-ip tbody tr td:not(:empty)');
+
                 $this->assertTrue(count($availableIpAddresses) == 7);
 
                 $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
                 $browser->click( 'a#delete' )
                     ->waitForText('Do you really want to delete this IP address?')
                     ->press( 'Delete' )
-                    ->assertPathIs( "/ip-address/list/$prot/$vlanId" )
+                    ->waitForLocation( "/ip-address/list/$prot/$vlanId" )
                     ->assertSee('IP Addresses deleted.');
 
                 $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
@@ -206,7 +209,7 @@ class IpAddressControllerTest extends DuskTestCase
                 $browser->click( 'a#delete' )
                     ->waitForText('Do you really want to delete this IP address?')
                     ->press( 'Delete' )
-                    ->assertPathIs( "/ip-address/list/$prot/$vlanId" )
+                    ->waitForLocation( "/ip-address/list/$prot/$vlanId" )
                     ->assertSee('IP Addresses deleted.')
                     ->assertSee( "There are no IPv$prot addresses in this VLAN." );
 

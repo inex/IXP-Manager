@@ -146,9 +146,9 @@ interface Backend
      * {inheritDoc}
      *
      * @param Graph $graph
-     * @return string
+     * @return false|string
      */
-    public function png( Graph $graph ): string;
+    public function png( Graph $graph ): false|string;
 
     /**
      * Get the path to the graphing data file (e.g. path to log or rrd file).
@@ -164,9 +164,9 @@ interface Backend
      * {inheritDoc}
      *
      * @param Graph $graph
-     * @return string
+     * @return false|string
      */
-    public function rrd( Graph $graph ): string;
+    public function rrd( Graph $graph ): false|string;
 
     /**
      * Get a complete list of functionality that this backend supports.

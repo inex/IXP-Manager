@@ -387,13 +387,12 @@ class IXP implements ExtensionInterface
      * Takes a URL with https://xxx/ and returns xxx
      *
      * @param  string $url      The URL
-     *
      * @return string
      */
     public function nakedUrl( string $url ): string
     {
         $url = preg_replace( '/^http[s]?:\/\//', '', $url );
-        return preg_replace( '/\/$/', '', $url );
+        return preg_replace( '/\/$/', '', $url ) ?? '';
     }
 
     /**

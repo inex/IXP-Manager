@@ -67,10 +67,11 @@ class Kernel extends ConsoleKernel
 
         // IRRDB - https://docs.ixpmanager.org/latest/features/irrdb/
         if( config( 'ixp.irrdb.bgpq3.path' ) && is_executable( config( 'ixp.irrdb.bgpq3.path' ) ) ) {
+
             $schedule->command( 'irrdb:update-prefix-db --alert-email' )->cron( '7 */6 * * *' )
                 ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_IRRDB_UPDATE_PREFIX_DB', false ); } )
                 ->withoutOverlapping();
-                
+
             $schedule->command( 'irrdb:update-asn-db --alert-email' )->cron( '37 */6 * * *' )
                 ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_IRRDB_UPDATE_ASN_DB', false ); } )
                 ->withoutOverlapping();

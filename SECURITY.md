@@ -1,10 +1,14 @@
 # Security Policy
 
+## Secure Application Development Policy
+
+Please see: [https://docs.ixpmanager.org/dev/policy/](https://docs.ixpmanager.org/dev/policy/).
+
 ## Reporting a Vulnerability
 
 Thank you in advance for looking to responsibly report security issues. 
 
-Please contact us by email on [security@ixpmanager.org](security@ixpmanager.org) to report security issues or discuss security concerns. All security vulnerabilities will be promptly addressed.
+Please contact us by email on [security@ixpmanager.org](mailto:security@ixpmanager.org) to report security issues or discuss security concerns. All security vulnerabilities will be promptly addressed.
 
 
 ### Confidentiality and Acknowledgements
@@ -18,9 +22,10 @@ Likewise, we are delighted to achowledge and thank anyone who responsibly report
 
 
 | Version | Supported          |
-| ------- | ------------------ |
+|---------|--------------------|
+| 7.x.y   | :white_check_mark: |
 | 6.x.y   | :white_check_mark: |
-| 5.x.y   | :x: |
+| 5.x.y   | :x:                |
 | 4.x.y   | :x:                |
 | < 4.0   | :x:                |
 
