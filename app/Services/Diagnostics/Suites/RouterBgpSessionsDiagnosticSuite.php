@@ -162,18 +162,36 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
             $max_prefixes = false;
         } else {
             $max_prefixes = true;
-            $max_prefixes_percent = (int) ($bgpsum->route_limit_at / $bgpsum->import_limit) * 100;
+            if( isset($bgpsum->route_limit_at) ) {
+                $max_prefixes_percent = (int)( $bgpsum->route_limit_at / $bgpsum->import_limit ) * 100;
+            } else {
+                $max_prefixes_percent = '?';
+            }
         }
 
         $narrative = <<<ENDNARR
-        <b>State:</b> {$bgpsum->state}<br>
-        <b>Changed:</b> {$bgpsum->state_changed}<br>
-        <b>Connection:</b> {$bgpsum->connection}<br>
-        <b>Hold timer (now):</b> {$bgpsum->hold_timer} ({$bgpsum->hold_timer_now})<br>
-        <b>Keepalive (now):</b> {$bgpsum->keepalive} ({$bgpsum->keepalive_now})<br>
-        <b>Max prefixes:</b> {$bgpsum->import_limit}<br>
-        <b># Routes:</b> {$bgpsum->route_limit_at}<br>
+            <b>State:</b> {$bgpsum->state}<br>
+            <b>Changed:</b> {$bgpsum->state_changed}<br>
+            <b>Connection:</b> {$bgpsum->connection}<br>
         ENDNARR;
+
+        if( isset( $bgpsum->hold_timer_now ) ) {
+            $narrative .= "<b>Hold timer (now):</b> {$bgpsum->hold_timer} ({$bgpsum->hold_timer_now})<br>";
+        } else if( isset( $bgpsum->hold_timer ) ) {
+            $narrative .= "<b>Hold timer:</b> {$bgpsum->hold_timer}<br>";
+        }
+
+        if( isset( $bgpsum->keepalive_now ) ) {
+            $narrative .= "<b>Keepalive (now):</b> {$bgpsum->keepalive} ({$bgpsum->keepalive_now})<br>";
+        } else if( isset( $bgpsum->keepalive ) ) {
+            $narrative .= "<b>Keepalive:</b> {$bgpsum->keepalive}<br>";
+        }
+
+        $narrative .= "<b>Max prefixes:</b> {$bgpsum->import_limit}<br>";
+
+        if( isset( $bgpsum->route_limit_at ) ) {
+            $narrative .= "<b># Routes:</b> {$bgpsum->route_limit_at}<br>";
+        }
 
         if( $bgpsum->state !== 'up' ) {
 
@@ -197,8 +215,7 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
         }
 
         return new DiagnosticResult(
-            name: $mainName . "session up " . ( $max_prefixes ? "({$bgpsum->route_limit_at}/{$bgpsum->import_limit} prefixes) " : "(no max prefixes) " )
-                . "(last keepalive " . ($bgpsum->keepalive-$bgpsum->keepalive_now) . "/{$bgpsum->keepalive})",
+            name: $mainName . "session up " . ( $max_prefixes && isset($bgpsum->route_limit_at) ? "({$bgpsum->route_limit_at}/{$bgpsum->import_limit} prefixes) " : " " ),
             result: DiagnosticResult::TYPE_GOOD,
             narrativeHtml: $narrative,
         );
