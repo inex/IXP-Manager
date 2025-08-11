@@ -1,72 +1,69 @@
 
-.env
-.env.barryo
-.env*.local
-.env.by-vagrant.*
-/*.rrd
-.project
-.buildpath
-.settings/
-.vagrant/
-.phpunit.cache/
-auth.json
-/.fleet
+/.env
+/.env.barryo
+/.env*.local
+/.env.by-vagrant.*
+/.env.sage
+/.project
+/.buildpath
+/.settings/
+/.phpunit.cache/
 /vendor/
-bin/fixtures.php
-public/.htaccess
-public/logos/*
+/public/.htaccess
+/public/logos/*
 /public/build
-
-public/favicon.ico
+/public/favicon.ico
 
 .directory
 .DS_Store
+.vagrant/
 *~
+*.rrd
 
 .cache/
 .composer/
 .config/
 .ixp-manager-installer-settingsrc
 composer.phar
-tools/installers/Vagrantfile
+/tools/installers/Vagrantfile
 
-storage/.local
-storage/grapher/
-storage/files/*
-storage/tmp/*
+/storage/.local
+/storage/grapher/
+/storage/files/*
+/storage/tmp/*
 
-tests/Browser/ExampleTest.php
+/tests/Browser/ExampleTest.php
 
-tools/perl-lib/IXPManager/MYMETA.yml
-tools/perl-lib/IXPManager/Makefile
-tools/perl-lib/IXPManager/blib/
-tools/perl-lib/IXPManager/pm_to_blib
-tools/perl-lib/IXPManager/ixpmanager.conf
+/tools/perl-lib/IXPManager/MYMETA.yml
+/tools/perl-lib/IXPManager/Makefile
+/tools/perl-lib/IXPManager/blib/
+/tools/perl-lib/IXPManager/pm_to_blib
+/tools/perl-lib/IXPManager/ixpmanager.conf
 
-config/contact_group.php
-config/custom.php
-config/grapher_cli.php
-config/grapher_trunks.php
-config/grapher_smokeping_overrides.php
-config/ixp_tools.php
-config/lookingglass.php
-config/mailinglists.php
-config/trustedproxy.php
+/config/contact_group.php
+/config/custom.php
+/config/grapher_cli.php
+/config/grapher_trunks.php
+/config/grapher_smokeping_overrides.php
+/config/ixp_tools.php
+/config/lookingglass.php
+/config/mailinglists.php
+/config/trustedproxy.php
 
 ubuntu-*-cloudimg-console.log
 
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/codeStyles/
-.idea/dataSources.local.xml
-.idea/dataSources.xml
-.idea/dataSources
-.idea/inspectionProfiles
-.idea/ixpv.iml
-.idea/php.xml
-.idea/symfony2.xml
-.idea/composerJson.xml
-.idea/misc.xml
+/.idea/workspace.xml
+/.idea/tasks.xml
+/.idea/codeStyles/
+/.idea/dataSources.local.xml
+/.idea/dataSources.xml
+/.idea/dataSources
+/.idea/inspectionProfiles
+/.idea/ixpv.iml
+/.idea/php.xml
+/.idea/symfony2.xml
+/.idea/composerJson.xml
+/.idea/misc.xml
 
 
 # Let's not accidently add SQL dumps to Git
@@ -78,12 +75,11 @@ ubuntu-*-cloudimg-console.log
 npm-debug.log
 yarn-error.log
 
-tools/docker/containers/mysql/docker.sql
+/tools/docker/containers/mysql/docker.sql
 
-.phpunit.result.cache
+/.phpunit.result.cache
 
-app/Console/Commands/Redcentric.php
-.env.sage
+/app/Console/Commands/Redcentric.php
 
 .idea/httpRequests
 .phpactor.json

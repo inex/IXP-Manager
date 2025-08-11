@@ -52,8 +52,6 @@ class ResetMysqlViews extends IXPCommand
     /**
      * Execute the console command.
      *
-     * Transfers data from the table 'customer' and 'user' to the table 'customer_to_users'
-     *
      * @return mixed
      *
      * @throws
