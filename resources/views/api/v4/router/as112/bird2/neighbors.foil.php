@@ -10,17 +10,6 @@ function fn_import ( int remote_as )
         return false;
     }
 
-    # Peer ASN == route's first ASN?
-    if (bgp_path.first != remote_as ) then {
-        return false;
-    }
-
-
-    # Prevent BGP NEXT_HOP Hijacking
-    if !( from = bgp_next_hop ) then {
-        return false;
-    }
-
     # Belt and braces: no one needs an ASN path with > 64 hops, that's just broken
     if( bgp_path.len > 64 ) then {
         return false;
