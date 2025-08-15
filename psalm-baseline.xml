@@ -536,6 +536,7 @@
     </MissingDocblockType>
     <TooManyArguments>
       <code><![CDATA[exceptInput]]></code>
+      <code><![CDATA[exceptInput]]></code>
     </TooManyArguments>
   </file>
   <file src="app/Http/Controllers/Interfaces/VlanInterfaceController.php">
@@ -1291,10 +1292,8 @@
       <code><![CDATA[$mainName . " No, last polled: " . $lastPolled]]></code>
       <code><![CDATA[$mainName ."configured as null/0 but switch port reports " . $this->pi->switchPort->ifMtu]]></code>
       <code><![CDATA[$pi?->switchPort]]></code>
-      <code><![CDATA[$pi?->switchPort]]></code>
     </RedundantCondition>
     <TypeDoesNotContainNull>
-      <code><![CDATA[$pi]]></code>
       <code><![CDATA[$pi]]></code>
     </TypeDoesNotContainNull>
     <UndefinedMagicPropertyFetch>
@@ -1307,10 +1306,8 @@
     </InvalidScalarArgument>
     <RedundantCondition>
       <code><![CDATA[$pi?->switchPort]]></code>
-      <code><![CDATA[$pi?->switchPort]]></code>
     </RedundantCondition>
     <TypeDoesNotContainNull>
-      <code><![CDATA[$pi]]></code>
       <code><![CDATA[$pi]]></code>
     </TypeDoesNotContainNull>
   </file>
