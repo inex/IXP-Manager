@@ -179,8 +179,8 @@ class SwitchPortController extends EloquentController
     public function list( Request $param ) : View
     {
         $switch = false;
-        if( $param->switch !== null ) {
-            if(  $switch = Switcher::find( $param->switch ) ) {
+        if( $param->switchid !== null ) {
+            if(  $switch = Switcher::find( $param->switchid ) ) {
                 $param->session()->put( "switch-port-list", $switch->id );
             } else {
                 $param->session()->remove( "switch-port-list" );
