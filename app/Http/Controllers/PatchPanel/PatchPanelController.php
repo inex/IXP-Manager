@@ -32,11 +32,7 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
-use IXP\Models\{
-    Cabinet,
-    Location,
-    PatchPanel
-};
+use IXP\Models\{Cabinet, Location, PatchPanel, PatchPanelPort, PatchPanelPortHistory};
 
 use IXP\Http\Controllers\Controller;
 use IXP\Http\Requests\StorePatchPanel;
@@ -206,4 +202,84 @@ class PatchPanelController extends Controller
             'pp'    => $pp->load([ 'cabinet', 'patchPanelPorts' ] )
         ]);
     }
+
+
+
+    /**
+     * Allow to display the form to edit a patch panel
+     *
+     * @param Request       $r
+     * @param PatchPanel    $pp      the patch panel
+     *
+     * @return  View
+     */
+    public function expunge( Request $r, PatchPanel $pp ): View
+    {
+        Former::populate([
+            'cabinet_id'                => $r->old( 'cabinet_id',          (string)$pp->cabinet_id          ),
+            'name'                      => $r->old( 'name',                $pp->name                ),
+            'colo_reference'            => $r->old( 'colo_reference',      $pp->colo_reference      ),
+            'cable_type'                => $r->old( 'cable_type',          (string)$pp->cable_type          ),
+            'connector_type'            => $r->old( 'connector_type',      (string)$pp->connector_type      ),
+            'installation_date'         => $r->old( 'installation_date',   $pp->installation_date   ),
+            'port_prefix'               => $r->old( 'port_prefix',         $pp->port_prefix         ),
+            'location_notes'            => $r->old( 'location_notes',      $pp->location_notes      ),
+            'u_position'                => $r->old( 'u_position',          (string)$pp->u_position          ),
+            'colo_pp_type'              => $r->old( 'colo_pp_type',        (string)$pp->colo_pp_type        ),
+            'mounted_at'                => $r->old( 'mounted_at',          (string)$pp->mounted_at          ),
+            'numberOfPorts'             => $r->old( 'numberOfPorts','0'                         ),
+        ]);
+
+        return view( 'patch-panel/expunge' )->with([
+            'pp'            => $pp,
+            'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
+                ->orderBy( 'name' )->get(),
+        ]);
+    }
+
+
+
+    /**
+     * Allow to display the form to edit a patch panel
+     *
+     * @param Request       $r
+     * @param PatchPanel    $pp      the patch panel
+     *
+     * @return RedirectResponse
+     */
+    public function doExpunge( Request $r, PatchPanel $pp ): RedirectResponse
+    {
+        PatchPanelPortHistory::whereIn( 'patch_panel_port_id', $pp->patchPanelPorts->pluck('id') )
+            ->update( [ 'duplex_master_id' => null ] );
+
+        PatchPanelPort::where( 'patch_panel_id', $pp->id )
+            ->update( [ 'duplex_master_id' => null ] );
+
+
+        foreach( $pp->patchPanelPorts as $ppp ) {
+
+            foreach( $ppp->patchPanelPortHistories as $ppph ) {
+
+                foreach( $ppph->patchPanelPortHistoryFiles as $ppphf ) {
+                    @unlink( $ppphf->path() );
+                    $ppphf->delete();
+                }
+
+                $ppph->delete();
+            }
+
+            foreach( $ppp->patchPanelPortFiles as $pppf ) {
+                @unlink( $pppf->path() );
+                $pppf->delete();
+            }
+
+            $ppp->delete();
+        }
+
+        $pp->delete();
+
+        AlertContainer::push( 'The patch panel has been expunged.', Alert::SUCCESS );
+        return redirect( route( "patch-panel@list-inactive" ) );
+    }
+
 }

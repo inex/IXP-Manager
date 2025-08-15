@@ -81,7 +81,9 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], functi
     Route::get(     'view/{pp}',                        'PatchPanelController@view'             )->name( 'patch-panel@view'             );
     Route::get(     'change-status/{pp}/{active}',      'PatchPanelController@changeStatus'     )->name( 'patch-panel@change-status'    );
     Route::post(    'store',                            'PatchPanelController@store'            )->name( 'patch-panel@store'            );
-    Route::put(    'update/{pp}',                      'PatchPanelController@update'           )->name( 'patch-panel@update'           );
+    Route::put(    'update/{pp}',                      'PatchPanelController@update'            )->name( 'patch-panel@update'           );
+    Route::get(     'expunge/{pp}',                    'PatchPanelController@expunge'           )->name( 'patch-panel@expunge'          );
+    Route::post(    'do-expunge/{pp}',                 'PatchPanelController@doExpunge'         )->name( 'patch-panel@do-expunge'       );
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

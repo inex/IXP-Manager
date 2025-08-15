@@ -202,6 +202,9 @@
                                             <a class="btn btn-white" id='list-reactivate-<?= $pp->id ?>' href="<?= route( 'patch-panel@change-status' , [ 'pp' => $pp->id, 'active' => ( $pp->active ? '0' : '1' ) ] ) ?>" title="Reactive">
                                                 <i class="fa fa-repeat"></i>
                                             </a>
+                                            <a class="btn btn-danger" id='list-expunge-<?= $pp->id ?>' href="<?= route( 'patch-panel@expunge' , [ 'pp' => $pp->id ] ) ?>" title="Expunge">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
                                         <?php endif; ?>
                                         <a class="btn btn-white" href="<?= route ( 'patch-panel-port@list-for-patch-panel' , [ 'pp' => $pp->id ] ) ?>" title="See Ports">
                                             <i class="fa fa-th"></i>
