@@ -118,6 +118,10 @@
                                 </div>
                                 <div class="col-12 col-md-9 tw-text-center md:tw-text-left">
                                     <?=  $t->ee( $c->peeringmacro ) ?>
+
+                                    <?php if( strlen( $c->peeringmacrov6 ?? "" ) && $c->peeringmacrov6 !== $c->peeringmacro ): ?>
+                                        (IPv6: <?=  $t->ee( $c->peeringmacrov6 ) ?>)
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         <?php endif; ?>
