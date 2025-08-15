@@ -80,9 +80,13 @@
                                           Multiple (<?= $u['nbC2U'] ?>)
                                         </a>
                                     <?php else: ?>
-                                        <a href="<?=  route( "customer@overview" , [ 'cust' => $u[ 'custid' ] ] ) ?>">
-                                            <?= $t->ee( $u['customer'] ) ?>
-                                        </a>
+                                        <?php if( !$u['customer'] || !$u[ 'custid' ] ): ?>
+                                            <span class="badge badge-warning">DB Issue?</span> User not affiliated to a customer.
+                                        <?php else: ?>
+                                            <a href="<?=  route( "customer@overview" , [ 'cust' => $u[ 'custid' ] ] ) ?>">
+                                                <?= $t->ee( $u['customer'] ) ?>
+                                            </a>
+                                        <?php endif; ?>
                                     <?php endif; ?>
                                 </td>
                             <?php endif; ?>
