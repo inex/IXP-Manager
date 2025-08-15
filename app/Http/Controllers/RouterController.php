@@ -63,8 +63,25 @@ class RouterController extends Controller
      */
     public function list(): View
     {
+        $routers = Router::with( 'vlan' )->get();
+
+        $birdv1Templates = [];
+
+        foreach( $routers as $router ) {
+            if( str_contains( $router->template, 'router/as112/bird/' ) ) {
+                $birdv1Templates[] = $router->handle;
+            }
+        }
+
+        if( $birdv1Templates !== [] ) {
+            AlertContainer::push( 'Bird v1 went end of life at the end of 2023, however the following routers are using a Bird v1 templates: '
+                . implode( ', ', $birdv1Templates ) . '. You should migrate to Bird v2 or v3 as support for Bird v1 will be '
+                . 'removed from IXP Manager in a future release.', Alert::WARNING
+            );
+        }
+
         return view( 'router/index' )->with([
-            'routers'       => Router::with( 'vlan' )->get()
+            'routers'       => Router::with( 'vlan' )->get(),
         ]);
     }
 
