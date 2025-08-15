@@ -41,7 +41,7 @@ return [
     |
     */
 
-    'default' => env( 'LOG_CHANNEL', env( 'APP_LOG', 'single' ) ),
+    'default' => env( 'LOG_CHANNEL', env( 'APP_LOG', 'daily' ) ),
 
 
     /*
@@ -75,9 +75,11 @@ return [
     */
 
     'channels' => [
+
+
         'stack' => [
             'driver' => 'stack',
-            'channels' => explode(',', env('LOG_STACK', 'single')),
+            'channels' => explode(',', (string) env('LOG_STACK', 'single')),
             'ignore_exceptions' => false,
         ],
 
@@ -92,7 +94,7 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
-            'days' => env('LOG_DAILY_DAYS', 14),
+            'days' => env('LOG_DAILY_DAYS', 28),
             'replace_placeholders' => true,
         ],
 
@@ -121,10 +123,10 @@ return [
             'driver' => 'monolog',
             'level' => env('LOG_LEVEL', 'debug'),
             'handler' => StreamHandler::class,
-            'formatter' => env('LOG_STDERR_FORMATTER'),
-            'with' => [
+            'handler_with' => [
                 'stream' => 'php://stderr',
             ],
+            'formatter' => env('LOG_STDERR_FORMATTER'),
             'processors' => [PsrLogMessageProcessor::class],
         ],
 
