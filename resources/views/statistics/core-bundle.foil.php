@@ -18,7 +18,7 @@
                 <a class="navbar-brand">
                     Core Bundle:
                 </a>
-                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <div>
                     <form class="navbar-form navbar-left form-inline d-block d-lg-flex"  action="<?= route( "statistics@core-bundle", [ "cb" => $cb->id ] ) ?>" method="GET">
                         <ul class="navbar-nav">
                             <li class="nav-item">
