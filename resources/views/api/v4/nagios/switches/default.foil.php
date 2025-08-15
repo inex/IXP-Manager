@@ -65,6 +65,8 @@
 # <?= $s->name ?> - <?= $s->cabinet->colocation ?>, <?= $s->cabinet->location->name ?>.
 #
 
+<?php if( $s->ipv4addr ): ?>
+
 define host {
     use                     <?= $t->host_definition ?>
 
@@ -77,6 +79,12 @@ define host {
     _DBID                   <?= $s->id ?>
 
 }
+
+<?php else: ?>
+
+    # No IPv4 address for <?= $s->hostname ?> so excluding from monitoring.
+
+<?php endif; ?>
 
 <?php endforeach; ?>
 
