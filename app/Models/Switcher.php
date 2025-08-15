@@ -379,12 +379,21 @@ class Switcher extends Model
         // clone the ports currently known to this switch as we'll be playing with this array
         $existingPorts = clone $this->switchPorts;
 
+        $foundIfIndexes = [];
+
         // iterate over all the ports discovered on the switch:
         foreach( $host->useIface()->indexes() as $index ) {
             // Port types - see https://docs.ixpmanager.org/latest/usage/switches/#snmp-and-port-types-iftype
             if( isset( $host->useIface()->types()[ $index ] ) && !in_array( $host->useIface()->types()[ $index ], config('ixp.snmp.allowed_interface_types') ) ) {
                 continue;
             }
+
+            // https://github.com/inex/IXP-Manager/issues/840 suggested duplicate ports were being added.
+            // Track found indexes to avoid this.
+            if( in_array( $index, $foundIfIndexes ) ) {
+                continue;
+            }
+            $foundIfIndexes[] = $index;
 
             // find the matching switch port that may already be in the database (or create a new one)
             $sp = false;
