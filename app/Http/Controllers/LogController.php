@@ -83,6 +83,41 @@ class LogController extends Controller
             $models = $models->toArray();
         }
 
+        $logs = Log::selectRaw( 'log.*, u.username' )
+            ->leftJoin( 'user AS u', 'u.id', 'log.user_id' )
+            ->when( $r->model, function( Builder $q, $model ) {
+                return $q->where('log.model', 'like', $model );
+            } )->when( $model_id, function( Builder $q, $model_id ) {
+                return $q->where('log.model_id', $model_id );
+            } )->when( $user, function( Builder $q, $user ) {
+                return $q->where('u.username', $user );
+            } )->when( $action, function( Builder $q, $action ) {
+                return $q->where('log.action', $action );
+            } )->when( $created_at, function( Builder $q, $created_at ) {
+                return $q->where('log.created_at', 'like', $created_at . '%' );
+            } )->orderByDesc( 'created_at' )->paginate( 20 );
+
+        // pagination:
+        if( $r->model ) {
+            $logs->appends( [ 'model' => $r->model ] );
+        }
+
+        if( $model_id ) {
+            $logs->appends( [ 'model_id' => $model_id ] );
+        }
+
+        if( $model_id ) {
+            $logs->appends( [ 'model_id' => $model_id ] );
+        }
+
+        if( $created_at ) {
+            $logs->appends( [ 'created_at' => $created_at ] );
+        }
+
+        if( $r->action ) {
+            $logs->appends( [ 'action' => $r->action ] );
+        }
+
         return view( 'log/index' )->with([
             'models'    => $models,
             'model'     => $r->model,
@@ -91,19 +126,7 @@ class LogController extends Controller
                 ->leftJoin( 'user AS u', 'u.id', 'log.user_id')
                 ->orderBy( 'username' )
                 ->distinct()->get()->toArray(),
-            'logs'      => Log::selectRaw( 'log.*, u.username' )
-                ->leftJoin( 'user AS u', 'u.id', 'log.user_id' )
-                ->when( $r->model, function( Builder $q, $model ) {
-                    return $q->where('log.model', 'like', $model );
-                } )->when( $model_id, function( Builder $q, $model_id ) {
-                    return $q->where('log.model_id', $model_id );
-                } )->when( $user, function( Builder $q, $user ) {
-                    return $q->where('u.username', $user );
-                } )->when( $action, function( Builder $q, $action ) {
-                    return $q->where('log.action', $action );
-                } )->when( $created_at, function( Builder $q, $created_at ) {
-                    return $q->where('log.created_at', 'like', $created_at . '%' );
-                } )->orderByDesc( 'created_at' )->paginate( 20 )
+            'logs'      => $logs,
         ]);
     }
 

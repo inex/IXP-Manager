@@ -127,7 +127,7 @@ $this->layout( 'layouts/ixpv4' );
                         </td>
                     </tr>
                 <?php endif; ?>
-            <tbody>
+            </tbody>
         </table>
         <?= $t->logs->onEachSide(0)->links() ?>
     </div>
