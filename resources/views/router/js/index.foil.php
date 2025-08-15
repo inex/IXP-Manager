@@ -9,9 +9,17 @@
             { responsivePriority: 1, targets: 0 },
             { responsivePriority: 2, targets: -1 }
         ],
+        fnDrawCallback: function( oSettings ) {
+            $( '.btn-reset-ts' ).click( resetRouterTimestamp );
+            $( '.btn-resume' ).click( resumeRouterUpdates );
+            $( '.btn-pause' ).click( pauseRouterUpdates );
+            $( '.btn-delete' ).click( deleteRouter );
+        },
     } );
 
-    $( '.btn-delete' ).click( function( e ) {
+
+
+    function deleteRouter( e ) {
         e.preventDefault();
         let url = this.href;
 
@@ -42,10 +50,10 @@
                 },
             }
         });
-    });
+    }
 
 
-    $( '.btn-pause' ).click( function( e ) {
+    function pauseRouterUpdates( e ) {
         e.preventDefault();
         let url = this.href;
 
@@ -75,11 +83,11 @@
                 },
             }
         });
-    });
+    }
 
 
 
-    $( '.btn-resume' ).click( function( e ) {
+    function resumeRouterUpdates( e ) {
         e.preventDefault();
         let url = this.href;
 
@@ -109,11 +117,11 @@
                 },
             }
         });
-    });
+    }
 
 
 
-    $( '.btn-reset-ts' ).click( function( e ) {
+    function resetRouterTimestamp( e ) {
         e.preventDefault();
         let url = this.href;
 
@@ -145,5 +153,5 @@
                 },
             }
         });
-    });
+    }
 </script>
