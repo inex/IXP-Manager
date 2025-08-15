@@ -91,7 +91,7 @@
                         Peering Policy
                     </th>
                     <th>
-                        Reseller
+                        Resold
                     </th>
                     <th>
                         Type
