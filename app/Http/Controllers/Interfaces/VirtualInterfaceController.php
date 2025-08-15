@@ -105,6 +105,48 @@ class VirtualInterfaceController extends Common
     }
 
     /**
+     * Display all the virtualInterfaces that are allocated to non-active customers
+     *
+     * @return  View
+     */
+    public function listOrphaned() : View
+    {
+        return view( 'interfaces/virtual/list-orphaned' )->with([
+            'resellerMode'      => $this->resellerMode(),
+            'vis'               => VirtualInterface::selectRaw(
+                'vi.id AS id, 
+                            SUM( pi.speed ) AS speed,
+                            SUM( pi.rate_limit ) AS rate_limit,
+                            COUNT( pi.id ) AS nbpi,
+                            c.id AS custid, c.name AS custname,
+                            c.dateleave AS dateleave,
+                            c.status AS custstatus,
+                            c.type AS custtype,
+                            l.id as locationid, l.name AS locationname,
+                            s.id AS switchid, s.name AS switchname,
+                            GROUP_CONCAT( sp.name ) AS switchport,
+                            GROUP_CONCAT( sp.type ) AS switchporttype,
+                            GROUP_CONCAT( ppi.id ) AS peering,
+                            GROUP_CONCAT( fpi.id ) AS fanout'
+                )->from( 'virtualinterface AS vi' )
+                    ->leftJoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
+                    ->leftJoin( 'physicalinterface AS ppi', 'ppi.fanout_physical_interface_id', 'pi.id' )
+                    ->leftJoin( 'physicalinterface AS fpi', 'fpi.id', 'pi.fanout_physical_interface_id' )
+                    ->leftJoin( 'cust AS c', 'c.id', 'vi.custid' )
+                    ->leftJoin( 'switchport AS sp', 'sp.id', 'pi.switchportid' )
+                    ->leftJoin( 'switch AS s', 's.id', 'sp.switchid' )
+                    ->leftJoin( 'cabinet AS cab', 'cab.id', 's.cabinetid' )
+                    ->leftJoin( 'location AS l', 'l.id', 'cab.locationid' )
+                ->whereNotNull( 'c.dateleave' )
+                ->orWhere( 'c.status', '!=', Customer::STATUS_NORMAL )
+                ->orWhere( 'c.type', Customer::TYPE_ASSOCIATE )
+                ->groupBy( 'id' )
+                ->get()->toArray(),
+        ]);
+    }
+
+
+    /**
      * Display the form to create a virtual interface
      *
      * @param  Customer  $cust  customer

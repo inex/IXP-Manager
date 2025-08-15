@@ -165,6 +165,7 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
 Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], function() {
     Route::group( [  'prefix' => 'virtual' ], function() {
         Route::get(     'list',                     'VirtualInterfaceController@list'                   )->name(    'virtual-interface@list'                    );
+        Route::get(     'list-orphaned',            'VirtualInterfaceController@listOrphaned'           )->name(    'virtual-interface@list-orphaned'           );
         Route::get(     'edit/{vi}',                'VirtualInterfaceController@edit'                   )->name(    'virtual-interface@edit'                    );
         Route::get(     'create',                   'VirtualInterfaceController@create'                 )->name(    'virtual-interface@create'                  );
         Route::get(     'create/cust/{cust}',       'VirtualInterfaceController@createForCust'          )->name(    'virtual-interface@create-for-cust'         );

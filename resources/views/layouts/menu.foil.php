@@ -67,6 +67,12 @@
                             Sflow Receivers
                         </a>
                     </li>
+
+                    <li class="nav-sub-menu-item <?= !request()->is( 'interfaces/virtual/list-orphaned' ) ?: 'active' ?>">
+                        <a class="nav-link" href="<?= route('virtual-interface@list-orphaned') ?>">
+                            Orphaned Interfaces
+                        </a>
+                    </li>
                 </ul>
             <?php endif; ?>
 
