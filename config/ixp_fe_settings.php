@@ -468,6 +468,14 @@ return [
                     'help'       => 'Chose between allowing users to opt into 2fa, or requiring all users with minimum selected previlege.',
                 ],
 
+                'secure_session_cookie' => [
+                    'config_key' => 'session.secure',
+                    'dotenv_key' => 'SESSION_SECURE_COOKIE',
+                    'type'       => 'radio',
+                    'name'       => 'Enforce secure session cookies',
+                    'help'       => 'By setting this option, session cookies will only be sent back to the server if the browser has a HTTPS connection. '
+                                    . 'This will keep the cookie from being sent to you if it can not be done securely. Note that all cookies are also encrypted.',
+                ],
 
                 'peeringdb_oauth_enabled'                => [
                     'config_key' => 'auth.peeringdb_oauth_enabled',
