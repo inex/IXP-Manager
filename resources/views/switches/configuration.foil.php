@@ -176,10 +176,19 @@
                                 <?= str_replace( ",", "<br>", $conf[ "ifName" ] ) ?>
                             </td>
                             <td>
-                                <?= $t->scaleBits( array_sum( explode( "," , $conf[ "rate_limit" ] ?: $conf[ "speed" ]) )*1000*1000, 0 ) ?>
+                                <?php
+                                    $portSpeed = 0;
+                                    $speeds = explode( "," , $conf[ "rate_limit" ] ?: $conf[ "speed" ] );
+                                    foreach( $speeds as $speed ) {
+                                        if( is_numeric( $speed ) ) {
+                                            $portSpeed += $speed;
+                                        }
+                                    }
+                                ?>
+                                <?= $t->scaleBits( $portSpeed*1000*1000, 0 ) ?>
                             </td>
                             <td>
-                                <?= array_sum( explode( ',' , $conf[ "rate_limit" ] ?: $conf[ 'speed' ] ) ) ?>
+                                <?= $portSpeed ?>
                             </td>
                             <td>
                                 <?= $conf[ "vlan" ] ?>
