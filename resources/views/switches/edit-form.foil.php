@@ -39,7 +39,7 @@
                         <?php
                             $cabinetid = old('cabinetid') ?? ( $t->data[ 'params'][ 'object'][ 'cabinetid' ] ?? null );
                         ?>
-                        <select class="form-control" id="cabinetid" name="cabinetid">
+                        <select class="form-control" id="cabinetid" name="cabinetid" required>
                             <option value="" disabled="disabled" selected="selected">
                                 Choose a rack <?= $cabinetid ?>
                             </option>
@@ -65,6 +65,7 @@
                     ->fromQuery( $t->data[ 'params'][ 'infra'], 'name' )
                     ->placeholder( 'Choose the infrastructure' )
                     ->addClass( 'chzn-select' )
+                    ->required()
                     ->blockHelp( "The infrastructure (IXP) that this switch participates in." );
                 ?>
             </div>
