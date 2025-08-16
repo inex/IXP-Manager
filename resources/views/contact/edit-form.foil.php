@@ -130,13 +130,13 @@
                             <table class="table table-no-border">
                                 <?php foreach( $t->data[ 'params'][ "allGroups" ] as $gname => $gvalue ): ?>
                                     <?php if( $gname !== "ROLE" && config('contact_group.types.' . $gname ) ): ?>
-                                        <tr>
+                                        <tr class="tw-border-b-1 tw-border-b-solid tw-border-b-gray-200">
                                             <td>
                                                 <label for="mayauthorize" class="control-label col-lg-2 col-sm-4" style="display: grid">&nbsp;<?= $gname ?>&nbsp;</label>
                                             </td>
 
-                                            <?php foreach( $gvalue as $ggroup ): ?>
                                                 <td>
+                                                    <?php foreach( $gvalue as $ggroup ): ?>
                                                     <div class="form-group row">
                                                         <div class="col-sm-6 col-md-6 col-lg-8 col-xl-6">
                                                             <div class="form-check form-check-inline">
@@ -147,8 +147,8 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <?php endforeach; ?>
                                                 </td>
-                                            <?php endforeach; ?>
                                         </tr>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
