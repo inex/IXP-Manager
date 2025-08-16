@@ -94,13 +94,15 @@
                                 <?= \IXP\Models\User::$PRIVILEGES_TEXT_VSHORT[ $u[ "privileges" ] ] ?? 'X' ?>
                                 <?= ( $u[ 'nbC2U' ] > 1 ) ? "*": "" ?>
                             </td>
-                            <td>
+                            <td data-sort="<?= $u[ 'u2fa_enabled' ] ? 1 : 0 ?>">
                                 <?php if( $u[ 'u2fa_enabled' ] ): ?>
                                     <span class="badge badge-success">2FA</span>
+                                <?php else: ?>
+                                    <span class="badge badge-danger">2FA</span>
                                 <?php endif; ?>
 
                                 <?php if( config( 'auth.peeringdb.enabled' ) && $u['peeringdb_id'] ): ?>
-                                    <span class="badge badge-success">OAuth</span>
+                                    <span class="badge badge-info">OAuth</span>
                                 <?php endif; ?>
                             </td>
                             <td>

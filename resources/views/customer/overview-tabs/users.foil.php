@@ -21,7 +21,7 @@
                 Last Login
             </th>
             <th>
-                2FA Enabled
+                Flags
             </th>
             <th>
                 Actions
@@ -53,7 +53,15 @@
                     <?= $c2u->last_login_date ?? '<em>Never</em>' ?>
                 </td>
                 <td>
-                    <?= $u2fa && $u2fa->enabled ? "Yes" : "No" ?>
+                    <?php if( $u2fa && $u2fa->enabled ): ?>
+                        <span class="badge badge-success">2FA</span>
+                    <?php else: ?>
+                        <span class="badge badge-danger">2FA</span>
+                    <?php endif; ?>
+
+                    <?php if( config( 'auth.peeringdb.enabled' ) && $user->peeringdb_id ): ?>
+                        <span class="badge badge-info">OAuth</span>
+                    <?php endif; ?>
                 </td>
                 <td>
                     <div class="btn-group btn-group-sm">
