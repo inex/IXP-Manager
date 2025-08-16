@@ -57,7 +57,7 @@ return [
     'titlename'     => env( 'IDENTITY_TITLENAME', env( 'IDENTITY_SITENAME', 'IXP Manager' ) ),
 
     'corporate_url' => env( 'IDENTITY_CORPORATE_URL', '*** CONFIG IDENTITY IN .env ***' ),
-    'url'           => env( 'APP_URL', url('/') ),
+    'url'           => env( 'APP_URL', '' ),
     'biglogo'       => env( 'IDENTITY_BIGLOGO', 'https://www.ixpmanager.org/images/logos/ixp-manager.png' ),
 
     'vlans'       => [
