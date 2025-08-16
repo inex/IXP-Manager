@@ -172,7 +172,7 @@ function updateSwitchPort( e ) {
         selectedPort = $( "#original-switch-port-fanout" ).val();
     } else {
         dd_sp     = $( "#switchportid" );
-        arrayType = [ <?= \IXP\Models\SwitchPort::TYPE_UNSET ?>,  <?= \IXP\Models\SwitchPort::TYPE_PEERING ?>, <?= \IXP\Models\SwitchPort::TYPE_CORE ?> ];
+        arrayType = [ <?= \IXP\Models\SwitchPort::TYPE_UNSET ?>, <?= \IXP\Models\SwitchPort::TYPE_RESELLER ?>, <?= \IXP\Models\SwitchPort::TYPE_PEERING ?>, <?= \IXP\Models\SwitchPort::TYPE_CORE ?> ];
         selectedPort = $( "#original-switch-port" ).val();
     }
 

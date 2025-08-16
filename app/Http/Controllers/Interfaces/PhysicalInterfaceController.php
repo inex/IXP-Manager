@@ -136,10 +136,20 @@ class PhysicalInterfaceController extends Common
     public function store( StorePhysicalInterface $r ): RedirectResponse
     {
         $vi = VirtualInterface::find( $r->virtualinterfaceid );
+	    $sp = SwitchPort::find( $r->switchportid );
 
-        // when presenting the add PI form, we include peering and unknown port types; set the selected port as peering:
-        SwitchPort::find( $r->switchportid )
-            ->update( [ 'type' => SwitchPort::TYPE_PEERING ] );
+	    // If the first port in an existing virtual interface is already
+	    // reseller, set the new port to reseller.
+	    if ( $vi->physicalInterfaces()->count() > 0
+             && $vi->physicalInterfaces()->first()->switchport->typeReseller() ) {
+             $sp->update( [ 'type' => SwitchPort::TYPE_RESELLER ] );
+	    }
+
+	    // when presenting the add PI form, we include peering, reseller and unknown port types;
+	    // set the selected port as peering unless already reseller
+        if ( $sp->type !== SwitchPort::TYPE_RESELLER ) {
+                $sp->update( [ 'type' => SwitchPort::TYPE_PEERING ] );
+        }
 
         $this->setBundleDetails( $vi );
         $vi->save();
@@ -201,12 +211,12 @@ class PhysicalInterfaceController extends Common
         // fill the form with physical interface data
         $data = [
             'switch'        => $r->old( 'switch',        $pi->switchPort->switchid  ),
-            'switchportid'  => $r->old( 'switchportid',  (string)$pi->switchportid          ),
+            'switchportid'  => $r->old( 'switchportid',  (string)$pi->switchportid  ),
             'status'        => $r->old( 'status',        $pi->status                ),
             'speed'         => $r->old( 'speed',         $pi->speed                 ),
             'duplex'        => $r->old( 'duplex',        $pi->duplex                ),
-            'rate_limit'    => $r->old( 'rate_limit',    (string)$pi->rate_limit            ),
-            'autoneg'       => $r->old( 'autoneg',       (string)$pi->autoneg               ),
+            'rate_limit'    => $r->old( 'rate_limit',    (string)$pi->rate_limit    ),
+            'autoneg'       => $r->old( 'autoneg',       (string)$pi->autoneg       ),
             'notes'         => $r->old( 'notes',         $pi->notes                 ),
         ];
 
@@ -253,9 +263,12 @@ class PhysicalInterfaceController extends Common
     public function update( StorePhysicalInterface $r, PhysicalInterface $pi ): RedirectResponse
     {
         $vi = VirtualInterface::find( $r->virtualinterfaceid );
-        // when presenting the add PI form, we include peering and unknown port types; set the selected port as peering:
-        $sp = SwitchPort::find( $r->switchportid );
-        $sp->update( [ 'type' => SwitchPort::TYPE_PEERING ] );
+        // when presenting the add PI form, we include peering, reseller uplink and unknown port types; set the selected port as peering:
+	    $sp = SwitchPort::find( $r->switchportid );
+
+	    if ( $sp->type !== SwitchPort::TYPE_RESELLER ) {
+		    $sp->update( [ 'type' => SwitchPort::TYPE_PEERING ] );
+	    }
 
         if( $pi->otherPICoreLink() ){
             // check if the user has changed the switch port
