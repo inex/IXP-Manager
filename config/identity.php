@@ -53,12 +53,12 @@ return [
     'billing_phone'       => env( 'IDENTITY_BILLING_PHONE', '*** CONFIG IDENTITY IN .env ***' ),
     'billing_hours'       => env( 'IDENTITY_BILLING_HOURS', '*** CONFIG IDENTITY IN .env ***' ),
 
-    'sitename'      => env( 'IDENTITY_SITENAME', '*** CONFIG IDENTITY IN .env ***' ),
+    'sitename'      => env( 'IDENTITY_SITENAME', 'IXP Manager' ),
     'titlename'     => env( 'IDENTITY_TITLENAME', env( 'IDENTITY_SITENAME', 'IXP Manager' ) ),
 
     'corporate_url' => env( 'IDENTITY_CORPORATE_URL', '*** CONFIG IDENTITY IN .env ***' ),
-    'url'           => env( 'APP_URL', '*** CONFIG APP_URL IN .env ***' ),
-    'biglogo'       => env( 'IDENTITY_BIGLOGO', '*** CONFIG IDENTITY IN .env ***' ),
+    'url'           => env( 'APP_URL', url('/') ),
+    'biglogo'       => env( 'IDENTITY_BIGLOGO', 'https://www.ixpmanager.org/images/logos/ixp-manager.png' ),
 
     'vlans'       => [
             'default' => env( 'IDENTITY_DEFAULT_VLAN', 1 ),
