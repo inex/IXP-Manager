@@ -53,6 +53,7 @@ class IxpServiceProvider extends ServiceProvider
      *
      * @return void
      */
+    #[\Override]
     public function register(): void
     {
         $this->app->resolving('view', function( $view ) {

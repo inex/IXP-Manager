@@ -42,6 +42,7 @@ class RipeAtlasProvider extends ServiceProvider
      *
      * @return void
      */
+    #[\Override]
     public function register(): void
     {
         $this->app->singleton( 'IXP\Services\ApiCall', function( $app ) {

@@ -56,7 +56,9 @@ class StoreSflowReceiver extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{virtual_interface_id: 'required|integer|exists:virtualinterface,id', dst_ip: 'required|ip', dst_port: 'required|integer'}
      */
     public function rules(): array
     {

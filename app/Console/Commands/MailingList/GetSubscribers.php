@@ -58,8 +58,6 @@ class GetSubscribers extends MailingList
     /**
      * Execute the console command.
      *
-     * @return mixed
-     *
      * @throws
      */
     public function handle(): int

@@ -53,6 +53,7 @@ class Store extends FormRequest
      *
      * @return void
      */
+    #[\Override]
     protected function prepareForValidation(): void
     {
         // If all vlans or all peers are selected (value === 0) then reset to null to avoid conflict in DB
@@ -65,7 +66,9 @@ class Store extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return ((IPv4Cidr|IPv6Cidr|Ipv4SubnetSize|Ipv6SubnetSize|\Closure|string)[]|string)[]
+     *
+     * @psalm-return array{peer_id: list{'nullable', 'integer', \Closure(mixed, mixed, mixed):mixed}, vlan_id: list{'nullable', 'integer', \Closure(mixed, mixed, mixed):mixed}, advertised_prefix: list{'nullable', 'max:43', 'string'|IPv4Cidr|IPv6Cidr, ''|Ipv4SubnetSize|Ipv6SubnetSize}, received_prefix: list{'nullable', 'max:43', 'string'|IPv4Cidr|IPv6Cidr, ''|Ipv4SubnetSize|Ipv6SubnetSize}, protocol: string, action_advertise: string, action_receive: string}
      */
     public function rules(): array
     {

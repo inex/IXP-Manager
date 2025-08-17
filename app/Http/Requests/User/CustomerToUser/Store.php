@@ -38,7 +38,7 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-class Store extends FormRequest
+final class Store extends FormRequest
 {
     /**
      * The Customer object

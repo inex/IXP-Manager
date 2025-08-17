@@ -157,7 +157,8 @@ abstract class Command extends \Illuminate\Console\Command
      * @param string $name The parameter name for output in error messages
      * @param mixed $value The value to validate against $rule
      *
-     * @return bool
+     * @return true
+     *
      * @throws \Exception
      */
     protected function validateOrExit( string $rule, string $name, string $value ): bool

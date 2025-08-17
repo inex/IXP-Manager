@@ -95,7 +95,7 @@ class SettingsController extends Controller
     /**
      * Display the form to update the .env
      */
-    private function createForm()
+    private function createForm(): string
     {
         $envValues = $this->envWriter->getVariables();
 
@@ -194,7 +194,7 @@ class SettingsController extends Controller
     /**
      * Display the form to edit an object
      */
-    protected function index()
+    protected function index(): \Illuminate\Contracts\View\View
     {
         return view( 'settings.index' )->with( [
             'form' => $this->createForm(),
@@ -206,9 +206,11 @@ class SettingsController extends Controller
      *
      * @param Request $request
      *
-     * @return array
+     * @return string[]
      *
      * @throws
+     *
+     * @psalm-return array{status: 'success', message: 'Modification done'}
      */
     public function update( Request $request ): array
     {

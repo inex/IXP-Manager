@@ -62,11 +62,11 @@ class ReindexIfIndex extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
-     *
      * @throws
+     *
+     * @psalm-return -2|-1|0
      */
-    public function handle()
+    public function handle(): int
     {
         if( ! ( $s = Switcher::where( 'name', $this->argument('switch') )->first() ) ) {
             $this->error( "ERR: No switch found with name: " . $this->argument('switch' ) );

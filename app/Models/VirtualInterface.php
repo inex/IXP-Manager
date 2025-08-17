@@ -113,6 +113,8 @@ class VirtualInterface extends Model
 
     /**
      * Get the customer that owns the virtual interfaces.
+     *
+     * @psalm-return BelongsTo<Customer>
      */
     public function customer(): BelongsTo
     {
@@ -121,6 +123,8 @@ class VirtualInterface extends Model
 
     /**
      * Get the VLAN interfaces for the virtual interface
+     *
+     * @psalm-return HasMany<VlanInterface>
      */
     public function vlanInterfaces(): HasMany
     {
@@ -129,6 +133,8 @@ class VirtualInterface extends Model
 
     /**
      * Get the physical interfaces for the virtual interface
+     *
+     * @psalm-return HasMany<PhysicalInterface>
      */
     public function physicalInterfaces(): HasMany
     {
@@ -137,6 +143,8 @@ class VirtualInterface extends Model
 
     /**
      * Get the mac addresses for the virtual interface
+     *
+     * @psalm-return HasMany<MacAddress>
      */
     public function macAddresses(): HasMany
     {
@@ -145,6 +153,8 @@ class VirtualInterface extends Model
 
     /**
      * Get the sflow receivers for the virtual interface
+     *
+     * @psalm-return HasMany<SflowReceiver>
      */
     public function sflowReceivers(): HasMany
     {
@@ -201,6 +211,9 @@ class VirtualInterface extends Model
     /**
      * Get peering PhysicalInterfaces
      *
+     * @return PhysicalInterface[]
+     *
+     * @psalm-return list{0?: PhysicalInterface,...}
      */
     public function peeringPhysicalInterface(): array
     {
@@ -216,7 +229,9 @@ class VirtualInterface extends Model
     /**
      * Get fanout PhysicalInterfaces
      *
-     * @return array
+     * @return (PhysicalInterface|null)[]
+     *
+     * @psalm-return list{0?: PhysicalInterface|null,...}
      */
     public function fanoutPhysicalInterface(): array
     {
@@ -251,9 +266,9 @@ class VirtualInterface extends Model
      *
      * @see SwitchPortt::$TYPES
      *
-     * @return string|bool The virtual interface type (`\Models\SwitchPort::TYPE_XXX`) or false if no physical interfaces.
+     * @return false|int|null The virtual interface type (`\Models\SwitchPort::TYPE_XXX`) or false if no physical interfaces.
      */
-    public function type()
+    public function type(): int|false|null
     {
         if( $this->physicalInterfaces->isNotEmpty() ) {
             return $this->physicalInterfaces[ 0 ]->switchPort->type;

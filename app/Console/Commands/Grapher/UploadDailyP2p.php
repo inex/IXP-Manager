@@ -32,6 +32,8 @@ class UploadDailyP2p extends GrapherCommand
 
     /**
      * Execute the console command.
+     *
+     * @psalm-return -1|0
      */
     public function handle(): int
     {
@@ -78,8 +80,12 @@ class UploadDailyP2p extends GrapherCommand
      * @param Customer $customer
      * @param Carbon $start
      * @param Carbon $end
-     * @return array
+     *
+     * @return int[][]
+     *
      * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     *
+     * @psalm-return array<''|int, array<string, int<min, max>>>
      */
     protected function collectStatistics(Customer $customer, Carbon $start, Carbon $end) : array
     {

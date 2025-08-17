@@ -56,10 +56,8 @@ class SwitchConfigurationGenerator
      * Set the switch
      *
      * @param Switcher $switch
-     *
-     * @return SwitchConfigurationGenerator
      */
-    public function setSwitch( Switcher $switch ): SwitchConfigurationGenerator
+    public function setSwitch( Switcher $switch ): static
     {
         $this->switch = $switch;
         return $this;
@@ -78,9 +76,11 @@ class SwitchConfigurationGenerator
     /**
      * Generate and return the configuration
      *
-     * @return array The configuration
+     * @return (array|mixed)[][]
      *
      * @throws
+     *
+     * @psalm-return array{layer2interfaces: array<array|mixed>}
      */
     public function generate(): array
     {
@@ -113,7 +113,9 @@ class SwitchConfigurationGenerator
     /**
      * @param VirtualInterface $vi
      *
-     * @return array|array[]
+     * @return ((((null|string)[]|int|null)[]|null|string)[]|bool|int|mixed|null|string)[][]
+     *
+     * @psalm-return list{0?: array{type: 'edge', description: null|string, dot1q: bool|null, virtualinterfaceid: int, lagframing: bool, lagindex?: int, vlans: list{array{number: int|null, vlaninterfaceid: int, macaddresses: list{0?: null|string,...}, ipaddresses: array{ipv4?: null|string, ipv6?: null|string}},...}, name: null|string, lagmaster?: bool, fastlacp?: bool, lagmembers?: list<null|string>, shutdown: bool, status: mixed|string, autoneg?: bool, speed?: int|null, rate_limit?: int|null}, 1?: array{type: 'edge', description: null|string, dot1q: bool|null, virtualinterfaceid: int, lagframing: bool, lagindex?: int, vlans: list{array{number: int|null, vlaninterfaceid: int, macaddresses: list{0?: null|string,...}, ipaddresses: array{ipv4?: null|string, ipv6?: null|string}},...}, name: null|string, lagmaster: bool, fastlacp: bool, shutdown: bool, status: mixed|string, autoneg: bool, speed: int|null, rate_limit: int|null, lagmembers?: list<null|string>},...}
      */
     private function processVirtualInterface( VirtualInterface $vi ): array
     {
@@ -231,7 +233,9 @@ class SwitchConfigurationGenerator
     /**
      * @param PhysicalInterface $pi
      *
-     * @return array|array[]
+     * @return (((array|mixed)[]|null|string)[]|bool|int|null|string)[][]
+     *
+     * @psalm-return list{0: array{type: 'core', description: string, dot1q: bool|null, stp: bool, cost: int|null, preference: int|null, virtualinterfaceid: int|null, corebundleid: int, lagframing: bool|null, lagindex?: int, vlans: list{0?: array{number: mixed, macaddresses: array<never, never>},...}, name: null|string, lagmaster?: bool, fastlacp?: bool, lagmembers?: list<null|string>, shutdown: bool, autoneg?: bool, speed?: int|null}, 1?: array{type: 'core', description: string, dot1q: bool|null, stp: bool, cost: int|null, preference: int|null, virtualinterfaceid: int|null, corebundleid: int, lagframing: bool|null, lagindex?: int, vlans: list{0?: array{number: mixed, macaddresses: array<never, never>},...}, name: null|string, lagmaster: bool, fastlacp: bool, shutdown: bool, autoneg: bool, speed: int|null, lagmembers?: list<null|string>},...}
      */
     private function processCoreBundleInterface( PhysicalInterface $pi ): array
     {

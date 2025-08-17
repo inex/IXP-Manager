@@ -97,9 +97,9 @@ class P2p extends Graph
      *
      * @param VlanInterfaceModel $vli
      *
-     * @return P2p Fluid interface
+     * @return static Fluid interface
      */
-    public function setSourceVlanInterface( VlanInterfaceModel $vli ): P2p
+    public function setSourceVlanInterface( VlanInterfaceModel $vli ): static
     {
         if( $this->svli() && $this->svli()->id !== $vli->id ) {
             $this->wipe();
@@ -115,9 +115,9 @@ class P2p extends Graph
      * @param VlanInterfaceModel    $vli
      * @param bool                  $wipe Graph settings are wiped by default when the dvli changes
      *
-     * @return P2p Fluid interface
+     * @return static Fluid interface
      */
-    public function setDestinationVlanInterface( VlanInterfaceModel $vli, bool $wipe = true ): P2p
+    public function setDestinationVlanInterface( VlanInterfaceModel $vli, bool $wipe = true ): static
     {
         if( $this->dvli() && $this->dvli()->id !== $vli->id ) {
             if( $wipe ) { $this->wipe(); }
@@ -131,6 +131,7 @@ class P2p extends Graph
      * The name of a graph (e.g. member name, IXP name, etc)
      * @return string
      */
+    #[\Override]
     public function name(): string
     {
         return sprintf( "P2P :: %s - %s :: %s",
@@ -147,6 +148,7 @@ class P2p extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function identifier(): string
     {
         return sprintf( "p2p-svli%05d-dvli%05d", $this->svli()->id, $this->dvli()->id );
@@ -182,6 +184,7 @@ class P2p extends Graph
      *
      * @return bool
      */
+    #[\Override]
     public function authorise(): bool
     {
         /** @var User $us */
@@ -228,6 +231,7 @@ class P2p extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function url( array $overrides = [] ): string
     {
         return parent::url( $overrides ) . sprintf("&svli=%d&dvli=%d",
@@ -241,8 +245,11 @@ class P2p extends Graph
      *
      * Extends base function
      *
-     * @return array $params
+     * @return (int|mixed)[] $params
+     *
+     * @psalm-return array{svli: int, dvli: int,...}
      */
+    #[\Override]
     public function getParamsAsArray(): array
     {
         $p = parent::getParamsAsArray();

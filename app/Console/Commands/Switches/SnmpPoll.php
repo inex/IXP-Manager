@@ -63,11 +63,11 @@ class SnmpPoll extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
-     *
      * @throws
+     *
+     * @psalm-return -1|0
      */
-    public function handle()
+    public function handle(): int
     {
         if( $this->argument('switch') ) {
             if( ! ( $switches = Switcher::where( 'name', $this->argument('switch') )->get() ) ) {

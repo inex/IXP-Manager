@@ -80,9 +80,9 @@ class Infrastructure extends Graph
      *
      * @param InfrastructureModel $infra
      *
-     * @return Infrastructure Fluid interface
+     * @return static Fluid interface
      */
-    public function setInfrastructure( InfrastructureModel $infra ): Infrastructure
+    public function setInfrastructure( InfrastructureModel $infra ): static
     {
         if( $this->infrastructure() && $this->infrastructure()->id !== $infra->id ) {
             $this->wipe();
@@ -97,6 +97,7 @@ class Infrastructure extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function name(): string
     {
         return $this->infrastructure()->name ?: '';
@@ -109,6 +110,7 @@ class Infrastructure extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function identifier(): string
     {
         return sprintf( "infrastructure%03d", $this->infrastructure()->id );
@@ -123,6 +125,7 @@ class Infrastructure extends Graph
      *
      * @return bool
      */
+    #[\Override]
     public function authorise(): bool
     {
         /** @var User $us */
@@ -156,6 +159,7 @@ class Infrastructure extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function url( array $overrides = [] ): string
     {
         return parent::url( $overrides ) . sprintf("&id=%d",
@@ -168,8 +172,11 @@ class Infrastructure extends Graph
      *
      * Extends base function
      *
-     * @return array $params
+     * @return (int|mixed)[] $params
+     *
+     * @psalm-return array{id: int,...}
      */
+    #[\Override]
     public function getParamsAsArray(): array
     {
         $p = parent::getParamsAsArray();

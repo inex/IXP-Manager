@@ -66,10 +66,8 @@ class Generator
      * Set the template name
      *
      * @param string $tmpl
-     *
-     * @return Generator
      */
-    public function setTemplate( string $tmpl ): Generator
+    public function setTemplate( string $tmpl ): static
     {
         $this->tmpl = $tmpl;
         return $this;
@@ -121,19 +119,21 @@ class Generator
      *
      * Returns an associate array indexed by ordered ASNs of active external trafficking customers:
      *
-     *     [
-     *         [65500] => [
-     *                        ['name']    => Customer Name
-     *                        ['asmacro'] => AS-CUSTOMER
-     *                    ],
-     *                    ...
-     *     ]
+     * [
+     * [65500] => [
+     * ['name']    => Customer Name
+     * ['asmacro'] => AS-CUSTOMER
+     * ],
+     * ...
+     * ]
      *
-     * @param   Collection $customers Array of all active external trafficking customers
+     * @param Collection $customers Array of all active external trafficking customers
      *
-     * @return array Associate array indexed by ordered ASNs
+     * @return array[]
      *
      * @throws
+     *
+     * @psalm-return array<array{asmacro: mixed, name: mixed}>
      */
     private function generateASNs( Collection $customers ): array
     {
@@ -156,46 +156,48 @@ class Generator
      *
      * Returns an array of the form:
      *
-     *     [
-     *         [ vlans ] => [
-     *             [ $vlanid ] => [
-     *                 [servers] => [   // route server IP addresses by protocol
-     *                     [4] => [
-     *                         [0] => 193.242.111.8
-     *                         ...
-     *                     ],
-     *                     [6] => [
-     *                         ...
-     *                     ]
-     *                 ]
-     *             ],
-     *             [ $another_vlanid ] => [
-     *                 ...
-     *             ],
-     *             ...
-     *         ],
-     *         [clients] => [
-     *             [$customer_asn] => [
-     *                 [id] => customer id,
-     *                 [ vlans ] => [
-     *                     [ vlanid ] => [
-     *                         [$vlan_interface_id] => [    // customer's IP addresses by protocol
-     *                             [4] => 193.242.111.xx
-     *                             [6] => 2001:7f8:18::xx
-     *                         ],
-     *                         ...   // if the user has more than one VLAN interface on this VLAN
-     *                     ],
-     *                     ...
-     *                 ],
-     *             ],
-     *         ],
-     *     ]
+     * [
+     * [ vlans ] => [
+     * [ $vlanid ] => [
+     * [servers] => [   // route server IP addresses by protocol
+     * [4] => [
+     * [0] => 193.242.111.8
+     * ...
+     * ],
+     * [6] => [
+     * ...
+     * ]
+     * ]
+     * ],
+     * [ $another_vlanid ] => [
+     * ...
+     * ],
+     * ...
+     * ],
+     * [clients] => [
+     * [$customer_asn] => [
+     * [id] => customer id,
+     * [ vlans ] => [
+     * [ vlanid ] => [
+     * [$vlan_interface_id] => [    // customer's IP addresses by protocol
+     * [4] => 193.242.111.xx
+     * [6] => 2001:7f8:18::xx
+     * ],
+     * ...   // if the user has more than one VLAN interface on this VLAN
+     * ],
+     * ...
+     * ],
+     * ],
+     * ],
+     * ]
      *
      * @param Collection $customers
      *
-     * @return array As defined above
+     * @return ((((array|mixed)[]|mixed)[]|mixed)[]|mixed)[]
      *
      * @throws
+     *
+     * @psalm-return array{vlans?: array<array{servers: array{6: list<mixed>, 4: list<mixed>}}>, clients?: array<array{id: mixed, vlans?: array<array|mixed>|mixed}|mixed>|mixed}
      */
     private function generateRouteServerClientDetails( Collection $customers ): array
     {

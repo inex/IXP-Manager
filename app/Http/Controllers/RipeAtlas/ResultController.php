@@ -64,7 +64,10 @@ class ResultController extends Eloquent2Frontend
 
     /**
      * This function sets up the frontend controller
+     *
+     * @return void
      */
+    #[\Override]
     public function feInit()
     {
         $this->feParams         = (object)[
@@ -97,6 +100,7 @@ class ResultController extends Eloquent2Frontend
      *
      * @return array
      */
+    #[\Override]
     protected function listGetData( $id = null ): array
     {
         $feParams = $this->feParams;

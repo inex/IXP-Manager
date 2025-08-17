@@ -49,11 +49,11 @@ class CustomerPolicy
      * Superadmins can do anything
      *
      * @param User  $user
-     * @param       $ability
+     * @param $ability
      *
-     * @return bool|null
+     * @return null|true
      */
-    public function before( User $user, $ability ): ?bool
+    public function before( User $user, $ability ): bool|null
     {
         if( $user->isSuperUser() ) {
             return true;
@@ -77,10 +77,9 @@ class CustomerPolicy
     /**
      * Determine whether the user can create customers.
      *
-     * @param  User  $user
-     *
+     * @param User  $user
      */
-    public function create( User $user )
+    public function create( User $user ): void
     {
         //
     }
@@ -88,11 +87,10 @@ class CustomerPolicy
     /**
      * Determine whether the user can update the customer.
      *
-     * @param  User         $user
-     * @param  Customer     $customer
-     *
+     * @param User         $user
+     * @param Customer     $customer
      */
-    public function update(User $user, Customer $customer)
+    public function update(User $user, Customer $customer): void
     {
         //
     }
@@ -100,11 +98,10 @@ class CustomerPolicy
     /**
      * Determine whether the user can delete the customer.
      *
-     * @param  User         $user
-     * @param  Customer     $customer
-     *
+     * @param User         $user
+     * @param Customer     $customer
      */
-    public function delete( User $user, Customer $customer )
+    public function delete( User $user, Customer $customer ): void
     {
         //
     }
@@ -112,11 +109,10 @@ class CustomerPolicy
     /**
      * Determine whether the user can restore the customer.
      *
-     * @param  User         $user
-     * @param  Customer     $customer
-     *
+     * @param User         $user
+     * @param Customer     $customer
      */
-    public function restore( User $user, Customer $customer )
+    public function restore( User $user, Customer $customer ): void
     {
         //
     }
@@ -124,11 +120,10 @@ class CustomerPolicy
     /**
      * Determine whether the user can permanently delete the customer.
      *
-     * @param  User         $user
-     * @param  Customer     $customer
-     *
+     * @param User         $user
+     * @param Customer     $customer
      */
-    public function forceDelete( User $user, Customer $customer )
+    public function forceDelete( User $user, Customer $customer ): void
     {
         //
     }

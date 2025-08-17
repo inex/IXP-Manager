@@ -64,6 +64,7 @@ class ConsoleServerController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
+    #[\Override]
     public function feInit(): void
     {
         $this->feParams         = (object)[
@@ -146,6 +147,7 @@ class ConsoleServerController extends EloquentController
      *
      * @return array
      */
+    #[\Override]
     protected function listGetData( $id = null ): array
     {
         $feParams = $this->feParams;
@@ -172,8 +174,11 @@ class ConsoleServerController extends EloquentController
     /**
      * Display the form to create an object
      *
-     * @return array
+     * @return (ConsoleServer|mixed)[]
+     *
+     * @psalm-return array{object: ConsoleServer, cabinets: mixed, vendors: mixed}
      */
+    #[\Override]
     protected function createPrepareForm(): array
     {
         return [
@@ -187,10 +192,13 @@ class ConsoleServerController extends EloquentController
     /**
      * Display the form to edit an object
      *
-     * @param   int $id ID of the row to edit
+     * @param int $id ID of the row to edit
      *
      * @return array
+     *
+     * @psalm-return array{object: mixed, cabinets: mixed, vendors: mixed}
      */
+    #[\Override]
     protected function editPrepareForm( int $id ): array
     {
         $this->object = ConsoleServer::findOrFail( $id );
@@ -219,10 +227,11 @@ class ConsoleServerController extends EloquentController
      *
      * @param Request $r
      *
-     * @return bool|RedirectResponse
+     * @return true
      *
      * @throws
      */
+    #[\Override]
     public function doStore( Request $r ): bool|RedirectResponse
     {
         $this->checkForm( $r );
@@ -236,10 +245,11 @@ class ConsoleServerController extends EloquentController
      * @param Request   $r
      * @param int       $id
      *
-     * @return bool|RedirectResponse
+     * @return true
      *
      * @throws
      */
+    #[\Override]
     public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = ConsoleServer::findOrFail( $id );
@@ -255,6 +265,7 @@ class ConsoleServerController extends EloquentController
      *
      * @return bool Return false to stop / cancel the deletion
      */
+    #[\Override]
     protected function preDelete(): bool
     {
         $this->object->consoleServerConnections()->delete();
@@ -266,6 +277,7 @@ class ConsoleServerController extends EloquentController
      *
      * @param Request $r
      */
+    #[\Override]
     public function checkForm( Request $r ): void
     {
         $r->validate( [

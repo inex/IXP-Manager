@@ -123,10 +123,8 @@ abstract class Changed implements ShouldQueue
 
     /**
      * Get old note
-     *
-     * @return CustomerNote|null
      */
-    public function oldNote(): ?CustomerNote
+    public function oldNote(): CustomerNote
     {
         return $this->ocn;
     }
@@ -185,6 +183,8 @@ abstract class Changed implements ShouldQueue
      * Resolve the type
      *
      * @return string
+     *
+     * @psalm-return 'Created'|'Deleted'|'Edited'
      */
     public function actionDescription(): string
     {

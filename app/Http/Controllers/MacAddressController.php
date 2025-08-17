@@ -59,6 +59,7 @@ class MacAddressController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
+    #[\Override]
     public function feInit(): void
     {
         $this->feParams         = (object)[
@@ -92,6 +93,7 @@ class MacAddressController extends EloquentController
 
      * @return array
      */
+    #[\Override]
     protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;

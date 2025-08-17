@@ -85,6 +85,7 @@ class EloquentUserProvider implements IlluminateUserProvider
      *
      * @throws
      */
+    #[\Override]
     public function retrieveByToken( $identifier, $token ): ?Authenticatable
     {
         $urt = UserRememberToken::where( [ 'user_id' => $identifier ] )->where( [ 'token' => $token ] )->first();
@@ -139,6 +140,7 @@ class EloquentUserProvider implements IlluminateUserProvider
      *
      * @return Authenticatable|null
      */
+    #[\Override]
     public function retrieveById( $identifier ): ?Authenticatable
     {
         return $this->model::find( $identifier );
@@ -147,10 +149,12 @@ class EloquentUserProvider implements IlluminateUserProvider
     /**
      * We do not need this as we have a multi remember token per user
      *
-     * @param Authenticatable|Model  $user
-     * @param  string  $token
+     * @param Authenticatable $user
+     * @param string  $token
+     *
      * @return void
      */
+    #[\Override]
     public function updateRememberToken( Authenticatable $user, $token ){}
 
     /**
@@ -160,6 +164,7 @@ class EloquentUserProvider implements IlluminateUserProvider
      *
      * @return Authenticatable|null
      */
+    #[\Override]
     public function retrieveByCredentials( array $credentials ): ?Authenticatable
     {
         // First we will add each credential element to the query as a where clause.
@@ -190,6 +195,7 @@ class EloquentUserProvider implements IlluminateUserProvider
      *
      * @return bool
      */
+    #[\Override]
     public function validateCredentials( Authenticatable $user, array $credentials ): bool
     {
         return $this->hasher->check( $credentials['password'], $user->getAuthPassword() );
@@ -204,6 +210,7 @@ class EloquentUserProvider implements IlluminateUserProvider
      * @param bool $force
      * @return void
      */
+    #[\Override]
     public function rehashPasswordIfRequired( Authenticatable $user, array $credentials, bool $force = false )
     {
         // TODO: Implement rehashPasswordIfRequired() method.

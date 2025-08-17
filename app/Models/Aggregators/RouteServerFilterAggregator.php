@@ -67,6 +67,7 @@ use IXP\Models\RouteServerFilterProd;
  * @method static Builder|RouteServerFilterAggregator whereReceivedPrefix($value)
  * @method static Builder|RouteServerFilterAggregator whereUpdatedAt($value)
  * @method static Builder|RouteServerFilterAggregator whereVlanId($value)
+ * @method static Builder<static>|RouteServerFilterAggregator whereActionAdvertise($value)
  * @mixin \Eloquent
  */
 class RouteServerFilterAggregator extends RouteServerFilter
@@ -83,6 +84,8 @@ class RouteServerFilterAggregator extends RouteServerFilter
      * Most functions will need the set of user and production filters
      *
      * @return Collection[] [ ufilters, pfilters ]
+     *
+     * @psalm-return list{Collection<int, \Illuminate\Database\Eloquent\Model>, Collection<int, \Illuminate\Database\Eloquent\Model>}
      */
     private static function filters( Customer $c ): array
     {

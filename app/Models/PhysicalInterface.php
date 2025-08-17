@@ -163,6 +163,8 @@ class PhysicalInterface extends Model
 
     /**
      * Get the virtual interface that owns the physical interface.
+     *
+     * @psalm-return BelongsTo<VirtualInterface>
      */
     public function virtualInterface(): BelongsTo
     {
@@ -171,6 +173,8 @@ class PhysicalInterface extends Model
 
     /**
      * Get the switch port that owns the physical interface.
+     *
+     * @psalm-return BelongsTo<SwitchPort>
      */
     public function switchPort(): BelongsTo
     {
@@ -179,6 +183,8 @@ class PhysicalInterface extends Model
 
     /**
      * Get the fanout physical interface associated with the physical interface.
+     *
+     * @psalm-return BelongsTo<self>
      */
     public function fanoutPhysicalInterface(): BelongsTo
     {
@@ -187,6 +193,8 @@ class PhysicalInterface extends Model
 
     /**
      * Get the core interface associated with the physical interface.
+     *
+     * @psalm-return HasOne<CoreInterface>
      */
     public function coreInterface(): HasOne
     {
@@ -195,6 +203,8 @@ class PhysicalInterface extends Model
 
     /**
      * Get the peering physical interface associated with the physical interface.
+     *
+     * @psalm-return HasOne<self>
      */
     public function peeringPhysicalInterface(): HasOne
     {
@@ -203,6 +213,8 @@ class PhysicalInterface extends Model
 
     /**
      * Get the trafficDailiesPhysInt associated with the physical interface.
+     *
+     * @psalm-return HasMany<TrafficDailyPhysInt>
      */
     public function trafficDailiesPhysInt(): HasMany
     {
@@ -304,7 +316,7 @@ class PhysicalInterface extends Model
     /**
      * Get the configured speed
      */
-    public function configuredSpeed(): int
+    public function configuredSpeed(): int|null
     {
         return $this->rate_limit ?: $this->speed;
     }
@@ -362,9 +374,9 @@ class PhysicalInterface extends Model
      * peering ports. In this case, this function will return the related peering or
      * fanout port as appropriate.
      *
-     * @return PhysicalInterface|bool The related peering / fanout port (or false for none / n/a)
+     * @return false|self The related peering / fanout port (or false for none / n/a)
      */
-    public function relatedInterface()
+    public function relatedInterface(): self|false
     {
         if( $sp = $this->switchPort ) {
             if( $sp->typeFanout() && $this->peeringPhysicalInterface ){
@@ -382,9 +394,9 @@ class PhysicalInterface extends Model
     /**
      * Get the other physical interface associated to the core link of the current Physical Interface
      *
-     * @return PhysicalInterface|bool
+     * @return false|null|self
      */
-    public function otherPICoreLink(): PhysicalInterface|bool
+    public function otherPICoreLink(): false|null|self
     {
         if( $ci = $this->coreInterface ){
             if( $this->id === $ci->coreLink()->coreInterfaceSideA->physical_interface_id ){
@@ -409,10 +421,8 @@ class PhysicalInterface extends Model
 
     /**
      * Get the core bundle if the physical interface is associated to a core bundle
-     *
-     * @return CoreBundle|bool
      */
-    public function coreBundle()
+    public function coreBundle(): CoreBundle|false
     {
         if( $ci = $this->coreInterface ){
             return $ci->coreLink()->coreBundle;

@@ -108,9 +108,9 @@ class RouterController extends Controller
      *
      * @param string $handle Handle of the router that we want
      *
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|JsonResponse|Response
+     * @return JsonResponse|Response
      */
-    public function getUpdateLock( string $handle )
+    public function getUpdateLock( string $handle ): Response|JsonResponse
     {
         if( !( $r = Router::whereHandle( $handle )->first() ) ) {
             abort( 404, "Unknown router handle" );
@@ -251,7 +251,9 @@ class RouterController extends Controller
      *
      * @param Router $r
      *
-     * @return array
+     * @return (float|int|null|string)[]
+     *
+     * @psalm-return array{last_update_started: null|string, last_update_started_unix: float|int|null|string, last_updated: null|string, last_updated_unix: float|int|null|string}
      */
     private function lastUpdatedArray( Router $r ): array
     {

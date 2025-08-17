@@ -28,7 +28,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use IXP\Models\PatchPanelPort;
 use IXP\Models\User;
 
-class MovePatchPanelPort extends FormRequest
+final class MovePatchPanelPort extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -46,7 +46,9 @@ class MovePatchPanelPort extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{id: 'required|integer|exists:patch_panel_port,id', port_id: 'required|integer|exists:patch_panel_port,id', slave_id: ''|'required|integer|different:port_id|exists:patch_panel_port,id'}
      */
     public function rules(): array
     {

@@ -189,6 +189,8 @@ class Grapher
      * @return BackendContract[]
      *
      * @throws
+     *
+     * @psalm-return list{0?: BackendContract,...}
      */
     public function backendsForGraph( Graph $graph ): array
     {
@@ -326,9 +328,9 @@ class Grapher
      *
      * @param VirtualInterface $int
      *
-     * @return Graph
+     * @return PhysIntGraph|VirtIntGraph
      */
-    public function virtint( VirtualInterface $int ): Graph
+    public function virtint( VirtualInterface $int ): VirtIntGraph|PhysIntGraph
     {
         // if there is only one physint, then the user really wants that:
         if( $int->physicalInterfaces->count()  === 1 ) {

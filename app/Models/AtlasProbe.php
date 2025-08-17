@@ -75,6 +75,7 @@ use Illuminate\Support\{
  * @method static Builder|AtlasProbe whereUpdatedAt($value)
  * @method static Builder|AtlasProbe whereV4Enabled($value)
  * @method static Builder|AtlasProbe whereV6Enabled($value)
+ * @method static Builder<static>|AtlasProbe newQuery()
  * @mixin Eloquent
  */
 class AtlasProbe extends Model
@@ -108,6 +109,8 @@ class AtlasProbe extends Model
 
     /**
      * Get the customer that owns the Atlas probe
+     *
+     * @psalm-return BelongsTo<Customer>
      */
     public function customer(): BelongsTo
     {

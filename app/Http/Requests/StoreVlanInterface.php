@@ -58,7 +58,9 @@ class StoreVlanInterface extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return ((IdnValidate|string)[]|string)[]
+     *
+     * @psalm-return array{vlanid: 'required|integer|exists:vlan,id', virtualinterfaceid: 'required|integer|exists:virtualinterface,id', irrdbfilter: 'boolean', mcastenabled: 'boolean', ipv4enabled: 'boolean', ipv4address: 'ipv4|nullable'|'ipv4|required', ipv4hostname: list{'string', 'max:255', 'nullable'|'required', IdnValidate}, ipv4bgpmd5secret: 'string|max:255|nullable', ipv4canping: 'boolean', ipv4monitorrcbgp: 'boolean', maxbgpprefix: 'integer|nullable', rsclient: 'boolean', rsmorespecifics: 'boolean', as112client: 'boolean', busyhost: 'boolean', ipv6enabled: 'boolean', ipv6address: 'ipv6|nullable'|'ipv6|required', ipv6hostname: list{'string', 'max:255', 'nullable'|'required', IdnValidate}, ipv6bgpmd5secret: 'string|max:255|nullable', ipv6canping: 'boolean', ipv6monitorrcbgp: 'boolean'}
      */
     public function rules(): array
     {

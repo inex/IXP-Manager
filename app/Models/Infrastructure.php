@@ -66,6 +66,7 @@ use IXP\Traits\Observable;
  * @method static Builder|Infrastructure whereUpdatedAt($value)
  * @property int $ixp_id
  * @method static Builder|Infrastructure whereIxpId($value)
+ * @property-read Collection<int, \IXP\Models\Vlan> $vlans
  * @mixin Eloquent
  */
 class Infrastructure extends Model
@@ -97,6 +98,8 @@ class Infrastructure extends Model
 
     /**
      * Get the vlans for the infrastructure
+     *
+     * @psalm-return HasMany<Vlan>
      */
     public function vlans(): HasMany
     {
@@ -105,6 +108,8 @@ class Infrastructure extends Model
 
     /**
      * Get the switchers for the infrastructure
+     *
+     * @psalm-return HasMany<Switcher>
      */
     public function switchers(): HasMany
     {

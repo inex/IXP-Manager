@@ -273,7 +273,7 @@ abstract class EloquentController extends Controller
      *
      * Must return null (for okay) or a RedirectResponse (`redirect()`).
      *
-     * @return RedirectResponse|null ?RedirectResponse
+     * @return null ?RedirectResponse
      */
     protected function canList(): ?RedirectResponse
     {
@@ -372,7 +372,7 @@ abstract class EloquentController extends Controller
     /**
      * Prepares data for the create form
      *
-     * @return array
+     * @return never
      *
      * @throws GeneralException
      */
@@ -386,7 +386,7 @@ abstract class EloquentController extends Controller
      *
      * @param int $id
      *
-     * @return array
+     * @return never
      *
      * @throws GeneralException
      */
@@ -447,6 +447,8 @@ abstract class EloquentController extends Controller
      * @param Request $r
      *
      * @throws GeneralException
+     *
+     * @return never
      */
     public function checkForm( Request $r ): void
     {
@@ -458,7 +460,7 @@ abstract class EloquentController extends Controller
      *
      * @param Request $r
      *
-     * @return RedirectResponse|bool
+     * @return never
      *
      * @throws GeneralException
      */
@@ -473,7 +475,7 @@ abstract class EloquentController extends Controller
      * @param Request   $r
      * @param int       $id
      *
-     * @return RedirectResponse|bool
+     * @return never
      *
      * @throws GeneralException
      */
@@ -487,11 +489,9 @@ abstract class EloquentController extends Controller
      *
      * @param Request $r
      *
-     * @return RedirectResponse|bool
-     *
      * @throws
      */
-    public function store( Request $r )
+    public function store( Request $r ): RedirectResponse|false
     {
         $storeResult = $this->doStore( $r );
 
@@ -515,11 +515,9 @@ abstract class EloquentController extends Controller
      * @param Request   $r
      * @param int       $id
      *
-     * @return RedirectResponse|bool
-     *
      * @throws GeneralException
      */
-    public function update( Request $r, int $id )
+    public function update( Request $r, int $id ): RedirectResponse|false
     {
         $updateResult = $this->doUpdate( $r, $id );
 
@@ -542,7 +540,7 @@ abstract class EloquentController extends Controller
      *
      * To implement this, have it return a valid route name
      *
-     * @return string|null
+     * @return null
      */
     protected function postStoreRedirect(): ?string
     {
@@ -554,7 +552,7 @@ abstract class EloquentController extends Controller
      *
      * @param string $action Either 'add', 'edit', 'delete'
      *
-     * @return bool
+     * @return true
      */
     protected function postFlush( string $action ): bool
     {
@@ -569,7 +567,7 @@ abstract class EloquentController extends Controller
      *
      * The object to be deleted is available via `$this->>object`
      *
-     * @return bool Return false to stop / cancel the deletion
+     * @return true Return false to stop / cancel the deletion
      */
     protected function preDelete(): bool
     {
@@ -608,7 +606,7 @@ abstract class EloquentController extends Controller
      *
      * To implement this, have it return a valid route url (e.g. `return route( "route-name" );`
      *
-     * @return null|string
+     * @return null
      */
     protected function postDeleteRedirect(): ?string
     {
@@ -647,9 +645,9 @@ abstract class EloquentController extends Controller
      * @param string    $tpl            The template to display
      * @param bool      $quitOnMissing  If a template is not found, this normally throws a 404. If this is set to false, the function returns false instead.
      *
-     * @return bool|string The template to use of false if none found
+     * @return false|string The template to use of false if none found
      */
-    protected function resolveTemplate( string $tpl, bool $quitOnMissing = true )
+    protected function resolveTemplate( string $tpl, bool $quitOnMissing = true ): string|false
     {
         if( view()->exists( $this->feParams->viewFolderName . "/{$tpl}" ) ) {
             return $this->feParams->viewFolderName . "/{$tpl}";
@@ -677,9 +675,9 @@ abstract class EloquentController extends Controller
      * @param string $url  URL to redirect to (default: the default route)
      * @param int    $code Redirection code (default: 302)
      *
-     * @return void
+     * @return never
      */
-    protected function unauthorized( string $url = '', $code = 302 ): void
+    protected function unauthorized( string $url = '', $code = 302 )
     {
         abort( 302, '', [ 'Location' => url($url) ] );
         // belt and braces:

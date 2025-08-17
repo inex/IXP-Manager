@@ -56,7 +56,9 @@ class StoreCoreLink extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array<string, 'required|integer|exists:switchport,id'>
      */
     public function rules(): array
     {

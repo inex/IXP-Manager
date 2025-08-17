@@ -58,6 +58,7 @@ class VlanInterfaceL2DiagnosticSuite extends DiagnosticSuite
 
     /**
      * Run the diagnostics suite
+     *
      * @throws BindingResolutionException
      */
     public function run(): VlanInterfaceL2DiagnosticSuite
@@ -71,8 +72,9 @@ class VlanInterfaceL2DiagnosticSuite extends DiagnosticSuite
 
 
     /**
-     *
      * @return DiagnosticResult[]
+     *
+     * @psalm-return list{0?: DiagnosticResult,...}
      */
     public function arping( VlanInterface $vli ): array
     {

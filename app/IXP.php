@@ -155,7 +155,8 @@ class IXP
      * Scale a size in bytes in human style filesize
      *
      * @param int  $bytes          The value to scale
-     * @return string            Scaled / formatted number / type.
+     *
+     * @return string Scaled / formatted number / type.
      */
     public static function scaleFilesize( int $bytes ): string
     {

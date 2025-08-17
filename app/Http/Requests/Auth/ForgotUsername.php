@@ -40,7 +40,7 @@ class ForgotUsername extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return true
      */
     public function authorize(): bool
     {
@@ -50,7 +50,9 @@ class ForgotUsername extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{email: 'required|email'}
      */
     public function rules(): array
     {

@@ -66,9 +66,8 @@ class BirdsEye implements LookingGlassContract
      * Enable / disable caching
      *
      * @param bool $b
-     * @return BirdsEye
      */
-    public function setCacheEnabled( bool $b ): BirdsEye
+    public function setCacheEnabled( bool $b ): static
     {
         $this->cacheEnabled = $b;
         return $this;
@@ -89,8 +88,9 @@ class BirdsEye implements LookingGlassContract
      *
      * @param Router $r
      *
-     * @return BirdsEye For fluent interfaces
+     * @return static For fluent interfaces
      */
+    #[\Override]
     public function setRouter( Router $r ): LookingGlassContract
     {
         $this->router = $r;
@@ -102,6 +102,7 @@ class BirdsEye implements LookingGlassContract
      *
      * @return Router
      */
+    #[\Override]
     public function router(): Router
     {
         return $this->router;
@@ -126,6 +127,7 @@ class BirdsEye implements LookingGlassContract
      *
      * @return string
      */
+    #[\Override]
     public function bgpSummary(): string
     {
         return $this->apiCall( 'protocols/bgp' );
@@ -137,6 +139,7 @@ class BirdsEye implements LookingGlassContract
      * @param string $protocol Protocol name
      * @return string
      */
+    #[\Override]
     public function bgpNeighbourSummary( string $protocol ): string
     {
         return $this->apiCall( 'protocol/' . urlencode( $protocol ) );
@@ -147,6 +150,7 @@ class BirdsEye implements LookingGlassContract
      *
      * @return string
      */
+    #[\Override]
     public function status(): string
     {
         return $this->apiCall( 'status' );
@@ -159,6 +163,7 @@ class BirdsEye implements LookingGlassContract
      *
      * @return string
      */
+    #[\Override]
     public function symbols(): string
     {
         return $this->apiCall( 'symbols' );
@@ -169,6 +174,7 @@ class BirdsEye implements LookingGlassContract
      * @param string $table Table name
      * @return string
      */
+    #[\Override]
     public function routesForTable( string $table ): string
     {
         return $this->apiCall( 'routes/table/' . urlencode( $table ) );
@@ -181,6 +187,7 @@ class BirdsEye implements LookingGlassContract
      *
      * @return string
      */
+    #[\Override]
     public function routesForProtocol( string $protocol ): string
     {
         return $this->apiCall( 'routes/protocol/' . urlencode( $protocol ) );
@@ -193,6 +200,7 @@ class BirdsEye implements LookingGlassContract
      *
      * @return string
      */
+    #[\Override]
     public function routesForExport(string $protocol): string
     {
         return $this->apiCall( 'routes/export/' . urlencode( $protocol ) );
@@ -207,6 +215,7 @@ class BirdsEye implements LookingGlassContract
      *
      * @return string
      */
+    #[\Override]
     public function protocolRoute( string $protocol,string $network,int $mask ): string
     {
         return $this->apiCall( 'route/' . urlencode($network . '/' . $mask ) . '/protocol/' . urlencode( $protocol ) );
@@ -221,6 +230,7 @@ class BirdsEye implements LookingGlassContract
      *
      * @return string
      */
+    #[\Override]
     public function protocolTable( string $table,string $network,int $mask ): string
     {
         return $this->apiCall( 'route/' . urlencode($network . '/' . $mask ) . '/table/' . urlencode( $table ) );
@@ -235,6 +245,7 @@ class BirdsEye implements LookingGlassContract
      *
      * @return string
      */
+    #[\Override]
     public function exportRoute( string $protocol, string $network, int $mask ): string
     {
         return $this->apiCall( 'route/' . urlencode($network . '/' . $mask ) . '/export/' . urlencode( $protocol ) );
@@ -249,6 +260,7 @@ class BirdsEye implements LookingGlassContract
      *
      * @return string
      */
+    #[\Override]
     public function routesProtocolLargeCommunityWildXYRoutes( string $protocol, int $x, int $y ): string
     {
         return $this->apiCall( 'routes/lc-zwild/protocol/' . urlencode( $protocol ) . '/' . $x . '/' . $y );

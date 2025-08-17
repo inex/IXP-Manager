@@ -25,4 +25,4 @@ namespace IXP\Exceptions\Services\Grapher;
 
 use Exception;
 
-class GraphCannotBeProcessedException extends Exception {}
+final class GraphCannotBeProcessedException extends Exception {}

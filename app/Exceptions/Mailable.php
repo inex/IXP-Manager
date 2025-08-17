@@ -25,4 +25,4 @@ namespace IXP\Exceptions;
 
 use Exception;
 
-class Mailable extends Exception {}
+final class Mailable extends Exception {}

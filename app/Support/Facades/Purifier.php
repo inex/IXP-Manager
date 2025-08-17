@@ -2,7 +2,6 @@
 
 namespace IXP\Support\Facades;
 
-
 // Based on https://github.com/LukeTowers/Purifier and embedded as this package
 // is stale and does not support PHP 7.4. MIT license per 20210304 (BOD).
 
@@ -14,6 +13,12 @@ use Illuminate\Support\Facades\Facade;
 class Purifier extends Facade
 {
 
+    #[\Override]
+    /**
+     * @return string
+     *
+     * @psalm-return 'purifier'
+     */
     protected static function getFacadeAccessor()
     {
         return 'purifier';

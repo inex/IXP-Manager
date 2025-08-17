@@ -23,4 +23,4 @@
 
 use Exception;
 
-class ConfigurationException extends Exception {}
+final class ConfigurationException extends Exception {}

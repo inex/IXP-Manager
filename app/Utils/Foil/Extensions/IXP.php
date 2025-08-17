@@ -51,16 +51,32 @@ class IXP implements ExtensionInterface
      */
     private $args;
 
+    #[\Override]
+    /**
+     * @return void
+     */
     public function setup( array $args = [] )
     {
         $this->args = $args;
     }
 
+    #[\Override]
+    /**
+     * @return array
+     *
+     * @psalm-return array<never, never>
+     */
     public function provideFilters(): array
     {
        return [];
     }
 
+    #[\Override]
+    /**
+     * @return (static|string)[][]
+     *
+     * @psalm-return array{alerts: list{AlertContainer::class, 'html'}, as112UiActive: list{static, 'as112UiActive'}, asNumber: list{static, 'asNumber'}, google2faAuthenticator: list{static, 'google2faAuthenticator'}, logoManagementEnabled: list{static, 'logoManagementEnabled'}, maxFileUploadSize: list{static, 'maxFileUploadSize'}, nagiosHostname: list{static, 'nagiosHostname'}, nakedUrl: list{static, 'nakedUrl'}, resellerMode: list{static, 'resellerMode'}, scaleBits: list{static, 'scaleBits'}, scaleBytes: list{static, 'scaleBytes'}, scaleSpeed: list{static, 'scaleSpeed'}, scaleFilesize: list{static, 'scaleFilesize'}, softwrap: list{static, 'softwrap'}, whoisPrefix: list{static, 'whoisPrefix'}}
+     */
     public function provideFunctions(): array
     {
         return [
@@ -93,7 +109,10 @@ class IXP implements ExtensionInterface
     {
         static $max_size = null;
 
-        $parseSize = function( $size ) {
+        $parseSize = /**
+         * @return numeric-string
+         */
+        function( $size ): string {
             $unit = preg_replace( '/[^bkmgtpezy]/i', '', $size ); // Remove the non-unit characters from the size.
             $size = preg_replace( '/[^0-9\.]/',      '', $size ); // Remove the non-numeric characters from the size.
 
@@ -225,7 +244,8 @@ class IXP implements ExtensionInterface
      * Scale a size in bytes in human style filesize
      *
      * @param int  $bytes          The value to scale
-     * @return string            Scaled / formatted number / type.
+     *
+     * @return string Scaled / formatted number / type.
      */
     public function scaleFilesize( int $bytes ): string
     {

@@ -101,6 +101,7 @@ use IXP\Models\SwitchPort;
  * @method static Builder|SwitcherAggregator whereSnmppasswd($value)
  * @method static Builder|SwitcherAggregator whereUpdatedAt($value)
  * @method static Builder|SwitcherAggregator whereVendorid($value)
+ * @method static Builder<static>|SwitcherAggregator whereMauSupported($value)
  * @mixin \Eloquent
  */
 class SwitcherAggregator extends Switcher
@@ -264,7 +265,7 @@ class SwitcherAggregator extends Switcher
     }
 
     /**
-     * @param string|null $net
+     * @param string $net
      * @param string $side
      * @param bool $maskneeded
      *
@@ -293,6 +294,8 @@ class SwitcherAggregator extends Switcher
      * @param Switcher      $switch     switch to query
      *
      * @return array
+     *
+     * @psalm-return array<int, mixed>
      */
     public static function coreBundleNeighbors( Switcher $switch ): array
     {

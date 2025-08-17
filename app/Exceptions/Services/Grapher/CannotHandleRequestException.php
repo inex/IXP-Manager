@@ -24,4 +24,4 @@ namespace IXP\Exceptions\Services\Grapher;
  */
 use Exception;
 
-class CannotHandleRequestException extends Exception {}
+final class CannotHandleRequestException extends Exception {}

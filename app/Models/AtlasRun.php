@@ -102,6 +102,8 @@ class AtlasRun extends Model
 
     /**
      * Get the atlas measurements
+     *
+     * @psalm-return HasMany<AtlasMeasurement>
      */
     public function atlasMeasurements(): HasMany
     {
@@ -110,6 +112,8 @@ class AtlasRun extends Model
 
     /**
      * Get the vlan
+     *
+     * @psalm-return BelongsTo<Vlan>
      */
     public function vlan(): BelongsTo
     {

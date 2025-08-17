@@ -53,8 +53,6 @@ abstract class GrapherCommand extends IXPCommand
 
     /**
      * @param Grapher $g
-     *
-     * @return Command
      */
     protected function setGrapher( Grapher $g ): Command
     {

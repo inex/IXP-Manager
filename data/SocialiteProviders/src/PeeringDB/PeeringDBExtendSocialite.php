@@ -9,7 +9,7 @@ class PeeringDBExtendSocialite
     /**
      * Execute the provider.
      */
-    public function handle(SocialiteWasCalled $socialiteWasCalled)
+    public function handle(SocialiteWasCalled $socialiteWasCalled): void
     {
         $socialiteWasCalled->extendSocialite('peeringdb', __NAMESPACE__.'\Provider');
     }

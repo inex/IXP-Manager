@@ -206,6 +206,8 @@ class SwitchPort extends Model
 
     /**
      * Get the switcher that own the switch port
+     *
+     * @psalm-return BelongsTo<Switcher>
      */
     public function switcher(): BelongsTo
     {
@@ -214,6 +216,8 @@ class SwitchPort extends Model
 
     /**
      * Get the patch panel ports for this switch port
+     *
+     * @psalm-return HasOne<PhysicalInterface>
      */
     public function physicalInterface(): HasOne
     {
@@ -222,6 +226,8 @@ class SwitchPort extends Model
 
     /**
      * Get the patch panel ports for this switch port
+     *
+     * @psalm-return HasOne<PatchPanelPort>
      */
     public function patchPanelPort(): HasOne
     {
@@ -293,6 +299,8 @@ class SwitchPort extends Model
      * Get the appropriate OID for in octets
      *
      * @return string
+     *
+     * @psalm-return '.1.3.6.1.2.1.31.1.1.1.6'
      */
     public function oidInOctets(): string
     {
@@ -303,6 +311,8 @@ class SwitchPort extends Model
      * Get the appropriate OID for out octets
      *
      * @return string
+     *
+     * @psalm-return '.1.3.6.1.2.1.31.1.1.1.10'
      */
     public function oidOutOctets(): string
     {
@@ -313,6 +323,8 @@ class SwitchPort extends Model
      * Get the appropriate OID for in unicast packets
      *
      * @return string
+     *
+     * @psalm-return '.1.3.6.1.2.1.31.1.1.1.7'
      */
     public function oidInUnicastPackets(): string
     {
@@ -321,7 +333,10 @@ class SwitchPort extends Model
 
     /**
      * Get the appropriate OID for out unicast packets
+     *
      * @return string
+     *
+     * @psalm-return '.1.3.6.1.2.1.31.1.1.1.11'
      */
     public function oidOutUnicastPackets(): string
     {
@@ -330,7 +345,10 @@ class SwitchPort extends Model
 
     /**
      * Get the appropriate OID for in errors
+     *
      * @return string
+     *
+     * @psalm-return '.1.3.6.1.2.1.2.2.1.14'
      */
     public function oidInErrors(): string
     {
@@ -339,7 +357,10 @@ class SwitchPort extends Model
 
     /**
      * Get the appropriate OID for out errors
+     *
      * @return string
+     *
+     * @psalm-return '.1.3.6.1.2.1.2.2.1.20'
      */
     public function oidOutErrors(): string
     {
@@ -348,7 +369,10 @@ class SwitchPort extends Model
 
     /**
      * Get the appropriate OID for in discards
+     *
      * @return string
+     *
+     * @psalm-return '.1.3.6.1.2.1.2.2.1.13'
      */
     public function oidInDiscards(): string
     {
@@ -359,6 +383,8 @@ class SwitchPort extends Model
      * Get the appropriate OID for out discards
      *
      * @return string
+     *
+     * @psalm-return '.1.3.6.1.2.1.2.2.1.19'|'.1.3.6.1.4.1.1916.1.4.14.1.1'
      */
     public function oidOutDiscards(): string
     {
@@ -376,6 +402,8 @@ class SwitchPort extends Model
      * Get the appropriate OID for in broadcasts
      *
      * @return string
+     *
+     * @psalm-return '.1.3.6.1.2.1.31.1.1.1.9'
      */
     public function oidInBroadcasts(): string
     {
@@ -386,13 +414,15 @@ class SwitchPort extends Model
      * Get the appropriate OID for out broadcasts
      *
      * @return string
+     *
+     * @psalm-return '.1.3.6.1.2.1.31.1.1.1.13'
      */
     public function oidOutBroadcasts(): string
     {
         return Iface::OID_IF_HC_OUT_BROADCAST;
     }
 
-    public function ifnameToSNMPIdentifier()
+    public function ifnameToSNMPIdentifier(): string|null
     {
         # escape special characters in ifName as per
         # http://oss.oetiker.ch/mrtg/doc/mrtg-reference.en.html - "Interface by Name" section
@@ -412,15 +442,12 @@ class SwitchPort extends Model
      *
      * @link https://github.com/opensolutions/OSS_SNMP
      *
-     *
      * @param SNMP $host An instance of the SNMP host object
      * @param bool $logger An instance of the logger or false
      *
-     * @return SwitchPort For fluent interfaces
-     *
      * @throws
      */
-    public function snmpUpdate( SNMP $host, bool $logger = false, bool $nosave = false ): SwitchPort
+    public function snmpUpdate( SNMP $host, bool $logger = false, bool $nosave = false ): static
     {
         foreach( self::$SNMP_MAP as $snmp => $attribute ) {
 

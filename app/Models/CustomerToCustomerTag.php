@@ -68,6 +68,8 @@ class CustomerToCustomerTag extends Model
 
     /**
      * Get the customer that own the customer to contact
+     *
+     * @psalm-return BelongsTo<Customer>
      */
     public function customer(): BelongsTo
     {
@@ -76,6 +78,8 @@ class CustomerToCustomerTag extends Model
 
     /**
      * Get the tag that own the customer to contact
+     *
+     * @psalm-return BelongsTo<CustomerTag>
      */
     public function tag(): BelongsTo
     {

@@ -387,12 +387,12 @@ class StatisticsController extends Controller
      * Display all graphs for a member
      *
      * @param StatisticsRequest     $r
-     * @param Customer|null         $cust the member
+     * @param Customer|null $cust the member
      *
      * @return RedirectResponse|View
      *
      */
-    public function member( StatisticsRequest $r, Customer $cust = null ): RedirectResponse|View
+    public function member( StatisticsRequest $r, ?Customer $cust = null ): RedirectResponse|View
     {
         if( !$cust && Auth::check() ) {
             $cust = Auth::getUser()->customer;
@@ -513,12 +513,14 @@ class StatisticsController extends Controller
     /**
      * sFlow Peer to Peer statistics
      *
-     * @param  Request  $request
-     * @param  Customer|null  $customer
+     * @param Request  $request
+     * @param Customer|null  $customer
      *
-     * @return array
+     * @return (Customer|VlanInterface|\Illuminate\Support\Collection|mixed|null|string)[]
      *
      * @throws ParameterException
+     *
+     * @psalm-return array{c: Customer|null, category: null|string, period: null|string, protocol: null|string, srcVlis: mixed, srcVli: VlanInterface|mixed, dstVlis: \Illuminate\Support\Collection, dstVli: VlanInterface|mixed|null}
      */
     public function p2pPrepare( Request $request, ?Customer $customer, ?VlanInterface $dstVli = null ): array
     {

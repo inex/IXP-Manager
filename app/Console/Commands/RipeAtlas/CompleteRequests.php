@@ -58,8 +58,6 @@ class CompleteRequests extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
-     *
      * @throws
      */
     public function handle(): int

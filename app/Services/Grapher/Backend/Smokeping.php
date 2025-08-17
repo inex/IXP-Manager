@@ -59,6 +59,7 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
      *
      * @return string
      */
+    #[\Override]
     public function name(): string
     {
         return 'smokeping';
@@ -71,6 +72,7 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
      *
      * @return bool
      */
+    #[\Override]
     public function isConfigurationRequired(): bool
     {
         return true;
@@ -81,8 +83,9 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
      *
      * @see \IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
      *
-     * @return bool
+     * @return true
      */
+    #[\Override]
     public function isMonolithicConfigurationSupported(): bool
     {
         return true;
@@ -93,8 +96,9 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
      *
      * @see \IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
      *
-     * @return bool
+     * @return false
      */
+    #[\Override]
     public function isMultiFileConfigurationSupported(): bool
     {
         return false;
@@ -108,8 +112,11 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
      * @param int   $type     The type of configuration to generate
      * @param array $options
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return list{string}
      */
+    #[\Override]
     public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC, array $options = [] ): array
     {
         $v = Vlan::findOrFail( $options[ 'vlanid' ] ?? null );
@@ -155,8 +162,11 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
      *
      * {inheritDoc}
      *
-     * @return array
+     * @return string[][][]
+     *
+     * @psalm-return array{latency: array{protocols: array{ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts', errs: 'errs', discs: 'discs', bcasts: 'bcasts'}, periods: array{3hours: '3hours', 30hours: '30hours', 10days: '10days', 1year: '1year'}, types: array{png: 'png'}}}
      */
+    #[\Override]
     public static function supports(): array
     {
         return [
@@ -175,8 +185,12 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
      * {inheritDoc}
      *
      * @param Graph $graph
+     *
      * @return array
+     *
+     * @psalm-return array<never, never>
      */
+    #[\Override]
     public function data( Graph $graph ): array
     {
         return [];
@@ -191,6 +205,7 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
      *
      * @return false|string
      */
+    #[\Override]
     public function png( Graph $graph ): false|string
     {
         return @file_get_contents( $this->resolveFilePath( $graph ) );
@@ -207,6 +222,7 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
      *
      * @throws
      */
+    #[\Override]
     public function dataPath( Graph $graph ): string
     {
         return $this->resolveFilePath( $graph );
@@ -219,8 +235,11 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
      *
      * @param Graph $graph
      *
-     * @return false|string
+     * @return string
+     *
+     * @psalm-return ''
      */
+    #[\Override]
     public function rrd( Graph $graph ): false|string
     {
         return '';

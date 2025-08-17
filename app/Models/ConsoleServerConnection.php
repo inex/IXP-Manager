@@ -142,6 +142,8 @@ class ConsoleServerConnection extends Model
 
     /**
      * Get the customer that own the console server connection
+     *
+     * @psalm-return BelongsTo<CustomerTag>
      */
     public function customer(): BelongsTo
     {
@@ -150,6 +152,8 @@ class ConsoleServerConnection extends Model
 
     /**
      * Get the customer that own the console server connection
+     *
+     * @psalm-return BelongsTo<Switcher>
      */
     public function switcher(): BelongsTo
     {
@@ -158,6 +162,8 @@ class ConsoleServerConnection extends Model
 
     /**
      * Get the console server that own the console server connection
+     *
+     * @psalm-return BelongsTo<ConsoleServer>
      */
     public function consoleServer(): BelongsTo
     {

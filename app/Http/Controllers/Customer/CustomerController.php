@@ -533,8 +533,6 @@ class CustomerController extends Controller
      *
      * @param WelcomeEmailRequest   $r
      * @param Customer              $cust
-     *
-     * @return RedirectResponse|View
      */
     public function sendWelcomeEmail( WelcomeEmailRequest $r, Customer $cust ): RedirectResponse|View
     {

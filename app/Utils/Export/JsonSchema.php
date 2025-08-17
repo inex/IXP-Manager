@@ -78,10 +78,10 @@ class JsonSchema
      * @param bool          $asArray    Do not convert to JSON but rather return the PHP array
      * @param bool          $detailed   Create the very detailed version (usually for logged in users)
      * @param bool          $tags       Include customer tags
-     * @return string|array
+     *
      * @throws
      */
-    public function get( string $version = null, $asArray = false, $detailed = true, $tags = false )
+    public function get( string $version = null, bool $asArray = false, bool $detailed = true, bool $tags = false ): array|string
     {
         if( $version === null ) {
             $version = self::EUROIX_JSON_LATEST;
@@ -133,9 +133,11 @@ class JsonSchema
      *
      * @param string $version The version to collate the detail for
      *
-     * @return array
+     * @return (|(array|mixed|value-of<TArray>)[]|int|null|string)[][]
      *
      * @throws
+     *
+     * @psalm-return list{0?: array{shortname: null|string, name: , country: |string, url: , peeringdb_id?: int, ixf_id?: int, ixp_id: int, support_email: , support_phone: , support_contact_hours: , emergency_email: , emergency_phone: , emergency_contact_hours: , billing_contact_hours: , billing_email: , billing_phone: , peering_policy_list: non-empty-list<value-of<never>>, vlan: array<int<0, max>, array<string, mixed>>, switch: array},...}
      */
     private function getIXPInfo( string $version ): array
     {
@@ -245,7 +247,9 @@ class JsonSchema
      * @param string            $version
      * @param Infrastructure    $infra
      *
-     * @return array
+     * @return (|int|null|string)[][]
+     *
+     * @psalm-return list<array{city: (TGeneratedFromParam0 is null ? Illuminate\Config\Repository : (TGeneratedFromParam0 is string ? mixed : null))|string, colo: null|string, country: (TGeneratedFromParam0 is null ? Illuminate\Config\Repository : (TGeneratedFromParam0 is string ? mixed : null))|string, id: int, manufacturer?: null|string, model?: null|string, name: null|string, pdb_facility_id?: int, software?: string}>
      */
     private function getSwitchInfo( string $version, Infrastructure $infra ): array
     {
@@ -289,7 +293,9 @@ class JsonSchema
      * @param bool $detailed
      * @param bool $tags
      *
-     * @return array
+     * @return ((((((stdClass|string)[]|bool|int|mixed|string)[]|int|null)[][]|mixed|string)[]|bool|int|null|string)[]|int|null|string)[][]
+     *
+     * @psalm-return array<int<0, max>, array{asnum: int|null, member_since: string, url: null|string, name: null|string, peering_policy: null|string, member_type: string, contact_email?: list{null|string}, contact_phone?: list{null|string}, peering_policy_url?: null|string, contact_hours?: string, ixp_manager?: array{tags: array<string, string>, in_manrs: bool, is_reseller: bool, is_resold: bool, resold_via_asn?: int|null}, connection_list: list<array{if_list: list{0?: array{if_phys_speed?: int|null, if_speed: int, switch_id: int|null}, ...<array{if_phys_speed?: int|null, if_speed: int, switch_id: int|null}>}, ixp_id: mixed, state: 'active', vlan_list: list{non-empty-array<non-empty-literal-string, array{address: mixed, as_macro?: string, mac_addresses?: list{0?: string, ...<string>}, max_prefix?: int, routeserver: bool, service_type?: list{'ixroutecollector'|'ixrouteserver', ...<'ixroutecollector'|'ixrouteserver'>}, services?: list{stdClass, ...<stdClass>}}|int|null>, ...<non-empty-array<non-empty-literal-string, array{address: mixed, as_macro?: string, mac_addresses?: list{0?: string, ...<string>}, max_prefix?: int, routeserver: bool, service_type?: list{'ixroutecollector'|'ixrouteserver', ...<'ixroutecollector'|'ixrouteserver'>}, services?: list{stdClass, ...<stdClass>}}|int|null>>}}>}>
      */
     private function getMemberInfo( string $version, bool $detailed, bool $tags ): array
     {
@@ -554,6 +560,8 @@ class JsonSchema
      * @param int $ixpmType
      *
      * @return string
+     *
+     * @psalm-return 'ixp'|'other'|'peering'
      */
     private function xlateMemberType( int $ixpmType ) : string
     {

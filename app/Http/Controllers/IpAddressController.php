@@ -75,8 +75,10 @@ class IpAddressController extends Controller
      * @param boolean   $model      Do we need to return the $model ?
      *
      * @return int|string
+     *
+     * @psalm-return IPv4Address::class|IPv6Address::class|int
      */
-    private function processProtocol( int $protocol , bool $model = true ): int|string
+    private function processProtocol( int $protocol , bool $model = true ): string|int|string
     {
         if( !in_array( $protocol, [ 4,6 ] ) ) {
             abort( 404 , 'Unknown protocol');
@@ -295,9 +297,11 @@ class IpAddressController extends Controller
      * @param bool           $decimal
      * @param bool           $overflow
      *
-     * @return array Generated addresses (string[])
+     * @return string[]
      *
      * @throws
+     *
+     * @psalm-return list{0?: string,...}
      */
     private static function generateSequentialAddresses( IPToolsNetwork $network, bool $decimal = false, bool $overflow = true ): array
     {

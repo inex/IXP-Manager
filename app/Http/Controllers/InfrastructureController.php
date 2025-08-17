@@ -64,6 +64,7 @@ class InfrastructureController extends Eloquent2Frontend
     /**
      * This function sets up the frontend controller
      */
+    #[\Override]
     public function feInit(): void
     {
         $this->feParams         = (object)[
@@ -124,6 +125,7 @@ class InfrastructureController extends Eloquent2Frontend
 
      * @return array
      */
+    #[\Override]
     protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
@@ -137,8 +139,11 @@ class InfrastructureController extends Eloquent2Frontend
     /**
      * Display the form to create an object
      *
-     * @return array
+     * @return (Infrastructure|array)[]
+     *
+     * @psalm-return array{object: Infrastructure, countries: array}
      */
+    #[\Override]
     protected function createPrepareForm(): array
     {
         return [
@@ -150,10 +155,13 @@ class InfrastructureController extends Eloquent2Frontend
     /**
      * Display the form to add/edit an object
      *
-     * @param   int $id ID of the row to edit
+     * @param int $id ID of the row to edit
      *
-     * @return array
+     * @return (array|mixed)[]
+     *
+     * @psalm-return array{object: mixed, countries: array}
      */
+    #[\Override]
     protected function editPrepareForm( int $id ): array
     {
         $this->object = Infrastructure::findOrFail( $id );
@@ -177,10 +185,11 @@ class InfrastructureController extends Eloquent2Frontend
      *
      * @param Request $r
      *
-     * @return bool|RedirectResponse
+     * @return true
      *
      * @throws
      */
+    #[\Override]
     public function doStore( Request $r ): bool|RedirectResponse
     {
         $this->checkForm( $r );
@@ -195,10 +204,11 @@ class InfrastructureController extends Eloquent2Frontend
      * @param Request   $r
      * @param int       $id
      *
-     * @return bool|RedirectResponse
+     * @return true
      *
      * @throws
      */
+    #[\Override]
     public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = Infrastructure::findOrFail( $id );
@@ -229,6 +239,7 @@ class InfrastructureController extends Eloquent2Frontend
     /**
      * @inheritdoc
      */
+    #[\Override]
     protected function preDelete(): bool
     {
         $okay = true;
@@ -258,6 +269,7 @@ class InfrastructureController extends Eloquent2Frontend
      *
      * @param Request $r
      */
+    #[\Override]
     public function checkForm( Request $r ): void
     {
         $r->validate( [

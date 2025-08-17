@@ -397,7 +397,7 @@ class UserController extends Controller
     /**
      * Redirect the user post store
      */
-    protected function postStoreRedirect()
+    protected function postStoreRedirect(): string
     {
         /** @var User $us */
         $us = Auth::user();

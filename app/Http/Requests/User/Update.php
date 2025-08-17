@@ -62,7 +62,9 @@ class Update extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{name?: 'required|string|max:255', username?: string, email?: 'required|email|max:255', authorisedMobile?: 'nullable|string|max:50', privs?: string}
      */
     public function rules(): array
     {
@@ -98,7 +100,7 @@ class Update extends FormRequest
     /**
      * @param Validator $validator
      *
-     * @return bool
+     * @return false
      */
     public function withValidator( Validator $validator ): bool
     {

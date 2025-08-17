@@ -63,6 +63,8 @@ class UpdatePrefixDb extends UpdateDb
      * @return int
      *
      * @throws
+     *
+     * @psalm-return -99|0
      */
     public function handle(): int
     {

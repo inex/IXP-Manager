@@ -62,7 +62,9 @@ class Store extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{name: 'required|string|max:255', username: string, email: 'required|email|max:255', authorisedMobile: 'nullable|string|max:50', custid: 'required|integer|exists:cust,id', privs: string}
      */
     public function rules(): array
     {
@@ -79,7 +81,7 @@ class Store extends FormRequest
     /**
      * @param Validator $validator
      *
-     * @return bool
+     * @return false
      */
     public function withValidator( Validator $validator ): bool
     {

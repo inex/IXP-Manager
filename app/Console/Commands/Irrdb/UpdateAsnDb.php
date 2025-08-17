@@ -59,9 +59,9 @@ class UpdateAsnDb extends UpdateDb
     /**
      * Execute the console command.
      *
-     * @return mixed
-     *
      * @throws
+     *
+     * @psalm-return -99|0
      */
     public function handle(): int
     {

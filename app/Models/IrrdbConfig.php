@@ -53,6 +53,7 @@ use IXP\Traits\Observable;
  * @method static Builder|IrrdbConfig whereUpdatedAt($value)
  * @property string|null $protocol
  * @method static Builder|IrrdbConfig whereProtocol($value)
+ * @property string|null $source
  * @mixin \Eloquent
  */
 class IrrdbConfig extends Model
@@ -79,6 +80,8 @@ class IrrdbConfig extends Model
 
     /**
      * Get the customers for the Irrdb Config
+     *
+     * @psalm-return HasMany<Customer>
      */
     public function customers(): HasMany
     {

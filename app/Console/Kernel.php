@@ -35,6 +35,7 @@ class Kernel extends ConsoleKernel
      *
      * @return void
      */
+    #[\Override]
     protected function schedule( Schedule $schedule ): void
     {
         // Expunge logs / GDPR data / etc.
@@ -97,6 +98,7 @@ class Kernel extends ConsoleKernel
      *
      * @return void
      */
+    #[\Override]
     protected function commands(): void
     {
         $this->load(__DIR__.'/Commands');

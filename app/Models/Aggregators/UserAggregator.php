@@ -111,34 +111,36 @@ class UserAggregator extends User
      * Find or create a user from PeeringDB information.
      *
      *
-     *  +pdbuser: array:8 [▼
-     *    "family_name" => "Bloggs"
-     *    "email" => "ixpmanager@example.com"
-     *    "name" => "Joe Bloggs"
-     *    "verified_user" => true
-     *    "verified_email" => true
-     *    "networks" => array:2 [▼
-     *      0 => array:4 [▼
-     *        "perms" => 1
-     *        "id" => 888
-     *        "name" => "INEX Route Collectors"
-     *        "asn" => 65501
-     *      ]
-     *      1 => array:4 [▼
-     *        "perms" => 1
-     *        "id" => 777
-     *        "name" => "INEX Route Servers"
-     *        "asn" => 65500
-     *      ]
-     *    ]
-     *    "id" => 666
-     *    "given_name" => "Joe"
-     *  ]
+     * +pdbuser: array:8 [▼
+     * "family_name" => "Bloggs"
+     * "email" => "ixpmanager@example.com"
+     * "name" => "Joe Bloggs"
+     * "verified_user" => true
+     * "verified_email" => true
+     * "networks" => array:2 [▼
+     * 0 => array:4 [▼
+     * "perms" => 1
+     * "id" => 888
+     * "name" => "INEX Route Collectors"
+     * "asn" => 65501
+     * ]
+     * 1 => array:4 [▼
+     * "perms" => 1
+     * "id" => 777
+     * "name" => "INEX Route Servers"
+     * "asn" => 65500
+     * ]
+     * ]
+     * "id" => 666
+     * "given_name" => "Joe"
+     * ]
      * }
      *
      * @param array $pdbuser
      *
-     * @return array
+     * @return ((Customer|mixed)[]|User|mixed|null)[]
+     *
+     * @psalm-return array{user: User|mixed|null, added_to: list<mixed>, removed_from: list<IXP\Models\Customer>}
      */
     public static function findOrCreateFromPeeringDb( array $pdbuser ): array
     {

@@ -27,9 +27,9 @@ use Exception;
 use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container as AlertContainer;
 
-class IrrdbManage extends Exception
+final class IrrdbManage extends Exception
 {
-    final public function render()
+    final public function render(): \Illuminate\Http\RedirectResponse
     {
         AlertContainer::push( $this->getMessage(), Alert::DANGER );
         return redirect()->back();

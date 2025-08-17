@@ -110,6 +110,8 @@ class Location extends Model
 
     /**
      * Get the switchers for the cabinet
+     *
+     * @psalm-return HasMany<Cabinet>
      */
     public function cabinets(): HasMany
     {

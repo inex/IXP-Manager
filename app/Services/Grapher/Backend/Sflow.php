@@ -54,6 +54,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      *
      * @return string
      */
+    #[\Override]
     public function name(): string
     {
         return 'sflow';
@@ -66,6 +67,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      *
      * @return bool
      */
+    #[\Override]
     public function isConfigurationRequired(): bool
     {
         return false;
@@ -76,8 +78,9 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      *
      * @see \IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
      *
-     * @return bool
+     * @return false
      */
+    #[\Override]
     public function isMonolithicConfigurationSupported(): bool
     {
         return false;
@@ -88,8 +91,9 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      *
      * @see \IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
      *
-     * @return bool
+     * @return false
      */
+    #[\Override]
     public function isMultiFileConfigurationSupported(): bool
     {
         return false;
@@ -104,7 +108,10 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      * @param array $options
      *
      * @return array
+     *
+     * @psalm-return array<never, never>
      */
+    #[\Override]
     public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC, array $options = [] ): array
     {
         return [];
@@ -115,8 +122,11 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      *
      * {inheritDoc}
      *
-     * @return array
+     * @return string[][][]
+     *
+     * @psalm-return array{vlan: array{protocols: array{ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year'}, types: array<string, string>}, vlaninterface: array{protocols: array{ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year'}, types: array<string, string>}, p2p: array{protocols: array{ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year', custom: 'custom'}, types: array<string, string>}}
      */
+    #[\Override]
     public static function supports(): array
     {
         $graphProtocols = Graph::PROTOCOLS;
@@ -161,6 +171,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      *
      * @throws
      */
+    #[\Override]
     public function data( Graph $graph ): array
     {
         try {
@@ -183,6 +194,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      *
      * @throws
      */
+    #[\Override]
     public function dataPath( Graph $graph ): string
     {
         return $this->resolveFilePath( $graph, 'rrd' );
@@ -197,6 +209,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      *
      * @return false|string
      */
+    #[\Override]
     public function png( Graph $graph ): false|string
     {
         try {
@@ -217,6 +230,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      *
      * @return false|string
      */
+    #[\Override]
     public function rrd( Graph $graph ): false|string
     {
         try {
@@ -287,8 +301,10 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      * @return string
      *
      * @throws
+     *
+     * @psalm-param 'rrd' $type
      */
-    private function resolveFilePath( Graph $graph, $type ): string
+    private function resolveFilePath( Graph $graph, string $type ): string
     {
         $config = config('grapher.backends.sflow');
 

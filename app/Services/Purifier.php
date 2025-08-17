@@ -26,7 +26,7 @@ use HTMLPurifier_HTMLDefinition;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Filesystem\Filesystem;
 
-class Purifier
+final class Purifier
 {
 
     /**
@@ -63,6 +63,8 @@ class Purifier
      * Setup
      *
      * @throws Exception
+     *
+     * @return void
      */
     private function setUp()
     {
@@ -198,7 +200,7 @@ class Purifier
     /**
      * Check/Create cache directory
      */
-    private function checkCacheDirectory()
+    private function checkCacheDirectory(): void
     {
         $cachePath = $this->config->get('purifier.cachePath');
 

@@ -44,7 +44,10 @@ class Grapher extends Facade
      * Get the registered name of the component.
      *
      * @return string
+     *
+     * @psalm-return GrapherService::class
      */
+    #[\Override]
     protected static function getFacadeAccessor(): string
     {
         return GrapherService::class;

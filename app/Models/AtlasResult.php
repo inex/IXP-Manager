@@ -75,6 +75,8 @@ class AtlasResult extends Model
 
     /**
      * Get the atlas measurement
+     *
+     * @psalm-return BelongsTo<AtlasMeasurement>
      */
     public function atlasMeasurement(): BelongsTo
     {

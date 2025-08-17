@@ -94,10 +94,9 @@ class DotEnvWriter
      * @param string $value The value
      * @param string|null $description The description (remarked line before variable, only on new variable)
      *
-     * @return     self
-     * @throws     InvalidArgumentException  If a new key contains invalid characters
+     * @throws InvalidArgumentException  If a new key contains invalid characters
      */
-    public function set( string $key, string $value, string|null $description = null ): self
+    public function set( string $key, string $value, string|null $description = null ): static
     {
         // If the key exists, replace its value
         if( $lineId = $this->findVariable( $key ) ) {
@@ -130,9 +129,8 @@ class DotEnvWriter
      * Set more values at once
      *
      * @param array $values The values as key => value pairs
-     * @return     self
      */
-    public function setValues( array $values ): self
+    public function setValues( array $values ): static
     {
         foreach( $values as $key => $value ) {
             $this->set( $key, $value );
@@ -146,9 +144,8 @@ class DotEnvWriter
      *
      * @param string $key The key
      * @param bool $removeDescription Remove the description before the variable
-     * @return     self
      */
-    public function delete( string $key, bool $removeDescription = false ): self
+    public function delete( string $key, bool $removeDescription = false ): static
     {
         if( $lineId = $this->findVariable( $key ) ) {
             unset( $this->variables[ $lineId ] );
@@ -165,9 +162,8 @@ class DotEnvWriter
      * Comment out an environment variable if present
      *
      * @param string $key The key
-     * @return     self
      */
-    public function disable( string $key ): self
+    public function disable( string $key ): static
     {
         if( $lineId = $this->findVariable( $key ) ) {
             $this->variables[ $lineId ][ "status" ] = false;
@@ -182,9 +178,8 @@ class DotEnvWriter
      * Uncomment out an environment variable if present
      *
      * @param string $key The key
-     * @return     self
      */
-    public function enable( string $key ): self
+    public function enable( string $key ): static
     {
         if( $lineId = $this->findVariable( $key ) ) {
             $this->variables[ $lineId ][ "status" ] = true;
@@ -212,9 +207,12 @@ class DotEnvWriter
      *
      * @param string $key The key
      * @param bool $full Give full content of the found variable
-     * @return array|int|false
+     *
+     * @return array|false|int
+     *
+     * @psalm-return array<int, mixed>|false|int
      */
-    public function get( string $key, bool $full = false ): array|int|false
+    public function get( string $key, bool $full = false ): array|false|int
     {
         $lineId = $this->findVariable( $key );
         if ($full) {
@@ -241,7 +239,9 @@ class DotEnvWriter
     /**
      * Returns the variable collection without empty lines, key as env key
      *
-     * @return     array
+     * @return array[]
+     *
+     * @psalm-return array<array{value: mixed, status: mixed}>
      */
     public function getVariables(): array
     {

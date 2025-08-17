@@ -67,11 +67,11 @@ class OUI
     /**
      * Load the raw OUI data from the specified location
      *
-     * @return OUI An instance of this class for fluent interfaces
+     * @return static An instance of this class for fluent interfaces
      *
      * @throws GeneralException
      */
-    public function loadList(): OUI
+    public function loadList(): static
     {
         $this->raw = @file_get_contents( $this->file );
 
@@ -85,9 +85,11 @@ class OUI
     /**
      * @param false $data
      *
-     * @return array
+     * @return string[]
      *
      * @throws GeneralException
+     *
+     * @psalm-return array<string, string>
      */
     public function processRawData( $data = false ): array
     {

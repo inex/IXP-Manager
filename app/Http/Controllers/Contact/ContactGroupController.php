@@ -66,6 +66,7 @@ class ContactGroupController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
+    #[\Override]
     public function feInit(): void
     {
         $this->feParams         = ( object )[
@@ -124,6 +125,7 @@ class ContactGroupController extends EloquentController
      *
      * @throws
      */
+    #[\Override]
     protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
@@ -139,6 +141,7 @@ class ContactGroupController extends EloquentController
     /**
      * @return RedirectResponse|null
      */
+    #[\Override]
     protected function canList(): ?RedirectResponse
     {
         // are contact groups configured?
@@ -152,10 +155,13 @@ class ContactGroupController extends EloquentController
     /**
      * Display the form to create an object
      *
-     * @return array
+     * @return (|ContactGroup)[]
      *
      * @throws
+     *
+     * @psalm-return array{object: ContactGroup, types: }
      */
+    #[\Override]
     protected function createPrepareForm(): array
     {
         return [
@@ -167,12 +173,15 @@ class ContactGroupController extends EloquentController
     /**
      * Display the form to edit an object
      *
-     * @param   int|null $id ID of the row to edit
+     * @param int|null $id ID of the row to edit
      *
-     * @return array
+     * @return (|mixed)[]
      *
      * @throws
+     *
+     * @psalm-return array{object: mixed, types: }
      */
+    #[\Override]
     protected function editPrepareForm( int $id = null ): array
     {
         $this->object = ContactGroup::findOrFail( $id );
@@ -196,10 +205,11 @@ class ContactGroupController extends EloquentController
      *
      * @param Request $r
      *
-     * @return bool|RedirectResponse
+     * @return true
      *
      * @throws
      */
+    #[\Override]
     public function doStore( Request $r ): bool|RedirectResponse
     {
         $this->checkForm( $r );
@@ -213,10 +223,11 @@ class ContactGroupController extends EloquentController
      * @param Request   $r
      * @param int       $id
      *
-     * @return bool|RedirectResponse
+     * @return true
      *
      * @throws
      */
+    #[\Override]
     public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = ContactGroup::findOrFail( $id );
@@ -230,6 +241,7 @@ class ContactGroupController extends EloquentController
      *
      * @param Request $r
      */
+    #[\Override]
     public function checkForm( Request $r ): void
     {
         $r->validate( [

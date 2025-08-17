@@ -70,6 +70,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|AtlasMeasurement whereId($value)
  * @method static Builder|AtlasMeasurement whereRunId($value)
  * @method static Builder|AtlasMeasurement whereUpdatedAt($value)
+ * @method static Builder<static>|AtlasMeasurement newQuery()
  * @mixin Eloquent
  */
 
@@ -102,6 +103,8 @@ class AtlasMeasurement extends Model
 
     /**
      * Get the atlas run
+     *
+     * @psalm-return BelongsTo<AtlasRun>
      */
     public function atlasRun(): BelongsTo
     {
@@ -110,6 +113,8 @@ class AtlasMeasurement extends Model
 
     /**
      * Get the customer source
+     *
+     * @psalm-return BelongsTo<Customer>
      */
     public function custSource(): BelongsTo
     {
@@ -118,6 +123,8 @@ class AtlasMeasurement extends Model
 
     /**
      * Get the customer destination
+     *
+     * @psalm-return BelongsTo<Customer>
      */
     public function custDest(): BelongsTo
     {
@@ -126,6 +133,8 @@ class AtlasMeasurement extends Model
 
     /**
      * Get the atlas result for a measurement
+     *
+     * @psalm-return HasOne<AtlasResult>
      */
     public function atlasResult(): HasOne
     {

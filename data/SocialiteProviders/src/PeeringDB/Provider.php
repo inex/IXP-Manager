@@ -20,6 +20,7 @@ class Provider extends AbstractProvider
     /**
      * {@inheritdoc}
      */
+    #[\Override]
     protected function getAuthUrl($state)
     {
         return $this->buildAuthUrlFromBase('https://auth.peeringdb.com/oauth2/authorize', $state);
@@ -28,6 +29,7 @@ class Provider extends AbstractProvider
     /**
      * {@inheritdoc}
      */
+    #[\Override]
     protected function getTokenUrl()
     {
         return 'https://auth.peeringdb.com/oauth2/token/';
@@ -36,6 +38,7 @@ class Provider extends AbstractProvider
     /**
      * {@inheritdoc}
      */
+    #[\Override]
     protected function getUserByToken($token)
     {
         $response = $this->getHttpClient()->get('https://auth.peeringdb.com/profile/v1', [
@@ -50,6 +53,7 @@ class Provider extends AbstractProvider
     /**
      * {@inheritdoc}
      */
+    #[\Override]
     protected function mapUserToObject(array $user)
     {
         return (new User())->setRaw($user)->map([
@@ -62,6 +66,7 @@ class Provider extends AbstractProvider
     /**
      * {@inheritdoc}
      */
+    #[\Override]
     protected function getTokenFields($code)
     {
         return array_merge(parent::getTokenFields($code), [

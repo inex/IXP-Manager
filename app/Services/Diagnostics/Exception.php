@@ -23,4 +23,4 @@ namespace IXP\Services\Diagnostics;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-class Exception extends \Exception {}
+final class Exception extends \Exception {}

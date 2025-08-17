@@ -97,9 +97,9 @@ class SwitchUserController extends Controller
     /**
      * Allow to switch back users
      *
-     * @return RedirectResponse
+     * @return RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function switchBack(): RedirectResponse
+    public function switchBack(): \Illuminate\Routing\Redirector|RedirectResponse
     {
         if( !session()->exists( "switched_user_from" ) ) {
             AlertContainer::push( "You are not currently logged in as another user. You are logged in as: " . Auth::getUser()->username . "( " . Auth::getUser()->name . " )", Alert::DANGER );

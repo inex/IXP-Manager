@@ -79,9 +79,9 @@ class VlanInterface extends Graph
      *
      * @param VlanInterfaceModel $vli
      *
-     * @return VlanInterface Fluid interface
+     * @return static Fluid interface
      */
-    public function setVlanInterface( VlanInterfaceModel $vli ): VlanInterface
+    public function setVlanInterface( VlanInterfaceModel $vli ): static
     {
         if( $this->vlanInterface() && $this->vlanInterface()->id !== $vli->id ) {
             $this->wipe();
@@ -93,10 +93,8 @@ class VlanInterface extends Graph
 
     /**
      * Get the customer owning this virtual interface
-     *
-     * @return Customer
      */
-    public function customer(): Customer
+    public function customer(): Customer|null
     {
         return $this->vlanint->virtualInterface->customer;
     }
@@ -105,6 +103,7 @@ class VlanInterface extends Graph
      * The name of a graph (e.g. member name, IXP name, etc)
      * @return string
      */
+    #[\Override]
     public function name(): string
     {
         $n = "VLAN Interface Traffic";
@@ -129,6 +128,7 @@ class VlanInterface extends Graph
      * E.g. for an IXP, it might be ixpxxx where xxx is the database id
      * @return string
      */
+    #[\Override]
     public function identifier(): string
     {
         return sprintf( "vli%05d", $this->vlanInterface()->id );
@@ -143,6 +143,7 @@ class VlanInterface extends Graph
      *
      * @return bool
      */
+    #[\Override]
     public function authorise(): bool
     {
         /** @var User $us */
@@ -187,6 +188,7 @@ class VlanInterface extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function url( array $overrides = [] ): string
     {
         return parent::url( $overrides ) . sprintf("&id=%d",
@@ -199,8 +201,11 @@ class VlanInterface extends Graph
      *
      * Extends base function
      *
-     * @return array $params
+     * @return (int|mixed)[] $params
+     *
+     * @psalm-return array{id: int,...}
      */
+    #[\Override]
     public function getParamsAsArray(): array
     {
         $p          = parent::getParamsAsArray();

@@ -42,7 +42,7 @@ class PeeringManagerRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return true
      */
     public function authorize(): bool
     {
@@ -75,7 +75,9 @@ class PeeringManagerRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{to: 'required|emails', cc: 'nullable|emails', bcc: 'nullable|emails', subject: 'required|string', message: 'required'}
      */
     public function rules(): array
     {
@@ -91,8 +93,11 @@ class PeeringManagerRequest extends FormRequest
     /**
      * Get the error messages for the defined validation rules.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{'to.emails': 'One or more of the email addresses are invalid', 'cc.emails': 'One or more of the email addresses are invalid', 'bcc.emails': 'One or more of the email addresses are invalid'}
      */
+    #[\Override]
     public function messages(): array
     {
         return [

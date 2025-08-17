@@ -113,7 +113,9 @@ class ResetPasswordController extends Controller
     /**
      * Get the password reset validation rules.
      *
-     * @return array
+     * @return ((Password|string)[]|string)[]
+     *
+     * @psalm-return array{token: 'required', username: 'required|string', password: list{'required', 'confirmed', Password}}
      */
     protected function rules(): array
     {
@@ -174,11 +176,9 @@ class ResetPasswordController extends Controller
      * Get the response for a successful password reset.
      *
      * @param Request   $r
-     * @param  string   $response
-     *
-     * @return RedirectResponse|JsonResponse
+     * @param string   $response
      */
-    protected function sendResetResponse( Request $r, string $response )
+    protected function sendResetResponse( Request $r, string $response ): RedirectResponse
     {
         AlertContainer::push( trans( $response ) , Alert::SUCCESS );
         return redirect( $this->redirectPath() );

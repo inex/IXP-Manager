@@ -410,10 +410,8 @@ abstract class Graph
      * Set the grapher service
      *
      * @param Grapher $grapher
-     *
-     * @return Graph
      */
-    protected function setGrapher( $grapher ): Graph
+    protected function setGrapher( $grapher ): static
     {
         $this->grapher = $grapher;
         return $this;
@@ -465,9 +463,11 @@ abstract class Graph
     /**
      * A veritable table of contents for API access to this graph
      *
-     * @return array
+     * @return ((mixed|string)[]|mixed|string)[]
      *
      * @throws
+     *
+     * @psalm-return array{class: string, urls?: array<string>, base_url: string, statistics: array, params: array, supports: mixed, backends: array, backend: string}
      */
     public function toc(): array
     {
@@ -703,7 +703,7 @@ abstract class Graph
      * In it's default incarnation, this will **always** fail. You need to explicitly
      * allow graph access based on your own requirements.
      *
-     * @return bool
+     * @return false
      *
      * @throws
      */
@@ -719,16 +719,18 @@ abstract class Graph
      * @throws AuthorizationException
      *
      * @param string $message Deny message
+     *
+     * @return never
      */
-    protected function deny( $message = 'This action is unauthorized.' ): void
+    protected function deny( $message = 'This action is unauthorized.' )
     {
         throw new AuthorizationException($message);
     }
 
     /**
-    * Action to take when authorisation succeeds.
+     * Action to take when authorisation succeeds.
      *
-    * @return bool
+     * @return true
      */
     protected function allow(): bool
     {
@@ -751,7 +753,7 @@ abstract class Graph
      * @param Carbon $start
      * @param Carbon $end
      *
-     * @return Graph Fluid interface
+     * @return static Fluid interface
      *
      * @throws ParameterException
      */
@@ -782,10 +784,8 @@ abstract class Graph
      * Set the start date for the custom period
      *
      * @param Carbon|null $value
-     *
-     * @return Graph
      */
-    public function setPeriodStart( ?Carbon $value = null ): Graph
+    public function setPeriodStart( ?Carbon $value = null ): static
     {
         $this->custom_date_start = $value;
         return $this;
@@ -805,10 +805,8 @@ abstract class Graph
      * Set the start date for the custom period
      *
      * @param Carbon|null $value
-     *
-     * @return Graph
      */
-    public function setPeriodEnd( ?Carbon $value = null ): Graph
+    public function setPeriodEnd( ?Carbon $value = null ): static
     {
         $this->custom_date_end = $value;
         return $this;
@@ -851,11 +849,11 @@ abstract class Graph
      *
      * @param string $value
      *
-     * @return Graph Fluid interface
+     * @return static Fluid interface
      *
      * @throws ParameterException
      */
-    public function setProtocol( string $value ): Graph
+    public function setProtocol( string $value ): static
     {
         if( !isset( $this::PROTOCOLS[ $value ] ) ) {
             throw new ParameterException('Invalid protocol ' . $value );
@@ -917,11 +915,11 @@ abstract class Graph
      *
      * @param string $category_value
      *
-     * @return Graph Fluid interface
+     * @return static Fluid interface
      *
      * @throws ParameterException
      */
-    public function setCategory( string $category_value ): Graph
+    public function setCategory( string $category_value ): static
     {
         if( !isset( $this::CATEGORIES[ $category_value ] ) ) {
             throw new ParameterException('Invalid category ' . $category_value );
@@ -949,11 +947,11 @@ abstract class Graph
      *
      * @param string $type_value
      *
-     * @return Graph Fluid interface
+     * @return static Fluid interface
      *
      * @throws ParameterException
      */
-    public function setType( string $type_value ): Graph
+    public function setType( string $type_value ): static
     {
         if( !isset( $this::TYPES[ $type_value ] ) ) {
             throw new ParameterException('Invalid type ' . $type_value );
@@ -976,7 +974,7 @@ abstract class Graph
      *
      * @param array $params
      *
-     * @return Graph Fluid interface
+     * @return static Fluid interface
      */
     public function setParamsFromArray( array $params ): Graph
     {
@@ -1003,7 +1001,9 @@ abstract class Graph
      *
      * Base function supports keys: type, protocol, category, period
      *
-     * @return array $params
+     * @return (Carbon|mixed|null)[] $params
+     *
+     * @psalm-return array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: Carbon|null, period_end?: Carbon|null}
      */
     public function getParamsAsArray(): array
     {
@@ -1103,7 +1103,7 @@ abstract class Graph
      *
      * @param string|null $value The user input value
      *
-     * @return string|null The verified / sanitised / default value
+     * @return string The verified / sanitised / default value
      */
     public static function processParameterType( ?string $value = null ): string|null
     {

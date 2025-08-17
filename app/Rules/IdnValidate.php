@@ -52,6 +52,7 @@ class IdnValidate implements Rule
      *
      * @return bool
      */
+    #[\Override]
     public function passes( $attribute, $value ): bool
     {
         $foo = idn_to_ascii ( $value, IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46 );
@@ -62,7 +63,10 @@ class IdnValidate implements Rule
      * Get the validation error message.
      *
      * @return string
+     *
+     * @psalm-return 'The :attribute is not valid.'
      */
+    #[\Override]
     public function message(): string
     {
         return 'The :attribute is not valid.';

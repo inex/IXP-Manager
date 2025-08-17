@@ -189,7 +189,9 @@ class SearchController extends Controller
      *
      * @param Collection $vlis vlan interfaces list
      *
-     * @return  array array composed of the the result (customer) and the interface (vlan interfaces)
+     * @return (\Illuminate\Database\Eloquent\Model[]|mixed)[][] array composed of the the result (customer) and the interface (vlan interfaces)
+     *
+     * @psalm-return array{results: array, interfaces: array<non-empty-list<Illuminate\Database\Eloquent\Model>>}
      */
     private function processIpSearch( Collection $vlis ): array
     {
@@ -207,7 +209,9 @@ class SearchController extends Controller
      *
      * @param Collection|null  $is virtual interfaces list
      *
-     * @return  array array composed of the the result (customer) and the interface (vlan interfaces)
+     * @return ((VirtualInterface|mixed|null)[]|Customer|mixed|null)[][] array composed of the the result (customer) and the interface (vlan interfaces)
+     *
+     * @psalm-return array{results: array<''|int, Customer|mixed|null>, interfaces: array<''|int, list{VirtualInterface|mixed|null,...}>}
      */
     private function processMACSearch( Collection $is = null ): array
     {
@@ -234,7 +238,9 @@ class SearchController extends Controller
      * @param array $discovered
      * @param array $configured
      *
-     * @return array
+     * @return array[]
+     *
+     * @psalm-return array{results: array, interfaces: array}
      */
     private function mergeMacs( array $discovered, array $configured ): array
     {

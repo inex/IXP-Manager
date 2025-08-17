@@ -48,6 +48,7 @@ class ParsedownServiceProvider extends ServiceProvider
     /**
      * @return void
      */
+    #[\Override]
     public function register(): void
     {
         $this->app->singleton('parsedown', function () {

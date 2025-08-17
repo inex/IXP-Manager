@@ -27,7 +27,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 
 use IXP\Models\CompanyBillingDetail;
 
-class BillingDetailsChanged
+final class BillingDetailsChanged
 {
     use Dispatchable, SerializesModels;
 

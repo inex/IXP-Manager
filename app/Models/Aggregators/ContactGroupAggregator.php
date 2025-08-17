@@ -80,7 +80,7 @@ class ContactGroupAggregator extends ContactGroup
      * @param int|null      $cid    Contact id to filter for a particular contact
      * @param bool          $active Filter active
      *
-     * @return array
+     * @return array[][]
      */
     public static function getGroupNamesTypeArray( string $type = null, int $cid = null, bool $active = false ): array
     {

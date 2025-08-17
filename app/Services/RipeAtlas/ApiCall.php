@@ -47,9 +47,11 @@ class ApiCall
      * @param $customer
      * @param $protocol
      *
-     * @return array
+     * @return (bool|mixed|string)[]
      *
      * @throws
+     *
+     * @psalm-return array{error: bool, response: mixed|string}
      */
     public function queryAtlasForProbes( $customer, $protocol ): array
     {
@@ -139,9 +141,11 @@ class ApiCall
      *
      * @param int $atlasId
      *
-     * @return array
+     * @return (bool|mixed|string)[]
      *
      * @throws
+     *
+     * @psalm-return array{error: bool, response: mixed|string}
      */
     public function updateAtlasMeasurement( int $atlasId ): array
     {
@@ -176,9 +180,11 @@ class ApiCall
     /**
      * Get the Atlas measurements from the API
      *
-     * @return array
+     * @return (bool|mixed|string)[]
      *
      * @throws
+     *
+     * @psalm-return array{error: bool, response: mixed|string}
      */
     public function myAtlasMeasurements(): array
     {

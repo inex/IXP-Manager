@@ -77,6 +77,7 @@ class ApiKeyController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
+    #[\Override]
     public function feInit(): void
     {
         $this->feParams         = (object)[
@@ -138,6 +139,7 @@ class ApiKeyController extends EloquentController
      *
      * @return void
      */
+    #[\Override]
     protected static function additionalRoutes( string $route_prefix ): void
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
@@ -153,6 +155,7 @@ class ApiKeyController extends EloquentController
      *
      * @return array
      */
+    #[\Override]
     protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
@@ -167,8 +170,11 @@ class ApiKeyController extends EloquentController
     /**
      * Display the form to create an object
      *
-     * @return array
+     * @return ApiKey[]
+     *
+     * @psalm-return array{object: ApiKey}
      */
+    #[\Override]
     protected function createPrepareForm(): array
     {
         return [
@@ -179,10 +185,13 @@ class ApiKeyController extends EloquentController
     /**
      * Display the form to edit an object
      *
-     * @param   int $id ID of the row to edit
+     * @param int $id ID of the row to edit
      *
      * @return array
+     *
+     * @psalm-return array{object: mixed}
      */
+    #[\Override]
     protected function editPrepareForm( int $id ): array
     {
         $this->object = ApiKey::findOrFail( $id );
@@ -203,10 +212,11 @@ class ApiKeyController extends EloquentController
      *
      * @param Request $r
      *
-     * @return bool|RedirectResponse
+     * @return RedirectResponse|true
      *
      * @throws
      */
+    #[\Override]
     public function doStore( Request $r )
     {
         if( $r->user()->apiKeys()->count() >= config( 'ixp_fe.api_keys.max_keys' ) ) {
@@ -233,10 +243,11 @@ class ApiKeyController extends EloquentController
      * @param Request   $r
      * @param int       $id
      *
-     * @return bool|RedirectResponse
+     * @return true
      *
      * @throws
      */
+    #[\Override]
     public function doUpdate( Request $r, int $id )
     {
         $this->object = ApiKey::findOrFail( $id );
@@ -271,6 +282,7 @@ class ApiKeyController extends EloquentController
      *
      * @return void
      */
+    #[\Override]
     public function checkForm( Request $r ): void
     {
         $r->validate( [

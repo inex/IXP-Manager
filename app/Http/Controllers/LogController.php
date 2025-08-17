@@ -60,8 +60,6 @@ class LogController extends Controller
      * Display the Logs list
      *
      * @param Request   $r
-     *
-     * @return Application|Factory|\Illuminate\Contracts\View\View|View
      */
     public function list( Request $r ): \Illuminate\Contracts\View\View|Factory|View|Application
     {
@@ -133,11 +131,9 @@ class LogController extends Controller
     /**
      * Display the log details
      *
-     * @param  Log  $log  the log
-     *
-     * @return Factory|\Illuminate\Contracts\View\View|Application
+     * @param Log  $log  the log
      */
-    public function view( Log $log ): Factory|\Illuminate\Contracts\View\View|Application
+    public function view( Log $log ): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\View|Application
     {
         return view( 'log/view' )->with([
             'log'   => $log

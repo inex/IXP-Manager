@@ -80,11 +80,9 @@ class Trunk extends Graph
      *
      * @param string $n
      *
-     * @return Trunk Fluid interface
-     *
      * @throws
      */
-    public function setTrunkname( string $n ): Trunk
+    public function setTrunkname( string $n ): static
     {
         if( !is_array( config('grapher.backends.mrtg.trunks.'.$n) ) ) {
             throw new ParameterException("Invalid trunk name in constructor");
@@ -98,6 +96,7 @@ class Trunk extends Graph
      * The name of a graph (e.g. member name, IXP name, etc)
      * @return string
      */
+    #[\Override]
     public function name(): string
     {
         return config('grapher.backends.mrtg.trunks.' . $this->trunkname().'.title' );
@@ -110,6 +109,7 @@ class Trunk extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function identifier(): string
     {
         return $this->trunkname();
@@ -124,6 +124,7 @@ class Trunk extends Graph
      *
      * @return bool
      */
+    #[\Override]
     public function authorise(): bool
     {
         /** @var User $us */
@@ -152,6 +153,7 @@ class Trunk extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function url( array $overrides = [] ): string
     {
         return parent::url( $overrides ) . sprintf("&id=%s",
@@ -164,8 +166,11 @@ class Trunk extends Graph
      *
      * Extends base function
      *
-     * @return array $params
+     * @return (mixed|string)[] $params
+     *
+     * @psalm-return array{id: string,...}
      */
+    #[\Override]
     public function getParamsAsArray(): array
     {
         $p          = parent::getParamsAsArray();

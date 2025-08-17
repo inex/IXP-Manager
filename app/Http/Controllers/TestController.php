@@ -2,7 +2,7 @@
 
 namespace IXP\Http\Controllers;
 
-class TestController
+final class TestController
 {
     public function __invoke()
     {

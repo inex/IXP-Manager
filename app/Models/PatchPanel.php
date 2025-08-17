@@ -189,6 +189,8 @@ class PatchPanel extends Model
 
     /**
      * Get the patch panel port files for this patch panel port
+     *
+     * @psalm-return HasMany<PatchPanelPort>
      */
     public function patchPanelPorts(): HasMany
     {
@@ -197,6 +199,8 @@ class PatchPanel extends Model
 
     /**
      * Get the cabinet that own the patch panel
+     *
+     * @psalm-return BelongsTo<Cabinet>
      */
     public function cabinet(): BelongsTo
     {
@@ -315,12 +319,14 @@ class PatchPanel extends Model
     /**
      * get the css class used to display the value => available ports / total ports
      *
-     * @param  int  $total
-     * @param  int  $available
+     * @param int  $total
+     * @param int  $available
      *
      * @return string
-     * @author  Yann Robin <yann@islandbridgenetworks.ie>
      *
+     * @author Yann Robin <yann@islandbridgenetworks.ie>
+     *
+     * @psalm-return 'danger'|'success'|'warning'
      */
     public function cssClassPortCount( int $total, int $available): string
     {

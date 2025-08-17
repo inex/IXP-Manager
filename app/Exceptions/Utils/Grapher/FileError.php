@@ -25,4 +25,4 @@ namespace IXP\Exceptions\Utils\Grapher;
 
 use Exception;
 
-class FileError extends Exception {}
+final class FileError extends Exception {}

@@ -58,7 +58,9 @@ class NocDetailsRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{nocphone: 'nullable|string|max:255', noc24hphone: 'nullable|string|max:255', nocemail: 'nullable|email|max:255', nochours: string, nocwww: 'nullable|url|max:255'}
      */
     public function rules(): array
     {

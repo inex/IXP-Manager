@@ -52,7 +52,9 @@ class Notification extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{notify: 'required|in:none,watched,all'}
      */
     public function rules(): array
     {

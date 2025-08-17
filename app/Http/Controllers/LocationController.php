@@ -72,6 +72,7 @@ class LocationController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
+    #[\Override]
     public function feInit(): void
     {
         $this->feParams = (object)[
@@ -136,6 +137,7 @@ class LocationController extends EloquentController
      *
      * @return array
      */
+    #[\Override]
     protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
@@ -149,8 +151,11 @@ class LocationController extends EloquentController
     /**
      * Display the form to create an object
      *
-     * @return array
+     * @return (Location|array)[]
+     *
+     * @psalm-return array{object: Location, countries: array}
      */
+    #[\Override]
     protected function createPrepareForm(): array
     {
         return [
@@ -162,10 +167,13 @@ class LocationController extends EloquentController
     /**
      * Display the form to edit an object
      *
-     * @param   int $id ID of the row to edit
+     * @param int $id ID of the row to edit
      *
-     * @return array
+     * @return (array|mixed)[]
+     *
+     * @psalm-return array{object: mixed, countries: array}
      */
+    #[\Override]
     protected function editPrepareForm( int $id ): array
     {
         $this->object = Location::findOrFail( $id );
@@ -197,8 +205,9 @@ class LocationController extends EloquentController
      *
      * @param Request $r
      *
-     * @return bool|RedirectResponse
+     * @return true
      */
+    #[\Override]
     public function doStore( Request $r ): bool|RedirectResponse
     {
         $this->checkForm( $r );
@@ -212,8 +221,9 @@ class LocationController extends EloquentController
      * @param Request   $r
      * @param int       $id
      *
-     * @return bool|RedirectResponse
+     * @return true
      */
+    #[\Override]
     public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = Location::findOrFail( $id );
@@ -225,6 +235,7 @@ class LocationController extends EloquentController
     /**
      * @inheritdoc
      */
+    #[\Override]
     protected function preDelete(): bool
     {
         if( $this->object->cabinets->count() ) {
@@ -239,6 +250,7 @@ class LocationController extends EloquentController
      *
      * @param Request $r
      */
+    #[\Override]
     public function checkForm( Request $r ): void
     {
         $r->validate( [

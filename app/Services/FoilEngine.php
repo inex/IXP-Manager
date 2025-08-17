@@ -26,7 +26,7 @@ use Illuminate\Contracts\View\Engine as EngineInterface;
 
 use Foil\Engine as EngineFoil;
 
-class FoilEngine implements EngineInterface
+final class FoilEngine implements EngineInterface
 {
     private EngineFoil $engine;
 
@@ -48,6 +48,7 @@ class FoilEngine implements EngineInterface
      *
      * @return string
      */
+    #[\Override]
     public function get( $path, array $data = array() ): string
     {
         return $this->engine->render( $path, $data );

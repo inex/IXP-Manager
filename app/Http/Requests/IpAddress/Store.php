@@ -61,7 +61,9 @@ class Store extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{vlan: 'required|integer|exists:vlan,id', network: 'required|string|max:255', decimal: 'bool', skip: 'bool', overflow: 'bool'}
      */
     public function rules(): array
     {

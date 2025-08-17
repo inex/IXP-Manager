@@ -97,6 +97,7 @@ class UpdatePrefixDb extends UpdateDb
      *
      * @return array Valid prefixes
      */
+    #[\Override]
     protected function validate( array $entries, int $protocol ): array
     {
         if( $protocol === 4 ) {

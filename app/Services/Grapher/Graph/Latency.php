@@ -129,10 +129,11 @@ class Latency extends Graph
      *
      * @param string $value
      *
-     * @return Graph Fluid interface
+     * @return static Fluid interface
      *
      * @throws ParameterException
      */
+    #[\Override]
     public function setPeriod( string $value, ?Carbon $start = null, ?Carbon $end = null ): Graph
     {
         if( !isset( self::PERIODS[ $value ] ) ) {
@@ -158,6 +159,7 @@ class Latency extends Graph
      *
      * @return string
      */
+    #[\Override]
     public static function resolvePeriod( $period = null ): string
     {
         return self::PERIODS[ $period ] ?? 'Unknown';
@@ -175,6 +177,7 @@ class Latency extends Graph
      *
      * @return string|null The verified / sanitised / default value
      */
+    #[\Override]
     public static function processParameterPeriod( string $value = null, string $default = null, $withExtended = false ): string|null
     {
         if( $withExtended && !isset( self::PERIODS_EXTENDED[ $value ] ) ) {
@@ -201,6 +204,7 @@ class Latency extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function name(): string
     {
         return sprintf( "Latency Graph :: %s :: %s :: %s",
@@ -217,6 +221,7 @@ class Latency extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function identifier(): string
     {
         return sprintf( "latency-vli%d-%s", $this->vli()->id, $this->protocol() );
@@ -252,6 +257,7 @@ class Latency extends Graph
      *
      * @throws AuthorizationException
      */
+    #[\Override]
     public function authorise(): bool
     {
         /** @var User $us */
@@ -297,6 +303,7 @@ class Latency extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function url( array $overrides = [] ): string
     {
         return parent::url( $overrides ) . sprintf("&id=%d",
@@ -309,8 +316,11 @@ class Latency extends Graph
      *
      * Extends base function
      *
-     * @return array $params
+     * @return (int|mixed)[] $params
+     *
+     * @psalm-return array{id: int,...}
      */
+    #[\Override]
     public function getParamsAsArray(): array
     {
         $p          = parent::getParamsAsArray();

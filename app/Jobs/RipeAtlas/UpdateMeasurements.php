@@ -81,6 +81,8 @@ class UpdateMeasurements extends Job implements ShouldQueue
      * @return int
      *
      * @throws
+     *
+     * @psalm-return 0|1
      */
     public function handle(): int
     {

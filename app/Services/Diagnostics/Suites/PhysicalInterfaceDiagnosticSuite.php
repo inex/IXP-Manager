@@ -10,7 +10,7 @@ namespace IXP\Services\Diagnostics\Suites;
  *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, version v2.0 of the License.
+ * Software Foundation, version v2.0 of the Licensefinal .
  *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -83,9 +83,10 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
 
     /**
      * Get / instantiate the snmp client
-     * @return SNMP|bool|null
+     *
+     * @return SNMP|bool
      */
-    private function snmpClient($pi): SNMP|bool|null {
+    private function snmpClient(PhysicalInterface $pi): bool|SNMP|null {
 
         if( $this->snmpClient === null ) {
             if( empty( $pi?->switchPort->switcher->snmppasswd ) ) {
@@ -428,6 +429,8 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
      * Examine the Switch Port physical speed and provide information on it.
      *
      * @return DiagnosticResult[]
+     *
+     * @psalm-return list{0: DiagnosticResult, 1?: DiagnosticResult, 2?: DiagnosticResult}
      */
     private function mauState():  array
     {

@@ -25,4 +25,4 @@ namespace IXP\Exceptions\Switches;
 
 use Exception;
 
-class RebootDiscoveryNotSupported extends Exception {}
+final class RebootDiscoveryNotSupported extends Exception {}

@@ -47,6 +47,7 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder|IPv6Address whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|IPv6Address whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|IPv6Address whereVlanid($value)
+ * @property \Illuminate\Support\Carbon|null $created_at
  * @mixin \Eloquent
  */
 class IPv6Address extends Model
@@ -60,6 +61,8 @@ class IPv6Address extends Model
 
     /**
      * Get the vlan that own the ipv6address
+     *
+     * @psalm-return BelongsTo<Vlan>
      */
     public function vlan(): BelongsTo
     {
@@ -68,6 +71,8 @@ class IPv6Address extends Model
 
     /**
      * Get the vlan interface associated with the ipv6.
+     *
+     * @psalm-return HasOne<VlanInterface>
      */
     public function vlanInterface(): HasOne
     {

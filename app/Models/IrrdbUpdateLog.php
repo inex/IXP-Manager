@@ -24,7 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog wherePrefixV4($value)
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog wherePrefixV6($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog whereUpdatedAt($value)
+ * @method static \Illuminatfinal e\Database\Eloquent\Builder|IrrdbUpdateLog whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbUpdateLog whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class IrrdbUpdateLog extends Model
@@ -47,8 +48,11 @@ class IrrdbUpdateLog extends Model
     /**
      * Get the attributes that should be cast.
      *
-     * @return array<string, string>
+     * @return string[]
+     *
+     * @psalm-return array{prefix_v4: 'datetime', prefix_v6: 'datetime', asn_v4: 'datetime', asn_v6: 'datetime'}
      */
+    #[\Override]
     protected function casts(): array
     {
         return [
@@ -66,9 +70,8 @@ class IrrdbUpdateLog extends Model
      * - relevant: if customer is not v6 enabled, ignore these fields
      *
      * @param Customer $c
-     * @return Carbon
      */
-    public static function lastUpdatedMax( Customer $c ): ?Carbon
+    public static function lastUpdatedMax( Customer $c ): \Illuminate\Support\Carbon|null
     {
         /** @var IrrdbUpdateLog $log */
         $log = self::firstWhere('cust_id', $c->id);

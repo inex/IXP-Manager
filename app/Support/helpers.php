@@ -138,7 +138,10 @@ if( !function_exists( 'ixp_get_client_ip' ) )
 // simple allows the dev system to return a blank graph.
 if( !function_exists( 'rrd_graph' ) )
 {
-    function rrd_graph( $a, $b ) { return []; }
+    /**
+     * @psalm-return array<never, never>
+     */
+    function rrd_graph( $a, $b ): array { return []; }
 }
 
 
@@ -175,7 +178,7 @@ function parsedown(?string $value = null, ?bool $inline = null): Parsedown|strin
 
 if( !function_exists( 'app_env_is' ) )
 {
-    function app_env_is( string $env )
+    function app_env_is( string $env ): bool
     {
         return config('app.env') === $env;
     }

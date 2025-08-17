@@ -70,7 +70,7 @@ class DashboardController extends Controller
      *
      * @throws
      */
-    public function index( Request $r, string $tab = null ): RedirectResponse|View
+    public function index( Request $r, string $tab = null ): View|RedirectResponse|View
     {
         /** @var User $us */
         $us = Auth::getUser();

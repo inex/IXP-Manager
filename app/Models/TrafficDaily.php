@@ -113,6 +113,8 @@ class TrafficDaily extends Model
 
     /**
      * Get the customer that own the traffic daily
+     *
+     * @psalm-return BelongsTo<Customer>
      */
     public function customer(): BelongsTo
     {

@@ -115,6 +115,8 @@ abstract class Email extends Mailable
      * @param string $recipientClass
      *
      * @return array Array of email addresses
+     *
+     * @psalm-return list{0?: mixed}
      */
     public function getRecipientEmails( string $recipientClass ): array
     {

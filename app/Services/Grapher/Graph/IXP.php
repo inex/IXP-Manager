@@ -51,6 +51,7 @@ class IXP extends Graph
      *
      * @return IXP Fluid interface
      */
+    #[\Override]
     public function setParamsFromArray( array $params ): IXP
     {
         parent::setParamsFromArray( $params );
@@ -61,6 +62,7 @@ class IXP extends Graph
      * The name of a graph (e.g. member name, IXP name, etc)
      * @return string
      */
+    #[\Override]
     public function name(): string
     {
         return config( 'identity.orgname' );
@@ -73,6 +75,7 @@ class IXP extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function identifier(): string
     {
         return sprintf( "ixp%03d", 1 );
@@ -87,6 +90,7 @@ class IXP extends Graph
      *
      * @return bool
      */
+    #[\Override]
     public function authorise(): bool
     {
         /** @var User $us */
@@ -120,6 +124,7 @@ class IXP extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function url( array $overrides = [] ): string
     {
         return parent::url( $overrides ) . sprintf("&id=%d",
@@ -132,8 +137,11 @@ class IXP extends Graph
      *
      * Extends base function
      *
-     * @return array $params
+     * @return (int|mixed)[] $params
+     *
+     * @psalm-return array{id: 1,...}
      */
+    #[\Override]
     public function getParamsAsArray(): array
     {
         $p = parent::getParamsAsArray();

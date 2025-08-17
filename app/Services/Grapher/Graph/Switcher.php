@@ -79,9 +79,9 @@ class Switcher extends Graph
      *
      * @param SwitcherModel $switch
      *
-     * @return Switcher Fluid interface
+     * @return static Fluid interface
      */
-    public function setSwitch( SwitcherModel $switch ): Switcher
+    public function setSwitch( SwitcherModel $switch ): static
     {
         if( $this->switch() && $this->switch()->id !== $switch->id ) {
             $this->wipe();
@@ -96,6 +96,7 @@ class Switcher extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function name(): string
     {
         return $this->switch()->name ?: '';
@@ -108,6 +109,7 @@ class Switcher extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function identifier(): string
     {
         return sprintf( "switch%05d", $this->switch()->id );
@@ -122,6 +124,7 @@ class Switcher extends Graph
      *
      * @return bool
      */
+    #[\Override]
     public function authorise(): bool
     {
         /** @var User $us */
@@ -150,6 +153,7 @@ class Switcher extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function url( array $overrides = [] ): string
     {
         return parent::url( $overrides ) . sprintf("&id=%d",
@@ -162,8 +166,11 @@ class Switcher extends Graph
      *
      * Extends base function
      *
-     * @return array $params
+     * @return (int|mixed)[] $params
+     *
+     * @psalm-return array{id: int,...}
      */
+    #[\Override]
     public function getParamsAsArray(): array
     {
         $p = parent::getParamsAsArray();

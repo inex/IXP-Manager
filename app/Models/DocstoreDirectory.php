@@ -92,6 +92,8 @@ class DocstoreDirectory extends Model
 
     /**
      * Get the parent directory
+     *
+     * @psalm-return BelongsTo<self>
      */
     public function parentDirectory(): BelongsTo
     {
@@ -100,6 +102,8 @@ class DocstoreDirectory extends Model
 
     /**
      * Get the files in this directory
+     *
+     * @psalm-return HasMany<DocstoreFile>
      */
     public function files(): HasMany
     {
@@ -129,17 +133,19 @@ class DocstoreDirectory extends Model
     /**
      * Create an array of directories keeping the hierarchy root/subfolder
      *
-     *  [
-     *      [ "id" => 1, "name"  => "Folder 1" ],
-     *      [ "id" => 2, "name"  => " - Sub Folder 1" ],
-     *      [ "id" => 3, "name"  => " - Sub Folder 2" ],
-     *      [ "id" => 4, "name"  => "Folder 2" ],
-     *  ]
+     * [
+     * [ "id" => 1, "name"  => "Folder 1" ],
+     * [ "id" => 2, "name"  => " - Sub Folder 1" ],
+     * [ "id" => 3, "name"  => " - Sub Folder 2" ],
+     * [ "id" => 4, "name"  => "Folder 2" ],
+     * ]
      *
      * @param $dirs EloquentCollection
      * @param $depth int
      *
-     * @return array
+     * @return ((mixed|string)[]|mixed)[]
+     *
+     * @psalm-return list{0: array{id: ''|mixed, name: string}|mixed, 1?: array{id: ''|mixed, name: string}|mixed,...}
      */
     public static function getListingForDropdown( EloquentCollection $dirs, int $depth = 5 ): array
     {

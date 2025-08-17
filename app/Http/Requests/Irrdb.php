@@ -69,6 +69,8 @@ class Irrdb extends FormRequest
      * Get the validation rules that apply to the request.
      *
      * @return array
+     *
+     * @psalm-return array<never, never>
      */
     public function rules(): array
     {

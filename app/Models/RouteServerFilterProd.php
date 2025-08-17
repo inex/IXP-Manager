@@ -93,6 +93,7 @@ class RouteServerFilterProd extends RouteServerFilter
      *
      * @return string
      */
+    #[\Override]
     public static function logSubject( Model $model ): string
     {
         return sprintf(

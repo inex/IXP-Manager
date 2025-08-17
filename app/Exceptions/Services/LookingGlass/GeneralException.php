@@ -25,4 +25,4 @@ namespace IXP\Exceptions\Services\LookingGlass;
 
 use Exception;
 
-class GeneralException extends Exception {}
+final class GeneralException extends Exception {}

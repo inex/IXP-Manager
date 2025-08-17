@@ -89,9 +89,9 @@ class CoreBundle extends Graph
      *
      * @param CoreBundleModel $cb
      *
-     * @return CoreBundle Fluid interface
+     * @return static Fluid interface
      */
-    public function setCoreBundle( CoreBundleModel $cb ): CoreBundle
+    public function setCoreBundle( CoreBundleModel $cb ): static
     {
         if( $this->coreBundle() && $this->coreBundle()->id !== $cb->id ) {
             $this->wipe();
@@ -119,10 +119,8 @@ class CoreBundle extends Graph
      * Get the side to show
      *
      * @param string $side
-     *
-     * @return CoreBundle
      */
-    public function setSide( string $side ): CoreBundle
+    public function setSide( string $side ): static
     {
         $this->side = self::processParameterSide( $side );
         return $this;
@@ -133,6 +131,7 @@ class CoreBundle extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function name(): string
     {
         return $this->coreBundle()->graph_title;
@@ -145,6 +144,7 @@ class CoreBundle extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function identifier(): string
     {
         return sprintf( "cb-aggregate-%05d-side%s", $this->coreBundle()->id, $this->side() );
@@ -159,6 +159,7 @@ class CoreBundle extends Graph
      *
      * @return bool
      */
+    #[\Override]
     public function authorise(): bool
     {
         /** @var User $us */
@@ -192,6 +193,7 @@ class CoreBundle extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function url( array $overrides = [] ): string
     {
         return parent::url( $overrides ) . sprintf("&id=%d",
@@ -204,8 +206,11 @@ class CoreBundle extends Graph
      *
      * Extends base function
      *
-     * @return array $params
+     * @return (int|mixed|string)[] $params
+     *
+     * @psalm-return array{id: int, side: string,...}
      */
+    #[\Override]
     public function getParamsAsArray(): array
     {
         $p          = parent::getParamsAsArray();
@@ -234,6 +239,7 @@ class CoreBundle extends Graph
      * Does a abort(404) if invalid
      *
      * @param string $s The user input value
+     *
      * @return string The verified / sanitised / default value
      */
     public static function processParameterSide( string $s ): string

@@ -67,11 +67,9 @@ class ConfigurationGenerator
      *
      * @param Router $router Router details
      *
-     * @return ConfigurationGenerator
-     *
      * @throws
      */
-    public function setRouter( Router $router ): ConfigurationGenerator
+    public function setRouter( Router $router ): static
     {
         $this->router = $router;
         return $this;
@@ -89,8 +87,6 @@ class ConfigurationGenerator
 
     /**
      * Generate and return the configuration
-     *
-     * @return ViewContract The configuration
      *
      * @throws
      */

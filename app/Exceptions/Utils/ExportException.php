@@ -25,13 +25,13 @@ namespace IXP\Exceptions\Utils;
 
 use Exception;
 
-class ExportException extends Exception
+final class ExportException extends Exception
 {
 
     /**
-     * @return void
+     * @return never
      */
-    final public function render(): void
+    final public function render()
     {
         abort( 500, $this->getMessage() );
     }

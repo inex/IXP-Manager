@@ -91,6 +91,7 @@ class UpdateAsnDb extends UpdateDb
      *
      * @return array Valid ASNs
      */
+    #[\Override]
     protected function validate( array $entries, int $protocol ) : array
     {
         foreach( $entries as $key => $value ) {

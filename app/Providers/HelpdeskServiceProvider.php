@@ -64,6 +64,7 @@ class HelpdeskServiceProvider extends ServiceProvider
      *
      * @return void
      */
+    #[\Override]
     public function register(): void
     {
         $this->app->singleton( Helpdesk::class, function( $app ) {
@@ -88,8 +89,11 @@ class HelpdeskServiceProvider extends ServiceProvider
     /**
      * Get the services provided by the provider.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return list{Helpdesk::class}
      */
+    #[\Override]
     public function provides(): array
     {
         return [ Helpdesk::class ];

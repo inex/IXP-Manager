@@ -77,6 +77,7 @@ class Layer2AddressController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
+    #[\Override]
     public function feInit(): void
     {
         /** @var User $us */
@@ -133,6 +134,7 @@ class Layer2AddressController extends EloquentController
      *
      * @return void
      */
+    #[\Override]
     protected static function additionalRoutes( string $route_prefix ): Void
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
@@ -148,6 +150,7 @@ class Layer2AddressController extends EloquentController
 
      * @return array
      */
+    #[\Override]
     protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;

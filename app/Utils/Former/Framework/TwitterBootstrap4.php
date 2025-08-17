@@ -57,6 +57,7 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4
      * @return Element A wrapped field
      * @psalm-suppress UndefinedDocblockClass - Former Container type confusing psalm
      */
+    #[\Override]
     public function wrapField( $field ): Element
     {
         $width = $this->app[ 'former.form' ]->getAttributes()[ 'custom-input-width-class' ] ?? $this->fieldWidth;
@@ -72,6 +73,7 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4
      *
      * @psalm-suppress UndefinedDocblockClass - Former Container type confusing psalm
      */
+    #[\Override]
     public function getLabelClasses()
     {
         $width = $this->app[ 'former.form' ]->getAttributes()[ 'custom-label-width-class' ] ?? $this->labelWidth;
@@ -94,6 +96,7 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4
      *
      * @return Element
      */
+    #[\Override]
     public function createBlockHelp( $text, $attributes = array() )
     {
         return Element::create('small', $text, $attributes )
@@ -105,6 +108,7 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4
      *
      * @return Element A wrapped item
      */
+    #[\Override]
     public function placeAround( $item ): Element
     {
         // Render object
@@ -124,6 +128,7 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4
      * @return string A list of group classes
      * @psalm-suppress UndefinedDocblockClass - Former Container type confusing psalm
      */
+    #[\Override]
     public function getGroupClasses(): string
     {
         $classes = 'form-group ';
@@ -141,9 +146,11 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4
     /**
      * Add actions block class
      *
-     * @return string|null
+     * @return null|string
+     *
      * @psalm-suppress UndefinedDocblockClass - Former Container type confusing psalm
      */
+    #[\Override]
     public function getActionClasses(): ?string
     {
         if( $this->app[ 'former.form' ]->isOfType( 'horizontal' ) || $this->app[ 'former.form' ]->isOfType( 'inline' ) ) {
@@ -171,6 +178,7 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4
      * @return string A wrapped actions block
      * @psalm-suppress UndefinedDocblockClass - Former Container type confusing psalm
      */
+    #[\Override]
     public function wrapActions( $actions ): string
     {
         // For horizontal forms, we wrap the actions in a div

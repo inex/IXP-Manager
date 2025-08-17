@@ -65,7 +65,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/amphp/byte-stream" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/openlss/lib-array2xml" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/webmozart/path-util" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/felixfbecker/advanced-json-rpc" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/felixfbecker/language-server-protocol" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/vimeo/psalm" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/netresearch/jsonmapper" />
@@ -164,6 +163,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/orchestra/sidekick" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/revolt/event-loop" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/staabm/side-effects-detector" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/danog/advanced-json-rpc" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-php84" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
