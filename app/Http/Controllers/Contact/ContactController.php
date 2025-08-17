@@ -189,7 +189,7 @@ class ContactController extends EloquentController
      *
      * @return array
      */
-    private function getFeList( stdClass $feParams, int $id = null, int $role = null, int $cgid = null ): array
+    private function getFeList( stdClass $feParams, ?int $id = null, ?int $role = null, ?int $cgid = null ): array
     {
         /** @var User $us */
         $us = Auth::getUser();

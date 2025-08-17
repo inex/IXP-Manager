@@ -296,7 +296,7 @@ class VlanController extends EloquentController
      *
      * @return View
      */
-    public function listPrivate( Infrastructure $infra = null ): View
+    public function listPrivate( ?Infrastructure $infra = null ): View
     {
         $this->data[ 'rows' ] = Vlan::where( 'private', 1 )
             ->when( $infra, function( $q, $infra ) {
@@ -353,7 +353,7 @@ class VlanController extends EloquentController
      *
      * @return bool
      */
-    private function checkIsDuplicate( Request $r, int $objectid = null ): bool
+    private function checkIsDuplicate( Request $r, ?int $objectid = null ): bool
     {
         $exist = Vlan::where( 'infrastructureid', $r->infrastructureid )
             ->where( 'config_name', $r->config_name )

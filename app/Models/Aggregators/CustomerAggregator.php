@@ -197,7 +197,7 @@ class CustomerAggregator extends Customer
      *
      * @return array
      */
-    public static function getByVlanAndProtocol( int $vlanid = null, int $protocol = null ): array
+    public static function getByVlanAndProtocol( ?int $vlanid = null, ?int $protocol = null ): array
     {
         return self::select( [ 'c.id', 'c.name' ] )
             ->from( 'cust AS c' )
@@ -567,7 +567,7 @@ class CustomerAggregator extends Customer
      *
      * @return Collection
      */
-    public static function withProbesForProtocol( int $protocol = 4, int $vlanid = null, array $includeCust = [], string $orderBy = 'name', int $limit = null ): Collection
+    public static function withProbesForProtocol( int $protocol = 4, ?int $vlanid = null, array $includeCust = [], string $orderBy = 'name', ?int $limit = null ): Collection
     {
         $enabled = $protocol === 4 ? 'v4_enabled' : 'v6_enabled';
 

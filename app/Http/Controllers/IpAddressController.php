@@ -78,7 +78,7 @@ class IpAddressController extends Controller
      *
      * @psalm-return IPv4Address::class|IPv6Address::class|int
      */
-    private function processProtocol( int $protocol , bool $model = true ): string|int|string
+    private function processProtocol( int $protocol , bool $model = true ): string|int
     {
         if( !in_array( $protocol, [ 4,6 ] ) ) {
             abort( 404 , 'Unknown protocol');

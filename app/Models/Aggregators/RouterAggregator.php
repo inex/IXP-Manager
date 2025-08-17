@@ -129,7 +129,7 @@ class RouterAggregator extends Router
      *
      * @psalm-return array<array>
      */
-    public static function forDropdown( Customer $cust = null, User $user = null ): array
+    public static function forDropdown( ?Customer $cust = null, ?User $user = null ): array
     {
         $privs = $user ? $user->privs() : User::AUTH_PUBLIC;
         $routers = self::whereNotNull( 'api' )
@@ -164,7 +164,7 @@ class RouterAggregator extends Router
      *
      * @psalm-return array<array<non-empty-list<mixed>>>
      */
-    public static function forTab( Customer $cust = null, User $user = null ): array
+    public static function forTab( ?Customer $cust = null, ?User $user = null ): array
     {
         $privs = $user ? $user->privs() : User::AUTH_PUBLIC;
         $routers = self::

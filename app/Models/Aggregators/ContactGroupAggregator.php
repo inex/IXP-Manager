@@ -83,7 +83,7 @@ class ContactGroupAggregator extends ContactGroup
      *
      * @psalm-return array<array<array{id: mixed, name: mixed}>>
      */
-    public static function getGroupNamesTypeArray( string $type = null, int $cid = null, bool $active = false ): array
+    public static function getGroupNamesTypeArray( ?string $type = null, ?int $cid = null, bool $active = false ): array
     {
         $result = self::when( $cid , function( Builder $q, $cid ) {
             return $q->leftJoin( 'contact_to_group', function( $join ) use( $cid ) {

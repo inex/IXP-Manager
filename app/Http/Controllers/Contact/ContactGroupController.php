@@ -182,7 +182,7 @@ class ContactGroupController extends EloquentController
      * @psalm-return array{object: mixed, types: }
      */
     #[\Override]
-    protected function editPrepareForm( int $id = null ): array
+    protected function editPrepareForm( ?int $id = null ): array
     {
         $this->object = ContactGroup::findOrFail( $id );
 

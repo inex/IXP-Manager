@@ -112,7 +112,7 @@ class Grapher
      *
      * @throws
      */
-    public function resolveBackend( string $backend = null ): string
+    public function resolveBackend( ?string $backend = null ): string
     {
         $config = config('grapher.backend');
 

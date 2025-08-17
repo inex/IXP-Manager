@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="6.5.0@38fc8444edf0cebc9205296ee6e30e906ade783b">
+<files psalm-version="6.13.1@1e3b7f0a8ab32b23197b91107adc0a7ed8a05b51">
   <file src="app/Console/Commands/Contact/ExportGroup.php">
     <RedundantCondition>
       <code><![CDATA[$name]]></code>
@@ -8,11 +8,13 @@
   </file>
   <file src="app/Console/Commands/Grapher/EmailPortsWithCounts.php">
     <MissingDocblockType>
-      <code><![CDATA[private function emailPortsWithCounts( $category ): array]]></code>
+      <code><![CDATA[private function emailPortsWithCounts( string $category ): array]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Console/Commands/Grapher/EmailTrafficDeltas.php">
     <InvalidOperand>
+      <code><![CDATA[$port['count'] - 1]]></code>
+      <code><![CDATA[$port['count'] - 1]]></code>
       <code><![CDATA[config('grapher.cli.traffic_differentials.stddev_calc_length', 60)]]></code>
     </InvalidOperand>
     <MissingDocblockType>
@@ -20,9 +22,10 @@
     </MissingDocblockType>
   </file>
   <file src="app/Console/Commands/Grapher/UploadDailyP2p.php">
-    <UndefinedMagicPropertyFetch>
-      <code><![CDATA[$customer->virtualinterfaces]]></code>
-    </UndefinedMagicPropertyFetch>
+    <InvalidOperand>
+      <code><![CDATA[microtime(true) - $iterTime]]></code>
+      <code><![CDATA[microtime(true) - $startTime]]></code>
+    </InvalidOperand>
   </file>
   <file src="app/Console/Commands/Grapher/UploadPhysIntStatsToDb.php">
     <ImplicitToStringCast>
@@ -110,12 +113,18 @@
   </file>
   <file src="app/Console/Commands/Rir/GenerateObject.php">
     <MissingDocblockType>
-      <code><![CDATA[public function handle()]]></code>
+      <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/Router/GenerateConfiguration.php">
+    <InvalidOperand>
+      <code><![CDATA[memory_get_peak_usage( true )/1024/1024]]></code>
+      <code><![CDATA[memory_get_peak_usage()/1024/1024]]></code>
+    </InvalidOperand>
   </file>
   <file src="app/Console/Commands/Switches/ReindexIfIndex.php">
     <MissingDocblockType>
-      <code><![CDATA[public function handle()]]></code>
+      <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
     <TooManyArguments>
       <code><![CDATA[option]]></code>
@@ -123,7 +132,7 @@
   </file>
   <file src="app/Console/Commands/Switches/SnmpPoll.php">
     <MissingDocblockType>
-      <code><![CDATA[public function handle()]]></code>
+      <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
     <TooManyArguments>
       <code><![CDATA[option]]></code>
@@ -140,12 +149,12 @@
   </file>
   <file src="app/Console/Commands/Upgrade/PromoteCustUser.php">
     <MissingDocblockType>
-      <code><![CDATA[public function handle()]]></code>
+      <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Console/Commands/Upgrade/RemoveCustAdmin.php">
     <MissingDocblockType>
-      <code><![CDATA[public function handle()]]></code>
+      <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Console/Commands/Upgrade/ResetMysqlViews.php">
@@ -164,6 +173,11 @@
       <code><![CDATA[$search]]></code>
     </InvalidScalarArgument>
   </file>
+  <file src="app/Console/Commands/Utils/ExpungeLogs.php">
+    <ImplicitToStringCast>
+      <code><![CDATA[$sixmonthsago]]></code>
+    </ImplicitToStringCast>
+  </file>
   <file src="app/Console/Commands/Utils/SmtpMailTest.php">
     <InvalidCast>
       <code><![CDATA[$mail_default]]></code>
@@ -175,7 +189,7 @@
   </file>
   <file src="app/Console/Commands/Utils/UpdateOuiDatabase.php">
     <MissingDocblockType>
-      <code><![CDATA[public function handle()]]></code>
+      <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Events/Customer/Note/Changed.php">
@@ -184,6 +198,11 @@
     </RedundantCondition>
   </file>
   <file src="app/Http/Controllers/AdminController.php">
+    <InvalidOperand>
+      <code><![CDATA[$byLan[ $infrastructure ][ $speed ] += $numports]]></code>
+      <code><![CDATA[$byLocation[ $location ][ $speed ] += $numports]]></code>
+      <code><![CDATA[$speeds[ $speed ] += $numports]]></code>
+    </InvalidOperand>
     <MissingDocblockType>
       <code><![CDATA[private function publicPeeringGraphs( Request $r ): array]]></code>
     </MissingDocblockType>
@@ -208,6 +227,11 @@
     </MissingDocblockType>
   </file>
   <file src="app/Http/Controllers/Api/V4/Provisioner/YamlController.php">
+    <InvalidOperand>
+      <code><![CDATA[$speed / 1000.0]]></code>
+      <code><![CDATA[$speed /= 1000.0]]></code>
+      <code><![CDATA[round( $speed )]]></code>
+    </InvalidOperand>
     <MissingDocblockType>
       <code><![CDATA[private function structuredResponse( array $array, string $format ): Response]]></code>
       <code><![CDATA[public function bgpForSwitch( Switcher $switch, string $format ): Response]]></code>
@@ -240,6 +264,10 @@
     </MissingDocblockType>
   </file>
   <file src="app/Http/Controllers/Api/V4/RouterController.php">
+    <InvalidOperand>
+      <code><![CDATA[memory_get_peak_usage( true ) / 1024 / 1024]]></code>
+      <code><![CDATA[memory_get_peak_usage() / 1024 / 1024]]></code>
+    </InvalidOperand>
     <MissingDocblockType>
       <code><![CDATA[public function genConfig( string $handle ): Response]]></code>
     </MissingDocblockType>
@@ -249,6 +277,15 @@
       <code><![CDATA[private function structuredResponse( array $array, string $format ): Response]]></code>
       <code><![CDATA[public function getReceiverList( string $format = null ): Response]]></code>
     </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/Api/V4/SwitchController.php">
+    <UndefinedDocblockClass>
+      <code><![CDATA[$cb]]></code>
+      <code><![CDATA[$cb]]></code>
+      <code><![CDATA[$cb]]></code>
+      <code><![CDATA[$cb]]></code>
+      <code><![CDATA[$cb->enabled]]></code>
+    </UndefinedDocblockClass>
   </file>
   <file src="app/Http/Controllers/Api/V4/VlanController.php">
     <InvalidScalarArgument>
@@ -269,12 +306,26 @@
     </InvalidScalarArgument>
   </file>
   <file src="app/Http/Controllers/ApiKeyController.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{object: ApiKey}]]></code>
+      <code><![CDATA[array{object: mixed}]]></code>
+      <code><![CDATA[void]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidOperand>
       <code><![CDATA[config( 'ixp_fe.api_keys.max_keys' )]]></code>
     </InvalidOperand>
+    <InvalidReturnStatement>
+      <code><![CDATA[Redirect::back()->withInput()]]></code>
+      <code><![CDATA[true]]></code>
+      <code><![CDATA[true]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[doStore]]></code>
+      <code><![CDATA[doUpdate]]></code>
+    </InvalidReturnType>
     <MissingDocblockType>
-      <code><![CDATA[public function doStore( Request $r )]]></code>
-      <code><![CDATA[public function doUpdate( Request $r, int $id )]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
     </MissingDocblockType>
     <RedundantCondition>
       <code><![CDATA[User::AUTH_CUSTADMIN]]></code>
@@ -285,6 +336,9 @@
     <MissingDocblockType>
       <code><![CDATA[public function sendResetLinkEmail( Request $r ): RedirectResponse]]></code>
     </MissingDocblockType>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->email]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/Auth/LoginController.php">
     <InvalidOperand>
@@ -295,11 +349,14 @@
       <code><![CDATA[config( "ixp_fe.lang.customer.one" )]]></code>
     </InvalidOperand>
     <MissingDocblockType>
-      <code><![CDATA[public function peeringdbHandleProviderCallback( Request $r )]]></code>
+      <code><![CDATA[public function peeringdbHandleProviderCallback( Request $r ): RedirectResponse]]></code>
     </MissingDocblockType>
     <NoInterfaceProperties>
       <code><![CDATA[$suser->user]]></code>
     </NoInterfaceProperties>
+    <UndefinedDocblockClass>
+      <code><![CDATA[$c]]></code>
+    </UndefinedDocblockClass>
   </file>
   <file src="app/Http/Controllers/Auth/ResetPasswordController.php">
     <MissingDocblockType>
@@ -327,28 +384,103 @@
     </NoInterfaceProperties>
   </file>
   <file src="app/Http/Controllers/CabinetController.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{object: Cabinet, locations: mixed}]]></code>
+      <code><![CDATA[array{object: mixed, locations: mixed}]]></code>
+      <code><![CDATA[true]]></code>
+    </ImplementedReturnTypeMismatch>
+    <InvalidReturnStatement>
+      <code><![CDATA[$okay]]></code>
+      <code><![CDATA[true]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[bool]]></code>
+      <code><![CDATA[doStore]]></code>
+    </InvalidReturnType>
     <MissingDocblockType>
-      <code><![CDATA[public function doStore( Request $r )]]></code>
+      <code><![CDATA[#[\Override]]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Http/Controllers/ConsoleServer/ConsoleServerConnectionController.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[RedirectResponse|true]]></code>
+      <code><![CDATA[array{object: ConsoleServerConnection, custs: mixed, servers: mixed, cs: mixed}]]></code>
+      <code><![CDATA[array{object: mixed, custs: mixed, servers: mixed, cs: mixed}]]></code>
+      <code><![CDATA[null|string]]></code>
+    </ImplementedReturnTypeMismatch>
+    <InvalidReturnStatement>
+      <code><![CDATA[Redirect::back()->withInput()]]></code>
+      <code><![CDATA[route( 'console-server-connection@list' )]]></code>
+      <code><![CDATA[route( 'console-server-connection@listPort' , [ "cs" => $cs->id ] )]]></code>
+      <code><![CDATA[true]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[doStore]]></code>
+      <code><![CDATA[string]]></code>
+    </InvalidReturnType>
     <MissingDocblockType>
-      <code><![CDATA[public function doStore( Request $r )]]></code>
+      <code><![CDATA[#[\Override]]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Http/Controllers/ConsoleServer/ConsoleServerController.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{object: ConsoleServer, cabinets: mixed, vendors: mixed}]]></code>
+      <code><![CDATA[array{object: mixed, cabinets: mixed, vendors: mixed}]]></code>
+      <code><![CDATA[bool]]></code>
+      <code><![CDATA[void]]></code>
+    </ImplementedReturnTypeMismatch>
+    <InvalidReturnStatement>
+      <code><![CDATA[true]]></code>
+      <code><![CDATA[true]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[bool|RedirectResponse]]></code>
+      <code><![CDATA[bool|RedirectResponse]]></code>
+    </InvalidReturnType>
     <MissingDocblockType>
-      <code><![CDATA[public function doStore( Request $r ): bool|RedirectResponse]]></code>
-      <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Http/Controllers/Contact/ContactController.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[bool]]></code>
+      <code><![CDATA[null|string]]></code>
+      <code><![CDATA[string]]></code>
+      <code><![CDATA[void]]></code>
+    </ImplementedReturnTypeMismatch>
+    <InvalidReturnStatement>
+      <code><![CDATA[[
+            'object'                => $this->object,
+            'groupsForContact'      => $this->object->contactGroupsAll()->get()->keyBy( 'id' )->toArray(),
+            'custs'                 => Customer::orderBy( 'name' )->get(),
+            'roles'                 => $data[ 'roles' ],
+            'allGroups'             => $data[ 'allGroups' ],
+        ]]]></code>
+      <code><![CDATA[[
+            'object'                => $this->object,
+            'groupsForContact'      => [],
+            'custs'                 => Customer::orderBy( 'name' )->get(),
+            'roles'                 => $data[ 'roles' ],
+            'allGroups'             => $data[ 'allGroups' ],
+        ]]]></code>
+      <code><![CDATA[redirect( route( self::route_prefix() . '@edit', [ 'id' => $this->object->id ] ) )]]></code>
+      <code><![CDATA[redirect( route( self::route_prefix() . '@edit', [ 'id' => $this->object->id ] ) )]]></code>
+      <code><![CDATA[true]]></code>
+      <code><![CDATA[true]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[bool|RedirectResponse]]></code>
+      <code><![CDATA[bool|RedirectResponse]]></code>
+    </InvalidReturnType>
     <MissingDocblockType>
-      <code><![CDATA[protected function createPrepareForm(): array]]></code>
-      <code><![CDATA[protected function editPrepareForm( int $id ): array]]></code>
-      <code><![CDATA[protected function listGetData( ?int $id = null ): array]]></code>
-      <code><![CDATA[public function doStore( Request $r ): bool|RedirectResponse]]></code>
-      <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
     </MissingDocblockType>
     <NoInterfaceProperties>
       <code><![CDATA[Auth::getUser()->custid]]></code>
@@ -359,15 +491,37 @@
     </RedundantCondition>
   </file>
   <file src="app/Http/Controllers/Contact/ContactGroupController.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[RedirectResponse|null]]></code>
+      <code><![CDATA[void]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidArgument>
       <code><![CDATA[array_keys( config( 'contact_group.types' ) )]]></code>
     </InvalidArgument>
+    <InvalidReturnStatement>
+      <code><![CDATA[[
+            'object'        => $this->object,
+            'types'         => config( "contact_group.types" )
+        ]]]></code>
+      <code><![CDATA[[
+            'object'        => $this->object,
+            'types'         => config( 'contact_group.types' )
+        ]]]></code>
+      <code><![CDATA[true]]></code>
+      <code><![CDATA[true]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[bool|RedirectResponse]]></code>
+      <code><![CDATA[bool|RedirectResponse]]></code>
+    </InvalidReturnType>
     <MissingDocblockType>
-      <code><![CDATA[protected function createPrepareForm(): array]]></code>
-      <code><![CDATA[protected function editPrepareForm( int $id = null ): array]]></code>
-      <code><![CDATA[protected function listGetData( ?int $id = null ): array]]></code>
-      <code><![CDATA[public function doStore( Request $r ): bool|RedirectResponse]]></code>
-      <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Http/Controllers/Controller.php">
@@ -376,9 +530,21 @@
     </MissingDocblockType>
   </file>
   <file src="app/Http/Controllers/CustKitController.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{object: CustomerEquipment, cabinets: mixed, custs: mixed}]]></code>
+      <code><![CDATA[array{object: mixed, cabinets: mixed, custs: mixed}]]></code>
+    </ImplementedReturnTypeMismatch>
+    <InvalidReturnStatement>
+      <code><![CDATA[true]]></code>
+      <code><![CDATA[true]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[doStore]]></code>
+      <code><![CDATA[doUpdate]]></code>
+    </InvalidReturnType>
     <MissingDocblockType>
-      <code><![CDATA[public function doStore( Request $r )]]></code>
-      <code><![CDATA[public function doUpdate( Request $r, int $id )]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Http/Controllers/Customer/CustomerController.php">
@@ -398,6 +564,14 @@
       <code><![CDATA[public function update( CustomerRequest $r, Customer $cust ): RedirectResponse]]></code>
       <code><![CDATA[public function welcomeEmail( Customer $cust ) : View]]></code>
     </MissingDocblockType>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->billingNotes]]></code>
+      <code><![CDATA[$r->isResold]]></code>
+      <code><![CDATA[$r->isResold]]></code>
+      <code><![CDATA[$r->name]]></code>
+      <code><![CDATA[$r->reseller]]></code>
+      <code><![CDATA[$r->reseller]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/Customer/CustomerNotesController.php">
     <MissingDocblockType>
@@ -405,13 +579,26 @@
     </MissingDocblockType>
   </file>
   <file src="app/Http/Controllers/Customer/CustomerTagController.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{object: CustomerTag}]]></code>
+      <code><![CDATA[array{object: mixed}]]></code>
+      <code><![CDATA[void]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidOperand>
       <code><![CDATA[config( 'ixp_fe.lang.customer.many' )]]></code>
       <code><![CDATA[config( 'ixp_fe.lang.customer.one' )]]></code>
     </InvalidOperand>
+    <InvalidReturnStatement>
+      <code><![CDATA[true]]></code>
+      <code><![CDATA[true]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[bool|RedirectResponse]]></code>
+      <code><![CDATA[bool|RedirectResponse]]></code>
+    </InvalidReturnType>
     <MissingDocblockType>
-      <code><![CDATA[public function doStore( Request $r ): bool|RedirectResponse]]></code>
-      <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
       <code><![CDATA[public function link( Request $r, Customer $cust ): RedirectResponse]]></code>
     </MissingDocblockType>
   </file>
@@ -423,10 +610,13 @@
     <NoInterfaceProperties>
       <code><![CDATA[Auth::getUser()->custid]]></code>
     </NoInterfaceProperties>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->id]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/DashboardController.php">
     <MissingDocblockType>
-      <code><![CDATA[public function index( Request $r, string $tab = null ): RedirectResponse|View]]></code>
+      <code><![CDATA[public function index( Request $r, ?string $tab = null ): RedirectResponse|View]]></code>
       <code><![CDATA[public function storeBillingDetails( BillingDetailsRequest $r ): RedirectResponse]]></code>
       <code><![CDATA[public function storeNocDetails( NocDetailsRequest $r ): RedirectResponse]]></code>
     </MissingDocblockType>
@@ -435,6 +625,23 @@
       <code><![CDATA[Auth::getUser()->customer]]></code>
       <code><![CDATA[Auth::getUser()->customer]]></code>
     </NoInterfaceProperties>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->billingAddress1]]></code>
+      <code><![CDATA[$r->billingAddress2]]></code>
+      <code><![CDATA[$r->billingAddress3]]></code>
+      <code><![CDATA[$r->billingContactName]]></code>
+      <code><![CDATA[$r->billingCountry]]></code>
+      <code><![CDATA[$r->billingEmail]]></code>
+      <code><![CDATA[$r->billingPostcode]]></code>
+      <code><![CDATA[$r->billingTelephone]]></code>
+      <code><![CDATA[$r->billingTownCity]]></code>
+      <code><![CDATA[$r->invoiceEmail]]></code>
+      <code><![CDATA[$r->noc24hphone]]></code>
+      <code><![CDATA[$r->nocemail]]></code>
+      <code><![CDATA[$r->nochours]]></code>
+      <code><![CDATA[$r->nocphone]]></code>
+      <code><![CDATA[$r->nocwww]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/Docstore/DirectoryController.php">
     <NoInterfaceProperties>
@@ -473,35 +680,54 @@
     </MissingDocblockType>
   </file>
   <file src="app/Http/Controllers/InfrastructureController.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{object: Infrastructure, countries: array}]]></code>
+      <code><![CDATA[array{object: mixed, countries: array}]]></code>
+      <code><![CDATA[void]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidOperand>
       <code><![CDATA[config( 'ixp_api.IXPDB.ixp_www' )]]></code>
       <code><![CDATA[config( 'ixp_api.peeringDB.ixp_www' )]]></code>
     </InvalidOperand>
+    <InvalidReturnStatement>
+      <code><![CDATA[$okay]]></code>
+      <code><![CDATA[true]]></code>
+      <code><![CDATA[true]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[bool]]></code>
+      <code><![CDATA[bool|RedirectResponse]]></code>
+      <code><![CDATA[bool|RedirectResponse]]></code>
+    </InvalidReturnType>
     <MissingDocblockType>
-      <code><![CDATA[public function doStore( Request $r ): bool|RedirectResponse]]></code>
-      <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Http/Controllers/Interfaces/Common.php">
-    <InvalidPropertyFetch>
-      <code><![CDATA[$pi->relatedInterface()->virtualInterface]]></code>
-      <code><![CDATA[$pi->relatedInterface()->virtualInterface]]></code>
-      <code><![CDATA[$pi->relatedInterface()->virtualInterface]]></code>
-    </InvalidPropertyFetch>
     <MissingDocblockType>
       <code><![CDATA[public function assignChannelGroup( VirtualInterface $vi ): int]]></code>
-      <code><![CDATA[public function buildCorelink( CoreBundle $coreBundle, Request $request, array $virtualInterfaces, bool $edit )]]></code>
-      <code><![CDATA[public function processFanoutPhysicalInterface( $r, PhysicalInterface $pi, VirtualInterface $vi ): bool]]></code>
+      <code><![CDATA[public function buildCorelink( CoreBundle $coreBundle, Request $request, array $virtualInterfaces, bool $edit ): RedirectResponse|true]]></code>
+      <code><![CDATA[public function processFanoutPhysicalInterface( \IXP\Http\Requests\StorePhysicalInterface $r, PhysicalInterface $pi, VirtualInterface $vi ): bool]]></code>
       <code><![CDATA[public function removeRelatedInterface( PhysicalInterface $pi ): void]]></code>
       <code><![CDATA[public function setBundleDetails( VirtualInterface $vi ): void]]></code>
       <code><![CDATA[public function setIp( Request $r, Vlan $v, VlanInterface $vli, bool $ipv6 = false ): bool]]></code>
     </MissingDocblockType>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->fanout]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/Interfaces/CoreBundleController.php">
     <MissingDocblockType>
       <code><![CDATA[public function storeWizard( Store $r ): RedirectResponse]]></code>
       <code><![CDATA[public function updateWizard( Store $r, CoreBundle $cb): RedirectResponse]]></code>
     </MissingDocblockType>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->custid]]></code>
+      <code><![CDATA[$r->custid]]></code>
+      <code><![CDATA[$r->mtu]]></code>
+      <code><![CDATA[$r->type]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/Interfaces/PhysicalInterfaceController.php">
     <InvalidArgument>
@@ -509,9 +735,6 @@
       <code><![CDATA[$pi->status]]></code>
       <code><![CDATA[$pi->switchPort->switchid]]></code>
     </InvalidArgument>
-    <InvalidPropertyFetch>
-      <code><![CDATA[$pi->otherPICoreLink()->switchPort]]></code>
-    </InvalidPropertyFetch>
     <MissingDocblockType>
       <code><![CDATA[public function delete( Request $r, PhysicalInterface $pi): RedirectResponse]]></code>
       <code><![CDATA[public function store( StorePhysicalInterface $r ): RedirectResponse]]></code>
@@ -525,6 +748,20 @@
     <TypeDoesNotContainNull>
       <code><![CDATA[[]]]></code>
     </TypeDoesNotContainNull>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->cb]]></code>
+      <code><![CDATA[$r->cb]]></code>
+      <code><![CDATA[$r->duplex]]></code>
+      <code><![CDATA[$r->duplex]]></code>
+      <code><![CDATA[$r->speed]]></code>
+      <code><![CDATA[$r->speed]]></code>
+      <code><![CDATA[$r->status]]></code>
+      <code><![CDATA[$r->status]]></code>
+      <code><![CDATA[$r->switchportid]]></code>
+      <code><![CDATA[$r->switchportid]]></code>
+      <code><![CDATA[$r->virtualinterfaceid]]></code>
+      <code><![CDATA[$r->virtualinterfaceid]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/Interfaces/VirtualInterfaceController.php">
     <InvalidArgument>
@@ -538,6 +775,14 @@
       <code><![CDATA[exceptInput]]></code>
       <code><![CDATA[exceptInput]]></code>
     </TooManyArguments>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->channelgroup]]></code>
+      <code><![CDATA[$r->channelgroup]]></code>
+      <code><![CDATA[$r->lag_framing]]></code>
+      <code><![CDATA[$r->name]]></code>
+      <code><![CDATA[$r->switchportid]]></code>
+      <code><![CDATA[$r->vlanid]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/Interfaces/VlanInterfaceController.php">
     <InvalidArgument>
@@ -553,6 +798,13 @@
     <TypeDoesNotContainType>
       <code><![CDATA[false]]></code>
     </TypeDoesNotContainType>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->redirect2vi]]></code>
+      <code><![CDATA[$r->virtualinterfaceid]]></code>
+      <code><![CDATA[$r->vlanid]]></code>
+      <code><![CDATA[$r->vlanid]]></code>
+      <code><![CDATA[$r->vlanid]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/IpAddressController.php">
     <ImplicitToStringCast>
@@ -566,6 +818,35 @@
       <code><![CDATA[public function list( int $protocol, int $vid = null ): View]]></code>
       <code><![CDATA[public function store( Store $r ): RedirectResponse]]></code>
     </MissingDocblockType>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$network->getFirstIP()->version]]></code>
+      <code><![CDATA[$network->getFirstIP()->version]]></code>
+      <code><![CDATA[$network->getFirstIP()->version]]></code>
+      <code><![CDATA[$r->network]]></code>
+      <code><![CDATA[$r->network]]></code>
+      <code><![CDATA[$r->vlan]]></code>
+    </UndefinedMagicPropertyFetch>
+  </file>
+  <file src="app/Http/Controllers/Irrdb/IrrdbConfigController.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{object: IrrdbConfig}]]></code>
+      <code><![CDATA[array{object: mixed}]]></code>
+      <code><![CDATA[true]]></code>
+      <code><![CDATA[true]]></code>
+      <code><![CDATA[void]]></code>
+    </ImplementedReturnTypeMismatch>
+    <InvalidReturnStatement>
+      <code><![CDATA[$okay]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[bool]]></code>
+    </InvalidReturnType>
+  </file>
+  <file src="app/Http/Controllers/Irrdb/IrrdbController.php">
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->reset_cache]]></code>
+      <code><![CDATA[$r->reset_cache]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/Layer2AddressController.php">
     <RedundantCondition>
@@ -573,12 +854,50 @@
       <code><![CDATA[User::AUTH_CUSTUSER]]></code>
     </RedundantCondition>
   </file>
+  <file src="app/Http/Controllers/LocationController.php">
+    <FalsableReturnStatement>
+      <code><![CDATA[false]]></code>
+    </FalsableReturnStatement>
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{object: Location, countries: array}]]></code>
+      <code><![CDATA[array{object: mixed, countries: array}]]></code>
+      <code><![CDATA[true]]></code>
+      <code><![CDATA[true]]></code>
+      <code><![CDATA[void]]></code>
+    </ImplementedReturnTypeMismatch>
+    <InvalidReturnType>
+      <code><![CDATA[bool]]></code>
+    </InvalidReturnType>
+  </file>
   <file src="app/Http/Controllers/NetworkInfoController.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{object: NetworkInfo, vlans: \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model>}]]></code>
+      <code><![CDATA[array{object: mixed, vlans: \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model>}]]></code>
+      <code><![CDATA[void]]></code>
+    </ImplementedReturnTypeMismatch>
+    <InvalidReturnStatement>
+      <code><![CDATA[Redirect::back()->withInput()]]></code>
+      <code><![CDATA[Redirect::back()->withInput()]]></code>
+      <code><![CDATA[true]]></code>
+      <code><![CDATA[true]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[bool|RedirectResponse]]></code>
+      <code><![CDATA[bool|RedirectResponse]]></code>
+    </InvalidReturnType>
     <MissingDocblockType>
-      <code><![CDATA[protected function listGetData( ?int $id = null ): array]]></code>
-      <code><![CDATA[public function doStore( Request $r ): bool|RedirectResponse]]></code>
-      <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
     </MissingDocblockType>
+  </file>
+  <file src="app/Http/Controllers/PatchPanel/PatchPanelController.php">
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->location_notes]]></code>
+      <code><![CDATA[$r->location_notes]]></code>
+      <code><![CDATA[$r->numberOfPorts]]></code>
+      <code><![CDATA[$r->numberOfPorts]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/PatchPanel/Port/DangerActionsController.php">
     <NoInterfaceProperties>
@@ -587,11 +906,25 @@
       <code><![CDATA[Auth::getUser()->username]]></code>
       <code><![CDATA[Auth::getUser()->username]]></code>
     </NoInterfaceProperties>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->port_id]]></code>
+      <code><![CDATA[$r->slave_id]]></code>
+    </UndefinedMagicPropertyFetch>
+  </file>
+  <file src="app/Http/Controllers/PatchPanel/Port/EmailController.php">
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->loa]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/PatchPanel/Port/FileController.php">
     <NoInterfaceProperties>
       <code><![CDATA[Auth::getUser()->username]]></code>
     </NoInterfaceProperties>
+  </file>
+  <file src="app/Http/Controllers/PatchPanel/Port/HistoryFileController.php">
+    <InvalidOperand>
+      <code><![CDATA[$file->patch_panel_port_history_id]]></code>
+    </InvalidOperand>
   </file>
   <file src="app/Http/Controllers/PatchPanel/Port/PortController.php">
     <InvalidArgument>
@@ -604,6 +937,35 @@
       <code><![CDATA[public function setNotes( Request $r, PatchPanelPort $ppp ) : JsonResponse]]></code>
       <code><![CDATA[public function update( StorePatchPanelPortRequest $r, PatchPanelPort $ppp ): RedirectResponse]]></code>
     </MissingDocblockType>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->allocated]]></code>
+      <code><![CDATA[$r->allocated]]></code>
+      <code><![CDATA[$r->assigned_at]]></code>
+      <code><![CDATA[$r->assigned_at]]></code>
+      <code><![CDATA[$r->cease_requested_at]]></code>
+      <code><![CDATA[$r->cease_requested_at]]></code>
+      <code><![CDATA[$r->ceased_at]]></code>
+      <code><![CDATA[$r->ceased_at]]></code>
+      <code><![CDATA[$r->chargeable]]></code>
+      <code><![CDATA[$r->colo_billing_ref]]></code>
+      <code><![CDATA[$r->colo_circuit_ref]]></code>
+      <code><![CDATA[$r->connected_at]]></code>
+      <code><![CDATA[$r->connected_at]]></code>
+      <code><![CDATA[$r->customer_id]]></code>
+      <code><![CDATA[$r->customer_id]]></code>
+      <code><![CDATA[$r->description]]></code>
+      <code><![CDATA[$r->duplex]]></code>
+      <code><![CDATA[$r->internal_use]]></code>
+      <code><![CDATA[$r->notes]]></code>
+      <code><![CDATA[$r->owned_by]]></code>
+      <code><![CDATA[$r->partner_port]]></code>
+      <code><![CDATA[$r->pi_status]]></code>
+      <code><![CDATA[$r->private_notes]]></code>
+      <code><![CDATA[$r->state]]></code>
+      <code><![CDATA[$r->switch]]></code>
+      <code><![CDATA[$r->switch_port_id]]></code>
+      <code><![CDATA[$r->ticket_ref]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/PeeringManagerController.php">
     <ImplicitToStringCast>
@@ -628,6 +990,11 @@
       <code><![CDATA[Auth::getUser()->custid]]></code>
       <code><![CDATA[Auth::getUser()->custid]]></code>
     </NoInterfaceProperties>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->marksent]]></code>
+      <code><![CDATA[$r->peerid]]></code>
+      <code><![CDATA[$r->sendtome]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/PeeringMatrixController.php">
     <InvalidCast>
@@ -656,6 +1023,14 @@
     <TypeDoesNotContainType>
       <code><![CDATA[Auth::getUser()->prefs[ 'notes' ][ 'global_notifs' ]]]></code>
     </TypeDoesNotContainType>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->authorisedMobile]]></code>
+      <code><![CDATA[$r->email]]></code>
+      <code><![CDATA[$r->name]]></code>
+      <code><![CDATA[$r->new_password]]></code>
+      <code><![CDATA[$r->notify]]></code>
+      <code><![CDATA[$r->username]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/RipeAtlas/MeasurementController.php">
     <MissingDocblockType>
@@ -663,6 +1038,12 @@
     </MissingDocblockType>
   </file>
   <file src="app/Http/Controllers/RipeAtlas/RunController.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[RedirectResponse|true]]></code>
+      <code><![CDATA[array{object: null, vlans: \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model>, preAddForm: true}]]></code>
+      <code><![CDATA[bool]]></code>
+      <code><![CDATA[void]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidOperand>
       <code><![CDATA[config( "ixp_fe.lang.customer.one" )]]></code>
     </InvalidOperand>
@@ -680,6 +1061,9 @@
       <code><![CDATA[public function store( StoreRouter $r ): RedirectResponse]]></code>
       <code><![CDATA[public function update( StoreRouter $r, Router $router ): RedirectResponse]]></code>
     </MissingDocblockType>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->template]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/RsFilterController.php">
     <InvalidArgument>
@@ -703,11 +1087,15 @@
       <code><![CDATA[null]]></code>
       <code><![CDATA[null]]></code>
     </TypeDoesNotContainNull>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->custid]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/SearchController.php">
-    <MissingDocblockType>
-      <code><![CDATA[$results[ $vli->virtualInterface->custid ]]]></code>
-    </MissingDocblockType>
+    <UndefinedDocblockClass>
+      <code><![CDATA[array{results: array, interfaces: array<non-empty-list<Illuminate\Database\Eloquent\Model>>}]]></code>
+      <code><![CDATA[array{results: array<int, Customer|mixed>, interfaces: array<int, non-empty-list<IXP\Models\VirtualInterface|mixed>>}]]></code>
+    </UndefinedDocblockClass>
   </file>
   <file src="app/Http/Controllers/Services/Grapher.php">
     <MissingDocblockType>
@@ -730,8 +1118,8 @@
       <code><![CDATA[public function routeSearch( string $handle ): View]]></code>
       <code><![CDATA[public function routeTable( string $handle, string $network, string $mask, string $table ): View]]></code>
       <code><![CDATA[public function routesForExport( string $handle, string $protocol ): View]]></code>
-      <code><![CDATA[public function routesForProtocol( string $handle, string $protocol )]]></code>
-      <code><![CDATA[public function routesForTable( string $handle, string $table )]]></code>
+      <code><![CDATA[public function routesForProtocol( string $handle, string $protocol ): RedirectResponse|View]]></code>
+      <code><![CDATA[public function routesForTable( string $handle, string $table ): RedirectResponse|View]]></code>
       <code><![CDATA[public function status( string $handle ): Response]]></code>
     </MissingDocblockType>
     <NoInterfaceProperties>
@@ -764,22 +1152,60 @@
       <code><![CDATA[$vlan]]></code>
       <code><![CDATA[$vlan]]></code>
     </TypeDoesNotContainType>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->day]]></code>
+      <code><![CDATA[$r->infra]]></code>
+      <code><![CDATA[$r->vlan]]></code>
+      <code><![CDATA[$r->vlan]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/Switches/SwitchController.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{object: Switcher, addBySnmp: array|null|string, preAddForm: false, cabinets: array<int, mixed>, infra: mixed, vendors: mixed}]]></code>
+      <code><![CDATA[array{object: mixed, addBySnmp: array|null|string, preAddForm: false, cabinets: array<int, mixed>, infra: mixed, vendors: mixed}]]></code>
+      <code><![CDATA[true]]></code>
+      <code><![CDATA[void]]></code>
+    </ImplementedReturnTypeMismatch>
     <ImplicitToStringCast>
       <code><![CDATA[now()]]></code>
     </ImplicitToStringCast>
+    <InvalidReturnStatement>
+      <code><![CDATA[$okay]]></code>
+      <code><![CDATA[true]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[bool]]></code>
+      <code><![CDATA[bool|RedirectResponse]]></code>
+    </InvalidReturnType>
     <MissingDocblockType>
+      <code><![CDATA[#[\Override]]]></code>
       <code><![CDATA[private function extraAttributes( Request $r ): void]]></code>
       <code><![CDATA[public function configuration( Request $r ) : View]]></code>
-      <code><![CDATA[public function doUpdate( Request $r, int $id ): bool|RedirectResponse]]></code>
     </MissingDocblockType>
     <RedundantCondition>
       <code><![CDATA[User::AUTH_CUSTADMIN]]></code>
       <code><![CDATA[User::AUTH_CUSTUSER]]></code>
     </RedundantCondition>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->hostname]]></code>
+      <code><![CDATA[$r->snmppasswd]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/Switches/SwitchPortController.php">
+    <FalsableReturnStatement>
+      <code><![CDATA[false]]></code>
+      <code><![CDATA[false]]></code>
+    </FalsableReturnStatement>
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{object: SwitchPort, switches: mixed}]]></code>
+      <code><![CDATA[array{object: mixed, switches: mixed}]]></code>
+      <code><![CDATA[string|null]]></code>
+      <code><![CDATA[true]]></code>
+      <code><![CDATA[true]]></code>
+    </ImplementedReturnTypeMismatch>
+    <InvalidReturnType>
+      <code><![CDATA[bool]]></code>
+    </InvalidReturnType>
     <MissingDocblockType>
       <code><![CDATA[public function unusedOptics() : View]]></code>
     </MissingDocblockType>
@@ -793,6 +1219,10 @@
     <RedundantCondition>
       <code><![CDATA[$disassociatedUser->customers()]]></code>
     </RedundantCondition>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->privs]]></code>
+      <code><![CDATA[$r->user_id]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/User/User2FAController.php">
     <RedundantCondition>
@@ -818,6 +1248,34 @@
     <RedundantFunctionCall>
       <code><![CDATA[sprintf]]></code>
     </RedundantFunctionCall>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->authorisedMobile]]></code>
+      <code><![CDATA[$r->authorisedMobile]]></code>
+      <code><![CDATA[$r->custid]]></code>
+      <code><![CDATA[$r->custid]]></code>
+      <code><![CDATA[$r->disabled]]></code>
+      <code><![CDATA[$r->disabled]]></code>
+      <code><![CDATA[$r->email]]></code>
+      <code><![CDATA[$r->email]]></code>
+      <code><![CDATA[$r->email]]></code>
+      <code><![CDATA[$r->name]]></code>
+      <code><![CDATA[$r->name]]></code>
+      <code><![CDATA[$r->privs]]></code>
+      <code><![CDATA[$r->privs]]></code>
+      <code><![CDATA[$r->username]]></code>
+      <code><![CDATA[$r->username]]></code>
+    </UndefinedMagicPropertyFetch>
+  </file>
+  <file src="app/Http/Controllers/User/UserRememberTokenController.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[null|string]]></code>
+    </ImplementedReturnTypeMismatch>
+    <InvalidReturnStatement>
+      <code><![CDATA[$this->object->user_id === Auth::id()]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[bool]]></code>
+    </InvalidReturnType>
   </file>
   <file src="app/Http/Controllers/Utils/IxfCompareController.php">
     <InvalidArgument>
@@ -828,10 +1286,32 @@
       <code><![CDATA[$sources[ $r->sourcea_dd ]]]></code>
     </InvalidArrayAccess>
   </file>
+  <file src="app/Http/Controllers/VendorController.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{object: Vendor}]]></code>
+      <code><![CDATA[array{object: mixed}]]></code>
+      <code><![CDATA[true]]></code>
+      <code><![CDATA[true]]></code>
+      <code><![CDATA[void]]></code>
+    </ImplementedReturnTypeMismatch>
+  </file>
   <file src="app/Http/Controllers/VlanController.php">
     <ImplementedParamTypeMismatch>
       <code><![CDATA[$id]]></code>
     </ImplementedParamTypeMismatch>
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[RedirectResponse|true]]></code>
+      <code><![CDATA[RedirectResponse|true]]></code>
+      <code><![CDATA[array{object: Vlan, infrastructure: mixed}]]></code>
+      <code><![CDATA[array{object: mixed, infrastructure: mixed}]]></code>
+      <code><![CDATA[void]]></code>
+    </ImplementedReturnTypeMismatch>
+    <InvalidReturnStatement>
+      <code><![CDATA[$okay]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[bool]]></code>
+    </InvalidReturnType>
   </file>
   <file src="app/Http/Controllers/WeatherMapController.php">
     <InvalidArrayAccess>
@@ -877,30 +1357,159 @@
       <code><![CDATA[public function handle( Request $r, Closure $next )]]></code>
     </MissingDocblockType>
   </file>
+  <file src="app/Http/Requests/CoreBundle/Store.php">
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->cb]]></code>
+      <code><![CDATA[$this->type]]></code>
+    </UndefinedThisPropertyFetch>
+  </file>
+  <file src="app/Http/Requests/Customer/Store.php">
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->cust]]></code>
+      <code><![CDATA[$this->cust]]></code>
+      <code><![CDATA[$this->isReseller]]></code>
+      <code><![CDATA[$this->isResold]]></code>
+      <code><![CDATA[$this->reseller]]></code>
+      <code><![CDATA[$this->type]]></code>
+      <code><![CDATA[$this->type]]></code>
+    </UndefinedThisPropertyFetch>
+  </file>
+  <file src="app/Http/Requests/IpAddress/DeleteByNetwork.php">
+    <ImplicitToStringCast>
+      <code><![CDATA[$network->getFirstIP()]]></code>
+    </ImplicitToStringCast>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$ip->version]]></code>
+    </UndefinedMagicPropertyFetch>
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->network]]></code>
+    </UndefinedThisPropertyFetch>
+  </file>
+  <file src="app/Http/Requests/IpAddress/Store.php">
+    <ImplicitToStringCast>
+      <code><![CDATA[$network->getFirstIP()]]></code>
+    </ImplicitToStringCast>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$ip->version]]></code>
+    </UndefinedMagicPropertyFetch>
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->network]]></code>
+    </UndefinedThisPropertyFetch>
+  </file>
   <file src="app/Http/Requests/Irrdb.php">
     <MissingDocblockType>
       <code><![CDATA[public function withValidator(): void]]></code>
     </MissingDocblockType>
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->cust]]></code>
+      <code><![CDATA[$this->cust]]></code>
+      <code><![CDATA[$this->protocol]]></code>
+      <code><![CDATA[$this->type]]></code>
+    </UndefinedThisPropertyFetch>
+  </file>
+  <file src="app/Http/Requests/MovePatchPanelPort.php">
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->port_id]]></code>
+    </UndefinedThisPropertyFetch>
   </file>
   <file src="app/Http/Requests/Profile/Password.php">
     <NoInterfaceProperties>
       <code><![CDATA[Auth::getUser()->password]]></code>
     </NoInterfaceProperties>
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->current_password]]></code>
+    </UndefinedThisPropertyFetch>
   </file>
   <file src="app/Http/Requests/Profile/Profile.php">
     <NoInterfaceProperties>
       <code><![CDATA[Auth::getUser()->password]]></code>
     </NoInterfaceProperties>
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->actual_password]]></code>
+    </UndefinedThisPropertyFetch>
+  </file>
+  <file src="app/Http/Requests/RouteServerFilter/Store.php">
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->advertised_prefix]]></code>
+      <code><![CDATA[$this->peer_id]]></code>
+      <code><![CDATA[$this->protocol]]></code>
+      <code><![CDATA[$this->protocol]]></code>
+      <code><![CDATA[$this->received_prefix]]></code>
+      <code><![CDATA[$this->vlan_id]]></code>
+    </UndefinedThisPropertyFetch>
+  </file>
+  <file src="app/Http/Requests/StorePatchPanelPort.php">
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->allocated]]></code>
+      <code><![CDATA[$this->duplex]]></code>
+      <code><![CDATA[$this->prewired]]></code>
+    </UndefinedThisPropertyFetch>
+  </file>
+  <file src="app/Http/Requests/StorePhysicalInterface.php">
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->fanout]]></code>
+    </UndefinedThisPropertyFetch>
+  </file>
+  <file src="app/Http/Requests/StoreRouter.php">
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->api]]></code>
+      <code><![CDATA[$this->api_type]]></code>
+      <code><![CDATA[$this->db_id]]></code>
+      <code><![CDATA[$this->protocol]]></code>
+      <code><![CDATA[$this->router]]></code>
+    </UndefinedThisPropertyFetch>
+  </file>
+  <file src="app/Http/Requests/StoreVirtualInterfaceWizard.php">
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->ipv4enabled]]></code>
+      <code><![CDATA[$this->ipv6enabled]]></code>
+    </UndefinedThisPropertyFetch>
+  </file>
+  <file src="app/Http/Requests/StoreVlanInterface.php">
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->ipv4enabled]]></code>
+      <code><![CDATA[$this->ipv6enabled]]></code>
+    </UndefinedThisPropertyFetch>
+  </file>
+  <file src="app/Http/Requests/Switches/StoreBySmtp.php">
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->id]]></code>
+    </UndefinedThisPropertyFetch>
+  </file>
+  <file src="app/Http/Requests/User/CheckEmail.php">
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->email]]></code>
+    </UndefinedThisPropertyFetch>
+  </file>
+  <file src="app/Http/Requests/User/CustomerToUser/Delete.php">
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->c2u]]></code>
+    </UndefinedThisPropertyFetch>
+  </file>
+  <file src="app/Http/Requests/User/CustomerToUser/Store.php">
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->customer_id]]></code>
+      <code><![CDATA[$this->privs]]></code>
+      <code><![CDATA[$this->user_id]]></code>
+    </UndefinedThisPropertyFetch>
   </file>
   <file src="app/Http/Requests/User/Delete.php">
     <NoInterfaceProperties>
       <code><![CDATA[Auth::user()->username]]></code>
     </NoInterfaceProperties>
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->u]]></code>
+    </UndefinedThisPropertyFetch>
   </file>
   <file src="app/Http/Requests/User/Store.php">
     <RedundantCondition>
       <code><![CDATA[$isSuperUser]]></code>
     </RedundantCondition>
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->custid]]></code>
+      <code><![CDATA[$this->id]]></code>
+      <code><![CDATA[$this->privs]]></code>
+    </UndefinedThisPropertyFetch>
   </file>
   <file src="app/Http/Requests/User/Update.php">
     <RedundantCondition>
@@ -912,6 +1521,12 @@
       <code><![CDATA[$isSuperUser]]></code>
       <code><![CDATA[$isSuperUser]]></code>
     </TypeDoesNotContainType>
+    <UndefinedThisPropertyFetch>
+      <code><![CDATA[$this->custid]]></code>
+      <code><![CDATA[$this->privs]]></code>
+      <code><![CDATA[$this->u]]></code>
+      <code><![CDATA[$this->u]]></code>
+    </UndefinedThisPropertyFetch>
   </file>
   <file src="app/Jobs/FetchFilteredPrefixesForCustomer.php">
     <MissingDocblockType>
@@ -920,7 +1535,7 @@
   </file>
   <file src="app/Jobs/RipeAtlas/CompleteRequests.php">
     <MissingDocblockType>
-      <code><![CDATA[public function handle()]]></code>
+      <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Jobs/RipeAtlas/CreateMeasurements.php">
@@ -960,11 +1575,6 @@
                 }]]></code>
     </MissingDocblockType>
   </file>
-  <file src="app/Listeners/RipeAtlas/MeasurementComplete.php">
-    <RedundantCondition>
-      <code><![CDATA[$r = $am->atlasResult()]]></code>
-    </RedundantCondition>
-  </file>
   <file src="app/Mail/Alert.php">
     <InvalidOperand>
       <code><![CDATA[config('identity.sitename' )]]></code>
@@ -993,6 +1603,18 @@
       <code><![CDATA[$this->event->note()]]></code>
     </RedundantCondition>
   </file>
+  <file src="app/Mail/Customer/WelcomeEmail.php">
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->message]]></code>
+      <code><![CDATA[$r->subject]]></code>
+    </UndefinedMagicPropertyFetch>
+  </file>
+  <file src="app/Mail/PatchPanelPort/Email.php">
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$request->email_subject]]></code>
+      <code><![CDATA[$request->email_text]]></code>
+    </UndefinedMagicPropertyFetch>
+  </file>
   <file src="app/Mail/PeeringManager/RequestPeeringManager.php">
     <MissingDocblockType>
       <code><![CDATA[public function checkIfSendable( bool $sendtome ): void]]></code>
@@ -1000,6 +1622,11 @@
     <RedundantCondition>
       <code><![CDATA[!filter_var( config( "ixp.peering_manager.testemail" ) , FILTER_VALIDATE_EMAIL )]]></code>
     </RedundantCondition>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$r->message]]></code>
+      <code><![CDATA[$r->sendtome]]></code>
+      <code><![CDATA[$r->subject]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Mail/User/UserAddedToCustomer.php">
     <InvalidOperand>
@@ -1017,6 +1644,9 @@
     </MissingDocblockType>
   </file>
   <file src="app/Models/Aggregators/CustomerAggregator.php">
+    <InvalidDocblock>
+      <code><![CDATA[public static function getPeeringManagerArrayByType( Customer $cust, $vlans, array $protos ): array|null]]></code>
+    </InvalidDocblock>
     <MissingDocblockType>
       <code><![CDATA[$cb->deleteObject();]]></code>
       <code><![CDATA[public static function deleteObject( Customer $cust ): bool]]></code>
@@ -1024,7 +1654,7 @@
   </file>
   <file src="app/Models/Aggregators/IpAddressAggregator.php">
     <MissingDocblockType>
-      <code><![CDATA[public static function bulkAdd( array $addresses, Vlan $vlan, $model, bool $skip = true ): array]]></code>
+      <code><![CDATA[public static function bulkAdd( array $addresses, Vlan $vlan, string $model, bool $skip = true ): array]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Models/Aggregators/PatchPanelPortAggregator.php">
@@ -1034,15 +1664,21 @@
   </file>
   <file src="app/Models/Aggregators/SwitcherAggregator.php">
     <InvalidOperand>
+      <code><![CDATA[$firstip + 1]]></code>
       <code><![CDATA[$mask]]></code>
+      <code><![CDATA[$net + 1]]></code>
+      <code><![CDATA[0xffffffff << ( 32 - $mask )]]></code>
+      <code><![CDATA[ip2long( $ip ) & ( 0xffffffff << ( 32 - $mask ) )]]></code>
     </InvalidOperand>
     <InvalidScalarArgument>
       <code><![CDATA[$firstip]]></code>
       <code><![CDATA[$firstip + 1]]></code>
     </InvalidScalarArgument>
-    <MismatchingDocblockParamType>
-      <code><![CDATA[string|null]]></code>
-    </MismatchingDocblockParamType>
+  </file>
+  <file src="app/Models/Aggregators/UserAggregator.php">
+    <UndefinedDocblockClass>
+      <code><![CDATA[array{user: User|mixed|null, added_to: list<mixed>, removed_from: list<IXP\Models\Customer>}]]></code>
+    </UndefinedDocblockClass>
   </file>
   <file src="app/Models/Aggregators/VirtualInterfaceAggregator.php">
     <MissingDocblockType>
@@ -1068,24 +1704,19 @@
       <code><![CDATA[public function deleteObject(): bool]]></code>
     </MissingDocblockType>
     <UndefinedMagicPropertyFetch>
-      <code><![CDATA[$cl->coreInterfaceSideA->physicalinterface]]></code>
-      <code><![CDATA[$cl->coreInterfaceSideA->physicalinterface]]></code>
       <code><![CDATA[$side->physicalinterface]]></code>
     </UndefinedMagicPropertyFetch>
   </file>
-  <file src="app/Models/CoreInterface.php">
-    <InvalidNullableReturnType>
-      <code><![CDATA[CoreLink]]></code>
-    </InvalidNullableReturnType>
-    <NullableReturnStatement>
-      <code><![CDATA[$this->coreLinkSideA]]></code>
-      <code><![CDATA[$this->coreLinkSideB]]></code>
-    </NullableReturnStatement>
-  </file>
   <file src="app/Models/Customer.php">
+    <InvalidOperand>
+      <code><![CDATA[$this->autsys]]></code>
+    </InvalidOperand>
     <MissingDocblockType>
       <code><![CDATA[public function routeServerClient( ?int $proto = null ): bool]]></code>
     </MissingDocblockType>
+    <UndefinedDocblockClass>
+      <code><![CDATA[array<''|int, array{vlis: non-empty-list<IXP\Models\VlanInterface>, members?: array<''|int, self>}>]]></code>
+    </UndefinedDocblockClass>
   </file>
   <file src="app/Models/DocstoreCustomerDirectory.php">
     <InvalidArgument>
@@ -1102,9 +1733,6 @@
             }
         }]]></code>
     </InvalidArgument>
-    <MismatchingDocblockParamType>
-      <code><![CDATA[User|null]]></code>
-    </MismatchingDocblockParamType>
     <MissingDocblockType>
       <code><![CDATA[public static function deleteAllForCustomer( Customer $cust ): void]]></code>
       <code><![CDATA[public static function recursiveDelete( DocstoreCustomerDirectory $dir ): void]]></code>
@@ -1125,9 +1753,6 @@
             }
         }]]></code>
     </InvalidArgument>
-    <MismatchingDocblockParamType>
-      <code><![CDATA[User|null]]></code>
-    </MismatchingDocblockParamType>
   </file>
   <file src="app/Models/DocstoreDirectory.php">
     <MissingDocblockType>
@@ -1135,6 +1760,9 @@
     </MissingDocblockType>
   </file>
   <file src="app/Models/IrrdbUpdateLog.php">
+    <InvalidDocblock>
+      <code><![CDATA[IrrdbUpdateLog]]></code>
+    </InvalidDocblock>
     <RedundantCondition>
       <code><![CDATA[!$oldest]]></code>
       <code><![CDATA[!$oldest]]></code>
@@ -1143,21 +1771,43 @@
       <code><![CDATA[$oldest]]></code>
       <code><![CDATA[$oldest]]></code>
     </TypeDoesNotContainType>
+    <UndefinedMagicPropertyFetch>
+      <code><![CDATA[$log->asn_v4]]></code>
+      <code><![CDATA[$log->asn_v4]]></code>
+      <code><![CDATA[$log->asn_v6]]></code>
+      <code><![CDATA[$log->asn_v6]]></code>
+      <code><![CDATA[$log->prefix_v4]]></code>
+      <code><![CDATA[$log->prefix_v4]]></code>
+      <code><![CDATA[$log->prefix_v6]]></code>
+      <code><![CDATA[$log->prefix_v6]]></code>
+    </UndefinedMagicPropertyFetch>
   </file>
-  <file src="app/Models/P2pDailyStats.php">
-    <MismatchingDocblockReturnType>
-      <code><![CDATA[P2pDailyStats[]]]></code>
-    </MismatchingDocblockReturnType>
+  <file src="app/Models/PatchPanel.php">
+    <InvalidOperand>
+      <code><![CDATA[$available]]></code>
+      <code><![CDATA[$total]]></code>
+    </InvalidOperand>
   </file>
   <file src="app/Models/PatchPanelPort.php">
     <ImplicitToStringCast>
       <code><![CDATA[now()]]></code>
     </ImplicitToStringCast>
+    <InvalidOperand>
+      <code><![CDATA[$this->number % 2 ? ( floor( $this->number / 2 ) ) + 1 : $this->number / 2]]></code>
+      <code><![CDATA[( floor( $this->number / 2 ) ) + 1]]></code>
+    </InvalidOperand>
+    <InvalidReturnStatement>
+      <code><![CDATA[$this->hasMany(PatchPanelPortFile::class, 'patch_panel_port_id' )
+            ->where( 'is_private', 0 )]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[HasMany]]></code>
+    </InvalidReturnType>
     <MissingDocblockType>
       <code><![CDATA[$slave->remove();]]></code>
       <code><![CDATA[$user]]></code>
       <code><![CDATA[public function archive(): PatchPanelPortHistory]]></code>
-      <code><![CDATA[public function move( PatchPanelPort $dest, PatchPanelPort $slave = null ): bool]]></code>
+      <code><![CDATA[public function move( PatchPanelPort $dest, ?PatchPanelPort $slave = null ): bool]]></code>
       <code><![CDATA[public function remove(): void]]></code>
     </MissingDocblockType>
     <NoInterfaceProperties>
@@ -1174,23 +1824,12 @@
       <code><![CDATA[public static function createFromPort( PatchPanelPort $ppp ): PatchPanelPortHistory]]></code>
     </MissingDocblockType>
   </file>
-  <file src="app/Models/PhysicalInterface.php">
-    <InvalidNullableReturnType>
-      <code><![CDATA[PhysicalInterface|bool]]></code>
-      <code><![CDATA[int]]></code>
-    </InvalidNullableReturnType>
-    <NullableReturnStatement>
-      <code><![CDATA[$ci->coreLink()->coreInterfaceSideA->physicalInterface]]></code>
-      <code><![CDATA[$ci->coreLink()->coreInterfaceSideB->physicalInterface]]></code>
-      <code><![CDATA[$this->rate_limit ?: $this->speed]]></code>
-    </NullableReturnStatement>
-  </file>
   <file src="app/Models/SwitchPort.php">
     <ImplicitToStringCast>
       <code><![CDATA[now()]]></code>
     </ImplicitToStringCast>
     <MissingDocblockType>
-      <code><![CDATA[public function snmpUpdate( SNMP $host, bool $logger = false, bool $nosave = false ): SwitchPort]]></code>
+      <code><![CDATA[public function snmpUpdate( SNMP $host, bool $logger = false, bool $nosave = false ): static]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Models/Switcher.php">
@@ -1198,36 +1837,28 @@
       <code><![CDATA[now()]]></code>
     </ImplicitToStringCast>
     <MissingDocblockType>
-      <code><![CDATA[public function snmpPollSwitchPorts( $host, $logger = false, bool|array &$result = false, bool $nosave = false ): Switcher]]></code>
+      <code><![CDATA[public function snmpPollSwitchPorts( SNMP $host, bool $logger = false, bool|array &$result = false, bool $nosave = false ): static]]></code>
     </MissingDocblockType>
     <RedundantCondition>
       <code><![CDATA[$logger]]></code>
     </RedundantCondition>
-    <UndefinedMagicPropertyFetch>
-      <code><![CDATA[$sp->physicalInterface->coreinterface]]></code>
-    </UndefinedMagicPropertyFetch>
+    <UndefinedDocblockClass>
+      <code><![CDATA[list<IXP\Models\CoreBundle>]]></code>
+    </UndefinedDocblockClass>
   </file>
   <file src="app/Models/VirtualInterface.php">
     <InvalidDocblock>
       <code><![CDATA[return $ci->coreLink()->coreBundle;]]></code>
     </InvalidDocblock>
-    <InvalidReturnStatement>
-      <code><![CDATA[$this->physicalInterfaces[ 0 ]->switchPort->type]]></code>
-    </InvalidReturnStatement>
-    <InvalidReturnType>
-      <code><![CDATA[string|bool]]></code>
-    </InvalidReturnType>
-    <NullableReturnStatement>
-      <code><![CDATA[$this->physicalInterfaces[ 0 ]->switchPort->type]]></code>
-    </NullableReturnStatement>
-    <UndefinedMagicPropertyFetch>
-      <code><![CDATA[$pi->coreinterface]]></code>
-    </UndefinedMagicPropertyFetch>
+    <UndefinedDocblockClass>
+      <code><![CDATA[list<IXP\Models\PhysicalInterface>]]></code>
+      <code><![CDATA[list<IXP\Models\PhysicalInterface>]]></code>
+    </UndefinedDocblockClass>
   </file>
   <file src="app/Models/VlanInterface.php">
     <MissingDocblockType>
       <code><![CDATA[public function canGraphForLatency( string $proto ): bool]]></code>
-      <code><![CDATA[public function getIPAddress( int|string $proto )]]></code>
+      <code><![CDATA[public function getIPAddress( int|string $proto ): IPv4Address|IPv6Address|null]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Policies/RouteServerFilterPolicy.php">
@@ -1247,15 +1878,20 @@
   </file>
   <file src="app/Providers/DiagnosticsServiceProvider.php">
     <MissingDocblockType>
+      <code><![CDATA[#[\Override]]]></code>
       <code><![CDATA[public function boot(): void]]></code>
-      <code><![CDATA[public function register()]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Providers/GrapherServiceProvider.php">
     <MissingDocblockType>
+      <code><![CDATA[#[\Override]]]></code>
       <code><![CDATA[public function boot(): void]]></code>
-      <code><![CDATA[public function register()]]></code>
     </MissingDocblockType>
+  </file>
+  <file src="app/Providers/ParsedownServiceProvider.php">
+    <UndefinedInterfaceMethod>
+      <code><![CDATA[getCompiler]]></code>
+    </UndefinedInterfaceMethod>
   </file>
   <file src="app/Rules/Ipv4SubnetSize.php">
     <InvalidOperand>
@@ -1268,13 +1904,10 @@
     </InvalidOperand>
   </file>
   <file src="app/Services/Auth/EloquentUserProvider.php">
-    <MismatchingDocblockParamType>
-      <code><![CDATA[Authenticatable|Model]]></code>
-    </MismatchingDocblockParamType>
     <MissingDocblockType>
+      <code><![CDATA[#[\Override]]]></code>
       <code><![CDATA[public function addRememberToken( $user ): UserRememberToken]]></code>
       <code><![CDATA[public function purgeExpiredRememberTokens( User $user ): void]]></code>
-      <code><![CDATA[public function retrieveByToken( $identifier, $token ): ?Authenticatable]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Services/Auth/SessionGuard.php">
@@ -1286,30 +1919,60 @@
     </NoInterfaceProperties>
   </file>
   <file src="app/Services/Diagnostics/Suites/PhysicalInterfaceDiagnosticSuite.php">
+    <ImplicitToStringCast>
+      <code><![CDATA[$lastPolled]]></code>
+      <code><![CDATA[$lastPolled]]></code>
+    </ImplicitToStringCast>
     <RedundantCondition>
       <code><![CDATA["Configured MTU is null/0 but switch port reports " . $this->pi->switchPort->ifMtu]]></code>
       <code><![CDATA["No, last polled: " . $lastPolled]]></code>
       <code><![CDATA[$mainName . " No, last polled: " . $lastPolled]]></code>
       <code><![CDATA[$mainName ."configured as null/0 but switch port reports " . $this->pi->switchPort->ifMtu]]></code>
       <code><![CDATA[$pi?->switchPort]]></code>
+      <code><![CDATA[$pi?->switchPort]]></code>
     </RedundantCondition>
     <TypeDoesNotContainNull>
+      <code><![CDATA[$pi]]></code>
       <code><![CDATA[$pi]]></code>
     </TypeDoesNotContainNull>
     <UndefinedMagicPropertyFetch>
       <code><![CDATA[$this->pi->switchPort->ifSpeed]]></code>
     </UndefinedMagicPropertyFetch>
   </file>
+  <file src="app/Services/Diagnostics/Suites/RouterBgpSessionsDiagnosticSuite.php">
+    <InvalidOperand>
+      <code><![CDATA[$vli->virtualInterface->customer->autsys]]></code>
+      <code><![CDATA[$vli->virtualInterface->customer->autsys]]></code>
+    </InvalidOperand>
+  </file>
   <file src="app/Services/Diagnostics/Suites/TransceiverDiagnosticSuite.php">
+    <InvalidOperand>
+      <code><![CDATA[10 * log10($matches[1])]]></code>
+    </InvalidOperand>
     <InvalidScalarArgument>
       <code><![CDATA[$matches[1]]]></code>
     </InvalidScalarArgument>
     <RedundantCondition>
       <code><![CDATA[$pi?->switchPort]]></code>
+      <code><![CDATA[$pi?->switchPort]]></code>
     </RedundantCondition>
     <TypeDoesNotContainNull>
       <code><![CDATA[$pi]]></code>
+      <code><![CDATA[$pi]]></code>
     </TypeDoesNotContainNull>
+  </file>
+  <file src="app/Services/Diagnostics/Suites/VirtualInterfaceDiagnosticSuite.php">
+    <RedundantCondition>
+      <code><![CDATA[$vi->physicalInterfaces]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="app/Services/Diagnostics/Suites/VlanInterfaceL2DiagnosticSuite.php">
+    <InvalidArgument>
+      <code><![CDATA[$this->arping( $this->vli )]]></code>
+    </InvalidArgument>
+    <UndefinedDocblockClass>
+      <code><![CDATA[list<IXP\Services\Diagnostics\DiagnosticResult>]]></code>
+    </UndefinedDocblockClass>
   </file>
   <file src="app/Services/Grapher.php">
     <InvalidArrayAccess>
@@ -1321,7 +1984,7 @@
       <code><![CDATA[public function backendForGraph( Graph $graph, array $backends = [] ): BackendContract]]></code>
       <code><![CDATA[public function backendsForGraph( Graph $graph ): array]]></code>
       <code><![CDATA[public function latency( VlanInterface $vli ): LatencyGraph]]></code>
-      <code><![CDATA[public function resolveBackend( string $backend = null ): string]]></code>
+      <code><![CDATA[public function resolveBackend( ?string $backend = null ): string]]></code>
       <code><![CDATA[public function trunk( string $trunkname ): TrunkGraph]]></code>
     </MissingDocblockType>
     <NoValue>
@@ -1335,8 +1998,8 @@
       <code><![CDATA[$config['logdir']]]></code>
     </InvalidArrayAccess>
     <MissingDocblockType>
-      <code><![CDATA[private function resolveFilePath( Graph $graph, $type ): string]]></code>
-      <code><![CDATA[public function data( Graph $graph ): array]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[private function resolveFilePath( Graph $graph, string $type ): string]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Services/Grapher/Backend/Mrtg.php">
@@ -1351,15 +2014,22 @@
       <code><![CDATA[$config['logdir']]]></code>
       <code><![CDATA[$config['logdir']]]></code>
     </InvalidArrayAccess>
+    <InvalidOperand>
+      <code><![CDATA[$data[ 'swports_maxbytes' ][ $switch->id ] += ( ( $pi->detectedSpeed() > 0 ) ? $pi->detectedSpeed() : 1 ) * 1000000 / 8]]></code>
+      <code><![CDATA[$data['infraports_maxbytes'][ $switcher->infrastructureModel->id ] += $maxbytes]]></code>
+      <code><![CDATA[$data['ixpports_maxbytes'] += $maxbytes]]></code>
+      <code><![CDATA[$data['locports_maxbytes'  ][ $location->id ] += $maxbytes]]></code>
+      <code><![CDATA[$data['swports_maxbytes'   ][ $switcher->id ] += $maxbytes]]></code>
+    </InvalidOperand>
     <MissingDocblockType>
-      <code><![CDATA[public function data( Graph $graph ): array]]></code>
-      <code><![CDATA[public function dataPath( Graph $graph ): string]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
       <code><![CDATA[public function resolveFilePath( Graph $graph, string $type ): string]]></code>
     </MissingDocblockType>
-    <UndefinedMagicPropertyFetch>
-      <code><![CDATA[$cl->coreinterfacesidea]]></code>
-      <code><![CDATA[$cl->coreinterfacesideb]]></code>
-    </UndefinedMagicPropertyFetch>
+    <UndefinedDocblockClass>
+      <code><![CDATA[$cb->corelinks]]></code>
+      <code><![CDATA[$cb->id]]></code>
+    </UndefinedDocblockClass>
   </file>
   <file src="app/Services/Grapher/Backend/Sflow.php">
     <InvalidArrayAccess>
@@ -1368,10 +2038,10 @@
       <code><![CDATA[$config['root']]]></code>
     </InvalidArrayAccess>
     <MissingDocblockType>
-      <code><![CDATA[private function resolveFileName( Graph $graph, $type ): string]]></code>
-      <code><![CDATA[private function resolveFilePath( Graph $graph, $type ): string]]></code>
-      <code><![CDATA[public function data( Graph $graph ): array]]></code>
-      <code><![CDATA[public function dataPath( Graph $graph ): string]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[private function resolveFileName( Graph $graph, string $type ): string]]></code>
+      <code><![CDATA[private function resolveFilePath( Graph $graph, string $type ): string]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Services/Grapher/Backend/Smokeping.php">
@@ -1379,8 +2049,8 @@
       <code><![CDATA[$urls[ $graph->vli()->vlan->id ]]]></code>
     </InvalidArrayAccess>
     <MissingDocblockType>
+      <code><![CDATA[#[\Override]]]></code>
       <code><![CDATA[private function resolveFilePath( Graph $graph ): string]]></code>
-      <code><![CDATA[public function dataPath( Graph $graph ): string]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Services/Grapher/Graph.php">
@@ -1399,24 +2069,39 @@
     </MissingDocblockType>
   </file>
   <file src="app/Services/Grapher/Graph/CoreBundle.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int, side: string}]]></code>
+    </ImplementedReturnTypeMismatch>
     <RedundantCondition>
       <code><![CDATA[$this->coreBundle()]]></code>
     </RedundantCondition>
   </file>
   <file src="app/Services/Grapher/Graph/Customer.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
+    </ImplementedReturnTypeMismatch>
     <RedundantCondition>
       <code><![CDATA[$this->customer()]]></code>
     </RedundantCondition>
   </file>
   <file src="app/Services/Grapher/Graph/IXP.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: 1}]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidCast>
       <code><![CDATA[config( 'grapher.access.ixp' )]]></code>
     </InvalidCast>
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[IXP]]></code>
+    </LessSpecificImplementedReturnType>
     <TypeDoesNotContainType>
       <code><![CDATA[(int)config( 'grapher.access.ixp' ) === User::AUTH_PUBLIC]]></code>
     </TypeDoesNotContainType>
   </file>
   <file src="app/Services/Grapher/Graph/Infrastructure.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidCast>
       <code><![CDATA[config( 'grapher.access.infrastructure' )]]></code>
     </InvalidCast>
@@ -1427,7 +2112,15 @@
       <code><![CDATA[(int)config( 'grapher.access.infrastructure' ) === User::AUTH_PUBLIC]]></code>
     </TypeDoesNotContainType>
   </file>
+  <file src="app/Services/Grapher/Graph/Latency.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: Carbon|null, period_end?: Carbon|null, id: int}]]></code>
+    </ImplementedReturnTypeMismatch>
+  </file>
   <file src="app/Services/Grapher/Graph/Location.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidCast>
       <code><![CDATA[config( 'grapher.access.location' )]]></code>
       <code><![CDATA[config( 'grapher.access.location' )]]></code>
@@ -1440,6 +2133,9 @@
     </TypeDoesNotContainType>
   </file>
   <file src="app/Services/Grapher/Graph/P2p.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, svli: int, dvli: int}]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidCast>
       <code><![CDATA[config( 'grapher.access.p2p' )]]></code>
     </InvalidCast>
@@ -1449,19 +2145,17 @@
     </RedundantCondition>
   </file>
   <file src="app/Services/Grapher/Graph/PhysicalInterface.php">
-    <InvalidNullableReturnType>
-      <code><![CDATA[Customer]]></code>
-      <code><![CDATA[string]]></code>
-    </InvalidNullableReturnType>
-    <NullableReturnStatement>
-      <code><![CDATA[$this->physicalInterface()->switchPort->name]]></code>
-      <code><![CDATA[$this->physint->virtualInterface->customer]]></code>
-    </NullableReturnStatement>
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
+    </ImplementedReturnTypeMismatch>
     <RedundantCondition>
       <code><![CDATA[$this->physicalInterface()]]></code>
     </RedundantCondition>
   </file>
   <file src="app/Services/Grapher/Graph/Switcher.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidCast>
       <code><![CDATA[config( 'grapher.access.switch' )]]></code>
       <code><![CDATA[config( 'grapher.access.switch' )]]></code>
@@ -1474,29 +2168,32 @@
     </TypeDoesNotContainType>
   </file>
   <file src="app/Services/Grapher/Graph/Trunk.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: string}]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidCast>
       <code><![CDATA[config( 'grapher.access.trunk' )]]></code>
     </InvalidCast>
     <MissingDocblockType>
       <code><![CDATA[public function __construct( Grapher $grapher, string $n )]]></code>
-      <code><![CDATA[public function setTrunkname( string $n ): Trunk]]></code>
+      <code><![CDATA[public function setTrunkname( string $n ): static]]></code>
     </MissingDocblockType>
     <TypeDoesNotContainType>
       <code><![CDATA[(int)config( 'grapher.access.trunk' ) === User::AUTH_PUBLIC]]></code>
     </TypeDoesNotContainType>
   </file>
   <file src="app/Services/Grapher/Graph/VirtualInterface.php">
-    <InvalidNullableReturnType>
-      <code><![CDATA[Customer]]></code>
-    </InvalidNullableReturnType>
-    <NullableReturnStatement>
-      <code><![CDATA[$this->virtint->customer]]></code>
-    </NullableReturnStatement>
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
+    </ImplementedReturnTypeMismatch>
     <RedundantCondition>
       <code><![CDATA[$this->virtualInterface()]]></code>
     </RedundantCondition>
   </file>
   <file src="app/Services/Grapher/Graph/Vlan.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidCast>
       <code><![CDATA[config( 'grapher.access.vlan' )]]></code>
     </InvalidCast>
@@ -1508,15 +2205,12 @@
     </TypeDoesNotContainType>
   </file>
   <file src="app/Services/Grapher/Graph/VlanInterface.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidCast>
       <code><![CDATA[config( 'grapher.access.customer' )]]></code>
     </InvalidCast>
-    <InvalidNullableReturnType>
-      <code><![CDATA[Customer]]></code>
-    </InvalidNullableReturnType>
-    <NullableReturnStatement>
-      <code><![CDATA[$this->vlanint->virtualInterface->customer]]></code>
-    </NullableReturnStatement>
     <RedundantCondition>
       <code><![CDATA[$this->vlanInterface()]]></code>
     </RedundantCondition>
@@ -1531,7 +2225,7 @@
   </file>
   <file src="app/Services/Helpdesk/Zendesk.php">
     <ImplementedReturnTypeMismatch>
-      <code><![CDATA[Contact|bool]]></code>
+      <code><![CDATA[Contact|false]]></code>
     </ImplementedReturnTypeMismatch>
     <ImplicitToStringCast>
       <code><![CDATA[now()]]></code>
@@ -1539,15 +2233,15 @@
     <InvalidScalarArgument>
       <code><![CDATA[60/200]]></code>
     </InvalidScalarArgument>
-    <MismatchingDocblockReturnType>
-      <code><![CDATA[Contact|bool]]></code>
-    </MismatchingDocblockReturnType>
+    <MethodSignatureMismatch>
+      <code><![CDATA[Zendesk]]></code>
+    </MethodSignatureMismatch>
     <MissingDocblockType>
-      <code><![CDATA[protected function callApi( $fn )]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[protected function callApi( \Closure $fn )]]></code>
       <code><![CDATA[public function __construct( $config )]]></code>
-      <code><![CDATA[public function organisationFind( int $id )]]></code>
-      <code><![CDATA[public function organisationUpdate( int $helpdeskId, Customer $cust )]]></code>
-      <code><![CDATA[public function userFind( int  $id )]]></code>
     </MissingDocblockType>
     <UndefinedMagicPropertyAssignment>
       <code><![CDATA[$cust->helpdesk_id]]></code>
@@ -1560,7 +2254,7 @@
   </file>
   <file src="app/Services/LookingGlass.php">
     <MissingDocblockType>
-      <code><![CDATA[public function forRouter( Router $router )]]></code>
+      <code><![CDATA[public function forRouter( Router $router ): BirdseyeLookingGlass]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Services/PeeringDb.php">
@@ -1590,9 +2284,6 @@
     </MissingDocblockType>
   </file>
   <file src="app/Services/RipeAtlas/Interpretor.php">
-    <MismatchingDocblockReturnType>
-      <code><![CDATA[integer]]></code>
-    </MismatchingDocblockReturnType>
     <MissingDocblockType>
       <code><![CDATA[public function interpret( AtlasMeasurement $atlasMeasurement ): AtlasResult]]></code>
     </MissingDocblockType>
@@ -1604,8 +2295,8 @@
   </file>
   <file src="app/Tasks/Irrdb/UpdateDb.php">
     <MissingDocblockType>
-      <code><![CDATA[protected function updateDb( array $fromIrrdb, int $protocol, $type = 'prefix' ): bool]]></code>
-      <code><![CDATA[public function setBgpq3( Bgpq3 $bgpq3 ): UpdateDb]]></code>
+      <code><![CDATA[protected function updateDb( array $fromIrrdb, int $protocol, string $type = 'prefix' ): bool]]></code>
+      <code><![CDATA[public function setBgpq3( Bgpq3 $bgpq3 ): static]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Tasks/Irrdb/UpdatePrefixDb.php">
@@ -1625,7 +2316,7 @@
     <MissingDocblockType>
       <code><![CDATA[public function __construct( Router $r )]]></code>
       <code><![CDATA[public function render(): ViewContract]]></code>
-      <code><![CDATA[public function setRouter( Router $router ): ConfigurationGenerator]]></code>
+      <code><![CDATA[public function setRouter( Router $router ): static]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Tasks/Yaml/SwitchConfigurationGenerator.php">
@@ -1639,27 +2330,46 @@
     </InvalidOperand>
   </file>
   <file src="app/Utils/Export/JsonSchema.php">
+    <InvalidDocblock>
+      <code><![CDATA[private function getSwitchInfo( string $version, Infrastructure $infra ): array]]></code>
+    </InvalidDocblock>
     <MissingDocblockType>
       <code><![CDATA[private function getIXPInfo( string $version ): array]]></code>
-      <code><![CDATA[public function get( string $version = null, $asArray = false, $detailed = true, $tags = false )]]></code>
+      <code><![CDATA[public function get( ?string $version = null, bool $asArray = false, bool $detailed = true, bool $tags = false ): array|string]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Utils/Foil/Extensions/IXP.php">
     <InvalidLiteralArgument>
       <code><![CDATA['bkmgtpezy']]></code>
     </InvalidLiteralArgument>
+    <InvalidOperand>
+      <code><![CDATA[$subnet]]></code>
+    </InvalidOperand>
   </file>
   <file src="app/Utils/Former/Framework/TwitterBootstrap4.php">
     <ImplementedReturnTypeMismatch>
-      <code><![CDATA[string|null]]></code>
+      <code><![CDATA[null|string]]></code>
     </ImplementedReturnTypeMismatch>
   </file>
+  <file src="app/Utils/Grapher/Dummy.php">
+    <InvalidOperand>
+      <code><![CDATA[mt_rand( 0, 10 ) / 1000.0]]></code>
+      <code><![CDATA[mt_rand( 0, 10 ) / 1000.0]]></code>
+    </InvalidOperand>
+  </file>
   <file src="app/Utils/Grapher/Mrtg.php">
+    <InvalidOperand>
+      <code><![CDATA[time() - $periodsecs]]></code>
+    </InvalidOperand>
     <MissingDocblockType>
       <code><![CDATA[protected function loadMrtgFile(): array]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Utils/Grapher/Rrd.php">
+    <InvalidOperand>
+      <code><![CDATA[time() - self::PERIOD_TIME[ $this->graph()->period() ]]]></code>
+      <code><![CDATA[time() - self::PERIOD_TIME[ $this->graph()->period() ]]]></code>
+    </InvalidOperand>
     <InvalidScalarArgument>
       <code><![CDATA[$this->graph()->periodEnd()->timestamp]]></code>
       <code><![CDATA[$this->graph()->periodStart()->timestamp]]></code>
@@ -1668,15 +2378,16 @@
     <MissingDocblockType>
       <code><![CDATA[private function getLocalCopy(): string]]></code>
       <code><![CDATA[private function getLocalDirectory(): string]]></code>
-      <code><![CDATA[private function getLocalFilename( $ext = 'rrd' ): string]]></code>
+      <code><![CDATA[private function getLocalFilename( string $ext = 'rrd' ): string]]></code>
       <code><![CDATA[protected function loadRrdFile(): void]]></code>
       <code><![CDATA[public function __construct( string $file, Graph $graph )]]></code>
       <code><![CDATA[public function data(): array]]></code>
       <code><![CDATA[public function png(): string]]></code>
-      <code><![CDATA[public function rrd()]]></code>
+      <code><![CDATA[public function rrd(): string]]></code>
     </MissingDocblockType>
     <TypeDoesNotContainType>
       <code><![CDATA[!is_array( $rrd )]]></code>
+      <code><![CDATA[$png === false]]></code>
       <code><![CDATA[$rrd === false]]></code>
       <code><![CDATA[$rrd === false]]></code>
       <code><![CDATA[$rrd === false || !is_array( $rrd )]]></code>
@@ -1686,15 +2397,20 @@
     <MissingDocblockType>
       <code><![CDATA[public function delete( Request $r ): RedirectResponse]]></code>
       <code><![CDATA[public function edit( int $id ): View]]></code>
-      <code><![CDATA[public function store( Request $r )]]></code>
+      <code><![CDATA[public function store( Request $r ): RedirectResponse|false]]></code>
     </MissingDocblockType>
-    <NoInterfaceProperties>
-      <code><![CDATA[Auth::getUser()->username]]></code>
-      <code><![CDATA[Auth::getUser()->username]]></code>
-    </NoInterfaceProperties>
+    <NoValue>
+      <code><![CDATA[$storeResult]]></code>
+      <code><![CDATA[$updateResult]]></code>
+      <code><![CDATA[$url]]></code>
+      <code><![CDATA[return $r;]]></code>
+    </NoValue>
     <RedundantCondition>
       <code><![CDATA[is_array( $data )]]></code>
     </RedundantCondition>
+    <TypeDoesNotContainType>
+      <code><![CDATA[$url = $this->postDeleteRedirect()]]></code>
+    </TypeDoesNotContainType>
   </file>
   <file src="app/Utils/IpAddress.php">
     <MissingDocblockType>

@@ -70,7 +70,7 @@ class PatchPanelPortAggregator extends PatchPanelPort
      *
      * @return Collection
      */
-    public static function list( int $ppid = null, bool $advanced = false, int $location = null, int $cabinet = null, int $cabletype = null, bool $availableForUse = false, bool $prewiredOnly = false ): Collection
+    public static function list( ?int $ppid = null, bool $advanced = false, ?int $location = null, ?int $cabinet = null, ?int $cabletype = null, bool $availableForUse = false, bool $prewiredOnly = false ): Collection
     {
         return self::selectRaw( '
             ppp.*,
@@ -133,7 +133,7 @@ class PatchPanelPortAggregator extends PatchPanelPort
      *
      * @return  array   list of patch panel form key => pppId , value => ppp name
      */
-    public static function getAvailablePorts( int $ppid, $excludeIds = [], int $includeSlave = null, bool $excludeDuplex = true )
+    public static function getAvailablePorts( int $ppid, $excludeIds = [], ?int $includeSlave = null, bool $excludeDuplex = true )
     {
         $ppps = PatchPanelPort::selectRaw(
             'ppp.id, ppp.number, 

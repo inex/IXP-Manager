@@ -109,7 +109,7 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4
      * @return Element A wrapped item
      */
     #[\Override]
-    public function placeAround( $item ): Element
+    public function placeAround( $item, $place = null ): Element
     {
         // Render object
         if( is_object( $item ) && method_exists( $item, '__toString' ) ) {

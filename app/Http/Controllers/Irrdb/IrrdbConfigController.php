@@ -145,7 +145,7 @@ class IrrdbConfigController extends EloquentController
      * @psalm-return array{object: mixed}
      */
     #[\Override]
-    protected function editPrepareForm( int $id = null ): array
+    protected function editPrepareForm( ?int $id = null ): array
     {
         $this->object = IrrdbConfig::findOrFail( $id );
 

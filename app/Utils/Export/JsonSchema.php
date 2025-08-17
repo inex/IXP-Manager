@@ -81,7 +81,7 @@ class JsonSchema
      *
      * @throws
      */
-    public function get( string $version = null, bool $asArray = false, bool $detailed = true, bool $tags = false ): array|string
+    public function get( ?string $version = null, bool $asArray = false, bool $detailed = true, bool $tags = false ): array|string
     {
         if( $version === null ) {
             $version = self::EUROIX_JSON_LATEST;

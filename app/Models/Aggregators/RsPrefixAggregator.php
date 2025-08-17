@@ -246,7 +246,7 @@ class RsPrefixAggregator extends RsPrefix
      *
      * @return bool|array Count of all routes not advertised to the route server but would be accepted by it
      */
-    public static function summaryRoutesAdvertisedAndNotAccepted( int $protocol, int $cust = null )
+    public static function summaryRoutesAdvertisedAndNotAccepted( int $protocol, ?int $cust = null )
     {
         return self::getSummaryRoutes( $protocol, 0, false, $cust );
     }
@@ -260,7 +260,7 @@ class RsPrefixAggregator extends RsPrefix
      *
      * @return bool|array Count of all routes advertised to the route server but not accepted by it
      */
-    public static function summaryRoutesNotAdvertisedButAcceptable( int $protocol, int $cust = null )
+    public static function summaryRoutesNotAdvertisedButAcceptable( int $protocol, ?int $cust = null )
     {
         return self::getSummaryRoutes( $protocol, 1, true, $cust );
     }
@@ -319,7 +319,7 @@ class RsPrefixAggregator extends RsPrefix
      *
      * @return array All routes advertised to the route server and accepted by it
      */
-    public static function routesAdvertisedAndAccepted( int $protocol = null, int $cust = null ): array
+    public static function routesAdvertisedAndAccepted( ?int $protocol = null, ?int $cust = null ): array
     {
         return self::getRoutes( 1, false, $protocol, $cust );
     }
@@ -368,7 +368,7 @@ class RsPrefixAggregator extends RsPrefix
      *
      * @return array The database query result
      */
-    public static function getRoutes( int $irrdb, bool $rsOriginIsNull, int $protocol = null, int $cust = null ): array
+    public static function getRoutes( int $irrdb, bool $rsOriginIsNull, ?int $protocol = null, ?int $cust = null ): array
     {
          return self::selectRaw(
             'cust.id AS id, cust.name AS name, rs_prefixes.protocol AS protocol,

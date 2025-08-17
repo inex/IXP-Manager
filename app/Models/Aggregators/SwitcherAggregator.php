@@ -115,7 +115,7 @@ class SwitcherAggregator extends Switcher
 
      * @return Collection
      */
-    public static function getByLocationInfrastructureSpeed( int $infra = null, int $location = null, int $speed = null ): Collection
+    public static function getByLocationInfrastructureSpeed( ?int $infra = null, ?int $location = null, ?int $speed = null ): Collection
     {
         /** @psalm-suppress InvalidArgument - psalm can not recognise eloquent grouped conditions */
         return self::select( 'switch.*' )
@@ -155,7 +155,7 @@ class SwitcherAggregator extends Switcher
      *
      * @return array
      */
-    public static function getConfiguration( int $switchid = null, int $infraid = null, int $facilityid = null, int $speed = null, int $vlanid = null, bool $rsclient = false, bool $ipv6enabled = false ): array
+    public static function getConfiguration( ?int $switchid = null, ?int $infraid = null, ?int $facilityid = null, ?int $speed = null, ?int $vlanid = null, bool $rsclient = false, bool $ipv6enabled = false ): array
     {
         // BUGLET: see https://github.com/inex/IXP-Manager/issues/757
         // "Switch configuration port list erroneously lists non-rate limited port as rate limited"

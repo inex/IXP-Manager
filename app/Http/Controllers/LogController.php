@@ -133,7 +133,7 @@ class LogController extends Controller
      *
      * @param Log  $log  the log
      */
-    public function view( Log $log ): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\View|Application
+    public function view( Log $log ): \Illuminate\Contracts\View\View|Application
     {
         return view( 'log/view' )->with([
             'log'   => $log

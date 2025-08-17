@@ -344,7 +344,7 @@ class ConsoleServerConnectionController extends EloquentController
      *
      * @return bool
      */
-    private function checkIsDuplicate( Request $r , int $objectid = null ): bool
+    private function checkIsDuplicate( Request $r , ?int $objectid = null ): bool
     {
         $exist = ConsoleServerConnection::where( "console_server_id" , $r->console_server_id  )
             ->where( 'port' , $r->port )

@@ -232,7 +232,7 @@ class NetworkInfoController extends EloquentController
      *
      * @return bool
      */
-    private function checkIsDuplicate( Request $r, int $objectid = null  ): bool
+    private function checkIsDuplicate( Request $r, ?int $objectid = null  ): bool
     {
         $vlan = Vlan::find( $r->vlanid );
 

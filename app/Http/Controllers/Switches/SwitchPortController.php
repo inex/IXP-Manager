@@ -149,7 +149,7 @@ class SwitchPortController extends EloquentController
      * @return array
      */
     #[\Override]
-    protected function listGetData( int $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams   = $this->feParams;
         $params     = $this->data;

@@ -681,7 +681,7 @@ class PatchPanelPort extends Model
      *
      * @throws
      */
-    public function move( PatchPanelPort $dest, PatchPanelPort $slave = null ): bool
+    public function move( PatchPanelPort $dest, ?PatchPanelPort $slave = null ): bool
     {
         // preflight checks
         if( $this->duplexSlavePorts()->count() && ( $slave === null || !$slave->availableForUse() ) ) {
