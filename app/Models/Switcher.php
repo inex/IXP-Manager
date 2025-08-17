@@ -464,7 +464,10 @@ class Switcher extends Model
 
     /**
      * Return an array of core bundles
+     *
      * @return CoreBundle[]
+     *
+     * @psalm-return list{0?: CoreBundle,...}
      */
     public function getCoreBundles(): array
     {

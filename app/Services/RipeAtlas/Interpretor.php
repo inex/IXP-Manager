@@ -103,7 +103,7 @@ class Interpretor
      *
      * @param array $tracert Raw RIPE Atles JSON result as PHP
      *
-     * @return (mixed|string)[][][] The path
+     * @return (mixed|string)[][][]
      *
      * @psalm-return array{hops: list{0?: list{'*'|mixed,...},...}, ixpx: array<never, never>}
      */

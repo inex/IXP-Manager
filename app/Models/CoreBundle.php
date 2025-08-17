@@ -223,10 +223,8 @@ class CoreBundle extends Model
 
     /**
      * get the speed of the Physical interface
-     *
-     * @return int
      */
-    public function speedPi(): int
+    public function speedPi(): int|null
     {
         $cl = $this->corelinks->first() ?? false;
         if( $cl ){
@@ -265,10 +263,8 @@ class CoreBundle extends Model
 
     /**
      * get the customer associated virtual interface of the core bundle
-     *
-     * @return Customer|bool
      */
-    public function customer()
+    public function customer(): Customer|false
     {
         $cl = $this->corelinks[ 0 ] ?? false;
         if( $cl ){

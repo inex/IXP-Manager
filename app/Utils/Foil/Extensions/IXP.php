@@ -51,6 +51,9 @@ class IXP implements ExtensionInterface
      */
     private $args;
 
+    /**
+     * @return void
+     */
     #[\Override]
     /**
      * @return void
@@ -60,6 +63,11 @@ class IXP implements ExtensionInterface
         $this->args = $args;
     }
 
+    /**
+     * @return array
+     *
+     * @psalm-return array<never, never>
+     */
     #[\Override]
     /**
      * @return array
@@ -71,6 +79,11 @@ class IXP implements ExtensionInterface
        return [];
     }
 
+    /**
+     * @return (static|string)[][]
+     *
+     * @psalm-return array{alerts: list{AlertContainer::class, 'html'}, as112UiActive: list{static, 'as112UiActive'}, asNumber: list{static, 'asNumber'}, google2faAuthenticator: list{static, 'google2faAuthenticator'}, logoManagementEnabled: list{static, 'logoManagementEnabled'}, maxFileUploadSize: list{static, 'maxFileUploadSize'}, nagiosHostname: list{static, 'nagiosHostname'}, nakedUrl: list{static, 'nakedUrl'}, resellerMode: list{static, 'resellerMode'}, scaleBits: list{static, 'scaleBits'}, scaleBytes: list{static, 'scaleBytes'}, scaleSpeed: list{static, 'scaleSpeed'}, scaleFilesize: list{static, 'scaleFilesize'}, softwrap: list{static, 'softwrap'}, whoisPrefix: list{static, 'whoisPrefix'}}
+     */
     #[\Override]
     /**
      * @return (static|string)[][]

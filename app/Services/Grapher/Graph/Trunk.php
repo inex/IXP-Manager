@@ -166,9 +166,9 @@ class Trunk extends Graph
      *
      * Extends base function
      *
-     * @return (mixed|string)[] $params
+     * @return (\Carbon\Carbon|mixed|null|string)[]
      *
-     * @psalm-return array{id: string,...}
+     * @psalm-return array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: string}
      */
     #[\Override]
     public function getParamsAsArray(): array

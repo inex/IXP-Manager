@@ -66,9 +66,10 @@ class VlanInterfaceL3DiagnosticSuite extends DiagnosticSuite
 
     /**
      * Run the diagnostics suite
+     *
      * @throws BindingResolutionException
      */
-    public function run(): VlanInterfaceL3DiagnosticSuite
+    public function run(): static
     {
 
         $this->results->add( $this->ping(   $this->vli, $this->protocol ) );

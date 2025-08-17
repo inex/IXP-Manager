@@ -422,7 +422,7 @@ class PhysicalInterface extends Model
     /**
      * Get the core bundle if the physical interface is associated to a core bundle
      */
-    public function coreBundle(): CoreBundle|false
+    public function coreBundle(): CoreBundle|false|null
     {
         if( $ci = $this->coreInterface ){
             return $ci->coreLink()->coreBundle;

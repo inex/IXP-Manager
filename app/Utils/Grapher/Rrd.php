@@ -166,9 +166,9 @@ class Rrd
      * @see getLocalCopy() for detals
      * @see getLocalFilename() for detals
      *
-     * @return string The full path to the local directory
-     *
      * @throws
+     *
+     * @psalm-return '/Users/barryo/dev/ixpm-inex/storage/grapher'
      */
     private function getLocalDirectory(): string
     {
@@ -191,13 +191,13 @@ class Rrd
      *
      * @see getLocalCopy() for detals
      *
-     * @param  string $ext The extension
-     *
-     * @return string The full path to the local copy
+     * @param string $ext The extension
      *
      * @throws
+     *
+     * @psalm-param 'png'|'rrd' $ext
      */
-    private function getLocalFilename( $ext = 'rrd' ): string
+    private function getLocalFilename( string $ext = 'rrd' ): string
     {
         return "{$this->getLocalDirectory()}/" . self::LOCAL_CACHE_RRD_PREFIX . "{$this->graph()->key()}.{$ext}";
     }
@@ -270,7 +270,7 @@ class Rrd
      *
      * @throws
      */
-    public function rrd()
+    public function rrd(): string
     {
         if( !( $rrd = @file_get_contents($this->file) ) ) {
             throw new FileErrorException("Could not read RRD file [{$this->file}]");
@@ -283,7 +283,9 @@ class Rrd
      *
      * This returns the appropriate keys to use when indexing arrays.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return list{'ds0'|'traffic_in', 'ds1'|'traffic_out'}
      */
     private function getIndexKeys(): array
     {
@@ -331,8 +333,12 @@ class Rrd
     /**
      * @param integer $start : timestamp
      * @param integer $end : timestamp
-     * @return array
+     *
+     * @return int[][]
+     *
      * @throws FileErrorException
+     *
+     * @psalm-return array<int<0, max>, list{int, int, int, int, int}>
      */
     public function dataWindow( int $start, int $end): array
     {

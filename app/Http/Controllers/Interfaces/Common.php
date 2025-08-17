@@ -348,7 +348,7 @@ abstract class Common extends Controller
      *
      * @throws
      */
-    public function buildCorelink( CoreBundle $coreBundle, Request $request, array $virtualInterfaces, bool $edit ): bool|RedirectResponse
+    public function buildCorelink( CoreBundle $coreBundle, Request $request, array $virtualInterfaces, bool $edit ): RedirectResponse|true
     {
         foreach( $request->input( "cl-details" ) as $coreLinkDetail ) {
             $coreLink = new CoreLink;

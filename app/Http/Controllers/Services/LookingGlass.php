@@ -225,7 +225,7 @@ class LookingGlass extends Controller
      *
      * @throws
      */
-    public function routesForTable( string $handle, string $table ): View|RedirectResponse
+    public function routesForTable( string $handle, string $table ): RedirectResponse|View
     {
         $tooManyRoutesMsg = "The routing table <code>{$table}</code> has too many routes to display in the web interface. Please use "
             . "<a href=\"" . route( 'lg::route-search', [ 'handle' => $this->lg()->router()->handle ] )

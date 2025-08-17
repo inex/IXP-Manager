@@ -103,7 +103,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
     /**
      * Run the diagnostics suite
      */
-    public function run(): PhysicalInterfaceDiagnosticSuite
+    public function run(): static
     {
         $this->results->add( $this->switchportLastPoll() );
 

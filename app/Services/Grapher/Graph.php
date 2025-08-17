@@ -463,11 +463,11 @@ abstract class Graph
     /**
      * A veritable table of contents for API access to this graph
      *
-     * @return ((mixed|string)[]|mixed|string)[]
+     * @return ((Carbon|float|mixed|null|string)[]|mixed|string)[]
      *
      * @throws
      *
-     * @psalm-return array{class: string, urls?: array<string>, base_url: string, statistics: array, params: array, supports: mixed, backends: array, backend: string}
+     * @psalm-return array{class: string, urls?: array<string>, base_url: string, statistics: array{totalin: float, totalout: float, curin: float, curout: float, averagein: float, averageout: float, maxin: float, maxout: float, maxinat: Carbon|null, maxoutat: Carbon|null}, params: array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: Carbon|null, period_end?: Carbon|null}, supports: mixed, backends: array, backend: string}
      */
     public function toc(): array
     {
@@ -703,7 +703,7 @@ abstract class Graph
      * In it's default incarnation, this will **always** fail. You need to explicitly
      * allow graph access based on your own requirements.
      *
-     * @return false
+     * @return never
      *
      * @throws
      */

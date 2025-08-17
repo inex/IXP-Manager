@@ -106,10 +106,8 @@ class RequestPeeringManager extends Mailable
      * Set up recipients and subject from a POST request.
      *
      * @param PeeringManagerRequest $r
-     *
-     * @return RequestPeeringManager
      */
-    protected function prepareFromRequest( PeeringManagerRequest $r ): RequestPeeringManager
+    protected function prepareFromRequest( PeeringManagerRequest $r ): static
     {
         if( !$r->sendtome ) {
             // recipients
@@ -132,10 +130,8 @@ class RequestPeeringManager extends Mailable
      * Set up Markdown body from a POST request.
      *
      * @param PeeringManagerRequest $r
-     *
-     * @return RequestPeeringManager
      */
-    public function prepareBody( PeeringManagerRequest $r ): RequestPeeringManager
+    public function prepareBody( PeeringManagerRequest $r ): static
     {
         // Templating is slightly awkward here as Laravel's Mailable is built around reading the
         // body from a template file be we have it via post.

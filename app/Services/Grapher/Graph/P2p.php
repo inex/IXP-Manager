@@ -245,9 +245,9 @@ class P2p extends Graph
      *
      * Extends base function
      *
-     * @return (int|mixed)[] $params
+     * @return (\Carbon\Carbon|int|mixed|null)[]
      *
-     * @psalm-return array{svli: int, dvli: int,...}
+     * @psalm-return array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, svli: int, dvli: int}
      */
     #[\Override]
     public function getParamsAsArray(): array

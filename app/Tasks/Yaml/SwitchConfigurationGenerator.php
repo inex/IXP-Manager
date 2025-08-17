@@ -76,11 +76,11 @@ class SwitchConfigurationGenerator
     /**
      * Generate and return the configuration
      *
-     * @return (array|mixed)[][]
+     * @return (((((mixed|null|string)[]|int|mixed|null)[]|mixed|null|string)[]|bool|int|mixed|null|string)[]|mixed)[][]
      *
      * @throws
      *
-     * @psalm-return array{layer2interfaces: array<array|mixed>}
+     * @psalm-return array{layer2interfaces: list{0?: array{type: 'core'|'edge', description: null|string, dot1q: bool|null, stp?: bool, cost?: int|null, preference?: int|null, virtualinterfaceid: int|null, corebundleid?: int, lagframing: bool|null, lagindex?: int, vlans: list{0?: array{number: int|mixed|null, macaddresses: list{0?: mixed|null|string,...}, vlaninterfaceid?: int, ipaddresses?: array{ipv4?: null|string, ipv6?: null|string}}|mixed,...}, name: null|string, lagmaster?: bool, fastlacp?: bool, lagmembers?: list<null|string>, shutdown: bool, autoneg?: bool, speed?: int|null, status?: mixed|string, rate_limit?: int|null}|mixed,...}}
      */
     public function generate(): array
     {

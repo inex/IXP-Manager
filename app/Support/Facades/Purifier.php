@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Facade;
 class Purifier extends Facade
 {
 
+    /**
+     * @return string
+     *
+     * @psalm-return 'purifier'
+     */
     #[\Override]
     /**
      * @return string

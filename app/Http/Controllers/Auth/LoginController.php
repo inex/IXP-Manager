@@ -138,8 +138,7 @@ class LoginController extends Controller
      * @param Request       $r
      * @param User          $user
      *
-     * @return Response|void
-     *
+     * @return RedirectResponse|null
      */
     protected function authenticated( Request $r, User $user )
     {
@@ -270,7 +269,7 @@ class LoginController extends Controller
      *
      * @throws
      */
-    public function peeringdbHandleProviderCallback( Request $r ): Response
+    public function peeringdbHandleProviderCallback( Request $r ): RedirectResponse
     {
         if( Auth::check() ) {
             AlertContainer::push( "You are already logged in - Login via PeeringDB aborted." , Alert::WARNING );

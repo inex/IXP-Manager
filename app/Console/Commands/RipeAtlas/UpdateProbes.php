@@ -91,7 +91,7 @@ class UpdateProbes extends Command
     /**
      * Returns all customers or, if specified on the command line, a specific customer
      *
-     * @return Collection|array Customer
+     * @return Collection|array
      *
      * @psalm-return Collection<int, \Illuminate\Database\Eloquent\Model>|list{mixed}
      */

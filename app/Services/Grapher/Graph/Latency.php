@@ -316,9 +316,9 @@ class Latency extends Graph
      *
      * Extends base function
      *
-     * @return (int|mixed)[] $params
+     * @return (Carbon|int|mixed|null)[]
      *
-     * @psalm-return array{id: int,...}
+     * @psalm-return array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: Carbon|null, period_end?: Carbon|null, id: int}
      */
     #[\Override]
     public function getParamsAsArray(): array

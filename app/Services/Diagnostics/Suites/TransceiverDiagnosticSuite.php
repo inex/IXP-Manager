@@ -136,7 +136,7 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
     /**
      * Run the diagnostics suite
      */
-    public function run(): TransceiverDiagnosticSuite
+    public function run(): static
     {
 
         // check if we can even run these first

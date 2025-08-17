@@ -269,7 +269,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      *
      * @throws
      */
-    private function resolveFileName( Graph $graph, $type ): string
+    private function resolveFileName( Graph $graph, string $type ): string
     {
         switch( $graph->classType() ) {
             case 'Vlan':

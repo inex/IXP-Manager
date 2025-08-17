@@ -206,9 +206,9 @@ class CoreBundle extends Graph
      *
      * Extends base function
      *
-     * @return (int|mixed|string)[] $params
+     * @return (\Carbon\Carbon|int|mixed|null|string)[]
      *
-     * @psalm-return array{id: int, side: string,...}
+     * @psalm-return array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int, side: string}
      */
     #[\Override]
     public function getParamsAsArray(): array

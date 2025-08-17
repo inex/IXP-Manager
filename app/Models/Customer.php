@@ -1190,9 +1190,9 @@ class Customer extends Model
      * ]
      * ]
      *
-     * @return array[][] Private VLAN details
+     * @return (VlanInterface|self)[][][]
      *
-     * @psalm-return array<''|int, array{vlis: non-empty-list<IXP\Models\VlanInterface>, members: array}>
+     * @psalm-return array<''|int, array{vlis: non-empty-list<IXP\Models\VlanInterface>, members?: array<''|int, self>}>
      */
     public function privateVlanDetails(): array
     {

@@ -193,10 +193,8 @@ class VirtualInterface extends Model
 
     /**
      * Return the core bundle associated to the virtual interface or false
-     *
-     * @return CoreBundle|bool
      */
-    public function getCoreBundle()
+    public function getCoreBundle(): CoreBundle|false|null
     {
         foreach( $this->physicalInterfaces as $pi ) {
             if( $pi->coreinterface()->exists() ) {
@@ -229,9 +227,9 @@ class VirtualInterface extends Model
     /**
      * Get fanout PhysicalInterfaces
      *
-     * @return (PhysicalInterface|null)[]
+     * @return PhysicalInterface[]
      *
-     * @psalm-return list{0?: PhysicalInterface|null,...}
+     * @psalm-return list{0?: PhysicalInterface,...}
      */
     public function fanoutPhysicalInterface(): array
     {

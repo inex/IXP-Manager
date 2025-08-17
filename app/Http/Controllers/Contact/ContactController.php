@@ -480,9 +480,11 @@ class ContactController extends EloquentController
 
     /**
      * @inheritdoc
+     *
+     * @return null|string
      */
     #[\Override]
-    protected function postStoreRedirect(): ?string
+    protected function postStoreRedirect(): string|null
     {
         /** @var User $us */
         $us = Auth::getUser();
@@ -603,9 +605,9 @@ class ContactController extends EloquentController
     /**
      * return an array of contacts data
      *
-     * @return (array|mixed|null)[]
+     * @return ((array|mixed)[][]|null)[]
      *
-     * @psalm-return array{roles: mixed|null, allGroups: array}
+     * @psalm-return array{roles: array<array>|null, allGroups: array<array<array>>}
      */
     private function getContactsData(): array
     {

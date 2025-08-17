@@ -201,9 +201,9 @@ class VlanInterface extends Graph
      *
      * Extends base function
      *
-     * @return (int|mixed)[] $params
+     * @return (\Carbon\Carbon|int|mixed|null)[]
      *
-     * @psalm-return array{id: int,...}
+     * @psalm-return array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}
      */
     #[\Override]
     public function getParamsAsArray(): array

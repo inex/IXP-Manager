@@ -43,6 +43,9 @@ class Bird implements ExtensionInterface
      */
     private $args;
 
+    /**
+     * @return void
+     */
     #[\Override]
     /**
      * @return void
@@ -52,6 +55,11 @@ class Bird implements ExtensionInterface
         $this->args = $args;
     }
 
+    /**
+     * @return array
+     *
+     * @psalm-return array<never, never>
+     */
     #[\Override]
     /**
      * @return array
@@ -63,6 +71,11 @@ class Bird implements ExtensionInterface
         return [];
     }
 
+    /**
+     * @return (static|string)[][]
+     *
+     * @psalm-return array{bird: list{static, 'getObject'}}
+     */
     #[\Override]
     /**
      * @return (static|string)[][]

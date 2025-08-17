@@ -61,7 +61,7 @@ class VlanInterfaceL2DiagnosticSuite extends DiagnosticSuite
      *
      * @throws BindingResolutionException
      */
-    public function run(): VlanInterfaceL2DiagnosticSuite
+    public function run(): static
     {
 
         $this->results->add( $this->arping( $this->vli ) );

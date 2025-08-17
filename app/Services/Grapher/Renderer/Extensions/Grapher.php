@@ -47,6 +47,9 @@ class Grapher implements ExtensionInterface
     
     private $args;
 
+    /**
+     * @return void
+     */
     #[\Override]
     /**
      * @return void
@@ -56,6 +59,11 @@ class Grapher implements ExtensionInterface
         $this->args = $args;
     }
 
+    /**
+     * @return array
+     *
+     * @psalm-return array<never, never>
+     */
     #[\Override]
     /**
      * @return array
@@ -67,6 +75,11 @@ class Grapher implements ExtensionInterface
        return [];
     }
     
+    /**
+     * @return (static|string)[][]
+     *
+     * @psalm-return array{grapher: list{static, 'getObject'}}
+     */
     #[\Override]
     /**
      * @return (static|string)[][]

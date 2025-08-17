@@ -238,9 +238,7 @@ class UserController extends Controller
     /**
      * Allow to create a User
      *
-     * @param  StoreUser  $r  instance of the current HTTP request
-     *
-     * @return  RedirectResponse|Redirector
+     * @param StoreUser  $r  instance of the current HTTP request
      *
      * @throws AuthorizationException
      */
@@ -348,8 +346,6 @@ class UserController extends Controller
      *
      * @param UpdateUser $r instance of the current HTTP request
      * @param User $u
-     *
-     * @return RedirectResponse|Redirector
      *
      * @throws AuthorizationException
      */

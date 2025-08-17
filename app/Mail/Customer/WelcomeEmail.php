@@ -101,10 +101,8 @@ class WelcomeEmail extends Mailable
      * Set up recipients and subject from a POST request.
      *
      * @param WelcomeEmailRequest $r
-     *
-     * @return WelcomeEmail
      */
-    protected function prepareFromRequest( WelcomeEmailRequest $r ): self
+    protected function prepareFromRequest( WelcomeEmailRequest $r ): static
     {
         // recipients
         foreach( [ 'to', 'cc', 'bcc' ] as $p ) {
@@ -125,10 +123,8 @@ class WelcomeEmail extends Mailable
      * Set up Markdown body from a POST request.
      *
      * @param WelcomeEmailRequest $r
-     *
-     * @return WelcomeEmail
      */
-    public function prepareBody( WelcomeEmailRequest $r ): self
+    public function prepareBody( WelcomeEmailRequest $r ): static
     {
         // Templating is slightly awkward here as Laravel's Mailable is built around reading the
         // body from a template file be we have it via post.

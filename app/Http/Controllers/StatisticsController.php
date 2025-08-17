@@ -520,7 +520,7 @@ class StatisticsController extends Controller
      *
      * @throws ParameterException
      *
-     * @psalm-return array{c: Customer|null, category: null|string, period: null|string, protocol: null|string, srcVlis: mixed, srcVli: VlanInterface|mixed, dstVlis: \Illuminate\Support\Collection, dstVli: VlanInterface|mixed|null}
+     * @psalm-return array{c: Customer|null, category: null|string, period: null|string, protocol: null|string, srcVlis: mixed, srcVli: VlanInterface|mixed, dstVlis: \Illuminate\Support\Collection, dstVli: VlanInterface|null}
      */
     public function p2pPrepare( Request $request, ?Customer $customer, ?VlanInterface $dstVli = null ): array
     {

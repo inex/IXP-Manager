@@ -354,9 +354,9 @@ class Zendesk implements HelpdeskContract
      * @param int           $org_id   The Zendesk ID of the organisation
      * @param false|int $id If updating, set to Zendesk contact ID
      *
-     * @return (int|mixed|null|string|true)[] Data in associate array format as required by Zendesk PHP API
+     * @return (int|null|string|true)[]
      *
-     * @psalm-return array{external_id?: int, name: string, email: null|string, phone: null|string, organization_id: int|null, role: 'admin'|'end-user', ticket_restriction?: 'organization'|'requested', verified?: true, locale_id?: 1176, time_zone?: 'Europe/Dublin', id?: mixed}
+     * @psalm-return array{external_id?: int, name: string, email: null|string, phone: null|string, organization_id: int|null, role: 'admin'|'end-user', ticket_restriction?: 'organization'|'requested', verified?: true, locale_id?: 1176, time_zone?: 'Europe/Dublin', id?: int}
      */
     private function contactEntityToZendeskObject( Contact $contact, int $org_id = null, int|false $id = false ): array
     {
@@ -472,8 +472,6 @@ class Zendesk implements HelpdeskContract
      *
      * @param int       $helpdeskId The ID of the helpdesk's user object
      * @param Contact   $contact    An IXP Manager contact as returned by `userFind()`
-     *
-     * @return Contact|false Decoupled contact object with `helpdesk_id`
      *
      * @throws \IXP\Services\Helpdesk\ApiException
      */

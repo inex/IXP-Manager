@@ -61,9 +61,10 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
 
     /**
      * Run the diagnostics suite
+     *
      * @throws GeneralException
      */
-    public function run(): IrrdbDiagnosticSuite
+    public function run(): static
     {
         // ordering here will determine order on view
         $this->results->add( $this->customerIrrdbFiltered( $this->customer ) );

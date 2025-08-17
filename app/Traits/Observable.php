@@ -144,10 +144,11 @@ trait Observable
     /**
      * @param User|null $user limit the log entries to the actions of this user
      *
-     * @return Builder
      * @psalm-suppress UndefinedThisPropertyFetch
+     *
+     * @psalm-return \Illuminate\Database\Eloquent\Builder<\IXP\Models\Log>
      */
-    public function getLogEntries( ?User $user = null ): Builder
+    public function getLogEntries( ?User $user = null ): \Illuminate\Database\Eloquent\Builder
     {
         return Log::entries( self::getClass(), $this->id, $user );
     }

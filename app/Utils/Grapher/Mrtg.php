@@ -138,22 +138,24 @@ class Mrtg
      * of associative arrays where the five elements of these arrays are just like the
      * MRTG log file:
      *
-     *     [
-     *       [
-     *         0 =>  unixtime stamp
-     *         1 =>  average incoming rate
-     *         2 =>  average outgoing rate
-     *         3 =>  maximum incoming rate
-     *         4 =>  maximum outgoing rate
-     *       ],
-     *       ....
-     *     ]
+     * [
+     * [
+     * 0 =>  unixtime stamp
+     * 1 =>  average incoming rate
+     * 2 =>  average outgoing rate
+     * 3 =>  maximum incoming rate
+     * 4 =>  maximum outgoing rate
+     * ],
+     * ....
+     * ]
      *
      * The above will be ordered with the newest first as per the log file.
      *
-     * @return array
+     * @return int[][]
      *
      * @throws
+     *
+     * @psalm-return list<list{int, int, int, int, int}>
      */
     protected function loadMrtgFile(): array
     {
@@ -189,11 +191,12 @@ class Mrtg
      * @throws GeneralException
      *
      * @see IXP\Utils\Grapher\Mrtg::loadMrtgFile()
-     *
+
      * Processing means:
      * - only returning the values for the requested period
      * - MRTG provides traffic as bytes, change to bits
      *
+     * @psalm-return array<int<0, max>, mixed>
      */
     public function data( Graph $graph ): array
     {

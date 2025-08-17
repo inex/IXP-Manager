@@ -294,7 +294,7 @@ class ConsoleServerConnectionController extends EloquentController
      * @inheritdoc
      */
     #[\Override]
-    protected function postStoreRedirect(): ?string
+    protected function postStoreRedirect(): string
     {
         if( $cs = ConsoleServer::find( request()->cs ) ) {
             return route( 'console-server-connection@listPort' , [ "cs" => $cs->id ] ) ;
