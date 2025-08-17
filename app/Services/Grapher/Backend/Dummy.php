@@ -208,6 +208,8 @@ class Dummy extends GrapherBackend implements GrapherBackendContract
      * @return array
      *
      * @throws
+     *
+     * @psalm-return array<int<0, max>, mixed>
      */
     #[\Override]
     public function data( Graph $graph ): array

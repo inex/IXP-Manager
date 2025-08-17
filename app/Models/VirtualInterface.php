@@ -211,7 +211,7 @@ class VirtualInterface extends Model
      *
      * @return PhysicalInterface[]
      *
-     * @psalm-return list{0?: PhysicalInterface,...}
+     * @psalm-return list<IXP\Models\PhysicalInterface>
      */
     public function peeringPhysicalInterface(): array
     {
@@ -229,7 +229,7 @@ class VirtualInterface extends Model
      *
      * @return PhysicalInterface[]
      *
-     * @psalm-return list{0?: PhysicalInterface,...}
+     * @psalm-return list<IXP\Models\PhysicalInterface>
      */
     public function fanoutPhysicalInterface(): array
     {

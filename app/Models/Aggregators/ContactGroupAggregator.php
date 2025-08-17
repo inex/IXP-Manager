@@ -65,22 +65,23 @@ class ContactGroupAggregator extends ContactGroup
      *
      * Returned array structure:
      *
-     *     $arr = [
-     *         'ROLE' => [
-     *              [ 'id' => 1, 'name' => 'Billing' ],
-     *              [ 'id' => 2, 'name' => 'Admin']
-     *         ]
-     *         'OTHER' => [
-     *              [ 'id' => n, 'name' => 'Other group' ]
-     *         ]
-     *     ];
-     *
+     * $arr = [
+     * 'ROLE' => [
+     * [ 'id' => 1, 'name' => 'Billing' ],
+     * [ 'id' => 2, 'name' => 'Admin']
+     * ]
+     * 'OTHER' => [
+     * [ 'id' => n, 'name' => 'Other group' ]
+     * ]
+     * ];
      *
      * @param string|null   $type   Optionally limit to a specific type
      * @param int|null      $cid    Contact id to filter for a particular contact
      * @param bool          $active Filter active
      *
      * @return array[][]
+     *
+     * @psalm-return array<array<array{id: mixed, name: mixed}>>
      */
     public static function getGroupNamesTypeArray( string $type = null, int $cid = null, bool $active = false ): array
     {

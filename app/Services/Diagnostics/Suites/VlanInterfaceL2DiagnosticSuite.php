@@ -74,7 +74,7 @@ class VlanInterfaceL2DiagnosticSuite extends DiagnosticSuite
     /**
      * @return DiagnosticResult[]
      *
-     * @psalm-return list{0?: DiagnosticResult,...}
+     * @psalm-return list<IXP\Services\Diagnostics\DiagnosticResult>
      */
     public function arping( VlanInterface $vli ): array
     {

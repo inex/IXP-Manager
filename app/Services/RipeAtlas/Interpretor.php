@@ -105,7 +105,7 @@ class Interpretor
      *
      * @return (mixed|string)[][][]
      *
-     * @psalm-return array{hops: list{0?: list{'*'|mixed,...},...}, ixpx: array<never, never>}
+     * @psalm-return array{hops: list<list{'*'|mixed, ...<mixed>}>, ixpx: array<never, never>}
      */
     private function parsePath( array $tracert ): array
     {

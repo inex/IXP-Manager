@@ -190,7 +190,7 @@ class Grapher
      *
      * @throws
      *
-     * @psalm-return list{0?: BackendContract,...}
+     * @psalm-return list<IXP\Contracts\Grapher\Backend>
      */
     public function backendsForGraph( Graph $graph ): array
     {

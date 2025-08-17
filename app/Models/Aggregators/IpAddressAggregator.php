@@ -50,7 +50,7 @@ final class IpAddressAggregator
      *
      * @psalm-param IPv4Address::class|IPv6Address::class $model
      *
-     * @psalm-return array{preexisting: list{0?: mixed,...}, new: list<mixed>}
+     * @psalm-return array{preexisting: list<non-empty-mixed>, new: list<mixed>}
      */
     public static function bulkAdd( array $addresses, Vlan $vlan, string $model, bool $skip = true ): array
     {

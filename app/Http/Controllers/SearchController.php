@@ -211,7 +211,7 @@ class SearchController extends Controller
      *
      * @return ((VirtualInterface|mixed)[]|Customer|mixed)[][]
      *
-     * @psalm-return array{results: array<int, Customer|mixed>, interfaces: array<int, list{VirtualInterface|mixed,...}>}
+     * @psalm-return array{results: array<int, Customer|mixed>, interfaces: array<int, non-empty-list<IXP\Models\VirtualInterface|mixed>>}
      */
     private function processMACSearch( Collection $is = null ): array
     {

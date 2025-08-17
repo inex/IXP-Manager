@@ -301,14 +301,16 @@ class Rrd
      * as an MRTG log file.
      *
      * @see \IXP\Utils\Grapher\Mrtg::loadMrtgFile()
-     *
+
      * Processing means:
      * - only returning the values for the requested period
      * - MRTG/RRD provides traffic as bytes, change to bits
      *
-     * @return array
+     * @return int[][]
      *
      * @throws
+     *
+     * @psalm-return array<int<0, max>, list{int, int, int, int, int}>
      */
     public function data(): array
     {

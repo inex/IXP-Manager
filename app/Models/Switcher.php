@@ -467,7 +467,7 @@ class Switcher extends Model
      *
      * @return CoreBundle[]
      *
-     * @psalm-return list{0?: CoreBundle,...}
+     * @psalm-return list<IXP\Models\CoreBundle>
      */
     public function getCoreBundles(): array
     {

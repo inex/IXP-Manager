@@ -301,7 +301,7 @@ class IpAddressController extends Controller
      *
      * @throws
      *
-     * @psalm-return list{0?: string,...}
+     * @psalm-return list<string>
      */
     private static function generateSequentialAddresses( IPToolsNetwork $network, bool $decimal = false, bool $overflow = true ): array
     {

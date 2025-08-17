@@ -476,7 +476,7 @@ class Zendesk implements HelpdeskContract
      * @throws \IXP\Services\Helpdesk\ApiException
      */
     #[\Override]
-    public function userUpdate( int $helpdeskId, Contact $contact ): Contact
+    public function userUpdate( int $helpdeskId, Contact $contact ): Contact|false
     {
         $response = $this->callApi( function() use ( $contact, $helpdeskId ) {
             return $this->client->users()->update( $helpdeskId, $this->contactEntityToZendeskObject( $contact, null, $helpdeskId ) );

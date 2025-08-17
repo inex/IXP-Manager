@@ -228,10 +228,10 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      *
      * @param Graph $graph
      *
-     * @return false|string
+     * @return string
      */
     #[\Override]
-    public function rrd( Graph $graph ): false|string
+    public function rrd( Graph $graph ): string
     {
         try {
             $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
