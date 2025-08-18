@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers;
 
 use App, Carbon\Carbon;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Auth\Access\AuthorizationException;
@@ -159,13 +160,14 @@ class StatisticsController extends Controller
     /**
      * Show Vlan (sflow) graphs
      *
-     * @param Vlan|null     $vlan       VLAN to show the graph of
-     * @param string        $protocol   IPv4/6
-     * @param string        $category
+     * @param Vlan|null $vlan VLAN to show the graph of
+     * @param string $protocol IPv4/6
+     * @param string $category
      *
      * @return View
      *
-     * @throws
+     * @throws ParameterException
+     * @throws BindingResolutionException
      */
     public function vlan( ?Vlan $vlan = null, string $protocol = Graph::PROTOCOL_IPV4, string $category = Graph::CATEGORY_BITS ) : View
     {
@@ -205,12 +207,12 @@ class StatisticsController extends Controller
     /**
      * Show IXP switch graphs
      *
-     * @param Switcher|null $switch         Switch to show the graph of
-     * @param string        $category       Category of graph to show (e.g. bits / pkts)
+     * @param Switcher|null $switch Switch to show the graph of
+     * @param string $category Category of graph to show (e.g. bits / pkts)
      *
      * @return View
-     *
-     * @throws
+     * @throws BindingResolutionException
+     * @throws ParameterException
      */
     public function switch( ?Switcher $switch = null, string $category = Graph::CATEGORY_BITS ) : View
     {
@@ -237,12 +239,12 @@ class StatisticsController extends Controller
     /**
      * Show IXP location graphs
      *
-     * @param Location|null $location       Location§ to show the graph of
-     * @param string        $category       Category of graph to show (e.g. bits / pkts)
+     * @param Location|null $location Location§ to show the graph of
+     * @param string $category Category of graph to show (e.g. bits / pkts)
      *
      * @return View
-     *
-     * @throws
+     * @throws BindingResolutionException
+     * @throws ParameterException
      */
     public function location( ?Location $location = null, string $category = Graph::CATEGORY_BITS ) : View
     {

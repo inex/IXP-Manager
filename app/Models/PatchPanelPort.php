@@ -606,7 +606,7 @@ class PatchPanelPort extends Model
     {
         foreach( $this->duplexSlavePorts as $pppsp ) {
             $pppsp->reset();
-            $pppsp->update( [ 'duplex_master_id', null ] );
+            $pppsp->update( [ 'duplex_master_id' => null ] );
         }
 
         // Attributes that are not reset

@@ -26,8 +26,10 @@ namespace IXP\Http\Controllers\Customer;
 use App, Auth, Cache, Countries, Former, Mail;
 
 use Carbon\Carbon;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Builder;
 
+use IXP\Exceptions\GeneralException;
 use Illuminate\Http\{
     JsonResponse,
     RedirectResponse,
@@ -423,12 +425,12 @@ class CustomerController extends Controller
     /**
      * Display the customer overview
      *
-     * @param   Customer    $cust   the customer
-     * @param   string|null $tab    Tab from the overview selected
+     * @param Customer $cust the customer
+     * @param string|null $tab Tab from the overview selected
      *
      * @return  View
-     *
-     * @throws
+     * @throws GeneralException
+     * @throws BindingResolutionException
      */
     public function overview( Customer $cust, ?string $tab = null ) : View
     {
