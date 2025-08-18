@@ -168,15 +168,12 @@ elif [[ -f /tmp/.ixp-manager-installer-settingsrc ]]; then
 else
     IXPNAME="Somecity Internet Exchange Point"
     IXPSNAME="SCIX"
-    IXPCITY="SomeCity"
-    IXPCOUNTRY="Country"
     IXPASN="65535"
-    IXPPEEREMAIL="peering@example.com"
-    IXPNOCEMAIL="noc@example.com"
-    IXPNOCPHONE="+555 1 555 1234"
-    IXPWWW="http://www.example.com/"
+    IXPEMAIL="operations@example.com"
+    IXPPHONE="+353 20 912 2000"
+    IXPWWW="https://www.example.com/"
     NAME="Joe Bloggs"
-    USEREMAIL="root@localhost"
+    USEREMAIL="joebloggs@example.com"
     USERNAME="jbloggs"
 
     # generate some passwords (securely):
@@ -199,12 +196,9 @@ function get_user_input() {
 
 get_user_input IXPNAME      "Long name of your IXP"          "$IXPNAME"
 get_user_input IXPSNAME     "Short name of your IXP"         "$IXPSNAME"
-get_user_input IXPCITY      "Your city"                      "$IXPCITY"
-get_user_input IXPCOUNTRY   "Your country"                   "$IXPCOUNTRY"
 get_user_input IXPASN       "AS number of your IXP"          "$IXPASN"
-get_user_input IXPPEEREMAIL "Your peering email"             "$IXPPEEREMAIL"
-get_user_input IXPNOCEMAIL  "Your NOC email"                 "$IXPNOCEMAIL"
-get_user_input IXPNOCPHONE  "Your NOC contact phone number"  "$IXPNOCPHONE"
+get_user_input IXPEMAIL     "Your IXP email"                 "$IXPEMAIL"
+get_user_input IXPPHONE     "Your NOC contact phone number"  "$IXPPHONE"
 get_user_input IXPWWW       "Your IXP website"               "$IXPWWW"
 
 echo -e "\n\n##################################################################\n\n"
@@ -223,12 +217,9 @@ echo -e "\n\n##################################################################\
 
 IXPNAME=${IXPNAME//[\'\\\"]/}
 IXPSNAME=${IXPSNAME//[\'\\\"]/}
-IXPCITY=${IXPCITY//[\'\\\"]/}
-IXPCOUNTRY=${IXPCOUNTRY//[\'\\\"]/}
 IXPASN=${IXPASN//[\'\\\"]/}
-IXPPEEREMAIL=${IXPPEEREMAIL//[\'\\\"]/}
-IXPNOCEMAIL=${IXPNOCEMAIL//[\'\\\"]/}
-IXPNOCPHONE=${IXPNOCPHONE//[\'\\\"]/}
+IXPEMAIL=${IXPPEEREMAIL//[\'\\\"]/}
+IXPPHONE=${IXPNOCPHONE//[\'\\\"]/}
 IXPWWW=${IXPWWW//[\'\\\"]/}
 NAME=${NAME//[\'\\\"]/}
 USEREMAIL=${USEREMAIL//[\'\\\"]/}
@@ -243,12 +234,9 @@ cat >/tmp/.ixp-manager-installer-settingsrc <<END_SETTINGS
 # IXP Manager install script - temp storage of settings
 IXPNAME="${IXPNAME}"
 IXPSNAME="${IXPSNAME}"
-IXPCITY="${IXPCITY}"
-IXPCOUNTRY="${IXPCOUNTRY}"
 IXPASN="${IXPASN}"
-IXPPEEREMAIL="${IXPPEEREMAIL}"
-IXPNOCEMAIL="${IXPNOCEMAIL}"
-IXPNOCPHONE="${IXPNOCPHONE}"
+IXPEMAIL="${IXPPEEREMAIL}"
+IXPPHONE="${IXPNOCPHONE}"
 IXPWWW="${IXPWWW}"
 NAME="${NAME}"
 USEREMAIL="${USEREMAIL}"
@@ -264,13 +252,11 @@ chmod 0600 /tmp/.ixp-manager-installer-settingsrc
 log_break
 echo -e "User input:\n\n" >>/tmp/ixp-manager-install.log
 
+echo "IXPNAME:      ${IXPNAME}"      >>/tmp/ixp-manager-install.log
 echo "IXPSNAME:     ${IXPSNAME}"     >>/tmp/ixp-manager-install.log
-echo "IXPCITY:      ${IXPCITY}"      >>/tmp/ixp-manager-install.log
-echo "IXPCOUNTRY:   ${IXPCOUNTRY}"   >>/tmp/ixp-manager-install.log
 echo "IXPASN:       ${IXPASN}"       >>/tmp/ixp-manager-install.log
-echo "IXPPEEREMAIL: ${IXPPEEREMAIL}" >>/tmp/ixp-manager-install.log
-echo "IXPNOCEMAIL:  ${IXPNOCEMAIL}"  >>/tmp/ixp-manager-install.log
-echo "IXPNOCPHONE:  ${IXPNOCPHONE}"  >>/tmp/ixp-manager-install.log
+echo "IXPEMAIL:     ${IXPEMAIL}"     >>/tmp/ixp-manager-install.log
+echo "IXPPHONE:     ${IXPPHONE}"     >>/tmp/ixp-manager-install.log
 echo "IXPWWW:       ${IXPWWW}"       >>/tmp/ixp-manager-install.log
 echo "NAME:         ${NAME}"         >>/tmp/ixp-manager-install.log
 echo "USEREMAIL:    ${USEREMAIL}"    >>/tmp/ixp-manager-install.log
@@ -357,17 +343,6 @@ if [[ -f /tmp/.ixp-manager-installer-settingsrc ]]; then
     mv /tmp/.ixp-manager-installer-settingsrc $IXPROOT/.ixp-manager-installer-settingsrc
 fi
 
-##################################################################
-### Bcrypt hashed password for user
-##################################################################
-
-log_break
-echo -n "Create Bcrypt hashed password for user..."
-echo "Create Bcrypt hashed password for user..." &>> /tmp/ixp-manager-install.log
-ADMIN_PW_SALT="$( openssl rand -base64 16 )"
-HASH_PW=$( php -r "echo escapeshellarg( crypt( '${IXPM_ADMIN_PW}', sprintf( '\$2a\$%02d\$%s', 10, substr( '${ADMIN_PW_SALT}', 0, 22 ) ) ) );" )
-echo "HASH_PW:      ${HASH_PW}" >>/tmp/ixp-manager-install.log
-echo '[done]'
 
 ##################################################################
 ### MySQL Setup
@@ -434,20 +409,20 @@ APP_NAME="${IDENTITY_SITENAME}"
 # IDENTITY_TITLENAME="Vagrant IXP Manager"
 
 IDENTITY_LEGALNAME="${IXPNAME}"
-IDENTITY_CITY="${IXPCITY}"
-IDENTITY_COUNTRY="${IXPCOUNTRY}"
+IDENTITY_CITY="City"
+IDENTITY_COUNTRY="Country"
 IDENTITY_ORGNAME="\${IDENTITY_LEGALNAME}"
 
 # As well as uses in other places, emails are sent from the following name/email:
 IDENTITY_NAME="\${IDENTITY_LEGALNAME}"
-IDENTITY_EMAIL="${IXPNOCEMAIL}"
+IDENTITY_EMAIL="${IXPEMAIL}"
 
 IDENTITY_TESTEMAIL="\${IDENTITY_EMAIL}"
 
 # Used on some traffic graphs:
 IDENTITY_WATERMARK="${IXPNAME}"
 IDENTITY_SUPPORT_EMAIL="\${IDENTITY_EMAIL}"
-IDENTITY_SUPPORT_PHONE="${IXPNOCPHONE}"
+IDENTITY_SUPPORT_PHONE="${IXPPHONE}"
 IDENTITY_SUPPORT_HOURS="24x7"
 
 # IXP Manager will need to send alert emails. This is the recipient email for these alerts.
@@ -455,7 +430,7 @@ IDENTITY_ALERTS_EMAIL=${IDENTITY_SUPPORT_EMAIL}
 IDENTITY_ALERTS_NAME="IXP Manager Alerts"
 
 IDENTITY_BILLING_EMAIL="\${IDENTITY_EMAIL}"
-IDENTITY_BILLING_PHONE="${IXPNOCEMAIL}"
+IDENTITY_BILLING_PHONE="${IXPPHONE}"
 IDENTITY_BILLING_HOURS="24x7"
 
 # Web address of your IXP's website. Used in IX-F Export schema, etc.
@@ -463,7 +438,7 @@ IDENTITY_CORPORATE_URL="${IXPWWW}"
 
 # The logo to show on the login page. Should be a URL.
 # (the example here works - the leading '//' means the browser should match http/https based on the web page)
-IDENTITY_BIGLOGO="http://www.ixpmanager.org/images/logos/ixp-manager.png"
+IDENTITY_BIGLOGO="https://www.ixpmanager.org/images/logos/ixp-manager.png"
 
 IDENTITY_DEFAULT_VLAN=1
 
@@ -757,35 +732,15 @@ echo '[done]'
 # We really need a wizard for this but for now:
 echo -n "Creating initial database entities..."
 
-mysql -u root "-p${MYSQL_ROOT_PW}" $DBNAME <<END_SQL
-INSERT INTO infrastructure ( name, shortname, isPrimary, created_at, updated_at )
-    VALUES ( 'Infrastructure #1', '#1', 1, NOW(), NOW() );
-SET @infraid = LAST_INSERT_ID();
+cd $IXPROOT
 
-INSERT INTO company_registration_detail ( registeredName, created_at, updated_at ) VALUES ( '${IXPNAME}', NOW(), NOW() );
-SET @crdid = LAST_INSERT_ID();
+export IXP_SETUP_ADMIN_PASSWORD=$IXPM_ADMIN_PW
 
-INSERT INTO company_billing_detail ( billingContactName, invoiceMethod, billingFrequency, created_at, updated_at )
-    VALUES ( '${NAME}', 'EMAIL', 'NOBILLING', NOW(), NOW() );
-SET @cbdid = LAST_INSERT_ID();
+log_break && php artisan ixp-manager:setup-wizard --ixp-name="${IXPNAME}" --ixp-shortname="${IXPSNAME}" \
+  --admin-name="${NAME}" --admin-username="${USERNAME}"  --admin-email="${USEREMAIL}"                   \
+  --asn="${IXPASN}" --ixp-email="${IXPEMAIL}" --ixp-phone="${IXPPHONE}" --ixp-url="${IXPWWW}"           \
+  --echo-password --force
 
-INSERT INTO cust ( name, shortname, type, abbreviatedName, autsys, maxprefixes, peeringemail, nocphone, noc24hphone,
-        nocemail, nochours, nocwww, peeringpolicy, corpwww, datejoin, status, activepeeringmatrix, isReseller,
-        company_registered_detail_id, company_billing_details_id, created_at, updated_at )
-    VALUES ( '${IXPNAME}', '${IXPSNAME}', 3, '${IXPSNAME}', '${IXPASN}', 100, '${IXPPEEREMAIL}', '${IXPNOCPHONE}',
-        '${IXPNOCPHONE}', '${IXPNOCEMAIL}', '24x7', '', 'mandatory', '${IXPWWW}', NOW(), 1, 1, 0, @crdid, @cbdid, NOW(), NOW() );
-SET @custid = LAST_INSERT_ID();
-
-INSERT INTO user ( custid, name, username, password, email, privs, disabled, created_at, updated_at )
-    VALUES ( @custid, '${NAME}', '${USERNAME}', ${HASH_PW}, '${USEREMAIL}', 3, 0, NOW(), NOW() );
-SET @userid = LAST_INSERT_ID();
-
-INSERT INTO customer_to_users ( customer_id, user_id, privs, created_at, updated_at )
-    VALUES ( @custid, @userid, 3, NOW(), NOW() );
-
-INSERT INTO contact ( custid, name, email, created_at, updated_at )
-    VALUES ( @custid, '${NAME}', '${USEREMAIL}', NOW(), NOW() );
-END_SQL
 
 # And seed the database:
 cd $IXPROOT

@@ -908,25 +908,25 @@ class Customer extends Model
     public function getFormattedName( $fmt = null ): ?string
     {
         if( $this->type === self::TYPE_ASSOCIATE ) {
-            return $this->abbreviatedName;
+            return $this->abbreviatedName ?? $this->name;
         }
 
         if( $fmt === null || ( $fmt = config('ixp_fe.customer_name_format') ) === null ) {
             $fmt = "%a %j";
         }
 
-        $as = $this->autsys ?: false;
+        $as = (string)$this->autsys;
 
-        return str_replace(
+        return (string) str_replace(
             [ '%n', '%a', '%s', '%i', '%j', '%k', '%l' ],
             [
-                $this->name ?: '',
-                $this->abbreviatedName ?: '',
-                $this->shortname ?: '',
-                $as ? (string) $as : '',
-                $as ? "[AS{$as}]"  : '',
-                $as ? "AS{$as}"    : '',
-                $as ? " - AS{$as}" : ''
+                $this->name ?? '',
+                $this->abbreviatedName ?? ( $this->name ?? '' ),
+                $this->shortname ?? '',
+                $as,
+                "[AS{$as}]",
+                "AS{$as}",
+                " - AS{$as}"
             ],
             $fmt
         );

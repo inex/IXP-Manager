@@ -4,7 +4,7 @@ namespace IXP\Console\Commands;
 define('strict_types', 1);
 
 /*
- * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,20 +28,16 @@ use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Carbon;
 
 
-use IXP\Models\{
-    CompanyBillingDetail,
-    CompanyRegisteredDetail,
-    Customer,
-    Infrastructure,
-    User
-};
+use IXP\Models\{CompanyBillingDetail, CompanyRegisteredDetail, Customer, CustomerToUser, Infrastructure, User};
+use function Termwind\ask;
 
 /**
  * Artisan command to streamline the initial installation of IXP Manager
  *
  * @author     Iskren Hadzhinedev <i.hadzhinedev@gmail.com>
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @package    IXP\Console\Commands
- * @copyright  Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SetupWizard extends Command
@@ -52,18 +48,39 @@ class SetupWizard extends Command
      * @var string
      */
     protected $signature = 'ixp-manager:setup-wizard'
-        . ' {--N|name= : The name of the admin user}'
-        . ' {--U|username= : The username of the admin user}'
-        . ' {--E|email= : The email of the admin user}'
-        . ' {--A|asn= : The ASN of your IXP}'
-        . ' {--I|infrastructure= : The name of your primary infrastructure}'
-        . ' {--C|company-name= : The name of your company}';
+        . ' {--ixp-name= : The name of the IXP (e.g. Somecity Internet Exchange Point)}'
+        . ' {--ixp-shortname= : The short name of the IXP (e.g. DIX)}'
+        . ' {--admin-name= : The name of the admin user}'
+        . ' {--admin-username= : The username of the admin user}'
+        . ' {--admin-password= : The password for the admin user (if unset, taken from the IXP_SETUP_ADMIN_PASSWORD environment variable or random value assigned)}'
+        . ' {--admin-email= : The email of the admin user}'
+        . ' {--asn= : The ASN of your IXP}'
+        . ' {--ixp-email= : The contact email for your IXP (e.g. operations@example.com)}'
+        . ' {--ixp-phone= : The contact number for your IXP (e.g. +353209122000)}'
+        . ' {--ixp-url= : The web address for your IXP (e.g. https://www.example.com/)}'
+        . ' {--echo-password : Echo the password to the console}'
+        . ' {--skip-confirm : Skip the confirmation prompt}'
+        . ' {--force : Force the installation without validation}';
 
     /**
      * The console command description.
      * @var string
      */
-    protected $description = "Run initial setup for IXP Manager";
+    protected $description = "Create initial database objects for IXP Manager";
+
+    protected array $ixpdata = [
+        'ixp-name' => [ 'var' => 'ixpname', 'default' => 'Somecity Internet Exchange Point', 'prompt' => 'Enter the full name of your IXP' ],
+        'ixp-shortname' => [ 'var' => 'ixpshortname', 'default' => 'SCIX', 'prompt' => 'Enter the short name of your IXP' ],
+        'admin-name' => [ 'var' => 'adminname', 'default' => 'Joe Bloggs', 'prompt' => 'Enter the full name of the admin user' ],
+        'admin-username' => [ 'var' => 'adminusername', 'default' => 'jbloggs', 'prompt' => 'Enter the username of the admin user' ],
+        'admin-password' => [ 'var' => 'adminpassword', 'default' => null, 'prompt' => 'Enter the password of the admin user' ],
+        'admin-email' => [ 'var' => 'adminemail', 'default' => 'joebloggs@example.com', 'prompt' => 'Enter the email of the admin user' ],
+        'asn' => [ 'var' => 'asn', 'default' => '65535', 'prompt' => 'Enter the ASN of your IXP' ],
+        'ixp-email' => [ 'var' => 'ixpemail', 'default' => 'operations@example.com', 'prompt' => 'Enter the email of the IXP' ],
+        'ixp-phone' => [ 'var' => 'ixpphone', 'default' => '+353 20 912 2000', 'prompt' => 'Enter the phone number of the IXP' ],
+        'ixp-url' => [ 'var' => 'ixpurl', 'default' => 'https://www.example.com/', 'prompt' => 'Enter the web address of the IXP' ],
+    ];
+
 
     /**
      * Execute the console command.
@@ -79,140 +96,189 @@ class SetupWizard extends Command
             return 1;
         }
 
-        $this->info('Starting the setup wizard...');
-        $data = $this->populateData();
+        $this->line( self::BANNER );
 
-        $passhash = password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 10]);
+        $this->line("Welcome to the IXP Manager setup wizard!\n\n");
 
-        try {
-            DB::transaction(function () use ($data, $passhash) {
+        $table      = [];
+        $data       = [];
 
-                Infrastructure::create([
-                    'name' => $data['infrastructure'],
-                    'shortname' => $data['infrastructure'],
-                    'isPrimary' => 1,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                ]);
+        // gather data
+        foreach( $this->ixpdata as $option => $value ) {
 
-                $billingDetail = CompanyBillingDetail::create([
-                    'billingContatName' => $data['name'],
-                    'billingEmail' => config('identity.billing_email', $data['email']),
-                    'invoiceMethod' => CompanyBillingDetail::INVOICE_METHOD_EMAIL,
-                    'billingFrequency' => CompanyBillingDetail::BILLING_FREQUENCY_NOBILLING,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                ]);
+            if( $this->option( $option ) ) {
+                ${$value['var']} = $this->option( $option );
+            } else {
 
-                $registrationDetail = CompanyRegisteredDetail::create([
-                    'registeredName' => $data['company_name'],
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                ]);
+                if( $option === 'admin-password' ) {
 
-                $cust = Customer::create([
-                    'name' => $data['company_name'],
-                    'type' => 3,
-                    'shortname' => $data['company_name'],
-                    'autsys' => $data['asn'],
-                    'maxprefixes' => 100,
-                    'peeringemail' => $data['email'],
-                    'peeringpolicy' => 'mandatory',
-                    'nocphone' => config('identity.support_phone', '+1 555 555 5555'),
-                    'noc24hphone' => config('identity.support_phone', '+1 555 555 5555'),
-                    'nocemail' => config('identity.support_email', $data['email']),
-                    'nochours' => config('identity.support_hours', '24/7'),
-                    'nocwww' => config('app.url', 'http://example.com'),
-                    'corpwww' => config('identity.corporate_url', 'http://example.com'),
-                    'datejoin' => Carbon::now(),
-                    'status' => 1,
-                    'activepeeringmatrix' => 1,
-                    'company_registered_detail_id' => $registrationDetail->id,
-                    'company_billing_details_id' => $billingDetail->id,
-                    'abbreviatedName' => $data['company_name'],
-                    'isReseller' => 0,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                ]);
+                    if( ( $envPassword = getenv('IXP_SETUP_ADMIN_PASSWORD') ) !== false) {
+                        // Do not use laravel's `env()` because it reads the .env file.
+                        ${$value['var']} = getenv('IXP_SETUP_ADMIN_PASSWORD');
 
-                $cust->contacts()->create([
-                    'name' => $data['name'],
-                    'email' => $data['email'],
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                ]);
+                        // Unset the variable as soon as we read it to reduce the risk of it leaking.
+                        putenv( 'IXP_SETUP_ADMIN_PASSWORD' );
+                    } else {
+                        ${$value['var']} = str()->random( 12 );
+                    }
 
-                $user = new User;
-                $user->name = $data['name'];
-                $user->username = $data['username'];
-                $user->password = $passhash;
-                $user->email = $data['email'];
-                $user->privs = User::AUTH_SUPERUSER;
-                $user->disabled = 0;
-                $user->creator = 'IXP Manager setup wizard';
-                $user->created_at = Carbon::now();
-                $user->updated_at = Carbon::now();
+                } else {
 
-                $user->save();
-                $user->customer()->associate($cust);
-                $user->customers()->attach($cust->id);
-                $user->currentCustomerToUser()->update(['privs' => User::AUTH_SUPERUSER]);
-            });
-        }
-        catch (\Exception $e) {
-            $this->error('A database error occurred while setting up IXP Manager:' . $e->getMessage());
-            return 2;
+                    ${$value[ 'var' ]} = ask( $value[ 'prompt' ] . ' [' . $value[ 'default' ] . '] ' );
+
+                    if( !${$value[ 'var' ]} ) {
+                        ${$value[ 'var' ]} = $value[ 'default' ];
+                    }
+                }
+
+
+
+            }
+
+            $data[ $option ] = ${$value[ 'var' ]};
+
+            if( $option !== 'admin-password' || $this->option( 'echo-password' ) ) {
+                $table[] = [ $option, ${$value[ 'var' ]} ];
+            }
+
         }
 
-        return 0;
-    }
+        $this->table( ['Option', 'Value'], $table );
 
-    protected function populateData(): array
-    {
-
-        /* Do not use laravel's `env()` because it reads the .env file.
-         * Instead explicitly require the variable to be set from the OS or the SAPI to avoid someone accidentally leaving it set in the .env file.
-         */
-        $envPassword = getenv('IXP_SETUP_ADMIN_PASSWORD');
-        putenv('IXP_SETUP_ADMIN_PASSWORD'); // Unset the variable as soon as we read it to reduce the risk of it leaking.
-
-        $data = [
-            "asn" => $this->option('asn') ?? $this->ask('Enter the ASN of your IXP'),
-            "company_name" => $this->option('company-name') ?? $this->ask('Enter the name of your company'),
-            "infrastructure" => $this->option('infrastructure') ?? $this->ask('Enter the name of your primary infrastructure'),
-            "name" => $this->option('name') ?? $this->ask('Enter the full name(s) of the admin user'),
-            "username" => $this->option('username') ?? $this->ask('Enter the username of the admin user'),
-            "email" => $this->option('email') ?? $this->ask('Enter the email of the admin user'),
-            "password" => $envPassword === false ? $this->secret('Enter the password of the admin user') : $envPassword,
-        ];
-        if ($envPassword === false && $data['password'] !== $this->secret('Confirm the password of the admin user')) {
-            $this->error('Passwords do not match. Exiting.');
-            exit(1);
-        }
-
-        $passwordRules = Password::min(8)
-            ->mixedCase()
-            ->numbers()
-            ->symbols()
-            ->uncompromised();
         $validator = \Validator::make($data, [
             'asn' => 'required|integer|between:1,4294967295',
-            'company_name' => 'required|string',
-            'infrastructure' => 'required|string',
-            'name' => 'required|string',
-            'username' => 'required|string',
-            'email' => 'required|email',
-            'password' => ['required', 'string', $passwordRules],
+            'ixp-name' => 'required|string',
+            'ixp-shortname' => 'required|string',
+            'admin-name' => 'required|string',
+            'admin-username' => 'required|string',
+            'admin-email' => 'required|email',
+            'admin-password' => 'required|string|min:10',
+            'ixp-phone' => 'required|string',
+            'ixp-url' => 'required|url',
+            'ixp-email' => 'required|email',
         ]);
 
-        if ($validator->fails()) {
+        if ( !$this->option('force') && $validator->fails()) {
             $this->error('The following errors occurred:');
             foreach ($validator->errors()->all() as $error) {
                 $this->error("\t" . $error);
             }
-            exit(2);
+            return 2;
         }
-        return $data;
 
+        if( ( !$this->option('force') || !$this->option( 'skip-confirm' ) )
+                && !$this->confirm( 'Is this information correct, and do you want to continue to create the database objects?' ) )
+        {
+            $this->error('No confirmation was given. Exiting.');
+            return 3;
+        }
+
+        try {
+
+            DB::beginTransaction();
+
+            Infrastructure::create( [
+                'name'       => $ixpname,
+                'shortname'  => $ixpshortname,
+                'isPrimary'  => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ] );
+
+            $billingDetail = CompanyBillingDetail::create( [
+                'billingContatName' => $adminname,
+                'billingEmail'      => $adminemail,
+                'invoiceMethod'     => CompanyBillingDetail::INVOICE_METHOD_EMAIL,
+                'billingFrequency'  => CompanyBillingDetail::BILLING_FREQUENCY_NOBILLING,
+                'created_at'        => Carbon::now(),
+                'updated_at'        => Carbon::now(),
+            ] );
+
+            $registrationDetail = CompanyRegisteredDetail::create( [
+                'registeredName' => $ixpname,
+                'created_at'     => Carbon::now(),
+                'updated_at'     => Carbon::now(),
+            ] );
+
+            $cust = Customer::create( [
+                'name'                         => $ixpname,
+                'type'                         => Customer::TYPE_INTERNAL,
+                'shortname'                    => $ixpshortname,
+                'autsys'                       => $asn,
+                'maxprefixes'                  => 1,
+                'peeringemail'                 => $ixpemail,
+                'peeringpolicy'                => Customer::PEERING_POLICY_MANDATORY,
+                'nocphone'                     => $ixpphone,
+                'noc24hphone'                  => $ixpphone,
+                'nocemail'                     => $ixpemail,
+                'nochours'                     => Customer::NOC_HOURS_24x7,
+                'nocwww'                       => $ixpurl,
+                'corpwww'                      => $ixpurl,
+                'datejoin'                     => Carbon::now(),
+                'status'                       => Customer::STATUS_NORMAL,
+                'activepeeringmatrix'          => true,
+                'company_registered_detail_id' => $registrationDetail->id,
+                'company_billing_details_id'   => $billingDetail->id,
+                'abbreviatedName'              => $ixpshortname,
+                'isReseller'                   => false,
+                'created_at'                   => Carbon::now(),
+                'updated_at'                   => Carbon::now(),
+            ] );
+
+            $cust->contacts()->create( [
+                'name'       => $adminname,
+                'email'      => $adminemail,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ] );
+
+            $user = new User;
+            $user->name = $adminname;
+            $user->username = $adminusername;
+            $user->password = password_hash( $adminpassword, PASSWORD_BCRYPT, [ 'cost' => config( 'hashing.bcrypt.rounds' ) ] );
+            $user->email = $adminemail;
+            $user->privs = User::AUTH_SUPERUSER;
+            $user->disabled = false;
+            $user->creator = 'IXP Manager SetupWizard';
+            $user->created_at = Carbon::now();
+            $user->updated_at = Carbon::now();
+            $user->save();
+
+            CustomerToUser::create( [
+                'customer_id' => $cust->id,
+                'user_id'     => $user->id,
+                'privs'       => User::AUTH_SUPERUSER,
+                'created_at'  => Carbon::now(),
+                'updated_at'  => Carbon::now(),
+            ] );
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            $this->error('A database error occurred while setting up IXP Manager:' . $e->getMessage());
+            return 4;
+        }
+
+        $this->info('IXP Manager has been setup successfully!');
+
+        return 0;
     }
+
+
+
+    public const string BANNER = "
+
+ _____  ______    __  __                                   
+|_ _\ \/ /  _ \  |  \/  | __ _ _ __   __ _  __ _  ___ _ __ 
+ | | \  /| |_) | | |\/| |/ _` | '_ \ / _` |/ _` |/ _ \ '__|
+ | | /  \|  __/  | |  | | (_| | | | | (_| | (_| |  __/ |   
+|___/_/\_\_|_    |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_|_  
+/ ___|  ___| |_ _   _ _ _\ \      / (_)____|___/_ __ __| | 
+\___ \ / _ \ __| | | | '_ \ \ /\ / /| |_  / _` | '__/ _` | 
+ ___) |  __/ |_| |_| | |_) \ V  V / | |/ / (_| | | | (_| | 
+|____/ \___|\__|\__,_| .__/ \_/\_/  |_/___\__,_|_|  \__,_| 
+                     |_|                                   
+
+";
+
 }
