@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ef7ece9f04030a23f55fa303ef961008",
+    "content-hash": "8f82bc4cbc825bf5eb293dfa051fbdd5",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -3972,29 +3972,29 @@
         },
         {
             "name": "opensolutions/foil",
-            "version": "0.7.1",
+            "version": "0.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opensolutions/foil.git",
-                "reference": "ca15194f73a9768d276f79565bba79c0fa52ab0c"
+                "reference": "2fd2d3658850142ff2d74f985f75179c5b0bcb19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opensolutions/foil/zipball/ca15194f73a9768d276f79565bba79c0fa52ab0c",
-                "reference": "ca15194f73a9768d276f79565bba79c0fa52ab0c",
+                "url": "https://api.github.com/repos/opensolutions/foil/zipball/2fd2d3658850142ff2d74f985f75179c5b0bcb19",
+                "reference": "2fd2d3658850142ff2d74f985f75179c5b0bcb19",
                 "shasum": ""
             },
             "require": {
                 "aura/html": "~2.4",
                 "evenement/evenement": "~2.0",
                 "igorw/get-in": "~1.0",
-                "php": ">=5.4",
+                "php": ">=8.1",
                 "pimple/pimple": "~3.0"
             },
             "require-dev": {
                 "brain/monkey": "~1.1",
-                "mockery/mockery": "0.9.3",
-                "phpunit/phpunit": "~4.8"
+                "mockery/mockery": "~1",
+                "phpunit/phpunit": "~10"
             },
             "type": "library",
             "autoload": {
@@ -4024,9 +4024,9 @@
                 "templates"
             ],
             "support": {
-                "source": "https://github.com/opensolutions/foil/tree/0.7.1"
+                "source": "https://github.com/opensolutions/foil/tree/0.7.3"
             },
-            "time": "2025-08-09T12:57:28+00:00"
+            "time": "2025-08-18T10:29:20+00:00"
         },
         {
             "name": "opensolutions/oss-snmp",

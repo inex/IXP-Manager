@@ -31,7 +31,7 @@
         "bacon/bacon-qr-code": "^3.0.0",
         "barryvdh/laravel-dompdf": "^3.0.0",
         "erusev/parsedown": "^1.7",
-        "opensolutions/foil": "^0.7.0",
+        "opensolutions/foil": "^0.7.2",
         "intervention/image": "^2.7",
         "laravel/horizon": "^5.7",
         "laravel/telescope": "^5.0",
