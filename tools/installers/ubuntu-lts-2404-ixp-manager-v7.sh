@@ -402,15 +402,16 @@ DB_PASSWORD="${MYSQL_IXPM_PW}"
 # This has grown organically and we intend to clean this up in a coming release and
 # documenting where and how each one is spceifically used.
 
+
 # Used in various emails, etc.
-IDENTITY_SITENAME="${IXPSNAME} IXP Manager"
-APP_NAME="${IDENTITY_SITENAME}"
-# Shown in title bar of web portal. Defaults to IDENTITY_SITENAME
-# IDENTITY_TITLENAME="Vagrant IXP Manager"
+IDENTITY_SITENAME="${IXPSNAME}  IXP Manager"
+APP_NAME="\${IDENTITY_SITENAME}"
+# Shown in title bar of web portal.
+IDENTITY_TITLENAME="\${IDENTITY_SITENAME}"
 
 IDENTITY_LEGALNAME="${IXPNAME}"
-IDENTITY_CITY="City"
-IDENTITY_COUNTRY="Country"
+IDENTITY_CITY="Cork"
+IDENTITY_COUNTRY="IE"
 IDENTITY_ORGNAME="\${IDENTITY_LEGALNAME}"
 
 # As well as uses in other places, emails are sent from the following name/email:
@@ -420,18 +421,20 @@ IDENTITY_EMAIL="${IXPEMAIL}"
 IDENTITY_TESTEMAIL="\${IDENTITY_EMAIL}"
 
 # Used on some traffic graphs:
-IDENTITY_WATERMARK="${IXPNAME}"
+IDENTITY_WATERMARK="\${IDENTITY_SITENAME}"
+
 IDENTITY_SUPPORT_EMAIL="\${IDENTITY_EMAIL}"
 IDENTITY_SUPPORT_PHONE="${IXPPHONE}"
-IDENTITY_SUPPORT_HOURS="24x7"
+IDENTITY_SUPPORT_HOURS="8x5"
 
 # IXP Manager will need to send alert emails. This is the recipient email for these alerts.
-IDENTITY_ALERTS_EMAIL=${IDENTITY_SUPPORT_EMAIL}
+IDENTITY_ALERTS_EMAIL=\${IDENTITY_SUPPORT_EMAIL}
 IDENTITY_ALERTS_NAME="IXP Manager Alerts"
+
 
 IDENTITY_BILLING_EMAIL="\${IDENTITY_EMAIL}"
 IDENTITY_BILLING_PHONE="${IXPPHONE}"
-IDENTITY_BILLING_HOURS="24x7"
+IDENTITY_BILLING_HOURS="8x5"
 
 # Web address of your IXP's website. Used in IX-F Export schema, etc.
 IDENTITY_CORPORATE_URL="${IXPWWW}"
@@ -440,7 +443,10 @@ IDENTITY_CORPORATE_URL="${IXPWWW}"
 # (the example here works - the leading '//' means the browser should match http/https based on the web page)
 IDENTITY_BIGLOGO="https://www.ixpmanager.org/images/logos/ixp-manager.png"
 
+# For some actions (e.g. peering matrix) we need to know what VLAN to show by default.
+# This is the vlan.id database entry (i.e. not the VLAN number/tag!)
 IDENTITY_DEFAULT_VLAN=1
+
 
 #########################################################################################
 ### Member vs. Customer
@@ -736,10 +742,10 @@ cd $IXPROOT
 
 export IXP_SETUP_ADMIN_PASSWORD=$IXPM_ADMIN_PW
 
-log_break && php artisan ixp-manager:setup-wizard --ixp-name="${IXPNAME}" --ixp-shortname="${IXPSNAME}" \
-  --admin-name="${NAME}" --admin-username="${USERNAME}"  --admin-email="${USEREMAIL}"                   \
-  --asn="${IXPASN}" --ixp-email="${IXPEMAIL}" --ixp-phone="${IXPPHONE}" --ixp-url="${IXPWWW}"           \
-  --echo-password --force
+log_break && php artisan ixp-manager:setup-wizard --ixp-shortname="${IXPSNAME}"       \
+  --admin-name="${NAME}" --admin-username="${USERNAME}" --admin-email="${USEREMAIL}"  \
+  --asn="${IXPASN}" --echo-password --force
+
 
 
 # And seed the database:

@@ -48,16 +48,12 @@ class SetupWizard extends Command
      * @var string
      */
     protected $signature = 'ixp-manager:setup-wizard'
-        . ' {--ixp-name= : The name of the IXP (e.g. Somecity Internet Exchange Point)}'
         . ' {--ixp-shortname= : The short name of the IXP (e.g. DIX)}'
         . ' {--admin-name= : The name of the admin user}'
         . ' {--admin-username= : The username of the admin user}'
         . ' {--admin-password= : The password for the admin user (if unset, taken from the IXP_SETUP_ADMIN_PASSWORD environment variable or random value assigned)}'
         . ' {--admin-email= : The email of the admin user}'
         . ' {--asn= : The ASN of your IXP}'
-        . ' {--ixp-email= : The contact email for your IXP (e.g. operations@example.com)}'
-        . ' {--ixp-phone= : The contact number for your IXP (e.g. +353209122000)}'
-        . ' {--ixp-url= : The web address for your IXP (e.g. https://www.example.com/)}'
         . ' {--echo-password : Echo the password to the console}'
         . ' {--skip-confirm : Skip the confirmation prompt}'
         . ' {--force : Force the installation without validation}';
@@ -68,17 +64,84 @@ class SetupWizard extends Command
      */
     protected $description = "Create initial database objects for IXP Manager";
 
+
     protected array $ixpdata = [
-        'ixp-name' => [ 'var' => 'ixpname', 'default' => 'Somecity Internet Exchange Point', 'prompt' => 'Enter the full name of your IXP' ],
-        'ixp-shortname' => [ 'var' => 'ixpshortname', 'default' => 'SCIX', 'prompt' => 'Enter the short name of your IXP' ],
-        'admin-name' => [ 'var' => 'adminname', 'default' => 'Joe Bloggs', 'prompt' => 'Enter the full name of the admin user' ],
-        'admin-username' => [ 'var' => 'adminusername', 'default' => 'jbloggs', 'prompt' => 'Enter the username of the admin user' ],
-        'admin-password' => [ 'var' => 'adminpassword', 'default' => null, 'prompt' => 'Enter the password of the admin user' ],
-        'admin-email' => [ 'var' => 'adminemail', 'default' => 'joebloggs@example.com', 'prompt' => 'Enter the email of the admin user' ],
-        'asn' => [ 'var' => 'asn', 'default' => '65535', 'prompt' => 'Enter the ASN of your IXP' ],
-        'ixp-email' => [ 'var' => 'ixpemail', 'default' => 'operations@example.com', 'prompt' => 'Enter the email of the IXP' ],
-        'ixp-phone' => [ 'var' => 'ixpphone', 'default' => '+353 20 912 2000', 'prompt' => 'Enter the phone number of the IXP' ],
-        'ixp-url' => [ 'var' => 'ixpurl', 'default' => 'https://www.example.com/', 'prompt' => 'Enter the web address of the IXP' ],
+        'ixp-name'       => [
+            'var' => 'ixpname',
+            'config' => 'identity.name',
+            'env' => 'IXP_NAME',
+        ],
+        'ixp-legalname'       => [
+            'var' => 'ixplegalname',
+            'config' => 'identity.legalname',
+            'env' => 'IXP_LEGALNAME',
+        ],
+        'ixp-shortname'  => [
+            'var' => 'ixpshortname',
+            'default' => 'IXP',
+            'prompt' => 'Enter the short name of your IXP',
+            'ask' => true,
+        ],
+        'admin-name'     => [
+            'var' => 'adminname',
+            'default' => 'Joe Bloggs',
+            'prompt' => 'Enter the full name of the admin user',
+            'ask' => true,
+        ],
+        'admin-username' => [
+            'var' => 'adminusername',
+            'default' => 'jbloggs',
+            'prompt' => 'Enter the username of the admin user',
+            'ask' => true,
+        ],
+        'admin-password' => [
+            'var' => 'adminpassword',
+            'default' => null,
+            'prompt' => 'Enter the password of the admin user',
+            'ask' => true,
+        ],
+        'admin-email'    => [
+            'var' => 'adminemail',
+            'default' => 'joebloggs@example.com',
+            'prompt' => 'Enter the email of the admin user',
+            'ask' => true,
+        ],
+        'asn'            => [
+            'var' => 'asn',
+            'default' => '65535',
+            'prompt' => 'Enter the ASN of your IXP',
+            'ask' => true,
+        ],
+        'ixp-email'      => [
+            'var' => 'ixpemail',
+            'config' => 'identity.support_email',
+            'prompt' => 'Enter the support email of the IXP',
+            'env' => 'IXP_SUPPORT_EMAIL',
+        ],
+        'ixp-phone'      => [
+            'var' => 'ixpphone',
+            'config' => 'identity.support_phone',
+            'prompt' => 'Enter the support phone number of the IXP',
+            'env' => 'IXP_SUPPORT_PHONE',
+        ],
+        'ixp-billing-email'      => [
+            'var' => 'ixpbillingemail',
+            'config' => 'identity.billing_email',
+            'prompt' => 'Enter the billing email of the IXP',
+            'env' => 'IXP_BILLING_EMAIL',
+        ],
+        'ixp-billing-phone'      => [
+            'var' => 'ixpbillingphone',
+            'config' => 'identity.billing_phone',
+            'prompt' => 'Enter the billing phone number of the IXP',
+            'env' => 'IXP_BILLING_PHONE',
+        ],
+        'ixp-url'        => [
+            'var' => 'ixpurl',
+            'config' => 'identity.corporate_url',
+            'prompt' => 'Enter the web address of the IXP',
+            'env' => 'IXP_CORPORATE_URL',
+        ],
     ];
 
 
@@ -91,6 +154,21 @@ class SetupWizard extends Command
      */
     public function handle(): int
     {
+
+        // The premise of this script is to create the necessary database objects for IXP Manager
+        // after a new installation.
+        //
+        // One key element is that a number of settings, which the script will inform and ask for
+        // confirmation of, are set in the .env file.
+        //
+        // A handful of others are prompted from the user. In particular, the detaails for the
+        // first admin user are asked for.
+        //
+        // This admin user's password should preferably be set in the IXP_SETUP_ADMIN_PASSWORD
+        // environment variable.
+
+
+
         if (Customer::count() > 0) {
             $this->error('IXP Manager has already been setup. Exiting.');
             return 1;
@@ -100,62 +178,71 @@ class SetupWizard extends Command
 
         $this->line("Welcome to the IXP Manager setup wizard!\n\n");
 
+        // print a warning to inform the user that some options are taken from .env
+        if( !$this->confirmDotEnv() ) {
+            return 1;
+        }
+
         $table      = [];
         $data       = [];
 
         // gather data
-        foreach( $this->ixpdata as $option => $value ) {
+        foreach( $this->ixpdata as $setting => $attributes ) {
 
-            if( $this->option( $option ) ) {
-                ${$value['var']} = $this->option( $option );
+            if( !isset( $attributes[ 'ask' ] ) || !$attributes[ 'ask' ] ) {
+                ${$attributes[ 'var' ]} = config( $attributes[ 'config' ] );
+
+            } elseif( $this->option( $setting ) ) {
+                ${$attributes['var']} = $this->option( $setting );
+
             } else {
 
-                if( $option === 'admin-password' ) {
+                if( $setting === 'admin-password' ) {
 
-                    if( ( $envPassword = getenv('IXP_SETUP_ADMIN_PASSWORD') ) !== false) {
+                    if( getenv( 'IXP_SETUP_ADMIN_PASSWORD' ) !== false ) {
                         // Do not use laravel's `env()` because it reads the .env file.
-                        ${$value['var']} = getenv('IXP_SETUP_ADMIN_PASSWORD');
+                        ${$attributes[ 'var' ]} = getenv( 'IXP_SETUP_ADMIN_PASSWORD' );
 
                         // Unset the variable as soon as we read it to reduce the risk of it leaking.
                         putenv( 'IXP_SETUP_ADMIN_PASSWORD' );
                     } else {
-                        ${$value['var']} = str()->random( 12 );
+                        ${$attributes[ 'var' ]} = str()->random( 12 );
                     }
 
                 } else {
 
-                    ${$value[ 'var' ]} = ask( $value[ 'prompt' ] . ' [' . $value[ 'default' ] . '] ' );
+                    ${$attributes[ 'var' ]} = ask( $attributes[ 'prompt' ] . ' [' . $attributes[ 'default' ] . '] ' );
 
-                    if( !${$value[ 'var' ]} ) {
-                        ${$value[ 'var' ]} = $value[ 'default' ];
+                    if( !${$attributes[ 'var' ]} ) {
+                        ${$attributes[ 'var' ]} = $attributes[ 'default' ];
                     }
                 }
-
-
-
             }
 
-            $data[ $option ] = ${$value[ 'var' ]};
+            $data[ $setting ] = ${$attributes[ 'var' ]};
 
-            if( $option !== 'admin-password' || $this->option( 'echo-password' ) ) {
-                $table[] = [ $option, ${$value[ 'var' ]} ];
+            if( $setting !== 'admin-password' || $this->option( 'echo-password' ) ) {
+                $table[] = [ $setting, ${$attributes[ 'var' ]} ];
             }
 
         }
 
-        $this->table( ['Option', 'Value'], $table );
+        $this->table( ['Setting', 'Value'], $table );
 
         $validator = \Validator::make($data, [
             'asn' => 'required|integer|between:1,4294967295',
             'ixp-name' => 'required|string',
+            'ixp-legalname' => 'required|string',
             'ixp-shortname' => 'required|string',
             'admin-name' => 'required|string',
             'admin-username' => 'required|string',
             'admin-email' => 'required|email',
             'admin-password' => 'required|string|min:10',
             'ixp-phone' => 'required|string',
-            'ixp-url' => 'required|url',
             'ixp-email' => 'required|email',
+            'ixp-billing-phone' => 'required|string',
+            'ixp-billing-email' => 'required|email',
+            'ixp-url' => 'required|url',
         ]);
 
         if ( !$this->option('force') && $validator->fails()) {
@@ -166,11 +253,11 @@ class SetupWizard extends Command
             return 2;
         }
 
-        if( ( !$this->option('force') || !$this->option( 'skip-confirm' ) )
-                && !$this->confirm( 'Is this information correct, and do you want to continue to create the database objects?' ) )
-        {
-            $this->error('No confirmation was given. Exiting.');
-            return 3;
+        if( !$this->option('force') && !$this->option( 'skip-confirm' ) ) {
+            if( !$this->confirm( 'Is this information correct, and do you want to continue to create the database objects?' ) ) {
+                $this->error( 'No confirmation was given. Exiting.' );
+                return 3;
+            }
         }
 
         try {
@@ -186,8 +273,8 @@ class SetupWizard extends Command
             ] );
 
             $billingDetail = CompanyBillingDetail::create( [
-                'billingContatName' => $adminname,
-                'billingEmail'      => $adminemail,
+                'billingContatName' => $ixpshortname . ' Billing Team',
+                'billingEmail'      => $ixpbillingemail,
                 'invoiceMethod'     => CompanyBillingDetail::INVOICE_METHOD_EMAIL,
                 'billingFrequency'  => CompanyBillingDetail::BILLING_FREQUENCY_NOBILLING,
                 'created_at'        => Carbon::now(),
@@ -195,7 +282,7 @@ class SetupWizard extends Command
             ] );
 
             $registrationDetail = CompanyRegisteredDetail::create( [
-                'registeredName' => $ixpname,
+                'registeredName' => $ixplegalname,
                 'created_at'     => Carbon::now(),
                 'updated_at'     => Carbon::now(),
             ] );
@@ -280,5 +367,27 @@ class SetupWizard extends Command
                      |_|                                   
 
 ";
+
+    private function confirmDotEnv(): bool
+    {
+        $this->alert( "The following options are taken directly from the .env file:" );
+
+        foreach( $this->ixpdata as $setting => $attributes ) {
+
+            if( !isset( $attributes[ 'ask' ] ) || !$attributes[ 'ask' ] ) {
+                $this->line( "\t{$attributes['env']}    =>    " . config( $attributes[ 'config' ] ) );
+            }
+
+        }
+
+        $this->newLine(2);
+
+        if( $this->option( 'force' ) ) {
+            return true;
+        }
+
+        return $this->confirm( 'Do you want to continue?' );
+    }
+
 
 }

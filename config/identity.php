@@ -30,33 +30,33 @@ return [
      */
 
 
-    'legalname'   => env( 'IDENTITY_LEGALNAME', '*** CONFIG IDENTITY IN .env ***' ),
+    'legalname'   => env( 'IDENTITY_LEGALNAME', 'IXP' ),
 
     'location'    => [
-            'city'       => env( 'IDENTITY_CITY', '*** CONFIG IDENTITY IN .env ***' ),
-            'country'    => env( 'IDENTITY_COUNTRY', '*** CONFIG IDENTITY IN .env ***' ),
+            'city'       => env( 'IDENTITY_CITY', 'Cork' ),
+            'country'    => env( 'IDENTITY_COUNTRY', 'IE' ),
         ],
 
-    'orgname'     => env( 'IDENTITY_ORGNAME', '*** CONFIG IDENTITY IN .env ***' ),
-    'name'        => env( 'IDENTITY_NAME', '*** CONFIG IDENTITY IN .env ***' ),
-    'email'       => env( 'IDENTITY_EMAIL', '*** CONFIG IDENTITY IN .env ***' ),
-    'testemail'   => env( 'IDENTITY_TESTEMAIL', '*** CONFIG IDENTITY IN .env ***' ),
-    'rsvpemail'   => env( 'IDENTITY_RSVPEMAIL', '*** CONFIG IDENTITY IN .env ***' ),
+    'orgname'     => env( 'IDENTITY_ORGNAME', 'IXP' ),
+    'name'        => env( 'IDENTITY_NAME', 'IXP' ),
+    'email'       => env( 'IDENTITY_EMAIL', 'ixp@example.com' ),
+    'testemail'   => env( 'IDENTITY_TESTEMAIL', 'ixp@example.com' ),
+    'rsvpemail'   => env( 'IDENTITY_RSVPEMAIL', 'ixp@example.com' ),
     
-    'watermark'   => env( 'IDENTITY_WATERMARK', '*** CONFIG IDENTITY IN .env ***' ),
+    'watermark'   => env( 'IDENTITY_WATERMARK', 'IXP Manager' ),
 
-    'support_email'       => env( 'IDENTITY_SUPPORT_EMAIL', '*** CONFIG IDENTITY IN .env ***' ),
-    'support_phone'       => env( 'IDENTITY_SUPPORT_PHONE', '*** CONFIG IDENTITY IN .env ***' ),
-    'support_hours'       => env( 'IDENTITY_SUPPORT_HOURS', '*** CONFIG IDENTITY IN .env ***' ),
+    'support_email'       => env( 'IDENTITY_SUPPORT_EMAIL', 'ixp@example.com' ),
+    'support_phone'       => env( 'IDENTITY_SUPPORT_PHONE', '+353 20 912 2000' ),
+    'support_hours'       => env( 'IDENTITY_SUPPORT_HOURS', \IXP\Models\Customer::NOC_HOURS_24x7 ),
 
-    'billing_email'       => env( 'IDENTITY_BILLING_EMAIL', '*** CONFIG IDENTITY IN .env ***' ),
-    'billing_phone'       => env( 'IDENTITY_BILLING_PHONE', '*** CONFIG IDENTITY IN .env ***' ),
-    'billing_hours'       => env( 'IDENTITY_BILLING_HOURS', '*** CONFIG IDENTITY IN .env ***' ),
+    'billing_email'       => env( 'IDENTITY_BILLING_EMAIL', 'ixp@example.com' ),
+    'billing_phone'       => env( 'IDENTITY_BILLING_PHONE', '+353 20 912 2000' ),
+    'billing_hours'       => env( 'IDENTITY_BILLING_HOURS', \IXP\Models\Customer::NOC_HOURS_8x5 ),
 
     'sitename'      => env( 'IDENTITY_SITENAME', 'IXP Manager' ),
     'titlename'     => env( 'IDENTITY_TITLENAME', env( 'IDENTITY_SITENAME', 'IXP Manager' ) ),
 
-    'corporate_url' => env( 'IDENTITY_CORPORATE_URL', '*** CONFIG IDENTITY IN .env ***' ),
+    'corporate_url' => env( 'IDENTITY_CORPORATE_URL', 'https://www.example.com/' ),
     'url'           => env( 'APP_URL', '' ),
     'biglogo'       => env( 'IDENTITY_BIGLOGO', 'https://www.ixpmanager.org/images/logos/ixp-manager.png' ),
 
