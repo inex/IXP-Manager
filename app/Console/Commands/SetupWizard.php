@@ -115,31 +115,26 @@ class SetupWizard extends Command
         'ixp-email'      => [
             'config' => 'identity.support_email',
             'prompt' => 'Enter the support email of the IXP',
-            'env' => 'IXP_SUPPORT_EMAIL',
             'value' => null,
         ],
         'ixp-phone'      => [
             'config' => 'identity.support_phone',
             'prompt' => 'Enter the support phone number of the IXP',
-            'env' => 'IXP_SUPPORT_PHONE',
             'value' => null,
         ],
         'ixp-billing-email'      => [
             'config' => 'identity.billing_email',
             'prompt' => 'Enter the billing email of the IXP',
-            'env' => 'IXP_BILLING_EMAIL',
             'value' => null,
         ],
         'ixp-billing-phone'      => [
             'config' => 'identity.billing_phone',
             'prompt' => 'Enter the billing phone number of the IXP',
-            'env' => 'IXP_BILLING_PHONE',
             'value' => null,
         ],
         'ixp-url'        => [
             'config' => 'identity.corporate_url',
             'prompt' => 'Enter the web address of the IXP',
-            'env' => 'IXP_CORPORATE_URL',
             'value' => null,
         ],
     ];
