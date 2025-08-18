@@ -26,16 +26,16 @@
     "require": {
         "php": "^8.4",
         "ext-json": "*",
-        "laravel/framework": "^11.31",
+        "laravel/framework": "^12.0",
         "anahkiasen/former": "^5.1.1",
-        "bacon/bacon-qr-code": "^2.0.0",
+        "bacon/bacon-qr-code": "^3.0.0",
         "barryvdh/laravel-dompdf": "^3.0.0",
         "erusev/parsedown": "^1.7",
         "opensolutions/foil": "^0.7.0",
         "intervention/image": "^2.7",
         "laravel/horizon": "^5.7",
         "laravel/telescope": "^5.0",
-        "laravel/tinker": "^2.9",
+        "laravel/tinker": "^2.10.1",
         "laravel/ui": "^4.0",
         "mews/purifier": "^3.4",
         "opensolutions/oss-snmp": "^1.0",
@@ -52,7 +52,7 @@
         "fakerphp/faker": "^1.23",
         "laravel/dusk": "^8.0",
         "mockery/mockery": "^1.6",
-        "phpunit/phpunit": "^11.0.1",
+        "phpunit/phpunit": "^11.5.3",
         "vimeo/psalm": "^6.0",
         "psalm/plugin-laravel": "^3.0.3",
         "staudenmeir/dusk-updater": "^1.5"
@@ -88,7 +88,8 @@
     },
     "scripts": {
         "post-autoload-dump": [
-            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan config:clear",
+            "@php artisan clear-compiled",
             "@php artisan package:discover"
         ],
 

@@ -160,7 +160,7 @@ class Latency extends Graph
      * @return string
      */
     #[\Override]
-    public static function resolvePeriod( $period = null ): string
+    public static function resolvePeriod( ?string $period = null ): string
     {
         return self::PERIODS[ $period ] ?? 'Unknown';
     }
@@ -178,7 +178,7 @@ class Latency extends Graph
      * @return string|null The verified / sanitised / default value
      */
     #[\Override]
-    public static function processParameterPeriod( string $value = null, string $default = null, $withExtended = false ): string|null
+    public static function processParameterPeriod( ?string $value = null, ?string $default = null, $withExtended = false ): string|null
     {
         if( $withExtended && !isset( self::PERIODS_EXTENDED[ $value ] ) ) {
             $value = $default ?? self::PERIOD_DEFAULT;

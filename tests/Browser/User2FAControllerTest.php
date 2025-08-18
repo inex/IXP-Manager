@@ -80,12 +80,6 @@ class User2FAControllerTest extends DuskTestCase
     {
         $this->browse( function ( Browser $browser) {
 
-            $this->deleteEnvValue( '2FA_ENFORCE_FOR_USERS="1"' );
-
-            // changing the environment causes the server to restart
-            // Environment modified. Restarting server...
-            sleep(2);
-
             $userUsername = 'travis';
             $userPassword = 'travisci';
 

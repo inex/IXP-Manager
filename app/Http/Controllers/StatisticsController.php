@@ -167,7 +167,7 @@ class StatisticsController extends Controller
      *
      * @throws
      */
-    public function vlan( Vlan $vlan = null, string $protocol = Graph::PROTOCOL_IPV4, string $category = Graph::CATEGORY_BITS ) : View
+    public function vlan( ?Vlan $vlan = null, string $protocol = Graph::PROTOCOL_IPV4, string $category = Graph::CATEGORY_BITS ) : View
     {
         $vlans   = Vlan::publicOnly()
             ->where( 'peering_matrix', true )
@@ -212,7 +212,7 @@ class StatisticsController extends Controller
      *
      * @throws
      */
-    public function switch( Switcher $switch = null, string $category = Graph::CATEGORY_BITS ) : View
+    public function switch( ?Switcher $switch = null, string $category = Graph::CATEGORY_BITS ) : View
     {
         $switches = Switcher::where( 'active', true )
             ->orderBy( 'name' )->get()
@@ -244,7 +244,7 @@ class StatisticsController extends Controller
      *
      * @throws
      */
-    public function location( Location $location = null, string $category = Graph::CATEGORY_BITS ) : View
+    public function location( ?Location $location = null, string $category = Graph::CATEGORY_BITS ) : View
     {
         $locations = Location::orderBy( 'name' )->get()
             ->keyBy( 'id' );
@@ -275,7 +275,7 @@ class StatisticsController extends Controller
      *
      * @throws ParameterException
      */
-    public function trunk( string $trunk = null, string $category = Graph::CATEGORY_BITS ): RedirectResponse|View
+    public function trunk( ?string $trunk = null, string $category = Graph::CATEGORY_BITS ): RedirectResponse|View
     {
         if( !is_array( config('grapher.backends.mrtg.trunks') ) || !count( config('grapher.backends.mrtg.trunks') ) ) {
             AlertContainer::push(

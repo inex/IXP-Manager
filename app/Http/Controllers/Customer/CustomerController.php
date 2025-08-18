@@ -430,7 +430,7 @@ class CustomerController extends Controller
      *
      * @throws
      */
-    public function overview( Customer $cust, string $tab = null ) : View
+    public function overview( Customer $cust, ?string $tab = null ) : View
     {
         $grapher = App::make( Grapher::class );
 

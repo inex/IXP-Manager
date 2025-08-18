@@ -829,7 +829,7 @@ abstract class Graph
      *
      * @return string
      */
-    public static function resolvePeriod( $period = null ): string
+    public static function resolvePeriod( ?string $period = null ): string
     {
         return self::PERIOD_DESCS[ $period ] ?? 'Unknown';
     }
