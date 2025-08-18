@@ -29,26 +29,30 @@ use IXP\Models\IPv4Address;
 use IXP\Models\IPv6Address;
 use IXP\Models\Vlan;
 
-class IpAddressAggregator
+final class IpAddressAggregator
 {
     /**
      * Bulk add IP addresses from the given array.
      *
      * The array returned contains two further arrays:
      *
-     * * `preexisting` => addresses that already existed in the database.
-     * * `new`         => addresses added (if `skip == true`) or addresses that would have been added.
+     * `preexisting` => addresses that already existed in the database.
+     * `new`         => addresses added (if `skip == true`) or addresses that would have been added.
      *
      * @param array $addresses
      * @param Vlan $vlan
      * @param IPv4Address|IPv6Address $model
      * @param bool $skip If the address already exists, then skip over it (default). Otherwise, do not add any addresses.
      *
-     * @return array
+     * @return array[]
      *
      * @throws
+     *
+     * @psalm-param IPv4Address::class|IPv6Address::class $model
+     *
+     * @psalm-return array{preexisting: list<non-empty-mixed>, new: list<mixed>}
      */
-    public static function bulkAdd( array $addresses, Vlan $vlan, $model, bool $skip = true ): array
+    public static function bulkAdd( array $addresses, Vlan $vlan, string $model, bool $skip = true ): array
     {
         $results = [
             'preexisting'  => [],

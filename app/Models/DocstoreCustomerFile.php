@@ -124,6 +124,7 @@ class DocstoreCustomerFile extends Model
      *
      * @return void
      */
+    #[\Override]
     protected static function boot(): void
     {
         parent::boot();
@@ -144,6 +145,8 @@ class DocstoreCustomerFile extends Model
 
     /**
      * Get the directory that owns the file.
+     *
+     * @psalm-return BelongsTo<DocstoreCustomerDirectory>
      */
     public function directory(): BelongsTo
     {
@@ -152,6 +155,8 @@ class DocstoreCustomerFile extends Model
 
     /**
      * Get the customer that owns the file
+     *
+     * @psalm-return BelongsTo<Customer>
      */
     public function customer(): BelongsTo
     {
@@ -194,7 +199,7 @@ class DocstoreCustomerFile extends Model
      *
      * @param Customer                          $cust
      * @param DocstoreCustomerDirectory|null    $dir
-     * @param User|null                         $user
+     * @param User $user
      *
      * @return Collection
      */

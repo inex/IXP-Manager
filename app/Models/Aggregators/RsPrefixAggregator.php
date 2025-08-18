@@ -66,7 +66,9 @@ class RsPrefixAggregator extends RsPrefix
      * This isn't really necessary but it prevents a ton of isset() queries at the
      * presentation layer.
      *
-     * @return array Initialised customer element array
+     * @return (int|int[])[] Initialised customer element array
+     *
+     * @psalm-return array<0|array{4: 0, 6: 0, total: 0}>
      */
     private static function initialiseAggregateRouteSummariesArray(): array
     {
@@ -135,28 +137,29 @@ class RsPrefixAggregator extends RsPrefix
      *
      * A sample element of the array is (RS = Route Server):
      *
-     *     [64] => [                   // customer ID
-     *         [total] => 10           // total routes of all types
-     *         [adv_acc] => [          // routes advertised to the RS and accepted by the RS
-     *             [4] => 6            // IPv4
-     *             [6] => 2            // IPv6
-     *             [total] => 8        // total
-     *         ]
-     *         [adv_nacc] => [         // routes advertised but not accepted (not in IRRDB)
-     *             [4] => 0
-     *             [6] => 1
-     *             [total] => 1
-     *         ]
-     *         [nadv_acc] => [         // routes not advertised but that would be accepted
-     *             [4] => 0
-     *             [6] => 1
-     *             [total] => 1
-     *         ]
-     *         [name] => Customer Name
-     *     ]
+     * [64] => [                   // customer ID
+     * [total] => 10           // total routes of all types
+     * [adv_acc] => [          // routes advertised to the RS and accepted by the RS
+     * [4] => 6            // IPv4
+     * [6] => 2            // IPv6
+     * [total] => 8        // total
+     * ]
+     * [adv_nacc] => [         // routes advertised but not accepted (not in IRRDB)
+     * [4] => 0
+     * [6] => 1
+     * [total] => 1
+     * ]
+     * [nadv_acc] => [         // routes not advertised but that would be accepted
+     * [4] => 0
+     * [6] => 1
+     * [total] => 1
+     * ]
+     * [name] => Customer Name
+     * ]
      *
+     * @return array[] Route acceptance counts for all customers as an aggregated array
      *
-     * @return array Route acceptance counts for all customers as an aggregated array
+     * @psalm-return array<array>
      */
     public static function aggregateRouteSummaries(): array
     {
@@ -185,26 +188,26 @@ class RsPrefixAggregator extends RsPrefix
      *
      * A sample element of the array is (RS = Route Server):
      *
-     *     [
-     *         [adv_acc] => [                             // Routes advertised and accepted
-     *             [0] => [
-     *                 [id] => 64                         // Customer ID
-     *                 [name] => ABC Limited              // Customer Name
-     *                 [protocol] => 4                    // protocol (4,6)
-     *                 [irrdb] => 1                       // 1 if the route is in IRRDB
-     *                 [prefix] => 192.0.2.0/24           // prefix
-     *                 [timestamp] => DateTime Object
-     *                 [rsorigin] => 65500                // origin AS
-     *             ]
-     *             ...
-     *         ]
-     *         [adv_nacc] => [                            // Routes advertised but not accepted
-     *             ...
-     *         ]
-     *         [nadv_acc] => [                            // Routes not advertised but acceptable
-     *             ...
-     *         ]
-     *     ]
+     * [
+     * [adv_acc] => [                             // Routes advertised and accepted
+     * [0] => [
+     * [id] => 64                         // Customer ID
+     * [name] => ABC Limited              // Customer Name
+     * [protocol] => 4                    // protocol (4,6)
+     * [irrdb] => 1                       // 1 if the route is in IRRDB
+     * [prefix] => 192.0.2.0/24           // prefix
+     * [timestamp] => DateTime Object
+     * [rsorigin] => 65500                // origin AS
+     * ]
+     * ...
+     * ]
+     * [adv_nacc] => [                            // Routes advertised but not accepted
+     * ...
+     * ]
+     * [nadv_acc] => [                            // Routes not advertised but acceptable
+     * ...
+     * ]
+     * ]
      *
      * @param int $cust The customer ID to return routes for
      * @param int|null protocol The (optional) protocol to limit results to (''4'', ''6'', ''NULL'')
@@ -243,7 +246,7 @@ class RsPrefixAggregator extends RsPrefix
      *
      * @return bool|array Count of all routes not advertised to the route server but would be accepted by it
      */
-    public static function summaryRoutesAdvertisedAndNotAccepted( int $protocol, int $cust = null )
+    public static function summaryRoutesAdvertisedAndNotAccepted( int $protocol, ?int $cust = null )
     {
         return self::getSummaryRoutes( $protocol, 0, false, $cust );
     }
@@ -257,7 +260,7 @@ class RsPrefixAggregator extends RsPrefix
      *
      * @return bool|array Count of all routes advertised to the route server but not accepted by it
      */
-    public static function summaryRoutesNotAdvertisedButAcceptable( int $protocol, int $cust = null )
+    public static function summaryRoutesNotAdvertisedButAcceptable( int $protocol, ?int $cust = null )
     {
         return self::getSummaryRoutes( $protocol, 1, true, $cust );
     }
@@ -316,7 +319,7 @@ class RsPrefixAggregator extends RsPrefix
      *
      * @return array All routes advertised to the route server and accepted by it
      */
-    public static function routesAdvertisedAndAccepted( int $protocol = null, int $cust = null ): array
+    public static function routesAdvertisedAndAccepted( ?int $protocol = null, ?int $cust = null ): array
     {
         return self::getRoutes( 1, false, $protocol, $cust );
     }
@@ -365,7 +368,7 @@ class RsPrefixAggregator extends RsPrefix
      *
      * @return array The database query result
      */
-    public static function getRoutes( int $irrdb, bool $rsOriginIsNull, int $protocol = null, int $cust = null ): array
+    public static function getRoutes( int $irrdb, bool $rsOriginIsNull, ?int $protocol = null, ?int $cust = null ): array
     {
          return self::selectRaw(
             'cust.id AS id, cust.name AS name, rs_prefixes.protocol AS protocol,

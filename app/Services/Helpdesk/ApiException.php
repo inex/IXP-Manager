@@ -23,7 +23,7 @@
 
 use Exception;
 
-class ApiException extends Exception {
+final class ApiException extends Exception {
 
     /**
      * Error details from Zendesk
@@ -59,7 +59,7 @@ class ApiException extends Exception {
      *
      * @param object $ed
      */
-    public function setErrorDetails( $ed ) {
+    public function setErrorDetails( $ed ): void {
         $this->errorDetails = $ed;
     }
 

@@ -67,6 +67,7 @@ class NetworkInfoController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
+    #[\Override]
     public function feInit(): void
     {
         $this->feParams         = (object)[
@@ -119,6 +120,7 @@ class NetworkInfoController extends EloquentController
      *
      * @throws
      */
+    #[\Override]
     protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
@@ -136,8 +138,11 @@ class NetworkInfoController extends EloquentController
     /**
      * Display the form to create an object
      *
-     * @return array
+     * @return (NetworkInfo|\Illuminate\Database\Eloquent\Collection)[]
+     *
+     * @psalm-return array{object: NetworkInfo, vlans: \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model>}
      */
+    #[\Override]
     protected function createPrepareForm(): array
     {
         return [
@@ -149,10 +154,13 @@ class NetworkInfoController extends EloquentController
     /**
      * Display the form to edit an object
      *
-     * @param   int $id ID of the row to edit
+     * @param int $id ID of the row to edit
      *
-     * @return array
+     * @return (\Illuminate\Database\Eloquent\Collection|mixed)[]
+     *
+     * @psalm-return array{object: mixed, vlans: \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model>}
      */
+    #[\Override]
     protected function editPrepareForm( int $id ): array
     {
         $this->object = NetworkInfo::findOrFail( $id );
@@ -175,10 +183,11 @@ class NetworkInfoController extends EloquentController
      *
      * @param Request $r
      *
-     * @return bool|RedirectResponse
+     * @return RedirectResponse|true
      *
      * @throws
      */
+    #[\Override]
     public function doStore( Request $r ): bool|RedirectResponse
     {
         $this->checkForm( $r );
@@ -197,10 +206,11 @@ class NetworkInfoController extends EloquentController
      * @param Request   $r
      * @param int       $id
      *
-     * @return bool|RedirectResponse
+     * @return RedirectResponse|true
      *
      * @throws
      */
+    #[\Override]
     public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = NetworkInfo::findOrFail( $id );
@@ -222,7 +232,7 @@ class NetworkInfoController extends EloquentController
      *
      * @return bool
      */
-    private function checkIsDuplicate( Request $r, int $objectid = null  ): bool
+    private function checkIsDuplicate( Request $r, ?int $objectid = null  ): bool
     {
         $vlan = Vlan::find( $r->vlanid );
 
@@ -244,6 +254,7 @@ class NetworkInfoController extends EloquentController
      *
      * @param Request   $r
      */
+    #[\Override]
     public function checkForm( Request $r ): void
     {
         $rangeMasklen = (int)$r->protocol === 4 ? 'min:16|max:29' : 'min:32|max:64';

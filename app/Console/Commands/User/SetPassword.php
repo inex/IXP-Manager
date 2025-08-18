@@ -66,7 +66,10 @@ class SetPassword extends Command
      * Execute the console command.
      *
      * @return int
+     *
      * @throws \Exception
+     *
+     * @psalm-return -1|0
      */
     public function handle(): int
     {

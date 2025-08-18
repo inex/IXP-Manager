@@ -354,6 +354,8 @@ class Customer extends Model
 
     /**
      * Get the customer equipments for the customer
+     *
+     * @psalm-return HasMany<CustomerEquipment>
      */
     public function customerEquipments(): HasMany
     {
@@ -362,6 +364,8 @@ class Customer extends Model
 
     /**
      * Get the virtual interfaces for the customer
+     *
+     * @psalm-return HasMany<VirtualInterface>
      */
     public function virtualInterfaces(): HasMany
     {
@@ -370,8 +374,10 @@ class Customer extends Model
 
     /**
      * Get the virtual interfaces for the customer
+     *
+     * @psalm-return HasOne<IrrdbUpdateLog>
      */
-    public function irrdbUpdateLog(): Hasone
+    public function irrdbUpdateLog(): HasOne
     {
         return $this->hasOne(IrrdbUpdateLog::class, 'cust_id');
     }
@@ -380,6 +386,8 @@ class Customer extends Model
 
     /**
      * Get the peers for the customer
+     *
+     * @psalm-return HasMany<PeeringManager>
      */
     public function peers(): HasMany
     {
@@ -388,6 +396,8 @@ class Customer extends Model
 
     /**
      * Get the peers with for the customer
+     *
+     * @psalm-return HasMany<PeeringManager>
      */
     public function peersWith(): HasMany
     {
@@ -396,6 +406,8 @@ class Customer extends Model
 
     /**
      * Get the virtual interfaces for the customer
+     *
+     * @psalm-return HasManyThrough<VlanInterface>
      */
     public function vlanInterfaces(): HasManyThrough
     {
@@ -406,6 +418,8 @@ class Customer extends Model
 
     /**
      * Get the docstore customer directories for the customer
+     *
+     * @psalm-return HasMany<DocstoreCustomerDirectory>
      */
     public function docstoreCustomerDirectories(): HasMany
     {
@@ -414,6 +428,8 @@ class Customer extends Model
 
     /**
      * Get the docstore customer files for the customer
+     *
+     * @psalm-return HasMany<DocstoreCustomerFile>
      */
     public function docstoreCustomerFiles(): HasMany
     {
@@ -422,6 +438,8 @@ class Customer extends Model
 
     /**
      * Get the contacts for the customer
+     *
+     * @psalm-return HasMany<Contact>
      */
     public function contacts(): HasMany
     {
@@ -430,6 +448,8 @@ class Customer extends Model
 
     /**
      * Get the console server connections for the customer
+     *
+     * @psalm-return HasMany<ConsoleServerConnection>
      */
     public function consoleServerConnections(): HasMany
     {
@@ -438,6 +458,8 @@ class Customer extends Model
 
     /**
      * Get the route server filters for the customer
+     *
+     * @psalm-return HasMany<RouteServerFilter>
      */
     public function routeServerFilters(): HasMany
     {
@@ -446,6 +468,8 @@ class Customer extends Model
 
     /**
      * Get the route server filters for the customer (in production)
+     *
+     * @psalm-return HasMany<RouteServerFilterProd>
      */
     public function routeServerFiltersInProduction(): HasMany
     {
@@ -454,6 +478,8 @@ class Customer extends Model
 
     /**
      * Get the peer route server filters for the customer
+     *
+     * @psalm-return HasMany<RouteServerFilter>
      */
     public function peerRouteServerFilters(): HasMany
     {
@@ -462,6 +488,8 @@ class Customer extends Model
 
     /**
      * Get the irrdb Prefixes for the customer
+     *
+     * @psalm-return HasMany<IrrdbPrefix>
      */
     public function irrdbPrefixes(): HasMany
     {
@@ -470,6 +498,8 @@ class Customer extends Model
 
     /**
      * Get the traffic dailies for the customer
+     *
+     * @psalm-return HasMany<TrafficDaily>
      */
     public function trafficDailies(): HasMany
     {
@@ -478,6 +508,8 @@ class Customer extends Model
 
     /**
      * Get the patch panel portss for the customer
+     *
+     * @psalm-return HasMany<PatchPanelPort>
      */
     public function patchPanelPorts(): HasMany
     {
@@ -486,6 +518,8 @@ class Customer extends Model
 
     /**
      * Get the patch panel port histories for the customer
+     *
+     * @psalm-return HasMany<PatchPanelPortHistory>
      */
     public function patchPanelPortHistories(): HasMany
     {
@@ -494,6 +528,8 @@ class Customer extends Model
 
     /**
      * Get the rsPrefixes for the customer
+     *
+     * @psalm-return HasMany<RsPrefix>
      */
     public function rsPrefixes(): HasMany
     {
@@ -502,6 +538,8 @@ class Customer extends Model
 
     /**
      * Get the customer notes for the customer
+     *
+     * @psalm-return HasMany<CustomerNote>
      */
     public function customerNotes(): HasMany
     {
@@ -510,6 +548,8 @@ class Customer extends Model
 
     /**
      * Get the atlas probes for the customer
+     *
+     * @psalm-return HasMany<AtlasProbe>
      */
     public function AtlasProbes(): HasMany
     {
@@ -518,6 +558,8 @@ class Customer extends Model
 
     /**
      * Get the atlas measurement source for the customer
+     *
+     * @psalm-return HasMany<AtlasMeasurement>
      */
     public function AtlasMeasurementsSource(): HasMany
     {
@@ -526,6 +568,8 @@ class Customer extends Model
 
     /**
      * Get the atlas measurement destination for the customer
+     *
+     * @psalm-return HasMany<AtlasMeasurement>
      */
     public function AtlasMeasurementsDest(): HasMany
     {
@@ -534,6 +578,8 @@ class Customer extends Model
 
     /**
      * Get the logo for the customer
+     *
+     * @psalm-return HasOne<Logo>
      */
     public function logo(): HasOne
     {
@@ -542,6 +588,8 @@ class Customer extends Model
 
     /**
      * Get the billing details for the customer
+     *
+     * @psalm-return BelongsTo<CompanyBillingDetail>
      */
     public function companyBillingDetail(): BelongsTo
     {
@@ -550,6 +598,8 @@ class Customer extends Model
 
     /**
      * Get the registered detail for the customer
+     *
+     * @psalm-return BelongsTo<CompanyRegisteredDetail>
      */
     public function companyRegisteredDetail(): BelongsTo
     {
@@ -558,14 +608,18 @@ class Customer extends Model
 
     /**
      * Get the resold customers for the customer
+     *
+     * @psalm-return HasMany<self>
      */
-    public function resoldCustomers(): hasMany
+    public function resoldCustomers(): HasMany
     {
         return $this->hasMany( __CLASS__, 'reseller' );
     }
 
     /**
      * Get the reseller for the customer
+     *
+     * @psalm-return BelongsTo<self>
      */
     public function resellerObject(): BelongsTo
     {
@@ -574,6 +628,8 @@ class Customer extends Model
 
     /**
      * Get the irrdbconfig that own the customer
+     *
+     * @psalm-return BelongsTo<IrrdbConfig>
      */
     public function irrdbConfig(): BelongsTo
     {
@@ -582,6 +638,8 @@ class Customer extends Model
 
     /**
      * Get all the users for the customer
+     *
+     * @psalm-return BelongsToMany<User>
      */
     public function users(): BelongsToMany
     {
@@ -590,6 +648,8 @@ class Customer extends Model
 
     /**
      * Get all the customer to user for the customer
+     *
+     * @psalm-return HasMany<CustomerToUser>
      */
     public function customerToUser(): HasMany
     {
@@ -598,6 +658,8 @@ class Customer extends Model
 
     /**
      * The tags that belong to the customer.
+     *
+     * @psalm-return BelongsToMany<CustomerTag>
      */
     public function tags(): BelongsToMany
     {
@@ -738,7 +800,10 @@ class Customer extends Model
      * Scope a query to only include current members
      *
      * @param Builder $query
+     *
      * @return Builder
+     *
+     * @psalm-return Builder<Model>
      */
     public function scopeCurrent( Builder $query): Builder
     {
@@ -775,6 +840,8 @@ class Customer extends Model
      * @param Builder $query
      *
      * @return Builder
+     *
+     * @psalm-return Builder<Model>
      */
     public function scopeActive( Builder $query ): Builder
     {
@@ -1114,17 +1181,18 @@ class Customer extends Model
      *
      * Response is an array such as:
      *
-     *     [8] => [                          // VLAN ID
-     *         [vlis] => [
-     *             // VlanInterface objects for the customer that are on this private VLAN
-     *         ],
-     *         [members] => [
-     *             // Customer objects for all customers (including this one) that share this VLAN
-     *         ]
-     *     ]
+     * [8] => [                          // VLAN ID
+     * [vlis] => [
+     * // VlanInterface objects for the customer that are on this private VLAN
+     * ],
+     * [members] => [
+     * // Customer objects for all customers (including this one) that share this VLAN
+     * ]
+     * ]
      *
+     * @return (VlanInterface|self)[][][]
      *
-     * @return array Private VLAN details
+     * @psalm-return array<''|int, array{vlis: non-empty-list<IXP\Models\VlanInterface>, members?: array<''|int, self>}>
      */
     public function privateVlanDetails(): array
     {
@@ -1168,9 +1236,9 @@ class Customer extends Model
      * @param int $cust
      * @param int $protocol
      *
-     * @return Collection
+     * @psalm-return \Illuminate\Database\Eloquent\Collection<int, Model>
      */
-    public function scopeAddressesForVlan( $query, int $vlanid, int $cust, int $protocol ): Collection
+    public function scopeAddressesForVlan( $query, int $vlanid, int $cust, int $protocol ): \Illuminate\Database\Eloquent\Collection
     {
         $enabled    = $protocol === 4 ? 'ipv4enabled'    : 'ipv6enabled';
         $field      = $protocol === 4 ? 'ipv4addressid'  : 'ipv6addressid';

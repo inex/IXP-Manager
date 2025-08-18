@@ -46,7 +46,9 @@ abstract class Common extends Controller
      *
      * @param PatchPanelPort $ppp
      *
-     * @return array To be unpacked with list( $pdf, $pdfname )
+     * @return (\Barryvdh\DomPDF\PDF|string)[]
+     *
+     * @psalm-return list{\Barryvdh\DomPDF\PDF, string}
      */
     protected function createLoaPDF( PatchPanelPort $ppp ): array
     {

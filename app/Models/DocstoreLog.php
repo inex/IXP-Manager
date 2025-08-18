@@ -18,7 +18,7 @@ namespace IXP\Models;
  * more details.
  *
  * You should have received a copy of the GNU General Public License v2.0
- * along with IXP Manager.  If not, see:
+final  * along with IXP Manager.  If not, see:
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -69,6 +69,8 @@ class DocstoreLog extends Model
 
     /**
      * Get the file that owns this log.
+     *
+     * @psalm-return BelongsTo<DocstoreFile>
      */
     public function file(): BelongsTo
     {

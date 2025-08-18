@@ -25,4 +25,4 @@ namespace IXP\Exceptions;
 
 use Exception;
 
-class User2FAException extends Exception {}
+final class User2FAException extends Exception {}

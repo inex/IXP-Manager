@@ -46,6 +46,8 @@ abstract class UpdateDb extends Command
 
     /**
      * Setup checks
+     *
+     * @return true
      */
     protected function setupChecks(): bool
     {

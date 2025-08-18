@@ -69,6 +69,7 @@ class ConsoleServerConnectionController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
+    #[\Override]
     public function feInit(): void
     {
         $this->feParams         = (object)[
@@ -143,6 +144,7 @@ class ConsoleServerConnectionController extends EloquentController
      *
      * @return void
      */
+    #[\Override]
     protected static function additionalRoutes( string $route_prefix ): void
     {
         Route::group( [ 'prefix' => $route_prefix ], static function() use ( $route_prefix ) {
@@ -157,12 +159,14 @@ class ConsoleServerConnectionController extends EloquentController
      *
      * @return array
      */
+    #[\Override]
     protected function listGetData( ?int $id = null ): array
     {
         return ConsoleServerConnectionAggregatore::getFeList( $this->feParams, $id );
     }
 
 
+    #[\Override]
     protected function preList(): void
     {
         $this->data[ 'params' ]     = [
@@ -174,8 +178,11 @@ class ConsoleServerConnectionController extends EloquentController
     /**
      * Display the form to create an object
      *
-     * @return array
+     * @return (ConsoleServerConnection|mixed)[]
+     *
+     * @psalm-return array{object: ConsoleServerConnection, custs: mixed, servers: mixed, cs: mixed}
      */
+    #[\Override]
     protected function createPrepareForm() : array
     {
         return [
@@ -189,10 +196,13 @@ class ConsoleServerConnectionController extends EloquentController
     /**
      * Display the form to edit an object
      *
-     * @param   int $id ID of the row to edit
+     * @param int $id ID of the row to edit
      *
      * @return array
+     *
+     * @psalm-return array{object: mixed, custs: mixed, servers: mixed, cs: mixed}
      */
+    #[\Override]
     protected function editPrepareForm( int $id ) : array
     {
         $this->object = ConsoleServerConnection::find( $id );
@@ -223,10 +233,11 @@ class ConsoleServerConnectionController extends EloquentController
      *
      * @param Request $r
      *
-     * @return bool|RedirectResponse
+     * @return RedirectResponse|true
      *
      * @throws
      */
+    #[\Override]
     public function doStore( Request $r )
     {
         $this->checkForm( $r );
@@ -246,9 +257,9 @@ class ConsoleServerConnectionController extends EloquentController
      * @param Request   $r
      * @param int       $id
      *
-     * @return bool|RedirectResponse
-     *
+     * @return RedirectResponse|true
      */
+    #[\Override]
     public function doUpdate( Request $r, int $id )
     {
         $this->object = ConsoleServerConnection::findOrFail( $id );
@@ -282,7 +293,8 @@ class ConsoleServerConnectionController extends EloquentController
     /**
      * @inheritdoc
      */
-    protected function postStoreRedirect(): ?string
+    #[\Override]
+    protected function postStoreRedirect(): string
     {
         if( $cs = ConsoleServer::find( request()->cs ) ) {
             return route( 'console-server-connection@listPort' , [ "cs" => $cs->id ] ) ;
@@ -296,6 +308,7 @@ class ConsoleServerConnectionController extends EloquentController
      *
      * @return null|string
      */
+    #[\Override]
     protected function postDeleteRedirect(): ?string
     {
         return route('console-server-connection@listPort' , [ 'cs' => $this->object->console_server_id ] );
@@ -306,6 +319,7 @@ class ConsoleServerConnectionController extends EloquentController
      *
      * @param $r
      */
+    #[\Override]
     public function checkForm( Request $r ): void
     {
         $r->validate( [
@@ -330,7 +344,7 @@ class ConsoleServerConnectionController extends EloquentController
      *
      * @return bool
      */
-    private function checkIsDuplicate( Request $r , int $objectid = null ): bool
+    private function checkIsDuplicate( Request $r , ?int $objectid = null ): bool
     {
         $exist = ConsoleServerConnection::where( "console_server_id" , $r->console_server_id  )
             ->where( 'port' , $r->port )

@@ -58,9 +58,10 @@ class VlanInterfaceL2DiagnosticSuite extends DiagnosticSuite
 
     /**
      * Run the diagnostics suite
+     *
      * @throws BindingResolutionException
      */
-    public function run(): VlanInterfaceL2DiagnosticSuite
+    public function run(): static
     {
 
         $this->results->add( $this->arping( $this->vli ) );
@@ -71,8 +72,9 @@ class VlanInterfaceL2DiagnosticSuite extends DiagnosticSuite
 
 
     /**
-     *
      * @return DiagnosticResult[]
+     *
+     * @psalm-return list<IXP\Services\Diagnostics\DiagnosticResult>
      */
     public function arping( VlanInterface $vli ): array
     {

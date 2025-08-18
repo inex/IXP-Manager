@@ -115,6 +115,8 @@ class RouteServerFilter extends Model
 
     /**
      * Get the customer that owns the route server filter.
+     *
+     * @psalm-return BelongsTo<Customer>
      */
     public function customer(): BelongsTo
     {
@@ -123,6 +125,8 @@ class RouteServerFilter extends Model
 
     /**
      * Get the peer that owns the route server filter.
+     *
+     * @psalm-return BelongsTo<Customer>
      */
     public function peer(): BelongsTo
     {
@@ -131,6 +135,8 @@ class RouteServerFilter extends Model
 
     /**
      * Get the vlan that owns the route server filter.
+     *
+     * @psalm-return BelongsTo<Vlan>
      */
     public function vlan(): BelongsTo
     {

@@ -27,7 +27,7 @@ use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use IXP\Models\User;
 
-class EmailPatchPanelPort extends FormRequest
+final class EmailPatchPanelPort extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -45,7 +45,9 @@ class EmailPatchPanelPort extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{email_to: 'required|string', email_cc: 'nullable|string', email_bcc: 'nullable|string', email_subject: 'required|string', email_text: 'required'}
      */
     public function rules(): array
     {

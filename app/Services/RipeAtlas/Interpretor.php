@@ -103,7 +103,9 @@ class Interpretor
      *
      * @param array $tracert Raw RIPE Atles JSON result as PHP
      *
-     * @return array The path
+     * @return (mixed|string)[][][]
+     *
+     * @psalm-return array{hops: list<list{'*'|mixed, ...<mixed>}>, ixpx: array<never, never>}
      */
     private function parsePath( array $tracert ): array
     {
@@ -143,9 +145,9 @@ class Interpretor
      * @param array $path Path of IP addresses
      * @param array $addrs List of addresses to find in $path
      *
-     * @return integer
+     * @psalm-return int<0, max>
      */
-    private function queryPassesThrough( array &$path, array $addrs ): integer
+    private function queryPassesThrough( array &$path, array $addrs ): int
     {
 
         foreach( $path[ 'hops' ] as $ipset ) {

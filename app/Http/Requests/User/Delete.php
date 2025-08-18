@@ -69,6 +69,8 @@ class Delete extends FormRequest
      * Get the validation rules that apply to the request.
      *
      * @return array
+     *
+     * @psalm-return array<never, never>
      */
     public function rules(): array
     {
@@ -78,7 +80,7 @@ class Delete extends FormRequest
     /**
      * @param Validator $validator
      *
-     * @return bool
+     * @return true
      */
     public function withValidator( Validator $validator ): bool
     {

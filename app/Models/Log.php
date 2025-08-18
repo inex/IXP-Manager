@@ -98,6 +98,8 @@ class Log extends Model
 
     /**
      * Get the user record associated with this log
+     *
+     * @psalm-return HasOne<User>
      */
     public function user(): HasOne
     {
@@ -110,6 +112,8 @@ class Log extends Model
      * @param User|null $user limit the log entries to the actions of this user
      *
      * @return Builder
+     *
+     * @psalm-return Builder<static>
      */
     public static function entries(string $model, int $id, ?User $user = null): Builder
     {

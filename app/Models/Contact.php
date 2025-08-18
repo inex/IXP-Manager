@@ -151,6 +151,8 @@ class Contact extends Model
 
     /**
      * Get the customer that own the contact
+     *
+     * @psalm-return BelongsTo<Customer>
      */
     public function customer(): BelongsTo
     {

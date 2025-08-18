@@ -31,7 +31,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use IXP\Models\User;
 use IXP\Rules\IdnValidate;
 
-class Store extends FormRequest
+final class Store extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -49,9 +49,11 @@ class Store extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return ((IdnValidate|string)[]|string)[]
+     *
+     * @psalm-return array{name: string, hostname: list{'required', 'string', 'max:255', string, IdnValidate}, cabinetid: 'required|integer|exists:cabinet,id', infrastructure: 'required|integer|exists:infrastructure,id', snmppasswd: 'nullable|string|max:255', vendorid: 'required|integer|exists:vendor,id', ipv4addr: 'nullable|ipv4', ipv6addr: 'nullable|ipv6', model: 'nullable|string|max:255', asn: 'nullable|integer|min:1', loopback_ip: string, loopback_name: 'nullable|string|max:255', mgmt_mac_address: 'nullable|string|max:17|regex:/^[a-f0-9:\.\-]{12,17}$/i'}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name'                      => 'required|string|max:255|unique:switch,name'      . ( $this->input('id') ? ','. $this->input('id') : '' ),

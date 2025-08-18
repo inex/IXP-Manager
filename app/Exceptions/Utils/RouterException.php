@@ -25,4 +25,4 @@ namespace IXP\Exceptions\Utils;
 
 use Exception;
 
-class RouterException extends Exception {}
+final class RouterException extends Exception {}

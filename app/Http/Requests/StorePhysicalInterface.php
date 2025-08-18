@@ -58,7 +58,9 @@ class StorePhysicalInterface extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{virtualinterfaceid: 'required|integer|exists:virtualinterface,id', switch: 'required|integer|exists:switch,id', switchportid: 'required|integer|exists:switchport,id', status: string, speed: string, duplex: string, rate_limit: 'nullable|integer|min:0', notes: 'string|nullable', 'switch-fanout': 'integer|nullable'|'integer|required|exists:switch,id', 'switch-port-fanout': 'integer|nullable'|'integer|required|exists:switchport,id'}
      */
     public function rules(): array
     {

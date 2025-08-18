@@ -75,6 +75,7 @@ class SwitchPortController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
+    #[\Override]
     public function feInit(): void
     {
         $this->feParams         = ( object )[
@@ -122,6 +123,7 @@ class SwitchPortController extends EloquentController
      *
      * @return void
      */
+    #[\Override]
     protected static function additionalRoutes( string $route_prefix ): void
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
@@ -146,7 +148,8 @@ class SwitchPortController extends EloquentController
      *
      * @return array
      */
-    protected function listGetData( int $id = null ): array
+    #[\Override]
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams   = $this->feParams;
         $params     = $this->data;
@@ -176,6 +179,7 @@ class SwitchPortController extends EloquentController
      *
      * @return View
      */
+    #[\Override]
     public function list( Request $param ) : View
     {
         $switch = false;
@@ -203,8 +207,11 @@ class SwitchPortController extends EloquentController
     /**
      * Display the form to create an object
      *
-     * @return array
+     * @return (SwitchPort|mixed)[]
+     *
+     * @psalm-return array{object: SwitchPort, switches: mixed}
      */
+    #[\Override]
     protected function createPrepareForm(): array
     {
         return [
@@ -218,8 +225,9 @@ class SwitchPortController extends EloquentController
      *
      * @param Request $r
      *
-     * @return bool|RedirectResponse
+     * @return true
      */
+    #[\Override]
     public function doStore( Request $r ): bool|RedirectResponse
     {
         $rules = [
@@ -250,10 +258,13 @@ class SwitchPortController extends EloquentController
     /**
      * Display the form to edit an object
      *
-     * @param   int $id ID of the row to edit
+     * @param int $id ID of the row to edit
      *
      * @return array
+     *
+     * @psalm-return array{object: mixed, switches: mixed}
      */
+    #[\Override]
     protected function editPrepareForm( $id = null ): array
     {
         $this->object = SwitchPort::findOrFail( $id );
@@ -277,8 +288,9 @@ class SwitchPortController extends EloquentController
      * @param Request   $r
      * @param int       $id
      *
-     * @return bool|RedirectResponse
+     * @return true
      */
+    #[\Override]
     public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = SwitchPort::findOrFail( $id );
@@ -300,6 +312,7 @@ class SwitchPortController extends EloquentController
      *
      * @return string|null
      */
+    #[\Override]
     protected function postStoreRedirect(): ?string
     {
         if( request()->isAdd ) {
@@ -311,6 +324,7 @@ class SwitchPortController extends EloquentController
     /**
      * @inheritdoc
      */
+    #[\Override]
     protected function preDelete(): bool
     {
         if( $pi = $this->object->physicalInterface ) {
@@ -333,6 +347,8 @@ class SwitchPortController extends EloquentController
      * Set up all the information to display the Unused optics list
      *
      * @bool
+     *
+     * @return true
      */
     public function setUpUnusedOptics(): bool
     {
@@ -392,6 +408,8 @@ class SwitchPortController extends EloquentController
      * Set up all the information to display the list MAU
      *
      * @bool
+     *
+     * @return true
      */
     public function setUpListMau(): bool
     {
@@ -482,6 +500,8 @@ class SwitchPortController extends EloquentController
      * Set up all the information to display the operation Status
      *
      * @bool
+     *
+     * @return true
      */
     public function setUpOpStatus(): bool
     {
@@ -722,6 +742,8 @@ class SwitchPortController extends EloquentController
      * Set up all the information to display the optic inventory
      *
      * @bool
+     *
+     * @return true
      */
     public function setUpOpticInventory(): bool
     {
@@ -777,6 +799,8 @@ class SwitchPortController extends EloquentController
      * Set up all the information to display the optics list
      *
      * @bool
+     *
+     * @return true
      */
     public function setUpOpticList(): bool
     {

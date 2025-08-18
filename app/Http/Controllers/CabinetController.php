@@ -73,6 +73,7 @@ class CabinetController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
+    #[\Override]
     public function feInit(): void
     {
         $this->feParams         = ( object )[
@@ -133,6 +134,7 @@ class CabinetController extends EloquentController
 
      * @return array
      */
+    #[\Override]
     protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
@@ -148,8 +150,11 @@ class CabinetController extends EloquentController
     /**
      * Display the form to add/edit an object
      *
-     * @return array
+     * @return (Cabinet|mixed)[]
+     *
+     * @psalm-return array{object: Cabinet, locations: mixed}
      */
+    #[\Override]
     protected function createPrepareForm(): array
     {
         return [
@@ -161,10 +166,13 @@ class CabinetController extends EloquentController
     /**
      * Display the form to create/edit an object
      *
-     * @param   int $id ID of the row to edit
+     * @param int $id ID of the row to edit
      *
      * @return array
+     *
+     * @psalm-return array{object: mixed, locations: mixed}
      */
+    #[\Override]
     protected function editPrepareForm( int $id ): array
     {
         $this->object = Cabinet::findOrFail( $id );
@@ -190,10 +198,11 @@ class CabinetController extends EloquentController
      *
      * @param Request $r
      *
-     * @return bool|RedirectResponse
+     * @return true
      *
      * @throws
      */
+    #[\Override]
     public function doStore( Request $r )
     {
         $this->checkForm( $r );
@@ -207,9 +216,9 @@ class CabinetController extends EloquentController
      * @param Request   $r
      * @param int       $id
      *
-     * @return bool|RedirectResponse
-     *
+     * @return true
      */
+    #[\Override]
     public function doUpdate( Request $r, int $id )
     {
         $this->checkForm( $r );
@@ -221,6 +230,7 @@ class CabinetController extends EloquentController
     /**
      * @inheritdoc
      */
+    #[\Override]
     protected function preDelete(): bool
     {
         $okay = true;
@@ -248,6 +258,7 @@ class CabinetController extends EloquentController
      *
      * @param $r
      */
+    #[\Override]
     public function checkForm( Request $r ): void
     {
         $r->validate( [

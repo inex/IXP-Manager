@@ -61,6 +61,7 @@ class CustKitController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
+    #[\Override]
     public function feInit(): void
     {
         $this->feParams         = (object)[
@@ -117,6 +118,7 @@ class CustKitController extends EloquentController
      *
      * @return array
      */
+    #[\Override]
     protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
@@ -133,8 +135,11 @@ class CustKitController extends EloquentController
     /**
      * Display the form to create an object
      *
-     * @return array
+     * @return (CustomerEquipment|mixed)[]
+     *
+     * @psalm-return array{object: CustomerEquipment, cabinets: mixed, custs: mixed}
      */
+    #[\Override]
     protected function createPrepareForm(): array
     {
         return [
@@ -150,10 +155,11 @@ class CustKitController extends EloquentController
      *
      * @param Request $r
      *
-     * @return bool|RedirectResponse
+     * @return true
      *
      * @throws
      */
+    #[\Override]
     public function doStore( Request $r )
     {
         $this->checkForm( $r );
@@ -166,10 +172,13 @@ class CustKitController extends EloquentController
     /**
      * Display the form to edit an object
      *
-     * @param   int $id ID of the row to edit
+     * @param int $id ID of the row to edit
      *
      * @return array
+     *
+     * @psalm-return array{object: mixed, cabinets: mixed, custs: mixed}
      */
+    #[\Override]
     protected function editPrepareForm( int $id ): array
     {
         $this->object = CustomerEquipment::findOrFail( $id );
@@ -195,10 +204,11 @@ class CustKitController extends EloquentController
      * @param Request   $r
      * @param int       $id
      *
-     * @return bool|RedirectResponse
+     * @return true
      *
      * @throws
      */
+    #[\Override]
     public function doUpdate( Request $r, int $id )
     {
         $this->object = CustomerEquipment::findOrFail( $id );
@@ -214,6 +224,7 @@ class CustKitController extends EloquentController
      *
      * @param $r
      */
+    #[\Override]
     public function checkForm( Request $r ): void
     {
         $r->validate( [

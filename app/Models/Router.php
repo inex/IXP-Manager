@@ -250,6 +250,8 @@ class Router extends Model
 
     /**
      * Get the vlan that own the router
+     *
+     * @psalm-return BelongsTo<Vlan>
      */
     public function vlan(): BelongsTo
     {
@@ -258,6 +260,8 @@ class Router extends Model
 
     /**
      * Get the router's configuration / isolation pair
+     *
+     * @psalm-return BelongsTo<self>
      */
     public function pair(): BelongsTo
     {
@@ -571,7 +575,7 @@ class Router extends Model
      * @param bool $lock As well as querying the update status, we should lock it also.
      * @return bool
      */
-    public function canUpdate( bool $lock = false ): ?bool
+    public function canUpdate( bool $lock = false ): bool
     {
         // if we're paused, we don't need to check anything else
         if( $this->pause_updates ) {

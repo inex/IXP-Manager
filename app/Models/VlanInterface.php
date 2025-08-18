@@ -130,6 +130,8 @@ class VlanInterface extends Model
 
     /**
      * Get the customer that owns the virtual interfaces.
+     *
+     * @psalm-return BelongsTo<VirtualInterface>
      */
     public function virtualInterface(): BelongsTo
     {
@@ -138,6 +140,8 @@ class VlanInterface extends Model
 
     /**
      * Get the vlan that holds the vlan interface.
+     *
+     * @psalm-return BelongsTo<Vlan>
      */
     public function vlan(): BelongsTo
     {
@@ -146,6 +150,8 @@ class VlanInterface extends Model
 
     /**
      * Get the layer2addresses for the vlan interface
+     *
+     * @psalm-return HasMany<Layer2Address>
      */
     public function layer2addresses(): HasMany
     {
@@ -154,6 +160,8 @@ class VlanInterface extends Model
 
     /**
      * Get the ipv4address associated with the vlaninterface.
+     *
+     * @psalm-return BelongsTo<IPv4Address>
      */
     public function ipv4address(): BelongsTo
     {
@@ -162,6 +170,8 @@ class VlanInterface extends Model
 
     /**
      * Get the ipv6address associated with the vlaninterface.
+     *
+     * @psalm-return BelongsTo<IPv6Address>
      */
     public function ipv6address(): BelongsTo
     {
@@ -235,11 +245,9 @@ class VlanInterface extends Model
      *
      * @param int|string $proto Either 4/ipv4 / 6/ipv6 (as defined in Grapher)
      *
-     * @return null|IPv4Address|IPv6Address
-     *
      * @throws
      */
-    public function getIPAddress( int|string $proto )
+    public function getIPAddress( int|string $proto ): IPv4Address|IPv6Address|null
     {
         if( is_string( $proto ) ) {
             $proto = strtolower( $proto );

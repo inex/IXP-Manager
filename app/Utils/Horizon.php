@@ -40,8 +40,10 @@ class Horizon
      * Returns with Horizon's current status: 'inactive', 'paused' or 'running'
      *
      * @return string
+     *
+     * @psalm-return 'inactive'|'paused'|'running'
      */
-    public static function status()
+    public static function status(): string
     {
         if( !$masters = app(MasterSupervisorRepository::class )->all() ) {
             return self::STATUS_INACTIVE;

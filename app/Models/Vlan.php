@@ -122,6 +122,8 @@ class Vlan extends Model
 
     /**
      * Get the vlan interfaces that are in this vlan
+     *
+     * @psalm-return HasMany<VlanInterface>
      */
     public function vlanInterfaces(): HasMany
     {
@@ -130,6 +132,8 @@ class Vlan extends Model
 
     /**
      * Get the vlan interfaces that are in this vlan
+     *
+     * @psalm-return HasMany<Router>
      */
     public function routers(): HasMany
     {
@@ -138,6 +142,8 @@ class Vlan extends Model
 
     /**
      * Get the ipv4addresses for the vlan
+     *
+     * @psalm-return HasMany<IPv4Address>
      */
     public function ipv4Addresses(): HasMany
     {
@@ -146,6 +152,8 @@ class Vlan extends Model
 
     /**
      * Get the ipv6addresses for the vlan
+     *
+     * @psalm-return HasMany<IPv6Address>
      */
     public function ipv6Addresses(): HasMany
     {
@@ -154,6 +162,8 @@ class Vlan extends Model
 
     /**
      * Get the route server filters for the vlan
+     *
+     * @psalm-return HasMany<RouteServerFilter>
      */
     public function routeServerFilters(): HasMany
     {
@@ -162,6 +172,8 @@ class Vlan extends Model
 
     /**
      * Get the networks info for the vlan
+     *
+     * @psalm-return HasMany<NetworkInfo>
      */
     public function networksInfo(): HasMany
     {
@@ -170,6 +182,8 @@ class Vlan extends Model
 
     /**
      * Get the atlas run that are in this vlan
+     *
+     * @psalm-return HasMany<AtlasRun>
      */
     public function atlasRun(): HasMany
     {
@@ -178,6 +192,8 @@ class Vlan extends Model
 
     /**
      * Get the infrastructure that own the vlan
+     *
+     * @psalm-return BelongsTo<Infrastructure>
      */
     public function infrastructure(): BelongsTo
     {

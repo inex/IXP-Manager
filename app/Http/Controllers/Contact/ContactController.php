@@ -83,6 +83,7 @@ class ContactController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
+    #[\Override]
     public function feInit(): void
     {
         $this->feParams         = ( object )[
@@ -188,7 +189,7 @@ class ContactController extends EloquentController
      *
      * @return array
      */
-    private function getFeList( stdClass $feParams, int $id = null, int $role = null, int $cgid = null ): array
+    private function getFeList( stdClass $feParams, ?int $id = null, ?int $role = null, ?int $cgid = null ): array
     {
         /** @var User $us */
         $us = Auth::getUser();
@@ -229,6 +230,7 @@ class ContactController extends EloquentController
      *
      * @throws
      */
+    #[\Override]
     protected function listGetData( ?int $id = null ): array
     {
         $role = $cg = null;
@@ -275,6 +277,7 @@ class ContactController extends EloquentController
     /**
      * @inheritdoc
      */
+    #[\Override]
     protected function preView(): void
     {
         /** @var User $us */
@@ -306,10 +309,13 @@ class ContactController extends EloquentController
     /**
      * Display the form to add/edit an object
      *
-     * @return array
+     * @return (Contact|array|mixed)[]
      *
      * @throws
+     *
+     * @psalm-return array{object: Contact, groupsForContact: array<never, never>, custs: mixed, roles: mixed, allGroups: mixed}
      */
+    #[\Override]
     protected function createPrepareForm(): array
     {
         $this->setRedirectSession();
@@ -335,10 +341,11 @@ class ContactController extends EloquentController
      *
      * @param Request $r
      *
-     * @return bool|RedirectResponse
+     * @return RedirectResponse|true
      *
      * @throws
      */
+    #[\Override]
     public function doStore( Request $r ): bool|RedirectResponse
     {
         /** @var User $us */
@@ -366,12 +373,15 @@ class ContactController extends EloquentController
     /**
      * Display the form to edit an object
      *
-     * @param   int $id ID of the row to edit
+     * @param int $id ID of the row to edit
      *
      * @return array
      *
      * @throws
+     *
+     * @psalm-return array{object: mixed, groupsForContact: mixed, custs: mixed, roles: mixed, allGroups: mixed}
      */
+    #[\Override]
     protected function editPrepareForm( int $id ): array
     {
         /** @var User $us */
@@ -421,10 +431,11 @@ class ContactController extends EloquentController
      * @param Request   $r
      * @param int       $id
      *
-     * @return bool|RedirectResponse
+     * @return RedirectResponse|true
      *
      * @throws
      */
+    #[\Override]
     public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         /** @var User $us */
@@ -469,8 +480,11 @@ class ContactController extends EloquentController
 
     /**
      * @inheritdoc
+     *
+     * @return null|string
      */
-    protected function postStoreRedirect(): ?string
+    #[\Override]
+    protected function postStoreRedirect(): string|null
     {
         /** @var User $us */
         $us = Auth::getUser();
@@ -500,6 +514,7 @@ class ContactController extends EloquentController
      *
      * @return bool Return false to stop / cancel the deletion
      */
+    #[\Override]
     protected function preDelete(): bool
     {
         /** @var User $us */
@@ -523,8 +538,9 @@ class ContactController extends EloquentController
      *
      * To implement this, have it return a valid route url (e.g. `return route( "route-name" );`
      *
-     * @return null|string
+     * @return string
      */
+    #[\Override]
     protected function postDeleteRedirect(): ?string
     {
         // retrieve the customer ID
@@ -544,6 +560,7 @@ class ContactController extends EloquentController
      *
      * @return void
      */
+    #[\Override]
     public function checkForm( Request $r ): void
     {
         $rules = [
@@ -588,7 +605,9 @@ class ContactController extends EloquentController
     /**
      * return an array of contacts data
      *
-     * @return array
+     * @return ((array|mixed)[][]|null)[]
+     *
+     * @psalm-return array{roles: array<array>|null, allGroups: array<array<array>>}
      */
     private function getContactsData(): array
     {

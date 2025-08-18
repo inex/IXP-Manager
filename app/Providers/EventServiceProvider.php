@@ -154,6 +154,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @return void
      */
+    #[\Override]
     public function boot(): void
     {
         //
@@ -162,8 +163,9 @@ class EventServiceProvider extends ServiceProvider
     /**
      * Determine if events and listeners should be automatically discovered.
      *
-     * @return bool
+     * @return false
      */
+    #[\Override]
     public function shouldDiscoverEvents()
     {
         return false;

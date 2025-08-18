@@ -66,6 +66,7 @@ class SessionGuard extends BaseGuard
      *
      * @return User|AuthenticatableContract|void|null
      */
+    #[\Override]
     public function user()
     {
         if( $this->loggedOut ){
@@ -150,6 +151,7 @@ class SessionGuard extends BaseGuard
      * @return void
      * @psalm-suppress UndefinedInterfaceMethod
      */
+    #[\Override]
     protected function ensureRememberTokenIsSet( AuthenticatableContract $user ): void
     {
         if( !$this->userRememberToken ) {
@@ -171,6 +173,7 @@ class SessionGuard extends BaseGuard
      *
      * @throws GeneralException
      */
+    #[\Override]
     protected function queueRecallerCookie( AuthenticatableContract $user ): void
     {
         // we shouldn't have called this function unless a UserRememberToken has been created
@@ -196,6 +199,7 @@ class SessionGuard extends BaseGuard
      *
      * @return void
      */
+    #[\Override]
     protected function cycleRememberToken( AuthenticatableContract $user ): void
     {
         if( $this->recaller() && $this->recaller()->token() ) {

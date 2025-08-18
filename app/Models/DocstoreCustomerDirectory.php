@@ -114,6 +114,7 @@ class DocstoreCustomerDirectory extends Model
      *
      * @return void
      */
+    #[\Override]
     protected static function boot(): void
     {
         parent::boot();
@@ -134,6 +135,8 @@ class DocstoreCustomerDirectory extends Model
 
     /**
      * Get the customer
+     *
+     * @psalm-return BelongsTo<Customer>
      */
     public function customer(): BelongsTo
     {
@@ -150,6 +153,8 @@ class DocstoreCustomerDirectory extends Model
 
     /**
      * Get the parent directory
+     *
+     * @psalm-return BelongsTo<self>
      */
     public function parentDirectory(): BelongsTo
     {
@@ -158,6 +163,8 @@ class DocstoreCustomerDirectory extends Model
 
     /**
      * Get the files in this directory
+     *
+     * @psalm-return HasMany<DocstoreCustomerFile>
      */
     public function files(): HasMany
     {
@@ -170,7 +177,7 @@ class DocstoreCustomerDirectory extends Model
      *
      * @param Customer                  $cust
      * @param DocstoreDirectory|null    $dir
-     * @param User|null                 $user
+     * @param User $user
      *
      * @return Collection
      */
@@ -187,17 +194,19 @@ class DocstoreCustomerDirectory extends Model
     /**
      * Create an array of directories keeping the hierarchy root/subfolder
      *
-     *  [
-     *      [ "id" => 1, "name"  => "Folder 1" ],
-     *      [ "id" => 2, "name"  => " - Sub Folder 1" ],
-     *      [ "id" => 3, "name"  => " - Sub Folder 2" ],
-     *      [ "id" => 4, "name"  => "Folder 2" ],
-     *  ]
+     * [
+     * [ "id" => 1, "name"  => "Folder 1" ],
+     * [ "id" => 2, "name"  => " - Sub Folder 1" ],
+     * [ "id" => 3, "name"  => " - Sub Folder 2" ],
+     * [ "id" => 4, "name"  => "Folder 2" ],
+     * ]
      *
      * @param $dirs     Collection
      * @param $depth    int
      *
-     * @return array
+     * @return ((mixed|string)[]|mixed)[]
+     *
+     * @psalm-return list{0: array{id: ''|mixed, name: string}|mixed, 1?: array{id: ''|mixed, name: string}|mixed,...}
      */
     public static function getListingForDropdown( Collection $dirs, int $depth = 5 ): array
     {

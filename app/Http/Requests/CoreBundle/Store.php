@@ -64,7 +64,9 @@ class Store extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{custid: 'required|integer|exists:cust,id', description: 'required|string|max:255', graph_title: 'required|string|max:255', cost: 'nullable|integer', preference: 'nullable|integer', type: string, ipv4_subnet: 'nullable'|'required', mtu?: 'required|integer|min:0|max:64000', 'vi-name-a'?: 'nullable'|'required|string|max:255', 'vi-name-b'?: 'nullable'|'required|string|max:255', 'vi-channel-number-a'?: 'nullable'|'required|integer|min:0', 'vi-channel-number-b'?: 'nullable'|'required|integer|min:0'}
      */
     public function rules(): array
     {
@@ -95,7 +97,7 @@ class Store extends FormRequest
     /**
      * @param Validator $validator
      *
-     * @return bool
+     * @return true
      */
     public function withValidator( Validator $validator ): bool
     {

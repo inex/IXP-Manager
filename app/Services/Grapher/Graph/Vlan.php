@@ -80,9 +80,9 @@ class Vlan extends Graph
      *
      * @param VlanModel $vlan
      *
-     * @return Vlan Fluid interface
+     * @return static Fluid interface
      */
-    public function setVlan( VlanModel $vlan ): Vlan
+    public function setVlan( VlanModel $vlan ): static
     {
         if( $this->vlan() && $this->vlan()->id !== $vlan->id ) {
             $this->wipe();
@@ -97,6 +97,7 @@ class Vlan extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function name(): string
     {
         return $this->vlan()->name ?: '';
@@ -109,6 +110,7 @@ class Vlan extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function identifier(): string
     {
         return sprintf( "vlan%05d", $this->vlan()->number );
@@ -123,6 +125,7 @@ class Vlan extends Graph
      *
      * @return bool
      */
+    #[\Override]
     public function authorise(): bool
     {
         /** @var User $us */
@@ -156,6 +159,7 @@ class Vlan extends Graph
      * @param array $overrides Allow standard parameters to be overridden (e.g. category)
      * @return string
      */
+    #[\Override]
     public function url( array $overrides = [] ): string
     {
         return parent::url( $overrides ) . sprintf("&id=%d",
@@ -168,8 +172,11 @@ class Vlan extends Graph
      *
      * Extends base function
      *
-     * @return array $params
+     * @return (\Carbon\Carbon|int|mixed|null)[]
+     *
+     * @psalm-return array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}
      */
+    #[\Override]
     public function getParamsAsArray(): array
     {
         $p          = parent::getParamsAsArray();

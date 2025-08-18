@@ -78,9 +78,9 @@ class Location extends Graph
      *
      * @param LocationModel $switch
      *
-     * @return Location Fluid interface
+     * @return static Fluid interface
      */
-    public function setLocation( LocationModel $location ): Location
+    public function setLocation( LocationModel $location ): static
     {
         if( $this->location() && $this->location()->id !== $location->id ) {
             $this->wipe();
@@ -95,6 +95,7 @@ class Location extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function name(): string
     {
         return $this->location()->name ?: '';
@@ -107,6 +108,7 @@ class Location extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function identifier(): string
     {
         return sprintf( "location%05d", $this->location()->id );
@@ -121,6 +123,7 @@ class Location extends Graph
      *
      * @return bool
      */
+    #[\Override]
     public function authorise(): bool
     {
         /** @var User $us */
@@ -149,6 +152,7 @@ class Location extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function url( array $overrides = [] ): string
     {
         return parent::url( $overrides ) . sprintf("&id=%d",
@@ -161,8 +165,11 @@ class Location extends Graph
      *
      * Extends base function
      *
-     * @return array $params
+     * @return (\Carbon\Carbon|int|mixed|null)[]
+     *
+     * @psalm-return array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}
      */
+    #[\Override]
     public function getParamsAsArray(): array
     {
         $p = parent::getParamsAsArray();

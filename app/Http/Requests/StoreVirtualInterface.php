@@ -56,7 +56,9 @@ class StoreVirtualInterface extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{custid: 'integer|required|exists:cust,id', name: 'string|max:255|nullable', description: 'string|max:255|nullable', channelgroup: 'integer|nullable', mtu: 'integer|min:1|max:64000|nullable'}
      */
     public function rules(): array
     {

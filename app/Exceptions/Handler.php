@@ -69,6 +69,7 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
+    #[\Override]
     public function register()
     {
         $this->reportable(function (Throwable $e) {
@@ -84,6 +85,7 @@ class Handler extends ExceptionHandler
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
+    #[\Override]
     public function render($request, Throwable $e)
     {
         if( $e instanceof GraphCannotBeProcessedException ) {

@@ -92,9 +92,11 @@ class EmailTrafficDeltas extends GrapherCommand
      * @param Carbon    $day
      * @param float     $stddev
      *
-     * @return array
+     * @return (|\Illuminate\Database\Eloquent\Model|float|int|mixed|string)[][]
      *
      * @throws
+     *
+     * @psalm-return list<array{count: float(0)|float(1)|float(2), cust: Illuminate\Database\Eloquent\Model, dIn: float|int<0, max>, dOut: float|int<0, max>, days: (TGeneratedFromParam0 is null ? Illuminate\Config\Repository : (TGeneratedFromParam0 is string ? mixed : null)), meanIn: mixed, meanOut: mixed, percentIn: float|int, percentOut: float|int, pngMonth: string, pngYear: string, sIn: 'decrease'|'increase', sOut: 'decrease'|'increase', stddevIn: float, stddevOut: float, thresholdIn: float, thresholdOut: float, todayAvgIn: mixed, todayAvgOut: mixed}>
      */
     private function portsWithDelta( Carbon $day, float $stddev ): array
     {
@@ -191,6 +193,8 @@ class EmailTrafficDeltas extends GrapherCommand
      * Check the various arguments and options that have been password to the console command
      *
      * @return int 0 for success or else an error code
+     *
+     * @psalm-return 0|253|254
      */
     protected function verifyArgsAndOptions(): int
     {

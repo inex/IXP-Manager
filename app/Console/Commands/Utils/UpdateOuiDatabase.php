@@ -61,11 +61,9 @@ class UpdateOuiDatabase extends IXPCommand
     /**
      * Execute the console command.
      *
-     * @return mixed
-     *
      * @throws
      */
-    public function handle()
+    public function handle(): int
     {
         $ouitool = new OUIUtil( $this->argument( 'file' ) );
 

@@ -57,7 +57,12 @@ class DiagnosticsController extends Controller
         ];
     }
 
-    private function generateBadges() {
+    /**
+     * @return string[]
+     *
+     * @psalm-return array<string>
+     */
+    private function generateBadges(): array {
         $badges = [];
         $enabledBadges = [
             DiagnosticResult::TYPE_FATAL,

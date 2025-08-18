@@ -91,6 +91,7 @@ class UserRememberTokenController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
+    #[\Override]
     public function feInit(): void
     {
         $this->feParams         = (object)[
@@ -128,6 +129,7 @@ class UserRememberTokenController extends EloquentController
      *
      * @return void
      */
+    #[\Override]
     protected static function additionalRoutes( string $route_prefix ): void
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
@@ -143,6 +145,7 @@ class UserRememberTokenController extends EloquentController
      *
      * @return void
      */
+    #[\Override]
     protected function preList(): void
     {
         // We want to indicate which session is the user's //current// session so they can avoid logging themselves out.
@@ -164,7 +167,8 @@ class UserRememberTokenController extends EloquentController
      *
      * @return array
      */
-    protected function listGetData( int $id = null ): array
+    #[\Override]
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
         return UserRememberToken::where( 'user_id', request()->user()->id )
@@ -178,6 +182,7 @@ class UserRememberTokenController extends EloquentController
     /**
      * @inheritdoc
      */
+    #[\Override]
     protected function preDelete(): bool
     {
         // ensure a user can only delete their own sessions:
@@ -193,6 +198,7 @@ class UserRememberTokenController extends EloquentController
      *
      * @return null|string
      */
+    #[\Override]
     protected function postDeleteRedirect(): ?string
     {
         if( $r = request()->cookies->get( Auth::getRecallerName() ) ) {

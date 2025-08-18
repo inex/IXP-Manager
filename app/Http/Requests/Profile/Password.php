@@ -54,7 +54,9 @@ class Password extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return ((\Illuminate\Validation\Rules\Password|string)[]|string)[]
+     *
+     * @psalm-return array{current_password: 'required|string', new_password: list{'required', 'max:255', 'different:current_password', \Illuminate\Validation\Rules\Password}, confirm_password: 'required|same:new_password'}
      */
     public function rules(): array
     {

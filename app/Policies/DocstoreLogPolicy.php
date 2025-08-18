@@ -43,6 +43,9 @@ class DocstoreLogPolicy
 {
     use HandlesAuthorization;
 
+    /**
+     * @return null|true
+     */
     public function before( $user, $ability )
     {
         if( $user->isSuperUser() ) {
@@ -54,7 +57,6 @@ class DocstoreLogPolicy
      * Determine whether the user can view any docstore logs.
      *
      * @param User $user
-     *
      */
-    public function viewAny( User $user ) {}
+    public function viewAny( User $user ): void {}
 }

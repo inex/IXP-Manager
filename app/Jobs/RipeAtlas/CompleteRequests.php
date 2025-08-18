@@ -71,11 +71,11 @@ class CompleteRequests extends Job implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @return bool
-     *
      * @throws
+     *
+     * @psalm-return 0|1
      */
-    public function handle()
+    public function handle(): int
     {
         $ams = $this->atlasRun->atlasMeasurements()->get();
 

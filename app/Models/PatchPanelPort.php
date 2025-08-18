@@ -293,6 +293,8 @@ class PatchPanelPort extends Model
 
     /**
      * Get the Patch Panel that owns this patch panel port
+     *
+     * @psalm-return BelongsTo<PatchPanel>
      */
     public function patchPanel(): BelongsTo
     {
@@ -301,6 +303,8 @@ class PatchPanelPort extends Model
 
     /**
      * Get the switch port that owns this patch panel port
+     *
+     * @psalm-return BelongsTo<SwitchPort>
      */
     public function switchPort(): BelongsTo
     {
@@ -309,6 +313,8 @@ class PatchPanelPort extends Model
 
     /**
      * Get the customer that owns this patch panel port
+     *
+     * @psalm-return BelongsTo<Customer>
      */
     public function customer(): BelongsTo
     {
@@ -317,6 +323,8 @@ class PatchPanelPort extends Model
 
     /**
      * Get the duplex master port that owns this patch panel port
+     *
+     * @psalm-return BelongsTo<self>
      */
     public function duplexMasterPort(): BelongsTo
     {
@@ -325,6 +333,8 @@ class PatchPanelPort extends Model
 
     /**
      * Get the patch panel port files for this patch panel port
+     *
+     * @psalm-return HasMany<PatchPanelPortFile>
      */
     public function patchPanelPortFiles(): HasMany
     {
@@ -333,6 +343,8 @@ class PatchPanelPort extends Model
 
     /**
      * Get the patch panel port histories for this patch panel port
+     *
+     * @psalm-return HasMany<PatchPanelPortHistory>
      */
     public function patchPanelPortHistories(): HasMany
     {
@@ -341,6 +353,7 @@ class PatchPanelPort extends Model
 
     /**
      * Get the public patch panel port files for this patch panel port
+     *
      * @psalm-suppress all
      */
     public function patchPanelPortFilesPublic(): HasMany
@@ -351,6 +364,8 @@ class PatchPanelPort extends Model
 
     /**
      * Get the duplex slaves ports for this patch panel port
+     *
+     * @psalm-return HasMany<self>
      */
     public function duplexSlavePorts(): HasMany
     {
@@ -591,7 +606,7 @@ class PatchPanelPort extends Model
     {
         foreach( $this->duplexSlavePorts as $pppsp ) {
             $pppsp->reset();
-            $pppsp->update( [ 'duplex_master_id', null ] );
+            $pppsp->update( [ 'duplex_master_id' => null ] );
         }
 
         // Attributes that are not reset
@@ -666,7 +681,7 @@ class PatchPanelPort extends Model
      *
      * @throws
      */
-    public function move( PatchPanelPort $dest, PatchPanelPort $slave = null ): bool
+    public function move( PatchPanelPort $dest, ?PatchPanelPort $slave = null ): bool
     {
         // preflight checks
         if( $this->duplexSlavePorts()->count() && ( $slave === null || !$slave->availableForUse() ) ) {

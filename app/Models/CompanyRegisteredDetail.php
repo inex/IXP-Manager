@@ -96,6 +96,8 @@ class CompanyRegisteredDetail extends Model
 
     /**
      * Get the customer for the company registered detail
+     *
+     * @psalm-return HasOne<Customer>
      */
     public function customer(): HasOne
     {

@@ -33,7 +33,7 @@ use IXP\Models\IrrdbAsn;
 use IXP\Models\IrrdbPrefix;
 use IXP\Models\Vlan;
 
-class IrrdbAggregator
+final class IrrdbAggregator
 {
     /**
      * Utility function to get the prefixes/ASN a customer has for a given protocol

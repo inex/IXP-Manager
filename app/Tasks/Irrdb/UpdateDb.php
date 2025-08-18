@@ -120,10 +120,8 @@ abstract class UpdateDb
      * Set the customer member
      *
      * @param Customer $customer
-     *
-     * @return UpdateDb
      */
-    public function setCustomer( Customer $customer ): UpdateDb
+    public function setCustomer( Customer $customer ): static
     {
         $this->customer = $customer;
         return $this;
@@ -154,11 +152,9 @@ abstract class UpdateDb
      *
      * @param Bgpq3 $bgpq3
      *
-     * @return UpdateDb
-     *
      * @throws
      */
-    public function setBgpq3( Bgpq3 $bgpq3 ): UpdateDb
+    public function setBgpq3( Bgpq3 $bgpq3 ): static
     {
         $this->bgpq3 = $bgpq3;
         return $this;
@@ -206,8 +202,10 @@ abstract class UpdateDb
      * @return bool
      *
      * @throws
+     *
+     * @psalm-param 'asn'|'prefix' $type
      */
-    protected function updateDb( array $fromIrrdb, int $protocol, $type = 'prefix' ): bool
+    protected function updateDb( array $fromIrrdb, int $protocol, string $type = 'prefix' ): bool
     {
         switch( $type ) {
             case 'asn':

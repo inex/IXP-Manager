@@ -75,6 +75,8 @@ class MailingList
      * @param bool $subscribed
      *
      * @return array
+     *
+     * @psalm-return array<never, mixed>
      */
     public function getSubscriberEmails( bool $subscribed = true ): array
     {
@@ -111,7 +113,10 @@ class MailingList
      *
      * @param Collection $addresses Addresses to initialise IXP Manager user preferences with.
      *                       NB: ensure all addresses passed are normalised to lower case!
-     * @return array
+     *
+     * @return array[]
+     *
+     * @psalm-return array{skipped: list<lowercase-string>, subscribed: list<lowercase-string>, unsubscribed: list<lowercase-string>, unknown: array}
      */
     public function init( Collection $addresses ): array
     {

@@ -46,6 +46,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
      *
      * @return void
      */
+    #[\Override]
     public function boot(): void
     {
         parent::boot();
@@ -64,6 +65,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
      *
      * @return void
      */
+    #[\Override]
     protected function gate(): void
     {
         Gate::define('viewHorizon', function ( $user ) {

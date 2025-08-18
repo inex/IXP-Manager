@@ -81,8 +81,10 @@ class Zendesk implements HelpdeskContract
      * @param function $fn Anonymous function containing API call
      *
      * @throws
+     *
+     * @psalm-param \Closure():(\stdClass|null)|\Closure():void $fn
      */
-    protected function callApi( $fn )
+    protected function callApi( \Closure $fn )
     {
         try {
             usleep( 60/200 );
@@ -102,6 +104,7 @@ class Zendesk implements HelpdeskContract
     /**
      * Return the Zendesk debug information
      */
+    #[\Override]
     public function getDebug()
     {
         return $this->debug;
@@ -111,7 +114,10 @@ class Zendesk implements HelpdeskContract
      * Find all tickets on the helpdesk
      *
      * @throws \IXP\Services\Helpdesk\ApiException
+     *
+     * @return void
      */
+    #[\Override]
     public function ticketsFindAll()
     {
         $this->callApi( function() { $this->client->tickets()->findAll(); } );
@@ -134,7 +140,9 @@ class Zendesk implements HelpdeskContract
      * @param Customer      $cust     The IXP Manager customer entity
      * @param bool|int $id       If updating, set to Zendesk organisation ID
      *
-     * @return array Data in associate array format as required by Zendesk PHP API
+     * @return ((bool|int|mixed|null|string)[]|int|null|string|true)[] Data in associate array format as required by Zendesk PHP API
+     *
+     * @psalm-return array{external_id: int, name: null|string, domain_names?: string, id?: int|true, organization_fields: array{asn: int|null, as_set: null|string, peering_email: null|string, noc_email: null|string, shortname: null|string, type: mixed, addresses: string, status: mixed, has_left: bool}}
      */
     private function customerEntityToZendeskObject( Customer $cust, bool|int $id = false ): array
     {
@@ -226,6 +234,7 @@ class Zendesk implements HelpdeskContract
      *
      * @return bool True if these objects are not in sync
      */
+    #[\Override]
     public function organisationNeedsUpdating( Customer $cdb, Customer $chd ): bool
     {
         try {
@@ -254,10 +263,11 @@ class Zendesk implements HelpdeskContract
      *
      * @param Customer $cust An IXP Manager customer to create as organisation
      *
-     * @return Customer|bool A decoupled customer entity (including `helpdesk_id`)
+     * @return Customer|false A decoupled customer entity (including `helpdesk_id`)
      *
      * @throws \IXP\Services\Helpdesk\ApiException
      */
+    #[\Override]
     public function organisationCreate( Customer $cust )
     {
         $response = $this->callApi( function() use ( $cust ) {
@@ -280,10 +290,11 @@ class Zendesk implements HelpdeskContract
      * @param int               $helpdeskId The ID of the helpdesk's organisation object
      * @param Customer          $cust       An IXP Manager customer as returned by `organisationFind()`
      *
-     * @return Customer|bool A decoupled customer entity (including `helpdesk_id`)
+     * @return Customer|false
      *
      * @throws
      */
+    #[\Override]
     public function organisationUpdate( int $helpdeskId, Customer $cust )
     {
             $response = $this->callApi( function() use ( $cust, $helpdeskId ) {
@@ -299,7 +310,7 @@ class Zendesk implements HelpdeskContract
     /**
      * Find an organisation by our own customer ID
      *
-     * **NB:** the returned entity shouldn't have an ID parameter set - you should already know it!
+     * NB:** the returned entity shouldn't have an ID parameter set - you should already know it!
      *
      * The reason for this is that the returned customer object is incomplete and is only intended
      * to be used to compare local with Zendesk and/or identify if a customer exists.
@@ -309,10 +320,11 @@ class Zendesk implements HelpdeskContract
      *
      * @param int $id Our own customer ID to find the organisation from
      *
-     * @return Customer|bool A shallow disassociated customer object or false
+     * @return Customer|false
      *
      * @throws
      */
+    #[\Override]
     public function organisationFind( int $id )
     {
             $response = $this->callApi( function() use ( $id ) {
@@ -340,11 +352,13 @@ class Zendesk implements HelpdeskContract
      *
      * @param Contact       $contact  The IXP Manager customer entity
      * @param int           $org_id   The Zendesk ID of the organisation
-     * @param            $id       If updating, set to Zendesk contact ID
+     * @param false|int $id If updating, set to Zendesk contact ID
      *
-     * @return array Data in associate array format as required by Zendesk PHP API
+     * @return (int|null|string|true)[]
+     *
+     * @psalm-return array{external_id?: int, name: string, email: null|string, phone: null|string, organization_id: int|null, role: 'admin'|'end-user', ticket_restriction?: 'organization'|'requested', verified?: true, locale_id?: 1176, time_zone?: 'Europe/Dublin', id?: int}
      */
-    private function contactEntityToZendeskObject( Contact $contact, int $org_id = null, $id = false ): array
+    private function contactEntityToZendeskObject( Contact $contact, int $org_id = null, int|false $id = false ): array
     {
         $data = [];
 
@@ -411,6 +425,7 @@ class Zendesk implements HelpdeskContract
      *
      * @return bool True if these objects are not in sync
      */
+    #[\Override]
     public function contactNeedsUpdating( Contact $cdb, Contact $chd ): bool
     {
         try {
@@ -431,10 +446,11 @@ class Zendesk implements HelpdeskContract
      * @param Contact $contact An IXP Manager contact to create
      * @param $org_id
      *
-     * @return Contact|bool Decoupled contact object with `helpdesk_id`
+     * @return Contact|false Decoupled contact object with `helpdesk_id`
      *
      * @throws ApiException
      */
+    #[\Override]
     public function userCreate( Contact $contact, $org_id )
     {
         $response = $this->callApi( function() use ( $contact, $org_id ) {
@@ -457,11 +473,10 @@ class Zendesk implements HelpdeskContract
      * @param int       $helpdeskId The ID of the helpdesk's user object
      * @param Contact   $contact    An IXP Manager contact as returned by `userFind()`
      *
-     * @return Contact|bool Decoupled contact object with `helpdesk_id`
-     *
      * @throws \IXP\Services\Helpdesk\ApiException
      */
-    public function userUpdate( int $helpdeskId, Contact $contact ): Contact
+    #[\Override]
+    public function userUpdate( int $helpdeskId, Contact $contact ): Contact|false
     {
         $response = $this->callApi( function() use ( $contact, $helpdeskId ) {
             return $this->client->users()->update( $helpdeskId, $this->contactEntityToZendeskObject( $contact, null, $helpdeskId ) );
@@ -477,7 +492,7 @@ class Zendesk implements HelpdeskContract
     /**
      * Find an user by our own contact ID
      *
-     * **NB:** the returned entity shouldn't have an ID parameter set - you should already know it!
+     * NB:** the returned entity shouldn't have an ID parameter set - you should already know it!
      *
      * The reason for this is that the returned contact object is incomplete and is only intended
      * to be used to compare local with Zendesk and/or identify if a contact exists.
@@ -487,10 +502,11 @@ class Zendesk implements HelpdeskContract
      *
      * @param int $id Our own contact ID to find the contact from
      *
-     * @return Contact|bool A shallow disassociated contact object or false
+     * @return Contact|false
      *
      * @throws
      */
+    #[\Override]
     public function userFind( int  $id )
     {
         $response = $this->callApi( function() use ( $id ) {

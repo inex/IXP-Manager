@@ -98,6 +98,8 @@ class P2pDailyStats extends Model
 
     /**
      * Get the logo for the customer
+     *
+     * @psalm-return HasOne<Customer>
      */
     public function peer(): HasOne
     {
@@ -138,7 +140,6 @@ class P2pDailyStats extends Model
      * Get the latest n P2pDailyStats for this customer.
      *
      * @param Customer $c
-     * @return P2pDailyStats[]
      */
     public static function latestN( Customer $c, int $n = 5 ): Collection
     {

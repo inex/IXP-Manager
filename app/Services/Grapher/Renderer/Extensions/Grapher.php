@@ -47,16 +47,45 @@ class Grapher implements ExtensionInterface
     
     private $args;
 
+    /**
+     * @return void
+     */
+    #[\Override]
+    /**
+     * @return void
+     */
     public function setup(array $args = [])
     {
         $this->args = $args;
     }
 
+    /**
+     * @return array
+     *
+     * @psalm-return array<never, never>
+     */
+    #[\Override]
+    /**
+     * @return array
+     *
+     * @psalm-return array<never, never>
+     */
     public function provideFilters()
     {
        return [];
     }
     
+    /**
+     * @return (static|string)[][]
+     *
+     * @psalm-return array{grapher: list{static, 'getObject'}}
+     */
+    #[\Override]
+    /**
+     * @return (static|string)[][]
+     *
+     * @psalm-return array{grapher: list{static, 'getObject'}}
+     */
     public function provideFunctions()
     {
         return [
@@ -64,7 +93,7 @@ class Grapher implements ExtensionInterface
         ];
     }
 
-    public function getObject(): Grapher
+    public function getObject(): static
     {
        return $this;
     }

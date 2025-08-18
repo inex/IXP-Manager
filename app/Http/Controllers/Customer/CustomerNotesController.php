@@ -80,10 +80,8 @@ class CustomerNotesController extends Controller
 
     /**
      * Get the list of unread not for the current user
-     *
-     * @return Application|Factory|\Illuminate\Contracts\View\View
      */
-    public function unreadNotes()
+    public function unreadNotes(): \Illuminate\Contracts\View\View
     {
         /** @var User $us */
         $us = Auth::getUser();

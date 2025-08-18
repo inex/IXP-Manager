@@ -53,9 +53,9 @@ class InPeeringDb extends  Command
     /**
      * Execute the console command.
      *
-     * @return mixed
-     *
      * @throws
+     *
+     * @psalm-return 0|1|2
      */
     public function handle(): int
     {

@@ -114,9 +114,10 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
 
     /**
      * Get / instantiate the snmp client
-     * @return SNMP|bool|null
+     *
+     * @return SNMP|bool
      */
-    private function snmpClient($pi): SNMP|bool|null {
+    private function snmpClient(PhysicalInterface $pi): bool|SNMP|null {
 
         if( $this->snmpClient === null ) {
             if( empty( $pi?->switchPort->switcher->snmppasswd ) ) {
@@ -135,7 +136,7 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
     /**
      * Run the diagnostics suite
      */
-    public function run(): TransceiverDiagnosticSuite
+    public function run(): static
     {
 
         // check if we can even run these first
@@ -266,6 +267,8 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
      * //    => 3: DOM RX Power Sensor
      *
      * @return DiagnosticResult[]
+     *
+     * @psalm-return list{DiagnosticResult,...}
      */
     private function lightLevels( PhysicalInterface $pi ): array
     {

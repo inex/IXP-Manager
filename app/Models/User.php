@@ -180,6 +180,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     /**
      * Get the remember tokens for the user
+     *
+     * @psalm-return HasMany<UserRememberToken>
      */
     public function userRememberTokens(): HasMany
     {
@@ -188,6 +190,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     /**
      * Get the remember tokens for the user
+     *
+     * @psalm-return HasOne<User2FA>
      */
     public function user2FA(): HasOne
     {
@@ -196,6 +200,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     /**
      * Get the customer
+     *
+     * @psalm-return BelongsTo<Customer>
      */
     public function customer(): BelongsTo
     {
@@ -204,6 +210,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     /**
      * Get the api keys for the user
+     *
+     * @psalm-return HasMany<ApiKey>
      */
     public function apiKeys(): HasMany
     {
@@ -221,6 +229,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     /**
      * Get all the customers for the user
+     *
+     * @psalm-return HasMany<CustomerToUser>
      */
     public function customerToUser(): HasMany
     {
@@ -364,6 +374,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      *
      * @return void
      */
+    #[\Override]
     public function sendPasswordResetNotification( $token ): void
     {
         event( new ForgotPasswordEvent( $token, $this ) );
@@ -378,6 +389,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      *
      * @return string
      */
+    #[\Override]
     public function getRememberToken(): string
     {
         // We have overridden Laravel's remember token functionality and do not rely on this.
@@ -389,6 +401,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     /**
      * Allow direct access to the 2FA secret code
      */
+    #[\Override]
     public function __get( $key )
     {
         switch( $key ) {

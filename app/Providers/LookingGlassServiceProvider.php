@@ -83,6 +83,7 @@ class LookingGlassServiceProvider extends ServiceProvider
      *
      * @return void
      */
+    #[\Override]
     public function register(): void
     {
         $this->app->singleton( LookingGlass::class, function( $app ) {
@@ -93,8 +94,11 @@ class LookingGlassServiceProvider extends ServiceProvider
     /**
      * Get the services provided by the provider.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return list{LookingGlass::class}
      */
+    #[\Override]
     public function provides(): array
     {
         return [ LookingGlass::class ];

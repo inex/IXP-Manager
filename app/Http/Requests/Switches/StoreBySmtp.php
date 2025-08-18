@@ -58,7 +58,9 @@ class StoreBySmtp extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return ((IdnValidate|string)[]|string)[]
+     *
+     * @psalm-return array{snmppasswd: 'required|string|max:255', hostname: list{'required', 'string', 'max:255', IdnValidate, string}}
      */
     public function rules(): array
     {

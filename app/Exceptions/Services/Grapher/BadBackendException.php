@@ -25,4 +25,4 @@ namespace IXP\Exceptions\Services\Grapher;
 
 use Exception;
 
-class BadBackendException extends Exception {}
+final class BadBackendException extends Exception {}

@@ -238,9 +238,7 @@ class UserController extends Controller
     /**
      * Allow to create a User
      *
-     * @param  StoreUser  $r  instance of the current HTTP request
-     *
-     * @return  RedirectResponse|Redirector
+     * @param StoreUser  $r  instance of the current HTTP request
      *
      * @throws AuthorizationException
      */
@@ -349,8 +347,6 @@ class UserController extends Controller
      * @param UpdateUser $r instance of the current HTTP request
      * @param User $u
      *
-     * @return RedirectResponse|Redirector
-     *
      * @throws AuthorizationException
      */
     public function update( UpdateUser $r, User $u ): RedirectResponse|Redirector
@@ -397,7 +393,7 @@ class UserController extends Controller
     /**
      * Redirect the user post store
      */
-    protected function postStoreRedirect()
+    protected function postStoreRedirect(): string
     {
         /** @var User $us */
         $us = Auth::user();

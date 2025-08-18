@@ -52,7 +52,7 @@ class PruneDailyP2p extends IXPCommand
      */
     protected $description = 'Delete --all or records older than --days from p2p_daily_stats';
 
-    public function handle()
+    public function handle(): int
     {
         if( $this->option('all') ) {
             $before = now();

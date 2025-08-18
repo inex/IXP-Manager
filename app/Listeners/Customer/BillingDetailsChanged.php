@@ -28,7 +28,7 @@ use IXP\Events\Customer\BillingDetailsChanged as BillingDetailsChangedEvent;
 
 use IXP\Mail\Customer\BillingDetailsChanged as BillingDetailsChangedMailable;
 
-class BillingDetailsChanged
+final class BillingDetailsChanged
 {
     /**
      * Create the event listener.

@@ -197,7 +197,7 @@ class CustomerAggregator extends Customer
      *
      * @return array
      */
-    public static function getByVlanAndProtocol( int $vlanid = null, int $protocol = null ): array
+    public static function getByVlanAndProtocol( ?int $vlanid = null, ?int $protocol = null ): array
     {
         return self::select( [ 'c.id', 'c.name' ] )
             ->from( 'cust AS c' )
@@ -227,95 +227,96 @@ class CustomerAggregator extends Customer
      *
      * Sample return:
      *
-     *     [
-     *         "me" => [    "id" => 69
-     *                       "name" => "3 Ireland's"
-     *                       "shortname" => "three"
-     *                       "autsys" => 34218
-     *                       "maxprefixes" => 100
-     *                       "peeringemail" => "io.ip@three.co.uk"
-     *                       "peeringpolicy" => "open"
-     *                       "vlaninterfaces" => [
-     *                               10 => [
-     *                                   0 => [
-     *                                           "ipv4enabled" => true
-     *                                           "ipv6enabled" => false
-     *                                           "rsclient" => true
-     *                                       ]
-     *                               ]
+     * [
+     * "me" => [    "id" => 69
+     * "name" => "3 Ireland's"
+     * "shortname" => "three"
+     * "autsys" => 34218
+     * "maxprefixes" => 100
+     * "peeringemail" => "io.ip@three.co.uk"
+     * "peeringpolicy" => "open"
+     * "vlaninterfaces" => [
+     * 10 => [
+     * 0 => [
+     * "ipv4enabled" => true
+     * "ipv6enabled" => false
+     * "rsclient" => true
+     * ]
+     * ]
      *
-     *                          ]
+     * ]
      *
-     *                  ]
+     * ]
      *
-     *         "potential" => [
-     *               12041 => false
-     *               56767 => false
-     *               196737 => false
-     *          ]
+     * "potential" => [
+     * 12041 => false
+     * 56767 => false
+     * 196737 => false
+     * ]
      *
-     *          "potential_bilat" => [
-     *               12041 => true
-     *               56767 => true
-     *               196737 => false
-     *          ]
+     * "potential_bilat" => [
+     * 12041 => true
+     * 56767 => true
+     * 196737 => false
+     * ]
      *
-     *          "peered" => [
-     *               12041 => true
-     *               56767 => true
-     *               196737 => false
-     *          ]
+     * "peered" => [
+     * 12041 => true
+     * 56767 => true
+     * 196737 => false
+     * ]
      *
-     *          "peered" => [
-     *               12041 => false
-     *               56767 => false
-     *               196737 => false
-     *          ]
+     * "peered" => [
+     * 12041 => false
+     * 56767 => false
+     * 196737 => false
+     * ]
      *
-     *         "peers" => [
-     *               60 => [
-     *                   "id" => 44
-     *                   "custid" => 69
-     *                   "peerid" => 60
-     *                   "email_last_sent" => null
-     *                   "emails_sent" => 0
-     *                   "peered" => false
-     *                   "rejected" => false
-     *                   "notes" => ""
-     *                   "created" => DateTime
-     *                   "updated" => DateTime
-     *                   "email_days" => -1
-     *               ]
-     *           ]
+     * "peers" => [
+     * 60 => [
+     * "id" => 44
+     * "custid" => 69
+     * "peerid" => 60
+     * "email_last_sent" => null
+     * "emails_sent" => 0
+     * "peered" => false
+     * "rejected" => false
+     * "notes" => ""
+     * "created" => DateTime
+     * "updated" => DateTime
+     * "email_days" => -1
+     * ]
+     * ]
      *
-     *          "custs" => [
-     *               12041 => [
-     *                   "id" => 146
-     *                   "name" => "Afilias"
-     *                   "shortname" => "afilias"
-     *                   "autsys" => 12041
-     *                   "maxprefixes" => 500
-     *                   "peeringemail" => "peering@afilias-nst.info"
-     *                   "peeringpolicy" => "open"
-     *                   "vlaninterfaces" => [...]
-     *                   "ispotential" => true
-     *                   10 => [
-     *                   4 => 1
-     *                   ]
-     *               ]
-     *               56767 => [...]
-     *               196737 => [...]
+     * "custs" => [
+     * 12041 => [
+     * "id" => 146
+     * "name" => "Afilias"
+     * "shortname" => "afilias"
+     * "autsys" => 12041
+     * "maxprefixes" => 500
+     * "peeringemail" => "peering@afilias-nst.info"
+     * "peeringpolicy" => "open"
+     * "vlaninterfaces" => [...]
+     * "ispotential" => true
+     * 10 => [
+     * 4 => 1
+     * ]
+     * ]
+     * 56767 => [...]
+     * 196737 => [...]
      *
-     *     ]
+     * ]
      *
      * @param Customer  $cust   Current customer
      * @param Vlan[] $vlans  Array of Vlans
      * @param array     $protos Array of protos
      *
-     * @return array|null
+     * @return ((((int|mixed)[]|mixed|string|true)[]|Vlan|bool|mixed)[]|mixed|null)[]|null
      *
+     * @psalm-return array{me: mixed|null, potential: array<array-key|array<0|1|2>|mixed, bool>, potential_bilat: array<array-key|array<0|1|2>|mixed, bool>, peered: array<array-key|array<0|1|2>|mixed, bool>, rejected: array<array-key|array<0|1|2>|mixed, bool>, peers: array|mixed, custs: array<array<array<0|1|2>|mixed|true>|mixed>, bilat: array<array<int, array|string>>, vlan: array<Vlan>, protos: array}|null
      */
-    public static function getPeeringManagerArrayByType( Customer $cust, $vlans, array $protos ): ?array
+    public static function getPeeringManagerArrayByType( Customer $cust, $vlans, array $protos ): array|null
     {
         if( !count( $vlans ) ) {
             return null;
@@ -455,7 +456,7 @@ class CustomerAggregator extends Customer
      *
      * @param Customer $cust The customer Object
      *
-     * @return bool
+     * @return true
      *
      * @throws
      */
@@ -566,7 +567,7 @@ class CustomerAggregator extends Customer
      *
      * @return Collection
      */
-    public static function withProbesForProtocol( int $protocol = 4, int $vlanid = null, array $includeCust = [], string $orderBy = 'name', int $limit = null ): Collection
+    public static function withProbesForProtocol( int $protocol = 4, ?int $vlanid = null, array $includeCust = [], string $orderBy = 'name', ?int $limit = null ): Collection
     {
         $enabled = $protocol === 4 ? 'v4_enabled' : 'v6_enabled';
 

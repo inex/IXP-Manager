@@ -85,6 +85,8 @@ class NetworkInfo extends Model
 
     /**
      * Get the vlan that own the network info
+     *
+     * @psalm-return BelongsTo<Vlan>
      */
     public function vlan(): BelongsTo
     {
@@ -97,43 +99,45 @@ class NetworkInfo extends Model
      *
      * For example (where `x` is the vlan ID):
      *
-     *     [x] => array(2) {
-     *       [4] => array(9) {
-     *         ["id"] => string(1) "1"
-     *           ["protocol"] => string(1) "4"
-     *           ["network"] => string(13) "193.242.111.0"
-     *           ["masklen"] => string(2) "25"
-     *           ["rs1address"] => string(13) "193.242.111.8"
-     *           ["rs2address"] => string(13) "193.242.111.9"
-     *           ["dnsfile"] => string(44) "/opt/bind/zones/reverse-vlan-10-ipv4.include"
-     *           ["Vlan"] => array(5) {
-     *             ["id"] => string(1) "2"
-     *             ["name"] => string(15) "Peering VLAN #1"
-     *             ["number"] => string(2) "10"
-     *             ["rcvrfname"] => string(0) ""
-     *             ["notes"] => string(0) ""
-     *           }
-     *       }
-     *       [6] => array(9) {
-     *         ["id"] => string(1) "2"
-     *           ["vlanid"] => string(1) "2"
-     *           ["protocol"] => string(1) "6"
-     *           ["network"] => string(16) "2001:07F8:0018::"
-     *           ["masklen"] => string(2) "64"
-     *           ["rs1address"] => string(14) "2001:7f8:18::8"
-     *           ["rs2address"] => string(14) "2001:7f8:18::9"
-     *           ["dnsfile"] => string(44) "/opt/bind/zones/reverse-vlan-10-ipv6.include"
-     *           ["Vlan"] => array(5) {
-     *             ["id"] => string(1) "2"
-     *             ["name"] => string(15) "Peering VLAN #1"
-     *             ["number"] => string(2) "10"
-     *             ["rcvrfname"] => string(0) ""
-     *             ["notes"] => string(0) ""
-     *           }
-     *         }
-     *     }
+     * [x] => array(2) {
+     * [4] => array(9) {
+     * ["id"] => string(1) "1"
+     * ["protocol"] => string(1) "4"
+     * ["network"] => string(13) "193.242.111.0"
+     * ["masklen"] => string(2) "25"
+     * ["rs1address"] => string(13) "193.242.111.8"
+     * ["rs2address"] => string(13) "193.242.111.9"
+     * ["dnsfile"] => string(44) "/opt/bind/zones/reverse-vlan-10-ipv4.include"
+     * ["Vlan"] => array(5) {
+     * ["id"] => string(1) "2"
+     * ["name"] => string(15) "Peering VLAN #1"
+     * ["number"] => string(2) "10"
+     * ["rcvrfname"] => string(0) ""
+     * ["notes"] => string(0) ""
+     * }
+     * }
+     * [6] => array(9) {
+     * ["id"] => string(1) "2"
+     * ["vlanid"] => string(1) "2"
+     * ["protocol"] => string(1) "6"
+     * ["network"] => string(16) "2001:07F8:0018::"
+     * ["masklen"] => string(2) "64"
+     * ["rs1address"] => string(14) "2001:7f8:18::8"
+     * ["rs2address"] => string(14) "2001:7f8:18::9"
+     * ["dnsfile"] => string(44) "/opt/bind/zones/reverse-vlan-10-ipv6.include"
+     * ["Vlan"] => array(5) {
+     * ["id"] => string(1) "2"
+     * ["name"] => string(15) "Peering VLAN #1"
+     * ["number"] => string(2) "10"
+     * ["rcvrfname"] => string(0) ""
+     * ["notes"] => string(0) ""
+     * }
+     * }
+     * }
      *
-     * @return array As described above
+     * @return array[] As described above
+     *
+     * @psalm-return array<array>
      */
     public static function vlanProtocol(): array
     {

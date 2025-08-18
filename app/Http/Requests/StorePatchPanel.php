@@ -58,7 +58,9 @@ class StorePatchPanel extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{name: 'required|string|max:255', colo_reference: 'required|string|max:255', cabinet_id: 'required|integer|exists:cabinet,id', cable_type: 'required|integer', connector_type: 'required|integer', installation_date: 'date', port_prefix: 'string|nullable', u_position: 'numeric|nullable', colo_pp_type: 'numeric', mounted_at: string, numberOfPorts: 'required|integer'}
      */
     public function rules(): array
     {

@@ -264,9 +264,9 @@ class VlanInterfaceAggregator extends VlanInterface
      * @param int $asn
      * @param int $proto
      *
-     * @return array Array of IP addresses [ '192.0.2.2', '192.0.2.23', ]
-     *
      * @throws
+     *
+     * @psalm-return list<mixed>
      */
     public static function getAllIPsForASN( Vlan $v, int $asn, int $proto ): array
     {

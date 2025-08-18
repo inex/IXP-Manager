@@ -86,6 +86,9 @@ class ContactGroup extends Model
         'limited_to'
     ];
 
+    /**
+     * @psalm-return BelongsToMany<Contact>
+     */
     public function contacts(): BelongsToMany
     {
         return $this->belongsToMany(Contact::class )->withPivot( 'contact_to_group', 'contact_group_id' );

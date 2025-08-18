@@ -60,9 +60,10 @@ class DiagnosticResultSet
      * Adds a diagnostic result to the result set.
      *
      * @param DiagnosticResult|DiagnosticResult[] $result The diagnostic result to add.
-     * @return DiagnosticResultSet This diagnostic result set.
+     *
+     * @return static This diagnostic result set.
      */
-    public function add( DiagnosticResult|array $result ): DiagnosticResultSet {
+    public function add( DiagnosticResult|array $result ): static {
 
         $this->results = array_merge(
             $this->results,
@@ -73,7 +74,7 @@ class DiagnosticResultSet
     }
 
 
-    public function addSubset(DiagnosticResultSet $subset) {
+    public function addSubset(DiagnosticResultSet $subset): void {
         $this->subsets[] = $subset;
     }
 

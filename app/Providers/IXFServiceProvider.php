@@ -63,6 +63,7 @@ class IXFServiceProvider extends ServiceProvider
      *
      * @return void
      */
+    #[\Override]
     public function register(): void
     {
         $this->app->singleton( IXF::class, function( $app ) {

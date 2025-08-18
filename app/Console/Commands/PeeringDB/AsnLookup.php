@@ -25,8 +25,10 @@ class AsnLookup extends Command
      * Execute the console command.
      *
      * @return int
+     *
+     * @psalm-return -1|0
      */
-    public function handle()
+    public function handle(): int
     {
         // are we set up for auth?
         if( !config('ixp_api.peeringDB.api-key') ) {

@@ -302,7 +302,7 @@ debconf-set-selections <<< "mysql-server mysql-server/root_password_again passwo
 ### Packages
 ##################################################################
 
-# We need PHP 8.3 for IXP Manager v7 and we need to get this from
+# We need PHP 8.4 for IXP Manager v7 and we need to get this from
 # Ondrej's super PPA:
 
 log_break
@@ -314,11 +314,11 @@ echo -n "Installing PHP, Apache, MySQL, etc. Please be very patient..."
 # Prevent mrtg from prompting
 echo mrtg mrtg/conf_mods boolean true | debconf-set-selections
 
-log_break && apt install -qy apache2 php8.3 php8.3-intl php8.3-rrd php8.3-cgi php8.3-cli \
-    php8.3-snmp php8.3-curl  php8.3-memcached libapache2-mod-php8.3 mysql-server         \
-    mysql-client php8.3-mysql memcached snmp php8.3-mbstring php8.3-xml php8.3-gd        \
-    php8.3-bcmath bgpq3 php8.3-memcache unzip php8.3-zip git php8.3-yaml                 \
-    php8.3-ds libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl     \
+log_break && apt install -qy apache2 php8.4 php8.4-intl php8.4-rrd php8.4-cgi php8.4-cli \
+    php8.4-snmp php8.4-curl  php8.4-memcached libapache2-mod-php8.4 mysql-server         \
+    mysql-client php8.4-mysql memcached snmp php8.4-mbstring php8.4-xml php8.4-gd        \
+    php8.4-bcmath bgpq3 php8.4-memcache unzip php8.4-zip git php8.4-yaml                 \
+    php8.4-ds libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl     \
     libnetaddr-ip-perl rrdtool librrds-perl curl                                         \
         &>> /tmp/ixp-manager-install.log
 echo '[done]'
@@ -696,7 +696,6 @@ IXP_IRRDB_BGPQ3_PATH=/usr/bin/bgpq3
 
 END_ENV
 
-chown www-data: $IXPROOT/.env
 log_break && cat $IXPROOT/.env &>> /tmp/ixp-manager-install.log
 
 echo '[done]'
@@ -828,7 +827,7 @@ END_APACHE
 
 log_break && cat /etc/apache2/sites-available/000-default.conf &>> /tmp/ixp-manager-install.log
 a2dismod mpm_worker mpm_event &>> /tmp/ixp-manager-install.log
-a2enmod rewrite php8.3 &>> /tmp/ixp-manager-install.log
+a2enmod rewrite php8.4 &>> /tmp/ixp-manager-install.log
 
 service apache2 restart &>> /tmp/ixp-manager-install.log
 echo '[done]'
@@ -839,7 +838,7 @@ echo '[done]'
 
 chown -R root: ${IXPROOT}
 chown -R www-data: ${IXPROOT}/storage ${IXPROOT}/bootstrap/cache \
-    ${IXPROOT}/vendor ${IXPROOT}/public/logos   &>> /tmp/ixp-manager-install.log
+    ${IXPROOT}/vendor ${IXPROOT}/public/logos $IXPROOT/.env &>> /tmp/ixp-manager-install.log
 chmod -R ug+rwX,o+rX ${IXPROOT} &>> /tmp/ixp-manager-install.log
 
 # favicon

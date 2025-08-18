@@ -68,6 +68,7 @@ class VlanController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
+    #[\Override]
     public function feInit(): void
     {
         $this->feParams         = (object)[
@@ -129,6 +130,7 @@ class VlanController extends EloquentController
      *
      * @return void
      */
+    #[\Override]
     protected static function additionalRoutes( string $route_prefix ): void
     {
         Route::group( [ 'prefix' => $route_prefix ], static function() use ( $route_prefix ) {
@@ -146,6 +148,7 @@ class VlanController extends EloquentController
      *
      * @return array
      */
+    #[\Override]
     protected function listGetData( ?int $id = null ): array
     {
         $param = $this->feParams;
@@ -172,8 +175,11 @@ class VlanController extends EloquentController
     /**
      * Display the form to create an object
      *
-     * @return array
+     * @return (Vlan|mixed)[]
+     *
+     * @psalm-return array{object: Vlan, infrastructure: mixed}
      */
+    #[\Override]
     protected function createPrepareForm(): array
     {
         return [
@@ -187,8 +193,9 @@ class VlanController extends EloquentController
      *
      * @param Request $r
      *
-     * @return bool|RedirectResponse
+     * @return RedirectResponse|true
      */
+    #[\Override]
     public function doStore( Request $r ): bool|RedirectResponse
     {
         $this->checkForm( $r );
@@ -205,7 +212,10 @@ class VlanController extends EloquentController
      * @param null $id ID of the row to edit
      *
      * @return array
+     *
+     * @psalm-return array{object: mixed, infrastructure: mixed}
      */
+    #[\Override]
     protected function editPrepareForm( $id = null ): array
     {
         $this->object = Vlan::findOrFail( $id );
@@ -234,8 +244,9 @@ class VlanController extends EloquentController
      * @param Request   $r
      * @param int       $id
      *
-     * @return bool|RedirectResponse
+     * @return RedirectResponse|true
      */
+    #[\Override]
     public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = Vlan::findOrFail( $id );
@@ -251,6 +262,7 @@ class VlanController extends EloquentController
     /**
      * @inheritdoc
      */
+    #[\Override]
     protected function preDelete(): bool
     {
         $okay = true;
@@ -284,7 +296,7 @@ class VlanController extends EloquentController
      *
      * @return View
      */
-    public function listPrivate( Infrastructure $infra = null ): View
+    public function listPrivate( ?Infrastructure $infra = null ): View
     {
         $this->data[ 'rows' ] = Vlan::where( 'private', 1 )
             ->when( $infra, function( $q, $infra ) {
@@ -322,6 +334,7 @@ class VlanController extends EloquentController
      *
      * @param Request $r
      */
+    #[\Override]
     public function checkForm( Request $r ): void
     {
         $r->validate( [
@@ -340,7 +353,7 @@ class VlanController extends EloquentController
      *
      * @return bool
      */
-    private function checkIsDuplicate( Request $r, int $objectid = null ): bool
+    private function checkIsDuplicate( Request $r, ?int $objectid = null ): bool
     {
         $exist = Vlan::where( 'infrastructureid', $r->infrastructureid )
             ->where( 'config_name', $r->config_name )

@@ -58,7 +58,7 @@ class CustomerDiagnosticSuite extends DiagnosticSuite
     /**
      * Run the diagnostics suite
      */
-    public function run(): CustomerDiagnosticSuite
+    public function run(): static
     {
         // ordering here will determine order on view
         $this->results->add( $this->customerType( $this->customer ) );

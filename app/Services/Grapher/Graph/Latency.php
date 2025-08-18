@@ -129,10 +129,11 @@ class Latency extends Graph
      *
      * @param string $value
      *
-     * @return Graph Fluid interface
+     * @return static Fluid interface
      *
      * @throws ParameterException
      */
+    #[\Override]
     public function setPeriod( string $value, ?Carbon $start = null, ?Carbon $end = null ): Graph
     {
         if( !isset( self::PERIODS[ $value ] ) ) {
@@ -158,7 +159,8 @@ class Latency extends Graph
      *
      * @return string
      */
-    public static function resolvePeriod( $period = null ): string
+    #[\Override]
+    public static function resolvePeriod( ?string $period = null ): string
     {
         return self::PERIODS[ $period ] ?? 'Unknown';
     }
@@ -175,7 +177,8 @@ class Latency extends Graph
      *
      * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterPeriod( string $value = null, string $default = null, $withExtended = false ): string|null
+    #[\Override]
+    public static function processParameterPeriod( ?string $value = null, ?string $default = null, $withExtended = false ): string|null
     {
         if( $withExtended && !isset( self::PERIODS_EXTENDED[ $value ] ) ) {
             $value = $default ?? self::PERIOD_DEFAULT;
@@ -201,6 +204,7 @@ class Latency extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function name(): string
     {
         return sprintf( "Latency Graph :: %s :: %s :: %s",
@@ -217,6 +221,7 @@ class Latency extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function identifier(): string
     {
         return sprintf( "latency-vli%d-%s", $this->vli()->id, $this->protocol() );
@@ -252,6 +257,7 @@ class Latency extends Graph
      *
      * @throws AuthorizationException
      */
+    #[\Override]
     public function authorise(): bool
     {
         /** @var User $us */
@@ -297,6 +303,7 @@ class Latency extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function url( array $overrides = [] ): string
     {
         return parent::url( $overrides ) . sprintf("&id=%d",
@@ -309,8 +316,11 @@ class Latency extends Graph
      *
      * Extends base function
      *
-     * @return array $params
+     * @return (Carbon|int|mixed|null)[]
+     *
+     * @psalm-return array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: Carbon|null, period_end?: Carbon|null, id: int}
      */
+    #[\Override]
     public function getParamsAsArray(): array
     {
         $p          = parent::getParamsAsArray();

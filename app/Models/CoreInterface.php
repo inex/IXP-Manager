@@ -59,6 +59,8 @@ class CoreInterface extends Model
 
     /**
      * Get the physical interface associated with the core interface.
+     *
+     * @psalm-return BelongsTo<PhysicalInterface>
      */
     public function physicalInterface(): BelongsTo
     {
@@ -67,6 +69,8 @@ class CoreInterface extends Model
 
     /**
      * Get the corelink associated with the core interface side A.
+     *
+     * @psalm-return HasOne<CoreLink>
      */
     public function coreLinkSideA(): HasOne
     {
@@ -75,6 +79,8 @@ class CoreInterface extends Model
 
     /**
      * Get the corelink associated with the core interface side B.
+     *
+     * @psalm-return HasOne<CoreLink>
      */
     public function coreLinkSideB(): HasOne
     {
@@ -83,10 +89,8 @@ class CoreInterface extends Model
 
     /**
      * Check which side has a core link linked
-     *
-     * @return CoreLink
      */
-    public function coreLink(): CoreLink
+    public function coreLink(): CoreLink|null
     {
         if( $this->coreLinkSideA()->exists() ) {
             return $this->coreLinkSideA;

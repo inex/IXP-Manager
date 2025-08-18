@@ -78,6 +78,8 @@ class CustomerEquipment extends Model
 
     /**
      * Get the cabinet that own the customer equipment
+     *
+     * @psalm-return BelongsTo<Cabinet>
      */
     public function cabinet(): BelongsTo
     {

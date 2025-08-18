@@ -136,7 +136,7 @@ class Grapher extends Controller
         return $this->request;
     }
 
-    private function simpleResponse( $request ): Response
+    private function simpleResponse( Request $request ): Response
     {
         return (new Response( call_user_func( [ $this->graph(), $this->graph()->type() ] ) ) )
               ->header('Content-Type', Graph::CONTENT_TYPES[ $this->graph()->type() ] )

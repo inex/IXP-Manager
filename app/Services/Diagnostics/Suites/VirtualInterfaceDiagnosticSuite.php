@@ -67,7 +67,7 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
     /**
      * Run the diagnostics suite
      */
-    public function run(): VirtualInterfaceDiagnosticSuite
+    public function run(): static
     {
         $this->results->add( $this->portType( $this->vi ) );
         $this->results->add( $this->sameSwitch( $this->vi ) );

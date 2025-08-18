@@ -91,6 +91,8 @@ class LoginController extends Controller
      * Get the login username to be used by the controller.
      *
      * @return string
+     *
+     * @psalm-return 'username'
      */
     public function username(): string
     {
@@ -136,8 +138,7 @@ class LoginController extends Controller
      * @param Request       $r
      * @param User          $user
      *
-     * @return Response|void
-     *
+     * @return RedirectResponse|null
      */
     protected function authenticated( Request $r, User $user )
     {
@@ -176,10 +177,8 @@ class LoginController extends Controller
      *
      * @param Request       $r
      * @param string|null   $msg
-     *
-     * @return Response
      */
-    protected function sendFailedLoginResponse( Request $r, $msg = null ) : Response
+    protected function sendFailedLoginResponse( Request $r, $msg = null ) : RedirectResponse
     {
         AlertContainer::push( $msg ?? "Invalid username or password. Please try again." , Alert::DANGER );
         return redirect()->back()->withInput( $r->only('username') );
@@ -188,12 +187,10 @@ class LoginController extends Controller
     /**
      * Log the user out of the application.
      *
-     * @param   Request      $r
-     * @param   array|null   $customMessage Custom message to display
-     *
-     * @return Response
+     * @param Request      $r
+     * @param array|null   $customMessage Custom message to display
      */
-    public function logout( Request $r, $customMessage = null ) : Response
+    public function logout( Request $r, $customMessage = null ) : RedirectResponse
     {
         $this->guard()->logout();
         $r->session()->invalidate();
@@ -228,52 +225,51 @@ class LoginController extends Controller
      * Sample response:
      *
      * User {#1139 ▼
-     *  +accessTokenResponseBody: array:5 [▼
-     *    "access_token" => "xxxx"
-     *    "token_type" => "Bearer"
-     *    "expires_in" => 36000
-     *    "refresh_token" => "xxxx"
-     *    "scope" => "profile email networks"
-     *  ]
-     *  +token: "xxx"
-     *  +refreshToken: "xxx"
-     *  +expiresIn: 36000
-     *  +id: null
-     *  +nickname: null
-     *  +name: "Joe Bloggs"
-     *  +email: "ixpmanager@example.com"
-     *  +avatar: null
-     *  +user: array:8 [▼
-     *    "family_name" => "Bloggs"
-     *    "email" => "ixpmanager@example.com"
-     *    "name" => "Joe Bloggs"
-     *    "verified_user" => true
-     *    "verified_email" => true
-     *    "networks" => array:2 [▼
-     *      0 => array:4 [▼
-     *        "perms" => 1
-     *        "id" => 888
-     *        "name" => "INEX Route Collectors"
-     *        "asn" => 65501
-     *      ]
-     *      1 => array:4 [▼
-     *        "perms" => 1
-     *        "id" => 777
-     *        "name" => "INEX Route Servers"
-     *        "asn" => 65500
-     *      ]
-     *    ]
-     *    "id" => 666
-     *    "given_name" => "Joe"
-     *  ]
+     * +accessTokenResponseBody: array:5 [▼
+     * "access_token" => "xxxx"
+     * "token_type" => "Bearer"
+     * "expires_in" => 36000
+     * "refresh_token" => "xxxx"
+     * "scope" => "profile email networks"
+     * ]
+     * +token: "xxx"
+     * +refreshToken: "xxx"
+     * +expiresIn: 36000
+     * +id: null
+     * +nickname: null
+     * +name: "Joe Bloggs"
+     * +email: "ixpmanager@example.com"
+     * +avatar: null
+     * +user: array:8 [▼
+     * "family_name" => "Bloggs"
+     * "email" => "ixpmanager@example.com"
+     * "name" => "Joe Bloggs"
+     * "verified_user" => true
+     * "verified_email" => true
+     * "networks" => array:2 [▼
+     * 0 => array:4 [▼
+     * "perms" => 1
+     * "id" => 888
+     * "name" => "INEX Route Collectors"
+     * "asn" => 65501
+     * ]
+     * 1 => array:4 [▼
+     * "perms" => 1
+     * "id" => 777
+     * "name" => "INEX Route Servers"
+     * "asn" => 65500
+     * ]
+     * ]
+     * "id" => 666
+     * "given_name" => "Joe"
+     * ]
      * }
-     * @param Request   $r
      *
-     * @return RedirectResponse|Redirector|Response
+     * @param Request   $r
      *
      * @throws
      */
-    public function peeringdbHandleProviderCallback( Request $r )
+    public function peeringdbHandleProviderCallback( Request $r ): RedirectResponse
     {
         if( Auth::check() ) {
             AlertContainer::push( "You are already logged in - Login via PeeringDB aborted." , Alert::WARNING );

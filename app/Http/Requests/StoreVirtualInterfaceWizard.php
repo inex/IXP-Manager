@@ -60,7 +60,9 @@ class StoreVirtualInterfaceWizard extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return ((IdnValidate|string)[]|string)[]
+     *
+     * @psalm-return array{custid: 'required|integer|exists:cust,id', vlanid: 'required|integer|exists:vlan,id', trunk: 'boolean', switch: 'required|integer|exists:switch,id', switchportid: 'required|integer|exists:switchport,id', status: string, speed: string, duplex: string, maxbgpprefix: 'integer|nullable', mcastenabled: 'boolean', rsclient: 'boolean', irrdbfilter: 'boolean', rsmorespecifics: 'boolean', as112client: 'boolean', ipv4enabled: 'boolean', ipv4address: 'ipv4|nullable'|'ipv4|required', ipv4hostname: list{'string', 'max:255', 'nullable'|'required', IdnValidate}, ipv4bgpmd5secret: 'string|max:255|nullable', ipv4canping: 'boolean', ipv4monitorrcbgp: 'boolean', ipv6enabled: 'boolean', ipv6address: 'ipv6|nullable'|'ipv6|required', ipv6hostname: list{'string', 'max:255', 'nullable'|'required', IdnValidate}, ipv6bgpmd5secret: 'string|max:255|nullable', ipv6canping: 'boolean', ipv6monitorrcbgp: 'boolean'}
      */
     public function rules(): array
     {

@@ -221,11 +221,11 @@ class LookingGlass extends Controller
      * @param string $handle
      * @param string $table
      *
-     * @return RedirectResponse|Redirector|View
+     * @return RedirectResponse|View
      *
      * @throws
      */
-    public function routesForTable( string $handle, string $table )
+    public function routesForTable( string $handle, string $table ): RedirectResponse|View
     {
         $tooManyRoutesMsg = "The routing table <code>{$table}</code> has too many routes to display in the web interface. Please use "
             . "<a href=\"" . route( 'lg::route-search', [ 'handle' => $this->lg()->router()->handle ] )
@@ -256,11 +256,9 @@ class LookingGlass extends Controller
      * @param string $handle
      * @param string $protocol
      *
-     * @return View|RedirectResponse
-     *
      * @throws
      */
-    public function routesForProtocol( string $handle, string $protocol )
+    public function routesForProtocol( string $handle, string $protocol ): RedirectResponse|View
     {
         try{
             // get bgp protocol summary

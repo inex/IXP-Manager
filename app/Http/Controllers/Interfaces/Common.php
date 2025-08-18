@@ -121,7 +121,7 @@ abstract class Common extends Controller
      *
      * @throws
      */
-    public function processFanoutPhysicalInterface( $r, PhysicalInterface $pi, VirtualInterface $vi ): bool
+    public function processFanoutPhysicalInterface( \IXP\Http\Requests\StorePhysicalInterface $r, PhysicalInterface $pi, VirtualInterface $vi ): bool
     {
         if( !$r->fanout ) {
             $this->removeRelatedInterface( $pi );
@@ -225,6 +225,8 @@ abstract class Common extends Controller
      * @return int
      *
      * @throws
+     *
+     * @psalm-return int<1, 999>
      */
     public function assignChannelGroup( VirtualInterface $vi ): int
     {
@@ -337,16 +339,16 @@ abstract class Common extends Controller
     /**
      * Build everything that a Core Bundle need (core link, core Interface etc)
      *
-     * @param   CoreBundle  $coreBundle Core bundle object
-     * @param   Request     $request instance of the current HTTP request
-     * @param   array       $virtualInterfaces array of the Virtual interfaces ( side A and B ) linked to the core bundle
-     * @param   bool        $edit Are we editing the core bundle ?
+     * @param CoreBundle  $coreBundle Core bundle object
+     * @param Request     $request instance of the current HTTP request
+     * @param array       $virtualInterfaces array of the Virtual interfaces ( side A and B ) linked to the core bundle
+     * @param bool        $edit Are we editing the core bundle ?
      *
-     * @return RedirectResponse|bool
+     * @return RedirectResponse|true
      *
      * @throws
      */
-    public function buildCorelink( CoreBundle $coreBundle, Request $request, array $virtualInterfaces, bool $edit )
+    public function buildCorelink( CoreBundle $coreBundle, Request $request, array $virtualInterfaces, bool $edit ): RedirectResponse|true
     {
         foreach( $request->input( "cl-details" ) as $coreLinkDetail ) {
             $coreLink = new CoreLink;

@@ -60,7 +60,9 @@ class StoreRouter extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{handle: string, pair_id: string, vlan_id: 'required|integer|exists:vlan,id', protocol: string, type: string, name: 'required|string|max:255', shortname: 'required|string|max:30', router_id: 'required|ipv4', peering_ip: string, asn: 'required|integer', software: string, software_version: 'nullable|string|max:255', operating_system: 'nullable|string|max:255', operating_system_version: 'nullable|string|max:255', mgmt_host: 'required|string|max:255', api_type: string, api: ''|'url|required|regex:/.*[^\/]$/', lg_access: string}
      */
     public function rules(): array
     {
@@ -91,8 +93,11 @@ class StoreRouter extends FormRequest
     /**
      * Get the error messages for the defined validation rules.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{'api.regex': 'The API URL must not end with a trailing slash', 'pair_id.not_in': 'Cannot pair a router with itself'}
      */
+    #[\Override]
     public function messages(): array
     {
         return [

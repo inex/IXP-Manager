@@ -73,6 +73,7 @@ class DiagnosticsServiceProvider extends ServiceProvider
      *
      * @throws
      */
+    #[\Override]
     public function register()
     {
         $this->app->singleton(
@@ -84,8 +85,11 @@ class DiagnosticsServiceProvider extends ServiceProvider
     /**
      * Get the services provided by the provider.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return list{Diagnostics::class}
      */
+    #[\Override]
     public function provides(): array
     {
         return [ Diagnostics::class ];

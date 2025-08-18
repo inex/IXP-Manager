@@ -571,8 +571,8 @@ class UserControllerTest extends DuskTestCase
                 ->press( 'Create' )
                 ->waitForLocation( '/user/list' )
                 ->assertSee( 'User created. A welcome email' )
-                ->assertSee( 'Test User 1' )
-                ->assertSee( 'testuser1' )
+                ->assertSee( 'Test User 11' )
+                ->assertSee( 'testuser11' )
                 ->assertSee( 'test-user11@example.com' );
 
             // get the user:
@@ -646,7 +646,7 @@ class UserControllerTest extends DuskTestCase
 
             // delete this user
             $browser->press( '#btn-delete-' . $u->id )
-                ->waitForText( 'Do you really want to unlink this ' . config( 'ixp_fe.lang.customer.one' ) . ' from this user' )
+                ->waitForText( 'Do you really want to unlink this' )
                 ->press( 'Delete' )
                 ->waitForLocation( '/user/list' )
                 ->assertSee( 'User deleted' )

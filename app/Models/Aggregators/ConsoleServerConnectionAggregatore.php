@@ -78,7 +78,7 @@ class ConsoleServerConnectionAggregatore extends ConsoleServerConnection
      *
      * @return array
      */
-    public static function getFeList( stdClass $feParams, int $id = null, int $port = null ): array
+    public static function getFeList( stdClass $feParams, ?int $id = null, ?int $port = null ): array
     {
         return self::select(
             [

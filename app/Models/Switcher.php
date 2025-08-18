@@ -204,6 +204,8 @@ class Switcher extends Model
 
     /**
      * Get the infrastructure that own the switcher
+     *
+     * @psalm-return BelongsTo<Infrastructure>
      */
     public function infrastructureModel(): BelongsTo
     {
@@ -212,6 +214,8 @@ class Switcher extends Model
 
     /**
      * Get the cabinet that own the switcher
+     *
+     * @psalm-return BelongsTo<Cabinet>
      */
     public function cabinet(): BelongsTo
     {
@@ -220,6 +224,8 @@ class Switcher extends Model
 
     /**
      * Get the vendor that own the switcher
+     *
+     * @psalm-return BelongsTo<Vendor>
      */
     public function vendor(): BelongsTo
     {
@@ -228,6 +234,8 @@ class Switcher extends Model
 
     /**
      * Get the switch ports for the switcher
+     *
+     * @psalm-return HasMany<SwitchPort>
      */
     public function switchPorts(): HasMany
     {
@@ -236,6 +244,8 @@ class Switcher extends Model
 
     /**
      * Get the console server connections for the switcher
+     *
+     * @psalm-return HasMany<ConsoleServerConnection>
      */
     public function consoleServerConnections(): HasMany
     {
@@ -281,12 +291,12 @@ class Switcher extends Model
      * @param SNMP  $host       An instance of \OSS_SNMP\SNMP for this switch
      * @param bool  $logger     An instance of the logger or false
      *
-     * @return Switcher For fluent interfaces
+     * @return static For fluent interfaces
      */
-    public function snmpPoll( $host, bool $logger = false, bool $nosave = false ): Switcher
+    public function snmpPoll( $host, bool $logger = false, bool $nosave = false ): static
     {
         // utility to format dates
-        $formatDate = function( $d ) {
+        $formatDate = function( $d ): string {
             return $d instanceof DateTime ? $d->format( 'Y-m-d H:i:s' ) : 'Unknown';
         };
 
@@ -356,13 +366,13 @@ class Switcher extends Model
      * beginning -1 if the port only exists in the database). The contents of this
      * associative array is:
      *
-     *     "port"   => \Models\SwitchPort object
-     *     "bullet" =>
-     *         - false for existing ports
-     *         - "new" for newly found ports
-     *         - "db" for ports that exist in the database only
+     * "port"   => \Models\SwitchPort object
+     * "bullet" =>
+     * - false for existing ports
+     * - "new" for newly found ports
+     * - "db" for ports that exist in the database only
      *
-     * **Note:** It is assumed that the Doctrine2 Entity Manager is available in the
+     * Note:** It is assumed that the Doctrine2 Entity Manager is available in the
      * Zend registry as ``d2em`` in this function.
      *
      * @param SNMP $host An instance of \OSS_SNMP\SNMP for this switch
@@ -370,11 +380,9 @@ class Switcher extends Model
      * @param bool $result
      * @param bool $nosave Do we need to save the object in DB ?
      *
-     * @return Switcher For fluent interfaces
-     *
      * @throws
      */
-    public function snmpPollSwitchPorts( $host, $logger = false, bool|array &$result = false, bool $nosave = false ): Switcher
+    public function snmpPollSwitchPorts( SNMP $host, bool $logger = false, bool|array &$result = false, bool $nosave = false ): static
     {
         // clone the ports currently known to this switch as we'll be playing with this array
         $existingPorts = clone $this->switchPorts;
@@ -456,7 +464,10 @@ class Switcher extends Model
 
     /**
      * Return an array of core bundles
+     *
      * @return CoreBundle[]
+     *
+     * @psalm-return list<IXP\Models\CoreBundle>
      */
     public function getCoreBundles(): array
     {
@@ -488,7 +499,9 @@ class Switcher extends Model
      *
      * Checks for recent reboots and missed snmp polling.
      *
-     * @return array
+     * @return (bool|null|string|string[])[]
+     *
+     * @psalm-return array{name: null|string, status: bool, msgs: list{0: string, 1?: 'CRITICAL: rebooted within the last hour (probably).'|'Switch does not support reboot checks.', 2?: 'Switch does not support reboot checks.'}}
      */
     public function status(): array
     {

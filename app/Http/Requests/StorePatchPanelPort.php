@@ -58,7 +58,9 @@ class StorePatchPanelPort extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{switch_port_id: 'nullable|integer|exists:switchport,id', customer_id: 'nullable|integer|exists:cust,id', partner_port: 'nullable|integer|exists:patch_panel_port,id'|'required|integer|exists:patch_panel_port,id', number: 'nullable|string|max:255'|'required|string|max:255', patch_panel: 'nullable'|'required', description: 'nullable|string|max:255', colo_circuit_ref: 'nullable|string|max:255', colo_billing_ref: 'nullable|string|max:255', ticket_ref: 'nullable|string|max:255', state: string, chargeable: string, assigned_at: 'nullable|date', connected_at: 'nullable|date', cease_requested_at: 'nullable|date', ceased_at: 'nullable|date', last_state_change_at: 'nullable|date'}
      */
     public function rules(): array
     {

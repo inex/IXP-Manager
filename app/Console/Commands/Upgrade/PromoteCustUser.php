@@ -59,12 +59,11 @@ class PromoteCustUser extends IXPCommand
      *
      * Delete data from the table 'User'
      *
-     * @return mixed
-     *
      * @throws
      *
+     * @psalm-return 0|1
      */
-    public function handle()
+    public function handle(): int
     {
         echo "\n\n";
         $this->warn( "ONLY RUN ONCE AND ONLY WHEN UPGRADING TO IXP Manager v5.0.0 from v4.9.x" );

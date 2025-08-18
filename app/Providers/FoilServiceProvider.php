@@ -50,6 +50,7 @@ class FoilServiceProvider extends ServiceProvider
      *
      * @return void
      */
+    #[\Override]
     public function register(): void
     {
         $app = $this->app;

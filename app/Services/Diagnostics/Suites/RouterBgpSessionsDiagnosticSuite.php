@@ -76,9 +76,10 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
 
     /**
      * Run the diagnostics suite
+     *
      * @throws BindingResolutionException
      */
-    public function run(): RouterBgpSessionsDiagnosticSuite
+    public function run(): static
     {
         foreach( $this->routers as $router ) {
 

@@ -60,6 +60,7 @@ class LoginHistoryController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
+    #[\Override]
     public function feInit(): void
     {
         /** @var User $us */
@@ -110,6 +111,7 @@ class LoginHistoryController extends EloquentController
     /**
      * @inheritdoc
      */
+    #[\Override]
     public static function routes(): void
     {
         Route::group( [ 'prefix' => 'login-history' ], function() {
@@ -125,6 +127,7 @@ class LoginHistoryController extends EloquentController
      *
      * @return array
      */
+    #[\Override]
     protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
@@ -153,6 +156,7 @@ class LoginHistoryController extends EloquentController
      *
      * @return View
      */
+    #[\Override]
     public function view( Request $r, int $id ): View
     {
         $u = User::findOrFail( $id );

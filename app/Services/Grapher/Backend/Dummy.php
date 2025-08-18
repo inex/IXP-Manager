@@ -53,6 +53,7 @@ class Dummy extends GrapherBackend implements GrapherBackendContract
      *
      * @return string
      */
+    #[\Override]
     public function name(): string
     {
         return 'dummy';
@@ -65,6 +66,7 @@ class Dummy extends GrapherBackend implements GrapherBackendContract
      *
      * @return bool
      */
+    #[\Override]
     public function isConfigurationRequired(): bool
     {
         return false;
@@ -75,8 +77,9 @@ class Dummy extends GrapherBackend implements GrapherBackendContract
      *
      * @see Dummy::isMonolithicConfigurationSupported() for an explanation
      *
-     * @return bool
+     * @return false
      */
+    #[\Override]
     public function isMonolithicConfigurationSupported(): bool
     {
         return false;
@@ -87,8 +90,9 @@ class Dummy extends GrapherBackend implements GrapherBackendContract
      *
      * @see Dummy::isMonolithicConfigurationSupported() for an explanation
      *
-     * @return bool
+     * @return false
      */
+    #[\Override]
     public function isMultiFileConfigurationSupported(): bool
     {
         return false;
@@ -103,7 +107,10 @@ class Dummy extends GrapherBackend implements GrapherBackendContract
      * @param array             $options
      *
      * @return array
+     *
+     * @psalm-return array<never, never>
      */
+    #[\Override]
     public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC, array $options = [] ): array
     {
         return [];
@@ -114,8 +121,11 @@ class Dummy extends GrapherBackend implements GrapherBackendContract
      *
      * {inheritDoc}
      *
-     * @return array
+     * @return string[][][]
+     *
+     * @psalm-return array{ixp: array{protocols: array{all: 'all', ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts', errs: 'errs', discs: 'discs', bcasts: 'bcasts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year'}, types: array<string, string>}, infrastructure: array{protocols: array{all: 'all', ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts', errs: 'errs', discs: 'discs', bcasts: 'bcasts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year'}, types: array<string, string>}, vlan: array{protocols: array{all: 'all', ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts', errs: 'errs', discs: 'discs', bcasts: 'bcasts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year'}, types: array<string, string>}, trunk: array{protocols: array{all: 'all', ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts', errs: 'errs', discs: 'discs', bcasts: 'bcasts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year'}, types: array<string, string>}, switcher: array{protocols: array{all: 'all', ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts', errs: 'errs', discs: 'discs', bcasts: 'bcasts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year'}, types: array<string, string>}, physicalinterface: array{protocols: array{all: 'all', ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts', errs: 'errs', discs: 'discs', bcasts: 'bcasts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year'}, types: array<string, string>}, virtualinterface: array{protocols: array{all: 'all', ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts', errs: 'errs', discs: 'discs', bcasts: 'bcasts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year'}, types: array<string, string>}, customer: array{protocols: array{all: 'all', ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts', errs: 'errs', discs: 'discs', bcasts: 'bcasts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year'}, types: array<string, string>}, vlaninterface: array{protocols: array{all: 'all', ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts', errs: 'errs', discs: 'discs', bcasts: 'bcasts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year'}, types: array<string, string>}, latency: array{protocols: array{ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts', errs: 'errs', discs: 'discs', bcasts: 'bcasts'}, periods: array{3hours: '3hours', 30hours: '30hours', 10days: '10days', 1year: '1year'}, types: array{png: 'png'}}, p2p: array{protocols: array{all: 'all', ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts', errs: 'errs', discs: 'discs', bcasts: 'bcasts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year'}, types: array<string, string>}}
      */
+    #[\Override]
     public static function supports(): array
     {
         return [
@@ -198,7 +208,10 @@ class Dummy extends GrapherBackend implements GrapherBackendContract
      * @return array
      *
      * @throws
+     *
+     * @psalm-return array<int<0, max>, mixed>
      */
+    #[\Override]
     public function data( Graph $graph ): array
     {
         $dummy = new DummyFile( $this->resolveFilePath( $graph, 'log' ) );
@@ -214,6 +227,7 @@ class Dummy extends GrapherBackend implements GrapherBackendContract
      *
      * @return false|string
      */
+    #[\Override]
     public function png( Graph $graph ): false|string
     {
         return @file_get_contents( $this->resolveFilePath( $graph, 'png' ) );
@@ -225,8 +239,12 @@ class Dummy extends GrapherBackend implements GrapherBackendContract
      * {inheritDoc}
      *
      * @param Graph $graph
-     * @return false|string
+     *
+     * @return string
+     *
+     * @psalm-return ''
      */
+    #[\Override]
     public function rrd( Graph $graph ): false|string
     {
         return '';
@@ -243,6 +261,7 @@ class Dummy extends GrapherBackend implements GrapherBackendContract
      *
      * @throws CannotHandleRequestException
      */
+    #[\Override]
     public function dataPath( Graph $graph ): string
     {
         return $this->resolveFilePath( $graph, 'log' );
@@ -258,8 +277,10 @@ class Dummy extends GrapherBackend implements GrapherBackendContract
      * @return string
      *
      * @throws
+     *
+     * @psalm-param 'log'|'png' $type
      */
-    private function resolveFilePath( Graph $graph, $type ): string
+    private function resolveFilePath( Graph $graph, string $type ): string
     {
         $config = config('grapher.backends.dummy');
 

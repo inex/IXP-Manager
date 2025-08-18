@@ -28,7 +28,7 @@ use IXP\Models\AtlasMeasurement as AtlasMeasurementModel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 
-class MeasurementComplete
+final class MeasurementComplete
 {
     use Dispatchable, SerializesModels;
 

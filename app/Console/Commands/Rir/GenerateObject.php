@@ -63,11 +63,9 @@ class GenerateObject extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
-     *
      * @throws
      */
-    public function handle()
+    public function handle(): int
     {
         $gen = new RirGenerator( $this->argument ('object' ) );
 
@@ -104,13 +102,10 @@ class GenerateObject extends Command
     }
 
     /**
-     *
      * @param string $w
      * @param string $e
-     *
-     * @return string|null
      */
-    private function checkEmail( string $w, string $e ): ?string
+    private function checkEmail( string $w, string $e ): string
     {
         if( filter_var( $e, FILTER_VALIDATE_EMAIL ) ) {
             return $e;

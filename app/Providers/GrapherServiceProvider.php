@@ -110,6 +110,7 @@ class GrapherServiceProvider extends ServiceProvider
      *
      * @throws
      */
+    #[\Override]
     public function register()
     {
         // make sure the config is okay:
@@ -130,8 +131,11 @@ class GrapherServiceProvider extends ServiceProvider
     /**
      * Get the services provided by the provider.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return list{Grapher::class}
      */
+    #[\Override]
     public function provides(): array
     {
         return [ Grapher::class ];

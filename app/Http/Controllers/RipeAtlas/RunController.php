@@ -90,7 +90,10 @@ class RunController extends Eloquent2Frontend
 
     /**
      * This function sets up the frontend controller
+     *
+     * @return void
      */
+    #[\Override]
     public function feInit()
     {
         $this->feParams         = (object)[
@@ -136,6 +139,7 @@ class RunController extends Eloquent2Frontend
      *
      * @return void
      */
+    #[\Override]
     protected static function additionalRoutes( string $route_prefix ): void
     {
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
@@ -151,6 +155,7 @@ class RunController extends Eloquent2Frontend
      *
      * @return array
      */
+    #[\Override]
     protected function listGetData( $id = null ): array
     {
         $feParams = $this->feParams;
@@ -176,8 +181,11 @@ class RunController extends Eloquent2Frontend
     /**
      * Display the form to create an object
      *
-     * @return array
+     * @return (\Illuminate\Database\Eloquent\Collection|null|true)[]
+     *
+     * @psalm-return array{object: null, vlans: \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model>, preAddForm: true}
      */
+    #[\Override]
     protected function createPrepareForm(): array
     {
         Former::populate( [
@@ -227,8 +235,9 @@ class RunController extends Eloquent2Frontend
      *
      * @param Request $r
      *
-     * @return bool|RedirectResponse
+     * @return RedirectResponse|true
      */
+    #[\Override]
     public function doStore( Request $r ): bool|RedirectResponse
     {
         if( !$r->selected_custs || !count( $r->selected_custs ) ) {
@@ -285,6 +294,7 @@ class RunController extends Eloquent2Frontend
      *
      * @return bool Return false to stop / cancel the deletion
      */
+    #[\Override]
     protected function preDelete(): bool
     {
         if( !$this->object->completed_at ) {
@@ -304,6 +314,7 @@ class RunController extends Eloquent2Frontend
      *
      * @param Request $r
      */
+    #[\Override]
     public function checkForm( Request $r ): void
     {
         $rules = [

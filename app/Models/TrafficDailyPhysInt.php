@@ -125,6 +125,8 @@ class TrafficDailyPhysInt extends Model
 
     /**
      * Get the physical interface that own the traffic daily phys int
+     *
+     * @psalm-return BelongsTo<PhysicalInterface>
      */
     public function physicalInterface(): BelongsTo
     {

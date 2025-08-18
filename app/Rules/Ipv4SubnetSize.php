@@ -45,6 +45,7 @@ class Ipv4SubnetSize implements Rule
      *
      * @return bool
      */
+    #[\Override]
     public function passes( $attribute, $value ): bool
     {
         $parts = explode( '/', $value );
@@ -64,6 +65,7 @@ class Ipv4SubnetSize implements Rule
      *
      * @return string
      */
+    #[\Override]
     public function message(): string
     {
         return 'Invalid subnet, must be minimum ' . config( "ixp.irrdb.min_v4_subnet_size" );

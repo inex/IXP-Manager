@@ -61,12 +61,14 @@ class Dummy extends Mrtg
      * @throws GeneralException
      *
      * @see IXP\Utils\Grapher\Mrtg::loadMrtgFile()
-     *
+
      * Processing means:
      * - only returning the values for the requested period
      * - MRTG provides traffic as bytes, change to bits
      *
+     * @psalm-return array<int<0, max>, mixed>
      */
+    #[\Override]
     public function data( Graph $graph ): array
     {
         $values = [];

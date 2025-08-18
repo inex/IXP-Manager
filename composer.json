@@ -24,48 +24,41 @@
         }
     ],
     "require": {
-        "php": "^8.3",
+        "php": "^8.4",
         "ext-json": "*",
-        "laravel/framework": "^11.31",
-        "anahkiasen/former": "^4.6",
-        "bacon/bacon-qr-code": "^2.0.3",
-        "barryvdh/laravel-dompdf": "^2.0.0",
-        "doctrine/dbal": "^3.8",
+        "laravel/framework": "^12.0",
+        "anahkiasen/former": "^5.1.1",
+        "bacon/bacon-qr-code": "^3.0.0",
+        "barryvdh/laravel-dompdf": "^3.0.0",
         "erusev/parsedown": "^1.7",
-        "opensolutions/foil": "^0.7.0",
-        "guzzlehttp/guzzle": "^7.8",
+        "opensolutions/foil": "^0.7.2",
         "intervention/image": "^2.7",
         "laravel/horizon": "^5.7",
         "laravel/telescope": "^5.0",
-        "laravel/tinker": "^2.9",
+        "laravel/tinker": "^2.10.1",
         "laravel/ui": "^4.0",
         "mews/purifier": "^3.4",
         "opensolutions/oss-snmp": "^1.0",
-        "php-ds/php-ds": "^1.5",
-        "pragmarx/google2fa-laravel": "^1.4.1",
+        "php-ds/php-ds": "^1.7.0",
+        "pragmarx/google2fa-laravel": "^2.3.0",
         "s1lentium/iptools": "^1.2",
         "socialiteproviders/manager": "^4.6",
-        "spatie/laravel-ignition": "^2.7",
         "webpatser/laravel-countries": "^1.5.4",
         "wolfcast/browser-detection": "^2.9.5",
         "zendesk/zendesk_api_client_php": "^2.2.10"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.0",
-        "beyondcode/laravel-dump-server": "^2.0",
         "fakerphp/faker": "^1.23",
         "laravel/dusk": "^8.0",
-        "laravel/pint": "^1.15",
-        "laravel/sail": "^1.29",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.1",
-        "phpunit/phpunit": "^11.0.1",
+        "phpunit/phpunit": "^11.5.3",
+        "vimeo/psalm": "^6.0",
         "psalm/plugin-laravel": "^3.0.3",
-        "staudenmeir/dusk-updater": "^1.5",
-        "vimeo/psalm": "^6.0"
+        "staudenmeir/dusk-updater": "^1.5"
     },
     "support": {
-        "issues": "https://www.ixpmanager.org/support.php",
+        "issues": "https://www.ixpmanager.org/support",
         "forum": "https://www.inex.ie/mailman/listinfo/ixpmanager",
         "docs": "https://docs.ixpmanager.org/",
         "source": "https://github.com/inex/IXP-Manager"
@@ -94,14 +87,9 @@
         }
     },
     "scripts": {
-        "post-root-package-install": [
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
-        ],
-        "post-create-project-cmd": [
-            "@php artisan key:generate"
-        ],
         "post-autoload-dump": [
-            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan config:clear",
+            "@php artisan clear-compiled",
             "@php artisan package:discover"
         ],
 
@@ -129,7 +117,7 @@
             "pestphp/pest-plugin": true
         },
         "platform": {
-            "php": "8.3.11"
+            "php": "8.4.11"
         }
     },
    "minimum-stability": "dev",

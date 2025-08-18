@@ -56,7 +56,9 @@ class BillingDetailsRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{billingContactName: 'nullable|string|max:255', billingAddress1: 'nullable|string|max:255', billingAddress2: 'nullable|string|max:255', billingAddress3: 'nullable|string|max:255', billingTownCity: 'nullable|string|max:255', billingPostcode: 'nullable|string|max:255', billingCountry: string, billingEmail: 'nullable|email|max:255', billingTelephone: 'nullable|string|max:255', invoiceEmail: 'nullable|email|max:255'}
      */
     public function rules(): array
     {

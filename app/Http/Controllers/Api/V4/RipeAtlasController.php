@@ -42,9 +42,11 @@ class RipeAtlasController extends Controller
      *
      * @param int $atlasId
      *
-     * @return array
+     * @return (bool|string)[]
      *
      * @throws
+     *
+     * @psalm-return array{error: bool, response: string}
      */
     public function getAtlasMeasurementDetail( int $atlasId ): array
     {
@@ -75,9 +77,11 @@ class RipeAtlasController extends Controller
      *
      * @param int $atlasid
      *
-     * @return array
+     * @return (bool|string)[]
      *
      * @throws
+     *
+     * @psalm-return array{error: bool, response: string}
      */
     public function getAtlasProbeDetail( int $atlasid ): array
     {

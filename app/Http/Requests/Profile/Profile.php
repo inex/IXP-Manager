@@ -53,7 +53,9 @@ class Profile extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{name: 'required|string|min:2|max:255', username: string, email: 'required|email|max:255', authorisedMobile: 'nullable|string|max:30', actual_password: 'required|string|max:255'}
      */
     public function rules(): array
     {

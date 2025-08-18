@@ -49,6 +49,7 @@ class PurifierServiceProvider extends ServiceProvider
      *
      * @return void
      */
+    #[\Override]
     public function register()
     {
         $this->app->singleton('purifier', function (Container $app) {
@@ -61,8 +62,11 @@ class PurifierServiceProvider extends ServiceProvider
     /**
      * Get the services provided by the provider.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return list{'purifier'}
      */
+    #[\Override]
     public function provides()
     {
         return ['purifier'];

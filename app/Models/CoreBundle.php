@@ -127,6 +127,8 @@ class CoreBundle extends Model
 
     /**
      * Get the corelinks that belong to the corebundle
+     *
+     * @psalm-return HasMany<CoreLink>
      */
     public function corelinks(): HasMany
     {
@@ -180,8 +182,9 @@ class CoreBundle extends Model
      * @param Builder $query
      *
      * @return Builder
+     *
+     * @psalm-return Builder<Model>
      */
-
     public function scopeActive( Builder $query ): Builder
     {
         return $query->where( 'enabled' , true )
@@ -220,10 +223,8 @@ class CoreBundle extends Model
 
     /**
      * get the speed of the Physical interface
-     *
-     * @return int
      */
-    public function speedPi(): int
+    public function speedPi(): int|null
     {
         $cl = $this->corelinks->first() ?? false;
         if( $cl ){
@@ -262,10 +263,8 @@ class CoreBundle extends Model
 
     /**
      * get the customer associated virtual interface of the core bundle
-     *
-     * @return Customer|bool
      */
-    public function customer()
+    public function customer(): Customer|false
     {
         $cl = $this->corelinks[ 0 ] ?? false;
         if( $cl ){
@@ -278,6 +277,8 @@ class CoreBundle extends Model
      * get the virtual interfaces linked to the core links of the side A and B
      *
      * @return array
+     *
+     * @psalm-return array{a?: mixed, b?: mixed}
      */
     public function virtualInterfaces(): array
     {
@@ -340,7 +341,7 @@ class CoreBundle extends Model
     /**
      * Delete the Core Bundle and everything related.
      *
-     * @return bool
+     * @return true
      *
      * @throws
      */

@@ -77,10 +77,8 @@ class VirtualInterface extends Graph
 
     /**
      * Get the customer owning this virtual interface
-     *
-     * @return Customer
      */
-    public function customer(): Customer
+    public function customer(): Customer|null
     {
         return $this->virtint->customer;
     }
@@ -90,9 +88,9 @@ class VirtualInterface extends Graph
      *
      * @param VirtualInterfaceModel $vi
      *
-     * @return VirtualInterface Fluid interface
+     * @return static Fluid interface
      */
-    public function setVirtualInterface( VirtualInterfaceModel $vi ): VirtualInterface
+    public function setVirtualInterface( VirtualInterfaceModel $vi ): static
     {
         if( $this->virtualInterface() && $this->virtualInterface()->id !== $vi->id ) {
             $this->wipe();
@@ -107,6 +105,7 @@ class VirtualInterface extends Graph
      *
      * @return string
      */
+    #[\Override]
     public function name(): string
     {
         $pi = $this->virtualInterface()->physicalInterfaces[ 0 ];
@@ -119,6 +118,7 @@ class VirtualInterface extends Graph
      * E.g. for an IXP, it might be ixpxxx where xxx is the database id
      * @return string
      */
+    #[\Override]
     public function identifier(): string
     {
         return sprintf( "vi%05d", $this->virtualInterface()->id );
@@ -133,6 +133,7 @@ class VirtualInterface extends Graph
      *
      * @return bool
      */
+    #[\Override]
     public function authorise(): bool
     {
         /** @var User $us */
@@ -176,6 +177,7 @@ class VirtualInterface extends Graph
      * @param array $overrides Allow standard parameters to be overridden (e.g. category)
      * @return string
      */
+    #[\Override]
     public function url( array $overrides = [] ): string
     {
         return parent::url( $overrides ) . sprintf("&id=%d",
@@ -188,8 +190,11 @@ class VirtualInterface extends Graph
      *
      * Extends base function
      *
-     * @return array $params
+     * @return (\Carbon\Carbon|int|mixed|null)[]
+     *
+     * @psalm-return array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}
      */
+    #[\Override]
     public function getParamsAsArray(): array
     {
         $p          = parent::getParamsAsArray();

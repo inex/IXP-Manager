@@ -126,7 +126,10 @@ class EmailPortUtilisation extends GrapherCommand
 
     /**
      * Check the various arguments and options that have been password to the console command
+     *
      * @return int 0 for success or else an error code
+     *
+     * @psalm-return 0|253|254
      */
     protected function verifyArgsAndOptions(): int
     {

@@ -69,6 +69,8 @@ class CustomerNote extends Model
 
     /**
      * Get the customer that own the customer note
+     *
+     * @psalm-return BelongsTo<Customer>
      */
     public function customer(): BelongsTo
     {
@@ -123,15 +125,17 @@ class CustomerNote extends Model
      *
      * Returns an associate array with keys:
      *
-     * * `notesReadUpto` - UNIX timestamp of when the user last read all notes / marked them as read
-     * * `notesLastRead` - UNIX timestamp of when the user last read this customer's notes
-     * * `unreadNotes`   - number of unread notes for this customer
+     * `notesReadUpto` - UNIX timestamp of when the user last read all notes / marked them as read
+     * `notesLastRead` - UNIX timestamp of when the user last read this customer's notes
+     * `unreadNotes`   - number of unread notes for this customer
      *
      * @param Collection    $notes
      * @param Customer      $c      The customer
      * @param User          $u       Optional user
      *
-     * @return array
+     * @return (int|mixed|null)[]
+     *
+     * @psalm-return array{notesReadUpto: mixed|null, notesLastRead: mixed|null, unreadNotes: int}
      */
     public static function analyseForUser( Collection $notes, Customer $c, User $u ): array
     {

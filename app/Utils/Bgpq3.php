@@ -64,6 +64,8 @@ class Bgpq3
      * @return array The array of prefixes (or empty array).
      *
      * @throws Exception On a JSON decoding error
+     *
+     * @psalm-return list{0?: mixed,...}
      */
     public function getPrefixList( string $asmacro, int $proto = 4 ): array
     {
@@ -99,6 +101,8 @@ class Bgpq3
      * @param int       $proto The IP protocol - 4 or 6.
      *
      * @return array The array of prefixes (or empty array).
+     *
+     * @psalm-return list<mixed>
      */
     public function getAsnList( string $asmacro, int $proto = 4 ): array
     {
@@ -168,9 +172,9 @@ class Bgpq3
      *
      * @param string $whois The whois server to query
      *
-     * @return Bgpq3 For fluent interfaces
+     * @return static For fluent interfaces
      */
-    public function setWhois( string $whois ): Bgpq3
+    public function setWhois( string $whois ): static
     {
         $this->whois = $whois;
         return $this;
@@ -181,9 +185,9 @@ class Bgpq3
      *
      * @param string $sources The whois server sources
      *
-     * @return Bgpq3 For fluent interfaces
+     * @return static For fluent interfaces
      */
-    public function setSources( string $sources ): Bgpq3
+    public function setSources( string $sources ): static
     {
         $this->sources = $sources;
         return $this;
@@ -194,9 +198,9 @@ class Bgpq3
      *
      * @param string $path The executable path to the BGPQ executable
      *
-     * @return Bgpq3 For fluent interfaces
+     * @return static For fluent interfaces
      */
-    public function setPath( string $path ): Bgpq3
+    public function setPath( string $path ): static
     {
         $this->path = $path;
 

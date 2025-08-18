@@ -54,6 +54,7 @@ class IPv6Cidr implements Rule
      * @param  mixed  $value
      * @return bool
      */
+    #[\Override]
     public function passes( $attribute, $value ): bool
     {
         if( !strpos( $value, '/' ) ) {
@@ -83,7 +84,10 @@ class IPv6Cidr implements Rule
      * Get the validation error message.
      *
      * @return string
+     *
+     * @psalm-return 'Invalid IPv6 address in CIDR format (e.g. 2001:db8:10::/48).'
      */
+    #[\Override]
     public function message(): string
     {
         return 'Invalid IPv6 address in CIDR format (e.g. 2001:db8:10::/48).';

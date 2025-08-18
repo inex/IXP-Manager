@@ -60,8 +60,6 @@ class UpdateProbes extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
-     *
      * @throws
      */
     public function handle(): int
@@ -93,9 +91,11 @@ class UpdateProbes extends Command
     /**
      * Returns all customers or, if specified on the command line, a specific customer
      *
-     * @return Collection|array Customer
+     * @return Collection|array
+     *
+     * @psalm-return Collection<int, \Illuminate\Database\Eloquent\Model>|list{mixed}
      */
-    protected function resolveCustomers(): Collection|array
+    protected function resolveCustomers(): array|Collection
     {
         $cust = $this->argument('customer');
 

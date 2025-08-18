@@ -64,7 +64,9 @@ class CheckEmail extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{email: 'required|email|max:255'}
      */
     public function rules(): array
     {

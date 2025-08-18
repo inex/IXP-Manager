@@ -47,6 +47,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbAsn whereLastSeen($value)
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbAsn whereProtocol($value)
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbAsn whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbAsn newQuery()
  * @mixin \Eloquent
  */
 class IrrdbAsn extends Model

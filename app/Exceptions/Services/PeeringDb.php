@@ -25,4 +25,4 @@ namespace IXP\Exceptions\Services;
 
 use Exception;
 
-class PeeringDb extends Exception {}
+final class PeeringDb extends Exception {}

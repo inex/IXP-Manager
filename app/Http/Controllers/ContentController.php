@@ -95,12 +95,10 @@ class ContentController extends Controller
     /**
      * Display the appropriate member details page (if permissions match)
      *
-     * @param  int    $priv Required privilege for access to the content
-     * @param  string $page Page to display
-     *
-     * @return View|Response|JsonResponse
+     * @param int    $priv Required privilege for access to the content
+     * @param string $page Page to display
      */
-    public function members( int $priv, string $page )
+    public function members( int $priv, string $page ): Response
     {
         /** @var User $us */
         $us = Auth::getUser();
@@ -138,10 +136,8 @@ class ContentController extends Controller
 
     /**
      * Display the appropriate member details page (if permissions match)
-     *
-     * @return View|Response|JsonResponse
      */
-    public function simpleMembers()
+    public function simpleMembers(): Response
     {
         return $this->members( 0, 'list.json' );
     }

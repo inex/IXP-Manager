@@ -76,6 +76,8 @@ class CoreLink extends Model
 
     /**
      * Get the core interface side A  associated with the corelink.
+     *
+     * @psalm-return BelongsTo<CoreInterface>
      */
     public function coreInterfaceSideA(): BelongsTo
     {
@@ -84,6 +86,8 @@ class CoreLink extends Model
 
     /**
      * Get the core interface side B  associated with the corelink.
+     *
+     * @psalm-return BelongsTo<CoreInterface>
      */
     public function coreInterfaceSideB(): BelongsTo
     {
@@ -93,7 +97,9 @@ class CoreLink extends Model
     /**
      * Get the core interface (A/B)
      *
-     * @return array
+     * @return CoreInterface[]
+     *
+     * @psalm-return list{CoreInterface, CoreInterface}
      */
     public function coreInterfaces(): array
     {
@@ -101,6 +107,8 @@ class CoreLink extends Model
     }
     /**
      * Get the corebundle that own the corelink
+     *
+     * @psalm-return BelongsTo<CoreBundle>
      */
     public function coreBundle(): BelongsTo
     {

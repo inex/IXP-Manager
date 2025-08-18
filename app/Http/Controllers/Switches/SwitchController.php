@@ -85,6 +85,7 @@ class SwitchController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
+    #[\Override]
     public function feInit(): void
     {
         /** @var User $us */
@@ -200,6 +201,7 @@ class SwitchController extends EloquentController
      *
      * @return void
      */
+    #[\Override]
     protected static function additionalRoutes( string $route_prefix ): void
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
@@ -218,6 +220,7 @@ class SwitchController extends EloquentController
      *
      * @return View
      */
+    #[\Override]
     public function list( Request $param  ) : View
     {
         if( ( $showActiveOnly = $param->activeOnly ) !== null  ) {
@@ -337,6 +340,7 @@ class SwitchController extends EloquentController
      *
      * @return array
      */
+    #[\Override]
     protected function listGetData( ?int $id = null ): array
     {
         $feParams   = $this->feParams;
@@ -361,8 +365,11 @@ class SwitchController extends EloquentController
     /**
      * Display the form to create an object
      *
-     * @return array
+     * @return (Switcher|array|false|mixed|null|string)[]
+     *
+     * @psalm-return array{object: Switcher, addBySnmp: array|null|string, preAddForm: false, cabinets: array<int, mixed>, infra: mixed, vendors: mixed}
      */
+    #[\Override]
     protected function createPrepareForm(): array
     {
         return [
@@ -381,8 +388,9 @@ class SwitchController extends EloquentController
      *
      * @param Request $r
      *
-     * @return bool|RedirectResponse
+     * @return true
      */
+    #[\Override]
     public function doStore( Request $r ): bool|RedirectResponse
     {
         $this->checkForm( $r );
@@ -401,10 +409,13 @@ class SwitchController extends EloquentController
     /**
      * Display the form to edit an object
      *
-     * @param   int $id ID of the row to edit
+     * @param int $id ID of the row to edit
      *
-     * @return array
+     * @return (array|false|mixed|null|string)[]
+     *
+     * @psalm-return array{object: mixed, addBySnmp: array|null|string, preAddForm: false, cabinets: array<int, mixed>, infra: mixed, vendors: mixed}
      */
+    #[\Override]
     protected function editPrepareForm( int $id ): array
     {
         $this->object = Switcher::findOrFail( $id );
@@ -444,10 +455,11 @@ class SwitchController extends EloquentController
      * @param Request   $r
      * @param int       $id
      *
-     * @return bool|RedirectResponse
+     * @return true
      *
      * @throws
      */
+    #[\Override]
     public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {
         $this->object = Switcher::findOrFail( $id );
@@ -534,6 +546,7 @@ class SwitchController extends EloquentController
     /**
      * @inheritdoc
      */
+    #[\Override]
     protected function preDelete() : bool
     {
         $okay = true;
@@ -726,6 +739,7 @@ class SwitchController extends EloquentController
      *
      * @param Request $r
      */
+    #[\Override]
     public function checkForm( Request $r ): void
     {
         $r->validate( [

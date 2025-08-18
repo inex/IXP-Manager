@@ -229,6 +229,8 @@ class YamlController extends Controller
      * @param Switcher $switch
      *
      * @return array
+     *
+     * @psalm-return array{switch: mixed}
      */
     private function showSwitchRestructureOutput( Switcher $switch ): array
     {

@@ -45,6 +45,7 @@ class IPv4Cidr implements Rule
      *
      * @return bool
      */
+    #[\Override]
     public function passes( $attribute, $value): bool
     {
         if( !strpos( $value, '/' ) ) {
@@ -74,7 +75,10 @@ class IPv4Cidr implements Rule
      * Get the validation error message.
      *
      * @return string
+     *
+     * @psalm-return 'Invalid IPv4 address in CIDR format (e.g. 192.0.2.0/24).'
      */
+    #[\Override]
     public function message(): string
     {
         return 'Invalid IPv4 address in CIDR format (e.g. 192.0.2.0/24).';

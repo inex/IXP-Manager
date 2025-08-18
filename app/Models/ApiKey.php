@@ -58,6 +58,7 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|ApiKey whereUserId($value)
  * @property string $created
  * @method static Builder|ApiKey whereCreated($value)
+ * @property \Illuminate\Support\Carbon|null $created_at
  * @mixin \Eloquent
  */
 class ApiKey extends Model
@@ -79,6 +80,8 @@ class ApiKey extends Model
 
     /**
      * Get the user
+     *
+     * @psalm-return BelongsTo<User>
      */
     public function user(): BelongsTo
     {

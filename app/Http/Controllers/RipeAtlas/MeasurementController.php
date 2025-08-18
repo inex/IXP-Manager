@@ -89,7 +89,10 @@ class MeasurementController extends Eloquent2Frontend
 
     /**
      * This function sets up the frontend controller
+     *
+     * @return void
      */
+    #[\Override]
     public function feInit()
     {
         $this->feParams         = (object)[
@@ -174,6 +177,7 @@ class MeasurementController extends Eloquent2Frontend
      *
      * @return void
      */
+    #[\Override]
     protected static function additionalRoutes( string $route_prefix ): void
     {
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
@@ -191,6 +195,7 @@ class MeasurementController extends Eloquent2Frontend
      *
      * @return View
      */
+    #[\Override]
     public function list( Request $param  ) : View
     {
         $rid = false;
@@ -214,6 +219,7 @@ class MeasurementController extends Eloquent2Frontend
      *
      * @return array
      */
+    #[\Override]
     protected function listGetData( $id = null ): array
     {
         $rid        = $this->data[ 'params' ][ 'rid' ] ?? null;
@@ -303,8 +309,6 @@ class MeasurementController extends Eloquent2Frontend
      * Display the ripe atlas measurements matrix for a run
      *
      * @param AtlasRun $atlasRun ID of the atlas run
-     *
-     * @return Application|Factory|\Illuminate\Contracts\View\View|View
      */
     public function matrix( AtlasRun $atlasRun ): \Illuminate\Contracts\View\View|Factory|View|Application
     {

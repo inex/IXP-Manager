@@ -71,6 +71,7 @@ class PeeringDbServiceProvider extends ServiceProvider
      *
      * @return void
      */
+    #[\Override]
     public function register(): void
     {
         $this->app->singleton( PeeringDb::class, function( $app ) {

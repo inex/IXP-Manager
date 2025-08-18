@@ -83,6 +83,8 @@ class GenerateConfiguration extends GrapherCommand
      * @param string $conf The Configuration
      *
      * @return int Suggested status code for script exit (0 == success)
+     *
+     * @psalm-return -2|0
      */
     protected function outputConfiguration( $conf ): int
     {

@@ -43,16 +43,45 @@ class Bird implements ExtensionInterface
      */
     private $args;
 
+    /**
+     * @return void
+     */
+    #[\Override]
+    /**
+     * @return void
+     */
     public function setup( array $args = [] )
     {
         $this->args = $args;
     }
 
+    /**
+     * @return array
+     *
+     * @psalm-return array<never, never>
+     */
+    #[\Override]
+    /**
+     * @return array
+     *
+     * @psalm-return array<never, never>
+     */
     public function provideFilters()
     {
         return [];
     }
 
+    /**
+     * @return (static|string)[][]
+     *
+     * @psalm-return array{bird: list{static, 'getObject'}}
+     */
+    #[\Override]
+    /**
+     * @return (static|string)[][]
+     *
+     * @psalm-return array{bird: list{static, 'getObject'}}
+     */
     public function provideFunctions()
     {
         return [
@@ -61,7 +90,7 @@ class Bird implements ExtensionInterface
     }
 
 
-    public function getObject(): Bird
+    public function getObject(): static
     {
         return $this;
     }
