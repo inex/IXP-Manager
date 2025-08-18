@@ -67,80 +67,80 @@ class SetupWizard extends Command
 
     protected array $ixpdata = [
         'ixp-name'       => [
-            'var' => 'ixpname',
             'config' => 'identity.name',
             'env' => 'IXP_NAME',
+            'value' => null,
         ],
         'ixp-legalname'       => [
-            'var' => 'ixplegalname',
             'config' => 'identity.legalname',
             'env' => 'IXP_LEGALNAME',
+            'value' => null,
         ],
         'ixp-shortname'  => [
-            'var' => 'ixpshortname',
             'default' => 'IXP',
             'prompt' => 'Enter the short name of your IXP',
             'ask' => true,
+            'value' => null,
         ],
         'admin-name'     => [
-            'var' => 'adminname',
             'default' => 'Joe Bloggs',
             'prompt' => 'Enter the full name of the admin user',
             'ask' => true,
+            'value' => null,
         ],
         'admin-username' => [
-            'var' => 'adminusername',
             'default' => 'jbloggs',
             'prompt' => 'Enter the username of the admin user',
             'ask' => true,
+            'value' => null,
         ],
         'admin-password' => [
-            'var' => 'adminpassword',
             'default' => null,
             'prompt' => 'Enter the password of the admin user',
             'ask' => true,
+            'value' => null,
         ],
         'admin-email'    => [
-            'var' => 'adminemail',
             'default' => 'joebloggs@example.com',
             'prompt' => 'Enter the email of the admin user',
             'ask' => true,
+            'value' => null,
         ],
         'asn'            => [
-            'var' => 'asn',
             'default' => '65535',
             'prompt' => 'Enter the ASN of your IXP',
             'ask' => true,
+            'value' => null,
         ],
         'ixp-email'      => [
-            'var' => 'ixpemail',
             'config' => 'identity.support_email',
             'prompt' => 'Enter the support email of the IXP',
             'env' => 'IXP_SUPPORT_EMAIL',
+            'value' => null,
         ],
         'ixp-phone'      => [
-            'var' => 'ixpphone',
             'config' => 'identity.support_phone',
             'prompt' => 'Enter the support phone number of the IXP',
             'env' => 'IXP_SUPPORT_PHONE',
+            'value' => null,
         ],
         'ixp-billing-email'      => [
-            'var' => 'ixpbillingemail',
             'config' => 'identity.billing_email',
             'prompt' => 'Enter the billing email of the IXP',
             'env' => 'IXP_BILLING_EMAIL',
+            'value' => null,
         ],
         'ixp-billing-phone'      => [
-            'var' => 'ixpbillingphone',
             'config' => 'identity.billing_phone',
             'prompt' => 'Enter the billing phone number of the IXP',
             'env' => 'IXP_BILLING_PHONE',
+            'value' => null,
         ],
         'ixp-url'        => [
-            'var' => 'ixpurl',
             'config' => 'identity.corporate_url',
             'prompt' => 'Enter the web address of the IXP',
             'env' => 'IXP_CORPORATE_URL',
+            'value' => null,
         ],
     ];
 
@@ -149,8 +149,7 @@ class SetupWizard extends Command
      * Execute the console command.
      *
      * @return int
-     *
-     * @throws
+     * @throws \Throwable
      */
     public function handle(): int
     {
@@ -183,98 +182,25 @@ class SetupWizard extends Command
             return 1;
         }
 
-        $table      = [];
-        $data       = [];
+        $data = $this->gatherData();
 
-        // gather data
-        foreach( $this->ixpdata as $setting => $attributes ) {
-
-            if( !isset( $attributes[ 'ask' ] ) || !$attributes[ 'ask' ] ) {
-                ${$attributes[ 'var' ]} = config( $attributes[ 'config' ] );
-
-            } elseif( $this->option( $setting ) ) {
-                ${$attributes['var']} = $this->option( $setting );
-
-            } else {
-
-                if( $setting === 'admin-password' ) {
-
-                    if( getenv( 'IXP_SETUP_ADMIN_PASSWORD' ) !== false ) {
-                        // Do not use laravel's `env()` because it reads the .env file.
-                        ${$attributes[ 'var' ]} = getenv( 'IXP_SETUP_ADMIN_PASSWORD' );
-
-                        // Unset the variable as soon as we read it to reduce the risk of it leaking.
-                        putenv( 'IXP_SETUP_ADMIN_PASSWORD' );
-                    } else {
-                        ${$attributes[ 'var' ]} = str()->random( 12 );
-                    }
-
-                } else {
-
-                    ${$attributes[ 'var' ]} = ask( $attributes[ 'prompt' ] . ' [' . $attributes[ 'default' ] . '] ' );
-
-                    if( !${$attributes[ 'var' ]} ) {
-                        ${$attributes[ 'var' ]} = $attributes[ 'default' ];
-                    }
-                }
-            }
-
-            $data[ $setting ] = ${$attributes[ 'var' ]};
-
-            if( $setting !== 'admin-password' || $this->option( 'echo-password' ) ) {
-                $table[] = [ $setting, ${$attributes[ 'var' ]} ];
-            }
-
-        }
-
-        $this->table( ['Setting', 'Value'], $table );
-
-        $validator = \Validator::make($data, [
-            'asn' => 'required|integer|between:1,4294967295',
-            'ixp-name' => 'required|string',
-            'ixp-legalname' => 'required|string',
-            'ixp-shortname' => 'required|string',
-            'admin-name' => 'required|string',
-            'admin-username' => 'required|string',
-            'admin-email' => 'required|email',
-            'admin-password' => 'required|string|min:10',
-            'ixp-phone' => 'required|string',
-            'ixp-email' => 'required|email',
-            'ixp-billing-phone' => 'required|string',
-            'ixp-billing-email' => 'required|email',
-            'ixp-url' => 'required|url',
-        ]);
-
-        if ( !$this->option('force') && $validator->fails()) {
-            $this->error('The following errors occurred:');
-            foreach ($validator->errors()->all() as $error) {
-                $this->error("\t" . $error);
-            }
-            return 2;
-        }
-
-        if( !$this->option('force') && !$this->option( 'skip-confirm' ) ) {
-            if( !$this->confirm( 'Is this information correct, and do you want to continue to create the database objects?' ) ) {
-                $this->error( 'No confirmation was given. Exiting.' );
-                return 3;
-            }
-        }
 
         try {
 
             DB::beginTransaction();
 
             Infrastructure::create( [
-                'name'       => $ixpname,
-                'shortname'  => $ixpshortname,
+                'name'       => $data['ixp-name'],
+                'shortname'  => $data['ixp-shortname'],
                 'isPrimary'  => 1,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ] );
 
             $billingDetail = CompanyBillingDetail::create( [
-                'billingContatName' => $ixpshortname . ' Billing Team',
-                'billingEmail'      => $ixpbillingemail,
+                'billingContatName' => $data['ixp-shortname'] . ' Billing Team',
+                'billingEmail'      => $data['ixp-billing-email'],
+                'billingTelephone'  => $data['ixp-billing-phone'],
                 'invoiceMethod'     => CompanyBillingDetail::INVOICE_METHOD_EMAIL,
                 'billingFrequency'  => CompanyBillingDetail::BILLING_FREQUENCY_NOBILLING,
                 'created_at'        => Carbon::now(),
@@ -282,51 +208,48 @@ class SetupWizard extends Command
             ] );
 
             $registrationDetail = CompanyRegisteredDetail::create( [
-                'registeredName' => $ixplegalname,
+                'registeredName' => $data['ixp-legalname'],
                 'created_at'     => Carbon::now(),
                 'updated_at'     => Carbon::now(),
             ] );
 
             $cust = Customer::create( [
-                'name'                         => $ixpname,
+                'name'                         => $data['ixp-name'],
                 'type'                         => Customer::TYPE_INTERNAL,
-                'shortname'                    => $ixpshortname,
-                'autsys'                       => $asn,
+                'shortname'                    => $data['ixp-shortname'],
+                'autsys'                       => $data['asn'],
                 'maxprefixes'                  => 1,
-                'peeringemail'                 => $ixpemail,
+                'peeringemail'                 => $data['ixp-email'],
                 'peeringpolicy'                => Customer::PEERING_POLICY_MANDATORY,
-                'nocphone'                     => $ixpphone,
-                'noc24hphone'                  => $ixpphone,
-                'nocemail'                     => $ixpemail,
+                'nocphone'                     => $data['ixp-phone'],
+                'noc24hphone'                  => $data['ixp-phone'],
+                'nocemail'                     => $data['ixp-email'],
                 'nochours'                     => Customer::NOC_HOURS_24x7,
-                'nocwww'                       => $ixpurl,
-                'corpwww'                      => $ixpurl,
+                'nocwww'                       => $data['ixp-url'],
+                'corpwww'                      => $data['ixp-url'],
                 'datejoin'                     => Carbon::now(),
                 'status'                       => Customer::STATUS_NORMAL,
                 'activepeeringmatrix'          => true,
                 'company_registered_detail_id' => $registrationDetail->id,
                 'company_billing_details_id'   => $billingDetail->id,
-                'abbreviatedName'              => $ixpshortname,
+                'abbreviatedName'              => $data['ixp-shortname'],
                 'isReseller'                   => false,
                 'created_at'                   => Carbon::now(),
                 'updated_at'                   => Carbon::now(),
             ] );
 
             $cust->contacts()->create( [
-                'name'       => $adminname,
-                'email'      => $adminemail,
+                'name'       => $data['admin-name'],
+                'email'      => $data['admin-email'],
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ] );
 
             $user = new User;
-            $user->name = $adminname;
-            $user->username = $adminusername;
-            $user->password = password_hash( $adminpassword, PASSWORD_BCRYPT, [ 'cost' => config( 'hashing.bcrypt.rounds' ) ] );
-            $user->email = $adminemail;
-            $user->privs = User::AUTH_SUPERUSER;
-            $user->disabled = false;
-            $user->creator = 'IXP Manager SetupWizard';
+            $user->name = $data['admin-name'];
+            $user->username = $data['admin-username'];
+            $user->password = password_hash( $data['admin-password'], PASSWORD_BCRYPT, [ 'cost' => config( 'hashing.bcrypt.rounds' ) ] );
+            $user->email = $data['admin-email'];
             $user->created_at = Carbon::now();
             $user->updated_at = Carbon::now();
             $user->save();
@@ -389,5 +312,85 @@ class SetupWizard extends Command
         return $this->confirm( 'Do you want to continue?' );
     }
 
+    private function gatherData(): array {
+        $table = [];
+        $data = [];
+
+        // gather data
+        foreach( $this->ixpdata as $setting => $attributes ) {
+
+            if( !isset( $attributes[ 'ask' ] ) || !$attributes[ 'ask' ] ) {
+                $this->ixpdata[$setting][ 'value' ] = config( $attributes[ 'config' ] );
+
+            } elseif( $this->option( $setting ) ) {
+                $this->ixpdata[$setting][ 'value' ] = $this->option( $setting );
+
+            } else {
+
+                if( $setting === 'admin-password' ) {
+
+                    if( getenv( 'IXP_SETUP_ADMIN_PASSWORD' ) !== false ) {
+                        // Do not use laravel's `env()` because it reads the .env file.
+                        $this->ixpdata[$setting][ 'value' ] = getenv( 'IXP_SETUP_ADMIN_PASSWORD' );
+
+                        // Unset the variable as soon as we read it to reduce the risk of it leaking.
+                        putenv( 'IXP_SETUP_ADMIN_PASSWORD' );
+                    } else {
+                        $this->ixpdata[$setting][ 'value' ] = str()->random( 12 );
+                    }
+
+                } else {
+
+                    $this->ixpdata[$setting][ 'value' ] = ask( $attributes[ 'prompt' ] . ' [' . $attributes[ 'default' ] . '] ' );
+
+                    if( !$this->ixpdata[$setting][ 'value' ] ) {
+                        $this->ixpdata[$setting][ 'value' ] = $attributes[ 'default' ];
+                    }
+                }
+            }
+
+            $data[ $setting ] = $this->ixpdata[$setting][ 'value' ];
+
+            if( $setting !== 'admin-password' || $this->option( 'echo-password' ) ) {
+                $table[] = [ $setting, $this->ixpdata[$setting][ 'value' ] ];
+            }
+
+        }
+
+        $this->table( ['Setting', 'Value'], $table );
+
+        $validator = \Validator::make($data, [
+            'asn' => 'required|integer|between:1,4294967295',
+            'ixp-name' => 'required|string',
+            'ixp-legalname' => 'required|string',
+            'ixp-shortname' => 'required|string',
+            'admin-name' => 'required|string',
+            'admin-username' => 'required|string',
+            'admin-email' => 'required|email',
+            'admin-password' => 'required|string|min:10',
+            'ixp-phone' => 'required|string',
+            'ixp-email' => 'required|email',
+            'ixp-billing-phone' => 'required|string',
+            'ixp-billing-email' => 'required|email',
+            'ixp-url' => 'required|url',
+        ]);
+
+        if ( !$this->option('force') && $validator->fails()) {
+            $this->error('The following errors occurred:');
+            foreach ($validator->errors()->all() as $error) {
+                $this->error("\t" . $error);
+            }
+            exit(2);
+        }
+
+        if( !$this->option('force') && !$this->option( 'skip-confirm' ) ) {
+            if( !$this->confirm( 'Is this information correct, and do you want to continue to create the database objects?' ) ) {
+                $this->error( 'No confirmation was given. Exiting.' );
+                exit(3);
+            }
+        }
+
+        return $data;
+    }
 
 }

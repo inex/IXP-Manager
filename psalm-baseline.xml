@@ -122,6 +122,11 @@
       <code><![CDATA[memory_get_peak_usage()/1024/1024]]></code>
     </InvalidOperand>
   </file>
+  <file src="app/Console/Commands/SetupWizard.php">
+    <InvalidOperand>
+      <code><![CDATA[config( $attributes[ 'config' ] )]]></code>
+    </InvalidOperand>
+  </file>
   <file src="app/Console/Commands/Switches/ReindexIfIndex.php">
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
@@ -558,7 +563,6 @@
     </InvalidOperand>
     <MissingDocblockType>
       <code><![CDATA[public function delete( Customer $cust ) : RedirectResponse]]></code>
-      <code><![CDATA[public function overview( Customer $cust, string $tab = null ) : View]]></code>
       <code><![CDATA[public function store( CustomerRequest $r ): RedirectResponse]]></code>
       <code><![CDATA[public function storeBillingAndRegDetails( BillingInformationRequest $r, Customer $cust ): RedirectResponse]]></code>
       <code><![CDATA[public function update( CustomerRequest $r, Customer $cust ): RedirectResponse]]></code>
@@ -1137,10 +1141,7 @@
       <code><![CDATA[public function infrastructure( ?Infrastructure $infra = null, string $category = Graph::CATEGORY_BITS ) : View]]></code>
       <code><![CDATA[public function ixp( string $category = Graph::CATEGORY_BITS ) : View]]></code>
       <code><![CDATA[public function leagueTable( Request $r ): View]]></code>
-      <code><![CDATA[public function location( Location $location = null, string $category = Graph::CATEGORY_BITS ) : View]]></code>
       <code><![CDATA[public function p2pTable( Request $r ): View|RedirectResponse]]></code>
-      <code><![CDATA[public function switch( Switcher $switch = null, string $category = Graph::CATEGORY_BITS ) : View]]></code>
-      <code><![CDATA[public function vlan( Vlan $vlan = null, string $protocol = Graph::PROTOCOL_IPV4, string $category = Graph::CATEGORY_BITS ) : View]]></code>
     </MissingDocblockType>
     <RedundantCondition>
       <code><![CDATA[$vlan]]></code>
