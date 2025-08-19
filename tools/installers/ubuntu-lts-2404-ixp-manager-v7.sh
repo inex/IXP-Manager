@@ -48,6 +48,13 @@ fi
 
 cat <<WELCOME
 
+ _____  ______    __  __
+|_ _\ \/ /  _ \  |  \/  | __ _ _ __   __ _  __ _  ___ _ __
+ | | \  /| |_) | | |\/| |/ _` | '_ \ / _` |/ _` |/ _ \ '__|
+ | | /  \|  __/  | |  | | (_| | | | | (_| | (_| |  __/ |
+|___/_/\_\_|     |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_|
+                                           |___/
+
 ===================================================================
                IXP Manager Installation Script
 ===================================================================
@@ -105,7 +112,7 @@ apt-get autoremove -yq &>> /tmp/ixp-manager-install.log
 echo '[done]'
 
 
-locale-gen en_IE.UTF-8
+locale-gen en_IE.UTF-8  &>> /tmp/ixp-manager-install.log
 export LANG=en_IE.UTF-8
 
 IPADDRESS=$( ifconfig | awk '/inet /{print $2}' | grep -v '127.0.0.1' | head -1 )
@@ -218,8 +225,8 @@ echo -e "\n\n##################################################################\
 IXPNAME=${IXPNAME//[\'\\\"]/}
 IXPSNAME=${IXPSNAME//[\'\\\"]/}
 IXPASN=${IXPASN//[\'\\\"]/}
-IXPEMAIL=${IXPPEEREMAIL//[\'\\\"]/}
-IXPPHONE=${IXPNOCPHONE//[\'\\\"]/}
+IXPEMAIL=${IXPEMAIL//[\'\\\"]/}
+IXPPHONE=${IXPPHONE//[\'\\\"]/}
 IXPWWW=${IXPWWW//[\'\\\"]/}
 NAME=${NAME//[\'\\\"]/}
 USEREMAIL=${USEREMAIL//[\'\\\"]/}
@@ -235,8 +242,8 @@ cat >/tmp/.ixp-manager-installer-settingsrc <<END_SETTINGS
 IXPNAME="${IXPNAME}"
 IXPSNAME="${IXPSNAME}"
 IXPASN="${IXPASN}"
-IXPEMAIL="${IXPPEEREMAIL}"
-IXPPHONE="${IXPNOCPHONE}"
+IXPEMAIL="${IXPEMAIL}"
+IXPPHONE="${IXPPHONE}"
 IXPWWW="${IXPWWW}"
 NAME="${NAME}"
 USEREMAIL="${USEREMAIL}"
