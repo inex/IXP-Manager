@@ -94,9 +94,7 @@
         ],
 
         "post-install-cmd": [
-            "@php artisan clear-compiled",
-            "@./vendor/bin/phpunit --migrate-configuration",
-            "@./vendor/bin/phpunit -c phpunit.dusk.xml --migrate-configuration"
+            "@php artisan clear-compiled"
         ],
 
         "post-update-cmd": [
