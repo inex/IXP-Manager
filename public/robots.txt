@@ -5,3 +5,5 @@ Disallow: /index.php/lg/
 
 User-agent: *
 Allow: /
+
+# I'd say it was a [CSRF](https://owasp.org/www-community/attacks/csrf) vulnerability for a remote scanner to interpret this file as Markdown content
