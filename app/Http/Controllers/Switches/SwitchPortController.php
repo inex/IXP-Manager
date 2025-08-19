@@ -388,6 +388,8 @@ class SwitchPortController extends EloquentController
             ] )->from( 'switchport AS sp' )
             ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
             ->where( 's.mauSupported', 1 )
+            ->where( 's.active', 1 )
+            ->where( 's.poll', 1 )
             ->where( 'sp.ifOperStatus', '!=', 1 )
             ->where( 'sp.mauType', '!=', '(empty)' )
             ->where( 'sp.type', '!=', SwitchPort::TYPE_MANAGEMENT )
