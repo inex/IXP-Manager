@@ -537,12 +537,13 @@ class UserControllerTest extends DuskTestCase
                 ->type( 'username', 'imcustadmin' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->pause(500);
+                ->waitForLocation( '/dashboard' );
+
 
             $browser->visit( '/user/list' )
-                ->assertSee( 'Users' )
+                ->assertSee( 'imagine-custuser@example.com' )
                 ->assertSee( 'imcustuser' )
-                ->assertSee( 'imagine-custuser@example.com' );
+                ->assertSee('Users');
 
             /**
              *
@@ -699,7 +700,7 @@ class UserControllerTest extends DuskTestCase
                 ->type( 'name', 'Test Test 1' )
                 ->type( 'authorisedMobile', '12125551000' )
                 ->press( 'Save Changes' )
-                ->assertPathIs( '/user/list' )
+                ->waitForLocation( '/user/list' )
                 ->assertSee( 'User updated' )
                 ->assertSee( 'Test Test 1' )
                 ->assertSee( 'imcustadmin' )
