@@ -16,7 +16,7 @@ From August 2025, the recommended IXP manager version is the v7 release and the 
 
 To install on this platform, please proceed as follows:
 
-1. Prepare a physical / virtual machine with (minimum) 8GB of disk space (40GB recommended) and 2GB of RAM (4GB recommended). We recommend using LVM to partition your hard drive so space can be increased on the fly. We also recommend created a dedicated `/srv` partition of >= 30GB in which to install IXP Manager.
+1. Prepare a physical / virtual machine with (minimum) 30GB of disk space and 4GB of RAM. We recommend using LVM to partition your hard drive so space can be increased on the fly. We also recommend created a dedicated `/srv` partition of >= 20GB in which to install IXP Manager.
 2. Attach / insert the latest [Ubuntu 24.04 LTS](http://releases.ubuntu.com/24.04/) server install image and boot.
 3. Follow the Ubuntu installers process (see our video of this referenced above for help).
 4. When you reach the *SSH Setup* screen, check the *Install OpenSSH server* so you can ssh in to complete the process later.
