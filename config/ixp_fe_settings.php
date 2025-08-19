@@ -794,25 +794,25 @@ return [
                     'help'       => 'Full path to the bgpq3 utility.',
                 ],
 
-//                'ping4' => [
-//                    'config_key' => 'ixp.exec.ping4',
-//                    'dotenv_key' => 'IXP_EXEC_PING4',
-//                    'type'       => 'text',
-//                    'rules'      => '',
-//                    'name'       => 'Diagnostics - ipv4 ping',
-//                    'docs_url'   => null,
-//                    'help'       => 'ping command for ipv4 diagnostics. <code>%s</code> is the placeholder for the target IP.',
-//                ],
-//
-//                'ping6' => [
-//                    'config_key' => 'ixp.exec.ping6',
-//                    'dotenv_key' => 'IXP_EXEC_PING6',
-//                    'type'       => 'text',
-//                    'rules'      => '',
-//                    'name'       => 'Diagnostics - ipv6 ping',
-//                    'docs_url'   => null,
-//                    'help'       => 'ping command for ipv6 diagnostics. <code>%s</code> is the placeholder for the target IP.',
-//                ],
+                'ping4' => [
+                    'config_key' => 'ixp.exec.ping4',
+                    'dotenv_key' => 'IXP_EXEC_PING4',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'Diagnostics - ipv4 ping',
+                    'docs_url'   => null,
+                    'help'       => 'ping command for ipv4 diagnostics. <code>%s</code> is the placeholder for the target IP.',
+                ],
+
+                'ping6' => [
+                    'config_key' => 'ixp.exec.ping6',
+                    'dotenv_key' => 'IXP_EXEC_PING6',
+                    'type'       => 'text',
+                    'rules'      => '',
+                    'name'       => 'Diagnostics - ipv6 ping',
+                    'docs_url'   => null,
+                    'help'       => 'ping command for ipv6 diagnostics. <code>%s</code> is the placeholder for the target IP.',
+                ],
 
 
             ],
