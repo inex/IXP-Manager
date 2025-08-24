@@ -50,6 +50,7 @@ return [
                     'dotenv_key' => 'IXP_AS112_UI_ACTIVE',
                     'type'       => 'radio',
                     'invert'     => false,
+                    'rules'      => 'boolean',
                     'name'       => 'AS112 functionality',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/as112/',
                     'help'       => 'AS112 is a service which provides anycast reverse DNS lookup for several prefixes, 
@@ -62,6 +63,7 @@ return [
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_CONSOLE',
                     'type'       => 'radio',
                     'invert'     => true,
+                    'rules'      => 'boolean',
                     'name'       => 'Console Server Connections',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/console-servers/', // can be null
                     'help'       => 'An IXP would typically have out of band access (for emergencies, firmware upgrades, 
@@ -77,6 +79,7 @@ return [
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_CUSTKIT',
                     'type'       => 'radio',
                     'invert'     => true,
+                    'rules'      => 'boolean',
                     'name'       => 'Colocated Equipment',
                     'docs_url'   => null,
                     'help'       => 'If you provide equipment colocation services for members, the module will allow you to 
@@ -89,6 +92,7 @@ return [
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_LOGS',
                     'type'       => 'radio',
                     'invert'     => true,
+                    'rules'      => 'boolean',
                     'name'       => 'Database Change Logging',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/dblogs/',
                     'help'       => 'Database change logging for changes made via the UI.',
@@ -99,6 +103,7 @@ return [
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_DOCSTORE_CUSTOMER',
                     'type'       => 'radio',
                     'invert'     => true,
+                    'rules'      => 'boolean',
                     'name'       => 'Customer Document Store',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/docstore/',
                     'help'       => 'A per-member document store which allows administrators to upload documents on a 
@@ -112,6 +117,7 @@ return [
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_DOCSTORE',
                     'type'       => 'radio',
                     'invert'     => true,
+                    'rules'      => 'boolean',
                     'name'       => 'Document Store',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/docstore/',
                     'help'       => 'A general document store which allows administrators to make documents generally available 
@@ -124,6 +130,7 @@ return [
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_FILTERED_PREFIXES',
                     'type'       => 'radio',
                     'invert'     => true,
+                    'rules'      => 'boolean',
                     'name'       => 'Filtered Prefixes',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/route-servers/#displaying-filtered-prefixes',
                     'help'       => 'This feature provides member\'s a live view of member prefixes filtered on the IXP\'s route servers.
@@ -136,6 +143,7 @@ return [
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS',
                     'type'       => 'radio',
                     'invert'     => true,
+                    'rules'      => 'boolean',
                     'name'       => 'Looking Glass',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/looking-glass/',
                     'help'       => 'IXP Manager supports full looking glass features when using the Bird BGP daemon and 
@@ -148,6 +156,7 @@ return [
                     'dotenv_key' => 'IXP_FE_LOGIN_HISTORY_ENABLED',
                     'type'       => 'radio',
                     'invert'     => true,
+                    'rules'      => 'boolean',
                     'name'       => "Login History",
                     'help'       => 'Record user logins and view it in the UI. Expunged after six months by default.',
                 ],
@@ -158,6 +167,7 @@ return [
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_LOGO',
                     'type'       => 'radio',
                     'invert'     => true,
+                    'rules'      => 'boolean',
                     'name'       => 'Member Logos',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/customers/#customer-logos',
                     'help'       => 'Allows customer users and administrators to upload and manage their organisation\'s logo.',
@@ -168,6 +178,7 @@ return [
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_PEERING_MANAGER',
                     'type'       => 'radio',
                     'invert'     => true,
+                    'rules'      => 'boolean',
                     'name'       => 'Peering Manager',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/peering-manager/',
                     'help'       => 'The Peering Manager is a fantastic tool that allows your members to view, compose, 
@@ -179,6 +190,7 @@ return [
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_PEERING_MATRIX',
                     'type'       => 'radio',
                     'invert'     => true,
+                    'rules'      => 'boolean',
                     'name'       => 'Peering Matrix',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/peering-matrix/',
                     'help'       => 'The peering matrix system builds up a list of who is peering with whom over your IXP. You 
@@ -192,6 +204,7 @@ return [
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_PHPINFO',
                     'type'       => 'radio',
                     'invert'     => true,
+                    'rules'      => 'boolean',
                     'name'       => 'PHP Info',
                     'docs_url'   => null,
                     'help'       => 'The PHP Info option under IXP Utilities on the left hand menu. This is available to 
@@ -203,6 +216,7 @@ return [
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',
                     'type'       => 'radio',
                     'invert'     => true,
+                    'rules'      => 'boolean',
                     'name'       => 'RS Prefixes',
                     'docs_url'   => null,
                     'help'       => '[DEPRECATED] <em>Filtered Prefixes</em> above should be used instead of this.',
@@ -213,11 +227,24 @@ return [
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_RS_FILTERS',
                     'type'       => 'radio',
                     'invert'     => true,
+                    'rules'      => 'boolean',
                     'name'       => 'Route Server Filtering UI',
                     'docs_url'   => 'https://github.com/inex/IXP-Manager/releases/tag/v6.4.0',
                     'help'       => 'Community-based filtering is the standard way to allow route server participants at an IXP 
                         to control their routing policy. This feature allows IXP members to configure route server filtering in a web-based UI.',
                 ],
+
+                'settings'                => [
+                    'config_key' => 'ixp_fe.frontend.disabled.settings',
+                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_SETTINGS',
+                    'type'       => 'radio',
+                    'invert'     => true,
+                    'rules'      => 'boolean',
+                    'name'       => 'Settings UI Interface',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/settings',
+                    'help'       => 'A UI for managing settings in the .env configuration file.',
+                ],
+
 
             ],
         ],
@@ -233,7 +260,7 @@ return [
                     'config_key' => 'identity.orgname',
                     'dotenv_key' => 'IDENTITY_ORGNAME',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:255',
                     'name'       => 'Organisation Name',
                     'docs_url'   => null,
                     'help'       => 'What your IXP is generally known as. E.g. INEX, LONAP, etc.',
@@ -242,7 +269,7 @@ return [
                     'config_key' => 'identity.name',
                     'dotenv_key' => 'IDENTITY_NAME',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:255',
                     'name'       => 'Name',
                     'docs_url'   => null,
                     'help'       => 'What your IXP is generally known as. E.g. INEX, LONAP, etc.',
@@ -251,7 +278,7 @@ return [
                     'config_key' => 'identity.sitename',
                     'dotenv_key' => 'IDENTITY_SITENAME',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:255',
                     'name'       => 'Site Name',
                     'docs_url'   => null,
                     'help'       => 'The name of this website. E.g. INEX IXP Manager',
@@ -260,7 +287,7 @@ return [
                     'config_key' => 'identity.titlename',
                     'dotenv_key' => 'IDENTITY_TITLENAME',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:255',
                     'name'       => 'Site Title',
                     'docs_url'   => null,
                     'help'       => 'Your site/IXP name in the top left menu of IXP Manager.',
@@ -269,7 +296,7 @@ return [
                     'config_key' => 'identity.legalname',
                     'dotenv_key' => 'IDENTITY_LEGALNAME',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:255',
                     'name'       => 'Legal Name',
                     'docs_url'   => null,
                     'help'       => 'The full legal name of the IXP.',
@@ -278,20 +305,20 @@ return [
                     'config_key' => 'identity.location.city',
                     'dotenv_key' => 'IDENTITY_CITY',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:255',
                     'name'       => 'City',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'This is a fall back location, typically only used if it cannot be inferred from your facility settings.',
                 ],
                 'location_country' => [
                     'config_key' => 'identity.location.country',
                     'dotenv_key' => 'IDENTITY_COUNTRY',
                     'type'       => 'select',
                     'options'    => [ 'type' => 'countries' ], // special option list for countries
-                    'rules'      => '',
+                    'rules'      => 'nullable|size:2',
                     'name'       => 'Country',
                     'docs_url'   => null,
-                    'help'       => '',
+                    'help'       => 'This is a fall back location, typically only used if it cannot be inferred from your facility settings.',
                 ],
                 'email'            => [
                     'config_key' => 'identity.email',
@@ -308,7 +335,7 @@ return [
                     'config_key' => 'identity.corporate_url',
                     'dotenv_key' => 'IDENTITY_CORPORATE_URL',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:255|url',
                     'name'       => 'Corporate URL',
                     'docs_url'   => null,
                     'help'       => 'E.g. https://www.example.com/',
@@ -317,7 +344,7 @@ return [
                     'config_key' => 'identity.url',
                     'dotenv_key' => 'APP_URL',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:255|url',
                     'name'       => 'IXP Manager URL',
                     'docs_url'   => null,
                     'help'       => 'E.g. https://www.example.com/portal/',
@@ -328,7 +355,7 @@ return [
                     'config_key' => 'mail.alerts_recipient.name',
                     'dotenv_key' => 'IDENTITY_ALERTS_NAME',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:255',
                     'name'       => 'Alert Recipient Name',
                     'docs_url'   => null,
                     'help'       => 'IXP Manager will need to send alert emails. This is the recipient name for these alerts. 
@@ -338,7 +365,7 @@ return [
                 'alerts_recipient_address' => [
                     'config_key' => 'mail.alerts_recipient.address',
                     'dotenv_key' => 'IDENTITY_ALERTS_EMAIL',
-                    'type'       => 'text',
+                    'type'       => 'nullable|text',
                     'rules'      => 'nullable|max:255|email',
                     'name'       => 'Alert Recipient Email Address',
                     'docs_url'   => null,
@@ -359,7 +386,7 @@ return [
                     'config_key' => 'identity.watermark',
                     'dotenv_key' => 'IDENTITY_WATERMARK',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:100',
                     'name'       => 'Watermark',
                     'docs_url'   => null,
                     'help'       => 'Printed on some graphes, etc. E.g., "INEX, Ireland"',
@@ -377,7 +404,7 @@ return [
                     'config_key' => 'identity.support_phone',
                     'dotenv_key' => 'IDENTITY_SUPPORT_PHONE',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:100',
                     'name'       => 'Support Phone Number',
                     'docs_url'   => null,
                     'help'       => 'Your support/operations phone number.',
@@ -386,7 +413,7 @@ return [
                     'config_key' => 'identity.support_hours',
                     'dotenv_key' => 'IDENTITY_SUPPORT_HOURS',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:100',
                     'name'       => 'Support Hours',
                     'docs_url'   => null,
                     'help'       => 'Hours that support is normally available. Standard industry nomenclature includes: 24/7, 8x5, 8x7, 12x5, 12x7',
@@ -404,7 +431,7 @@ return [
                     'config_key' => 'identity.billing_phone',
                     'dotenv_key' => 'IDENTITY_BILLING_PHONE',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:100',
                     'name'       => 'Billing Phone Number',
                     'docs_url'   => null,
                     'help'       => 'Your billing/accounting contact phone number.',
@@ -413,7 +440,7 @@ return [
                     'config_key' => 'identity.billing_hours',
                     'dotenv_key' => 'IDENTITY_BILLING_HOURS',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:100',
                     'name'       => 'Billing Hours',
                     'docs_url'   => null,
                     'help'       => 'Hours that billing support is normally available. Standard industry nomenclature includes: 24/7, 8x5, 8x7, 12x5, 12x7',
@@ -423,19 +450,10 @@ return [
                     'config_key' => 'identity.biglogo',
                     'dotenv_key' => 'IDENTITY_BIGLOGO',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable',
                     'name'       => 'Big Logo',
                     'docs_url'   => null,
                     'help'       => 'URL of the logo to use on the login page. Can be <code>https://...</code> or <code>file:///home/...</code>',
-                ],
-                'vlans_default'    => [
-                    'config_key' => 'identity.vlans.default',
-                    'dotenv_key' => 'IDENTITY_DEFAULT_VLAN',
-                    'type'       => 'select',
-                    'options'    => [ 'type' => 'collection', 'list' => [ 'model' => 'Vlan', 'keys' => 'id', 'values' => 'name' ] ],
-                    'name'       => 'Default Vlans',
-                    'docs_url'   => null,
-                    'help'       => '',
                 ],
             ],
 
@@ -452,6 +470,7 @@ return [
                     'config_key' => 'google2fa.enabled',
                     'dotenv_key' => '2FA_ENABLED',
                     'type'       => 'radio',
+                    'rules'      => 'boolean',
                     'name'       => 'Two-factor Authentication (2fa) Enabled',
                     'docs_url'   => 'https://docs.ixpmanager.org/usage/authentication/#two-factor-authentication-2fa',
                     'help'       => 'If you disable this, 2fa will not be an option for securing users login, and any users with existing 2fa will not be required to confirm it on login.',
@@ -464,6 +483,7 @@ return [
                     'type'       => 'select',
                     'options'    => [ 'type' => 'array', 'list' => \IXP\Models\User::$PRIVILEGES_TEXT + [ 4 => 'Do not enforce for any user' ] ],
                     'name'       => "Enforce 2FA for Users >=",
+                    'rules'      => 'required|in:1,2,3,4',
                     'docs_url'   => 'https://docs.ixpmanager.org/usage/authentication/#enforcing-2fa-for-users',
                     'help'       => 'Chose between allowing users to opt into 2fa, or requiring all users with minimum selected previlege.',
                 ],
@@ -472,15 +492,17 @@ return [
                     'config_key' => 'session.secure',
                     'dotenv_key' => 'SESSION_SECURE_COOKIE',
                     'type'       => 'radio',
+                    'rules'      => 'boolean',
                     'name'       => 'Enforce secure session cookies',
                     'help'       => 'By setting this option, session cookies will only be sent back to the server if the browser has a HTTPS connection. '
                                     . 'This will keep the cookie from being sent to you if it can not be done securely. Note that all cookies are also encrypted.',
                 ],
 
                 'peeringdb_oauth_enabled'                => [
-                    'config_key' => 'auth.peeringdb_oauth_enabled',
+                    'config_key' => 'auth.peeringdb.enabled',
                     'dotenv_key' => 'AUTH_PEERINGDB_ENABLED',
                     'type'       => 'radio',
+                    'rules'      => 'boolean',
                     'name'       => 'PeeringDB OAuth Enabled',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/peeringdb-oauth/',
                     'help'       => 'Enable OAuth with PeeringDB. Note a number of additional settings below are required.',
@@ -510,7 +532,7 @@ return [
                     'config_key' => 'services.peeringdb_oauth_redirect',
                     'dotenv_key' => 'PEERINGDB_OAUTH_REDIRECT',
                     'type'       => 'text',
-                    'rules'      => 'nullable|max:255',
+                    'rules'      => 'nullable|max:255|url',
                     'name'       => 'PeeringDB OAuth Redirect',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/peeringdb-oauth/',
                     'help'       => 'PeeringDB OAuth - post authentication redirect target on IXP Manager. Assuming your '
@@ -533,6 +555,7 @@ return [
                     'config_key' => 'ixp_api.peeringdb.api_key',
                     'dotenv_key' => 'IXP_API_PEERING_DB_API_KEY',
                     'type'       => 'text',
+                    'rules'      => 'nullable|max:255',
                     'name'       => "PeeringDB API Key",
                     'docs_url'   => 'https://docs.peeringdb.com/howto/api_keys/',
                     'help'       => "IXP Manager uses information from PeeringDB in a number of places. Setting an API
@@ -550,11 +573,11 @@ return [
 
             'fields' => [
 
-                'public'           => [
+                'ixf_public'           => [
                     'config_key' => 'ixp_api.json_export_schema.public',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_PUBLIC',
                     'type'       => 'radio',
-                    'rules'      => '',
+                    'rules'      => 'boolean',
                     'name'       => 'IX-F Export is Public',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/ixf-export/',
                     'help'       => 'We strongly advise you <b>not</b> to disable public access if you are a standard IXP. Remember, the '
@@ -562,91 +585,91 @@ return [
                                         . 'If you disable this then only logged in users can access the IX-F export.',
                 ],
 
-                'access_key'       => [
+                'ixf_access_key'       => [
                     'config_key' => 'ixp_api.json_export_schema.access_key',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_ACCESS_KEY',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:255',
                     'name'       => 'IX-F Export Access Key',
                     'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#configuration-options',
                     'help'       => 'If you disable public access, then you can set an access key (password) here to allow remote non-logged in access.',
                 ],
 
-                'excludes_rfc5398' => [
+                'ixf_excludes_rfc5398' => [
                     'config_key' => 'ixp_api.json_export_schema.excludes.rfc5398',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_RFC5398',
                     'type'       => 'radio',
-                    'rules'      => '',
+                    'rules'      => 'boolean',
                     'name'       => 'IX-F Export - Exclude rfc5398 ASNs',
                     'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#excluding-members',
                     'help'       => 'Excludes members with documentation ASNs (64496 - 64511, 65536 - 65551)',
                 ],
 
-                'excludes_rfc6996' => [
+                'ixf_excludes_rfc6996' => [
                     'config_key' => 'ixp_api.json_export_schema.excludes.rfc6996',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_RFC6996',
                     'type'       => 'radio',
-                    'rules'      => '',
+                    'rules'      => 'boolean',
                     'name'       => 'IX-F Export - Exclude rfc6996 ASNs',
                     'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#excluding-members',
                     'help'       => 'Excludes members with private ASNs (64512 - 65534, 4200000000 - 4294967294)',
                 ],
 
-                'excludes_tags'    => [
+                'ixf_excludes_tags'    => [
                     'config_key' => 'ixp_api.json_export_schema.excludes.tags',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_TAGS',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:1024',
                     'name'       => 'IX-F Export - Excludes Tags',
                     'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#excluding-members',
                     'help'       => 'You can exclude members by tag by setting this option. E.g. <code>tag1|tag2</code>',
                 ],
 
-                'excludes_asnum'    => [
+                'ixf_excludes_asnum'    => [
                     'config_key' => 'ixp_api.json_export_schema.excludes.asnum',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_ASNUM',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:1024',
                     'name'       => 'IX-F Export - Excludes ASNs',
                     'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#excluding-members',
                     'help'       => 'You can exclude members by ASN by setting this option. E.g. <code>64496|64497|...</code>',
                 ],
 
-                'excludes_switch'  => [
+                'ixf_excludes_switch'  => [
                     'config_key' => 'ixp_api.json_export_schema.excludes.switch',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_SWITCH',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:1024',
                     'name'       => 'IX-F Export - Exclude Switch Info',
                     'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#excluding-some-data',
                     'help'       => 'If you need, e.g., to exclude the model and software version from switch information, you can set the following: <code>model|software</code>',
                 ],
 
-                'excludes_ixp'  => [
+                'ixf_excludes_ixp'  => [
                     'config_key' => 'ixp_api.json_export_schema.excludes.ixp',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_IXP',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:1024',
                     'name'       => 'IX-F Export - Exclude IXP Info',
                     'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#excluding-some-data',
                     'help'       => 'If you need, e.g., to exclude some of your IXP information, you can set the following: <code>name|url</code>',
                 ],
 
-                'excludes_member'  => [
+                'ixf_excludes_member'  => [
                     'config_key' => 'ixp_api.json_export_schema.excludes.member',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_MEMBER',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:1024',
                     'name'       => 'IX-F Export - Exclude Member Info',
                     'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#excluding-some-data',
                     'help'       => 'If you need, e.g., to exclude some member information, you can set the following: <code>peering_policy|member_type</code>',
                 ],
 
-                'excludes_intinfo'  => [
+                'ixf_excludes_intinfo'  => [
                     'config_key' => 'ixp_api.json_export_schema.excludes.intinfo',
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_INTINFO',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:1024',
                     'name'       => 'IX-F Export - Exclude Interface Info',
                     'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#excluding-some-data',
                     'help'       => 'If you need, e.g., to exclude some of your members\' interface information, you can set the following: <code>mac_addresses|routeserver</code>',
@@ -671,6 +694,7 @@ return [
                     'options'    => [ 'type' => 'array', 'list' => array_filter( IXP\Services\Grapher\Graph::PERIODS, function( $k ) {
                             return $k !== IXP\Services\Grapher\Graph::PERIOD_CUSTOM;
                         }, ARRAY_FILTER_USE_KEY  ) ],
+                    'rules'      => "nullable|in:" . implode( ',', array_keys( IXP\Services\Grapher\Graph::PERIODS ) ),
                     'name'       => "Default Graph Period",
                     'help'       => 'Default graph period on the admin dashboard.',
                 ],
@@ -699,21 +723,21 @@ return [
 
             'fields' => [
 
-                'min_v4_subnet_size' => [
+                'rs_min_v4_subnet_size' => [
                     'config_key' => 'ixp.irrdb.min_v4_subnet_size',
                     'dotenv_key' => 'IXP_IRRDB_MIN_V4_SUBNET_SIZE',
                     'type'       => 'text',
-                    'rules'      => 'between:1,32',
+                    'rules'      => 'integer|between:1,32',
                     'name'       => 'Minimum IPv4 Subnet Size',
                     'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/route-servers/',
                     'help'       => 'Minimum ipv4 subnet size accepted by route servers. Should be no more specific than a /24.',
                 ],
 
-                'min_v6_subnet_size' => [
+                'rs_min_v6_subnet_size' => [
                     'config_key' => 'ixp.irrdb.min_v6_subnet_size',
                     'dotenv_key' => 'IXP_IRRDB_MIN_V6_SUBNET_SIZE',
                     'type'       => 'text',
-                    'rules'      => 'between:1,128',
+                    'rules'      => 'integer|between:1,128',
                     'name'       => 'Minimum IPv6 Subnet Size',
                     'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/route-servers/',
                     'help'       => 'Minimum ipv6 subnet size accepted by route servers. Should be no more specific than a /48.',
@@ -733,41 +757,41 @@ return [
                                         displayed on the route server filters page.",
                 ],
 
-                'rpki_rtr1_host' => [
+                'rs_rpki_rtr1_host' => [
                     'config_key' => 'ixp.rpki.rtr1.host',
                     'dotenv_key' => 'IXP_RPKI_RTR1_HOST',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:255',
                     'name'       => 'RPKI Validator #1 Host',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/rpki/',
                     'help'       => 'IP address of the first RPKI local cache / validator. This will be inserted into the generated route server configuration if RPKI is enabled.',
                 ],
 
-                'rpki_rtr1_port' => [
+                'rs_rpki_rtr1_port' => [
                     'config_key' => 'ixp.rpki.rtr1.port',
                     'dotenv_key' => 'IXP_RPKI_RTR1_PORT',
                     'type'       => 'text',
-                    'rules'      => 'between:1,65535',
+                    'rules'      => 'nullable|integer|between:1,65535',
                     'name'       => 'RPKI Validator #1 Port',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/rpki/',
                     'help'       => 'Port to connect to on the first RPKI local cache / validator. This will be inserted into the generated route server configuration if RPKI is enabled.',
                 ],
 
-                'rpki_rtr2_host' => [
+                'rs_rpki_rtr2_host' => [
                     'config_key' => 'ixp.rpki.rtr2.host',
                     'dotenv_key' => 'IXP_RPKI_RTR2_HOST',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:255',
                     'name'       => 'RPKI Validator #2 Host',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/rpki/',
                     'help'       => 'IP address of the second RPKI local cache / validator. This will be inserted into the generated route server configuration if RPKI is enabled.',
                 ],
 
-                'rpki_rtr2_port' => [
+                'rs_rpki_rtr2_port' => [
                     'config_key' => 'ixp.rpki.rtr2.port',
                     'dotenv_key' => 'IXP_RPKI_RTR2_PORT',
                     'type'       => 'text',
-                    'rules'      => 'between:1,65535',
+                    'rules'      => 'nullable|integer|between:1,65535',
                     'name'       => 'RPKI Validator #2 Port',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/rpki/',
                     'help'       => 'Port to connect to on the second RPKI local cache / validator. This will be inserted into the generated route server configuration if RPKI is enabled.',
@@ -788,7 +812,7 @@ return [
                     'config_key' => 'ixp.irrdb.bgpq3.path',
                     'dotenv_key' => 'IXP_IRRDB_BGPQ3_PATH',
                     'type'       => 'text',
-                    'rules'      => '',
+                    'rules'      => 'nullable|max:255',
                     'name'       => 'Path to bgpq3 utility',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/irrdb/',
                     'help'       => 'Full path to the bgpq3 utility.',

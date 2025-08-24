@@ -30,6 +30,7 @@ use Foil\Contracts\ExtensionInterface;
 use Illuminate\Support\Facades\Auth;
 
 use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
+use Countries;
 use function count;
 
 /**
@@ -82,20 +83,17 @@ class IXP implements ExtensionInterface
     /**
      * @return (static|string)[][]
      *
-     * @psalm-return array{alerts: list{AlertContainer::class, 'html'}, as112UiActive: list{static, 'as112UiActive'}, asNumber: list{static, 'asNumber'}, google2faAuthenticator: list{static, 'google2faAuthenticator'}, logoManagementEnabled: list{static, 'logoManagementEnabled'}, maxFileUploadSize: list{static, 'maxFileUploadSize'}, nagiosHostname: list{static, 'nagiosHostname'}, nakedUrl: list{static, 'nakedUrl'}, resellerMode: list{static, 'resellerMode'}, scaleBits: list{static, 'scaleBits'}, scaleBytes: list{static, 'scaleBytes'}, scaleSpeed: list{static, 'scaleSpeed'}, scaleFilesize: list{static, 'scaleFilesize'}, softwrap: list{static, 'softwrap'}, whoisPrefix: list{static, 'whoisPrefix'}}
+     * @psalm-return array{alerts: list{AlertContainer::class, 'html'}, as112UiActive: list{static, 'as112UiActive'}, asNumber: list{static, 'asNumber'}, getCountriesSelection : list{static, 'getCountriesSelection'}, getSelectOptions: list{static, 'getSelectOptions'}, google2faAuthenticator: list{static, 'google2faAuthenticator'}, logoManagementEnabled: list{static, 'logoManagementEnabled'}, maxFileUploadSize: list{static, 'maxFileUploadSize'}, nagiosHostname: list{static, 'nagiosHostname'}, nakedUrl: list{static, 'nakedUrl'}, resellerMode: list{static, 'resellerMode'}, scaleBits: list{static, 'scaleBits'}, scaleBytes: list{static, 'scaleBytes'}, scaleSpeed: list{static, 'scaleSpeed'}, scaleFilesize: list{static, 'scaleFilesize'}, softwrap: list{static, 'softwrap'}, whoisPrefix: list{static, 'whoisPrefix'}}
      */
     #[\Override]
-    /**
-     * @return (static|string)[][]
-     *
-     * @psalm-return array{alerts: list{AlertContainer::class, 'html'}, as112UiActive: list{static, 'as112UiActive'}, asNumber: list{static, 'asNumber'}, google2faAuthenticator: list{static, 'google2faAuthenticator'}, logoManagementEnabled: list{static, 'logoManagementEnabled'}, maxFileUploadSize: list{static, 'maxFileUploadSize'}, nagiosHostname: list{static, 'nagiosHostname'}, nakedUrl: list{static, 'nakedUrl'}, resellerMode: list{static, 'resellerMode'}, scaleBits: list{static, 'scaleBits'}, scaleBytes: list{static, 'scaleBytes'}, scaleSpeed: list{static, 'scaleSpeed'}, scaleFilesize: list{static, 'scaleFilesize'}, softwrap: list{static, 'softwrap'}, whoisPrefix: list{static, 'whoisPrefix'}}
-     */
     public function provideFunctions(): array
     {
         return [
             'alerts'                 => [ AlertContainer::class, 'html' ],
             'as112UiActive'          => [ $this, 'as112UiActive' ],
             'asNumber'               => [ $this, 'asNumber' ],
+            'getCountriesSelection'  => [ $this, 'getCountriesSelection' ],
+            'getSelectOptions'       => [ $this, 'getSelectOptions' ],
             'google2faAuthenticator' => [ $this, 'google2faAuthenticator' ],
             'logoManagementEnabled'  => [ $this, 'logoManagementEnabled' ],
             'maxFileUploadSize'      => [ $this, 'maxFileUploadSize' ],
@@ -437,4 +435,31 @@ class IXP implements ExtensionInterface
     {
         return new GoogleAuthenticator( request() );
     }
+
+
+    /**
+     * Get an array of countries for a select dropdown.
+     *
+     * @return array in form [ISO 2-letter Code] => "Name"
+     */
+    public function getCountriesSelection(): array {
+        $countries = Countries::getList();
+        $list = [];
+        foreach($countries as $country) {
+            $list[$country['iso_3166_2']] = $country['name'];
+        }
+        return $list;
+    }
+
+    /**
+     * Create an option list for a select input element
+     *
+     * @return array
+     */
+    public function getSelectOptions( string $model, string $key, string $value  ): array {
+
+        /** @var \Illuminate\Database\Eloquent\Model $model */
+        return $model::select( $key, $value )->pluck( $value, $key )->toArray();
+    }
+
 }

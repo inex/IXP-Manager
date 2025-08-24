@@ -91,7 +91,14 @@ class PeeringMatrixController extends Controller
         } else if( $r->session()->exists( "peering-matrix-vlan" ) ) {
             $vl = $r->session()->get( "peering-matrix-vlan" );
         } else {
-            $vl = config( "identity.vlans.default" );
+            $vl = Vlan::where( 'peering_matrix', 1 )->first();
+            
+            if( !$vl ) {
+                AlertContainer::push( 'There are no VLANs configured to be included in the peering matrix.', Alert::DANGER );
+                return redirect('');
+            }
+            
+            $vl = $vl->id;
         }
 
         if( $r->proto  !== null ) {
@@ -122,16 +129,12 @@ class PeeringMatrixController extends Controller
         }
 
 
-        if( !isset( $vlans[ $vl ] ) ){
-            $vl = config( "identity.vlans.default", null );
+        if( !isset( $vlans[ $vl ] ) ) {
+            AlertContainer::push( 'There are no VLANs set for the peering matrix. Please '
+                    . 'edit your VLAN(s) and set the "Peering Matrix" option to "Yes" for at least one of them.',
+            Alert::DANGER );
 
-            if( !isset( $vlans[ $vl ] ) ) {
-                AlertContainer::push( 'There is no default VLAN set for the peering matrix. Please '
-                    . 'set <code>IDENTITY_DEFAULT_VLAN</code> in your <code>.env</code> file to a valid DB ID '
-                    . 'of the VLAN you would like the peering matrix to show by default.', Alert::DANGER );
-
-                return redirect( '');
-            }
+            return redirect( '');
         }
 
         /** @var User $us */

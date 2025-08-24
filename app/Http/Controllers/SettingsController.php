@@ -1,9 +1,11 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,223 +25,186 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Former;
+use Exception;
 
-use IXP\Services\DotEnvWriter;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use IXP\Exceptions\Utils\DotEnvParserException;
+use IXP\Utils\DotEnv\DotEnvContainer;
+use IXP\Utils\DotEnv\DotEnvParser;
+use IXP\Utils\DotEnv\DotEnvWriter;
+use IXP\Utils\View\Alert\Alert;
+use IXP\Utils\View\Alert\Container as AlertContainer;
 
 /**
  * .env file configurator Controller
  * @author     Laszlo Kiss <laszlo@islandbridgenetworks.ie>
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers
- * @copyright  Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SettingsController extends Controller
 {
     protected array $fe_settings;
-
-
-    public function __construct(
-        protected Former $former,
-        protected DotEnvWriter $envWriter
-    ) {
-        $this->fe_settings = config( 'ixp_fe_settings');
+    
+    
+    public function __construct()
+    {
+        $this->fe_settings = config( 'ixp_fe_settings' );
     }
-
+    
     /**
      * Collect rules from the fe_settings configuration file which contains
      * arrays of 'panels' for the UI.
      *
-     * @param array $panels
      * @return array
      */
-    private function gatherRules(array $panels): array
+    private function gatherRules(): array
     {
         $rules = [];
-        foreach($panels as $panel) {
-            foreach($panel["fields"] as $label => $field) {
-                if(isset($field["rules"]) && $field["rules"] !== '') {
-                    $rules[$label] = $field["rules"];
+        
+        foreach( $this->fe_settings[ "panels" ] as $panel ) {
+            foreach( $panel[ "fields" ] as $label => $field ) {
+                if( isset( $field[ "rules" ] ) && $field[ "rules" ] !== '' ) {
+                    $rules[ $label ] = $field[ "rules" ];
                 }
             }
         }
+        
         return $rules;
     }
-
-    /**
-     * Replace substitution in value
-     *
-     * @param string|null $value
-     * @param array $attributes
-     *
-     * @return string|null
-     */
-    private function patternReplace(string|null $value,array $attributes): string|null
-    {
-        // check value: if it is points to another value grab that and replace it
-        preg_match_all('/\${([\w\.]+)}/',$value,$matches);
-        if (count($matches) > 0) {
-            $search = $matches[0];
-            $replace = [];
-            foreach($matches[1] as $key) {
-                $replace[] = $attributes[$key]["value"] ?: '';
-            }
-            $value = str_replace($search,$replace,$value);
-        }
-        return $value;
-    }
-
-    /**
-     * Display the form to update the .env
-     */
-    private function createForm(): string
-    {
-        $envValues = $this->envWriter->getVariables();
-
-        $form = $this->former::open()->method('POST')
-            ->id('envForm')
-            ->action(route('settings@update'))
-            ->customInputWidthClass( 'col-8' )
-            ->customLabelWidthClass( 'col-4' )
-            ->actionButtonsCustomClass( "grey-box")
-            ->rules($this->gatherRules($this->fe_settings["panels"]));
-
-        $form .= '<ul class="tabNavMenu" id="envFormTabs">';
-        $first = true;
-        $tabContents = [];
-
-        foreach($this->fe_settings["panels"] as $panel => $content) {
-            $form .= '<li>'
-                .'<button class="tabButton'.($first ? ' active' : '').'" id="'.$panel.'-tab" data-target="#'.$panel.'-content" type="button">'.$content["title"].'</button></li>';
-
-            $tab = '<div class="tabPanel'.($first ? ' active' : '').'" id="'.$panel.'-content" role="tabpanel" aria-labelledby="'.$panel.'-content">';
-
-            if(isset($content["description"]) && $content["description"] !== "") {
-                $tab .= '<div class="alert alert-info" role="alert"><div class="d-flex align-items-center"><div class="text-center"><i class="fa fa-question-circle fa-2x"></i></div><div class="col-sm-12">'.$content["description"].'</div></div></div>';
-            }
-
-            if(isset($content["fields"]) && count($content["fields"])) {
-
-                foreach($content["fields"] as $field => $param) {
-                    $title = $param["name"];
-                    if(isset($param["docs_url"]) && $param["docs_url"]) {
-                        $title .= '<a href="'.$param["docs_url"].'" target="_blank"><i class="ml-2 fa fa-external-link"></i></a>';
-                    }
-
-                    // value comes from config, not .env. Config includes defaults not covered by .env and so
-                    // using .env could overwrite defaults.
-                    $value = config( $param['config_key'] );
-
-                    switch($param["type"]) {
-
-                        case 'radio':
-                            if( isset( $param["invert"] ) && $param["invert"] ) {
-                                $value = !$value;
-                            }
-                            $input = Former::checkbox($field)->label($title)->check( $value );
-                            break;
-
-                        case 'select':
-                            if($param["options"]["type"] === 'array') {
-                                $options = $param["options"]["list"];
-                            } else if($param["options"]["type"] === 'countries') {
-                                $options = $this->getCountriesSelection();;
-                            } else {
-                                $options = $this->getSelectOptions($param["options"]["list"]);
-                            }
-
-                            $input = Former::select($field)->label($title)->options($options,$value)->placeholder('Select an Option')->addClass( 'chzn-select' );
-                            break;
-
-                        case 'textarea':
-                            $value = $this->patternReplace($value,$envValues);
-
-                            $input = Former::textarea($field)->label($title)->value($value);
-                            break;
-
-                        default: // text
-                            $value = $this->patternReplace($value,$envValues);
-                            $input = Former::text($field)->label($title)->value($value);
-                    }
-
-                    $tab .= '<div class="inputWrapper">'.$input;
-
-                    if(isset($param["help"]) && $param["help"] !== '') {
-                        $tab .= '<div class="small"><i class="fa fa-info-circle tw-text-blue-600"></i> '.$param["help"].'</div>';
-                    }
-
-                    $tab .= '</div>';
-                }
-            }
-
-            $tab .= '</div>';
-            $tabContents[] = $tab;
-            $first = false;
-        }
-
-
-        $form .= '</ul><div class="tabContent" id="envFormTabContents">';
-        $form .= implode('',$tabContents).'</div>';
-        $form .= $this->former::actions(
-            Former::primary_button( 'Save Changes' )->id('updateButton')->class( "mb-2 mb-sm-0" )
-        );
-        $form .= $this->former::close();
-        return $form;
-    }
-
-
+    
+    
     /**
      * Display the form to edit an object
      */
-    protected function index(): \Illuminate\Contracts\View\View
+    protected function index(): View
     {
+        try {
+            $this->checkIfDotEnvIsCompatible();
+        } catch( Exception $e ) {
+            
+            AlertContainer::push( $e->getMessage(), Alert::DANGER );
+            
+            return view( 'settings.compatibility' )->with( [
+                'exception' => $e,
+            ] );
+        }
+        
         return view( 'settings.index' )->with( [
-            'form' => $this->createForm(),
+            'settings' => $this->fe_settings,
+            'rules'    => [], //$this->gatherRules(),
         ] );
     }
-
+    
+    
+    /**
+     * @throws DotEnvParserException
+     * @throws Exception
+     */
+    private function checkIfDotEnvIsCompatible()
+    {
+        if( !file_exists( base_path( '.env' ) ) ) {
+            throw new Exception( "The .env file is missing. Please create it and try again." );
+        }
+        
+        if( !is_writable( base_path( '.env' ) ) ) {
+            throw new Exception( "The .env file is can not be written to. Please check the file permissions and try again." );
+        }
+        
+        if( !( $env = file_get_contents( base_path( '.env' ) ) ) ) {
+            throw new Exception( "The .env file is empty. Please add some settings and try again." );
+        }
+        
+        new DotEnvParser( $env )->parse();
+    }
+    
+    /**
+     * @throws DotEnvParserException
+     * @throws Exception
+     */
+    private function loadDotEnv(): DotEnvContainer
+    {
+        if( !file_exists( base_path( '.env' ) ) ) {
+            throw new Exception( "The .env file is missing. Please create it and try again." );
+        }
+        
+        if( !( $env = file_get_contents( base_path( '.env' ) ) ) ) {
+            throw new Exception( "The .env file is empty. Please add some settings and try again." );
+        }
+        
+        
+        return new DotEnvContainer( new DotEnvParser( $env )->parse()->settings() );
+    }
+    
+    /**
+     * @throws Exception
+     */
+    private function saveDotEnv( string $dotEnv ): void
+    {
+        if( !file_exists( base_path( '.env' ) ) ) {
+            throw new Exception( "The .env file is missing. Please create it and try again." );
+        }
+        
+        if( !is_writable( base_path( '.env' ) ) ) {
+            throw new Exception( "The .env file is can not be written to. Please check the file permissions and try again." );
+        }
+        
+        if( !( file_put_contents( base_path( '.env' ), $dotEnv ) ) ) {
+            throw new Exception( "Could not write to the .env file. Please check the file permissions and try again." );
+        }
+    }
+    
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
      * @param Request $request
-     *
-     * @return string[]
-     *
-     * @throws
-     *
-     * @psalm-return array{status: 'success', message: 'Modification done'}
+     * @return RedirectResponse
      */
-    public function update( Request $request ): array
+    public function update( Request $request ): RedirectResponse
     {
-        $changes = $request->all();
+        $validated = $request->validate( $this->gatherRules() );
 
-        foreach($this->fe_settings["panels"] as $panel) {
-            foreach($panel["fields"] as $label => $field) {
-                switch($field["type"]) {
-                    case 'radio':
-                        $value = $changes[ $label ] === '1';
-                        if( isset( $field["invert"] ) && $field["invert"] ) {
-                            $value = !$value;
-                        }
-
-                        $this->envWriter->set($field["dotenv_key"],$value ? "true" : "false");
-                        break;
-                    default:
-                        if(!isset($changes[$label]) || $changes[$label] === NULL || $changes[$label] === '') {
-                            $this->envWriter->disable($field["dotenv_key"]);
-                        } else {
-                            $this->envWriter->set($field["dotenv_key"],$changes[$label]);
-                        }
+        try {
+            // only interested in saving settings where the value has changed
+            $dotenv = $this->loadDotEnv();
+            
+            foreach( $this->fe_settings[ "panels" ] as $panel ) {
+                foreach( $panel[ "fields" ] as $fname => $fconfig ) {
+                    
+                    $orig = config( $fconfig[ "config_key" ] );
+                    if( isset( $fconfig[ "invert" ] ) && $fconfig[ "invert" ] ) {
+                        $orig = !$orig;
+                    }
+                    
+                    if( !isset( $validated[ $fname ] ) || $validated[ $fname ] == $orig ) {
+                        continue;
+                    }
+                    
+                    // update dotenv container
+                    if( $dotenv->isset( $fconfig[ 'dotenv_key' ] ) ) {
+                        $dotenv->updateValue( $fconfig[ 'dotenv_key' ], $validated[ $fname ] );
+                    } else {
+                        // include blank line
+                        $dotenv->set( null, null, null );
+                        $dotenv->set( $fconfig[ 'dotenv_key' ], $validated[ $fname ] );
+                    }
+                    
                 }
-
             }
+            
+            $this->saveDotEnv( new DotEnvWriter( $dotenv->settings() )->generateContent() );
+            
+        } catch( DotEnvParserException|Exception $e ) {
+            AlertContainer::push( $e->getMessage(), Alert::DANGER );
+            return redirect()->back();
         }
-        $this->envWriter->write();
-
-        return ["status" => "success", "message" => "Modification done"];
+        
+        AlertContainer::push( 'Settings have been successfully updated', Alert::SUCCESS );
+        return redirect( route( 'settings@edit') );
     }
-
+    
 }

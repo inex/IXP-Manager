@@ -171,11 +171,11 @@ interface Helpdesk
      * @param int       $helpdeskId The ID of the helpdesk's user object
      * @param Contact   $contact    An IXP Manager contact as returned by `userFind()`
      *
-     * @return Contact Decoupled contact object with `helpdesk_id`
+     * @return Contact|false Decoupled contact object with `helpdesk_id`
      *
      * @throws ApiException
      */
-    public function userUpdate( int $helpdeskId, Contact $contact ): Contact;
+    public function userUpdate( int $helpdeskId, Contact $contact ): Contact|false;
 
     /**
      * Find an user by our own contact ID

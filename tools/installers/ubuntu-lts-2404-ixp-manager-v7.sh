@@ -384,19 +384,19 @@ APP_KEY=
 APP_DEBUG=false
 
 # Web address - required for sending emails via CLI scripts, etc.
-APP_URL="http://${IPADDRESS}"
+APP_URL=http://${IPADDRESS}
 
 # See http://php.net/manual/en/timezones.php for a list of timezones:
-APP_TIMEZONE="UTC"
+APP_TIMEZONE=UTC
 
 # Laravel log format (strorage/log). See config/log.php
-APP_LOG="single"
+APP_LOG=single
 
 # MySQL Connection Details
-DB_HOST="127.0.0.1"
-DB_DATABASE="${DBNAME}"
-DB_USERNAME="${DBUSER}"
-DB_PASSWORD="${MYSQL_IXPM_PW}"
+DB_HOST=127.0.0.1
+DB_DATABASE=${DBNAME}
+DB_USERNAME=${DBUSER}
+DB_PASSWORD=${MYSQL_IXPM_PW}
 
 #######################################################################################
 # Identity. Used throughout IXP Manager in various ways.
@@ -405,35 +405,35 @@ DB_PASSWORD="${MYSQL_IXPM_PW}"
 
 
 # Used in various emails, etc.
-IDENTITY_SITENAME="${IXPSNAME}  IXP Manager"
-APP_NAME="\${IDENTITY_SITENAME}"
+IDENTITY_SITENAME="${IXPSNAME} IXP Manager"
+APP_NAME="${IXPSNAME} IXP Manager"
 # Shown in title bar of web portal.
-IDENTITY_TITLENAME="\${IDENTITY_SITENAME}"
+IDENTITY_TITLENAME="${IXPSNAME} IXP Manager"
 
 IDENTITY_LEGALNAME="${IXPNAME}"
-IDENTITY_CITY="Cork"
-IDENTITY_COUNTRY="IE"
-IDENTITY_ORGNAME="\${IDENTITY_LEGALNAME}"
+IDENTITY_CITY=Cork
+IDENTITY_COUNTRY=IE
+IDENTITY_ORGNAME="${IXPNAME}"
 
 # As well as uses in other places, emails are sent from the following name/email:
-IDENTITY_NAME="\${IDENTITY_LEGALNAME}"
+IDENTITY_NAME="${IXPNAME}"
 IDENTITY_EMAIL="${IXPEMAIL}"
 
-IDENTITY_TESTEMAIL="\${IDENTITY_EMAIL}"
+IDENTITY_TESTEMAIL="${IXPEMAIL}"
 
 # Used on some traffic graphs:
-IDENTITY_WATERMARK="\${IDENTITY_SITENAME}"
+IDENTITY_WATERMARK="${IXPSNAME} IXP Manager"
 
-IDENTITY_SUPPORT_EMAIL="\${IDENTITY_EMAIL}"
+IDENTITY_SUPPORT_EMAIL="${IXPEMAIL}"
 IDENTITY_SUPPORT_PHONE="${IXPPHONE}"
 IDENTITY_SUPPORT_HOURS="8x5"
 
 # IXP Manager will need to send alert emails. This is the recipient email for these alerts.
-IDENTITY_ALERTS_EMAIL=\${IDENTITY_SUPPORT_EMAIL}
+IDENTITY_ALERTS_EMAIL="${IXPEMAIL}"
 IDENTITY_ALERTS_NAME="IXP Manager Alerts"
 
 
-IDENTITY_BILLING_EMAIL="\${IDENTITY_EMAIL}"
+IDENTITY_BILLING_EMAIL="${IXPEMAIL}"
 IDENTITY_BILLING_PHONE="${IXPPHONE}"
 IDENTITY_BILLING_HOURS="8x5"
 
@@ -442,11 +442,7 @@ IDENTITY_CORPORATE_URL="${IXPWWW}"
 
 # The logo to show on the login page. Should be a URL.
 # (the example here works - the leading '//' means the browser should match http/https based on the web page)
-IDENTITY_BIGLOGO="https://www.ixpmanager.org/images/logos/ixp-manager.png"
-
-# For some actions (e.g. peering matrix) we need to know what VLAN to show by default.
-# This is the vlan.id database entry (i.e. not the VLAN number/tag!)
-IDENTITY_DEFAULT_VLAN=1
+IDENTITY_BIGLOGO=https://www.ixpmanager.org/images/logos/ixp-manager.png
 
 
 #########################################################################################
@@ -648,14 +644,6 @@ IXP_IRRDB_BGPQ3_PATH=/usr/bin/bgpq3
 # IXP_RPKI_RTR2_PORT=3323
 
 #########################################################################################
-### Development Helpers
-###
-
-# Disable HTML5 validation to test PHP code based request validators
-# FORMER_LIVE_VALIDATION=false
-
-
-#########################################################################################
 ### PeeringDB OAuth
 ###
 ### https://docs.ixpmanager.org/latest/features/peeringdb-oauth/
@@ -672,9 +660,6 @@ IXP_IRRDB_BGPQ3_PATH=/usr/bin/bgpq3
 ### See: https://docs.ixpmanager.org/latest/features/routers/#filtering-known-transit-networks
 # IXP_NO_TRANSIT_ASNS_EXCLUDE=65501,65502
 # IXP_NO_TRANSIT_ASNS_OVERRIDE=65501,65502,65503
-
-# Full slash 'description' with /slashes\ and "quotes"
-
 
 END_ENV
 

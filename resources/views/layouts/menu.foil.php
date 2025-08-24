@@ -412,11 +412,13 @@
                 IXP UTILITIES
             </h6>
 
-            <li class="<?= !request()->is( 'settings/*' ) ?: 'active' ?>">
-                <a href="<?= route( 'settings@edit' ) ?>" class="nav-link">
-                    Settings
-                </a>
-            </li>
+            <?php if( !config( 'ixp_fe.frontend.disabled.settings' ) ): ?>
+                <li class="<?= !request()->is( 'settings/*' ) ?: 'active' ?>">
+                    <a href="<?= route( 'settings@edit' ) ?>" class="nav-link">
+                        Settings
+                    </a>
+                </li>
+            <?php endif; ?>
 
             <?php if( Gate::allows( 'viewHorizon' ) && config( 'queue.default' ) === 'redis' ): ?>
                 <li>

@@ -95,6 +95,7 @@ return [
             'ripe-atlas'                => true, // not ready for use yet
             'rs-prefixes'               => env( 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',       true  ),
             'rs-filters'                => env( 'IXP_FE_FRONTEND_DISABLED_RS_FILTERS',        true  ),
+            'settings'                  => env( 'IXP_FE_FRONTEND_DISABLED_SETTINGS',          false ),
         ],
     ],
 

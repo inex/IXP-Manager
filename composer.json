@@ -50,12 +50,13 @@
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.0",
         "fakerphp/faker": "^1.23",
+        "laravel/boost": "^1.0",
         "laravel/dusk": "^8.0",
         "mockery/mockery": "^1.6",
         "phpunit/phpunit": "^11.5.3",
-        "vimeo/psalm": "^6.0",
         "psalm/plugin-laravel": "^3.0.3",
-        "staudenmeir/dusk-updater": "^1.5"
+        "staudenmeir/dusk-updater": "^1.5",
+        "vimeo/psalm": "^6.0"
     },
     "support": {
         "issues": "https://www.ixpmanager.org/support",

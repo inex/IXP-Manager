@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Countries;
+use Auth;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -140,33 +140,5 @@ class Controller extends BaseController
         return $privs;
     }
 
-    /**
-     * Get an array of countries for a select dropdown.
-     *
-     * @return array in form [ISO 2-letter Code] => "Name"
-     */
-    protected function getCountriesSelection(): array {
-        $countries = Countries::getList();
-        $list = [];
-        foreach($countries as $country) {
-            $list[$country['iso_3166_2']] = $country['name'];
-        }
-        return $list;
-    }
 
-    /**
-     * create an option list for a select input element
-     * @param array $data array of query data eg. ["model" => 'User', "keys" => 'id', "values" => 'name']
-     * @return array
-     */
-    protected function getSelectOptions( array $data): array {
-        $modelName = "IXP\\Models\\" . $data["model"];
-        $model = new $modelName;
-        $rawList = $model::select($data["keys"],$data["values"])->get();
-        $list = [];
-        foreach($rawList as $raw) {
-            $list[$raw[$data["keys"]]] = $raw[$data["values"]];
-        }
-        return $list;
-    }
 }
