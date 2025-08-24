@@ -413,8 +413,8 @@
             </h6>
 
             <?php if( !config( 'ixp_fe.frontend.disabled.settings' ) ): ?>
-                <li class="<?= !request()->is( 'settings/*' ) ?: 'active' ?>">
-                    <a href="<?= route( 'settings@edit' ) ?>" class="nav-link">
+                <li class="<?= !request()->is( 'settings*' ) ?: 'active' ?>">
+                    <a href="<?= route( 'settings@index' ) ?>" class="nav-link">
                         Settings
                     </a>
                 </li>

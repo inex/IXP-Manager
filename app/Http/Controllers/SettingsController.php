@@ -204,7 +204,7 @@ class SettingsController extends Controller
         }
         
         AlertContainer::push( 'Settings have been successfully updated', Alert::SUCCESS );
-        return redirect( route( 'settings@edit') );
+        return redirect( route( 'settings@index') );
     }
     
 }

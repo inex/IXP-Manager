@@ -294,7 +294,7 @@ Route::get( 'search', 'SearchController@do' )->name( 'search' );
 /// .ENV Configurator
 ///
 Route::group( [ 'prefix' => 'settings' ], function() {
-    Route::get( 'edit', 'SettingsController@index' )->name( 'settings@edit' );
+    Route::get( '', 'SettingsController@index' )->name( 'settings@index' );
     Route::post( 'update', 'SettingsController@update' )->name( 'settings@update' );
 });
 
