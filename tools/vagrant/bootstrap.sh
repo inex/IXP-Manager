@@ -42,7 +42,7 @@
 
 echo "Updating packages...."
 apt-get update &>/dev/null
-#apt-get dist-upgrade -y
+apt-get dist-upgrade -y
 
 # Defaults for MySQL and phpMyAdmin:
 echo 'mysql-server mysql-server/root_password password password' | debconf-set-selections
@@ -56,19 +56,28 @@ echo 'mrtg mrtg/conf_mods boolean true' | debconf-set-selections
 echo 'mrtg mrtg/create_www boolean true' | debconf-set-selections
 echo 'mrtg mrtg/fix_permissions boolean true' | debconf-set-selections
 
-echo "Installng MySQL..."
-apt-get install -y mysql-server mysql-client  &>/dev/null
+# ensure basic tools are installed
+apt-get install -yq ubuntu-minimal openssl wget net-tools
 
-echo "Installing apache, php, etc..."
-apt-get install -y apache2 php8.3 php8.3-intl php8.3-mysql php-rrd php8.3-cgi php8.3-cli     \
-    php8.3-snmp php8.3-curl php8.3-memcached libapache2-mod-php8.3 bash-completion \
-    php8.3-mysql memcached snmp php8.3-mbstring php8.3-xml php8.3-gd bgpq3 php8.3-memcache   \
-    unzip php8.3-zip git php8.3-yaml php8.3-bcmath libconfig-general-perl joe      \
-    libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl  \
-    phpmyadmin  &>/dev/null
+# We need PHP 8.4 for IXP Manager v7 and we need to get this from
+# Ondrej's super PPA:
+apt-get install -yq software-properties-common
+add-apt-repository -y ppa:ondrej/php
 
-# php8.3-ds -> add back when fixed in 24.04
+echo "Installing mysql, apache, php, etc..."
+apt-get install -y apache2 php8.4 php8.4-intl php8.4-mysql php8.4-rrd php8.4-cgi php8.4-cli \
+    php8.4-snmp php8.4-curl  php8.4-memcached libapache2-mod-php8.4 mysql-server            \
+    mysql-client memcached snmp php8.4-mbstring php8.4-xml php8.4-gd bgpq3 unzip git joe    \
+    php8.4-bcmath bgpq3 php8.4-memcache unzip php8.4-zip git php8.4-yaml phpmyadmin         \
+    php8.4-ds libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl        \
+    libnetaddr-ip-perl rrdtool librrds-perl curl bash-completion &>/dev/null
 
+## Setup bird3 repo on Ubuntu 24.04 LTS
+#apt-get -y install apt-transport-https ca-certificates wget
+#wget -O /usr/share/keyrings/cznic-labs-pkg.gpg https://pkg.labs.nic.cz/gpg
+#echo "deb [signed-by=/usr/share/keyrings/cznic-labs-pkg.gpg] https://pkg.labs.nic.cz/bird3 noble main" | sudo tee /etc/apt/sources.list.d/cznic-labs-bird3.list
+#apt-get update
+#apt-get install -yq bird3
 
 
 ####################################################################################
