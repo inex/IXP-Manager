@@ -28,7 +28,7 @@ To install on this platform, please proceed as follows:
 sudo su -
 
 # download the installation script
-wget https://github.com/inex/IXP-Manager/raw/master/tools/installers/ubuntu-lts-2404-ixp-manager-v7.sh
+wget https://github.com/inex/IXP-Manager/raw/release-v7/tools/installers/ubuntu-lts-2404-ixp-manager-v7.sh
 
 # and execute it:
 bash ./ubuntu-lts-2404-ixp-manager-v7.sh
