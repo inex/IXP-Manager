@@ -71,7 +71,7 @@ return [
                                         module allows you to record what equipment console server ports connect to.
                                         For larger exchanges, a modern DCIM system such as
                                         <a href="https://netboxlabs.com/dcim/" target="_blank">NetBox</a>
-                                        is recrommended.',
+                                        is recommended.',
                 ],
 
                 'cust-kit'                  => [
@@ -84,7 +84,7 @@ return [
                     'docs_url'   => null,
                     'help'       => 'If you provide equipment colocation services for members, the module will allow you to 
                                         maintain an inventory of this. For larger exchanges, a modern DCIM system such as
-                                        <a href="https://netboxlabs.com/dcim/" target="_blank">NetBox</a> is recrommended.',
+                                        <a href="https://netboxlabs.com/dcim/" target="_blank">NetBox</a> is recommended.',
                 ],
 
                 'logs'                      => [
@@ -133,8 +133,8 @@ return [
                     'rules'      => 'boolean',
                     'name'       => 'Filtered Prefixes',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/route-servers/#displaying-filtered-prefixes',
-                    'help'       => 'This feature provides member\'s a live view of member prefixes filtered on the IXP\'s route servers.
-                                        It requires that you are using IXP Manager\'s Bird v2 route server configuration and
+                    'help'       => 'This feature provides members a live view of member prefixes filtered on the IXP\'s route servers.
+                                        It requires that you are using IXP Manager\'s BIRD v2 route server configuration and
                                         have enabled the looking glass.'
                 ],
 
@@ -146,8 +146,8 @@ return [
                     'rules'      => 'boolean',
                     'name'       => 'Looking Glass',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/looking-glass/',
-                    'help'       => 'IXP Manager supports full looking glass features when using the Bird BGP daemon and 
-                                        Bird\'s Eye (a simple secure micro service for querying Bird). This feature is an
+                    'help'       => 'IXP Manager supports full looking glass features when using the BIRD BGP daemon and 
+                                        Bird\'s Eye (a simple secure micro service for querying BIRD). This feature is a
                                         required element of some other features such as the filtered prefixes.',
                 ],
 
@@ -194,7 +194,7 @@ return [
                     'name'       => 'Peering Matrix',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/peering-matrix/',
                     'help'       => 'The peering matrix system builds up a list of who is peering with whom over your IXP. You 
-                                        will need sflow running with a 
+                                        will need sFlow running with a 
                                         <a href="https://docs.ixpmanager.org/latest/features/peering-matrix/#data-source-sflow-bgp-session-detection" 
                                         target="_blank">BGP detector</a> running.',
                 ],
@@ -485,7 +485,7 @@ return [
                     'name'       => "Enforce 2FA for Users >=",
                     'rules'      => 'required|in:1,2,3,4',
                     'docs_url'   => 'https://docs.ixpmanager.org/usage/authentication/#enforcing-2fa-for-users',
-                    'help'       => 'Chose between allowing users to opt into 2fa, or requiring all users with minimum selected previlege.',
+                    'help'       => 'Choose between allowing users to opt into 2fa, or requiring all users with minimum selected privilege.',
                 ],
 
                 'secure_session_cookie' => [
@@ -682,7 +682,7 @@ return [
         'admin_options' => [
 
             'title'       => 'Admin',
-            'description' => "Various administrator related options.",
+            'description' => "Various administrator-related options.",
 
             'fields' => [
 
@@ -730,7 +730,7 @@ return [
                     'rules'      => 'integer|between:1,32',
                     'name'       => 'Minimum IPv4 Subnet Size',
                     'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/route-servers/',
-                    'help'       => 'Minimum ipv4 subnet size accepted by route servers. Should be no more specific than a /24.',
+                    'help'       => 'Minimum IPv4 subnet size accepted by route servers. Should be no more specific than a /24.',
                 ],
 
                 'rs_min_v6_subnet_size' => [
@@ -740,7 +740,7 @@ return [
                     'rules'      => 'integer|between:1,128',
                     'name'       => 'Minimum IPv6 Subnet Size',
                     'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/route-servers/',
-                    'help'       => 'Minimum ipv6 subnet size accepted by route servers. Should be no more specific than a /48.',
+                    'help'       => 'Minimum IPv6 subnet size accepted by route servers. Should be no more specific than a /48.',
                 ],
 
 
