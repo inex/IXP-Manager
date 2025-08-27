@@ -12,7 +12,7 @@
  *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
  *
  * You should have received a copy of the GNU General Public License v2.0
@@ -54,7 +54,7 @@ return [
                     'name'       => 'AS112 functionality',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/as112/',
                     'help'       => 'AS112 is a service which provides anycast reverse DNS lookup for several prefixes, 
-                                        particularly rfc1918 space. If you are providing an AS112 service to your members,
+                                        particularly RFC 1918 space. If you are providing an AS112 service to your members,
                                         this feature enables UI elements for that.',
                 ],
 
@@ -66,9 +66,9 @@ return [
                     'rules'      => 'boolean',
                     'name'       => 'Console Server Connections',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/console-servers/', // can be null
-                    'help'       => 'An IXP would typically have out of band access (for emergencies, firmware upgrades, 
+                    'help'       => 'An IXP would typically have out-of-band access (for emergencies, firmware upgrades, 
                                         etc) to critical infrastructure devices by means of a console server. This 
-                                        module allows you to record what equipment console server ports connect to.
+                                        module allows you to record which equipment console server ports connect to.
                                         For larger exchanges, a modern DCIM system such as
                                         <a href="https://netboxlabs.com/dcim/" target="_blank">NetBox</a>
                                         is recommended.',
@@ -147,8 +147,8 @@ return [
                     'name'       => 'Looking Glass',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/looking-glass/',
                     'help'       => 'IXP Manager supports full looking glass features when using the BIRD BGP daemon and 
-                                        Bird\'s Eye (a simple secure micro service for querying BIRD). This feature is a
-                                        required element of some other features such as the filtered prefixes.',
+                                        Bird\'s Eye (a simple, secure micro service for querying BIRD). This feature is a
+                                        required element of some other features, such as the filtered prefixes.',
                 ],
 
                 'login_history' => [
@@ -158,7 +158,7 @@ return [
                     'invert'     => true,
                     'rules'      => 'boolean',
                     'name'       => "Login History",
-                    'help'       => 'Record user logins and view it in the UI. Expunged after six months by default.',
+                    'help'       => 'Record user logins and view them in the UI. Expunged after six months by default.',
                 ],
 
 
@@ -207,7 +207,7 @@ return [
                     'rules'      => 'boolean',
                     'name'       => 'PHP Info',
                     'docs_url'   => null,
-                    'help'       => 'The PHP Info option under IXP Utilities on the left hand menu. This is available to 
+                    'help'       => 'The PHP Info option under IXP Utilities on the left-hand menu. This is available to 
                                         administrators only and shows the output of <code>phpinfo()</code>.',
                 ],
 
@@ -308,7 +308,7 @@ return [
                     'rules'      => 'nullable|max:255',
                     'name'       => 'City',
                     'docs_url'   => null,
-                    'help'       => 'This is a fall back location, typically only used if it cannot be inferred from your facility settings.',
+                    'help'       => 'This is a fallback location, typically only used if it cannot be inferred from your facility settings.',
                 ],
                 'location_country' => [
                     'config_key' => 'identity.location.country',
@@ -318,7 +318,7 @@ return [
                     'rules'      => 'nullable|size:2',
                     'name'       => 'Country',
                     'docs_url'   => null,
-                    'help'       => 'This is a fall back location, typically only used if it cannot be inferred from your facility settings.',
+                    'help'       => 'This is a fallback location, typically only used if it cannot be inferred from your facility settings.',
                 ],
                 'email'            => [
                     'config_key' => 'identity.email',
@@ -358,7 +358,7 @@ return [
                     'rules'      => 'nullable|max:255',
                     'name'       => 'Alert Recipient Name',
                     'docs_url'   => null,
-                    'help'       => 'IXP Manager will need to send alert emails. This is the recipient name for these alerts. 
+                    'help'       => 'IXP Manager will need to send alert emails. This is the recipient\'s name for these alerts. 
                                         E.g. MyIXP Ops Team',
                 ],
 
@@ -369,7 +369,7 @@ return [
                     'rules'      => 'nullable|max:255|email',
                     'name'       => 'Alert Recipient Email Address',
                     'docs_url'   => null,
-                    'help'       => 'IXP Manager will need to send alert emails. This is the recipient email for these alerts. 
+                    'help'       => 'IXP Manager will need to send alert emails. This is the recipient\'s email for these alerts. 
                                         E.g. ops@example.com',
                 ],
 
@@ -389,7 +389,7 @@ return [
                     'rules'      => 'nullable|max:100',
                     'name'       => 'Watermark',
                     'docs_url'   => null,
-                    'help'       => 'Printed on some graphes, etc. E.g., "INEX, Ireland"',
+                    'help'       => 'Printed on some graphs, etc. E.g., "INEX, Ireland"',
                 ],
                 'support_email'    => [
                     'config_key' => 'identity.support_email',
@@ -462,7 +462,7 @@ return [
         'auth' => [
 
             'title'       => 'Authentication',
-            'description' => "Authentication related options.",
+            'description' => "Authentication-related options.",
 
             'fields' => [
 
@@ -473,7 +473,7 @@ return [
                     'rules'      => 'boolean',
                     'name'       => 'Two-factor Authentication (2fa) Enabled',
                     'docs_url'   => 'https://docs.ixpmanager.org/usage/authentication/#two-factor-authentication-2fa',
-                    'help'       => 'If you disable this, 2fa will not be an option for securing users login, and any users with existing 2fa will not be required to confirm it on login.',
+                    'help'       => 'If you disable this, 2fa will not be an option for securing user logins, and any users with existing 2fa will not be required to confirm it on login.',
                 ],
 
                 'ixpm_2fa_enforce_for_users' => [
@@ -505,7 +505,7 @@ return [
                     'rules'      => 'boolean',
                     'name'       => 'PeeringDB OAuth Enabled',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/peeringdb-oauth/',
-                    'help'       => 'Enable OAuth with PeeringDB. Note a number of additional settings below are required.',
+                    'help'       => 'Enable OAuth with PeeringDB. Note several additional settings below are required.',
                 ],
 
                 'peeringdb_oauth_client_id'          => [
@@ -546,7 +546,7 @@ return [
         'third_party' => [
 
             'title'       => '3rd Parties',
-            'description' => "Configuration options for third party services.",
+            'description' => "Configuration options for third-party services.",
 
             'fields' => [
 
@@ -558,9 +558,9 @@ return [
                     'rules'      => 'nullable|max:255',
                     'name'       => "PeeringDB API Key",
                     'docs_url'   => 'https://docs.peeringdb.com/howto/api_keys/',
-                    'help'       => "IXP Manager uses information from PeeringDB in a number of places. Setting an API
-                                        key is highly recommended so additional information can be accessed and so that
-                                        rate limited can be avoided.",
+                    'help'       => "IXP Manager uses information from PeeringDB in several places. Setting an API
+                                        key is highly recommended so that additional information can be accessed, and to
+                                        prevent rate limiting.",
                 ],
 
             ],
@@ -582,7 +582,7 @@ return [
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/ixf-export/',
                     'help'       => 'We strongly advise you <b>not</b> to disable public access if you are a standard IXP. Remember, the '
                                         . 'public version is essentially the same list as you would provide on your standard website\'s list of members. '
-                                        . 'If you disable this then only logged in users can access the IX-F export.',
+                                        . 'If you disable this, then only logged-in users can access the IX-F export.',
                 ],
 
                 'ixf_access_key'       => [
@@ -600,7 +600,7 @@ return [
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_RFC5398',
                     'type'       => 'radio',
                     'rules'      => 'boolean',
-                    'name'       => 'IX-F Export - Exclude rfc5398 ASNs',
+                    'name'       => 'IX-F Export - Exclude RFC 5398 ASNs',
                     'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#excluding-members',
                     'help'       => 'Excludes members with documentation ASNs (64496 - 64511, 65536 - 65551)',
                 ],
@@ -610,7 +610,7 @@ return [
                     'dotenv_key' => 'IXP_API_JSONEXPORTSCHEMA_EXCLUDE_RFC6996',
                     'type'       => 'radio',
                     'rules'      => 'boolean',
-                    'name'       => 'IX-F Export - Exclude rfc6996 ASNs',
+                    'name'       => 'IX-F Export - Exclude RFC 6996 ASNs',
                     'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/ixf-export/#excluding-members',
                     'help'       => 'Excludes members with private ASNs (64512 - 65534, 4200000000 - 4294967294)',
                 ],
@@ -752,7 +752,7 @@ return [
                     'rules'      => 'nullable|max:1024',
                     'name'       => 'Route Server Update Period',
                     //'docs_url'   => '',
-                    'help'       => "If you have enabled the route server community filtering via UI option, then your members will
+                    'help'       => "If you have enabled the route server community filtering via the UI option, then your members will
                                         need to know how often you update their configurations. The text you enter here will be 
                                         displayed on the route server filters page.",
                 ],
