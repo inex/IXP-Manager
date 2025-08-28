@@ -357,7 +357,6 @@ echo "Setting up Birdseye / looking glasses..."
 git clone https://github.com/inex/birdseye.git /srv/birdseye &>/dev/null
 cd /srv/birdseye
 git config --global --add safe.directory /srv/birdseye
-git checkout php83 &>/dev/null
 COMPOSER_ALLOW_SUPERUSER=1 composer install &>/dev/null
 
 cat >/etc/apache2/sites-enabled/birdseye.conf <<END_APACHE
