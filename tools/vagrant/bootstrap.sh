@@ -42,7 +42,7 @@
 
 echo "Updating packages...."
 apt-get update &>/dev/null
-#apt-get dist-upgrade -y
+apt-get dist-upgrade -y
 
 # Defaults for MySQL and phpMyAdmin:
 echo 'mysql-server mysql-server/root_password password password' | debconf-set-selections
@@ -56,19 +56,43 @@ echo 'mrtg mrtg/conf_mods boolean true' | debconf-set-selections
 echo 'mrtg mrtg/create_www boolean true' | debconf-set-selections
 echo 'mrtg mrtg/fix_permissions boolean true' | debconf-set-selections
 
-echo "Installng MySQL..."
-apt-get install -y mysql-server mysql-client  &>/dev/null
+# ensure basic tools are installed
+apt-get install -yq ubuntu-minimal openssl wget net-tools
 
-echo "Installing apache, php, etc..."
-apt-get install -y apache2 php8.3 php8.3-intl php8.3-mysql php-rrd php8.3-cgi php8.3-cli     \
-    php8.3-snmp php8.3-curl php8.3-memcached libapache2-mod-php8.3 bash-completion \
-    php8.3-mysql memcached snmp php8.3-mbstring php8.3-xml php8.3-gd bgpq3 php8.3-memcache   \
-    unzip php8.3-zip git php8.3-yaml php8.3-bcmath libconfig-general-perl joe      \
-    libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl  \
-    phpmyadmin  &>/dev/null
+# We need PHP 8.4 for IXP Manager v7 and we need to get this from
+# Ondrej's super PPA:
+apt-get install -yq software-properties-common
+add-apt-repository -y ppa:ondrej/php
 
-# php8.3-ds -> add back when fixed in 24.04
+echo "Installing mysql, apache, php, etc..."
+apt-get install -y apache2 php8.4 php8.4-intl php8.4-mysql php8.4-rrd php8.4-cgi php8.4-cli \
+    php8.4-snmp php8.4-curl  php8.4-memcached libapache2-mod-php8.4 mysql-server            \
+    mysql-client memcached snmp php8.4-mbstring php8.4-xml php8.4-gd bgpq3 unzip git joe    \
+    php8.4-bcmath bgpq3 php8.4-memcache unzip php8.4-zip git php8.4-yaml phpmyadmin         \
+    php8.4-ds libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl        \
+    libnetaddr-ip-perl rrdtool librrds-perl curl bash-completion &>/dev/null
 
+
+# Rather than packaged Bird on ubuntu which is a few versions behind, use NIX.CZ repo:
+
+# apt-get -y install bird2 &>/dev/null
+
+apt-get -y install apt-transport-https ca-certificates wget
+wget -O /usr/share/keyrings/cznic-labs-pkg.gpg https://pkg.labs.nic.cz/gpg
+echo "deb [signed-by=/usr/share/keyrings/cznic-labs-pkg.gpg] https://pkg.labs.nic.cz/bird2 noble main" > /etc/apt/sources.list.d/cznic-labs-bird2.list
+apt-get update
+apt-get install bird2
+
+
+## Setup bird3 repo on Ubuntu 24.04 LTS
+#apt-get -y install apt-transport-https ca-certificates wget
+#wget -O /usr/share/keyrings/cznic-labs-pkg.gpg https://pkg.labs.nic.cz/gpg
+#echo "deb [signed-by=/usr/share/keyrings/cznic-labs-pkg.gpg] https://pkg.labs.nic.cz/bird3 noble main" | sudo tee /etc/apt/sources.list.d/cznic-labs-bird3.list
+#apt-get update
+#apt-get install -yq bird3
+
+
+apt-get install -y
 
 
 ####################################################################################
@@ -234,16 +258,70 @@ sed -i 's/127.0.0.1 localhost/127.0.0.1 localhost swi1-fac1-1 swi1-fac2-1 swi2-f
 
 
 
+####################################################################################
+#######
+####### AS112 Testbed
+#######
+
+
+echo "Setting up as112 testbed..."
+
+# sigh, ubuntu installs a local resolver process. not sure i'll ever forgive them for this.
+#
+# start by stopping and removing it
+
+/usr/bin/systemctl stop systemd-resolved.service
+/usr/bin/systemctl disable systemd-resolved.service &>/dev/null
+dpkg --purge systemd-resolved &>/dev/null
+
+# remove and install a basic resolv.conf
+rm -f /etc/resolv.conf
+cat >/etc/resolv.conf <<END_RESOLV
+#
+# installed by IXP Manager vagrant bootstrap script
+
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+nameserver 2001:4860:4860::8888
+nameserver 2001:4860:4860::8844
+
+
+END_RESOLV
+
+# install powerdns
+apt-get -y install pdns-server pdns-backend-bind &>/dev/null
+systemctl stop pdns.service
+
+rm -rf /etc/powerdns/*
+cp /vagrant/tools/runtime/as112/powerdns/{pdns.conf,named.conf} /etc/powerdns
+mkdir /etc/powerdns/zones
+cp /vagrant/tools/runtime/as112/zones/* /etc/powerdns/zones
+chown -R pdns: /etc/powerdns/
+
+# add as112 and dname ip addresses
+
+/usr/sbin/ip address add 192.175.48.1/32  dev lo    # PRISONER.IANA.ORG
+/usr/sbin/ip address add 192.175.48.6/32  dev lo    # BLACKHOLE-1.IANA.ORG
+/usr/sbin/ip address add 192.175.48.42/32 dev lo    # BLACKHOLE-2.IANA.ORG
+/usr/sbin/ip address add 192.31.196.1/32  dev lo    # blackhole.as112.arpa (DNAME)
+
+/usr/sbin/ip address add 2620:4f:8000::1/128   dev lo    # PRISONER.IANA.ORG
+/usr/sbin/ip address add 2620:4f:8000::6/128   dev lo    # BLACKHOLE-1.IANA.ORG
+/usr/sbin/ip address add 2620:4f:8000::42/128  dev lo    # BLACKHOLE-2.IANA.ORG
+/usr/sbin/ip address add 2001:4:112::1/128     dev lo    # blackhole.as112.arpa (DNAME)
+
+systemctl start pdns.service
+
+# for testing
+apt-get -y install php-net-dns2 &>/dev/null
+
+
 
 ####################################################################################
 #######
 ####### Route Servers / Collectors / AS112 / Clients
 
 echo "Setting up router testbed..."
-
-apt-get -y install bird2 &>/dev/null
-/usr/bin/systemctl stop bird.service &>/dev/null
-/usr/bin/systemctl disable bird.service &>/dev/null
 
 IPS=`mysql --defaults-extra-file=/etc/mysql/ixpmanager.cnf --skip-column-names  --silent --raw ixp \
   -e 'SELECT DISTINCT ipaddr.address FROM ipv4address as ipaddr JOIN vlaninterface AS vli ON vli.ipv4addressid = ipaddr.id'`
@@ -350,6 +428,8 @@ END_CRON
 
 
 
+
+
 ####################################################################################
 #######
 ####### Startup script on reboot
@@ -398,12 +478,14 @@ cat <<"END_ASCII"
              |___/                                             |___/
 
 
- _     ______ _____ _
-| |    |  ___|  __ \ |
-| |    | |_  | |  \/ |
-| |    |  _| | | __| |
-| |____| |   | |_\ \_|
-\_____/\_|    \____(_)
+ _          _   _        __ _       _
+| |        | | ( )      / _| |     | |
+| |     ___| |_|/ ___  | |_| |_   _| |
+| |    / _ \ __| / __| |  _| | | | | |
+| |___|  __/ |_  \__ \ | | | | |_| |_|
+\_____/\___|\__| |___/ |_| |_|\__, (_)
+                               __/ |
+                              |___/
 
 END_ASCII
 
