@@ -28,8 +28,6 @@ use Illuminate\Database\Eloquent\{
     Relations\BelongsTo
 };
 
-use Illuminate\Support\Facades\DB;
-
 use IXP\Traits\Observable;
 
 /**
@@ -167,13 +165,13 @@ class Router extends Model
     /**
      * CONST PROTOCOL
      */
-    public const PROTOCOL_IPV4                 = '4';
-    public const PROTOCOL_IPV6                 = '6';
+    public const string PROTOCOL_IPV4                 = '4';
+    public const string PROTOCOL_IPV6                 = '6';
 
     /**
      * @var array Router Protocols
      */
-    public static $PROTOCOLS = [
+    public static array $PROTOCOLS = [
         self::PROTOCOL_IPV4     =>      'IPv4',
         self::PROTOCOL_IPV6     =>      'IPv6'
     ];
@@ -181,15 +179,15 @@ class Router extends Model
     /**
      * CONST TYPES
      */
-    public const TYPE_ROUTE_SERVER                 = 1;
-    public const TYPE_ROUTE_COLLECTOR              = 2;
-    public const TYPE_AS112                        = 3;
-    public const TYPE_OTHER                        = 99;
+    public const int TYPE_ROUTE_SERVER                 = 1;
+    public const int TYPE_ROUTE_COLLECTOR              = 2;
+    public const int TYPE_AS112                        = 3;
+    public const int TYPE_OTHER                        = 99;
 
     /**
      * @var array Router types textual description
      */
-    public static $TYPES = [
+    public static array $TYPES = [
         self::TYPE_ROUTE_SERVER             => 'Route Server',
         self::TYPE_ROUTE_COLLECTOR          => 'Route Collector',
         self::TYPE_AS112                    => 'AS112',
@@ -199,7 +197,7 @@ class Router extends Model
     /**
      * @var array Router types short description
      */
-    public static $TYPES_SHORT = [
+    public static array $TYPES_SHORT = [
         self::TYPE_ROUTE_SERVER             => 'RS',
         self::TYPE_ROUTE_COLLECTOR          => 'RC',
         self::TYPE_AS112                    => 'AS112',
@@ -209,19 +207,19 @@ class Router extends Model
     /**
      * CONST SOFTWARES
      */
-    public const SOFTWARE_BIRD                     = 1;
-    public const SOFTWARE_BIRD2                    = 6;
-    public const SOFTWARE_BIRD3                    = 7;
-    public const SOFTWARE_QUAGGA                   = 2;
-    public const SOFTWARE_FRROUTING                = 3;
-    public const SOFTWARE_OPENBGPD                 = 4;
-    public const SOFTWARE_CISCO                    = 5;
-    public const SOFTWARE_OTHER                    = 99;
+    public const int SOFTWARE_BIRD                     = 1;
+    public const int SOFTWARE_BIRD2                    = 6;
+    public const int SOFTWARE_BIRD3                    = 7;
+    public const int SOFTWARE_QUAGGA                   = 2;
+    public const int SOFTWARE_FRROUTING                = 3;
+    public const int SOFTWARE_OPENBGPD                 = 4;
+    public const int SOFTWARE_CISCO                    = 5;
+    public const int SOFTWARE_OTHER                    = 99;
 
     /**
      * @var array Router softwares textual description
      */
-    public static $SOFTWARES = [
+    public static array $SOFTWARES = [
         self::SOFTWARE_BIRD                 => 'Bird v1',
         self::SOFTWARE_BIRD2                => 'Bird v2',
         self::SOFTWARE_BIRD3                => 'Bird v3',        
@@ -235,14 +233,14 @@ class Router extends Model
     /**
      * CONST SOFTWARES
      */
-    public const API_TYPE_NONE                     = 0;
-    public const API_TYPE_BIRDSEYE                 = 1;
-    public const API_TYPE_OTHER                    = 99;
+    public const int API_TYPE_NONE                     = 0;
+    public const int API_TYPE_BIRDSEYE                 = 1;
+    public const int API_TYPE_OTHER                    = 99;
 
     /**
      * @var array Router API types
      */
-    public static $API_TYPES = [
+    public static array $API_TYPES = [
         self::API_TYPE_NONE                 => 'None',
         self::API_TYPE_BIRDSEYE             => 'Birdseye',
         self::API_TYPE_OTHER                => 'Other'
@@ -337,12 +335,12 @@ class Router extends Model
     {
         return $query->where('protocol', self::PROTOCOL_IPV6);
     }
-
+    
     /**
      * Scope a query to match IPvX routers only
      *
      * @param Builder $query
-     *
+     * @param int $protocol
      * @return Builder
      */
     public function scopeIpProtocol( Builder $query, int $protocol ): Builder
@@ -492,7 +490,7 @@ class Router extends Model
      *
      * @param int $threshold
      *
-     * @return bool
+     * @return ?bool
      */
     public function lastUpdatedGreaterThanSeconds( int $threshold ): ?bool
     {
@@ -569,6 +567,26 @@ class Router extends Model
      * 2. It doesn't have a pair and it itself is not mid-update.
      * 3. It does have a pair and neither it nor itself are mid-update.
      *
+     *  For testing, we are not including database read/write locks here.
+     *  This function should be run in the following way:
+     *
+     *  try {
+     *      DB::unprepared( 'LOCK TABLES routers WRITE' );
+     *
+     *      if( !( $r = Router::whereHandle( $handle )->first() ) ) {
+     *          return response( 'Unknown router handle', 404 );
+     *      }
+     *
+     *      if( $r->canUpdate( true ) ) {
+     *          return response()->json( $this->lastUpdatedArray( $r ) );
+     *      }
+     *  } finally {
+     *      if( $r->getDirty() ) {
+     *          $r->save();
+     *      }
+     *      DB::unprepared( 'UNLOCK TABLES' );
+     *  }
+ *
      * The lock parameter should be set to true to take an update lock (i.e. to
      * set last_update_started).
      *
@@ -581,56 +599,92 @@ class Router extends Model
         if( $this->pause_updates ) {
             return false;
         }
-
+        
+        // check for pairs first
+        if( $this->pair && $this->pair->isUpdating() ) {
+            return false;
+        }
+        
         $canUpdate = false;
 
-        try {
-            // get a total lock on the table so only this thread can read and write
-            DB::raw( 'LOCK TABLES routers WRITE' );
+        // Got to assume yes here as we're asking the question.
+        if( !$this->last_updated && !$this->last_update_started ) {
+            $canUpdate = true;
+        }
 
-            // Got to assume yes here as we're asking the question.
-            if( !$this->last_updated && !$this->last_update_started ) {
-                $canUpdate = true;
-            }
+        else if( !$this->isUpdating() ) {
+            $canUpdate = true;
+        }
 
-            // else if I don't have a pair and I'm not updating or I have a pair but neither of us are updating
-            else if( ( !$this->pair || !$this->pair->isUpdating() ) && !$this->isUpdating() ) {
-                $canUpdate = true;
-            }
+        if( $canUpdate && $lock ) {
 
-        } finally {
-            // finally is always executed even when we return() out of the try.
-
-            if( $canUpdate && $lock ) {
-
-                // need to avoid a same-second race condition
-                while( $this->last_updated?->format('Y-m-d H:i:s') == now()->format('Y-m-d H:i:s') ) {
+            // need to avoid a same-second race condition
+            if( $this->last_updated ) {
+                while( $this->last_updated->format('U') >= now()->format('U') ) {
                     sleep(1);
                 }
-
-                $this->last_update_started = now();
-                $this->save();
             }
 
-            DB::raw('UNLOCK TABLES');
-
-            // do not return out of finally or any exception will be silently handled.
+            $this->last_update_started = now();
         }
 
         return $canUpdate;
     }
-
-
-
-
+    
+    
+    /**
+     * This function releases an update lock.
+     *
+     * For testing, we are not including database read/write locks here.
+     * This function should be run in the following way:
+     *
+     * try {
+     *     DB::unprepared( 'LOCK TABLES routers WRITE' );
+     *
+     *     if( !( $r = Router::whereHandle( $handle )->first() ) ) {
+     *         return response( 'Unknown router handle', 404 );
+     *     }
+     *
+     *     $r->releaseUpdateLock();
+     * } finally {
+     *     if( $r->getDirty() ) {
+     *         $r->save();
+     *     }
+     *     DB::unprepared( 'UNLOCK TABLES' );
+     * }
+     *
+     * It always returns true, including if there is no current lock.
+     *
+     * @return true
+     */
+    public function releaseUpdateLock(): true
+    {
+        if( !$this->isUpdating() ) {
+            return true;
+        }
+        
+        if( !$this->last_updated && !$this->last_update_started ) {
+            return true;
+        }
+        
+        if( !$this->last_updated && $this->last_update_started ) {
+            $this->last_update_started = null;
+        } else {
+            $this->last_update_started = $this->last_updated;
+        }
+        
+        return true;
+    }
+    
+    
     /**
      * String to describe the model being updated / deleted / created
      *
-     * @param Model $model
+     * @param Router $model
      *
      * @return string
      */
-    public static function logSubject( Model $model ): string
+    public static function logSubject( Router $model ): string
     {
         return sprintf(
             "Router [id:%d] '%s' belonging to Vlan [id:%d] '%s'",

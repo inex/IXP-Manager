@@ -86,6 +86,7 @@ Route::group( [  'prefix' => 'router' ], function() {
 
     // Get / set a routers last updated time:
     Route::post('get-update-lock/{handle}',                  'RouterController@getUpdateLock'           );
+    Route::post('release-update-lock/{handle}',              'RouterController@releaseUpdateLock'       );
 
     Route::post('updated/{handle}',                          'RouterController@setLastUpdated'          );
 
