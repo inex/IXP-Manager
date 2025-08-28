@@ -1,0 +1,46 @@
+; ###########################################################################
+; #####
+; ##### PowerDNS configuration file for AS112
+; #####
+; ##### Part of IXP Manager - https://www.ixpmanager.org/
+; #####
+; ##### See: https://github.com/inex/IXP-Manager/tree/main/tools/runtime/as112
+; ##### See: https://www.as112.net/
+; #####
+; ##### August 2025
+; #####
+
+; ##### Based on https://datatracker.ietf.org/doc/html/rfc7534.html
+
+; db.hostname.as112.arpa
+;
+$TTL    1W
+@       SOA     server.example.net. admin.example.net. (
+                        1               ; serial number
+                        1W              ; refresh
+                        1M              ; retry
+                        1W              ; expire
+                        1W )            ; negative caching TTL
+;
+        NS      blackhole.as112.arpa.
+;
+        TXT     "Name of Facility or similar" "City, Country"
+        TXT     "See http://www.as112.net/ for more information."
+;
+; The LOC record is expressed in a master file in the following format:
+;
+;  ⟨owner⟩ ⟨TTL⟩ ⟨class⟩ LOC ( d1 [m1 [s1]] {"N"|"S"} d2 [m2 [s2]]
+;                             {"E"|"W"} alt["m"] [siz["m"] [hp["m"]
+;                             [vp["m"]]]] )
+;
+;  where:
+;
+;      d1:     [0 .. 90]            (degrees latitude)
+;      d2:     [0 .. 180]           (degrees longitude)
+;      m1, m2: [0 .. 59]            (minutes latitude/longitude)
+;      s1, s2: [0 .. 59.999]        (seconds latitude/longitude)
+;      alt:    [-100000.00 .. 42849672.95] BY .01 (altitude in meters)
+;      siz, hp, vp: [0 .. 90000000.00] (size/precision in meters)
+;
+;
+        LOC     45 25 0.000 N 75 42 0.000 W 80.00m 1m 10000m 10m

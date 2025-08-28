@@ -1,0 +1,31 @@
+; ###########################################################################
+; #####
+; ##### PowerDNS configuration file for AS112
+; #####
+; ##### Part of IXP Manager - https://www.ixpmanager.org/
+; #####
+; ##### See: https://github.com/inex/IXP-Manager/tree/main/tools/runtime/as112
+; ##### See: https://www.as112.net/
+; #####
+; ##### August 2025
+; #####
+
+; ##### Based on https://datatracker.ietf.org/doc/html/rfc7534.html
+
+
+; db.dd-empty
+;
+; Empty zone for Direct Delegation AS112 service.
+;
+$TTL    1W
+@  IN  SOA  prisoner.iana.org. hostmaster.root-servers.org. (
+        1       ; serial number
+        1W      ; refresh
+        1M      ; retry
+        1W      ; expire
+        1W )    ; negative caching TTL
+;
+        NS     blackhole-1.iana.org.
+        NS     blackhole-2.iana.org.
+;
+; There should be no other resource records included in this zone.
