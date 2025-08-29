@@ -119,6 +119,7 @@ class RouterTest extends TestCase
         $response->assertStatus( 404 );
     }
     
+    
     public function testApiRouterGetLastUpdatedNulls(): void
     {
         $response = $this->withKey()->get( '/api/v4/router/updated/test-router' );
@@ -149,6 +150,19 @@ class RouterTest extends TestCase
         $this->assertEquals( $now->toAtomString(), $response->json('last_updated') );
         $this->assertEquals( $now->format('U'), $response->json('last_updated_unix') );
     }
+    
+    
+    public function testNoUpdateLockIfPaused(): void
+    {
+        $this->r->pause_updates = true;
+        $this->r->save();
+        
+        $response = $this->withKey()->post( '/api/v4/router/get-update-lock/test-router' );
+        $response->assertStatus( 423 );
+        $response->assertContent( 'Router not available for update' );
+    }
+    
+    
     public function testApiRouterGetUpdateLockOnNulls(): void
     {
         $response = $this->withKey()->post( '/api/v4/router/get-update-lock/test-router' );

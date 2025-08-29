@@ -26,7 +26,7 @@
 ### CONFIGURE ME HERE
 ###
 ### This is where YOU need to set your specific IXP Manager installation details.
-### Typically you only need to edit the first four.
+### Typically you only need to edit the first three settings below.
 ###
 ###########################################################################################
 ###########################################################################################
@@ -63,13 +63,22 @@ LOCKPATH="/tmp/ixp-manager-locks"
 # Parse arguments
 export DEBUG=0
 export FORCE_RELOAD=0
+export LOCKING_ENABLED=1
 
 function show_help {
-    echo "$0 [-d] [-f] -h <handle> [-?]"
+    cat <<END_HELP
+$0 [-d] [-f] [-s] -h <handle> [-?]
+
+    -d    Enable debug mode, show all commands as they are run
+    -f    Force reload of BIRD, even if config is unchnaged
+    -h    Router handle to update (required)
+    -s    Skip lock - reads config, even if router is paused or locked
+
+END_HELP
 }
 
 
-while getopts "?qdfh:" opt; do
+while getopts "?dfsh:" opt; do
     case "$opt" in
         \?)
             show_help
@@ -80,6 +89,8 @@ while getopts "?qdfh:" opt; do
         f)  export FORCE_RELOAD=1
             ;;
         h)  handle=$OPTARG
+            ;;
+        s) export LOCKING_ENABLED=0
             ;;
     esac
 done
@@ -92,6 +103,7 @@ fi
 # check we're allowed to use this handle here
 if [[ "$ALLOWED_HANDLES" != *"$handle"* ]]; then
   echo "$handle not allowed here. Should be one of $ALLOWED_HANDLES."
+  exit 1
 fi
 
 
@@ -142,25 +154,32 @@ fi
 release_ixpmanager_lock() {
   ### Tell IXP Manager that the config never started and release the lock
 
-  cmd="curl --fail -s -X POST -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_RELEASE}/${handle} >/dev/null"
-  if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
+    if [[ $LOCKING_ENABLED -eq 1 ]]; then
 
-  until eval $cmd; do
-      echo "Warning - could not release lock on IXP Manager via API - sleeping 60 secs and trying again"
-      sleep 60
-  done
+        cmd="curl --fail -s -X POST -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_RELEASE}/${handle} >/dev/null"
+        if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
+
+        until eval $cmd; do
+            echo "Warning - could not release lock on IXP Manager via API - sleeping 60 secs and trying again"
+            sleep 60
+        done
+
+    fi
 }
 
-cmd="curl --fail -s -X POST -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_LOCK}/${handle} >/dev/null"
+if [[ $LOCKING_ENABLED -eq 1 ]]; then
 
-if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
-eval $cmd
+    cmd="curl --fail -s -X POST -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_LOCK}/${handle} >/dev/null"
 
-if [[ $? -ne 0 ]]; then
-    echo "ABORTING: router not available for update"
-    exit 200
+    if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
+    eval $cmd
+
+    if [[ $? -ne 0 ]]; then
+        echo "ABORTING: router not available for update"
+        exit 200
+    fi
+
 fi
-
 
 ###########################################################################################
 ###########################################################################################
@@ -300,13 +319,17 @@ fi
 ###########################################################################################
 ###########################################################################################
 
-# tell IXP Manager the router has been updated:
-cmd="curl --fail -s -X POST -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_DONE}/${handle} >/dev/null"
-if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
+if [[ $LOCKING_ENABLED -eq 1 ]]; then
 
-until eval $cmd; do
-    echo "Warning - could not inform IXP Manager via updated API - sleeping 60 secs and trying again"
-    sleep 60
-done
+    # tell IXP Manager the router has been updated:
+    cmd="curl --fail -s -X POST -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_DONE}/${handle} >/dev/null"
+    if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
+
+    until eval $cmd; do
+        echo "Warning - could not inform IXP Manager via updated API - sleeping 60 secs and trying again"
+        sleep 60
+    done
+
+fi
 
 exit 0
