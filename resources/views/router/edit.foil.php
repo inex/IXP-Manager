@@ -62,7 +62,7 @@
                         ->label( 'Pair With' )
                         ->fromQuery( \IXP\Models\Router::pluck('handle', 'id')->toArray() )
                         ->placeholder( 'Production pairing / reconfigure isolation' )
-                        ->addClass( 'chzn-select' )
+                        ->addClass( 'chzn-select-deselect' )
                         ->blockHelp( 'The stock router configuration update scripts that ship with IXP Manager (>=v6.3.0) will '
                             . 'look to ensure that only one router in a pair can be updated at the one time and will pause '
                             . 'updating if either has not reported that the last update was successful. The idea being that '

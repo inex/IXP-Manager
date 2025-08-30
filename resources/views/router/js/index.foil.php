@@ -15,6 +15,9 @@
             $( '.btn-pause' ).click( pauseRouterUpdates );
             $( '.btn-delete' ).click( deleteRouter );
         },
+        initComplete: function () {
+            $('div.dataTables_filter input', this.api().table().container()).attr('name', 'dt-search-input');
+        },
     } );
 
 
@@ -42,7 +45,7 @@
                     }
                 },
                 submit: {
-                    label: 'Delete',
+                    label: 'Delete Router',
                     className: 'btn-danger',
                     callback: function () {
                         $( '#form-delete' ).submit();
