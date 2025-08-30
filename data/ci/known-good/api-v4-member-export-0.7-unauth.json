@@ -323,7 +323,7 @@
                         {
                             "vlan_id": 1,
                             "ipv6": {
-                                "address": "2001:db8:1::8",
+                                "address": "2001:db8:1::b",
                                 "as_macro": "AS-IBIS",
                                 "routeserver": true,
                                 "mac_addresses": [],
