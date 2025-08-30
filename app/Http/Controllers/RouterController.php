@@ -158,6 +158,7 @@ class RouterController extends Controller
     {
         Former::populate([
             'handle'                    => request()->old( 'handle',      $router->handle       ),
+            'pair_id'                   => request()->old( 'pair_id',     $router->pair_id      ),
             'vlan_id'                   => request()->old( 'vlan_id',     (string)$router->vlan_id      ),
             'protocol'                  => request()->old( 'protocol',    $router->protocol     ),
             'type'                      => request()->old( 'type',        $router->type         ),
@@ -179,7 +180,6 @@ class RouterController extends Controller
             'rpki'                      => request()->old( 'rpki',              (string)$router->rpki               ),
             'rfc1997_passthru'          => request()->old( 'rfc1997_passthru',  (string)$router->rfc1997_passthru   ),
             'skip_md5'                  => request()->old( 'skip_md5',          (string)$router->skip_md5           ),
-            'pair_id'                   => request()->old( 'pair_id',           (string)$router->pair_id            ),
             'template'                  => request()->old( 'template',          $router->template           ),
         ]);
 
@@ -201,6 +201,10 @@ class RouterController extends Controller
      */
     public function update( StoreRouter $r, Router $router ): RedirectResponse
     {
+        if( !$r->exists( 'pair_id' ) ) {
+            $r->merge( ['pair_id' => null]);
+        }
+        
         $router->update( $r->all() );
 
         $this->checkASN32( $router );

@@ -42,12 +42,14 @@ use Throwable;
  */
 class RouterControllerTest extends DuskTestCase
 {
+    
+    public function setUp(): void {
+        parent::setUp();
+        Router::whereHandle( 'aaa-dusk-ci-test' )->delete();
+    }
     public function tearDown(): void
     {
-        if( $router = Router::whereHandle( 'dusk-ci-test' )->get()->first() ) {
-            $router->delete();
-        }
-
+        Router::whereHandle( 'aaa-dusk-ci-test' )->delete();
         parent::tearDown();
     }
 
@@ -73,7 +75,7 @@ class RouterControllerTest extends DuskTestCase
                 ->assertSee( 'Handle' );
 
             // 1. test add
-            $browser->type( 'handle', 'dusk-ci-test' )
+            $browser->type( 'handle', 'aaa-dusk-ci-test' )
                 ->select( 'vlan_id', '2' )
                 ->select( 'protocol', '6' )
                 ->select( 'type', '1' )
@@ -103,11 +105,11 @@ class RouterControllerTest extends DuskTestCase
                 ->assertSee( 'Router created' );
 
             /** @var Router $router */
-            $router = Router::whereHandle( 'dusk-ci-test' )->get()->first();
+            $router = Router::whereHandle( 'aaa-dusk-ci-test' )->get()->first();
 
             // 2. test added data in database against expected values
             $this->assertInstanceOf( Router::class, $router );
-            $this->assertEquals( 'dusk-ci-test', $router->handle );
+            $this->assertEquals( 'aaa-dusk-ci-test', $router->handle );
             $this->assertEquals( '2', $router->vlan_id );
             $this->assertEquals( '6', $router->protocol );
             $this->assertEquals( '1', $router->type );
@@ -134,7 +136,7 @@ class RouterControllerTest extends DuskTestCase
             $browser->visit( '/router/edit/' . $router->id );
 
             // 4. test that form contains settings as above using assertChecked(), assertNotChecked(), assertSelected(), assertInputValue, ...
-            $browser->assertInputValue( 'handle', 'dusk-ci-test' )
+            $browser->assertInputValue( 'handle', 'aaa-dusk-ci-test' )
                 ->assertSelected( 'vlan_id', '2' )
                 ->assertSelected( 'protocol', '6' )
                 ->assertSelected( 'type', '1' )
@@ -190,7 +192,7 @@ class RouterControllerTest extends DuskTestCase
             $router->refresh();
 
             $this->assertInstanceOf( Router::class, $router );
-            $this->assertEquals( 'dusk-ci-test', $router->handle );
+            $this->assertEquals( 'aaa-dusk-ci-test', $router->handle );
             $this->assertEquals( '1', $router->vlan_id );
             $this->assertEquals( '4', $router->protocol );
             $this->assertEquals( '2', $router->type );
@@ -239,7 +241,7 @@ class RouterControllerTest extends DuskTestCase
             $router->refresh();
 
             $this->assertInstanceOf( Router::class, $router );
-            $this->assertEquals( 'dusk-ci-test', $router->handle );
+            $this->assertEquals( 'aaa-dusk-ci-test', $router->handle );
             $this->assertEquals( '1', $router->vlan_id );
             $this->assertEquals( '4', $router->protocol );
             $this->assertEquals( '2', $router->type );
@@ -286,15 +288,16 @@ class RouterControllerTest extends DuskTestCase
 
             // 11. delete the router in the UI and verify via success message text and location
             $browser->visit( '/router/list/' )
+                ->pause( 500 )
                 ->click( 'a[href$="/router/view/' . $router->id . '"] + button' )
                 ->press( '#btn-delete-' . $router->id )
                 ->waitForText( 'Do you want to delete this router' )
-                ->press( 'Delete' );
+                ->press( 'Delete Router' );
 
             $browser->waitForText( 'Router deleted.' );
 
             // 12. do a D2EM findOneBy and verify false/null
-            $this->assertEquals( null, Router::whereHandle( 'dusk-ci-test' )->get()->first() );
+            $this->assertEquals( null, Router::whereHandle( 'aaa-dusk-ci-test' )->get()->first() );
         } );
     }
 }
