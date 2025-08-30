@@ -32,6 +32,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 
 use IXP\Exceptions\Services\Grapher\ParameterException;
 use IXP\Http\Requests\StatisticsP2pRequest;
+use IXP\IXP;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -345,7 +346,7 @@ class StatisticsController extends Controller
             if( !in_array( $r->protocol, Graph::PROTOCOLS_REAL, true ) ) {
                 $r->protocol = Graph::PROTOCOL_IPV4;
             }
-            $targets = VlanInterfaceAggregator::forVlan( $vlan, $r->protocol );
+            $targets = VlanInterfaceAggregator::forVlan( $vlan, IXP::protocolTextToInt( $r->protocol ) );
         } else {
             $targets = [];
         }

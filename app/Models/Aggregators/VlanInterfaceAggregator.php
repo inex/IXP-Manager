@@ -300,8 +300,6 @@ class VlanInterfaceAggregator extends VlanInterface
      * @param int $proto
      * @return bool
      * @throws \Exception
-     *
-     * @psalm-return list<mixed>
      */
     public static function isRouteServer( Vlan $v, int $asn, int $proto ): bool
     {
