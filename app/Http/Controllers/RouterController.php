@@ -158,7 +158,7 @@ class RouterController extends Controller
     {
         Former::populate([
             'handle'                    => request()->old( 'handle',      $router->handle       ),
-            'pair_id'                   => request()->old( 'pair_id',     $router->pair_id      ),
+            'pair_id'                   => request()->old( 'pair_id',     $router->pair_id ? (string)$router->pair_id : null ),
             'vlan_id'                   => request()->old( 'vlan_id',     (string)$router->vlan_id      ),
             'protocol'                  => request()->old( 'protocol',    $router->protocol     ),
             'type'                      => request()->old( 'type',        $router->type         ),

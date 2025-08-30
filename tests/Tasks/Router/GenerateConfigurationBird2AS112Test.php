@@ -22,7 +22,7 @@ namespace Tasks\Router;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Illuminate\Foundation\Testing\WithoutMiddleware;
+
 use IXP\Models\Router;
 use IXP\Tasks\Router\ConfigurationGenerator as RouterConfigurationGenerator;
 
@@ -40,11 +40,11 @@ use Tests\TestCase;
  */
 class GenerateConfigurationBird2AS112Test extends TestCase
 {
-    public $rshandles    = [
+    public array $rshandles    = [
         'b2-as112-lan1-ipv4',
-//        'b2-as112-lan1-ipv6',
-//        'b2-as112-lan2-ipv4',
-//        'b2-as112-lan2-ipv6',
+        'b2-as112-lan1-ipv6',
+        'b2-as112-lan2-ipv4',
+        'b2-as112-lan2-ipv6',
     ];
 
     public function testAs112Bird2ConfigurationGeneration(): void
@@ -52,10 +52,10 @@ class GenerateConfigurationBird2AS112Test extends TestCase
         foreach( $this->rshandles as $handle )
         {
             $router = Router::whereHandle( $handle )->get()->first();
-            $conf = ( new RouterConfigurationGenerator( $router ) )->render();
+            $conf = new RouterConfigurationGenerator( $router )->render();
 
-            $knownGoodConf = file_get_contents( base_path() . "/data/ci/known-good/ci-apiv4-{$handle}.conf" );
-            $this->assertFalse( $knownGoodConf === false, "RS Conf generation - could not load known good file ci-apiv4-{$handle}.conf" );
+            $knownGoodConf = file_get_contents( base_path() . "/data/ci/known-good/ci-apiv4-$handle.conf" );
+            $this->assertFalse( $knownGoodConf === false, "RS Conf generation - could not load known good file ci-apiv4-$handle.conf" );
 
             // clean the configs to remove the comment lines and white space which are irrelevant
             $conf          = preg_replace( "/^#.*$/m", "", $conf          );
@@ -63,7 +63,7 @@ class GenerateConfigurationBird2AS112Test extends TestCase
             $conf          = preg_replace( "/^\s+$/m", "", $conf          );
             $knownGoodConf = preg_replace( "/^\s+$/m", "", $knownGoodConf );
 
-            $this->assertEquals( $knownGoodConf, $conf, "Known good and generated RS configuration for {$handle} do not match" );
+            $this->assertEquals( $knownGoodConf, $conf, "Known good and generated RS configuration for $handle do not match" );
         }
     }
 }
