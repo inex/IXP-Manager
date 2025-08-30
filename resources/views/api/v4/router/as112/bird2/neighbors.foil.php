@@ -52,9 +52,14 @@ protocol bgp pb_as<?= $int['autsys'] ?>_vli<?= $int['vliid'] ?>_ipv<?= $int['pro
         multihop;        # needed for loopback interface binding
 <?php endif; ?>
         ipv<?= $int['protocol'] ?? 4 ?> {
+<?php if( $int['is_route_server'] ): ?>
+            # peer is route server at own IXP => prefixes already validated by route server
+            import all;
+<?php else: ?>
             import where fn_import( <?= $int['autsys'] ?> );
-            export where proto = "static_as112";
             import limit <?= $int['maxprefixes'] ?> action restart;
+<?php endif; ?>
+            export where proto = "static_as112";
         };
         <?php if( $int['bgpmd5secret'] && !$t->router->skip_md5 ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
 

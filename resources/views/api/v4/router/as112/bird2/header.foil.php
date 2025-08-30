@@ -67,7 +67,7 @@ protocol device {
 
 # These function excludes weird networks
 #  rfc1918, class D, class E, too long and too short prefixes
-function avoid_martians()
+function avoid_martians() -> bool
 prefix set martians;
 {
     <?php if( $t->router->protocol === 6 ): ?>
@@ -124,8 +124,9 @@ prefix set martians;
     <?php endif; ?>
 
     # Avoid RFC1918 and similar networks
-    if net ~ martians then
+    if ( net ~ martians ) then {
         return false;
+    }
 
     return true;
 }

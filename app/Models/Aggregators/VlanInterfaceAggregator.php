@@ -103,12 +103,12 @@ class VlanInterfaceAggregator extends VlanInterface
      * Utility function to provide an array of VLAN interface objects on a given VLAN.
      *
      * @param Vlan $vlan The VLAN to gather VlanInterfaces for
-     * @param bool|mixed $protocol Either 4 or 6 to limit the results to interface with IPv4 / IPv6
+     * @param int|bool $protocol Either 4 or 6 to limit the results to interface with IPv4 / IPv6
      *
      * @return Collection
      *
      */
-    public static function forVlan( Vlan $vlan, $protocol = false )
+    public static function forVlan( Vlan $vlan, int|bool $protocol = false ): Collection
     {
         return self::select( [ 'vli.*' ] )
             ->from( 'vlaninterface AS vli' )
@@ -250,9 +250,8 @@ class VlanInterfaceAggregator extends VlanInterface
 
         return $q->get()->toArray();
     }
-
-
-
+    
+    
     /**
      * Find all IP addresses on a given VLAN for a given ASN and protocol.
      *
@@ -264,9 +263,8 @@ class VlanInterfaceAggregator extends VlanInterface
      * @param int $asn
      * @param int $proto
      *
-     * @throws
-     *
-     * @psalm-return list<mixed>
+     * @return array
+     * @throws \Exception
      */
     public static function getAllIPsForASN( Vlan $v, int $asn, int $proto ): array
     {
@@ -292,7 +290,33 @@ class VlanInterfaceAggregator extends VlanInterface
 
         return $vips;
     }
+    
+    
+    /**
+     * Is this peer a route server?
+     *
+     * @param Vlan $v
+     * @param int $asn
+     * @param int $proto
+     * @return bool
+     * @throws \Exception
+     *
+     * @psalm-return list<mixed>
+     */
+    public static function isRouteServer( Vlan $v, int $asn, int $proto ): bool
+    {
+        if( !in_array( $proto, [ 4,6 ] , true ) ) {
+            throw new \Exception( 'Invalid inet protocol' );
+        }
 
+        return Router::where( 'asn', $asn )
+            ->where( 'vlan_id', $v->id )
+            ->where( 'protocol', $proto )
+            ->where( 'type', Router::TYPE_ROUTE_SERVER )
+            ->get()
+            ->count() > 0;
+    }
+    
     /**
      * Utility function to get and return active VLAN interfaces on the requested protocol
      * suitable for route collector / server configuration.
@@ -305,6 +329,7 @@ class VlanInterfaceAggregator extends VlanInterface
      *         [cshortname] => shortname
      *         [autsys] => 65000
      *         [peeringmacro] => QWE              // or AS65500 if not defined
+     *         [is_route_server] => 0             // indicates if this peer is a route server
      *         [vliid] => 159
      *         [fvliid] => 00159                  // formatted %05d
      *         [address] => 192.0.2.123
@@ -320,13 +345,14 @@ class VlanInterfaceAggregator extends VlanInterface
      *         [vlanid] => 2
      *     ]
      *
-     * @param Vlan  $vlan
-     * @param int   $protocol
-     * @param int   $target
-     * @param bool  $quarantine
+     * @param Vlan $vlan
+     * @param int $protocol
+     * @param int $target
+     * @param bool $quarantine
      *
      * @return array As defined above
      *
+     * @throws \Exception
      */
     public static function sanitiseVlanInterfaces( Vlan $vlan, int $protocol = 4, int $target = Router::TYPE_ROUTE_SERVER, bool $quarantine = false ): array
     {
@@ -334,7 +360,7 @@ class VlanInterfaceAggregator extends VlanInterface
 
         $newints = [];
 
-        foreach( $ints as $index => $int ) {
+        foreach( $ints as $int ) {
 
             if( !$int['enabled'] ) {
                 continue;
@@ -342,7 +368,9 @@ class VlanInterfaceAggregator extends VlanInterface
 
             $int['protocol'] = $protocol;
             $int['vlanid']   = $int['vid'];
-
+            
+            $int['is_route_server'] = self::isRouteServer( $vlan, $int['autsys'], $protocol );
+            
             // don't need this anymore:
             unset( $int['enabled'] );
 
