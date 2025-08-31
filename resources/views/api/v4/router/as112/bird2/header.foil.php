@@ -58,7 +58,7 @@ protocol kernel {
     ipv<?= $int['protocol'] ?? 4 ?> {
         export all;
     };
-    scan time 60;
+    scan time 120;
 }
 
 protocol device {
