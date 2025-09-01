@@ -520,7 +520,7 @@ class JsonSchema
             if( $detailed ) {
                 $memberinfo[ $cnt ] = array_merge( $memberinfo[ $cnt ], [
                     'contact_email' => [ $c->peeringemail ],
-                    'contact_phone' => [ $c->nocphone ],
+                    'contact_phone' => [ $c->nocphone ?? '' ],
                 ]);
 
                 if( filter_var($c->nocwww, FILTER_VALIDATE_URL) !== false ) {
