@@ -110,7 +110,7 @@ The template looks for a few optional settings which can bet set per-instance in
 
 BIRD does not have as many options as Cisco for maximum prefix limits, warn and shutdown/restart actions.
 
-Cisco allows setting a default for all pees (unless configured otherwise by peer) and separate max prefix warn and/or shutdown thresholds based on either a fixed number or warn percentage.
+Cisco allows setting a default for all peers (unless configured otherwise by peer) and separate max prefix warn and/or shutdown thresholds based on either a fixed number or warn percentage.
 
 This Cisco config sets defaults for all peers (unless configured otherwise) of 20000 prefixes, log a warning at 90%, restart after 5 minutes. A few peers announce more than 20000 prefixes and are explicitly configured.
 
