@@ -3,7 +3,7 @@
 namespace Tests\Browser;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -39,7 +39,7 @@ use Tests\DuskTestCase;
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Tests\Browser
- * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class VirtualInterfaceControllerTest extends DuskTestCase
@@ -103,7 +103,6 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->select( 'status',     '4'     )
                 ->select( 'speed',      '1000'  )
                 ->select( 'duplex',     'full'  )
-                ->type( 'maxbgpprefix', '100'   )
                 ->check( 'rsclient'     )
                 ->check( 'irrdbfilter'  )
                 ->check( 'as112client'  )
@@ -113,6 +112,8 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->type( 'ipv6hostname',    'v6.example.com'    )
                 ->type( 'ipv4bgpmd5secret', 'soopersecret'   )
                 ->type( 'ipv6bgpmd5secret', 'soopersecret'   )
+                ->type( 'ipv4maxbgpprefix', '200'   )
+                ->type( 'ipv6maxbgpprefix', '100'   )
                 ->check( 'ipv4canping'        )
                 ->check( 'ipv6canping'        )
                 ->check( 'ipv4monitorrcbgp'   )
@@ -149,11 +150,12 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $this->assertEquals( true,              $vli->ipv6enabled           );
         $this->assertEquals( "v4.example.com",  $vli->ipv4hostname          );
         $this->assertEquals( "v6.example.com",  $vli->ipv6hostname          );
+        $this->assertEquals( "200",             $vli->ipv4maxbgpprefix      );
+        $this->assertEquals( "100",             $vli->ipv6maxbgpprefix      );
         $this->assertEquals( false,             $vli->mcastenabled          );
         $this->assertEquals( true,              $vli->irrdbfilter           );
         $this->assertEquals( "soopersecret",    $vli->ipv4bgpmd5secret      );
         $this->assertEquals( "soopersecret",    $vli->ipv6bgpmd5secret      );
-        $this->assertEquals( "100",             $vli->maxbgpprefix          );
         $this->assertEquals( true,              $vli->rsclient              );
         $this->assertEquals( true,              $vli->ipv4canping           );
         $this->assertEquals( true,              $vli->ipv6canping           );
@@ -481,7 +483,6 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->waitFor( "#ipv6-area"  )
                 ->check( 'ipv4enabled'     )
                 ->waitFor( "#ipv4-area"  )
-                ->type( "maxbgpprefix", '30' )
                 ->check( "rsclient"         )
                 ->check( 'irrdbfilter'      )
                 ->check( 'rsmorespecifics'  )
@@ -489,6 +490,8 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->select( 'ipv6address', '2001:db8:2::1'   )
                 ->type( 'ipv4hostname', 'v4.example.com'   )
                 ->type( 'ipv6hostname', 'v6.example.com'   )
+                ->type( "ipv4maxbgpprefix", '250' )
+                ->type( "ipv6maxbgpprefix", '150' )
                 ->type( 'ipv4bgpmd5secret', 'soopersecret' )
                 ->type( 'ipv6bgpmd5secret', 'soopersecret' )
                 ->check( 'ipv4canping' )
@@ -518,7 +521,8 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $this->assertEquals( true,              $vli->irrdbfilter           );
         $this->assertEquals( "soopersecret",    $vli->ipv4bgpmd5secret      );
         $this->assertEquals( "soopersecret",    $vli->ipv6bgpmd5secret      );
-        $this->assertEquals( "30",              $vli->maxbgpprefix          );
+        $this->assertEquals( "250",             $vli->ipv4maxbgpprefix      );
+        $this->assertEquals( "150",             $vli->ipv6maxbgpprefix      );
         $this->assertEquals( true,              $vli->rsclient              );
         $this->assertEquals( true,              $vli->ipv4canping           );
         $this->assertEquals( true,              $vli->ipv6canping           );
@@ -541,7 +545,6 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->assertChecked('busyhost'      )
                 ->assertChecked('ipv6enabled'  )
                 ->assertChecked('ipv4enabled'  )
-                ->assertInputValue('maxbgpprefix', '30' )
                 ->assertChecked('rsclient'          )
                 ->assertChecked('irrdbfilter'       )
                 ->assertChecked('rsmorespecifics'   )
@@ -551,6 +554,8 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->assertInputValue( 'ipv6hostname',        'v6.example.com'    )
                 ->assertInputValue( 'ipv4bgpmd5secret',  'soopersecret'      )
                 ->assertInputValue( 'ipv6bgpmd5secret',  'soopersecret'      )
+                ->assertInputValue('ipv4maxbgpprefix', '250' )
+                ->assertInputValue('ipv6maxbgpprefix', '150' )
                 ->assertChecked( 'ipv4canping' )
                 ->assertChecked( 'ipv6canping' )
                 ->assertChecked( 'ipv4monitorrcbgp' )
@@ -562,7 +567,6 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $browser->select('vlanid', '1' )
                 ->uncheck( "mcastenabled"   )
                 ->uncheck( "busyhost"       )
-                ->type( "maxbgpprefix", '20' )
                 ->uncheck( "rsclient"    )
                 ->uncheck( 'irrdbfilter' )
                 ->uncheck( 'rsmorespecifics' )
@@ -572,6 +576,8 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->type( 'ipv6hostname',        'v6-2.example.com'  )
                 ->type( 'ipv4bgpmd5secret',  'soopersecrets'     )
                 ->type( 'ipv6bgpmd5secret',  'soopersecrets'     )
+                ->type( "ipv4maxbgpprefix", '300' )
+                ->type( "ipv6maxbgpprefix", '180' )
                 ->uncheck( 'ipv4canping' )
                 ->uncheck( 'ipv6canping' )
                 ->uncheck( 'ipv4monitorrcbgp' )
@@ -589,11 +595,12 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $this->assertEquals( true,                  $vli->ipv6enabled           );
         $this->assertEquals( "v4-2.example.com",    $vli->ipv4hostname          );
         $this->assertEquals( "v6-2.example.com",    $vli->ipv6hostname          );
+        $this->assertEquals( 300,                   $vli->ipv4maxbgpprefix      );
+        $this->assertEquals( 180,                   $vli->ipv6maxbgpprefix      );
         $this->assertEquals( false,                 $vli->mcastenabled          );
         $this->assertEquals( false,                 $vli->irrdbfilter           );
         $this->assertEquals( "soopersecrets",       $vli->ipv4bgpmd5secret      );
         $this->assertEquals( "soopersecrets",       $vli->ipv6bgpmd5secret      );
-        $this->assertEquals( 20,                    $vli->maxbgpprefix          );
         $this->assertEquals( false,                 $vli->rsclient              );
         $this->assertEquals( false,                 $vli->ipv4canping           );
         $this->assertEquals( false,                 $vli->ipv6canping           );
@@ -614,7 +621,6 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->assertNotChecked('busyhost'       )
                 ->assertChecked('ipv6enabled'      )
                 ->assertChecked('ipv4enabled'      )
-                ->assertInputValue('maxbgpprefix', '20')
                 ->assertNotChecked('rsclient'       )
                 ->assertNotChecked('irrdbfilter'    )
                 ->assertNotChecked('rsmorespecifics')
@@ -624,6 +630,8 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->assertInputValue( 'ipv6hostname', 'v6-2.example.com' )
                 ->assertInputValue( 'ipv4bgpmd5secret', 'soopersecrets' )
                 ->assertInputValue( 'ipv6bgpmd5secret', 'soopersecrets' )
+                ->assertInputValue('ipv4maxbgpprefix', '300')
+                ->assertInputValue('ipv6maxbgpprefix', '180')
                 ->assertNotChecked( 'ipv4canping' )
                 ->assertNotChecked( 'ipv6canping' )
                 ->assertNotChecked( 'ipv4monitorrcbgp' )
@@ -691,7 +699,6 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->assertChecked('busyhost'      )
                 ->assertChecked('ipv6enabled'  )
                 ->assertChecked('ipv4enabled'  )
-                ->assertInputValue('maxbgpprefix', '20')
                 ->assertChecked('rsclient'          )
                 ->assertChecked('irrdbfilter'       )
                 ->assertChecked('rsmorespecifics'   )
@@ -701,6 +708,8 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->assertInputValue( 'ipv6hostname', 'v6-2.example.com' )
                 ->assertInputValue( 'ipv4bgpmd5secret', 'soopersecrets' )
                 ->assertInputValue( 'ipv6bgpmd5secret', 'soopersecrets' )
+                ->assertInputValue('ipv4maxbgpprefix', '300')
+                ->assertInputValue('ipv6maxbgpprefix', '180')
                 ->assertChecked( 'ipv4canping' )
                 ->assertChecked( 'ipv6canping' )
                 ->assertChecked( 'ipv4monitorrcbgp' )
@@ -721,11 +730,12 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $this->assertEquals( true,                  $vliDuplicated->ipv6enabled             );
         $this->assertEquals( "v4-2.example.com",    $vliDuplicated->ipv4hostname            );
         $this->assertEquals( "v6-2.example.com",    $vliDuplicated->ipv6hostname            );
+        $this->assertEquals( "300",                 $vliDuplicated->ipv4maxbgpprefix        );
+        $this->assertEquals( "180",                 $vliDuplicated->ipv6maxbgpprefix        );
         $this->assertEquals( true,                  $vliDuplicated->mcastenabled            );
         $this->assertEquals( true,                  $vliDuplicated->irrdbfilter             );
         $this->assertEquals( "soopersecrets",       $vliDuplicated->ipv4bgpmd5secret        );
         $this->assertEquals( "soopersecrets",       $vliDuplicated->ipv6bgpmd5secret        );
-        $this->assertEquals( "20",                  $vliDuplicated->maxbgpprefix            );
         $this->assertEquals( true,                  $vliDuplicated->rsclient                );
         $this->assertEquals( true,                  $vliDuplicated->ipv4canping             );
         $this->assertEquals( true,                  $vliDuplicated->ipv6canping             );

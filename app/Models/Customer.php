@@ -189,6 +189,8 @@ use IXP\Models\AtlasMeasurement;
  * @method static Builder|Customer whereCreated($value)
  * @method static Builder|Customer whereLastupdated($value)
  * @property-read \IXP\Models\IrrdbUpdateLog|null $irrdbUpdateLog
+ * @property int|null $maxprefixesv6
+ * @method static Builder<static>|Customer whereMaxprefixesv6($value)
  * @mixin Eloquent
  */
 class Customer extends Model
@@ -213,6 +215,7 @@ class Customer extends Model
         'shortname',
         'autsys',
         'maxprefixes',
+        'maxprefixesv6',
         'peeringemail',
         'nocphone',
         'noc24hphone',

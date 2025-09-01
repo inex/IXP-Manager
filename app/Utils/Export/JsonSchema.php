@@ -422,6 +422,7 @@ class JsonSchema
                         $enabledfn = "ipv{$protocol}enabled";
                         $ipvaddressfn = "ipv{$protocol}address";
                         $ipv = "ipv{$protocol}";
+                        $maxprefixes = $protocol == 4 ? 'maxprefixes' : 'maxprefixesv6';
 
                         if( $vli->$enabledfn ) {
                             $vlanentry[ $ipv ][ 'address' ] = $vli->$ipvaddressfn->address;
@@ -437,8 +438,8 @@ class JsonSchema
 
                             $vlanentry[ $ipv ][ 'mac_addresses' ] = $macAddresses;
 
-                            if( !is_null ( $c->maxprefixes ) ) {
-                                $vlanentry[ $ipv ][ 'max_prefix' ] = $c->maxprefixes;
+                            if( !is_null ( $c->$maxprefixes ) ) {
+                                $vlanentry[ $ipv ][ 'max_prefix' ] = $c->$maxprefixes;
                             }
 
 

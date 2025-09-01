@@ -47,7 +47,6 @@ use IXP\Models\{Customer, PhysicalInterface, Router, Vlan, VlanInterface};
  * @property string|null $bgpmd5secret
  * @property string|null $ipv4bgpmd5secret
  * @property string|null $ipv6bgpmd5secret
- * @property int|null $maxbgpprefix
  * @property int|null $rsclient
  * @property int|null $ipv4canping
  * @property int|null $ipv6canping
@@ -86,7 +85,6 @@ use IXP\Models\{Customer, PhysicalInterface, Router, Vlan, VlanInterface};
  * @method static Builder|VlanInterfaceAggregator whereIpv6hostname($value)
  * @method static Builder|VlanInterfaceAggregator whereIpv6monitorrcbgp($value)
  * @method static Builder|VlanInterfaceAggregator whereIrrdbfilter($value)
- * @method static Builder|VlanInterfaceAggregator whereMaxbgpprefix($value)
  * @method static Builder|VlanInterfaceAggregator whereMcastenabled($value)
  * @method static Builder|VlanInterfaceAggregator whereNotes($value)
  * @method static Builder|VlanInterfaceAggregator whereRsclient($value)
@@ -94,6 +92,10 @@ use IXP\Models\{Customer, PhysicalInterface, Router, Vlan, VlanInterface};
  * @method static Builder|VlanInterfaceAggregator whereUpdatedAt($value)
  * @method static Builder|VlanInterfaceAggregator whereVirtualinterfaceid($value)
  * @method static Builder|VlanInterfaceAggregator whereVlanid($value)
+ * @property int|null $ipv4maxbgpprefix
+ * @property int|null $ipv6maxbgpprefix
+ * @method static Builder<static>|VlanInterfaceAggregator whereIpv4maxbgpprefix($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereIpv6maxbgpprefix($value)
  * @mixin \Eloquent
  */
 class VlanInterfaceAggregator extends VlanInterface
@@ -187,7 +189,8 @@ class VlanInterfaceAggregator extends VlanInterface
             'cust.id AS cid', 'cust.name AS cname',
             'cust.abbreviatedName AS abrevcname',
             'cust.shortname AS cshortname',
-            'cust.autsys AS autsys', 'cust.maxprefixes AS gmaxprefixes',
+            'cust.autsys AS autsys',
+            ( $proto === 4 ? 'cust.maxprefixes' : 'cust.maxprefixesv6' ) . ' AS gmaxprefixes',
             'cust.peeringmacro AS peeringmacro', 'cust.peeringmacrov6  AS peeringmacrov6',
 
             'v.id AS vid', 'v.number AS vtag', 'v.name AS vname', 'vi.id AS viid',
@@ -198,7 +201,7 @@ class VlanInterfaceAggregator extends VlanInterface
             "vli.ipv{$proto}hostname     AS hostname" ,
             "vli.ipv{$proto}monitorrcbgp AS monitorrcbgp" ,
             "vli.ipv{$proto}bgpmd5secret AS bgpmd5secret" ,
-            'vli.maxbgpprefix            AS maxbgpprefix' ,
+            "vli.ipv{$proto}maxbgpprefix AS maxbgpprefix" ,
             'vli.as112client             AS as112client' ,
             'vli.rsclient                AS rsclient' ,
             'vli.busyhost                AS busyhost' ,
@@ -239,8 +242,8 @@ class VlanInterfaceAggregator extends VlanInterface
         }
 
         $q->groupByRaw( "vli.id, cust.id, cust.name, cust.abbreviatedName, cust.shortname, cust.autsys,
-                        cust.maxprefixes, cust.peeringmacro, cust.peeringmacrov6,
-                        vli.ipv{$proto}enabled, addr.address, vli.ipv{$proto}bgpmd5secret, vli.maxbgpprefix,
+                        cust.maxprefixes" . ( $proto === 4 ? '' : 'v6' ) . ", cust.peeringmacro, cust.peeringmacrov6,
+                        vli.ipv{$proto}enabled, addr.address, vli.ipv{$proto}bgpmd5secret, vli.ipv{$proto}maxbgpprefix,
                         vli.ipv{$proto}hostname, vli.ipv{$proto}monitorrcbgp, vli.busyhost,
                         vli.as112client, vli.rsclient, vli.irrdbfilter, vli.ipv{$proto}canping,
                         s.id, s.name,
@@ -382,14 +385,14 @@ class VlanInterfaceAggregator extends VlanInterface
 
             $int['fvliid'] = sprintf( '%04d', $int['vliid'] );
 
-            if( $int['maxbgpprefix'] && $int['maxbgpprefix'] > $int['gmaxprefixes'] ) {
+            if( $int['maxbgpprefix'] && $int['maxbgpprefix'] > 0 ) {
                 $int['maxprefixes'] = $int['maxbgpprefix'];
             } else {
                 $int['maxprefixes'] = $int['gmaxprefixes'];
             }
 
-            if( !$int['maxprefixes'] ) {
-                $int['maxprefixes'] = 250;
+            if( !( is_numeric( $int['maxprefixes'] ) && $int['maxprefixes'] > 0 ) ) {
+                $int['maxprefixes'] = ( $protocol === 4 ? config( 'ixp.default_maxprefixes.v4' ) : config( 'ixp.default_maxprefixes.v6' ) );
             }
 
             unset( $int['gmaxprefixes'] );

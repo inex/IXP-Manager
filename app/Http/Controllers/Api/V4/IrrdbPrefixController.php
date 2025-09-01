@@ -62,7 +62,7 @@ class IrrdbPrefixController extends Controller
 
         $prefixes = false;
 
-        if( $cust->maxprefixes < 2000 ){
+        if( ( $cust->maxprefixes ?? 0 ) < 2000 ){
             $prefixes = IrrdbPrefix::where( 'customer_id', $cust->id )->where( 'protocol', $protocol )->get()->toArray();
         }
 

@@ -154,12 +154,19 @@
                 ?>
 
                 <?= Former::number( 'maxprefixes' )
-                    ->label( 'Max Prefixes' )
-                    ->placeholder('250')
-                    ->blockHelp( "Max Prefixes is known as <em>the global max prefixes</em> value. It is used to work out the appropriate "
+                    ->label( 'IPv4 Max Prefixes' )
+                    ->placeholder( config( 'ixp.default_maxprefixes.v4' ) )
+                    ->blockHelp( "IPv4 Max Prefixes is known as <em>the global ipv4 max prefixes</em> value. It is used to work out the appropriate "
                         . "max prefixes value to apply to all router configurations in the stock / default templates (route collector and "
                         . "servers, AS112). The calculated value is also included in emails from the Peering Manager from customer to customer.<br><br>"
+                        . "This value can be overridden on a per VLAN interface basis.<br><br>"
                         . "Please see the external documentation referenced above for full details of this and alternative ways of setting it." );
+                ?>
+
+                <?= Former::number( 'maxprefixesv6' )
+                        ->label( 'IPv6 Max Prefixes' )
+                        ->placeholder( config( 'ixp.default_maxprefixes.v6' ) )
+                        ->blockHelp( "IPv6 Max Prefixes is known as <em>the global ipv6 max prefixes</em> value. See details above re the IPv4 version." );
                 ?>
 
                 <?= Former::email( 'peeringemail' )

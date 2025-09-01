@@ -166,7 +166,7 @@ class RsFilterController extends Controller
         ] );
 
         $advertisedPrefixes = [];
-        if( $cust->maxprefixes < 2000 ) {
+        if( ( $cust->maxprefixes ?? 0 ) < 2000 ) {
             $advertisedPrefixes = IrrdbPrefix::where( 'customer_id', $cust->id )
                 ->where( 'protocol', $protocol )->get()->toArray();
         }

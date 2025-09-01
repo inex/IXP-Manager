@@ -159,11 +159,6 @@
                             General VLAN Settings
                         </h3>
                         <hr>
-                        <?= Former::number( 'maxbgpprefix' )
-                            ->label( 'Max BGP Prefixes' )
-                            ->blockHelp( 'Setting this will override the overall ' . config( 'ixp_fe.lang.customer.one' ) . ' setting. Leave blank to use the overall setting.' );
-                        ?>
-
                         <?= Former::checkbox( 'rsclient' )
                             ->label( '&nbsp;' )
                             ->text( 'Route Server Client' )
