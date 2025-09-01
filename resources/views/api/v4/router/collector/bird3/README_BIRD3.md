@@ -2,7 +2,7 @@
 
 Templates here are an initial effort at BIRD 3 collector router.
 
-**2025-09-01 - rob@lonap.net. It is working not yet fully tested at LONAP. Further updates may be needed.**
+**2025-09-01 - rob@lonap.net. It is working but not yet production tested at LONAP. Further updates may be needed.**
 
 ## Skinning
 
