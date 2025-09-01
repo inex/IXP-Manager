@@ -257,7 +257,7 @@
                                 "as_macro": "AS-HEANET",
                                 "routeserver": true,
                                 "mac_addresses": [],
-                                "max_prefix": 1000
+                                "max_prefix": 200
                             }
                         }
                     ]
@@ -286,7 +286,7 @@
                                 "as_macro": "AS-HEANET",
                                 "routeserver": true,
                                 "mac_addresses": [],
-                                "max_prefix": 1000
+                                "max_prefix": 200
                             }
                         }
                     ]
