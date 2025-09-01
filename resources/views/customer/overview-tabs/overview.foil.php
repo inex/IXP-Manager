@@ -268,17 +268,66 @@ $c = $t->c; /** @var \IXP\Models\Customer $c */
 
                     <tr>
                         <td>
-                            <b>Max Prefixes</b>
+                            <b>IPv4 Max Prefixes</b>
                         </td>
                         <td>
-                            <?= $c->maxprefixes ?>
                             <?php $arrayVal = [] ?>
                             <?php foreach( $c->virtualInterfaces as $vi ): ?>
                                 <?php foreach( $vi->vlanInterfaces as $vli ): ?>
-                                    <?php $arrayVal[] = $vli->maxbgpprefix ?>
+                                    <?php if( $vli->ipv4maxbgpprefix !== null && $vli->ipv4maxbgpprefix ): ?>
+                                        <?php $arrayVal[] = (int)$vli->ipv4maxbgpprefix ?>
+                                    <?php endif; ?>
                                 <?php endforeach; ?>
                             <?php endforeach; ?>
-                            (<?= implode( ', ', $arrayVal ) ?>)
+
+                            <?php if( $c->maxprefixes || count( $arrayVal ) ): ?>
+                                <?= $c->maxprefixes ?>
+                                <?php if( count( $arrayVal ) ): ?>
+                                    <span class="badge badge-secondary" data-toggle="tooltip" data-placement="top"
+                                          title="Global max of <?= $c->maxprefixes ?> is overridden on <?= count( $arrayVal ) ?> VLAN(s)"
+                                    >
+                                            (<?= implode( ', ', $arrayVal ) ?>)
+                                    </span>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <span class="badge badge-warning" data-toggle="tooltip" data-placement="top"
+                                      title="No max prefixes configured on customer or VLAN interface, default value imposed."
+                                >
+                                            <?= config( 'ixp.default_maxprefixes.v4' ) ?>
+                                </span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>IPv6 Max Prefixes</b>
+                        </td>
+                        <td>
+                            <?php $arrayVal = [] ?>
+                            <?php foreach( $c->virtualInterfaces as $vi ): ?>
+                                <?php foreach( $vi->vlanInterfaces as $vli ): ?>
+                                    <?php if( $vli->ipv6maxbgpprefix !== null && $vli->ipv6maxbgpprefix ): ?>
+                                        <?php $arrayVal[] = (int)$vli->ipv6maxbgpprefix ?>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            <?php endforeach; ?>
+
+                            <?php if( $c->maxprefixes || count( $arrayVal ) ): ?>
+                                <?= $c->maxprefixesv6 ?>
+                                <?php if( count( $arrayVal ) ): ?>
+                                    <span class="badge badge-secondary" data-toggle="tooltip" data-placement="top"
+                                          title="Global max of <?= $c->maxprefixesv6 ?> is overridden on <?= count( $arrayVal ) ?> VLAN(s)"
+                                    >
+                                            (<?= implode( ', ', $arrayVal ) ?>)
+                                    </span>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <span class="badge badge-warning" data-toggle="tooltip" data-placement="top"
+                                      title="No max prefixes configured on customer or VLAN interface, default value imposed."
+                                >
+                                            <?= config( 'ixp.default_maxprefixes.v6' ) ?>
+                                </span>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 </tbody>

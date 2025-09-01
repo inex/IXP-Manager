@@ -60,7 +60,7 @@ class Store extends FormRequest
      *
      * @return (string|string[])[]
      *
-     * @psalm-return array{name: 'required|string|max:255', type: string, shortname: string, corpwww: 'nullable|url|max:255', datejoin: 'required|date', dateleft: 'nullable|date', status: string, md5support: string, abbreviatedName: 'required|string|max:30', autsys?: 'int|min:1', maxprefixes?: 'nullable|int|min:0', peeringemail?: 'email', peeringmacro?: list{'nullable', 'string', 'max:255', 'regex:/^(AS-[A-Z0-9]+(?:-[A-Z0-9]+)*|AS[1-9]\d*(?::AS-[A-Z0-9]+(?:-[A-Z0-9]+)*)?)$/i'}, peeringmacrov6?: list{'nullable', 'string', 'max:255', 'regex:/^(AS-[A-Z0-9]+(?:-[A-Z0-9]+)*|AS[1-9]\d*(?::AS-[A-Z0-9]+(?:-[A-Z0-9]+)*)?)$/i'}, peeringpolicy?: string, irrdb?: 'nullable|integer|exists:irrdbconfig,id', nocphone?: 'nullable|string|max:255', noc24hphone?: 'nullable|string|max:255', nocemail?: 'email|max:255', nochours?: string, nocwww?: 'nullable|url|max:255', reseller?: 'nullable|integer|exists:cust,id'}
+     * @psalm-return array{name: 'required|string|max:255', type: string, shortname: string, corpwww: 'nullable|url|max:255', datejoin: 'required|date', dateleft: 'nullable|date', status: string, md5support: string, abbreviatedName: 'required|string|max:30', autsys?: 'int|min:1', maxprefixes?: 'nullable|int|min:0', maxprefixesv6?: 'nullable|int|min:0', peeringemail?: 'email', peeringmacro?: list{'nullable', 'string', 'max:255', 'regex:/^(AS-[A-Z0-9]+(?:-[A-Z0-9]+)*|AS[1-9]\d*(?::AS-[A-Z0-9]+(?:-[A-Z0-9]+)*)?)$/i'}, peeringmacrov6?: list{'nullable', 'string', 'max:255', 'regex:/^(AS-[A-Z0-9]+(?:-[A-Z0-9]+)*|AS[1-9]\d*(?::AS-[A-Z0-9]+(?:-[A-Z0-9]+)*)?)$/i'}, peeringpolicy?: string, irrdb?: 'nullable|integer|exists:irrdbconfig,id', nocphone?: 'nullable|string|max:255', noc24hphone?: 'nullable|string|max:255', nocemail?: 'email|max:255', nochours?: string, nocwww?: 'nullable|url|max:255', reseller?: 'nullable|integer|exists:cust,id'}
      */
     public function rules(): array
     {
@@ -79,6 +79,7 @@ class Store extends FormRequest
         $validateOtherDetails = [
             'autsys'                => 'int|min:1',
             'maxprefixes'           => 'nullable|int|min:0',
+            'maxprefixesv6'         => 'nullable|int|min:0',
             'peeringemail'          => 'email',
             'peeringmacro'          => [ 'nullable', 'string', 'max:255', 'regex:/^(AS-[A-Z0-9]+(?:-[A-Z0-9]+)*|AS[1-9]\d*(?::AS-[A-Z0-9]+(?:-[A-Z0-9]+)*)?)$/i' ],
             'peeringmacrov6'        => [ 'nullable', 'string', 'max:255', 'regex:/^(AS-[A-Z0-9]+(?:-[A-Z0-9]+)*|AS[1-9]\d*(?::AS-[A-Z0-9]+(?:-[A-Z0-9]+)*)?)$/i' ],

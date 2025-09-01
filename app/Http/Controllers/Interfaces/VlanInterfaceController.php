@@ -92,7 +92,7 @@ class VlanInterfaceController extends Common
     }
 
     /**
-     * Display the form to edit a VLAM interface
+     * Display the form to edit a VLAN interface
      *
      * @param Request $r
      * @param VirtualInterface $vi The virtual interface to add this VLI to
@@ -102,7 +102,8 @@ class VlanInterfaceController extends Common
     public function create( Request $r, VirtualInterface $vi ): View
     {
         Former::populate( [
-            'maxbgpprefix' => $r->old( 'maxbgpprefix', $vi->customer->maxprefixes ),
+            'ipv4maxbgpprefix' => $r->old( 'ipv4maxbgpprefix', (string)$vi->customer->maxprefixes   ),
+            'ipv6maxbgpprefix' => $r->old( 'ipv6maxbgpprefix', (string)$vi->customer->maxprefixesv6 ),
         ] );
 
         return view( 'interfaces/vlan/edit' )->with( [
@@ -160,9 +161,9 @@ class VlanInterfaceController extends Common
             'ipv4address'      => $r->old( 'ipv4address', (string)$vli->ipv4addressid ),
             'ipv4hostname'     => $r->old( 'ipv4hostname', $vli->ipv4hostname ),
             'ipv4bgpmd5secret' => $r->old( 'ipv4bgpmd5secret', $vli->ipv4bgpmd5secret ),
+            'ipv4maxbgpprefix' => $r->old( 'ipv4maxbgpprefix', (string)$vli->ipv4maxbgpprefix ),
             'ipv4canping'      => $r->old( 'ipv4canping', (string)$vli->ipv4canping ),
             'ipv4monitorrcbgp' => $r->old( 'ipv4monitorrcbgp', (string)$vli->ipv4monitorrcbgp ),
-            'maxbgpprefix'     => $r->old( 'maxbgpprefix', (string)$vli->maxbgpprefix ),
             'rsclient'         => $r->old( 'rsclient', (string)$vli->rsclient ),
             'rsmorespecifics'  => $r->old( 'rsmorespecifics', (string)$vli->rsmorespecifics ),
             'as112client'      => $r->old( 'as112client', (string)$vli->as112client ),
@@ -171,6 +172,7 @@ class VlanInterfaceController extends Common
             'ipv6address'      => $r->old( 'ipv6address', (string)$vli->ipv6addressid ),
             'ipv6hostname'     => $r->old( 'ipv6hostname', $vli->ipv6hostname ),
             'ipv6bgpmd5secret' => $r->old( 'ipv6bgpmd5secret', $vli->ipv6bgpmd5secret ),
+            'ipv6maxbgpprefix' => $r->old( 'ipv6maxbgpprefix', (string)$vli->ipv6maxbgpprefix ),
             'ipv6canping'      => $r->old( 'ipv6canping', (string)$vli->ipv6canping ),
             'ipv6monitorrcbgp' => $r->old( 'ipv6monitorrcbgp', (string)$vli->ipv6monitorrcbgp ),
         ] );

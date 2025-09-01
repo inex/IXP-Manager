@@ -30,6 +30,12 @@
             ->blockHelp( 'MD5 secret for route server / collector / AS112 BGP sessions. Can be copied from the IPv4 version if set or (if supported by your browser), it can be generated in a cryptographically secure manner by clicking the <em>refresh</em> button.' );
         ?>
 
+        <?= Former::number( 'ipv6maxbgpprefix' )
+                ->label( 'Max BGP Prefixes' )
+                ->blockHelp( 'The maximum IPv6 prefixes that any router configured via IXP Manager should accept for this endpoint. '
+                        . 'See <a href="https://docs.ixpmanager.org/latest/usage/customers/#peering-details">the official documentation</a> for more details.' );
+        ?>
+
         <?= Former::checkbox( 'ipv6canping' )
             ->label( '&nbsp;' )
             ->text( 'IPv6 Ping Allowed / Possible' )

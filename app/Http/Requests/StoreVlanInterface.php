@@ -60,7 +60,7 @@ class StoreVlanInterface extends FormRequest
      *
      * @return ((IdnValidate|string)[]|string)[]
      *
-     * @psalm-return array{vlanid: 'required|integer|exists:vlan,id', virtualinterfaceid: 'required|integer|exists:virtualinterface,id', irrdbfilter: 'boolean', mcastenabled: 'boolean', ipv4enabled: 'boolean', ipv4address: 'ipv4|nullable'|'ipv4|required', ipv4hostname: list{'string', 'max:255', 'nullable'|'required', IdnValidate}, ipv4bgpmd5secret: 'string|max:255|nullable', ipv4canping: 'boolean', ipv4monitorrcbgp: 'boolean', maxbgpprefix: 'integer|nullable', rsclient: 'boolean', rsmorespecifics: 'boolean', as112client: 'boolean', busyhost: 'boolean', ipv6enabled: 'boolean', ipv6address: 'ipv6|nullable'|'ipv6|required', ipv6hostname: list{'string', 'max:255', 'nullable'|'required', IdnValidate}, ipv6bgpmd5secret: 'string|max:255|nullable', ipv6canping: 'boolean', ipv6monitorrcbgp: 'boolean'}
+     * @psalm-return array{vlanid: 'required|integer|exists:vlan,id', virtualinterfaceid: 'required|integer|exists:virtualinterface,id', irrdbfilter: 'boolean', mcastenabled: 'boolean', ipv4enabled: 'boolean', ipv4address: 'ipv4|nullable'|'ipv4|required', ipv4hostname: list{'string', 'max:255', 'nullable'|'required', IdnValidate}, ipv4bgpmd5secret: 'string|max:255|nullable', ipv4canping: 'boolean', ipv4monitorrcbgp: 'boolean', ipv4maxbgpprefix: 'integer|nullable', ipv6maxbgpprefix: 'integer|nullable', rsclient: 'boolean', rsmorespecifics: 'boolean', as112client: 'boolean', busyhost: 'boolean', ipv6enabled: 'boolean', ipv6address: 'ipv6|nullable'|'ipv6|required', ipv6hostname: list{'string', 'max:255', 'nullable'|'required', IdnValidate}, ipv6bgpmd5secret: 'string|max:255|nullable', ipv6canping: 'boolean', ipv6monitorrcbgp: 'boolean'}
      */
     public function rules(): array
     {
@@ -73,9 +73,9 @@ class StoreVlanInterface extends FormRequest
             'ipv4address'           => 'ipv4' .  ( $this->ipv4enabled ? '|required' : '|nullable' ),
             'ipv4hostname'          => [ 'string', 'max:255' , ( ( config('ixp_fe.vlaninterfaces.hostname_required' ) && $this->ipv4enabled ) ? 'required' : 'nullable' ), new IdnValidate() ],
             'ipv4bgpmd5secret'      => 'string|max:255|nullable',
+            'ipv4maxbgpprefix'      => 'integer|nullable',
             'ipv4canping'           => 'boolean',
             'ipv4monitorrcbgp'      => 'boolean',
-            'maxbgpprefix'          => 'integer|nullable',
             'rsclient'              => 'boolean',
             'rsmorespecifics'       => 'boolean',
             'as112client'           => 'boolean',
@@ -84,6 +84,7 @@ class StoreVlanInterface extends FormRequest
             'ipv6address'           => 'ipv6' . ( $this->ipv6enabled ? '|required' : '|nullable' ),
             'ipv6hostname'          => [ 'string', 'max:255' , ( ( config('ixp_fe.vlaninterfaces.hostname_required' ) && $this->ipv6enabled ) ? 'required' : 'nullable' ), new IdnValidate() ],
             'ipv6bgpmd5secret'      => 'string|max:255|nullable',
+            'ipv6maxbgpprefix'      => 'integer|nullable',
             'ipv6canping'           => 'boolean',
             'ipv6monitorrcbgp'      => 'boolean',
         ];

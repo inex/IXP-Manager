@@ -51,7 +51,6 @@ use IXP\Traits\Observable;
  * @property string|null $bgpmd5secret
  * @property string|null $ipv4bgpmd5secret
  * @property string|null $ipv6bgpmd5secret
- * @property int|null $maxbgpprefix
  * @property int|null $rsclient
  * @property int|null $ipv4canping
  * @property int|null $ipv6canping
@@ -90,7 +89,6 @@ use IXP\Traits\Observable;
  * @method static Builder|VlanInterface whereIpv6hostname($value)
  * @method static Builder|VlanInterface whereIpv6monitorrcbgp($value)
  * @method static Builder|VlanInterface whereIrrdbfilter($value)
- * @method static Builder|VlanInterface whereMaxbgpprefix($value)
  * @method static Builder|VlanInterface whereMcastenabled($value)
  * @method static Builder|VlanInterface whereNotes($value)
  * @method static Builder|VlanInterface whereRsclient($value)
@@ -98,6 +96,10 @@ use IXP\Traits\Observable;
  * @method static Builder|VlanInterface whereUpdatedAt($value)
  * @method static Builder|VlanInterface whereVirtualinterfaceid($value)
  * @method static Builder|VlanInterface whereVlanid($value)
+ * @property int|null $ipv4maxbgpprefix
+ * @property int|null $ipv6maxbgpprefix
+ * @method static Builder<static>|VlanInterface whereIpv4maxbgpprefix($value)
+ * @method static Builder<static>|VlanInterface whereIpv6maxbgpprefix($value)
  * @mixin Eloquent
  */
 class VlanInterface extends Model
@@ -122,7 +124,8 @@ class VlanInterface extends Model
         'irrdbfilter',
         'rsmorespecifics',
         'mcastenabled',
-        'maxbgpprefix',
+        'ipv4maxbgpprefix',
+        'ipv6maxbgpprefix',
         'rsclient',
         'as112client',
         'busyhost',
