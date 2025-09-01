@@ -106,7 +106,7 @@ The template looks for a few optional settings which can bet set per-instance in
     ],
 ```
 
-- `passive` - The default config actively tries to establish BGP sessions in the usual manner. This setting enables BGP passive mode. (A peer may establish a session to us, but we do not try to establish a BGP session to them.) This is used while testing BIRD config templates/new servers etc. from live IXP Manager, but do not want the server to try to bring up sessions with members. (Otherwise, members will query this and ask us what it is/should they peer with it/why are we trying to open sessions etc...)
+- `passive` - The default config actively tries to establish BGP sessions in the usual manner. This setting enables BGP passive mode. (A peer may establish a session to us, but we do not try to establish a BGP session to them.) This is used while testing BIRD config templates/new servers etc. from live IXP Manager, but we do not want the server to try to bring up sessions with members. (Otherwise, members will query this and ask us what it is/should they peer with it/why are we trying to open sessions etc...)
 
 BIRD does not have as many options as Cisco for maximum prefix limits, warn and shutdown/restart actions.
 
