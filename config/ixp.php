@@ -118,7 +118,7 @@ return [
 
     'default_maxprefixes' => [
         'v4' => env( 'IXP_DEFAULT_MAXPREFIXES_V4', 250 ),
-        'v6' => env( 'IXP_DEFAULT_MAXPREFIXES_V4', 20 ),
+        'v6' => env( 'IXP_DEFAULT_MAXPREFIXES_V6', 50 ),
     ],
 
     'exec' => [
