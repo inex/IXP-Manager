@@ -685,6 +685,34 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->assertSee( "Edit Virtual Interface" );
 
 
+
+        // Edit the VLAN Interface
+        $browser->click( "#edit-vli-" . $vli->id )
+            ->waitForLocation('/interfaces/vlan/edit/' . $vli->id . "/vintid/" . $vi->id )
+            ->assertSee( "Edit VLAN Interface" );
+
+        // Check max prefixes
+        $browser->assertInputValue('ipv4maxbgpprefix', '300')
+            ->assertInputValue('ipv6maxbgpprefix', '180');
+
+        // Check all the checkboxes
+        $browser->type( "ipv4maxbgpprefix", '' )
+            ->type( "ipv6maxbgpprefix", '0' )
+            ->press('Save Changes')
+            ->waitForLocation('/interfaces/virtual/edit/' . $vi->id )
+            ->assertSee('VLAN Interface updated.');
+
+        $vli->refresh();
+
+        $this->assertNull( $vli->ipv4maxbgpprefix );
+        $this->assertEquals( 0, $vli->ipv6maxbgpprefix );
+
+        //reset
+        $vli->ipv4maxbgpprefix = 300;
+        $vli->ipv6maxbgpprefix = 180;
+        $vli->save();
+
+
         // test the duplication functionality
         $browser->click( "#btn-duplicate-vli-" . $vli->id )
                 ->waitForText( 'Duplicate the VLAN Interface' )
