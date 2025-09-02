@@ -256,7 +256,7 @@
                     ->label( 'Hours' )
                     ->fromQuery( \IXP\Models\Customer::$NOC_HOURS )
                     ->placeholder( 'Choose NOC Hours' )
-                    ->addClass( 'chzn-select' )
+                    ->addClass( 'chzn-select-deselect' )
                     ->blockHelp( 'The hours during which the NOC is available.' );
                 ?>
 
