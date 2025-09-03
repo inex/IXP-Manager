@@ -63,12 +63,13 @@ function filter_has_transit_path()
 }
 
 <?php else: ?>
+
 define TRANSIT_ASNS = [ <?= implode( ', ', array_keys( $no_transit_asns ) ) ?> ];
 
-function filter_has_transit_path()
-int set transit_asns;
+function filter_has_transit_path() -> bool
 {
-    transit_asns = TRANSIT_ASNS;
+    int set transit_asns = TRANSIT_ASNS;
+
     if (bgp_path ~ transit_asns) then {
         bgp_large_community.add( IXP_LC_FILTERED_TRANSIT_FREE_ASN );
         return true;

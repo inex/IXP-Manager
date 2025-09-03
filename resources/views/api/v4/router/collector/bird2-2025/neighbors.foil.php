@@ -68,12 +68,13 @@
 ?>
 
 
-function f_import_as<?= $int['autsys'] ?>()
-
-prefix set allnet;
-ip set allips;
-int set allas;
+function f_import_as<?= $int['autsys'] ?>() -> bool
 {
+
+    prefix set allnet;
+    ip set allips;
+    int set allas;
+
 
     <?= $t->insert( 'api/v4/router/collector/bird2/import-pre-extra', [ 'int' => $int ] ) ?>
 
@@ -243,7 +244,8 @@ protocol bgp pb_as<?= $int['autsys'] ?>_vli<?= $int['vliid'] ?>_ipv<?= $int['pro
         export none;
     };
 
-    <?php if( $int['bgpmd5secret'] && !$t->router->skip_md5 ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
+    <?php if( $int['bgpmd5secret'] && !$t->router->skip_md5 ): ?>password "<?= $int['bgpmd5secret'] ?>";
+    authentication md5;<?php endif; ?>
 
 }
 

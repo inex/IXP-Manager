@@ -246,11 +246,9 @@
                     to read the documentation for this but examples of route server, route collector and AS112 configs as
                     used at INEX can be used with the bundled templates by entering one of the following:<br><br>
                         &middot; <code>api/v4/router/server/bird2/standard</code><br>
+                        &middot; <code>api/v4/router/collector/bird2-2025/standard</code><br>
                         &middot; <code>api/v4/router/collector/bird2/standard</code><br>
                         &middot; <code>api/v4/router/as112/bird2/standard</code><br>
-                        &middot; <code>api/v4/router/server/bird/standard</code><br>
-                        &middot; <code>api/v4/router/collector/bird/standard</code><br>
-                        &middot; <code>api/v4/router/as112/bird/standard</code><br><br>
                         
                         <b>NB: only <code>bird2</code> templates support RPKI and advanced looking glass features.</b>
                     " );
