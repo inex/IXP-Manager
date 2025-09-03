@@ -222,15 +222,15 @@ class DotEnvParser
     {
         $value = self::stripQuotes( $value );
 
-        if( in_array( strtolower( $value ), [ 'true', 'on', 'yes', '1' ] ) ) {
+        if( in_array( strtolower( $value ), [ 'true', 'on', 'yes' ] ) ) {
             return true;
         }
 
-        if( in_array( strtolower( $value ), [ 'false', 'off', 'no', '0' ] ) ) {
+        if( in_array( strtolower( $value ), [ 'false', 'off', 'no' ] ) ) {
             return false;
         }
 
-        if( preg_match( '/^\-?[1-9][0-9]*$/', $value ) ) {
+        if( preg_match( '/^\-?[0-9]+$/', $value ) ) {
             return (int)$value;
         }
 

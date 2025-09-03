@@ -89,12 +89,15 @@ final class DotEnvParserTest extends TestCase
     {
         $p = $this->makeParser();
 
+        // phpDotEnv can interpret 1 as bool, but we also need 1 as an integer,
+        // so will use integer as a priority
+        
         $this->assertNotTrue( '1' );
         $this->assertTrue( $p->parseValue('true') );
         $this->assertTrue( $p->parseValue('True') );
         $this->assertTrue( $p->parseValue('TRUE') );
         $this->assertTrue( $p->parseValue('yes') );
-        $this->assertTrue( $p->parseValue('1') );
+        // int: $this->assertTrue( $p->parseValue('1') );
         $this->assertTrue( $p->parseValue('On') );
         $this->assertTrue( $p->parseValue('on') );
 
@@ -103,7 +106,7 @@ final class DotEnvParserTest extends TestCase
         $this->assertFalse( $p->parseValue('False') );
         $this->assertFalse( $p->parseValue('FALSE') );
         $this->assertFalse( $p->parseValue('no') );
-        $this->assertFalse( $p->parseValue('0') );
+        // int: $this->assertFalse( $p->parseValue('0') );
         $this->assertFalse( $p->parseValue('Off') );
         $this->assertFalse( $p->parseValue('off') );
     }
@@ -114,14 +117,14 @@ final class DotEnvParserTest extends TestCase
 
         $this->assertIsNotInt( '1' );
 
-        // boolean 0/1 are not parsed as ints, but rather booleans
-        $this->assertIsNotInt( $p->parseValue('0') );
-        $this->assertIsNotInt( $p->parseValue('1') );
+        // boolean 0/1 are parsed as ints, not booleans
+        $this->assertIsInt( $p->parseValue('0') );
+        $this->assertIsInt( $p->parseValue('1') );
 
-        $this->assertIsString( $p->parseValue('02') );
-        $this->assertEquals( '02', $p->parseValue('02') );
-        $this->assertIsString( $p->parseValue('-02') );
-        $this->assertEquals( '-02', $p->parseValue('-02') );
+        $this->assertIsInt( $p->parseValue('02') );
+        $this->assertEquals( 2, $p->parseValue('02') );
+        $this->assertIsInt( $p->parseValue('-02') );
+        $this->assertEquals( -2, $p->parseValue('-02') );
 
         $this->assertIsInt( $p->parseValue('2') );
         $this->assertEquals( 2, $p->parseValue('2') );
