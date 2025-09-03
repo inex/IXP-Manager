@@ -509,7 +509,7 @@ return [
                 ],
 
                 'peeringdb_oauth_client_id'          => [
-                    'config_key' => 'services.peeringdb_oauth_client_id',
+                    'config_key' => 'services.peeringdb.client_id',
                     'dotenv_key' => 'PEERINGDB_OAUTH_CLIENT_ID',
                     'type'       => 'text',
                     'rules'      => 'nullable|max:255',
@@ -519,7 +519,7 @@ return [
                 ],
 
                 'peeringdb_oauth_client_secret'          => [
-                    'config_key' => 'services.peeringdb_oauth_client_secret',
+                    'config_key' => 'services.peeringdb.client_secret',
                     'dotenv_key' => 'PEERINGDB_OAUTH_CLIENT_SECRET',
                     'type'       => 'text',
                     'rules'      => 'nullable|max:255',
@@ -529,7 +529,7 @@ return [
                 ],
 
                 'peeringdb_oauth_redirect'          => [
-                    'config_key' => 'services.peeringdb_oauth_redirect',
+                    'config_key' => 'services.peeringdb.redirect',
                     'dotenv_key' => 'PEERINGDB_OAUTH_REDIRECT',
                     'type'       => 'text',
                     'rules'      => 'nullable|max:255|url',
