@@ -242,20 +242,20 @@
             <?php endif; ?>
 
 
-            <li>
+            <li class="<?= request()->is( 'irrdb/summary*' ) ? 'active' : '' ?>">
                 <a href="<?= route( 'irrdb@summary' ) ?>" class="nav-link">
                     IRRDB Summary
                 </a>
             </li>
 
-            <?php if( request()->is( 'irrdb-config*' ) ): ?>
-            <ul>
-                <li class="nav-sub-menu-item <?= !request()->is( 'irrdb-config/*' ) ?: 'active' ?>">
-                    <a href="<?= route( 'irrdb-config@list' ) ?>">
-                     IRRDB Configuration
-                   </a>
-                </li>
-            </ul>
+            <?php if( request()->is( 'irrdb*' ) ): ?>
+                <ul>
+                    <li class="nav-sub-menu-item <?= request()->is( 'irrdb-config/*' ) ? 'active' : '' ?>">
+                        <a href="<?= route( 'irrdb-config@list' ) ?>" class="nav-link">
+                            IRRDB Configuration
+                       </a>
+                    </li>
+                </ul>
             <?php endif; ?>
 
 
