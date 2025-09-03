@@ -1,6 +1,6 @@
 <?php
 
-namespace Tasks\Router;
+namespace Tests\Tasks\Router;
 
 /*
  * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -41,7 +41,7 @@ use Tests\TestCase;
  */
 class GenerateConfigurationBird22025CollectorTest extends TestCase
 {
-    public $rchandles    = [
+    public array $rchandles    = [
         'b2-2025-rc1-lan1-ipv4' => 'b2-rc1-lan1-ipv4',
         'b2-2025-rc1-lan1-ipv6' => 'b2-rc1-lan1-ipv6',
     ];
@@ -52,10 +52,10 @@ class GenerateConfigurationBird22025CollectorTest extends TestCase
         {
             $router = Router::whereHandle( $handle )->get()->first();
             $router->template = 'api/v4/router/collector/bird2-2025/standard';
-            $conf = ( new RouterConfigurationGenerator( $router ) )->render();
+            $conf = new RouterConfigurationGenerator( $router )->render();
 
-            $knownGoodConf = file_get_contents( base_path() . "/data/ci/known-good/ci-apiv4-{$knowngood}.conf" );
-            $this->assertFalse( $knownGoodConf === false, "RC Conf generation - could not load known good file ci-apiv4-{$knowngood}.conf" );
+            $knownGoodConf = file_get_contents( base_path() . "/data/ci/known-good/ci-apiv4-$knowngood.conf" );
+            $this->assertFalse( $knownGoodConf === false, "RC Conf generation - could not load known good file ci-apiv4-$knowngood.conf" );
 
             // clean the configs to remove the comment lines which are irrelevant
             $conf          = preg_replace( "/^#.*$/m", "", $conf          );
@@ -63,7 +63,7 @@ class GenerateConfigurationBird22025CollectorTest extends TestCase
             $conf          = preg_replace( "/^\s+$/m", "", $conf          );
             $knownGoodConf = preg_replace( "/^\s+$/m", "", $knownGoodConf );
 
-            $this->assertEquals( $knownGoodConf, $conf, "Known good and generated RC configuration for {$handle} do not match" );
+            $this->assertEquals( $knownGoodConf, $conf, "Known good and generated RC configuration for $handle do not match" );
         }
     }
 }
