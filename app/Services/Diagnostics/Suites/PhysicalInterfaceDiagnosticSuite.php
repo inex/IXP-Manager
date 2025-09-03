@@ -401,9 +401,9 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
      */
     private function speed():  DiagnosticResult
     {
-        $mainName = "Switch port speed configured as {$this->pi->speed()}; actual switch port speed: " . ( PhysicalInterface::$SPEED[$this->pi->switchPort->ifSpeed] ?? $this->pi->switchPort->ifSpeed ?? 'null' );
+        $mainName = "Switch port speed configured as {$this->pi->speed()}; actual switch port speed: " . ( PhysicalInterface::$SPEED[ $this->pi->switchPort->ifHighSpeed] ?? $this->pi->switchPort->ifHighSpeed ?? 'null' );
 
-        if( $this->pi->switchPort->ifSpeed == $this->pi->speed ) {
+        if( $this->pi->switchPort->ifHighSpeed == $this->pi->speed ) {
 
             return new DiagnosticResult(
                 name: $mainName,
