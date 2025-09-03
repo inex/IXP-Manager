@@ -156,7 +156,7 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
 
             $this->results->add( new DiagnosticResult(
                 name: "Transceiver diagnostics not available for non-Arista EOS switches currently.",
-                result: DiagnosticResult::TYPE_WARN,
+                result: DiagnosticResult::TYPE_UNKNOWN,
                 narrative: "Please log into the switch and run transceiver diagnostics manually.",
             ) );
 
