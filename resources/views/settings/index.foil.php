@@ -108,7 +108,7 @@ IXP Manager Settings
                                             if( isset( $param["invert"] ) && $param["invert"] ) {
                                                 $value = !$value;
                                             }
-                                            echo Former::checkbox($field)->label($label)->check( $value );
+                                            echo Former::checkbox($field)->label($label)->check( (bool)$value );
                                             break;
 
                                         case 'select':

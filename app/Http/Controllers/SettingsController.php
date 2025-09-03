@@ -167,23 +167,24 @@ class SettingsController extends Controller
     public function update( Request $request ): RedirectResponse
     {
         $validated = $request->validate( $this->gatherRules() );
-
+        
         try {
             // only interested in saving settings where the value has changed
             $dotenv = $this->loadDotEnv();
             
             foreach( $this->fe_settings[ "panels" ] as $panel ) {
                 foreach( $panel[ "fields" ] as $fname => $fconfig ) {
-                    
+
                     $orig = config( $fconfig[ "config_key" ] );
+                    
                     if( isset( $fconfig[ "invert" ] ) && $fconfig[ "invert" ] ) {
-                        $orig = !$orig;
+                        $validated[ $fname ] = $validated[ $fname ] === "1" ? "0" : "1";
                     }
                     
                     if( !isset( $validated[ $fname ] ) || $validated[ $fname ] == $orig ) {
                         continue;
                     }
-                    
+
                     // update dotenv container
                     if( $dotenv->isset( $fconfig[ 'dotenv_key' ] ) ) {
                         $dotenv->updateValue( $fconfig[ 'dotenv_key' ], $validated[ $fname ] );
@@ -195,7 +196,7 @@ class SettingsController extends Controller
                     
                 }
             }
-            
+
             $this->saveDotEnv( new DotEnvWriter( $dotenv->settings() )->generateContent() );
             
         } catch( DotEnvParserException|Exception $e ) {
