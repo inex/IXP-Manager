@@ -44,9 +44,12 @@ URL_CONF="${URLROOT}/api/v4/router/gen-config"
 URL_RELEASE="${URLROOT}/api/v4/router/release-update-lock"
 URL_DONE="${URLROOT}/api/v4/router/updated"
 
+BIRD_RUN_USER=bird
+BIRD_RUN_GROUP=bird
+
 BIRDBIN="/usr/sbin/bird"
 ETCPATH="/usr/local/etc/bird"
-RUNPATH="/var/run/bird"
+RUNPATH="/run/bird"
 LOGPATH="/var/log/bird"
 LOCKPATH="/tmp/ixp-manager-locks"
 
@@ -67,18 +70,19 @@ export LOCKING_ENABLED=1
 
 function show_help {
     cat <<END_HELP
-$0 [-d] [-f] [-s] -h <handle> [-?]
+$0 [-d] [-f] [-s] -h <handle> [-i <systemd_service>] [-?]
 
     -d    Enable debug mode, show all commands as they are run
     -f    Force reload of BIRD, even if config is unchnaged
     -h    Router handle to update (required)
+    -i    Name of BIRD systemd service. (e.g. bird-ipv4). If specified, BIRD will be started via systemd
     -s    Skip lock - reads config, even if router is paused or locked
 
 END_HELP
 }
 
 
-while getopts "?dfsh:" opt; do
+while getopts "?dfsh:i:" opt; do
     case "$opt" in
         \?)
             show_help
@@ -90,10 +94,17 @@ while getopts "?dfsh:" opt; do
             ;;
         h)  handle=$OPTARG
             ;;
-        s) export LOCKING_ENABLED=0
+        i)  service=$OPTARG
+            ;;                
+        s)  export LOCKING_ENABLED=0
             ;;
     esac
 done
+
+if [[ -z "$handle" ]]; then
+    echo ERROR: handle is required
+    exit 1
+fi
 
 if [[ -z "$handle" ]]; then
     echo ERROR: handle is required
@@ -106,11 +117,35 @@ if [[ "$ALLOWED_HANDLES" != *"$handle"* ]]; then
   exit 1
 fi
 
+if [[ -z "$URLROOT" ]]; then
+    echo ERROR: URLROOT is required
+    exit 1
+fi
 
-mkdir -p $ETCPATH
-mkdir -p $LOGPATH
-mkdir -p $RUNPATH
-mkdir -p $LOCKPATH
+if [[ -z "$APIKEY" ]]; then
+    echo ERROR: APIKEY is required
+    exit 1
+fi
+
+if [ -n "$BIRD_RUN_USER" ]; then
+    if ! getent passwd $BIRD_RUN_USER >/dev/null; then
+        echo "Configured user '$BIRD_RUN_USER' doesn't exist."
+        exit 1
+    fi
+fi
+
+if [ -n "$BIRD_RUN_GROUP" ]; then
+    if ! getent group $BIRD_RUN_GROUP >/dev/null; then
+        echo "Configured group '$BIRD_RUN_GROUP' doesn't exist."
+        exit 1
+    fi
+fi
+
+
+[ ! -f "$ETCPATH" ] && mkdir -p $ETCPATH ; chown --silent "$BIRD_RUN_USER:$BIRD_RUN_GROUP" "$ETCPATH" && chmod 775 "$ETCPATH"
+[ ! -f "$LOGPATH" ] && mkdir -p $LOGPATH ; chown --silent "$BIRD_RUN_USER:$BIRD_RUN_GROUP" "$LOGPATH" && chmod 755 "$LOGPATH"
+[ ! -f "$RUNPATH" ] && mkdir -p $RUNPATH ; chown --silent "$BIRD_RUN_USER:$BIRD_RUN_GROUP" "$RUNPATH" && chmod 755 "$RUNPATH"
+[ ! -f "$LOCKPATH" ] && mkdir -p $LOCKPATH ; chown --silent "$BIRD_RUN_USER:$BIRD_RUN_GROUP" "$LOCKPATH" && chmod 775 "$LOCKPATH"
 
 
 cfile="${ETCPATH}/bird-${handle}.conf"
@@ -154,7 +189,7 @@ fi
 release_ixpmanager_lock() {
   ### Tell IXP Manager that the config never started and release the lock
 
-    if [[ $LOCKING_ENABLED -eq 1 ]]; then
+    if [[ $LOCKING_ENABLED -eq 1 && -n "$URL_RELEASE" ]]; then
 
         cmd="curl --fail -s -X POST -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_RELEASE}/${handle} >/dev/null"
         if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
@@ -270,7 +305,27 @@ if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
 eval $cmd &>/dev/null
 
 if [[ $? -ne 0 ]]; then
-    cmd="${BIRDBIN} -c ${cfile} -s $socket"
+
+    # use systemd?
+    
+    if [[ -n "$service" ]]; then
+
+      # check if service is present and enabled:
+      s_status=$(systemctl is-enabled $service)
+
+      if [[ $? -ne 0 ]]; then
+         echo "ERROR: systemctl returned status $s_status for service $service"
+         # do not release the lock - this could be a proper issue
+         exit 5
+      fi
+
+      cmd="systemctl start $service"
+
+    else
+
+      cmd="${BIRDBIN} -c ${cfile} -s $socket"
+
+    fi
 
     if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
     eval $cmd &>/dev/null
