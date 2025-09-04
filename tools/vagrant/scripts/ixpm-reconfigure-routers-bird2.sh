@@ -323,7 +323,7 @@ if [[ $? -ne 0 ]]; then
 
     else
 
-      cmd="${BIRDBIN} -c ${cfile} -s $socket"
+      cmd="${BIRDBIN} -c ${cfile} -s $socket -u ${BIRD_RUN_USER} -g ${BIRD_RUN_GROUP}"
 
     fi
 
