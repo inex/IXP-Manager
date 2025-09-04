@@ -54,7 +54,7 @@ class IrrdbDiagnosticSuite extends DiagnosticSuite
         $this->name        = 'IRRDB Filtering';
         $this->description = "Diagnostics related to IRRDB filtering.";
         $this->type        = 'CUSTOMER';
-        $this->link        = route( 'irrdb@list', ['cust' => $this->customer] );
+        $this->link        = route( 'irrdb@list', ['cust' => $this->customer, 'type' => 'prefix', 'protocol' => 4 ] );
 
         parent::__construct();
     }
