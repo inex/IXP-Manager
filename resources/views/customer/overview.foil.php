@@ -206,7 +206,7 @@
                     </li>
                 <?php endif; ?>
 
-                <?php if( count( $c->virtualInterfaces ) ):?>
+                <?php if( !$c->typeAssociate() && count( $c->virtualInterfaces ) ):?>
                     <li role="ports" class="nav-item ">
                         <a class="nav-link <?php if( $t->tab === 'ports' ): ?> active <?php endif; ?>" data-toggle="tab" href="#ports" data-toggle="tab">
                             Ports
@@ -329,7 +329,7 @@
                     </div>
                 <?php endif ?>
 
-                <?php if( !$c->typeAssociate() && !$c->hasLeft() ):?>
+                <?php if( !$c->typeAssociate() ):?>
                     <div id="ports" class="tab-pane fade <?php if( $t->tab === 'ports' ): ?> active show <?php endif; ?> ">
                         <?php if( $t->resellerMode() && $c->isReseller ): ?>
                             <?= $t->insert( 'customer/overview-tabs/reseller-ports', [ 'isSuperUser' => $isSuperUser ] ); ?>
