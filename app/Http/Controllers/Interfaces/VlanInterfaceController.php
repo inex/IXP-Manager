@@ -102,7 +102,7 @@ class VlanInterfaceController extends Common
     public function create( Request $r, VirtualInterface $vi ): View
     {
         Former::populate( [
-            'maxbgpprefix' => $r->old( 'maxbgpprefix', $vi->customer->maxprefixes ),
+            'maxbgpprefix' => $r->old( 'maxbgpprefix', (string)$vi->customer->maxprefixes ),
         ] );
 
         return view( 'interfaces/vlan/edit' )->with( [
@@ -266,10 +266,6 @@ class VlanInterfaceController extends Common
 
     /**
      * Display a VLAN Interface
-     *
-     * @param VlanInterface $vli
-     *
-     * @return  View
      */
     public function view( VlanInterface $vli ): View
     {
