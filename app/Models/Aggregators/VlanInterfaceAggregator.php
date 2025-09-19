@@ -23,6 +23,7 @@ namespace IXP\Models\Aggregators;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Exception;
 use Illuminate\Database\Eloquent\{
     Builder,
 };
@@ -262,17 +263,14 @@ class VlanInterfaceAggregator extends VlanInterface
      * which prevents next-hop hijacking but allows the same ASN to
      * set its other IPs as the next hop.
      *
-     * @param Vlan $v
-     * @param int $asn
-     * @param int $proto
      *
-     * @return array
-     * @throws \Exception
+     * @throws Exception
+     * @psalm-return list<mixed>
      */
     public static function getAllIPsForASN( Vlan $v, int $asn, int $proto ): array
     {
         if( !in_array( $proto, [ 4,6 ] , true ) ) {
-            throw new \Exception( 'Invalid inet protocol' );
+            throw new Exception( 'Invalid inet protocol' );
         }
 
         $ips = Vlan::select( [ 'ip.address' ] )

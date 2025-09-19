@@ -268,10 +268,6 @@ class VlanInterfaceController extends Common
 
     /**
      * Display a VLAN Interface
-     *
-     * @param VlanInterface $vli
-     *
-     * @return  View
      */
     public function view( VlanInterface $vli ): View
     {
