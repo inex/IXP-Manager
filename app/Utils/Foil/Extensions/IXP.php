@@ -293,10 +293,10 @@ class IXP implements ExtensionInterface
      *
     * @return string            Scaled / formatted number / type.
     */
-    public function softwrap( array $data, int $perline, string $elementSeparator, string $lineEnding, int $indent = 0, int $pad = 0 ): string
+    public function softwrap( array $data, int $perline, string $elementSeparator, string $lineEnding, int $indent = 0, int $pad = 0, string $terminator = "" ): string
     {
         if( !( $cnt = count( $data ) ) ) {
-            return '';
+            return '' . $terminator;
         }
 
         $itrn = 0;
@@ -319,6 +319,8 @@ class IXP implements ExtensionInterface
 
             $itrn++;
         }
+        
+        $str .= str_contains( $str, "\n" ) && $terminator != "" ? "\n$terminator" : $terminator;
 
         return $str;
     }

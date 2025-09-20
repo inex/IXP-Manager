@@ -122,9 +122,3 @@ function avoid_martians() -> bool
     return true;
 }
 
-
-
-
-##
-## Route collector client configuration
-##

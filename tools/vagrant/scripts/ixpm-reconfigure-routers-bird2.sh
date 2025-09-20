@@ -37,6 +37,7 @@ URLROOT="http://127.0.0.1"
 # prevent errors by limiting this server/script to the following space separated handles
 ALLOWED_HANDLES="as112-vix1-ipv4 as112-vix1-ipv6 as112-vix2-ipv4 as112-vix2-ipv6"
 
+
 # --- the following should be fine on a typical Debian / Ubuntu system:
 
 URL_LOCK="${URLROOT}/api/v4/router/get-update-lock"
@@ -49,7 +50,351 @@ ETCPATH="/usr/local/etc/bird"
 RUNPATH="/var/run/bird"
 LOGPATH="/var/log/bird"
 LOCKPATH="/tmp/ixp-manager-locks"
+LOCK="${LOCKPATH}/$(basename $0).lock"
 
+
+
+
+
+
+
+
+###########################################################################################
+###########################################################################################
+###
+### FUNCTIONS
+###
+###########################################################################################
+###########################################################################################
+
+
+## Get a lock, if enabled, for the router from IXP Manager
+##
+## Globals used: $LOCKING_ENABLED, $APIKEY, $URL_LOCK
+## Inheritied variables: $handle
+function get_ixpmanager_lock() {
+
+    local cmd
+
+    if [[ $LOCKING_ENABLED -ne 1 ]]; then
+       debug "[fn get_ixpmanager_lock] skipping lock, disabled"
+        return 0
+    fi
+
+    cmd="curl --fail -s -X POST -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_LOCK}/${handle} >/dev/null"
+
+    debug "[fn get_ixpmanager_lock] $cmd"
+    eval $cmd
+
+    if [[ $? -ne 0 ]]; then
+        verbose "[CANNOT LOCK] " "ERROR" "NL"
+        echo "ABORTING: router $handle not available for update"
+        exit 200
+    fi
+
+    verbose "[LOCKED] " "OK"
+
+    return 0
+}
+
+
+## Release a lock, if enabled, for the router from IXP Manager
+##
+## Globals used: $LOCKING_ENABLED, $APIKEY, $URL_RELEASE
+## Inheritied variables: $handle
+function release_ixpmanager_lock() {
+    ### Tell IXP Manager that the config never started and release the lock
+
+    local cmd
+
+    if [[ $LOCKING_ENABLED -ne 1 ]]; then
+        debug "[fn release_ixpmanager_lock] skipping unlock, disabled"
+        return 0
+    fi
+
+    cmd="curl --fail -s -X POST -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_RELEASE}/${handle} >/dev/null"
+    debug "[fn release_ixpmanager_lock] $cmd"
+
+    until eval $cmd; do
+        verbose "[UNLOCKING...] " "WARNING"
+        sleep 60
+    done
+
+    verbose "[UNLOCKED] " "OK"
+
+}
+
+## Get a lock so this script can only run once at a time
+##
+## Globals used: $LOCK
+function acquire_script_lock() {
+  if [ -f "${LOCK}" ]; then
+    another_locked_instance
+  else
+    debug "[fn acquire_script_lock] acquiring script lock"
+    echo $$ > "${LOCK}"
+    trap remove_lock EXIT
+  fi
+}
+
+## Release the script lock (a lock so this script can only run once at a time)
+##
+## Globals used: $LOCK
+function remove_lock() {
+    debug "[fn remove_lock] remove script lock"
+    rm -f "$LOCK"
+}
+
+## Announce that another script is running and exit
+##
+## Globals used: $LOCK
+function another_locked_instance() {
+    debug "[fn another_locked_instance]"
+    colourize "ERROR" "There is another instance running and locked via ${LOCK}, exiting"
+    echo
+    exit 1
+}
+
+
+## Get (and check) router configuration from IXP Manager
+##
+## Globals used: $APIKEY, $URL_CONF, $BIRDBIN
+## Inheritied variables: $handle
+## Passed parameters:
+##   $1 - destination file
+function get_configuration() {
+
+    local cmd dest
+    dest=$1
+
+    cmd="curl --fail -s -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_CONF}/${handle} >${dest}"
+
+    debug "[fn get_configuration] $cmd"
+    eval $cmd
+
+    # We want to be safe here so check the generated file to see whether it
+    # looks valid
+    if [[ $? -ne 0 ]]; then
+        verbose "[CONFIGURATION NOT DOWNLOADED] " "ERROR" "NL"
+        echo "ERROR: non-zero return from curl for $handle when generating $dest"
+        release_ixpmanager_lock
+        exit 2
+    fi
+
+    if [[ ! -e $dest || ! -s $dest ]]; then
+        verbose "[CONFIGURATION NOT DOWNLOADED] " "ERROR" "NL"
+        echo "ERROR: $dest does not exist or is zero size for $handle"
+        release_ixpmanager_lock
+        exit 3
+    fi
+
+    if [[ $( cat $dest | grep "END_OF_CONFIG_MARKER_FOR_${handle}" | wc -l ) -ne 1 ]]; then
+        verbose "[CONFIGURATION CORRUPT] " "ERROR" "NL"
+        echo "ERROR: END_OF_CONFIG_MARKER_FOR_${handle} not found in config file $dest - something has gone wrong..."
+        # do not release the lock - this could be a proper issue
+        exit 4
+    fi
+
+    # parse and check the config
+    cmd="${BIRDBIN} -p -c $dest"
+    debug "[fn get_configuration] $cmd"
+    eval $cmd &>/dev/null
+    if [[ $? -ne 0 ]]; then
+        verbose "[CONFIGURATION INVALID] " "ERROR" "NL"
+        echo "ERROR: non-zero return from ${BIRDBIN} when parsing $dest"
+        # do not release the lock - this could be a proper issue
+        exit 7
+    fi
+
+    verbose "[CONFIGURATION DOWNLOADED] " "OK"
+    return 0
+}
+
+## See if we need, or are being forced, to reload
+##
+## Globals used: $URL_CONF, $FORCE_RELOAD
+## Passed parameters:
+##   $1 - BIRD configuration file
+##   $2 - destination file
+function determine_if_reload_is_requred() {
+
+    local cfile dest reload_required DIFF
+
+    reload_required=1
+    cfile=$1
+    dest=$2
+
+    if [[ -f $cfile ]]; then
+        cat $cfile    | egrep -v '^#.*$' >${cfile}.filtered
+        cat $dest     | egrep -v '^#.*$' >${dest}.filtered
+
+        diff ${cfile}.filtered ${dest}.filtered >/dev/null
+        DIFF=$?
+
+        rm -f ${cfile}.filtered ${dest}.filtered
+
+        if [[ $DIFF -eq 0 ]]; then
+            reload_required=0
+            rm -f $dest
+        else
+            # back up the current one and replace
+            cp "${cfile}" "${cfile}.old"
+            mv $dest $cfile
+        fi
+    else
+        mv $dest $cfile
+    fi
+
+    debug "[fn determine_if_reload_is_requred] \$reload_required=${reload_required}"
+
+    # are we forcing a reload?
+    if [[ $FORCE_RELOAD -eq 1 ]]; then
+        reload_required=1
+        debug "[fn determine_if_reload_is_requred] reload enforced by script switch"
+    fi
+
+    return $reload_required
+}
+
+## Check to see if the BIRD daemon is running
+##
+## Globals used: $BIRDBIN
+## Passed parameters:
+##   $1 - BIRD daemon socket
+function is_bird_running() {
+    local cmd bird_running socket
+
+    socket=$1
+
+    cmd="${BIRDBIN}c -s $socket show memory"
+    eval $cmd &>/dev/null
+    bird_running=$?
+
+    debug "[fn is_bird_running] $cmd \$bird_running=${bird_running}"
+
+    if [[ $bird_running -ne 0 ]]; then
+        verbose "[BIRD NOT RUNNING] " "WARNING"
+    fi
+
+    #NB: value of $bird_running is zero if it is running
+    return $bird_running
+}
+
+## Start BIRD
+##
+## Globals used: $BIRDBIN
+## Passed parameters:
+##   $1 - BIRD configuration file
+##   $2 - BIRD daemon socket
+function start_bird() {
+    local cmd cfile socket
+
+    cfile=$1
+    socket=$2
+
+    cmd="${BIRDBIN} -c ${cfile} -s $socket"
+
+    debug "[fn start_bird] $cmd"
+    eval $cmd &>/dev/null
+
+    if [[ $? -ne 0 ]]; then
+        verbose "[BIRD NOT STARTED] " "ERROR" "NL"
+        echo "ERROR: ${BIRDBIN} was not running for $dest and could not be started"
+        # do not release the lock - this could be a proper issue
+        exit 5
+    fi
+
+    return 0
+}
+
+## Reconfigure a running BIRD daemon
+##
+## Globals used: $BIRDBIN
+## Passed parameters:
+##   $1 - configuration file
+##   $2 - socket
+##   $3 - download destination file
+function reconfigure_bird() {
+    local cmd cfile socket dest
+
+    cfile=$1
+    socket=$2
+    dest=$3
+
+    cmd="${BIRDBIN}c -s $socket configure"
+    debug "[fn reconfigure_bird] $cmd"
+    eval $cmd &>/dev/null
+
+    if [[ $? -ne 0 ]]; then
+        verbose "[RECONFIGURE FAILED] " "ERROR" "NL"
+        echo "ERROR: Reconfigure failed for $handle/$dest"
+
+        # do not release the lock - this could be a proper issue
+
+        if [[ -e ${cfile}.old ]]; then
+            echo "  -> Trying to revert to previous"
+            mv ${cfile} ${dest}.failed
+            mv ${cfile}.old ${cfile}
+            cmd="${BIRDBIN}c -s $socket configure"
+            debug "[fn reconfigure_bird] $cmd"
+            eval $cmd &>/dev/null
+            if [[ $? -eq 0 ]]; then
+                echo "  -> Successfully reverted"
+            else
+                echo "  -> Reversion failed"
+                exit 6
+            fi
+        fi
+    fi
+
+    return 0
+}
+
+## Colour a string and output it
+## Parameters:
+##   $1 - colour code - ERROR, WARNING or OK
+##   $2 - message (no new line emitted)
+function colourize() {
+
+    local type message colour
+
+    type=$1
+    message=$2
+
+    case "$type" in
+        "ERROR")
+            colour="\033[0;31m";;
+        "WARNING")
+            colour="\033[0;33m";;
+        "OK")
+            colour="\033[0;32m";;
+        *)
+            colour="\033[0m";;
+    esac
+
+    printf "${colour}${message}\033[0m"
+}
+
+function debug() {
+    if [[ $DEBUG -eq 1 ]]; then echo "DEBUG: ${1}"; fi
+}
+
+function verbose() {
+
+    if [[ $VERBOSE -eq 1 ]]; then
+
+        if [[ -n $2 ]]; then
+            colourize "${2}" "${1}"
+        else
+            echo -n "${1}"
+        fi
+
+        if [[ -n $3 ]]; then
+            echo
+        fi
+    fi
+
+}
 
 
 ###########################################################################################
@@ -62,23 +407,25 @@ LOCKPATH="/tmp/ixp-manager-locks"
 
 # Parse arguments
 export DEBUG=0
+export VERBOSE=0
 export FORCE_RELOAD=0
 export LOCKING_ENABLED=1
 
 function show_help {
     cat <<END_HELP
-$0 [-d] [-f] [-s] -h <handle> [-?]
+$0 [-d] [-f] [-s] [-v] -h <handle> [-?]
 
     -d    Enable debug mode, show all commands as they are run
+    -v    Enable verbose mode (script has no output by default on successful run)
     -f    Force reload of BIRD, even if config is unchnaged
     -h    Router handle to update (required)
-    -s    Skip lock - reads config, even if router is paused or locked
+    -s    Skip lock - downloads config, even if router is paused or locked
 
 END_HELP
 }
 
 
-while getopts "?dfsh:" opt; do
+while getopts "?dfsvh:" opt; do
     case "$opt" in
         \?)
             show_help
@@ -92,6 +439,8 @@ while getopts "?dfsh:" opt; do
             ;;
         s) export LOCKING_ENABLED=0
             ;;
+        v)  export VERBOSE=1
+            ;;
     esac
 done
 
@@ -104,6 +453,16 @@ fi
 if [[ "$ALLOWED_HANDLES" != *"$handle"* ]]; then
   echo "$handle not allowed here. Should be one of $ALLOWED_HANDLES."
   exit 1
+fi
+
+# if debug enabled, then verbose should be too
+if [[ $DEBUG -eq 1 ]] && [[ $VERBOSE -eq 1 ]]; then
+    VERBOSE=0
+    echo "WARNING: either verbose or debug mode should be use, verbose disabled"
+fi
+
+if [[ $VERBOSE -eq 1 ]]; then
+    verbose "${handle}: "
 fi
 
 
@@ -121,215 +480,46 @@ socket="${RUNPATH}/bird-${handle}.ctl"
 ###########################################################################################
 ###########################################################################################
 ###
-### Script locking - only allow one instance of this script per handle
+### Main script function
 ###
 ###########################################################################################
 ###########################################################################################
 
-LOCK="${LOCKPATH}/${handle}.lock"
+# only one instance of this script can run at a time
+acquire_script_lock
 
-remove_lock() {
-    rm -f "$LOCK"
-}
+# Get a lock from IXP Manager to update the router
+# aborts with exit code 200 if unavailable
+get_ixpmanager_lock
 
-another_locked_instance() {
-    echo "There is another instance running for ${handle} and locked via ${LOCK}, exiting"
-    exit 1
-}
+# Get and validate the configuration from IXP Manager
+# aborts with various codes if there are issues
+get_configuration $dest
 
-if [ -f "${LOCK}" ]; then
-  another_locked_instance
-else
-  echo $$ > "${LOCK}"
-  trap remove_lock EXIT
-fi
-
-
-
-###########################################################################################
-###########################################################################################
-###
-### Get a lock from IXP Manager to update the router
-
-release_ixpmanager_lock() {
-  ### Tell IXP Manager that the config never started and release the lock
-
-    if [[ $LOCKING_ENABLED -eq 1 ]]; then
-
-        cmd="curl --fail -s -X POST -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_RELEASE}/${handle} >/dev/null"
-        if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
-
-        until eval $cmd; do
-            echo "Warning - could not release lock on IXP Manager via API - sleeping 60 secs and trying again"
-            sleep 60
-        done
-
-    fi
-}
-
-if [[ $LOCKING_ENABLED -eq 1 ]]; then
-
-    cmd="curl --fail -s -X POST -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_LOCK}/${handle} >/dev/null"
-
-    if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
-    eval $cmd
-
-    if [[ $? -ne 0 ]]; then
-        echo "ABORTING: router not available for update"
-        exit 200
-    fi
-
-fi
-
-###########################################################################################
-###########################################################################################
-###
-### Get the configuration from IXP Manager
-###
-###########################################################################################
-###########################################################################################
-
-cmd="curl --fail -s -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_CONF}/${handle} >${dest}"
-
-if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
-eval $cmd
-
-# We want to be safe here so check the generated file to see whether it
-# looks valid
-if [[ $? -ne 0 ]]; then
-    echo "ERROR: non-zero return from curl when generating $dest"
-    release_ixpmanager_lock
-    exit 2
-fi
-
-if [[ ! -e $dest || ! -s $dest ]]; then
-    echo "ERROR: $dest does not exist or is zero size"
-    release_ixpmanager_lock
-    exit 3
-fi
-
-if [[ $( cat $dest | grep "protocol bgp pb_" | wc -l ) -lt 2 ]]; then
-    echo "ERROR: fewer than 2 BGP protocol definitions in config file $dest - something has gone wrong..."
-    # do not release the lock - this could be a proper issue
-    exit 4
-fi
-
-# parse and check the config
-cmd="${BIRDBIN} -p -c $dest"
-if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
-eval $cmd &>/dev/null
-if [[ $? -ne 0 ]]; then
-    echo "ERROR: non-zero return from ${BIRDBIN} when parsing $dest"
-    # do not release the lock - this could be a proper issue
-    exit 7
-fi
-
-
-
-###########################################################################################
-###########################################################################################
-###
-### Apply the configuration and start Bird if necessary
-###
-###########################################################################################
-###########################################################################################
-
-# config file should be okay; If everything is up and running, do we need a reload?
-
-RELOAD_REQUIRED=1
-if [[ -f $cfile ]]; then
-    cat $cfile    | egrep -v '^#.*$' >${cfile}.filtered
-    cat $dest     | egrep -v '^#.*$' >${dest}.filtered
-
-    diff ${cfile}.filtered ${dest}.filtered >/dev/null
-    DIFF=$?
-
-    rm -f ${cfile}.filtered ${dest}.filtered
-
-    if [[ $DIFF -eq 0 ]]; then
-        RELOAD_REQUIRED=0
-        rm -f $dest
-    else
-        # back up the current one and replace
-        cp "${cfile}" "${cfile}.old"
-        mv $dest $cfile
-    fi
-else
-    mv $dest $cfile
-fi
-
-# are we forcing a reload?
-if [[ $FORCE_RELOAD -eq 1 ]]; then
-    RELOAD_REQUIRED=1
-fi
-
+# Apply the configuration and start Bird if necessary
+determine_if_reload_is_requred $cfile $dest
+RELOAD_REQUIRED=$?
 
 # are we running or do we need to be started?
-cmd="${BIRDBIN}c -s $socket show memory"
-if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
-eval $cmd &>/dev/null
+is_bird_running $socket
 
 if [[ $? -ne 0 ]]; then
-    cmd="${BIRDBIN} -c ${cfile} -s $socket"
-
-    if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
-    eval $cmd &>/dev/null
-
-    if [[ $? -ne 0 ]]; then
-        echo "ERROR: ${BIRDBIN} was not running for $dest and could not be started"
-        # do not release the lock - this could be a proper issue
-        exit 5
+    start_bird $cfile $socket
+    verbose "[BIRD STARTED] " "OK"
+    if [[ $VERBOSE -ne 1 ]]; then
+        echo "NOTICE: bird daemon was not running and has been started"
     fi
 elif [[ $RELOAD_REQUIRED -eq 1 ]]; then
-    cmd="${BIRDBIN}c -s $socket configure"
-    if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
-    eval $cmd &>/dev/null
-
-    if [[ $? -ne 0 ]]; then
-        echo "ERROR: Reconfigure failed for $dest"
-        # do not release the lock - this could be a proper issue
-
-        if [[ -e ${cfile}.old ]]; then
-            echo "Trying to revert to previous"
-            mv ${cfile}.conf $dest.failed
-            mv ${cfile}.old ${cfile}
-            cmd="${BIRDBIN}c -s $socket configure"
-            if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
-            eval $cmd &>/dev/null
-            if [[ $? -eq 0 ]]; then
-                echo Successfully reverted
-            else
-                echo Reversion failed
-                exit 6
-            fi
-        fi
-    fi
+    reconfigure_bird $cfile $socket $dest
+    verbose "[BIRD RECONFIGURED] " "OK"
 else
-    if [[ $DEBUG -eq 1 ]]; then
-        echo "Bird running and no reload required so skipping configure";
-    fi
+    verbose "[BIRD RUNNING] [NO RECONFIG REQUIRED] " "OK"
 fi
 
+# Tell IXP Manager that the config is complete and release the lock
+release_ixpmanager_lock
 
-###########################################################################################
-###########################################################################################
-###
-### Tell IXP Manager that the config is complete and release the lock
-###
-###########################################################################################
-###########################################################################################
+verbose "" "OK" "NL"
 
-if [[ $LOCKING_ENABLED -eq 1 ]]; then
-
-    # tell IXP Manager the router has been updated:
-    cmd="curl --fail -s -X POST -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_DONE}/${handle} >/dev/null"
-    if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
-
-    until eval $cmd; do
-        echo "Warning - could not inform IXP Manager via updated API - sleeping 60 secs and trying again"
-        sleep 60
-    done
-
-fi
-
+# all done
 exit 0

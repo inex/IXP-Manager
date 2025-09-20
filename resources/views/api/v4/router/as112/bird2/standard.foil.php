@@ -38,3 +38,8 @@
 <?= $this->insert('api/v4/router/as112/bird2/neighbors')        ?>
 
 <?= $this->insert('api/v4/router/as112/bird2/footer')           ?>
+
+
+##
+## END_OF_CONFIG_MARKER_FOR_<?= $t->handle . "\n" ?>
+##

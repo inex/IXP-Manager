@@ -70,11 +70,18 @@
 
 function f_import_as<?= $int['autsys'] ?>() -> bool
 {
+<?php if( $int['is_route_server'] ): ?>
+    # This ASN is a route server
 
+    # We assume (because this is an IXP Manager environment) that the route server
+    # is configured to use the same filtering as the route collector, we we just
+    # import everything.
+    bgp_large_community.add( IXP_LC_INFO_FROM_IXROUTESERVER );
+
+<?php else: ?>
     prefix set allnet;
     ip set allips;
     int set allas;
-
 
     <?= $t->insert( 'api/v4/router/collector/bird2/import-pre-extra', [ 'int' => $int ] ) ?>
 
@@ -129,15 +136,12 @@ function f_import_as<?= $int['autsys'] ?>() -> bool
 
 <?php
     // Only do IRRDB ASN filtering if this is enabled per client:
-    $asns = [];
     if( ( $int['rsclient'] ?? false ) && $int['irrdbfilter'] ?? true ):
 
         $asns = \IXP\Models\Aggregators\IrrdbAggregator::asnsForRouterConfiguration( $int[ 'cid' ], $t->router->protocol );
         if( count( $asns ) ): ?>
 
-    allas = [ <?php echo $t->softwrap( $asns, 10, ", ", ",", 14, 7 ); ?>
-
-    ];
+    allas = [ <?php echo $t->softwrap( $asns, 10, ", ", ",", 14, 7, '    ];' ); ?>
 
         <?php   else: ?>
 
@@ -151,9 +155,6 @@ function f_import_as<?= $int['autsys'] ?>() -> bool
     }
 
 <?php endif; ?>
-
-
-
 <?php if( $t->router->rpki && config( 'ixp.rpki.rtr1.host' ) ): ?>
 
     # RPKI check
@@ -173,12 +174,8 @@ function f_import_as<?= $int['autsys'] ?>() -> bool
 
 <?php endif; ?>
 
-
-
-
 <?php
     // Only do IRRDB prefix filtering if this is enabled per client:
-    $prefixes = [];
     if( ( $int['rsclient'] ?? false ) && $int['irrdbfilter'] ?? true ):
 
         $prefixes = \IXP\Models\Aggregators\IrrdbAggregator::prefixesForRouterConfiguration( $int[ 'cid' ], $t->router->protocol );
@@ -187,9 +184,8 @@ function f_import_as<?= $int['autsys'] ?>() -> bool
 
     allnet = [ <?php echo $t->softwrap( $int['rsmorespecifics']
         ? $t->bird()->prefixExactToLessSpecific( $prefixes, $t->router->protocol, config( 'ixp.irrdb.min_v' . $t->router->protocol . '_subnet_size' ) )
-        : $prefixes, 4, ", ", ",", 15, $t->router->protocol == 6 ? 36 : 26 ); ?>
+        : $prefixes, 4, ", ", ",", 15, $t->router->protocol == 6 ? 36 : 26, '    ];' ); ?>
 
-    ];
 
     if ! (net ~ allnet) then {
         if bgp_large_community ~ [IXP_LC_INFO_RPKI_VALID] then {
@@ -217,8 +213,7 @@ function f_import_as<?= $int['autsys'] ?>() -> bool
     bgp_large_community.add( IXP_LC_INFO_IRRDB_NOT_CHECKED );
 
 <?php endif; ?>
-
-
+<?php endif; /* end of is route server */ ?>
 
     return true;
 }
