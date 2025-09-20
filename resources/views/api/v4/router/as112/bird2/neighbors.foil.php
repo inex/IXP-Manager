@@ -48,6 +48,7 @@ protocol bgp pb_as<?= $int['autsys'] ?>_vli<?= $int['vliid'] ?>_ipv<?= $int['pro
         source address routeraddress;
         neighbor <?= $int['address'] ?> as <?= $int['autsys'] ?>;
         strict bind yes;
+        enforce first as <?= $int['is_route_server'] ? 'off' : 'on' ?>;
 <?php if( config('app.env') === 'vagrant' ): ?>
         multihop;        # needed for loopback interface binding
 <?php endif; ?>
