@@ -124,6 +124,29 @@ function release_ixpmanager_lock() {
 
 }
 
+
+## Mark update successfully done and release the lock, if enabled
+##
+## Globals used: $LOCKING_ENABLED, $APIKEY, $URL_DONE
+## Inheritied variables: $handle
+function notify_ixpmanager_done() {
+    ### Tell IXP Manager that the config completed
+
+    local cmd
+
+    cmd="curl --fail -s -X POST -H \"X-IXP-Manager-API-Key: ${APIKEY}\" ${URL_DONE}/${handle} >/dev/null"
+    debug "[fn notify_ixpmanager_done] $cmd"
+
+    until eval $cmd; do
+        verbose "[NOTIFYING IXPMANAGER...] " "WARNING"
+        sleep 60
+    done
+
+    verbose "[IXPMANAGER NOTIFIED] " "OK"
+
+}
+
+
 ## Get a lock so this script can only run once at a time
 ##
 ## Globals used: $LOCK
@@ -517,7 +540,7 @@ else
 fi
 
 # Tell IXP Manager that the config is complete and release the lock
-release_ixpmanager_lock
+notify_ixpmanager_done
 
 verbose "" "OK" "NL"
 
