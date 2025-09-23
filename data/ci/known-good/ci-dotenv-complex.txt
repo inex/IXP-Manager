@@ -289,8 +289,11 @@ IXP_IRRDB_BGPQ3_PATH=/usr/bin/bgpq3
 # See: https://docs.ixpmanager.org/latest/features/rpki/
 IXP_RPKI_RTR1_HOST=192.0.2.11
 IXP_RPKI_RTR1_PORT=3323
+IXP_RPKI_RTR1_MIN_VERSION=1
+IXP_RPKI_RTR1_MAX_VERSION=2
 IXP_RPKI_RTR2_HOST=192.0.2.12
 IXP_RPKI_RTR2_PORT=3323
+IXP_RPKI_RTR2_MIN_VERSION=0
 
 
 #########################################################################################
