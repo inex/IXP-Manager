@@ -17,11 +17,9 @@ function fn_import ( int remote_as ) -> bool
 
     <?php if( $t->router->rpki ): ?>
 
-    # RPKI check
+    # RPKI check - deny invalids
     if( roa_check( t_roa, net, bgp_path.last_nonaggregated ) = ROA_INVALID ) then {
         return false;
-    } else if( roa_check( t_roa, net, bgp_path.last_nonaggregated ) = ROA_VALID ) then {
-        return true;
     }
 
     <?php else: ?>
