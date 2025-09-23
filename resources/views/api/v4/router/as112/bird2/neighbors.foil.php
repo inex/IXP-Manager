@@ -1,5 +1,5 @@
 
-function fn_import ( int remote_as )
+function fn_import ( int remote_as ) -> bool
 {
     if !(avoid_martians()) then {
         return false;

@@ -37,7 +37,7 @@
 # Generated: <?= date('Y-m-d H:i:s') . "\n" ?>
 #
 
-# For VLAN: <?= $t->vlan->name ?> (Tag: <?= $t->vlan->number ?>, Database ID: <?= $t->vlan->id ?>)
+# For VLAN: <?= $t->vlan->name ?> (Tag: <?= $t->vlan->number ?>, Database ID: <?= $t->vlan->id ?>) - IPv<?= $t->router->protocol ?>
 
 # standardise time formats:
 timeformat base         iso long;
@@ -55,10 +55,11 @@ define routeraddress = <?= $t->router->peering_ip ?>;
 router id <?= $t->router->router_id ?>;
 
 protocol kernel {
-    ipv<?= $int['protocol'] ?? 4 ?> {
+    ipv<?= $t->router->protocol ?> {
         export all;
     };
     scan time 120;
+    netlink rx buffer 1703936;
 }
 
 protocol device {
