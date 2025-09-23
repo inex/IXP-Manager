@@ -178,8 +178,6 @@ class RouterController extends Controller
             'quarantine'                => request()->old( 'quarantine',        (string)$router->quarantine         ),
             'bgp_lc'                    => request()->old( 'bgp_lc',            (string)$router->bgp_lc             ),
             'rpki'                      => request()->old( 'rpki',              (string)$router->rpki               ),
-            'rpki_min_version'          => request()->old( 'rpki_min_version',  (string)$router->rpki_min_version   ),
-            'rpki_max_version'          => request()->old( 'rpki_max_version',  (string)$router->rpki_max_version   ),
             'rfc1997_passthru'          => request()->old( 'rfc1997_passthru',  (string)$router->rfc1997_passthru   ),
             'skip_md5'                  => request()->old( 'skip_md5',          (string)$router->skip_md5           ),
             'template'                  => request()->old( 'template',          $router->template           ),

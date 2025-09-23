@@ -216,22 +216,6 @@
                     template and the software / platform! Ensure you have created at least one RPKI-RTR daemon also." );
                     ?>
 
-                    <?= Former::select( 'rpki_min_version' )
-                            ->label( 'RPKI Min Version' )
-                            ->fromQuery( \IXP\Models\Router::$RPKI_VERSIONS )
-                            ->placeholder( 'Choose the minimum version' )
-                            ->addClass( 'chzn-select' )
-                            ->blockHelp( "Optional setting to configuration BIRD with a minimum supported RPKI protocol version. If unsure, leave unset." );
-                    ?>
-
-                    <?= Former::select( 'rpki_max_version' )
-                            ->label( 'RPKI Max Version' )
-                            ->fromQuery( \IXP\Models\Router::$RPKI_VERSIONS )
-                            ->placeholder( 'Choose the maximum version' )
-                            ->addClass( 'chzn-select' )
-                            ->blockHelp( "Optional setting to configuration BIRD with a maximum supported RPKI protocol version. If unsure, leave unset." );
-                    ?>
-
                     <?= Former::checkbox( 'rfc1997_passthru' )
                         ->label('RFC1997 Passthru')
                         ->text( 'Pass through RFC1997 well-known communities (recommended)' )

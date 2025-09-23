@@ -108,10 +108,6 @@ use IXP\Traits\Observable;
  * @method static Builder|Router routeCollector()
  * @method static Builder|Router ipvX(int $protocol)
  * @method static Builder|Router ipProtocol(int $protocol)
- * @property int|null $rpki_min_version
- * @property int|null $rpki_max_version
- * @method static Builder<static>|Router whereRpkiMaxVersion($value)
- * @method static Builder<static>|Router whereRpkiMinVersion($value)
  * @mixin \Eloquent
  */
 class Router extends Model
@@ -144,8 +140,6 @@ class Router extends Model
         'template',
         'skip_md5',
         'rpki',
-        'rpki_min_version',
-        'rpki_max_version',
         'software_version',
         'operating_system',
         'operating_system_version',
@@ -250,24 +244,6 @@ class Router extends Model
         self::API_TYPE_NONE                 => 'None',
         self::API_TYPE_BIRDSEYE             => 'Birdseye',
         self::API_TYPE_OTHER                => 'Other'
-    ];
-
-    /**
-     * CONST RPKI Versions
-     */
-    public const null RPKI_VERSION_UNSET    = null;
-    public const int  RPKI_VERSION_0        = 0;
-    public const int  RPKI_VERSION_1        = 1;
-    public const int  RPKI_VERSION_2        = 2;
-
-    /**
-     * @var array RPKI Versions
-     */
-    public static array $RPKI_VERSIONS = [
-        self::RPKI_VERSION_UNSET    => 'Unset',
-        self::RPKI_VERSION_0        => '0',
-        self::RPKI_VERSION_1        => '1',
-        self::RPKI_VERSION_2        => '2',
     ];
 
     /**
