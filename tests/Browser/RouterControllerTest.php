@@ -129,6 +129,8 @@ class RouterControllerTest extends DuskTestCase
             $this->assertEquals( true, $router->quarantine );
             $this->assertEquals( true, $router->bgp_lc );
             $this->assertEquals( true, $router->rpki );
+            $this->assertNull( $router->rpki_min_version );
+            $this->assertNull( $router->rpki_max_version );
             $this->assertEquals( true, $router->skip_md5 );
             $this->assertEquals( 'api/v4/router/server/bird/standard', $router->template );
 
@@ -156,6 +158,8 @@ class RouterControllerTest extends DuskTestCase
                 ->assertChecked( 'quarantine' )
                 ->assertChecked( 'bgp_lc' )
                 ->assertChecked( 'rpki' )
+                ->assertSelected( 'rpki_min_version', '' )
+                ->assertSelected( 'rpki_max_version', '' )
                 ->assertChecked( 'skip_md5' )
                 ->assertInputValue( 'template', 'api/v4/router/server/bird/standard' );
 
@@ -182,6 +186,8 @@ class RouterControllerTest extends DuskTestCase
             $browser->uncheck( 'quarantine' )
                 ->uncheck( 'bgp_lc' )
                 ->uncheck( 'rpki' )
+                ->select( 'rpki_min_version', '0' )
+                ->select( 'rpki_max_version', '2' )
                 ->uncheck( 'skip_md5' )
                 ->type( 'template', 'api/v4/router/as112/bird/standard' )
                 ->press( 'Save Changes' )
@@ -212,6 +218,8 @@ class RouterControllerTest extends DuskTestCase
             $this->assertEquals( false, $router->quarantine );
             $this->assertEquals( false, $router->bgp_lc );
             $this->assertEquals( false, $router->rpki );
+            $this->assertEquals( 0, $router->rpki_min_version );
+            $this->assertEquals( 2, $router->rpki_max_version );
             $this->assertEquals( false, $router->skip_md5 );
             $this->assertEquals( 'api/v4/router/as112/bird/standard', $router->template );
 
@@ -229,6 +237,8 @@ class RouterControllerTest extends DuskTestCase
                 ->assertNotChecked( 'quarantine' )
                 ->assertNotChecked( 'bgp_lc' )
                 ->assertNotChecked( 'rpki' )
+                ->assertSelected( 'rpki_min_version', '0' )
+                ->assertSelected( 'rpki_max_version', '2' )
                 ->assertNotChecked( 'skip_md5' );
 
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
@@ -261,6 +271,8 @@ class RouterControllerTest extends DuskTestCase
             $this->assertEquals( false, $router->quarantine );
             $this->assertEquals( false, $router->bgp_lc );
             $this->assertEquals( false, $router->rpki );
+            $this->assertEquals( 0, $router->rpki_min_version );
+            $this->assertEquals( 2, $router->rpki_max_version );
             $this->assertEquals( false, $router->skip_md5 );
             $this->assertEquals( 'api/v4/router/as112/bird/standard', $router->template );
 
@@ -273,6 +285,8 @@ class RouterControllerTest extends DuskTestCase
             $browser->check( 'quarantine' )
                 ->check( 'bgp_lc' )
                 ->check( 'rpki' )
+                ->select( 'rpki_min_version', '' )
+                ->select( 'rpki_max_version', '' )
                 ->check( 'skip_md5' )
                 ->press( 'Save Changes' )
                 ->waitForLocation( '/router/list' );
@@ -284,6 +298,8 @@ class RouterControllerTest extends DuskTestCase
             $this->assertEquals( true, $router->quarantine );
             $this->assertEquals( true, $router->bgp_lc );
             $this->assertEquals( true, $router->rpki );
+            $this->assertNull( $router->rpki_min_version );
+            $this->assertNull( $router->rpki_max_version );
             $this->assertEquals( true, $router->skip_md5 );
 
             // 11. delete the router in the UI and verify via success message text and location

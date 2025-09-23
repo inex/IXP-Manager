@@ -224,6 +224,12 @@
                                 </td>
                                 <td>
                                     <?= $rt->rpki ? 'Yes' : 'No' ?>
+                                    <?php if( $rt->rpki_min_version !== null || $rt->rpki_max_version !== null ): ?>
+                                        (
+                                            <?= $rt->rpki_min_version !== null ? 'Min:' . $rt->rpki_min_version . ';' : '' ?>
+                                            <?= $rt->rpki_max_version !== null ? 'Max:' . $rt->rpki_max_version . ';' : '' ?>
+                                        )
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                             <tr>

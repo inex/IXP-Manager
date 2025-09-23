@@ -15,6 +15,7 @@
     <InvalidOperand>
       <code><![CDATA[$port['count'] - 1]]></code>
       <code><![CDATA[$port['count'] - 1]]></code>
+      <code><![CDATA[config('grapher.cli.traffic_differentials.stddev_calc_length', 60)]]></code>
     </InvalidOperand>
     <MissingDocblockType>
       <code><![CDATA[private function portsWithDelta( Carbon $day, float $stddev ): array]]></code>
@@ -30,6 +31,9 @@
     <ImplicitToStringCast>
       <code><![CDATA[$today]]></code>
     </ImplicitToStringCast>
+    <InvalidOperand>
+      <code><![CDATA[config( 'grapher.cli.traffic_daily.delete_old_days', 140 )]]></code>
+    </InvalidOperand>
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
@@ -38,6 +42,9 @@
     <ImplicitToStringCast>
       <code><![CDATA[$today]]></code>
     </ImplicitToStringCast>
+    <InvalidOperand>
+      <code><![CDATA[config( 'grapher.cli.traffic_daily.delete_old_days', 140 )]]></code>
+    </InvalidOperand>
   </file>
   <file src="app/Console/Commands/InManrs.php">
     <UndefinedConstant>
@@ -53,6 +60,11 @@
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
+  </file>
+  <file src="app/Console/Commands/Irrdb/UpdateDb.php">
+    <InvalidOperand>
+      <code><![CDATA[config( 'mail.alerts_recipient.address' )]]></code>
+    </InvalidOperand>
   </file>
   <file src="app/Console/Commands/Irrdb/UpdatePrefixDb.php">
     <MissingDocblockType>
@@ -110,6 +122,11 @@
       <code><![CDATA[memory_get_peak_usage()/1024/1024]]></code>
     </InvalidOperand>
   </file>
+  <file src="app/Console/Commands/SetupWizard.php">
+    <InvalidOperand>
+      <code><![CDATA[config( $attributes[ 'config' ] )]]></code>
+    </InvalidOperand>
+  </file>
   <file src="app/Console/Commands/Switches/ReindexIfIndex.php">
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
@@ -165,6 +182,15 @@
     <ImplicitToStringCast>
       <code><![CDATA[$sixmonthsago]]></code>
     </ImplicitToStringCast>
+  </file>
+  <file src="app/Console/Commands/Utils/SmtpMailTest.php">
+    <InvalidCast>
+      <code><![CDATA[$mail_default]]></code>
+      <code><![CDATA[$mail_default]]></code>
+      <code><![CDATA[$mail_default]]></code>
+      <code><![CDATA[$mail_default]]></code>
+      <code><![CDATA[$mail_default]]></code>
+    </InvalidCast>
   </file>
   <file src="app/Console/Commands/Utils/UpdateOuiDatabase.php">
     <MissingDocblockType>
@@ -276,6 +302,10 @@
     </MissingDocblockType>
   </file>
   <file src="app/Http/Controllers/Api/V4/WhoisController.php">
+    <InvalidOperand>
+      <code><![CDATA[config( 'ixp_api.whois.asn2.host' )]]></code>
+      <code><![CDATA[config( 'ixp_api.whois.asn2.host' )]]></code>
+    </InvalidOperand>
     <InvalidScalarArgument>
       <code><![CDATA[$asn]]></code>
     </InvalidScalarArgument>
@@ -286,6 +316,9 @@
       <code><![CDATA[array{object: mixed}]]></code>
       <code><![CDATA[void]]></code>
     </ImplementedReturnTypeMismatch>
+    <InvalidOperand>
+      <code><![CDATA[config( 'ixp_fe.api_keys.max_keys' )]]></code>
+    </InvalidOperand>
     <InvalidReturnStatement>
       <code><![CDATA[Redirect::back()->withInput()]]></code>
       <code><![CDATA[true]]></code>
@@ -313,6 +346,13 @@
     </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/Auth/LoginController.php">
+    <InvalidOperand>
+      <code><![CDATA[config( "ixp_fe.lang.customer.many" )]]></code>
+      <code><![CDATA[config( "ixp_fe.lang.customer.many" )]]></code>
+      <code><![CDATA[config( "ixp_fe.lang.customer.many" )]]></code>
+      <code><![CDATA[config( "ixp_fe.lang.customer.one" )]]></code>
+      <code><![CDATA[config( "ixp_fe.lang.customer.one" )]]></code>
+    </InvalidOperand>
     <MissingDocblockType>
       <code><![CDATA[public function peeringdbHandleProviderCallback( Request $r ): RedirectResponse]]></code>
     </MissingDocblockType>
@@ -328,7 +368,17 @@
       <code><![CDATA[protected function resetPassword( User $user, string $password ): void]]></code>
     </MissingDocblockType>
   </file>
+  <file src="app/Http/Controllers/Auth/SwitchCustomerController.php">
+    <InvalidOperand>
+      <code><![CDATA[config( "ixp_fe.lang.customer.one" )]]></code>
+      <code><![CDATA[config( "ixp_fe.lang.customer.one" )]]></code>
+    </InvalidOperand>
+  </file>
   <file src="app/Http/Controllers/Auth/SwitchUserController.php">
+    <InvalidOperand>
+      <code><![CDATA[config( 'ixp_fe.lang.customer.one' )]]></code>
+      <code><![CDATA[config( 'ixp_fe.lang.customer.one' )]]></code>
+    </InvalidOperand>
     <NoInterfaceProperties>
       <code><![CDATA[Auth::getUser()->name]]></code>
       <code><![CDATA[Auth::getUser()->name]]></code>
@@ -450,6 +500,9 @@
       <code><![CDATA[RedirectResponse|null]]></code>
       <code><![CDATA[void]]></code>
     </ImplementedReturnTypeMismatch>
+    <InvalidArgument>
+      <code><![CDATA[array_keys( config( 'contact_group.types' ) )]]></code>
+    </InvalidArgument>
     <InvalidReturnStatement>
       <code><![CDATA[[
             'object'        => $this->object,
@@ -505,6 +558,9 @@
       <code><![CDATA[$cust->status]]></code>
       <code><![CDATA[$cust->type]]></code>
     </InvalidArgument>
+    <InvalidOperand>
+      <code><![CDATA[config('identity.name')]]></code>
+    </InvalidOperand>
     <MissingDocblockType>
       <code><![CDATA[public function delete( Customer $cust ) : RedirectResponse]]></code>
       <code><![CDATA[public function store( CustomerRequest $r ): RedirectResponse]]></code>
@@ -532,6 +588,10 @@
       <code><![CDATA[array{object: mixed}]]></code>
       <code><![CDATA[void]]></code>
     </ImplementedReturnTypeMismatch>
+    <InvalidOperand>
+      <code><![CDATA[config( 'ixp_fe.lang.customer.many' )]]></code>
+      <code><![CDATA[config( 'ixp_fe.lang.customer.one' )]]></code>
+    </InvalidOperand>
     <InvalidReturnStatement>
       <code><![CDATA[true]]></code>
       <code><![CDATA[true]]></code>
@@ -595,16 +655,28 @@
     </NoInterfaceProperties>
   </file>
   <file src="app/Http/Controllers/Docstore/FileController.php">
+    <InvalidOperand>
+      <code><![CDATA[config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' )]]></code>
+    </InvalidOperand>
     <NoInterfaceProperties>
       <code><![CDATA[$user->username]]></code>
       <code><![CDATA[$user->username]]></code>
       <code><![CDATA[Auth::user()->username]]></code>
     </NoInterfaceProperties>
   </file>
+  <file src="app/Http/Controllers/DocstoreCustomer/DirectoryController.php">
+    <InvalidOperand>
+      <code><![CDATA[config( 'ixp_fe.lang.customer.one' )]]></code>
+      <code><![CDATA[config( 'ixp_fe.lang.customer.one' )]]></code>
+    </InvalidOperand>
+  </file>
   <file src="app/Http/Controllers/DocstoreCustomer/FileController.php">
     <InvalidArgument>
       <code><![CDATA[$file->customer->id]]></code>
     </InvalidArgument>
+    <InvalidOperand>
+      <code><![CDATA[config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' )]]></code>
+    </InvalidOperand>
   </file>
   <file src="app/Http/Controllers/FilteredPrefixesController.php">
     <MissingDocblockType>
@@ -617,6 +689,10 @@
       <code><![CDATA[array{object: mixed, countries: array}]]></code>
       <code><![CDATA[void]]></code>
     </ImplementedReturnTypeMismatch>
+    <InvalidOperand>
+      <code><![CDATA[config( 'ixp_api.IXPDB.ixp_www' )]]></code>
+      <code><![CDATA[config( 'ixp_api.peeringDB.ixp_www' )]]></code>
+    </InvalidOperand>
     <InvalidReturnStatement>
       <code><![CDATA[$okay]]></code>
       <code><![CDATA[true]]></code>
@@ -896,6 +972,9 @@
     <ImplicitToStringCast>
       <code><![CDATA[now()]]></code>
     </ImplicitToStringCast>
+    <InvalidOperand>
+      <code><![CDATA[config( "identity.orgname" )]]></code>
+    </InvalidOperand>
     <MissingDocblockType>
       <code><![CDATA[private function loadPeeringManager( Customer $cust, Customer $peer ): PeeringManager]]></code>
       <code><![CDATA[public function formEmailFrag( Request $r ): JsonResponse]]></code>
@@ -919,12 +998,17 @@
     </UndefinedMagicPropertyFetch>
   </file>
   <file src="app/Http/Controllers/PeeringMatrixController.php">
+    <InvalidCast>
+      <code><![CDATA[config( 'ixp.peering-matrix.lookback_days' )]]></code>
+    </InvalidCast>
     <MissingDocblockType>
       <code><![CDATA[public function index( Request $r ): View|RedirectResponse]]></code>
     </MissingDocblockType>
     <TypeDoesNotContainType>
       <code><![CDATA[!is_int( $lookback_days )]]></code>
       <code><![CDATA[!is_int( $lookback_days ) || $lookback_days < 1]]></code>
+      <code><![CDATA[!is_int( $lookback_days ) || $lookback_days < 1]]></code>
+      <code><![CDATA[$lookback_days < 1]]></code>
     </TypeDoesNotContainType>
   </file>
   <file src="app/Http/Controllers/ProfileController.php">
@@ -961,6 +1045,9 @@
       <code><![CDATA[bool]]></code>
       <code><![CDATA[void]]></code>
     </ImplementedReturnTypeMismatch>
+    <InvalidOperand>
+      <code><![CDATA[config( "ixp_fe.lang.customer.one" )]]></code>
+    </InvalidOperand>
   </file>
   <file src="app/Http/Controllers/RouterController.php">
     <InvalidArgument>
@@ -983,6 +1070,9 @@
     <InvalidArgument>
       <code><![CDATA[$rsf->protocol ?? null]]></code>
     </InvalidArgument>
+    <InvalidOperand>
+      <code><![CDATA[config('ixp_fe.rs-filters.ttl' )]]></code>
+    </InvalidOperand>
     <NoInterfaceProperties>
       <code><![CDATA[Auth::getUser()->username]]></code>
       <code><![CDATA[Auth::getUser()->username]]></code>
@@ -1180,6 +1270,15 @@
       <code><![CDATA[bool]]></code>
     </InvalidReturnType>
   </file>
+  <file src="app/Http/Controllers/Utils/IxfCompareController.php">
+    <InvalidArgument>
+      <code><![CDATA[array_keys( config('ixp_fe.ixfsources'))]]></code>
+      <code><![CDATA[array_keys( config('ixp_fe.ixfsources'))]]></code>
+    </InvalidArgument>
+    <InvalidArrayAccess>
+      <code><![CDATA[$sources[ $r->sourcea_dd ]]]></code>
+    </InvalidArrayAccess>
+  </file>
   <file src="app/Http/Controllers/VendorController.php">
     <ImplementedReturnTypeMismatch>
       <code><![CDATA[array{object: Vendor}]]></code>
@@ -1208,6 +1307,10 @@
     </InvalidReturnType>
   </file>
   <file src="app/Http/Controllers/WeatherMapController.php">
+    <InvalidArrayAccess>
+      <code><![CDATA[config( 'ixp_tools.weathermap' )[ $id ]]]></code>
+      <code><![CDATA[config( 'ixp_tools.weathermap' )[ $id ]]]></code>
+    </InvalidArrayAccess>
     <TypeDoesNotContainType>
       <code><![CDATA[!is_numeric( $id )]]></code>
     </TypeDoesNotContainType>
@@ -1229,9 +1332,18 @@
     </NoInterfaceProperties>
   </file>
   <file src="app/Http/Middleware/RsPrefixes.php">
+    <InvalidCast>
+      <code><![CDATA[config( 'ixp_fe.rs-prefixes.access' )]]></code>
+      <code><![CDATA[config( 'ixp_fe.rs-prefixes.access' )]]></code>
+      <code><![CDATA[config( 'ixp_fe.rs-prefixes.access' )]]></code>
+    </InvalidCast>
     <MissingDocblockType>
       <code><![CDATA[public function handle( Request $r, Closure $next )]]></code>
     </MissingDocblockType>
+    <TypeDoesNotContainType>
+      <code><![CDATA[(int)config( 'ixp_fe.rs-prefixes.access' ) === User::AUTH_PUBLIC]]></code>
+      <code><![CDATA[(int)config( 'ixp_fe.rs-prefixes.access' ) === User::AUTH_PUBLIC]]></code>
+    </TypeDoesNotContainType>
   </file>
   <file src="app/Http/Middleware/Services/LookingGlass.php">
     <MissingDocblockType>
@@ -1456,10 +1568,28 @@
                 }]]></code>
     </MissingDocblockType>
   </file>
+  <file src="app/Mail/Alert.php">
+    <InvalidOperand>
+      <code><![CDATA[config('identity.sitename' )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Mail/Auth/ForgotPassword.php">
+    <InvalidOperand>
+      <code><![CDATA[config('identity.sitename' )]]></code>
+    </InvalidOperand>
+  </file>
   <file src="app/Mail/Auth/ForgotUsername.php">
     <InvalidDocblock>
       <code><![CDATA[public $users;]]></code>
     </InvalidDocblock>
+    <InvalidOperand>
+      <code><![CDATA[config('identity.sitename' )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Mail/Auth/PasswordReset.php">
+    <InvalidOperand>
+      <code><![CDATA[config('identity.sitename' )]]></code>
+    </InvalidOperand>
   </file>
   <file src="app/Mail/Customer/Note/Changed.php">
     <RedundantCondition>
@@ -1482,11 +1612,24 @@
     <MissingDocblockType>
       <code><![CDATA[public function checkIfSendable( bool $sendtome ): void]]></code>
     </MissingDocblockType>
+    <RedundantCondition>
+      <code><![CDATA[!filter_var( config( "ixp.peering_manager.testemail" ) , FILTER_VALIDATE_EMAIL )]]></code>
+    </RedundantCondition>
     <UndefinedMagicPropertyFetch>
       <code><![CDATA[$r->message]]></code>
       <code><![CDATA[$r->sendtome]]></code>
       <code><![CDATA[$r->subject]]></code>
     </UndefinedMagicPropertyFetch>
+  </file>
+  <file src="app/Mail/User/UserAddedToCustomer.php">
+    <InvalidOperand>
+      <code><![CDATA[config('identity.sitename' )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Mail/User/UserCreated.php">
+    <InvalidOperand>
+      <code><![CDATA[config('identity.sitename' )]]></code>
+    </InvalidOperand>
   </file>
   <file src="app/Models/Aggregators/BgpSessionDataAggregator.php">
     <MissingDocblockType>
@@ -1742,6 +1885,16 @@
       <code><![CDATA[getCompiler]]></code>
     </UndefinedInterfaceMethod>
   </file>
+  <file src="app/Rules/Ipv4SubnetSize.php">
+    <InvalidOperand>
+      <code><![CDATA[config( "ixp.irrdb.min_v4_subnet_size" )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Rules/Ipv6SubnetSize.php">
+    <InvalidOperand>
+      <code><![CDATA[config( "ixp.irrdb.min_v6_subnet_size" )]]></code>
+    </InvalidOperand>
+  </file>
   <file src="app/Services/Auth/EloquentUserProvider.php">
     <MissingDocblockType>
       <code><![CDATA[#[\Override]]]></code>
@@ -1811,6 +1964,10 @@
     </UndefinedDocblockClass>
   </file>
   <file src="app/Services/Grapher.php">
+    <InvalidArrayAccess>
+      <code><![CDATA[config('grapher.backend')[0]]]></code>
+      <code><![CDATA[config('grapher.backends')[ $backend ]]]></code>
+    </InvalidArrayAccess>
     <MissingDocblockType>
       <code><![CDATA[public function backend( $backend = null ): BackendContract]]></code>
       <code><![CDATA[public function backendForGraph( Graph $graph, array $backends = [] ): BackendContract]]></code>
@@ -1819,14 +1976,33 @@
       <code><![CDATA[public function resolveBackend( ?string $backend = null ): string]]></code>
       <code><![CDATA[public function trunk( string $trunkname ): TrunkGraph]]></code>
     </MissingDocblockType>
+    <NoValue>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+    </NoValue>
   </file>
   <file src="app/Services/Grapher/Backend/Dummy.php">
+    <InvalidArrayAccess>
+      <code><![CDATA[$config['logdir']]]></code>
+    </InvalidArrayAccess>
     <MissingDocblockType>
       <code><![CDATA[#[\Override]]]></code>
       <code><![CDATA[private function resolveFilePath( Graph $graph, string $type ): string]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Services/Grapher/Backend/Mrtg.php">
+    <InvalidArrayAccess>
+      <code><![CDATA[$config[ 'logdir' ]]]></code>
+      <code><![CDATA[$config['logdir']]]></code>
+      <code><![CDATA[$config['logdir']]]></code>
+      <code><![CDATA[$config['logdir']]]></code>
+      <code><![CDATA[$config['logdir']]]></code>
+      <code><![CDATA[$config['logdir']]]></code>
+      <code><![CDATA[$config['logdir']]]></code>
+      <code><![CDATA[$config['logdir']]]></code>
+      <code><![CDATA[$config['logdir']]]></code>
+    </InvalidArrayAccess>
     <InvalidOperand>
       <code><![CDATA[$data[ 'swports_maxbytes' ][ $switch->id ] += ( ( $pi->detectedSpeed() > 0 ) ? $pi->detectedSpeed() : 1 ) * 1000000 / 8]]></code>
       <code><![CDATA[$data['infraports_maxbytes'][ $switcher->infrastructureModel->id ] += $maxbytes]]></code>
@@ -1845,6 +2021,11 @@
     </UndefinedDocblockClass>
   </file>
   <file src="app/Services/Grapher/Backend/Sflow.php">
+    <InvalidArrayAccess>
+      <code><![CDATA[$config['root']]]></code>
+      <code><![CDATA[$config['root']]]></code>
+      <code><![CDATA[$config['root']]]></code>
+    </InvalidArrayAccess>
     <MissingDocblockType>
       <code><![CDATA[#[\Override]]]></code>
       <code><![CDATA[#[\Override]]]></code>
@@ -1853,12 +2034,21 @@
     </MissingDocblockType>
   </file>
   <file src="app/Services/Grapher/Backend/Smokeping.php">
+    <InvalidArrayAccess>
+      <code><![CDATA[$urls[ $graph->vli()->vlan->id ]]]></code>
+    </InvalidArrayAccess>
     <MissingDocblockType>
       <code><![CDATA[#[\Override]]]></code>
       <code><![CDATA[private function resolveFilePath( Graph $graph ): string]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Services/Grapher/Graph.php">
+    <InvalidCast>
+      <code><![CDATA[config( 'identity.watermark' )]]></code>
+    </InvalidCast>
+    <InvalidOperand>
+      <code><![CDATA[config( 'identity.orgname')]]></code>
+    </InvalidOperand>
     <MissingDocblockType>
       <code><![CDATA[public function authorise(): bool]]></code>
       <code><![CDATA[public function backend(): GrapherBackend]]></code>
@@ -1887,17 +2077,29 @@
     <ImplementedReturnTypeMismatch>
       <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: 1}]]></code>
     </ImplementedReturnTypeMismatch>
+    <InvalidCast>
+      <code><![CDATA[config( 'grapher.access.ixp' )]]></code>
+    </InvalidCast>
     <LessSpecificImplementedReturnType>
       <code><![CDATA[IXP]]></code>
     </LessSpecificImplementedReturnType>
+    <TypeDoesNotContainType>
+      <code><![CDATA[(int)config( 'grapher.access.ixp' ) === User::AUTH_PUBLIC]]></code>
+    </TypeDoesNotContainType>
   </file>
   <file src="app/Services/Grapher/Graph/Infrastructure.php">
     <ImplementedReturnTypeMismatch>
       <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
     </ImplementedReturnTypeMismatch>
+    <InvalidCast>
+      <code><![CDATA[config( 'grapher.access.infrastructure' )]]></code>
+    </InvalidCast>
     <RedundantCondition>
       <code><![CDATA[$this->infrastructure()]]></code>
     </RedundantCondition>
+    <TypeDoesNotContainType>
+      <code><![CDATA[(int)config( 'grapher.access.infrastructure' ) === User::AUTH_PUBLIC]]></code>
+    </TypeDoesNotContainType>
   </file>
   <file src="app/Services/Grapher/Graph/Latency.php">
     <ImplementedReturnTypeMismatch>
@@ -1908,14 +2110,24 @@
     <ImplementedReturnTypeMismatch>
       <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
     </ImplementedReturnTypeMismatch>
+    <InvalidCast>
+      <code><![CDATA[config( 'grapher.access.location' )]]></code>
+      <code><![CDATA[config( 'grapher.access.location' )]]></code>
+    </InvalidCast>
     <RedundantCondition>
       <code><![CDATA[$this->location()]]></code>
     </RedundantCondition>
+    <TypeDoesNotContainType>
+      <code><![CDATA[(int)config( 'grapher.access.location' ) === User::AUTH_PUBLIC]]></code>
+    </TypeDoesNotContainType>
   </file>
   <file src="app/Services/Grapher/Graph/P2p.php">
     <ImplementedReturnTypeMismatch>
       <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, svli: int, dvli: int}]]></code>
     </ImplementedReturnTypeMismatch>
+    <InvalidCast>
+      <code><![CDATA[config( 'grapher.access.p2p' )]]></code>
+    </InvalidCast>
     <RedundantCondition>
       <code><![CDATA[$this->dvli()]]></code>
       <code><![CDATA[$this->svli()]]></code>
@@ -1933,18 +2145,31 @@
     <ImplementedReturnTypeMismatch>
       <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
     </ImplementedReturnTypeMismatch>
+    <InvalidCast>
+      <code><![CDATA[config( 'grapher.access.switch' )]]></code>
+      <code><![CDATA[config( 'grapher.access.switch' )]]></code>
+    </InvalidCast>
     <RedundantCondition>
       <code><![CDATA[$this->switch()]]></code>
     </RedundantCondition>
+    <TypeDoesNotContainType>
+      <code><![CDATA[(int)config( 'grapher.access.switch' ) === User::AUTH_PUBLIC]]></code>
+    </TypeDoesNotContainType>
   </file>
   <file src="app/Services/Grapher/Graph/Trunk.php">
     <ImplementedReturnTypeMismatch>
       <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: string}]]></code>
     </ImplementedReturnTypeMismatch>
+    <InvalidCast>
+      <code><![CDATA[config( 'grapher.access.trunk' )]]></code>
+    </InvalidCast>
     <MissingDocblockType>
       <code><![CDATA[public function __construct( Grapher $grapher, string $n )]]></code>
       <code><![CDATA[public function setTrunkname( string $n ): static]]></code>
     </MissingDocblockType>
+    <TypeDoesNotContainType>
+      <code><![CDATA[(int)config( 'grapher.access.trunk' ) === User::AUTH_PUBLIC]]></code>
+    </TypeDoesNotContainType>
   </file>
   <file src="app/Services/Grapher/Graph/VirtualInterface.php">
     <ImplementedReturnTypeMismatch>
@@ -1958,17 +2183,29 @@
     <ImplementedReturnTypeMismatch>
       <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
     </ImplementedReturnTypeMismatch>
+    <InvalidCast>
+      <code><![CDATA[config( 'grapher.access.vlan' )]]></code>
+    </InvalidCast>
     <RedundantCondition>
       <code><![CDATA[$this->vlan()]]></code>
     </RedundantCondition>
+    <TypeDoesNotContainType>
+      <code><![CDATA[(int)config( 'grapher.access.vlan' ) === User::AUTH_PUBLIC]]></code>
+    </TypeDoesNotContainType>
   </file>
   <file src="app/Services/Grapher/Graph/VlanInterface.php">
     <ImplementedReturnTypeMismatch>
       <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
     </ImplementedReturnTypeMismatch>
+    <InvalidCast>
+      <code><![CDATA[config( 'grapher.access.customer' )]]></code>
+    </InvalidCast>
     <RedundantCondition>
       <code><![CDATA[$this->vlanInterface()]]></code>
     </RedundantCondition>
+    <TypeDoesNotContainType>
+      <code><![CDATA[(int)config( 'grapher.access.customer' ) === User::AUTH_PUBLIC]]></code>
+    </TypeDoesNotContainType>
   </file>
   <file src="app/Services/Grapher/Statistics.php">
     <RedundantCondition>
@@ -2004,6 +2241,9 @@
     </MissingDocblockType>
   </file>
   <file src="app/Services/PeeringDb.php">
+    <InvalidOperand>
+      <code><![CDATA[config( 'ixp_api.peeringDB.api-key' )]]></code>
+    </InvalidOperand>
     <TooManyArguments>
       <code><![CDATA[fake]]></code>
     </TooManyArguments>
@@ -2014,6 +2254,11 @@
     </TypeDoesNotContainType>
   </file>
   <file src="app/Services/RipeAtlas/ApiCall.php">
+    <InvalidOperand>
+      <code><![CDATA[config( "ixp_api.atlas_measurement_key" )]]></code>
+      <code><![CDATA[config('ixp_api.atlas_measurement_key' )]]></code>
+      <code><![CDATA[config('ixp_api.atlas_measurement_key')]]></code>
+    </InvalidOperand>
     <MissingDocblockType>
       <code><![CDATA[public function myAtlasMeasurements(): array]]></code>
       <code><![CDATA[public function queryAtlasForProbes( $customer, $protocol ): array]]></code>
@@ -2061,6 +2306,11 @@
     <MissingDocblockType>
       <code><![CDATA[public function generate(): array]]></code>
     </MissingDocblockType>
+  </file>
+  <file src="app/Utils/Bgpq3.php">
+    <InvalidOperand>
+      <code><![CDATA[$minSubnetSize]]></code>
+    </InvalidOperand>
   </file>
   <file src="app/Utils/Export/JsonSchema.php">
     <InvalidDocblock>
