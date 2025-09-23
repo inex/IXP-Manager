@@ -147,12 +147,16 @@ return [
 
     'rpki' => [
         'rtr1' => [
-            'host' => env( 'IXP_RPKI_RTR1_HOST', false ),
-            'port' => env( 'IXP_RPKI_RTR1_PORT', '3323' ),
+            'host'        => env( 'IXP_RPKI_RTR1_HOST', false ),
+            'port'        => env( 'IXP_RPKI_RTR1_PORT', '3323' ),
+            'min_version' => env( 'IXP_RPKI_RTR1_MIN_VERSION', null ),
+            'max_version' => env( 'IXP_RPKI_RTR1_MAX_VERSION', null ),
         ],
         'rtr2' => [
-            'host' => env( 'IXP_RPKI_RTR2_HOST', false ),
-            'port' => env( 'IXP_RPKI_RTR2_PORT', false ),
+            'host'        => env( 'IXP_RPKI_RTR2_HOST', false ),
+            'port'        => env( 'IXP_RPKI_RTR2_PORT', false ),
+            'min_version' => env( 'IXP_RPKI_RTR2_MIN_VERSION', null ),
+            'max_version' => env( 'IXP_RPKI_RTR2_MAX_VERSION', null ),
         ],
     ],
 
