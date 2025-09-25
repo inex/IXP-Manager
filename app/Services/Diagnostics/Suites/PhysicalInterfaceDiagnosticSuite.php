@@ -315,7 +315,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
      */
     private function switchPortActive():  DiagnosticResult
     {
-        $mainName = 'Within IXP Manager, the phsyical interface is '
+        $mainName = 'Within IXP Manager, the physical interface is '
             . ( $this->pi->status ? 'enabled' : 'disabled' )
             . ' and the switchport is '
             . ( $this->pi->switchPort->active ? 'active' : 'inactive' );
