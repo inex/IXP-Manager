@@ -430,8 +430,7 @@
                 }
             })
             .fail( function() {
-                alert( "Error running ajax query for " + url );
-                throw new Error( "Error running ajax query for " + url );
+                console.error( "Error running ajax query for " + url );
             })
         });
     </script>
