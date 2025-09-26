@@ -2079,24 +2079,39 @@
     </MissingDocblockType>
   </file>
   <file src="app/Services/Grapher/Graph/CoreBundle.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int, side: string}]]></code>
+    </ImplementedReturnTypeMismatch>
     <RedundantCondition>
       <code><![CDATA[$this->coreBundle()]]></code>
     </RedundantCondition>
   </file>
   <file src="app/Services/Grapher/Graph/Customer.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
+    </ImplementedReturnTypeMismatch>
     <RedundantCondition>
       <code><![CDATA[$this->customer()]]></code>
     </RedundantCondition>
   </file>
   <file src="app/Services/Grapher/Graph/IXP.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: 1}]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidCast>
       <code><![CDATA[config( 'grapher.access.ixp' )]]></code>
     </InvalidCast>
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[IXP]]></code>
+    </LessSpecificImplementedReturnType>
     <TypeDoesNotContainType>
       <code><![CDATA[(int)config( 'grapher.access.ixp' ) === User::AUTH_PUBLIC]]></code>
     </TypeDoesNotContainType>
   </file>
   <file src="app/Services/Grapher/Graph/Infrastructure.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidCast>
       <code><![CDATA[config( 'grapher.access.infrastructure' )]]></code>
     </InvalidCast>
@@ -2107,7 +2122,15 @@
       <code><![CDATA[(int)config( 'grapher.access.infrastructure' ) === User::AUTH_PUBLIC]]></code>
     </TypeDoesNotContainType>
   </file>
+  <file src="app/Services/Grapher/Graph/Latency.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: Carbon|null, period_end?: Carbon|null, id: int}]]></code>
+    </ImplementedReturnTypeMismatch>
+  </file>
   <file src="app/Services/Grapher/Graph/Location.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidCast>
       <code><![CDATA[config( 'grapher.access.location' )]]></code>
       <code><![CDATA[config( 'grapher.access.location' )]]></code>
@@ -2120,6 +2143,9 @@
     </TypeDoesNotContainType>
   </file>
   <file src="app/Services/Grapher/Graph/P2p.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, svli: int, dvli: int}]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidCast>
       <code><![CDATA[config( 'grapher.access.p2p' )]]></code>
     </InvalidCast>
@@ -2129,11 +2155,17 @@
     </RedundantCondition>
   </file>
   <file src="app/Services/Grapher/Graph/PhysicalInterface.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
+    </ImplementedReturnTypeMismatch>
     <RedundantCondition>
       <code><![CDATA[$this->physicalInterface()]]></code>
     </RedundantCondition>
   </file>
   <file src="app/Services/Grapher/Graph/Switcher.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidCast>
       <code><![CDATA[config( 'grapher.access.switch' )]]></code>
       <code><![CDATA[config( 'grapher.access.switch' )]]></code>
@@ -2146,6 +2178,9 @@
     </TypeDoesNotContainType>
   </file>
   <file src="app/Services/Grapher/Graph/Trunk.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: string}]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidCast>
       <code><![CDATA[config( 'grapher.access.trunk' )]]></code>
     </InvalidCast>
@@ -2158,11 +2193,17 @@
     </TypeDoesNotContainType>
   </file>
   <file src="app/Services/Grapher/Graph/VirtualInterface.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
+    </ImplementedReturnTypeMismatch>
     <RedundantCondition>
       <code><![CDATA[$this->virtualInterface()]]></code>
     </RedundantCondition>
   </file>
   <file src="app/Services/Grapher/Graph/Vlan.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidCast>
       <code><![CDATA[config( 'grapher.access.vlan' )]]></code>
     </InvalidCast>
@@ -2174,6 +2215,9 @@
     </TypeDoesNotContainType>
   </file>
   <file src="app/Services/Grapher/Graph/VlanInterface.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, id: int}]]></code>
+    </ImplementedReturnTypeMismatch>
     <InvalidCast>
       <code><![CDATA[config( 'grapher.access.customer' )]]></code>
     </InvalidCast>
