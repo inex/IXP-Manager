@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -31,18 +31,14 @@ use Illuminate\Foundation\Http\FormRequest;
  * Statistics FormRequest
  *
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@opensolutions.ie.ie>
  * @category   IXP
  * @package    IXP\Http\Requests
- * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class StatisticsRequest extends FormRequest
 {
-    public ?string $period   = null;
-    public ?string $category = null;
-    public ?string $protocol = null;
-    public ?string $type     = null;
 
     /**
      * Determine if the user is authorized to make this request.

@@ -401,7 +401,7 @@ class StatisticsController extends Controller
             $cust = Auth::getUser()->customer;
         }
 
-        if( $cust == null ) {
+        if( !$cust ) {
             abort( 403, "You are not authorised to view this member's graphs." );
         }
 
