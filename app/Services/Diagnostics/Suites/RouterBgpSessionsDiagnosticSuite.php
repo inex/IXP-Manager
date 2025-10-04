@@ -95,7 +95,9 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
                             Carbon::parse( $status->status->last_reconfig )->diffForHumans(),
                             result: DiagnosticResult::TYPE_TRACE,
                         ) );
-
+                        
+                        $this->results->add( $this->protocolStatus( $this->vli, $this->protocol, $router, $this->lg[ $router->handle ] ) );
+                        
                     } else {
 
                         $this->results->add( new DiagnosticResult(
@@ -124,8 +126,6 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
                 continue;
             }
 
-            $this->results->add( $this->protocolStatus( $this->vli, $this->protocol, $router, $this->lg[ $router->handle ] ) );
-
         }
 
         return $this;
@@ -152,9 +152,9 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
             if( !( $bgpsum = json_decode( $lg->bgpNeighbourSummary( $pb ) ) ) ) {
 
                 return new DiagnosticResult(
-                    name: $mainName . 'could not query looking glass',
-                    result: DiagnosticResult::TYPE_FATAL,
-                    narrative: "API call to looking glass failed.",
+                    name: $mainName . 'not configured',
+                    result: DiagnosticResult::TYPE_TRACE,
+                    narrative: "There is no BGP session configured for this interface.",
                 );
 
             }
