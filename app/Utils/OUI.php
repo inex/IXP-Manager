@@ -38,7 +38,7 @@ class OUI
      * Where to get the OUI list from
      * @var string Where to get the OUI list from
      */
-    public $file = 'http://standards.ieee.org/develop/regauth/oui/oui.txt';
+    public $file = 'https://standards-oui.ieee.org/oui/oui.txt';
 
     /**
      * Raw OUI data
