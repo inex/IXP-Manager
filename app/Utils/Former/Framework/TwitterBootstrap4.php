@@ -146,8 +146,6 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4
     /**
      * Add actions block class
      *
-     * @return null|string
-     *
      * @psalm-suppress UndefinedDocblockClass - Former Container type confusing psalm
      */
     #[\Override]
