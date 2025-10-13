@@ -85,7 +85,7 @@ class InfrastructureController extends Eloquent2Frontend
                 'ixf_ix_id' => [
                     'title'    => 'IXF-ID',
                     'type'     => self::$FE_COL_TYPES[ 'REPLACE' ],
-                    'subject'  => '<a href="' . config( 'ixp_api.IXPDB.ixp_www' ) . '/%%COL%%/" target="_blank">%%COL%%</a>',
+                    'subject'  => '<a href="' . config( 'ixp_api.IXPDB.ixp_www' ) . '" target="_blank">%%COL%%</a>',
                 ],
                 'peeringdb_ix_id' => [
                     'title'    => 'PeeringDB ID',

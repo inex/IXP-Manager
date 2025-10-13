@@ -113,7 +113,7 @@ return [
     */
     'IXPDB' => [
         'ixp_api'         => env( 'IXP_API_IXPDB_IXP_URL',  "https://api.ixpdb.net/v1/provider/list"  ),
-        'ixp_www'         => env( 'IXP_WWW_IXPDB_IXP_URL',  "https://ixpdb.euro-ix.net/en/ixpdb/ixp" ),
+        'ixp_www'         => env( 'IXP_WWW_IXPDB_IXP_URL',  "https://ixpdb.euro-ix.net/en/explore/ixp/%%COL%%/" ),
     ],
 
     /*
