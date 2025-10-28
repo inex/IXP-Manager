@@ -166,7 +166,7 @@
                         </div>
                         <div>
                             <p>
-                                Is available, the volume of traffic shown below is yesterday's total across all possible peering sessions and protocols in both directions.
+                                If available, the volume of traffic shown below is yesterday's total across all possible peering sessions and protocols in both directions.
                             </p>
                         </div>
                     </div>
