@@ -89,6 +89,7 @@ class InfrastructureControllerTest extends DuskTestCase
                 ->type( 'shortname', 'phpunit' )
                 ->select( 'country', 'IE' )
                 ->check( 'isPrimary' )
+                ->check( 'exclude_from_ixf_export' )
                 ->select( 'ixf_ix_id', '1' )
                 ->select( 'peeringdb_ix_id', '1' )
                 ->type( 'notes', 'I am a note' )
@@ -112,10 +113,11 @@ class InfrastructureControllerTest extends DuskTestCase
             $this->assertEquals( 'phpunit', $infra->shortname );
             $this->assertEquals( 'IE', $infra->country );
             $this->assertEquals( 'I am a note', $infra->notes );
-            $this->assertEquals( true, $infra->isPrimary );
             $this->assertEquals( '1', $infra->ixf_ix_id );
             $this->assertEquals( '1', $infra->peeringdb_ix_id );
-
+            $this->assertTrue( $infra->isPrimary );
+            $this->assertTrue( $infra->exclude_from_ixf_export );
+            
             // 3. browse to edit infrastructure object:
             $browser->click( '#e2f-list-edit-' . $infra->id )
                 ->waitForText( 'Edit Infrastructure' );
@@ -126,6 +128,7 @@ class InfrastructureControllerTest extends DuskTestCase
                 ->assertSelected( 'country', 'IE' )
                 ->assertInputValue( 'notes', 'I am a note' )
                 ->assertChecked( 'isPrimary' )
+                ->assertChecked( 'exclude_from_ixf_export' )
                 ->assertSelected( 'ixf_ix_id', '1' )
                 ->assertSelected( 'peeringdb_ix_id', '1' );
 
@@ -135,6 +138,7 @@ class InfrastructureControllerTest extends DuskTestCase
                 ->select( 'peeringdb_ix_id', '2' )
                 ->select( 'country', 'FR' )
                 ->uncheck( 'isPrimary' )
+                ->uncheck( 'exclude_from_ixf_export' )
                 ->press( 'Save Changes' )
                 ->waitForLocation( '/infrastructure/list' )
                 ->assertSee( "Infrastructure updated" );
@@ -148,9 +152,10 @@ class InfrastructureControllerTest extends DuskTestCase
             $this->assertEquals( 'phpunit', $infra->shortname );
             $this->assertEquals( 'I am a note', $infra->notes );
             $this->assertEquals( 'FR', $infra->country );
-            $this->assertEquals( false, $infra->isPrimary );
             $this->assertEquals( '2', $infra->ixf_ix_id );
             $this->assertEquals( '2', $infra->peeringdb_ix_id );
+            $this->assertFalse( $infra->isPrimary );
+            $this->assertFalse( $infra->exclude_from_ixf_export );
 
 
             // 7. edit again and assert that all checkboxes are unchecked and assert select values are as expected
@@ -161,6 +166,7 @@ class InfrastructureControllerTest extends DuskTestCase
                 ->assertInputValue( 'shortname', 'phpunit' )
                 ->assertInputValue( 'notes', 'I am a note' )
                 ->assertNotChecked( 'isPrimary' )
+                ->assertNotChecked( 'exclude_from_ixf_export' )
                 ->assertSelected( 'ixf_ix_id', '2' )
                 ->assertSelected( 'country', 'FR' )
                 ->assertSelected( 'peeringdb_ix_id', '2' );
@@ -178,23 +184,25 @@ class InfrastructureControllerTest extends DuskTestCase
             $this->assertEquals( 'Infrastructure PHPUnit', $infra->name );
             $this->assertEquals( 'phpunit', $infra->shortname );
             $this->assertEquals( 'FR', $infra->country );
-            $this->assertEquals( false, $infra->isPrimary );
             $this->assertEquals( '2', $infra->ixf_ix_id );
             $this->assertEquals( '2', $infra->peeringdb_ix_id );
-
+            $this->assertFalse( $infra->isPrimary );
+            $this->assertFalse( $infra->exclude_from_ixf_export );
 
             // 9. edit again and check all checkboxes and submit
             $browser->visit( '/infrastructure/edit/' . $infra->id )
                 ->waitForText( 'Edit Infrastructure' )
                 ->check( 'isPrimary' )
+                ->check( 'exclude_from_ixf_export' )
                 ->press( 'Save Changes' )
                 ->waitForLocation( '/infrastructure/list' );
 
 
             // 10. verify checkbox bool elements in database are all true
             $infra->refresh();
-
-            $this->assertEquals( true, $infra->isPrimary );
+            
+            $this->assertTrue( $infra->isPrimary );
+            $this->assertTrue( $infra->exclude_from_ixf_export );
 
             // 11. delete the router in the UI and verify via success message text and location
             $browser->visit( '/infrastructure/list/' )

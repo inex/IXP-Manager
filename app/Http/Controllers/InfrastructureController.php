@@ -102,6 +102,10 @@ class InfrastructureController extends Eloquent2Frontend
                     'title' => 'Country',
                     'type' => self::$FE_COL_TYPES[ 'COUNTRY' ]
                 ],
+                'exclude_from_ixf_export' => [
+                    'title' => 'Exclude from IX-F Export',
+                    'type' => self::$FE_COL_TYPES[ 'YES_NO' ]
+                ],
                 'notes'       => [
                     'title'         => 'Notes',
                     'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
@@ -171,7 +175,9 @@ class InfrastructureController extends Eloquent2Frontend
             'shortname'        => request()->old( 'shortname', $this->object->shortname     ),
             'isPrimary'        => request()->old( 'isPrimary', $this->object->isPrimary     ),
             'country'          => request()->old( 'country', in_array( $this->object->country,  array_values( Countries::getListForSelect( 'iso_3166_2' ) ), false ) ? $this->object->country : null ),
-            'notes'            => request()->old( 'notes', $this->object->notes             ),
+            'exclude_from_ixf_export'
+                               => request()->old( 'exclude_from_ixf_export', $this->object->exclude_from_ixf_export  ),
+            'notes'            => request()->old( 'notes',                   $this->object->notes                    ),
         ]);
 
         return [

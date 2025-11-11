@@ -59,6 +59,19 @@
                 . "cached for two hours. Use 'artisan cache:clear' to reset it.");
         ?>
 
+        <?= Former::checkbox( 'exclude_from_ixf_export' )
+                ->label( '&nbsp;' )
+                ->text( 'Exclude from IX-F Export' )
+                ->value( 1 )
+                ->inline()
+                ->blockHelp( "By default, all infrastructures (IXPs), their switches, connections, etc., are included in the IX-F export. "
+                        . "Check this box if you do not want to include this infrastructure in the export.<br><br>"
+                        . "If you are unsure, leave this unchecked. For more information, see the "
+                        . "<a href=\"https://docs.ixpmanager.org/latest/features/ixf-export/\" target=\"_blank\">IX-F Export documentation</a>."
+                );
+        ?>
+
+
         <div class="form-group row">
             <div class="col-sm-8">
                 <div class="card">

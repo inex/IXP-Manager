@@ -71,6 +71,9 @@ class JsonSchema
         self::EUROIX_JSON_VERSION_1_0,
     ];
     
+    // the data to export
+    private array $output = [];
+    
     /**
      * Get the JSON schema (for a given version or for the latest version)
      *
@@ -90,26 +93,26 @@ class JsonSchema
         }
 
         /** @psalm-suppress UndefinedConstant */
-        $output = [
+        $this->output = [
             'version' => $version,
             'generator' => 'IXP Manager v' . APPLICATION_VERSION,
         ];
 
         // normalise times to UTC for exports
         date_default_timezone_set('UTC');
-        $output['timestamp'] = now()->toIso8601ZuluString();
+        $this->output['timestamp'] = now()->toIso8601ZuluString();
 
-        $output['ixp_list']    = $this->getIXPInfo( $version );
-        $output['member_list'] = $this->getMemberInfo( $version, $detailed, $tags );
+        $infrasIncluded = $this->getIXPInfo( $version );
+        $this->output['member_list'] = $this->getMemberInfo( $version, $detailed, $tags, $infrasIncluded );
 
         // apply filters as some IXs don't want to export all details
-        $output = $this->filter($output);
+        $this->output = $this->filter($this->output);
 
         if( $asArray ) {
-            return $output;
+            return $this->output;
         }
 
-        return json_encode( $output, JSON_PRETTY_PRINT )."\n";
+        return json_encode( $this->output, JSON_PRETTY_PRINT )."\n";
     }
 
     /**
@@ -132,18 +135,19 @@ class JsonSchema
      * Collate the IXP specific information for the JSON schema export
      *
      * @param string $version The version to collate the detail for
-     *
-     * @return (|(array|mixed|value-of<TArray>)[]|int|null|string)[][]
-     *
      * @throws
-     *
-     * @psalm-return list{0?: array{shortname: null|string, name: , country: |string, url: , peeringdb_id?: int, ixf_id?: int, ixp_id: int, support_email: , support_phone: , support_contact_hours: , emergency_email: , emergency_phone: , emergency_contact_hours: , billing_contact_hours: , billing_email: , billing_phone: , peering_policy_list: non-empty-list<value-of<never>>, vlan: array<int<0, max>, array<string, mixed>>, switch: array},...}
      */
     private function getIXPInfo( string $version ): array
     {
         $ixpinfo = [];
+        $infrasIncluded = [];
 
         foreach( Infrastructure::with( ['switchers.cabinet.location'] )->get() as $infra ) {
+            
+            if( $infra->exclude_from_ixf_export ) {
+                continue;
+            }
+            
             $i = [];
             $i['shortname'] = $infra->name;
             $i['name'] = config('identity.legalname');
@@ -182,6 +186,8 @@ class JsonSchema
                 }
             }
 
+            $infrasIncluded[] = $infra->id;
+            
             $i['ixp_id'] = $infra->id;    // referenced in member's connections section
 
             $i['support_email'] = config('identity.support_email');
@@ -237,8 +243,10 @@ class JsonSchema
 
             $ixpinfo[] = $i;
         }
-
-        return $ixpinfo;
+        
+        $this->output['ixp_list']    = $ixpinfo;
+        
+        return $infrasIncluded;
     }
 
     /**
@@ -288,16 +296,8 @@ class JsonSchema
 
     /**
      * Collate the IXP's member information for the JSON schema export
-     *
-     * @param string $version The version to collate the detail for
-     * @param bool $detailed
-     * @param bool $tags
-     *
-     * @return ((((((stdClass|string)[]|bool|int|mixed|string)[]|int|null)[][]|mixed|string)[]|bool|int|null|string)[]|int|null|string)[][]
-     *
-     * @psalm-return array<int<0, max>, array{asnum: int|null, member_since: string, url: null|string, name: null|string, peering_policy: null|string, member_type: string, contact_email?: list{null|string}, contact_phone?: list{null|string}, peering_policy_url?: null|string, contact_hours?: string, ixp_manager?: array{tags: array<string, string>, in_manrs: bool, is_reseller: bool, is_resold: bool, resold_via_asn?: int|null}, connection_list: list<array{if_list: list{0?: array{if_phys_speed?: int|null, if_speed: int, switch_id: int|null}, ...<array{if_phys_speed?: int|null, if_speed: int, switch_id: int|null}>}, ixp_id: mixed, state: 'active', vlan_list: list{non-empty-array<non-empty-literal-string, array{address: mixed, as_macro?: string, mac_addresses?: list{0?: string, ...<string>}, max_prefix?: int, routeserver: bool, service_type?: list{'ixroutecollector'|'ixrouteserver', ...<'ixroutecollector'|'ixrouteserver'>}, services?: list{stdClass, ...<stdClass>}}|int|null>, ...<non-empty-array<non-empty-literal-string, array{address: mixed, as_macro?: string, mac_addresses?: list{0?: string, ...<string>}, max_prefix?: int, routeserver: bool, service_type?: list{'ixroutecollector'|'ixrouteserver', ...<'ixroutecollector'|'ixrouteserver'>}, services?: list{stdClass, ...<stdClass>}}|int|null>>}}>}>
      */
-    private function getMemberInfo( string $version, bool $detailed, bool $tags ): array
+    private function getMemberInfo( string $version, bool $detailed, bool $tags, array $infrasIncluded ): array
     {
         $memberinfo = [];
 
@@ -374,6 +374,9 @@ class JsonSchema
                     }
                 }
             }
+            
+            // ensure we have at least one interface on an included infrastructure
+            $atLeastOneInfraIsConnected = false;
 
             foreach( $c->virtualInterfaces as $vi ) {
                 $iflist = [];
@@ -384,6 +387,15 @@ class JsonSchema
                     // FIXME: hack for LONAP as they do peering on reseller ports :-(
                     if( !$pi->switchPort->typePeering() && !$pi->switchPort->typeReseller() ) {
                         continue;
+                    }
+                    
+                    // is this an infrastructure we are including?
+                    try {
+                        if( !in_array( $pi->switchPort->switcher->infrastructure, $infrasIncluded ) ) {
+                            continue;
+                        }
+                    } catch( \Exception $e ) {
+                        dd($pi);
                     }
                     
                     $atLeastOnePiIsPeering = true;
@@ -407,7 +419,9 @@ class JsonSchema
                 if( !$atLeastOnePiIsPeering || !$atLeastOnePiIsConnected ) {
                     continue;
                 }
-
+                
+                $atLeastOneInfraIsConnected = true;
+                
                 $vlanentries = [];
                 foreach( $vi->vlanInterfaces as $vli ) {
                     if( $vli->vlan->private || !$vli->vlan->export_to_ixf ) {
@@ -507,7 +521,7 @@ class JsonSchema
 
                 $connlist[] = $conn;
             }
-
+            
             $memberinfo[ $cnt ] = [
                 'asnum'          => $c->autsys,
                 'member_since'   => \Carbon\Carbon::parse($c->datejoin)->format( 'Y-m-d' ).'T00:00:00Z',
@@ -546,10 +560,11 @@ class JsonSchema
                     $memberinfo[ $cnt ][ 'ixp_manager' ][ 'resold_via_asn' ]   = $c->resellerObject->autsys;
                 }
             }
-
-            $memberinfo[ $cnt ][ 'connection_list' ] = $connlist;
-
-            $cnt++;
+            
+            if( $atLeastOneInfraIsConnected ) {
+                $memberinfo[ $cnt ][ 'connection_list' ] = $connlist;
+                $cnt++;
+            }
         }
 
         return $memberinfo;
