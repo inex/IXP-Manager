@@ -298,29 +298,6 @@
             ]
         },
         {
-            "asnum": 2128,
-            "member_since": "2014-01-06T00:00:00Z",
-            "url": "http:\/\/www.siep.com\/",
-            "name": "INEX",
-            "peering_policy": "mandatory",
-            "member_type": "ixp",
-            "contact_email": [
-                "peering@siep.net"
-            ],
-            "contact_phone": [
-                "+353 1 123 4567"
-            ],
-            "peering_policy_url": "http:\/\/www.siep.com\/noc\/",
-            "contact_hours": "24x7",
-            "ixp_manager": {
-                "tags": [],
-                "in_manrs": false,
-                "is_reseller": false,
-                "is_resold": false
-            },
-            "connection_list": []
-        },
-        {
             "asnum": 25441,
             "member_since": "2014-01-06T00:00:00Z",
             "url": "http:\/\/www.example.com\/",
