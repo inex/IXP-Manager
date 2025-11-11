@@ -50,17 +50,13 @@ abstract class Changed implements ShouldQueue
 
     /**
      * old customer note
-     *
-     * @var CustomerNote
      */
-    protected $ocn;
+    protected ?CustomerNote $ocn;
 
     /**
      * new customer note
-     *
-     * @var CustomerNote
      */
-    protected $cn;
+    protected CustomerNote $cn;
 
     /**
      * @var Customer
@@ -86,7 +82,7 @@ abstract class Changed implements ShouldQueue
      *
      * @throws GeneralException
      */
-    public function __construct( CustomerNote $ocn = null , CustomerNote $cn, User $user )
+    public function __construct( ?CustomerNote $ocn, CustomerNote $cn, User $user )
     {
         $this->ocn      = $ocn;
         $this->cn       = $cn;
@@ -124,7 +120,7 @@ abstract class Changed implements ShouldQueue
     /**
      * Get old note
      */
-    public function oldNote(): CustomerNote
+    public function oldNote(): ?CustomerNote
     {
         return $this->ocn;
     }
@@ -146,7 +142,8 @@ abstract class Changed implements ShouldQueue
      */
     public function eitherNote(): CustomerNote
     {
-        return $this->cn ?: $this->ocn;
+        // for changed events, the new note is always set
+        return $this->cn;
     }
 
     /**
