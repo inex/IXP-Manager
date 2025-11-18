@@ -3,7 +3,7 @@
 namespace Tests\Browser;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -37,7 +37,7 @@ use Throwable;
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Tests\Browser
- * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class RouterControllerTest extends DuskTestCase
@@ -71,7 +71,7 @@ class RouterControllerTest extends DuskTestCase
                 ->press( '#login-btn' )
                 ->waitForLocation( '/admin' );
 
-            $browser->visit( '/router/create' )
+            $browser->visit( route( 'router@create' ) )
                 ->assertSee( 'Handle' );
 
             // 1. test add
@@ -101,7 +101,7 @@ class RouterControllerTest extends DuskTestCase
                 ->check( 'skip_md5' )
                 ->type( 'template', 'api/v4/router/server/bird/standard' )
                 ->press( 'Create' )
-                ->waitForLocation( '/router/list' )
+                ->waitForLocation( route( 'router@list' ) )
                 ->assertSee( 'Router created' );
 
             /** @var Router $router */
@@ -132,8 +132,8 @@ class RouterControllerTest extends DuskTestCase
             $this->assertEquals( true, $router->skip_md5 );
             $this->assertEquals( 'api/v4/router/server/bird/standard', $router->template );
 
-            // 3. browse to edit router object: $browser->visit( '/router/edit/' . $router->getId() )
-            $browser->visit( '/router/edit/' . $router->id );
+            // 3. browse to edit router object: $browser->visit( route( 'router@edit'/' . $router->getId() )
+            $browser->visit( route( 'router@edit', $router->id ) );
 
             // 4. test that form contains settings as above using assertChecked(), assertNotChecked(), assertSelected(), assertInputValue, ...
             $browser->assertInputValue( 'handle', 'aaa-dusk-ci-test' )
@@ -185,7 +185,7 @@ class RouterControllerTest extends DuskTestCase
                 ->uncheck( 'skip_md5' )
                 ->type( 'template', 'api/v4/router/as112/bird/standard' )
                 ->press( 'Save Changes' )
-                ->waitForLocation( '/router/list' );
+                ->waitForLocation( route( 'router@list' ) );
 
 
             // 6. repeat database load and database object check for new values (repeat 2)
@@ -217,7 +217,7 @@ class RouterControllerTest extends DuskTestCase
 
 
             // 7. edit again and assert that all checkboxes are unchecked and assert select values are as expected
-            $browser->visit( '/router/edit/' . $router->id )
+            $browser->visit( route( 'router@edit', $router->id ) )
                 ->assertSee( 'Handle' );
 
             $browser->assertSelected( 'vlan_id', '1' )
@@ -235,7 +235,7 @@ class RouterControllerTest extends DuskTestCase
 
             // 8. submit with no changes and verify no changes in database
             $browser->press( 'Save Changes' )
-                ->waitForLocation( '/router/list' );
+                ->waitForLocation( route( 'router@list' ) );
 
             // . repeat database load and database object check for new values (repeat 2)
             $router->refresh();
@@ -265,7 +265,7 @@ class RouterControllerTest extends DuskTestCase
             $this->assertEquals( 'api/v4/router/as112/bird/standard', $router->template );
 
             // 9. edit again and check all checkboxes and submit
-            $browser->visit( '/router/edit/' . $router->id )
+            $browser->visit( route( 'router@edit', $router->id ) )
                 ->assertSee( 'Handle' );
 
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
@@ -275,7 +275,7 @@ class RouterControllerTest extends DuskTestCase
                 ->check( 'rpki' )
                 ->check( 'skip_md5' )
                 ->press( 'Save Changes' )
-                ->waitForLocation( '/router/list' );
+                ->waitForLocation( route( 'router@list' ) );
 
 
             // 10. verify checkbox bool elements in database are all true
@@ -287,7 +287,7 @@ class RouterControllerTest extends DuskTestCase
             $this->assertEquals( true, $router->skip_md5 );
 
             // 11. delete the router in the UI and verify via success message text and location
-            $browser->visit( '/router/list/' )
+            $browser->visit( route( 'router@list' ) )
                 ->pause( 500 )
                 ->click( 'a[href$="/router/view/' . $router->id . '"] + button' )
                 ->press( '#btn-delete-' . $router->id )

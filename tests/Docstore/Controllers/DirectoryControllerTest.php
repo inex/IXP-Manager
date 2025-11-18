@@ -74,7 +74,7 @@ class DirectoryControllerTest extends TestCase
     {
         // public user
         $response = $this->get( route( 'docstore-dir@create' ) );
-        $response->assertStatus(403 );
+        $response->assertStatus(302 );
     }
 
     /**
@@ -128,7 +128,7 @@ class DirectoryControllerTest extends TestCase
 
         // public user
         $response = $this->get( route( 'docstore-dir@edit', [ 'dir' => $dir ] ) );
-        $response->assertStatus(403 );
+        $response->assertStatus(302 );
     }
 
     /**
@@ -186,7 +186,7 @@ class DirectoryControllerTest extends TestCase
     {
         // public user
         $response = $this->post( route( 'docstore-dir@store' ), [ 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
-        $response->assertStatus(403 );
+        $response->assertStatus(302 );
         $this->assertDatabaseMissing( 'docstore_directories', [ 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
     }
 
@@ -275,7 +275,7 @@ class DirectoryControllerTest extends TestCase
                 'parent_dir_id' => self::testInfo[ 'parentDirId2' ]
             ]
         );
-        $response->assertStatus(403 );
+        $response->assertStatus(302 );
         $this->assertDatabaseHas(       'docstore_directories', [ 'name' => self::testInfo[ 'folderName' ],     'description' => self::testInfo[ 'folderDescription' ],     'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
         $this->assertDatabaseMissing(   'docstore_directories', [ 'name' => self::testInfo[ 'folderName2' ],    'description' => self::testInfo[ 'folderDescription2' ],    'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
     }
@@ -373,7 +373,7 @@ class DirectoryControllerTest extends TestCase
 
         // public user
         $response = $this->delete( route( 'docstore-dir@delete', [ 'dir' => $dir ] ) );
-        $response->assertStatus(403 );
+        $response->assertStatus(302 );
         $this->assertDatabaseHas( 'docstore_directories', [ 'name' => self::testInfo[ 'folderName2' ],    'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
     }
 

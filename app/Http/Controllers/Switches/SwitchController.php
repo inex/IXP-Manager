@@ -82,6 +82,9 @@ class SwitchController extends EloquentController
      */
     protected $object = null;
 
+    protected static bool $is_admin_route = true;
+
+
     /**
      * This function sets up the frontend controller
      */
@@ -106,14 +109,14 @@ class SwitchController extends EloquentController
                 'cabinet'  => [
                     'title'      => 'Rack',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'rack',
+                    'controller' => 'admin/rack',
                     'action'     => 'view',
                     'idField'    => 'cabinetid'
                 ],
                 'vendor'  => [
                     'title'      => 'Vendor',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'vendor',
+                    'controller' => 'admin/vendor',
                     'action'     => 'view',
                     'idField'    => 'vendorid'
                 ],
@@ -205,12 +208,17 @@ class SwitchController extends EloquentController
     protected static function additionalRoutes( string $route_prefix ): void
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
-        Route::group( [  'prefix' => $route_prefix ], function() {
+        Route::group( [  'prefix' => ( static::$is_admin_route ? 'admin/' : '' ) . $route_prefix ], function() {
             Route::get(  'create-by-snmp',      'Switches\SwitchController@addBySnmp'       )->name( 'switch@create-by-snmp'   );
             Route::get(  'port-report/{switch}','Switches\SwitchController@portReport'      )->name( "switch@port-report"   );
-            Route::get(  'configuration',       'Switches\SwitchController@configuration'   )->name( "switch@configuration" );
             Route::post( 'store-by-snmp',       'Switches\SwitchController@storeBySmtp'     )->name( "switch@store-by-snmp" );
         });
+
+        // never an admin route:
+        Route::group( [  'prefix' => $route_prefix ], function() {
+            Route::get(  'configuration',       'Switches\SwitchController@configuration'   )->name( "switch@configuration" );
+        });
+
     }
 
     /**

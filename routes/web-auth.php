@@ -99,9 +99,12 @@ Route::get(  'switch/configuration',       'Switches\SwitchController@configurat
 ///
 /// Authentication
 ///
-Route::group( [ 'namespace' => 'Auth' ], function() {
+Route::group( [ 'prefix' => 'admin', 'namespace' => 'Auth' ], function() {
     Route::get('switch-user/{c2u}',        'SwitchUserController@switch'       )->name( 'switch-user@switch'            );
     Route::get('switch-user-back',         'SwitchUserController@switchBack'    )->name( 'switch-user@switchBack'        );
+});
+
+Route::group( [ 'namespace' => 'Auth' ], function() {
     Route::get('switch-customer/{cust}',   'SwitchCustomerController@switch'    )->name( 'switch-customer@switch'        );
 });
 

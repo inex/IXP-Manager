@@ -63,6 +63,8 @@ class ContactGroupController extends EloquentController
 
     protected static $route_prefix = "contact-group";
 
+    protected static bool $is_admin_route = true;
+
     /**
      * This function sets up the frontend controller
      */
@@ -250,5 +252,21 @@ class ContactGroupController extends EloquentController
             'type'                  => 'required|string|in:' . implode( ',', array_keys( config( 'contact_group.types' ) ) ),
             'limited_to'            => 'required|integer|min:0',
         ] );
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    #[\Override]
+    protected function preDelete(): bool
+    {
+        $okay = true;
+        if( ( $cnt = $this->object->contacts()->count() ) ) {
+            AlertContainer::push( "You cannot delete this contact group as there are {$cnt} contacts associated with it.", Alert::DANGER );
+            $okay = false;
+        }
+
+        return $okay;
     }
 }

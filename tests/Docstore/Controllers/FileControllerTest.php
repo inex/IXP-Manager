@@ -72,7 +72,7 @@ class FileControllerTest extends TestCase
     {
         // public user
         $response = $this->get( route( 'docstore-file@upload' ) );
-        $response->assertStatus(403 );
+        $response->assertStatus(302 );
     }
 
     /**
@@ -125,7 +125,7 @@ class FileControllerTest extends TestCase
             'min_privs' => self::testInfo[ 'filePrivs' ],'uploadedFile'  => $uploadedFile
         ] );
 
-        $response->assertStatus(403 );
+        $response->assertStatus(302 );
 
         $this->assertDatabaseMissing( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId' ], 'name' =>  self::testInfo[ 'fileName' ], 'disk' => 'docstore', 'sha256' => hash_file( 'sha256', $uploadedFile ),
@@ -697,7 +697,7 @@ class FileControllerTest extends TestCase
         $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
         $this->delete( route( 'docstore-file@delete', [ 'file' => $file ] ) )
-            ->assertStatus(403 );
+            ->assertStatus(302 );
         $this->assertDatabaseHas( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
             'name'                  =>  self::testInfo[ 'fileName2' ],

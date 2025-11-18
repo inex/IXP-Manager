@@ -59,7 +59,7 @@ if( config( 'google2fa.enabled' ) ) {
 ///
 /// IP Address
 ///
-Route::group( [ 'prefix' => 'ip-address' ], function() {
+Route::group( [ 'prefix' => 'admin/ip-address' ], function() {
     Route::get(     'list/{protocol}/{vlanid?}',                'IpAddressController@list'              )->name( 'ip-address@list'                 );
     Route::get(     'delete-by-network/vlan/{vlan}',            'IpAddressController@deleteByNetwork'   )->name( 'ip-address@delete-by-network'    );
     Route::post(    'delete-by-network/vlan/{vlan}',            'IpAddressController@deleteByNetwork'   );
@@ -73,7 +73,7 @@ Route::group( [ 'prefix' => 'ip-address' ], function() {
 ///
 /// Patch Panel
 ///
-Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], function() {
+Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'admin/patch-panel' ], function() {
     Route::get(     'list',                             'PatchPanelController@index'            )->name( 'patch-panel@list'             );
     Route::get(     'list/inactive',                    'PatchPanelController@indexInactive'    )->name( 'patch-panel@list-inactive'    );
     Route::get(     'create',                           'PatchPanelController@create'           )->name( 'patch-panel@create'           );
@@ -91,7 +91,7 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], functi
 ///
 /// Patch Panel Port
 ///
-Route::group( [ 'namespace' => 'PatchPanel\Port', 'prefix' => 'patch-panel-port' ], function() {
+Route::group( [ 'namespace' => 'PatchPanel\Port', 'prefix' => 'admin/patch-panel-port' ], function() {
     Route::get(     'list',                             'PortController@index'                  )->name('patch-panel-port@list'                     );
     Route::post(    'advanced-list',                    'PortController@advancedIndex'          )->name('patch-panel-port@advanced-list'            );
     Route::get(     'list/patch-panel/{pp}',            'PortController@index'                  )->name('patch-panel-port@list-for-patch-panel'     );
@@ -129,7 +129,7 @@ Route::group( [ 'namespace' => 'PatchPanel\Port', 'prefix' => 'patch-panel-port'
 ///
 /// Router
 ///
-Route::group( [ 'prefix' => 'router' ], function() {
+Route::group( [ 'prefix' => 'admin/router' ], function() {
     Route::get(     'list',             'RouterController@list'     )->name( 'router@list'   );
     Route::get(     'status',           'RouterController@status'   )->name( 'router@status' );
     Route::get(     'create',           'RouterController@create'   )->name( 'router@create' );
@@ -150,7 +150,7 @@ Route::group( [ 'prefix' => 'router' ], function() {
 ///
 /// Statistics
 ///
-Route::group( [ 'prefix' => 'statistics' ], function() {
+Route::group( [ 'prefix' => 'admin/statistics' ], function() {
     Route::get(  'league-table', 'StatisticsController@leagueTable' );
     Route::post( 'league-table', 'StatisticsController@leagueTable' )->name( 'statistics@league-table'      );
     Route::get(  'utilisation',  'StatisticsController@utilisation' )->name( 'statistics@utilisation'       );
@@ -162,7 +162,7 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
 ///
 /// Interfaces
 ///
-Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], function() {
+Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'admin/interfaces' ], function() {
     Route::group( [  'prefix' => 'virtual' ], function() {
         Route::get(     'list',                     'VirtualInterfaceController@list'                   )->name(    'virtual-interface@list'                    );
         Route::get(     'list-orphaned',            'VirtualInterfaceController@listOrphaned'           )->name(    'virtual-interface@list-orphaned'           );
@@ -234,7 +234,7 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
 /// Customer
 ///
 Route::group( [ 'namespace' => 'Customer'  ], function() {
-    Route::group( [ 'prefix' => 'customer' ], function() {
+    Route::group( [ 'prefix' => 'admin/customer' ], function() {
         Route::get(     'list',                                 'CustomerController@list'                       )->name( 'customer@list'                            );
         Route::get(     'create',                               'CustomerController@create'                     )->name( 'customer@create'                          );
         Route::get(     'edit/{cust}',                          'CustomerController@edit'                       )->name( 'customer@edit'                            );
@@ -256,7 +256,7 @@ Route::group( [ 'namespace' => 'Customer'  ], function() {
         } );
     }
 
-    Route::group( [ 'prefix' => 'customer-note' ], function() {
+    Route::group( [ 'prefix' => 'admin/customer-note' ], function() {
         Route::get(    'read-all',                          'CustomerNotesController@readAll'                )->name( 'customerNotes@readAll');
         Route::get(    'unread-notes',                      'CustomerNotesController@unreadNotes'            )->name( "customerNotes@unreadNotes" );
     });
@@ -268,7 +268,7 @@ Route::group( [ 'namespace' => 'Customer'  ], function() {
 /// User
 ///
 Route::group( [ 'namespace' => 'User' ], function() {
-    Route::group( [ 'prefix' => 'customer-to-user' ], function() {
+    Route::group( [ 'prefix' => 'admin/customer-to-user' ], function() {
         Route::post('privs',     'CustomerToUserController@updatePrivs' )->name( "customer-to-user@privs" );
     });
 });
@@ -285,7 +285,7 @@ Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );
 ///
 /// Search
 ///
-Route::get( 'search', 'SearchController@do' )->name( 'search' );
+Route::get( 'admin/search', 'SearchController@do' )->name( 'search' );
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -293,7 +293,7 @@ Route::get( 'search', 'SearchController@do' )->name( 'search' );
 ///
 /// .ENV Configurator
 ///
-Route::group( [ 'prefix' => 'settings' ], function() {
+Route::group( [ 'prefix' => 'admin/settings' ], function() {
     Route::get( '', 'SettingsController@index' )->name( 'settings@index' );
     Route::post( 'update', 'SettingsController@update' )->name( 'settings@update' );
 });
@@ -304,7 +304,7 @@ Route::group( [ 'prefix' => 'settings' ], function() {
 /// CUSTOMER DOCUMENT STORE
 ///
 if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ) {
-    Route::group( [ 'namespace' => 'DocstoreCustomer', 'prefix' => 'docstorec' ], function() {
+    Route::group( [ 'namespace' => 'DocstoreCustomer', 'prefix' => 'admin/docstorec' ], function() {
         Route::get( '',                           'DirectoryController@listCustomers'   )->name( 'docstore-c-dir@customers'                 );
 
         Route::get( '{cust}/dir/create',          'DirectoryController@create'              )->name( 'docstore-c-dir@create'                );
@@ -328,10 +328,38 @@ if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ) {
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
+/// DOCUMENT STORE
+///
+if( !config( 'ixp_fe.frontend.disabled.docstore' ) ) {
+    Route::group( [ 'namespace' => 'Docstore', 'prefix' => 'admin/docstore' ], function() {
+
+        Route::get( '/dir/create',          'DirectoryController@create'    )->name( 'docstore-dir@create'  );
+        Route::get( '/dir/{dir}/edit',      'DirectoryController@edit'      )->name( 'docstore-dir@edit'    );
+
+        Route::post(    '/dir/store',       'DirectoryController@store'     )->name( 'docstore-dir@store'   );
+        Route::put(     '/dir/update/{dir}','DirectoryController@update'    )->name( 'docstore-dir@update'  );
+        Route::delete(  '/dir/{dir}',       'DirectoryController@delete'    )->name( 'docstore-dir@delete'  );
+
+        Route::delete( '/file/{file}',             'FileController@delete'      )->name( 'docstore-file@delete'      );
+
+        Route::get(  '/file/upload',       'FileController@upload' )->name( 'docstore-file@upload'  );
+        Route::get(  '/file/{file}/edit',  'FileController@edit'   )->name( 'docstore-file@edit'    );
+        Route::post( '/file/store',        'FileController@store'  )->name( 'docstore-file@store'   );
+        Route::put(  '/file/update/{file}','FileController@update' )->name( 'docstore-file@update'  );
+
+        Route::get(    '/file/info/{file}',        'FileController@info'          )->name( 'docstore-file@info'        );
+        Route::get(    '/file/{file}/logs',        'LogController@list'           )->name( 'docstore-log@list'         );
+        Route::get(    '/file/{file}/unique-logs', 'LogController@uniqueList'     )->name( 'docstore-log@unique-list'  );
+    } );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
 /// LOGS
 ///
 if( !config( 'ixp_fe.frontend.disabled.logs' ) ){
-    Route::group( [ 'prefix' => 'log' ], function() {
+    Route::group( [ 'prefix' => 'admin/log' ], function() {
         Route::get(     'list',         'LogController@list'    )->name( 'log@list'     );
         Route::get(     'view/{log}',   'LogController@view'    )->name( 'log@view'     );
     } );
@@ -344,7 +372,7 @@ if( !config( 'ixp_fe.frontend.disabled.logs' ) ){
 /// Route Server Filters
 ///
 
-Route::get( 'rs-filters/list-customers', 'RsFilterController@listCustomers' )->name( 'rs-filters@list-customers' );
+Route::get( 'admin/rs-filters/list-customers', 'RsFilterController@listCustomers' )->name( 'rs-filters@list-customers' );
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -353,7 +381,7 @@ Route::get( 'rs-filters/list-customers', 'RsFilterController@listCustomers' )->n
 /// IRRDB
 ///
 
-Route::get( 'irrdb/summary', 'Irrdb\IrrdbController@summary' )->name( 'irrdb@summary' );
+Route::get( 'admin/irrdb/summary', 'Irrdb\IrrdbController@summary' )->name( 'irrdb@summary' );
 
 
 
@@ -365,7 +393,7 @@ Route::get( 'irrdb/summary', 'Irrdb\IrrdbController@summary' )->name( 'irrdb@sum
 ///
 /// Utilities
 ///
-Route::get( 'phpinfo', function() {
+Route::get( 'admin/phpinfo', function() {
         if( config('app.debug') || !config( 'ixp_fe.frontend.disabled.phpinfo' ) ) {
             phpinfo();
         } else {
@@ -373,7 +401,7 @@ Route::get( 'phpinfo', function() {
         }
     } )->name('phpinfo' );
 
-Route::group( [ 'prefix' => 'utils', 'namespace' => 'Utils' ], function() {
+Route::group( [ 'prefix' => 'admin/utils', 'namespace' => 'Utils' ], function() {
     Route::get( 'phpinfo', function() {
         return view( 'utils/phpinfo' );
     })->name('utils/phpinfo');

@@ -66,6 +66,8 @@ class ConsoleServerConnectionController extends EloquentController
      */
     protected $object = null;
 
+    protected static bool $is_admin_route = true;
+
     /**
      * This function sets up the frontend controller
      */
@@ -84,7 +86,7 @@ class ConsoleServerConnectionController extends EloquentController
                 'customer'  => [
                     'title'      => 'Customer',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'customer',
+                    'controller' => 'admin/customer',
                     'action'     => 'overview',
                     'idField'    => 'customerid'
                 ],
@@ -147,7 +149,7 @@ class ConsoleServerConnectionController extends EloquentController
     #[\Override]
     protected static function additionalRoutes( string $route_prefix ): void
     {
-        Route::group( [ 'prefix' => $route_prefix ], static function() use ( $route_prefix ) {
+        Route::group( [ 'prefix' => ( static::$is_admin_route ? 'admin/' : '' ) . $route_prefix ], static function() use ( $route_prefix ) {
             Route::get(     'list/port/{cs}',               'ConsoleServer\ConsoleServerConnectionController@listPort'    )->name( $route_prefix . '@listPort'   );
         });
     }

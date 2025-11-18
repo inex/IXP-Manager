@@ -58,6 +58,8 @@ class CustKitController extends EloquentController
      */
     protected $object = null;
 
+    protected static bool $is_admin_route = true;
+
     /**
      * This function sets up the frontend controller
      */
@@ -78,14 +80,14 @@ class CustKitController extends EloquentController
                 'customer'  => [
                     'title'         => 'Customer',
                     'type'          => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller'    => 'customer',
+                    'controller'    => 'admin/customer',
                     'action'        => 'overview',
                     'idField'       => 'custid'
                 ],
                 'cabinet'  => [
                     'title'      => 'Rack',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'rack',
+                    'controller' => 'admin/rack',
                     'action'     => 'view',
                     'idField'    => 'cabinetid'
                 ],

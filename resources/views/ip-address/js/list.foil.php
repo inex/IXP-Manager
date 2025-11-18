@@ -23,7 +23,7 @@
 
     $( "#vlan" ).select2({ placeholder: "Select a VLAN..." }).on( 'change', function(e) {
         let vlan = this.value;
-        window.location = "<?= url( 'ip-address/list' ) ?>/"+ protocol + '/' + vlan;
+        window.location = "<?= url( 'admin/ip-address/list' ) ?>/"+ protocol + '/' + vlan;
     });
 
     /**

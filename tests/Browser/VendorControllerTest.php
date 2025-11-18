@@ -3,7 +3,7 @@
 namespace Tests\Browser;
 
 /*
- * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -37,7 +37,7 @@ use Tests\DuskTestCase;
  * @author     Laszlo Kiss <laszlo@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Tests\Browser
- * @copyright  Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class VendorControllerTest extends DuskTestCase
@@ -73,15 +73,15 @@ class VendorControllerTest extends DuskTestCase
                 ->press( '#login-btn' )
                 ->waitForLocation( '/admin' );
 
-            $browser->visit( '/vendor/list' )
+            $browser->visit( route( 'vendor@list' ) )
                 ->assertSee( 'Vendors' );
 
-            $browser->visit( '/vendor/create' )
+            $browser->visit( route( 'vendor@create' ) )
                 ->assertSee( 'Vendors / Create Vendor' );
 
             // 1. test add empty inputs
             $browser->press( 'Create' )
-                ->waitForLocation( '/vendor/create' )
+                ->waitForLocation( route( 'vendor@create' ) )
                 ->assertSee( "The name field is required." )
                 ->assertSee( "The shortname field is required." );
 
@@ -91,7 +91,7 @@ class VendorControllerTest extends DuskTestCase
                 ->type( 'bundle_name', 'Vendor Bundle' );
 
             $browser->press( 'Create' )
-                ->waitForLocation( '/vendor/list' )
+                ->waitForLocation( route( 'vendor@list' ) )
                 ->assertSee( "Vendor created." );
 
             $vendor = Vendor::whereName( 'Vendor Company' )->first();
@@ -114,7 +114,7 @@ class VendorControllerTest extends DuskTestCase
 
             // 6. submit with no changes and verify no changes in database
             $browser->press( 'Save Changes' )
-                ->waitForLocation( '/vendor/list' );
+                ->waitForLocation( route( 'vendor@list' ) );
 
             // 7. repeat database load and database object check for new values (repeat 2)
             $vendor->refresh();
@@ -124,7 +124,7 @@ class VendorControllerTest extends DuskTestCase
             $this->assertEquals( 'Vendor Bundle', $vendor->bundle_name );
 
             // 8. edit object
-            $browser->visit( '/vendor/edit/' . $vendor->id )
+            $browser->visit( route( 'vendor@edit', $vendor->id ) )
                 ->assertSee( 'Vendors / Edit Vendor' );
 
             $browser->type( 'name', 'Vendor Company2' )
@@ -132,7 +132,7 @@ class VendorControllerTest extends DuskTestCase
                 ->type( 'bundle_name', 'Vendor Bundle2' );
 
             $browser->press( 'Save Changes' )
-                ->waitForLocation( '/vendor/list' );
+                ->waitForLocation( route( 'vendor@list' ) );
 
             // 9. verify object values
             $vendor->refresh();
@@ -142,7 +142,7 @@ class VendorControllerTest extends DuskTestCase
             $this->assertEquals( 'Vendor Bundle2', $vendor->bundle_name );
 
             // 10. delete the router in the UI and verify via success message text and location
-            $browser->visit( '/vendor/list/' )
+            $browser->visit( route( 'vendor@list' ) )
                 ->click( '#e2f-list-delete-' . $vendor->id )
                 ->waitForText( 'Do you really want to delete this a vendor?' )
                 ->press( 'Delete' );

@@ -135,7 +135,7 @@
                     callback: function () {
                         let duplicateTo = $( "#duplicateTo" );
                         if( duplicateTo.val() ) {
-                            window.location.href = "<?= url( 'interfaces/vlan/duplicate' ) ?>/"+ id + "/to/" + duplicateTo.val();
+                            window.location.href = "<?= url( 'admin/interfaces/vlan/duplicate' ) ?>/"+ id + "/to/" + duplicateTo.val();
                         }
                     }
                 }

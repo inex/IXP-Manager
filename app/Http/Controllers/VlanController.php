@@ -65,6 +65,9 @@ class VlanController extends EloquentController
      */
     protected $object = null;
 
+    protected static bool $is_admin_route = true;
+
+
     /**
      * This function sets up the frontend controller
      */
@@ -133,7 +136,7 @@ class VlanController extends EloquentController
     #[\Override]
     protected static function additionalRoutes( string $route_prefix ): void
     {
-        Route::group( [ 'prefix' => $route_prefix ], static function() use ( $route_prefix ) {
+        Route::group( [ 'prefix' => ( static::$is_admin_route ? 'admin/' : '' ) . $route_prefix ], static function() use ( $route_prefix ) {
             Route::get(     'private',                             'VlanController@listPrivate'    )->name( $route_prefix . '@private'        );
             Route::get(     'private/infra/{infra}',               'VlanController@listPrivate'    )->name( $route_prefix . '@privateInfra'   );
             Route::get(     'list/infra/{infra}',                  'VlanController@listInfra'      )->name( $route_prefix . '@infra'          );

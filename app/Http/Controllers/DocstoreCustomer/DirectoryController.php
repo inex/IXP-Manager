@@ -87,7 +87,7 @@ class DirectoryController extends Controller
      *
      * @throws AuthorizationException
      */
-    public function list( Request $r, Customer $cust, DocstoreCustomerDirectory $dir = null ) : View
+    public function list( Request $r, Customer $cust, ?DocstoreCustomerDirectory $dir ) : View
     {
         $this->authorize( 'list', [ DocstoreCustomerDirectory::class, $cust ] );
 
@@ -115,7 +115,7 @@ class DirectoryController extends Controller
      *
      * @throws AuthorizationException
      */
-    public function listPatchPanelPortFiles( Request $r,  Customer $cust = null ) : View
+    public function listPatchPanelPortFiles( Request $r,  ?Customer $cust ) : View
     {
         $this->authorize( 'listPatchPanelPortFiles', [ DocstoreCustomerDirectory::class, $cust ] );
 

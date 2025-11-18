@@ -22,6 +22,7 @@
  */
 
 use Illuminate\Support\Facades\Route;
+use IXP\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,8 +95,6 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'location/{location?}/{category?}',            'StatisticsController@location'             )->name( 'statistics@location'              );
     Route::get(  'switch/{switch?}/{category?}',                'StatisticsController@switch'               )->name( 'statistics@switch'                );
     Route::get(  'trunk/{trunk?}/{category?}',                  'StatisticsController@trunk'                )->name( 'statistics@trunk'                 );
-    Route::get(  'members',                                     'StatisticsController@members'              );
-    Route::post( 'members',                                     'StatisticsController@members'              )->name( 'statistics@members'               );
     Route::get(  'p2ps/{customer?}',                            'StatisticsController@p2ps'                 )->name( 'statistics@p2ps-get'              );
     Route::post( 'p2ps/{customer?}',                            'StatisticsController@p2ps'                 )->name( 'statistics@p2ps'                  );
     Route::get(  'p2p/{srcVli}/{dstVli}',                       'StatisticsController@p2p'                  )->name( 'statistics@p2p-get'               );
@@ -108,6 +107,17 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'latency/{vli}/{protocol}',                    'StatisticsController@latency'              )->name( 'statistics@latency'               );
     Route::get(  'core-bundle/{cb}',                            'StatisticsController@coreBundle'           )->name( 'statistics@core-bundle'           );
 });
+
+Route::group( [ 'prefix' => ( ( is_numeric(config( 'grapher.access.customer' )) && config( 'grapher.access.customer' ) <= User::AUTH_CUSTADMIN ) ? '' : 'admin/' ) . 'statistics' ], function() {
+
+    Route::get( 'members', 'StatisticsController@members' );
+    Route::post( 'members', 'StatisticsController@members' )->name( 'statistics@members' );
+
+});
+
+
+
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,25 +167,8 @@ if( !config( 'ixp_fe.frontend.disabled.docstore' ) ) {
     Route::group( [ 'namespace' => 'Docstore', 'prefix' => 'docstore' ], function() {
         Route::get( '/{dir?}',          'DirectoryController@list'      )->name( 'docstore-dir@list' );
 
-        Route::get( '/dir/create',          'DirectoryController@create'    )->name( 'docstore-dir@create'  );
-        Route::get( '/dir/{dir}/edit',      'DirectoryController@edit'      )->name( 'docstore-dir@edit'    );
-
-        Route::post(    '/dir/store',       'DirectoryController@store'     )->name( 'docstore-dir@store'   );
-        Route::put(     '/dir/update/{dir}','DirectoryController@update'    )->name( 'docstore-dir@update'  );
-        Route::delete(  '/dir/{dir}',       'DirectoryController@delete'    )->name( 'docstore-dir@delete'  );
-
         Route::get(    '/file/download/{file}',    'FileController@download'    )->name( 'docstore-file@download'    );
         Route::get(    '/file/view/{file}',        'FileController@view'        )->name( 'docstore-file@view'        );
-        Route::get(    '/file/info/{file}',        'FileController@info'        )->name( 'docstore-file@info'        );
-        Route::delete( '/file/{file}',             'FileController@delete'      )->name( 'docstore-file@delete'      );
-
-        Route::get(  '/file/upload',       'FileController@upload' )->name( 'docstore-file@upload'  );
-        Route::get(  '/file/{file}/edit',  'FileController@edit'   )->name( 'docstore-file@edit'    );
-        Route::post( '/file/store',        'FileController@store'  )->name( 'docstore-file@store'   );
-        Route::put(  '/file/update/{file}','FileController@update' )->name( 'docstore-file@update'  );
-
-        Route::get(    '/file/{file}/logs',        'LogController@list'           )->name( 'docstore-log@list'         );
-        Route::get(    '/file/{file}/unique-logs', 'LogController@uniqueList'     )->name( 'docstore-log@unique-list'  );
     } );
 }
 
