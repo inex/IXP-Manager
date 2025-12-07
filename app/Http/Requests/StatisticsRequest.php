@@ -50,7 +50,20 @@ class StatisticsRequest extends FormRequest
         // authorisation done on a per action basis using Grapher::Graph->authorise() in the controller
         return true;
     }
-
+    
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->period   = $this->query('period');
+        $this->category = $this->query('category');
+        $this->protocol = $this->query('protocol');
+        $this->type     = $this->query('type');
+    }
+    
     /**
      * Get the validation rules that apply to the request.
      *
