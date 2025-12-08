@@ -9,9 +9,9 @@
 
 In addition to the above, I have:
 
- - [ ] ensure unit tests all run without error
- - [ ] ran pslam and corrected any static analysis issues
- - [ ] ensured all relevant template output is escaped to avoid XSS attached with `<?= $t->ee( $data ) ?>` or equivalent.
+ - [ ] ensured unit tests all run without error
+ - [ ] ran psalm and corrected any static analysis issues
+ - [ ] ensured all relevant template output is escaped to avoid XSS attached with `<?= $t->ee( $data ) ?>` or equivalent
  - [ ] ensured appropriate checks against user privilege / resources accessed
  - [ ] API calls (particular for add/edit/delete/toggle) are not implemented with GET and use CSRF tokens to avoid CSRF attacks
   
