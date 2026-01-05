@@ -57,6 +57,8 @@ use IXP\Traits\Observable;
  * @method static \Illuminate\Database\Eloquent\Builder|Logo whereWidth($value)
  * @property string $uploaded_at
  * @method static \Illuminate\Database\Eloquent\Builder|Logo whereUploadedAt($value)
+ * @property string $type
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Logo whereType($value)
  * @mixin \Eloquent
  */
 class Logo extends Model

@@ -5,7 +5,7 @@
 
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
- * Generated for Laravel 11.45.1.
+ * Generated for Laravel 11.47.0.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -5136,30 +5136,6 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Remove all items from the cache.
-         *
-         * @return bool
-         * @static
-         */
-        public static function flush()
-        {
-            /** @var \Illuminate\Cache\ArrayStore $instance */
-            return $instance->flush();
-        }
-
-        /**
-         * Get the cache key prefix.
-         *
-         * @return string
-         * @static
-         */
-        public static function getPrefix()
-        {
-            /** @var \Illuminate\Cache\ArrayStore $instance */
-            return $instance->getPrefix();
-        }
-
-        /**
          * Get a lock instance.
          *
          * @param string $name
@@ -5170,7 +5146,7 @@ namespace Illuminate\Support\Facades {
          */
         public static function lock($name, $seconds = 0, $owner = null)
         {
-            /** @var \Illuminate\Cache\ArrayStore $instance */
+            /** @var \Illuminate\Cache\RedisStore $instance */
             return $instance->lock($name, $seconds, $owner);
         }
 
@@ -5184,8 +5160,119 @@ namespace Illuminate\Support\Facades {
          */
         public static function restoreLock($name, $owner)
         {
-            /** @var \Illuminate\Cache\ArrayStore $instance */
+            /** @var \Illuminate\Cache\RedisStore $instance */
             return $instance->restoreLock($name, $owner);
+        }
+
+        /**
+         * Remove all items from the cache.
+         *
+         * @return bool
+         * @static
+         */
+        public static function flush()
+        {
+            /** @var \Illuminate\Cache\RedisStore $instance */
+            return $instance->flush();
+        }
+
+        /**
+         * Remove all expired tag set entries.
+         *
+         * @return void
+         * @static
+         */
+        public static function flushStaleTags()
+        {
+            /** @var \Illuminate\Cache\RedisStore $instance */
+            $instance->flushStaleTags();
+        }
+
+        /**
+         * Get the Redis connection instance.
+         *
+         * @return \Illuminate\Redis\Connections\Connection
+         * @static
+         */
+        public static function connection()
+        {
+            /** @var \Illuminate\Cache\RedisStore $instance */
+            return $instance->connection();
+        }
+
+        /**
+         * Get the Redis connection instance that should be used to manage locks.
+         *
+         * @return \Illuminate\Redis\Connections\Connection
+         * @static
+         */
+        public static function lockConnection()
+        {
+            /** @var \Illuminate\Cache\RedisStore $instance */
+            return $instance->lockConnection();
+        }
+
+        /**
+         * Specify the name of the connection that should be used to store data.
+         *
+         * @param string $connection
+         * @return void
+         * @static
+         */
+        public static function setConnection($connection)
+        {
+            /** @var \Illuminate\Cache\RedisStore $instance */
+            $instance->setConnection($connection);
+        }
+
+        /**
+         * Specify the name of the connection that should be used to manage locks.
+         *
+         * @param string $connection
+         * @return \Illuminate\Cache\RedisStore
+         * @static
+         */
+        public static function setLockConnection($connection)
+        {
+            /** @var \Illuminate\Cache\RedisStore $instance */
+            return $instance->setLockConnection($connection);
+        }
+
+        /**
+         * Get the Redis database instance.
+         *
+         * @return \Illuminate\Contracts\Redis\Factory
+         * @static
+         */
+        public static function getRedis()
+        {
+            /** @var \Illuminate\Cache\RedisStore $instance */
+            return $instance->getRedis();
+        }
+
+        /**
+         * Get the cache key prefix.
+         *
+         * @return string
+         * @static
+         */
+        public static function getPrefix()
+        {
+            /** @var \Illuminate\Cache\RedisStore $instance */
+            return $instance->getPrefix();
+        }
+
+        /**
+         * Set the cache key prefix.
+         *
+         * @param string $prefix
+         * @return void
+         * @static
+         */
+        public static function setPrefix($prefix)
+        {
+            /** @var \Illuminate\Cache\RedisStore $instance */
+            $instance->setPrefix($prefix);
         }
 
             }
@@ -12929,6 +13016,34 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
+         * Sets the list of HTTP methods that can be overridden.
+         * 
+         * Set to null to allow all methods to be overridden (default). Set to an
+         * empty array to disallow overrides entirely. Otherwise, provide the list
+         * of uppercased method names that are allowed.
+         *
+         * @param \Symfony\Component\HttpFoundation\uppercase-string[]|null $methods
+         * @static
+         */
+        public static function setAllowedHttpMethodOverride($methods)
+        {
+            //Method inherited from \Symfony\Component\HttpFoundation\Request 
+            return \Illuminate\Http\Request::setAllowedHttpMethodOverride($methods);
+        }
+
+        /**
+         * Gets the list of HTTP methods that can be overridden.
+         *
+         * @return \Symfony\Component\HttpFoundation\uppercase-string[]|null
+         * @static
+         */
+        public static function getAllowedHttpMethodOverride()
+        {
+            //Method inherited from \Symfony\Component\HttpFoundation\Request 
+            return \Illuminate\Http\Request::getAllowedHttpMethodOverride();
+        }
+
+        /**
          * Whether the request contains a Session which was started in one of the
          * previous requests.
          *
@@ -13025,7 +13140,7 @@ namespace Illuminate\Support\Facades {
          * 
          * Suppose this request is instantiated from /mysite on localhost:
          * 
-         *  * http://localhost/mysite              returns an empty string
+         *  * http://localhost/mysite              returns '/'
          *  * http://localhost/mysite/about        returns '/about'
          *  * http://localhost/mysite/enco%20ded   returns '/enco%20ded'
          *  * http://localhost/mysite/about?var=1  returns '/about'
@@ -13359,7 +13474,18 @@ namespace Illuminate\Support\Facades {
 
         /**
          * Gets the format associated with the mime type.
+         * 
+         * Resolution order:
+         *   1) Exact match on the full MIME type (e.g. "application/json").
+         *   2) Match on the canonical MIME type (i.e. before the first ";" parameter).
+         *   3) If the type is "application/*+suffix", use the structured syntax suffix
+         *      mapping (e.g. "application/foo+json" → "json"), when available.
+         *   4) If $subtypeFallback is true and no match was found:
+         *      - return the MIME subtype (without "x-" prefix), provided it does not
+         *        contain a "+" (e.g. "application/x-yaml" → "yaml", "text/csv" → "csv").
          *
+         * @param string|null $mimeType The mime type to check
+         * @param bool $subtypeFallback Whether to fall back to the subtype if no exact match is found
          * @static
          */
         public static function getFormat($mimeType)
@@ -13372,6 +13498,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Associates a format with mime types.
          *
+         * @param string $format The format to set
          * @param string|string[] $mimeTypes The associated mime types (the preferred one must be the first as it will be used as the content type)
          * @static
          */
@@ -25228,7 +25355,7 @@ namespace PragmaRX\Google2FALaravel {
          * @return string
          * @static
          */
-        public static function generateSecretKey($length = 16, $prefix = '')
+        public static function generateSecretKey($length = 32, $prefix = '')
         {
             //Method inherited from \PragmaRX\Google2FA\Google2FA 
             /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
@@ -25663,11 +25790,6 @@ namespace PragmaRX\Google2FALaravel {
 
 namespace Laravel\Socialite\Facades {
     /**
-     * @method array getScopes()
-     * @method \Laravel\Socialite\Contracts\Provider scopes(array|string $scopes)
-     * @method \Laravel\Socialite\Contracts\Provider setScopes(array|string $scopes)
-     * @method \Laravel\Socialite\Contracts\Provider redirectUrl(string $url)
-     * @see \Laravel\Socialite\SocialiteManager
      */
     class Socialite {
         /**
@@ -25802,6 +25924,20 @@ namespace Laravel\Socialite\Facades {
             //Method inherited from \Illuminate\Support\Manager 
             /** @var \Laravel\Socialite\SocialiteManager $instance */
             return $instance->getContainer();
+        }
+
+        /**
+         * Register a fake user for the given driver.
+         *
+         * @param string $driver
+         * @param \Laravel\Socialite\Contracts\User|\Closure|array|null $user
+         * @return \Laravel\Socialite\Testing\SocialiteFake
+         * @static
+         */
+        public static function fake($driver, $user = null)
+        {
+            /** @var \Laravel\Socialite\Testing\SocialiteFake $instance */
+            return $instance->fake($driver, $user);
         }
 
             }

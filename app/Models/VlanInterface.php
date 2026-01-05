@@ -98,6 +98,10 @@ use IXP\Traits\Observable;
  * @method static Builder|VlanInterface whereUpdatedAt($value)
  * @method static Builder|VlanInterface whereVirtualinterfaceid($value)
  * @method static Builder|VlanInterface whereVlanid($value)
+ * @property int|null $ipv4maxbgpprefix
+ * @property int|null $ipv6maxbgpprefix
+ * @method static Builder<static>|VlanInterface whereIpv4maxbgpprefix($value)
+ * @method static Builder<static>|VlanInterface whereIpv6maxbgpprefix($value)
  * @mixin Eloquent
  */
 class VlanInterface extends Model

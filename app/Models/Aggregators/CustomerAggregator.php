@@ -184,6 +184,8 @@ use Illuminate\Support\Collection;
  * @method static Builder|CustomerAggregator whereCreated($value)
  * @method static Builder|CustomerAggregator whereLastupdated($value)
  * @property-read \IXP\Models\IrrdbUpdateLog|null $irrdbUpdateLog
+ * @property int|null $maxprefixesv6
+ * @method static Builder<static>|CustomerAggregator whereMaxprefixesv6($value)
  * @mixin \Eloquent
  */
 class CustomerAggregator extends Customer

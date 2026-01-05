@@ -60,7 +60,7 @@ class AppServiceProvider extends ServiceProvider
                 'recording' => !cache('telescope:pause-recording'),
             ]);
         });
-
+        
         Former::framework( TwitterBootstrap4::class );
         // observer for docstore directory
         DocstoreDirectory::observe( DocstoreDirectoryObserver::class );
@@ -68,7 +68,7 @@ class AppServiceProvider extends ServiceProvider
         DocstoreCustomerDirectory::observe( DocstoreCustomerDirectoryObserver::class );
 
         Paginator::useBootstrap();
-
+        
         if(config('ixp_fe.forcessl', false)) {
             \URL::forceScheme('https');
         }

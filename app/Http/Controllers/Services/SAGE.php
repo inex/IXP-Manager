@@ -64,20 +64,20 @@ class SAGE extends Controller
         'LAN1-1G-FIRST' => [ 'd' => 'INEX LAN1 - First 1Gb Port (per month)',      'l' => 4510, 'p' => 0.00 ],
         'LAN1-1G-ADDNL' => [ 'd' => 'INEX LAN1 - Additional 1Gb Port (per month)', 'l' => 4510, 'p' => 56.00 ],
 
-        'LAN1-10G-FIRST' => [ 'd' => 'INEX LAN1 - First 10Gb Port (per month)',      'l' => 4510, 'p' => 210.00 ],
-        'LAN1-10G-ADDNL' => [ 'd' => 'INEX LAN1 - Additional 10Gb Port (per month)', 'l' => 4510, 'p' => 210.00 ],
+        'LAN1-10G-FIRST' => [ 'd' => 'INEX LAN1 - First 10Gb Port (per month)',      'l' => 4510, 'p' => 200.00 ],
+        'LAN1-10G-ADDNL' => [ 'd' => 'INEX LAN1 - Additional 10Gb Port (per month)', 'l' => 4510, 'p' => 200.00 ],
 
-        'LAN1-100G-FIRST' => [ 'd' => 'INEX LAN1 - First 100Gb Port (per month)',      'l' => 4510, 'p' => 1000.00 ],
-        'LAN1-100G-ADDNL' => [ 'd' => 'INEX LAN1 - Additional 100Gb Port (per month)', 'l' => 4510, 'p' => 1000.00 ],
+        'LAN1-100G-FIRST' => [ 'd' => 'INEX LAN1 - First 100Gb Port (per month)',      'l' => 4510, 'p' => 950.00 ],
+        'LAN1-100G-ADDNL' => [ 'd' => 'INEX LAN1 - Additional 100Gb Port (per month)', 'l' => 4510, 'p' => 950.00 ],
 
         'LAN2-1G-FREE'  => [ 'd' => 'INEX LAN2 - First 1Gb Port (free with LAN1) (per month)',  'l' => 4511, 'p' => 0.00 ],
         'LAN2-1G-ADDNL' => [ 'd' => 'INEX LAN2 - Additional 1Gb Port (per month)',              'l' => 4511, 'p' => 56.00 ],
 
         'LAN2-10G-FREE'  => [ 'd' => 'INEX LAN2 - First 10Gb Port (free with LAN1) (per month)',      'l' => 4511, 'p' => 0.00 ],
-        'LAN2-10G-ADDNL' => [ 'd' => 'INEX LAN2 - Additional 10Gb Port (per month)',                  'l' => 4511, 'p' => 210.00 ],
+        'LAN2-10G-ADDNL' => [ 'd' => 'INEX LAN2 - Additional 10Gb Port (per month)',                  'l' => 4511, 'p' => 200.00 ],
 
-        'LAN2-100G-FIRST' => [ 'd' => 'INEX LAN2 - First 100Gb Port (per month)',                      'l' => 4511, 'p' => 1000.00 ],
-        'LAN2-100G-ADDNL' => [ 'd' => 'INEX LAN2 - Additional 100Gb Port (per month)',                 'l' => 4511, 'p' => 1000.00 ],
+        'LAN2-100G-FIRST' => [ 'd' => 'INEX LAN2 - First 100Gb Port (per month)',                      'l' => 4511, 'p' => 950.00 ],
+        'LAN2-100G-ADDNL' => [ 'd' => 'INEX LAN2 - Additional 100Gb Port (per month)',                 'l' => 4511, 'p' => 950.00 ],
 
         'CORK-1G-FIRST' => [ 'd' => 'INEX Cork - First 1Gb Port (per month)',      'l' => 4512, 'p' => 0.00 ],
         'CORK-1G-ADDNL' => [ 'd' => 'INEX Cork - Additional 1Gb Port (per month)', 'l' => 4512, 'p' => 0.00 ],
@@ -127,7 +127,7 @@ class SAGE extends Controller
     public function callback()
     {
 
-        //return $this->pull();
+//        return $this->pull();
 
         // 1 - Ledgers
         //return dd( $this->ledgers() );
@@ -138,13 +138,12 @@ class SAGE extends Controller
 
 
         // 3 - Customers
-        // return dd( $this->customers() );
+//        return dd( $this->customers() );
 
         // 4 - Invoices
         return $this->invoices();
-
-
-        return view( 'services/sage/index', [ 'suser' => Socialite::driver('sage')->user() ] );
+        
+//        return view( 'services/sage/index', [ 'suser' => Socialite::driver('sage')->user() ] );
     }
 
     public function pull()
@@ -618,10 +617,19 @@ class SAGE extends Controller
                 $summary[ $pi->autsys ]['vlans']        = [];
                 $summary[ $pi->autsys ]['privatevlans'] = [];
             }
+            
+            if( $pi->rate_limit ) {
+                
+                for( $i = 0; $i < $pi->rate_limit/1000; $i++ ) {
+                    $summary[ $pi->autsys ][ $pi->privatevlan ? 'privatevlans' : 'vlans' ][ $pi->vlantag ][] = 1000;
+                }
+                
+            } else {
+                $summary[ $pi->autsys ][ $pi->privatevlan ? 'privatevlans' : 'vlans' ][ $pi->vlantag ][] = $pi->speed;
+            }
 
-            $summary[ $pi->autsys ][ $pi->privatevlan ? 'privatevlans' : 'vlans' ][ $pi->vlantag ][] = $pi->speed;
         }
-
+        
         return $summary;
     }
 
@@ -786,15 +794,15 @@ class SAGE extends Controller
         foreach( $this->services as $srv ) {
             $headings[$srv['l']] = $srv['l'];
         }
-
+        
+        $member_pis = $this->getPhysIntsForAccounting();
+        
         $suser = Socialite::driver('sage')->user();
-
+        
         $sageLedgers   = $this->sageGetLedgers( $suser );
         $sageServices  = $this->sageGetServices( $suser );
         $sageCustomers = $this->sageGetCustomers( $suser );
-
-        $member_pis = $this->getPhysIntsForAccounting();
-
+        
         $lan1vid = 10;
         $lan2vid = 12;
         $corkvid = 210;
@@ -844,6 +852,9 @@ class SAGE extends Controller
         //// **** RATE LIMITED PORTS *******
         //// **** RATE LIMITED PORTS *******
         //// **** RATE LIMITED PORTS *******
+        ///
+        /// Code for gathering PIs assumes all rate limited ports at multiples of 1G
+        ///
 
         //// **** VAT 56 certificates!!   *******
         //// **** VAT 56 certificates!!   *******
@@ -875,25 +886,34 @@ class SAGE extends Controller
             $invoice_lines = [];
             $notes = '';
             $ilidx = 0;
-
-            $first_port_charge_done = false;
+            
+            $first_lan1_port_charge_done = false;
+            $first_lan2_port_charge_done = false;
+            $first_cork_port_charge_done = false;
             $eligable_for_lan2_free = false;
             $lan2_free_applied = false;
             $lan1_free_applied = false;
-
+            
+            
             if( !( $cust = Customer::find( $pis['custid'] ) ) ) {
                 Log::error("Could not load model for customer ID {$pis['custid']}");
                 continue;
             }
-
-
-
+            
             // 182 -  Convergenze [AS39120] FULL MEMBER RESOLD CUSTOMER
             // 190 -  Swisscom [AS3303] FULL MEMBER RESOLD CUSTOMER
             if( in_array( $cust->id, [ 182, 190, ] ) ) {
                 Log::info( "***** SKIPPING {$cust->name}");
                 continue;
             }
+            
+            
+            if( !isset( $sageCustomers[ $cust->id ] ) ) {
+                Log::error("No SAGE customer for cust ID {$cust->id} - {$cust->name}");
+                continue;
+            }
+
+
 
 //            if( $cust->companyBillingDetail->billingFrequency != CompanyBillingDetail::BILLING_FREQUENCY_QUARTERLY ) {
 //                Log::info( "***** SKIPPING {$cust->name} - non quarterly");
@@ -904,7 +924,7 @@ class SAGE extends Controller
 
             $invoice = [
                 'contact_id' => $sageCustomers[ $cust->id ] ?? 'XXX',
-                'date'       => '2025-01-01',
+                'date'       => '2026-01-01',
                 'status_id'  => 'DRAFT',
             ];
 
@@ -978,6 +998,7 @@ class SAGE extends Controller
                         Log::info( "    -     {$invoice_lines[$ilidx-1]['description']} @ {$invoice_lines[$ilidx-1]['unit_price']} x {$invoice_lines[$ilidx-1]['quantity']}" );
 
                         $lan2_free_applied = true;
+                        $first_lan2_port_charge_done = true;
 
                         fputcsv( $fp, [
                             'cust_asn'   => $asn,
@@ -1012,7 +1033,7 @@ class SAGE extends Controller
                         Log::info( "    -     {$invoice_lines[$ilidx-1]['description']} @ {$invoice_lines[$ilidx-1]['unit_price']} x {$invoice_lines[$ilidx-1]['quantity']}" );
 
                         $lan1_free_applied = true;
-                        $first_port_charge_done = true;
+                        $first_lan1_port_charge_done = true;
                         $eligable_for_lan2_free = true;
 
                         fputcsv( $fp, [
@@ -1040,13 +1061,40 @@ class SAGE extends Controller
 
                     $sc .= ( $p / 1000 ) . 'G-';
 
-                    if( !$first_port_charge_done ) {
-                        $first_port_charge_done = true;
-                        $sc .= 'FIRST';
-                    } else {
-                        $sc .= 'ADDNL';
+                    switch( $vid ) {
+                        
+                        case $lan1vid:
+                            if( !$first_lan1_port_charge_done ) {
+                                $first_lan1_port_charge_done = true;
+                                $sc .= 'FIRST';
+                            } else {
+                                $sc .= 'ADDNL';
+                            }
+                            break;
+                        
+                        case $lan2vid:
+                            if( !$first_lan2_port_charge_done ) {
+                                $first_lan2_port_charge_done = true;
+                                $sc .= 'FIRST';
+                            } else {
+                                $sc .= 'ADDNL';
+                            }
+                            break;
+                        
+                        case $corkvid:
+                            if( !$first_cork_port_charge_done ) {
+                                $first_cork_port_charge_done = true;
+                                $sc .= 'FIRST';
+                            } else {
+                                $sc .= 'ADDNL';
+                            }
+                            break;
+                            
+                        default:
+                            die('What VLAN are we doing here?');
+                        
                     }
-
+                            
                     $fee = $this->services[$sc]['p'];
                     $invoice_lines[$ilidx++] = [
                         'description'             => $this->services[ $sc ]['d'],

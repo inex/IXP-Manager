@@ -94,6 +94,10 @@ use IXP\Models\{Customer, PhysicalInterface, Router, Vlan, VlanInterface};
  * @method static Builder|VlanInterfaceAggregator whereUpdatedAt($value)
  * @method static Builder|VlanInterfaceAggregator whereVirtualinterfaceid($value)
  * @method static Builder|VlanInterfaceAggregator whereVlanid($value)
+ * @property int|null $ipv4maxbgpprefix
+ * @property int|null $ipv6maxbgpprefix
+ * @method static Builder<static>|VlanInterfaceAggregator whereIpv4maxbgpprefix($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereIpv6maxbgpprefix($value)
  * @mixin \Eloquent
  */
 class VlanInterfaceAggregator extends VlanInterface

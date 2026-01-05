@@ -66,6 +66,8 @@ use IXP\Traits\Observable;
  * @method static Builder|Infrastructure whereUpdatedAt($value)
  * @property int $ixp_id
  * @method static Builder|Infrastructure whereIxpId($value)
+ * @property int $exclude_from_ixf_export
+ * @method static Builder<static>|Infrastructure whereExcludeFromIxfExport($value)
  * @mixin Eloquent
  */
 class Infrastructure extends Model
