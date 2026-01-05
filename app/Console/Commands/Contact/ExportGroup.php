@@ -25,8 +25,6 @@ namespace IXP\Console\Commands\Contact;
 
 use Illuminate\Database\Eloquent\Builder;
 use IXP\Console\Commands\Command;
-
-use D2EM;
 use IXP\Models\Contact;
 
 /**
@@ -70,7 +68,7 @@ class ExportGroup extends Command
         $type = $this->option('type');
         $name = $this->option('name');
         // Imported from Zend Framework with little change on 2017-11
-        if( ( !$type && !$name ) || ( $type && $name ) )  {
+        if( !( $type && $name ) || ( $type && $name ) )  {
             $this->error( "Group name or type must be set (and not both)." );
             return -1;
         }

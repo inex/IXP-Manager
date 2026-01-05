@@ -5,17 +5,21 @@ on: [ push, pull_request ]
 jobs:
   ci-ex-dusk:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
-    - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+    - uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.0'
+        php-version: '8.3'
+      env:
+        update: true
     - uses: actions/checkout@v2
     - uses: shogo82148/actions-setup-mysql@v1
       with:
         mysql-version: '8.0'
-    - run: mysql -uroot -h127.0.0.1 -e 'CREATE DATABASE myapp_test'
+    - name: Print PHP version
+      run: echo ${{ steps.setup-php.outputs.php-version }}
+    - run: mysql -u root -h 127.0.0.1 -e 'CREATE DATABASE ixp_ci; CREATE USER IF NOT EXISTS ixp_ci@localhost IDENTIFIED BY "ixp_ci"; GRANT ALL ON ixp_ci.* TO ixp_ci@localhost;'
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.ci', '.env');"
     - name: Install bgpq3
@@ -26,10 +30,12 @@ jobs:
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Database
       run: |
-        cat data/ci/ci_test_db.sql  | mysql --default-character-set=utf8mb4 -h 127.0.0.1 -u root myapp_test
+        cat data/ci/ci_test_db.sql  | mysql --default-character-set=utf8mb4 -h localhost -u root ixp_ci
     - name: Set up php server
       run: |
         php ./artisan serve  &>php-built-in.log &
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       run: vendor/bin/phpunit --testsuite 'Docstore Test Suite,IXP Manager Test Suite'
+    - name: Static code analysis
+      run: vendor/bin/psalm
 

@@ -172,7 +172,7 @@ class RsFilterController extends Controller
         }
 
         $peers = array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ],
-            CustomerAggregator::getByVlanAndProtocol( $vlanid , $protocol ) );
+            CustomerAggregator::getByVlanAndProtocol( (int)$vlanid , (int)$protocol ) );
 
         // exclude this network
         foreach( $peers as $i => $p ) {
@@ -237,9 +237,9 @@ class RsFilterController extends Controller
     {
         $this->authorize( 'checkRsfObject',  [ RouteServerFilter::class, $rsf ] );
 
-        $vlanid     = $r->old( 'vlan_id',     $rsf->vlan_id  ?? null );
+        $vlanid     = $r->old( 'vlan_id',     (string)$rsf->vlan_id  ?? null );
         $protocol   = $r->old( 'protocol',    $rsf->protocol ?? null );
-        $peerid     = $r->old( 'peer_id',     $rsf->peer_id  ?? null );
+        $peerid     = $r->old( 'peer_id',     (string)$rsf->peer_id  ?? null );
 
         Former::populate( [
             'vlan_id'               => $vlanid      ?? "null",
@@ -256,7 +256,7 @@ class RsFilterController extends Controller
             'c'         => $rsf->customer,
             'vlans'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], $this->getPublicPeeringVLANs( $rsf->customer_id ) ),
             'protocols' => Router::$PROTOCOLS,
-            'peers'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], CustomerAggregator::getByVlanAndProtocol( $vlanid , $protocol ) ),
+            'peers'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], CustomerAggregator::getByVlanAndProtocol( (int)$vlanid , (int)$protocol ) ),
         ] );
     }
 

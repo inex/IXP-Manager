@@ -60,7 +60,7 @@ class StatisticsController extends Controller
      * Access via https://ixp.example.com/statistics/overall-by-month
      *
      * Respects Grapher authorisation settings:
-     *   http://docs.ixpmanager.org/features/grapher/#accessibility-of-aggregate-graphs
+     *   https://docs.ixpmanager.org/latest/features/grapher/#accessibility-of-aggregate-graphs
      *
      * This is mostly used by https://www.inex.ie/ 's front page graph.
      *

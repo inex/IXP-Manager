@@ -7,7 +7,7 @@
             null,
             null,
             <?php foreach( $t->peers[ "vlan" ] as $vlan ): ?>
-                <?php if( isset( $t->peers[ "me" ][ 'vlan_interfaces' ][ $vlan->number ] ) ): ?>
+                <?php if( isset( $t->peers[ "me" ][ 'vlan_interfaces' ][ $vlan['number'] ] ) ): ?>
                     { "orderable": false },
                 <?php endif; ?>
 

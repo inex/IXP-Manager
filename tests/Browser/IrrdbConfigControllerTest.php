@@ -64,11 +64,12 @@ class IrrdbConfigControllerTest extends DuskTestCase
     {
         $this->browse( function( Browser $browser ) {
             $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
                 ->visit( '/login' )
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->assertPathIs( '/admin' );
+                ->waitForLocation( '/admin' );
 
             $browser->visit( '/irrdb-config/list' )
                 ->assertSee( 'IRRDB Sources' );
@@ -80,7 +81,7 @@ class IrrdbConfigControllerTest extends DuskTestCase
 
             // 1. test add empty inputs
             $browser->press( 'Create' )
-                ->assertPathIs( '/irrdb-config/create' )
+                ->waitForLocation( '/irrdb-config/create' )
                 ->assertSee( "The host field is required." )
                 ->assertSee( "The source field is required." );
 
@@ -92,7 +93,7 @@ class IrrdbConfigControllerTest extends DuskTestCase
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             $browser->press( 'Create' )
-                ->assertPathIs( '/irrdb-config/list' )
+                ->waitForLocation( '/irrdb-config/list' )
                 ->assertSee( "IRRDB Source created." );
 
             $irrdbConfig = IrrdbConfig::where( 'source', 'TEST1' )->first();
@@ -106,7 +107,7 @@ class IrrdbConfigControllerTest extends DuskTestCase
 
             // 4. browse to edit infrastructure object:
             $browser->click( '#e2f-list-edit-' . $irrdbConfig->id )
-                ->assertSee( 'IRRDB Sources / Edit IRRDB Source' );
+                ->waitForText( 'IRRDB Sources / Edit IRRDB Source' );
 
             // 5. test that form contains settings as above using assertChecked(), assertNotChecked(), assertSelected(), assertInputValue, ...
             $browser->assertInputValue( 'host', 'whois.radb.net' )
@@ -117,7 +118,7 @@ class IrrdbConfigControllerTest extends DuskTestCase
 
             // 6. submit with no changes and verify no changes in database
             $browser->press( 'Save Changes' )
-                ->assertPathIs( '/irrdb-config/list' )
+                ->waitForLocation( '/irrdb-config/list' )
                 ->assertSee('IRRDB Source updated.');
 
 
@@ -139,7 +140,7 @@ class IrrdbConfigControllerTest extends DuskTestCase
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             $browser->press( 'Save Changes' )
-                ->assertPathIs( '/irrdb-config/list' )
+                ->waitForLocation( '/irrdb-config/list' )
                 ->assertSee('IRRDB Source updated.');
 
 
@@ -156,7 +157,7 @@ class IrrdbConfigControllerTest extends DuskTestCase
                 ->waitForText( 'Do you really want to delete this an IRRDB Sources?' )
                 ->press( 'Delete' );
 
-            $browser->assertSee( 'IRRDB Source deleted.' );
+            $browser->waitForText( 'IRRDB Source deleted.' );
 
             // 14. do a D2EM findOneBy and verify false/null
             $this->assertTrue( IrrdbConfig::where( 'source', 'TEST1,TEST2' )->doesntExist() );

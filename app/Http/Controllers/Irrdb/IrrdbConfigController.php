@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Http\Controllers;
+namespace IXP\Http\Controllers\Irrdb;
 
 /*
  * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -74,7 +74,7 @@ class IrrdbConfigController extends EloquentController
             'listOrderBy'       => 'host',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'irrdb-config',
-            'documentation'     => 'https://docs.ixpmanager.org/features/irrdb/',
+            'documentation'     => 'https://docs.ixpmanager.org/latest/features/irrdb/',
             'listColumns'       => [
                 'host'      => 'Host',
                 'source'    => 'Source'
@@ -155,11 +155,6 @@ class IrrdbConfigController extends EloquentController
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $r
-     *
-     * @return bool|RedirectResponse
-     *
-     * @throws
      */
     public function doStore( Request $r ): bool|RedirectResponse
     {
@@ -171,12 +166,7 @@ class IrrdbConfigController extends EloquentController
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request   $r
-     * @param int       $id
      *
-     * @return bool|RedirectResponse
-     *
-     * @throws
      */
     public function doUpdate( Request $r, int $id ): bool|RedirectResponse
     {

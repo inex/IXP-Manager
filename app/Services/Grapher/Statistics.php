@@ -39,49 +39,49 @@ class Statistics
     /**
      * Total packets/bits in
      *
-     * @var int
+     * @var float
      */
     private $totalIn;
 
     /**
      * Total packets/bits out
      *
-     * @var int
+     * @var float
      */
     private $totalOut;
 
     /**
      * Current packets/bits in
      *
-     * @var int
+     * @var float
      */
     private $curIn;
 
     /**
      * Current packets/bits out
      *
-     * @var int
+     * @var float
      */
     private $curOut;
 
     /**
      * Average packets/bits in
      *
-     * @var int
+     * @var float
      */
     private $averageIn;
 
     /**
      * Average packets/bits out
      *
-     * @var int
+     * @var float
      */
     private $averageOut;
 
     /**
      * Max packets/bits in
      *
-     * @var int
+     * @var float
      */
     private $maxIn;
 
@@ -95,7 +95,7 @@ class Statistics
     /**
      * Max packets/bits out
      *
-     * @var int
+     * @var float
      */
     private $maxOut;
 
@@ -212,26 +212,26 @@ class Statistics
     /**
      * Set statistics value
      *
-     * @param float $v
+     * @param float $value
      *
      * @return Statistics (for fluid interface)
      */
-    public function setTotalIn( float $v ): Statistics
+    public function setTotalIn( float $value ): Statistics
     {
-        $this->totalIn = $v;
+        $this->totalIn = $value;
         return $this;
     }
 
     /**
      * Set statistics value
      *
-     * @param float $v
+     * @param float $value
      *
      * @return Statistics (for fluid interface)
      */
-    public function setTotalOut( float $v ): Statistics
+    public function setTotalOut( float $value ): Statistics
     {
-        $this->totalOut = $v;
+        $this->totalOut = $value;
         return $this;
     }
 

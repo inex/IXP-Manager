@@ -26,7 +26,7 @@
                             Adding switches in IXP Manager requires SNMP v2 access from the host that runs IXP Manager. When you complete the details below, IXP Manager
                             queries the switch using SNMP to discover its make, model, number and names of ports, etc.
                         </p>
-                        See <a target="_blank" href="<?= url( 'https://docs.ixpmanager.org/usage/switches/' ) ?>">the official documentation for more information</a>
+                        See <a target="_blank" href="<?= url( 'https://docs.ixpmanager.org/latest/usage/switches/' ) ?>">the official documentation for more information</a>
                         or click the <em>Help</em> button below.
                     </div>
                 </div>

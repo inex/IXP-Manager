@@ -144,18 +144,25 @@ class SwitchController extends Controller
         $msgs = [];
 
         foreach( $s->getCoreBundles() as $cb ) {
+            $switchA = $cb->switchSideX();
+            /** @psalm-suppress InvalidPropertyFetch */
+            $switchAName = $switchA !== false ? $switchA->name : 'none';
+            $switchB = $cb->switchSideX( false );
+            /** @psalm-suppress InvalidPropertyFetch */
+            $switchBName = $switchB !== false ? $switchB->name : 'none';
+
             if( $cb->enabled ) {
                 $linksup      = count( $cb->coreLinksWithIfOperStateX() ); // with no args this defaults to X = oper state up for enabled links
                 $linksenabled = count( $cb->corelinks()->active()->get()->toArray() );
 
                 if( $linksup === $linksenabled ) {
-                    $msgs[] = $cb->switchSideX( true )->name . ' - ' . $cb->switchSideX( false )->name . " OK - {$linksup}/${linksenabled} links up";
+                    $msgs[] = $switchAName . ' - ' . $switchBName . " OK - {$linksup}/{$linksenabled} links up";
                 } else {
                     $okay = false;
-                    $msgs[] = 'ISSUE: ' . $cb->switchSideX( true )->name . ' - ' . $cb->switchSideX( false )->name . " has {$linksup}/${linksenabled} links up";
+                    $msgs[] = 'ISSUE: ' . $switchAName . ' - ' . $switchBName . " has {$linksup}/{$linksenabled} links up";
                 }
             } else {
-                $msgs[] = 'Ignoring ' . $cb->switchSideX( true )->name . ' - ' . $cb->switchSideX( false )->name . ' as core bundle disabled';
+                $msgs[] = 'Ignoring ' . $switchAName . ' - ' . $switchBName . ' as core bundle disabled';
             }
         }
 

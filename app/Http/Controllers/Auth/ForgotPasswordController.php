@@ -141,8 +141,8 @@ class ForgotPasswordController extends Controller
      */
     protected function sendResetLinkFailedResponse(): RedirectResponse
     {
-        AlertContainer::push( "If your email matches user(s) on the system, then an email listing those users has been sent to you." , Alert::INFO );
-        return back();
+        AlertContainer::push( 'If your email matches user(s) on the system, then an email listing those users has been sent to you.', Alert::INFO );
+        return redirect( route( 'login@login' ) );
     }
 
     /**

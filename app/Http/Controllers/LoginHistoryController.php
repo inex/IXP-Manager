@@ -62,6 +62,9 @@ class LoginHistoryController extends EloquentController
      */
     public function feInit(): void
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         $this->feParams         = (object)[
             'model'             => UserLoginHistory::class,
             'pagetitle'         => 'Login History',
@@ -95,7 +98,7 @@ class LoginHistoryController extends EloquentController
         // phpunit / artisan trips up here without the cli test:
         if( PHP_SAPI !== 'cli' ) {
             // custom access controls:
-            switch( Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC ) {
+            switch( Auth::check() ? $us->privs() : User::AUTH_PUBLIC ) {
                 case User::AUTH_SUPERUSER:
                     break;
                 default:

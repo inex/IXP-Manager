@@ -15,7 +15,7 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm ml-auto" role="group">
-        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/usage/customers">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/usage/customers">
             Documentation
         </a>
     </div>
@@ -33,7 +33,7 @@
         ?>
 
         <div id="instructions-alert" class="alert alert-info collapse">
-            Official <b>IXP Manager</b> documentation for adding / editing <?= config( 'ixp_fe.lang.customer.many' ) ?> can be found at <a href="http://docs.ixpmanager.org/usage/customers/">http://docs.ixpmanager.org/</a>.
+            Official <b>IXP Manager</b> documentation for adding / editing <?= config( 'ixp_fe.lang.customer.many' ) ?> can be found at <a href="https://docs.ixpmanager.org/latest/usage/customers/">https://docs.ixpmanager.org/</a>.
         </div>
 
         <div class="bg-light shadow-sm p-4">
@@ -200,7 +200,7 @@
                     ->fromQuery( $t->irrdbs, 'source' )
                     ->addClass( 'chzn-select-deselect' )
                     ->blockHelp( "The IRRDB source sets the database where IXP Manager queries the customer's IRR data from. See "
-                        . '<a href="http://docs.ixpmanager.org/features/irrdb/">the IRRDB feature page</a> for more information.' );
+                        . '<a href="https://docs.ixpmanager.org/latest/features/irrdb/">the IRRDB feature page</a> for more information.' );
                 ?>
 
                 <?= Former::checkbox( 'activepeeringmatrix' )

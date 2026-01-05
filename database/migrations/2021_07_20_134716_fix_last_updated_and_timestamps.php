@@ -17,7 +17,6 @@ class FixLastUpdatedAndTimestamps extends Migration
             if( !Schema::hasColumn( 'routers', 'last_updated' ) ) {
                 $table->dateTime( 'last_updated' )->nullable();
             } else {
-                $table->dateTime( 'last_updated' )->change();
                 $table->dateTime( 'last_updated' )->nullable()->change();
             }
 

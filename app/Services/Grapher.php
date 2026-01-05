@@ -85,7 +85,7 @@ class Grapher
     /**
      * Is the cache enabled?
      *
-     * @var bool
+     * @var integer
      */
     private $cacheLifetime = 300;
 

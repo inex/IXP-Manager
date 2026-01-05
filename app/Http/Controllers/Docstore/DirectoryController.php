@@ -73,7 +73,10 @@ class DirectoryController extends Controller
             $privs  = $user->privs;
         }
 
-        $dirs   = DocstoreDirectory::getHierarchyForUserClass( optional( $user )->privs() ?? 0 )[ $dir->id ?? '' ] ?? [];
+        /** @var User $us */
+        $us = optional($user);
+
+        $dirs   = DocstoreDirectory::getHierarchyForUserClass( $us->privs() ?? 0 )[ $dir->id ?? '' ] ?? [];
         $files  = DocstoreFile::getListing( $dir, $privs );
 
         $nbTotalDirs    = count( DocstoreDirectory::getHierarchyForUserClass( User::AUTH_SUPERUSER )[ $dir->id ?? '' ] ?? [] );

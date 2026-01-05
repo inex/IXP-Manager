@@ -166,6 +166,7 @@ class ProfileController extends Controller
      */
     public function updateNotificationPreference( NotificationRequest $r ) : RedirectResponse
     {
+        /** @var User $user */
         $user   = Auth::getUser();
         $prefs  = $user->prefs;
 
@@ -190,6 +191,7 @@ class ProfileController extends Controller
     public function updateMailingLists( Request $r ) : RedirectResponse
     {
         if( config( 'mailinglists.enabled', false ) ) {
+            /** @var User $user */
             $user           = Auth::getUser();
             $prefs          = $user->prefs;
             $mailintLists   = [];

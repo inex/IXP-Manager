@@ -195,12 +195,12 @@ class CoreBundle extends Model
      *
      * @return Switcher|bool
      */
-    public function switchSideX( bool $sideA = true )
+    public function switchSideX( bool $sideA = true ): Switcher|bool
     {
         $cl = $this->corelinks->first() ?? false;
 
         if( $cl ){
-            /** @var CoreInterface $side */
+            /** @var Switcher $side */
             $side = $sideA ? $cl->coreInterfaceSideA : $cl->coreInterfaceSideB;
             return $side->physicalinterface->switchPort->switcher;
         }

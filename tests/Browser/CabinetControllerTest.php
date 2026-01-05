@@ -1,6 +1,6 @@
 <?php
 
-namespace Browser;
+namespace Tests\Browser;
 
 /*
  * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -65,11 +65,12 @@ class CabinetControllerTest extends DuskTestCase
     {
         $this->browse( function( Browser $browser ) {
             $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
                 ->visit( '/login' )
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->assertPathIs( '/admin' );
+                ->waitForLocation( '/admin' );
 
             $browser->visit( '/rack/list' )
                 ->assertSee( 'Racks' )
@@ -82,7 +83,7 @@ class CabinetControllerTest extends DuskTestCase
 
             // 1. test add empty inputs
             $browser->press( 'Create' )
-                ->assertPathIs( '/rack/create' )
+                ->waitForLocation( '/rack/create' )
                 ->assertSee( "The name field is required." )
                 ->assertSee( "The locationid field is required." )
                 ->assertSee( "The colocation field is required." )
@@ -100,7 +101,7 @@ class CabinetControllerTest extends DuskTestCase
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             $browser->press( 'Create' )
-                ->assertPathIs( '/rack/list' )
+                ->waitForLocation( '/rack/list' )
                 ->assertSee( "Rack created." );
 
             $cabinet = Cabinet::whereName( 'Cabinet Test' )->first();
@@ -118,7 +119,7 @@ class CabinetControllerTest extends DuskTestCase
 
             // 4. browse to edit infrastructure object:
             $browser->click( '#e2f-list-edit-' . $cabinet->id )
-                ->assertSee( 'Racks / Edit Rack' );
+                ->waitForText( 'Racks / Edit Rack' );
 
             // 5. test that form contains settings as above using assertChecked(), assertNotChecked(), assertSelected(), assertInputValue, ...
             $browser->assertInputValue( 'name', 'Cabinet Test' )
@@ -135,7 +136,7 @@ class CabinetControllerTest extends DuskTestCase
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             $browser->press( 'Save Changes' )
-                ->assertPathIs( '/rack/list' )
+                ->waitForLocation( '/rack/list' )
                 ->assertSee( "Rack updated" );
 
 
@@ -167,7 +168,7 @@ class CabinetControllerTest extends DuskTestCase
 
             // 9. submit with no changes and verify no changes in database
             $browser->press( 'Save Changes' )
-                ->assertPathIs( '/rack/list' );
+                ->waitForLocation( '/rack/list' );
 
 
             // 10. repeat database load and database object check for new values (repeat 2)
@@ -195,7 +196,7 @@ class CabinetControllerTest extends DuskTestCase
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             $browser->press( 'Save Changes' )
-                ->assertPathIs( '/rack/list' );
+                ->waitForLocation( '/rack/list' );
 
 
             // 12. verify object values
@@ -215,7 +216,7 @@ class CabinetControllerTest extends DuskTestCase
                 ->waitForText( 'Do you really want to delete this rack' )
                 ->press( 'Delete' );
 
-            $browser->assertSee( 'Rack deleted.' );
+            $browser->waitForText( 'Rack deleted.' );
 
             // 14. do a D2EM findOneBy and verify false/null
             $this->assertTrue( Cabinet::whereName( 'Cabinet Test2' )->doesntExist() );

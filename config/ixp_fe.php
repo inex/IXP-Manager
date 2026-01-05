@@ -96,7 +96,6 @@ return [
             'logs'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGS',              false ),
             'logo'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGO',              true  ),
             'lg'                        => env( 'IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS',     true  ),
-            'net-info'                  => env( 'IXP_FE_FRONTEND_DISABLED_NETINFO',           true ),
             'peering-manager'           => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MANAGER',   false ),
             'peering-matrix'            => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MATRIX',    false ),
             'phpinfo'                   => env( 'IXP_FE_FRONTEND_DISABLED_PHPINFO',           true  ),
@@ -163,7 +162,7 @@ return [
         //
         'billing_updates_notify' => env( 'IXP_FE_CUSTOMER_BILLING_UPDATES_NOTIFY', false ),
 
-        // customer notes - see: https://docs.ixpmanager.org/usage/notes/
+        // customer notes - see: https://docs.ixpmanager.org/latest/usage/notes/
         //
         // Admin users can opt to get notified when a customer note is added / edited / deleted.
         // For testing and demonstration purposes, this can be disabled and all updates

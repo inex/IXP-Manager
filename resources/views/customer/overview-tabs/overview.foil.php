@@ -1,5 +1,8 @@
 <?php
-    $c = $t->c; /** @var \IXP\Models\Customer $c */
+
+use IXP\Models\IrrdbUpdateLog;
+
+$c = $t->c; /** @var \IXP\Models\Customer $c */
 ?>
 <div class="d-flex row">
     <div class="col-sm-12">
@@ -94,11 +97,39 @@
                                 <b>IRRDB</b>
                             </td>
                             <td>
-                                <?php if( $irrdb = $c->irrdbConfig ): ?>
+                                <?php if( $c->irrdbFiltered() && $irrdb = $c->irrdbConfig ): ?>
                                     <?= $t->ee( $irrdb->source )?>
                                     <?php if( $c->routeServerClient() && $c->irrdbFiltered() ): ?>
                                         (<a href="<?= route( "irrdb@list", [ "cust" => $c->id, "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">entries</a>)
+
+                                        <a type="button" class="tw-ml-2 tw-rounded tw-bg-white tw-px-2 tw-py-1 tw-text-xs tw-font-semibold tw-text-gray-900 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-gray-300 hover:tw-bg-gray-50"
+                                            href="<?= route( 'diagnostics@irrdb', $c ) ?>"
+                                        >
+                                            <i class="fa fa-wrench" aria-hidden="true"></i>
+                                        </a>
+
+
+                                        <br>
+
+                                        <?php
+                                            $lastUpdatedWarn = false;
+                                            if( $lastUpdated = IrrdbUpdateLog::lastUpdatedMax($c) ) {
+                                                if( $lastUpdated->isBefore( now()->subDay() ) ) {
+                                                    $lastUpdatedWarn = true;
+                                                }
+                                                $lastUpdated = $lastUpdated->format('Y-m-d H:i');
+                                            } else {
+                                                $lastUpdatedWarn = true;
+                                                $lastUpdated = 'NEVER';
+                                            }
+                                        ?>
+                                        Last updated:
+                                            <?= $lastUpdatedWarn ? '<span class="tw-inline-flex tw-items-center tw-rounded-md tw-ml-2  tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-yellow-50 -text-yellow-800 tw-ring-yellow-600/20">' : '' ?>
+                                            <?= $lastUpdated ?>
+                                            <?= $lastUpdatedWarn ? '</span>' : '' ?>
                                     <?php endif; ?>
+                                <?php else: ?>
+                                    <em>(no IRRDB filtering)</em>
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -195,7 +226,7 @@
                             <b>Joined</b>
                         </td>
                         <td>
-                            <?= \Carbon\Carbon::instance( $c->datejoin )->format( 'Y-m-d' ) ?>
+                            <?= \Carbon\Carbon::parse( $c->datejoin )->format( 'Y-m-d' ) ?>
                         </td>
                     </tr>
                     <tr>
@@ -204,7 +235,7 @@
                         </td>
                         <td>
                             <?php if( $c->hasLeft() ):?>
-                                <?= \Carbon\Carbon::instance( $c->dateleave )->format( 'Y-m-d' ) ?>
+                                <?= \Carbon\Carbon::parse( $c->dateleave )->format( 'Y-m-d' ) ?>
                             <?php endif; ?>
                         </td>
                     </tr>

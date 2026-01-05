@@ -67,12 +67,14 @@ class Store extends FormRequest
      */
     public function rules(): array
     {
+        /** @var User $us */
+        $us = Auth::user();
         $rules = [
             'user_id'       => 'required|integer|exists:user,id',
             'privs'         => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES_ALL ) ),
         ];
 
-        if( Auth::user()->isSuperUser() ) {
+        if( $us->isSuperUser() ) {
             $extraRules = [
                 'customer_id'   => 'required|integer|exists:cust,id',
             ];
@@ -86,13 +88,15 @@ class Store extends FormRequest
      */
     public function withValidator( Validator $validator ): void
     {
-        $validator->after( function( Validator $validator ) {
+        /** @var User $us */
+        $us = Auth::user();
+        $validator->after( function( Validator $validator ) use ($us) {
             if( !$this->user_id ) {
                 AlertContainer::push( "You must select one user from the list." , Alert::DANGER );
                 return false;
             }
 
-            $this->cust = Auth::user()->isSuperUser() ? Customer::find( $this->customer_id ) : Auth::user()->customer;
+            $this->cust = $us->isSuperUser() ? Customer::find( $this->customer_id ) : $us->customer;
 
             if( CustomerToUser::where( 'customer_id', $this->cust->id )->where( 'user_id', $this->user_id )->get()->isNotEmpty() ) {
                 AlertContainer::push( "This user is already associated with " . $this->cust->name, Alert::DANGER );

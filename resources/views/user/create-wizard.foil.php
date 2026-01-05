@@ -9,7 +9,7 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/usage/users/">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/usage/users/">
             Documentation
         </a>
         <a class="btn btn-white" href="<?= route('user@list') ?>">

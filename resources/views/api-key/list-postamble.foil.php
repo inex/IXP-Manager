@@ -11,7 +11,7 @@
     </div>
     <div class="card-body">
         <p>
-            Please see the <a href="http://docs.ixpmanager.org/features/api/">official API documentation here.</a>
+            Please see the <a href="https://docs.ixpmanager.org/latest/features/api/">official API documentation here.</a>
         </p>
         <p>
 
@@ -35,7 +35,7 @@
             <dd>
                 See <a href="https://ixpdb.euro-ix.net/en/">here for details on the IX-F Member List</a>
                 (or <a href="https://github.com/euro-ix/json-schemas/">the GitHub repo</a>)
-                and <a href="http://docs.ixpmanager.org/features/ixf-export/">here for IXP Manager's IX-F
+                and <a href="https://docs.ixpmanager.org/latest/features/ixf-export/">here for IXP Manager's IX-F
                     Member List export instructions</a>.<br><br>
                 Examples:
                 <ul>
@@ -103,11 +103,11 @@
 
                 <dt>Sflow MAC Address Mapping</dt>
                 <dd>
-                    When configuring <a href="https://docs.ixpmanager.org/features/sflow-p2p/">Sflow based peer to peer graphs</a>,
+                    When configuring <a href="https://docs.ixpmanager.org/latest/features/sflow-p2p/">Sflow based peer to peer graphs</a>,
                     the mechanism to associate sflow samples (based on source and destination MAC addreesses) to VLAN interfaces
                     requires a MAC to VLAN interface dictionary.
                     <br><br>
-                    As IXP Manager <a href="https://docs.ixpmanager.org/features/layer2-addresses/">supports layer2 / MAC addresses in two ways</a>
+                    As IXP Manager <a href="https://docs.ixpmanager.org/latest/features/layer2-addresses/">supports layer2 / MAC addresses in two ways</a>
                     (learned versus configured), there are two endpoints.
                     <ul>
                         <li>Learned: <code><a href="<?= url( "/api/v4/sflow-db-mapper/learned-macs" ) ?>"><?= url( "/api/v4/sflow-db-mapper/learned-macs" ) ?></a></code></li>

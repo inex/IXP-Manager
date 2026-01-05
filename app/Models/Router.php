@@ -107,6 +107,9 @@ use IXP\Traits\Observable;
  * @method static Builder|Router whereType($value)
  * @method static Builder|Router whereUpdatedAt($value)
  * @method static Builder|Router whereVlanId($value)
+ * @method static Builder|Router routeCollector()
+ * @method static Builder|Router ipvX(int $protocol)
+ * @method static Builder|Router ipProtocol(int $protocol)
  * @mixin \Eloquent
  */
 class Router extends Model
@@ -282,6 +285,18 @@ class Router extends Model
     }
 
     /**
+     * Scope a query to only include route collectors
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeRouteCollector( Builder $query ): Builder
+    {
+        return $query->where('type', self::TYPE_ROUTE_COLLECTOR);
+    }
+
+    /**
      * Scope a query to only include route servers
      *
      * @param Builder $query
@@ -316,6 +331,19 @@ class Router extends Model
     {
         return $query->where('protocol', self::PROTOCOL_IPV6);
     }
+
+    /**
+     * Scope a query to match IPvX routers only
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeIpProtocol( Builder $query, int $protocol ): Builder
+    {
+        return $query->where('protocol', $protocol === 4 ? self::PROTOCOL_IPV4 : self::PROTOCOL_IPV6 );
+    }
+
 
     /**
      * Scope a query to match BGP Large Communities enabled
@@ -405,6 +433,18 @@ class Router extends Model
     {
         return self::$TYPES[ $this->type ] ?? 'Unknown';
     }
+
+    /**
+     * Check if the given type matches the routers's type.
+     *
+     * @param int $type The type to check against.
+     * @return bool True if the given type matches, false otherwise.
+     */
+    public function isType( int $type ): bool
+    {
+        return $this->type === $type;
+    }
+
 
     /**
      * Turn the database integer representation of the lg access into text as

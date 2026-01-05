@@ -68,7 +68,7 @@
 ?>
 
 
-function f_import_as<?= $int['autsys'] ?>()
+function f_import_as<?= $int['autsys'] ?>() -> bool
 
 prefix set allnet;
 ip set allips;
@@ -231,6 +231,9 @@ protocol bgp pb_as<?= $int['autsys'] ?>_vli<?= $int['vliid'] ?>_ipv<?= $int['pro
     local as routerasn;
     source address routeraddress;
     strict bind yes;
+<?php if( config('app.env') === 'vagrant' ): ?>
+    multihop;        # needed for loopback interface binding
+<?php endif; ?>
     neighbor <?= $int['address'] ?> as <?= $int['autsys'] ?>;
 
     <?= $t->ipproto ?> {

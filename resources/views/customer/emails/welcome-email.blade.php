@@ -2,7 +2,7 @@
 
 
 **NB: this is a sample IXP Manager welcome email. You should copy this file and skin it as
-per the instructions at: http://docs.ixpmanager.org/features/skinning/ **
+per the instructions at: https://docs.ixpmanager.org/latest/features/skinning/ **
 
 
 Dear New <?= config( 'identity.orgname' ) ?> Member,

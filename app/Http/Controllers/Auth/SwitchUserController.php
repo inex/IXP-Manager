@@ -64,7 +64,9 @@ class SwitchUserController extends Controller
      */
     public function switch( CustomerToUser $c2u ): RedirectResponse
     {
-        if( !Auth::getUser()->isSuperUser() ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+        if( !$us->isSuperUser() ) {
             AlertContainer::push( "You are not allowed to switch users!", Alert::DANGER );
             return redirect()->to( "/" );
         }

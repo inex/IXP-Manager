@@ -1,6 +1,4 @@
 
-version: "2.3"
-
 networks:
     ixpmanager:
         driver: bridge
@@ -21,6 +19,7 @@ services:
         build:
             context: tools/docker/containers/mysql
         image: ixpmanager/mysql:dev
+        platform: linux/x86_64
         ports:
             - 33060:3306
         networks:
@@ -73,6 +72,7 @@ services:
         environment:
             XDEBUG_CONFIG: remote_host=${DOCKER_XDEBUG_CONFIG_REMOTE_HOST}
         image: ixpmanager/www:v5.0.0
+        platform: linux/x86_64
         ports:
             - 8880:80
         depends_on:
@@ -120,6 +120,7 @@ services:
 
     cust-as112:
         image: ixpmanager/bird:1.6.3
+        platform: linux/x86_64
         depends_on:
             - "rs1"
         networks:
@@ -132,6 +133,7 @@ services:
 
     cust-as42:
         image: ixpmanager/bird:1.6.3
+        platform: linux/x86_64
         depends_on:
             - "rs1"
         networks:
@@ -144,6 +146,7 @@ services:
 
     cust-as1213:
         image: ixpmanager/bird:1.6.3
+        platform: linux/x86_64
         depends_on:
             - "rs1"
         networks:
@@ -156,6 +159,7 @@ services:
 
     cust-as1213-v6:
         image: ixpmanager/bird6:1.6.3
+        platform: linux/x86_64
         depends_on:
             - "rs1"
         networks:
@@ -168,6 +172,7 @@ services:
 
     cust-as25441-v6:
         image: ixpmanager/bird6:1.6.3
+        platform: linux/x86_64
         depends_on:
             - "rs1"
         networks:

@@ -26,6 +26,7 @@ namespace IXP\Providers;
 use Auth;
 
 use Illuminate\Support\Facades\Gate;
+use IXP\Models\User;
 use Laravel\Horizon\HorizonApplicationServiceProvider;
 
 /**
@@ -66,7 +67,9 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     protected function gate(): void
     {
         Gate::define('viewHorizon', function ( $user ) {
-            return Auth::check() && Auth::getUser()->isSuperUser();
+            /** @var User $us */
+            $us = Auth::getUser();
+            return Auth::check() && $us->isSuperUser();
         });
     }
 }

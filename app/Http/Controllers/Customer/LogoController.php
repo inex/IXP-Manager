@@ -36,10 +36,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 use IXP\Http\Controllers\Controller;
 
-use IXP\Models\{
-    Customer,
-    Logo
-};
+use IXP\Models\{Customer, Logo, User};
 
 use IXP\Http\Requests\Customer\Logo as LogoRequest;
 
@@ -104,6 +101,8 @@ class LogoController extends Controller
      */
     public function store( LogoRequest $r ): RedirectResponse
     {
+        /** @var User $us */
+        $us = Auth::getUser();
         $c = $this->loadCustomer( $r->id );
 
         if( !$r->hasFile( 'logo' ) ) {
@@ -128,7 +127,7 @@ class LogoController extends Controller
         $logo = Logo::make( [
             'original_name'     => $file->getClientOriginalName(),
             'stored_name'       => sha1( $img->getEncoded() ) . '.png',
-            'uploaded_by'       => Auth::getUser()->username,
+            'uploaded_by'       => $us->username,
             'width'             => $img->width(),
             'height'            => $img->height(),
         ] );
@@ -145,7 +144,7 @@ class LogoController extends Controller
         $img->save( $saveTo );
 
         AlertContainer::push( "Logo uploaded.", Alert::SUCCESS );
-        return redirect( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ 'cust' => $c->id ] ) : route( "dashboard@index" ) );
+        return redirect( $us->isSuperUser() ? route( "customer@overview" , [ 'cust' => $c->id ] ) : route( "dashboard@index" ) );
     }
 
     /**
@@ -159,6 +158,9 @@ class LogoController extends Controller
      */
     public function delete( int $id ) : RedirectResponse
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         $c = $this->loadCustomer( $id );
 
         // do we have a logo?
@@ -173,7 +175,8 @@ class LogoController extends Controller
 
         $oldLogo->delete();
         AlertContainer::push( "Logo deleted.", Alert::SUCCESS );
-        return redirect( Auth::getUser()->isSuperUser() ? route( 'customer@overview', [ 'cust' => $c->id ] ) : route( 'dashboard@index' ) );
+
+        return redirect( $us->isSuperUser() ? route( 'customer@overview', [ 'cust' => $c->id ] ) : route( 'dashboard@index' ) );
     }
 
     /**
@@ -185,7 +188,9 @@ class LogoController extends Controller
      */
     private function loadCustomer( ?int $id ): Customer
     {
-        if( Auth::getUser()->isSuperUser() ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+        if( $us->isSuperUser() ) {
             return Customer::findOrFail( $id );
         }
         return Customer::find( Auth::getUser()->custid );

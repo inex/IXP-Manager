@@ -66,11 +66,12 @@ class VendorControllerTest extends DuskTestCase
     {
         $this->browse( function( Browser $browser ) {
             $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
                 ->visit( '/login' )
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->assertPathIs( '/admin' );
+                ->waitForLocation( '/admin' );
 
             $browser->visit( '/vendor/list' )
                 ->assertSee( 'Vendors' );
@@ -80,7 +81,7 @@ class VendorControllerTest extends DuskTestCase
 
             // 1. test add empty inputs
             $browser->press( 'Create' )
-                ->assertPathIs( '/vendor/create' )
+                ->waitForLocation( '/vendor/create' )
                 ->assertSee( "The name field is required." )
                 ->assertSee( "The shortname field is required." );
 
@@ -90,7 +91,7 @@ class VendorControllerTest extends DuskTestCase
                 ->type( 'bundle_name', 'Vendor Bundle' );
 
             $browser->press( 'Create' )
-                ->assertPathIs( '/vendor/list' )
+                ->waitForLocation( '/vendor/list' )
                 ->assertSee( "Vendor created." );
 
             $vendor = Vendor::whereName( 'Vendor Company' )->first();
@@ -104,7 +105,7 @@ class VendorControllerTest extends DuskTestCase
 
             // 4. browse to edit infrastructure object:
             $browser->click( '#e2f-list-edit-' . $vendor->id )
-                ->assertSee( 'Vendors / Edit Vendor' );
+                ->waitForText( 'Vendors / Edit Vendor' );
 
             // 5. test that form contains settings as above using assertChecked(), assertNotChecked(), assertSelected(), assertInputValue, ...
             $browser->assertInputValue( 'name', 'Vendor Company' )
@@ -113,7 +114,7 @@ class VendorControllerTest extends DuskTestCase
 
             // 6. submit with no changes and verify no changes in database
             $browser->press( 'Save Changes' )
-                ->assertPathIs( '/vendor/list' );
+                ->waitForLocation( '/vendor/list' );
 
             // 7. repeat database load and database object check for new values (repeat 2)
             $vendor->refresh();
@@ -131,7 +132,7 @@ class VendorControllerTest extends DuskTestCase
                 ->type( 'bundle_name', 'Vendor Bundle2' );
 
             $browser->press( 'Save Changes' )
-                ->assertPathIs( '/vendor/list' );
+                ->waitForLocation( '/vendor/list' );
 
             // 9. verify object values
             $vendor->refresh();
@@ -146,7 +147,7 @@ class VendorControllerTest extends DuskTestCase
                 ->waitForText( 'Do you really want to delete this a vendor?' )
                 ->press( 'Delete' );
 
-            $browser->assertSee( 'Vendor deleted.' );
+            $browser->waitForText( 'Vendor deleted.' );
 
             // 11. do a D2EM findOneBy and verify false/null
             $this->assertTrue( Vendor::whereName( 'Vendor Company2' )->doesntExist() );

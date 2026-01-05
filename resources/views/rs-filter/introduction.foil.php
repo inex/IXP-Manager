@@ -11,7 +11,7 @@
             </h3>
             <p>
                 <b>IXP Manager</b> supports the industry standards for community based route server filtering. You can find
-                the <a href="https://docs.ixpmanager.org/features/route-servers/#well-known-filtering-communities">official
+                the <a href="https://docs.ixpmanager.org/latest/features/route-servers/#well-known-filtering-communities">official
                     documentation here</a>. Using the BGP-community mechanism can be difficult to implement where a network
                 engineer is not familiar with BGP communities or where a network may have arduous change control processes
                 for altering a router's configuration.

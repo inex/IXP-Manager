@@ -103,6 +103,9 @@ use IXP\Models\User;
  * @method static Builder|RouterAggregator whereType($value)
  * @method static Builder|RouterAggregator whereUpdatedAt($value)
  * @method static Builder|RouterAggregator whereVlanId($value)
+ * @method static Builder|RouterAggregator routeCollector()
+ * @method static Builder|RouterAggregator ipvX(int $protocol)
+ * @method static Builder|RouterAggregator ipProtocol(int $protocol)
  * @mixin \Eloquent
  */
 class RouterAggregator extends Router

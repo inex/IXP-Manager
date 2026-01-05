@@ -7,6 +7,7 @@ namespace IXP\Providers;
 
 use Illuminate\Container\Container;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\Application as LaravelApplication;
 
 use IXP\Services\Purifier;
 
@@ -22,9 +23,8 @@ class PurifierServiceProvider extends ServiceProvider
     /**
      * Boot the service provider.
      *
-     * @return null
      */
-    public function boot()
+    public function boot(): void
     {
         $this->setupConfig();
     }
@@ -34,7 +34,7 @@ class PurifierServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function setupConfig()
+    protected function setupConfig(): void
     {
         $source = config_path( 'purifier.php' );
         if ($this->app instanceof LaravelApplication && $this->app->runningInConsole()) {

@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth;
+use Auth, Countries;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -55,7 +55,7 @@ class Controller extends BaseController
      *
      * To enable reseller mode set the env variable IXP_RESELLER_ENABLED
      *
-     * @see http://docs.ixpmanager.org/features/reseller/
+     * @see https://docs.ixpmanager.org/latest/features/reseller/
      *
      * @return bool
      */
@@ -69,7 +69,7 @@ class Controller extends BaseController
      *
      * To disable as112 in the UI set the env variable IXP_AS112_UI_ACTIVE
      *
-     * @see http://docs.ixpmanager.org/features/as112/
+     * @see https://docs.ixpmanager.org/latest/features/as112/
      *
      * @return bool
      */
@@ -100,7 +100,7 @@ class Controller extends BaseController
     {
         foreach( [ 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR' ] as $key ) {
             if( array_key_exists( $key, $_SERVER ) === true ) {
-                foreach( explode(',', $_SERVER[$key] ) as $ip ) {
+                foreach( explode(',', (string) $_SERVER[$key] ) as $ip ) {
                     $ip = trim($ip);
                     if( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) !== false ) {
                         return $ip;
@@ -120,8 +120,11 @@ class Controller extends BaseController
      */
     protected function getAllowedPrivs(): array
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         $privs          = User::$PRIVILEGES_TEXT_NONSUPERUSER;
-        $isSuperUser    = Auth::getUser()->isSuperUser();
+        $isSuperUser    = $us->isSuperUser();
 
         // If we add a user via the customer overview users list
         if( request()->custid && request()->is( 'user/create*' ) ) {
@@ -135,5 +138,35 @@ class Controller extends BaseController
             $privs = User::$PRIVILEGES_TEXT;
         }
         return $privs;
+    }
+
+    /**
+     * Get an array of countries for a select dropdown.
+     *
+     * @return array in form [ISO 2-letter Code] => "Name"
+     */
+    protected function getCountriesSelection(): array {
+        $countries = Countries::getList();
+        $list = [];
+        foreach($countries as $country) {
+            $list[$country['iso_3166_2']] = $country['name'];
+        }
+        return $list;
+    }
+
+    /**
+     * create an option list for a select input element
+     * @param array $data array of query data eg. ["model" => 'User', "keys" => 'id', "values" => 'name']
+     * @return array
+     */
+    protected function getSelectOptions( array $data): array {
+        $modelName = "IXP\\Models\\" . $data["model"];
+        $model = new $modelName;
+        $rawList = $model::select($data["keys"],$data["values"])->get();
+        $list = [];
+        foreach($rawList as $raw) {
+            $list[$raw[$data["keys"]]] = $raw[$data["values"]];
+        }
+        return $list;
     }
 }

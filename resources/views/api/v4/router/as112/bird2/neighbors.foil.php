@@ -58,6 +58,10 @@ protocol bgp pb_as<?= $int['autsys'] ?>_vli<?= $int['vliid'] ?>_ipv<?= $int['pro
         local as routerasn;
         source address routeraddress;
         neighbor <?= $int['address'] ?> as <?= $int['autsys'] ?>;
+        strict bind yes;
+<?php if( config('app.env') === 'vagrant' ): ?>
+        multihop;        # needed for loopback interface binding
+<?php endif; ?>
         ipv<?= $int['protocol'] ?? 4 ?> {
             import where fn_import( <?= $int['autsys'] ?> );
             export where proto = "static_as112";

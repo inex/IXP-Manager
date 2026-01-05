@@ -69,62 +69,62 @@ class VlanInterfaceController extends Common
      */
     public function list(): View
     {
-        return view( 'interfaces/vlan/list' )->with([
-            'vlis'      => VlanInterface::with( 'virtualInterface.customer' )
+        return view( 'interfaces/vlan/list' )->with( [
+            'vlis' => VlanInterface::with( 'virtualInterface.customer' )
                 ->with( 'vlan' )
                 ->with( 'ipv4address' )
                 ->with( 'ipv6address' )
-                ->get()
-        ]);
+                ->get(),
+        ] );
     }
 
     /**
      * Duplicate a VLAN interface
      *
-     * @param VlanInterface $vli     VLI that we will get the information from
-     * @param Vlan          $v       vlan where we will create the new VLI
+     * @param VlanInterface $vli VLI that we will get the information from
+     * @param Vlan $v vlan where we will create the new VLI
      *
      * @return  View
      */
     public function duplicateForm( VlanInterface $vli, Vlan $v ): View
     {
-        return $this->edit( request(), $vli, null , $v );
+        return $this->edit( request(), $vli, null, $v );
     }
 
     /**
      * Display the form to edit a VLAM interface
      *
-     * @param Request           $r
-     * @param VirtualInterface  $vi The virtual interface to add this VLI to
+     * @param Request $r
+     * @param VirtualInterface $vi The virtual interface to add this VLI to
      *
      * @return View
      */
     public function create( Request $r, VirtualInterface $vi ): View
     {
-        Former::populate([
-            'maxbgpprefix'              => $r->old( 'maxbgpprefix', $vi->customer->maxprefixes ),
-        ]);
+        Former::populate( [
+            'maxbgpprefix' => $r->old( 'maxbgpprefix', $vi->customer->maxprefixes ),
+        ] );
 
-        return view( 'interfaces/vlan/edit' )->with([
-            'vlans'                     => Vlan::orderBy('number')->get(),
-            'vli'                       => false,
-            'vi'                        => $vi,
-            'redirect2vi'               => $vi ? true : false,
-            'duplicateTo'               => false
-        ]);
+        return view( 'interfaces/vlan/edit' )->with( [
+            'vlans'       => Vlan::orderBy( 'number' )->get(),
+            'vli'         => false,
+            'vi'          => $vi,
+            'redirect2vi' => $vi ? true : false,
+            'duplicateTo' => false,
+        ] );
     }
 
     /**
      * Create a vlan interface
      *
-     * @param   StoreVlanInterface $r instance of the current HTTP request
+     * @param StoreVlanInterface $r instance of the current HTTP request
      *
      * @return  RedirectResponse
      */
     public function store( StoreVlanInterface $r ): RedirectResponse
     {
-        $vli    = VlanInterface::make( $r->all() );
-        $v      = Vlan::find( $r->vlanid );
+        $vli = VlanInterface::make( $r->all() );
+        $v   = Vlan::find( $r->vlanid );
 
         if( !$this->setIp( $r, $v, $vli, false ) || !$this->setIp( $r, $v, $vli, true ) ) {
             return Redirect::back()->withInput( $r->all() );
@@ -142,60 +142,58 @@ class VlanInterfaceController extends Common
     /**
      * Display the form to edit a VLAN interface
      *
-     * @param Request                   $r
-     * @param VlanInterface             $vli    The VLAN interface
-     * @param VirtualInterface|null     $vi     The virtual interface to add this VLI to
-     * @param Vlan|null                 $duplicateTo The ID of the vlan Interface that will receive the data of the the other vli ( $id )
+     * @param Request $r
+     * @param VlanInterface $vli The VLAN interface
+     * @param VirtualInterface|null $vi The virtual interface to add this VLI to
+     * @param Vlan|null $duplicateTo The ID of the vlan Interface that will receive the data of the the other vli ( $id )
      *
      * @return View
      */
-    public function edit( Request $r,  VlanInterface $vli, VirtualInterface $vi = null, Vlan $duplicateTo = null ): View
+    public function edit( Request $r, VlanInterface $vli, VirtualInterface $vi = null, Vlan $duplicateTo = null ): View
     {
-        Former::populate([
-            'vlanid'                    => $r->old( 'vlanid',           $duplicateTo->id ?? $vli->vlanid ),
-            'irrdbfilter'               => $r->old( 'irrdbfilter',              $vli->irrdbfilter               ),
-            'mcastenabled'              => $r->old( 'mcastenabled',             $vli->mcastenabled              ),
+        $vlanId = $duplicateTo->id ?? $vli->vlanid;
+        Former::populate( [
+            'vlanid'           => $r->old( 'vlanid', (string)$vlanId ),
+            'irrdbfilter'      => $r->old( 'irrdbfilter', (string)$vli->irrdbfilter ),
+            'mcastenabled'     => $r->old( 'mcastenabled', (string)$vli->mcastenabled ),
+            'ipv4enabled'      => $r->old( 'ipv4enabled', (string)$vli->ipv4enabled ),
+            'ipv4address'      => $r->old( 'ipv4address', (string)$vli->ipv4addressid ),
+            'ipv4hostname'     => $r->old( 'ipv4hostname', $vli->ipv4hostname ),
+            'ipv4bgpmd5secret' => $r->old( 'ipv4bgpmd5secret', $vli->ipv4bgpmd5secret ),
+            'ipv4canping'      => $r->old( 'ipv4canping', (string)$vli->ipv4canping ),
+            'ipv4monitorrcbgp' => $r->old( 'ipv4monitorrcbgp', (string)$vli->ipv4monitorrcbgp ),
+            'maxbgpprefix'     => $r->old( 'maxbgpprefix', (string)$vli->maxbgpprefix ),
+            'rsclient'         => $r->old( 'rsclient', (string)$vli->rsclient ),
+            'rsmorespecifics'  => $r->old( 'rsmorespecifics', (string)$vli->rsmorespecifics ),
+            'as112client'      => $r->old( 'as112client', (string)$vli->as112client ),
+            'busyhost'         => $r->old( 'busyhost', (string)$vli->busyhost ),
+            'ipv6enabled'      => $r->old( 'ipv6enabled', (string)$vli->ipv6enabled ),
+            'ipv6address'      => $r->old( 'ipv6address', (string)$vli->ipv6addressid ),
+            'ipv6hostname'     => $r->old( 'ipv6hostname', $vli->ipv6hostname ),
+            'ipv6bgpmd5secret' => $r->old( 'ipv6bgpmd5secret', $vli->ipv6bgpmd5secret ),
+            'ipv6canping'      => $r->old( 'ipv6canping', (string)$vli->ipv6canping ),
+            'ipv6monitorrcbgp' => $r->old( 'ipv6monitorrcbgp', (string)$vli->ipv6monitorrcbgp ),
+        ] );
 
-            'ipv4enabled'               => $r->old( 'ipv4enabled',              $vli->ipv4enabled               ),
-            'ipv4address'               => $r->old( 'ipv4address',              $vli->ipv4addressid             ),
-            'ipv4hostname'              => $r->old( 'ipv4hostname',             $vli->ipv4hostname              ),
-            'ipv4bgpmd5secret'          => $r->old( 'ipv4bgpmd5secret',         $vli->ipv4bgpmd5secret          ),
-            'ipv4canping'               => $r->old( 'ipv4canping',              $vli->ipv4canping               ),
-            'ipv4monitorrcbgp'          => $r->old( 'ipv4monitorrcbgp',         $vli->ipv4monitorrcbgp          ),
-
-            'maxbgpprefix'              => $r->old( 'maxbgpprefix',             $vli->maxbgpprefix              ),
-            'rsclient'                  => $r->old( 'rsclient',                 $vli->rsclient                  ),
-            'rsmorespecifics'           => $r->old( 'rsmorespecifics',          $vli->rsmorespecifics           ),
-            'as112client'               => $r->old( 'as112client',              $vli->as112client               ),
-            'busyhost'                  => $r->old( 'busyhost',                 $vli->busyhost                  ),
-
-            'ipv6enabled'               => $r->old( 'ipv6enabled',              $vli->ipv6enabled               ),
-            'ipv6address'               => $r->old( 'ipv6address',              $vli->ipv6addressid             ),
-            'ipv6hostname'              => $r->old( 'ipv6hostname',             $vli->ipv6hostname              ),
-            'ipv6bgpmd5secret'          => $r->old( 'ipv6bgpmd5secret',         $vli->ipv6bgpmd5secret          ),
-            'ipv6canping'               => $r->old( 'ipv6canping',              $vli->ipv6canping               ),
-            'ipv6monitorrcbgp'          => $r->old( 'ipv6monitorrcbgp',         $vli->ipv6monitorrcbgp          ),
-        ]);
-
-        $redirect2vi = (bool) $vi;
-        if( !$vi ){
+        $redirect2vi = (bool)$vi;
+        if( !$vi ) {
             $vi = $vli->virtualInterface;
         }
 
-        return view( 'interfaces/vlan/edit' )->with([
-            'vlans'                     => Vlan::  orderBy('number')->get(),
-            'vli'                       => $vli,
-            'vi'                        => $vi ?: false,
-            'duplicateTo'               => $duplicateTo ?: false,
-            'redirect2vi'               => $redirect2vi
-        ]);
+        return view( 'interfaces/vlan/edit' )->with( [
+            'vlans'       => Vlan::  orderBy( 'number' )->get(),
+            'vli'         => $vli,
+            'vi'          => $vi ?: false,
+            'duplicateTo' => $duplicateTo ?: false,
+            'redirect2vi' => $redirect2vi,
+        ] );
     }
 
     /**
      * Update a vlan interface
      *
-     * @param   StoreVlanInterface  $r      instance of the current HTTP request
-     * @param   VlanInterface       $vli
+     * @param StoreVlanInterface $r instance of the current HTTP request
+     * @param VlanInterface $vli
      *
      * @return  RedirectResponse
      *
@@ -222,8 +220,8 @@ class VlanInterfaceController extends Common
     /**
      * Duplicate a vlan interface
      *
-     * @param   StoreVlanInterface  $r      instance of the current HTTP request
-     * @param   VlanInterface       $vli
+     * @param StoreVlanInterface $r instance of the current HTTP request
+     * @param VlanInterface $vli
      *
      * @return  RedirectResponse
      *
@@ -236,7 +234,7 @@ class VlanInterfaceController extends Common
         $v      = Vlan::find( $r->vlanid );
 
         DB::beginTransaction();
-        $vli    = VlanInterface::make();
+        $vli = VlanInterface::make();
 
         if( !$this->setIp( $r, $v, $vli, false ) || !$this->setIp( $r, $v, $vli, true ) ) {
             // Rollback if there is issue to avoid to insert the data created above
@@ -251,7 +249,7 @@ class VlanInterfaceController extends Common
             Layer2Address::create(
                 [
                     'vlan_interface_id' => $vli->id,
-                    'mac'               => $l2a->mac
+                    'mac'               => $l2a->mac,
                 ]
             );
         }
@@ -275,15 +273,15 @@ class VlanInterfaceController extends Common
      */
     public function view( VlanInterface $vli ): View
     {
-        return view( 'interfaces/vlan/view' )->with([
-            'vli' => $vli
-        ]);
+        return view( 'interfaces/vlan/view' )->with( [
+            'vli' => $vli,
+        ] );
     }
 
     /**
      * Delete a VLAN Interface and the Layer2Address associated
      *
-     * @param  VlanInterface  $vli
+     * @param VlanInterface $vli
      *
      * @return  RedirectResponse
      *
@@ -296,9 +294,9 @@ class VlanInterfaceController extends Common
 
         AlertContainer::push( 'VLAN Interface deleted.', Alert::SUCCESS );
 
-        if( $_SERVER[ "HTTP_REFERER" ] === route( 'vlan-interface@list' ) ){
+        if( $_SERVER[ "HTTP_REFERER" ] === route( 'vlan-interface@list' ) ) {
             return redirect( route( 'vlan-interface@list' ) );
         }
-        return redirect( route( 'virtual-interface@edit' , [ 'vi' => $vli->virtualinterfaceid ] ) );
+        return redirect( route( 'virtual-interface@edit', [ 'vi' => $vli->virtualinterfaceid ] ) );
     }
 }

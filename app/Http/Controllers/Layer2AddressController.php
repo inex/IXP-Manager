@@ -79,6 +79,9 @@ class Layer2AddressController extends EloquentController
      */
     public function feInit(): void
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         $this->feParams         = (object)[
             'model'             => Layer2Address::class,
             'pagetitle'         => 'Configured MAC Addresses',
@@ -88,7 +91,7 @@ class Layer2AddressController extends EloquentController
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'layer2-address',
             'readonly'          => self::$read_only,
-            'documentation'     => 'https://docs.ixpmanager.org/features/layer2-addresses/',
+            'documentation'     => 'https://docs.ixpmanager.org/latest/features/layer2-addresses/',
             'listColumns'       => [
                 'customer'          => 'Customer',
                 'switchport'        => 'Interface(s)',
@@ -106,7 +109,7 @@ class Layer2AddressController extends EloquentController
         // phpunit / artisan trips up here without the cli test:
         if( PHP_SAPI !== 'cli' ) {
             // custom access controls:
-            switch( Auth::check() ? Auth::getUser()->privs() : User::AUTH_PUBLIC ) {
+            switch( Auth::check() ? $us->privs() : User::AUTH_PUBLIC ) {
                 case User::AUTH_SUPERUSER:
                     break;
                 case User::AUTH_CUSTUSER || User::AUTH_CUSTADMIN:
@@ -189,11 +192,14 @@ class Layer2AddressController extends EloquentController
      */
     public function forVlanInterface( VlanInterface $vli ): View|RedirectResponse
     {
-        if( Auth::getUser()->isSuperUser() ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+
+        if( $us->isSuperUser() ) {
             return view( 'layer2-address/vlan-interface' )->with( [ 'vli' => $vli ] );
         }
 
-        if( config( 'ixp_fe.layer2-addresses.customer_can_edit' ) && Auth::getUser()->custid === $vli->virtualInterface->customer->id ) {
+        if( config( 'ixp_fe.layer2-addresses.customer_can_edit' ) && $us->custid === $vli->virtualInterface->customer->id ) {
             return view( 'layer2-address/vlan-interface-cust' )->with( [ 'vli' => $vli ] );
         }
         return redirect('');

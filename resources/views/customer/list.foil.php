@@ -137,7 +137,7 @@
                         <?= $t->insert( 'customer/list-status', [ 'cust' => $c ] ) ?>
                     </td>
                     <td>
-                        <?= \Carbon\Carbon::instance( $c->datejoin )->format( 'Y-m-d' ) ?>
+                        <?= \Carbon\Carbon::parse( $c->datejoin )->format( 'Y-m-d' ) ?>
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">

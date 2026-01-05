@@ -19,6 +19,11 @@
                 <i class="fa fa-cog"></i>
             </button>
             <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="<?= route( 'diagnostics@customer', [ 'customer' => $c->id ] ) ?>">
+                    Run diagnostics...
+                </a>
+
+                <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="<?= route( 'virtual-interface@create-wizard-for-cust', [ 'cust' => $c->id ] ) ?>">
                     Provision new port...
                 </a>
@@ -135,7 +140,7 @@
                     <?php endif; ?>
 
                     <span class="tw-text-gray-600">
-                         joined <?= \Carbon\Carbon::instance( $c->datejoin )->format('Y') ?>
+                         joined <?= \Carbon\Carbon::parse( $c->datejoin )->format('Y') ?>
                         <?php if( $r = $c->resellerObject ): ?>
                            - resold via <a href="<?= route( "customer@overview" , [ 'cust' => $r->id ] ) ?>"><?= $t->ee($r->abbreviatedName)?></a>
                         <?php endif; ?>
@@ -201,7 +206,7 @@
                     </li>
                 <?php endif; ?>
 
-                <?php if( !$c->typeAssociate() && !$c->hasLeft() ):?>
+                <?php if( count( $c->virtualInterfaces ) ):?>
                     <li role="ports" class="nav-item ">
                         <a class="nav-link <?php if( $t->tab === 'ports' ): ?> active <?php endif; ?>" data-toggle="tab" href="#ports" data-toggle="tab">
                             Ports
@@ -299,7 +304,7 @@
 
                     <?php if( config('grapher.backends.sflow.enabled') ) : ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= route( "statistics@p2p", [ 'cust' => $c->id ] )  ?>">
+                            <a class="nav-link" href="<?= route( "statistics@p2ps-get", [ 'customer' => $c->id ] )  ?>">
                               P2P &raquo;
                             </a>
                         </li>

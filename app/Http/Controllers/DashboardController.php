@@ -40,12 +40,7 @@ use IXP\Http\Requests\Dashboard\{
     BillingDetailsRequest
 };
 
-use IXP\Models\{
-    Aggregators\RsPrefixAggregator,
-    Customer,
-    CustomerNote,
-    NetworkInfo
-};
+use IXP\Models\{Aggregators\RsPrefixAggregator, Customer, CustomerNote, NetworkInfo, P2pDailyStats, User};
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -77,8 +72,10 @@ class DashboardController extends Controller
      */
     public function index( Request $r, string $tab = null ): RedirectResponse|View
     {
+        /** @var User $us */
+        $us = Auth::getUser();
         // Redirect Super user
-        if( Auth::getUser()->isSuperUser() ) {
+        if( $us->isSuperUser() ) {
             return redirect( '/');
         }
 
@@ -120,7 +117,6 @@ class DashboardController extends Controller
             'recentMembers'                 => Customer::getConnected( true, true, 'datejoin', 'desc' )->take( 5 ),
             'crossConnects'                 => $c->patchPanelPorts()->masterPort()->get(),
             'notesInfo'                     => CustomerNote::analyseForUser( $cns, $c, Auth::getUser() ),
-            'rsRoutes'                      => $rsRoutes        ?? null,
             'resoldCustomer'                => $resoldCustomer  ?? null,
             'netInfo'                       => $netinfo         ?? null,
             'c'                             => $c->load( [
@@ -138,6 +134,8 @@ class DashboardController extends Controller
             'dataNocDetail'                 => $dataNocDetail,
             'countries'                     => Countries::getList('name' ),
             'tab'                           => strtolower( $tab ) ?: false,
+            'p2pstats'                      => P2pDailyStats::latestN( $c ),
+
         ]);
     }
 

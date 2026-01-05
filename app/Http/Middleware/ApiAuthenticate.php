@@ -61,9 +61,8 @@ class ApiAuthenticate
 	 */
 	public function handle( Request $r, Closure $next )
 	{
-		// are we already logged in?
+        // are we already logged in?
 		if( !Auth::check() ) {
-
 			// find API key. Prefer header to URL:
 			$apikey = false;
 			if( $r->header('X-IXP-Manager-API-Key') ) {
@@ -101,10 +100,15 @@ class ApiAuthenticate
                 'lastseenAt'    => now(),
                 'lastseenFrom'  => ixp_get_client_ip(),
             ] );
-		}elseif( Auth::user()->disabled ){
-            return response( 'User is disabled', 403 );
-        }elseif( Auth::user()->customer()->active()->notDeleted()->doesntExist() ){// Check if default customer is disabled
-            return response( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' of the user is disabled', 403 );
+		} else {
+            /** @var User $us */
+            $us = Auth::user();
+
+            if( $us->disabled ){
+                return response( 'User is disabled', 403 );
+            } elseif( $us->customer()->active()->notDeleted()->doesntExist() ){// Check if default customer is disabled
+                return response( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' of the user is disabled', 403 );
+            }
         }
 
 		return $next( $r );

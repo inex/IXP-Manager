@@ -24,6 +24,6 @@
     </p>
 
     <p>
-        <b>For more information, <a target="_blank" href="https://docs.ixpmanager.org/features/docstore/">see the official document here</a>.</b>
+        <b>For more information, <a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/">see the official document here</a>.</b>
     </p>
 </div>

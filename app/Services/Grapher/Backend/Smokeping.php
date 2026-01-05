@@ -189,11 +189,9 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
      *
      * @param Graph $graph
      *
-     * @return string
-     *
-     * @throws
+     * @return false|string
      */
-    public function png( Graph $graph ): string
+    public function png( Graph $graph ): false|string
     {
         return @file_get_contents( $this->resolveFilePath( $graph ) );
     }
@@ -221,9 +219,9 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
      *
      * @param Graph $graph
      *
-     * @return string
+     * @return false|string
      */
-    public function rrd( Graph $graph ): string
+    public function rrd( Graph $graph ): false|string
     {
         return '';
     }
@@ -236,7 +234,7 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract
      *
      * However we allow per VLAN overrides. See the documentation for details above this:
      *
-     * @see https://docs.ixpmanager.org/grapher/smokeping/
+     * @see https://docs.ixpmanager.org/latest/grapher/smokeping/
      *
      * @param LatencyGraph $graph
      *

@@ -145,20 +145,20 @@ class ProbesController extends Eloquent2Frontend
     /**
      * List the contents of a database table.
      *
-     * @param Request $r
+     * @param Request $param
      *
      * @return View
      */
-    public function list( Request $r  ): View
+    public function list( Request $param  ): View
     {
         $cid = $protocol = false;
 
-        if( $cust = Customer::find( $r->cust ) ) {
+        if( $cust = Customer::find( $param->cust ) ) {
             $cid = $cust->id;
         }
 
-        if( array_key_exists( $r->protocol, Router::$PROTOCOLS ) ) {
-            $protocol = $r->protocol;
+        if( array_key_exists( $param->protocol, Router::$PROTOCOLS ) ) {
+            $protocol = $param->protocol;
         }
 
         $this->data[ 'params' ][ 'cid' ]            = $cid;

@@ -61,9 +61,11 @@ class ContentController extends Controller
      */
     public function index( int $priv, string $page ): View
     {
+        /** @var User $us */
+        $us = Auth::getUser();
         // check privilege:
         if( $priv !== User::AUTH_PUBLIC ) {
-            if( Auth::guest() || Auth::getUser()->privs() < $priv ) {
+            if( Auth::guest() || $us->privs() < $priv ) {
                 abort( 403, 'Unauthorized' );
             }
         }
@@ -100,10 +102,12 @@ class ContentController extends Controller
      */
     public function members( int $priv, string $page )
     {
+        /** @var User $us */
+        $us = Auth::getUser();
 
         // check privilege:
         if( $priv !== User::AUTH_PUBLIC ) {
-            if( Auth::guest() || Auth::getUser()->privs() < $priv ) {
+            if( Auth::guest() || $us->privs() < $priv ) {
                 abort( 403, 'Unauthorized' );
             }
         }

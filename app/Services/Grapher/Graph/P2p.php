@@ -159,7 +159,10 @@ class P2p extends Graph
      */
     public static function authorisedForAllCustomers(): bool
     {
-        if( Auth::check() && Auth::getUser()->isSuperUser() ) {
+        /** @var User $us */
+        $us = Auth::getUser();
+
+        if( Auth::check() && $us->isSuperUser() ) {
             return true;
         }
 
@@ -167,7 +170,7 @@ class P2p extends Graph
             return true;
         }
 
-        return Auth::check() && is_numeric( config( 'grapher.access.p2p' ) ) && Auth::getUser()->privs() >= config( 'grapher.access.p2p' );
+        return Auth::check() && is_numeric( config( 'grapher.access.p2p' ) ) && $us->privs() >= config( 'grapher.access.p2p' );
     }
 
     /**
@@ -181,6 +184,9 @@ class P2p extends Graph
      */
     public function authorise(): bool
     {
+        /** @var User $us */
+        $us = Auth::getUser();
+
         // NB: see above authorisedForAllCustomers()
         if( is_numeric( config( 'grapher.access.p2p' ) ) && config( 'grapher.access.p2p' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
@@ -191,23 +197,23 @@ class P2p extends Graph
             return false;
         }
 
-        if( Auth::getUser()->isSuperUser() ) {
+        if( $us->isSuperUser() ) {
             return $this->allow();
         }
 
-        if( Auth::getUser()->custid === $this->svli()->virtualInterface->customer->id ) {
+        if( $us->custid === $this->svli()->virtualInterface->customer->id ) {
             return $this->allow();
         }
 
         if( config( 'grapher.access.p2p' ) !== 'own_graphs_only'
             && is_numeric( config( 'grapher.access.p2p' ) )
-            && Auth::getUser()->privs() >= (int)config( 'grapher.access.p2p' )
+            && $us->privs() >= (int)config( 'grapher.access.p2p' )
         ) {
             return $this->allow();
         }
 
         Log::notice( sprintf( "[Grapher] [Customer]: user %d::%s tried to access a customer p2p vli graph "
-                . "{$this->svli()->id} with dvli {$this->dvli()->id} which is not theirs", Auth::id(), Auth::getUser()->username )
+                . "{$this->svli()->id} with dvli {$this->dvli()->id} which is not theirs", Auth::id(), $us->username )
         );
 
         $this->deny();

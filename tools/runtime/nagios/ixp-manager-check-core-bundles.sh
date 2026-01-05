@@ -23,7 +23,7 @@
 
 # Example Nagios check for switch status
 
-# See: http://docs.ixpmanager.org/features/nagios/
+# See: https://docs.ixpmanager.org/latest/features/nagios/
 
 # Parse arguments
 APIKEY=""

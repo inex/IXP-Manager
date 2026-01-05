@@ -64,11 +64,12 @@ class CustomerEquipmentControllerTest extends DuskTestCase
     {
         $this->browse( function( Browser $browser ) {
             $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
                 ->visit( '/login' )
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->assertPathIs( '/admin' );
+                ->waitForLocation( '/admin' );
 
             $browser->visit( '/cust-kit/list' )
                 ->assertSee( 'Colocated Equipment' );
@@ -78,7 +79,7 @@ class CustomerEquipmentControllerTest extends DuskTestCase
 
             // 1. test add empty inputs
             $browser->press( 'Create' )
-                ->assertPathIs( '/cust-kit/create' )
+                ->waitForLocation( '/cust-kit/create' )
                 ->assertSee( "The name field is required." )
                 ->assertSee( "The custid field is required." )
                 ->assertSee( "The cabinetid field is required." );
@@ -90,7 +91,7 @@ class CustomerEquipmentControllerTest extends DuskTestCase
                 ->type( 'descr', 'Test Description' );
 
             $browser->press( 'Create' )
-                ->assertPathIs( '/cust-kit/list' )
+                ->waitForLocation( '/cust-kit/list' )
                 ->assertSee( "Colocated Equipment created." );
 
             $colocatedEquipment = CustomerEquipment::whereName( 'Colocated Equipment #1' )->first();
@@ -105,7 +106,7 @@ class CustomerEquipmentControllerTest extends DuskTestCase
 
             // 4. browse to edit infrastructure object:
             $browser->click( '#e2f-list-edit-' . $colocatedEquipment->id )
-                ->assertSee( 'Colocated Equipment / Edit Colocated Equipment' );
+                ->waitForText( 'Colocated Equipment / Edit Colocated Equipment' );
 
             // 5. test that form contains settings as above using assertChecked(), assertNotChecked(), assertSelected(), assertInputValue, ...
             $browser->assertInputValue( 'name', 'Colocated Equipment #1' )
@@ -117,7 +118,7 @@ class CustomerEquipmentControllerTest extends DuskTestCase
             $browser->select( 'custid', '2' );
 
             $browser->press( 'Save Changes' )
-                ->assertPathIs( '/cust-kit/list' )
+                ->waitForLocation( '/cust-kit/list' )
                 ->assertSee( "Colocated Equipment updated" );
 
 
@@ -132,7 +133,7 @@ class CustomerEquipmentControllerTest extends DuskTestCase
 
             // 8. edit again and assert that all checkboxes are unchecked and assert select values are as expected
             $browser->visit( '/cust-kit/edit/' . $colocatedEquipment->id )
-                ->assertSee( 'Colocated Equipment / Edit Colocated Equipment' );
+                ->waitForText( 'Colocated Equipment / Edit Colocated Equipment' );
 
             $browser->assertInputValue( 'name', 'Colocated Equipment #1' )
                 ->assertSelected( 'custid', 2 )
@@ -141,7 +142,7 @@ class CustomerEquipmentControllerTest extends DuskTestCase
 
             // 9. submit with no changes and verify no changes in database
             $browser->press( 'Save Changes' )
-                ->assertPathIs( '/cust-kit/list' );
+                ->waitForLocation( '/cust-kit/list' );
 
 
             // 10. repeat database load and database object check for new values (repeat 2)
@@ -163,7 +164,7 @@ class CustomerEquipmentControllerTest extends DuskTestCase
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             $browser->press( 'Save Changes' )
-                ->assertPathIs( '/cust-kit/list' );
+                ->waitForLocation( '/cust-kit/list' );
 
 
             // 12. verify object values
@@ -180,7 +181,7 @@ class CustomerEquipmentControllerTest extends DuskTestCase
                 ->waitForText( 'Do you really want to delete this colocated equipment?' )
                 ->press( 'Delete' );
 
-            $browser->assertSee( 'Colocated Equipment deleted.' );
+            $browser->waitForText( 'Colocated Equipment deleted.' );
 
             // 14. do a D2EM findOneBy and verify false/null
             $this->assertTrue( CustomerEquipment::whereName( 'Colocated Equipment #2' )->doesntExist() );

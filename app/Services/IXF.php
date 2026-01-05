@@ -24,6 +24,7 @@ namespace IXP\Services;
  */
 
 use Exception;
+use Throwable;
 use Illuminate\Http\Client\Response as HttpResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -56,9 +57,9 @@ class IXF
     public int $status = 0;
 
     /**
-     * @var ?Exception If the api call threw an exception, it is caught and stored here.
+     * @var Exception If the api call threw an exception, it is caught and stored here.
      */
-    public ?Exception $exception;
+    public ?Exception $exception = null;
 
 
 
@@ -92,7 +93,11 @@ class IXF
         $ixs = $this->execute( config( 'ixp_api.IXPDB.ixp_api' ) );
 
         if( $ixs === null ) {
-            throw $this->exception;
+            if( $this->exception ) {
+                throw $this->exception;
+            } else {
+                throw new Exception( 'IXF ixps error' );
+            }
         }
 
         foreach( $ixs->json() as $ix ) {

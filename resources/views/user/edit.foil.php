@@ -14,7 +14,7 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm ml-auto" role="group">
-        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/usage/users/">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/usage/users/">
             Documentation
         </a>
 
@@ -131,7 +131,7 @@
                                                     ->fromQuery( $isSuperUser && $c2u->customer->typeInternal()  ?
                                                         User::$PRIVILEGES_TEXT : User::$PRIVILEGES_TEXT_NONSUPERUSER, 'name' )
                                                     ->addClass( 'chzn-select privs' )
-                                                    ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/usage/users/#types-of-users">'
+                                                    ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/latest/usage/users/#types-of-users">'
                                                         . 'the official documentation here</a>.'
                                                     );
                                                 ?>
@@ -174,7 +174,7 @@
                                 ->placeholder( 'Select a privilege' )
                                 ->fromQuery( $t->privs , 'name' )
                                 ->addClass( 'chzn-select' )
-                                ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/usage/users/#types-of-users">'
+                                ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/latest/usage/users/#types-of-users">'
                                     . 'the official documentation here</a>.'
                                 );
                             ?>

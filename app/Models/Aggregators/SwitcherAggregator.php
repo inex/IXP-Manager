@@ -116,6 +116,7 @@ class SwitcherAggregator extends Switcher
      */
     public static function getByLocationInfrastructureSpeed( int $infra = null, int $location = null, int $speed = null ): Collection
     {
+        /** @psalm-suppress InvalidArgument - psalm can not recognise eloquent grouped conditions */
         return self::select( 'switch.*' )
             ->when( $location , function( Builder $q, $location ) {
                 return $q->leftJoin( 'cabinet AS c', 'c.id', 'switch.cabinetid' )
@@ -131,7 +132,7 @@ class SwitcherAggregator extends Switcher
                     ->leftjoin( 'vlaninterface AS vli', 'vli.virtualinterfaceid','vi.id' )
                     ->leftjoin( 'ipv4address AS ipv4', 'ipv4.id', '=', 'vli.ipv4addressid' )
                     ->leftjoin( 'ipv6address AS ipv6', 'ipv4.id', '=', 'vli.ipv6addressid' )
-                    ->where( function($query ) use ($speed) {
+                    ->where( function( $query ) use ( $speed ) {
                         $query->where( 'pi.speed', $speed )
                             ->orWhere( 'pi.rate_limit', $speed );
                     });
@@ -158,6 +159,7 @@ class SwitcherAggregator extends Switcher
         // BUGLET: see https://github.com/inex/IXP-Manager/issues/757
         // "Switch configuration port list erroneously lists non-rate limited port as rate limited"
 
+        /** @psalm-suppress InvalidArgument - psalm can not recognise eloquent grouped conditions */
         return self::selectRaw(
             's.name AS switchname, 
                 s.id AS switchid,
@@ -294,6 +296,7 @@ class SwitcherAggregator extends Switcher
      */
     public static function coreBundleNeighbors( Switcher $switch ): array
     {
+        /** @psalm-suppress InvalidArgument - psalm can not recognise eloquent grouped conditions */
         return self::query()->selectRaw( 'cb.type, cb.ipv4_subnet as cbSubnet, 
                 cb.cost, cb.preference, cl.ipv4_subnet as clSubnet, sA.id as sAid, 
                 sB.id as sBid, sA.name as sAname , sB.name as sBname, sA.asn as sAasn , 

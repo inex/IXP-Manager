@@ -23,6 +23,7 @@ namespace IXP\Services\Grapher;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Carbon\Carbon;
 use IXP\Services\Grapher;
 
 use IXP\Contracts\Grapher\Backend as GrapherBackend;
@@ -115,6 +116,22 @@ abstract class Graph
     public const PERIOD_YEAR  = 'year';
 
     /**
+     * Custom periods allow any start time and an end time that is not "now"
+     */
+    public const PERIOD_CUSTOM  = 'custom';
+
+    /**
+     * Custom Period range parameters - start
+     */
+    protected ?Carbon $custom_date_start;
+
+    /**
+     * Custom Period range parameters - end
+     */
+    protected ?Carbon $custom_date_end;
+
+
+    /**
      * Default period
      */
     public const PERIOD_DEFAULT  = self::PERIOD_DAY;
@@ -129,21 +146,45 @@ abstract class Graph
      * Array of valid periods for drill down graphs
      */
     public const PERIODS = [
-        self::PERIOD_DAY   => self::PERIOD_DAY,
-        self::PERIOD_WEEK  => self::PERIOD_WEEK,
-        self::PERIOD_MONTH => self::PERIOD_MONTH,
-        self::PERIOD_YEAR  => self::PERIOD_YEAR
+        self::PERIOD_DAY     => self::PERIOD_DAY,
+        self::PERIOD_WEEK    => self::PERIOD_WEEK,
+        self::PERIOD_MONTH   => self::PERIOD_MONTH,
+        self::PERIOD_YEAR    => self::PERIOD_YEAR,
     ];
 
     /**
      * Array of valid periods for drill down graphs
      */
-    public const PERIOD_DESCS = [
-        self::PERIOD_DAY   => 'Day',
-        self::PERIOD_WEEK  => 'Week',
-        self::PERIOD_MONTH => 'Month',
-        self::PERIOD_YEAR  => 'Year'
+    public const PERIODS_EXTENDED = [
+        self::PERIOD_DAY     => self::PERIOD_DAY,
+        self::PERIOD_WEEK    => self::PERIOD_WEEK,
+        self::PERIOD_MONTH   => self::PERIOD_MONTH,
+        self::PERIOD_YEAR    => self::PERIOD_YEAR,
+        self::PERIOD_CUSTOM  => self::PERIOD_CUSTOM,
     ];
+
+
+    /**
+     * Array of valid periods for drill down graphs
+     */
+    public const PERIOD_DESCS = [
+        self::PERIOD_DAY     => 'Day',
+        self::PERIOD_WEEK    => 'Week',
+        self::PERIOD_MONTH   => 'Month',
+        self::PERIOD_YEAR    => 'Year',
+    ];
+
+    /**
+     * Array of valid periods for drill down graphs
+     */
+    public const PERIOD_DESCS_EXTENDED = [
+        self::PERIOD_DAY     => 'Day',
+        self::PERIOD_WEEK    => 'Week',
+        self::PERIOD_MONTH   => 'Month',
+        self::PERIOD_YEAR    => 'Year',
+        self::PERIOD_CUSTOM  => 'Custom',
+    ];
+
 
     /**
      * 'Bits' category for graphs
@@ -706,24 +747,81 @@ abstract class Graph
     /**
      * Set the period we should use
      *
-     * @param string $v
+     * @param string $value
+     * @param Carbon $start
+     * @param Carbon $end
      *
      * @return Graph Fluid interface
      *
      * @throws ParameterException
      */
-    public function setPeriod( string $v ): Graph
+    public function setPeriod( string $value, ?Carbon $start = null, ?Carbon $end = null ): Graph
     {
-        if( !isset( $this::PERIODS[ $v ] ) ) {
-            throw new ParameterException('Invalid period ' . $v );
+        if( !isset( $this::PERIODS_EXTENDED[ $value ] ) ) {
+            throw new ParameterException('Invalid period ' . $value );
         }
 
-        if( $this->period() !== $v ) {
+        if( $this->period() !== $value ) {
             $this->wipe();
         }
 
-        $this->period = $v;
+        $this->period = $value;
+
+        if( $value === $this::PERIOD_CUSTOM ) {
+            $this->setPeriodStart( $start );
+            $this->setPeriodEnd( $end );
+        } else {
+            $this->setPeriodStart();
+            $this->setPeriodEnd();
+        }
+
         return $this;
+    }
+
+    /**
+     * Set the start date for the custom period
+     *
+     * @param Carbon|null $value
+     *
+     * @return Graph
+     */
+    public function setPeriodStart( ?Carbon $value = null ): Graph
+    {
+        $this->custom_date_start = $value;
+        return $this;
+    }
+
+    /**
+     * Get the start date for the custom period
+     *
+     * @return Carbon|null $value
+     */
+    public function periodStart(): ?Carbon
+    {
+        return $this->custom_date_start;
+    }
+
+    /**
+     * Set the start date for the custom period
+     *
+     * @param Carbon|null $value
+     *
+     * @return Graph
+     */
+    public function setPeriodEnd( ?Carbon $value = null ): Graph
+    {
+        $this->custom_date_end = $value;
+        return $this;
+    }
+
+    /**
+     * Get the end date for the custom period
+     *
+     * @return Carbon|null $value
+     */
+    public function periodEnd(): ?Carbon
+    {
+        return $this->custom_date_end;
     }
 
     /**
@@ -751,23 +849,23 @@ abstract class Graph
     /**
      * Set the protocol we should use
      *
-     * @param string $v
+     * @param string $value
      *
      * @return Graph Fluid interface
      *
      * @throws ParameterException
      */
-    public function setProtocol( string $v ): Graph
+    public function setProtocol( string $value ): Graph
     {
-        if( !isset( $this::PROTOCOLS[ $v ] ) ) {
-            throw new ParameterException('Invalid protocol ' . $v );
+        if( !isset( $this::PROTOCOLS[ $value ] ) ) {
+            throw new ParameterException('Invalid protocol ' . $value );
         }
 
-        if( $this->protocol() !== $v ) {
+        if( $this->protocol() !== $value ) {
             $this->wipe();
         }
 
-        $this->protocol = $v;
+        $this->protocol = $value;
         return $this;
     }
 
@@ -817,23 +915,23 @@ abstract class Graph
     /**
      * Set the category we should use
      *
-     * @param string $v
+     * @param string $category_value
      *
      * @return Graph Fluid interface
      *
      * @throws ParameterException
      */
-    public function setCategory( string $v ): Graph
+    public function setCategory( string $category_value ): Graph
     {
-        if( !isset( $this::CATEGORIES[ $v ] ) ) {
-            throw new ParameterException('Invalid category ' . $v );
+        if( !isset( $this::CATEGORIES[ $category_value ] ) ) {
+            throw new ParameterException('Invalid category ' . $category_value );
         }
 
-        if( $this->category() !== $v ) {
+        if( $this->category() !== $category_value ) {
             $this->wipe();
         }
 
-        $this->category = $v;
+        $this->category = $category_value;
         return $this;
     }
 
@@ -849,23 +947,23 @@ abstract class Graph
     /**
      * Set the type we should use
      *
-     * @param string $v
+     * @param string $type_value
      *
      * @return Graph Fluid interface
      *
      * @throws ParameterException
      */
-    public function setType( string $v ): Graph
+    public function setType( string $type_value ): Graph
     {
-        if( !isset( $this::TYPES[ $v ] ) ) {
-            throw new ParameterException('Invalid type ' . $v );
+        if( !isset( $this::TYPES[ $type_value ] ) ) {
+            throw new ParameterException('Invalid type ' . $type_value );
         }
 
-        if( $this->type() !== $v ) {
+        if( $this->type() !== $type_value ) {
             $this->wipe();
         }
 
-        $this->type = $v;
+        $this->type = $type_value;
         return $this;
     }
 
@@ -886,6 +984,15 @@ abstract class Graph
             if( isset( $params[$param] ) ) {
                 $fn = 'set' . ucfirst( $param );
                 $this->$fn( $params[$param] );
+
+                if($param === 'period' && $params[ 'period' ] === $this::PERIOD_CUSTOM) {
+                    if(isset($params[ 'period_start' ])) {
+                        $this->setPeriodStart( Carbon::parse( $params[ 'period_start' ] ) );
+                    }
+                    if(isset($params[ 'period_end' ])) {
+                        $this->setPeriodEnd( Carbon::parse( $params[ 'period_end' ] ) );
+                    }
+                }
             }
         }
         return $this;
@@ -900,11 +1007,16 @@ abstract class Graph
      */
     public function getParamsAsArray(): array
     {
-        $p = [];
+        // todo: extend for PERIOD_CUSTOM
+        $parameters = [];
         foreach( [ 'type', 'category', 'period', 'protocol'] as $param ){
-            $p[ $param ] = $this->$param();
+            $parameters[ $param ] = $this->$param();
+            if($param === 'period' && $this->period === $this::PERIOD_CUSTOM) {
+                $parameters[ 'period_start' ] = $this->custom_date_start;
+                $parameters[ 'period_end' ]   = $this->custom_date_end;
+            }
         }
-        return $p;
+        return $parameters;
     }
 
     /**
@@ -913,17 +1025,20 @@ abstract class Graph
      * Note that this function just sets the default if the input is invalid.
      * If you want to force an exception in such cases, use setPeriod()
      *
-     * @param string|null  $v The user input value
-     * @param string|null  $d The preferred default value
+     * @param string|null $value The user input value
+     * @param string|null $default The preferred default value
      *
-     * @return string The verified / sanitised / default value
+     * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterPeriod( $v = null, $d = null ): string
+    public static function processParameterPeriod( string $value = null, string $default = null, $withExtended = false ): string|null
     {
-        if( !isset( self::PERIODS[ $v ] ) ) {
-            $v = $d ?? self::PERIOD_DEFAULT;
+        if( $withExtended && !isset( self::PERIODS_EXTENDED[ $value ] ) ) {
+            $value = $default ?? self::PERIOD_DEFAULT;
+        } else if( !isset( self::PERIODS[ $value ] ) ) {
+            $value = $default ?? self::PERIOD_DEFAULT;
         }
-        return $v;
+
+        return $value;
     }
 
     /**
@@ -932,16 +1047,16 @@ abstract class Graph
      * Note that this function just sets the default if the input is invalid.
      * If you want to force an exception in such cases, use setProtocol()
      *
-     * @param string|null $v The user input value
+     * @param string|null $value The user input value
      *
-     * @return string The verified / sanitised / default value
+     * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterProtocol( $v = null ): string
+    public static function processParameterProtocol( string $value = null ): string|null
     {
-        if( !isset( self::PROTOCOLS[ $v ] ) ) {
-            $v = self::PROTOCOL_DEFAULT;
+        if( !isset( self::PROTOCOLS[ $value ] ) ) {
+            $value = self::PROTOCOL_DEFAULT;
         }
-        return $v;
+        return $value;
     }
 
     /**
@@ -950,15 +1065,15 @@ abstract class Graph
      * Note that this function just sets the default (ipv4) if the input is invalid.
      * If you want to force an exception in such cases, use setProtocol()
      *
-     * @param string|null $v The user input value
-     * @return string The verified / sanitised / default value
+     * @param string|null $value The user input value
+     * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterRealProtocol( $v = null ): string
+    public static function processParameterRealProtocol( string $value = null ): string|null
     {
-        if( !isset( self::PROTOCOLS_REAL[ $v ] ) ) {
-            $v = self::PROTOCOL_IPV4;
+        if( !isset( self::PROTOCOLS_REAL[ $value ] ) ) {
+            $value = self::PROTOCOL_IPV4;
         }
-        return $v;
+        return $value;
     }
 
     /**
@@ -967,17 +1082,17 @@ abstract class Graph
      * Note that this function just sets the default if the input is invalid.
      * If you want to force an exception in such cases, use setCategory()
      *
-     * @param string|null $v The user input value
+     * @param string|null $value The user input value
      * @param bool $bits_pkts_only
      *
-     * @return string The verified / sanitised / default value
+     * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterCategory( $v = null, $bits_pkts_only = false ): string
+    public static function processParameterCategory( string $value = null, bool $bits_pkts_only = false ): string|null
     {
-        if( ( $bits_pkts_only && !isset( self::CATEGORIES_BITS_PKTS[$v] ) ) || ( !$bits_pkts_only && !isset( self::CATEGORIES[ $v ] ) ) ) {
-            $v = self::CATEGORY_DEFAULT;
+        if( ( $bits_pkts_only && !isset( self::CATEGORIES_BITS_PKTS[$value] ) ) || ( !$bits_pkts_only && !isset( self::CATEGORIES[ $value ] ) ) ) {
+            $value = self::CATEGORY_DEFAULT;
         }
-        return $v;
+        return $value;
     }
 
     /**
@@ -986,15 +1101,15 @@ abstract class Graph
      * Note that this function just sets the default if the input is invalid.
      * If you want to force an exception in such cases, use setType()
      *
-     * @param string|null $v The user input value
+     * @param string|null $value The user input value
      *
-     * @return string The verified / sanitised / default value
+     * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterType( $v = null ): string
+    public static function processParameterType( string $value = null ): string|null
     {
-        if( !isset( self::TYPES[ $v ] ) ) {
-            $v = self::TYPE_DEFAULT;
+        if( !isset( self::TYPES[ $value ] ) ) {
+            $value = self::TYPE_DEFAULT;
         }
-        return $v;
+        return $value;
     }
 }

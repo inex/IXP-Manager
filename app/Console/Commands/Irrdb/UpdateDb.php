@@ -23,8 +23,9 @@ namespace IXP\Console\Commands\Irrdb;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Mail;
 use IXP\Console\Commands\Command;
+use IXP\Mail\Alert;
 use IXP\Models\Customer;
 
 /**
@@ -57,34 +58,33 @@ abstract class UpdateDb extends Command
     /**
      * Returns all customers or, if specified on the command line, a specific customer
      *
-     * @return array|Builder|Customer
+     * @return mixed
      */
-    protected function resolveCustomers()
+    protected function resolveCustomers( array $options ): mixed
     {
-        $custarg = $this->argument('customer' );
+        if( $options[ 'asn' ] ) {
+            $c = Customer::whereAutsys( $options[ 'asn' ] )->get();
 
-        // if not customer specific, return all appropriate ones:
-        if( !$custarg ) {
-            return Customer::currentActive( true )->get();
-        }
+            if( !count( $c ) ) {
+                $this->error( "No customer found with ASN {$options[ 'asn' ]}" );
+                exit(-1);
+            }
 
-        // assume ASN first:
-        if( is_numeric( $custarg ) && count( ( $c = Customer::whereAutsys( $custarg )->get() ) ) > 0 ) {
             return $c;
         }
 
-        // then ID:
-        if( is_numeric( $custarg ) && ( $c = Customer::find( $custarg ) ) ) {
-            return [ $c ];
-        }
+        if( $options[ 'id' ] ) {
+            $c = Customer::whereId( $options[ 'id' ] )->get();
 
-        if( count( $c = Customer::whereShortname( $custarg )->get() ) > 0 ) {
+            if( !count( $c ) ) {
+                $this->error( "No customer found with ID {$options[ 'id' ]}" );
+                exit(-1);
+            }
+
             return $c;
         }
 
-        $this->error( "Could not find a customer matching id/shortname: " . $custarg );
-
-        exit(-1);
+        return Customer::currentActive( true )->get();
     }
 
     /**
@@ -95,7 +95,7 @@ abstract class UpdateDb extends Command
      *
      * @return void
      */
-    public function printResults( Customer $c, array $r, string $irrdbType = 'prefix' ): void
+    protected function printResults( Customer $c, array $r, string $irrdbType = 'prefix' ): void
     {
         $this->netTime  += $r[ 'netTime' ];
         $this->dbTime   += $r[ 'dbTime' ];
@@ -137,4 +137,28 @@ abstract class UpdateDb extends Command
             }
         }
     }
+
+    /**
+     * Handle exceptions
+     */
+    protected function handleException( Customer $c, \Exception $e, string $type ): void
+    {
+        $this->error( "IRRDB {$type} update failed for {$c->name}/AS{$c->autsys}" );
+        $this->error( $e->getMessage() );
+
+        if( !$this->option('alert-email') ) {
+            return;
+        }
+
+        if( !config('mail.alerts_recipient.address') ) {
+            $this->warn( "Alert email not sent as IDENTITY_ALERTS_EMAIL .env option not set." );
+            return;
+        }
+
+        Mail::to( [ [ 'name' => config( 'mail.alerts_recipient.name' ), 'email' => config( 'mail.alerts_recipient.address' ) ] ] )
+            ->send( new Alert("IRRDB {$type} update failed for {$c->name}/AS{$c->autsys}", $e ) );
+
+        $this->info( "Alert email sent to " . config( 'mail.alerts_recipient.address' ) );
+    }
+
 }
