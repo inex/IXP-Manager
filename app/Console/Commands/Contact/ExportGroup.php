@@ -79,7 +79,7 @@ class ExportGroup extends Command
         }
 
         $contacts = Contact::selectRaw( 'c.name AS name, c.position as position, c.email AS email, c.phone AS phone, c.mobile AS mobile,
-                    c.facilityaccess AS facilityaccess, c.mayauthorize AS mayauthorize, c.notes as notes' )
+                    c.notes as notes' )
             ->from( 'contact AS c' )
             ->leftJoin( 'contact_to_group AS ctg', 'ctg.contact_id', 'c.id' )
             ->leftJoin( 'contact_group AS cg', 'cg.id', 'ctg.contact_group_id' )
