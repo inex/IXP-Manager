@@ -97,13 +97,13 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
                         </a>
                     <?php endif; ?>
 
-                    <?php if( is_numeric( config( 'grapher.access.location' ) ) && config( 'grapher.access.location' ) === \IXP\Models\User::AUTH_PUBLIC ): ?>
+                    <?php if( is_numeric( config( 'grapher.access.location' ) ) && (int)config( 'grapher.access.location' ) === \IXP\Models\User::AUTH_PUBLIC ): ?>
                         <a class="dropdown-item <?= !request()->is( 'statistics/location' ) ?: 'active' ?>" href="<?= route('statistics@location' ) ?>">
                             Facility Graphs
                         </a>
                     <?php endif; ?>
 
-                    <?php if( is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) === \IXP\Models\User::AUTH_PUBLIC ): ?>
+                    <?php if( is_numeric( config( 'grapher.access.trunk' ) ) && (int)config( 'grapher.access.trunk' ) === \IXP\Models\User::AUTH_PUBLIC ): ?>
                         <?php if( count( config( 'grapher.backends.mrtg.trunks' ) ?? [] ) ): ?>
                             <a class="dropdown-item <?= !request()->is( 'statistics/trunk*' ) ?: 'active' ?>" href="<?= route('statistics@trunk') ?>">
                                 Inter-Switch / PoP Graphs

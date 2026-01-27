@@ -241,7 +241,7 @@ class Latency extends Graph
             return true;
         }
 
-        if( !Auth::check() && is_numeric( config( 'grapher.access.latency' ) ) && config( 'grapher.access.latency' ) === User::AUTH_PUBLIC ) {
+        if( !Auth::check() && is_numeric( config( 'grapher.access.latency' ) ) && (int)config( 'grapher.access.latency' ) === User::AUTH_PUBLIC ) {
             return true;
         }
 
@@ -264,7 +264,7 @@ class Latency extends Graph
         $us = Auth::getUser();
 
         // NB: see above authorisedForAllCustomers()
-        if( is_numeric( config( 'grapher.access.latency' ) ) && config( 'grapher.access.latency' ) === User::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.latency' ) ) && (int)config( 'grapher.access.latency' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 
