@@ -48,9 +48,13 @@ class DeleteIxpTable extends Migration
         foreach( $infrastructure_fks as $fk ) {
             Schema::table( 'infrastructure', function( Blueprint $table ) use ( $fk ) {
                 $table->dropForeign( $fk );
-                $table->dropColumn( 'ixp_id' );
             } );
         }
+
+        Schema::table( 'infrastructure', function( Blueprint $table ) {
+            $table->dropUnique( 'IXPSN' );
+            $table->dropColumn( 'ixp_id' );
+        } );
 
         $traffic_daily_fks = array_column(
             Schema::getConnection()->select('SELECT CONSTRAINT_NAME FROM information_schema.KEY_COLUMN_USAGE '
