@@ -89,6 +89,9 @@ filter f_import_as<?= $int['autsys'] . "\n" ?>
 
 ?>
 
+    # RFC 8326 - facilitate Graceful BGP Session Shutdown
+    if (65535, 0) ~ bgp_community then bgp_local_pref = 0;
+
     # Filter small prefixes
 <?php if( $t->router->protocol == 6 ): ?>
     if ( net ~ [ ::/0{<?= config( 'ixp.irrdb.min_v6_subnet_size', 48 ) == 128 ? 128 : config( 'ixp.irrdb.min_v6_subnet_size', 48 ) + 1 ?>,128} ] ) then {
