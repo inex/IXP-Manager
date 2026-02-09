@@ -108,12 +108,15 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'core-bundle/{cb}',                            'StatisticsController@coreBundle'           )->name( 'statistics@core-bundle'           );
 });
 
-Route::group( [ 'prefix' => ( ( is_numeric(config( 'grapher.access.customer' )) && config( 'grapher.access.customer' ) <= User::AUTH_CUSTADMIN ) ? '' : 'admin/' ) . 'statistics' ], function() {
 
-    Route::get( 'members', 'StatisticsController@members' );
-    Route::post( 'members', 'StatisticsController@members' )->name( 'statistics@members' );
 
-});
+// The following are always available under /admin, but optionally without /admin if non-admin-only access is configured:
+if( is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) <= User::AUTH_CUSTADMIN ) {
+    Route::group( [ 'prefix' => 'statistics' ], function() {
+        Route::get( 'members', 'StatisticsController@members' );
+        Route::post( 'members', 'StatisticsController@members' )->name( 'statistics@members' );
+    } );
+}
 
 
 

@@ -59,7 +59,7 @@ class UserControllerTest extends DuskTestCase
 
         // set back the changed attributes
         $customAdmin = User::whereEmail('imagine-custadmin@example.com')->first();
-        $customAdmin->Name = "Test Test";
+        $customAdmin->name = "Test Test";
         $customAdmin->authorisedMobile = null;
         $customAdmin->save();
 
@@ -894,7 +894,7 @@ class UserControllerTest extends DuskTestCase
 
 
             // Deleting created users for the tests
-            $browser->visit( '/switch-user-back' );
+            $browser->visit( '/admin/switch-user-back' );
 
             $addedUser = User::whereEmail( 'test13@example.com' )->first();
             $addedUser2 = User::whereEmail( 'heanet-custadmin@example.com' )->first();
@@ -902,18 +902,19 @@ class UserControllerTest extends DuskTestCase
             $browser->visit( '/user/list' )
                 ->click( "#btn-delete-" . $addedUser->id )
                 ->waitForText( 'Are you sure you want to delete this user' )
-                ->press( "Delete" );
+                ->press( "Delete" )
+                ->waitForText( 'User deleted' );
 
             // the below dusk delete is not working because:
             // Unable to locate element with selector [#btn-delete-c2u-7].
             // But it should work :shrug:  - delete for now to reset database
-            $c2u->delete();
+//            $c2u->delete();
 
-//            $browser->visit( "/user/edit/" . $addedUser2->id )
-//                ->waitForText('INEX')
-//                ->click( "#btn-delete-c2u-" . $c2u->id )
-//                ->waitForText( "Do you really want to unlink this " . config( 'ixp_fe.lang.customer.one' ) . " from this user" )
-//                ->press( "Delete" );
+            $browser->visit( "/user/edit/" . $addedUser2->id )
+                ->waitForText('INEX')
+                ->click( "#btn-delete-c2u-" . $c2u->id )
+                ->waitForText( "Do you really want to unlink this" )
+                ->press( "Delete" );
         } );
     }
 }

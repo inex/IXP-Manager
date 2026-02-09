@@ -155,6 +155,10 @@ Route::group( [ 'prefix' => 'admin/statistics' ], function() {
     Route::post( 'league-table', 'StatisticsController@leagueTable' )->name( 'statistics@league-table'      );
     Route::get(  'utilisation',  'StatisticsController@utilisation' )->name( 'statistics@utilisation'       );
     Route::post( 'utilisation',  'StatisticsController@utilisation' )->name( 'statistics@utilisation:post'  );
+
+    // The following /may/ also be available without /admin from routes/web.php if non-admin-only access is configured
+    Route::get( 'members', 'StatisticsController@members' );
+    Route::post( 'members', 'StatisticsController@members' )->name( 'statistics@members' );
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

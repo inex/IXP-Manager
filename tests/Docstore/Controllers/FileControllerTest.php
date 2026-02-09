@@ -641,7 +641,8 @@ class FileControllerTest extends TestCase
         $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
         $response = $this->get( route( 'docstore-file@info', [ 'file' => $file ] ) );
-        $response->assertStatus( 403 );
+
+        $response->assertStatus( 302 ); // it's 403 if logged in but not superuser
     }
 
     /**
