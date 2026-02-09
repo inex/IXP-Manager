@@ -81,7 +81,7 @@ Route::get( 'weather-map/{id}',                  'WeatherMapController@index' )-
 ///
 Route::get( 'content/{priv}/{page}',        'ContentController@index'   )->name( 'content'          );
 Route::get( 'public-content/{page}',        'ContentController@public'  )->name( 'public-content'   );
-Route::get( 'content/members/{priv}/{page}','ContentController@members' )->name( 'content/members'  );
+Route::get( 'content/members/{priv}/{page}','ContentController@members' );
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +101,7 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::post( 'p2p/{srcVli}/{dstVli}',                       'StatisticsController@p2p'                  )->name( 'statistics@p2p'                   );
     Route::post( 'p2p',                                         'StatisticsController@p2pPost'              )->name( 'statistics@p2p-post'              );
     Route::get(  'p2p-table',                                   'StatisticsController@p2pTable'             )->name( 'statistics@p2p-table'             );
-    Route::post( 'p2p-table',                                   'StatisticsController@p2pTable'             )->name( 'statistics@p2p-table'             );
+    Route::post( 'p2p-table',                                   'StatisticsController@p2pTable'             )->name( 'statistics@p2p-table:post'        );
     Route::get(  'member/{cust?}',                              'StatisticsController@member'               )->name( 'statistics@member'                );
     Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'      )->name( 'statistics@member-drilldown'      );
     Route::get(  'latency/{vli}/{protocol}',                    'StatisticsController@latency'              )->name( 'statistics@latency'               );

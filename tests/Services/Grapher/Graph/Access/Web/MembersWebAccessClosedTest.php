@@ -32,7 +32,7 @@ use Tests\Services\Grapher\Graph\Access\Access;
  *
  * This test is based on the routes being prefixed with /admin only.
  *
- * Class MembersAccessTest
+ * Class MembersWebAccessClosedTest
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
