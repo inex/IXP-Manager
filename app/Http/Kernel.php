@@ -146,24 +146,25 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        '2fa'                   => Middleware\Google2FA::class,
+        'apiauth'               => Middleware\ApiAuthenticate::class,
+        'apideprecated'         => Middleware\ApiDeprecated::class,
+        'apimaybeauth'          => Middleware\ApiMaybeAuthenticate::class,
+        'assert.privilege'      => Middleware\AssertUserPrivilege::class,
         'auth'                  => Middleware\Authenticate::class,
         'auth.basic'            => AuthenticateWithBasicAuth::class,
         'auth.session'          => \Illuminate\Session\Middleware\AuthenticateSession::class,
         //'bindings'              => SubstituteBindings::class,
-        'can'                   => Authorize::class,
         'cache.headers'         => SetCacheHeaders::class,
-        'guest'                 => Middleware\RedirectIfAuthenticated::class,
-        'signed'                => Middleware\ValidateSignature::class,
-        'throttle'              => ThrottleRequests::class,
-        'verified'              => EnsureEmailIsVerified::class,
-        'apiauth'               => Middleware\ApiAuthenticate::class,
-        'apimaybeauth'          => Middleware\ApiMaybeAuthenticate::class,
-        'assert.privilege'      => Middleware\AssertUserPrivilege::class,
+        'can'                   => Authorize::class,
         'controller-enabled'    => Middleware\ControllerEnabled::class,
         'eloquent2Frontend'     => Middleware\Eloquent2Frontend::class,
         'grapher'               => Middleware\Services\Grapher::class,
+        'guest'                 => Middleware\RedirectIfAuthenticated::class,
         'rs-prefixes'           => Middleware\RsPrefixes::class,
-        '2fa'                   => Middleware\Google2FA::class,
+        'signed'                => Middleware\ValidateSignature::class,
+        'throttle'              => ThrottleRequests::class,
+        'verified'              => EnsureEmailIsVerified::class,
     ];
 
     /**

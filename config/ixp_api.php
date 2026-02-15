@@ -151,4 +151,18 @@ return [
     |
     */
     'atlas_measurement_key' => env( 'ATLAS_MEASUREMENT_KEY', '' ),
+    
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Unsecured API paths
+    |--------------------------------------------------------------------------
+    |
+    | IXP Manager v7.1.0 introduced an admin/ prepend on APIs for securing them.
+    |
+    | See: https://docs.ixpmanager.org/install/security/
+    */
+
+    'unsecured_api_access' => env( 'UNSECURED_API_ACCESS', true ),
+
 ];
