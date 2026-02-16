@@ -49,6 +49,9 @@ class MacAddressController extends EloquentController
      */
     protected $object = null;
 
+    protected static bool $is_admin_route = true;
+
+
     /**
      * Is this a read only controller?
      *

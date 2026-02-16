@@ -61,6 +61,9 @@ class ConsoleServerController extends EloquentController
      */
     protected $object = null;
 
+
+    protected static bool $is_admin_route = true;
+
     /**
      * This function sets up the frontend controller
      */
@@ -79,28 +82,28 @@ class ConsoleServerController extends EloquentController
                 'name'           => [
                     'title'      => 'Name',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'console-server-connection',
+                    'controller' => 'admin/console-server-connection',
                     'action'     => 'list/port',
                     'idField'    => 'id'
                 ],
                 'facility'  => [
                     'title'      => 'Facility',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'facility',
+                    'controller' => 'admin/facility',
                     'action'     => 'view',
                     'idField'    => 'locationid'
                 ],
                 'cabinet'  => [
-                    'title'      => 'Cabinet',
+                    'title'      => 'Rack',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'rack',
+                    'controller' => 'admin/rack',
                     'action'     => 'view',
                     'idField'    => 'cabinetid'
                 ],
                 'vendor'  => [
                     'title'       => 'Vendor',
                     'type'        => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller'  => 'vendor',
+                    'controller'  => 'admin/vendor',
                     'action'      => 'view',
                     'idField'     => 'vendorid'
                 ],
@@ -108,7 +111,7 @@ class ConsoleServerController extends EloquentController
                 'num_connections' => [
                     'title'      => 'Connections',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'console-server-connection',
+                    'controller' => 'admin/console-server-connection',
                     'action'     => 'list/port',
                     'idField'    => 'id'
                 ],

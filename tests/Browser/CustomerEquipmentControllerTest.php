@@ -3,7 +3,7 @@
 namespace Tests\Browser;
 
 /*
- * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -35,7 +35,7 @@ use Tests\DuskTestCase;
  * @author     Laszlo Kiss <laszlo@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Tests\Browser
- * @copyright  Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class CustomerEquipmentControllerTest extends DuskTestCase
@@ -71,15 +71,15 @@ class CustomerEquipmentControllerTest extends DuskTestCase
                 ->press( '#login-btn' )
                 ->waitForLocation( '/admin' );
 
-            $browser->visit( '/cust-kit/list' )
+            $browser->visit( route( 'cust-kit@list' ) )
                 ->assertSee( 'Colocated Equipment' );
 
-            $browser->visit( '/cust-kit/create' )
+            $browser->visit( route( 'cust-kit@create' ) )
                 ->assertSee( 'Colocated Equipment / Create Colocated Equipment' );
 
             // 1. test add empty inputs
             $browser->press( 'Create' )
-                ->waitForLocation( '/cust-kit/create' )
+                ->waitForLocation( route( 'cust-kit@create' ) )
                 ->assertSee( "The name field is required." )
                 ->assertSee( "The custid field is required." )
                 ->assertSee( "The cabinetid field is required." );
@@ -91,7 +91,7 @@ class CustomerEquipmentControllerTest extends DuskTestCase
                 ->type( 'descr', 'Test Description' );
 
             $browser->press( 'Create' )
-                ->waitForLocation( '/cust-kit/list' )
+                ->waitForLocation( route( 'cust-kit@list' ) )
                 ->assertSee( "Colocated Equipment created." );
 
             $colocatedEquipment = CustomerEquipment::whereName( 'Colocated Equipment #1' )->first();
@@ -118,7 +118,7 @@ class CustomerEquipmentControllerTest extends DuskTestCase
             $browser->select( 'custid', '2' );
 
             $browser->press( 'Save Changes' )
-                ->waitForLocation( '/cust-kit/list' )
+                ->waitForLocation( route( 'cust-kit@list' ) )
                 ->assertSee( "Colocated Equipment updated" );
 
 
@@ -132,7 +132,7 @@ class CustomerEquipmentControllerTest extends DuskTestCase
 
 
             // 8. edit again and assert that all checkboxes are unchecked and assert select values are as expected
-            $browser->visit( '/cust-kit/edit/' . $colocatedEquipment->id )
+            $browser->visit( route( 'cust-kit@edit', $colocatedEquipment->id ) )
                 ->waitForText( 'Colocated Equipment / Edit Colocated Equipment' );
 
             $browser->assertInputValue( 'name', 'Colocated Equipment #1' )
@@ -142,7 +142,7 @@ class CustomerEquipmentControllerTest extends DuskTestCase
 
             // 9. submit with no changes and verify no changes in database
             $browser->press( 'Save Changes' )
-                ->waitForLocation( '/cust-kit/list' );
+                ->waitForLocation( route( 'cust-kit@list' ) );
 
 
             // 10. repeat database load and database object check for new values (repeat 2)
@@ -154,7 +154,7 @@ class CustomerEquipmentControllerTest extends DuskTestCase
             $this->assertEquals( 'Test Description', $colocatedEquipment->descr );
 
             // 11. edit object
-            $browser->visit( '/cust-kit/edit/' . $colocatedEquipment->id )
+            $browser->visit( route( 'cust-kit@edit', $colocatedEquipment->id ) )
                 ->assertSee( 'Colocated Equipment / Edit Colocated Equipment' );
 
             $browser->type( 'name', 'Colocated Equipment #2' )
@@ -164,7 +164,7 @@ class CustomerEquipmentControllerTest extends DuskTestCase
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             $browser->press( 'Save Changes' )
-                ->waitForLocation( '/cust-kit/list' );
+                ->waitForLocation( route( 'cust-kit@list' ) );
 
 
             // 12. verify object values
@@ -176,7 +176,7 @@ class CustomerEquipmentControllerTest extends DuskTestCase
             $this->assertEquals( 'Test Description new', $colocatedEquipment->descr );
 
             // 13. delete the router in the UI and verify via success message text and location
-            $browser->visit( '/cust-kit/list/' )
+            $browser->visit( route( 'cust-kit@list' ) )
                 ->click( '#e2f-list-delete-' . $colocatedEquipment->id )
                 ->waitForText( 'Do you really want to delete this colocated equipment?' )
                 ->press( 'Delete' );

@@ -64,6 +64,8 @@ class NetworkInfoController extends EloquentController
      */
     protected $object = null;
 
+    protected static bool $is_admin_route = true;
+
     /**
      * This function sets up the frontend controller
      */
@@ -82,7 +84,7 @@ class NetworkInfoController extends EloquentController
                 'vlanname'  => [
                     'title'         => 'Vlan',
                     'type'          => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller'    => 'vlan',
+                    'controller'    => 'admin/vlan',
                     'action'        => 'view',
                     'idField'       => 'vlan_id'
                 ],

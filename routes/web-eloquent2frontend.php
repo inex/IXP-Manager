@@ -28,11 +28,11 @@
 |
 |
 */
-IXP\Http\Controllers\ApiKeyController::routes();
+
+// These are all under /admin
 IXP\Http\Controllers\CabinetController::routes();
 IXP\Http\Controllers\ConsoleServer\ConsoleServerController::routes();
 IXP\Http\Controllers\ConsoleServer\ConsoleServerConnectionController::routes();
-IXP\Http\Controllers\Contact\ContactController::routes();
 IXP\Http\Controllers\Contact\ContactGroupController::routes();
 IXP\Http\Controllers\CustKitController::routes();
 IXP\Http\Controllers\Customer\CustomerTagController::routes();
@@ -43,12 +43,21 @@ IXP\Http\Controllers\LocationController::routes();
 IXP\Http\Controllers\LoginHistoryController::routes();
 IXP\Http\Controllers\MacAddressController::routes();
 IXP\Http\Controllers\NetworkInfoController::routes();
+IXP\Http\Controllers\Switches\SwitchController::routes();
+IXP\Http\Controllers\Switches\SwitchPortController::routes();
+IXP\Http\Controllers\VlanController::routes();
+IXP\Http\Controllers\VendorController::routes();
+
+
+
+// These are NOT under /admin
+IXP\Http\Controllers\ApiKeyController::routes();
+IXP\Http\Controllers\Contact\ContactController::routes();
+IXP\Http\Controllers\User\UserRememberTokenController::routes();
+
+
+// Not ready for production
 //IXP\Http\Controllers\RipeAtlas\MeasurementController::routes();
 //IXP\Http\Controllers\RipeAtlas\ResultController::routes();
 //IXP\Http\Controllers\RipeAtlas\RunController::routes();
 //IXP\Http\Controllers\RipeAtlas\ProbesController::routes();
-IXP\Http\Controllers\Switches\SwitchController::routes();
-IXP\Http\Controllers\Switches\SwitchPortController::routes();
-IXP\Http\Controllers\User\UserRememberTokenController::routes();
-IXP\Http\Controllers\VendorController::routes();
-IXP\Http\Controllers\VlanController::routes();

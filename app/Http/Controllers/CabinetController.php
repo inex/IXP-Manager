@@ -61,6 +61,8 @@ class CabinetController extends EloquentController
      */
     protected $object = null;
 
+    protected static bool $is_admin_route = true;
+
     /**
      * The URL prefix to use.
      *
@@ -91,7 +93,7 @@ class CabinetController extends EloquentController
                 'locationname'  => [
                     'title'      => 'Facility',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'facility',
+                    'controller' => 'admin/facility',
                     'action'     => 'view',
                     'idField'    => 'locationid'
                 ],

@@ -65,6 +65,9 @@ class CustomerTagController extends EloquentController
      */
     protected $object = null;
 
+    protected static bool $is_admin_route = true;
+
+
     /**
      * This function sets up the frontend controller
      */
@@ -122,7 +125,7 @@ class CustomerTagController extends EloquentController
     #[\Override]
     protected static function additionalRoutes( string $route_prefix ): void
     {
-        Route::group( [ 'prefix' => $route_prefix ], static function() use ( $route_prefix ) {
+        Route::group( [ 'prefix' => ( static::$is_admin_route ? 'admin/' : '' ) .  $route_prefix ], static function() use ( $route_prefix ) {
             Route::get(     'cust/{cust}',  'Customer\CustomerTagController@linkCustomer' )->name( $route_prefix . '@link-customer' );
             Route::post(    'link/{cust}',  'Customer\CustomerTagController@link'         )->name( $route_prefix . '@link'          );
         });

@@ -57,6 +57,9 @@ class Layer2AddressController extends EloquentController
      */
     protected $object = null;
 
+    protected static bool $is_admin_route = true;
+
+
     /**
      * Is this a read only controller?
      *
@@ -138,7 +141,7 @@ class Layer2AddressController extends EloquentController
     protected static function additionalRoutes( string $route_prefix ): Void
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
-        Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
+        Route::group( [ 'prefix' => ( static::$is_admin_route ? 'admin/' : '' ) . $route_prefix ], function() use ( $route_prefix ) {
             Route::get(  'vlan-interface/{vli}', 'Layer2AddressController@forVlanInterface' )->name( $route_prefix . '@forVlanInterface' );
         });
     }

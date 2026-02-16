@@ -71,7 +71,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             $browser->press( "#delete-vi-" . $vi->id )
                 ->waitForText( 'Do you really want to delete this Virtual Interface?' )
                 ->press( "Delete" )
-                ->waitForLocation('/customer/overview/' . $vi->custid . '/ports' )
+                ->waitForLocation( route( 'customer@overview', [ 'cust' => $vi->custid, 'tab' => 'ports' ] ) )
                 ->assertSee('Virtual interface deleted.' );
         });
     }
@@ -87,7 +87,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
      */
     private function intTestVi( Browser $browser ): VirtualInterface
     {
-        $browser->visit('/interfaces/virtual/wizard-create/cust/5' )
+        $browser->visit( route( 'virtual-interface@create-wizard-for-cust', 5 ) )
             ->assertSee('Virtual Interface Settings' );
 
         // Create a new Vitural interface Via wizard form
@@ -183,7 +183,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
 
         // Go on edit page
-        $browser->visit('/interfaces/virtual/edit/' . $vi->id )
+        $browser->visit( route( 'virtual-interface@edit', $vi->id ) )
             ->assertSee('Edit Virtual Interface');
 
         // Check the form values
@@ -208,7 +208,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->type('channelgroup', '666'               )
                 ->type('mtu', '666' )
                 ->press('Save Changes'  )
-                ->waitForLocation('/interfaces/virtual/edit/' . $vi->id )
+                ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
                 ->assertSee('Virtual Interface updated');
 
         // Check value in DB
@@ -223,7 +223,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $this->assertEquals( true,          (bool)$vi->fastlacp     );
 
         // Go on edit page
-        $browser->visit('/interfaces/virtual/edit/' . $vi->id )
+        $browser->visit( route( 'virtual-interface@edit', $vi->id ) )
             ->assertSee('Edit Virtual Interface');
 
 
@@ -244,7 +244,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->uncheck('trunk'       )
                 ->uncheck('lag_framing' )
                 ->press('Save Changes' )
-                ->waitForLocation('/interfaces/virtual/edit/' . $vi->id )
+                ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
                 ->assertSee('Virtual Interface updated' );
 
         // Check value in DB
@@ -256,7 +256,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $this->assertEquals( false, (bool)$vi->fastlacp     );
 
         // Go on edit page
-        $browser->visit('/interfaces/virtual/edit/' . $vi->id )
+        $browser->visit( route( 'virtual-interface@edit', $vi->id ) )
             ->assertSee('Edit Virtual Interface' );
 
         // Check the form with new values
@@ -272,7 +272,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->waitFor( "#fastlacp" )
                 ->check('fastlacp'        )
                 ->press('Save Changes'  )
-                ->waitForLocation('/interfaces/virtual/edit/' . $vi->id )
+                ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
                 ->assertSee('Virtual Interface updated.' );
 
         // Check value in DB
@@ -283,7 +283,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $this->assertEquals( true, (bool)$vi->fastlacp      );
 
         // Go on edit page
-        $browser->visit('/interfaces/virtual/edit/' . $vi->id )
+        $browser->visit( route( 'virtual-interface@edit', $vi->id ) )
                 ->assertSee('Edit Virtual Interface' );
 
         // Check the form with new values
@@ -293,11 +293,11 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
 
         // Test for the issue : https://github.com/inex/IXP-Manager/issues/513
-        $browser->visit('/interfaces/virtual/edit/' . $vi->id )
+        $browser->visit( route( 'virtual-interface@edit', $vi->id ) )
                 ->assertSee('Edit Virtual Interface')
                 ->type(     "name" , '"test "')
                 ->click( '#submit-form' )
-                ->waitForLocation('/interfaces/virtual/edit/' . $vi->id );
+                ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) );
 
         $browser->assertSourceHas( 'Virtual Interface updated.' );
 
@@ -306,10 +306,10 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
         $this->assertEquals( "test ",     $vi->name );
 
-        $browser->visit('/interfaces/virtual/edit/' . $vi->id )
+        $browser->visit( route( 'virtual-interface@edit', $vi->id ) )
                 ->assertInputValue('name', '"test "' )
                 ->press('Save Changes' )
-                ->waitForLocation('/interfaces/virtual/edit/' . $vi->id )
+                ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
                 ->assertSee('Virtual Interface updated.' );
 
         // Check value in DB
@@ -330,10 +330,10 @@ class VirtualInterfaceControllerTest extends DuskTestCase
      */
     private function intTestPi(Browser $browser, VirtualInterface $vi ): void
     {
-        $browser->visit('/interfaces/virtual/edit/' . $vi->id );
+        $browser->visit( route( 'virtual-interface@edit', $vi->id ) );
 
         $browser->click( "#add-pi" )
-            ->waitForLocation('/interfaces/physical/create/vintid/' . $vi->id);
+            ->waitForLocation( route( 'physical-interface@create', $vi->id ) );
 
         // Add a new Physical interface
         $browser->select('switch',  '2' )
@@ -346,7 +346,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->check( 'autoneg' )
                 ->type( 'notes', '### note test' )
                 ->press( "Create" )
-                ->waitForLocation('/interfaces/virtual/edit/' . $vi->id )
+                ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
                 ->assertSee( 'Physical Interface created.' );
 
 
@@ -368,7 +368,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
 
         $browser->click( "#edit-pi-" . $pi->id )
-            ->waitForLocation('/interfaces/physical/edit/' . $pi->id . "/vintid/" . $vi->id )
+            ->waitForLocation( route( 'physical-interface@edit-from-virtual-interface', [ 'pi' => $pi->id, 'vi' => $vi->id ] ) )
             ->assertSee( "Physical Interfaces / Edit" );
 
 
@@ -394,7 +394,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->uncheck( 'autoneg' )
                 ->type( 'notes', '### note test test' )
                 ->press( "Save Changes" )
-                ->waitForLocation('/interfaces/virtual/edit/' . $vi->id )
+                ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
                 ->assertSee( 'Physical Interface updated.' );
 
         $pi->refresh();
@@ -410,7 +410,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
 
         $browser->click( "#edit-pi-" . $pi->id )
-            ->waitForLocation('/interfaces/physical/edit/' . $pi->id . "/vintid/" . $vi->id );
+            ->waitForLocation( route( 'physical-interface@edit-from-virtual-interface', [ 'pi' => $pi->id, 'vi' => $vi->id ] ) );
 
 
         $browser->assertSee( "Physical Interfaces / Edit" );
@@ -430,7 +430,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         // check all checkboxes
         $browser->check( 'autoneg' )
                 ->press( "Save Changes" )
-                ->waitForLocation('/interfaces/virtual/edit/' . $vi->id )
+                ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
                 ->assertSee( 'Physical Interface updated.' );
 
         $pi->refresh();
@@ -438,7 +438,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $this->assertEquals( true,  (bool)$pi->autoneg );
 
         $browser->click( "#edit-pi-" . $pi->id )
-            ->waitForLocation('/interfaces/physical/edit/' . $pi->id . "/vintid/" . $vi->id );
+            ->waitForLocation( route( 'physical-interface@edit-from-virtual-interface', [ 'pi' => $pi->id, 'vi' => $vi->id ] ) );
 
         $browser->assertSee( "Physical Interfaces / Edit" );
 
@@ -446,14 +446,14 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $browser->assertChecked('autoneg' );
 
         $browser->click( "#cancel-btn" )
-                ->waitForLocation('/interfaces/virtual/edit/' . $vi->id )
+                ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
                 ->assertSee( "Edit Virtual Interface" );
 
         // Delete physical interface
         $browser->press("#btn-delete-pi-" . $pi->id )
                 ->waitForText( 'Do you really want to delete this Physical Interface?' )
                 ->press('Delete')
-                ->waitForLocation('/interfaces/virtual/edit/' . $vi->id )
+                ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
                 ->assertSee( 'Physical Interface deleted.' );
     }
 
@@ -469,11 +469,11 @@ class VirtualInterfaceControllerTest extends DuskTestCase
      */
     private function intTestVli( Browser $browser, VirtualInterface $vi ): void
     {
-        $browser->visit('/interfaces/virtual/edit/' . $vi->id );
+        $browser->visit( route( 'virtual-interface@edit', $vi->id ) );
 
         $browser->click( "#add-vli" );
 
-        $browser->waitForLocation('/interfaces/vlan/create/vintid/' . $vi->id );
+        $browser->waitForLocation( route( 'vlan-interface@create', $vi->id ) );
 
         // Add a new Vlan interface
         $browser->select('vlanid',  '2' )
@@ -499,7 +499,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->check( 'ipv4monitorrcbgp' )
                 ->check( 'ipv6monitorrcbgp' )
                 ->press('Create')
-                ->waitForLocation('/interfaces/virtual/edit/' . $vi->id )
+                ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
                 ->assertSee('VLAN Interface created.');
 
         // check data in DB
@@ -535,7 +535,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
         // Edit the VLAN Interface
         $browser->click( "#edit-vli-" . $vli->id )
-            ->waitForLocation('/interfaces/vlan/edit/' . $vli->id . "/vintid/" . $vi->id )
+            ->waitForLocation( route( 'vlan-interface@edit-from-virtual-interface', [ 'vli' => $vli->id,  'vi' => $vi->id ] ) )
             ->assertSee( "Edit VLAN Interface" );
 
 
@@ -583,7 +583,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->uncheck( 'ipv4monitorrcbgp' )
                 ->uncheck( 'ipv6monitorrcbgp' )
                 ->press('Save Changes')
-                ->waitForLocation('/interfaces/virtual/edit/' . $vi->id )
+                ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
                 ->assertSee('VLAN Interface updated');
 
         $vli->refresh();
@@ -612,7 +612,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
         // Edit the VLAN Interface
         $browser->click( "#edit-vli-" . $vli->id )
-                ->waitForLocation('/interfaces/vlan/edit/' . $vli->id . "/vintid/" . $vi->id )
+                ->waitForLocation( route( 'vlan-interface@edit-from-virtual-interface', [ 'vli' => $vli->id,  'vi' => $vi->id ] ) )
                 ->assertSee( "Edit VLAN Interface" );
 
         // Check the form values
@@ -650,7 +650,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->check( 'ipv4monitorrcbgp' )
                 ->check( 'ipv6monitorrcbgp' )
                 ->press('Save Changes')
-                ->waitForLocation('/interfaces/virtual/edit/' . $vi->id )
+                ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
                 ->assertSee('VLAN Interface updated.');
 
         $vli->refresh();
@@ -667,7 +667,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
         // Edit the VLAN Interface
         $browser->click( "#edit-vli-" . $vli->id )
-            ->waitForLocation('/interfaces/vlan/edit/' . $vli->id . "/vintid/" . $vi->id )
+            ->waitForLocation( route( 'vlan-interface@edit-from-virtual-interface', [ 'vli' => $vli->id,  'vi' => $vi->id ] ) )
             ->assertSee( "Edit VLAN Interface" );
 
         // Check the form values
@@ -681,14 +681,14 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->assertChecked( 'ipv6monitorrcbgp'     );
 
         $browser->click( "#cancel-btn" )
-                ->waitForLocation('/interfaces/virtual/edit/' . $vi->id )
+                ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
                 ->assertSee( "Edit Virtual Interface" );
 
 
 
         // Edit the VLAN Interface
         $browser->click( "#edit-vli-" . $vli->id )
-            ->waitForLocation('/interfaces/vlan/edit/' . $vli->id . "/vintid/" . $vi->id )
+            ->waitForLocation( route( 'vlan-interface@edit-from-virtual-interface', [ 'vli' => $vli->id,  'vi' => $vi->id ] ) )
             ->assertSee( "Edit VLAN Interface" );
 
         // Check max prefixes
@@ -699,7 +699,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $browser->type( "ipv4maxbgpprefix", '' )
             ->type( "ipv6maxbgpprefix", '0' )
             ->press('Save Changes')
-            ->waitForLocation('/interfaces/virtual/edit/' . $vi->id )
+            ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
             ->assertSee('VLAN Interface updated.');
 
         $vli->refresh();
@@ -718,7 +718,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->waitForText( 'Duplicate the VLAN Interface' )
                 ->select( "#duplicateTo" , '2' )
                 ->press('Duplicate')
-                ->waitForLocation('/interfaces/vlan/duplicate/' . $vli->id . "/to/2" )
+                ->waitForLocation( route( 'vlan-interface@duplicate-form', [ 'vli' => $vli->id, 'v' => 2 ] ) )
                 ->assertSee( 'This form allows you to duplicate the selected' );
 
         // check that the form match with the Vlan interface information
@@ -776,7 +776,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $browser->press("#btn-delete-vli-" . $vli->id )
                 ->waitForText( 'Do you really want to delete this VLAN Interface?' )
                 ->press('Delete')
-                ->waitForLocation('/interfaces/virtual/edit/' . $vi->id )
+                ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
                 ->assertSee( 'VLAN Interface deleted' );
 
     }

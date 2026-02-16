@@ -58,7 +58,7 @@ class SwitchPortControllerTest extends DuskTestCase
                     ->type( 'password', 'travisci' )
                     ->press( '#login-btn' )
                     ->waitForLocation( '/admin' )
-                    ->visit( '/switch-port/list' );
+                    ->visit( route( 'switch-port@list' ) );
 
             /**
              * Test view Switch information
@@ -79,7 +79,7 @@ class SwitchPortControllerTest extends DuskTestCase
                     ->waitForText( "Details for switch port: " . $sp->switcher->name . " :: " . $sp->name . " (DB ID: " . $sp->id . ")" );
 
             $browser->press( "#e2f-list-a" )
-                    ->waitForLocation( "/switch-port/list" );
+                    ->waitForLocation( route( 'switch-port@list' ) );
 
 
             /**
@@ -103,7 +103,7 @@ class SwitchPortControllerTest extends DuskTestCase
             $browser->driver->executeScript('window.scrollTo(0, 3000);');
 
             $browser->click( "#btn-submit" )
-                    ->waitForLocation( "/switch-port/list" )
+                    ->waitForLocation( route( 'switch-port@list' ) )
                     ->assertSee( "Switch Port created" );
 
                 $newSp = SwitchPort::whereName( 'travistest1' )->first();
@@ -148,7 +148,7 @@ class SwitchPortControllerTest extends DuskTestCase
 
             // submit unchanged form
             $browser->press(    'Save Changes')
-                ->waitForLocation('/switch-port/list')
+                ->waitForLocation( route( 'switch-port@list' ) )
                 ->assertSee( "Switch Port updated" );
 
             $newSp->refresh();
@@ -192,7 +192,7 @@ class SwitchPortControllerTest extends DuskTestCase
                     ->select(   'type',     2 )
                     ->uncheck(  'active' )
                     ->press(    'Save Changes' )
-                    ->waitForLocation('/switch-port/list'  )
+                    ->waitForLocation( route( 'switch-port@list' ) )
                     ->assertSee( "Switch Port updated"  );
 
 
@@ -235,7 +235,7 @@ class SwitchPortControllerTest extends DuskTestCase
             // Test the checkbox (checked)
             $browser->check(  'active' )
                 ->press(    'Save Changes')
-                ->waitForLocation('/switch-port/list')
+                ->waitForLocation( route( 'switch-port@list' ) )
                 ->assertSee( "Switch Port updated" );
 
             $newSp->refresh();
@@ -248,7 +248,7 @@ class SwitchPortControllerTest extends DuskTestCase
             // Test the checkbox (unchecked)
             $browser->uncheck(  'active' )
                     ->press(    'Save Changes')
-                    ->waitForLocation('/switch-port/list')
+                    ->waitForLocation( route( 'switch-port@list' ) )
                     ->assertSee( "Switch Port updated" );
 
             // refresh the object
@@ -264,7 +264,7 @@ class SwitchPortControllerTest extends DuskTestCase
             // Test the select
             $browser->select(  'type', 3 )
                 ->press(    'Save Changes')
-                ->waitForLocation('/switch-port/list')
+                ->waitForLocation( route( 'switch-port@list' ) )
                 ->assertSee( "Switch Port updated" );
 
             $newSp->refresh();
@@ -278,7 +278,7 @@ class SwitchPortControllerTest extends DuskTestCase
             // Test the select
             $browser->select(  'type', 4 )
                 ->press(    'Save Changes')
-                ->waitForLocation('/switch-port/list')
+                ->waitForLocation( route( 'switch-port@list' ) )
                 ->assertSee( "Switch Port updated" );
 
              $newSp->refresh();

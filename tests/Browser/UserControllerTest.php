@@ -3,7 +3,7 @@
 namespace Tests\Browser;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -42,7 +42,7 @@ use Tests\DuskTestCase;
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Tests\Browser
- * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class UserControllerTest extends DuskTestCase
@@ -59,7 +59,7 @@ class UserControllerTest extends DuskTestCase
 
         // set back the changed attributes
         $customAdmin = User::whereEmail('imagine-custadmin@example.com')->first();
-        $customAdmin->Name = "Test Test";
+        $customAdmin->name = "Test Test";
         $customAdmin->authorisedMobile = null;
         $customAdmin->save();
 
@@ -382,7 +382,7 @@ class UserControllerTest extends DuskTestCase
              *  Add User Via customer overview
              *
              */
-            $browser->visit( '/customer/overview/5/users' )
+            $browser->visit( route( 'customer@overview', [ 'cust' => 5, 'tab' => 'users' ] ) )
                 ->waitForText( 'imcustadmin' )
                 ->assertSee( 'imagine-custadmin@example.com' )
                 ->press( '#users-add-btn' )
@@ -401,7 +401,7 @@ class UserControllerTest extends DuskTestCase
                 ->check( 'disabled' )
                 ->type( 'authorisedMobile', '12125551000' )
                 ->press( 'Create' )
-                ->waitForLocation( '/customer/overview/5/users' )
+                ->waitForLocation(  route( 'customer@overview', [ 'cust' => 5, 'tab' => 'users' ] )  )
                 ->assertSee( 'User created. A welcome email' )
                 ->assertSee( 'Test User 2' )
                 ->assertSee( 'testuser2' )
@@ -434,7 +434,7 @@ class UserControllerTest extends DuskTestCase
             $browser->press( '#btn-delete-' . $c2u3->user_id )
                 ->waitForText( 'Do you really want to delete this user?' )
                 ->press( 'Delete' )
-                ->waitForLocation( '/customer/overview/5/users' )
+                ->waitForLocation( route( 'customer@overview', [ 'cust' => 5, 'tab' => 'users' ] ) )
                 ->assertSee( 'User deleted' )
                 ->assertDontSee( 'Test User 1' )
                 ->assertDontSee( 'testuser1' )
@@ -748,7 +748,7 @@ class UserControllerTest extends DuskTestCase
             $existingUser = User::whereUsername( 'travis' )->first();
 
             // 1. customer overview -> non internal customer -> add user from tab -> no super option
-            $browser->visit( 'customer/overview/' . $nonInternalCust->id . '/users' )
+            $browser->visit( route( 'customer@overview', [ 'cust' => $nonInternalCust->id, 'tab' => 'users' ] ) )
                 ->pause(500)
                 ->press( "#users-add-btn" )
                 ->type( '#email', 'test@example.com' )
@@ -759,7 +759,7 @@ class UserControllerTest extends DuskTestCase
 
             // 2. customer overview -> non internal customer -> add existing user from tab -> no super option
 
-            $browser->visit( 'customer/overview/' . $nonInternalCust->id . '/users' )
+            $browser->visit( route( 'customer@overview', [ 'cust' => $nonInternalCust->id, 'tab' => 'users' ] ) )
                 ->click( "#users-add-btn" )
                 ->type( '#email', $existingUser->email )
                 ->click( '.btn-primary' )
@@ -768,7 +768,7 @@ class UserControllerTest extends DuskTestCase
             // 3. customer overview -> internal customer -> add user from tab -> super option
 
 
-            $browser->visit( 'customer/overview/' . $internalCust->id . '/users' )
+            $browser->visit( route( 'customer@overview', [ 'cust' => $internalCust->id, 'tab' => 'users' ] ) )
                 ->click( "#users-add-btn" )
                 ->type( '#email', 'test2@example.com' )
                 ->click( '.btn-primary' )
@@ -778,7 +778,7 @@ class UserControllerTest extends DuskTestCase
 
             // 4. customer overview -> internal customer -> add existing user from tab -> super option
 
-            $browser->visit( 'customer/overview/' . $internalCust->id . '/users' )
+            $browser->visit( route( 'customer@overview', [ 'cust' => $internalCust->id, 'tab' => 'users' ] ) )
                 ->click( "#users-add-btn" )
                 ->type( '#email', $existingUser->email )
                 ->click( '.btn-primary' )
@@ -894,7 +894,7 @@ class UserControllerTest extends DuskTestCase
 
 
             // Deleting created users for the tests
-            $browser->visit( '/switch-user-back' );
+            $browser->visit( '/admin/switch-user-back' );
 
             $addedUser = User::whereEmail( 'test13@example.com' )->first();
             $addedUser2 = User::whereEmail( 'heanet-custadmin@example.com' )->first();
@@ -902,18 +902,19 @@ class UserControllerTest extends DuskTestCase
             $browser->visit( '/user/list' )
                 ->click( "#btn-delete-" . $addedUser->id )
                 ->waitForText( 'Are you sure you want to delete this user' )
-                ->press( "Delete" );
+                ->press( "Delete" )
+                ->waitForText( 'User deleted' );
 
             // the below dusk delete is not working because:
             // Unable to locate element with selector [#btn-delete-c2u-7].
             // But it should work :shrug:  - delete for now to reset database
-            $c2u->delete();
+//            $c2u->delete();
 
-//            $browser->visit( "/user/edit/" . $addedUser2->id )
-//                ->waitForText('INEX')
-//                ->click( "#btn-delete-c2u-" . $c2u->id )
-//                ->waitForText( "Do you really want to unlink this " . config( 'ixp_fe.lang.customer.one' ) . " from this user" )
-//                ->press( "Delete" );
+            $browser->visit( "/user/edit/" . $addedUser2->id )
+                ->waitForText('INEX')
+                ->click( "#btn-delete-c2u-" . $c2u->id )
+                ->waitForText( "Do you really want to unlink this" )
+                ->press( "Delete" );
         } );
     }
 }

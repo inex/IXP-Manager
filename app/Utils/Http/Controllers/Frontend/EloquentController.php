@@ -100,6 +100,14 @@ abstract class EloquentController extends Controller
     protected static $route_prefix = null;
 
     /**
+     * Is this an admin controller?
+     *
+     * If so, we prefix 'admin/' to the route.
+     */
+    protected static bool $is_admin_route = false;
+
+
+    /**
      * The minimum privileges required to access this controller.
      *
      * If you set this to less than the superuser, you need to manage privileges and access
@@ -205,7 +213,7 @@ abstract class EloquentController extends Controller
         $class = '\\' . static::class;
         $route_prefix = self::route_prefix();
 
-        Route::group( [ 'prefix' => $route_prefix ], static function() use ( $class, $route_prefix ) {
+        Route::group( [ 'prefix' => ( static::$is_admin_route ? 'admin/' : '' ) . $route_prefix ], static function() use ( $class, $route_prefix ) {
             Route::get( 'list',      $class . '@list' )->name( $route_prefix . '@list' );
             Route::get( 'view/{id}', $class . '@view' )->name( $route_prefix . '@view' );
 
@@ -235,6 +243,7 @@ abstract class EloquentController extends Controller
         if( $class::$route_prefix ) {
             return $class::$route_prefix;
         }
+
         return Str::kebab( substr( class_basename( $class ), 0, -10 ) );
     }
 

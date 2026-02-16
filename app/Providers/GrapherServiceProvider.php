@@ -75,7 +75,7 @@ class GrapherServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Route::group( ['middleware' => 'grapher', 'namespace' => 'IXP\Http\Controllers\Services', 'as' => 'grapher::', 'prefix' => 'grapher'  ], function(){
+        Route::group( ['middleware' => 'grapher', 'namespace' => 'IXP\Http\Controllers\Services', 'prefix' => 'grapher'  ], function(){
             Route::get( 'ixp',               'Grapher@ixp'               );
             Route::get( 'infrastructure',    'Grapher@infrastructure'    );
             Route::get( 'vlan',              'Grapher@vlan'              );
@@ -92,7 +92,7 @@ class GrapherServiceProvider extends ServiceProvider
         });
 
         Route::group(['middleware' => [ 'api/v4', 'assert.privilege:' . User::AUTH_SUPERUSER ],
-                'namespace' => 'IXP\Http\Controllers\Services', 'as' => 'grapher::' ], function(){
+                'namespace' => 'IXP\Http\Controllers\Services',  ], function(){
 
             Route::get(  'api/v4/grapher/mrtg-config', 'Grapher\Api@generateConfiguration' );
             Route::get(  'api/v4/grapher/config',      'Grapher\Api@generateConfiguration' );
