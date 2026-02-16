@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "laravel-boost": {
+      "command": "/Users/barryo/Library/Application Support/Herd/bin/php84",
+      "args": [
+        "/Users/barryo/dev/ixpm-inex/artisan",
+        "boost:mcp"
+      ]
+    },
+    "herd": {
+      "command": "/Users/barryo/Library/Application Support/Herd/bin/php84",
+      "args": [
+        "/Applications/Herd.app/Contents/Resources/herd-mcp.phar"
+      ],
+      "env": {
+        "SITE_PATH": "/Users/barryo/dev/ixpm-inex"
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+    "agents": [
+        "junie"
+    ],
+    "guidelines": true,
+    "herd_mcp": true,
+    "mcp": true,
+    "sail": false,
+    "skills": [
+        "tailwindcss-development"
+    ]
+}

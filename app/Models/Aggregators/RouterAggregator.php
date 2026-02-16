@@ -106,6 +106,10 @@ use IXP\Models\User;
  * @method static Builder|RouterAggregator routeCollector()
  * @method static Builder|RouterAggregator ipvX(int $protocol)
  * @method static Builder|RouterAggregator ipProtocol(int $protocol)
+ * @property int|null $rpki_min_version
+ * @property int|null $rpki_max_version
+ * @method static Builder<static>|RouterAggregator whereRpkiMaxVersion($value)
+ * @method static Builder<static>|RouterAggregator whereRpkiMinVersion($value)
  * @mixin \Eloquent
  */
 class RouterAggregator extends Router
