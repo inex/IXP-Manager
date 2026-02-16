@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d7aeeaa22e9edb61020ef7cfaf9559da",
+    "content-hash": "0e6415193c06654c286bccd7d2c303fc",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -9407,20 +9407,20 @@
         },
         {
             "name": "barryvdh/laravel-ide-helper",
-            "version": "v3.6.1",
+            "version": "v3.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-ide-helper.git",
-                "reference": "b106f7ee85f263c4f103eca49e7bf3862c2e5e75"
+                "reference": "8d441ec99f8612b942b55f5183151d91591b618a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-ide-helper/zipball/b106f7ee85f263c4f103eca49e7bf3862c2e5e75",
-                "reference": "b106f7ee85f263c4f103eca49e7bf3862c2e5e75",
+                "url": "https://api.github.com/repos/barryvdh/laravel-ide-helper/zipball/8d441ec99f8612b942b55f5183151d91591b618a",
+                "reference": "8d441ec99f8612b942b55f5183151d91591b618a",
                 "shasum": ""
             },
             "require": {
-                "barryvdh/reflection-docblock": "^2.4",
+                "barryvdh/reflection-docblock": "^2.3",
                 "composer/class-map-generator": "^1.0",
                 "ext-json": "*",
                 "illuminate/console": "^11.15 || ^12",
@@ -9485,7 +9485,7 @@
             ],
             "support": {
                 "issues": "https://github.com/barryvdh/laravel-ide-helper/issues",
-                "source": "https://github.com/barryvdh/laravel-ide-helper/tree/v3.6.1"
+                "source": "https://github.com/barryvdh/laravel-ide-helper/tree/v3.5.5"
             },
             "funding": [
                 {
@@ -9497,7 +9497,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-12-10T09:11:07+00:00"
+            "time": "2025-02-11T13:59:46+00:00"
         },
         {
             "name": "barryvdh/reflection-docblock",
@@ -10781,6 +10781,158 @@
             "time": "2024-09-08T10:20:00+00:00"
         },
         {
+            "name": "orchestra/sidekick",
+            "version": "v1.2.20",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/orchestral/sidekick.git",
+                "reference": "267a71b56cb2fe1a634d69fc99889c671b77ff43"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/orchestral/sidekick/zipball/267a71b56cb2fe1a634d69fc99889c671b77ff43",
+                "reference": "267a71b56cb2fe1a634d69fc99889c671b77ff43",
+                "shasum": ""
+            },
+            "require": {
+                "composer-runtime-api": "^2.2",
+                "composer/semver": "^3.0",
+                "php": "^8.1",
+                "symfony/polyfill-php83": "^1.32"
+            },
+            "require-dev": {
+                "fakerphp/faker": "^1.21",
+                "laravel/framework": "^10.48.29|^11.44.7|^12.1.1|^13.0",
+                "laravel/pint": "^1.4",
+                "mockery/mockery": "^1.5.1",
+                "orchestra/testbench-core": "^8.37.0|^9.14.0|^10.2.0|^11.0",
+                "phpstan/phpstan": "^2.1.14",
+                "phpunit/phpunit": "^10.0|^11.0|^12.0",
+                "symfony/process": "^6.0|^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/Eloquent/functions.php",
+                    "src/Filesystem/functions.php",
+                    "src/Http/functions.php",
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "Orchestra\\Sidekick\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mior Muhammad Zaki",
+                    "email": "crynobone@gmail.com"
+                }
+            ],
+            "description": "Packages Toolkit Utilities and Helpers for Laravel",
+            "support": {
+                "issues": "https://github.com/orchestral/sidekick/issues",
+                "source": "https://github.com/orchestral/sidekick/tree/v1.2.20"
+            },
+            "time": "2026-01-12T11:09:33+00:00"
+        },
+        {
+            "name": "orchestra/testbench-core",
+            "version": "v10.9.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/orchestral/testbench-core.git",
+                "reference": "754d2b71601822d1f57f28119e4dea27ed1a5205"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/orchestral/testbench-core/zipball/754d2b71601822d1f57f28119e4dea27ed1a5205",
+                "reference": "754d2b71601822d1f57f28119e4dea27ed1a5205",
+                "shasum": ""
+            },
+            "require": {
+                "composer-runtime-api": "^2.2",
+                "orchestra/sidekick": "~1.1.23|~1.2.20",
+                "php": "^8.2",
+                "symfony/deprecation-contracts": "^2.5|^3.0",
+                "symfony/polyfill-php83": "^1.33"
+            },
+            "conflict": {
+                "brianium/paratest": "<7.3.0|>=8.0.0",
+                "laravel/framework": "<12.40.0|>=13.0.0",
+                "laravel/serializable-closure": "<1.3.0|>=2.0.0 <2.0.3|>=3.0.0",
+                "nunomaduro/collision": "<8.0.0|>=9.0.0",
+                "phpunit/phpunit": "<10.5.35|>=11.0.0 <11.5.3|12.0.0|>=12.6.0"
+            },
+            "require-dev": {
+                "fakerphp/faker": "^1.24",
+                "laravel/framework": "^12.40.0",
+                "laravel/pint": "^1.24",
+                "laravel/serializable-closure": "^1.3|^2.0.4",
+                "mockery/mockery": "^1.6.10",
+                "phpstan/phpstan": "^2.1.33",
+                "phpunit/phpunit": "^10.5.35|^11.5.3|^12.0.1",
+                "spatie/laravel-ray": "^1.42.0",
+                "symfony/process": "^7.2.0",
+                "symfony/yaml": "^7.2.0",
+                "vlucas/phpdotenv": "^5.6.1"
+            },
+            "suggest": {
+                "brianium/paratest": "Allow using parallel testing (^7.3).",
+                "ext-pcntl": "Required to use all features of the console signal trapping.",
+                "fakerphp/faker": "Allow using Faker for testing (^1.23).",
+                "laravel/framework": "Required for testing (^12.40.0).",
+                "mockery/mockery": "Allow using Mockery for testing (^1.6).",
+                "nunomaduro/collision": "Allow using Laravel style tests output and parallel testing (^8.0).",
+                "orchestra/testbench-dusk": "Allow using Laravel Dusk for testing (^10.0).",
+                "phpunit/phpunit": "Allow using PHPUnit for testing (^10.5.35|^11.5.3|^12.0.1).",
+                "symfony/process": "Required to use Orchestra\\Testbench\\remote function (^7.2).",
+                "symfony/yaml": "Required for Testbench CLI (^7.2).",
+                "vlucas/phpdotenv": "Required for Testbench CLI (^5.6.1)."
+            },
+            "bin": [
+                "testbench"
+            ],
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "Orchestra\\Testbench\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mior Muhammad Zaki",
+                    "email": "crynobone@gmail.com",
+                    "homepage": "https://github.com/crynobone"
+                }
+            ],
+            "description": "Testing Helper for Laravel Development",
+            "homepage": "https://packages.tools/testbench",
+            "keywords": [
+                "BDD",
+                "TDD",
+                "dev",
+                "laravel",
+                "laravel-packages",
+                "testing"
+            ],
+            "support": {
+                "issues": "https://github.com/orchestral/testbench/issues",
+                "source": "https://github.com/orchestral/testbench-core"
+            },
+            "time": "2026-01-13T05:19:42+00:00"
+        },
+        {
             "name": "phar-io/manifest",
             "version": "2.0.4",
             "source": {
@@ -11642,6 +11794,84 @@
                 }
             ],
             "time": "2026-02-10T12:28:25+00:00"
+        },
+        {
+            "name": "psalm/plugin-laravel",
+            "version": "v3.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/psalm/psalm-plugin-laravel.git",
+                "reference": "364a35e28d45cabaece26f2a2e51e50fc43e99b4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/psalm/psalm-plugin-laravel/zipball/364a35e28d45cabaece26f2a2e51e50fc43e99b4",
+                "reference": "364a35e28d45cabaece26f2a2e51e50fc43e99b4",
+                "shasum": ""
+            },
+            "require": {
+                "barryvdh/laravel-ide-helper": "~3.5.4",
+                "ext-simplexml": "*",
+                "illuminate/config": "^11.35 || ^12.0",
+                "illuminate/container": "^11.35 || ^12.0",
+                "illuminate/contracts": "^11.35 || ^12.0",
+                "illuminate/database": "^11.35 || ^12.0",
+                "illuminate/events": "^11.35 || ^12.0",
+                "illuminate/http": "^11.35 || ^12.0",
+                "illuminate/routing": "^11.35 || ^12.0",
+                "illuminate/support": "^11.35 || ^12.0",
+                "illuminate/view": "^11.35 || ^12.0",
+                "nikic/php-parser": "^5.0",
+                "orchestra/testbench-core": "^9.11 || ^10.0",
+                "php": "^8.2",
+                "symfony/console": "^7.1",
+                "symfony/finder": "^7.1",
+                "vimeo/psalm": "dev-master || ^6.0 || ^7.0.0-beta1"
+            },
+            "require-dev": {
+                "laravel/framework": "^11.35 || ^12.0",
+                "phpunit/phpunit": "^10.5 || ^11.5",
+                "phpyh/psalm-tester": "^0.1.0",
+                "ramsey/collection": "^1.3",
+                "rector/rector": "^2.0",
+                "slevomat/coding-standard": "^8.15",
+                "squizlabs/php_codesniffer": "^3.11",
+                "symfony/http-foundation": "^7.1"
+            },
+            "type": "psalm-plugin",
+            "extra": {
+                "psalm": {
+                    "pluginClass": "Psalm\\LaravelPlugin\\Plugin"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psalm\\LaravelPlugin\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthew Brown",
+                    "email": "github@muglug.com"
+                }
+            ],
+            "description": "Psalm plugin for Laravel",
+            "homepage": "https://github.com/psalm/psalm-plugin-laravel",
+            "keywords": [
+                "dev",
+                "laravel",
+                "psalm",
+                "psalm-plugin"
+            ],
+            "support": {
+                "issues": "https://github.com/psalm/psalm-plugin-laravel/issues",
+                "source": "https://github.com/psalm/psalm-plugin-laravel/tree/v3.0.4"
+            },
+            "time": "2025-08-12T18:13:40+00:00"
         },
         {
             "name": "revolt/event-loop",

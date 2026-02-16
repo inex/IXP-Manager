@@ -26,6 +26,8 @@ jobs:
       run: sudo apt-get install bgpq3
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+    - name: Fix temporary issue between laravel-ide-helper and psalm-laravel
+      run: cp -f data/ci/known-good/Alias.php vendor/barryvdh/laravel-ide-helper/src/Alias.php
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Database
