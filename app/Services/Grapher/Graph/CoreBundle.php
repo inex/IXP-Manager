@@ -174,7 +174,7 @@ class CoreBundle extends Graph
             return false;
         }
 
-        if( !Auth::check() && is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) === User::AUTH_PUBLIC ) {
+        if( !Auth::check() && is_numeric( config( 'grapher.access.trunk' ) ) && (int)config( 'grapher.access.trunk' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 

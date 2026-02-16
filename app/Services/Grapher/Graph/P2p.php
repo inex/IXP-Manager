@@ -191,7 +191,7 @@ class P2p extends Graph
         $us = Auth::getUser();
 
         // NB: see above authorisedForAllCustomers()
-        if( is_numeric( config( 'grapher.access.p2p' ) ) && config( 'grapher.access.p2p' ) === User::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.p2p' ) ) && (int)config( 'grapher.access.p2p' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 

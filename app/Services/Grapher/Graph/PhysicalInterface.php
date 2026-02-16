@@ -139,7 +139,7 @@ class PhysicalInterface extends Graph
         /** @var User $us */
         $us = Auth::getUser();
 
-        if( is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) === User::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.customer' ) ) && (int)config( 'grapher.access.customer' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 

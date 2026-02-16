@@ -130,7 +130,7 @@ class Customer extends Graph
             return true;
         }
 
-        if( !Auth::check() && is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) === User::AUTH_PUBLIC ) {
+        if( !Auth::check() && is_numeric( config( 'grapher.access.customer' ) ) && (int)config( 'grapher.access.customer' ) === User::AUTH_PUBLIC ) {
             return true;
         }
 
@@ -153,7 +153,7 @@ class Customer extends Graph
         $us = Auth::getUser();
 
         // NB: see above authorisedForAllCustomers()
-        if( is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) === User::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.customer' ) ) && (int)config( 'grapher.access.customer' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 
