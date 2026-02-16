@@ -18,7 +18,7 @@ function fn_import ( int remote_as ) -> bool
     <?php if( $t->router->rpki ): ?>
 
     # RPKI check - deny invalids
-    if ( roa_check( t_roa ) = ROA_INVALID ) then {
+    if( roa_check( t_roa ) = ROA_INVALID ) then {
         print "Ignore RPKI invalid ", net, " for ASN ", bgp_path.last;
         return false;
     }

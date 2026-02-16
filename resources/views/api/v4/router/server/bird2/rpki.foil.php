@@ -46,13 +46,13 @@ protocol rpki rpki2 {
 function filter_rpki()
 {
     # RPKI check
-    if ( roa_check( t_roa ) = ROA_INVALID ) then {
+    if( roa_check( t_roa ) = ROA_INVALID ) then {
         print "Tagging invalid ROA ", net, " for ASN ", bgp_path.last;
         bgp_large_community.add( IXP_LC_FILTERED_RPKI_INVALID );
         return true;
     }
 
-    if ( roa_check( t_roa ) = ROA_VALID ) then {
+    if( roa_check( t_roa ) = ROA_VALID ) then {
         bgp_large_community.add( IXP_LC_INFO_RPKI_VALID );
         return true;
     }
