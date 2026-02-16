@@ -41,8 +41,6 @@ use IXP\Traits\Observable;
  * @property string|null $email
  * @property string|null $phone
  * @property string|null $mobile
- * @property bool $facilityaccess
- * @property bool $mayauthorize
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $lastupdatedby
  * @property string|null $creator
@@ -63,10 +61,8 @@ use IXP\Traits\Observable;
  * @method static Builder|Contact whereCreator($value)
  * @method static Builder|Contact whereCustid($value)
  * @method static Builder|Contact whereEmail($value)
- * @method static Builder|Contact whereFacilityaccess($value)
  * @method static Builder|Contact whereId($value)
  * @method static Builder|Contact whereLastupdatedby($value)
- * @method static Builder|Contact whereMayauthorize($value)
  * @method static Builder|Contact whereMobile($value)
  * @method static Builder|Contact whereName($value)
  * @method static Builder|Contact whereNotes($value)
@@ -102,22 +98,10 @@ class Contact extends Model
         'email',
         'phone',
         'mobile',
-        'facilityaccess',
-        'mayauthorize',
         'lastupdatedby',
         'creator',
         'position',
         'notes',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'facilityaccess'            => 'boolean',
-        'mayauthorize'              => 'boolean',
     ];
 
     /**
