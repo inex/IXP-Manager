@@ -18,9 +18,6 @@ protocol rpki rpki1 {
 
     remote "<?= config( 'ixp.rpki.rtr1.host' ) ?>" port <?= config( 'ixp.rpki.rtr1.port' ) ?>;
 
-    retry keep 90;
-    refresh keep 900;
-    expire keep 172800;
 }
 
     <?php if( config( 'ixp.rpki.rtr2.host' ) ): ?>
@@ -31,9 +28,6 @@ protocol rpki rpki2 {
 
     remote "<?= config( 'ixp.rpki.rtr2.host' ) ?>" port <?= config( 'ixp.rpki.rtr2.port' ) ?>;
 
-    retry keep 90;
-    refresh keep 900;
-    expire keep 172800;
 }
 
     <?php endif; /* rtr2 */ ?>
