@@ -207,8 +207,37 @@ class PeeringDb
 
         return $facilities;
     }
-
-
+    
+    
+    
+    
+    
+    /**
+     * Get peering ASNs from PeeringDB
+     *
+     * @return array|false Array of all asns on PeetingDB if successful, or false
+     */
+    public function getPeeringAsns(): array|false
+    {
+        $response = $this->execute(
+            $this->generateBasePeeringDbUrl( "/net.json?fields=asn" )
+        );
+        
+        if( $response->ok() ) {
+            $asns = [];
+            foreach( $response->json()['data'] as $net ) {
+                $asns[] = $net['asn'];
+            }
+            
+            return $asns;
+        }
+        
+        $this->error = $response->json()[ 'message' ] ?? 'Error';
+        return false;
+    }
+    
+    
+    
     /**
      * Takes a response from $this->getNetworkByAsn and formats it into an ASCII table for display in a <pre></pre>
      *
@@ -270,6 +299,7 @@ ENDWHOIS;
 
         try {
             $response = Http::withHeaders( $headers )
+                ->withUserAgent( 'IXP-Manager/' . APPLICATION_VERSION )
                 ->accept( 'application/json' )
                 ->get( $query );
 
@@ -345,6 +375,33 @@ ENDWHOIS;
         $this->error = null;
         $this->exception = null;
         $this->status = 0;
+    }
+    
+    /**
+     * Give appropriate errors when api/username not set
+     */
+    public function warnOnBadAuthMethods(): array {
+        
+        $warnings = [];
+        
+        // are we set up for auth?
+        if( !config('ixp_api.peeringDB.api-key') ) {
+            $warnings[] = str_repeat( '-', 70 )
+                . "\nNo API key defined in .env for PeeringDB.\n\n"
+                . "See https://docs.peeringdb.com/howto/api_keys/ and set IXP_API_PEERING_DB_API_KEY in .env.\n\n"
+                . "Without an API key, only public information will be returned and PeeringDB request throttling will apply.\n"
+                . str_repeat( '-', 70 ) . "\n\n";
+        }
+        
+        if( config('ixp_api.peeringDB.username') && config('ixp_api.peeringDB.password') ) {
+            $warnings[] =
+                str_repeat( '-', 70 ) . "\n"
+                . "Username and password are set in .env for PeeringDB. This is deprecated and they should be replaced with an API key.\n\n"
+                . "See https://docs.peeringdb.com/howto/api_keys/ and set IXP_API_PEERING_DB_API_KEY in .env.\n"
+                . str_repeat( '-', 70 ) . "\n\n";
+        }
+        
+        return $warnings;
     }
 
 }
