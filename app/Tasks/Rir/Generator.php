@@ -90,7 +90,7 @@ class Generator
      *
      * @throws
      */
-    public function generate(): string
+    public function generate( bool $forJson = false ): string
     {
         if( !( $this->template() ) ) {
             throw new GeneralException( 'You must specify a template name so you can generate a RIR object' );
@@ -110,10 +110,62 @@ class Generator
                 'customers'     => $customers,
                 'asns'          => $this->generateASNs( $customers ),
                 "rsclients"     => $this->generateRouteServerClientDetails( $customers ),
-                "protocols"     => [ 4, 6 ]
+                "protocols"     => [ 4, 6 ],
+                "forJson"       => $forJson,
             ] )->render();
     }
 
+    
+    public function generateJson(): array {
+        
+        $text = $this->generate( forJson: true );
+        
+        $type = null;
+        $key  = null;
+        $attributes = [];
+        
+        foreach( preg_split("/((\r?\n)|(\r\n?))/", $text ) as $line ) {
+            
+            if( !strpos( $line, ':' ) ) {
+                continue;
+            }
+            
+            [ $name, $value ] = explode( ':', $line, 2 );
+            
+            if( trim( $name ) === 'IXPM-OBJECT' ) {
+                $type = trim( $value );
+            } else if( trim( $name ) === 'IXPM-KEY' ) {
+                $key = trim( $value );
+            } else {
+                $attributes[] = [
+                    'name'  => trim( $name ),
+                    'value' => trim( $value )
+                ];
+            }
+        }
+
+        return [
+            'type'     => $type,
+            'key'      => $key,
+            'data'     => [
+                'objects' => [
+                    'object' => [
+                        [
+                            'source' => [
+                                'id' => 'RIPE'
+                            ],
+                            'attributes' => [
+                                'attribute' => $attributes
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+        ];
+    }
+    
+    
+    
     /**
      * Gather and create the IXP customer ASN details.
      *

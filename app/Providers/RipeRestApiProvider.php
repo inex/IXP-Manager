@@ -3,7 +3,7 @@
 namespace IXP\Providers;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -24,11 +24,20 @@ namespace IXP\Providers;
  */
 
 use Illuminate\Support\ServiceProvider;
+
 use Illuminate\Contracts\Support\DeferrableProvider;
 
-use IXP\Services\RipeAtlas\ApiCall;
+use IXP\Services\RipeRestApi;
 
-class RipeAtlasProvider extends ServiceProvider implements DeferrableProvider
+/**
+ * RIPE REST API Service Provider
+ *
+ * @see https://docs.ixpmanager.org/latest/features/rir-objects/
+ * @author      Barry O'Donovan     <barry@opensolutions.ie>
+ * @copyright   Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class RipeRestApiProvider extends ServiceProvider implements DeferrableProvider
 {
 
     /**
@@ -46,8 +55,10 @@ class RipeAtlasProvider extends ServiceProvider implements DeferrableProvider
     #[\Override]
     public function register(): void
     {
-        $this->app->singleton( 'IXP\Services\ApiCall', function( $app ) {
-            return new ApiCall();
+        $this->app->bind( RipeRestApi::class, function( $app ) {
+            $ripe = new RipeRestApi();
+            $ripe->checkConfiguration();
+            return $ripe;
         });
     }
     
@@ -58,6 +69,6 @@ class RipeAtlasProvider extends ServiceProvider implements DeferrableProvider
      */
     public function provides(): array
     {
-        return [ApiCall::class];
+        return [RipeRestApi::class];
     }
 }
