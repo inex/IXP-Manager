@@ -139,6 +139,7 @@ class IXF
 
         try {
             $response = Http::accept( 'application/json' )
+                ->withUserAgent( 'IXP-Manager/' . APPLICATION_VERSION )
                 ->get( $query );
 
             $this->status = $response->status();
