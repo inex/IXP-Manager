@@ -123,7 +123,6 @@ class RouterBgpSessionsDiagnosticSuite extends DiagnosticSuite
                     name: "Router {$router->handle} does not have an API, skipping tests",
                     result: DiagnosticResult::TYPE_DEBUG
                 ) );
-                continue;
             }
 
         }
