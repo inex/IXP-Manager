@@ -61,7 +61,8 @@ class InManrs extends  Command
     {
         // get list of peeringdb networks:
         try {
-            $resp = Http::withHeaders( [
+            $resp = Http::withUserAgent( 'IXP-Manager/' . APPLICATION_VERSION )
+            ->withHeaders( [
                 'X-Request-Client'         => 'IXP Manager',
                 'X-Request-Client-Version' => APPLICATION_VERSION,
             ] )->throw()->acceptJson()
