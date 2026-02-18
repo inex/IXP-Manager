@@ -56,7 +56,7 @@ class MaxPrefixes_7_1_0 extends IXPCommand
             versions, a max prefixes setting on a VLAN interface only took effect if it was greater than
             the global (as set on the customer) value. 
             
-            This is not intuitive as we show allow the more specific setting on the VLAN interface, whether
+            This is not intuitive as we should allow the more specific setting on the VLAN interface, whether
             lower or higher than the global, take precedence. 
             
             This script will identify any settings on VLAN interfaces that are lower than the global setting,
