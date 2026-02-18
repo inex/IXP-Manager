@@ -77,7 +77,7 @@ class CoreBundleControllerTest extends DuskTestCase
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->waitForLocation( '/admin' );
+                ->waitForLocation( '/admin/dashboard' );
 
             $coreBundlesList = [
                 CoreBundle::TYPE_ECMP => [

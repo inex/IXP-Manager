@@ -70,7 +70,7 @@ class ApiKeyControllerTest extends DuskTestCase
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->waitForLocation( '/admin' );
+                ->waitForLocation( '/admin/dashboard' );
 
             $browser->visit( '/api-key/list' )
                 ->assertSee( 'API Keys' )

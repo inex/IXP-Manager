@@ -103,7 +103,7 @@ class IpAddressControllerTest extends DuskTestCase
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->waitForLocation( '/admin' );
+                ->waitForLocation( '/admin/dashboard' );
 
             $vlan = Vlan::create( $this->vlan );
             $vlanId = $vlan->id;

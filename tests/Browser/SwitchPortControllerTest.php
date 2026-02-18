@@ -57,7 +57,7 @@ class SwitchPortControllerTest extends DuskTestCase
                     ->type( 'username', 'travis' )
                     ->type( 'password', 'travisci' )
                     ->press( '#login-btn' )
-                    ->waitForLocation( '/admin' )
+                    ->waitForLocation( '/admin/dashboard' )
                     ->visit( route( 'switch-port@list' ) );
 
             /**

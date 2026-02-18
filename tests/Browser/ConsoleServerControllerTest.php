@@ -76,7 +76,7 @@ class ConsoleServerControllerTest extends DuskTestCase
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->waitForLocation( '/admin' );
+                ->waitForLocation( '/admin/dashboard' );
 
             $browser->visit( route( 'console-server@list' ) )
                 ->waitForText( 'Console Servers' );

@@ -55,8 +55,8 @@ class LoginTest extends DuskTestCase
                     ->type( 'username', 'travis' )
                     ->type( 'password', 'travisci' )
                     ->press( '#login-btn' )
-                    ->waitForLocation( '/admin' )
-                    ->assertPathIs( '/admin' );
+                    ->waitForLocation( '/admin/dashboard' )
+                    ->assertPathIs( '/admin/dashboard' );
         });
     }
 }

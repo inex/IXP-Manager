@@ -69,7 +69,7 @@ class IrrdbConfigControllerTest extends DuskTestCase
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->waitForLocation( '/admin' );
+                ->waitForLocation( '/admin/dashboard' );
 
             $browser->visit( route( 'irrdb-config@list' ) )
                 ->assertSee( 'IRRDB Sources' );

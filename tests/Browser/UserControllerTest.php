@@ -85,7 +85,7 @@ class UserControllerTest extends DuskTestCase
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->waitForLocation( '/admin' );
+                ->waitForLocation( '/admin/dashboard' );
 
             $browser->visit( '/user/list' )
                 ->assertSee( 'hecustadmin' )
@@ -494,7 +494,7 @@ class UserControllerTest extends DuskTestCase
                 ->assertSeeIn( "#my-account-dd", "Imagine" );
 
             $browser->click( "#switch-cust-1" )
-                ->waitForLocation( "/admin" )
+                ->waitForLocation( "/admin/dashboard" )
                 ->assertSee( "You are now logged in for INEX." );
 
 
@@ -736,7 +736,7 @@ class UserControllerTest extends DuskTestCase
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->waitForLocation( '/admin' );
+                ->waitForLocation( '/admin/dashboard' );
 
             /** @var Customer $nonInternalCust */
             $nonInternalCust = Customer::whereType( Customer::TYPE_FULL )->first();

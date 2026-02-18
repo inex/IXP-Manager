@@ -60,7 +60,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->type('username', 'travis' )
                 ->type('password', 'travisci' )
                 ->press('#login-btn' )
-                ->waitForLocation('/admin' );
+                ->waitForLocation('/admin/dashboard' );
 
             $vi = $this->intTestVi( $browser );
 

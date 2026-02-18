@@ -90,7 +90,7 @@ class User2FAControllerTest extends DuskTestCase
                 ->type('username', $userUsername )
                 ->type('password', $userPassword )
                 ->press('#login-btn' )
-                ->waitForLocation('/admin');
+                ->waitForLocation( '/admin/dashboard' );
 
             $browser->visit('/profile')
                     ->assertPathIs('/profile');
@@ -138,7 +138,7 @@ class User2FAControllerTest extends DuskTestCase
              */
             $browser->type('one_time_password', $otp)
                 ->press('Authenticate')
-                ->waitForLocation('/admin')
+                ->waitForLocation( '/admin/dashboard' )
                 ->assertDontSee('The one time password entered was wrong.');
 
 
@@ -245,7 +245,7 @@ class User2FAControllerTest extends DuskTestCase
         $browser->type( '#one_time_password', $otp )
                 ->type( 'password', $userPassword )
                 ->press( 'Enable 2FA' )
-                ->waitForLocation( '/admin')
+                ->waitForLocation( '/admin/dashboard')
                 ->assertSee( '2FA successfully enabled.',1);
 
         //Check 2fa is enabled
