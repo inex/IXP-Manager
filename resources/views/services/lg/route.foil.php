@@ -10,7 +10,7 @@
     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 </div>
 <div class="modal-body">
-    <?php if( isset( $t->content->routes ) ): ?>
+    <?php if( isset( $t->content ) && isset( $t->content->routes ) ): ?>
         <?php foreach( $t->content->routes as $r ): ?>
           <table class="table table-striped text-monospace" style="font-size: 14px;">
               <tbody>

@@ -54,23 +54,13 @@ mnt-by:         INEX-NOC
 <?php endif; ?>
 <?php foreach( $t->rsclients[ "vlans" ][ $vlanid ][ "servers" ][ $proto ] as $serverip ): ?>
 <?php if( $proto == 4 ): ?>
-import:         from AS<?= $cust->autsys ?> <?= $interface[ $proto ] ?> at <?= $serverip ?>
+import:         from AS<?= $cust->autsys ?> <?= $interface[ $proto ] ?> at <?= $serverip ?> accept <?= $cust->asMacro( $proto, 'AS' ) ?>  # <?= $cust->name ?>
 
-                accept <?= $cust->asMacro( $proto, 'AS' ) ?>  # <?= $cust->name ?>
-
-export:         to AS<?= $cust->autsys ?> <?= $interface[ $proto ] ?> at <?= $serverip ?>
-
-                announce AS-SET-INEX-RS
+export:         to AS<?= $cust->autsys ?> <?= $interface[ $proto ] ?> at <?= $serverip ?> announce AS-SET-INEX-RS
 <?php else: ?>
-mp-import:      afi ipv6.unicast
-                from AS<?= $cust->autsys?> <?= $interface[ $proto ] ?> at <?= $serverip ?>
+mp-import:      afi ipv6.unicast from AS<?= $cust->autsys?> <?= $interface[ $proto ] ?> at <?= $serverip ?> accept <?= $cust->asMacro( $proto, 'AS' ) ?>  # <?= $cust->name ?>
 
-                accept <?= $cust->asMacro( $proto, 'AS' ) ?>  # <?= $cust->name ?>
-
-mp-export:      afi ipv6.unicast
-                to AS<?= $cust->autsys ?> <?= $interface[ $proto ] ?> at <?= $serverip ?>
-
-                announce AS-SET-INEX-RS
+mp-export:      afi ipv6.unicast to AS<?= $cust->autsys ?> <?= $interface[ $proto ] ?> at <?= $serverip ?> announce AS-SET-INEX-RS
 <?php endif; ?>
 <?php endforeach; ?>
 <?php endforeach; ?>

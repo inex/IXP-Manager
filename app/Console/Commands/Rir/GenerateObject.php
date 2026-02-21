@@ -51,7 +51,7 @@ class GenerateObject extends Command
                         {object             : The RIR object template to use}
                         {--send-email       : Rather than printing to screen, sends and email for updating a RIR automatically}
                         {--update-ripe-db   : Update the RIPE database with the generated object, using the RIPE REST API}
-                        {--force            : Send email/update RIPE even if the generated object matches the cached version
+                        {--force            : Send email/update RIPE even if the generated object matches the cached version}
                         {--to=              : The email address to send the object to (if not specified then uses IXP_API_RIR_EMAIL_TO)}
                         {--from=            : The email address from which the email is sent (if not specified, tries IXP_API_RIR_EMAIL_FROM and then defaults to IDENTITY_EMAIL)}';
 
