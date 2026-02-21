@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,6 +25,6 @@
 # Basic version information
 #
 
-define( 'APPLICATION_VERSION', '7.0.1' );
-define( 'APPLICATION_VERDATE', '2025090300' );
-define( 'DOCUMENTATION_VERSION', '7.0' );
+define( 'APPLICATION_VERSION', '7.1.0' );
+define( 'APPLICATION_VERDATE', '2026022100' );
+define( 'DOCUMENTATION_VERSION', '7.1' );
