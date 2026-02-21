@@ -32,7 +32,7 @@
 ###########################################################################################
 
 APIKEY="your-api-key"
-URLROOT="https://ixp.example.com"
+URLROOT="https://ixp.example.com/admin"
 
 # prevent errors by limiting this server/script to the following space separated handles
 ALLOWED_HANDLES="rs1-ipv4 rs1-ipv6"
