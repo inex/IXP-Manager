@@ -92,7 +92,7 @@ class GrapherServiceProvider extends ServiceProvider
         });
         
         if( config( 'ixp_api.unsecured_api_access' ) ) {
-            Route::group( [ 'middleware' => [ 'api/v4', 'assert.privilege:' . User::AUTH_SUPERUSER ],
+            Route::group( [ 'middleware' => [ 'apideprecated', 'api/v4', 'assert.privilege:' . User::AUTH_SUPERUSER ],
                             'namespace'  => 'IXP\Http\Controllers\Services', ], function() {
                 
                 Route::get( 'api/v4/grapher/mrtg-config', 'Grapher\Api@generateConfiguration' );
