@@ -1,7 +1,7 @@
-password: <?= config('ixp_api.rir.password') ?>
-
-
-aut-num:        AS43760
+<?php if( $t->forJson ): ?>
+IXPM-OBJECT:   aut-num
+IXPM-KEY:      AS43760
+<?php endif; ?>aut-num:        AS43760
 as-name:        INEX-RS
 descr:          Internet Neutral Exchange Association Company Limited By Guarantee
 remarks:        ------------------------------------------------------------------

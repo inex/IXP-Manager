@@ -23,7 +23,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
-                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex" action="<?= route('statistics@p2p-table' ) ?>" method="post">
+                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex" action="<?= route('statistics@p2p-table:post' ) ?>" method="post">
 
                             <?php if( !Auth::user()->isSuperUser() ): ?>
                                 <input type="hidden" name="custid" value="<?= $c->id ?>" />

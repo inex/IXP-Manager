@@ -66,7 +66,8 @@ use IXP\Traits\Observable;
  * @method static Builder|Infrastructure whereUpdatedAt($value)
  * @property int $ixp_id
  * @method static Builder|Infrastructure whereIxpId($value)
- * @property-read Collection<int, \IXP\Models\Vlan> $vlans
+ * @property int $exclude_from_ixf_export
+ * @method static Builder<static>|Infrastructure whereExcludeFromIxfExport($value)
  * @mixin Eloquent
  */
 class Infrastructure extends Model
@@ -90,11 +91,27 @@ class Infrastructure extends Model
         'name',
         'shortname',
         'isPrimary',
+        'exclude_from_ixf_export',
         'peeringdb_ix_id',
         'ixf_ix_id',
         'country',
         'notes',
     ];
+
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'isPrimary' => 'boolean',
+            'exclude_from_ixf_export' => 'boolean',
+        ];
+    }
+
 
     /**
      * Get the vlans for the infrastructure

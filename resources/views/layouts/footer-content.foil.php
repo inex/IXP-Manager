@@ -20,12 +20,12 @@
                     <i class="fa fa-globe fa-inverse mx-1"></i>
                 </a>
 
-                <a href="https://www.facebook.com/ixpmanager">
-                    <i class="fa fa-facebook fa-inverse mx-1" ></i>
+                <a href="https://www.youtube.com/channel/UCeW2fmMTBtE4fnlmg-2-evA">
+                    <i class="fa fa-youtube-play fa-inverse mx-1" ></i>
                 </a>
 
-                <a  href="https://twitter.com/ixpmanager">
-                    <i class="fa fa-twitter fa-inverse mx-1"></i>
+                <a  href="https://www.linkedin.com/company/inex---internet-neutral-exchange/">
+                    <i class="fa fa-linkedin fa-inverse mx-1"></i>
                 </a>
 
                 <a  href="https://github.com/inex/IXP-Manager">

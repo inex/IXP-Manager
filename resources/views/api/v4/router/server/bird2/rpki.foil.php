@@ -18,9 +18,6 @@ protocol rpki rpki1 {
 
     remote "<?= config( 'ixp.rpki.rtr1.host' ) ?>" port <?= config( 'ixp.rpki.rtr1.port' ) ?>;
 
-    retry keep 90;
-    refresh keep 900;
-    expire keep 172800;
 }
 
 <?php if( config( 'ixp.rpki.rtr2.host' ) ): ?>
@@ -31,9 +28,6 @@ protocol rpki rpki2 {
 
     remote "<?= config( 'ixp.rpki.rtr2.host' ) ?>" port <?= config( 'ixp.rpki.rtr2.port' ) ?>;
 
-    retry keep 90;
-    refresh keep 900;
-    expire keep 172800;
 }
 
 <?php endif; /* rtr2 */ ?>
@@ -46,13 +40,13 @@ protocol rpki rpki2 {
 function filter_rpki()
 {
     # RPKI check
-    if( roa_check( t_roa, net, bgp_path.last_nonaggregated ) = ROA_INVALID ) then {
+    if( roa_check( t_roa ) = ROA_INVALID ) then {
         print "Tagging invalid ROA ", net, " for ASN ", bgp_path.last;
         bgp_large_community.add( IXP_LC_FILTERED_RPKI_INVALID );
         return true;
     }
 
-    if( roa_check( t_roa, net, bgp_path.last_nonaggregated ) = ROA_VALID ) then {
+    if( roa_check( t_roa ) = ROA_VALID ) then {
         bgp_large_community.add( IXP_LC_INFO_RPKI_VALID );
         return true;
     }

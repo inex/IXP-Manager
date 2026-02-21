@@ -92,7 +92,7 @@ class UserController extends Controller
      *
      * @return  array
      */
-    private function getListData( User $u = null ): array
+    private function getListData( ?User $u = null ): array
     {
         return User::selectRaw(
             'u.id as id, 
@@ -154,7 +154,7 @@ class UserController extends Controller
      *
      * @throws AuthorizationException
      */
-    public function createForm( Request $r, Customer $cust = null ): View
+    public function createForm( Request $r, ?Customer $cust = null ): View
     {
         $this->authorize( 'any', User::class );
 

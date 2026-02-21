@@ -55,31 +55,31 @@
                     Statistics
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <?php if( is_numeric( config( 'grapher.access.ixp' ) ) && config( 'grapher.access.ixp' ) === \IXP\Models\User::AUTH_PUBLIC ): ?>
+                    <?php if( is_numeric( config( 'grapher.access.ixp' ) ) && (int)config( 'grapher.access.ixp' ) === \IXP\Models\User::AUTH_PUBLIC ): ?>
                         <a class="dropdown-item <?= !request()->is( 'statistics/ixp*' ) ?: 'active' ?>" href="<?= route( 'statistics@ixp' ) ?>">
                             Overall Peering Graphs
                         </a>
                     <?php endif; ?>
 
-                    <?php if( is_numeric( config( 'grapher.access.infrastructure' ) ) && config( 'grapher.access.infrastructure' ) === \IXP\Models\User::AUTH_PUBLIC ): ?>
+                    <?php if( is_numeric( config( 'grapher.access.infrastructure' ) ) && (int)config( 'grapher.access.infrastructure' ) === \IXP\Models\User::AUTH_PUBLIC ): ?>
                         <a class="dropdown-item <?= !request()->is( 'statistics/infrastructure*' ) ?: 'active' ?>" href="<?= route( 'statistics@infrastructure' ) ?>">
                             Infrastructure Graphs
                         </a>
                     <?php endif; ?>
 
-                    <?php if( is_numeric( config( 'grapher.access.vlan' ) ) && config( 'grapher.access.vlan' ) === \IXP\Models\User::AUTH_PUBLIC && config( 'grapher.backends.sflow.enabled' ) ): ?>
+                    <?php if( is_numeric( config( 'grapher.access.vlan' ) ) && (int)config( 'grapher.access.vlan' ) === \IXP\Models\User::AUTH_PUBLIC && config( 'grapher.backends.sflow.enabled' ) ): ?>
                         <a class="dropdown-item <?= !request()->is( 'statistics/vlan*' ) ?: 'active' ?>" href="<?= route( 'statistics@vlan' ) ?>">
                             VLAN / Per-Protocol Graphs
                         </a>
                     <?php endif; ?>
 
-                    <?php if( is_numeric( config( 'grapher.access.location' ) ) && config( 'grapher.access.location' ) === \IXP\Models\User::AUTH_PUBLIC ): ?>
+                    <?php if( is_numeric( config( 'grapher.access.location' ) ) && (int)config( 'grapher.access.location' ) === \IXP\Models\User::AUTH_PUBLIC ): ?>
                         <a class="dropdown-item <?= !request()->is( 'statistics/location' ) ?: 'active' ?>" href="<?= route('statistics@location' ) ?>">
                             Facility Graphs
                         </a>
                     <?php endif; ?>
 
-                    <?php if( is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) === \IXP\Models\User::AUTH_PUBLIC ): ?>
+                    <?php if( is_numeric( config( 'grapher.access.trunk' ) ) && (int)config( 'grapher.access.trunk' ) === \IXP\Models\User::AUTH_PUBLIC ): ?>
                         <?php if( count( config( 'grapher.backends.mrtg.trunks' ) ?? [] ) ): ?>
                             <a class="dropdown-item <?= !request()->is( 'statistics/trunk*' ) ?: 'active' ?>" href="<?= route('statistics@trunk') ?>">
                                 Inter-Switch / PoP Graphs
@@ -91,7 +91,7 @@
                         <?php endif; ?>
                     <?php endif; ?>
 
-                    <?php if( is_numeric( config( 'grapher.access.switch' ) ) && config( 'grapher.access.switch' ) === \IXP\Models\User::AUTH_PUBLIC ): ?>
+                    <?php if( is_numeric( config( 'grapher.access.switch' ) ) && (int)config( 'grapher.access.switch' ) === \IXP\Models\User::AUTH_PUBLIC ): ?>
                         <a class="dropdown-item <?= !request()->is( 'statistics/switch' ) ?: 'active' ?>" href="<?= route('statistics@switch') ?>">
                             Switch Aggregate Graphs
                         </a>

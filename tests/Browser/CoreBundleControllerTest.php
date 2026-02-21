@@ -3,7 +3,7 @@
 namespace Tests\Browser;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -43,7 +43,7 @@ use Laravel\Dusk\Browser;
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Tests\Browser
- * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class CoreBundleControllerTest extends DuskTestCase
@@ -77,7 +77,7 @@ class CoreBundleControllerTest extends DuskTestCase
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->waitForLocation( '/admin' );
+                ->waitForLocation( '/admin/dashboard' );
 
             $coreBundlesList = [
                 CoreBundle::TYPE_ECMP => [
@@ -222,11 +222,11 @@ class CoreBundleControllerTest extends DuskTestCase
             ];
 
             foreach( $coreBundlesList as $type => $coreBundle ) {
-                $browser->visit( '/interfaces/core-bundle/list' )
+                $browser->visit( route( 'core-bundle@list' ) )
                     ->waitForText( 'Core Bundle / List' )
 //                    ->click(    '#add-cb' )
                     ->click( '#add-cb-wizard' )
-                    ->waitForLocation( '/interfaces/core-bundle/create-wizard' )
+                    ->waitForLocation( route( 'core-bundle@create-wizard' ) )
                     ->assertSee( 'Core Bundles / Create Wizard' );
 
                 // filling forms
@@ -326,7 +326,7 @@ class CoreBundleControllerTest extends DuskTestCase
                     ->click( '#delete-cl-3' )
                     ->assertDontSee( 'Link 3' )
                     ->click( '#core-bundle-submit-btn' )
-                    ->waitForLocation( '/interfaces/core-bundle/list' )
+                    ->waitForLocation( route( 'core-bundle@list' ) )
                     ->assertSee( 'Core bundle created' );
 
                 // Checking values inserted in DB
@@ -404,7 +404,7 @@ class CoreBundleControllerTest extends DuskTestCase
                  * Edit Core bundle type ECMP
                  *
                  */
-                $browser->visit( '/interfaces/core-bundle/list' )
+                $browser->visit( route( 'core-bundle@list' ) )
                     ->click( '#edit-cb-' . $cb->id );
 
                 $browser->waitForText( 'General Core Bundle Settings' )
@@ -458,7 +458,7 @@ class CoreBundleControllerTest extends DuskTestCase
                  * Edit Core links for Core Bundle
                  *
                  */
-                $browser->visit( '/interfaces/core-bundle/edit/' . $cb->id );
+                $browser->visit( route( 'core-bundle@edit', $cb->id ) );
 
                 $browser->assertSee( 'Side A' )
                     ->assertSee( 'Side B' )
@@ -530,7 +530,7 @@ class CoreBundleControllerTest extends DuskTestCase
 
                 $cl3id = $cl3->id;
 
-                $browser->visit( '/interfaces/core-bundle/edit/' . $cb->id );
+                $browser->visit( route( 'core-bundle@edit', $cb->id ) );
                 $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
                 $browser->click( '#btn-delete-cl-' . $cl3->id )
                     ->waitForText( 'Do you really want to delete this core link?' )
@@ -541,8 +541,8 @@ class CoreBundleControllerTest extends DuskTestCase
 
                 $cbid = $cb->id;
 
-                $browser->visit( '/interfaces/core-bundle/edit/' . $cb->id )
-                    ->waitForLocation( '/interfaces/core-bundle/edit/' . $cb->id);
+                $browser->visit( route( 'core-bundle@edit', $cb->id ) )
+                    ->waitForLocation( route( 'core-bundle@edit', $cb->id ) );
                 $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
                 $browser->click( '#btn-delete-cb' )
                     ->waitForText( 'Do you really want to delete this core bundle?' )

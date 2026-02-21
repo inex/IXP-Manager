@@ -3,7 +3,7 @@
 namespace Tests\Browser;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -39,7 +39,7 @@ use Tests\DuskTestCase;
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Tests\Browser
- * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class IpAddressControllerTest extends DuskTestCase
@@ -103,7 +103,7 @@ class IpAddressControllerTest extends DuskTestCase
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->waitForLocation( '/admin' );
+                ->waitForLocation( '/admin/dashboard' );
 
             $vlan = Vlan::create( $this->vlan );
             $vlanId = $vlan->id;
@@ -113,44 +113,44 @@ class IpAddressControllerTest extends DuskTestCase
                 $prot = $cat[ "protocol" ];
 
                 // 1. open Test VLAN list, check is empty
-                $browser->visit( "/ip-address/list/$prot" )
+                $browser->visit( route( "ip-address@list", [ 'protocol' => $prot ] ) )
                     ->assertSee( "IPv$prot Addresses" )
                     ->select( 'vlan', $vlanId )
                     ->waitForText( "There are no IPv$prot addresses in this VLAN." );
 
                 // 2. create some ip addresses in the test VLAN
-                $browser->visit( "/ip-address/create/$prot?vlan=$vlanId" )
+                $browser->visit( route( "ip-address@create", [ 'protocol' => $prot ] ) . "?vlan=$vlanId" )
                     ->assertSee( "IP Addresses / Create IPv$prot Address" )
                     ->assertSelected( 'vlan', $vlanId )
                     ->type( "network", $cat[ "net1" ] )
                     ->check( 'skip' )
                     ->press( "Add Addresses" )
-                    ->waitForLocation( "/ip-address/list/$prot/$vlanId" )
-                    ->assertSee( "8 new IP addresses added to ".$vlan->name.". There were 0 preexisting address(es)." )
+                    ->waitForLocation( route( "ip-address@list", [ 'protocol' => $prot, 'vlanid' => $vlanId ] ) )
+                    ->assertSee( "8 new IP addresses added to " . $vlan->name . ". There were 0 preexisting address(es)." )
                     ->assertSee( "Showing 1 to 8 of 8 entries" );
 
                 // 3. add again
-                $browser->visit( "/ip-address/create/$prot?vlan=$vlanId" )
+                $browser->visit( route( "ip-address@create", [ 'protocol' => $prot ] ) . "?vlan=$vlanId" )
                     ->type( "network", $cat[ "net1" ] )
                     ->check( 'skip' )
                     ->press( "Add Addresses" )
-                    ->waitForLocation( "/ip-address/create/$prot" )
+                    ->waitForLocation( route( "ip-address@create", [ 'protocol' => $prot ] ) )
                     ->assertQueryStringHas("vlan",$vlanId)
                     ->assertSee( "No addresses were added. 8 already exist in the database.");
 
                 // 3. add again w/o skip
                 $browser->uncheck( 'skip' )
                     ->press( "Add Addresses" )
-                    ->waitForLocation( "/ip-address/create/$prot" )
+                    ->waitForLocation( route( "ip-address@create", [ 'protocol' => $prot ] ) )
                     ->assertQueryStringHas("vlan",$vlanId)
                     ->assertSee( "No addresses were added as the following addresses already exist in the database:" );
 
                 // 4. add more ip addresses in the test VLAN
-                $browser->visit( "/ip-address/create/$prot?vlan=$vlanId" )
+                $browser->visit( route( "ip-address@create", [ 'protocol' => $prot ] ) . "?vlan=$vlanId" )
                     ->type( "network", $cat[ "net2" ] )
                     ->check( 'skip' )
                     ->press( "Add Addresses" )
-                    ->waitForLocation( "/ip-address/list/$prot/$vlanId" )
+                    ->waitForLocation( route( "ip-address@list", [ 'protocol' => $prot, 'vlanid' => $vlanId ] ) )
                     ->assertSee( "8 new IP addresses added to ".$vlan->name.". There were 8 preexisting address(es)." );
 
                 $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
@@ -169,12 +169,12 @@ class IpAddressControllerTest extends DuskTestCase
                 $browser->click('a.delete-ip[href="'.$deleteUrl.'"]')
                     ->waitForText('Do you really want to delete this IP address?')
                     ->press( 'Delete' )
-                    ->waitForLocation( "/ip-address/list/$prot/$vlanId" )
+                    ->waitForLocation( route( "ip-address@list", [ 'protocol' => $prot, 'vlanid' => $vlanId ] ) )
                     ->assertSee('The IP has been successfully deleted.')
                     ->assertDontSee($cat["ip1"]);
 
                 // 6. ip addresses mass delete with missing item
-                $browser->visit( "/ip-address/delete-by-network/vlan/$vlanId" )
+                $browser->visit( route( 'ip-address@delete-by-network', $vlanId ) )
                     ->assertSee('VLANs / Delete Free IP Addresses')
                     ->type('network', $cat[ "del1" ] )
                     ->press( 'Find Free Addresses' )
@@ -189,7 +189,7 @@ class IpAddressControllerTest extends DuskTestCase
                 $browser->click( 'a#delete' )
                     ->waitForText('Do you really want to delete this IP address?')
                     ->press( 'Delete' )
-                    ->waitForLocation( "/ip-address/list/$prot/$vlanId" )
+                    ->waitForLocation( route( "ip-address@list", [ 'protocol' => $prot, 'vlanid' => $vlanId ] ) )
                     ->assertSee('IP Addresses deleted.');
 
                 $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
@@ -197,7 +197,7 @@ class IpAddressControllerTest extends DuskTestCase
                 $browser->assertSee( "Showing 1 to 8 of 8 entries" );
 
                 // 7. ip addresses mass delete
-                $browser->visit( "/ip-address/delete-by-network/vlan/$vlanId" )
+                $browser->visit( route( 'ip-address@delete-by-network', $vlanId ) )
                     ->assertSee('VLANs / Delete Free IP Addresses')
                     ->type('network', $cat[ "del2" ] )
                     ->press( 'Find Free Addresses' )
@@ -209,12 +209,12 @@ class IpAddressControllerTest extends DuskTestCase
                 $browser->click( 'a#delete' )
                     ->waitForText('Do you really want to delete this IP address?')
                     ->press( 'Delete' )
-                    ->waitForLocation( "/ip-address/list/$prot/$vlanId" )
+                    ->waitForLocation( route( "ip-address@list", [ 'protocol' => $prot, 'vlanid' => $vlanId ] ) )
                     ->assertSee('IP Addresses deleted.')
                     ->assertSee( "There are no IPv$prot addresses in this VLAN." );
 
                 // 8. check other vlan active address for deletion
-                $browser->visit( "/ip-address/list/$prot" )
+                $browser->visit( route( "ip-address@list", [ 'protocol' => $prot ] ) )
                     ->assertSee( "IPv$prot Addresses" )
                     ->select( 'vlan', 'Peering LAN1' );
 
@@ -228,7 +228,7 @@ class IpAddressControllerTest extends DuskTestCase
                 $this->assertTrue(count($availableDeleteButton) === 0);
 
                 // 9. check active ip address missing on mass delete
-                $browser->visit( "/ip-address/delete-by-network/vlan/1" )
+                $browser->visit( route( 'ip-address@delete-by-network', 1 ) )
                     ->assertSee('VLANs / Delete Free IP Addresses')
                     ->type('network', $cat[ "del3" ] )
                     ->press( 'Find Free Addresses' )

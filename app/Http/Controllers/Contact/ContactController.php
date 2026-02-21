@@ -107,6 +107,7 @@ class ContactController extends EloquentController
                     'customer'  => [
                         'title'      => 'Customer',
                         'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'route'      => 'customer@overview',
                         'controller' => 'customer',
                         'action'     => 'overview',
                         'idField'    => 'custid'

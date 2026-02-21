@@ -67,10 +67,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/stopwatch" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-ray" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/macroable" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/psalm/plugin-laravel" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/ray" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/orchestra/testbench" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/orchestra/testbench-core" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/zbateson/mail-mime-parser" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/zbateson/stream-decorators" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/zbateson/mb-wrapper" />
@@ -95,9 +92,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp/uri-template" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/league/flysystem-local" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/nunomaduro/termwind" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/orchestra/canvas" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/orchestra/canvas-core" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/orchestra/workbench" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/mailer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-php83" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-uuid" />
@@ -149,7 +143,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/daverandom/libdns" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/kelunik/certificate" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/opensolutions/foil" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/orchestra/sidekick" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/revolt/event-loop" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/staabm/side-effects-detector" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/danog/advanced-json-rpc" />
@@ -161,6 +154,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/mcp" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/roster" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phiki/phiki" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/thecodingmachine/safe" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/_laravel_idea" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

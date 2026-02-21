@@ -57,6 +57,8 @@ class LoginHistoryController extends EloquentController
      */
     protected $object = null;
 
+    protected static bool $is_admin_route = true;
+
     /**
      * This function sets up the frontend controller
      */
@@ -81,7 +83,7 @@ class LoginHistoryController extends EloquentController
                 'cust_name'  => [
                     'title'      => 'Customer',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'customer',
+                    'controller' => 'admin/customer',
                     'action'     => 'overview',
                     'idField'    => 'cust_id'
                 ],
@@ -114,7 +116,7 @@ class LoginHistoryController extends EloquentController
     #[\Override]
     public static function routes(): void
     {
-        Route::group( [ 'prefix' => 'login-history' ], function() {
+        Route::group( [ 'prefix' => 'admin/login-history' ], function() {
             Route::get(  'list',                'LoginHistoryController@list'   )->name( 'login-history@list'   );
             Route::get(  'view/{id}',           'LoginHistoryController@view'   )->name( 'login-history@view'   );
         });

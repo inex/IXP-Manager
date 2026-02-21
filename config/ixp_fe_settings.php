@@ -538,7 +538,27 @@ return [
                     'help'       => 'PeeringDB OAuth - post authentication redirect target on IXP Manager. Assuming your '
                                         . 'APP_URL is correct, then: <code>' . config('app.url') . '/auth/login/peeringdb/callback</code>'
                 ],
-
+                
+                'ripe_api_key'          => [
+                    'config_key' => 'ixp_api.rir.ripe_api_key',
+                    'dotenv_key' => 'IXP_RIPE_API_KEY',
+                    'type'       => 'text',
+                    'rules'      => 'nullable|max:255',
+                    'name'       => 'RIPE API Key for Updating RIR Objects',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/rir-objects/',
+                    'help'       => 'RIPE REST API key - you will receive this from your RIPE LIR portal account',
+                ],
+                
+                'unsecured_api_access'                => [
+                    'config_key' => 'ixp_api.unsecured_api_access',
+                    'dotenv_key' => 'UNSECURED_API_ACCESS',
+                    'type'       => 'radio',
+                    'rules'      => 'boolean',
+                    'name'       => 'Unsecured API Access Enabled',
+                    'docs_url'   => 'https://docs.ixpmanager.org/install/security/',
+                    'help'       => 'IXP Manager v7.1.0 introduced an admin/ prepend on APIs for securing them. For v7.1.0 only, unsecured access will be enabled by default to allow administrators migrate their API clients.',
+                ],
+            
             ],
 
         ],

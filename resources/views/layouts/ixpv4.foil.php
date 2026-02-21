@@ -119,7 +119,7 @@
 
             <?php if( $authCheck && $privs === User::AUTH_SUPERUSER ): ?>
                 $( "#menu-select-customer" ).select2({ width: '100%',placeholder: "Jump to <?= config( 'ixp_fe.lang.customer.one' ) ?>...", allowClear: true }).change( function(){
-                    document.location.href = '<?= url( "/customer/overview" ) ?>/' + $( "#menu-select-customer" ).val();
+                    document.location.href = '<?= url( "/admin/customer/overview" ) ?>/' + $( "#menu-select-customer" ).val();
                 });
 
                 $('#sidebarCollapse').click( function () {

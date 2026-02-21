@@ -72,6 +72,9 @@ class SwitchPortController extends EloquentController
      */
     protected $object = null;
 
+    protected static bool $is_admin_route = true;
+
+
     /**
      * This function sets up the frontend controller
      */
@@ -127,7 +130,7 @@ class SwitchPortController extends EloquentController
     protected static function additionalRoutes( string $route_prefix ): void
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
-        Route::group( [  'prefix' => $route_prefix ], static function() {
+        Route::group( [  'prefix' => ( static::$is_admin_route ? 'admin/' : '' ) . $route_prefix ], static function() {
             Route::get(  'unused-optics',       'Switches\SwitchPortController@unusedOptics'   )->name( 'switch-port@unused-optics'     );
             Route::get(  'optic-inventory',     'Switches\SwitchPortController@opticInventory' )->name( 'switch-port@optic-inventory'   );
             Route::get(  'optic-list',          'Switches\SwitchPortController@opticList'      )->name( 'switch-port@optic-list'        );

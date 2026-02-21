@@ -26,6 +26,7 @@ namespace IXP\Console\Commands\Contact;
 use Illuminate\Database\Eloquent\Builder;
 use IXP\Console\Commands\Command;
 use IXP\Models\Contact;
+use IXP\Models\Customer;
 
 /**
   * Artisan command to export contacts by group
@@ -67,8 +68,9 @@ class ExportGroup extends Command
     {
         $type = $this->option('type');
         $name = $this->option('name');
+        
         // Imported from Zend Framework with little change on 2017-11
-        if( !( $type && $name ) || ( $type && $name ) )  {
+        if( !( $type || $name ) || ( $type && $name ) )  {
             $this->error( "Group name or type must be set (and not both)." );
             return -1;
         }
@@ -79,25 +81,30 @@ class ExportGroup extends Command
         }
 
         $contacts = Contact::selectRaw( 'c.name AS name, c.position as position, c.email AS email, c.phone AS phone, c.mobile AS mobile,
-                    c.facilityaccess AS facilityaccess, c.mayauthorize AS mayauthorize, c.notes as notes' )
+                    c.notes as notes, cu.status AS cust_status' )
             ->from( 'contact AS c' )
             ->leftJoin( 'contact_to_group AS ctg', 'ctg.contact_id', 'c.id' )
             ->leftJoin( 'contact_group AS cg', 'cg.id', 'ctg.contact_group_id' )
             ->leftJoin( 'cust AS cu', 'cu.id', 'c.custid')
+            ->whereRaw( 'cu.datejoin <= CURRENT_DATE() AND ( cu.dateleave IS NULL OR cu.dateleave >= CURRENT_DATE() )')
             ->when( $type, function( Builder $q, $type ) {
-                return $q->where( 'cg.type', $type );
-            }, function( $query ) use( $name ) {
-                return $query->where( 'cg.name', $name );
-            } )
-            ->when( $cid = $this->option('cid'), function( Builder $q, $cid ) {
-                return $q->where( 'cu.id', $cid );
-            })->groupBy( 'c.id' )->get()->toArray();
+                    return $q->where( 'cg.type', $type );
+                }, function( $query ) use( $name ) {
+                    return $query->where( 'cg.name', $name );
+                } )
+                ->when( $cid = $this->option('cid'), function( Builder $q, $cid ) {
+                    return $q->where( 'cu.id', $cid );
+                })->groupBy( 'c.id' )->get()->toArray();
 
         if( !count( $contacts ) ) {
             if( $this->option('format' ) === 'json' ) {
                 echo json_encode( [] ) . "\n";
             }
             return 0;
+        }
+        
+        foreach( $contacts as &$contact ) {
+            $contact['cust_status'] = Customer::$CUST_STATUS_TEXT[$contact['cust_status']];
         }
 
         if( $this->option('format') === "csv" )  {

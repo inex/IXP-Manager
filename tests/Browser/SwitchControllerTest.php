@@ -3,7 +3,7 @@
 namespace Tests\Browser;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -36,7 +36,7 @@ use Tests\DuskTestCase;
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Tests\Browser
- * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SwitchControllerTest extends DuskTestCase
@@ -71,13 +71,13 @@ class SwitchControllerTest extends DuskTestCase
                     ->type( 'username', 'travis' )
                     ->type( 'password', 'travisci' )
                     ->press( '#login-btn' )
-                    ->waitForLocation( '/admin' );
+                    ->waitForLocation( '/admin/dashboard' );
 
-            $browser->visit( '/switch/list' )
+            $browser->visit( route( 'switch@list' ) )
                 ->assertSee( 'switch1' )
                 ->assertSee( 'switch2' );
 
-            $browser->visit( '/switch/create-by-snmp' )
+            $browser->visit( route( 'switch@create-by-snmp' ) )
                 ->assertSee( 'Create Switch via SNMP' )
                 ->assertSee( 'Hostname' )
                 ->assertSee( 'SNMP Community' );
@@ -87,7 +87,7 @@ class SwitchControllerTest extends DuskTestCase
             $browser->type( 'hostname', 'phpunit.test.example.com'  )
                 ->type( 'snmppasswd', 'mXPOSpC52cSFg1qN'            )
                 ->press('Next ≫' )
-                ->waitForLocation('/switch/store-by-snmp' )
+                ->waitForLocation( route( 'switch@store-by-snmp' ) )
                 ->assertInputValue( 'name',       'phpunit' )
                 ->assertInputValue( 'hostname',   'phpunit.test.example.com'    )
                 ->assertInputValue( 'snmppasswd', 'mXPOSpC52cSFg1qN'            )
@@ -110,7 +110,7 @@ class SwitchControllerTest extends DuskTestCase
             $browser->driver->executeScript('window.scrollTo(0, 3000);');
 
             $browser->press( 'Create' )
-                    ->waitForLocation('/switch/list' )
+                    ->waitForLocation( route( 'switch@list' ) )
                     ->assertSee( 'phpunit' )
                     ->assertSee( 'FESX648' );
 
@@ -136,13 +136,13 @@ class SwitchControllerTest extends DuskTestCase
             $this->assertEquals( 'Test note',                $switch->notes             );
 
             // test that editing while not making any changes and saving changes nothing
-            $browser->visit( '/switch/edit/' . $switch->id          )
-                    ->waitForLocation('/switch/edit/' . $switch->id    );
+            $browser->visit( route( 'switch@edit', $switch->id ) )
+                    ->waitForLocation(route( 'switch@edit', $switch->id ) );
 
             $browser->driver->executeScript('window.scrollTo(0, 3000);');
 
             $browser->press( 'Save Changes'     )
-                    ->waitForLocation('/switch/list' )
+                    ->waitForLocation(route( 'switch@list' ) )
                     ->assertSee( 'phpunit' )
                     ->assertSee( 'FESX648' );
 
@@ -169,8 +169,8 @@ class SwitchControllerTest extends DuskTestCase
 
             // now test that editing while making changes works
 
-            $browser->visit( '/switch/edit/' . $switch->id                     )
-                    ->waitForLocation('/switch/edit/' . $switch->id              )
+            $browser->visit( route( 'switch@edit', $switch->id ) )
+                    ->waitForLocation(route( 'switch@edit', $switch->id ) )
                     ->type( 'name', 'phpunit2'                          )
                     ->type( 'hostname', 'phpunit2.test.example.com'     )
                     ->type( 'snmppasswd', 'newpassword'                 )
@@ -190,7 +190,7 @@ class SwitchControllerTest extends DuskTestCase
             $browser->driver->executeScript('window.scrollTo(0, 3000);' );
 
             $browser->press( 'Save Changes'        )
-                    ->waitForLocation('/switch/list'   )
+                    ->waitForLocation(route( 'switch@list' )   )
                     ->assertSee( 'phpunit2'         )
                     ->assertSee( 'TI24X'            );
 
@@ -218,13 +218,13 @@ class SwitchControllerTest extends DuskTestCase
             // test that editing while not making any changes and saving changes nothing
             // (this is a retest for, e.g. unchecked checkboxes)
 
-            $browser->visit( '/switch/edit/' . $switch->id      )
-                ->assertPathIs('/switch/edit/' . $switch->id    );
+            $browser->visit( route( 'switch@edit', $switch->id ) )
+                ->waitForLocation(route( 'switch@edit', $switch->id ) );
 
             $browser->driver->executeScript('window.scrollTo(0, 3000);');
 
             $browser->press( 'Save Changes'        )
-                    ->waitForLocation('/switch/list'   )
+                    ->waitForLocation(route( 'switch@list' )   )
                     ->assertSee( 'phpunit2'         )
                     ->assertSee( 'TI24X'            );
 
@@ -250,7 +250,7 @@ class SwitchControllerTest extends DuskTestCase
             $browser->press( '#d2f-list-delete-' . $switch->id      )
                 ->waitForText( 'Do you really want to delete this'    )
                 ->press( 'Delete' )
-                ->waitForLocation('/switch/list'   )
+                ->waitForLocation(route( 'switch@list' )   )
                 ->assertDontSee( 'phpunit2'     )
                 ->assertDontSee( 'TI24X'        );
         });

@@ -108,6 +108,10 @@ use IXP\Traits\Observable;
  * @method static Builder|Router routeCollector()
  * @method static Builder|Router ipvX(int $protocol)
  * @method static Builder|Router ipProtocol(int $protocol)
+ * @property int|null $rpki_min_version
+ * @property int|null $rpki_max_version
+ * @method static Builder<static>|Router whereRpkiMaxVersion($value)
+ * @method static Builder<static>|Router whereRpkiMinVersion($value)
  * @mixin \Eloquent
  */
 class Router extends Model

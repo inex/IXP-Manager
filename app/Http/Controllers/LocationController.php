@@ -60,6 +60,8 @@ class LocationController extends EloquentController
      */
     protected $object = null;
 
+    protected static bool $is_admin_route = true;
+
     /**
      * The URL prefix to use.
      *

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+# Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
 # All Rights Reserved.
 #
 # This file is part of IXP Manager.
@@ -25,12 +25,11 @@
 
 echo "Reconfiguring all bird instances:"
 
-# These handles should match the definitions in config/routers.php, and
-# should be changed as appropriate:
+# These handles should match the definitions in IXP Manager
 
 for handle in rs1-lan1-ipv4 rs1-lan1-ipv6 rs1-lan2-ipv4 rs1-lan2-ipv6; do
     echo -ne "HANDLE: ${handle}: "
-    /usr/local/sbin/api-reconfigure-example.sh -f -h $handle -q
+    /usr/local/sbin/api-reconfigure-example-birdv2.sh -h $handle
     if [[ $? -eq 0 ]]; then
         echo -ne "OK    "
     else

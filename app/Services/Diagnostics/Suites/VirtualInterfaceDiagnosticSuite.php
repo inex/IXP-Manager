@@ -49,7 +49,7 @@ class VirtualInterfaceDiagnosticSuite extends DiagnosticSuite
 
         $name = '';
 
-        if( $vi->physicalInterfaces ) {
+        if( $vi->physicalInterfaces->count() ) {
             $name .= 'Connection to ';
             $name .= $vi->physicalInterfaces[0]?->switchPort?->switcher?->infrastructureModel->name
                     . ' via ' . $vi->physicalInterfaces[0]?->switchPort?->switcher?->name;

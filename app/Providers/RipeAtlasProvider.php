@@ -24,10 +24,11 @@ namespace IXP\Providers;
  */
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Support\DeferrableProvider;
 
 use IXP\Services\RipeAtlas\ApiCall;
 
-class RipeAtlasProvider extends ServiceProvider
+class RipeAtlasProvider extends ServiceProvider implements DeferrableProvider
 {
 
     /**
@@ -48,5 +49,15 @@ class RipeAtlasProvider extends ServiceProvider
         $this->app->singleton( 'IXP\Services\ApiCall', function( $app ) {
             return new ApiCall();
         });
+    }
+    
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array<int, string>
+     */
+    public function provides(): array
+    {
+        return [ApiCall::class];
     }
 }

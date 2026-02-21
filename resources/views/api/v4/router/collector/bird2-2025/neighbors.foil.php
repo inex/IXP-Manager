@@ -158,9 +158,9 @@ function f_import_as<?= $int['autsys'] ?>() -> bool
 <?php if( $t->router->rpki && config( 'ixp.rpki.rtr1.host' ) ): ?>
 
     # RPKI check
-    if( roa_check( t_roa, net, bgp_path.last_nonaggregated ) = ROA_INVALID ) then {
+    if( roa_check( t_roa ) = ROA_INVALID ) then {
         bgp_large_community.add( IXP_LC_FILTERED_RPKI_INVALID );
-    } else if( roa_check( t_roa, net, bgp_path.last_nonaggregated ) = ROA_VALID ) then {
+    } else if( roa_check( t_roa ) = ROA_VALID ) then {
         bgp_large_community.add( IXP_LC_INFO_RPKI_VALID );
     } else {
         # RPKI unknown, keep checking and mark as unknown for info

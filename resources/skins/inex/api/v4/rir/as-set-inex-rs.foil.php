@@ -1,7 +1,7 @@
-password: <?= config('ixp_api.rir.password') ?>
-
-
-as-set:         AS-SET-INEX-RS
+<?php if( $t->forJson ): ?>
+IXPM-OBJECT:   as-set
+IXPM-KEY:      AS-SET-INEX-RS
+<?php endif; ?>as-set:         AS-SET-INEX-RS
 descr:          ASNs connected to the Route Server system at INEX
 descr:          INEX is an IXP located in Dublin, Ireland
 admin-c:        INO7-RIPE

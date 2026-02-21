@@ -66,7 +66,7 @@ class UserRememberTokenControllerTest extends DuskTestCase
                     ->type('username', $user->username )
                     ->type('password', 'travisci' )
                     ->press('#login-btn' )
-                    ->waitForLocation( '/admin' );
+                    ->waitForLocation( '/admin/dashboard' );
 
             /**
              * Check that the remember cookie and DB entry is not existing as we didn't check the remember me checkbox
@@ -85,7 +85,7 @@ class UserRememberTokenControllerTest extends DuskTestCase
                     ->type('password', 'travisci' )
                     ->check( '#remember-me')
                     ->press('#login-btn' )
-                    ->waitForLocation( '/admin' );
+                    ->waitForLocation( '/admin/dashboard' );
 
             /**
              * Check that the remember cookie and DB entry is existing as we checked the remember me checkbox
@@ -105,7 +105,7 @@ class UserRememberTokenControllerTest extends DuskTestCase
                 ->type('password', 'travisci' )
                 ->check( '#remember-me')
                 ->press('#login-btn' )
-                ->waitForLocation( '/admin' );
+                ->waitForLocation( '/admin/dashboard' );
 
             /**
              * Check that the remember cookie exist in the new browser

@@ -29,7 +29,7 @@
 composer.phar
 /tools/installers/Vagrantfile
 
-/.phpstorm.meta.php
+/.phpstorm.meta.php/laravel.meta.php
 /_ide_helper.php
 
 /storage/.local

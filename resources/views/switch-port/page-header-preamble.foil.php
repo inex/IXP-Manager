@@ -5,13 +5,13 @@
         ?>
             <div class="btn-group btn-group-sm">
                 <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?php if( request()->is( 'switch-port/op-status/*' ) ): ?>
+                    <?php if( request()->is( 'admin/switch-port/op-status/*' ) ): ?>
                         Live Port States (via SNMP poll)
-                    <?php elseif( request()->is( 'switch-port/snmp-poll/*' ) ): ?>
+                    <?php elseif( request()->is( 'admin/switch-port/snmp-poll/*' ) ): ?>
                         View/Edit Ports (via SNMP poll)
-                    <?php elseif( request()->is( 'switch-port/list' ) ): ?>
+                    <?php elseif( request()->is( 'admin/switch-port/list' ) ): ?>
                         View/Edit Ports (database only)
-                    <?php elseif( request()->is( 'switch-port/list-mau/*' ) ): ?>
+                    <?php elseif( request()->is( 'admin/switch-port/list-mau/*' ) ): ?>
                         Port MAU Detail (database only)
                     <?php else: ?>
                         Unknown action?

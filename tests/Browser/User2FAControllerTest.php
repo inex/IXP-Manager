@@ -3,7 +3,7 @@
 namespace Tests\Browser;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -37,7 +37,7 @@ use Tests\DuskTestCase;
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Tests\Browser
- * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class User2FAControllerTest extends DuskTestCase
@@ -90,7 +90,7 @@ class User2FAControllerTest extends DuskTestCase
                 ->type('username', $userUsername )
                 ->type('password', $userPassword )
                 ->press('#login-btn' )
-                ->waitForLocation('/admin');
+                ->waitForLocation( '/admin/dashboard' );
 
             $browser->visit('/profile')
                     ->assertPathIs('/profile');
@@ -119,7 +119,7 @@ class User2FAControllerTest extends DuskTestCase
             /**
              * Try to access to a page without typing the OTP
              */
-            $browser->visit('/customer/list')
+            $browser->visit(route( 'customer@list' ) )
                     ->assertSee('Enter the one time code from your authenticator app');
 
             /**
@@ -138,7 +138,7 @@ class User2FAControllerTest extends DuskTestCase
              */
             $browser->type('one_time_password', $otp)
                 ->press('Authenticate')
-                ->waitForLocation('/admin')
+                ->waitForLocation( '/admin/dashboard' )
                 ->assertDontSee('The one time password entered was wrong.');
 
 
@@ -245,7 +245,7 @@ class User2FAControllerTest extends DuskTestCase
         $browser->type( '#one_time_password', $otp )
                 ->type( 'password', $userPassword )
                 ->press( 'Enable 2FA' )
-                ->waitForLocation( '/admin')
+                ->waitForLocation( '/admin/dashboard')
                 ->assertSee( '2FA successfully enabled.',1);
 
         //Check 2fa is enabled

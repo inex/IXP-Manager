@@ -495,8 +495,6 @@ CREATE TABLE `contact` (
   `email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `phone` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `mobile` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `facilityaccess` tinyint(1) NOT NULL DEFAULT '0',
-  `mayauthorize` tinyint(1) NOT NULL DEFAULT '0',
   `notes` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
   `updated_at` datetime DEFAULT NULL,
   `lastupdatedby` int DEFAULT NULL,
@@ -514,7 +512,7 @@ CREATE TABLE `contact` (
 
 LOCK TABLES `contact` WRITE;
 /*!40000 ALTER TABLE `contact` DISABLE KEYS */;
-INSERT INTO `contact` VALUES (1,1,'Travis CI','Master of the Universe','joe@siep.com','+353 86 123 4567','+353 1 123 4567',1,1,'','2014-01-06 13:54:22',1,'1','2014-01-06 13:54:22'),(2,5,'Imagine CustAdmin','Imagine CustAdmin','imagine-custadmin@example.com','','',1,1,'','2018-05-15 15:36:12',1,'travis','2018-05-15 15:36:12'),(3,5,'Imagine CustUser','Imagine CustUser','imagine-custuser@example.com','','',1,1,'','2018-05-15 15:36:54',1,'travis','2018-05-15 15:36:54'),(4,2,'HEAnet CustUser','HEANet CustUser','heanet-custuser@example.com','','',1,1,'','2018-05-22 12:00:00',1,'travis',NULL),(5,2,'HEAnet CustAdmin','HEANet CustAdmin','heanet-custadmin@example.com','','',1,1,'','2018-05-22 12:00:00',1,'travis',NULL);
+INSERT INTO `contact` VALUES (1,1,'Travis CI','Master of the Universe','joe@siep.com','+353 86 123 4567','+353 1 123 4567','','2014-01-06 13:54:22',1,'1','2014-01-06 13:54:22'),(2,5,'Imagine CustAdmin','Imagine CustAdmin','imagine-custadmin@example.com','','','','2018-05-15 15:36:12',1,'travis','2018-05-15 15:36:12'),(3,5,'Imagine CustUser','Imagine CustUser','imagine-custuser@example.com','','','','2018-05-15 15:36:54',1,'travis','2018-05-15 15:36:54'),(4,2,'HEAnet CustUser','HEANet CustUser','heanet-custuser@example.com','','','','2018-05-22 12:00:00',1,'travis',NULL),(5,2,'HEAnet CustAdmin','HEANet CustAdmin','heanet-custadmin@example.com','','','','2018-05-22 12:00:00',1,'travis',NULL);
 /*!40000 ALTER TABLE `contact` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1110,6 +1108,7 @@ CREATE TABLE `infrastructure` (
   `isPrimary` tinyint(1) NOT NULL DEFAULT '0',
   `peeringdb_ix_id` bigint DEFAULT NULL,
   `ixf_ix_id` bigint DEFAULT NULL,
+  `exclude_from_ixf_export` tinyint(1) NOT NULL DEFAULT '0',
   `country` varchar(2) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `notes` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -1125,7 +1124,7 @@ CREATE TABLE `infrastructure` (
 
 LOCK TABLES `infrastructure` WRITE;
 /*!40000 ALTER TABLE `infrastructure` DISABLE KEYS */;
-INSERT INTO `infrastructure` VALUES (1,'Infrastructure #1','#1',1,48,20,NULL,NULL,NULL,NULL),(2,'Infrastructure #2','#2',0,387,645,NULL,NULL,NULL,NULL);
+INSERT INTO `infrastructure` VALUES (1,'Infrastructure #1','#1',1,48,20,0,NULL,NULL,NULL,NULL),(2,'Infrastructure #2','#2',0,387,645,0,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `infrastructure` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1494,7 +1493,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1503,7 +1502,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3),(9,'2020_07_21_094354_create_route_server_filters',4),(12,'2020_09_03_153723_add_timestamps',5),(13,'2020_09_18_095136_delete_ixp_table',6),(14,'2020_11_16_102415_database_fixes',7),(15,'2021_03_12_150418_create_log_table',8),(16,'2021_04_14_125742_user_pref',9),(17,'2021_04_14_101948_update_timestamps',10),(18,'2021_05_18_085721_add_note_infrastructure',11),(19,'2021_05_18_114206_update_pp_prefix_size',12),(20,'2020_06_01_143931_database_schema_at_end_v5',13),(21,'2021_03_30_124916_create_atlas_probes',13),(22,'2021_03_30_125238_create_atlas_runs',13),(23,'2021_03_30_125422_create_atlas_measurements',13),(24,'2021_03_30_125723_create_atlas_results',13),(25,'2021_06_11_141137_update_db_doctrine2eloquent',13),(26,'2021_07_20_134716_fix_last_updated_and_timestamps',13),(27,'2021_09_16_195333_add_rate_limit_col_to_physint',13),(28,'2021_09_17_144421_modernise_irrdb_conf_table',13),(29,'2021_09_21_100354_create_route_server_filters_prod',14),(30,'2021_09_21_162700_rs_pairing',15),(31,'2022_02_12_183121_add_colo_pp_type_patch_panel',15),(32,'2023_09_26_191150_add_registration_details',15),(33,'2024_03_18_191322_add_export_to_ixf_vlan',15),(34,'2024_08_10_125003_create_irrdb_update_logs',16),(35,'2024_09_05_111855_create_p2p_daily_stats_table',17),(36,'2024_05_29_102028_reset-views',18),(37,'2025_09_01_102636_add_ipv6_max_prefixes',19);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3),(9,'2020_07_21_094354_create_route_server_filters',4),(12,'2020_09_03_153723_add_timestamps',5),(13,'2020_09_18_095136_delete_ixp_table',6),(14,'2020_11_16_102415_database_fixes',7),(15,'2021_03_12_150418_create_log_table',8),(16,'2021_04_14_125742_user_pref',9),(17,'2021_04_14_101948_update_timestamps',10),(18,'2021_05_18_085721_add_note_infrastructure',11),(19,'2021_05_18_114206_update_pp_prefix_size',12),(20,'2020_06_01_143931_database_schema_at_end_v5',13),(21,'2021_03_30_124916_create_atlas_probes',13),(22,'2021_03_30_125238_create_atlas_runs',13),(23,'2021_03_30_125422_create_atlas_measurements',13),(24,'2021_03_30_125723_create_atlas_results',13),(25,'2021_06_11_141137_update_db_doctrine2eloquent',13),(26,'2021_07_20_134716_fix_last_updated_and_timestamps',13),(27,'2021_09_16_195333_add_rate_limit_col_to_physint',13),(28,'2021_09_17_144421_modernise_irrdb_conf_table',13),(29,'2021_09_21_100354_create_route_server_filters_prod',14),(30,'2021_09_21_162700_rs_pairing',15),(31,'2022_02_12_183121_add_colo_pp_type_patch_panel',15),(32,'2023_09_26_191150_add_registration_details',15),(33,'2024_03_18_191322_add_export_to_ixf_vlan',15),(34,'2024_08_10_125003_create_irrdb_update_logs',16),(35,'2024_09_05_111855_create_p2p_daily_stats_table',17),(36,'2024_05_29_102028_reset-views',18),(37,'2025_09_01_102636_add_ipv6_max_prefixes',19),(38,'2025_11_11_085835_add_exclude_from_ixf_export_to_infrastructure',20),(39,'2026_02_16_205211_remove_legacy_columns_from_contacts',21);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3069,4 +3068,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-09-01 16:05:36
+-- Dump completed on 2026-02-16 21:01:24

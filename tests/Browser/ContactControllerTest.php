@@ -3,7 +3,7 @@
 namespace Tests\Browser;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -35,7 +35,7 @@ use Throwable;
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Tests\Browser
- * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class ContactControllerTest extends DuskTestCase
@@ -67,7 +67,7 @@ class ContactControllerTest extends DuskTestCase
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->waitForLocation( '/admin' );
+                ->waitForLocation( '/admin/dashboard' );
 
             $browser->visit( '/contact/list' )
                 ->assertSee( 'HEAnet CustAdmin' )
@@ -197,7 +197,7 @@ class ContactControllerTest extends DuskTestCase
 
         $this->browse( function( Browser $browser ) {
 
-            $browser->visit( '/customer/overview/5/contacts' )
+            $browser->visit( '/admin/customer/overview/5/contacts' )
                 ->waitForText( 'Imagine CustAdmin' )
                 ->assertSee( 'imagine-custadmin@example.com' )
                 ->press( '#contacts-add-btn' )
@@ -217,7 +217,7 @@ class ContactControllerTest extends DuskTestCase
                 ->type( 'notes', 'Test note' )
                 ->press( 'Create' );
 
-            $browser->waitForLocation( '/customer/overview/5/contacts' )
+            $browser->waitForLocation( '/admin/customer/overview/5/contacts' )
                 ->assertSee( 'Contact created' )
                 ->assertSee( 'Test Contact 1' )
                 ->assertSee( '0209110000 / 0209120000' )
@@ -239,14 +239,14 @@ class ContactControllerTest extends DuskTestCase
             $browser->press( '#cont-list-edit-' . $c->id )
                 ->waitForLocation( '/contact/edit/' . $c->id )
                 ->press( 'Save Changes' )
-                ->waitForLocation( '/customer/overview/5/contacts' );
+                ->waitForLocation( '/admin/customer/overview/5/contacts' );
 
 
             // delete this contact
             $browser->press( '#btn-delete-' . $c->id )
                 ->waitForText( 'Delete Contact' )
                 ->press( 'Delete' )
-                ->waitForLocation( '/customer/overview/5/contacts' )
+                ->waitForLocation( '/admin/customer/overview/5/contacts' )
                 ->assertSee( 'Contact deleted' )
                 ->assertDontSee( 'Test Contact 1' )
                 ->assertDontSee( 'Test Position' )

@@ -112,6 +112,9 @@ int set allas;
         # This ASN was configured not to use IRRDB filtering
 <?php endif; ?>
 
+    # RFC 8326 - facilitate Graceful BGP Session Shutdown
+    if (65535, 0) ~ bgp_community then bgp_local_pref = 0;
+
     accept;
 }
 

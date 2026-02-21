@@ -58,8 +58,8 @@ class DiagnosticsServiceProvider extends ServiceProvider
                 : [ 'web' , 'auth',          'assert.privilege:' . User::AUTH_SUPERUSER ],
             'namespace' => 'IXP\Http\Controllers' ], function(){
 
-            Route::get(  'diagnostics/customer/{customer}', 'DiagnosticsController@customer')->name('diagnostics@customer' );
-            Route::get(  'diagnostics/irrdb/{customer}',    'DiagnosticsController@irrdb'   )->name('diagnostics@irrdb'    );
+            Route::get(  'admin/diagnostics/customer/{customer}', 'DiagnosticsController@customer')->name('diagnostics@customer' );
+            Route::get(  'admin/diagnostics/irrdb/{customer}',    'DiagnosticsController@irrdb'   )->name('diagnostics@irrdb'    );
         });
 
         // we have a few rendering functions we want to include here:

@@ -224,45 +224,54 @@ class LoginController extends Controller
      *
      * Sample response:
      *
-     * User {#1139 ▼
-     * +accessTokenResponseBody: array:5 [▼
-     * "access_token" => "xxxx"
-     * "token_type" => "Bearer"
-     * "expires_in" => 36000
-     * "refresh_token" => "xxxx"
-     * "scope" => "profile email networks"
-     * ]
-     * +token: "xxx"
-     * +refreshToken: "xxx"
-     * +expiresIn: 36000
-     * +id: null
-     * +nickname: null
-     * +name: "Joe Bloggs"
-     * +email: "ixpmanager@example.com"
-     * +avatar: null
-     * +user: array:8 [▼
-     * "family_name" => "Bloggs"
-     * "email" => "ixpmanager@example.com"
-     * "name" => "Joe Bloggs"
-     * "verified_user" => true
-     * "verified_email" => true
-     * "networks" => array:2 [▼
-     * 0 => array:4 [▼
-     * "perms" => 1
-     * "id" => 888
-     * "name" => "INEX Route Collectors"
-     * "asn" => 65501
-     * ]
-     * 1 => array:4 [▼
-     * "perms" => 1
-     * "id" => 777
-     * "name" => "INEX Route Servers"
-     * "asn" => 65500
-     * ]
-     * ]
-     * "id" => 666
-     * "given_name" => "Joe"
-     * ]
+     * SocialiteProviders\Manager\OAuth2\User {#999 ▼
+     *   +id: null
+     *   +nickname: null
+     *   +name: "IP NOC"
+     *   +email: "ipnoc@example.com"
+     *   +avatar: null
+     *   +user: array:8 [▼
+     *     "id" => 1234
+     *     "given_name" => "IP NOC"
+     *     "family_name" => "NOC"
+     *     "name" => "IP NOC"
+     *     "verified_user" => true
+     *     "email" => "ipnoc@example.com"
+     *     "verified_email" => true
+     *     "networks" => array:2 [▼
+     *         0 => array:5 [▼
+     *         "id" => 1234
+     *         "name" => "INTERNET LTD"
+     *         "asn" => 65500
+     *         "perms" => 15
+     *         "manage_peering_sessions" => 15
+     *       ]
+     *       1 => array:5 [▼
+     *         "id" => 1235
+     *         "name" => "IP LTD"
+     *         "asn" => 65501
+     *         "perms" => 15
+     *         "manage_peering_sessions" => 15
+     *       ]
+     *     ]
+     *   ]
+     *   +attributes: array:2 [▼
+     *     "name" => "IP NOC"
+     *     "email" => "ipnoc@example.com"
+     *   ]
+     *   +token: "abcdefghijklmnopqrstuvwxyz0123456789"
+     *   +refreshToken: "abcdefghijklmnopqrstuvwxyz0123456789"
+     *   +expiresIn: 36000
+     *   +approvedScopes: array:1 [▼
+     *     0 => "profile email networks"
+     *   ]
+     *   +accessTokenResponseBody: array:5 [▼
+     *     "access_token" => "abcdefghijklmnopqrstuvwxyz0123456789"
+     *     "expires_in" => 36000
+     *     "token_type" => "Bearer"
+     *     "scope" => "profile email networks"
+     *     "refresh_token" => "abcdefghijklmnopqrstuvwxyz0123456789"
+     *   ]
      * }
      *
      * @param Request   $r
@@ -312,6 +321,7 @@ class LoginController extends Controller
 
         Auth::login( $result['user'] );
         $this->authenticated( $r, $result['user'] );
+        session([ 'ixpm_external_2fa_completed' => true ]);
         return redirect('');
     }
 }

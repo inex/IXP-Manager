@@ -29,7 +29,7 @@ use Tests\DuskTestCase;
 use Throwable;
 
 /**
- * Vendor Controller
+ * Settings Controller
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   IXP
@@ -80,15 +80,15 @@ class SettingsControllerTest extends DuskTestCase
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->waitForLocation( '/admin' );
+                ->waitForLocation( '/admin/dashboard' );
 
-            $browser->visit( '/settings' )
+            $browser->visit( route( 'settings@index' ) )
                 ->assertSee( 'IXP Manager Settings' );
             
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
             
             $browser->press( 'Save Changes' )
-                ->waitForLocation( '/settings' );
+                ->waitForLocation( route( 'settings@index' ) );
             
             // ensure a save with no changes yields no changes in the .env file
             $this->assertEquals( $this->oenv, file_get_contents( __DIR__ . '/../../.env' ));

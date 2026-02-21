@@ -226,6 +226,7 @@ return [
         IXP\Providers\PeeringDbServiceProvider::class,
         IXP\Providers\IxpServiceProvider::class,
         IXP\Providers\RipeAtlasProvider::class,
+        IXP\Providers\RipeRestApiProvider::class,
 
         IXP\Providers\DiagnosticsServiceProvider::class,
 
@@ -301,7 +302,9 @@ return [
         'Validator' => 'Illuminate\Support\Facades\Validator',
         'View'      => 'Illuminate\Support\Facades\View',
 
-        'Grapher'   => IXP\Support\Facades\Grapher::class,
+        'Grapher'     => IXP\Support\Facades\Grapher::class,
+        'RipeRestApi' => IXP\Support\Facades\RipeRestApi::class,
+        
         'Image'     => Intervention\Image\Facades\Image::class,
 
         'Former'    => Former\Facades\Former::class,

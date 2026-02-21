@@ -60,10 +60,13 @@ return [
     */
     'rir' => [
         'password' => env( 'IXP_API_RIR_PASSWORD', 'xxxxx' ),
+        
         'email'    => [
             'from' => env( 'IXP_API_RIR_EMAIL_FROM', null ),
             'to'   => env( 'IXP_API_RIR_EMAIL_TO',   null ),
         ],
+        
+        'ripe_api_key' => env( 'IXP_RIPE_API_KEY', null ),
     ],
 
 
@@ -151,4 +154,18 @@ return [
     |
     */
     'atlas_measurement_key' => env( 'ATLAS_MEASUREMENT_KEY', '' ),
+    
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Unsecured API paths
+    |--------------------------------------------------------------------------
+    |
+    | IXP Manager v7.1.0 introduced an admin/ prepend on APIs for securing them.
+    |
+    | See: https://docs.ixpmanager.org/install/security/
+    */
+
+    'unsecured_api_access' => env( 'UNSECURED_API_ACCESS', true ),
+
 ];

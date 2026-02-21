@@ -24,8 +24,11 @@ namespace IXP\Console\Commands;
  */
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\Http;
 use IXP\Models\Customer;
- /**
+use IXP\Services\PeeringDb;
+
+/**
   * Artisan command to update the in_peeringdb flag of members
   *
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
@@ -59,22 +62,17 @@ class InPeeringDb extends  Command
      */
     public function handle(): int
     {
-        // get list of peeringdb networks:
-        if( !( $json = file_get_contents( 'https://www.peeringdb.com/api/net.json?fields=asn' ) ) ) {
-            $this->error( 'Could not load ASNs via PeeringDB\'s API' );
-            return 1;
+        $pdb = app()->make( PeeringDb::class );
+        
+        foreach( $pdb->warnOnBadAuthMethods() as $w ) {
+            $this->warn( $w );
         }
 
-        $peeringdb_asns = json_decode( $json, false );
+        $asns = $pdb->getPeeringAsns();
 
-        if( !isset( $peeringdb_asns->data ) || !count( $peeringdb_asns->data ) ) {
-            $this->error( 'Empty or no ASNs returned from PeeringDB\'s API' );
+        if( $asns === false ) {
+            $this->error( $pdb->error );
             return 2;
-        }
-
-        $asns = [];
-        foreach( $peeringdb_asns->data as $net ) {
-            $asns[] = $net->asn;
         }
 
         // easiest thing to do here is, in a transaction, set all in_peeringdb to false

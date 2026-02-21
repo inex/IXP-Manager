@@ -61,6 +61,9 @@ class IrrdbConfigController extends EloquentController
      */
     protected $object = null;
 
+    protected static bool $is_admin_route = true;
+
+
     /**
      * This function sets up the frontend controller
      */

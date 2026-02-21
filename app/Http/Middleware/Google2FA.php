@@ -64,7 +64,9 @@ class Google2FA
             return $next( $r );
         }
 
-        if( in_array( $r->route()->getName(), $this->excludes, true ) ) {
+        if( session( 'ixpm_external_2fa_completed', false )
+                || in_array( $r->route()->getName(), $this->excludes, true )
+        ) {
             return $next( $r );
         }
 

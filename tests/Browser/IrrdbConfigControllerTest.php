@@ -3,7 +3,7 @@
 namespace Tests\Browser;
 
 /*
- * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -35,7 +35,7 @@ use Tests\DuskTestCase;
  * @author     Laszlo Kiss <laszlo@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Tests\Browser
- * @copyright  Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class IrrdbConfigControllerTest extends DuskTestCase
@@ -69,19 +69,19 @@ class IrrdbConfigControllerTest extends DuskTestCase
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->waitForLocation( '/admin' );
+                ->waitForLocation( '/admin/dashboard' );
 
-            $browser->visit( '/irrdb-config/list' )
+            $browser->visit( route( 'irrdb-config@list' ) )
                 ->assertSee( 'IRRDB Sources' );
 
-            $browser->visit( '/irrdb-config/create' )
+            $browser->visit( route( 'irrdb-config@create' ) )
                 ->assertSee( 'IRRDB Sources / Create IRRDB Source' );
 
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             // 1. test add empty inputs
             $browser->press( 'Create' )
-                ->waitForLocation( '/irrdb-config/create' )
+                ->waitForLocation( route( 'irrdb-config@create' ) )
                 ->assertSee( "The host field is required." )
                 ->assertSee( "The source field is required." );
 
@@ -93,7 +93,7 @@ class IrrdbConfigControllerTest extends DuskTestCase
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             $browser->press( 'Create' )
-                ->waitForLocation( '/irrdb-config/list' )
+                ->waitForLocation( route( 'irrdb-config@list' ) )
                 ->assertSee( "IRRDB Source created." );
 
             $irrdbConfig = IrrdbConfig::where( 'source', 'TEST1' )->first();
@@ -118,7 +118,7 @@ class IrrdbConfigControllerTest extends DuskTestCase
 
             // 6. submit with no changes and verify no changes in database
             $browser->press( 'Save Changes' )
-                ->waitForLocation( '/irrdb-config/list' )
+                ->waitForLocation( route( 'irrdb-config@list' ) )
                 ->assertSee('IRRDB Source updated.');
 
 
@@ -130,7 +130,7 @@ class IrrdbConfigControllerTest extends DuskTestCase
             $this->assertEquals( 'TEST1 Query from RADB Database', $irrdbConfig->notes );
 
             // 8. edit object
-            $browser->visit( '/irrdb-config/edit/' . $irrdbConfig->id )
+            $browser->visit( route( 'irrdb-config@edit', $irrdbConfig->id ) )
                 ->assertSee( 'IRRDB Sources / Edit IRRDB Source' );
 
             $browser->type( 'host', 'whois.radb.net' )
@@ -140,7 +140,7 @@ class IrrdbConfigControllerTest extends DuskTestCase
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
 
             $browser->press( 'Save Changes' )
-                ->waitForLocation( '/irrdb-config/list' )
+                ->waitForLocation( route( 'irrdb-config@list' ) )
                 ->assertSee('IRRDB Source updated.');
 
 
@@ -152,7 +152,7 @@ class IrrdbConfigControllerTest extends DuskTestCase
             $this->assertEquals( 'TEST1+TEST2 Query from RADB Database', $irrdbConfig->notes );
 
             // 13. delete the router in the UI and verify via success message text and location
-            $browser->visit( '/irrdb-config/list/' )
+            $browser->visit( route( 'irrdb-config@list' ) )
                 ->click( '#e2f-list-delete-' . $irrdbConfig->id )
                 ->waitForText( 'Do you really want to delete this an IRRDB Sources?' )
                 ->press( 'Delete' );
