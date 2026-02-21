@@ -74,15 +74,11 @@ class MaxPrefixes_7_1_0 extends IXPCommand
                 foreach( $vi->vlanInterfaces as $vli ) {
 
                     if( $vli->ipv4maxbgpprefix ) {
-                        if( !$c->maxprefixes || $c->maxprefixes < $vli->ipv4maxbgpprefix ) {
                             $this->shouldChange( $c, $vli, 4 );
-                        }
                     }
 
                     if( $vli->ipv6maxbgpprefix ) {
-                        if( !$c->maxprefixesv6 || $c->maxprefixesv6 < $vli->ipv6maxbgpprefix ) {
                             $this->shouldChange( $c, $vli, 6 );
-                        }
                     }
                 }
             }
@@ -136,6 +132,16 @@ class MaxPrefixes_7_1_0 extends IXPCommand
                 $c->$fnC   = $vli->$fnV;
                 $vli->$fnV = null;
                 $c->save();
+                $vli->save();
+                $this->info("DONE");
+            } else {
+                $this->warn('No confirmation received, moving on...');
+            }
+
+        } else if( $c->$fnC && $vli->$fnV && $c->$fnC > $vli->$fnV ) {
+
+            if( $this->confirm( "VLAN interface has a LOWER value than the customer, clear VLAN interface?") ) {
+                $vli->$fnV = null;
                 $vli->save();
                 $this->info("DONE");
             } else {
