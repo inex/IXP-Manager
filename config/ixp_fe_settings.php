@@ -155,7 +155,7 @@ return [
                     'config_key' => 'ixp_fe.login_history.enabled',
                     'dotenv_key' => 'IXP_FE_LOGIN_HISTORY_ENABLED',
                     'type'       => 'radio',
-                    'invert'     => true,
+                    'invert'     => false,
                     'rules'      => 'boolean',
                     'name'       => "Login History",
                     'help'       => 'Record user logins and view them in the UI. Expunged after six months by default.',
