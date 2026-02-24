@@ -20,16 +20,12 @@
                     <i class="fa fa-globe fa-inverse mx-1"></i>
                 </a>
 
-                <a href="https://www.linkedin.com/groups/1853398/">
+                <a href="https://www.linkedin.com/company/inex---internet-neutral-exchange/">
                     <i class="fa fa-linkedin fa-inverse mx-1"></i>
                 </a>
 
                 <a href="https://www.facebook.com/comepeerwithme/">
                     <i class="fa fa-facebook fa-inverse mx-1" ></i>
-                </a>
-
-                <a  href="https://twitter.com/ComePeerWithMe">
-                    <i class="fa fa-twitter fa-inverse mx-1"></i>
                 </a>
 
                 <a  href="https://github.com/inex">
