@@ -36,7 +36,7 @@
     dd_pp.change( function( ) {
         let fn = "<?= $hasSlave ? "free-duplex-port" : "free-port"  ?>"
 
-        let url     = "<?= url( '/api/v4/patch-panel' )?>/" +  $( this ).val() + "/" + fn;
+        let url     = "<?= url( '/admin/api/v4/patch-panel' )?>/" +  $( this ).val() + "/" + fn;
         let datas   = {
             pppid: <?= $t->ppp->id ?>
         };

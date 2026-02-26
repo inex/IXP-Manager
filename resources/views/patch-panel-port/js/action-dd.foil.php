@@ -161,7 +161,7 @@
      * Calls an API endpoint on IXP Manager to get patch panel port details
      */
     function ajaxGetPatchPanelPort( pppid, action, url, handleData ) {
-        return $.ajax( "<?= url('api/v4/patch-panel-port/deep') ?>/" + pppid )
+        return $.ajax( "<?= url('admin/api/v4/patch-panel-port/deep') ?>/" + pppid )
             .done( function( data ) {
                 handleData( data, action, url );
             })
@@ -301,7 +301,7 @@
     }
 
     function setNotes( ppp, action, url ){
-        $.ajax( "<?= url('patch-panel-port/notes')?>/" + ppp.id, {
+        $.ajax( "<?= url('admin/patch-panel-port/notes')?>/" + ppp.id, {
             data: {
                 pppId: ppp.id,
                 notes: $( '#notes-modal-body-public-notes' ).val(),
@@ -458,7 +458,7 @@
     function deleteFile( e ) {
         let pppfid = $( this ).attr( 'data-object-id' );
 
-        $.ajax( "<?= url('patch-panel-port/file/delete/') ?>/" + pppfid, {
+        $.ajax( "<?= url('admin/patch-panel-port/file/delete/') ?>/" + pppfid, {
             type : 'delete',
             data: {
                 jsonResponse: 1,
@@ -481,7 +481,7 @@
     function toggleFilePrivacy( e ) {
         let pppfid = $( this ).attr( 'data-object-id' );
 
-        $.ajax( "<?= url('patch-panel-port/file/toggle-privacy') ?>/" + pppfid ,{
+        $.ajax( "<?= url('admin/patch-panel-port/file/toggle-privacy') ?>/" + pppfid ,{
             type: 'POST'
         })
             .done( function( data ) {
