@@ -58,8 +58,8 @@ class IxpServiceProvider extends ServiceProvider
     {
         $this->app->resolving('view', function( $view ) {
             View::composer('*', function($view) {
-                /** @var User $us */
-                $us = Auth::getUser();
+                /** @var ?User $us */
+                $us = Auth::user();
 
                 if( ( Auth::check() && $us->isSuperUser() ) || config( 'IXP_PHPUNIT_RUNNING', false ) ) {
                     // get an array of customer id => names
