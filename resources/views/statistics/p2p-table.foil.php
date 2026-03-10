@@ -73,8 +73,6 @@
                     <tr>
                         <th></th>
                         <th>Member</th>
-                        <th>In</th>
-                        <th>Out</th>
                         <th>Total</th>
                         <th>In</th>
                         <th>Out</th>
@@ -82,6 +80,8 @@
                         <th>In</th>
                         <th>Out</th>
                         <th>Total</th>
+                        <th>In</th>
+                        <th>Out</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -93,17 +93,17 @@
                             <td><?= $s->peer_id ?></td>
                             <td><?= $s->peer->abbreviatedName ?></td>
 
+                            <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv4_total_in  + $s->ipv6_total_in + $s->ipv4_total_out + $s->ipv6_total_out ?></td>
                             <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv4_total_in  + $s->ipv6_total_in  ?></td>
                             <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv4_total_out + $s->ipv6_total_out ?></td>
-                            <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv4_total_in  + $s->ipv6_total_in + $s->ipv4_total_out + $s->ipv6_total_out ?></td>
 
+                            <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv4_total_in + $s->ipv4_total_out ?></td>
                             <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv4_total_in ?></td>
                             <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv4_total_out ?></td>
-                            <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv4_total_in + $s->ipv4_total_out ?></td>
 
+                            <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv6_total_in + $s->ipv6_total_out ?></td>
                             <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv6_total_in ?></td>
                             <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv6_total_out ?></td>
-                            <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv6_total_in + $s->ipv6_total_out ?></td>
 
                         </tr>
                     <?php endforeach; ?>
