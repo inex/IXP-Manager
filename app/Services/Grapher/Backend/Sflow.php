@@ -23,6 +23,7 @@ namespace IXP\Services\Grapher\Backend;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use IXP\Models\VlanInterface;
 use Log;
 
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
@@ -31,10 +32,12 @@ use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
 use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
 
 use IXP\Services\Grapher\Backend as GrapherBackend;
+use IXP\Services\Grapher\Graph\MultiP2p as MultiP2pGraph;
 use IXP\Services\Grapher\Graph;
 
 use IXP\Utils\Grapher\{
-    Rrd  as RrdUtil
+    Rrd  as RrdUtil,
+    MultiRrd  as MultiRrdUtil,
 };
 
 /**
@@ -124,7 +127,8 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      *
      * @return string[][][]
      *
-     * @psalm-return array{vlan: array{protocols: array{ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year'}, types: array<string, string>}, vlaninterface: array{protocols: array{ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year'}, types: array<string, string>}, p2p: array{protocols: array{ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year', custom: 'custom'}, types: array<string, string>}}
+     * @psalm-return array{vlan: array{protocols: array{ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year'}, types: array<string, string>}, vlaninterface: array{protocols: array{ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year'}, types: array<string, string>}, p2p: array{protocols: array{ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year', custom: 'custom'}, types: array<string, string>}, multip2p: array{protocols: array{all: 'all', ipv4: 'ipv4', ipv6: 'ipv6'}, categories: array{bits: 'bits', pkts: 'pkts'}, periods: array{day: 'day', week: 'week', month: 'month', year: 'year', custom: 'custom'}, types: array<string, string>}
+     *     }
      */
     #[\Override]
     public static function supports(): array
@@ -154,11 +158,14 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
                 'periods'     => Graph::PERIODS_EXTENDED,
                 'types'       => Graph::TYPES,
             ],
+            'multip2p' => [
+                'protocols'   => Graph::PROTOCOLS,
+                'categories'  => Graph::CATEGORIES_BITS_PKTS,
+                'periods'     => Graph::PERIODS_EXTENDED,
+                'types'       => Graph::TYPES,
+            ],
         ];
     }
-
-
-
 
     /**
      * Get the data points for a given graph
@@ -212,11 +219,22 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
     #[\Override]
     public function png( Graph $graph ): false|string
     {
+        if (!$graph instanceof Graph\MultiP2p) {
+            try {
+                $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
+                return @file_get_contents( $rrd->png() );
+            } catch( FileErrorException $e ) {
+                Log::notice("[Grapher] {$this->name()} png(): could not load rrd file " . ( isset( $rrd ) ? $rrd->file() : '???' ) );
+                return ''; // FIXME check handling of this
+            }
+        }
+
         try {
-            $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
+            $rrd = new MultiRrdUtil( $this->resolveMultiP2pFilePath($graph), $graph );
             return @file_get_contents( $rrd->png() );
-        } catch( FileErrorException $e ) {
-            Log::notice("[Grapher] {$this->name()} png(): could not load rrd file " . ( isset( $rrd ) ? $rrd->file() : '???' ) );
+        } catch ( FileErrorException $e ) {
+            Log::notice("[Grapher] {$this->name()} png(): could not load one or more file(s) " .
+                ( isset( $rrd ) ? implode( ', ', $rrd->localfiles() ) : '???' ) );
             return ''; // FIXME check handling of this
         }
     }
@@ -327,5 +345,61 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
             default:
                 throw new CannotHandleRequestException("Backend asserted it could process but cannot handle graph of type: {$graph->type()}" );
         }
+    }
+
+    private function resolveMultiP2pFileName( MultiP2pGraph $graph, VlanInterface $svli, VlanInterface $dvli, string $protocol ): string
+    {
+        return sprintf("p2p.%s.%s.src-%05d.dst-%05d.rrd",
+            $protocol, $this->translateCategory( $graph->category() ), $svli->id, $dvli->id);
+    }
+
+    /**
+     * @param MultiP2pGraph $graph
+     * @return string[]
+     */
+    private function resolveMultiP2pFilePath ( MultiP2pGraph $graph ): array
+    {
+        $config = config('grapher.backends.sflow');
+
+        $protocols = match( $graph->protocol() ) {
+            Graph::PROTOCOL_IPV4 => [ 4 ],
+            Graph::PROTOCOL_IPV6 => [ 6 ],
+            Graph::PROTOCOL_ALL  => [ 4, 6 ],
+        };
+
+        $graph->srcCustomer()->load('virtualInterfaces.vlanInterfaces');
+        $graph->dstCustomer()->load('virtualInterfaces.vlanInterfaces');
+
+        $files = [];
+
+        foreach( $graph->srcCustomer()->virtualInterfaces as $svi ) {
+            foreach( $svi->vlanInterfaces as $svli ) {
+                foreach( $protocols as $protocol ) {
+
+                    // Is this setting ever changed? This line means we can't see a graph unless ipvx is enabled
+                    // in IXP-Manager, while there may have been traffic (in the past, or just somehow).
+                    if( !$svli->ipvxEnabled($protocol) ) {
+                        continue;
+                    }
+
+                    // todo: check this out for optimization
+                    foreach( $graph->dstCustomer()->virtualInterfaces as $dvi ) {
+                        foreach( $dvi->vlanInterfaces as $dvli ) {
+
+                            // Take only dvi's matching this vlanid.
+                            if( $svli->vlanid !== $dvli->vlanid) {
+                                continue;
+                            }
+
+                            $files[] = sprintf("%s/%s/%s/p2p/src-%05d/%s", $config['root'],
+                                'ipv' . $protocol, $this->translateCategory( $graph->category() ), $svli->id,
+                                $this->resolveMultiP2pFileName( $graph, $svli, $dvli, 'ipv' . $protocol ));
+                        }
+                    }
+                }
+            }
+        }
+
+        return $files;
     }
 }

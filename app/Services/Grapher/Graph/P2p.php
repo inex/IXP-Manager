@@ -241,7 +241,7 @@ class P2p extends Graph
     }
 
     /**
-     * Get parameters in bulk as associative array
+     * Get parameters in bulk as an associative array
      *
      * Extends base function
      *

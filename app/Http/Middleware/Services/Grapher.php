@@ -40,8 +40,9 @@ use IXP\Services\Grapher\Graph\{
     VirtualInterface  as VirtIntGraph,  // member LAG
     Customer          as CustomerGraph, // member agg over all physical ports
     VlanInterface     as VlanIntGraph,  // member VLAN interface
+    MultiP2p          as MultiP2pGraph,
     P2p               as P2pGraph,
-    Latency           as LatencyGraph
+    Latency           as LatencyGraph,
 };
 /**
  * Middleware: Grapher
@@ -171,16 +172,22 @@ class Grapher
                 $graph = $grapher->p2p( $srcvlanint, $dstvlanint );
                 break;
 
+            case 'multip2p':
+                $srcCust = MultiP2pGraph::processParameterSrcCustomer( (int)$request->input('scid', 0) );
+                $dstCust = MultiP2pGraph::processParameterDstCustomer( (int)$request->input('dcid', 0) );
+                $graph = $grapher->multiP2p( $srcCust, $dstCust );
+                break;
+
             default:
                 abort(404, 'No such graph type');
         }
 
+        /** @var Graph $graph */
         $graph->setPeriod(   $graph->processParameterPeriod(   $request->period ) );
         $graph->setCategory( $graph->processParameterCategory( $request->category ) );
         $graph->setProtocol( $graph->processParameterProtocol( $request->protocol ) );
         $graph->setType(     $graph->processParameterType(     $request->type ) );
 
-        /** @var Graph $graph */
         return $graph;
     }
 }
