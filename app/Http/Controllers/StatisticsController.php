@@ -31,7 +31,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Access\AuthorizationException;
 
 use IXP\Exceptions\Services\Grapher\ParameterException;
-use IXP\Http\Requests\StatisticsP2pRequest;
 use IXP\IXP;
 use Illuminate\Http\{
     Request,
@@ -771,11 +770,6 @@ class StatisticsController extends Controller
             'c'            => $r->custid ? $customers[$r->custid] : false,
         ] );
     }
-
-
-
-
-
 
     /**
      * Show daily traffic for customers in a table.
