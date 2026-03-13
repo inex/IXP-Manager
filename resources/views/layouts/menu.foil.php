@@ -3,7 +3,7 @@
         <ul class="nav d-inline ">
             <form class="bd-search d-flex align-items-center tw-border-grey-lighter tw-border-r-4 tw-py-4" method="get" action="<?= route( 'search' ) ?>">
                 <div class="input-group tw-pr-4">
-                    <input type="text" class="form-control" placeholder="Search for..." name="search">
+                    <input type="text" class="form-control" aria-label="Search" placeholder="Search for..." name="search">
                     <div class="input-group-append">
                         <button class="btn btn-light input-group-text" type="button" id="searchHelp" data-toggle="modal" data-target="#searchHelpModal">
                             <i class="fa fa-question-circle"></i>
