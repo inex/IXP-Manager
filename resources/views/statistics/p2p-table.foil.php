@@ -74,12 +74,13 @@
                         </div>
                     </div>
                 <?php else: ?>
+
                     <table id="ixpDataTable" class="table table-striped table-bordered collapse" style="width:100%">
                         <thead class="thead-dark">
                             <?php if( $c->isIPvXEnabled(4) && $c->isIPvXEnabled(6) ): ?>
                             <tr>
                                 <th></th>
-                                <th></th>
+                                <th colspan="2"></th>
                                 <?php if( $c->isIPvXEnabled(4) && $c->isIPvXEnabled(6) ): ?>
                                 <th colspan="3">Total (IPv4 + IPv6)</th>
                                 <?php endif; ?>
@@ -94,6 +95,7 @@
                             <tr>
                                 <th></th>
                                 <th>Member</th>
+                                <th></th>
                                 <?php if( $c->isIPvXEnabled(4) && $c->isIPvXEnabled(6) ): ?>
                                 <th>Total</th>
                                 <th>In</th>
@@ -119,6 +121,15 @@
                                 <tr>
                                     <td><?= $s->peer_id ?></td>
                                     <td><?= $s->peer->abbreviatedName ?></td>
+                                    <td class="tw-text-center tw-align-middle">
+                                        <a href="<?= route( "statistics@p2p-totals",
+                                                ['srcCust' => $c->id,
+                                                 'dstCust' => $s->peer->id,
+                                                 'protocol' => $t->defaultChartProtocol
+                                                ] ) ?>">
+                                            <i class="fa fa-bar-chart fa-2x" ></i>
+                                        </a>
+                                    </td>
                                     <?php if( $c->isIPvXEnabled(4) && $c->isIPvXEnabled(6) ): ?>
                                     <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv4_total_in  + $s->ipv6_total_in + $s->ipv4_total_out + $s->ipv6_total_out ?></td>
                                     <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv4_total_in  + $s->ipv6_total_in  ?></td>

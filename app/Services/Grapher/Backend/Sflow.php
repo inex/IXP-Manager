@@ -386,7 +386,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
                     foreach( $graph->dstCustomer()->virtualInterfaces as $dvi ) {
                         foreach( $dvi->vlanInterfaces as $dvli ) {
 
-                            // Take only dvi's matching this vlanid.
+                            // Take only dvli's matching this vlanid.
                             if( $svli->vlanid !== $dvli->vlanid) {
                                 continue;
                             }

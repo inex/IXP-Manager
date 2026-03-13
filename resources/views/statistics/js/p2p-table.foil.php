@@ -72,10 +72,10 @@
 
         // Determine which table columns contain data transfer volume and need to be scaled.
         let transferTargets;
-        if (colCount === 5) {
-            transferTargets = [2, 3, 4];
+        if (colCount === 6) {
+            transferTargets = [3, 4, 5];
         } else {
-            transferTargets = [2, 3, 4, 5, 6, 7, 8, 9, 10];
+            transferTargets = [3, 4, 5, 6, 7, 8, 9, 10, 11];
         }
 
         tableList.dataTable({
@@ -85,10 +85,11 @@
 
             "bAutoWidth": false,
 
-            "aaSorting": [[4, 'desc']],
+            "aaSorting": [[5, 'desc']],
             "iDisplayLength": 100,
             "aoColumnDefs": [
                 {"bVisible": false, "aTargets": [0]},
+                {"orderable": false, "aTargets": [2]},
                 {"render": myScaleTotal, "aTargets": transferTargets}
             ]
         });
