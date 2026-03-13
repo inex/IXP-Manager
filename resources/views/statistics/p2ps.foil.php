@@ -217,7 +217,7 @@
                             </h4>
                         </div>
                         <div class="card-body">
-                            <a href="<?= route( 'statistics@p2p', [ 'srcVli' => $t->srcVli->id, 'dstVli' => $dvli->id ] )
+                            <a href="<?= route( 'statistics@p2p-get', [ 'srcVli' => $t->srcVli->id, 'dstVli' => $dvli->id ] )
                                 . '?category=' . $t->category
                                 . '&period='   . $t->period
                                 . '&protocol=' . $t->protocol
