@@ -16,7 +16,7 @@
             }
 
             if( switchId != null && switchId !== '' ) {
-                let url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/ports";
+                let url = "<?= url( '/admin/api/v4/switch' )?>/" + switchId + "/ports";
 
                 datas = {
                     types : [ <?= \IXP\Models\SwitchPort::TYPE_UNSET ?>, <?= \IXP\Models\SwitchPort::TYPE_CORE ?> ],
