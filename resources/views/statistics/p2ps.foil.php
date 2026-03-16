@@ -53,12 +53,12 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                    <ul class="navbar-nav">
-                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex" action="<?= route( 'statistics@p2ps', [ 'customer' => $this->c->id ] ) ?>" method="post">
+                    <form class="navbar-form navbar-left form-inline d-block d-lg-flex" action="<?= route( 'statistics@p2ps', [ 'customer' => $this->c->id ] ) ?>" method="post">
+                        <ul class="navbar-nav">
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">
 <!--                                    <label for="select_network" class="col-sm-4 col-lg-3">Interface:</label>-->
-                                    <select id="select_network" name="svli" class="form-control">
+                                    <select id="select_network" aria-label="VLAN Interface" name="svli" class="form-control">
                                         <?php foreach( $t->srcVlis as $vli ):
                                             /** @var $vli \IXP\Models\VlanInterface */?>
                                             <option value="<?= $vli->id ?>" <?php if( $t->srcVli->id === $vli->id ): ?> selected <?php endif; ?>  >
@@ -74,7 +74,7 @@
                                 <li class="nav-item">
                                     <div class="nav-link d-flex ">
 <!--                                        <label for="select_category" class="col-sm-4 col-lg-6">Category:</label>-->
-                                        <select id="select_category" name="category" class="form-control">
+                                        <select id="select_category" aria-label="Category" name="category" class="form-control">
                                             <?php foreach( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS_DESCS as $cvalue => $cname ): ?>
                                                 <option value="<?= $cvalue ?>" <?php if( $t->category === $cvalue ): ?> selected <?php endif; ?>  >
                                                     <?= $cname ?>
@@ -87,7 +87,7 @@
                                 <li class="nav-item">
                                     <div class="nav-link d-flex ">
 <!--                                        <label for="select_period" class="col-sm-4 col-lg-6">Period:</label>-->
-                                        <select id="select_period" name="period" class="form-control">
+                                        <select id="select_period" aria-label="Period" name="period" class="form-control">
                                             <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $pvalue => $pname ): ?>
                                                 <option value="<?= $pvalue ?>" <?php if( $t->period === $pvalue ): ?> selected <?php endif; ?>  >
                                                     <?= $pname ?>
@@ -100,7 +100,7 @@
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">
 <!--                                    <label for="select_protocol" class="col-sm-4 col-lg-6">Protocol:</label>-->
-                                    <select id="select_protocol" name="protocol" class="form-control">
+                                    <select id="select_protocol" aria-label="Protocol" name="protocol" class="form-control">
                                         <?php foreach( IXP\Services\Grapher\Graph::PROTOCOL_REAL_DESCS as $pvalue => $pname ): ?>
                                             <?php if( $t->srcVli->vlan->private || $t->srcVli->ipvxEnabled( $pvalue ) ): ?>
                                                 <option value="<?= $pvalue ?>" <?php if( $t->protocol === $pvalue ): ?> selected <?php endif; ?>  >
@@ -113,7 +113,7 @@
                             </li>
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">
-                                    <select id="select_show_graphs" name="show_graphs" class="form-control">
+                                    <select id="select_show_graphs" aria-label="Graphs toggle" name="show_graphs" class="form-control">
                                         <option value="show" <?php if(  $t->showGraphs ): ?> selected <?php endif; ?>  >Show Graphs</option>
                                         <option value="hide" <?php if( !$t->showGraphs ): ?> selected <?php endif; ?>  >Hide Graphs</option>
                                     </select>
@@ -121,7 +121,7 @@
                             </li>
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">
-                                    <select id="select_order_by" name="order_by" class="form-control">
+                                    <select id="select_order_by" aria-label="Order By" name="order_by" class="form-control">
                                         <option value="traffic" <?php if( $t->orderBy === 'traffic' ): ?> selected <?php endif; ?>  >Order by Traffic</option>
                                         <option value="name"    <?php if( $t->orderBy !== 'traffic' ): ?> selected <?php endif; ?>  >Order by Name</option>
                                     </select>
@@ -134,8 +134,8 @@
                             <div class="float-right">
                                 <a class="btn btn-white mr-2" href="<?= route( 'statistics@p2p-table', [ 'custid' => $t->c->id ] ) ?>">Table</a>
                             </div>
-                        </form>
-                    </ul>
+                        </ul>
+                    </form>
                 </div>
             </nav>
         </div>
