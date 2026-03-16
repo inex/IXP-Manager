@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.39, for Linux (aarch64)
+-- MySQL dump 10.13  Distrib 8.0.45, for Linux (aarch64)
 --
 -- Host: localhost    Database: ixp
 -- ------------------------------------------------------
--- Server version	8.0.39-0ubuntu0.24.04.1
+-- Server version	8.0.45-0ubuntu0.24.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -248,6 +248,49 @@ LOCK TABLES `bgpsessiondata` WRITE;
 /*!40000 ALTER TABLE `bgpsessiondata` DISABLE KEYS */;
 /*!40000 ALTER TABLE `bgpsessiondata` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`ixp`@`%`*/ /*!50003 TRIGGER `bgp_sessions_update` AFTER INSERT ON `bgpsessiondata` FOR EACH ROW BEGIN
+
+    IF NOT EXISTS ( SELECT 1 FROM bgp_sessions WHERE srcipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND dstipaddressid = NEW.dstipaddressid ) THEN
+			INSERT INTO bgp_sessions
+                ( srcipaddressid, protocol, dstipaddressid, packetcount, last_seen, source )
+			VALUES
+                ( NEW.srcipaddressid, NEW.protocol, NEW.dstipaddressid, NEW.packetcount, NOW(), NEW.source );
+    ELSE
+			UPDATE bgp_sessions SET
+				last_seen   = NOW(),
+				packetcount = packetcount + NEW.packetcount
+			WHERE
+				srcipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND dstipaddressid = NEW.dstipaddressid;
+    END IF;
+
+    IF NOT EXISTS ( SELECT 1 FROM bgp_sessions WHERE dstipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND srcipaddressid = NEW.dstipaddressid ) THEN
+			INSERT INTO bgp_sessions
+                ( srcipaddressid, protocol, dstipaddressid, packetcount, last_seen, source )
+			VALUES
+                ( NEW.dstipaddressid, NEW.protocol, NEW.srcipaddressid, NEW.packetcount, NOW(), NEW.source );
+    ELSE
+			UPDATE bgp_sessions SET
+				last_seen   = NOW(),
+				packetcount = packetcount + NEW.packetcount
+			WHERE
+				dstipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND srcipaddressid = NEW.dstipaddressid;
+    END IF;
+
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `cabinet`
@@ -451,8 +494,6 @@ CREATE TABLE `contact` (
   `email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `phone` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `mobile` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `facilityaccess` tinyint(1) NOT NULL DEFAULT '0',
-  `mayauthorize` tinyint(1) NOT NULL DEFAULT '0',
   `updated_at` datetime DEFAULT NULL,
   `lastupdatedby` int DEFAULT NULL,
   `creator` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
@@ -471,7 +512,7 @@ CREATE TABLE `contact` (
 
 LOCK TABLES `contact` WRITE;
 /*!40000 ALTER TABLE `contact` DISABLE KEYS */;
-INSERT INTO `contact` VALUES (1,1,'Vagrant Superuser','vagrant@example.net',NULL,NULL,0,0,'2024-08-21 08:53:33',NULL,NULL,'2024-08-21 08:53:33',NULL,NULL);
+INSERT INTO `contact` VALUES (1,1,'Vagrant Superuser','vagrant@example.net',NULL,NULL,'2024-08-21 08:53:33',NULL,NULL,'2024-08-21 08:53:33',NULL,NULL);
 /*!40000 ALTER TABLE `contact` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -649,7 +690,8 @@ CREATE TABLE `cust` (
   `type` int DEFAULT NULL,
   `shortname` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `autsys` int DEFAULT NULL,
-  `maxprefixes` int DEFAULT NULL,
+  `maxprefixes` int unsigned DEFAULT NULL,
+  `maxprefixesv6` int unsigned DEFAULT NULL,
   `peeringemail` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `nocphone` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `noc24hphone` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
@@ -698,7 +740,7 @@ CREATE TABLE `cust` (
 
 LOCK TABLES `cust` WRITE;
 /*!40000 ALTER TABLE `cust` DISABLE KEYS */;
-INSERT INTO `cust` VALUES (1,'VAGRANTIX',3,'VAGRANTIX',65500,100,'peering@example.net','12345678','12345678',NULL,'noc@example.net','24x7','',NULL,NULL,'mandatory','http://127.0.0.1:8088','2024-08-21',NULL,1,1,NULL,NULL,1,1,NULL,'VAGRANTIX','UNKNOWN',NULL,0,0,0,1,'2024-08-21 13:51:52','2024-08-21 13:51:52'),(2,'AS112',4,'dnsoarc112',112,20,'peering@example.com',NULL,NULL,NULL,'noc@example.com',NULL,NULL,3,'AS112','open','https://www.as112.net/','2024-01-01',NULL,1,1,1,'1',2,2,NULL,'AS112','NO',NULL,0,0,0,1,'2024-08-21 19:39:41','2024-08-21 19:50:10'),(3,'NREN',1,'nren',1213,100,'peering@example.com',NULL,NULL,NULL,'noc@example.com',NULL,NULL,1,'AS-HEANET','selective','https://nren.example.com/','2024-08-01',NULL,1,1,1,'1',3,3,NULL,'NREN','YES',NULL,0,0,0,1,'2024-08-21 20:08:58','2024-08-21 21:03:32'),(4,'Eyeball ISP',1,'eyeballisp',25441,500,'peering@example.com',NULL,NULL,NULL,'noc@example.com',NULL,NULL,1,'AS-IBIS','open','https://eyeballisp.example.com/','2024-01-01',NULL,1,1,NULL,'1',4,4,NULL,'Eyeball ISP','YES',NULL,0,0,0,1,'2024-08-21 20:27:04','2024-08-21 20:27:04'),(5,'CDN',1,'cdn',2906,500,'peering@example.com',NULL,NULL,NULL,'noc@example.com',NULL,NULL,3,'AS-NFLX','open','https://cdn.example.com/','2024-02-01',NULL,1,1,NULL,'1',5,5,NULL,'CDN','YES',NULL,0,0,0,1,'2024-08-21 20:33:17','2024-08-21 20:33:17'),(6,'Regional WISP',1,'regionalwisp',39093,10,'peering@example.com',NULL,NULL,NULL,'noc@example.com',NULL,NULL,1,'AS-WESTNET','open','http://regionalwisp.example.com/','2024-03-01',NULL,1,1,1,'1',6,6,NULL,'R-WISP','YES',NULL,0,0,0,1,'2024-08-21 20:48:58','2024-08-21 20:52:16'),(7,'VAGRANTIX Route Servers',3,'routeservers',65501,100000,'peering@example.com',NULL,NULL,NULL,'noc@example.com',NULL,NULL,1,NULL,'open','https://vagrantix.example.com/','2024-01-01',NULL,1,1,NULL,'1',7,7,NULL,'VAGRANTIX RS','YES',NULL,0,0,0,1,'2024-08-21 21:04:53','2024-08-21 21:04:53'),(8,'Associate Member',2,'associate',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'https://associate.example.com/','2024-04-01',NULL,2,1,NULL,'1',8,8,NULL,'Associate Member','UNKNOWN',NULL,0,0,0,1,'2024-08-21 21:10:32','2024-08-21 21:10:32');
+INSERT INTO `cust` VALUES (1,'VAGRANTIX',3,'VAGRANTIX',65500,100,100,'peering@example.net','12345678','12345678',NULL,'noc@example.net','24x7','',NULL,NULL,'mandatory','http://127.0.0.1:8088','2024-08-21',NULL,1,1,NULL,NULL,1,1,NULL,'VAGRANTIX','UNKNOWN',NULL,0,0,0,1,'2024-08-21 13:51:52','2024-08-21 13:51:52'),(2,'AS112',4,'dnsoarc112',112,20,20,'peering@example.com',NULL,NULL,NULL,'noc@example.com',NULL,NULL,3,'AS112','open','https://www.as112.net/','2024-01-01',NULL,1,1,1,'1',2,2,NULL,'AS112','NO',NULL,0,0,0,1,'2024-08-21 19:39:41','2024-08-21 19:50:10'),(3,'NREN',1,'nren',1213,100,100,'peering@example.com',NULL,NULL,NULL,'noc@example.com',NULL,NULL,1,'AS-HEANET','selective','https://nren.example.com/','2024-08-01',NULL,1,1,1,'1',3,3,NULL,'NREN','YES',NULL,0,0,0,1,'2024-08-21 20:08:58','2024-08-21 21:03:32'),(4,'Eyeball ISP',1,'eyeballisp',25441,500,500,'peering@example.com',NULL,NULL,NULL,'noc@example.com',NULL,NULL,1,'AS-IBIS','open','https://eyeballisp.example.com/','2024-01-01',NULL,1,1,NULL,'1',4,4,NULL,'Eyeball ISP','YES',NULL,0,0,0,1,'2024-08-21 20:27:04','2024-08-21 20:27:04'),(5,'CDN',1,'cdn',2906,500,500,'peering@example.com',NULL,NULL,NULL,'noc@example.com',NULL,NULL,3,'AS-NFLX','open','https://cdn.example.com/','2024-02-01',NULL,1,1,NULL,'1',5,5,NULL,'CDN','YES',NULL,0,0,0,1,'2024-08-21 20:33:17','2024-08-21 20:33:17'),(6,'Regional WISP',1,'regionalwisp',39093,10,10,'peering@example.com',NULL,NULL,NULL,'noc@example.com',NULL,NULL,1,'AS-WESTNET','open','http://regionalwisp.example.com/','2024-03-01',NULL,1,1,1,'1',6,6,NULL,'R-WISP','YES',NULL,0,0,0,1,'2024-08-21 20:48:58','2024-08-21 20:52:16'),(7,'VAGRANTIX Route Servers',3,'routeservers',65501,100000,100000,'peering@example.com',NULL,NULL,NULL,'noc@example.com',NULL,NULL,1,NULL,'open','https://vagrantix.example.com/','2024-01-01',NULL,1,1,NULL,'1',7,7,NULL,'VAGRANTIX RS','YES',NULL,0,0,0,1,'2024-08-21 21:04:53','2024-08-21 21:04:53'),(8,'Associate Member',2,'associate',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'https://associate.example.com/','2024-04-01',NULL,2,1,NULL,'1',8,8,NULL,'Associate Member','UNKNOWN',NULL,0,0,0,1,'2024-08-21 21:10:32','2024-08-21 21:10:32');
 /*!40000 ALTER TABLE `cust` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1061,6 +1103,7 @@ CREATE TABLE `infrastructure` (
   `isPrimary` tinyint(1) NOT NULL DEFAULT '0',
   `peeringdb_ix_id` bigint DEFAULT NULL,
   `ixf_ix_id` bigint DEFAULT NULL,
+  `exclude_from_ixf_export` tinyint(1) NOT NULL DEFAULT '0',
   `country` varchar(2) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `notes` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -1076,7 +1119,7 @@ CREATE TABLE `infrastructure` (
 
 LOCK TABLES `infrastructure` WRITE;
 /*!40000 ALTER TABLE `infrastructure` DISABLE KEYS */;
-INSERT INTO `infrastructure` VALUES (1,'VAGRANT IX1','VIX1',1,NULL,NULL,NULL,NULL,'2024-08-21 13:46:32','2024-08-21 13:46:32'),(2,'VAGRANT IX2','VIX2',0,NULL,NULL,'IE',NULL,'2024-08-21 19:17:13','2024-08-21 19:17:13');
+INSERT INTO `infrastructure` VALUES (1,'VAGRANT IX1','VIX1',1,NULL,NULL,0,NULL,NULL,'2024-08-21 13:46:32','2024-08-21 13:46:32'),(2,'VAGRANT IX2','VIX2',0,NULL,NULL,0,'IE',NULL,'2024-08-21 19:17:13','2024-08-21 19:17:13');
 /*!40000 ALTER TABLE `infrastructure` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1447,7 +1490,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1456,7 +1499,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2020_06_01_143931_database_schema_at_end_v5',1),(2,'2020_07_21_094354_create_route_server_filters',1),(3,'2020_09_03_153723_add_timestamps',1),(4,'2020_09_18_095136_delete_ixp_table',1),(5,'2020_11_16_102415_database_fixes',1),(6,'2021_03_12_150418_create_log_table',1),(7,'2021_03_30_124916_create_atlas_probes',1),(8,'2021_03_30_125238_create_atlas_runs',1),(9,'2021_03_30_125422_create_atlas_measurements',1),(10,'2021_03_30_125723_create_atlas_results',1),(11,'2021_04_14_101948_update_timestamps',1),(12,'2021_04_14_125742_user_pref',1),(13,'2021_05_18_085721_add_note_infrastructure',1),(14,'2021_05_18_114206_update_pp_prefix_size',1),(15,'2021_06_11_141137_update_db_doctrine2eloquent',1),(16,'2021_07_20_134716_fix_last_updated_and_timestamps',1),(17,'2021_09_16_195333_add_rate_limit_col_to_physint',1),(18,'2021_09_17_144421_modernise_irrdb_conf_table',1),(19,'2021_09_21_100354_create_route_server_filters_prod',1),(20,'2021_09_21_162700_rs_pairing',1),(21,'2022_02_12_183121_add_colo_pp_type_patch_panel',1),(22,'2023_09_26_191150_add_registration_details',1),(23,'2024_03_18_191322_add_export_to_ixf_vlan',1),(24,'2024_08_10_125003_create_irrdb_update_logs',1);
+INSERT INTO `migrations` VALUES (1,'2020_06_01_143931_database_schema_at_end_v5',1),(2,'2020_07_21_094354_create_route_server_filters',1),(3,'2020_09_03_153723_add_timestamps',1),(4,'2020_09_18_095136_delete_ixp_table',1),(5,'2020_11_16_102415_database_fixes',1),(6,'2021_03_12_150418_create_log_table',1),(7,'2021_03_30_124916_create_atlas_probes',1),(8,'2021_03_30_125238_create_atlas_runs',1),(9,'2021_03_30_125422_create_atlas_measurements',1),(10,'2021_03_30_125723_create_atlas_results',1),(11,'2021_04_14_101948_update_timestamps',1),(12,'2021_04_14_125742_user_pref',1),(13,'2021_05_18_085721_add_note_infrastructure',1),(14,'2021_05_18_114206_update_pp_prefix_size',1),(15,'2021_06_11_141137_update_db_doctrine2eloquent',1),(16,'2021_07_20_134716_fix_last_updated_and_timestamps',1),(17,'2021_09_16_195333_add_rate_limit_col_to_physint',1),(18,'2021_09_17_144421_modernise_irrdb_conf_table',1),(19,'2021_09_21_100354_create_route_server_filters_prod',1),(20,'2021_09_21_162700_rs_pairing',1),(21,'2022_02_12_183121_add_colo_pp_type_patch_panel',1),(22,'2023_09_26_191150_add_registration_details',1),(23,'2024_03_18_191322_add_export_to_ixf_vlan',1),(24,'2024_08_10_125003_create_irrdb_update_logs',1),(25,'2014_10_12_100000_create_password_resets_table',2),(26,'2018_08_08_100000_create_telescope_entries_table',2),(27,'2019_03_25_211956_create_failed_jobs_table',2),(28,'2020_02_06_204556_create_docstore_directories',2),(29,'2020_02_06_204608_create_docstore_files',2),(30,'2020_02_06_204911_create_docstore_logs',2),(31,'2020_03_09_110945_create_docstore_customer_directories',2),(32,'2020_03_09_111505_create_docstore_customer_files',2),(33,'2024_05_29_102028_reset-views',2),(34,'2024_09_05_111855_create_p2p_daily_stats_table',2),(35,'2025_09_01_102636_add_ipv6_max_prefixes',2),(36,'2025_11_11_085835_add_exclude_from_ixf_export_to_infrastructure',2),(37,'2026_02_16_205211_remove_legacy_columns_from_contacts',2);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1549,6 +1592,44 @@ CREATE TABLE `oui` (
 LOCK TABLES `oui` WRITE;
 /*!40000 ALTER TABLE `oui` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oui` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `p2p_daily_stats`
+--
+
+DROP TABLE IF EXISTS `p2p_daily_stats`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `p2p_daily_stats` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `day` date NOT NULL,
+  `cust_id` int NOT NULL,
+  `peer_id` int NOT NULL,
+  `ipv4_total_in` bigint unsigned DEFAULT NULL,
+  `ipv4_total_out` bigint unsigned DEFAULT NULL,
+  `ipv6_total_in` bigint unsigned DEFAULT NULL,
+  `ipv6_total_out` bigint unsigned DEFAULT NULL,
+  `ipv4_max_in` bigint unsigned DEFAULT NULL,
+  `ipv4_max_out` bigint unsigned DEFAULT NULL,
+  `ipv6_max_in` bigint unsigned DEFAULT NULL,
+  `ipv6_max_out` bigint unsigned DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `p2p_daily_stats_day_cust_id_peer_id_unique` (`day`,`cust_id`,`peer_id`),
+  KEY `p2p_daily_stats_cust_id_foreign` (`cust_id`),
+  CONSTRAINT `p2p_daily_stats_cust_id_foreign` FOREIGN KEY (`cust_id`) REFERENCES `cust` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `p2p_daily_stats`
+--
+
+LOCK TABLES `p2p_daily_stats` WRITE;
+/*!40000 ALTER TABLE `p2p_daily_stats` DISABLE KEYS */;
+/*!40000 ALTER TABLE `p2p_daily_stats` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2672,6 +2753,122 @@ INSERT INTO `vendor` VALUES (1,'Allied Telesyn','AlliedTel','alliedtel',NULL,'20
 UNLOCK TABLES;
 
 --
+-- Temporary view structure for view `view_cust_current_active`
+--
+
+DROP TABLE IF EXISTS `view_cust_current_active`;
+/*!50001 DROP VIEW IF EXISTS `view_cust_current_active`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `view_cust_current_active` AS SELECT 
+ 1 AS `id`,
+ 1 AS `name`,
+ 1 AS `type`,
+ 1 AS `shortname`,
+ 1 AS `autsys`,
+ 1 AS `maxprefixes`,
+ 1 AS `peeringemail`,
+ 1 AS `nocphone`,
+ 1 AS `noc24hphone`,
+ 1 AS `nocfax`,
+ 1 AS `nocemail`,
+ 1 AS `nochours`,
+ 1 AS `nocwww`,
+ 1 AS `irrdb`,
+ 1 AS `peeringmacro`,
+ 1 AS `peeringpolicy`,
+ 1 AS `corpwww`,
+ 1 AS `datejoin`,
+ 1 AS `dateleave`,
+ 1 AS `status`,
+ 1 AS `activepeeringmatrix`,
+ 1 AS `lastupdatedby`,
+ 1 AS `creator`,
+ 1 AS `company_registered_detail_id`,
+ 1 AS `company_billing_details_id`,
+ 1 AS `peeringmacrov6`,
+ 1 AS `abbreviatedName`,
+ 1 AS `MD5Support`,
+ 1 AS `reseller`,
+ 1 AS `isReseller`,
+ 1 AS `in_manrs`,
+ 1 AS `in_peeringdb`,
+ 1 AS `peeringdb_oauth`,
+ 1 AS `created_at`,
+ 1 AS `updated_at`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary view structure for view `view_switch_details_by_custid`
+--
+
+DROP TABLE IF EXISTS `view_switch_details_by_custid`;
+/*!50001 DROP VIEW IF EXISTS `view_switch_details_by_custid`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `view_switch_details_by_custid` AS SELECT 
+ 1 AS `id`,
+ 1 AS `custid`,
+ 1 AS `virtualinterfacename`,
+ 1 AS `virtualinterfaceid`,
+ 1 AS `status`,
+ 1 AS `speed`,
+ 1 AS `duplex`,
+ 1 AS `notes`,
+ 1 AS `switchport`,
+ 1 AS `switchportid`,
+ 1 AS `spifname`,
+ 1 AS `switch`,
+ 1 AS `switchhostname`,
+ 1 AS `switchid`,
+ 1 AS `vendorid`,
+ 1 AS `snmppasswd`,
+ 1 AS `infrastructure`,
+ 1 AS `cabinet`,
+ 1 AS `colocabinet`,
+ 1 AS `locationname`,
+ 1 AS `locationshortname`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary view structure for view `view_vlaninterface_details_by_custid`
+--
+
+DROP TABLE IF EXISTS `view_vlaninterface_details_by_custid`;
+/*!50001 DROP VIEW IF EXISTS `view_vlaninterface_details_by_custid`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `view_vlaninterface_details_by_custid` AS SELECT 
+ 1 AS `id`,
+ 1 AS `custid`,
+ 1 AS `virtualinterfaceid`,
+ 1 AS `status`,
+ 1 AS `virtualinterfacename`,
+ 1 AS `vlan`,
+ 1 AS `vlanname`,
+ 1 AS `vlanid`,
+ 1 AS `vlaninterfaceid`,
+ 1 AS `ipv4enabled`,
+ 1 AS `ipv4hostname`,
+ 1 AS `ipv4canping`,
+ 1 AS `ipv4monitorrcbgp`,
+ 1 AS `ipv6enabled`,
+ 1 AS `ipv6hostname`,
+ 1 AS `ipv6canping`,
+ 1 AS `ipv6monitorrcbgp`,
+ 1 AS `as112client`,
+ 1 AS `mcastenabled`,
+ 1 AS `ipv4bgpmd5secret`,
+ 1 AS `ipv6bgpmd5secret`,
+ 1 AS `rsclient`,
+ 1 AS `irrdbfilter`,
+ 1 AS `busyhost`,
+ 1 AS `notes`,
+ 1 AS `ipv4address`,
+ 1 AS `ipv6address`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `virtualinterface`
 --
 
@@ -2765,7 +2962,8 @@ CREATE TABLE `vlaninterface` (
   `bgpmd5secret` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `ipv4bgpmd5secret` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `ipv6bgpmd5secret` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `maxbgpprefix` int DEFAULT NULL,
+  `ipv4maxbgpprefix` int unsigned DEFAULT NULL,
+  `ipv6maxbgpprefix` int unsigned DEFAULT NULL,
   `rsclient` tinyint(1) DEFAULT NULL,
   `ipv4canping` tinyint(1) DEFAULT NULL,
   `ipv6canping` tinyint(1) DEFAULT NULL,
@@ -2795,9 +2993,63 @@ CREATE TABLE `vlaninterface` (
 
 LOCK TABLES `vlaninterface` WRITE;
 /*!40000 ALTER TABLE `vlaninterface` DISABLE KEYS */;
-INSERT INTO `vlaninterface` VALUES (1,7,7,1,1,1,'vagrantix1.as112.example.net',1,'vagrantix1.as112.example.net',0,1,NULL,NULL,NULL,NULL,1,1,1,1,1,0,0,NULL,0,'2024-08-21 19:41:21','2024-08-21 19:41:21'),(2,71,71,2,2,1,'vagrantix2.as112.example.net',1,'vagrantix2.as112.example.net',0,1,NULL,NULL,NULL,NULL,1,1,1,1,1,0,0,NULL,0,'2024-08-21 19:42:49','2024-08-21 19:42:49'),(3,11,11,3,1,1,'vagrantix1.nren.example.net',1,'vagrantix1.nren.example.net',0,1,NULL,'iKHFHvNSzohx','iKHFHvNSzohx',NULL,1,1,1,1,1,1,0,NULL,0,'2024-08-21 20:10:03','2024-08-21 20:10:03'),(4,75,75,4,2,1,'vagrantix2.nren.example.net',1,'vagrantix2.nren.example.net',0,1,NULL,'iKHFHvNSzohx','iKHFHvNSzohx',NULL,1,1,1,1,1,1,0,NULL,0,'2024-08-21 20:17:05','2024-08-21 20:17:05'),(5,12,12,5,1,1,'vagrantix1.eyeballisp.example.net',1,'vagrantix1.eyeballisp.example.net',0,1,NULL,'lR8Z0s2PaGY4','lR8Z0s2PaGY4',NULL,1,1,1,1,1,1,0,NULL,0,'2024-08-21 20:28:11','2024-08-21 20:28:11'),(6,13,13,6,1,1,'vagrantix1.eyeballisp2.example.net',1,'vagrantix1.eyeballisp2.example.net',0,1,NULL,'lR8Z0s2PaGY4','lR8Z0s2PaGY4',NULL,1,1,1,1,1,1,0,NULL,0,'2024-08-21 20:29:29','2024-08-21 20:29:29'),(7,76,76,7,2,1,'vagrantix2.eyeballisp.example.net',1,'vagrantix2.eyeballisp.example.net',0,1,NULL,'lR8Z0s2PaGY4','lR8Z0s2PaGY4',NULL,1,1,1,1,1,1,0,NULL,0,'2024-08-21 20:30:18','2024-08-21 20:30:18'),(8,14,14,8,1,1,'vagrantix1.cdn.example.net',1,'vagrantix1.cdn.example.net',0,1,NULL,'wpwf4xw2FFTa','wpwf4xw2FFTa',NULL,1,1,1,1,1,0,0,NULL,0,'2024-08-21 20:39:20','2024-08-21 20:39:20'),(9,78,78,9,2,1,'vagrantix2.cdn.example.net',1,'vagrantix2.cdn.example.net',0,1,NULL,'wpwf4xw2FFTa','wpwf4xw2FFTa',NULL,1,1,1,1,1,0,0,NULL,0,'2024-08-21 20:40:24','2024-08-21 20:40:24'),(10,15,NULL,10,1,1,'vagrantix1.regionalwisp.example.net',0,NULL,0,1,NULL,'32o5OVIKDmKN',NULL,NULL,1,1,0,1,0,1,0,NULL,0,'2024-08-21 20:51:52','2024-08-21 20:51:52'),(11,129,129,11,1,1,'rc1.vagrantix1.example.net',1,'rc1.vagrantix1.example.net',0,0,NULL,NULL,NULL,NULL,1,1,1,1,1,1,0,NULL,0,'2024-08-21 20:56:19','2024-08-21 20:56:32'),(12,130,130,11,3,1,'rc1.vagrantix1.example.net',1,'rc1.vagrantix1.example.net',0,0,NULL,NULL,NULL,100,1,1,1,1,1,1,0,NULL,0,'2024-08-21 20:57:25','2024-08-21 20:57:25'),(13,131,131,12,2,1,'rc1.vagrantix2.example.net',1,'rc1.vagrantix2.example.net',0,0,NULL,NULL,NULL,NULL,1,1,1,1,1,1,0,NULL,0,'2024-08-21 21:00:47','2024-08-21 21:00:47'),(14,132,132,12,4,1,'rc1.vagrantix2.example.net',1,'rc1.vagrantix2.example.net',0,0,NULL,NULL,NULL,100,1,1,1,1,1,1,0,NULL,0,'2024-08-21 21:01:21','2024-08-21 21:01:21'),(15,9,9,13,1,1,'rs1.vagrantix1.example.net',1,'rs1.vagrantix1.example.net',0,0,NULL,NULL,NULL,NULL,0,1,1,1,1,1,0,NULL,0,'2024-08-21 21:05:55','2024-08-21 21:05:55'),(16,10,10,14,1,1,'rs2.vagrantix1.example.net',1,'rs2.vagrantix1.example.net',0,0,NULL,NULL,NULL,NULL,0,1,1,1,1,1,0,NULL,0,'2024-08-21 21:07:00','2024-08-21 21:07:00'),(17,73,73,15,2,1,'rs1.vagrantix2.example.net',1,'rs1.vagrantix2.example.net',0,0,NULL,NULL,NULL,NULL,0,1,1,1,1,1,0,NULL,0,'2024-08-21 21:07:57','2024-08-21 21:07:57');
+INSERT INTO `vlaninterface` VALUES (1,7,7,1,1,1,'vagrantix1.as112.example.net',1,'vagrantix1.as112.example.net',0,1,NULL,NULL,NULL,NULL,NULL,1,1,1,1,1,0,0,NULL,0,'2024-08-21 19:41:21','2024-08-21 19:41:21'),(2,71,71,2,2,1,'vagrantix2.as112.example.net',1,'vagrantix2.as112.example.net',0,1,NULL,NULL,NULL,NULL,NULL,1,1,1,1,1,0,0,NULL,0,'2024-08-21 19:42:49','2024-08-21 19:42:49'),(3,11,11,3,1,1,'vagrantix1.nren.example.net',1,'vagrantix1.nren.example.net',0,1,NULL,'iKHFHvNSzohx','iKHFHvNSzohx',NULL,NULL,1,1,1,1,1,1,0,NULL,0,'2024-08-21 20:10:03','2024-08-21 20:10:03'),(4,75,75,4,2,1,'vagrantix2.nren.example.net',1,'vagrantix2.nren.example.net',0,1,NULL,'iKHFHvNSzohx','iKHFHvNSzohx',NULL,NULL,1,1,1,1,1,1,0,NULL,0,'2024-08-21 20:17:05','2024-08-21 20:17:05'),(5,12,12,5,1,1,'vagrantix1.eyeballisp.example.net',1,'vagrantix1.eyeballisp.example.net',0,1,NULL,'lR8Z0s2PaGY4','lR8Z0s2PaGY4',NULL,NULL,1,1,1,1,1,1,0,NULL,0,'2024-08-21 20:28:11','2024-08-21 20:28:11'),(6,13,13,6,1,1,'vagrantix1.eyeballisp2.example.net',1,'vagrantix1.eyeballisp2.example.net',0,1,NULL,'lR8Z0s2PaGY4','lR8Z0s2PaGY4',NULL,NULL,1,1,1,1,1,1,0,NULL,0,'2024-08-21 20:29:29','2024-08-21 20:29:29'),(7,76,76,7,2,1,'vagrantix2.eyeballisp.example.net',1,'vagrantix2.eyeballisp.example.net',0,1,NULL,'lR8Z0s2PaGY4','lR8Z0s2PaGY4',NULL,NULL,1,1,1,1,1,1,0,NULL,0,'2024-08-21 20:30:18','2024-08-21 20:30:18'),(8,14,14,8,1,1,'vagrantix1.cdn.example.net',1,'vagrantix1.cdn.example.net',0,1,NULL,'wpwf4xw2FFTa','wpwf4xw2FFTa',NULL,NULL,1,1,1,1,1,0,0,NULL,0,'2024-08-21 20:39:20','2024-08-21 20:39:20'),(9,78,78,9,2,1,'vagrantix2.cdn.example.net',1,'vagrantix2.cdn.example.net',0,1,NULL,'wpwf4xw2FFTa','wpwf4xw2FFTa',NULL,NULL,1,1,1,1,1,0,0,NULL,0,'2024-08-21 20:40:24','2024-08-21 20:40:24'),(10,15,NULL,10,1,1,'vagrantix1.regionalwisp.example.net',0,NULL,0,1,NULL,'32o5OVIKDmKN',NULL,NULL,NULL,1,1,0,1,0,1,0,NULL,0,'2024-08-21 20:51:52','2024-08-21 20:51:52'),(11,129,129,11,1,1,'rc1.vagrantix1.example.net',1,'rc1.vagrantix1.example.net',0,0,NULL,NULL,NULL,NULL,NULL,1,1,1,1,1,1,0,NULL,0,'2024-08-21 20:56:19','2024-08-21 20:56:32'),(12,130,130,11,3,1,'rc1.vagrantix1.example.net',1,'rc1.vagrantix1.example.net',0,0,NULL,NULL,NULL,100,100,1,1,1,1,1,1,0,NULL,0,'2024-08-21 20:57:25','2024-08-21 20:57:25'),(13,131,131,12,2,1,'rc1.vagrantix2.example.net',1,'rc1.vagrantix2.example.net',0,0,NULL,NULL,NULL,NULL,NULL,1,1,1,1,1,1,0,NULL,0,'2024-08-21 21:00:47','2024-08-21 21:00:47'),(14,132,132,12,4,1,'rc1.vagrantix2.example.net',1,'rc1.vagrantix2.example.net',0,0,NULL,NULL,NULL,100,100,1,1,1,1,1,1,0,NULL,0,'2024-08-21 21:01:21','2024-08-21 21:01:21'),(15,9,9,13,1,1,'rs1.vagrantix1.example.net',1,'rs1.vagrantix1.example.net',0,0,NULL,NULL,NULL,NULL,NULL,0,1,1,1,1,1,0,NULL,0,'2024-08-21 21:05:55','2024-08-21 21:05:55'),(16,10,10,14,1,1,'rs2.vagrantix1.example.net',1,'rs2.vagrantix1.example.net',0,0,NULL,NULL,NULL,NULL,NULL,0,1,1,1,1,1,0,NULL,0,'2024-08-21 21:07:00','2024-08-21 21:07:00'),(17,73,73,15,2,1,'rs1.vagrantix2.example.net',1,'rs1.vagrantix2.example.net',0,0,NULL,NULL,NULL,NULL,NULL,0,1,1,1,1,1,0,NULL,0,'2024-08-21 21:07:57','2024-08-21 21:07:57');
 /*!40000 ALTER TABLE `vlaninterface` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Final view structure for view `view_cust_current_active`
+--
+
+/*!50001 DROP VIEW IF EXISTS `view_cust_current_active`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`ixp`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `view_cust_current_active` AS select `cu`.`id` AS `id`,`cu`.`name` AS `name`,`cu`.`type` AS `type`,`cu`.`shortname` AS `shortname`,`cu`.`autsys` AS `autsys`,`cu`.`maxprefixes` AS `maxprefixes`,`cu`.`peeringemail` AS `peeringemail`,`cu`.`nocphone` AS `nocphone`,`cu`.`noc24hphone` AS `noc24hphone`,`cu`.`nocfax` AS `nocfax`,`cu`.`nocemail` AS `nocemail`,`cu`.`nochours` AS `nochours`,`cu`.`nocwww` AS `nocwww`,`cu`.`irrdb` AS `irrdb`,`cu`.`peeringmacro` AS `peeringmacro`,`cu`.`peeringpolicy` AS `peeringpolicy`,`cu`.`corpwww` AS `corpwww`,`cu`.`datejoin` AS `datejoin`,`cu`.`dateleave` AS `dateleave`,`cu`.`status` AS `status`,`cu`.`activepeeringmatrix` AS `activepeeringmatrix`,`cu`.`lastupdatedby` AS `lastupdatedby`,`cu`.`creator` AS `creator`,`cu`.`company_registered_detail_id` AS `company_registered_detail_id`,`cu`.`company_billing_details_id` AS `company_billing_details_id`,`cu`.`peeringmacrov6` AS `peeringmacrov6`,`cu`.`abbreviatedName` AS `abbreviatedName`,`cu`.`MD5Support` AS `MD5Support`,`cu`.`reseller` AS `reseller`,`cu`.`isReseller` AS `isReseller`,`cu`.`in_manrs` AS `in_manrs`,`cu`.`in_peeringdb` AS `in_peeringdb`,`cu`.`peeringdb_oauth` AS `peeringdb_oauth`,`cu`.`created_at` AS `created_at`,`cu`.`updated_at` AS `updated_at` from `cust` `cu` where ((`cu`.`datejoin` <= curdate()) and ((`cu`.`dateleave` is null) or (`cu`.`dateleave` < '1970-01-01') or (`cu`.`dateleave` >= curdate())) and ((`cu`.`status` = 1) or (`cu`.`status` = 2))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `view_switch_details_by_custid`
+--
+
+/*!50001 DROP VIEW IF EXISTS `view_switch_details_by_custid`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`ixp`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `view_switch_details_by_custid` AS select `vi`.`id` AS `id`,`vi`.`custid` AS `custid`,concat(`vi`.`name`,`vi`.`channelgroup`) AS `virtualinterfacename`,`pi`.`virtualinterfaceid` AS `virtualinterfaceid`,`pi`.`status` AS `status`,`pi`.`speed` AS `speed`,`pi`.`duplex` AS `duplex`,`pi`.`notes` AS `notes`,`sp`.`name` AS `switchport`,`sp`.`id` AS `switchportid`,`sp`.`ifName` AS `spifname`,`sw`.`name` AS `switch`,`sw`.`hostname` AS `switchhostname`,`sw`.`id` AS `switchid`,`sw`.`vendorid` AS `vendorid`,`sw`.`snmppasswd` AS `snmppasswd`,`sw`.`infrastructure` AS `infrastructure`,`ca`.`name` AS `cabinet`,`ca`.`colocation` AS `colocabinet`,`lo`.`name` AS `locationname`,`lo`.`shortname` AS `locationshortname` from (((((`virtualinterface` `vi` join `physicalinterface` `pi`) join `switchport` `sp`) join `switch` `sw`) join `cabinet` `ca`) join `location` `lo`) where ((`pi`.`virtualinterfaceid` = `vi`.`id`) and (`pi`.`switchportid` = `sp`.`id`) and (`sp`.`switchid` = `sw`.`id`) and (`sw`.`cabinetid` = `ca`.`id`) and (`ca`.`locationid` = `lo`.`id`)) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `view_vlaninterface_details_by_custid`
+--
+
+/*!50001 DROP VIEW IF EXISTS `view_vlaninterface_details_by_custid`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`ixp`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `view_vlaninterface_details_by_custid` AS select `pi`.`id` AS `id`,`vi`.`custid` AS `custid`,`pi`.`virtualinterfaceid` AS `virtualinterfaceid`,`pi`.`status` AS `status`,concat(`vi`.`name`,`vi`.`channelgroup`) AS `virtualinterfacename`,`vlan`.`number` AS `vlan`,`vlan`.`name` AS `vlanname`,`vlan`.`id` AS `vlanid`,`vli`.`id` AS `vlaninterfaceid`,`vli`.`ipv4enabled` AS `ipv4enabled`,`vli`.`ipv4hostname` AS `ipv4hostname`,`vli`.`ipv4canping` AS `ipv4canping`,`vli`.`ipv4monitorrcbgp` AS `ipv4monitorrcbgp`,`vli`.`ipv6enabled` AS `ipv6enabled`,`vli`.`ipv6hostname` AS `ipv6hostname`,`vli`.`ipv6canping` AS `ipv6canping`,`vli`.`ipv6monitorrcbgp` AS `ipv6monitorrcbgp`,`vli`.`as112client` AS `as112client`,`vli`.`mcastenabled` AS `mcastenabled`,`vli`.`ipv4bgpmd5secret` AS `ipv4bgpmd5secret`,`vli`.`ipv6bgpmd5secret` AS `ipv6bgpmd5secret`,`vli`.`rsclient` AS `rsclient`,`vli`.`irrdbfilter` AS `irrdbfilter`,`vli`.`busyhost` AS `busyhost`,`vli`.`notes` AS `notes`,`v4`.`address` AS `ipv4address`,`v6`.`address` AS `ipv6address` from ((`physicalinterface` `pi` join `virtualinterface` `vi`) join (((`vlaninterface` `vli` left join `ipv4address` `v4` on((`vli`.`ipv4addressid` = `v4`.`id`))) left join `ipv6address` `v6` on((`vli`.`ipv6addressid` = `v6`.`id`))) left join `vlan` on((`vli`.`vlanid` = `vlan`.`id`)))) where ((`pi`.`virtualinterfaceid` = `vi`.`id`) and (`vli`.`virtualinterfaceid` = `vi`.`id`)) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -2808,4 +3060,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-23  9:05:56
+-- Dump completed on 2026-03-05 10:03:48
