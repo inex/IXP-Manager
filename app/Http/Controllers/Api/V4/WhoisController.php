@@ -50,12 +50,11 @@ class WhoisController extends Controller
      *
      * @return Response
      */
-    public function asn( Request $r, string $asn ): Response
+    public function asn( PeeringDb $pdb, Request $r, string $asn ): Response
     {
-        $response = Cache::remember( 'api-v4-whois-asn-' . $asn, config('ixp_api.whois.cache_ttl'), function () use ( $asn ) {
+        $response = Cache::remember( 'api-v4-whois-asn-' . $asn, config('ixp_api.whois.cache_ttl'), function () use ( $pdb, $asn ) {
 
             // try PeeringDB first
-            $pdb = new PeeringDb();
             if( $net = $pdb->getNetworkByAsn( $asn ) ) {
                 return $pdb->netAsAscii( $net );
             }
