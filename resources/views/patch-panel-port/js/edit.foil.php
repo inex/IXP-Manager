@@ -84,7 +84,7 @@
 
             if( dd_switch_port.val() !== '' ) {
                 let spid  = dd_switch_port.val();
-                let url   = "<?= url( '/api/v4/switch-port' ) ?>/" + spid + "/physical-interface";
+                let url   = "<?= url( '/admin/api/v4/switch-port' ) ?>/" + spid + "/physical-interface";
 
                 $.ajax( url )
                 .done( function( data ) {
@@ -111,7 +111,7 @@
         dd_switch_port.html(`<option value=''>Choose a Switch Port</option>`).trigger('change.select2');
 
         let cid = dd_customer.val();
-        let url = "<?= url('/api/v4/customer')?>/" + cid + "/switches";
+        let url = "<?= url('/admin/api/v4/customer')?>/" + cid + "/switches";
 
         $.ajax( url , {
             data: {
@@ -196,13 +196,13 @@
         dd_switch_port.html( `<option value=''>Loading please wait</option>` ).trigger('change.select2');
 
         <?php if ( $t->prewired ): ?>
-            url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/switch-port-prewired";
+            url = "<?= url( '/admin/api/v4/switch' )?>/" + switchId + "/switch-port-prewired";
             datas = {
                 switchId: switchId,
                 spId: dd_switch_port.val()
             };
         <?php else: ?>
-            url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/switch-port-for-ppp";
+            url = "<?= url( '/admin/api/v4/switch' )?>/" + switchId + "/switch-port-for-ppp";
             datas = {
                 switchId: switchId,
                 custId: dd_customer.val(),
@@ -304,7 +304,7 @@
             let option = '';
             dd_customer.html( `<option value=''>Loading please wait</option>` ).trigger('change.select2');
 
-            $.ajax( "<?= url( '/api/v4/switch-port' ) ?>/" + switchPortId + "/customer" )
+            $.ajax( "<?= url( '/admin/api/v4/switch-port' ) ?>/" + switchPortId + "/customer" )
             .done( function( data ) {
                 if( data.customer[ 'nb' ] > 0 ) {
                     option = `<option value='${data.customer[ 'id']}'>${data.customer[ 'name']}</option>`;
