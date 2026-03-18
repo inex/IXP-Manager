@@ -294,7 +294,7 @@ class PatchPanelPort extends Model
     /**
      * Get the Patch Panel that owns this patch panel port
      *
-     * @psalm-return BelongsTo<PatchPanel>
+     * @psalm-return BelongsTo<PatchPanel, self>
      */
     public function patchPanel(): BelongsTo
     {
@@ -304,7 +304,7 @@ class PatchPanelPort extends Model
     /**
      * Get the switch port that owns this patch panel port
      *
-     * @psalm-return BelongsTo<SwitchPort>
+     * @psalm-return BelongsTo<SwitchPort, self>
      */
     public function switchPort(): BelongsTo
     {
@@ -314,7 +314,7 @@ class PatchPanelPort extends Model
     /**
      * Get the customer that owns this patch panel port
      *
-     * @psalm-return BelongsTo<Customer>
+     * @psalm-return BelongsTo<Customer, self>
      */
     public function customer(): BelongsTo
     {
@@ -324,7 +324,7 @@ class PatchPanelPort extends Model
     /**
      * Get the duplex master port that owns this patch panel port
      *
-     * @psalm-return BelongsTo<self>
+     * @psalm-return BelongsTo<self, self>
      */
     public function duplexMasterPort(): BelongsTo
     {
@@ -334,7 +334,7 @@ class PatchPanelPort extends Model
     /**
      * Get the patch panel port files for this patch panel port
      *
-     * @psalm-return HasMany<PatchPanelPortFile>
+     * @psalm-return HasMany<PatchPanelPortFile, self>
      */
     public function patchPanelPortFiles(): HasMany
     {
@@ -344,7 +344,7 @@ class PatchPanelPort extends Model
     /**
      * Get the patch panel port histories for this patch panel port
      *
-     * @psalm-return HasMany<PatchPanelPortHistory>
+     * @psalm-return HasMany<PatchPanelPortHistory, self>
      */
     public function patchPanelPortHistories(): HasMany
     {
@@ -365,7 +365,7 @@ class PatchPanelPort extends Model
     /**
      * Get the duplex slaves ports for this patch panel port
      *
-     * @psalm-return HasMany<self>
+     * @psalm-return HasMany<self, self>
      */
     public function duplexSlavePorts(): HasMany
     {

@@ -8,11 +8,11 @@
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
     errorBaseline="psalm-baseline.xml"
+    allConstantsGlobal="true"
 >
 
     <extraFiles>
         <file name="artisan"/>
-        <file name="version.php"/>
         <file name="public/index.php"/>
     </extraFiles>
 
@@ -25,6 +25,7 @@
             <file name="psalm-baseline.xml"/>
             <directory name="vendor"/>
         </ignoreFiles>
+        <file name="version.php"/>
     </projectFiles>
 
     <plugins>
@@ -37,5 +38,9 @@
                 <directory name="app" /> <!-- all InvalidReturnType issues in this directory are suppressed -->
             </errorLevel>
         </UndefinedMagicMethod>
+        <MissingPureAnnotation errorLevel="suppress"/>
+        <MissingAbstractPureAnnotation errorLevel="suppress"/>
+        <MissingInterfaceImmutableAnnotation errorLevel="suppress"/>
+        <MissingImmutableAnnotation errorLevel="suppress"/>
     </issueHandlers>
 </psalm>

@@ -128,7 +128,7 @@ class CoreBundle extends Model
     /**
      * Get the corelinks that belong to the corebundle
      *
-     * @psalm-return HasMany<CoreLink>
+     * @psalm-return HasMany<CoreLink, self>
      */
     public function corelinks(): HasMany
     {

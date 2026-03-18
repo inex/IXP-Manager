@@ -114,7 +114,7 @@ class VirtualInterface extends Model
     /**
      * Get the customer that owns the virtual interfaces.
      *
-     * @psalm-return BelongsTo<Customer>
+     * @psalm-return BelongsTo<Customer, self>
      */
     public function customer(): BelongsTo
     {
@@ -124,7 +124,7 @@ class VirtualInterface extends Model
     /**
      * Get the VLAN interfaces for the virtual interface
      *
-     * @psalm-return HasMany<VlanInterface>
+     * @psalm-return HasMany<VlanInterface, self>
      */
     public function vlanInterfaces(): HasMany
     {
@@ -134,7 +134,7 @@ class VirtualInterface extends Model
     /**
      * Get the physical interfaces for the virtual interface
      *
-     * @psalm-return HasMany<PhysicalInterface>
+     * @psalm-return HasMany<PhysicalInterface, self>
      */
     public function physicalInterfaces(): HasMany
     {
@@ -144,7 +144,7 @@ class VirtualInterface extends Model
     /**
      * Get the mac addresses for the virtual interface
      *
-     * @psalm-return HasMany<MacAddress>
+     * @psalm-return HasMany<MacAddress, self>
      */
     public function macAddresses(): HasMany
     {
@@ -154,7 +154,7 @@ class VirtualInterface extends Model
     /**
      * Get the sflow receivers for the virtual interface
      *
-     * @psalm-return HasMany<SflowReceiver>
+     * @psalm-return HasMany<SflowReceiver, self>
      */
     public function sflowReceivers(): HasMany
     {

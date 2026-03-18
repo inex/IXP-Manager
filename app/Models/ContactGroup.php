@@ -87,7 +87,7 @@ class ContactGroup extends Model
     ];
 
     /**
-     * @psalm-return BelongsToMany<Contact>
+     * @psalm-return BelongsToMany<Contact, self>
      */
     public function contacts(): BelongsToMany
     {

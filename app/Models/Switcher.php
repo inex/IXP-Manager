@@ -205,7 +205,7 @@ class Switcher extends Model
     /**
      * Get the infrastructure that own the switcher
      *
-     * @psalm-return BelongsTo<Infrastructure>
+     * @psalm-return BelongsTo<Infrastructure, self>
      */
     public function infrastructureModel(): BelongsTo
     {
@@ -215,7 +215,7 @@ class Switcher extends Model
     /**
      * Get the cabinet that own the switcher
      *
-     * @psalm-return BelongsTo<Cabinet>
+     * @psalm-return BelongsTo<Cabinet, self>
      */
     public function cabinet(): BelongsTo
     {
@@ -225,7 +225,7 @@ class Switcher extends Model
     /**
      * Get the vendor that own the switcher
      *
-     * @psalm-return BelongsTo<Vendor>
+     * @psalm-return BelongsTo<Vendor, self>
      */
     public function vendor(): BelongsTo
     {
@@ -235,7 +235,7 @@ class Switcher extends Model
     /**
      * Get the switch ports for the switcher
      *
-     * @psalm-return HasMany<SwitchPort>
+     * @psalm-return HasMany<SwitchPort, self>
      */
     public function switchPorts(): HasMany
     {
@@ -245,7 +245,7 @@ class Switcher extends Model
     /**
      * Get the console server connections for the switcher
      *
-     * @psalm-return HasMany<ConsoleServerConnection>
+     * @psalm-return HasMany<ConsoleServerConnection, self>
      */
     public function consoleServerConnections(): HasMany
     {

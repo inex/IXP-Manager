@@ -123,7 +123,7 @@ class Vlan extends Model
     /**
      * Get the vlan interfaces that are in this vlan
      *
-     * @psalm-return HasMany<VlanInterface>
+     * @psalm-return HasMany<VlanInterface, self>
      */
     public function vlanInterfaces(): HasMany
     {
@@ -133,7 +133,7 @@ class Vlan extends Model
     /**
      * Get the vlan interfaces that are in this vlan
      *
-     * @psalm-return HasMany<Router>
+     * @psalm-return HasMany<Router, self>
      */
     public function routers(): HasMany
     {
@@ -143,7 +143,7 @@ class Vlan extends Model
     /**
      * Get the ipv4addresses for the vlan
      *
-     * @psalm-return HasMany<IPv4Address>
+     * @psalm-return HasMany<IPv4Address, self>
      */
     public function ipv4Addresses(): HasMany
     {
@@ -153,7 +153,7 @@ class Vlan extends Model
     /**
      * Get the ipv6addresses for the vlan
      *
-     * @psalm-return HasMany<IPv6Address>
+     * @psalm-return HasMany<IPv6Address, self>
      */
     public function ipv6Addresses(): HasMany
     {
@@ -163,7 +163,7 @@ class Vlan extends Model
     /**
      * Get the route server filters for the vlan
      *
-     * @psalm-return HasMany<RouteServerFilter>
+     * @psalm-return HasMany<RouteServerFilter, self>
      */
     public function routeServerFilters(): HasMany
     {
@@ -173,7 +173,7 @@ class Vlan extends Model
     /**
      * Get the networks info for the vlan
      *
-     * @psalm-return HasMany<NetworkInfo>
+     * @psalm-return HasMany<NetworkInfo, self>
      */
     public function networksInfo(): HasMany
     {
@@ -183,7 +183,7 @@ class Vlan extends Model
     /**
      * Get the atlas run that are in this vlan
      *
-     * @psalm-return HasMany<AtlasRun>
+     * @psalm-return HasMany<AtlasRun, self>
      */
     public function atlasRun(): HasMany
     {
@@ -193,7 +193,7 @@ class Vlan extends Model
     /**
      * Get the infrastructure that own the vlan
      *
-     * @psalm-return BelongsTo<Infrastructure>
+     * @psalm-return BelongsTo<Infrastructure, self>
      */
     public function infrastructure(): BelongsTo
     {

@@ -87,7 +87,7 @@ class PeeringManager extends Model
     /**
      * Get the customer that owns the peering manager
      *
-     * @psalm-return BelongsTo<Customer>
+     * @psalm-return BelongsTo<Customer, self>
      */
     public function customer(): BelongsTo
     {
@@ -97,7 +97,7 @@ class PeeringManager extends Model
     /**
      * Get the peer that owns the peering manager
      *
-     * @psalm-return BelongsTo<Customer>
+     * @psalm-return BelongsTo<Customer, self>
      */
     public function peer(): BelongsTo
     {

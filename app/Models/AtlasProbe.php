@@ -110,7 +110,7 @@ class AtlasProbe extends Model
     /**
      * Get the customer that owns the Atlas probe
      *
-     * @psalm-return BelongsTo<Customer>
+     * @psalm-return BelongsTo<Customer, self>
      */
     public function customer(): BelongsTo
     {
