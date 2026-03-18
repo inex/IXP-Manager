@@ -86,7 +86,7 @@
     btn_populate.on( 'click', function( e ) {
         if( input_search.val() && /^\s*\d+\s*$/.test( input_search.val() ) ) {
             let peering_policy = '';
-            let url = " <?= url( "api/v4/customer/query-peeringdb/asn" ) ?>/" + input_search.val().trim();
+            let url = " <?= url( "admin/api/v4/customer/query-peeringdb/asn" ) ?>/" + input_search.val().trim();
 
             btn_populate.attr( "disabled", "disabled" );
             $( '#error-message' ).remove();
