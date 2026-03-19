@@ -129,27 +129,6 @@ abstract class Command extends \Illuminate\Console\Command
     }
 
     /**
-     * Validate an input.
-     *
-     * @param  mixed   $method
-     * @param  array   $rules
-     *
-     * @return mixed
-     */
-    protected function validate_cmd( mixed $method, array $rules ): mixed
-    {
-        $value = $method();
-        $validate = $this->validateInput( $rules, $value );
-
-        if( $validate !== true ) {
-            $this->warn( $validate );
-            $value = $this->validate_cmd( $method, $rules );
-        }
-        return $value;
-    }
-
-
-    /**
      * Simple validator function for validating a single value against a given rule
      * and error and exit it if fails.
      *
