@@ -45,27 +45,18 @@ use IXP\Services\Grapher\{Graph};
 class MultiP2p extends Graph
 {
     /**
-     * Source customer to graph
-     */
-    private readonly Customer $srcCustomer;
-
-    /**
-     * Destination customer to graph
-     */
-    private readonly Customer $dstCustomer;
-
-    /**
      * Constructor
      *
      * @param Grapher $grapher
      * @param Customer $srcCustomer
      * @param Customer $dstCustomer
      */
-    public function __construct( Grapher $grapher, Customer $srcCustomer, Customer $dstCustomer )
-    {
+    public function __construct(
+        Grapher $grapher,
+        private readonly Customer $srcCustomer,
+        private readonly Customer $dstCustomer,
+    ) {
         parent::__construct( $grapher );
-        $this->srcCustomer = $srcCustomer;
-        $this->dstCustomer = $dstCustomer;
     }
 
     /**
