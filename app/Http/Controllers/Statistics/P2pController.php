@@ -155,7 +155,7 @@ class P2pController extends Controller
 
                     foreach ($dstCustomer->virtualInterfaces as $dstVi) {
                         foreach ($dstVi->vlanInterfaces as $dstVli) {
-                            if ($vli->vlanid !== $dstVli->vlanid) {
+                            if ($vli->vlanid !== $dstVli->vlanid || !$dstVli->ipvxEnabled($protocol)) {
                                 continue;
                             }
 
