@@ -7,7 +7,10 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-        Statistics /  P2P Table <?= $c ? '/ <a href="' . route( 'statistics@p2ps-get', [ 'customer' => $c->id ] ) . '">' . $c->getFormattedName() . '</a>' : '' ?>
+        Statistics /  P2P Table
+<?php if( Auth::user()->isSuperUser() ):?>
+    <?= $c ? '/ <a href="' . route( 'statistics@p2p-table', [ 'custid' => $c->id ] ) . '">' . $c->getFormattedName() . '</a>' : '' ?>
+<?php endif; ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -54,8 +57,13 @@
 
                             <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                             <li class="nav-item float-right">
-                                <input class="btn btn-white float-right" type="submit" name="submit" value="Submit" />
+                                <input class="btn btn-white ml-2" type="submit" name="submit" value="Submit" />
                             </li>
+                            <?php if ( $c ): ?>
+                            <li class="nav-item float-right">
+                                <a class="btn btn-white ml-2" href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] ) ?>">List</a>
+                            </li>
+                            <?php endif; ?>
                         </form>
                     </ul>
                 </div>

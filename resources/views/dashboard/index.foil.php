@@ -109,7 +109,7 @@
 
                             <?php if( config( 'grapher.backends.sflow.enabled' )  ): ?>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="<?= route( "statistics@p2ps-get" , [ "customer" => $c->id ] ) ?>">
+                                    <a class="nav-link" href="<?= route( "statistics@p2p-table" ) ?>">
                                         Peer to Peer Traffic &raquo;
                                     </a>
                                 </li>

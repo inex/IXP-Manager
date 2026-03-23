@@ -1,10 +1,37 @@
 <?php
 /** @var Foil\Template\Template $t */
-$this->layout( 'layouts/ixpv4' )
+$this->layout( 'layouts/ixpv4' );
+
+$isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
+
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    P2P Traffic per VLI - with <?= $t->dstCustomer->abbreviatedName ?> (<?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>)
+    <?php if( Auth::check() && $isSuperUser ): ?>
+        <a href="<?= route( 'customer@overview', [ 'cust' => $t->srcCustomer->id ] ) ?>" >
+            <?= $t->srcCustomer->getFormattedName() ?>
+        </a>
+        /
+        <a href="<?= route( 'statistics@member', [ 'cust' => $t->srcCustomer->id ] ) ?>" >
+            Statistics
+        </a>
+        /
+        <a href="<?= route( 'statistics@p2p-table', [ 'custid' => $t->srcCustomer->id ] ) ?>" >
+            Peer to Peer Graphs
+        </a>
+        /
+        Traffic Exchanged with
+        <a href="<?= route( 'statistics@p2p-totals', [ 'srcCust' => $this->dstCustomer->id, 'dstCust' => $t->srcCustomer->id ] )
+        . '?category=' . $t->category
+        . '&protocol=' . $t->protocol
+        ?>">
+            <?= $this->dstCustomer->getFormattedName() ?>
+        </a> (/ VLI / protocol)
+        (<?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>)
+
+    <?php else: ?>
+        P2P Traffic with <?= $t->dstCustomer->abbreviatedName ?> (/ VLI / protocol) (<?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>)
+    <?php endif; ?>
 <?php $this->append() ?>
 
 

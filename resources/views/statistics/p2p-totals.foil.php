@@ -16,7 +16,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
             Statistics
         </a>
         /
-        <a href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->srcCustomer->id ] ) ?>" >
+        <a href="<?= route( 'statistics@p2p-table', [ 'custid' => $t->srcCustomer->id ] ) ?>" >
             Peer to Peer Graphs
         </a>
         /
@@ -30,7 +30,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
     (<?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>)
 
     <?php else: ?>
-        Peer to Peer Graphs :: <?= $t->srcCustomer->getFormattedName() ?>
+        Peer to Peer Graphs
     <?php endif; ?>
 
 <?php $this->append() ?>

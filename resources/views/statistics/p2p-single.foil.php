@@ -18,7 +18,7 @@
             Statistics
         </a>
         /
-        <a href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] ) ?>" >
+        <a href="<?= route( 'statistics@p2p-table', [ 'custid' => $t->c->id ] ) ?>" >
             Peer to Peer Graphs
         </a>
         /
