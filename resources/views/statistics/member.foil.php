@@ -83,7 +83,7 @@
                             </h3>
                             <div class="btn-group btn-group-sm my-auto">
                                 <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
-                                    <a class="btn btn-sm btn-white" href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] ) ?>">
+                                    <a class="btn btn-sm btn-white" href="<?= route( 'statistics@p2p-table', [ 'custid' => $t->c->id ] ) ?>">
                                         <span class="fa fa-random"></span>
                                     </a>
                                 <?php endif; ?>
