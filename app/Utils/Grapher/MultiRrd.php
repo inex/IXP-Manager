@@ -189,18 +189,27 @@ class MultiRrd
      *
      * Naturally, rrd_* is an exception :-(
      *
-     * This function creates a local copy.
+     * This function creates a local copy of the remote file.
+     *
+     * If the remote file cannot be found, or if the requested file is
+     * local but does not exist, false is returned instead.
+     *
+     * This deviates from the other RRD class, as there are more transient
+     * reasons that a file might not exist in this case.
      *
      * @see removeLocalCopies()
      *
-     * @return string The full path to the local copy
+     * @return string|false The full path to the local copy, or false if it does not exist.
      *
      * @throws FileErrorException
      */
-    private function getLocalCopy( string $file ): string
+    private function getLocalCopy( string $file ): string|false
     {
-        // if it's already local, just return
+        // if it's already local, just return it, if it exists.
         if( !str_starts_with( $file, 'http' ) ) {
+            if( !file_exists( $file ) ) {
+                return false;
+            }
             return $file;
         }
 
@@ -208,7 +217,10 @@ class MultiRrd
 
         // does the local file exist and is it less than 5mins old?
         if( !file_exists($localname) || !( time() - filemtime($localname) < 300 ) ) {
-            if( !( ( $r = @file_get_contents( $file ) ) && @file_put_contents( $localname, $r ) ) ) {
+            if( !( $r = @file_get_contents( $file ) ) ) {
+                return false;
+            }
+            if( !( @file_put_contents( $localname, $r ) ) ) {
                 throw new FileErrorException("Could not create local RRD copy");
             }
         }
@@ -245,9 +257,22 @@ class MultiRrd
      */
     protected function loadRrdFiles(): void
     {
+        $missing = [];
         // we need to allow for remote files but php's rrd_* functions don't support this
         foreach( $this->realfiles as $file ) {
-            $this->localfiles[] = $this->getLocalCopy( $file );
+            if( ( $localCopy = $this->getLocalCopy( $file ) ) ) {
+                $this->localfiles[] = $localCopy;
+            } else {
+                $missing[] = $file;
+            }
+        }
+
+        if (count($missing)) {
+            Log::notice("Some remote RRD files could not be found: " . implode(", ", $missing));
+        }
+
+        if (count($this->localfiles) === 0) {
+            throw new FileErrorException("No local files found after loading.");
         }
     }
 
