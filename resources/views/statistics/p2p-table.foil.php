@@ -61,7 +61,7 @@
                             </li>
                             <?php if ( $c ): ?>
                             <li class="nav-item float-right">
-                                <a class="btn btn-white ml-2" href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] ) ?>">List</a>
+                                <a class="btn btn-white ml-2" href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] ) ?>">Legacy List</a>
                             </li>
                             <?php endif; ?>
                         </form>
