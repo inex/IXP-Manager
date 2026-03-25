@@ -144,14 +144,17 @@ class P2pController extends Controller
         // Only render graphs for the protocols requested by the user
         $renderProtocols = $this->protocolListFromGraphOption( $requestProtocol );
 
-        $graphs = [];
-
+        $graphData = [];
         foreach ($srcCustomer->virtualInterfaces as $vi) {
             foreach ($vi->vlanInterfaces as $vli) {
                 foreach ($renderProtocols as $protocol) {
                     if (!$vli->ipvxEnabled($protocol)) {
                         continue;
                     }
+                    $myAddress = match($protocol) {
+                        4 => $vli->ipv4address->address,
+                        6 => $vli->ipv6address->address,
+                    };
 
                     foreach ($dstCustomer->virtualInterfaces as $dstVi) {
                         foreach ($dstVi->vlanInterfaces as $dstVli) {
@@ -167,7 +170,15 @@ class P2pController extends Controller
                             ;
                             $graph->authorise();
 
-                            $graphs[] = $graph;
+                            $theirAddress = match($protocol) {
+                                4 => $dstVli->ipv4address->address,
+                                6 => $dstVli->ipv6address->address,
+                            };
+                            $graphData[] = [
+                                "title" => sprintf("%s IPv%d", $vli->vlan->name, $protocol),
+                                "subtitle" => sprintf("Traffic between %s <-> %s", $myAddress, $theirAddress),
+                                "graph" => $graph,
+                            ];
                         }
                     }
                 }
@@ -175,7 +186,7 @@ class P2pController extends Controller
         }
 
         return view( 'statistics/p2p-per-vli' )->with( [
-            'graphs'              => $graphs,
+            'graphData'           => $graphData,
             'protocol'            => $requestProtocol,
             'category'            => $requestCategory,
             'period'              => $requestPeriod,

@@ -87,14 +87,17 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
             </nav>
 
             <div class="row">
-                <?php foreach( $t->graphs as $graph ): ?>
+                <?php foreach( $t->graphData as $graphData ): ?>
                     <div class="col-md-12 col-lg-6 mb-4">
                         <div class="card">
                             <div class="card-header">
-                                <h3><?= IXP\Services\Grapher\Graph::resolvePeriod( $t->period ) ?> Graph</h3>
+                                <h4>
+                                    <?= $graphData['title'] ?>
+                                </h4>
                             </div>
                             <div class="card-body">
-                                <?= $graph->renderer()->boxLegacy() ?>
+                                <?= $graphData['graph']->renderer()->boxLegacy() ?>
+                                <p class="card-text"><small class="text-muted"><?= $graphData['subtitle'] ?></small></p>
                             </div>
                         </div>
                     </div>
