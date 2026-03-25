@@ -135,7 +135,7 @@
                                                  'dstCust' => $s->peer->id,
                                                  'protocol' => $t->defaultChartProtocol
                                                 ] ) ?>">
-                                            <i class="fa fa-bar-chart fa-2x" ></i>
+                                            <i class="fa fa-bar-chart" ></i>
                                         </a>
                                     </td>
                                     <?php if( $c->isIPvXEnabled(4) && $c->isIPvXEnabled(6) ): ?>
