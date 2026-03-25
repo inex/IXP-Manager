@@ -31,6 +31,8 @@
 
     $( '.btn-edit-notes' ).click( function(e) {
         e.preventDefault();
+        let tab = $( this ).attr( 'data-notes-target' );
+        $('li > a[href="' + tab + '"]').tab("show");
         popup( $( this ).attr( 'data-object-id' ), 'edit-notes', $( this ).attr( 'href' ), false );
     });
 

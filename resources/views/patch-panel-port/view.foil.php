@@ -480,7 +480,7 @@
                                                 <div class="card-header">
                                                     Public Notes:
                                                     <?php if( $current ): ?>
-                                                        <a class="btn btn-white btn-sm pull-right btn-edit-notes" data-object-id="<?= $ppp->id ?>" href="<?= url()->current() ?>" title="edit note" >
+                                                        <a class="btn btn-white btn-sm pull-right btn-edit-notes" data-notes-target="#public-note-tab" data-object-id="<?= $ppp->id ?>" href="<?= url()->current(); ?>" title="edit note" >
                                                             <i class="fa fa-pencil"></i>
                                                         </a>
                                                     <?php endif; ?>
@@ -495,7 +495,7 @@
                                                 <div class="card-header">
                                                         Private Notes:
                                                     <?php if( $current ): ?>
-                                                        <a class="btn btn-white btn-sm pull-right btn-edit-notes" data-object-id="<?= $ppp->id ?>" href="<?= url()->current() ?>" title="edit note" >
+                                                        <a class="btn btn-white btn-sm pull-right btn-edit-notes" data-notes-target="#private-note-tab" data-object-id="<?= $ppp->id ?>" href="<?= url()->current(); ?>" title="edit note" >
                                                             <i class="fa fa-pencil"></i>
                                                         </a>
                                                     <?php endif; ?>
