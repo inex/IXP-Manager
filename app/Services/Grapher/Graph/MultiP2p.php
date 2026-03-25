@@ -109,11 +109,11 @@ class MultiP2p extends Graph
             return true;
         }
 
-        if( !Auth::check() && is_numeric( config( 'grapher.access.multip2p' ) ) && config( 'grapher.access.multip2p' ) === User::AUTH_PUBLIC ) {
+        if( !Auth::check() && is_numeric( config( 'grapher.access.p2p' ) ) && config( 'grapher.access.p2p' ) === User::AUTH_PUBLIC ) {
             return true;
         }
 
-        return Auth::check() && is_numeric( config( 'grapher.access.multip2p' ) ) && $us->privs() >= config( 'grapher.access.multip2p' );
+        return Auth::check() && is_numeric( config( 'grapher.access.p2p' ) ) && $us->privs() >= config( 'grapher.access.p2p' );
     }
 
     /**
@@ -127,7 +127,7 @@ class MultiP2p extends Graph
     public function authorise(): bool
     {
         // NB: see above authorisedForAllCustomers()
-        if( is_numeric( config( 'grapher.access.multip2p' ) ) && config( 'grapher.access.multip2p' ) === User::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.p2p' ) ) && config( 'grapher.access.p2p' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 
@@ -145,9 +145,9 @@ class MultiP2p extends Graph
             return $this->allow();
         }
 
-        if( config( 'grapher.access.multip2p' ) !== 'own_graphs_only'
-            && is_numeric( config( 'grapher.access.multip2p' ) )
-            && $us->privs() >= (int)config( 'grapher.access.multip2p' )
+        if( config( 'grapher.access.p2p' ) !== 'own_graphs_only'
+            && is_numeric( config( 'grapher.access.p2p' ) )
+            && $us->privs() >= (int)config( 'grapher.access.p2p' )
         ) {
             return $this->allow();
         }
