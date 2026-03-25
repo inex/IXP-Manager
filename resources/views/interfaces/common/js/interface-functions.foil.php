@@ -19,7 +19,7 @@ function updateIpAddresses() {
         $( '.ip-is-used-alert' ).html( '' ).hide();
 
         let vlanid = dd_vlan.val();
-        let url    = "<?= url( '/api/v4/vlan' )?>/" + vlanid + "/ip-addresses";
+        let url    = "<?= url( '/admin/api/v4/vlan' )?>/" + vlanid + "/ip-addresses";
 
         ajaxRequests.push( $.ajax( url )
             .done( function( data ) {
@@ -176,7 +176,7 @@ function updateSwitchPort( e ) {
         selectedPort = $( "#original-switch-port" ).val();
     }
 
-    let url = "<?= url( '/api/v4/switch' )?>/" + sw.val() + "/ports";
+    let url = "<?= url( '/admin/api/v4/switch' )?>/" + sw.val() + "/ports";
 
     datas = {
         types : arrayType,

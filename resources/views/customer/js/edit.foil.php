@@ -11,6 +11,7 @@
     const input_autsys              = $( '#autsys' );
     const input_datejoin            = $( '#datejoin' );
     const input_maxprefixes         = $( '#maxprefixes' );
+    const input_maxprefixesv6        = $( '#maxprefixesv6' );
     const input_nocphone            = $( '#nocphone' );
     const input_nocemail            = $( '#nocemail' );
     const input_peeringemail        = $( '#peeringemail' );
@@ -86,7 +87,7 @@
     btn_populate.on( 'click', function( e ) {
         if( input_search.val() && /^\s*\d+\s*$/.test( input_search.val() ) ) {
             let peering_policy = '';
-            let url = " <?= url( "api/v4/customer/query-peeringdb/asn" ) ?>/" + input_search.val().trim();
+            let url = " <?= url( "admin/api/v4/customer/query-peeringdb/asn" ) ?>/" + input_search.val().trim();
 
             btn_populate.attr( "disabled", "disabled" );
             $( '#error-message' ).remove();
@@ -105,7 +106,11 @@
                         input_peeringmacro.val(     htmlEntities( response.net.irr_as_set ) ).addClass( 'is-valid' );
 
                         if( response.net.info_prefixes4 !== "undefined" ) {
-                            input_maxprefixes.val( Math.ceil( htmlEntities( response.net.info_prefixes4 ) * 1.2 ) ).addClass( 'is-valid' );
+                            input_maxprefixes.val( Math.ceil( htmlEntities( response.net.info_prefixes4 ) ) ).addClass( 'is-valid' );
+                        }
+
+                        if( response.net.info_prefixes6 !== "undefined" ) {
+                            input_maxprefixesv6.val( Math.ceil( htmlEntities( response.net.info_prefixes6 ) ) ).addClass( 'is-valid' );
                         }
 
                         dd_peering_policy.val(  htmlEntities( response.net.policy_general ).toLowerCase() ).trigger( "change" ).addClass( 'is-valid' );
