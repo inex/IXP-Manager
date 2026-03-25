@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9d7c851b6a2879f6a23fa54e13aa3276",
+    "content-hash": "bad1109e7addafc4b1fd6bc62c2f49e1",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -13590,7 +13590,7 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "dev",
+    "minimum-stability": "beta",
     "stability-flags": {
         "vimeo/psalm": 20
     },
