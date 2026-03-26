@@ -125,9 +125,10 @@
                                                 <?= $t->insert( 'statistics/snippets/latency-dropup', [ 'vi' => $vi ] ) ?>
 
                                                 <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
-                                                    <a class="btn btn-white" href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] )
-                                                        . ( $vi->vlanInterfaces->isNotEmpty() ? '?svli=' . $vi->vlanInterfaces[ 0 ]->id : '' )
-                                                    ?>">
+                                                    <a class="btn btn-white" href="<?= route( 'statistics@p2ps-get',
+                                                            [ 'customer' => $t->c->id ] +
+                                                            ( $vi->vlanInterfaces->isNotEmpty() ? [ 'svli' => $vi->vlanInterfaces[ 0 ]->id ] : [] )
+                                                    ); ?>">
                                                         <span class="fa fa-random"></span>
                                                     </a>
                                                 <?php endif; ?>
@@ -169,9 +170,10 @@
                                                         <?= $t->insert( 'statistics/snippets/latency-dropup', [ 'vi' => $vi ] ) ?>
                                                     <?php endif; ?>
                                                     <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
-                                                        <a class="btn btn-white btn-sm" href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] )
-                                                        . ( $vi->vlanInterfaces->isNotEmpty() ? '?svli=' . $vi->vlanInterfaces[ 0 ]->id : '' )
-                                                        ?>">
+                                                        <a class="btn btn-white btn-sm" href="<?= route( 'statistics@p2ps-get',
+                                                                [ 'customer' => $t->c->id ] +
+                                                                ( $vi->vlanInterfaces->isNotEmpty() ? ['svli' => $vi->vlanInterfaces[ 0 ]->id ] : [] )
+                                                        ) ?>">
                                                             <span class="fa fa-random"></span>
                                                         </a>
                                                     <?php endif; ?>
