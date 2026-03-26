@@ -362,10 +362,11 @@ class MultiRrd
             $cnt++;
         }
 
-        $options[] = "CDEF:atotal={$a}" . str_repeat( '+,', $cnt-2 ) . '+';
-        $options[] = "CDEF:btotal={$b}" . str_repeat( '+,', $cnt-2 ) . '+';
-        $options[] = "CDEF:ctotal={$c}" . str_repeat( '+,', $cnt-2 ) . '+';
-        $options[] = "CDEF:dtotal={$d}" . str_repeat( '+,', $cnt-2 ) . '+';
+        // nb: there may just be one file, and in that case, we don't need to sum anything
+        $options[] = "CDEF:atotal={$a}" . str_repeat( '+,', $cnt-1 );
+        $options[] = "CDEF:btotal={$b}" . str_repeat( '+,', $cnt-1 );
+        $options[] = "CDEF:ctotal={$c}" . str_repeat( '+,', $cnt-1 );
+        $options[] = "CDEF:dtotal={$d}" . str_repeat( '+,', $cnt-1 );
 
         $options[] = "CDEF:cdefa=atotal," . ( $this->graph()->category() === Graph::CATEGORY_BITS ? '8' : '1' ) . ',*';
         $options[] = "CDEF:cdefb=btotal," . ( $this->graph()->category() === Graph::CATEGORY_BITS ? '8' : '1' ) . ',*';
