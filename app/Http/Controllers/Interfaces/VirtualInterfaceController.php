@@ -318,7 +318,7 @@ class VirtualInterfaceController extends Common
      * @return View
      * @throws JsonException
      */
-    public function wizard( ?Customer $cust ): View
+    public function wizard( ?Customer $cust = null ): View
     {
         if( $cust ) {
             Former::populate( [
