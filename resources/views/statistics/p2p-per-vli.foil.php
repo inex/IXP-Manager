@@ -81,6 +81,15 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
                                     </select>
                                 </div>
                             </li>
+
+                            <li class="nav-item float-right">
+                                <a class="btn btn-white ml-2" href="<?= route( 'statistics@p2p-totals', [
+                                        'srcCust' => $t->srcCustomer->id,
+                                        'dstCust' => $this->dstCustomer->id,
+                                        'category' => $t->category,
+                                        'protocol' => $t->protocol,
+                                ] ) ?>">Overall Traffic</a>
+                            </li>
                         </ul>
                     </form>
                 </div>
@@ -103,6 +112,48 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
                     </div>
                 <?php endforeach; ?>
             </div>
+        </div>
+    </div>
+
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h3>Peer-to-Peer Traffic Breakdown with <?= $t->ee( $this->dstCustomer->getFormattedName() ) ?></h3>
+        </div>
+        <div class="card-body">
+            <p>
+                These graphs chart the traffic exchanged by each of your ports, to ports belonging to <?= $t->ee( $this->dstCustomer->getFormattedName() ) ?>.
+            </p>
+
+            <div class="row">
+                <div class="col-lg-5 col-sm-12 text-center">
+                    <p>Your ports</p>
+                    <pre class="p-2 border text-center"><?php
+                        foreach ($t->myPorts as $portDescription): ?>
+<?= $portDescription ?><br><?php
+                        endforeach; ?>
+</pre>
+                </div>
+
+                <div class="col-lg-5 col-sm-12 text-center">
+                    <p>Their ports:</p>
+                    <pre class="p-2 border text-center"><?php
+                        foreach ($t->theirPorts as $portDescription): ?>
+<?= $portDescription ?><br><?php
+                        endforeach; ?>
+</pre>
+                </div>
+            </div>
+
+            <?php if (count($t->possibleProtocols) > 1): ?>
+                <p>
+                    You can select a particular protocol to view, or choose all to see the total traffic for all protocols.
+                </p>
+            <?php endif; ?>
+
+            <p>
+                You can also select a period for the charts to display.
+            </p>
         </div>
     </div>
 <?php $this->append() ?>

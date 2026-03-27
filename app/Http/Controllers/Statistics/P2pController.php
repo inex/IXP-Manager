@@ -105,6 +105,7 @@ class P2pController extends Controller
         if( !in_array( $requestProtocol, $possibleProtocols ) ) {
             abort(400, "Customer does not support $requestProtocol");
         }
+        $renderProtocols = $this->protocolListFromGraphOption( $requestProtocol );
 
         $graph = App::make( Grapher::class )
             ->multiP2p( $srcCustomer, $dstCustomer )
@@ -114,6 +115,32 @@ class P2pController extends Controller
 
         $graph->authorise();
 
+        // Generate some description test for the graphs.
+        $myPorts = [];
+        $theirPorts = [];
+        foreach ($srcCustomer->virtualInterfaces as $vi) {
+            foreach ($vi->vlanInterfaces as $vli) {
+                foreach ($renderProtocols as $protocol) {
+                    if (!$vli->ipvxEnabled($protocol)) {
+                        continue;
+                    }
+                    $myAddress = $protocol === 4 ? $vli->ipv4address->address : $vli->ipv6address->address;
+                    $myPorts[] = "{$vli->vlan->name} - {$myAddress}" . ( $vi->lag_framing ? " (LAG) {$vi->name}{$vi->channelgroup}" : "" );
+
+                    foreach ($dstCustomer->virtualInterfaces as $dstVi) {
+                        foreach ($dstVi->vlanInterfaces as $dstVli) {
+                            if ($vli->vlanid !== $dstVli->vlanid || !$dstVli->ipvxEnabled($protocol)) {
+                                continue;
+                            }
+
+                            $theirAddress = $protocol === 4 ? $dstVli->ipv4address->address : $dstVli->ipv6address->address;
+                            $theirPorts[] = "{$dstVli->vlan->name} - {$theirAddress}" . ( $dstVi->lag_framing ? " (LAG) {$dstVi->name}{$dstVi->channelgroup}" : "" );
+                        }
+                    }
+                }
+            }
+        }
+
         return view( 'statistics/p2p-totals')->with( [
             'graph'               => $graph,
             'protocol'            => $requestProtocol,
@@ -121,6 +148,8 @@ class P2pController extends Controller
             'possibleProtocols'   => $possibleProtocols,
             'srcCustomer'         => $srcCustomer,
             'dstCustomer'         => $dstCustomer,
+            'myPorts'             => $myPorts,
+            'theirPorts'          => $theirPorts,
         ] );
     }
 
@@ -151,10 +180,9 @@ class P2pController extends Controller
                     if (!$vli->ipvxEnabled($protocol)) {
                         continue;
                     }
-                    $myAddress = match($protocol) {
-                        4 => $vli->ipv4address->address,
-                        6 => $vli->ipv6address->address,
-                    };
+
+                    $myAddress = $protocol === 4 ? $vli->ipv4address->address : $vli->ipv6address->address;
+                    $myPorts[] = "{$vli->vlan->name} - {$myAddress}" . ( $vi->lag_framing ? " (LAG) {$vi->name}{$vi->channelgroup}" : "" );
 
                     foreach ($dstCustomer->virtualInterfaces as $dstVi) {
                         foreach ($dstVi->vlanInterfaces as $dstVli) {
@@ -170,13 +198,12 @@ class P2pController extends Controller
                             ;
                             $graph->authorise();
 
-                            $theirAddress = match($protocol) {
-                                4 => $dstVli->ipv4address->address,
-                                6 => $dstVli->ipv6address->address,
-                            };
+                            $theirAddress = $protocol === 4 ? $dstVli->ipv4address->address : $dstVli->ipv6address->address;
+                            $theirPorts[] = "{$dstVli->vlan->name} - {$theirAddress}" . ( $dstVi->lag_framing ? " (LAG) {$dstVi->name}{$dstVi->channelgroup}" : "" );
+
                             $graphData[] = [
                                 "title" => sprintf("%s IPv%d", $vli->vlan->name, $protocol),
-                                "subtitle" => sprintf("Traffic between %s <-> %s", $myAddress, $theirAddress),
+                                "subtitle" => sprintf("%s traffic between %s <-> %s", $vli->vlan->name,$myAddress, $theirAddress),
                                 "graph" => $graph,
                             ];
                         }
@@ -193,6 +220,8 @@ class P2pController extends Controller
             'possibleProtocols'   => $graphProtocolOptions,
             'srcCustomer'         => $srcCustomer,
             'dstCustomer'         => $dstCustomer,
+            'myPorts'             => $myPorts,
+            'theirPorts'          => $theirPorts,
         ] );
     }
 }
