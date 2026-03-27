@@ -54,7 +54,7 @@
                             Action
                         </th>
                     </tr>
-                <thead>
+                </thead>
                 <tbody>
                     <?php foreach( $t->vis as $vi ): ?>
                         <tr>

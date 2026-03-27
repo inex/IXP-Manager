@@ -91,7 +91,7 @@
                         Last Reboot
                     </th>
                 </tr>
-            <thead>
+            </thead>
             <tbody>
                 <?php foreach( $t->routers as $router ):
                     /** @var IXP\Models\Router $router */ ?>

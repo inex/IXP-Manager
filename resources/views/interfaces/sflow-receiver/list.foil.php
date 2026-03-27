@@ -41,7 +41,7 @@
                             Action
                         </th>
                     </tr>
-                <thead>
+                </thead>
                 <tbody>
                     <?php foreach( $t->listSr as $sflr ): /** @var \IXP\Models\SflowReceiver $sflr */ ?>
                         <tr>

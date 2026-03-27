@@ -50,7 +50,7 @@
                             Actions
                         </th>
                     </tr>
-                <thead>
+                </thead>
                 <tbody>
                     <?php foreach( $t->routers as $router ):
                         /** @var $router \IXP\Models\Router */?>

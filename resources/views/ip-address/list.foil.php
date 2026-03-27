@@ -96,7 +96,7 @@
                                 Action
                             </th>
                         </tr>
-                    <thead>
+                    </thead>
                     <tbody>
                         <?php foreach( $t->ips as $ip ):?>
                             <tr>

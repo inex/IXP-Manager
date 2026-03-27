@@ -47,7 +47,7 @@
                             Action
                         </th>
                     </tr>
-                <thead>
+                </thead>
                 <tbody>
                     <?php foreach( $t->cbs as $cb ):
                         /** @var \IXP\Models\CoreBundle $cb */

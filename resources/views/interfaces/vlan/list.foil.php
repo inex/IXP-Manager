@@ -33,7 +33,7 @@
                             Action
                         </th>
                     </tr>
-                <thead>
+                </thead>
                 <tbody>
                     <?php foreach( $t->vlis as $vli ):
                         /** @var \IXP\Models\VlanInterface $vli */ ?>

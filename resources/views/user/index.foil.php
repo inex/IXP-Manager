@@ -56,7 +56,7 @@
                             Action
                         </th>
                     </tr>
-                <thead>
+                </thead>
                 <tbody>
                     <?php foreach( $t->users as $u ): ?>
                         <tr>

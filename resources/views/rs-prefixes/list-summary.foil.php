@@ -1,17 +1,19 @@
 <table class="table collapse table-striped w-100" id="summary-table-<?= $t->type ?>">
     <thead class="thead-dark">
-        <th>
-            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
-        </th>
-        <th>
-            IPv4
-        </th>
-        <th>
-            IPv6
-        </th>
-        <th>
-            Total
-        </th>
+        <tr>
+            <th>
+                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
+            </th>
+            <th>
+                IPv4
+            </th>
+            <th>
+                IPv6
+            </th>
+            <th>
+                Total
+            </th>
+        </tr>
     </thead>
     <tbody>
         <?php foreach( $t->cPrefixes as $id => $cp ): ?>

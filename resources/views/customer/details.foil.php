@@ -39,7 +39,7 @@
                             <?php endif; ?>
                         <?php endif; ?>
                     </tr>
-                <thead>
+                </thead>
                 <tbody>
                     <?php foreach( $t->custs as $c ):
                         /** @var \IXP\Models\Customer $c */
