@@ -98,6 +98,48 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
             </div>
         </div>
     </div>
+
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h3>Total Peer-to-Peer Traffic with <?= $t->ee( $this->dstCustomer->getFormattedName() ) ?></h3>
+        </div>
+        <div class="card-body">
+            <p>
+                These graphs show the <strong>total</strong> traffic exchanged between you and <?= $t->ee( $this->dstCustomer->getFormattedName() ) ?> between the following ports:
+            </p>
+
+            <div class="row">
+                <div class="col-lg-5 col-sm-12 text-center">
+                    <p>Your ports</p>
+                    <pre class="p-2 border text-center"><?php
+                        foreach ($t->myPorts as $portDescription): ?>
+<?= $portDescription ?><br><?php
+                        endforeach; ?>
+</pre>
+                </div>
+
+                <div class="col-lg-5 col-sm-12 text-center">
+                    <p>Their ports:</p>
+                    <pre class="p-2 border text-center"><?php
+                        foreach ($t->theirPorts as $portDescription): ?>
+<?= $portDescription ?><br><?php
+                        endforeach; ?>
+</pre>
+                </div>
+            </div>
+
+            <?php if (count($t->possibleProtocols) > 1): ?>
+            <p>
+                You can select a particular protocol to view, or choose all to see the total traffic for all protocols.
+            </p>
+            <?php endif; ?>
+
+            <p>
+                Click any graph to view graphs of all traffic flows for each port separately.
+            </p>
+        </div>
+    </div>
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
