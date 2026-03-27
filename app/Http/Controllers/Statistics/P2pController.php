@@ -125,7 +125,7 @@ class P2pController extends Controller
                         continue;
                     }
                     $myAddress = $protocol === 4 ? $vli->ipv4address->address : $vli->ipv6address->address;
-                    $myPorts[] = "{$vli->vlan->name} - {$myAddress}" . ( $vi->lag_framing ? " (LAG) {$vi->name}{$vi->channelgroup}" : "" );
+                    $myPorts[] = "{$vli->vlan->name} - {$myAddress}";
 
                     foreach ($dstCustomer->virtualInterfaces as $dstVi) {
                         foreach ($dstVi->vlanInterfaces as $dstVli) {
@@ -134,7 +134,7 @@ class P2pController extends Controller
                             }
 
                             $theirAddress = $protocol === 4 ? $dstVli->ipv4address->address : $dstVli->ipv6address->address;
-                            $theirPorts[] = "{$dstVli->vlan->name} - {$theirAddress}" . ( $dstVi->lag_framing ? " (LAG) {$dstVi->name}{$dstVi->channelgroup}" : "" );
+                            $theirPorts[] = "{$dstVli->vlan->name} - {$theirAddress}";
                         }
                     }
                 }
@@ -182,7 +182,7 @@ class P2pController extends Controller
                     }
 
                     $myAddress = $protocol === 4 ? $vli->ipv4address->address : $vli->ipv6address->address;
-                    $myPorts[] = "{$vli->vlan->name} - {$myAddress}" . ( $vi->lag_framing ? " (LAG) {$vi->name}{$vi->channelgroup}" : "" );
+                    $myPorts[] = "{$vli->vlan->name} - {$myAddress}";
 
                     foreach ($dstCustomer->virtualInterfaces as $dstVi) {
                         foreach ($dstVi->vlanInterfaces as $dstVli) {
@@ -199,7 +199,7 @@ class P2pController extends Controller
                             $graph->authorise();
 
                             $theirAddress = $protocol === 4 ? $dstVli->ipv4address->address : $dstVli->ipv6address->address;
-                            $theirPorts[] = "{$dstVli->vlan->name} - {$theirAddress}" . ( $dstVi->lag_framing ? " (LAG) {$dstVi->name}{$dstVi->channelgroup}" : "" );
+                            $theirPorts[] = "{$dstVli->vlan->name} - {$theirAddress}";
 
                             $graphData[] = [
                                 "title" => sprintf("%s IPv%d", $vli->vlan->name, $protocol),
