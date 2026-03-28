@@ -63,7 +63,7 @@
                             <th>
                                 Action <a class="btn btn-sm btn-white" href="#" id="add-l2a"><i class="fa fa-plus"></i></a>
                             </th>
-                            </tr>
+                        </tr>
                     </thead>
                     <tbody>
                         <?php foreach( $t->vli->layer2Addresses as $l2a ):?>

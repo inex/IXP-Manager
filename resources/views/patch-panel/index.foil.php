@@ -139,7 +139,7 @@
                                 Action
                             </th>
                         </tr>
-                    <thead>
+                    </thead>
                     <tbody>
                         <?php foreach( $t->patchPanels as $pp ):
                             /** @var \IXP\Models\PatchPanel $pp */

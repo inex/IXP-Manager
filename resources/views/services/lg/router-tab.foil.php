@@ -21,13 +21,15 @@
                             <div id="<?= $formatedName . '-' . $protocol ?>" class="tab-pane <?= !($protocol === array_key_first( $info ) ) ?: 'active show'?>">
                                 <table class="table table-striped hover table-router">
                                     <thead class="table-dark">
-                                        <th>
-                                            Router
-                                        </th>
-                                        <th>
-                                            Config Last Updated
-                                        </th>
-                                        <th></th>
+                                        <tr>
+                                            <th>
+                                                Router
+                                            </th>
+                                            <th>
+                                                Config Last Updated
+                                            </th>
+                                            <th></th>
+                                        </tr>
                                     </thead>
                                     <tbody>
                                         <?php foreach ( $routers as $router ): ?>

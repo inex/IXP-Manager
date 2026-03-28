@@ -93,7 +93,7 @@
                           Last seen
                       </th>
                   </tr>
-              <thead>
+              </thead>
               <tbody>
                   <?php foreach( $t->irrdbList as $irrdb ): ?>
                       <tr>

@@ -149,24 +149,26 @@
                                     <td colspan="2">
                                         <table class="table table-striped w-100">
                                             <thead class="thead-dark">
-                                                <th>
-                                                    <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
-                                                </th>
-                                                <th>
-                                                    Privilege
-                                                </th>
-                                                <th>
-                                                    Created By
-                                                </th>
-                                                <th>
-                                                    Created
-                                                </th>
-                                                <th>
-                                                    Updated
-                                                </th>
-                                                <th>
-                                                    Actions
-                                                </th>
+                                                <tr>
+                                                    <th>
+                                                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
+                                                    </th>
+                                                    <th>
+                                                        Privilege
+                                                    </th>
+                                                    <th>
+                                                        Created By
+                                                    </th>
+                                                    <th>
+                                                        Created
+                                                    </th>
+                                                    <th>
+                                                        Updated
+                                                    </th>
+                                                    <th>
+                                                        Actions
+                                                    </th>
+                                                </tr>
                                             </thead>
                                             <tbody>
                                                 <?php foreach( $t->c2us as $c2u ): ?>

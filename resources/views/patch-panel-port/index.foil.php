@@ -89,7 +89,7 @@
                             Action
                         </th>
                     </tr>
-                <thead>
+                </thead>
                 <tbody>
                     <?php
                         $lastUsedNumber = 0;

@@ -1,19 +1,21 @@
 <table class="table collapse table-striped w-100" id="list-table-<?= $t->type ?>" width="100%">
     <thead class="thead-dark">
-        <th>
-            Prefix
-        </th>
-        <th>
-            Protocol
-        </th>
-        <th>
-            First Seen
-        </th>
-        <?php if( $t->type === 'adv_acc' || $t->type === 'adv_nacc' ): ?>
+        <tr>
             <th>
-                Origin AS
+                Prefix
             </th>
-        <?php endif; ?>
+            <th>
+                Protocol
+            </th>
+            <th>
+                First Seen
+            </th>
+            <?php if( $t->type === 'adv_acc' || $t->type === 'adv_nacc' ): ?>
+                <th>
+                    Origin AS
+                </th>
+            <?php endif; ?>
+        </tr>
     </thead>
     <tbody>
         <?php foreach( $t->aggRoutes[ $t->type ] as $r ): ?>
