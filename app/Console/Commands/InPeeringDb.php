@@ -24,7 +24,6 @@ namespace IXP\Console\Commands;
  */
 use Illuminate\Support\Facades\DB;
 
-use Illuminate\Support\Facades\Http;
 use IXP\Models\Customer;
 use IXP\Services\PeeringDb;
 
