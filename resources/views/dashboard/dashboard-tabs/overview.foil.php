@@ -76,7 +76,7 @@
                 <h4>Your Top Peers</h4>
                 <div class="mb-4 tw-text-sm">
                     Your top peers <?= \Carbon\Carbon::parse( $t->p2pstats[0]->day )->diffForHumans() ?>.
-                    See all <a href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] ) ?>">here</a>.
+                    See all <a href="<?= route( 'statistics@p2p-table' ) ?>">here</a>.
                 </div>
 
                 <table  class="table table-sm table-hover" >

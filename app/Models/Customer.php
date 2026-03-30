@@ -1079,8 +1079,6 @@ class Customer extends Model
         return false;
     }
 
-
-
     /**
      * Is this customer graphable?
      *

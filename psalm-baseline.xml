@@ -2142,6 +2142,11 @@
       <code><![CDATA[(int)config( 'grapher.access.location' ) === User::AUTH_PUBLIC]]></code>
     </TypeDoesNotContainType>
   </file>
+  <file src="app/Services/Grapher/Graph/MultiP2p.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, scid: int, dcid: int}]]></code>
+    </ImplementedReturnTypeMismatch>
+  </file>
   <file src="app/Services/Grapher/Graph/P2p.php">
     <ImplementedReturnTypeMismatch>
       <code><![CDATA[array{protocol: mixed, period: mixed, category: mixed, type: mixed, period_start?: \Carbon\Carbon|null, period_end?: \Carbon\Carbon|null, svli: int, dvli: int}]]></code>
@@ -2363,6 +2368,14 @@
     <MissingDocblockType>
       <code><![CDATA[protected function loadMrtgFile(): array]]></code>
     </MissingDocblockType>
+  </file>
+  <file src="app/Utils/Grapher/MultiRrd.php">
+    <InvalidOperand>
+      <code><![CDATA[time() - self::PERIOD_TIME[ $this->graph()->period() ]]]></code>
+    </InvalidOperand>
+    <TypeDoesNotContainType>
+      <code><![CDATA[$png === false]]></code>
+    </TypeDoesNotContainType>
   </file>
   <file src="app/Utils/Grapher/Rrd.php">
     <InvalidOperand>

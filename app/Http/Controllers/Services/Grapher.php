@@ -30,8 +30,8 @@ use Illuminate\Http\{
 
 use IXP\Http\Controllers\Controller;
 
-use \IXP\Services\Grapher as GrapherService;
-use \IXP\Services\Grapher\Graph;
+use IXP\Services\Grapher as GrapherService;
+use IXP\Services\Grapher\Graph;
 
 use IXP\Exceptions\Services\Grapher\GeneralException as GrapherGeneralException;
 
@@ -62,39 +62,23 @@ use Carbon\Carbon;
 class Grapher extends Controller
 {
     /**
-     * the grapher service
-     *
-     * @var GrapherService
-     */
-    private $grapher;
-
-    /**
      * The graph object
      *
-     * @var Graph
+     * @var ?Graph
      */
-    private $graph = null;
-
-    /**
-     * The request object
-     *
-     * @var Request $request
-     */
-    private $request = null;
-
+    private ?Graph $graph = null;
 
     /**
      * Constructor
      *
-     * @var Request             $request
-     * @var GrapherService      $grapher
+     * NB: Constructor happens before middleware.
+     * @param Request             $request
+     * @param GrapherService      $grapher
      */
-    public function __construct( Request $request, GrapherService $grapher )
-    {
-        $this->grapher = $grapher;
-        $this->request = $request;
-        // NB: Construtcor happens before middleware...
-    }
+    public function __construct(
+        private readonly Request $request,
+        private readonly GrapherService $grapher,
+    ) {}
 
     /**
      * Grapher accessor
@@ -111,7 +95,7 @@ class Grapher extends Controller
      *
      * @return Graph
      *
-     * @throws
+     * @throws GrapherGeneralException
      */
     private function graph(): Graph
     {
@@ -208,6 +192,11 @@ class Grapher extends Controller
     }
 
     public function p2p( Request $request ): Response
+    {
+        return $this->simpleResponse( $request );
+    }
+
+    public function multip2p( Request $request ): Response
     {
         return $this->simpleResponse( $request );
     }

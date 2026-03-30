@@ -49,7 +49,7 @@
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">
                                     <label for="period" class="col-sm-4 col-lg-6">Period:</label>
-                                    <select id="period" name="period" onchange="" class="form-control" placeholder="Select State">
+                                    <select id="period" name="period" onchange="" class="form-control">
                                         <option></option>
                                         <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $pvalue => $pname ): ?>
                                             <option value="<?= $pvalue ?>" <?php if( $t->period === $pvalue ): ?> selected <?php endif; ?>  ><?= $pname ?></option>
@@ -61,7 +61,7 @@
                             <li class="nav-item float-right ml-3">
                                 <input type="submit" class="btn btn-white" value="Show Graphs">
                                 <?php if( config('grapher.backends.sflow.enabled') && $t->grapher()->canAccessAllCustomerP2pGraphs() ): ?>
-                                    <a class="btn btn-white ml-2" href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] ) ?>">
+                                    <a class="btn btn-white ml-2" href="<?= route( 'statistics@p2p-table', [ 'custid' => $t->c->id ] ) ?>">
                                         <i class="fa fa-random"></i>&nbsp;&nbsp;P2P Graphs
                                     </a>&nbsp;&nbsp;&nbsp;&nbsp;
                                 <?php endif; ?>
@@ -83,7 +83,7 @@
                             </h3>
                             <div class="btn-group btn-group-sm my-auto">
                                 <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
-                                    <a class="btn btn-sm btn-white" href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] ) ?>">
+                                    <a class="btn btn-sm btn-white" href="<?= route( 'statistics@p2p-table', [ 'custid' => $t->c->id ] ) ?>">
                                         <span class="fa fa-random"></span>
                                     </a>
                                 <?php endif; ?>
@@ -125,9 +125,10 @@
                                                 <?= $t->insert( 'statistics/snippets/latency-dropup', [ 'vi' => $vi ] ) ?>
 
                                                 <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
-                                                    <a class="btn btn-white" href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] )
-                                                        . ( $vi->vlanInterfaces->isNotEmpty() ? '?svli=' . $vi->vlanInterfaces[ 0 ]->id : '' )
-                                                    ?>">
+                                                    <a class="btn btn-white" href="<?= route( 'statistics@p2ps-get',
+                                                            [ 'customer' => $t->c->id ] +
+                                                            ( $vi->vlanInterfaces->isNotEmpty() ? [ 'svli' => $vi->vlanInterfaces[ 0 ]->id ] : [] )
+                                                    ); ?>">
                                                         <span class="fa fa-random"></span>
                                                     </a>
                                                 <?php endif; ?>
@@ -169,9 +170,10 @@
                                                         <?= $t->insert( 'statistics/snippets/latency-dropup', [ 'vi' => $vi ] ) ?>
                                                     <?php endif; ?>
                                                     <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
-                                                        <a class="btn btn-white btn-sm" href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] )
-                                                        . ( $vi->vlanInterfaces->isNotEmpty() ? '?svli=' . $vi->vlanInterfaces[ 0 ]->id : '' )
-                                                        ?>">
+                                                        <a class="btn btn-white btn-sm" href="<?= route( 'statistics@p2ps-get',
+                                                                [ 'customer' => $t->c->id ] +
+                                                                ( $vi->vlanInterfaces->isNotEmpty() ? ['svli' => $vi->vlanInterfaces[ 0 ]->id ] : [] )
+                                                        ) ?>">
                                                             <span class="fa fa-random"></span>
                                                         </a>
                                                     <?php endif; ?>

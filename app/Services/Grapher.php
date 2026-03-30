@@ -28,7 +28,7 @@ use Cache, Config;
 use IXP\Exceptions\Services\Grapher\{
         BadBackendException,
         ConfigurationException,
-        GraphCannotBeProcessedException
+        GraphCannotBeProcessedException,
 };
 
 use Closure;
@@ -43,7 +43,8 @@ use IXP\Models\{Customer,
     VirtualInterface,
     VlanInterface,
     Switcher,
-    Vlan};
+    Vlan,
+};
 
 use IXP\Services\Grapher\Graph;
 
@@ -60,11 +61,12 @@ use IXP\Services\Grapher\Graph\{
     Customer          as CustomerGraph, // member agg over all physical ports
     VlanInterface     as VlanIntGraph,  // member VLAN interface
     P2p               as P2pGraph,
-    Latency           as LatencyGraph
+    MultiP2p          as MultiP2pGraph,
+    Latency           as LatencyGraph,
 };
 
 /**
- * Grapher Backend -> Mrtg
+ * Grapher service
  *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
@@ -80,14 +82,14 @@ class Grapher
      *
      * @var bool
      */
-    private $cacheEnabled = false;
+    private bool $cacheEnabled = false;
 
     /**
      * Is the cache enabled?
      *
      * @var integer
      */
-    private $cacheLifetime = 300;
+    private int $cacheLifetime = 300;
 
     /**
      * Constructor
@@ -110,7 +112,8 @@ class Grapher
      *
      * @return string
      *
-     * @throws
+     * @throws ConfigurationException
+     * @throws BadBackendException
      */
     public function resolveBackend( ?string $backend = null ): string
     {
@@ -139,12 +142,13 @@ class Grapher
      *
      * @return BackendContract
      *
-     * @throws
+     * @throws ConfigurationException
+     * @throws BadBackendException
      *
      * @see \IXP\Console\Commands\Grapher\GrapherCommand::resolveBackend()
      *
      */
-    public function backend( $backend = null ): BackendContract
+    public function backend( ?string $backend = null ): BackendContract
     {
         $backend = $this->resolveBackend( $backend );
         $backendClass = Config::get( "grapher.providers.{$backend}" );
@@ -156,7 +160,7 @@ class Grapher
      *
      * @param Graph $graph
      *
-     * @param array|string $backends Limit search to specified backends
+     * @param array|string[] $backends Limit search to specified backends
      *
      * @return BackendContract
      *
@@ -190,7 +194,7 @@ class Grapher
      *
      * @throws
      *
-     * @psalm-return list<IXP\Contracts\Grapher\Backend>
+     * @psalm-return list<BackendContract>
      */
     public function backendsForGraph( Graph $graph ): array
     {
@@ -367,6 +371,18 @@ class Grapher
     /**
      * Get an instance of a p2p graph
      *
+     * @param Customer $sc
+     * @param Customer $dc
+     * @return MultiP2pGraph
+     */
+    public function multiP2p( Customer $sc, Customer $dc ): MultiP2pGraph
+    {
+        return new MultiP2pGraph( $this, $sc, $dc );
+    }
+
+    /**
+     * Get an instance of a p2p graph
+     *
      * @param VlanInterface $svli
      * @param VlanInterface $dvli
      *
@@ -412,7 +428,7 @@ class Grapher
      */
     public function cacheEnabled(): bool
     {
-        return (bool)$this->cacheEnabled;
+        return $this->cacheEnabled;
     }
 
     /**
@@ -430,7 +446,7 @@ class Grapher
      */
     public function cacheLifetime(): int
     {
-        return (int)$this->cacheLifetime;
+        return $this->cacheLifetime;
     }
 
     /**

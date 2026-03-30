@@ -997,7 +997,7 @@ abstract class Graph
     }
 
     /**
-     * Get parameters in bulk as associative array
+     * Get parameters in bulk as an associative array
      *
      * Base function supports keys: type, protocol, category, period
      *

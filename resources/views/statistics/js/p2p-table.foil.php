@@ -39,7 +39,11 @@
 
         for( let i = 0; i < strFormat.length; i++ )  {
             if( ( data / 1000 < 1 ) || ( strFormat.length === i + 1 ) ) {
-                retString =  number_format( data, 0 ) + " " + strFormat[i];
+                // If i is 0, we're dealing with bytes and don't want any decimal places.
+                // If i is >0, we're dealing with a larger unit and so some decimal places are helpful.
+                // For instance if data in is 30GB and data out is 210TB - it's hard to see any difference in the total without decimal places.
+                let decimalPlaces = i === 0 ? 0 : 2;
+                retString = number_format( data, decimalPlaces ) + " " + strFormat[i];
                 break;
             } else {
                 data = data / 1000;
@@ -51,23 +55,45 @@
 
     let tableList = $( '#ixpDataTable' );
 
-    tableList.dataTable({
-        stateSave: false,
-
-        "aLengthMenu": [[20, 50, 100, 500, -1], [20, 50, 100, 500, "All"]],
-
-        "bAutoWidth": false,
-
-        "aaSorting": [[4, 'desc']],
-        "iDisplayLength": 100,
-        "aoColumnDefs": [
-            {"bVisible": false, "aTargets": [0]},
-            {"render": myScaleTotal, "aTargets": [2, 3, 4, 5, 6, 7, 8, 9, 10]}
-        ]
-    });
-
-
     $(document).ready(function() {
+
+        // When the backend composes the p2p-table page, it is checking if the
+        // customer has any VLI's with IPV4 or IPV6 enabled.
+        // If they only have VLI's for one protocol, then there are 5 rows in the table (initially, before datatables
+        // strips off the member column). If they have VLI's with both protocols, then there are 11.
+        let colCount = 0;
+        $('#ixpDataTable tr:nth-child(1) td').each(function () {
+            if ($(this).attr('colspan')) {
+                colCount += +$(this).attr('colspan');
+            } else {
+                colCount++;
+            }
+        });
+
+        // Determine which table columns contain data transfer volume and need to be scaled.
+        let transferTargets;
+        if (colCount === 6) {
+            transferTargets = [3, 4, 5];
+        } else {
+            transferTargets = [3, 4, 5, 6, 7, 8, 9, 10, 11];
+        }
+
+        tableList.dataTable({
+            stateSave: false,
+
+            "aLengthMenu": [[20, 50, 100, 500, -1], [20, 50, 100, 500, "All"]],
+
+            "bAutoWidth": false,
+
+            "aaSorting": [[5, 'desc']],
+            "iDisplayLength": 100,
+            "aoColumnDefs": [
+                {"bVisible": false, "aTargets": [0]},
+                {"orderable": false, "aTargets": [2]},
+                {"render": myScaleTotal, "aTargets": transferTargets}
+            ]
+        });
+
         tableList.show();
     });
 

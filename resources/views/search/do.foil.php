@@ -14,7 +14,7 @@
                 <div class="card-body">
                     <form class="form-inline" method="get" action="<?= route( 'search' ) ?>">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search for..." name="search" value="<?= $t->search ?>">
+                            <input type="text" class="form-control" aria-label="Search" placeholder="Search for..." name="search" value="<?= $t->search ?>">
                             <div class="input-group-append">
                                 <button class="btn btn-white" type="submit">Search</button>
                                 <button class="btn btn-white" type="button" data-toggle="modal" data-target="#searchHelpModal">
@@ -89,7 +89,7 @@
                                             <a class="btn btn-white" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $cust->id, "type" => "agg" ] ) ?>">
                                                 Statistics
                                             </a>
-                                            <a class="btn btn-white" href="<?= route( 'statistics@p2ps', [ 'customer' => $cust->id ] )?>">
+                                            <a class="btn btn-white" href="<?= route( 'statistics@p2p-table', [ 'custid' => $cust->id ] )?>">
                                                 P2P
                                             </a>
                                             <a class="btn btn-white" href="<?= route( "customer@overview" , [ 'cust' => $cust->id, "tab" => "users" ] ) ?>">
