@@ -88,6 +88,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
                                 <a href="<?= route( 'statistics@p2p-per-vli', [
                                         'srcCust' => $t->srcCustomer->id,
                                         'dstCust' => $t->dstCustomer->id,
+                                        'protocol' => $t->protocol,
                                         'period' => $pvalue] ) ?>">
                                     <?= $t->graph->setPeriod( $pvalue )->renderer()->boxLegacy() ?>
                                 </a>
