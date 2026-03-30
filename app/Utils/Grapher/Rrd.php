@@ -333,6 +333,30 @@ class Rrd
     }
 
     /**
+     * Open an RRD file, applying a consolidation function on the data.
+     *
+     * @param int $start
+     * @param int $end
+     * @param string $consolidationFunction
+     * @return array
+     * @throws FileErrorException
+     */
+    private function fetchRrdFile( int $start, int $end, string $consolidationFunction): array
+    {
+         $rrd = rrd_fetch( $this->file, [
+            $consolidationFunction,
+            '--start', $start,
+            '--end', $end,
+        ]);
+
+        if( $rrd === false || !is_array( $rrd ) ) {
+            throw new FileErrorException("Could not open RRD file");
+        }
+
+        return $rrd;
+    }
+
+    /**
      * @param integer $start : timestamp
      * @param integer $end : timestamp
      *
@@ -344,46 +368,46 @@ class Rrd
      */
     public function dataWindow( int $start, int $end): array
     {
-        $rrd = rrd_fetch( $this->file, [
-            'AVERAGE',
-            '--start', $start,
-            '--end', $end,
-        ]);
+        $rrdAverage = $this->fetchRrdFile( $start, $end, 'AVERAGE');
+        $rrdMax = $this->fetchRrdFile( $start, $end, 'MAX');
 
-        if( $rrd === false || !is_array( $rrd ) ) {
-            throw new FileErrorException("Could not open RRD file");
-        }
-
-        $this->start = $rrd['start'];
-        $this->end   = $rrd['end'];
-        $this->step  = $rrd['step'];
+        $this->start = $rrdAverage['start'];
+        $this->end   = $rrdAverage['end'];
+        $this->step  = $rrdAverage['step'];
 
         [ $indexIn, $indexOut ] = $this->getIndexKeys();
 
         // we want newest first, so iterate in reverse
         // but.... do, we?
         // $tin = array_reverse( $rrd['data'][ $indexIn ], true );
-        $tin = $rrd['data'][ $indexIn ];
+        $tin = $rrdAverage['data'][ $indexIn ];
 
         $values  = [];
 
         $isBits = ( $this->graph()->category() === Graph::CATEGORY_BITS );
 
         $i = 0;
-         foreach( $tin as $ts => $v ) {
-            if( is_numeric( $v ) && is_numeric( $rrd['data'][$indexOut][$ts] ) ) {
+        foreach( $tin as $ts => $v ) {
+            if( is_numeric( $v ) && is_numeric( $rrdAverage['data'][$indexOut][$ts] ) && is_numeric( $rrdMax['data'][$indexIn][$ts]) ) {
                 // first couple are often blank
                 if( $ts > time() - $this->step ) {
                     continue;
                 }
 
-                $values[$i] = [ (int)$ts, (int)$v, (int)$rrd['data'][$indexOut][$ts], (int)$v, (int)$rrd['data'][$indexOut][$ts] ];
+                /**
+                 * 1st column: The Unix timestamp for the point in time the data on this line is relevant ($ts)
+                 * 2nd column: The average incoming transfer rate in bytes per second. ($v))
+                 * 3rd column: The average outgoing transfer rate in bytes per second since the previous measurement. ($rrdAverage['data'][$indexOut][$ts])
+                 * 4th column: The maximum incoming transfer rate in bytes per second for the current interval. ($rrdMax['data'][$indexIn][$ts])
+                 * 5th column: The maximum outgoing transfer rate in bytes per second for the current interval. ($rrdMax['data'][$indexOut][$ts])
+                 */
+                $values[$i] = [ (int)$ts, (int)$v, (int)$rrdAverage['data'][$indexOut][$ts], (int)$rrdMax['data'][$indexIn][$ts], (int)$rrdMax['data'][$indexOut][$ts] ];
 
                 if( $isBits ) {
-                    $values[$i][1] *= 8;
-                    $values[$i][2] *= 8;
-                    $values[$i][3] *= 8;
-                    $values[$i][4] *= 8;
+                    $values[ $i ][ 1 ] *= 8;
+                    $values[ $i ][ 2 ] *= 8;
+                    $values[ $i ][ 3 ] *= 8;
+                    $values[ $i ][ 4 ] *= 8;
                 }
                 $i++;
             }
