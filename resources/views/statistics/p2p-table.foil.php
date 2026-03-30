@@ -18,7 +18,11 @@
         <div class="col-sm-12">
             <?= $t->alerts() ?>
             <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
-                <a class="navbar-brand" href="<?= route('statistics@members') ?>">
+                <a class="navbar-brand" href="<?=
+                    Auth::user()->isSuperUser()
+                            ? route( 'statistics@p2p-table', [ 'custid' => $c->id ] )
+                            : route('statistics@p2p-table')
+                ?>">
                     P2P Table:
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
