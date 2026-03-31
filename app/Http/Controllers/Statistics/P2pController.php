@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use IXP\Http\Controllers\Controller;
 use IXP\IXP;
+use IXP\Models\Aggregators\VlanInterfaceAggregator;
 use IXP\Models\Customer;
+use IXP\Models\Vlan;
 use IXP\Services\Grapher;
 use IXP\Services\Grapher\Graph;
 
@@ -88,27 +90,20 @@ class P2pController extends Controller
      * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function p2pTotals(Request $request, int $scid, int $dcid): View
+    public function p2pTotals( Request $request, Customer $srcCust, Customer $dstCust ): View
     {
         if( !Auth::check() ) {
             abort( 403, "You are not authorised to view this page." );
         }
 
-        $srcCustomer = Customer::findOrFail( $scid );
-        $dstCustomer = Customer::findOrFail( $dcid );
-
         $requestProtocol = Graph::processParameterProtocol( $request->protocol );
         $requestCategory = Graph::processParameterCategory( $request->category, true );
 
-        // Abort if the requested protocol is not
-        $possibleProtocols = $this->convertProtocolsToGraphOptions( $this->determineCustomerEnabledProtocols( $srcCustomer ) );
-        if( !in_array( $requestProtocol, $possibleProtocols ) ) {
-            abort(400, "Customer does not support $requestProtocol");
-        }
+        $possibleProtocols = $this->convertProtocolsToGraphOptions( $this->determineCustomerEnabledProtocols( $srcCust ) );
         $renderProtocols = $this->protocolListFromGraphOption( $requestProtocol );
 
         $graph = App::make( Grapher::class )
-            ->multiP2p( $srcCustomer, $dstCustomer )
+            ->multiP2p( $srcCust, $dstCust )
             ->setProtocol( $requestProtocol )
             ->setCategory( $requestCategory )
         ;
@@ -118,18 +113,18 @@ class P2pController extends Controller
         // Generate some description test for the graphs.
         $myPorts = [];
         $theirPorts = [];
-        foreach ($srcCustomer->virtualInterfaces as $vi) {
-            foreach ($vi->vlanInterfaces as $vli) {
-                foreach ($renderProtocols as $protocol) {
-                    if (!$vli->ipvxEnabled($protocol)) {
+        foreach ( $srcCust->virtualInterfaces as $vi ) {
+            foreach ( $vi->vlanInterfaces as $vli ) {
+                foreach ( $renderProtocols as $protocol ) {
+                    if ( !$vli->ipvxEnabled($protocol) ) {
                         continue;
                     }
                     $myAddress = $protocol === 4 ? $vli->ipv4address->address : $vli->ipv6address->address;
                     $myPorts[] = "{$vli->vlan->name} - {$myAddress}";
 
-                    foreach ($dstCustomer->virtualInterfaces as $dstVi) {
-                        foreach ($dstVi->vlanInterfaces as $dstVli) {
-                            if ($vli->vlanid !== $dstVli->vlanid || !$dstVli->ipvxEnabled($protocol)) {
+                    foreach ( $dstCust->virtualInterfaces as $dstVi ) {
+                        foreach ( $dstVi->vlanInterfaces as $dstVli ) {
+                            if ( $vli->vlanid !== $dstVli->vlanid || !$dstVli->ipvxEnabled( $protocol ) ) {
                                 continue;
                             }
 
@@ -146,21 +141,18 @@ class P2pController extends Controller
             'protocol'            => $requestProtocol,
             'category'            => $requestCategory,
             'possibleProtocols'   => $possibleProtocols,
-            'srcCustomer'         => $srcCustomer,
-            'dstCustomer'         => $dstCustomer,
+            'srcCustomer'         => $srcCust,
+            'dstCustomer'         => $dstCust,
             'myPorts'             => $myPorts,
             'theirPorts'          => $theirPorts,
         ] );
     }
 
-    public function p2pPerVli(Request $request, int $scid, int $dcid): View
+    public function p2pPerVlan(Request $request, Customer $srcCust, Customer $dstCust): View
     {
         if( !Auth::check() ) {
             abort( 403, "You are not authorised to view this page." );
         }
-
-        $srcCustomer = Customer::findOrFail( $scid );
-        $dstCustomer = Customer::findOrFail( $dcid );
 
         $requestProtocol = Graph::processParameterProtocol( $request->protocol );
         $requestCategory = Graph::processParameterCategory( $request->category, true );
@@ -168,60 +160,66 @@ class P2pController extends Controller
 
         // Determine protocols supported by the customer, and from those, generate a list of
         // options for grapher protocol.
-        $graphProtocolOptions = $this->convertProtocolsToGraphOptions( $this->determineCustomerEnabledProtocols( $srcCustomer ) );
+        $graphProtocolOptions = $this->convertProtocolsToGraphOptions( $this->determineCustomerEnabledProtocols( $srcCust ) );
 
-        // Only render graphs for the protocols requested by the user
-        $renderProtocols = $this->protocolListFromGraphOption( $requestProtocol );
+        // Get list of VLAN ID and Name, without duplicates.
+        $vlans = Vlan::findMany(VlanInterfaceAggregator::findVlansBetweenCustomers( $srcCust, $dstCust ));
 
         $graphData = [];
-        foreach ($srcCustomer->virtualInterfaces as $vi) {
-            foreach ($vi->vlanInterfaces as $vli) {
-                foreach ($renderProtocols as $protocol) {
-                    if (!$vli->ipvxEnabled($protocol)) {
-                        continue;
+
+        foreach ( $vlans as $vlan) {
+            $srcVlis = $srcCust->vlanInterfaces()->where('vlaninterface.vlanid', $vlan->id)->get();
+            $dstVlis = $dstCust->vlanInterfaces()->where('vlaninterface.vlanid', $vlan->id)->get();
+
+            $haveData = false;
+            $srcIps = [];
+            $dstIps = [];
+            foreach( $srcVlis as $svli ) {
+                foreach( $dstVlis as $dvli ) {
+                    if ( ( $requestProtocol === Graph::PROTOCOL_IPV4 || $requestProtocol === Graph::PROTOCOL_ALL ) &&
+                        ($svli->ipvxEnabled(4) && $dvli->ipvxEnabled(4))) {
+                        $haveData = true;
+                        $srcIps[] = $svli->ipv4address->address;
+                        $dstIps[] = $dvli->ipv4address->address;
                     }
 
-                    $myAddress = $protocol === 4 ? $vli->ipv4address->address : $vli->ipv6address->address;
-                    $myPorts[] = "{$vli->vlan->name} - {$myAddress}";
-
-                    foreach ($dstCustomer->virtualInterfaces as $dstVi) {
-                        foreach ($dstVi->vlanInterfaces as $dstVli) {
-                            if ($vli->vlanid !== $dstVli->vlanid || !$dstVli->ipvxEnabled($protocol)) {
-                                continue;
-                            }
-
-                            $graph = App::make( Grapher::class )
-                                ->p2p( $vli, $dstVli )
-                                ->setProtocol( IXP::IPv4 === $protocol ? Graph::PROTOCOL_IPV4 : Graph::PROTOCOL_IPV6 )
-                                ->setCategory( $requestCategory )
-                                ->setPeriod( $requestPeriod )
-                            ;
-                            $graph->authorise();
-
-                            $theirAddress = $protocol === 4 ? $dstVli->ipv4address->address : $dstVli->ipv6address->address;
-                            $theirPorts[] = "{$dstVli->vlan->name} - {$theirAddress}";
-
-                            $graphData[] = [
-                                "title" => sprintf("%s IPv%d", $vli->vlan->name, $protocol),
-                                "subtitle" => sprintf("%s traffic between %s <-> %s", $vli->vlan->name,$myAddress, $theirAddress),
-                                "graph" => $graph,
-                            ];
-                        }
+                    if ( ( $requestProtocol === Graph::PROTOCOL_IPV6 || $requestProtocol === Graph::PROTOCOL_ALL ) &&
+                        ($svli->ipvxEnabled(6) && $dvli->ipvxEnabled(6))) {
+                        $haveData = true;
+                        $srcIps[] = $svli->ipv6address->address;
+                        $dstIps[] = $dvli->ipv6address->address;
                     }
                 }
             }
+
+            if (!$haveData) {
+                continue;
+            }
+
+            $graph = App::make( Grapher::class )
+                ->multiP2p( $srcCust, $dstCust )
+                ->setVlan( $vlan->id )
+                ->setProtocol( $requestProtocol )
+                ->setCategory( $requestCategory )
+                ->setPeriod( $requestPeriod )
+            ;
+            $graph->authorise();
+
+            $graphData[] = [
+                "title" => $vlan->name,
+                "subtitle" => "Traffic between ".implode(", ", array_unique($srcIps))." (yours) and ".implode(", ", array_unique($dstIps)) . " (theirs)",
+                "graph" => $graph,
+            ];
         }
 
-        return view( 'statistics/p2p-per-vli' )->with( [
+        return view( 'statistics/p2p-per-vlan' )->with( [
             'graphData'           => $graphData,
             'protocol'            => $requestProtocol,
             'category'            => $requestCategory,
             'period'              => $requestPeriod,
             'possibleProtocols'   => $graphProtocolOptions,
-            'srcCustomer'         => $srcCustomer,
-            'dstCustomer'         => $dstCustomer,
-            'myPorts'             => $myPorts,
-            'theirPorts'          => $theirPorts,
+            'srcCustomer'         => $srcCust,
+            'dstCustomer'         => $dstCust,
         ] );
     }
 }

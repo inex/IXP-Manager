@@ -230,7 +230,12 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
         }
 
         try {
-            $rrd = new MultiRrdUtil( $this->resolveMultiP2pFilePath($graph), $graph );
+            if ($graph->getVlan() === null) {
+                $paths = $this->resolveMultiP2pFilePath($graph);
+            } else {
+                $paths = $this->resolveMultiP2pVlanFilePaths($graph, $graph->getVlan());
+            }
+            $rrd = new MultiRrdUtil( $paths, $graph );
             return @file_get_contents( $rrd->png() );
         } catch ( FileErrorException $e ) {
             Log::notice("[Grapher] {$this->name()} png(): could not load one or more file(s) " .
@@ -376,8 +381,6 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
             foreach( $svi->vlanInterfaces as $svli ) {
                 foreach( $protocols as $protocol ) {
 
-                    // Is this setting ever changed? This line means we can't see a graph unless ipvx is enabled
-                    // in IXP-Manager, while there may have been traffic (in the past, or just somehow).
                     if( !$svli->ipvxEnabled($protocol) ) {
                         continue;
                     }
@@ -395,6 +398,42 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
                                 $this->resolveMultiP2pFileName( $graph, $svli, $dvli, 'ipv' . $protocol ));
                         }
                     }
+                }
+            }
+        }
+
+        return $files;
+    }
+
+    /**
+     * @param MultiP2pGraph $graph
+     * @param int $vlan
+     * @return string[]
+     */
+    private function resolveMultiP2pVlanFilePaths ( MultiP2pGraph $graph , int $vlan): array
+    {
+        $config = config('grapher.backends.sflow');
+
+        $srcVlis = $graph->srcCustomer()->vlanInterfaces()->where('vlaninterface.vlanid', $vlan)->get();
+        $dstVlis = $graph->dstCustomer()->vlanInterfaces()->where('vlaninterface.vlanid', $vlan)->get();
+
+        $files = [];
+
+        foreach( $srcVlis as $svli ) {
+            foreach( $dstVlis as $dvli ) {
+
+                if ( ( $graph->protocol() === Graph::PROTOCOL_IPV4 || $graph->protocol() === Graph::PROTOCOL_ALL ) &&
+                    ($svli->ipvxEnabled(4) && $dvli->ipvxEnabled(4))) {
+                    $files[] = sprintf("%s/%s/%s/p2p/src-%05d/%s", $config['root'],
+                        'ipv4', $this->translateCategory( $graph->category() ), $svli->id,
+                        $this->resolveMultiP2pFileName( $graph, $svli, $dvli, 'ipv4' ));
+                }
+
+                if ( ( $graph->protocol() === Graph::PROTOCOL_IPV6 || $graph->protocol() === Graph::PROTOCOL_ALL ) &&
+                    ($svli->ipvxEnabled(6) && $dvli->ipvxEnabled(6))) {
+                    $files[] = sprintf("%s/%s/%s/p2p/src-%05d/%s", $config['root'],
+                        'ipv6', $this->translateCategory( $graph->category() ), $svli->id,
+                        $this->resolveMultiP2pFileName( $graph, $svli, $dvli, 'ipv6' ));
                 }
             }
         }
