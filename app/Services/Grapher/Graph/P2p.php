@@ -47,17 +47,13 @@ class P2p extends Graph
 {
     /**
      * Source VlanInterface to graph
-     *
-     * @var VlanInterfaceModel
      */
-    private $svli = null;
+    private VlanInterfaceModel $svli;
 
     /**
      * Destination VlanInterface to graph
-     *
-     * @var VlanInterfaceModel
      */
-    private $dvli = null;
+    private VlanInterfaceModel $dvli;
 
     /**
      * Constructor

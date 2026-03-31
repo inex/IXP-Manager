@@ -27,6 +27,7 @@ use Exception;
 use Illuminate\Database\Eloquent\{
     Builder,
 };
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 
 use IXP\Models\{Customer, PhysicalInterface, Router, Vlan, VlanInterface};
@@ -422,5 +423,59 @@ class VlanInterfaceAggregator extends VlanInterface
         }
 
         return $newints;
+    }
+
+    /**
+     * This function takes two customers, and finds vlaninterfaces two customers can use to route to eachother.
+     * It will return records for each customer VLI across all VLAN's they have in common.
+     * It returns a collection of items with the following form:
+     * [
+     *     [
+     *         'vlanid' => 1,
+     *         'ipv4address' => '192.0.2.123',
+     *         'ipv6address' => '2001:db8::123',
+     *         'name' => 'Peering LAN #1',
+     *         'custid' => 120,
+     *     ],
+     * ]
+     * @param Customer $cust1
+     * @param Customer $cust2
+     * @return Collection
+     */
+    public static function findVlisBetweenCustomers( Customer $cust1, Customer $cust2 ): Collection
+    {
+        return VlanInterface::select(["vlaninterface.vlanid", "ipv4address.address as ipv4address", "ipv6address.address as ipv6address", "v.name", "vi.custid"])
+            ->join('virtualinterface as vi', 'vi.id', '=', 'vlaninterface.virtualinterfaceid')
+            ->leftJoin('ipv4address', 'ipv4address.id', '=', 'vlaninterface.ipv4addressid')
+            ->leftJoin('ipv6address', 'ipv6address.id', '=', 'vlaninterface.ipv6addressid')
+            ->join('vlan as v', 'v.id', '=', 'vlaninterface.vlanid')
+            ->whereIn('vi.custid', [$cust1->id, $cust2->id])
+            ->get()
+        ;
+    }
+
+
+    /**
+     * This function takes two customers, and finds Vlans which the customers have in common with
+     * eachother.
+     * It returns an array of vlan ID's the users have in common.
+     * @param Customer $cust1
+     * @param Customer $cust2
+     * @return int[]
+     */
+    public static function findVlansBetweenCustomers( Customer $cust1, Customer $cust2 ): array
+    {
+        return VlanInterface::selectRaw("DISTINCT vlaninterface.vlanid")
+            ->join('virtualinterface as vi', 'vi.id', '=', 'vlaninterface.virtualinterfaceid')
+            ->where('vi.custid', $cust1->id)
+            ->whereIn('vlaninterface.vlanid', function( QueryBuilder $query) use ($cust2) {
+                $query->select('vlaninterface.vlanid')
+                    ->from('vlaninterface')
+                    ->join('virtualinterface as vi', 'vi.id', '=', 'vlaninterface.virtualinterfaceid')
+                    ->where('vi.custid', $cust2->id);
+            })
+            ->get()
+            ->pluck('vlanid')
+            ->toArray();
     }
 }

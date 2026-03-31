@@ -44,6 +44,8 @@ use IXP\Services\Grapher\{Graph};
  */
 class MultiP2p extends Graph
 {
+    private ?int $vlan = null;
+
     /**
      * Constructor
      *
@@ -73,6 +75,17 @@ class MultiP2p extends Graph
     public function dstCustomer(): Customer
     {
         return $this->dstCustomer;
+    }
+
+    public function setVlan(int $vlan): static
+    {
+        $this->vlan = $vlan;
+        return $this;
+    }
+
+    public function getVlan(): ?int
+    {
+        return $this->vlan;
     }
 
     /**

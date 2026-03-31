@@ -21,9 +21,13 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
         </a>
         /
         Traffic Exchanged with
-        <a href="<?= route( 'statistics@p2p-totals', [ 'srcCust' => $this->dstCustomer->id, 'dstCust' => $t->srcCustomer->id ] )
-        . '?category=' . $t->category
-        . '&protocol=' . $t->protocol
+        <a href="<?= route( 'statistics@p2p-per-vlan', [
+                'srcCust' => $this->dstCustomer->id,
+                'dstCust' => $t->srcCustomer->id ,
+                'period' => $t->period,
+                'category' => $t->category,
+                'protocol' => $t->protocol,
+        ] )
         ?>">
             <?= $this->dstCustomer->getFormattedName() ?>
         </a>
@@ -39,7 +43,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
         <?= $t->alerts() ?>
         <div class="col-md-12">
             <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
-                <a class="navbar-brand" href="<?= route( "statistics@p2p-per-vli", ['srcCust' => $t->srcCustomer->id, 'dstCust' => $t->dstCustomer->id] ) ?>">
+                <a class="navbar-brand" href="<?= route( "statistics@p2p-per-vlan", ['srcCust' => $t->srcCustomer->id, 'dstCust' => $t->dstCustomer->id] ) ?>">
                     Graph Options:
                 </a>
 
@@ -106,7 +110,6 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
                             </div>
                             <div class="card-body">
                                 <?= $graphData['graph']->renderer()->boxLegacy() ?>
-                                <p class="card-text"><small class="text-muted"><?= $graphData['subtitle'] ?></small></p>
                             </div>
                         </div>
                     </div>
@@ -122,28 +125,8 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
         </div>
         <div class="card-body">
             <p>
-                These graphs chart the traffic exchanged by each of your ports, to ports belonging to <?= $t->ee( $this->dstCustomer->getFormattedName() ) ?>.
+                These graphs chart the traffic across each VLAN between you and <?= $t->ee( $this->dstCustomer->getFormattedName() ) ?>.
             </p>
-
-            <div class="row">
-                <div class="col-lg-5 col-sm-12 text-center">
-                    <p>Your ports</p>
-                    <pre class="p-2 border text-center"><?php
-                        foreach ($t->myPorts as $portDescription): ?>
-<?= $portDescription ?><br><?php
-                        endforeach; ?>
-</pre>
-                </div>
-
-                <div class="col-lg-5 col-sm-12 text-center">
-                    <p>Their ports:</p>
-                    <pre class="p-2 border text-center"><?php
-                        foreach ($t->theirPorts as $portDescription): ?>
-<?= $portDescription ?><br><?php
-                        endforeach; ?>
-</pre>
-                </div>
-            </div>
 
             <?php if (count($t->possibleProtocols) > 1): ?>
                 <p>
@@ -160,7 +143,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
 
 <?php $this->section( 'scripts' ) ?>
     <script>
-        let base_route   = "<?= route( 'statistics@p2p-per-vli', ['srcCust' => $t->srcCustomer->id, 'dstCust' => $t->dstCustomer->id] ) ?>";
+        let base_route   = "<?= route( 'statistics@p2p-per-vlan', ['srcCust' => $t->srcCustomer->id, 'dstCust' => $t->dstCustomer->id] ) ?>";
         let sel_category = $("#form-select-category");
         let sel_protocol = $("#form-select-protocol");
         let sel_period   = $("#form-select-period");

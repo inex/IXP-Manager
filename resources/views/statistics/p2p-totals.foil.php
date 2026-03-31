@@ -21,10 +21,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
         </a>
         /
         Traffic Exchanged with
-        <a href="<?= route( 'statistics@p2p-totals', [ 'srcCust' => $this->dstCustomer->id, 'dstCust' => $t->srcCustomer->id ] )
-        . '?category=' . $t->category
-        . '&protocol=' . $t->protocol
-        ?>">
+        <a href="<?= route( 'statistics@p2p-totals', [ 'srcCust' => $this->dstCustomer->id, 'dstCust' => $t->srcCustomer->id ] ) ?>">
             <?= $this->dstCustomer->getFormattedName() ?>
         </a>
 
@@ -85,10 +82,11 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
                                 <h3><?= IXP\Services\Grapher\Graph::resolvePeriod( $pvalue ) ?> Graph</h3>
                             </div>
                             <div class="card-body">
-                                <a href="<?= route( 'statistics@p2p-per-vli', [
+                                <a href="<?= route( 'statistics@p2p-per-vlan', [
                                         'srcCust' => $t->srcCustomer->id,
                                         'dstCust' => $t->dstCustomer->id,
                                         'protocol' => $t->protocol,
+                                        'category' => $t->category,
                                         'period' => $pvalue] ) ?>">
                                     <?= $t->graph->setPeriod( $pvalue )->renderer()->boxLegacy() ?>
                                 </a>
