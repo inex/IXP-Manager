@@ -47,7 +47,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
 
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <form class="navbar-form navbar-left form-inline d-block d-lg-flex">
-                        <ul class="navbar-nav">
+                        <ul class="navbar-nav mt-2 mt-lg-0">
                             <li class="nav-item">
                                 <div class="nav-link d-flex">
                                     <label for="form-select-protocol" class="col-lg-6 col-sm-4">Protocol:</label>
