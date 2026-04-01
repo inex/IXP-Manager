@@ -86,13 +86,15 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
                                 </div>
                             </li>
 
-                            <li class="nav-item float-right">
-                                <a class="btn btn-white ml-2" href="<?= route( 'statistics@p2p-totals', [
-                                        'srcCust' => $t->srcCustomer->id,
-                                        'dstCust' => $this->dstCustomer->id,
-                                        'category' => $t->category,
-                                        'protocol' => $t->protocol,
-                                ] ) ?>">Overall Traffic</a>
+                            <li class="nav-item">
+                                <div class="nav-link d-flex">
+                                    <a class="btn btn-white ml-2" href="<?= route( 'statistics@p2p-totals', [
+                                            'srcCust' => $t->srcCustomer->id,
+                                            'dstCust' => $this->dstCustomer->id,
+                                            'category' => $t->category,
+                                            'protocol' => $t->protocol,
+                                    ] ) ?>">Overall Traffic</a>
+                                </div>
                             </li>
                         </ul>
                     </form>
