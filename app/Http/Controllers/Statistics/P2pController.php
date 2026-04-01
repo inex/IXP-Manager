@@ -83,9 +83,9 @@ class P2pController extends Controller
      *    is enabled
      *  - request graphs of packet volume or bits transferred.
      *
-     * @param Request $request
-     * @param int $scid
-     * @param int $dcid
+     * @param Request  $request
+     * @param Customer $scid
+     * @param Customer $dcid
      * @return View
      * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
@@ -143,11 +143,17 @@ class P2pController extends Controller
             'possibleProtocols'   => $possibleProtocols,
             'srcCustomer'         => $srcCust,
             'dstCustomer'         => $dstCust,
-            'myPorts'             => $myPorts,
-            'theirPorts'          => $theirPorts,
+            'myPorts'             => array_unique($myPorts),
+            'theirPorts'          => array_unique($theirPorts),
         ] );
     }
 
+    /**
+     * @param Request $request
+     * @param Customer $srcCust
+     * @param Customer $dstCust
+     * @return View
+     */
     public function p2pPerVlan(Request $request, Customer $srcCust, Customer $dstCust): View
     {
         if( !Auth::check() ) {
