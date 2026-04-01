@@ -164,7 +164,7 @@ class PhysicalInterface extends Model
     /**
      * Get the virtual interface that owns the physical interface.
      *
-     * @psalm-return BelongsTo<VirtualInterface>
+     * @psalm-return BelongsTo<VirtualInterface, self>
      */
     public function virtualInterface(): BelongsTo
     {
@@ -174,7 +174,7 @@ class PhysicalInterface extends Model
     /**
      * Get the switch port that owns the physical interface.
      *
-     * @psalm-return BelongsTo<SwitchPort>
+     * @psalm-return BelongsTo<SwitchPort, self>
      */
     public function switchPort(): BelongsTo
     {
@@ -184,7 +184,7 @@ class PhysicalInterface extends Model
     /**
      * Get the fanout physical interface associated with the physical interface.
      *
-     * @psalm-return BelongsTo<self>
+     * @psalm-return BelongsTo<self, self>
      */
     public function fanoutPhysicalInterface(): BelongsTo
     {
@@ -194,7 +194,7 @@ class PhysicalInterface extends Model
     /**
      * Get the core interface associated with the physical interface.
      *
-     * @psalm-return HasOne<CoreInterface>
+     * @psalm-return HasOne<CoreInterface, self>
      */
     public function coreInterface(): HasOne
     {
@@ -204,7 +204,7 @@ class PhysicalInterface extends Model
     /**
      * Get the peering physical interface associated with the physical interface.
      *
-     * @psalm-return HasOne<self>
+     * @psalm-return HasOne<self, self>
      */
     public function peeringPhysicalInterface(): HasOne
     {
@@ -214,7 +214,7 @@ class PhysicalInterface extends Model
     /**
      * Get the trafficDailiesPhysInt associated with the physical interface.
      *
-     * @psalm-return HasMany<TrafficDailyPhysInt>
+     * @psalm-return HasMany<TrafficDailyPhysInt, self>
      */
     public function trafficDailiesPhysInt(): HasMany
     {

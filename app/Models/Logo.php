@@ -81,7 +81,7 @@ class Logo extends Model
     /**
      * Get the customer that own the logo
      *
-     * @psalm-return BelongsTo<Customer>
+     * @psalm-return BelongsTo<Customer, self>
      */
     public function customer(): BelongsTo
     {

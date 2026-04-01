@@ -26,18 +26,18 @@
     "require": {
         "php": "^8.4",
         "ext-json": "*",
-        "laravel/framework": "^12.0",
         "anahkiasen/former": "^5.1.1",
         "bacon/bacon-qr-code": "^3.0.0",
         "barryvdh/laravel-dompdf": "^3.0.0",
         "erusev/parsedown": "^1.7",
-        "opensolutions/foil": "^0.7.2",
         "intervention/image": "^2.7",
+        "laravel/framework": "^12.0",
         "laravel/horizon": "^5.7",
         "laravel/telescope": "^5.0",
         "laravel/tinker": "^2.10.1",
         "laravel/ui": "^4.0",
         "mews/purifier": "^3.4",
+        "opensolutions/foil": "^0.7.2",
         "opensolutions/oss-snmp": "^1.0",
         "php-ds/php-ds": "^1.7.0",
         "pragmarx/google2fa-laravel": "^2.3.0",
@@ -54,9 +54,9 @@
         "laravel/dusk": "^8.0",
         "mockery/mockery": "^1.6",
         "phpunit/phpunit": "^11.5.3",
+        "psalm/plugin-laravel": "^4.3",
         "staudenmeir/dusk-updater": "^1.5",
-        "vimeo/psalm": "^6.0",
-        "psalm/plugin-laravel": "^3.0.0"
+        "vimeo/psalm": "dev-master"
     },
     "support": {
         "issues": "https://www.ixpmanager.org/support",
@@ -119,6 +119,6 @@
             "php": "8.4.11"
         }
     },
-   "minimum-stability": "dev",
+   "minimum-stability": "beta",
    "prefer-stable": true
 }

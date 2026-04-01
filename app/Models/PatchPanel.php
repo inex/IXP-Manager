@@ -190,7 +190,7 @@ class PatchPanel extends Model
     /**
      * Get the patch panel port files for this patch panel port
      *
-     * @psalm-return HasMany<PatchPanelPort>
+     * @psalm-return HasMany<PatchPanelPort, self>
      */
     public function patchPanelPorts(): HasMany
     {
@@ -200,7 +200,7 @@ class PatchPanel extends Model
     /**
      * Get the cabinet that own the patch panel
      *
-     * @psalm-return BelongsTo<Cabinet>
+     * @psalm-return BelongsTo<Cabinet, self>
      */
     public function cabinet(): BelongsTo
     {

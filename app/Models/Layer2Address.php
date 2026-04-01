@@ -83,7 +83,7 @@ class Layer2Address extends Model
     /**
      * Get the vlan interface that holds the layer2address
      *
-     * @psalm-return BelongsTo<VlanInterface>
+     * @psalm-return BelongsTo<VlanInterface, self>
      */
     public function vlanInterface(): BelongsTo
     {

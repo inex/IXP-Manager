@@ -82,7 +82,7 @@ class Vendor extends Model
     /**
      * Get the console servers for the vendor
      *
-     * @psalm-return HasMany<ConsoleServer>
+     * @psalm-return HasMany<ConsoleServer, self>
      */
     public function consoleServers(): HasMany
     {
@@ -92,7 +92,7 @@ class Vendor extends Model
     /**
      * Get the switchers for the vendor
      *
-     * @psalm-return HasMany<Switcher>
+     * @psalm-return HasMany<Switcher, self>
      */
     public function switchers(): HasMany
     {

@@ -86,7 +86,7 @@ class NetworkInfo extends Model
     /**
      * Get the vlan that own the network info
      *
-     * @psalm-return BelongsTo<Vlan>
+     * @psalm-return BelongsTo<Vlan, self>
      */
     public function vlan(): BelongsTo
     {

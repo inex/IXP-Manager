@@ -136,7 +136,7 @@ class Contact extends Model
     /**
      * Get the customer that own the contact
      *
-     * @psalm-return BelongsTo<Customer>
+     * @psalm-return BelongsTo<Customer, self>
      */
     public function customer(): BelongsTo
     {

@@ -67,6 +67,7 @@ class RipeRestApiProvider extends ServiceProvider implements DeferrableProvider
      *
      * @return array<int, string>
      */
+    #[\Override]
     public function provides(): array
     {
         return [RipeRestApi::class];

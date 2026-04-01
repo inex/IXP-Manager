@@ -104,6 +104,7 @@ class Infrastructure extends Model
      *
      * @return array<string, string>
      */
+    #[\Override]
     protected function casts(): array
     {
         return [
@@ -116,7 +117,7 @@ class Infrastructure extends Model
     /**
      * Get the vlans for the infrastructure
      *
-     * @psalm-return HasMany<Vlan>
+     * @psalm-return HasMany<Vlan, self>
      */
     public function vlans(): HasMany
     {
@@ -126,7 +127,7 @@ class Infrastructure extends Model
     /**
      * Get the switchers for the infrastructure
      *
-     * @psalm-return HasMany<Switcher>
+     * @psalm-return HasMany<Switcher, self>
      */
     public function switchers(): HasMany
     {

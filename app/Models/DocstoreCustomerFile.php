@@ -146,7 +146,7 @@ class DocstoreCustomerFile extends Model
     /**
      * Get the directory that owns the file.
      *
-     * @psalm-return BelongsTo<DocstoreCustomerDirectory>
+     * @psalm-return BelongsTo<DocstoreCustomerDirectory, self>
      */
     public function directory(): BelongsTo
     {
@@ -156,7 +156,7 @@ class DocstoreCustomerFile extends Model
     /**
      * Get the customer that owns the file
      *
-     * @psalm-return BelongsTo<Customer>
+     * @psalm-return BelongsTo<Customer, self>
      */
     public function customer(): BelongsTo
     {

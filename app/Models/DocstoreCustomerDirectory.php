@@ -136,7 +136,7 @@ class DocstoreCustomerDirectory extends Model
     /**
      * Get the customer
      *
-     * @psalm-return BelongsTo<Customer>
+     * @psalm-return BelongsTo<Customer, self>
      */
     public function customer(): BelongsTo
     {
@@ -154,7 +154,7 @@ class DocstoreCustomerDirectory extends Model
     /**
      * Get the parent directory
      *
-     * @psalm-return BelongsTo<self>
+     * @psalm-return BelongsTo<self, self>
      */
     public function parentDirectory(): BelongsTo
     {
@@ -164,7 +164,7 @@ class DocstoreCustomerDirectory extends Model
     /**
      * Get the files in this directory
      *
-     * @psalm-return HasMany<DocstoreCustomerFile>
+     * @psalm-return HasMany<DocstoreCustomerFile, self>
      */
     public function files(): HasMany
     {

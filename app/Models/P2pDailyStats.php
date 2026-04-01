@@ -99,7 +99,7 @@ class P2pDailyStats extends Model
     /**
      * Get the logo for the customer
      *
-     * @psalm-return HasOne<Customer>
+     * @psalm-return HasOne<Customer, self>
      */
     public function peer(): HasOne
     {

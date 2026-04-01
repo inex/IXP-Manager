@@ -60,7 +60,7 @@ class CoreInterface extends Model
     /**
      * Get the physical interface associated with the core interface.
      *
-     * @psalm-return BelongsTo<PhysicalInterface>
+     * @psalm-return BelongsTo<PhysicalInterface, self>
      */
     public function physicalInterface(): BelongsTo
     {
@@ -70,7 +70,7 @@ class CoreInterface extends Model
     /**
      * Get the corelink associated with the core interface side A.
      *
-     * @psalm-return HasOne<CoreLink>
+     * @psalm-return HasOne<CoreLink, self>
      */
     public function coreLinkSideA(): HasOne
     {
@@ -80,7 +80,7 @@ class CoreInterface extends Model
     /**
      * Get the corelink associated with the core interface side B.
      *
-     * @psalm-return HasOne<CoreLink>
+     * @psalm-return HasOne<CoreLink, self>
      */
     public function coreLinkSideB(): HasOne
     {
