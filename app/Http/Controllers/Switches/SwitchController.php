@@ -294,7 +294,7 @@ class SwitchController extends EloquentController
             'vendor'  => [
                 'title'      => 'Vendor',
                 'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                'controller' => 'vendor',
+                'controller' => 'admin/vendor',
                 'action'     => 'view',
                 'idField'    => 'vendorid'
             ],

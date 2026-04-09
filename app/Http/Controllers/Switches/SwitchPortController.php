@@ -552,9 +552,9 @@ class SwitchPortController extends EloquentController
      *
      * @param Switcher $switch
      *
-     * @return view
+     * @return View
      */
-    public function listOpStatus( Switcher $switch  ): view
+    public function listOpStatus( Switcher $switch  ): View
     {
         // to refresh switch and switch port details via SNMP
         try {
@@ -602,9 +602,9 @@ class SwitchPortController extends EloquentController
      *
      * @param Switcher $switch Switch
      *
-     * @return view
+     * @return View
      */
-    public function snmpPoll( Switcher $switch ): view
+    public function snmpPoll( Switcher $switch ): View
     {
         if( !$switch->active ) {
             AlertContainer::push( "SNMP Polling of ports is only valid for switches that are active", Alert::DANGER );
@@ -764,7 +764,7 @@ class SwitchPortController extends EloquentController
             'cnt'  => [
                 'title'                 => 'Count',
                 'type'                  => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                'controller'            => 'switch-port',
+                'controller'            => 'admin/switch-port',
                 'action'                => 'optic-list',
                 'nameIdOptionalParam'   => 'mau-type',
                 'idField'               => 'mauType'
@@ -777,9 +777,9 @@ class SwitchPortController extends EloquentController
     /**
      * Display the Optic Inventory
      *
-     * @return view
+     * @return View
      */
-    public function opticInventory(): view
+    public function opticInventory(): View
     {
         $this->setUpOpticInventory();
 
@@ -821,7 +821,7 @@ class SwitchPortController extends EloquentController
             'custname'  => [
                 'title'                 => 'Customer',
                 'type'                  => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                'controller'            => 'customer',
+                'controller'            => 'admin/customer',
                 'action'                => 'overview',
                 'idField'               => 'custid'
             ],

@@ -89,7 +89,7 @@ class NetworkInfoController extends EloquentController
                     'idField'       => 'vlan_id'
                 ],
                 'protocol'      => [
-                    'title' => 'Protocol',
+                    'title'     => 'Protocol',
                     'type'      =>   self::$FE_COL_TYPES[ 'CONST' ],
                     'const'     =>   Router::$PROTOCOLS,
                 ],
