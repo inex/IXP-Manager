@@ -9,7 +9,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
 <?php $this->section( 'page-header-preamble' ) ?>
     <?php if( Auth::check() && $isSuperUser ): ?>
         <a href="<?= route( 'customer@overview', [ 'cust' => $t->srcCustomer->id ] ) ?>" >
-            <?= $t->srcCustomer->getFormattedName() ?>
+            <?= $t->ee( $t->srcCustomer->getFormattedName() ) ?>
         </a>
         /
         <a href="<?= route( 'statistics@member', [ 'cust' => $t->srcCustomer->id ] ) ?>" >
@@ -21,11 +21,8 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
         </a>
         /
         Traffic Exchanged with
-        <a href="<?= route( 'statistics@p2p-totals', [ 'srcCust' => $this->dstCustomer->id, 'dstCust' => $t->srcCustomer->id ] )
-        . '?category=' . $t->category
-        . '&protocol=' . $t->protocol
-        ?>">
-            <?= $this->dstCustomer->getFormattedName() ?>
+        <a href="<?= route( 'statistics@p2p-totals', [ 'srcCust' => $this->dstCustomer->id, 'dstCust' => $t->srcCustomer->id ] ) ?>">
+            <?= $t->ee( $this->dstCustomer->getFormattedName() ) ?>
         </a>
 
     <?php else: ?>
@@ -50,7 +47,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
 
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <form class="navbar-form navbar-left form-inline d-block d-lg-flex">
-                        <ul class="navbar-nav">
+                        <ul class="navbar-nav mt-2 mt-lg-0">
                             <li class="nav-item">
                                 <div class="nav-link d-flex">
                                     <label for="form-select-protocol" class="col-lg-6 col-sm-4">Protocol:</label>
@@ -85,9 +82,11 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
                                 <h3><?= IXP\Services\Grapher\Graph::resolvePeriod( $pvalue ) ?> Graph</h3>
                             </div>
                             <div class="card-body">
-                                <a href="<?= route( 'statistics@p2p-per-vli', [
+                                <a href="<?= route( 'statistics@p2p-per-vlan', [
                                         'srcCust' => $t->srcCustomer->id,
                                         'dstCust' => $t->dstCustomer->id,
+                                        'protocol' => $t->protocol,
+                                        'category' => $t->category,
                                         'period' => $pvalue] ) ?>">
                                     <?= $t->graph->setPeriod( $pvalue )->renderer()->boxLegacy() ?>
                                 </a>
@@ -114,7 +113,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
                     <p>Your ports</p>
                     <pre class="p-2 border text-center"><?php
                         foreach ($t->myPorts as $portDescription): ?>
-<?= $portDescription ?><br><?php
+<?= $t->ee( $portDescription ) ?><br><?php
                         endforeach; ?>
 </pre>
                 </div>
@@ -123,7 +122,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
                     <p>Their ports:</p>
                     <pre class="p-2 border text-center"><?php
                         foreach ($t->theirPorts as $portDescription): ?>
-<?= $portDescription ?><br><?php
+<?= $t->ee( $portDescription ) ?><br><?php
                         endforeach; ?>
 </pre>
                 </div>
