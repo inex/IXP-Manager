@@ -9,7 +9,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
 <?php $this->section( 'page-header-preamble' ) ?>
     <?php if( Auth::check() && $isSuperUser ): ?>
         <a href="<?= route( 'customer@overview', [ 'cust' => $t->srcCustomer->id ] ) ?>" >
-            <?= $t->srcCustomer->getFormattedName() ?>
+            <?= $t->ee( $t->srcCustomer->getFormattedName() ) ?>
         </a>
         /
         <a href="<?= route( 'statistics@member', [ 'cust' => $t->srcCustomer->id ] ) ?>" >
@@ -22,7 +22,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
         /
         Traffic Exchanged with
         <a href="<?= route( 'statistics@p2p-totals', [ 'srcCust' => $this->dstCustomer->id, 'dstCust' => $t->srcCustomer->id ] ) ?>">
-            <?= $this->dstCustomer->getFormattedName() ?>
+            <?= $t->ee( $this->dstCustomer->getFormattedName() ) ?>
         </a>
 
     <?php else: ?>
@@ -113,7 +113,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
                     <p>Your ports</p>
                     <pre class="p-2 border text-center"><?php
                         foreach ($t->myPorts as $portDescription): ?>
-<?= $portDescription ?><br><?php
+<?= $t->ee( $portDescription ) ?><br><?php
                         endforeach; ?>
 </pre>
                 </div>
@@ -122,7 +122,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
                     <p>Their ports:</p>
                     <pre class="p-2 border text-center"><?php
                         foreach ($t->theirPorts as $portDescription): ?>
-<?= $portDescription ?><br><?php
+<?= $t->ee( $portDescription ) ?><br><?php
                         endforeach; ?>
 </pre>
                 </div>

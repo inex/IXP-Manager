@@ -9,7 +9,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
 <?php $this->section( 'page-header-preamble' ) ?>
     <?php if( Auth::check() && $isSuperUser ): ?>
         <a href="<?= route( 'customer@overview', [ 'cust' => $t->srcCustomer->id ] ) ?>" >
-            <?= $t->srcCustomer->getFormattedName() ?>
+            <?= $t->ee( $t->srcCustomer->getFormattedName() ) ?>
         </a>
         /
         <a href="<?= route( 'statistics@member', [ 'cust' => $t->srcCustomer->id ] ) ?>" >
@@ -29,11 +29,11 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
                 'protocol' => $t->protocol,
         ] )
         ?>">
-            <?= $this->dstCustomer->getFormattedName() ?>
+            <?= $t->ee( $this->dstCustomer->getFormattedName() ) ?>
         </a>
 
     <?php else: ?>
-        P2P Traffic with <?= $t->dstCustomer->abbreviatedName ?> (/ VLI / protocol) (<?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>)
+        P2P Traffic with <?= $t->ee( $t->dstCustomer->abbreviatedName ) ?>
     <?php endif; ?>
 <?php $this->append() ?>
 
@@ -107,7 +107,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
                         <div class="card">
                             <div class="card-header">
                                 <h4>
-                                    <?= $graphData['title'] ?>
+                                    <?= $t->ee( $graphData['title'] ) ?>
                                 </h4>
                             </div>
                             <div class="card-body">
