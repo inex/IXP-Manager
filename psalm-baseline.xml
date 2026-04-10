@@ -2416,6 +2416,11 @@
       <code><![CDATA[public static function toArpa( string $ip, int $protocol ): string]]></code>
     </MissingDocblockType>
   </file>
+  <file src="app/Utils/Whois/WhoisResolver.php">
+    <InvalidCast>
+      <code><![CDATA[config( "ixp_api.whois.{$server}.port" )]]></code>
+    </InvalidCast>
+  </file>
   <file src="data/SocialiteProviders/src/PeeringDB/Provider.php">
     <ImplicitToStringCast>
       <code><![CDATA[$response->getBody()]]></code>

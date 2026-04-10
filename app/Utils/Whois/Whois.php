@@ -1,9 +1,9 @@
 <?php
 
-namespace IXP\Utils;
+namespace IXP\Utils\Whois;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,19 +28,19 @@ namespace IXP\Utils;
  *
  * A Whois implementation
  *
- * @package IXP\Utils
+ * @package \IXP\Utils\Whois
  */
 class Whois
 {
     /**
      * @var string Whois server hostname
      */
-    private $host;
+    private string $host;
 
     /**
      * @var int Whois server port
      */
-    private $port;
+    private int $port;
 
 
     /**
@@ -53,11 +53,6 @@ class Whois
         $this->host = $host;
         $this->port = $port;
     }
-
-
-    /**
-     *
-     */
 
     /**
      * Do a whois lookup

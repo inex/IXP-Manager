@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,7 +28,10 @@ use Cache;
 use IXP\Services\PeeringDb;
 use Illuminate\Http\{Request,Response};
 
-use IXP\Utils\Whois;
+use IXP\Utils\Whois\{
+    Whois,
+    WhoisHost,
+};
 
 /**
  * WhoisController
@@ -45,14 +48,16 @@ class WhoisController extends Controller
     /**
      * API call to do a Whois looking on an AS number
      *
+     * @param PeeringDb $pdb   service to resolve via PeeringDb
+     * @param Whois     $whois A Whois instance
      * @param Request   $r
-     * @param string    $asn The AS number
+     * @param string    $asn   The AS number
      *
      * @return Response
      */
-    public function asn( PeeringDb $pdb, Request $r, string $asn ): Response
+    public function asn( PeeringDb $pdb, #[WhoisHost('asn2')] Whois $whois, Request $r, string $asn ): Response
     {
-        $response = Cache::remember( 'api-v4-whois-asn-' . $asn, config('ixp_api.whois.cache_ttl'), function () use ( $pdb, $asn ) {
+        $response = Cache::remember( 'api-v4-whois-asn-' . $asn, config('ixp_api.whois.cache_ttl'), function () use ( $pdb, $whois, $asn ): string {
 
             // try PeeringDB first
             if( $net = $pdb->getNetworkByAsn( $asn ) ) {
@@ -65,7 +70,6 @@ class WhoisController extends Controller
                 $response = "Querying PeeringDB failed:\n\nError:{$pdb->error}\n\nTrying " . config( 'ixp_api.whois.asn2.host' ) . ":\n\n";
             }
 
-            $whois = new Whois( config( 'ixp_api.whois.asn2.host' ), config( 'ixp_api.whois.asn2.port' ) );
             $response .= $whois->whois( 'AS' . (int)$asn );
 
             return $response;
@@ -77,17 +81,18 @@ class WhoisController extends Controller
     /**
      * API call to do a Whois looking on a prefix
      *
+     * @param Whois         $whois  A whois instance
      * @param string        $prefix The IP address element of the prefix
      * @param string|null   $mask   The mask length
      *
      * @return Response
      */
-    public function prefix( string $prefix, string $mask = null ): Response
+    public function prefix( #[WhoisHost('prefix')] Whois $whois, string $prefix, ?string $mask = null ): Response
     {
-        $response = Cache::remember( 'api-v4-whois-prefix-' . $prefix . '-' . $mask, config('ixp_api.whois.cache_ttl'), function () use ( $prefix, $mask ) {
-            $whois = new Whois( config('ixp_api.whois.prefix.host'), config('ixp_api.whois.prefix.port') );
-            return $whois->whois( $prefix .'/' . $mask );
-        });
+        // Don't append slash unless we're sending the mask also
+        $response = Cache::remember( 'api-v4-whois-prefix-' . $prefix . '-' . $mask, config('ixp_api.whois.cache_ttl'),
+            fn() => $whois->whois( $prefix . ($mask ? "/$mask" : ""))
+        );
 
         return response( $response, 200 )->header('Content-Type', 'text/plain');
     }
