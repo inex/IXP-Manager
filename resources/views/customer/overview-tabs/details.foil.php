@@ -85,7 +85,7 @@
 
                 <br>
 
-                <?= @parsedown( $rdetails->notes )?>
+                <?= clean( @parsedown( $rdetails->notes ) )?>
             </div>
         <?php endif; ?>
 
@@ -232,7 +232,7 @@
 
                     <br>
 
-                    <?= @parsedown( $bdetails->notes )?>
+                    <?= clean ( @parsedown( $bdetails->notes ) ) ?>
                 </div>
             <?php endif; ?>
 

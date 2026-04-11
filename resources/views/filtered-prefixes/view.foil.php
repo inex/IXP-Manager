@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Route Server Filtered Prefixes for <?= $t->cust->getFormattedName() ?>
+    Route Server Filtered Prefixes for <?= $t->ee( $t->cust->getFormattedName() ) ?>
 <?php $this->append() ?>
 
 
@@ -77,7 +77,7 @@
                                         <?php if( $lcinfo = $t->bird()->translateBgpFilteringLargeCommunity( substr( $r, strpos( $r, ':' ) ) ) ): ?>
                                             <span class="badge badge-<?= $lcinfo[1] ?>"><?= $lcinfo[0] ?></span>
                                         <?php else: ?>
-                                            <?= $r ?>
+                                            <?= $t->ee( $r ) ?>
                                         <?php endif; ?>
                                         <br>
                                     <?php endforeach; ?>
@@ -86,7 +86,7 @@
                                     <?php foreach( $detail['routers'] as $handle => $protocol ): ?>
                                         <a href="<?= route( 'lg::route-protocol', [ 'handle' => $handle, 'protocol' => $protocol ] ) ?>" target="_ixpm_lg">
                                             <span class="tw-inline-block tw-bg-grey-lighter tw-rounded-full tw-px-3 tw-py-1 tw-text-sm tw-mr-2 tw-my-1">
-                                                <?= $handle ?>
+                                                <?= $this->ee( $handle ) ?>
                                             </span>
                                         </a>
                                     <?php endforeach; ?>
@@ -104,7 +104,7 @@
                     <?php if( Auth::getUser()->isSuperUser() ): ?>
                         <p>
                             <b>Oh, wait, it looks like you're a super admin!</b>
-                            You can <a href="<?= route( 'filtered-prefixes@list', [ 'cust' => $t->cust->id ] ) ?>?reset_cache=1">bust the cache
+                            You can <a href="<?= route( 'filtered-prefixes@list', [ 'cust' => $t->cust->id, 'reset_cache' => 1 ] ) ?>">bust the cache
                             by clicking here</a>.
                         </p>
                     <?php endif; ?>

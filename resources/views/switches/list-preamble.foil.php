@@ -6,7 +6,7 @@
             </div>
             <div class="d-flex col-sm-12">
                 <div class="mr-auto">
-                    Only showing switches for: <b><?= $t->data[ 'params'][ "infra" ]->name ?></b>.
+                    Only showing switches for: <b><?= $t->ee( $t->data[ 'params'][ "infra" ]->name ) ?></b>.
                 </div>
                 <div class="float-right">
                     <a style="" class="btn btn-sm btn-white" href="<?= route( "switch@list" , [ "infra" => 0 ] ) ?>">

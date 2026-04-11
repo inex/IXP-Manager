@@ -54,7 +54,7 @@ $this->layout( 'layouts/ixpv4' );
                     <tr class="atlas-matrix-tr">
 
                         <td id="" class="tw-p-0  tw-whitespace-no-wrap pl-2 pr-2 cell-x-<?= $custSource->autsys ?> cell-hover border-right-0 cell-hover-<?= $custSource->autsys ?>" data-cust-asn="<?= $custSource->autsys ?>">
-                            <?= $custSource[ "abbreviatedName" ] ?>
+                            <?= $t->ee( $custSource[ "abbreviatedName" ] ) ?>
                         </td>
 
                         <td class="tw-p-0 tw-whitespace-no-wrap text-right cell-x-<?= $custSource->autsys ?> border-left-0 border-left-0 cell-hover cell-hover-<?= $custSource->autsys ?> pr-2" data-cust-asn="<?= $custSource->autsys ?>">

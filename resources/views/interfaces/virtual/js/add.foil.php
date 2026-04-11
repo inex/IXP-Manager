@@ -112,7 +112,7 @@
                 Please select the VLAN: <select id="duplicateTo" class="chzn-select">
                     <option></option>
                 <?php foreach( $t->vlans as $id => $vl): ?>
-                    <option value="<?= $vl->id ?>"><?= $vl->name ?></option>
+                    <option value="<?= $vl->id ?>"><?= $t->ee( $vl->name ) ?></option>
                 <?php endforeach; ?>
                 </select>
                 </p>

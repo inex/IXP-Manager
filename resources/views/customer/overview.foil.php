@@ -131,8 +131,8 @@
 
                 <p class="tw-mt-2">
                     <?php if( $c->corpwww ): ?>
-                        <a href="<?= $c->corpwww ?>" target="_blank">
-                            <?= $t->nakedUrl( $c->corpwww ) ?>
+                        <a href="<?= $t->ee( $c->corpwww, "attr" ) ?>" target="_blank">
+                            <?= $t->ee( $t->nakedUrl( $c->corpwww ) ) ?>
                         </a>
                         <span class="tw-text-gray-600">
                             -
@@ -244,7 +244,7 @@
                     <a class="nav-link <?php if( $t->tab === 'notes' ): ?> active <?php endif; ?>" data-toggle="tab" href="#notes" id="tab-notes" data-toggle="tab">
                         Notes
                         <?php if( $t->notesInfo[ "unreadNotes"] > 0 ): ?>
-                            <span id="notes-unread-indicator" class="badge badge-success"><?= $t->notesInfo[ "unreadNotes"] ?></span>
+                            <span id="notes-unread-indicator" class="badge badge-success"><?= $t->ee( $t->notesInfo[ "unreadNotes"] ) ?></span>
                         <?php endif ?>
                     </a>
                 </li>

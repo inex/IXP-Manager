@@ -31,7 +31,7 @@
             <?php foreach( $t->results['aonly'] as $asn => $details ): ?>
 
                 <tr>
-                    <td><?= $details['name'] ?> <a class="tw-text-gray-500 tw-text-xs tw-border-1 tw-border-gray-500 tw-rounded-md tw-ml-4" target="_blank" href="https://www.peeringdb.com/asn/<?= $asn ?>">PDB</a></td>
+                    <td><?= $t->ee( $details['name'] ) ?> <a class="tw-text-gray-500 tw-text-xs tw-border-1 tw-border-gray-500 tw-rounded-md tw-ml-4" target="_blank" href="https://www.peeringdb.com/asn/<?= $asn ?>">PDB</a></td>
                     <td><?= $t->asNumber( $asn ) ?></td>
                     <td><?= $t->scaleSpeed( $details['speed'] ) ?></td>
                 </tr>
@@ -59,7 +59,7 @@
         <?php foreach( $t->results['bonly'] as $asn => $details ): ?>
 
             <tr>
-                <td><?= $details['name'] ?> <a class="tw-text-gray-500 tw-text-xs tw-border-1 tw-border-gray-500 tw-rounded-md tw-ml-4" target="_blank" href="https://www.peeringdb.com/asn/<?= $asn ?>">PDB</a></td></td>
+                <td><?= $t->ee( $details['name'] ) ?> <a class="tw-text-gray-500 tw-text-xs tw-border-1 tw-border-gray-500 tw-rounded-md tw-ml-4" target="_blank" href="https://www.peeringdb.com/asn/<?= $asn ?>">PDB</a></td></td>
                 <td><?= $t->asNumber( $asn ) ?></td>
                 <td><?= $t->scaleSpeed( $details['speed'] ) ?></td>
             </tr>
@@ -88,7 +88,7 @@
         <?php foreach( $t->results['shared'] as $asn => $details ): ?>
 
             <tr>
-                <td><?= $details['name'] ?> <a class="tw-text-gray-500 tw-text-xs tw-border-1 tw-border-gray-500 tw-rounded-md tw-ml-4" target="_blank" href="https://www.peeringdb.com/asn/<?= $asn ?>">PDB</a></td></td>
+                <td><?= $t->ee( $details['name'] ) ?> <a class="tw-text-gray-500 tw-text-xs tw-border-1 tw-border-gray-500 tw-rounded-md tw-ml-4" target="_blank" href="https://www.peeringdb.com/asn/<?= $asn ?>">PDB</a></td></td>
                 <td><?= $t->asNumber( $asn ) ?></td>
                 <td><?= $t->scaleSpeed( $details['aspeed'] ) ?></td>
                 <td><?= $t->scaleSpeed( $details['bspeed'] ) ?></td>

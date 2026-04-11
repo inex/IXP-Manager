@@ -107,13 +107,13 @@
                             <?= $t->ee( $router->shortname ) ?>
                         </td>
                         <td>
-                            <?= $router->router_id ?>
+                            <?= $t->ee( $router->router_id ) ?>
                         </td>
                         <td>
                             <?= $router->software() ?>
                         </td>
 
-                        <td id="<?= $router->handle ?>-version">
+                        <td id="<?= $t->ee( $router->handle, "attr" ) ?>-version">
                             <?php if( $router->api && $router->api_type ): ?>
                                 <i class="fa fa-spinner fa-spin fa-fw"></i>
                             <?php else: ?>
@@ -121,11 +121,11 @@
                             <?php endif; ?>
                         </td>
 
-                        <td id="<?= $router->handle ?>-api-version"></td>
-                        <td id="<?= $router->handle ?>-bgp-sessions"></td>
-                        <td id="<?= $router->handle ?>-bgp-sessions-up"></td>
-                        <td id="<?= $router->handle ?>-last-updated"></td>
-                        <td id="<?= $router->handle ?>-last-reboot"></td>
+                        <td id="<?= $t->ee( $router->handle, "attr" ) ?>-api-version"></td>
+                        <td id="<?= $t->ee( $router->handle, "attr" ) ?>-bgp-sessions"></td>
+                        <td id="<?= $t->ee( $router->handle, "attr" ) ?>-bgp-sessions-up"></td>
+                        <td id="<?= $t->ee( $router->handle, "attr" ) ?>-last-updated"></td>
+                        <td id="<?= $t->ee( $router->handle, "attr" ) ?>-last-reboot"></td>
                     </tr>
                 <?php endforeach;?>
             <tbody>

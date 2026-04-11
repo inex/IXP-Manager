@@ -25,7 +25,7 @@
                 <div class="dropdown-divider"></div>
                 <?php foreach( $latencyGraphs as $latencyGraph ): ?>
                     <a class="dropdown-item" href="<?= route( 'statistics@latency', [ 'vli' => $latencyGraph->vli()->id, 'protocol' => $latencyGraph->protocol() ] ) ?>">
-                        <?= $latencyGraph->vli()->getIPAddress( $latencyGraph->protocol() )->address ?>
+                        <?= $t->ee( $latencyGraph->vli()->getIPAddress( $latencyGraph->protocol() )->address ) ?>
                     </a>
                 <?php endforeach; ?>
             </ul>

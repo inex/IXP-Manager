@@ -2,7 +2,7 @@
 
     <?php if( Auth::getUser()->isSuperUser() ): ?>
         <h3 class="tw-mb-8">
-          Welcome to the <?= ucfirst( config( 'ixp_fe.lang.customer.one') ) ?> Document Store for <?= $t->cust->name ?>
+          Welcome to the <?= ucfirst( config( 'ixp_fe.lang.customer.one') ) ?> Document Store for <?= $t->ee( $t->cust->name ) ?>
         </h3>
 
         <p>
@@ -21,7 +21,7 @@
 
     <?php else: ?>
 
-        <h3 class="tw-mb-8">Welcome To Your Document Store for <?= $t->cust->name ?></h3>
+        <h3 class="tw-mb-8">Welcome To Your Document Store for <?= $t->ee( $t->cust->name ) ?></h3>
 
         <p>
             If <?= config( 'identity.orgname' ) ?> has uploaded any files that are accessible by you then they will appear here.

@@ -95,4 +95,4 @@
         });
     </script>
 
-<?php $this->append() ?>å
+<?php $this->append() ?>

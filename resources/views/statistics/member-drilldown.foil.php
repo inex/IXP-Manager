@@ -8,7 +8,7 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <?php if( Auth::check() && $isSuperUser ): ?>
         <a href="<?= route( 'customer@overview', [ 'cust' => $c->id ] ) ?>" >
-            <?= $t->c->getFormattedName() ?>
+            <?= $t->ee( $t->c->getFormattedName() ) ?>
         </a>
         /
         <a href="<?= route( 'statistics@member', [ 'cust' => $c->id ] ) ?>" >
@@ -17,7 +17,7 @@
         /
         Statistics Drilldown (<?= $t->graph->resolveMyCategory() ?>)
     <?php else: ?>
-        IXP Port Graphs :: <?= $c->getFormattedName() ?>
+        IXP Port Graphs :: <?= $t->ee( $c->getFormattedName() ) ?>
     <?php endif; ?>
 <?php $this->append() ?>
 
@@ -45,7 +45,7 @@
                                     </select>
                                 </div>
                             </li>
-                            <a class="btn btn-white float-right" href="<?= route( 'statistics@member', [ 'cust' => $t->c->id ] ) ?>?category=<?= $t->graph->category() ?>">
+                            <a class="btn btn-white float-right" href="<?= route( 'statistics@member', [ 'cust' => $t->c->id, 'category' => $t->graph->category() ] ) ?>">
                                 All Ports
                             </a>
                         </form>
@@ -66,7 +66,7 @@
                         LAG
                         <?php if( $sp = $t->graph->virtualInterface()->switchPort() ): ?>
                             <small>
-                                <?= $sp->switcher->name ?>
+                                <?= $t->ee( $sp->switcher->name ) ?>
                                 <?php
                                     $names = [];
                                     foreach( $t->graph->virtualInterface()->physicalInterfaces as $pi ){
@@ -76,12 +76,12 @@
                                     }
                                 ?>
 
-                                [<?= implode( ', ', $names ) ?>]
+                                [<?= $t->ee( implode( ', ', $names ) ) ?>]
                             </small>
                         <?php endif;
                         break;
                     case IXP\Services\Grapher\Graph\PhysicalInterface::class: ?>
-                        Port:  <?= $t->graph->physicalInterface()->switchport->switcher->name ?> / <?= $t->graph->physicalInterface()->switchport->name ?>
+                        Port:  <?= $t->ee( $t->graph->physicalInterface()->switchport->switcher->name ) ?> / <?= $t->ee( $t->graph->physicalInterface()->switchport->name ) ?>
 
                         <?php if( $t->resellerMode() && $c->isReseller ): ?>
                             <br />
@@ -90,7 +90,7 @@
                                     Peering Port
                                 <?php elseif( $t->graph->physicalInterface()->switchport->typeFanout() ): ?>
                                     Fanout Port for <a href="<?= route( 'customer@overview', [ 'cust' => $t->graph->physicalInterface()->relatedInterface()->virtualInterface->customer->id ] ) ?>">
-                                        <?= $t->graph->physicalInterface()->relatedInterface()->virtualInterface->customer->abbreviatedName ?>
+                                        <?= $t->ee( $t->graph->physicalInterface()->relatedInterface()->virtualInterface->customer->abbreviatedName ) ?>
                                     </a>
                                 <?php elseif( $t->graph->physicalInterface()->switchport->typeReseller() ): ?>
                                     Reseller Uplink Port

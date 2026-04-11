@@ -34,8 +34,8 @@
                         </h3>
 
                         <p class="tw-mt-2">
-                            <a href="<?= $c->corpwww ?>" target="_blank">
-                                <?= $t->nakedUrl( $c->corpwww ?? '' ) ?>
+                            <a href="<?= $t->ee( $c->corpwww, "attr" ) ?>" target="_blank">
+                                <?= $t->ee( $t->nakedUrl( $c->corpwww ?? '' ) ) ?>
                             </a>
 
                             <span class="tw-text-gray-600">
@@ -55,7 +55,7 @@
 
                                 <?php if( $c->peeringpolicy !== \IXP\Models\Customer::PEERING_POLICY_OPEN ): ?>
                                     <span class="tw-inline-block tw-border-1 tw-border-gray-600 tw-p-1 tw-rounded-full tw-text-gray-600 tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-3">
-                                        <?= $c->peeringpolicy ?>
+                                        <?= $t->ee( $c->peeringpolicy ) ?>
                                     </span>
                                 <?php endif; ?>
                             </p>
@@ -80,7 +80,7 @@
                                 </div>
                                 <div class="col-12 col-md-9 tw-text-center md:tw-text-left">
                                     <a href="mailto:<?= $c->peeringemail ?>">
-                                        <?= $c->peeringemail ?>
+                                        <?= $t->ee( $c->peeringemail ) ?>
                                     </a>
                                 </div>
                             </div>
@@ -104,7 +104,7 @@
                                 <?php endif; ?>
 
                                 <?php if( filter_var( $c->nocwww, FILTER_VALIDATE_URL ) ): ?>
-                                    / <a href="<?= $c->nocwww ?>"><?= $c->nocwww ?></a>
+                                    / <a href="<?= $t->ee( $c->nocwww, "attr" )?>"><?= $t->ee( $c->nocwww ) ?></a>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -142,7 +142,7 @@
                             <div class="tw-px-6 tw-py-6">
                                 <div class="tw-font-bold tw-text-xl tw-mb-2">
                                     <?php if( $infra = $vi->physicalInterfaces[ 0 ]->switchPort->switcher->infrastructureModel ): ?>
-                                        <?= $infra->name ?>
+                                        <?= $t->ee( $infra->name ) ?>
                                     <?php else: ?>
                                       '<em>Unknown Infrastructure</em>'
                                     <?php endif; ?>
@@ -176,11 +176,11 @@
 
                                         <p class="tw-text-grey-darker tw-text-base">
                                             <?php if( $vli->ipv6enabled && $vli->ipv6address ): ?>
-                                                <?= $vli->ipv6address->address ?>
+                                                <?= $t->ee( $vli->ipv6address->address ) ?>
                                                 <br>
                                             <?php endif; ?>
                                             <?php if( $vli->ipv4enabled && $vli->ipv4address ): ?>
-                                                <?= $vli->ipv4address->address ?>
+                                                <?= $t->ee( $vli->ipv4address->address ) ?>
                                                 <br>
                                             <?php else: ?>
                                                 &nbsp;<br>

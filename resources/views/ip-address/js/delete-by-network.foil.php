@@ -7,7 +7,7 @@
                         <div>Do you really want to delete this IP address?</div>
                         <input type="hidden"   name="doDelete" value="1">
                         <input type="hidden"   name="network"  value="${network}">
-                        <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                        <input type="hidden"   name="_token"   value="<?= csrf_token() ?>">
                     </form>`;
 
         bootbox.dialog({

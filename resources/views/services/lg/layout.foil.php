@@ -3,7 +3,7 @@
 <?php $this->section('page-header-preamble') ?>
     Looking Glass
     <?php if( $t->lg ): ?>
-        <small class="text-muted" style="font-size: 16px;"><?= $t->lg->router()->name ?></small>
+        <small class="text-muted" style="font-size: 16px;"><?= $t->ee( $t->lg->router()->name ) ?></small>
     <?php endif; ?>
 <?php $this->append() ?>
 
@@ -14,7 +14,7 @@
                 <span class="fa fa-list"></span>
             </a>
             <button class="btn btn-white dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <?= $t->lg ? $t->lg->router()->name : 'Select a router...' ?>
+                <?= $t->lg ? $t->ee( $t->lg->router()->name ) : 'Select a router...' ?>
             </button>
             <div class="dropdown-menu dropdown-menu-right">
                 <?php foreach( $t->routers as $type => $subRouters ): ?>
@@ -32,25 +32,25 @@
                                     echo 'Route Servers';
                                     break;
                                 default:
-                                    echo $type;
+                                    echo $t->ee( $type );
                                     break;
                             endswitch;
                         ?>
                     </h6>
                     <?php foreach( $subRouters as $key => $name ): ?>
-                        <a class="dropdown-item <?= $t->lg && $key === $t->lg->router()->handle ? 'active' : '' ?>" href="<?= url('/lg/' . $key ) ?>">
-                            <?= $name ?>
+                        <a class="dropdown-item <?= $t->lg && $key === $t->lg->router()->handle ? 'active' : '' ?>" href="<?= route( 'lg::bgp-sum', [ 'handle' => $key ] ) ?>">
+                            <?= $t->ee( $name ) ?>
                         </a>
                     <?php endforeach; ?>
                 <?php endforeach; ?>
             </div>
         </div>
         <?php if( $t->lg ): ?>
-            <a class="btn btn-white" href="<?= url('lg/' . $t->lg->router()->handle . '/route-search') ?>">
+            <a class="btn btn-white" href="<?= route( 'lg::route-search', [ 'handle' => $t->lg->router()->handle ] ) ?>">
                 <span class="fa fa-search"></span>
             </a>
         <?php endif; ?>
-        <a class="btn btn-white" href="<?= url('lg') .'/' . ( $t->lg ? $t->lg->router()->handle : '' ) ?>">
+        <a class="btn btn-white" href="<?= $t->lg ? route( 'lg::bgp-sum', [ 'handle' => $t->lg->router()->handle ] ) : route( 'lg::index' ) ?>">
             <span class="fa fa-home"></span>
         </a>
     </div>

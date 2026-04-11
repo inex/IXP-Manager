@@ -11,7 +11,7 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <?php if( Auth::check() && $isSuperUser ): ?>
         <a href="<?= route( 'customer@overview', [ 'cust' => $t->c->id ] ) ?>" >
-            <?= $t->c->getFormattedName() ?>
+            <?= $t->ee( $t->c->getFormattedName() ) ?>
         </a>
         /
         <a href="<?= route( 'statistics@member', [ 'cust' => $t->c->id ] ) ?>" >
@@ -23,15 +23,11 @@
         </a>
         /
         Traffic Exchanged with
-            <a href="<?= route( 'statistics@p2p-get', [ 'srcVli' => $dstVli->id, 'dstVli' => $srcVli->id ] )
-                . '?category=' . $t->category
-                . '&period='   . $t->period
-                . '&protocol=' . $t->protocol
-            ?>">
-                <?= $dstVli->virtualInterface->customer->getFormattedName() ?>
+            <a href="<?= route( 'statistics@p2p-get', [ 'srcVli' => $dstVli->id, 'dstVli' => $srcVli->id, 'category' => $t->category, 'period' => $t->period, 'protocol' => $t->protocol ] ) ?>">
+                <?= $t->ee( $dstVli->virtualInterface->customer->getFormattedName() ) ?>
         </a>
     <?php else: ?>
-        Peer to Peer Graphs :: <?= $t->c->getFormattedName() ?>
+        Peer to Peer Graphs :: <?= $t->ee( $t->c->getFormattedName() ) ?>
     <?php endif; ?>
 <?php $this->append() ?>
 
@@ -46,8 +42,8 @@
         <div class="col-md-12">
             <?= $t->alerts() ?>
             <h3>
-                Traffic exchanged between <?= $srcVli->virtualInterface->customer->abbreviatedName ?> (<?= $srcVli->getIPAddress( $t->protocol )->address ?? 'No IP' ?>)
-                &amp; <?= $dstVli->virtualInterface->customer->abbreviatedName ?> (<?= $dstVli->getIPAddress( $t->protocol )->address ?? 'No IP' ?>)
+                Traffic exchanged between <?= $t->ee( $srcVli->virtualInterface->customer->abbreviatedName ) ?> (<?= $t->ee( $srcVli->getIPAddress( $t->protocol )->address ?? 'No IP' ) ?>)
+                &amp; <?= $t->ee( $dstVli->virtualInterface->customer->abbreviatedName ) ?> (<?= $t->ee( $dstVli->getIPAddress( $t->protocol )->address ?? 'No IP' ) ?>)
             </h3>
         </div>
     </div>
@@ -67,8 +63,8 @@
                                     <select id="select_network" name="svli" class="form-control">
                                         <?php foreach( $t->srcVlis as $id => $vli ): ?>
                                             <option value="<?= $id ?>" <?php if( $t->srcVli->id === $vli->id ): ?> selected <?php endif; ?>  >
-                                                <?= $vli->vlan->name ?>
-                                                    :: <?= $vli->getIPAddress( $t->protocol )->address ?? 'No IP - VLI ID: ' . $vli->id ?>
+                                                <?= $t->ee( $vli->vlan->name ) ?>
+                                                    :: <?= $t->ee( $vli->getIPAddress( $t->protocol )->address ?? 'No IP - VLI ID: ' . $vli->id ) ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>

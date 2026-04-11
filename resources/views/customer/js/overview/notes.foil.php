@@ -132,7 +132,8 @@
                 $.ajax( urlAction )
                 .done( function( data ) {
                     if( data ){
-                        btn.html( data );
+                        // Backend returns Watch / Unwatch, just use text
+                        btn.text( data );
                     }
                 })
                 .fail( function(){
@@ -230,8 +231,8 @@
 
         $.ajax( urlAction )
         .done( function( data ) {
-            $( "#co-notes-view-dialog-title" ).html( data.note[ 'title' ] );
-            $( "#co-notes-view-dialog-note"  ).html( data.note[ 'note' ] );
+            $( "#co-notes-view-dialog-title" ).text( data.note[ 'title' ] );
+            $( "#co-notes-view-dialog-note"  ).html( data.note[ 'note_parsedown' ] );
             $( "#co-notes-view-dialog-date"  ).html( 'Note first created: ' + data.note[ 'created_at' ] );
             $( "#co-notes-view-dialog" ).modal();
         })

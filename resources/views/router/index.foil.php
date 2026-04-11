@@ -70,7 +70,7 @@
                                 <?= $t->ee( $router->pair?->handle )?>
                             </td>
                             <td>
-                                <?= $router->peering_ip ?>
+                                <?= $t->ee( $router->peering_ip ) ?>
                             </td>
                             <td>
                                 <?= $router->asn ?>

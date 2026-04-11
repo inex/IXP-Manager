@@ -125,7 +125,7 @@
                                 </b>
                             </td>
                             <td>
-                                <?= @parsedown( $pi->notes ) ?>
+                                <?= clean( @parsedown( $pi->notes ) ) ?>
                             </td>
                         </tr>
                         <tr>

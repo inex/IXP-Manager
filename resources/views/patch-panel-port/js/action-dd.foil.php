@@ -107,9 +107,9 @@
 
         let html = `<form id="form-delete" method="POST" action="${url}">
                         <div>Do you really want to split this port?</div></br>
-                        <div>The slave port (${slavePort}) will be removed from the master port (${masterPort})
-                        and marked as available. If you want to split the other way (${slavePort} as master),
-                        split now and then use the move function on (${masterPort}) afterwards.</div>
+                        <div>The slave port (${htmlEntities(slavePort)}) will be removed from the master port (${htmlEntities(masterPort)})
+                        and marked as available. If you want to split the other way (${htmlEntities(slavePort)} as master),
+                        split now and then use the move function on (${htmlEntities(masterPort)}) afterwards.</div>
                         <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                         <input type="hidden" name="_method" value="put" />
                     </form>`;

@@ -50,11 +50,11 @@
                             <tr>
                                 <td>
                                     <a href="<?= route( "customer@overview" , [ 'cust' => $n[ 'cid' ], 'tab' => 'notes' ] ) ?>" >
-                                        <?= $n[ 'cname' ] ?>
+                                        <?= $t->ee( $n[ 'cname' ] ) ?>
                                     </a>
                                 </td>
                                 <td>
-                                    <?= $n[ 'latest' ] ?>
+                                    <?= $t->ee( $n[ 'latest' ] ) ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

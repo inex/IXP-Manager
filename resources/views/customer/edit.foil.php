@@ -1,6 +1,10 @@
 <?php
-    /** @var Foil\Template\Template $t */
-    $this->layout( 'layouts/ixpv4' );
+/** @var Foil\Template\Template $t */
+
+use IXP\Models\Customer;
+use IXP\Models\IrrdbConfig;
+
+$this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'title' ) ?>
@@ -205,7 +209,7 @@
                 <?= Former::select( 'irrdb' )
                     ->label( 'IRRDB Source' )
                     ->placeholder( 'Choose a IRRDB Source' )
-                    ->fromQuery( $t->irrdbs, 'source' )
+                    ->fromQuery( $t->irrdbs, fn (IrrdbConfig $model ) => $t->ee( $model->source ) )
                     ->addClass( 'chzn-select-deselect' )
                     ->blockHelp( "The IRRDB source sets the database where IXP Manager queries the customer's IRR data from. See "
                         . '<a href="https://docs.ixpmanager.org/latest/features/irrdb/">the IRRDB feature page</a> for more information.' );
@@ -291,7 +295,7 @@
                     <div id="reseller-area" class="collapse">
                         <?= Former::select( 'reseller' )
                             ->label( 'Reseller' )
-                            ->fromQuery( $t->resellers, 'name' )
+                            ->fromQuery( $t->resellers, fn ( Customer $model ) => $t->ee( $model->name ) )
                             ->placeholder( 'Choose an reseller' )
                             ->addClass( 'chzn-select' )
                             ->blockHelp( '' );

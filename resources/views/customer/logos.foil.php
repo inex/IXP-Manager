@@ -26,7 +26,7 @@
                             </div>
                             <hr class="tw-mt-4 tw-mb-2">
                             <h5>
-                                <?= $cust->name ?>
+                                <?= $t->ee( $cust->name ) ?>
                             </h5>
                         </div>
                     </a>

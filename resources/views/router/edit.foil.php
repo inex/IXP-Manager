@@ -1,7 +1,7 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Router / <?=  $t->rt  ? 'Edit : '. $t->rt->name : 'Create' ?></li>
+    Router / <?=  $t->rt  ? 'Edit : '. $t->ee( $t->rt->name ) : 'Create' ?></li>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -60,7 +60,7 @@
 
                     <?= Former::select( 'pair_id' )
                         ->label( 'Pair With' )
-                        ->fromQuery( \IXP\Models\Router::pluck('handle', 'id')->toArray() )
+                        ->fromQuery( \IXP\Models\Router::select( [ 'handle', 'id' ] )->get()->toArray() , fn ( $model ) => $t->ee( $model->handle ) )
                         ->placeholder( 'Production pairing / reconfigure isolation' )
                         ->addClass( 'chzn-select-deselect' )
                         ->blockHelp( 'The stock router configuration update scripts that ship with IXP Manager (>=v6.3.0) will '
@@ -75,7 +75,7 @@
 
                     <?= Former::select( 'vlan_id' )
                         ->label( 'Vlan' )
-                        ->fromQuery( $t->vlans, 'name' )
+                        ->fromQuery( $t->vlans, fn ( $model ) => $t->ee( $model->name ) )
                         ->placeholder( 'Choose a VLAN' )
                         ->addClass( 'chzn-select' );
                     ?>
@@ -255,7 +255,7 @@
                     " );
                     ?>
 
-                    <?= $t->rt ? '<input type="hidden" name="db_id" value="' . $this->rt->id . '">' : '' ?>
+                    <?= $t->rt ? '<input type="hidden" name="db_id" value="' . $this->ee( $this->rt->id, 'attr' ) . '">' : '' ?>
 
                     <?=Former::actions( Former::primary_submit( $t->rt ? 'Save Changes' : 'Create' )->id('btn-submit-form')->class( "mb-2 mb-sm-0"),
                         Former::secondary_link( 'Cancel' )->href( route( 'router@list' ) )->class( "mb-2 mb-sm-0"),

@@ -219,7 +219,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= @parsedown( $t->ee( $pp->locationDescription() ) ) ?>
+                                    <?= clean( @parsedown( $pp->locationDescription() ) ) ?>
                                 </td>
                             </tr>
                             <tr>
@@ -229,7 +229,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= @parsedown( $t->ee( $pp->location_notes ) ) ?>
+                                    <?= clean( @parsedown( $pp->location_notes ) ) ?>
                                 </td>
                             </tr>
                         </table>

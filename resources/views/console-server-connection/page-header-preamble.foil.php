@@ -16,7 +16,7 @@
             </div>
         </div>
 
-        <a  class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@create' ) ?><?= isset( $t->data[ 'params'][ "cs" ] ) ? "?console_server_id=" . $t->data[ 'params'][ "cs" ] : ""  ?>">
+        <a  class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@create' , isset( $t->data[ 'params' ][ "cs" ] ) ? [ "console_server_id" => $t->data[ 'params' ][ "cs" ] ] : [] ) ?>">
             <i class="fa fa-plus"></i>
         </a>
     </div>

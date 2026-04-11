@@ -12,7 +12,7 @@
         </a>
     <?php endif;?>
 
-    <a class="btn btn-white" href="<?= route('customer@list' ) . "?tag=" . $t->row[ 'id' ] ?>" title="List Customers with Tag">
+    <a class="btn btn-white" href="<?= route('customer@list', [ "tag" => $t->row['id'] ] ) ?>" title="List Customers with Tag">
         <i class="fa fa-list"></i>
     </a>
 </div>

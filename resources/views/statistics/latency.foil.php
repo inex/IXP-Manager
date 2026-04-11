@@ -7,7 +7,7 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <?php if( Auth::check() && $isSuperUser ): ?>
         <a href="<?= route( 'customer@overview', [ 'cust' => $t->c->id ] ) ?>" >
-            <?= $t->c->getFormattedName() ?>
+            <?= $t->ee( $t->c->getFormattedName() ) ?>
         </a>
        /
         <a href="<?= route( 'statistics@member', [ 'cust' => $t->c->id ] ) ?>" >
@@ -35,7 +35,7 @@
         <div class="col-md-12">
             <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
                 <a class="navbar-brand">
-                  Latency Graphs for <?= $t->vli->vlan->name ?> on <?= $t->ip ?>
+                  Latency Graphs for <?= $t->ee( $t->vli->vlan->name ) ?> on <?= $t->ee( $t->ip ) ?>
                 </a>
 
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,7 @@
                                             <?php foreach( IXP\Services\Grapher\Graph::PROTOCOLS_REAL as $pvalue => $pname ): ?>
                                                 <?php if( $t->vli->canGraphForLatency( $pvalue ) ): ?>
                                                     <option value="<?= $pvalue ?>" <?php if( $t->protocol === $pvalue ): ?> selected <?php endif; ?>  >
-                                                        <?= IXP\Services\Grapher\Graph::PROTOCOL_DESCS[ $pvalue ] ?> :: <?= $t->vli->getIPAddress( $pvalue )->address ?>
+                                                        <?= IXP\Services\Grapher\Graph::PROTOCOL_DESCS[ $pvalue ] ?> :: <?= $t->ee( $t->vli->getIPAddress( $pvalue )->address ) ?>
                                                     </option>
                                                 <?php endif; ?>
                                             <?php endforeach; ?>

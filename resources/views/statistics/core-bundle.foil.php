@@ -26,7 +26,7 @@
                                     <select id="form-select-corebundleid" name="cbid" class="form-control" >
                                         <?php foreach( $t->cbs as $cbl ): ?>
                                             <option value="<?= $cbl->id ?>" <?= $cb->id !== $cbl->id ?: 'selected="selected"' ?>>
-                                                <?= $cbl->graph_title ?>
+                                                <?= $t->ee( $cbl->graph_title ) ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>

@@ -93,10 +93,10 @@
                                     <?php if( $t->rsf->vlan ): ?>
                                         <?php if( $isSuperUser ): ?>
                                             <a href="<?= route( "vlan@view" , [ "id" => $rsf->vlan_id ] )?> ">
-                                                <?= $rsf->vlan->name ?>
+                                                <?= $t->ee( $rsf->vlan->name ) ?>
                                             </a>
                                         <?php else: ?>
-                                            <?= $rsf->vlan->name ?>
+                                            <?= $t->ee( $rsf->vlan->name ) ?>
                                         <?php endif; ?>
                                     <?php else: ?>
                                         All LAN's
@@ -204,7 +204,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $rsf->live ?>
+                                    <?= $t->ee( $rsf->live ) ?>
                                 </td>
                             </tr>
                         </table>

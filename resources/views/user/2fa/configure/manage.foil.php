@@ -11,7 +11,7 @@
 </div>
 
 <p>
-    Code: <b class="tw-font-mono"><?= $t->user->user2FA->secret ?></b>
+    Code: <b class="tw-font-mono"><?= $t->ee( $t->user->user2FA->secret ) ?></b>
 </p>
 
 <hr class="tw-my-8">

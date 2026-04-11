@@ -33,7 +33,7 @@
                     <?php if( $prefix->irrdb ): ?> Yes<?php else: ?>No<?php endif; ?>
                 </td>
                 <td>
-                    <?= $prefix->rs_origin ?>
+                    <?= $t->ee( $prefix->rs_origin ) ?>
                 </td>
             </tr>
         <?php endforeach; ?>

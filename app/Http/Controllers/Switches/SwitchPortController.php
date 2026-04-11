@@ -96,8 +96,7 @@ class SwitchPortController extends EloquentController
                 'switchname'  => [
                     'title'      => 'Switch',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'switch',
-                    'action'     => 'view',
+                    'route'      => 'switch@view',
                     'idField'    => 'switchid'
                 ],
                 'name'           => 'Description',

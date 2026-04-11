@@ -21,7 +21,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
         </a>
         /
         Traffic Exchanged with
-        <a href="<?= route( 'statistics@p2p-totals', [ 'srcCust' => $this->dstCustomer->id, 'dstCust' => $t->srcCustomer->id ] ) ?>">
+        <a href="<?= route( 'statistics@p2p-totals', [ 'srcCust' => $this->dstCustomer->id, 'dstCust' => $t->srcCustomer->id, 'category' => $t->category, 'protocol' => $t->protocol ] ) ?>">
             <?= $t->ee( $this->dstCustomer->getFormattedName() ) ?>
         </a>
 

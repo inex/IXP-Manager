@@ -1,6 +1,9 @@
 <?php
     /** @var Foil\Template\Template $t */
-    $this->layout( 'layouts/ixpv4' );
+
+use IXP\Models\Customer;
+
+$this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -47,7 +50,7 @@
 
                         <?= Former::select( 'custid' )
                             ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
-                            ->fromQuery( $t->custs, 'name' )
+                            ->fromQuery( $t->custs , fn ( $model ) => $t->ee( $model->name ) )
                             ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
                             ->addClass( 'chzn-select' )
                             ->disabled( $t->selectedCust ? true : false )
@@ -62,7 +65,7 @@
 
                         <?= Former::select( 'vlanid' )
                             ->label( 'VLAN' )
-                            ->fromQuery( $t->vlans, 'name' )
+                            ->fromQuery( $t->vlans, fn( $model ) => $t->ee( $model->name ) )
                             ->placeholder( 'Choose a VLAN' )
                             ->addClass( 'chzn-select' )
                             ->blockHelp( '' );
@@ -110,7 +113,7 @@
                         </div>
                         <?= Former::select( 'switch' )
                             ->label( 'Switch' )
-                            ->fromQuery( $t->pi_switches, 'name' )
+                            ->fromQuery( $t->pi_switches, fn( $model ) => $t->ee( $model->name ) )
                             ->placeholder( 'Choose a switch' )
                             ->addClass( 'chzn-select' )
                             ->blockHelp( '' );

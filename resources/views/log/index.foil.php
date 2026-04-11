@@ -36,14 +36,14 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::select( 'model' )
                     ->label( '' )
-                    ->fromQuery( $t->models, 'model' )
+                    ->fromQuery( $t->models, fn ($row) => $t->ee( $row->model ) )
                     ->placeholder( 'Model' )
                     ->addClass( 'tw-ml-4 tw-mt-2' )
                 ?>
 
                 <?= Former::select( 'user' )
                     ->label( '' )
-                    ->fromQuery( $t->users, 'username' )
+                    ->fromQuery( $t->users, fn ($row) => $t->ee( $row->username ) )
                     ->placeholder( 'User' )
                     ->addClass( 'tw-ml-4 tw-mt-2' )
                 ?>
@@ -101,10 +101,10 @@ $this->layout( 'layouts/ixpv4' );
                         <td>
                             <?php if( $log->user_id ): ?>
                                 <a href="<?= route( 'user@view', [ 'u' => $log->user_id ] ) ?>">
-                                    <?= $log->username ?>
+                                    <?= $t->ee( $log->username ) ?>
                                 </a>
                             <?php else: ?>
-                                    <?= $log->username ?>
+                                    <?= $t->ee( $log->username ) ?>
                             <?php endif; ?>
                         </td>
                         <td>

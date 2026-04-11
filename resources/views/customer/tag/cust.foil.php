@@ -6,7 +6,7 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     Tags /
     <a href="<?= route( 'customer@overview', [ 'cust' => $t->c->id ] ) ?>">
-        <?= $t->c->getFormattedName() ?>
+        <?= $t->ee( $t->c->getFormattedName() ) ?>
     </a>
 <?php $this->append() ?>
 

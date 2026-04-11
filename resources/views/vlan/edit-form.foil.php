@@ -23,7 +23,7 @@
 
         <?= Former::select( 'infrastructureid' )
             ->label( 'Infrastructure' )
-            ->fromQuery( $t->data[ 'params'][ 'infrastructure'], 'name' )
+            ->fromQuery( $t->data[ 'params'][ 'infrastructure'], fn ($model) => $t->ee( $model->name ) )
             ->placeholder( 'Choose an infrastructure' )
             ->addClass( 'chzn-select' );
         ?>

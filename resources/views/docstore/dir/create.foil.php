@@ -36,7 +36,7 @@
 
         <?= Former::select( 'parent_dir_id' )
             ->label( 'Parent Directory' )
-            ->fromQuery( $t->dirs, 'name' )
+            ->fromQuery( $t->dirs, fn ($dir) => htmlentities( $dir->name, ENT_QUOTES, 'UTF-8', double_encode: false ) )
             ->addClass( 'chzn-select' )
             ->blockHelp( "Where to create the new directory." );
         ?>

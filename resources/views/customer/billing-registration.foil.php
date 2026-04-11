@@ -5,7 +5,7 @@
 
 <?php $this->section( 'page-header-preamble' ) ?>
     <a href="<?= route( 'customer@overview', [ 'cust' => $t->c->id ] ) ?>">
-        <?= $t->c->getFormattedName() ?>
+        <?= $t->ee( $t->c->getFormattedName() ) ?>
     </a>
     /
     Billing and Registration Details
@@ -62,7 +62,7 @@
 
                         <?= Former::select( 'jurisdiction' )
                             ->label( 'Jurisdiction' )
-                            ->fromQuery( $t->juridictions, 'jurisdiction' )
+                            ->fromQuery( $t->jurisdictions, fn( $row ) => $t->ee( $row->jurisdiction ) )
                             ->placeholder( 'Choose a jurisdiction' )
                             ->addClass( 'chzn-select-tag' )
                             ->blockHelp( '' );

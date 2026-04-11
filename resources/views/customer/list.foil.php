@@ -19,14 +19,14 @@
                 <?= $t->state ? 'State: ' . \IXP\Models\Customer::$CUST_STATUS_TEXT[ $t->state ] : "Limit to state..." ?>
             </button>
             <div class="dropdown-menu">
-                <a class="dropdown-item  <?= $t->state ?: "active" ?>" href="<?= route( 'customer@list', [ 'state' => 0 ] ) ?>">
+                <a class="dropdown-item  <?= $t->ee( $t->state ?: "active" ) ?>" href="<?= route( 'customer@list', [ 'state' => 0 ] ) ?>">
                     All States
                 </a>
 
                 <div class="dropdown-divider"></div>
 
                 <?php foreach( \IXP\Models\Customer::$CUST_STATUS_TEXT as $state => $text ): ?>
-                    <a class="dropdown-item <?= (int)$t->state !== $state ?: "active" ?>" href="<?= route( 'customer@list', [ 'state' => $state ] ) ?>">
+                    <a class="dropdown-item <?= (int)$t->state !== $state ? "" : "active" ?>" href="<?= route( 'customer@list', [ 'state' => $state ] ) ?>">
                         <?= $text ?>
                     </a>
                 <?php endforeach; ?>
@@ -63,7 +63,7 @@
 
                 <div class="dropdown-divider"></div>
                 <?php foreach( $t->tags as $tag ): ?>
-                    <a class="dropdown-item <?= $t->tag !== $tag[ 'id' ] ?: "active" ?>"href="<?= route( 'customer@list' , [ 'tag' => $tag[ 'id' ] ] ) ?>">
+                    <a class="dropdown-item <?= $t->tag !== $tag[ 'id' ] ?: "active" ?>" href="<?= route( 'customer@list' , [ 'tag' => $tag[ 'id' ] ] ) ?>">
                         <?= $t->ee( $tag[ 'display_as' ] ) ?>
                     </a>
                 <?php endforeach; ?>

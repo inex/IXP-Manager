@@ -53,7 +53,7 @@
                                 <?php if( !$t->associates ): ?>
                                     <?php if( $c->peeringpolicy !== \IXP\Models\Customer::PEERING_POLICY_OPEN ): ?>
                                         <span class="tw-hidden lg:tw-inline tw-border-1 tw-p-1 tw-rounded-full tw-float-right tw-text-grey-dark tw-uppercase tw-text-xs">
-                                            <?= $c->peeringpolicy ?>
+                                            <?= $t->ee( $c->peeringpolicy ) ?>
                                         </span>
                                     <?php endif; ?>
 

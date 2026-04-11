@@ -30,7 +30,7 @@
                 <div class="col-sm-6">
                     <?= Former::select( 'custid' )
                         ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
-                        ->fromQuery( $t->custs, 'name' )
+                        ->fromQuery( $t->custs , fn ( $model ) => $t->ee( $model->name ) )
                         ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
                         ->addClass( 'chzn-select' )
                         ->disabled( $t->selectedCust ? true : false )

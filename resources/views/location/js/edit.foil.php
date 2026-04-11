@@ -27,7 +27,8 @@
                     if( selectedpdb === parseInt(pdb.id) ){
                         selectNow = 'selected="selected" ';
                     }
-                    options += `<option ${selectNow}value="${pdb.id}">${pdb.name}</option>\n`;
+                    let pdbName = htmlEntities(pdb.name);
+                    options += `<option ${selectNow}value="${pdb.id}">${pdbName}</option>\n`;
                 });
                 dd_pdb.html( options );
             })

@@ -21,7 +21,7 @@
                 <tr>
                     <td>
                         <a href="<?= route( "rs-prefixes@view", [ 'cust' => $id ] ) ?>">
-                            <?= $cp[ 'name' ] ?>
+                            <?= $t->ee( $cp[ 'name' ] ) ?>
                         </a>
                     </td>
                     <td>

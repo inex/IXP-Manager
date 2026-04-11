@@ -52,9 +52,10 @@ class UtilsController extends Controller
      */
     public function markdown( Request $r ): JsonResponse
     {
-        $pd = new Parsedown();
+        /** @var Parsedown $parsedown */
+        $parsedown = app('parsedown');
         return response()->json([
-            'html' => clean( $pd->text( $r->text ) )
+            'html' => clean( $parsedown->text( $r->text ) )
         ]);
     }
 }

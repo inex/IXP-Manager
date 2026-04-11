@@ -1,4 +1,6 @@
-<?php $this->layout( 'layouts/ixpv4' );
+<?php use IXP\Models\Customer;
+
+$this->layout( 'layouts/ixpv4' );
     /** @var object $t */
 ?>
 
@@ -68,6 +70,13 @@
                         </tr>
                     </thead>
                     <tbody class="cursor-pointer">
+                        <?php if ( count( $t->listUsers ) === 0 ): ?>
+                            <tr>
+                                <td colspan="<?= Auth::user()->isSuperUser() ? 5 : 4 ?>">
+                                    No users found - check the provided email!
+                                </td>
+                            </tr>
+                        <?php endif; ?>
                         <?php foreach( $t->listUsers as $user ): ?>
                             <tr>
                                 <td>
@@ -108,7 +117,7 @@
                     ->id( 'privs' )
                     ->label( 'Privileges' )
                     ->placeholder( 'Select a privilege' )
-                    ->fromQuery( $t->privs , 'name' )
+                    ->fromQuery( $t->privs )
                     ->addClass( 'chzn-select' )
                     ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/latest/usage/users/#types-of-users">'
                         . 'the official documentation here</a>.'
@@ -120,7 +129,7 @@
                         ->id( 'customer_id' )
                         ->label( 'Customer' )
                         ->placeholder( 'Select a customer' )
-                        ->fromQuery( $t->custs , 'name' )
+                        ->fromQuery( $t->custs , fn ( Customer $model ) => $t->ee( $model->name ) )
                         ->addClass( 'chzn-select' )
                         ->blockHelp( "The customer to create the user for.<br><br>If creating a customer for your own IXP, then pick the IXP customer entry." )
                         ->disabled( $t->c ? true : false );

@@ -354,7 +354,8 @@
             }
 
             if( val.id !== parseInt( currentSwitch.val() ) ){
-                options += `<option ${select} value="${val.id}">${val.name}</option>\n`;
+                let switchName = htmlEntities(val.name);
+                options += `<option ${select} value="${val.id}">${switchName}</option>\n`;
             }
         });
 

@@ -36,8 +36,8 @@
                                           <?= \IXP\Models\Customer::givenType( $type[ 'ctype' ] ) ?>
                                       </td>
                                       <td class="tw-text-right">
-                                          <a href="<?= route( "customer@list" ) . '?type=' . $type[ 'ctype' ] ?>">
-                                              <?= $type[ 'cnt' ] ?>
+                                          <a href="<?= route( "customer@list", [ 'type' => $type[ 'ctype' ] ] ) ?>">
+                                              <?= $t->ee( $type[ 'cnt' ] ) ?>
                                           </a>
                                       </td>
                                   </tr>
@@ -74,11 +74,11 @@
                                     <?php foreach( $t->stats[ "percentByVlan" ] as $stats  ): ?>
                                         <tr>
                                             <td>
-                                                <?= $stats[ 'vlanname' ] ?>
+                                                <?= $t->ee( $stats[ 'vlanname' ] ) ?>
                                             </td>
                                             <td class="tw-text-right">
                                                 <a href="<?= route( "switch@configuration", [ "vlan" => $stats[ 'vlanid' ] ] ) ?>">
-                                                    <?= $stats[ 'count' ] ?>
+                                                    <?= $t->ee( $stats[ 'count' ] ) ?>
                                                 </a>
                                             </td>
                                             <td class="tw-text-right">
@@ -112,11 +112,11 @@
                                   <?php foreach( $t->stats[ "custsByLocation" ] as $name => $loc  ): ?>
                                       <tr>
                                           <td>
-                                              <?= $loc[ 'name' ] ?>
+                                              <?= $t->ee( $loc[ 'name' ] ) ?>
                                           </td>
                                           <td class="tw-text-right">
                                               <a href="<?= route( "switch@configuration", [ "location" => $loc[ 'id' ] ] ) ?>">
-                                                  <?= $loc[ 'count' ] ?>
+                                                  <?= $t->ee( $loc[ 'count' ] ) ?>
                                               </a>
                                           </td>
                                       </tr>
@@ -160,7 +160,7 @@
                                                 <td class="tw-text-right">
                                                     <?php if( isset( $speed[ $s ] ) ): ?>
                                                         <a href="<?= route( "switch@configuration", [ "location" => $speed[ 'id' ], "speed" => $s ] ) ?>">
-                                                            <?= $speed[ $s ] ?>
+                                                            <?= $t->ee( $speed[ $s ] ) ?>
                                                         </a>
                                                         <?php $rowcount += $speed[ $s ] ?>
                                                     <?php else: ?>
@@ -183,7 +183,7 @@
                                         <?php foreach( $t->stats[ "speeds"] as $s => $c ): ?>
                                             <td class="tw-text-right">
                                                 <b>
-                                                    <?= $c ?>
+                                                    <?= $t->ee( $c ) ?>
                                                 </b>
                                             </td>
                                         <?php endforeach; ?>
@@ -247,7 +247,7 @@
                                                 <td class="tw-text-right">
                                                     <?php if( isset( $spds[ $speed ] ) ): ?>
                                                         <a href="<?= route( "switch@configuration", [ "infra" => $spds[ 'id' ], "speed" => $speed ] ) ?>">
-                                                            <?= $spds[ $speed ] ?>
+                                                            <?= $t->ee( $spds[ $speed ] ) ?>
                                                         </a>
                                                         <?php $rowcount += $spds[ $speed ] ?>
                                                         <?php $rowcap = $rowcap + $spds[ $speed ] * $speed ?>
@@ -338,12 +338,12 @@
                                             <td class="tw-text-right">
                                                 <?php $rsclients += $vlan[ 'rsclient_count' ] ?>
                                                 <a href="<?= route( "switch@configuration", [ "vlan" => $vlan[ 'vlanid' ], "rs-client" => 1 ] ) ?>">
-                                                    <?= $vlan[ 'rsclient_count' ] ?>
+                                                    <?= $t->ee( $vlan[ 'rsclient_count' ] ) ?>
                                                 </a>
                                             </td>
                                             <td class="tw-text-right">
                                                 <?php $total += $vlan[ 'overall_count' ] ?>
-                                                <?= $vlan[ 'overall_count' ] ?>
+                                                <?= $t->ee( $vlan[ 'overall_count' ] ) ?>
                                             </td>
                                             <td class="tw-text-right">
                                                 <?= round( ( 100.0 * $vlan[ 'rsclient_count' ] ) / $vlan[ 'overall_count' ] ) ?>%
@@ -411,12 +411,12 @@
                                             <td class="tw-text-right">
                                                 <?php $ipv6 += $vlan[ 'ipv6_count' ] ?>
                                                 <a href="<?= route( "switch@configuration", [ "vlan" => $vlan[ 'vlanid' ], "ipv6-enabled" => 1 ] ) ?>">
-                                                    <?= $vlan[ 'ipv6_count' ] ?>
+                                                    <?= $t->ee( $vlan[ 'ipv6_count' ] ) ?>
                                                 </a>
                                             </td>
                                             <td class="tw-text-right">
                                                 <?php $total += $vlan[ 'overall_count' ] ?>
-                                                <?= $vlan[ 'overall_count' ] ?>
+                                                <?= $t->ee( $vlan[ 'overall_count' ] ) ?>
                                             </td>
                                             <td class="tw-text-right">
                                                 <?= round( (100.0 *  $vlan[ 'ipv6_count' ] ) / $vlan[ 'overall_count' ] ) ?>%
@@ -433,12 +433,12 @@
                                         </td>
                                         <td class="text-right">
                                             <b>
-                                                <?= $ipv6 ?>
+                                                <?= $t->ee( $ipv6 ) ?>
                                             </b>
                                         </td>
                                         <td class="text-right">
                                             <b>
-                                                <?= $total ?>
+                                                <?= $t->ee( $total ) ?>
                                             </b>
                                         </td>
                                         <td class="text-right">
@@ -498,7 +498,7 @@
                                         <?php foreach( $t->stats[ "speeds"] as $s => $c ): ?>
                                             <td class="tw-text-right">
                                                 <?php if( isset( $speed[ $s ] ) ): ?>
-                                                    <?= $speed[ $s ] ?>
+                                                    <?= $t->ee( $speed[ $s ] ) ?>
                                                     <?php $rowcount += $speed[ $s ] ?>
                                                 <?php else: ?>
                                                     0
@@ -507,7 +507,7 @@
                                         <?php endforeach; ?>
                                         <td class="tw-text-right">
                                             <b>
-                                                <?= $rowcount ?>
+                                                <?= $t->ee( $rowcount ) ?>
                                             </b>
                                         </td>
                                     </tr>
@@ -520,13 +520,13 @@
                                     <?php foreach( $t->stats[ "speeds"] as $s => $c ): ?>
                                         <td class="tw-text-right">
                                             <a href="<?= route( "switch@configuration", [ "location" => $locationDetails[ 'id' ], "speed" => $s ] ) ?>">
-                                                <?= $locationDetails[$s] ?? 0 ?>
+                                                <?= $t->ee( $locationDetails[$s] ?? 0 ) ?>
                                             </a>
                                         </td>
                                     <?php endforeach; ?>
                                     <td class="tw-text-right">
                                         <b>
-                                            <?= $colcount ?>
+                                            <?= $t->ee( $colcount ) ?>
                                         </b>
                                     </td>
                                 </tr>
@@ -576,7 +576,7 @@
                                             <?= $t->scaleSpeed( $rlp['numports'] * $rlp['rlspeed'] ) ?>
                                         </td>
                                         <td>
-                                            <?= $rlp['numports'] ?> x <?= $t->scaleSpeed( $rlp['rlspeed']) ?>
+                                            <?= $t->ee( $rlp['numports'] ) ?> x <?= $t->scaleSpeed( $rlp['rlspeed']) ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -595,7 +595,7 @@
                 <div class="col-12 col-xl-6">
                     <div class="tw-mb-6">
                         <?php foreach( $t->graph_periods as $period => $desc ): ?>
-                            <a class="tw-mr-6 hover:tw-no-underline" href="<?= route('admin@dashboard') ?>?graph_period=<?= $period ?>">
+                            <a class="tw-mr-6 hover:tw-no-underline" href="<?= route('admin@dashboard', [ 'graph_period' => $period ]) ?>">
                                 <span class="btn btn-white tw-rounded-full <?= $t->graph_period === $period ? 'tw-font-semibold tw-text-grey-darkest' : 'tw-text-grey-dark' ?> mr-2">
                                     <?= $desc ?>
                                 </span>
@@ -650,7 +650,7 @@
             <div class="tw-bg-blue-100 tw-border-l-4 tw-border-blue-500 tw-text-blue-700 tw-p-4 tw-shadow-md" role="alert">
                 Dashboard statistics are cached for 1 hour (graphs for 5mins). These dashboard statistics were last cached
                 <?= $t->stats['cached_at']->diffForHumans() ?>.
-                <a href="<?= route('admin@dashboard') ?>?graph_period=<?= $t->graph_period ?>&refresh_cache=1">Click
+                <a href="<?= route('admin@dashboard', [ 'graph_period' => $t->graph_period, 'refresh_cache' => 1 ]) ?>">Click
                     here</a> to refresh the cache now.
             </div>
         </div>

@@ -54,7 +54,7 @@
                                     <a class="nav-link <?php if( $t->tab === 'notes' ): ?>active<?php endif; ?>" data-toggle="tab" href="#notes" id="tab-notes" data-toggle="tab">
                                         Notes
                                         <?php if( $t->notesInfo[ "unreadNotes"] > 0 ): ?>
-                                          <span id="notes-unread-indicator" class="badge badge-success"><?= $t->notesInfo[ "unreadNotes"] ?></span>
+                                          <span id="notes-unread-indicator" class="badge badge-success"><?= $t->ee( $t->notesInfo[ "unreadNotes"] ) ?></span>
                                         <?php endif ?>
                                     </a>
                                 </li>

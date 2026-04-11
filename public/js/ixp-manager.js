@@ -153,11 +153,20 @@ function ixpRandomString( length = 12 ) {
  * @returns {string}
  */
 function htmlEntities(str) {
-    return String(str).replace(/&/g, '&amp;')
-                        .replace(/</g, '&lt;')
-                        .replace(/>/g, '&gt;')
-                        .replace(/"/g, '&quot;')
-                        .replace(/'/g, '&quot;');
+    let entityMap = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+        '/': '&#x2F;',
+        '`': '&#x60;',
+        '=': '&#x3D;'
+    };
+
+    return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+        return entityMap[s];
+    });
 }
 
 

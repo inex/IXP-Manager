@@ -22,7 +22,7 @@
             masklen = 128;
         }
 
-        $.get('<?= url('lg/' . $t->lg->router()->handle  . '/route') ?>/' + encodeURIComponent( net ) + '/' +
+        $.get('<?= url('lg/' . $t->ee( $t->lg->router()->handle, "js" )  . '/route') ?>/' + encodeURIComponent( net ) + '/' +
             encodeURIComponent( masklen ) + '/' +
             source + '/' + encodeURIComponent( dd_source.val() ), function( html ) {
                 $( '#route-modal .modal-content' ).html( html );

@@ -24,7 +24,7 @@
         <div class="col-md-12">
             <?= $t->alerts() ?>
             <h3 class="tw-my-4">
-                <?= $t->unique ? 'Unique' : 'All' ?> Downloads for: <?= $t->file->name ?>
+                <?= $t->unique ? 'Unique' : 'All' ?> Downloads for: <?= $t->ee( $t->file->name ) ?>
                 <small class="tw-ml-8 tw-text-sm">
                     [Switch to <?php if( $t->unique ): ?>
                         <a href="<?= route( 'docstore-log@list', [ 'file' => $t->file ] ) ?>">All Downloads</a>]
@@ -71,7 +71,7 @@
                         <?php foreach( $t->logs as $log ): ?>
                             <tr>
                                 <td>
-                                    <?= $log->name ?? '' ?>
+                                    <?= $t->ee( $log->name ) ?? '' ?>
                                     <?php if( $log->username ): ?>
                                         (<?= $t->ee( $log->username ) ?>)
                                     <?php endif; ?>
