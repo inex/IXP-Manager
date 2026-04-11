@@ -66,7 +66,7 @@
 
                     <?= Former::select( 'cabinet_id' )
                         ->label( 'Rack' )
-                        ->fromQuery( $t->cabinets, 'name' )
+                        ->fromQuery( $t->cabinets, fn ( $model ) => $t->ee( $model->name ) )
                         ->placeholder( 'Choose a rack' )
                         ->addClass( 'chzn-select' );
                     ?>

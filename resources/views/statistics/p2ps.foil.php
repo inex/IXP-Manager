@@ -7,7 +7,7 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <?php if( Auth::check() && $isSuperUser ): ?>
         <a href="<?= route( 'customer@overview', [ 'cust' => $t->c->id ] ) ?>" >
-            <?= $t->c->getFormattedName() ?>
+            <?= $t->ee( $t->c->getFormattedName() ) ?>
         </a>
         /
         <a href="<?= route( 'statistics@member', [ 'cust' => $t->c->id ] ) ?>" >
@@ -17,14 +17,14 @@
         <a href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] ) ?>" >
             Peer to Peer Graphs
         </a>
-        (<?= $t->srcVli->getIPAddress( $t->protocol )->address ?? 'No IP' ?>
+        (<?= $t->ee( $t->srcVli->getIPAddress( $t->protocol )->address ?? 'No IP' ) ?>
             / <?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>
             / <?= IXP\Services\Grapher\Graph::resolvePeriod( $t->period ) ?>
             / <?= IXP\Services\Grapher\Graph::resolveProtocol( $t->protocol ) ?>
         )
 
     <?php else: ?>
-        Peer to Peer Graphs :: <?= $t->c->getFormattedName() ?>
+        Peer to Peer Graphs :: <?= $t->ee( $t->c->getFormattedName() ) ?>
     <?php endif; ?>
 <?php $this->append() ?>
 
@@ -62,8 +62,8 @@
                                         <?php foreach( $t->srcVlis as $vli ):
                                             /** @var $vli \IXP\Models\VlanInterface */?>
                                             <option value="<?= $vli->id ?>" <?php if( $t->srcVli->id === $vli->id ): ?> selected <?php endif; ?>  >
-                                                <?= $vli->vlan->name ?>
-                                                :: <?= $vli->getIPAddress( $t->protocol )->address ?? 'No IP - VLI ID: ' . $vli->id ?>
+                                                <?= $t->ee( $vli->vlan->name ) ?>
+                                                :: <?= $t->ee( $vli->getIPAddress( $t->protocol )->address ?? 'No IP - VLI ID: ' . $vli->id ) ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -180,12 +180,8 @@
                         foreach( $dstVlis as $dvli ):
                     ?>
                         <li>
-                            <a href="<?= route( 'statistics@p2p-get', [ 'srcVli' => $t->srcVli->id, 'dstVli' => $dvli->id ] )
-                                . '?category=' . $t->category
-                                . '&period='   . $t->period
-                                . '&protocol=' . $t->protocol
-                            ?>">
-                                <?= $dvli->virtualInterface->customer->getFormattedName() ?>
+                            <a href="<?= route( 'statistics@p2p-get', [ 'srcVli' => $t->srcVli->id, 'dstVli' => $dvli->id, 'category' => $t->category, 'period' => $t->period, 'protocol' => $t->protocol ] ) ?>">
+                                <?= $t->ee( $dvli->virtualInterface->customer->getFormattedName() ) ?>
                             </a>
                             <?php if( $t->orderBy === 'traffic' && $dvli->total_traffic ): ?>
                                 <span class="tw-tabular-nums">(<?= \IXP\IXP::scaleBytes( $dvli->total_traffic, 1 ) ?>)</span>
@@ -213,15 +209,11 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <h4>
-                                <?= $dvli->virtualInterface->customer->getFormattedName() ?> :: <?= $dvli->getIPAddress( $t->protocol ) ? $dvli->getIPAddress( $t->protocol )->address : 'No IP' ?>
+                                <?= $t->ee( $dvli->virtualInterface->customer->getFormattedName() ) ?> :: <?= $t->ee( $dvli->getIPAddress( $t->protocol ) ? $dvli->getIPAddress( $t->protocol )->address : 'No IP' ) ?>
                             </h4>
                         </div>
                         <div class="card-body">
-                            <a href="<?= route( 'statistics@p2p-get', [ 'srcVli' => $t->srcVli->id, 'dstVli' => $dvli->id ] )
-                                . '?category=' . $t->category
-                                . '&period='   . $t->period
-                                . '&protocol=' . $t->protocol
-                            ?>">
+                            <a href="<?= route( 'statistics@p2p-get', [ 'srcVli' => $t->srcVli->id, 'dstVli' => $dvli->id, 'category' => $t->category, 'period' => $t->period, 'protocol' => $t->protocol] ) ?>">
                                 <img class="img-fluid" src="<?= $t->graph->setDestinationVlanInterface( $dvli, false )->setType('png')->url() ?>">
                             </a>
                         </div>

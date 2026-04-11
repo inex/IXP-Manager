@@ -1,4 +1,5 @@
 <?php
+  use IXP\Models\Customer;
   use IXP\Models\User;
 
   $this->layout( 'layouts/ixpv4' );
@@ -154,7 +155,7 @@
                                 <?= Former::select( 'custid')
                                     ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
                                     ->placeholder( 'Select a ' . config( 'ixp_fe.lang.customer.one' ) )
-                                    ->fromQuery( $t->custs, 'name' )
+                                    ->fromQuery( $t->custs , fn ( Customer $model ) => $t->ee( $model->name ) )
                                     ->addClass( 'chzn-select' )
                                     ->blockHelp( 'The ' . config( 'ixp_fe.lang.customer.one' ) . ' to create the user for.<br><br>If creating a ' . config( 'ixp_fe.lang.customer.one' ) . ' for your own IXP, then pick the IXP ' . config( 'ixp_fe.lang.customer.one' ) . ' entry.' )
                                     ->disabled( $t->c ? true : false );
@@ -172,7 +173,7 @@
                                 ->id( 'privs' )
                                 ->label( 'Privilege' )
                                 ->placeholder( 'Select a privilege' )
-                                ->fromQuery( $t->privs , 'name' )
+                                ->fromQuery( $t->privs )
                                 ->addClass( 'chzn-select' )
                                 ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/latest/usage/users/#types-of-users">'
                                     . 'the official documentation here</a>.'

@@ -1,10 +1,10 @@
 <div class="modal-header">
     <h4 class="modal-title" id="myModalLabel">
-        Route Details - <code><?= $t->net ?></code>
+        Route Details - <code><?= $t->ee( $t->net ) ?></code>
         <?php if( $t->source === 'table' ): ?>
-            in table <code><?= $t->name ?></code>
+            in table <code><?= $t->ee( $t->name ) ?></code>
         <?php else: ?>
-            as received from protocol <code><?= $t->name ?></code>
+            as received from protocol <code><?= $t->ee( $t->name ) ?></code>
         <?php endif; ?>
     </h4>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -19,7 +19,7 @@
                           <b>Network</b>
                       </td>
                       <td>
-                          <?= $r->network ?>
+                          <?= $t->ee( $r->network ) ?>
                       </td>
                   </tr>
                   <tr>
@@ -27,7 +27,7 @@
                           <b>Gateway</b>
                       </td>
                       <td>
-                          <?= $r->gateway ?>
+                          <?= $t->ee( $r->gateway ) ?>
                           &nbsp;&nbsp;
                           <?php if( $r->primary ): ?>
                               <span class="badge badge-success">
@@ -45,7 +45,7 @@
                           <b>From Protocol</b>
                       </td>
                       <td>
-                          <?= $r->from_protocol ?>
+                          <?= $t->ee( $r->from_protocol ) ?>
                       </td>
                   </tr>
                   <tr>
@@ -61,7 +61,7 @@
                           <b>Metric</b>
                       </td>
                       <td>
-                          <?= $r->metric ?>
+                          <?= $t->ee( $r->metric ) ?>
                       </td>
                   </tr>
                   <tr>

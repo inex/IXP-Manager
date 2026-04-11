@@ -7,7 +7,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Customers / Delete :: <?= $c->getFormattedName() ?>
+    Customers / Delete :: <?= $t->ee( $c->getFormattedName() ) ?>
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -16,7 +16,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3>
-                        Delete Customer: <?= $c->getFormattedName() ?>
+                        Delete Customer: <?= $t->ee( $c->getFormattedName() ) ?>
                     </h3>
                 </div>
                 <div class="card-body">

@@ -75,7 +75,7 @@
 
                                     $sps = explode( ',', $vi[ 'switchport' ] );
                                     foreach( $sps as $sp ){
-                                      echo $sp . '<br/>';
+                                      echo $t->ee( $sp ). '<br/>';
                                     }
                                     ?>
                                 </td>
@@ -86,7 +86,7 @@
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <?= $vi['rate_limit'] ?: $vi[ 'speed' ] ?>
+                                    <?= $this->ee( $vi['rate_limit'] ?: $vi[ 'speed' ] ) ?>
                                 </td>
                             <?php else: ?>
                                 <td></td>

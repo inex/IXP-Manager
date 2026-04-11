@@ -42,7 +42,7 @@ $c = $t->c; /** @var \IXP\Models\Customer $c */
                             <b>Corporate Site</b>
                         </td>
                         <td>
-                            <a target="_blank" href="<?= $t->ee( $c->corpwww )?>">
+                            <a target="_blank" href="<?= $t->ee( $c->corpwww, "attr" )?>">
                                 <?= $t->ee( $c->corpwww ) ?>
                             </a>
                         </td>
@@ -145,7 +145,7 @@ $c = $t->c; /** @var \IXP\Models\Customer $c */
                             <?php if( !$c->typeAssociate() ): ?>
                                 <?php if( $c->nochours      ): ?>   <?= $t->ee( $c->nochours ) ?> <br />    <?php endif; ?>
                                 <?php if( $c->nocemail      ): ?>   <a href="mailto:<?= $t->ee( $c->nocemail ) ?>"> <?= $t->ee( $c->nocemail ) ?> </a><br /><?php endif; ?>
-                                <?php if( $c->nocwww        ): ?>   <a href="<?= $t->ee( $c->nocwww ) ?>"> <?= $t->ee( $c->nocwww ) ?> </a><br /><?php endif; ?>
+                                <?php if( $c->nocwww        ): ?>   <a href="<?= $t->ee( $c->nocwww, "attr" ) ?>"> <?= $t->ee( $c->nocwww ) ?> </a><br /><?php endif; ?>
                                 <?php if( $c->nocphone      ): ?>   <?= $t->ee( $c->nocphone ) ?> <br />    <?php endif; ?>
                                 <?php if( $c->noc24hphone   ): ?>   <?= $t->ee( $c->noc24hphone ) ?> (24h) <?php endif; ?>
                             <?php endif; ?>

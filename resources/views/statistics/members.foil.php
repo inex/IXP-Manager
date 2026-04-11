@@ -12,8 +12,8 @@
         <?php endif; ?>
 
         (
-        <?= $t->infra ? 'MRTG: '  . $t->infra->name : '' ?>
-        <?= $t->vlan  ? 'SFlow: ' . $t->vlan->name  : '' ?>
+        <?= $t->infra ? 'MRTG: '  . $t->ee( $t->infra->name ) : '' ?>
+        <?= $t->vlan  ? 'SFlow: ' . $t->ee( $t->vlan->name )  : '' ?>
         /
         <?= $t->graph->resolveCategory( $t->graph->category() ) ?>
         /
@@ -51,7 +51,7 @@
                                         <select id="selectInfra" class="form-control" name="infra">
                                             <option>All</option>
                                             <?php foreach( $t->infras as  $i ): ?>
-                                                <option value="<?= $i[ 'id' ] ?>" <?= $t->infra && $t->infra->id === $i[ 'id' ] ? 'selected="selected"' : '' ?>><?= $i[ 'name' ] ?></option>
+                                                <option value="<?= $i[ 'id' ] ?>" <?= $t->infra && $t->infra->id === $i[ 'id' ] ? 'selected="selected"' : '' ?>><?= $t->ee( $i[ 'name' ] ) ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -105,7 +105,7 @@
                                         <select id="selectVlan" class="form-control" name="vlan">
                                             <option>All</option>
                                             <?php foreach( $t->vlans as $i ): ?>
-                                                <option value="<?= $i[ 'id' ] ?>" <?= $t->vlan && $t->vlan->id === $i[ 'id' ] ? 'selected="selected"' : '' ?>><?= $i[ 'name' ] ?></option>
+                                                <option value="<?= $i[ 'id' ] ?>" <?= $t->vlan && $t->vlan->id === $i[ 'id' ] ? 'selected="selected"' : '' ?>><?= $t->ee( $i[ 'name' ] ) ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -190,7 +190,7 @@
                                 <div class="card-header d-flex">
                                     <div class="mr-auto">
                                         <b class="align-middle">
-                                            <?= $graph->customer()->getFormattedName() ?>
+                                            <?= $t->ee( $graph->customer()->getFormattedName() ) ?>
                                         </b>
                                     </div>
                                     <div class="btn-group btn-group-sm my-auto" role="group">

@@ -28,7 +28,8 @@ function updateIpAddresses() {
                 $.each( data.ipv6, function( key, ip ) {
                     // if the address is free (or used by this interface):
                     if( ip.vliid === null || ( selectedIPv6 && selectedIPv6 === ip.address ) ) {
-                        options += `<option value="${ip.address}">${ip.address}</option>\n`;
+                        let ipText = htmlEntities(ip.address);
+                        options += `<option value="${ipText}">${ipText}</option>\n`;
                     }
                 });
                 dd_ipv6.html( options );
@@ -42,7 +43,8 @@ function updateIpAddresses() {
                 $.each( data.ipv4, function( key, ip ) {
                     // if the address is free (or used by this interface):
                     if( ip.vliid === null || ( selectedIPv4 && selectedIPv4 === ip.address ) ) {
-                        options += `<option value="${ip.address}">${ip.address}</option>\n`;
+                        let ipText = htmlEntities(ip.address);
+                        options += `<option value="${ipText}">${ipText}</option>\n`;
                     }
                 });
                 dd_ipv4.html( options );
@@ -141,7 +143,9 @@ function usedAcrossVlans() {
             })
             .done( function( data ) {
                 $.each( data, function( key, vli ){
-                    html += `<li>${ipAddress} is in use by ${vli.cabbreviatedname} on ${vli.vname}</li>\n`;
+                    let vlanName = htmlEntities(vli.vname);
+                    let custName = htmlEntities(vli.cabbreviatedname);
+                    html += `<li>${ipAddress} is in use by ${custName} on ${vlanName}</li>\n`;
                 });
             })
             .fail( function() {
@@ -197,7 +201,8 @@ function updateSwitchPort( e ) {
 
         $.each( data.ports, function( key, port ) {
             if( ( port.pi_id === null || port.id === parseInt( selectedPort ) ) ) {
-                options += `<option value="${port.id}">${port.name} (${port.type})</option>\n`;
+                let swPortText = htmlEntities(port.name);
+                options += `<option value="${port.id}">${swPortText} (${port.type})</option>\n`;
             }
         });
 

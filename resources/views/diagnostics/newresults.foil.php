@@ -4,7 +4,7 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= $t->customer->name ?></a>
+Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= $t->ee( $t->customer->name ) ?></a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>

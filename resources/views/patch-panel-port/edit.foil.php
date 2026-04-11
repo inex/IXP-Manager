@@ -105,7 +105,7 @@ $this->layout( 'layouts/ixpv4' );
     <span id='duplex-port-area' class='collapse'>
         <?= Former::select( 'partner_port' )
             ->label( 'Partner Port' )
-            ->fromQuery( $t->partnerPorts, 'name' )
+            ->fromQuery( $t->partnerPorts, fn ( $model ) => $t->ee( $model->name ) )
             ->placeholder( 'Choose a partner port' )
             ->addClass( 'chzn-select' )
             ->blockHelp( 'The second half of the duplex port.' );
@@ -144,18 +144,18 @@ $this->layout( 'layouts/ixpv4' );
             <div class="mr-auto col-lg-11 col-md-10">
                 <?= Former::select( 'switch' )
                     ->label( 'Switch' )
-                    ->fromQuery( $t->switches, 'name' )
+                    ->fromQuery( $t->switches, fn ( $model ) => $t->ee( $model->name ) )
                     ->placeholder( 'Choose a switch' )
                     ->addClass( 'chzn-select' )
-                    ->append(  $ppp->switchPort ? "<span class='badge badge-info'> Was " . $ppp->switchPort->switcher->name . " </span>"  : '' );
+                    ->append(  $ppp->switchPort ? "<span class='badge badge-info'> Was " . $t->ee( $ppp->switchPort->switcher->name ) . " </span>"  : '' );
                 ?>
 
                 <?= Former::select( 'switch_port_id' )
                     ->label( 'Switch Port' )
-                    ->fromQuery( $t->switchPorts, 'name' )
+                    ->fromQuery( $t->switchPorts, fn ( $model ) => $t->ee( $model->name ) )
                     ->placeholder( 'Choose a switch port' )
                     ->addClass( 'chzn-select' )
-                    ->append(  $ppp->switchPort ? "<span class='badge badge-info'> Was " . $ppp->switchPort->name . " </span>" : '' );
+                    ->append(  $ppp->switchPort ? "<span class='badge badge-info'> Was " . $t->ee( $ppp->switchPort->name ) . " </span>" : '' );
                 ?>
             </div>
 
@@ -174,10 +174,10 @@ $this->layout( 'layouts/ixpv4' );
                 <div class="mr-auto col-lg-11 col-md-10">
                     <?= Former::select( 'customer_id' )
                         ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
-                        ->fromQuery( $t->customers, 'name' )
+                        ->fromQuery( $t->customers , fn ( $model ) => $t->ee( $model->name ) )
                         ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
                         ->addClass( 'chzn-select' )
-                        ->append(  $ppp->customer ? "<span class='badge badge-info'> Was " . $ppp->customer->name. " </span>" : '' );
+                        ->append(  $ppp->customer ? "<span class='badge badge-info'> Was " . $t->ee( $ppp->customer->name ). " </span>" : '' );
                     ?>
                 </div>
 

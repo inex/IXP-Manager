@@ -5,7 +5,7 @@
 
 <?php $this->section( 'page-header-preamble' ) ?>
     Peering Matrix
-    <small><?= $t->vlans[ $t->vl ][ 'name' ] ?></small>
+    <small><?= $t->ee( $t->vlans[ $t->vl ][ 'name' ] ) ?></small>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -30,12 +30,12 @@
         <?php if( count( $t->vlans ) > 1 ): ?>
             <div class="btn-group btn-group-sm">
                 <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?= $t->vl ? 'Vlan: ' . $t->vlans[ $t->vl ][ 'name' ] : "Limit to Vlan..." ?>
+                    <?= $t->vl ? 'Vlan: ' . $t->ee( $t->vlans[ $t->vl ][ 'name' ] ) : "Limit to Vlan..." ?>
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">
                     <?php foreach( $t->vlans as $vl ): ?>
-                        <a class="dropdown-item <?= $t->vl === $vl[ 'id' ] ? "active" : "" ?>" href="<?= route( "peering-matrix@index" ) . '?vlan=' . $vl[ 'id' ] ?>">
-                            <?= $vl[ 'name' ] ?>
+                        <a class="dropdown-item <?= $t->vl === $vl[ 'id' ] ? "active" : "" ?>" href="<?= route( "peering-matrix@index", [ 'vlan' => $vl['id'] ] ) ?>">
+                            <?= $t->ee( $vl[ 'name' ] ) ?>
                         </a>
                     <?php endforeach; ?>
                 </div>
@@ -48,7 +48,7 @@
             </button>
             <div class="dropdown-menu dropdown-menu-right">
                 <?php foreach( $t->protos as $id => $name ): ?>
-                    <a class="dropdown-item <?= $t->proto == $id ? "active" : "" ?>" href="<?= route( "peering-matrix@index" ) . '?proto=' . $id ?>">
+                    <a class="dropdown-item <?= $t->proto == $id ? "active" : "" ?>" href="<?= route( "peering-matrix@index", [ 'proto' => $id ] ) ?>">
                         <?= $t->ee( $name ) ?>
                     </a>
                 <?php endforeach; ?>

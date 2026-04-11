@@ -10,7 +10,7 @@
 
         <?= Former::select( 'vlan_id' )
             ->label( 'VLAN' )
-            ->fromQuery( $t->data[ 'params'][ 'vlans'], 'name' )
+            ->fromQuery( $t->data[ 'params'][ 'vlans'], fn ( $model ) => $t->ee( $model->name ) )
             ->placeholder( 'Choose a VLAN' )
             ->addClass( 'chzn-select' )
             ->disabled( !$t->data[ 'params'][ 'preAddForm'] );
@@ -88,7 +88,7 @@
                                     <input type="checkbox" <?= !old( 'selected_custs' ) && $count <= 10 ? "checked" : "" ?> <?= old( 'selected_custs' ) && in_array( $c[ 'id' ], old( 'selected_custs' ) ) ? "checked" : "" ?> class="cust-checkbox mr-2" name="selected_custs[<?= $c[ "id" ] ?>]" id="custs-<?= $c[ "id" ] ?>" value="<?= $c[ "id" ] ?>" />
 
                                     <span class="label-cust cursor-pointer">
-                                            <?= $c[ "name"] ?>
+                                            <?= $t->ee( $c[ "name"] ) ?>
                                         </span>
                                 </td>
                                 <?php if( $count++ % 3 === 0 ) {

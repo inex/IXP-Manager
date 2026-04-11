@@ -3,7 +3,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Search - <?= $t->type ?> - <?= $t->ee( $t->search ) ?>
+    Search - <?= $t->ee( $t->type ) ?> - <?= $t->ee( $t->search ) ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>

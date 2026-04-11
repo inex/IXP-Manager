@@ -6,7 +6,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Route Server Filtering <?= $isSuperUser ? ' for <a href="' . route( 'customer@overview', $t->c ) . '">' . $t->c->name . '</a>' : '' ?>
+    Route Server Filtering <?= $isSuperUser ? ' for <a href="' . route( 'customer@overview', $t->c ) . '">' . $t->ee( $t->c->name ) . '</a>' : '' ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -66,7 +66,7 @@
                             <div class="pull-right d-flex">
                                 <form id="form-revert" action="<?= route( 'rs-filter@revert', [ 'cust' => $t->c->id ] ) ?>" method="post">
                                     <input type="hidden" name="_token" value="<?= csrf_token() ?>" />
-                                    <button type="submit" class="btn btn-warning mr-4" id="submit-revert"  href="  title="Revert Changes">
+                                    <button type="submit" class="btn btn-warning mr-4" id="submit-revert"  title="Revert Changes">
                                         Revert
                                     </button>
                                 </form>

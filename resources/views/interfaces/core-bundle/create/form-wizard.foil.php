@@ -47,7 +47,7 @@
                             <hr>
                             <?= Former::select( 'custid' )
                                 ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
-                                ->fromQuery( $t->customers, 'name' )
+                                ->fromQuery( $t->customers , fn ( $model ) => $t->ee( $model->name ) )
                                 ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
                                 ->addClass( 'chzn-select' )
                                 ->required( true )
@@ -97,7 +97,7 @@
 
                             <?= Former::select( 'type' )
                                 ->label( 'Type' )
-                                ->fromQuery( \IXP\Models\CoreBundle::$TYPES , 'name' )
+                                ->fromQuery( \IXP\Models\CoreBundle::$TYPES )
                                 ->placeholder( 'Choose core bundle type' )
                                 ->addClass( 'chzn-select' )
                                 ->required( true )

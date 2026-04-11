@@ -1,7 +1,7 @@
 <?php $this->layout('services/lg/layout') ?>
 
 <?php $this->section('title') ?>
-    <small>Routes for <?= ucwords( $t->source ) ?> <code><?= $t->name ?></code></small>
+    <small>Routes for <?= ucwords( $t->source ) ?> <code><?= $t->ee( $t->name ) ?></code></small>
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -9,7 +9,7 @@
     <div class="card mb-4">
         <div class="card-body">
             <?php if( $t->source ?? false ): ?>
-                <b>Routes <?= $t->source === 'export to protocol' ? 'exported to protocol' : 'from ' . $t->source ?>: <code><?= $t->name ?></code>.</b>
+                <b>Routes <?= $t->source === 'export to protocol' ? 'exported to protocol' : 'from ' . $t->ee( $t->source ) ?>: <code><?= $t->ee( $t->name ) ?></code>.</b>
             <?php endif; ?>
             
             <b>Key:</b> <span class="badge badge-success">P</span>
@@ -64,13 +64,18 @@
                             // need to split the ip/netmask so we don't urlencode() the '/' between them:
                             list( $ip, $mask ) = explode( '/', $r->network );
                         ?>
-                        <a href="<?= url('/lg') . '/' . $t->lg->router()->handle ?>/route/<?= urlencode($ip) ?>/<?= $mask ?>/table/master<?= (int)$t->lg->router()->software === \IXP\Models\Router::SOFTWARE_BIRD2 ? $t->lg->router()->protocol()[-1] : '' ?>"
-                                data-toggle="modal" data-target="#route-modal">
-                            <?= $r->network ?>
+                        <a href="<?= route('lg::network-route-table', [
+                                'handle' => $t->lg->router()->handle,
+                                'net' => $ip,
+                                'mask' => $mask,
+                                'table' => "master".((int)$t->lg->router()->software === \IXP\Models\Router::SOFTWARE_BIRD2 ? $t->lg->router()->protocol()[-1] : '')
+                        ] ) ?>"
+                           data-toggle="modal" data-target="#route-modal">
+                            <?= $t->ee( $r->network ) ?>
                         </a>
                     </td>
                     <td>
-                        <?= $r->gateway ?>
+                        <?= $t->ee( $r->gateway ) ?>
                     </td>
                     <td>
                         <?php if( $r->primary ): ?>
@@ -79,7 +84,7 @@
                             <span class="badge badge-warning">N</span>
                         <?php endif; ?>
                     </td>
-                    <td><?= $r->metric ?></td>
+                    <td><?= $t->ee( $r->metric ) ?></td>
                     <td>
                         <span class="badge badge-secondary">
                             <?php if( isset( $r->bgp->communities ) ): ?>
@@ -105,8 +110,20 @@
                         <?php endif; ?>
                     </td>
                     <td>
+                        <?php
+                        // Determine URL and the param used to indicate the name to lookup
+                        if ($t->source === "export to protocol" || $t->source === "export"):
+                            $routeName = "lg::network-route-export";
+                            $source = "protocol";
+                        else:
+                            $routeName = "lg::network-route-" . $t->source;
+                            $source = $t->source;
+                        endif;
+
+                        [$net, $mask] = explode('/',$r->network);
+                        ?>
                         <a class="btn btn-white btn-sm" style="font-size: 14px;" data-toggle="modal"
-                            href="<?= url('/lg') . '/' . $t->lg->router()->handle ?>/route/<?= urlencode( explode('/',$r->network)[0] ) ?>/<?= explode('/',$r->network)[1] ?>/<?= $t->source == 'export to protocol' ? 'export' : $t->source ?>/<?= $t->name ?>"
+                            href="<?= route( $routeName, [ 'handle' => $t->lg->router()->handle, 'net' => $net, 'mask' => $mask, $source => $t->name ] ) ?>"
                             data-target="#route-modal">Details</a>
                     </td>
                 </tr>

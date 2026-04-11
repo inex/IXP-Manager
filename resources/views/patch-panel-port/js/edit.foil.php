@@ -128,7 +128,8 @@
                 let xid = null;
 
                 $.each( data.switches, function( key, value ){
-                    options += `<option value='${value.id}'>${value.name}</option>`;
+                    let switchName = htmlEntities(value.name);
+                    options += `<option value='${value.id}'>${switchName}</option>`;
                     xcount++;
                     xid = value.id;
                 });
@@ -157,7 +158,7 @@
         let options = `<option value=''> Choose a Switch</option>`;
 
         <?php foreach ( $t->switches as $switch ): ?>
-            options += `<option value='<?= $switch->id ?>'><?= $switch->name ?></option>`;
+            options += `<option value='<?= $switch->id ?>'><?= $t->ee( $switch->name ) ?></option>`;
         <?php endforeach; ?>
 
         dd_switch.html( options ).trigger('change.select2');
@@ -217,7 +218,7 @@
             currentSpId = <?= $t->ppp->switch_port_id ?>;
 
             // create the option for the switch port dropdown
-            spOption =  `<option value='<?= $t->ppp->switch_port_id ?>' > <?= $t->ppp->switchPort->name ?> ( <?= $t->ppp->switchPort->type() ?> ) </option>`;
+            spOption =  `<option value='<?= $t->ppp->switch_port_id ?>' > <?= $t->ee( $t->ppp->switchPort->name ) ?> ( <?= $t->ppp->switchPort->type() ?> ) </option>`;
         <?php endif; ?>
         console.log( currentSId , spOptionset);
 
@@ -240,7 +241,7 @@
                         }
                     }
                 }
-                options += `<option value="${value.id}">${value.name} (${sptypes[value.type]})</option>`
+                options += `<option value="${value.id}">${htmlEntities(value.name)} (${sptypes[value.type]})</option>`
 
                 // if we have a switch port for the ppp and we did not already insert the option ( let spOption ) in the select
                 if( currentSId && !spOptionset ){
@@ -307,7 +308,7 @@
             $.ajax( "<?= url( '/admin/api/v4/switch-port' ) ?>/" + switchPortId + "/customer" )
             .done( function( data ) {
                 if( data.customer[ 'nb' ] > 0 ) {
-                    option = `<option value='${data.customer[ 'id']}'>${data.customer[ 'name']}</option>`;
+                    option = `<option value='${data.customer[ 'id']}'>${htmlEntities(data.customer[ 'name'])}</option>`;
                 }
                 dd_customer.html( option );
             })
@@ -328,7 +329,7 @@
         let options = `<option value=''> Choose a <?= config( 'ixp_fe.lang.customer.one' ) ?></option>`;
 
         <?php foreach ( $t->customers as $c ): ?>
-            options += `<option value='<?= $c->id ?>'><?= $c->name ?></option>`;
+            options += `<option value='<?= $c->id ?>'><?= $t->ee( $c->name ) ?></option>`;
         <?php endforeach; ?>
         dd_customer.html( options ).trigger('change.select2');
 

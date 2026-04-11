@@ -18,7 +18,7 @@
                 <div class="dropdown-divider"></div>
 
                 <?php foreach( $t->data[ 'params'][ "roles" ] as $index => $role ): ?>
-                    <a class="dropdown-item <?= isset($t->data[ 'params'][ "role" ]) && (int)$t->data[ 'params'][ "role" ] === $role[ 'id'] ? 'active' : '' ?>" href="<?= route( $t->feParams->route_prefix . "@list" ) ?>?role=<?= $role[ 'id' ] ?>">
+                    <a class="dropdown-item <?= isset($t->data[ 'params'][ "role" ]) && (int)$t->data[ 'params'][ "role" ] === $role[ 'id'] ? 'active' : '' ?>" href="<?= route( $t->feParams->route_prefix . "@list", [ 'role' => $role['id'] ] ) ?>">
                         <?= $t->ee( $role[ 'name' ] ) ?>
                     </a>
                 <?php endforeach; ?>

@@ -106,6 +106,7 @@ class IXP implements ExtensionInterface
             'scaleFilesize'          => [ $this, 'scaleFilesize' ],
             'softwrap'               => [ $this, 'softwrap' ],
             'whoisPrefix'            => [ $this, 'whoisPrefix' ],
+            'mapToSelectOptions'     => [ $this, 'mapToSelectOptions' ],
         ];
     }
 
@@ -464,4 +465,17 @@ class IXP implements ExtensionInterface
         return $model::select( $key, $value )->pluck( $value, $key )->toArray();
     }
 
+    /**
+     * Convert an key=>value array to a format for Former
+     * @param array $array
+     * @return array
+     */
+    public function mapToSelectOptions( array $array ): array
+    {
+        $list = [];
+        foreach( $array as $k => $v ) {
+            $list[] = ['id' => $k, 'text' => $v];
+        }
+        return $list;
+    }
 }

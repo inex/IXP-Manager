@@ -12,7 +12,7 @@
                     <?php $vlanid = $vlan['number'] ?>
                     <?php if( isset( $t->peers[ "me" ][ 'vlan_interfaces' ][ $vlanid ] ) ): ?>
                         <th>
-                            <?= $vlan['name'] ?>
+                            <?= $t->ee( $vlan['name'] ) ?>
                         </th>
                     <?php endif; ?>
                 <?php endforeach; ?>
@@ -27,7 +27,7 @@
                 <?php if( $p ): ?>
                     <tr>
                         <td id="peer-name-<?= $cid ?>">
-                            <?= $c[ "name" ] ?>
+                            <?= $t->ee( $c[ "name" ] ) ?>
                         </td>
                         <td>
                             <?= $c[ "autsys" ] ?>

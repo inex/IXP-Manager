@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    Switch Aggregate Graphs - <?= $t->switch->name ?> (<?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>)
+    Switch Aggregate Graphs - <?= $t->ee( $t->switch->name ) ?> (<?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>)
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -29,7 +29,7 @@
                                     <label for="switchid" class="col-sm-4 col-lg-4">Switch:</label>
                                     <select id="form-select-switchid" name="switchid" class="form-control">
                                         <?php foreach( $t->switches as $s ): ?>
-                                            <option value="<?= $s->id ?>" <?= $t->switch->id !== $s->id ?: 'selected="selected"' ?>><?= $s->name ?></option>
+                                            <option value="<?= $s->id ?>" <?= $t->switch->id !== $s->id ?: 'selected="selected"' ?>><?= $t->ee( $s->name ) ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>

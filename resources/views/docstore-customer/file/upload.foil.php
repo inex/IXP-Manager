@@ -7,7 +7,7 @@
 
 <?php $this->section( 'page-header-preamble' ) ?>
     <a href="<?= route( 'customer@overview', [ 'cust' => $t->cust->id ] ) ?>">
-        <?= $t->cust->name ?>
+        <?= $t->ee( $t->cust->name ) ?>
     </a> ::
     Document Store :: <?= $t->file ? 'Edit' : 'Upload' ?> <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> File
 <?php $this->append() ?>
@@ -43,14 +43,14 @@
 
         <?= Former::select( 'docstore_customer_directory_id' )
             ->label( 'Directory' )
-            ->fromQuery( $t->dirs, 'name' )
+            ->fromQuery( $t->dirs, fn ($dir) => htmlentities( $dir->name, ENT_QUOTES, 'UTF-8', double_encode: false ) )
             ->addClass( 'chzn-select' )
             ->blockHelp( "The directory in which to store the file." );
         ?>
 
         <?= Former::select( 'min_privs' )
             ->label( 'Minimum privilege' )
-            ->fromQuery( \IXP\Models\User::$PRIVILEGES_TEXT , 'name' )
+            ->fromQuery( \IXP\Models\User::$PRIVILEGES_TEXT )
             ->addClass( 'chzn-select' )
             ->blockHelp( "The minimum privilege a user is required to have to view and download the file." );
         ?>

@@ -1,5 +1,6 @@
 
 <?php
+/** @var Foil\Template\Template $t */
 // due to how PHP Foil passes data, we reassign this so we can copy and paste normal list code if we want.
 // see http://www.foilphp.it/docs/DATA/PASS-DATA.html
 $row = $t->row;
@@ -20,7 +21,7 @@ $row = $t->row;
     </td>
     <td>
         <?php if( $row['expires'] ): ?>
-            <?= $row['expires'] ?>
+            <?= $t->ee( $row['expires'] ) ?>
         <?php else: ?>
             <em>Never</em>
         <?php endif; ?>
@@ -28,7 +29,7 @@ $row = $t->row;
 
     <td>
         <?php if( $row['lastseenAt'] ): ?>
-            <?= $row['lastseenAt'] ?>
+            <?= $t->ee( $row['lastseenAt'] ) ?>
         <?php endif; ?>
 
     </td>

@@ -1,3 +1,9 @@
+<?php
+
+use IXP\Models\Infrastructure;
+use IXP\Models\Vendor;
+
+?>
 <div class="card col-sm-12">
     <div class="card-body">
 
@@ -41,13 +47,13 @@
                         ?>
                         <select class="form-control" id="cabinetid" name="cabinetid" required>
                             <option value="" disabled="disabled" selected="selected">
-                                Choose a rack <?= $cabinetid ?>
+                                Choose a rack <?= $t->ee( $cabinetid ) ?>
                             </option>
                             <?php foreach( $t->data[ 'params'][ 'cabinets'] as $location ): ?>
-                                <optgroup label="<?= $location[ 'name' ] ?>">
+                                <optgroup label="<?= $t->ee( $location[ 'name' ], 'attr') ?>">
                                     <?php foreach( $location[ 'cabinets' ] as $c ): ?>
                                         <option value="<?= $c[ 'id' ] ?>" <?= (int)$cabinetid === $c[ 'id' ] ? 'selected' : '' ?> >
-                                            <?= $c[ 'name' ] ?> [<?= $c[ 'colocation' ] ?>]
+                                            <?= $t->ee( $c[ 'name' ] ) ?> [<?= $t->ee( $c[ 'colocation' ] ) ?>]
                                         </option>
                                     <?php endforeach; ?>
                                 </optgroup>
@@ -62,7 +68,7 @@
 
                 <?= Former::select( 'infrastructure' )
                     ->label( 'Infrastructure' )
-                    ->fromQuery( $t->data[ 'params'][ 'infra'], 'name' )
+                    ->fromQuery( $t->data[ 'params'][ 'infra'], function (Infrastructure $infra) use ($t) { return $t->ee( $infra->name ); } )
                     ->placeholder( 'Choose the infrastructure' )
                     ->addClass( 'chzn-select' )
                     ->required()
@@ -84,7 +90,7 @@
 
                 <?= Former::select( 'vendorid' )
                     ->label( 'Vendor' )
-                    ->fromQuery( $t->data[ 'params'][ 'vendors'], 'name' )
+                    ->fromQuery( $t->data[ 'params'][ 'vendors'], function (Vendor $vendor) use ($t) { return $t->ee($vendor->name); } )
                     ->placeholder( 'Choose a vendor' )
                     ->addClass( 'chzn-select' )
                     ->blockHelp( "The switch vendor. If the vendor is not listed here, then you can add it in the "
@@ -209,7 +215,7 @@
                 Former::primary_submit( $t->data['params']['isAdd'] ? 'Create' : 'Save Changes' )->id( 'btn-submit' )->class( "mb-2 mb-sm-0" ),
                 Former::secondary_link( 'Cancel' )->href( route( $t->feParams->route_prefix.'@list') )->class( "mb-2 mb-sm-0" ),
                 Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" ),
-                Former::secondary_link( $t->data[ 'params'][ 'addBySnmp'] ? "Manual / Non-SNMP Add" : "Add by SNMP" )->href( route( $t->data[ 'params'][ 'addBySnmp'] ? $t->feParams->route_prefix.'@create' : $t->feParams->route_prefix.'@create-by-snmp' ) . ( $t->data[ 'params'][ 'addBySnmp'] ? "?manual=1" : "" ) )->class( "mb-2 mb-sm-0" )
+                Former::secondary_link( $t->data[ 'params'][ 'addBySnmp'] ? "Manual / Non-SNMP Add" : "Add by SNMP" )->href( route( $t->data[ 'params'][ 'addBySnmp'] ? $t->feParams->route_prefix.'@create' : $t->feParams->route_prefix.'@create-by-snmp', $t->data[ 'params'][ 'addBySnmp'] ? [ "manual" => 1 ] : [] ) )->class( "mb-2 mb-sm-0" )
             );
         ?>
 

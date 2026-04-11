@@ -2,7 +2,7 @@
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
 
-    const protocol  = "<?= $t->protocol ?>";
+    const protocol  = "<?= $t->ee( $t->protocol , 'js' ) ?>";
     const table     = $( '#ip-address-list' );
 
     $(document).ready( function() {

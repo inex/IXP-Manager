@@ -63,14 +63,14 @@
                         <?php foreach( $t->vli->layer2Addresses as $l2a ):?>
                             <tr>
                                 <td>
-                                    <?= $l2a->macFormatted( ':' ) ?>
+                                    <?= $t->ee( $l2a->macFormatted( ':' ) ) ?>
                                 </td>
                                 <td>
                                     <?= $l2a->created_at ?>
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <a class="btn btn-white btn-view-l2a" id="view-l2a-<?= $l2a->id ?>" data-object-mac="<?= $l2a->mac ?>" href="#" title="View">
+                                        <a class="btn btn-white btn-view-l2a" id="view-l2a-<?= $l2a->id ?>" data-object-mac="<?= $t->ee( $l2a->mac, 'attr' ) ?>" href="#" title="View">
                                             <i class="fa fa-eye"></i>
                                         </a>
                                         <?php if( $t->vli->layer2Addresses()->count() > config( 'ixp_fe.layer2-addresses.customer_params.min_addresses' ) ): ?>

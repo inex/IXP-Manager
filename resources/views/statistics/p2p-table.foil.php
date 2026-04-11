@@ -9,7 +9,7 @@
 <?php $this->section( 'page-header-preamble' ) ?>
         Statistics /  P2P Table
 <?php if( Auth::user()->isSuperUser() ):?>
-    <?= $c ? '/ <a href="' . route( 'statistics@p2p-table', [ 'custid' => $c->id ] ) . '">' . $c->getFormattedName() . '</a>' : '' ?>
+    <?= $c ? '/ <a href="' . route( 'statistics@p2p-table', [ 'custid' => $c->id ] ) . '">' . $t->ee( $c->getFormattedName() ) . '</a>' : '' ?>
 <?php endif; ?>
 <?php $this->append() ?>
 
@@ -41,7 +41,7 @@
                                         <select id="metric" class="form-control chzn-select col-xl-7 col-lg-6" name="custid">
                                             <option value="" disabled selected><em>Select a customer...</em></option>
                                             <?php foreach( $t->customers as $id => $cust ): ?>
-                                                <option value="<?= $id ?>" <?= $c && $c->id == $id ? 'selected' : '' ?>><?= $cust->getFormattedName() ?></option>
+                                                <option value="<?= $id ?>" <?= $c && $c->id == $id ? 'selected' : '' ?>><?= $t->ee( $cust->getFormattedName() ) ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -53,7 +53,7 @@
                                     <label for="metric" class="col-sm-4 col-lg-4">Day:</label>
                                     <select id="metric" class="form-control" name="day">
                                         <?php foreach( $t->days as $day ): ?>
-                                            <option value="<?= $day ?>" <?= $t->day === $day ? 'selected="selected"' : '' ?>><?= $day ?></option>
+                                            <option value="<?= $t->ee( $day ) ?>" <?= $t->day === $day ? 'selected="selected"' : '' ?>><?= $t->ee( $day ) ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -86,7 +86,6 @@
                         </div>
                     </div>
                 <?php else: ?>
-
                     <table id="ixpDataTable" class="table table-striped table-bordered collapse" style="width:100%">
                         <thead class="thead-dark">
                             <?php if( $c->isIPvXEnabled(4) && $c->isIPvXEnabled(6) ): ?>
@@ -132,7 +131,7 @@
                             ?>
                                 <tr>
                                     <td><?= $s->peer_id ?></td>
-                                    <td><?= $s->peer->abbreviatedName ?></td>
+                                    <td><?= $t->ee( $s->peer->abbreviatedName ) ?></td>
                                     <td class="tw-text-center tw-align-middle">
                                         <a href="<?= route( "statistics@p2p-totals",
                                                 ['srcCust' => $c->id,
@@ -172,7 +171,7 @@
                         </div>
                         <div class="col-sm-12">
                             <?php if( $c ): ?>
-                                No records for found for <?= $t->day ?>.
+                                No records for found for <?= $t->ee( $t->day ) ?>.
 
                                 <?php if( Auth::user()->isSuperUser() ): ?>
                                     This may be expected (date in future / date before records were kept / etc.).

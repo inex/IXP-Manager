@@ -31,7 +31,7 @@
 
     <div class="card">
         <div class="card-header">
-            <b>Details for switch port: <?= $t->data[ 'item' ]['switchname'] ?> :: <?= $t->data[ 'item' ]['name'] ?></b>
+            <b>Details for switch port: <?= $t->ee( $t->data[ 'item' ]['switchname'] ) ?> :: <?= $t->ee( $t->data[ 'item' ]['name'] ) ?></b>
             (DB ID: <?= $t->data[ 'item' ]['id'] ?>)
         </div>
 
@@ -88,7 +88,7 @@
                                     <b>MAU Type</b>
                                 </td>
                                 <td>
-                                    <?= $t->data[ 'item' ][ 'mauType' ] ?? '(not supported / unknown)' ?>
+                                    <?= $t->ee( $t->data[ 'item' ][ 'mauType' ] ) ?? '(not supported / unknown)' ?>
                                 </td>
                             </tr>
                             <tr>
@@ -96,7 +96,7 @@
                                     <b>MAU State</b>
                                 </td>
                                 <td>
-                                    <?= $t->data[ 'item' ][ 'mauState' ] ?? '(not supported / unknown)' ?>
+                                    <?= $t->ee( $t->data[ 'item' ][ 'mauState' ] ) ?? '(not supported / unknown)' ?>
                                 </td>
                             </tr>
                             <tr>
@@ -104,7 +104,7 @@
                                     <b>MAU Availability</b>
                                 </td>
                                 <td>
-                                    <?= $t->data[ 'item' ][ 'mauAvailability' ] ?? '(not supported / unknown)' ?>
+                                    <?= $t->ee( $t->data[ 'item' ][ 'mauAvailability' ] ) ?? '(not supported / unknown)' ?>
                                 </td>
                             </tr>
                             <tr>
@@ -112,7 +112,7 @@
                                     <b>MAU Jacktype</b>
                                 </td>
                                 <td>
-                                    <?= $t->data[ 'item' ][ 'mauJacktype' ] ?? '(not supported / unknown)' ?>
+                                    <?= $t->ee( $t->data[ 'item' ][ 'mauJacktype' ] ) ?? '(not supported / unknown)' ?>
                                 </td>
                             </tr>
                             <tr>
@@ -163,7 +163,7 @@
                                     <b>ifIndex</b>
                                 </td>
                                 <td>
-                                    <?= $t->data[ 'item' ][ 'ifIndex' ] ?>
+                                    <?= $t->ee( $t->data[ 'item' ][ 'ifIndex' ] ) ?>
                                 </td>
                             </tr>
                             <tr>
@@ -189,7 +189,7 @@
                                     <b>ifHighSpeed</b>
                                 </td>
                                 <td>
-                                    <?= $t->data[ 'item' ][ 'ifHighSpeed' ]?>
+                                    <?= $t->ee( $t->data[ 'item' ][ 'ifHighSpeed' ] )?>
                                 </td>
                             </tr>
 
@@ -198,7 +198,7 @@
                                     <b>iMtu</b>
                                 </td>
                                 <td>
-                                    <?= $t->data[ 'item' ][ 'ifMtu' ] ?>
+                                    <?= $t->ee( $t->data[ 'item' ][ 'ifMtu' ] ) ?>
                                 </td>
                             </tr>
                             <tr>
@@ -238,7 +238,7 @@
                                     <b>lastSnmpPoll</b>
                                 </td>
                                 <td>
-                                    <?= $t->data[ 'item' ][ 'ifLastChange' ] ?? '(not yet polled)' ?>
+                                    <?= $t->ee( $t->data[ 'item' ][ 'ifLastChange' ] ?? '(not yet polled)' ) ?>
                                 </td>
                             </tr>
                             <tr>
@@ -246,7 +246,7 @@
                                     <b>lagIfIndex</b>
                                 </td>
                                 <td>
-                                    <?= $t->data[ 'item' ][ 'lagIfIndex' ] ?>
+                                    <?= $t->ee( $t->data[ 'item' ][ 'lagIfIndex' ] ) ?>
                                 </td>
                             </tr>
                         </tbody>
@@ -267,7 +267,7 @@
                             <b>
                                 This port is in use by
                                 <a href="<?= route( 'customer@overview', [ 'cust' => $t->data[ 'item' ][ 'cid' ] ] ) ?>">
-                                    <?= $t->data[ 'item' ][ 'cname' ] ?></a>.
+                                    <?= $t->ee( $t->data[ 'item' ][ 'cname' ] ) ?></a>.
                             </b>
                         <?php else: ?>
                             <b>

@@ -13,19 +13,19 @@
 
     <?php foreach( $t->srcVlis as $vli ): ?>
         <?php if( $vli->ipv4enabled ): ?>
-            ipv4_select_options += `<option value="<?= $vli->id ?>"><?= $vli->vlan->name ?> :: `
-                + `<?= $vli->ipv4Address->address ?? ('No IP - VLI ID: '.$vli->id) ?>`
+            ipv4_select_options += `<option value="<?= $t->ee( $vli->id )?>"><?= $t->ee( $vli->vlan->name, "js") ?> :: `
+                + `<?= $t->ee( $vli->ipv4Address->address ?? 'No IP - VLI ID: '.$vli->id ) ?>`
                 + `</option>`;
         <?php endif; ?>
 
         <?php if( $vli->ipv6enabled ): ?>
-            ipv6_select_options += `<option value="<?= $vli->id ?>"><?= $vli->vlan->name ?> :: `
-                + `<?= $vli->ipv6Address->address ?? ('No IP - VLI ID: '.$vli->id) ?>`
+            ipv6_select_options += `<option value="<?= $vli->id ?>"><?= $t->ee( $vli->vlan->name, "js" ) ?> :: `
+                + `<?= $t->ee( $vli->ipv6Address->address ?? 'No IP - VLI ID: '.$vli->id ) ?>`
                 + `</option>`;
         <?php endif; ?>
     <?php endforeach; ?>
 
-    let protocol = "<?= $t->protocol ?>";
+    let protocol = "<?= $t->ee( $t->protocol, 'js' ) ?>";
 
     let sel_network   = $("#select_network");
     let sel_protocol  = $("#select_protocol");

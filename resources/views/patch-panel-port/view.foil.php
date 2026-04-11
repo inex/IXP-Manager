@@ -101,7 +101,7 @@
                                                     </b>
                                                 </td>
                                                 <td>
-                                                    <?= @parsedown( $t->ee( $history->description ) ) ?>
+                                                    <?= clean( @parsedown( $history->description ) ) ?>
                                                 </td>
                                             </tr>
                                             <?php if( $current ): ?>
@@ -486,7 +486,7 @@
                                                     <?php endif; ?>
                                                 </div>
                                                 <div class="card-body" id="public-note-display">
-                                                    <?= @parsedown( $history->notes ) ?>
+                                                    <?= clean( @parsedown( $history->notes ) ) ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -501,7 +501,7 @@
                                                     <?php endif; ?>
                                                 </div>
                                                 <div class="card-body" id="private-note-display">
-                                                    <?=  @parsedown( $history->private_notes ) ?>
+                                                    <?= clean( @parsedown( $history->private_notes ) ) ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -513,7 +513,7 @@
                                                         Notes:
                                                     </div>
                                                     <div class="card-body">
-                                                        <?= @parsedown( $history->notes ) ?>
+                                                        <?= clean( @parsedown( $history->notes ) ) ?>
                                                     </div>
                                                 </div>
                                             <?php endif; ?>

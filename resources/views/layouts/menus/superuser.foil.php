@@ -138,7 +138,7 @@
             <select id="menu-select-customer" type="select" name="id" class="chzn-select col-xl-7 col-lg-6">
                 <option></option>
                 <?php foreach( $t->dd_customer_id_name as $k => $i ): ?>
-                    <option value="<?= $k ?>"><?= $i[ 'name' ] ?></option>
+                    <option value="<?= $k ?>"><?= $t->ee( $i[ 'name' ] ) ?></option>
                 <?php endforeach; ?>
             </select>
         </form>
@@ -180,7 +180,7 @@
                                <?= Auth::getUser()->custid !== $cust->id ?: "onclick='return false;'" ?>
                                href="<?= Auth::getUser()->custid === $cust->id ? '#' : route( 'switch-customer@switch' , [ "cust" => $cust->id ] ) ?>"
                             >
-                                <?= $cust->name ?>
+                                <?= $t->ee( $cust->name ) ?>
                             </a>
                         <?php endforeach; ?>
                     <?php endif; ?>

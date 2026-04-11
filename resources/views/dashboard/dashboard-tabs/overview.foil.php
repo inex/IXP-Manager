@@ -99,7 +99,7 @@
                 ?>
                     <tr>
                         <td>
-                            <?= $p2p->peer->abbreviatedName ?>
+                            <?= $t->ee( $p2p->peer->abbreviatedName ) ?>
                         </td>
                         <td class="tw-text-right tw-font-mono">
                             <?= \IXP\IXP::scaleBytes( $p2p->total_traffic() ) ?>

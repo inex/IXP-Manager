@@ -41,7 +41,7 @@
                         ->id( 'cust' )
                         ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
                         ->placeholder( 'Select a ' . config( 'ixp_fe.lang.customer.one' ) )
-                        ->fromQuery( $t->data[ 'params'][ 'custs' ], 'name' )
+                        ->fromQuery( $t->data[ 'params'][ 'custs' ], fn ($model) => $t->ee( $model->name ) )
                         ->addClass( 'chzn-select' )
                         ->blockHelp( ucfirst( config( 'ixp_fe.lang.customer.one' ) )  . ' to assign this contact to.' );
                     ?>
@@ -132,7 +132,7 @@
                                     <?php if( $gname !== "ROLE" && config('contact_group.types.' . $gname ) ): ?>
                                         <tr class="tw-border-b-1 tw-border-b-solid tw-border-b-gray-200">
                                             <td>
-                                                <label for="mayauthorize" class="control-label col-lg-2 col-sm-4" style="display: grid">&nbsp;<?= $gname ?>&nbsp;</label>
+                                                <label for="mayauthorize" class="control-label col-lg-2 col-sm-4" style="display: grid">&nbsp;<?= $t->ee( $gname ) ?>&nbsp;</label>
                                             </td>
 
                                                 <td>
@@ -142,7 +142,7 @@
                                                             <div class="form-check form-check-inline">
                                                                 <input id='role_<?= $ggroup[ 'id' ] ?>' type='checkbox' <?= in_array( $ggroup[ 'id' ], $checkedRoles, false ) ? 'checked' : '' ?> name='roles[]' value='<?= $ggroup[ 'id' ] ?>'>
                                                                 <label for="role_<?= $ggroup[ 'id' ] ?>" class="form-check-label">
-                                                                    <?= $ggroup[ 'name' ] ?>
+                                                                    <?= $t->ee( $ggroup[ 'name' ] ) ?>
                                                                 </label>
                                                             </div>
                                                         </div>

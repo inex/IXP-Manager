@@ -15,7 +15,7 @@
     <div class="btn-group btn-group-sm" role="group">
         <div class="btn-group btn-group-sm">
             <button type="button" class="btn btn-white dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?= $switch ? $switch->infrastructureModel->name : ($infra->name ?? "All Infrastructures") ?>
+                <?= $switch ? $t->ee( $switch->infrastructureModel->name ) : $t->ee($infra->name ?? "All Infrastructures") ?>
             </button>
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
                 <a class="dropdown-item <?= $switch ? "" : ( !$infra ? "active" : "" ) ?>" href="<?= route( "switch@configuration", [ "infra" => 0 ] ) ?>">
@@ -24,7 +24,7 @@
                 <div class="dropdown-divider"></div>
                 <?php foreach( $t->infras as $i ): ?>
                     <a class="dropdown-item <?= $switch ? "active" : ( $infra && $infra->id === $i->id ? "active" : "" )?>" href="<?= route( "switch@configuration", [ "infra" => $i->id ] ) ?>">
-                        <?= $i->name ?>
+                        <?= $t->ee( $i->name ) ?>
                     </a>
                 <?php endforeach; ?>
             </div>
@@ -32,7 +32,7 @@
 
         <div class="btn-group btn-group-sm">
             <button type="button" class="btn btn-white dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?= $vlan->name ?? "All VLANs" ?>
+                <?= $this->ee( $vlan->name ?? "All VLANs" ) ?>
             </button>
 
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
@@ -42,7 +42,7 @@
                 <div class="dropdown-divider"></div>
                 <?php foreach( $t->vlans as $vl ): ?>
                     <a class="dropdown-item <?= $vlan && $vlan->id === $vl->id ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "vlan" => $vl->id ] ) ?>">
-                        <?= $vl->name ?>
+                        <?= $t->ee( $vl->name ) ?>
                     </a>
                 <?php endforeach; ?>
             </div>
@@ -50,7 +50,7 @@
 
         <div class="btn-group btn-group-sm">
             <button type="button" class="btn btn-white dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?= $switch ? $switch->cabinet->location->name : ($location->name ?? "All Facilities") ?>
+                <?= $switch ? $t->ee( $switch->cabinet->location->name ) : $t->ee( $location->name ?? "All Facilities" ) ?>
             </button>
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
                 <a class="dropdown-item <?= $switch ? "" : ( $location ?: "active" ) ?>" href="<?= route( "switch@configuration", [ "location" => 0 ] ) ?>">
@@ -59,7 +59,7 @@
                 <div class="dropdown-divider"></div>
                 <?php foreach( $t->locations as $l ): ?>
                     <a class="dropdown-item <?= $switch ? "active" : ( !($location && $location->id === $l->id) ?: "active" ) ?>" href="<?= route( "switch@configuration", [ "location" => $l->id ] ) ?>">
-                        <?= $l->name ?>
+                        <?= $t->ee( $l->name ) ?>
                     </a>
                 <?php endforeach; ?>
             </div>
@@ -67,14 +67,14 @@
 
         <div class="btn-group btn-group-sm">
             <button type="button" class="btn btn-white dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?= $switch->name ?? "All switches" ?>
+                <?= $t->ee( $switch->name  ?? "All switches" ) ?>
             </button>
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
                 <a class="dropdown-item <?= !$switch ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "switch" => 0 ] ) ?>">All Switch</a>
                 <div class="dropdown-divider"></div>
                 <?php foreach( $t->switches as $s ): ?>
                     <a class="dropdown-item <?= $switch && $switch->id === $s->id ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "switch" => $s->id ] ) ?>">
-                        <?= $s->name ?>
+                        <?= $t->ee( $s->name ) ?>
                     </a>
                 <?php endforeach; ?>
             </div>
@@ -108,7 +108,7 @@
         <div class="col-sm-12">
             <?php if( $t->summary ): ?>
                 <p>
-                    <?= $t->summary ?>
+                    <?= $t->ee( $t->summary ) ?>
                 </p>
             <?php endif; ?>
 
@@ -161,19 +161,19 @@
                             <td>
                                 <?php if( $conf[ 'custid' ] ): ?>
                                     <a href="<?= route( $isSuperUser ? 'customer@overview' : 'customer@detail' , [ 'cust' => $conf[ "custid" ] ] ) ?>">
-                                        <?= $conf[ 'customer' ] ?>
+                                        <?= $t->ee( $conf[ 'customer' ] ) ?>
                                     </a>
                                 <?php endif; ?>
                             </td>
                             <td>
                                 <?php if( $conf[ 'switchid' ] ): ?>
                                     <a href="<?= route( $isSuperUser ? 'switch@port-report' : 'switch@configuration' , [ "switch" => $conf[ "switchid" ] ] ) ?>">
-                                        <?= $conf[ 'switchname' ] ?>
+                                        <?= $t->ee( $conf[ 'switchname' ] ) ?>
                                     </a>
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <?= str_replace( ",", "<br>", $conf[ "ifName" ] ) ?>
+                                <?= str_replace( ",", "<br>", $t->ee( $conf[ "ifName" ] ) ) ?>
                             </td>
                             <td>
                                 <?php
@@ -191,7 +191,7 @@
                                 <?= $portSpeed ?>
                             </td>
                             <td>
-                                <?= $conf[ "vlan" ] ?>
+                                <?= $t->ee( $conf[ "vlan" ] ) ?>
                             </td>
                             <td>
                                 <?=  $t->asNumber( $conf[ "asn" ] ) ?>
@@ -201,12 +201,12 @@
                             </td>
                             <td>
                                 <?php if( $conf['ipv4enabled'] ): ?>
-                                    <?= str_replace( ",", "<br>" , $conf[ "ipv4address" ] ) ?>
+                                    <?= str_replace( ",", "<br>" , $t->ee( $conf[ "ipv4address" ] ) ) ?>
                                 <?php endif; ?>
                             </td>
                             <td>
                                 <?php if( $conf['ipv6enabled'] ): ?>
-                                    <?= str_replace( ",", "<br>" , $conf[ "ipv6address" ] ) ?>
+                                    <?= str_replace( ",", "<br>" , $t->ee( $conf[ "ipv6address" ] ) ) ?>
                                 <?php endif; ?>
                             </td>
                             <td>

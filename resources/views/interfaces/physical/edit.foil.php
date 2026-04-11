@@ -43,7 +43,7 @@
                     <?= Former::select( 'switch' )
                         ->dataValue( 'switch' )
                         ->label( 'Switch' )
-                        ->fromQuery( $t->switches, 'name' )
+                        ->fromQuery( $t->switches, fn( $model ) => $t->ee( $model->name ) )
                         ->placeholder( 'Choose a switch' )
                         ->addClass( 'chzn-select' )
                         ->blockHelp( 'The switch where the port will be located. Selected / changing this updates the port list below.' );
@@ -51,7 +51,7 @@
 
                     <?= Former::select( 'switchportid' )
                         ->label( 'Switch Port' )
-                        ->fromQuery( $t->switchports, 'name' )
+                        ->fromQuery( $t->switchports, fn( $model ) => $t->ee( $model->name ) )
                         ->placeholder( 'Choose a switch port' )
                         ->addClass( 'chzn-select' )
                         ->blockHelp( 'Suitable available ports. For example, when adding a peering interface, only ports of type <em>Peering</em> or <em>Unset / Unknown</em> are shown. '
@@ -147,7 +147,7 @@
 
                             <?= Former::select( 'switch-b' )
                                 ->label( 'Switch' )
-                                ->fromQuery( $t->switches, 'name' )
+                                ->fromQuery( $t->switches, fn( $model ) => $t->ee( $model->name ) )
                                 ->placeholder( 'Choose a fanout switch' )
                                 ->addClass( 'chzn-select' )
                                 ->disabled( true)
@@ -156,7 +156,7 @@
 
                             <?= Former::select( 'switch-port-b' )
                                 ->label( 'Switch Port' )
-                                ->fromQuery( $t->ee( $t->otherPICoreLink->switchPort->name ) , 'name' )
+                                ->fromQuery( $t->ee( $t->otherPICoreLink->switchPort->name ) )
                                 ->placeholder( 'Choose a switch port' )
                                 ->addClass( 'chzn-select' )
                                 ->disabled( true)
@@ -201,7 +201,7 @@
                             <div class="form-group">
                                 <label for="notes" class="control-label col-lg-6 col-sm-6">Notes</label>
                                 <div class="col-sm-8">
-                                    <?= @parsedown( $t->notesb )?>
+                                    <?= clean( @parsedown( $t->notesb ) )?>
                                 </div>
                             </div>
 
@@ -227,7 +227,7 @@
                                 <?= Former::select( 'switch-fanout' )
                                     ->dataValue( 'fanout' )
                                     ->label( 'Switch' )
-                                    ->fromQuery( $t->switches, 'name' )
+                                    ->fromQuery( $t->switches, fn( $model ) => $t->ee( $model->name ) )
                                     ->placeholder( 'Choose a Switch' )
                                     ->addClass( 'chzn-select' )
                                     ->blockHelp( '' );

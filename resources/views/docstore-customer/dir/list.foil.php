@@ -13,7 +13,7 @@
         </a> :: Document Store
     <?php else: ?>
         <a href="<?= route( 'dashboard@index' ) ?>" >
-            <?= $t->cust->name ?>
+            <?= $t->ee( $t->cust->name ) ?>
         </a> :: Document Store
     <?php endif; ?>
 <?php $this->append() ?>
@@ -58,7 +58,7 @@
 
     <?php if( $t->dir && $t->dir->description ): ?>
         <div class="row tw-my-8 tw-p-4 tw-border-2 tw-border-gray-500 tw-rounded-lg tw-bg-gray-200">
-            <?= @parsedown( $t->ee( $t->dir->description ) ) ?>
+            <?= clean( @parsedown( $t->dir->description ) ) ?>
         </div>
     <?php endif; ?>
 
@@ -168,7 +168,7 @@
                         <td class="<?= $i ? '' : 'tw-border-t-2' ?> tw-px-4 tw-w-auto">
                             <a href="<?= route($file->isViewable() ? 'docstore-c-file@view' : 'docstore-c-file@download', [ 'cust' => $t->cust, 'file' => $file->id ] ) ?>"
                                 <?php if( trim( $file->description ) ): ?>
-                                    data-toggle="tooltip" data-placement="top" data-html="true" title="<?= parsedown( $file->description ) ?>"
+                                    data-toggle="tooltip" data-placement="top" data-html="true" title="<?= clean( @parsedown( $file->description ) ) ?>"
                                 <?php endif; ?>><?= $t->ee( $file->name ) ?>
                             </a>
                         </td>
