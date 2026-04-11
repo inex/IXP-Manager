@@ -25,7 +25,7 @@
                     <td>
                         <strong>Switch A:</strong>
                         <?php if( $t->cb->sameSwitchForEachPIFromCL( true ) ): ?>
-                            <span class="tw-font-mono"><?= $t->cb->switchSideX( true )->name ?></span>
+                            <span class="tw-font-mono"><?= $this->ee( $t->cb->switchSideX( true )->name ) ?></span>
                             <input type="hidden" value="<?= $t->cb->switchSideX( true )->id ?>" id="switch-a">
                         <?php else: ?>
                             <span class="badge badge-warning">Multiple</span>
@@ -34,7 +34,7 @@
                     <td>
                         <strong>Switch B:</strong>
                         <?php if( $t->cb->sameSwitchForEachPIFromCL( false ) ): ?>
-                            <span class="tw-font-mono"><?= $t->cb->switchSideX( false )->name ?></span>
+                            <span class="tw-font-mono"><?= $this->ee( $t->cb->switchSideX( false )->name ) ?></span>
                             <input type="hidden" value="<?= $t->cb->switchSideX( false )->id ?>" id="switch-b">
                         <?php else: ?>
                             <span class="badge badge-warning">Multiple</span>
@@ -79,13 +79,13 @@
                             <?= $nbCl ?>
                         </td>
                         <td class="align-middle">
-                            <?= $cl->coreInterfaceSideA->physicalInterface->switchPort->name ?>
+                            <?= $this->ee( $cl->coreInterfaceSideA->physicalInterface->switchPort->name ) ?>
                             <a class="btn btn-sm btn-white" href="<?= route('physical-interface@edit-from-core-bundle' , [ 'pi' => $cl->coreInterfaceSideA->physicalInterface->id, 'cb' => $t->cb->id ] ) ?>">
                                 <i class="fa fa-pencil"></i>
                             </a>
                         </td>
                         <td class="align-middle">
-                            <?= $cl->coreInterfaceSideB->physicalInterface->switchPort->name ?>
+                            <?= $this->ee( $cl->coreInterfaceSideB->physicalInterface->switchPort->name ) ?>
                             <a class="btn btn-sm btn-white" href="<?= route('physical-interface@edit-from-core-bundle' , [ 'pi' => $cl->coreInterfaceSideB->physicalInterface->id, 'cb' => $t->cb->id ] ) ?>">
                                 <i class="fa fa-pencil"></i>
                             </a>

@@ -11,7 +11,7 @@
 
         <?= Former::select( 'vlanid' )
             ->label( 'VLAN' )
-            ->fromQuery( $t->data[ 'params'][ 'vlans'], 'name' )
+            ->fromQuery( $t->data[ 'params'][ 'vlans'], fn ( $model ) => $t->ee( $model->name ) )
             ->placeholder( 'Choose a VLAN' )
             ->addClass( 'chzn-select' )
             ->blockHelp( "" );
@@ -19,7 +19,7 @@
 
         <?= Former::select( 'protocol' )
             ->label( 'Protocol' )
-            ->fromQuery( \IXP\Models\Router::$PROTOCOLS , 'name' )
+            ->fromQuery( \IXP\Models\Router::$PROTOCOLS )
             ->placeholder( 'Choose a protocol' )
             ->addClass( 'chzn-select' )
             ->blockHelp( "" );

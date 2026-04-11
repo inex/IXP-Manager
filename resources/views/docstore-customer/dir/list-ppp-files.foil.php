@@ -5,7 +5,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <a href="<?= route( 'customer@overview', [ 'cust' => $t->cust->id ] ) ?>" ><?= $t->cust->name ?></a> ::
+    <a href="<?= route( 'customer@overview', [ 'cust' => $t->cust->id ] ) ?>" ><?= $t->ee( $t->cust->name ) ?></a> ::
 
     <?php if( $t->history ): ?>
         Patch Panel Port History Files

@@ -38,8 +38,8 @@
                             IP Addresses
                         </dt>
                         <dd class="col-sm-9">
-                            <?= $t->vli->ipv4Address ? $t->vli->ipv4Address->address . ( $t->vli->ipv6Address ? ' / ': '' ) : ''  ?>
-                            <?= $t->vli->ipv6Address->address ?? '' ?>
+                            <?= $t->ee( $t->vli->ipv4Address ? $t->vli->ipv4Address->address . ( $t->vli->ipv6Address ? ' / ': '' ) : ''  ) ?>
+                            <?= $t->ee( $t->vli->ipv6Address->address ?? '' ) ?>
                         </dd>
                     </dl>
                 </div>
@@ -69,7 +69,7 @@
                         <?php foreach( $t->vli->layer2Addresses as $l2a ):?>
                             <tr>
                                 <td>
-                                    <?= $l2a->macFormatted( ':' ) ?>
+                                    <?= $t->ee( $l2a->macFormatted( ':' ) ) ?>
                                 </td>
                                 <td>
                                     <?= $l2a->created_at ?>
@@ -79,7 +79,7 @@
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <a class="btn btn-white btn-view-l2a" id="view-l2a-<?= $l2a->id ?>" data-object-mac="<?= $l2a->mac ?>" href="#" title="View">
+                                        <a class="btn btn-white btn-view-l2a" id="view-l2a-<?= $l2a->id ?>" data-object-mac="<?= $t->ee( $l2a->mac, 'attr' ) ?>" href="#" title="View">
                                             <i class="fa fa-eye"></i>
                                         </a>
                                         <a class="btn btn-white btn-delete" data-object-id="<?= $l2a->id ?>" href="<?= route( 'l2-address@delete' , [ 'l2a' => $l2a->id, 'showFeMessage' => true  ]  )  ?>"  title="Delete">

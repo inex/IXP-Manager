@@ -41,9 +41,9 @@
 
                     <?php foreach( $t->customers_logs as $c ): ?>
                         <tr>
-                            <td data-sort="<?= $c->abbreviatedName ?>">
+                            <td data-sort="<?= $t->ee( $c->abbreviatedName ) ?>">
                                 <a href="<?= route( 'customer@overview', [ 'cust' => $c->id ] ) ?>">
-                                    <?= $c->abbreviatedName ?> (AS<?= $c->autsys ?>)
+                                    <?= $t->ee( $c->abbreviatedName ) ?> (AS<?= $c->autsys ?>)
                                 </a>
                             </td>
 
@@ -90,7 +90,7 @@
                                                     'cust' => $c,
                                                     'type' => str_starts_with( $type, 'prefix' ) ? 'prefix' : 'asn',
                                                     'protocol' => str_ends_with( $type, '4' ) ? '4' : '6',
-                                                ] ) ?>" <i class="ml-2 fa fa-arrow-circle-o-right"></i></a>
+                                                ] ) ?>"> <i class="ml-2 fa fa-arrow-circle-o-right"></i></a>
 
                                             <?php endif; ?>
 

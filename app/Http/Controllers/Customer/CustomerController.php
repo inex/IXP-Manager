@@ -331,7 +331,7 @@ class CustomerController extends Controller
 
         return view( 'customer/billing-registration' )->with([
             'c'                             => $cust,
-            'juridictions'                  => CompanyRegisteredDetail::select( 'jurisdiction' )
+            'jurisdictions'                 => CompanyRegisteredDetail::select( 'jurisdiction' )
                 ->where( 'jurisdiction', '!=', '' )->distinct()->get()->toArray(),
             'countries'                     => Countries::getList('name' )
         ]);

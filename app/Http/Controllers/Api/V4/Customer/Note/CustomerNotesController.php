@@ -70,8 +70,8 @@ class CustomerNotesController extends Controller
         $user   = Auth::getUser();
         $cn     = new CustomerNote;
 
-        $cn->title          =   $r->title;
-        $cn->note           =   $r->note ;
+        $cn->title          =   e( $r->title );
+        $cn->note           =   e( $r->note  );
         $cn->private        =   $r->public ? 0 : 1;
         $cn->customer_id    =   $cust->id;
         $cn->save();
@@ -103,8 +103,8 @@ class CustomerNotesController extends Controller
         $user = Auth::getUser();
         $old = clone( $cn );
 
-        $cn->title   =   $r->title;
-        $cn->note    =   $r->note ;
+        $cn->title   =   e( $r->title );
+        $cn->note    =   e( $r->note  );
         $cn->private =   $r->public ? 0 : 1;
         $cn->save();
 
@@ -141,9 +141,9 @@ class CustomerNotesController extends Controller
         }
 
         $note = $cn->toArray();
-        $note[ 'note_parsedown' ] = parsedown( $cn->note );
+        $note[ 'note_parsedown' ] = clean( parsedown( $cn->note ) );
         $note[ 'created_at' ] = $cn->created_at->format( 'Y-m-d H:i:s' );
-        
+
         return response()->json( [ 'note' => $note ] );
     }
 

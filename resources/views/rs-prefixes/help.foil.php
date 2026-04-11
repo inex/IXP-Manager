@@ -10,13 +10,13 @@
 
 <p>
     <?= config( 'identity.name' ) ?> has set the source of IRRDB information for this network to:
-    <?= $c->irrdbConfig->source ?> <em>(<?= $c->irrdbConfig->notes ?>)</em>.
+    <?= $t->ee( $c->irrdbConfig->source ) ?> <em>(<?= $t->ee( $c->irrdbConfig->notes ) ?>)</em>.
 </p>
 
 <p>
     <?php if( $c->peeringmacro ): ?>
-        We are using the IPv4 AS-SET <code><?= $c->peeringmacro ?></code>
-        (and IPv6 AS-SET <code><?= $c->asMacro( 6 ) ?></code>) when querying the IRRDB database(s).
+        We are using the IPv4 AS-SET <code><?= $t->ee( $c->peeringmacro ) ?></code>
+        (and IPv6 AS-SET <code><?= $t->ee( $c->asMacro( 6 ) ) ?></code>) when querying the IRRDB database(s).
     <?php else: ?>
         We have no AS-SET on record for his network and as such, we are just querying the IRRDB database(s) using
         the single ASN <?= $c->autsys ?>.
@@ -49,7 +49,7 @@
 <div>
     <pre>
         route:          192.0.2.0/24
-        descr:          <?= $c->name ?>
+        descr:          <?= $t->ee( $c->name ) ?>
         origin:         AS<?= $c->autsys ?>
         mnt-by:         YOURORG-MNT
     </pre>
@@ -58,7 +58,7 @@
 <div>
     <pre>
         route6:         2001:DB8::/32
-        descr:          <?= $c->name ?>
+        descr:          <?= $t->ee( $c->name ) ?>
         origin:         AS<?= $c->autsys ?>
         mnt-by:         YOURORG-MNT
     </pre>

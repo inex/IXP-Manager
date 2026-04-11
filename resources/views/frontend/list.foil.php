@@ -116,7 +116,7 @@
                                                         <?php $params = '/' . $nameIdParam . $row[ $cconf['idField'] ] ; ?>
 
                                                         <?php if( isset( $cconf['nameIdOptionalParam'] ) ): ?>
-                                                            <?php $params = '?' . $cconf['nameIdOptionalParam'] . '=' . $row[ $cconf['idField'] ] ; ?>
+                                                            <?php $params = '?' . $cconf['nameIdOptionalParam'] . '=' . urlencode($row[ $cconf['idField'] ]) ; ?>
                                                         <?php endif; ?>
                             
                                                         <?php if( isset( $cconf['route'] ) ): ?>
@@ -237,7 +237,7 @@
                                                         <?php endif; ?>
                                                     <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'ARRAY'] ): ?>
 
-                                                        <?= $cconf[ 'source' ][ $row[ $col ] ] ?? $row[ $col ] ?>
+                                                        <?= $this->ee( $cconf[ 'source' ][ $row[ $col ] ] ?? $row[ $col ] ) ?>
 
                                                     <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'INTEGER'] ): ?>
 
@@ -245,7 +245,7 @@
 
                                                     <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'LIMIT'] ): ?>
 
-                                                        <?= Str::limit( $row[ $col ], $cconf[ 'limitTo'] )?>
+                                                        <?= $t->ee( Str::limit( $row[ $col ], $cconf[ 'limitTo'] ) ) ?>
 
                                                     <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'TEXT'] ): ?>
 

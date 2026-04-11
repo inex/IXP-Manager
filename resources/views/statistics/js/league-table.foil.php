@@ -1,6 +1,6 @@
 <script>
 
-    let category = "<?= $t->category ?>";
+    let category = "<?= $t->ee( $t->category, "js" ) ?>";
 
     // from phpjs - MIT license:
     function number_format (number, decimals, dec_point, thousands_sep) {

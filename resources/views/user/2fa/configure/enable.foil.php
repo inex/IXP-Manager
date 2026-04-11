@@ -16,7 +16,7 @@
 </div>
 
 <p>
-    Alternatively, you can enter this code manually into your authenticator application: <b class="tw-font-mono"><?= $t->user->user2FA->secret ?></b>
+    Alternatively, you can enter this code manually into your authenticator application: <b class="tw-font-mono"><?= $t->ee( $t->user->user2FA->secret ) ?></b>
 </p>
 
 <p>

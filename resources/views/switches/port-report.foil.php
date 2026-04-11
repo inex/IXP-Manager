@@ -3,7 +3,7 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     Switches
     /
-    Port Report for <?= $t->s->name ?>
+    Port Report for <?= $t->ee( $t->s->name ) ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -11,11 +11,11 @@
         <!-- Single button -->
         <div class="btn-group btn-group-sm">
             <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?=  $t->s->name ?> <span class="caret"></span>
+                <?= $t->ee( $t->s->name ) ?> <span class="caret"></span>
             </button>
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
                 <?php foreach( $t->switches as $switch ): ?>
-                    <a class="dropdown-item <?= $t->s->id === $switch[ 'id' ] ? 'active' : '' ?>" href="<?= route( "switch@port-report", [ "switch" => $switch[ 'id' ] ] ) ?>"><?= $switch[ 'name' ] ?></a>
+                    <a class="dropdown-item <?= $t->s->id === $switch[ 'id' ] ? 'active' : '' ?>" href="<?= route( "switch@port-report", [ "switch" => $switch[ 'id' ] ] ) ?>"><?= $t->ee( $switch[ 'name' ] ) ?></a>
                 <?php endforeach; ?>
             </div>
         </div>
@@ -55,17 +55,17 @@
                                 <?= $port[ "id" ] ?>
                             </td>
                             <td>
-                                <?= $port[ "name" ] ?>
+                                <?= $t->ee( $port[ "name" ] ) ?>
                             </td>
                             <td>
                                 <?= \IXP\Models\SwitchPort::$TYPES[ $port[ "porttype" ] ]?>
                             </td>
                             <?php if( isset( $port[ "speed" ] ) ): ?>
                                 <td>
-                                    <?= $port[ "speed" ] ?>/<?= $port[ "duplex" ] ?>
+                                    <?= $port[ "speed" ] ?>/<?= $t->ee( $port[ "duplex" ] ) ?>
                                 </td>
                                 <td>
-                                    <?= $port[ "custname" ] ?>
+                                    <?= $t->ee( $port[ "custname" ] ) ?>
                                 </td>
                             <?php else: ?>
                                 <td></td>

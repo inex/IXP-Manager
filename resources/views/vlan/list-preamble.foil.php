@@ -7,7 +7,7 @@
             <div class="col-sm-12 d-flex">
                 <div class="mr-auto">
                     Only showing <?php if( isset( $t->feParams->publicOnly ) and $t->feParams->publicOnly ): ?> public <?php endif; ?>
-                    VLANs for: <b><?=  $t->feParams->infra->name ?></b>.
+                    VLANs for: <b><?= $t->ee( $t->feParams->infra->name ) ?></b>.
                 </div>
 
                 <div class="btn-group btn-group-sm" role="group">

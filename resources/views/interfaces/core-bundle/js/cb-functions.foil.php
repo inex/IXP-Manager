@@ -34,7 +34,8 @@
                     let options = `<option value="">Choose a switch port</option>\n`;
 
                     $.each( data.ports, function( key, value ){
-                        options += `<option value="${value.id}">${value.name} (${value.type})</option>\n`;
+                        let swPortName = htmlEntities(value.name);
+                        options += `<option value="${value.id}">${swPortName} (${value.type})</option>\n`;
                     });
 
                     dd_switch_port.html( options );

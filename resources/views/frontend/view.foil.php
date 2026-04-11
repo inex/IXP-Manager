@@ -139,7 +139,7 @@ $this->layout( 'layouts/ixpv4' );
 
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'PARSDOWN'] ): ?>
 
-                                                            <?= @parsedown( $t->data[ 'item' ][ $col ] )?>
+                                                            <?= clean( @parsedown( $t->data[ 'item' ][ $col ] ) )?>
 
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'CONST'] ): ?>
 
@@ -201,7 +201,7 @@ $this->layout( 'layouts/ixpv4' );
 
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'ARRAY'] ): ?>
 
-                                                            <?= $cconf[ 'source' ][ $t->data[ 'item' ][ $col] ] ?? $t->data[ 'item' ][ $col] ?>
+                                                            <?= $this->ee( $cconf[ 'source' ][ $t->data[ 'item' ][ $col] ] ?? $t->data[ 'item' ][ $col] ) ?>
 
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'INTEGER'] ): ?>
 
@@ -209,7 +209,7 @@ $this->layout( 'layouts/ixpv4' );
 
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'LIMIT'] ): ?>
 
-                                                            <?= Str::limit( $t->data[ 'item' ][ $col ], $cconf[ 'limitTo'] )?>
+                                                            <?= $t->ee( Str::limit( $t->data[ 'item' ][ $col ], $cconf[ 'limitTo'] ) ) ?>
 
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'TEXT'] ): ?>
 

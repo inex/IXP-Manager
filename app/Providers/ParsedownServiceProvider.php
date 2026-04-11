@@ -51,7 +51,7 @@ class ParsedownServiceProvider extends ServiceProvider
     #[\Override]
     public function register(): void
     {
-        $this->app->singleton('parsedown', function () {
+        $this->app->singleton('parsedown', function (): Parsedown {
             $parsedown = Parsedown::instance();
 
             $parsedown->setBreaksEnabled(
@@ -71,6 +71,11 @@ class ParsedownServiceProvider extends ServiceProvider
             );
 
             return $parsedown;
+        });
+
+        // be sure that laravel uses the instance with our config settings applied, if requested from the container
+        $this->app->singleton(Parsedown::class, function (): Parsedown {
+            return app('parsedown');
         });
 
         $this->mergeConfigFrom(__DIR__ . '/../Support/parsedown.php', 'parsedown');

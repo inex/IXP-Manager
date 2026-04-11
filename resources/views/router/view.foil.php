@@ -98,7 +98,7 @@
                                     <b>Router ID:</b>
                                 </td>
                                 <td>
-                                    <?= $rt->router_id ?>
+                                    <?= $t->ee( $rt->router_id ) ?>
                                 </td>
                             </tr>
                             <tr>
@@ -155,7 +155,7 @@
                                     <b>Software:</b>
                                 </td>
                                 <td>
-                                    <?= $rt->software() ?> <?= $rt->software_version ?>
+                                    <?= $rt->software() ?> <?= $t->ee( $rt->software_version ) ?>
                                 </td>
                             </tr>
                             <tr>
@@ -163,7 +163,7 @@
                                     <b>Operating System:</b>
                                 </td>
                                 <td>
-                                    <?= $rt->operating_system ?> <?= $rt->operating_system_version ?>
+                                    <?= $t->ee( $rt->operating_system ) ?> <?= $t->ee( $rt->operating_system_version ) ?>
                                 </td>
                             </tr>
                             <tr>

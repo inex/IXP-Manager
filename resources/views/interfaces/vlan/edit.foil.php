@@ -7,7 +7,7 @@
     VLAN Interfaces
     /
     <?= $t->duplicateTo ? 'Duplicate' : ( $t->vli ? 'Edit' : 'Create' ) ?> VLAN Interface
-    (<?= $t->vi ? $t->vi->customer->getFormattedName() : $t->vli->virtualInterface->customer->getFormattedName() ?>)
+    (<?= $t->ee( $t->vi ? $t->vi->customer->getFormattedName() : $t->vli->virtualInterface->customer->getFormattedName() ) ?>)
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -34,7 +34,7 @@
                             <i class="fa fa-question-circle fa-2x"></i>
                         </div>
                         <div class="col-sm-12">
-                            This form allows you to duplicate the selected VLAN interface from <em><?= $t->vli->vlan->name ?></em> to your chosen VLAN as indicated below.
+                            This form allows you to duplicate the selected VLAN interface from <em><?= $t->ee( $t->vli->vlan->name ) ?></em> to your chosen VLAN as indicated below.
                             The IP address(es) will be created if they do not already exist (and will be checked to ensure they are not already in use). The new interface will not
                             be created until you click the <em>Save Changes</em> button below.
                         </div>
@@ -72,7 +72,7 @@
                         <div class="col-md-12 col-lg-6">
                             <?= Former::select( 'vlanid' )
                                 ->label( 'VLAN' )
-                                ->fromQuery( $t->vlans, 'name' )
+                                ->fromQuery( $t->vlans, fn ( $model ) => $t->ee( $model->name ) )
                                 ->placeholder( 'Choose a VLAN' )
                                 ->addClass( 'chzn-select' )
                                 ->disabled( $t->duplicateTo ? true : false )

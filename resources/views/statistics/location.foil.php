@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    Location Aggregate Graphs - <?= $t->location->name ?> (<?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>)
+    Location Aggregate Graphs - <?= $t->ee( $t->location->name ) ?> (<?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>)
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -29,7 +29,7 @@
                                     <label for="locationid" class="col-sm-4 col-lg-4">Location:</label>
                                     <select id="form-select-locationid" name="locationid" class="form-control">
                                         <?php foreach( $t->locations as $s ): ?>
-                                            <option value="<?= $s->id ?>" <?= $t->location->id !== $s->id ?: 'selected="selected"' ?>><?= $s->name ?></option>
+                                            <option value="<?= $s->id ?>" <?= $t->location->id !== $s->id ?: 'selected="selected"' ?>><?= $t->ee( $s->name ) ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>

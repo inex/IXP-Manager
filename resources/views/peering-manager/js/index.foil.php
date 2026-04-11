@@ -129,7 +129,7 @@
             if (data.error ) {
                 bootbox.dialog({
                     title: "<i class='fa fa-cross'></i> Error",
-                    message: data.message,
+                    message: htmlEntities(data.message),
                     buttons: {
                         ok: {
                             label: "Ok",
@@ -145,7 +145,7 @@
                 $( "#peering-notes-icon-" + $( "#peerid" ).val() ).css( "color", "black" );
                 bootbox.alert({
                     title: "<i class='fa fa-check'></i> Success",
-                    message: data.message,
+                    message: htmlEntities(data.message),
                     buttons: {
                         ok: {
                             label: "Close"
@@ -211,7 +211,7 @@
                 if( data.error ){
                     bootbox.dialog({
                         title: "<i class='fa fa-cross'></i> Error",
-                        message: data.message,
+                        message: htmlEntities(data.message),
                         buttons: {
                             ok: {
                                 label: "Close",
@@ -234,7 +234,7 @@
 
                     bootbox.alert({
                         title: "<i class='fa fa-check'></i> Success",
-                        message: data.message,
+                        message: htmlEntities(data.message),
                         buttons: {
                             ok: {
                                 label: "Close"

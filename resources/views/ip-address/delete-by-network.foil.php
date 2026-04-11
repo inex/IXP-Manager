@@ -14,7 +14,7 @@
             <?= $t->alerts() ?>
             <div class="card">
                 <div class="card-header">
-                    <h3>Delete Free IP Addresses for VLAN: <?= $t->vlan->name ?></h3>
+                    <h3>Delete Free IP Addresses for VLAN: <?= $t->ee( $t->vlan->name ) ?></h3>
                 </div>
 
                 <div class="card-body row">
@@ -81,7 +81,7 @@
                                       <?php foreach( $t->ips as $ip ): ?>
 
                                           <td>
-                                              <?= $ip->address ?>
+                                              <?= $t->ee( $ip->address ) ?>
                                           </td>
 
                                           <?php if( $count++ % 3 == 0 ) { echo "</tr><tr>"; } ?>

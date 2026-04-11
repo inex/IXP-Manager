@@ -112,7 +112,7 @@
                         <span id="co-notes-dialog-title-action">
                           Create a
                         </span>
-                        Note for <?= $t->c->name ?>
+                        Note for <?= $t->ee( $t->c->name ) ?>
                     </h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <i class="fa fa-times"></i>

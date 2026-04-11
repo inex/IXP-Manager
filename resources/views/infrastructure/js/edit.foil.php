@@ -38,7 +38,8 @@
                     if( selectedixp === parseInt(ixp.ixf_id) ){
                         selectNow = 'selected="selected" ';
                     }
-                    options += `<option ${selectNow}value="${ixp.ixf_id}">${ixp.name}</option>\n`;
+                    let ixpName = htmlEntities(ixp.name)
+                    options += `<option ${selectNow}value="${ixp.ixf_id}">${ixpName}</option>\n`;
                 });
                 dd_ixp.html( options );
                 dd_ixp.attr("placeholder", "Choose the matching IX-F IXP...");
@@ -84,7 +85,8 @@
                     if( selectedpdb === parseInt(ixp.pdb_id) ){
                         selectNow = 'selected="selected" ';
                     }
-                    options += `<option ${selectNow}value="${ixp.pdb_id}">${ixp.name}</option>\n`;
+                    let ixpName = htmlEntities(ixp.name);
+                    options += `<option ${selectNow}value="${ixp.pdb_id}">${ixpName}</option>\n`;
                 });
                 dd_pdb.html( options );
             })

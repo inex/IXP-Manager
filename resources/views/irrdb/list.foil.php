@@ -6,11 +6,11 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <?php if(  $isSuperUser  ): ?>
         <a href="<?= route( "customer@overview" , [ 'cust' => $t->customer->id ] ) ?>">
-            <?= $t->customer->name ?>
+            <?= $t->ee( $t->customer->name ) ?>
         </a>
         /
     <?php endif; ?>
-    IRRDB <?= $t->type === "asn" ? 'ASNs' : 'Prefixes' ?> IPv<?= $t->protocol ?> Entries (<?= count( $t->irrdbList ) ?>)
+    IRRDB <?= $t->type === "asn" ? 'ASNs' : 'Prefixes' ?> IPv<?= $t->ee( $t->protocol ) ?> Entries (<?= count( $t->irrdbList ) ?>)
 <?php $this->append() ?>
 
 
@@ -52,28 +52,28 @@
                               here to refresh the page</a>.
                       </p>
                   <?php else: ?>
-                      The IRRDB update process has completed. <?= $t->updatedIrrdb[ "msg" ] ?>
+                      The IRRDB update process has completed. <?= $t->ee( $t->updatedIrrdb[ "msg" ] ) ?>
                       <br/><br/>
-                      There are a total of <?= $t->updatedIrrdb[ "v" . $t->protocol ][ "count" ] ?> IPv<?= $t->protocol ?> <?= $t->type === "asn" ? 'ASNs' : 'prefixes' ?>
+                      There are a total of <?= $t->ee( $t->updatedIrrdb[ "v" . $t->protocol ][ "count" ] ) ?> IPv<?= $t->ee( $t->protocol ) ?> <?= $t->type === "asn" ? 'ASNs' : 'prefixes' ?>
                       of which <b><?= count( $t->updatedIrrdb[ "v" . $t->protocol ][ "new" ] ) ?> are new and have been added;
                       and <?= count( $t->updatedIrrdb[ "v" . $t->protocol ][ "stale" ] ) ?> are stale and have been removed</b>.
 
                       <?php if( count( $t->updatedIrrdb[ "v" . $t->protocol ][ "new" ] ) > 0): ?>
                           <br><br>
-                          <h6>New/Added IPv<?= $t->protocol ?> <?= $t->type === "asn" ? 'ASNs' : 'Prefixes' ?></h6>
+                          <h6>New/Added IPv<?= $t->ee( $t->protocol ) ?> <?= $t->type === "asn" ? 'ASNs' : 'Prefixes' ?></h6>
                           <ul>
                               <?php foreach( $t->updatedIrrdb[ "v" . $t->protocol ][ "new" ] as $new ): ?>
-                                  <li> <?= $new ?> </li>
+                                  <li> <?= $t->ee( $new ) ?> </li>
                               <?php endforeach; ?>
                           </ul>
                       <?php endif; ?>
 
                       <?php if( count( $t->updatedIrrdb[ "v" . $t->protocol ][ "stale" ] ) > 0): ?>
                           <br><br>
-                          <h6>Stale/Removed IPv<?= $t->protocol ?> <?= $t->type === "asn" ? 'ASNs' : 'Prefixes' ?></h6>
+                          <h6>Stale/Removed IPv<?= $t->ee( $t->protocol ) ?> <?= $t->type === "asn" ? 'ASNs' : 'Prefixes' ?></h6>
                           <ul>
                               <?php foreach( $t->updatedIrrdb[ "v" . $t->protocol ][ "stale" ] as $stale ): ?>
-                                  <li> <?= $stale[$t->type] ?> </li>
+                                  <li> <?= $t->ee( $stale[$t->type] ) ?> </li>
                               <?php endforeach; ?>
                           </ul>
                       <?php endif; ?>
@@ -101,10 +101,10 @@
                               <?= $t->type === "asn" ? $t->asNumber( $irrdb[ "asn" ] ) : $t->whoisPrefix( $irrdb[ "prefix" ] ) ?>
                           </td>
                           <td>
-                              <?= $irrdb[ "first_seen" ] ?? "" ?>
+                              <?= $t->ee( $irrdb[ "first_seen" ] ?? "" ) ?>
                           </td>
                           <td>
-                              <?= $irrdb[ "last_seen" ] ?? "" ?>
+                              <?= $t->ee( $irrdb[ "last_seen" ] ?? "" ) ?>
                           </td>
                       </tr>
                   <?php endforeach;?>
@@ -121,11 +121,11 @@
                   <?php if( $isSuperUser ): ?>
                       <p>
                           The network / database / processing effort was:
-                          <?= $t->updatedIrrdb['netTime'] ?>s / <?= $t->updatedIrrdb['dbTime'] ?>s / <?= $t->updatedIrrdb['procTime'] ?>s.
+                          <?= $t->ee( $t->updatedIrrdb['netTime'] ) ?>s / <?= $t->ee( $t->updatedIrrdb['dbTime'] ) ?>s / <?= $t->ee( $t->updatedIrrdb['procTime'] ) ?>s.
                       </p>
                       <p>
                           <b>It looks like you're a super admin!</b>
-                          You can <a href="<?= route( 'irrdb@update', [ 'cust' => $t->customer->id, 'type' => $t->type, 'protocol' => $t->protocol ] ) ?>?reset_cache=1">force a cache refresh by clicking here</a>.
+                          You can <a href="<?= route( 'irrdb@update', [ 'cust' => $t->customer->id, 'type' => $t->type, 'protocol' => $t->protocol, 'reset_cache' => 1 ] ) ?>">force a cache refresh by clicking here</a>.
                       </p>
                   <?php endif; ?>
               </div>

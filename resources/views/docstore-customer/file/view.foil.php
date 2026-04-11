@@ -29,12 +29,12 @@
             <?= $t->alerts() ?>
 
             <h3 class="tw-mt-4">
-              Viewing File: <?= $t->file->name ?>
+              Viewing File: <?= $t->ee( $t->file->name ) ?>
             </h3>
 
             <div class="tw-mt-8 tw-border-1 tw-p-5 tw-rounded-lg tw-border-gray-200 tw-bg-gray-100 tw-text-black">
                 <?php if( strtolower( $t->file->extension() ) === 'md' ): ?>
-                    <?= @parsedown( $t->content ) ?>
+                    <?= clean( @parsedown( $t->content ) ) ?>
                 <?php else: ?>
                     <pre><?= $t->ee( trim( $t->content ) ) ?></pre>
                 <?php endif; ?>

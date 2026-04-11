@@ -38,7 +38,7 @@
                                     <select id="vlan" name="vlan" class="form-control">
                                         <option></option>
                                             <?php foreach( $t->vlans as $v ): ?>
-                                                <option value="<?= $v->id ?>" <?= $t->vlan && $v->id === $t->vlan ? 'selected' : '' ?>><?= $v->name ?></option>
+                                                <option value="<?= $v->id ?>" <?= $t->vlan && $v->id === $t->vlan ? 'selected' : '' ?>><?= $t->ee( $v->name ) ?></option>
                                             <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -58,7 +58,7 @@
                                     <label for="period" class="col-sm-4 col-lg-5">Day:</label>
                                     <select id="day" class="form-control" name="day">
                                         <?php foreach( $t->days as $day ): ?>
-                                            <option value="<?= $day ?>" <?= $t->day === $day ? 'selected="selected"' : '' ?>><?= $day ?></option>
+                                            <option value="<?= $t->ee( $day, "attr") ?>" <?= $t->day === $day ? 'selected="selected"' : '' ?>><?= $t->ee( $day ) ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -94,39 +94,39 @@
                         <tr>
                             <td>
                                 <a href="<?= route( 'customer@overview', [ 'cust' => $td[ 'cid' ] ] ) ?>">
-                                    <?= $td[ 'cname' ] ?>
+                                    <?= $t->ee( $td[ 'cname' ] ) ?>
                                 </a>
                             </td>
                             <td>
-                                <?= $td[ 'switch' ] ?>
+                                <?= $t->ee( $td[ 'switch' ] ) ?>
                             </td>
                             <td class="tw-text-center">
-                                <?= $td[ 'num_ports_in_lag' ] ?>
+                                <?= $t->ee( $td[ 'num_ports_in_lag' ] ) ?>
                             </td>
                             <td class="tw-text-center">
-                                <?= $td[ 'vi_speed' ] * 1000000 ?>
+                                <?= $t->ee( $td[ 'vi_speed' ] * 1000000 ) ?>
                             </td>
                             <td class="tw-text-center <?= $td[ 'max_in' ] < $td[ 'max_out' ] ? '' : 'tw-font-bold' ?>">
-                                <?= $td[ 'max_in' ] ?>
+                                <?= $t->ee( $td[ 'max_in' ] ) ?>
                             </td>
                             <td class="tw-text-center <?= $td[ 'max_in' ] > $td[ 'max_out' ] ? '' : 'tw-font-bold' ?>">
-                                <?= $td[ 'max_out' ] ?>
+                                <?= $t->ee( $td[ 'max_out' ] ) ?>
                             </td>
                             <td class="tw-text-center">
                                 <?php if( $td[ 'util' ] >= 90 ): ?>
                                     <span class="badge badge-danger">
-                                        <?= $td[ 'util' ] ?>
+                                        <?= $t->ee( $td[ 'util' ] ) ?>
                                     </span>
                                 <?php elseif( $td[ 'util' ] >= 80 ): ?>
                                     <span class="badge badge-warning">
-                                        <?= $td[ 'util' ] ?>
+                                        <?= $t->ee( $td[ 'util' ] ) ?>
                                     </span>
                                 <?php elseif( $td[ 'util' ] >= 70 ): ?>
                                     <span class="badge badge-info">
-                                        <?= $td[ 'util' ] ?>
+                                        <?= $t->ee( $td[ 'util' ] ) ?>
                                     </span>
                                 <?php else: ?>
-                                    <?= $td[ 'util' ] ?>
+                                    <?= $t->ee( $td[ 'util' ] ) ?>
                                 <?php endif; ?>
                             </td>
                             <td>

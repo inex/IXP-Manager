@@ -55,7 +55,7 @@
 
 	<div class="message" style="padding: 10px;">
 		Server Error
-		@if ($exception->getMessage())
+		@if (config('app.debug') && $exception->getMessage())
 			:: {{ $exception->getMessage() }}
 		@endif
 	</div>

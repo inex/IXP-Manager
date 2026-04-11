@@ -37,7 +37,7 @@
 
                 <tr <?= $p->state === 'up' ? '' : 'class="warning"' ?>>
                     <td class="pr-4">
-                        <?=$p->neighbor_address?>
+                        <?= $t->ee( $p->neighbor_address ) ?>
                     </td>
                     <td class="pr-4">
                         <?= ( $p->description_short ?? false ) ? $t->ee( $p->description_short ) : $t->ee( $p->description ?? "" ) ?>
@@ -46,8 +46,8 @@
                         <?= $t->asNumber( $p->neighbor_as, false ) ?>
                     </td>
                     <td>
-                        <a href="<?= url('/lg') . '/' . $t->lg->router()->handle ?>/routes/table/<?= $p->table ?>">
-                            <?= $p->table ?>
+                        <a href="<?= route('lg::route-table', [ 'handle' => $t->lg->router()->handle, 'table' => $p->table ]) ?>">
+                            <?= $t->ee( $p->table ) ?>
                         </a>
                     </td>
                     <?php if( isset($p->import_limit) and isset( $p->route_limit_at ) and $p->import_limit ): ?>
@@ -67,10 +67,10 @@
                     </td>
                     <td class="text-right pr-4" data-order="<?= $p->state !== 'up' ? "-1" : $p->routes->imported ?>">
                         <?php if( $p->state !== 'up' ): ?>
-                            <span class="badge badge-warning"><?= $p->bgp_state ?></span>
+                            <span class="badge badge-warning"><?= $t->ee( $p->bgp_state ) ?></span>
                         <?php else: ?>
                             <?php if( is_int( $p->routes->imported ) && is_int( $t->content->api->max_routes ) && $p->routes->imported < $t->content->api->max_routes ): ?>
-                                <a href="<?= url('/lg') . '/' . $t->lg->router()->handle ?>/routes/protocol/<?= $name ?>">
+                                <a href="<?= route('lg::route-protocol', [ 'protocol' => $name, 'handle' => $t->lg->router()->handle ] ) ?>">
                             <?php endif; ?>
                             <?= $p->routes->imported ?>
                             <?php if( is_int( $p->routes->imported ) && is_int( $t->content->api->max_routes ) && $p->routes->imported < $t->content->api->max_routes ): ?>
@@ -81,7 +81,7 @@
                     <td class="text-right pr-4" data-order="<?= $p->state === 'up' ? $p->routes->exported : -1 ?>">
                         <?php if( $p->state === 'up' ): ?>
                             <?php if( is_int( $p->routes->exported ) && is_int( $t->content->api->max_routes ) && $p->routes->exported < $t->content->api->max_routes ): ?>
-                                <a href="<?= url('/lg') . '/' . $t->lg->router()->handle ?>/routes/export/<?= $name ?>">
+                                <a href="<?= route('lg::route-export', [ 'protocol' => $name, 'handle' => $t->lg->router()->handle ] ) ?>">
                             <?php endif; ?>
                             <?= $p->routes->exported ?>
                             <?php if( is_int( $p->routes->exported ) && is_int( $t->content->api->max_routes ) && $p->routes->exported < $t->content->api->max_routes ): ?>
@@ -90,8 +90,8 @@
                         <?php endif; ?>
                     </td>
                     <td class="text-reset">
-                        <a class="btn btn-white btn-sm" style="font-size: 14px;" id="protocol_details-<?= $name ?>"
-                            data-protocol="<?= $name ?>" title="<?= $t->ee( $p->description ) ?? "" ?>">
+                        <a class="btn btn-white btn-sm" style="font-size: 14px;" id="protocol_details-<?= $t->ee( $name , "attr" )?>"
+                            data-protocol="<?= $t->ee( $name, "attr" ) ?>" title="<?= $t->ee( $p->description, "attr" ) ?? "" ?>">
                             Details
                         </a>
                     </td>
@@ -113,7 +113,7 @@
         </div>
         <div class="modal-body">
             <pre>
-<span id="p_name"></span>    <span id="p_bird_protocol"></span>    <span="p_table"></span> <span id="p_state"></span>     <span id="p_state_changed"></span>  <span id="p_connection"></span>
+<span id="p_name"></span>    <span id="p_bird_protocol"></span>    <span id="p_table"></span> <span id="p_state"></span>     <span id="p_state_changed"></span>  <span id="p_connection"></span>
   Description:    <span id="p_description"></span>
   Preference:     <span id="p_preference"></span>
   Input filter:   <span id="p_input_filter"></span>
@@ -187,11 +187,12 @@
     });
 
     $('a[id|="sourceSelector"]').on( 'click', function(){
+        // Unused JS?
         if( $("#net").val().trim() == "" ) {
             return;
         }
         $("#submit").prop('disabled', true);
-        $.get('<?= url('/lg') . '/' . $t->lg->router()->handle ?>/route/' + encodeURIComponent($("#net").val().trim()) + '/' +
+        $.get('<?= url('/lg') . '/' . $t->ee( $t->lg->router()->handle, "js" ) ?>/route/' + encodeURIComponent($("#net").val().trim()) + '/' +
                 source + '/' + encodeURIComponent( $("#source").val() ), function(html) {
             $('#route-modal .modal-content').html(html);
             $('#route-modal').modal('show', {backdrop: 'static'});

@@ -192,7 +192,7 @@ class UserController extends Controller
         }
 
         if( $user = User::where( 'email',  $r->email )->first() ){
-            return redirect( route( "customer-to-user@create", [ 'email' => $user->email ] ) . ( $custid ? "?cust=" . $custid : '' ) );
+            return redirect( route( "customer-to-user@create", [ 'email' => $user->email ] + ( $custid ? [ "cust" => $custid ] : [] ) ) );
         }
 
         return redirect( route("user@create" , [ 'custid' => $custid, 'email' => $r->email ] ) );
