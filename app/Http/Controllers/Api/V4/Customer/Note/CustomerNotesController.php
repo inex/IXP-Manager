@@ -70,8 +70,8 @@ class CustomerNotesController extends Controller
         $user   = Auth::getUser();
         $cn     = new CustomerNote;
 
-        $cn->title          =   e( $r->title );
-        $cn->note           =   e( $r->note  );
+        $cn->title          =   $r->title;
+        $cn->note           =   $r->note;
         $cn->private        =   $r->public ? 0 : 1;
         $cn->customer_id    =   $cust->id;
         $cn->save();
