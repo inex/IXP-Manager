@@ -238,7 +238,7 @@
                                     <b>lastSnmpPoll</b>
                                 </td>
                                 <td>
-                                    <?= $t->ee( $t->data[ 'item' ][ 'ifLastChange' ] ?? '(not yet polled)' ) ?>
+                                    <?= $t->ee( $t->data[ 'item' ][ 'lastSnmpPoll' ] ?? '(not yet polled)' ) ?>
                                 </td>
                             </tr>
                             <tr>
