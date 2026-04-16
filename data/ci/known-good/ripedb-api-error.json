@@ -1,0 +1,23 @@
+{
+  "errormessages" : {
+    "errormessage" : [
+      {
+        "severity" : "Error",
+        "text" : "Unrecognized source: %s",
+        "args" : [ {
+          "value" : "INVALID_SOURCE"
+        } ]
+      },
+      {
+        "severity" : "Error",
+        "attribute" : {
+          "name" : "admin-c",
+          "value" : "INVALID"
+        },
+        "text" : "\"%s\" is not valid for this object type",
+        "args" : [ {
+          "value" : "admin-c"
+        } ]
+      } ]
+  }
+}
