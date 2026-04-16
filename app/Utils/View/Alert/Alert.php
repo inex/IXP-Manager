@@ -1,11 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IXP\Utils\View\Alert;
 
 /**
- * A class to encapsulate Bootstrap v3 messages.
- *
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -27,6 +27,7 @@ namespace IXP\Utils\View\Alert;
  
 /**
  * Alert
+ * A class to encapsulate Bootstrap v3 messages.
  *
  * @author Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -47,30 +48,14 @@ class Alert
     ];
 
     /**
-     * The message
-     * @var string
-     */
-    protected $message;
-
-    /**
-     * The class
-     * @var string
-     */
-    private $class = '';
-
-    /**
      * The constructor
-     * @param string $message
-     * @param string $class
+     * @param string $message  The message
+     * @param string $class    The class
      */
-    public function __construct( string $message, string $class = self::INFO )
+    public function __construct( protected string $message, protected string $class = self::INFO )
     {
-        $this->message = $message;
-
         if( !in_array( $class, self::CLASSES ) ) {
             $this->class = self::INFO;
-        } else {
-            $this->class = $class;
         }
     }
 

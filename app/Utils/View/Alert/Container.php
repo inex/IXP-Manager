@@ -1,11 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IXP\Utils\View\Alert;
 
-/**
- * A class to encapsulate Bootstrap v3 messages.
- *
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+/*
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -26,10 +26,11 @@ namespace IXP\Utils\View\Alert;
  */
  
 /**
- * Alert
+ * Container
+ * Stores bootstrap container messages in session for rendering as HTML.
  *
  * @author Barry O'Donovan <barry@islandbridgenetworks.ie>
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  */
 class Container
 {
@@ -41,7 +42,7 @@ class Container
      *
      * @return void
      */
-    public static function push( string $message, string $class = Alert::INFO, $clear = false ): void
+    public static function push( string $message, string $class = Alert::INFO, bool $clear = false ): void
     {
         if( $clear || !( $alerts = session('ixp.utils.view.alerts') ) ) {
             $alerts = [];
@@ -54,11 +55,9 @@ class Container
     /**
      * Pop an alert off the message stack
      *
-     * FIXME: when PHP 7.1 is a req, fix the return type
-     *
      * @return Alert|null for none ( === null)
      */
-    public static function pop()
+    public static function pop(): ?Alert
     {
         $alerts = session('ixp.utils.view.alerts');
 
@@ -79,7 +78,6 @@ class Container
     public static function html(): string
     {
         $alerts = '';
-        $color = '';
 
         // need to explicitly list all CSS classes or they will be purged.
         // i.e. do NOT dynamically generate CSS class names.
