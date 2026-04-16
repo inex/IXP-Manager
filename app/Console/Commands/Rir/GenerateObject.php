@@ -142,10 +142,9 @@ class GenerateObject extends Command
      * Send an email with the generated object
      * @param string $key
      * @param string $obj
-     * @param string|null $cobj
      * @return void
      */
-    private function sendEmail( string $key, string $obj, ?string $cobj ): void {
+    private function sendEmail( string $key, string $obj ): void {
         if( !$this->option( "to" ) && !config( 'ixp_api.rir.email.to' )   ){
             $this->error( "Please specify the TO email address" );
             exit( -1 );
