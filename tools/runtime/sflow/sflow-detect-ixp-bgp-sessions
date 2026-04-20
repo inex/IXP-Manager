@@ -2,7 +2,7 @@
 #
 # sflow-detect-ixp-bgp-sessions
 #
-# Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+# Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
 # All Rights Reserved.
 #
 # This file is part of IXP Manager.
@@ -47,6 +47,8 @@ my $dbh = $ixp->{db};
 
 my $debug = defined($ixp->{ixp}->{debug}) ? $ixp->{ixp}->{debug} : 0;
 my $insanedebug = 0;
+my $map_vlans = defined($ixp->{ixp}->{map_vlans}) ? $ixp->{ixp}->{map_vlans} : 0;
+my $map_vlan_query = $ixp->{ixp}->{map_vlan_query};
 my $sflowtool = defined($ixp->{ixp}->{sflowtool}) ? $ixp->{ixp}->{sflowtool} : '/usr/bin/sflowtool';
 my $sflowtool_opts = defined($ixp->{ixp}->{sflowtool_bgp_opts}) ? $ixp->{ixp}->{sflowtool_bgp_opts} : '-l';
 my $timer_period = 600;
@@ -68,6 +70,13 @@ if ($insanedebug) {
 }
 
 my $ipmappings = reload_ipmappings($dbh);
+
+my $vlan_mappings;
+
+if ($map_vlans) {
+	$vlan_mappings = reload_vlan_mappings($dbh,$map_vlan_query);
+	$debug && print Dumper ($vlan_mappings);
+}
 
 my $execute_periodic = 0;
 my $quit_after_periodic = 0;
@@ -137,6 +146,13 @@ while (<SFLOWTOOL>) {
 
 		# we're also only interested in ip addresses that have a database match
 		if ($ipmappings->{$ipprotocol}->{$srcip} && $ipmappings->{$ipprotocol}->{$dstip}) {
+
+				# if enabled, correct VLAN if there are VLAN translations e.g. for resold customers:
+				if ($vlan_mappings->{$vlan}->{'vlan'}) {
+					print STDERR " [VLAN mapping: VLAN $vlan -> $vlan_mappings->{$vlan}->{'vlan'}]" if ($debug);
+					$vlan = $vlan_mappings->{$vlan}->{'vlan'};
+				}
+
 			print STDERR " database updated" if ($debug);
 			if (!$sth->execute($ipmappings->{$ipprotocol}->{$srcip}, $ipmappings->{$ipprotocol}->{$dstip}, $ipprotocol, $vlan, $agent)) {
 				print STDERR " unsuccessfully" if ($debug);
@@ -162,8 +178,14 @@ while (<SFLOWTOOL>) {
 		}
 		$execute_periodic = 0;
 		$ipmappings = reload_ipmappings($dbh);
+
+		if ($map_vlans) {
+			$vlan_mappings = reload_vlan_mappings($dbh,$map_vlan_query);
+		}
+
 		$debug && print STDERR "DEBUG: periodic reload completed at ".time()."\n";
 		$debug && print Dumper ($ipmappings);
+		$debug && print Dumper ($vlan_mappings);		
 
 		if (time() - $lastdailyrun > 86400) {
 			$lastdailyrun = time();
@@ -226,4 +248,26 @@ sub reload_ipmappings
 	}
 
 	return $mapping;
+}
+
+#
+# VLAN translation mappings
+#
+sub reload_vlan_mappings {
+
+        my ($d,$sql) = @_;
+
+	return undef unless ($sql);
+
+	my ($s, $mapping);
+
+	$debug && print STDERR "DEBUG: sql $sql\n";
+
+	$s = $d->prepare("$sql");
+	$s->execute();
+
+	$mapping = $s->fetchall_hashref('pvlan');
+
+	return $mapping;
+
 }
