@@ -262,7 +262,7 @@ class Generator
             foreach( [ 4, 6 ] as $proto ) {
                 // get the available route servers
                 $servers = Router::routeServer()->where( 'vlan_id', $vlan->id )
-                    ->where( 'protocol', 4 )->get()->pluck( 'peering_ip' )->toArray();
+                    ->where( 'protocol', $proto )->get()->pluck( 'peering_ip' )->toArray();
 
                 if( !count( $servers ) ){
                     continue;

@@ -156,6 +156,10 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/phiki/phiki" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/thecodingmachine/safe" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/_laravel_idea" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/sentinel" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/orchestra/sidekick" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/orchestra/testbench-core" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psalm/plugin-laravel" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
