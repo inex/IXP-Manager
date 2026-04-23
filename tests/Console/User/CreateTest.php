@@ -57,7 +57,7 @@ class CreateTest extends TestCase
         $this->assertEquals( '+353809999999', $user->authorisedMobile );
         $this->assertEquals( 'administrator@ixp.local', $user->email );
         $this->assertEquals( '0', $user->disabled );
-        $this->assertEquals( User::AUTH_CUSTADMIN, $user->privs );
+        $this->assertEquals( User::AUTH_CUSTADMIN, $user->privs() );
         $this->assertEquals( $customer->id, $user->custid );
 
         $c2u = $user->customerToUser->first();
@@ -141,7 +141,7 @@ class CreateTest extends TestCase
         $this->assertEquals( '+353809999999', $user->authorisedMobile );
         $this->assertEquals( 'administrator@ixp.local', $user->email );
         $this->assertEquals( '0', $user->disabled );
-        $this->assertEquals( User::AUTH_CUSTADMIN, $user->privs );
+        $this->assertEquals( User::AUTH_CUSTADMIN, $user->privs() );
         $this->assertEquals( $customer->id, $user->custid );
 
         $c2u = $user->customerToUser->first();
@@ -212,7 +212,7 @@ class CreateTest extends TestCase
         $this->assertEquals( '+353809999999', $user->authorisedMobile);
         $this->assertEquals( 'administrator@ixp.local', $user->email);
         $this->assertEquals( '0', $user->disabled);
-        $this->assertEquals(User::AUTH_CUSTADMIN, $user->privs);
+        $this->assertEquals(User::AUTH_CUSTADMIN, $user->privs() );
         $this->assertEquals( $customer->id, $user->custid);
 
         $c2u = $user->customerToUser->first();

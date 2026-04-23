@@ -158,7 +158,7 @@ class PhysicalInterface extends Graph
 
         if( config( 'grapher.access.customer' ) !== 'own_graphs_only'
             && is_numeric( config( 'grapher.access.customer' ) )
-            && $us->privs >= config( 'grapher.access.customer' )
+            && $us->privs() >= config( 'grapher.access.customer' )
         ) {
             return $this->allow();
         }

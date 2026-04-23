@@ -283,7 +283,7 @@ class Latency extends Graph
 
         if( config( 'grapher.access.latency' ) !== 'own_graphs_only'
             && is_numeric( config( 'grapher.access.latency' ) )
-            && $us->privs >= config( 'grapher.access.latency' )
+            && $us->privs() >= config( 'grapher.access.latency' )
         ) {
             return $this->allow();
         }

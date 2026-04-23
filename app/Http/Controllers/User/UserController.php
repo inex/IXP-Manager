@@ -50,6 +50,7 @@ use IXP\Http\Requests\User\{
 use IXP\Mail\User\UserCreated as UserCreatedeMailable;
 
 use IXP\Models\{
+    Aggregators\CustomerToUserAggregator,
     Customer,
     CustomerToUser,
     User
@@ -259,7 +260,6 @@ class UserController extends Controller
         $user->email            = strtolower( $r->email );
         $user->disabled         = $r->disabled ? 0 : 1; // input as enable in the view
         $user->lastupdatedby    = Auth::id();
-        $user->privs            = $r->privs;
         $user->custid           = $us->isSuperUser() ? $r->custid : $us->custid;
         $user->save();
 
@@ -379,6 +379,14 @@ class UserController extends Controller
             /** @var $c2u CustomerToUser  */
             if( !( $c2u = $u->customerToUser()->where( 'customer_id', Auth::user()->custid  )->first() ) ) {
                 abort(404, 'UserToCustomer not found');
+            }
+
+            if ($us->id === $u->id) {
+                // editing our self - if we are dropping privs and there's no one else with this privilege, disallow the change
+                if ($r->privs < $c2u->privs && CustomerToUserAggregator::countActiveUsersWithPrivilege(Auth::user()->custid, $c2u->privs) === 1) {
+                    AlertContainer::push( 'You are the only user with that privilege so the change is not allowed.', Alert::WARNING );
+                    return redirect( request()->headers->get('referer', "" ) );
+                }
             }
 
             $c2u->privs =  $r->privs;

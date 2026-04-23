@@ -53,7 +53,7 @@ class LoginSuccessful
 
         Log::notice( 'Login successful for user "' . $user->username. '" from IP ' . ixp_get_client_ip() . '.' );
 
-        if( !session()->exists( "switched_user_from" ) && ( $c2u = $user->currentCustomerToUser() ) ) {
+        if( !session()->exists( "switched_user_from" ) && ( $c2u = $user->currentCustomerToUser ) ) {
             $c2u->update( [
                 'last_login_date'   => now(),
                 'last_login_from'   => ixp_get_client_ip(),

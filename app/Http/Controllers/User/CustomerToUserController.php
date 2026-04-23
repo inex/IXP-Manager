@@ -44,6 +44,7 @@ use IXP\Http\Requests\User\CustomerToUser\{
 };
 
 use IXP\Models\{
+    Aggregators\CustomerToUserAggregator,
     Customer,
     CustomerToUser,
     User
@@ -137,7 +138,6 @@ class CustomerToUserController extends Controller
      * Function to Update privs for a CustomerToUser
      *
      * @param Request $r
-     *
      * @return JsonResponse
      */
     public function updatePrivs( Request $r ): JsonResponse
@@ -148,8 +148,16 @@ class CustomerToUserController extends Controller
         /** @var CustomerToUser $c2u */
         $c2u = CustomerToUser::findOrFail( $r->id );
 
-        if( in_array( (int)$r->privs , User::$PRIVILEGES_ALL, true ) ) {
+        if( !in_array( (int)$r->privs , array_keys( User::$PRIVILEGES ), true ) ) {
             return response()->json( [ 'success' => false, 'message' => "Unknown privilege requested" ] );
+        }
+
+        if ( $c2u->user_id === $us->id ) {
+            // If we are changing ourselves and requested privs are lower than our current privs, check if there is only
+            // one user assigned to the customer with those privileges - possibly us. If so, disallow, because we can lose access
+            if ( $r->privs < $c2u->privs && CustomerToUserAggregator::countActiveUsersWithPrivilege( $c2u->customer_id, $c2u->privs ) === 1 ) {
+                return response()->json( [ 'success' => false, 'message' => "You are the only user with that privilege so the change is not allowed." ] );
+            }
         }
 
         if( (int)$r->privs === User::AUTH_SUPERUSER ) {

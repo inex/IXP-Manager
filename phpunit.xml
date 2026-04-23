@@ -19,7 +19,9 @@
     </testsuite>
     <testsuite name="IXP Manager Test Suite">
       <directory suffix="Test.php">./tests/API</directory>
+      <directory suffix="Test.php">./tests/Http</directory>
       <directory suffix="Test.php">./tests/IXP</directory>
+      <directory suffix="Test.php">./tests/Models</directory>
       <directory suffix="Test.php">./tests/Services</directory>
       <directory suffix="Test.php">./tests/Tasks</directory>
       <directory suffix="Test.php">./tests/Utils</directory>

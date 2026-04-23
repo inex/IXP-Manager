@@ -131,7 +131,7 @@ class UserControllerTest extends DuskTestCase
             $this->assertEquals( 'testuser1', $u->username );
             $this->assertEquals( 'test-user1@example.com', $u->email );
             $this->assertEquals( '12125551000', $u->authorisedMobile );
-            $this->assertEquals( User::AUTH_CUSTUSER, $u->privs );
+            $this->assertEquals( User::AUTH_CUSTUSER, $u->privs() );
             $this->assertEquals( 5, $u->custid );
             $this->assertTrue( $u->isCustUser() );
             $this->assertFalse( (bool)$u->disabled );
@@ -445,7 +445,7 @@ class UserControllerTest extends DuskTestCase
 
             /**
              *
-             *  Add Customer to the loggued user and then test the switch customer function, then delete new the customer
+             *  Add Customer to the logged user and then test the switch customer function, then delete new the customer
              *
              */
 

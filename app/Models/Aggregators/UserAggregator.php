@@ -190,7 +190,6 @@ class UserAggregator extends User
                 $user->peeringdb_id = $pdbuser['id'];
                 $user->username     = $uname;
                 $user->password     = Hash::make( Str::random() );
-                $user->privs        = $priv;
                 $user->creator      = 'OAuth-PeeringDB';
                 $user->save();
 

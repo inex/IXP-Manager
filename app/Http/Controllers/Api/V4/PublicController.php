@@ -66,7 +66,7 @@ class PublicController extends Controller
             'authenticated' => true,
             'user_id' => Auth::getUser()->id,
             'username' => Auth::getUser()->username,
-            'priv' => Auth::getUser()->privs,
+            'priv' => Auth::getUser()->privs(),
             'current_customer_id' => Auth::getUser()->customer->id,
             'current_customer' => Auth::getUser()->customer->name,
         ]);

@@ -60,7 +60,6 @@ use IXP\Traits\Observable;
  * @property string|null $email
  * @property string|null $authorisedMobile
  * @property int|null $uid
- * @property int|null $privs
  * @property int|null $disabled
  * @property int|null $lastupdatedby
  * @property string|null $creator
@@ -72,6 +71,7 @@ use IXP\Traits\Observable;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ApiKey> $apiKeys
  * @property-read int|null $api_keys_count
+ * @property-read \IXP\Models\CustomerToUser|null $currentCustomerToUser
  * @property-read \IXP\Models\Customer|null $customer
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\CustomerToUser> $customerToUser
  * @property-read int|null $customer_to_user_count
@@ -301,11 +301,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function privs(): ?int
     {
-        $c2u = CustomerToUser::where( 'customer_id' , $this->custid )->where( 'user_id' , $this->id )->first();
-        if( $c2u ) {
-            return $c2u->privs;
-        }
-        return null;
+        return $this->currentCustomerToUser?->privs;
     }
 
     /**
@@ -351,20 +347,21 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
-     * Get the current customer to user - if one exists.
+     * Defines a relationship to query against the **current** customer-to-user
+     * record for the user. Benefits from memoization instead of querying every
+     * single time.
      *
-     * @return CustomerToUser|null
+     * @return HasOne
      */
-    public function currentCustomerToUser(): ?CustomerToUser
+    public function currentCustomerToUser(): HasOne
     {
-        if( !$this->customer ) {
-            return null;
-        }
-
-        $c2u = CustomerToUser::where( 'customer_id', $this->custid )
-            ->where( 'user_id', $this->id )->first();
-
-        return $c2u ?? null;
+        return $this->hasOne(CustomerToUser::class, 'user_id')
+            ->where('customer_id', function ($query) {
+                $query->select('custid')
+                    ->from($this->getTable() . " as search_users")
+                    ->whereColumn('search_users.id', 'customer_to_users.user_id')
+                    ->limit(1);
+            });
     }
 
     /**

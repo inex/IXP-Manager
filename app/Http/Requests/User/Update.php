@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\User;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -38,16 +38,17 @@ use IXP\Models\{
  *
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Requests\User
- * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 
 class Update extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Determine if the user is authorised to make this request.
      *
      * @return bool
      */
@@ -68,58 +69,30 @@ class Update extends FormRequest
      */
     public function rules(): array
     {
-        /** @var User $us */
-        $us = Auth::user();
-        $addUserInfo = [];
+        /** @var User $u */
+        $u = Auth::user();
 
-        // If its a superuser
-        if( $us->isSuperUser() ) {
-            $infoArray = [
+        // If it's a superuser
+        if( $u->isSuperUser() ) {
+            $rules = [
                 'name'                                              => 'required|string|max:255',
                 'username'                                          => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/|unique:user,username,' . $this->u->id,
                 'email'                                             => 'required|email|max:255',
                 'authorisedMobile'                                  => 'nullable|string|max:50',
             ];
         } else  {
-            $infoArray = [
-                'privs'         => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES_ALL ) )
+            $rules = [
+                'privs'         => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES_TEXT_NONSUPERUSER ) )
             ];
 
             // If the User edit himself
-            if( Auth::id() === (int)$this->u->id ) {
-                $addUserInfo = [
+            if( $u->id == $this->u->id ) {
+                $rules = array_merge( $rules, [
                     'name'                                              => 'required|string|max:255',
                     'authorisedMobile'                                  => 'nullable|string|max:50'
-                ];
+                ] );
             }
-            $infoArray = array_merge( $infoArray, $addUserInfo );
         }
-        return $infoArray ;
-    }
-
-    /**
-     * @param Validator $validator
-     *
-     * @return false
-     */
-    public function withValidator( Validator $validator ): bool
-    {
-        /** @var User $us */
-        $us = Auth::user();
-        $isSuperUser = $us->isSuperUser();
-        if( !$validator->fails() && !$isSuperUser ) {
-            $validator->after( function( Validator $validator ) use ( $us, $isSuperUser ) {
-                $cust = $isSuperUser ? Customer::find( $this->custid ) : $us->customer;
-
-                if( (int)$this->privs === User::AUTH_SUPERUSER ) {
-                    if( !$isSuperUser || ( $isSuperUser && !$cust->typeInternal() ) ) {
-                        $validator->errors()->add( 'privs', "You are not allowed to set this User as a Super User for " . $cust->name );
-                        return false;
-                    }
-                }
-                return true;
-            });
-        }
-        return false;
+        return $rules;
     }
 }
