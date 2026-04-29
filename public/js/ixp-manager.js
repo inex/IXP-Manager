@@ -164,7 +164,7 @@ function htmlEntities(str) {
         '=': '&#x3D;'
     };
 
-    return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+    return String(str).replace(/[&<>"'`=\/]/g, function (s) {
         return entityMap[s];
     });
 }
