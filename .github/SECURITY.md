@@ -24,7 +24,7 @@ Likewise, we are delighted to acknowledge and thank anyone who responsibly repor
 | Version | Supported          | Details / Until                                                             |
 |---------|--------------------|-----------------------------------------------------------------------------|
 | 7.x.y   | :white_check_mark: | Current release, full support until min. 6 months after a future v7 release |
-| 6.x.y   | :white_check_mark: | March 1st 2026, security issues only                                        |
+| 6.x.y   | :x:                | March 1st 2026, security issues only                                        |
 | 5.x.y   | :x:                |                                                                             |
 | 4.x.y   | :x:                |                                                                             |
 | < 4.0   | :x:                |                                                                             |
