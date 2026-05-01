@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\API;
+namespace Tests\Api;
 
 /*
  * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.

@@ -11,6 +11,12 @@ let mix = require('laravel-mix');
  |
  */
 
+mix.disableNotifications();
+
+mix.options({
+    progress: false
+});
+
 mix.scripts(
     [
         'node_modules/jquery/dist/jquery.min.js',

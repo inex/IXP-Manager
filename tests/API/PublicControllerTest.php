@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\API;
+namespace Tests\Api;
 
 use IXP\Models\Customer;
 use IXP\Models\CustomerToUser;

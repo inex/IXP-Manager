@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\IXP;
+namespace Tests\Ixp;
 
 /*
  * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -39,7 +39,7 @@ use Tests\TestCase;
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class OUITest extends TestCase
+class OuiTest extends TestCase
 {
     public $sampleRawData = <<<END_DATA
 

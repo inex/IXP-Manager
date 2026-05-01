@@ -108,6 +108,7 @@ use IXP\Traits\Observable;
  * @property string|null $created
  * @method static Builder|User whereCreated($value)
  * @method static Builder|User whereLastupdated($value)
+ * @property int|null $privs
  * @mixin Eloquent
  */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract

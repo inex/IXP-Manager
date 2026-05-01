@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\API;
+namespace Tests\Api;
 
 use IXP\Services\PeeringDb;
 use IXP\Utils\Whois\Whois;
