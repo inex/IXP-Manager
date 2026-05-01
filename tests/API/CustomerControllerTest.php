@@ -1,6 +1,6 @@
 <?php
 
-namespace API;
+namespace Tests\API;
 
 
 use IXP\Services\PeeringDb;

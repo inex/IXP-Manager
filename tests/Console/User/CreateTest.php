@@ -1,6 +1,6 @@
 <?php
 
-namespace Console\User;
+namespace Tests\Console\User;
 
 use Illuminate\Support\Facades\Event;
 use IXP\Models\CustomerToUser;
