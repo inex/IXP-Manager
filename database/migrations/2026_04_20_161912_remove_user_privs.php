@@ -22,13 +22,16 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('user', function (Blueprint $table) {
-            $table->integer('privs')->nullable()->after('uid');
-        });
+//        Schema::table('user', function (Blueprint $table) {
+//            $table->integer('privs')->nullable()->after('uid');
+//        });
 
-        foreach (User::all() as $user) {
-            $user->priv = $user->currentCustomerToUser->privs;
-            $user->save();
-        }
+        try {
+            foreach (User::all() as $user) {
+                $user->privs = $user->currentCustomerToUser->privs;
+                $user->save();
+            }
+        
+        } catch( Exception ) {}
     }
 };
