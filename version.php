@@ -28,3 +28,21 @@
 define( 'APPLICATION_VERSION', '7.3.1' );
 define( 'APPLICATION_VERDATE', '2026060800' );
 define( 'DOCUMENTATION_VERSION', '7.3' );
+
+$APPLICATION_MANIFEST = [
+    'php_version' => [
+        'min' => '8.4.0',
+        'recommended' => '8.4.',
+        'max' => null,
+    ],
+    'mysql_version' => [
+        'min' => '8.0.0',
+        'recommended' => '8.0.',
+        'max' => null,
+    ],
+    'laravel_required_extensions' => [
+        'ctype', 'curl', 'dom', 'fileinfo', 'filter', 'hash', 'mbstring', 'openssl', 'pcre', 'pdo', 'session', 'tokenizer', 'xml'
+    ],
+];
+
+return $APPLICATION_MANIFEST;
