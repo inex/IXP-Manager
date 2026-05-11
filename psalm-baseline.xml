@@ -2336,7 +2336,7 @@
       <code><![CDATA[public function generate(): array]]></code>
     </MissingDocblockType>
   </file>
-  <file src="app/Utils/Bgpq3.php">
+  <file src="app/Utils/BgpqBase.php">
     <InvalidOperand>
       <code><![CDATA[$minSubnetSize]]></code>
     </InvalidOperand>

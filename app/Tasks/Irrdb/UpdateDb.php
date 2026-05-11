@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace IXP\Tasks\Irrdb;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -32,8 +32,7 @@ use IXP\Exceptions\{
 
 use IXP\Models\{Aggregators\IrrdbAggregator, Customer, IrrdbAsn, IrrdbPrefix, IrrdbUpdateLog};
 
-use Illuminate\Support\Facades\Cache;
-use IXP\Utils\Bgpq3;
+use IXP\Contracts\IrrQuerier;
 
 /**
  * UpdateDb
@@ -42,31 +41,31 @@ use IXP\Utils\Bgpq3;
  * @author     Yann Robin      <yann@islandbridgenetworks.ie>
  * @category   Tasks
  * @package    IXP\Tasks\Irrdb
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 abstract class UpdateDb
 {
     /**
-     * BGPQ3 Utility Interface details object.
+     * IrrQuerier utility
      *
-     * @var Bgpq3
+     * @var IrrQuerier
      */
-    private $bgpq3 = null;
+    private IrrQuerier $irrdb;
 
     /**
      * Customer to update prefixes of
      *
      * @var Customer
      */
-    private $customer = null;
+    private Customer $customer;
 
     /**
      * Protocols to update
      *
      * @var array
      */
-    private $protocols = [ 4,6 ];
+    private array $protocols = [ 4,6 ];
 
     /**
      * Variable for timing
@@ -101,19 +100,20 @@ abstract class UpdateDb
     /**
      * UpdatePrefixDb constructor.
      *
+     * @param IrrQuerier    $irrQuerier
      * @param Customer      $c
      * @param array|null    $protocols
      *
      * @throws ConfigurationException
      */
-    public function __construct( Customer $c, ?array $protocols = null ) {
+    public function __construct( IrrQuerier $irrQuerier, Customer $c, ?array $protocols = null ) {
         $this->setCustomer( $c );
 
         if( $protocols !== null ) {
             $this->protocols = $protocols;
         }
 
-        $this->setBgpq3( new Bgpq3( config( 'ixp.irrdb.bgpq3.path' ) ) );
+        $this->setIrrQuerier( $irrQuerier );
     }
 
     /**
@@ -148,26 +148,25 @@ abstract class UpdateDb
     }
 
     /**
-     * Set the Bgpq3 utility
+     * Set the IrrQuerier utility
      *
-     * @param Bgpq3 $bgpq3
+     * @param IrrQuerier $irrdb
      *
-     * @throws
      */
-    public function setBgpq3( Bgpq3 $bgpq3 ): static
+    public function setIrrQuerier( IrrQuerier $irrdb ): static
     {
-        $this->bgpq3 = $bgpq3;
+        $this->irrdb = $irrdb;
         return $this;
     }
 
     /**
-     * Get the Bgpq3 utility
+     * Get the IrrQuerier utility
      *
-     * @return Bgpq3
+     * @return IrrQuerier
      */
-    public function bgpq3(): Bgpq3
+    public function irrdb(): IrrQuerier
     {
-        return $this->bgpq3;
+        return $this->irrdb;
     }
 
     /**
@@ -201,7 +200,7 @@ abstract class UpdateDb
      *
      * @return bool
      *
-     * @throws
+     * @throws GeneralException|\Throwable
      *
      * @psalm-param 'asn'|'prefix' $type
      */
@@ -233,7 +232,7 @@ abstract class UpdateDb
                 $msg = "IRRDB {$type}: {$this->customer()->name} has a non-zero {$type} count for IPv{$protocol} in the database but "
                     . "BGPQ3 returned none. Please examine manually. No databases changes made for this customer.";
                 Log::alert( $msg );
-                $result['msg'] = $msg;
+                $this->result['msg'] = $msg;
             }
 
             // in either case, we have nothing to do with an empty ASN list:

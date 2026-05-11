@@ -29,25 +29,26 @@ use Illuminate\Container\Attributes\Config;
 use IXP\Exceptions\ConfigurationException;
 
 /**
- * Interface for the BQPQ3 command line utility
+ * Interface for the BQPQ4 command line utility
  *
- * @see http://snar.spb.ru/prog/bgpq3/
+ * @see https://github.com/bgp/bgpq4
  *
  * @author Barry O'Donovan <barry@opensolutions.ie>
+ * @author Thomas Kerin    <thomas@islandbridgenetworks.ie>
  */
-class Bgpq3 extends BgpqBase
+class Bgpq4 extends BgpqBase
 {
-    protected string $utility = 'BGPQ3';
+    protected string $utility = 'BGPQ4';
 
     /**
      * Constructor
      *
-     * @param string $path The full executable path of the BGPQ3 utility
-     * @param ?string $whois Whois server - defaults to BGPQ3's own default
-     * @param ?string $sources Whois server sources - defaults to BGPQ3's own default
+     * @param string $path The full executable path of the BGPQ4 utility
+     * @param ?string $whois Whois server - defaults to BGPQ4's own default
+     * @param ?string $sources Whois server sources - defaults to BGPQ4's own default
      * @throws ConfigurationException
      */
-    public function __construct( #[Config('ixp.irrdb.bgpq3.path')] protected string $path, protected ?string $whois = null, protected ?string $sources = null )
+    public function __construct( #[Config('ixp.irrdb.bgpq4.path')] protected string $path, protected ?string $whois = null, protected ?string $sources = null )
     {
         $this->validatePath($path);
     }

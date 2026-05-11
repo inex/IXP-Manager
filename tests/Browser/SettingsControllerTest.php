@@ -44,17 +44,25 @@ class SettingsControllerTest extends DuskTestCase
      * The expected .env file contents before we go messing with it
      * @var string|null
      */
-    private ?string $oenv = null;
-    
+    private ?string $test_env = null;
+
+    /**
+     * The user's existing .env file that we want to preserve
+     * @var string|null
+     */
+    private ?string $user_env = null;
+
+
     /**
      * @throws
      */
     public function setUp(): void
     {
-        $this->oenv = file_get_contents( __DIR__ . '/../../.env.ci' );
-        
-        file_put_contents( __DIR__ . '/../../.env', $this->oenv );
-        usleep( 500_000 );
+        $this->user_env = file_get_contents( __DIR__ . '/../../.env' );
+        $this->test_env = file_get_contents( __DIR__ . '/../../.env.ci' );
+
+        file_put_contents( __DIR__ . '/../../.env', $this->test_env );
+        usleep( 1_000_000 );
         parent::setUp();
     }
 
@@ -63,8 +71,8 @@ class SettingsControllerTest extends DuskTestCase
      */
     public function tearDown(): void
     {
-        file_put_contents( __DIR__ . '/../../.env', $this->oenv );
-        usleep( 500_000 );
+        file_put_contents( __DIR__ . '/../../.env', $this->user_env );
+        usleep( 1_000_000 );
         parent::tearDown();
     }
     
@@ -91,7 +99,7 @@ class SettingsControllerTest extends DuskTestCase
                 ->waitForLocation( route( 'settings@index' ) );
             
             // ensure a save with no changes yields no changes in the .env file
-            $this->assertEquals( $this->oenv, file_get_contents( __DIR__ . '/../../.env' ));
+            $this->assertEquals( $this->test_env, file_get_contents( __DIR__ . '/../../.env' ));
             
             // change some values to check validation
             $browser->press( 'Route Servers' )
@@ -104,7 +112,7 @@ class SettingsControllerTest extends DuskTestCase
                 ->assertSee( 'The rs rpki rtr1 port must be an integer' );
             
             // ensure still no changes
-            $this->assertEquals( $this->oenv, file_get_contents( __DIR__ . '/../../.env' ));
+            $this->assertEquals( $this->test_env, file_get_contents( __DIR__ . '/../../.env' ));
             
             // change some values to check validation
             $browser->press( 'Route Servers' )
@@ -118,13 +126,13 @@ class SettingsControllerTest extends DuskTestCase
             $nenv = file_get_contents( __DIR__ . '/../../.env' );
             
             // now we have a change
-            $this->assertNotEquals( $this->oenv, $nenv );
+            $this->assertNotEquals( $this->test_env, $nenv );
 
             // we substituted 3323 for 12345
-            $this->assertEquals( strlen( $nenv ), strlen( $this->oenv ) + 1 );
+            $this->assertEquals( strlen( $nenv ), strlen( $this->test_env ) + 1 );
             
-            $this->assertStringContainsString( 'IXP_RPKI_RTR1_PORT=3323', $this->oenv );
-            $this->assertStringNotContainsString( 'IXP_RPKI_RTR1_PORT=12345', $this->oenv );
+            $this->assertStringContainsString( 'IXP_RPKI_RTR1_PORT=3323', $this->test_env );
+            $this->assertStringNotContainsString( 'IXP_RPKI_RTR1_PORT=12345', $this->test_env );
             
             $this->assertStringNotContainsString( 'IXP_RPKI_RTR1_PORT=3323', $nenv );
             $this->assertStringContainsString( 'IXP_RPKI_RTR1_PORT=12345', $nenv );

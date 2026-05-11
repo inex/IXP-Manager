@@ -1,10 +1,7 @@
 <?php
 
-declare(strict_types=1);
-namespace IXP\Tasks\Irrdb;
-
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -24,6 +21,9 @@ namespace IXP\Tasks\Irrdb;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+namespace IXP\Tasks\Irrdb;
+
 use Illuminate\Support\Facades\Cache;
 use IXP\Models\IrrdbAsn;
 use Log;
@@ -34,7 +34,7 @@ use Log;
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @category   Tasks
  * @package    IXP\Tasks\Irrdb
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class UpdateAsnDb extends UpdateDb
@@ -44,17 +44,18 @@ class UpdateAsnDb extends UpdateDb
      *
      * @return array
      *
-      * @throws
+     * @throws \IXP\Exceptions\GeneralException
      */
     public function update(): array
     {
         foreach( $this->protocols() as $protocol ) {
             if( $this->customer()->irrdbConfig && $this->customer()->routeServerClient( $protocol ) && $this->customer()->irrdbFiltered() ) {
-                $this->bgpq3()->setWhois( $this->customer()->irrdbConfig->host );
-                $this->bgpq3()->setSources( $this->customer()->irrdbConfig->source );
+                $this->irrdb()
+                    ->setWhois( $this->customer()->irrdbConfig->host )
+                    ->setSources( $this->customer()->irrdbConfig->source );
 
                 $this->startTimer();
-                $asns = $this->bgpq3()->getAsnList( $this->customer()->asMacro( $protocol, 'as' ), $protocol );
+                $asns = $this->irrdb()->getAsnList( $this->customer()->asMacro( $protocol, 'as' ), $protocol );
                 $this->result[ 'netTime' ] += $this->timeElapsed();
 
                 $this->result[ 'v' . $protocol ][ 'count' ] = count( $asns );
@@ -67,7 +68,7 @@ class UpdateAsnDb extends UpdateDb
                 // Delete any pre-existing entries just in case this has changed recently:
                 $this->startTimer();
 
-                Cache::store()->forget( 'irrdb:asns:ipv' . $protocol . ':' . $this->customer()->asMacro( $protocol ) );
+                Cache::store()->forget( 'irrdb:asn:ipv' . $protocol . ':' . $this->customer()->asMacro( $protocol ) );
 
                 IrrdbAsn::whereCustomerId( $this->customer()->id )
                     ->whereProtocol( $protocol )->delete();
