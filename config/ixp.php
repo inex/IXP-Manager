@@ -108,7 +108,7 @@ return [
 
         'bgpq3' => [
             // Filesystem path to bgpq3
-            'path' => env( 'IXP_IRRDB_BGPQ3_PATH', false ),
+            'path' => env( 'IXP_IRRDB_BGPQ3_PATH', 'bgpq3' ),
         ],
 
         'bgpq4' => [
