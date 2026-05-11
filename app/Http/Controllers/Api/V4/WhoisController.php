@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\Api\V4;
 
 use Cache;
 
+use IXP\Models\Asn;
 use IXP\Services\PeeringDb;
 use Illuminate\Http\{Request,Response};
 
@@ -48,34 +49,24 @@ class WhoisController extends Controller
     /**
      * API call to do a Whois looking on an AS number
      *
-     * @param PeeringDb $pdb   service to resolve via PeeringDb
-     * @param Whois     $whois A Whois instance
-     * @param Request   $r
-     * @param string    $asn   The AS number
+     * @param string    $asn The AS number
      *
      * @return Response
      */
-    public function asn( PeeringDb $pdb, #[WhoisHost('asn2')] Whois $whois, Request $r, string $asn ): Response
+    public function asn( string $asn ): Response
     {
-        $response = Cache::remember( 'api-v4-whois-asn-' . $asn, config('ixp_api.whois.cache_ttl'), function () use ( $pdb, $whois, $asn ): string {
+        $asn = Asn::where( 'asn', '=', $asn )->first();
+        if ( $asn === null ) {
+            return response( 'ASN not found in store', 404 )
+                ->header( 'Content-Type', 'text/plain' );
+        }
 
-            // try PeeringDB first
-            if( $net = $pdb->getNetworkByAsn( $asn ) ) {
-                return $pdb->netAsAscii( $net );
-            }
-
-            if( $pdb->status === 404 ) {
-                $response = "ASN not registered in PeeringDB. Trying " . config( 'ixp_api.whois.asn2.host' ) . ":\n\n";
-            } else {
-                $response = "Querying PeeringDB failed:\n\nError:{$pdb->error}\n\nTrying " . config( 'ixp_api.whois.asn2.host' ) . ":\n\n";
-            }
-
-            $response .= $whois->whois( 'AS' . (int)$asn );
-
-            return $response;
-        });
-
-        return response( $response, 200 )->header('Content-Type', 'text/plain');
+        $contents  = "Number  : $asn->asn\n";
+        $contents .= "Name    : $asn->name\n";
+        $contents .= "Class:  : $asn->class\n";
+        $contents .= "Country : $asn->country_code\n";
+        return response( $contents, 200 )
+            ->header( 'Content-Type', 'text/plain' );
     }
 
     /**

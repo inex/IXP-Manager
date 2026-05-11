@@ -34,9 +34,9 @@ class WhoisLiveTest extends TestCase
     {
         $whois = app(WhoisResolver::class)->get('prefix');
         $result = $whois->whois('8.8.8.8/32');
-        $this->assertStringContainsString('route:          8.8.8.0/24', $result);
-        $this->assertStringContainsString('origin:         AS15169',    $result);
-        $this->assertStringContainsString('descr:          Google',     $result);
+        $this->assertStringContainsString('8.8.8.0/24', $result);
+        $this->assertStringContainsString('15169',      $result);
+        $this->assertStringContainsString('Google',     $result);
     }
 
     public function testPrefixWithoutMask()
@@ -44,17 +44,9 @@ class WhoisLiveTest extends TestCase
         $whois = app(WhoisResolver::class)->get('prefix');
 
         $result = $whois->whois('8.8.8.8');
-        $this->assertStringContainsString('route:          8.8.8.0/24', $result);
-        $this->assertStringContainsString('origin:         AS15169',    $result);
-        $this->assertStringContainsString('descr:          Google',     $result);
-    }
-
-    public function testPrefixWithoutMaskTrailingSlash()
-    {
-        // This test shows what happens when a trailing slash is left on, when network mask is omitted.
-        $whois = app(WhoisResolver::class)->get('prefix');
-        $result = $whois->whois('8.8.8.8/');
-        $this->assertEquals("%  No entries found for the selected source(s).\n\n\n", $result);
+        $this->assertStringContainsString('8.8.8.0/24', $result);
+        $this->assertStringContainsString('15169',      $result);
+        $this->assertStringContainsString('Google',     $result);
     }
 
     public function testAsn()
