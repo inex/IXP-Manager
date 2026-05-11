@@ -36,7 +36,6 @@ use IXP\Models\CustomerToUser;
  * @category IXP
  * @copyright Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
- *
  * @property-read \IXP\Models\Customer|null $customer
  * @property-read \IXP\Models\User|null $user
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\UserLoginHistory> $userLoginHistories
