@@ -115,14 +115,14 @@ class RouterTest extends TestCase
     
     public function testApiRouterNotExists(): void
     {
-        $response = $this->withKey()->get( '/api/v4/router/updated/test-router-xxx' );
+        $response = $this->withKey()->get( '/admin/api/v4/router/updated/test-router-xxx' );
         $response->assertStatus( 404 );
     }
     
     
     public function testApiRouterGetLastUpdatedNulls(): void
     {
-        $response = $this->withKey()->get( '/api/v4/router/updated/test-router' );
+        $response = $this->withKey()->get( '/admin/api/v4/router/updated/test-router' );
         $response->assertStatus( 200 );
         
         $this->assertNull( $response->json('last_update_started') );
@@ -137,7 +137,7 @@ class RouterTest extends TestCase
         $this->r->last_update_started = $this->r->last_updated = $now;
         $this->r->save();
         
-        $response = $this->withKey()->get( '/api/v4/router/updated/test-router' );
+        $response = $this->withKey()->get( '/admin/api/v4/router/updated/test-router' );
         $response->assertStatus( 200 );
         
         $this->assertNotNull( $response->json('last_update_started') );
@@ -157,7 +157,7 @@ class RouterTest extends TestCase
         $this->r->pause_updates = true;
         $this->r->save();
         
-        $response = $this->withKey()->post( '/api/v4/router/get-update-lock/test-router' );
+        $response = $this->withKey()->post( '/admin/api/v4/router/get-update-lock/test-router' );
         $response->assertStatus( 423 );
         $response->assertContent( 'Router not available for update' );
     }
@@ -165,7 +165,7 @@ class RouterTest extends TestCase
     
     public function testApiRouterGetUpdateLockOnNulls(): void
     {
-        $response = $this->withKey()->post( '/api/v4/router/get-update-lock/test-router' );
+        $response = $this->withKey()->post( '/admin/api/v4/router/get-update-lock/test-router' );
         $response->assertStatus( 200 );
 
         $this->assertNotNull( $response->json('last_update_started') );
@@ -180,7 +180,7 @@ class RouterTest extends TestCase
         $this->assertNotNull( $this->r->last_update_started );
         $this->assertNull( $this->r->last_updated );
         
-        $response = $this->withKey()->post( '/api/v4/router/updated/test-router' );
+        $response = $this->withKey()->post( '/admin/api/v4/router/updated/test-router' );
         $response->assertStatus( 200 );
         
         $this->assertNotNull( $response->json('last_updated') );
@@ -199,7 +199,7 @@ class RouterTest extends TestCase
         $this->r->last_update_started = $this->r->last_updated = now()->addSecond();
         $this->r->save();
 
-        $response = $this->withKey()->post( '/api/v4/router/get-update-lock/test-router' );
+        $response = $this->withKey()->post( '/admin/api/v4/router/get-update-lock/test-router' );
         $response->assertStatus( 200 );
         
         $this->assertNotNull( $response->json('last_update_started') );
@@ -218,7 +218,7 @@ class RouterTest extends TestCase
     
     public function testApiRouterReleaseLockOnNotLocked(): void
     {
-        $response = $this->withKey()->post( '/api/v4/router/release-update-lock/test-router' );
+        $response = $this->withKey()->post( '/admin/api/v4/router/release-update-lock/test-router' );
         $response->assertStatus( 200 );
         
         $this->assertNull( $response->json('last_update_started') );
@@ -232,7 +232,7 @@ class RouterTest extends TestCase
         $this->r->last_update_started = now()->subMinutes( 2 );
         $this->r->save();
         
-        $response = $this->withKey()->post( '/api/v4/router/release-update-lock/test-router' );
+        $response = $this->withKey()->post( '/admin/api/v4/router/release-update-lock/test-router' );
         $response->assertStatus( 200 );
         
         $this->assertNull( $response->json( 'last_update_started' ) );
@@ -248,7 +248,7 @@ class RouterTest extends TestCase
         $this->r->last_update_started = now();
         $this->r->save();
         
-        $response = $this->withKey()->post( '/api/v4/router/release-update-lock/test-router' );
+        $response = $this->withKey()->post( '/admin/api/v4/router/release-update-lock/test-router' );
         $response->assertStatus( 200 );
         
         $this->assertNotNull( $response->json('last_update_started') );
@@ -270,7 +270,7 @@ class RouterTest extends TestCase
         $this->r->last_update_started = $now->clone()->subMinutes( 2 );
         $this->r->save();
         
-        $response = $this->withKey()->post( '/api/v4/router/updated/test-router' );
+        $response = $this->withKey()->post( '/admin/api/v4/router/updated/test-router' );
         $response->assertStatus( 200 );
         
         $this->assertNotNull( $response->json( 'last_update_started' ) );
@@ -291,7 +291,7 @@ class RouterTest extends TestCase
         $this->r->last_updated = $now->clone()->subMinute();
         $this->r->save();
         
-        $response = $this->withKey()->post( '/api/v4/router/updated/test-router' );
+        $response = $this->withKey()->post( '/admin/api/v4/router/updated/test-router' );
         $response->assertStatus( 200 );
         
         $this->assertNotNull( $response->json( 'last_update_started' ) );
@@ -309,7 +309,7 @@ class RouterTest extends TestCase
         $this->rpair->last_update_started = now()->subMinutes( 2 );
         $this->rpair->save();
 
-        $response = $this->withKey()->post( '/api/v4/router/get-update-lock/test-router' );
+        $response = $this->withKey()->post( '/admin/api/v4/router/get-update-lock/test-router' );
 
         $response->assertStatus( 423 );
         $this->assertEquals( 'Router not available for update', $response->getContent() );
@@ -321,7 +321,7 @@ class RouterTest extends TestCase
         $this->rpair->last_update_started = now()->subMinutes( 2 );
         $this->rpair->save();
         
-        $response = $this->withKey()->post( '/api/v4/router/get-update-lock/test-router' );
+        $response = $this->withKey()->post( '/admin/api/v4/router/get-update-lock/test-router' );
         
         $response->assertStatus( 423 );
         $this->assertEquals( 'Router not available for update', $response->getContent() );

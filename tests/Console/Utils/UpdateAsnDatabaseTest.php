@@ -49,6 +49,10 @@ class UpdateAsnDatabaseTest extends TestCase
 
     public function testFreshFromFile()
     {
+        // let's ensure we're starting with a clean slate
+        Asn::truncate();
+        
+        
         $this->assertEquals(0, Asn::count());
         $this->artisan('utils:asn-update -v ' . $this->getSampleFilePath())
             ->assertExitCode(0)

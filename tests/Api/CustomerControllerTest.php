@@ -36,7 +36,7 @@ class CustomerControllerTest extends TestCase
                 ->andReturn( $mockResponseData );
         });
 
-        $response = $this->withKey()->get( "api/v4/customer/query-peeringdb/asn/1213" );
+        $response = $this->withKey()->get( "admin/api/v4/customer/query-peeringdb/asn/1213" );
         $response->assertStatus( 200 );
         $response->assertExactJson( [
             "net" => $mockResponseData
@@ -53,7 +53,7 @@ class CustomerControllerTest extends TestCase
             $mock->status = 404;
         });
 
-        $response = $this->withKey()->get( "api/v4/customer/query-peeringdb/asn/0" );
+        $response = $this->withKey()->get( "admin/api/v4/customer/query-peeringdb/asn/0" );
         $response->assertStatus( 200 );
         $response->assertExactJson( [
             "error" => "No network with AS0 found in PeeringDB"
