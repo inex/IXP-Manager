@@ -25,6 +25,7 @@ namespace IXP\Utils\Grapher;
 
 use Carbon\Carbon;
 use IXP\Exceptions\Services\Grapher\BackendFeatureNotImplementedException;
+use IXP\Exceptions\Services\Grapher\ParameterException;
 use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
 use IXP\Services\Grapher\Graph;
 
@@ -302,8 +303,24 @@ class MultiRrd
         return [ 'traffic_in', 'traffic_out' ];
     }
 
+    public function data(): array
+    {
+        if( $this->graph()->period() === Graph::PERIOD_CUSTOM ) {
+            if( !$this->graph()->periodStart() || !$this->graph()->periodEnd() ) {
+                throw new ParameterException('Period Start and Period End must be set for custom period graphs');
+            }
+
+            return $this->dataWindow(
+                $this->graph()->periodStart()->timestamp,
+                $this->graph()->periodEnd()->timestamp
+            );
+        } else {
+            return $this->dataWindow( time() - self::PERIOD_TIME[ $this->graph()->period() ], time() );
+        }
+    }
+
     /**
-     * From the RRD file, process the data and return it in the same format
+     * From the RRD files, process the data and return it in the same format
      * as an MRTG log file.
      *
      * @see \IXP\Utils\Grapher\Mrtg::loadMrtgFile()
@@ -315,9 +332,61 @@ class MultiRrd
      * @return array
      *
      */
-    public function data(): array
+    public function dataWindow($start, $end): array
     {
-        throw new BackendFeatureNotImplementedException();
+        [ $indexIn, $indexOut ] = $this->getIndexKeys();
+
+        $options = [
+            '--json',
+            '--start', $start,
+            '--end', $end,
+        ];
+
+        $cnt = 0;
+        $avgInFields = $maxInFields = $avgOutFields = $maxOutFields = '';
+        foreach( $this->localfiles as $f ) {
+            $options[] = "DEF:avgIn{$cnt}={$f}:{$indexIn}:AVERAGE";
+            $options[] = "DEF:avgOut{$cnt}={$f}:{$indexOut}:AVERAGE";
+            $options[] = "DEF:maxIn{$cnt}={$f}:{$indexIn}:MAX";
+            $options[] = "DEF:maxOut{$cnt}={$f}:{$indexOut}:MAX";
+
+            // If we add a value with NaN we get NaN.
+            // This expression ensures NaN values are replaced with 0:
+            // avgInX,UN,0,avgInX,IF
+            $avgInFields  .= "avgIn{$cnt},UN,0,avgIn{$cnt},IF,";
+            $avgOutFields .= "avgOut{$cnt},UN,0,avgOut{$cnt},IF,";
+            $maxInFields  .= "maxIn{$cnt},UN,0,maxIn{$cnt},IF,";
+            $maxOutFields .= "maxOut{$cnt},UN,0,maxOut{$cnt},IF,";
+            $cnt++;
+        }
+
+        $unitMultiplier = $this->graph()->category() === Graph::CATEGORY_BITS ? '8' : '1';
+        // sum together to get 'total'. apply *1 or *8 depending on whether we want bits.
+        // note: there may be only one file, if so we dont need to add anything
+        $options[] = "CDEF:avgInTotal={$avgInFields}"   . str_repeat( '+,', $cnt-1 ) . "$unitMultiplier,*";
+        $options[] = "CDEF:avgOutTotal={$avgOutFields}" . str_repeat( '+,', $cnt-1 ) . "$unitMultiplier,*";
+        $options[] = "CDEF:maxInTotal={$maxInFields}"   . str_repeat( '+,', $cnt-1 ) . "$unitMultiplier,*";
+        $options[] = "CDEF:maxOutTotal={$maxOutFields}" . str_repeat( '+,', $cnt-1 ) . "$unitMultiplier,*";
+
+        $options[] = 'XPORT:avgInTotal:AverageIn';
+        $options[] = 'XPORT:avgOutTotal:AverageOut';
+        $options[] = 'XPORT:maxInTotal:MaxIn';
+        $options[] = 'XPORT:maxOutTotal:MaxOut';
+
+        $result = rrd_xport( $options );
+
+        $log = [];
+        foreach( $result['data'][0]['data'] as $ts => $n ) {
+            $log[] = [
+                (int)$ts,
+                (int)round( $result['data'][0]['data'][$ts] ),
+                (int)round( $result['data'][1]['data'][$ts] ),
+                (int)round( $result['data'][2]['data'][$ts] ),
+                (int)round( $result['data'][3]['data'][$ts] ),
+            ];
+        }
+
+        return $log;
     }
 
     /**

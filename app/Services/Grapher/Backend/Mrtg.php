@@ -133,7 +133,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
 
     /**
      * Utility function to slurp all peering ports from the database and arrange them in
-     * arrays for genertaing Mrtg configuration files.
+     * arrays for generating Mrtg configuration files.
      *
      * The array returned is an array of arrays containing:
      *
@@ -146,8 +146,8 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
      * array `['custlags']` containing an array of PhysicalInterfaceEntity IDs contained in an array indexed
      * by VirtualInterfaceEntity IDs in turn in an array of customer IDs:
      * `['custlags'][$custid][$viid][]`
-     * array `['swports']` indexed by Switcher ID conataining the PhysicalInterfaceEntity IDs of peering ports
-     * array `['infraports']` indexed by Infrastructure ID conataining the PhysicalInterfaceEntity IDs of peering ports
+     * array `['swports']` indexed by Switcher ID containing the PhysicalInterfaceEntity IDs of peering ports
+     * array `['infraports']` indexed by Infrastructure ID containing the PhysicalInterfaceEntity IDs of peering ports
      * array `['ixpports']` conataining the PhysicalInterfaceEntity IDs of peering ports
      *
      * @return (((int|int[])[]|Customer|Infrastructure|PhysicalInterface|\IXP\Models\CoreBundle|\IXP\Models\Location|\IXP\Models\Switcher|float|int|null)[]|float|int)[]

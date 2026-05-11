@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace IXP\Tasks\Irrdb;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -40,7 +40,7 @@ use IXP\Rules\{
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @category   Tasks
  * @package    IXP\Tasks\Irrdb
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class UpdatePrefixDb extends UpdateDb
@@ -50,17 +50,18 @@ class UpdatePrefixDb extends UpdateDb
      *
      * @return array
      *
-     * @throws
+     * @throws \IXP\Exceptions\GeneralException
      */
     public function update(): array
     {
         foreach( $this->protocols() as $protocol ) {
             if( $this->customer()->irrdbConfig && $this->customer()->routeServerClient( $protocol ) && $this->customer()->irrdbFiltered() ) {
-                $this->bgpq3()->setWhois( $this->customer()->irrdbConfig->host );
-                $this->bgpq3()->setSources( $this->customer()->irrdbConfig->source );
+                $this->irrdb()
+                    ->setWhois( $this->customer()->irrdbConfig->host )
+                    ->setSources( $this->customer()->irrdbConfig->source );
 
                 $this->startTimer();
-                $prefixes = $this->bgpq3()->getPrefixList( $this->customer()->asMacro( $protocol, 'as' ), $protocol );
+                $prefixes = $this->irrdb()->getPrefixList( $this->customer()->asMacro( $protocol, 'as' ), $protocol );
                 $this->result[ 'netTime' ] += $this->timeElapsed();
 
                 $this->result[ 'v' . $protocol ][ 'count' ] = count( $prefixes );

@@ -1,7 +1,5 @@
 <?php
 
-namespace IXP\Exceptions;
-
 /*
  * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -23,6 +21,10 @@ namespace IXP\Exceptions;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Exceptions;
+
 use Exception;
 
-final class ConfigurationException extends Exception {}
+class ProcessException extends Exception {}

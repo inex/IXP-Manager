@@ -27,6 +27,9 @@
 // determines what .env elements are configurable via the frontend and sets up the
 // form for this.
 
+use Illuminate\Validation\Rule;
+use IXP\Rules\ExistsAndExecutable;
+
 return [
 
     /*
@@ -365,7 +368,7 @@ return [
                 'alerts_recipient_address' => [
                     'config_key' => 'mail.alerts_recipient.address',
                     'dotenv_key' => 'IDENTITY_ALERTS_EMAIL',
-                    'type'       => 'nullable|text',
+                    'type'       => 'text',
                     'rules'      => 'nullable|max:255|email',
                     'name'       => 'Alert Recipient Email Address',
                     'docs_url'   => null,
@@ -572,7 +575,7 @@ return [
 
                 'peeringdb_api_key' => [
 
-                    'config_key' => 'ixp_api.peeringdb.api_key',
+                    'config_key' => 'ixp_api.peeringDB.api-key',
                     'dotenv_key' => 'IXP_API_PEERING_DB_API_KEY',
                     'type'       => 'text',
                     'rules'      => 'nullable|max:255',
@@ -708,7 +711,7 @@ return [
 
                 'default_graph_period' => [
 
-                    'config_key' => 'ixp_fe.admin.default_graph_period',
+                    'config_key' => 'ixp_fe.admin_dashboard.default_graph_period',
                     'dotenv_key' => 'IXP_FE_ADMIN_DASHBOARD_DEFAULT_GRAPH_PERIOD',
                     'type'       => 'select',
                     'options'    => [ 'type' => 'array', 'list' => array_filter( IXP\Services\Grapher\Graph::PERIODS, function( $k ) {
@@ -722,8 +725,8 @@ return [
 
                 'billing-updates-notification' => [
 
-                    'config_key' => 'ixp_fe.frontend.billing-updates.notification',
-                    'dotenv_key' => 'IXP_FE_BILLING_UPDATES',
+                    'config_key' => 'ixp_fe.customer.billing_updates_notify',
+                    'dotenv_key' => 'IXP_FE_CUSTOMER_BILLING_UPDATES_NOTIFY',
                     'type'       => 'text',
                     'rules'      => 'nullable|max:255|email',
                     'name'       => 'Billing Updates Notification',
@@ -766,7 +769,7 @@ return [
 
                 'rs-filters-ttl' => [
                     // this via config() will give default value
-                    'config_key' => 'ixp_fe.frontend.rs-filters.ttl',
+                    'config_key' => 'ixp_fe.rs-filters.ttl',
                     'dotenv_key' => 'IXP_FE_RS_FILTERS_TIME_TO_LIVE',
                     'type'       => 'textarea',
                     'rules'      => 'nullable|max:1024',
@@ -828,15 +831,48 @@ return [
 
             'fields' => [
 
+                'irrdb_utility' => [
+                    'config_key' => 'ixp.irrdb.utility',
+                    'dotenv_key' => 'IXP_IRRDB_UTILITY',
+                    'type'       => 'select',
+                    'options'    => [
+                        'type' => 'array',
+                        'list' => [ 'bgpq3' => 'bgpq3', 'bgpq4' => 'bgpq4' ],
+                    ],
+                    'rules'      => 'in:bgpq3,bgpq4',
+                    'name'       => 'IRRDB utility',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/irrdb/',
+                    'help'       => 'Software to use for IRRDB lookups. This defaults to bgpq3.',
+                ],
+
                 'bgpq3' => [
                     'config_key' => 'ixp.irrdb.bgpq3.path',
                     'dotenv_key' => 'IXP_IRRDB_BGPQ3_PATH',
                     'type'       => 'text',
-                    'rules'      => 'nullable|max:255',
+                    'rules'      => ['nullable', 'max:255', 'regex:/^(?:\/(?:[a-zA-Z0-9._-]+\/)*)?[a-zA-Z0-9._-]+$/',
+//                        Rule::when(function () {
+//                            return request()->input('irrdb_utility') === 'bgpq3';
+//                        }, new ExistsAndExecutable)
+                    ],
                     'name'       => 'Path to bgpq3 utility',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/irrdb/',
-                    'help'       => 'Full path to the bgpq3 utility.',
+                    'help'       => 'Full path to the bgpq3 executable, or an executable in $PATH.',
                 ],
+
+                'bgpq4' => [
+                    'config_key' => 'ixp.irrdb.bgpq4.path',
+                    'dotenv_key' => 'IXP_IRRDB_BGPQ4_PATH',
+                    'type'       => 'text',
+                    'rules'      => ['nullable', 'max:255', 'regex:/^(?:\/(?:[a-zA-Z0-9._-]+\/)*)?[a-zA-Z0-9._-]+$/',
+//                        Rule::when(function () {
+//                            return request()->input('irrdb_utility') === 'bgpq4';
+//                        }, new ExistsAndExecutable)
+                    ],
+                    'name'       => 'Path to bgpq4 utility',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/irrdb/',
+                    'help'       => 'Full path to the bgpq4 executable, or an executable in $PATH.',
+                ],
+
 
 //                'ping4' => [
 //                    'config_key' => 'ixp.exec.ping4',

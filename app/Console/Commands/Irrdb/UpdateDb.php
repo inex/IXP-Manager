@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IXP\Console\Commands\Irrdb;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -35,7 +37,7 @@ use IXP\Models\Customer;
   * @author     Yann Robin      <yann@islandbridgenetworks.ie>
   * @category   Irrdb
   * @package    IXP\Console\Commands
-  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
 abstract class UpdateDb extends Command
@@ -152,15 +154,16 @@ abstract class UpdateDb extends Command
             return;
         }
 
-        if( !config('mail.alerts_recipient.address') ) {
+        $recipient = config( 'mail.alerts_recipient.address' );
+        if( !is_string($recipient) ) {
             $this->warn( "Alert email not sent as IDENTITY_ALERTS_EMAIL .env option not set." );
             return;
         }
 
-        Mail::to( [ [ 'name' => config( 'mail.alerts_recipient.name' ), 'email' => config( 'mail.alerts_recipient.address' ) ] ] )
+        Mail::to( [ [ 'name' => config( 'mail.alerts_recipient.name' ), 'email' => $recipient ] ] )
             ->send( new Alert("IRRDB {$type} update failed for {$c->name}/AS{$c->autsys}", $e ) );
 
-        $this->info( "Alert email sent to " . config( 'mail.alerts_recipient.address' ) );
+        $this->info( "Alert email sent to " . $recipient );
     }
 
 }

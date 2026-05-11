@@ -29,7 +29,7 @@ return [
 
     /* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;
-    ;; Enables resller mode
+    ;; Enables reseller mode
     ;;
     ;; See: https://github.com/inex/IXP-Manager/wiki/Reseller-Functionality
     ;; */
@@ -97,8 +97,23 @@ return [
        ;; */
 
     'irrdb' => [
+
+        // Which IRRDB query utility to use. Options are:
+        // - none
+        // - bgpq3
+        // - bgpq4
+        //
+        // In release v7.2, we maintain the legacy default of bgpq3.
+        'utility' => env( 'IXP_IRRDB_UTILITY', 'bgpq3' ),
+
         'bgpq3' => [
+            // Filesystem path to bgpq3
             'path' => env( 'IXP_IRRDB_BGPQ3_PATH', false ),
+        ],
+
+        'bgpq4' => [
+            // Filesystem path to bgpq4
+            'path' => env( 'IXP_IRRDB_BGPQ4_PATH', false ),
         ],
 
         // ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
