@@ -2046,6 +2046,9 @@
       <code><![CDATA[$config['root']]]></code>
       <code><![CDATA[$config['root']]]></code>
       <code><![CDATA[$config['root']]]></code>
+      <code><![CDATA[$config['root']]]></code>
+      <code><![CDATA[$config['root']]]></code>
+      <code><![CDATA[$config['root']]]></code>
     </InvalidArrayAccess>
     <MissingDocblockType>
       <code><![CDATA[#[\Override]]]></code>
@@ -2371,6 +2374,7 @@
   </file>
   <file src="app/Utils/Grapher/MultiRrd.php">
     <InvalidOperand>
+      <code><![CDATA[time() - self::PERIOD_TIME[ $this->graph()->period() ]]]></code>
       <code><![CDATA[time() - self::PERIOD_TIME[ $this->graph()->period() ]]]></code>
     </InvalidOperand>
     <TypeDoesNotContainType>

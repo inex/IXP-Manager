@@ -162,7 +162,9 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
                 'protocols'   => Graph::PROTOCOLS,
                 'categories'  => Graph::CATEGORIES_BITS_PKTS,
                 'periods'     => Graph::PERIODS_EXTENDED,
-                'types'       => Graph::TYPES,
+                'types'       => [  Graph::TYPE_PNG  => Graph::TYPE_PNG,
+                                    Graph::TYPE_LOG  => Graph::TYPE_LOG,
+                                    Graph::TYPE_JSON => Graph::TYPE_JSON, ],
             ],
         ];
     }
@@ -181,12 +183,26 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
     #[\Override]
     public function data( Graph $graph ): array
     {
+        if ( !$graph instanceof Graph\MultiP2p ) {
+            try {
+                $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
+                return $rrd->data();
+            } catch( FileErrorException $e ) {
+                Log::notice( "[Grapher] {$this->name()} data(): could not load file {$this->resolveFilePath( $graph, 'rrd' )}" );
+                return [];
+            }
+        }
+
         try {
-            $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
+            $paths = $graph->getVlan() === null
+                ? $this->resolveMultiP2pFilePath( $graph )
+                : $this->resolveMultiP2pVlanFilePaths( $graph, $graph->getVlan() );
+            $rrd = new MultiRrdUtil( $paths, $graph );
             return $rrd->data();
-        } catch( FileErrorException $e ) {
-            Log::notice("[Grapher] {$this->name()} data(): could not load file {$this->resolveFilePath( $graph, 'rrd' )}");
-            return [];
+        } catch ( FileErrorException $e ) {
+            Log::notice("[Grapher] {$this->name()} data(): could not load one or more file(s) " .
+                ( isset( $rrd ) ? implode( ', ', $rrd->localfiles() ) : '???' ) );
+            return []; // FIXME check handling of this
         }
     }
 
@@ -273,7 +289,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      *
      * @return string
      */
-    private function translateCategory( $c ): string
+    private function translateCategory( string $c ): string
     {
         if( $c === Graph::CATEGORY_BITS ) {
             return 'bytes';
@@ -410,7 +426,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      * @param int $vlan
      * @return string[]
      */
-    private function resolveMultiP2pVlanFilePaths ( MultiP2pGraph $graph , int $vlan): array
+    private function resolveMultiP2pVlanFilePaths ( MultiP2pGraph $graph, int $vlan ): array
     {
         $config = config('grapher.backends.sflow');
 

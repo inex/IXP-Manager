@@ -368,49 +368,45 @@ class Rrd
      */
     public function dataWindow( int $start, int $end): array
     {
-        $rrdAverage = $this->fetchRrdFile( $start, $end, 'AVERAGE');
-        $rrdMax = $this->fetchRrdFile( $start, $end, 'MAX');
+        $avg = $this->fetchRrdFile( $start, $end, 'AVERAGE' );
+        $max = $this->fetchRrdFile( $start, $end, 'MAX' );
 
-        $this->start = $rrdAverage['start'];
-        $this->end   = $rrdAverage['end'];
-        $this->step  = $rrdAverage['step'];
+        $this->start = $avg['start'];
+        $this->end   = $avg['end'];
+        $this->step  = $avg['step'];
 
         [ $indexIn, $indexOut ] = $this->getIndexKeys();
 
         // we want newest first, so iterate in reverse
         // but.... do, we?
         // $tin = array_reverse( $rrd['data'][ $indexIn ], true );
-        $tin = $rrdAverage['data'][ $indexIn ];
+        $tin = $avg['data'][ $indexIn ];
 
         $values  = [];
 
-        $isBits = ( $this->graph()->category() === Graph::CATEGORY_BITS );
-
-        $i = 0;
+        $unitMultiplier = $this->graph()->category() === Graph::CATEGORY_BITS ? 8 : 1;
+        $now = time();
         foreach( $tin as $ts => $v ) {
-            if( is_numeric( $v ) && is_numeric( $rrdAverage['data'][$indexOut][$ts] ) && is_numeric( $rrdMax['data'][$indexIn][$ts]) ) {
-                // first couple are often blank
-                if( $ts > time() - $this->step ) {
-                    continue;
-                }
-
-                /**
-                 * 1st column: The Unix timestamp for the point in time the data on this line is relevant ($ts)
-                 * 2nd column: The average incoming transfer rate in bytes per second. ($v))
-                 * 3rd column: The average outgoing transfer rate in bytes per second since the previous measurement. ($rrdAverage['data'][$indexOut][$ts])
-                 * 4th column: The maximum incoming transfer rate in bytes per second for the current interval. ($rrdMax['data'][$indexIn][$ts])
-                 * 5th column: The maximum outgoing transfer rate in bytes per second for the current interval. ($rrdMax['data'][$indexOut][$ts])
-                 */
-                $values[$i] = [ (int)$ts, (int)$v, (int)$rrdAverage['data'][$indexOut][$ts], (int)$rrdMax['data'][$indexIn][$ts], (int)$rrdMax['data'][$indexOut][$ts] ];
-
-                if( $isBits ) {
-                    $values[ $i ][ 1 ] *= 8;
-                    $values[ $i ][ 2 ] *= 8;
-                    $values[ $i ][ 3 ] *= 8;
-                    $values[ $i ][ 4 ] *= 8;
-                }
-                $i++;
+            // first couple are often blank
+            if( $ts > ($now - $this->step) && is_nan($avg['data'][$indexIn][$ts]) && is_nan($avg['data'][$indexOut][$ts]) && is_nan($max['data'][$indexIn][$ts]) && is_nan($max['data'][$indexOut][$ts]) ) {
+                continue;
             }
+
+            /**
+             * 1st column: The Unix timestamp for the point in time the data on this line is relevant             ($ts)
+             * 2nd column: The average incoming transfer rate in bytes per second.                                ($rrdAverage['data'][$indexIn][$ts] or $v))
+             * 3rd column: The average outgoing transfer rate in bytes per second since the previous measurement. ($rrdAverage['data'][$indexOut][$ts])
+             * 4th column: The maximum incoming transfer rate in bytes per second for the current interval.       ($rrdMax['data'][$indexIn][$ts])
+             * 5th column: The maximum outgoing transfer rate in bytes per second for the current interval.       ($rrdMax['data'][$indexOut][$ts])
+             */
+
+            $values[] = [
+                (int)$ts,
+                is_nan($avg['data'][$indexIn][$ts])  ? 0 : (int)round($avg['data'][$indexIn][$ts] * $unitMultiplier),
+                is_nan($avg['data'][$indexOut][$ts]) ? 0 : (int)round($avg['data'][$indexOut][$ts] * $unitMultiplier),
+                is_nan($max['data'][$indexIn][$ts])  ? 0 : (int)round($max['data'][$indexIn][$ts] * $unitMultiplier),
+                is_nan($max['data'][$indexOut][$ts]) ? 0 : (int)round($max['data'][$indexOut][$ts] * $unitMultiplier),
+            ];
         }
         return $values;
     }

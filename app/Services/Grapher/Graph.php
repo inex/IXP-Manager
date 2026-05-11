@@ -599,7 +599,7 @@ abstract class Graph
     }
 
     /**
-     * Return the class name less the IXP\Grapher\Graph\ namespace
+     * Return the class name less the IXP\Services\Grapher\Graph\ namespace
      *
      * @return string
      */
