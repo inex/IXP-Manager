@@ -38,6 +38,8 @@ class Kernel extends ConsoleKernel
     #[\Override]
     protected function schedule( Schedule $schedule ): void
     {
+        $jitter = config('app.key') ? schedule_jitter() : 0;
+
         // Expunge logs / GDPR data / etc.
         $schedule->command( 'utils:expunge-logs' )->dailyAt( '3:04' );
         
@@ -59,21 +61,21 @@ class Kernel extends ConsoleKernel
 
 
         // https://docs.ixpmanager.org/latest/features/peeringdb/#existence-of-peeringdb-records
-        $schedule->command('ixp-manager:update-in-peeringdb')->daily()
+        $schedule->command('ixp-manager:update-in-peeringdb')->daily()->at( $this->jitterTime( $jitter, 1 ) )
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UPDATE_IN_PEERINGDB', false ); } );
 
         // https://docs.ixpmanager.org/latest/features/manrs/
-        $schedule->command('ixp-manager:update-in-manrs')->daily()
+        $schedule->command('ixp-manager:update-in-manrs')->dailyAt( $this->jitterTime( $jitter, 2 ) )
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UPDATE_IN_MANRS', false ); } );
 
         // IRRDB - https://docs.ixpmanager.org/latest/features/irrdb/
         if( config( 'ixp.irrdb.bgpq3.path' ) && is_executable( config( 'ixp.irrdb.bgpq3.path' ) ) ) {
 
-            $schedule->command( 'irrdb:update-prefix-db --alert-email' )->cron( '7 */6 * * *' )
+            $schedule->command( 'irrdb:update-prefix-db --alert-email' )->cron( $this->jitterMinute( $jitter, 7 ) . ' */6 * * *' )
                 ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_IRRDB_UPDATE_PREFIX_DB', false ); } )
                 ->withoutOverlapping();
 
-            $schedule->command( 'irrdb:update-asn-db --alert-email' )->cron( '37 */6 * * *' )
+            $schedule->command( 'irrdb:update-asn-db --alert-email' )->cron( $this->jitterMinute( $jitter, 37 ) . ' */6 * * *' )
                 ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_IRRDB_UPDATE_ASN_DB', false ); } )
                 ->withoutOverlapping();
         }
@@ -82,8 +84,12 @@ class Kernel extends ConsoleKernel
         $schedule->command('telescope:prune --hours=72')->daily();
 
         // OUI Update - https://docs.ixpmanager.org/latest/features/layer2-addresses/#oui-database
-        $schedule->command( 'utils:oui-update' )->weekly()->mondays()->at('9:15')
+        $schedule->command( 'utils:oui-update' )->weekly()->mondays()->at( $this->jitterTime( $jitter, 9, 15 ) )
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UTILS_OUI_UPDATE', false ); } )
+            ->withoutOverlapping();
+
+        $schedule->command( 'utils:asn-update' )->weekly()->tuesdays()->at( $this->jitterTime( $jitter, 10, 15 ) )
+            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UTILS_ASN_UPDATE', false ); } )
             ->withoutOverlapping();
 
         // Switch SNMP pool - https://docs.ixpmanager.org/latest/usage/switches/#automated-polling-snmp-updates
@@ -91,6 +97,25 @@ class Kernel extends ConsoleKernel
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_SWITCH_SNMP_POLL', false ); } )
             ->withoutOverlapping();
 
+    }
+
+    /**
+     * Format $hour and $minute into a time string ("hh:mm"), factoring in $jitter to
+     * roughly spread load around
+     */
+    private function jitterTime(int $jitter, int $hour = 0, int $minute = 0): string
+    {
+        return sprintf( '%02d:%02d', $hour, ($minute + $jitter) % 60 );
+    }
+
+    /**
+     * Format $minute into a minute string ("mm"), factoring in $jitter to
+     * roughly spread load around
+     * @return string
+     */
+    private function jitterMinute(int $jitter, int $minute = 0): string
+    {
+        return sprintf( '%02d', ($minute + $jitter) % 60 );
     }
 
     /**

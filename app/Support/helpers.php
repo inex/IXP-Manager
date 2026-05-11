@@ -183,3 +183,22 @@ if( !function_exists( 'app_env_is' ) )
         return config('app.env') === $env;
     }
 }
+
+if( !function_exists( 'schedule_jitter' ) )
+{
+    /**
+     * Schedule jitter returns a random number between 0-255
+     *
+     * This function uses the hash of the app.key config value to generate a
+     * random jitter value (from 0-255) for scheduling tasks.
+     *
+     * app.key is 1) required by each installation; 2) kept constant; and 3) and a fairly small volume of data to hash.
+     *
+     * @return int
+     */
+    function schedule_jitter(): int
+    {
+        $byte = hash( 'sha256', config( 'app.key' ), true )[0];
+        return unpack( "C", $byte )[1];
+    }
+}
