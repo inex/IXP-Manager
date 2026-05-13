@@ -60,6 +60,7 @@ use Symfony\Component\HttpFoundation\{
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers\Auth
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -178,7 +179,7 @@ class LoginController extends Controller
      * @param Request       $r
      * @param string|null   $msg
      */
-    protected function sendFailedLoginResponse( Request $r, $msg = null ) : RedirectResponse
+    protected function sendFailedLoginResponse( Request $r, ?string $msg = null ) : RedirectResponse
     {
         AlertContainer::push( $msg ?? "Invalid username or password. Please try again." , Alert::DANGER );
         return redirect()->back()->withInput( $r->only('username') );
@@ -187,13 +188,13 @@ class LoginController extends Controller
     /**
      * Log the user out of the application.
      *
-     * @param Request      $r
+     * @param Request      $request
      * @param array|null   $customMessage Custom message to display
      */
-    public function logout( Request $r, $customMessage = null ) : RedirectResponse
+    public function logout( Request $request, ?array $customMessage = null ) : RedirectResponse
     {
         $this->guard()->logout();
-        $r->session()->invalidate();
+        $request->session()->invalidate();
 
         AlertContainer::push( $customMessage ? $customMessage[ "message" ] : "You have been logged out." , $customMessage ? $customMessage[ "class" ] : Alert::SUCCESS );
         return redirect('');

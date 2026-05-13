@@ -51,6 +51,7 @@ use IXP\Utils\View\Alert\{
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers\Auth
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -92,21 +93,21 @@ class ResetPasswordController extends Controller
      *
      * If no token is present, display the link request form.
      *
-     * @param Request       $r
-     * @param  string|null  $token
+     * @param Request       $request
+     * @param string|null   $token
      *
      * @return View
      */
-    public function showResetForm( Request $r, string $token = null ): View
+    public function showResetForm( Request $request, ?string $token = null ): View
     {
         Former::populate( [
-            'username'      => request()->old( 'username',  $r->username    ),
-            'token'         => request()->old( 'token',     $token          ),
+            'username'      => request()->old( 'username',  $request->username    ),
+            'token'         => request()->old( 'token',     $token                ),
         ] );
 
         return view('auth/reset-password')->with( [
             'token'     => $token,
-            'username'  => $r->username
+            'username'  => $request->username
         ] );
     }
 

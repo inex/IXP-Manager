@@ -58,6 +58,7 @@ use IXP\Utils\View\Alert\{
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers\PatchPanel\Port
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -72,7 +73,7 @@ class PortController extends Controller
      *
      * @return  View
      */
-    public function index( PatchPanel $pp = null ): View
+    public function index( ?PatchPanel $pp = null ): View
     {
         return view( 'patch-panel-port/index' )->with([
             'patchPanelPorts'   => PatchPanelPortAggregator::list( $pp->id ?? null ),
@@ -145,7 +146,7 @@ class PortController extends Controller
      *
      * @return View
      */
-    public function edit( Request $r, PatchPanelPort $ppp, string $formType = null ): View
+    public function edit( Request $r, PatchPanelPort $ppp, ?string $formType = null ): View
     {
         // if this is a slave port in a duplex port, swap for the master:
         $ppp = $ppp->duplexMasterPort ?? $ppp;

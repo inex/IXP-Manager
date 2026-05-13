@@ -46,6 +46,7 @@ use IXP\Models\{
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -207,13 +208,13 @@ class SearchController extends Controller
     /**
      * Process the mac address search
      *
-     * @param Collection|null  $is virtual interfaces list
+     * @param Collection  $is virtual interfaces list
      *
      * @return ((VirtualInterface|mixed)[]|Customer|mixed)[][]
      *
      * @psalm-return array{results: array<int, Customer|mixed>, interfaces: array<int, non-empty-list<IXP\Models\VirtualInterface|mixed>>}
      */
-    private function processMACSearch( Collection $is = null ): array
+    private function processMACSearch( Collection $is ): array
     {
         $results = $interfaces = [];
 
