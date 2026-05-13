@@ -32,6 +32,7 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController as Eloquent2Frontend;
  * Result Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers\RipeAtlas
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -96,12 +97,12 @@ class ResultController extends Eloquent2Frontend
     /**
      * Provide array of rows for the list action and view action
      *
-     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @param int|null $id The `id` of the row to load for `view` action`. `null` if `listAction`
      *
      * @return array
      */
     #[\Override]
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
         return AtlasResult::when( $id, function( Builder $q, $id ) {

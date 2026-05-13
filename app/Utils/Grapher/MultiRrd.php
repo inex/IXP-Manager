@@ -33,9 +33,10 @@ use Illuminate\Support\Facades\Log;
 
 
 /**
- * A class to handle RRD files
+ * A class for operations on multiple RRD files
  *
  * @author Barry O'Donovan <barry@opensolutions.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @package Grapher
  */
 class MultiRrd
@@ -175,7 +176,7 @@ class MultiRrd
      *
      * @throws FileErrorException
      */
-    private function getLocalFilename( $file, ?string $exten = null ): string
+    private function getLocalFilename( string $file, ?string $exten = null ): string
     {
         $parts = explode( '/', $file );
         $name  = $parts[ array_key_last( $parts ) ];

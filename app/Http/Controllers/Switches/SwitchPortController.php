@@ -58,6 +58,7 @@ use OSS_SNMP\MIBS\Iface;
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers\Switches
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -267,7 +268,7 @@ class SwitchPortController extends EloquentController
      * @psalm-return array{object: mixed, switches: mixed}
      */
     #[\Override]
-    protected function editPrepareForm( $id = null ): array
+    protected function editPrepareForm( int $id ): array
     {
         $this->object = SwitchPort::findOrFail( $id );
 

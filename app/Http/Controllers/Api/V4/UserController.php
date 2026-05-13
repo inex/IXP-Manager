@@ -38,6 +38,7 @@ use IXP\Models\User;
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   APIv4
  * @package    IXP\Http\Controllers\Api\V4
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -52,7 +53,7 @@ class UserController extends Controller
      *
      * @return JsonResponse
      */
-    public function json( int $priv = null ): JsonResponse
+    public function json( ?int $priv = null ): JsonResponse
     {
         return response()->json(
             User::byPrivs( $priv )->get()->toArray()
@@ -68,7 +69,7 @@ class UserController extends Controller
      *
      * @return Response
      */
-    public function formatted( Request $r, int $priv = null, string $template = null ): Response
+    public function formatted( Request $r, ?int $priv = null, ?string $template = null ): Response
     {
         if( $template === null && !$r->template ) {
             $tmpl = 'api/v4/user/formatted/default';

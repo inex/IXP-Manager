@@ -45,6 +45,7 @@ use IXP\Models\{
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   APIv4
  * @package    IXP\Http\Controllers\Api\V4
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -64,7 +65,7 @@ class NagiosController extends Controller
      *
      * @return Response
      */
-    public function customers( Request $r, Vlan $vlan, int $protocol, string $template = null ): Response
+    public function customers( Request $r, Vlan $vlan, int $protocol, ?string $template = null ): Response
     {
         if( !in_array( $protocol, [ 4, 6 ] ) ) {
             abort( 404, 'Unknown protocol' );
@@ -107,7 +108,7 @@ class NagiosController extends Controller
      *
      * @return Response
      */
-    public function switches( Request $r, Infrastructure $infra, string $template = null ): Response
+    public function switches( Request $r, Infrastructure $infra, ?string $template = null ): Response
     {
         if( $template === null ) {
             $tmpl = 'api/v4/nagios/switches/default';
@@ -141,7 +142,7 @@ class NagiosController extends Controller
      *
      * @return Response
      */
-    public function birdseyeDaemons( Request $r, string $template = null, Vlan $vlan = null ): Response
+    public function birdseyeDaemons( Request $r, ?string $template = null, ?Vlan $vlan = null ): Response
     {
         $routers = Router::where( 'api_type', Router::API_TYPE_BIRDSEYE )
             ->when( $vlan, function( Builder $q, $vlan ) {
@@ -189,7 +190,7 @@ class NagiosController extends Controller
      *
      * @return Response
      */
-    public function birdseyeBgpSessions( Request $r, Vlan $vlan, int $protocol, int $type, string $template = null ): Response
+    public function birdseyeBgpSessions( Request $r, Vlan $vlan, int $protocol, int $type, ?string $template = null ): Response
     {
         if( !in_array( $protocol, [ 4, 6 ] ) ) {
             abort( 404, 'Unknown protocol' );

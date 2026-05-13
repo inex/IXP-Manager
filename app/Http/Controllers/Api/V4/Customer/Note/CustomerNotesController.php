@@ -48,6 +48,7 @@ use IXP\Events\Customer\Note\{
  * Customer Note API v4 Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   Customers
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
@@ -171,7 +172,7 @@ class CustomerNotesController extends Controller
      *
      * @return JsonResponse
      */
-    public function ping( Customer $c = null ): JsonResponse
+    public function ping( ?Customer $c = null ): JsonResponse
     {
         /** @var User $u */
         $u = Auth::getUser();
@@ -220,7 +221,7 @@ class CustomerNotesController extends Controller
      *
      * @return JsonResponse
      */
-    private function notifyToggle( Customer $cust = null, CustomerNote $cn = null ): JsonResponse
+    private function notifyToggle( ?Customer $cust = null, ?CustomerNote $cn = null ): JsonResponse
     {
         /** @var User $user */
         $user   = Auth::getUser();

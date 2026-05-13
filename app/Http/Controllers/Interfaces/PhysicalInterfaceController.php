@@ -53,6 +53,7 @@ use IXP\Utils\View\Alert\{
  * PhysicalInterface Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers\Interfaces
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -195,7 +196,7 @@ class PhysicalInterfaceController extends Common
      *
      * @return View|RedirectResponse
      */
-    public function edit( Request $r,  PhysicalInterface $pi, VirtualInterface $vi = null, CoreBundle $cb = null )
+    public function edit( Request $r,  PhysicalInterface $pi, ?VirtualInterface $vi = null, ?CoreBundle $cb = null )
     {
         // we never edit a fanout port:
         if( $pi->switchPort->typeFanout() ) {
