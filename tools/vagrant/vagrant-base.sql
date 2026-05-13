@@ -58,7 +58,7 @@ DROP TABLE IF EXISTS `asns`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `asns` (
-  `asn` int NOT NULL AUTO_INCREMENT,
+  `asn` bigint unsigned NOT NULL,
   `name` varchar(300) COLLATE utf8mb4_unicode_ci NOT NULL,
   `class` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL,
   `country_code` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1515,7 +1515,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1524,7 +1524,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2020_06_01_143931_database_schema_at_end_v5',1),(2,'2020_07_21_094354_create_route_server_filters',1),(3,'2020_09_03_153723_add_timestamps',1),(4,'2020_09_18_095136_delete_ixp_table',1),(5,'2020_11_16_102415_database_fixes',1),(6,'2021_03_12_150418_create_log_table',1),(7,'2021_03_30_124916_create_atlas_probes',1),(8,'2021_03_30_125238_create_atlas_runs',1),(9,'2021_03_30_125422_create_atlas_measurements',1),(10,'2021_03_30_125723_create_atlas_results',1),(11,'2021_04_14_101948_update_timestamps',1),(12,'2021_04_14_125742_user_pref',1),(13,'2021_05_18_085721_add_note_infrastructure',1),(14,'2021_05_18_114206_update_pp_prefix_size',1),(15,'2021_06_11_141137_update_db_doctrine2eloquent',1),(16,'2021_07_20_134716_fix_last_updated_and_timestamps',1),(17,'2021_09_16_195333_add_rate_limit_col_to_physint',1),(18,'2021_09_17_144421_modernise_irrdb_conf_table',1),(19,'2021_09_21_100354_create_route_server_filters_prod',1),(20,'2021_09_21_162700_rs_pairing',1),(21,'2022_02_12_183121_add_colo_pp_type_patch_panel',1),(22,'2023_09_26_191150_add_registration_details',1),(23,'2024_03_18_191322_add_export_to_ixf_vlan',1),(24,'2024_08_10_125003_create_irrdb_update_logs',1),(25,'2014_10_12_100000_create_password_resets_table',2),(26,'2018_08_08_100000_create_telescope_entries_table',2),(27,'2019_03_25_211956_create_failed_jobs_table',2),(28,'2020_02_06_204556_create_docstore_directories',2),(29,'2020_02_06_204608_create_docstore_files',2),(30,'2020_02_06_204911_create_docstore_logs',2),(31,'2020_03_09_110945_create_docstore_customer_directories',2),(32,'2020_03_09_111505_create_docstore_customer_files',2),(33,'2024_05_29_102028_reset-views',2),(34,'2024_09_05_111855_create_p2p_daily_stats_table',2),(35,'2025_09_01_102636_add_ipv6_max_prefixes',2),(36,'2025_11_11_085835_add_exclude_from_ixf_export_to_infrastructure',2),(37,'2026_02_16_205211_remove_legacy_columns_from_contacts',2),(40,'2026_04_20_161912_remove_user_privs',3),(41,'2026_04_27_110644_create_asn_table',4);
+INSERT INTO `migrations` VALUES (1,'2020_06_01_143931_database_schema_at_end_v5',1),(2,'2020_07_21_094354_create_route_server_filters',1),(3,'2020_09_03_153723_add_timestamps',1),(4,'2020_09_18_095136_delete_ixp_table',1),(5,'2020_11_16_102415_database_fixes',1),(6,'2021_03_12_150418_create_log_table',1),(7,'2021_03_30_124916_create_atlas_probes',1),(8,'2021_03_30_125238_create_atlas_runs',1),(9,'2021_03_30_125422_create_atlas_measurements',1),(10,'2021_03_30_125723_create_atlas_results',1),(11,'2021_04_14_101948_update_timestamps',1),(12,'2021_04_14_125742_user_pref',1),(13,'2021_05_18_085721_add_note_infrastructure',1),(14,'2021_05_18_114206_update_pp_prefix_size',1),(15,'2021_06_11_141137_update_db_doctrine2eloquent',1),(16,'2021_07_20_134716_fix_last_updated_and_timestamps',1),(17,'2021_09_16_195333_add_rate_limit_col_to_physint',1),(18,'2021_09_17_144421_modernise_irrdb_conf_table',1),(19,'2021_09_21_100354_create_route_server_filters_prod',1),(20,'2021_09_21_162700_rs_pairing',1),(21,'2022_02_12_183121_add_colo_pp_type_patch_panel',1),(22,'2023_09_26_191150_add_registration_details',1),(23,'2024_03_18_191322_add_export_to_ixf_vlan',1),(24,'2024_08_10_125003_create_irrdb_update_logs',1),(25,'2014_10_12_100000_create_password_resets_table',2),(26,'2018_08_08_100000_create_telescope_entries_table',2),(27,'2019_03_25_211956_create_failed_jobs_table',2),(28,'2020_02_06_204556_create_docstore_directories',2),(29,'2020_02_06_204608_create_docstore_files',2),(30,'2020_02_06_204911_create_docstore_logs',2),(31,'2020_03_09_110945_create_docstore_customer_directories',2),(32,'2020_03_09_111505_create_docstore_customer_files',2),(33,'2024_05_29_102028_reset-views',2),(34,'2024_09_05_111855_create_p2p_daily_stats_table',2),(35,'2025_09_01_102636_add_ipv6_max_prefixes',2),(36,'2025_11_11_085835_add_exclude_from_ixf_export_to_infrastructure',2),(37,'2026_02_16_205211_remove_legacy_columns_from_contacts',2),(40,'2026_04_20_161912_remove_user_privs',3),(42,'2026_04_27_110644_create_asn_table',4);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3084,4 +3084,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-30 15:35:35
+-- Dump completed on 2026-05-13 13:30:40
