@@ -61,6 +61,7 @@ use IXP\Utils\View\Alert\{
  *
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -95,13 +96,11 @@ class IpAddressController extends Controller
      * Display the list of the IP Address (IPv4 or IPv6)
      *
      * @param int       $protocol   Protocol of the IP address
-     * @param int|null  Vlan        ID of the vlan
+     * @param int|null  $vid        ID of the vlan
      *
-     * @return view
-     *
-     * @throws
+     * @return View
      */
-    public function list( int $protocol, int $vid = null ): View
+    public function list( int $protocol, ?int $vid = null ): View
     {
         $vlan = false;
         if( $vid ) {

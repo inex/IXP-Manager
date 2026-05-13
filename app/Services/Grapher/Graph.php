@@ -39,6 +39,7 @@ use Illuminate\Auth\Access\AuthorizationException;
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Services\Grapher
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -1027,10 +1028,11 @@ abstract class Graph
      *
      * @param string|null $value The user input value
      * @param string|null $default The preferred default value
+     * @param bool        $withExtended Whether to include extended periods
      *
      * @return string|null The verified / sanitised / default value
      */
-    public static function processParameterPeriod( ?string $value = null, ?string $default = null, $withExtended = false ): string|null
+    public static function processParameterPeriod( ?string $value = null, ?string $default = null, bool $withExtended = false ): string|null
     {
         if( $withExtended && !isset( self::PERIODS_EXTENDED[ $value ] ) ) {
             $value = $default ?? self::PERIOD_DEFAULT;

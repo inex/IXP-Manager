@@ -45,6 +45,7 @@ use IXP\Services\Grapher\Graph;
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Services\Grapher
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -172,13 +173,14 @@ class Latency extends Graph
      * Note that this function just sets the default if the input is invalid.
      * If you want to force an exception in such cases, use setPeriod()
      *
-     * @param string|null $value The user input value
-     * @param string|null $default The preferred default value
+     * @param string|null $value        The user input value
+     * @param string|null $default      The preferred default value
+     * @param bool        $withExtended The preferred default value
      *
      * @return string|null The verified / sanitised / default value
      */
     #[\Override]
-    public static function processParameterPeriod( ?string $value = null, ?string $default = null, $withExtended = false ): string|null
+    public static function processParameterPeriod( ?string $value = null, ?string $default = null, bool $withExtended = false ): string|null
     {
         if( $withExtended && !isset( self::PERIODS_EXTENDED[ $value ] ) ) {
             $value = $default ?? self::PERIOD_DEFAULT;

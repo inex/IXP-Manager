@@ -115,7 +115,7 @@ class RsPrefixAggregator extends RsPrefix
      *
      * @return array Route acceptance counts for all customers as an aggregated array
      */
-    public static function aggregateRouteSummariesForCustomer( $custid ): array
+    public static function aggregateRouteSummariesForCustomer( int $custid ): array
     {
         $summary = self::initialiseAggregateRouteSummariesArray();
 
@@ -232,7 +232,7 @@ class RsPrefixAggregator extends RsPrefix
      *
      * @return bool|array Count of all routes advertised to the route server and accepted by it
      */
-    public static function summaryRoutesAdvertisedAndAccepted( $protocol, $cust = null )
+    public static function summaryRoutesAdvertisedAndAccepted( int $protocol, ?int $cust = null )
     {
         return self::getSummaryRoutes( $protocol, 1, false, $cust );
     }
@@ -281,7 +281,7 @@ class RsPrefixAggregator extends RsPrefix
      *
      * @return bool|array The database query result (or false if none)
      */
-    public static function getSummaryRoutes( int  $protocol, int $irrdb, bool $rsOriginIsNull, ?int $cust = null )
+    public static function getSummaryRoutes( int $protocol, int $irrdb, bool $rsOriginIsNull, ?int $cust = null )
     {
         $result = self::selectRaw(
             'cust.id AS id, cust.name AS name,
@@ -333,7 +333,7 @@ class RsPrefixAggregator extends RsPrefix
      *
      * @return array All routes not advertised to the route server but would be accepted by it
      */
-    public static function routesAdvertisedAndNotAccepted( $protocol = null, $cust = null ): array
+    public static function routesAdvertisedAndNotAccepted( ?int $protocol = null, ?int $cust = null ): array
     {
         return self::getRoutes( 0, false, $protocol, $cust );
     }
@@ -347,7 +347,7 @@ class RsPrefixAggregator extends RsPrefix
      *
      * @return array All routes not advertised to the route server but would be accepted by it
      */
-    public static function routesNotAdvertisedButAcceptable( $protocol = null, $cust = null ): array
+    public static function routesNotAdvertisedButAcceptable( ?int $protocol = null, ?int $cust = null ): array
     {
         return self::getRoutes( 1, true, $protocol, $cust );
     }

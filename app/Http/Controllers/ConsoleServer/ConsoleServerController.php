@@ -47,6 +47,7 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController;
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers\ConsoleServer
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -151,7 +152,7 @@ class ConsoleServerController extends EloquentController
      * @return array
      */
     #[\Override]
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
         return ConsoleServer::selectRaw(

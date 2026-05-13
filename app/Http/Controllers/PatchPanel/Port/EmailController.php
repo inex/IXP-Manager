@@ -53,6 +53,7 @@ use IXP\Utils\View\Alert\{
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers\PatchPanel\Port
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -137,19 +138,16 @@ class EmailController extends Common
      *
      * @param PatchPanelPort    $ppp
      * @param int               $type Email type to send
-     * @param Email|null        $mailable
      *
      * @return  Email
      */
-    private function setupEmailRoutes( PatchPanelPort $ppp, int $type, Email $mailable = null ): Email
+    private function setupEmailRoutes( PatchPanelPort $ppp, int $type ): Email
     {
         if( !array_key_exists( $type, PatchPanelPort::$EMAIL_CLASSES ) ) {
             abort(404, 'Email type not found');
         }
 
-        if( !$mailable ) {
-            $mailable = new PatchPanelPort::$EMAIL_CLASSES[ $type ]( $ppp );
-        }
+        $mailable = new PatchPanelPort::$EMAIL_CLASSES[ $type ]( $ppp );
 
         Former::populate([
             'email_to'       => implode( ',', $mailable->getRecipientEmails('to') ),

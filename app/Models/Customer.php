@@ -904,11 +904,11 @@ class Customer extends Model
     /**
      * Get formatted name
      *
-     * @param  null  $fmt
+     * @param  string|null  $fmt
      *
      * @return null|string
      */
-    public function getFormattedName( $fmt = null ): ?string
+    public function getFormattedName( ?string $fmt = null ): ?string
     {
         if( $this->type === self::TYPE_ASSOCIATE ) {
             return $this->abbreviatedName ?? $this->name;
