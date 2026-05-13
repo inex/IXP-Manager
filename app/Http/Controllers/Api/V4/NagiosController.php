@@ -168,8 +168,8 @@ class NagiosController extends Controller
                     'vlanid'    => $vlan->id ?? false,
 
                     // optional POST/GET parameters
-                    'host_definition'    => $r->input( 'host_definition', 'ixp-manager-host-birdseye-daemon' ),
-                    'service_definition' => $r->input( 'host_definition', 'ixp-manager-service-birdseye-daemon' ),
+                    'host_definition'    => $r->input( 'host_definition',    'ixp-manager-host-birdseye-daemon'    ),
+                    'service_definition' => $r->input( 'service_definition', 'ixp-manager-service-birdseye-daemon' ),
 
                 ], 200)
                 ->header('Content-Type', 'text/plain; charset=utf-8');
