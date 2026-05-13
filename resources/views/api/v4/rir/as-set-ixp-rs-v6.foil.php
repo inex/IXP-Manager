@@ -1,6 +1,6 @@
 <?php if( $t->forJson ): ?>
-IXPM-OBJECT:    aut-num
-IXPM-KEY:       AS66500<?php else: ?>
+IXPM-OBJECT:    as-set
+IXPM-KEY:       AS-SET-IXP-RS-V6<?php else: ?>
 password:       <?= config('ixp_api.rir.password') ?>
 <?php endif; ?>
 
