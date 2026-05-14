@@ -62,7 +62,7 @@ if [ -z "${APIKEY}" ] || [ -z "${ID}" ]; then
 fi
 
 
-STATUS="$( wget -O - -q  "${URL}/api/v4/switch/${ID}/status?apikey=${APIKEY}" )"
+STATUS="$( wget -O - -q  "${URL}/admin/api/v4/switch/${ID}/status?apikey=${APIKEY}" )"
 
 if [ $? -ne 0 ] || [ -z "$STATUS" ]; then
     echo Could not query switch status via API

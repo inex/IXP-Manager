@@ -40,10 +40,10 @@ ALLOWED_HANDLES="rs1-ipv4 rs1-ipv6"
 
 # --- the following should be fine on a typical Debian / Ubuntu system:
 
-URL_LOCK="${URLROOT}/api/v4/router/get-update-lock"
-URL_CONF="${URLROOT}/api/v4/router/gen-config"
-URL_RELEASE="${URLROOT}/api/v4/router/release-update-lock"
-URL_DONE="${URLROOT}/api/v4/router/updated"
+URL_LOCK="${URLROOT}/admin/api/v4/router/get-update-lock"
+URL_CONF="${URLROOT}/admin/api/v4/router/gen-config"
+URL_RELEASE="${URLROOT}/admin/api/v4/router/release-update-lock"
+URL_DONE="${URLROOT}/admin/api/v4/router/updated"
 
 BIRDBIN="/usr/sbin/bird"
 ETCPATH="/usr/local/etc/bird"
