@@ -38,9 +38,9 @@ BIRDBIN="/usr/sbin/bird"
 
 # --- the following should be fine on a typical Debian / Ubuntu system:
 
-URL_LOCK="${URLROOT}/api/v4/router/get-update-lock"
-URL_CONF="${URLROOT}/api/v4/router/gen-config"
-URL_DONE="${URLROOT}/api/v4/router/updated"
+URL_LOCK="${URLROOT}/admin/api/v4/router/get-update-lock"
+URL_CONF="${URLROOT}/admin/api/v4/router/gen-config"
+URL_DONE="${URLROOT}/admin/api/v4/router/updated"
 
 ETCPATH="/usr/local/etc/bird"
 RUNPATH="/var/run/bird"
