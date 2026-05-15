@@ -165,7 +165,7 @@ class GenerateObjectTest extends TestCase
     {
         config()->set('ixp_api.rir.ripe_api_key', 'fakeapikey' );
         \Http::fake(
-            ['https://rest.db.ripe.net/RIPE/aut-num/AS66500' => \Http::response('[]', 200)]
+            ['https://rest.db.ripe.net/RIPE/as-set/AS-SET-IXP-RS' => \Http::response('[]', 200)]
         );
 
         $rirObject = 'as-set-ixp-rs';
@@ -183,7 +183,7 @@ class GenerateObjectTest extends TestCase
     {
         config()->set('ixp_api.rir.ripe_api_key', 'fakeapikey' );
         \Http::fake(
-            ['https://rest.db.ripe.net/RIPE/aut-num/AS66500' => \Http::response('[]', 200)]
+            ['https://rest.db.ripe.net/RIPE/as-set/AS-SET-IXP-RS' => \Http::response('[]', 200)]
         );
 
         $rirObject = 'as-set-ixp-rs';
@@ -210,7 +210,7 @@ class GenerateObjectTest extends TestCase
     {
         config()->set('ixp_api.rir.ripe_api_key', 'fakeapikey' );
         \Http::fake( [
-            'https://rest.db.ripe.net/RIPE/aut-num/AS66500' => \Http::response(file_get_contents("data/ci/known-good/ripedb-api-error.json"), 401 )
+            'https://rest.db.ripe.net/RIPE/as-set/AS-SET-IXP-RS' => \Http::response(file_get_contents("data/ci/known-good/ripedb-api-error.json"), 401 )
         ] );
 
         $rirObject = 'as-set-ixp-rs';
