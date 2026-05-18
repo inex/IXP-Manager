@@ -3,7 +3,7 @@
     "description": "An application by INEX to manage Internet Exchange Points (IXPs) - https://www.ixpmanager.org/",
     "type": "project",
     "keywords": ["ixp manager", "ixpm", "inex", "ixp"],
-    "homepage": "https://github.com/inex/IXP-Manager/wiki",
+    "homepage": "https://github.com/inex/IXP-Manager",
     "license": "GPL-2.0",
     "authors": [
         {
