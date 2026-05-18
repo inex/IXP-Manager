@@ -29,7 +29,7 @@ return [
     |
     */
     'skinning' => [
-        // https://github.com/inex/IXP-Manager/wiki/Skinning :
+        // https://docs.ixpmanager.org/latest/features/skinning/ :
         'smarty' => env( 'VIEW_SMARTY_SKIN', "" ),
     ],
 

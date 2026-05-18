@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -47,9 +47,10 @@ use IXP\Utils\View\Alert\{
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers
- * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class PeeringMatrixController extends Controller
@@ -123,7 +124,7 @@ class PeeringMatrixController extends Controller
 
         if( !count( $vlans ) ) {
             AlertContainer::push( 'No VLANs have been enabled for the peering matrix. Please see <a href="'
-                . 'https://github.com/inex/IXP-Manager/wiki/Peering-Matrix">these instructions</a>'
+                . 'https://docs.ixpmanager.org/latest/features/peering-matrix/">these instructions</a>'
                 . ' / contact our support team.', Alert::DANGER );
             return redirect( '');
         }

@@ -26,7 +26,7 @@
 // INEX Switch Trunk Graphs - a production example.
 //
 // This is v4 maintaining legacy support for manual trunk graphs.
-// Please see: https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs
+// Please see: https://docs.ixpmanager.org/latest/grapher/mrtg/
 //
 // This will be phased out / automated / managed on the frontend soon
 

@@ -57,7 +57,7 @@ return [
     //
     // Generated RIR objects
     //
-    // See: https://github.com/inex/IXP-Manager/wiki/RIR-Objects
+    // See: https://docs.ixpmanager.org/latest/features/rir-objects/
     'rir_ripe_password' => 'supersecret',
 
     //;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

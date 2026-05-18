@@ -639,7 +639,8 @@
                         <div class="card-body">
                             <p>
                                 Aggregate graphs have not been configured.
-                                Please see <a href="https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs">this documentation</a>.
+
+                                Please see <a href="https://docs.ixpmanager.org/latest/grapher/mrtg/">this documentation</a>.
                             </p>
                         </div>
                     </div>

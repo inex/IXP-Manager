@@ -31,7 +31,8 @@ return [
     ;;
     ;; Enables reseller mode
     ;;
-    ;; See: https://github.com/inex/IXP-Manager/wiki/Reseller-Functionality
+    ;; See: https://docs.ixpmanager.org/latest/features/reseller/
+    ;;
     ;; */
     'reseller' => [
         'enabled' => env( 'IXP_RESELLER_ENABLED', false ),
@@ -45,7 +46,7 @@ return [
     /* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; Specifies whether to display and enable control of AS112 functionality for customers
     ;;
-    ;; See https://github.com/inex/IXP-Manager/wiki/AS112
+    ;; See https://docs.ixpmanager.org/latest/features/as112/
     ;; */
     'as112' => [
         'ui_active' => env( 'IXP_AS112_UI_ACTIVE', false ),
@@ -55,7 +56,7 @@ return [
     /* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
        ;; Peering Manager
        ;;
-       ;; See: https://github.com/inex/IXP-Manager/wiki/Peering-Manager
+       ;; See: https://docs.ixpmanager.org/latest/features/peering-manager/
        ;;
        ;; The Peering Manager allows your members to send peering requests to other members
        ;; that contain all the necessary peering details.
