@@ -44,5 +44,6 @@ class EmptyValidator implements Validator
     }
     public function run( ValidationBackend $backend ): void
     {
+        sleep(1);
     }
 }

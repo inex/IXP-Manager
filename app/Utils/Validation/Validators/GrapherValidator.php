@@ -52,5 +52,6 @@ class GrapherValidator implements Validator
         $backend->ok("Sflow enabled");
         $backend->ok("Sflow using HTTP");
         $backend->error("using deprecated option");
+        sleep(3);
     }
 }

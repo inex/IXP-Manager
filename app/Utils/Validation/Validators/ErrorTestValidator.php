@@ -44,6 +44,7 @@ class ErrorTestValidator implements Validator
     }
     public function run( ValidationBackend $backend ): void
     {
+        sleep(2);
         throw new \RuntimeException("meteorite hit the line");
     }
 }
