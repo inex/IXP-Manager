@@ -23,7 +23,7 @@
 namespace IXP\Contracts\Validation;
 
 /**
- * A Validator is responsible for running a set of tests.
+ * A Validator performs a series of checks and reports the findings in a ValidationBackend
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
 interface Validator
