@@ -10,12 +10,17 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use IXP\Contracts\Validation\ValidationRunner;
+use IXP\Contracts\Validation\Validator;
 use IXP\Utils\ConcurrentJobRunner;
+use IXP\Utils\Validation\Result;
+use IXP\Utils\Validation\Software;
 use IXP\Utils\Validation\ValidatorBackendFactory;
+use IXP\Utils\View\Alert\Container as AlertContainer;
 use Ramsey\Uuid\Uuid;
 
 class ValidationController
@@ -130,19 +135,48 @@ class ValidationController
         Cache::put( $this->getJobKey( $jobId ), $blob, 1200 );
     }
 
-    public function view(string $id): View
+    public function view(string $id): View|RedirectResponse
     {
         if ( !( $job = Cache::get( $this->getJobKey( $id ) ) ) ) {
-            abort(404, "Job details not found");
+            AlertContainer::push("A validation task with the provided ID could not be found. Start another validation instead.");
+            return redirect()->route('validation@start');
         }
 
-        return view('validation/view', [
+        return view('validation/view2', [
+            'jobId' => $id,
             'job' => $job,
         ]);
     }
 
-    public function apiLoadResults(): void
+    public function apiResults(string $id): JsonResponse
     {
-        throw new \RuntimeException('Validation load results method not implemented');
+        if ( !( $job = Cache::get( $this->getJobKey( $id ) ) ) ) {
+            return response()->json( [], 404 );
+        }
+
+        $complete = array_all( $job['backends'] , fn(ValidationRunner $backend) => $backend->isComplete() );
+
+        $prioritySortedBackends = collect($job['backends'])->sortBy(fn(ValidationRunner $backend) => $backend->getPriority())->all();
+        $backends = [];
+        foreach ($prioritySortedBackends as $backend) {
+            if ( !$backend->isComplete() ) {
+                continue;
+            }
+            $software = array_map( fn(Software $software) => ['name' => $software->software, 'version' => $software->version ], $backend->getSoftware() );
+            $results = array_map( fn(Result $result) => ['message' => $result->message, 'type' => $result->type ], $backend->getResults() );
+            $backends[] = [
+                'name' => $backend->getName(),
+                'priority' => $backend->getPriority(),
+                'software' => $software,
+                'results' => $results,
+            ];
+        }
+
+        return response()->json( [
+            'started' => $job['started'],
+            'finished' => $job['finished'],
+            'complete' => $complete,
+            'validations' => $backends,
+        ] );
     }
 }
