@@ -10,11 +10,12 @@ System Validation
 
 
 <?php $this->section( 'page-header-postamble' ) ?>
-<div id="loading-spinner" class="btn-group btn-group-sm tw-ml-2" role="group">
-    <span><i class="fa fa-spinner fa-spin tw-pt-2"></i></span>
-    <span class="mt-2 text-muted">&nbsp; Loading results..</span>
-</div>
 <div class="btn-group btn-group-sm tw-ml-2" role="group">
+    <span id="loading-spinner" class="loading-results-indicator">
+        <i class="fa fa-spinner fa-spin tw-pt-2"></i> &nbsp;
+        <span class="text-muted">Performing system validation checks.. &nbsp;&nbsp;</span>
+    </span>
+
     <a class="btn btn-white" href="<?= route('validation@start' ) ?>">
         <span class="fa fa-repeat"></span>
     </a>
@@ -27,13 +28,6 @@ System Validation
     <?= $t->alerts() ?>
     <div id="validation-container" class="row">
     </div>
-
-    <template id="tmpl-validation-loading">
-        <div class="text-center col-12 " id="loading-spinner">
-            <span><i class="fa fa-spinner fa-spin text-5xl"></i></span>
-            <span class="mt-2 text-muted">&nbsp; Loading results..</span>
-        </div>
-    </template>
 
     <template id="validation-template">
         <!-- validation-info-button attr title -->
@@ -49,8 +43,6 @@ System Validation
                     <i class="fa fa-info" aria-hidden="true"></i>
                 </button>
                 <span class="validation-title"></span>
-
-                &nbsp;&nbsp;&nbsp;&nbsp;<a href="" class="tw-hidden validation-link"><i class="ml-2 fa fa-arrow-circle-o-right"></i></a>
             </h1>
         </div>
     </template>
@@ -73,8 +65,6 @@ System Validation
 <?php $this->section('scripts') ?>
 <script type="module">
     let jobId = "<?= $t->ee( $t->jobId, "js" ); ?>";
-    let finished = false;
-    let failed = false;
 
     let resultTypeBadgeClass = {
         'FAILURE': 'tw-border-red-600 tw-bg-red-600',
@@ -82,20 +72,22 @@ System Validation
         'OK': 'tw-border-teal-400 tw-bg-teal-400',
     };
 
+    const $loadingSpinner = $('.loading-results-indicator');
+    const $container = $('#validation-container');
+    const $validationTemplate = $('#validation-template');
+
     $( document ).ready( function() {
+        // Load validation results on page open
         loadJobs();
 
+        // Periodic refresh of validation results
         let refreshTimeout = setInterval(function () {
             loadJobs();
         }, 1000);
 
         function loadJobs() {
-            const $loadingSpinner = $('#loading-spinner');
-            const $container = $('#validation-container');
-            const $validationTemplate = $('#validation-template')
-
-            // Show loading state
-            $container.html('<div class="text-center col-12 py-5"><div class="spinner-border text-primary"></div></div>');
+            // Show loading spinner?
+            // $container.html('<div class="text-center col-12 py-5"><div class="spinner-border text-primary"></div></div>');
 
             // Hit our Laravel API endpoint
             $.ajax({
@@ -106,50 +98,19 @@ System Validation
                     // Clear container for fresh data
                     $container.empty();
 
-                    if (taskData['validations'].length === 0) {
-                        $container.html('<div class="alert alert-info col-12">No jobs found.</div>');
-                        return;
-                    }
-
                     // Loop through each job
                     taskData['validations'].forEach(function(validationData) {
-                        let $validationClone = $( $validationTemplate.prop('content') ).clone();
-                        $validationClone
-                            .find('.validation-info-button')
-                            .attr("title", validationData.name)
-                            .attr("data-content", "More info about " + validationData.name);
-
-                        let link = "https://ixp.local/testing";
-                        if (false) {
-                            $validationClone
-                                .find('.validation-link')
-                                .attr("href", link);
-                        }
-
-                        $validationClone.find('.validation-title').text(validationData.name);
+                        let validationFragment = createValidationFragment(validationData.name);
 
                         // 3. Loop through and add the child results
                         validationData.results.forEach(function(resultData) {
-                            console.log(resultData);
-                            let $resultClone = $( $('#result-template').prop('content') ).clone();
-
-                            $resultClone.find('.info-line').attr("data-result-type", resultData.type);
-
-                            $resultClone
-                                .find('.result-badge')
-                                .attr("title", resultData.message)
-                            ;
-                            $resultClone.find('.result-badge').addClass(resultTypeBadgeClass[resultData.type]);
-
-                            $resultClone.find('.result-type').text(resultData.type.toUpperCase());
-                            $resultClone.find('.info-content').text(resultData.message);
-                            $resultClone.attr('data-result-type', resultData.type);
+                            let resultFragment = createValidationResultFragment(resultData.type, resultData.message);
 
                             // Append the result clone into the validation clone's list
-                            $validationClone.find('.set-wrapper').append($resultClone);
+                            validationFragment.find('.set-wrapper').append(resultFragment);
                         });
 
-                        $container.append($validationClone);
+                        $container.append(validationFragment);
                     });
 
                     if (taskData.complete) {
@@ -166,6 +127,32 @@ System Validation
                     $('[data-toggle="popover"]').popover()
                 }
             });
+        }
+
+        function createValidationFragment(name) {
+            let $validationClone = $( $validationTemplate.prop('content') ).clone();
+            $validationClone
+                .find('.validation-info-button')
+                .attr("title", name)
+                .attr("data-content", "More info about " + name);
+
+            $validationClone.find('.validation-title').text(name);
+            return $validationClone;
+        }
+
+        function createValidationResultFragment(resultType, resultMessage) {
+            let $resultClone = $( $('#result-template').prop('content') ).clone();
+
+            $resultClone.find('.info-line').attr("data-result-type", resultType);
+
+            $resultClone.find('.result-badge').attr("title", resultMessage);
+            $resultClone.find('.result-badge').addClass(resultTypeBadgeClass[resultType]);
+
+            $resultClone.find('.result-type').text(resultType.toUpperCase());
+            $resultClone.find('.info-content').text(resultMessage);
+            $resultClone.attr('data-result-type', resultType);
+
+            return $resultClone;
         }
     });
 

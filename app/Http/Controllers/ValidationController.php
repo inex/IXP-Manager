@@ -15,7 +15,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use IXP\Contracts\Validation\ValidationRunner;
-use IXP\Contracts\Validation\Validator;
 use IXP\Utils\ConcurrentJobRunner;
 use IXP\Utils\Validation\Result;
 use IXP\Utils\Validation\Software;
