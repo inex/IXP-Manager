@@ -187,7 +187,7 @@ class RunCommand extends Command
 
                 // 1. Generate the rows for this specific backend
                 $rows = $results->isEmpty()
-                    ? [[$validatorName, null, null]]
+                    ? [[$validatorName, null, "<comment>The validator did not report any results</comment>"]]
                     : $results->map(fn ($result, $key) => [
                         $key === 0 ? $validatorName : null,
                         $result->type->name,
