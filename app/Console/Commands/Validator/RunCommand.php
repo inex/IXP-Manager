@@ -30,7 +30,7 @@ use IXP\Utils\ConcurrentJobRunner;
 use IXP\Utils\Validation\Backend;
 use IXP\Utils\Validation\ResultType;
 use IXP\Utils\Validation\Software;
-use IXP\Utils\Validation\ValidatorBackendFactory;
+use IXP\Utils\Validation\ValidationRunnerFactory;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
@@ -64,22 +64,24 @@ class RunCommand extends Command
     private array $backends;
 
     /**
-     * Associative array of ResultType values to counts. Tracks number of results of each type.
-     * @var array
+     * For summary purposes, count the number of result types
      */
-    private array $resultCounts;
+    private array $resultTypeCount;
+
+    /**
+     * For summary purposes, count the number of validators which failed to complete
+     */
+    private int $failureCount = 0;
 
     /**
      * Begin running validation suite.
      *
      * @throws \ReflectionException
      */
-    public function handle( ValidatorBackendFactory $validation, ConcurrentJobRunner $runner): int
+    public function handle( ValidationRunnerFactory $validation, ConcurrentJobRunner $runner ): int
     {
-        $jobID = (string) UUID::uuid4();
-
         $this->initEmptyResultsSummary();
-        $this->backends = $validation->buildBackends($jobID);
+        $this->backends = $validation->getRunners();
 
         $jobs = [];
         foreach ($this->backends as $backend) {
@@ -95,15 +97,30 @@ class RunCommand extends Command
 
         $runner->timeout( (int) ($this->option('timeout') ?: 60));
         $runner->run($jobs, function ( $taskKey, ValidationRunner $backend, $progress ) use ($outputFn) {
+            // Respond when a ValidationRunner stops running due to success or failure
             foreach ($backend->getResults() as $result) {
                 $this->recordResultType($result->type);
             }
+            $this->failureCount += $backend->isFailed() ? 1 : 0;
             $outputFn($taskKey, $backend, $progress);
         });
 
         $summary = $this->buildResultsSummary();
 
-        $this->info("Validations completed. " . $summary);
+        $this->line("Validations summary: " . $summary);
+
+        if (array_any($this->backends, fn(ValidationRunner $runner) => $runner->getFailureInfo() != null)) {
+            foreach ($this->backends as $backend) {
+                if (($failure = $backend->getFailureInfo())) {
+                    $this->line("<comment>Error prevented {$backend->getValidator()->getName()} from finishing</comment>");
+
+                    $exceptionMessage = sprintf("encountered %s at %s:%d:\n%s",
+                        $failure->class, $failure->file, $failure->line , $failure->message);
+
+                    $this->line($exceptionMessage);
+                }
+            }
+        }
 
         return 0;
     }
@@ -114,7 +131,7 @@ class RunCommand extends Command
     private function basicResultsOutput(): \Closure
     {
         return function ( $taskKey, ValidationRunner $backend, $progress ) {
-            $this->line("[{$progress}%] Finished: <comment>{$backend->getName()}</comment>");
+            $this->line("[{$progress}%] Finished: <comment>{$backend->getValidator()->getName()}</comment>");
             if (count($backend->getSoftware())) {
                 $this->line(" * Software");
                 foreach( $backend->getSoftware() as $software ) {
@@ -127,6 +144,11 @@ class RunCommand extends Command
                 foreach( $backend->getResults() as $result) {
                     $this->line("  - [{$result->type->value}] $result->message");
                 }
+            }
+
+            if ( ($failure = $backend->getFailureInfo()) ) {
+                $exceptionMessage = sprintf("%s at %s:%d: %s", $failure->class, $failure->file, $failure->line , $failure->message);
+                $this->line(" * Failure: " . $exceptionMessage);
             }
         };
     }
@@ -146,7 +168,7 @@ class RunCommand extends Command
             // Create a copy of only the completed backends, sorted by Validator priority
             $backends = collect($this->backends)
                 ->filter( fn( ValidationRunner $b ) => $b->isComplete() )
-                ->sortBy( fn( ValidationRunner $b ) => $b->getPriority() )
+                ->sortBy( fn( ValidationRunner $b ) => $b->getValidator()->getPriority() )
                 ->values();
 
             // Build list of software
@@ -161,7 +183,7 @@ class RunCommand extends Command
 
             $resultsRows = collect($backends)->flatMap(function (ValidationRunner $backend, $index) use ($backends) {
                 $results = collect($backend->getResults());
-                $validatorName = $backend->getName();
+                $validatorName = $backend->getValidator()->getName();
 
                 // 1. Generate the rows for this specific backend
                 $rows = $results->isEmpty()
@@ -171,6 +193,10 @@ class RunCommand extends Command
                         $result->type->name,
                         $result->message
                     ])->all();
+
+                if ($backend->getFailureInfo()) {
+                    $rows[] = [null, null, "<comment>This validator failed to complete due to an error</comment>"];
+                }
 
                 // 2. Append a separator if it's not the last backend in the list
                 if ($index < count($backends) - 1) {
@@ -201,7 +227,7 @@ class RunCommand extends Command
      */
     private function initEmptyResultsSummary(): void
     {
-        $this->resultCounts = array_fill_keys(array_map(fn($enum) => $enum->value, ResultType::cases()), 0);
+        $this->resultTypeCount = array_fill_keys(array_map(fn( $enum) => $enum->value, ResultType::cases()), 0);
     }
 
     /**
@@ -209,7 +235,7 @@ class RunCommand extends Command
      */
     private function recordResultType(ResultType $type): void
     {
-        $this->resultCounts[$type->value]++;
+        $this->resultTypeCount[$type->value]++;
     }
 
     /**
@@ -217,23 +243,14 @@ class RunCommand extends Command
      */
     private function buildResultsSummary(): string
     {
-        return collect($this->resultCounts)
+        $summary = collect($this->resultTypeCount)
             ->filter(fn(int $count) => $count > 0)
             ->implode(function(int $count, string $type): string {
-                $style = $this->getStyleForResultType($type);
-                return "<$style>" . strtolower($type) . ": {$count}</$style>";
+                return strtolower($type) . ": {$count}";
             }, ", " );
-    }
-
-    /**
-     * Return the style to use for the given ResultType
-     */
-    private function getStyleForResultType(string $type): string
-    {
-        return match( ResultType::from($type) ) {
-            ResultType::Ok       => "info",
-            ResultType::Error    => "comment",
-            ResultType::Failure  => "error",
-        };
+        if ($this->failureCount > 0) {
+            $summary .= ". " . $this->failureCount . " validators failed due to an error.";
+        }
+        return $summary;
     }
 }

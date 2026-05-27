@@ -22,36 +22,25 @@
 
 declare(strict_types=1);
 
-namespace IXP\Utils\Validation\Validators;
-
-use IXP\Contracts\Validation\ValidationBackend;
-use IXP\Contracts\Validation\Validator;
+namespace IXP\Utils\Validation;
 
 /**
+ * DTO for sharing details about an exception that occurred.
+ * Depending on PHP's configuration, an exception trace can contain arguments which are closures,
+ * and cannot be serialized. We use this object to pass back key information about what happened instead.
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class AnotherLongValidator implements Validator
-//class AnotherLongValidator
+readonly class FailureInfo
 {
-    public function getName(): string
-    {
-        return "Long running validator";
-    }
+    public function __construct(
+        private(set) string $class,
+        private(set) string $message,
+        private(set) string $file,
+        private(set) int $line,
+    ) {}
 
-    public function getDescription(): string
+    public static function fromThrowable(\Throwable $e): static
     {
-        return "Another fairly long running validator! Never know when it's going to finish ¯\_(ツ)_/¯";
-    }
-
-    public function getPriority(): int
-    {
-        return 50;
-    }
-
-    public function run( ValidationBackend $backend ): void
-    {
-        sleep(7);
-        $backend->software('mysql', '8.0');
-        $backend->info("it passed!");
+        return new static( get_class($e), $e->getMessage(), $e->getFile(), $e->getLine() );
     }
 }

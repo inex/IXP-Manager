@@ -2,6 +2,7 @@
 
 namespace IXP\Contracts\Validation;
 
+use IXP\Utils\Validation\FailureInfo;
 use IXP\Utils\Validation\Result;
 use IXP\Utils\Validation\Software;
 
@@ -14,24 +15,24 @@ use IXP\Utils\Validation\Software;
 interface ValidationRunner
 {
     /**
-     * Get the name of the validator being run
+     * Return the underlying Validator instance
      */
-    public function getName(): string;
+    public function getValidator(): Validator;
 
     /**
-     * Get the priority of the validator being run
-     */
-    public function getPriority(): int;
-
-    /**
-     * Create a and execute the validator instance so results are available
+     * Execute the validator instance so results are available
      */
     public function run(): static;
 
     /**
-     * @return bool
+     * Return whether the Validator has finished running
      */
     public function isComplete(): bool;
+
+    /**
+     * Return whether the Validator encountered af failure (Exception was thrown)
+     */
+    public function isFailed(): bool;
 
     /**
      * Get the software version information reported by the validation
@@ -44,4 +45,9 @@ interface ValidationRunner
      * @return Result[]
      */
     public function getResults(): array;
+
+    /**
+     * Return any uncaught \Throwable that arises while running the Validator
+     */
+    public function getFailureInfo(): ?FailureInfo;
 }

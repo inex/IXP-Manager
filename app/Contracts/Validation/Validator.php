@@ -34,6 +34,11 @@ interface Validator
     public function getName(): string;
 
     /**
+     * Description of the validator
+     */
+    public function getDescription(): string;
+
+    /**
      * Priority of the validator - lower numbers are rendered earlier.
      */
     public function getPriority(): int;

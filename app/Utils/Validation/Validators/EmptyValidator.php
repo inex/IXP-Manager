@@ -31,11 +31,16 @@ use IXP\Contracts\Validation\Validator;
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
 class EmptyValidator implements Validator
-//class ErrorTestValidator
+//class EmptyValidator
 {
     public function getName(): string
     {
         return "EmptyValidator";
+    }
+
+    public function getDescription(): string
+    {
+        return "This validator does absolutely nothing, and takes some time to do so!";
     }
 
     public function getPriority(): int

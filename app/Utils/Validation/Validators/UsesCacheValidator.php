@@ -31,10 +31,16 @@ use IXP\Contracts\Validation\Validator;
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
 class UsesCacheValidator implements Validator
+//class UsesCacheValidator
 {
     public function getName(): string
     {
         return "Cache setup validator";
+    }
+
+    public function getDescription(): string
+    {
+        return "Checks that cache configuration is working.";
     }
 
     public function getPriority(): int
@@ -54,7 +60,7 @@ class UsesCacheValidator implements Validator
         } else if ($randomInt != \Cache::get($key)) {
             $backend->error("Cache not working - retrieved value didn't match expected value");
         } else {
-            $backend->ok("Tests passed");
+            $backend->info("Tests passed");
         }
     }
 }

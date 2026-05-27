@@ -38,13 +38,20 @@ class ErrorTestValidator implements Validator
         return "ERROR Test Validator";
     }
 
+    public function getDescription(): string
+    {
+        return "This validator throws errors";
+    }
+
     public function getPriority(): int
     {
         return 100;
     }
+
     public function run( ValidationBackend $backend ): void
     {
         sleep(2);
+        $backend->info("zend.exception_ignore_args " . ini_get("zend.exception_ignore_args"));
         throw new \RuntimeException("meteorite hit the line");
     }
 }

@@ -38,11 +38,17 @@ System Validation
         <div class="set-wrapper col-12 tw-mb-8">
             <h1 class="head-set tw-font-semibold tw-text-base tw-border-b-1 tw-h-8 tw-leading-8 tw-text-gray-900 tw-mb-0 tw-mt-3 tw-border-gray-600 tw-overflow-hidden">
                 <button type="button" class="validation-info-button tw-mr-1 tw-rounded tw-bg-white tw-text-gray-700 hover:tw-bg-gray-50 hover:tw-border-gray-800 tw-border-2 tw-border-gray-600 tw-w-6 tw-h-6 tw-leading-5"
-                        data-toggle="popover" title="" data-content=""
+                        data-toggle="popover" title="" data-content="" tabIndex="0"
                 >
                     <i class="fa fa-info" aria-hidden="true"></i>
                 </button>
+                <button type="button" class="validation-failure-button tw-hidden tw-mr-1 tw-rounded tw-bg-red-500 tw-text-gray-300 hover:tw-bg-red-300 hover:tw-border-gray-800 tw-border-2 tw-border-gray-600 tw-w-6 tw-h-6 tw-leading-5"
+                        data-toggle="popover" title="" data-content="" tabIndex="0"
+                >
+                    <i class="fa fa-exclamation" aria-hidden="true"></i>
+                </button>
                 <span class="validation-title"></span>
+
             </h1>
         </div>
     </template>
@@ -55,7 +61,8 @@ System Validation
             <div class="result-type tw-min-w-16 tw-ml-1"></div>
             <div class="info-content"><div class="info-extra-content">
 <!--                    --><?php //= $r->narrative ? $t->ee( $r->narrative ) : ( $r->narrativeHtml ?: '' ) ?><!--</div>-->
-<!--            </div>-->
+            </div>
+            </div>
         </div>
     </template>
 
@@ -89,22 +96,23 @@ System Validation
             // Show loading spinner?
             // $container.html('<div class="text-center col-12 py-5"><div class="spinner-border text-primary"></div></div>');
 
-            // Hit our Laravel API endpoint
             $.ajax({
                 url: '<?= route("validation@api-results", ['id' => $t->jobId]); ?>',
                 method: 'GET',
                 dataType: 'json',
                 success: function(taskData) {
+                    $container.find('[data-toggle="popover"]').popover('dispose');
+
                     // Clear container for fresh data
                     $container.empty();
 
                     // Loop through each job
                     taskData['validations'].forEach(function(validationData) {
-                        let validationFragment = createValidationFragment(validationData.name);
+                        let validationFragment = createValidationFragment(validationData);
 
                         // 3. Loop through and add the child results
                         validationData.results.forEach(function(resultData) {
-                            let resultFragment = createValidationResultFragment(resultData.type, resultData.message);
+                            let resultFragment = createValidationResultFragment(resultData);
 
                             // Append the result clone into the validation clone's list
                             validationFragment.find('.set-wrapper').append(resultFragment);
@@ -124,33 +132,44 @@ System Validation
                 },
                 complete: function() {
                     // since we dynamically created the validation template, initialise popver now.
-                    $('[data-toggle="popover"]').popover()
+                    // $('[data-toggle="popover"]').popover()
+
+                    $container.find('[data-toggle="popover"]').popover({
+                        trigger: 'focus'
+                    });
                 }
             });
         }
 
-        function createValidationFragment(name) {
+        function createValidationFragment(validationData) {
             let $validationClone = $( $validationTemplate.prop('content') ).clone();
             $validationClone
                 .find('.validation-info-button')
-                .attr("title", name)
-                .attr("data-content", "More info about " + name);
+                .attr("title", validationData.name)
+                .attr("data-content", validationData.description);
 
-            $validationClone.find('.validation-title').text(name);
+            $validationClone.find('.validation-title').text(validationData.name);
+
+            if (validationData.failure) {
+                $validationClone.find(".validation-failure-button")
+                    .removeClass("tw-hidden")
+                    .attr("title", "An exception occurred while running the validation")
+                    .attr("data-content", "Uncaught " + validationData['failure']['exception'] + ' at ' + validationData['failure']['file'] + ':' + validationData['failure']['line'] + ": " + validationData['failure']['message']);
+            }
             return $validationClone;
         }
 
-        function createValidationResultFragment(resultType, resultMessage) {
+        function createValidationResultFragment(resultData) {
             let $resultClone = $( $('#result-template').prop('content') ).clone();
 
-            $resultClone.find('.info-line').attr("data-result-type", resultType);
+            $resultClone.find('.info-line').attr("data-result-type", resultData.type);
 
-            $resultClone.find('.result-badge').attr("title", resultMessage);
-            $resultClone.find('.result-badge').addClass(resultTypeBadgeClass[resultType]);
+            $resultClone.find('.result-badge').attr("title", resultData.message);
+            $resultClone.find('.result-badge').addClass(resultTypeBadgeClass[resultData.type]);
 
-            $resultClone.find('.result-type').text(resultType.toUpperCase());
-            $resultClone.find('.info-content').text(resultMessage);
-            $resultClone.attr('data-result-type', resultType);
+            $resultClone.find('.result-type').text(resultData.type.toUpperCase());
+            $resultClone.find('.info-content').text(resultData.message);
+            $resultClone.attr('data-result-type', resultData.type);
 
             return $resultClone;
         }

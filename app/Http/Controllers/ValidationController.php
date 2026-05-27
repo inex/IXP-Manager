@@ -18,7 +18,7 @@ use IXP\Contracts\Validation\ValidationRunner;
 use IXP\Utils\ConcurrentJobRunner;
 use IXP\Utils\Validation\Result;
 use IXP\Utils\Validation\Software;
-use IXP\Utils\Validation\ValidatorBackendFactory;
+use IXP\Utils\Validation\ValidationRunnerFactory;
 use IXP\Utils\View\Alert\Container as AlertContainer;
 use Ramsey\Uuid\Uuid;
 
@@ -41,10 +41,10 @@ class ValidationController
         return view( 'validation/start-form' );
     }
 
-    public function startSubmit( ValidatorBackendFactory $validation, ConcurrentJobRunner $runner ): RedirectResponse
+    public function startSubmit( ValidationRunnerFactory $validation, ConcurrentJobRunner $runner ): RedirectResponse
     {
         $jobId = Uuid::uuid4()->toString();
-        $backends = $validation->buildBackends( $jobId );
+        $backends = $validation->getRunners();
 
         $jobs = [];
         foreach( $backends as $backend ) {
@@ -97,12 +97,11 @@ class ValidationController
         }
 
         Log::info( "Validation job finalized", ['job_id' => $jobId]);
-
     }
 
     private function updateWithValidationResults( string $jobId, int|string $taskKey, ValidationRunner $backend, int|float $progress ): void
     {
-        Log::info( "Received results for validation job ", [ 'job_id' => $jobId, 'validation' => $backend->getName() ] );
+        Log::info( "Received results for validation job ", [ 'job_id' => $jobId, 'validation' => $backend->getValidator()->getName() ] );
         $blob = Cache::get( $this->getJobKey( $jobId ) );
         $blob[ 'backends' ][ $taskKey ] = $backend;
         $blob[ 'progress' ] = $progress;
@@ -155,27 +154,46 @@ class ValidationController
 
         $complete = array_all( $job['backends'] , fn(ValidationRunner $backend) => $backend->isComplete() );
 
-        $prioritySortedBackends = collect($job['backends'])->sortBy(fn(ValidationRunner $backend) => $backend->getPriority())->all();
-        $backends = [];
+        $prioritySortedBackends = collect($job['backends'])
+            ->sortBy(fn(ValidationRunner $backend) => $backend->getValidator()->getPriority())
+            ->all();
+        $validations = [];
+
+        /** @var ValidationRunner[] $prioritySortedBackends */
         foreach ($prioritySortedBackends as $backend) {
             if ( !$backend->isComplete() ) {
                 continue;
             }
-            $software = array_map( fn(Software $software) => ['name' => $software->software, 'version' => $software->version ], $backend->getSoftware() );
-            $results = array_map( fn(Result $result) => ['message' => $result->message, 'type' => $result->type ], $backend->getResults() );
-            $backends[] = [
-                'name' => $backend->getName(),
-                'priority' => $backend->getPriority(),
-                'software' => $software,
-                'results' => $results,
+            $software = array_map( fn( Software $software ) => ['name' => $software->software, 'version' => $software->version ], $backend->getSoftware() );
+            $results = array_map(  fn( Result $result ) => ['message' => $result->message, 'type' => $result->type ], $backend->getResults() );
+            if ( ( $failureInfo = $backend->getFailureInfo() ) ) {
+                $failure = [
+                    'exception' => $failureInfo->class,
+                    'message'   => $failureInfo->message,
+                    'file'      => $failureInfo->file,
+                    'line'      => $failureInfo->line,
+                ];
+            } else {
+                $failure = null;
+            }
+
+            $validations[] = [
+                'name'         => $backend->getValidator()->getName(),
+                'description'  => $backend->getValidator()->getDescription(),
+                'priority'     => $backend->getValidator()->getPriority(),
+                'is_complete'  => $backend->isComplete(),
+                'is_failed'    => $backend->isFailed(),
+                'software'     => $software,
+                'results'      => $results,
+                'failure'      => $failure,
             ];
         }
 
         return response()->json( [
-            'started' => $job['started'],
-            'finished' => $job['finished'],
-            'complete' => $complete,
-            'validations' => $backends,
+            'started'     => $job['started'],
+            'finished'    => $job['finished'],
+            'complete'    => $complete,
+            'validations' => $validations,
         ] );
     }
 }

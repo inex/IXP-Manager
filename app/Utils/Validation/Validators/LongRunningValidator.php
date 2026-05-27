@@ -31,11 +31,16 @@ use IXP\Contracts\Validation\Validator;
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
 //class LongRunningValidator
-class LongRunningValidator  implements Validator
+class LongRunningValidator implements Validator
 {
     public function getName(): string
     {
-        return "some long running validator\n";
+        return "some long running validator";
+    }
+
+    public function getDescription(): string
+    {
+        return "Description here";
     }
 
     public function getPriority(): int
@@ -45,6 +50,6 @@ class LongRunningValidator  implements Validator
     public function run( ValidationBackend $backend ): void
     {
         sleep(5);
-        $backend->ok("long running test passed");
+        $backend->info("long running test passed");
     }
 }

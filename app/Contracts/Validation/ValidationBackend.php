@@ -35,17 +35,23 @@ interface ValidationBackend
     public function software(string $name, string $version): void;
 
     /**
+     * Report debug level information
+     */
+    public function debug( string $message): void;
+
+    /**
      * Report a positive validation outcome
      */
-    public function ok(string $message): void;
+    public function info( string $message): void;
+
+
+    /**
+     * Report an warning condition detected during validation
+     */
+    public function warning(string $message): void;
 
     /**
      * Report an erroneous condition detected during validation
      */
     public function error(string $message): void;
-
-    /**
-     * Report a failure that took place during validation.
-     */
-    public function failure(string $message): void;
 }

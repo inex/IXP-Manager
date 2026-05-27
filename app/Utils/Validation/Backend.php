@@ -37,7 +37,7 @@ use IXP\Contracts\Validation\Validator;
  */
 class Backend implements ValidationBackend, ValidationRunner
 {
-    public function __construct( private(set) string $testID, private(set) string $validatorClass ) { }
+    public function __construct( private(set) string $validatorClass ) { }
 
     /**
      * @var Software[]
@@ -55,11 +55,16 @@ class Backend implements ValidationBackend, ValidationRunner
     private bool $complete = false;
 
     /**
+     * Store details about any raised exception
+     */
+    private ?FailureInfo $failureInfo = null;
+
+    /**
      * Cached validator instance
      */
     private ?Validator $validator = null;
 
-    private function getValidator(): Validator
+    public function getValidator(): Validator
     {
         if (null === $this->validator) {
             $this->validator = new $this->validatorClass();
@@ -67,27 +72,27 @@ class Backend implements ValidationBackend, ValidationRunner
         return $this->validator;
     }
 
-    public function getName(): string
-    {
-        return $this->getValidator()->getName();
-    }
-
-    public function getPriority(): int
-    {
-        return $this->getValidator()->getPriority();
-    }
-
     public function isComplete(): bool
     {
         return $this->complete;
+    }
+
+    public function isFailed(): bool
+    {
+        return $this->failureInfo != null;
+    }
+
+    public function getFailureInfo(): ?FailureInfo
+    {
+        return $this->failureInfo;
     }
 
     public function run(): static
     {
         try {
             $this->getValidator()->run($this);
-        } catch (\Exception $e) {
-            $this->failure("Uncaught exception: " . $e->getMessage());
+        } catch (\Throwable $e) {
+            $this->validatorFailure($e);
         }
         $this->complete = true;
         return $this;
@@ -108,9 +113,19 @@ class Backend implements ValidationBackend, ValidationRunner
         $this->software[] = new Software($name, $version);
     }
 
-    public function ok(string $message): void
+    public function debug( string $message): void
     {
-        $this->results[] = new Result($message, ResultType::Ok);
+        $this->results[] = new Result($message, ResultType::Debug);
+    }
+
+    public function info( string $message): void
+    {
+        $this->results[] = new Result($message, ResultType::Info);
+    }
+
+    public function warning(string $message): void
+    {
+        $this->results[] = new Result($message, ResultType::Warning);
     }
 
     public function error(string $message): void
@@ -118,8 +133,8 @@ class Backend implements ValidationBackend, ValidationRunner
         $this->results[] = new Result($message, ResultType::Error);
     }
 
-    public function failure(string $message): void
+    private function validatorFailure(\Throwable $e): void
     {
-        $this->results[] = new Result($message, ResultType::Failure);
+        $this->failureInfo = FailureInfo::fromThrowable($e);
     }
 }

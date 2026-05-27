@@ -33,31 +33,30 @@ use IXP\Contracts\Validation\Validator;
 use Ramsey\Uuid\Uuid;
 
 /**
- * ValidatorBackendFactory - prepare a list of backends for Validators
+ * ValidationRunnerFactory - prepare a list of backends for Validators
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class ValidatorBackendFactory
+class ValidationRunnerFactory
 {
     /**
-     * Find all validators and build a list of backends to run them against.
-     * @param string $testUUID
-     * @return ValidationRunner[]
+     * Find all validators and build a list of ValidationRunners to run them against.
+     * @return Backend[]
      * @throws \ReflectionException
      */
-    public function buildBackends( string $testUUID ): array
+    public function getRunners(): array
     {
-        $backends = [];
+        $runners = [];
         foreach( glob( app_path( 'Utils/Validation/Validators/*Validator.php' ) ) as $filename) {
             $validatorClass = "\\IXP\\Utils\\Validation\\Validators\\" . basename( $filename, ".php" );
-
             // don't run anything that doesn't implement ValidatorInterface
             $reflectionClass = new \ReflectionClass( $validatorClass );
             if ( !( $reflectionClass->implementsInterface( Validator::class ) ) ) {
                 continue;
             }
 
-            $backends[] = new Backend( $testUUID, $validatorClass );
+            $runners[] = new Backend( $validatorClass );
         }
-        return $backends;
+
+        return $runners;
     }
 }
