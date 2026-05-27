@@ -3,7 +3,7 @@
     // MRTG Configuration Templates
     //
     // This is v4 maintaining legacy support for manual trunk graphs.
-    // Please see: https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs
+    // Please see: https://docs.ixpmanager.org/latest/grapher/mrtg/
     //
     // This will be phased out / automated / managed on the frontend soon
     //
@@ -11,7 +11,7 @@
     // you can't effect the changes you need with skinning, consider posting to the mailing
     // list to see if it can be achieved / incorporated.
     //
-    // Skinning: https://ixp-manager.readthedocs.org/en/latest/features/skinning.html
+    // Skinning: https://docs.ixpmanager.org/latest/features/skinning/
 
 ?>
 
@@ -20,7 +20,7 @@
 # definition of these in the IXP Manager database, so we chicken out and let
 # each IXP do it manually.  Simplicity r00lz.
 #
-# See: https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs#inter-switch-link-graphs
+# See: https://docs.ixpmanager.org/latest/grapher/mrtg/
 #
 # Here are some examples.
 

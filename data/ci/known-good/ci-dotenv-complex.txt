@@ -234,7 +234,7 @@ IXP_API_JSONEXPORTSCHEMA_EXCLUDE_RFC6996=true
 #######################################################################################
 ### Skinning
 #
-# See https://ixp-manager.readthedocs.io/en/latest/features/skinning.html
+# See https://docs.ixpmanager.org/latest/features/skinning/
 
 VIEW_SKIN=myskin
 

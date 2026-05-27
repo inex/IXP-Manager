@@ -505,7 +505,7 @@ IXP_FE_FRONTEND_DISABLED_LOGO=false
 
 
 #######################################################################################
-### Graphing - see https://ixp-manager.readthedocs.org/en/latest/features/grapher.html
+### Graphing - see https://docs.ixpmanager.org/latest/grapher/introduction/
 
 # Enable the backends you have configured. E.g.:
 # GRAPHER_BACKENDS="mrtg|sflow|smokeping"
@@ -585,7 +585,7 @@ GRAPHER_BACKEND_MRTG_DBTYPE="rrd"
 #######################################################################################
 ### Skinning
 #
-# See https://ixp-manager.readthedocs.io/en/latest/features/skinning.html
+# See https://docs.ixpmanager.org/latest/features/skinning/
 #
 # VIEW_SKIN="myskin"
 
