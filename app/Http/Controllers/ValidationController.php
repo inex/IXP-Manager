@@ -52,7 +52,7 @@ class ValidationController
         }
 
         Log::info( "Initialised validation job", ['job_id' => $jobId]);
-        Cache::put( $this->getJobKey( $jobId ), [
+        Cache::store('file')->put( $this->getJobKey( $jobId ), [
             'job_id'   => $jobId,
             'started'  => Carbon::now()->getTimestamp(),
             'finished' => null,
@@ -86,7 +86,7 @@ class ValidationController
         try {
             $runner->run( $jobs, function( $taskKey, ValidationRunner $backend, $progress ) use ( $jobId, &$unsavedResults ) {
                 try {
-                    Cache::lock( $this->getLockKey( $jobId ), 5 )
+                    Cache::store('file')->lock( $this->getLockKey( $jobId ), 5 )
                         ->block( 5, fn() => $this->updateWithValidationResults( $jobId, $taskKey, $backend, $progress ) );
                 } catch( LockTimeoutException $e ) {
                     // as we failed to acquire the lock keep the result so we can apply it during finalizeJob
@@ -94,7 +94,7 @@ class ValidationController
                 }
             }, function( $taskKey ) use ( $jobId, &$unsavedTimedOutJobs ) {
                 try {
-                    Cache::lock( $this->getLockKey( $jobId ), 5 )
+                    Cache::store('file')->lock( $this->getLockKey( $jobId ), 5 )
                         ->block( 5, fn() => $this->updateTaskMarkTimedOut( $jobId, $taskKey ) );
                 } catch( LockTimeoutException $e ) {
                     // as we failed to acquire the lock keep the result so we can apply it during finalizeJob
@@ -102,7 +102,7 @@ class ValidationController
                 }
             }, function ($taskKey, \Throwable $exception) use ($jobId, &$fatalErrors) {
                 try {
-                    Cache::lock( $this->getLockKey( $jobId ), 5 )
+                    Cache::store('file')->lock( $this->getLockKey( $jobId ), 5 )
                         ->block( 5, fn() => $this->updateWithFatalError( $jobId, $taskKey, $exception ) );
                 } catch( LockTimeoutException $e ) {
                     // as we failed to acquire the lock keep the result so we can apply it during finalizeJob
@@ -111,7 +111,7 @@ class ValidationController
             } );
         } finally {
             try {
-                Cache::lock( $this->getLockKey( $jobId ), 5 )
+                Cache::store('file')->lock( $this->getLockKey( $jobId ), 5 )
                     ->block( 10, fn() => $this->finalizeJob( $jobId, $unsavedResults, $unsavedTimedOutJobs, $fatalErrors ) );
             } catch ( LockTimeoutException $e ) {
                 \Log::warning("Failed to finalize validation job. It appears if the lock is still held by something.");
@@ -126,18 +126,18 @@ class ValidationController
      */
     private function updateTaskMarkTimedOut( string $jobId, int|string $taskKey ): void
     {
-        $blob = Cache::get( $this->getJobKey( $jobId ) );
+        $blob = Cache::store('file')->get( $this->getJobKey( $jobId ) );
         Log::warning( "Marking Validation task as timed out", [ 'job_id' => $jobId, 'task' => $taskKey, 'validation' => $blob['backends'][$taskKey]->getValidator()->getName() ] );
         $blob[ 'backends' ][ $taskKey ]->markTimedOut();
-        Cache::put( $this->getJobKey( $jobId ), $blob, 1200 );
+        Cache::store('file')->put( $this->getJobKey( $jobId ), $blob, 1200 );
     }
 
     private function updateWithFatalError(string $jobId, int|string $taskKey, \Throwable $e): void
     {
-        $blob = Cache::get( $this->getJobKey( $jobId ) );
+        $blob = Cache::store('file')->get( $this->getJobKey( $jobId ) );
         Log::warning( "Validation task produced an unhandled exception", [ 'job_id' => $jobId, 'task' => $taskKey, 'validation' => $blob['backends'][$taskKey]->getValidator()->getName() ] );
         $blob[ 'backends' ][ $taskKey ]->validatorFailure($e);
-        Cache::put( $this->getJobKey( $jobId ), $blob, 1200 );
+        Cache::store('file')->put( $this->getJobKey( $jobId ), $blob, 1200 );
     }
 
     /**
@@ -146,11 +146,11 @@ class ValidationController
      */
     private function updateWithValidationResults( string $jobId, int|string $taskKey, ValidationRunner $backend, int|float $progress ): void
     {
-        $blob = Cache::get( $this->getJobKey( $jobId ) );
+        $blob = Cache::store('file')->get( $this->getJobKey( $jobId ) );
         Log::debug( "Recording results of completed validation job", [ 'job_id' => $jobId, 'taskkey' => $taskKey, 'validation' => $backend->getValidator()->getName() ] );
         $blob[ 'backends' ][ $taskKey ] = $backend;
         $blob[ 'progress' ] = $progress;
-        Cache::put( $this->getJobKey( $jobId ), $blob, 1200 );
+        Cache::store('file')->put( $this->getJobKey( $jobId ), $blob, 1200 );
     }
 
     /**
@@ -164,7 +164,7 @@ class ValidationController
     {
         Log::debug( "Finalizing validation job", [ 'job_id' => $jobId ] );
 
-        $blob = Cache::get( $this->getJobKey( $jobId ) );
+        $blob = Cache::store('file')->get( $this->getJobKey( $jobId ) );
         $blob[ 'finished' ] = Carbon::now()->getTimestamp();
         $blob[ 'progress' ] = 100;
         foreach( $unsavedResults as [ $taskKey, $backend, $progress ] ) {
@@ -176,12 +176,12 @@ class ValidationController
         foreach( $fatalErrors as [$taskKey, $exception] ) {
             $blob[ 'backends' ][ $taskKey ]->validatorFailure($exception);
         }
-        Cache::put( $this->getJobKey( $jobId ), $blob, 1200 );
+        Cache::store('file')->put( $this->getJobKey( $jobId ), $blob, 1200 );
     }
 
     public function view(string $id): View|RedirectResponse
     {
-        if ( !( $job = Cache::get( $this->getJobKey( $id ) ) ) ) {
+        if ( !( $job = Cache::store('file')->get( $this->getJobKey( $id ) ) ) ) {
             AlertContainer::push("A validation task with the provided ID could not be found. Start another validation instead.");
             return redirect()->route('validation@start');
         }
@@ -193,7 +193,7 @@ class ValidationController
 
     public function apiResults(string $id): JsonResponse
     {
-        if ( !( $job = Cache::get( $this->getJobKey( $id ) ) ) ) {
+        if ( !( $job = Cache::store('file')->get( $this->getJobKey( $id ) ) ) ) {
             return response()->json( [], 404 );
         }
         $complete = array_all( $job['backends'] , fn(ValidationRunner $backend) => $backend->isComplete() || $backend->isTimedOut() );
