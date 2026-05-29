@@ -25,6 +25,7 @@ declare(strict_types=1);
 namespace IXP\Utils;
 
 use Illuminate\Console\Application;
+use Illuminate\Process\Exceptions\ProcessTimedOutException;
 use Illuminate\Process\InvokedProcess;
 use Illuminate\Process\PendingProcess;
 use Illuminate\Support\Arr;
@@ -34,6 +35,10 @@ use Laravel\SerializableClosure\SerializableClosure;
 /**
  * ConcurrentJobRunner is a replacement for Laravels Concurrency::run method
  * which is unable to report results from a task as each task finishes.
+ *
+ * It uses the same internal artisan command to run serialized closures.
+ *
+ * Care must be taken that tasks handle all exceptions they generate.
  *
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
@@ -54,16 +59,20 @@ class ConcurrentJobRunner
     }
 
     /**
-     * Run a set of closures concurrently and react as each one completes by calling $onTaskComplete
+     * Run a set of closures concurrently, and react as each one completes by calling $onTaskComplete.
+     * If a timeout is set, and it is reached, then onTaskTimeout will be called with each timed out task key.
      *
      * @param \Closure|array<int|string, \Closure> $tasks  An array of \Closures or a single \Closure. Can be indexed,
      *                                                     or associative.
      * @param \Closure|null $onTaskComplete                Callback: fn($taskName, $result, $progressPercentage). If
      *                                                     $tasks is indexed or associative, $taskName is the index or key.
-     * @todo: Exceptions?
-     * @todo: timeouts
+     * @param \Closure|null $onTaskTimeout                 Callback: fn($taskKey). If $tasks is indexed or associative,
+     *                                                     $taskName is the index or key.
+     * @param \Closure|null $onTaskError                   Callback: fn($taskKey, \Throwable). If $tasks is indexed or associative,
+     *                                                     $taskName is the index or key. The Throwable originates from the task,
+     *                                                     but was not caught and processed there.
      */
-    public function run(\Closure|array $tasks, ?\Closure $onTaskComplete = null): array
+    public function run(\Closure|array $tasks, ?\Closure $onTaskComplete = null, ?\Closure $onTaskTimeout = null, ?\Closure $onTaskError = null): array
     {
         $tasks = Arr::wrap($tasks);
         $totalTasks = count($tasks);
@@ -92,41 +101,85 @@ class ConcurrentJobRunner
         /** @var InvokedProcess[] $invokedProcesses */
         $invokedProcesses = array_map( fn ( PendingProcess $pending ) => $pending->start(), $pendingProcesses );
 
-        // Loop while we have running processes
-        // @todo: need to add timeout support here
-        while ($this->anyProcessRunning($invokedProcesses)) {
+        try {
+            while ($this->anyProcessRunning($invokedProcesses)) {
+                foreach ($invokedProcesses as $key => $process) {
+                    $process->ensureNotTimedOut();
+
+                    // Check if it's not running and we haven't handled it yet
+                    if (!$process->running() && !in_array($key, $completedTaskKeys)) {
+                        $completedTaskKeys[] = $key;
+
+                        // Safely extract and unserialize the closure return value
+                        $cmdJsonOutput = $this->processOutput($process);
+
+                        if (! $cmdJsonOutput['successful']) {
+                            $exception = new $cmdJsonOutput['exception'](
+                                ...(! empty(array_filter($cmdJsonOutput['parameters']))
+                                ? $cmdJsonOutput['parameters']
+                                : [$cmdJsonOutput['message']])
+                            );
+                            \Log::error("An unhandled exception was raised while processing concurrent jobs - tasks should ensure they catch their own exceptions");
+                            if ($onTaskError) {
+                                $onTaskError($key, $exception);
+                            }
+                            continue;
+                        }
+
+                        // success is true, so result is serialized
+                        $taskOutput = unserialize($cmdJsonOutput['result']);
+
+                        $finalResults[$key] = $taskOutput;
+
+                        // Calculate real-time progress percentage
+                        $progress = round((count($completedTaskKeys) / $totalTasks) * 100);
+
+                        // Fire the optional feedback callback dynamically
+                        if ($onTaskComplete) {
+                            $onTaskComplete($key, $taskOutput, $progress);
+                        }
+                    }
+                }
+
+                usleep(100000); // 100ms throttle to prevent CPU pinning
+            }
+
+            // Final pass in case we missed any tasks that stopped
             foreach ($invokedProcesses as $key => $process) {
+                if (!in_array($key, $completedTaskKeys)) {
+                    $cmdJsonOutput = $this->processOutput($process);
 
-                // Check if it's not running and we haven't handled it yet
-                if (!$process->running() && !in_array($key, $completedTaskKeys)) {
-                    $completedTaskKeys[] = $key;
+                    if (! $cmdJsonOutput['successful']) {
+                        $exception = new $cmdJsonOutput['exception'](
+                            ...(! empty(array_filter($cmdJsonOutput['parameters']))
+                            ? $cmdJsonOutput['parameters']
+                            : [$cmdJsonOutput['message']])
+                        );
+                        \Log::error("An unhandled exception was raised while processing concurrent jobs - tasks should ensure they catch their own exceptions");
+                        if ($onTaskError) {
+                            $onTaskError($key, $exception);
+                        }
+                        continue;
+                    }
 
-                    // Safely extract and unserialize the closure return value
-                    $taskOutput = $this->processOutput($process);
+                    // success is true, so result is serialized
+                    $taskOutput = unserialize($cmdJsonOutput['result']);
+
                     $finalResults[$key] = $taskOutput;
 
-                    // Calculate real-time progress percentage
-                    $progress = round((count($completedTaskKeys) / $totalTasks) * 100);
-
-                    // Fire the optional feedback callback dynamically
                     if ($onTaskComplete) {
+                        $progress = round((count($finalResults) / $totalTasks) * 100);
                         $onTaskComplete($key, $taskOutput, $progress);
                     }
                 }
             }
 
-            usleep(100000); // 100ms throttle to prevent CPU pinning
-        }
-
-        // Final pass in case we missed any tasks that stopped
-        foreach ($invokedProcesses as $key => $process) {
-            if (!in_array($key, $completedTaskKeys)) {
-                $taskOutput = $this->processOutput($process);
-                $finalResults[$key] = $taskOutput;
-
-                if ($onTaskComplete) {
-                    $progress = round((count($finalResults) / $totalTasks) * 100);
-                    $onTaskComplete($key, $taskOutput, $progress);
+        } catch (ProcessTimedOutException $e) {
+            foreach ($invokedProcesses as $key => $process) {
+                if (!in_array($key, $completedTaskKeys)) {
+                    if ($onTaskTimeout) {
+                        $onTaskTimeout($key);
+                    }
                 }
             }
         }
@@ -135,7 +188,7 @@ class ConcurrentJobRunner
     }
 
     /**
-     * Takes an InvokedProcess and decodes the returned result.
+     * Takes an InvokedProcess and decodes the returned result from invoke-serialized-closure
      *
      * If successful: [
      *     'successful' => true,
@@ -160,19 +213,7 @@ class ConcurrentJobRunner
             $rawOutput = substr($rawOutput, 0, $pos);
         }
 
-        $cmdJsonOutput = json_decode($rawOutput, true);
-
-        if (! $cmdJsonOutput['successful']) {
-            // @todo: may want to make this simply mark the test as failed?
-            throw new $cmdJsonOutput['exception'](
-                ...(! empty(array_filter($cmdJsonOutput['parameters']))
-                ? $cmdJsonOutput['parameters']
-                : [$cmdJsonOutput['message']])
-            );
-        }
-
-        // success is true, so result is serialized
-        return unserialize($cmdJsonOutput['result']);
+        return json_decode($rawOutput, true);
     }
 
     /**

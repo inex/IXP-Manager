@@ -49,7 +49,9 @@ class RunCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'validator:run {--timeout=60} {--refresh}';
+    protected $signature = "validator:run
+                                {--timeout=30     : Set a task timeout in seconds}
+                                {--simple-output  : Print results in sequence, don't use tables or refreshing}";
 
     /**
      * The console command description.
@@ -59,7 +61,7 @@ class RunCommand extends Command
     protected $description = "Run system validation routines";
 
     /**
-     * @var ValidationRunner[]
+     * @var Backend[]
      */
     private array $backends;
 
@@ -72,6 +74,11 @@ class RunCommand extends Command
      * For summary purposes, count the number of validators which failed to complete
      */
     private int $failureCount = 0;
+
+    /**
+     * For summary purposes, count the number of timed out validators
+     */
+    private int $timedOutCount = 0;
 
     /**
      * Begin running validation suite.
@@ -88,37 +95,58 @@ class RunCommand extends Command
             $jobs[] = fn() => $backend->run();
         }
 
-        if ($this->option('refresh')) {
+        if ($this->option('simple-output')) {
+            $outputFn = $this->basicResultsOutput();
+        } else {
             $tablesSection = $this->output->getOutput()->section();
             $outputFn = $this->refreshResultsOutput($tablesSection);
-        } else {
-            $outputFn = $this->basicResultsOutput();
         }
 
-        $runner->timeout( (int) ($this->option('timeout') ?: 60));
+        $runner->timeout( (int) ( $this->option('timeout') ?: 30 ) );
         $runner->run($jobs, function ( $taskKey, ValidationRunner $backend, $progress ) use ($outputFn) {
-            // Respond when a ValidationRunner stops running due to success or failure
+            // Update backends with test results
+            $this->backends[$taskKey] = $backend;
+
+            // Record result type, or failure count
             foreach ($backend->getResults() as $result) {
                 $this->recordResultType($result->type);
             }
             $this->failureCount += $backend->isFailed() ? 1 : 0;
+
+            // Call output function to render an update
             $outputFn($taskKey, $backend, $progress);
+        }, function ($timedOutKey) {
+            // Mark process as timed out:
+            $backend = $this->backends[$timedOutKey];
+            $backend->markTimedOut();
+            $this->timedOutCount++;
+        }, function ($taskKey, \Throwable $exception) use (&$fatalError) {
+            // Mark task as failed due to unhandled exception:
+            $backend = $this->backends[$taskKey];
+            $backend->validatorFailure($exception);
+            $this->failureCount++;
         });
 
         $summary = $this->buildResultsSummary();
 
         $this->line("Validations summary: " . $summary);
 
-        if (array_any($this->backends, fn(ValidationRunner $runner) => $runner->getFailureInfo() != null)) {
-            foreach ($this->backends as $backend) {
-                if (($failure = $backend->getFailureInfo())) {
-                    $this->line("<comment>Error prevented {$backend->getValidator()->getName()} from finishing</comment>");
+        if ( ( $failed = array_filter( $this->backends, fn( ValidationRunner $runner ) => $runner->isFailed() ) ) && !empty( $failed ) ) {
+            $this->line("");
+            $this->line("<comment>The following validations encountered errors which prevented them from finishing:</comment>");
+            foreach ($failed as $backend) {
+                $failure = $backend->getFailureInfo();
+                $exceptionMessage = sprintf( " - '%s' encountered %s at %s:%d:\n%s",
+                    $backend->getValidator()->getName(), $failure->class, $failure->file, $failure->line , $failure->message);
+                $this->line($exceptionMessage);
+                $this->line("");
+            }
+        }
 
-                    $exceptionMessage = sprintf("encountered %s at %s:%d:\n%s",
-                        $failure->class, $failure->file, $failure->line , $failure->message);
-
-                    $this->line($exceptionMessage);
-                }
+        if ( ( $timedOut = array_filter($this->backends, fn( ValidationRunner $runner ) => $runner->isTimedOut() ) ) && !empty( $timedOut ) ) {
+            $this->line("The following validations timed out before reporting their results");
+            foreach ($timedOut as $backend) {
+                $this->line(" * {$backend->getValidator()->getName()}");
             }
         }
 
@@ -132,22 +160,23 @@ class RunCommand extends Command
     {
         return function ( $taskKey, ValidationRunner $backend, $progress ) {
             $this->line("[{$progress}%] Finished: <comment>{$backend->getValidator()->getName()}</comment>");
-            if (count($backend->getSoftware())) {
+            if ( count( $backend->getSoftware() ) ) {
                 $this->line(" * Software");
                 foreach( $backend->getSoftware() as $software ) {
                     $this->line("  - {$software->software} {$software->version}");
                 }
             }
 
-            if (count($backend->getResults())) {
+            if ( count( $backend->getResults() ) ) {
                 $this->line(" * Results");
                 foreach( $backend->getResults() as $result) {
                     $this->line("  - [{$result->type->value}] $result->message");
                 }
             }
 
-            if ( ($failure = $backend->getFailureInfo()) ) {
-                $exceptionMessage = sprintf("%s at %s:%d: %s", $failure->class, $failure->file, $failure->line , $failure->message);
+            if ( ($failure = $backend->getFailureInfo() ) ) {
+                $exceptionMessage = sprintf("%s at %s:%d: %s",
+                    $failure->class, $failure->file, $failure->line , $failure->message);
                 $this->line(" * Failure: " . $exceptionMessage);
             }
         };
@@ -162,12 +191,9 @@ class RunCommand extends Command
         return function ( $taskKey, Backend $backend, $progress ) use ($section) {
             $section->clear();
 
-            // Update backends with test results
-            $this->backends[$taskKey] = $backend;
-
             // Create a copy of only the completed backends, sorted by Validator priority
             $backends = collect($this->backends)
-                ->filter( fn( ValidationRunner $b ) => $b->isComplete() )
+                ->filter( fn( ValidationRunner $b ) => $b->isComplete() || $b->isTimedOut() )
                 ->sortBy( fn( ValidationRunner $b ) => $b->getValidator()->getPriority() )
                 ->values();
 
@@ -186,13 +212,17 @@ class RunCommand extends Command
                 $validatorName = $backend->getValidator()->getName();
 
                 // 1. Generate the rows for this specific backend
-                $rows = $results->isEmpty()
-                    ? [[$validatorName, null, "<comment>The validator did not report any results</comment>"]]
-                    : $results->map(fn ($result, $key) => [
+                if ($backend->isTimedOut()) {
+                    $rows = [[$validatorName, null, "<comment>The validator timed out before it reported any results</comment>"]];
+                } else if ($results->isEmpty()) {
+                    $rows = [[$validatorName, null, "<comment>The validator did not report any results</comment>"]];
+                } else {
+                    $rows = $results->map(fn ($result, $key) => [
                         $key === 0 ? $validatorName : null,
                         $result->type->name,
                         $result->message
                     ])->all();
+                }
 
                 if ($backend->getFailureInfo()) {
                     $rows[] = [null, null, "<comment>This validator failed to complete due to an error</comment>"];
@@ -247,10 +277,19 @@ class RunCommand extends Command
             ->filter(fn(int $count) => $count > 0)
             ->implode(function(int $count, string $type): string {
                 return strtolower($type) . ": {$count}";
-            }, ", " );
+            }, ", " ) . ".";
+
         if ($this->failureCount > 0) {
-            $summary .= ". " . $this->failureCount . " validators failed due to an error.";
+            $summary .= " " . $this->failureCount . " " . $this->pluralize("validator", $this->failureCount) . " failed due to an error.";
+        }
+        if ($this->timedOutCount > 0) {
+            $summary .= " " . $this->timedOutCount . " " . $this->pluralize("validator", $this->timedOutCount) .  " timed out.";
         }
         return $summary;
+    }
+
+    private function pluralize(string $text, int $count): string
+    {
+        return $count === 1 ? $text : $text . "s";
     }
 }

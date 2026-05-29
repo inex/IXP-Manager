@@ -35,7 +35,7 @@ System Validation
         <!-- validation-title -->
         <!-- validation-link -->
 
-        <div class="set-wrapper col-12 tw-mb-8">
+        <div class="set-wrapper col-12 tw-mb-4">
             <h1 class="head-set tw-font-semibold tw-text-base tw-border-b-1 tw-h-8 tw-leading-8 tw-text-gray-900 tw-mb-0 tw-mt-3 tw-border-gray-600 tw-overflow-hidden">
                 <button type="button" class="validation-info-button tw-mr-1 tw-rounded tw-bg-white tw-text-gray-700 hover:tw-bg-gray-50 hover:tw-border-gray-800 tw-border-2 tw-border-gray-600 tw-w-6 tw-h-6 tw-leading-5"
                         data-toggle="popover" title="" data-content="" tabIndex="0"
@@ -46,6 +46,12 @@ System Validation
                         data-toggle="popover" title="" data-content="" tabIndex="0"
                 >
                     <i class="fa fa-exclamation" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="validation-timeout-button tw-hidden tw-mr-1 tw-rounded tw-bg-orange-500 tw-text-gray-300 hover:tw-bg-orange-300 hover:tw-border-gray-800 tw-border-2 tw-border-gray-600 tw-w-6 tw-h-6 tw-leading-5"
+                        data-toggle="popover" title="Validation timed out" data-content="The timeout was reached before results could be reported" tabIndex="0"
+                >
+                    <!-- if updating font awesome this could become fa-clock-rotate-left -->
+                    <i class="fa fa-history" aria-hidden="true"></i>
                 </button>
                 <span class="validation-title"></span>
 
@@ -108,6 +114,9 @@ System Validation
 
                     // Loop through each job
                     taskData['validations'].forEach(function(validationData) {
+                        if (!(validationData.is_complete || validationData.is_timedout)) {
+                            return;
+                        }
                         let validationFragment = createValidationFragment(validationData);
 
                         // 3. Loop through and add the child results
@@ -150,12 +159,16 @@ System Validation
 
             $validationClone.find('.validation-title').text(validationData.name);
 
-            if (validationData.failure) {
+            if (validationData.is_failed) {
                 $validationClone.find(".validation-failure-button")
                     .removeClass("tw-hidden")
                     .attr("title", "An exception occurred while running the validation")
                     .attr("data-content", "Uncaught " + validationData['failure']['exception'] + ' at ' + validationData['failure']['file'] + ':' + validationData['failure']['line'] + ": " + validationData['failure']['message']);
             }
+            if (validationData.is_timedout) {
+                $validationClone.find(".validation-timeout-button").removeClass("tw-hidden");
+            }
+
             return $validationClone;
         }
 

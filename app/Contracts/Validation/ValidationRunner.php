@@ -1,4 +1,24 @@
 <?php
+/*
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
 
 namespace IXP\Contracts\Validation;
 
@@ -25,7 +45,8 @@ interface ValidationRunner
     public function run(): static;
 
     /**
-     * Return whether the Validator has finished running
+     * Return whether the Validator has finished running without a timeout.
+     * It may have failed, or completed normally.
      */
     public function isComplete(): bool;
 
@@ -33,6 +54,27 @@ interface ValidationRunner
      * Return whether the Validator encountered af failure (Exception was thrown)
      */
     public function isFailed(): bool;
+
+    /**
+     * Return any uncaught \Throwable that arises while running the Validator
+     */
+    public function getFailureInfo(): ?FailureInfo;
+
+    /**
+     * Set any exceptions reported while processing this job.
+     */
+    public function validatorFailure(\Throwable $e): void;
+
+    /**
+     * Return whether the Validation has been marked as timed out (usually by
+     * the invoking process for record keeping)
+     */
+    public function isTimedOut(): bool;
+
+    /**
+     * Mark the Validation has having timed out. No results are expected.
+     */
+    public function markTimedOut(): void;
 
     /**
      * Get the software version information reported by the validation
@@ -46,8 +88,4 @@ interface ValidationRunner
      */
     public function getResults(): array;
 
-    /**
-     * Return any uncaught \Throwable that arises while running the Validator
-     */
-    public function getFailureInfo(): ?FailureInfo;
 }

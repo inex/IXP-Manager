@@ -60,6 +60,11 @@ class Backend implements ValidationBackend, ValidationRunner
     private ?FailureInfo $failureInfo = null;
 
     /**
+     * Store whether validator timed out
+     */
+    private bool $timedOut = false;
+
+    /**
      * Cached validator instance
      */
     private ?Validator $validator = null;
@@ -72,21 +77,6 @@ class Backend implements ValidationBackend, ValidationRunner
         return $this->validator;
     }
 
-    public function isComplete(): bool
-    {
-        return $this->complete;
-    }
-
-    public function isFailed(): bool
-    {
-        return $this->failureInfo != null;
-    }
-
-    public function getFailureInfo(): ?FailureInfo
-    {
-        return $this->failureInfo;
-    }
-
     public function run(): static
     {
         try {
@@ -96,6 +86,37 @@ class Backend implements ValidationBackend, ValidationRunner
         }
         $this->complete = true;
         return $this;
+    }
+
+    public function validatorFailure(\Throwable $e): void
+    {
+        $this->failureInfo = FailureInfo::fromThrowable($e);
+        $this->complete = true;
+    }
+
+    public function isComplete(): bool
+    {
+        return $this->complete;
+    }
+
+    public function isFailed(): bool
+    {
+        return $this->getFailureInfo() != null;
+    }
+
+    public function getFailureInfo(): ?FailureInfo
+    {
+        return $this->failureInfo;
+    }
+
+    public function isTimedOut(): bool
+    {
+        return $this->timedOut;
+    }
+
+    public function markTimedOut(): void
+    {
+        $this->timedOut = true;
     }
 
     public function getSoftware(): array
@@ -131,10 +152,5 @@ class Backend implements ValidationBackend, ValidationRunner
     public function error(string $message): void
     {
         $this->results[] = new Result($message, ResultType::Error);
-    }
-
-    private function validatorFailure(\Throwable $e): void
-    {
-        $this->failureInfo = FailureInfo::fromThrowable($e);
     }
 }

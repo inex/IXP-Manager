@@ -63,46 +63,91 @@ class ValidationController
 
         defer( fn() => $this->runValidations( $runner, $jobs, $jobId ) );
 
-        Log::info( "Response returned" );
-
         return redirect()->route( 'validation@view', [ 'id' => $jobId ] );
     }
 
+    /**
+     * Take a list of \Closures and run them concurrently. Results are written to the cache as they come in.
+     * If we fail to acquire the lock, save the update for the finalization step.
+     *
+     * todo: do we need locks when this orchestration code is gathering the results and writing
+     * to the cache in a single thread?
+     */
     private function runValidations( ConcurrentJobRunner $runner, array $jobs, string $jobId )
     {
-        Log::info( "Validation job starting", ['job_id' => $jobId]);
-        $jobError = null;
-        $unsavedResults = [];
+        Log::debug( "Validation job starting", ['job_id' => $jobId]);
+
+        $unsavedResults      = [];
+        $unsavedTimedOutJobs = [];
+        $fatalErrors         = [];
+
+        $runner->timeout(30);
+
         try {
             $runner->run( $jobs, function( $taskKey, ValidationRunner $backend, $progress ) use ( $jobId, &$unsavedResults ) {
                 try {
                     Cache::lock( $this->getLockKey( $jobId ), 5 )
                         ->block( 5, fn() => $this->updateWithValidationResults( $jobId, $taskKey, $backend, $progress ) );
                 } catch( LockTimeoutException $e ) {
-                    // failed to acquire the lock, god knows why. build up our results
-                    // and save them at once at the end
+                    // as we failed to acquire the lock keep the result so we can apply it during finalizeJob
                     $unsavedResults[] = [ $taskKey, $backend, $progress ];
                 }
-                // todo: need to catch all exceptions here, otherwise we interrupt processing other validations
+            }, function( $taskKey ) use ( $jobId, &$unsavedTimedOutJobs ) {
+                try {
+                    Cache::lock( $this->getLockKey( $jobId ), 5 )
+                        ->block( 5, fn() => $this->updateTaskMarkTimedOut( $jobId, $taskKey ) );
+                } catch( LockTimeoutException $e ) {
+                    // as we failed to acquire the lock keep the result so we can apply it during finalizeJob
+                    $unsavedTimedOutJobs[] = [ $taskKey ];
+                }
+            }, function ($taskKey, \Throwable $exception) use ($jobId, &$fatalErrors) {
+                try {
+                    Cache::lock( $this->getLockKey( $jobId ), 5 )
+                        ->block( 5, fn() => $this->updateWithFatalError( $jobId, $taskKey, $exception ) );
+                } catch( LockTimeoutException $e ) {
+                    // as we failed to acquire the lock keep the result so we can apply it during finalizeJob
+                    $fatalErrors[] = [ $taskKey, $exception ];
+                }
             } );
-        } catch( \Exception $e ) {
-            $jobError = $e;
         } finally {
-            // this is our last occasion to update the job.
-            // - record when the processing finished
-            // - record any errors that occurred during processing
-            // - if any results could not be saved (due to lock timeout), save them now
-            Cache::lock( $this->getLockKey( $jobId ), 5 )
-                ->block( 5, fn() => $this->finalizeJob( $jobId, $unsavedResults, $jobError ) );
+            try {
+                Cache::lock( $this->getLockKey( $jobId ), 5 )
+                    ->block( 10, fn() => $this->finalizeJob( $jobId, $unsavedResults, $unsavedTimedOutJobs, $fatalErrors ) );
+            } catch ( LockTimeoutException $e ) {
+                \Log::warning("Failed to finalize validation job. It appears if the lock is still held by something.");
+            }
         }
 
         Log::info( "Validation job finalized", ['job_id' => $jobId]);
     }
 
+    /**
+     * Mark this validation has having timed out.
+     */
+    private function updateTaskMarkTimedOut( string $jobId, int|string $taskKey ): void
+    {
+        $blob = Cache::get( $this->getJobKey( $jobId ) );
+        Log::warning( "Marking Validation task as timed out", [ 'job_id' => $jobId, 'task' => $taskKey, 'validation' => $blob['backends'][$taskKey]->getValidator()->getName() ] );
+        $blob[ 'backends' ][ $taskKey ]->markTimedOut();
+        Cache::put( $this->getJobKey( $jobId ), $blob, 1200 );
+    }
+
+    private function updateWithFatalError(string $jobId, int|string $taskKey, \Throwable $e): void
+    {
+        $blob = Cache::get( $this->getJobKey( $jobId ) );
+        Log::warning( "Validation task produced an unhandled exception", [ 'job_id' => $jobId, 'task' => $taskKey, 'validation' => $blob['backends'][$taskKey]->getValidator()->getName() ] );
+        $blob[ 'backends' ][ $taskKey ]->validatorFailure($e);
+        Cache::put( $this->getJobKey( $jobId ), $blob, 1200 );
+    }
+
+    /**
+     * Take the returned ValidationRunner and serialize it to cache. In this method, it is
+     * either completed successfully, or we caught an exception.
+     */
     private function updateWithValidationResults( string $jobId, int|string $taskKey, ValidationRunner $backend, int|float $progress ): void
     {
-        Log::info( "Received results for validation job ", [ 'job_id' => $jobId, 'validation' => $backend->getValidator()->getName() ] );
         $blob = Cache::get( $this->getJobKey( $jobId ) );
+        Log::debug( "Recording results of completed validation job", [ 'job_id' => $jobId, 'taskkey' => $taskKey, 'validation' => $backend->getValidator()->getName() ] );
         $blob[ 'backends' ][ $taskKey ] = $backend;
         $blob[ 'progress' ] = $progress;
         Cache::put( $this->getJobKey( $jobId ), $blob, 1200 );
@@ -111,24 +156,25 @@ class ValidationController
     /**
      * @param string $jobId
      * @param array $unsavedResults
+     * @param array $unsavedTimedOutJobs
      * @param \Exception|null $jobError
      * @return void
      */
-    private function finalizeJob(string $jobId, array $unsavedResults, ?\Exception $jobError): void
+    private function finalizeJob(string $jobId, array $unsavedResults, array $unsavedTimedOutJobs, array $fatalErrors): void
     {
-        Log::info( "Finalizing validation job", [ 'job_id' => $jobId ] );
+        Log::debug( "Finalizing validation job", [ 'job_id' => $jobId ] );
 
         $blob = Cache::get( $this->getJobKey( $jobId ) );
         $blob[ 'finished' ] = Carbon::now()->getTimestamp();
         $blob[ 'progress' ] = 100;
-        if( count( $unsavedResults ) ) {
-            foreach( $unsavedResults as [ $taskKey, $backend, $progress ] ) {
-                $blob[ 'backends' ][ $taskKey ] = $backend;
-            }
+        foreach( $unsavedResults as [ $taskKey, $backend, $progress ] ) {
+            $blob[ 'backends' ][ $taskKey ] = $backend;
         }
-        if( $jobError ) {
-            // todo: decide what to store here in error handling review
-            $blob[ 'error' ] = "Error during test run: " . $jobError->getMessage();
+        foreach ( $unsavedTimedOutJobs as $taskKey ) {
+            $blob[ 'backends' ][ $taskKey ]->markTimedOut();
+        }
+        foreach( $fatalErrors as [$taskKey, $exception] ) {
+            $blob[ 'backends' ][ $taskKey ]->validatorFailure($exception);
         }
         Cache::put( $this->getJobKey( $jobId ), $blob, 1200 );
     }
@@ -142,7 +188,6 @@ class ValidationController
 
         return view('validation/view2', [
             'jobId' => $id,
-            'job' => $job,
         ]);
     }
 
@@ -151,8 +196,7 @@ class ValidationController
         if ( !( $job = Cache::get( $this->getJobKey( $id ) ) ) ) {
             return response()->json( [], 404 );
         }
-
-        $complete = array_all( $job['backends'] , fn(ValidationRunner $backend) => $backend->isComplete() );
+        $complete = array_all( $job['backends'] , fn(ValidationRunner $backend) => $backend->isComplete() || $backend->isTimedOut() );
 
         $prioritySortedBackends = collect($job['backends'])
             ->sortBy(fn(ValidationRunner $backend) => $backend->getValidator()->getPriority())
@@ -161,9 +205,7 @@ class ValidationController
 
         /** @var ValidationRunner[] $prioritySortedBackends */
         foreach ($prioritySortedBackends as $backend) {
-            if ( !$backend->isComplete() ) {
-                continue;
-            }
+            // This loop processes complete (successful + failed), and timed out
             $software = array_map( fn( Software $software ) => ['name' => $software->software, 'version' => $software->version ], $backend->getSoftware() );
             $results = array_map(  fn( Result $result ) => ['message' => $result->message, 'type' => $result->type ], $backend->getResults() );
             if ( ( $failureInfo = $backend->getFailureInfo() ) ) {
@@ -183,6 +225,7 @@ class ValidationController
                 'priority'     => $backend->getValidator()->getPriority(),
                 'is_complete'  => $backend->isComplete(),
                 'is_failed'    => $backend->isFailed(),
+                'is_timedout'  => $backend->isTimedOut(),
                 'software'     => $software,
                 'results'      => $results,
                 'failure'      => $failure,
