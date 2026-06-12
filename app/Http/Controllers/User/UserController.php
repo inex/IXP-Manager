@@ -28,6 +28,7 @@ use Auth, Former, Hash, Log, Mail;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Routing\Redirector;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -474,6 +475,12 @@ class UserController extends Controller
             $c2u->delete();
         }
 
+        // delete application passwords
+        foreach( $u->appPasswords as $ap ) {
+            DB::table( 'app_passwords_last_logins' )->where( 'id', $ap->id )->delete();
+        }
+        $u->appPasswords()->delete();
+        
         // preserve and delete logs
         foreach( \IXP\Models\Log::whereUserId( $u->id )->orderBy( 'id', 'ASC' )->get() as $l ) {
             Log::info( "[USER DEL - PRESERVING LOG {$l->id}] {$l->model}:{$l->model_id}:{$l->action} ::: {$l->message} ::: " . json_encode( $l->models ) . " ::: {$l->created_at->format('Y-m-d H:i:s')} :::ENDS:::" );

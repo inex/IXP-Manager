@@ -161,6 +161,14 @@
                         Active Sessions
                     </a>
 
+                    <?php if( !config( 'ixp_fe.frontend.disabled.app-passwords' ) ): ?>
+                        <div class="dropdown-divider"></div>
+    
+                        <a class="dropdown-item <?= !request()->is( '*app-password*' ) ?: 'active' ?>" href="<?= route('app-password@list' )?>">
+                            App Passwords
+                        </a>
+                    <?php endif; ?>
+                    
                     <div class="dropdown-divider"></div>
 
                     <a class="dropdown-item <?= !request()->is( 'customer-note/unread-notes' ) ?: 'active' ?>" href="<?= route( 'customerNotes@unreadNotes' ) ?>">Unread Notes</a>

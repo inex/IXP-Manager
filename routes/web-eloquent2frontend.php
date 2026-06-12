@@ -30,6 +30,7 @@
 */
 
 // These are all under /admin
+IXP\Http\Controllers\AppPasswordController::routes();
 IXP\Http\Controllers\CabinetController::routes();
 IXP\Http\Controllers\ConsoleServer\ConsoleServerController::routes();
 IXP\Http\Controllers\ConsoleServer\ConsoleServerConnectionController::routes();

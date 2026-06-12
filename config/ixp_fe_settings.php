@@ -60,7 +60,22 @@ return [
                                         particularly RFC 1918 space. If you are providing an AS112 service to your members,
                                         this feature enables UI elements for that.',
                 ],
-
+                
+                'app-passwords' => [
+                    'config_key' => 'ixp_fe.frontend.disabled.app-password',
+                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_APP_PASSWORD',
+                    'type'       => 'radio',
+                    'invert'     => true,
+                    'rules'      => 'boolean',
+                    'name'       => 'Application-Specific Passwords',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/app-passwords/', // can be null
+                    'help'       => 'App Passwords can be used, where necessary, to bridge the gap to modern security
+                                        standards where a necessary system creates a classic compliance headache, such
+                                        as no direct support for Two-Factor Authentication (2FA). IXP Manager implements
+                                        an application-specific password manager for the convenience of IXPs who need it
+                                        and who do not have an alternative system.',
+                ],
+                
                 'console-server-connection' => [
                     'config_key' => 'ixp_fe.frontend.disabled.console-server-connection',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_CONSOLE',

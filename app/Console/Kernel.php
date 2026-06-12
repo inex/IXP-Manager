@@ -42,6 +42,7 @@ class Kernel extends ConsoleKernel
 
         // Expunge logs / GDPR data / etc.
         $schedule->command( 'utils:expunge-logs' )->dailyAt( '3:04' );
+        $schedule->command( 'utils:expunge-app-passwords-and-logs' )->dailyAt( '3:14' );
         
         // Grapher - https://docs.ixpmanager.org/latest/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails
         $schedule->command( 'grapher:upload-stats-to-db' )->dailyAt( '2:00' )

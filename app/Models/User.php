@@ -69,7 +69,12 @@ use IXP\Traits\Observable;
  * @property array|null $prefs
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ApiKey> $apiKeys
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ApiKey> 
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> 
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> 
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> 
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> 
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> $apiKeys
  * @property-read int|null $api_keys_count
  * @property-read \IXP\Models\CustomerToUser|null $currentCustomerToUser
  * @property-read \IXP\Models\Customer|null $customer
@@ -217,6 +222,16 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function apiKeys(): HasMany
     {
         return $this->hasMany(ApiKey::class, 'user_id' );
+    }
+
+    /**
+     * Get the app passwords for the user
+     *
+     * @psalm-return HasMany<AppPassword>
+     */
+    public function appPasswords(): HasMany
+    {
+        return $this->hasMany(AppPassword::class, "user_id" );
     }
 
     /**
