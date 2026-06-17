@@ -22,7 +22,7 @@
 
 // variables - you need to change these!
 $key="your-api-key";
-$url="https://ixp.example.com/api/v4/router/updated";
+$url="https://ixp.example.com/admin/api/v4/router/updated";
 $threshold=86400;
 
 // is curl available?

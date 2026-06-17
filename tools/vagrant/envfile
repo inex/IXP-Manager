@@ -186,7 +186,7 @@ GRAPHER_BACKEND_MRTG_LOGDIR="/srv/mrtg"
 ########################################################################################
 #### Skinning
 ##
-## See https://ixp-manager.readthedocs.io/en/latest/features/skinning.html
+## See https://docs.ixpmanager.org/latest/features/skinning/
 ##
 ## VIEW_SKIN="myskin"
 #

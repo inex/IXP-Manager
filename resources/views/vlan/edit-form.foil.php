@@ -48,8 +48,8 @@
             ->text( 'Include VLAN in the peering matrix (see help)' )
             ->value( 1 )
             ->inline()
-            ->blockHelp( "Selecting this checkbox means that this VLAN will appear on the <a href='http://ixp-master.dev/peering-matrix' target='_blank'>peering matrix</a>. 
-                Note that this does not mean that this matrix will be populated. For that, you need to <a href='https://github.com/inex/IXP-Manager/wiki/Peering-Matrix'>configure
+            ->blockHelp( "Selecting this checkbox means that this VLAN will appear on the <a href='". route("peering-matrix@index")."' target='_blank'>peering matrix</a>.
+                Note that this does not mean that this matrix will be populated. For that, you need to <a href='https://docs.ixpmanager.org/latest/features/peering-matrix/'>configure
                 sflow support for this</a>." );
         ?>
 
@@ -59,7 +59,7 @@
             ->value( 1 )
             ->inline()
             ->blockHelp( "Selecting this checkbox means that this VLAN will appear on the members' peering manager. 
-                Note that this does not mean that it will be populated. For that, you need to <a href='https://github.com/inex/IXP-Manager/wiki/Peering-Matrix'>configure
+                Note that this does not mean that it will be populated. For that, you need to <a href='https://docs.ixpmanager.org/latest/features/peering-matrix/'>configure
                 sflow support for this</a>." );
         ?>
         <?= Former::checkbox( 'export_to_ixf' )

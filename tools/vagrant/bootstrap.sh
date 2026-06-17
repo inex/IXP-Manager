@@ -364,6 +364,7 @@ Listen 81
 
 <VirtualHost *:81>
     DocumentRoot /srv/birdseye/public
+    AllowEncodedSlashes NoDecode
 
     <Directory /srv/birdseye/public>
         Options FollowSymLinks

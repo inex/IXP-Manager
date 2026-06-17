@@ -29,7 +29,7 @@
 ## SET THE FOLLOWING VARIABLES APPROPRIATELY
 
 KEY="your-ixp-manager-apikey-here"
-URL="https://www.example.com/ixp/api/v4/nagios"
+URL="https://www.example.com/ixp/admin/api/v4/nagios"
 
 # where to store the Nagios host/service configuration files:
 CONFPATH="/usr/local/etc/nagios/conf.d"
