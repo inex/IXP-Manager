@@ -25,6 +25,7 @@ namespace IXP\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use IXP\Jobs\SendAppPasswordExpiryReminders;
 
 class Kernel extends ConsoleKernel
 {
@@ -43,6 +44,7 @@ class Kernel extends ConsoleKernel
         // Expunge logs / GDPR data / etc.
         $schedule->command( 'utils:expunge-logs' )->dailyAt( '3:04' );
         $schedule->command( 'utils:expunge-app-passwords-and-logs' )->dailyAt( '3:14' );
+        $schedule->job( new SendAppPasswordExpiryReminders() )->dailyAt( '10:00' );
         
         // Grapher - https://docs.ixpmanager.org/latest/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails
         $schedule->command( 'grapher:upload-stats-to-db' )->dailyAt( '2:00' )
