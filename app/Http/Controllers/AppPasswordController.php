@@ -239,7 +239,15 @@ class AppPasswordController extends EloquentController
         
         $this->object = new AppPassword;
         $pass = $this->generateReadablePassword();
-        $this->object->password    = Hash::driver($r->algoritm)->make($pass);
+        
+        if( $r->algorithm === 'sha256' ) {
+            $this->object->salt     = bin2hex( random_bytes( 32 ) );
+            $this->object->password = hash( 'sha256', $pass . $this->object->salt );
+        } else {
+            $this->object->salt     = null;
+            $this->object->password = Hash::driver($r->algorithm)->make($pass);
+        }
+        
         $this->object->expires     = $r->expires;
         $this->object->description = $r->description;
         $this->object->user_id     = $r->user()->id;

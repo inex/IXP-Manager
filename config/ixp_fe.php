@@ -255,6 +255,7 @@ return [
                 'bcrypt'   => 'Bcrypt',
                 'argon'    => 'Argon2i',
                 'argon2id' => 'Argon2id',
+                'sha256'   => 'SHA256',
             ],
             // Default algorithm to use
             'default_algorithm' => env('IXP_FE_APP_PASSWORDS_DEFAULT_ALGO', 'bcrypt'),

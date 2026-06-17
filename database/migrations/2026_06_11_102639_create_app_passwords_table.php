@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('app_passwords', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->string('password', 255)->unique();
+            $table->string('password', 255)->nullable(false);
+            $table->string('salt', 64)->nullable();
             $table->dateTime('expires')->nullable(false);
             $table->dateTime('last_seen_at')->nullable();
             $table->string('last_seen_from', 255)->nullable();
