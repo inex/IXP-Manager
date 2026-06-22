@@ -53,9 +53,9 @@
 
     <div style="display: flex; justify-content: center;">
         @if( config( "identity.biglogo" ) )
-            <img class="tw-inline img-fluid tw-w-full tw-max-w-sm tw-mx-auto" src="<?= config( "identity.biglogo" ) ?>" />
+            <img class="tw-inline img-fluid tw-w-full tw-max-w-sm tw-mx-auto" src="<?= config( "identity.biglogo" ) ?>" alt="IXP Manager Logo" />
         @else
-            <img src="/images/ixp-manager.png" alt="" />
+            <img src="<?= url("/images/ixp-manager.png") ?>" alt="IXP Manager Logo" />
         @endif
     </div>
 
