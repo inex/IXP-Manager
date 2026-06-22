@@ -41,8 +41,8 @@
 #######
 
 echo "Updating packages...."
-apt-get update &>/dev/null
-apt-get dist-upgrade -y
+DEBIAN_FRONTEND=noninteractive apt-get update &>/dev/null
+DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
 
 # Defaults for MySQL and phpMyAdmin:
 echo 'mysql-server mysql-server/root_password password password' | debconf-set-selections
@@ -57,15 +57,15 @@ echo 'mrtg mrtg/create_www boolean true' | debconf-set-selections
 echo 'mrtg mrtg/fix_permissions boolean true' | debconf-set-selections
 
 # ensure basic tools are installed
-apt-get install -yq ubuntu-minimal openssl wget net-tools
+DEBIAN_FRONTEND=noninteractive apt-get install -yq ubuntu-minimal openssl wget net-tools
 
 # We need PHP 8.4 for IXP Manager v7 and we need to get this from
 # Ondrej's super PPA:
-apt-get install -yq software-properties-common
+DEBIAN_FRONTEND=noninteractive apt-get install -yq software-properties-common
 add-apt-repository -y ppa:ondrej/php
 
 echo "Installing mysql, apache, php, etc..."
-apt-get install -y apache2 php8.4 php8.4-intl php8.4-mysql php8.4-rrd php8.4-cgi php8.4-cli \
+DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 php8.4 php8.4-intl php8.4-mysql php8.4-rrd php8.4-cgi php8.4-cli \
     php8.4-snmp php8.4-curl  php8.4-memcached libapache2-mod-php8.4 mysql-server            \
     mysql-client memcached snmp php8.4-mbstring php8.4-xml php8.4-gd bgpq3 bgpq4 unzip git  \
     joe php8.4-bcmath bgpq3 php8.4-memcache unzip php8.4-zip git php8.4-yaml phpmyadmin     \
@@ -77,11 +77,11 @@ apt-get install -y apache2 php8.4 php8.4-intl php8.4-mysql php8.4-rrd php8.4-cgi
 
 # apt-get -y install bird2 &>/dev/null
 
-apt-get -y install apt-transport-https ca-certificates wget
+DEBIAN_FRONTEND=noninteractive apt-get -y install apt-transport-https ca-certificates wget
 wget -O /usr/share/keyrings/cznic-labs-pkg.gpg https://pkg.labs.nic.cz/gpg
 echo "deb [signed-by=/usr/share/keyrings/cznic-labs-pkg.gpg] https://pkg.labs.nic.cz/bird2 noble main" > /etc/apt/sources.list.d/cznic-labs-bird2.list
-apt-get update
-apt-get install bird2
+DEBIAN_FRONTEND=noninteractive apt-get update
+DEBIAN_FRONTEND=noninteractive apt-get install bird2
 
 
 ## Setup bird3 repo on Ubuntu 24.04 LTS
@@ -92,7 +92,7 @@ apt-get install bird2
 #apt-get install -yq bird3
 
 
-apt-get install -y
+DEBIAN_FRONTEND=noninteractive apt-get install -y
 
 
 ####################################################################################
@@ -241,7 +241,7 @@ END_SCREEN
 #######
 
 echo "Setting up snmpsim..."
-apt-get install -y python3-pip python3-venv python3-full &>/dev/null
+DEBIAN_FRONTEND=noninteractive apt-get install -y python3-pip python3-venv python3-full &>/dev/null
 mkdir /srv/venv
 python3 -m venv /srv/venv/ &>/dev/null
 cd /srv/venv/
@@ -289,7 +289,7 @@ nameserver 2001:4860:4860::8844
 END_RESOLV
 
 # install powerdns
-apt-get -y install pdns-server pdns-backend-bind &>/dev/null
+DEBIAN_FRONTEND=noninteractive apt-get -y install pdns-server pdns-backend-bind &>/dev/null
 systemctl stop pdns.service
 
 rm -rf /etc/powerdns/*
@@ -313,7 +313,7 @@ chown -R pdns: /etc/powerdns/
 systemctl start pdns.service
 
 # for testing
-apt-get -y install php-net-dns2 &>/dev/null
+DEBIAN_FRONTEND=noninteractive apt-get -y install php-net-dns2 &>/dev/null
 
 
 
