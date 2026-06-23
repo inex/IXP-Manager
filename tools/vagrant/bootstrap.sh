@@ -245,7 +245,7 @@ apt-get install -y python3-pip python3-venv python3-full &>/dev/null
 mkdir /srv/venv
 python3 -m venv /srv/venv/ &>/dev/null
 cd /srv/venv/
-./bin/pip install snmpsim &>/dev/null
+./bin/pip install snmpsim pysmi &>/dev/null
 mkdir /srv/snmpclients
 cp /vagrant/tools/vagrant/snmpwalks/*snmprec /srv/snmpclients/
 chown -R vagrant: /srv/snmpclients
