@@ -44,7 +44,6 @@ interface ValidationBackend
      */
     public function info( string $message): void;
 
-
     /**
      * Report an warning condition detected during validation
      */

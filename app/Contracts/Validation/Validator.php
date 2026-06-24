@@ -46,5 +46,5 @@ interface Validator
     /**
      * Execute validator routines, reporting findings to ValidationBackend
      */
-    public function run( ValidationBackend $backend): void;
+    public function run( ValidationBackend $backend ): void;
 }
