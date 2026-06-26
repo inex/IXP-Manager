@@ -44,7 +44,6 @@ class CustomerPolicy
 {
     use HandlesAuthorization;
 
-
     /**
      * Superadmins can do anything
      *

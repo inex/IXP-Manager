@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Http\Controllers;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,7 +20,11 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, DB, Former, Log, Redirect;
+declare(strict_types=1);
+
+namespace IXP\Http\Controllers;
+
+use Auth, DB, Former, Gate, Log, Redirect;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\View\View;
@@ -72,7 +73,7 @@ class RsFilterController extends Controller
      */
     public function listCustomers(): View
     {
-        $this->authorize( 'checkListCustomers',  [ RouteServerFilter::class ] );
+        Gate::authorize( 'checkListCustomers', [ RouteServerFilter::class ] );
 
         return view( 'rs-filter/list-customers' )->with([
             "customers"         => Customer::select( DB::raw('cust.id, cust.name, COUNT("route_server_filters_prod.id") as prod_rules') )
@@ -82,7 +83,6 @@ class RsFilterController extends Controller
                                         ->get()
         ]);
     }
-
 
     /**
      * Display the list of Route Server Filter
@@ -95,7 +95,7 @@ class RsFilterController extends Controller
      */
     public function list( Customer $cust ): View
     {
-        $this->authorize( 'checkCustObject',  [ RouteServerFilter::class, $cust ] );
+        Gate::authorize( 'listRsFilters', [ RouteServerFilter::class, $cust ] );
 
         return view( 'rs-filter/list' )->with([
             "rsFilters"         => RouteServerFilter::where( "customer_id" , $cust->id )
@@ -107,14 +107,12 @@ class RsFilterController extends Controller
         ]);
     }
 
-
-
     /**
      * Revert changes
      */
     public function revert( Customer $cust ): RedirectResponse
     {
-        $this->authorize( 'checkCustObject',  [ RouteServerFilter::class, $cust ] );
+        Gate::authorize( 'revertRsFilters', [ RouteServerFilter::class, $cust ] );
 
         RouteServerFilterAggregator::revert( $cust );
 
@@ -127,7 +125,7 @@ class RsFilterController extends Controller
      */
     public function commit( Customer $cust ): RedirectResponse
     {
-        $this->authorize( 'checkCustObject',  [ RouteServerFilter::class, $cust ] );
+        Gate::authorize( 'commitRsFilters', [ RouteServerFilter::class, $cust ] );
 
         RouteServerFilterAggregator::commit( $cust );
 
@@ -149,7 +147,7 @@ class RsFilterController extends Controller
      */
     public function create( Request $r,  Customer $cust ): View
     {
-        $this->authorize( 'checkCustObject',  [ RouteServerFilter::class, $cust ]  );
+        Gate::authorize( 'createRsFilter', [ RouteServerFilter::class, $cust ] );
 
         $vlanid     = $r->old( 'vlan_id' );
         $protocol   = $r->old( 'protocol');
@@ -205,7 +203,7 @@ class RsFilterController extends Controller
     {
         $cust = Customer::findOrFail( $r->custid );
 
-        $this->authorize( 'checkCustObject',  [ RouteServerFilter::class, $cust ]  );
+        Gate::authorize( 'createRsFilter', [ RouteServerFilter::class, $cust ] );
 
         $rsf = RouteServerFilter::make( array_merge( $r->except( [ 'enabled', 'order_by' ] ),
             [
@@ -235,7 +233,7 @@ class RsFilterController extends Controller
      */
     public function edit( Request $r, RouteServerFilter $rsf ): View
     {
-        $this->authorize( 'checkRsfObject',  [ RouteServerFilter::class, $rsf ] );
+        Gate::authorize( 'update', $rsf );
 
         $vlanid     = $r->old( 'vlan_id',     (string)$rsf->vlan_id  ?? null );
         $protocol   = $r->old( 'protocol',    $rsf->protocol ?? null );
@@ -272,7 +270,7 @@ class RsFilterController extends Controller
      */
     public function update( Store $r, RouteServerFilter $rsf ): RedirectResponse
     {
-        $this->authorize( 'checkRsfObject',  [ RouteServerFilter::class, $rsf ] );
+        Gate::authorize( 'update', $rsf );
 
         $rsf->update( $r->all() );
 
@@ -292,7 +290,7 @@ class RsFilterController extends Controller
      */
     public function view( RouteServerFilter $rsf ): View
     {
-        $this->authorize( 'checkRsfObject',  [ RouteServerFilter::class, $rsf ]  );
+        Gate::authorize( 'view', $rsf );
 
         return view( 'rs-filter/view' )->with( [
             'rsf'   => $rsf
@@ -311,7 +309,7 @@ class RsFilterController extends Controller
      */
     public function toggleEnable( RouteServerFilter $rsf, int $enable ): RedirectResponse
     {
-        $this->authorize( 'checkRsfObject',  [ RouteServerFilter::class, $rsf ]  );
+        Gate::authorize( 'toggleEnable', $rsf );
 
         $status = $enable ? 'enabled' : 'disabled';
 
@@ -335,7 +333,7 @@ class RsFilterController extends Controller
      */
     public function changeOrderBy( RouteServerFilter $rsf,  int $up ): RedirectResponse
     {
-        $this->authorize( 'checkRsfObject',  [ RouteServerFilter::class, $rsf ]  );
+        Gate::authorize( 'changeOrder', $rsf );
 
         // Getting the list of all the route server filters for the customer
         $listRsf = RouteServerFilter::where( "customer_id", $rsf->customer_id )
@@ -387,7 +385,7 @@ class RsFilterController extends Controller
      */
     public function delete( RouteServerFilter $rsf ): RedirectResponse
     {
-        $this->authorize( 'checkRsfObject',  [ RouteServerFilter::class, $rsf ]  );
+        Gate::authorize( 'delete', $rsf );
         $rsf->delete();
 
         Log::notice( Auth::getUser()->username." deleted the route server filter with the ID:" . $rsf->id );

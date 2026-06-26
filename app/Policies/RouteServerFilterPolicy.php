@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Policies;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,11 +20,13 @@ namespace IXP\Policies;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Route;
+declare(strict_types=1);
+
+namespace IXP\Policies;
 
 use IXP\Models\{
-    User,
     Customer,
+    User,
     RouteServerFilter
 };
 
@@ -38,6 +37,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Policies
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -49,26 +49,19 @@ class RouteServerFilterPolicy
 
     /**
      * Super admins can do anything
+     *
+     * @param User  $user
+     * @param $ability
+     *
+     * @return null|true
      */
-    public function before( User $user, $ability): ?bool
+    public function before( User $user, $ability ): bool|null
     {
-        $privs = $user->privs();
-        if( $privs !== User::AUTH_SUPERUSER ) {
-            $minAuth = User::AUTH_CUSTADMIN;
-
-            if( in_array( explode('@', Route::getCurrentRoute()->getActionName() )[1], [ "view", "list" ] ) ){
-                $minAuth = User::AUTH_CUSTUSER;
-            }
-
-            if( $privs < $minAuth ) {
-                return false;
-            }
-
-            return null;
+        if( $user->isSuperUser() ) {
+            return true;
         }
-        return true;
+        return null;
     }
-
 
     /**
      * Determine whether the user can access the list of customers with filters
@@ -78,26 +71,93 @@ class RouteServerFilterPolicy
         return $user->isSuperUser();
     }
 
-
     /**
-     * Determine whether the user can access to that route
+     * Authorise a request by $user to update the provided RouteServerFilter
      */
-    public function checkCustObject( User $user, Customer $cust ): bool
+    public function update( User $user, RouteServerFilter $rsf ): bool
     {
-        if( $cust->id !== $user->custid && !$user->isSuperUser() ){
-            return false;
-        }
-        return $cust->routeServerClient();
+        return $this->authorizeCustomerAccess( $user, $rsf->customer );
     }
 
     /**
-     * Determine whether the user can access to that route
+     * Authorise a request by $user to view the provided RouteServerFilter
      */
-    public function checkRsfObject( User $user, RouteServerFilter $rsf ): bool
+    public function view( User $user, RouteServerFilter $rsf ): bool
     {
-        if(  $rsf->customer_id !== $user->custid  && !$user->isSuperUser() ){
+        return $this->authorizeCustomerAccess( $user, $rsf->customer, true );
+    }
+
+    /**
+     * Authorise a request by $user to toggle enable on the provided RouteServerFilter
+     */
+    public function toggleEnable( User $user, RouteServerFilter $rsf ): bool
+    {
+        return $this->authorizeCustomerAccess( $user, $rsf->customer );
+    }
+
+    /**
+     * Authorise a request by $user to move the position of the provided RouteServerFilter
+     */
+    public function changeOrder( User $user, RouteServerFilter $rsf ): bool
+    {
+        return $this->authorizeCustomerAccess( $user, $rsf->customer );
+    }
+
+    /**
+     * Authorise a request by $user to delete the provided RouteServerFilter
+     */
+    public function delete( User $user, RouteServerFilter $rsf ): bool
+    {
+        return $this->authorizeCustomerAccess( $user, $rsf->customer );
+    }
+
+    /**
+     * Authorise a request from $user to view $customer's route server filters.
+     */
+    public function listRsFilters( User $user, Customer $customer ): bool
+    {
+        return $this->authorizeCustomerAccess( $user, $customer, true );
+    }
+
+    /**
+     * Authorise a request from $user to revert $customer's uncommitted route server filters.
+     */
+    public function revertRsFilters( User $user, Customer $customer ): bool
+    {
+        return $this->authorizeCustomerAccess( $user, $customer );
+    }
+
+    /**
+     * Authorise a request from $user to commit $customer's staged route server filters.
+     */
+    public function commitRsFilters( User $user, Customer $customer ): bool
+    {
+        return $this->authorizeCustomerAccess( $user, $customer );
+    }
+
+    /**
+     * Authorise a request from $user to create a new RsFilter for $customer.
+     */
+    public function createRsFilter( User $user, Customer $customer ): bool
+    {
+        return $this->authorizeCustomerAccess($user, $customer);
+    }
+
+    private function authorizeCustomerAccess(User $user, Customer $customer, bool $allowCustUser = false): bool
+    {
+        // there exists a before method, with the same check, but add it here just in case it ever gets removed.
+        if ($user->isSuperUser()) {
+            return true;
+        }
+        if ( $customer->id !== $user->custid ) {
             return false;
         }
-        return $rsf->customer->routeServerClient();
+
+        if ( $user->isCustAdmin() || ( $allowCustUser && $user->isCustUser() ) ) {
+            return $customer->routeServerClient();
+        }
+
+        return false;
     }
+
 }
