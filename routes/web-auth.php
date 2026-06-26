@@ -219,7 +219,7 @@ if( !config( 'ixp_fe.frontend.disabled.rs-filters') ) {
         Route::get('create/{cust}',                  'RsFilterController@create'            )->name("rs-filter@create"             );
         Route::get('edit/{rsf}',                     'RsFilterController@edit'           )->name("rs-filter@edit"            );
         Route::get('view/{rsf}',                     'RsFilterController@view'           )->name("rs-filter@view"            );
-        Route::get('toogle-enable/{rsf}/{enable}',   'RsFilterController@toggleEnable'   )->name("rs-filter@toggle-enable"   );
+        Route::get('toggle-enable/{rsf}/{enable}',   'RsFilterController@toggleEnable'   )->name("rs-filter@toggle-enable"   );
         Route::get('change-order/{rsf}/{up}',        'RsFilterController@changeOrderBy'  )->name("rs-filter@change-order"    );
 
         Route::post('revert/{cust}',                 'RsFilterController@revert'         )->name("rs-filter@revert"          );

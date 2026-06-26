@@ -14,7 +14,7 @@
             buttons: {
                 cancel: {
                     label: 'Close',
-                    className: 'btn-secondary',
+                    className: 'btn-secondary delete-rsf-cancel',
                     callback: function () {
                         $('.bootbox.modal').modal('hide');
                         return false;
@@ -22,7 +22,7 @@
                 },
                 submit: {
                     label: 'Delete',
-                    className: 'btn-danger',
+                    className: 'btn-danger delete-rsf-confirm',
                     callback: function () {
                         $('#form-delete').submit();
                     }
@@ -42,7 +42,7 @@
             buttons: {
                 cancel: {
                     label: 'Close',
-                    className: 'btn-secondary',
+                    className: 'btn-secondary submit-revert-cancel',
                     callback: function () {
                         $('.bootbox.modal').modal('hide');
                         return false;
@@ -50,7 +50,7 @@
                 },
                 submit: {
                     label: 'Revert',
-                    className: 'btn-danger',
+                    className: 'btn-danger submit-revert-confirm',
                     callback: function () {
                         $( "#form-revert" ).submit();
                     }
@@ -73,7 +73,7 @@
             buttons: {
                 cancel: {
                     label: 'Close',
-                    className: 'btn-secondary',
+                    className: 'btn-secondary submit-commit-cancel',
                     callback: function () {
                         $('.bootbox.modal').modal('hide');
                         return false;
@@ -81,7 +81,7 @@
                 },
                 submit: {
                     label: 'Commit',
-                    className: 'btn-danger',
+                    className: 'btn-danger submit-commit-confirm',
                     callback: function () {
                         $( "#form-commit" ).submit();
                     }
