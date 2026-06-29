@@ -60,10 +60,6 @@
                         <li>
                             all peering manager records (peering request emails sent/received, ignored status, etc.);
                         </li>
-                        <li>
-                            all <b><?= $c->patchPanelPorts()->count() ?></b> customer patch panel ports will be be set to awaiting-cease
-                            <em>(if this is non-zero, you should really sort these out before deleting the customer!)</em>;
-                        </li>
 
                         <li>
                             <b><?= $c->consoleServerConnections()->count() ?></b> console server connections;
