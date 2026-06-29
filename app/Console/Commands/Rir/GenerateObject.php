@@ -67,6 +67,8 @@ class GenerateObject extends Command
      * Execute the console command.
      *
      * @throws
+     *
+     * @psalm-return 0|1
      */
     public function handle(): int
     {
@@ -139,7 +141,7 @@ class GenerateObject extends Command
      */
     private function sendEmail( string $obj ): void
     {
-        if( !$this->option( "to" ) && !config( 'ixp_api.rir.email.to' )   ){
+        if( !$this->option( "to" ) && config( 'ixp_api.rir.email.to' ) === null ){
             $this->fail( "Please specify the TO email address" );
         }
 

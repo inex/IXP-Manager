@@ -69,6 +69,6 @@ class PortUtilisation extends Mailable
     public function build(): self
     {
         return $this->view('services.grapher.email.port-utilisation')
-            ->subject( env('IDENTITY_NAME') . " :: Ports Utilisation Report" );
+            ->subject( config( 'identity.name' ) . " :: Ports Utilisation Report" );
     }
 }

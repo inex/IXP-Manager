@@ -288,7 +288,7 @@ ENDWHOIS;
         }
 
         // api key?
-        if( config( 'ixp_api.peeringDB.api-key' ) ) {
+        if( config( 'ixp_api.peeringDB.api-key' ) !== null ) {
             $headers = [
                 'Authorization' => 'Api-Key ' . config( 'ixp_api.peeringDB.api-key' ),
             ];
@@ -352,9 +352,14 @@ ENDWHOIS;
      */
     private function generateBasePeeringDbUrl( string $query = "" ): string
     {
-        if( config( 'ixp_api.peeringDB.api-key' ) ) {
+        /** @var string|null $un */
+        $un = config( 'ixp_api.peeringDB.username' );
+        /** @var string|null $pw */
+        $pw = config( 'ixp_api.peeringDB.password' );
+
+        if( config( 'ixp_api.peeringDB.api-key' ) !== null ) {
             $credentials = '';
-        } else if( ( $un = config( 'ixp_api.peeringDB.username' ) ) === null || ( $pw = config( 'ixp_api.peeringDB.password' ) ) === null ) {
+        } else if( $un === null || $pw === null ) {
             Log::warning( 'Neither PeeringDb API Key nor deprecated username / password set in .env. Only public data will be retrieved. Please set an API Key' );
             $credentials = '';
         } else {
@@ -385,7 +390,7 @@ ENDWHOIS;
         $warnings = [];
         
         // are we set up for auth?
-        if( !config('ixp_api.peeringDB.api-key') ) {
+        if( config('ixp_api.peeringDB.api-key') === null ) {
             $warnings[] = str_repeat( '-', 70 )
                 . "\nNo API key defined in .env for PeeringDB.\n\n"
                 . "See https://docs.peeringdb.com/howto/api_keys/ and set IXP_API_PEERING_DB_API_KEY in .env.\n\n"
@@ -393,7 +398,7 @@ ENDWHOIS;
                 . str_repeat( '-', 70 ) . "\n\n";
         }
         
-        if( config('ixp_api.peeringDB.username') && config('ixp_api.peeringDB.password') ) {
+        if( config('ixp_api.peeringDB.username') !== null && config('ixp_api.peeringDB.password') !== null) {
             $warnings[] =
                 str_repeat( '-', 70 ) . "\n"
                 . "Username and password are set in .env for PeeringDB. This is deprecated and they should be replaced with an API key.\n\n"

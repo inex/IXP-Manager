@@ -32,7 +32,7 @@
 
 HANDLES="rc1-vix1-ipv4 rc1-vix1-ipv6 rc1-vix2-ipv4 rc1-vix2-ipv6"
 
-APIKEY="r8sFfkGamCjrbbLC12yIoCJooIRXzY9CYPaLVz92GFQyGqLq"
+APIKEY="ixpm_7fwTNH5XMKcR_2v4Na6muGvvoIonPtL2pllqdSxdmzzos44Prjv"
 URLROOT="http://127.0.0.1"
 BIRDBIN="/usr/sbin/bird"
 

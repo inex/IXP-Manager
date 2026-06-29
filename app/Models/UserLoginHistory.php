@@ -78,7 +78,7 @@ class UserLoginHistory extends Model
     /**
      * Get the customer to user
      *
-     * @psalm-return BelongsTo<CustomerToUser>
+     * @return BelongsTo<CustomerToUser, UserLoginHistory>
      */
     public function customerToUser(): BelongsTo
     {

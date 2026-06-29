@@ -41,9 +41,9 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    public const API_KEY_CUSTUSER  = 'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC7';
-    public const API_KEY_CUSTADMIN = 'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC8';
-    public const API_KEY_SUPERUSER = 'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9';
+    public const API_KEY_CUSTUSER  = 'ixpm_v7zO4TmaX3Ft_bo4NB55lMRFPSqoNDCv34xDkwg8d2WK01bMzif';
+    public const API_KEY_CUSTADMIN = 'ixpm_GcMPPjWig7w2_G6yoQYvkQSLhfkOuhwEYoULcsM512Vjt2sQ532';
+    public const API_KEY_SUPERUSER = 'ixpm_iqLw1OF50aPU_XX3U8cGvlRiaf7YLX8a41uSJVqBbRAAl0LfKVo';
 
     public function __construct( $name = null, array $data = [], $dataName = '' )
     {

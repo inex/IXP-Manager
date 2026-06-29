@@ -149,7 +149,10 @@ class SetupWizard extends Command
      * Execute the console command.
      *
      * @return int
+     *
      * @throws \Throwable
+     *
+     * @psalm-return 0|1|4
      */
     public function handle(): int
     {

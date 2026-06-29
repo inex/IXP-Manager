@@ -115,7 +115,7 @@ class Cabinet extends Model
     /**
      * Get the switchers for the cabinet
      *
-     * @psalm-return HasMany<Switcher>
+     * @return HasMany<Switcher, Cabinet>
      */
     public function switchers(): HasMany
     {
@@ -125,7 +125,7 @@ class Cabinet extends Model
     /**
      * Get the customerEquipments for the cabinet
      *
-     * @psalm-return HasMany<CustomerEquipment>
+     * @return HasMany<CustomerEquipment,Cabinet>
      */
     public function customerEquipment(): HasMany
     {
@@ -135,7 +135,7 @@ class Cabinet extends Model
     /**
      * Get the console servers for the cabinet
      *
-     * @psalm-return HasMany<ConsoleServer>
+     * @return HasMany<ConsoleServer, Cabinet>
      */
     public function consoleServers(): HasMany
     {
@@ -145,7 +145,7 @@ class Cabinet extends Model
     /**
      * Get the patch panels for the cabinet
      *
-     * @psalm-return HasMany<PatchPanel>
+     * @return HasMany<PatchPanel, Cabinet>
      */
     public function patchPanels(): HasMany
     {
@@ -155,7 +155,7 @@ class Cabinet extends Model
     /**
      * Get the location for the cabinet
      *
-     * @psalm-return BelongsTo<Location>
+     * @return BelongsTo<Location,Cabinet>
      */
     public function location(): BelongsTo
     {

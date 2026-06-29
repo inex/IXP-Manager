@@ -127,14 +127,6 @@ class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
 
     /**
      * Query the various route servers for filtered prefixes and add them to the $this->filteredPrefixes array
-     *
-     * @param LookingGlass      $lg
-     * @param VlanInterface     $vli
-     * @param int               $ipproto
-     *
-     * @return void
-     *
-     * @throws
      */
     private function queryRouteServer( LookingGlass $lg, VlanInterface $vli, int $ipproto ): void
     {

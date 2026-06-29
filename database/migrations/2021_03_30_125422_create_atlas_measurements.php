@@ -14,7 +14,7 @@ class CreateAtlasMeasurements extends Migration
     public function up()
     {
         Schema::create('atlas_measurements', function (Blueprint $table) {
-            $table->increments('id')->unsigned( false );
+            $table->increments('id')->unsigned();
             $table->integer('run_id' );
             $table->integer('cust_source' )->nullable();
             $table->integer('cust_dest' )->nullable();

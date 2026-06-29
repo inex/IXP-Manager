@@ -80,7 +80,7 @@ class UpdateMeasurements extends Job implements ShouldQueue
      *
      * @return int
      *
-     * @throws
+     * @throws \JsonException|\Illuminate\Contracts\Container\BindingResolutionException
      *
      * @psalm-return 0|1
      */

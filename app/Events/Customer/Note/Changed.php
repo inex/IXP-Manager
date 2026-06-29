@@ -23,7 +23,7 @@ namespace IXP\Events\Customer\Note;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Exceptions\GeneralException;
+
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -49,29 +49,14 @@ abstract class Changed implements ShouldQueue
     use Dispatchable, SerializesModels, InteractsWithQueue;
 
     /**
-     * old customer note
-     */
-    protected ?CustomerNote $ocn;
-
-    /**
-     * new customer note
-     */
-    protected CustomerNote $cn;
-
-    /**
      * @var Customer
      */
-    protected $cust;
+    protected Customer $cust;
 
     /**
      * @var string
      */
-    protected $type;
-
-    /**
-     * @var User
-     */
-    protected $user;
+    protected string $type;
 
     /**
      * Create a new event instance.
@@ -79,28 +64,17 @@ abstract class Changed implements ShouldQueue
      * @param  CustomerNote|null    $ocn
      * @param  CustomerNote         $cn
      * @param User                  $user
-     *
-     * @throws GeneralException
      */
-    public function __construct( ?CustomerNote $ocn, CustomerNote $cn, User $user )
+    public function __construct(
+        protected ?CustomerNote $ocn,
+        protected CustomerNote $cn,
+        protected User $user )
     {
-        $this->ocn      = $ocn;
-        $this->cn       = $cn;
-        $this->user     = $user;
-
-        if( $ocn ) {
-            $this->cust = $ocn->customer;
-        } else if( $cn ) {
-            $this->cust = $cn->customer;
-        } else {
-            throw new GeneralException( "Customer note is missing." );
-        }
+        $this->cust = $ocn?->customer ?? $cn->customer;
     }
 
     /**
      * Get customer
-     *
-     * @return Customer
      */
     public function customer(): Customer
     {
@@ -108,9 +82,7 @@ abstract class Changed implements ShouldQueue
     }
 
     /**
-     * Get customer
-     *
-     * @return User
+     * Get user
      */
     public function user(): User
     {
@@ -127,8 +99,6 @@ abstract class Changed implements ShouldQueue
 
     /**
      * Get note
-     *
-     * @return CustomerNote
      */
     public function note(): CustomerNote
     {
@@ -137,8 +107,6 @@ abstract class Changed implements ShouldQueue
 
     /**
      * Get either note: get the new note if set, otherwise the old note
-     *
-     * @return CustomerNote
      */
     public function eitherNote(): CustomerNote
     {
@@ -148,8 +116,6 @@ abstract class Changed implements ShouldQueue
 
     /**
      * Is the event type: a customer note was added
-     *
-     * @return bool
      */
     public function typeCreated(): bool
     {
@@ -158,8 +124,6 @@ abstract class Changed implements ShouldQueue
 
     /**
      * Is the event type: a customer note was deleted
-     *
-     * @return bool
      */
     public function typeDeleted(): bool
     {
@@ -168,8 +132,6 @@ abstract class Changed implements ShouldQueue
 
     /**
      * Is the event type: a customer note was edited
-     *
-     * @return bool
      */
     public function typeEdited(): bool
     {
@@ -178,8 +140,6 @@ abstract class Changed implements ShouldQueue
 
     /**
      * Resolve the type
-     *
-     * @return string
      *
      * @psalm-return 'Created'|'Deleted'|'Edited'
      */

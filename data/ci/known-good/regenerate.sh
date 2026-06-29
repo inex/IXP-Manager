@@ -1,6 +1,6 @@
 #! /bin/bash
 
-KEY="Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9"
+KEY="ixpm_iqLw1OF50aPU_XX3U8cGvlRiaf7YLX8a41uSJVqBbRAAl0LfKVo"
 URL="http://127.0.0.1:8080/apiv1"
 WGET="/usr/bin/wget"
 BIRD="/usr/sbin/bird"

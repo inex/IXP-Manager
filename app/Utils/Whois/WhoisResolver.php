@@ -48,6 +48,13 @@ class WhoisResolver
             throw new WhoisException( "Configuration not found for whois server '$server'" );
         }
 
-        return new Whois( config( "ixp_api.whois.{$server}.host" ), (int) config( "ixp_api.whois.{$server}.port" ) );
+        /** @var mixed $port */
+        $port = config( "ixp_api.whois.{$server}.port" );
+
+        if( !is_numeric( $port ) ) {
+            throw new WhoisException( "Whois server port must be numeric" );
+        }
+
+        return new Whois( config( "ixp_api.whois.{$server}.host" ), (int)$port );
     }
 }

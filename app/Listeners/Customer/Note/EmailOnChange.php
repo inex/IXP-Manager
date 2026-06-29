@@ -138,7 +138,7 @@ class EmailOnChange
             $to = [];
 
             foreach( $c2us as $c2u ) {
-                $user = $c2u->user;/** @var $user User */
+                $user = $c2u->user;
                 if( isset( $user->prefs[ 'notes' ][ 'global_notifs' ] ) && $user->prefs[ 'notes' ][ 'global_notifs' ] === 'none' ){
                     continue;
                 }

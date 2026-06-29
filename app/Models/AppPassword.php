@@ -42,38 +42,33 @@ use Illuminate\Database\Eloquent\{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\User $user
+ * @property string|null $salt
+ * @property string|null $last_seen_at
+ * @property string|null $last_seen_from
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppPassword newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppPassword newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppPassword query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppPassword whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppPassword whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppPassword whereExpires($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppPassword whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppPassword whereLastSeenAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppPassword whereLastSeenFrom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppPassword wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppPassword whereSalt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppPassword whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppPassword whereUserId($value)
  * @mixin \Eloquent
  */
 class AppPassword extends Model
 {
     
     use Observable;
-    
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'app_passwords';
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_id',
-        'password',
-        'expires',
-        'lastseenAt',
-        'lastseenFrom',
-        'description'
-    ];
 
     /**
      * Get the user
      *
-     * @psalm-return BelongsTo<User>
+     * @return BelongsTo<User, AppPassword>
      */
     public function user(): BelongsTo
     {

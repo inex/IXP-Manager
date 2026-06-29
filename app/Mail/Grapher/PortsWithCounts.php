@@ -71,7 +71,7 @@ class PortsWithCounts extends Mailable
     {
         $c = Graph::resolveCategory( $this->category );
         return $this->view('services.grapher.email.ports-with-counts')
-            ->subject( env('IDENTITY_NAME') . " :: Ports with " . $c )
+            ->subject( config( 'identity.name' ) . " :: Ports with " . $c )
             ->with( 'categoryDesc', $c );
     }
 }

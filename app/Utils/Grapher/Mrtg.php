@@ -151,11 +151,9 @@ class Mrtg
      *
      * The above will be ordered with the newest first as per the log file.
      *
-     * @return int[][]
+     * @return array<array{int, int, int, int, int}>
      *
-     * @throws
-     *
-     * @psalm-return list<list{int, int, int, int, int}>
+     * @throws FileErrorException
      */
     protected function loadMrtgFile(): array
     {

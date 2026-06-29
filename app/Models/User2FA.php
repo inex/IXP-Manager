@@ -72,7 +72,7 @@ class User2FA extends Model
     /**
      * Get the physical interface associated with the core interface.
      *
-     * @psalm-return BelongsTo<User>
+     * @return BelongsTo<User, User2FA>
      */
     public function user(): BelongsTo
     {

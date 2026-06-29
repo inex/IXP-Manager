@@ -45,9 +45,9 @@ class ApiKeyMaybeAuthTest extends TestCase
 
     private const array TEST_KEYS = [
         // user id => key
-        1 => 'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9',
-        2 => 'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC8',
-        3 => 'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC7',
+        1 => 'ixpm_iqLw1OF50aPU_XX3U8cGvlRiaf7YLX8a41uSJVqBbRAAl0LfKVo',
+        2 => 'ixpm_GcMPPjWig7w2_G6yoQYvkQSLhfkOuhwEYoULcsM512Vjt2sQ532',
+        3 => 'ixpm_v7zO4TmaX3Ft_bo4NB55lMRFPSqoNDCv34xDkwg8d2WK01bMzif',
     ];
 
     public function testApiMaybeAuthAccessNoKey(): void

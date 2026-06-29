@@ -14,7 +14,7 @@ class CreateAtlasRuns extends Migration
     public function up()
     {
         Schema::create('atlas_runs', function (Blueprint $table) {
-            $table->increments('id')->unsigned( false );
+            $table->increments('id')->unsigned();
             $table->integer('vlan_id' )->nullable();
             $table->integer('protocol' )->nullable();
             $table->dateTime('scheduled_at' )->nullable();

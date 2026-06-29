@@ -83,12 +83,14 @@ abstract class Command extends \Illuminate\Console\Command
      }
 
     /**
-     * Returns the list of customers that the keyword match the ASN or the name
-     *
-     * @param  string|int  $search
-     *
-     * @return array
-     */
+      * Returns the list of customers that the keyword match the ASN or the name
+      *
+      * @param string|int  $search
+      *
+      * @return array
+      *
+      * @psalm-return array<int, mixed>
+      */
      protected function customersViaNameOrASN( string|int $search ): array
      {
          return Customer::selectRaw( 'id,name,autsys' )

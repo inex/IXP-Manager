@@ -4,19 +4,17 @@ $row = $t->row;
 ?>
 
 <tr>
-
-    <?php if( (bool)request()->query( 'all', 0 ) ): ?>
-        <td>
-            <?= $t->ee( $row['user'] ) ?>
-        </td>
-    <?php endif; ?>
     
     <td>
         <?= $t->ee( $row['description'] ) ?>
     </td>
 
     <td>
-        <?= $row['expires'] ? Carbon\Carbon::parse( $row['expires'] )->format('Y-m-d') : '' ?>
+        <?php $expires = Carbon\Carbon::parse( $t->ee( $row['expires'] ) ); ?>
+        <?php if( $expires->isPast() ): ?>
+            <i class="fa fa-exclamation-triangle text-danger"></i>
+        <?php endif; ?>
+        <?= $expires->format('Y-m-d') ?>
     </td>
     
     <td>

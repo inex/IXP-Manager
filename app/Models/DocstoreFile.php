@@ -123,7 +123,7 @@ class DocstoreFile extends Model
     /**
      * Get the directory that owns the file.
      *
-     * @psalm-return BelongsTo<DocstoreDirectory>
+     * @return BelongsTo<DocstoreDirectory, DocstoreFile>
      */
     public function directory(): BelongsTo
     {
@@ -133,7 +133,7 @@ class DocstoreFile extends Model
     /**
      * Get the access logs for this file
      *
-     * @psalm-return HasMany<DocstoreLog>
+     * @return HasMany<DocstoreLog, DocstoreFile>
      */
     public function logs(): HasMany
     {

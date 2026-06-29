@@ -64,7 +64,7 @@ class MacAddress extends Model
     /**
      * Get the virtual interface for the mac addresses for
      *
-     * @psalm-return BelongsTo<VirtualInterface>
+     * @return BelongsTo<VirtualInterface, MacAddress>
      */
     public function virtualInterface(): BelongsTo
     {

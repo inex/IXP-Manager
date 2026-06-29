@@ -65,17 +65,14 @@ use IXP\Traits\Observable;
  * @property string|null $creator
  * @property string|null $name
  * @property int|null $peeringdb_id
- * @property array|null $extra_attributes
- * @property array|null $prefs
+ * @property array<array-key, mixed>|null $extra_attributes (DC2Type:json)
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ApiKey> 
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> 
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> 
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> 
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> 
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> $apiKeys
+ * @property array<array-key, mixed>|null $prefs
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ApiKey> $apiKeys
  * @property-read int|null $api_keys_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> $appPasswords
+ * @property-read int|null $app_passwords_count
  * @property-read \IXP\Models\CustomerToUser|null $currentCustomerToUser
  * @property-read \IXP\Models\Customer|null $customer
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\CustomerToUser> $customerToUser
@@ -87,33 +84,27 @@ use IXP\Traits\Observable;
  * @property-read \IXP\Models\User2FA|null $user2FA
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\UserRememberToken> $userRememberTokens
  * @property-read int|null $user_remember_tokens_count
- * @method static Builder|User activeOnly()
- * @method static Builder|User byPrivs(?int $priv = null)
- * @method static Builder|User newModelQuery()
- * @method static Builder|User newQuery()
- * @method static Builder|User query()
- * @method static Builder|User whereAuthorisedMobile($value)
- * @method static Builder|User whereCreatedAt($value)
- * @method static Builder|User whereCreator($value)
- * @method static Builder|User whereCustid($value)
- * @method static Builder|User whereDisabled($value)
- * @method static Builder|User whereEmail($value)
- * @method static Builder|User whereExtraAttributes($value)
- * @method static Builder|User whereId($value)
- * @method static Builder|User whereLastupdatedby($value)
- * @method static Builder|User whereName($value)
- * @method static Builder|User wherePassword($value)
- * @method static Builder|User wherePeeringdbId($value)
- * @method static Builder|User wherePrefs($value)
- * @method static Builder|User wherePrivs($value)
- * @method static Builder|User whereUid($value)
- * @method static Builder|User whereUpdatedAt($value)
- * @method static Builder|User whereUsername($value)
- * @property string|null $lastupdated
- * @property string|null $created
- * @method static Builder|User whereCreated($value)
- * @method static Builder|User whereLastupdated($value)
- * @property int|null $privs
+ * @method static Builder<static>|User activeOnly()
+ * @method static Builder<static>|User byPrivs(?int $priv = null)
+ * @method static Builder<static>|User newModelQuery()
+ * @method static Builder<static>|User newQuery()
+ * @method static Builder<static>|User query()
+ * @method static Builder<static>|User whereAuthorisedMobile($value)
+ * @method static Builder<static>|User whereCreatedAt($value)
+ * @method static Builder<static>|User whereCreator($value)
+ * @method static Builder<static>|User whereCustid($value)
+ * @method static Builder<static>|User whereDisabled($value)
+ * @method static Builder<static>|User whereEmail($value)
+ * @method static Builder<static>|User whereExtraAttributes($value)
+ * @method static Builder<static>|User whereId($value)
+ * @method static Builder<static>|User whereLastupdatedby($value)
+ * @method static Builder<static>|User whereName($value)
+ * @method static Builder<static>|User wherePassword($value)
+ * @method static Builder<static>|User wherePeeringdbId($value)
+ * @method static Builder<static>|User wherePrefs($value)
+ * @method static Builder<static>|User whereUid($value)
+ * @method static Builder<static>|User whereUpdatedAt($value)
+ * @method static Builder<static>|User whereUsername($value)
  * @mixin Eloquent
  */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
@@ -187,7 +178,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     /**
      * Get the remember tokens for the user
      *
-     * @psalm-return HasMany<UserRememberToken>
+     * @return HasMany<UserRememberToken, User>
      */
     public function userRememberTokens(): HasMany
     {
@@ -197,7 +188,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     /**
      * Get the remember tokens for the user
      *
-     * @psalm-return HasOne<User2FA>
+     * @return HasOne<User2FA, User>
      */
     public function user2FA(): HasOne
     {
@@ -207,7 +198,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     /**
      * Get the customer
      *
-     * @psalm-return BelongsTo<Customer>
+     * @return BelongsTo<Customer, User>
      */
     public function customer(): BelongsTo
     {
@@ -217,7 +208,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     /**
      * Get the api keys for the user
      *
-     * @psalm-return HasMany<ApiKey>
+     * @return HasMany<ApiKey, User>
      */
     public function apiKeys(): HasMany
     {
@@ -227,7 +218,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     /**
      * Get the app passwords for the user
      *
-     * @psalm-return HasMany<AppPassword>
+     * @return HasMany<AppPassword, User>
      */
     public function appPasswords(): HasMany
     {
@@ -236,6 +227,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     /**
      * Get all the customers for the user
+     * @return BelongsToMany<Customer, User>
      */
     public function customers(): BelongsToMany
     {
@@ -246,7 +238,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     /**
      * Get all the customers for the user
      *
-     * @psalm-return HasMany<CustomerToUser>
+     * @return HasMany<CustomerToUser, User>
      */
     public function customerToUser(): HasMany
     {

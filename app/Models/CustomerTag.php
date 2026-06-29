@@ -81,7 +81,7 @@ class CustomerTag extends Model
     /**
      * Get all the customers for the tag
      *
-     * @psalm-return BelongsToMany<Customer>
+     * @return BelongsToMany<Customer, CustomerTag>
      */
     public function customers(): BelongsToMany
     {

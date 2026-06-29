@@ -107,10 +107,7 @@ class Rrd
     /**
      * Class constructor.
      *
-     * @param  string  $file  The RRD log file to load for analysis
-     * @param  Graph  $graph  The graph object
-     *
-     * @throws
+     * @throws FileErrorException
      */
     public function __construct( string $file, Graph $graph )
     {
@@ -166,9 +163,7 @@ class Rrd
      * @see getLocalCopy() for detals
      * @see getLocalFilename() for detals
      *
-     * @throws
-     *
-     * @psalm-return '/Users/barryo/dev/ixpm-inex/storage/grapher'
+     * @throws FileErrorException
      */
     private function getLocalDirectory(): string
     {
@@ -193,7 +188,7 @@ class Rrd
      *
      * @param string $ext The extension
      *
-     * @throws
+     * @throws FileErrorException
      *
      * @psalm-param 'png'|'rrd' $ext
      */
@@ -215,7 +210,7 @@ class Rrd
      *
      * @return string The full path to the local copy
      *
-     * @throws
+     * @throws FileErrorException
      */
     private function getLocalCopy(): string
     {
@@ -257,7 +252,7 @@ class Rrd
     /**
      * Prepare RRD file
      *
-     * @throws
+     * @throws FileErrorException
      */
     protected function loadRrdFile(): void
     {
@@ -268,7 +263,7 @@ class Rrd
     /**
      * Get the RRD file
      *
-     * @throws
+     * @throws FileErrorException
      */
     public function rrd(): string
     {
@@ -308,7 +303,8 @@ class Rrd
      *
      * @return int[][]
      *
-     * @throws
+     * @throws FileErrorException
+     * @throws ParameterException
      *
      * @psalm-return array<int<0, max>, list{int, int, int, int, int}>
      */
@@ -321,13 +317,13 @@ class Rrd
             }
 
             return $this->dataWindow(
-                $this->graph()->periodStart()->timestamp,
-                $this->graph()->periodEnd()->timestamp
+                (int)$this->graph()->periodStart()->timestamp,
+                (int)$this->graph()->periodEnd()->timestamp
             );
 
         } else {
 
-            return $this->dataWindow(time() - self::PERIOD_TIME[ $this->graph()->period() ], time());
+            return $this->dataWindow(time() - (int)self::PERIOD_TIME[ $this->graph()->period() ], time());
 
         }
     }
@@ -343,6 +339,7 @@ class Rrd
      */
     private function fetchRrdFile( int $start, int $end, string $consolidationFunction): array
     {
+        /** @var array|false $rrd */
          $rrd = rrd_fetch( $this->file, [
             $consolidationFunction,
             '--start', $start,
@@ -414,7 +411,8 @@ class Rrd
     /**
      * From the RRD file, process and return a png
      *
-     * @throws
+     * @throws FileErrorException
+     * @throws ParameterException
      */
     public function png(): string
     {

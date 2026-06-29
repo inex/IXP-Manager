@@ -312,11 +312,11 @@ class MultiRrd
             }
 
             return $this->dataWindow(
-                $this->graph()->periodStart()->timestamp,
-                $this->graph()->periodEnd()->timestamp
+                (int)$this->graph()->periodStart()->timestamp,
+                (int)$this->graph()->periodEnd()->timestamp
             );
         } else {
-            return $this->dataWindow( time() - self::PERIOD_TIME[ $this->graph()->period() ], time() );
+            return $this->dataWindow( time() - (int)self::PERIOD_TIME[ $this->graph()->period() ], time() );
         }
     }
 
@@ -325,15 +325,13 @@ class MultiRrd
      * as an MRTG log file.
      *
      * @see \IXP\Utils\Grapher\Mrtg::loadMrtgFile()
-     *
+
      * Processing means:
      * - only returning the values for the requested period
      * - MRTG/RRD provides traffic as bytes, change to bits
      *
-     * @return array
-     *
      */
-    public function dataWindow($start, $end): array
+    public function dataWindow(int $start, int $end): array
     {
         [ $indexIn, $indexOut ] = $this->getIndexKeys();
 

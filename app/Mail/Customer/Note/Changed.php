@@ -44,22 +44,13 @@ class Changed extends Mailable
     use Queueable, SerializesModels;
 
     /**
-     *
-     * @var CustomerNoteChangedEvent
-     */
-    public $event;
-
-    /**
      * Create a new message instance.
-     *
-     * @param CustomerNoteChangedEvent $e
      *
      * @return void
      */
-    public function __construct( CustomerNoteChangedEvent $e )
-    {
-        $this->event = $e;
-    }
+    public function __construct(
+        public CustomerNoteChangedEvent $event
+    ) {}
 
     /**
      * Build the message.
@@ -68,8 +59,8 @@ class Changed extends Mailable
      */
     public function build()
     {
-        $cust = $this->event->note() ? $this->event->note()->customer : $this->event->oldNote()->customer;
+        $cust = $this->event->note()->customer;
         return $this->markdown( 'customer.emails.note-changed' )
-            ->subject( env('IDENTITY_NAME') . " :: Customer Notes :: " . $cust->getFormattedName() );
+            ->subject( config( 'identity.name' ) . " :: Customer Notes :: " . $cust->getFormattedName() );
     }
 }

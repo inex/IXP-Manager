@@ -161,11 +161,7 @@ class RequestPeeringManager extends Mailable
     /**
      * Checks if we can send the email
      *
-     * @param bool $sendtome
-     *
-     * @return void
-     *
-     * @throws
+     * @throws MailableException
      */
     public function checkIfSendable( bool $sendtome ): void
     {

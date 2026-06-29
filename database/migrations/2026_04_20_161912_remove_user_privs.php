@@ -28,6 +28,7 @@ return new class extends Migration
 
         try {
             foreach (User::all() as $user) {
+                /** @psalm-suppress UndefinedMagicPropertyAssignment (it's been removed from the Model already */
                 $user->privs = $user->currentCustomerToUser->privs;
                 $user->save();
             }

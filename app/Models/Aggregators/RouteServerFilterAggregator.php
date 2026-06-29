@@ -83,9 +83,9 @@ class RouteServerFilterAggregator extends RouteServerFilter
     /**
      * Most functions will need the set of user and production filters
      *
-     * @return Collection[] [ ufilters, pfilters ]
+     * @return (Collection)[]
      *
-     * @psalm-return list{Collection<int, \Illuminate\Database\Eloquent\Model>, Collection<int, \Illuminate\Database\Eloquent\Model>}
+     * @psalm-return list{Collection<int, RouteServerFilter>, Collection<int, RouteServerFilterProd>}
      */
     private static function filters( Customer $c ): array
     {

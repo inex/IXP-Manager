@@ -79,6 +79,6 @@ class TrafficDeltas extends Mailable
     public function build(): self
     {
         return $this->view('services.grapher.email.traffic-deltas')
-            ->subject( env('IDENTITY_NAME') . " :: Traffic Deltas Report" );
+            ->subject( config( 'identity.name' ) . " :: Traffic Deltas Report" );
     }
 }

@@ -69,6 +69,6 @@ class ChangedMail extends Mailable
     public function build()
     {
         return $this->markdown( 'layer2-address.emails.changed' )
-            ->subject( env('IDENTITY_NAME') . " :: Layer2 / MAC Address Changed for " . $this->event->customer );
+            ->subject( config( 'identity.name' ) . " :: Layer2 / MAC Address Changed for " . $this->event->customer );
     }
 }

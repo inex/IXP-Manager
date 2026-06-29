@@ -205,7 +205,7 @@ class Switcher extends Model
     /**
      * Get the infrastructure that own the switcher
      *
-     * @psalm-return BelongsTo<Infrastructure>
+     * @return BelongsTo<Infrastructure, Switcher>
      */
     public function infrastructureModel(): BelongsTo
     {
@@ -215,7 +215,7 @@ class Switcher extends Model
     /**
      * Get the cabinet that own the switcher
      *
-     * @psalm-return BelongsTo<Cabinet>
+     * @return BelongsTo<Cabinet, Switcher>
      */
     public function cabinet(): BelongsTo
     {
@@ -225,7 +225,7 @@ class Switcher extends Model
     /**
      * Get the vendor that own the switcher
      *
-     * @psalm-return BelongsTo<Vendor>
+     * @return BelongsTo<Vendor, Switcher>
      */
     public function vendor(): BelongsTo
     {
@@ -235,7 +235,7 @@ class Switcher extends Model
     /**
      * Get the switch ports for the switcher
      *
-     * @psalm-return HasMany<SwitchPort>
+     * @return HasMany<SwitchPort, Switcher>
      */
     public function switchPorts(): HasMany
     {
@@ -245,7 +245,7 @@ class Switcher extends Model
     /**
      * Get the console server connections for the switcher
      *
-     * @psalm-return HasMany<ConsoleServerConnection>
+     * @return HasMany<ConsoleServerConnection, Switcher>
      */
     public function consoleServerConnections(): HasMany
     {
@@ -465,9 +465,9 @@ class Switcher extends Model
     /**
      * Return an array of core bundles
      *
-     * @return CoreBundle[]
+     * @return (CoreBundle|null)[]
      *
-     * @psalm-return list<IXP\Models\CoreBundle>
+     * @psalm-return list<IXP\Models\CoreBundle|null>
      */
     public function getCoreBundles(): array
     {

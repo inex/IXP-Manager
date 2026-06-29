@@ -26,7 +26,7 @@ class SendAppPasswordExpiryRemindersTest extends TestCase
         $user->email = $random . '@example.net';
         $user->save();
 
-        $password = AppPassword::create([
+        $password = AppPassword::forceCreate([
             'user_id' => $user->id,
             'password' => 'hash-value',
             'expires' => Carbon::today()->addDays(14)->setTime(12, 0, 0),
@@ -57,7 +57,7 @@ class SendAppPasswordExpiryRemindersTest extends TestCase
         $user->email = $random . '@example.net';
         $user->save();
 
-        $password = AppPassword::create([
+        $password = AppPassword::forceCreate([
             'user_id' => $user->id,
             'password' => 'hash-value',
             'expires' => Carbon::today()->addDays(13)->setTime(12, 0, 0),

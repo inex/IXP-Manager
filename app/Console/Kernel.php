@@ -25,6 +25,7 @@ namespace IXP\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use IXP\Jobs\SendApiKeyExpiryReminders;
 use IXP\Jobs\SendAppPasswordExpiryReminders;
 
 class Kernel extends ConsoleKernel
@@ -43,16 +44,17 @@ class Kernel extends ConsoleKernel
 
         // Expunge logs / GDPR data / etc.
         $schedule->command( 'utils:expunge-logs' )->dailyAt( '3:04' );
+        $schedule->command( 'utils:expunge-api-keys' )->dailyAt( '3:12' );
         $schedule->command( 'utils:expunge-app-passwords-and-logs' )->dailyAt( '3:14' );
+
+        $schedule->job( new SendApiKeyExpiryReminders() )->dailyAt( '10:00' );
         $schedule->job( new SendAppPasswordExpiryReminders() )->dailyAt( '10:00' );
         
         // Grapher - https://docs.ixpmanager.org/latest/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails
         $schedule->command( 'grapher:upload-stats-to-db' )->dailyAt( '2:00' )
-            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_GRAPHER_UPLOAD_STATS_TO_DB', false ); } )
             ->withoutOverlapping();
 
         $schedule->command( 'grapher:upload-pi-stats-to-db' )->dailyAt( '2:10' )
-            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_GRAPHER_UPLOAD_STATS_TO_DB', false ); } )
             ->withoutOverlapping();
 
         if( config( 'grapher.backends.sflow.enabled' ) ) {
@@ -64,21 +66,17 @@ class Kernel extends ConsoleKernel
 
 
         // https://docs.ixpmanager.org/latest/features/peeringdb/#existence-of-peeringdb-records
-        $schedule->command('ixp-manager:update-in-peeringdb')->daily()->at( $this->jitterTime( $jitter, 1 ) )
-            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UPDATE_IN_PEERINGDB', false ); } );
+        $schedule->command('ixp-manager:update-in-peeringdb')->daily()->at( $this->jitterTime( $jitter, 1 ) );
 
         // https://docs.ixpmanager.org/latest/features/manrs/
-        $schedule->command('ixp-manager:update-in-manrs')->dailyAt( $this->jitterTime( $jitter, 2 ) )
-            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UPDATE_IN_MANRS', false ); } );
+        $schedule->command('ixp-manager:update-in-manrs')->dailyAt( $this->jitterTime( $jitter, 2 ) );
 
         // IRRDB - https://docs.ixpmanager.org/latest/features/irrdb/
         if( ( $utility = config( 'ixp.irrdb.utility' ) ) && is_executable( config( 'ixp.irrdb.' . $utility . '.path' ) ) ) {
             $schedule->command( 'irrdb:update-prefix-db --alert-email' )->cron( $this->jitterMinute( $jitter, 7 ) . ' */6 * * *' )
-                ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_IRRDB_UPDATE_PREFIX_DB', false ); } )
                 ->withoutOverlapping();
 
             $schedule->command( 'irrdb:update-asn-db --alert-email' )->cron( $this->jitterMinute( $jitter, 37 ) . ' */6 * * *' )
-                ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_IRRDB_UPDATE_ASN_DB', false ); } )
                 ->withoutOverlapping();
         }
 
@@ -87,16 +85,13 @@ class Kernel extends ConsoleKernel
 
         // OUI Update - https://docs.ixpmanager.org/latest/features/layer2-addresses/#oui-database
         $schedule->command( 'utils:oui-update' )->weekly()->mondays()->at( $this->jitterTime( $jitter, 9, 15 ) )
-            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UTILS_OUI_UPDATE', false ); } )
             ->withoutOverlapping();
 
         $schedule->command( 'utils:asn-update' )->weekly()->tuesdays()->at( $this->jitterTime( $jitter, 10, 15 ) )
-            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UTILS_ASN_UPDATE', false ); } )
             ->withoutOverlapping();
 
         // Switch SNMP pool - https://docs.ixpmanager.org/latest/usage/switches/#automated-polling-snmp-updates
         $schedule->command( 'switch:snmp-poll' )->everyFiveMinutes()
-            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_SWITCH_SNMP_POLL', false ); } )
             ->withoutOverlapping();
 
     }

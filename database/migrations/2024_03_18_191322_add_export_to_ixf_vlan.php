@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use IXP\Models\Vlan;
 
 class AddExportToIxfVlan extends Migration
 {
@@ -17,7 +18,7 @@ class AddExportToIxfVlan extends Migration
             $table->tinyInteger( 'export_to_ixf' )->after( 'peering_manager' )->nullable( false )->default(1);
         });
 
-        \IXP\Models\Vlan::wherePrivate(1)->update(['export_to_ixf' => false]);
+        Vlan::wherePrivate(true)->update(['export_to_ixf' => false]);
     }
 
     /**

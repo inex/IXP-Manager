@@ -111,7 +111,7 @@ class Location extends Model
     /**
      * Get the switchers for the cabinet
      *
-     * @psalm-return HasMany<Cabinet>
+     * @return HasMany<Cabinet, Location>
      */
     public function cabinets(): HasMany
     {

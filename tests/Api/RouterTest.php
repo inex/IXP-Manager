@@ -40,7 +40,7 @@ use Tests\TestCase;
  */
 class RouterTest extends TestCase
 {
-    private const string API_KEY = 'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9';
+    private const string API_KEY = 'ixpm_iqLw1OF50aPU_XX3U8cGvlRiaf7YLX8a41uSJVqBbRAAl0LfKVo';
 
     private Router $r;
     private Router $rpair;

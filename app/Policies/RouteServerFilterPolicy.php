@@ -49,15 +49,8 @@ class RouteServerFilterPolicy
 
     /**
      * Super admins can do anything
-     *
-     * @param User  $user
-     * @param       $ability
-     *
-     * @return bool
-     *
-     * @throws
      */
-    public function before( User $user, $ability): bool
+    public function before( User $user, $ability): ?bool
     {
         $privs = $user->privs();
         if( $privs !== User::AUTH_SUPERUSER ) {
@@ -70,6 +63,8 @@ class RouteServerFilterPolicy
             if( $privs < $minAuth ) {
                 return false;
             }
+
+            return null;
         }
         return true;
     }
@@ -77,12 +72,6 @@ class RouteServerFilterPolicy
 
     /**
      * Determine whether the user can access the list of customers with filters
-     *
-     * @param User          $user
-     *
-     * @return bool
-     *
-     * @throws
      */
     public function checkListCustomers( User $user ): bool
     {
@@ -92,13 +81,6 @@ class RouteServerFilterPolicy
 
     /**
      * Determine whether the user can access to that route
-     *
-     * @param User          $user
-     * @param Customer      $cust
-     *
-     * @return bool
-     *
-     * @throws
      */
     public function checkCustObject( User $user, Customer $cust ): bool
     {
@@ -110,13 +92,6 @@ class RouteServerFilterPolicy
 
     /**
      * Determine whether the user can access to that route
-     *
-     * @param  User                 $user
-     * @param  RouteServerFilter    $rsf
-     *
-     * @return bool
-     *
-     * @throws
      */
     public function checkRsfObject( User $user, RouteServerFilter $rsf ): bool
     {

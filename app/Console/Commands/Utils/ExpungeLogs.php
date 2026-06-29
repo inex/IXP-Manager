@@ -82,11 +82,6 @@ class ExpungeLogs extends IXPCommand
         UserLoginHistory::where( 'at', '<', $sixmonthsago )->delete();
         $this->isVerbosityVerbose() && $this->info(' [done]' );
 
-        // Deleting expired API Keys older than 1 week
-        $this->isVerbosityVerbose() && $this->output->write('Expunging expired API Key records > 1 week...', false );
-        ApiKey::whereNotNull( 'expires' )->where( 'expires', '<', now()->subWeek()->format( 'Y-m-d 00:00:00' )  )->delete();
-        $this->isVerbosityVerbose() && $this->info(' [done]' );
-
         // Deleting expired UserRememberTokens
         $this->isVerbosityVerbose() && $this->output->write('Expunging expired user remember tokens...', false );
         UserRememberToken::where( 'expires', '<', now()->format( 'Y-m-d H:i:s' ) )->delete();

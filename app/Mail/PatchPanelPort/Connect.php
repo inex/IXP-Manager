@@ -45,7 +45,7 @@ class Connect extends Email
     public function __construct( PatchPanelPort $ppp )
     {
         parent::__construct( $ppp );
-        $this->subject = "Cross connect to " . env('IDENTITY_ORGNAME' ) . " [" . $ppp->patchPanel->colo_reference . " / " . $ppp->name() . "]";
+        $this->subject = "Cross connect to " . config( 'identity.orgname' ) . " [" . $ppp->patchPanel->colo_reference . " / " . $ppp->name() . "]";
         $this->tmpl = 'patch-panel-port/emails/connect';
     }
 }

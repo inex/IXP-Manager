@@ -54,7 +54,6 @@ use IXP\Traits\Observable;
  * @method static Builder|Layer2Address whereVlanInterfaceId($value)
  * @property string|null $created
  * @method static Builder|Layer2Address whereCreated($value)
- * @property string|null $firstseen
  * @mixin \Eloquent
  */
 class Layer2Address extends Model
@@ -83,7 +82,7 @@ class Layer2Address extends Model
     /**
      * Get the vlan interface that holds the layer2address
      *
-     * @psalm-return BelongsTo<VlanInterface>
+     * @return BelongsTo<VlanInterface, Layer2Address>
      */
     public function vlanInterface(): BelongsTo
     {

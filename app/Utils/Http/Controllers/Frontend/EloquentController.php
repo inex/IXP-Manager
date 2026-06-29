@@ -86,9 +86,16 @@ abstract class EloquentController extends Controller
     /**
      * Allow controllers to override the default successful store message
      *
-     * @var string
+     * @var ?string
      */
     protected $store_alert_success_message = null;
+
+    /**
+     * Allow controllers to override the default successful update message
+     *
+     * @var ?string
+     */
+    protected $update_alert_success_message = null;
 
     /**
      * The URL prefix to use.
@@ -318,6 +325,7 @@ abstract class EloquentController extends Controller
     public function list( Request $param )
     {
         if( ( $r = $this->canList() ) !== null ) {
+            /** @psalm-suppress NoValue - this can be set non-null in child classes */
             return $r;
         }
 
@@ -339,7 +347,7 @@ abstract class EloquentController extends Controller
     {
         $data = $this->listGetData( $id );
 
-        if( is_array( $data ) && reset( $data ) ) {
+        if( reset( $data ) ) {
             // get first value of the array
             return $data[0];
         }
@@ -381,8 +389,6 @@ abstract class EloquentController extends Controller
     /**
      * Prepares data for the create form
      *
-     * @return never
-     *
      * @throws GeneralException
      */
     protected function createPrepareForm(): array
@@ -394,8 +400,6 @@ abstract class EloquentController extends Controller
      * Prepares data for the edit form
      *
      * @param int $id
-     *
-     * @return never
      *
      * @throws GeneralException
      */
@@ -440,7 +444,7 @@ abstract class EloquentController extends Controller
      *
      * @return view
      *
-     * @throws
+     * @throws GeneralException
      */
     public function edit( int $id ): View
     {
@@ -456,8 +460,6 @@ abstract class EloquentController extends Controller
      * @param Request $r
      *
      * @throws GeneralException
-     *
-     * @return never
      */
     public function checkForm( Request $r ): void
     {
@@ -469,7 +471,7 @@ abstract class EloquentController extends Controller
      *
      * @param Request $r
      *
-     * @return never
+     * @return RedirectResponse|true
      *
      * @throws GeneralException
      */
@@ -484,7 +486,7 @@ abstract class EloquentController extends Controller
      * @param Request   $r
      * @param int       $id
      *
-     * @return never
+     * @return RedirectResponse|true
      *
      * @throws GeneralException
      */
@@ -496,9 +498,7 @@ abstract class EloquentController extends Controller
     /**
      * Action for storing a new object
      *
-     * @param Request $r
-     *
-     * @throws
+     * @throws GeneralException
      */
     public function store( Request $r ): RedirectResponse|false
     {
@@ -523,8 +523,6 @@ abstract class EloquentController extends Controller
      *
      * @param Request   $r
      * @param int       $id
-     *
-     * @throws GeneralException
      */
     public function update( Request $r, int $id ): RedirectResponse|false
     {
@@ -549,7 +547,7 @@ abstract class EloquentController extends Controller
      *
      * To implement this, have it return a valid route name
      *
-     * @return null
+     * @return null|string
      */
     protected function postStoreRedirect(): ?string
     {
@@ -589,8 +587,6 @@ abstract class EloquentController extends Controller
      * @param Request $r
      *
      * @return RedirectResponse
-     *
-     * @throws
      */
     public function delete( Request $r ): RedirectResponse
     {
@@ -603,6 +599,8 @@ abstract class EloquentController extends Controller
             $this->postFlush( 'delete' );
             AlertContainer::push( $this->feParams->titleSingular . " deleted.", Alert::SUCCESS );
         }
+
+        /** @psalm-suppress TypeDoesNotContainType, NoValue - can be set non-null in child classes */
         if( $url = $this->postDeleteRedirect() ) {
             return redirect()->to( $url );
         }
@@ -614,8 +612,6 @@ abstract class EloquentController extends Controller
      * Allow D2F implementations to override where the post-delete redirect goes.
      *
      * To implement this, have it return a valid route url (e.g. `return route( "route-name" );`
-     *
-     * @return null
      */
     protected function postDeleteRedirect(): ?string
     {

@@ -97,6 +97,8 @@ use IXP\Models\{
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereCreated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereLastupdated($value)
  * @property-read CustomerToUser|null $currentCustomerToUser
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> $appPasswords
+ * @property-read int|null $app_passwords_count
  * @mixin \Eloquent
  */
 class UserAggregator extends User

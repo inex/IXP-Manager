@@ -198,11 +198,8 @@ class Create extends Command
      * This validator function takes a value (called $name), and attempts to validate
      * it against the provided rules. If the validation fails, it returns the error message.
      * If successful, true is returned.
-     * @param string     $name
-     * @param string     $rules
-     * @param mixed      $value
      *
-     * @return bool|string
+     * @return string|true
      */
     private function validateInput( string $name, string $rules, mixed $value ): bool|string
     {

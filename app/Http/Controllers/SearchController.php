@@ -210,9 +210,9 @@ class SearchController extends Controller
      *
      * @param Collection  $is virtual interfaces list
      *
-     * @return ((VirtualInterface|mixed)[]|Customer|mixed)[][]
+     * @return ((\Illuminate\Database\Eloquent\Model|null)[]|Customer|mixed|null)[][]
      *
-     * @psalm-return array{results: array<int, Customer|mixed>, interfaces: array<int, non-empty-list<IXP\Models\VirtualInterface|mixed>>}
+     * @psalm-return array{results: array<''|int, Customer|mixed|null>, interfaces: array<''|int, non-empty-list<Illuminate\Database\Eloquent\Model|null>>}
      */
     private function processMACSearch( Collection $is ): array
     {

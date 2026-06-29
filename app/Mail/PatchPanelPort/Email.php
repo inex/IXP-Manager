@@ -85,7 +85,7 @@ abstract class Email extends Mailable
             $this->to( $c->nocemail, $c->abbreviatedName . ' NOC' );
         }
 
-        $this->bcc( env( 'IDENTITY_SUPPORT_EMAIL' ), env( 'IDENTITY_NAME') . ' Operations' );
+        $this->bcc( config( 'identity.support_email'), config( 'identity.name' ) . ' Operations' );
     }
 
     /**

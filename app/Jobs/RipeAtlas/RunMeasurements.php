@@ -76,9 +76,7 @@ class RunMeasurements extends Job implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @return void
-     *
-     * @throws
+     * @throws \JsonException|\Illuminate\Contracts\Container\BindingResolutionException
      */
     public function handle(): void
     {

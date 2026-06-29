@@ -88,7 +88,7 @@ class Generator
      *
      * @return string
      *
-     * @throws
+     * @throws GeneralException
      */
     public function generate( bool $forJson = false ): string
     {
@@ -172,26 +172,27 @@ class Generator
      * Returns an associate array indexed by ordered ASNs of active external trafficking customers:
      *
      * [
-     * [65500] => [
-     * ['name']    => Customer Name
-     * ['asmacro'] => AS-CUSTOMER
-     * ],
+     *     [65500] => [
+     *         ['name'] => Customer Name
+     *         ['asmacro'] => AS-CUSTOMER
+     *     ],
      * ...
      * ]
      *
      * @param Collection $customers Array of all active external trafficking customers
+     * @return array<int, array{asmacro: ?string, name: string}>
      *
-     * @return array[]
-     *
-     * @throws
-     *
-     * @psalm-return array<array{asmacro: mixed, name: mixed}>
+     * @throws \Exception
      */
     private function generateASNs( Collection $customers ): array
     {
         $asns = [];
         foreach( $customers as $c ) {
-            /** @var $c Customer */
+
+            if( !$c->autsys ) {
+                continue;
+            }
+
             $asns[ $c->autsys ] = [
                 'asmacro' => $c->asMacro( 4, 'AS' ),
                 'name'    => $c->name
@@ -243,13 +244,6 @@ class Generator
      * ],
      * ]
      *
-     * @param Collection $customers
-     *
-     * @return ((((array|mixed)[]|mixed)[]|mixed)[]|mixed)[]
-     *
-     * @throws
-     *
-     * @psalm-return array{vlans?: array<array{servers: array{6: list<mixed>, 4: list<mixed>}}>, clients?: array<array{id: mixed, vlans?: array<array|mixed>|mixed}|mixed>|mixed}
      */
     private function generateRouteServerClientDetails( Collection $customers ): array
     {

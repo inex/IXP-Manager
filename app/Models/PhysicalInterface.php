@@ -118,7 +118,7 @@ class PhysicalInterface extends Model
      * @param  ?int  $value
      * @return void
      */
-    public function setRateLimitAttribute($value)
+    protected function setRateLimitAttribute($value)
     {
         $this->attributes['rate_limit'] = $value ?: null;
     }
@@ -164,7 +164,7 @@ class PhysicalInterface extends Model
     /**
      * Get the virtual interface that owns the physical interface.
      *
-     * @psalm-return BelongsTo<VirtualInterface>
+     * @return BelongsTo<VirtualInterface, PhysicalInterface>
      */
     public function virtualInterface(): BelongsTo
     {
@@ -174,7 +174,7 @@ class PhysicalInterface extends Model
     /**
      * Get the switch port that owns the physical interface.
      *
-     * @psalm-return BelongsTo<SwitchPort>
+     * @return BelongsTo<SwitchPort, PhysicalInterface>
      */
     public function switchPort(): BelongsTo
     {
@@ -184,7 +184,7 @@ class PhysicalInterface extends Model
     /**
      * Get the fanout physical interface associated with the physical interface.
      *
-     * @psalm-return BelongsTo<self>
+     * @return BelongsTo<self, PhysicalInterface>
      */
     public function fanoutPhysicalInterface(): BelongsTo
     {
@@ -194,7 +194,7 @@ class PhysicalInterface extends Model
     /**
      * Get the core interface associated with the physical interface.
      *
-     * @psalm-return HasOne<CoreInterface>
+     * @return HasOne<CoreInterface, PhysicalInterface>
      */
     public function coreInterface(): HasOne
     {
@@ -204,7 +204,7 @@ class PhysicalInterface extends Model
     /**
      * Get the peering physical interface associated with the physical interface.
      *
-     * @psalm-return HasOne<self>
+     * @return HasOne<PhysicalInterface, PhysicalInterface>
      */
     public function peeringPhysicalInterface(): HasOne
     {
@@ -214,7 +214,7 @@ class PhysicalInterface extends Model
     /**
      * Get the trafficDailiesPhysInt associated with the physical interface.
      *
-     * @psalm-return HasMany<TrafficDailyPhysInt>
+     * @return HasMany<TrafficDailyPhysInt, PhysicalInterface>
      */
     public function trafficDailiesPhysInt(): HasMany
     {

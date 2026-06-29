@@ -31,7 +31,7 @@
 ###########################################################################################
 ###########################################################################################
 
-APIKEY="r8sFfkGamCjrbbLC12yIoCJooIRXzY9CYPaLVz92GFQyGqLq"
+APIKEY="ixpm_7fwTNH5XMKcR_2v4Na6muGvvoIonPtL2pllqdSxdmzzos44Prjv"
 URLROOT="http://127.0.0.1"
 
 # prevent errors by limiting this server/script to the following space separated handles

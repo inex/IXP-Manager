@@ -78,6 +78,6 @@ class BillingDetailsChanged extends Mailable
     public function build(): self
     {
         return $this->markdown( 'customer.emails.billing-details-changed' )
-            ->subject( env('IDENTITY_NAME') . " :: Updated Billing Details for " . $this->cbd->customer->getFormattedName() );
+            ->subject( config( 'identity.name' ) . " :: Updated Billing Details for " . $this->cbd->customer->getFormattedName() );
     }
 }

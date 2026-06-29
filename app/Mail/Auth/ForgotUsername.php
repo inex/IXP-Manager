@@ -42,20 +42,14 @@ class ForgotUsername extends Mailable
     use Queueable, SerializesModels;
 
     /**
-     * @var []
-     */
-    public $users;
-
-    /**
      * Create a new message instance.
      *
      * @param Collection $users
      *
      */
-    public function __construct( Collection $users )
-    {
-        $this->users    = $users;
-    }
+    public function __construct(
+        public Collection $users
+    ){}
 
     /**
      * Build the message.

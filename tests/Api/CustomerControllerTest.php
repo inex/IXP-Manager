@@ -9,11 +9,9 @@ use Tests\TestCase;
 
 class CustomerControllerTest extends TestCase
 {
-    private const string API_KEY = 'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9';
-
     private function withKey(): static
     {
-        return $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY );
+        return $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER );
     }
 
     public function testSwitches_UnknownPatchPanel()

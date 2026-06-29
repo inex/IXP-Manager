@@ -63,7 +63,7 @@ class IPv4Address extends Model
     /**
      * Get the vlan that own the ipv4address
      *
-     * @psalm-return BelongsTo<Vlan>
+     * @return BelongsTo<Vlan, IPv4Address>
      */
     public function vlan(): BelongsTo
     {
@@ -73,7 +73,7 @@ class IPv4Address extends Model
     /**
      * Get the vlan interface associated with the ipv4.
      *
-     * @psalm-return HasOne<VlanInterface>
+     * @return HasOne<VlanInterface, IPv4Address>
      */
     public function vlanInterface(): HasOne
     {

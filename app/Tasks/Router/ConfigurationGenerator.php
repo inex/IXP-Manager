@@ -54,8 +54,6 @@ class ConfigurationGenerator
      * ConfigurationGenerator constructor
      * .
      * @param Router $r
-     *
-     * @throws
      */
     public function __construct( Router $r )
     {
@@ -66,8 +64,6 @@ class ConfigurationGenerator
      * Set the router options array
      *
      * @param Router $router Router details
-     *
-     * @throws
      */
     public function setRouter( Router $router ): static
     {
@@ -87,8 +83,6 @@ class ConfigurationGenerator
 
     /**
      * Generate and return the configuration
-     *
-     * @throws
      */
     public function render(): ViewContract
     {

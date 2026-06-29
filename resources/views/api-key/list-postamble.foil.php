@@ -1,9 +1,5 @@
 
-<?php if( isset( $t->data[ 'rows' ][ 0 ] ) ) : ?>
-    <?php $example_api_key = config( 'ixp_fe.api_keys.show_keys' ) ? $t->data[ 'rows' ][ 0 ][ 'apiKey' ] : Str::limit( $t->data[ 'rows' ][ 0 ][ 'apiKey' ] , 6 ) ?>
-<?php else: ?>
-    <?php $example_api_key = '$your_api_key' ?>
-<?php endif; ?>
+<?php $example_api_key = 'ixpm_exampleKey_uPq9H...' ?>
 
 <div class="card mt-4">
     <div class="card-header">

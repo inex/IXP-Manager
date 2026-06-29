@@ -97,7 +97,7 @@ class PatchPanelPortFile extends Model
     /**
      * Get the Patch Panel Port that owns this patch panel port file
      *
-     * @psalm-return BelongsTo<PatchPanelPort>
+     * @return BelongsTo<PatchPanelPort, PatchPanelPortFile>
      */
     public function patchPanelPort(): BelongsTo
     {

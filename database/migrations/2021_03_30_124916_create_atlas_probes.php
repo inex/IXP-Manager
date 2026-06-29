@@ -14,7 +14,7 @@ class CreateAtlasProbes extends Migration
     public function up(): void
     {
         Schema::create('atlas_probes', function (Blueprint $table) {
-            $table->bigIncrements('id')->unsigned( false );
+            $table->bigIncrements('id')->unsigned();
             $table->integer('cust_id');
             $table->string('address_v4', 15)->nullable();
             $table->string('address_v6', 39)->nullable();

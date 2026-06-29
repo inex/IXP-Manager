@@ -9,7 +9,11 @@ $row = $t->row;
 <tr>
 
     <td>
-        <?= config( 'ixp_fe.api_keys.show_keys' ) ?  $t->ee( $row['apiKey'] ) : Str::limit(  $t->ee( $row['apiKey'] ), 6 ) ?>
+        <?php if( $row['token_identifier'] ): ?>
+            <?= $row['token_identifier'] ?>
+        <?php else: ?>
+            <?= Str::limit(  $t->ee( $row['api_key'] ), 6 ) ?> (<i class="fa fa-exclamation-triangle text-danger"></i> Legacy)
+        <?php endif; ?>
         <?php if( $t->ee( $row['description'] ) ): ?>
             <br>
             <em><?= $t->ee( $row['description'] ) ?></em>
@@ -21,20 +25,22 @@ $row = $t->row;
     </td>
     <td>
         <?php if( $row['expires'] ): ?>
-            <?= $t->ee( $row['expires'] ) ?>
-        <?php else: ?>
-            <em>Never</em>
+            <?php $expires = Carbon\Carbon::parse( $t->ee( $row['expires'] ) ); ?>
+            <?php if( $expires->isPast() ): ?>
+                <i class="fa fa-exclamation-triangle text-danger"></i>
+            <?php endif; ?>
+            <?= $expires->format('Y-m-d') ?>
         <?php endif; ?>
     </td>
 
     <td>
-        <?php if( $row['lastseenAt'] ): ?>
-            <?= $t->ee( $row['lastseenAt'] ) ?>
+        <?php if( $row['last_seen_at'] ): ?>
+            <?= $t->ee( $row['last_seen_at'] ) ?>
         <?php endif; ?>
 
     </td>
     <td>
-        <?= $t->ee( $row['lastseenFrom'] ) ?>
+        <?= $t->ee( $row['last_seen_from'] ) ?>
     </td>
     <td>
         <div class="btn-group btn-group-sm">

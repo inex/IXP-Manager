@@ -142,7 +142,7 @@ class NetworkInfoController extends EloquentController
      *
      * @return (NetworkInfo|\Illuminate\Database\Eloquent\Collection)[]
      *
-     * @psalm-return array{object: NetworkInfo, vlans: \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model>}
+     * @psalm-return array{object: NetworkInfo, vlans: \Illuminate\Database\Eloquent\Collection<int, Vlan>}
      */
     #[\Override]
     protected function createPrepareForm(): array
@@ -160,7 +160,7 @@ class NetworkInfoController extends EloquentController
      *
      * @return (\Illuminate\Database\Eloquent\Collection|mixed)[]
      *
-     * @psalm-return array{object: mixed, vlans: \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model>}
+     * @psalm-return array{object: mixed, vlans: \Illuminate\Database\Eloquent\Collection<int, Vlan>}
      */
     #[\Override]
     protected function editPrepareForm( int $id ): array

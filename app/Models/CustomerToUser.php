@@ -105,7 +105,7 @@ class CustomerToUser extends Model
     /**
      * Get the customer for the customertouser
      *
-     * @psalm-return BelongsTo<Customer>
+     * @return BelongsTo<Customer, CustomerToUser>
      */
     public function customer(): BelongsTo
     {
@@ -115,7 +115,7 @@ class CustomerToUser extends Model
     /**
      * Get the user for the customertouser
      *
-     * @psalm-return BelongsTo<User>
+     * @return BelongsTo<User, CustomerToUser>
      */
     public function user(): BelongsTo
     {
@@ -125,7 +125,7 @@ class CustomerToUser extends Model
     /**
      * Get the user Login Histories for the customertouser
      *
-     * @psalm-return HasMany<UserLoginHistory>
+     * @return HasMany<UserLoginHistory, CustomerToUser>
      */
     public function userLoginHistories(): HasMany
     {

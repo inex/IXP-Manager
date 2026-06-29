@@ -128,7 +128,7 @@ class CoreBundle extends Model
     /**
      * Get the corelinks that belong to the corebundle
      *
-     * @psalm-return HasMany<CoreLink>
+     * @return HasMany<CoreLink, CoreBundle>
      */
     public function corelinks(): HasMany
     {
@@ -236,9 +236,9 @@ class CoreBundle extends Model
     /**
      * get the duplex of the Physical interface
      *
-     * @return int|false
+     * @return false|null|string
      */
-    public function duplexPi()
+    public function duplexPi(): string|false|null
     {
         if( $cl = $this->corelinks()->first() ){
             return $cl->coreInterfaceSideA->physicalinterface->duplex;
@@ -249,10 +249,8 @@ class CoreBundle extends Model
 
     /**
      * get the auto neg of the Physical interface
-     *
-     * @return int|false
      */
-    public function autoNegPi()
+    public function autoNegPi(): bool|null
     {
         if( $cl = $this->corelinks()->first() ){
             return $cl->coreInterfaceSideA->physicalinterface->autoneg;
@@ -264,10 +262,10 @@ class CoreBundle extends Model
     /**
      * get the customer associated virtual interface of the core bundle
      */
-    public function customer(): Customer|false
+    public function customer(): Customer|null|false
     {
         $cl = $this->corelinks[ 0 ] ?? false;
-        if( $cl ){
+        if( $cl ) {
             return $cl->coreInterfaceSideA->physicalinterface->virtualInterface->customer;
         }
         return false;

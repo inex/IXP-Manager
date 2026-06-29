@@ -76,7 +76,7 @@ class SflowReceiver extends Model
     /**
      * Get the virtual Interfae that owns the sflow receiver.
      *
-     * @psalm-return BelongsTo<VirtualInterface>
+     * @return BelongsTo<VirtualInterface, SflowReceiver>
      */
     public function virtualInterface(): BelongsTo
     {

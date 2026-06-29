@@ -57,7 +57,7 @@ class InPeeringDb extends  Command
      *
      * @throws
      *
-     * @psalm-return 0|1|2
+     * @psalm-return 0|2
      */
     public function handle(): int
     {

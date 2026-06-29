@@ -3,7 +3,7 @@
 namespace IXP\Http\Middleware;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -27,6 +27,7 @@ use Auth, Closure;
 
 use Illuminate\Http\Request;
 
+use IXP\Models\Aggregators\ApiKeyAggregator;
 use IXP\Models\ApiKey;
 use IXP\Models\User;
 
@@ -40,7 +41,7 @@ use IXP\Models\User;
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Middleware
- * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class ApiMaybeAuthenticate
@@ -67,6 +68,7 @@ class ApiMaybeAuthenticate
 
         // are we already logged in?
 		if( !Auth::check() ) {
+
 			// find API key. Prefer header to URL:
 			$apikey = false;
 			if( $r->header('X-IXP-Manager-API-Key') ) {
@@ -76,34 +78,48 @@ class ApiMaybeAuthenticate
 			}
 
 			if( $apikey ) {
-			    if( !( $key = ApiKey::where( 'apiKey', $apikey )->with( 'user.customer' )->first() ) ) {
-                    return response( 'Valid API key required', 403 );
+
+                /** @var ApiKey $key */
+
+                // modern or legacy handling?
+                if( str_starts_with( $apikey, ApiKey::PREFIX ) ) {
+
+                    $key = ApiKeyAggregator::authenticate( $apikey );
+
+                    if( !$key instanceof ApiKey ) {
+                        // if it's not an ApiKey object, it's an error response
+                        return $key;
+                    }
+
+                } else {
+                    // legacy
+
+                    if( !( $key = ApiKey::where( 'api_key', $apikey )->with( 'user.customer' )->first() ) ) {
+                        return response( 'Valid API key required', 401 );
+                    }
                 }
 
-                if( $key->expires && now() > $key->expires ) {
-                    return response( 'API key expired', 403 );
+                if( $key->expires->isPast() ) {
+                    return response( 'API key expired', 401 );
                 }
 
                 // Check if user is disabled
                 if( $key->user->disabled ){
-                    return response( 'User is disabled', 403 );
+                    return response( 'User is disabled', 401 );
                 }
 
                 // Check if default customer is disabled
                 if( $key->user->customer()->active()->notDeleted()->doesntExist() ){
-                    return response( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' of the user is disabled', 403 );
+                    return response( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' of the user is disabled', 401 );
                 }
 
                 Auth::onceUsingId( $key->user_id );
                 $us = Auth::user();
 
-                $key->update( [
-                    'lastseenAt'    => now(),
-                    'lastseenFrom'  => ixp_get_client_ip(),
-                ] );
+                $key->updateLastSeen();
             }
 		} elseif( $us->disabled ){
-            return response( 'User is disabled', 403 );
+            return response( 'User is disabled', 401 );
         }
 
 		return $next( $r );

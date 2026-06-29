@@ -51,7 +51,6 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix wherePrefix($value)
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereProtocol($value)
  * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbPrefix newQuery()
  * @mixin \Eloquent
  */
 class IrrdbPrefix extends Model
@@ -80,7 +79,7 @@ class IrrdbPrefix extends Model
     /**
      * Get the customer for the irrdb prefix
      *
-     * @psalm-return BelongsTo<Customer>
+     * @return BelongsTo<Customer, IrrdbPrefix>
      */
     public function customer(): BelongsTo
     {

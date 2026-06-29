@@ -202,3 +202,54 @@ if( !function_exists( 'schedule_jitter' ) )
         return unpack( "C", $byte )[1];
     }
 }
+
+if( !function_exists( 'base62_encode' ) )
+{
+    /**
+     * Base62 encode a number
+     *
+     * Base62 encoding transforms numerical data into a more compact and URL-friendly string by mapping
+     * it to a character set comprising digits (0-9), uppercase letters (A-Z), and lowercase letters
+     * (a-z). This character set totals 62 unique symbols.
+     *
+     * @param int $num
+     * @return string
+     */
+    function base62_encode( int $num ): string
+    {
+        $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $r = '';
+        while( $num > 0 ) {
+            $r = $chars[$num % 62] . $r;
+            $num = intdiv($num, 62);
+        }
+        return str_pad($r, 6, '0', STR_PAD_LEFT);
+    }
+}
+
+
+if( !function_exists( 'base62_decode' ) )
+{
+    /**
+     * Base62 decode a number
+     *
+     * Base62 encoding transforms numerical data into a more compact and URL-friendly string by mapping
+     * it to a character set comprising digits (0-9), uppercase letters (A-Z), and lowercase letters
+     * (a-z). This character set totals 62 unique symbols.
+     *
+     * @param string $base62
+     * @return int
+     */
+    function base62_decode( string $str ): int
+    {
+        $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charsMap = array_flip(str_split($chars));
+        $num = 0;
+        foreach( str_split($str) as $char ) {
+            $num = ($num * 62) + $charsMap[$char];
+        }
+        return $num;
+    }
+}
+
+

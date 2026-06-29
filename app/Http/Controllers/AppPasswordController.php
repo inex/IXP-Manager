@@ -32,6 +32,7 @@ use IXP\Utils\View\Alert\{
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Random\RandomException;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -94,25 +95,25 @@ class AppPasswordController extends EloquentController
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
                     'controller' => 'user',
                     'action'     => 'view',
-                    'idField'    => 'user_id'
+                    'idField'    => 'user_id',
                 ],
                 'description'  => [
                     'title'        => 'Description',
-                    'type'         => self::$FE_COL_TYPES[ 'TEXT' ]
+                    'type'         => self::$FE_COL_TYPES[ 'TEXT' ],
                 ],
                 'expires'      => [
                     'title'        => 'Expires',
-                    'type'         => self::$FE_COL_TYPES[ 'DATE' ]
+                    'type'         => self::$FE_COL_TYPES[ 'DATE' ],
                 ],
                 'last_seen_at'   => [
                     'title'        => 'Last Seen At',
-                    'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
+                    'type'         => self::$FE_COL_TYPES[ 'DATETIME' ],
                 ],
                 'last_seen_from'   => [
                     'title'        => 'Last Seen From',
-                    'type'         => self::$FE_COL_TYPES[ 'TEXT' ]
+                    'type'         => self::$FE_COL_TYPES[ 'TEXT' ],
                 ],
-            ]
+            ],
         ];
         
         if( !( (bool)request()->query( 'all', 0 ) ) ) {
@@ -123,7 +124,7 @@ class AppPasswordController extends EloquentController
         $this->feParams->viewColumns = array_merge( $this->feParams->listColumns, [
             'created_at'      => [
                 'title'        => 'Created At',
-                'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
+                'type'         => self::$FE_COL_TYPES[ 'DATETIME' ],
             ],
         ] );
 
@@ -169,12 +170,9 @@ class AppPasswordController extends EloquentController
     {
         $feParams = $this->feParams;
         
-        return AppPassword::select( [ 'app_passwords.*', 'user.name AS user' ] )
-            ->leftJoin( 'user', 'user.id', 'app_passwords.user_id' )
-            ->when( $id === null && !( (bool)request()->query( 'all', 0 ) ), function( Builder $q, $id ) {
-                return $q->where('user_id', Auth::id() );
-            })->when( $id , function( Builder $q, $id ) {
-                return $q->where('app_passwords.id', $id );
+        return AppPassword::where( 'user_id', Auth::id() )
+            ->when( $id , function( Builder $q, $id ) {
+                return $q->where('id', $id );
             } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
                 return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
             })->get()->toArray();
@@ -191,7 +189,7 @@ class AppPasswordController extends EloquentController
     protected function createPrepareForm(): array
     {
         return [
-            'object'          => $this->object
+            'object'          => $this->object,
         ];
     }
 
@@ -207,7 +205,7 @@ class AppPasswordController extends EloquentController
     #[\Override]
     protected function editPrepareForm( int $id ): array
     {
-        $this->object = AppPassword::findOrFail( $id );
+        $this->object = AppPassword::whereId($id)->whereUserId( Auth::id() )->firstOrFail();
 
         Former::populate( [
             'description'       => request()->old( 'description',       $this->object->description ),
@@ -221,17 +219,15 @@ class AppPasswordController extends EloquentController
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $r
      *
      * @return RedirectResponse|true
-     *
-     * @throws
+     * @throws RandomException
      */
     #[\Override]
     public function doStore( Request $r )
     {
-        if( $r->user()->appPasswords()->count() >= config( 'ixp_fe.app_passwords.max_passwords', 50 ) ) {
-            AlertContainer::push( "We currently have a limit of " . config( 'ixp_fe.app_passwords.max_passwords', 50 ) . " app passwords per user. Please contact us if you require more.", Alert::DANGER );
+        if( $r->user()->appPasswords()->count() >= config( 'ixp_fe.app_passwords.max_passwords' ) ) {
+            AlertContainer::push( "We currently have a limit of " . config( 'ixp_fe.app_passwords.max_passwords' ) . " app passwords per user. Please contact us if you require more.", Alert::DANGER );
             return Redirect::back()->withInput();
         }
 
@@ -261,24 +257,27 @@ class AppPasswordController extends EloquentController
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request   $r
-     * @param int       $id
+     * @param Request $r
+     * @param int $id
      *
      * @return true
-     *
-     * @throws
      */
     #[\Override]
     public function doUpdate( Request $r, int $id )
     {
         $this->object = AppPassword::findOrFail( $id );
-        
-        $validatedData = $r->validate( [
+
+        if( $this->object->user_id !== $r->user()->id ) {
+            abort( 403, 'Unauthorized' );
+        }
+
+        $r->validate( [
             'description'        => 'required|string|max:255',
         ] );
         
         // $validatedData ONLY contains what we validated above
-        $this->object->update( $validatedData );
+        $this->object->description = $r->description;
+        $this->object->save();
         return true;
     }
 
@@ -292,7 +291,7 @@ class AppPasswordController extends EloquentController
     #[\Override]
     public function checkForm( Request $r ): void
     {
-        $max_duration = config('ixp_fe.app_passwords.max_expires_duration', '90 days');
+        $max_duration = config('ixp_fe.app_passwords.max_expires_duration' );
         $max_date = now()->add($max_duration)->format('Y-m-d');
         
         $algo = $r->input( 'algorithm', config('ixp_fe.app_passwords.encryption.default_algorithm' ) );
@@ -347,10 +346,14 @@ class AppPasswordController extends EloquentController
      * @param int $id
      * @return View|RedirectResponse
      */
-    public function history(int $id): View|RedirectResponse
+    public function history( Request $r, int $id): View|RedirectResponse
     {
         $this->object = AppPassword::where('id', $id )->firstOrFail();
-        
+
+        if( $this->object->user_id !== $r->user()->id ) {
+            abort( 403, 'Unauthorized' );
+        }
+
         $this->listIncludeTemplates();
         
         $history = DB::table('app_passwords_last_logins')

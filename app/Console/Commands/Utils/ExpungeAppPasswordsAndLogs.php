@@ -50,7 +50,7 @@ class ExpungeAppPasswordsAndLogs extends IXPCommand
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $days = $this->argument('days') ?: config('ixp_fe.app_passwords.history_retention_days', 90);
         $date = Carbon::now()->subDays($days);

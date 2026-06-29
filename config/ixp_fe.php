@@ -229,12 +229,15 @@ return [
    */
     'api_keys' => [
 
-        // when an API key is created it is only shown once in the UI and there after it is hidden.
-        // set IXP_FE_API_KEYS_SHOW=true in .env to show the keys
-        'show_keys'       => env( 'IXP_FE_API_KEYS_SHOW', false ),
-
         // maximum API keys per user
         'max_keys'        => env( 'IXP_FE_API_KEYS_MAX', 10 ),
+
+        // History retention in days
+        'history_retention_days' => env('IXP_FE_API_KEYS_HISTORY_RETENTION_DAYS', 90),
+
+        // Maximum duration for password expiry (e.g. '30 days', '12 months')
+        'max_expires_duration' => env('IXP_FE_API_KEYS_MAX_EXPIRES_DURATION', '1 year' ),
+
     ],
 
     /*
@@ -263,6 +266,7 @@ return [
             // Can the user change the algorithm on creation?
             'user_can_change'   => env('IXP_FE_APP_PASSWORDS_USER_CAN_CHANGE', false),
         ],
+
         // History retention in days
         'history_retention_days' => env('IXP_FE_APP_PASSWORDS_HISTORY_RETENTION_DAYS', 90),
 

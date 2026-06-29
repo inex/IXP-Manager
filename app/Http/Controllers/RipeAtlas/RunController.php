@@ -183,7 +183,7 @@ class RunController extends Eloquent2Frontend
      *
      * @return (\Illuminate\Database\Eloquent\Collection|null|true)[]
      *
-     * @psalm-return array{object: null, vlans: \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model>, preAddForm: true}
+     * @psalm-return array{object: null, vlans: \Illuminate\Database\Eloquent\Collection<int, Vlan>, preAddForm: true}
      */
     #[\Override]
     protected function createPrepareForm(): array

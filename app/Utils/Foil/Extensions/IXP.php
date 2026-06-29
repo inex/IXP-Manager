@@ -81,9 +81,7 @@ class IXP implements ExtensionInterface
     }
 
     /**
-     * @return (static|string)[][]
-     *
-     * @psalm-return array{alerts: list{AlertContainer::class, 'html'}, as112UiActive: list{static, 'as112UiActive'}, asNumber: list{static, 'asNumber'}, getCountriesSelection : list{static, 'getCountriesSelection'}, getSelectOptions: list{static, 'getSelectOptions'}, google2faAuthenticator: list{static, 'google2faAuthenticator'}, logoManagementEnabled: list{static, 'logoManagementEnabled'}, maxFileUploadSize: list{static, 'maxFileUploadSize'}, nagiosHostname: list{static, 'nagiosHostname'}, nakedUrl: list{static, 'nakedUrl'}, resellerMode: list{static, 'resellerMode'}, scaleBits: list{static, 'scaleBits'}, scaleBytes: list{static, 'scaleBytes'}, scaleSpeed: list{static, 'scaleSpeed'}, scaleFilesize: list{static, 'scaleFilesize'}, softwrap: list{static, 'softwrap'}, whoisPrefix: list{static, 'whoisPrefix'}}
+     * @return array<string, array>
      */
     #[\Override]
     public function provideFunctions(): array
@@ -130,6 +128,7 @@ class IXP implements ExtensionInterface
 
             if( $unit ) {
                 // Find the position of the unit in the ordered string which is the power of magnitude to multiply a kilobyte by.
+                /** @psalm-suppress InvalidLiteralArgument - we intend the literal argument here */
                 return (string)round( $size * ( 1024 ** stripos( 'bkmgtpezy', $unit[0] ) ) );
             }
 
@@ -354,7 +353,7 @@ class IXP implements ExtensionInterface
      */
     public function resellerMode(): bool
     {
-        return (bool)config( 'ixp.reseller.enabled', false );
+        return config( 'ixp.reseller.enabled', false );
     }
 
     /**
@@ -366,7 +365,8 @@ class IXP implements ExtensionInterface
      */
     public function logoManagementEnabled(): bool
     {
-        return !(bool)config( 'ixp_fe.frontend.disabled.logo' );
+        /** @psalm-suppress RedundantCast */
+        return !config( 'ixp_fe.frontend.disabled.logo' );
     }
 
     /**
@@ -380,7 +380,7 @@ class IXP implements ExtensionInterface
      */
     public function as112UiActive(): bool
     {
-        return (bool)config( 'ixp.as112.ui_active', false );
+        return config( 'ixp.as112.ui_active', false );
     }
 
     /**

@@ -76,7 +76,7 @@ class RsPrefix extends Model
     /**
      * Get the the customer that own the rs prefix
      *
-     * @psalm-return BelongsTo<Customer>
+     * @return BelongsTo<Customer, RsPrefix>
      */
     public function customer(): BelongsTo
     {

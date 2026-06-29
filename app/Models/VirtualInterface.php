@@ -114,7 +114,7 @@ class VirtualInterface extends Model
     /**
      * Get the customer that owns the virtual interfaces.
      *
-     * @psalm-return BelongsTo<Customer>
+     * @return BelongsTo<Customer, VirtualInterface>
      */
     public function customer(): BelongsTo
     {
@@ -124,7 +124,7 @@ class VirtualInterface extends Model
     /**
      * Get the VLAN interfaces for the virtual interface
      *
-     * @psalm-return HasMany<VlanInterface>
+     * @return HasMany<VlanInterface, VirtualInterface>
      */
     public function vlanInterfaces(): HasMany
     {
@@ -134,7 +134,7 @@ class VirtualInterface extends Model
     /**
      * Get the physical interfaces for the virtual interface
      *
-     * @psalm-return HasMany<PhysicalInterface>
+     * @return HasMany<PhysicalInterface, VirtualInterface>
      */
     public function physicalInterfaces(): HasMany
     {
@@ -144,7 +144,7 @@ class VirtualInterface extends Model
     /**
      * Get the mac addresses for the virtual interface
      *
-     * @psalm-return HasMany<MacAddress>
+     * @return HasMany<MacAddress, VirtualInterface>
      */
     public function macAddresses(): HasMany
     {
@@ -154,7 +154,7 @@ class VirtualInterface extends Model
     /**
      * Get the sflow receivers for the virtual interface
      *
-     * @psalm-return HasMany<SflowReceiver>
+     * @return HasMany<SflowReceiver, VirtualInterface>
      */
     public function sflowReceivers(): HasMany
     {
@@ -227,9 +227,9 @@ class VirtualInterface extends Model
     /**
      * Get fanout PhysicalInterfaces
      *
-     * @return PhysicalInterface[]
+     * @return (PhysicalInterface|null)[]
      *
-     * @psalm-return list<IXP\Models\PhysicalInterface>
+     * @psalm-return list<IXP\Models\PhysicalInterface|null>
      */
     public function fanoutPhysicalInterface(): array
     {

@@ -78,7 +78,7 @@ class UserRememberToken extends Model
     /**
      * Get the user that own the remember token
      *
-     * @psalm-return BelongsTo<User>
+     * @return BelongsTo<User, UserRememberToken>
      */
     public function user(): BelongsTo
     {

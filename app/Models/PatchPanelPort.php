@@ -294,7 +294,7 @@ class PatchPanelPort extends Model
     /**
      * Get the Patch Panel that owns this patch panel port
      *
-     * @psalm-return BelongsTo<PatchPanel>
+     * @return BelongsTo<PatchPanel, PatchPanelPort>
      */
     public function patchPanel(): BelongsTo
     {
@@ -304,7 +304,7 @@ class PatchPanelPort extends Model
     /**
      * Get the switch port that owns this patch panel port
      *
-     * @psalm-return BelongsTo<SwitchPort>
+     * @return BelongsTo<SwitchPort, PatchPanelPort>
      */
     public function switchPort(): BelongsTo
     {
@@ -314,7 +314,7 @@ class PatchPanelPort extends Model
     /**
      * Get the customer that owns this patch panel port
      *
-     * @psalm-return BelongsTo<Customer>
+     * @return BelongsTo<Customer, PatchPanelPort>
      */
     public function customer(): BelongsTo
     {
@@ -324,7 +324,7 @@ class PatchPanelPort extends Model
     /**
      * Get the duplex master port that owns this patch panel port
      *
-     * @psalm-return BelongsTo<self>
+     * @psalm-return BelongsTo<self, PatchPanelPort>
      */
     public function duplexMasterPort(): BelongsTo
     {
@@ -334,7 +334,7 @@ class PatchPanelPort extends Model
     /**
      * Get the patch panel port files for this patch panel port
      *
-     * @psalm-return HasMany<PatchPanelPortFile>
+     * @return HasMany<PatchPanelPortFile, PatchPanelPort>
      */
     public function patchPanelPortFiles(): HasMany
     {
@@ -344,7 +344,7 @@ class PatchPanelPort extends Model
     /**
      * Get the patch panel port histories for this patch panel port
      *
-     * @psalm-return HasMany<PatchPanelPortHistory>
+     * @return HasMany<PatchPanelPortHistory, PatchPanelPort>
      */
     public function patchPanelPortHistories(): HasMany
     {
@@ -354,7 +354,7 @@ class PatchPanelPort extends Model
     /**
      * Get the public patch panel port files for this patch panel port
      *
-     * @psalm-suppress all
+     * @return HasMany<PatchPanelPortFile, PatchPanelPort>
      */
     public function patchPanelPortFilesPublic(): HasMany
     {
@@ -365,7 +365,7 @@ class PatchPanelPort extends Model
     /**
      * Get the duplex slaves ports for this patch panel port
      *
-     * @psalm-return HasMany<self>
+     * @return HasMany<PatchPanelPort, PatchPanelPort>
      */
     public function duplexSlavePorts(): HasMany
     {

@@ -26,6 +26,7 @@ namespace IXP\Listeners\RipeAtlas;
 use App;
 
 use IXP\Events\RipeAtlas\MeasurementComplete as MeasurementCompleteEvent;
+use IXP\Models\AtlasResult;
 use IXP\Services\RipeAtlas\Interpretor;
 
 /**
@@ -52,7 +53,7 @@ class MeasurementComplete
         $am = $event->atlasMeasurement;
 
         // if there's already a result, delete it as this is a re-run
-        if( $r = $am->atlasResult() ) {
+        if( $r = $am->atlasResult ) {
             $r->delete();
         }
 
