@@ -186,6 +186,13 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
                     continue;
                 }
 
+                // we also do not include reseller interfaces here
+                // https://github.com/inex/IXP-Manager/pull/914
+                if( $vi->typeFanout() || $vi->typeReseller() ) {
+                    continue;
+                }
+
+
                 /** @var PhysicalInterface $pi */
                 foreach( $vi->physicalInterfaces as $pi ) {
                     if( $pi->id > $maxPiID ) {
