@@ -24,13 +24,12 @@ return new class extends Migration
 
         DB::unprepared('
             CREATE TRIGGER tr_app_passwords_last_logins
-            AFTER UPDATE ON app_passwords
+            AFTER INSERT ON app_passwords_last_logins
             FOR EACH ROW
             BEGIN
-                IF (OLD.last_seen_at IS NULL AND NEW.last_seen_at IS NOT NULL) OR (OLD.last_seen_at <> NEW.last_seen_at) OR (OLD.last_seen_from IS NULL AND NEW.last_seen_from IS NOT NULL) OR (OLD.last_seen_from <> NEW.last_seen_from) THEN
-                    INSERT INTO app_passwords_last_logins (app_password_id, last_seen_at, last_seen_from)
-                    VALUES (NEW.id, NEW.last_seen_at, NEW.last_seen_from);
-                END IF;
+                UPDATE `app_passwords`
+                    SET last_seen_from = NEW.last_seen_from, last_seen_at = NEW.last_seen_at
+                WHERE id = NEW.app_password_id;
             END
         ');
     }

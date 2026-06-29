@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.45, for macos15 (arm64)
+-- MySQL dump 10.13  Distrib 8.0.36, for macos14 (arm64)
 --
 -- Host: 127.0.0.1    Database: ixp_ci
 -- ------------------------------------------------------
--- Server version	8.0.45
+-- Server version	8.0.36
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -49,7 +49,7 @@ CREATE TABLE `api_keys` (
 
 LOCK TABLES `api_keys` WRITE;
 /*!40000 ALTER TABLE `api_keys` DISABLE KEYS */;
-INSERT INTO `api_keys` VALUES (1,1,"iqLw1OF50aPU","e97b4fa0d8f7a8b44780d9187deb8c19cf1e928d3a55f15d039dfefb7bbd572a",NULL,'2099-06-25 15:55:40','','2017-05-19 09:48:49','127.0.0.1',NULL,'2014-01-06 13:43:19',NULL),(3,2,"GcMPPjWig7w2","eb092954796de9e99f1a2db84651545be23f91628e754dfa846cbe6c7e67e250",NULL,'2027-06-25 15:55:40','','2017-05-19 09:48:49','127.0.0.1',NULL,'2014-01-06 13:43:19',NULL),(4,3,"v7zO4TmaX3Ft","9e6fb1c8821d9a66adbebce97e5bd3769ee26423d3cb3c373a37f9a8992516db",NULL,'2027-06-25 15:55:40','','2017-05-19 09:48:49','127.0.0.1',NULL,'2014-01-06 13:43:19',NULL);
+INSERT INTO `api_keys` VALUES (1,1,'iqLw1OF50aPU','e97b4fa0d8f7a8b44780d9187deb8c19cf1e928d3a55f15d039dfefb7bbd572a',NULL,'2099-06-25 15:55:40','','2017-05-19 09:48:49','127.0.0.1',NULL,'2014-01-06 13:43:19',NULL),(3,2,'GcMPPjWig7w2','eb092954796de9e99f1a2db84651545be23f91628e754dfa846cbe6c7e67e250',NULL,'2027-06-25 15:55:40','','2017-05-19 09:48:49','127.0.0.1',NULL,'2014-01-06 13:43:19',NULL),(4,3,'v7zO4TmaX3Ft','9e6fb1c8821d9a66adbebce97e5bd3769ee26423d3cb3c373a37f9a8992516db',NULL,'2027-06-25 15:55:40','','2017-05-19 09:48:49','127.0.0.1',NULL,'2014-01-06 13:43:19',NULL);
 /*!40000 ALTER TABLE `api_keys` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -63,12 +63,12 @@ DROP TABLE IF EXISTS `app_passwords`;
 CREATE TABLE `app_passwords` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `salt` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `salt` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `expires` datetime NOT NULL,
   `last_seen_at` datetime DEFAULT NULL,
-  `last_seen_from` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `last_seen_from` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -85,26 +85,6 @@ LOCK TABLES `app_passwords` WRITE;
 /*!40000 ALTER TABLE `app_passwords` DISABLE KEYS */;
 /*!40000 ALTER TABLE `app_passwords` ENABLE KEYS */;
 UNLOCK TABLES;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `tr_app_passwords_last_logins` AFTER UPDATE ON `app_passwords` FOR EACH ROW BEGIN
-                IF (OLD.last_seen_at IS NULL AND NEW.last_seen_at IS NOT NULL) OR (OLD.last_seen_at <> NEW.last_seen_at) OR (OLD.last_seen_from IS NULL AND NEW.last_seen_from IS NOT NULL) OR (OLD.last_seen_from <> NEW.last_seen_from) THEN
-                    INSERT INTO app_passwords_last_logins (app_password_id, last_seen_at, last_seen_from)
-                    VALUES (NEW.id, NEW.last_seen_at, NEW.last_seen_from);
-                END IF;
-            END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `app_passwords_last_logins`
@@ -117,7 +97,7 @@ CREATE TABLE `app_passwords_last_logins` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `app_password_id` bigint unsigned NOT NULL,
   `last_seen_at` datetime NOT NULL,
-  `last_seen_from` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `last_seen_from` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `app_passwords_last_logins_app_password_id_foreign` (`app_password_id`),
@@ -133,6 +113,25 @@ LOCK TABLES `app_passwords_last_logins` WRITE;
 /*!40000 ALTER TABLE `app_passwords_last_logins` DISABLE KEYS */;
 /*!40000 ALTER TABLE `app_passwords_last_logins` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `tr_app_passwords_last_logins` AFTER INSERT ON `app_passwords_last_logins` FOR EACH ROW BEGIN
+                UPDATE `app_passwords`
+                    SET last_seen_from = NEW.last_seen_from, last_seen_at = NEW.last_seen_at
+                WHERE id = NEW.app_password_id;
+            END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `asns`
@@ -1602,7 +1601,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1611,7 +1610,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3),(9,'2020_07_21_094354_create_route_server_filters',4),(12,'2020_09_03_153723_add_timestamps',5),(13,'2020_09_18_095136_delete_ixp_table',6),(14,'2020_11_16_102415_database_fixes',7),(15,'2021_03_12_150418_create_log_table',8),(16,'2021_04_14_125742_user_pref',9),(17,'2021_04_14_101948_update_timestamps',10),(18,'2021_05_18_085721_add_note_infrastructure',11),(19,'2021_05_18_114206_update_pp_prefix_size',12),(20,'2020_06_01_143931_database_schema_at_end_v5',13),(21,'2021_03_30_124916_create_atlas_probes',13),(22,'2021_03_30_125238_create_atlas_runs',13),(23,'2021_03_30_125422_create_atlas_measurements',13),(24,'2021_03_30_125723_create_atlas_results',13),(25,'2021_06_11_141137_update_db_doctrine2eloquent',13),(26,'2021_07_20_134716_fix_last_updated_and_timestamps',13),(27,'2021_09_16_195333_add_rate_limit_col_to_physint',13),(28,'2021_09_17_144421_modernise_irrdb_conf_table',13),(29,'2021_09_21_100354_create_route_server_filters_prod',14),(30,'2021_09_21_162700_rs_pairing',15),(31,'2022_02_12_183121_add_colo_pp_type_patch_panel',15),(32,'2023_09_26_191150_add_registration_details',15),(33,'2024_03_18_191322_add_export_to_ixf_vlan',15),(34,'2024_08_10_125003_create_irrdb_update_logs',16),(35,'2024_09_05_111855_create_p2p_daily_stats_table',17),(36,'2024_05_29_102028_reset-views',18),(37,'2025_09_01_102636_add_ipv6_max_prefixes',19),(38,'2025_11_11_085835_add_exclude_from_ixf_export_to_infrastructure',20),(39,'2026_02_16_205211_remove_legacy_columns_from_contacts',21),(40,'2026_04_20_161912_remove_user_privs',22),(42,'2026_04_27_110644_create_asn_table',23),(43,'2026_06_11_102639_create_app_passwords_table',24),(44,'2026_06_11_112737_create_app_passwords_last_logins_table',24),(45,'2026_06_25_133900_set_api_keys_expires_not_nullable',25);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3),(9,'2020_07_21_094354_create_route_server_filters',4),(12,'2020_09_03_153723_add_timestamps',5),(13,'2020_09_18_095136_delete_ixp_table',6),(14,'2020_11_16_102415_database_fixes',7),(15,'2021_03_12_150418_create_log_table',8),(16,'2021_04_14_125742_user_pref',9),(17,'2021_04_14_101948_update_timestamps',10),(18,'2021_05_18_085721_add_note_infrastructure',11),(19,'2021_05_18_114206_update_pp_prefix_size',12),(20,'2020_06_01_143931_database_schema_at_end_v5',13),(21,'2021_03_30_124916_create_atlas_probes',13),(22,'2021_03_30_125238_create_atlas_runs',13),(23,'2021_03_30_125422_create_atlas_measurements',13),(24,'2021_03_30_125723_create_atlas_results',13),(25,'2021_06_11_141137_update_db_doctrine2eloquent',13),(26,'2021_07_20_134716_fix_last_updated_and_timestamps',13),(27,'2021_09_16_195333_add_rate_limit_col_to_physint',13),(28,'2021_09_17_144421_modernise_irrdb_conf_table',13),(29,'2021_09_21_100354_create_route_server_filters_prod',14),(30,'2021_09_21_162700_rs_pairing',15),(31,'2022_02_12_183121_add_colo_pp_type_patch_panel',15),(32,'2023_09_26_191150_add_registration_details',15),(33,'2024_03_18_191322_add_export_to_ixf_vlan',15),(34,'2024_08_10_125003_create_irrdb_update_logs',16),(35,'2024_09_05_111855_create_p2p_daily_stats_table',17),(36,'2024_05_29_102028_reset-views',18),(37,'2025_09_01_102636_add_ipv6_max_prefixes',19),(38,'2025_11_11_085835_add_exclude_from_ixf_export_to_infrastructure',20),(39,'2026_02_16_205211_remove_legacy_columns_from_contacts',21),(40,'2026_04_20_161912_remove_user_privs',22),(42,'2026_04_27_110644_create_asn_table',23),(46,'2026_06_11_102639_create_app_passwords_table',24),(47,'2026_06_11_112737_create_app_passwords_last_logins_table',24),(48,'2026_06_25_133900_set_api_keys_expires_not_nullable',24);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3176,4 +3175,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-25 15:55:40
+-- Dump completed on 2026-06-29 23:24:17
