@@ -3,7 +3,6 @@
 namespace Tests\Http\Controllers;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use IXP\Models\Cabinet;
 use IXP\Models\CompanyBillingDetail;
 use IXP\Models\CompanyRegisteredDetail;
@@ -11,8 +10,6 @@ use IXP\Models\Customer;
 use IXP\Models\Location;
 use IXP\Models\PatchPanel;
 use IXP\Models\PatchPanelPort;
-use IXP\Models\PhysicalInterface;
-use IXP\Models\VirtualInterface;
 use Tests\TestCase;
 
 class CustomerControllerTest extends TestCase

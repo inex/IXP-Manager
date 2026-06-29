@@ -78,7 +78,15 @@
                         <li>
                             all route server entries learned from IRRDB for prefixes and origin ASNs as well as prefixes learned from the route servers.
                         </li>
-
+                        <li>
+                            IRRDB update logs
+                        </li>
+                        <li>
+                            <b><?= $c->docstoreCustomerDirectories()->count() ?></b> directories and <b><?= $c->docstoreCustomerFiles()->count() ?></b> files from the customers Document Store;</b>
+                        </li>
+                        <li>
+                            any route server filters (staged or in production)
+                        </li>
                         <li>
                             all Ripe Atlas Probes.
                         </li>
