@@ -1,6 +1,6 @@
 <?php
 
-namespace Jobs;
+namespace Tests\Jobs;
 
 use Carbon\Carbon;
 use Illuminate\Mail\Mailable;

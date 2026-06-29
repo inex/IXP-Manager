@@ -21,7 +21,7 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace Console\Utils;
+namespace Tests\Console\Utils;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;

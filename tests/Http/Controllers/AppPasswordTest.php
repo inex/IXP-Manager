@@ -22,7 +22,7 @@
 
 declare(strict_types=1);
 
-namespace Http\Controllers;
+namespace Tests\Http\Controllers;
 
 use Illuminate\Support\Facades\Hash;
 use IXP\Models\AppPassword;

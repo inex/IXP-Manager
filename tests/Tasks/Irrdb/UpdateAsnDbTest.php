@@ -21,7 +21,7 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace Tasks\Irrdb;
+namespace Tests\Tasks\Irrdb;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
