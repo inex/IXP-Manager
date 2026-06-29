@@ -147,7 +147,10 @@ class ContactGroupController extends EloquentController
     protected function canList(): ?RedirectResponse
     {
         // are contact groups configured?
-        if( config( 'contact_group.types', false ) === false ) {
+        /** @var false|array $types */
+        $types = config( "contact_group.types", false );
+        
+        if( $types === false ) {
             AlertContainer::push( 'Contact groups are not configured. Please see <a href="https://docs.ixpmanager.org/latest/usage/contacts/#contact-groups">the documentation here</a>.', Alert::INFO );
             return redirect( route( 'contact@list' ) );
         }

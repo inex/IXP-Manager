@@ -477,6 +477,8 @@ class MultiRrd
         $options[] = 'GPRINT:last_in:\tCur\\: %6.2lf%s\l';
 
         $options[] = 'COMMENT:\s';
+        
+        /** @var false|array $png */
         $png = rrd_graph( $this->getLocalFilename( $this->graph->key(), 'png'), $options );
         if( $png === false ) {
             throw new FileErrorException("Could not open/create RRD/PNG file");

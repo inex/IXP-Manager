@@ -483,6 +483,7 @@ class Rrd
 
         $options[] = 'COMMENT:\s';
 
+        /** @var false|array $png */
         $png = rrd_graph( $this->getLocalFilename('png'), $options );
 
         if( $png === false ) {
