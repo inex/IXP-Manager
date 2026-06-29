@@ -86,7 +86,7 @@ class AppPasswordController extends EloquentController
             'nameSingular'      => 'app password',
             'documentation'     => 'https://docs.ixpmanager.org/latest/features/app-passwords/',
             'listOrderBy'       => 'created_at',
-            'listOrderByDir'    => 'ASC',
+            'listOrderByDir'    => 'DESC',
             'viewFolderName'    => 'app-password',
             'listColumns'    => [
                 'id'           => [ 'title' => 'UID', 'display' => false ],
