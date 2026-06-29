@@ -521,7 +521,12 @@ class CustomerAggregator extends Customer
                 $cb->deleteObject();
             }
             $cust->tags()->detach();
-            
+
+            $cust->routeServerFiltersInProduction()->delete();
+            $cust->routeServerFilters()->delete();
+            $cust->docstoreCustomerFiles()->delete();
+            $cust->docstoreCustomerDirectories()->delete();
+            $cust->irrdbUpdateLog()->delete();
             $cust->delete();
 
             $cust->companyBillingDetail()->delete();
