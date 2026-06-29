@@ -562,25 +562,12 @@ class CustomerController extends Controller
      */
     public function deleteRecap( Customer $cust ): RedirectResponse|View
     {
-        // cannot delete a customer with active cross connects:
-        if( $cust->patchPanelPorts->isNotEmpty() ) {
-            AlertContainer::push( "This customer has active patch panel ports. Please cease "
-                . "these (or set them to awaiting cease and unset the customer link in the patch panel "
-                . "port) to proceed with deleting this customer.", Alert::DANGER
-            );
-            return redirect( route( "customer@overview", [ 'cust' => $cust->id ] ) );
-        }
-
-        // cannot delete a customer with fan out ports:
-        if( Customer::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )
-            ->leftJoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
-            ->whereNotNull( 'pi.fanout_physical_interface_id' )
-            ->whereNotNull( 'reseller' )->where( 'cust.id', $cust->id )->count() ){
-                        AlertContainer::push( "This customer has is a resold customer with fan out physical "
-                            . "interfaces. Please delete these manually before proceeding with deleting the customer.",
-                            Alert::DANGER
-                        );
-                        return redirect( route( "customer@overview", [ 'cust' => $cust->id ] ) );
+        if ($redirect = $this->redirectIfCustomerHasResellerCustomers($cust)) {
+            return $redirect;
+        } else if ($redirect = $this->redirectIfCustomerHasActiveCrossConnects($cust)) {
+            return $redirect;
+        } else if ($redirect = $this->redirectIfCustomerHasActiveFanoutPorts($cust)) {
+            return $redirect;
         }
 
         return view( 'customer/delete' )->with([
@@ -599,6 +586,14 @@ class CustomerController extends Controller
      */
     public function delete( Customer $cust ) : RedirectResponse
     {
+        if ($redirect = $this->redirectIfCustomerHasResellerCustomers($cust)) {
+            return $redirect;
+        } else if ($redirect = $this->redirectIfCustomerHasActiveCrossConnects($cust)) {
+            return $redirect;
+        } else if ($redirect = $this->redirectIfCustomerHasActiveFanoutPorts($cust)) {
+            return $redirect;
+        }
+
         if( CustomerAggregator::deleteObject( $cust ) ) {
             AlertContainer::push( "Customer <em>{$cust->getFormattedName()}</em> deleted.", Alert::SUCCESS );
             Cache::forget( 'admin_home_customers' );
@@ -606,5 +601,43 @@ class CustomerController extends Controller
             AlertContainer::push( "Customer could not be deleted. Please open a GitHub bug report.", Alert::DANGER );
         }
         return redirect( route( "customer@list" ) );
+    }
+
+    private function redirectIfCustomerHasResellerCustomers( Customer $cust ): ?RedirectResponse
+    {
+        if( $cust->isReseller && Customer::whereReseller( $cust->id )->notDeleted()->count() > 0 ) {
+            AlertContainer::push( "This customer is a reseller still associated with active resold customers. Please ".
+                " disassociate their customers before proceeding with deleting the reselling customer.", Alert::DANGER );
+            return redirect( route( "customer@overview", [ 'cust' => $cust->id ] ) );
+        }
+        return null;
+    }
+
+    private function redirectIfCustomerHasActiveCrossConnects( Customer $cust ): ?RedirectResponse
+    {
+        if( $cust->patchPanelPorts->isNotEmpty() ) {
+            AlertContainer::push( "This customer has active patch panel ports. Please cease "
+                . "these (or set them to awaiting cease and unset the customer link in the patch panel "
+                . "port) to proceed with deleting this customer.", Alert::DANGER
+            );
+            return redirect( route( "customer@overview", [ 'cust' => $cust->id ] ) );
+        }
+        return null;
+    }
+
+    private function redirectIfCustomerHasActiveFanoutPorts( Customer $cust ): ?RedirectResponse
+    {
+        // cannot delete a customer with fan out ports:
+        if( Customer::leftJoin( 'virtualinterface AS vi', 'vi.custid', 'cust.id' )
+            ->leftJoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
+            ->whereNotNull( 'pi.fanout_physical_interface_id' )
+            ->whereNotNull( 'reseller' )->where( 'cust.id', $cust->id )->count() ){
+            AlertContainer::push( "This customer has is a resold customer with fan out physical "
+                . "interfaces. Please delete these manually before proceeding with deleting the customer.",
+                Alert::DANGER
+            );
+            return redirect( route( "customer@overview", [ 'cust' => $cust->id ] ) );
+        }
+        return null;
     }
 }
