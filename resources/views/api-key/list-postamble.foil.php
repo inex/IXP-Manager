@@ -11,7 +11,7 @@
         </p>
         <p>
 
-            The API key can be passed in the header (preferred) or on the URL. For example:
+            The API key can be passed in the header (preferred) or on the URL (though this is currently being deprecated). For example:
         <ul>
             <li>
                 <code>curl -X GET -H "X-IXP-Manager-API-Key: <?= $t->ee( $example_api_key ) ?>" <?= url( "/api/v4/test" ) ?></code>
@@ -106,8 +106,8 @@
                     As IXP Manager <a href="https://docs.ixpmanager.org/latest/features/layer2-addresses/">supports layer2 / MAC addresses in two ways</a>
                     (learned versus configured), there are two endpoints.
                     <ul>
-                        <li>Learned: <code><a href="<?= url( "/api/v4/sflow-db-mapper/learned-macs" ) ?>"><?= url( "/api/v4/sflow-db-mapper/learned-macs" ) ?></a></code></li>
-                        <li>Configured: <code><a href="<?= url( "/api/v4/sflow-db-mapper/configured-macs" ) ?>"><?= url( "/api/v4/sflow-db-mapper/configured-macs" ) ?></a></code></li>
+                        <li>Learned: <code><a href="<?= url( "/admin/api/v4/sflow-db-mapper/learned-macs" ) ?>"><?= url( "/admin/api/v4/sflow-db-mapper/learned-macs" ) ?></a></code></li>
+                        <li>Configured: <code><a href="<?= url( "/admin/api/v4/sflow-db-mapper/configured-macs" ) ?>"><?= url( "/admin/api/v4/sflow-db-mapper/configured-macs" ) ?></a></code></li>
                     </ul>
                     The JSON output is structured as follows:
                     <ul>

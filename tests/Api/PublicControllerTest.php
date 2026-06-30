@@ -3,6 +3,7 @@
 namespace Tests\Api;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use IXP\Models\ApiKey;
 use IXP\Models\Customer;
@@ -109,6 +110,17 @@ class PublicControllerTest extends TestCase
 
         $apiKey->refresh();
         $this->assertEquals($now->timestamp, $apiKey->last_seen_at->timestamp);
+
+        // This is needed because for some reason laravel doesn't clear Auth between test HTTP requests?
+        Auth::forgetUser();
+
+        // test disabled legacy apikey
+        config()->set('ixp_api.allow_apikeys_get_parameter', false);
+        $this->assertFalse(config('ixp_api.allow_apikeys_get_parameter'));
+
+        $response = $this->get( '/api/v4/test?apikey=' . $legacyApiKey );
+        $response->assertStatus( 200 )
+            ->assertSee( 'Authenticated: No' );
     }
 
     public function testPing()
