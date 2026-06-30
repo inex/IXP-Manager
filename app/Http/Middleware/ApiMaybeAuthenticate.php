@@ -27,6 +27,7 @@ use Auth, Closure;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Log;
 use IXP\Models\Aggregators\ApiKeyAggregator;
 use IXP\Models\ApiKey;
 use IXP\Models\User;
@@ -52,7 +53,7 @@ class ApiMaybeAuthenticate
 	 * API key can be passed in the header (preferred) or on the URL.
 	 *
 	 *     curl -X GET -H "X-IXP-Manager-API-Key: mySuperSecretApiKey" http://ixpv.dev/api/v4/test
-	 *     wget http://ixpv.dev/api/v4/test?apikey=mySuperSecretApiKey
+	 *     DEPRECATED wget http://ixpv.dev/api/v4/test?apikey=mySuperSecretApiKey
 	 *
 	 * @param   Request     $r
 	 * @param   Closure     $next
@@ -67,17 +68,25 @@ class ApiMaybeAuthenticate
         $us = Auth::user();
 
         // are we already logged in?
-		if( !Auth::check() ) {
+        if( !Auth::check() ) {
 
-			// find API key. Prefer header to URL:
-			$apikey = false;
-			if( $r->header('X-IXP-Manager-API-Key') ) {
-				$apikey = $r->header('X-IXP-Manager-API-Key');
-			} else if( $r->apikey ) {
-				$apikey = $r->apikey;
-			}
+            // find API key. Prefer header to URL:
+            $apikey = false;
+            $logIdentifier = null;
+            if( $r->header('X-IXP-Manager-API-Key') ) {
+                $apikey = $r->header('X-IXP-Manager-API-Key');
+            } else if( $r->apikey ) {
+                // use always because normal deferred functions only run when the status code < 400
+                defer(function() use ($r, &$logIdentifier) {
+                    Log::notice( 'DEPRECATED usage of API Key in GET parameter (' . $logIdentifier . '): ' . $r->path() . ' from ' . ixp_get_client_ip() );
+                })->always();
 
-			if( $apikey ) {
+                if ( config( 'ixp_api.allow_apikeys_get_parameter' ) ) {
+                    $apikey = $r->apikey;
+                }
+            }
+
+            if( $apikey ) {
 
                 /** @var ApiKey $key */
 
@@ -90,13 +99,16 @@ class ApiMaybeAuthenticate
                         // if it's not an ApiKey object, it's an error response
                         return $key;
                     }
-
+                    // record a token identifier in case we need to report an APIKEY via get parameter
+                    $logIdentifier = "API Token Identifier: " . $key->token_identifier;
                 } else {
                     // legacy
 
                     if( !( $key = ApiKey::where( 'api_key', $apikey )->with( 'user.customer' )->first() ) ) {
                         return response( 'Valid API key required', 401 );
                     }
+                    // record Api Key ID in case we need to report a APIKEY vqia get parameter
+                    $logIdentifier = "API Key ID: " . $key->id;
                 }
 
                 if( $key->expires->isPast() ) {

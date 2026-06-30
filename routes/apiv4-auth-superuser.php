@@ -34,10 +34,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// API key can be passed in the header (preferred) or on the URL.
+// API key can be passed in the header (preferred) or on the URL (deprecated).
 //
 //     curl -X GET -H "X-IXP-Manager-API-Key: mySuperSecretApiKey" http://ixpv.dev/api/v4/test
-//     wget http://ixpv.dev/api/v4/test?apikey=mySuperSecretApiKey
+//     DEPRECATED wget http://ixpv.dev/api/v4/test?apikey=mySuperSecretApiKey
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Customers

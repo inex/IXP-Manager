@@ -35,7 +35,8 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Foundation\Http\Middleware\{
     CheckForMaintenanceMode,
     ConvertEmptyStringsToNull,
-    ValidatePostSize
+    InvokeDeferredCallbacks,
+    ValidatePostSize,
 };
 
 use Illuminate\Http\Middleware\HandleCors;
@@ -72,7 +73,7 @@ class Kernel extends HttpKernel
         ValidatePostSize::class,
         Middleware\TrimStrings::class,
         ConvertEmptyStringsToNull::class,
-
+        InvokeDeferredCallbacks::class,
     ];
 
     /**
