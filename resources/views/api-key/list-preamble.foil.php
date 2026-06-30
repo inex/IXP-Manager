@@ -4,7 +4,7 @@
             <i class="fa fa-exclamation-circle fa-2x"></i>
         </div>
         <div class="col-sm-12">
-            <strong>Treat your API key as a password.</strong>
+            <strong>Treat your API key as a password - never share it and store it securely.</strong>
         </div>
     </div>
 </div>
