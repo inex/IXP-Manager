@@ -235,7 +235,7 @@ return [
         // History retention in days
         'history_retention_days' => env('IXP_FE_API_KEYS_HISTORY_RETENTION_DAYS', 90),
 
-        // Maximum duration for password expiry (e.g. '30 days', '12 months')
+        // Maximum duration for api key expiry (e.g. '30 days', '12 months')
         'max_expires_duration' => env('IXP_FE_API_KEYS_MAX_EXPIRES_DURATION', '1 year' ),
 
     ],
