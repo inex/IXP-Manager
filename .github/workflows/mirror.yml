@@ -1,0 +1,24 @@
+name: Mirror to GitLab
+
+on:
+  push:
+    branches:
+      - '*'
+    tags:
+      - '*'
+  delete:
+
+jobs:
+  mirror_to_gitlab:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Mirror to GitLab Remote
+        uses: pixta-dev/repository-mirroring-action@v1
+        with:
+          target_repo_url: git@gitlab.com:inex/ixp-manager.git
+          ssh_private_key: ${{ secrets.GITLAB_SSH_PRIVATE_KEY }}
