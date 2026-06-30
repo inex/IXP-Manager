@@ -165,9 +165,21 @@ return [
     |
     | The default was switched from true to false in v7.2.0.
     |
-    | See: https://docs.ixpmanager.org/install/security/
+    | See: https://docs.ixpmanager.org/latest/install/security/
     */
 
     'unsecured_api_access' => env( 'UNSECURED_API_ACCESS', false ),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Allow API Keys to be provided via GET parameter in URL.
+    |--------------------------------------------------------------------------
+    |
+    | This previously supported authentication mode is being deprecated in favour of
+    | providing the key via HTTP Headers. A log will be generated when an API Key uses
+    | this feature. The setting will be turned off in a future release.
+    |
+    | See: https://docs.ixpmanager.org/latest/features/api/
+    */
+    'allow_apikeys_get_parameter' => env( 'IXP_ALLOW_DEPRECATED_APIKEYS_VIA_GET', true ),
 ];
