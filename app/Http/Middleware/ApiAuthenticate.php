@@ -68,6 +68,7 @@ class ApiAuthenticate
 			// find API key. Prefer header to URL:
 			$apikey = false;
             $logIdentifier = null;
+            
 			if( $r->header('X-IXP-Manager-API-Key') ) {
 				$apikey = $r->header('X-IXP-Manager-API-Key');
 			} else if( $r->apikey ) {
