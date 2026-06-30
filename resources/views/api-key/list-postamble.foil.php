@@ -87,11 +87,11 @@
                     You may change <code>.yaml</code> to <code>.json</code> in the URL if you prefer. If you wish to use the switch
                     database ID rather than the name, alter the URL for: <code>s#switch-name/{switchname}#switch/{id}#</code>.
                     <ul>
-                        <li>Layer2 Interfaces: <code><?= url( "/api/v4/provisioner/layer2interfaces/switch-name" ) ?>/{switchname}.yaml</code></li>
-                        <li>Layer3 Interfaces: <code><?= url( "/api/v4/provisioner/layer3interfaces/switch-name" ) ?>/{switchname}.yaml</code></li>
-                        <li>Routing: <code><?= url( "/api/v4/provisioner/routing/switch-name" ) ?>/{switchname}.yaml</code></li>
-                        <li>Basic Switch Information: <code><?= url( "/api/v4/provisioner/switch/switch-name" ) ?>/{switchname}.yaml</code></li>
-                        <li>VLANs: <code><?= url( "/api/v4/provisioner/vlans/switch-name" ) ?>/{switchname}.yaml</code></li>
+                        <li>Layer2 Interfaces: <code><?= url( "/admin/api/v4/provisioner/layer2interfaces/switch-name" ) ?>/{switchname}.yaml</code></li>
+                        <li>Layer3 Interfaces: <code><?= url( "/admin/api/v4/provisioner/layer3interfaces/switch-name" ) ?>/{switchname}.yaml</code></li>
+                        <li>Routing: <code><?= url( "/admin/api/v4/provisioner/routing/switch-name" ) ?>/{switchname}.yaml</code></li>
+                        <li>Basic Switch Information: <code><?= url( "/admin/api/v4/provisioner/switch/switch-name" ) ?>/{switchname}.yaml</code></li>
+                        <li>VLANs: <code><?= url( "/admin/api/v4/provisioner/vlans/switch-name" ) ?>/{switchname}.yaml</code></li>
                     </ul>
                 </dd>
 
