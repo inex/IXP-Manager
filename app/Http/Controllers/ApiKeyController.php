@@ -88,12 +88,12 @@ class ApiKeyController extends EloquentController
             'documentation'     => 'https://docs.ixpmanager.org/latest/features/api/',
             'listColumns'    => [
                 'id'           => [ 'title' => 'UID', 'display' => false ],
-                'api_key'       => [
+                'api_key'      => [
                     'title'        => 'API Key',
                     'type'         => self::$FE_COL_TYPES[ 'LIMIT' ],
                     'limitTo'      => 6
                 ],
-                'created_at'      => [
+                'created_at'   => [
                     'title'        => 'Created',
                     'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ],
@@ -101,7 +101,7 @@ class ApiKeyController extends EloquentController
                     'title'        => 'Expires',
                     'type'         => self::$FE_COL_TYPES[ 'DATE' ]
                 ],
-                'last_seen_at'   => [
+                'last_seen_at' => [
                     'title'        => 'Last Seen',
                     'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ],
@@ -110,7 +110,29 @@ class ApiKeyController extends EloquentController
         ];
 
         // display the same information in the view as the list
-        $this->feParams->viewColumns = $this->feParams->listColumns;
+        $this->feParams->viewColumns = [
+            'id'               => [ 'title' => 'UID', 'display' => false ],
+            'api_key'          => [
+                'title'          => 'API Key',
+                'type'           => self::$FE_COL_TYPES[ 'LIMIT' ],
+                'limitTo'        => 6
+            ],
+            'token_identifier' => 'Token Identifier',
+            'description'      => 'Description',
+            'created_at'       => [
+                'title'          => 'Created',
+                'type'           => self::$FE_COL_TYPES[ 'DATETIME' ]
+            ],
+            'expires'          => [
+                'title'          => 'Expires',
+                'type'           => self::$FE_COL_TYPES[ 'DATE' ]
+            ],
+            'last_seen_at'     => [
+                'title'          => 'Last Seen',
+                'type'           => self::$FE_COL_TYPES[ 'DATETIME' ]
+            ],
+            'last_seen_from' => 'Last Seen From'
+        ];
 
         // phpunit / artisan trips up here without the cli test:
         if( PHP_SAPI !== 'cli' ) {
