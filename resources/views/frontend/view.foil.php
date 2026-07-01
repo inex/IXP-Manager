@@ -79,12 +79,30 @@ $this->layout( 'layouts/ixpv4' );
 
                                                         <?php if( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'HAS_ONE'] ): ?>
                                                             <?php $nameIdParam = '' ; ?>
+
                                                             <?php if( isset( $cconf['nameIdParam'] ) ): ?>
                                                                 <?php $nameIdParam = $cconf['nameIdParam'].'/'; ?>
                                                             <?php endif; ?>
-                                                            <a href="<?= url( $cconf[ 'controller'] . '/' . $cconf[ 'action'] . '/'.$nameIdParam . $t->data[ 'item' ][ $cconf['idField'] ] ) ?>">
-                                                                <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
-                                                            </a>
+
+                                                            <?php $params = '/' . $nameIdParam . $this->data[ 'item' ][ $cconf['idField'] ] ; ?>
+
+                                                            <?php if( isset( $cconf['nameIdOptionalParam'] ) ): ?>
+                                                                <?php $params = '?' . $cconf['nameIdOptionalParam'] . '=' . urlencode($this->data[ 'item' ][ $cconf['idField'] ]) ; ?>
+                                                            <?php endif; ?>
+
+                                                            <?php if( isset( $cconf['route'] ) ): ?>
+
+                                                                <a href="<?= route( $cconf[ 'route'], $this->data[ 'item' ][ $cconf['idField'] ] ) ?>">
+                                                                    <?= $t->ee( $this->data[ 'item' ][$col] ) ?>
+                                                                </a>
+
+                                                            <?php else: ?>
+
+                                                                <a href="<?= url( $cconf[ 'controller'] . '/' . $cconf[ 'action'] . $params ) ?>">
+                                                                    <?= $t->ee( $this->data[ 'item' ][$col] ) ?>
+                                                                </a>
+
+                                                            <?php endif; ?>
 
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'XLATE'] ): ?>
 
