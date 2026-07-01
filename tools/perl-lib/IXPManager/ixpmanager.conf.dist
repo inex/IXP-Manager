@@ -34,4 +34,29 @@
 #	debug = 1
 	apikey = VeryLongAPIKeyFromIXPManager
 	apibaseurl = http://www.example.com/ixp/api/v4
+
+	# use configured MAC table instead of learned MAC table?
+	# macdbtype = configured
+
+	# If resold VLANs are not in IXP Manager, do we map VLANs for translations/resold customers?
+
+	map_vlans = 0
+
+	# If map_vlans is enabled, query to translate VLANs.
+ 	# query should return two fields: pvlan (resold vlan) and vlan (peering vlan)
+ 	#
+ 	# Example: Extract VLAN id from subinterface names e.g. Ethernet15/1.501
+ 	# for all resold customers. Map to actual peering VLAN as configured in IXPM.
+	# 
+ 	map_vlan_query = SELECT DISTINCT SUBSTRING_INDEX(sp.name, '.', -1) AS pvlan, v.number as vlan \
+		FROM switchport sp \
+		INNER JOIN physicalinterface pi ON pi.switchportid = sp.id \
+		INNER JOIN virtualinterface vi ON pi.virtualinterfaceid = vi.id \
+		INNER JOIN cust c ON vi.custid = c.id \
+		INNER JOIN vlaninterface vli ON vli.virtualinterfaceid = vi.id \
+		INNER JOIN vlan v ON vli.vlanid = v.id \
+		WHERE c.reseller > 0 AND \
+		v.peering_matrix = 1 AND \
+		sp.name LIKE '%.%'
+
 </ixp>
