@@ -26,8 +26,21 @@ System Validation
 <?php $this->section('content') ?>
 
     <?= $t->alerts() ?>
+
     <div id="validation-container" class="row">
     </div>
+
+    <div id="software-table-list" class="row tw-p-4 m-1 tw-shadow-md tw-border-1 tw-border-grey-light tw-rounded-sm">
+    </div>
+
+    <template id="software-table-2-row-template">
+        <!-- .software-name -->
+        <!-- .software-version -->
+        <div class="col-6 row">
+            <div class="col-6"><b class="software-name"></b> </div>
+            <div class="col-6 software-version"></div>
+        </div>
+    </template>
 
     <template id="validation-template">
         <!-- validation-info-button attr title -->
@@ -88,6 +101,7 @@ System Validation
     const $loadingSpinner = $('.loading-results-indicator');
     const $container = $('#validation-container');
     const $validationTemplate = $('#validation-template');
+    const $softwareTableBody = $('#software-table-list');
 
     $( document ).ready( function() {
         // Load validation results on page open
@@ -111,6 +125,7 @@ System Validation
 
                     // Clear container for fresh data
                     $container.empty();
+                    $softwareTableBody.empty();
 
                     // Loop through each job
                     taskData['validations'].forEach(function(validationData) {
@@ -125,6 +140,11 @@ System Validation
 
                             // Append the result clone into the validation clone's list
                             validationFragment.find('.set-wrapper').append(resultFragment);
+                        });
+
+                        validationData.software.forEach(function (software) {
+                            let rowFragment = createSoftwareTableRow(software);
+                            $softwareTableBody.append(rowFragment);
                         });
 
                         $container.append(validationFragment);
@@ -185,6 +205,13 @@ System Validation
             $resultClone.attr('data-result-type', resultData.type);
 
             return $resultClone;
+        }
+
+        function createSoftwareTableRow(software) {
+            let $rowClone = $(  $('#software-table-2-row-template').prop('content') ).clone();
+            $rowClone.find('.software-name').text(software.name);
+            $rowClone.find('.software-version').text(software.version);
+            return $rowClone;
         }
     });
 
