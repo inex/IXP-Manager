@@ -204,7 +204,11 @@ class RunCommand extends Command
                 ->all();
 
             if (count($softwareList)) {
-                $this->tablify($section, ['Software', 'Version'], $softwareList);
+                new Table($section)
+                    ->setHeaders( [ 'Software', 'Version' ] )
+                    ->setStyle( 'default' )
+                    ->setRows( $softwareList )
+                    ->render();
             }
 
             $resultsRows = collect($backends)->flatMap(function (ValidationRunner $backend, $index) use ($backends) {
@@ -236,20 +240,15 @@ class RunCommand extends Command
                 return $rows;
             })->all();
 
-            $this->tablify($section, ['Validator', 'Result', 'Message'], $resultsRows, 'System Validation');
+            new Table($section)
+                ->setHeaders( [ 'Validator', 'Result', 'Message' ] )
+                ->setStyle( 'default' )
+                ->setRows( $resultsRows )
+                ->setHeaderTitle( 'System Validation' )
+                ->setColumnMaxWidth( 0, 20 )
+                ->setColumnMaxWidth( 2, 80 )
+                ->render();
         };
-    }
-
-    private function tablify(OutputInterface $output, array $headers, array $rows, ?string $title = null): void
-    {
-        $table = new Table($output)
-            ->setHeaders( $headers )
-            ->setStyle('default')
-            ->setRows( $rows );
-        if ($title) {
-            $table->setHeaderTitle($title);
-        }
-        $table->render();
     }
 
     /**
