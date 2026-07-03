@@ -98,20 +98,18 @@ function doMinimumPhpVersionCheck( string $minVersion, string $recommendedPrefix
     $version = phpversion();
     $results[] = new SoftwareVersionCheckResult( "PHP", $version, ResultStatus::OK, [ "PHP version: $version" ] );
 
-    if ( version_compare( phpversion(), $minVersion, '<' ) ) {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ "PHP version $minVersion or higher required" ] );
+    if ( version_compare( $version, $minVersion, '>=' ) && ($maxVersion === null || version_compare($version, $maxVersion, '>=')) ) {
+        $results[] = new CheckResult( ResultStatus::OK, [ "Running a supported PHP version. " . (str_starts_with( $version, $recommendedPrefix ) ? "Version is a recommended version" : "") ] );
     } else {
-        $results[] = new CheckResult( ResultStatus::OK, [ "Minimum PHP version requirement met" ] );
+        if ( version_compare( $version, $minVersion, '<' ) ) {
+            $results[] = new CheckResult( ResultStatus::ERROR, [ "PHP version $minVersion or higher required" ] );
+        }
+        if ($maxVersion !== null && version_compare( $version, $maxVersion, '>')) {
+            $results[] = new CheckResult( ResultStatus::ERROR, [ "PHP version exceeds max supported version " . $maxVersion ] );
+        }
     }
-
-    if ( !str_starts_with( phpversion(), $recommendedPrefix ) ) {
+    if ( !str_starts_with( $version, $recommendedPrefix ) ) {
         $results[] = new CheckResult( ResultStatus::WARNING, [ "Not running a recommended PHP version." ] );
-    } else {
-        $results[] = new CheckResult( ResultStatus::OK, [ "Running recommended PHP version" ] );
-    }
-
-    if ($maxVersion !== null && version_compare(phpversion(), $maxVersion, '>')) {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ "PHP version exceeds max supported version " . $maxVersion ] );
     }
 
     if (ini_get("allow_url_fopen") == 1) {
@@ -237,20 +235,19 @@ function doMySqlCheck(string $minVersion, string $recommendedPrefix, ?string $ma
     }
 
     // Min/Max/Recommended MySQL server checks:
-    if ( version_compare( $version, $minVersion, '<' ) ) {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ "MySQL version $minVersion or higher is required" ] );
-    } else {
-        $results[] = new CheckResult( ResultStatus::OK, [ "Minimum version requirement met" ] );
-    }
 
+    if ( version_compare( $version, $minVersion, '>=' ) && ($maxVersion === null || version_compare($version, $maxVersion, '>=')) ) {
+        $results[] = new CheckResult( ResultStatus::OK, [ "Running a supported MySQL version. " . (str_starts_with( $version, $recommendedPrefix ) ? "Version is a recommended version" : "") ] );
+    } else {
+        if ( version_compare( $version, $minVersion, '<' ) ) {
+            $results[] = new CheckResult( ResultStatus::ERROR, [ "MySQL version $minVersion or higher required" ] );
+        }
+        if ($maxVersion !== null && version_compare( $version, $maxVersion, '>')) {
+            $results[] = new CheckResult( ResultStatus::ERROR, [ "MySQL version exceeds max supported version " . $maxVersion ] );
+        }
+    }
     if ( !str_starts_with( $version, $recommendedPrefix ) ) {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ "Not running a recommended version" ] );
-    } else {
-        $results[] = new CheckResult( ResultStatus::OK, [ "Running a recommended version." ] );
-    }
-
-    if ( $maxVersion !== null && version_compare( $version, $maxVersion, '>' ) ) {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ "Exceeds max supported version " . $maxVersion ] );
+        $results[] = new CheckResult( ResultStatus::WARNING, [ "Not running a recommended MySQL version." ] );
     }
 
     // What schema/migration are we running?
@@ -428,7 +425,8 @@ readonly class SoftwareVersionCheckResult implements CheckResultInterface, Softw
 
 requireConfirmationIfRunningRoot();
 
-$manifest = include "version.php";
+include "version.php";
+$manifest = APPLICATION_MANIFEST;
 
 $tasks = [];
 $tasks[] = new BasicValidation( 'PHP', doMinimumPhpVersionCheck(...), [ $manifest['php_version']['min'], $manifest['php_version']['recommended'], $manifest['php_version']['max'] ] );
@@ -469,7 +467,10 @@ foreach ( $tasks as $task ) {
 if ( $haveErrors ) {
     echo "There were errors during the validation process. Please review the checks above for details.\n";
     exit(1);
-} else {
-    echo "No errors detected during basic validations\n";
 }
+
+
+echo "No errors detected during basic validations\n";
+
+echo shell_exec(__DIR__ . "/artisan validator:run");
 
