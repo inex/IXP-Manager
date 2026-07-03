@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace IXP\Utils\Validation\Validators;
 
+use Illuminate\Http\Client\ConnectionException;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
 use IXP\Models\Infrastructure;
@@ -68,7 +69,12 @@ class IxpManagerIsRegisteredValidator implements Validator
             return;
         }
 
-        $ixpList = \Http::get('https://www.ixpmanager.org/js/ixp-manager-users.json')->json('ixp_list');
+        try {
+            $ixpList = \Http::get('https://www.ixpmanager.org/js/ixp-manager-users.json')->json('ixp_list');
+        } catch ( ConnectionException $e) {
+            $backend->warning("Could not fetch registered networks from ixpmanager.org: " . $e->getMessage());
+            return;
+        }
 
         if ($ixpList) {
             $pdbIds        = array_column($ixpList, 'peeringdb_id');
