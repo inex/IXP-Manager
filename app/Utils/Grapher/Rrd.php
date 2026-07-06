@@ -416,8 +416,6 @@ class Rrd
      */
     public function png(): string
     {
-        $separated_maxima = self::PERIOD_TIME[ $this->graph()->period() ] > 60*60*24*2;
-
         [ $indexIn, $indexOut ] = $this->getIndexKeys();
 
         $options = [
@@ -427,13 +425,13 @@ class Rrd
             '--start', time() - self::PERIOD_TIME[ $this->graph()->period() ],
             '--lower-limit=0',
             '--title=' . $this->graph()->title(),
-            '--vertical-label=' . $this->graph()->category() . ' / second',
-            '--watermark=' . $this->graph()->watermark(),
-            '--font=TITLE:10:Times',
-            '--font=WATERMARK:8:Times',
+            '--font=TITLE:10:Courier',
+            '--font=WATERMARK:4:Times',
             '--font=LEGEND:8:Courier',
-            '--font=AXIS:6:Courier',
-            '--font=UNIT:6:Courier',
+            '--font=AXIS:8:Courier',
+            '--font=UNIT:8:Courier',
+            '--color','BACK#FFFFFF',
+            '--border', 0,
 
             'DEF:a='.$this->file().':'.$indexIn.':AVERAGE',
             'DEF:b='.$this->file().':'.$indexIn.':MAX',
@@ -453,35 +451,33 @@ class Rrd
             'VDEF:avg_out=cdefd,AVERAGE',
         ];
 
-        $options[] = 'COMMENT:Out';
-
-        if( $separated_maxima ) {
-            $options[] = 'AREA:cdefd#006600:Peak';
-            $options[] = 'GPRINT:max_out:%6.2lf%s\t';
-            $options[] = 'AREA:cdefc#00CF00:Avg';
+        if ( $this->graph()->category() == 'bits' ) {
+            $unit_text = "bits/sec";
+            $colour_area_in = "33CC33FF";
+            $colour_line_in = "006600FF";
+            $colour_line_out = "002A97FF";
+        } elseif ( $this->graph()->category() == 'errs' ) {
+            $unit_text = "errors/sec";
+            $colour_area_in = "FA5050FF";
+            $colour_line_in = "FA0000FF";
+            $colour_line_out = "FFAA00FF";
         } else {
-            $options[] = 'AREA:cdefc#00CF00:Max';
-            $options[] = 'GPRINT:max_out:%6.2lf%s\t';
-            $options[] = 'COMMENT:Avg';
-        }
-        $options[] = 'GPRINT:avg_out:%6.2lf%s';
-        $options[] = 'GPRINT:last_out:\tCur\\: %6.2lf%s\l';
+            $unit_text = "pkts/sec";
+            $colour_area_in = "FFDD88FF";
+            $colour_line_in = "FF8525FF";
+            $colour_line_out = "AA66AAFF";
+        };
 
-        $options[] = 'COMMENT:In ';
-
-        if( $separated_maxima ) {
-            $options[] = 'LINE1:cdefb#ff00ff:Peak';
-            $options[] = 'GPRINT:max_in:%6.2lf%s\t';
-            $options[] = 'LINE2:cdefa#002A97FF:Avg';
-        } else {
-            $options[] = 'LINE2:cdefa#002A97FF:Max';
-            $options[] = 'GPRINT:max_in:%6.2lf%s\t';
-            $options[] = 'COMMENT:Avg';
-        }
+        $options[] = 'COMMENT:' . str_pad($unit_text, 15) . 'Cur      Avg       Max\\n';
+        $options[] = 'AREA:cdefb#' . $colour_area_in . ':' . str_pad('In', 8);
+        $options[] = 'LINE1:cdefb#' . $colour_line_in . ':';
+        $options[] = 'GPRINT:last_in:%6.2lf%s';
         $options[] = 'GPRINT:avg_in:%6.2lf%s';
-        $options[] = 'GPRINT:last_in:\tCur\\: %6.2lf%s\l';
-
-        $options[] = 'COMMENT:\s';
+        $options[] = 'GPRINT:max_in:%6.2lf%s\\n';
+        $options[] = 'LINE1.25:cdefd#' . $colour_line_out . ':' . str_pad('Out', 8);
+        $options[] = 'GPRINT:last_out:%6.2lf%s';
+        $options[] = 'GPRINT:avg_out:%6.2lf%s';
+        $options[] = 'GPRINT:max_out:%6.2lf%s\\n';
 
         /** @var false|array $png */
         $png = rrd_graph( $this->getLocalFilename('png'), $options );
