@@ -138,10 +138,10 @@ class VlanController extends EloquentController
     protected static function additionalRoutes( string $route_prefix ): void
     {
         Route::group( [ 'prefix' => ( static::$is_admin_route ? 'admin/' : '' ) . $route_prefix ], static function() use ( $route_prefix ) {
-            Route::get(     'private',                             'VlanController@listPrivate'    )->name( $route_prefix . '@private'        );
-            Route::get(     'private/infra/{infra}',               'VlanController@listPrivate'    )->name( $route_prefix . '@privateInfra'   );
-            Route::get(     'list/infra/{infra}',                  'VlanController@listInfra'      )->name( $route_prefix . '@infra'          );
-            Route::get(     'list/infra/{infra}/public/{public}',  'VlanController@listInfra'      )->name( $route_prefix . '@infraPublic'    );
+            Route::get(     'private',                             [self::class, 'listPrivate']    )->name( $route_prefix . '@private'        );
+            Route::get(     'private/infra/{infra}',               [self::class, 'listPrivate']    )->name( $route_prefix . '@privateInfra'   );
+            Route::get(     'list/infra/{infra}',                  [self::class, 'listInfra']      )->name( $route_prefix . '@infra'          );
+            Route::get(     'list/infra/{infra}/public/{public}',  [self::class, 'listInfra']      )->name( $route_prefix . '@infraPublic'    );
         });
     }
 

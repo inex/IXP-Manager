@@ -209,14 +209,14 @@ class SwitchController extends EloquentController
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
         Route::group( [  'prefix' => ( static::$is_admin_route ? 'admin/' : '' ) . $route_prefix ], function() {
-            Route::get(  'create-by-snmp',      'Switches\SwitchController@addBySnmp'       )->name( 'switch@create-by-snmp'   );
-            Route::get(  'port-report/{switch}','Switches\SwitchController@portReport'      )->name( "switch@port-report"   );
-            Route::post( 'store-by-snmp',       'Switches\SwitchController@storeBySmtp'     )->name( "switch@store-by-snmp" );
+            Route::get(  'create-by-snmp',       [self::class, 'addBySnmp']     )->name( 'switch@create-by-snmp'   );
+            Route::get(  'port-report/{switch}', [self::class, 'portReport']    )->name( "switch@port-report"   );
+            Route::post( 'store-by-snmp',        [self::class, 'storeBySmtp']   )->name( "switch@store-by-snmp" );
         });
 
         // never an admin route:
         Route::group( [  'prefix' => $route_prefix ], function() {
-            Route::get(  'configuration',       'Switches\SwitchController@configuration'   )->name( "switch@configuration" );
+            Route::get(  'configuration',        [self::class, 'configuration']  )->name( "switch@configuration" );
         });
 
     }
@@ -581,7 +581,7 @@ class SwitchController extends EloquentController
      *
      * @param Switcher $switch ID for the switch
      *
-     * @return view
+     * @return View
      */
     public function portReport( Switcher $switch ) : View
     {
@@ -620,7 +620,7 @@ class SwitchController extends EloquentController
      *
      * @param Request $r
      *
-     * @return view
+     * @return View
      *
      * @throws
      */

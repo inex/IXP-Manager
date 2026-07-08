@@ -144,7 +144,7 @@ class IpAddressController extends Controller
      *
      * @param int   $protocol   Protocol of the IP address
      *
-     * @return view
+     * @return View
      */
     public function create( int $protocol ): View
     {

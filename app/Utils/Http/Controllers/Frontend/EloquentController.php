@@ -217,25 +217,24 @@ abstract class EloquentController extends Controller
     public static function routes(): void
     {
         // add leading slash to class name for absolute resolution:
-        $class = '\\' . static::class;
         $route_prefix = self::route_prefix();
 
-        Route::group( [ 'prefix' => ( static::$is_admin_route ? 'admin/' : '' ) . $route_prefix ], static function() use ( $class, $route_prefix ) {
-            Route::get( 'list',      $class . '@list' )->name( $route_prefix . '@list' );
-            Route::get( 'view/{id}', $class . '@view' )->name( $route_prefix . '@view' );
+        Route::group( [ 'prefix' => ( static::$is_admin_route ? 'admin/' : '' ) . $route_prefix ], static function() use ( $route_prefix ) {
+            Route::get( 'list',      [static::class, 'list'] )->name( $route_prefix . '@list' );
+            Route::get( 'view/{id}', [static::class, 'view'] )->name( $route_prefix . '@view' );
 
             if( !static::$read_only ) {
-                Route::get(  'create',          $class . '@create'  )->name( $route_prefix . '@create'  );
-                Route::delete( 'delete/{id}',   $class . '@delete'  )->name( $route_prefix . '@delete'  );
+                Route::get(  'create',          [static::class, 'create']  )->name( $route_prefix . '@create'  );
+                Route::delete( 'delete/{id}',   [static::class, 'delete']  )->name( $route_prefix . '@delete'  );
                 if( !static::$disable_edit ) {
-                    Route::get( 'edit/{id}',    $class . '@edit'    )->name( $route_prefix . '@edit'    );
-                    Route::put( 'update/{id}',  $class . '@update'  )->name( $route_prefix . '@update'  );
+                    Route::get( 'edit/{id}',    [static::class, 'edit']    )->name( $route_prefix . '@edit'    );
+                    Route::put( 'update/{id}',  [static::class, 'update']  )->name( $route_prefix . '@update'  );
                 }
-                Route::post( 'store', $class . '@' . static::$storeFn )->name( $route_prefix . '@store' );
+                Route::post( 'store', [static::class, static::$storeFn] )->name( $route_prefix . '@store' );
             }
         });
 
-        $class::additionalRoutes( $route_prefix );
+        static::additionalRoutes( $route_prefix );
     }
 
     /**
@@ -245,13 +244,11 @@ abstract class EloquentController extends Controller
      */
     public static function route_prefix(): ?string
     {
-        $class = static::class;
-
-        if( $class::$route_prefix ) {
-            return $class::$route_prefix;
+        if( static::$route_prefix ) {
+            return static::$route_prefix;
         }
 
-        return Str::kebab( substr( class_basename( $class ), 0, -10 ) );
+        return Str::kebab( substr( class_basename( static::class ), 0, -10 ) );
     }
 
     /**
@@ -442,7 +439,7 @@ abstract class EloquentController extends Controller
      *
      * @param int $id ID of the object to edit
      *
-     * @return view
+     * @return View
      *
      * @throws GeneralException
      */

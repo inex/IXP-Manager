@@ -147,7 +147,7 @@ class FileController extends Controller
      *
      * @throws AuthorizationException
      */
-    public function upload( Request $r, Customer $cust ): view
+    public function upload( Request $r, Customer $cust ): View
     {
         $this->authorize( 'create', DocstoreCustomerFile::class );
 

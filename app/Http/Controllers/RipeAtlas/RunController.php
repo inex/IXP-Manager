@@ -143,8 +143,8 @@ class RunController extends Eloquent2Frontend
     protected static function additionalRoutes( string $route_prefix ): void
     {
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::get( 'add-step-2',                   'RipeAtlas\RunController@addStep2'      )->name( $route_prefix . '@add-step-2'    );
-            Route::put( 'run/complete/{atlasrun}',      'RipeAtlas\RunController@completeRun'   )->name( $route_prefix . '@complete-run'  );
+            Route::get( 'add-step-2',                   [self::class, 'addStep2']      )->name( $route_prefix . '@add-step-2'    );
+            Route::put( 'run/complete/{atlasrun}',      [self::class, 'completeRun']   )->name( $route_prefix . '@complete-run'  );
         });
     }
 

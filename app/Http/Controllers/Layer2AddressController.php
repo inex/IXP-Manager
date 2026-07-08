@@ -142,7 +142,7 @@ class Layer2AddressController extends EloquentController
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
         Route::group( [ 'prefix' => ( static::$is_admin_route ? 'admin/' : '' ) . $route_prefix ], function() use ( $route_prefix ) {
-            Route::get(  'vlan-interface/{vli}', 'Layer2AddressController@forVlanInterface' )->name( $route_prefix . '@forVlanInterface' );
+            Route::get(  'vlan-interface/{vli}', [self::class, 'forVlanInterface'] )->name( $route_prefix . '@forVlanInterface' );
         });
     }
 

@@ -134,7 +134,7 @@ class UserRememberTokenController extends EloquentController
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
         Route::group( [  'prefix' => $route_prefix ], static function() use ( $route_prefix ) {
-            Route::delete(  'delete',   'User\UserRememberTokenController@delete' )->name( $route_prefix."@delete" );
+            Route::delete(  'delete',   [self::class, 'delete'] )->name( $route_prefix."@delete" );
         });
     }
 

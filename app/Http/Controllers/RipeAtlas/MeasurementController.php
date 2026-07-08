@@ -182,10 +182,10 @@ class MeasurementController extends Eloquent2Frontend
     protected static function additionalRoutes( string $route_prefix ): void
     {
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::get( 'matrix/{atlasRun}',            'RipeAtlas\MeasurementController@matrix'                )->name( $route_prefix . '@matrix'              );
-            Route::post('run/{atlasrun}',               'RipeAtlas\MeasurementController@runMeasurements'       )->name( $route_prefix . '@run-measurements'    );
-            Route::put( 'update/{atlasrun}',            'RipeAtlas\MeasurementController@updateMeasurements'    )->name( $route_prefix . '@update-measurements' );
-            Route::put( 'stop-measurements/{atlasrun}', 'RipeAtlas\MeasurementController@stopMeasurements'      )->name( $route_prefix . '@stop-measurements'   );
+            Route::get( 'matrix/{atlasRun}',            [self::class, 'matrix']                )->name( $route_prefix . '@matrix'              );
+            Route::post('run/{atlasrun}',               [self::class, 'runMeasurements']       )->name( $route_prefix . '@run-measurements'    );
+            Route::put( 'update/{atlasrun}',            [self::class, 'updateMeasurements']    )->name( $route_prefix . '@update-measurements' );
+            Route::put( 'stop-measurements/{atlasrun}', [self::class, 'stopMeasurements']      )->name( $route_prefix . '@stop-measurements'   );
         });
     }
 
