@@ -172,7 +172,10 @@ class DotEnvParser
         // check for duplicate keys
         $keys = [];
         foreach( $this->settings as $setting ) {
-            if( $setting['key'] !== null && isset( $keys[ $setting['key'] ] ) ) {
+            if( $setting['key'] === null ) {
+                continue;
+            }
+            if(isset( $keys[ $setting['key'] ] ) ) {
                 throw new DotEnvParserException( "Cannot parse .env - at least two variables have the same name: " . $setting['key'] );
             }
             $keys[ $setting['key'] ] = true;
