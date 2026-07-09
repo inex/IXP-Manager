@@ -66,6 +66,7 @@ class As112Validator implements Validator
 
     /**
      * Find any Vlans, on ipv4 or ipv6, which are not quarantine Vlan's, that don't have an AS112 router
+     * VLAN's aren't directly marked as quarantine so we look for routers which are marked quarantine.
      * @return Collection
      */
     private function findVlansAndProtocolsMissingAs112Router(): Collection
@@ -93,5 +94,5 @@ class As112Validator implements Validator
                     ->where('routers.quarantine', 0);
             })
             ->get();
-}
+    }
 }
