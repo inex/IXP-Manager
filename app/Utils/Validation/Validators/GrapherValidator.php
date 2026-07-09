@@ -130,10 +130,17 @@ class GrapherValidator implements Validator
             }
         }
 
+        $publicMemberGraphs = [];
         foreach ($memberGraphs as $graphType) {
             if (!in_array(config('grapher.access.' . $graphType), $memberAllowedOptions)) {
                 $backend->error("Invalid access level for $graphType graph " . config('grapher.access.' . $graphType));
+            } else if (config('grapher.access.' . $graphType) === User::AUTH_PUBLIC) {
+                $publicMemberGraphs[] = $graphType;
             }
+        }
+
+        if (count($publicMemberGraphs) > 0) {
+            $backend->warning("Member " . implode(", ", $publicMemberGraphs) . " graphs configured with public access - is this intentional?");
         }
     }
 
