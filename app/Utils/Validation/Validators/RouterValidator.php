@@ -24,11 +24,9 @@ declare(strict_types=1);
 
 namespace IXP\Utils\Validation\Validators;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Collection as SupportCollection;
+use Carbon\Carbon;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
-use IXP\Models\Infrastructure;
 use IXP\Models\Router;
 use IXP\Models\Vlan;
 
@@ -79,6 +77,28 @@ class RouterValidator implements Validator
             } else if (!is_string(config('ixp.rpki.rtr1.host')) || !is_string(config('ixp.rpki.rtr2.host'))) {
                 $backend->warning("A second RPKI instance is recommended for redundancy.");
             }
+        }
+
+        $needsLookingGlass = [];
+        foreach (Router::all() as $router) {
+            // exclude quarantine?
+            if (!$router->quarantine) {
+                if ($router->api_type === null || $router->api_type == 0) {
+                    $needsLookingGlass[] = $router->handle;
+                } else if ($router->api === null) {
+                    $backend->error("Router " . $router->handle . " has Looking Glass API type configured, but API endpoint is empty");
+                }
+
+                if ($router->updated_at === null) {
+                    // should this be a single suggest?
+                    $backend->warning("Router " . $router->handle . " has not been updated - are you using the router configuration API?");
+                } else if (Carbon::now()->diffInHours($router->updated_at) > 24 ) {
+                    $backend->error("Router " . $router->handle . " has not updated for over 24 hours! Is this out of date?");
+                }
+            }
+        }
+        if (count($needsLookingGlass) > 0) {
+            $backend->warning("We recommend configuring Looking Glass on all routers - some found without: " . implode(", ", $needsLookingGlass));
         }
     }
 }
