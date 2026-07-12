@@ -15,7 +15,7 @@ class CreateAtlasMeasurements extends Migration
     {
         Schema::create('atlas_measurements', function (Blueprint $table) {
             $table->increments('id')->unsigned();
-            $table->integer('run_id' );
+            $table->integer('run_id' )->unsigned();
             $table->integer('cust_source' )->nullable();
             $table->integer('cust_dest' )->nullable();
             $table->integer('atlas_id' )->nullable();

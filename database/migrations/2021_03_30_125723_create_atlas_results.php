@@ -15,7 +15,7 @@ class CreateAtlasResults extends Migration
     {
         Schema::create('atlas_results', function (Blueprint $table) {
             $table->increments('id')->unsigned();
-            $table->integer('measurement_id' )->nullable()->unique();
+            $table->integer('measurement_id' )->nullable()->unsigned()->unique();
             $table->string('routing', 255)->nullable();
             $table->longText('path' )->nullable();
             $table->timestamps();
