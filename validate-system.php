@@ -246,33 +246,23 @@ function doMinimumPhpVersionCheck( string $minVersion, string $recommendedPrefix
     $results = [];
 
     $version = phpversion();
-    $results[] = new SoftwareVersionCheckResult( "PHP", $version, ResultStatus::OK, [ "PHP version: $version" ] );
-
-    if ( version_compare( $version, $minVersion, '>=' ) && ($maxVersion === null || version_compare($version, $maxVersion, '>=')) ) {
-        $results[] = new CheckResult( ResultStatus::OK, [ "Running a supported PHP version. " . (str_starts_with( $version, $recommendedPrefix ) ? "Version is a recommended version" : "") ] );
-    } else {
-        if ( version_compare( $version, $minVersion, '<' ) ) {
-            $results[] = new CheckResult( ResultStatus::ERROR, [ "PHP version $minVersion or higher required" ] );
-        }
-        if ($maxVersion !== null && version_compare( $version, $maxVersion, '>')) {
-            $results[] = new CheckResult( ResultStatus::ERROR, [ "PHP version exceeds max supported version " . $maxVersion ] );
-        }
-    }
-    if ( !str_starts_with( $version, $recommendedPrefix ) ) {
-        $results[] = new CheckResult( ResultStatus::WARNING, [ "Not running a recommended PHP version." ] );
+    $results[] = new SoftwareVersion('PHP', $version);
+    if ( version_compare( $version, $minVersion, '<' ) ) {
+        $results[] = new CheckResult( ResultStatus::ERROR, [ "PHP version " . $minVersion . " or higher required - running " . $version ] );
+    } else if ($maxVersion !== null && version_compare( $version, $maxVersion, '>')) {
+        $results[] = new CheckResult( ResultStatus::ERROR, [ "PHP version exceeds max supported version " . $maxVersion ] );
+    } else if ( !str_starts_with( $version, $recommendedPrefix ) ) {
+        $results[] = new CheckResult( ResultStatus::WARNING, [ "Not running a recommended PHP version - running " . $version ] );
     }
 
-    if (ini_get("allow_url_fopen") == 1) {
-        $results[] = new CheckResult( ResultStatus::OK, [ "allow_url_fopen is enabled" ] );
-    } else {
-        $results[] = new CheckResult( ResultStatus::WARNING, [ "allow_url_fopen is disabled, this may impact some features" ] );
-    }
+//    if (ini_get("allow_url_fopen") == 1) {
+//        $results[] = new CheckResult( ResultStatus::OK, [ "allow_url_fopen is enabled" ] );
+//    } else {
+//        $results[] = new CheckResult( ResultStatus::WARNING, [ "allow_url_fopen is disabled, this may impact some features" ] );
+//    }
 
     if ( !extension_loaded('pdo_mysql') ) {
         $results[] = new CheckResult( ResultStatus::ERROR, [ 'PDO MySQL extension is not installed' ] );
-    } else {
-        $version = phpversion( 'pdo_mysql' ) ?? 'unknown';
-        $results[] =  new SoftwareVersionCheckResult( "pdo_mysql", $version, ResultStatus::OK, [ 'PDO MySQL extension version: ' . $version ] );
     }
 
     return $results;
@@ -280,10 +270,9 @@ function doMinimumPhpVersionCheck( string $minVersion, string $recommendedPrefix
 
 function doComposerCheck(): array
 {
+    $results = [];
     if ( !file_exists( "vendor/autoload.php" ) ) {
         $results[] = new CheckResult( ResultStatus::ERROR, ['composer install has not been run'] );
-    } else {
-        $results[] = new CheckResult( ResultStatus::OK, [ 'composer has been run' ] );
     }
 
     return $results;
@@ -295,33 +284,15 @@ function doEnvFileChecks(): array
     if ( !file_exists(".env") ) {
         $results[] = new CheckResult( ResultStatus::ERROR, [ '.env file does not exist' ] );
         return $results;
-    } else {
-        $results[] = new CheckResult( ResultStatus::OK, [ '.env file exists' ] );
     }
 
     if ( ( $parseEnv = loadEnv(".env", $errorMessage ) ) === false ) {
         $results[] = new CheckResult( ResultStatus::ERROR, [ $errorMessage ] );
         return $results;
-    } else {
-        $results[] = new CheckResult( ResultStatus::OK, [ '.env file passed basic checks' ] );
     }
 
     if ( !array_key_exists('APP_KEY', $parseEnv) ) {
         $results[] = new CheckResult( ResultStatus::ERROR, [ 'APP_KEY is not set in .env' ] );
-    } else {
-        $results[] = new CheckResult( ResultStatus::OK, [ 'APP_KEY is set in .env' ] );
-    }
-
-    if ( array_key_exists( 'APP_DEBUG', $parseEnv ) && parseBooleanEnvVar( $parseEnv['APP_DEBUG'] ) === true ) {
-        $results[] = new CheckResult( ResultStatus::WARNING, [ 'APP_DEBUG is set to true' ] );
-    } else {
-        $results[] = new CheckResult( ResultStatus::OK, [ 'APP_DEBUG is not set to true' ] );
-    }
-
-    if ( array_key_exists( 'APP_ENV', $parseEnv ) && $parseEnv['APP_ENV'] !== 'production' ) {
-        $results[] = new CheckResult( ResultStatus::WARNING, [ 'APP_ENV is not set to production' ] );
-    } else {
-        $results[] = new CheckResult( ResultStatus::OK, [ 'APP_ENV is set to production' ] );
     }
 
     return $results;
@@ -371,7 +342,6 @@ function doMySqlCheck(string $minVersion, string $recommendedPrefix, ?string $ma
                 \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
                 \PDO::ATTR_EMULATE_PREPARES   => false,
         ] );
-        $results[] = new CheckResult( ResultStatus::OK, [ "Connected to MySQL" ] );
     } catch (\PDOException $e) {
         return new CheckResult( ResultStatus::ERROR, [ "Connection failed: " . $e->getMessage() ] );
     }
@@ -379,31 +349,24 @@ function doMySqlCheck(string $minVersion, string $recommendedPrefix, ?string $ma
     // Determine MySQL server version
     try {
         $version = $pdo->query( "SELECT VERSION() as version" )->fetchColumn();
-        $results[] = new SoftwareVersionCheckResult( "MySQL", $version, ResultStatus::OK, [ "MySQL version: " . $version ] );
     } catch (\PDOException $e) {
         return new CheckResult( ResultStatus::ERROR, [ "Failed to determine server version: " . $e->getMessage() ] );
     }
 
     // Min/Max/Recommended MySQL server checks:
 
-    if ( version_compare( $version, $minVersion, '>=' ) && ($maxVersion === null || version_compare($version, $maxVersion, '>=')) ) {
-        $results[] = new CheckResult( ResultStatus::OK, [ "Running a supported MySQL version. " . (str_starts_with( $version, $recommendedPrefix ) ? "Version is a recommended version" : "") ] );
-    } else {
-        if ( version_compare( $version, $minVersion, '<' ) ) {
-            $results[] = new CheckResult( ResultStatus::ERROR, [ "MySQL version $minVersion or higher required" ] );
-        }
-        if ($maxVersion !== null && version_compare( $version, $maxVersion, '>')) {
-            $results[] = new CheckResult( ResultStatus::ERROR, [ "MySQL version exceeds max supported version " . $maxVersion ] );
-        }
-    }
-    if ( !str_starts_with( $version, $recommendedPrefix ) ) {
+    if ( version_compare( $version, $minVersion, '<' ) ) {
+        $results[] = new CheckResult( ResultStatus::ERROR, [ "MySQL version $minVersion or higher required" ] );
+    } else if ($maxVersion !== null && version_compare( $version, $maxVersion, '>')) {
+        $results[] = new CheckResult( ResultStatus::ERROR, [ "MySQL version exceeds max supported version " . $maxVersion ] );
+    } else if ( !str_starts_with( $version, $recommendedPrefix ) ) {
         $results[] = new CheckResult( ResultStatus::WARNING, [ "Not running a recommended MySQL version." ] );
     }
 
     // What schema/migration are we running?
     try {
         $schemaVersion = $pdo->query( "SELECT migration FROM migrations ORDER BY id DESC LIMIT 1" )->fetchColumn();
-        $results[] = new SoftwareVersionCheckResult( "DB Schema", $schemaVersion, ResultStatus::INFO, [ "Running schema: " . $schemaVersion ] );
+        $results[] = new SoftwareVersion( "DB Schema", $schemaVersion );
     } catch (\PDOException $e) {
         $results[] = new CheckResult( ResultStatus::ERROR, [ "failed to determine schema version: " . $e->getMessage() ] );
     }
@@ -417,20 +380,14 @@ function doLaravelRequiredExtensionChecks(array $requiredByLaravel): array
 
     // Check that required extensions are installed
     $missingExtensions = [];
-    $presentExtensions = [];
     foreach ( $requiredByLaravel as $extension ) {
         if ( !extension_loaded( $extension ) ) {
             $missingExtensions[] = $extension;
-        } else {
-            $presentExtensions[] = $extension;
         }
     }
 
     if ( count( $missingExtensions ) > 0 ) {
         $results[] = new CheckResult( ResultStatus::WARNING, [ 'Missing required PHP extensions: ' . implode(', ', $missingExtensions) ] );
-    }
-    if ( count( $presentExtensions ) > 0 ) {
-        $results[] = new CheckResult( ResultStatus::OK, [ "Required extensions found: " . implode(', ', $presentExtensions) ] );
     }
 
     return $results;
@@ -448,7 +405,7 @@ function doIxpManagerReleaseCheck(string $localVersion): array
     $results = [];
 
     // Include the current IXP Manager version
-    $results[] = new SoftwareVersionCheckResult( "IXP-Manager", APPLICATION_VERSION, ResultStatus::INFO, [ "IXP Manager " . APPLICATION_VERSION . " is installed" ] );
+    $results[] = new SoftwareVersion( "IXP-Manager", APPLICATION_VERSION );
 
     // Lookup tags. Use file_get_contents with curl fallback
     if ( ini_get( 'allow_url_fopen' ) == 1 ) {
@@ -511,8 +468,6 @@ function doIxpManagerReleaseCheck(string $localVersion): array
     $tags = json_decode( $tagsJson );
     if ( version_compare( $localVersion, ltrim( $tags[0]->name, "v" ), '<' ) ) {
         $results[] = new CheckResult( ResultStatus::WARNING, [ "A newer version of IXP-Manager is available: " . $tags[0]->name ] );
-    } else if ( version_compare( $localVersion, ltrim( $tags[0]->name, "v" ), '=' ) ) {
-        $results[] = new CheckResult(ResultStatus::OK, [ "Running latest version of IXP-Manager" ] );
     }
 
     return $results;
@@ -520,8 +475,8 @@ function doIxpManagerReleaseCheck(string $localVersion): array
 
 class BasicValidation
 {
-    /** @var CheckResultInterface[] */
-    public private(set) array $results = [];
+    /** @var CheckResult[]|SoftwareVersion[] */
+    private(set) array $results = [];
 
     public function __construct(public readonly string $name, private \Closure $callable, private ?array $params = null) {}
 
@@ -530,7 +485,7 @@ class BasicValidation
         $results = call_user_func_array($this->callable, $this->params ?? []);
 
         // can return a single result, or an array of results
-        if ($results instanceof CheckResultInterface) {
+        if ($results instanceof CheckResult) {
             $results = [$results];
         }
         $this->results = $results;
@@ -538,7 +493,7 @@ class BasicValidation
 
     public function hasErrors(): bool
     {
-        return array_any( $this->results, fn( $result ) => $result->status === ResultStatus::ERROR );
+        return array_any( $this->results, fn( $result ) => $result instanceof CheckResult && $result->status === ResultStatus::ERROR );
     }
 }
 
@@ -550,26 +505,15 @@ enum ResultStatus
     case ERROR;
 }
 
-interface CheckResultInterface
-{
-    public ResultStatus $status { get; }
-    public array $messages      { get; }
-}
 
-interface SoftwareVersionCheckResultInterface
-{
-    public string $software { get; }
-    public string $version  { get; }
-}
-
-readonly class CheckResult implements CheckResultInterface
+readonly class CheckResult
 {
     public function __construct( public ResultStatus $status, public array $messages = []) {}
 }
 
-readonly class SoftwareVersionCheckResult implements CheckResultInterface, SoftwareVersionCheckResultInterface
+readonly class SoftwareVersion
 {
-    public function __construct( public string $software, public string $version, public ResultStatus $status, public array $messages = []) {}
+    public function __construct( public string $software, public string $version) {}
 }
 
 
@@ -592,13 +536,16 @@ $tasks[] = new BasicValidation( 'Laravel Required Extensions', doLaravelRequired
 $tasks[] = new BasicValidation( 'IXP Manager', doIxpManagerReleaseCheck(...), [ APPLICATION_VERSION ] );
 
 $softwareVersionResults = [];
+$checkResults = [];
 
 $haveErrors = false;
 foreach ( $tasks as $task ) {
     $task->run();
     foreach ( $task->results as $taskResult ) {
-        if ( $taskResult instanceof SoftwareVersionCheckResultInterface ) {
+        if ( $taskResult instanceof SoftwareVersion ) {
             $softwareVersionResults[$taskResult->software] = $taskResult->version;
+        } else {
+            $checkResults[$task->name][] = $taskResult;
         }
     }
     $haveErrors = $haveErrors || $task->hasErrors();
@@ -610,10 +557,13 @@ foreach ( $softwareVersionResults as $software => $result ) {
 }
 
 echo "\n";
-echo "Checks:\n";
-foreach ( $tasks as $task ) {
-    echo "task: " . $task->name . "\n";
-    foreach ( $task->results as $result ) {
+echo "warnings:\n";
+foreach ( $checkResults as $taskName => $taskResults ) {
+    if (count($taskResults) === 0) {
+        continue;
+    }
+    echo "task: " . $taskName . "\n";
+    foreach ( $taskResults as $result ) {
         echo " * " . $result->status->name . ": " . implode("\n * ", $result->messages) . "\n";
     }
     echo "\n";
@@ -627,5 +577,5 @@ if ( $haveErrors ) {
 
 echo "No errors detected during basic validations\n";
 
-echo shell_exec(__DIR__ . "/artisan validator:run");
+echo shell_exec(__DIR__ . "/artisan validator:run --simple-output");
 
