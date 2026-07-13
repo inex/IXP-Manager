@@ -79,14 +79,17 @@ System Validation
     </template>
 
     <template id="result-template">
-        <!-- info-line attr data-result-type -->
+        <!-- validation-result attr data-result-type -->
         <!-- result-badge  -->
-        <div class="info-line tw-text-xs tw-border-b-1 tw-h-6 tw-leading-6 tw-text-gray-900 tw-pl-4 tw-mt-2 tw-flex tw-justify-start tw-align-middle" data-result-type="">
+        <div class="validation-result tw-relative tw-h-fit !tw-important tw-text-xs tw-border-b-1 tw-leading-6 tw-text-gray-900 tw-pl-4 tw-mt-2 tw-flex tw-justify-start tw-align-middle" data-result-type="">
             <div class="result-badge badgeDot tw-rounded-full tw-border-2 tw-w-5 tw-h-5 tw-mr-1" title=""></div>
             <div class="result-type tw-min-w-16 tw-ml-1"></div>
-            <div class="info-content"><div class="info-extra-content">
+            <!-- tw-overflow-hidden tw-h-[1.2rem] tw-leading-[1.2rem] -->
+            <div class="validation-content-container tw-relative tw-w-[calc(100%-6.5rem)]  tw-border tw-border-transparent tw-text-[0.9rem] tw-transition-[height] tw-duration-250">
+                <span class="validation-content"></span>
+                <div class="validation-extra-content tw-hidden tw-relative tw-font-size-xs">
 <!--                    --><?php //= $r->narrative ? $t->ee( $r->narrative ) : ( $r->narrativeHtml ?: '' ) ?><!--</div>-->
-            </div>
+                </div>
             </div>
         </div>
     </template>
@@ -205,13 +208,13 @@ System Validation
         function createValidationResultFragment(resultData) {
             let $resultClone = $( $('#result-template').prop('content') ).clone();
 
-            $resultClone.find('.info-line').attr("data-result-type", resultData.type);
+            $resultClone.find('.validation-result').attr("data-result-type", resultData.type);
 
             $resultClone.find('.result-badge').attr("title", resultData.message);
             $resultClone.find('.result-badge').addClass(resultTypeBadgeClass[resultData.type]);
 
             $resultClone.find('.result-type').text(resultData.type.toUpperCase());
-            $resultClone.find('.info-content').text(resultData.message);
+            $resultClone.find('.validation-content').text(resultData.message);
             $resultClone.attr('data-result-type', resultData.type);
 
             return $resultClone;
@@ -242,11 +245,16 @@ System Validation
             let status = $(this).data("target");
             let disable = $(this).hasClass('tw-opacity-40');
 
-            $(".info-line[data-result-type='" + status + "']").each( function() {
+            $(".validation-result[data-result-type='" + status + "']").each( function() {
                 $(this).removeClass('tw-hidden');
                 if(disable) { $(this).addClass('tw-hidden'); }
             })
         })
     }
+
+    $(document).on('click','.validation-result', function() {
+        console.log("running")
+        $(this).find('.validation-extra-content').toggleClass('tw-hidden');
+    })
 </script>
 <?php $this->append() ?>
