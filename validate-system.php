@@ -3,6 +3,156 @@
 
 declare(strict_types=1);
 
+
+/**
+ * This function prints a pre-populated GitHub Issue Template.
+ */
+function printIssueAssistanceInfo(): void {
+    // OS Detection
+    switch (PHP_OS_FAMILY) {
+        case 'BSD':
+            $osInfo = file_get_contents('/etc/os-release');
+            if ($osInfo === false) {
+                exec("uname -mrs", $uname, $exitCode);
+                if ($exitCode === 0) {
+                    $osInfo = implode("\n", $uname);
+                }
+                unset($uname, $exitCode);
+            }
+            break;
+        case 'Linux':
+            $osInfo = file_get_contents('/etc/os-release');
+            if ($osInfo === false) {
+                $osInfo = file_get_contents('/etc/lsb-release');
+            }
+            break;
+        case 'Darwin':
+            if ($pfile = file_get_contents('/System/Library/CoreServices/SystemVersion.plist')) {
+                // The regex pattern
+                $pattern = '/<key>ProductUserVisibleVersion<\/key>\s*<string>([^<]+)<\/string>/';
+                if (preg_match($pattern, $pfile, $matches)) {
+                    // $matches[1] contains the value inside the capture group
+                    $osInfo = "macOS " . $matches[1];
+                }
+            }
+            break;
+        default:
+            $osInfo = false;
+            break;
+    }
+
+    // IXP Manager version
+    $versionInfo = false;
+    if ($versionFile = file_get_contents(__DIR__ . "/version.php")) {
+        // Regex targeting both constants with named capture groups
+        $pattern = "/define\s*\(\s*['\"]APPLICATION_VERSION['\"]\s*,\s*['\"](?<version>[^'\"]+)['\"]\s*\).*?define\s*\(\s*['\"]APPLICATION_VERDATE['\"]\s*,\s*['\"](?<verdate>[^'\"]+)['\"]\s*\)/s";
+
+        if (preg_match($pattern, $versionFile, $matches)) {
+            $version = $matches['version'];
+            $verdate = $matches['verdate'];
+
+            $versionInfo =
+                "APPLICATION_VERSION: " . $version . "\n" .
+                "APPLICATION_VERDATE: " . $verdate . "\n";
+        }
+    }
+
+    // PHP Environment
+    $environmentInfoPhp = false;
+    exec("php -v", $output, $exitCode);
+    if ($exitCode === 0) {
+        $environmentInfoPhp = implode("\n", $output) . "\n\n";
+    }
+
+    $exitCode = null;
+    $output = null;
+    if (PHP_OS_FAMILY === "BSD") {
+        exec("pkg list | grep php", $output, $exitCode);
+    } if (PHP_OS_FAMILY === "Linux") {
+        if (!empty(shell_exec("which dpkg"))) {
+            exec("dpkg -l | grep php", $output, $exitCode);
+        } elseif (!empty(shell_exec("which yum"))) {
+            exec("yum list installed | grep php", $output, $exitCode);
+        } elseif (!empty(shell_exec("which dnf"))) {
+            exec("dnf list installed | grep php", $output, $exitCode);
+        }
+    }
+
+    if ($exitCode === 0) {
+        $environmentInfoPackages = implode("\n", $output);
+    } else {
+        $environmentInfoPackages = "COULDN'T CALL PACKAGE MANAGER - please provide the list of PHP packages installed on your system.";
+    }
+    unset($output, $exitCode);
+
+    // Configuration: Non-critical environment variables.
+    $envInfo = false;
+    if (PHP_OS_FAMILY === "Linux" || PHP_OS_FAMILY === "BSD" || PHP_OS_FAMILY === "Darwin") {
+        exec("grep -Ev '(^#|^\s*$|^DB_|^APP_KEY|^HELPDESK|^IDENTITY|^MAIL_|^IXP_API_RIR_PASSWORD|^IXP_API_PEERING_DB_)' .env", $output, $exitCode);
+        if ($exitCode === 0) {
+            $envInfo = implode("\n", $output);
+        }
+        unset($output, $exitCode);
+    }
+
+    echo "
+##### ISSUE TYPE
+
+Bug Report
+
+##### OS
+<!---
+Mention the OS you are running IXP Manager on (including Linux variant if relevant)
+-->
+
+" . $osInfo . "
+
+##### VERSION
+
+<!--- Paste verbatim the output between quotes below. NB: run this command
+from IXP Manager's root directory (e.g. /srv/ixpmanager)
+
+cat version.php | grep APPLICATION
+-->
+
+```
+$versionInfo
+```
+
+##### ENVIRONMENT
+
+<!--- Paste verbatim the output from the following commands between quotes below
+php -v
+dpkg -l | grep php   (or equivalent for your OS - list of php packages installed)
+-->
+
+```
+" .
+            $environmentInfoPhp.
+            $environmentInfoPackages.
+"
+
+```
+
+<!--- You can also use gist.github.com links for larger files -->
+
+##### CONFIGURATION
+
+<!--- Paste the output of the following between quotes below:
+(run from IXP Manager's root directory (e.g. /srv/ixpmanager)
+NB: sanity check the output to make sure you are happy you are not leaking any security information!
+
+cat .env | egrep -v '(^#|^\s*$|^DB_|^APP_KEY|^HELPDESK|^IDENTITY|^MAIL_|^IXP_API_RIR_PASSWORD|^IXP_API_PEERING_DB_)'
+-->
+
+```
+" . $envInfo . "
+```
+
+<!--- You can also use gist.github.com links for larger files -->
+";
+}
+
 /**
  * Discourage running this script as root.
  */
@@ -427,6 +577,11 @@ requireConfirmationIfRunningRoot();
 
 include "version.php";
 $manifest = APPLICATION_MANIFEST;
+
+if (array_any($argv, fn($v) => $v === '--github-issue')) {
+    printIssueAssistanceInfo();
+    return;
+}
 
 $tasks = [];
 $tasks[] = new BasicValidation( 'PHP', doMinimumPhpVersionCheck(...), [ $manifest['php_version']['min'], $manifest['php_version']['recommended'], $manifest['php_version']['max'] ] );
