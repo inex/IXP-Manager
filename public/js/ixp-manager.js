@@ -197,15 +197,16 @@ function ixpAsnumber( asNumber ) {
 
     $.ajax(url)
         .done(function (data) {
-            let content = '<div class="asn-table"><pre class="font-mono text-xs">' + htmlEntities(data) + '</pre>';
+            const content = $('<div class="asn-table"><pre class="font-mono text-xs"></pre></div>');
+            content.find('pre').text(data);
 
-            $('.bootbox-body').html( content ).scrollTop();
+            $('.bootbox-body').html(content).scrollTop(0);
         })
         .fail(function (resp) {
             if (resp.status === 404) {
-                $('.bootbox-body').text( "No information found for the requested AS" ).scrollTop();
+                $('.bootbox-body').text( "No information found for the requested AS" ).scrollTop(0);
             } else {
-                $('.bootbox-body').text( `Error running ajax query for ${url}` ).scrollTop();
+                $('.bootbox-body').text( `Error running ajax query for the requested AS` ).scrollTop(0);
                 throw `Error running ajax query for ${url}`;
             }
         });
@@ -229,9 +230,7 @@ function ixpWhoisPrefix( prefix, subnet = true ) {
         url = encodeURI(WHOIS_PREFIX_URL + "/" + parts[0] + "/" + parts[1] );
     }
 
-    let content = `<div class="prefix-table"><pre class="font-mono text-xs">`;
-    
-    let bb = bootbox.dialog({
+    bootbox.dialog({
         message: '<div><p class="text-center"><i class="fa fa-spinner fa-spin text-5xl"></i></p></div>',
         size: "large",
         title: "Prefix Whois Lookup",
@@ -247,12 +246,12 @@ function ixpWhoisPrefix( prefix, subnet = true ) {
         }
     });
 
-
     $.ajax(url)
         .done(function (data) {
-            content += data + '</pre>';
+            const content = $('<div class="prefix-table"><pre class="font-mono text-xs"></pre></div>');
+            content.find('pre').text(data);
 
-            $('.bootbox-body').html( content ).scrollTop();
+            $('.bootbox-body').html(content).scrollTop(0);
         })
         .fail(function () {
             alert(`Error running ajax query for ${url}`);
