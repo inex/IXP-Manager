@@ -54,7 +54,7 @@ class RouterValidator implements Validator
     public function run( ValidationBackend $backend ): void
     {
         if (Router::where('type', Router::TYPE_ROUTE_SERVER)->count() === 0) {
-            $backend->warning("Did you know that IXP Manager can generate configuration for route servers?");
+            $backend->suggestion("Did you know that IXP Manager can generate configuration for route servers?");
         } else {
             $routeServersNoRpki = [];
             foreach (Vlan::all() as $vlan) {
@@ -73,7 +73,7 @@ class RouterValidator implements Validator
 
             if (!is_string(config('ixp.rpki.rtr1.host')) && !is_string(config('ixp.rpki.rtr1.host'))) {
                 // neither set..
-                $backend->warning("Did you know IXP-Manager supports RPKI for route server configuration?");
+                $backend->suggestion("Did you know IXP-Manager supports RPKI for route server configuration?");
             } else if (!is_string(config('ixp.rpki.rtr1.host')) || !is_string(config('ixp.rpki.rtr2.host'))) {
                 $backend->warning("A second RPKI instance is recommended for redundancy.");
             }

@@ -56,7 +56,7 @@ class As112Validator implements Validator
     public function run( ValidationBackend $backend ): void
     {
         if ( !config ( 'ixp.as112.ui_active' ) ) {
-            $backend->warning( "Did you know IXP-Manager can help you run an AS112 service?" );
+            $backend->suggestion( "Did you know IXP-Manager can help you run an AS112 service?" );
         } else {
             $backend->info("AS112 UI is active");
             foreach ($this->findVlansAndProtocolsMissingAs112Router() as $vlan) {

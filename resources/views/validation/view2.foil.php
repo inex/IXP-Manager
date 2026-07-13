@@ -93,9 +93,11 @@ System Validation
     let jobId = "<?= $t->ee( $t->jobId, "js" ); ?>";
 
     let resultTypeBadgeClass = {
-        'FAILURE': 'tw-border-red-600 tw-bg-red-600',
-        'ERROR': 'tw-border-red-400 tw-bg-red-400',
-        'OK': 'tw-border-teal-400 tw-bg-teal-400',
+        'ERROR': 'tw-border-red-600 tw-bg-red-600',
+        'WARNING': 'tw-border-orange-400 tw-bg-orange-400',
+        'SUGGEST': 'tw-border-yellow-300 tw-bg-yellow-300',
+        'INFO': 'tw-border-white-1000 tw-bg-white-1000',
+        'DEBUG': 'tw-border-gray-300 tw-bg-gray-300',
     };
 
     const $loadingSpinner = $('.loading-results-indicator');

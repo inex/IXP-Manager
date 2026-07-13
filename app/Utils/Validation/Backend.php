@@ -144,6 +144,11 @@ class Backend implements ValidationBackend, ValidationRunner
         $this->results[] = new Result($message, ResultType::Info);
     }
 
+    public function suggestion( string $message ): void
+    {
+        $this->results[] = new Result($message, ResultType::Suggestion);
+    }
+
     public function warning(string $message): void
     {
         $this->results[] = new Result($message, ResultType::Warning);

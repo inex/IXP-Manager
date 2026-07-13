@@ -31,6 +31,7 @@ enum ResultType: string
 {
     case Debug = 'DEBUG';
     case Info = 'INFO';
+    case Suggestion = 'SUGGEST';
     case Warning = 'WARNING';
     case Error = 'ERROR';
 }

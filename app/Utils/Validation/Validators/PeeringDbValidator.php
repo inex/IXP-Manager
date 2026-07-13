@@ -24,10 +24,8 @@ declare(strict_types=1);
 
 namespace IXP\Utils\Validation\Validators;
 
-use Illuminate\Http\Client\ConnectionException;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
-use IXP\Models\Infrastructure;
 use IXP\Services\PeeringDb;
 
 
@@ -63,7 +61,7 @@ class PeeringDbValidator implements Validator
     private function checkPeeringDbOauthIntegration( ValidationBackend $backend ): void
     {
         if (!config('auth.peeringdb.enabled')) {
-            $backend->warning("Did you know that IXP Manager supports login with PeeringDb?");
+            $backend->suggestion("Did you know that IXP Manager supports login with PeeringDb?");
         } else {
             $missingConfig = array_filter([ 'client_id', 'client_secret', 'redirect' ], fn( $field ) => config( "services.peeringdb." . $field ) === null );
             if (count($missingConfig) > 0) {
@@ -74,32 +72,34 @@ class PeeringDbValidator implements Validator
 
     private function checkPeeringDbApiIntegration( ValidationBackend $backend ): void
     {
+        // todo: refactor this - PeeringDB doesn't support Basic Auth..
         if (array_all(['ixp_api.peeringDB.username', 'ixp_api.peeringDB.password', 'ixp_api.peeringDB.api-key'], fn( $field ) => config( $field ) === null)) {
-            // have nothing setup.know IXP Manager
-            $backend->warning("Did you know you can integrate with PeeringDB to load network and facility information?");
-        } else {
-            if (config('ixp_api.peeringDB.api-key') != null) {
-                // no warning, happy with apikey usage
-                if (config('ixp_api.peeringDB.username') != null || config('ixp_api.peeringDB.password') != null) {
-                    $backend->warning("Your PeeringDB API key is configured, and PeeringDB no longer supports Basic Authentication. Remove the username and password from your configuration.");
-                }
-                $pdb = app(PeeringDb::class);
-                try {
-                    $pdb->getPeeringAsns();
-                    if ($pdb->status !== 200) {
-                        if ($pdb->status === 401) {
-                            $backend->error("Received 401 Not Authorized from PeeringDB. Your API Key may be invalid.");
-                        } else if ($pdb->error != null) {
-                            $backend->error("Error while performing PeeringDB API request (HTTP status " . $pdb->status . ") : " . $pdb->error);
-                        }
-                    }
-                } catch (\Exception $e) {
-                    $backend->error("Error performing PeeringDB test API call! (HTTP status " . $pdb->status . ") " . $e->getMessage());
-                    \Log::error($e);
-                }
-            } else if (config('ixp_api.peeringDB.username') != null || config('ixp_api.peeringDB.password') != null) {
-                $backend->error("PeeringDB no longer supports Basic Authentication. Remove the username and password from your configuration, and provide an API key instead.");
+            // have nothing setup
+            $backend->suggestion("Did you know you can integrate with PeeringDB to load network and facility information?");
+            return;
+        }
+
+        if (config('ixp_api.peeringDB.api-key') != null) {
+            // no warning, happy with apikey usage
+            if (config('ixp_api.peeringDB.username') != null || config('ixp_api.peeringDB.password') != null) {
+                $backend->warning("Your PeeringDB API key is configured, and PeeringDB no longer supports Basic Authentication. Remove the username and password from your configuration.");
             }
+            $pdb = app(PeeringDb::class);
+            try {
+                $pdb->getPeeringAsns();
+                if ($pdb->status !== 200) {
+                    if ($pdb->status === 401) {
+                        $backend->error("Received 401 Not Authorized from PeeringDB. Your API Key may be invalid.");
+                    } else if ($pdb->error != null) {
+                        $backend->error("Error while performing PeeringDB API request (HTTP status " . $pdb->status . ") : " . $pdb->error);
+                    }
+                }
+            } catch (\Exception $e) {
+                $backend->error("Error performing PeeringDB test API call! (HTTP status " . $pdb->status . ") " . $e->getMessage());
+                \Log::error($e);
+            }
+        } else if (config('ixp_api.peeringDB.username') != null || config('ixp_api.peeringDB.password') != null) {
+            $backend->error("PeeringDB no longer supports Basic Authentication. Remove the username and password from your configuration, and provide an API key instead.");
         }
     }
 }

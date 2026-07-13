@@ -45,6 +45,11 @@ interface ValidationBackend
     public function info( string $message): void;
 
     /**
+     * Report a suggestion to the user
+     */
+    public function suggestion( string $message): void;
+
+    /**
      * Report an warning condition detected during validation
      */
     public function warning(string $message): void;
