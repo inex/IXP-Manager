@@ -15,7 +15,13 @@ System Validation
         <i class="fa fa-spinner fa-spin tw-pt-2"></i> &nbsp;
         <span class="text-muted">Performing system validation checks.. &nbsp;&nbsp;</span>
     </span>
-
+    <div>
+        <span data-target="ERROR" class="resultStatusButton  hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-pink-50 tw-text-red-600 tw-ring-pink-700/10 tw-ring-1 tw-ring-inset">Error</span>
+        <span data-target="WARNING" class="resultStatusButton  hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-orange-50 -text-orange-500 tw-ring-orange-600/20 tw-ring-1 tw-ring-inset">Warning</span>
+        <span data-target="SUGGEST" class="resultStatusButton  hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-yellow-50 -text-yellow-300 tw-ring-yellow-600/20 tw-ring-1 tw-ring-inset">Suggest</span>
+        <span data-target="INFO" class="resultStatusButton   tw-opacity-40 hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-white-50 tw-text-grey-200 tw-ring-blue-700/10 tw-ring-1 tw-ring-inset">Info</span>
+        <span data-target="DEBUG" class="resultStatusButton  tw-opacity-40 hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-gray-50 tw-text-gray-600 tw-ring-gray-500/10 tw-ring-1 tw-ring-inset">Debug</span>
+    </div>
     <a class="btn btn-white" href="<?= route('validation@start' ) ?>">
         <span class="fa fa-repeat"></span>
     </a>
@@ -37,8 +43,8 @@ System Validation
         <!-- .software-name -->
         <!-- .software-version -->
         <div class="col-6 row">
-            <div class="col-6"><b class="software-name"></b> </div>
-            <div class="col-6 software-version"></div>
+            <div class="col-12"><b class="software-name"></b> </div>
+            <div class="col-12 software-version"></div>
         </div>
     </template>
 
@@ -152,6 +158,8 @@ System Validation
                         $container.append(validationFragment);
                     });
 
+                    toggleInformation();
+
                     if (taskData.complete) {
                         clearTimeout(refreshTimeout);
                         $loadingSpinner.remove();
@@ -217,5 +225,28 @@ System Validation
         }
     });
 
+    /**
+     * Enable/disable badges
+     */
+    $(document).on('click','.resultStatusButton',function() {
+        $(this).toggleClass('tw-opacity-40');
+        toggleInformation();
+    })
+
+    /**
+     * Regenerate diagnostics data show or hide based on badge buttons state
+     */
+    function toggleInformation() {
+        const badgeButtons = $('.resultStatusButton');
+        badgeButtons.each( function() {
+            let status = $(this).data("target");
+            let disable = $(this).hasClass('tw-opacity-40');
+
+            $(".info-line[data-result-type='" + status + "']").each( function() {
+                $(this).removeClass('tw-hidden');
+                if(disable) { $(this).addClass('tw-hidden'); }
+            })
+        })
+    }
 </script>
 <?php $this->append() ?>
