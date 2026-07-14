@@ -26,8 +26,6 @@ namespace Tests\Docstore\Controllers;
 use IXP\Models\User;
 use Storage;
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-
 use Illuminate\Http\UploadedFile;
 
 use IXP\Models\DocstoreFile;
@@ -640,9 +638,9 @@ class FileControllerTest extends TestCase
     {
         $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
-        $response = $this->get( route( 'docstore-file@info', [ 'file' => $file ] ) );
+        $response = $this->get( route( 'docstore-file-api@info', [ 'file' => $file ] ) );
 
-        $response->assertStatus( 302 ); // it's 403 if logged in but not superuser
+        $response->assertStatus( 401 ); // hits ApiAuthenticate middleware
     }
 
     /**
@@ -655,8 +653,8 @@ class FileControllerTest extends TestCase
         $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
         $response = $this->actingAs(  $this->getCustUser( 'hecustuser' ) )
-            ->get( route( 'docstore-file@info', [ 'file' => $file ] ) );
-        $response->assertStatus( 403 );
+            ->get( route( 'docstore-file-api@info', [ 'file' => $file ] ) );
+        $response->assertStatus( 403 ); // policy prevents non-superadmins from accessing file
     }
 
     /**
@@ -669,8 +667,8 @@ class FileControllerTest extends TestCase
         $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
         $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
-            ->get( route( 'docstore-file@info', [ 'file' => $file ] ) );
-        $response->assertStatus( 403 );
+            ->get( route( 'docstore-file-api@info', [ 'file' => $file ] ) );
+        $response->assertStatus( 403 );  // policy prevents non-superadmins from accessing file
     }
 
     /**
@@ -682,10 +680,14 @@ class FileControllerTest extends TestCase
     {
         $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
 
-        $response = $this->actingAs( $this->getSuperUser( 'travis' ) )
-            ->get( route( 'docstore-file@info', [ 'file' => $file ] ) );
+        $user = $this->getSuperUser( 'travis' );
+        $response = $this->actingAs( $user )
+            ->get( route( 'docstore-file-api@info', [ 'file' => $file ] ) );
         $response->assertStatus( 200 )
-            ->assertViewIs('docstore.file.info' );
+            ->assertJson( [
+                'file_name' => self::testInfo[ 'fileName2' ],
+                'created_by' => ['username' => $user->username, 'name' => $user->name],
+            ] );
     }
 
     /**

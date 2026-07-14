@@ -449,7 +449,12 @@
       <code><![CDATA[$r->nocwww]]></code>
     </UndefinedMagicPropertyFetch>
   </file>
-  <file src="app/Http/Controllers/Docstore/FileController.php">
+  <file src="app/Http/Controllers/Api/V4/Docstore/FileController.php">
+    <InvalidOperand>
+      <code><![CDATA[config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' )]]></code>
+    </InvalidOperand>
+  </file>
+  <file src="app/Http/Controllers/Api/V4/DocstoreCustomer/FileController.php">
     <InvalidOperand>
       <code><![CDATA[config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' )]]></code>
     </InvalidOperand>
@@ -458,9 +463,6 @@
     <InvalidArgument>
       <code><![CDATA[$file->customer->id]]></code>
     </InvalidArgument>
-    <InvalidOperand>
-      <code><![CDATA[config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' )]]></code>
-    </InvalidOperand>
   </file>
   <file src="app/Http/Controllers/FilteredPrefixesController.php">
     <MissingDocblockType>

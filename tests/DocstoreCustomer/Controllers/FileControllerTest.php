@@ -27,14 +27,9 @@ use Storage;
 
 
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-
 use Illuminate\Http\UploadedFile;
 
-use IXP\Models\{
-    DocstoreCustomerFile,
-    User
-};
+use IXP\Models\{DocstoreCustomerFile, User};
 
 use Tests\TestCase;
 
@@ -588,10 +583,10 @@ class FileControllerTest extends TestCase
     public function testInfoPublicUser(): void
     {
         $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
-
-        $response = $this->get( route( 'docstore-c-file@info', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) );
-        $response->assertStatus( 302 )
-            ->assertRedirect( route('login@showForm' ) );
+        $response = $this->get( route( 'docstore-c-file-api@info', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) );
+        // model binding happens before our authentication middleware and fails
+        // because of the global scope on DocstureCustomerFile that triggers ModelNotFound
+        $response->assertStatus( 404 );
     }
 
     /**
@@ -605,7 +600,9 @@ class FileControllerTest extends TestCase
 
         $user = $this->getCustUser( 'hecustuser' );
 
-        $response = $this->actingAs( $user )->get( route( 'docstore-c-file@info', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) );
+        // model binding happens before our authentication middleware and fails
+        // because of the global scope on DocstureCustomerFile that triggers ModelNotFound
+        $response = $this->actingAs( $user )->get( route( 'docstore-c-file-api@info', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) );
         $response->assertStatus( 404 );
     }
 
@@ -620,7 +617,7 @@ class FileControllerTest extends TestCase
 
         $user = $this->getCustAdminUser( 'hecustadmin' );
 
-        $response = $this->actingAs( $user )->get( route( 'docstore-c-file@info', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) );
+        $response = $this->actingAs( $user )->get( route( 'docstore-c-file-api@info', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) );
         $response->assertStatus( 403 );
     }
 
@@ -635,9 +632,13 @@ class FileControllerTest extends TestCase
 
         $user = $this->getSuperUser( 'travis' );
 
-        $response = $this->actingAs( $user )->get( route( 'docstore-c-file@info', [ 'cust' => self::testInfo[ 'customerId' ] ,'file' => $file ] ) );
+        $response = $this->actingAs( $user )->get( route( 'docstore-c-file-api@info', [ 'cust' => self::testInfo[ 'customerId' ] ,'file' => $file ] ) );
         $response->assertStatus( 200 )
-            ->assertViewIs('docstore-customer.file.info' );
+            ->assertJson( [
+                    'file_name' => self::testInfo[ 'fileName2' ],
+                    'created_by' => ['username' => $user->username, 'name' => $user->name],
+                    'customer' => $file->customer->name,
+            ] );
     }
 
     /**

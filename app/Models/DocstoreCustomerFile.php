@@ -130,8 +130,10 @@ class DocstoreCustomerFile extends Model
         parent::boot();
 
         static::addGlobalScope('privs', function ( Builder $builder ) {
+            // Needs to be user here, route model binding takes place very early in the
+            // request cycle and getUser is just a getter
             /** @var User $us */
-            $us = Auth::getUser();
+            $us = Auth::user();
 
             if( !Auth::check() ) {
                 // if public user make sure that no records is returned

@@ -115,29 +115,6 @@ class FileController extends Controller
     }
 
     /**
-     * Get information on a docstore customer file
-     *
-     * @param  DocstoreCustomerFile  $file
-     *
-     * @return mixed
-     *
-     * @throws AuthorizationException
-     */
-    public function info( DocstoreCustomerFile $file )
-    {
-        $this->authorize( 'info', $file );
-
-        return view( 'docstore-customer/file/info', [
-            'file'          => $file,
-            'size'          => Storage::disk( $file->disk )->size( $file->path ),
-            'last_modified' => Storage::disk( $file->disk )->lastModified( $file->path ),
-            'dspath'        => config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' ) . '/' . $file->path,
-            'created_by'    => User::find( $file->created_by ),
-            'created_at'    => $file->created_at,
-        ]);
-    }
-
-    /**
      * Upload a new docstore customer file
      *
      * @param  Request  $r
