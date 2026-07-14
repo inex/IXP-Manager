@@ -2,52 +2,21 @@
 
     $( document ).ready( function() {
 
-        /**
-         * Display in a readable way a json value
-         */
-        $( '.json-view' ).on( 'click', function( event ) {
-            event.preventDefault();
+        function showJsonModal(rawJson) {
+            let formattedJson;
 
-            let url, json;
-
-            if( $( this ).attr( "data-type" ) == 'DB' ) {
-                json = $( this ).attr( "data-value" );
-                let html = '<pre>' + JSON.stringify( JSON.parse( json ) , null, 2 ) + '</pre>';
-
-                callPopup( html );
-
-            } else {
-                url = $( this ).attr( "data-value" );
-
-                $.ajax( url )
-                    .done( function( data ) {
-                        json = data.response;
-
-                        let html = '<pre>' + JSON.stringify( JSON.parse( json ) , null, 2 ) + '</pre>';
-
-                        callPopup( html );
-
-                    })
-                    .fail( function(){
-                        bootbox.alert( "Error running ajax query for " + url );
-                        throw new Error( "Error running ajax query for " + url );
-                    })
-                    .always( function() {
-
-                    });
-
+            try {
+                formattedJson = JSON.stringify(JSON.parse(rawJson), null, 2);
+            } catch (e) {
+                // Fallback to raw string if parsing fails
+                formattedJson = rawJson;
             }
 
-
-
-
-        } );
-
-        function callPopup( html ) {
+            const content = $('<pre>').text(formattedJson);
 
             bootbox.dialog({
-                message: html,
-                size: 'large' ,
+                message: content,
+                size: 'large',
                 title: "View Json",
                 buttons: {
                     cancel: {
@@ -57,10 +26,34 @@
                             $('.bootbox.modal').modal('hide');
                             return false;
                         }
-                    },
+                    }
                 }
             });
-
         }
+
+        /**
+         * Display in a readable way a json value
+         */
+        $( '.json-view' ).on( 'click', function( event ) {
+            event.preventDefault();
+
+            const element = $(this);
+            const dataType = element.attr('data-type');
+            const dataValue = element.attr('data-value');
+
+            if( dataType === 'DB' ) {
+                // dataValue is the raw JSON to be displayed
+                showJsonModal(dataValue);
+            } else {
+                $.ajax( dataValue )
+                    .done( function( data ) {
+                        showJsonModal( data.response );
+                    })
+                    .fail( function() {
+                        bootbox.alert( "Error running ajax query for " + dataValue );
+                        throw new Error( "Error running ajax query for " + dataValue );
+                    });
+            }
+        } );
     });
 </script>
