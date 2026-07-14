@@ -63,7 +63,22 @@
 
             $.ajax(url)
                 .done(function (data) {
-                    $('.bootbox-body').html( data ).scrollTop();
+                    // Clone template for metadata, populate with API response
+                    const template = $('#file-metadata-template');
+                    const fragment = $(document.importNode(template[0].content, true));
+                    fragment.find('#meta-filename').text(data.file_name);
+                    if (data.created_by != null) {
+                        fragment.find('#meta-created-by').text(data.created_by.username + " (" + data.created_by.name + ")");
+                    } else {
+                        fragment.find('#meta-created-by').html(
+                            $('em').text('User no longer exists in database.')
+                        );
+                    }
+                    fragment.find('#meta-dspath').text(data.dspath);
+                    fragment.find('#meta-created-at').text(data.created_at);
+                    fragment.find('#meta-last-modified').text(data.last_modified);
+                    fragment.find('#meta-size').text(data.size);
+                    $('.bootbox-body').html( fragment ).scrollTop(0);
                 })
                 .fail(function () {
                     alert(`Error running ajax query for ${url}`);

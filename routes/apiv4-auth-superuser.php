@@ -139,6 +139,28 @@ Route::group( [ 'namespace' => 'Customer\Note', 'prefix' => 'customer-note' ], f
     Route::delete(  'delete/{cn}',                  'CustomerNotesController@delete'            )->name( 'customer-notes@delete');
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// CUSTOMER DOCUMENT STORE
+///
+if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ) {
+    Route::group( ['namespace' => 'DocstoreCustomer', 'prefix' => 'docstorec'], function() {
+        Route::get(    'file/info/{file}',    'FileController@info'          )->name( 'docstore-c-file-api@info'        );
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// DOCUMENT STORE
+///
+if( !config( 'ixp_fe.frontend.disabled.docstore' ) ) {
+    Route::group( ['namespace' => 'Docstore', 'prefix' => 'docstore'], function() {
+        Route::get(    'file/info/{file}',    'FileController@info'          )->name( 'docstore-file-api@info'        );
+    });
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // RIPE ATLAS
 //

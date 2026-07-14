@@ -9,7 +9,7 @@
             let extra = type === 'directory' ?
                 '<b>All subdirectories and all files within those directories will also be deleted!</b>' : '';
 
-            html = `<form id="form-delete" method="POST" action="${url}">
+            let html = `<form id="form-delete" method="POST" action="${url}">
                         <div>
                             Do you really want to delete this ${type}?
                             ${extra}
@@ -45,7 +45,7 @@
             e.preventDefault();
             let url = this.href;
 
-             bootbox.dialog({
+            bootbox.dialog({
                 message: '<div><p class="text-center"><i class="fa fa-spinner fa-spin text-5xl"></i></p></div>',
                 size: "extra-large",
                 title: "File Metadata",
@@ -63,7 +63,22 @@
 
             $.ajax( url )
                 .done(function (data) {
-                    $('.bootbox-body').html( data ).scrollTop();
+                    const template = $('#file-metadata-template');
+                    const fragment = $(document.importNode(template[0].content, true));
+                    fragment.find('#meta-filename').text(data.file_name);
+                    if (data.created_by != null) {
+                        fragment.find('#meta-created-by').text(data.created_by.username + " (" + data.created_by.name + ")");
+                    } else {
+                        fragment.find('#meta-created-by').html(
+                            $('em').text('User no longer exists in database.')
+                        );
+                    }
+                    fragment.find('#meta-customer').text(data.customer);
+                    fragment.find('#meta-dspath').text(data.dspath);
+                    fragment.find('#meta-created-at').text(data.created_at);
+                    fragment.find('#meta-last-modified').text(data.last_modified);
+                    fragment.find('#meta-size').text(data.size);
+                    $('.bootbox-body').html( fragment ).scrollTop(0);
                 })
                 .fail(function () {
                     alert(`Error running ajax query for ${url}`);
