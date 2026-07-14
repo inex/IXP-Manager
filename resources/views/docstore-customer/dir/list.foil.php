@@ -197,7 +197,7 @@
                                         <a class="dropdown-item" href="<?= route( 'docstore-c-file@download', [ 'cust' => $t->cust, 'file' => $file->id] ) ?>">Download</a>
                                     <?php endif; ?>
                                     <?php if( $check && $isSuperUser ): ?>
-                                        <a class="dropdown-item btn-meta" href="<?= route( "docstore-c-file@info", [ "file" => $file ] ) ?>">Metadata</a>
+                                        <a class="dropdown-item btn-meta" href="<?= route( "docstore-c-file-api@info", [ "file" => $file ] ) ?>">Metadata</a>
                                     <?php endif; ?>
                                     <a class="dropdown-item" href="#"
                                        onclick="bootbox.alert({ message: 'SHA checksums can be used to check the authenticity / integrity of files.<br><br><?= $file->sha256 ? "SHA256 checksum: [<code>" . $t->ee( $file->sha256 ) . "</code>]" : "there is no sha256 checksum registered for this file." ?>', size: 'large' }); return false;">Show SHA256</a>
@@ -223,6 +223,71 @@
             </tbody>
         </table>
     </div>
+
+    <template id="file-metadata-template">
+        <!-- meta-filename -->
+        <!-- meta-created-by -->
+        <!-- meta-customer -->
+        <!-- meta-dspath -->
+        <!-- meta-created-at -->
+        <!-- meta-last-modified -->
+        <!-- meta-size -->
+        <div>
+            <h4>Metadata for <span id="meta-filename"></span></h4>
+
+            <table class="tw-mt-8">
+                <tr class="tw-border-t-1 tw-border-blue-500">
+                    <td class="tw-text-right tw-font-bold tw-p-2">
+                        Created By
+                    </td>
+                    <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
+                        <span id="meta-created-by"></span>
+                    </td>
+                </tr>
+                <tr class="tw-border-t-1 tw-border-blue-500">
+                    <td class="tw-text-right tw-font-bold tw-p-2">
+                        Customer
+                    </td>
+                    <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
+                        <span id="meta-customer"></span>
+                    </td>
+                </tr>
+                <tr class="tw-border-t-1 tw-border-blue-500">
+                    <td class="tw-text-right tw-font-bold tw-p-2">
+                        Path
+                    </td>
+                    <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
+                        <span id="meta-dspath"></span>
+                    </td>
+                </tr>
+                <tr class="tw-border-t-1 tw-border-blue-500">
+                    <td class="tw-text-right tw-font-bold tw-p-2">
+                        Created
+                    </td>
+                    <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
+                        <span id="meta-created-at"></span>
+                    </td>
+                </tr>
+                <tr class="tw-border-t-1 tw-border-blue-500">
+                    <td class="tw-text-right tw-font-bold tw-p-2">
+                        Last Modified
+                    </td>
+                    <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
+                        <span id="meta-last-modified"></span>
+                    </td>
+                </tr>
+                <tr class="tw-border-t-1 tw-border-b-1 tw-border-blue-500">
+                    <td class="tw-text-right tw-font-bold tw-p-2">
+                        Size
+                    </td>
+                    <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
+                        <span id="meta-size"></span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </template>
+
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
