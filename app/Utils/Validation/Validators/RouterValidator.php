@@ -66,16 +66,16 @@ class RouterValidator implements Validator
                 $routeServersNoRpki = array_merge($routeServersNoRpki, $rsNoRpki->all());
             }
 
-            if (count($routeServersNoRpki) > 0) {
-                $backend->warning("Found Route Servers without RPKI enabled: " . implode(", ",
-                    array_map(fn($router) => $router->handle, $routeServersNoRpki)));
-            }
-
             if (!is_string(config('ixp.rpki.rtr1.host')) && !is_string(config('ixp.rpki.rtr1.host'))) {
                 // neither set..
                 $backend->suggestion("Did you know IXP-Manager supports RPKI for route server configuration?");
             } else if (!is_string(config('ixp.rpki.rtr1.host')) || !is_string(config('ixp.rpki.rtr2.host'))) {
                 $backend->warning("A second RPKI instance is recommended for redundancy.");
+            }
+
+            if ( (is_string( config('ixp.rpki.rtr1.host') ) || is_string( config('ixp.rpki.rtr2.host') ) ) && count($routeServersNoRpki) > 0) {
+                $backend->warning("Found Route Servers without RPKI enabled: " . implode(", ",
+                        array_map(fn($router) => $router->handle, $routeServersNoRpki)));
             }
         }
 

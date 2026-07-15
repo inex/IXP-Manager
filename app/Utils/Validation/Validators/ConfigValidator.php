@@ -63,5 +63,23 @@ class ConfigValidator implements Validator
         } catch ( \Exception $e ) {
             $backend->error("The cache write test encountered an error: " . $e->getMessage());
         }
+
+        if ( !config ( 'ixp.as112.ui_active' ) ) {
+            $backend->suggestion( "Did you know IXP-Manager can help you run an AS112 service?" );
+        } else {
+            $backend->info("AS112 UI is enabled.");
+        }
+
+        if ( config( 'ixp_fe.frontend.disabled.settings' ) ) {
+            $backend->suggestion( "Did you know there is a UI for editing the IXP Manager .env file?" );
+        } else {
+            $backend->info( "Settings UI is enabled." );
+        }
+
+        if ( config('ixp_fe.frontend.disabled.lg' ) ) {
+            $backend->suggestion( "Did you know IXP Manager has a built in Looking Glass UI?" );
+        } else {
+            $backend->info( "Looking Glass UI is enabled." );
+        }
     }
 }
