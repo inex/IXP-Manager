@@ -84,12 +84,20 @@ System Validation
         <div class="validation-result tw-relative tw-h-fit !tw-important tw-text-xs tw-border-b-1 tw-leading-6 tw-text-gray-900 tw-pl-4 tw-mt-2 tw-flex tw-justify-start tw-align-middle" data-result-type="">
             <div class="result-badge badgeDot tw-rounded-full tw-border-2 tw-w-5 tw-h-5 tw-mr-1" title=""></div>
             <div class="result-type tw-min-w-16 tw-ml-1"></div>
-            <!-- tw-overflow-hidden tw-h-[1.2rem] tw-leading-[1.2rem] -->
             <div class="validation-content-container tw-relative tw-w-[calc(100%-6.5rem)]  tw-border tw-border-transparent tw-text-[0.9rem] tw-transition-[height] tw-duration-250">
                 <span class="validation-content"></span>
                 <div class="validation-extra-content tw-hidden tw-relative tw-font-size-xs">
 <!--                    --><?php //= $r->narrative ? $t->ee( $r->narrative ) : ( $r->narrativeHtml ?: '' ) ?><!--</div>-->
                 </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="no-output-template">
+        <div class="tw-relative tw-h-fit !tw-important tw-text-xs tw-border-b-1 tw-leading-6 tw-text-gray-900 tw-pl-4 tw-mt-2 tw-flex tw-justify-start tw-align-middle">
+            <div class="tw-min-w-16 tw-ml-1"></div>
+            <div class="tw-relative tw-w-[calc(100%-6.5rem)] tw-border tw-border-transparent tw-text-[0.9rem]">
+                <em>This validator did not produce any output</em>
             </div>
         </div>
     </template>
@@ -152,6 +160,9 @@ System Validation
                             // Append the result clone into the validation clone's list
                             validationFragment.find('.set-wrapper').append(resultFragment);
                         });
+                        if (validationData.results.length === 0) {
+                            validationFragment.find('.set-wrapper').append(createNoOutputFragment());
+                        }
 
                         validationData.software.forEach(function (software) {
                             let rowFragment = createSoftwareTableRow(software);
@@ -173,9 +184,6 @@ System Validation
                     $container.html('<div class="alert alert-danger col-12">Failed to load jobs. Please try again.</div>');
                 },
                 complete: function() {
-                    // since we dynamically created the validation template, initialise popver now.
-                    // $('[data-toggle="popover"]').popover()
-
                     $container.find('[data-toggle="popover"]').popover({
                         trigger: 'focus'
                     });
@@ -203,6 +211,11 @@ System Validation
             }
 
             return $validationClone;
+        }
+
+        function createNoOutputFragment() {
+            return $( $('#no-output-template').prop('content') ).clone();
+
         }
 
         function createValidationResultFragment(resultData) {
@@ -234,7 +247,7 @@ System Validation
     $(document).on('click','.resultStatusButton',function() {
         $(this).toggleClass('tw-opacity-40');
         toggleInformation();
-    })
+    });
 
     /**
      * Regenerate diagnostics data show or hide based on badge buttons state
@@ -248,13 +261,12 @@ System Validation
             $(".validation-result[data-result-type='" + status + "']").each( function() {
                 $(this).removeClass('tw-hidden');
                 if(disable) { $(this).addClass('tw-hidden'); }
-            })
-        })
+            });
+        });
     }
 
     $(document).on('click','.validation-result', function() {
-        console.log("running")
         $(this).find('.validation-extra-content').toggleClass('tw-hidden');
-    })
+    });
 </script>
 <?php $this->append() ?>
