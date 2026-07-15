@@ -48,7 +48,7 @@ class RouterValidator implements Validator
 
     public function getPriority(): int
     {
-        return 10;
+        return 40;
     }
 
     public function run( ValidationBackend $backend ): void

@@ -31,29 +31,25 @@ use Ramsey\Uuid\Uuid;
 /**
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class EnvSettingsValidator implements Validator
+class ConfigValidator implements Validator
 {
     public function getName(): string
     {
-        return ".env file validations";
+        return "Configuration validation";
     }
 
     public function getDescription(): string
     {
-        return "Perform some sanity checks of settings in the .env file";
+        return "Perform checks of the IXP Manager configuration";
     }
 
     public function getPriority(): int
     {
-        return 1;
+        return 20;
     }
 
     public function run( ValidationBackend $backend ): void
     {
-        if ( config('ixp_api.unsecured_api_access') ) {
-            $backend->warning("UNSECURED_API_ACCESS is enabled");
-        }
-
         $backend->info("Default cache driver is " . config('cache.default') );
 
         try {

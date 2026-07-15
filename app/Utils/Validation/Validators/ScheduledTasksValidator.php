@@ -46,7 +46,7 @@ class ScheduledTasksValidator implements Validator
 
     public function getPriority(): int
     {
-        return 10;
+        return 13;
     }
 
     public function run( ValidationBackend $backend ): void
@@ -58,7 +58,7 @@ class ScheduledTasksValidator implements Validator
         } else if ($schedulerLastRun->last_run_at->diffInMinutes( Carbon::now() ) > 10) {
             $backend->error("Task scheduler hasn't run for 10 minutes - your automated tasks are not running!");
         } else {
-            $backend->debug("Task scheduler is running");
+            $backend->info("Task scheduler is running");
         }
     }
 }

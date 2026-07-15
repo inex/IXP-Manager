@@ -47,7 +47,7 @@ class GrapherValidator implements Validator
 
     public function getPriority(): int
     {
-        return 10;
+        return 44;
     }
 
     public function run( ValidationBackend $backend ): void

@@ -50,7 +50,7 @@ class As112Validator implements Validator
 
     public function getPriority(): int
     {
-        return 5;
+        return 50;
     }
 
     public function run( ValidationBackend $backend ): void

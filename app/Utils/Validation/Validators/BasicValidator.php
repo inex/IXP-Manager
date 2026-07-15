@@ -40,7 +40,7 @@ class BasicValidator implements Validator
 
     public function getDescription(): string
     {
-        return "Perform some basic checks - not run on CLI";
+        return "Perform some basic system checks";
     }
 
     public function getPriority(): int

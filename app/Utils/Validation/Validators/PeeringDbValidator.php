@@ -49,7 +49,7 @@ class PeeringDbValidator implements Validator
 
     public function getPriority(): int
     {
-        return 100;
+        return 48;
     }
 
     public function run( ValidationBackend $backend ): void

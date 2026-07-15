@@ -57,7 +57,7 @@ class IxpManagerIsRegisteredValidator implements Validator
 
     public function getPriority(): int
     {
-        return 100;
+        return 30;
     }
 
     public function run( ValidationBackend $backend ): void
