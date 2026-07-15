@@ -195,11 +195,11 @@
                                         </a>
 
                                         <?php if( $pp->active ): ?>
-                                            <a class="btn btn-white btn-delete" id='list-delete-<?= $pp->id ?>' href="<?= route( 'patch-panel@change-status' , [ 'pp' => $pp->id, 'active' => ( $pp->active ? '0' : '1' ) ] ) ?>" title="Make Inactive">
+                                            <a class="btn btn-white btn-change-status" id='list-deactivate-<?= $pp->id ?>' href="<?= route( 'patch-panel@change-status' , [ 'pp' => $pp->id ] ) ?>" data-active="0" title="Make Inactive">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                         <?php else: ?>
-                                            <a class="btn btn-white" id='list-reactivate-<?= $pp->id ?>' href="<?= route( 'patch-panel@change-status' , [ 'pp' => $pp->id, 'active' => ( $pp->active ? '0' : '1' ) ] ) ?>" title="Reactive">
+                                            <a class="btn btn-white btn-change-status" id='list-reactivate-<?= $pp->id ?>' href="<?= route( 'patch-panel@change-status' , [ 'pp' => $pp->id ] ) ?>" data-active="1" title="Reactivate">
                                                 <i class="fa fa-repeat"></i>
                                             </a>
                                             <a class="btn btn-danger" id='list-expunge-<?= $pp->id ?>' href="<?= route( 'patch-panel@expunge' , [ 'pp' => $pp->id ] ) ?>" title="Expunge">

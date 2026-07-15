@@ -45,6 +45,7 @@
         $( '.btn-infos' ).click( function( e ) {
             e.preventDefault();
             let url = this.href;
+
             bootbox.dialog({
                 message: '<div><p class="text-center"><i class="fa fa-spinner fa-spin text-5xl"></i></p></div>',
                 size: "extra-large",

@@ -187,7 +187,7 @@ class IpAddressControllerTest extends DuskTestCase
 
                 $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
                 $browser->click( 'a#delete' )
-                    ->waitForText('Do you really want to delete this IP address?')
+                    ->waitForText('Do you really want to delete these IP addresses?')
                     ->press( 'Delete' )
                     ->waitForLocation( route( "ip-address@list", [ 'protocol' => $prot, 'vlanid' => $vlanId ] ) )
                     ->assertSee('IP Addresses deleted.');
@@ -207,7 +207,7 @@ class IpAddressControllerTest extends DuskTestCase
                 $this->assertTrue(count($availableIpAddresses) == 8);
 
                 $browser->click( 'a#delete' )
-                    ->waitForText('Do you really want to delete this IP address?')
+                    ->waitForText('Do you really want to delete these IP addresses?')
                     ->press( 'Delete' )
                     ->waitForLocation( route( "ip-address@list", [ 'protocol' => $prot, 'vlanid' => $vlanId ] ) )
                     ->assertSee('IP Addresses deleted.')

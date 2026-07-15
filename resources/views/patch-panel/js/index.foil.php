@@ -35,13 +35,37 @@
             $('#adv-search-select-cabinets').html( opts );
         });
 
-        $( '.btn-delete' ).click( function( event ) {
+        $( '.btn-change-status' ).click( function( event ) {
             event.preventDefault();
             let url = this.href;
+            let setActive = $( this ).attr( "data-active" );
+            let title, confirmButtonText, confirmButtonClass, prompt;
+
+            if (setActive === "1") {
+                title = "Reactivate Patch Panel"
+                prompt = "Are you sure that you want to reactivate this Patch Panel?";
+                confirmButtonText = "Reactivate";
+                confirmButtonClass = "btn-info";
+            } else if (setActive === "0") {
+                title = "Delete Patch Panel";
+                prompt = "Are you sure that you want to delete this Patch Panel? It will become deactivated.";
+                confirmButtonText = "Delete";
+                confirmButtonClass = "btn-danger";
+            } else {
+                return;
+            }
+
+            let form = `
+                <form id="form-change-pp-status" method="POST" action="${url}">
+                    <div>${prompt}</div>
+                    <input type="hidden" name="active" value="${setActive}">
+                    <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                    <input type="hidden" name="_method" value="patch" />
+                </form>`;
 
             bootbox.dialog({
-                message: 'Are you sure that you want to delete this Patch Panel? It will become deactivated.',
-                title: "Delete Patch Panel",
+                message: form,
+                title: title,
                 buttons: {
                     cancel: {
                         label: 'Close',
@@ -52,10 +76,10 @@
                         }
                     },
                     submit: {
-                        label: 'Delete',
-                        className: 'btn-danger',
+                        label: confirmButtonText,
+                        className: confirmButtonClass,
                         callback: function () {
-                            window.location = url;
+                            $('#form-change-pp-status').submit();
                         }
                     },
                 }
