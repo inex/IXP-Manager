@@ -145,7 +145,7 @@
 
         bootbox.dialog({
             title: `Delete ${elementName}`,
-            message: html ,
+            message: html,
             buttons: {
                 cancel: {
                     label: 'Close',

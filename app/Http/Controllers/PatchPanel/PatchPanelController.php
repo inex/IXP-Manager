@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\PatchPanel;
 
 use Former;
 
+use IXP\Http\Requests\TogglePatchPanelActive;
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -179,17 +180,17 @@ class PatchPanelController extends Controller
     /**
      * Change the status to active or inactive for a patch panel
      *
-     * @param PatchPanel    $pp
-     * @param int           $active
+     * @param PatchPanel              $pp
+     * @param TogglePatchPanelActive  $request
      *
      * @return RedirectResponse
      */
-    public function changeStatus( PatchPanel $pp, int $active ): RedirectResponse
+    public function changeStatus( PatchPanel $pp, TogglePatchPanelActive $request ): RedirectResponse
     {
-        $status = $active ? 'active' : 'inactive';
+        $status = $request->active ? 'active' : 'inactive';
 
         if( $pp->patchPanelPorts()->count() === $pp->availableForUsePortCount() ) {
-            $pp->update( [ 'active' => (bool)$active ] );
+            $pp->update( [ 'active' => (bool)$request->active ] );
             AlertContainer::push( 'The patch panel has been marked as ' . $status, Alert::SUCCESS );
         } else {
             AlertContainer::push( 'To make a patch panel ' . $status . ', all ports must be available for use.', Alert::DANGER );
