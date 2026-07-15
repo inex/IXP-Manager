@@ -27,6 +27,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use IXP\Jobs\SendApiKeyExpiryReminders;
 use IXP\Jobs\SendAppPasswordExpiryReminders;
+use IXP\Models\TaskLastRun;
 
 class Kernel extends ConsoleKernel
 {
@@ -94,6 +95,7 @@ class Kernel extends ConsoleKernel
         $schedule->command( 'switch:snmp-poll' )->everyFiveMinutes()
             ->withoutOverlapping();
 
+        TaskLastRun::updateSchedulerCronJob();
     }
 
     /**
