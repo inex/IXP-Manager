@@ -12,8 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('task_last_run', function (Blueprint $table) {
-            $table->text("task_key");
+            $table->string("task_key", 64);
+            $table->string('parameters', 255);
             $table->dateTime("last_run_at");
+
+            $table->unique( [ 'task_key', 'parameters' ] );
         });
     }
 

@@ -25,23 +25,28 @@ declare(strict_types=1);
 namespace IXP\Utils\Validation\Validators;
 
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
+use IXP\Models\Infrastructure;
 use IXP\Models\Router;
 use IXP\Models\TaskLastRun;
 use IXP\Models\Vlan;
 
+/**
+ * This validator checks the laravel task scheduler is running
+ */
 class ScheduledTasksValidator implements Validator
 {
 
     public function getName(): string
     {
-        return "Scheduler validator";
+        return "Scheduler Task validator";
     }
 
     public function getDescription(): string
     {
-        return "Checks scheduled tasks are running";
+        return "Checks the IXP Manager task scheduler is running.";
     }
 
     public function getPriority(): int
@@ -51,14 +56,14 @@ class ScheduledTasksValidator implements Validator
 
     public function run( ValidationBackend $backend ): void
     {
-        $schedulerLastRun = TaskLastRun::whereTaskKey(TaskLastRun::SCHEDULER_CRON_JOB)->first();
+        $schedulerLastRun = TaskLastRun::whereTaskKey( TaskLastRun::SCHEDULER_CRON_JOB )->first();
 
         if ( !$schedulerLastRun ) {
-            $backend->error("No record of task scheduler running - your automated tasks are not running!");
-        } else if ($schedulerLastRun->last_run_at->diffInMinutes( Carbon::now() ) > 10) {
-            $backend->error("Task scheduler hasn't run for 10 minutes - your automated tasks are not running!");
+            $backend->error( "No record of task scheduler running - your automated tasks are not running!" );
+        } else if( $schedulerLastRun->last_run_at->diffInMinutes( Carbon::now() ) > 10 ) {
+            $backend->error( "Task scheduler hasn't run for 10 minutes - your automated tasks are not running!" );
         } else {
-            $backend->info("Task scheduler is running");
+            $backend->info( "Task scheduler is running" );
         }
     }
 }

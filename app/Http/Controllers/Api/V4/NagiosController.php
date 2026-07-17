@@ -37,6 +37,7 @@ use IXP\Models\{
     Infrastructure,
     PhysicalInterface,
     Router,
+    TaskLastRun,
     Vlan
 };
 
@@ -81,6 +82,8 @@ class NagiosController extends Controller
             abort(404, 'Unknown template');
         }
 
+        TaskLastRun::updateNagiosCustomers( [ 'vlan' => $vlan->id, 'protocol' => $protocol, 'template' => $tmpl ] );
+
         return response()
             ->view( $tmpl, [
                 'vlan'     => $vlan,
@@ -119,6 +122,8 @@ class NagiosController extends Controller
         if( !FacadeView::exists( $tmpl ) ) {
             abort(404, 'Unknown template');
         }
+
+        TaskLastRun::updateNagiosSwitches( [ 'infrastructure' => $infra->id, 'template' => $tmpl ] );
 
         return response()
             ->view( $tmpl, [
@@ -162,6 +167,8 @@ class NagiosController extends Controller
         if( !FacadeView::exists( $tmpl ) ) {
             abort(404, 'Unknown template');
         }
+
+        TaskLastRun::updateNagiosBirdseyeDaemons( [ 'template' => $tmpl, 'vlan' => $vlan?->id ] );
 
         return response()
                 ->view( $tmpl, [
@@ -219,6 +226,8 @@ class NagiosController extends Controller
         if( !$routers->count() ) {
             abort( 404, "No suitable router(s) found." );
         }
+
+        TaskLastRun::updateNagiosBirdseyeDaemons( [ 'vlan' => $vlan->id, 'protocol' => $protocol, 'type' => $type, 'template' => $tmpl ] );
 
         return response()
             ->view( $tmpl, [
