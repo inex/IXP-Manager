@@ -28,6 +28,7 @@ use IXP\Console\Commands\Command;
 use IXP\Contracts\Validation\ValidationRunner;
 use IXP\Utils\ConcurrentJobRunner;
 use IXP\Utils\Validation\Backend;
+use IXP\Utils\Validation\Result;
 use IXP\Utils\Validation\ResultType;
 use IXP\Utils\Validation\Software;
 use IXP\Utils\Validation\ValidationRunnerFactory;
@@ -50,8 +51,9 @@ class RunCommand extends Command
      * @var string
      */
     protected $signature = "validator:run
-                                {--timeout=30     : Set a task timeout in seconds}
-                                {--simple-output  : Print results in sequence, don't use tables or refreshing}";
+                                {--timeout=30     : Set a task timeout in seconds }
+                                {--log-level=suggest  : Select the lowest log level to print. In ascending order: debug, info, suggest, warning, error }
+    ";
 
     /**
      * The console command description.
@@ -61,9 +63,15 @@ class RunCommand extends Command
     protected $description = "Run system validation routines";
 
     /**
+     * List of result types which we are interested in seeing displayed.
+     * @var ResultType[]
+     */
+    private array $logResultTypes;
+
+    /**
      * @var Backend[]
      */
-    private array $backends;
+    private array $runners;
 
     /**
      * For summary purposes, count the number of result types
@@ -85,53 +93,32 @@ class RunCommand extends Command
      *
      * @throws \ReflectionException
      */
-    public function handle( ValidationRunnerFactory $validation, ConcurrentJobRunner $runner ): int
+    public function handle( ValidationRunnerFactory $validation, ConcurrentJobRunner $jobRunner ): int
     {
+        if (ResultType::tryFrom(strtoupper($this->option('log-level'))) === null) {
+            $this->line("Unknown log level '{$this->option('log-level')}'");
+            return 1;
+        }
+        $this->logResultTypes = $this->resultTypesToRender(ResultType::from(strtoupper($this->option('log-level'))));
         $this->initEmptyResultsSummary();
-        $this->backends = $validation->getRunners();
+        $this->runners = $validation->getRunners();
 
         $jobs = [];
-        foreach ($this->backends as $backend) {
-            $jobs[] = fn() => $backend->run();
+        foreach ( $this->runners as $runner) {
+            $jobs[] = fn() => $runner->run();
         }
 
-        if ($this->option('simple-output')) {
-            $outputFn = $this->basicResultsOutput();
-        } else {
-            $tablesSection = $this->output->getOutput()->section();
-            $outputFn = $this->refreshResultsOutput($tablesSection);
-        }
+        $jobRunner
+            ->timeout( (int) ( $this->option('timeout') ?: 30 ) )
+            ->run( $jobs, $this->runnerReturned(...), $this->runnerTimedOut(...), $this->runnerFailure(...) );
 
-        $runner->timeout( (int) ( $this->option('timeout') ?: 30 ) );
-        $runner->run($jobs, function ( $taskKey, ValidationRunner $backend, $progress ) use ($outputFn) {
-            // Update backends with test results
-            $this->backends[$taskKey] = $backend;
+        $this->printResultsFromRunners();
 
-            // Record result type, or failure count
-            foreach ($backend->getResults() as $result) {
-                $this->recordResultType($result->type);
-            }
-            $this->failureCount += $backend->isFailed() ? 1 : 0;
+        $this->line("");
+        $this->line("Log level: " . $this->option('log-level'));
+        $this->line("Validations summary: " . $this->buildResultsSummary());
 
-            // Call output function to render an update
-            $outputFn($taskKey, $backend, $progress);
-        }, function ($timedOutKey) {
-            // Mark process as timed out:
-            $backend = $this->backends[$timedOutKey];
-            $backend->markTimedOut();
-            $this->timedOutCount++;
-        }, function ($taskKey, \Throwable $exception) use (&$fatalError) {
-            // Mark task as failed due to unhandled exception:
-            $backend = $this->backends[$taskKey];
-            $backend->validatorFailure($exception);
-            $this->failureCount++;
-        });
-
-        $summary = $this->buildResultsSummary();
-
-        $this->line("Validations summary: " . $summary);
-
-        if ( ( $failed = array_filter( $this->backends, fn( ValidationRunner $runner ) => $runner->isFailed() ) ) && !empty( $failed ) ) {
+        if ( ( $failed = array_filter( $this->runners, fn( ValidationRunner $runner ) => $runner->isFailed() ) ) && !empty( $failed ) ) {
             $this->line("");
             $this->line("<comment>The following validations encountered errors which prevented them from finishing:</comment>");
             foreach ($failed as $backend) {
@@ -143,7 +130,7 @@ class RunCommand extends Command
             }
         }
 
-        if ( ( $timedOut = array_filter($this->backends, fn( ValidationRunner $runner ) => $runner->isTimedOut() ) ) && !empty( $timedOut ) ) {
+        if ( ( $timedOut = array_filter($this->runners, fn( ValidationRunner $runner ) => $runner->isTimedOut() ) ) && !empty( $timedOut ) ) {
             $this->line("The following validations timed out before reporting their results");
             foreach ($timedOut as $backend) {
                 $this->line(" * {$backend->getValidator()->getName()}");
@@ -154,101 +141,123 @@ class RunCommand extends Command
     }
 
     /**
-     * Return a closure for basic results output: prints each backend as it finishes
+     * Called when task successfully completes.
      */
-    private function basicResultsOutput(): \Closure
+    private function runnerReturned( int|string $taskKey, ValidationRunner $runner, float $progress ): void
     {
-        return function ( $taskKey, ValidationRunner $backend, $progress ) {
-            $this->line("[{$progress}%] Finished: <comment>{$backend->getValidator()->getName()}</comment>");
-            if ( count( $backend->getSoftware() ) ) {
-                $this->line(" * Software");
-                foreach( $backend->getSoftware() as $software ) {
-                    $this->line("  - {$software->software} {$software->version}");
-                }
-            }
+        // Update runners with test results
+        $this->runners[$taskKey] = $runner;
 
-            if ( count( $backend->getResults() ) ) {
-                $this->line(" * Results");
-                foreach( $backend->getResults() as $result) {
-                    $this->line("  - [{$result->type->value}] $result->message");
-                }
-            }
-
-            if ( ($failure = $backend->getFailureInfo() ) ) {
-                $exceptionMessage = sprintf("%s at %s:%d: %s",
-                    $failure->class, $failure->file, $failure->line , $failure->message);
-                $this->line(" * Failure: " . $exceptionMessage);
-            }
-        };
+        // Record result type, or failure count
+        foreach ( $runner->getResults() as $result ) {
+            $this->recordResultType( $result->type );
+        }
+        $this->failureCount += $runner->isFailed() ? 1 : 0;
+        // do we want a progress bar or something?
     }
 
     /**
-     * Return a closure for a refreshing results output. Prints tables of software and validator
-     * results that update with each completed validator
+     * Called when a task is detected as having timed out. No information
+     * about state returned, we just mark it as timed out.
      */
-    private function refreshResultsOutput(ConsoleSectionOutput $section): \Closure
+    private function runnerTimedOut( int|string $timedOutKey ): void
     {
-        return function ( $taskKey, Backend $backend, $progress ) use ($section) {
-            $section->clear();
+        $this->runners[$timedOutKey]->markTimedOut();
+        $this->timedOutCount++;
+    }
 
-            // Create a copy of only the completed backends, sorted by Validator priority
-            $backends = collect($this->backends)
-                ->filter( fn( ValidationRunner $b ) => $b->isComplete() || $b->isTimedOut() )
-                ->sortBy( fn( ValidationRunner $b ) => $b->getValidator()->getPriority() )
-                ->values();
+    /**
+     * Called when an UNHANDLED error bubbles up. ValidationRunner already catches all
+     * errors raised by a Validator, so we are talking extremely unusual circumstances.
+     * This should not happen in normal operation, however, we have code to handle
+     * it because we don't want an unexpected failure to affect the running/reporting of
+     * other validators.
+     */
+    private function runnerFailure( int|string $taskKey, \Throwable $exception ): void
+    {
+        $this->runners[$taskKey]->validatorFailure($exception);
+        $this->failureCount++;
+    }
+    /**
+     * Print a table of software versions, and runner results
+     */
+    private function printResultsFromRunners(): void
+    {
+        // Create a copy of only the completed runners, sorted by Validator priority
+        $runners = collect($this->runners)
+            ->filter( fn( ValidationRunner $b ) => $b->isComplete() || $b->isTimedOut() )
+            ->sortBy( fn( ValidationRunner $b ) => $b->getValidator()->getPriority() )
+            ->values();
 
-            // Build list of software
-            $softwareList = collect($backends)
-                ->flatMap( fn( ValidationRunner $backend ) => $backend->getSoftware() )
-                ->map(     fn( Software $software) => [ $software->software, $software->version ] )
-                ->all();
+        // Build list of software
+        $softwareList = collect($runners)
+            ->flatMap( fn( ValidationRunner $backend ) => $backend->getSoftware() )
+            ->map(     fn( Software $software) => [ $software->software, $software->version ] )
+            ->all();
 
-            if (count($softwareList)) {
-                new Table($section)
-                    ->setHeaders( [ 'Software', 'Version' ] )
-                    ->setStyle( 'default' )
-                    ->setRows( $softwareList )
-                    ->render();
-            }
+        if (count($softwareList)) {
+            new Table($this->output)
+                ->setHeaders( [ 'Software', 'Version' ] )
+                ->setStyle( 'default' )
+                ->setRows( $softwareList )
+                ->render();
+        }
 
-            $resultsRows = collect($backends)->flatMap(function (ValidationRunner $backend, $index) use ($backends) {
-                $results = collect($backend->getResults());
-                $validatorName = $backend->getValidator()->getName();
+        $resultsRows = collect($runners)->flatMap(function ( ValidationRunner $runner, $index) use ($runners) {
+            $results = collect($runner->getResults());
+            $validatorName = $runner->getValidator()->getName();
 
-                // 1. Generate the rows for this specific backend
-                if ($backend->isTimedOut()) {
-                    $rows = [[$validatorName, null, "<comment>The validator timed out before it reported any results</comment>"]];
-                } else if ($results->isEmpty()) {
-                    $rows = [[$validatorName, null, "<comment>The validator did not report any results</comment>"]];
-                } else {
-                    $rows = $results->map(fn ($result, $key) => [
+            // Build rows containing the output for each runner
+            if ($runner->isTimedOut()) {
+                $rows = [[$validatorName, null, "<comment>The validator timed out before it reported any results</comment>"]];
+            } else if ($results->isEmpty()) {
+                $rows = [[$validatorName, null, "<comment>The validator did not report any results</comment>"]];
+            } else {
+                // Filter out irrelevant result types (based on log level setting) and return results
+                $rows = $results
+                    ->filter( fn ($result) => in_array( $result->type, $this->logResultTypes ) )
+                    ->values()
+                    ->map(fn (Result $result, $key ) => [
                         $key === 0 ? $validatorName : null,
                         $result->type->name,
                         $result->message
                     ])->all();
+
+                // There _were_ results, but our log level excluded all of them. Provide an explanation.
+                if ( count($rows) === 0 ) {
+                    $rows[] = [$validatorName, null, "<comment>No results reached the log-level threshold</comment>"];
                 }
+            }
 
-                if ($backend->getFailureInfo()) {
-                    $rows[] = [null, null, "<comment>This validator failed to complete due to an error</comment>"];
-                }
+            if ( $runner->getFailureInfo() ) {
+                $rows[] = [null, null, "<comment>This validator failed to complete due to an error</comment>"];
+            }
 
-                // 2. Append a separator if it's not the last backend in the list
-                if ($index < count($backends) - 1) {
-                    $rows[] = [new TableSeparator(['colspan' => 3])];
-                }
+            // Append a separator if it's not the last backend in the list
+            if ($index < count($runners) - 1) {
+                $rows[] = [new TableSeparator(['colspan' => 3])];
+            }
 
-                return $rows;
-            })->all();
+            return $rows;
+        })->all();
 
-            new Table($section)
-                ->setHeaders( [ 'Validator', 'Result', 'Message' ] )
-                ->setStyle( 'default' )
-                ->setRows( $resultsRows )
-                ->setHeaderTitle( 'System Validation' )
-                ->setColumnMaxWidth( 0, 20 )
-                ->setColumnMaxWidth( 2, 80 )
-                ->render();
-        };
+        new Table($this->output)
+            ->setHeaders( [ 'Validator', 'Result', 'Message' ] )
+            ->setStyle( 'default' )
+            ->setRows( $resultsRows )
+            ->setHeaderTitle( 'System Validation' )
+            ->setColumnMaxWidth( 0, 20 )
+            ->setColumnMaxWidth( 2, 80 )
+            ->render();
+    }
+
+    /**
+     * Assuming that ResultTypes are defined in the order of increasing severity,
+     * take min log level, and only return result types with that level or higher.
+     */
+    private function resultTypesToRender(ResultType $minLevel): array
+    {
+        return array_slice(ResultType::cases(), array_search($minLevel, ResultType::cases()));
     }
 
     /**

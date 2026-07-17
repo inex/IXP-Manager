@@ -56,7 +56,8 @@ interface ValidationRunner
     public function isFailed(): bool;
 
     /**
-     * Return any uncaught \Throwable that arises while running the Validator
+     * Return any uncaught \Throwable that arises while running the Validator.
+     * The runner may still contain results.
      */
     public function getFailureInfo(): ?FailureInfo;
 
