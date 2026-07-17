@@ -60,7 +60,6 @@ class SecurityValidator implements Validator
         }
 
         try {
-            // todo: how exactly should we deal with reverse proxies here?
             $url = url("/login");
             $loginResponse = \Http::get($url);
             $headers = $loginResponse->headers();
@@ -75,7 +74,7 @@ class SecurityValidator implements Validator
             }
 
         } catch (ConnectionException $e) {
-            $backend->error("Connection error when checking login endpoint: " . $e->getMessage());
+            $backend->warning("Failed to load IXP Manager login page for HTTP check. This is to be expected in some configurations.");
         }
     }
 }
