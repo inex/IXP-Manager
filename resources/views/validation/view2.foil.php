@@ -90,6 +90,15 @@ System Validation
 <!--                    --><?php //= $r->narrative ? $t->ee( $r->narrative ) : ( $r->narrativeHtml ?: '' ) ?><!--</div>-->
                 </div>
             </div>
+<!--            -->
+            <div class="result-icon tw-ml-auto tw-flex tw-items-center tw-pr-4">
+                <a href="#" target="_blank" class="validation-docs-link tw-hidden tw-ml-auto tw-flex tw-items-center tw-pr-4 tw-text-gray-500 hover:tw-text-gray-900">
+                    <i class="fa fa-book"></i> &nbsp;
+                </a>
+<!--                <a href="#" target="_blank" class="validation-settings-link tw-hidden tw-ml-auto tw-flex tw-items-center tw-pr-4 tw-text-gray-500 hover:tw-text-gray-900">-->
+<!--                    <i class="fa fa-gear"></i> &nbsp;-->
+<!--                </a>-->
+            </div>
         </div>
     </template>
 
@@ -229,6 +238,13 @@ System Validation
             $resultClone.find('.result-type').text(resultData.type.toUpperCase());
             $resultClone.find('.validation-content').text(resultData.message);
             $resultClone.attr('data-result-type', resultData.type);
+
+            if (resultData.docs_url != null) {
+                $resultClone.find('.validation-docs-link').attr('href', resultData.docs_url);
+                $resultClone.find(".validation-docs-link").removeClass("tw-hidden");
+            }
+            // $resultClone.find('.validation-settings-link').attr('href', resultData.docs_url);
+            // $resultClone.find(".validation-settings-link").removeClass("tw-hidden");
 
             return $resultClone;
         }

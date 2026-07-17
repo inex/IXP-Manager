@@ -20,6 +20,8 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
 namespace IXP\Utils\Validation;
 
 /**
@@ -27,5 +29,10 @@ namespace IXP\Utils\Validation;
  */
 readonly class Result
 {
-    public function __construct(private(set) string $message, private(set) ResultType $type) {}
+    public function __construct(
+        private(set) string     $message,
+        private(set) ResultType $type,
+        private(set) ?string    $docsLink = null,
+        private(set) ?string    $settingsUrl = null,
+    ) {}
 }

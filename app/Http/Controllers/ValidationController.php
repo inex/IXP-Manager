@@ -207,7 +207,8 @@ class ValidationController
         foreach ($prioritySortedBackends as $backend) {
             // This loop processes complete (successful + failed), and timed out
             $software = array_map( fn( Software $software ) => ['name' => $software->software, 'version' => $software->version ], $backend->getSoftware() );
-            $results = array_map(  fn( Result $result ) => ['message' => $result->message, 'type' => $result->type ], $backend->getResults() );
+            $results = array_map(  fn( Result $result ) => ['message' => $result->message, 'type' => $result->type, 'docs_url' => $result->docsLink, 'settings_url' => $result->settingsUrl ], $backend->getResults() );
+
             if ( ( $failureInfo = $backend->getFailureInfo() ) ) {
                 $failure = [
                     'exception' => $failureInfo->class,

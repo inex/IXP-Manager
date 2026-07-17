@@ -253,3 +253,12 @@ if( !function_exists( 'base62_decode' ) )
 }
 
 
+if( !function_exists( 'documentation_url' ) ) {
+    function documentation_url( string $uri): string
+    {
+        if ($uri && $uri[0] != '/') {
+            $uri = '/' . $uri;
+        }
+        return "https://docs.ixpmanager.org/" . DOCUMENTATION_VERSION . $uri;
+    }
+}

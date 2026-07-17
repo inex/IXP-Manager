@@ -37,25 +37,25 @@ interface ValidationBackend
     /**
      * Report debug level information
      */
-    public function debug( string $message): void;
+    public function debug( string $message, ?string $docsLink = null, ?string $settingsPage = null): void;
 
     /**
      * Report a positive validation outcome
      */
-    public function info( string $message): void;
+    public function info( string $message, ?string $docsLink = null, ?string $settingsPage = null): void;
 
     /**
      * Report a suggestion to the user
      */
-    public function suggestion( string $message): void;
+    public function suggestion( string $message, ?string $docsLink = null, ?string $settingsPage = null): void;
 
     /**
      * Report an warning condition detected during validation
      */
-    public function warning(string $message): void;
+    public function warning(string $message, ?string $docsLink = null, ?string $settingsPage = null): void;
 
     /**
      * Report an erroneous condition detected during validation
      */
-    public function error(string $message): void;
+    public function error(string $message, ?string $docsLink = null, ?string $settingsPage = null): void;
 }

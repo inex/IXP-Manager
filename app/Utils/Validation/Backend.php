@@ -134,28 +134,28 @@ class Backend implements ValidationBackend, ValidationRunner
         $this->software[] = new Software($name, $version);
     }
 
-    public function debug( string $message): void
+    public function debug( string $message, ?string $docsLink = null, ?string $settingsPage = null): void
     {
-        $this->results[] = new Result($message, ResultType::Debug);
+        $this->results[] = new Result($message, ResultType::Debug, $docsLink, $settingsPage);
     }
 
-    public function info( string $message): void
+    public function info( string $message, ?string $docsLink = null, ?string $settingsPage = null): void
     {
-        $this->results[] = new Result($message, ResultType::Info);
+        $this->results[] = new Result($message, ResultType::Info, $docsLink, $settingsPage);
     }
 
-    public function suggestion( string $message ): void
+    public function suggestion( string $message, ?string $docsLink = null, ?string $settingsPage = null): void
     {
-        $this->results[] = new Result($message, ResultType::Suggestion);
+        $this->results[] = new Result($message, ResultType::Suggestion, $docsLink, $settingsPage);
     }
 
-    public function warning(string $message): void
+    public function warning(string $message, ?string $docsLink = null, ?string $settingsPage = null): void
     {
-        $this->results[] = new Result($message, ResultType::Warning);
+        $this->results[] = new Result($message, ResultType::Warning, $docsLink, $settingsPage);
     }
 
-    public function error(string $message): void
+    public function error(string $message, ?string $docsLink = null, ?string $settingsPage = null): void
     {
-        $this->results[] = new Result($message, ResultType::Error);
+        $this->results[] = new Result($message, ResultType::Error, $docsLink, $settingsPage);
     }
 }
