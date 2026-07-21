@@ -66,6 +66,7 @@ $this->layout( 'layouts/ixpv4' );
                 <?= Former::text( 'name' )
                     ->label( 'Name' )
                     ->placeholder( "Acme Intermet Access" )
+                    ->required()
                     ->blockHelp( "The customer's name as you/they typically want it to appear in IXP Manager. It is not necessarily "
                         . "their full legal entity name (that goes elsewhere). The <em>abbreviated name</em> is a shorter version "
                         . "of the name that is used in space constrained areas such as graph labels." );
@@ -75,6 +76,7 @@ $this->layout( 'layouts/ixpv4' );
                     ->label( 'Type' )
                     ->fromQuery( \IXP\Models\Customer::$CUST_TYPES_TEXT )
                     ->placeholder( 'Choose Type' )
+                    ->required()
                     ->addClass( 'chzn-select' )
                     ->blockHelp( 'Please see the external documentation referenced above for full details of customer types. For a normal IXP customer, you just want <code>Full</code>.' );
                 ?>
@@ -82,6 +84,7 @@ $this->layout( 'layouts/ixpv4' );
                 <?= Former::text( 'shortname' )
                     ->label( 'Short Name' )
                     ->placeholder( "acme" )
+                    ->required()
                     ->blockHelp( "Short name is something we are slowly removing. It is currently visible in some URLs and a couple other "
                         . "areas. It should be a lowercase single word (<code>[a-z0-9]</code>) and it should not be changed after it is set." );
                 ?>
@@ -96,6 +99,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::date( 'datejoin' )
                     ->label( 'Date Joined' )
+                    ->required()
                     ->blockHelp( 'The data this customer joined the exchange.' );
                 ?>
 
@@ -110,6 +114,7 @@ $this->layout( 'layouts/ixpv4' );
                     ->label( 'Status' )
                     ->fromQuery( \IXP\Models\Customer::$CUST_STATUS_TEXT )
                     ->placeholder( 'Choose Status' )
+                    ->required()
                     ->addClass( 'chzn-select' )
                     ->blockHelp( "The state of the customer. The most important of which is <code>Normal</code> which is what you'll use nearly 100% of the "
                         . "time. Setting either of the other two options (<code>Suspended</code> / <code>Not Connected</code>) will have the same effect as "
@@ -127,6 +132,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::text( 'abbreviatedName' )
                     ->label( 'Abbreviated Name' )
+                    ->required()
                     ->placeholder( "Acme" )
                     ->blockHelp( "The Abbreviated Name is a shorter version of the name that is used in space constrained areas such as graph labels." );
                 ?>
@@ -154,6 +160,7 @@ $this->layout( 'layouts/ixpv4' );
                 <?= Former::number( 'autsys' )
                     ->label( 'AS Number' )
                     ->placeholder('65500')
+                    ->required()
                     ->blockHelp( 'The AS Number is just the integer value without any AS prefix, etc.' );
                 ?>
 
@@ -176,6 +183,7 @@ $this->layout( 'layouts/ixpv4' );
                 <?= Former::email( 'peeringemail' )
                     ->label( 'Email' )
                     ->placeholder( "peering@example.com" )
+                    ->required()
                     ->blockHelp( "The Peering Email is used in member lists and by the Peering Manager for sending emails. We encourage "
                         . "using a role alias such as peering@example.com." );
                 ?>
@@ -251,6 +259,7 @@ $this->layout( 'layouts/ixpv4' );
                 <?= Former::email( 'nocemail' )
                     ->label( 'Email' )
                     ->placeholder( 'noc@example.com' )
+                    ->required()
                     ->blockHelp( 'The NOC email is used in customer lists. We encourage "
             . "the use of a role alias such as noc@example.com.<br><br>'
                         . 'This is available to all other customers.' );
